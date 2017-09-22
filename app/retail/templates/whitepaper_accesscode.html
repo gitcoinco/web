@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+    <div class="container-fluid" style="">
+        <div class=" row ">
+            <div class="col-4 pb-4">
+                <div class="align-items-right justify-content-right" style="text-align: right;">
+                    <img src="/static/v2/images/prime.png" style="max-width:300px;">
+                </div>
+            </div>
+            <div class="col-1 pb-4">
+            </div>
+            <div class="col-6 pb-4">
+                <div class="form_container">
+                    <div style="max-width: 500px; margin: 0px auto;">
+                    <p>Please submit your info below for access to the whitepaper.</a> </p>
+                    {% if msg %}
+                        <p style="background-color: #fee856; padding: 5px 10px;">
+                            {{msg}}
+                        </p>
+                    {% endif %}
+                    <form id=whitepaper method=POST>
+                        <div class="form-group">
+                            <label for="email">Email address</label>
+                            <input type=text name=email class=form-control placeholder='you@somewhere'  value="{{email}}" required>
+                            <small id="emailHelp" class="form-text text-muted">Gitcoin will never share your email with anyone else.</small>
+                        </div>
+                        <div class="form-group">
+                        <label for="accesskey">Access Code</label>
+                        <input type=text class=form-control name=accesskey id="accesskey" placeholder='XXXX-YYYY-ZZZZZ' value="{{accesskey}}" >
+
+                        </div>
+                        {% csrf_token %}
+                        <input class='btn btn-sm btn-success raise' type='submit' name='submit' value="Go">
+                    </form>
+
+                    {% endblock %}
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-1 pb-4">
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% block scripts %}
+
+
+<script>
+
+    $(document).ready(function() {
+        $('#whitepaper input.btn-go').click(function(e){
+            setTimeout(function(){
+                $('#whitepaper input.btn-go').attr('disabled','disabled');
+            },1);
+        });
+    });
+</script>
+
+
+{% endblock %}

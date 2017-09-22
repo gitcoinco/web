@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include 'shared/head.html' %}
+{% include 'shared/cards.html' %}
+
+<body class="interior {{active}}">
+    <div class="container-fluid header dash">
+        {% include 'shared/nav_internal.html' %}
+    </div>
+    <div class="row no-gutter  text-uppercase">
+        <div class="col-3" style="background: #eee; ">
+            {% include 'shared/current_balance.html' %}
+            {% include 'shared/sidebar_search.html' %}
+        </div>
+
+        <div class="col body">
+            <div class="container-fluid no-gutter">
+            {% include 'shared/bounty_def.html' %}
+                <div class="row font-smaller-2" id="form_container">
+                    {% include 'shared/no_metamask_error.html' %}
+                    {% include 'shared/zero_balance_error.html' %}
+                    {% include 'shared/unlock_metamask.html' %}
+                    <div class="col d-flex align-items-center justify-content-center" id="primary_form">
+                        <div class="d-flex justify-content-center flex-column mt-5 w-50" id="primary_subform">
+                            {% include 'shared/bounty_nav.html' with active_item=1 %}
+                            <div class="w-100" style="text-align: center;">
+                                <h3>Submit a Bounty</h3>
+                                <img src="/static/v2/images/prime.png">
+                            </div>
+                            <div id=network_status class="w-100" style="text-align: center;">
+                                <div class="w-40">
+                                        Web3: <span>☑ - Enabled</span>
+                                        <br>
+                                        Eth: <span>☑ - Available</span>
+                                </div>
+                            </div>
+                            <div class="w-100">
+                                <label for=issueURL>Issue URL:</label>
+                                <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
+                            </div>
+                            <div class="w-100 mt-2 d-flex ">
+                                <div class="w-50 mt-2 mr-3 d-flex flex-column">
+                                <label for=amount>Amount:</label>
+                                </div>
+                            </div>
+                            <div class="w-100 mt-0">
+                                <input name='amount' id='amount'  class="gc-round-text-input" type="text" placeholder="Amount" value="{{amount}}" style="width: 20%; display: inline;" />
+                                <select name='deonomination' class="btn btn-sm btn-outline-dark" style="width: 77%;  display: inline;">
+                                </select>
+                            </div>
+                            <div class="w-100 mt-2">
+                                <label for=expirationTimeDelta>Expires in:</label>
+                                    <select class="w-100 btn btn-sm btn-outline-dark" name=expirationTimeDelta >
+                                        <option value="86400">1 day</option>
+                                        <option value="604800">1 week</option>
+                                        <option value="1209600">2 weeks</option>
+                                        <option value="2592000">1 month</option>
+                                        <option value="31536000">1 year</option>
+                                        <option value="9999999999">Never</option>
+                                    </select>
+                                
+                            </div>
+                            <div id="advancedLink" class="mt-2">
+                                <a href="#">Advanced ⬇ </a>
+                            </div>
+                            <div id="advanced_container" style="display: none;">
+                                <div class="w-100 mt-2">
+                                    <label for=title>Issue Title:</label>
+                                    <input name='title' id="title"  class="w-100 gc-round-text-input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" />
+                                </div>
+                                <div class="w-100 mt-2">
+                                    <label for=keywords>Keywords:</label>
+                                    <input name='keywords' id='keywords'  class="w-100 gc-round-text-input" type="text" placeholder="python, solidity, html, javascript, react (optional)" value="{{keywords}}" />
+                                </div>
+                                <div class="w-100 mt-2">
+                                    <label for=githubUsername>Github Username:</label>
+                                    <input name='githubUsername' id='githubUsername'  class="w-100 gc-round-text-input" type="text" placeholder="@you (optional)" value="{{githubUsername}}" />
+                                </div>
+                                <div class="w-100 mt-2">
+                                    <label for=notificationEmail>Notification Email:</label>
+                                    <input name='notificationEmail' id='notificationEmail'  class="w-100 gc-round-text-input" type="text" placeholder="you@domain.co (optional)" value="{{notificationEmail}}" />
+                                </div>
+                                <div class="w-100 mt-2 d-flex ">
+                                    <div class="w-50 mt-2 mr-3 d-flex flex-column">
+                                        <label>Bounty Details</label>
+                                    </div>
+                                </div>
+                                <div class="w-100 mt-0 d-flex ">
+                                    <div class="w-50 mt-2 mr-3 d-flex flex-column">
+                                        <select class="w-100 btn btn-sm btn-outline-dark" name=experienceLevel >
+                                            <option value="">-- Experience Level -- </option>
+                                            <option>Beginner</option>
+                                            <option>Intermediate</option>
+                                            <option>Advanced</option>
+                                        </select>
+                                    </div>
+                                    <div class="w-50 mt-2 mr-3 d-flex flex-column">
+                                        <select class="w-100 btn btn-sm btn-outline-dark" name=projectLength >
+                                            <option value="">-- Project Length -- </option>
+                                            <option>Hours</option>
+                                            <option>Days</option>
+                                            <option>Weeks</option>
+                                            <option>Months</option>
+                                        </select>
+                                    </div>
+                                    <div class="w-50 mt-2 mr-3 d-flex flex-column">
+                                        <select class="w-100 btn btn-sm btn-outline-dark" name=bountyType >
+                                            <option value="">-- Bounty Type -- </option>
+                                            <option>Bug</option>
+                                            <option>Feature</option>
+                                            <option>Security</option>
+                                            <option>Other</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="w-100 mt-2">
+                                <a class="btn btn-sm btn-info mt-3 mb-5 pulseClick float-right" role="button" id="submitBounty" href="#">Create Bounty</a>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/ga.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+
+</body>
+
+
+<!-- jQuery -->
+<script src="{{STATIC_URL}}v2/js/abi.js"></script>
+<script src="{{STATIC_URL}}v2/js/tokens.js"></script>
+<script src="{{STATIC_URL}}v2/js/shared.js"></script>
+<script src="{{STATIC_URL}}v2/js/pages/new_bounty.js"></script>
+
+
+</html>

@@ -1,0 +1,13 @@
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+
+## SERVER ADMIN STUFF
+15 3 * * * /usr/bin/certbot renew --quiet --renew-hook "/bin/systemctl reload nginx"
+
+## BACKUPS
+1 1 * * * cd gitcoin/coin; bash scripts/backup.bash >> /var/log/gitcoin/backup.log  2>&1
+
+## GITCOIN WEB3 STUFF
+* * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_geth  >> /var/log/gitcoin/sync_geth.log  2>&1
+
+## GITCOIN MARKETING 
+15 12,15 * * * cd gitcoin/coin; bash scripts/run_management_command.bash post_quote  >> /var/log/gitcoin/post_quote.log  2>&1

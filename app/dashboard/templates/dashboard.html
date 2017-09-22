@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include 'shared/head.html' %}
+{% include 'shared/cards.html' %}
+
+<body class="interior {{active}}">
+    <div class="container-fluid header dash">
+        {% include 'shared/nav_internal.html' %}
+
+    </div>
+    <div class="row no-gutter  text-uppercase">
+        <div class="col-3" style="background: #eee; ">
+            {% include 'shared/current_balance.html' %}
+            {% include 'shared/sidebar_search.html' %}
+        </div>
+
+        <div class="col body">
+            <div class="container-fluid" id="bounties">
+            {% include 'shared/search_bar.html' %}
+
+                <div class="row mt-2 mb-2">
+                    <div class="col-4 ml-3 font-bigger-2" style="color: #3e24fb;padding-left: 1rem;">Bounties</div>
+                    <div class="col-8"></div>
+                </div>
+                <div class="row loading justify-content-center align-items-center loading_img">
+                    <img src='/static/v2/images/loading.gif'>
+                </div>
+                <div class="row nonefound" style="display:none;">
+                    <img src="static/v2/images/shrug_bot.png">
+                    <h3>No results found.  </h3>
+                    <p>Please try another query</p>
+                    <p>- or -</p>
+                    <p>
+                         <a href="#" class="save_search">save search</a> to be notified when results do appear.
+                     </p>
+                </div>
+            </div>
+        </div>
+
+      <!-- JSRender stuff --> 
+      <script id="result" type="text/x-jsrender">
+        <div class="row bounty_row pt-2" data-href="[[:action]]">
+                [[if my_bounty]]
+                    <div class="col-2 pt-3 d-flex justify-content-center special_tag">
+                        [[:my_bounty]]
+                    </div>
+                [[else]]
+                    <div class="col-2 pt-3 d-flex justify-content-center">
+                        <div class="experience [[:experience_level]]">&nbsp;</div>
+                    </div>
+                [[/if]]
+            <div class="col-7 d-flex flex-column">
+                <div class="w-75 d-flex flex-column pb-2" style="border-bottom: 1px solid #f9f9f9">
+                    <div class="font-bigger-1">[[:title]]</div>
+                    <div class="font-smaller-2">[[:p]]</div>
+                </div>
+            </div>
+            <div class="col-1 d-flex align-items-center">
+                <a class="btn btn-sm btn-darkBlue font-smaller-2" role="button" href="#">[[:rounded_amount]] <span class="font-smaller-4">[[:token_name]]</span></a>
+            </div>
+        </div>
+
+      </script>
+
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/ga.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+
+<script src="{{STATIC_URL}}v2/js/tokens.js"></script>
+<script src="{{STATIC_URL}}v2/js/pages/dashboard.js"></script>
+<script src="{{STATIC_URL}}v2/js/shared.js"></script>
+
+</body>
+</html>

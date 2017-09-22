@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+    <div class="container-fluid" style="">
+        <div class=" row ">
+            <div class="col-4 pb-4">
+                <div class="align-items-right justify-content-right" style="text-align: right;">
+                    <img src="/static/v2/images/regulus.png" style="max-width:300px;">
+                </div>
+            </div>
+            <div class="col-1 pb-4">
+            </div>
+            <div class="col-6 pb-4">
+                <div class="form_container">
+                    <div style="max-width: 500px; margin: 0px auto;">
+                    <p>Please submit your info below for access to the whitepaper. <a href="/whitepaper/accesscode">Already have an access code?</a> </p>
+                    {% if msg %}
+                        <p style="background-color: #fee856; padding: 5px 10px;">
+                            {{msg}}
+                        </p>
+                    {% endif %}
+                    <form id=whitepaper  method=POST>
+                        <div class="form-group">
+                            <label for="email">Email address</label>
+                            <input type=text name=email class=form-control placeholder='you@somewhere'  value="{{email}}" required>
+                            <small id="emailHelp" class="form-text text-muted">Gitcoin will never share your email with anyone else.</small>
+                        </div>
+                        <div class="form-group">
+                        <label for="role">Interested as a</label>
+                            <select multiple class="form-control" id="role" name="role"  required>
+                              <option>Open Source Developer</option>
+                              <option>Open Source Repo Maintainer</option>
+                              <option>Token Purchaser</option>
+                              <option>Press</option>
+                              <option>Advisor</option>
+                              <option>Other</option>
+                            </select>
+                            <small id="role" class="form-text text-muted">Feel free to select more than one.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="comments">Comments</label>
+                            <textarea class="form-control" id="comments" name="comments" rows="3" required>{{comments}}</textarea>
+                            <small id="comments" class="form-text text-muted">Who are you?  What is your interest in the whitepaper?</small>
+                        </div> 
+                        {% csrf_token %}
+                        <input class='btn btn-sm btn-success raise' type='submit' name='submit' value="Go">
+                    </form>
+
+                    {% endblock %}
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-1 pb-4">
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% block scripts %}
+
+
+<script>
+
+    $(document).ready(function() {
+        $('#whitepaper input.btn-go').click(function(e){
+            setTimeout(function(){
+                $('#whitepaper input.btn-go').attr('disabled','disabled');
+            },1);
+        });
+    });
+</script>
+
+
+{% endblock %}

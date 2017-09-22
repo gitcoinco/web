@@ -1,0 +1,22 @@
+        <nav class="navbar navbar-expand-md navbar-dark">
+            <a class="navbar-brand pt-0 pb-0" href="/">
+                    <img id="logo" src="/static/v2/images/logo.png" width="201" height="50" />
+                </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+                              <span class="navbar-toggler-icon"></span>
+                            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <nav class="navbar-nav ml-auto mr-3">
+                    <a class="nav-link {% if active == 'home' %}selected{%endif%}" href="/">Home</a>
+                    <a class="nav-link {% if active == 'about' %}selected{%endif%}" href="/about">About</a>
+                    <a class="nav-link" href="/dashboard">Bounty Explorer</a>
+                    <a class="nav-link" href="https://gitcoinhelp.zendesk.com/hc/en-us/">Help</a>
+
+                </nav>
+                <img class="mr-5" src="/static/v2/images/spaceship.png" width="93" height="81" />
+                <a class="btn btn-outline-info pl-4 pr-4 pulseClick" role="button" href="/get">Get Gitcoin</a>
+
+            </div>
+        </nav>

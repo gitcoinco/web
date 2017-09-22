@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include 'shared/head.html' %}
+{% include 'shared/cards.html' %}
+
+<body class="{{active}}">
+    <div class="container-fluid header">
+        {% include 'shared/nav.html' %}
+        {% if minihero %}
+            {% include 'shared/minihero.html' with h1=minihero %}
+        {% endif %}
+    </div>
+
+    <div class="container-fluid mt-3">
+        </div>
+        <div class="row mt-5 pb-3">
+            <div class="col text-center body">
+
+                {% block body %}{% endblock %}
+
+            </div>
+        </div>
+    </div>
+
+    {% include 'shared/footer.html' %}
+    {% include 'shared/footer_scripts.html' %}
+
+</body>
+
+{% include 'shared/ga.html' %}
+
+
+{% block scripts %}{% endblock %}
+
+
+</html>

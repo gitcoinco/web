@@ -1,0 +1,612 @@
+div.body{
+
+  min-height: 400px;
+
+}
+.navbar-nav .nav-link{
+    border-radius: 2px; 
+}
+.navbar-nav .nav-link:hover{
+    background-color:rgba(255,255,255,0.2);;
+}
+.navbar-nav a.nav-link.selected{
+    color: #4aeaa7 !important;
+}
+
+.footer .nav-link:hover{
+    border-radius: 2px; 
+    background-color:rgba(255,255,255,0.2);;
+}
+
+.interior .body {
+    background-color: white;
+}   
+.interior {
+}
+
+.interior .container-fluid{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.search_bar, .bounty_def{
+    background-color: #eee;
+    height: 136px;
+    padding-top: 10px;
+}
+.interior #logo{
+    margin-top: -5px;
+}
+
+.interior .header{
+    background-size: cover;
+}
+
+.howworks_container{
+    background-color: white;
+    padding-bottom: 40px;
+    margin-top: 0px !important;
+}
+
+.howworks{
+    margin-top: 20px;
+}
+.howworks ol{
+    list-style: none;
+}
+.howworks ol li {
+    margin-bottom: 20px;
+}
+.howworks ol li img{
+    float: left;
+    width: 50px;
+    height: 50px;
+    margin-right: 20px;
+}
+.howworks ol li.third img{
+    height: 40px;
+}
+.howworks iframe{
+    width: 560px; 
+    height: 315px;
+}
+
+.why_gitcoin_cta {
+    padding-bottom: 60px !important;
+}
+
+.bg-darkBlue a{
+    color: #eee;
+}
+
+#origin_story img{
+    max-height: 200px;
+    max-width: 300px;
+}
+
+#origin_story .row .col p{
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.advisor{
+    float:left;
+    height: 170px;
+    width: 150px;
+}
+
+.advisor img{
+    max-height: 100px;
+    max-width: 100px;
+}
+p a {
+    color: #212529;
+    text-decoration: underline;;
+}
+.modal a.close-modal {
+    display: none !important;
+}
+.iama{
+    background: #0d023b; 
+    color: white;
+    cursor: pointer;
+}
+
+.iama .mt-3{
+    width: 40px; 
+    height: 40px; 
+    border-radius: 20px; 
+}
+
+.iama:hover,
+.iama.clicked{
+    background: #3e24fb; color: #fff
+}
+
+
+.iama:hover .mt-3,
+.iama.clicked .mt-3{
+    width: 40px; 
+    height: 40px; 
+    border-radius: 20px; 
+}
+
+.iama:first-child{
+    border-right: 1px dotted #29eb98;
+}
+.iama:last-child{
+    border-left: 1px dotted #29eb98;
+}
+
+
+.iama img{
+    width: 30px;
+    height: 30px;
+    filter: invert(100%);
+}
+
+
+.btn{
+    cursor: pointer;    
+}
+#hero_cta a.btn{
+    padding: 0.6rem 1.05rem;
+    font-size: 1.25rem;
+}
+
+#hero_cta a img{
+    margin-top: -3px;
+    height: 20px;
+    width: 20px;
+    margin-right: 5px;
+}
+
+.dashboard .body{
+    padding-bottom: 50px;
+}
+
+.dashboard .body .row{
+    margin-left: 0px;
+}
+.dashboard .special_tag a{
+    max-height: 30px;
+}
+.body .nonefound{
+    margin-left: 100px;
+    margin-top: 100px;
+    text-align: center;
+}
+.dashboard .body .bounty_row:hover{
+    background-color: #fafafa;
+    cursor: pointer;
+}
+.dashboard .body .sort_option{
+    cursor: pointer;
+    padding: 5px; 
+    border-radius: 5px;
+}
+.dashboard .body .sort_option:hover{
+    background-color: #fafafa;
+}
+.dashboard .body .sort_option.selected{
+    border: 1px solid #212529;
+}
+.dashboard .body .experience{
+    border-radius: 6px; 
+    width: 12px; 
+    height: 12px;
+    background: grey; 
+}
+.dashboard .body .experience.beginner{
+    background: #37ea9c; 
+}
+.dashboard .body .experience.intermediate{
+    background: #fecf32; 
+}
+.dashboard .body .experience.advanced{
+    background: #f9006c; 
+}
+.dashboard .body .loading{
+    text-align: center;
+}
+.loading_img img{
+    max-width: 100px;
+}
+.dashboard .body .experienence.unknown{
+    background: #eee; 
+}
+.dashboard #clear{
+    cursor: pointer;
+    margin-top: 30px;
+}
+.sidebar_search label {
+    margin-bottom: 0px;
+    cursor: pointer;
+}
+
+#mailchimp{
+    overflow: hidden;
+}
+#mailchimp div,
+#mailchimp p,
+#mailchimp h5
+{
+    z-index: 9;
+}
+#mailchimp p{
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+#mailchimp p.email{
+    margin-bottom: 2rem;
+}
+
+body #mc_embed_signup {
+    background: transparent !important;
+}
+body #mc_embed_signup label {
+    font-weight: normal;
+}
+
+.form_container{
+    text-align: left;
+    background-color: white;
+    border-radius: 2px; 
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.form_container input[type=text],
+.form_container select,
+.form_container textarea{
+    background-color: #eee;
+}
+
+input[type=text].loading{
+    background-image: url('/static/v2/images/loading.gif');
+    background-repeat: no-repeat;
+    background-position: right;
+    background-size: 30px;
+}
+
+#upper_left{
+    min-height: 140px;
+}
+
+#upper_left #sidebar_head{
+    text-align: center;
+    line-height: 1.3em;
+}
+
+#upper_left a{
+    color: white;
+    text-decoration: underline;;
+}
+#upper_left img {
+    filter: invert(100%);
+    margin-bottom: 10px;
+    max-width: 40px;
+    max-height: 40px;
+    display: inline;
+}
+
+.blocking_error {
+    text-align: center;
+    margin: 100px auto;
+    max-width: 500px;
+}
+.blocking_error img {
+    max-width: 150px;
+    filter: grayscale(80%);
+    -moz-filter: grayscale(80%);
+    -ms-filter: grayscale(80%);
+    -o-filter: grayscale(80%);
+}
+
+#no_metamask_error img {
+    filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+}
+#primary_form img{
+    max-width: 100px;
+}
+
+.bounty_nav{
+    border-bottom: 2px solid #212529;
+    padding-bottom: 4px;
+}
+
+.bounty_nav li{
+    display: inline;
+    margin-left: 30px;
+    margin-right: 30px;
+    margin-bottom: 5px;
+    padding: 5px;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+.bounty_nav li.active{
+    background-color: #212529;
+    color: white;
+}
+
+.submit_bounty #network_status div{
+    display: inline;
+}
+#network_status div span{
+    color: #4aeba8;
+}
+.submit_bounty select[name=deonomination]{
+    text-align: left;
+}
+/* The alert message box */
+.alert {
+    background-color: #f44336; 
+    border-radius: 0px;
+    padding: 20px;
+    color: white;
+    margin-bottom: 1px;
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    z-index: 999999;
+}
+
+.alert.success {
+    background-color: #4CAF50;
+}
+.alert.info {
+    background-color: #2196F3;
+}
+.alert.warning {
+    background-color: #ff9800;
+}
+
+/* The close button */
+.closebtn {
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    margin-left: 15px;
+    transition: 0.3s;
+}
+
+/* When moving the mouse over the close button */
+.closebtn:hover {
+    color: black;
+}
+
+.modal#save{
+    width: 50%;
+}
+.modal#save img{
+    width: 30px;
+    height: 30px;
+}
+.modal#save p{
+    display: inline;;
+}
+
+.row.nonefound img {
+    filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+    max-width: 250px;
+}
+.row.nonefound p {
+    margin-bottom: 0px;
+}
+.bottom_notification {
+    padding: 10px 30px;
+    background: #3e00ff;
+    color: white;
+    width: 100%;
+    margin-left: 0px;
+}
+.bottom_notification a {
+    color: white;
+    text-decoration: underline;
+    margin-left: 5px;
+}
+body.bounty_details .col.body{
+    min-height: 1200px;
+}
+body.bounty_details #actions {
+    width: 60%;
+    margin: 0px auto;
+    padding-top: 20px;
+}
+body.bounty_details #actions a{
+    margin: 0px auto;
+}
+body.bounty_details #primary_view .bounty_detail{
+    min-height: 50px;
+}
+body.bounty_details #primary_view h4{
+    padding-top: 0px;
+}
+body.bounty_details #primary_view .bounty_detail:nth-child(odd) {
+    background-color: #eee;
+}
+body.bounty_details #primary_view .label,
+body.bounty_details #primary_view .value{
+    display: inline-block;
+    text-overflow: ellipsis;
+    font-size: 12px;
+}
+body.bounty_details #primary_view .label{
+    width: 30%;
+}
+body.bounty_details #primary_view .value{
+    width: 69%;
+}
+
+@media (max-width: 1025px) {
+    .howworks iframe{
+        width: 460px; 
+        height: 258px;
+    }
+    .advisor{
+        width: 130px;
+    }
+    .whitepaper .row .col-1,
+    .whitepaper .row .col-4{
+        display: none;
+    }
+    .whitepaper .row .col-6{
+        width: 90%;
+        flex: 0 0 90%;
+        max-width: 90%;
+        padding-left: 10px;
+        padding-right: 10px;
+        margin: 0px auto;
+    }
+    .bounty_def .col-7{
+        width: 80%;
+        flex: 0 0 80%;
+        max-width: 80%;
+        padding-left: 20px !important;
+    }
+    .bounty_def .ml-3{
+        font-size: .9rem;
+    }
+}
+@media (max-width: 769px) {
+    #team .row,
+    #team .row .d-flex,
+    .row.howworks .d-flex,
+    .row.howworks{
+        display: block;
+        width: 100%;
+    }
+    #team .row div{
+        text-align: center;
+    }
+    #team .row img.img-fluid{
+        float: none !important;
+    }
+    .howworks iframe{
+        width: 460px; 
+        height: 250px;
+    }
+    .advisor{
+        width: 100px;
+        float: none;
+        display: inline-block;;
+    }
+    .avatar-img-wrapper{
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+    .bounty_def .mt-4{
+        margin-top: 0px !important;
+    }
+    .search_bar .sort_row{
+        display: none !important;
+    }
+    .search_bar{
+        height: 90px ;
+    }
+    .dash-filter-header{
+        font-size: 1rem;
+    }
+    #hero_cta a.btn{
+        padding: .5rem .75rem;
+        font-size: 1rem;
+    }
+
+}
+@media (max-width: 481px) {
+
+    .header .row.ml-5{
+        margin-left: 0em !important;
+    }   
+    .header .header-line{
+        font-size: 2.5em;
+    }   
+    .header .subheader-line{
+        font-size: 1.5em;
+    }   
+
+    #mailchimp,
+    .why_gitcoin,
+    .why_gitcoin .row{
+        margin-left: 0px;
+        margin-right: 0px;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    #features .row,
+    #features .row .d-flex,
+    #origin_story .row,
+    #origin_story .row .d-flex,
+    .why_gitcoin .row,
+    .why_gitcoin .row .d-flex{
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+    .row.howworks .d-flex,
+    .row.howworks{
+        text-align: left;
+    }
+
+    .row.howworks .font-bigger-2{
+        font-size: 1rem;
+    }
+    .row.howworks iframe{
+        width: 280px; 
+        height: 170px;
+        margin: 0px auto;
+    }
+    #get .row{
+        display: block;
+    }
+    #get .row .iama{
+        margin-bottom: 5px;
+    }
+    .advisor{
+        margin-left: 10px;
+    }
+    h4{
+        padding-top: 20px;
+    }
+    .bounty_def .col-7{
+        padding-left: 40px !important;
+        font-size: .8rem;
+    }
+    .search_bar span{
+        display: none;
+    }
+    .interior .col-3{
+        display: none;
+    }
+    .interior .body{
+        width: 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    #hero_cta a.btn{
+        margin-top: 10px;
+    }
+
+}
+@media (max-width: 350px) {
+    img#logo{
+        width: 150px;
+        height: 37px;
+    }
+    .header .header-line{
+        font-size: 1.5em;
+    }   
+    .header .subheader-line{
+        font-size: 1.2em;
+    }   
+}
+

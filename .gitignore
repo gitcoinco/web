@@ -1,0 +1,10 @@
+*.DS_Store*
+*.pyc
+static/*
+sftp-config.json
+app/app/local_settings.py
+app/static/*
+app/mydatabase
+app/marketing/quotify/output/*
+app/output/whitepaper*
+app/assets/other/wp.pdf

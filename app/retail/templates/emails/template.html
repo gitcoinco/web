@@ -1,0 +1,150 @@
+<style>
+
+    @font-face {
+        font-family: "futura-pt";
+        src: url("https://gitcoin.co/static/fonts/futura/font4.ttf") /* TTF file for CSS3 browsers */
+    }
+    body {
+      font-family: "futura-pt", Futura !important;
+    }
+
+    h1, h2, h3, h4, h5, h6,
+    .h1, .h2, .h3, .h4, .h5, .h6 {
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    h4, .h4 {
+      text-align: center;
+      padding-top: 40px;
+    }
+
+    #container_table{
+        background-color: lightgray;
+        margin:0; 
+        padding:0; 
+        line-height: 100% ; 
+        width:100%; 
+    }
+
+    #container_table .body{
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+    #container_table .body table{
+        background-color: white;
+    }
+
+    .primary_content{
+
+    }
+
+    #footer{
+        background: #ffffff; 
+        height: 60px;
+    }
+
+    #footer #copyright{
+        text-align: right;
+    }
+
+    #footer #copyright p{
+        color: black; 
+        margin-right: 25px; 
+        text-align: right;
+    }
+
+    #footer #legal {
+        text-align: left;
+    }
+
+    #footer #legal p{
+        color: black; 
+        margin-left: 30px;
+    }
+
+    #logo{
+        text-align: center;
+    }
+
+    @media only screen and (max-device-width: 480px) {
+    }
+    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+    }
+
+
+</style>
+
+<body>
+<table cellspacing="0" cellpadding="0" border="0" id="container_table">
+    <tr id="social">
+        <td>
+            <table cellspacing="0" cellpadding="0" border="0" align="center">
+                <td align="center" width="70" valign="top" class="mainContent">
+                    <a href="https://www.facebook.com//">
+                        <img src="FACEBOOKLOGO">
+                    </a>
+                </td>
+                <td align="center" width="70" valign="top" class="mainContent">
+                    <a href="https://www.facebook.com//">
+                        <img src="FACEBOOKLOGO">
+                    </a>
+                </td>
+                <td align="center" width="70" valign="top" class="mainContent">
+                    <a href="https://www.facebook.com//">
+                        <img src="FACEBOOKLOGO">
+                    </a>
+                </td>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td valign="top" class="body"> 
+            <table cellpadding="0" cellspacing="0" border="0" align="center" id="email_header">
+                <tr>
+                    <td width="600" valign="middle" id="logo">
+                        <img src="/static/v2/images/logo.png" alt="Gitcoin" title="Gitcoin">
+                    </td>
+                </tr>
+            </table>
+            <table cellpadding="0" cellspacing="0" border="0" align="center" id="wrapper">
+                <tr>
+                    <td width="600" valign="top" align="center" class="primary_content">
+
+                    {% block content %}
+                    {% endblock %}
+
+                    <BR>
+                    <h1>I am a template</h1>
+                    <p> body</p>
+
+
+                    </td>
+                </tr>
+            </table>
+            <table cellpadding="0" cellspacing="0" border="0" align="center" id="footer" style="">
+                <tr>
+                    <td id="legal" width="300" valign="middle">
+                        <a href="https://gitcoin.co/terms">
+                            <span>Terms & Conditions</span>
+                        </a>
+                        <a href="mailto:support@gitcoin.co">
+                            <span>Contact</span>
+                        </a>
+                    </td>
+                    <td width="300" valign="middle" id="copyright">
+                        <p>
+                            <span>&copy; 2017 Gitcoin Core, Inc.</span>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+
+        </td>
+    </tr>
+</table>  
+<!-- End of wrapper table -->
+</body>
+</html>
+
+

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include 'shared/head.html' %}
+{% include 'shared/cards.html' %}
+
+<body class="interior {{active}}">
+    <div class="container-fluid header dash">
+        {% include 'shared/nav_internal.html' %}
+    </div>
+    <div class="row no-gutter  text-uppercase">
+        <div class="col-3" style="background: #eee; ">
+            {% include 'shared/current_balance.html' %}
+            {% include 'shared/sidebar_search.html' %}
+        </div>
+
+        <div class="col body">
+            <div class="container-fluid no-gutter">
+            {% include 'shared/bounty_def.html' %}
+                <div class="row font-smaller-2" id="form_container">
+                    {% include 'shared/no_metamask_error.html' %}
+                    {% include 'shared/zero_balance_error.html' %}
+                    {% include 'shared/unlock_metamask.html' %}
+                    <div class="col d-flex align-items-center justify-content-center" id="primary_form">
+                        <div class="d-flex justify-content-center flex-column mt-5 w-50" id="primary_subform">
+                            {% include 'shared/bounty_nav.html' with active_item=3 %}
+                            <div class="w-100" style="text-align: center;">
+                                <h3>Accept Bounty</h3>
+                                <img src="/static/v2/images/prime.png">
+                            </div>
+                            <div id=network_status class="w-100" style="text-align: center;">
+                                <div class="w-40">
+                                        Web3: <span>☑ - Enabled</span>
+                                        <br>
+                                        Eth: <span>☑ - Available</span>
+                                </div>
+                            </div>
+                            <div class="w-100">
+                                <label for=issueURL>Issue URL:</label>
+                                <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
+                            </div>
+                            <div class="w-100 mt-2">
+                                <input type="button" id="rejectBounty" class="btn btn-sm btn-warning mt-3 mb-2 pulseClick submitBounty" name="submit" value="Reject" style="width: 49%; text-transform: uppercase;" >
+                                <input type="button" id="acceptBounty" class="btn btn-sm btn-info mt-3 mb-2 pulseClick submitBounty" name="submit" value="Accept" style="width: 49%; text-transform: uppercase;">
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/ga.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+
+</body>
+
+
+<!-- jQuery -->
+<script src="{{STATIC_URL}}v2/js/abi.js"></script>
+<script src="{{STATIC_URL}}v2/js/tokens.js"></script>
+<script src="{{STATIC_URL}}v2/js/shared.js"></script>
+<script src="{{STATIC_URL}}v2/js/pages/process_bounty.js"></script>
+
+
+</html>
