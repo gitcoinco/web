@@ -3,7 +3,9 @@ from django.template.response import TemplateResponse
 
 
 def index(request):
-    context = {'active': 'home'}
+    context = {
+        'active': 'home',
+    }
     return TemplateResponse(request, 'index.html', context)
 
 
