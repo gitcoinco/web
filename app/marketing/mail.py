@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
     Copyright (C) 2017 Gitcoin Core 
 
@@ -15,7 +16,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 '''
-# -*- coding: utf-8 -*-
 import sendgrid
 from sendgrid.helpers.mail import Email, Content, Mail, Personalization
 from django.conf import settings

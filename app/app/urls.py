@@ -49,6 +49,14 @@ urlpatterns = [
     url(r'^bounty/details/?', dashboard.views.bounty_details, name='bounty_details'),
     url(r'^helpers/get_title?', dashboard.helpers.title, name='helpers_title'),
     url(r'^helpers/get_keywords?', dashboard.helpers.keywords, name='helpers_keywords'),
+    url(r'^legal/?', dashboard.views.terms, name='legal'),
+    url(r'^terms/?', dashboard.views.terms, name='_terms'),
+    url(r'^legal/terms/?', dashboard.views.terms, name='terms'),
+    url(r'^legal/privacy/?', dashboard.views.privacy, name='privacy'),
+    url(r'^legal/cookie/?', dashboard.views.cookie, name='cookie'),
+    url(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
+    url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
+
 
     #token distribution event
     url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),

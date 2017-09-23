@@ -1,0 +1,161 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core 
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+<pre>
+Effective Date: September 25 2017 
+
+API Terms of Use
+
+These API Terms of Use (the “API Terms”), dated as of September 25 2017  (the “Effective Date”), are made and entered into by and between Gitcoin Core LLC., a Colorado corporation and its affiliates (“Gitcoin”, "Gitcoin Core", or “we”), and you (“Developer” or “you”).  Gitcoin Core and Developer are sometimes referred to in the API Terms individually as a “Party” and collectively as the “Parties”. Gitcoin Core and Developer hereby agree as follows:
+
+1. AGREEMENT TO THE API TERMS.
+
+By registering a software application, website, repository, or product you create or service that you offer (a “Developer Application”), you agree to be bound by the API Terms. You must read, agree to, and accept all of the terms and conditions contained in the API Terms in order to use the Gitcoin API. Additionally, you agree to and accept the Gitcoin Terms of Service, available at https://gitcoin.co/legal/.  If you disagree with any of the terms of the API Terms or the Gitcoin Terms of Service, Gitcoin Core does not grant you a license to use the  API.  If you are using the API on behalf of a company or any other entity, you represent and warrant that you have full legal authority to register a Developer Application on behalf of that entity and bind it to the API Terms and the Gitcoin Terms of Service.  If you are not authorized, you may not accept the API Terms or register a Developer Application for someone else.
+
+2. DEFINITIONS.
+
+Capitalized terms not defined in the API Terms have the meanings given to them in the Gitcoin Terms of Service.
+
+Gitcoin API ("API").  A set of web-based services providing programmatic access to Gitcoin systems and data, together with all updates, revisions, and copies thereof. This also includes any associated tools and documentation that Gitcoin makes available under the API Terms.
+Gitcoin Content.  Any data, content, or executables of or associated with the Gitcoin API or Site Services (as defined in the Gitcoin.co Terms of Service).  This includes all User Data.
+User Data.  Any content, information, and other data about persons who use the Gitcoin services received or collected by Developer through any instance of the Developer Application, the Gitcoin API, or otherwise in connection with the API Terms.
+
+3. DEVELOPER’S USE OF THE GITCOIN API.
+
+Developer wishes to use and access the Gitcoin API in connection with the development and distribution of a Developer Application and agrees to the additional requirements herein. Developer and Gitcoin hereby agree as follows:
+
+Developer Registration. Before using the Gitcoin API, Developer must provide accurate information identifying its organization and the individual representative who will serve as a point of contact for Gitcoin. The registration may be completed and accepted by Gitcoin on the Site.  Upon successful registration, Gitcoin shall make Access Credentials available to Developer.  “Access Credentials” means the necessary security keys, secrets, tokens, and other credentials to access the Gitcoin API.  All activities that occur using your Access Credentials are your responsibility.  Access Credentials are specific to you and are confidential information.  Keep them secret.  You must not sell, transfer, or sublicense the Access Credentials.  Do not try to circumvent them and do not require your users, employees, contractors, or agents to obtain their own Access Credentials to build, maintain, or use the Developer Application.  Developer itself must request any Access Credentials to be used by any employee, contractor, or agent of Developer.
+Development of the Developer Application. Subject to the terms of these Terms of Use, Developer will develop one or more Developer Applications. Developer will ensure that all Developer Applications are and remain in compliance with the API Terms and the Gitcoin Terms of Service.
+Permitted Uses of the Gitcoin API. Your use of the Gitcoin API is limited to the purpose of facilitating your own or your Users’ use of the Gitcoin Site and Site Services. Some examples of permitted uses of the Gitcoin API would be to create Applications that:
+Allow Gitcoin Users to search for and browse Gitcoin job postings with a customized interface;
+Allow Gitcoin Users to manage active contracts;
+Allow Gitcoin Users to apply to jobs on Gitcoin; or
+Allow Gitcoin Users to manage invoices, billing, and communications on Gitcoin.
+Prohibited Uses of the Gitcoin API. Developer must never do any of the following:
+Use the Gitcoin API in any Developer Application that includes adult content, promotes gambling, involves the sale of tobacco or alcohol to persons under 21 years of age, promotes or offers malicious code, or violates any applicable law or regulation.
+Use the Gitcoin API to retrieve Gitcoin Content that is then aggregated with third-party search results in such a way that a user cannot attribute the Gitcoin Content to Gitcoin (such as aggregated search results).
+Distribute or allow access to the Gitcoin API to anyone other than the entity on whose behalf Developer agreed to these Terms, or create an application programming interface that enables access to Gitcoin Content
+Prohibited Uses/Functions of Developer Application. Developer and the Developer Application must not do the following:
+Implement features or business practices that unlawfully harm the professional reputation or relationships of Gitcoin or Gitcoin users.
+Use Gitcoin Content received from the Gitcoin API in any manner that facilitates bias, discrimination, or data “redlining,” whether intentional or inadvertent, based on sensitive or protected categories or characteristics.
+Impersonate Gitcoin or an Gitcoin user or intentionally misrepresent Gitcoin or any Gitcoin user or other third party when requesting or publishing information.
+Obfuscate or hide any Gitcoin buttons, sign-in functionality, or consent or authorization flows from your users.
+Proxy, request, or use Gitcoin account user names or passwords in any fashion for any reason.
+Request from the Gitcoin API more than the minimum data fields and application permissions the Developer Application needs.
+Try to exceed or circumvent limitations on calls and use. This includes creating multiple Developer Applications for identical, or largely similar, purposes.
+Download, scrape, post, or transmit, in any form or by any means, any part of the Site or Site Services, including data retrieved by web browser plugins.
+Copy, reformat, reverse-engineer, or otherwise modify the Gitcoin API, Access Credentials, the Site, the Site Services, or any Gitcoin Content.
+Promote or operate any product or service that competes with the Gitcoin Site Services.
+Interfere with or disrupt Gitcoin services, Gitcoin servers or networks connected to Gitcoin services, or disobey any requirements, procedures, policies or regulations of networks connected to the Gitcoin Site or Site Services.
+Engage in any conduct that fails to comply with, or is otherwise inconsistent with, any agreement between Developer and Gitcoin or any written instructions provided by Gitcoin.
+4. API LICENSE.
+
+Using the Gitcoin API. As part of the API Terms, Gitcoin grants you a non-exclusive, non-transferable, and non-sublicensable (except as expressly permitted herein) license to use the Gitcoin API solely to do the following and subject to the restrictions set forth in the API Terms:
+Enable your Application to interact with Gitcoin’s databases to retrieve information necessary to facilitate your own or Your Users’ use of the Site and Site Services through your Application;
+Make limited intermediate copies of Gitcoin Content only as necessary to perform activity permitted under the API Terms. You must delete all intermediate copies when they are no longer required for the purpose for which they were created;
+Rearrange or reorganize Gitcoin Content within your Application; and
+Display in your Application Gitcoin Content consistent with this Agreement.
+Access Credentials. Gitcoin will provide you with Access Credentials that permit you to access the Gitcoin API. The Access Credentials are the property of Gitcoin and may be revoked if you share them with any third party (other than as allowed in the API Terms), if they are compromised, if you violate the API Terms or the Gitcoin Terms of Service, or if Gitcoin terminates the API Terms.
+API Call Limitations. The number of API calls you will permitted to make during any given time period may be limited. Gitcoin will determine call limits based on various factors, including the ways your Application may be used or the anticipated volume of use associated with your Application.  Gitcoin may, in its sole discretion, charge you for API calls that exceed the call limits or terminate your access to the Gitcoin API in accordance with Section 17 (Suspension and Termination).  Unused calls will not roll over to the next day or month, as applicable.
+
+5. CERTIFICATION.
+
+At its discretion, Gitcoin may require or offer Certification for certain Applications. Certification will consist of confirmation by Gitcoin or a third party it designates that your Application’s technology complies with the API Terms and the Gitcoin Terms of Service. You will be responsible for all costs associated with certification and any modifications necessary to meet the certification requirements and you may not be permitted to access the Gitcoin API in certain cases until certification is complete. At Gitcoin’s discretion, future modifications of your Application or use or display of Gitcoin Content may be subject to re-certification. If Gitcoin requires certification, your failure to maintain certification is cause for immediate termination of the API Terms.
+
+6. DATA USE.
+
+Obligations to Gitcoin. Developer may only use, disclose, and otherwise process User Data in accordance with the written instructions of Gitcoin and applicable laws, rules and regulations.
+Prohibited Uses. Developer will not:
+Use Gitcoin Content for any purpose except to the extent necessary for (1) the purpose of processing and supporting a specific transaction for the applicable Gitcoin user or (2) the purpose of providing services to Gitcoin.
+Use Gitcoin Content for any research or publication purpose without prior written consent and a license from Gitcoin to research or publish, as applicable, Gitcoin Content.
+Use Gitcoin Content for any other purpose (e.g., for Developer’s own benefit or for the benefit of any other entity or person).
+Use Gitcoin Content for user profiling purposes or for advertising purposes.
+Sell, lease, sublicense, or otherwise transfer, directly or indirectly, Gitcoin Content to any third party.
+Augment, commingle, or supplement Gitcoin Content with personally identifiable or confidential information (including any mobile device identifier or other unique identifier that identifies any particular user, browser, computer or device) from any third-party source.
+Use the user identification or authentication codes connected to any Gitcoin user to disclose information related to that user to any third party.
+
+7. DATA STORAGE.
+
+Except as provided in the API Terms, Developer may not copy or store any Gitcoin Content, or any information expressed by or representing Gitcoin Content (such as hashed or otherwise transformed data).
+
+Authentication Tokens. Developer may store any Developer Application-specific alphanumeric user identification codes that Gitcoin provides to Developer for identifying individual users of the Developer Application or any tokens that Gitcoin provides to Developer when an Gitcoin user authenticates the Developer Application for the Gitcoin user’s account.
+Cached Content. Solely for the purpose of improving user experience, Developer may cache Gitcoin Content for no more than twenty-four (24) hours.
+Deletion. Developer must promptly and securely delete all User Data collected from Gitcoin users upon request of the Gitcoin user, when the Gitcoin user deactivates or uninstalls the Developer Application, when the Gitcoin user closes their account with Developer, and before, when possible, or promptly upon termination of the API Terms. Developer will promptly and securely delete all Gitcoin Content after completion of all activities reasonably necessary to operate or maintain the Developer Application and upon termination of the API Terms.
+8. USER CONSENT AND AGREEMENT.
+
+User Agreement and Privacy Policy. The Developer Application must include your own user agreement and privacy policy.  Your user agreement and privacy policy must be prominently identified or located where members download or access the Development Application.  Your privacy policy must meet applicable legal standards and accurately describe the collection, use, storage and sharing of data.  You must promptly notify us of any breaches of your user agreement or privacy policy that impact or may impact Gitcoin users.
+User Consent. Before obtaining information from Gitcoin users, you must obtain their informed consent by telling them what information you collect and how it will be used, stored or shared, and by taking any additional steps required by law or regulation.
+9. DATA SAFEGUARDS.
+
+Developer will protect User Data in accordance with all applicable laws.  Your network, operating system, and software of your web servers, databases, and computer systems (collectively “Systems”) must be properly configured to securely operate the Developer Application and User Data.  The Developer Application must use reasonable security measures to protect any User Data and any elements or components of the Gitcoin API. You shall not architect, design, or select Systems in a manner to avoid these obligations.  You must promptly report to Gitcoin at legalnotices@Gitcoin.co any security deficiencies in, or intrusions into, your Systems that you discover to Gitcoin.  You will work with Gitcoin to correct any security deficiency and disconnect any intrusions or intruders as soon as practicable upon discovery of any such deficiency or intrusion.  In the event of any security deficiency or intrusion involving the Developer Application or User Data, you will make no public statements without prior written and express permission from Gitcoin in each instance, unless otherwise required by law.
+
+10. ACCESS TO THE GITCOIN API.
+
+Subject to the API Terms, Gitcoin may, in its sole discretion, make specific instances or versions of the Gitcoin API available to Developer for use in connection with Developer Applications.  Gitcoin may terminate such access to the Gitcoin API, in whole or certain features, functions, or services thereof, for convenience, at any time. The Gitcoin API will be deemed to be a part of the Site Services as set forth in the Gitcoin Terms of Service.
+
+11. Gitcoin API SUPPORT AND CHANGES.
+
+Gitcoin may provide technical support, upgrades, or modifications of the Gitcoin API in Gitcoin’s sole discretion.  Gitcoin may cease providing technical support, upgrades, or modifications of the Gitcoin API at any time and for any reason without notice or liability to Developer.  Gitcoin may release new versions of the Gitcoin API and require Developer to use the new version of the Gitcoin API.  Developer’s use of new releases or versions of the Gitcoin API will be acceptance of all modifications of the Gitcoin API.
+
+12. INTELLECTUAL PROPERTY.
+
+Gitcoin Materials. Gitcoin Core owns all rights, title, and interest, including all intellectual property rights, in and to, the Gitcoin API; all elements, components, and executables of the Gitcoin API; and all elements, components, and executables of the Site Services (collectively, the “Gitcoin Materials”). The only exception to this is any information or Content which you as an Gitcoin user have licensed to Gitcoin under the Gitcoin Terms of Service.  Except for the express licenses granted in the API Terms, Gitcoin does not grant you any right, title, or interest in the Gitcoin Materials.  Developer agrees to take such actions as Gitcoin may reasonably request to perfect Gitcoin’s rights to the Gitcoin Materials.
+Developer Property. Except to the extent the Developer Application contains Gitcoin Materials, Gitcoin claims no ownership or control over your Developer Application. During the term of the API Terms you hereby grant Gitcoin a paid-up, royalty-free, non-exclusive, worldwide, irrevocable right and license, under all of your intellectual property rights, to: (1) use, perform, and display the Developer Application and its content for purposes of marketing, demonstrating, and making the Developer Application available to Gitcoin users; (2) link to and direct Gitcoin users to the Developer Application; and (3) sublicense the foregoing rights to our affiliates.
+Feedback. Developer may, but is not required to, provide suggestions, comments, ideas, or know‐how, in any form, to Gitcoin related to Gitcoin products, services or technology (“Feedback”). To the extent Developer provides Feedback to Gitcoin, Developer grants Gitcoin the right to use such Feedback without any right to compensation from Gitcoin.
+13. INDEPENDENT DEVELOPMENT BY Gitcoin.
+
+Developer understands and acknowledges that Gitcoin may be independently creating applications, content, and other products or services that may be similar to or competitive with the Developer Application.  Nothing in the API Terms will be construed as restricting or preventing Gitcoin from creating and fully exploiting any applications, content, and other products or services, without any obligation to Developer.  This paragraph will survive the termination or expiration of the API Terms.
+
+14. CONFIDENTIAL INFORMATION.
+
+Developer agrees that the content of the Gitcoin API, and any Gitcoin Content that by its nature should reasonably be known to be confidential, is deemed to be confidential information of Gitcoin and Developer will maintain the same in strict confidence and not disclose the same to any third party (other than employees, agents and contractors of Developer for the sole purpose of providing services to Developer to complete work permitted hereunder) or use the same for any purpose other than its performance under the Agreement. To the extent that you retain any Gitcoin Content after the termination or expiration of the API Terms, this paragraph will survive the termination or expiration of the API Terms.
+
+15. EFFECT.
+
+The provisions of the API Terms will control over any inconsistent provisions of the Gitcoin Terms of Service, and the Gitcoin Terms of Service, as modified and supplemented by the API Terms, will remain in full force and effect. Any “shrink wrap” or “click wrap” license agreement or any other terms and conditions associated with Developer’s Application is null and void, is not applicable hereunder, and is expressly excluded.
+
+16. FEES.
+
+Gitcoin Core currently provides the Gitcoin API without charge.  However, Gitcoin reserves the right, at Gitcoin’s sole discretion, to charge fees for future use of or access to the Gitcoin API.  Developer may not charge any fee to Gitcoin users for the Developer’s Application without the express written permission or agreement of Gitcoin.
+
+17. TERM AND TERMINATION.
+
+Term. The term of the API Terms will commence on the date upon which you agree to the API Terms and will continue until terminated as set forth below.
+Developer’s Termination Rights. Developer may terminate the API Terms by discontinuing use of the Gitcoin API and returning all Gitcoin Content, including User Data.
+Suspension and Termination. Gitcoin may suspend or terminate Developer’s use of the Gitcoin API at any time if we believe you have violated the API Terms or Gitcoin Terms of Service, or if we believe the availability of the Gitcoin API in the Developer Application is not in our or our users’ best interests. Immediately upon termination of the API Terms, all licenses granted to Developer will cease and all data retrieved from the Gitcoin API or Site Services must be deleted.
+Effect of Termination. Upon termination of these Terms:
+all rights and licenses granted to Developer will terminate immediately;
+Developer will promptly and securely destroy Gitcoin Content in your possession or control;
+neither party is liable to the other party solely because the API Terms have been terminated;
+unless we agree otherwise in writing or as stated explicitly in the API Terms, Developer must permanently delete all Gitcoin Content and User Data or other data which you stored pursuant to your use of the Gitcoin API. Gitcoin may require that you certify in writing your compliance with this section; and
+Gitcoin will make commercially reasonable efforts to remove all references and links to the Developer Application from the Site (Gitcoin has no other obligation to delete copies of, references to, or links to the Developer Application).
+
+18. WARRANTIES AND LIABILITIES.
+
+Disclaimer of Warranties. GITCOIN PROVIDES THE GITCOIN API, Gitcoin CONTENT, AND ALL OTHER INFORMATION AND SERVICES ON AN “AS IS” AND “AS AVAILABLE” BASIS WITH NO WARRANTIES, EITHER EXPRESS OR IMPLIED, OF ANY KIND. TO THE FULLEST EXTENT PERMISSIBLE UNDER APPLICABLE LAW, GITCOIN DISCLAIMS ANY AND ALL WARRANTIES AND REPRESENTATIONS, INCLUDING, WITHOUT LIMITATION, ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, ACCURACY OF DATA, AND NONINFRINGEMENT.  GITCOIN DOES NOT GUARANTEE THAT THE GITCOIN API WILL FUNCTION WITHOUT INTERRUPTION OR ERRORS IN FUNCTIONING.  IN PARTICULAR, THE OPERATION OF THE GITCOIN API MAY BE INTERRUPTED DUE TO MAINTENANCE, UPDATES, OR SYSTEM OR NETWORK FAILURES.  Gitcoin DISCLAIMS ALL LIABILITY FOR DAMAGES CAUSED BY ANY SUCH INTERRUPTION OR ERRORS IN FUNCTIONING.  FURTHERMORE, Gitcoin DISCLAIMS ALL LIABILITY FOR ANY MALFUNCTIONING, IMPOSSIBILITY OF ACCESS, OR POOR USE CONDITIONS OF THE GITCOIN API DUE TO INAPPROPRIATE EQUIPMENT, DISTURBANCES RELATED TO INTERNET SERVICE PROVIDERS, TO THE SATURATION OF THE INTERNET NETWORK, AND FOR ANY OTHER REASON.
+Limitations of Liability. GITCOIN AND OUR EMPLOYEES, AGENTS, SHAREHOLDERS, OR DIRECTORS, SHALL NOT BE LIABLE FOR ANY SPECIAL, INCIDENTAL, INDIRECT, PUNITIVE, OR CONSEQUENTIAL DAMAGES OR LOSS OF USE, PROFIT, REVENUE OR DATA TO YOU OR ANY THIRD PERSON ARISING FROM YOUR USE OF THE GITCOIN API. THIS LIMITATION OF LIABILITY SHALL APPLY REGARDLESS OF WHETHER (i) YOU BASE YOUR CLAIM ON CONTRACT, TORT, STATUTE, OR ANY OTHER LEGAL THEORY, (ii) WE KNEW OR SHOULD HAVE KNOWN ABOUT THE POSSIBILITY OF SUCH DAMAGES, OR (iii) THE LIMITED REMEDIES PROVIDED IN THIS SECTION FAIL OF THEIR ESSENTIAL PURPOSE.  THIS LIMITATION OF LIABILITY SHALL NOT APPLY TO ANY DAMAGE THAT GITCOIN MAY CAUSE YOU INTENTIONALLY OR KNOWINGLY IN VIOLATION OF THE API TERMS OR APPLICABLE LAW.
+Indemnification. You will defend, hold harmless, and indemnify GITCOIN (and our and their respective employees, agents, shareholders, and directors) from any claim or action brought by a third party, including all damages, liabilities, costs and expenses, including reasonable attorneys’ fees, to the extent resulting from, alleged to have resulted from, or in connection with: (i) your breach of your obligations herein; or (ii) the violation of any copyright, trademark, service mark, trade secret or United States patent by the Developer Application.
+
+19. GENERAL.
+
+Relationship of the Parties. The parties are agreeing to the API Terms as independent contractors, and the API Terms will not be construed to create a partnership, joint venture or employment relationship between them. Neither party is authorized to or will represent itself to be an employee or agent of the other or enter into any agreement on the other’s behalf of or in the other’s name.
+Assignability. You may not assign the API Terms, nor any of your rights or obligations hereunder, without Gitcoin’s prior written consent. Gitcoin may freely assign the API Terms without your consent.  Any attempted assignment or transfer in violation of this section will be null and void.  Subject to the foregoing restrictions, the API Terms will inure to the benefit of successors and permitted assigns of the parties.
+Severability.  If and to the extent any provision of the API Terms is held illegal, invalid, or unenforceable in whole or in part under applicable law, such provision or such portion thereof shall be ineffective as to the jurisdiction in which it is illegal, invalid, or unenforceable to the extent of its illegality, invalidity, or unenforceability, and shall be deemed modified to the extent necessary to conform to applicable law so as to give the maximum effect to the intent of the parties. The illegality, invalidity, or enforceability of such provision in that jurisdiction shall not in any way affect the legality, validity, or enforceability of such provision in any other jurisdiction or of any other provision in any jurisdiction.
+Choice of Law and Venue. The API Terms and any controversy, dispute or claim arising out of or relating to the API Terms shall be governed by and construed in accordance with the laws of the State of Colorado without regard to its conflict of law provisions and excluding the United Nations Convention on Contracts for the International Sale of Goods (CISG). With respect to any User located outside the United States, the User agrees that the Colorado state courts of Boulder County (or, if there is federal jurisdiction, the United States District Court for the Boulder County Colorado) will have jurisdiction and venue with respect to any claim arising out of or relating to the API Terms and consents to the personal jurisdiction and venue of those courts.
+No Waiver. The failure or delay of either party to exercise or enforce any right or claim does not constitute a waiver of such right or claim and shall in no way affect that party’s right to later enforce or exercise it, unless such party issues an express written waiver, signed by a duly authorized representative of each party.
+Miscellaneous. The API Terms set forth the entire agreement and understanding of the parties relating to their subject matter and cancel and supersede any prior or contemporaneous discussions, agreements, representations, warranties, and other communications between them. No modification or amendment to the API Terms shall be binding upon Gitcoin unless in a written instrument signed by a duly authorized representative of Gitcoin.
+</pre>

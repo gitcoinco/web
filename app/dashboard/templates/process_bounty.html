@@ -57,6 +57,10 @@
                                 <label for=issueURL>Issue URL:</label>
                                 <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
                             </div>
+                            <div class="w-100 mt-2 terms_container">
+                                <input name='terms' id='terms' type="checkbox" value=1 />
+                                <label for=terms>I have read, understand, and agree to, the <a href="/legal/terms" target=new>Terms of Service</a>:</label>
+                            </div>
                             <div class="w-100 mt-2">
                                 <input type="button" id="rejectBounty" class="btn btn-sm btn-warning mt-3 mb-2 pulseClick submitBounty" name="submit" value="Reject" style="width: 49%; text-transform: uppercase;" >
                                 <input type="button" id="acceptBounty" class="btn btn-sm btn-info mt-3 mb-2 pulseClick submitBounty" name="submit" value="Accept" style="width: 49%; text-transform: uppercase;">

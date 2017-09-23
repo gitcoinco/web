@@ -85,6 +85,11 @@ $(document).ready(function(){
         
         //validation
         var isError = false;
+
+        if($('#terms:checked').length == 0){
+            _alert({ message: "Please accept the terms of service." });
+            isError = true;
+        }
         if(issueURL == ''){
             _alert({ message: "Please enter an issue URL." });
             isError = true;

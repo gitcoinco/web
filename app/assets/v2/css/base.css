@@ -504,6 +504,10 @@ body.bounty_details #primary_view .value{
     margin-left: 5px;
 }
 
+.terms_container a{
+    color:black;
+}
+
 @media (max-width: 1025px) {
     .interior .col-3{
         display: none;

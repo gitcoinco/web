@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''
     Copyright (C) 2017 Gitcoin Core 
 
@@ -15,7 +16,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 '''
-#!/usr/bin/env python
 import os
 import sys
 

@@ -1,0 +1,530 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core 
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+<pre>
+
+Effective Date: September 25 2017 
+
+This User Agreement (this “Agreement”) is a contract between you (“you” or “User”) and Gitcoin Core LLC. (“Gitcoin”, "Gitcoin Core"m “we,” or “us”)  You must read, agree to, and accept all of the terms and conditions contained in this Agreement in order to use our website located at gitcoin.co, all affiliated websites, including mobile websites and applications, owned and operated by us, our predecessors or successors in interest, or our Affiliates (collectively, the “Site”), all services (except the Freelancer Services), applications and products that are accessible through the Site and all Gitcoin mobile applications that link to or reference this Agreement (“Site Services”) whether provided by us or our Affiliates.  
+
+This Agreement includes and hereby incorporates by reference the following: Terms of Use; Cookie Policy; Privacy Policy; Proprietary Rights Infringement Reporting Procedures; “Gitcoin” Software License Agreement; API Terms of Use; as such agreements may be in effect and modified by Gitcoin from time to time (collectively, with this Agreement, the “Terms of Service”). The Terms of Service are available at gitcoin.co/terms/.
+
+Subject to the conditions set forth herein, Gitcoin may, in its sole discretion, amend this Agreement and the other Terms of Service at any time by posting a revised version on the Site and will provide reasonable advance notice of any amendment that includes a Substantial Change.  If the Substantial Change includes an increase to Fees charged by Gitcoin, Gitcoin will provide at least 30 days’ advance notice of the change, but may not provide any advance notice for changes resulting in a reduction in Fees or any temporary or promotional Fee change.  Any revisions to the Terms of Service will take effect on the noted effective date or when posted if there is no noted effective date (each, as applicable, the “Effective Date”).  
+
+Your continued use of the Site or the Site Services after the Effective Date of a revised version of this Agreement or of any other Terms of Service constitutes your acceptance of and agreement to be bound by the Terms of Service as revised.  In the event of a conflict between this Agreement and the other Terms of Service, this Agreement will control unless the other Agreement explicitly states that it controls.  Capitalized terms are defined throughout this Agreement and in Section 23 (Definitions).
+
+YOU UNDERSTAND THAT BY USING THE SITE OR SITE SERVICES AFTER THE EFFECTIVE DATE, YOU AGREE TO BE BOUND BY THE TERMS OF SERVICE, INCLUDING THE MANDATORY BINDING ARBITRATION AND CLASS ACTION/JURY TRIAL WAIVER PROVISION IN SECTION 21.4 OF THIS AGREEMENT.  IF YOU DO NOT ACCEPT THE TERMS OF SERVICE IN ITS ENTIRETY, YOU MUST NOT ACCESS OR USE THE SITE OR THE SITE SERVICES AFTER THE EFFECTIVE DATE.  IF YOU AGREE TO THE TERMS OF SERVICE ON BEHALF OF AN ENTITY, OR IN CONNECTION WITH PROVIDING OR RECEIVING SERVICES ON BEHALF OF AN ENTITY OR AGENCY, YOU REPRESENT AND WARRANT THAT YOU HAVE THE AUTHORITY TO BIND THAT ENTITY OR AGENCY TO THE TERMS OF SERVICE.  IN THAT EVENT, “YOU” AND “YOUR” WILL REFER AND APPLY TO THAT ENTITY OR AGENCY.
+
+1.  DIGITAL SIGNATURE
+
+By registering for an Gitcoin.co account on the Site (an “Account”), or by posting or claiming a Bounty, or by clicking to accept the Terms of Service when prompted on the Site, you are deemed to have executed this Agreement and the other Terms of Service electronically, effective on the date you register your Account or click to accept the Terms of Service, pursuant to the U.S. Electronic Signatures in Global and National Commerce Act (the E-Sign Act) (15 U.S.C. § 7001, et seq.).  Your Bounty registration constitutes an acknowledgement that you are able to electronically receive, download, and print this Agreement, the other Terms of Service, and any amendments.
+
+2.  CONSENT TO USE ELECTRONIC RECORDS
+
+In connection with the Terms of Service, you may be entitled to receive certain records from Gitcoin or our Affiliates, such as contracts, notices, and communications, in writing.  To facilitate your use of the Site and the Site Services, you give us permission to provide these records to you electronically instead of in paper form.
+
+2.1 YOUR CONSENT AND YOUR RIGHT TO WITHDRAW CONSENT
+
+By registering for an Account, you consent to electronically receive and access, via email or the Site, all records and notices for the services provided to you under the Terms of Service that we or our Affiliates would otherwise be required to provide to you in paper form.  However, we reserve the right, in our sole discretion, to communicate with you via the U.S. Postal Service and other third-party mail services using the address under which your account is registered.  Your consent to receive records and notices electronically will remain in effect until you withdraw it.  You may withdraw your consent to receive further records and notices electronically at any time by contacting Customer Support.  If you withdraw your consent to receive such records and notices electronically, we will revoke your access to the Site and the Site Services, and you will no longer be permitted to use the Site or the Site Services.  Any withdrawal of your consent to receive records and notices electronically will be effective only after we have a reasonable period of time to process your request for withdrawal.  Please note that your withdrawal of consent to receive records and notices electronically will not apply to records and notices electronically provided by us to you before the withdrawal of your consent becomes effective.
+
+2.2 KEEPING YOUR ADDRESS AND EMAIL ADDRESS CURRENT WITH US
+
+In order to ensure that we are able to provide records and notices to you electronically, you agree to notify us immediately of any change in your email address by updating your Account information on the Site or by contacting Customer Support.  In addition, so that we may communicate with you via the U.S. Postal Service and other third-party mail services, you agree to notify us immediately of any change in your address.
+
+2.3 HARDWARE AND SOFTWARE YOU WILL NEED TO USE THE SITE SERVICES FOR YOUR BUSINESS
+
+To access and retain the records and notices we provide to you electronically, you will need: (a) a valid email address; (b) a computer system that operates on a platform like Windows or Mac; (c) a connection to the Internet; (d) Current Versions of the software, browsers, plug-ins, or other computer applications and programs identified on the Site (Users utilizing other browsers may experience compatibility difficulties); (e) a Current Version of a program that accurately reads and displays PDF files, such as the Current Version of Adobe Acrobat Reader; (f) a computer or device and an operating system capable of supporting all of the above; and (g) a printer to print out and retain records and notices in paper form or electronic storage to retain records and notices in an electronic form.  By “Current Version”, we mean a version of the software that is currently being supported by its publisher.  We may change these requirements from time to time and will update this Agreement accordingly.  You should retain a copy of all of the records and notices we send to you electronically.
+
+By accepting and agreeing to this Agreement and the other Terms of Service electronically, you represent that (x) you have read and understand the above consent to receive records and notices electronically; (y) you satisfy the minimum hardware and software requirements specified above; and (z) your consent will remain in effect until you withdraw your consent as specified above.
+
+3. Gitcoin ACCOUNTS
+
+3.1 ACCOUNT ELIGIBILITY
+
+To use the Site and certain Site Services, you must register for an Account.  Gitcoin offers the Site and Site Services for your business purposes only, and not for personal, household, or consumer use.  To use the Site and Site Services, you must have, and hereby represent that you have, an independent business (whether it be as a self-employed individual/sole proprietor or as a corporation or other entity) and further represent that you intend to use the Site and Site Services for your business purposes only, unless you use the Site and Site Services solely as an employee and Agency Member of a registered Agency Account.  You understand that you must comply with any licensing or registration requirements with respect to your business, and you represent that you comply with all such requirements.  To register for an Account, you must be, and hereby represent that you are, a legal entity or an individual 18 years or older who can form legally binding contracts.  By registering for an Account, by using the Site or Site Services after the Effective Date if you had an account on the Effective Date, or by clicking to accept the Terms of Service when prompted on the Site, you agree to: (a) abide by this Agreement and the other Terms of Service; (b) be financially responsible for your use of the Site and the purchase or delivery of Freelancer Services; and (c) perform your obligations as specified by any Service Contract that you enter into, unless such obligations are prohibited by applicable law or the Terms of Service.  Gitcoin reserves the right, in our sole discretion, to refuse, suspend, or revoke your access to the Site and Site Services upon discovery that any information you provided on any form or posted on the Site is not true, accurate, or complete, or such information or other conduct otherwise violates the Terms of Service, or for any other reason or no reason in Gitcoin’s sole discretion.
+
+You represent that you are not: (x) a citizen or resident of a geographic area in which access to or use of the Site or Site Services is prohibited by applicable law, decree, regulation, treaty, or administrative act; (y) a citizen or resident of, or located in, a geographic area that is subject to U.S. or other sovereign country sanctions or embargoes; or (z) an individual, or an individual employed by or associated with an entity, identified on the U.S. Department of Commerce’s Denied Persons or Entity List, the U.S. Department of Treasury’s Specially Designated Nationals or Blocked Persons Lists, or the U.S. Department of State’s Debarred Parties List or otherwise ineligible to receive items subject to U.S. export control laws and regulations or other economic sanction rules of any sovereign nation. You agree that if your country of residence or other circumstances change such that the above representations are no longer accurate, that you will immediately cease using the Site and Site Services. 
+
+3.2 ACCOUNT REGISTRATION; PROFILE
+
+By registering for an account, you must complete a User profile (“Profile”), which you consent to be shown to other Users and, unless you change your privacy settings, the public.  If you are a Freelancer, unless you use the Site solely as an employee and Agency Member of a registered Agency Account, you represent and warrant that you use your Profile to market your business to others for the purpose of entering into independent contractor relationships with other Users.  You agree to provide true, accurate, and complete information on your Profile and all registration and other forms you access on the Site or provide to us and to update your information to maintain its truthfulness, accuracy, and completeness.  You agree not to provide and to correct any information about your location, your business, your skills, or the services your business provides that is or becomes false or misleading.  You agree not to register for more than one Client Account and one Freelancer Account without express written permission from us (except that you may register as an Agency Member of other Accounts as provided below).  You agree not to ask or allow another person to create an Account on your behalf, for your use, or for your benefit.
+
+3.3 IDENTITY VERIFICATION  
+
+When you register for an Account and from time to time thereafter, your Account may be subject to verification, including, but not limited to, validation against third-party databases or the verification of one or more official government or legal documents that confirm your identity and your ability to represent your business on Gitcoin, if it is a separate legal entity.  You authorize Gitcoin, directly or through third parties, to make any inquiries necessary to validate your identity and confirm your ownership of your email address or financial accounts, subject to applicable law.  When requested, you must provide us with information about you and your business.
+
+3.4 AGENCY ACCOUNTS
+
+You may create an account through which other authorized Freelancers (each, an “Agency Member”) may act on your behalf in the roles you assign for your account (an “Agency Account”).  A Freelancer creates an Agency Account on behalf of a business (the “Agency”), which may be the Freelancer as a sole proprietor or a partnership, corporation, or other legal entity the User controls.  The Freelancer that registered the Agency Account may also grant certain account administration privileges for the Agency Account to one or more Agency Members (each, an “Agency Account Administrator”).  Except as otherwise required by applicable law, only the User who registered the Agency Account and the Agency Account Administrators can add or remove Agency Members to or from the Agency Account.
+
+Each Agency Member must have an Account and a Profile.  You understand and agree that the Agency may determine the Profile visibility and hourly rate of any of its Agency Members, and you authorize the Agency to do so by becoming an Agency Member.  Each Agency Member must be a User and must be a real person or legally recognized entity.  Each Agency Member’s Account Profile must contain the Agency Member’s real name, and Agency Members must comply with all Terms of Service.  Agency Members’ identities will be subject to verification.  If any of your Agency Members violate the Terms of Service, it may affect your ability to use the Site.   Upon closure of an Agency Account, Gitcoin may close any or all related Accounts.
+
+You agree to grant access to the Agency Account, including with respect to any Agency Members, only to Users authorized to act on your behalf and only in accordance with the Terms of Service.  Additionally, you agree to be fully responsible and liable for any action of any Agency Member and any other User who uses the Agency Account, including Agency Account Administrators.  You represent that your Agency Members have the authority to accept the Terms of Service on your behalf and to create a legally binding obligation on your behalf.  You understand and agree that an Agency Member may accept and enter into Service Contracts on behalf of the Agency, and that the Agency is responsible and liable for all Service Contracts accepted by anyone acting as an Agency Member.  
+
+Each Agency Member is either an employee or an independent contractor of the Agency, as determined by the Agency.  Without limiting the Agency’s obligations described in Section 8.2 (Responsibility for Employees and Subcontractors, Including Agency Members), the Agency acknowledges and agrees that it assumes all liability for the classification of its Agency Members as employees or independent contractors.  The Agency further acknowledges and agrees that the Agency is responsible for paying its Agency Members.  Agency Members acknowledge and agree that their Agency is solely responsible for paying them for work on behalf of the Agency and that such payments will not be made through the Site.
+
+Your Agency Account (including feedback) and username are transferable only upon Gitcoin’s approval, at Gitcoin’s sole discretion.
+
+You understand and agree that Agency Members’ Profiles may display work history that includes work done under the Agency, including after the Agency Member is no longer an Agency Member.
+
+3.5 USERNAMES AND PASSWORDS
+
+When you register for an Account, you may be asked to choose a username and password for the Account.  Each User and any Agency Account Administrator will also be asked to choose the initial username and password for any Agency Account that is added to the Account (and can change the password for the Agency Account at any time).
+
+You are entirely responsible for safeguarding and maintaining the confidentiality of your Account or Agency Account username and password.  You authorize Gitcoin to assume that any person using the Site with your username and password, either is you or is authorized to act for you.  You agree to notify us immediately if you suspect or become aware of any unauthorized use of your Account or Agency Account or any unauthorized access to your password or the password of any User of your Account (or any related Agency Account).  You further agree not to use any username, or password of another User of the Site that you are not authorized to use, and not to allow others who are not authorized to do so to use your Account or Agency Account at any time.
+
+3.6 MARKETPLACE FEEDBACK
+
+You acknowledge and agree that feedback benefits the marketplace, all Users, and the efficiency of the Site and you specifically request that Gitcoin post composite or compiled feedback about Users, including yourself, on User Profiles and elsewhere on the Site. You acknowledge and agree that feedback results for you, including your Job Success Score (“JSS”), if any, will consist of comments, ratings, indicators of User satisfaction, and other feedback left by other Users.  You further acknowledge and agree that Gitcoin will make feedback results available to other marketplace Users, including composite or compiled feedback.  Gitcoin provides this feedback system as a means through which Users can share their opinions publicly and Gitcoin does not monitor or censor these opinions.  You acknowledge and agree that posted composite or compiled feedback and any JSS relate only to the business advertised in the Freelancer Profile and not to any individual person.  You agree not to use the JSS to make any employment, credit, credit valuation, underwriting, or other similar decision about any other User.  
+
+Gitcoin does not investigate any remarks posted by Users for accuracy or reliability but may do so if a User requests that Gitcoin do so.  You may be held legally responsible for damages suffered by other Users or third parties as a result of your remarks if such remarks are legally actionable or defamatory.  Gitcoin is not legally responsible for any feedback or comments posted or made available on the Site by any Users or third parties, even if that information is defamatory or otherwise legally actionable.  In order to protect the integrity of the feedback system and protect Users from abuse, Gitcoin reserves the right (but is under no obligation) to remove posted feedback or information that, in Gitcoin’s sole judgment, violates the Terms of Service or negatively affects our marketplace.  You acknowledge and agree that you will notify Gitcoin of any error or inaccurate statement in your feedback results, including the JSS, and that if you do not do so, Gitcoin may rely on the accuracy of such information.
+
+4. PURPOSE OF THE SITE AND SITE SERVICES
+
+The Site is a marketplace where Clients and Freelancers can identify each other and advertise, buy, and sell Freelancer Services online.  Subject to the Terms of Service, Gitcoin provides the Site Services to Users, including hosting and maintaining the Site, enabling the formation of Service Contracts, and coordinating disputes related to those Service Contracts.  If Users agree on terms for Freelancer Services, a Service Contract is formed directly between such Users, subject to the provisions set forth in Section 5 (Contractual Relationship Between Client and Freelancer), unless you are enrolled in Gitcoin Payroll.  When a User enters a Service Contract, the User uses the Site to engage, communicate, invoice and pay online.
+
+5 NO ESCROW
+
+Gitcoin Core does not hold any funds on behalf of users; User funds are stored in web3, on the Ethereum blockchain.  In the event that funds need to be recovered or in the event of a dispute, the user shall be solely responsible for interfacing with the Ethereum blockchain to do so.  If funds cannot be recovered or dispute cannot be resolved, User agrees to indemnify Gitcoin Core from any action resultant from this loss.
+
+6. PAYMENT TERMS
+
+6.1 SERVICE FEE
+
+The fees to use the Site and Site Services and Blockcahin are paid solely by the Freelancer. When a Client pays a Freelancer, or when funds related to an Engagement are otherwise released to a Freelancer as required by the applicable Escrow Instructions, the smart contract will credit the Freelancer Escrow Account for the full amount paid or released, and then subtract and disburse to Gitcoin a service fee (the “Service Fee”).  Freelancer agrees to pay Gitcoin the Service Fee for using the Site’s communication, invoicing services.
+
+6.2 MEMBERSHIP FEES
+
+Freelancers will subscribe to different levels of participation and privileges on the Site, by payment of subscription fees.
+
+6.3 NO FEE FOR INTRODUCING OR FOR FINDING ENGAGEMENTS  
+
+Gitcoin does not introduce Clients to Freelancers and does not help Freelancers secure Engagements. Gitcoin merely makes the Site Services available to enable Freelancers to do so themselves. Therefore, Gitcoin does not charge a fee when a Freelancer finds a suitable Client or finds an Engagement. However, a Client and a Freelancer are obligated to use the Site to pay and receive payment for their work together if they identified each other through the Site, as detailed in Section 7 (Non-Circumvention), below.  In addition, Gitcoin does not charge any fee or dues for posting public feedback and composite or compiled feedback, including JSS.
+
+
+6.4 FORMAL INVOICES AND TAXES  
+
+Gitcoin will have no responsibility for determining the necessity of or for issuing any formal invoices, or for determining, remitting, or withholding any taxes applicable to the Freelancer Fees.  Freelancer will be solely responsible for determining whether it is required by applicable law to issue any formal invoices for the Freelancer Fees and for issuing any invoices so required.  Freelancer will also be solely responsible for determining whether: (a) Freelancer or Gitcoin is required by applicable law to remit to the appropriate authorities any value added tax or any other taxes or similar charges applicable to the Freelancer Fees and remitting any such taxes or charges to the appropriate authorities on behalf of itself or Gitcoin, as appropriate; and (b) Gitcoin is required by applicable law to withhold any amount of the Freelancer Fees and for notifying Gitcoin of any such requirement and indemnifying Gitcoin (either by Gitcoin, at our sole discretion, offsetting the relevant amount against a future payment of Freelancer Fees to Freelancer or Freelancer reimbursing Gitcoin for the applicable amount) for any requirement to pay any withholding amount to the appropriate authorities (including penalties and interest).  In the event of an audit of Gitcoin, Freelancer agrees to promptly cooperate with Gitcoin and provide copies of Freelancer’s tax returns and other documents as may be reasonably requested for purposes of such audit, including but not limited to records showing Freelancer is engaging in an independent business as represented to Gitcoin.
+
+6.5 PAYMENT METHODS
+
+Clients are charged a fee for payment processing and administration.
+
+In order to use certain Site Services, Client must provide account information for at least one valid Payment Method. 
+
+Client hereby authorizes Gitcoin, Gitcoin Core, and Elance Limited to interface with the Ethereum blockchain on their behalf.  Gitcoin Core makes no representation that there are not bugs in the smart contracts, Site interface, or Site.
+
+6.6 ETHEREUM TOKENS AND FOREIGN CURRENCY CONVERSION
+
+The Site and the Site Services operate in Ethereum based tokens. If Client’s Payment Method is denominated in a currency other than Ethereum tokens and requires currency conversion to make payments in Ethereum tokens, the Site may display foreign currency conversion rates that Gitcoin or other Affiliates currently make available to convert supported foreign currencies to Ethereum tokens.  These foreign currency conversion rates adjust regularly based on market conditions.  Please note that the wholesale currency conversion rates at which we or our Affiliates obtain foreign currency will usually be different than the foreign currency conversion rates offered on the Site.  Client, at its sole discretion and risk, may authorize the charge of its Payment Method in a supported foreign currency and the conversion of the payment to Ethereum tokens at the foreign currency conversion rate displayed on the Site.  A list of supported foreign currencies is available on the Site.  If foreign currency conversion is required to make a payment in Ethereum tokens and either Gitcoin, Gitcoin Core, or another Affiliate does not support the foreign currency or Client does not authorize the conversion of such payment at the foreign currency conversion rate displayed on the Site or an Affiliate will charge Client’s Payment Method in Ethereum tokens and Client’s Payment Method provider will convert the payment at a foreign currency conversion rate selected by Client’s Payment Method provider.  Client’s Payment Method provider may also charge fees directly to the Payment Method used to fund a cross-border payment even when no currency conversion is involved.  Client’s authorization of a payment using a foreign currency conversion rate displayed on the Site is at Client’s sole risk.  Gitcoin, Gitcoin Core, and other Affiliates are not responsible for currency fluctuations that occur when billing or crediting a Payment Method denominated in a currency other than Ethereum tokens.  Gitcoin, Gitcoin Core, and other Affiliates are not responsible for currency fluctuations that occur when receiving or sending payments via wire transfer, check or automated clearinghouse to and from the Blockchain Account.
+
+6.7 No PAYMENT PROTECTION  
+
+In the rare event that a Client does not make payment for legitimate services performed by a Freelancer, Gitcoin will provide no payment protection to the Freelancer.
+
+Freelancer hereby irrevocably assigns to Gitcoin the right to recover from the Client any amounts that Gitcoin or our Affiliates provide to the Freelancer in connection with the Payment Protection membership benefit.  
+
+7. NON-CIRCUMVENTION
+
+You acknowledge and agree that a substantial portion of the compensation Gitcoin receives for making the Site available to you is collected through the Service Fee described in Section 6.1 (“Service Fee”).  Gitcoin only receives this Service Fee when a Client and a Freelancer pay and receive payment through the Site.  Therefore, for 24 months from the time you identify or are identified by any party through the Site (the “Non-Circumvention Period”), you must use the Site as your exclusive method to request, make, and receive all payments for work directly or indirectly with that party or arising out of your relationship with that party (the “Gitcoin Relationship”).  You may opt-out of this obligation with respect to each Client-Freelancer relationship only if Client or prospective Client or Freelancer pays Gitcoin for each such relationship:
+
+(a) an “Opt-Out Fee” computed to be the greater of the following amounts:
+
+(i) $2,500; or
+
+(ii) 15% of the cost to the Client of the services to be performed in the Gitcoin Relationship during the Non-Circumvention Period, as estimated in good faith by the prospective Client; or
+
+(iii) all Service Fees that would be earned by Gitcoin from the Gitcoin Relationship during the Non-Circumvention Period, computed based on the annualized amount earned by Freelancer from Client during the most recent normalized 8-week period, or during such shorter period as data is available to Gitcoin; and
+
+(b) interest at the rate of 18% per annum or the maximum rate permitted by applicable law, whichever is less, calculated from the date Client first makes payment to the subject Freelancer until the date the Opt-Out Fee is paid.
+
+To pay the Opt-Out Fee, you must request instructions by sending an email message to optoutfee@Gitcoin.co.
+
+Except if you pay the Opt-Out Fee, you agree not to circumvent the Payment Methods offered by the Site.  By way of illustration and not in limitation of the foregoing, you must not:
+
+Submit proposals or solicit parties identified through the Site to contact, hire, work with, or pay outside the Site.
+Accept proposals or solicit parties identified through the Site to contact, deliver services, invoice, or receive payment outside the Site.
+Invoice or report on the Site or in an Opt-Out Fee request an invoice or payment amount lower than that actually agreed between Users.
+You agree to notify Gitcoin immediately if another person improperly contacts you or suggests making or receiving payments outside of the Site. If you are aware of a breach or potential breach of this non-circumvention agreement, please submit a confidential report to Gitcoin by sending an email message to:  policy-reports@Gitcoin.co.
+
+If you refuse to accept any new version of the Terms of Service or elect not to comply with certain conditions of using the Site, such as minimum rates supported on the Site, and therefore choose to cease using the Site, you may pay the Opt-Out Fee for each other User you wish to continue working with on whatever terms you agree after you cease using the Site.
+
+8. SERVICE CONTRACT TERMS
+
+Unless otherwise expressly agreed to in writing by both Users, and except for Freelancer Services using Gitcoin Payroll, the default terms and conditions of the Service Contract that a Freelancer enters directly with a Client when the Freelancer agrees to provide Freelancer Services to the Client are as set forth in this Section 8.  If Gitcoin Payroll is used for the Engagement, then only Sections 8.7 and 8.8 of this Section 8 apply.  Users may agree between them on any additional or different terms for their Service Contract as long as such terms do not and do not purport to affect the rights or responsibilities of Gitcoin or violate the Terms of Service.  Gitcoin is not a party to any Service Contract by or between Users.  
+
+Users agree that the terms concerning the Service Contract described on the Site, including Freelancer Fees, rates, hours, and milestones, form part of the Service Contract.  Users agree to obtain the consent of the other before making changes to the Service Contract by adding additional or different milestones or making other changes to the Service Contract on the Site.  If consent of the other party is not first obtained, the other party may reject such changes by terminating the Service Contract (see Section 8.5) or accept such changes by continuing to work on the Service Contract.
+
+8.1 SERVICES
+
+Freelancer will perform the Freelancer Services in a professional and workmanlike manner and will timely deliver any agreed upon Work Product. The manner and means of performing the Freelancer Services will be determined and controlled solely by Freelancer, which is engaged by Client as an independent contractor.  
+
+8.2 RESPONSIBILITY FOR EMPLOYEES AND SUBCONTRACTORS, INCLUDING AGENCY MEMBERS
+
+To ensure accurate billing, work billed for Contracts under a Freelancer’s Account must be performed by the Freelancer that has the Account.  With an Agency Account, the Agency may bill for hourly work done by Agency Members.  
+
+If a User subcontracts with or employs third parties to perform Freelancer Services on behalf of the User for any Engagement, the User represents and warrants that it does so as a legally recognized entity or person and in compliance with all applicable laws and regulations.  As used in this Agreement, the term “Delegee” refers to any employee, independent contractor, or agent of a User, including an Agency Member, that the User engages to perform any work on its behalf under a Service Contract.  Regardless of whether a User has Delegees, the User remains responsible for all services performed under the User’s Service Contracts, including ensuring that the services comply with the Terms of Service (including confidentiality and intellectual property obligations).  Each Agency specifically acknowledges and agrees that Agency Members have the authority to bind the Agency to Service Contracts entered into by Agency Members on behalf of the Agency.
+
+Freelancer, Agency, Delegee, and Client acknowledge and agree that Delegees are not employees, independent contractors or agents of Gitcoin or Client.  Agency, Delegee, and Freelancer represent, warrant, and covenant that: (a) Agency and, if applicable, each other User is solely responsible for all payments, obligations, wages, costs, unemployment insurance, workers’ compensation insurance, contributions, and expenses of Delegees; (b) neither Gitcoin nor Client has the right or power to supervise or control Delegees; and (c) no Delegees of any Agency or other User will have any claim under this Agreement or the other Terms of Service for overtime pay, sick leave, holiday or vacation pay, retirement benefits, worker’s compensation benefits, unemployment benefits, contributions, or any other employee benefits of any kind from Gitcoin or Client.
+
+With respect to Delegees, Gitcoin merely provides the platform for Agency or Freelancer to communicate and share information with Clients and, if they are Users, with Delegees.  Agency, Delegee, and Freelancer understand and agree that the contract terms, pay rate, work hours, service dates and working conditions will be established by the Agency, Freelancer, and/or Client and not by Gitcoin.  Agency, Delegee, and Freelancer acknowledge and agree that Delegees are not employees or independent contractors of Gitcoin, and further acknowledge and agree that they will not be providing any services to Gitcoin (directly or indirectly) while employed or engaged by the Agency or another User.  
+
+Agency, Delegee, and Freelancer acknowledge and agree that Gitcoin does not, in any way, supervise, direct, or control Delegees; Gitcoin does not set Delegees’ contract terms (including determining whether the contract will be set at an hourly or fixed fee), fees, rates, work hours, work schedules, or location of work; Gitcoin will not provide Delegees with training or any equipment, labor, or materials needed for a particular Service Contract; and Gitcoin does not provide the premises at which the Delegees will perform the work.
+
+8.3 CLIENT PAYMENTS AND BILLING
+
+For Fixed-Price Contracts, Client becomes obligated immediately upon sending a Fixed-Price Contract offer or upon activating any additional milestone.
+
+8.4 DISPUTE RESOLUTION
+
+With respect to disputes arising between Clients and Freelancers, you agree to abide by the dispute resolution provisions set forth in this agreement.
+
+8.5 TERMINATION OF A SERVICE CONTRACT
+
+There shall be no termination of a service contract, under any circumstances..
+
+8.6 INTELLECTUAL PROPERTY RIGHTS
+
+CERTAIN DEFINED TERMS
+
+The following capitalized terms have the following meanings:
+
+“Background Technology” means all Inventions developed by Freelancer other than in the course of providing Freelancer Services to Client under the Service Contract and all Inventions that Freelancer incorporates into Work Product.
+
+“Client Materials” means requests, intellectual property, and any other information or materials that Client provides to Freelancer for Freelancer to perform Freelancer Services.
+
+“Invention” means any ideas, concepts, information, materials, processes, data, programs, know-how, improvements, discoveries, developments, designs, artwork, formulae, other copyrightable works, and techniques and all Intellectual Property Rights therein.
+
+BACKGROUND TECHNOLOGY
+
+Freelancer will disclose in the Engagement Terms any Background Technology which Freelancer proposes to incorporate into Work Product or upon which use or distribution of the Work Product will depend. If Freelancer discloses no Background Technology, Freelancer warrants that it will not incorporate any Background Technology into Work Product provided pursuant thereto. Freelancer will separately provide, with each delivery of Work Product to Client, a third-party bill of materials that identifies all Background Technology and other third-party materials that have been incorporated into the Work Product and provides, for each item of Background Technology identified, (a) the name and any associated version number, (b) the applicable license or licensing terms, (c) whether the item has been modified by Freelancer, and (d) how the item has been incorporated into, is used by, or is relied upon by the Work Product. Notwithstanding the foregoing, unless otherwise agreed in the Engagement Terms, Freelancer agrees that it will not incorporate into Work Product or otherwise deliver to Client any software code for which the use or distribution of the code will create (or purport to create) obligations for Client to grant any rights or immunities under Client intellectual property to a third-party, including without limitation any obligation that the Work Product or Client software combined with, derived from, or distributed with such Work Product (x) be disclosed or distributed in source code form, (y) be licensed for the purpose of making derivative works, or (z) be redistributable at no charge.
+
+LICENSE TO BACKGROUND TECHNOLOGY
+
+Upon Freelancer’s receipt of full payment from Client for delivery of Work Product, Freelancer hereby automatically grants to Client a non-exclusive, perpetual, fully-paid and royalty-free, irrevocable and worldwide right, with rights to sublicense through multiple levels of sublicensees, to reproduce, make derivative works of, distribute, publicly perform, and publicly display in any form or medium, whether now known or later developed, make, have made, use, sell, import, offer for sale, and exercise any and all present or future rights in the Background Technology incorporated or used in Work Product delivered for that payment. If payment is made only for partial delivery of Work Product, the grant described herein applies only to the portion of Work Product delivered.
+
+CLIENT MATERIALS
+
+Client grants Freelancer a limited, non-exclusive, revocable (at any time, at Client’s sole discretion) right to use the Client Materials as necessary solely for the performance of the Freelancer Services under the applicable Service Contract. Client reserves all other rights and interest, including, without limitation, all Intellectual Property Rights, in and to the Client Materials. Upon completion or termination of the Service Contract, or upon Client’s written request, Freelancer will immediately return all Client Materials to Client and further agrees to destroy all copies of Client Materials and Deliverables (except for Background Technology as permitted by the Service Contract) contained in or on Freelancer’s premises, systems, or any other equipment or location otherwise under Freelancer’s control. Within ten days of such request from Client, Freelancer agrees to provide written certification to Client that Freelancer has returned or destroyed all Client Materials and Work Product as provided in this subsection.
+
+OWNERSHIP OF WORK PRODUCT AND INTELLECTUAL PROPERTY
+
+Upon Freelancer’s receipt of full payment from Client, the Work Product, including without limitation all Intellectual Property Rights in the Work Product, will be the sole and exclusive property of Client, and Client will be deemed to be the author thereof. If Freelancer has any Intellectual Property Rights to the Work Product that are not owned by Client upon Freelancer’s receipt of payment from Client, Freelancer hereby automatically irrevocably assigns to Client all right, title and interest worldwide in and to such Intellectual Property Rights. Except as set forth above, Freelancer retains no rights to use, and will not challenge the validity of Client’s ownership in, such Intellectual Property Rights. Freelancer hereby waives any moral rights, rights of paternity, integrity, disclosure and withdrawal or inalienable rights under applicable law in and to the Work Product. If payment is made only for partial delivery of Work Product, the assignment described herein applies only to the portion of Work Product delivered.
+
+LICENSE TO OR WAIVER OF OTHER RIGHTS
+
+If Freelancer has any right to the Work Product, including without limitation any Intellectual Property Right, that cannot be assigned to Client by Freelancer, Freelancer hereby automatically, upon Freelancer’s receipt of full payment from Client, unconditionally and irrevocably grants to Client during the term of such rights, an exclusive, even as to Freelancer, irrevocable, perpetual, worldwide, fully-paid and royalty-free license to such rights, with rights to sublicense through multiple levels of sublicensees, to reproduce, make derivative works of, distribute, publicly perform and publicly display in any form or medium, whether now known or later developed, make, use, sell, import, offer for sale and exercise any and all such rights. If Freelancer has any rights to such Work Product that cannot be assigned or licensed, Freelancer hereby automatically, upon Freelancer’s receipt of payment from Client, unconditionally and irrevocably waives the enforcement of such rights, and all claims and causes of action of any kind against Client or related to Client’s customers, with respect to such rights, and will, at Client’s request and expense, consent to and join in any action to enforce such rights.  If payment is made only for partial delivery of Work Product, the grant described herein applies only to the portion of Work Product delivered.
+
+ASSISTANCE
+
+Freelancer will assist Client in every way, including by signing any documents or instruments reasonably required, both during and after the term of the Service Contract, to obtain and enforce Intellectual Property Rights relating to Work Product in all countries. In the event Client is unable, after reasonable effort, to secure Freelancer’s signature on any document needed in connection with the foregoing, Freelancer hereby designates and appoints Client and its duly authorized officers and agents as its agent and attorney in fact to act on its behalf to further the purposes of this Section with the same legal force and effect as if executed by Freelancer.
+
+IMMUNITY
+
+A disclosure of information will be immune from prosecution or civil action under the Defend Trade Secrets Act, 18 U.S.C. section 1832, if it: (A) is made (i) in confidence to a Federal, State, or local government official, either directly or indirectly, or to an attorney; and (ii) solely for the purpose of reporting or investigating a suspected violation of law; or (B) is made in a complaint or other document filed in a lawsuit or other proceeding, if such filing is made under seal.
+
+8.7 WORKER CLASSIFICATION
+
+Client is responsible and assumes all liability for determining whether Freelancers are independent contractors or employees and engaging them accordingly; Gitcoin disclaims any liability for such determination or the related Engagement.  The Terms of Service do not create a partnership or agency relationship between Users.  Freelancer does not have authority to enter into written or oral (whether implied or express) contracts on behalf of Gitcoin.  For Service Contracts classified as independent contractor relationships, Client may not require an exclusive relationship.  A Freelancer classified as an independent contractor is free at all times to provide Freelancer Services to persons or businesses other than Client, including any competitor of Client.
+
+For Freelancer Services classified as employment, Client must sign up for and participate in the Gitcoin Payroll program made available on the Site, with employment services provided as discussed in Section 8.8 (Employment Services), unless Client pays the Opt-Out Fee.  For all purposes with Gitcoin Payroll, the employer of the Freelancer will be the third-party Staffing Provider and not Gitcoin under any circumstances.  
+
+
+9. RECORDS OF COMPLIANCE
+
+Users will each (1) create and maintain records to document satisfaction of their respective obligations under this Agreement; any Service Contract, including, without limitation, their respective payment obligations and compliance with tax and employment laws; and any Gitcoin Agreement, and (2) provide copies of such records to Gitcoin upon request.  Nothing in this subsection requires or will be construed as requiring Gitcoin to supervise or monitor a User’s compliance with this Agreement, the other Terms of Service, or a Service Contract.
+
+10. RELATIONSHIP WITH GITCOIN
+
+Gitcoin is not a party to the dealings between Client and Freelancer, including posts, proposals, screening, selection, contracting, and performance of Freelancer Services.  Gitcoin does not introduce Freelancers to Clients or help Freelancers find Engagements.  Gitcoin merely makes the Site Services available to enable Freelancers to identify and determine the suitability of Clients for themselves and to enable Clients to identify and determine the suitability of Freelancers for themselves.  Gitcoin does not, in any way, supervise, direct, or control Freelancer or Freelancer’s work.  Gitcoin does not set Freelancer’s work hours, work schedules, or location of work, nor is Gitcoin involved in determining if the Freelancer Fees will be set at an hourly or fixed rate for a Service Contract.  Gitcoin will not provide Freelancer with training or any equipment, labor, or materials needed for a particular Service Contract.  Gitcoin does not provide the premises at which the Freelancer will perform the work.  Gitcoin makes no representations about, and does not guarantee the quality, safety, or legality of, the Freelancer Services; the truth or accuracy of Freelancer’s listings on the Site; the qualifications, background, or identities of Users; the ability of Freelancers to deliver the Freelancer Services; the ability of Clients to pay for the Freelancer Services; or that a Client or Freelancer can or will actually complete a transaction.
+
+Gitcoin does not deduct any amount for withholding, unemployment, Social Security, or other taxes for Client or Freelancer, each of which is solely responsible for all tax returns and payments required to be filed with or made to any federal, state, or local tax authority in any nation with respect to Freelancer’s performance, and Client’s acceptance, of Freelancer Services.
+
+Gitcoin is not required to and may not verify any feedback or information given to us by Freelancers or Clients, nor does Gitcoin perform background checks on Freelancers or Clients.
+
+You hereby acknowledge and agree that Gitcoin may provide information on the Site about a Freelancer or Client, such as feedback, composite feedback, including a strength or risk score, geographical location, or verification of identity or credentials.  However, such information is based solely on data that Freelancers or Clients voluntarily submit to Gitcoin and does not constitute and will not be construed as an introduction, endorsement, or recommendation by Gitcoin; Gitcoin provides such information solely for the convenience of Users.
+
+11. THIRD-PARTY BENEFICIARY
+
+Users appoint Gitcoin as a third-party beneficiary of their Service Contracts for purposes of enforcing any obligations owed to, and any benefits conferred on, Gitcoin hereunder.  For example, Section 5.1(c) and Section 5.1(d) of this Agreement prohibit certain terms in any Service Contract and Gitcoin is hereby made a third-party beneficiary for purposes of enforcing such prohibitions.  Users further agree that Gitcoin has the right to take such actions with respect to their Accounts, including, without limitation, suspension, termination, or legal actions, as we, in our sole discretion, deem necessary to enforce our rights as a third-party beneficiary under the Service Contracts.
+
+The Terms of Service and any Account registration will not be construed as creating or implying any relationship of agency, franchise, partnership, or joint venture between Users and Gitcoin, except and solely to the extent expressly stated in this Agreement.  
+
+12. COMMUNICATIONS FROM YOU TO GITCOIN
+
+All notices to Gitcoin or our Affiliates intended to have a legal effect must be in writing and delivered either (a) in person; (b) by a means evidenced by a proof receipt, to the following address: PO Box 92039; Attn: Legal; Boulder CO; or (c) in writing via email to legalnotices@Gitcoin.co.  All such notices are deemed effective upon receipt by Gitcoin.  Gitcoin does not accept service of any legal process by email or mail; all such service should occur by hand delivery on Gitcoin or its registered agent for service of process.
+
+13. Gitcoin’S ROLE
+
+13.1 SERVICE CONTRACTS
+
+You expressly acknowledge, agree, and understand that: (a) the Site is merely a venue where Users may act as Clients and/or Freelancers; (b) Gitcoin is not a party to any Service Contracts between Clients and Freelancers; (c) you are not an employee of Gitcoin, and Gitcoin does not, in any way, supervise, direct, or control the Freelancer or Freelancer Services; (d) Gitcoin will not have any liability or obligations under or related to Service Contracts for any acts or omissions by you or other Users; (e) Gitcoin has no control over Freelancers or the Freelancer Services offered or rendered by Freelancers; and (f) Gitcoin makes no representations as to the reliability, capability, or qualifications of any Freelancer or the quality, security, or legality of any Freelancer Services, and Gitcoin disclaims any and all liability relating thereto.
+
+14. LICENSES AND THIRD-PARTY CONTENT
+
+14.1 SITE LICENSE AND INTELLECTUAL PROPERTY RIGHTS
+
+Subject to and conditioned on compliance with the Terms of Service, Gitcoin grants you a limited license to access and, if you have created an Account, to use the Site for the purpose of using the Site Services.  You must not access (or attempt to access) the Site or Site Services by any means other than the interface provided, and you will not use information from the Site or Site Services for any purposes other than the purposes for which it was made available.  You agree not to use the Site or Site Services for offering any goods or services other than Freelancer Services as permitted by this Agreement.  You must not sell, reproduce, distribute, modify, display, publicly perform, prepare derivative works based on, repost, or otherwise use any content of the Site or Site Services in any way for any public or commercial purpose without Gitcoin’s prior written consent.  You must not use any content of the Site or Site Services on any other website or in a networked computer environment for any purpose except your own viewing without Gitcoin’s prior written consent.  You must not frame or link to the Site or Site Services except as permitted in writing by Gitcoin.  You must not attempt to reverse engineer, modify, adapt, translate, prepare derivative works from, decompile, attempt to interfere with the operation of, or otherwise attempt to derive source code from any part of the Site or Site Services unless expressly permitted by applicable law.  You will not access Site Services in order to build a similar service or application, or publish any performance, or any benchmark test or analysis relating to the Site Services.  Gitcoin and our licensors retain all right, title, and interest in and to all Intellectual Property Rights related in and to the Site and the Site Services.  The Gitcoin logos and names are trademarks of Gitcoin and may be registered in certain jurisdictions.  All other product names, company names, marks, logos, and symbols on the Site or Site Services may be the trademarks of their respective owners.  Except as expressly stated in this Agreement, nothing in the Terms of Service confers any license under any of Gitcoin’s or any third party’s Intellectual Property Rights, whether by estoppel, implication, or otherwise.
+
+14.2 USER CONTENT LICENSE
+
+When you post User Content on the Site or through the Site Services or provide Gitcoin with User Content, you represent and warrant that you have the right, power, and authority to post that User Content and grant the licenses specified below.  You further represent and warrant that by posting or providing such User Content you will not violate third-party rights of any kind, including, without limitation, any Intellectual Property Rights, rights of publicity, and privacy rights.  To the extent your User Content may be copyrightable, you represent, warrant, and covenant that you are the owner of all the copyright rights to such User Content and that Gitcoin may exercise the rights to your User Content granted under the Terms of Service without any liability or obligation for any payment.
+
+You retain all ownership rights in any User Content you post on Gitcoin.  To the extent permitted by applicable law, you also grant to Gitcoin and our successors and Affiliates a royalty-free, sub-licensable, transferable, perpetual, irrevocable, non-exclusive, worldwide license to use, reproduce, modify, publish, list information regarding, edit, translate, distribute, publicly perform, publicly display, and make derivative works of all such User Content and your name, voice, and/or likeness as contained in your User Content, in whole or in part, and in any form, media, or technology, whether now known or hereafter developed, for use in connection with the Site and Gitcoin’s (and our successors’ and Affiliates’) business, including, without limitation, for promoting and redistributing part or all of the Site (and derivative works thereof) in any media formats and through any media channels.  You also hereby grant each User a non-exclusive license to access your User Content through the Site and to use, reproduce, distribute, display, and perform such User Content to the extent permitted through the normal functionality of the Site and subject to all applicable confidentiality and other provisions of this Agreement, our Privacy Policy, and applicable law.
+
+Notwithstanding the foregoing paragraph, Gitcoin will only use or disclose User Content you post to any non-public area of the Site to the extent necessary to provide Site Services to you as further described in our Privacy Policy.
+
+The licenses to User Content granted by you in this Agreement will terminate within a commercially reasonable time after you remove or delete your User Content from the Site, except that you grant Gitcoin and our successors and Affiliates the irrevocable and perpetual license to retain and use, but not publicly display or distribute, server or archival copies of all User Content that you have removed or deleted to the extent permitted by applicable law.
+
+You may submit comments or ideas about the Site and Site Services, including without limitation about how to improve the Site or Site Services (collectively, “Ideas”).  By submitting any Ideas, you agree that: (a) your disclosure is voluntary, gratuitous, unsolicited, and without restriction and will not place Gitcoin under any fiduciary or other obligation, (b) your Ideas do not contain the confidential or proprietary information of third parties, and (c) we are free to use the Ideas without any additional compensation to you and to disclose the Ideas on a non-confidential basis or otherwise to anyone.  You further acknowledge and agree that, by acceptance of your submission, Gitcoin does not waive any rights to use similar or related ideas known or developed by Gitcoin or obtained from sources other than you.
+
+14.3 UNAUTHORIZED ACCESS AND USE; SITE INTERFERENCE; MALICIOUS SOFTWARE
+
+The Site contains robot exclusion headers.  You agree that you will not use any robot, spider, scraper, or other automated means to access the Site for any purpose without our express written permission.  You will not access the audiovisual content available on the Site for any purpose or in any manner other than streaming.  You agree that you will not: (a) take any action that imposes or we believe may impose (in our sole discretion) an unreasonable or disproportionately large load on the Site’s infrastructure; (b) copy, reproduce, modify, create derivative works from, distribute, or publicly display any content (other than content you have submitted to the Site) from the Site, any software code that is part of the Site, or any services that are offered on the Site without the prior express written permission of Gitcoin and the appropriate third party, as applicable; (c) interfere or attempt to interfere with the proper operation of the Site or any activities conducted on the Site; (d) bypass any measures we may use to prevent or restrict access to the Site or any subparts of the Site, including, without limitation, features that prevent or restrict use or copying of any content or enforce limitations on use of the Site or the content therein; (e) transmit spam, chain letters, or other unsolicited communications; (f) attempt to interfere with or compromise the system integrity or security or decipher any transmissions to or from the servers running the Site; (g) collect or harvest any personally identifiable information, including Account names, from the Site; (h) access any content on the Site through any technology or means other than those provided or authorized by the Site; or (i) directly or indirectly, advertise or promote another website, product, or service or solicit other Users for other websites, products, or services.
+
+Additionally, you agree that you will not post or introduce any invalid data, virus, worm, or other harmful or malicious software code, agent, hidden procedure, routine, or mechanism through or to the Site or the Site software that is designed to cause to cease functioning, disrupt, disable, harm, or otherwise impair in any manner, including aesthetic disruptions or distortions, the operation of (or to allow you or any other person to access or damage or corrupt data, storage media, programs, equipment, or communications or otherwise interfere with operations of or on) the Site or any other software, firmware, hardware, computer system, or network of Gitcoin or any third party
+
+14.4 THIRD-PARTY VERIFICATION
+
+The Site makes available various services provided by third parties to verify a User’s credentials and provide other information.  Any information or content expressed or made available by these third parties or any other Users is that of the respective author(s) or distributor(s) and not of Gitcoin.  Gitcoin neither endorses nor is responsible for the accuracy or reliability of any opinion, advice, information, or statement made on the Site by anyone other than Gitcoin’s authorized employees acting in their official capacities.
+
+14.5 LINKS AND APPLICATIONS
+
+The Site may contain links to third-party websites.  The Site may also contain applications that allow you to access third-party websites via the Site.  Such third-party websites are owned and operated by the third parties and/or their licensors.  Your access and use of third-party websites, including online communication services, such as chat, email, and calls will be governed by the terms and policies of the applicable third-party websites. You acknowledge and agree that Gitcoin is not responsible or liable for: (a) the availability or accuracy of third-party websites; or (b) the content, advertising, or products on or available from third-party websites.  You are responsible for deciding if you want to access third-party websites by clicking on a link or installing an application.  The inclusion of any link or application on the Site does not imply that we endorse the linked site or application.  You use the links and third-party websites at your own risk and agree that your use of an application or third-party website via the Site is on an “as is” and “as available” basis without any warranty for any purpose.
+
+14.6 MOBILE AND OTHER DEVICES
+
+When using our mobile applications, please be aware that your carrier’s normal rates and fees, such as text messaging and data charges, will still apply.  Our mobile applications may not contain the same functionality available on the Site.  
+
+14.7 SITE UPDATES
+
+We may from time to time in our sole discretion develop and provide Site Services updates, which may include upgrades, bug fixes, patches, and other error corrections and/or new features (collectively, including related documentation, “Updates”).  Updates may also modify or delete in their entirety certain features and functionality.  You agree that we do not have any obligation to provide any Updates or to continue to provide or enable any particular features or functionality.  You will promptly download and install all Updates and acknowledge and agree that Site Services or portions thereof may not work properly should you fail to do so. You further agree that all Updates will be subject to the terms of the Terms of Service, unless otherwise provided in terms associated with such Update.  Gitcoin reserves the right, at any time, to modify, suspend, or discontinue Site Services or any part thereof without notice.  You agree Gitcoin will not be liable to you or any third party for any modification, suspension, or discontinuance of Site Services or any part thereof.
+
+15. CONFIDENTIAL INFORMATION
+
+15.1 CONFIDENTIALITY
+
+To the extent a Client or Freelancer provides Confidential Information to the other, the recipient will protect the secrecy of the discloser’s Confidential Information with the same degree of care as it uses to protect its own Confidential Information, but in no event with less than due care, and will: (a) not disclose or permit others to disclose another’s Confidential Information to anyone without first obtaining the express written consent of the owner of the Confidential Information; (b) not use or permit the use of another’s Confidential Information, except as necessary for the performance of Freelancer Services (including, without limitation, the storage or transmission of Confidential Information on or through the Site for use by Freelancer); and (c) limit access to another’s Confidential Information to its personnel who need to know such information for the performance of Freelancer Services.  A disclosure of information will be immune from prosecution or civil action under the Defend Trade Secrets Act, 18 U.S.C. section 1832, if it: (A) is made (i) in confidence to a Federal, State, or local government official, either directly or indirectly, or to an attorney; and (ii) solely for the purpose of reporting or investigating a suspected violation of law; or (B) is made in a complaint or other document filed in a lawsuit or other proceeding, if such filing is made under seal.
+
+15.2 RETURN
+
+If and when Confidential Information is no longer needed for the performance of the Freelancer Services for a Services Contract or at Client’s or Freelancer’s written request (which may be made at any time at Client’s or Freelancer’s sole discretion), the party that received Confidential Information, will, at its expense, promptly destroy or return the disclosing party’s Confidential Information and any copies thereof contained in or on its premises, systems, or any other equipment otherwise under its control.  The party that received Confidential Information agrees to provide written certification to the party disclosing the Confidential Information of compliance with this subsection within ten days after the receipt of disclosing party’s written request for such certification.
+
+15.3 PUBLICATION
+
+Without limiting Section 15.1 (Confidentiality), Client, Freelancer, and Gitcoin will not publish, or cause to be published, any other party’s Confidential Information or Work Product, except as may be necessary for performance of Freelancer Services for a Services Contract.
+
+16. WARRANTY DISCLAIMER
+
+YOU AGREE NOT TO RELY ON THE SITE, THE SITE SERVICES, ANY INFORMATION ON THE SITE OR THE CONTINUATION OF THE SITE.  THE SITE AND THE SITE SERVICES ARE PROVIDED “AS IS” AND ON AN “AS AVAILABLE” BASIS.  Gitcoin MAKES NO EXPRESS REPRESENTATIONS OR WARRANTIES WITH REGARD TO THE SITE, THE SITE SERVICES, WORK PRODUCT, OR ANY ACTIVITIES OR ITEMS RELATED TO THIS AGREEMENT OR THE OTHE TERMS OF SERVICE.  TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, Gitcoin DISCLAIMS ALL EXPRESS AND IMPLIED CONDITIONS, REPRESENTATIONS, AND WARRANTIES INCLUDING, BUT NOT LIMITED TO, THE WARRANTIES OF MERCHANTABILITY, ACCURACY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.  SOME JURISDICTIONS MAY NOT ALLOW FOR ALL OF THE FOREGOING LIMITATIONS ON WARRANTIES, SO TO THAT EXTENT, SOME OR ALL OF THE ABOVE LIMITATIONS MAY NOT APPLY TO YOU.  SECTION 20 (TERM AND TERMINATION) STATES USER’S SOLE AND EXCLUSIVE REMEDY AGAINST Gitcoin WITH RESPECT TO ANY DEFECTS, NON-CONFORMANCES, OR DISSATISFACTION.
+
+17. LIMITATION OF LIABILITY
+
+Gitcoin is not liable, and you agree not to hold us responsible, for any damages or losses arising out of or in connection with the Terms of Service, including, but not limited to:
+
+your use of or your inability to use our Site or Site Services;
+delays or disruptions in our Site or Site Services;
+viruses or other malicious software obtained by accessing, or linking to, our Site or Site Services;
+glitches, bugs, errors, or inaccuracies of any kind in our Site or Site Services;
+damage to your hardware device from the use of the Site or Site Services;
+the content, actions, or inactions of third parties’ use of the Site or Site Services;
+a suspension or other action taken with respect to your account;
+your reliance on the quality, accuracy, or reliability of job postings, Profiles, ratings, recommendations, and feedback (including their content, order, and display), or metrics found on, used on, or made available through the Site; and
+your need to modify practices, content, or behavior or your loss of or inability to do business, as a result of changes to the Terms of Service.
+ADDITIONALLY, IN NO EVENT WILL Gitcoin, OUR AFFILIATES, OUR LICENSORS, OR OUR THIRD-PARTY SERVICE PROVIDERS BE LIABLE FOR ANY SPECIAL, CONSEQUENTIAL, INCIDENTAL, PUNITIVE, EXEMPLARY, OR INDIRECT COSTS OR DAMAGES, INCLUDING, BUT NOT LIMITED TO, LITIGATION COSTS, INSTALLATION AND REMOVAL COSTS, OR LOSS OF DATA, PRODUCTION, PROFIT, OR BUSINESS OPPORTUNITIES.  THE LIABILITY OF Gitcoin, OUR AFFILIATES, OUR LICENSORS, AND OUR THIRD-PARTY SERVICE PROVIDERS TO ANY USER FOR ANY CLAIM ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT OR THE OTHER TERMS OF SERVICE WILL NOT EXCEED THE LESSER OF: (A) $2,500; OR (B) ANY FEES RETAINED BY Gitcoin WITH RESPECT TO SERVICE CONTRACTS ON WHICH USER WAS INVOLVED AS CLIENT OR FREELANCER DURING THE SIX-MONTH PERIOD PRECEDING THE DATE OF THE CLAIM.  THESE LIMITATIONS WILL APPLY TO ANY LIABILITY, ARISING FROM ANY CAUSE OF ACTION WHATSOEVER ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT OR THE OTHER TERMS OF SERVICE, WHETHER IN CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY, OR OTHERWISE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH COSTS OR DAMAGES AND EVEN IF THE LIMITED REMEDIES PROVIDED HEREIN FAIL OF THEIR ESSENTIAL PURPOSE.  SOME STATES AND JURISDICTIONS DO NOT ALLOW FOR ALL OF THE FOREGOING EXCLUSIONS AND LIMITATIONS, SO TO THAT EXTENT, SOME OR ALL OF THESE LIMITATIONS AND EXCLUSIONS MAY NOT APPLY TO YOU.
+
+18. RELEASE
+
+In addition to the recognition that Gitcoin is not a party to any contract between Users, you hereby release Gitcoin, our Affiliates, and our respective officers, directors, agents, subsidiaries, joint ventures, and employees from claims, demands, and damages (actual and consequential) of every kind and nature, known and unknown, arising out of or in any way connected with any dispute you have with another User, whether it be at law or in equity.  This release includes, for example and without limitation, any disputes regarding the performance, functions, and quality of the Freelancer Services provided to Client by a Freelancer and requests for refunds based upon disputes.  Procedures regarding the handling of certain disputes between Users are discussed in subsection 8.4 (Dispute Resolution).
+
+TO THE EXTENT APPLICABLE, YOU HEREBY WAIVE THE PROTECTIONS OF THE COLORADO CIVIL CODE (AND ANY ANALOGOUS LAW IN ANY OTHER APPLICABLE JURISDICTION) WHICH SAYS: “A GENERAL RELEASE DOES NOT EXTEND TO CLAIMS WHICH THE CREDITOR DOES NOT KNOW OR SUSPECT TO EXIST IN HIS OR HER FAVOR AT THE TIME OF EXECUTING THE RELEASE, WHICH IF KNOWN BY HIM OR HER MUST HAVE MATERIALLY AFFECTED HIS OR HER SETTLEMENT WITH THE DEBTOR.”
+
+This release will not apply to a claim that Gitcoin failed to meet our obligations under the Terms of Service.
+
+19. INDEMNIFICATION
+
+You will indemnify, defend, and hold harmless Gitcoin, our Affiliates, and our respective directors, officers, employees, representatives, and agents (each an “Indemnified Party”) from any and all claims, damages, liabilities, costs, losses, and expenses (including, but not limited to, reasonable attorneys’ fees and all related costs and expenses) arising from or relating to any claim, suit, proceeding, demand, or action brought by you or a third party or other User against an Indemnified Party relating to: (a) use of the Site and the Site Services by you or your agents, including any payment obligations incurred through use of the Site Services; (b) any Service Contract entered into by you or your agents, including, but not limited to, the classification of a Freelancer as an independent contractor; the classification of Gitcoin as an employer or joint employer of Freelancer; any employment-related claims, such as those relating to employment termination, employment discrimination, harassment, or retaliation; and any claims for unpaid wages or other compensation, overtime pay, sick leave, holiday or vacation pay, retirement benefits, worker’s compensation benefits, unemployment benefits, or any other employee benefits; (c) failure to comply with the Terms of Service by you or your agents; (d) failure to comply with applicable law by you or your agents; (e) negligence, willful misconduct, or fraud by you or your agents; and (f) defamation, libel, violation of privacy rights, unfair competition, or infringement of Intellectual Property Rights or allegations thereof to the extent caused by you or your agents.
+
+20. AGREEMENT TERM AND TERMINATION
+
+The Terms of Service as amended from time to time, will become effective on the later of the Effective Date or your first visit to the Site and will remain in effect for the duration of your use of the Site or Site Services.  Unless both you and Gitcoin expressly agree otherwise in writing, either of us may terminate this Agreement in our sole discretion, at any time, without explanation, upon written notice to the other, which will result in the termination of the other Terms of Service as well, except as otherwise provided herein.  You may provide written notice to legalnotices@Gitcoin.co.  If you are using Gitcoin Payroll, you must legally terminate your relationship with Client or Freelancer, as applicable, before terminating this Agreement. In the event you properly terminate this Agreement, your right to use the Site is automatically revoked, and your Account will be closed; however, (a) if you have any open Engagements when you terminate this Agreement, you will continue to be bound by this Agreement and the other Terms of Service until all such Engagements have closed on the Site; (b) Gitcoin will continue to perform those Site Services necessary to complete any open Engagement or related transaction between you and another User; and (c) you will continue to be obligated to pay any amounts accrued but unpaid as of the date of termination or as of the completion of any open Engagements, whichever is later, to Gitcoin for any Site Services and to any Freelancers for any Freelancer Services.  Without limiting any other provisions of the Terms of Service, the termination of this Agreement for any reason will not release you, any User with whom you have entered into a Service Contract, or Gitcoin from any obligations incurred prior to termination of this Agreement or that thereafter may accrue in respect of any act or omission prior to such termination.  Those portions of the Terms of Service necessary to implement the foregoing survive termination of this Agreement for any reason.
+
+Without limiting Gitcoin’s other rights or remedies, we may temporarily suspend, indefinitely suspend, or permanently revoke your access to the Site and refuse to provide any or all Site Services to you if: (i) you breach the letter or spirit of any terms and conditions of this Agreement or other parts of the Terms of Service; (ii) we suspect or become aware that you have provided false or misleading information to us; or (iii) we believe, in our sole discretion, that your actions may cause legal liability for you, our Users, or Gitcoin or our Affiliates; may be contrary to the interests of the Site or the User community; or may involve illicit activity.  If your Account is suspended or closed, you may not use the Site under the same Account or a different Account or reregister under a new Account without Gitcoin’s prior written consent.  If you attempt to use the Site under a different Account, we reserve the right to reclaim available funds in that Account and/or use an available Payment Method to pay for any amounts owed by you to the extent permitted by applicable law.
+
+Without limiting Gitcoin’s other rights or remedies, if you engage in actions or activities that circumvent the Site or otherwise reduce fees owed Gitcoin or our Affiliates under the Terms of Service, you must pay Gitcoin, and you authorize Gitcoin or its Affiliate to charge you, for all fees owed to Gitcoin and our Affiliates and reimburse Gitcoin for the Opt-Out Fee, if applicable, all losses and costs (including any and all time of Gitcoin’s employees) and reasonable expenses (including attorneys’ fees) related to investigating such breach and collecting such fees.  In addition, violations of the Terms of Service may be prosecuted to the fullest extent of the law and may result in additional penalties and sanctions.
+
+If your Account is closed for any reason, you will no longer have access to data, messages, files, and other material you keep on the Site.  If practicable or required by law, Gitcoin will retain this information along with all your previous posts and proposals for a period of up to five years from the date of closure.  However, you understand that any closure of your Account may involve deletion of any content stored in your Account for which Gitcoin will have no liability whatsoever.
+
+20.1 ENFORCEMENT OF AGREEMENT  
+
+Gitcoin has the right, but not the obligation, to suspend or revoke your access to the Site and Site Services if we believe that you have violated or acted inconsistently with the letter or spirit of this Agreement or the Terms of Service or violated our rights or those of another party.  Without limiting Gitcoin’s other rights or remedies, we may suspend or close your Account, use self-help in connection with our rights to reclaim funds, and refuse to provide any further access to the Site or the Services to you if (a) you breach any terms and conditions of this Agreement or other Terms of Service; (b) we are unable to verify or authenticate any information you provide to us; or (c) we believe that your actions may cause legal liability for you, other Users, or Gitcoin.  
+
+20.2 CONSEQUENCES OF AGREEMENT TERMINATION
+
+Termination of this Agreement and/or closing of your Account will not relieve Client of the requirement to pay for Freelancer Services performed prior to the Effective Date of the termination or thereafter for any Service Contracts executed before termination of this Agreement, which fees and expenses, together with any applicable taxes, Client hereby authorizes Gitcoin to charge to its Payment Method pursuant to Section 6 (Payment Terms).  Subject to the applicable Dispute Resolution Procedures, Gitcoin will pay Freelancer, in accordance with the provisions of Section 6 (Payment Terms) for all time recorded in the Time Logs incurred prior to the Effective Date of the termination or thereafter for any Service Contracts executed before termination of this Agreement.
+
+Except as otherwise required by applicable law, we will notify you if we close your Account, unless we believe, in our sole judgment, that giving notice may cause damage.  You acknowledge and agree that the value, reputation, and goodwill of the Site depend on transparency of User’s Account status to all Users, including both yourself and other Users who have entered into Service Contracts with you.  You therefore agree as follows: IF Gitcoin DECIDES TO SUSPEND OR CLOSE YOUR ACCOUNT, Gitcoin HAS THE RIGHT BUT NOT THE OBLIGATION TO:  (A) NOTIFY OTHER USERS THAT HAVE ENTERED INTO SERVICE CONTRACTS WITH YOU TO INFORM THEM OF YOUR SUSPENDED OR CLOSED ACCOUNT STATUS, AND (B) PROVIDE THOSE USERS WITH A SUMMARY OF THE REASONS FOR YOUR ACCOUNT SUSPENSION OR CLOSURE.
+
+20.3 SURVIVAL
+
+After this Agreement terminates, the terms of this Agreement and the other Terms of Service that expressly or by their nature contemplate performance after the Agreement terminates or expires will survive and continue in full force and effect.  For example, the provisions protecting Confidential Information, requiring arbitration, permitting audits, protecting intellectual property, requiring non-circumvention, indemnification, payment of fees, reimbursement and setting forth limitations of liability each, by their nature, contemplate performance or observance after this Agreement terminates.
+
+21. CANCELLATIONS, REFUNDS, AND DISPUTES
+
+21.1 DISPUTE PROCESS AND SCOPE
+
+For disputes arising between Clients and Freelancers, you agree to abide by the dispute process below:
+
+If a dispute arises between you and Gitcoin or our Affiliates, our goal is to resolve the dispute quickly and cost-effectively.  Accordingly, you, Gitcoin, and our Affiliates agree to resolve any claim, dispute, or controversy that arises out of or relates to this Agreement, the other Terms of Service, your relationship with Gitcoin (including any claimed employment with Gitcoin or one of its Affiliates or successors), the termination of your relationship with Gitcoin, or the Site Services (each, a “Claim”) in accordance with this Section.  For the avoidance of doubt, Claims include, but are not limited to, all claims, disputes, or controversies arising out of or relating to the Terms of Service, any Service Contract, escrow payments or agreements, any payments or monies you claim are due to you from Gitcoin or its Affiliates or successors, trade secrets, unfair competition, false advertising, consumer protection, privacy, compensation, classification, minimum wage, seating, expense reimbursement, overtime, breaks and rest periods, termination, discrimination or harassment and claims arising under the Uniform Trade Secrets Act as enacted in any state, Civil Rights Act of 1964, Americans With Disabilities Act, Age Discrimination in Employment Act, Family Medical Leave Act, Fair Labor Standards Act, Employee Retirement Income Security Act (except for claims for employee benefits under any benefit plan sponsored by the Company and (a) covered by the Employee Retirement Income Security Act of 1974 or (b) funded by insurance), Affordable Care Act, Genetic Information Non-Discrimination Act, state statutes or regulations addressing the same or similar subject matters, and all other federal or state legal claims arising out of or relating to your relationship with Gitcoin or the termination of that relationship.  Only with respect to the Arbitration Provision, Claims do not include disputes that may not be subject to a pre-dispute arbitration agreement as provided by the Dodd-Frank Wall Street Reform and Consumer Protection Act (Public Law 111-203) and are excluded from the coverage of the Arbitration Provision.
+
+You agree that any Claim must be resolved as described in the subsections below titled “Informal Dispute Resolution” and “Mandatory Binding Arbitration and Class Action/Jury Trial Waiver.”  
+
+21.2 CHOICE OF LAW
+
+This Agreement, the other Terms of Service, and any Claim will be governed by and construed in accordance with the laws of the State of Colorado, without regard to its conflict of law provisions and excluding the United Nations Convention on Contracts for the International Sale of Goods (CISG); provided, however, that any Claims  made by any Freelancer located within the United States will be governed by the law of the state in which such Freelancer resides.
+
+21.3 INFORMAL DISPUTE RESOLUTION
+
+Before serving a demand for arbitration of a Claim, you agree to first notify Gitcoin of the Claim at PO Box 92039; Attn: Legal; Boulder CO or by email to legalnotices@Gitcoin.co, and Gitcoin agrees to provide to you a notice at your email address on file (in each case, a “Notice”) and seek informal resolution of the Claim.  Any Notice from you must include your name, pertinent account information, a brief description of the Claim, and your contact information, so that we may evaluate the Claim and attempt to informally resolve the Claim.  Any Notice from Gitcoin must include pertinent account information, a brief description of the Claim, and Gitcoin’s contact information, so that you may evaluate the Claim and attempt to informally resolve the Claim.  Both you and Gitcoin will have 60 days from the date of the receipt of the Notice to informally resolve the other party’s Claim, which, if successful, will avoid the need for further action.
+
+21.4 MANDATORY BINDING ARBITRATION AND CLASS ACTION/JURY TRIAL WAIVER (DOES NOT APPLY TO USERS LOCATED OUTSIDE THE UNITED STATES AND ITS TERRITORIES)
+
+This Mandatory Binding Arbitration and Class Action/Jury Trial Waiver provision (“Arbitration Provision”) applies to all Users except Users located outside of the United States and its territories.
+
+In the unlikely event the parties are unable to resolve a Claim within 60 days of the receipt of the applicable Notice, you, Gitcoin, and our Affiliates agree to resolve the Claim by binding arbitration before an arbitrator from JAMS. JAMS may be contacted at www.jamsadr.com.
+
+A. SCOPE OF ARBITRATION AGREEMENT AND CONDUCT OF ARBITRATION
+
+Arbitration as provided in this Mandatory Binding Arbitration and Class Action/Jury Trial Waiver provision (“Arbitration Provision”) is governed by the United States Federal Arbitration Act (9 U.S.C. §§ 1 et seq.).  This Arbitration Provision applies to any Claim the parties may have and survives after your relationship with Gitcoin ends.  This Arbitration Provision is intended to apply to the resolution of disputes that otherwise would be resolved in a court of law or before a forum other than arbitration.  If for any reason JAMS will not administer the arbitration, either party may apply to a court of competent jurisdiction with authority over the location where the arbitration will be conducted for appointment of a neutral arbitrator.
+
+Except as otherwise provided herein, arbitration will be conducted in Boulder County, Colorado in accordance with the JAMS Comprehensive Arbitration Rules and Procedures under the Optional Expedited Arbitration Procedures then in effect for JAMS.  Notwithstanding the foregoing, any Claims by Freelancers that allege employment or worker classification claims will be conducted within 25 miles of where the Freelancer is located in accordance with the JAMS Employment Arbitration Rules and Procedures then in effect.  The JAMS arbitration rules may be found at www.jamsadr.com or by searching online for “JAMS Comprehensive Arbitration Rules and Procedures” or “JAMS Employment Arbitration Rules.”  The parties agree that any party will have the right to appear at the arbitration by telephone and/or video rather than in person.
+
+You and Gitcoin will follow the applicable JAMS rules with respect to arbitration fees.  In any arbitration under the JAMS Employment Arbitration Rules and Procedures, the Freelancer will pay JAMS arbitration fees only to the extent those fees are no greater than the filing or initial appearance fees applicable to court actions in the jurisdiction where the arbitration will be conducted.  The arbitrator must follow applicable law and may award only those remedies that would have applied had the matter been heard in court.  Judgment may be entered on the arbitrator’s decision in any court having jurisdiction.
+
+This Arbitration Provision does not apply to litigation between the Company and you to which you are a party that is or was already pending in a state or federal court before the expiration of your opt-out period.  This Arbitration Provision also does not apply to claims for workers compensation, state disability insurance or unemployment insurance benefits.  Either you or Gitcoin may apply to a court of competent jurisdiction for provisional injunctive relief in connection with an arbitrable controversy, but only upon the ground that the award to which that party may be entitled may be rendered ineffectual without such relief; the arbitrator will render the final judgment in the matter.  
+
+Regardless of any other terms of this Arbitration Provision, a claim may be brought by or to, and remedies awarded by, an administrative agency if applicable law permits the agency to adjudicate, investigate or prosecute the claim notwithstanding the existence of this agreement to arbitrate.  Such administrative claims include without limitation claims or charges brought before the U.S. Equal Employment Opportunity Commission, the U.S. Department of Labor, or the National Labor Relations Board.  Nothing in this Arbitration Provision will be deemed to preclude or excuse a party from bringing an administrative claim before any agency in order to fulfill the party’s obligation to exhaust administrative remedies before making a claim in arbitration, if any.
+
+B. INTERPRETATION AND ENFORCEMENT OF THIS ARBITRATION PROVISION
+
+This Arbitration Provision is the full and complete agreement relating to the formal resolution of Claims.  For the avoidance of doubt, this Arbitration Provision covers, and the arbitrator shall have exclusive jurisdiction to decide, all disputes arising out of or relating to the interpretation, enforcement, or application of this Arbitration Provision, including the enforceability, revocability, scope, or validity of the Arbitration Provision or any portion of the Arbitration Provision.  All such matters shall be decided by an arbitrator and not by a court.  The parties expressly agree that the arbitrator and not a court will decide any question of whether the parties agreed to arbitrate, including but not limited to any claim that all or part of this Agreement or any other part of the Terms of Service is void or voidable.
+
+In the event any portion of this Arbitration Provision is deemed unenforceable, the remainder of this Arbitration Provision will be enforceable.  If any portion of the Class Action Waiver in subsection C, below, of this Arbitration Provision is deemed to be unenforceable, you and Gitcoin agree that this Arbitration Provision will be enforced to the fullest extent permitted by law.  
+
+C. CLASS ACTION AND JURY TRIAL WAIVER
+
+This arbitration provision affects your ability to participate in class, collective or representative actions.  Both you and Gitcoin agree to bring any dispute in arbitration on an individual basis only, and not on a class, collective, or representative basis on behalf of others.  There will be no right or authority for any dispute to be brought, heard or arbitrated as a class, collective, representative or private attorney general action, or as a member in any such class, collective, representative or private attorney general proceeding (“Class Action Waiver”).  The Class Action Waiver does not prevent you from bringing a Claim in arbitration as a private attorney general solely on your own behalf and not on behalf of others.  Notwithstanding any other portion of this Arbitration Provision or the JAMS Rules, the arbitrator will have authority to hear any Claim on a class, collective, or representative basis if, only if, and only to the extent that, the arbitrator determines that the waiver of such class, collective, or representative Claim is unenforceable.  You and Gitcoin agree that you will not be retaliated against, disciplined or threatened with discipline as a result of exercising any rights under Section 7 of the National Labor Relations Act by filing or participating in a class, collective or representative action in any forum.  However, Gitcoin may lawfully seek enforcement of this arbitration provision and the Class Action Waiver under the Federal Arbitration Act and seek dismissal of such class, collective or representative actions or claims.
+
+D. RIGHT TO OPT OUT OF ARBITRATION AND CLASS ACTION/JURY TRIAL WAIVER.
+
+You may opt out of the foregoing arbitration and class action/jury trial waiver provision of this Agreement by notifying Gitcoin in writing within 30 days of the date you first registered for the Site.  To opt out, you must send a written notification to Gitcoin at Attn: Legal; Boulder CO that includes (a) your account username, (b) your name, (c) your address, (d) your telephone number, (e) your email address, and (f) a clear statement indicating that you do not wish to resolve claims through arbitration and demonstrating compliance with the 30-day time limit to opt out of the above arbitration and class action/jury trial waiver provisions. Alternatively or in addition, you may send this written notification to legalnotices@Gitcoin.co.  
+
+22. GENERAL
+
+22.1 ENTIRE AGREEMENT
+
+This Agreement, together with the other Terms of Service, sets forth the entire agreement and understanding between you and Gitcoin relating to the subject matter hereof and thereof and cancels and supersedes any prior or contemporaneous discussions, agreements, representations, warranties, and other communications between you and us, written or oral, to the extent they relate in any way to the subject matter hereof and thereof.  The section headings in the Terms of Service are included for ease of reference only and have no binding effect.  Even though Gitcoin drafted the Terms of Service, you represent that you had ample time to review and decide whether to agree to the Terms of Service.  If an ambiguity or question of intent or interpretation of the Terms of Service arises, no presumption or burden of proof will arise favoring or disfavoring you or Gitcoin because of the authorship of any provision of the Terms of Service.
+
+22.2 SIDE AGREEMENTS
+
+Notwithstanding subsection 22.1 (Entire Agreement), Clients and Freelancers may enter into any supplemental or other written agreements that they deem appropriate (e.g., confidentiality agreements, invention assignment agreements, assignment of rights, etc.).  The terms and conditions of the Terms of Service, however, will govern and supersede any term or condition in a side agreement that purports to expand Gitcoin’s obligations or restrict Gitcoin’s rights under the Terms of Service.
+
+22.3 COMPLIANCE
+
+User will not violate any applicable foreign, federal, state, or local laws or third-party rights on or related to the Site.  Without limiting the generality of the foregoing, User agrees to comply with all applicable laws and regulations, including, but not limited to, import and export control laws and third parties’ Intellectual Property Rights.
+
+22.4 MODIFICATIONS
+
+No modification or amendment to the Terms of Service will be binding upon Gitcoin unless in a written instrument signed by a duly authorized representative of Gitcoin.  For the purposes of this subsection, a written instrument will expressly exclude electronic communications, such as email and electronic notices, but will include facsimiles.  This Section 22.4 (Modifications) does not apply to amendments to the Terms of Service posted by Gitcoin to the Site from time to time.
+
+22.5 NO WAIVER
+
+The failure or delay of either party to exercise or enforce any right or claim does not constitute a waiver of such right or claim and will in no way affect that party’s right to later enforce or exercise it, unless such party issues an express written waiver, signed by a duly authorized representative of such party.
+
+22.6 ASSIGNABILITY
+
+User may not assign the Terms of Service, or any of its rights or obligations hereunder, without Gitcoin’s prior written consent in the form of a written instrument signed by a duly authorized representative of Gitcoin (and, for the purposes of this subsection, a written instrument will expressly exclude electronic communications such as email and electronic notices, but will include facsimiles).  Gitcoin may freely assign this Agreement or the other Terms of Service without User’s consent.  Any attempted assignment or transfer in violation of this subsection will be null and void.  Subject to the foregoing restrictions, the Terms of Service will inure to the benefit of the successors and permitted assigns of the parties.
+
+22.7 SEVERABILITY
+
+If and to the extent any provision of this Agreement or the other Terms of Service is held illegal, invalid, or unenforceable in whole or in part under applicable law, such provision or such portion thereof will be ineffective as to the jurisdiction in which it is illegal, invalid, or unenforceable to the extent of its illegality, invalidity, or unenforceability and will be deemed modified to the extent necessary to conform to applicable law so as to give the maximum effect to the intent of the parties.  The illegality, invalidity, or unenforceability of such provision in that jurisdiction will not in any way affect the legality, validity, or enforceability of such provision in any other jurisdiction or of any other provision in any jurisdiction.
+
+22.8 FORCE MAJEURE
+
+The parties to this Agreement will not be responsible for the failure to perform or any delay in performance of any obligation hereunder due to labor disturbances, accidents, fires, floods, telecommunications or Internet failures, strikes, wars, riots, rebellions, blockades, acts of government, governmental requirements and regulations or restrictions imposed by law or any other similar conditions beyond the reasonable control of such party.  The time for performance of such party will be extended by the period of such delay.  Irrespective of any extension of time, if an event of Force Majeure occurs and its effect continues for a period of 60 days, either the party may give to the other a 30-day notice of termination.  If, at the end of the 30 day period, the effect of the Force Majeure continues, the Agreement and the other Terms of Service will terminate, except as provided in Section 20.3.
+
+22.9 PREVAILING LANGUAGE AND LOCATION
+
+The English language version of the Terms of Service will be controlling in all respects and will prevail in case of any inconsistencies with translated versions, if any.  The Site is controlled and operated from our facilities in the United States.  Gitcoin makes no representations that the Site is appropriate or available for use in other locations.  Those who access or use the Site from other jurisdictions do so at their own volition and are entirely responsible for compliance with all applicable foreign, United States, state, and local laws and regulations, including, but not limited to, export and import regulations, including the Export Administration Regulations maintained by the United States Department of Commerce and the sanctions programs maintained by the Department of the Treasury Office of Foreign Assets Control.  You must not directly or indirectly sell, export, re-export, transfer, divert, or otherwise dispose of any software or service to any end user without obtaining any and all required authorizations from the appropriate government authorities.  You also warrant that you are not prohibited from receiving U.S. origin products, including services or software. You may not use or access the Site if you are: (a) a resident of a geographic area embargoed by the United States; (b) subject to United States economic sanctions that prohibit your use or access to the Site; or (c) a foreign person or entity blocked or denied by the United States government.  Unless otherwise explicitly stated, all materials found on the Site are solely directed to individuals, companies, or other entities located in the United States.
+
+23. DEFINITIONS
+
+“Affiliate” means any entity that, directly or indirectly, through one or more intermediaries, controls, is controlled by, or is under common control with Gitcoin.
+
+“Client” means any authorized User utilizing the Site to seek and/or obtain Freelancer Services from another User.  From time to time, Gitcoin may act as a Client, and the terms and conditions of this Agreement applicable to Clients will apply to Gitcoin when Gitcoin acts in this way.
+
+“Client Deliverables” means requests, intellectual property, and any other information or materials that a Freelancer receives from a Client to perform Freelancer Services.
+
+“Confidential Information” means Client Deliverables, Freelancer Deliverables, Work Product, and any other information provided to, or created by, a User for a Service Contract or to perform or assist in performing Freelancer Services, regardless of whether in tangible, electronic, verbal, graphic, visual, or other form.  Confidential Information does not include material or information that: (a) is generally known by third parties as a result of no act or omission of Freelancer or Client; (b) subsequent to disclosure hereunder, was lawfully received without restriction on disclosure from a third party having the right to disseminate the information; (c) was already known by User prior to receiving it from the other party and was not received from a third party in breach of that third party’s obligations of confidentiality; or (d) was independently developed by User without use of another person’s Confidential Information.
+
+“Engagement” means an engagement for Freelancer Services that a Freelancer provides to a Client under a Service Contract on the Site.
+
+
+“Fixed-Price Contract” means a Service Contract for which Client is charged a fixed fee agreed between a Client and a Freelancer, prior to the commencement of a Service Contract, for the completion of all Freelancer Services contracted by Client for such Service Contract.
+
+“Freelancer” means any authorized User utilizing the Site to advertise and provide Services to Clients.
+
+“Freelancer Deliverables” means requests, intellectual property, and any other information or materials that a Client receives from a Freelancer for a particular Service Contract.
+
+“Freelancer Fees” means: (a) for an Hourly Contract, an amount equal to the number of hours recorded by Freelancer in the Time Logs, multiplied by the hourly rate set by the Freelancer; (b) for a Fixed-Price Contract, the fixed fee agreed between a Client and a Freelancer; and (c) any bonuses or other payments made by a Client.
+
+“Freelancer Services” means all services performed for or delivered to Clients by Freelancers.
+
+“Hourly Contract” means a Service Contract for which Client is charged based on the hourly rate set by the Freelancer.
+
+“Intellectual Property Rights” means all patent rights, copyright rights, mask work rights, moral rights, rights of publicity, trademark, trade dress and service mark rights, goodwill, trade secret rights and other intellectual property rights as may now exist or hereafter come into existence, and all applications therefore and registrations, renewals and extensions thereof, under the laws of any state, country, territory or other jurisdiction.
+
+“Payment Method” means a valid credit card issued by a bank acceptable to Gitcoin, a bank account linked to your Account, a PayPal account, a debit card, or such other method of payment as Gitcoin may accept from time to time in our sole discretion.
+
+“Payroll Employee” means a Freelancer enrolled in Gitcoin Payroll, accepted for employment by a Staffing Provider, and assigned by the Staffing Provider to provide Freelancer Services to one or more Client(s).
+
+“Service Contract” means, as applicable, (a) the contractual provisions between a Client and a Freelancer governing the Freelancer Services to be performed by a Freelancer for Client for an Engagement; or (b) if you use Gitcoin Payroll, the contractual provisions between Freelancer and the Staffing Provider for the provision of services to Client, if any; and, in each case, the additional agreements referenced in Section 5.1 (Service Contracts).
+
+“Substantial Change” means a change to the terms of the Terms of Service that reduces your rights or increases your responsibilities.
+
+“Time Logs” means the report of hours recorded for a stated period by a Freelancer for the Freelancer Services performed for a Client.
+
+“Gitcoin Team Software” means the online platform accessed using Gitcoin’s downloaded team software that enables time tracking and invoicing, chat, and screenshot sharing with other Users.
+
+“User Content” means any data, feedback, content, text, photographs, images, video, music, or other information that you post to any part of the Site or provide to Gitcoin.
+
+“Work Product” means any tangible or intangible results or deliverables that Freelancer agrees to create for, or actually delivers to, Client as a result of performing the Freelancer Services, including, but not limited to, configurations, computer programs, or other information, or customized hardware, and any intellectual property developed in connection therewith.
+
+24. CONTACTING US
+
+If you have questions or need assistance, please contact Customer Support.
+
+25. OTHER LEGAL DOCUMENTS
+
+- https://gitcoin.co/legal/terms
+- https://gitcoin.co/legal/privacy
+- https://gitcoin.co/legal/cookie
+- https://gitcoin.co/legal/prirp
+- https://gitcoin.co/legal/apitos
+
+
+</pre>

@@ -26,6 +26,10 @@ window.onload = function(){
             localStorage['githubUsername'] = githubUsername;
 
             var isError = false;
+            if($('#terms:checked').length == 0){
+                _alert({ message: "Please accept the terms of service." });
+                isError = true;
+            }
             if(issueURL == ''){
                 _alert({ message: "Please enter a issue URL." });
                 isError = true;

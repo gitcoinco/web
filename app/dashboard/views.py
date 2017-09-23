@@ -120,6 +120,36 @@ def sync_web3(request):
 
     return JsonResponse(result)
 
+# LEGAL
+
+def terms(request):
+    params = {
+    }
+    return TemplateResponse(request, 'legal/terms.txt', params)
+
+
+def privacy(request):
+    params = {
+    }
+    return TemplateResponse(request, 'legal/privacy.txt', params)
+
+
+def cookie(request):
+    params = {
+    }
+    return TemplateResponse(request, 'legal/cookie.txt', params)
+
+
+def prirp(request):
+    params = {
+    }
+    return TemplateResponse(request, 'legal/prirp.txt', params)
+
+
+def apitos(request):
+    params = {
+    }
+    return TemplateResponse(request, 'legal/apitos.txt', params)
 
 
 
