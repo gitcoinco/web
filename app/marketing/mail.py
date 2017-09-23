@@ -92,7 +92,12 @@ def bounty_expire_warning(bounty, to_emails=[]):
     if not bounty or not bounty.value_in_usdt:
         return
 
-    subject = "😕 Bounty Expiring Soon ... 😕"
+    unit = 'days'
+    num = int(round((bounty.expires_date - timezone.now()).days, 0))
+    if num == 0:
+        unit = 'hours'
+        num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
+    subject = "😕 Your Bounty Expires In {} {} ... 😕".format(days, unit)
 
     from_email = settings.CONTACT_EMAIL
     html, text = render_bounty_expire_warning(bounty)

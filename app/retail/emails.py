@@ -70,11 +70,16 @@ def render_new_bounty_rejection(bounty):
 
 def render_bounty_expire_warning(bounty):
 
-    days = int(round((bounty.expires_date - timezone.now()).days, 0))
+    unit = 'days'
+    num = int(round((bounty.expires_date - timezone.now()).days, 0))
+    if num == 0:
+        unit = 'hours'
+        num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
 
     params = {
         'bounty': bounty,
-        'days': days,
+        'num': num,
+        'unit': unit,
     }
 
     response_html = premailer.transform(render_to_string("emails/new_bounty_expire_warning.html", params))

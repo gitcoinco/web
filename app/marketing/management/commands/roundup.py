@@ -1,12 +1,12 @@
 from django.core.management.base import BaseCommand
-from marketing.mail import *
-from django.conf import settings
 from dashboard.models import Bounty
+from django.utils import timezone
+from marketing.mail import weekly_roundup
 
 
 class Command(BaseCommand):
 
-    help = 'sends a test email'
+    help = 'the weekly roundup emails'
 
     def handle(self, *args, **options):
         days_back = 90
@@ -20,6 +20,6 @@ class Command(BaseCommand):
         email_list = set(email_list)
 
         #TODO: formalize the list management into its own database table, completely with ability to manage subscriptions
-        
+
         for to_email in email_list:
             weekly_roundup([to_email])
