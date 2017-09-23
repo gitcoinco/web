@@ -50,19 +50,8 @@
                                 </select>
                             </div>
                             <div class="w-100 mt-2">
-                                <label for=expirationTimeDelta>Expires in:</label>
-                                    <select class="w-100 btn btn-sm btn-outline-dark" name=expirationTimeDelta >
-                                        <option value="86400">1 day</option>
-                                        <option value="259200">3 days</option>
-                                        <option value="604800">1 week</option>
-                                        <option value="1209600">2 weeks</option>
-                                        <option value="2592000">1 month</option>
-                                        <option value="7776000">3 months</option>
-                                        <option value="15552000">6 months</option>
-                                        <option value="31536000" selected="">1 year</option>
-                                        <option value="9999999999">Never</option>
-                                    </select>
-                                
+                                <label for=notificationEmail>Notification Email:</label>
+                                <input name='notificationEmail' id='notificationEmail'  class="w-100 gc-round-text-input" type="text" placeholder="you@domain.co (optional, but recommended for notifications)" value="{{notificationEmail}}" />
                             </div>
                             <div id="advancedLink" class="mt-2">
                                 <a href="#">Advanced ⬇ </a>
@@ -77,12 +66,22 @@
                                     <input name='keywords' id='keywords'  class="w-100 gc-round-text-input" type="text" placeholder="python, solidity, html, javascript, react (optional)" value="{{keywords}}" />
                                 </div>
                                 <div class="w-100 mt-2">
-                                    <label for=githubUsername>Github Username:</label>
-                                    <input name='githubUsername' id='githubUsername'  class="w-100 gc-round-text-input" type="text" placeholder="@you (optional)" value="{{githubUsername}}" />
+                                    <label for=expirationTimeDelta>Expires in:</label>
+                                        <select class="w-100 btn btn-sm btn-outline-dark" name=expirationTimeDelta >
+                                            <option value="86400">1 day</option>
+                                            <option value="259200">3 days</option>
+                                            <option value="604800">1 week</option>
+                                            <option value="1209600">2 weeks</option>
+                                            <option value="2592000">1 month</option>
+                                            <option value="7776000">3 months</option>
+                                            <option value="15552000">6 months</option>
+                                            <option value="31536000" selected="">1 year</option>
+                                            <option value="9999999999">Never</option>
+                                        </select>                            
                                 </div>
                                 <div class="w-100 mt-2">
-                                    <label for=notificationEmail>Notification Email:</label>
-                                    <input name='notificationEmail' id='notificationEmail'  class="w-100 gc-round-text-input" type="text" placeholder="you@domain.co (optional)" value="{{notificationEmail}}" />
+                                    <label for=githubUsername>Github Username:</label>
+                                    <input name='githubUsername' id='githubUsername'  class="w-100 gc-round-text-input" type="text" placeholder="@you (optional)" value="{{githubUsername}}" />
                                 </div>
                                 <div class="w-100 mt-2 d-flex ">
                                     <div class="w-50 mt-2 mr-3 d-flex flex-column">
