@@ -24,6 +24,26 @@ Technically, the system is architected:
 * __Web 3 Bridge__ This is the bridge between web3 and the rest of the application.  Mostly built in javascript(web3js) and python(web3py).
 * __Brochureware__ Just a nice little landing page telling folks what the Gitcoin project is.
 
+# Legal
+
+'''
+    Copyright (C) 2017 Gitcoin Core 
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+'''
+
 
 
 <!-- Google Analytics -->

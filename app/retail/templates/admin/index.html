@@ -1,4 +1,22 @@
 {% extends "admin/base_site.html" %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core 
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+
 {% load i18n admin_static %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
@@ -51,11 +69,10 @@
 
 {% block sidebar %}
 
-<div id="content-related">
-    <div class="module" id="custom-links">
+<div id="links-related">
+    <div class="module" id="-some-custom-links">
         <h2>{% trans 'Links' %}</h2>
         <ul>
-            <li><a href="{% url 'admin_email_template' %}">Admin Email Template</a></li>
         </ul>
     </div>
 
