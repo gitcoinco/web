@@ -48,6 +48,7 @@ var link_ize = function(key, val, result){
 var rows = [
     'title',
     'web3_created',
+    'status',
     'github_url',
     'value_in_token',
     'value_in_eth',
@@ -71,7 +72,6 @@ var heads = {
 }
 var display_name = {
     'title': "title",
-    'web3_created': "created",
     'github_url': "Issue URL",
     'value_in_token': "Amount",
     'bounty_owner_address': "Address",
@@ -101,8 +101,21 @@ var callbacks = {
     'claimee_github_username': github_ize,
     'bounty_owner_github_username': github_ize,
     'value_in_eth': function(key, val, result){
+        if(result['token_name'] == 'ETH'){
+            return [null, null];
+        }
         return [ "Amount (ETH)" , Math.round((parseInt(val) / 10**18) * 1000) / 1000];
     },
+    'web3_created': function(key, val, result){
+        return [ "created" , timeDifference(new Date(), new Date(val))];
+    },
+    'expires_date': function(key, val, result){
+        expires_date = new Date(val);
+        now = new Date();
+        var response = timeDifference(now, expires_date);
+        return [ "expires" , response];
+    },
+    
 }
 
 var pendingChangesWarning = function(issueURL, last_modified_time_remote){
@@ -173,16 +186,14 @@ window.addEventListener('load', function() {
                     $('.title').html("Bounty Details: " + result['title']);
 
                     //nav
-                    var status = '';
-                    if(result['claimeee_address'] == "0x0000000000000000000000000000000000000000"){
+                    var status = result['status'];
+                    if(status == 'submitted'){
                        $('.bounty_nav li.submit').addClass('active');
-                       status = 'submitted';
-                    } else if(!result['is_open']){
+                    } else if(status == 'fulfilled'){
                        $('.bounty_nav li.accept').addClass('active');
-                       status = 'fulfilled';
-                    } else {
+                    } else if(status == 'claimed'){
                        $('.bounty_nav li.fulfill').addClass('active');
-                       status = 'claimed';
+                    } else {
                     }
 
                     //insert table onto page

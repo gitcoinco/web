@@ -1,15 +1,171 @@
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
+from django.conf import settings
+from django.utils import timezone
 import premailer
+
+### RENDERERS
+
+
+def render_new_bounty(bounty):
+
+    params = {
+        'bounty': bounty,
+    }
+
+    response_html = premailer.transform(render_to_string("emails/new_bounty.html", params))
+    response_txt = render_to_string("emails/new_bounty.txt", params)
+
+    return response_html, response_txt
+
+
+def render_new_bounty(bounty):
+
+    params = {
+        'bounty': bounty,
+    }
+
+    response_html = premailer.transform(render_to_string("emails/new_bounty.html", params))
+    response_txt = render_to_string("emails/new_bounty.txt", params)
+
+    return response_html, response_txt
+
+
+def render_new_bounty_claim(bounty):
+
+    params = {
+        'bounty': bounty,
+    }
+
+    response_html = premailer.transform(render_to_string("emails/new_bounty_claim.html", params))
+    response_txt = render_to_string("emails/new_bounty_claim.txt", params)
+
+    return response_html, response_txt
+
+
+def render_new_bounty_acceptance(bounty):
+
+    params = {
+        'bounty': bounty,
+    }
+
+    response_html = premailer.transform(render_to_string("emails/new_bounty_acceptance.html", params))
+    response_txt = render_to_string("emails/new_bounty_acceptance.txt", params)
+
+    return response_html, response_txt
+
+
+def render_new_bounty_rejection(bounty):
+
+    params = {
+        'bounty': bounty,
+    }
+
+    response_html = premailer.transform(render_to_string("emails/new_bounty_rejection.html", params))
+    response_txt = render_to_string("emails/new_bounty_rejection.txt", params)
+
+    return response_html, response_txt
+
+
+def render_bounty_expire_warning(bounty):
+
+    days = int(round((bounty.expires_date - timezone.now()).days, 0))
+
+    params = {
+        'bounty': bounty,
+        'days': days,
+    }
+
+    response_html = premailer.transform(render_to_string("emails/new_bounty_expire_warning.html", params))
+    response_txt = render_to_string("emails/new_bounty_expire_warning.txt", params)
+
+    return response_html, response_txt
+
+
+def roundup_bounties(start_date, end_date):
+    from dashboard.models import Bounty
+
+    bounties = Bounty.objects.all()
+    if not settings.DEBUG:
+        bounties = bounties.filter(
+            web3_created__gt=start_date,
+            web3_created__lt=start_date,
+            expires_date__gt=end_date + timezone.timedelta(days=3),
+        )
+    bounties = bounties.filter(
+        is_open=True,
+        ).order_by('-_val_usd_db')[:5]
+
+    return bounties
+
+
+def render_new_bounty_roundup(bounties):
+
+    params = {
+        'bounties': bounties,
+        'override_back_color': '#0fce7c',
+        'invert_footer': True,
+    }
+
+    response_html = premailer.transform(render_to_string("emails/bounty_roundup.html", params))
+    response_txt = render_to_string("emails/bounty_roundup.txt", params)
+
+    return response_html, response_txt
+
+
+### DJANGO REQUESTS
 
 
 @staff_member_required
-def template(request):
+def new_bounty(request):
+    from dashboard.models import Bounty
 
-    params = {}
+    response_html, response_txt = render_new_bounty(Bounty.objects.all().last())
 
-    response_html = premailer.transform(render_to_string("emails/template.html", params, request=request))
-    response_txt = render_to_string("emails/template.txt", params, request=request)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_bounty_claim(request):
+    from dashboard.models import Bounty
+
+    response_html, response_txt = render_new_bounty_claim(Bounty.objects.all().last())
+
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_bounty_rejection(request):
+    from dashboard.models import Bounty
+
+    response_html, response_txt = render_new_bounty_rejection(Bounty.objects.all().last())
+
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_bounty_acceptance(request):
+    from dashboard.models import Bounty
+
+    response_html, response_txt = render_new_bounty_acceptance(Bounty.objects.all().last())
+
+    return HttpResponse(response_html)
+
+@staff_member_required
+def bounty_expire_warning(request):
+    from dashboard.models import Bounty
+
+    response_html, response_txt = render_bounty_expire_warning(Bounty.objects.all().last())
+
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def roundup(request):
+    from dashboard.models import Bounty
+
+    bounties = roundup_bounties(timezone.now()-timezone.timedelta(weeks=1), timezone.now())
+    response_html, response_txt = render_new_bounty_roundup(bounties)
 
     return HttpResponse(response_html)

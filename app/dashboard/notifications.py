@@ -3,6 +3,7 @@ import twitter
 import requests
 from urlparse import urlparse
 from app.github import post_issue_comment
+from marketing.mail import new_bounty_claim, new_bounty_rejection, new_bounty_acceptance
 
 
 def maybe_market_to_twitter(bounty, event_name, txid):
@@ -86,3 +87,33 @@ def maybe_market_to_github(bounty, event_name, txid):
         return False
 
     return True
+
+
+def maybe_market_to_email(b, event_name, txid):
+
+    #TODO: allow people to subscribe to new_bounty notifications
+    #new_bounty(b, [to_email])
+
+    to_emails = []
+
+    if event_name == 'new_claim':
+        try:
+            to_emails = [b.bounty_owner_email]
+            new_bounty_claim(b, to_emails)
+        except Exception as e:
+            print(e)
+    if event_name == 'approved_claim':
+        try:
+            to_emails = [b.bounty_owner_email, b.claimee_email]
+            new_bounty_rejection(b, to_emails)
+        except Exception as e:
+            print(e)
+    if event_name == 'rejected_claim':
+        try:
+            to_emails = [b.bounty_owner_email, b.claimee_email]
+            new_bounty_acceptance(b, to_emails)
+        except Exception as e:
+            print(e)
+
+    return len(to_emails)
+

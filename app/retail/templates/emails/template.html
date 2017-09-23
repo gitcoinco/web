@@ -2,16 +2,19 @@
 
     @font-face {
         font-family: "futura-pt";
-        src: url("https://gitcoin.co/static/fonts/futura/font4.ttf") /* TTF file for CSS3 browsers */
+        src: url("http://localhost:8080/static/v2/fonts/futura/font4.ttf") /* TTF file for CSS3 browsers */
     }
     body {
       font-family: "futura-pt", Futura !important;
+      margin: 0px;
+      padding: 0px;
     }
 
     h1, h2, h3, h4, h5, h6,
     .h1, .h2, .h3, .h4, .h5, .h6 {
       letter-spacing: 0.15em;
       text-transform: uppercase;
+      font-weight: lighter;
     }
 
     h4, .h4 {
@@ -20,7 +23,11 @@
     }
 
     #container_table{
-        background-color: lightgray;
+        {% if override_back_color %}
+            background-color: {{override_back_color}};
+        {% else %}
+            background-color: #eff4ee;
+        {% endif %}
         margin:0; 
         padding:0; 
         line-height: 100% ; 
@@ -32,15 +39,15 @@
         padding-bottom: 50px;
     }
     #container_table .body table{
+        border: 5px white solid;
         background-color: white;
     }
 
     .primary_content{
-
+        padding-top: 20px;
     }
 
     #footer{
-        background: #ffffff; 
         height: 60px;
     }
 
@@ -54,17 +61,61 @@
         text-align: right;
     }
 
-    #footer #legal {
+    #footer #legal_contact {
         text-align: left;
+        padding-left: 5px;
     }
 
-    #footer #legal p{
+    #footer #legal_contact p{
         color: black; 
         margin-left: 30px;
     }
 
+    #social img{
+        {% if invert_footer %}
+        filter: invert(100%);
+        {% endif %}
+    }
+
     #logo{
         text-align: center;
+    }
+    #social {
+        height: 100px;
+        margin-top: 10px;
+        margin-bottom: 50px;
+    }
+    #social td {
+
+    }
+    tr.even{
+        background-color: #eee
+    }
+    tr.odd{
+        background-color: white;
+    }
+    a{
+        color: #15003e;
+    }
+    p, a, span{
+        font-size: 12px;
+        letter-spacing: 0.1em;
+        font-weight: lighter;
+        max-width: 550px;
+        line-height: 18px;
+    }
+
+    a.button{
+        color: #fff;
+        background-color: #0d023b;
+        border-color: #0d023b;        
+        padding: 3px 10px;
+        font-size: 14px;
+        line-height: 1.5;
+        border-radius: 1.5rem;
+        font-weight: 100;
+        text-align: center;    
+        text-decoration: none;
     }
 
     @media only screen and (max-device-width: 480px) {
@@ -77,33 +128,12 @@
 
 <body>
 <table cellspacing="0" cellpadding="0" border="0" id="container_table">
-    <tr id="social">
-        <td>
-            <table cellspacing="0" cellpadding="0" border="0" align="center">
-                <td align="center" width="70" valign="top" class="mainContent">
-                    <a href="https://www.facebook.com//">
-                        <img src="FACEBOOKLOGO">
-                    </a>
-                </td>
-                <td align="center" width="70" valign="top" class="mainContent">
-                    <a href="https://www.facebook.com//">
-                        <img src="FACEBOOKLOGO">
-                    </a>
-                </td>
-                <td align="center" width="70" valign="top" class="mainContent">
-                    <a href="https://www.facebook.com//">
-                        <img src="FACEBOOKLOGO">
-                    </a>
-                </td>
-            </table>
-        </td>
-    </tr>
     <tr>
         <td valign="top" class="body"> 
             <table cellpadding="0" cellspacing="0" border="0" align="center" id="email_header">
                 <tr>
                     <td width="600" valign="middle" id="logo">
-                        <img src="/static/v2/images/logo.png" alt="Gitcoin" title="Gitcoin">
+                        <img src="/static/v2/images/emailhead.png" alt="Gitcoin" title="Gitcoin">
                     </td>
                 </tr>
             </table>
@@ -113,24 +143,21 @@
 
                     {% block content %}
                     {% endblock %}
-
-                    <BR>
-                    <h1>I am a template</h1>
-                    <p> body</p>
-
-
                     </td>
                 </tr>
             </table>
             <table cellpadding="0" cellspacing="0" border="0" align="center" id="footer" style="">
                 <tr>
-                    <td id="legal" width="300" valign="middle">
+                    <td id="legal_contact" width="300" valign="middle">
                         <a href="https://gitcoin.co/terms">
-                            <span>Terms & Conditions</span>
-                        </a>
+                            <span>Terms &amp; Conditions</span>
+                        </a> | 
+                        <a href="mailto:unsubscribe@gitcoin.co?subject=Unsubscribe&body=Please unsubscribe me.">
+                            <span>Unsubscribe</span>
+                        </a> | 
                         <a href="mailto:support@gitcoin.co">
                             <span>Contact</span>
-                        </a>
+                        </a> 
                     </td>
                     <td width="300" valign="middle" id="copyright">
                         <p>
@@ -140,6 +167,37 @@
                 </tr>
             </table>
 
+        </td>
+    </tr>
+    <tr id="social">
+        <td>
+            <table cellspacing="0" cellpadding="0" border="0" align="center">
+                <td align="center" width="45" valign="top" class="mainContent">
+                    <a href="https://www.medium.com/gitcoin">
+                        <img height="30" width="30" src="http://localhost:8080/static/v2/images/social/medium.png">
+                    </a>
+                </td>
+                <td align="center" width="45" valign="top" class="mainContent">
+                    <a href="https://www.facebook.com/GetGitcoin">
+                        <img height="30" width="30" src="http://localhost:8080/static/v2/images/social/facebook.png">
+                    </a>
+                </td>
+                <td align="center" width="45" valign="top" class="mainContent">
+                    <a href="https://www.twitter.com/GetGitcoin">
+                        <img height="30" width="30" src="http://localhost:8080/static/v2/images/social/twitter.png">
+                    </a>
+                </td>
+                <td align="center" width="45" valign="top" class="mainContent">
+                    <a href="https://reddit.com/r/gitcoincommunity">
+                        <img height="30" width="30" src="http://localhost:8080/static/v2/images/social/reddit-light.png">
+                    </a>
+                </td>
+                <td align="center" width="45" valign="top" class="mainContent">
+                    <a href="https://gitcoincommunity.herokuapp.com">
+                        <img height="30" width="30" src="http://localhost:8080/static/v2/images/social/slack.png">
+                    </a>
+                </td>
+            </table>
         </td>
     </tr>
 </table>  

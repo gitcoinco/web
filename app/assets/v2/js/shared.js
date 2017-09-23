@@ -80,6 +80,10 @@ function getParam(parameterName) {
 
 function timeDifference(current, previous) {
 
+    if(current<previous){
+        return "in " + timeDifference(previous, current).replace(" ago","")
+    }
+
     var msPerMinute = 60 * 1000;
     var msPerHour = msPerMinute * 60;
     var msPerDay = msPerHour * 24;

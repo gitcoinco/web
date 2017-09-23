@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import datetime
 from dashboard.models import Bounty, BountySyncRequest
-from dashboard.marketing import maybe_market_to_twitter, maybe_market_to_slack, maybe_market_to_github
+from dashboard.notifications import maybe_market_to_twitter, maybe_market_to_slack, maybe_market_to_github, maybe_market_to_email
 from django.http import JsonResponse
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
@@ -206,13 +206,13 @@ def process_bounty_changes(old_bounty, new_bounty, txid):
     did_post_to_twitter = maybe_market_to_twitter(new_bounty, event_name, txid)
     did_post_to_slack = maybe_market_to_slack(new_bounty, event_name, txid)
     did_post_to_github = maybe_market_to_github(new_bounty, event_name, txid)
-    did_post_to_facebook = False #TODO
-    did_post_to_email_notifiactions = False #TODO
+    did_post_to_email = maybe_market_to_email(new_bounty, event_name, txid)
     print("============ done posting ==============")
 
     # what happened
     what_happened = {
         'did_bsr': did_bsr,
+        'did_post_to_email': did_post_to_email,
         'did_post_to_github': did_post_to_github,
         'did_post_to_slack': did_post_to_slack,
         'did_post_to_twitter': did_post_to_twitter,

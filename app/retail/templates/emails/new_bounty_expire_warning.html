@@ -1,0 +1,34 @@
+{% extends 'emails/template.html' %}
+{% load humanize %} 
+
+{% block content %}
+
+<h1>😕 Bounty Expiring ... 😕</h1>
+
+
+<p>
+    Heads up! The bounty that you posted (below) is expiring in {{days}} days.  
+
+    {% if bounty.status == 'claimed' %}
+        There is a currently pending claim agains this bounty.  Please make sure you process it before it expires!
+    {% endif %}
+
+</p>
+
+<br>
+
+{% include 'emails/bounty.html' with bounty=bounty %}
+
+<p>
+You are receiving this email because your email address is on the bounty notification list for this bounty. 
+</p>
+
+<p>
+    Keep Pushing Open Source Forward,
+    <br>
+    -- Gitcoin Core
+</p>
+
+
+
+{% endblock %}

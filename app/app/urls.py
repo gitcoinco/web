@@ -58,7 +58,12 @@ urlpatterns = [
 
     # admin views
     url(r'^_administration/?', admin.site.urls, name='admin'),
-    url(r'^_administration/email/template$', retail.emails.template, name='admin_email_template'),
+    url(r'^_administration/email/new_bounty$', retail.emails.new_bounty, name='new_bounty'),
+    url(r'^_administration/email/roundup$', retail.emails.roundup, name='roundup'),
+    url(r'^_administration/email/new_bounty_claim$', retail.emails.new_bounty_claim, name='new_bounty_claim'),
+    url(r'^_administration/email/new_bounty_rejection$', retail.emails.new_bounty_rejection, name='new_bounty_rejection'),
+    url(r'^_administration/email/new_bounty_acceptance$', retail.emails.new_bounty_acceptance, name='new_bounty_acceptance'),
+    url(r'^_administration/email/bounty_expire_warning$', retail.emails.bounty_expire_warning, name='bounty_expire_warning'),
 
 ]
 

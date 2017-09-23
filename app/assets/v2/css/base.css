@@ -447,6 +447,9 @@ body.bounty_details #primary_view .value{
 }
 
 @media (max-width: 1025px) {
+    .interior .col-3{
+        display: none;
+    }
     .howworks iframe{
         width: 460px; 
         height: 258px;
@@ -582,9 +585,6 @@ body.bounty_details #primary_view .value{
         font-size: .8rem;
     }
     .search_bar span{
-        display: none;
-    }
-    .interior .col-3{
         display: none;
     }
     .interior .body{

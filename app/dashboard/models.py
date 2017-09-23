@@ -8,6 +8,7 @@ from economy.models import SuperModel
 from economy.utils import convert_amount
 from django.contrib.postgres.fields import JSONField
 from dashboard.tokens import addr_to_token
+from django.utils import timezone
 
 
 class Bounty(SuperModel):
@@ -51,6 +52,7 @@ class Bounty(SuperModel):
     metadata = JSONField(default={})
     claimee_metadata = JSONField(default={})
     current_bounty = models.BooleanField(default=False) # whether this bounty is the most current revision one or not
+    _val_usd_db = models.DecimalField(default=10, decimal_places=2, max_digits=20)
 
     def __str__(self):
         return "{}{} {} {} {}".format( "(CURRENT) " if self.current_bounty else "" , self.title, self.value_in_token, self.token_name, self.web3_created)
@@ -62,6 +64,37 @@ class Bounty(SuperModel):
         token = addr_to_token(self.token_address)
         decimals = token['decimals']
         return self.value_in_token / 10**decimals
+
+    @property
+    def title_or_desc(self):
+        return self.title if self.title else self.github_url
+
+    @property
+    def absolute_url(self):
+        return self.get_absolute_url()
+
+    @property
+    def keywords(self):
+        return self.metadata.get('issueKeywords',False)
+
+    @property
+    def status(self):
+        try:
+            if not self.is_open:
+                return 'fulfilled'
+            if timezone.now() > self.expires_date:
+                return 'expired'
+            if self.claimeee_address == '0x0000000000000000000000000000000000000000':
+                return 'submitted'
+            if self.claimeee_address != '0x0000000000000000000000000000000000000000':
+                return 'claimed'
+            return 'unknown'
+        except Exception as e:
+            return 'unknown'
+
+    @property
+    def value_true(self):
+        return self.get_natural_value()
 
     @property
     def value_in_eth(self):

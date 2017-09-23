@@ -1,0 +1,32 @@
+{% extends 'emails/template.html' %}
+{% load humanize %} 
+
+{% block content %}
+
+<h1>⚡️ Bounties this week ⚡</h1>
+
+
+<p>
+    Hot off the press, new Open Source Work is available in the <a href="https://gitcoin.co/explorer">Bounty Explorer</a>:
+</p>
+
+<br>
+
+{% for bounty in bounties %}
+    {% include 'emails/bounty.html' with bounty=bounty small=1 %}
+    <hr>
+{% endfor %}
+
+<p>
+    You are receiving this email because your email address is on the bounty notification list. 
+</p>
+
+<p>
+    Keep Pushing Open Source Forward,
+    <br>
+    -- Gitcoin Core
+</p>
+
+
+
+{% endblock %}

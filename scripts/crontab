@@ -15,3 +15,4 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 
 ## GITCOIN MARKETING 
 15 12,15 * * * cd gitcoin/coin; bash scripts/run_management_command.bash post_quote  >> /var/log/gitcoin/post_quote.log  2>&1
+30 12 * * 2 cd gitcoin/coin; bash scripts/run_management_command.bash roundup  >> /var/log/gitcoin/roundup.log  2>&1

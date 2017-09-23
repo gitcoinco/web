@@ -10,6 +10,7 @@ ALLOWED_HOSTS = [
 ]
 TWITTER_USERNAME = 'TODO'
 CONTACT_EMAIL = 'TODO'
+BCC_EMAIL = 'TODO'
 
 # -------------------------------------------------------
 

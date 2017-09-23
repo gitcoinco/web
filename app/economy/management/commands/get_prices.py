@@ -1,3 +1,4 @@
+from dashboard.models import Bounty
 from django.core.management.base import BaseCommand
 from economy.models import ConversionRate
 import requests
@@ -50,5 +51,10 @@ class Command(BaseCommand):
                 print('{}=>{}:{}'.format(from_currency, to_currency, to_amount))
             except Exception as e:
                 print(e)
+
+        for b in Bounty.objects.all():
+            print('refreshed {}'.format(b.pk))
+            b._val_usd_db = b.value_in_usdt
+            b.save()
 
 
