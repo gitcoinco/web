@@ -91,6 +91,10 @@ var refreshBounties = function(){
 };
 
 window.addEventListener('load', function() {
+    var q = getParam('q');
+    if(q){
+        $("#keywords").val(q);
+    }
     refreshBounties();
 });
 

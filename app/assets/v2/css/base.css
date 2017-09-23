@@ -446,6 +446,64 @@ body.bounty_details #primary_view .value{
     width: 69%;
 }
 
+#gitcoin_buttons #example img{
+    width: 500px;
+    max-width: 100%
+}
+
+#gitcoin_buttons .flex-column{
+    border-radius: 5px;
+
+}
+#gitcoin_buttons .btn.delta_1{
+    background-color: #f9006c;
+    border: 1px solid white;
+}
+#gitcoin_buttons .btn.delta_1 span{
+    color: #f9006c;
+    background-color: white;
+}
+
+#gitcoin_buttons .btn.delta_2{
+    background-color: #3e00ff;
+    border: 1px solid white;
+}
+#gitcoin_buttons .btn.delta_2 span{
+    color: #3e00ff;
+    background-color: white;
+}
+
+#gitcoin_buttons .btn.delta_3{
+    background-color: white;
+    border: 1px solid black;
+    color: black;
+}
+#gitcoin_buttons .btn.delta_3 img{
+    filter: invert(100%);
+}
+#gitcoin_buttons .btn.delta_3 span{
+    color: white;
+    background-color: black;
+}
+
+#gitcoin_buttons .btn{
+    font-weight: bold;
+    margin: 10px;
+}
+#gitcoin_buttons .btn img {
+    width: 24px;
+    height: 24px;
+}
+#gitcoin_buttons .btn span {
+    font-size: 10px;
+    text-transform: uppercase;;
+    border-radius: 4px;
+    color: #100136;
+    padding: 2px 10px;
+    background-color: white;
+    margin-left: 5px;
+}
+
 @media (max-width: 1025px) {
     .interior .col-3{
         display: none;
