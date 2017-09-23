@@ -5,8 +5,9 @@ from django.db import models
 
 # Create your models here.
 from economy.models import SuperModel
+from economy.utils import convert_amount
 from django.contrib.postgres.fields import JSONField
-from django.contrib.humanize.templatetags.humanize import naturaltime
+from dashboard.tokens import addr_to_token
 
 
 class Bounty(SuperModel):
@@ -54,9 +55,37 @@ class Bounty(SuperModel):
     def __str__(self):
         return "{}{} {} {} {}".format( "(CURRENT) " if self.current_bounty else "" , self.title, self.value_in_token, self.token_name, self.web3_created)
 
+    def get_absolute_url(self):
+        return "{}bounty/details?url={}".format(settings.BASE_URL, self.github_url)
+
+    def get_natural_value(self):
+        token = addr_to_token(self.token_address)
+        decimals = token['decimals']
+        return self.value_in_token / 10**decimals
+
+    @property
+    def value_in_eth(self):
+        if self.token_name == 'ETH':
+            return self.value_in_token
+        try:
+            return convert_amount(self.value_in_token, self.token_name, 'ETH')
+        except:
+            return None
+
+    @property
+    def value_in_usdt(self):
+        if self.token_name == 'USDT':
+            return self.value_in_token
+        try:
+            return round(convert_amount(self.value_in_eth, 'ETH', 'USDT') / 10**18, 2)
+        except:
+            return None
+
+
 class BountySyncRequest(SuperModel):
     github_url = models.URLField()
     processed = models.BooleanField()
+
 
 class Subscription(SuperModel):
     email = models.EmailField(max_length=255)

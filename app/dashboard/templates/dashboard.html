@@ -57,7 +57,16 @@
                 </div>
             </div>
             <div class="col-1 d-flex align-items-center">
-                <a class="btn btn-sm btn-darkBlue font-smaller-2" role="button" href="#">[[:rounded_amount]] <span class="font-smaller-4">[[:token_name]]</span></a>
+                <a class="btn btn-sm btn-darkBlue font-smaller-2" role="button" href="#">
+                    [[:rounded_amount]] <span class="font-smaller-4">[[:token_name]]</span>
+                </a>
+            </div>
+            <div class="col-1 d-flex align-items-center">
+                [[if value_in_usdt]]
+                    <a class="btn btn-sm btn-darkBlue font-smaller-2" role="button" href="#">
+                            [[:value_in_usdt]] <span class="font-smaller-4">USDT</span>
+                    </a>
+                [[/if]]
             </div>
         </div>
 

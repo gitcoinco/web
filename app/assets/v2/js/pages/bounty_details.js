@@ -50,6 +50,8 @@ var rows = [
     'web3_created',
     'github_url',
     'value_in_token',
+    'value_in_eth',
+    'value_in_usdt',
     'bounty_owner_address',
     'bounty_owner_email',
     'bounty_owner_github_username',
@@ -82,6 +84,7 @@ var display_name = {
     'project_length': "Project Length",
     'bounty_type': "Bounty Type",
     'expires_date': "Expires",
+    'value_in_usdt' : "Amount (USDT)",
 };
 var callbacks = {
     'github_url': link_ize,
@@ -97,6 +100,9 @@ var callbacks = {
     'bounty_type': unknown_if_empty,
     'claimee_github_username': github_ize,
     'bounty_owner_github_username': github_ize,
+    'value_in_eth': function(key, val, result){
+        return [ "Amount (ETH)" , Math.round((parseInt(val) / 10**18) * 1000) / 1000];
+    },
 }
 
 var pendingChangesWarning = function(issueURL, last_modified_time_remote){

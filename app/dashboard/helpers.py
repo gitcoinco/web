@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import datetime
 from dashboard.models import Bounty, BountySyncRequest
+from dashboard.marketing import maybe_market_to_twitter, maybe_market_to_slack, maybe_market_to_github
 from django.http import JsonResponse
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
@@ -8,6 +9,7 @@ from django.db import transaction
 from ratelimit.decorators import ratelimit
 import json
 import requests
+import pprint
 
 # gets title of remote html doc (github issue)
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
@@ -176,24 +178,46 @@ def syncBountywithWeb3(bountyContract, url):
     return (didChange, old_bounties.first(), new_bounty)
 
 
-def process_bounty_changes(old_bounty, new_bounty):
+def process_bounty_changes(old_bounty, new_bounty, txid):
 
     # process bounty sync requests
+    did_bsr = False
     for bsr in BountySyncRequest.objects.filter(processed=False, github_url=new_bounty.github_url):
+        did_bsr = True
         bsr.processed = True;
         bsr.save()
 
     # new bounty
     null_address = '0x0000000000000000000000000000000000000000'
     if (old_bounty is None and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
-        print('new bounty')
+        event_name = 'new_bounty'
     elif old_bounty.claimeee_address == null_address and new_bounty.claimeee_address != null_address:
-        print("new claim")
+        event_name = 'new_claim'
     elif old_bounty.is_open and not new_bounty.is_open:
-        print("approved claim")
+        event_name = 'approved_claim'
     elif old_bounty.claimeee_address != null_address and new_bounty.claimeee_address == null_address:
-        print("rejected claim")
+        event_name = 'rejected_claim'
     else:
-        print('some unknown event')
+        event_name = 'unknown_event'
+    print(event_name)
 
-    print("TODO: process bounty changes")
+    # marketing
+    print("============ posting ==============")
+    did_post_to_twitter = maybe_market_to_twitter(new_bounty, event_name, txid)
+    did_post_to_slack = maybe_market_to_slack(new_bounty, event_name, txid)
+    did_post_to_github = maybe_market_to_github(new_bounty, event_name, txid)
+    did_post_to_facebook = False #TODO
+    did_post_to_email_notifiactions = False #TODO
+    print("============ done posting ==============")
+
+    # what happened
+    what_happened = {
+        'did_bsr': did_bsr,
+        'did_post_to_github': did_post_to_github,
+        'did_post_to_slack': did_post_to_slack,
+        'did_post_to_twitter': did_post_to_twitter,
+    }
+
+    print("changes processed: ")
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(what_happened)

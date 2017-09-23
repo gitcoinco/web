@@ -14,7 +14,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # setup
-
         urls_to_check = BountySyncRequest.objects.filter(processed=False, created_on__gt=(timezone.now() - timezone.timedelta(hours=2))).values_list('github_url',flat=True)
 
         print("****************************************")
@@ -41,26 +40,23 @@ class Command(BaseCommand):
                 "toBlock": "latest",
                 "address": settings.BOUNTY_CONTRACT_ADDRESS,
             })
+            bountyContract = getBountyContract(web3)
 
             log_entries = _filter.get(False)
             print('got {} log entrires from web3'.format(len(log_entries)))
 
             for entry in log_entries:
+                txid = entry['transactionHash']
                 result = web3.toAscii(entry['data']);
                 result = result[result.find('http'):]
                 url = result[:result.find('\x00')]
                 url = normalizeURL(url)
-                urls.append(url)
 
-            print('got {} url entrires from web3'.format(len(urls)))
-
-            bountyContract = getBountyContract(web3)
-            for url in set(urls):
                 didChange, old_bounty, new_bounty = syncBountywithWeb3(bountyContract, url)
                 print("{} changed, {}".format(didChange, url))
-                if didChange: 
+                if didChange:
                     print("- processing changes");
-                    process_bounty_changes(old_bounty, new_bounty)
+                    process_bounty_changes(old_bounty, new_bounty, txid)
 
 
         web3.eth.filter('pending').watch(new_transaction_callback)

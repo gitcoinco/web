@@ -1,13 +1,15 @@
 from django.conf import settings
 import json
 from web3 import Web3
-from web3.providers.rpc import RPCProvider, KeepAliveRPCProvider
-from web3.providers.tester import TestRPCProvider
+from web3.providers.rpc import KeepAliveRPCProvider, HTTPProvider
+
 
 def getWeb3(provider='default'):
     if provider == 'infura':
         host = 'mainnet.infura.io' if not settings.IS_TESTNET else 'ropsten.infura.io'
-        web3 = Web3(KeepAliveRPCProvider(host=host, port=8545, ssl=True, path=settings.INFURA_KEY))
+        web3 = Web3(HTTPProvider('https://mainnet.infura.io/'+settings.INFURA_KEY))
+    elif provider == 'cusom_provider' and settings.DEBUG:
+        web3 = Web3(KeepAliveRPCProvider(host=settings.GETH_HOST, port=8545))
     elif provider == 'testrpc_internal' and settings.DEBUG:
         web3 = Web3(KeepAliveRPCProvider(host='localhost', port=8545))
     elif provider == 'testrpc' and settings.DEBUG:

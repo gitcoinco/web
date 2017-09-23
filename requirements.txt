@@ -1,4 +1,5 @@
 bs4
+ccxt
 django==1.11
 django-bootstrap3==8.2.3
 django-filter
@@ -19,3 +20,4 @@ PyPdf
 python-twitter==3.2
 sendgrid
 web3
+

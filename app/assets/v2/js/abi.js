@@ -17,7 +17,7 @@ var bounty_address = function (){
             return 'TODO';
         break;
         case "custom network":
-            return '0x9785cf4ac14dbe4cc3875bb9f45fc0d7c409e21c';
+            return '0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd';
         break;
     }
 }

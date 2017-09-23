@@ -4,11 +4,12 @@ from datetime import datetime
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
 
+
 # Serializers define the API representation.
 class BountySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Bounty
-        #fields = ('url', 'username', 'email', 'is_staff')
+        fields = ("url","created_on","modified_on","title","web3_created","value_in_token","token_name","token_address","bounty_type","project_length","experience_level","github_url","bounty_owner_address","bounty_owner_email","bounty_owner_github_username","claimeee_address","claimee_email","claimee_github_username","is_open","expires_date","raw_data","metadata","claimee_metadata","current_bounty", 'value_in_eth', 'value_in_usdt')
 
 
 # ViewSets define the view behavior.

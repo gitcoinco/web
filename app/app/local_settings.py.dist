@@ -17,6 +17,7 @@ TIME_ZONE = 'MST'
 LOGGING = {}
 DEBUG_APPS = []
 STATIC_URL = '/static/'
+BASE_URL = 'http://localhost:8080/'
 
 ####################################################################
 # SECRETS
@@ -44,7 +45,7 @@ GETH_HOST = 'localhost'
 GETH_PORT = '8545'
 # this is the defeault address generated if you deploy the gitcoin smart contracts with the instructions
 # in the smart_contracts repo
-BOUNTY_CONTRACT_ADDRESS = '0x9785cf4ac14dbe4cc3875bb9f45fc0d7c409e21c'
+BOUNTY_CONTRACT_ADDRESS = '0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd'
 DEFAULT_PROVIDER = 'testrpc'
 
 CSRF_TRUSTED_ORIGINS = [
@@ -62,5 +63,8 @@ TWITTER_CONSUMER_KEY = 'TODO'
 TWITTER_CONSUMER_SECRET = 'TODO'
 TWITTER_ACCESS_TOKEN = 'TODO'
 TWITTER_ACCESS_SECRET = 'TODO'
+
+# only needed if you slack things
+SLACK_WEBHOOK = 'TODO'
 
 ####################################################################
