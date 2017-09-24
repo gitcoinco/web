@@ -6,9 +6,14 @@ $(document).ready(function(){
       var url = $(this).attr('href');
       setTimeout(function(){
         $.get(url, function(newHTML){
+            console.log('got' + newHTML);
             $(newHTML).appendTo('body').modal();
         });
       },300);
+    });
+
+    $(".navbar-toggler").click(function(){
+      $(".navbar-collapse").toggleClass('show')
     });
 
     //get gitcoin modal
