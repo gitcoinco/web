@@ -56,13 +56,14 @@ window.onload = function(){
 
                     var _callback = function(error, result){
                         var next = function(){
-                            callFunctionWhenTransactionMined(result,function(){
-                                sync_web3(issueURL);
-                                localStorage[issueURL] = timestamp();
-                                add_to_watch_list(issueURL);
+                            localStorage['txid'] = result;
+                            sync_web3(issueURL);
+                            localStorage[issueURL] = timestamp();
+                            add_to_watch_list(issueURL);
+                            _alert({ message: "Submitted transaction to web3." }, 'info');
+                            setTimeout(function(){
                                 document.location.href= "/bounty/details?url="+issueURL;
-                                _alert({ message: "Transaction complete." }, 'info');
-                            });
+                            },1000);
 
                         };
                         if(error){

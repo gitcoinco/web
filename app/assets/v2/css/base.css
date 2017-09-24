@@ -352,6 +352,10 @@ input[type=text].loading{
     width: 100%;
     z-index: 999999;
 }
+.alert a{
+  color: white;
+  text-decoration: underline;;
+}
 
 .alert.success {
     background-color: #4CAF50;
@@ -359,6 +363,7 @@ input[type=text].loading{
 .alert.info {
     background-color: #2196F3;
 }
+
 .alert.warning {
     background-color: #ff9800;
 }

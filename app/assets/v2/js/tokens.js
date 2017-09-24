@@ -5,6 +5,7 @@ var tokens = function(network_id){
     if(network_id == "mainnet" ){
       _tokens = [
     //non-etherdelta tokens
+        {"addr": "0xe635c6d338dcd31c979b88000ff97c1fa3f0472c", "name": "GIT", "decimals": 18},
         {"addr": "0x2941deaad71adb02b944bd38ebce2f1f4c9a62dc", "name": "COLO", "decimals": 18},
     //from https://github.com/etherdelta/etherdelta.github.io/blob/master/config/main.json
         {"addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18},
@@ -169,6 +170,7 @@ var tokens = function(network_id){
       _tokens = [
         { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
         { "addr": "0x2941deaad71adb02b944bd38ebce2f1f4c9a62dc", "name": "COLO", "decimals": 18 },
+        { "addr": "0xeccb46ebe07c5a2b249586796f921ddfe0d46271", "name": "GIT", "decimals": 18 },
         ];
     } else if(network_id == "custom network" ){ //testrpc
       _tokens = [

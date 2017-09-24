@@ -5,19 +5,39 @@ var bounty_abi = [{"inputs": [{"type": "uint256", "name": ""}], "constant": true
 var bounty_address = function (){
     switch(document.web3network){
         case "mainnet":
-            return 'TODO';
+            return '0xc14c22f07bc8aeda9fd87c7bd579169fd6bf01b5';
         break;
         case "ropsten":
-            return 'TODO';
+            return '0x3102118ba636942c82d1a6efa2e7d069dc2d14bd';
         break;
         case "kovan":
-            return 'TODO';
+            throw "not supported";
         break;
         case "rinkeby":
-            return 'TODO';
+            throw "not supported";
         break;
         case "custom network":
             return '0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd';
+        break;
+    }
+}
+
+var etherscan_tx_url = function (txid){
+    switch(document.web3network){
+        case "mainnet":
+            return 'https://etherscan.io/tx/' + txid;
+        break;
+        case "ropsten":
+            return 'https://ropsten.etherscan.io/tx/' + txid;
+        break;
+        case "kovan":
+            return 'https://kovan.etherscan.io/tx/' + txid;
+        break;
+        case "rinkeby":
+            return 'https://rinkeby.etherscan.io/tx/' + txid;
+        break;
+        case "custom network":
+            return 'https://localhost/tx/' + txid;
         break;
     }
 }

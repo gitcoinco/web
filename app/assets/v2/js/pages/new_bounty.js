@@ -124,13 +124,14 @@ $(document).ready(function(){
                     _alert({ message: "There was an error.  Please try again or conact support." });
                 $('#submitBounty').removeAttr('disabled');
             } else {
-                callFunctionWhenTransactionMined(result,function(){
-                    sync_web3(issueURL);
-                    localStorage[issueURL] = timestamp();
-                    add_to_watch_list(issueURL);
+                sync_web3(issueURL);
+                localStorage['txid'] = result;
+                localStorage[issueURL] = timestamp();
+                add_to_watch_list(issueURL);
+                _alert({ message: "Submission submitted to web3." }, 'info');
+                setTimeout(function(){
                     document.location.href= "/bounty/details?url="+issueURL;
-                    _alert({ message: "Transaction complete." }, 'info');
-                });
+                },1000);
 
             }
         }

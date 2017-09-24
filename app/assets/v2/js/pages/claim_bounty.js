@@ -47,7 +47,7 @@ window.onload = function(){
                     $('.submitBounty').removeAttr('disabled');
                     return;
                 } else {
-
+                    console.log(result);
                     var bountyAmount = Math.round(result[0].toNumber() * web3.fromWei("1", "ether")); 
                     bountyDetails = [bountyAmount, result[1], result[2], result[3]];
                     var fromAddress = result[2];
@@ -69,13 +69,14 @@ window.onload = function(){
 
                     var callback = function(error, result){
                         var next = function(){
-                            callFunctionWhenTransactionMined(result,function(){
-                                sync_web3(issueURL);
-                                localStorage[issueURL] = timestamp();
-                                add_to_watch_list(issueURL);
+                            localStorage['txid'] = result;
+                            sync_web3(issueURL);
+                            localStorage[issueURL] = timestamp();
+                            add_to_watch_list(issueURL);
+                            _alert({ message: "Claim submitted to web3." },'info');
+                            setTimeout(function(){
                                 document.location.href= "/bounty/details?url="+issueURL;
-                                _alert({ message: "Claim complete." },'info');
-                            });
+                            },1000);
 
                         };
                         if(error){
