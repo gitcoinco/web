@@ -3,7 +3,7 @@ $(document).ready(function(){
         console.log('############################################');
         console.log('# Hi there technical person,');
         console.log('# ');
-        console.log('# We\'d love your help to ');
+        console.log('# We\'d love your help ');
         console.log('# **** Pushing Open Source Forward **** ');
         console.log('# Check us out: ');
         console.log('# - http://github.com/gitcoinco');
