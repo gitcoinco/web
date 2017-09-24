@@ -92,7 +92,7 @@ def help_faq(request):
 
 
 def browser_extension(request):
-    return redirect('https://TODO.com')
+    return redirect('https://chrome.google.com/webstore/detail/gdocmelgnjeejhlphdnoocikeafdpaep/publish-accepted')
 
 
 def slack(request):
