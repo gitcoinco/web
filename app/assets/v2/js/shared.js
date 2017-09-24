@@ -203,6 +203,8 @@ window.addEventListener('load', function() {
         } else {
             web3.version.getNetwork((error, netId) => {
                 if(!error){
+
+                    //figure out which network we're on
                     var network = "unknown";
                       switch (netId) {
                         case "1":
@@ -214,11 +216,32 @@ window.addEventListener('load', function() {
                         case "3":
                           network = 'ropsten';
                           break
+                        case "4":
+                          network = 'rinkleby';
+                          break
+                        case "42":
+                          network = 'kovan';
+                          break
                         default:
                           network = "custom network";
                       }
                     document.web3network = network;
-                    $("#sidebar_head").html("Web3 enabled <img src='/static/v2/images/icons/rss.png'>");
+
+                    // is this a supported networK?
+                    var is_supported_network = true;
+                    if(network == 'rinkleby' || network == 'kovan'){
+                        is_supported_network = false;
+                    }
+                    if(network == 'mainnet'){
+                        if(document.location.href.indexOf("https://gitcoin.co") == -1){
+                            is_supported_network = false;
+                        }
+                    }
+                    if(is_supported_network){
+                        $("#sidebar_head").html("Web3 enabled <img src='/static/v2/images/icons/rss.png'>");
+                    } else {
+                        $("#sidebar_head").html("Unsupported network <img src='/static/v2/images/icons/battery_empty.png'>");
+                    }
                     $("#sidebar_p").html("Connected to " + network + ".");
                 }
                 else {
