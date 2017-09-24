@@ -107,6 +107,8 @@ window.onload = function(){
                             function(errors,result){
                                 console.log('got gas result');
                                 var gas = result + 10;
+                                // TODO: why does estimateGas seem to be :way: off for this
+                                // metmask eems to think it's a 'new contract creation'
                                 var gasLimit = gas * 2;
                                 bounty.claimBounty.sendTransaction(issueURL, 
                                     claimee_metadata,
