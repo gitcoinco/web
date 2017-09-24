@@ -60,6 +60,24 @@ $(document).ready(function(){
             $(this).text('Advanced ⬇ ');
         }
     });
+    //TODO: refactor to DRY
+    if(localStorage['expirationTimeDelta']){
+        $('select[name=expirationTimeDelta] option:contains('+localStorage['expirationTimeDelta']+')').prop('selected', true);
+    }
+    if(localStorage['experienceLevel']){
+        $('select[name=experienceLevel] option:contains('+localStorage['experienceLevel']+')').prop('selected', true);
+    }
+    if(localStorage['projectLength']){
+        $('select[name=projectLength] option:contains('+localStorage['projectLength']+')').prop('selected', true);
+    }
+    if(localStorage['bountyType']){
+        $('select[name=bountyType] option:contains('+localStorage['bountyType']+')').prop('selected', true);
+    }
+    if(localStorage['issueURL']){
+        $('input[name=issueURL]').val(localStorage['issueURL']);
+    }
+
+
     
     //submit bounty button click
     $('#submitBounty').click(function(e){
@@ -109,10 +127,16 @@ $(document).ready(function(){
         $(this).attr('disabled','disabled');
 
         //save off local state for later
+        localStorage['issueURL'] = issueURL;
         localStorage['amount'] = amount;
         localStorage['notificationEmail'] = notificationEmail;
         localStorage['githubUsername'] = githubUsername;
         localStorage['tokenAddress'] = tokenAddress;
+        localStorage['expirationTimeDelta'] = $('select[name=expirationTimeDelta').val();
+        localStorage['experienceLevel'] = $('select[name=experienceLevel').val();
+        localStorage['projectLength'] = $('select[name=projectLength').val();
+        localStorage['bountyType'] = $('select[name=bountyType').val();
+
 
         //setup web3
         var isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
@@ -135,6 +159,7 @@ $(document).ready(function(){
                 add_to_watch_list(issueURL);
                 _alert({ message: "Submission sent to web3." }, 'info');
                 setTimeout(function(){
+                    delete localStorage['issueURL'];
                     document.location.href= "/bounty/details?url="+issueURL;
                 },1000);
 

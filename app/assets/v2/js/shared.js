@@ -142,6 +142,7 @@ var sync_web3 = function(issueURL, bountydetails, callback){
     }
     if(typeof bountydetails != 'undefined'){
         args['bountydetails'] = bountydetails;
+        args['contract_address'] = bounty_address();
     }
     $.post(url, args, function(){
         if(typeof callback != 'undefined'){

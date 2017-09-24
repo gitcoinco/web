@@ -133,8 +133,9 @@ def sync_web3(request):
             bountydetails[9] = int(bountydetails[9])
             bountydetails[10] = str(bountydetails[10])
             print(bountydetails)
+            contract_address = request.POST.get('contract_address')
             #TODO: verify client did not manipulate the data
-            process_bounty_details(bountydetails, issueURL)
+            process_bounty_details(bountydetails, issueURL, contract_address)
 
         BountySyncRequest.objects.create(
             github_url=issueURL,

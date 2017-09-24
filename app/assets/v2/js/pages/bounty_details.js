@@ -113,7 +113,7 @@ var callbacks = {
         return [ "Amount (USDT)" , val];
     },
     'web3_created': function(key, val, result){
-        return [ "created" , timeDifference(new Date(result['now']), new Date(result['created_on']))];
+        return [ "updated" , timeDifference(new Date(result['now']), new Date(result['created_on']))];
     },
     'expires_date': function(key, val, result){
         expires_date = new Date(val);

@@ -132,10 +132,10 @@ def normalizeURL(url):
 # then new_bounty
 def syncBountywithWeb3(bountyContract, url):
     bountydetails = bountyContract.call().bountydetails(url)
-    return process_bounty_details(bountydetails, url)
+    return process_bounty_details(bountydetails, url, bountyContract.address)
 
 
-def process_bounty_details(bountydetails, url):
+def process_bounty_details(bountydetails, url, contract_address):
     url = normalizeURL(url)
 
     #extract json
@@ -194,6 +194,7 @@ def process_bounty_details(bountydetails, url):
             metadata=metadata,
             claimee_metadata=claimee_metadata,
             current_bounty=True,
+            contract_address=contract_address,
             )
 
     return (didChange, old_bounties.first(), new_bounty)

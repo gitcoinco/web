@@ -15,8 +15,6 @@ window.onload = function(){
         }
 
 
-        var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-
         $('#submitBounty').click(function(e){
             e.preventDefault();
             var notificationEmail = $('input[name=notificationEmail]').val();
@@ -44,6 +42,7 @@ window.onload = function(){
             }
 
             $(this).attr('disabled','disabled');
+            var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
 
             var _callback = function(error, result){
                 var ignore_error = false;
@@ -53,7 +52,7 @@ window.onload = function(){
                     ignore_error = String(error).indexOf('BigNumber') != -1;
                 }
                 var run_main = !error || ignore_error;
-                if(!ignore_error){
+                if(error && !ignore_error){
                     _alert({ message: "Could not get bounty details." });
                 }
                 if(run_main){
@@ -100,16 +99,12 @@ window.onload = function(){
                     };
 
                     setTimeout(function(){
-                        console.log('est gas');
-                        bounty.claimBounty.estimateGas(issueURL, 
+                        bounty.claimBounty.estimateGas(
+                            issueURL, 
                             claimee_metadata, 
-                            {from :account}, 
                             function(errors,result){
-                                console.log('got gas result');
                                 var gas = result + 10;
-                                // TODO: why does estimateGas seem to be :way: off for this
-                                // metmask eems to think it's a 'new contract creation'
-                                var gasLimit = gas * 2;
+                                var gasLimit = gas * gasLimitMultiplier;
                                 bounty.claimBounty.sendTransaction(issueURL, 
                                     claimee_metadata,
                                     {
@@ -124,6 +119,7 @@ window.onload = function(){
                     e.preventDefault();
                 }
             };
+            console.log(issueURL);
             bounty.bountydetails.call(issueURL, _callback);
         });
     },100);

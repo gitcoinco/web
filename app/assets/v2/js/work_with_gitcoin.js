@@ -5,7 +5,7 @@ $(document).ready(function(){
         console.log('# ');
         console.log('# We\'d love your help ');
         console.log('# **** Pushing Open Source Forward **** ');
-        console.log('# Check us out: ');
+        console.log('# Get in touch: ');
         console.log('# - http://github.com/gitcoinco');
         console.log('# - founders@gitcoin.co');
         console.log('# ');

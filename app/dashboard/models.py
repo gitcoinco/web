@@ -70,6 +70,7 @@ class Bounty(SuperModel):
     claimee_metadata = JSONField(default={})
     current_bounty = models.BooleanField(default=False) # whether this bounty is the most current revision one or not
     _val_usd_db = models.DecimalField(default=10, decimal_places=2, max_digits=20)
+    contract_address = models.CharField(max_length=50,default='')
 
     def __str__(self):
         return "{}{} {} {} {}".format( "(CURRENT) " if self.current_bounty else "" , self.title, self.value_in_token, self.token_name, self.web3_created)

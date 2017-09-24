@@ -9,7 +9,6 @@ window.onload = function(){
             $('input[name=terms]').attr('checked','checked');
         }
 
-        var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
         var bountyDetails = []
 
         $('.submitBounty').click(function(e){
@@ -32,10 +31,12 @@ window.onload = function(){
                 return;
             }
 
+            var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
             $(this).attr('disabled','disabled');
             var callback = function(error, result){
                 if(error){
                     _alert({ message: "Could not get bounty details" });
+                    console.log(error);
                     $('.submitBounty').removeAttr('disabled');
                     return;
                 } else {
