@@ -56,16 +56,16 @@ DATABASES = {
 }
 
 SENDGRID_API_KEY = 'TODO' # only needed if you send emails
-INFURA_KEY = 'TODO' # only needed if you use infura
 
-# geth settings
-IS_TESTNET = True
-GETH_HOST = 'localhost'
-GETH_PORT = '8545'
-# this is the defeault address generated if you deploy the gitcoin smart contracts with the instructions
-# in the smart_contracts repo
-BOUNTY_CONTRACT_ADDRESS = '0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd'
-DEFAULT_PROVIDER = 'testrpc'
+CUSTOM_MAINNET_GETH_HOST = 'TODO'
+CUSTOM_MAINNET_GETH_PORT = '8545'
+CUSTOM_RINKEBY_GETH_HOST = 'TODO'
+CUSTOM_RINKEBY_GETH_PORT = '8545'
+CUSTOM_TESTRPC_GETH_HOST = 'localhost'
+CUSTOM_TESTRPC_GETH_PORT = '8545'
+TESRPC_CONTRACT_ADDRESS = '0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd'
+DEFAULT_NETWORK = 'testrpc'
+INFURA_KEY = 'TODO' # only needed if you use infura
 
 CSRF_TRUSTED_ORIGINS = [
     'localhost'

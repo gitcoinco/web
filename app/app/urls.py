@@ -37,6 +37,13 @@ urlpatterns = [
     url(r'^about/?', retail.views.about, name='about'),
     url(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),
     url(r'^$', retail.views.index, name='index'),
+    url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
+    url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
+    url(r'^help/faq?', retail.views.help_faq, name='help_faq'),
+    url(r'^help/portal?', retail.views.portal, name='portal'),
+    url(r'^help/?', retail.views.help, name='help'),
+    url(r'^extension/?', retail.views.browser_extension, name='browser_extension'),
+    url(r'^slack/?', retail.views.slack, name='slack'),
 
     # dashboard views
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),

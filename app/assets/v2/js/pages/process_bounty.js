@@ -4,6 +4,11 @@ window.onload = function(){
     //a little time for web3 injection
     setTimeout(function(){
         var account = web3.eth.accounts[0];
+
+        if (typeof localStorage['acceptTOS'] !='undefined' && localStorage['acceptTOS']){
+            $('input[name=terms]').attr('checked','checked');
+        }
+
         var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
         var bountyDetails = []
 
@@ -16,6 +21,8 @@ window.onload = function(){
             if($('#terms:checked').length == 0){
                 _alert({ message: "Please accept the terms of service." });
                 isError = true;
+            } else {
+                localStorage['acceptTOS'] = true;
             }
             if(issueURL == ''){
                 _alert({ message: "Please enter a issue URL." });
@@ -32,7 +39,7 @@ window.onload = function(){
                     $('.submitBounty').removeAttr('disabled');
                     return;
                 } else {
-                    var bountyAmount = Math.round(result[0].toNumber() * web3.fromWei("1", "ether")); 
+                    var bountyAmount = result[0].toNumber(); 
                     bountyDetails = [bountyAmount, result[1], result[2], result[3]];
                     var fromAddress = result[2];
                     var claimeeAddress = result[3];

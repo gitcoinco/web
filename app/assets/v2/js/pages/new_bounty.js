@@ -28,6 +28,9 @@ window.addEventListener('load', function() {
         if (typeof localStorage['notificationEmail'] !='undefined'){
             $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
         }
+        if (typeof localStorage['acceptTOS'] !='undefined' && localStorage['acceptTOS']){
+            $('input[name=terms]').attr('checked','checked');
+        }
 
     },100);
 
@@ -89,6 +92,8 @@ $(document).ready(function(){
         if($('#terms:checked').length == 0){
             _alert({ message: "Please accept the terms of service." });
             isError = true;
+        } else {
+            localStorage['acceptTOS'] = true;
         }
         if(issueURL == ''){
             _alert({ message: "Please enter an issue URL." });

@@ -17,10 +17,9 @@
 '''
 from django.core.management.base import BaseCommand
 from django.conf import settings
-from economy.eth import getWeb3, getBountyContract
+from economy.eth import getWeb3, getBountyContract, get_network_details
 from django.utils import timezone
 from dashboard.helpers import syncBountywithWeb3, process_bounty_changes, normalizeURL
-from dashboard.models import BountySyncRequest
 import time
 
 
@@ -28,17 +27,33 @@ class Command(BaseCommand):
 
     help = 'syncs bounties with geth'
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--network',
+            dest='network',
+            type=str,
+            default=settings.DEFAULT_NETWORK,
+            help="network (optional)",
+        )
+
+        parser.add_argument(
+            '--provider',
+            dest='provider',
+            type=str,
+            default='default',
+            help="provider (optional)",
+        )
+
     def handle(self, *args, **options):
 
         # setup
-        urls_to_check = BountySyncRequest.objects.filter(processed=False, created_on__gt=(timezone.now() - timezone.timedelta(hours=2))).values_list('github_url',flat=True)
-
+        bounty_contract_address, infura_host, custom_geth_details, is_testnet = get_network_details(options['network'])
         print("****************************************")
-        print("connecting....")
+        print("connecting {} {} ....".format(options['network'], options['provider']))
         print("****************************************")
 
         start_time = int(timezone.now().strftime("%S"))
-        web3 = getWeb3(settings.DEFAULT_PROVIDER)
+        web3 = getWeb3(options['network'], options['provider'])
         end_time = int(timezone.now().strftime("%S"))
         connect_time = end_time - start_time
 
@@ -55,9 +70,9 @@ class Command(BaseCommand):
             _filter = web3.eth.filter({
                 "fromBlock": fromBlock,
                 "toBlock": "latest",
-                "address": settings.BOUNTY_CONTRACT_ADDRESS,
+                "address": bounty_contract_address,
             })
-            bountyContract = getBountyContract(web3)
+            bountyContract = getBountyContract(web3, bounty_contract_address)
 
             log_entries = _filter.get(False)
             print('got {} log entrires from web3'.format(len(log_entries)))

@@ -16,7 +16,7 @@
 
 '''
 from django.template.response import TemplateResponse
-# Create your views here.
+from django.shortcuts import redirect
 
 
 def index(request):
@@ -32,6 +32,14 @@ def about(request):
         'title': 'About',
     }
     return TemplateResponse(request, 'about.html', context)
+
+
+def help(request):
+    context = {
+        'active': 'help',
+        'title': 'Help',
+    }
+    return TemplateResponse(request, 'help.html', context)
 
 
 def get_gitcoin(request):
@@ -65,3 +73,28 @@ def error(request, code):
     }
     context['title'] = "Error {}".format(code)
     return TemplateResponse(request, 'error.html', context)
+
+
+def portal(request):
+    return redirect('https://gitcoinhelp.zendesk.com/hc/en-us/')
+
+
+def help_dev(request):
+    return redirect('https://docs.google.com/document/d/1S8BLKJF7J5RbrfFw-mX0iYcy4VSc6-a1aQXtKT_ta0Y/edit#heading=h.4z9ys82qb69x')
+
+
+def help_repo(request):
+    return redirect('https://docs.google.com/document/d/1_U9IdDN8FIRMGAdLWCMl2BnqCTAv558QvyJiSWQfkbs/edit#heading=h.nsiwdwpezm79')
+
+
+def help_faq(request):
+    return redirect('https://gitcoinhelp.zendesk.com/hc/en-us/sections/115000415412-FAQ')
+
+
+def browser_extension(request):
+    return redirect('https://TODO.com')
+
+
+def slack(request):
+    return redirect('https://gitcoincommunity.herokuapp.com')
+

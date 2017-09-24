@@ -17,6 +17,12 @@ div.body{
     border-radius: 2px; 
     background-color:rgba(255,255,255,0.2);;
 }
+.footer img{
+    width: 25px;
+    height: 25px;
+    filter: invert(100%);
+}
+
 
 .interior .body {
     background-color: white;
@@ -109,7 +115,10 @@ p a {
     color: white;
     cursor: pointer;
 }
-
+.iama a{
+    color: white;
+    font-weight: lighter;;
+}
 .iama .mt-3{
     width: 40px; 
     height: 40px; 

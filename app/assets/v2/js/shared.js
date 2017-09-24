@@ -93,28 +93,37 @@ function timeDifference(current, previous) {
     var elapsed = current - previous;
 
     if (elapsed < msPerMinute) {
-         return Math.round(elapsed/1000) + ' seconds ago';   
+        var amt = Math.round(elapsed/1000);
+        var unit = 'second';
     }
 
     else if (elapsed < msPerHour) {
-         return Math.round(elapsed/msPerMinute) + ' minutes ago';   
+        var amt = Math.round(elapsed/msPerMinute);
+        var unit = 'minute';
     }
 
     else if (elapsed < msPerDay ) {
-         return Math.round(elapsed/msPerHour ) + ' hours ago';   
+        var amt = Math.round(elapsed/msPerHour );
+        var unit = 'hour';
     }
 
     else if (elapsed < msPerMonth) {
-        return Math.round(elapsed/msPerDay) + ' days ago';   
+        var amt = Math.round(elapsed/msPerDay);
+        var unit = 'day';
     }
 
     else if (elapsed < msPerYear) {
-        return Math.round(elapsed/msPerMonth) + ' months ago';   
+        var amt = Math.round(elapsed/msPerMonth);
+        var unit = 'month';
     }
 
     else {
-        return Math.round(elapsed/msPerYear ) + ' years ago';   
+        var amt = Math.round(elapsed/msPerYear);
+        var unit = 'year';
     }
+    var plural = amt != 1 ? 's' : '';
+    
+    return amt + ' '+unit+plural+' ago';   
 }
 
 var sync_web3 = function(issueURL){

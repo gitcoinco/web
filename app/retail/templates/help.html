@@ -1,0 +1,112 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core 
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+<!DOCTYPE html>
+<html lang="en">
+
+{% include 'shared/head.html' %}
+
+<body class="{{active}}">
+    <div class="container-fluid header">
+        {% include 'shared/nav.html' %}
+        {% include 'shared/minihero.html' with h1='Help' suppress_logo=1 %}
+
+    </div>
+
+    <div class="container-fluid white-light-bg text-center" style="">
+        <div class="row pb-5 pt-5">
+            <div class="col pb-4">
+                <h4 >Developer?</h4>
+                <h6 style="" >Check out the Gitcoin Developer guide</h6>
+            </div>
+        </div>
+        <div class=" row ">
+            <div class="col pb-4">
+                <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
+                    <a href="/help/dev" target=new>
+                        <img class="animated fadeIn" src="/static/v2/images/guide_dev.png" style="max-width: 60%;  border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5 pb-3 animatedParent">
+            <div class="col animated pulse fast">
+                <a class="btn btn-lg btn-warning raise mb-4" role="button" target=new href="/help/dev">View Developer Guide</a>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid text-center" style="background: white;">
+        <div class="row pb-5 pt-5">
+            <div class="col pb-4">
+                <h4>Repo Maintainer</h4>
+                <h6 style="" >Check out the Gitcoin Repo Maintainer guide</h6>
+            </div>
+        </div>
+        <div class=" row ">
+            <div class="col pb-4">
+                <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
+                    <a href="/help/repo" target=new>
+                        <img class="animated fadeIn" src="/static/v2/images/guide_repo.png" style="max-width: 60%; border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5 pb-3 animatedParent">
+            <div class="col animated pulse fast">
+                <a class="btn btn-lg btn-warning raise mb-4" role="button" target=new href="/help/repo">View Repo Maintainer Guide</a>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="container-fluid text-center white-light-bg" id="gitcoin_buttons">
+        <div class="row">
+            <div class="col pb-4">
+                <h4 >Got more questions?</h4>
+            </div>
+        </div>
+        <div class="row mt-2 mb-2 pb-3 animatedParent">
+            <div class="col animated pulse fast">
+                <a class="btn btn-lg btn-warning raise" role="button" href="/help/portal">View Help Portal</a>
+            </div>
+        </div>
+        <div class="row pb-3 animatedParent">
+            <div class="col animated pulse fast">
+                - or -
+                <br>
+                <a class="" role="button" href="/help/faq">View FAQ</a>
+            </div>
+        </div>
+        <div class="row mb-5 pb-3 animatedParent">
+            <div class="col animated pulse fast">
+                - or -
+                <br>
+                <a class="" role="button" href="mailto:founders@gitcoin.co">Contact Gitcoin Core</a>
+            </div>
+        </div>
+    </div>
+
+
+    {% include 'shared/footer.html' %}
+    {% include 'shared/ga.html' %}
+    {% include 'shared/footer_scripts.html' %}
+
+</body>
+
+</html>

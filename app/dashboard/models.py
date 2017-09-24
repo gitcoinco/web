@@ -95,6 +95,10 @@ class Bounty(SuperModel):
         return self.metadata.get('issueKeywords',False)
 
     @property
+    def now(self):
+        return timezone.now()
+
+    @property
     def status(self):
         try:
             if not self.is_open:

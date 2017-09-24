@@ -24,7 +24,7 @@ from retail.emails import *
 
 def send_mail(from_email, to_email, subject, body, html=False):
     sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
-    from_email = Email(from_email)
+    from_email = Email(from_email, "Gitcoin.co")
     to_email = Email(to_email)
     contenttype = "text/plain" if not html else "text/html"
     content = Content(contenttype, html) if html else Content(contenttype, body)

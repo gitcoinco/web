@@ -107,11 +107,11 @@ var callbacks = {
         return [ "Amount (ETH)" , Math.round((parseInt(val) / 10**18) * 1000) / 1000];
     },
     'web3_created': function(key, val, result){
-        return [ "created" , timeDifference(new Date(), new Date(val))];
+        return [ "created" , timeDifference(new Date(result['now']), new Date(result['created_on']))];
     },
     'expires_date': function(key, val, result){
         expires_date = new Date(val);
-        now = new Date();
+        now = new Date(result['now']);
         var response = timeDifference(now, expires_date);
         return [ "expires" , response];
     },
