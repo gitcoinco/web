@@ -175,7 +175,7 @@ var tokens = function(network_id){
     } else if(network_id == "custom network" ){ //testrpc
       _tokens = [
         { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
-        { "addr": "0x9ee228365ebc1da6a5d025fdf0939edf2bea21da", "name": "DERP", "decimals": 18 },
+        { "addr": "0xc5b2bf13a45b4682c31eb4144fe82339aae6ac06", "name": "DERP", "decimals": 18 },
         ];
     } else {
       _tokens = [

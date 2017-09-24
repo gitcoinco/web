@@ -101,10 +101,16 @@ var callbacks = {
     'claimee_github_username': github_ize,
     'bounty_owner_github_username': github_ize,
     'value_in_eth': function(key, val, result){
-        if(result['token_name'] == 'ETH'){
+        if(result['token_name'] == 'ETH' || val == null){
             return [null, null];
         }
         return [ "Amount (ETH)" , Math.round((parseInt(val) / 10**18) * 1000) / 1000];
+    },
+    'value_in_usdt': function(key, val, result){
+        if(val == null){
+            return [null, null];
+        }
+        return [ "Amount (USDT)" , val];
     },
     'web3_created': function(key, val, result){
         return [ "created" , timeDifference(new Date(result['now']), new Date(result['created_on']))];

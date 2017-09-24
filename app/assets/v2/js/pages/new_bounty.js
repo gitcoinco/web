@@ -171,8 +171,7 @@ $(document).ready(function(){
         var callback = function(error, result){
             var next = function(){
                 callFunctionWhenTransactionMined(result,function(){
-                    _alert({ message: "Transaction sent." }, 'info');
-                    _alert({ title: "Next", message: "Submit the bounty to the bounty contract."  }, 'info');
+                    _alert({ title: "Transaction #2", message: "Thanks for approving the token transfer.  Now, submit the bounty to the bounty contract."  }, 'info');
                     sendPostBounty();
                 });
             };
