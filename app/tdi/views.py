@@ -22,7 +22,7 @@ from django.template.response import TemplateResponse
 from django.core.validators import validate_email
 from django.conf import settings
 from pyPdf import PdfFileWriter, PdfFileReader
-from marketing.mail import send_mail
+from marketing.mails import send_mail
 from ratelimit.decorators import ratelimit
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.colors import Color

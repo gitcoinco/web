@@ -20,7 +20,7 @@ import twitter
 import requests
 from urlparse import urlparse
 from app.github import post_issue_comment
-from marketing.mail import new_bounty_claim, new_bounty_rejection, new_bounty_acceptance
+from marketing.mails import new_bounty_claim, new_bounty_rejection, new_bounty_acceptance
 
 
 def maybe_market_to_twitter(bounty, event_name, txid):
