@@ -3,6 +3,10 @@ div.body{
   min-height: 400px;
 
 }
+div, p, a, span{
+    word-wrap: break-word;
+}
+
 .navbar-nav .nav-link{
     border-radius: 2px; 
 }
@@ -601,7 +605,9 @@ body.bounty_details #primary_view .value{
 
 }
 @media (max-width: 481px) {
-
+    .hide_min_viewport{
+        display: none !important;
+    }
     .header .row.ml-5{
         margin-left: 0em !important;
     }   
@@ -611,6 +617,18 @@ body.bounty_details #primary_view .value{
     .header .subheader-line{
         font-size: 1.5em;
     }   
+
+    .dashboard .row.bounty_row .col-7{
+        flex: 0 0 80%;
+        max-width: 80%;
+    }
+    .dashboard .row.bounty_row .col-7 .w-75{
+        width: 95% !important;
+        padding-left: 3%;
+    }
+    .bounty_nav{
+        display: none;
+    }
 
     #mailchimp,
     .why_gitcoin,

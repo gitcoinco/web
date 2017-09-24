@@ -179,7 +179,7 @@ $(document).ready(function(){
             }, function(response){
                 var status = response['status'];
                 if(status == 200){
-                     _alert({ message: "Success!"},'success');
+                     _alert({ title: "You're in!", message: "Keep an eye on your inbox for the next listing."},'success');
                      $.modal.close();
                 } else {
                      _alert({ message: response['msg']});

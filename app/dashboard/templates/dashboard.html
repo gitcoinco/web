@@ -60,7 +60,7 @@
       <script id="result" type="text/x-jsrender">
         <div class="row bounty_row pt-2" data-href="[[:action]]">
                 [[if my_bounty]]
-                    <div class="col-2 pt-3 d-flex justify-content-center special_tag">
+                    <div class="col-2 pt-3 d-flex justify-content-center special_tag hide_min_viewport">
                         [[:my_bounty]]
                     </div>
                 [[else]]
@@ -81,7 +81,7 @@
             </div>
             <div class="col-1 d-flex align-items-center">
                 [[if value_in_usdt]]
-                    <a class="btn btn-sm btn-darkBlue font-smaller-2" role="button" href="#">
+                    <a class="btn btn-sm btn-darkBlue font-smaller-2 hide_min_viewport" role="button" href="#">
                             [[:value_in_usdt]] <span class="font-smaller-4">USDT</span>
                     </a>
                 [[/if]]

@@ -171,13 +171,17 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote){
         var showWarningMessage = function(){
             var pendingchanges = 'pending changes';
             var this_transaction = 'this transaction';
-            if(typeof localStorage['txid'] != undefined){
-                pendingchanges = "<a target=new href='"+etherscan_tx_url(localStorage['txid'])+"'>"+pendingchanges+"</a>"
-                this_transaction = "<a target=new href='"+etherscan_tx_url(localStorage['txid'])+"'>"+this_transaction+"</a>"
+            var title = '';
+            if(typeof localStorage['txid'] != 'undefined' && localStorage['txid'].indexOf('0x') != -1){
+                var link_url = etherscan_tx_url(localStorage['txid']);
+                pendingchanges = "<a target=new href='"+link_url+"'>"+pendingchanges+"</a>"
+                this_transaction = "<a target=new href='"+link_url+"'>"+this_transaction+"</a>"
+                title = "Your transaction has been posted to web3.";
             }
-            var msg = 'This bounty has '+pendingchanges+'.  Please wait a minute or two for web3 to sync '+this_transaction+'.';
-            msg = msg + ' (This page will automatically refresh as soon as web3 is updated.)';
-            _alert(msg, 'info');            
+            var msg = `<br>This bounty has recently been updated and while the blockchain syncs it has `+pendingchanges+`.  
+            Please wait a minute or two for web3 to sync `+this_transaction+`.
+            <br>(You can close the browser tab.  If not, this page will automatically refresh as soon as web3 is updated.)`
+            _alert({ title: title, message: msg},'info');
         }
 
 

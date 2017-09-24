@@ -32,7 +32,7 @@ window.addEventListener('load', function() {
             $('input[name=terms]').attr('checked','checked');
         }
 
-    },100);
+    },500);
 
 });
 
@@ -119,7 +119,7 @@ $(document).ready(function(){
         var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
         var account = web3.eth.coinbase;
         amount = amount * decimalDivisor;
-        const gasPrice = 1000000000 * 16; //16 gwei
+        const gasPrice = 10**9 * 16; //16 gwei
         var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
 
         //setup callback functions for web3 calls
@@ -133,7 +133,7 @@ $(document).ready(function(){
                 localStorage['txid'] = result;
                 localStorage[issueURL] = timestamp();
                 add_to_watch_list(issueURL);
-                _alert({ message: "Submission submitted to web3." }, 'info');
+                _alert({ message: "Submission sent to web3." }, 'info');
                 setTimeout(function(){
                     document.location.href= "/bounty/details?url="+issueURL;
                 },1000);
@@ -153,16 +153,16 @@ $(document).ready(function(){
                 {from :account, value:value},
                 function(errors, result){
                     var gas = result + 10;
-                    var gasLimit = gas * 2;
+                    var gasLimit = gas * gasLimitMultiplier;
                     bounty.postBounty.sendTransaction(issueURL, 
                         amount, 
                         tokenAddress, 
                         expirationTimeDelta, 
                         JSON.stringify(metadata),
                         {from :account, 
-                            gas:gas, 
-                            gasLimit: gasLimit, 
-                            gasPrice:gasPrice, 
+                            gas:web3.toHex(gas), 
+                            gasLimit: web3.toHex(gasLimit), 
+                            gasPrice:web3.toHex(gasPrice), 
                             value:value},
                         callback2);
 
@@ -191,14 +191,15 @@ $(document).ready(function(){
             token_contract.approve.estimateGas(bounty_address()
                 ,amount, 
                 function(errors,result){
-                    var gas = result + 10;
-                    var gasLimit = gas * 2;
+                    var gas = result * 1.5;
+                    var gasLimit = gas * gasLimitMultiplier;
                     token_contract.approve.sendTransaction(bounty_address()
                         ,amount, 
                         {from :account, 
-                            gas:gas, 
-                            gasLimit: gasLimit, 
-                            gasPrice:gasPrice},
+                            gas:web3.toHex(gas), 
+                            gasLimit: web3.toHex(gasLimit), 
+                            gasPrice:web3.toHex(gasPrice), 
+                        },
                         callback);
                 });
         };

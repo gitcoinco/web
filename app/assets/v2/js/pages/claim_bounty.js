@@ -46,30 +46,37 @@ window.onload = function(){
             $(this).attr('disabled','disabled');
 
             var _callback = function(error, result){
+                var ignore_error = false;
                 if(error){
-                    _alert({ message: "Could not get bounty details." });
-                    console.log(error);
                     $('.submitBounty').removeAttr('disabled');
-                    return;
-                } else {
-                    var bountyAmount = result[0].toNumber();
-                    bountyDetails = [bountyAmount, result[1], result[2], result[3]];
-                    var fromAddress = result[2];
-                    var claimeeAddress = result[3];
-                    var open = result[4];
-                    var initialized = result[5];
+                    console.log(error);
+                    ignore_error = String(error).indexOf('BigNumber') != -1;
+                }
+                var run_main = !error || ignore_error;
+                if(!ignore_error){
+                    _alert({ message: "Could not get bounty details." });
+                }
+                if(run_main){
+                    if(!ignore_error){
+                        var bountyAmount = result[0].toNumber();
+                        bountyDetails = [bountyAmount, result[1], result[2], result[3]];
+                        var fromAddress = result[2];
+                        var claimeeAddress = result[3];
+                        var open = result[4];
+                        var initialized = result[5];
 
-                    var errormsg = undefined;
-                    if(bountyAmount == 0 || open == false || initialized == false){
-                        errormsg = "No active bounty found at this address.  Are you sure this is an active bounty?";
-                    } 
+                        var errormsg = undefined;
+                        if(bountyAmount == 0 || open == false || initialized == false){
+                            errormsg = "No active bounty found at this address.  Are you sure this is an active bounty?";
+                        } 
 
-                    if(errormsg){
-                        _alert({ message: errormsg });
-                        $('#submitBounty').removeAttr('disabled');
-                        return;
+                        if(errormsg){
+                            _alert({ message: errormsg });
+                            $('#submitBounty').removeAttr('disabled');
+                            return;
+                        }
                     }
-                    const gasPrice = 1000000000 * 16; //16 gwei
+
 
                     var callback = function(error, result){
                         var next = function(){
@@ -93,15 +100,22 @@ window.onload = function(){
                     };
 
                     setTimeout(function(){
+                        console.log('est gas');
                         bounty.claimBounty.estimateGas(issueURL, 
                             claimee_metadata, 
                             {from :account}, 
                             function(errors,result){
+                                console.log('got gas result');
                                 var gas = result + 10;
                                 var gasLimit = gas * 2;
                                 bounty.claimBounty.sendTransaction(issueURL, 
                                     claimee_metadata,
-                                    {from :account, gas:gas, gasLimit: gasLimit , gasPrice:defaultGasPrice}, 
+                                    {
+                                        from : account,
+                                        gas:web3.toHex(gas), 
+                                        gasLimit: web3.toHex(gasLimit), 
+                                        gasPrice:web3.toHex(defaultGasPrice), 
+                                    }, 
                                 callback);
                         });
                     },100);
@@ -109,7 +123,6 @@ window.onload = function(){
                 }
             };
             bounty.bountydetails.call(issueURL, _callback);
-
         });
     },100);
 

@@ -215,7 +215,7 @@ var retrieveKeywords = function(){
 
 //figure out what version of web3 this is
 window.addEventListener('load', function() {
-    var timeout_value = 50;
+    var timeout_value = 100;
     setTimeout(function(){
         if (typeof web3 =='undefined'){
             $("#sidebar_head").html("Web3 disabled <img src='/static/v2/images/icons/question.png'>");
@@ -240,7 +240,7 @@ window.addEventListener('load', function() {
                           network = 'ropsten';
                           break
                         case "4":
-                          network = 'rinkleby';
+                          network = 'rinkeby';
                           break
                         case "42":
                           network = 'kovan';
@@ -252,20 +252,30 @@ window.addEventListener('load', function() {
 
                     // is this a supported networK?
                     var is_supported_network = true;
-                    if(network == 'rinkleby' || network == 'kovan'){
+                    var recommended_network = "mainnet or ropsten";
+
+                    if(network == 'rinkeby' || network == 'kovan'){
                         is_supported_network = false;
+                    }
+                    if(document.location.href.indexOf("https://gitcoin.co") != -1){
+                        if(network != 'mainnet' && network != 'ropsten'){
+                            is_supported_network = false;
+                            recommended_network = "mainnet or ropsten";
+                        }
                     }
                     if(network == 'mainnet'){
                         if(document.location.href.indexOf("https://gitcoin.co") == -1){
                             is_supported_network = false;
                         }
                     }
+                    var sidebar_p = "Connected to " + network + ".";
                     if(is_supported_network){
                         $("#sidebar_head").html("Web3 enabled <img src='/static/v2/images/icons/rss.png'>");
                     } else {
                         $("#sidebar_head").html("Unsupported network <img src='/static/v2/images/icons/battery_empty.png'>");
+                        sidebar_p += "<br>(try " + recommended_network + " instead)";
                     }
-                    $("#sidebar_p").html("Connected to " + network + ".");
+                    $("#sidebar_p").html(sidebar_p);
                 }
                 else {
                     $("#sidebar_head").html("Web3 disabled");

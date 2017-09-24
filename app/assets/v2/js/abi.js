@@ -39,8 +39,12 @@ var etherscan_tx_url = function (txid){
         case "custom network":
             return 'https://localhost/tx/' + txid;
         break;
+        default:
+            return 'https://etherscan.io/tx/' + txid;
+        break;
     }
 }
 
-defaultGasPrice = 1000000000;
-weiPerEther = 1000000000000000000;
+gasLimitMultiplier = 4;
+defaultGasPrice = 10**9 * 15; //15 gwei
+weiPerEther = 10**18;

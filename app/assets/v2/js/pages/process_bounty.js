@@ -1,4 +1,4 @@
-const gasPrice = 1000000000 * 16; //16 gwei
+const gasPrice = 10**9 * 16; //16 gwei
 
 window.onload = function(){
     //a little time for web3 injection
@@ -88,12 +88,13 @@ window.onload = function(){
                     method.estimateGas(issueURL, {from :account}, 
                             function(errors,result){
                                 var gas = result * 2;
-                                var gasLimit = gas * 2;
+                                var gasLimit = gas * gasLimitMultiplier;
                                 method.sendTransaction(issueURL, 
                                     {from :account, 
-                                        gas:gas, 
-                                        gasLimit: gasLimit, 
-                                        gasPrice:gasPrice}, 
+                                        gas:web3.toHex(gas), 
+                                        gasLimit: web3.toHex(gasLimit), 
+                                        gasPrice:web3.toHex(gasPrice), 
+                                    }, 
                                     _callback);
                             }
                         );
