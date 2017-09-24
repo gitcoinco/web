@@ -54,18 +54,28 @@ def getWeb3(network, prefer_provider='default'):
     custom_geth_host = custom_geth_details[0]
     custom_geth_port = custom_geth_details[1]
 
-    rpc_web3 = Web3(KeepAliveRPCProvider(host=custom_geth_host, port=custom_geth_port))
-    http_web3 = Web3(HTTPProvider('https://'+infura_host+'/'+settings.INFURA_KEY))
+    def rpc_web3():
+        return Web3(KeepAliveRPCProvider(host=custom_geth_host, port=custom_geth_port))
 
+    def http_web3():
+        # return Web3(HTTPProvider('https://'+infura_host+'/'+settings.INFURA_KEY))
+        return Web3(Web3.RPCProvider(
+            host=infura_host,
+            path=settings.INFURA_KEY,
+            port='443',
+            ssl=1))
+
+    # no infura for testrpc!
     if network == 'testrpc':
-        return rpc_web3
+        return rpc_web3()
 
+    # return diff provider based upon input
     if prefer_provider == 'infura':
-        return http_web3
+        return http_web3()
     elif prefer_provider == 'default':
-        return http_web3
+        return http_web3()
     elif prefer_provider == 'custom':
-        return rpc_web3
+        return rpc_web3()
     else:
         raise
 
