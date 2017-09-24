@@ -20,7 +20,6 @@ import twitter
 import requests
 from urlparse import urlparse
 from app.github import post_issue_comment
-from marketing.mails import new_bounty_claim, new_bounty_rejection, new_bounty_acceptance
 
 
 def maybe_market_to_twitter(bounty, event_name, txid):
@@ -107,6 +106,7 @@ def maybe_market_to_github(bounty, event_name, txid):
 
 
 def maybe_market_to_email(b, event_name, txid):
+    from marketing.mails import new_bounty_claim, new_bounty_rejection, new_bounty_acceptance
 
     #TODO: allow people to subscribe to new_bounty notifications
     #new_bounty(b, [to_email])
