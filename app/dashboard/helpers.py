@@ -16,13 +16,13 @@
 
 '''
 from bs4 import BeautifulSoup
-import datetime
 from dashboard.models import Bounty, BountySyncRequest
 from dashboard.notifications import maybe_market_to_twitter, maybe_market_to_slack, maybe_market_to_github, maybe_market_to_email
 from django.http import JsonResponse
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.db import transaction
+from django.utils import timezone
 from ratelimit.decorators import ratelimit
 import json
 import requests
@@ -121,17 +121,21 @@ def keywords(request):
 
     return JsonResponse(response)
 
+
 def normalizeURL(url):
     if url[-1] == '/':
         url = url[0:-1]
     return url
 
-#returns didChange if bounty has changed since last sync
+# returns didChange if bounty has changed since last sync
 # then old_bounty
 # then new_bounty
 def syncBountywithWeb3(bountyContract, url):
-    #setup
     bountydetails = bountyContract.call().bountydetails(url)
+    return process_bounty_details(bountydetails, url)
+
+
+def process_bounty_details(bountydetails, url):
     url = normalizeURL(url)
 
     #extract json
@@ -169,8 +173,8 @@ def syncBountywithWeb3(bountyContract, url):
             old_bounty.current_bounty = False;
             old_bounty.save()
         new_bounty = Bounty.objects.create(
-            title=metadata.get('issueTitle'),
-            web3_created=datetime.datetime.fromtimestamp(bountydetails[7]),
+            title=metadata.get('issueTitle',''),
+            web3_created=timezone.datetime.fromtimestamp(bountydetails[7]),
             value_in_token=bountydetails[0],
             token_name=metadata.get('tokenName'),
             token_address=bountydetails[1],
@@ -185,7 +189,7 @@ def syncBountywithWeb3(bountyContract, url):
             claimee_email=claimee_metadata.get('notificationEmail', None),
             claimee_github_username=claimee_metadata.get('githubUsername', None),
             is_open=bountydetails[4],
-            expires_date=datetime.datetime.fromtimestamp(bountydetails[9]),
+            expires_date=timezone.datetime.fromtimestamp(bountydetails[9]),
             raw_data=bountydetails,
             metadata=metadata,
             claimee_metadata=claimee_metadata,

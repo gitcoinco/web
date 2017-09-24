@@ -92,7 +92,7 @@ class Bounty(SuperModel):
 
     @property
     def keywords(self):
-        return self.metadata.get('issueKeywords',False)
+        return self.metadata.get('issueKeywords', False)
 
     @property
     def now(self):

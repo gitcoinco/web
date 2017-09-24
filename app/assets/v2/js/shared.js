@@ -32,6 +32,15 @@ var timestamp = function(){
     return Math.floor(Date.now() / 1000);
 };
 
+
+var showLoading = function(){
+    $('.loading').css('display', 'flex');
+    $(".nonefound").css('display','none');
+    $("#primary_view").css('display','none');
+    $("#actions").css('display','none');
+    setTimeout(showLoading,10);
+};
+
 var watch_list = function(){
     if(typeof localStorage['watches'] == 'undefined'){
         return [];
@@ -124,15 +133,20 @@ function timeDifference(current, previous) {
     var plural = amt != 1 ? 's' : '';
     
     return amt + ' '+unit+plural+' ago';   
-}
+};
 
-var sync_web3 = function(issueURL){
+var sync_web3 = function(issueURL, bountydetails, callback){
     var url = '/bounty/sync_web3';
     args = {
         'issueURL': issueURL,
     }
+    if(typeof bountydetails != 'undefined'){
+        args['bountydetails'] = bountydetails;
+    }
     $.post(url, args, function(){
-        console.log('done');
+        if(typeof callback != 'undefined'){
+            callback();
+        }
     })
 }
 

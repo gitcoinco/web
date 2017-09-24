@@ -23,7 +23,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from dashboard.helpers import normalizeURL
+from dashboard.helpers import normalizeURL, process_bounty_details
 
 def process_bounty(request):
 
@@ -103,16 +103,39 @@ def save_search(request):
     return TemplateResponse(request, 'save_search.html', context)
 
 @csrf_exempt
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+#@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def sync_web3(request):
+
+    #setup
     result = {}
     issueURL = request.POST.get('issueURL', False)
+    bountydetails = request.POST.getlist('bountydetails[]', [])
     if issueURL:
+
         issueURL = normalizeURL(issueURL)
-        result['status'] = 'OK'
-        for existing_bsr in BountySyncRequest.objects.filter(github_url=issueURL, processed=False):
-            existing_bsr.processed = True
-            existing_bsr.save()
+        if not len(bountydetails):
+            #create a bounty sync request
+            result['status'] = 'OK'
+            for existing_bsr in BountySyncRequest.objects.filter(github_url=issueURL, processed=False):
+                existing_bsr.processed = True
+                existing_bsr.save()
+        else:
+            #normalize data
+            bountydetails[0] = int(bountydetails[0])
+            bountydetails[1] = str(bountydetails[1])
+            bountydetails[2] = str(bountydetails[2])
+            bountydetails[3] = str(bountydetails[3])
+            bountydetails[4] = bool(bountydetails[4] == 'true')
+            bountydetails[5] = bool(bountydetails[5] == 'true')
+            bountydetails[6] = str(bountydetails[6])
+            bountydetails[7] = int(bountydetails[7])
+            bountydetails[8] = str(bountydetails[8])
+            bountydetails[9] = int(bountydetails[9])
+            bountydetails[10] = str(bountydetails[10])
+            print(bountydetails)
+            #TODO: verify client did not manipulate the data
+            process_bounty_details(bountydetails, issueURL)
+
         BountySyncRequest.objects.create(
             github_url=issueURL,
             processed=False,
