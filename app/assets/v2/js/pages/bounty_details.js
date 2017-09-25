@@ -125,7 +125,7 @@ var callbacks = {
 }
 
 
-var pendingChangesWarning = function(issueURL, last_modified_time_remote){
+var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         //setup callbacks
         var changes_synced_callback = function(){
             document.location.href = document.location.href;
@@ -195,10 +195,12 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote){
         var is_changing_local_recent = local_delta < (60 * 60); // less than one hour
 
         //remote warning 
-        var remote_delta = (new Date() - new Date(last_modified_time_remote)) / 1000;
+        var remote_delta = (new Date(now) - new Date(last_modified_time_remote)) / 1000;
         var is_changing_remote_recent = remote_delta < (60 * 60); // less than one minute
 
         should_display_warning = !last_modified_time_remote || ((is_changing_local_recent) && (remote_delta > local_delta));
+        console.log(should_display_warning);
+        console.log(last_modified_time_remote, is_changing_local_recent, remote_delta, local_delta);
         if(should_display_warning){
 
             showWarningMessage();
@@ -315,7 +317,7 @@ window.addEventListener('load', function() {
                     
                     //cleanup
                     document.result = result;
-                    pendingChangesWarning(issueURL, result['modified_on']);
+                    pendingChangesWarning(issueURL, result['modified_on'], result['now']);
                     add_to_watch_list(result['github_url']);
                     return;
                 }
