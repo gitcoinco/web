@@ -147,7 +147,7 @@ $(document).ready(function(){
         var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
 
         //setup callback functions for web3 calls
-        var callback2 = function(error, result){
+        var post_bounty_callback = function(error, result){
             if(error){
                 console.log("two", error);
                     _alert({ message: "There was an error.  Please try again or conact support." });
@@ -170,7 +170,8 @@ $(document).ready(function(){
             if(isETH){
                 value = amount;
             }
-            bounty.postBounty.estimateGas(issueURL, 
+            var _bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+            _bounty.postBounty.estimateGas(issueURL, 
                 amount, 
                 tokenAddress, 
                 expirationTimeDelta, 
@@ -179,7 +180,7 @@ $(document).ready(function(){
                 function(errors, result){
                     var gas = result + 10;
                     var gasLimit = gas * gasLimitMultiplier;
-                    bounty.postBounty.sendTransaction(issueURL, 
+                    _bounty.postBounty.sendTransaction(issueURL, 
                         amount, 
                         tokenAddress, 
                         expirationTimeDelta, 
@@ -189,11 +190,12 @@ $(document).ready(function(){
                             gasLimit: web3.toHex(gasLimit), 
                             gasPrice:web3.toHex(gasPrice), 
                             value:value},
-                        callback2);
+                        post_bounty_callback);
 
                 });
         };
-        var callback = function(error, result){
+        var erc20_approve_callback = function(error, result){
+            _alert({ title: "Transaction #1 Submitted", message: "We've just submited the first contract to the blockchain.  Hang tight for a few seconds (can sometimes take up to a minute) while it confirms."  }, 'info');
             var next = function(){
                 callFunctionWhenTransactionMined(result,function(){
                     _alert({ title: "Transaction #2", message: "Thanks for approving the token transfer.  Now, submit the bounty to the bounty contract."  }, 'info');
@@ -225,7 +227,7 @@ $(document).ready(function(){
                             gasLimit: web3.toHex(gasLimit), 
                             gasPrice:web3.toHex(gasPrice), 
                         },
-                        callback);
+                        erc20_approve_callback);
                 });
         };
         // actually send the transactions to web3
