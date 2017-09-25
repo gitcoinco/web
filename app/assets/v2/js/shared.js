@@ -49,7 +49,7 @@ var watch_list = function(){
 }
 
 var is_on_watch_list = function(issueURL){
-    if(localStorage['watches'].indexOf(issueURL) != -1){
+    if(localStorage['watches'] && localStorage['watches'].indexOf(issueURL) != -1){
         return true;
     }
     return false;
