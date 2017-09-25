@@ -13,7 +13,7 @@ This is the website that is live at gitcoin.co
 Functionally, the app has several key features:
 
 * Smart Contracts -- Where bounties are stored and indexed.
-* Brochureware -- Describes the project
+* Brochureware -- Describes the project.
 * Bounty Explorer -- A searchable index of all of the work available in the system.
 * Bounty Submission / Acceptance flow -- Interface between the application and web3.
 
@@ -118,6 +118,28 @@ truffle(development)> BountyIndex.at('0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd
 - be sure to replace `https://github.com/owocki/pytrader/pull/83` with the issue that you care about.
 
 Further information on the smart contract interface is available at [https://github.com/gitcoinco/smart_contracts/blob/master/contracts/bounty/BountyIndex.sol](https://github.com/gitcoinco/smart_contracts/blob/master/contracts/bounty/BountyIndex.sol)
+
+# Running Locally
+
+```
+git clone https://github.com/gitcoinco/web.git
+cd web
+cp app/local_settings.py.dist app/local_settings.py
+
+```
+
+You will need to edit the `app/local_settings.py` file with your local settings.  Look for config items that are marked `#required`.
+
+
+```
+mkvirtualenv gcoin
+pip install -r requirements.txt
+./manage.py sync_db
+./manage.py migrate
+./manage.py runserver 0.0.0.0:8080
+```
+
+Navigate to `http://localhost:8080/`. 
 
 
 # Adding your token to Gitcoin.
