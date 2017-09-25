@@ -6,5 +6,5 @@ app/app/local_settings.py
 app/static/*
 app/mydatabase
 app/marketing/quotify/output/*
-app/output/whitepaper*
+app/output/*.pdf
 app/assets/other/wp.pdf
