@@ -146,7 +146,6 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         var check_for_bounty_changed_updates_web3 = function(){
             callFunctionWhenTransactionMined(localStorage['txid'],function(){
                 var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-                console.log('syncing with web3');
                 setTimeout(function(){
                     bounty.bountydetails.call(issueURL, function(error, result){
                         if(error){
@@ -157,7 +156,6 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                             result[7] = result[7].toNumber();
                             result[9] = result[9].toNumber();
                             was_success = result[0] > 0;
-                            console.log(result);
                             if(was_success){
                                 console.log('success syncing with web3');
                                 sync_web3(issueURL, result, changes_synced_callback);
@@ -199,8 +197,6 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         var is_changing_remote_recent = remote_delta < (60 * 60); // less than one minute
 
         should_display_warning = !last_modified_time_remote || ((is_changing_local_recent) && (remote_delta > local_delta));
-        console.log(should_display_warning);
-        console.log(last_modified_time_remote, is_changing_local_recent, remote_delta, local_delta, last_modified_time_remote, now);
         if(should_display_warning){
 
             showWarningMessage();
@@ -220,7 +216,7 @@ window.addEventListener('load', function() {
             var nonefound = true;
             for(var i = 0; i<results.length; i++){
                 var result = results[i];
-                if(result['github_url'] == issueURL){
+                if(normalizeURL(result['github_url']) == normalizeURL(issueURL)){
                     $(".result_container").css('display','flex','important');
                     nonefound= false;
 

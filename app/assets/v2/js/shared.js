@@ -11,6 +11,21 @@ var callFunctionWhenTransactionMined = function(txHash, f){
     });
 };
 
+var waitforWeb3 = function(callback){
+    if(document.web3network){
+        callback();
+    } else {
+        var wait_callback = function(){
+            waitforWeb3(callback);
+        };
+        setTimeout(wait_callback, 100);
+    }
+}
+
+var normalizeURL = function(url){
+    return url.replace(/\/$/, '');
+}
+
 var _alert = function (msg, _class){
     if(typeof msg == 'string'){
         msg = {
