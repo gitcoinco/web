@@ -33,13 +33,18 @@ git checkout $BRANCH
 git pull origin $BRANCH
 
 #deploy hooks
+echo "- install req"
 pip install -r requirements.txt
+echo "- install crontab"
 crontab scripts/crontab
 cd app
+echo "- collect static"
 ./manage.py collectstatic --noinput -i other
 rm -Rf ~/gitcoin/coin/app/static/other
+echo "- db"
 ./manage.py migrate
 ./manage.py createcachetable
 
 #finally, let gunicorn know its ok to restart
+echo "- gunicorn"
 sudo systemctl restart gunicorn
