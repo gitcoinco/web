@@ -155,7 +155,7 @@ $(document).ready(function(){
     $(".save_search").click(function(e){
         e.preventDefault();
         $("#save").remove();
-        var url = '/search/save';
+        var url = '/sync/search_save';
         setTimeout(function(){
             $.get(url, function(newHTML){
                 $(newHTML).appendTo('body').modal();
@@ -172,7 +172,7 @@ $(document).ready(function(){
         if(!is_validated){
              _alert({ message: "Please enter a valid email address." });
         } else {
-            var url = '/search/save';
+            var url = '/sync/search_save';
             $.post(url, {
                 email: email,
                 raw_data, raw_data,

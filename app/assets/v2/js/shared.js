@@ -136,7 +136,7 @@ function timeDifference(current, previous) {
 };
 
 var sync_web3 = function(issueURL, bountydetails, callback){
-    var url = '/bounty/sync_web3';
+    var url = '/sync/web3';
     args = {
         'issueURL': issueURL,
     }
@@ -183,7 +183,7 @@ var retrieveTitle = function(){
     if(issue_url.length < 5 || issue_url.indexOf('github') == -1){
         return;
     }
-    var request_url = '/helpers/get_title?url=' + encodeURIComponent(issue_url);
+    var request_url = '/sync/get_issue_title?url=' + encodeURIComponent(issue_url);
     target_ele.addClass('loading');
     $.get(request_url, function(result){
         target_ele.removeClass('loading');
@@ -202,7 +202,7 @@ var retrieveKeywords = function(){
     if(issue_url.length < 5 || issue_url.indexOf('github') == -1){
         return;
     }
-    var request_url = '/helpers/get_keywords?url=' + encodeURIComponent(issue_url);
+    var request_url = '/sync/get_issue_keywords?url=' + encodeURIComponent(issue_url);
     target_ele.addClass('loading');
     $.get(request_url, function(result){
         target_ele.removeClass('loading');

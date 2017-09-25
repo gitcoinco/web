@@ -36,14 +36,10 @@ urlpatterns = [
     # dashboard views
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
-    url(r'^search/save?', dashboard.views.save_search, name='save_search'),
-    url(r'^bounty/sync_web3/?', dashboard.views.sync_web3, name='sync_web3'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     url(r'^bounty/claim/?', dashboard.views.claim_bounty, name='claim_bounty'),
     url(r'^bounty/process/?', dashboard.views.process_bounty, name='process_bounty'),
     url(r'^bounty/details/?', dashboard.views.bounty_details, name='bounty_details'),
-    url(r'^helpers/get_title?', dashboard.helpers.title, name='helpers_title'),
-    url(r'^helpers/get_keywords?', dashboard.helpers.keywords, name='helpers_keywords'),
     url(r'^legal/?', dashboard.views.terms, name='legal'),
     url(r'^terms/?', dashboard.views.terms, name='_terms'),
     url(r'^legal/terms/?', dashboard.views.terms, name='terms'),
@@ -51,6 +47,12 @@ urlpatterns = [
     url(r'^legal/cookie/?', dashboard.views.cookie, name='cookie'),
     url(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
+
+    # sync methods
+    url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
+    url(r'^sync/get_issue_title?', dashboard.helpers.title, name='helpers_title'),
+    url(r'^sync/get_issue_keywords?', dashboard.helpers.keywords, name='helpers_keywords'),
+    url(r'^sync/search_save?', dashboard.views.save_search, name='save_search'),
 
     # brochureware views
     url(r'^about/?', retail.views.about, name='about'),

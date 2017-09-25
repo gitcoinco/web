@@ -314,6 +314,7 @@ window.addEventListener('load', function() {
                     document.result = result;
                     pendingChangesWarning(issueURL, result['modified_on']);
                     add_to_watch_list(result['github_url']);
+                    return;
                 }
             }
             if(nonefound){
