@@ -151,15 +151,18 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote){
                     bounty.bountydetails.call(issueURL, function(error, result){
                         if(error){
                             setTimeout(check_for_bounty_changed_updates_web3, 1000);
+                            console.log(error);
                         } else {
                             result[0] = result[0].toNumber();
                             result[7] = result[7].toNumber();
                             result[9] = result[9].toNumber();
                             was_success = result[0] > 0;
+                            console.log(result);
                             if(was_success){
                                 console.log('success syncing with web3');
                                 sync_web3(issueURL, result, changes_synced_callback);
                             } else {
+                                console.log('not success syncing with web3');
                                 setTimeout(check_for_bounty_changed_updates_web3, 1000);
                             }
                         }

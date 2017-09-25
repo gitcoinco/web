@@ -195,7 +195,6 @@ $(document).ready(function(){
                 });
         };
         var erc20_approve_callback = function(error, result){
-            _alert({ title: "Transaction #1 Submitted", message: "We've just submited the first contract to the blockchain.  Hang tight for a few seconds (can sometimes take up to a minute) while it confirms."  }, 'info');
             var next = function(){
                 callFunctionWhenTransactionMined(result,function(){
                     _alert({ title: "Transaction #2", message: "Thanks for approving the token transfer.  Now, submit the bounty to the bounty contract."  }, 'info');
@@ -211,6 +210,7 @@ $(document).ready(function(){
                     $('#submitBounty').removeAttr('disabled');
                 }
             } else {
+                _alert({ title: "Transaction #1 Submitted", message: "We've just submited the first contract to the blockchain.  Hang tight for a few seconds (can sometimes take up to a minute) while it confirms."  }, 'info');
                 next();
             }
         };
@@ -218,7 +218,8 @@ $(document).ready(function(){
             token_contract.approve.estimateGas(bounty_address()
                 ,amount, 
                 function(errors,result){
-                    var gas = result * 1.5;
+                    //var gas = result * 1.5;
+                    var gas = 470227;
                     var gasLimit = gas * gasLimitMultiplier;
                     token_contract.approve.sendTransaction(bounty_address()
                         ,amount, 
