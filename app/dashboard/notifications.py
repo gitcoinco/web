@@ -37,7 +37,7 @@ def maybe_market_to_twitter(bounty, event_name, txid):
     )
 
     new_tweet = "New bounty worth {} {} \n\n{}".format(
-        round(bounty.get_natural_value(), 2),
+        round(bounty.get_natural_value(), 4),
         bounty.token_name,
         bounty.get_absolute_url()
     )
@@ -56,7 +56,7 @@ def maybe_market_to_slack(bounty, event_name, txid):
         return False
 
     title = bounty.title if bounty.title else bounty.github_url
-    msg = "{} worth {} {}: {} \n\n{}".format(event_name, round(bounty.get_natural_value(), 2), bounty.token_name, title, bounty.get_absolute_url())
+    msg = "{} worth {} {}: {} \n\n{}".format(event_name, round(bounty.get_natural_value(), 4), bounty.token_name, title, bounty.get_absolute_url())
 
     payload = {
         "text": msg,
@@ -81,9 +81,9 @@ def maybe_market_to_github(bounty, event_name, txid):
     # prepare message
     msg = ''
     if event_name == 'new_bounty':
-        msg = "__This issue now has a bounty of {} {} attached to it.__  \n\nLearn more at: {}".format(round(bounty.get_natural_value(), 2), bounty.token_name, bounty.get_absolute_url())
+        msg = "__This issue now has a bounty of {} {} attached to it.__  \n\nLearn more at: {}".format(round(bounty.get_natural_value(), 4), bounty.token_name, bounty.get_absolute_url())
     elif event_name == 'approved_claim':
-        msg = "__The bounty of {} {} attached to this issue has been approved & issue.d__  \n\nLearn more at: {}".format(round(bounty.get_natural_value(), 2), bounty.token_name, bounty.get_absolute_url())
+        msg = "__The bounty of {} {} attached to this issue has been approved & issue.d__  \n\nLearn more at: {}".format(round(bounty.get_natural_value(), 4), bounty.token_name, bounty.get_absolute_url())
     else:
         return False
 

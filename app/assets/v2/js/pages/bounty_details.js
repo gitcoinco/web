@@ -200,7 +200,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
 
         should_display_warning = !last_modified_time_remote || ((is_changing_local_recent) && (remote_delta > local_delta));
         console.log(should_display_warning);
-        console.log(last_modified_time_remote, is_changing_local_recent, remote_delta, local_delta);
+        console.log(last_modified_time_remote, is_changing_local_recent, remote_delta, local_delta, last_modified_time_remote, now);
         if(should_display_warning){
 
             showWarningMessage();
