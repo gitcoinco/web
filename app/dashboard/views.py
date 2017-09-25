@@ -23,7 +23,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from dashboard.helpers import normalizeURL, process_bounty_details
+from dashboard.helpers import normalizeURL, process_bounty_details, process_bounty_changes
 
 def process_bounty(request):
 
@@ -134,13 +134,20 @@ def sync_web3(request):
             bountydetails[10] = str(bountydetails[10])
             print(bountydetails)
             contract_address = request.POST.get('contract_address')
-            #TODO: verify client did not manipulate the data
-            process_bounty_details(bountydetails, issueURL, contract_address)
+            didChange, old_bounty, new_bounty = process_bounty_details(bountydetails, issueURL, contract_address)
+
+            print("{} changed, {}".format(didChange, issueURL))
+            if didChange:
+                print("- processing changes");
+                process_bounty_changes(old_bounty, new_bounty, None)
+
 
         BountySyncRequest.objects.create(
             github_url=issueURL,
             processed=False,
             )
+
+
 
     return JsonResponse(result)
 

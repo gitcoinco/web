@@ -122,13 +122,13 @@ def maybe_market_to_email(b, event_name, txid):
     if event_name == 'approved_claim':
         try:
             to_emails = [b.bounty_owner_email, b.claimee_email]
-            new_bounty_rejection(b, to_emails)
+            new_bounty_acceptance(b, to_emails)
         except Exception as e:
             print(e)
     if event_name == 'rejected_claim':
         try:
             to_emails = [b.bounty_owner_email, b.claimee_email]
-            new_bounty_acceptance(b, to_emails)
+            new_bounty_rejection(b, to_emails)
         except Exception as e:
             print(e)
 

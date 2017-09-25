@@ -89,7 +89,7 @@
     text-align: center;
     top: 16px;
     width: 55px;
-    z-index: 9999;
+    z-index: 1;
 }
 .tline > li > .tline_badge img {
     width: 35px;
