@@ -81,7 +81,8 @@ def maybe_market_to_github(bounty, event_name, txid):
     # prepare message
     msg = ''
     if event_name == 'new_bounty':
-        msg = "__This issue now has a bounty of {} {} attached to it.__  \n\nLearn more at: {}".format(round(bounty.get_natural_value(), 4), bounty.token_name, bounty.get_absolute_url())
+        usdt_value = "(" + bounty.value_in_usdt + " USDT)" if bounty.value_in_usdt else ""
+        msg = "__This issue now has a bounty of {} {} {} attached to it.__  To view or claim this bounty, [click here]({}).".format(round(bounty.get_natural_value(), 4), bounty.token_name, usdt_value, bounty.get_absolute_url())
     elif event_name == 'approved_claim':
         msg = "__The bounty of {} {} attached to this issue has been approved & issue.d__  \n\nLearn more at: {}".format(round(bounty.get_natural_value(), 4), bounty.token_name, bounty.get_absolute_url())
     else:

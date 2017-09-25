@@ -205,6 +205,8 @@ var retrieveTitle = function(){
         if(result['title']){
             target_ele.val(result['title']);
         }
+    }).fail(function(){
+        target_ele.removeClass('loading');
     });
 };
 var retrieveKeywords = function(){
@@ -225,6 +227,8 @@ var retrieveKeywords = function(){
             var keywords = result['keywords'];
             target_ele.val(keywords.join(', '));
         }
+    }).fail(function(){
+        target_ele.removeClass('loading');
     });
 };
 
