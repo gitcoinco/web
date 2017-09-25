@@ -161,6 +161,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                                 sync_web3(issueURL, result, changes_synced_callback);
                             } else {
                                 console.log('not success syncing with web3');
+                                console.log(result);
                                 setTimeout(check_for_bounty_changed_updates_web3, 1000);
                             }
                         }
