@@ -81,7 +81,7 @@ class Bounty(SuperModel):
     def get_natural_value(self):
         token = addr_to_token(self.token_address)
         decimals = token['decimals']
-        return self.value_in_token / 10**decimals
+        return float(self.value_in_token) / 10**decimals
 
     @property
     def title_or_desc(self):
@@ -132,7 +132,7 @@ class Bounty(SuperModel):
         if self.token_name == 'USDT':
             return self.value_in_token
         try:
-            return round(convert_amount(self.value_in_eth, 'ETH', 'USDT') / 10**18, 2)
+            return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / 10**18, 2)
         except:
             return None
 

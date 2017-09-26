@@ -46,5 +46,5 @@ var etherscan_tx_url = function (txid){
 }
 
 gasLimitMultiplier = 4;
-defaultGasPrice = 10**9 * 15; //15 gwei
+defaultGasPrice = 10**9 * 9; //9 gwei
 weiPerEther = 10**18;
