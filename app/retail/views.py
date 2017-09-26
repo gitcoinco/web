@@ -92,9 +92,14 @@ def help_faq(request):
 
 
 def browser_extension(request):
-    return redirect('https://chrome.google.com/webstore/detail/gdocmelgnjeejhlphdnoocikeafdpaep/publish-accepted')
+    return redirect('https://chrome.google.com/webstore/detail/gdocmelgnjeejhlphdnoocikeafdpaep')
 
 
 def slack(request):
     return redirect('https://gitcoincommunity.herokuapp.com')
+
+
+def btctalk(request):
+    return redirect('https://bitcointalk.org/index.php?topic=2206663')
+
 

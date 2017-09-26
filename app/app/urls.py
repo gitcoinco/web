@@ -65,6 +65,7 @@ urlpatterns = [
     url(r'^help/?', retail.views.help, name='help'),
     url(r'^extension/?', retail.views.browser_extension, name='browser_extension'),
     url(r'^slack/?', retail.views.slack, name='slack'),
+    url(r'^btctalk/?', retail.views.btctalk, name='btctalk'),
 
     #token distribution event
     url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),

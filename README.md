@@ -4,6 +4,11 @@
 
 Gitcoin pushes Open Source Forward.  Learn more at [https://gitcoin.co](https://gitcoin.co)
 
+
+<a href="https://gitcoin.co/explorer/?q=https://github.com/gitcoinco/web">
+    <img src='https://gitcoin.co/static/v2/images/promo_buttons/slice_01.png' width=267px height=52px />
+</a>
+
 # web repo
 
 This is the website that is live at gitcoin.co
