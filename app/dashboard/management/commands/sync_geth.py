@@ -29,9 +29,9 @@ POLL_SLEEP_TIME = 3
 
 def get_callback(web3, bounty_contract_address, realtime):
 
-    def process_change(bountyContract, url, txid):
+    def process_change(bountyContract, url, txid, network):
         url = normalizeURL(url)
-        didChange, old_bounty, new_bounty = syncBountywithWeb3(bountyContract, url)
+        didChange, old_bounty, new_bounty = syncBountywithWeb3(bountyContract, url, network)
         print("{} changed, {}".format(didChange, url))
         if didChange:
             print("- processing changes");
@@ -55,7 +55,7 @@ def get_callback(web3, bounty_contract_address, realtime):
             result = web3.toAscii(entry['data']);
             result = result[result.find('http'):]
             url = result[:result.find('\x00')]
-            process_change(bountyContract, url, txid)
+            process_change(bountyContract, url, txid, None) #TODO - pass options['network'] in 
 
     def faux_realtime_callback(block_id):
         bountyContract = getBountyContract(web3, bounty_contract_address)
@@ -63,7 +63,7 @@ def get_callback(web3, bounty_contract_address, realtime):
 
         for bsr in bsrs:
             url = bsr.github_url
-            process_change(bountyContract, url, None)
+            process_change(bountyContract, url, None, None) #TODO - pass options['network'] in 
 
         pass
 

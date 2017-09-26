@@ -143,7 +143,6 @@ $(document).ready(function(){
         var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
         var account = web3.eth.coinbase;
         amount = amount * decimalDivisor;
-        const gasPrice = 10**9 * 16; //16 gwei
         var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
 
         //setup callback functions for web3 calls
@@ -188,7 +187,7 @@ $(document).ready(function(){
                         {from :account, 
                             gas:web3.toHex(gas), 
                             gasLimit: web3.toHex(gasLimit), 
-                            gasPrice:web3.toHex(gasPrice), 
+                            gasPrice:web3.toHex(defaultGasPrice), 
                             value:value},
                         post_bounty_callback);
 
@@ -226,7 +225,7 @@ $(document).ready(function(){
                         {from :account, 
                             gas:web3.toHex(gas), 
                             gasLimit: web3.toHex(gasLimit), 
-                            gasPrice:web3.toHex(gasPrice), 
+                            gasPrice:web3.toHex(defaultGasPrice), 
                         },
                         erc20_approve_callback);
                 });

@@ -134,7 +134,8 @@ def sync_web3(request):
             bountydetails[10] = str(bountydetails[10])
             print(bountydetails)
             contract_address = request.POST.get('contract_address')
-            didChange, old_bounty, new_bounty = process_bounty_details(bountydetails, issueURL, contract_address)
+            network = request.POST.get('network')
+            didChange, old_bounty, new_bounty = process_bounty_details(bountydetails, issueURL, contract_address, network)
 
             print("{} changed, {}".format(didChange, issueURL))
             if didChange:
