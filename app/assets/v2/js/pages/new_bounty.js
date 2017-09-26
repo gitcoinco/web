@@ -184,8 +184,8 @@ $(document).ready(function(){
                     var gasLimit = gas * gasLimitMultiplier;
 
                     // for some reason web3 was estimating 6699496 as the gas for standardtoken transfers
-                    var max_gas = 517849;
-                    if(gas > max_gas){
+                    var max_gas_for_erc20 = 517849;
+                    if(gas > max_gas_for_erc20 && !isETH){
                         gas = max_gas;
                         gasLimit = gas * 1.3;
                     }
