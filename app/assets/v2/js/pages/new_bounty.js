@@ -1,6 +1,6 @@
 
 window.addEventListener('load', function() {
-    setTimeout(function(){
+    waitforWeb3(function(){
         //add tokens to the submission form
         var tokenAddress = localStorage['tokenAddress'];
         if(!tokenAddress){
@@ -31,8 +31,7 @@ window.addEventListener('load', function() {
         if (typeof localStorage['acceptTOS'] !='undefined' && localStorage['acceptTOS']){
             $('input[name=terms]').attr('checked','checked');
         }
-
-    },500);
+    });
 
 });
 
