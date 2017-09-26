@@ -19,13 +19,28 @@
                             <div class="w-100" style="text-align: center;">
                                 <ol class="bounty_nav">
                                     <li class="{% if active_item == 1 %}active{%endif%} submit" >
-                                        1. Active{% if past_tense %}ed{%endif%}
+                                        1. 
+                                        {% if past_tense %}
+                                            Active
+                                        {%else%}
+                                            Create
+                                        {%endif%}
                                     </li>
                                     <li class="{% if active_item == 2 %}active{%endif%} fulfill">
-                                        2. Claim{% if past_tense %}ed{%endif%}
+                                        2.
+                                        {% if past_tense %}
+                                            Claimed
+                                        {%else%}
+                                            Claim
+                                        {%endif%}
                                     </li>
                                     <li class="{% if active_item == 3 %}active{%endif%} accept">
-                                        3. Accept{% if past_tense %}ed{%endif%}
+                                        3.
+                                        {% if past_tense %}
+                                            Paid
+                                        {%else%}
+                                            Pay
+                                        {%endif%}
                                     </li>
                                 </ol>
                             </div>

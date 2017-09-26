@@ -49,7 +49,7 @@ def new_bounty(request):
     params = {
         'issueURL': request.GET.get('source'),
         'active': 'submit_bounty',
-        'title': 'Submit Bounty',
+        'title': 'Create Bounty',
     }
 
     return TemplateResponse(request, 'submit_bounty.html', params)
