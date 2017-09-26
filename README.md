@@ -31,28 +31,30 @@ Technically, the system is architected:
 
 # HTTPS API
 
-Gitcoin provides a simple HTTPS API to access data without having to run your own Ethereum node. Right now the `bounties` endpoint is available at: https://gitcoin.co/api/v0.1/bounties
+Gitcoin provides a simple HTTPS API to access data without having to run your own Ethereum node. The API is live at https://gitcoin.co/api/v0.1
 
 ### Datatypes
 
 Beyond simple datatypes like `string` or `integer` the API returns datatypes like dates that are serialized in a very specific fashion.
 
-|                    |                                                           | 
-|--------------------|-----------------------------------------------------------| 
-| `date_time`        | Date and time represented in ISO 8601                     | 
-| `ethereum_address` | An ethereum token address with the leading `0x`           | 
-| `token_type`       | The type of token offered as a reward. Ex: `ETH` or `GIT` | 
-
+|  Datatype          |    Description                                            | Example 
+|--------------------|-----------------------------------------------------------| --------------------------------------------------------------------------------------|
+| `date_time`        | Date and time represented in ISO 8601                     | `2017-09-24T18:59:53.964344Z`                                                          |
+| `ethereum_address` | An ethereum token address with the leading `0x`           | `0x636f3093258412b96c43bef3663f1b853253ec59` |
+| `token_type`       | The type of token offered as a reward. Ex: `ETH` or `GIT` | `ETH`                                                                                  |
    
 ### `bounties`
 
-The bounties endpoint provides a listing of bounties and their current status. 
+The bounties endpoint provides a listing of bounties and their current status. There are two endpoints that access bounties:
+
+- `https://gitcoin.co/api/v0.1/bounties` - Returns a list of bounties
+- `https://gitcoin.co/api/v0.1/bounties/<bountyId>` - Returns a single bounty by ID.
 
 #### Fields
 
-|                    |                    |                                                                   | 
+| Field Key          |  Datatype          | Description                                                       | 
 |--------------------|--------------------|-------------------------------------------------------------------| 
-| `url`              | `string`           |  URL for this specific bounty Ex: api/v0.1/bounties/9             | 
+| `url`              | `string`           | URL for this specific bounty Ex: api/v0.1/bounties/9             | 
 | `created_on`       | `date_time`        | Creation timestamp                                                | 
 | `modified_on`      | `date_time`        | Last modified timestamp                                           | 
 | `title`            | `string`           | Title of the bounty                                               | 
@@ -73,14 +75,14 @@ The bounties endpoint provides a listing of bounties and their current status.
 
 **Current Status**
 
-|           |           |                                                                                                                                                                                                           | 
+| Field Key |  Datatype |  Description                                                                                                                                                                                               | 
 |-----------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| 
 | `is_open` | `boolean` | True if the bounty has not been completed                                                                                                                                                                 | 
 | `status`  | `string`  | Current status enum: (`submitted`, The bounty was created) (`claimed`, Someone claimed the bounty) (`fulfilled`, Someone claimed and completed the bounty) (`expired`, The bounty expired w/o completion) | 
 
 **Bounty Creator & Bounty Claimee**
 
-|                                |                    |                                                          | 
+|  Field Key                     | Datatype           |  Description                                             | 
 |--------------------------------|--------------------|----------------------------------------------------------| 
 | `bounty_owner_address`         | `ethereum_address` | Address of the person who owns the bounty                | 
 | `bounty_owner_email`           | `string`           | Email of the bounty owner                                | 
@@ -164,9 +166,6 @@ By passing an `order_by` parameter you can order the data by the provided key. E
   ]
 
 ```
-
-[There is a bounty on adding more documentation to the API.](https://github.com/gitcoinco/web/issues/1).  Please feel free to take a stab at it.
-
 
 # WEB3 API
 
