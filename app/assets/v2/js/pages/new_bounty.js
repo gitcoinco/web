@@ -178,6 +178,13 @@ $(document).ready(function(){
                 function(errors, result){
                     var gas = result + 10;
                     var gasLimit = gas * gasLimitMultiplier;
+
+                    // for some reason web3 was estimating 6699496 as the gas for standardtoken transfers
+                    var max_gas = 517849;
+                    if(gas > max_gas){
+                        gas = max_gas;
+                        gasLimit = gas * 1.3;
+                    }
                     _bounty.postBounty.sendTransaction(issueURL, 
                         amount, 
                         tokenAddress, 
