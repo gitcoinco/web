@@ -3,6 +3,9 @@ window.onload = function(){
     setTimeout(function(){
         var account = web3.eth.accounts[0];
 
+        if(getParam('source')){
+            $('input[name=issueURL]').val(getParam('source'));
+        }
         if (typeof localStorage['acceptTOS'] !='undefined' && localStorage['acceptTOS']){
             $('input[name=terms]').attr('checked','checked');
         }

@@ -13,6 +13,9 @@ window.onload = function(){
         if (typeof localStorage['acceptTOS'] !='undefined' && localStorage['acceptTOS']){
             $('input[name=terms]').attr('checked','checked');
         }
+        if(getParam('source')){
+            $('input[name=issueURL]').val(getParam('source'));
+        }
 
 
         $('#submitBounty').click(function(e){

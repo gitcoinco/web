@@ -38,6 +38,10 @@ window.addEventListener('load', function() {
 
 $(document).ready(function(){
 
+    if(getParam('source')){
+        $('input[name=issueURL]').val(getParam('source'));
+    }
+
     //fetch issue URL related info
     $("input[name=issueURL]").blur(retrieveTitle);
     $("input[name=issueURL]").blur(retrieveKeywords);
