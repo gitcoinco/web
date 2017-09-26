@@ -31,10 +31,82 @@ Technically, the system is architected:
 
 # HTTPS API
 
-You may interact with the HTTPS API as follows
+Gitcoin provides a simple HTTPS API to access data without having to run your own Ethereum node. The API is live at https://gitcoin.co/api/v0.1
 
+### Datatypes
+
+Beyond simple datatypes like `string` or `integer` the API returns datatypes like dates that are serialized in a very specific fashion.
+
+|  Datatype          |    Description                                            | Example 
+|--------------------|-----------------------------------------------------------| --------------------------------------------------------------------------------------|
+| `date_time`        | Date and time represented in ISO 8601                     | `2017-09-24T18:59:53.964344Z`                                                          |
+| `ethereum_address` | An ethereum token address with the leading `0x`           | `0x636f3093258412b96c43bef3663f1b853253ec59` |
+| `token_type`       | The type of token offered as a reward. Ex: `ETH` or `GIT` | `ETH`                                                                                  |
+   
+### `bounties`
+
+The bounties endpoint provides a listing of bounties and their current status. There are two endpoints that access bounties:
+
+- `https://gitcoin.co/api/v0.1/bounties` - Returns a list of bounties
+- `https://gitcoin.co/api/v0.1/bounties/<bountyId>` - Returns a single bounty by ID.
+
+#### Fields
+
+| Field Key          |  Datatype          | Description                                                       | 
+|--------------------|--------------------|-------------------------------------------------------------------| 
+| `url`              | `string`           | URL for this specific bounty Ex: api/v0.1/bounties/9             | 
+| `created_on`       | `date_time`        | Creation timestamp                                                | 
+| `modified_on`      | `date_time`        | Last modified timestamp                                           | 
+| `title`            | `string`           | Title of the bounty                                               | 
+| `web3_created`     | `date_time`        | Creation timestamp for the transaction that holds this bounty     | 
+| `value_in_token`   | `integer`          | Amount of tokens rewarded for bounty                              | 
+| `token_name`       | `token_type`       | Type of token. Ex: `ETH`, `GIT`                                   | 
+| `token_address`    | `ethereum_address` | Address where the tokens are located                              | 
+| `bounty_type`      | `string`           | Type of bounty. Ex: `Bug`, `Feature`, `Security`                  | 
+| `project_length`   | `string`           | Relative length of project Ex: `Hours`, `Days`, `Weeks`, `Months` | 
+| `experience_level` | `string`           | Recommended experience level                                      | 
+| `github_url`       | `string`           | URL on GitHub where you can find the bounty description           | 
+| `current_bounty`   | `boolean`          | Whether this bounty is the most current revision one or not       | 
+| `expires_date`     | `date_time`        | Date before which the bounty must be compelted                    | 
+| `raw_data`         | `array`            | Raw contract data, see the example below for more information     | 
+| `value_in_eth`     | `integer`          | Value of the bounty in Ethereum                                   | 
+| `value_in_usdt`    | `float`            | Approximation of current value in USD                             | 
+| `now`              | `date_time`        | Current date_time on the server                                   | 
+
+**Current Status**
+
+| Field Key |  Datatype |  Description                                                                                                                                                                                               | 
+|-----------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| 
+| `is_open` | `boolean` | True if the bounty has not been completed                                                                                                                                                                 | 
+| `status`  | `string`  | Current status enum: (`submitted`, The bounty was created) (`claimed`, Someone claimed the bounty) (`fulfilled`, Someone claimed and completed the bounty) (`expired`, The bounty expired w/o completion) | 
+
+**Bounty Creator & Bounty Claimee**
+
+|  Field Key                     | Datatype           |  Description                                             | 
+|--------------------------------|--------------------|----------------------------------------------------------| 
+| `bounty_owner_address`         | `ethereum_address` | Address of the person who owns the bounty                | 
+| `bounty_owner_email`           | `string`           | Email of the bounty owner                                | 
+| `bounty_owner_github_username` | `string`           | Username of the bounty owner                             | 
+| `metadata`                     | `dictionary`       | Misc metadata about the bounty and the creator           | 
+| `claimeee_address`             | `ethereum_address` | Address of the person who claimed the bounty             | 
+| `claimee_email`                | `string`           | Email of the person claiming the bounty                  | 
+| `claimee_github_username`      | `string`           | Username of the claimee                                  | 
+| `claimee_metadata`             | `dictionary`       | `githubUsername` and `notificationEmail` for the claimee | 
+
+#### URL Parameters
+
+**Filters**
+
+You can filter the data returned from the API buy providing these keys as URL parameters `raw_data`, `experience_level`, `project_length`, `bounty_type`, `bounty_owner_address`, `is_open`, and `github_url`. `github_url` can take a comma-seperated list of GitHub urls
+
+**Order By**
+
+By passing an `order_by` parameter you can order the data by the provided key. Ex: `?order_by=expires_date`. To sort in the opposite direction you can add a `-` in from the the key `?order_by=-expires_date`. 
+
+#### Example Request
+   
 ```
-~ % curl "http://gitcoin.co/api/v0.1/bounties/?&order_by=web3_created"
+~ % curl "https://gitcoin.co/api/v0.1/bounties/?&order_by=web3_created"
 
 [
   {
@@ -94,9 +166,6 @@ You may interact with the HTTPS API as follows
   ]
 
 ```
-
-[There is a bounty on adding more documentation to the API.](https://github.com/gitcoinco/web/issues/1).  Please feel free to take a stab at it.
-
 
 # WEB3 API
 
