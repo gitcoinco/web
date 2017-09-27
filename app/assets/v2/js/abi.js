@@ -45,6 +45,7 @@ var etherscan_tx_url = function (txid){
     }
 }
 
-gasLimitMultiplier = 4;
-defaultGasPrice = 10**9 * 9; //9 gwei
-weiPerEther = 10**18;
+var max_gas_for_erc20 = 517849;
+var gasLimitMultiplier = 4;
+var defaultGasPrice = 10**9 * 9; //9 gwei
+var weiPerEther = 10**18;
