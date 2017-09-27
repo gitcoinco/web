@@ -180,14 +180,13 @@ $(document).ready(function(){
                 JSON.stringify(metadata),
                 {from :account, value:value},
                 function(errors, result){
-                    var gas = result + 10;
-                    console.log('got est gas' + gas)
-                    var gasLimit = gas * gasLimitMultiplier;
+                    var gas = Math.round(result * 1.3);
+                    var gasLimit = Math.round(gas * gasLimitMultiplier);
 
                     // for some reason web3 was estimating 6699496 as the gas for standardtoken transfers
                     if((gas > max_gas_for_erc20) && !isETH){
                         gas = max_gas_for_erc20;
-                        gasLimit = gas * 1.3;
+                        gasLimit = Math.round(gas * 1.3);
                     }
                     _bounty.postBounty.sendTransaction(issueURL, 
                         amount, 
@@ -228,8 +227,8 @@ $(document).ready(function(){
                 ,amount, 
                 function(errors,result){
                     //var gas = result * 1.5;
-                    var gas = 470227;
-                    var gasLimit = gas * gasLimitMultiplier;
+                    var gas = Math.round(470227 * gasMultiplier);
+                    var gasLimit = Math.round(gas * gasLimitMultiplier);
                     token_contract.approve.sendTransaction(bounty_address()
                         ,amount, 
                         {from :account, 

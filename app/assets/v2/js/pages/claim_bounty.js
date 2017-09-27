@@ -106,8 +106,8 @@ window.onload = function(){
                             issueURL, 
                             claimee_metadata, 
                             function(errors,result){
-                                var gas = result + 10;
-                                var gasLimit = gas * gasLimitMultiplier;
+                                var gas = Math.round(result * gasMultiplier);
+                                var gasLimit = Math.round(gas * gasLimitMultiplier);
                                 bounty.claimBounty.sendTransaction(issueURL, 
                                     claimee_metadata,
                                     {

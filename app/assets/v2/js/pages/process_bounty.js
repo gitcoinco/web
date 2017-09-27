@@ -89,8 +89,8 @@ window.onload = function(){
                     }
                     method.estimateGas(issueURL, {from :account}, 
                             function(errors,result){
-                                var gas = result * 2;
-                                var gasLimit = gas * gasLimitMultiplier;
+                                var gas = Math.round(result * gasMultiplier);
+                                var gasLimit = Math.round(gas * gasLimitMultiplier);
                                 method.sendTransaction(issueURL, 
                                     {from :account, 
                                         gas:web3.toHex(gas), 
