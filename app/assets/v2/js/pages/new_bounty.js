@@ -180,13 +180,13 @@ $(document).ready(function(){
                 JSON.stringify(metadata),
                 {from :account, value:value},
                 function(errors, result){
-                    var gas = Math.round(result * 1.3);
+                    var gas = Math.round(result * gasMultiplier);
                     var gasLimit = Math.round(gas * gasLimitMultiplier);
 
                     // for some reason web3 was estimating 6699496 as the gas for standardtoken transfers
-                    if((gas > max_gas_for_erc20) && !isETH){
-                        gas = max_gas_for_erc20;
-                        gasLimit = Math.round(gas * 1.3);
+                    if((gas > max_gas_for_erc20_bounty_post) && !isETH){
+                        gas = max_gas_for_erc20_bounty_post;
+                        gasLimit = Math.round(gas * gasMultiplier);
                     }
                     _bounty.postBounty.sendTransaction(issueURL, 
                         amount, 
@@ -218,7 +218,9 @@ $(document).ready(function(){
                     $('#submitBounty').removeAttr('disabled');
                 }
             } else {
-                _alert({ title: "Transaction #1 Submitted", message: "We've just submited the first contract to the blockchain.  Hang tight for a few seconds (can sometimes take up to a minute) while it confirms."  }, 'info');
+                var url = etherscan_tx_url(result);
+                var msg = "We've just submited the <a href="+url+" target=new>first transaction to the blockchain</a>.  Hang tight for a few seconds (can sometimes take up to a minute depending upon gas settings & network state) while it confirms.";
+                _alert({ title: "Transaction #1 Submitted", message: msg  }, 'info');
                 next();
             }
         };
@@ -226,8 +228,7 @@ $(document).ready(function(){
             token_contract.approve.estimateGas(bounty_address()
                 ,amount, 
                 function(errors,result){
-                    //var gas = result * 1.5;
-                    var gas = Math.round(470227 * gasMultiplier);
+                    var gas = Math.round(erc20_approve_gas * gasMultiplier);
                     var gasLimit = Math.round(gas * gasLimitMultiplier);
                     token_contract.approve.sendTransaction(bounty_address()
                         ,amount, 

@@ -45,7 +45,8 @@ var etherscan_tx_url = function (txid){
     }
 }
 
-var max_gas_for_erc20 = 517849;
+var erc20_approve_gas = 560000;
+var max_gas_for_erc20_bounty_post = 517849;
 var gasLimitMultiplier = 4;
 var gasMultiplier = 1.3;
 var defaultGasPrice = 10**9 * 9; //9 gwei

@@ -160,9 +160,8 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                                 console.log('success syncing with web3');
                                 sync_web3(issueURL, result, changes_synced_callback);
                             } else {
-                                console.log('not success syncing with web3');
-                                console.log(result);
-                                setTimeout(check_for_bounty_changed_updates_web3, 1000);
+                                var link_url = etherscan_tx_url(localStorage['txid']);
+                                _alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
                             }
                         }
                     });
