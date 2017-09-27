@@ -185,7 +185,7 @@ $(document).ready(function(){
 
                     // for some reason web3 was estimating 6699496 as the gas for standardtoken transfers
                     if((gas > max_gas_for_erc20_bounty_post) && !isETH){
-                        gas = max_gas_for_erc20_bounty_post;
+                        gas = Math.round(max_gas_for_erc20_bounty_post * gasMultiplier);
                         gasLimit = Math.round(gas * gasMultiplier);
                     }
                     _bounty.postBounty.sendTransaction(issueURL, 
