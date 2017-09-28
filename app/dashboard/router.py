@@ -62,6 +62,8 @@ class BountyViewSet(viewsets.ModelViewSet):
         order_by = self.request.GET.get('order_by')
         if order_by:
             queryset = queryset.order_by(order_by)
+            for item in queryset:
+                print(item.idx_project_length, item.project_length)
 
         return queryset
 

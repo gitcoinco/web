@@ -215,7 +215,6 @@ window.addEventListener('load', function() {
         var uri = '/api/v0.1/bounties?';
         $.get(uri, function(results){
             results = sanitizeAPIResults(results);
-            console.log(results);
             var nonefound = true;
             for(var i = 0; i<results.length; i++){
                 var result = results[i];

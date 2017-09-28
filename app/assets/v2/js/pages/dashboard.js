@@ -148,7 +148,9 @@ $(document).ready(function(){
         }
         $('.sort_option').removeClass('selected');
         $(this).addClass('selected');
-        refreshBounties();
+        setTimeout(function(){
+            refreshBounties();
+        },10);
         e.preventDefault();
     });
 

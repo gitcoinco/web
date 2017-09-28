@@ -71,7 +71,12 @@ class Command(BaseCommand):
 
         for b in Bounty.objects.all():
             print('refreshed {}'.format(b.pk))
-            b._val_usd_db = b.value_in_usdt
-            b.save()
+            try:
+                b._val_usd_db = b.value_in_usdt
+                b.save()
+            except Exception as e:
+                print(e)
+                b._val_usd_db = 0
+                b.save()
 
 

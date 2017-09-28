@@ -26,27 +26,29 @@ from economy.utils import convert_amount
 from django.contrib.postgres.fields import JSONField
 from dashboard.tokens import addr_to_token
 from django.utils import timezone
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 
 class Bounty(SuperModel):
     BOUNTY_TYPES = [
-        ('bug', 'bug'),
-        ('security', 'security'),
-        ('feature', 'feature'),
-        ('unknown', 'unknown'),
+        ('Bug', 'Bug'),
+        ('Security', 'Security'),
+        ('Feature', 'Feature'),
+        ('Unknown', 'Unknown'),
     ]
     EXPERIENCE_LEVELS = [
-        ('beginner', 'beginner'),
-        ('intermediate', 'intermediate'),
-        ('advanced', 'advanced'),
-        ('unknown', 'unknown'),
+        ('Beginner', 'Beginner'),
+        ('Intermediate', 'Intermediate'),
+        ('Advanced', 'Advanced'),
+        ('Unknown', 'Unknown'),
     ]
     PROJECT_LENGTHS = [
-        ('hours', 'hours'),
-        ('days', 'days'),
-        ('weeks', 'weeks'),
-        ('months', 'months'),
-        ('unknown', 'unknown'),
+        ('Hours', 'Hours'),
+        ('Days', 'Days'),
+        ('Weeks', 'Weeks'),
+        ('Months', 'Months'),
+        ('Unknown', 'Unknown'),
     ]
     title = models.CharField(max_length=255)
     web3_created = models.DateTimeField()
@@ -69,9 +71,12 @@ class Bounty(SuperModel):
     metadata = JSONField(default={})
     claimee_metadata = JSONField(default={})
     current_bounty = models.BooleanField(default=False) # whether this bounty is the most current revision one or not
-    _val_usd_db = models.DecimalField(default=10, decimal_places=2, max_digits=20)
+    _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=20)
     contract_address = models.CharField(max_length=50,default='')
     network = models.CharField(max_length=255, null=True)
+    idx_experience_level = models.IntegerField(default=0, db_index=True)
+    idx_project_length = models.IntegerField(default=0, db_index=True)
+
 
     def __str__(self):
         return "{}{} {} {} {}".format( "(CURRENT) " if self.current_bounty else "" , self.title, self.value_in_token, self.token_name, self.web3_created)
@@ -150,3 +155,27 @@ class Subscription(SuperModel):
 
     def __str__(self):
         return "{} {}".format(self.email, (self.created_on))
+
+
+# method for updating
+@receiver(pre_save, sender=Bounty, dispatch_uid="psave_bounty")
+def psave_bounty(sender, instance, **kwargs):
+
+    idx_experience_level = {
+        'Unknown': 1,
+        'Beginner': 2,
+        'Intermediate': 3,
+        'Advanced': 4,
+    }
+
+    idx_project_length = {
+        'Unknown': 1,
+        'Hours': 2,
+        'Days': 3,
+        'Weeks': 4,
+        'Months': 5,
+    }
+
+    instance._val_usd_db = instance.value_in_usdt if instance.value_in_usdt else 0
+    instance.idx_experience_level = idx_experience_level.get(instance.experience_level, 0)
+    instance.idx_project_length = idx_project_length.get(instance.project_length, 0)
