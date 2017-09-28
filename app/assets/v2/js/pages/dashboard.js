@@ -50,6 +50,7 @@ var refreshBounties = function(){
 
     //order
     $.get(uri, function(results){
+        results = sanitizeAPIResults(results);
         if(results.length==0){
             $(".nonefound").css('display','block');
         }

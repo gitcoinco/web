@@ -134,6 +134,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         var check_for_bounty_changed_updates_REST = function(){
             var uri = '/api/v0.1/bounties?github_url='+issueURL;
              $.get(uri, function(results){
+                results = sanitizeAPIResults(results);
                 var result = results[0];
                 // if remote entry has been modified, refresh the page.  if not, try again
                 if(typeof result == 'undefined' || result['modified_on'] == last_modified_time_remote){
@@ -213,6 +214,8 @@ window.addEventListener('load', function() {
         var issueURL = getParam('url');
         var uri = '/api/v0.1/bounties?';
         $.get(uri, function(results){
+            results = sanitizeAPIResults(results);
+            console.log(results);
             var nonefound = true;
             for(var i = 0; i<results.length; i++){
                 var result = results[i];

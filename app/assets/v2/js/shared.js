@@ -11,6 +11,33 @@ var callFunctionWhenTransactionMined = function(txHash, f){
     });
 };
 
+var sanitizeDict = function(d){
+    if(typeof d != "object"){
+        return d;
+    }
+    keys = Object.keys(d);
+    for(var i=0; i<keys.length; i++){
+        var key = keys[i];
+        d[key] = sanitize(d[key]);
+    }
+    return d
+}
+
+var sanitizeAPIResults = function(results){
+    for(var i=0; i<results.length; i++){
+        results[i] = sanitizeDict(results[i]);
+    }
+    return results
+}
+
+var sanitize = function(str){
+    if(typeof str != "string"){
+        return str;
+    }
+    result = str.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/'/g, '&quot;');
+    return result;
+}
+
 var waitforWeb3 = function(callback){
     if(document.web3network){
         callback();
@@ -202,6 +229,7 @@ var retrieveTitle = function(){
     var request_url = '/sync/get_issue_title?url=' + encodeURIComponent(issue_url);
     target_ele.addClass('loading');
     $.get(request_url, function(result){
+        result = sanitizeAPIResults(result);
         target_ele.removeClass('loading');
         if(result['title']){
             target_ele.val(result['title']);
@@ -223,6 +251,7 @@ var retrieveKeywords = function(){
     var request_url = '/sync/get_issue_keywords?url=' + encodeURIComponent(issue_url);
     target_ele.addClass('loading');
     $.get(request_url, function(result){
+        result = sanitizeAPIResults(result);
         target_ele.removeClass('loading');
         if(result['keywords']){
             var keywords = result['keywords'];
