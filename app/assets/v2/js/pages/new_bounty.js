@@ -65,7 +65,8 @@ $(document).ready(function(){
     });
     //TODO: refactor to DRY
     if(localStorage['expirationTimeDelta']){
-        $('select[name=expirationTimeDelta] option:contains('+localStorage['expirationTimeDelta']+')').prop('selected', true);
+        $('select[name=expirationTimeDelta] option').prop('selected', false);
+        $('select[name=expirationTimeDelta] option[value=\''+localStorage['expirationTimeDelta']+'\']').prop('selected', true);
     }
     if(localStorage['experienceLevel']){
         $('select[name=experienceLevel] option:contains('+localStorage['experienceLevel']+')').prop('selected', true);
