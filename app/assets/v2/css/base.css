@@ -528,6 +528,21 @@ body.bounty_details #primary_view .value{
     color:black;
 }
 
+.press_container img{
+    max-width:  200px;
+    filter: grayscale(100%);
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+    -o-filter: grayscale(100%);
+}
+.press_container img:hover{
+    max-width:  200px;
+    filter: grayscale(0%);
+    -moz-filter: grayscale(0%);
+    -ms-filter: grayscale(0%);
+    -o-filter: grayscale(0%);
+}
+
 @media (max-width: 1025px) {
     .interior .col-3{
         display: none;
