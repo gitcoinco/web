@@ -19,32 +19,47 @@
 
             <div class="d-flex flex-column align-items-center sidebar_search">
                 <form>
+
                     <div class="rowcol d-flex flex-column  mt-5">
-                        <div class="dash-filter-header mb-2">Filter</div>
+                        <div class="dash-filter-header mb-2">Status</div>
                         <div class="d-flex flex-column ml-3">
                             <div class="d-flex align-items-center form-line mb-2">
-                                <input name="bounty_filter" id="Myself" type="radio" value="myself" />
+                                <input name="idx_status" id="status_open" type="radio" value="submitted" />
                                 <div class="dash-filter-label ml-2">
-                                    <label for=Myself>Submitted By Myself</label>
+                                    <label for=status_open>Open</label>
                                 </div>
                             </div>
+
                             <div class="d-flex align-items-center form-line mb-2">
-                                <input name="bounty_filter" id="watched" type="radio" value="watched" />
+                                <input name="idx_status" id="status_expired" type="radio" value="expired" />
                                 <div class="dash-filter-label ml-2">
-                                    <label for=watched>Watched</label>
+                                    <label for=status_expired>Expired</label>
                                 </div>
                             </div>
-                            <div class="d-flex align-items-center form-line  mb-2">
-                                <input name="bounty_filter" id="any_open" type="radio" value="open" checked />
-                                <div class="dash-filter-label ml-2"><label for=any_open>Open</label></div>
+
+                            <div class="d-flex align-items-center form-line mb-2">
+                                <input name="idx_status" id="status_claimed" type="radio" value="claimed" />
+                                <div class="dash-filter-label ml-2">
+                                    <label for=status_claimed>Claimed</label>
+                                </div>
                             </div>
+
+                            <div class="d-flex align-items-center form-line mb-2">
+                                <input name="idx_status" id="status_fulfilled" type="radio" value="fulfilled" />
+                                <div class="dash-filter-label ml-2">
+                                    <label for=status_fulfilled>Fulfilled</label>
+                                </div>
+                            </div>
+
                             <div class="d-flex align-items-center form-line  mb-2">
-                                <input name="bounty_filter" id="any_author" type="radio" value="any" checked />
-                                <div class="dash-filter-label ml-2"><label for=any_author>Any</label></div>
+                                <input name="idx_status" id="any_status" type="radio" value="any" checked />
+                                <div class="dash-filter-label ml-2"><label for=any_status>Any</label></div>
                             </div>
 
                         </div>
                     </div>
+
+
                     <div class="rowcol d-flex flex-column  mt-5">
                         <div class="dash-filter-header mb-2">Experience Level</div>
                         <div class="d-flex flex-column ml-3">
@@ -110,6 +125,29 @@
                                 <input name="bounty_type" id="any_bt" type="radio" value="any" checked />
                                 <div class="dash-filter-label ml-2"><label for=any_bt>Any</label></div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="rowcol d-flex flex-column  mt-5">
+                        <div class="dash-filter-header mb-2">Other Filters</div>
+                        <div class="d-flex flex-column ml-3">
+                            <div class="d-flex align-items-center form-line mb-2">
+                                <input name="bounty_filter" id="Myself" type="radio" value="myself" />
+                                <div class="dash-filter-label ml-2">
+                                    <label for=Myself>Submitted By Myself</label>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center form-line mb-2">
+                                <input name="bounty_filter" id="watched" type="radio" value="watched" />
+                                <div class="dash-filter-label ml-2">
+                                    <label for=watched>Watched</label>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center form-line  mb-2">
+                                <input name="bounty_filter" id="any_author" type="radio" value="any" checked />
+                                <div class="dash-filter-label ml-2"><label for=any_author>Any</label></div>
+                            </div>
+
                         </div>
                     </div>
 

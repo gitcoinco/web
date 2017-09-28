@@ -76,6 +76,7 @@ class Bounty(SuperModel):
     network = models.CharField(max_length=255, null=True)
     idx_experience_level = models.IntegerField(default=0, db_index=True)
     idx_project_length = models.IntegerField(default=0, db_index=True)
+    idx_status = models.CharField(max_length=50,default='')
 
 
     def __str__(self):
@@ -176,6 +177,7 @@ def psave_bounty(sender, instance, **kwargs):
         'Months': 5,
     }
 
+    instance.idx_status = instance.status
     instance._val_usd_db = instance.value_in_usdt if instance.value_in_usdt else 0
     instance.idx_experience_level = idx_experience_level.get(instance.experience_level, 0)
     instance.idx_project_length = idx_project_length.get(instance.project_length, 0)

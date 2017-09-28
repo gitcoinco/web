@@ -1,5 +1,5 @@
 //helper functions
-var sidebar_keys = ['experience_level', 'project_length', 'bounty_type', 'bounty_filter'];
+var sidebar_keys = ['experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'idx_status'];
 
 var get_search_URI = function(){
     var uri = '/api/v0.1/bounties?';
@@ -13,9 +13,7 @@ var get_search_URI = function(){
 
         //special casing. TODO: clean this up
         if(key == 'bounty_filter'){
-            if(val=='open') {
-                uri = uri + 'is_open=True&';
-            } else if(val == 'myself'){
+            if(val=='myself') {
                 key='bounty_owner_address';
             } else if(val == 'watched'){
                 key='github_url';

@@ -39,7 +39,7 @@ class BountyViewSet(viewsets.ModelViewSet):
         queryset = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')
 
         #filtering
-        for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address']:
+        for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address', 'idx_status']:
             if key in self.request.GET.keys():
                 request_key = key if key != 'bounty_owner_address' else 'coinbase' # special hack just for looking up bounties posted by a certain person
                 val = self.request.GET.get(request_key)
@@ -62,8 +62,6 @@ class BountyViewSet(viewsets.ModelViewSet):
         order_by = self.request.GET.get('order_by')
         if order_by:
             queryset = queryset.order_by(order_by)
-            for item in queryset:
-                print(item.idx_project_length, item.project_length)
 
         return queryset
 
