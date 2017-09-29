@@ -26,6 +26,19 @@ class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
-admin.site.register(WhitepaperAccessRequest, GeneralAdmin)
+class WhitepaperAccessRequestAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    list_display = ['pk', 'link', 'role', 'processed', 'comments', 'email', 'created_on']
+    readonly_fields = ['link']
+
+    def link(self, instance):
+        if instance.processed:
+            return 'n/a'
+        link = "<a href=/_administration/process_accesscode_request/{}>process me</a>".format(instance.pk)
+        return link
+    link.allow_tags = True
+
+
+admin.site.register(WhitepaperAccessRequest, WhitepaperAccessRequestAdmin)
 admin.site.register(AccessCodes, GeneralAdmin)
 admin.site.register(WhitepaperAccess, GeneralAdmin)

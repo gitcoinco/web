@@ -25,8 +25,9 @@ from retail.emails import *
 def send_mail(from_email, to_email, subject, body, html=False, bcc_gitcoin_core=True):
     if(bcc_gitcoin_core):
         prepend_str = "Sent to {}\n".format(to_email)
-        _body = prepend_str + str(body)
-        _html = prepend_str + str(html)
+        _html = _body = prepend_str + str(body)
+        if html:
+            _html = prepend_str + str(html)
         _to_email = 'email_logger@gitcoin.co'
         send_mail(from_email, _to_email, subject, _body, _html, bcc_gitcoin_core=False)
 

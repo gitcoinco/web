@@ -1,0 +1,59 @@
+{% extends "admin/base_site.html" %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core 
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+    
+<h1>Process {{obj}}</h1>
+<form method=POST>
+    {% csrf_token %}
+<input type="text" name="subject" value="RE: {{obj.email}} Gitcoin Whitepaper Request" style="width: 500px;">
+<textarea name="body" style="width: 500px; height: 300px;">
+> New Whitepaper Request:
+> {{obj}}
+
+Hey there,
+
+I'm glad to have you interested in the Gitcoin whitepaper.  Where'd you hear about the project?
+
+Here's an access code for you: [code] 
+You can redeeem it at https://gitcoin.co/whitepaper/accesscode
+
+I'd love to hear your feedback after you read it.
+
+Best,
+Kevin
+https://gitcoin.co
+
+</textarea>
+<br>
+<input type="submit" name="submit" value="Submit">
+</form>
+
+{{pk}}
+{% endblock %}

@@ -19,8 +19,10 @@ from reportlab.pdfgen import canvas
 from django.http import HttpResponse
 from .models import WhitepaperAccess, AccessCodes, WhitepaperAccessRequest
 from django.template.response import TemplateResponse
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.validators import validate_email
 from django.conf import settings
+from django.utils import timezone
 from pyPdf import PdfFileWriter, PdfFileReader
 from marketing.mails import send_mail
 from ratelimit.decorators import ratelimit
@@ -28,8 +30,11 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib.colors import Color
 from wsgiref.util import FileWrapper
 from retail.helpers import get_ip
+from django.shortcuts import redirect
 import os
 import StringIO
+import hashlib
+from django.contrib import messages
 
 
 def ratelimited(request, ratelimited=False):
@@ -198,4 +203,40 @@ def whitepaper_access(request, ratelimited=False):
     response = HttpResponse(wrapper, content_type='application/pdf')
     response['Content-Length'] = os.path.getsize(filename)
     return response
+
+@staff_member_required
+def process_accesscode_request(request, pk):
+
+    obj = WhitepaperAccessRequest.objects.get(pk=pk)
+    context = {
+        'obj': obj,
+    }
+
+    if obj.processed:
+        raise
+
+    if request.POST.get('submit', False):
+        h = hashlib.new('ripemd160')
+        h.update(h.hexdigest() + str(timezone.now()))
+        invitecode = h.hexdigest()[:29]
+
+        code = AccessCodes.objects.create(
+            invitecode=invitecode,
+            maxuses=1,
+            )
+        obj.processed = True
+        obj.save()
+
+        from_email = settings.PERSONAL_CONTACT_EMAIL
+        to_email = obj.email
+        subject = request.POST.get('subject')
+        body = request.POST.get('body').replace('[code]',invitecode)
+        send_mail(from_email, to_email, subject, body )
+        messages.success(request, 'Invite sent')
+
+        return redirect('/_administration/tdi/whitepaperaccessrequest/?processed=False')
+
+    return TemplateResponse(request, 'process_accesscode_request.html', context)
+
+
 
