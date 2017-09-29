@@ -153,7 +153,7 @@ $(document).ready(function(){
         var post_bounty_callback = function(error, result){
             if(error){
                 console.log("two", error);
-                    _alert({ message: "There was an error.  Please try again or conact support." });
+                    _alert({ message: "There was an error.  Please try again or contact support." });
                 $('#submitBounty').removeAttr('disabled');
             } else {
                 sync_web3(issueURL);
@@ -215,7 +215,7 @@ $(document).ready(function(){
                 if (isApprovalAlreadyGranted){
                     next();
                 } else {
-                    _alert({ message: "There was an error.  Please try again or conact support." });
+                    _alert({ message: "There was an error.  Please try again or contact support." });
                     $('#submitBounty').removeAttr('disabled');
                 }
             } else {
@@ -246,7 +246,7 @@ $(document).ready(function(){
             bounty.bountydetails.call(issueURL, function(error, result){
                 if(error){
                     console.log(error);
-                    _alert({ message: "There was an error.  Please try again or conact support." });
+                    _alert({ message: "There was an error.  Please try again or contact support." });
                     return;
                 }
                 var isOpenAlready = result[4];
