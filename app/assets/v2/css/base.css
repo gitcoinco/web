@@ -530,6 +530,7 @@ body.bounty_details #primary_view .value{
 
 .press_container img{
     max-width:  200px;
+    max-height: 100px;
     filter: grayscale(100%);
     -moz-filter: grayscale(100%);
     -ms-filter: grayscale(100%);
@@ -537,6 +538,7 @@ body.bounty_details #primary_view .value{
 }
 .press_container img:hover{
     max-width:  200px;
+    max-height: 150px;
     filter: grayscale(0%);
     -moz-filter: grayscale(0%);
     -ms-filter: grayscale(0%);
