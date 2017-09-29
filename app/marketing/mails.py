@@ -22,7 +22,7 @@ from django.conf import settings
 from retail.emails import *
 
 
-def send_mail(from_email, to_email, subject, body, html=False, bcc_gitcoin_core=True):
+def send_mail(from_email, to_email, subject, body, html=False, bcc_gitcoin_core=True, from_name="Gitcoin.co"):
     if(bcc_gitcoin_core):
         prepend_str = "Sent to {}\n".format(to_email)
         _html = _body = prepend_str + str(body)
@@ -33,7 +33,7 @@ def send_mail(from_email, to_email, subject, body, html=False, bcc_gitcoin_core=
 
     print("-- Sending Mail '{}' to {}".format(subject, to_email))
     sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
-    from_email = Email(from_email, "Gitcoin.co")
+    from_email = Email(from_email, from_name)
     to_email = Email(to_email)
     contenttype = "text/plain" if not html else "text/html"
     content = Content(contenttype, html) if html else Content(contenttype, body)

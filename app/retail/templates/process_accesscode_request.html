@@ -32,7 +32,7 @@
 <h1>Process {{obj}}</h1>
 <form method=POST>
     {% csrf_token %}
-<input type="text" name="subject" value="RE: {{obj.email}} Gitcoin Whitepaper Request" style="width: 500px;">
+<input type="text" name="subject" value="RE: Gitcoin Whitepaper Request for {{obj.email}}" style="width: 500px;">
 <textarea name="body" style="width: 500px; height: 300px;">
 > New Whitepaper Request:
 > {{obj}}
@@ -46,9 +46,12 @@ You can redeeem it at https://gitcoin.co/whitepaper/accesscode
 
 I'd love to hear your feedback after you read it.
 
-Best,
-Kevin
+Best, 
+
+Kevin from
 https://gitcoin.co
+
+https://www.linkedin.com/in/owocki/
 
 </textarea>
 <br>

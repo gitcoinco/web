@@ -231,7 +231,7 @@ def process_accesscode_request(request, pk):
         to_email = obj.email
         subject = request.POST.get('subject')
         body = request.POST.get('body').replace('[code]',invitecode)
-        send_mail(from_email, to_email, subject, body )
+        send_mail(from_email, to_email, subject, body, from_name="Kevin from Gitcoin.co")
         messages.success(request, 'Invite sent')
 
         return redirect('/_administration/tdi/whitepaperaccessrequest/?processed=False')
