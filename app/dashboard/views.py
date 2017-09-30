@@ -39,7 +39,7 @@ def dashboard(request):
 
     params = {
         'active': 'dashboard',
-        'title': 'Dashboard',
+        'title': 'Bounty Explorer',
     }
     return TemplateResponse(request, 'dashboard.html', params)
 
