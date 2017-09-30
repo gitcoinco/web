@@ -197,7 +197,7 @@ Further information on the smart contract interface is available at [https://git
 
 ```
 git clone https://github.com/gitcoinco/web.git
-cd web
+cd web/app
 cp app/local_settings.py.dist app/local_settings.py
 
 ```
@@ -206,10 +206,11 @@ You will need to edit the `app/local_settings.py` file with your local settings.
 
 
 ```
-mkvirtualenv gcoin
-pip install -r requirements.txt
-./manage.py sync_db
+virtualenv gcoin
+source gcoin/bin/activate
+pip install -r ../requirements.txt
 ./manage.py migrate
+./manage.py createcachetable
 ./manage.py runserver 0.0.0.0:8080
 ```
 
