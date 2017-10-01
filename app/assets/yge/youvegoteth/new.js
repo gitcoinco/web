@@ -23,4 +23,7 @@ window.onload = function () {
         _alert("batch mode enabled", 'info');
         $('batches').style.display = 'block';
     }
+    if(getParam('username')){
+        localStorage['username'] = getParam('username');
+    }
 };

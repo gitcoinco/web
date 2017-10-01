@@ -32,6 +32,10 @@ window.onload = function () {
 
     var min_send_amt_wei = 6000000;
 
+    if(localStorage['username']){
+        $('username').value = localStorage['username'];
+    }
+
     tokens.forEach(function(ele){
         var option = document.createElement("option");
         option.text = ele.name;
