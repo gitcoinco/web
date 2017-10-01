@@ -4,7 +4,7 @@ There is a new bounty *rejection* to the Gitcoin.co Bounty Explorer. Please refe
 
 {% include 'emails/bounty.txt' with bounty=bounty %}
 
-You are receiving this email because your email address is on the bounty notification list for this bounty. 
+You are receiving this email because your email address is on the bounty notification list for this bounty.
 
 
 Keep Pushing Open Source Forward,

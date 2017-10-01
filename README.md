@@ -101,7 +101,7 @@ You can filter the data returned from the API buy providing these keys as URL pa
 
 **Order By**
 
-By passing an `order_by` parameter you can order the data by the provided key. Ex: `?order_by=expires_date`. To sort in the opposite direction you can add a `-` in from the the key `?order_by=-expires_date`. 
+By passing an `order_by` parameter you can order the data by the provided key. Ex: `?order_by=expires_date`. To sort in the opposite direction you can add a `-` in from the the key `?order_by=-expires_date`.
 
 #### Example Request
    
@@ -162,7 +162,7 @@ By passing an `order_by` parameter you can order the data by the provided key. E
     "status": "expired",
     "now": "2017-09-24T18:59:53.964344Z"
   },
-  .... 
+  ....
   ]
 
 ```
@@ -214,7 +214,7 @@ pip install -r ../requirements.txt
 ./manage.py runserver 0.0.0.0:8080
 ```
 
-Navigate to `http://localhost:8080/`. 
+Navigate to `http://localhost:8080/`.
 
 
 # Adding your token to Gitcoin.
