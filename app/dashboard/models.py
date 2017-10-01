@@ -159,7 +159,7 @@ class Subscription(SuperModel):
 
 
 class Tip(SuperModel):
-    emails = models.TextField()
+    emails = JSONField()
     url = models.CharField(max_length=255, default='')
     tokenName = models.CharField(max_length=255)
     tokenAddress = models.CharField(max_length=255)

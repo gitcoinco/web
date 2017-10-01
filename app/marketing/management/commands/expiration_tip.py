@@ -16,27 +16,23 @@
 
 '''
 from django.core.management.base import BaseCommand
-from dashboard.models import Bounty
+from dashboard.models import Tip
 from django.utils import timezone
-from marketing.mails import weekly_roundup
-
+from marketing.mails import tip_email
+import json
 
 class Command(BaseCommand):
 
-    help = 'the weekly roundup emails'
+    help = 'the expiration notifications'
 
     def handle(self, *args, **options):
-        days_back = 90
-
-        email_list = []
-        for b in Bounty.objects.filter(web3_created__gt=timezone.now()-timezone.timedelta(days=days_back)).all():
-            if b.bounty_owner_email:
-                email_list.append(b.bounty_owner_email)
-            if b.claimee_email:
-                email_list.append(b.claimee_email)
-        email_list = set(email_list)
-
-        #TODO: formalize the list management into its own database table, completely with ability to manage subscriptions
-
-        for to_email in email_list:
-            weekly_roundup([to_email])
+        days = [1, 3, 14, 15, 13]
+        for day in days:
+            # TODO: In future, check blockchain to see if tip has been redeemed 
+            tips = Tip.objects.filter(
+                expires_date__lt=(timezone.now() + timezone.timedelta(days=(day+1))),
+                expires_date__gte=(timezone.now() + timezone.timedelta(days=day)),
+            ).all()
+            print('day {} got {} tips'.format(day, tips.count()))
+            for t in tips:
+                tip_email(t, t.emails, False)

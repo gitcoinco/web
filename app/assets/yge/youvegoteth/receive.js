@@ -92,7 +92,7 @@ window.onload = function () {
                 _alert('got an error :(');
             } else {
                 startConfetti();
-                $("send_eth").innerHTML = "<h1>Success 🚀!</h1> <a href='https://"+etherscanDomain+"/tx/"+result+"'>See your transaction on the blockchain here</a>.<br><br>It might take a few minutes to show up, depending upon: <br> - network congestion<br> - network fees that sender allocated to transaction<br>" ;
+                $("send_eth").innerHTML = "<h1>Success 🚀!</h1> <a target=new href='https://"+etherscanDomain+"/tx/"+result+"'>See your transaction on the blockchain here</a>.<br><br>It might take a few minutes to show up, depending upon: <br> - network congestion<br> - network fees that sender allocated to transaction<br><br><a id='' class='button' href='/'>⬅ Back to Gitcoin.co</a>" ;
             }
         };
 

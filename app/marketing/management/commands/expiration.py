@@ -18,7 +18,7 @@
 from django.core.management.base import BaseCommand
 from dashboard.models import Bounty
 from django.utils import timezone
-from marketing.mail import bounty_expire_warning
+from marketing.mails import bounty_expire_warning
 
 
 class Command(BaseCommand):

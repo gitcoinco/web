@@ -1,3 +1,4 @@
+{% load humanize %} 
 ⚡️ New Tip Alert ⚡️
 
 {% if tip.from_name %}{{tip.from_name}}{% else %}Someone{% endif %} has sent you tip worth {{amount}} {{tokenName}}.

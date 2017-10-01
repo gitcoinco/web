@@ -26,11 +26,15 @@ a{
 }
 </style>
 
+{% if is_new %}
 <h1>⚡️ New Tip Alert ⚡️</h1>
+{% else %}
+<h1>🕑 Reminder: Tip Expires Soon 🕝</h1>
+{% endif %}
 
 
 <h3>
-    {% if tip.from_name %}{{tip.from_name}}{% else %}Someone{% endif %} has sent you tip worth {{amount}} {{tokenName}}.
+    {% if tip.from_name %}{{tip.from_name}}{% else %}Someone{% endif %} sent you tip worth {{amount}} {{tokenName}}{% if not is_new %} {{tip.created_on | naturaltime}}{%endif%}.
 </h3>
 {% if tip.url %}
     <p>

@@ -25,7 +25,7 @@ import premailer
 ### RENDERERS
 
 
-def render_new_tip(tip):
+def render_tip_email(tip, is_new):
 
     params = {
         'link': tip.url,
@@ -34,6 +34,7 @@ def render_new_tip(tip):
         'comments': tip.comments,
         'tip': tip,
         'show_expires': tip.expires_date < (timezone.now() + timezone.timedelta(days=365)),
+        'is_new': is_new
     }
 
     response_html = premailer.transform(render_to_string("emails/new_tip.html", params))
@@ -148,7 +149,7 @@ def render_new_bounty_roundup(bounties):
 def new_tip(request):
     from dashboard.models import Tip
     tip = Tip.objects.last()
-    response_html, response_txt = render_new_tip(tip)
+    response_html, response_txt = render_tip_email(tip, True)
 
     return HttpResponse(response_html)
 

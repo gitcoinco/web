@@ -26,7 +26,7 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from dashboard.helpers import normalizeURL, process_bounty_details, process_bounty_changes
 import json
-from marketing.mails import new_tip
+from marketing.mails import tip_email
 from app.github import get_user as get_github_user
 
 def send_tip(request):
@@ -79,7 +79,7 @@ def send_tip_2(request):
             from_name=params['from_name'],
             tokenAddress=params['tokenAddress'],
             )
-        new_tip(tip, set(emails))
+        tip_email(tip, set(emails), True)
         response = {
             'status': status,
             'message': message,
