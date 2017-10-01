@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>{{title}} | Gitcoin</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="/static/yge/js/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="/static/yge/css/main.css" />
+        <link rel="stylesheet" href="/static/v2/css/rain.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="/static/yge/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="/static/yge/css/ie8.css" /><![endif]-->
+		<noscript><link rel="stylesheet" href="/static/yge/css/noscript.css" /></noscript>
+
+        <link rel="apple-touch-icon" sizes="180x180" href="/static/v2/images/favicon.ico/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/static/v2/images/favicon.ico/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/static/v2/images/favicon.ico/favicon-16x16.png">
+        <link rel="manifest" href="/static/v2/images/favicon.ico/manifest.json">
+        <meta name="theme-color" content="#ffffff">
+
+        <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+        
+
+{% block 'scripts' %}
+{% endblock %}
+
+	</head>
+	<body >
+        {% block 'world' %}
+        {% endblock %}
+        {% include 'shared/rain.html' with class="color" %}
+        {% include 'shared/rain.html' with class="color" %}
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					{% block 'main' %}
+
+                    {% endblock %}
+
+				<!-- Footer -->
+					<footer id="footer">
+						<ul class="copyright">
+                            <li>
+                                <a href="/">&copy; Gitcoin.co</a>
+                            </li>
+                            <li>
+                                <a href="/tip">Send Tip</a>
+                            </li>
+                            <li style="border-left: none;">
+                                <select id="network" style="background:transparent" onchange="onNetworkChange();" >
+                                    <option value="1">Mainnet</option>
+                                    <option value="3">Ropsten</option>
+                                    <option value="9">TestRPC</option>
+                                </select>
+                            </li>
+						</ul>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<!--[if lte IE 8]><script src="/static/yge/js/respond.min.js"></script><![endif]-->
+			<script>
+				if ('addEventListener' in window) {
+					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-loading\b/, ''); });
+					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+				}
+			</script>
+
+        {% include 'shared/ga.html' %}
+
+	</body>
+</html>

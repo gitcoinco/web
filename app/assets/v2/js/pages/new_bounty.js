@@ -1,40 +1,4 @@
-
-window.addEventListener('load', function() {
-    waitforWeb3(function(){
-        //add tokens to the submission form
-        var tokenAddress = localStorage['tokenAddress'];
-        if(!tokenAddress){
-            tokenAddress='0x0000000000000000000000000000000000000000';
-        }
-        var _tokens = tokens(document.web3network);
-        for(var i=0;i<_tokens.length;i++){
-            var token = _tokens[i];
-            var select = {
-                value: token['addr'],
-                text: token['name'],
-            };
-            if(token['addr']==tokenAddress){
-                select['selected']='selected';
-            }
-            $("select[name=deonomination]").append($('<option>', select))
-        }
-        //if web3, set the values of some form variables
-        if (typeof localStorage['amount'] !='undefined'){
-            $('input[name=amount]').val(localStorage['amount']);
-        }
-        if (typeof localStorage['githubUsername'] !='undefined'){
-            $('input[name=githubUsername]').val(localStorage['githubUsername']);
-        }
-        if (typeof localStorage['notificationEmail'] !='undefined'){
-            $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
-        }
-        if (typeof localStorage['acceptTOS'] !='undefined' && localStorage['acceptTOS']){
-            $('input[name=terms]').attr('checked','checked');
-        }
-    });
-
-});
-
+load_tokens();
 
 $(document).ready(function(){
 

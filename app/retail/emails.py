@@ -25,14 +25,16 @@ import premailer
 ### RENDERERS
 
 
-def render_new_bounty(bounty):
+def render_new_tip(link, amount, tokenName):
 
     params = {
-        'bounty': bounty,
+        'link': link,
+        'amount': round(amount,2),
+        'tokenName': tokenName,
     }
 
-    response_html = premailer.transform(render_to_string("emails/new_bounty.html", params))
-    response_txt = render_to_string("emails/new_bounty.txt", params)
+    response_html = premailer.transform(render_to_string("emails/new_tip.html", params))
+    response_txt = render_to_string("emails/new_tip.txt", params)
 
     return response_html, response_txt
 
@@ -137,6 +139,14 @@ def render_new_bounty_roundup(bounties):
 
 
 ### DJANGO REQUESTS
+
+
+@staff_member_required
+def new_tip(request):
+
+    response_html, response_txt = render_new_tip('/foo/bar', 10, 'ETH')
+
+    return HttpResponse(response_html)
 
 
 @staff_member_required

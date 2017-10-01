@@ -1,0 +1,43 @@
+@media print {
+
+    #main{
+    	width: 100%;
+        padding: 0px;
+        min-height: 2000px
+    }
+
+    #wrapper{
+        padding: 0px;
+    }
+
+    p.alert_msg,
+    body header,
+    body header img,
+    #send_eth_done h1,
+    #send_eth_done h2,
+    #link_container, 
+    #send_eth_done hr,
+    #footer,
+    .button,
+    p
+    {
+        display: none;
+    }
+    p.qrcode_header{
+        display: block;
+    }
+    #qrcode_container{
+        text-align: left;
+    }
+    .qr_span{
+        text-align: center;
+        display: inline-block;;
+        width: 400px;
+        height: 400px;
+    }
+    .qrcodes canvas{
+        width: 100px;
+        height: 100px;
+    }
+
+}

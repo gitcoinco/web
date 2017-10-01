@@ -1,0 +1,76 @@
+{% extends 'yge/base.html' %}
+
+{% block 'scripts' %}
+<script src="/static/yge/ethereumjs/ethereumjs-accounts.js"></script>
+<script src="/static/yge/ethereumjs/web3.js"></script>
+<script src="/static/yge/ethereumjs/hooked-web3-provider.js"></script>
+<script src="/static/yge/ethereumjs/tx.js"></script>
+<script src="/static/yge/youvegoteth/index.js"></script>
+<script src="/static/yge/youvegoteth/tokens.js"></script>
+<script src="/static/yge/youvegoteth/pre.js"></script>
+<script src="/static/yge/youvegoteth/receive.js"></script>
+<script src="/static/yge/youvegoteth/confetti.js"></script>
+<script src="/static/yge/youvegoteth/web3alert.js"></script>
+<script src="/static/yge/lightwallet.min.js"></script>
+{% endblock %}
+<!-- Main -->
+
+{% block 'world' %}
+    <canvas id="world" style="position:absolute; top:0px; left: 0px;">
+    </canvas>
+{% endblock %}
+
+{% block 'main' %}
+<section id="main">
+    <header>
+        <span class="avatar">
+            <a href='index.html'>
+                <img src="/static/v2/images/helmet.png" style="max-width: 100px; max-height: 100px;" />
+            </a>
+        </span>
+    </header>
+    <div id="loading">
+        <h1>Loading</h1>
+        <img src="images/loading.gif">
+    </div>
+
+    <div id="step_zero" style="display:none;">
+        <h1 id="zeroh1">You've Got ETH!</h1>
+        <p>To claim it, please install MetaMask and refresh the page.</p>
+        <a href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en" id="install" class="button">Install Metamask 🐬</a>
+        <br>
+        <br>
+        <h2>What is Metamask?</h2>
+        <iframe width="100%" src="https://www.youtube.com/embed/6Gf_kRE4MJU" frameborder="0" allowfullscreen></iframe>
+
+    </div>
+    <div id="send_eth" style="display:none;">
+        <h1 id="oneh1">Receive Ethereum Now.</h1>
+        
+        <div>
+            <input type="hidden" placeholder="idx_address" id="idx_address" value="">
+        </div>
+        <div>
+            <input type="hidden" placeholder="private_key" id="private_key" value="">
+        </div>
+        <div>
+            Forward it to a permanent address:
+            <br>
+            <input type="text" placeholder="forwarding_address" id="forwarding_address" value="0x0">
+        </div>
+        <div>
+            <br>
+            <a href="#" id="receive" class="button">Receive <span id="tokenName">Eth</span> Tip 🐬</a>
+            <br>
+        </div>
+    </div>
+    <div id="send_eth_done" style="display:none;">
+        <h1>Congrats!</h1>
+        <p>You've received Ethereum via transaction <span id="trans_id"></span>.</p>
+    </div>
+
+
+
+</section>
+
+{% endblock %}

@@ -24,6 +24,61 @@ from django.views.decorators.csrf import csrf_exempt
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from dashboard.helpers import normalizeURL, process_bounty_details, process_bounty_changes
+import json
+from marketing.mails import new_tip
+from app.github import get_user as get_github_user
+
+def send_tip(request):
+
+    params = {
+        'issueURL': request.GET.get('source'),
+        'title': 'Send Tip',
+    }
+
+    return TemplateResponse(request, 'yge/send1.html', params)
+
+
+def receive_tip(request):
+
+    params = {
+        'issueURL': request.GET.get('source'),
+        'title': 'Receive Tip',
+    }
+
+    return TemplateResponse(request, 'yge/receive.html', params)
+
+
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def send_tip_2(request):
+
+    if request.body != '':
+        status = 'OK'
+        message = 'Notification has been sent'
+        params = json.loads(request.body)
+        emails = []
+        if params['email']:
+            emails.append(params['email'])
+        gh_user = get_github_user(params['username'])
+        if gh_user['email']:
+            emails.append(gh_user['email'])
+        if len(emails) == 0:
+            status = 'error'
+            message = 'No email addresses found'
+        new_tip(params['url'], params['amount'], params['tokenName'], set(emails))
+        response = {
+            'status': status,
+            'message': message,
+        }
+        return JsonResponse(response)
+
+    params = {
+        'issueURL': request.GET.get('source'),
+        'title': 'Send Tip',
+    }
+
+    return TemplateResponse(request, 'yge/send2.html', params)
+
 
 def process_bounty(request):
 

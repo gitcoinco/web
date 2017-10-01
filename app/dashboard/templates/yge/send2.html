@@ -1,0 +1,91 @@
+{% extends 'yge/base.html' %}
+
+{% block 'scripts' %}
+
+<script src="/static/yge/youvegoteth/index.js"></script>
+<script src="/static/yge/youvegoteth/pre.js"></script>
+<script src="/static/yge/youvegoteth/tokens.js"></script>
+<script src="/static/yge/youvegoteth/send.js"></script>
+<script src="/static/yge/youvegoteth/web3alert.js"></script>
+<script src="/static/yge/lightwallet.min.js"></script>
+<script src="/static/yge/qrcode.min.js"></script>
+
+
+{% endblock %}
+
+<!-- Main -->
+{% block 'main' %}
+<section id="main">
+    <header>
+        <span class="avatar">
+            <a href='index.html'>
+                <img src="/static/v2/images/helmet.png" style="max-width: 100px; max-height: 100px;" />
+            </a>
+        </span>
+    </header>
+
+    <div id="send_eth">
+    <h1>Send Tip.</h1>
+        <div>
+            <br>
+            Amount of  
+            <select id="token" style="width:100px; margin-bottom: 10px; display: inline;" >
+                <option value="0x0">ETH</option>
+            </select>
+            <input type="text" placeholder="1.1" id="amount" value="" style="width: 170px; display: inline;">
+        </div>
+        <div>
+            To Github Username:
+            <input type="text" placeholder="@username" id="username" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
+        </div>
+        <div id="advanced_toggle">
+            <a href="#" onClick="advancedToggle()" >Advanced >></a>
+        </div>
+        <div id='advanced' style="display:none;">
+            <div>
+                To Email address (optional):
+                <input type="text" placeholder="foo@bar.it" id="email" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
+            </div>
+            <div>
+                Fees:
+                <select id="fees" style="width:400px; margin: 0px auto;" >
+                    <option value="100000">Low (100k wei) / Slow Confirmation</option>
+                    <option value="125000">Medum (125k wei) / Medium Confirmation</option>
+                    <option value="150000">High (150k wei) / Fast Confirmation</option>
+                    <option value="200000">Very High (200k wei) / Faster Confirmation</option>
+                </select>
+            </div>
+            <div>
+                Expires:
+                <select id="expires" style="width:400px; margin: 0px auto;" >
+                    <option value="86400">One Day</option>
+                    <option value="604800" selected="selected">One Week</option>
+                    <option value="7257600">One Month</option>
+                    <option value="87091200">One Year</option>
+                    <option value="870912000">Ten Years</option>
+                    <option value="9999999999999">Never</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <br>
+            <input type="checkbox" id="tos" value="1" >
+            <label for="tos">I understand & agree to the <a href="https://gitcoin.co/terms">terms of service</a>.</label>
+        </div>
+
+      <a href="#" id="send" class="button">Send 🐬</a>
+
+    </div>
+
+    <div id="send_eth_done" style="display:none;">
+        <h1>Woo hoo!</h1>
+        <h2>Your <span id="tokenName">ETH</span> is safe & secure <a id="trans_link" href="" target=new>in the smart contract</a>.</h2>
+        <hr>
+        <h1>@<span id=new_username></span> has been sent a notification</h1>
+        <h3>with instructions about how to receive their tip</h1>
+        <br>
+        <a id="" class="button" href="/tip/send">⬅ Start Over</a>
+    </div>
+
+</section>
+{% endblock %}

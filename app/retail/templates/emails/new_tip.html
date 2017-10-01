@@ -1,0 +1,46 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core 
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load humanize %} 
+
+{% block content %}
+
+<h1>🔥 New Tip Alert 🔥</h1>
+
+
+<p>
+    You've received an tip worth {{amount}} {{tokenName}} via Gitcoin.co.
+</p>
+
+<br>
+
+<a class="button" href="{{link}}" style="">Redeem Tip on Gitcoin.co</a>
+
+<p>
+    You are receiving this email because your email address is on the tip notification list. 
+</p>
+
+<p>
+    Keep Pushing Open Source Forward,
+    <br>
+    -- Gitcoin Core
+</p>
+
+
+
+{% endblock %}

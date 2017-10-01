@@ -51,6 +51,19 @@ def send_mail(from_email, to_email, subject, body, html=False, bcc_gitcoin_core=
     return response
 
 
+def new_tip(link, amount, tokenName, to_emails=[]):
+    if not link or not amount or not tokenName:
+        return
+
+    subject = "⚡️ New Tip Worth {} {}".format(round(amount,2), tokenName)
+
+    from_email = settings.CONTACT_EMAIL
+    html, text = render_new_tip(link, amount, tokenName)
+
+    for to_email in to_emails:
+        send_mail(from_email, to_email, subject, text, html)
+
+
 def new_bounty(bounty, to_emails=[]):
     if not bounty or not bounty.value_in_usdt:
         return
