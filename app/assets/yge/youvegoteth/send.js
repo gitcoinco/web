@@ -79,6 +79,9 @@ window.onload = function () {
         var github_url = $("issueURL").value;
         var from_name = $("fromName").value;
         var username = $("username").value;
+        if(username.indexOf('@') == -1){
+            username = '@' + username;
+        }
         var _disableDeveloperTip = true;
         var accept_tos = $("tos").checked;
         var token = $("token").value;

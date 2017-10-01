@@ -38,7 +38,7 @@ def get_issue_comments(owner, repo):
 
 
 def get_user(user):
-    url = 'https://api.github.com/users/{}'.format(user)
+    url = 'https://api.github.com/users/{}'.format(user.replace('@',''))
     response = requests.get(url, auth=_auth, headers=headers)
 
     return response.json()
