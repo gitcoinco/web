@@ -158,6 +158,23 @@ class Subscription(SuperModel):
         return "{} {}".format(self.email, (self.created_on))
 
 
+class Tip(SuperModel):
+    emails = models.TextField()
+    url = models.CharField(max_length=255, default='')
+    tokenName = models.CharField(max_length=255)
+    tokenAddress = models.CharField(max_length=255)
+    amount = models.DecimalField(default=1, decimal_places=2, max_digits=50)
+    comments = models.TextField(default='')
+    ip = models.CharField(max_length=50)
+    expires_date = models.DateTimeField()
+    github_url = models.URLField(null=True)
+    from_name = models.CharField(max_length=255, default='')
+
+    def __str__(self):
+        from django.contrib.humanize.templatetags.humanize import naturalday
+        return "{} {}.  created: {}, expires: {}".format(self.amount, self.tokenName, naturalday(self.created_on), naturalday(self.expires_date))
+
+
 # method for updating
 @receiver(pre_save, sender=Bounty, dispatch_uid="psave_bounty")
 def psave_bounty(sender, instance, **kwargs):

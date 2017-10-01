@@ -17,9 +17,10 @@
 '''
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from dashboard.models import Subscription, BountySyncRequest
+from dashboard.models import Subscription, BountySyncRequest, Tip
 from django.template.response import TemplateResponse
 from django.http import JsonResponse
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -60,12 +61,25 @@ def send_tip_2(request):
         if params['email']:
             emails.append(params['email'])
         gh_user = get_github_user(params['username'])
-        if gh_user['email']:
+        if gh_user.get('email', False):
             emails.append(gh_user['email'])
         if len(emails) == 0:
             status = 'error'
             message = 'No email addresses found'
-        new_tip(params['url'], params['amount'], params['tokenName'], params['comments'], set(emails))
+        expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
+        tip = Tip.objects.create(
+            emails=emails,
+            url=params['url'],
+            tokenName=params['tokenName'],
+            amount=params['amount'],
+            comments=params['comments'],
+            ip=get_ip(request),
+            expires_date=expires_date,
+            github_url=params['github_url'],
+            from_name=params['from_name'],
+            tokenAddress=params['tokenAddress'],
+            )
+        new_tip(tip, set(emails))
         response = {
             'status': status,
             'message': message,

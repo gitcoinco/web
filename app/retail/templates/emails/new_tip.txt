@@ -1,15 +1,23 @@
-🔥 New Tip Alert 🔥
+⚡️ New Tip Alert ⚡️
 
-You've received an tip worth {{amount}} {{tokenName}} via Gitcoin.co.
+{% if tip.from_name %}{{tip.from_name}}{% else %}Someone{% endif %} has sent you tip worth {{amount}} {{tokenName}}.
+
+{% if tip.url %}
+{% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on {{tip.url}}: 
+{% endif %}
 
 {% if comments %}
-The sender had the following comments: {{comments}}
+{% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} had the following comments: 
+{{comments}}
+{% endif %}
+
+{% if show_expires %}
+The tip expires on *{{tip.expires_date}}, in just {{tip.expires_date | naturaltime}}*.  No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:
+{% else %}
+No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:
 {% endif %}
 
 Click here to redeem it: {{link}}
-
-You are receiving this email because your email address is on the tip notification list. 
-
 
 Keep Pushing Open Source Forward,
 -- Gitcoin Core

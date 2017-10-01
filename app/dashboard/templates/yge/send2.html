@@ -39,12 +39,20 @@
             <input type="text" placeholder="@username" id="username" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
         </div>
         <div id="advanced_toggle">
-            <a href="#" onClick="advancedToggle()" >Advanced >></a>
+            <a onClick="advancedToggle()" >Advanced >></a>
         </div>
         <div id='advanced' style="display:none;">
             <div>
+                Related Github Issue URL (optional):
+                <input type="text" placeholder="https://github.com/user/repo/pull/n" id="issueURL" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
+            </div>
+            <div>
                 To Email address (optional):
                 <input type="text" placeholder="foo@bar.it" id="email" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
+            </div>
+            <div>
+                From Name (optional):
+                <input type="text" placeholder="Bobby Tables" id="fromName" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
             </div>
             <div>
                 Fees:
@@ -58,12 +66,15 @@
             <div>
                 Expires:
                 <select id="expires" style="width:400px; margin: 0px auto;" >
-                    <option value="86400">One Day</option>
-                    <option value="604800" selected="selected">One Week</option>
-                    <option value="7257600">One Month</option>
-                    <option value="87091200">One Year</option>
-                    <option value="870912000">Ten Years</option>
-                    <option value="9999999999999">Never</option>
+                    <option value="86400">1 day</option>
+                    <option value="259200">3 days</option>
+                    <option value="604800" selected="selected">1 week</option>
+                    <option value="1209600">2 weeks</option>
+                    <option value="2592000">1 month</option>
+                    <option value="7776000">3 months</option>
+                    <option value="15552000">6 months</option>
+                    <option value="31536000" selected="">1 year</option>
+                    <option value="9999999999">Never</option>
                 </select>
             </div>
             <div>

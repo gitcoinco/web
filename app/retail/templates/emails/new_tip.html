@@ -20,28 +20,46 @@
 
 {% block content %}
 
-<h1>🔥 New Tip Alert 🔥</h1>
+<style>
+a{
+    word-wrap: break-word;
+}
+</style>
+
+<h1>⚡️ New Tip Alert ⚡️</h1>
 
 
-<p>
-    You've received an tip worth {{amount}} {{tokenName}} via Gitcoin.co.
-</p>
+<h3>
+    {% if tip.from_name %}{{tip.from_name}}{% else %}Someone{% endif %} has sent you tip worth {{amount}} {{tokenName}}.
+</h3>
+{% if tip.url %}
+    <p>
+    {% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{tip.url}}">{{tip.url}}</a>: 
+    </p>
+{% endif %}
+
 {% if comments %}
     <p>
-    The sender had the following comments: 
+    {% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} had the following comments: 
 <pre>
     {{comments}}
 </pre>
     </p>
 {% endif %}
 
+{% if show_expires %}
+    <p>
+    The tip expires on <strong>{{tip.expires_date}}, in just {{tip.expires_date | naturaltime}}</strong>.  No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:
+    </p>
+{% else %}
+    <p>
+     No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:
+    </p>
+{% endif %}
+
 <br>
 
 <a class="button" href="{{link}}" style="">Redeem Tip</a>
-
-<p>
-    You are receiving this email because your email address is on the tip notification list. 
-</p>
 
 <p>
     Keep Pushing Open Source Forward,

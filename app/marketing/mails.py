@@ -51,14 +51,14 @@ def send_mail(from_email, to_email, subject, body, html=False, bcc_gitcoin_core=
     return response
 
 
-def new_tip(link, amount, tokenName, comments, to_emails=[]):
-    if not link or not amount or not tokenName:
+def new_tip(tip, to_emails=[]):
+    if not tip or not tip.url or not tip.amount or not tip.tokenName:
         return
 
-    subject = "⚡️ New Tip Worth {} {}".format(round(amount,2), tokenName)
+    subject = "⚡️ New Tip Worth {} {}".format(round(tip.amount,2), tip.tokenName)
 
     from_email = settings.CONTACT_EMAIL
-    html, text = render_new_tip(link, amount, tokenName, comments)
+    html, text = render_new_tip(tip)
 
     for to_email in to_emails:
         send_mail(from_email, to_email, subject, text, html)

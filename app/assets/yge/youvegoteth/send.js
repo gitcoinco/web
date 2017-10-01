@@ -33,8 +33,29 @@ window.onload = function () {
 
     var min_send_amt_wei = 6000000;
 
+    if(localStorage['amount']){
+        $('amount').value = localStorage['amount'];
+    }
     if(localStorage['username']){
         $('username').value = localStorage['username'];
+    }
+    if(localStorage['issueURL']){
+        $('issueURL').value = localStorage['issueURL'];
+    }
+    if(localStorage['email']){
+        $('email').value = localStorage['email'];
+    }
+    if(localStorage['fromName']){
+        $('fromName').value = localStorage['fromName'];
+    }
+    if(localStorage['comments']){
+        $('comments').value = localStorage['comments'];
+    }
+    if(localStorage['fees']){
+        $("fees").selectedIndex = localStorage['fees'];
+    }
+    if(localStorage['expires']){
+        $("expires").selectedIndex = localStorage['expires'];
     }
 
     tokens.forEach(function(ele){
@@ -45,7 +66,8 @@ window.onload = function () {
     });
 
     // When 'Generate Account' is clicked
-    $("send").onclick = function() {
+    $("send").onclick = function(e) {
+        e.preventDefault();
         if(metaMaskWarning()){
             return;
         }
@@ -54,6 +76,8 @@ window.onload = function () {
 
         //get form data
         var email = $("email").value;
+        var github_url = $("issueURL").value;
+        var from_name = $("fromName").value;
         var username = $("username").value;
         var _disableDeveloperTip = true;
         var accept_tos = $("tos").checked;
@@ -74,6 +98,8 @@ window.onload = function () {
         //validation
         var hasEmail = email != '';
         var hasUsername = username != '';
+
+        //validation
         if(hasEmail && !validateEmail(email)){
             _alert('Email is optional, but if you enter an email, you must enter a valid email!');
             return;
@@ -103,6 +129,15 @@ window.onload = function () {
             _alert('You must accept the terms.');
             return;
         }
+
+        localStorage['amount'] = amountInEth;
+        localStorage['username'] = username;
+        localStorage['issueURL'] = github_url;
+        localStorage['fromName'] = from_name;
+        localStorage['email'] = email;
+        localStorage['comments'] = comments;
+        localStorage['expires'] = $("expires").selectedIndex;
+        localStorage['fees'] = $("fees").selectedIndex;
 
         var numBatches = document.addresses.length;
         var plural = numBatches > 1 ? 's' : '';
@@ -137,6 +172,10 @@ window.onload = function () {
                             tokenName: tokenName,
                             amount: amount/weiConvert,
                             comments: comments,
+                            expires_date: expires,
+                            github_url: github_url,
+                            from_name: from_name,
+                            tokenAddress: token,
                         }),
                     }).then(function(response) {
                       return response.json();

@@ -19,7 +19,7 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from .models import Bounty, Subscription, BountySyncRequest
+from .models import Bounty, Subscription, BountySyncRequest, Tip
 
 # Register your models here.
 class GeneralAdmin(admin.ModelAdmin):
@@ -28,3 +28,4 @@ class GeneralAdmin(admin.ModelAdmin):
 admin.site.register(Subscription, GeneralAdmin)
 admin.site.register(Bounty, GeneralAdmin)
 admin.site.register(BountySyncRequest, GeneralAdmin)
+admin.site.register(Tip, GeneralAdmin)
