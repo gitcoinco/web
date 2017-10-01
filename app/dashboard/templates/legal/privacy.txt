@@ -8,11 +8,11 @@
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Affero General Public License for more details.
 
     You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
 <pre>
@@ -145,7 +145,7 @@ Gitcoin takes commercially reasonable steps to help protect and secure the infor
 
 Gitcoin is a United States company. If you are located outside the United States and choose to provide information to us, Gitcoin transfers Personal Information to the United States for processing. The U.S. may not have the same data protection laws as the country in which you initially provided the information. When we transfer your information to the U.S., we will protect it as described in this Privacy Policy. By visiting the Service, or providing Gitcoin with any information, you fully understand and unambiguously consent to this transfer, processing and storage of your information in the United States.
 
-Gitcoin  protects personally identifiable information from residents of the European Union, other European Economic Area countries, and Switzerland in accordance with applicable law (including, as applicable, reliance upon your consent and EU-approved standard contract clauses).  
+Gitcoin  protects personally identifiable information from residents of the European Union, other European Economic Area countries, and Switzerland in accordance with applicable law (including, as applicable, reliance upon your consent and EU-approved standard contract clauses). 
 
 9. LINKS TO OTHER SITES
 

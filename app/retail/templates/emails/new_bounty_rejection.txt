@@ -1,6 +1,6 @@
 😕 New Bounty Rejection 😕
 
-There is a new bounty *rejection* to the Gitcoin.co Bounty Explorer.  Please refer to the rejection comments on the github pull request to learn why.
+There is a new bounty *rejection* to the Gitcoin.co Bounty Explorer. Please refer to the rejection comments on the github pull request to learn why.
 
 {% include 'emails/bounty.txt' with bounty=bounty %}
 

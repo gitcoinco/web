@@ -1,6 +1,6 @@
 👇 New Bounty Claim 👇
 
-There is a new bounty *claim* submitted against your Bounty.  Please check it out, below
+There is a new bounty *claim* submitted against your Bounty. Please check it out, below
 
 {% include 'emails/bounty.txt' with bounty=bounty %}
 
