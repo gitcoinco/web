@@ -2,9 +2,13 @@
 
 You've received an tip worth {{amount}} {{tokenName}} via Gitcoin.co.
 
-You are receiving this email because your email address is on the tip notification list. 
+{% if comments %}
+The sender had the following comments: {{comments}}
+{% endif %}
 
 Click here to redeem it: {{link}}
+
+You are receiving this email because your email address is on the tip notification list. 
 
 
 Keep Pushing Open Source Forward,

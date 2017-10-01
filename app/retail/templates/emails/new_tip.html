@@ -26,10 +26,18 @@
 <p>
     You've received an tip worth {{amount}} {{tokenName}} via Gitcoin.co.
 </p>
+{% if comments %}
+    <p>
+    The sender had the following comments: 
+<pre>
+    {{comments}}
+</pre>
+    </p>
+{% endif %}
 
 <br>
 
-<a class="button" href="{{link}}" style="">Redeem Tip on Gitcoin.co</a>
+<a class="button" href="{{link}}" style="">Redeem Tip</a>
 
 <p>
     You are receiving this email because your email address is on the tip notification list. 

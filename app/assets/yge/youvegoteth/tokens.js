@@ -4,6 +4,7 @@ var tokens =  null
 if(network_id == 0 ){
   var tokens = [
 //YGE tokens
+    {"addr": "0xe635c6d338dcd31c979b88000ff97c1fa3f0472c", "name": "GIT", "decimals": 18},
     { "addr": "0x2941deaad71adb02b944bd38ebce2f1f4c9a62dc", "name": "COLO", "decimals": 18 },
 // from https://github.com/etherdelta/etherdelta.github.io/blob/master/config/main.json
     { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },

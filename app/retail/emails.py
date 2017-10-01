@@ -25,12 +25,13 @@ import premailer
 ### RENDERERS
 
 
-def render_new_tip(link, amount, tokenName):
+def render_new_tip(link, amount, tokenName, comments):
 
     params = {
         'link': link,
         'amount': round(amount,2),
         'tokenName': tokenName,
+        'comments': comments,
     }
 
     response_html = premailer.transform(render_to_string("emails/new_tip.html", params))
@@ -144,7 +145,7 @@ def render_new_bounty_roundup(bounties):
 @staff_member_required
 def new_tip(request):
 
-    response_html, response_txt = render_new_tip('/foo/bar', 10, 'ETH')
+    response_html, response_txt = render_new_tip('/foo/bar', 10, 'ETH', 'test123 foo bar lol')
 
     return HttpResponse(response_html)
 

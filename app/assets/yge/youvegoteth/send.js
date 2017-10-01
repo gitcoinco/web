@@ -10,6 +10,7 @@ function isNumeric(n) {
 function advancedToggle(){
     $('advanced_toggle').style.display = 'none';
     $('advanced').style.display = 'block';
+    return false;
 }
 
 var unPackAddresses = function(){
@@ -69,7 +70,7 @@ window.onload = function () {
         }
         var amount = $("amount").value * weiConvert;
         var amountInEth = amount * 1.0 / weiConvert;
-
+        var comments = $('comments').value;
         //validation
         var hasEmail = email != '';
         var hasUsername = username != '';
@@ -135,6 +136,7 @@ window.onload = function () {
                             email: email,
                             tokenName: tokenName,
                             amount: amount/weiConvert,
+                            comments: comments,
                         }),
                     }).then(function(response) {
                       return response.json();

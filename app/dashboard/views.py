@@ -65,7 +65,7 @@ def send_tip_2(request):
         if len(emails) == 0:
             status = 'error'
             message = 'No email addresses found'
-        new_tip(params['url'], params['amount'], params['tokenName'], set(emails))
+        new_tip(params['url'], params['amount'], params['tokenName'], params['comments'], set(emails))
         response = {
             'status': status,
             'message': message,
