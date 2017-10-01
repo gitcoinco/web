@@ -90,6 +90,10 @@ div, p, a, span{
     color: #eee;
 }
 
+#feature_videos h6{
+    padding-top: 10px;
+}
+
 #origin_story img{
     max-height: 200px;
     max-width: 300px;
