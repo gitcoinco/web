@@ -27,6 +27,7 @@ import premailer
 
 def render_tip_email(tip, is_new):
 
+    warning = tip.network if tip.network != 'mainnet' else ""
     params = {
         'link': tip.url,
         'amount': round(tip.amount,2),
@@ -34,7 +35,8 @@ def render_tip_email(tip, is_new):
         'comments': tip.comments,
         'tip': tip,
         'show_expires': tip.expires_date < (timezone.now() + timezone.timedelta(days=365)),
-        'is_new': is_new
+        'is_new': is_new,
+        'warning': warning,
     }
 
     response_html = premailer.transform(render_to_string("emails/new_tip.html", params))

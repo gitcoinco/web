@@ -62,12 +62,14 @@ if(getParam('network') != null || getParam('n') != null){
 //default to latest contract, unless user has a link to receive.html where addres/key are specificed but contract verseion is not.
 contract_revision=1;
 setContractSelect(1);
+networkName = ''
 
 if(network_id==9){
     //testrpc
     var contract_address = '0x852624f8b99431a354bf11543b10762fd3cdfae3'; 
     setNetworkSelect(2);
     etherscanDomain = 'localhost';
+    networkName = 'testrpc'
 }
 else if(network_id==3){
     //ropsten
@@ -75,11 +77,13 @@ else if(network_id==3){
     contract_address = '0xb917e0f1fdebb89d37cbe053f59066a20b6794d6'; //ropsten v1
     etherscanDomain = 'ropsten.etherscan.io';
     setNetworkSelect(1);    
+    networkName = 'ropsten'
 } else {
     //mainnet
     var contract_address = '0x0';
     contract_address = '0x8bcaadc84fd3bdea3cc5dd534cd85692a820a692'; //mainnet v1
     setNetworkSelect(0);
+    networkName = 'mainnet'
 }
 var contract = function(){
     return web3.eth.contract(abi).at(contract_address);

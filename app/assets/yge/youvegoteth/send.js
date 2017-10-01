@@ -176,6 +176,7 @@ window.onload = function () {
                             github_url: github_url,
                             from_name: from_name,
                             tokenAddress: token,
+                            network: networkName,
                         }),
                     }).then(function(response) {
                       return response.json();

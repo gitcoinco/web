@@ -1,3 +1,7 @@
+# encoding=utf8
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 '''
     Copyright (C) 2017 Gitcoin Core 
 
@@ -98,6 +102,36 @@ def maybe_market_to_github(bounty, event_name, txid):
 
     # actually post
     url = bounty.github_url
+    uri = urlparse(url).path
+    uri_array = uri.split('/')
+    try:
+        username = uri_array[1]
+        repo = uri_array[2]
+        issue_num = uri_array[4]
+
+        post_issue_comment(username, repo, issue_num, msg)
+
+    except Exception as e:
+        print(e)
+        return False
+
+    return True
+
+
+def maybe_market_tip_to_github(tip):
+    if not settings.GITHUB_CLIENT_ID:
+        return False
+    if not tip.github_url:
+        return False
+
+    # prepare message
+    username = tip.username if '@' in tip.username else str('@' + tip.username)
+    _from = " from {}".format(tip.from_name) if tip.from_name else ""
+    warning = tip.network if tip.network != 'mainnet' else ""
+    msg = "⚡️ A tip worth {} {} {} has been granted to {} for this issue{}. ⚡️ \n\nNice work {}, check your email for further instructions.".format(round(tip.amount, 3), warning, tip.tokenName, username, _from, username)
+
+    # actually post
+    url = tip.github_url
     uri = urlparse(url).path
     uri_array = uri.split('/')
     try:

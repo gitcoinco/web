@@ -26,6 +26,7 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from dashboard.helpers import normalizeURL, process_bounty_details, process_bounty_changes
 import json
+from dashboard.notifications import maybe_market_tip_to_github
 from marketing.mails import tip_email
 from app.github import get_user as get_github_user
 
@@ -50,7 +51,7 @@ def receive_tip(request):
 
 
 @csrf_exempt
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='1/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_2(request):
 
     if request.body != '':
@@ -58,6 +59,8 @@ def send_tip_2(request):
         message = 'Notification has been sent'
         params = json.loads(request.body)
         emails = []
+        
+        #basic validation
         if params['email']:
             emails.append(params['email'])
         gh_user = get_github_user(params['username'])
@@ -67,6 +70,8 @@ def send_tip_2(request):
             status = 'error'
             message = 'No email addresses found'
         expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
+
+        #db mutations
         tip = Tip.objects.create(
             emails=emails,
             url=params['url'],
@@ -77,9 +82,16 @@ def send_tip_2(request):
             expires_date=expires_date,
             github_url=params['github_url'],
             from_name=params['from_name'],
+            username=params['username'],
+            network=params['network'],
             tokenAddress=params['tokenAddress'],
             )
+
+        #notifications
+        maybe_market_tip_to_github(tip)
         tip_email(tip, set(emails), True)
+
+        #http response
         response = {
             'status': status,
             'message': message,

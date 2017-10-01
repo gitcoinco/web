@@ -169,6 +169,8 @@ class Tip(SuperModel):
     expires_date = models.DateTimeField()
     github_url = models.URLField(null=True)
     from_name = models.CharField(max_length=255, default='')
+    username = models.CharField(max_length=255, default='')
+    network = models.CharField(max_length=255, default='')
 
     def __str__(self):
         from django.contrib.humanize.templatetags.humanize import naturalday

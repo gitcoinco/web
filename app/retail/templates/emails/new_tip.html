@@ -34,7 +34,7 @@ a{
 
 
 <h3>
-    {% if tip.from_name %}{{tip.from_name}}{% else %}Someone{% endif %} sent you tip worth {{amount}} {{tokenName}}{% if not is_new %} {{tip.created_on | naturaltime}}{%endif%}.
+    {% if tip.from_name %}{{tip.from_name}}{% else %}Someone{% endif %} sent you tip worth {{amount}} {{warning}} {{tokenName}}{% if not is_new %} {{tip.created_on | naturaltime}}{%endif%}.
 </h3>
 {% if tip.url %}
     <p>
