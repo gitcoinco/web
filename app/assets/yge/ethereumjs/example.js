@@ -32,7 +32,7 @@
                 $("new").onclick = function() {
                     console.log($("new_passphrase").value);
                     
-                    var newAccount = Accounts.new($("new_passphrase").value);
+                    var newAccount = document.Accounts.new($("new_passphrase").value);
                     $("new_result").innerHTML = JSON.stringify(newAccount, null, 2);
                 };
                 

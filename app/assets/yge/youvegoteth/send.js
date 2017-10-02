@@ -58,11 +58,13 @@ window.onload = function () {
         $("expires").selectedIndex = localStorage['expires'];
     }
 
-    tokens.forEach(function(ele){
-        var option = document.createElement("option");
-        option.text = ele.name;
-        option.value = ele.addr;
-        $("token").add(option);
+    waitforWeb3(function(){
+        tokens(document.web3network).forEach(function(ele){
+            var option = document.createElement("option");
+            option.text = ele.name;
+            option.value = ele.addr;
+            $("token").add(option);
+        });
     });
 
     // When 'Generate Account' is clicked
@@ -158,13 +160,16 @@ window.onload = function () {
                     $("send_eth").style.display = 'none';
                     $("tokenName").innerHTML = tokenName;
                     $("send_eth_done").style.display = 'block';
-                    $("trans_link").href = "https://"+etherscanDomain+"/tx/" + result;
-                    var relative_link = "?n=" + network_id+ "&c=" + contract_revision + "&key=" + _private_key ;
+                    $("trans_link").href = "https://"+etherscanDomain()+"/tx/" + result;
+                    $("trans_link2").href = "https://"+etherscanDomain()+"/tx/" + result;
+                    var relative_link = "?n=" + document.web3network+ "&txid=" + txid + "&key=" + _private_key ;
                     var base_url = document.location.href.split('?')[0].replace('send/2','receive').replace('#','');
                     var link = base_url + relative_link;
                     $('new_username').innerHTML = username;
                     var warning = getWarning();
-
+                    callFunctionWhenTransactionMined(txid, function(){
+                        $("loading_trans").innerHTML = "This transaction has been confirmed 👌";
+                    });
                     const url = "/tip/send/2";
                     fetch(url, {
                         method : "POST",
@@ -179,7 +184,8 @@ window.onload = function () {
                             github_url: github_url,
                             from_name: from_name,
                             tokenAddress: token,
-                            network: networkName,
+                            network: document.web3network,
+                            txid: txid,
                         }),
                     }).then(function(response) {
                       return response.json();
@@ -202,14 +208,14 @@ window.onload = function () {
                     _alert('got an error :(');
                 } else {
                     var approve_amount = amount * numBatches;
-                    token_contract(token).approve.estimateGas(contract_address, approve_amount, function(error, result){
+                    token_contract(token).approve.estimateGas(contract_address(), approve_amount, function(error, result){
                         var _gas = result;
                         if (_gas > maxGas){
                             _gas = maxGas;
                         }
                         var _gasLimit = _gas * 1.01;
                         token_contract(token).approve.sendTransaction(
-                            contract_address, 
+                            contract_address(), 
                             approve_amount, 
                             {from :fromAccount, gas:gas, gasLimit: gasLimit},
                             final_callback);

@@ -7,7 +7,7 @@ window.onload = function () {
         }
         var addresses = []
         for(var i=0; i<num_batches; i++){
-            var newAccount = Accounts.new('');
+            var newAccount = document.Accounts.new('');
             var address = newAccount.address;
             var _private_key = newAccount.private;
             addresses[i] = {

@@ -171,10 +171,11 @@ class Tip(SuperModel):
     from_name = models.CharField(max_length=255, default='')
     username = models.CharField(max_length=255, default='')
     network = models.CharField(max_length=255, default='')
+    txid = models.CharField(max_length=255, default='')
 
     def __str__(self):
         from django.contrib.humanize.templatetags.humanize import naturalday
-        return "{} {}.  created: {}, expires: {}".format(self.amount, self.tokenName, naturalday(self.created_on), naturalday(self.expires_date))
+        return "{} -- {} {}.  created: {}, expires: {}".format(self.network, self.amount, self.tokenName, naturalday(self.created_on), naturalday(self.expires_date))
 
 
 # method for updating

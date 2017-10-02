@@ -85,6 +85,7 @@ def send_tip_2(request):
             username=params['username'],
             network=params['network'],
             tokenAddress=params['tokenAddress'],
+            txid=params['txid'],
             )
 
         #notifications

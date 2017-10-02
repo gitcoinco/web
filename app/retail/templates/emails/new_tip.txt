@@ -4,7 +4,7 @@
 {% if tip.from_name %}{{tip.from_name}}{% else %}Someone{% endif %} has sent you tip worth {{amount}} {{warning}} {{tokenName}}.
 
 {% if tip.url %}
-{% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on {{tip.url}}: 
+{% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on {{tip.github_url}}: 
 {% endif %}
 
 {% if comments %}

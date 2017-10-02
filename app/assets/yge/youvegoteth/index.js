@@ -3,9 +3,9 @@ var tokenabi = [{"inputs": [{"type": "address", "name": "_spender"}, {"type": "u
 
 var getWarning = function(){
     var warning = "";
-    if(network_id == 3){
+    if(document.web3network == 'ropsten'){
         warning = "(Ropsten)";
-    } else if(network_id == 9){
+    } else if(document.web3network == 'custom network'){
         warning = "(TestRPC)";
     }
     return warning;
@@ -24,102 +24,127 @@ function getParam(parameterName) {
     return result;
 }
 
-var setNetworkSelect = function(newNum){
-    setTimeout(function(){
-        if(!document.getElementById("network")){
-            setNetworkSelect(newNum);
-        } else {
-            console.log(newNum);
-            document.getElementById("network").selectedIndex = newNum;        
-        }
-    },100);
-}
-var setContractSelect = function(newNum){
-    setTimeout(function(){
-        if(!document.getElementById("contract")){
-            setContractSelect();
-        } else {
-            document.getElementById("contract").selectedIndex = newNum;        
-        }
-
-    },100);
-}
-
 //figure out what network to point at
-network_id=0; //mainnet
-var etherscanDomain = 'etherscan.io';
-if(getParam('network') != null || getParam('n') != null){
-    var newNetwork = parseInt(getParam('network'));
-    if(getParam('n')){
-        newNetwork = parseInt(getParam('n'));
-    }
-    localStorage.setItem('network_id', newNetwork);
-    network_id = newNetwork;
-} else if(localStorage.getItem('network_id') != null){
-    network_id = parseInt(localStorage.getItem('network_id'));
-}
-
 //default to latest contract, unless user has a link to receive.html where addres/key are specificed but contract verseion is not.
-contract_revision=1;
-setContractSelect(1);
-networkName = ''
-
-if(network_id==9){
-    //testrpc
-    var contract_address = '0x852624f8b99431a354bf11543b10762fd3cdfae3'; 
-    setNetworkSelect(2);
-    etherscanDomain = 'localhost';
-    networkName = 'testrpc'
+var contract_address = function(){
+    if(document.web3network=='custom network'){
+        //testrpc
+        var contract_address = '0x852624f8b99431a354bf11543b10762fd3cdfae3'; 
+    }
+    else if(document.web3network=='ropsten'){
+        //ropsten
+        var contract_address = '0xb917e0f1fdebb89d37cbe053f59066a20b6794d6'; //ropsten v1
+    } else {
+        //mainnet
+        var contract_address = '0x8bcaadc84fd3bdea3cc5dd534cd85692a820a692'; //mainnet v1
+    }
+    return contract_address;
 }
-else if(network_id==3){
-    //ropsten
-    var contract_address = '0x0';
-    contract_address = '0xb917e0f1fdebb89d37cbe053f59066a20b6794d6'; //ropsten v1
-    etherscanDomain = 'ropsten.etherscan.io';
-    setNetworkSelect(1);    
-    networkName = 'ropsten'
-} else {
-    //mainnet
-    var contract_address = '0x0';
-    contract_address = '0x8bcaadc84fd3bdea3cc5dd534cd85692a820a692'; //mainnet v1
-    setNetworkSelect(0);
-    networkName = 'mainnet'
+var etherscanDomain = function(){
+    var etherscanDomain = 'etherscan.io';
+
+    if(document.web3network=='custom network'){
+        //testrpc
+        etherscanDomain = 'localhost';
+    }
+    else if(document.web3network=='ropsten'){
+        //ropsten
+        etherscanDomain = 'ropsten.etherscan.io';
+    } else {
+        //mainnet
+    }
+    return etherscanDomain;
 }
 var contract = function(){
-    return web3.eth.contract(abi).at(contract_address);
+    return web3.eth.contract(abi).at(contract_address());
 }
 var token_contract = function(token_address){
     return web3.eth.contract(tokenabi).at(token_address);
 }
 
-var onNetworkChange = function(){
-    var newNetwork = parseInt($("network").value);
-    localStorage.setItem('network_id', newNetwork);
-    document.location.href = document.location.href;
-}
 
 
 //background moving 
-setTimeout(function () {
+var addMotion = function(){
+  if(!$("yge")){
+    return setTimeout(addMotion, 50);
+  }
+  var startX = null;
+  var startY = null;
+  var movementStrength = 25;
+  var _height = 1000;
+  var _width = 1000;
+  var height = movementStrength / _height;
+  var width = movementStrength / _width;
+  $("yge").addEventListener("mousemove",function(e){
+        var pageX = e.pageX - (_height / 2);
+        var pageY = e.pageY - (_width / 2);
+        var newvalueX = width * (pageX - startX) * -1 - 25;
+        var newvalueY = height * (pageY - startY) * -1 - 50;
+        if(!startX){
+          startX = newvalueX;
+        }
+        if(!startY){
+          startY = newvalueY;
+        }
+        $("yge").style.backgroundPosition =  (newvalueX - startX - 10)+"px     "+(newvalueY - startY - 10)+"px";
+  });
+};
+setTimeout(addMotion, 5);
 
-    var startX = null;
-    var startY = null;
-    var movementStrength = 25;
-    var _height = 1000;
-    var _width = 1000;
-    var height = movementStrength / _height;
-    var width = movementStrength / _width;
-      $("yge").addEventListener("mousemove",function(e){
-            var pageX = e.pageX - (_height / 2);
-            var pageY = e.pageY - (_width / 2);
-            var newvalueX = width * (pageX - startX) * -1 - 25;
-            var newvalueY = height * (pageY - startY) * -1 - 50;
-            if(!startX){
-              startX = newvalueX;
+var waitforWeb3 = function(callback){
+    if(document.web3network){
+        callback();
+    } else {
+        var wait_callback = function(){
+            waitforWeb3(callback);
+        };
+        setTimeout(wait_callback, 100);
+    }
+}
+
+//figure out what version of web3 this is
+window.addEventListener('load', function() {
+    var timeout_value = 100;
+    setTimeout(function(){
+        web3.version.getNetwork((error, netId) => {
+            if(!error){
+
+                //figure out which network we're on
+                var network = "unknown";
+                  switch (netId) {
+                    case "1":
+                      network = 'mainnet';
+                      break
+                    case "2":
+                      network = 'morden';
+                      break
+                    case "3":
+                      network = 'ropsten';
+                      break
+                    case "4":
+                      network = 'rinkeby';
+                      break
+                    case "42":
+                      network = 'kovan';
+                      break
+                    default:
+                      network = "custom network";
+                  }
+                document.web3network = network;
             }
-            if(!startY){
-              startY = newvalueY;
-            }
-            $("yge").style.backgroundPosition =  (newvalueX - startX - 10)+"px     "+(newvalueY - startY - 10)+"px";
-      });
+        })
+    }, timeout_value);
 });
+
+var callFunctionWhenTransactionMined = function(txHash, f){
+    var transactionReceipt = web3.eth.getTransactionReceipt(txHash, function(error, result){
+        if(result){
+            f();
+        } else {
+            setTimeout(function(){
+                callFunctionWhenTransactionMined(txHash, f);
+            },1000);
+        }
+    });
+};

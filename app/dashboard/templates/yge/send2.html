@@ -19,7 +19,7 @@
     <header>
         <span class="avatar">
             <a href='index.html'>
-                <img src="/static/v2/images/helmet.png" style="max-width: 100px; max-height: 100px;" />
+                <img src="/static/v2/images/helmet.png" style="background-color: white; max-width: 100px; max-height: 100px;" />
             </a>
         </span>
     </header>
@@ -86,6 +86,7 @@
             <br>
             <input type="checkbox" id="tos" value="1" >
             <label for="tos">I understand & agree to the <a href="https://gitcoin.co/terms">terms of service</a>.</label>
+
         </div>
 
       <a href="#" id="send" class="button">Send ⚡️</a>
@@ -94,10 +95,15 @@
 
     <div id="send_eth_done" style="display:none;">
         <h1>Woo hoo!</h1>
-        <h2>Your <span id="tokenName">ETH</span> is safe & secure <a id="trans_link" href="" target=new>in the smart contract</a>.</h2>
+        <h2>Your <span id="tokenName">ETH</span> has been sent <a id="trans_link" href="" target=new>to the blockchain</a>.</h2>
+        <p id="loading_trans">
+            <a id="trans_link2" href="" target=new>The transaction</a> is still pending.  This page will auto-update when the transaction is confirmed.
+            <br>    
+            <img src="/static/yge/images/loading.gif" style="max-width: 70px; max-height: 70px;">
+        </p>
         <hr>
-        <h1><span id=new_username></span> has been notified</h1>
-        <h3>with instructions about how to receive their tip</h1>
+        <h1>&amp; <span id=new_username></span> has been notified</h1>
+        <h3>with instructions about how to receive their tip.</h1>
         <br>
         <a id="" class="button" href="/tip/send">⬅ Start Over</a>
     </div>

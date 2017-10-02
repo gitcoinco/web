@@ -1,4 +1,8 @@
 var weiPerEther = 1000000000000000000;
+var gasPrice = 1;
+var gas = 100000 * 2;
+var gasLimit = gas * 2;
+var maxGas = 4468057;
 
 // Make alias of docuemtn.getElementById -> $
 function makeAlias(object, name) {
@@ -9,36 +13,38 @@ function makeAlias(object, name) {
     }
 }
 
-var passphrase = 'youvegoteth';
-var gasPrice = 1;
-var gas = 100000 * 2;
-var gasLimit = gas * 2;
-var maxGas = 4468057;
-
 // Make docuemtn.getElementById aliased by $
 $ = makeAlias(document, 'getElementById');
 
 // Create Accounts Object
+waitforWeb3(function(){
+  if(Accounts){
+    // Set web3 provider
+    var host = ''
+    if(document.web3network=='custom network'){
+        host = "http://localhost:8545"; //testrpc
+    }
+    else if(document.web3network=='ropsten'){
+        host = 'https://ropsten.infura.io/'; //ropsten
+    } else {
+        host = 'https://mainnet.infura.io/'; //mainnet
+    }
+    var provider = new HookedWeb3Provider({
+      host: host,
+      transaction_signer: document.Accounts
+    });
+    web3.setProvider(provider);
+
+
+  }
+});
+
+
 if(Accounts){
-  var Accounts = new Accounts();
+var Accounts = new Accounts();
 
-  // Set web3 provider
-  var host = ''
-  if(network_id==9){
-      host = "http://localhost:8545"; //testrpc
-  }
-  else if(network_id==3){
-      host = 'https://ropsten.infura.io/'; //ropsten
-  } else {
-      host = 'https://mainnet.infura.io/'; //mainnet
-  }
-  var provider = new HookedWeb3Provider({
-    host: host,
-    transaction_signer: Accounts
-  });
-  web3.setProvider(provider);
-
-  // Extend the web3 object
-  Accounts.log = function(msg){console.log(msg);};
+// Extend the web3 object
+Accounts.log = function(msg){console.log(msg);};
 
 }
+document.Accounts = Accounts;

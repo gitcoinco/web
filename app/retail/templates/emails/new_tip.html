@@ -38,7 +38,7 @@ a{
 </h3>
 {% if tip.url %}
     <p>
-    {% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{tip.url}}">{{tip.url}}</a>: 
+    {% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{tip.github_url}}">{{tip.github_url}}</a>: 
     </p>
 {% endif %}
 
