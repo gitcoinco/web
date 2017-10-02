@@ -62,6 +62,7 @@ window.onload = function () {
             option.value = ele.addr;
             $("token").add(option);
         });
+        jQuery('#token').select2();
     });
 
     // When 'Generate Account' is clicked
