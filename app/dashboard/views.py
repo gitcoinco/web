@@ -66,9 +66,6 @@ def send_tip_2(request):
         gh_user = get_github_user(params['username'])
         if gh_user.get('email', False):
             emails.append(gh_user['email'])
-        if len(emails) == 0:
-            status = 'error'
-            message = 'No email addresses found'
         expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
 
         #db mutations
@@ -89,9 +86,12 @@ def send_tip_2(request):
             )
 
         #notifications
-        maybe_market_tip_to_github(tip)
+        did_post_to_github = maybe_market_tip_to_github(tip)
         maybe_market_tip_to_slack(tip, 'new_tip', tip.txid)
         tip_email(tip, set(emails), True)
+        if len(emails) == 0 and not did_post_to_github:
+            status = 'error'
+            message = 'Uh oh! No email addresses found via Github API and could not post to github'
 
         #http response
         response = {
