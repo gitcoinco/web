@@ -89,7 +89,7 @@ def maybe_market_tip_to_slack(tip, event_name, txid):
         return False
 
     title = tip.github_url
-    msg = "{} worth {} {}: {} \n\n{}".format(event_name, round(tip.amount(), 4), tip.tokenName, title, tip.github_url)
+    msg = "{} worth {} {}: {} \n\n{}".format(event_name, round(tip.amount, 4), tip.tokenName, title, tip.github_url)
 
     payload = {
         "text": msg,
