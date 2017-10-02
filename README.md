@@ -2,7 +2,7 @@
 
 # Gitcoin
 
-Gitcoin pushes Open Source Forward.  Learn more at [https://gitcoin.co](https://gitcoin.co)
+Gitcoin pushes Open Source Forward. Learn more at [https://gitcoin.co](https://gitcoin.co)
 
 
 <a href="https://gitcoin.co/explorer/?q=https://github.com/gitcoinco/web">
@@ -24,9 +24,9 @@ Functionally, the app has several key features:
 
 Technically, the system is architected:
 
-* __Web3__ The main source of truth for the system is the Ethereum blockchain.  Check out the [smart contracts](https://github.com/gitcoinco/smart_contracts).
+* __Web3__ The main source of truth for the system is the Ethereum blockchain. Check out the [smart contracts](https://github.com/gitcoinco/smart_contracts).
 * __Web2__ This part of the app is built with Python, Django, Postgres, and a handful of other tools that are common in the web2 ecosystem.
-* __Web 3 Bridge__ This is the bridge between web3 and the rest of the application.  Mostly built in javascript(web3js) and python(web3py).
+* __Web 3 Bridge__ This is the bridge between web3 and the rest of the application. Mostly built in javascript(web3js) and python(web3py).
 * __Brochureware__ Just a nice little landing page telling folks what the Gitcoin project is.
 
 # HTTPS API
@@ -101,7 +101,7 @@ You can filter the data returned from the API buy providing these keys as URL pa
 
 **Order By**
 
-By passing an `order_by` parameter you can order the data by the provided key. Ex: `?order_by=expires_date`. To sort in the opposite direction you can add a `-` in from the the key `?order_by=-expires_date`. 
+By passing an `order_by` parameter you can order the data by the provided key. Ex: `?order_by=expires_date`. To sort in the opposite direction you can add a `-` in from the the key `?order_by=-expires_date`.
 
 #### Example Request
    
@@ -162,7 +162,7 @@ By passing an `order_by` parameter you can order the data by the provided key. E
     "status": "expired",
     "now": "2017-09-24T18:59:53.964344Z"
   },
-  .... 
+  ....
   ]
 
 ```
@@ -202,7 +202,7 @@ cp app/local_settings.py.dist app/local_settings.py
 
 ```
 
-You will need to edit the `app/local_settings.py` file with your local settings.  Look for config items that are marked `#required`.
+You will need to edit the `app/local_settings.py` file with your local settings. Look for config items that are marked `#required`.
 
 
 ```
@@ -214,7 +214,7 @@ pip install -r ../requirements.txt
 ./manage.py runserver 0.0.0.0:8080
 ```
 
-Navigate to `http://localhost:8080/`. 
+Navigate to `http://localhost:8080/`.
 
 
 # Adding your token to Gitcoin.
@@ -237,11 +237,11 @@ Have an ERC20 compatible token that you'ud like to add support for?  Great!
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Affero General Public License for more details.
 
     You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
 

@@ -8,11 +8,11 @@
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Affero General Public License for more details.
 
     You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
 from django.core.management.base import BaseCommand
@@ -117,7 +117,7 @@ class Command(BaseCommand):
             while True:
                 time.sleep(1)
         except requests.exceptions.HTTPError:
-            print("- realtime not working.  attempting to faux realtime! #YOLO")
+            print("- realtime not working. attempting to faux realtime! #YOLO")
             callback = get_callback(web3, bounty_contract_address, False)
             last_blockNumber = 0
             while True:

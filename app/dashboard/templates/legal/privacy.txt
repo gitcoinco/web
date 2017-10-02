@@ -8,11 +8,11 @@
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU Affero General Public License for more details.
 
     You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
 <pre>
@@ -39,7 +39,7 @@ Non-Identifying Information/Usernames: We also may collect other information, su
 In some cases, we may render Personal Information (generally, email address) into a form of Non-Identifying Information referred to in this Privacy Policy as “Hashed Information.” This is typically accomplished using a mathematical process (commonly known as a hash function) to convert information into a code. The code does not identify you directly, but it may be used to connect your activity and interests.
 
 Combination of Personal and Non-Identifying Information: Certain Non-Identifying Information would be considered a part of your Personal Information if it were combined with other identifiers in a way that enables you to be identified (for example, combining information with your name). But the same pieces of information are considered Non-Identifying Information when they are taken alone or combined only with other non-identifying information (for example, your viewing preferences). We may combine your Personal Information with Non-Identifying Information, but Gitcoin will treat the combined information as Personal Information.
-Collection of the Third Party Personal Information: We collect the following personal information from you about your contacts or friends: First, last name and email address when you provide it to us for the purpose of adding your contacts to a message room. 
+Collection of the Third Party Personal Information: We collect the following personal information from you about your contacts or friends: First, last name and email address when you provide it to us for the purpose of adding your contacts to a message room.
 Information Received from Third Parties
 
 We also may receive information about you from third parties. For example, we may supplement the information we collect with outside records or third parties may provide information in connection with a co-marketing agreement or at your request (such as if you choose to sign in with a third-party service). If we combine the information we receive from others with information we collect through the Service, we will treat the combined information as described in this Privacy Policy.
@@ -145,7 +145,7 @@ Gitcoin takes commercially reasonable steps to help protect and secure the infor
 
 Gitcoin is a United States company. If you are located outside the United States and choose to provide information to us, Gitcoin transfers Personal Information to the United States for processing. The U.S. may not have the same data protection laws as the country in which you initially provided the information. When we transfer your information to the U.S., we will protect it as described in this Privacy Policy. By visiting the Service, or providing Gitcoin with any information, you fully understand and unambiguously consent to this transfer, processing and storage of your information in the United States.
 
-Gitcoin  protects personally identifiable information from residents of the European Union, other European Economic Area countries, and Switzerland in accordance with applicable law (including, as applicable, reliance upon your consent and EU-approved standard contract clauses).  
+Gitcoin  protects personally identifiable information from residents of the European Union, other European Economic Area countries, and Switzerland in accordance with applicable law (including, as applicable, reliance upon your consent and EU-approved standard contract clauses).
 
 9. LINKS TO OTHER SITES
 
