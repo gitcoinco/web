@@ -92,7 +92,7 @@ window.onload = function () {
             _alert("Invalid Link.  Please check your link and try again");
             return;
         }
-        $("send_eth").innerHTML = "<img src='/static/yge/images/loading.gif' style='max-width: 70px; max-height: 70px;'><br><h4>Loading..</h4>";
+        $("send_eth").innerHTML = "<img src='/static/yge/images/loading.gif' style='max-width: 70px; max-height: 70px;'><br><h4>Submitting to the blockchain..</h4>";
         //set up callback to sendRawTransaction
         var callback = function(error, result){
             if(error){
@@ -100,67 +100,57 @@ window.onload = function () {
                 _alert('got an error :(');
             } else {
                 startConfetti();
-                $("send_eth").innerHTML = "<h1>Success 🚀!</h1> <a target=new href='https://"+etherscanDomain()+"/tx/"+result+"'>See your transaction on the blockchain here</a>.<br><br><strong>Status:</strong> <span id=status>Loading ... <img src='/static/yge/images/loading.gif' style='max-width: 10px; max-height: 10px;'></span><br><br>It might take a few minutes to sync, depending upon: <br> - network congestion<br> - network fees that sender allocated to transaction<br><br><a id='' class='button' href='/'>⬅ Back to Gitcoin.co</a>" ;
-                waitforWeb3(function(){
+                $("send_eth").innerHTML = "<h1>Success 🚀!</h1> <a target=new href='https://"+etherscanDomain()+"/tx/"+result+"'>See your transaction on the blockchain here</a>.<br><br><strong>Status:</strong> <span id=status>Loading ... <img src='/static/yge/images/loading.gif' style='max-width: 10px; max-height: 10px;'></span><br><br><span id=mighttake>It might take a few minutes to sync, depending upon: <br> - network congestion<br> - network fees that sender allocated to transaction<br></span><br><a id='' class='button' href='/'>⬅ Back to Gitcoin.co</a>" ;
+                callFunctionWhenTransactionMined(result, function(){
                     $("status").innerHTML = "Processed ⚡️";
+                    $("mighttake").innerHTML = '';
                 });
             }
         };
 
         //find the nonce
         web3.eth.getTransactionCount(_idx,function(error,result){
-            console.log('-');
             var nonce = result;
             if(!nonce){
                 nonce = 0;
             }
             web3.eth.getBalance(_idx, function(error,result){
-                console.log('-');
                 var balance = result.toNumber();
-                console.log('balance: '+balance);
                 if(balance==0){
                     _alert("You must wait until the senders transaction confirms.");
                     return;
                 }
-                console.log('-');
-                console.log('latest gasLimit: ' + gasLimit);
-                contract().claimTransfer.estimateGas(_idx, forwarding_address,function(error,result1){
 
-                    //setup raw transaction
-                    console.log('estimated gas: ' + result);
-                    var estimate = result;
-                    var gasPrice = 10**9 * 1.7;
-                    var data = contract().claimTransfer.getData(_idx, forwarding_address);
-                    var payloadData = data; //??
-                    var fromAccount = _idx; //???
-                    var gas = estimate;
-                    if(balance > (gas*gasPrice)){
-                        gasPrice = 10**9 * 1.4;
-                    }
-                    console.log('maxGas: ' + maxGas);
-                    console.log('gasPrice: ' + gasPrice);
-                    console.log('gas: ' + gas);
-                    var gasLimit = gas + 1;
-                    var rawTx = {
-                        nonce: web3.toHex(nonce),
-                        gasPrice: web3.toHex(gasPrice),
-                        gasLimit: web3.toHex(gasLimit),
-                        gas: web3.toHex(gas),
-                        to: contract_address(),
-                        from: fromAccount,
-                        value: '0x00',
-                        data: payloadData,
-                    };
-                    
-                    //sign & serialize raw transaction
-                    var tx = new EthJS.Tx(rawTx);
-                    tx.sign(new EthJS.Buffer.Buffer.from(private_key, 'hex'));
-                    var serializedTx = tx.serialize();
+                //setup raw transaction
+                var estimate = 10**5;
+                var gasPrice = 10**9 * 1.7;
+                var data = contract().claimTransfer.getData(_idx, forwarding_address);
+                var payloadData = data; //??
+                var fromAccount = _idx; //???
+                var gas = estimate;
+                if(balance > (gas*gasPrice)){
+                    gasPrice = 10**9 * 1.4;
+                }
+                var gasLimit = gas + 1;
+                var rawTx = {
+                    nonce: web3.toHex(nonce),
+                    gasPrice: web3.toHex(gasPrice),
+                    gasLimit: web3.toHex(gasLimit),
+                    gas: web3.toHex(gas),
+                    to: contract_address(),
+                    from: fromAccount,
+                    value: '0x00',
+                    data: payloadData,
+                };
+                
+                //sign & serialize raw transaction
+                var tx = new EthJS.Tx(rawTx);
+                tx.sign(new EthJS.Buffer.Buffer.from(private_key, 'hex'));
+                var serializedTx = tx.serialize();
 
-                    //send raw transaction
-                    web3.eth.sendRawTransaction('0x' + serializedTx.toString('hex'), callback);
+                //send raw transaction
+                web3.eth.sendRawTransaction('0x' + serializedTx.toString('hex'), callback);
 
-                });
             });
         });
     };

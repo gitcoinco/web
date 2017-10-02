@@ -84,7 +84,7 @@ window.onload = function () {
         var _disableDeveloperTip = true;
         var accept_tos = $("tos").checked;
         var token = $("token").value;
-        var fees = 10**(5);
+        var fees = 10**(9+5) * 2.01;
         var expires = parseInt($("expires").value);
         var isSendingETH = (token == '0x0' || token == '0x0000000000000000000000000000000000000000');
         var tokenDetails = tokenAddressToDetails(token);
@@ -143,7 +143,6 @@ window.onload = function () {
         var numBatches = document.addresses.length;
         var plural = numBatches > 1 ? 's' : '';
         var processTx = function(i){
-            console.log('process tx');
             //generate ephemeral account
             var _owner = '0x' + lightwallet.keystore._computeAddressFromPrivKey(document.addresses[i].pk);
             var _private_key = document.addresses[i]['pk'];
@@ -235,27 +234,27 @@ window.onload = function () {
                     next_callback = final_callback;
                 }
             }
-            console.log('estimating gas');
-            contract().newTransfer.estimateGas(_disableDeveloperTip, _owner, token, amount, fees, expires, function(error, result){
-                var _gas = result;
-                console.log('estimated gas: ' + _gas)
-                if (_gas > maxGas){
-                    _gas = maxGas;
-                }
-                var _gasLimit = _gas * 1.01;
-                contract().newTransfer.sendTransaction(
-                    _disableDeveloperTip,
-                    _owner,
-                    token,
-                    amount,
-                    fees,
-                    expires,
-                    {from :fromAccount,
-                        gas: _gas,
-                        value: amountETHToSend,
-                        gasLimit: _gasLimit},
-                next_callback);
-            });
+            var _gas = recommendGas;
+            if (_gas > maxGas){
+                _gas = maxGas;
+            }
+            if (_gas > recommendGas){
+                _gas = recommendGas;
+            }
+            var _gasLimit = _gas * 1.01;
+            contract().newTransfer.sendTransaction(
+                _disableDeveloperTip,
+                _owner,
+                token,
+                amount,
+                fees,
+                expires,
+                {from :fromAccount,
+                    gas: web3.toHex(_gas),
+                    gasPrice: web3.toHex(10**9 * 10),
+                    value: amountETHToSend,
+                    gasLimit: _gasLimit},
+            next_callback);
         };
         processTx(0);
     };

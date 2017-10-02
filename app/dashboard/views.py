@@ -90,7 +90,7 @@ def send_tip_2(request):
 
         #notifications
         maybe_market_tip_to_github(tip)
-        maybe_market_tip_to_slack(tip, 'new_tip')
+        maybe_market_tip_to_slack(tip, 'new_tip', tip.txid)
         tip_email(tip, set(emails), True)
 
         #http response
