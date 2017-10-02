@@ -129,6 +129,12 @@ p a {
     color: white;
     font-weight: lighter;;
 }
+.iama a.btn{
+    color: #f9006c;
+}
+.iama a.btn:hover{
+    color: white;
+}
 .iama .mt-3{
     width: 40px; 
     height: 40px; 
@@ -548,7 +554,6 @@ body.bounty_details #primary_view .value{
     -ms-filter: grayscale(0%);
     -o-filter: grayscale(0%);
 }
-
 @media (max-width: 1025px) {
     .interior .col-3{
         display: none;
