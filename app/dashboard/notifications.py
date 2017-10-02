@@ -60,13 +60,36 @@ def maybe_market_to_twitter(bounty, event_name, txid):
 
 
 def maybe_market_to_slack(bounty, event_name, txid):
-    if not settings.TWITTER_CONSUMER_KEY:
+    if not settings.SLACK_WEBHOOK:
         return False
     if bounty.get_natural_value() < 0.0001:
         return False
 
     title = bounty.title if bounty.title else bounty.github_url
     msg = "{} worth {} {}: {} \n\n{}".format(event_name, round(bounty.get_natural_value(), 4), bounty.token_name, title, bounty.get_absolute_url())
+
+    payload = {
+        "text": msg,
+    }
+    try:
+        r = requests.post(
+            settings.SLACK_WEBHOOK,
+            json=payload,
+            timeout=3)
+        return r.status_code == 200
+    except Exception as e:
+        print(e)
+        return False
+
+    pass
+
+
+def maybe_market_tip_to_slack(tip, event_name, txid):
+    if not settings.SLACK_WEBHOOK:
+        return False
+
+    title = tip.github_url
+    msg = "{} worth {} {}: {} \n\n{}".format(event_name, round(tip.amount(), 4), tip.tokenName, title, tip.github_url)
 
     payload = {
         "text": msg,

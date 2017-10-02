@@ -26,7 +26,7 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from dashboard.helpers import normalizeURL, process_bounty_details, process_bounty_changes
 import json
-from dashboard.notifications import maybe_market_tip_to_github
+from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack
 from marketing.mails import tip_email
 from app.github import get_user as get_github_user
 
@@ -90,6 +90,7 @@ def send_tip_2(request):
 
         #notifications
         maybe_market_tip_to_github(tip)
+        maybe_market_tip_to_slack(tip, 'new_tip')
         tip_email(tip, set(emails), True)
 
         #http response

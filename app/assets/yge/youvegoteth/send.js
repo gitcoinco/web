@@ -51,9 +51,6 @@ window.onload = function () {
     if(localStorage['comments']){
         $('comments').value = localStorage['comments'];
     }
-    if(localStorage['fees']){
-        $("fees").selectedIndex = localStorage['fees'];
-    }
     if(localStorage['expires']){
         $("expires").selectedIndex = localStorage['expires'];
     }
@@ -87,7 +84,7 @@ window.onload = function () {
         var _disableDeveloperTip = true;
         var accept_tos = $("tos").checked;
         var token = $("token").value;
-        var fees = parseInt($("fees").value);
+        var fees = 10**(5);
         var expires = parseInt($("expires").value);
         var isSendingETH = (token == '0x0' || token == '0x0000000000000000000000000000000000000000');
         var tokenDetails = tokenAddressToDetails(token);
@@ -142,11 +139,11 @@ window.onload = function () {
         localStorage['email'] = email;
         localStorage['comments'] = comments;
         localStorage['expires'] = $("expires").selectedIndex;
-        localStorage['fees'] = $("fees").selectedIndex;
 
         var numBatches = document.addresses.length;
         var plural = numBatches > 1 ? 's' : '';
         var processTx = function(i){
+            console.log('process tx');
             //generate ephemeral account
             var _owner = '0x' + lightwallet.keystore._computeAddressFromPrivKey(document.addresses[i].pk);
             var _private_key = document.addresses[i]['pk'];
@@ -238,8 +235,10 @@ window.onload = function () {
                     next_callback = final_callback;
                 }
             }
+            console.log('estimating gas');
             contract().newTransfer.estimateGas(_disableDeveloperTip, _owner, token, amount, fees, expires, function(error, result){
                 var _gas = result;
+                console.log('estimated gas: ' + _gas)
                 if (_gas > maxGas){
                     _gas = maxGas;
                 }

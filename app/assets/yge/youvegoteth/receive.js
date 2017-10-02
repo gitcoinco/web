@@ -2,7 +2,6 @@
 window.onload = function () {
 
         setTimeout(function(){
-            console.log(web3);  
             if(!web3.currentProvider || !web3.currentProvider.isMetaMask){
                 $("step_zero").style.display = "block";
                 $("send_eth").style.display = "none";
@@ -93,7 +92,7 @@ window.onload = function () {
             _alert("Invalid Link.  Please check your link and try again");
             return;
         }
-
+        $("send_eth").innerHTML = "<img src='/static/yge/images/loading.gif' style='max-width: 70px; max-height: 70px;'><br><h4>Loading..</h4>";
         //set up callback to sendRawTransaction
         var callback = function(error, result){
             if(error){
@@ -110,49 +109,57 @@ window.onload = function () {
 
         //find the nonce
         web3.eth.getTransactionCount(_idx,function(error,result){
+            console.log('-');
             var nonce = result;
             if(!nonce){
                 nonce = 0;
             }
             web3.eth.getBalance(_idx, function(error,result){
+                console.log('-');
                 var balance = result.toNumber();
+                console.log('balance: '+balance);
                 if(balance==0){
                     _alert("You must wait until the senders transaction confirms.");
                     return;
                 }
-                web3.eth.getBlock("latest", function(error,result){
-                    var gasLimit = result.gasLimit;
-                    contract().claimTransfer.estimateGas(_idx, forwarding_address,function(error,result1){
+                console.log('-');
+                console.log('latest gasLimit: ' + gasLimit);
+                contract().claimTransfer.estimateGas(_idx, forwarding_address,function(error,result1){
 
-                        //setup raw transaction
-                        var data = contract().claimTransfer.getData(_idx, forwarding_address);
-                        var payloadData = data; //??
-                        var fromAccount = _idx; //???
-                        var gas = balance - 1;
-                        if(gas > maxGas){
-                            gas = maxGas;
-                        }
-                        gasLimit = gas + 1;
-                        var rawTx = {
-                            nonce: web3.toHex(nonce),
-                            gasPrice: web3.toHex(1),
-                            gasLimit: web3.toHex(gasLimit),
-                            gas: web3.toHex(gas),
-                            to: contract_address(),
-                            from: fromAccount,
-                            value: '0x00',
-                            data: payloadData,
-                        };
-                        
-                        //sign & serialize raw transaction
-                        var tx = new EthJS.Tx(rawTx);
-                        tx.sign(new EthJS.Buffer.Buffer.from(private_key, 'hex'));
-                        var serializedTx = tx.serialize();
+                    //setup raw transaction
+                    console.log('estimated gas: ' + result);
+                    var estimate = result;
+                    var gasPrice = 10**9 * 1.7;
+                    var data = contract().claimTransfer.getData(_idx, forwarding_address);
+                    var payloadData = data; //??
+                    var fromAccount = _idx; //???
+                    var gas = estimate;
+                    if(balance > (gas*gasPrice)){
+                        gasPrice = 10**9 * 1.4;
+                    }
+                    console.log('maxGas: ' + maxGas);
+                    console.log('gasPrice: ' + gasPrice);
+                    console.log('gas: ' + gas);
+                    var gasLimit = gas + 1;
+                    var rawTx = {
+                        nonce: web3.toHex(nonce),
+                        gasPrice: web3.toHex(gasPrice),
+                        gasLimit: web3.toHex(gasLimit),
+                        gas: web3.toHex(gas),
+                        to: contract_address(),
+                        from: fromAccount,
+                        value: '0x00',
+                        data: payloadData,
+                    };
+                    
+                    //sign & serialize raw transaction
+                    var tx = new EthJS.Tx(rawTx);
+                    tx.sign(new EthJS.Buffer.Buffer.from(private_key, 'hex'));
+                    var serializedTx = tx.serialize();
 
-                        //send raw transaction
-                        web3.eth.sendRawTransaction('0x' + serializedTx.toString('hex'), callback);
+                    //send raw transaction
+                    web3.eth.sendRawTransaction('0x' + serializedTx.toString('hex'), callback);
 
-                    });
                 });
             });
         });
