@@ -16,6 +16,8 @@ $(document).ready(function(){
     }
     $('input[name=issueURL]').focus();
 
+    $('select[name=deonomination').select2();
+
     $('#advancedLink a').click(function(e){
         e.preventDefault();
         var target = $("#advanced_container");
