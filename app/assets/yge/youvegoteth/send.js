@@ -141,6 +141,7 @@ window.onload = function () {
         localStorage['comments'] = comments;
         localStorage['expires'] = $("expires").selectedIndex;
 
+        loading_button(jQuery("#send"));       
         var numBatches = document.addresses.length;
         var plural = numBatches > 1 ? 's' : '';
         var processTx = function(i){
@@ -152,6 +153,7 @@ window.onload = function () {
             var final_callback = function(error, result){
                 if(error){
                     _alert('got an error :(');
+                    unloading_button(jQuery("#send"));       
                 } else {
                     var txid = result;
                     $("send_eth").style.display = 'none';
@@ -203,6 +205,7 @@ window.onload = function () {
                 if(error){
                     console.log(error);
                     _alert('got an error :(');
+                    unloading_button(jQuery("#send"));       
                 } else {
                     var approve_amount = amount * numBatches;
                     token_contract(token).approve.estimateGas(contract_address(), approve_amount, function(error, result){

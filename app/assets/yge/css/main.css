@@ -92,10 +92,10 @@ body {
 	body {
 		height: 100%;
 		background-color: #0d023b;
-		background-image: url("/static/yge/images/overlay1.png"), -moz-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("/static/v2/images/header-bg.png");
-		background-image: url("/static/yge/images/overlay1.png"), -webkit-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("/static/v2/images/header-bg.png");
-		background-image: url("/static/yge/images/overlay1.png"), -ms-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("/static/v2/images/header-bg.png");
-		background-image: url("/static/yge/images/overlay1.png"), linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("/static/v2/images/header-bg.png");
+		background-image: url("/static/yge/images/overlay.png"), -moz-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("/static/v2/images/header-bg.png");
+		background-image: url("/static/yge/images/overlay.png"), -webkit-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("/static/v2/images/header-bg.png");
+		background-image: url("/static/yge/images/overlay.png"), -ms-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("/static/v2/images/header-bg.png");
+		background-image: url("/static/yge/images/overlay.png"), linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("/static/v2/images/header-bg.png");
 		background-repeat: no-repeat;
 		background-size: 110%;
 		background-position: center center;
@@ -113,10 +113,10 @@ body {
 			opacity: 0;
 			z-index: 1;
 			background-color: #ffffff;
-			background-image: url("/static/yge/images/overlay1.png"), -moz-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
-			background-image: url("/static/yge/images/overlay1.png"), -webkit-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
-			background-image: url("/static/yge/images/overlay1.png"), -ms-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
-			background-image: url("/static/yge/images/overlay1.png"), linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
+			background-image: url("/static/yge/images/overlay.png"), -moz-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
+			background-image: url("/static/yge/images/overlay.png"), -webkit-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
+			background-image: url("/static/yge/images/overlay.png"), -ms-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
+			background-image: url("/static/yge/images/overlay.png"), linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35));
 			background-repeat: repeat,			no-repeat;
 			background-size: 100px 100px, cover;
 			background-position: top left,		center center;

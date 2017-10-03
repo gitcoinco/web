@@ -92,6 +92,6 @@ TWITTER_ACCESS_TOKEN = 'TODO'
 TWITTER_ACCESS_SECRET = 'TODO'
 
 # optional: only needed if you slack things
-SLACK_WEBHOOK = 'TODO'
+SLACK_TOKEN = 'TODO'
 
 ####################################################################

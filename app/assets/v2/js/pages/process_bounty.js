@@ -33,12 +33,13 @@ window.onload = function(){
             }
 
             var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-            $(this).attr('disabled','disabled');
+            console.log($(this));
+            loading_button($(this));
             var callback = function(error, result){
                 if(error){
                     _alert({ message: "Could not get bounty details" });
                     console.log(error);
-                    $('.submitBounty').removeAttr('disabled');
+                    unloading_button($('.submitBounty'));
                     return;
                 } else {
                     var bountyAmount = result[0].toNumber(); 
@@ -59,7 +60,7 @@ window.onload = function(){
 
                     if(errormsg){
                         _alert({ message: errormsg });
-                        $('.submitBounty').removeAttr('disabled');
+                        unloading_button($('.submitBounty'));
                         return;
                     }
 
@@ -77,7 +78,7 @@ window.onload = function(){
                         };
                         if(error){
                             _alert({ message: "There was an error" });
-                            $('.submitBounty').removeAttr('disabled');
+                            unloading_button($('.submitBounty'));
                         } else {
                             next();
                         }

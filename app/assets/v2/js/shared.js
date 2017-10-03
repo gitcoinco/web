@@ -11,6 +11,15 @@ var callFunctionWhenTransactionMined = function(txHash, f){
     });
 };
 
+var loading_button = function(button){
+    button.prepend('<img src=/static/v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
+}
+
+var unloading_button = function(button){
+    button.removeClass('disabled');
+    button.find('img').remove();
+}
+
 var sanitizeDict = function(d){
     if(typeof d != "object"){
         return d;

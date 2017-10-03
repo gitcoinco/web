@@ -53,6 +53,7 @@ $(document).ready(function(){
     $('#submitBounty').click(function(e){
         //setup
         e.preventDefault();
+        loading_button($(this));
         var githubUsername = $('input[name=githubUsername]').val();
         var issueURL = $('input[name=issueURL]').val();
         var notificationEmail = $('input[name=notificationEmail]').val();
@@ -92,6 +93,7 @@ $(document).ready(function(){
             isError = true;
         }
         if(isError){
+            unloading_button($(this));
             return;
         }
         $(this).attr('disabled','disabled');
@@ -117,6 +119,7 @@ $(document).ready(function(){
 
         //setup callback functions for web3 calls
         var post_bounty_callback = function(error, result){
+            unloading_button($('#submitBounty'));
             if(error){
                 console.log("two", error);
                     _alert({ message: "There was an error.  Please try again or contact support." });
@@ -177,6 +180,7 @@ $(document).ready(function(){
                 });
             };
             if(error){
+                unloading_button($('#submitBounty'));
                 var isApprovalAlreadyGranted = error.toString().indexOf('invalid opcode') != -1;
                 if (isApprovalAlreadyGranted){
                     next();
@@ -213,11 +217,13 @@ $(document).ready(function(){
                 if(error){
                     console.log(error);
                     _alert({ message: "There was an error.  Please try again or contact support." });
+                    unloading_button($('#submitBounty'));
                     return;
                 }
                 var isOpenAlready = result[4];
                 if(isOpenAlready){
                     _alert("There is already an open funding on this issue.  Please try again with another issue.");
+                    unloading_button($('#submitBounty'));
                     return;
                 }
                 if(!isETH){

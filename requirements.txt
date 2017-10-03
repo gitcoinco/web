@@ -18,5 +18,6 @@ psycopg2
 PyPdf
 python-twitter==3.2
 sendgrid
+slackclient
 web3
 

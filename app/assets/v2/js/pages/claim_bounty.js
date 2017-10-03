@@ -19,6 +19,7 @@ window.onload = function(){
 
 
         $('#submitBounty').click(function(e){
+            loading_button($('#submitBounty'));
             e.preventDefault();
             var notificationEmail = $('input[name=notificationEmail]').val();
             var githubUsername = $('input[name=githubUsername]').val();
@@ -41,22 +42,22 @@ window.onload = function(){
                 isError = true;
             }
             if(isError){
+                unloading_button($('#submitBounty'));
                 return;
             }
 
-            $(this).attr('disabled','disabled');
             var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
 
             var _callback = function(error, result){
                 var ignore_error = false;
                 if(error){
-                    $('.submitBounty').removeAttr('disabled');
                     console.log(error);
                     ignore_error = String(error).indexOf('BigNumber') != -1;
                 }
                 var run_main = !error || ignore_error;
                 if(error && !ignore_error){
                     _alert({ message: "Could not get bounty details." });
+                    unloading_button($('#submitBounty'));
                 }
                 if(run_main){
                     if(!ignore_error){
@@ -74,7 +75,7 @@ window.onload = function(){
 
                         if(errormsg){
                             _alert({ message: errormsg });
-                            $('#submitBounty').removeAttr('disabled');
+                            unloading_button($('#submitBounty'));
                             return;
                         }
                     }
@@ -95,7 +96,7 @@ window.onload = function(){
                         if(error){
                             console.log("err", error);
                             _alert({ message: "There was an error" });
-                            $('#submitBounty').removeAttr('disabled');
+                            unloading_button($('#submitBounty'));
                         } else {
                             next();
                         }

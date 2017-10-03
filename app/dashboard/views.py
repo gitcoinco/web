@@ -40,7 +40,34 @@ def send_tip(request):
     return TemplateResponse(request, 'yge/send1.html', params)
 
 
+@csrf_exempt
+@ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
 def receive_tip(request):
+
+    if request.body != '':
+        status = 'OK'
+        message = 'Tip has been received'
+        params = json.loads(request.body)
+
+        #db mutations
+        try:
+            tip = Tip.objects.get(
+                txid=params['txid'],
+                )
+            tip.receive_txid = params['receive_txid']
+            tip.received_on = timezone.now()
+            tip.save()
+        except Exception as e:
+            status = 'error'
+            message = str(e)
+
+        #http response
+        response = {
+            'status': status,
+            'message': message,
+        }
+        return JsonResponse(response)
+
 
     params = {
         'issueURL': request.GET.get('source'),

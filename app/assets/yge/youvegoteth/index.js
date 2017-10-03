@@ -148,3 +148,13 @@ var callFunctionWhenTransactionMined = function(txHash, f){
         }
     });
 };
+
+var loading_button = function(button){
+    button.prepend('<img src=/static/v2/images/loading.gif style="max-width:10px; max-height: 10px; margin-right: 5px">').addClass('disabled');
+}
+
+var unloading_button = function(button){
+    button.removeClass('disabled');
+    button.find('img').remove();
+}
+

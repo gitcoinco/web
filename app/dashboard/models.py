@@ -100,7 +100,10 @@ class Bounty(SuperModel):
 
     @property
     def keywords(self):
-        return self.metadata.get('issueKeywords', False)
+        try:
+            return self.metadata.get('issueKeywords', False)
+        except:
+            return False
 
     @property
     def now(self):
@@ -172,6 +175,8 @@ class Tip(SuperModel):
     username = models.CharField(max_length=255, default='')
     network = models.CharField(max_length=255, default='')
     txid = models.CharField(max_length=255, default='')
+    receive_txid = models.CharField(max_length=255, default='')
+    received_on = models.DateTimeField(null=True)
 
     def __str__(self):
         from django.contrib.humanize.templatetags.humanize import naturalday

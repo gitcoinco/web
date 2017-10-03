@@ -24,6 +24,7 @@ import twitter
 import requests
 from urlparse import urlparse
 from app.github import post_issue_comment
+from slackclient import SlackClient
 
 
 def maybe_market_to_twitter(bounty, event_name, txid):
@@ -59,52 +60,65 @@ def maybe_market_to_twitter(bounty, event_name, txid):
     return True
 
 
+def should_post_in_channel(channel, bounty):
+    if channel ['bounties', 'developer']:
+        return True
+    if 'dev-' in channel:
+        keyword = channel.replace('dev-','').lower()
+        return keyword in str(bounty.title).lower() \
+            or keyword in str(bounty.keywords).lower() \
+            or keyword in str(bounty.github_url).lower()
+
+    return False
+
+
 def maybe_market_to_slack(bounty, event_name, txid):
-    if not settings.SLACK_WEBHOOK:
+    if not settings.SLACK_TOKEN:
         return False
     if bounty.get_natural_value() < 0.0001:
         return False
 
     title = bounty.title if bounty.title else bounty.github_url
-    msg = "{} worth {} {}: {} \n\n{}".format(event_name.replace('bounty','funded_issue'), round(bounty.get_natural_value(), 4), bounty.token_name, title, bounty.get_absolute_url())
+    msg = "{} worth {} {}: {} \n\n{}".format(event_name.replace('bounty', 'funded_issue'), round(bounty.get_natural_value(), 4), bounty.token_name, title, bounty.get_absolute_url())
 
-    payload = {
-        "text": msg,
-    }
     try:
-        r = requests.post(
-            settings.SLACK_WEBHOOK,
-            json=payload,
-            timeout=3)
-        return r.status_code == 200
-    except Exception as e:
-        print(e)
-        return False
+        sc = SlackClient(settings.SLACK_TOKEN)
+        channels = sc.api_call("channels.list")
+        channels = [chan['name'] for chan in channels['channels']]
+        channels_to_post_in = [channel for channel in channels if should_post_in_channel(channel, bounty)]
+        channel = 'bounties'
+        for channel in channels_to_post_in:
+            sc.api_call(
+              "chat.postMessage",
+              channel=channel,
+              text=msg,
+            ) 
+    except:
+        return False       
 
-    pass
+    return True
 
 
 def maybe_market_tip_to_slack(tip, event_name, txid):
-    if not settings.SLACK_WEBHOOK:
+    if not settings.SLACK_TOKEN:
         return False
 
     title = tip.github_url
     msg = "{} worth {} {}: {} \n\n{}".format(event_name, round(tip.amount, 4), tip.tokenName, title, tip.github_url)
 
-    payload = {
-        "text": msg,
-    }
     try:
-        r = requests.post(
-            settings.SLACK_WEBHOOK,
-            json=payload,
-            timeout=3)
-        return r.status_code == 200
+        sc = SlackClient(settings.SLACK_TOKEN)
+        channel = 'bounties'
+        sc.api_call(
+          "chat.postMessage",
+          channel=channel,
+          text=msg,
+        )
     except Exception as e:
         print(e)
         return False
 
-    pass
+    return True
 
 
 def maybe_market_to_github(bounty, event_name, txid):
