@@ -67,11 +67,12 @@ def help(request):
 <p>There are many successful centralized hiring resources available on the web. &nbsp;Because these platforms were an&nbsp;efficient way to source, select, and manage a global workforce , millions of dollars was&nbsp;processed through these systems every day.</p>
 <p>Gitcoin takes the value that flows through these system, and makes it more efficient and fair. &nbsp;Gitcoin is a distributed network of smart contracts, based upon Ethereum, that aims to solve problems with centralized hiring resources, namely by</p>
 <ul>
-<li>cutting out the middlemen,</li>
+<li>being more open,</li>
 <li>being more fair,</li>
 <li>being more efficient,</li>
-<li>being more open,</li>
 <li>being easier to use.</li>
+<li>leveraging a global workforce,</li>
+<li>cutting out the middlemen,</li>
 </ul>
 <p>When Sir Tim Berners-Lee first invented the World Wide Web in the late 1980s&nbsp;to make information sharing on the Internet easier, he did something very important. He specified an open protocol, the Hypertext Transfer Protocol or HTTP, that anyone could use to make information available and to access such information. &nbsp;</p>
 <p>Gitcoin is similarly built on an open protocol of smart contracts.</p>
@@ -186,7 +187,7 @@ def help_repo(request):
 
 
 def help_faq(request):
-    return redirect('https://gitcoinhelp.zendesk.com/hc/en-us/sections/115000415412-FAQ')
+    return redirect('https://gitcoin.co/help#faq')
 
 
 def browser_extension(request):
