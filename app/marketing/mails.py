@@ -84,9 +84,12 @@ def weekly_roundup(to_emails=[]):
     end_date = timezone.now()
     bounties = roundup_bounties(start_date, end_date)
 
-    total_value = round(sum(bounties.values_list('_val_usd_db', flat=True)),2)
+    total_value_usdt = round(sum(bounties.values_list('_val_usd_db', flat=True)),2)
 
-    subject = "⚡️ ${} of Funded Issues! Roundup for Week Ending {}".format(total_value, end_date.strftime('%Y-%m-%d'))
+    if total_value_usdt < 10:
+        raise
+
+    subject = "⚡️ ${} of Funded Issues! Roundup for Week Ending {}".format(total_value_usdt, end_date.strftime('%Y-%m-%d'))
 
     html, text = render_new_bounty_roundup(bounties)
     from_email = settings.CONTACT_EMAIL

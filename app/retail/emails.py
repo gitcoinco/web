@@ -113,19 +113,19 @@ def render_bounty_expire_warning(bounty):
     return response_html, response_txt
 
 
-def roundup_bounties(start_date, end_date):
+def roundup_bounties(start_date, end_date, num=5):
     from dashboard.models import Bounty
 
     bounties = Bounty.objects.all()
     if not settings.DEBUG:
         bounties = bounties.filter(
             web3_created__gt=start_date,
-            web3_created__lt=start_date,
+            web3_created__lt=end_date,
             expires_date__gt=end_date + timezone.timedelta(days=3),
         )
     bounties = bounties.filter(
         is_open=True,
-        ).order_by('-_val_usd_db')[:5]
+        ).order_by('-_val_usd_db')[:num]
 
     return bounties
 
