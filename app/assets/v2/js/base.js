@@ -31,6 +31,10 @@ $(document).ready(function(){
       setTimeout(callback,300);
     });
 
+    $('.faq_item h5').click(function(){
+      $(this).parents('.col').find('.answer').toggleClass('hidden');
+    });
+
 });
 
 $(window).scroll(function(){

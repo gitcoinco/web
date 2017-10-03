@@ -29,7 +29,16 @@ div, p, a, span{
 .modal{
     z-index: 9;
 }
-
+.hidden{
+    display: none;
+}
+.faq_item {
+    max-width: 600px;
+    margin: 0px auto;
+}
+.faq_item h5{
+    cursor: pointer;
+}
 .interior .body {
     background-color: white;
 }   

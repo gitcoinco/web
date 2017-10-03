@@ -96,26 +96,29 @@
     <div class="container-fluid text-center white-light-bg" id="gitcoin_buttons">
         <div class="row">
             <div class="col pb-4">
-                <h4 >Got more questions?</h4>
+                <h4 >FAQ</h4>
+            </div>
+        </div>
+        {% for item in faq %}
+        <div class="row mt-2 mb-2 pb-3 faq_item">
+            <div class="col text-left   ">
+                <h5>{{item.q}}</h5>
+                <div class='hidden answer'>{{item.a|safe}}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="container-fluid text-center " id="gitcoin_buttons" style="background-color: white;">
+        <div class="row">
+            <div class="col pb-4">
+                <h4 >Got another question?</h4>
             </div>
         </div>
         <div class="row mt-2 mb-2 pb-3 animatedParent">
             <div class="col animated pulse fast">
-                <a class="btn btn-lg btn-warning raise" role="button" href="/help/portal">View Help Portal</a>
-            </div>
-        </div>
-        <div class="row pb-3 animatedParent">
-            <div class="col animated pulse fast">
-                - or -
-                <br>
-                <a class="" role="button" href="/help/faq">View FAQ</a>
-            </div>
-        </div>
-        <div class="row mb-5 pb-3 animatedParent">
-            <div class="col animated pulse fast">
-                - or -
-                <br>
-                <a class="" role="button" href="mailto:founders@gitcoin.co">Contact Gitcoin Core</a>
+                <a class="btn btn-lg btn-warning raise" role="button" href="mailto:founders@gitcoin.co">Contact Gitcoin Core</a>
             </div>
         </div>
     </div>
