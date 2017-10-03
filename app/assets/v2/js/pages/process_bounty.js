@@ -50,11 +50,11 @@ window.onload = function(){
 
                     var errormsg = undefined;
                     if(bountyAmount == 0 || open == false || initialized == false){
-                        errormsg = "No active bounty found at this address.  Are you sure this is an active bounty?";
+                        errormsg = "No active funding found at this address.  Are you sure this is an active funded issue?";
                     } else if(claimeeAddress == '0x0000000000000000000000000000000000000000'){
                         errormsg = "No claimee found for this bounty.";
                     } else if(fromAddress != web3.eth.coinbase){
-                        errormsg = "You can only process a bounty if you submitted it.";
+                        errormsg = "You can only process a funded issue if you submitted it.";
                     }
 
                     if(errormsg){
@@ -71,7 +71,7 @@ window.onload = function(){
                             add_to_watch_list(issueURL);
                             _alert({ message: "Submitted transaction to web3." }, 'info');
                             setTimeout(function(){
-                                document.location.href= "/bounty/details?url="+issueURL;
+                                document.location.href= "/funding/details?url="+issueURL;
                             },1000);
 
                         };

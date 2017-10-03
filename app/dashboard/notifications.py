@@ -44,7 +44,7 @@ def maybe_market_to_twitter(bounty, event_name, txid):
         access_token_secret=settings.TWITTER_ACCESS_SECRET,
     )
 
-    new_tweet = "New bounty worth {} {} \n\n{}".format(
+    new_tweet = "New funded issue worth {} {} \n\n{}".format(
         round(bounty.get_natural_value(), 4),
         bounty.token_name,
         bounty.get_absolute_url()
@@ -66,7 +66,7 @@ def maybe_market_to_slack(bounty, event_name, txid):
         return False
 
     title = bounty.title if bounty.title else bounty.github_url
-    msg = "{} worth {} {}: {} \n\n{}".format(event_name, round(bounty.get_natural_value(), 4), bounty.token_name, title, bounty.get_absolute_url())
+    msg = "{} worth {} {}: {} \n\n{}".format(event_name.replace('bounty','funded_issue'), round(bounty.get_natural_value(), 4), bounty.token_name, title, bounty.get_absolute_url())
 
     payload = {
         "text": msg,
@@ -117,9 +117,9 @@ def maybe_market_to_github(bounty, event_name, txid):
     msg = ''
     if event_name == 'new_bounty':
         usdt_value = "(" + str(round(bounty.value_in_usdt, 2)) + " USDT)" if bounty.value_in_usdt else ""
-        msg = "__This issue now has a bounty of {} {} {} attached to it.__  To view or claim this bounty, [click here]({}).".format(round(bounty.get_natural_value(), 4), bounty.token_name, usdt_value, bounty.get_absolute_url())
+        msg = "__This issue now has a funding of {} {} {} attached to it.__  To view or claim this funding, [click here]({}).".format(round(bounty.get_natural_value(), 4), bounty.token_name, usdt_value, bounty.get_absolute_url())
     elif event_name == 'approved_claim':
-        msg = "__The bounty of {} {} attached to this issue has been approved & issued.__  \n\nLearn more at: {}".format(round(bounty.get_natural_value(), 4), bounty.token_name, bounty.get_absolute_url())
+        msg = "__The funding of {} {} attached to this issue has been approved & issued.__  \n\nLearn more at: {}".format(round(bounty.get_natural_value(), 4), bounty.token_name, bounty.get_absolute_url())
     else:
         return False
 

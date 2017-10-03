@@ -1,14 +1,14 @@
-😕 Bounty Expiring ... 😕
+😕 Funded Issue Expiring ... 😕
 
-Heads up! The bounty that you posted (below) is expiring in {{num}} {{unit}}.
+Heads up! The funded issue that you posted (below) is expiring in {{num}} {{unit}}.
 
 {% if bounty.status == 'claimed' %}
-    There is a currently pending claim agains this bounty. Please make sure you process it before it expires!
+    There is a currently pending claim agains this funded issue. Please make sure you process it before it expires!
 {% endif %}
 
 {% include 'emails/bounty.txt' with bounty=bounty %}
 
-You are receiving this email because your email address is on the bounty notification list for this bounty.
+You are receiving this email because your email address is on the notification list for this funded issue.
 
 
 Keep Pushing Open Source Forward,

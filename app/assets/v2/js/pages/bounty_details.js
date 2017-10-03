@@ -65,8 +65,8 @@ var rows = [
     'expires_date',
 ]
 var heads = {
-    'title': 'Bounty Info',
-    'bounty_owner_address': 'Bounty Submitter',
+    'title': 'Issue Funding Info',
+    'bounty_owner_address': 'Funder',
     'claimeee_address': 'Claimee',
     'experience_level': 'Meta',
 }
@@ -82,7 +82,7 @@ var display_name = {
     'claimee_email': "Email",
     'experience_level': "Experience Level",
     'project_length': "Project Length",
-    'bounty_type': "Bounty Type",
+    'bounty_type': "Issue Fund Type",
     'expires_date': "Expires",
     'value_in_usdt' : "Amount (USDT)",
 };
@@ -180,7 +180,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                 this_transaction = "<a target=new href='"+link_url+"'>"+this_transaction+"</a>"
                 title = "Your transaction has been posted to web3.";
             }
-            var msg = `<br>This bounty has recently been updated and while the blockchain syncs it has `+pendingchanges+`.  
+            var msg = `<br>This funded issue has recently been updated and while the blockchain syncs it has `+pendingchanges+`.  
             Please wait a minute or two for web3 to sync `+this_transaction+`.
             <br>(You can close the browser tab.  If not, this page will automatically refresh as soon as web3 is updated.)`
             _alert({ title: title, message: msg},'info');
@@ -232,7 +232,7 @@ window.addEventListener('load', function() {
 
                     // title
                     result['title'] = result['title'] ? result['title'] : result['github_url'];
-                    $('.title').html("Bounty Details: " + result['title']);
+                    $('.title').html("Funded Issue Details: " + result['title']);
 
                     //nav
                     var status = result['status'];
@@ -281,14 +281,14 @@ window.addEventListener('load', function() {
                     var actions = [entry];
                     if(status=='submitted'){
                         var entry = {
-                            href: '/bounty/claim?source='+result['github_url'],
+                            href: '/funding/claim?source='+result['github_url'],
                             text: 'Claim Issue',
                         }
                         actions.push(entry);
                     }
                     if(status=='claimed'){
                         var entry = {
-                            href: '/bounty/process?source='+result['github_url'],
+                            href: '/funding/process?source='+result['github_url'],
                             text: 'Accept/Reject Issue',
                         }
                         actions.push(entry);

@@ -129,7 +129,7 @@ $(document).ready(function(){
                 _alert({ message: "Submission sent to web3." }, 'info');
                 setTimeout(function(){
                     delete localStorage['issueURL'];
-                    document.location.href= "/bounty/details?url="+issueURL;
+                    document.location.href= "/funding/details?url="+issueURL;
                 },1000);
 
             }
@@ -172,7 +172,7 @@ $(document).ready(function(){
         var erc20_approve_callback = function(error, result){
             var next = function(){
                 callFunctionWhenTransactionMined(result,function(){
-                    _alert({ title: "Transaction #2", message: "Thanks for approving the token transfer.  Now, submit the bounty to the bounty contract."  }, 'info');
+                    _alert({ title: "Transaction #2", message: "Thanks for approving the token transfer.  Now, submit the funded issue to the contract."  }, 'info');
                     sendPostBounty();
                 });
             };
@@ -217,7 +217,7 @@ $(document).ready(function(){
                 }
                 var isOpenAlready = result[4];
                 if(isOpenAlready){
-                    _alert("There is already an open bounty on this issue.  Please try again with another issue.");
+                    _alert("There is already an open funding on this issue.  Please try again with another issue.");
                     return;
                 }
                 if(!isETH){

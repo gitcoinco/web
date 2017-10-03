@@ -40,7 +40,7 @@
                     <li class="animated fadeInLeftShort first"> 
                         <img src="/static/v2/images/why-different/projects.png"/>
                     <div class="font-bigger-2 font-italic">1. Find a Project.</div>
-                    <div class="font-smaller-1">Bug Bounties, Security Bounties, Feature Bounties. Gitcoin's Bounty Explorer is the easiest way to find paid work in open source.</div>
+                    <div class="font-smaller-1">Bugs, Features, Security Issues. Gitcoin's Issue Explorer is the easiest way to find paid work in open source.</div>
                     </li>
                     <li class="animated fadeInLeftShort second"> 
                         <img src="/static/v2/images/why-different/spaceship.png"  />
@@ -140,7 +140,7 @@
 
                     {% include 'shared/rain.html' with class="color" %}
 
-                    <h5 id=get_notified>Newsletter</h5>
+                    <h5 id=get_notified>Be the first to know about new funded issues.</h5>
                     <p>
 
                     <!-- Begin MailChimp Signup Form -->
@@ -150,19 +150,7 @@
                         /* Add your own MailChimp form style overrides in your site stylesheet or in this style block.
                            We recommend moving this block and the preceding CSS link to the HEAD of your HTML file. */
                     </style>
-                    <div id="mc_embed_signup">
-                    <form action="//gitcoin.us16.list-manage.com/subscribe/post?u=f9f93e162a8732673b942cbda&amp;id=791d905ad8" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-                        <div id="mc_embed_signup_scroll">
-                        <label for="mce-EMAIL">(Once a month max, & we never sell your data.)</label>
-                        <input type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="you@domain.com" required>
-                        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-                        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_f9f93e162a8732673b942cbda_791d905ad8" tabindex="-1" value=""></div>
-                        <div class="clear">
-                            <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="btn btn-sm btn-warning raise"></div>
-                        </div>
-                    </form>
-                    </div>
-
+                    {% include 'shared/mailchimp.html' %}
                     <!--End mc_embed_signup-->
                     </p>
                     <p class="or"> - or - 
@@ -236,7 +224,7 @@
                     <div class="tline_module mod2 animated bounceInLeft">
                       <div class="tline_heading">
                         <h5>Q4 2017: Launch</h5>
-                        <p>The Bounty Explorer goes live. The code behind the project is released open source. For the first time, coders can monetize their open-source work without a centralized middleman, and an incentive is provided to the open-source community to <i>Push Open Source Repos Forward</i>, together.</p>
+                        <p>The Issues Explorer goes live. The code behind the project is released open source. For the first time, coders can monetize their open-source work without a centralized middleman, and an incentive is provided to the open-source community to <i>Push Open Source Repos Forward</i>, together.</p>
                       </div>
 
                     </div>
@@ -250,8 +238,8 @@
                     </div>
                     <div class="tline_module contain1 animated bounceInRight">
                       <div class="tline_heading">
-                        <h5>Next: Bounties++</h5>
-                        <p>Bounties are processed through the system, and feedback is processed into building a better, faster, cheaper, Bounty Explorer. The system is dogfooded; Gitcoin bounties are used to build Gitcoin.</p>
+                        <h5>Next: Tools++</h5>
+                        <p>Funded Issues are processed through the system, and feedback is processed into building a better, faster, cheaper way of pushing open source forward. The system is dogfooded; Gitcoin tools used to build Gitcoin.</p>
                       </div>
 
                     </div>

@@ -45,6 +45,21 @@ div, p, a, span{
     height: 136px;
     padding-top: 10px;
 }
+.search_bar, .bounty_def #mce-EMAIL{
+    display: inline;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+.search_bar, .bounty_def #mc-embedded-subscribe{
+    display: inline;
+    text-transform: uppercase;
+}
+.bounty_def h5{
+    font-size: 1.1rem;   
+}
+.bounty_def .mt-4{
+    margin-top: 10px !important;
+}
 .interior #logo{
     margin-top: -5px;
 }
@@ -586,6 +601,12 @@ body.bounty_details #primary_view .value{
     .bounty_def .ml-3{
         font-size: .9rem;
     }
+    .bounty_def h5{
+        font-size: 1.3rem;   
+    }
+    .bounty_def .mt-4{
+        margin-top: 10px !important;
+    }
 }
 @media (max-width: 769px) {
     #team .row,
@@ -629,6 +650,9 @@ body.bounty_details #primary_view .value{
     #hero_cta a.btn{
         padding: .5rem .75rem;
         font-size: 1rem;
+    }
+    .bounty_def h5{
+        font-size: 1.2rem;   
     }
 
 }
@@ -717,6 +741,9 @@ body.bounty_details #primary_view .value{
     #hero_cta a.btn{
         margin-top: 10px;
     }
+    .bounty_def h5{
+        font-size: .9rem;   
+    }
 
 }
 @media (max-width: 350px) {
@@ -730,5 +757,8 @@ body.bounty_details #primary_view .value{
     .header .subheader-line{
         font-size: 1.2em;
     }   
+    .bounty_def h5{
+        font-size: .8rem;   
+    }
 }
 

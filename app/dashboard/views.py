@@ -112,7 +112,7 @@ def process_bounty(request):
 
     params = {
         'issueURL': request.GET.get('source'),
-        'title': 'Process Bounty',
+        'title': 'Process Issue',
     }
 
     return TemplateResponse(request, 'process_bounty.html', params)
@@ -122,7 +122,7 @@ def dashboard(request):
 
     params = {
         'active': 'dashboard',
-        'title': 'Bounty Explorer',
+        'title': 'Issue Explorer',
     }
     return TemplateResponse(request, 'dashboard.html', params)
 
@@ -132,7 +132,7 @@ def new_bounty(request):
     params = {
         'issueURL': request.GET.get('source'),
         'active': 'submit_bounty',
-        'title': 'Create Bounty',
+        'title': 'Create Funded Issue',
     }
 
     return TemplateResponse(request, 'submit_bounty.html', params)
@@ -142,7 +142,7 @@ def claim_bounty(request):
 
     params = {
         'issueURL': request.GET.get('source'),
-        'title': 'Claim Bounty',
+        'title': 'Claim Issue',
         'active': 'claim_bounty',
     }
 
@@ -153,7 +153,7 @@ def bounty_details(request):
 
     params = {
         'issueURL': request.GET.get('issue_'),
-        'title': 'Bounty Details',
+        'title': 'Issue Details',
         'active': 'bounty_details',
     }
 

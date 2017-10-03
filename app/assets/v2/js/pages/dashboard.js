@@ -72,7 +72,7 @@ var refreshBounties = function(){
                 } else if(is_on_watch_list(result['github_url'])) {
                     result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">watched</span></a>';
                 }
-                result['action'] = '/bounty/details?url=' + result['github_url'];
+                result['action'] = '/funding/details?url=' + result['github_url'];
                 result['title'] = result['title'] ? result['title'] : result['github_url'];
                 result['p'] = timeDifference(new Date(), new Date(result['created_on']))+' - '+(result['project_length'] ? result['project_length'] : "Unknown Length")+' - '+(result['bounty_type'] ? result['bounty_type'] : "Unknown Type")+' - '+(result['experience_level'] ? result['experience_level'] : "Unknown Experience Level") + ( is_expired ? " - (Expired)" : "");
                 result['watch'] = 'Watch';
@@ -180,7 +180,7 @@ $(document).ready(function(){
             }, function(response){
                 var status = response['status'];
                 if(status == 200){
-                     _alert({ title: "You're in!", message: "Keep an eye on your inbox for the next bounty listing."},'success');
+                     _alert({ title: "You're in!", message: "Keep an eye on your inbox for the next funding listing."},'success');
                      $.modal.close();
                 } else {
                      _alert({ message: response['msg']});

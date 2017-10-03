@@ -88,7 +88,7 @@ window.onload = function(){
                             add_to_watch_list(issueURL);
                             _alert({ message: "Claim submitted to web3." },'info');
                             setTimeout(function(){
-                                document.location.href= "/bounty/details?url="+issueURL;
+                                document.location.href= "/funding/details?url="+issueURL;
                             },1000);
 
                         };
