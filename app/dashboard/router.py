@@ -26,7 +26,7 @@ from rest_framework import routers, serializers, viewsets
 class BountySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Bounty
-        fields = ("url","created_on","modified_on","title","web3_created","value_in_token","token_name","token_address","bounty_type","project_length","experience_level","github_url","bounty_owner_address","bounty_owner_email","bounty_owner_github_username","claimeee_address","claimee_email","claimee_github_username","is_open","expires_date","raw_data","metadata","claimee_metadata","current_bounty", 'value_in_eth', 'value_in_usdt', 'status', 'now', 'avatar_url')
+        fields = ("url","created_on","modified_on","title","web3_created","value_in_token","token_name","token_address","bounty_type","project_length","experience_level","github_url","bounty_owner_address","bounty_owner_email","bounty_owner_github_username","claimeee_address","claimee_email","claimee_github_username","is_open","expires_date","raw_data","metadata","claimee_metadata","current_bounty", 'value_in_eth', 'value_in_usdt', 'status', 'now', 'avatar_url', 'value_true')
 
 
 # ViewSets define the view behavior.

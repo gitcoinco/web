@@ -38,6 +38,32 @@ var get_search_URI = function(){
     return uri;
 };
 
+var process_stats = function(results){
+    var num = results.length;
+    var worth_usdt = 0;
+    var worth_eth = 0;
+    var currencies_to_value = {};
+    for(var i = 0; i<results.length; i++){
+        var result = results[i];
+        worth_usdt += result['value_in_usdt'];
+        worth_eth += result['value_in_eth'];
+        var token = result['token_name']
+        if(token != 'ETH'){
+            if(!currencies_to_value[token]){
+                currencies_to_value[token] = 0
+            }
+            currencies_to_value[token] += result['value_true'];
+        }
+    }
+    worth_usdt = worth_usdt.toFixed(2);
+    worth_eth = (worth_eth / 10 ** 18).toFixed(2);
+    var stats = "" + num + " worth " + worth_usdt + " USDT, " + worth_eth + " ETH";
+    for(var token in currencies_to_value){
+        stats += ", " + currencies_to_value[token].toFixed(2) + " " + token;
+    }
+    $("#stats").html("("+stats+")");
+}
+
 var refreshBounties = function(){
     $('.nonefound').css('display', 'none');
     $('.loading').css('display', 'block');
@@ -82,6 +108,7 @@ var refreshBounties = function(){
 
                 $("#bounties").append(html);
         }
+        process_stats(results);
     }).fail(function(){
         _alert('got an error. please try again, or contact support@gitcoin.co');
     }).always(function(){
