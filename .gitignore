@@ -8,3 +8,4 @@ app/mydatabase
 app/marketing/quotify/output/*
 app/output/*.pdf
 app/assets/other/wp.pdf
+app/assets/other/avatars/

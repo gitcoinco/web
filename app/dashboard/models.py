@@ -108,8 +108,6 @@ class Bounty(SuperModel):
             print(e)
             return None
 
-
-
     @property
     def keywords(self):
         try:

@@ -262,6 +262,7 @@ def sync_web3(request):
 
     return JsonResponse(result)
 
+
 # LEGAL
 
 def terms(request):

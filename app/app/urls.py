@@ -20,6 +20,7 @@ from django.contrib import admin
 import retail.views
 import dashboard.views
 import dashboard.helpers
+import dashboard.embed
 import retail.emails
 import tdi.views
 
@@ -56,6 +57,7 @@ urlpatterns = [
     url(r'^legal/cookie/?', dashboard.views.cookie, name='cookie'),
     url(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
+    url(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
 
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
