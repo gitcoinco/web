@@ -52,7 +52,8 @@ def embed(request):
         avatar = Image.open(filepath, 'r')
 
     #get issues
-    bounties = Bounty.objects.filter(github_url__startswith = repo_url, current_bounty=True).order_by('-web3_created')[:10]
+    length = request.GET.get('len', 10)
+    bounties = Bounty.objects.filter(github_url__startswith = repo_url, current_bounty=True).order_by('-web3_created')[:length]
 
     #try:
     if True:
