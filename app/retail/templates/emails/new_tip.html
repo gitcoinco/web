@@ -41,17 +41,24 @@ p, pre{
 
 
 <h3>
-    {% if tip.from_name %}{{tip.from_name}}{% else %}Someone{% endif %} sent you tip worth {{amount}} {{warning}} {{tokenName}}{% if not is_new %} {{tip.created_on | naturaltime}}{%endif%}.
+    {% if tip.from_name %}{{tip.from_name}}{% else %}Someone{% endif %} sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% if not is_new %} {{tip.created_on | naturaltime}}{%endif%}.
 </h3>
-{% if tip.url %}
+{% if tip.github_url %}
     <p>
-    {% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{tip.github_url}}">{{tip.github_url}}</a>: 
+    {% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{tip.github_url}}">{{tip.github_url}}</a>.
+        {% if comments %}
+            They had the following comments: 
+        <pre>
+            {{comments}}
+        </pre>
+        {% endif %}
+
     </p>
 {% endif %}
 
-{% if comments %}
+{% if comments and not tip.github_url %}
     <p>
-    {% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} had the following comments: 
+    They had the following comments: 
 <pre>
     {{comments}}
 </pre>
