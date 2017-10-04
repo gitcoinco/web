@@ -76,7 +76,8 @@ class Bounty(SuperModel):
     network = models.CharField(max_length=255, null=True)
     idx_experience_level = models.IntegerField(default=0, db_index=True)
     idx_project_length = models.IntegerField(default=0, db_index=True)
-    idx_status = models.CharField(max_length=50,default='')
+    idx_status = models.CharField(max_length=50, default='')
+    avatar_url = models.CharField(max_length=255, default='')
 
 
     def __str__(self):
@@ -97,6 +98,17 @@ class Bounty(SuperModel):
     @property
     def absolute_url(self):
         return self.get_absolute_url()
+
+    def get_avatar_url(self):
+        try:
+            from app.github import org_name, get_user
+            _org_name = org_name(self.github_url)
+            return get_user(_org_name)['avatar_url']
+        except Exception as e:
+            print(e)
+            return None
+
+
 
     @property
     def keywords(self):

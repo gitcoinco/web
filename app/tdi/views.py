@@ -66,6 +66,8 @@ Role: {}\n
 Comments: {}\n
 IP: {}\n
 
+https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/
+
     """.format(context['email'], context['role'], context['comments'], ip)
     send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, "New Whitepaper Request", str(body))
 

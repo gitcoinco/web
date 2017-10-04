@@ -25,7 +25,25 @@ from .models import Bounty, Subscription, BountySyncRequest, Tip
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
+# Register your models here.
+class Bounty_Admin(admin.ModelAdmin):
+    ordering = ['-id']
+
+    list_display = ['pk', 'img', 'what']
+    readonly_fields = ['what', 'img']
+
+    def img(self, instance):
+        if not instance.avatar_url:
+            return 'n/a'
+        img_html = "<img src={} style='max-width:30px; max-height: 30px'>".format(instance.avatar_url)
+        return img_html
+    img.allow_tags = True
+
+    def what(self, instance):
+        return str(instance)
+
+
 admin.site.register(Subscription, GeneralAdmin)
-admin.site.register(Bounty, GeneralAdmin)
+admin.site.register(Bounty, Bounty_Admin)
 admin.site.register(BountySyncRequest, GeneralAdmin)
 admin.site.register(Tip, GeneralAdmin)

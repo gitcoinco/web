@@ -62,3 +62,12 @@ def post_issue_comment_reaction(owner, repo, comment_id, content):
     response = requests.post(url, data=json.dumps(body), auth=_auth, headers=headers)
     return response.json()
 
+
+def repo_url(issue_url):
+    return '/'.join(issue_url.split('/')[:-2])
+
+
+def org_name(issue_url):
+    return issue_url.split('/')[3]
+
+

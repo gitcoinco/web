@@ -25,6 +25,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        for b in Bounty.objects.filter(current_bounty=True).all():
-            print('refreshed {}'.format(b.pk))
+        current_bounties = Bounty.objects.filter(current_bounty=True).all()
+        for b in current_bounties:
             b.save()
+            print('1/ refreshed {}'.format(b.pk))
+
+        all_bounties = Bounty.objects.all()
+        for b in all_bounties:
+            if not b.avatar_url:
+                b.avatar_url = b.get_avatar_url()
+            b.save()
+            print('2/ refreshed {}'.format(b.pk))

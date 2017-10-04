@@ -46,13 +46,14 @@ var link_ize = function(key, val, result){
 
 //rows in the 'about' page
 var rows = [
+    'avatar_url',
     'title',
-    'web3_created',
-    'status',
     'github_url',
     'value_in_token',
     'value_in_eth',
     'value_in_usdt',
+    'web3_created',
+    'status',
     'bounty_owner_address',
     'bounty_owner_email',
     'bounty_owner_github_username',
@@ -65,7 +66,8 @@ var rows = [
     'expires_date',
 ]
 var heads = {
-    'title': 'Issue Funding Info',
+    'avatar_url': 'Issue',
+    'value_in_token': 'Issue Funding Info',
     'bounty_owner_address': 'Funder',
     'claimeee_address': 'Claimee',
     'experience_level': 'Meta',
@@ -90,6 +92,12 @@ var callbacks = {
     'github_url': link_ize,
     'value_in_token': function(key, val, result){
         return [ 'amount', Math.round((parseInt(val) / 10**document.decimals) * 1000) / 1000 + " " + result['token_name']];
+    },
+    'avatar_url': function(key, val, result){
+        if(!_truthy(val)){
+            return [null, null]
+        }
+        return [ 'avatar', '<img class=avatar src="'+val+'">'];
     },
     'claimeee_address': address_ize,
     'bounty_owner_address': address_ize,
@@ -277,6 +285,7 @@ window.addEventListener('load', function() {
                     var entry = {
                         href: result['github_url'],
                         text: 'View on Github',
+                        target: 'new',
                     }
                     var actions = [entry];
                     if(status=='submitted'){

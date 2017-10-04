@@ -64,9 +64,15 @@
                         [[:my_bounty]]
                     </div>
                 [[else]]
-                    <div class="col-2 pt-3 d-flex justify-content-center">
-                        <div class="experience [[:experience_level]]">&nbsp;</div>
-                    </div>
+                    [[if avatar_url]]
+                        <div class="col-2 d-flex justify-content-center special_tag hide_min_viewport">
+                            <img src='[[:avatar_url]]' class='avatar'>
+                        </div>
+                    [[else]]
+                        <div class="col-2 pt-3 d-flex justify-content-center">
+                            <div class="experience [[:experience_level]]">&nbsp;</div>
+                        </div>
+                    [[/if]]
                 [[/if]]
             <div class="col-7 d-flex flex-column">
                 <div class="w-75 d-flex flex-column pb-2" style="border-bottom: 1px solid #f9f9f9">
