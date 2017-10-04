@@ -7,6 +7,7 @@ from app.github import org_name, get_user
 import requests
 from dashboard.models import Bounty
 
+
 def wrap_text(text, w=30):
     new_text = ""
     new_sentence = ""
@@ -18,6 +19,19 @@ def wrap_text(text, w=30):
             new_sentence = ""
     new_text += "\n" + new_sentence
     return new_text
+
+
+def summarize_bounties(bounties):
+    val_usdt = sum(bounties.values_list('_val_usd_db', flat=True))
+
+    if val_usdt < 1:
+        return False, ""
+
+    currency_to_value = {bounty.token_name: 0.00 for bounty in bounties}
+    for bounty in bounties:
+        currency_to_value[bounty.token_name] += bounty.value_true
+    other_values = ", ".join(["{} {}".format(round(value, 2), token_name) for token_name, value in currency_to_value.items()])
+    return True, "Total: {} issue{}, {} USDT, {}".format(bounties.count(), 's' if bounties.count() != 1 else "", val_usdt, other_values)
 
 
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
@@ -32,50 +46,51 @@ def embed(request):
     if not repo_url or 'github.com' not in repo_url:
         return err_response
 
-    #get avatar of repo
-    _org_name = org_name(repo_url)
-    print(_org_name)
-    avatar = None
-    filename = "{}.png".format(_org_name)
-    filepath = 'assets/other/avatars/' + filename
     try:
-        avatar = Image.open(filepath, 'r')
-    except IOError:
-        remote_user = get_user(_org_name)
-        remote_avatar_url = remote_user['avatar_url']
+        #get avatar of repo
+        _org_name = org_name(repo_url)
+        is_org_gitcoin = _org_name == 'gitcoinco'
 
-        r = requests.get(remote_avatar_url, stream=True)
-        chunk_size = 20000
-        with open(filepath, 'wb') as fd:
-            for chunk in r.iter_content(chunk_size):
-                fd.write(chunk)
-        avatar = Image.open(filepath, 'r').convert("RGBA")
+        avatar = None
+        filename = "{}.png".format(_org_name)
+        filepath = 'assets/other/avatars/' + filename
+        try:
+            avatar = Image.open(filepath, 'r')
+        except IOError:
+            remote_user = get_user(_org_name)
+            remote_avatar_url = remote_user['avatar_url']
 
-        #make transparent
-        datas = avatar.getdata()
+            r = requests.get(remote_avatar_url, stream=True)
+            chunk_size = 20000
+            with open(filepath, 'wb') as fd:
+                for chunk in r.iter_content(chunk_size):
+                    fd.write(chunk)
+            avatar = Image.open(filepath, 'r').convert("RGBA")
 
-        newData = []
-        for item in datas:
-            if item[0] == 255 and item[1] == 255 and item[2] == 255:
-                newData.append((255, 255, 255, 0))
-            else:
-                newData.append(item)
+            #make transparent
+            datas = avatar.getdata()
 
-        avatar.putdata(newData)
-        avatar.save(filepath, "PNG")
+            newData = []
+            for item in datas:
+                if item[0] == 255 and item[1] == 255 and item[2] == 255:
+                    newData.append((255, 255, 255, 0))
+                else:
+                    newData.append(item)
 
-    #get issues
-    length = request.GET.get('len', 10)
-    bounties = Bounty.objects.filter(github_url__startswith = repo_url, current_bounty=True).order_by('-web3_created')[:length]
+            avatar.putdata(newData)
+            avatar.save(filepath, "PNG")
 
-    #try:
-    if True:
+        #get issues
+        length = request.GET.get('len', 10)
+        super_bounties = Bounty.objects.filter(github_url__startswith=repo_url,current_bounty=True).order_by('-web3_created')
+        bounties = super_bounties[:length]
+
         #config
         bounty_height = 105
         font_path = 'marketing/quotify/fonts/'
         width = 500
         height_offset = ((max(bounties.count(), 1) + 1) * (bounty_height))
-        height = 250 + height_offset
+        height = 300 + height_offset
         spacing = 0
         line = "".join(["_" for ele in range(0,47)])
 
@@ -83,9 +98,9 @@ def embed(request):
         img = Image.new("RGBA", (width, height), (255, 255, 255))
         white = (255, 255, 255)
         black = (0, 0, 0)
-        h1 = ImageFont.truetype(font_path + 'Futura-Bold.ttf', 48, encoding="unic")
-        h1_thin = ImageFont.truetype(font_path + 'Futura-Normal.ttf', 48, encoding="unic")
-        h2_thin = ImageFont.truetype(font_path + 'Futura-Normal.ttf', 28, encoding="unic")
+        h1 = ImageFont.truetype(font_path + 'Futura-Bold.ttf', 28, encoding="unic")
+        h1_thin = ImageFont.truetype(font_path + 'Futura-Normal.ttf', 28, encoding="unic")
+        h2_thin = ImageFont.truetype(font_path + 'Futura-Normal.ttf', 22, encoding="unic")
         p = ImageFont.truetype(font_path + 'Futura-LightBT.ttf', 20, encoding="unic")
         p_bold = ImageFont.truetype(font_path + 'Futura-Bold.ttf', 20, encoding="unic")
 
@@ -118,42 +133,44 @@ def embed(request):
         img_w, img_h = back.size
         bg_w, bg_h = img.size
         offset = 250, 10
-        img.paste(back, offset, back)
+        if not is_org_gitcoin:
+            img.paste(back, offset, back)
 
         # plus sign
         ## config
-        text = '+'
-        #execute 
-        text = wrap_text(text, 20)
-        draw = ImageDraw.Draw(img)
-        img_w, img_h = img.size
-        x = 225
-        y = 60
-        draw.multiline_text(align="center", xy=(x, y), text=text, fill=black, font=h1, spacing=spacing)
-        draw = ImageDraw.Draw(img)
+        if not is_org_gitcoin:
+            text = '+'
+            #execute 
+            text = wrap_text(text, 20)
+            draw = ImageDraw.Draw(img)
+            img_w, img_h = img.size
+            x = 225
+            y = 60
+            draw.multiline_text(align="center", xy=(x, y), text=text, fill=black, font=h1, spacing=spacing)
+            draw = ImageDraw.Draw(img)
 
         # header
         ## config
-        text = 'Funded Issues'
+        text = '{} Supports Funded Issues'.format(_org_name.title())
         #execute 
-        text = wrap_text(text, 20)
+        text = wrap_text(text, 30)
         draw = ImageDraw.Draw(img)
         img_w, img_h = img.size
         x = 10
         y = 200
-        draw.multiline_text(align="center", xy=(x, y), text=text, fill=black, font=h1, spacing=spacing)
+        draw.multiline_text(align="left", xy=(x, y), text=text, fill=black, font=h1, spacing=spacing)
         draw = ImageDraw.Draw(img)
 
 
         ## config
-        text = 'Powered by Gitcoin.co'
+        show_value, value = summarize_bounties(super_bounties)
+        text = '{}\nPush Open Source Forward | Powered by Gitcoin.co'.format(wrap_text(value, 45) if show_value else "")
         #execute 
-        text = wrap_text(text, 20)
         draw = ImageDraw.Draw(img)
         img_w, img_h = img.size
         x = 10
-        y = 260
-        draw.multiline_text(align="center", xy=(x, y), text=text, fill=black, font=h2_thin, spacing=spacing)
+        y = 235
+        draw.multiline_text(align="left", xy=(x, y), text=text, fill=black, font=h2_thin, spacing=12)
         draw = ImageDraw.Draw(img)
 
         # put bounty list in there
@@ -167,7 +184,7 @@ def embed(request):
             value = "{}, {}".format(value_eth, value_in_usdt)
             if not value_eth:
                 value = value_native
-            text = "{}\n{}\n\nWorth: {}".format(line, wrap_text(bounty.title_or_desc, 52), value)
+            text = "{}\n{}\n\nWorth: {}".format(line, wrap_text(bounty.title_or_desc, 40), value)
             #execute 
             draw = ImageDraw.Draw(img)
             img_w, img_h = img.size
@@ -187,11 +204,23 @@ def embed(request):
             draw.multiline_text(align="left", xy=(x, y), text=text, fill=black, font=p, spacing=spacing)
             draw = ImageDraw.Draw(img)
 
+        if bounties.count() != 0:
+            ## config
+            text = 'Browse Issues @ https://gitcoin.co/explorer'
+            #execute 
+            text = wrap_text(text, 20)
+            draw = ImageDraw.Draw(img)
+            img_w, img_h = img.size
+            x = 10
+            y = height - 60
+            draw.multiline_text(align="center", xy=(x, y), text=text, fill=black, font=h2_thin, spacing=spacing)
+            draw = ImageDraw.Draw(img)
+
 
 
         response = HttpResponse(content_type="image/jpeg")
         img.save(response, "JPEG")
         return response
-    #except IOError as e:
-    #    print(e)
-    #    return err_response
+    except IOError as e:
+        print(e)
+        return err_response
