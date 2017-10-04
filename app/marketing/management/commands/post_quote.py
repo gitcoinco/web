@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
     Copyright (C) 2017 Gitcoin Core 
 
@@ -16,7 +17,6 @@
 
 '''
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 from django.core.management.base import BaseCommand
 from django.conf import settings
@@ -66,11 +66,12 @@ class Command(BaseCommand):
 
         quote = quotes[0][0]
         author = quotes[0][1]
-
         tweet = "{} by {}: \"{}\"".format(intro, author, quote).replace("&amp;",'and')
 
         if len(tweet) >= 140:
             tweet = tweet[:136] + "..."
+        if len(quote) < 5:
+            return
 
         print(tweet)
 
