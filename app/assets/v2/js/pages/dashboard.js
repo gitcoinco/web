@@ -1,5 +1,5 @@
 //helper functions
-var sidebar_keys = ['experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'idx_status'];
+var sidebar_keys = ['experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'idx_status', 'network'];
 
 var get_search_URI = function(){
     var uri = '/api/v0.1/bounties?';
