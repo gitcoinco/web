@@ -49,7 +49,20 @@ def embed(request):
         with open(filepath, 'wb') as fd:
             for chunk in r.iter_content(chunk_size):
                 fd.write(chunk)
-        avatar = Image.open(filepath, 'r')
+        avatar = Image.open(filepath, 'r').convert("RGBA")
+
+        #make transparent
+        datas = avatar.getdata()
+
+        newData = []
+        for item in datas:
+            if item[0] == 255 and item[1] == 255 and item[2] == 255:
+                newData.append((255, 255, 255, 0))
+            else:
+                newData.append(item)
+
+        avatar.putdata(newData)
+        avatar.save(filepath, "PNG")
 
     #get issues
     length = request.GET.get('len', 10)
@@ -165,7 +178,7 @@ def embed(request):
 
         if bounties.count() == 0:
 
-            text = "{}\n\n Post a funded issue at https://gitcoin.co\n\n{}".format(line, line)
+            text = "{}\n\n{}\n\n{}".format(line, wrap_text("No active issues. Post a funded issue at https://gitcoin.co", 50), line)
             #execute 
             draw = ImageDraw.Draw(img)
             img_w, img_h = img.size
