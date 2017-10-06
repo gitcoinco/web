@@ -124,9 +124,16 @@ window.addEventListener('load', function() {
     refreshBounties();
 });
 
+var getNextDayOfWeek = function(date, dayOfWeek) {
+        var resultDate = new Date(date.getTime());
+        resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay() - 1) % 7 +1);
+        return resultDate;
+    }
 
 $(document).ready(function(){
 
+    next_announce = getNextDayOfWeek(new Date(), 2);
+    $("#announceIssues").html(timeDifference(new Date, next_announce))
     //index clicks
     $("#bounties").delegate('.bounty_row','click',function(e){
         document.location.href = $(this).data('href');
