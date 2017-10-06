@@ -17,7 +17,17 @@
 '''
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+from economy.models import SuperModel
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 
-# Create your models here.
+
+class EmailSubscriber(SuperModel):
+    email = models.EmailField(max_length=255)
+    source = models.CharField(max_length=50)
+    active = models.BooleanField(default=True)
+    preferences = JSONField(default={})
+    metadata = JSONField(default={})
+
+    def __str__(self):
+        return self.email

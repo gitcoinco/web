@@ -21,3 +21,11 @@ from __future__ import unicode_literals
 from django.contrib import admin
 
 # Register your models here.
+from .models import EmailSubscriber
+
+# Register your models here.
+class GeneralAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+
+
+admin.site.register(EmailSubscriber, GeneralAdmin)

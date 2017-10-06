@@ -20,4 +20,4 @@ python-twitter==3.2
 sendgrid
 slackclient
 web3
-
+mailchimp3
