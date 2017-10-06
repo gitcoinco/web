@@ -25,10 +25,13 @@ from django.views.decorators.csrf import csrf_exempt
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from dashboard.helpers import normalizeURL, process_bounty_details, process_bounty_changes
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 import json
 from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack
 from marketing.mails import tip_email
 from app.github import get_user as get_github_user
+confirm_time_target = 10
+
 
 def send_tip(request):
 
@@ -140,6 +143,7 @@ def process_bounty(request):
     params = {
         'issueURL': request.GET.get('source'),
         'title': 'Process Issue',
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_target),
     }
 
     return TemplateResponse(request, 'process_bounty.html', params)
@@ -160,6 +164,7 @@ def new_bounty(request):
         'issueURL': request.GET.get('source'),
         'active': 'submit_bounty',
         'title': 'Create Funded Issue',
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_target),
     }
 
     return TemplateResponse(request, 'submit_bounty.html', params)
@@ -171,6 +176,7 @@ def claim_bounty(request):
         'issueURL': request.GET.get('source'),
         'title': 'Claim Issue',
         'active': 'claim_bounty',
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_target),
     }
 
     return TemplateResponse(request, 'claim_bounty.html', params)

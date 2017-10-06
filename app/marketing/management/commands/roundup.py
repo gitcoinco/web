@@ -29,6 +29,9 @@ class Command(BaseCommand):
         days_back = 90
 
         email_list = []
+        # todo: tip emails
+        # mailchimp emails
+        # whitepaper dev emails
         bounties = Bounty.objects.filter(web3_created__gt=timezone.now()-timezone.timedelta(days=days_back)).all()
 
         for b in bounties:
