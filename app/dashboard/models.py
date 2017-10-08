@@ -78,7 +78,7 @@ class Bounty(SuperModel):
     idx_project_length = models.IntegerField(default=0, db_index=True)
     idx_status = models.CharField(max_length=50, default='')
     avatar_url = models.CharField(max_length=255, default='')
-
+    issue_description = models.TextField(default='')
 
     def __str__(self):
         return "{}{} {} {} {}".format( "(CURRENT) " if self.current_bounty else "" , self.title, self.value_in_token, self.token_name, self.web3_created)
@@ -155,6 +155,35 @@ class Bounty(SuperModel):
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / 10**18, 2)
         except:
             return None
+
+    def fetch_issue_description(self):
+        import requests
+        from bs4 import BeautifulSoup
+
+        url = self.github_url
+        if url.lower()[:19] != 'https://github.com/':
+            return
+
+        try:
+            html_response = requests.get(url)
+        except Exception as e:
+            print(e)
+            return
+
+        body = None
+        try:
+            soup = BeautifulSoup(html_response.text, 'html.parser')
+
+            eles = soup.findAll("td", {"class": "comment-body"})
+            if len(eles):
+                body = eles[0].prettify()
+
+
+        except Exception as e:
+            print(e)
+            return
+
+        self.issue_description = body
 
 
 class BountySyncRequest(SuperModel):

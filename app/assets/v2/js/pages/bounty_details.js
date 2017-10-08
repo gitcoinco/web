@@ -56,6 +56,7 @@ var rows = [
     'status',
     'bounty_owner_address',
     'bounty_owner_email',
+    'issue_description',
     'bounty_owner_github_username',
     'claimeee_address',
     'claimee_github_username',
@@ -72,22 +73,6 @@ var heads = {
     'claimeee_address': 'Claimee',
     'experience_level': 'Meta',
 }
-var display_name = {
-    'title': "title",
-    'github_url': "Issue URL",
-    'value_in_token': "Amount",
-    'bounty_owner_address': "Address",
-    'bounty_owner_email': "Email",
-    'bounty_owner_github_username': "GitHub Profile",
-    'claimeee_address': "Address",
-    'claimee_github_username': "GitHub Profile",
-    'claimee_email': "Email",
-    'experience_level': "Experience Level",
-    'project_length': "Project Length",
-    'bounty_type': "Issue Fund Type",
-    'expires_date': "Expires",
-    'value_in_usdt' : "Amount (USDT)",
-};
 var callbacks = {
     'github_url': link_ize,
     'value_in_token': function(key, val, result){
@@ -98,6 +83,40 @@ var callbacks = {
             return [null, null]
         }
         return [ 'avatar', '<img class=avatar src="'+val+'">'];
+    },
+    'status': function(key, val, result){
+        var ui_status = val;
+        if(ui_status=='submitted'){
+            ui_status = '<span style="color: #47913e;">active</span>';
+        }
+        if(ui_status=='claimed'){
+            ui_status = '<span style="color: #3e00ff;">claimed</span>';
+        }
+        return [ 'status', ui_status];
+    },
+    'issue_description': function(key, val, result){
+        var ui_body = val;
+        var allowed_tags = ['br', 'li', 'ol', 'ul', 'p', 'td', 'a', 'img'];
+        var open_close = ['', '/'];
+
+        for(var i=0; i<allowed_tags.length;i++){
+            var tag = allowed_tags[i];
+            for(var k=0; k<open_close.length;k++){
+                var oc = open_close[k];
+                var replace_tag = '&lt;'+ oc + tag +'.*&gt;';
+                var with_tag = '<'+ oc + tag +'>';
+                var re = new RegExp(replace_tag, 'g');
+                ui_body = ui_body.replace(re, with_tag);
+                var re = new RegExp(replace_tag.toUpperCase(), 'g');
+                ui_body = ui_body.replace(re, with_tag);
+            }
+        }
+
+        var max_len = 1000
+        if(ui_body.length > max_len){
+            ui_body = ui_body.substring(0, max_len) + '... <a target=new href="'+result['github_url']+'">See More</a> '
+        }
+        return [ 'issue_description', ui_body];
     },
     'claimeee_address': address_ize,
     'bounty_owner_address': address_ize,
@@ -118,7 +137,7 @@ var callbacks = {
         if(val == null){
             return [null, null];
         }
-        return [ "Amount (USDT)" , val];
+        return [ "Amount_usdt" , val];
     },
     'web3_created': function(key, val, result){
         return [ "updated" , timeDifference(new Date(result['now']), new Date(result['created_on']))];
@@ -227,8 +246,8 @@ window.addEventListener('load', function() {
             for(var i = 0; i<results.length; i++){
                 var result = results[i];
                 if(normalizeURL(result['github_url']) == normalizeURL(issueURL)){
-                    $(".result_container").css('display','flex','important');
-                    nonefound= false;
+                    $("#bounty_details").css('display','flex');
+                    nonefound = false;
 
                     //setup
                     var decimals = 18;
@@ -242,17 +261,6 @@ window.addEventListener('load', function() {
                     result['title'] = result['title'] ? result['title'] : result['github_url'];
                     $('.title').html("Funded Issue Details: " + result['title']);
 
-                    //nav
-                    var status = result['status'];
-                    if(status == 'submitted'){
-                       $('.bounty_nav li.submit').addClass('active');
-                    } else if(status == 'fulfilled'){
-                       $('.bounty_nav li.accept').addClass('active');
-                    } else if(status == 'claimed'){
-                       $('.bounty_nav li.fulfill').addClass('active');
-                    } else {
-                    }
-
                     //insert table onto page
                     for(var j=0; j< rows.length; j++){
                         var key = rows[j];
@@ -263,21 +271,16 @@ window.addEventListener('load', function() {
                         }
                         if(callbacks[key]){
                             _result = callbacks[key](key, val, result);
-                            key = _result[0];
                             val = _result[1];
                         }
-                        if(display_name[key]){
-                            key = display_name[key];
+                        var entry = {
+                            'head': head,
+                            'key': key,
+                            'val': val,
                         }
-                        if(key){
-                            var entry = {
-                                'head': head,
-                                'key': key,
-                                'val': val,
-                            }
-                            var tmpl = $.templates("#result");
-                            var html = tmpl.render(entry);
-                            $(".result_container").append(html);
+                        var id = '#' + key;
+                        if($(id).length){
+                            $(id).html(val);
                         }
                     }
 
@@ -286,19 +289,25 @@ window.addEventListener('load', function() {
                         href: result['github_url'],
                         text: 'View on Github',
                         target: 'new',
+                        parent: 'right_actions',
+                        color: 'darkGrey'
                     }
                     var actions = [entry];
-                    if(status=='submitted'){
+                    if(result['status']=='submitted'){
                         var entry = {
                             href: '/funding/claim?source='+result['github_url'],
                             text: 'Claim Issue',
+                            parent: 'right_actions',
+                            color: 'darkBlue'
                         }
                         actions.push(entry);
                     }
-                    if(status=='claimed'){
+                    if(result['status']=='claimed'){
                         var entry = {
                             href: '/funding/process?source='+result['github_url'],
                             text: 'Accept/Reject Issue',
+                            parent: 'right_actions',
+                            color: 'darkBlue'
                         }
                         actions.push(entry);
                     }
@@ -306,20 +315,25 @@ window.addEventListener('load', function() {
                         var entry = {
                             href: '/unwatch',
                             text: 'Unwatch',
+                            parent: 'left_actions',
+                            color: 'darkGrey'
                         }
                         actions.push(entry);
                     } else {
                         var entry = {
                             href: '/watch',
                             text: 'Watch',
+                            parent: 'left_actions',
+                            color: 'darkGrey'
                         }
                         actions.push(entry);
                     }
 
                     for(var l=0; l< actions.length; l++){
+                        var target = actions[l]['parent'];
                         var tmpl = $.templates("#action");
                         var html = tmpl.render(actions[l]);
-                        $("#actions").append(html);
+                        $("#"+target).append(html);
                     }
                     
                     //cleanup

@@ -18,49 +18,58 @@
             <div class="container-fluid" id="bounty_detail">
             {% include 'shared/bounty_def.html' %}
 
-                <div class="row mt-2 mb-2">
-                    <div class="title col-9 ml-3 font-bigger-2" style="color: #3e24fb;padding-left: 1rem;"></div>
-                    <div class="col-8"></div>
-                </div>
                 <div class="row loading justify-content-center align-items-center loading_img">
                     <img src='/static/v2/images/loading.gif'>
-                </div>
-                <div class="row mt-2 mb-2 " id="actions">
                 </div>
                 <div class="row nonefound" style="display:none;">
                     <img src="/static/v2/images/shrug_bot.png">
                     <h3>No funded issue found.</h3>
                     <p>Please go back to the <a href="/explorer">Issue Explorer</a> and try again.</p>
                 </div>
-                <div class="row mt-2 mb-2 " id="primary_view">
-                    <div class="col d-flex align-items-center justify-content-center">
-                        <div class="d-flex justify-content-center flex-column mt-5 w-60 result_container" style="display: none !important;" >
-                            {% include 'shared/bounty_nav.html' with past_tense=1 %}
+                <div class="row mt-4" id="bounty_details">
+                    <div class="ml-2 mr-2 pl-4 pr-4 col-2 left_details">
+                        <div id="avatar_url">
+                        </div>
+                        <span class=boldLabel><span id="web3_created"></span></span>
+                        <div id="left_actions"></div>
+                        <a class="font-smaller-2" style="color: #212529;" href="/explorer">&lt; Issue Explorer</a>
+                    </div>
+                    <div class="col-8 right_details">
+                        <span class=boldLabel>Status:</span> <span title="Funded issues can be in three status': 1: Active, 2: Claimed, 3:Accepted" id="status"></span>
+
+                        <h4 id="title">
+                        </h4>
+                        <span class=boldLabel>Bounty Amount:</span> <span id="value_in_token"></span> <span id="value_in_usdt"></span> USDT
+                        <div id="right_actions"></div>
+                        <h5>Issue Description</h5>
+                        <div id="issue_description"></div>
+                        <div style="width: 39%; display: inline-block;">
+                            <h5>Issue Info</h5>
+                            Experience Level: <span id="experience_level"></span>
+                            <br>
+                            Project Length: <span id="project_length"></span>
+                            <br>
+                            Bounty Type: <span id="bounty_type"></span>
+                            <br>
+                            Expires: <span id="expires_date"></span>
+                            <br>
+                        </div>
+                        <div style="width: 59%; display: inline-block;">
+                            <h5>Funder Info</h5>
+                            ETH Address <span id="bounty_owner_address"></span>
+                            <br>
+                            Email <span id="bounty_owner_email"></span>
+                            <br>
+                            Github Profile <span id="bounty_owner_github_username"></span>
+                            <br>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-
-      <script id="result" type="text/x-jsrender">
-        [[if head]]
-            <h4>[[:head]]</h4>
-        [[/if]]
-        <div class="bounty_detail">
-            <div class="w-100 mt-2">
-                <div class="label">
-                    [[:key]]
-                </div>
-                <div class="value">
-                    [[:val]]
-                </div>
-            </div>
-        </div>
-      </script>
-
       <script id="action" type="text/x-jsrender">
-        <a class="btn btn-sm btn-darkBlue" role="button" href="[[:href]]" target="[[:target]]"> <span class="font-smaller-4">[[:text]]</span></a>
+        <a class="btn btn-sm btn-[[:color]]" role="button" href="[[:href]]" target="[[:target]]"> <span class="font-smaller-4">[[:text]]</span></a>
       </script>
 
     {% include 'shared/bottom_notification.html' %}

@@ -21,12 +21,23 @@ from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '-r', '--remote',
+            action='store_true',
+            dest='remote',
+            default=False,
+            help='Pulls remote info about bounty too'
+        )
+
     help = 'refreshes the triggers associated with current bounties'
 
     def handle(self, *args, **options):
 
         current_bounties = Bounty.objects.filter(current_bounty=True).all()
         for b in current_bounties:
+            if options['remote']:
+                b.fetch_issue_description()
             b.save()
             print('1/ refreshed {}'.format(b.pk))
 

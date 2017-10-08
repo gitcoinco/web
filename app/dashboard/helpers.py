@@ -40,6 +40,11 @@ def title(request):
     except ValidationError, e:
         response['message'] = 'invalid arguments'
         return JsonResponse(response)
+
+    if url.lower()[:19] != 'https://github.com/':
+        response['message'] = 'invalid arguments'
+        return JsonResponse(response)
+
     try:
         html_response = requests.get(url)
     except ValidationError, e:
@@ -87,6 +92,11 @@ def keywords(request):
     except ValidationError, e:
         response['message'] = 'invalid arguments'
         return JsonResponse(response)
+
+    if url.lower()[:19] != 'https://github.com/':
+        response['message'] = 'invalid arguments'
+        return JsonResponse(response)
+
     try:
         repo_url = None
         if '/pull' in url:
@@ -197,6 +207,8 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             contract_address=contract_address,
             network=network,
             )
+        new_bounty.fetch_issue_description()
+        new_bounty.save()
 
     return (didChange, old_bounties.first(), new_bounty)
 

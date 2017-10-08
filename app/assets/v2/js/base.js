@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    $( document ).tooltip();
 
     //get gitcoin modal
     $("a[href='/get']").click(function(e){

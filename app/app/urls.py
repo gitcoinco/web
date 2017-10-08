@@ -73,6 +73,7 @@ urlpatterns = [
     url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
     url(r'^help/faq?', retail.views.help_faq, name='help_faq'),
     url(r'^help/portal?', retail.views.portal, name='portal'),
+    url(r'^help/pilot?', retail.views.help_pilot, name='help_pilot'),
     url(r'^help/?', retail.views.help, name='help'),
     url(r'^extension/?', retail.views.browser_extension, name='browser_extension'),
     url(r'^slack/?', retail.views.slack, name='slack'),

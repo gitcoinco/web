@@ -475,39 +475,63 @@ body.bounty_details .col.body{
     min-height: 1200px;
 }
 
+body.bounty_details .left_details {
+    text-align: right;
+}
 body.bounty_details .avatar {
-    max-width: 100px;
-    max-height: 100px;
+    max-width: 90px;
+    max-height: 90px;
     margin: 0px auto;
+    border: 1px solid #eaeaea;
+    border-radius: 50px; 
+    margin-top: 0px;
+    margin-bottom: 10px;
 }
-body.bounty_details #actions {
-    width: 60%;
-    margin: 0px auto;
+#bounty_details{
+    display: none;
+}
+body.bounty_details #left_actions,
+body.bounty_details #right_actions {
     padding-top: 20px;
+    padding-bottom: 10px;
 }
-body.bounty_details #actions a{
+body.bounty_details #bounty_details #left_actions
+{
+    padding-bottom: 25px;
+}
+body.bounty_details #left_actions a,
+body.bounty_details #right_actions a{
     margin: 0px auto;
 }
-body.bounty_details #primary_view .bounty_detail{
-    min-height: 50px;
+body.bounty_details #right_actions a{
+    margin-right: 20px;
+    margin-bottom: 20px;
 }
-body.bounty_details #primary_view h4{
-    padding-top: 0px;
+body.bounty_details #right_actions h5{
+    font-weight: 900;
 }
-body.bounty_details #primary_view .bounty_detail:nth-child(odd) {
+body.bounty_details .boldLabel{
+    color: #999999;
+    font-weight: 900;
+}
+body.bounty_details #bounty_details a.btn{
+    border-radius: 0.2rem;
+}
+body.bounty_details a.btn-darkGrey{
+    background-color: #e7e7e7;
+    color: #474747;
+}
+body.bounty_details a.btn-darkGrey:hover{
     background-color: #eee;
 }
-body.bounty_details #primary_view .label,
-body.bounty_details #primary_view .value{
-    display: inline-block;
-    text-overflow: ellipsis;
-    font-size: 12px;
+body.bounty_details a.btn-darkBlue:hover{
+    background-color: #0a012b;
 }
-body.bounty_details #primary_view .label{
-    width: 30%;
-}
-body.bounty_details #primary_view .value{
-    width: 69%;
+
+body.bounty_details #title{
+    text-align: left;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
 #gitcoin_buttons #example img{
@@ -628,6 +652,15 @@ body.bounty_details #primary_view .value{
     }
 }
 @media (max-width: 769px) {
+    body.bounty_details .left_details{
+        display: none;
+    }
+    body.bounty_details .right_details{
+        margin-left: 30px;
+        width: 100%;
+        max-width: 90%;
+    }
+
     #team .row,
     #team .row .d-flex,
     .row.howworks .d-flex,

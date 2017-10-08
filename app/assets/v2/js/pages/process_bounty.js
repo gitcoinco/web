@@ -14,7 +14,7 @@ window.onload = function(){
 
         $('.submitBounty').click(function(e){
             e.preventDefault();
-            var whatAction = $(this).val();
+            var whatAction = $(this).html().trim()
             var issueURL = $('input[name=issueURL]').val();
 
             var isError = false;
@@ -33,7 +33,6 @@ window.onload = function(){
             }
 
             var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-            console.log($(this));
             loading_button($(this));
             var callback = function(error, result){
                 if(error){
