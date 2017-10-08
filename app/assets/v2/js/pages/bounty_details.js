@@ -338,7 +338,7 @@ window.addEventListener('load', function() {
                     
                     //cleanup
                     document.result = result;
-                    pendingChangesWarning(issueURL, result['modified_on'], result['now']);
+                    pendingChangesWarning(issueURL, result['web3_created'], result['now']);
                     add_to_watch_list(result['github_url']);
                     return;
                 }
