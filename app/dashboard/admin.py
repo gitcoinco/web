@@ -21,9 +21,19 @@ from __future__ import unicode_literals
 from django.contrib import admin
 from .models import Bounty, Subscription, BountySyncRequest, Tip
 
-# Register your models here.
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
+
+
+class TipAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    readonly_fields = ['resend']
+
+    def resend(self, instance):
+        html = "<a href='/_administration/email/new_tip/resend?pk={}'>resend</a>".format(instance.pk)
+        return html
+    resend.allow_tags = True
+
 
 # Register your models here.
 class Bounty_Admin(admin.ModelAdmin):
@@ -46,4 +56,4 @@ class Bounty_Admin(admin.ModelAdmin):
 admin.site.register(Subscription, GeneralAdmin)
 admin.site.register(Bounty, Bounty_Admin)
 admin.site.register(BountySyncRequest, GeneralAdmin)
-admin.site.register(Tip, GeneralAdmin)
+admin.site.register(Tip, TipAdmin)

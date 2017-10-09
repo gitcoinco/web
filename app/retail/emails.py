@@ -21,6 +21,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.conf import settings
 from django.utils import timezone
 import premailer
+from django.template.response import TemplateResponse
 
 ### RENDERERS
 
@@ -154,6 +155,37 @@ def new_tip(request):
     response_html, response_txt = render_tip_email(tip, True)
 
     return HttpResponse(response_html)
+
+
+@staff_member_required
+def resend_new_tip(request):
+    from dashboard.models import Tip
+    from marketing.mails import tip_email
+    from django.contrib import messages
+    from django.shortcuts import redirect
+
+    pk = request.POST.get('pk', request.GET.get('pk'))
+    params = {
+        'pk': pk,
+    }
+
+    if request.POST.get('pk'):
+        email = request.POST.get('email')
+
+        if not pk or not email:
+            messages.error(request, 'Not sent.  Invalid args.')
+            return redirect('/_administration')
+
+        tip = Tip.objects.get(pk=pk)
+        tip.emails = tip.emails + [email]
+        tip_email(tip, [email], True)
+        tip.save()
+
+        messages.success(request, 'Resend sent')
+
+        return redirect('/_administration')
+
+    return TemplateResponse(request, 'resend_tip.html', params)
 
 
 @staff_member_required
