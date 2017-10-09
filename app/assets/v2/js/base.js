@@ -37,10 +37,14 @@ $(document).ready(function(){
     });
 
     //mixpanel integration
-    var params = {
-      page: document.location.pathname,
-    }
-    mixpanel.track("Pageview", params);
+    setTimeout(function(){
+      var web3v = (typeof web3 == 'undefined' || typeof web3.version == 'undefined') ? 'none' : web3.version.api;
+      var params = {
+        page: document.location.pathname,
+        web3: web3v,
+      }
+      mixpanel.track("Pageview", params);
+    },300);
 
     var tos = [
       'slack',
