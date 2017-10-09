@@ -81,9 +81,6 @@ def new_bounty(bounty, to_emails=[]):
 
 def weekly_roundup(to_emails=[]):
 
-    if total_value_usdt < 10:
-        raise
-
     subject = "🍃Gitcoin Weekly | Pumpkin Spice Lattes, Pilot Programs, Devcon 3, New Funded Issue Explorer "
     html, text = render_new_bounty_roundup()
     from_email = settings.CONTACT_EMAIL
