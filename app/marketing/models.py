@@ -28,9 +28,18 @@ class EmailSubscriber(SuperModel):
     active = models.BooleanField(default=True)
     preferences = JSONField(default={})
     metadata = JSONField(default={})
+    priv = models.CharField(max_length=30, default='')
 
     def __str__(self):
         return self.email
+
+    def set_priv(self):
+        import hashlib
+        from django.utils import timezone
+
+        h = hashlib.new('ripemd160')
+        h.update("{}-{}-{}".format(h.hexdigest(), timezone.now(), self.email))
+        self.priv = h.hexdigest()[:29]
 
 
 class Stat(SuperModel):

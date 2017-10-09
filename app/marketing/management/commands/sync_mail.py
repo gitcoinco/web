@@ -24,10 +24,13 @@ import requests
 
 def process_email(email, source):
     if not EmailSubscriber.objects.filter(email=email).exists():
-        EmailSubscriber.objects.create(
+        es = EmailSubscriber.objects.create(
             email=email,
             source=source,
             )
+        es.set_priv()
+        es.save()
+
 
 class Command(BaseCommand):
 
