@@ -35,7 +35,7 @@ class EmailSubscriber(SuperModel):
 
 class Stat(SuperModel):
     key = models.CharField(max_length=50, db_index=True)
-    val = models.CharField(max_length=50)
+    val = models.IntegerField()
 
     class Meta:
         index_together = [

@@ -19,5 +19,49 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render
-
+from django.contrib.admin.views.decorators import staff_member_required
+from django.template.response import TemplateResponse
+from marketing.models import Stat
+from chartit import DataPool, Chart
 # Create your views here.
+
+@staff_member_required
+def stats(request):
+    types = Stat.objects.distinct('key').values_list('key', flat=True)
+    params = {
+        'types': types,
+        'chart_list': [],
+    }
+
+    for t in types:
+        chartdata = \
+            DataPool(
+               series=
+                [{'options': {
+                   'source': Stat.objects.filter(key=t).all()},
+                  'terms': [
+                    'created_on',
+                    'val']}
+                 ])
+
+        cht = Chart(
+                datasource=chartdata,
+                series_options=
+                  [{'options':{
+                      'type': 'line',
+                      'stacking': False},
+                    'terms':{
+                      'created_on': [
+                        'val']
+                      }}],
+                chart_options =
+                  {'title': {
+                       'text': t + ' over time'},
+                   'xAxis': {
+                        'title': {
+                           'text': 'Time'}}})
+
+        params['chart_list'].append(cht)
+    
+    params['chart_list_str'] = ",".join(types)
+    return TemplateResponse(request, 'stats.html', params)

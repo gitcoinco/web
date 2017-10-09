@@ -51,7 +51,7 @@ window.onload = function(){
             var _callback = function(error, result){
                 var ignore_error = false;
                 if(error){
-                    console.log(error);
+                    console.error(error);
                     ignore_error = String(error).indexOf('BigNumber') != -1;
                 }
                 var run_main = !error || ignore_error;
@@ -94,7 +94,7 @@ window.onload = function(){
 
                         };
                         if(error){
-                            console.log("err", error);
+                            console.error("err", error);
                             _alert({ message: "There was an error" });
                             unloading_button($('#submitBounty'));
                         } else {
@@ -123,7 +123,6 @@ window.onload = function(){
                     e.preventDefault();
                 }
             };
-            console.log(issueURL);
             bounty.bountydetails.call(issueURL, _callback);
         });
     },100);

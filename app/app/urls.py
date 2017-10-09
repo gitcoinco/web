@@ -23,6 +23,7 @@ import dashboard.helpers
 import dashboard.embed
 import retail.emails
 import tdi.views
+import marketing.views
 
 from django.conf.urls import (
     handler400,
@@ -98,6 +99,8 @@ urlpatterns = [
     url(r'^_administration/email/bounty_expire_warning$', retail.emails.bounty_expire_warning, name='bounty_expire_warning'),
     url(r'^_administration/process_accesscode_request/(.*)$', tdi.views.process_accesscode_request, name='process_accesscode_request'),
     url(r'^_administration/email/new_tip/resend$', retail.emails.resend_new_tip, name='resend_new_tip'),
+
+    url(r'^_administration/stats$', marketing.views.stats, name='stats'),
 
 
 ]

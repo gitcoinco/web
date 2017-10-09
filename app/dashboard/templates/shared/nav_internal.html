@@ -29,6 +29,10 @@
                 <nav class="navbar-nav ml-auto mr-3">
                     <a class="nav-link" href="/">Home</a>
                     <a class="nav-link {% if active == 'dashboard' %}selected{%endif%}" href="/explorer">Issue Explorer</a>
+
+                    <a class="nav-link" href="/slack">
+                        <img style="max-width: 15px; max-height: 15px; margin-top:-3px; margin-right: 3px; filter: invert(100%);" src="/static/v2/images/social/slack2.png">Slack({{num_slack}})
+                    </a>
                     <a class="nav-link" href="/help">Help</a>
                 </nav>
                 <img class="mr-5" src="/static/v2/images//spaceship.png" width="52" height="45" />

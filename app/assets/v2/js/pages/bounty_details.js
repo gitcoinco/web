@@ -178,7 +178,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                     bounty.bountydetails.call(issueURL, function(error, result){
                         if(error){
                             setTimeout(check_for_bounty_changed_updates_web3, 1000);
-                            console.log(error);
+                            console.error(error);
                         } else {
                             result[0] = result[0].toNumber();
                             result[7] = result[7].toNumber();

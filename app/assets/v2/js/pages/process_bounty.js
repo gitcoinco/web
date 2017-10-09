@@ -37,7 +37,7 @@ window.onload = function(){
             var callback = function(error, result){
                 if(error){
                     _alert({ message: "Could not get bounty details" });
-                    console.log(error);
+                    console.error(error);
                     unloading_button($('.submitBounty'));
                     return;
                 } else {

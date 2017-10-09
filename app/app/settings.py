@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'dashboard',
     'tdi',
     'gas',
+    'chartit'
 ]
 
 MIDDLEWARE = [
