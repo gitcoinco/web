@@ -85,7 +85,7 @@ def weekly_roundup(to_emails=[]):
         raise
 
     subject = "🍃Gitcoin Weekly | Pumpkin Spice Lattes, Pilot Programs, Devcon 3, New Funded Issue Explorer "
-    html, text = render_new_bounty_roundup(bounties)
+    html, text = render_new_bounty_roundup()
     from_email = settings.CONTACT_EMAIL
 
     for to_email in to_emails:
