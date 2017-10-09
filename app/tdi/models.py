@@ -47,7 +47,7 @@ class WhitepaperAccess(SuperModel):
 
 class WhitepaperAccessRequest(SuperModel):
     comments = models.TextField(max_length=5000)
-    email = models.CharField(max_length=30)
+    email = models.CharField(max_length=255)
     role = models.CharField(max_length=255)
     ip = models.CharField(max_length=30)
     processed = models.BooleanField(default=False)
