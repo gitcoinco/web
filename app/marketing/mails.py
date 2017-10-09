@@ -61,10 +61,10 @@ def tip_email(tip, to_emails, is_new):
     if not is_new:
         subject = "🕐 New Tip Worth {} {} Expiring Soon".format(round(tip.amount,2), tip.tokenName)
 
-    from_email = settings.CONTACT_EMAIL
-    html, text = render_tip_email(to_email, tip, is_new)
-
     for to_email in to_emails:
+        from_email = settings.CONTACT_EMAIL
+        html, text = render_tip_email(to_email, tip, is_new)
+
         send_mail(from_email, to_email, subject, text, html)
 
 
@@ -74,20 +74,20 @@ def new_bounty(bounty, to_emails=[]):
 
     subject = "⚡️ New Funded Issue Worth ${}".format(bounty.value_in_usdt)
 
-    from_email = settings.CONTACT_EMAIL
-    html, text = render_new_bounty(to_email, bounty)
-
     for to_email in to_emails:
+        from_email = settings.CONTACT_EMAIL
+        html, text = render_new_bounty(to_email, bounty)
+
         send_mail(from_email, to_email, subject, text, html)
 
 
 def weekly_roundup(to_emails=[]):
 
     subject = "🍃Gitcoin Weekly | Pumpkin Spice Lattes, Pilot Programs, Devcon 3, New Funded Issue Explorer "
-    html, text = render_new_bounty_roundup(to_email)
-    from_email = settings.CONTACT_EMAIL
-
     for to_email in to_emails:
+        html, text = render_new_bounty_roundup(to_email)
+        from_email = settings.CONTACT_EMAIL
+
         send_mail(from_email, to_email, subject, text, html)
 
 
@@ -97,10 +97,10 @@ def new_bounty_claim(bounty, to_emails=[]):
 
     subject = "✉️ New Claim Inside ✉️"
 
-    from_email = settings.CONTACT_EMAIL
-    html, text = render_new_bounty_claim(to_email, bounty)
-
     for to_email in to_emails:
+        from_email = settings.CONTACT_EMAIL
+        html, text = render_new_bounty_claim(to_email, bounty)
+
         send_mail(from_email, to_email, subject, text, html)
 
 
@@ -110,10 +110,10 @@ def new_bounty_rejection(bounty, to_emails=[]):
 
     subject = "😕 Claim Rejected 😕"
 
-    from_email = settings.CONTACT_EMAIL
-    html, text = render_new_bounty_rejection(to_email, bounty)
-
     for to_email in to_emails:
+        from_email = settings.CONTACT_EMAIL
+        html, text = render_new_bounty_rejection(to_email, bounty)
+
         send_mail(from_email, to_email, subject, text, html)
 
 
@@ -123,10 +123,10 @@ def new_bounty_acceptance(bounty, to_emails=[]):
 
     subject = "🌈 Funds Paid! 🌈"
 
-    from_email = settings.CONTACT_EMAIL
-    html, text = render_new_bounty_acceptance(to_email, bounty)
-
     for to_email in to_emails:
+        from_email = settings.CONTACT_EMAIL
+        html, text = render_new_bounty_acceptance(to_email, bounty)
+
         send_mail(from_email, to_email, subject, text, html)
 
 
@@ -134,16 +134,16 @@ def bounty_expire_warning(bounty, to_emails=[]):
     if not bounty or not bounty.value_in_usdt:
         return
 
-    unit = 'days'
-    num = int(round((bounty.expires_date - timezone.now()).days, 0))
-    if num == 0:
-        unit = 'hours'
-        num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
-    subject = "😕 Your Funded Issue Expires In {} {} ... 😕".format(days, unit)
-
-    from_email = settings.CONTACT_EMAIL
-    html, text = render_bounty_expire_warning(to_email, bounty)
-
     for to_email in to_emails:
+        unit = 'days'
+        num = int(round((bounty.expires_date - timezone.now()).days, 0))
+        if num == 0:
+            unit = 'hours'
+            num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
+        subject = "😕 Your Funded Issue Expires In {} {} ... 😕".format(days, unit)
+
+        from_email = settings.CONTACT_EMAIL
+        html, text = render_bounty_expire_warning(to_email, bounty)
+
         send_mail(from_email, to_email, subject, text, html)
 

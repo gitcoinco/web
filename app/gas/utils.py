@@ -10,7 +10,6 @@ def recommend_min_gas_price_to_confirm_in_time(minutes, default=20):
             ).order_by('gas_price').first()
         return gp.gas_price
     except Exception as e:
-        print(e)
         return default
 
 

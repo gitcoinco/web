@@ -79,9 +79,6 @@ var callbacks = {
         return [ 'amount', Math.round((parseInt(val) / 10**document.decimals) * 1000) / 1000 + " " + result['token_name']];
     },
     'avatar_url': function(key, val, result){
-        if(!_truthy(val)){
-            return [null, null]
-        }
         return [ 'avatar', '<img class=avatar src="'+val+'">'];
     },
     'status': function(key, val, result){
@@ -96,8 +93,14 @@ var callbacks = {
     },
     'issue_description': function(key, val, result){
         var ui_body = val;
-        var allowed_tags = ['br', 'li', 'ol', 'ul', 'p', 'td', 'a', 'img'];
+        var allowed_tags = ['br', 'li', 'em', 'ol', 'ul', 'p', 'td', 'a', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
         var open_close = ['', '/'];
+        var replace_tags = {
+            'h1': 'h5',
+            'h2': 'h5',
+            'h3': 'h5',
+            'h4': 'h5',
+        }
 
         for(var i=0; i<allowed_tags.length;i++){
             var tag = allowed_tags[i];
@@ -108,6 +111,17 @@ var callbacks = {
                 var re = new RegExp(replace_tag, 'g');
                 ui_body = ui_body.replace(re, with_tag);
                 var re = new RegExp(replace_tag.toUpperCase(), 'g');
+                ui_body = ui_body.replace(re, with_tag);
+            }
+        }
+        for(var key in replace_tags){
+            for(var k=0; k<open_close.length;k++){
+                var oc = open_close[k];
+                var replace = key;
+                var _with = replace_tags[key];
+                var replace_tag = '<'+ oc + replace +'>';
+                var with_tag = '<'+ oc + _with +'>';
+                var re = new RegExp(replace_tag, 'g');
                 ui_body = ui_body.replace(re, with_tag);
             }
         }
@@ -188,6 +202,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                                 console.log('success syncing with web3');
                                 sync_web3(issueURL, result, changes_synced_callback);
                             } else {
+                                console.error(result);
                                 var link_url = etherscan_tx_url(localStorage['txid']);
                                 _alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
                             }

@@ -15,4 +15,6 @@ class GasProfile(SuperModel):
     _99confident_confirm_time_mins = models.DecimalField(decimal_places=2, max_digits=50)
 
     def __str__(self):
+        if not self:
+            return "none"
         return "gas_price: {}, mean_time_to_confirm_minutes: {} ".format(self.gas_price, self.mean_time_to_confirm_minutes)

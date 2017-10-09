@@ -103,10 +103,11 @@ class Bounty(SuperModel):
         try:
             from app.github import org_name, get_user
             _org_name = org_name(self.github_url)
-            return get_user(_org_name)['avatar_url']
+            response = get_user(_org_name)
+            return response['avatar_url']
         except Exception as e:
             print(e)
-            return None
+            return 'https://avatars0.githubusercontent.com/u/31359507?v=4'
 
     @property
     def keywords(self):
