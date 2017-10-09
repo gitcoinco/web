@@ -70,7 +70,7 @@ def whitepaper_access_request():
     from tdi.models import WhitepaperAccessRequest
 
     Stat.objects.create(
-        key='tips',
+        key='whitepaper_access_request',
         val=(WhitepaperAccessRequest.objects.count()),
         )
 
