@@ -16,8 +16,22 @@
 
 '''
 # -*- coding: utf-8 -*-
-from marketing.models import Stat
+from marketing.models import Stat, EmailSubscriber
 
 
 def get_stat(key):
     return Stat.objects.filter(key=key).order_by('-created_on').first().val
+
+
+def get_or_save_email_subscriber(email, source):
+    queryset = EmailSubscriber.objects.filter(email=email)
+    if not queryset.exists():
+        es = EmailSubscriber.objects.create(
+            email=email,
+            source=source,
+            )
+        es.set_priv()
+        es.save()
+        return es.priv
+    else:
+        return queryset.first().priv

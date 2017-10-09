@@ -106,6 +106,8 @@ urlpatterns = [
     url(r'^_administration/process_accesscode_request/(.*)$', tdi.views.process_accesscode_request, name='process_accesscode_request'),
     url(r'^_administration/email/new_tip/resend$', retail.emails.resend_new_tip, name='resend_new_tip'),
 
+    #marketing views
+    url(r'^email/settings/(.*)', marketing.views.email_settings, name='email_settings'),
     url(r'^_administration/stats$', marketing.views.stats, name='stats'),
 
 

@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core 
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+
+{% block body %}
+
+    <div class="container-fluid" style="">
+        <div class=" row ">
+            <div class="col-4 pb-4">
+                <div class="align-items-right justify-content-right" style="text-align: right;">
+                    <img src="/static/v2/images/regulus.png" style="max-width:300px;">
+                </div>
+            </div>
+            <div class="col-1 pb-4">
+            </div>
+            <div class="col-6 pb-4">
+                <div class="form_container" style="padding-left: 6px;">
+                    <h3>Manage Email Preferences</h3>
+                    <div style="max-width: 500px; margin: 0px auto;">
+                    {% if msg %}
+                        <p style="background-color: #fee856; padding: 5px 10px;">
+                            {{msg}}
+                        </p>
+                    {% endif %}
+                    <form id=whitepaper  method=POST>
+                        <div class="form-group">
+                            <label for="email">Email address</label>
+                            <input type=text name=email class=form-control placeholder='you@somewhere'  value="{{email}}" required>
+                            <small id="emailHelp" class="form-text text-muted">Gitcoin will never share your email with anyone else.</small>
+                        </div>
+                        <div class="form-group">
+                        <label for="level">Send me</label>
+                            <select class="form-control" id="level" name="level"  required>
+                              <option value="regular" {% if level == 'regular'%}selected{%endif%} >Regular: Weekly Roundups, Notifications, etc</option>
+                              <option value="lite" {% if level == 'lite'%}selected{%endif%}>Lite: Just Notifications</option>
+                              <option value="nothing" {% if level == 'nothing'%}selected{%endif%}>Nothing: Don't Email</option>
+                            </select>
+                            <small id="level" class="form-text text-muted">Gitcoin Regular: Usually emails once a week.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="comments">Comments</label>
+                            <textarea class="form-control" id="comments" name="comments" rows="3">{{comments}}</textarea>
+                            <small id="comments" class="form-text text-muted">How are we doing?  What do you think?</small>
+                        </div> 
+                        {% csrf_token %}
+                        <input class='btn btn-sm btn-success raise' type='submit' name='submit' value="Go">
+                    </form>
+
+                    {% endblock %}
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-1 pb-4">
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% block scripts %}
+
+
+<script>
+
+    $(document).ready(function() {
+        $('#whitepaper input.btn-go').click(function(e){
+            mixpanel.track("Whitepaper New Request", {});
+            setTimeout(function(){
+                $('#whitepaper input.btn-go').attr('disabled','disabled');
+            },1);
+        });
+    });
+</script>
+
+
+{% endblock %}

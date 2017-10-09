@@ -26,6 +26,7 @@ class EmailSubscriber(SuperModel):
     email = models.EmailField(max_length=255)
     source = models.CharField(max_length=50)
     active = models.BooleanField(default=True)
+    newsletter = models.BooleanField(default=True)
     preferences = JSONField(default={})
     metadata = JSONField(default={})
     priv = models.CharField(max_length=30, default='')

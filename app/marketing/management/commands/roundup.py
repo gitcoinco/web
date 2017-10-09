@@ -35,7 +35,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        email_list = EmailSubscriber.objects.filter(active=True).values_list('email',flat=True)
+        email_list = EmailSubscriber.objects.filter(newsletter=True).values_list('email',flat=True)
 
         print("got {} emails".format(len(email_list)))
 

@@ -23,6 +23,7 @@ import sendgrid
 from sendgrid.helpers.mail import Email, Content, Mail, Personalization
 from django.conf import settings
 from retail.emails import *
+from marketing.utils import get_or_save_email_subscriber
 
 
 def send_mail(from_email, to_email, subject, body, html=False, bcc_gitcoin_core=True, from_name="Gitcoin.co"):
@@ -36,6 +37,7 @@ def send_mail(from_email, to_email, subject, body, html=False, bcc_gitcoin_core=
         _to_email = 'email_logger@gitcoin.co'
         send_mail(from_email, _to_email, subject, _body, _html, bcc_gitcoin_core=False)
 
+    get_or_save_email_subscriber(to_email, 'internal')
     print("-- Sending Mail '{}' to {}".format(subject, to_email))
     sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
     from_email = Email(from_email, from_name)
@@ -60,7 +62,7 @@ def tip_email(tip, to_emails, is_new):
         subject = "🕐 New Tip Worth {} {} Expiring Soon".format(round(tip.amount,2), tip.tokenName)
 
     from_email = settings.CONTACT_EMAIL
-    html, text = render_tip_email(tip, is_new)
+    html, text = render_tip_email(to_email, tip, is_new)
 
     for to_email in to_emails:
         send_mail(from_email, to_email, subject, text, html)
@@ -73,7 +75,7 @@ def new_bounty(bounty, to_emails=[]):
     subject = "⚡️ New Funded Issue Worth ${}".format(bounty.value_in_usdt)
 
     from_email = settings.CONTACT_EMAIL
-    html, text = render_new_bounty(bounty)
+    html, text = render_new_bounty(to_email, bounty)
 
     for to_email in to_emails:
         send_mail(from_email, to_email, subject, text, html)
@@ -82,7 +84,7 @@ def new_bounty(bounty, to_emails=[]):
 def weekly_roundup(to_emails=[]):
 
     subject = "🍃Gitcoin Weekly | Pumpkin Spice Lattes, Pilot Programs, Devcon 3, New Funded Issue Explorer "
-    html, text = render_new_bounty_roundup()
+    html, text = render_new_bounty_roundup(to_email)
     from_email = settings.CONTACT_EMAIL
 
     for to_email in to_emails:
@@ -96,7 +98,7 @@ def new_bounty_claim(bounty, to_emails=[]):
     subject = "✉️ New Claim Inside ✉️"
 
     from_email = settings.CONTACT_EMAIL
-    html, text = render_new_bounty_claim(bounty)
+    html, text = render_new_bounty_claim(to_email, bounty)
 
     for to_email in to_emails:
         send_mail(from_email, to_email, subject, text, html)
@@ -109,7 +111,7 @@ def new_bounty_rejection(bounty, to_emails=[]):
     subject = "😕 Claim Rejected 😕"
 
     from_email = settings.CONTACT_EMAIL
-    html, text = render_new_bounty_rejection(bounty)
+    html, text = render_new_bounty_rejection(to_email, bounty)
 
     for to_email in to_emails:
         send_mail(from_email, to_email, subject, text, html)
@@ -122,7 +124,7 @@ def new_bounty_acceptance(bounty, to_emails=[]):
     subject = "🌈 Funds Paid! 🌈"
 
     from_email = settings.CONTACT_EMAIL
-    html, text = render_new_bounty_acceptance(bounty)
+    html, text = render_new_bounty_acceptance(to_email, bounty)
 
     for to_email in to_emails:
         send_mail(from_email, to_email, subject, text, html)
@@ -140,7 +142,7 @@ def bounty_expire_warning(bounty, to_emails=[]):
     subject = "😕 Your Funded Issue Expires In {} {} ... 😕".format(days, unit)
 
     from_email = settings.CONTACT_EMAIL
-    html, text = render_bounty_expire_warning(bounty)
+    html, text = render_bounty_expire_warning(to_email, bounty)
 
     for to_email in to_emails:
         send_mail(from_email, to_email, subject, text, html)

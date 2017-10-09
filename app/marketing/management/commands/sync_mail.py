@@ -16,21 +16,9 @@
 
 '''
 from django.core.management.base import BaseCommand
-from marketing.models import EmailSubscriber
 from django.conf import settings
 from mailchimp3 import MailChimp
-import requests
-
-
-def process_email(email, source):
-    if not EmailSubscriber.objects.filter(email=email).exists():
-        es = EmailSubscriber.objects.create(
-            email=email,
-            source=source,
-            )
-        es.set_priv()
-        es.save()
-
+from marketing.utils import get_or_save_email_subscriber as process_email
 
 class Command(BaseCommand):
 

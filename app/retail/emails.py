@@ -26,11 +26,12 @@ from django.conf import settings
 from django.utils import timezone
 import premailer
 from django.template.response import TemplateResponse
+from marketing.utils import get_or_save_email_subscriber
 
 ### RENDERERS
 
 
-def render_tip_email(tip, is_new):
+def render_tip_email(to_email, tip, is_new):
 
     warning = tip.network if tip.network != 'mainnet' else ""
     params = {
@@ -42,6 +43,7 @@ def render_tip_email(tip, is_new):
         'show_expires': tip.expires_date < (timezone.now() + timezone.timedelta(days=365)),
         'is_new': is_new,
         'warning': warning,
+        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer.transform(render_to_string("emails/new_tip.html", params))
@@ -50,10 +52,11 @@ def render_tip_email(tip, is_new):
     return response_html, response_txt
 
 
-def render_new_bounty(bounty):
+def render_new_bounty(to_email, bounty):
 
     params = {
         'bounty': bounty,
+        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer.transform(render_to_string("emails/new_bounty.html", params))
@@ -62,10 +65,11 @@ def render_new_bounty(bounty):
     return response_html, response_txt
 
 
-def render_new_bounty_claim(bounty):
+def render_new_bounty_claim(to_email, bounty):
 
     params = {
         'bounty': bounty,
+        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer.transform(render_to_string("emails/new_bounty_claim.html", params))
@@ -74,10 +78,11 @@ def render_new_bounty_claim(bounty):
     return response_html, response_txt
 
 
-def render_new_bounty_acceptance(bounty):
+def render_new_bounty_acceptance(to_email, bounty):
 
     params = {
         'bounty': bounty,
+        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer.transform(render_to_string("emails/new_bounty_acceptance.html", params))
@@ -86,10 +91,11 @@ def render_new_bounty_acceptance(bounty):
     return response_html, response_txt
 
 
-def render_new_bounty_rejection(bounty):
+def render_new_bounty_rejection(to_email, bounty):
 
     params = {
         'bounty': bounty,
+        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer.transform(render_to_string("emails/new_bounty_rejection.html", params))
@@ -98,7 +104,7 @@ def render_new_bounty_rejection(bounty):
     return response_html, response_txt
 
 
-def render_bounty_expire_warning(bounty):
+def render_bounty_expire_warning(to_email, bounty):
 
     unit = 'days'
     num = int(round((bounty.expires_date - timezone.now()).days, 0))
@@ -110,6 +116,7 @@ def render_bounty_expire_warning(bounty):
         'bounty': bounty,
         'num': num,
         'unit': unit,
+        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer.transform(render_to_string("emails/new_bounty_expire_warning.html", params))
@@ -118,24 +125,7 @@ def render_bounty_expire_warning(bounty):
     return response_html, response_txt
 
 
-def roundup_bounties(start_date, end_date, num=5):
-    from dashboard.models import Bounty
-
-    bounties = Bounty.objects.all()
-    if not settings.DEBUG:
-        bounties = bounties.filter(
-            web3_created__gt=start_date,
-            web3_created__lt=end_date,
-            expires_date__gt=end_date + timezone.timedelta(days=3),
-        )
-    bounties = bounties.filter(
-        is_open=True,
-        ).order_by('-_val_usd_db')[:num]
-
-    return bounties
-
-
-def render_new_bounty_roundup():
+def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
 
     bounties = [
@@ -158,6 +148,7 @@ def render_new_bounty_roundup():
         'override_back_color': '#15003e',
         'invert_footer': True,
         'hide_header': True,
+        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer.transform(render_to_string("emails/bounty_roundup.html", params))
@@ -173,7 +164,7 @@ def render_new_bounty_roundup():
 def new_tip(request):
     from dashboard.models import Tip
     tip = Tip.objects.last()
-    response_html, response_txt = render_tip_email(tip, True)
+    response_html, response_txt = render_tip_email(settings.CONTACT_EMAIL, tip, True)
 
     return HttpResponse(response_html)
 
@@ -213,7 +204,7 @@ def resend_new_tip(request):
 def new_bounty(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty(Bounty.objects.all().last())
+    response_html, response_txt = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.all().last())
 
     return HttpResponse(response_html)
 
@@ -222,7 +213,7 @@ def new_bounty(request):
 def new_bounty_claim(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty_claim(Bounty.objects.all().last())
+    response_html, response_txt = render_new_bounty_claim(settings.CONTACT_EMAIL, Bounty.objects.all().last())
 
     return HttpResponse(response_html)
 
@@ -231,7 +222,7 @@ def new_bounty_claim(request):
 def new_bounty_rejection(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty_rejection(Bounty.objects.all().last())
+    response_html, response_txt = render_new_bounty_rejection(settings.CONTACT_EMAIL, Bounty.objects.all().last())
 
     return HttpResponse(response_html)
 
@@ -240,7 +231,7 @@ def new_bounty_rejection(request):
 def new_bounty_acceptance(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty_acceptance(Bounty.objects.all().last())
+    response_html, response_txt = render_new_bounty_acceptance(settings.CONTACT_EMAIL, Bounty.objects.all().last())
 
     return HttpResponse(response_html)
 
@@ -248,7 +239,7 @@ def new_bounty_acceptance(request):
 def bounty_expire_warning(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_bounty_expire_warning(Bounty.objects.all().last())
+    response_html, response_txt = render_bounty_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last())
 
     return HttpResponse(response_html)
 
@@ -257,6 +248,6 @@ def bounty_expire_warning(request):
 def roundup(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty_roundup()
+    response_html, response_txt = render_new_bounty_roundup(settings.CONTACT_EMAIL)
 
     return HttpResponse(response_html)
