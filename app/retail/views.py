@@ -210,3 +210,30 @@ def btctalk(request):
     return redirect('https://bitcointalk.org/index.php?topic=2206663')
 
 
+def reddit(request):
+    return redirect('https://www.reddit.com/r/gitcoincommunity/')
+
+
+def twitter(request):
+    return redirect('http://twitter.com/getgitcoin')
+
+
+def fb(request):
+    return redirect('https://www.facebook.com/GetGitcoin/')
+
+
+def medium(request):
+    return redirect('https://medium.com/gitcoin')
+
+
+def github(request):
+    return redirect('https://github.com/gitcoinco/')
+
+
+def youtube(request):
+    return redirect('https://www.youtube.com/watch?v=DJartWzDn0E')
+
+
+
+
+

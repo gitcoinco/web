@@ -17,6 +17,7 @@ window.onload = function () {
         }
         localStorage.setItem("addresses", JSON.stringify(addresses));
         document.location.href = '/tip/send/2/';
+        mixpanel.track("Tip Step 1 Click", {});
     };
     $("neweth").onclick = _click;
     if(getParam('batch')){

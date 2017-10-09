@@ -79,6 +79,12 @@ urlpatterns = [
     url(r'^extension/?', retail.views.browser_extension, name='browser_extension'),
     url(r'^slack/?', retail.views.slack, name='slack'),
     url(r'^btctalk/?', retail.views.btctalk, name='btctalk'),
+    url(r'^reddit/?', retail.views.reddit, name='reddit'),
+    url(r'^twitter/?', retail.views.twitter, name='twitter'),
+    url(r'^fb/?', retail.views.fb, name='fb'),
+    url(r'^medium/?', retail.views.medium, name='medium'),
+    url(r'^github/?', retail.views.github, name='github'),
+    url(r'^youtube/?', retail.views.youtube, name='youtube'),
 
     #token distribution event
     url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),

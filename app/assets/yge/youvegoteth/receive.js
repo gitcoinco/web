@@ -23,13 +23,16 @@ window.onload = function () {
                         if(errors){
                             $("step_zero").style.display = "block";
                             $("send_eth").style.display = "none";
+                            mixpanel.track("Tip Receive Error", {step: 'transferdetails', error: errors});
                         } else {
                             var active = result[0];
                             if(!active){
                                 $("loading").innerHTML = "error :("
                                 $("step_zero").style.display = "none";
                                 $("send_eth").style.display = "none";
-                                _alert("This tip is no longer active, it has probably already been claimed.")
+                                var error = "This tip is no longer active, it has probably already been claimed.";
+                                _alert(error)
+                                mixpanel.track("Tip Receive Error", {step: 'transferdetails2', error: error});
                                 return;
                             }
                             var amount = result[1].toNumber();
@@ -72,6 +75,7 @@ window.onload = function () {
 
     // When 'Generate Account' is clicked
     $("receive").onclick = function() {
+        mixpanel.track("Tip Receive Click", {});
         metaMaskWarning();
 
         //get form data
@@ -99,9 +103,11 @@ window.onload = function () {
             if(error){
                 console.log(error);
                 _alert('got an error :(');
+                mixpanel.track("Tip Receive Error", {step: 'callback', error: error});
                 unloading_button(jQuery("#receive"));       
             } else {
                 startConfetti();
+                mixpanel.track("Tip Receive Success", {});
                 $("send_eth").innerHTML = "<h1>Success 🚀!</h1> <a target=new href='https://"+etherscanDomain()+"/tx/"+result+"'>See your transaction on the blockchain here</a>.<br><br><strong>Status:</strong> <span id=status>Confirming Transaction ... <br><img src='/static/yge/images/loading.gif' style='max-width: 30px; max-height: 30px;'></span><br><br><span id=mighttake>It might take a few minutes to sync, depending upon: <br> - network congestion<br> - network fees that sender allocated to transaction<br></span><br><a id='' class='button' href='/'>⬅ Back to Gitcoin.co</a>" ;
                 const url = "/tip/receive";
                 fetch(url, {

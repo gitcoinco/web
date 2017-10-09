@@ -84,6 +84,7 @@
 
     $(document).ready(function() {
         $('#whitepaper input.btn-go').click(function(e){
+            mixpanel.track("Whitepaper New Request", {});
             setTimeout(function(){
                 $('#whitepaper input.btn-go').attr('disabled','disabled');
             },1);

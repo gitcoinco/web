@@ -51,6 +51,8 @@ $(document).ready(function(){
     
     //submit bounty button click
     $('#submitBounty').click(function(e){
+        mixpanel.track("Submit New Bounty Clicked", {});
+
         //setup
         e.preventDefault();
         loading_button($(this));
@@ -121,6 +123,7 @@ $(document).ready(function(){
         var post_bounty_callback = function(error, result){
             unloading_button($('#submitBounty'));
             if(error){
+                mixpanel.track("New Bounty Error", {step: 'post_bounty', error: error});
                 console.error("two", error);
                     _alert({ message: "There was an error.  Please try again or contact support." });
                 $('#submitBounty').removeAttr('disabled');
@@ -132,6 +135,7 @@ $(document).ready(function(){
                 _alert({ message: "Submission sent to web3." }, 'info');
                 setTimeout(function(){
                     delete localStorage['issueURL'];
+                    mixpanel.track("Submit New Bounty Success", {});
                     document.location.href= "/funding/details?url="+issueURL;
                 },1000);
 
@@ -150,6 +154,7 @@ $(document).ready(function(){
                 JSON.stringify(metadata),
                 {from :account, value:value},
                 function(errors, result){
+                    mixpanel.track("New Bounty Error", {step: 'post_boutny', error: errors});
                     var gas = Math.round(result * gasMultiplier);
                     var gasLimit = Math.round(gas * gasLimitMultiplier);
 
@@ -180,6 +185,8 @@ $(document).ready(function(){
                 });
             };
             if(error){
+                mixpanel.track("New Bounty Error", {step: 'erc20', error: error});
+                console.error(error);
                 unloading_button($('#submitBounty'));
                 var isApprovalAlreadyGranted = error.toString().indexOf('invalid opcode') != -1;
                 if (isApprovalAlreadyGranted){
@@ -199,6 +206,7 @@ $(document).ready(function(){
             token_contract.approve.estimateGas(bounty_address()
                 ,amount, 
                 function(errors,result){
+                    mixpanel.track("New Bounty Error", {step: 'erc20', error: errors});
                     var gas = Math.round(erc20_approve_gas * gasMultiplier);
                     var gasLimit = Math.round(gas * gasLimitMultiplier);
                     token_contract.approve.sendTransaction(bounty_address()
@@ -216,6 +224,7 @@ $(document).ready(function(){
             bounty.bountydetails.call(issueURL, function(error, result){
                 if(error){
                     console.error(error);
+                    mixpanel.track("New Bounty Error", {step: 'details', error: error});
                     _alert({ message: "There was an error.  Please try again or contact support." });
                     unloading_button($('#submitBounty'));
                     return;

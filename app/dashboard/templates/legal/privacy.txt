@@ -168,3 +168,4 @@ Gitcoin may update this Privacy Policy at any time and any changes will be effec
 If you have any questions about this Privacy Policy, please contact us at legal@gitcoin.co
 
 </pre>
+{% include 'shared/ga.html' %}

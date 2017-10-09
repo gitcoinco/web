@@ -95,6 +95,11 @@ MAILCHIMP_USER = ''
 MAILCHIMP_API_KEY = ''
 MAILCHIMP_LIST_ID = ''
 
+TRACKJS_TOKEN=''
+
+MIXPANEL_TOKEN=''
+
+
 # optional: only needed if you slack things
 SLACK_TOKEN = 'TODO'
 

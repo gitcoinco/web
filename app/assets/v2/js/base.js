@@ -36,6 +36,53 @@ $(document).ready(function(){
       $(this).parents('.col').find('.answer').toggleClass('hidden');
     });
 
+    //mixpanel integration
+    var params = {
+      page: document.location.pathname,
+    }
+    mixpanel.track("Pageview", params);
+
+    var tos = [
+      'slack',
+      'btctalk',
+      'reddit',
+      'twitter',
+      'fb',
+      'medium',
+      'github',
+      'youtube',
+      'extension',
+      'get',
+      'watch',
+      'unwatch',
+      'save_search',
+      'help/repo',
+      'help/dev',
+      'help/portal',
+      'help/faq',
+    ]
+    for(var i=0;i<tos.length;i++){
+      var to = tos[i]
+      var callback = function(e){
+        var _params = {
+          'to': $(this).attr('href'),
+        };
+        mixpanel.track("Outbound", _params);
+      };
+      $('body').delegate("a[href='/"+to+"']",'click', callback);
+    }
+    $('body').delegate("a[href^='https://github.com/']", 'click', function(e){
+        var _params = {
+          'to_domain': 'github.com',
+          'to': $(this).attr('href'),
+        };
+        mixpanel.track("Outbound", _params);
+      });
+
+    $("#mc-embedded-subscribe").click(function(){
+        mixpanel.track("Email Subscribe");
+    });
+
 });
 
 $(window).scroll(function(){

@@ -72,6 +72,8 @@
 
     $(document).ready(function() {
         $('#whitepaper input.btn-go').click(function(e){
+            mixpanel.track("Whitepaper Access Code Request", {});
+
             setTimeout(function(){
                 $('#whitepaper input.btn-go').attr('disabled','disabled');
             },1);

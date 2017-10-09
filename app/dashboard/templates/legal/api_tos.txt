@@ -159,3 +159,5 @@ Choice of Law and Venue. The API Terms and any controversy, dispute or claim ari
 No Waiver. The failure or delay of either party to exercise or enforce any right or claim does not constitute a waiver of such right or claim and shall in no way affect that party’s right to later enforce or exercise it, unless such party issues an express written waiver, signed by a duly authorized representative of each party.
 Miscellaneous. The API Terms set forth the entire agreement and understanding of the parties relating to their subject matter and cancel and supersede any prior or contemporaneous discussions, agreements, representations, warranties, and other communications between them. No modification or amendment to the API Terms shall be binding upon Gitcoin unless in a written instrument signed by a duly authorized representative of Gitcoin.
 </pre>
+
+{% include 'shared/ga.html' %}

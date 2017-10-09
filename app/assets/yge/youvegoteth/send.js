@@ -67,6 +67,7 @@ window.onload = function () {
 
     // When 'Generate Account' is clicked
     $("send").onclick = function(e) {
+        mixpanel.track("Tip Step 2 Click", {});
         e.preventDefault();
         if(metaMaskWarning()){
             return;
@@ -152,9 +153,11 @@ window.onload = function () {
             //set up callback for web3 call to final transfer
             var final_callback = function(error, result){
                 if(error){
+                    mixpanel.track("Tip Step 2 Error", {step: 'final', error:error });
                     _alert('got an error :(');
                     unloading_button(jQuery("#send"));       
                 } else {
+                    mixpanel.track("Tip Step 2 Success", {});
                     var txid = result;
                     $("send_eth").style.display = 'none';
                     $("tokenName").innerHTML = tokenName;

@@ -49,3 +49,5 @@ Include the following statement: “I swear, under penalty of perjury, that I ha
 Sign and date the Counter Notice.
 Please bear in mind that Gitcoin Core cannot give you legal advice. If you have questions about whether certain proprietary rights are valid or whether certain material is infringing, you should contact an attorney.
 </pre>
+
+{% include 'shared/ga.html' %}

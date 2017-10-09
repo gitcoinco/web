@@ -72,6 +72,13 @@ var refreshBounties = function(){
     //filter
     var uri = get_search_URI();
 
+    //analytics
+    var params = {
+        uri : uri,
+    }
+    mixpanel.track("Refresh Bounties", params);
+
+
     //order
     $.get(uri, function(results){
         results = sanitizeAPIResults(results);

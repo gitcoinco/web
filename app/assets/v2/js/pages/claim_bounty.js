@@ -19,6 +19,7 @@ window.onload = function(){
 
 
         $('#submitBounty').click(function(e){
+            mixpanel.track("Claim Bounty Clicked", {});
             loading_button($('#submitBounty'));
             e.preventDefault();
             var notificationEmail = $('input[name=notificationEmail]').val();
@@ -52,6 +53,7 @@ window.onload = function(){
                 var ignore_error = false;
                 if(error){
                     console.error(error);
+                    mixpanel.track("Claim Bounty Error", {step: '_callback', error: error});
                     ignore_error = String(error).indexOf('BigNumber') != -1;
                 }
                 var run_main = !error || ignore_error;
@@ -89,11 +91,13 @@ window.onload = function(){
                             add_to_watch_list(issueURL);
                             _alert({ message: "Claim submitted to web3." },'info');
                             setTimeout(function(){
+                                mixpanel.track("Claim Bounty Success", {});
                                 document.location.href= "/funding/details?url="+issueURL;
                             },1000);
 
                         };
                         if(error){
+                            mixpanel.track("Claim Bounty Error", {step: 'callback', error: error});
                             console.error("err", error);
                             _alert({ message: "There was an error" });
                             unloading_button($('#submitBounty'));
@@ -109,6 +113,7 @@ window.onload = function(){
                             function(errors,result){
                                 var gas = Math.round(result * gasMultiplier);
                                 var gasLimit = Math.round(gas * gasLimitMultiplier);
+                                mixpanel.track("Claim Bounty Error", {step: 'estimateGas', error: errors});
                                 bounty.claimBounty.sendTransaction(issueURL, 
                                     claimee_metadata,
                                     {

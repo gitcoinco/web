@@ -77,3 +77,5 @@ CONTACTING US
 If you have any questions about this Cookie Policy, please contact us at support@gitcoin.co or https://gitcoin.co/help/
 
 </pre>
+
+{% include 'shared/ga.html' %}

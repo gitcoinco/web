@@ -13,6 +13,7 @@ window.onload = function(){
         var bountyDetails = []
 
         $('.submitBounty').click(function(e){
+            mixpanel.track("Process Bounty Clicked", {});
             e.preventDefault();
             var whatAction = $(this).html().trim()
             var issueURL = $('input[name=issueURL]').val();
@@ -36,6 +37,7 @@ window.onload = function(){
             loading_button($(this));
             var callback = function(error, result){
                 if(error){
+                    mixpanel.track("Process Bounty Error", {step: 'callback', error: error});
                     _alert({ message: "Could not get bounty details" });
                     console.error(error);
                     unloading_button($('.submitBounty'));
@@ -69,8 +71,10 @@ window.onload = function(){
                             sync_web3(issueURL);
                             localStorage[issueURL] = timestamp();
                             add_to_watch_list(issueURL);
+                            mixpanel.track("Process Bounty Error", {step: '_callback', error: error});
                             _alert({ message: "Submitted transaction to web3." }, 'info');
                             setTimeout(function(){
+                                mixpanel.track("Process Bounty Success", {});
                                 document.location.href= "/funding/details?url="+issueURL;
                             },1000);
 
@@ -89,6 +93,7 @@ window.onload = function(){
                     }
                     method.estimateGas(issueURL, {from :account}, 
                             function(errors,result){
+                                mixpanel.track("Process Bounty Error", {step: 'estimateGas', error: errors});
                                 var gas = Math.round(result * gasMultiplier);
                                 var gasLimit = Math.round(gas * gasLimitMultiplier);
                                 method.sendTransaction(issueURL, 
