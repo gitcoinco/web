@@ -31,3 +31,15 @@ class EmailSubscriber(SuperModel):
 
     def __str__(self):
         return self.email
+
+
+class Stat(SuperModel):
+    key = models.CharField(max_length=50, db_index=True)
+    val = models.CharField(max_length=50)
+
+    class Meta:
+        index_together = [
+            ["created_on", "key"],
+        ]
+    def __str__(self):
+        return "{}: {}".format(self.key, self.val)

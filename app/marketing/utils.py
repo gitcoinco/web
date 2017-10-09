@@ -16,17 +16,8 @@
 
 '''
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-from django.contrib import admin
-
-# Register your models here.
-from .models import EmailSubscriber, Stat
-
-# Register your models here.
-class GeneralAdmin(admin.ModelAdmin):
-    ordering = ['-id']
+from marketing.models import Stat
 
 
-admin.site.register(Stat, GeneralAdmin)
-admin.site.register(EmailSubscriber, GeneralAdmin)
+def get_stat(key):
+    return Stat.objects.filter(key=key).order_by('-created_on').first().val
