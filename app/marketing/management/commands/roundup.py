@@ -16,8 +16,7 @@
 
 '''
 from django.core.management.base import BaseCommand
-from dashboard.models import Bounty
-from django.utils import timezone
+from marketing.models import EmailSubscriber
 from marketing.mails import weekly_roundup
 
 
@@ -25,25 +24,22 @@ class Command(BaseCommand):
 
     help = 'the weekly roundup emails'
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '-live', '--live',
+            action='store_true',
+            dest='live',
+            default=False,
+            help='Actually Send the emails'
+        )
+
     def handle(self, *args, **options):
-        days_back = 90
 
-        email_list = []
-        # todo: tip emails
-        # mailchimp emails
-        # whitepaper dev emails
-        bounties = Bounty.objects.filter(web3_created__gt=timezone.now()-timezone.timedelta(days=days_back)).all()
+        email_list = EmailSubscriber.objects.filter(active=True).values_list('email',flat=True)
 
-        for b in bounties:
-            if b.bounty_owner_email:
-                email_list.append(b.bounty_owner_email)
-            if b.claimee_email:
-                email_list.append(b.claimee_email)
-        email_list = set(email_list)
-
-        print(email_list)
         print("got {} emails".format(len(email_list)))
-        #TODO: formalize the list management into its own database table, completely with ability to manage subscriptions
 
-        for to_email in email_list:
-            weekly_roundup([to_email])
+        if options['live']:
+            print("-sending")
+            for to_email in email_list:
+                weekly_roundup([to_email])

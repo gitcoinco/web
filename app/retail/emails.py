@@ -1,3 +1,7 @@
+# encoding=utf8
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 '''
     Copyright (C) 2017 Gitcoin Core 
 
@@ -131,12 +135,29 @@ def roundup_bounties(start_date, end_date, num=5):
     return bounties
 
 
-def render_new_bounty_roundup(bounties):
+def render_new_bounty_roundup():
+    from dashboard.models import Bounty
+
+    bounties = [
+        {
+            'obj': Bounty.objects.get(pk=24),
+            'primer': 'Piper Merriam aka "The Force in Open Source".  Oppy to work with him ~ @owocki',
+        },
+        {
+            'obj': Bounty.objects.get(pk=12),
+            'primer': 'Opportunity to get paid to play with Metamask.  One of the best designed & widely used tools in web3 ~ @owocki',
+        },
+        {
+            'obj': Bounty.objects.get(pk=5),
+            'primer': 'Want to work on Gitcoin?  Easy pickings 👇 ~ @owocki',
+        },
+    ]
 
     params = {
         'bounties': bounties,
-        'override_back_color': '#0fce7c',
+        'override_back_color': '#15003e',
         'invert_footer': True,
+        'hide_header': True,
     }
 
     response_html = premailer.transform(render_to_string("emails/bounty_roundup.html", params))
@@ -236,7 +257,6 @@ def bounty_expire_warning(request):
 def roundup(request):
     from dashboard.models import Bounty
 
-    bounties = roundup_bounties(timezone.now()-timezone.timedelta(weeks=1), timezone.now())
-    response_html, response_txt = render_new_bounty_roundup(bounties)
+    response_html, response_txt = render_new_bounty_roundup()
 
     return HttpResponse(response_html)

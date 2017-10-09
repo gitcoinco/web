@@ -80,17 +80,11 @@ def new_bounty(bounty, to_emails=[]):
 
 
 def weekly_roundup(to_emails=[]):
-    start_date = timezone.now() - timezone.timedelta(weeks=1)
-    end_date = timezone.now()
-    bounties = roundup_bounties(start_date, end_date)
-
-    total_value_usdt = round(sum(bounties.values_list('_val_usd_db', flat=True)),2)
 
     if total_value_usdt < 10:
         raise
 
-    subject = "⚡️ ${} of Funded Issues! Roundup for Week Ending {}".format(total_value_usdt, end_date.strftime('%Y-%m-%d'))
-
+    subject = "🍃Gitcoin Weekly | Pumpkin Spice Lattes, Pilot Programs, Devcon 3, New Funded Issue Explorer "
     html, text = render_new_bounty_roundup(bounties)
     from_email = settings.CONTACT_EMAIL
 

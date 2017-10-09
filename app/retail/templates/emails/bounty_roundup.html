@@ -20,19 +20,63 @@
 
 {% block content %}
 
-<h1>⚡️ Funded Issues this week ⚡</h1>
+<h1><img src="https://gitcoin.co/static/v2/images/helmet_emoji.png" width=40px height="40px"> The Gitcoin Weekly <img src="https://gitcoin.co/static/v2/images/helmet_emoji.png" width=40px height="40px"></h1>
+
+<table>
+    <tr>
+        <td colspan=6 valign="top" style='padding: 5px 10px 0px;'>
+            <p>
+                Hi there 👋,
+            </p>
+            <p>
+                Happy October!  Change is in the air. 🍃
+            </p>
+            <p>
+                 As I type this message to you, snow is falling outside my window in Colorado.  I had my first (and let's be honest, only) pumpkin spice latte of the season.  Also, whats got two thumbs and just ordered their haloween costume for devcon 3 in Cancun?  👉 This guy 👈  
+            </p>
+            <p>
+                Speaking of Devcon, Are you going?  If so, I'd <a href="https://twitter.com/owocki">love to hear from you</a>!
+            </p>
+            <p>
+                The focus right now at Gitcoin Core HQ is <strong>Pilot Programs</strong>.  I've still got a couple pilot program slots left.  Want to work together?  Reach out <a href="https://gitcoin.co/slack">on slack</a>.
+            </p>
+            <p>
+                Btw, have you seen the <strong>New Funded Issue Detail Page</strong>?  Want to know something cool?  It was built using Gitcoin.  Dogfooding 🙌 
+            </p>
+            <p>
+                Keep Pushing Open Source Forward,
+                <br> 
+                <a href="https://twitter.com/owocki">@owocki</a>
+            </p>
+        </td>
+        <td colspan=2 valign="bottom" style='padding: 5px 10px;'>
+            <a href="https://twitter.com/owocki">
+                <img src="https://gitcoin.co/static/v2/images/avatar.png" width="86" height="141">
+            </a>
+        </td>
+    </tr>
+</table>
 
 
-<p>
-    Hot off the press, new Open Source Work is available in the <a href="https://gitcoin.co/explorer">Issue Explorer</a>:
-</p>
+<h3>⚡️ Funded Issues ⚡</h3>
+<h5>🤔 Is this week your week to build something new? 🤔</h5>
 
 <br>
 
 {% for bounty in bounties %}
-    {% include 'emails/bounty.html' with bounty=bounty small=1 %}
+    {% include 'emails/bounty.html' with bounty=bounty.obj small=1 primer=bounty.primer %}
     <hr>
 {% endfor %}
+
+    <table>
+        <tr >
+            <td width="180">
+                <p style="text-align: center;">Don't see anything that strikes your fancy above?</p>
+                <a class="button"  href="{{bounty.absolute_url}}" >View Issue Explorer</a>
+            </td>
+        </tr>
+    </table>
+    <hr>
 
 <p>
     You are receiving this email because your email address is on the notification list.

@@ -159,6 +159,7 @@
 <table cellspacing="0" cellpadding="0" border="0" id="container_table">
     <tr>
         <td valign="top" class="body"> 
+            {% if not hide_header %}
             <table cellpadding="0" cellspacing="0" border="0" align="center" id="email_header">
                 <tr>
                     <td width="600" valign="middle" id="logo">
@@ -168,6 +169,7 @@
                     </td>
                 </tr>
             </table>
+            {% endif %}
             <table cellpadding="0" cellspacing="0" border="0" align="center" id="wrapper">
                 <tr>
                     <td width="600" valign="top" align="center" class="primary_content">

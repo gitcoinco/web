@@ -40,8 +40,21 @@
 }
 </style>
 
-    <img src="{{bounty.avatar_url}}" width=50px height=50px>
+    
     <table cellspacing="0" cellpadding="0" border="0" class='bounty'> 
+        {% if primer %}
+        <tr class="odd">
+            <td width="460" colspan="2" style="text-align: center;">
+                <p>
+                {{primer}}
+                <p>
+
+        </tr>
+        {% endif %}
+        <tr class="odd">
+            <td width="460" colspan="2" style="text-align: center;">
+                <img src="{{bounty.avatar_url}}" width=50px height=50px>
+        </tr>
         {% if bounty.title %}
         <tr class="odd">
             <td width="60" class="label">
