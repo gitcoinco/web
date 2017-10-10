@@ -100,6 +100,13 @@
             </div>
         </div>
         {% for item in faq %}
+        {% if item.category %}
+            <div class="row mt-2 mb-2 pb-3 faq_item">
+                <div class="col text-left   ">
+                    <h4 class="font-bigger-2 text-left  ">{{item.category}}</h4>
+                </div>
+            </div>
+        {% endif %}
         <div class="row mt-2 mb-2 pb-3 faq_item">
             <div class="col text-left   ">
                 <h5>{{item.q}}</h5>

@@ -224,3 +224,76 @@ def embed(request):
     except IOError as e:
         print(e)
         return err_response
+
+
+
+
+
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def avatar(request):
+    # default response 
+    could_not_find = Image.new('RGBA', (1, 1), (0,0,0,0))
+    err_response = HttpResponse(content_type="image/jpeg")
+    could_not_find.save(err_response, "JPEG")
+
+    # params
+    repo_url = request.GET.get('repo', False)
+    if not repo_url or 'github.com' not in repo_url:
+        return err_response
+
+    try:
+        #get avatar of repo
+        _org_name = org_name(repo_url)
+
+        avatar = None
+        filename = "{}.png".format(_org_name)
+        filepath = 'assets/other/avatars/' + filename
+        try:
+            avatar = Image.open(filepath, 'r')
+        except IOError:
+            remote_user = get_user(_org_name)
+            remote_avatar_url = remote_user['avatar_url']
+
+            r = requests.get(remote_avatar_url, stream=True)
+            chunk_size = 20000
+            with open(filepath, 'wb') as fd:
+                for chunk in r.iter_content(chunk_size):
+                    fd.write(chunk)
+            avatar = Image.open(filepath, 'r').convert("RGBA")
+
+            #make transparent
+            datas = avatar.getdata()
+
+            newData = []
+            for item in datas:
+                if item[0] == 255 and item[1] == 255 and item[2] == 255:
+                    newData.append((255, 255, 255, 0))
+                else:
+                    newData.append(item)
+
+            avatar.putdata(newData)
+            avatar.save(filepath, "PNG")
+
+        width, height = (215, 215)
+        img = Image.new("RGBA", (width, height), (255, 255, 255))
+        white = (255, 255, 255)
+        black = (0, 0, 0)
+
+
+        ## config
+        icon_size = (215, 215)
+        ## execute
+        img_w, img_h = avatar.size
+        avatar.thumbnail(icon_size, Image.ANTIALIAS)
+        bg_w, bg_h = img.size
+        offset = 0,0 
+        img.paste(avatar, offset, avatar)
+
+
+        response = HttpResponse(content_type="image/jpeg")
+        img.save(response, "JPEG")
+        return response
+    except IOError as e:
+        print(e)
+        return err_response
+

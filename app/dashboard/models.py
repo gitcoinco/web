@@ -96,18 +96,30 @@ class Bounty(SuperModel):
         return self.title if self.title else self.github_url
 
     @property
+    def org_name(self):
+        try:
+            from app.github import org_name
+            _org_name = org_name(self.github_url)
+            return _org_name
+        except Exception as e:
+            return None
+
+    @property
     def absolute_url(self):
         return self.get_absolute_url()
 
     def get_avatar_url(self):
         try:
-            from app.github import org_name, get_user
-            _org_name = org_name(self.github_url)
-            response = get_user(_org_name)
+            from app.github import get_user
+            response = get_user(self.org_name)
             return response['avatar_url']
         except Exception as e:
             print(e)
             return 'https://avatars0.githubusercontent.com/u/31359507?v=4'
+
+    @property
+    def local_avatar_url(self):
+        return "https://gitcoin.co/funding/avatar?repo={}".format(self.github_url)
 
     @property
     def keywords(self):

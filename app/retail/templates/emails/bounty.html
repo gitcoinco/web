@@ -53,7 +53,7 @@
         {% endif %}
         <tr class="odd">
             <td width="460" colspan="2" style="text-align: center;">
-                <img src="{{bounty.avatar_url}}" width=50px height=50px>
+                <img src="{{bounty.local_avatar_url}}" width=50px height=50px>
         </tr>
         {% if bounty.title %}
         <tr class="odd">
@@ -64,37 +64,39 @@
             </td>
             <td width="400">
                 <span>
-                    {{bounty.title}}
+                    {{bounty.org_name}}: {{bounty.title}}
                 </span>
             </td>
         </tr>
         {% endif %}
 
-        {% if bounty.keywords %}
-        <tr class="even">
-            <td width="60" class="label">
-                <span>
-                    Keywords
-                </span>
-            </td>
-            <td width="400">
-                <span>
-                    {{bounty.keywords}}
-                </span>
-            </td>
-        </tr>
-        {% endif %}
+        {% if not small %}
+            {% if bounty.keywords %}
+            <tr class="even">
+                <td width="60" class="label">
+                    <span>
+                        Keywords
+                    </span>
+                </td>
+                <td width="400">
+                    <span>
+                        {{bounty.keywords}}
+                    </span>
+                </td>
+            </tr>
+            {% endif %}
 
-        <tr class="odd">
-            <td width="60" class="label">
-                <span>
-                    Github
-                </span>
-            </td>
-            <td width="400">
-                <a href="{{bounty.github_url}}">{{bounty.github_url}}</a>
-            </td>
-        </tr>
+            <tr class="odd">
+                <td width="60" class="label">
+                    <span>
+                        Github
+                    </span>
+                </td>
+                <td width="400">
+                    <a href="{{bounty.github_url}}">{{bounty.github_url}}</a>
+                </td>
+            </tr>
+        {% endif %}
 
         <tr class="even">
             <td width="60" class="label">
@@ -137,25 +139,25 @@
                     </span>
                 </td>
             </tr>
-        {% endif %}
 
-        <tr class="odd extra_high">
-            <td width="60" class="label">
-                <span>
-                    Specs
-                </span>
-            </td>
-            <td width="400">
-                <span>
-                    Project Length: {% if bounty.project_length %}{{bounty.project_length}}{%else%}Not specified{%endif%}
-                    <br>
-                    Type: {% if bounty.bounty_type %}{{bounty.bounty_type}}{%else%}Not specified{%endif%}
-                    <br>
-                    Experience Level: {% if bounty.experience_level %}{{bounty.experience_level}}{%else%}Not specified{%endif%}
-                    <br>
-                </span>
-            </td>
-        </tr>
+            <tr class="odd extra_high">
+                <td width="60" class="label">
+                    <span>
+                        Specs
+                    </span>
+                </td>
+                <td width="400">
+                    <span>
+                        Project Length: {% if bounty.project_length %}{{bounty.project_length}}{%else%}Not specified{%endif%}
+                        <br>
+                        Type: {% if bounty.bounty_type %}{{bounty.bounty_type}}{%else%}Not specified{%endif%}
+                        <br>
+                        Experience Level: {% if bounty.experience_level %}{{bounty.experience_level}}{%else%}Not specified{%endif%}
+                        <br>
+                    </span>
+                </td>
+            </tr>
+        {% endif %}
 
         <tr class="cta">
             <td width="60" class="label">

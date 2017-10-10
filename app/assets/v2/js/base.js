@@ -53,6 +53,7 @@ $(document).ready(function(){
       'twitter',
       'fb',
       'medium',
+      'gitter',
       'github',
       'youtube',
       'extension',
@@ -86,6 +87,11 @@ $(document).ready(function(){
     $("#mc-embedded-subscribe").click(function(){
         mixpanel.track("Email Subscribe");
     });
+
+    $("body.whitepaper .btn-success").click(function(){
+        mixpanel.track("Whitepaper Request");
+    });
+
 
 });
 

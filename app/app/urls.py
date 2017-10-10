@@ -59,6 +59,7 @@ urlpatterns = [
     url(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
     url(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
+    url(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
 
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
@@ -81,6 +82,7 @@ urlpatterns = [
     url(r'^btctalk/?', retail.views.btctalk, name='btctalk'),
     url(r'^reddit/?', retail.views.reddit, name='reddit'),
     url(r'^twitter/?', retail.views.twitter, name='twitter'),
+    url(r'^gitter/?', retail.views.gitter, name='gitter'),
     url(r'^fb/?', retail.views.fb, name='fb'),
     url(r'^medium/?', retail.views.medium, name='medium'),
     url(r'^github/?', retail.views.github, name='github'),

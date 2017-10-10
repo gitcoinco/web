@@ -17,10 +17,10 @@ This is the website that is live at gitcoin.co
 
 Functionally, the app has several key features:
 
-* Smart Contracts -- Where bounties are stored and indexed.
+* Smart Contracts -- Where funded issues are stored and indexed.
 * Brochureware -- Describes the project.
-* Bounty Explorer -- A searchable index of all of the work available in the system.
-* Bounty Submission / Acceptance flow -- Interface between the application and web3.
+* Funded Issue Explorer -- A searchable index of all of the work available in the system.
+* Funded Issue Submission / Acceptance flow -- Interface between the application and web3.
 
 Technically, the system is architected:
 

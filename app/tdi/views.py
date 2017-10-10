@@ -89,7 +89,7 @@ https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/
         context['msg'] = "Invalid Email. Please contact founders@gitcoin.co"
         return TemplateResponse(request, 'whitepaper_new.html', context)
 
-    context['msg'] = "Your request has been sent."
+    context['msg'] = "Your request has been sent.  <a href=/slack>Meantime, why don't you check out the slack channel?</a>"
     return TemplateResponse(request, 'whitepaper_new.html', context)
 
 

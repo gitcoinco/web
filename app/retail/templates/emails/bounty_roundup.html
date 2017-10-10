@@ -20,28 +20,37 @@
 
 {% block content %}
 
+<style>
+    body  p,
+    body  span,
+    body  a{
+      font-family: "Arial";
+    }
+
+</style>
+
 <h1><img src="https://gitcoin.co/static/v2/images/helmet_emoji.png" width=40px height="40px"> The Gitcoin Weekly <img src="https://gitcoin.co/static/v2/images/helmet_emoji.png" width=40px height="40px"></h1>
 
 <table>
     <tr>
-        <td colspan=6 valign="top" style='padding: 5px 10px 0px;'>
+        <td id="welcome" colspan=6 valign="top" style='padding: 5px 10px 0px;'>
             <p>
                 Hi there 👋,
             </p>
             <p>
-                Happy October!  Change is in the air. 🍃
+                Happy October!  Its Autumn &amp; change is in the air. 🍃
             </p>
             <p>
-                 As I type this message to you, snow is falling outside my window in Colorado.  I had my first (and let's be honest, only) pumpkin spice latte of the season.  Also, whats got two thumbs and just ordered their haloween costume for devcon 3 in Cancun?  👉 This guy 👈  
+                 As I type this message to you, <a href="https://www.instagram.com/p/BaB6MwNnMoH/">snow is falling</a> outside my window in Colorado.  I had my first (and let's be honest, only) pumpkin spice latte of the season.  Also, whats got two thumbs and just ordered their haloween costume for Devcon3 in Cancun?  👉 This guy 👈 
             </p>
             <p>
-                Speaking of Devcon, Are you going?  If so, I'd <a href="https://twitter.com/owocki">love to hear from you</a>!
+                Speaking of Devcon3, are you going?  If so, I'd <a href="https://twitter.com/owocki">love to hear from you</a>!
             </p>
             <p>
                 The focus right now at Gitcoin Core HQ is <strong>Pilot Programs</strong>.  I've still got a couple pilot program slots left.  Want to work together?  Reach out <a href="https://gitcoin.co/slack">on slack</a>.
             </p>
             <p>
-                Btw, have you seen the <strong>New Funded Issue Detail Page</strong>?  Want to know something cool?  It was built using Gitcoin.  Dogfooding 🙌 
+                Btw, have you seen the <strong>New Funded Issue Detail Page</strong>?  Want to know something cool?  It was built using Gitcoin.  Dogfooding FTW! 
             </p>
             <p>
                 Keep Pushing Open Source Forward,
@@ -58,8 +67,8 @@
 </table>
 
 
-<h3>⚡️ Funded Issues ⚡</h3>
-<h5>🤔 Is this week your week to build something new? 🤔</h5>
+<h3>Funded Issues</h3>
+<h5>Is this week your week to build something new? 🤔</h5>
 
 <br>
 
@@ -70,16 +79,21 @@
 
     <table>
         <tr >
-            <td width="180">
-                <p style="text-align: center;">Don't see anything that strikes your fancy above?</p>
-                <a class="button"  href="{{bounty.absolute_url}}" >View Issue Explorer</a>
+            <td width="400">
+                <p style="text-align: center; margin-bottom: 0px;">Don't see anything that strikes your fancy above?</p>
+                <p style="text-align: center; margin-top: 0px;">There are more issues in the Gitcoin Issue Explorer:</p>
+            </td>
+        </tr>
+        <tr >
+            <td width="180" style="text-align: center;">
+                <a style="margin: 0px auto;" class="button"  href="{{bounty.absolute_url}}" >View Issue Explorer</a>
             </td>
         </tr>
     </table>
     <hr>
 
 <p>
-    You are receiving this email because your email address is on the notification list.
+    You are receiving this email because your email address is on the notification list. <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">Manage Email Settings</a>.
 </p>
 
 <p>

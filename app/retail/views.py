@@ -17,6 +17,10 @@
 '''
 from django.template.response import TemplateResponse
 from django.shortcuts import redirect
+from django.core.validators import validate_email
+from django.conf import settings
+from slackclient import SlackClient
+from marketing.utils import get_or_save_email_subscriber
 
 
 def index(request):
@@ -37,20 +41,17 @@ def about(request):
 def help(request):
     faq = [
         {
-            'q': 'Is Gitcoin open source?',
-            'a': "Yes, all of Gitcoin's core software systems are open source and available at <a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  Please see the liscense.txt file in each repo for more details."
-        },
-        {
+            'category': "Product",
             'q': 'I am a developer, I want build more Open Source Software. Where can I start?',
-            'a': "Check out the developer guide at <a href=https://gitcoin.co/help/dev>https://gitcoin.co/help/dev</a>."
-        },
-        {
-            'q': 'What tokens does Gitcoin support?',
-            'a': "Gitcoin supports Ether and all ERC20 tokens."
+            'a': "The <a href=https://gitcoin.co/explorer>Funded Issue Explorer</a> contains a handful of issues that are ready to be paid out as soon as they are turned around. Check out the developer guide at <a href=https://gitcoin.co/help/dev>https://gitcoin.co/help/dev</a>."
         },
         {
             'q': 'I am a repo maintainer.  How do I get started?',
-            'a': "Check out the repo maintainers guide at <a href=https://gitcoin.co/help/repo>https://gitcoin.co/help/repo</a>."
+            'a': "The best way to get started is to post a funded issue on a task you need done.  Check out the repo maintainers guide at <a href=https://gitcoin.co/help/repo>https://gitcoin.co/help/repo</a>."
+        },
+        {
+            'q': 'What tokens does Gitcoin support?',
+            'a': "Gitcoin supports Ether and all ERC20 tokens.  If the token you'd like to use is Ethereum based, then Gitcoin supports it."
         },
         {
             'q': 'What kind of issues are fundable?',
@@ -62,22 +63,101 @@ def help(request):
             """
         },
         {
-            'q': 'What is the difference between Gitcoin and centralized hiring websites?',
+            'q': 'Whats the difference between tips & funded issues?',
             'a': """
-<p>There are many successful centralized hiring resources available on the web. &nbsp;Because these platforms were an&nbsp;efficient way to source, select, and manage a global workforce , millions of dollars was&nbsp;processed through these systems every day.</p>
-<p>Gitcoin takes the value that flows through these system, and makes it more efficient and fair. &nbsp;Gitcoin is a distributed network of smart contracts, based upon Ethereum, that aims to solve problems with centralized hiring resources, namely by</p>
-<ul>
-<li>being more open,</li>
-<li>being more fair,</li>
-<li>being more efficient,</li>
-<li>being easier to use.</li>
-<li>leveraging a global workforce,</li>
-<li>cutting out the middlemen,</li>
-</ul>
-<p>When Sir Tim Berners-Lee first invented the World Wide Web in the late 1980s&nbsp;to make information sharing on the Internet easier, he did something very important. He specified an open protocol, the Hypertext Transfer Protocol or HTTP, that anyone could use to make information available and to access such information. &nbsp;</p>
-<p>Gitcoin is similarly built on an open protocol of smart contracts.</p>
-<p>By specifying a&nbsp;protocol, Tim Berners-Lee opened the way for anyone to build software, so-called web servers and browsers that would be compatible with this protocol. &nbsp; By specifying an open source protocol for Funding Issues and software development scoping &amp; payment, the Gitcoin Core team hopes to similarly inspire a generation of inventions in 21st century software.</p>
+
+<p>
+<strong>A tip</strong> is a tool to send ether or any ethereum token to any github account.  The flow for tips looks like this: 
+</p><p>
+> Send (party 1) => receive (party 2)
+</p><p>
+
+<strong>Funded Issues</strong> are a way to fund open source features, bugs, or security bounties.  The flow for funded issues looks like this: 
+</p><p>
+
+>  Fund Issue (party 1) => claim funds  (party 2) => accept (party 1)
+</p>
+
+
             """
+        },        
+        {
+            'q': 'What kind of contributors are successful on the Gitcoin network?',
+            'a': """
+
+<p>
+If you have an issues board that needs triaged, read on..
+</p>
+<p>
+If you would like to recruit engineers to help work on your repo, read on..
+</p>
+<p>
+If you want to create value, and receive Ether tokens in return, read on..
+</p>
+<p>
+If you are looking for a quick win, an easy buck, or to promote something, please turn around.
+</p>
+
+<p>
+We value communication that is:
+</p>
+
+<ul>
+<li>
+    Collaborative 
+</li>
+<li>
+    Intellectual & Intellectually Honest
+</li>
+<li>
+    Humble
+</li>
+<li>
+    Empathetic
+</li>
+<li>
+    Pragmatic
+</li>
+<li>
+    Stress reducing
+</li>
+</ul>
+
+<p>
+Here are some of our values
+</p>
+<ul>
+<li>
+    Show, don't tell
+</li>
+<li>
+    Give first
+</li>
+<li>
+     Be thoughtful & direct
+</li>
+<li>
+     Be credible
+</li>
+<li>
+     Challenge the status quo and be willing to be challenged
+</li>
+<li>
+     Create delightful experiences
+</li>
+</ul>
+
+
+            """
+        },
+        {
+            'q': 'I received a notification about tip / funded issue, but I can\'t process it.  Help!',
+            'a': "We'd love to help!  Please email <a href='mailto:founders@gitcoin.co'>founders@gitcoin.co</a> or join <a href=/slack>Gitcoin Community Slack</a>."
+        },
+        {
+            'category': "General",
+            'q': 'Is Gitcoin open source?',
+            'a': "Yes, all of Gitcoin's core software systems are open source and available at <a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  Please see the liscense.txt file in each repo for more details."
         },
         {
             'q': 'Is a token distribution event planned for Gitcoin?',
@@ -120,7 +200,7 @@ The best way to stay in touch is to
     <a href="/#mailchimp">Subscribe to the mailing list</a>
 </li>
 <li>
-    <a href="https://twitter.com/GetGitcoin">Follow the project on twitter</a>
+    <a href="/twitter">Follow the project on twitter</a>
 </li>
 <li>
     <a href="/slack">Join the slack channel</a>
@@ -130,6 +210,95 @@ The best way to stay in touch is to
 
             """
         },
+        {
+            'category': "Web3",
+            'q': 'What is the difference between Gitcoin and centralized hiring websites?',
+            'a': """
+<p>There are many successful centralized hiring resources available on the web. &nbsp;Because these platforms were an&nbsp;efficient way to source, select, and manage a global workforce , millions of dollars was&nbsp;processed through these systems every day.</p>
+<p>Gitcoin takes the value that flows through these system, and makes it more efficient and fair. &nbsp;Gitcoin is a distributed network of smart contracts, based upon Ethereum, that aims to solve problems with centralized hiring resources, namely by</p>
+<ul>
+<li>being more open,</li>
+<li>being more fair,</li>
+<li>being more efficient,</li>
+<li>being easier to use.</li>
+<li>leveraging a global workforce,</li>
+<li>cutting out the middlemen,</li>
+</ul>
+<p>When Sir Tim Berners-Lee first invented the World Wide Web in the late 1980s&nbsp;to make information sharing on the Internet easier, he did something very important. He specified an open protocol, the Hypertext Transfer Protocol or HTTP, that anyone could use to make information available and to access such information. &nbsp;</p>
+<p>Gitcoin is similarly built on an open protocol of smart contracts.</p>
+<p>By specifying a&nbsp;protocol, Tim Berners-Lee opened the way for anyone to build software, so-called web servers and browsers that would be compatible with this protocol. &nbsp; By specifying an open source protocol for Funding Issues and software development scoping &amp; payment, the Gitcoin Core team hopes to similarly inspire a generation of inventions in 21st century software.</p>
+            """
+        },
+        {
+            'q': 'Why do I need metamask?',
+            'a': """
+<p>
+You need <a href="https://metamask.io/">Metamask</a> in order to use Gitcoin.  
+</p>
+<p>
+
+Metamask turns google chrome into a Web3 Browser.   Web3 is powerful because it lets websites retrieve data from the blockchain, and lets users securely manage identity.
+</p>
+<p>
+
+In contrast to web2 where third parties own your data, in web3 you own your data and you are always in control.  On web3, your data is secured on the blockchain, which means that no one can ever freeze your assets or censor you.
+</p>
+<p>
+
+Download Metamask <a href="https://metamask.io/">here</a> today.
+</p>
+
+           """
+        },
+        {
+            'q': 'Why do I need to pay gas?',
+            'a': """
+<p>
+"Gas" is the name for a special unit used in Ethereum. It measures how much "work" an action or set of actions takes to perform (for example, storing data in a smart contract).
+</p>
+<p>
+The reason gas is important is that it helps to ensure an appropriate fee is being paid by transactions submitted to the network. By requiring that a transaction pay for each operation it performs (or causes a contract to perform), we ensure that network doesn't become bogged down with performing a lot of intensive work that isn't valuable to anyone.
+</p>
+<p>
+Gas fees are paid to the maintainers of the Ethereum network, in return for securing all of the Ether and Ethereum-based transactions in the world.  Gas fees are not paid to Gitcoin Core directly or indirectly.  
+</p>
+           """
+        },
+        {
+            'q': 'What are the advanages of Ethereum based applications?',
+            'a': """
+Here are some of the advantages of Ethereum based applications:
+<ul>
+<li>
+    Lower (or no) fees
+</li>
+<li>
+    No middlemen
+</li>
+<li>
+    No third party owns or can sell your data
+</li>
+<li>
+    No international conversion fees
+</li>
+<li>
+    Get paid in protocol, utility, or application tokens; not just cash.
+</li>
+</ul>
+
+
+           """
+        },
+        {
+            'q': 'I still dont get it.  Help!',
+            'a': """
+We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitcoin Slack Community</a> and let's talk.
+
+
+"""
+        },
+
+
 
     ]
 
@@ -203,7 +372,31 @@ def browser_extension(request):
 
 
 def slack(request):
-    return redirect('https://gitcoincommunity.herokuapp.com')
+    context = {
+
+    }
+
+    if request.POST.get('email', False):
+        email = request.POST['email']
+        valid_email = True
+        try:
+            validate_email(request.POST.get('email', False))
+        except Exception as e:
+            valid_email = False
+
+        if valid_email:
+            sc = SlackClient(settings.SLACK_TOKEN)
+            response = sc.api_call('users.admin.invite', email=email)
+            get_or_save_email_subscriber(email, 'slack')
+            if response['ok']:
+                context['msg'] = "Your invite has been sent. "
+            else:
+                context['msg'] = response['error']
+        else:
+            context['msg'] = "Invalid email"
+
+    return TemplateResponse(request, 'slack.html', context)
+    
 
 
 def btctalk(request):
@@ -224,6 +417,10 @@ def fb(request):
 
 def medium(request):
     return redirect('https://medium.com/gitcoin')
+
+
+def gitter(request):
+    return redirect('https://gitter.im/gitcoinco/Lobby')
 
 
 def github(request):
