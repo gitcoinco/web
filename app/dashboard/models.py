@@ -119,7 +119,7 @@ class Bounty(SuperModel):
 
     @property
     def local_avatar_url(self):
-        return "https://gitcoin.co/funding/avatar?repo={}".format(self.github_url)
+        return "https://gitcoin.co/funding/avatar?repo={}&v=2".format(self.github_url)
 
     @property
     def keywords(self):
