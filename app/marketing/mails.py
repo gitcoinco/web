@@ -35,7 +35,7 @@ def send_mail(from_email, to_email, subject, body, html=False, bcc_gitcoin_core=
         else:
             _html = False
         _to_email = 'email_logger@gitcoin.co'
-        send_mail(from_email, _to_email, subject, _body, _html, bcc_gitcoin_core=False)
+        send_mail(from_email, _to_email, subject, _body, _html, bcc_gitcoin_core=False, from_name=from_name)
 
     get_or_save_email_subscriber(to_email, 'internal')
     print("-- Sending Mail '{}' to {}".format(subject, to_email))
@@ -83,12 +83,12 @@ def new_bounty(bounty, to_emails=[]):
 
 def weekly_roundup(to_emails=[]):
 
-    subject = "🍃Gitcoin Weekly | Pumpkin Spice Lattes, Pilot Programs, Devcon 3, New Funded Issue Explorer "
+    subject = "🍃Gitcoin Weekly | Pumpkin Spice Lattes, Pilot Programs, Devcon3, New Funded Issue Detail Page "
     for to_email in to_emails:
         html, text = render_new_bounty_roundup(to_email)
-        from_email = settings.CONTACT_EMAIL
+        from_email = settings.PERSONAL_CONTACT_EMAIL
 
-        send_mail(from_email, to_email, subject, text, html)
+        send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
 
 
 def new_bounty_claim(bounty, to_emails=[]):

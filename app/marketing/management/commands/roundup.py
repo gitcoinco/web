@@ -18,6 +18,7 @@
 from django.core.management.base import BaseCommand
 from marketing.models import EmailSubscriber
 from marketing.mails import weekly_roundup
+import time
 
 
 class Command(BaseCommand):
@@ -35,11 +36,27 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        email_list = EmailSubscriber.objects.filter(newsletter=True).values_list('email',flat=True)
+        exclude_startswith = 'k'
+        filter_startswith = None
+
+        queryset = EmailSubscriber.objects.filter(newsletter=True)
+        if exclude_startswith:
+            queryset = queryset.exclude(email__startswith=exclude_startswith)
+        if filter_startswith:
+            queryset = queryset.filter(email__startswith=filter_startswith)
+        queryset = queryset.order_by('email')
+        email_list = queryset.values_list('email', flat=True)
 
         print("got {} emails".format(len(email_list)))
 
+        counter = 0
         if options['live']:
-            print("-sending")
             for to_email in email_list:
-                weekly_roundup([to_email])
+                counter += 1
+                print("-sending {} / {}".format(counter, to_email))
+                try:
+                    weekly_roundup([to_email])
+                    time.sleep(1)
+                except Exception as e:
+                    print(e)
+                    time.sleep(5)

@@ -27,10 +27,26 @@
 
 {% block breadcrumbs %}{% endblock %}
 
-{% block content %}
-
 {% block title %}Stats | Gitcoin
 {% endblock %}
+
+{% block content %}
+
+<style>
+.dashboard #content{
+    width: 100%;
+}
+</style>
+
+<a class="" href="{{filter_params}}&filter=">All</a> | 
+<a class="" href="{{filter_params}}&filter=Activity">Activity</a> | 
+<a class="" href="{{filter_params}}&filter=Marketing">Marketing</a> 
+
+<hr>
+
+<a class="" href="{{filter_params}}&rollup=hourly">Hourly</a> | 
+<a class="" href="{{filter_params}}&rollup=daily">Daily</a> | 
+<a class="" href="{{filter_params}}&rollup=weekly">Weekly</a>
 
 <head>
     <!-- code to include the highcharts and jQuery libraries goes here -->
@@ -47,7 +63,7 @@
 <body>
 
 {% for t in types %}
-    <div id='{{t}}'> Chart will be rendered here </div>
+    <div id='{{t}}' style="float:left; width: 33%;"> Chart will be rendered here </div>
 {% endfor %}
 
 

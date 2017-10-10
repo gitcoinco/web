@@ -66,4 +66,13 @@ class Command(BaseCommand):
             for email in email_list:
                 process_email(email, 'bounty_usage')
 
+        print("- tdi")
+        from tdi.models import WhitepaperAccess, WhitepaperAccessRequest
+        for wa in WhitepaperAccess.objects.all():
+                process_email(wa.email, 'whitepaperaccess')
+
+        for wa in WhitepaperAccessRequest.objects.all():
+                process_email(wa.email, 'whitepaperaccessrequest')
+
+
         print('/local')

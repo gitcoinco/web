@@ -39,6 +39,33 @@ def bounties():
         )
 
 
+def bounties_open():
+    from dashboard.models import Bounty
+
+    Stat.objects.create(
+        key='bounties_open',
+        val=(Bounty.objects.filter(current_bounty=True, idx_status='submitted').count()),
+        )
+
+
+def bounties_claimed():
+    from dashboard.models import Bounty
+
+    Stat.objects.create(
+        key='bounties_claimed',
+        val=(Bounty.objects.filter(current_bounty=True).exclude(claimeee_address='0x0000000000000000000000000000000000000000').count()),
+        )
+
+
+def bounties_fulfilled():
+    from dashboard.models import Bounty
+
+    Stat.objects.create(
+        key='bounties_fulfilled',
+        val=(Bounty.objects.filter(current_bounty=True,idx_status='fulfilled').count()),
+        )
+
+
 def tips():
     from dashboard.models import Tip
 
@@ -48,12 +75,39 @@ def tips():
         )
 
 
+def tips_received():
+    from dashboard.models import Tip
+
+    Stat.objects.create(
+        key='tips_received',
+        val=(Tip.objects.exclude(receive_txid='').count()),
+        )
+
+
 def subs():
     from marketing.models import EmailSubscriber
 
     Stat.objects.create(
         key='email_subscriberse',
         val=(EmailSubscriber.objects.count()),
+        )
+
+
+def subs_active():
+    from marketing.models import EmailSubscriber
+
+    Stat.objects.create(
+        key='email_subscribers_active',
+        val=(EmailSubscriber.objects.filter(active=True).count()),
+        )
+
+
+def subs_newsletter():
+    from marketing.models import EmailSubscriber
+
+    Stat.objects.create(
+        key='email_subscribers_newsletter',
+        val=(EmailSubscriber.objects.filter(newsletter=True).count()),
         )
 
 
@@ -81,7 +135,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        fs = [slack_users, bounties, tips, subs, whitepaper_access, whitepaper_access_request]
+        fs = [slack_users, bounties, tips, subs, whitepaper_access, whitepaper_access_request, tips_received, bounties_claimed, bounties_fulfilled, bounties_open, subs_active, subs_newsletter]
 
         for f in fs:
             try:

@@ -28,20 +28,57 @@ from django.core.validators import validate_email
 from retail.helpers import get_ip
 # Create your views here.
 
+
+def filter_types(types, _filters):
+    return_me = []
+    for t in types:
+        add = False
+        for f in _filters:
+            if f in t:
+                add = True
+        if add:
+            return_me.append(t)
+
+    return return_me
+
 @staff_member_required
 def stats(request):
-    types = Stat.objects.distinct('key').values_list('key', flat=True)
+    # get param
+    _filter = request.GET.get('filter')
+    rollup = request.GET.get('rollup')
+
+    # types
+    types = list(Stat.objects.distinct('key').values_list('key', flat=True))
+    types.sort()
+
+    # filters
+    if _filter == 'Activity':
+        _filters = ['tip', 'bount']
+        types = filter_types(types, _filters)
+    if _filter == 'Marketing':
+        _filters = ['slack', 'email', 'whitepaper']
+        types = filter_types(types, _filters)
+
+    # params
     params = {
         'types': types,
         'chart_list': [],
+        'filter_params': "?filter={}&rollup={}".format(_filter, rollup),
     }
 
     for t in types:
+
+        source = Stat.objects.filter(key=t)
+        if rollup == 'daily':
+            source = source.filter(created_on__hour=1)
+        if rollup == 'weekly':
+            source = source.filter(created_on__hour=1, created_on__week_day=1)
+
         chartdata = \
             DataPool(
                series=
                 [{'options': {
-                   'source': Stat.objects.filter(key=t).all()},
+                   'source': source},
                   'terms': [
                     'created_on',
                     'val']}

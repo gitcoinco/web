@@ -30,6 +30,12 @@ from marketing.utils import get_or_save_email_subscriber
 
 ### RENDERERS
 
+def premailer_transform(html):
+    import logging
+    import cssutils
+    cssutils.log.setLevel(logging.CRITICAL)
+    return premailer.transform(html)
+
 
 def render_tip_email(to_email, tip, is_new):
 
@@ -46,7 +52,7 @@ def render_tip_email(to_email, tip, is_new):
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
-    response_html = premailer.transform(render_to_string("emails/new_tip.html", params))
+    response_html = premailer_transform(render_to_string("emails/new_tip.html", params))
     response_txt = render_to_string("emails/new_tip.txt", params)
 
     return response_html, response_txt
@@ -59,7 +65,7 @@ def render_new_bounty(to_email, bounty):
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
-    response_html = premailer.transform(render_to_string("emails/new_bounty.html", params))
+    response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
     response_txt = render_to_string("emails/new_bounty.txt", params)
 
     return response_html, response_txt
@@ -72,7 +78,7 @@ def render_new_bounty_claim(to_email, bounty):
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
-    response_html = premailer.transform(render_to_string("emails/new_bounty_claim.html", params))
+    response_html = premailer_transform(render_to_string("emails/new_bounty_claim.html", params))
     response_txt = render_to_string("emails/new_bounty_claim.txt", params)
 
     return response_html, response_txt
@@ -85,7 +91,7 @@ def render_new_bounty_acceptance(to_email, bounty):
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
-    response_html = premailer.transform(render_to_string("emails/new_bounty_acceptance.html", params))
+    response_html = premailer_transform(render_to_string("emails/new_bounty_acceptance.html", params))
     response_txt = render_to_string("emails/new_bounty_acceptance.txt", params)
 
     return response_html, response_txt
@@ -98,7 +104,7 @@ def render_new_bounty_rejection(to_email, bounty):
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
-    response_html = premailer.transform(render_to_string("emails/new_bounty_rejection.html", params))
+    response_html = premailer_transform(render_to_string("emails/new_bounty_rejection.html", params))
     response_txt = render_to_string("emails/new_bounty_rejection.txt", params)
 
     return response_html, response_txt
@@ -119,7 +125,7 @@ def render_bounty_expire_warning(to_email, bounty):
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
-    response_html = premailer.transform(render_to_string("emails/new_bounty_expire_warning.html", params))
+    response_html = premailer_transform(render_to_string("emails/new_bounty_expire_warning.html", params))
     response_txt = render_to_string("emails/new_bounty_expire_warning.txt", params)
 
     return response_html, response_txt
@@ -151,7 +157,7 @@ def render_new_bounty_roundup(to_email):
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
-    response_html = premailer.transform(render_to_string("emails/bounty_roundup.html", params))
+    response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
     response_txt = render_to_string("emails/bounty_roundup.txt", params)
 
     return response_html, response_txt
