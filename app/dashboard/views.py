@@ -197,8 +197,8 @@ def bounty_details(request):
     try:
         b = Bounty.objects.get(github_url=request.GET.get('url'), current_bounty=True)
         if b.title:
-            params['title'] = b.title
-            params['card_title'] = "{} | Funded Issue Detail | Gitcoin".format(b.title)
+            params['card_title'] = "{} | {} Funded Issue Detail | Gitcoin".format(b.title, b.org_name)
+            params['title'] = params['card_title']
         params['avatar_url'] = b.local_avatar_url
     except Exception as e:
         print(e)
