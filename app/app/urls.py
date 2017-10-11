@@ -87,6 +87,7 @@ urlpatterns = [
     url(r'^medium/?', retail.views.medium, name='medium'),
     url(r'^github/?', retail.views.github, name='github'),
     url(r'^youtube/?', retail.views.youtube, name='youtube'),
+    url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
 
     #token distribution event
     url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),

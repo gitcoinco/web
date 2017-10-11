@@ -30,6 +30,12 @@ def index(request):
     return TemplateResponse(request, 'index.html', context)
 
 
+def robotstxt(request):
+    context = {
+    }
+    return TemplateResponse(request, 'robots.txt', context)
+
+
 def about(request):
     context = {
         'active': 'about',

@@ -1,0 +1,6 @@
+
+User-agent: Twitterbot
+Disallow:
+
+User-agent: Yandex
+Disallow: /
