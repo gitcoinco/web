@@ -50,10 +50,10 @@ class Command(BaseCommand):
         print("got {} emails".format(len(email_list)))
 
         counter = 0
-        if options['live']:
-            for to_email in email_list:
-                counter += 1
-                print("-sending {} / {}".format(counter, to_email))
+        for to_email in email_list:
+            counter += 1
+            print("-sending {} / {}".format(counter, to_email))
+            if options['live']:
                 try:
                     weekly_roundup([to_email])
                     time.sleep(1)

@@ -61,9 +61,9 @@ def maybe_market_to_twitter(bounty, event_name, txid):
 
 
 def should_post_in_channel(channel, bounty):
-    if channel ['bounties', 'developer']:
+    if channel in ['bounties', 'development']:
         return True
-    if 'dev-' in channel:
+    if 'dev-' in channel or channel in ['_design', 'content']:
         keyword = channel.replace('dev-','').lower()
         return keyword in str(bounty.title).lower() \
             or keyword in str(bounty.keywords).lower() \
@@ -93,7 +93,8 @@ def maybe_market_to_slack(bounty, event_name, txid):
               channel=channel,
               text=msg,
             ) 
-    except:
+    except Exception as e:
+        print(e)
         return False       
 
     return True

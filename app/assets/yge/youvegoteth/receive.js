@@ -30,6 +30,7 @@ window.onload = function () {
                                 $("loading").innerHTML = "error :("
                                 $("step_zero").style.display = "none";
                                 $("send_eth").style.display = "none";
+                                console.error('tip_inactive', result)
                                 var error = "This tip is no longer active, it has probably already been claimed.";
                                 _alert(error)
                                 mixpanel.track("Tip Receive Error", {step: 'transferdetails2', error: error});
