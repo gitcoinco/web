@@ -25,6 +25,7 @@ from django.views.decorators.csrf import csrf_exempt
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from dashboard.helpers import normalizeURL, process_bounty_details, process_bounty_changes
+from dashboard.models import Bounty
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 import json
 from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack
@@ -188,8 +189,20 @@ def bounty_details(request):
     params = {
         'issueURL': request.GET.get('issue_'),
         'title': 'Issue Details',
+        'card_title': 'Funded Issue Details | Gitcoin',
+        'avatar_url' : 'https://gitcoin.co/static/v2/images/helmet.png',
         'active': 'bounty_details',
     }
+
+    try:
+        b = Bounty.objects.get(github_url=request.GET.get('url'), current_bounty=True)
+        if b.title:
+            params['title'] = b.title
+            params['card_title'] = "{} | Funded Issue Detail | Gitcoin".format(b.title)
+        params['avatar_url'] = b.local_avatar_url
+    except Exception as e:
+        print(e)
+        pass
 
     return TemplateResponse(request, 'bounty_details.html', params)
 
