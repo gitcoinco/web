@@ -132,11 +132,11 @@ def new_bounty_acceptance(bounty, to_emails=[]):
 
 def new_match(to_emails=[]):
 
-    subject = "🌈 New Match, Kevin meet Metamask! 🌈"
+    subject = "⚡️ Kevin meet Metamask! "
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
-        html, text = render_new_match(to_email, bounty)
+        html, text = render_match_email(to_email)
 
         send_mail(from_email, to_email, subject, text, html)
 

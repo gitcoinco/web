@@ -29,11 +29,11 @@ class Command(BaseCommand):
 
         b = Bounty.objects.all().last()
         #new_bounty(b, [settings.CONTACT_EMAIL])
-        new_match(b, [settings.CONTACT_EMAIL])
+        new_match([settings.CONTACT_EMAIL])
         #weekly_roundup([settings.CONTACT_EMAIL])
         #new_bounty(b, [settings.CONTACT_EMAIL])
         #new_bounty_claim(b, [settings.CONTACT_EMAIL])
-        new_bounty_rejection(b, [settings.CONTACT_EMAIL])
+        #new_bounty_rejection(b, [settings.CONTACT_EMAIL])
         #new_bounty_acceptance(b, [settings.CONTACT_EMAIL])
         #bounty_expire_warning(b, [settings.CONTACT_EMAIL])
 
