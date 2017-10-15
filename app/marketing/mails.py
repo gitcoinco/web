@@ -130,6 +130,19 @@ def new_bounty_acceptance(bounty, to_emails=[]):
         send_mail(from_email, to_email, subject, text, html)
 
 
+def new_match(to_emails=[]):
+
+    subject = "🌈 New Match, Kevin meet Metamask! 🌈"
+
+    for to_email in to_emails:
+        from_email = settings.CONTACT_EMAIL
+        html, text = render_new_match(to_email, bounty)
+
+        send_mail(from_email, to_email, subject, text, html)
+
+
+
+
 def bounty_expire_warning(bounty, to_emails=[]):
     if not bounty or not bounty.value_in_usdt:
         return

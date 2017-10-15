@@ -1,0 +1,9 @@
+{% load humanize %} 
+⚡️ New Match Alert ⚡️
+
+Kevin, meet Gitcoinco.  MetaMask, meet Kevin.
+
+You are both CCed on this email.  Respond back to this email to get in touch.
+
+Keep Pushing Open Source Forward,
+-- Gitcoin Core

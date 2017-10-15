@@ -102,6 +102,7 @@ urlpatterns = [
     url(r'^_administration/email/new_bounty$', retail.emails.new_bounty, name='new_bounty'),
     url(r'^_administration/email/roundup$', retail.emails.roundup, name='roundup'),
     url(r'^_administration/email/new_tip$', retail.emails.new_tip, name='new_tip'),
+    url(r'^_administration/email/new_match$', retail.emails.new_match, name='new_match'),
     url(r'^_administration/email/new_bounty_claim$', retail.emails.new_bounty_claim, name='new_bounty_claim'),
     url(r'^_administration/email/new_bounty_rejection$', retail.emails.new_bounty_rejection, name='new_bounty_rejection'),
     url(r'^_administration/email/new_bounty_acceptance$', retail.emails.new_bounty_acceptance, name='new_bounty_acceptance'),

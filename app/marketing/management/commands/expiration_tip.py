@@ -28,10 +28,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         days = [1, 3, 14, 15, 13]
         for day in days:
-            # TODO: In future, check blockchain to see if tip has been redeemed 
             tips = Tip.objects.filter(
                 expires_date__lt=(timezone.now() + timezone.timedelta(days=(day+1))),
                 expires_date__gte=(timezone.now() + timezone.timedelta(days=day)),
+                receive_txid='',
             ).all()
             print('day {} got {} tips'.format(day, tips.count()))
             for t in tips:

@@ -58,6 +58,16 @@ def render_tip_email(to_email, tip, is_new):
     return response_html, response_txt
 
 
+def render_match_email(to_email):
+    params = {
+
+    }
+    response_html = premailer_transform(render_to_string("emails/new_match.html", params))
+    response_txt = render_to_string("emails/new_match.txt", params)
+
+    return response_html, response_txt
+
+
 def render_new_bounty(to_email, bounty):
 
     params = {
@@ -171,6 +181,13 @@ def new_tip(request):
     from dashboard.models import Tip
     tip = Tip.objects.last()
     response_html, response_txt = render_tip_email(settings.CONTACT_EMAIL, tip, True)
+
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_match(request):
+    response_html, response_txt = render_match_email(settings.CONTACT_EMAIL)
 
     return HttpResponse(response_html)
 

@@ -1,0 +1,58 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core 
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load humanize %} 
+
+{% block content %}
+
+<h1>⚡️ New Match Alert ⚡️</h1>
+
+<h3>
+    Kevin, meet Metamask.  Metamask, meet Kevin.
+</h3>
+
+<table>
+    <tr>
+        <td width="140" style="text-align: center;">   
+            <img src="https://avatars2.githubusercontent.com/u/513929?s=460&v=4" width="100" height="100">
+        </td>
+        <td>   
+            &lt;&gt;
+        </td>
+        <td width="140" style="text-align: center;">   
+            <img src="https://avatars1.githubusercontent.com/u/11744586?s=200&v=4" width="100" height="100">
+        </td>
+    </tr>
+</table>
+
+<p>
+    Kevin expressed interest in the following Funded Issue: <a href="https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/web/issues/1">HTTP API Documentation</a>
+</p>
+<p>
+    You are both CCed on this email.  Feel free to reply all and say hey. 
+</p>
+
+<p>
+    Keep Pushing Open Source Forward,
+    <br>
+    -- Gitcoin Core
+</p>
+
+
+
+{% endblock %}

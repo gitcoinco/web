@@ -232,7 +232,7 @@ class Tip(SuperModel):
 
     def __str__(self):
         from django.contrib.humanize.templatetags.humanize import naturalday
-        return "{} -- {} {}.  created: {}, expires: {}".format(self.network, self.amount, self.tokenName, naturalday(self.created_on), naturalday(self.expires_date))
+        return "({}) - {} {} to {},  created: {}, expires: {}".format(self.network, self.amount, self.tokenName, self.username, naturalday(self.created_on), naturalday(self.expires_date))
 
 
 # method for updating
