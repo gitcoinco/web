@@ -2,13 +2,13 @@ from gas.models import GasProfile
 from django.utils import timezone
 
 
-def recommend_min_gas_price_to_confirm_in_time(minutes, default=20):
+def recommend_min_gas_price_to_confirm_in_time(minutes, default=5):
     try:
         gp = GasProfile.objects.filter(
             created_on__gt=(timezone.now()-timezone.timedelta(minutes=31)),
             mean_time_to_confirm_minutes__lt=minutes
             ).order_by('gas_price').first()
-        return gp.gas_price
+        return max(gp.gas_price, 1)
     except Exception as e:
         return default
 

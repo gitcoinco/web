@@ -32,7 +32,7 @@ from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip
 from marketing.mails import tip_email
 from app.github import get_user as get_github_user
 
-confirm_time_minutes_target = 5
+confirm_time_minutes_target = 3
 
 
 def send_tip(request):
