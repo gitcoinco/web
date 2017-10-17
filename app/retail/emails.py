@@ -146,16 +146,16 @@ def render_new_bounty_roundup(to_email):
 
     bounties = [
         {
-            'obj': Bounty.objects.get(pk=24),
-            'primer': 'Piper Merriam aka "The Force in Open Source".  Oppy to work with him ~ @owocki',
+            'obj': Bounty.objects.get(pk=32),
+            'primer': 'We\'re looking to docker-ize the gitcoin.co site ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=12),
-            'primer': 'Opportunity to get paid to play with Metamask.  One of the best designed & widely used tools in web3 ~ @owocki',
+            'obj': Bounty.objects.get(pk=33),
+            'primer': 'I\'ve never worked on Elm, but I\'ve heard it described as a religoius experience.  Functional programmers are weird :)   ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=5),
-            'primer': 'Want to work on Gitcoin?  Easy pickings 👇 ~ @owocki',
+            'obj': Bounty.objects.get(pk=31),
+            'primer': 'This is a fun little idea to make the "waiting for block confirmation" page more engaging. 👇 ~ @owocki',
         },
     ]
 
