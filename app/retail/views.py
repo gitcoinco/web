@@ -319,7 +319,7 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
 def get_gitcoin(request):
     context = {
         'active': 'get',
-        'title': 'Get Gitcoin',
+        'title': 'Get Started',
     }
     return TemplateResponse(request, 'getgitcoin.html', context)
 

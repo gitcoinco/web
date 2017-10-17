@@ -1,7 +1,7 @@
 $(document).ready(function(){
     $( document ).tooltip();
 
-    //get gitcoin modal
+    //get started modal
     $("a[href='/get']").click(function(e){
       e.preventDefault();
       var url = $(this).attr('href');
@@ -17,7 +17,7 @@ $(document).ready(function(){
       $(".navbar-collapse").toggleClass('show')
     });
 
-    //get gitcoin modal
+    //get started modal
     $("body").delegate('.iama','click', function(){
         document.location.href = $(this).find('a').attr('href');
     });
