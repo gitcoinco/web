@@ -33,11 +33,25 @@ class Command(BaseCommand):
             default=False,
             help='Actually Send the emails'
         )
+        parser.add_argument(
+            '--exclude_startswith',
+            dest='exclude_startswith',
+            type=str,
+            default=None,
+            help="exclude_startswith (optional)",
+        )
+        parser.add_argument(
+            '--filter_startswith',
+            dest='filter_startswith',
+            type=str,
+            default=None,
+            help="filter_startswith (optional)",
+        )
 
     def handle(self, *args, **options):
 
-        exclude_startswith = 'k'
-        filter_startswith = None
+        exclude_startswith = options['exclude_startswith']
+        filter_startswith = options['filter_startswith']
 
         queryset = EmailSubscriber.objects.filter(newsletter=True)
         if exclude_startswith:
