@@ -115,7 +115,11 @@ var refreshBounties = function(){
 
                 $("#bounties").append(html);
         }
-        $(".bounty_row.result").changeElementType('a'); // hack so that users can right click on the element
+        $(".bounty_row.result").each(function(){
+            var href = $(this).attr('href');
+            $(this).changeElementType('a'); // hack so that users can right click on the element
+            $(this).attr('href', href);
+        })
         process_stats(results);
     }).fail(function(){
         _alert('got an error. please try again, or contact support@gitcoin.co');
