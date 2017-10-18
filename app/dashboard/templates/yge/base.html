@@ -64,6 +64,15 @@
 				}
 			</script>
 
+            {% if recommend_gas_price %}
+                <script type="text/javascript">
+                    setInterval(function(){
+                        defaultGasPrice = parseInt(10**9 * {{recommend_gas_price}}); 
+                    },1000);
+                </script>
+            {% endif %}
+
+
         {% include 'shared/ga.html' %}
 
 	</body>

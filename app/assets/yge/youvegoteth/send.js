@@ -258,7 +258,7 @@ window.onload = function () {
                 expires,
                 {from :fromAccount,
                     gas: web3.toHex(_gas),
-                    gasPrice: web3.toHex(10**9 * 10),
+                    gasPrice: web3.toHex(defaultGasPrice),
                     value: amountETHToSend,
                     gasLimit: _gasLimit},
             next_callback);
