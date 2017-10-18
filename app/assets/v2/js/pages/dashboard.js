@@ -115,6 +115,7 @@ var refreshBounties = function(){
 
                 $("#bounties").append(html);
         }
+        $(".bounty_row.result").changeElementType('a'); // hack so that users can right click on the element
         process_stats(results);
     }).fail(function(){
         _alert('got an error. please try again, or contact support@gitcoin.co');
@@ -141,11 +142,6 @@ $(document).ready(function(){
 
     next_announce = getNextDayOfWeek(new Date(), 2);
     $("#announceIssues").html(timeDifference(new Date, next_announce))
-    //index clicks
-    $("#bounties").delegate('.bounty_row','click',function(e){
-        document.location.href = $(this).data('href');
-        e.preventDefault();
-    });
 
     //sidebar clear
     $(".dashboard #clear").click(function(e){

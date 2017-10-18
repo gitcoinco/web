@@ -207,6 +207,20 @@ var sync_web3 = function(issueURL, bountydetails, callback){
 //sidebar
 $(document).ready(function(){
 
+    (function($) {
+        $.fn.changeElementType = function(newType) {
+            var attrs = {};
+
+            $.each(this[0].attributes, function(idx, attr) {
+                attrs[attr.nodeName] = attr.nodeValue;
+            });
+
+            this.replaceWith(function() {
+                return $("<" + newType + "/>", attrs).append($(this).contents());
+            });
+        };
+    })(jQuery);
+
     $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e){
         if(document.location.href.indexOf("/dashboard") == -1 && document.location.href.indexOf("/explorer") == -1){
             document.location.href = '/explorer';

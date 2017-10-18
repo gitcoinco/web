@@ -227,9 +227,13 @@ p a {
     margin-top: 100px;
     text-align: center;
 }
+.dashboard .body .bounty_row{
+    color: #212529;
+}
 .dashboard .body .bounty_row:hover{
     background-color: #fafafa;
     cursor: pointer;
+    text-decoration: none;;
 }
 .dashboard .body .sort_option{
     cursor: pointer;
