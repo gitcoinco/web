@@ -74,6 +74,17 @@ def stats(request):
         if rollup == 'weekly':
             source = source.filter(created_on__hour=1, created_on__week_day=1)
 
+        #compute avg
+        total = 0
+        count = source.count() - 1
+        avg = "NA"
+        if count > 1:
+            for i in range(0, count):
+                total += (source[i+1].val - source[i].val)
+            avg = round(total / count, 1)
+            avg = str("+{}".format(avg) if avg > 0 else avg)
+
+
         chartdata = \
             DataPool(
                series=
@@ -96,7 +107,7 @@ def stats(request):
                       }}],
                 chart_options =
                   {'title': {
-                       'text': t + ' over time'},
+                       'text': t + ' trend ({} avg)'.format(avg) },
                    'xAxis': {
                         'title': {
                            'text': 'Time'}}})

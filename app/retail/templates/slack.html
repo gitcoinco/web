@@ -35,7 +35,7 @@
                     <h4 class="font-smaller-1 pt-0">({{num_slack}} online now)</h4>
                     {% if msg %}
                         <p style="background-color: #fee856; padding: 5px 10px;">
-                            {{msg}}
+                            {{msg | safe}}
                         </p>
                     {% endif %}
                     <br>

@@ -34,7 +34,7 @@
                     <div style="max-width: 500px; margin: 0px auto;">
                     {% if msg %}
                         <p style="background-color: #fee856; padding: 5px 10px;">
-                            {{msg}}
+                            {{msg | safe}}
                         </p>
                     {% endif %}
                     <form id=whitepaper  method=POST>

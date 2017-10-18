@@ -34,7 +34,7 @@
                     <p>Please submit your info below for access to the whitepaper. <a href="/whitepaper/accesscode">Already have an access code?</a> </p>
                     {% if msg %}
                         <p style="background-color: #fee856; padding: 5px 10px;">
-                            {{msg}}
+                            {{msg | safe}}
                         </p>
                     {% endif %}
                     <form id=whitepaper  method=POST>
