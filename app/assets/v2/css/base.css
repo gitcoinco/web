@@ -49,6 +49,9 @@ div, p, a, span{
     padding-left: 0px;
     padding-right: 0px;
 }
+.index .container-fluid{
+    overflow-x: hidden;
+}
 .search_bar, .bounty_def{
     background-color: #eee;
     height: 136px;

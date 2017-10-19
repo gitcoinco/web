@@ -1,6 +1,43 @@
 //helper functions
 var sidebar_keys = ['experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'idx_status', 'network'];
 
+//sets search information default
+var save_sidebar_latest = function(){
+
+    localStorage['keywords'] = $("#keywords").val();
+    localStorage['sort'] = $('.sort_option.selected').data('key');
+    localStorage['sort_direction'] = $('.sort_option.selected').data('direction');
+
+    for(var i=0;i<sidebar_keys.length;i++){
+        var key = sidebar_keys[i];
+        var val = $("input[name="+key+"]:checked").val();
+        localStorage[key] = val;
+    }
+
+};
+
+//saves search information default
+var set_sidebar_defaults = function(){
+    if(localStorage['keywords']){
+        $("#keywords").val(localStorage['keywords']);
+    }
+    if(localStorage['sort']){
+        $('.sort_option').removeClass('selected');
+        var ele = $('.sort_option[data-key='+localStorage['sort']+']');
+        ele.addClass('selected');
+        ele.data('direction', localStorage['sort_direction']);
+    }
+    
+    for(var i=0;i<sidebar_keys.length;i++){
+        var key = sidebar_keys[i];
+        if(localStorage[key]){
+            $("input[name="+key+"][value="+localStorage[key]+"]").prop('checked', true);
+        }
+    }
+
+};
+
+
 var get_search_URI = function(){
     var uri = '/api/v0.1/bounties?';
     var keywords = $("#keywords").val();
@@ -65,6 +102,7 @@ var process_stats = function(results){
 }
 
 var refreshBounties = function(){
+    save_sidebar_latest();
     $('.nonefound').css('display', 'none');
     $('.loading').css('display', 'block');
     $('.bounty_row').remove();
@@ -133,6 +171,7 @@ window.addEventListener('load', function() {
     if(q){
         $("#keywords").val(q);
     }
+    set_sidebar_defaults();
     refreshBounties();
 });
 
