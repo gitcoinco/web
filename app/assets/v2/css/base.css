@@ -613,7 +613,7 @@ body.bounty_details #title{
 }
 .press_container img:hover{
     max-width:  200px;
-    max-height: 150px;
+    max-height: 100px;
     filter: grayscale(0%);
     -moz-filter: grayscale(0%);
     -ms-filter: grayscale(0%);
