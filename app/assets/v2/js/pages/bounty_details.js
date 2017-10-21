@@ -274,7 +274,7 @@ window.addEventListener('load', function() {
 
                     // title
                     result['title'] = result['title'] ? result['title'] : result['github_url'];
-                    result['title'] = result['network'] == 'mainnet' ? "(" + result['network'] + ") " + result['title'] : result['title'];
+                    result['title'] = result['network'] != 'mainnet' ? "(" + result['network'] + ") " + result['title'] : result['title'];
                     $('.title').html("Funded Issue Details: " + result['title']);
 
                     //insert table onto page
