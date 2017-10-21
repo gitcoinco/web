@@ -233,6 +233,10 @@ p a {
 .dashboard .body .bounty_row{
     color: #212529;
 }
+.dashboard .body .bounty_row.local,
+.dashboard .body .bounty_row.ropsten{
+    border-left: 1px solid red;
+}
 .dashboard .body .bounty_row:hover{
     background-color: #fafafa;
     cursor: pointer;

@@ -85,6 +85,9 @@ GITHUB_CLIENT_SECRET = 'TODO'
 GITHUB_API_USER = 'TODO'
 GITHUB_API_TOKEN = 'TODO'
 
+#global on / off switch for notifciations
+ENABLE_NOTIFICATIONS_ON_NETWORK = False
+
 # optional: only needed if you tweet hings
 TWITTER_CONSUMER_KEY = 'TODO'
 TWITTER_CONSUMER_SECRET = 'TODO'

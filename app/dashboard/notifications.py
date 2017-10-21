@@ -34,8 +34,8 @@ def maybe_market_to_twitter(bounty, event_name, txid):
     if event_name != 'new_bounty':
         return False
     if bounty.get_natural_value() < 0.0001:
-        print(bounty)
-        print(bounty.pk)
+        return False
+    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
 
     api = twitter.Api(
@@ -77,6 +77,8 @@ def maybe_market_to_slack(bounty, event_name, txid):
         return False
     if bounty.get_natural_value() < 0.0001:
         return False
+    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        return False
 
     title = bounty.title if bounty.title else bounty.github_url
     msg = "{} worth {} {}: {} \n\n{}".format(event_name.replace('bounty', 'funded_issue'), round(bounty.get_natural_value(), 4), bounty.token_name, title, bounty.get_absolute_url())
@@ -103,6 +105,8 @@ def maybe_market_to_slack(bounty, event_name, txid):
 def maybe_market_tip_to_slack(tip, event_name, txid):
     if not settings.SLACK_TOKEN:
         return False
+    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        return False
 
     title = tip.github_url
     msg = "{} worth {} {}: {} \n\n{}".format(event_name, round(tip.amount, 4), tip.tokenName, title, tip.github_url)
@@ -126,6 +130,8 @@ def maybe_market_to_github(bounty, event_name, txid):
     if not settings.GITHUB_CLIENT_ID:
         return False
     if bounty.get_natural_value() < 0.0001:
+        return False
+    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
 
     # prepare message
@@ -160,6 +166,8 @@ def maybe_market_tip_to_github(tip):
     if not settings.GITHUB_CLIENT_ID:
         return False
     if not tip.github_url:
+        return False
+    if tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
 
     # prepare message
