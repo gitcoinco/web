@@ -4,6 +4,9 @@
 
 Gitcoin pushes Open Source Forward. Learn more at [https://gitcoin.co](https://gitcoin.co)
 
+[Star](https://github.com/gitcoinco/web/stargazers) and [watch](https://github.com/gitcoinco/web/watchers) this github repository to stay up to date, we're pushing new code several times per week!
+
+
 
 <a href="https://gitcoin.co/explorer/?q=https://github.com/gitcoinco/web">
     <img src='https://gitcoin.co/static/v2/images/promo_buttons/slice_01.png' width=267px height=52px />
