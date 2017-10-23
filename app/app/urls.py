@@ -32,6 +32,9 @@ from django.conf.urls import (
     handler500
 )
 from dashboard.router import router
+from django.contrib.sitemaps.views import sitemap
+from sitemap import sitemaps
+
 
 urlpatterns = [
 
@@ -114,6 +117,7 @@ urlpatterns = [
     url(r'^email/settings/(.*)', marketing.views.email_settings, name='email_settings'),
     url(r'^_administration/stats$', marketing.views.stats, name='stats'),
 
+    url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 
 ]
 

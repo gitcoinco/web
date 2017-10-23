@@ -139,7 +139,12 @@ var callbacks = {
     'experience_level': unknown_if_empty,
     'project_length': unknown_if_empty,
     'bounty_type': unknown_if_empty,
-    'claimee_github_username': github_ize,
+    'claimee_email': function(key, val, result){
+        if(!_truthy(val)){
+            $("#claimee").addClass('hidden');
+        }
+        return address_ize(key, val, result);
+    },
     'bounty_owner_github_username': github_ize,
     'value_in_eth': function(key, val, result){
         if(result['token_name'] == 'ETH' || val == null){

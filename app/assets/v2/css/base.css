@@ -3,6 +3,9 @@ div.body{
   min-height: 400px;
 
 }
+.hidden{
+    display: none !important;
+}
 div, p, a, span{
     word-wrap: break-word;
 }

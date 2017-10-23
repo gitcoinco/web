@@ -208,7 +208,6 @@ def bounty_details(request):
     return TemplateResponse(request, 'bounty_details.html', params)
 
 
-
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def save_search(request):

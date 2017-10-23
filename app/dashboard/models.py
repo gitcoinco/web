@@ -84,7 +84,10 @@ class Bounty(SuperModel):
         return "{}{} {} {} {}".format( "(CURRENT) " if self.current_bounty else "" , self.title, self.value_in_token, self.token_name, self.web3_created)
 
     def get_absolute_url(self):
-        return "{}funding/details?url={}".format(settings.BASE_URL, self.github_url)
+        return settings.BASE_URL + self.get_relative_url(preceding_slash=False)
+
+    def get_relative_url(self, preceding_slash=True):
+        return "{}funding/details?url={}".format('/' if preceding_slash else '', self.github_url)
 
     def get_natural_value(self):
         token = addr_to_token(self.token_address)
