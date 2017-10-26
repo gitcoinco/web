@@ -46,9 +46,13 @@ echo "- db"
 ./manage.py migrate
 ./manage.py createcachetable
 
+#let gunicorn know its ok to restart
+echo "- gunicorn"
+sudo systemctl restart gunicorn
+
 # invalidate cloudfront
 aws cloudfront create-invalidation --distribution-id $DISTID --invalidation-batch="Paths={Quantity=1,Items=["/*"]},CallerReference=$(date)"
 
-#finally, let gunicorn know its ok to restart
-echo "- gunicorn"
-sudo systemctl restart gunicorn
+# ping google
+cd gitcoin/coin; bash scripts/run_management_command.bash ping_google
+
