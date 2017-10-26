@@ -239,7 +239,7 @@ def profile(request, handle):
             print(e)
 
     params['card_title'] = "@{} | Gitcoin".format(handle)
-    params['title'] = params['card_title']
+    params['title'] = "@{}".format(handle)
     params['avatar_url'] = profile.local_avatar_url
     params['profile'] = profile
     params['bounties'] = profile.bounties

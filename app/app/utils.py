@@ -12,7 +12,8 @@ def sync_profile(handle):
         return
 
     repos_data = get_user(handle, '/repos')
-
+    repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
+    print([ele['stargazers_count'] for ele in repos_data])
     # store the org info in postgres
     org, _ = Profile.objects.get_or_create(
         handle=handle,
