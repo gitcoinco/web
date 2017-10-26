@@ -35,7 +35,7 @@
                         <ul class='authors'>
                             {% for author in profile.authors %}
                                 <li>
-                                    <a href="https://github.com/{{author}}" target=new title="{{author}}">
+                                    <a href="/profile/{{author}}" target=new title="{{author}}">
                                     <img src="/funding/avatar?repo=https://github.com/{{author}}">
                                     </a>
                                 </li>
@@ -48,11 +48,13 @@
                                     <img src='/static/v2/images/social/web.png' alt='Medium'>
                                 </a>
                             <li>
-                            </li>
-                                <a href="mailto:{{profile.data.email}}">
-                                    <img src='/static/v2/images/social/mail.png' alt='Medium'>
-                                </a>
-                            <li>
+                            {% if profile.data.email %}
+                                </li>
+                                    <a href="mailto:{{profile.data.email}}">
+                                        <img src='/static/v2/images/social/mail.png' alt='Medium'>
+                                    </a>
+                                <li>
+                            {% endif %}
                             </li>
                                 <a href="{{profile.data.html_url}}/repos">
                                     <img src='/static/v2/images/social/github.png' alt='Medium'>

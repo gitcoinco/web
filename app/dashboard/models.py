@@ -369,6 +369,8 @@ class Profile(SuperModel):
 
     @property
     def authors(self):
+        auto_include_contributors_with_count_gt = 40
+
         _return = []
         for b in self.bounties:
             vals = [b.bounty_owner_github_username, b.claimee_github_username]
@@ -380,6 +382,11 @@ class Profile(SuperModel):
             for val in vals:
                 if val:
                     _return.append(val.replace('@',''))
+
+        for repo in self.repos_data:
+            for c in repo.get('contributors', []):
+                if type(c) == dict and c.get('contributions', 0) > auto_include_contributors_with_count_gt:
+                        _return.append(c['login'])
         _return = list(set(_return))
         _return.sort()
         return _return
