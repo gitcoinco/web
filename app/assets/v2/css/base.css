@@ -730,7 +730,16 @@ body.bounty_details #title{
 .profile_details .repos li p.meta{
     float: right;
 }
-
+@media (max-width: 1350px) {
+    .profile_details .bounties li div.details{
+        width: 500px;
+    }
+}
+@media (max-width: 1250px) {
+    .profile_details .bounties li div.details{
+        width: 400px;
+    }
+}
 @media (max-width: 1025px) {
     .profile_details .bounties li div.status,
     .profile_details .bounties li .amount{

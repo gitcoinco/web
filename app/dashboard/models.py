@@ -360,7 +360,7 @@ class Profile(SuperModel):
 
     @property
     def bounties(self):
-        return Bounty.objects.filter(github_url__startswith=self.github_url, current_bounty=True).order_by('-web3_created')
+        return Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True).order_by('-web3_created')
     
 
     @property
