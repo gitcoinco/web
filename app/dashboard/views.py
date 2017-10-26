@@ -229,11 +229,11 @@ def profile(request, handle):
     }
 
     try:
-        profile = Profile.objects.get(handle=handle)
+        profile = Profile.objects.get(handle__iexact=handle)
     except Profile.DoesNotExist as e:
         sync_profile(handle)
         try:
-            profile = Profile.objects.get(handle=handle)
+            profile = Profile.objects.get(handle__iexact=handle)
         except Profile.DoesNotExist as e:
             raise Http404
             print(e)
