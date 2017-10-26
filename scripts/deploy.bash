@@ -17,6 +17,7 @@
 '''
 
 BRANCH=$1
+DISTID=$2
 #deploy script
 #assumes that gitcoin repo lives at $HOME/gitcoin
 # and that gitcoinenv is the virtualenv under which it lives
@@ -44,6 +45,9 @@ rm -Rf ~/gitcoin/coin/app/static/other
 echo "- db"
 ./manage.py migrate
 ./manage.py createcachetable
+
+# invalidate cloudfront
+aws cloudfront create-invalidation --distribution-id $DISTID --invalidation-batch="Paths={Quantity=1,Items=["/*"]},CallerReference=$(date)"
 
 #finally, let gunicorn know its ok to restart
 echo "- gunicorn"

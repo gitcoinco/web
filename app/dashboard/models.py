@@ -28,6 +28,7 @@ from dashboard.tokens import addr_to_token
 from django.utils import timezone
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.contrib.humanize.templatetags.humanize import naturaltime
 
 
 class Bounty(SuperModel):
@@ -95,6 +96,10 @@ class Bounty(SuperModel):
         return float(self.value_in_token) / 10**decimals
 
     @property
+    def url(self):
+        return self.get_relative_url()
+
+    @property
     def title_or_desc(self):
         return self.title if self.title else self.github_url
 
@@ -143,7 +148,7 @@ class Bounty(SuperModel):
             if timezone.now() > self.expires_date:
                 return 'expired'
             if self.claimeee_address == '0x0000000000000000000000000000000000000000':
-                return 'submitted'
+                return 'open'
             if self.claimeee_address != '0x0000000000000000000000000000000000000000':
                 return 'claimed'
             return 'unknown'
@@ -171,6 +176,11 @@ class Bounty(SuperModel):
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / 10**18, 2)
         except:
             return None
+
+    @property
+    def desc(self):
+        return "{} {} {} {}".format(naturaltime(self.web3_created), self.idx_project_length, self.bounty_type, self.experience_level)
+
 
     def fetch_issue_description(self):
         import requests
@@ -261,3 +271,129 @@ def psave_bounty(sender, instance, **kwargs):
     instance._val_usd_db = instance.value_in_usdt if instance.value_in_usdt else 0
     instance.idx_experience_level = idx_experience_level.get(instance.experience_level, 0)
     instance.idx_project_length = idx_project_length.get(instance.project_length, 0)
+
+class Profile(SuperModel):
+    data = JSONField()
+    handle = models.CharField(max_length=255, db_index=True)
+    last_sync_date = models.DateTimeField(null=True)
+
+    _sample_data = '''
+        {
+          "public_repos": 9,
+          "site_admin": false,
+          "updated_at": "2017-10-09T22:55:57Z",
+          "gravatar_id": "",
+          "hireable": null,
+          "id": 30044474,
+          "followers_url": "https:\/\/api.github.com\/users\/gitcoinco\/followers",
+          "following_url": "https:\/\/api.github.com\/users\/gitcoinco\/following{\/other_user}",
+          "blog": "https:\/\/gitcoin.co",
+          "followers": 0,
+          "location": "Boulder, CO",
+          "type": "Organization",
+          "email": "founders@gitcoin.co",
+          "bio": "Push Open Source Forward.",
+          "gists_url": "https:\/\/api.github.com\/users\/gitcoinco\/gists{\/gist_id}",
+          "company": null,
+          "events_url": "https:\/\/api.github.com\/users\/gitcoinco\/events{\/privacy}",
+          "html_url": "https:\/\/github.com\/gitcoinco",
+          "subscriptions_url": "https:\/\/api.github.com\/users\/gitcoinco\/subscriptions",
+          "received_events_url": "https:\/\/api.github.com\/users\/gitcoinco\/received_events",
+          "starred_url": "https:\/\/api.github.com\/users\/gitcoinco\/starred{\/owner}{\/repo}",
+          "public_gists": 0,
+          "name": "Gitcoin Core",
+          "organizations_url": "https:\/\/api.github.com\/users\/gitcoinco\/orgs",
+          "url": "https:\/\/api.github.com\/users\/gitcoinco",
+          "created_at": "2017-07-10T10:50:51Z",
+          "avatar_url": "https:\/\/avatars1.githubusercontent.com\/u\/30044474?v=4",
+          "repos_url": "https:\/\/api.github.com\/users\/gitcoinco\/repos",
+          "following": 0,
+          "login": "gitcoinco"
+        }
+    '''
+    repos_data = JSONField(default={})
+
+    _sample_data = '''
+    [
+      {
+        "issues_url": "https:\/\/api.github.com\/repos\/gitcoinco\/chrome_ext\/issues{\/number}",
+        "deployments_url": "https:\/\/api.github.com\/repos\/gitcoinco\/chrome_ext\/deployments",
+        "has_wiki": true,
+        "forks_url": "https:\/\/api.github.com\/repos\/gitcoinco\/chrome_ext\/forks",
+        "mirror_url": null,
+        "issue_events_url": "https:\/\/api.github.com\/repos\/gitcoinco\/chrome_ext\/issues\/events{\/number}",
+        "stargazers_count": 1,
+        "subscription_url": "https:\/\/api.github.com\/repos\/gitcoinco\/chrome_ext\/subscription",
+        "merges_url": "https:\/\/api.github.com\/repos\/gitcoinco\/chrome_ext\/merges",
+        "has_pages": false,
+        "updated_at": "2017-09-25T11:39:03Z",
+        "private": false,
+        "pulls_url": "https:\/\/api.github.com\/repos\/gitcoinco\/chrome_ext\/pulls{\/number}",
+        "issue_comment_url": "https:\/\/api.github.com\/repos\/gitcoinco\/chrome_ext\/issues\/comments{\/number}",
+        "full_name": "gitcoinco\/chrome_ext",
+        "owner": {
+          "following_url": "https:\/\/api.github.com\/users\/gitcoinco\/following{\/other_user}",
+          "events_url": "https:\/\/api.github.com\/users\/gitcoinco\/events{\/privacy}",
+          "organizations_url": "https:\/\/api.github.com\/users\/gitcoinco\/orgs",
+          "url": "https:\/\/api.github.com\/users\/gitcoinco",
+          "gists_url": "https:\/\/api.github.com\/users\/gitcoinco\/gists{\/gist_id}",
+          "html_url": "https:\/\/github.com\/gitcoinco",
+          "subscriptions_url": "https:\/\/api.github.com\/users\/gitcoinco\/subscriptions",
+          "avatar_url": "https:\/\/avatars1.githubusercontent.com\/u\/30044474?v=4",
+          "repos_url": "https:\/\/api.github.com\/users\/gitcoinco\/repos",
+          "received_events_url": "https:\/\/api.github.com\/users\/gitcoinco\/received_events",
+          "gravatar_id": "",
+          "starred_url": "https:\/\/api.github.com\/users\/gitcoinco\/starred{\/owner}{\/repo}",
+          "site_admin": false,
+          "login": "gitcoinco",
+          "type": "Organization",
+          "id": 30044474,
+          "followers_url": "https:\/\/api.github.com\/users\/gitcoinco\/followers"
+        },
+        ...
+    ]
+    '''
+
+    @property
+    def is_org(self):
+        return self.data['type'] == 'Organization'
+
+    @property
+    def bounties(self):
+        return Bounty.objects.filter(github_url__startswith=self.github_url, current_bounty=True).order_by('-web3_created')
+    
+
+    @property
+    def tips(self):
+        return Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')
+
+    @property
+    def authors(self):
+        _return = []
+        for b in self.bounties:
+            vals = [b.bounty_owner_github_username, b.claimee_github_username]
+            for val in vals:
+                if val:
+                    _return.append(val.replace('@',''))
+        for t in self.tips:
+            vals = [t.username]
+            for val in vals:
+                if val:
+                    _return.append(val.replace('@',''))
+        _return = list(set(_return))
+        _return.sort()
+        return _return
+
+    @property
+    def github_url(self):
+        return "https://github.com/{}".format(self.handle)
+
+    @property
+    def local_avatar_url(self):
+        return "https://gitcoin.co/funding/avatar?repo={}&v=3".format(self.github_url)
+
+    def __str__(self):
+        return self.handle
+
+    def get_relative_url(self, preceding_slash=True):
+        return "{}profile/{}".format('/' if preceding_slash else '', self.handle)

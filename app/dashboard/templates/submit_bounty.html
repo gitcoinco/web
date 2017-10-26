@@ -46,13 +46,7 @@
                                 <h3>Fund an Issue</h3>
                                 <img src="/static/v2/images/prime.png">
                             </div>
-                            <div id=network_status class="w-100" style="text-align: center;">
-                                <div class="w-40">
-                                        Web3: <span>☑ - Enabled</span>
-                                        <br>
-                                        Eth: <span>☑ - Available</span>
-                                </div>
-                            </div>
+                            {% include 'shared/network_status.html' %}
                             <div class="w-100">
                                 <label for=issueURL>Issue URL:</label>
                                 <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />

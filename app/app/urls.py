@@ -49,6 +49,7 @@ urlpatterns = [
     url(r'^funding/process/?', dashboard.views.process_bounty, name='process_funding'),
     url(r'^bounty/details/?', dashboard.views.bounty_details, name='bounty_details'),
     url(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
+    url(r'^funding/clawback/?', dashboard.views.clawback_expired_bounty, name='clawback_expired_bounty'),
     url(r'^tip/receive/?', dashboard.views.receive_tip, name='receive_tip'),
     url(r'^tip/send/2/?', dashboard.views.send_tip_2, name='send_tip_2'),
     url(r'^tip/send/?', dashboard.views.send_tip, name='send_tip'),
@@ -63,6 +64,7 @@ urlpatterns = [
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
     url(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     url(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
+    url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
 
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),

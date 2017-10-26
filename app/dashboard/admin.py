@@ -19,7 +19,13 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from .models import Bounty, Subscription, BountySyncRequest, Tip
+from .models import ( 
+    Bounty, 
+    Subscription, 
+    BountySyncRequest, 
+    Tip,
+    Profile
+    )
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
@@ -54,6 +60,7 @@ class Bounty_Admin(admin.ModelAdmin):
 
 
 admin.site.register(Subscription, GeneralAdmin)
+admin.site.register(Profile, GeneralAdmin)
 admin.site.register(Bounty, Bounty_Admin)
 admin.site.register(BountySyncRequest, GeneralAdmin)
 admin.site.register(Tip, TipAdmin)

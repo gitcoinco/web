@@ -46,12 +46,7 @@
                                 <h3>Accept Funding Claim</h3>
                                 <img src="/static/v2/images/prime.png">
                             </div>
-                            <div id=network_status class="w-100" style="text-align: center;">
-                                <div class="w-40">
-                                        Web3: <span>☑ - Enabled</span>
-                                        <br>
-                                        Eth: <span>☑ - Available</span>
-                                </div>
+                            {% include 'shared/network_status.html' %}
                             </div>
                             <div class="w-100">
                                 <label for=issueURL>Issue URL:</label>

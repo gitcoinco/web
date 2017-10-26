@@ -81,7 +81,7 @@ The bounties endpoint provides a listing of bounties and their current status. T
 | Field Key |  Datatype |  Description                                                                                                                                                                                               | 
 |-----------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| 
 | `is_open` | `boolean` | True if the bounty has not been completed                                                                                                                                                                 | 
-| `status`  | `string`  | Current status enum: (`submitted`, The bounty was created) (`claimed`, Someone claimed the bounty) (`fulfilled`, Someone claimed and completed the bounty) (`expired`, The bounty expired w/o completion) | 
+| `status`  | `string`  | Current status enum: (`open`, The bounty was created) (`claimed`, Someone claimed the bounty) (`fulfilled`, Someone claimed and completed the bounty) (`expired`, The bounty expired w/o completion) | 
 
 **Bounty Creator & Bounty Claimee**
 

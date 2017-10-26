@@ -1,0 +1,64 @@
+'''
+    Copyright (C) 2017 Gitcoin Core 
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+'''
+from django.core.management.base import BaseCommand
+from django.utils import timezone
+from dashboard.models import Bounty
+from app.utils import sync_profile
+
+
+def does_need_refresh(handle):
+    needs_refresh = False
+    org = None
+    try:
+        org = Profile.objects.get(handle=handle)
+        org.last_sync_date > timezone.now() - timezone.timedelta(weeks=1)
+    except:
+        needs_refresh = True
+
+    return needs_refresh
+
+class Command(BaseCommand):
+
+    help = 'syncs orgs with github'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '-force', '--force',
+            action='store_true',
+            dest='force_refresh',
+            default=False,
+            help='Force the refresh'
+        )
+
+    def handle(self, *args, **options):
+
+        # setup
+        handles = set([b.org_name for b in Bounty.objects.filter(current_bounty=True)])
+        for handle in handles:
+            print(handle)
+
+            #does this handle need a refresh
+            needs_refresh = does_need_refresh(handle) or options['force_refresh']
+
+            if not needs_refresh:
+                print('- no refresh needed')
+            else:
+                sync_profile(handle)
+
+
+

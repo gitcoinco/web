@@ -17,20 +17,21 @@
 '''
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from dashboard.models import Subscription, BountySyncRequest, Tip
+from dashboard.models import Subscription, BountySyncRequest, Tip, Bounty, Profile
 from django.template.response import TemplateResponse
 from django.http import JsonResponse
 from django.utils import timezone
+from django.http import Http404
 from django.views.decorators.csrf import csrf_exempt
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from dashboard.helpers import normalizeURL, process_bounty_details, process_bounty_changes
-from dashboard.models import Bounty
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 import json
 from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack
 from marketing.mails import tip_email
 from app.github import get_user as get_github_user
+from app.utils import sync_profile
 
 confirm_time_minutes_target = 3
 
@@ -185,6 +186,18 @@ def claim_bounty(request):
     return TemplateResponse(request, 'claim_bounty.html', params)
 
 
+def clawback_expired_bounty(request):
+
+    params = {
+        'issueURL': request.GET.get('source'),
+        'title': 'Clawback Expired Issue',
+        'active': 'clawback_expired_bounty',
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+    }
+
+    return TemplateResponse(request, 'clawback_expired_bounty.html', params)
+
+
 def bounty_details(request):
 
     params = {
@@ -206,6 +219,33 @@ def bounty_details(request):
         pass
 
     return TemplateResponse(request, 'bounty_details.html', params)
+
+
+def profile(request, handle):
+
+    params = {
+        'title': 'Profile',
+        'active': 'profile_details',
+    }
+
+    try:
+        profile = Profile.objects.get(handle=handle)
+    except Profile.DoesNotExist as e:
+        sync_profile(handle)
+        try:
+            profile = Profile.objects.get(handle=handle)
+        except Profile.DoesNotExist as e:
+            raise Http404
+            print(e)
+
+    params['card_title'] = "@{} | Gitcoin".format(handle)
+    params['title'] = params['card_title']
+    params['avatar_url'] = profile.local_avatar_url
+    params['profile'] = profile
+    params['bounties'] = profile.bounties
+
+
+    return TemplateResponse(request, 'profile_details.html', params)
 
 
 @csrf_exempt

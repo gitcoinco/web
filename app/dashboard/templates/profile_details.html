@@ -1,0 +1,144 @@
+{% load humanize %} 
+<!DOCTYPE html>
+<html lang="en">
+
+{% include 'shared/head.html' %}
+{% include 'shared/cards_pic.html' %}
+
+<body class="interior {{active}}">
+    <div class="container-fluid header dash">
+        {% include 'shared/nav_internal.html' %}
+    </div>
+    <div class="row no-gutter  text-uppercase">
+        <div class="col-3" style="background: #eee; ">
+            {% include 'shared/current_balance.html' %}
+            {% include 'shared/sidebar_search.html' %}
+        </div>
+
+        <div class="col body">
+            <div class="container-fluid" id="profile_detail">
+            {% include 'shared/bounty_def.html' %}
+
+                <div class="row mt-0 ml-0" id="profile_details">
+
+                    <div id="hero" class="pt-4">
+                        <img class="avatar" src="{{profile.local_avatar_url}}">
+                        <h2>
+                            {{profile.handle}}
+                        </h2>
+                        {% if profile.data.bio %}
+                        <p>
+                            {{profile.data.bio}}
+                        </p>
+                        {% endif %}
+
+                        <ul class='authors'>
+                            {% for author in profile.authors %}
+                                <li>
+                                    <a href="https://github.com/{{author}}" target=new title="{{author}}">
+                                    <img src="/funding/avatar?repo=https://github.com/{{author}}">
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                        <ul class='ctas'>
+                            <li>
+                                <a href="{{profile.data.blog}}">
+                                    <img src='/static/v2/images/social/web.png' alt='Medium'>
+                                </a>
+                            <li>
+                            </li>
+                                <a href="mailto:{{profile.data.email}}">
+                                    <img src='/static/v2/images/social/mail.png' alt='Medium'>
+                                </a>
+                            <li>
+                            </li>
+                                <a href="{{profile.data.html_url}}/repos">
+                                    <img src='/static/v2/images/social/github.png' alt='Medium'>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <div>
+                        <h4>Funded Issues</h4>
+                            <ul class="bounties">
+                                {% for b in bounties %}
+                                    <li>
+                                        <a href="{{b.url}}">
+                                            <div class='status'>
+                                                <p>
+                                                    {{b.status}}
+                                                </p>
+                                            </div>
+                                            <div class="details">
+                                                <h6>
+                                                    {{b.title}}
+                                                </h6>
+                                                <p>
+                                                    {{b.desc}}
+                                                </p>
+                                            </div>
+                                            <div class="amount">
+                                                <a class="btn btn-sm btn-darkBlue font-smaller-2">
+                                                    {{b.value_true}} {{b.token_name}},
+                                                    {{b.value_in_usdt}}
+                                                    USDT
+                                                </a>
+                                            </div>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                {% if bounties|length == 0 %}
+                                    <li>
+                                        No funded issues found
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                        <div>
+                        <h4>Repos</h4>
+                            <ul class="repos">
+                                {% for r in profile.repos_data %}
+                                    <li>
+                                        <a href="/explorer/?q={{r.html_url}}">
+                                            <p class="meta mr-3">{{r.stargazers_count}} stars, {{r.watchers_count}} watchers</p>
+                                            <h6>
+                                            {{r.full_name}}</h6>
+                                            {% if r.description %}
+                                            <p class="mb-1">{{r.description}}</p>
+                                            {% endif %}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                {% if profile.repos_data|length == 0 %}
+                                    <li>
+                                        No repos
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/ga.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+
+</body>
+
+
+
+<!-- jQuery -->
+<script src="{{STATIC_URL}}v2/js/abi.js"></script>
+<script src="{{STATIC_URL}}v2/js/tokens.js"></script>
+<script src="{{STATIC_URL}}v2/js/shared.js"></script>
+<script src="{{STATIC_URL}}v2/js/pages/profile.js"></script>
+
+
+</html>

@@ -41,9 +41,9 @@
                     {% include 'shared/unlock_metamask.html' %}
                     <div class="col d-flex align-items-center justify-content-center" id="primary_form">
                         <div class="d-flex justify-content-center flex-column mt-5 w-50" id="primary_subform">
-                            {% include 'shared/bounty_nav.html' with active_item=2 %}
                             <div class="w-100" style="text-align: center;">
-                                <h3>Claim Funds</h3>
+                                <h3>Clawback Expired Funds</h3>
+                                <h5>(Issue Submitters only)</h5>
                                 <img src="/static/v2/images/prime.png">
                             </div>
                             {% include 'shared/network_status.html' %}
@@ -51,20 +51,12 @@
                                 <label for=issueURL>Issue URL:</label>
                                 <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
                             </div>
-                            <div class="w-100 mt-2">
-                                <label for=githubUsername>Github Username:</label>
-                                <input name='githubUsername' id="githubUsername" class="w-100 gc-round-text-input" type="text" placeholder="@you (optional)" value="{% if user %}{{user}}{%endif%}" />
-                            </div>
-                            <div class="w-100 mt-2">
-                                <label for=notificationEmail>Notification Email:</label>
-                                <input name='notificationEmail' id='notificationEmail'  class="w-100 gc-round-text-input" type="text" placeholder="you@domain.co (optional, but recommended for notifications)" value="{{notificationEmail}}" />
-                            </div>
                             <div class="w-100 mt-2 terms_container">
                                 <input name='terms' id='terms' type="checkbox" value=1 />
                                 <label for=terms>I have read, understand, and agree to, the <a href="/legal/terms" target=new>Terms of Service</a>:</label>
                             </div>
                             <div class="w-100 mt-2">
-                                <a class="btn btn-sm btn-info mt-3 mb-5 pulseClick float-right" role="button" id="submitBounty" href="#">Claim Funds</a>
+                                <a class="btn btn-sm btn-info mt-3 mb-5 pulseClick float-right" role="button" id="submitBounty" href="#">Clawback Funds</a>
                             </div>
 
                         </div>
@@ -85,7 +77,7 @@
 <script src="{{STATIC_URL}}v2/js/abi.js"></script>
 <script src="{{STATIC_URL}}v2/js/tokens.js"></script>
 <script src="{{STATIC_URL}}v2/js/shared.js"></script>
-<script src="{{STATIC_URL}}v2/js/pages/claim_bounty.js"></script>
+<script src="{{STATIC_URL}}v2/js/pages/clawback_expired_bounty.js"></script>
 
 
 </html>

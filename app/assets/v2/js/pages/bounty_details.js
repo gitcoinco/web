@@ -79,11 +79,11 @@ var callbacks = {
         return [ 'amount', Math.round((parseInt(val) / 10**document.decimals) * 1000) / 1000 + " " + result['token_name']];
     },
     'avatar_url': function(key, val, result){
-        return [ 'avatar', '<img class=avatar src="'+val+'">'];
+        return [ 'avatar', '<a href="/profile/'+result['org_name']+'"><img class=avatar src="'+val+'"></a>'];
     },
     'status': function(key, val, result){
         var ui_status = val;
-        if(ui_status=='submitted'){
+        if(ui_status=='open'){
             ui_status = '<span style="color: #47913e;">active</span>';
         }
         if(ui_status=='claimed'){
@@ -314,10 +314,19 @@ window.addEventListener('load', function() {
                         color: 'darkGrey'
                     }
                     var actions = [entry];
-                    if(result['status']=='submitted'){
+                    if(result['status']=='open'){
                         var entry = {
                             href: '/funding/claim?source='+result['github_url'],
                             text: 'Claim Issue',
+                            parent: 'right_actions',
+                            color: 'darkBlue'
+                        }
+                        actions.push(entry);
+                    }
+                    if(result['status']=='expired' && web3 && web3.eth.coinbase == result['bounty_owner_address'] ){
+                        var entry = {
+                            href: '/funding/clawback?source='+result['github_url'],
+                            text: 'Clawback Expired Funds',
                             parent: 'right_actions',
                             color: 'darkBlue'
                         }

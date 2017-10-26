@@ -37,6 +37,24 @@ var set_sidebar_defaults = function(){
 
 };
 
+var set_modifiers_sentence = function(){
+    var _modifiers = [];
+    for(var i=0;i<sidebar_keys.length;i++){
+        var key = sidebar_keys[i];
+        var val = $("input[name="+key+"]:checked").attr('val-ui');
+        if(val != ''){
+            _modifiers.push(val);
+        }
+    };
+    var sentence = _modifiers.join(" ");
+    var keywords = $("#keywords").val();
+    if(keywords){
+        sentence += ' w. keyword ' + keywords;
+    }
+
+
+    $("#modifiers").html(sentence);
+};
 
 var get_search_URI = function(){
     var uri = '/api/v0.1/bounties?';
@@ -103,6 +121,7 @@ var process_stats = function(results){
 
 var refreshBounties = function(){
     save_sidebar_latest();
+    set_modifiers_sentence();
     $('.nonefound').css('display', 'none');
     $('.loading').css('display', 'block');
     $('.bounty_row').remove();
