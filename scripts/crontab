@@ -15,7 +15,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 */15 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash refresh_bounties  >> /var/log/gitcoin/refresh_bounties.log  2>&1
 1 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash refresh_bounties --remote  >> /var/log/gitcoin/refresh_bounties_remote.log  2>&1
 */30 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_gas_prices  >> /var/log/gitcoin/sync_gas_prices.log  2>&1
-*/15 */2 * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_profiles  >> /var/log/gitcoin/sync_profiles.log  2>&1
+1 */2 * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_profiles  >> /var/log/gitcoin/sync_profiles.log  2>&1
 
 
 ## GITCOIN MARKETING 
