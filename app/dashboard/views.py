@@ -242,8 +242,8 @@ def profile(request, handle):
     params['title'] = "@{}".format(handle)
     params['avatar_url'] = profile.local_avatar_url
     params['profile'] = profile
+    params['stats'] = profile.stats
     params['bounties'] = profile.bounties
-
 
     return TemplateResponse(request, 'profile_details.html', params)
 

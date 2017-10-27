@@ -62,6 +62,18 @@
                             </li>
                         </ul>
                     </div>
+                    {% if stats|length > 0 %}
+                        <ul id="stats">
+                            {% for stat in stats %}
+                                <li>
+                                    {{stat.0}}
+                                    <span>
+                                        {{stat.1}}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                     <div>
                         <div>
                         <h4>Funded Issues</h4>

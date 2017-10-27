@@ -626,6 +626,27 @@ body.bounty_details #title{
     -ms-filter: grayscale(0%);
     -o-filter: grayscale(0%);
 }
+.profile_details #stats{
+    padding-top: 5px;
+    padding-left: 2px;
+    padding-right: 2px;
+    width: 100%;
+}
+.profile_details #stats li{
+    list-style: none;
+    display: inline-block;
+    width: 24%;
+    border: 1px solid black;
+    padding: 5px 10px;
+    margin-left: 2px;
+    text-align: center;
+    font-size: 32px;
+}
+.profile_details #stats li span{
+    font-size: 14px;
+    display: block;
+}
+
 .profile_details #hero{
     width: 100%;
     height: 370px;
@@ -639,7 +660,7 @@ body.bounty_details #title{
 }
 .profile_details #hero li{
     list-style: none;
-    display: inline-block;;
+    display: inline-block;
 }
 .profile_details #hero img.avatar{
     max-height: 125px;
@@ -793,7 +814,12 @@ body.bounty_details #title{
     }
 }
 @media (max-width: 769px) {
-
+    .profile_details #stats li{
+        width: 48%;
+    }
+    .profile_details #hero{
+        height: 400px;
+    }
     body.bounty_details .left_details{
         display: none;
     }

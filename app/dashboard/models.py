@@ -396,6 +396,48 @@ class Profile(SuperModel):
         return _return[:limit_to_num]
 
     @property
+    def stats(self):
+
+        bounties = self.bounties
+        acceptance_rate = 'N/A'
+        loyalty_rate = 0
+        claimees = []
+        for b in bounties:
+            if b.claimeee_address in claimees:
+                loyalty_rate += 1
+            claimees.append(b.claimeee_address)
+        success_rate = 0 
+        if bounties.count() > 0:
+            success_rate = int(round(bounties.filter(idx_status__in=['fulfilled', 'claimed']).count() * 1.0 / bounties.count(), 2) * 100)
+        if success_rate == 0:
+            success_rate = 'N/A'
+            loyalty_rate = 'N/A'
+        else:
+            success_rate = "{}%".format(success_rate)
+            loyalty_rate = "{}x".format(loyalty_rate)
+        return [
+            (bounties.count(), 'Total Funded Issues'),
+            (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
+            (success_rate, 'Success Rate'),
+            (loyalty_rate, 'Loyalty Rate'),
+        ]
+        
+        if self.is_org:
+            return [
+                ('100%', 'Acceptance Rate'),
+                ('0%', 'Kill Rate'),
+                ('15h', 'Acceptance Delay'),
+                ('3x', 'Loyalty Rate'),
+            ]
+        else:
+            return [
+                ('100%', 'Acceptance Ratio'),
+                ('10%', 'Revision Rate'),
+                ('15h', 'Acceptance Delay'),
+                ('3x', 'Loyalty Rate'),
+            ]
+
+    @property
     def github_url(self):
         return "https://github.com/{}".format(self.handle)
 
