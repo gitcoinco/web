@@ -370,26 +370,30 @@ class Profile(SuperModel):
     @property
     def authors(self):
         auto_include_contributors_with_count_gt = 40
+        limit_to_num = 10
 
         _return = []
-        for b in self.bounties:
-            vals = [b.bounty_owner_github_username, b.claimee_github_username]
-            for val in vals:
-                if val:
-                    _return.append(val.replace('@',''))
-        for t in self.tips:
-            vals = [t.username]
-            for val in vals:
-                if val:
-                    _return.append(val.replace('@',''))
 
-        for repo in self.repos_data:
+        for repo in sorted(self.repos_data, key=lambda repo: repo.get('contributions',-1), reverse=True):
             for c in repo.get('contributors', []):
                 if type(c) == dict and c.get('contributions', 0) > auto_include_contributors_with_count_gt:
                         _return.append(c['login'])
+
+        include_gitcoin_users = len(_return) < limit_to_num
+        if include_gitcoin_users:
+            for b in self.bounties:
+                vals = [b.bounty_owner_github_username, b.claimee_github_username]
+                for val in vals:
+                    if val:
+                        _return.append(val.replace('@',''))
+            for t in self.tips:
+                vals = [t.username]
+                for val in vals:
+                    if val:
+                        _return.append(val.replace('@',''))
         _return = list(set(_return))
         _return.sort()
-        return _return
+        return _return[:limit_to_num]
 
     @property
     def github_url(self):

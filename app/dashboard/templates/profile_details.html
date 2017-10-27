@@ -105,7 +105,7 @@
                                 {% for r in profile.repos_data %}
                                     <li>
                                         <a href="/explorer/?q={{r.html_url}}">
-                                            <p class="meta mr-3">{{r.stargazers_count}} stars, {{r.watchers_count}} watchers</p>
+                                            <p class="meta mr-3">{{r.stargazers_count}} stars</p>
                                             <h6>
                                             {{r.full_name}}</h6>
                                             {% if r.description %}

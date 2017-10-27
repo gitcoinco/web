@@ -34,7 +34,7 @@ def summarize_bounties(bounties):
     return True, "Total: {} issue{}, {} USDT, {}".format(bounties.count(), 's' if bounties.count() != 1 else "", val_usdt, other_values)
 
 
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
 def embed(request):
     # default response 
     could_not_find = Image.new('RGBA', (1, 1), (0,0,0,0))
@@ -226,10 +226,6 @@ def embed(request):
         return err_response
 
 
-
-
-
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def avatar(request):
     # default response 
     could_not_find = Image.new('RGBA', (1, 1), (0,0,0,0))
