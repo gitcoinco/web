@@ -46,7 +46,7 @@ var set_modifiers_sentence = function(){
             _modifiers.push(val);
         }
     };
-    var sentence = _modifiers.join(" ");
+    var sentence = _modifiers.join(" ") + " Funded Issues";
     var keywords = $("#keywords").val();
     if(keywords){
         sentence += ' w. keyword ' + keywords;

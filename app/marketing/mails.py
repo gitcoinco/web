@@ -83,7 +83,7 @@ def new_bounty(bounty, to_emails=[]):
 
 def weekly_roundup(to_emails=[]):
 
-    subject = "🇨🇦Gitcoin Weekly | Byzantium, ETHWaterloo, iOS app, and a handful of new Funded Issues"
+    subject = "🐳Gitcoin Weekly | Docker, Organization Profiles, and couple new Funded Issues"
     for to_email in to_emails:
         html, text = render_new_bounty_roundup(to_email)
         from_email = settings.PERSONAL_CONTACT_EMAIL

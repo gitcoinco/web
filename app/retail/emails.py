@@ -146,16 +146,12 @@ def render_new_bounty_roundup(to_email):
 
     bounties = [
         {
-            'obj': Bounty.objects.get(pk=32),
-            'primer': 'We\'re looking to docker-ize the gitcoin.co site ~ @owocki',
-        },
-        {
-            'obj': Bounty.objects.get(pk=33),
-            'primer': 'I\'ve never worked on Elm, but I\'ve heard it described as a religoius experience.  Functional programmers are weird :)   ~ @owocki',
+            'obj': Bounty.objects.get(pk=46),
+            'primer': 'Want to earn your first ETH through the platform?  Here\'s a good staring point 👇 ~ @owocki',
         },
         {
             'obj': Bounty.objects.get(pk=31),
-            'primer': 'This is a fun little idea to make the "waiting for block confirmation" page more engaging. 👇 ~ @owocki',
+            'primer': 'This is a fun little idea to make the "waiting for block confirmation" page more engaging. ~ @owocki',
         },
     ]
 
