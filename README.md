@@ -198,6 +198,17 @@ Further information on the smart contract interface is available at [https://git
 
 # Running Locally
 
+## With Docker
+
+```
+git clone https://github.com/gitcoinco/web.git
+cd web
+docker build -t web .
+cp app/app/local_settings.py.dist app/app/local_settings.py
+```
+
+## Without Docker
+
 ```
 git clone https://github.com/gitcoinco/web.git
 cd web/app

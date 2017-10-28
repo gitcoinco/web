@@ -3,7 +3,10 @@ from django.conf import settings
 
 def insert_settings(request):
     from marketing.utils import get_stat
-    num_slack = int(get_stat('slack_users'))
+    try:
+        num_slack = int(get_stat('slack_users'))
+    except:
+        num_slack = 0
     if num_slack > 1000:
         num_slack = u'{}k'.format(str(round((num_slack)/1000, 1)))
     context = {
