@@ -44,7 +44,7 @@ def bounties_open():
 
     Stat.objects.create(
         key='bounties_open',
-        val=(Bounty.objects.filter(current_bounty=True, idx_status='submitted').count()),
+        val=(Bounty.objects.filter(current_bounty=True, idx_status='open').count()),
         )
 
 

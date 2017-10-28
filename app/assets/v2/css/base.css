@@ -751,6 +751,22 @@ body.bounty_details #title{
 .profile_details .repos li p.meta{
     float: right;
 }
+.profile_details .dot{
+    border-radius: 6px; 
+    width: 12px; 
+    height: 12px;
+    margin-left: -55px;
+    float: left;
+    vertical-align: middle;
+    margin-top: 20px;
+}
+.profile_details li:nth-child(2n+0) .dot{
+    background: #919191; 
+}
+.profile_details li:nth-child(2n+1) .dot{
+    background: black; 
+}
+
 @media (max-width: 1350px) {
     .profile_details .bounties li div.details{
         width: 500px;

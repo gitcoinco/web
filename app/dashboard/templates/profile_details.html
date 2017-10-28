@@ -116,6 +116,7 @@
                             <ul class="repos">
                                 {% for r in profile.repos_data %}
                                     <li>
+                                        <div class="dot">&nbsp;</div>
                                         <a href="/explorer/?q={{r.html_url}}">
                                             <p class="meta mr-3">{{r.stargazers_count}} stars</p>
                                             <h6>
