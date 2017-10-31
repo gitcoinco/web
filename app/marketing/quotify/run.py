@@ -21,13 +21,13 @@ def recommend_font_size(text):
 def select_background_image():
     prefix = "marketing/quotify/input/"
     options = os.listdir(prefix)
-    return prefix + random.SystemRandom(options)
+    return prefix + random.SystemRandom().choice(options)
 
 
 def select_font():
     prefix = "marketing/quotify/fonts/"
     options = os.listdir(prefix)
-    return prefix + random.SystemRandom(options)
+    return prefix + random.SystemRandom().choice(options)
 
 
 def wrap_text(text, w=30):
