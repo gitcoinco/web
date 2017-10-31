@@ -82,15 +82,15 @@ def embed(request):
 
         #get issues
         length = request.GET.get('len', 10)
-        super_bounties = Bounty.objects.filter(github_url__startswith=repo_url,current_bounty=True,idx_status='open').order_by('-web3_created')
+        super_bounties = Bounty.objects.filter(github_url__startswith=repo_url,current_bounty=True,idx_status='open').order_by('-_val_usd_db')
         bounties = super_bounties[:length]
 
         #config
-        bounty_height = 105
+        bounty_height = 145
+        bounty_width = 400
         font_path = 'marketing/quotify/fonts/'
-        width = 500
-        height_offset = ((max(bounties.count(), 1) + 1) * (bounty_height))
-        height = 300 + height_offset
+        width = 1350
+        height = 350
         spacing = 0
         line = "".join(["_" for ele in range(0,47)])
 
@@ -169,7 +169,7 @@ def embed(request):
         draw = ImageDraw.Draw(img)
         img_w, img_h = img.size
         x = 10
-        y = 235
+        y = 225
         draw.multiline_text(align="left", xy=(x, y), text=text, fill=black, font=h2_thin, spacing=12)
         draw = ImageDraw.Draw(img)
 
@@ -184,12 +184,13 @@ def embed(request):
             value = "{}, {}".format(value_eth, value_in_usdt)
             if not value_eth:
                 value = value_native
-            text = "{}\n{}\n\nWorth: {}".format(line, wrap_text(bounty.title_or_desc, 40), value)
+            text = "{}{}\n{}\n\nWorth: {}".format("", line, wrap_text(bounty.title_or_desc, 30), value)
             #execute 
             draw = ImageDraw.Draw(img)
             img_w, img_h = img.size
-            x = 10
-            y = 210 + (i * bounty_height)
+            line_size =2
+            x = 500 + (int((i-1)/line_size) * (bounty_width))
+            y = 30 + (abs(i%line_size-1) * bounty_height)
             draw.multiline_text(align="left", xy=(x, y), text=text, fill=black, font=p, spacing=spacing)
             draw = ImageDraw.Draw(img)
 
@@ -212,7 +213,7 @@ def embed(request):
             draw = ImageDraw.Draw(img)
             img_w, img_h = img.size
             x = 10
-            y = height - 60
+            y = height - 50
             draw.multiline_text(align="center", xy=(x, y), text=text, fill=black, font=h2_thin, spacing=spacing)
             draw = ImageDraw.Draw(img)
 
