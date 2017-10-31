@@ -42,7 +42,7 @@ class Command(BaseCommand):
         "Software Dev QOTD",
         "Software Development Quote",
         ]
-        intro = random.choice(intros)
+        intro = random.SystemRandom().choice(intros)
 
 
         #setup
