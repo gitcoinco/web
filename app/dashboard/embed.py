@@ -82,7 +82,7 @@ def embed(request):
 
         #get issues
         length = request.GET.get('len', 10)
-        super_bounties = Bounty.objects.filter(github_url__startswith=repo_url,current_bounty=True).order_by('-web3_created')
+        super_bounties = Bounty.objects.filter(github_url__startswith=repo_url,current_bounty=True,idx_status='open').order_by('-web3_created')
         bounties = super_bounties[:length]
 
         #config
