@@ -5,8 +5,26 @@ $(document).ready(function(){
     if(getParam('source')){
         $('input[name=issueURL]').val(getParam('source'));
     }
-
+    if(localStorage['expirationTimeDelta']){
+        $('select[name=expirationTimeDelta] option').prop('selected', false);
+        $('select[name=expirationTimeDelta] option[value=\''+localStorage['expirationTimeDelta']+'\']').prop('selected', true);
+    }
+    if(localStorage['experienceLevel']){
+        $('select[name=experienceLevel] option:contains('+localStorage['experienceLevel']+')').prop('selected', true);
+    }
+    if(localStorage['projectLength']){
+        $('select[name=projectLength] option:contains('+localStorage['projectLength']+')').prop('selected', true);
+    }
+    if(localStorage['bountyType']){
+        $('select[name=bountyType] option:contains('+localStorage['bountyType']+')').prop('selected', true);
+    }
+    if(localStorage['issueURL']){
+        $('input[name=issueURL]').val(localStorage['issueURL']);
+    }
     //fetch issue URL related info
+    $("input[name=amount]").keyup(retrieveAmount);
+    $("input[name=amount]").blur(retrieveAmount);
+    $("select[name=deonomination]").change(retrieveAmount);
     $("input[name=issueURL]").blur(retrieveTitle);
     $("input[name=issueURL]").blur(retrieveKeywords);
 
@@ -29,24 +47,6 @@ $(document).ready(function(){
             $(this).text('Advanced ⬇ ');
         }
     });
-    //TODO: refactor to DRY
-    if(localStorage['expirationTimeDelta']){
-        $('select[name=expirationTimeDelta] option').prop('selected', false);
-        $('select[name=expirationTimeDelta] option[value=\''+localStorage['expirationTimeDelta']+'\']').prop('selected', true);
-    }
-    if(localStorage['experienceLevel']){
-        $('select[name=experienceLevel] option:contains('+localStorage['experienceLevel']+')').prop('selected', true);
-    }
-    if(localStorage['projectLength']){
-        $('select[name=projectLength] option:contains('+localStorage['projectLength']+')').prop('selected', true);
-    }
-    if(localStorage['bountyType']){
-        $('select[name=bountyType] option:contains('+localStorage['bountyType']+')').prop('selected', true);
-    }
-    if(localStorage['issueURL']){
-        $('input[name=issueURL]').val(localStorage['issueURL']);
-    }
-
 
     
     //submit bounty button click

@@ -239,6 +239,58 @@ $(document).ready(function(){
 });
 
 //callbacks that can retrieve various metadata about a github issue URL
+
+var retrieveAmount = function(){
+    var ele = $("input[name=amount]");
+    var target_ele = $("#usd_amount");
+
+    if (target_ele.html() == ""){
+        target_ele.html('<img style="width: 50px; height: 50px;" src=/static/v2/images/loading.gif>');
+    }
+
+    var amount = $("input[name=amount]").val();
+    var address = $('select[name=deonomination').val();
+    var denomination = tokenAddressToDetails(address)['name'];
+    var request_url = '/sync/get_amount?amount='+amount+'&denomination=' + denomination;
+    
+    //use cached conv rate if possible.
+    if(document.conversion_rates && document.conversion_rates[denomination]){
+        var usd_amount = amount / document.conversion_rates[denomination];
+        updateAmountUI(target_ele, usd_amount);
+        return;
+    }
+
+    //if not, use remote one
+    $.get(request_url, function(result){
+
+        //update UI
+        var usd_amount = result['usdt'];
+        var conv_rate = amount / usd_amount;
+        updateAmountUI(target_ele, usd_amount);
+
+        //store conv rate for later in cache
+        if(typeof document.conversion_rates == 'undefined'){
+            document.conversion_rates = {}
+        }
+        document.conversion_rates[denomination] = conv_rate;
+
+    }).fail(function(){
+        target_ele.html(' ');
+        //target_ele.html('Unable to find USDT amount');
+    });
+};
+
+var updateAmountUI = function(target_ele, usd_amount){
+        var usd_amount = Math.round(usd_amount * 100 ) / 100;
+        if (usd_amount > 1000000){
+            usd_amount = Math.round(usd_amount / 100000)/10 + "m"
+        } else if (usd_amount > 1000){
+            usd_amount = Math.round(usd_amount / 100)/10 + "k"
+        }
+        target_ele.html('Approx: '+usd_amount+' USDT');
+};
+
+
 var retrieveTitle = function(){
     var ele = $("input[name=issueURL]");
     var target_ele = $("input[name=title]");

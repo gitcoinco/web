@@ -401,6 +401,7 @@ input[type=text].loading{
 .submit_bounty #network_status div{
     display: inline;
 }
+
 #network_status div span{
     color: #4aeba8;
 }

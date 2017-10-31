@@ -23,10 +23,36 @@ from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.utils import timezone
-from ratelimit.decorators import ratelimit
+from django.http import Http404
+from economy.utils import convert_amount
 import json
+from ratelimit.decorators import ratelimit
 import requests
 import pprint
+
+# gets amount of remote html doc (github issue)
+@ratelimit(key='ip', rate='100/m', method=ratelimit.UNSAFE, block=True)
+def amount(request):
+    response = {}
+
+    try:
+        amount = request.GET.get('amount')
+        deonomination = request.GET.get('denomination')
+        if deonomination == 'ETH':
+            amount_in_eth = amount
+        else:
+            amount_in_eth = convert_amount(amount, deonomination, 'ETH')
+        amount_in_usdt = convert_amount(amount, 'ETH', 'USDT')
+        response = {
+            'eth': amount_in_eth,
+            'usdt': amount_in_usdt,
+        }
+        return JsonResponse(response)        
+    except Exception as e:
+        print(e)
+        raise Http404
+
+
 
 # gets title of remote html doc (github issue)
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)

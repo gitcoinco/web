@@ -226,6 +226,7 @@ var load_tokens = function(){
             //if web3, set the values of some form variables
             if (typeof localStorage['amount'] !='undefined'){
                 $('input[name=amount]').val(localStorage['amount']);
+                retrieveAmount();
             }
             if (typeof localStorage['githubUsername'] !='undefined'){
                 $('input[name=githubUsername]').val(localStorage['githubUsername']);
