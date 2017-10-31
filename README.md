@@ -9,7 +9,7 @@ Gitcoin pushes Open Source Forward. Learn more at [https://gitcoin.co](https://g
 
 
 <a href="https://gitcoin.co/explorer/?q=https://github.com/gitcoinco/web">
-    <img src='https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco' />
+    <img src='https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco' width=250 />
 </a>
 
 # web repo
