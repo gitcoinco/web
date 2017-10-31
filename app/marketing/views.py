@@ -21,11 +21,12 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from django.contrib.admin.views.decorators import staff_member_required
 from django.template.response import TemplateResponse
-from marketing.models import Stat, EmailSubscriber
+from marketing.models import Stat, EmailSubscriber, LeaderboardRank
 from chartit import DataPool, Chart
 from marketing.utils import get_or_save_email_subscriber
 from django.core.validators import validate_email
 from retail.helpers import get_ip
+from django.http import Http404
 # Create your views here.
 
 
@@ -165,5 +166,33 @@ def email_settings(request, key):
       'msg': msg,
     }
     return TemplateResponse(request, 'email_settings.html', context)
+
+def leaderboard(request, key):
+    if not key:
+        key = 'weekly_fulfilled'
+
+
+    titles = {
+        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
+        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
+        'monthly_fulfilled': 'Monthly Leaderboard: Fulfilled Funded Issues',
+        'monthly_all': 'Monthly Leaderboard: All Funded Issues',
+        'yearly_fulfilled': 'Yearly Leaderboard: Fulfilled Funded Issues',
+        'yearly_all': 'Yearly Leaderboard: All Funded Issues',
+        'all_fulfilled': 'All-Time Leaderboard: Fulfilled Funded Issues',
+        'all_all': 'All-Time Leaderboard: All Funded Issues',
+    }
+    if key not in titles.keys():
+        raise Http404
+
+    context = {
+        'items': LeaderboardRank.objects.filter(active=True, leaderboard=key).order_by('-amount'),
+        'titles': titles,
+        'title': titles[key],
+        'action_past_tense': 'Transacted' if 'fulfilled' in key else 'bountied',
+    }
+
+
+    return TemplateResponse(request, 'leaderboard.html', context)
 
 

@@ -53,3 +53,22 @@ class Stat(SuperModel):
         ]
     def __str__(self):
         return "{}: {}".format(self.key, self.val)
+
+
+class LeaderboardRank(SuperModel):
+    github_username = models.CharField(max_length=255)
+    leaderboard = models.CharField(max_length=255)
+    amount = models.FloatField()
+    active = models.BooleanField()
+
+    def __str__(self):
+        return "{}, {}: {}".format(self.leaderboard, self.github_username, self.amount)
+
+    @property
+    def github_url(self):
+        return "https://github.com/{}".format(self.github_username)
+
+    @property
+    def local_avatar_url(self):
+        return "/funding/avatar?repo={}&v=3".format(self.github_url)
+

@@ -22,7 +22,7 @@ from marketing.utils import get_or_save_email_subscriber as process_email
 
 class Command(BaseCommand):
 
-    help = 'pulls mailchipm emails'
+    help = 'pulls mailchimp emails'
 
     def handle(self, *args, **options):
         get_size = 50

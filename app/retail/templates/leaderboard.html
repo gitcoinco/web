@@ -1,0 +1,73 @@
+{% load humanize %} 
+<!DOCTYPE html>
+<html lang="en">
+
+{% include 'shared/head.html' %}
+{% include 'shared/cards_pic.html' %}
+
+<body class="interior {{active}}">
+    <div class="container-fluid header dash">
+        {% include 'shared/nav_internal.html' %}
+    </div>
+    <div class="row no-gutter  text-uppercase">
+        <div class="col-3" style="background: #eee; ">
+            {% include 'shared/current_balance.html' %}
+            {% include 'shared/sidebar_search.html' %}
+        </div>
+
+        <div class="col body">
+            <div class="container-fluid" id="leaderboard">
+            {% include 'shared/bounty_def.html' %}
+                <div class="row mt-0 ml-1 pt-1 pl-1">
+                    <select id="key">
+                        {% for this_title in titles.items %}
+                        <option value="{{this_title.0}}" {% if title == this_title.1 %}selected=selected{% endif %} >{{this_title.1}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="row mt-0 ml-1 pt-1 pl-1">
+                    <h2 class="mt-5">{{title}}</h2>
+                </div>
+                {% if items|length == 0 %}
+                    <div class="row mt-0 ml-0 pl-3">
+                        None found.
+                    </div>
+                {% endif %}
+
+                {% for item in items %}
+                    <div class="row mt-0 ml-0 pl-3 leaderboard_entry" href="/profile/{{item.github_username}}">
+                        <div>
+                            <span class=dot>&nbsp;</span>
+                        </div>
+                        <div>
+                            <img src="{{item.local_avatar_url}}">
+                        </div>
+                        <div>
+                            <h4>{{item.github_username}}</h4>
+                        </div>
+                        <div>
+                            <span>{{item.amount}} USDT {{action_past_tense}}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/ga.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+
+</body>
+
+
+
+<!-- jQuery -->
+<script src="{{STATIC_URL}}v2/js/abi.js"></script>
+<script src="{{STATIC_URL}}v2/js/tokens.js"></script>
+<script src="{{STATIC_URL}}v2/js/shared.js"></script>
+<script src="{{STATIC_URL}}v2/js/pages/leaderboard.js"></script>
+
+
+</html>

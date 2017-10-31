@@ -752,7 +752,8 @@ body.bounty_details #title{
 .profile_details .repos li p.meta{
     float: right;
 }
-.profile_details .dot{
+.profile_details .dot, 
+#leaderboard .dot{
     border-radius: 6px; 
     width: 12px; 
     height: 12px;
@@ -761,12 +762,57 @@ body.bounty_details #title{
     vertical-align: middle;
     margin-top: 20px;
 }
-.profile_details li:nth-child(2n+0) .dot{
+.profile_details li:nth-child(2n+0) .dot,
+#leaderboard .leaderboard_entry:nth-child(2n+0) .dot
+{
     background: #919191; 
 }
-.profile_details li:nth-child(2n+1) .dot{
+.profile_details li:nth-child(2n+1) .dot,
+#leaderboard .leaderboard_entry:nth-child(2n+1) .dot
+{
     background: black; 
 }
+#leaderboard .dot{
+    margin-left: 0px;
+    margin-top: 40px;
+}
+#leaderboard .leaderboard_entry{
+    padding: 10px 0px;
+}
+#leaderboard .leaderboard_entry:hover{
+    background-color: #fafafa;
+    cursor: pointer;
+} 
+#leaderboard .leaderboard_entry img{
+    max-height: 100px;
+    max-width: 100px;
+    border-radius: 45px;
+}
+#leaderboard .leaderboard_entry{
+    color: black;
+    text-decoration: none;
+}
+#leaderboard .leaderboard_entry div{
+    display: inline-block; 
+    width: 40%;
+}
+#leaderboard .leaderboard_entry h4{
+    padding-top: 0px;
+}
+#leaderboard .leaderboard_entry div:first-child{
+    width: 5%;
+}
+#leaderboard .leaderboard_entry div:nth-child(2){
+    width: 5%;
+}
+#leaderboard #key{
+    right: 0px;
+    display: block;
+    position: absolute;
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
 
 @media (max-width: 1350px) {
     .profile_details .bounties li div.details{
@@ -779,6 +825,13 @@ body.bounty_details #title{
     }
 }
 @media (max-width: 1025px) {
+    #leaderboard .leaderboard_entry div{
+        width: 30%;
+    }
+    #leaderboard .leaderboard_entry div:nth-child(2){
+        width: 30%;
+    }
+
     .profile_details .bounties li div.status,
     .profile_details .bounties li .amount{
         display: none;
@@ -894,6 +947,10 @@ body.bounty_details #title{
 
 }
 @media (max-width: 481px) {
+    #leaderboard .leaderboard_entry h4{
+        font-size: 18px;
+    }
+
     .hide_min_viewport{
         display: none !important;
     }

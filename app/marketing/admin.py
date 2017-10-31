@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 from django.contrib import admin
 
 # Register your models here.
-from .models import EmailSubscriber, Stat
+from .models import EmailSubscriber, Stat, LeaderboardRank
 
 # Register your models here.
 class GeneralAdmin(admin.ModelAdmin):
@@ -30,3 +30,4 @@ class GeneralAdmin(admin.ModelAdmin):
 
 admin.site.register(Stat, GeneralAdmin)
 admin.site.register(EmailSubscriber, GeneralAdmin)
+admin.site.register(LeaderboardRank, GeneralAdmin)

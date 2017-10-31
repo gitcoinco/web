@@ -17,7 +17,7 @@ var github_ize = function(key, val, result){
         if(!_truthy(val)){
             return [null, null]
         }
-        return [ key, "<a target=new href=https://github.com/"+val+">@"+val+"</a>"];
+        return [ key, "<a target=new href=https://github.com/"+val+">@"+val.replace('@','')+"</a>"];
     };
 var email_ize = function(key, val, result){
         if(!_truthy(val)){
@@ -93,7 +93,7 @@ var callbacks = {
     },
     'issue_description': function(key, val, result){
         var ui_body = val;
-        var allowed_tags = ['br', 'li', 'em', 'ol', 'ul', 'p', 'td', 'a', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+        var allowed_tags = ['br', 'li', 'em', 'ol', 'ul', 'p', 'td', 'a', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code'];
         var open_close = ['', '/'];
         var replace_tags = {
             'h1': 'h5',
