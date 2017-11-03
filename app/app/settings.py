@@ -179,6 +179,14 @@ CACHES = {
     }
 }
 
+# HTTP Strict Transport Security
+# https://docs.djangoproject.com/en/1.11/ref/middleware/#http-strict-transport-security
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+# Once you confirm that all assets are served securely on your site (i.e. HSTS didn’t break anything),
+# it’s a good idea to increase this value so that infrequent visitors will be protected (31536000 seconds, i.e. 1 year, is common).
+SECURE_HSTS_SECONDS = 3600
+
 # Include local settings overrides
 try:
     from .local_settings import *  # NOQA
