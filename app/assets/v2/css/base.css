@@ -636,16 +636,20 @@ body.bounty_details #title{
 .profile_details #stats li{
     list-style: none;
     display: inline-block;
+    background-color: #efefef;
     width: 24%;
-    border: 1px solid black;
     padding: 5px 10px;
     margin-left: 2px;
     text-align: center;
     font-size: 32px;
+    font-weight: bold;
+    border-radius: 3px;
 }
 .profile_details #stats li span{
     font-size: 14px;
     display: block;
+    font-weight: normal;
+    color: #8a8a8a;
 }
 
 .profile_details #hero{
@@ -751,6 +755,7 @@ body.bounty_details #title{
 }
 .profile_details .repos li p.meta{
     float: right;
+    padding-right: 10px;
 }
 .profile_details .dot, 
 #leaderboard .dot{
