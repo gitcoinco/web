@@ -21,6 +21,7 @@ import retail.views
 import dashboard.views
 import dashboard.helpers
 import dashboard.embed
+import dashboard.ios
 import retail.emails
 import tdi.views
 import marketing.views
@@ -64,6 +65,8 @@ urlpatterns = [
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
     url(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     url(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
+    url(r'^funding/save/?', dashboard.ios.save, name='save'),
+    url(r'^profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
 
     # sync methods

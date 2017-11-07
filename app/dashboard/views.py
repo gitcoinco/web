@@ -221,12 +221,7 @@ def bounty_details(request):
     return TemplateResponse(request, 'bounty_details.html', params)
 
 
-def profile(request, handle):
-
-    params = {
-        'title': 'Profile',
-        'active': 'profile_details',
-    }
+def profile_helper(handle):
 
     try:
         profile = Profile.objects.get(handle__iexact=handle)
@@ -237,7 +232,35 @@ def profile(request, handle):
         except Profile.DoesNotExist as e:
             raise Http404
             print(e)
+    return profile
 
+
+def profile_keywords(request, handle):
+    profile = profile_helper(handle)
+
+    keywords = []
+    for repo in profile.repos_data:
+        language = repo.get('language') if repo.get('language') else ''
+        _keywords = language.split(',')
+        for key in _keywords:
+            if key != '' and key not in keywords:
+                keywords.append(key)
+
+    response = {
+        'status': 200,
+        'keywords': keywords,
+    }
+    return JsonResponse(response)
+
+
+def profile(request, handle):
+
+    params = {
+        'title': 'Profile',
+        'active': 'profile_details',
+    }
+
+    profile = profile_helper(handle)
     params['card_title'] = "@{} | Gitcoin".format(handle)
     params['title'] = "@{}".format(handle)
     params['avatar_url'] = profile.local_avatar_url
