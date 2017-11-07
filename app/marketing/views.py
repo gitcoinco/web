@@ -57,7 +57,10 @@ def stats(request):
         _filters = ['tip', 'bount']
         types = filter_types(types, _filters)
     if _filter == 'Marketing':
-        _filters = ['slack', 'email', 'whitepaper']
+        _filters = ['slack', 'email', 'whitepaper', 'twitter']
+        types = filter_types(types, _filters)
+    if _filter == 'KPI':
+        _filters = ['slack', 'email_subscribers_active', 'bounties_open']
         types = filter_types(types, _filters)
 
     # params

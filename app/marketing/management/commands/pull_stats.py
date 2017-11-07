@@ -30,6 +30,41 @@ def slack_users():
         )
 
 
+def slack_users_active():
+    sc = SlackClient(settings.SLACK_TOKEN)
+    ul = sc.api_call("users.list")
+    presence = [sc.api_call("users.getPresence", user=user['id']).get('presence',None) for user in ul['members']]
+    num_active = len([item for item in presence if item == 'active'])
+    num_away = len([item for item in presence if item == 'away'])
+
+    Stat.objects.create(
+        key='slack_users_active',
+        val=num_active,
+        )
+
+    Stat.objects.create(
+        key='slack_users_away',
+        val=num_away,
+        )
+
+
+def twitter_followers():
+    import twitter
+
+    api = twitter.Api(
+        consumer_key=settings.TWITTER_CONSUMER_KEY,
+        consumer_secret=settings.TWITTER_CONSUMER_SECRET,
+        access_token_key=settings.TWITTER_ACCESS_TOKEN,
+        access_token_secret=settings.TWITTER_ACCESS_SECRET,
+    )
+    user = api.GetUser(screen_name=settings.TWITTER_USERNAME)
+
+    Stat.objects.create(
+        key='twitter_followers',
+        val=(user.followers_count),
+        )
+
+
 def bounties():
     from dashboard.models import Bounty
 
@@ -135,7 +170,22 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        fs = [slack_users, bounties, tips, subs, whitepaper_access, whitepaper_access_request, tips_received, bounties_claimed, bounties_fulfilled, bounties_open, subs_active, subs_newsletter]
+        fs = [
+            slack_users, 
+            twitter_followers, 
+            bounties, 
+            tips, 
+            subs, 
+            whitepaper_access, 
+            whitepaper_access_request, 
+            tips_received, 
+            bounties_claimed, 
+            bounties_fulfilled, 
+            bounties_open, 
+            subs_active, 
+            subs_newsletter, 
+            slack_users_active
+        ]
 
         for f in fs:
             try:
