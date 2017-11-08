@@ -25,6 +25,7 @@ import requests
 from urlparse import urlparse
 from app.github import post_issue_comment
 from slackclient import SlackClient
+import re
 
 
 def maybe_market_to_twitter(bounty, event_name, txid):
@@ -94,10 +95,10 @@ def maybe_market_to_slack(bounty, event_name, txid):
               "chat.postMessage",
               channel=channel,
               text=msg,
-            ) 
+            )
     except Exception as e:
         print(e)
-        return False       
+        return False
 
     return True
 
@@ -222,4 +223,98 @@ def maybe_market_to_email(b, event_name, txid):
             print(e)
 
     return len(to_emails)
+
+def maybe_post_on_craigslist(bounty):
+    CRAIGSLIST_URL = 'https://www.craigslist.org'
+    MAX_URLS = 10
+
+    import mechanicalsoup
+    from random import randint
+    from app.utils import fetch_last_email_id,fetch_mails_since_id
+
+    browser = mechanicalsoup.StatefulBrowser()
+    browser.open(CRAIGSLIST_URL) # open craigslist
+    post_link = browser.find_link(attrs={'id': 'post'})
+    page = browser.follow_link(post_link) # scraping the posting page link
+
+    form = page.soup.form
+    # select 'gig offered (I'm hiring for a short-term, small or odd job)'
+    form.find('input', {'type': 'radio', 'value': 'go'})['checked'] = ''
+    page = browser.submit(form, form['action'])
+
+    form = page.soup.form
+    # select 'I want to hire someone'
+    form.find('input', {'type': 'radio', 'value': 'G'})['checked'] = ''
+    page = browser.submit(form, form['action'])
+
+    form = page.soup.form
+    # select 'computer gigs (small web design, tech support, etc projects )'
+    form.find('input', {'type': 'radio', 'value': '110'})['checked'] = ''
+    page = browser.submit(form, form['action'])
+    form = page.soup.form
+
+    # keep selecting defaults for sub area etc till we reach edit page
+    # this step is to ensure that we go over all the extra pages which appear on craigslist only in some locations
+    # this choose the default skip options in craigslist
+    for i in range(MAX_URLS):
+        if page.url.endswith('s=edit'):
+            break
+        #Chooses the first default
+        form.find_all('input')[0]['checked'] = ''
+        page = browser.submit(form, form['action'])
+        form = page.soup.form
+    else:
+        # for-else magic
+        # if the loop completes normally that means we are still not at the edit page
+        # hence return and don't proceed further
+        return
+
+    posting_title = bounty.title
+    posting_body = "Solve this github issue: {}".format(bounty.github_url)
+
+    # Final form filling
+    form.find('input', {'id': "PostingTitle"})['value'] = posting_title
+    form.find('textarea', {'id': "PostingBody"}).insert(0, posting_body)
+    form.find('input', {'id': "FromEMail"})['value'] = settings.CONTACT_EMAIL
+    form.find('input', {'id': "ConfirmEMail"})['value'] = settings.CONTACT_EMAIL
+    form.find('input', {'id': "postal_code"})['value'] = str(randint(10**6, 10**7-1))
+    form.find('input', {'value': 'pay', 'name': 'remuneration_type'})['checked'] = ''
+    form.find('input', {'id': "remuneration"})['value'] = "{} ETH or {} USD".format(bounty.value_in_eth, bounty.value_in_usdt)
+
+    page = browser.submit(form, form['action'])
+
+    # skipping image upload
+    form = page.soup.find_all('form')[-1]
+    page = browser.submit(form, form['action'])
+
+    # submitting final form
+    form = page.soup.form
+    #getting last email id
+    last_email_id = fetch_last_email_id(settings.IMAP_EMAIl, settings.IMAP_PASSWORD)
+    page = browser.submit(form, form['action'])
+    last_email_id_new = fetch_last_email_id(settings.IMAP_EMAIl, settings.IMAP_PASSWORD)
+    #if no email has arrived wait for 5 seconds
+    if last_email_id==last_email_id_new:
+        # could slow responses if called syncronously in a request
+        import time
+        time.sleep(5)
+
+    emails = fetch_mails_since_id( settings.IMAP_EMAIl, settings.IMAP_PASSWORD,last_email_id)
+    for email_id, content in emails.items():
+        if 'craigslist' in content['from']:
+            for link in re.findall(r"(?:https?:\/\/[a-zA-Z0-9%]+[.]+craigslist+[.]+org/[a-zA-Z0-9\/\-]*)", content.as_string()):
+                #opening all links in the email
+                browser = mechanicalsoup.StatefulBrowser()
+                page = browser.open(link)
+                form = page.soup.form
+                page = browser.submit(form, form['action'])
+
+
+
+
+
+
+
+
+
 
