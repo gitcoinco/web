@@ -41,7 +41,7 @@ urlpatterns = [
 
 
     # api views
-    url(r'^api/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
+    url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/', include(router.urls)),
 
 
