@@ -19,6 +19,7 @@ from django.core.management.base import BaseCommand
 from marketing.models import Stat
 from slackclient import SlackClient
 from django.conf import settings
+from django.utils import timezone
 
 
 def slack_users():
@@ -31,6 +32,9 @@ def slack_users():
 
 
 def slack_users_active():
+    if settings.DEBUG:
+        return
+
     sc = SlackClient(settings.SLACK_TOKEN)
     ul = sc.api_call("users.list")
     presence = [sc.api_call("users.getPresence", user=user['id']).get('presence',None) for user in ul['members']]
@@ -72,6 +76,19 @@ def bounties():
         key='bounties',
         val=(Bounty.objects.filter(current_bounty=True).count()),
         )
+
+
+def bounties_fulfilled_pct():
+    from dashboard.models import Bounty
+    for status in ['fulfilled', 'expired', 'open', 'claimed']:
+        eligible_bounties = Bounty.objects.filter(current_bounty=True, web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
+        fulfilled_bounties = eligible_bounties.filter(idx_status=status)
+        val = int(100 * (fulfilled_bounties.count()) / (eligible_bounties.count()))
+
+        Stat.objects.create(
+            key='bounties_{}_pct'.format(status),
+            val=val,
+            )
 
 
 def bounties_open():
@@ -182,6 +199,7 @@ class Command(BaseCommand):
             bounties_claimed, 
             bounties_fulfilled, 
             bounties_open, 
+            bounties_fulfilled_pct,
             subs_active, 
             subs_newsletter, 
             slack_users_active
