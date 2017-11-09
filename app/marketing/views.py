@@ -78,7 +78,7 @@ def stats(request):
         elif rollup == 'weekly':
             source = source.filter(created_on__hour=1, created_on__week_day=1)
         
-        source = source[:30]
+        source = source[30:]
 
         #compute avg
         total = 0
