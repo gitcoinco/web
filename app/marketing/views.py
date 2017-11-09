@@ -27,6 +27,7 @@ from marketing.utils import get_or_save_email_subscriber
 from django.core.validators import validate_email
 from retail.helpers import get_ip
 from django.http import Http404
+from django.utils import timezone
 # Create your views here.
 
 
@@ -75,9 +76,12 @@ def stats(request):
         source = Stat.objects.filter(key=t)
         if rollup == 'daily':
             source = source.filter(created_on__hour=1)
+            source = source.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=30)))
         elif rollup == 'weekly':
             source = source.filter(created_on__hour=1, created_on__week_day=1)
-        
+            source = source.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=30*3)))
+        else:
+            source = source.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=2)))
 
         #compute avg
         total = 0
