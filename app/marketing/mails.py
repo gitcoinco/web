@@ -26,29 +26,41 @@ from retail.emails import *
 from marketing.utils import get_or_save_email_subscriber
 
 
-def send_mail(from_email, to_email, subject, body, html=False, bcc_gitcoin_core=True, from_name="Gitcoin.co"):
-    if(bcc_gitcoin_core):
-        prepend_str = "Sent to {}\n".format(to_email)
-        _body = prepend_str + str(body)
-        if html:
-            _html = prepend_str + str(html)
-        else:
-            _html = False
-        _to_email = 'email_logger@gitcoin.co'
-        send_mail(from_email, _to_email, subject, _body, _html, bcc_gitcoin_core=False, from_name=from_name)
+def send_mail(from_email, to_email, subject, body, html=False, from_name="Gitcoin.co", cc_emails=None):
 
+    # make sure this subscriber is saved
     get_or_save_email_subscriber(to_email, 'internal')
+
+    # debug logs
     print("-- Sending Mail '{}' to {}".format(subject, to_email))
+
+    # setup
     sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
     from_email = Email(from_email, from_name)
     to_email = Email(to_email)
     contenttype = "text/plain" if not html else "text/html"
+
+    # build content
     content = Content(contenttype, html) if html else Content(contenttype, body)
     if settings.DEBUG:
         to_email = Email(settings.CONTACT_EMAIL) #just to be double secret sure of what were doing in dev
         subject = "[DEBUG] " + subject
     mail = Mail(from_email, subject, to_email, content)
-    # mail.add_header({'bcc' : settings.BCC_EMAIL}) #TODO
+
+    # build personalization (BCC + CC)
+    p = Personalization()
+    p.add_to(to_email)
+    if cc_emails: #only add CCif not in prod
+        for cc_addr in set(cc_emails):
+            cc_addr = Email(cc_addr)
+            if settings.DEBUG:
+                cc_addr = to_email
+            if cc_addr._email != to_email._email:
+                p.add_to(cc_addr)
+    p.add_bcc(Email(settings.BCC_EMAIL))
+    mail.add_personalization(p)
+
+    # send mails
     response = sg.client.mail.send.post(request_body=mail.get())
     return response
 
@@ -130,15 +142,14 @@ def new_bounty_acceptance(bounty, to_emails=[]):
         send_mail(from_email, to_email, subject, text, html)
 
 
-def new_match(to_emails=[]):
+def new_match(to_emails, bounty, github_username):
 
-    subject = "⚡️ Kevin meet Metamask! "
+    subject = "⚡️ {} Meet {}: {}! ".format(github_username.title(), bounty.org_name.title(), bounty.title)
 
-    for to_email in to_emails:
-        from_email = settings.CONTACT_EMAIL
-        html, text = render_match_email(to_email)
-
-        send_mail(from_email, to_email, subject, text, html)
+    to_email = to_emails[0]
+    from_email = settings.CONTACT_EMAIL
+    html, text = render_match_email(to_email, bounty, github_username)
+    send_mail(from_email, to_email, subject, text, html, cc_emails=to_emails)
 
 
 

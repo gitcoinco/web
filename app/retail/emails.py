@@ -28,7 +28,9 @@ import premailer
 from django.template.response import TemplateResponse
 from marketing.utils import get_or_save_email_subscriber
 
+
 ### RENDERERS
+
 
 def premailer_transform(html):
     import logging
@@ -58,9 +60,10 @@ def render_tip_email(to_email, tip, is_new):
     return response_html, response_txt
 
 
-def render_match_email(to_email):
+def render_match_email(to_email, bounty, github_username):
     params = {
-
+        'bounty': bounty,
+        'github_username': github_username,
     }
     response_html = premailer_transform(render_to_string("emails/new_match.html", params))
     response_txt = render_to_string("emails/new_match.txt", params)
@@ -183,7 +186,8 @@ def new_tip(request):
 
 @staff_member_required
 def new_match(request):
-    response_html, response_txt = render_match_email(settings.CONTACT_EMAIL)
+    from dashboard.models import Bounty
+    response_html, response_txt = render_match_email(settings.CONTACT_EMAIL, Bounty.objects.all().last(), 'owocki')
 
     return HttpResponse(response_html)
 

@@ -20,6 +20,7 @@ from __future__ import unicode_literals
 from economy.models import SuperModel
 from django.db import models
 from django.contrib.postgres.fields import JSONField
+from dashboard.models import Bounty
 
 
 class EmailSubscriber(SuperModel):
@@ -71,4 +72,14 @@ class LeaderboardRank(SuperModel):
     @property
     def local_avatar_url(self):
         return "/funding/avatar?repo={}&v=3".format(self.github_url)
+
+
+class Match(SuperModel):
+    email = models.EmailField(max_length=255)
+    bounty = models.ForeignKey(Bounty, on_delete=models.CASCADE)
+    direction = models.CharField(max_length=50)
+    github_username = models.CharField(max_length=255)
+
+    def __str__(self):
+        return "{}: {}; {}".format(self.email, self.bounty, self.direction)
 

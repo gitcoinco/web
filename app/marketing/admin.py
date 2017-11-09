@@ -21,13 +21,14 @@ from __future__ import unicode_literals
 from django.contrib import admin
 
 # Register your models here.
-from .models import EmailSubscriber, Stat, LeaderboardRank
+from .models import EmailSubscriber, Stat, LeaderboardRank, Match
 
 # Register your models here.
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
+admin.site.register(Match, GeneralAdmin)
 admin.site.register(Stat, GeneralAdmin)
 admin.site.register(EmailSubscriber, GeneralAdmin)
 admin.site.register(LeaderboardRank, GeneralAdmin)
