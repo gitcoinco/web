@@ -21,6 +21,7 @@ from django.core.validators import validate_email
 from django.conf import settings
 from slackclient import SlackClient
 from marketing.utils import get_or_save_email_subscriber
+from django.http import JsonResponse
 
 
 def index(request):
@@ -346,7 +347,13 @@ def error(request, code):
         'code': code
     }
     context['title'] = "Error {}".format(code)
-    return TemplateResponse(request, 'error.html', context)
+    return_as_json = 'api' in request.path
+
+    if return_as_json:
+        return JsonResponse(context, status=500)
+    else:
+        return TemplateResponse(request, 'error.html', context)
+
 
 
 def portal(request):

@@ -39,6 +39,12 @@ from sitemap import sitemaps
 
 urlpatterns = [
 
+
+    # api views
+    url(r'^api/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
+    url(r'^api/v0.1/', include(router.urls)),
+
+
     # dashboard views
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
@@ -66,7 +72,6 @@ urlpatterns = [
     url(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     url(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
     url(r'^funding/save/?', dashboard.ios.save, name='save'),
-    url(r'^profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
 
     # sync methods
@@ -102,9 +107,6 @@ urlpatterns = [
     url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),
     url(r'^whitepaper/?', tdi.views.whitepaper_new, name='whitepaper'),
 
-
-    # api views
-    url(r'^api/v0.1/', include(router.urls)),
 
     # admin views
     url(r'^_administration/?', admin.site.urls, name='admin'),
