@@ -231,27 +231,29 @@ def maybe_post_on_craigslist(bounty):
     import mechanicalsoup
     from random import randint
     from app.utils import fetch_last_email_id,fetch_mails_since_id
+    import time
 
     browser = mechanicalsoup.StatefulBrowser()
     browser.open(CRAIGSLIST_URL) # open craigslist
     post_link = browser.find_link(attrs={'id': 'post'})
     page = browser.follow_link(post_link) # scraping the posting page link
 
-    form = page.soup.form
+    form = page.soup.form 
     # select 'gig offered (I'm hiring for a short-term, small or odd job)'
     form.find('input', {'type': 'radio', 'value': 'go'})['checked'] = ''
     page = browser.submit(form, form['action'])
 
-    form = page.soup.form
+    form = page.soup.form 
     # select 'I want to hire someone'
     form.find('input', {'type': 'radio', 'value': 'G'})['checked'] = ''
     page = browser.submit(form, form['action'])
 
-    form = page.soup.form
+    form = page.soup.form 
     # select 'computer gigs (small web design, tech support, etc projects )'
     form.find('input', {'type': 'radio', 'value': '110'})['checked'] = ''
     page = browser.submit(form, form['action'])
-    form = page.soup.form
+    form = page.soup.form 
+    
 
     # keep selecting defaults for sub area etc till we reach edit page
     # this step is to ensure that we go over all the extra pages which appear on craigslist only in some locations
@@ -260,7 +262,10 @@ def maybe_post_on_craigslist(bounty):
         if page.url.endswith('s=edit'):
             break
         #Chooses the first default
-        form.find_all('input')[0]['checked'] = ''
+        if page.url.endswith('s=subarea'):
+            form.find_all('input')[1]['checked'] = ''
+        else:
+            form.find_all('input')[0]['checked'] = ''
         page = browser.submit(form, form['action'])
         form = page.soup.form
     else:
@@ -277,37 +282,61 @@ def maybe_post_on_craigslist(bounty):
     form.find('textarea', {'id': "PostingBody"}).insert(0, posting_body)
     form.find('input', {'id': "FromEMail"})['value'] = settings.CONTACT_EMAIL
     form.find('input', {'id': "ConfirmEMail"})['value'] = settings.CONTACT_EMAIL
-    form.find('input', {'id': "postal_code"})['value'] = str(randint(10**6, 10**7-1))
+    for postal_code_input in form.find_all('input', {'id': "postal_code"}):
+        postal_code_input['value'] = '94105'
     form.find('input', {'value': 'pay', 'name': 'remuneration_type'})['checked'] = ''
-    form.find('input', {'id': "remuneration"})['value'] = "{} ETH or {} USD".format(bounty.value_in_eth, bounty.value_in_usdt)
-
+    form.find('input', {'id': "remuneration"})['value'] = "{} ETH".format(bounty.value_in_eth/10**18)
+    try:
+        form.find('input', {'id': "wantamap"})['data-checked'] = ''
+    except:
+        pass
     page = browser.submit(form, form['action'])
 
     # skipping image upload
     form = page.soup.find_all('form')[-1]
     page = browser.submit(form, form['action'])
 
+    for i in range(MAX_URLS):
+        if page.url.endswith('s=preview'):
+            break
+        #Chooses the first default
+        page = browser.submit(form, form['action'])
+        form = page.soup.form
+    else:
+        # for-else magic
+        # if the loop completes normally that means we are still not at the edit page
+        # hence return and don't proceed further
+        return
+
+
     # submitting final form
-    form = page.soup.form
+    form = page.soup.form 
     #getting last email id
-    last_email_id = fetch_last_email_id(settings.IMAP_EMAIl, settings.IMAP_PASSWORD)
+    last_email_id = fetch_last_email_id(settings.IMAP_EMAIL, settings.IMAP_PASSWORD)
     page = browser.submit(form, form['action'])
-    last_email_id_new = fetch_last_email_id(settings.IMAP_EMAIl, settings.IMAP_PASSWORD)
+    time.sleep(10)
+    last_email_id_new = fetch_last_email_id(settings.IMAP_EMAIL, settings.IMAP_PASSWORD)
     #if no email has arrived wait for 5 seconds
     if last_email_id==last_email_id_new:
         # could slow responses if called syncronously in a request
-        import time
         time.sleep(5)
 
-    emails = fetch_mails_since_id( settings.IMAP_EMAIl, settings.IMAP_PASSWORD,last_email_id)
+    emails = fetch_mails_since_id( settings.IMAP_EMAIL, settings.IMAP_PASSWORD,last_email_id)
     for email_id, content in emails.items():
         if 'craigslist' in content['from']:
             for link in re.findall(r"(?:https?:\/\/[a-zA-Z0-9%]+[.]+craigslist+[.]+org/[a-zA-Z0-9\/\-]*)", content.as_string()):
-                #opening all links in the email
-                browser = mechanicalsoup.StatefulBrowser()
-                page = browser.open(link)
-                form = page.soup.form
-                page = browser.submit(form, form['action'])
+                # opening all links in the email
+                try:
+                    browser = mechanicalsoup.StatefulBrowser()
+                    page = browser.open(link)
+                    form = page.soup.form 
+                    page = browser.submit(form, form['action'])
+                    return link
+                except:
+                    # in case of inavalid links
+                    pass
+            else:
+                return False
 
 
 

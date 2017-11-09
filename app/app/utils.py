@@ -83,7 +83,7 @@ def fetch_mails_since_id( email_id, password,since_id=None, host='imap.gmail.com
     emails = {}
     for id in ids:
         response, content = mailbox.fetch(str(id), '(RFC822)')
-        emails[str(id)] = email.message_from_bytes(content[0][1])
+        emails[str(id)] = email.message_from_string(content[0][1])
     return emails
 
 
