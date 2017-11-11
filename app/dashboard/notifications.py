@@ -280,12 +280,12 @@ def maybe_post_on_craigslist(bounty):
     # Final form filling
     form.find('input', {'id': "PostingTitle"})['value'] = posting_title
     form.find('textarea', {'id': "PostingBody"}).insert(0, posting_body)
-    form.find('input', {'id': "FromEMail"})['value'] = settings.CONTACT_EMAIL
-    form.find('input', {'id': "ConfirmEMail"})['value'] = settings.CONTACT_EMAIL
+    form.find('input', {'id': "FromEMail"})['value'] = settings.IMAP_EMAIL
+    form.find('input', {'id': "ConfirmEMail"})['value'] = settings.IMAP_EMAIL
     for postal_code_input in form.find_all('input', {'id': "postal_code"}):
         postal_code_input['value'] = '94105'
     form.find('input', {'value': 'pay', 'name': 'remuneration_type'})['checked'] = ''
-    form.find('input', {'id': "remuneration"})['value'] = "{} ETH".format(bounty.value_in_eth/10**18)
+    form.find('input', {'id': "remuneration"})['value'] = "{} {}".format(bounty.get_natural_value(), bounty.token_name)
     try:
         form.find('input', {'id': "wantamap"})['data-checked'] = ''
     except:
@@ -334,7 +334,7 @@ def maybe_post_on_craigslist(bounty):
                     return link
                 except:
                     # in case of inavalid links
-                    pass
+                    False
             else:
                 return False
 
