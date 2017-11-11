@@ -5,7 +5,7 @@ var bounty_abi = [{"inputs": [{"type": "uint256", "name": ""}], "constant": true
 var bounty_address = function (){
     switch(document.web3network){
         case "mainnet":
-            return '0x4e1799e6e54d848394b0b90593e789e939a9f801';
+            return '0xb10700b5ece20a3c65b047f76fd3dc13720bd30e';
         break;
         case "ropsten":
             return '0x3102118ba636942c82d1a6efa2e7d069dc2d14bd';
