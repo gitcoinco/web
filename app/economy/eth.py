@@ -24,7 +24,7 @@ from web3.providers.rpc import KeepAliveRPCProvider, HTTPProvider
 def get_network_details(network):
     bounty_contract_address = None
     if network == 'mainnet':
-        bounty_contract_address = '0xc14c22f07bc8aeda9fd87c7bd579169fd6bf01b5'
+        bounty_contract_address = '0x4e1799e6e54d848394b0b90593e789e939a9f801'
         infura_host = 'mainnet.infura.io'
         custom_geth_details = (settings.CUSTOM_MAINNET_GETH_HOST, settings.CUSTOM_MAINNET_GETH_PORT)
         is_testnet = False
