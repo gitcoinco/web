@@ -105,7 +105,7 @@ def maybe_market_to_slack(bounty, event_name, txid):
 def maybe_market_tip_to_slack(tip, event_name, txid):
     if not settings.SLACK_TOKEN:
         return False
-    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+    if tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
 
     title = tip.github_url
