@@ -195,9 +195,7 @@ truffle(development)> BountyIndex.at('0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd
 
 Further information on the smart contract interface is available at [https://github.com/gitcoinco/smart_contracts/blob/master/contracts/bounty/BountyIndex.sol](https://github.com/gitcoinco/smart_contracts/blob/master/contracts/bounty/BountyIndex.sol)
 
-# WEB3 API
-
-BOUNTYDETAILS function returns the following fields:
+_bountydetails function returns the following fields:
 
 #### Fields
 
