@@ -276,7 +276,7 @@ def maybe_post_on_craigslist(bounty):
 
     posting_title = bounty.title
     if posting_title is None or posting_title == "":
-        posting_title = "Please submit a pull request against this Github issue:{}".format(bounty.github_url)
+        posting_title = "Please turn around {}’s issue".format(bounty.org_name)
     posting_body = "Solve this github issue: {}".format(bounty.github_url)
 
     # Final form filling
