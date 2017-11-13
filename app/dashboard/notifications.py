@@ -225,7 +225,7 @@ def maybe_market_to_email(b, event_name, txid):
     return len(to_emails)
 
 def maybe_post_on_craigslist(bounty):
-    CRAIGSLIST_URL = 'https://www.craigslist.org'
+    CRAIGSLIST_URL = 'https://boulder.craigslist.org/'
     MAX_URLS = 10
 
     import mechanicalsoup
@@ -275,6 +275,8 @@ def maybe_post_on_craigslist(bounty):
         return
 
     posting_title = bounty.title
+    if posting_title is None or posting_title == "":
+        posting_title = "Please submit a pull request against this Github issue:{}".format(bounty.github_url)
     posting_body = "Solve this github issue: {}".format(bounty.github_url)
 
     # Final form filling

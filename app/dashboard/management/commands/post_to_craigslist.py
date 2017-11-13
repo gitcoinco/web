@@ -36,6 +36,7 @@ class Command(BaseCommand):
         one_hour_back = timezone.now()-timedelta(hours=hours)
         bounties_to_post = Bounty.objects.filter(web3_created__gte=one_hour_back )
         for bounty in bounties_to_post:
+            # print (bounty)
             link= maybe_post_on_craigslist(bounty)
             print("Posted {}".format(link))
 
