@@ -42,9 +42,9 @@ Beyond simple datatypes like `string` or `integer` the API returns datatypes lik
 
 |  Datatype          |    Description                                            | Example 
 |--------------------|-----------------------------------------------------------| --------------------------------------------------------------------------------------|
-| `date_time`        | Date and time represented in ISO 8601                     | `2017-09-24T18:59:53.964344Z`                                                          |
+| `date_time`        | Date and time represented in ISO 8601                     | `2017-09-24T18:59:53.964344Z`|
 | `ethereum_address` | An ethereum token address with the leading `0x`           | `0x636f3093258412b96c43bef3663f1b853253ec59` |
-| `token_type`       | The type of token offered as a reward. Ex: `ETH` or `GIT` | `ETH`                                                                                  |
+| `token_type`       | The type of token offered as a reward. Ex: `ETH` or `GIT` | `ETH`                                        |
    
 ### `bounties`
 
@@ -57,7 +57,7 @@ The bounties endpoint provides a listing of bounties and their current status. T
 
 | Field Key          |  Datatype          | Description                                                       | 
 |--------------------|--------------------|-------------------------------------------------------------------| 
-| `url`              | `string`           | URL for this specific bounty Ex: api/v0.1/bounties/9             | 
+| `url`              | `string`           | URL for this specific bounty Ex: api/v0.1/bounties/9              | 
 | `created_on`       | `date_time`        | Creation timestamp                                                | 
 | `modified_on`      | `date_time`        | Last modified timestamp                                           | 
 | `title`            | `string`           | Title of the bounty                                               | 
@@ -80,7 +80,7 @@ The bounties endpoint provides a listing of bounties and their current status. T
 
 | Field Key |  Datatype |  Description                                                                                                                                                                                               | 
 |-----------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| 
-| `is_open` | `boolean` | True if the bounty has not been completed                                                                                                                                                                 | 
+| `is_open` | `boolean` | True if the bounty has not been completed| 
 | `status`  | `string`  | Current status enum: (`open`, The bounty was created) (`claimed`, Someone claimed the bounty) (`fulfilled`, Someone claimed and completed the bounty) (`expired`, The bounty expired w/o completion) | 
 
 **Bounty Creator & Bounty Claimee**
@@ -172,7 +172,6 @@ By passing an `order_by` parameter you can order the data by the provided key. E
 
 # WEB3 API
 
-
 You may interact with the HTTPS API as follows
 
 ```
@@ -195,6 +194,24 @@ truffle(development)> BountyIndex.at('0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd
 - be sure to replace `https://github.com/owocki/pytrader/pull/83` with the issue that you care about.
 
 Further information on the smart contract interface is available at [https://github.com/gitcoinco/smart_contracts/blob/master/contracts/bounty/BountyIndex.sol](https://github.com/gitcoinco/smart_contracts/blob/master/contracts/bounty/BountyIndex.sol)
+
+_bountydetails function returns the following fields:
+
+#### Fields
+
+| Field Key          |  Datatype          | Description                                                       | 
+|--------------------|--------------------|-------------------------------------------------------------------| 
+| `amount`           | `float`            | Bounty amount in ETH or specified ERC20 token                     | 
+| `tokenAddress`     | `ethereum_address` | Address where the tokens are located                              | 
+| `bountyOwner`      | `ethereum_address` | Address of the person who owns the bounty                         | 
+| `claimee`          | `ethereum_address` | Address of the person who claimed the bounty                      | 
+| `open`             | `bool`             | True if the bounty has not been completed                         | 
+| `initialized`      | `bool`             | True if the bounty has been initialized                           | 
+| `issueURL`         | `string`           | URL on GitHub where you can find the bounty description           | 
+| `creationTime`     | `float`            | Creation timestamp                                                | 
+| `metaData`         | `string`           | Misc metadata about the bounty and the creator                    | 
+| `expirationTime`   | `float`            | Date before which the bounty must be completed                    | 
+| `claimee_metaData` | `string`           | githubUsername and notificationEmail for the claimee              |  
 
 # Running Locally
 
@@ -263,4 +280,3 @@ Have an ERC20 compatible token that you'ud like to add support for?  Great!
 
 <!-- Google Analytics -->
 <img src='https://ga-beacon.appspot.com/UA-102304388-1/gitcoinco/web' style='width:1px; height:1px;' >
-
