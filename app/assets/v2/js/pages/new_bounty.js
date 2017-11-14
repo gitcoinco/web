@@ -118,131 +118,86 @@ $(document).ready(function(){
         var account = web3.eth.coinbase;
         amount = amount * decimalDivisor;
         var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+        var expire_date = (expirationTimeDelta + (new Date().getTime()/1000|0) );
+        ipfs.ipfsApi = IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: "https", root:'/api/v0'});
+        ipfs.setProvider({ host: 'ipfs.infura.io', port: 5001, protocol: 'https', root:'/api/v0'});
 
-        //setup callback functions for web3 calls
-        var post_bounty_callback = function(error, result){
-            unloading_button($('#submitBounty'));
+        var submit = {
+          title: metadata['issueTitle'],
+          description: null,
+          sourceFileHash: null,
+          sourceFileName: null,
+          contact: notificationEmail,
+          categories: metadata['issueKeywords'],
+          githubLink: issueURL,
+        };
+        ipfs.addJson(submit, function (error, result) {
             if(error){
-                mixpanel.track("New Bounty Error", {step: 'post_bounty', error: error});
-                console.error("two", error);
-                    _alert({ message: "There was an error.  Please try again or contact support." });
+                mixpanel.track("New Bounty Error", {step: 'post_ipfs', error: error});
+                console.error(error);
+                _alert({ message: "There was an error.  Please try again or contact support." });
                 $('#submitBounty').removeAttr('disabled');
-            } else {
-                sync_web3(issueURL);
-                localStorage['txid'] = result;
-                localStorage[issueURL] = timestamp();
-                add_to_watch_list(issueURL);
-                _alert({ message: "Submission sent to web3." }, 'info');
-                setTimeout(function(){
-                    delete localStorage['issueURL'];
-                    mixpanel.track("Submit New Bounty Success", {});
-                    document.location.href= "/funding/details?url="+issueURL;
-                },1000);
+                return;
+            }
 
-            }
-        }
-        var sendPostBounty = function(){
-            var value = 0;
-            if(isETH){
-                value = amount;
-            }
-            var _bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-            _bounty.postBounty.estimateGas(issueURL, 
+
+            bounty.issueAndActivateBounty.estimateGas(
+                account, 
+                expire_date, 
+                result, 
                 amount, 
-                tokenAddress, 
-                expirationTimeDelta, 
-                JSON.stringify(metadata),
-                {from :account, value:value},
-                function(errors, result){
-                    mixpanel.track("New Bounty Error", {step: 'post_boutny', error: errors});
+                0x0, 
+                false, 
+                tokenAddress,
+                amount,
+                {
+                    from :account, 
+                    value:amount, 
+                },
+                function(error,result){
                     var gas = Math.round(result * gasMultiplier);
                     var gasLimit = Math.round(gas * gasLimitMultiplier);
-
-                    // for some reason web3 was estimating 6699496 as the gas for standardtoken transfers
-                    if((gas > max_gas_for_erc20_bounty_post) && !isETH){
-                        gas = Math.round(max_gas_for_erc20_bounty_post * gasMultiplier);
-                        gasLimit = Math.round(gas * gasMultiplier);
-                    }
-                    _bounty.postBounty.sendTransaction(issueURL, 
+                    bounty.issueAndActivateBounty.sendTransaction(
+                        account, 
+                        expire_date, 
+                        result, 
                         amount, 
-                        tokenAddress, 
-                        expirationTimeDelta, 
-                        JSON.stringify(metadata),
-                        {from :account, 
+                        0x0, 
+                        false, 
+                        tokenAddress,
+                        amount,
+                        {
+                            from :account, 
+                            value:amount, 
                             gas:web3.toHex(gas), 
                             gasLimit: web3.toHex(gasLimit), 
-                            gasPrice:web3.toHex(defaultGasPrice), 
-                            value:value},
-                        post_bounty_callback);
-
-                });
-        };
-        var erc20_approve_callback = function(error, result){
-            var next = function(){
-                callFunctionWhenTransactionMined(result,function(){
-                    _alert({ title: "Transaction #2", message: "Thanks for approving the token transfer.  Now, submit the funded issue to the contract."  }, 'info');
-                    sendPostBounty();
-                });
-            };
-            if(error){
-                mixpanel.track("New Bounty Error", {step: 'erc20', error: error});
-                console.error(error);
-                unloading_button($('#submitBounty'));
-                var isApprovalAlreadyGranted = error.toString().indexOf('invalid opcode') != -1;
-                if (isApprovalAlreadyGranted){
-                    next();
-                } else {
-                    _alert({ message: "There was an error.  Please try again or contact support." });
-                    $('#submitBounty').removeAttr('disabled');
-                }
-            } else {
-                var url = etherscan_tx_url(result);
-                var msg = "We've just submited the <a href="+url+" target=new>first transaction to the blockchain</a>.  Hang tight for a few seconds (can sometimes take up to a minute depending upon gas settings & network state) while it confirms.";
-                _alert({ title: "Transaction #1 Submitted", message: msg  }, 'info');
-                next();
-            }
-        };
-        var sendERC20Approve = function(){
-            token_contract.approve.estimateGas(bounty_address()
-                ,amount, 
-                function(errors,result){
-                    mixpanel.track("New Bounty Error", {step: 'erc20', error: errors});
-                    var gas = Math.round(erc20_approve_gas * gasMultiplier);
-                    var gasLimit = Math.round(gas * gasLimitMultiplier);
-                    token_contract.approve.sendTransaction(bounty_address()
-                        ,amount, 
-                        {from :account, 
-                            gas:web3.toHex(gas), 
-                            gasLimit: web3.toHex(gasLimit), 
-                            gasPrice:web3.toHex(defaultGasPrice), 
+                            gasPrice:web3.toHex(defaultGasPrice),
                         },
-                        erc20_approve_callback);
-                });
-        };
-        // actually send the transactions to web3
-        setTimeout(function(){
-            bounty.bountydetails.call(issueURL, function(error, result){
-                if(error){
-                    console.error(error);
-                    mixpanel.track("New Bounty Error", {step: 'details', error: error});
-                    _alert({ message: "There was an error.  Please try again or contact support." });
-                    unloading_button($('#submitBounty'));
-                    return;
-                }
-                var isOpenAlready = result[4];
-                if(isOpenAlready){
-                    _alert("There is already an open funding on this issue.  Please try again with another issue.");
-                    unloading_button($('#submitBounty'));
-                    return;
-                }
-                if(!isETH){
-                    sendERC20Approve();
-                } else {
-                    sendPostBounty();
-                }
-            });
-        },100);
-        e.preventDefault();
-    });
+                        function(error,result){
 
+                            if(error){
+                                mixpanel.track("New Bounty Error", {step: 'post_bounty', error: error});
+                                console.error(error);
+                                _alert({ message: "There was an error.  Please try again or contact support." });
+                                $('#submitBounty').removeAttr('disabled');
+                                return;
+                            }
+
+                            sync_web3(issueURL);
+                            localStorage['txid'] = result;
+                            localStorage[issueURL] = timestamp();
+                            add_to_watch_list(issueURL);
+                            _alert({ message: "Submission sent to web3." }, 'info');
+                            setTimeout(function(){
+                                delete localStorage['issueURL'];
+                                mixpanel.track("Submit New Bounty Success", {});
+                                document.location.href= "/funding/details?url="+issueURL;
+                            },1000);
+
+                        }
+                    );
+                }
+            );
+        });
+    });
 });
