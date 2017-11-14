@@ -105,4 +105,8 @@ MIXPANEL_TOKEN=''
 # optional: only needed if you slack things
 SLACK_TOKEN = 'TODO'
 
+# IMAP Settings
+IMAP_EMAIL='<email>'
+IMAP_PASSWORD='<password>'
+
 ####################################################################

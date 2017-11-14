@@ -4,6 +4,8 @@ from app.github import get_user
 from django.utils import timezone
 import requests
 import time
+import imaplib
+import email
 
 
 def add_contributors(repo_data):
@@ -51,3 +53,41 @@ def sync_profile(handle):
     org.repos_data = repos_data
     org.save()
     print("- updated")
+
+def fetch_last_email_id(email_id, password, host='imap.gmail.com', folder='INBOX'):
+    mailbox = imaplib.IMAP4_SSL(host)
+    try:
+        mailbox.login(email_id, password)
+    except imaplib.IMAP4.error:
+        return None
+    response, last_message_set_id=mailbox.select(folder)
+    if response!='OK':
+        return None
+    return last_message_set_id[0].decode('utf-8')
+
+def fetch_mails_since_id( email_id, password,since_id=None, host='imap.gmail.com', folder='INBOX'):
+    # searching via id becuase imap does not support time based search and has only date based search
+    mailbox = imaplib.IMAP4_SSL(host)
+    try:
+        mailbox.login(email_id, password)
+    except imaplib.IMAP4.error:
+        return None
+    mailbox.select(folder)
+    resp,all_ids = mailbox.search(None, "ALL")
+    all_ids = all_ids[0].decode("utf-8").split()
+    print(all_ids)
+    if since_id:
+        ids = all_ids[all_ids.index(str(since_id))+1:]
+    else:
+        ids = all_ids
+    emails = {}
+    for id in ids:
+        response, content = mailbox.fetch(str(id), '(RFC822)')
+        emails[str(id)] = email.message_from_string(content[0][1])
+    return emails
+
+
+
+
+
+
