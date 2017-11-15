@@ -149,12 +149,20 @@ def render_new_bounty_roundup(to_email):
 
     bounties = [
         {
-            'obj': Bounty.objects.get(pk=46),
-            'primer': 'Want to earn your first ETH through the platform?  Here\'s a good staring point 👇 ~ @owocki',
+            'obj': Bounty.objects.get(pk=95),
+            'primer': 'EtherDelta has bounties live for C# and Python API clients. ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=31),
-            'primer': 'This is a fun little idea to make the "waiting for block confirmation" page more engaging. ~ @owocki',
+            'obj': Bounty.objects.get(pk=123),
+            'primer': 'Truffle is a really important project in web3.  This is a great way to get started! ~ @owocki',
+        },
+        {
+            'obj': Bounty.objects.get(pk=118),
+            'primer': 'Into documentation?  Into security?  This issue is for you? ~ @owocki',
+        },
+        {
+            'obj': Bounty.objects.get(pk=128),
+            'primer': 'Want to support python in web3?  This issue is for you! ~ @owocki',
         },
     ]
 
