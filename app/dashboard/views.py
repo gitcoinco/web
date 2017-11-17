@@ -94,11 +94,29 @@ def send_tip_2(request):
         emails = []
         
         #basic validation
+        username = params['username']
+
+        #get emails
         if params['email']:
             emails.append(params['email'])
-        gh_user = get_github_user(params['username'])
+        gh_user = get_github_user(username)
+        user_full_name = gh_user['name']
         if gh_user.get('email', False):
             emails.append(gh_user['email'])
+        gh_user_events = get_github_user(username, '/events/public')
+        for event in gh_user_events:
+            commits = event.get('payload', {}).get('commits', [])
+            for commit in commits:
+                email = commit.get('author', {}).get('email', None)
+                #print(event['actor']['display_login'].lower() == username.lower())
+                #print(commit['author']['name'].lower() == user_full_name.lower())
+                #print('========')
+                if email and \
+                    event['actor']['display_login'].lower() == username.lower() and \
+                    commit['author']['name'].lower() == user_full_name.lower() and \
+                    'noreply.github.com' not in email and \
+                    email not in emails:
+                    emails.append(email)
         expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
 
         #db mutations
