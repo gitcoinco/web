@@ -306,14 +306,17 @@ window.addEventListener('load', function() {
                     }
 
                     //actions
-                    var entry = {
-                        href: result['github_url'],
-                        text: 'View on Github',
-                        target: 'new',
-                        parent: 'right_actions',
-                        color: 'darkGrey'
+                    var actions = [];
+                    if(result['github_url'].substring(0,4) == 'http'){
+                        var entry = {
+                            href: result['github_url'],
+                            text: 'View on Github',
+                            target: 'new',
+                            parent: 'right_actions',
+                            color: 'darkGrey'
+                        }
                     }
-                    var actions = [entry];
+                    actions.push(entry);
                     if(result['status']=='open'){
                         var entry = {
                             href: '/funding/claim?source='+result['github_url'],
