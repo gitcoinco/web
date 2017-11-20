@@ -103,6 +103,14 @@ class Bounty(SuperModel):
     def title_or_desc(self):
         return self.title if self.title else self.github_url
 
+
+    @property
+    def issue_description_text(self):
+        import re, cgi
+        tag_re = re.compile(r'(<!--.*?-->|<[^>]*>)')
+        return tag_re.sub('', self.issue_description)
+
+
     @property
     def org_name(self):
         try:
