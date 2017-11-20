@@ -140,7 +140,7 @@ var callbacks = {
     'project_length': unknown_if_empty,
     'bounty_type': unknown_if_empty,
     'claimee_email': function(key, val, result){
-        if(!_truthy(val)){
+        if(!_truthy(result['claimeee_address'])){
             $("#claimee").addClass('hidden');
         }
         return address_ize(key, val, result);
