@@ -150,7 +150,7 @@ def render_new_bounty_roundup(to_email):
     bounties = [
         {
             'obj': Bounty.objects.get(pk=95),
-            'primer': 'EtherDelta has bounties live for C# and Python API clients. ~ @owocki',
+            'primer': 'EtherDelta has bounties live for C# API clients. ~ @owocki',
         },
         {
             'obj': Bounty.objects.get(pk=123),
@@ -158,19 +158,19 @@ def render_new_bounty_roundup(to_email):
         },
         {
             'obj': Bounty.objects.get(pk=118),
-            'primer': 'Into documentation?  Into security?  This issue is for you? ~ @owocki',
+            'primer': 'Into documentation?  Into security?  This issue is for you! ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=128),
+            'obj': Bounty.objects.get(pk=126),
             'primer': 'Want to support python in web3?  This issue is for you! ~ @owocki',
         },
     ]
 
     params = {
         'bounties': bounties,
-        'override_back_color': '#15003e',
-        'invert_footer': True,
-        'hide_header': True,
+    #    'override_back_color': '#15003e',
+    #    'invert_footer': True,
+       'hide_header': True,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
