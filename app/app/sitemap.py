@@ -25,7 +25,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
             'help',
             'whitepaper',
             'whitepaper_access',
-            'leaderboard',
+            '_leaderboard',
         ]
 
     def location(self, item):
