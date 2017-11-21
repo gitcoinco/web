@@ -153,15 +153,15 @@ def render_new_bounty_roundup(to_email):
             'primer': 'EtherDelta has bounties live for C# API clients. ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=123),
+            'obj': Bounty.objects.get(pk=122),
             'primer': 'Truffle is a really important project in web3.  This is a great way to get started! ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=118),
+            'obj': Bounty.objects.get(pk=116),
             'primer': 'Into documentation?  Into security?  This issue is for you! ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=126),
+            'obj': Bounty.objects.get(pk=127),
             'primer': 'Want to support python in web3?  This issue is for you! ~ @owocki',
         },
     ]
