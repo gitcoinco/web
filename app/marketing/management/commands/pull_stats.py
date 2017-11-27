@@ -103,19 +103,17 @@ def joe_dominance_index():
         joe_bounties = all_bounties.filter(bounty_owner_address__in=joe_addresses)
         if not all_bounties.count():
             continue
-            
+
         val = int(100 * (joe_bounties.count()) / (all_bounties.count()))
 
-        print(days, val)
         Stat.objects.create(
             key='joe_dominance_index_{}_count'.format(days),
             val=val,
             )
 
         val = int(100 * sum([(b.value_in_usdt if b.value_in_usdt else 0) for b in joe_bounties]) / sum([(b.value_in_usdt if b.value_in_usdt else 0) for b in all_bounties]) )
-        print(days, val)
         Stat.objects.create(
-            key='joe_dominance_index_{}value'.format(days),
+            key='joe_dominance_index_{}_value'.format(days),
             val=val,
             )
 

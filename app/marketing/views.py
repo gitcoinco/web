@@ -61,7 +61,7 @@ def stats(request):
         _filters = ['slack', 'email', 'whitepaper', 'twitter']
         types = filter_types(types, _filters)
     if _filter == 'KPI':
-        _filters = ['slack', 'email_subscribers_active', 'bounties_open']
+        _filters = ['slack', 'email_subscribers_active', 'bounties_open', 'joe_dominance_index_30_count', 'joe_dominance_index_30_value']
         types = filter_types(types, _filters)
 
     # params
