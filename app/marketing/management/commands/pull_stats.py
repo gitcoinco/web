@@ -53,6 +53,8 @@ def slack_users_active():
 
 
 def twitter_followers():
+    if settings.DEBUG:
+        return
     import twitter
 
     api = twitter.Api(
@@ -87,6 +89,33 @@ def bounties_fulfilled_pct():
 
         Stat.objects.create(
             key='bounties_{}_pct'.format(status),
+            val=val,
+            )
+
+
+def joe_dominance_index():
+    from dashboard.models import Bounty
+
+    joe_addresses = ['0x4331B095bC38Dc3bCE0A269682b5eBAefa252929'.lower(), '0xe93d33CF8AaF56C64D23b5b248919EabD8c3c41E'.lower()]
+
+    for days in [7, 30, 90, 360]:
+        all_bounties = Bounty.objects.filter(current_bounty=True, web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+        joe_bounties = all_bounties.filter(bounty_owner_address__in=joe_addresses)
+        if not all_bounties.count():
+            continue
+            
+        val = int(100 * (joe_bounties.count()) / (all_bounties.count()))
+
+        print(days, val)
+        Stat.objects.create(
+            key='joe_dominance_index_{}_count'.format(days),
+            val=val,
+            )
+
+        val = int(100 * sum([(b.value_in_usdt if b.value_in_usdt else 0) for b in joe_bounties]) / sum([(b.value_in_usdt if b.value_in_usdt else 0) for b in all_bounties]) )
+        print(days, val)
+        Stat.objects.create(
+            key='joe_dominance_index_{}value'.format(days),
             val=val,
             )
 
@@ -202,7 +231,8 @@ class Command(BaseCommand):
             bounties_fulfilled_pct,
             subs_active, 
             subs_newsletter, 
-            slack_users_active
+            slack_users_active,
+            joe_dominance_index
         ]
 
         for f in fs:
