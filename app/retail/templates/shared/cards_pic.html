@@ -16,10 +16,38 @@
 
 {% endcomment %}
 
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@BlockchainAndBluegrass" />
-    <meta name="twitter:creator" content="@owocki">
-    <meta name="twitter:title" content="Blockchain and Bluegrass -- Feb 23-25 in Colorado" />
-    <meta name="twitter:description" content="Blockchain and Bluegrass is a 3 day celebration of blockchain, skiing, and bluegrass, hosted in Colorado." />
-    <meta name="twitter:image" content="https://blockchainandbluegrass.com/images/logo.jpg" />
+<meta name="twitter:domain" content="gitcoin.co" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@getgitcoin" />
+{% if card_title %}
+    <meta name="twitter:title" content="{{card_title}}" />
+{% else %}
+    <meta name="twitter:title" content="Gitcoin: Push Open Source Repos Forward" />
+{% endif %}
+<meta name="twitter:description" content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software." />
+{% if avatar_url %}
+    <meta name="twitter:image" content="{{avatar_url}}" />
+    <meta name="twitter:image:width" content="215" />
+    <meta name="twitter:image:height" content="215" />
+{% else %}
+    <meta name="twitter:image" content="https://gitcoin.co/static/v2/images/helmet.png" />
+    <meta name="twitter:image:width" content="238" />
+    <meta name="twitter:image:height" content="238" />
+{% endif %}
 
+
+<meta property=fb:app_id content="118275288856850">
+{% if card_title %}
+    <meta property=og:title content="{{card_title}}">
+{% else %}
+    <meta property=og:title content="Gitcoin: Push Open Source Repos Forward.">
+{% endif %}
+<meta property=og:url content="https://gitcoin.co/" >
+<meta property=og:description content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software.">
+{% if avatar_url %}
+    <meta property=og:image content="{{avatar_url}}">
+{% else %}
+    <meta property=og:image content="https://gitcoin.co/static/v2/images/helmet.png">
+{% endif %}
+<meta property=og:type content="website">
+<meta property=og:site_name content="Gitcoin: Push Open Source Repos Forward.">
