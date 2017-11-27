@@ -223,7 +223,7 @@ def bounty_details(request):
         'issueURL': request.GET.get('issue_'),
         'title': 'Issue Details',
         'card_title': 'Funded Issue Details | Gitcoin',
-        'avatar_url' : 'https://gitcoin.co/static/v2/images/helmet.png',
+        'avatar_url': 'https://gitcoin.co/static/v2/images/helmet.png',
         'active': 'bounty_details',
     }
 

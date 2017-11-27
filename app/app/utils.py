@@ -32,6 +32,7 @@ def add_contributors(repo_data):
     repo_data['contributors'] = response.json()
     return repo_data
 
+
 def sync_profile(handle):
     data = get_user(handle)
     is_error = not 'name' in data.keys()
@@ -58,6 +59,7 @@ def sync_profile(handle):
     org.save()
     print("- updated")
 
+
 def fetch_last_email_id(email_id, password, host='imap.gmail.com', folder='INBOX'):
     mailbox = imaplib.IMAP4_SSL(host)
     try:
@@ -68,6 +70,7 @@ def fetch_last_email_id(email_id, password, host='imap.gmail.com', folder='INBOX
     if response!='OK':
         return None
     return last_message_set_id[0].decode('utf-8')
+
 
 def fetch_mails_since_id( email_id, password,since_id=None, host='imap.gmail.com', folder='INBOX'):
     # searching via id becuase imap does not support time based search and has only date based search
@@ -89,9 +92,4 @@ def fetch_mails_since_id( email_id, password,since_id=None, host='imap.gmail.com
         response, content = mailbox.fetch(str(id), '(RFC822)')
         emails[str(id)] = email.message_from_string(content[0][1])
     return emails
-
-
-
-
-
 
