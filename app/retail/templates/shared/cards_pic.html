@@ -16,25 +16,18 @@
 
 {% endcomment %}
 
-<meta name="twitter:domain" content="gitcoin.co" />
-<meta name="twitter:card" content="summary" />
-<meta name="twitter:site" content="@getgitcoin" />
-{% if card_title %}
-    <meta name="twitter:title" content="{{card_title}}" />
-{% else %}
-    <meta name="twitter:title" content="Gitcoin: Push Open Source Repos Forward" />
-{% endif %}
-<meta name="twitter:description" content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software." />
-{% if avatar_url %}
-    <meta name="twitter:image" content="{{avatar_url}}" />
-    <meta name="twitter:image:width" content="215" />
-    <meta name="twitter:image:height" content="215" />
-{% else %}
-    <meta name="twitter:image" content="https://gitcoin.co/static/v2/images/helmet.png" />
-    <meta name="twitter:image:width" content="238" />
-    <meta name="twitter:image:height" content="238" />
-{% endif %}
 
+<meta name="twitter:card" content="player" />
+<meta name="twitter:site" content="@getgitcoin" />
+<meta name="twitter:title" content="{{card_title}}" />
+<meta name="twitter:description" content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software.
+" />
+<meta name="twitter:image" content="https://gitcoin.co/static/v2/images/helmet.png" />
+<meta name="twitter:player" content="https://www.youtube.com/embed/DJartWzDn0E" />
+<meta name="twitter:player:width" content="560" />
+<meta name="twitter:player:height" content="315" />
+<meta name="twitter:player:stream" content="/static/v2/card/card.mp4" />
+<meta name="twitter:player:stream:content_type" content="video/mp4" />
 
 <meta property=fb:app_id content="118275288856850">
 {% if card_title %}
