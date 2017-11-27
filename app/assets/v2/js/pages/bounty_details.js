@@ -308,8 +308,13 @@ window.addEventListener('load', function() {
                     //actions
                     var actions = [];
                     if(result['github_url'].substring(0,4) == 'http'){
+
+                        var github_url = result['github_url'];
+                        // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
+                        github_url = github_url.replace('pipermerriam/web3.py','ethereum/web3.py');
+
                         var entry = {
-                            href: result['github_url'],
+                            href: github_url,
                             text: 'View on Github',
                             target: 'new',
                             parent: 'right_actions',
