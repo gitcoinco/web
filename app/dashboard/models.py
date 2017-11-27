@@ -191,6 +191,9 @@ class Bounty(SuperModel):
     def desc(self):
         return "{} {} {} {}".format(naturaltime(self.web3_created), self.idx_project_length, self.bounty_type, self.experience_level)
 
+    @property
+    def turnaround_time(self):
+        return (self.created_on - self.web3_created).total_seconds()
 
     def fetch_issue_description(self):
         import requests

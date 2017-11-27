@@ -118,6 +118,27 @@ def joe_dominance_index():
             )
 
 
+def avg_time_bounty_turnaround():
+    import statistics
+    from dashboard.models import Bounty
+
+    for days in [7, 30, 90, 360]:
+        all_bounties = Bounty.objects.filter(current_bounty=True, idx_status='fulfilled', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+        if not all_bounties.count():
+            continue
+
+        turnaround_times = [b.turnaround_time for b in all_bounties]
+
+        val = int(statistics.median(turnaround_times) / 60 / 60) #seconds to hours
+
+        Stat.objects.create(
+            key='turnaround_time_hours_{}_days_back'.format(days),
+            val=val,
+            )
+
+
+
+
 def bounties_open():
     from dashboard.models import Bounty
 
@@ -230,7 +251,8 @@ class Command(BaseCommand):
             subs_active, 
             subs_newsletter, 
             slack_users_active,
-            joe_dominance_index
+            joe_dominance_index,
+            avg_time_bounty_turnaround
         ]
 
         for f in fs:
