@@ -24,7 +24,11 @@
 {% else %}
     <meta name="twitter:title" content="Gitcoin: Push Open Source Repos Forward" />
 {% endif %}
-<meta name="twitter:description" content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software." />
+{% if card_desc %}
+    <meta name="twitter:description" content="{{card_desc}}" />
+{% else %}
+    <meta name="twitter:description" content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software." />
+{% endif %}
 {% if avatar_url %}
     <meta name="twitter:image" content="{{avatar_url}}" />
     <meta name="twitter:image:width" content="215" />

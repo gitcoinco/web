@@ -8,6 +8,10 @@ import imaplib
 import email
 
 
+def ellipses(data, _len=75):
+    return (data[:_len] + '..') if len(data) > _len else data
+
+
 def add_contributors(repo_data):
     if repo_data.get('fork', False):
         return repo_data

@@ -28,6 +28,7 @@ from retail.helpers import get_ip
 from dashboard.helpers import normalizeURL, process_bounty_details, process_bounty_changes
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 import json
+from app.utils import ellipses
 from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack
 from marketing.mails import tip_email
 from app.github import get_user as get_github_user
@@ -231,6 +232,7 @@ def bounty_details(request):
         if b.title:
             params['card_title'] = "{} | {} Funded Issue Detail | Gitcoin".format(b.title, b.org_name)
             params['title'] = params['card_title']
+            params['card_desc'] = ellipses(b.issue_description_text)
         params['avatar_url'] = b.local_avatar_url
     except Exception as e:
         print(e)
