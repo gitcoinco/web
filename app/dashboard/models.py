@@ -108,7 +108,7 @@ class Bounty(SuperModel):
     def issue_description_text(self):
         import re, cgi
         tag_re = re.compile(r'(<!--.*?-->|<[^>]*>)')
-        return tag_re.sub('', self.issue_description)
+        return tag_re.sub('', self.issue_description).strip()
 
 
     @property
