@@ -82,7 +82,7 @@ def maybe_market_to_slack(bounty, event_name, txid):
         return False
 
     title = bounty.title if bounty.title else bounty.github_url
-    msg = "{} worth {} {}: {} \n\n{}".format(event_name.replace('bounty', 'funded_issue'), round(bounty.get_natural_value(), 4), bounty.token_name, title, bounty.get_absolute_url())
+    msg = "{} worth {} {}: {}&slack=1 \n\n{}".format(event_name.replace('bounty', 'funded_issue'), round(bounty.get_natural_value(), 4), bounty.token_name, title, bounty.get_absolute_url())
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
