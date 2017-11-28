@@ -112,7 +112,7 @@ var process_stats = function(results){
     }
     worth_usdt = worth_usdt.toFixed(2);
     worth_eth = (worth_eth / 10 ** 18).toFixed(2);
-    var stats = "" + num + " worth " + worth_usdt + " USDT, " + worth_eth + " ETH";
+    var stats = "" + num + " worth " + worth_usdt + " USD, " + worth_eth + " ETH";
     for(var token in currencies_to_value){
         stats += ", " + currencies_to_value[token].toFixed(2) + " " + token;
     }

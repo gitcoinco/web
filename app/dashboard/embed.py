@@ -31,7 +31,7 @@ def summarize_bounties(bounties):
     for bounty in bounties:
         currency_to_value[bounty.token_name] += bounty.value_true
     other_values = ", ".join(["{} {}".format(round(value, 2), token_name) for token_name, value in currency_to_value.items()])
-    return True, "Total: {} issue{}, {} USDT, {}".format(bounties.count(), 's' if bounties.count() != 1 else "", val_usdt, other_values)
+    return True, "Total: {} issue{}, {} USD, {}".format(bounties.count(), 's' if bounties.count() != 1 else "", val_usdt, other_values)
 
 
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
@@ -181,7 +181,7 @@ def embed(request):
         for bounty in bounties:
             i += 1
             value_eth = str(round(bounty.value_in_eth/10**18,2)) + "ETH" if bounty.value_in_eth else ""
-            value_in_usdt = str(round(bounty.value_in_usdt,2)) + "USDT" if bounty.value_in_usdt else ""
+            value_in_usdt = str(round(bounty.value_in_usdt,2)) + "USD" if bounty.value_in_usdt else ""
             value_native = "{} {}".format(round(bounty.value_true, 2), bounty.token_name)
 
             value = "{}, {}".format(value_eth, value_in_usdt)

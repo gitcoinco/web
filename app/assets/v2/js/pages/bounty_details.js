@@ -156,7 +156,7 @@ var callbacks = {
         if(val == null){
             return [null, null];
         }
-        return [ "Amount_usdt" , val];
+        return [ "Amount_usd" , val];
     },
     'web3_created': function(key, val, result){
         return [ "updated" , timeDifference(new Date(result['now']), new Date(result['created_on']))];
