@@ -22,3 +22,13 @@ services:
       - migration
     stdin_open: true
     tty: true
+  shell:
+    restart: always
+    build: .
+    command: /bin/bash
+    volumes:
+      - .:/code
+    depends_on:
+      - migration
+    stdin_open: true
+    tty: true
