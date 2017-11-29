@@ -164,8 +164,8 @@ def render_new_bounty_roundup(to_email):
 
     params = {
         'bounties': bounties,
-    #    'override_back_color': '#15003e',
-    #    'invert_footer': True,
+        'override_back_color': '#15003e',
+        'invert_footer': True,
        'hide_header': True,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
