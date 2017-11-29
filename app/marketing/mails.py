@@ -95,7 +95,7 @@ def new_bounty(bounty, to_emails=[]):
 
 def weekly_roundup(to_emails=[]):
 
-    subject = "⚡️ Gitcoin joins ConsenSys"
+    subject = "⚡️ Refer a Friend get ETH (bonus: Pilot Projects update)"
     for to_email in to_emails:
         html, text = render_new_bounty_roundup(to_email)
         from_email = settings.PERSONAL_CONTACT_EMAIL
