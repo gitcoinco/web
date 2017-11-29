@@ -57,7 +57,7 @@ div, p, a, span{
 }
 .search_bar, .bounty_def{
     background-color: #eee;
-    height: 136px;
+    height: 140px;
     padding-top: 10px;
 }
 .search_bar, .bounty_def #mce-EMAIL{
