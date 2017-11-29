@@ -21,6 +21,7 @@ from economy.models import SuperModel
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from dashboard.models import Bounty
+from django.contrib.postgres.fields import ArrayField
 
 
 class EmailSubscriber(SuperModel):
@@ -31,6 +32,8 @@ class EmailSubscriber(SuperModel):
     preferences = JSONField(default={})
     metadata = JSONField(default={})
     priv = models.CharField(max_length=30, default='')
+    github = models.CharField(max_length=255, default='')
+    keywords = ArrayField(models.CharField(max_length=200), blank=True, default=[])
 
     def __str__(self):
         return self.email

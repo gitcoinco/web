@@ -255,7 +255,7 @@ def profile_helper(handle):
     return profile
 
 
-def profile_keywords(request, handle):
+def profile_keywords_helper(handle):
     profile = profile_helper(handle)
 
     keywords = []
@@ -265,7 +265,12 @@ def profile_keywords(request, handle):
         for key in _keywords:
             if key != '' and key not in keywords:
                 keywords.append(key)
+    return keywords
 
+
+def profile_keywords(request, handle):
+    keywords = profile_keywords_helper(handle)
+    
     response = {
         'status': 200,
         'keywords': keywords,
