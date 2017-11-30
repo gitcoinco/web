@@ -355,9 +355,12 @@ def error(request, code):
         return TemplateResponse(request, 'error.html', context)
 
 
-
 def portal(request):
     return redirect('https://gitcoinhelp.zendesk.com/hc/en-us/')
+
+
+def feedback(request):
+    return redirect('https://goo.gl/forms/9rs9pNKJDnUDYEeA3')
 
 
 def help_dev(request):

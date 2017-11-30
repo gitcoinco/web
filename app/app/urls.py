@@ -95,6 +95,7 @@ urlpatterns = [
     url(r'^slack/?', retail.views.slack, name='slack'),
     url(r'^btctalk/?', retail.views.btctalk, name='btctalk'),
     url(r'^reddit/?', retail.views.reddit, name='reddit'),
+    url(r'^feedback/?', retail.views.feedback, name='feedback'),
     url(r'^twitter/?', retail.views.twitter, name='twitter'),
     url(r'^gitter/?', retail.views.gitter, name='gitter'),
     url(r'^fb/?', retail.views.fb, name='fb'),
