@@ -81,6 +81,8 @@ var get_search_URI = function(){
     }
     if(typeof web3 != 'undefined' && web3.eth.coinbase){
         uri += '&coinbase='+web3.eth.coinbase;
+    } else {
+        uri += '&coinbase=unknown';
     }
 
     var selected_option = $('.sort_option.selected');
