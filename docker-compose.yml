@@ -3,15 +3,13 @@ version: '3'
 services:
   db:
     image: postgres
-  migration:
-    build: .
-    command: python app/manage.py migrate
     volumes:
-      - .:/code
-    depends_on:
-      - db
+      - pgdata:/var/lib/postgresql/data
   web:
     restart: always
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
     build: .
     command: bash docker-command.bash
     volumes:
@@ -19,16 +17,9 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - migration
+      - db
     stdin_open: true
     tty: true
-  shell:
-    restart: always
-    build: .
-    command: /bin/bash
-    volumes:
-      - .:/code
-    depends_on:
-      - migration
-    stdin_open: true
-    tty: true
+
+volumes:
+  pgdata:
