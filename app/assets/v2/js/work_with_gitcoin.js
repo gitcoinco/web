@@ -8,6 +8,8 @@ $(document).ready(function(){
         console.log('# Get in touch: ');
         console.log('# - http://github.com/gitcoinco');
         console.log('# - founders@gitcoin.co');
+        console.log('# Turnaround a Funded Issue: ');
+        console.log('# - https://gitcoin.co/explorer');
         console.log('# ');
         console.log('# <3 ');
         console.log('# Gitcoin Core');
