@@ -49,7 +49,7 @@ var set_modifiers_sentence = function(){
     var sentence = _modifiers.join(" ") + " Funded Issues";
     var keywords = $("#keywords").val();
     if(keywords){
-        sentence += ' w. keyword ' + keywords;
+        sentence += ' w. keyword ' + encodeURIComponent(keywords);
     }
 
 
