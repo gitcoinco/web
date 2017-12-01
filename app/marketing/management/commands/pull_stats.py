@@ -70,6 +70,13 @@ def twitter_followers():
         val=(user.followers_count),
         )
 
+    user = api.GetUser(screen_name='owocki')
+
+    Stat.objects.create(
+        key='twitter_followers_owocki',
+        val=(user.followers_count),
+        )
+
 
 def bounties():
     from dashboard.models import Bounty

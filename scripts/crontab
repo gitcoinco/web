@@ -25,5 +25,6 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 1 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration_tip  >> /var/log/gitcoin/expiration_tip.log  2>&1
 1 10 * * 1 cd gitcoin/coin; bash scripts/run_management_command.bash assemble_leaderboards  >> /var/log/gitcoin/assemble_leaderboards.log  2>&1
 10 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash pull_stats  >> /var/log/gitcoin/pull_stats.log  2>&1
+10 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash pull_github  >> /var/log/gitcoin/pull_github.log  2>&1
 1 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash post_to_craigslist 1  >> /var/log/gitcoin/post_to_craigslist.log  2>&1
 
