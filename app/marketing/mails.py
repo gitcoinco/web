@@ -152,8 +152,6 @@ def new_match(to_emails, bounty, github_username):
     send_mail(from_email, to_email, subject, text, html, cc_emails=to_emails)
 
 
-
-
 def bounty_expire_warning(bounty, to_emails=[]):
     if not bounty or not bounty.value_in_usdt:
         return
@@ -164,7 +162,7 @@ def bounty_expire_warning(bounty, to_emails=[]):
         if num == 0:
             unit = 'hours'
             num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
-        subject = "😕 Your Funded Issue Expires In {} {} ... 😕".format(days, unit)
+        subject = "😕 Your Funded Issue ({}) Expires In {} {} ... 😕".format(bounty.title_or_desc, num, unit)
 
         from_email = settings.CONTACT_EMAIL
         html, text = render_bounty_expire_warning(to_email, bounty)

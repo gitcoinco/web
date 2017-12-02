@@ -30,6 +30,7 @@ class Command(BaseCommand):
         for day in days:
             bounties = Bounty.objects.filter(
                 is_open=True,
+                current_bounty=True,
                 expires_date__lt=(timezone.now() + timezone.timedelta(days=(day+1))),
                 expires_date__gte=(timezone.now() + timezone.timedelta(days=day)),
             ).all()
