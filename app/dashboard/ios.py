@@ -13,15 +13,15 @@ import logging
 def save(request):
 
     status = 422
-    message = 'Please use a GET'
+    message = 'Please use a POST'
 
-    if request.GET:
+    if request.POST.get('bounty_id', False):
 
         # handle a POST
-        bounty_id = request.GET.get('bounty_id')
-        email_address = request.GET.get('email_address')
-        direction = request.GET.get('direction')
-        github_username = request.GET.get('github_username')
+        bounty_id = request.POST.get('bounty_id')
+        email_address = request.POST.get('email_address')
+        direction = request.POST.get('direction')
+        github_username = request.POST.get('github_username')
 
         #do validation
         validation_failed = False
