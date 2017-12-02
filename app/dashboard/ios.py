@@ -70,5 +70,5 @@ def save(request):
         'status': status,
         'message': message,
     }
-    return JsonResponse(response)
+    return JsonResponse(response, status=status)
 
