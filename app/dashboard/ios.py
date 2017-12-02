@@ -14,7 +14,7 @@ def save(request):
 
     status = 422
     message = 'Please use a POST'
-
+    raise Exception(str(request.POST.keys()))
     if request.POST.get('bounty_id', False):
 
         # handle a POST
