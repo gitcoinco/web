@@ -47,6 +47,7 @@ def save(request):
         if validation_failed:
             status = 422
             message = 'Validation failed: {}'.format(validation_failed)
+            raise Exception(message)
         else:
             bounty = Bounty.objects.get(pk=bounty_id)
             #save obj
