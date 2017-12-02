@@ -66,9 +66,9 @@ def save(request):
             # response
             status = 200
             message = 'Success'
+    
+    raise Exception(message)
 
-    logging.debug(message)
-    logging.error(message)
     response = {
         'status': status,
         'message': message,
