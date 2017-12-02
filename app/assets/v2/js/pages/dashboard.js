@@ -48,8 +48,13 @@ var set_modifiers_sentence = function(){
     };
     var sentence = _modifiers.join(" ") + " Funded Issues";
     var keywords = $("#keywords").val();
+    var plural = 's';
+    if(keywords.split(',').length == 2){
+        plural = '';
+    }
     if(keywords){
-        sentence += ' w. keyword ' + encodeURIComponent(keywords);
+        var encoded_keywords = encodeURIComponent(keywords.split(',').join(" ")).split('%20').join(" ");
+        sentence += ' w. keyword'+plural+' ' + encoded_keywords;
     }
 
 
