@@ -31,6 +31,7 @@ import json
 from app.utils import ellipses
 from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack
 from marketing.mails import tip_email
+from marketing.models import Keyword
 from app.github import get_user as get_github_user
 from app.utils import sync_profile
 
@@ -177,6 +178,7 @@ def dashboard(request):
     params = {
         'active': 'dashboard',
         'title': 'Issue Explorer',
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'dashboard.html', params)
 

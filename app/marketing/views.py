@@ -28,6 +28,8 @@ from django.core.validators import validate_email
 from retail.helpers import get_ip
 from django.http import Http404
 from django.utils import timezone
+from marketing.models import Keyword
+import json
 # Create your views here.
 
 
@@ -177,6 +179,7 @@ def email_settings(request, key):
         'es': es,
         'keywords': ",".join(es.keywords),
         'msg': msg,
+        'autocomplete_keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'email_settings.html', context)
 

@@ -16,20 +16,30 @@
 
 '''
 from django.core.management.base import BaseCommand
-from marketing.mails import new_bounty
-from dashboard.models import Subscription, Bounty
-import requests
-from django.utils import timezone
+from marketing.models import Keyword
+from dashboard.models import Bounty
+import re
+
 
 class Command(BaseCommand):
 
-    help = 'pulls mailchimp emails'
+    help = 'syncs autocomplete keywords'
 
     def handle(self, *args, **options):
 
-        for sub in Subscription.objects.all():
-            url = "https://gitcoin.co/" + sub.raw_data
-            bounties_pks = [b['pk'] for b in requests.get(url).json()]
-            for bounty in Bounty.objects.filter(pk__in=bounties_pks, idx_status='open'):
-                if bounty.web3_created > (timezone.now() - timezone.timedelta(hours=24)):
-                    new_bounty(bounty, to_emails=[sub.email])
+        keywords = []
+
+        for bounty in Bounty.objects.all():
+            keywords.append(bounty.org_name)
+            keywords.append(bounty.bounty_owner_github_username)
+            keywords.append(bounty.claimee_github_username)
+            if bounty.keywords:
+                for keyword in bounty.keywords.split(','):
+                    keywords.append(keyword)
+        Keyword.objects.all().delete()
+        for keyword in set(keywords):
+            if keyword:
+                keyword = re.sub(r'\W+', '', keyword).lower()
+                if keyword:
+                    Keyword.objects.get_or_create(keyword=keyword)
+                    print(keyword)
