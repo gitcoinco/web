@@ -68,8 +68,6 @@ def save(request):
             status = 200
             message = 'Success'
     
-    raise Exception(str(message))
-
     response = {
         'status': status,
         'message': message,
