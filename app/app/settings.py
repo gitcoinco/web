@@ -146,21 +146,37 @@ USE_TZ = True
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': '/var/log/django/debug.log',
+    'filters': {
+        'require_debug_is_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
         },
+    },
+    'disable_existing_loggers': False,
+    'handlers': {
+        'rotatingfilehandler': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/var/log/django/debug.log',
+            'maxBytes': 1024 * 1024 * 10 , # 10 MB
+            'backupCount': 100,  # max 100 logs
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+        }
     },
     'loggers': {
         'django': {
-            'handlers': ['file'],
-            'level': 'ERROR',
+            'handlers': ['rotatingfilehandler', 'mail_admins'],
             'propagate': True,
+            'filters': ['require_debug_is_false'],
         },
     },
 }
+LOGGING['loggers']['django.request'] = LOGGING['loggers']['django']
+for ia in INSTALLED_APPS:
+    LOGGING['loggers'][ia] = LOGGING['loggers']['django']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/

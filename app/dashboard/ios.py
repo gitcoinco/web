@@ -5,6 +5,7 @@ from ratelimit.decorators import ratelimit
 from marketing.mails import new_match
 from marketing.models import Match
 from django.views.decorators.csrf import csrf_exempt
+import logging
 
 
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
@@ -47,7 +48,6 @@ def save(request):
         if validation_failed:
             status = 422
             message = 'Validation failed: {}'.format(validation_failed)
-            raise Exception(message)
         else:
             bounty = Bounty.objects.get(pk=bounty_id)
             #save obj
@@ -67,6 +67,8 @@ def save(request):
             status = 200
             message = 'Success'
 
+    logging.debug(message)
+    logging.error(message)
     response = {
         'status': status,
         'message': message,
