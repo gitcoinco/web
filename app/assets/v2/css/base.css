@@ -817,7 +817,9 @@ body.bounty_details #title{
     margin-right: 10px;
     margin-top: 5px;
 }
-
+#pull_gh {
+    font-size: 12px
+}
 
 @media (max-width: 1350px) {
     .profile_details .bounties li div.details{
@@ -889,6 +891,13 @@ body.bounty_details #title{
     }
 }
 @media (max-width: 769px) {
+    .email_settings .col-4 {
+        display: none;
+    }
+    .email_settings .col-6 {
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
     .profile_details #stats li{
         width: 48%;
     }
