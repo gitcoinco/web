@@ -37,7 +37,7 @@ def amount(request):
 
     try:
         amount = request.GET.get('amount')
-        deonomination = request.GET.get('denomination')
+        deonomination = request.GET.get('denomination', 'ETH')
         if deonomination == 'ETH':
             amount_in_eth = amount
         else:
