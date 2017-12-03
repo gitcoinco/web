@@ -6,6 +6,7 @@ from PIL import ImageDraw
 from app.github import org_name, get_user
 import requests
 from dashboard.models import Bounty
+from django.http import JsonResponse
 
 
 def wrap_text(text, w=30):
@@ -58,6 +59,8 @@ def embed(request):
             avatar = Image.open(filepath, 'r')
         except IOError:
             remote_user = get_user(_org_name)
+            if not remote_user.get('avatar_url', False):
+                return JsonResponse({'msg': 'invalid user'}, status=422)
             remote_avatar_url = remote_user['avatar_url']
 
             r = requests.get(remote_avatar_url, stream=True)
@@ -252,6 +255,8 @@ def avatar(request):
             avatar = Image.open(filepath, 'r')
         except IOError:
             remote_user = get_user(_org_name)
+            if not remote_user.get('avatar_url', False):
+                return JsonResponse({'msg': 'invalid user'}, status=422)
             remote_avatar_url = remote_user['avatar_url']
 
             r = requests.get(remote_avatar_url, stream=True)

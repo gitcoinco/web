@@ -16,29 +16,30 @@
 
 '''
 from django.core.management.base import BaseCommand
+from marketing.models import Keyword
 from dashboard.models import Bounty
-from django.utils import timezone
-from marketing.mails import bounty_expire_warning
+import re
 
 
 class Command(BaseCommand):
 
-    help = 'the expiration notifications'
+    help = 'syncs autocomplete keywords'
 
     def handle(self, *args, **options):
-        days = [1, 3, 5, 10]
-        for day in days:
-            bounties = Bounty.objects.filter(
-                is_open=True,
-                current_bounty=True,
-                expires_date__lt=(timezone.now() + timezone.timedelta(days=(day+1))),
-                expires_date__gte=(timezone.now() + timezone.timedelta(days=day)),
-            ).all()
-            print('day {} got {} bounties'.format(day, bounties.count()))
-            for b in bounties:
-                email_list = []
-                if b.bounty_owner_email:
-                    email_list.append(b.bounty_owner_email)
-                if b.claimee_email:
-                    email_list.append(b.claimee_email)
-                bounty_expire_warning(b, email_list)
+
+        keywords = []
+
+        for bounty in Bounty.objects.all():
+            keywords.append(bounty.org_name)
+            keywords.append(bounty.bounty_owner_github_username)
+            keywords.append(bounty.claimee_github_username)
+            if bounty.keywords:
+                for keyword in bounty.keywords.split(','):
+                    keywords.append(keyword)
+        Keyword.objects.all().delete()
+        for keyword in set(keywords):
+            if keyword:
+                keyword = re.sub(r'\W+', '', keyword).lower()
+                if keyword:
+                    Keyword.objects.get_or_create(keyword=keyword)
+                    print(keyword)

@@ -86,3 +86,7 @@ class Match(SuperModel):
     def __str__(self):
         return "{}: {}; {}".format(self.email, self.bounty, self.direction)
 
+
+class Keyword(SuperModel):
+    keyword = models.CharField(max_length=255)
+
