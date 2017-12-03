@@ -15,7 +15,7 @@ Pillow==4.0.0
 premailer
 populus==2.0.0a4
 psycopg2
-PyPdf
+PyPdf2
 python-twitter==3.2
 sendgrid
 slackclient

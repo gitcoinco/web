@@ -23,7 +23,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.validators import validate_email
 from django.conf import settings
 from django.utils import timezone
-from pyPdf import PdfFileWriter, PdfFileReader
+from PyPDF2 import PdfFileWriter, PdfFileReader
 from marketing.mails import send_mail
 from ratelimit.decorators import ratelimit
 from reportlab.lib.pagesizes import letter
