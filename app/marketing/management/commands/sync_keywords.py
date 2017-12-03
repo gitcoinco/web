@@ -15,10 +15,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.core.management.base import BaseCommand
-from marketing.models import Keyword
-from dashboard.models import Bounty
 import re
+
+from django.core.management.base import BaseCommand
+
+from dashboard.models import Bounty
+from marketing.models import Keyword
 
 
 class Command(BaseCommand):

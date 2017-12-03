@@ -15,8 +15,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from dashboard.models import Bounty
 from django.core.management.base import BaseCommand
+
+from dashboard.models import Bounty
 
 
 class Command(BaseCommand):

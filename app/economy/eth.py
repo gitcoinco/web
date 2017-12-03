@@ -15,10 +15,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.conf import settings
 import json
+
+from django.conf import settings
+
 from web3 import Web3
-from web3.providers.rpc import KeepAliveRPCProvider, HTTPProvider
+from web3.providers.rpc import HTTPProvider, KeepAliveRPCProvider
 
 
 def get_network_details(network):

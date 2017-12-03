@@ -15,11 +15,13 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import time
+
 from django.core.management.base import BaseCommand
+
+from app.github import search
 from dashboard.views import profile_keywords_helper
 from marketing.models import EmailSubscriber
-from app.github import search
-import time
 
 
 def get_github_user(email):

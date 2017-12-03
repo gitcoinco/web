@@ -18,16 +18,16 @@
 '''
 #!/usr/bin/env python
 
-from django.core.management.base import BaseCommand
-from django.conf import settings
-
-import twitter
+import csv
 import random
 import sys
 import time
-import csv
-from marketing.quotify.run import write_image, recommend_font_size, select_font, select_background_image
-import random
+
+from django.conf import settings
+from django.core.management.base import BaseCommand
+
+import twitter
+from marketing.quotify.run import recommend_font_size, select_background_image, select_font, write_image
 
 
 class Command(BaseCommand):
@@ -97,4 +97,3 @@ class Command(BaseCommand):
         #    else:
         #        status = api.PostUpdate(new_tweet)
             status = api.PostUpdate(new_tweet, media=img)
-

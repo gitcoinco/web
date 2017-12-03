@@ -1,12 +1,10 @@
-from ratelimit.decorators import ratelimit
-from django.http import HttpResponse
-from PIL import ImageFont
-from PIL import Image
-from PIL import ImageDraw
-from app.github import org_name, get_user
+from django.http import HttpResponse, JsonResponse
+
 import requests
+from app.github import get_user, org_name
 from dashboard.models import Bounty
-from django.http import JsonResponse
+from PIL import Image, ImageDraw, ImageFont
+from ratelimit.decorators import ratelimit
 
 
 def wrap_text(text, w=30):
@@ -301,4 +299,3 @@ def avatar(request):
     except IOError as e:
         print(e)
         return err_response
-

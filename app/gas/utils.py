@@ -1,5 +1,6 @@
-from gas.models import GasProfile
 from django.utils import timezone
+
+from gas.models import GasProfile
 
 
 def recommend_min_gas_price_to_confirm_in_time(minutes, default=5):

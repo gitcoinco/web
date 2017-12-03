@@ -15,14 +15,16 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.core.management.base import BaseCommand
-from django.conf import settings
-from economy.eth import getWeb3, getBountyContract, get_network_details
-from django.utils import timezone
-from dashboard.helpers import syncBountywithWeb3, process_bounty_changes, normalizeURL
-from dashboard.models import BountySyncRequest
 import time
+
+from django.conf import settings
+from django.core.management.base import BaseCommand
+from django.utils import timezone
+
 import requests
+from dashboard.helpers import normalizeURL, process_bounty_changes, syncBountywithWeb3
+from dashboard.models import BountySyncRequest
+from economy.eth import get_network_details, getBountyContract, getWeb3
 
 POLL_SLEEP_TIME = 3
 
@@ -127,5 +129,3 @@ class Command(BaseCommand):
                     callback(blockNumber) 
                 last_blockNumber = blockNumber
                 time.sleep(POLL_SLEEP_TIME)
-
-

@@ -1,5 +1,13 @@
 # encoding=utf8
 import sys
+
+from django.conf import settings
+
+import sendgrid
+from marketing.utils import get_or_save_email_subscriber, should_suppress_email
+from retail.emails import *
+from sendgrid.helpers.mail import Content, Email, Mail, Personalization
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 '''
@@ -19,11 +27,6 @@ sys.setdefaultencoding('utf8')
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-import sendgrid
-from sendgrid.helpers.mail import Email, Content, Mail, Personalization
-from django.conf import settings
-from retail.emails import *
-from marketing.utils import get_or_save_email_subscriber, should_suppress_email
 
 
 def send_mail(from_email, to_email, subject, body, html=False, from_name="Gitcoin.co", cc_emails=None):
@@ -174,4 +177,3 @@ def bounty_expire_warning(bounty, to_emails=[]):
 
         if not should_suppress_email(to_email):
             send_mail(from_email, to_email, subject, text, html)
-
