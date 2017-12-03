@@ -43,10 +43,8 @@ $(document).keyup(function(e) {
   currentButtonValue = $("input[name='carousel']:checked").val()
   if (e.key === "ArrowLeft") {
     previousSlide(currentButtonValue, radioButtons)
-    resetTimer()
   } else if (e.key == "ArrowRight") {
     nextSlide(currentButtonValue, radioButtons)
-    resetTimer()
   }
 });
 
