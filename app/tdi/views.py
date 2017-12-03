@@ -32,7 +32,7 @@ from wsgiref.util import FileWrapper
 from retail.helpers import get_ip
 from django.shortcuts import redirect
 import os
-import StringIO
+from io import StringIO
 import hashlib
 from django.contrib import messages
 

@@ -34,7 +34,7 @@ from django.conf.urls import (
 )
 from dashboard.router import router
 from django.contrib.sitemaps.views import sitemap
-from sitemap import sitemaps
+from . import sitemaps
 
 
 urlpatterns = [
