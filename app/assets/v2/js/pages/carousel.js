@@ -22,6 +22,8 @@ function nextSlide() {
   var nextButton = findNextButton(currentButtonValue, radioButtons)
 
   nextButton.click();
+
+  resetTimer();
 }
 
 function previousSlide() {
@@ -31,6 +33,20 @@ function previousSlide() {
   var prevButton = findPreviousButton(currentButtonValue, radioButtons)
 
   prevButton.click()
+
+  resetTimer();
+}
+
+var interval;
+var startTimer = function(){
+ interval = setInterval(function(){
+  nextSlide()
+  },5000);
+};
+
+function resetTimer() {
+  clearInterval(interval);
+  startTimer();
 }
 
 $(document).keyup(function(e) {
@@ -44,8 +60,5 @@ $(document).keyup(function(e) {
 });
 
 $(document).ready(function() {
-  var interval = setInterval(function() {
-    nextSlide()
-  }, 5000);
-
+  startTimer();
 })
