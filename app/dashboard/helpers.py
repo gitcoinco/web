@@ -63,7 +63,7 @@ def title(request):
     urlVal = URLValidator()
     try:
         urlVal(url)
-    except ValidationError, e:
+    except ValidationError as e:
         response['message'] = 'invalid arguments'
         return JsonResponse(response)
 
@@ -73,7 +73,7 @@ def title(request):
 
     try:
         html_response = requests.get(url)
-    except ValidationError, e:
+    except ValidationError as e:
         response['message'] = 'could not pull back remote response'
         return JsonResponse(response)
 
@@ -92,7 +92,7 @@ def title(request):
             for link in soup.find_all('h1'):
                 print(link.text)
 
-    except ValidationError, e:
+    except ValidationError as e:
         response['message'] = 'could not parse html'
         return JsonResponse(response)
 
@@ -115,7 +115,7 @@ def keywords(request):
     urlVal = URLValidator()
     try:
         urlVal(url)
-    except ValidationError, e:
+    except ValidationError as e:
         response['message'] = 'invalid arguments'
         return JsonResponse(response)
 
@@ -134,7 +134,7 @@ def keywords(request):
         keywords.append(split_repo_url[-2])
 
         html_response = requests.get(repo_url)
-    except ValidationError, e:
+    except ValidationError as e:
         response['message'] = 'could not pull back remote response'
         return JsonResponse(response)
 
@@ -145,7 +145,7 @@ def keywords(request):
         for ele in eles:
             keywords.append(ele.text)
 
-    except ValidationError, e:
+    except ValidationError as e:
         response['message'] = 'could not parse html'
         return JsonResponse(response)
 
