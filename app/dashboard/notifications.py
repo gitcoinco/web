@@ -18,7 +18,7 @@
 from django.conf import settings
 import twitter
 import requests
-from urlparse import urlparse
+from urllib import parse
 from app.github import post_issue_comment
 from slackclient import SlackClient
 import re
@@ -143,7 +143,7 @@ def maybe_market_to_github(bounty, event_name, txid):
 
     # actually post
     url = bounty.github_url
-    uri = urlparse(url).path
+    uri = parse(url).path
     uri_array = uri.split('/')
     try:
         username = uri_array[1]
@@ -175,7 +175,7 @@ def maybe_market_tip_to_github(tip):
 
     # actually post
     url = tip.github_url
-    uri = urlparse(url).path
+    uri = parse(url).path
     uri_array = uri.split('/')
     try:
         username = uri_array[1]
