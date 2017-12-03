@@ -2,7 +2,7 @@
   <div class="wrap">
     <div class="wrap2">
 
-      {% for slide in slides %}
+      {% for username, image_url, paragraph in slides %}
         <div class="group">
 
           {% if forloop.first %}
@@ -34,17 +34,26 @@
               <img class="carousel-closed-circle" src="/static/v2/images/carousel/circle_closed.png" />
               <img class="carousel-large-circle" src="/static/v2/images/carousel/circle_open_lg.png" />
               <img class="carousel-small-circle" src="/static/v2/images/carousel/circle_open_sm.png" />
-              <img class="carousel-img" src="{{slide.1}}">
+              <img class="carousel-img" src="{{image_url}}">
             </div>
             <div class="col-6 col-md-4 col-sm-12 testimony">
               <div class="testimony-paragraph">
-                {{slide.2}}
+                {{paragraph}}
               </div>
-              <div class="testimony-signature">---{{slide.0}}</div>
+              <div class="testimony-signature">---{{username}}</div>
             </div>
           </div>
         </div>
       {% endfor %}
+
+      <script>
+        var interval;
+        var startTimer = function(){
+         interval = setInterval(function(){
+          nextSlide()
+          },{{slideDuration}});
+        };
+      </script>
     </div>
   </div>
 </div>

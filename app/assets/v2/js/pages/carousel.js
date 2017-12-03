@@ -21,9 +21,7 @@ function nextSlide() {
 
   var nextButton = findNextButton(currentButtonValue, radioButtons)
 
-  nextButton.click();
-
-  resetTimer();
+  nextButton.click()
 }
 
 function previousSlide() {
@@ -33,16 +31,7 @@ function previousSlide() {
   var prevButton = findPreviousButton(currentButtonValue, radioButtons)
 
   prevButton.click()
-
-  resetTimer();
 }
-
-var interval;
-var startTimer = function(){
- interval = setInterval(function(){
-  nextSlide()
-  },5000);
-};
 
 function resetTimer() {
   clearInterval(interval);
@@ -54,11 +43,18 @@ $(document).keyup(function(e) {
   currentButtonValue = $("input[name='carousel']:checked").val()
   if (e.key === "ArrowLeft") {
     previousSlide(currentButtonValue, radioButtons)
+    resetTimer()
   } else if (e.key == "ArrowRight") {
     nextSlide(currentButtonValue, radioButtons)
+    resetTimer()
   }
 });
 
 $(document).ready(function() {
   startTimer();
+
+  $('input[type=radio][name=carousel]').change(function() {
+    resetTimer()
+  });
+
 })

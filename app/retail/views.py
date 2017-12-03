@@ -35,7 +35,8 @@ def index(request):
     context = {
         'active': 'home',
         'slides': slides,
-        'maxSlideIndex': maxSlideIndex
+        'maxSlideIndex': maxSlideIndex,
+        'slideDuration': 5000
     }
     return TemplateResponse(request, 'index.html', context)
 
