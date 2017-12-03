@@ -221,8 +221,8 @@ class Bounty(SuperModel):
         except Exception as e:
             print(e)
             return
-
-        self.issue_description = body
+        if body:
+            self.issue_description = body
 
 
 class BountySyncRequest(SuperModel):

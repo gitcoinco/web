@@ -1,9 +1,12 @@
 FROM python:3.6
 ENV PYTHONUNBUFFERED 1
-RUN mkdir /code
+RUN mkdir /code && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends gcc libc6-dev libc-dev libssl-dev && \
+    rm -rf /var/lib/apt/lists/*
 WORKDIR /code
-ADD requirements.txt /code/
+COPY requirements.txt /code/
 RUN pip install -r requirements.txt
-ADD requirements-dev.txt /code/
-RUN pip install -r requirements-dev.txt
-ADD . /code/
+COPY requirements-dev.txt /code/
+RUN pip install -r requirements-dev.txt && \
+    apt-get purge -y --auto-remove gcc libc6-dev libc-dev libssl-dev
