@@ -16,10 +16,12 @@
 
 '''
 from django.core.management.base import BaseCommand
-from marketing.mails import new_bounty
-from dashboard.models import Subscription, Bounty
-import requests
 from django.utils import timezone
+
+import requests
+from dashboard.models import Bounty, Subscription
+from marketing.mails import new_bounty
+
 
 class Command(BaseCommand):
 

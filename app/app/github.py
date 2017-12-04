@@ -15,10 +15,11 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.conf import settings
-import requests
 import json
 
+from django.conf import settings
+
+import requests
 
 _auth = (settings.GITHUB_API_USER, settings.GITHUB_API_TOKEN)
 headers = {
@@ -87,5 +88,3 @@ def repo_url(issue_url):
 
 def org_name(issue_url):
     return issue_url.split('/')[3]
-
-

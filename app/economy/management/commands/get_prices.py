@@ -15,11 +15,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from dashboard.models import Bounty
 from django.core.management.base import BaseCommand
-from economy.models import ConversionRate
-import requests
+
 import ccxt
+import requests
+from dashboard.models import Bounty
+from economy.models import ConversionRate
 
 
 class Command(BaseCommand):
@@ -78,5 +79,3 @@ class Command(BaseCommand):
                 print(e)
                 b._val_usd_db = 0
                 b.save()
-
-

@@ -5,6 +5,7 @@
 <script src="/static/yge/youvegoteth/index.js"></script>
 <script src="/static/yge/youvegoteth/pre.js"></script>
 <script src="/static/yge/youvegoteth/tokens.js"></script>
+<script src="/static/yge/youvegoteth/shared.js"></script>
 <script src="/static/yge/youvegoteth/send.js"></script>
 <script src="/static/yge/youvegoteth/web3alert.js"></script>
 <script src="/static/yge/lightwallet.min.js"></script>
@@ -32,7 +33,8 @@
             <select id="token" style="width:100px; margin-bottom: 10px; display: inline;" >
                 <option value="0x0">ETH</option>
             </select>
-            <input type="text" placeholder="1.1" id="amount" value="" style="width: 170px; display: inline;">
+            <input name="amount" type="text" placeholder="1.1" id="amount" value="" style="width: 170px; display: inline;">
+            <div id="usd_amount"></div>
         </div>
         <div>
             To Github Username:

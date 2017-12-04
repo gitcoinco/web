@@ -15,10 +15,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.core.management.base import BaseCommand
 from django.conf import settings
+from django.core.management.base import BaseCommand
+
 from mailchimp3 import MailChimp
 from marketing.utils import get_or_save_email_subscriber as process_email
+
 
 class Command(BaseCommand):
 

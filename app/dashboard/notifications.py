@@ -1,5 +1,16 @@
 # encoding=utf8
+import logging
+import re
 import sys
+from urlparse import urlparse
+
+from django.conf import settings
+
+import requests
+import twitter
+from app.github import post_issue_comment
+from slackclient import SlackClient
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 '''
@@ -19,14 +30,6 @@ sys.setdefaultencoding('utf8')
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.conf import settings
-import twitter
-import requests
-from urlparse import urlparse
-from app.github import post_issue_comment
-from slackclient import SlackClient
-import re
-import logging
 
 
 def maybe_market_to_twitter(bounty, event_name, txid):
@@ -350,13 +353,3 @@ def maybe_post_on_craigslist(bounty):
                     False
             else:
                 return False
-
-
-
-
-
-
-
-
-
-

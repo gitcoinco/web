@@ -16,7 +16,7 @@
 
 '''
 # -*- coding: utf-8 -*-
-from marketing.models import Stat, EmailSubscriber
+from marketing.models import EmailSubscriber, Stat
 
 
 def get_stat(key):

@@ -15,11 +15,14 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.core.management.base import BaseCommand
-from dashboard.models import Tip
-from django.utils import timezone
-from marketing.mails import tip_email
 import json
+
+from django.core.management.base import BaseCommand
+from django.utils import timezone
+
+from dashboard.models import Tip
+from marketing.mails import tip_email
+
 
 class Command(BaseCommand):
 
