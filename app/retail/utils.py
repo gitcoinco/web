@@ -15,8 +15,9 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from requests_oauthlib import OAuth2Session
 from django.conf import settings
+
+from requests_oauthlib import OAuth2Session
 
 
 def get_github_user_profile(token):

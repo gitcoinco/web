@@ -17,18 +17,19 @@
 '''
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.conf import settings
-from django.db import models
 
+from django.conf import settings
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.contrib.postgres.fields import JSONField
+from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.utils import timezone
+
+from dashboard.tokens import addr_to_token
 # Create your models here.
 from economy.models import SuperModel
 from economy.utils import convert_amount
-from django.contrib.postgres.fields import JSONField
-from dashboard.tokens import addr_to_token
-from django.utils import timezone
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
-from django.contrib.humanize.templatetags.humanize import naturaltime
 
 
 class Bounty(SuperModel):
@@ -221,8 +222,8 @@ class Bounty(SuperModel):
         except Exception as e:
             print(e)
             return
-
-        self.issue_description = body
+        if body:
+            self.issue_description = body
 
 
 class BountySyncRequest(SuperModel):

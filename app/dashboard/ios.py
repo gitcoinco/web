@@ -1,10 +1,14 @@
+import json
+import logging
+
 from django.core.validators import validate_email
-from dashboard.models import Bounty
 from django.http import JsonResponse
-from ratelimit.decorators import ratelimit
+from django.views.decorators.csrf import csrf_exempt
+
+from dashboard.models import Bounty
 from marketing.mails import new_match
 from marketing.models import Match
-from django.views.decorators.csrf import csrf_exempt
+from ratelimit.decorators import ratelimit
 
 
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
@@ -13,14 +17,14 @@ def save(request):
 
     status = 422
     message = 'Please use a POST'
-
-    if request.POST:
+    body = json.loads(request.body)
+    if body.get('bounty_id', False):
 
         # handle a POST
-        bounty_id = request.POST.get('bounty_id')
-        email_address = request.POST.get('email_address')
-        direction = request.POST.get('direction')
-        github_username = request.POST.get('github_username')
+        bounty_id = body.get('bounty_id')
+        email_address = body.get('email_address')
+        direction = body.get('direction')
+        github_username = body.get('github_username')
 
         #do validation
         validation_failed = False
@@ -65,10 +69,9 @@ def save(request):
             # response
             status = 200
             message = 'Success'
-
+    
     response = {
         'status': status,
         'message': message,
     }
-    return JsonResponse(response)
-
+    return JsonResponse(response, status=status)

@@ -18,16 +18,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
+import json
+
 from django.contrib.admin.views.decorators import staff_member_required
-from django.template.response import TemplateResponse
-from marketing.models import Stat, EmailSubscriber, LeaderboardRank
-from chartit import DataPool, Chart
-from marketing.utils import get_or_save_email_subscriber
 from django.core.validators import validate_email
-from retail.helpers import get_ip
 from django.http import Http404
+from django.shortcuts import render
+from django.template.response import TemplateResponse
 from django.utils import timezone
+
+from chartit import Chart, DataPool
+from marketing.models import EmailSubscriber, Keyword, LeaderboardRank, Stat
+from marketing.utils import get_or_save_email_subscriber
+from retail.helpers import get_ip
+
 # Create your views here.
 
 
@@ -61,7 +65,7 @@ def stats(request):
         _filters = ['slack', 'email', 'whitepaper', 'twitter']
         types = filter_types(types, _filters)
     if _filter == 'KPI':
-        _filters = ['slack', 'email_subscribers_active', 'bounties_open', 'joe_dominance_index_30_count', 'joe_dominance_index_30_value', 'turnaround_time_hours_30_days_back']
+        _filters = ['slack_users', 'email_subscribers_active', 'bounties_open', 'joe_dominance_index_30_count', 'joe_dominance_index_30_value', 'turnaround_time_hours_30_days_back', 'tips', 'twitter']
         types = filter_types(types, _filters)
 
     # params
@@ -135,12 +139,14 @@ def email_settings(request, key):
     if es.exists():
         email = es.first().email
         level = es.first().preferences.get('level', False)
-
+    es = es.first()
     if request.POST.get('email', False):
         level = request.POST.get('level')
         comments = request.POST.get('comments')[:255]
         email = request.POST.get('email')
-        print(email)
+        github = request.POST.get('github')
+        print(es.github)
+        keywords = request.POST.get('keywords').split(',')
         validation_passed = True
         try:
             validate_email(email)
@@ -152,12 +158,13 @@ def email_settings(request, key):
         if level not in ['lite', 'regular', 'nothing']:
             validation_passed = False
             msg = 'Invalid Level'
-
         if validation_passed:
             key = get_or_save_email_subscriber(email, 'settings')
             es = EmailSubscriber.objects.get(priv=key)
             es.preferences['level'] = level
             es.metadata['comments'] = comments
+            es.github = github
+            es.keywords = keywords
             ip = get_ip(request)
             es.active = level != 'nothing'
             es.newsletter = level == 'regular'
@@ -165,13 +172,16 @@ def email_settings(request, key):
                 es.metadata['ip'] = [ip]
             else:
                 es.metadata['ip'].append(ip)
+
             es.save()
             msg = "Updated your preferences.  "
-
     context = {
-      'email': email,
-      'level': level,
-      'msg': msg,
+        'active': 'email_settings',
+        'title': 'Email Settings',
+        'es': es,
+        'keywords': ",".join(es.keywords),
+        'msg': msg,
+        'autocomplete_keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'email_settings.html', context)
 
@@ -202,5 +212,3 @@ def leaderboard(request, key):
 
 
     return TemplateResponse(request, 'leaderboard.html', context)
-
-

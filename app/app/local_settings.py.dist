@@ -62,6 +62,15 @@ DATABASES = {
 }
 
 SENDGRID_API_KEY = 'TODO' # required only needed if you send emails
+SERVER_EMAIL = 'server@TODO.co'
+ADMINS = (
+  ('TODO', 'todo@todo.net'),
+)
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'TODO'
+EMAIL_HOST_PASSWORD = 'TODO'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 # optional:  only if you're syncing web3 (mostly used for bounty flow)
 CUSTOM_MAINNET_GETH_HOST = 'TODO'
