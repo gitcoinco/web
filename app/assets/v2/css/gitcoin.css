@@ -165,6 +165,10 @@ div.button-pink {
   background-repeat: no-repeat;
 }
 
+.bg-solid-white {
+  background-color: #ffffff;
+}
+
 .font-bigger-1 {
   font-size: 1.2rem;
 }
