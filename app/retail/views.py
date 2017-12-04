@@ -21,7 +21,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
-from marketing.utils import get_or_save_email_subscriber
+from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from slackclient import SlackClient
 
 
@@ -402,9 +402,8 @@ def slack(request):
             valid_email = False
 
         if valid_email:
-            sc = SlackClient(settings.SLACK_TOKEN)
-            response = sc.api_call('users.admin.invite', email=email)
             get_or_save_email_subscriber(email, 'slack')
+            response = invite_to_slack(email)
             if response['ok']:
                 context['msg'] = "Your invite has been sent. "
             else:

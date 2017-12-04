@@ -189,7 +189,7 @@ def new_tip(request):
 @staff_member_required
 def new_match(request):
     from dashboard.models import Bounty
-    response_html, response_txt = render_match_email(settings.CONTACT_EMAIL, Bounty.objects.all().last(), 'owocki')
+    response_html, response_txt = render_match_email(settings.CONTACT_EMAIL, Bounty.objects.exclude(title='').last(), 'owocki')
 
     return HttpResponse(response_html)
 

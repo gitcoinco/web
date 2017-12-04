@@ -61,10 +61,10 @@ def maybe_market_to_twitter(bounty, event_name, txid):
 
 
 def should_post_in_channel(channel, bounty):
-    if channel in ['bounties', 'development']:
+    if channel in ['focus-bounties', 'focus-dev']:
         return True
-    if 'dev-' in channel or channel in ['_design', 'content']:
-        keyword = channel.replace('dev-','').lower()
+    if 'focus-' in channel:
+        keyword = channel.replace('focus-', '').replace('dev-', '').lower()
         return keyword in str(bounty.title).lower() \
             or keyword in str(bounty.keywords).lower() \
             or keyword in str(bounty.github_url).lower()
@@ -88,7 +88,6 @@ def maybe_market_to_slack(bounty, event_name, txid):
         channels = sc.api_call("channels.list")
         channels = [chan['name'] for chan in channels['channels']]
         channels_to_post_in = [channel for channel in channels if should_post_in_channel(channel, bounty)]
-        channel = 'bounties'
         for channel in channels_to_post_in:
             sc.api_call(
               "chat.postMessage",

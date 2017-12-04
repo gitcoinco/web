@@ -41,24 +41,31 @@ p, pre{
 <table>
     <tr>
         <td width="140" style="text-align: center;"> 
-            <a href="https://github.com/{{github_username}}">  
-                <img src="https://gitcoin.co/funding/avatar?repo=https://github.com/{{github_username}}" width="100" height="100">
+            <a href="https://github.com/{{github_username}}"><img src="https://gitcoin.co/funding/avatar?repo=https://github.com/{{github_username}}" width="100" height="100" /></a>
+            <br>
+            <a href="https://github.com/{{github_username}}">
+                @{{github_username}}
             </a>
         </td>
         <td>   
             &lt;&gt;
         </td>
         <td width="140" style="text-align: center;">   
+            <a href="https://github.com/{{bounty.org_name}}"><img src="{{bounty.local_avatar_url}}" width="100" height="100"></a>
+            <br>
             <a href="https://github.com/{{bounty.org_name}}">  
-                <img src="{{bounty.local_avatar_url}}" width="100" height="100">
+                {{bounty.org_name}}
             </a>
         </td>
     </tr>
 </table>
 
 <p>
-    @{{github_username}} expressed interest in the following Funded Issue: <a href="{{bounty.absolute_url}}">{{bounty.title}}</a>
+    @{{github_username}} expressed interest in <a href="{{bounty.absolute_url}}">{{bounty.title_or_desc}}</a>
 </p>
+<h4>Matched Issue</h4>
+{% include 'emails/bounty.html' with bounty=bounty %}
+
 <p>
     You are both CCed on this email.  Feel free to reply all and say hey. 
 </p>
