@@ -141,7 +141,7 @@ def keywords(request):
     except ValidationError:
         response['message'] = 'could not pull back remote response'
         return JsonResponse(response)
-    except AttributeError, e:
+    except AttributeError:
         response['message'] = 'could not pull back remote response'
         return JsonResponse(response)
 
