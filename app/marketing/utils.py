@@ -16,11 +16,19 @@
 
 '''
 # -*- coding: utf-8 -*-
+from django.conf import settings
 from marketing.models import EmailSubscriber, Stat
+from slackclient import SlackClient
 
 
 def get_stat(key):
     return Stat.objects.filter(key=key).order_by('-created_on').first().val
+
+
+def invite_to_slack(email):
+    sc = SlackClient(settings.SLACK_TOKEN)
+    response = sc.api_call('users.admin.invite', email=email)
+    return response
 
 
 def should_suppress_notification_email(email):
@@ -39,6 +47,7 @@ def get_or_save_email_subscriber(email, source):
             )
         es.set_priv()
         es.save()
+        invite_to_slack(email)
         return es.priv
     else:
         return queryset.first().priv

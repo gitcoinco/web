@@ -21,7 +21,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
-from marketing.utils import get_or_save_email_subscriber
+from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from slackclient import SlackClient
 
 
@@ -386,12 +386,6 @@ def help_faq(request):
 
 def browser_extension(request):
     return redirect('https://chrome.google.com/webstore/detail/gdocmelgnjeejhlphdnoocikeafdpaep')
-
-
-def invite_to_slack(email):
-    sc = SlackClient(settings.SLACK_TOKEN)
-    response = sc.api_call('users.admin.invite', email=email)
-    return response
 
 
 def slack(request):
