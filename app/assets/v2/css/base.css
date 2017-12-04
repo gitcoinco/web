@@ -69,6 +69,17 @@ div, p, a, span{
     display: inline;
     text-transform: uppercase;
 }
+
+#mce-EMAIL {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 2px;
+}
+
+#mc-embedded-subscribe {
+  margin: 0 5px 5px;
+}
+
 .bounty_def h5{
     font-size: 1.1rem;   
 }
