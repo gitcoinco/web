@@ -36,6 +36,7 @@ from reportlab.lib.colors import Color
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from retail.helpers import get_ip
+from retail.views import invite_to_slack
 
 from .models import AccessCodes, WhitepaperAccess, WhitepaperAccessRequest
 
@@ -81,7 +82,8 @@ https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/
         ip=ip,
     )
 
-
+    invite_to_slack(context['email'])
+    
     valid_email = True
     try:
         validate_email(request.POST.get('email', False))

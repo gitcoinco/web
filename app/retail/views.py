@@ -388,6 +388,12 @@ def browser_extension(request):
     return redirect('https://chrome.google.com/webstore/detail/gdocmelgnjeejhlphdnoocikeafdpaep')
 
 
+def invite_to_slack(email):
+    sc = SlackClient(settings.SLACK_TOKEN)
+    response = sc.api_call('users.admin.invite', email=email)
+    return response
+
+
 def slack(request):
     context = {
 
@@ -402,9 +408,8 @@ def slack(request):
             valid_email = False
 
         if valid_email:
-            sc = SlackClient(settings.SLACK_TOKEN)
-            response = sc.api_call('users.admin.invite', email=email)
             get_or_save_email_subscriber(email, 'slack')
+            response = invite_to_slack(email)
             if response['ok']:
                 context['msg'] = "Your invite has been sent. "
             else:
