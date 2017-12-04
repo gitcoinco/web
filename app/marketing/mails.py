@@ -87,7 +87,7 @@ def new_bounty(bounty, to_emails=[]):
     if not bounty or not bounty.value_in_usdt:
         return
 
-    subject = "⚡️ New Funded Issue Worth ${}".format(bounty.value_in_usdt)
+    subject = "⚡️ New Funded Issue Match worth ${} ({})".format(bounty.value_in_usdt, b.keywords)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL

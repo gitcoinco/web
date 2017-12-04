@@ -55,6 +55,11 @@ def maybe_market_to_twitter(bounty, event_name, txid):
         bounty.token_name,
         bounty.get_absolute_url()
     )
+    if bounty.keywords:
+        for keyword in bounty.keywords.split(','):
+            _new_tweet = new_tweet + "#" + str(keyword).lower().strip()
+            if len(_new_tweet) < 140:
+                new_tweet = _new_tweet
 
     try:
         api.PostUpdate(new_tweet)
