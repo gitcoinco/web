@@ -1,11 +1,13 @@
-from django.conf import settings
-from dashboard.models import Bounty, Profile
-from app.github import get_user
-from django.utils import timezone
-import requests
-import time
-import imaplib
 import email
+import imaplib
+import time
+
+from django.conf import settings
+from django.utils import timezone
+
+import requests
+from app.github import get_user
+from dashboard.models import Bounty, Profile
 
 
 def ellipses(data, _len=75):
@@ -92,4 +94,3 @@ def fetch_mails_since_id( email_id, password,since_id=None, host='imap.gmail.com
         response, content = mailbox.fetch(str(id), '(RFC822)')
         emails[str(id)] = email.message_from_string(content[0][1])
     return emails
-

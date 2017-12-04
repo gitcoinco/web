@@ -1,5 +1,16 @@
 # encoding=utf8
 import sys
+
+from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.template.response import TemplateResponse
+from django.utils import timezone
+
+import premailer
+from marketing.utils import get_or_save_email_subscriber
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 '''
@@ -19,14 +30,6 @@ sys.setdefaultencoding('utf8')
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.template.loader import render_to_string
-from django.http import HttpResponse
-from django.contrib.admin.views.decorators import staff_member_required
-from django.conf import settings
-from django.utils import timezone
-import premailer
-from django.template.response import TemplateResponse
-from marketing.utils import get_or_save_email_subscriber
 
 
 ### RENDERERS

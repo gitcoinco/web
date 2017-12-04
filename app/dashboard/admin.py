@@ -19,13 +19,9 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from .models import ( 
-    Bounty, 
-    Subscription, 
-    BountySyncRequest, 
-    Tip,
-    Profile
-    )
+
+from .models import Bounty, BountySyncRequest, Profile, Subscription, Tip
+
 
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']

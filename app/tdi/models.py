@@ -54,4 +54,3 @@ class WhitepaperAccessRequest(SuperModel):
 
     def __str__(self):
         return "{} / {} / {} on {}".format(self.email, self.role, self.ip, self.created_on)
-

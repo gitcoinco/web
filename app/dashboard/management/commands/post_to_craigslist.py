@@ -16,14 +16,17 @@
 
 '''
 
+import time
+from datetime import datetime, timedelta
+
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+
+from app.utils import sync_profile
 from dashboard.models import Bounty
 from dashboard.notifications import maybe_post_on_craigslist
-from datetime import datetime, timedelta
-from app.utils import sync_profile
-import time
-from django.conf import settings
+
 
 class Command(BaseCommand):
     help = 'posts bounties created in provided hours on craigslist'
@@ -39,7 +42,3 @@ class Command(BaseCommand):
             # print (bounty)
             link= maybe_post_on_craigslist(bounty)
             print("Posted {}".format(link))
-
-
-
-

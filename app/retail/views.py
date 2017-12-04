@@ -15,13 +15,14 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.template.response import TemplateResponse
-from django.shortcuts import redirect
-from django.core.validators import validate_email
 from django.conf import settings
-from slackclient import SlackClient
-from marketing.utils import get_or_save_email_subscriber
+from django.core.validators import validate_email
 from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.template.response import TemplateResponse
+
+from marketing.utils import get_or_save_email_subscriber
+from slackclient import SlackClient
 
 
 def index(request):
@@ -445,8 +446,3 @@ def github(request):
 
 def youtube(request):
     return redirect('https://www.youtube.com/watch?v=DJartWzDn0E')
-
-
-
-
-

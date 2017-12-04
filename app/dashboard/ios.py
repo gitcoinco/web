@@ -1,12 +1,14 @@
+import json
+import logging
+
 from django.core.validators import validate_email
-from dashboard.models import Bounty
 from django.http import JsonResponse
-from ratelimit.decorators import ratelimit
+from django.views.decorators.csrf import csrf_exempt
+
+from dashboard.models import Bounty
 from marketing.mails import new_match
 from marketing.models import Match
-from django.views.decorators.csrf import csrf_exempt
-import logging
-import json
+from ratelimit.decorators import ratelimit
 
 
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
@@ -73,4 +75,3 @@ def save(request):
         'message': message,
     }
     return JsonResponse(response, status=status)
-

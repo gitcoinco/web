@@ -17,11 +17,12 @@
 '''
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from economy.models import SuperModel
+
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
-from django.contrib.postgres.fields import JSONField
+
 from dashboard.models import Bounty
-from django.contrib.postgres.fields import ArrayField
+from economy.models import SuperModel
 
 
 class EmailSubscriber(SuperModel):
@@ -89,4 +90,3 @@ class Match(SuperModel):
 
 class Keyword(SuperModel):
     keyword = models.CharField(max_length=255)
-

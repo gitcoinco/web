@@ -15,20 +15,24 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import json
+import pprint
+
+from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator
+from django.db import transaction
+from django.http import Http404, JsonResponse
+from django.utils import timezone
+
+import requests
 from bs4 import BeautifulSoup
 from dashboard.models import Bounty, BountySyncRequest
-from dashboard.notifications import maybe_market_to_twitter, maybe_market_to_slack, maybe_market_to_github, maybe_market_to_email
-from django.http import JsonResponse
-from django.core.validators import URLValidator
-from django.core.exceptions import ValidationError
-from django.db import transaction
-from django.utils import timezone
-from django.http import Http404
+from dashboard.notifications import (
+    maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
+)
 from economy.utils import convert_amount
-import json
 from ratelimit.decorators import ratelimit
-import requests
-import pprint
+
 
 # gets amount of remote html doc (github issue)
 @ratelimit(key='ip', rate='100/m', method=ratelimit.UNSAFE, block=True)

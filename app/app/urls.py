@@ -15,27 +15,20 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.conf.urls import include, url
+from django.conf.urls import handler400, handler403, handler404, handler500, include, url
 from django.contrib import admin
-import retail.views
-import dashboard.views
-import dashboard.helpers
-import dashboard.embed
-import dashboard.ios
-import retail.emails
-import tdi.views
-import marketing.views
-
-from django.conf.urls import (
-    handler400,
-    handler403,
-    handler404,
-    handler500
-)
-from dashboard.router import router
 from django.contrib.sitemaps.views import sitemap
-from sitemap import sitemaps
 
+import dashboard.embed
+import dashboard.helpers
+import dashboard.ios
+import dashboard.views
+import marketing.views
+import retail.emails
+import retail.views
+import tdi.views
+from dashboard.router import router
+from sitemap import sitemaps
 
 urlpatterns = [
 

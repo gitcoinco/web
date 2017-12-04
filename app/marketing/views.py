@@ -18,18 +18,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render
-from django.contrib.admin.views.decorators import staff_member_required
-from django.template.response import TemplateResponse
-from marketing.models import Stat, EmailSubscriber, LeaderboardRank
-from chartit import DataPool, Chart
-from marketing.utils import get_or_save_email_subscriber
-from django.core.validators import validate_email
-from retail.helpers import get_ip
-from django.http import Http404
-from django.utils import timezone
-from marketing.models import Keyword
 import json
+
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.validators import validate_email
+from django.http import Http404
+from django.shortcuts import render
+from django.template.response import TemplateResponse
+from django.utils import timezone
+
+from chartit import Chart, DataPool
+from marketing.models import EmailSubscriber, Keyword, LeaderboardRank, Stat
+from marketing.utils import get_or_save_email_subscriber
+from retail.helpers import get_ip
+
 # Create your views here.
 
 
@@ -210,5 +212,3 @@ def leaderboard(request, key):
 
 
     return TemplateResponse(request, 'leaderboard.html', context)
-
-

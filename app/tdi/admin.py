@@ -17,8 +17,10 @@
 '''
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from .models import AccessCodes, WhitepaperAccess, WhitepaperAccessRequest
+
 from django.contrib import admin
+
+from .models import AccessCodes, WhitepaperAccess, WhitepaperAccessRequest
 
 
 # Register your models here.

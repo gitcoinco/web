@@ -16,10 +16,11 @@
 
 '''
 from django.core.management.base import BaseCommand
-from bs4 import BeautifulSoup
 from django.db import transaction
-from gas.models import GasProfile
+
 import requests
+from bs4 import BeautifulSoup
+from gas.models import GasProfile
 
 
 class Command(BaseCommand):
@@ -54,5 +55,3 @@ class Command(BaseCommand):
                     _99confident_confirm_time_blocks=_99confident_confirm_time_blocks,
                     _99confident_confirm_time_mins=_99confident_confirm_time_mins,
                     )
-
-
