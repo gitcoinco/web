@@ -15,11 +15,13 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-import sendgrid
-from sendgrid.helpers.mail import Email, Content, Mail, Personalization
+
 from django.conf import settings
+
+import sendgrid
+from marketing.utils import get_or_save_email_subscriber, should_suppress_email
 from retail.emails import *
-from marketing.utils import get_or_save_email_subscriber
+from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
 
 def send_mail(from_email, to_email, subject, body, html=False, from_name="Gitcoin.co", cc_emails=None):
@@ -86,7 +88,8 @@ def new_bounty(bounty, to_emails=[]):
         from_email = settings.CONTACT_EMAIL
         html, text = render_new_bounty(to_email, bounty)
 
-        send_mail(from_email, to_email, subject, text, html)
+        if not should_suppress_email(to_email):
+            send_mail(from_email, to_email, subject, text, html)
 
 
 def weekly_roundup(to_emails=[]):
@@ -96,7 +99,8 @@ def weekly_roundup(to_emails=[]):
         html, text = render_new_bounty_roundup(to_email)
         from_email = settings.PERSONAL_CONTACT_EMAIL
 
-        send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
+        if not should_suppress_email(to_email):
+            send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
 
 
 def new_bounty_claim(bounty, to_emails=[]):
@@ -109,7 +113,8 @@ def new_bounty_claim(bounty, to_emails=[]):
         from_email = settings.CONTACT_EMAIL
         html, text = render_new_bounty_claim(to_email, bounty)
 
-        send_mail(from_email, to_email, subject, text, html)
+        if not should_suppress_email(to_email):
+            send_mail(from_email, to_email, subject, text, html)
 
 
 def new_bounty_rejection(bounty, to_emails=[]):
@@ -122,7 +127,8 @@ def new_bounty_rejection(bounty, to_emails=[]):
         from_email = settings.CONTACT_EMAIL
         html, text = render_new_bounty_rejection(to_email, bounty)
 
-        send_mail(from_email, to_email, subject, text, html)
+        if not should_suppress_email(to_email):
+            send_mail(from_email, to_email, subject, text, html)
 
 
 def new_bounty_acceptance(bounty, to_emails=[]):
@@ -135,7 +141,8 @@ def new_bounty_acceptance(bounty, to_emails=[]):
         from_email = settings.CONTACT_EMAIL
         html, text = render_new_bounty_acceptance(to_email, bounty)
 
-        send_mail(from_email, to_email, subject, text, html)
+        if not should_suppress_email(to_email):
+            send_mail(from_email, to_email, subject, text, html)
 
 
 def new_match(to_emails, bounty, github_username):
@@ -148,8 +155,6 @@ def new_match(to_emails, bounty, github_username):
     send_mail(from_email, to_email, subject, text, html, cc_emails=to_emails)
 
 
-
-
 def bounty_expire_warning(bounty, to_emails=[]):
     if not bounty or not bounty.value_in_usdt:
         return
@@ -160,10 +165,10 @@ def bounty_expire_warning(bounty, to_emails=[]):
         if num == 0:
             unit = 'hours'
             num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
-        subject = "😕 Your Funded Issue Expires In {} {} ... 😕".format(days, unit)
+        subject = "😕 Your Funded Issue ({}) Expires In {} {} ... 😕".format(bounty.title_or_desc, num, unit)
 
         from_email = settings.CONTACT_EMAIL
         html, text = render_bounty_expire_warning(to_email, bounty)
 
-        send_mail(from_email, to_email, subject, text, html)
-
+        if not should_suppress_email(to_email):
+            send_mail(from_email, to_email, subject, text, html)

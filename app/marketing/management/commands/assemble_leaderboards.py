@@ -15,11 +15,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+
 from dashboard.models import Bounty
 from marketing.models import LeaderboardRank
-from django.conf import settings
 
 days_back = 7
 if settings.DEBUG:
@@ -102,6 +103,3 @@ class Command(BaseCommand):
                     active=True,
                     )
                 print(key, username, amount)
-
-
-

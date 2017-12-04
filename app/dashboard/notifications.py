@@ -15,6 +15,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+
+import logging
 from django.conf import settings
 import twitter
 import requests
@@ -22,6 +24,7 @@ from urllib import parse
 from app.github import post_issue_comment
 from slackclient import SlackClient
 import re
+
 
 
 def maybe_market_to_twitter(bounty, event_name, txid):
@@ -192,30 +195,41 @@ def maybe_market_tip_to_github(tip):
 
 
 def maybe_market_to_email(b, event_name, txid):
-    from marketing.mails import new_bounty_claim, new_bounty_rejection, new_bounty_acceptance
-
-    #TODO: allow people to subscribe to new_bounty notifications
-    #new_bounty(b, [to_email])
-
+    from marketing.mails import new_bounty_claim, new_bounty_rejection, new_bounty_acceptance, new_bounty
+    from marketing.models import EmailSubscriber
     to_emails = []
 
+    if event_name == 'new_bounty':
+        try:
+            to_emails = []
+            keywords = b.keywords.split(',')
+            for keyword in keywords:
+                to_emails = to_emails + list(EmailSubscriber.objects.filter(keywords__contains=[keyword.strip()]).values_list('email', flat=True))
+            for to_email in set(to_emails):
+                new_bounty(b, [to_email])
+        except Exception as e:
+            logging.exception(e)
+            print(e)
     if event_name == 'new_claim':
         try:
             to_emails = [b.bounty_owner_email]
             new_bounty_claim(b, to_emails)
         except Exception as e:
+            logging.exception(e)
             print(e)
     if event_name == 'approved_claim':
         try:
             to_emails = [b.bounty_owner_email, b.claimee_email]
             new_bounty_acceptance(b, to_emails)
         except Exception as e:
+            logging.exception(e)
             print(e)
     if event_name == 'rejected_claim':
         try:
             to_emails = [b.bounty_owner_email, b.claimee_email]
             new_bounty_rejection(b, to_emails)
         except Exception as e:
+            logging.exception(e)
             print(e)
 
     return len(to_emails)
@@ -335,13 +349,3 @@ def maybe_post_on_craigslist(bounty):
                     False
             else:
                 return False
-
-
-
-
-
-
-
-
-
-

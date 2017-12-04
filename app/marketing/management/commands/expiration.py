@@ -16,8 +16,9 @@
 
 '''
 from django.core.management.base import BaseCommand
-from dashboard.models import Bounty
 from django.utils import timezone
+
+from dashboard.models import Bounty
 from marketing.mails import bounty_expire_warning
 
 
@@ -30,6 +31,7 @@ class Command(BaseCommand):
         for day in days:
             bounties = Bounty.objects.filter(
                 is_open=True,
+                current_bounty=True,
                 expires_date__lt=(timezone.now() + timezone.timedelta(days=(day+1))),
                 expires_date__gte=(timezone.now() + timezone.timedelta(days=day)),
             ).all()

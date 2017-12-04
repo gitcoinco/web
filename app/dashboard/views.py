@@ -17,22 +17,24 @@
 '''
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from dashboard.models import Subscription, BountySyncRequest, Tip, Bounty, Profile
+
+import json
+
+from django.http import Http404, JsonResponse
 from django.template.response import TemplateResponse
-from django.http import JsonResponse
 from django.utils import timezone
-from django.http import Http404
 from django.views.decorators.csrf import csrf_exempt
+
+from app.github import get_user as get_github_user
+from app.utils import ellipses, sync_profile
+from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
+from dashboard.models import Bounty, BountySyncRequest, Profile, Subscription, Tip
+from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from marketing.mails import tip_email
+from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from dashboard.helpers import normalizeURL, process_bounty_details, process_bounty_changes
-from gas.utils import recommend_min_gas_price_to_confirm_in_time
-import json
-from app.utils import ellipses
-from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack
-from marketing.mails import tip_email
-from app.github import get_user as get_github_user
-from app.utils import sync_profile
 
 confirm_time_minutes_target = 3
 
@@ -177,6 +179,7 @@ def dashboard(request):
     params = {
         'active': 'dashboard',
         'title': 'Issue Explorer',
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'dashboard.html', params)
 
@@ -401,6 +404,3 @@ def apitos(request):
     params = {
     }
     return TemplateResponse(request, 'legal/apitos.txt', params)
-
-
-

@@ -15,26 +15,29 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from reportlab.pdfgen import canvas
-from django.http import HttpResponse
-from .models import WhitepaperAccess, AccessCodes, WhitepaperAccessRequest
-from django.template.response import TemplateResponse
-from django.contrib.admin.views.decorators import staff_member_required
-from django.core.validators import validate_email
-from django.conf import settings
-from django.utils import timezone
-from PyPDF2 import PdfFileWriter, PdfFileReader
-from marketing.mails import send_mail
-from ratelimit.decorators import ratelimit
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.colors import Color
-from wsgiref.util import FileWrapper
-from retail.helpers import get_ip
-from django.shortcuts import redirect
+import hashlib
 import os
 from io import StringIO
-import hashlib
+from wsgiref.util import FileWrapper
+
+from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.validators import validate_email
+from django.http import HttpResponse
+from django.shortcuts import redirect
+from django.template.response import TemplateResponse
+from django.utils import timezone
+from marketing.mails import send_mail
+from PyPDF2 import PdfFileWriter, PdfFileReader
+from ratelimit.decorators import ratelimit
+from reportlab.lib.colors import Color
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from retail.helpers import get_ip
+
+from .models import AccessCodes, WhitepaperAccess, WhitepaperAccessRequest
+
 
 
 def ratelimited(request, ratelimited=False):
@@ -239,6 +242,3 @@ def process_accesscode_request(request, pk):
         return redirect('/_administration/tdi/whitepaperaccessrequest/?processed=False')
 
     return TemplateResponse(request, 'process_accesscode_request.html', context)
-
-
-

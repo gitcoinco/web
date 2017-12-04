@@ -1,11 +1,10 @@
-from ratelimit.decorators import ratelimit
-from django.http import HttpResponse
-from PIL import ImageFont
-from PIL import Image
-from PIL import ImageDraw
-from app.github import org_name, get_user
+from django.http import HttpResponse, JsonResponse
+
 import requests
+from app.github import get_user, org_name
 from dashboard.models import Bounty
+from PIL import Image, ImageDraw, ImageFont
+from ratelimit.decorators import ratelimit
 
 
 def wrap_text(text, w=30):
@@ -58,6 +57,8 @@ def embed(request):
             avatar = Image.open(filepath, 'r')
         except IOError:
             remote_user = get_user(_org_name)
+            if not remote_user.get('avatar_url', False):
+                return JsonResponse({'msg': 'invalid user'}, status=422)
             remote_avatar_url = remote_user['avatar_url']
 
             r = requests.get(remote_avatar_url, stream=True)
@@ -252,6 +253,8 @@ def avatar(request):
             avatar = Image.open(filepath, 'r')
         except IOError:
             remote_user = get_user(_org_name)
+            if not remote_user.get('avatar_url', False):
+                return JsonResponse({'msg': 'invalid user'}, status=422)
             remote_avatar_url = remote_user['avatar_url']
 
             r = requests.get(remote_avatar_url, stream=True)
@@ -296,4 +299,3 @@ def avatar(request):
     except IOError as e:
         print(e)
         return err_response
-

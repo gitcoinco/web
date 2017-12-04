@@ -15,12 +15,15 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import time
+
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from dashboard.models import Bounty
+
 from app.utils import sync_profile
-import time
-from django.conf import settings
+from dashboard.models import Bounty
+
 
 def does_need_refresh(handle):
     needs_refresh = False
@@ -66,7 +69,3 @@ class Command(BaseCommand):
             
             if not settings.DEBUG:
                 time.sleep(60)
-
-
-
-

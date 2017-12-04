@@ -16,11 +16,18 @@
 
 '''
 # -*- coding: utf-8 -*-
-from marketing.models import Stat, EmailSubscriber
+from marketing.models import EmailSubscriber, Stat
 
 
 def get_stat(key):
     return Stat.objects.filter(key=key).order_by('-created_on').first().val
+
+
+def should_suppress_email(email):
+    queryset = EmailSubscriber.objects.filter(email=email)
+    if queryset.exists():
+        return queryset.first().preferences.get('level', '') == 'nothing'
+    return False
 
 
 def get_or_save_email_subscriber(email, source):

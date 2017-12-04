@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2017 Gitcoin Core 
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,30 +15,33 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import re
 
-import time
-from datetime import datetime, timedelta
-
-from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
-from app.utils import sync_profile
 from dashboard.models import Bounty
-from dashboard.notifications import maybe_post_on_craigslist
+from marketing.models import Keyword
 
 
 class Command(BaseCommand):
-    help = 'posts bounties created in provided hours on craigslist'
 
-    def add_arguments(self, parser):
-        parser.add_argument('hours', type=int)
+    help = 'syncs autocomplete keywords'
 
     def handle(self, *args, **options):
-        hours = options['hours']
-        one_hour_back = timezone.now()-timedelta(hours=hours)
-        bounties_to_post = Bounty.objects.filter(web3_created__gte=one_hour_back )
-        for bounty in bounties_to_post:
-            # print (bounty)
-            link= maybe_post_on_craigslist(bounty)
-            print("Posted {}".format(link))
+
+        keywords = []
+
+        for bounty in Bounty.objects.all():
+            keywords.append(bounty.org_name)
+            keywords.append(bounty.bounty_owner_github_username)
+            keywords.append(bounty.claimee_github_username)
+            if bounty.keywords:
+                for keyword in bounty.keywords.split(','):
+                    keywords.append(keyword)
+        Keyword.objects.all().delete()
+        for keyword in set(keywords):
+            if keyword:
+                keyword = re.sub(r'\W+', '', keyword).lower()
+                if keyword:
+                    Keyword.objects.get_or_create(keyword=keyword)
+                    print(keyword)
