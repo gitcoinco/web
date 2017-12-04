@@ -1,0 +1,39 @@
+<div class="container-fluid mt-3 carousel">
+  <div class="row">
+    <div class="offset-lg-2 offset-md-1 offset-sm-0 hidden-xs-down col-sm-1 prev" align="center" onclick="prevSlide()">
+      <div class="control">
+        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12" id="slides">
+      {% for author, avatar, testimonial in slides %}
+      <div class="slide">
+          <div class="flex-container col-12">
+            <div class="avatar">
+              <div class="circles">
+                <i class="closed fa fa-circle" aria-hidden="true"></i>
+                <i class="circle-large fa fa-circle-o" aria-hidden="true"></i>
+                <i class="circle-small fa fa-circle-o" aria-hidden="true"></i>
+              </div>
+              <div class="upper-line"></div>
+              <img src="{{avatar}}">
+              <div class="lower-line"></div>
+            </div>
+            <div class="testimonial">
+              <p class="content">{{testimonial}}</p>
+              <p class="author">
+                <i class="fa fa-minus" aria-hidden="true"></i>
+                {{author}}
+              </p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="hidden-xs-down col-sm-1 next" align="center" onclick="nextSlide()">
+      <div class="control">
+        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+      </div>
+    </div>
+  </div>
+</div>

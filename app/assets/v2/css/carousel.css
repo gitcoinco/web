@@ -1,0 +1,187 @@
+.carousel {
+  background: white;
+  padding: 5px 0;
+  z-index: 0;
+}
+
+.carousel .row {
+  margin-top: 60px;
+  margin-bottom: 40px;
+}
+
+.carousel .control {
+  border-radius: 100%;
+  background-color: #ffce08;
+  width: 40px;
+  height: 40px;
+
+  position: relative;
+  top: 80px;
+}
+
+.carousel .flex-container {
+  display: flex;
+}
+
+.carousel .prev .control {
+  float: right;
+}
+
+.carousel .next .control {
+  float: left;
+}
+
+.carousel .control i {
+  margin: 12px auto;
+  position: relative;
+  top: 1px;
+}
+
+.carousel .prev .control i {
+  right: 1px;
+}
+
+.carousel .next .control i {
+  left: 1px;
+}
+
+.carousel .avatar {
+  margin-right: 30px;
+  margin-left: 70px;
+}
+
+.carousel .avatar i {
+  color: #36e69a;
+}
+
+.carousel .avatar .circles {
+  position: absolute;
+}
+
+.carousel .avatar .closed {
+  position: relative;
+  top: -38px;
+  left: 98px;
+  font-size: 8px;
+}
+
+.carousel .avatar .circle-small {
+	position: relative;
+	top: 20px;
+	left: 71px;
+	font-size: 20px;
+	z-index: -1;
+}
+
+.carousel .avatar .circle-large {
+	position: relative;
+	top: -12px;
+	left: 96px;
+	font-size: 30px;
+}
+
+.carousel .avatar img {
+  max-width: 120px;
+  border-radius: 10px;
+  background-color: #FAFAFA;
+}
+
+.carousel .upper-line,
+.carousel .lower-line {
+  position: relative;
+  height: 0;
+  border: 1px solid #f3126d;
+  transform: rotate(-45deg);
+}
+
+.carousel .upper-line {
+  left: -16px;
+  width: 60%;
+}
+
+.carousel .lower-line {
+  float: right;
+  top: -6px;
+  left: 12px;
+  width: 40%;
+  z-index: -1;
+}
+
+.carousel .testimonial {
+  font-family: "futura-pt", Futura !important;
+  font-weight: bold;
+  margin-top: 40px;
+  padding-right: 30px;
+}
+
+.carousel .author {
+  font-size: 12px;
+  text-transform: uppercase;
+  margin-left: 10px;
+  color: #3e00ff;
+  opacity: 0.5;
+}
+
+.carousel .author i {
+  font-size: 7px;
+}
+
+.carousel .content {
+  border-left: 4px solid #3e00ff;
+  padding-left: 10px;
+}
+
+#slides {
+  margin: 0;
+  padding: 0;
+}
+
+.slide {
+    min-height: 200px;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.5s;
+}
+
+.showing {
+    position: relative;
+    opacity: 1;
+}
+
+@media (max-width: 576px) {
+  .prev, .next {
+    visibility: hidden;
+  }
+
+  .carousel .flex-container {
+    flex-direction: column;
+  }
+
+  .carousel .avatar {
+    max-width: 30%;
+    border-radius: 10px;
+    margin-left: 35%;
+  }
+
+  .carousel .content {
+    border-left: 0;
+  }
+
+  .carousel .author, .carousel .content {
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel .control {
+    margin: 0 -20px;
+  }
+
+  .carousel .next .control i {
+    left: 2px;
+  }
+}

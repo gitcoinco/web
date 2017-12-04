@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -26,7 +26,13 @@ from slackclient import SlackClient
 
 
 def index(request):
+    slides = [
+        ("Kevin Owocki","/static/v2/images/avatar.png", "This could be the next freelance boom."),
+        ("Aditya Anand","/static/v2/images/avatar.png", "I feel it is so awesome to have the opportunity through Gitcoin to do what I love and get paid for it, and to have reasonable freedom about the way I work, that it already seems too good to be true."),
+        ("Kevin Owocki","/static/v2/images/avatar.png", "Staying lean, building the community, iterating... The way to go vs many projects that are just looking for the money grab immediately.")
+    ]
     context = {
+        'slides': slides,
         'active': 'home',
     }
     return TemplateResponse(request, 'index.html', context)
@@ -75,12 +81,12 @@ def help(request):
             'a': """
 
 <p>
-<strong>A tip</strong> is a tool to send ether or any ethereum token to any github account.  The flow for tips looks like this: 
+<strong>A tip</strong> is a tool to send ether or any ethereum token to any github account.  The flow for tips looks like this:
 </p><p>
 > Send (party 1) => receive (party 2)
 </p><p>
 
-<strong>Funded Issues</strong> are a way to fund open source features, bugs, or security bounties.  The flow for funded issues looks like this: 
+<strong>Funded Issues</strong> are a way to fund open source features, bugs, or security bounties.  The flow for funded issues looks like this:
 </p><p>
 
 >  Fund Issue (party 1) => claim funds  (party 2) => accept (party 1)
@@ -88,7 +94,7 @@ def help(request):
 
 
             """
-        },        
+        },
         {
             'q': 'What kind of contributors are successful on the Gitcoin network?',
             'a': """
@@ -112,7 +118,7 @@ We value communication that is:
 
 <ul>
 <li>
-    Collaborative 
+    Collaborative
 </li>
 <li>
     Intellectual & Intellectually Honest
@@ -241,7 +247,7 @@ The best way to stay in touch is to
             'q': 'Why do I need metamask?',
             'a': """
 <p>
-You need <a href="https://metamask.io/">Metamask</a> in order to use Gitcoin.  
+You need <a href="https://metamask.io/">Metamask</a> in order to use Gitcoin.
 </p>
 <p>
 
@@ -268,7 +274,7 @@ Download Metamask <a href="https://metamask.io/">here</a> today.
 The reason gas is important is that it helps to ensure an appropriate fee is being paid by transactions submitted to the network. By requiring that a transaction pay for each operation it performs (or causes a contract to perform), we ensure that network doesn't become bogged down with performing a lot of intensive work that isn't valuable to anyone.
 </p>
 <p>
-Gas fees are paid to the maintainers of the Ethereum network, in return for securing all of the Ether and Ethereum-based transactions in the world.  Gas fees are not paid to Gitcoin Core directly or indirectly.  
+Gas fees are paid to the maintainers of the Ethereum network, in return for securing all of the Ether and Ethereum-based transactions in the world.  Gas fees are not paid to Gitcoin Core directly or indirectly.
 </p>
            """
         },
@@ -344,7 +350,7 @@ def handler400(request):
 
 def error(request, code):
     context = {
-        'active': 'error', 
+        'active': 'error',
         'code': code
     }
     context['title'] = "Error {}".format(code)
@@ -412,7 +418,7 @@ def slack(request):
             context['msg'] = "Invalid email"
 
     return TemplateResponse(request, 'slack.html', context)
-    
+
 
 
 def btctalk(request):
