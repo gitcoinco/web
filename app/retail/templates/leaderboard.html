@@ -2,8 +2,10 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<head>
 {% include 'shared/head.html' %}
 {% include 'shared/cards_pic.html' %}
+</head>
 
 <body class="interior {{active}}">
     <div class="container-fluid header dash">
@@ -46,7 +48,7 @@
                             <h4>{{item.github_username}}</h4>
                         </div>
                         <div>
-                            <span>{{item.amount}} USDT {{action_past_tense}}</span>
+                            <span>{{item.amount}} USD {{action_past_tense}}</span>
                         </div>
                     </div>
                 {% endfor %}

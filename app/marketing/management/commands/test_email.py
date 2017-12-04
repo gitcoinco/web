@@ -15,10 +15,11 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.core.management.base import BaseCommand
-from marketing.mails import *
 from django.conf import settings
+from django.core.management.base import BaseCommand
+
 from dashboard.models import Bounty
+from marketing.mails import *
 
 
 class Command(BaseCommand):
@@ -36,4 +37,3 @@ class Command(BaseCommand):
         #new_bounty_rejection(b, [settings.CONTACT_EMAIL])
         #new_bounty_acceptance(b, [settings.CONTACT_EMAIL])
         #bounty_expire_warning(b, [settings.CONTACT_EMAIL])
-

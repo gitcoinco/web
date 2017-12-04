@@ -287,7 +287,7 @@ var updateAmountUI = function(target_ele, usd_amount){
         } else if (usd_amount > 1000){
             usd_amount = Math.round(usd_amount / 100)/10 + "k"
         }
-        target_ele.html('Approx: '+usd_amount+' USDT');
+        target_ele.html('Approx: '+usd_amount+' USD');
 };
 
 

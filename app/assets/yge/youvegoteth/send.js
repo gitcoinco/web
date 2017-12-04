@@ -35,6 +35,7 @@ window.onload = function () {
 
     if(localStorage['amount']){
         $('amount').value = localStorage['amount'];
+        retrieveAmount();
     }
     if(localStorage['username']){
         $('username').value = localStorage['username'];
@@ -54,6 +55,9 @@ window.onload = function () {
     if(localStorage['expires']){
         $("expires").selectedIndex = localStorage['expires'];
     }
+
+    jQuery("input[name=amount]").keyup(retrieveAmount);
+    jQuery("input[name=amount]").blur(retrieveAmount);
 
     waitforWeb3(function(){
         tokens(document.web3network).forEach(function(ele){

@@ -48,8 +48,13 @@ var set_modifiers_sentence = function(){
     };
     var sentence = _modifiers.join(" ") + " Funded Issues";
     var keywords = $("#keywords").val();
+    var plural = 's';
+    if(keywords.split(',').length == 2){
+        plural = '';
+    }
     if(keywords){
-        sentence += ' w. keyword ' + keywords;
+        var encoded_keywords = encodeURIComponent(keywords.split(',').join(" ")).split('%20').join(" ");
+        sentence += ' w. keyword'+plural+' ' + encoded_keywords;
     }
 
 
@@ -81,6 +86,8 @@ var get_search_URI = function(){
     }
     if(typeof web3 != 'undefined' && web3.eth.coinbase){
         uri += '&coinbase='+web3.eth.coinbase;
+    } else {
+        uri += '&coinbase=unknown';
     }
 
     var selected_option = $('.sort_option.selected');
@@ -112,7 +119,7 @@ var process_stats = function(results){
     }
     worth_usdt = worth_usdt.toFixed(2);
     worth_eth = (worth_eth / 10 ** 18).toFixed(2);
-    var stats = "" + num + " worth " + worth_usdt + " USDT, " + worth_eth + " ETH";
+    var stats = "" + num + " worth " + worth_usdt + " USD, " + worth_eth + " ETH";
     for(var token in currencies_to_value){
         stats += ", " + currencies_to_value[token].toFixed(2) + " " + token;
     }
@@ -158,7 +165,7 @@ var refreshBounties = function(){
                 if(typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']){
                     result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
                 } else if(result['claimeee_address'] != '0x0000000000000000000000000000000000000000'){
-                    result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">claimed</span></a>';
+                    result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">'+result['status']+'</span></a>';
                 } else if(is_on_watch_list(result['github_url'])) {
                     result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">watched</span></a>';
                 }
@@ -202,6 +209,44 @@ var getNextDayOfWeek = function(date, dayOfWeek) {
 
 $(document).ready(function(){
 
+    // TODO: DRY
+    function split( val ) {
+      return val.split( /,\s*/ );
+    }
+    function extractLast( term ) {
+      return split( term ).pop();
+    }
+    $( "#keywords" )
+      // don't navigate away from the field on tab when selecting an item
+      .on( "keydown", function( event ) {
+        if ( event.keyCode === $.ui.keyCode.TAB &&
+            $( this ).autocomplete( "instance" ).menu.active ) {
+          event.preventDefault();
+        }
+      })
+      .autocomplete({
+        minLength: 0,
+        source: function( request, response ) {
+          // delegate back to autocomplete, but extract the last term
+          response( $.ui.autocomplete.filter(
+            document.keywords, extractLast( request.term ) ) );
+        },
+        focus: function() {
+          // prevent value inserted on focus
+          return false;
+        },
+        select: function( event, ui ) {
+          var terms = split( this.value );
+          // remove the current input
+          terms.pop();
+          // add the selected item
+          terms.push( ui.item.value );
+          // add placeholder to get the comma-and-space at the end
+          terms.push( "" );
+          this.value = terms.join( ", " );
+          return false;
+        }
+      });
     next_announce = getNextDayOfWeek(new Date(), 2);
     $("#announceIssues").html(timeDifference(new Date, next_announce))
 

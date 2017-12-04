@@ -140,7 +140,7 @@ var callbacks = {
     'project_length': unknown_if_empty,
     'bounty_type': unknown_if_empty,
     'claimee_email': function(key, val, result){
-        if(!_truthy(val)){
+        if(!_truthy(result['claimeee_address'])){
             $("#claimee").addClass('hidden');
         }
         return address_ize(key, val, result);
@@ -156,7 +156,7 @@ var callbacks = {
         if(val == null){
             return [null, null];
         }
-        return [ "Amount_usdt" , val];
+        return [ "Amount_usd" , val];
     },
     'web3_created': function(key, val, result){
         return [ "updated" , timeDifference(new Date(result['now']), new Date(result['created_on']))];
@@ -306,14 +306,22 @@ window.addEventListener('load', function() {
                     }
 
                     //actions
-                    var entry = {
-                        href: result['github_url'],
-                        text: 'View on Github',
-                        target: 'new',
-                        parent: 'right_actions',
-                        color: 'darkGrey'
+                    var actions = [];
+                    if(result['github_url'].substring(0,4) == 'http'){
+
+                        var github_url = result['github_url'];
+                        // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
+                        github_url = github_url.replace('pipermerriam/web3.py','ethereum/web3.py');
+
+                        var entry = {
+                            href: github_url,
+                            text: 'View on Github',
+                            target: 'new',
+                            parent: 'right_actions',
+                            color: 'darkGrey'
+                        }
                     }
-                    var actions = [entry];
+                    actions.push(entry);
                     if(result['status']=='open'){
                         var entry = {
                             href: '/funding/claim?source='+result['github_url'],

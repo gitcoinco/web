@@ -18,6 +18,7 @@
 
 from.models import Bounty
 from datetime import datetime
+
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
 
@@ -26,7 +27,7 @@ from rest_framework import routers, serializers, viewsets
 class BountySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Bounty
-        fields = ("url","created_on","modified_on","title","web3_created","value_in_token","token_name","token_address","bounty_type","project_length","experience_level","github_url","bounty_owner_address","bounty_owner_email","bounty_owner_github_username","claimeee_address","claimee_email","claimee_github_username","is_open","expires_date","raw_data","metadata","claimee_metadata","current_bounty", 'value_in_eth', 'value_in_usdt', 'status', 'now', 'avatar_url', 'value_true', 'issue_description', 'network', 'org_name', 'pk')
+        fields = ("url","created_on","modified_on","title","web3_created","value_in_token","token_name","token_address","bounty_type","project_length","experience_level","github_url","bounty_owner_address","bounty_owner_email","bounty_owner_github_username","claimeee_address","claimee_email","claimee_github_username","is_open","expires_date","raw_data","metadata","claimee_metadata","current_bounty", 'value_in_eth', 'value_in_usdt', 'status', 'now', 'avatar_url', 'value_true', 'issue_description', 'network', 'org_name', 'pk', 'issue_description_text')
 
 
 # ViewSets define the view behavior.
@@ -39,14 +40,19 @@ class BountyViewSet(viewsets.ModelViewSet):
         queryset = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')
 
         #filtering
+        print(queryset.count())
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address', 'idx_status', 'network']:
             if key in self.request.GET.keys():
                 request_key = key if key != 'bounty_owner_address' else 'coinbase' # special hack just for looking up bounties posted by a certain person
                 val = self.request.GET.get(request_key)
-                if val:
+
+                vals = val.split(',')
+                _queryset = queryset.none()
+                for val in vals:
                     args = {}
-                    args['{}__icontains'.format(key)] = val
-                    queryset = queryset.filter(**args)
+                    args['{}__icontains'.format(key)] = val.strip()
+                    _queryset = _queryset | queryset.filter(**args)
+                queryset = _queryset
 
         #filter by PK
         if 'pk__gt' in self.request.GET.keys():

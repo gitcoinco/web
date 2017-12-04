@@ -86,8 +86,13 @@ $(document).ready(function(){
         } else {
             localStorage['acceptTOS'] = true;
         }
-        if(issueURL == ''){
-            _alert({ message: "Please enter an issue URL." });
+        var is_issueURL_invalid = issueURL == '' 
+            || issueURL.indexOf('http') != 0 
+            || issueURL.indexOf('github') == -1 
+            || issueURL.indexOf('javascript:') != -1 
+        ;
+        if(is_issueURL_invalid){
+            _alert({ message: "Please enter a valid github issue URL." });
             isError = true;
         }
         if(amount == ''){

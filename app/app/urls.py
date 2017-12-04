@@ -15,33 +15,27 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.conf.urls import include, url
+from django.conf.urls import handler400, handler403, handler404, handler500, include, url
 from django.contrib import admin
-import retail.views
-import dashboard.views
-import dashboard.helpers
-import dashboard.embed
-import dashboard.ios
-import retail.emails
-import tdi.views
-import marketing.views
-
-from django.conf.urls import (
-    handler400,
-    handler403,
-    handler404,
-    handler500
-)
-from dashboard.router import router
 from django.contrib.sitemaps.views import sitemap
-from sitemap import sitemaps
 
+import dashboard.embed
+import dashboard.helpers
+import dashboard.ios
+import dashboard.views
+import marketing.views
+import retail.emails
+import retail.views
+import tdi.views
+from dashboard.router import router
+from sitemap import sitemaps
 
 urlpatterns = [
 
 
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
+    url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
     url(r'^api/v0.1/', include(router.urls)),
 
 
@@ -71,7 +65,6 @@ urlpatterns = [
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
     url(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     url(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
-    url(r'^funding/save/?', dashboard.ios.save, name='save'),
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
 
     # sync methods
@@ -95,6 +88,7 @@ urlpatterns = [
     url(r'^slack/?', retail.views.slack, name='slack'),
     url(r'^btctalk/?', retail.views.btctalk, name='btctalk'),
     url(r'^reddit/?', retail.views.reddit, name='reddit'),
+    url(r'^feedback/?', retail.views.feedback, name='feedback'),
     url(r'^twitter/?', retail.views.twitter, name='twitter'),
     url(r'^gitter/?', retail.views.gitter, name='gitter'),
     url(r'^fb/?', retail.views.fb, name='fb'),
@@ -124,6 +118,7 @@ urlpatterns = [
     #marketing views
     url(r'^email/settings/(.*)', marketing.views.email_settings, name='email_settings'),
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
+    url(r'^leaderboard', marketing.views.leaderboard, name='_leaderboard'),
     url(r'^_administration/stats$', marketing.views.stats, name='stats'),
 
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),

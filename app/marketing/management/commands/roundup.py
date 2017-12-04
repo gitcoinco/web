@@ -15,10 +15,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.core.management.base import BaseCommand
-from marketing.models import EmailSubscriber
-from marketing.mails import weekly_roundup
 import time
+
+from django.core.management.base import BaseCommand
+
+from marketing.mails import weekly_roundup
+from marketing.models import EmailSubscriber
 
 
 class Command(BaseCommand):

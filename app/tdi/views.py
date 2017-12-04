@@ -15,26 +15,30 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from reportlab.pdfgen import canvas
-from django.http import HttpResponse
-from .models import WhitepaperAccess, AccessCodes, WhitepaperAccessRequest
-from django.template.response import TemplateResponse
-from django.contrib.admin.views.decorators import staff_member_required
-from django.core.validators import validate_email
-from django.conf import settings
-from django.utils import timezone
-from pyPdf import PdfFileWriter, PdfFileReader
-from marketing.mails import send_mail
-from ratelimit.decorators import ratelimit
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.colors import Color
-from wsgiref.util import FileWrapper
-from retail.helpers import get_ip
-from django.shortcuts import redirect
+import hashlib
 import os
 import StringIO
-import hashlib
+from wsgiref.util import FileWrapper
+
+from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.validators import validate_email
+from django.http import HttpResponse
+from django.shortcuts import redirect
+from django.template.response import TemplateResponse
+from django.utils import timezone
+
+from marketing.utils import invite_to_slack
+from marketing.mails import send_mail
+from pyPdf import PdfFileReader, PdfFileWriter
+from ratelimit.decorators import ratelimit
+from reportlab.lib.colors import Color
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from retail.helpers import get_ip
+
+from .models import AccessCodes, WhitepaperAccess, WhitepaperAccessRequest
 
 
 def ratelimited(request, ratelimited=False):
@@ -78,7 +82,8 @@ https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/
         ip=ip,
     )
 
-
+    invite_to_slack(context['email'])
+    
     valid_email = True
     try:
         validate_email(request.POST.get('email', False))
@@ -239,6 +244,3 @@ def process_accesscode_request(request, pk):
         return redirect('/_administration/tdi/whitepaperaccessrequest/?processed=False')
 
     return TemplateResponse(request, 'process_accesscode_request.html', context)
-
-
-

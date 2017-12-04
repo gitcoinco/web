@@ -15,15 +15,34 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.conf import settings
-import requests
 import json
 
+from django.conf import settings
+
+import requests
 
 _auth = (settings.GITHUB_API_USER, settings.GITHUB_API_TOKEN)
 headers = {
     'Accept': 'application/vnd.github.squirrel-girl-preview'
 }
+
+v3headers = {
+    'Accept': 'application/vnd.github.v3.text-match+json'
+}
+
+
+def search(q):
+    import requests
+
+    params = (
+        ('q', q),
+        ('sort', 'updated'),
+    )
+
+    response = requests.get('https://api.github.com/search/users', auth=_auth, headers=v3headers, params=params)
+    #print(response.headers['X-RateLimit-Limit'])
+    #print(response.headers['X-RateLimit-Remaining'])
+    return response.json()
 
 
 def get_issue_comments(owner, repo):
@@ -69,5 +88,3 @@ def repo_url(issue_url):
 
 def org_name(issue_url):
     return issue_url.split('/')[3]
-
-

@@ -15,11 +15,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.utils import timezone
+
 from marketing.models import Stat
 from slackclient import SlackClient
-from django.conf import settings
-from django.utils import timezone
 
 
 def slack_users():
@@ -53,6 +54,8 @@ def slack_users_active():
 
 
 def twitter_followers():
+    if settings.DEBUG:
+        return
     import twitter
 
     api = twitter.Api(
@@ -65,6 +68,13 @@ def twitter_followers():
 
     Stat.objects.create(
         key='twitter_followers',
+        val=(user.followers_count),
+        )
+
+    user = api.GetUser(screen_name='owocki')
+
+    Stat.objects.create(
+        key='twitter_followers_owocki',
         val=(user.followers_count),
         )
 
@@ -89,6 +99,52 @@ def bounties_fulfilled_pct():
             key='bounties_{}_pct'.format(status),
             val=val,
             )
+
+
+def joe_dominance_index():
+    from dashboard.models import Bounty
+
+    joe_addresses = ['0x4331B095bC38Dc3bCE0A269682b5eBAefa252929'.lower(), '0xe93d33CF8AaF56C64D23b5b248919EabD8c3c41E'.lower()]
+
+    for days in [7, 30, 90, 360]:
+        all_bounties = Bounty.objects.filter(current_bounty=True, web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+        joe_bounties = all_bounties.filter(bounty_owner_address__in=joe_addresses)
+        if not all_bounties.count():
+            continue
+
+        val = int(100 * (joe_bounties.count()) / (all_bounties.count()))
+
+        Stat.objects.create(
+            key='joe_dominance_index_{}_count'.format(days),
+            val=val,
+            )
+
+        val = int(100 * sum([(b.value_in_usdt if b.value_in_usdt else 0) for b in joe_bounties]) / sum([(b.value_in_usdt if b.value_in_usdt else 0) for b in all_bounties]) )
+        Stat.objects.create(
+            key='joe_dominance_index_{}_value'.format(days),
+            val=val,
+            )
+
+
+def avg_time_bounty_turnaround():
+    import statistics
+    from dashboard.models import Bounty
+
+    for days in [7, 30, 90, 360]:
+        all_bounties = Bounty.objects.filter(current_bounty=True, idx_status='fulfilled', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+        if not all_bounties.count():
+            continue
+
+        turnaround_times = [b.turnaround_time for b in all_bounties]
+
+        val = int(statistics.median(turnaround_times) / 60 / 60) #seconds to hours
+
+        Stat.objects.create(
+            key='turnaround_time_hours_{}_days_back'.format(days),
+            val=val,
+            )
+
+
 
 
 def bounties_open():
@@ -202,7 +258,9 @@ class Command(BaseCommand):
             bounties_fulfilled_pct,
             subs_active, 
             subs_newsletter, 
-            slack_users_active
+            slack_users_active,
+            joe_dominance_index,
+            avg_time_bounty_turnaround
         ]
 
         for f in fs:

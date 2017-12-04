@@ -1,5 +1,16 @@
 # encoding=utf8
 import sys
+
+from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.template.response import TemplateResponse
+from django.utils import timezone
+
+import premailer
+from marketing.utils import get_or_save_email_subscriber
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 '''
@@ -19,14 +30,6 @@ sys.setdefaultencoding('utf8')
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.template.loader import render_to_string
-from django.http import HttpResponse
-from django.contrib.admin.views.decorators import staff_member_required
-from django.conf import settings
-from django.utils import timezone
-import premailer
-from django.template.response import TemplateResponse
-from marketing.utils import get_or_save_email_subscriber
 
 
 ### RENDERERS
@@ -149,12 +152,16 @@ def render_new_bounty_roundup(to_email):
 
     bounties = [
         {
-            'obj': Bounty.objects.get(pk=46),
-            'primer': 'Want to earn your first ETH through the platform?  Here\'s a good staring point 👇 ~ @owocki',
+            'obj': Bounty.objects.get(pk=127),
+            'primer': 'Piper Merriam is the force in open source.  Know python? This issue is for you.',
         },
         {
-            'obj': Bounty.objects.get(pk=31),
-            'primer': 'This is a fun little idea to make the "waiting for block confirmation" page more engaging. ~ @owocki',
+            'obj': Bounty.objects.get(pk=120),
+            'primer': 'Truffle is one of the most popular web3 development tools.  Heres an oppy to help them increase their speed',
+        },
+        {
+            'obj': Bounty.objects.get(pk=168),
+            'primer': 'Here\'s an opportunity to recruit your friends and earn some ETH. (Recruiter Spammers need not apply!)',
         },
     ]
 
@@ -162,7 +169,7 @@ def render_new_bounty_roundup(to_email):
         'bounties': bounties,
         'override_back_color': '#15003e',
         'invert_footer': True,
-        'hide_header': True,
+       'hide_header': True,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -187,7 +194,7 @@ def new_tip(request):
 @staff_member_required
 def new_match(request):
     from dashboard.models import Bounty
-    response_html, response_txt = render_match_email(settings.CONTACT_EMAIL, Bounty.objects.all().last(), 'owocki')
+    response_html, response_txt = render_match_email(settings.CONTACT_EMAIL, Bounty.objects.exclude(title='').last(), 'owocki')
 
     return HttpResponse(response_html)
 

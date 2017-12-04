@@ -17,10 +17,12 @@
 '''
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from economy.models import SuperModel
+
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
-from django.contrib.postgres.fields import JSONField
+
 from dashboard.models import Bounty
+from economy.models import SuperModel
 
 
 class EmailSubscriber(SuperModel):
@@ -31,6 +33,8 @@ class EmailSubscriber(SuperModel):
     preferences = JSONField(default={})
     metadata = JSONField(default={})
     priv = models.CharField(max_length=30, default='')
+    github = models.CharField(max_length=255, default='')
+    keywords = ArrayField(models.CharField(max_length=200), blank=True, default=[])
 
     def __str__(self):
         return self.email
@@ -83,3 +87,6 @@ class Match(SuperModel):
     def __str__(self):
         return "{}: {}; {}".format(self.email, self.bounty, self.direction)
 
+
+class Keyword(SuperModel):
+    keyword = models.CharField(max_length=255)

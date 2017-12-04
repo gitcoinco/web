@@ -1,5 +1,16 @@
 # encoding=utf8
+import logging
+import re
 import sys
+from urlparse import urlparse
+
+from django.conf import settings
+
+import requests
+import twitter
+from app.github import post_issue_comment
+from slackclient import SlackClient
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 '''
@@ -19,13 +30,6 @@ sys.setdefaultencoding('utf8')
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.conf import settings
-import twitter
-import requests
-from urlparse import urlparse
-from app.github import post_issue_comment
-from slackclient import SlackClient
-import re
 
 
 def maybe_market_to_twitter(bounty, event_name, txid):
@@ -62,10 +66,10 @@ def maybe_market_to_twitter(bounty, event_name, txid):
 
 
 def should_post_in_channel(channel, bounty):
-    if channel in ['bounties', 'development']:
+    if channel in ['focus-bounties', 'focus-dev']:
         return True
-    if 'dev-' in channel or channel in ['_design', 'content']:
-        keyword = channel.replace('dev-','').lower()
+    if 'focus-' in channel:
+        keyword = channel.replace('focus-', '').replace('dev-', '').lower()
         return keyword in str(bounty.title).lower() \
             or keyword in str(bounty.keywords).lower() \
             or keyword in str(bounty.github_url).lower()
@@ -82,14 +86,13 @@ def maybe_market_to_slack(bounty, event_name, txid):
         return False
 
     title = bounty.title if bounty.title else bounty.github_url
-    msg = "{} worth {} {}: {} \n\n{}".format(event_name.replace('bounty', 'funded_issue'), round(bounty.get_natural_value(), 4), bounty.token_name, title, bounty.get_absolute_url())
+    msg = "{} worth {} {}: {} \n\n{}&slack=1".format(event_name.replace('bounty', 'funded_issue'), round(bounty.get_natural_value(), 4), bounty.token_name, title, bounty.get_absolute_url())
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
         channels = sc.api_call("channels.list")
         channels = [chan['name'] for chan in channels['channels']]
         channels_to_post_in = [channel for channel in channels if should_post_in_channel(channel, bounty)]
-        channel = 'bounties'
         for channel in channels_to_post_in:
             sc.api_call(
               "chat.postMessage",
@@ -138,8 +141,8 @@ def maybe_market_to_github(bounty, event_name, txid):
     # prepare message
     msg = ''
     if event_name == 'new_bounty':
-        usdt_value = "(" + str(round(bounty.value_in_usdt, 2)) + " USDT)" if bounty.value_in_usdt else ""
-        msg = "__This issue now has a funding of {} {} {} attached to it.__  To view or claim this funding, [click here]({}).".format(round(bounty.get_natural_value(), 4), bounty.token_name, usdt_value, bounty.get_absolute_url())
+        usdt_value = "(" + str(round(bounty.value_in_usdt, 2)) + " USD)" if bounty.value_in_usdt else ""
+        msg = "__This issue now has a funding of {} {} {} attached to it.__\n\n * If you would like to work on this issue you can claim it [here]({}).\n * If you've completed this issue and want to claim the bounty you can do so [here]({})\n".format(round(bounty.get_natural_value(), 4), bounty.token_name, usdt_value, bounty.get_absolute_url(), bounty.get_absolute_url())
     elif event_name == 'approved_claim':
         msg = "__The funding of {} {} attached to this issue has been approved & issued.__  \n\nLearn more at: {}".format(round(bounty.get_natural_value(), 4), bounty.token_name, bounty.get_absolute_url())
     else:
@@ -196,30 +199,41 @@ def maybe_market_tip_to_github(tip):
 
 
 def maybe_market_to_email(b, event_name, txid):
-    from marketing.mails import new_bounty_claim, new_bounty_rejection, new_bounty_acceptance
-
-    #TODO: allow people to subscribe to new_bounty notifications
-    #new_bounty(b, [to_email])
-
+    from marketing.mails import new_bounty_claim, new_bounty_rejection, new_bounty_acceptance, new_bounty
+    from marketing.models import EmailSubscriber
     to_emails = []
 
+    if event_name == 'new_bounty':
+        try:
+            to_emails = []
+            keywords = b.keywords.split(',')
+            for keyword in keywords:
+                to_emails = to_emails + list(EmailSubscriber.objects.filter(keywords__contains=[keyword.strip()]).values_list('email', flat=True))
+            for to_email in set(to_emails):
+                new_bounty(b, [to_email])
+        except Exception as e:
+            logging.exception(e)
+            print(e)
     if event_name == 'new_claim':
         try:
             to_emails = [b.bounty_owner_email]
             new_bounty_claim(b, to_emails)
         except Exception as e:
+            logging.exception(e)
             print(e)
     if event_name == 'approved_claim':
         try:
             to_emails = [b.bounty_owner_email, b.claimee_email]
             new_bounty_acceptance(b, to_emails)
         except Exception as e:
+            logging.exception(e)
             print(e)
     if event_name == 'rejected_claim':
         try:
             to_emails = [b.bounty_owner_email, b.claimee_email]
             new_bounty_rejection(b, to_emails)
         except Exception as e:
+            logging.exception(e)
             print(e)
 
     return len(to_emails)
@@ -339,13 +353,3 @@ def maybe_post_on_craigslist(bounty):
                     False
             else:
                 return False
-
-
-
-
-
-
-
-
-
-

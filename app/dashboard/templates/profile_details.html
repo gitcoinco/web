@@ -2,9 +2,10 @@
 <!DOCTYPE html>
 <html lang="en">
 
-{% include 'shared/head.html' %}
-{% include 'shared/cards_pic.html' %}
-
+<head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards_pic.html' %}
+</head>
 <body class="interior {{active}}">
     <div class="container-fluid header dash">
         {% include 'shared/nav_internal.html' %}
@@ -98,7 +99,7 @@
                                                 <a class="btn btn-sm btn-darkBlue font-smaller-2">
                                                     {{b.value_true}} {{b.token_name}},
                                                     {{b.value_in_usdt}}
-                                                    USDT
+                                                    USD
                                                 </a>
                                             </div>
                                         </a>

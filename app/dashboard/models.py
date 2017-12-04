@@ -17,18 +17,19 @@
 '''
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.conf import settings
-from django.db import models
 
+from django.conf import settings
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.contrib.postgres.fields import JSONField
+from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.utils import timezone
+
+from dashboard.tokens import addr_to_token
 # Create your models here.
 from economy.models import SuperModel
 from economy.utils import convert_amount
-from django.contrib.postgres.fields import JSONField
-from dashboard.tokens import addr_to_token
-from django.utils import timezone
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
-from django.contrib.humanize.templatetags.humanize import naturaltime
 
 
 class Bounty(SuperModel):
@@ -102,6 +103,14 @@ class Bounty(SuperModel):
     @property
     def title_or_desc(self):
         return self.title if self.title else self.github_url
+
+
+    @property
+    def issue_description_text(self):
+        import re, cgi
+        tag_re = re.compile(r'(<!--.*?-->|<[^>]*>)')
+        return tag_re.sub('', self.issue_description).strip()
+
 
     @property
     def org_name(self):
@@ -183,6 +192,9 @@ class Bounty(SuperModel):
     def desc(self):
         return "{} {} {} {}".format(naturaltime(self.web3_created), self.idx_project_length, self.bounty_type, self.experience_level)
 
+    @property
+    def turnaround_time(self):
+        return (self.created_on - self.web3_created).total_seconds()
 
     def fetch_issue_description(self):
         import requests
@@ -210,8 +222,8 @@ class Bounty(SuperModel):
         except Exception as e:
             print(e)
             return
-
-        self.issue_description = body
+        if body:
+            self.issue_description = body
 
 
 class BountySyncRequest(SuperModel):

@@ -129,6 +129,7 @@
 .tline > li > .tline_module:hover {
     border-left: 1px solid #d3d3d3;
     border-bottom: 2px solid #d3d3d3;
+    margin-bottom: -1px;
 }
 .tline > li.tline_other > .tline_module:hover {
     border-right: 1px solid #d3d3d3;

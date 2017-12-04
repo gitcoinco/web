@@ -15,13 +15,14 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.template.response import TemplateResponse
-from django.shortcuts import redirect
-from django.core.validators import validate_email
 from django.conf import settings
-from slackclient import SlackClient
-from marketing.utils import get_or_save_email_subscriber
+from django.core.validators import validate_email
 from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.template.response import TemplateResponse
+
+from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+from slackclient import SlackClient
 
 
 def index(request):
@@ -355,9 +356,12 @@ def error(request, code):
         return TemplateResponse(request, 'error.html', context)
 
 
-
 def portal(request):
     return redirect('https://gitcoinhelp.zendesk.com/hc/en-us/')
+
+
+def feedback(request):
+    return redirect('https://goo.gl/forms/9rs9pNKJDnUDYEeA3')
 
 
 def help_dev(request):
@@ -398,9 +402,8 @@ def slack(request):
             valid_email = False
 
         if valid_email:
-            sc = SlackClient(settings.SLACK_TOKEN)
-            response = sc.api_call('users.admin.invite', email=email)
             get_or_save_email_subscriber(email, 'slack')
+            response = invite_to_slack(email)
             if response['ok']:
                 context['msg'] = "Your invite has been sent. "
             else:
@@ -442,8 +445,3 @@ def github(request):
 
 def youtube(request):
     return redirect('https://www.youtube.com/watch?v=DJartWzDn0E')
-
-
-
-
-

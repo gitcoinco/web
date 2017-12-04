@@ -57,7 +57,7 @@ div, p, a, span{
 }
 .search_bar, .bounty_def{
     background-color: #eee;
-    height: 136px;
+    height: 140px;
     padding-top: 10px;
 }
 .search_bar, .bounty_def #mce-EMAIL{
@@ -69,6 +69,17 @@ div, p, a, span{
     display: inline;
     text-transform: uppercase;
 }
+
+#mce-EMAIL {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 2px;
+}
+
+#mc-embedded-subscribe {
+  margin: 0 5px 5px;
+}
+
 .bounty_def h5{
     font-size: 1.1rem;   
 }
@@ -817,7 +828,9 @@ body.bounty_details #title{
     margin-right: 10px;
     margin-top: 5px;
 }
-
+#pull_gh {
+    font-size: 12px
+}
 
 @media (max-width: 1350px) {
     .profile_details .bounties li div.details{
@@ -889,6 +902,13 @@ body.bounty_details #title{
     }
 }
 @media (max-width: 769px) {
+    .email_settings .col-4 {
+        display: none;
+    }
+    .email_settings .col-6 {
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
     .profile_details #stats li{
         width: 48%;
     }

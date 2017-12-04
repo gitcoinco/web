@@ -1,7 +1,9 @@
-from django.urls import reverse
 from django.contrib import sitemaps
 from django.contrib.sitemaps import Sitemap
+from django.urls import reverse
+
 from dashboard.models import Bounty, Profile
+
 
 class StaticViewSitemap(sitemaps.Sitemap):
     priority = 0.5
@@ -25,7 +27,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
             'help',
             'whitepaper',
             'whitepaper_access',
-            'leaderboard',
+            '_leaderboard',
         ]
 
     def location(self, item):

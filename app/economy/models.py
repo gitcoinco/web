@@ -18,18 +18,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models
-from django.utils.timezone import localtime
-from django.utils import timezone
-from django.contrib.postgres.fields import JSONField
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User
 from django.contrib.contenttypes import fields
-
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.contrib.postgres.fields import JSONField
+from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import User
-from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.utils import timezone
+from django.utils.timezone import localtime
 
 
 def get_time():
@@ -73,4 +72,3 @@ def reverse_conversion_rate(sender, instance, **kwargs):
         from_currency=instance.to_currency,
         to_currency=instance.from_currency
         )
-

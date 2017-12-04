@@ -17,21 +17,24 @@
 '''
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from dashboard.models import Subscription, BountySyncRequest, Tip, Bounty, Profile
+
+import json
+
+from django.http import Http404, JsonResponse
 from django.template.response import TemplateResponse
-from django.http import JsonResponse
 from django.utils import timezone
-from django.http import Http404
 from django.views.decorators.csrf import csrf_exempt
+
+from app.github import get_user as get_github_user
+from app.utils import ellipses, sync_profile
+from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
+from dashboard.models import Bounty, BountySyncRequest, Profile, Subscription, Tip
+from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from marketing.mails import tip_email
+from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from dashboard.helpers import normalizeURL, process_bounty_details, process_bounty_changes
-from gas.utils import recommend_min_gas_price_to_confirm_in_time
-import json
-from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack
-from marketing.mails import tip_email
-from app.github import get_user as get_github_user
-from app.utils import sync_profile
 
 confirm_time_minutes_target = 3
 
@@ -94,11 +97,29 @@ def send_tip_2(request):
         emails = []
         
         #basic validation
+        username = params['username']
+
+        #get emails
         if params['email']:
             emails.append(params['email'])
-        gh_user = get_github_user(params['username'])
+        gh_user = get_github_user(username)
+        user_full_name = gh_user['name']
         if gh_user.get('email', False):
             emails.append(gh_user['email'])
+        gh_user_events = get_github_user(username, '/events/public')
+        for event in gh_user_events:
+            commits = event.get('payload', {}).get('commits', [])
+            for commit in commits:
+                email = commit.get('author', {}).get('email', None)
+                #print(event['actor']['display_login'].lower() == username.lower())
+                #print(commit['author']['name'].lower() == user_full_name.lower())
+                #print('========')
+                if email and \
+                    event['actor']['display_login'].lower() == username.lower() and \
+                    commit['author']['name'].lower() == user_full_name.lower() and \
+                    'noreply.github.com' not in email and \
+                    email not in emails:
+                    emails.append(email)
         expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
 
         #db mutations
@@ -158,6 +179,7 @@ def dashboard(request):
     params = {
         'active': 'dashboard',
         'title': 'Issue Explorer',
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'dashboard.html', params)
 
@@ -204,7 +226,7 @@ def bounty_details(request):
         'issueURL': request.GET.get('issue_'),
         'title': 'Issue Details',
         'card_title': 'Funded Issue Details | Gitcoin',
-        'avatar_url' : 'https://gitcoin.co/static/v2/images/helmet.png',
+        'avatar_url': 'https://gitcoin.co/static/v2/images/helmet.png',
         'active': 'bounty_details',
     }
 
@@ -213,6 +235,7 @@ def bounty_details(request):
         if b.title:
             params['card_title'] = "{} | {} Funded Issue Detail | Gitcoin".format(b.title, b.org_name)
             params['title'] = params['card_title']
+            params['card_desc'] = ellipses(b.issue_description_text, 255)
         params['avatar_url'] = b.local_avatar_url
     except Exception as e:
         print(e)
@@ -235,7 +258,7 @@ def profile_helper(handle):
     return profile
 
 
-def profile_keywords(request, handle):
+def profile_keywords_helper(handle):
     profile = profile_helper(handle)
 
     keywords = []
@@ -245,7 +268,12 @@ def profile_keywords(request, handle):
         for key in _keywords:
             if key != '' and key not in keywords:
                 keywords.append(key)
+    return keywords
 
+
+def profile_keywords(request, handle):
+    keywords = profile_keywords_helper(handle)
+    
     response = {
         'status': 200,
         'keywords': keywords,
@@ -376,6 +404,3 @@ def apitos(request):
     params = {
     }
     return TemplateResponse(request, 'legal/apitos.txt', params)
-
-
-
