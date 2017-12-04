@@ -155,7 +155,7 @@ def email_settings(request, key):
             validation_passed = False
             msg = 'Invalid Email'
 
-        if level not in ['lite', 'regular', 'nothing']:
+        if level not in ['lite', 'lite1', 'regular', 'nothing']:
             validation_passed = False
             msg = 'Invalid Level'
         if validation_passed:
