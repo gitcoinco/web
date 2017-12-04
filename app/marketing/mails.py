@@ -4,7 +4,7 @@ import sys
 from django.conf import settings
 
 import sendgrid
-from marketing.utils import get_or_save_email_subscriber, should_suppress_email
+from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from retail.emails import *
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -12,7 +12,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 '''
     Copyright (C) 2017 Gitcoin Core 
-
+w
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
     by the Free Software Foundation, either version 3 of the License, or
@@ -93,7 +93,7 @@ def new_bounty(bounty, to_emails=[]):
         from_email = settings.CONTACT_EMAIL
         html, text = render_new_bounty(to_email, bounty)
 
-        if not should_suppress_email(to_email):
+        if not should_suppress_notification_email(to_email):
             send_mail(from_email, to_email, subject, text, html)
 
 
@@ -104,7 +104,7 @@ def weekly_roundup(to_emails=[]):
         html, text = render_new_bounty_roundup(to_email)
         from_email = settings.PERSONAL_CONTACT_EMAIL
 
-        if not should_suppress_email(to_email):
+        if not should_suppress_notification_email(to_email):
             send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
 
 
@@ -118,7 +118,7 @@ def new_bounty_claim(bounty, to_emails=[]):
         from_email = settings.CONTACT_EMAIL
         html, text = render_new_bounty_claim(to_email, bounty)
 
-        if not should_suppress_email(to_email):
+        if not should_suppress_notification_email(to_email):
             send_mail(from_email, to_email, subject, text, html)
 
 
@@ -132,7 +132,7 @@ def new_bounty_rejection(bounty, to_emails=[]):
         from_email = settings.CONTACT_EMAIL
         html, text = render_new_bounty_rejection(to_email, bounty)
 
-        if not should_suppress_email(to_email):
+        if not should_suppress_notification_email(to_email):
             send_mail(from_email, to_email, subject, text, html)
 
 
@@ -146,7 +146,7 @@ def new_bounty_acceptance(bounty, to_emails=[]):
         from_email = settings.CONTACT_EMAIL
         html, text = render_new_bounty_acceptance(to_email, bounty)
 
-        if not should_suppress_email(to_email):
+        if not should_suppress_notification_email(to_email):
             send_mail(from_email, to_email, subject, text, html)
 
 
@@ -175,5 +175,5 @@ def bounty_expire_warning(bounty, to_emails=[]):
         from_email = settings.CONTACT_EMAIL
         html, text = render_bounty_expire_warning(to_email, bounty)
 
-        if not should_suppress_email(to_email):
+        if not should_suppress_notification_email(to_email):
             send_mail(from_email, to_email, subject, text, html)

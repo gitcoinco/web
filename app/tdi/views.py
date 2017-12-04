@@ -29,6 +29,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
+from marketing.utils import invite_to_slack
 from marketing.mails import send_mail
 from pyPdf import PdfFileReader, PdfFileWriter
 from ratelimit.decorators import ratelimit
@@ -81,7 +82,8 @@ https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/
         ip=ip,
     )
 
-
+    invite_to_slack(context['email'])
+    
     valid_email = True
     try:
         validate_email(request.POST.get('email', False))

@@ -49,7 +49,8 @@
                         <label for="level">Send me</label>
                             <select class="form-control" id="level" name="level"  required>
                               <option value="regular" {% if es.preferences.level == 'regular'%}selected{%endif%} >Regular: Weekly Roundups, Notifications, etc</option>
-                              <option value="lite" {% if es.preferences.level == 'lite'%}selected{%endif%}>Lite: Just Notifications</option>
+                              <option value="lite1" {% if es.preferences.level == 'lite1'%}selected{%endif%}>Lite 1: Just Roundups</option>
+                              <option value="lite" {% if es.preferences.level == 'lite'%}selected{%endif%}>Lite 2: Just Notifications</option>
                               <option value="nothing" {% if es.preferences.level == 'nothing'%}selected{%endif%}>Nothing: Don't Email</option>
                             </select>
                             <small id="level" class="form-text text-muted">(roundup emails once a week)</small>
