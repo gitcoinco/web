@@ -23,10 +23,10 @@ def get_stat(key):
     return Stat.objects.filter(key=key).order_by('-created_on').first().val
 
 
-def should_suppress_email(email):
+def should_suppress_notification_email(email):
     queryset = EmailSubscriber.objects.filter(email=email)
     if queryset.exists():
-        return queryset.first().preferences.get('level', '') == 'nothing'
+        return queryset.first().preferences.get('level', '') in ['nothing', 'lite1']
     return False
 
 

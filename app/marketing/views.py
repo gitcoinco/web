@@ -167,7 +167,7 @@ def email_settings(request, key):
             es.keywords = keywords
             ip = get_ip(request)
             es.active = level != 'nothing'
-            es.newsletter = level == 'regular'
+            es.newsletter = level in ['regular', 'lite1']
             if not es.metadata.get('ip', False):
                 es.metadata['ip'] = [ip]
             else:
