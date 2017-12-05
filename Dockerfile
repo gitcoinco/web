@@ -1,4 +1,5 @@
 FROM python:2.7-slim
+ENV PYTHONUNBUFFERED 1
 RUN mkdir /code && \
     apt-get update && \
     apt-get install -y --no-install-recommends gcc libc6-dev libc-dev libssl-dev && \
