@@ -28,6 +28,15 @@ var unPackAddresses = function(){
 }
 
 window.onload = function () {
+    jQuery('#amount').on('keyup keypress blur change', function(e){
+        var denomination = jQuery('#token option:selected').text();
+        var usdAmount = getUSDEstimate(e.target.value, denomination);
+        if (usdAmount){
+            jQuery('#usd_amount').text(usdAmount);
+        } else {
+            jQuery('#usd_amount').html('</br>');
+        }
+    })
 
     unPackAddresses();
 
