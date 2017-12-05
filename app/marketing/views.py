@@ -187,6 +187,11 @@ def email_settings(request, key):
     }
     return TemplateResponse(request, 'email_settings.html', context)
 
+
+def _leaderboard(request):
+    return leaderboard(request, '')
+
+
 def leaderboard(request, key):
     if not key:
         key = 'weekly_fulfilled'
