@@ -139,6 +139,8 @@ def email_settings(request, key):
     if es.exists():
         email = es.first().email
         level = es.first().preferences.get('level', False)
+    else:
+        raise Http404
     es = es.first()
     if request.POST.get('email', False):
         level = request.POST.get('level')
