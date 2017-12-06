@@ -708,7 +708,6 @@ body.bounty_details #title{
     filter: invert(100%);
     margin: 10px;
 }
-
 .profile_details #hero .ctas img:hover{
     filter: invert(90%);
 }
@@ -777,120 +776,6 @@ body.bounty_details #title{
 }
 .profile_details .dot, 
 
-#leaderboard .leaderboard_entry .position{
-   color:lightgray;
-}
-/* #leaderboard .leaderboard_entry tr{
-    height: 80px;
- } */
-
-.profile_details li:nth-child(2n+0) .dot,
-#leaderboard .leaderboard_entry:nth-child(2n+0) .dot
-{
-    background: #f8f8f8; 
-}
-.profile_details li:nth-child(2n+1) .dot,
-#leaderboard .leaderboard_entry:nth-child(2n+1) .dot
-{
-    background: black; 
-}
-#leaderboard .dot{
-    margin-left: 0px;
-    margin-top: 40px;
-}
-#leaderboard .leaderboard_entry{
-    padding: 10px 0px;
-}
-
-#leaderboard .leaderboard_entry img{
-    max-height: 100px; 
-    border-radius: 50%;
-}
-#leaderboard .leaderboard_entry{
-    color: black;
-    text-decoration: none;
-}
-
-#leaderboard .leaderboard_entry a{
-    color: #8b8b8b;
-}
-
-#leaderboard .leaderboard_entry .item-amount{
-   font-size:1.5em;
-   font-weight: bold;
-   color: #86eec4;
-}
-
-#leaderboard .table-striped tbody tr:nth-of-type(2n+1) {
-    background-color: #f8f8f8;
-}
-
-
-#leaderboard #key{
-    right: 0px;
-    display: block;
-    position: absolute;
-    margin-right: 10px;
-    margin-top: 5px;
-}
-
-#leaderboard .podium {
-    background: #f5136e; /* For browsers that do not support gradients */
-    background: -webkit-gradient(linear, center top, center bottom, from(#f5136e), to(#0f023c));
-    background: -webkit-linear-gradient(#f5136e, #0f023c);
-    background: -moz-linear-gradient(#f5136e, #0f023c);
-    background: -o-linear-gradient(#f5136e, #0f023c);
-    background: -ms-linear-gradient(#f5136e, #0f023c);
-    background: linear-gradient(#f5136e, #0f023c);
-}
-
-
-#leaderboard .winner {
-    position: relative;
-    padding: 0px;
-}
-
-#leaderboard .winner-content {
-    top:40%;
-    left:0;
-    position: absolute;
-}
-
-
-
-#leaderboard .winner-content .winner-position {
-    width: 100%;
-    min-height: 100px;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-}
-
-#leaderboard .winner-content .winner-position-first  {
-    background-image: url('/static/v2/images/leaderboard-1.png');
-}
-
-#leaderboard .winner-content .winner-position-second  {
-    background-image: url('/static/v2/images/leaderboard-2.png');
-}
-
-#leaderboard .winner-content .winner-position-third  {
-    background-image: url('/static/v2/images/leaderboard-3.png');
-}
-
-
-#leaderboard .winner img{
-    opacity: 0.5;
-}
-
-#leaderboard .winner img:hover{
-    opacity: 0.55;
-}
-
-#leaderboard .winner a{
-    color:white;
-}
-
 #pull_gh {
     font-size: 12px
 }
@@ -906,12 +791,6 @@ body.bounty_details #title{
     }
 }
 @media (max-width: 1025px) {
-    #leaderboard .leaderboard_entry div{
-        width: 30%;
-    }
-    #leaderboard .leaderboard_entry div:nth-child(2){
-        width: 30%;
-    }
 
     .profile_details .bounties li div.status,
     .profile_details .bounties li .amount{
@@ -1032,12 +911,8 @@ body.bounty_details #title{
     .bounty_def h5{
         font-size: 1.2rem;   
     }
-
 }
 @media (max-width: 481px) {
-    #leaderboard .leaderboard_entry h4{
-        font-size: 18px;
-    }
 
     .hide_min_viewport{
         display: none !important;
@@ -1143,4 +1018,3 @@ body.bounty_details #title{
         font-size: .8rem;   
     }
 }
-

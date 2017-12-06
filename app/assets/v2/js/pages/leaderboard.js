@@ -3,9 +3,11 @@ $(document).ready(function () {
     var max = parseInt($(this).attr('aria-valuemax'))
     var now = parseInt($(this).attr('aria-valuenow'))
     var width = (now * 100) / max
-    console.log(width)
     $(this).css('width', width + '%')
-    // $(this).changeElementType('a'); // hack so that users can right click on the element
+  })
+
+  $('.clickable-row').click(function () {
+    window.location = $(this).data('href')
   })
 
   $('#key').change(function () {

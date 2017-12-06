@@ -210,10 +210,20 @@ def leaderboard(request, key):
     }
     if key not in titles.keys():
         raise Http404
-
-    amount_max = LeaderboardRank.objects.filter(active=True, leaderboard=key).values_list('amount').annotate(Max('amount')).order_by('-amount')[0][0]
+    
+    amount = LeaderboardRank.objects.filter(active=True, leaderboard=key).values_list('amount').annotate(Max('amount')).order_by('-amount')
     items = LeaderboardRank.objects.filter(active=True, leaderboard=key).order_by('-amount')
-    podium_items =  LeaderboardRank.objects.filter(active=True, leaderboard=key).order_by('-amount')[:3]
+   
+    if len(amount) > 0:
+        amount_max = amount[0][0]
+    else: 
+        amount_max = 0
+ 
+    if len(items) > 0:
+        podium_items = items[:3]
+    else:
+        podium_items = []
+    
     context = {
         'items': items,
         'titles': titles,

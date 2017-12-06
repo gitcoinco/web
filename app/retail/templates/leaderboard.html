@@ -17,14 +17,10 @@
             {% include 'shared/current_balance.html' %}
             <!-- {% include 'shared/sidebar_search.html' %} -->
         </div>
-
         <div class="col body">
             <div class="container-fluid" id="leaderboard">
             {% include 'shared/bounty_def.html' %}
-
-
             <div class="row mt-0 ml-1 pt-1 pl-1 podium">
-            
                 {% for podium_item in podium_items %}
                 <div class="col-4 winner ">
                     <img class="img-fluid"  src="{{podium_items.local_avatar_url}}" >
@@ -39,7 +35,6 @@
                             {% if forloop.counter == 3 %}
                             <div class="col-4 winner-position winner-position-third">
                             {% endif %}{% endif %}{% endif %}
-
                             </div>
                             <div class="col-8 " >
                                 <h5 style="color:white">  
@@ -53,73 +48,65 @@
                     </div>
                 </div>
                 {% endfor %}
-
             </div>
-            
-                <div class="row mt-0 ml-1 pt-1 pl-1" style="height: 4em; padding: 0.5em;">
-
-                    <div class="col-8" style="padding-top: 0.5em;">     
-                        <h3>{{title}}</h3>
-                    </div>
-
-                    <div class="col-4"> 
-                            <div class="form-group">
-                                <select id="key" class="form-control">
-                                    {% for this_title in titles.items %}
-                                        <option value="{{this_title.0}}" 
-                                        {% if title == this_title.1 %}selected=selected{% endif %} >{{this_title.1}}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                    </div>  
-       
+            <div class="row mt-0 ml-1 pt-1 pl-1" style="height: 4em; padding: 0.5em;">
+                <div class="col-8" style="padding-top: 0.5em;">     
+                    <h3>{{title}}</h3>
                 </div>
-
-
-                {% if items|length == 0 %}
-                    <div class="row mt-0 ml-0 pl-3">
-                        None found.
-                    </div>
-                {% endif %}
-
-
-                <table class="table table-striped table-hover leaderboard_entry">
-                    <tbody>
-                        {% for item in items %}
-
-                            <tr>
-                                <td class="align-middle position">#{{forloop.counter}}</td>
-                                <td class="col-2 align-middle">
-                                    <img class="img-fluid"  src="{{item.local_avatar_url}}">
-                                </td>
-                                <td class="align-middle">
-                                    <a href="/profile/{{item.github_username}}" target="_blank" >
-                                        @{{item.github_username}}
-                                    </a>
-                                </td>
-                                <td class="col-5 align-middle">
-                                    <div class="progress">
-                                        {% with forloop.counter0 as index %}
-                                            <div class="progress-bar progress-bar-striped bg-success" 
-                                            role="progressbar" 
-                                            aria-valuenow={{item.amount}} 
-                                            aria-valuemin=0
-                                            aria-valuemax={{amount_max}}></div>
-                                        {% endwith %}
-                                    </div>
-                                </td>
-                                <td class="align-middle item-amount">
-                                    ${{item.amount}}
-                                </td>
-                            </tr>
-
-                    {% endfor %}
-                    </tbody>
-                </table>
-
+                <div class="col-4"> 
+                        <div class="form-group">
+                            <select id="key" class="form-control">
+                                {% for this_title in titles.items %}
+                                    <option value="{{this_title.0}}" 
+                                    {% if title == this_title.1 %}selected=selected{% endif %} >{{this_title.1}}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                </div>  
             </div>
+
+            {% if items|length == 0 %}
+                <div class="row mt-0 ml-0 pl-3">
+                    None found.
+                </div>
+            {% endif %}
+
+            <table class="table table-striped table-hover leaderboard_entry">
+                <tbody>
+                    {% for item in items %}
+                        <tr class='clickable-row' data-href="/profile/{{item.github_username}}">
+                            <td class="align-middle position">#{{forloop.counter}}</td>
+                            <td class="col-2 align-middle">
+                                <img class="img-fluid"  src="{{item.local_avatar_url}}">
+                            </td>
+                            <td class="align-middle">
+                                <a href="/profile/{{item.github_username}}" target="_blank" >
+                                    @{{item.github_username}}
+                                </a>
+                            </td>
+                            <td class="col-5 align-middle">
+                                <div class="progress">
+                                    {% with forloop.counter0 as index %}
+                                        <div class="progress-bar progress-bar-striped bg-success" 
+                                        role="progressbar" 
+                                        aria-valuenow={{item.amount}} 
+                                        aria-valuemin=0
+                                        aria-valuemax={{amount_max}}></div>
+                                    {% endwith %}
+                                </div>
+                            </td>
+                            <td class="align-middle item-amount">
+                                ${{item.amount}}
+                            </td>
+                        </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+
         </div>
+    </div>
 
 
     {% include 'shared/bottom_notification.html' %}
