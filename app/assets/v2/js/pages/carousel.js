@@ -6,7 +6,7 @@ function nextSlide() {
   slides[currentSlide].className = 'slide';
   currentSlide = (currentSlide+1) % slides.length;
   slides[currentSlide].className = 'slide showing';
-  resetTimer()
+  resetTimer();
 }
 
 function prevSlide() {
@@ -14,12 +14,12 @@ function prevSlide() {
   if(currentSlide == 0)
     currentSlide = slides.length - 1;
   else
-  currentSlide = (currentSlide - 1) % slides.length;
+    currentSlide = (currentSlide - 1) % slides.length;
   slides[currentSlide].className = 'slide showing';
-  resetTimer()
+  resetTimer();
 }
 
 function resetTimer() {
-   clearInterval(interval)
-   startTimer()
+   clearInterval(interval);
+   startTimer();
 }

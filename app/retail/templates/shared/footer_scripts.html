@@ -35,14 +35,12 @@
         </script>
     {% endif %}
 
-    {% if slideDuration %}
-    <script>
-        var interval;
-        var startTimer = function(){
-            interval = setInterval(function(){
-                nextSlide()
-            },{{slideDuration}});
-        };
-        startTimer()
-    </script>
+    {% if slideDurationInMs %}
+        <script>
+            let interval;
+            let startTimer = () => {
+                interval = setInterval(() => nextSlide(), {{slideDurationInMs}});
+            };
+            startTimer();
+        </script>
     {% endif %}

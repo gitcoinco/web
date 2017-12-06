@@ -33,7 +33,7 @@ def index(request):
     ]
     context = {
         'slides': slides,
-        'slideDuration': 6000,
+        'slideDurationInMs': 6000,
         'active': 'home',
     }
     return TemplateResponse(request, 'index.html', context)
