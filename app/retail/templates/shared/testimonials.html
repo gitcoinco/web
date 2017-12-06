@@ -1,0 +1,59 @@
+<div class="container-fluid mt-3 howworks_container">
+  <div class="wrap">
+    <div class="wrap2">
+
+      {% for username, image_url, paragraph in slides %}
+        <div class="group">
+
+          {% if forloop.first %}
+            <input type="radio" name="carousel" id="{{ forloop.counter0 }}" value="{{ forloop.counter0 }}" checked="">
+          {% else %}
+            <input type="radio" name="carousel" id="{{ forloop.counter0 }}" value="{{ forloop.counter0 }}">
+          {% endif %}
+
+          {% if forloop.first %}
+            <label for="{{ maxSlideIndex }}" class="previous">
+            </label>
+          {% else %}
+            <label for="{{forloop.counter0 | add:-1 }}" class="previous">
+            </label>
+          {% endif %}
+
+          {% if forloop.last %}
+            <label for="0" class="next">
+            </label>
+          {% else %}
+            <label for="{{forloop.counter0 | add:1 }}" class="next">
+            </label>
+          {% endif %}
+
+          <div class="content row carousel-slide">
+            <div class="col-12 col-md-8 hidden-sm carousel-images">
+              <img class="carousel-large-pink-line" src="/static/v2/images/carousel/pink_line_lg.png" />
+              <img class="carousel-small-pink-line" src="/static/v2/images/carousel/pink_line_sm.png" />
+              <img class="carousel-closed-circle" src="/static/v2/images/carousel/circle_closed.png" />
+              <img class="carousel-large-circle" src="/static/v2/images/carousel/circle_open_lg.png" />
+              <img class="carousel-small-circle" src="/static/v2/images/carousel/circle_open_sm.png" />
+              <img class="carousel-img" src="{{image_url}}">
+            </div>
+            <div class="col-6 col-md-4 col-sm-12 testimony">
+              <div class="testimony-paragraph">
+                {{paragraph}}
+              </div>
+              <div class="testimony-signature">---{{username}}</div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+
+      <script>
+        var interval;
+        var startTimer = function(){
+         interval = setInterval(function(){
+          nextSlide()
+          },{{slideDuration}});
+        };
+      </script>
+    </div>
+  </div>
+</div>
