@@ -49,9 +49,13 @@ class Command(BaseCommand):
 
         ws.close()  # Close the websocket connection.
 
-        # Format the response data.
-        market_results = json.loads(result[2:])
-        tickers = market_results[1]['returnTicker']
+        try:
+            # Attempt to format the response data.
+            market_results = json.loads(result[2:])
+            tickers = market_results[1]['returnTicker']
+        except ValueError:
+            tickers = {}
+            print('Failed to retrieve etherdelta ticker data!')
 
         # etherdelta
         for pair, result in tickers.items():
@@ -68,7 +72,7 @@ class Command(BaseCommand):
                     from_currency=from_currency,
                     to_currency=to_currency,
                 )
-                print('EtherDelta: {}=>{}:{}'.format(from_currency, to_currency, to_amount))
+                print('Etherdelta: {}=>{}:{}'.format(from_currency, to_currency, to_amount))
             except Exception as e:
                 print(e)
 
