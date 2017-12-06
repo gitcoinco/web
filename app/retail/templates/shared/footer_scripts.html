@@ -34,3 +34,15 @@
             },1000);
         </script>
     {% endif %}
+
+    {% if slideDuration %}
+    <script>
+        var interval;
+        var startTimer = function(){
+            interval = setInterval(function(){
+                nextSlide()
+            },{{slideDuration}});
+        };
+        startTimer()
+    </script>
+    {% endif %}
