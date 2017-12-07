@@ -28,8 +28,7 @@ import retail.emails
 import retail.views
 import tdi.views
 from dashboard.router import router
-from django.contrib.sitemaps.views import sitemap
-from . import sitemaps
+from .sitemaps import sitemaps
 
 urlpatterns = [
 
