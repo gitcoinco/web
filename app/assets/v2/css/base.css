@@ -1071,6 +1071,14 @@ body.bounty_details #title{
         font-size: .9rem;   
     }
 
+    .testimonial-nav__left {
+        left: 1em;
+    }
+    
+    .testimonial-nav__right {
+        right: 1em;
+    }
+
 }
 @media (max-width: 350px) {
     img#logo{
