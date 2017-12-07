@@ -13,6 +13,16 @@ $(document).ready(function(){
       },300);
     });
 
+    $("#logo").mouseover(function(e){
+      $(this).attr('old-src', $(this).attr('src'));
+      var new_src = $(this).data('hover');
+      $(this).attr('src', new_src);
+      e.preventDefault();
+    });
+    $("#logo").mouseleave(function(e){
+      $(this).attr('src', $(this).attr('old-src'));
+    });
+
     $(".navbar-toggler").click(function(){
       $(".navbar-collapse").toggleClass('show')
     });
