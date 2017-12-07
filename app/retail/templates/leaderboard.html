@@ -23,7 +23,7 @@
             <div class="row mt-0 ml-1 pt-1 pl-1 podium">
                 {% for podium_item in podium_items %}
                 <div class="col-4 winner ">
-                    <img class="img-fluid"  src="{{podium_items.local_avatar_url}}" >
+                    <img class="img-fluid"  src="{{podium_item.local_avatar_url}}" >
                     <div class="container winner-content">
                         <div class="row align-items-center">
                             {% if forloop.counter == 1 %}
@@ -75,18 +75,18 @@
             <table class="table table-striped table-hover leaderboard_entry">
                 <tbody>
                     {% for item in items %}
-                        <tr class='clickable-row' data-href="/profile/{{item.github_username}}">
-                            <td class="align-middle position">#{{forloop.counter}}</td>
-                            <td class="col-2 align-middle">
-                                <img class="img-fluid"  src="{{item.local_avatar_url}}">
+                        <tr class='clickable-row d-flex  align-items-stretch ' data-href="/profile/{{item.github_username}}">
+                            <td class="col-1 d-flex align-items-center position">#{{forloop.counter}}</td>
+                            <td class="col-1 d-flex align-items-center" >
+                                <img class="img-fluid"  src="{{item.local_avatar_url}}">                                
                             </td>
-                            <td class="align-middle">
+                            <td class="col-2 d-flex align-items-center">
                                 <a href="/profile/{{item.github_username}}" target="_blank" >
                                     @{{item.github_username}}
                                 </a>
                             </td>
-                            <td class="col-5 align-middle">
-                                <div class="progress">
+                            <td class="col-6" style="padding-top: 2.5em;">
+                                <div class="progress ">
                                     {% with forloop.counter0 as index %}
                                         <div class="progress-bar progress-bar-striped bg-success" 
                                         role="progressbar" 
@@ -96,7 +96,7 @@
                                     {% endwith %}
                                 </div>
                             </td>
-                            <td class="align-middle item-amount">
+                            <td class="col-2 d-flex align-items-center item-amount">
                                 ${{item.amount}}
                             </td>
                         </tr>
