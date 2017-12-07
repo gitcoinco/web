@@ -44,7 +44,7 @@ class EmailSubscriber(SuperModel):
         from django.utils import timezone
 
         h = hashlib.new('ripemd160')
-        h_string = "%s-%s-%s" % (h.hexdigest(), timezone.now(), self.email)
+        h_string = "{}-{}-{}".format(h.hexdigest(), timezone.now(), self.email)
         h.update(h_string.encode())
         self.priv = h.hexdigest()[:29]
 

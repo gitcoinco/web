@@ -229,7 +229,7 @@ def process_accesscode_request(request, pk):
 
     if request.POST.get('submit', False):
         h = hashlib.new('ripemd160')
-        h_string = "%s%s" % (h.hexdigest(), str(timezone.now()))
+        h_string = h.hexdigest() + str(timezone.now())
         h.update(h_string.encode())
         invitecode = h.hexdigest()[:29]
 
