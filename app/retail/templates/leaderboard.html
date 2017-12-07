@@ -76,7 +76,7 @@
                 <tbody>
                     {% for item in items %}
                         <tr class='clickable-row d-flex  align-items-stretch ' data-href="/profile/{{item.github_username}}">
-                            <td class="col-1 d-flex align-items-center position">#{{forloop.counter}}</td>
+                            <td class="col-1 d-flex align-items-center">#{{forloop.counter}}</td>
                             <td class="col-1 d-flex align-items-center" >
                                 <img class="img-fluid"  src="{{item.local_avatar_url}}">                                
                             </td>
