@@ -118,8 +118,8 @@ urlpatterns = [
 
     #marketing views
     url(r'^email/settings/(.*)', marketing.views.email_settings, name='email_settings'),
+    url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
-    url(r'^leaderboard', marketing.views.leaderboard, name='_leaderboard'),
     url(r'^_administration/stats$', marketing.views.stats, name='stats'),
 
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),

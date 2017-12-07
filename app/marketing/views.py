@@ -139,6 +139,8 @@ def email_settings(request, key):
     if es.exists():
         email = es.first().email
         level = es.first().preferences.get('level', False)
+    else:
+        raise Http404
     es = es.first()
     if request.POST.get('email', False):
         level = request.POST.get('level')
@@ -155,7 +157,7 @@ def email_settings(request, key):
             validation_passed = False
             msg = 'Invalid Email'
 
-        if level not in ['lite', 'regular', 'nothing']:
+        if level not in ['lite', 'lite1', 'regular', 'nothing']:
             validation_passed = False
             msg = 'Invalid Level'
         if validation_passed:
@@ -184,6 +186,11 @@ def email_settings(request, key):
         'autocomplete_keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'email_settings.html', context)
+
+
+def _leaderboard(request):
+    return leaderboard(request, '')
+
 
 def leaderboard(request, key):
     if not key:

@@ -19,6 +19,13 @@ div, p, a, span{
 .navbar-nav a.nav-link.selected{
     color: #4aeaa7 !important;
 }
+.navbar a.slack img{
+    max-width: 15px; 
+    max-height: 15px; 
+    margin-top:-3px; 
+    margin-right: 3px; 
+    filter: invert(100%);
+}
 
 .footer .nav-link:hover{
     border-radius: 2px; 

@@ -126,7 +126,7 @@ window.onload = function () {
             return;
         }
         if(amountInEth < min_amount){
-            _alert('You can minimum of' + min_amount + ' '+tokenName+'.');
+            _alert('You can only send a minimum of ' + min_amount + ' '+tokenName+'.');
             return;
         }
         if(username == ''){
