@@ -776,6 +776,15 @@ body.bounty_details #title{
 }
 .profile_details .dot, 
 
+.profile_details li:nth-child(2n+0) .dot
+{
+    background: #f8f8f8; 
+}
+.profile_details li:nth-child(2n+1) .dot
+{
+    background: black; 
+}
+
 #pull_gh {
     font-size: 12px
 }

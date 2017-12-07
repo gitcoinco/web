@@ -1,17 +1,3 @@
- .profile_details li:nth-child(2n+0) .dot,
- #leaderboard .leaderboard_entry:nth-child(2n+0) .dot
- {
-     background: #f8f8f8; 
- }
- .profile_details li:nth-child(2n+1) .dot,
- #leaderboard .leaderboard_entry:nth-child(2n+1) .dot
- {
-     background: black; 
- }
- #leaderboard .dot{
-     margin-left: 0px;
-     margin-top: 40px;
- }
  #leaderboard .leaderboard_entry{
      padding: 10px 0px;
  }
@@ -34,7 +20,10 @@
     font-weight: bold;
     color: #86eec4;
  }
- 
+ #leaderboard .leaderboard_entry .item-position{
+    color:  #8b8b8b;
+ }
+
  #leaderboard .table-striped tbody tr:nth-of-type(2n+1) {
      background-color: #f8f8f8;
  }
