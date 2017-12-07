@@ -13,6 +13,10 @@ $(document).ready(function(){
       },300);
     });
 
+    //preload hover image
+    var url = $("#logo").data('hover');
+    $.get(url,function(){});
+
     $("#logo").mouseover(function(e){
       $(this).attr('old-src', $(this).attr('src'));
       var new_src = $(this).data('hover');
