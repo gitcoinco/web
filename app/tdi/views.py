@@ -17,7 +17,7 @@
 '''
 import hashlib
 import os
-from io import StringIO
+from io import BytesIO
 from wsgiref.util import FileWrapper
 
 from django.conf import settings
@@ -81,6 +81,9 @@ https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/
         comments=context['comments'],
         ip=ip,
     )
+
+    for code in AccessCodes.objects.all():
+        print(code)
 
     invite_to_slack(context['email'])
     
@@ -150,7 +153,7 @@ def whitepaper_access(request, ratelimited=False):
     send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, "New Whitepaper Generated", str(wa))
 
     # bottom watermark
-    packet1 = StringIO.StringIO()
+    packet1 = BytesIO()
     can = canvas.Canvas(packet1, pagesize=letter)
 
     grey = Color(22/255, 6/255, 62/255, alpha=0.3)
@@ -167,7 +170,7 @@ def whitepaper_access(request, ratelimited=False):
 
 
     # middle watermark
-    packet2 = StringIO.StringIO()
+    packet2 = BytesIO()
     can = canvas.Canvas(packet2, pagesize=letter)
     grey = Color(22/255, 6/255, 62/255, alpha=0.02)
     can.setFillColor(grey)
@@ -187,7 +190,8 @@ def whitepaper_access(request, ratelimited=False):
     new_pdf1 = PdfFileReader(packet1)
     new_pdf2 = PdfFileReader(packet2)
     # read your existing PDF
-    existing_pdf = PdfFileReader(file(path_to_file, "rb"))
+
+    existing_pdf = PdfFileReader(open(path_to_file, "rb"))
     output = PdfFileWriter()
     # add the "watermark" (which is the new pdf) on the existing page
     try:
@@ -201,13 +205,14 @@ def whitepaper_access(request, ratelimited=False):
         print(e)
     # finally, write "output" to a real file
     outputfile = "output/whitepaper_{}.pdf".format(wa.pk)
-    outputStream = file(outputfile, "wb")
+    outputStream = open(outputfile, "wb")
     output.write(outputStream)
     outputStream.close()
 
     filename = outputfile                       
-    wrapper = FileWrapper(file(filename))
+    wrapper = FileWrapper(open(filename, 'rb'))
     response = HttpResponse(wrapper, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="GitcoinWhitepaper.pdf"'
     response['Content-Length'] = os.path.getsize(filename)
     return response
 
@@ -224,7 +229,8 @@ def process_accesscode_request(request, pk):
 
     if request.POST.get('submit', False):
         h = hashlib.new('ripemd160')
-        h.update(h.hexdigest() + str(timezone.now()))
+        h_string = "%s%s" % (h.hexdigest(), str(timezone.now()))
+        h.update(h_string.encode())
         invitecode = h.hexdigest()[:29]
 
         code = AccessCodes.objects.create(
