@@ -126,7 +126,7 @@ class Command(BaseCommand):
         # get bounties
         bounties = Bounty.objects.filter(
             current_bounty=True,
-            created_on__gt=weekly_cutoff,
+#            created_on__gt=weekly_cutoff,
             )
 
         # iterate
@@ -144,13 +144,12 @@ class Command(BaseCommand):
 
         # tips
         tips = Tip.objects.filter(
-            created_on__gt=weekly_cutoff,
+#            created_on__gt=weekly_cutoff,
             )
 
         for t in tips:
             if not t.value_in_usdt:
                 continue
-
             usernames = []
             if t.username:
                 usernames.append(t.username)
