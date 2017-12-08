@@ -195,18 +195,19 @@ def _leaderboard(request):
 
 def leaderboard(request, key):
     if not key:
-        key = 'monthly_fulfilled'
-
+        key = 'monthly_earners'
 
     titles = {
-        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
-        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
-        'monthly_fulfilled': 'Monthly Leaderboard: Most Transacted',
-        'monthly_all': 'Monthly Leaderboard: All Funded Issues',
-        'yearly_fulfilled': 'Yearly Leaderboard: Fulfilled Funded Issues',
-        'yearly_all': 'Yearly Leaderboard: All Funded Issues',
-        'all_fulfilled': 'All-Time Leaderboard: Fulfilled Funded Issues',
-        'all_all': 'All-Time Leaderboard: All Funded Issues',
+#        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
+#        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
+#        'monthly_fulfilled': 'Monthly Leaderboard',
+         'monthly_payers': 'Top Payers',
+         'monthly_earners': 'Top Earners',
+#        'monthly_all': 'Monthly Leaderboard: All Funded Issues',
+#        'yearly_fulfilled': 'Yearly Leaderboard: Fulfilled Funded Issues',
+#        'yearly_all': 'Yearly Leaderboard: All Funded Issues',
+#        'all_fulfilled': 'All-Time Leaderboard: Fulfilled Funded Issues',
+#        'all_all': 'All-Time Leaderboard: All Funded Issues',
     }
     if key not in titles.keys():
         raise Http404
@@ -227,10 +228,13 @@ def leaderboard(request, key):
     context = {
         'items': items,
         'titles': titles,
-        'title': titles[key],
+        'selected': titles[key],
+        'title': "Monthly Leaderboard: " + titles[key],
+        'card_title': "Monthly Leaderboard: " +titles[key],
+        'card_desc': 'See the most valued members in the Gitcoin community this month',
         'action_past_tense': 'Transacted' if 'fulfilled' in key else 'bountied',
-        'amount_max':amount_max,
-        'podium_items':podium_items
+        'amount_max': amount_max,
+        'podium_items': podium_items
     }
 
 
