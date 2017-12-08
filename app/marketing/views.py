@@ -26,6 +26,7 @@ from django.http import Http404
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.utils import timezone
+from django.db.models import Max
 
 from chartit import Chart, DataPool
 from marketing.models import EmailSubscriber, Keyword, LeaderboardRank, Stat
@@ -209,12 +210,27 @@ def leaderboard(request, key):
     }
     if key not in titles.keys():
         raise Http404
-
+    
+    amount = LeaderboardRank.objects.filter(active=True, leaderboard=key).values_list('amount').annotate(Max('amount')).order_by('-amount')
+    items = LeaderboardRank.objects.filter(active=True, leaderboard=key).order_by('-amount')
+   
+    if len(amount) > 0:
+        amount_max = amount[0][0]
+    else: 
+        amount_max = 0
+ 
+    if len(items) > 0:
+        podium_items = items[:3]
+    else:
+        podium_items = []
+    
     context = {
-        'items': LeaderboardRank.objects.filter(active=True, leaderboard=key).order_by('-amount'),
+        'items': items,
         'titles': titles,
         'title': titles[key],
         'action_past_tense': 'Transacted' if 'fulfilled' in key else 'bountied',
+        'amount_max':amount_max,
+        'podium_items':podium_items
     }
 
 
