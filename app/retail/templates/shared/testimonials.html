@@ -6,7 +6,7 @@
       </button>
     </div>
     <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12" id="slides">
-      {% for author, avatar, testimonial in slides %}
+      {% for author, avatar, testimonial, url in slides %}
       <div class="slide">
           <div class="flex-container col-12">
             <div class="avatar">
@@ -23,7 +23,9 @@
               <p class="content">{{testimonial}}</p>
               <p class="author">
                 <i class="fa fa-minus" aria-hidden="true"></i>
-                {{author}}
+                <a href="{{url}}">
+                    {{author}}
+                </a>
               </p>
             </div>
           </div>

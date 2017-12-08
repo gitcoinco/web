@@ -1,3 +1,4 @@
+# encoding=utf8
 '''
     Copyright (C) 2017 Gitcoin Core
 
@@ -27,9 +28,13 @@ from slackclient import SlackClient
 
 def index(request):
     slides = [
-        ("Kevin Owocki","/static/v2/images/avatar.png", "This could be the next freelance boom."),
-        ("Aditya Anand","/static/v2/images/avatar.png", "I feel it is so awesome to have the opportunity through Gitcoin to do what I love and get paid for it, and to have reasonable freedom about the way I work, that it already seems too good to be true."),
-        ("Kevin Owocki","/static/v2/images/avatar.png", "Staying lean, building the community, iterating... The way to go vs many projects that are just looking for the money grab immediately.")
+        ("Zack Coburn, EtherDelta","/static/v2/images/testimonials/zack.jpg", "Gitcoin is the catalyst open source development needs to move forward. The process is seamless and the results speak for themselves.", 'https://github.com/zackcoburn'),
+        ("Phil Elsasser, Market","/static/v2/images/testimonials/phil.jpg", "Our first experiences with Gitcoin have been very positive.  It has helped MARKET to get new people involved quickly and in a cost effective manner.  Having fresh ideas and outside perspectives contribute to a new project is unbelievably valuable.", 'http://www.marketprotocol.io/'),
+        ("Aditya Anand", "/static/v2/images/testimonials/aditya.jpg", "It’s been a while since something has gotten me this riled up ! Love the concept and definitely sticking around to see this project through. Awesome community  + open source work + bounties", "https://github.com/thelostone-mc"),
+        ("Daniel Merrill", "/static/v2/images/testimonials/daniel.jpg", "Now that the internet of value is starting to be a thing, Gitcoin is adding a new layer of incentives into open source development, helping both the projects, by powering up their capacity, and the developers, by paying for their work.", "https://github.com/dmerrill6"),
+        ("Maurelian", "/static/v2/images/testimonials/maurelian.png", "Gitcoin helps us to finally close out the issues we’ve been meaning to get around to for too long.", "https://github.com/maurelian"),
+        ("Mark Beacom", "/static/v2/images/testimonials/mark.jpg", "Gitcoin is precisely what I’ve been looking for! It gives every developer a vehicle to make extra money or move their open source project ahead.", "https://github.com/mbeacom"),
+        ("Isaac Serafino", "/static/v2/images/testimonials/isaac.jpg", "I feel it is so awesome to have the opportunity through Gitcoin to do what I love and get paid for it, and to have reasonable freedom about the way I work, that it already seems too good to be true. ", "https://github.com/isaacserafino"),
     ]
     context = {
         'slides': slides,

@@ -2,6 +2,7 @@
   background: white;
   padding: 5px 0;
   z-index: 0;
+  overflow-y: hidden;
 }
 
 .carousel .row {
@@ -67,18 +68,18 @@
 }
 
 .carousel .avatar .circle-small {
-	position: relative;
-	top: 20px;
-	left: 71px;
-	font-size: 20px;
-	z-index: -1;
+  position: relative;
+  top: 20px;
+  left: 71px;
+  font-size: 20px;
+  z-index: -1;
 }
 
 .carousel .avatar .circle-large {
-	position: relative;
-	top: -12px;
-	left: 96px;
-	font-size: 30px;
+  position: relative;
+  top: -12px;
+  left: 96px;
+  font-size: 30px;
 }
 
 .carousel .avatar img {
@@ -111,7 +112,6 @@
 .carousel .testimonial {
   font-family: "futura-pt", Futura !important;
   font-weight: bold;
-  margin-top: 40px;
   padding-right: 30px;
 }
 
@@ -126,7 +126,9 @@
 .carousel .author i {
   font-size: 7px;
 }
-
+.carousel .author a{
+  cursor: pointer;
+}
 .carousel .content {
   border-left: 4px solid #3e00ff;
   padding-left: 10px;
