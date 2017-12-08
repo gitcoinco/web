@@ -195,13 +195,13 @@ def _leaderboard(request):
 
 def leaderboard(request, key):
     if not key:
-        key = 'weekly_fulfilled'
+        key = 'monthly_fulfilled'
 
 
     titles = {
         'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
         'weekly_all': 'Weekly Leaderboard: All Funded Issues',
-        'monthly_fulfilled': 'Monthly Leaderboard: Fulfilled Funded Issues',
+        'monthly_fulfilled': 'Monthly Leaderboard: Most Transacted',
         'monthly_all': 'Monthly Leaderboard: All Funded Issues',
         'yearly_fulfilled': 'Yearly Leaderboard: Fulfilled Funded Issues',
         'yearly_all': 'Yearly Leaderboard: All Funded Issues',

@@ -111,4 +111,14 @@
     #leaderboard .leaderboard_entry h4{
         font-size: 18px;
     }
+    #leaderboard .winner h2{
+        font-size: 18px;
+    }
+    #leaderboard .winner h5{
+        font-size: 16px;
+    }
+     #leaderboard .winner-content {
+         top:20%;
+     }
+ 
 }
