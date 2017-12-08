@@ -27,6 +27,10 @@
  #leaderboard .table-striped tbody tr:nth-of-type(2n+1) {
      background-color: #f8f8f8;
  }
+
+ #leaderboard .progress_container{
+    padding-top: 2.5em;
+ }
  
  
  #leaderboard #key{
@@ -113,11 +117,17 @@
     #leaderboard .leaderboard_entry div:nth-child(2){
         width: 30%;
     }
+    #leaderboard .leaderboard_entry div.progress{
+        width: 100%;
+    }
     #leaderboard .winner img{
         min-height: 18em;
     }
 }
 @media (max-width: 700px) {
+    #leaderboard .select{
+        display: none;
+    }
     #leaderboard h3{
         font-size: 1.3rem;
     }
@@ -136,6 +146,18 @@
     #leaderboard .winner img{
         min-height: 12em;
     }
+    #leaderboard .col-6{
+        flex: 0 0 25%;
+        max-width: 25%;        
+    }
+    #leaderboard .col-2{
+        flex: 0 0 30%;
+        max-width: 30%;   
+        overflow-x: hidden;;     
+    }
+     #leaderboard .progress_container{
+        padding-top: 1.5em;
+     }
 }
 
 @media (max-width: 481px) {
