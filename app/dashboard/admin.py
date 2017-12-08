@@ -19,6 +19,8 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 
 from .models import Bounty, BountySyncRequest, Profile, Subscription, Tip
 
@@ -32,9 +34,8 @@ class TipAdmin(admin.ModelAdmin):
     readonly_fields = ['resend']
 
     def resend(self, instance):
-        html = "<a href='/_administration/email/new_tip/resend?pk={}'>resend</a>".format(instance.pk)
+        html = format_html('<a href="/_administration/email/new_tip/resend?pk={}">resend</a>', instance.pk)
         return html
-    resend.allow_tags = True
 
 
 # Register your models here.
@@ -47,9 +48,8 @@ class Bounty_Admin(admin.ModelAdmin):
     def img(self, instance):
         if not instance.avatar_url:
             return 'n/a'
-        img_html = "<img src={} style='max-width:30px; max-height: 30px'>".format(instance.avatar_url)
+        img_html = format_html("<img src={} style='max-width:30px; max-height: 30px'>", mark_safe(instance.avatar_url))
         return img_html
-    img.allow_tags = True
 
     def what(self, instance):
         return str(instance)
