@@ -208,15 +208,21 @@ def leaderboard(request, key):
 #        'yearly_all': 'Yearly Leaderboard: All Funded Issues',
 #        'all_fulfilled': 'All-Time Leaderboard: Fulfilled Funded Issues',
 #        'all_all': 'All-Time Leaderboard: All Funded Issues',
+#TODO - also include options for weekly, yearly, and all cadences of earning
     }
     if key not in titles.keys():
         raise Http404
     
-    amount = LeaderboardRank.objects.filter(active=True, leaderboard=key).values_list('amount').annotate(Max('amount')).order_by('-amount')
-    items = LeaderboardRank.objects.filter(active=True, leaderboard=key).order_by('-amount')
-   
+    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
+    amount = leadeboardranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
+    items = leadeboardranks.order_by('-amount')
+    top_earners = ''
+
     if len(amount) > 0:
         amount_max = amount[0][0]
+        top_earners = leadeboardranks.order_by('-amount')[0:3].values_list('github_username', flat=True)
+        top_earners = ['@' + username for username in top_earners]
+        top_earners = "The top earners of this period are " + ", ".join(top_earners)
     else: 
         amount_max = 0
  
@@ -231,7 +237,7 @@ def leaderboard(request, key):
         'selected': titles[key],
         'title': "Monthly Leaderboard: " + titles[key],
         'card_title': "Monthly Leaderboard: " +titles[key],
-        'card_desc': 'See the most valued members in the Gitcoin community this month',
+        'card_desc': 'See the most valued members in the Gitcoin community this month. ' + top_earners,
         'action_past_tense': 'Transacted' if 'fulfilled' in key else 'bountied',
         'amount_max': amount_max,
         'podium_items': podium_items

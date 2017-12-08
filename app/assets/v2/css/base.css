@@ -750,7 +750,8 @@ body.bounty_details #title{
 .profile_details .bounties li a.btn{
     color: white;
 }
-.profile_details .bounties li div.status{
+.profile_details .bounties li div.status,
+.profile_details .bounties li div.relationship{
     height: 80px;
     width: 100px;
     display: inline-block;
@@ -759,8 +760,9 @@ body.bounty_details #title{
 }
 .profile_details .bounties li div.details{
     height: 80px;
-    width: 600px;
+    width: 500px;
     display: inline-block;
+    vertical-align: top;
 }
 .profile_details .bounties li div.details p{
     color: #919191;
@@ -812,7 +814,7 @@ body.bounty_details #title{
 
 @media (max-width: 1350px) {
     .profile_details .bounties li div.details{
-        width: 500px;
+        width: 400px;
     }
 }
 @media (max-width: 1250px) {
@@ -822,6 +824,7 @@ body.bounty_details #title{
 }
 @media (max-width: 1025px) {
 
+    .profile_details .bounties li div.relationship,
     .profile_details .bounties li div.status,
     .profile_details .bounties li .amount{
         display: none;
