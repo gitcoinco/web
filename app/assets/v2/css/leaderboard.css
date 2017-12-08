@@ -106,6 +106,23 @@
         width: 30%;
     }
 }
+@media (max-width: 700px) {
+    #leaderboard h3{
+        font-size: 1.3rem;
+    }
+    #leaderboard .leaderboard_entry h4{
+        font-size: 22px;
+    }
+    #leaderboard .winner h2{
+        font-size: 22px;
+    }
+    #leaderboard .winner h5{
+        font-size: 18px;
+    }
+     #leaderboard .winner-content {
+         top:20%;
+     }
+}
 
 @media (max-width: 481px) {
     #leaderboard .leaderboard_entry h4{
@@ -120,5 +137,6 @@
      #leaderboard .winner-content {
          top:20%;
      }
- 
 }
+
+
