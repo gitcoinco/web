@@ -19,7 +19,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Bounty
+from dashboard.models import Bounty, Tip
 from marketing.models import LeaderboardRank
 
 IGNORE_PAYERS = []
@@ -56,7 +56,7 @@ def add_element(key, username, amount):
     username = username.replace('@', '')
     if username not in ranks[key].keys():
         ranks[key][username] = 0
-    ranks[key][username] += amount
+    ranks[key][username] += float(amount)
 
 
 def sum_bounties(b, usernames):
@@ -96,6 +96,26 @@ def sum_bounties(b, usernames):
             add_element('yearly_all', username, b._val_usd_db)
 
 
+def sum_tips(t, usernames):
+    val_usd = t.value_in_usdt
+    for username in usernames:
+        add_element('all_fulfilled', username, val_usd)
+        add_element('all_earners', username, val_usd)
+        if t.created_on > weekly_cutoff:
+            add_element('weekly_fulfilled', username, val_usd)
+            add_element('weekly_earners', username, val_usd)
+            add_element('weekly_all', username, val_usd)
+        if t.created_on > monthly_cutoff:
+            add_element('monthly_fulfilled', username, val_usd)
+            add_element('monthly_all', username, val_usd)
+            add_element('monthly_earners', username, val_usd)
+        if t.created_on > yearly_cutoff:
+            add_element('yearly_fulfilled', username, val_usd)
+            add_element('yearly_all', username, val_usd)
+            add_element('yearly_earners', username, val_usd)
+
+
+
 class Command(BaseCommand):
 
     help = 'creates leaderboard objects'
@@ -122,10 +142,27 @@ class Command(BaseCommand):
 
             sum_bounties(b, usernames)
 
+        # tips
+        tips = Tip.objects.filter(
+            created_on__gt=weekly_cutoff,
+            )
+
+        for t in tips:
+            if not t.value_in_usdt:
+                continue
+
+            usernames = []
+            if t.username:
+                usernames.append(t.username)
+
+            sum_tips(t, usernames)
+
+        # set old LR as inactive
         for lr in LeaderboardRank.objects.filter(active=True):
             lr.active = False
             lr.save()
 
+        # save new LR in DB
         for key, rankings in ranks.items():
             for username, amount in rankings.items():
                 LeaderboardRank.objects.create(

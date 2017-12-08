@@ -185,10 +185,11 @@ class Bounty(SuperModel):
 
     @property
     def value_in_usdt(self):
+        decimals = 10**18
         if self.token_name == 'USDT':
             return self.value_in_token
         try:
-            return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / 10**18, 2)
+            return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except:
             return None
 
@@ -264,6 +265,27 @@ class Tip(SuperModel):
     def __str__(self):
         from django.contrib.humanize.templatetags.humanize import naturalday
         return "({}) - {} {} to {},  created: {}, expires: {}".format(self.network, self.amount, self.tokenName, self.username, naturalday(self.created_on), naturalday(self.expires_date))
+
+    #TODO: DRY
+    @property
+    def value_in_eth(self):
+        if self.tokenName == 'ETH':
+            return self.amount
+        try:
+            return convert_amount(self.amount, self.tokenName, 'ETH')
+        except:
+            return None
+
+    #TODO: DRY
+    @property
+    def value_in_usdt(self):
+        decimals = 1
+        if self.tokenName == 'USDT':
+            return self.amount
+        try:
+            return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
+        except:
+            return None
 
 
 # method for updating
