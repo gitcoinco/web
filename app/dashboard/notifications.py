@@ -5,7 +5,7 @@ import sys
 from urlparse import urlparse
 
 from django.conf import settings
-
+import random
 import requests
 import twitter
 from app.github import post_issue_comment
@@ -36,7 +36,7 @@ def maybe_market_to_twitter(bounty, event_name, txid):
 
     if not settings.TWITTER_CONSUMER_KEY:
         return False
-    if event_name != 'new_bounty':
+    if event_name not in ['new_bounty', 'remarket_bounty']:
         return False
     if bounty.get_natural_value() < 0.0001:
         return False
@@ -49,8 +49,25 @@ def maybe_market_to_twitter(bounty, event_name, txid):
         access_token_key=settings.TWITTER_ACCESS_TOKEN,
         access_token_secret=settings.TWITTER_ACCESS_SECRET,
     )
+    tweet_txts = [
+        "Earn {} {} {} now by completing this task: \n\n{}",
+        "Oppy to earn {} {} {} for completing this task: \n\n{}",
+    ]
+    if event_name == 'remarket_bounty':
+        tweet_txts = tweet_txts + [
+            "Gitcoin open task of the day is worth {} {} {} ⚡️ \n\n{}",
+            "Task of the day 💰 {} {} {} ⚡️ \n\n{}",
+        ]
+    if event_name == 'new_bounty':
+        tweet_txts = tweet_txts + [
+            "Hot off the blockchain! 🔥🔥🔥 There's a new task worth {} {} {} \n\n{}",
+            "💰 New Task Alert.. 💰 Earn {} {} {} for working on this 👇 \n\n{}",
+        ]
 
-    new_tweet = "Earn {} {} {} now by completing this task: \n\n{}".format(
+    random.shuffle(tweet_txts)
+    tweet_txt = tweet_txts[0]
+
+    new_tweet = tweet_txt.format(
         round(bounty.get_natural_value(), 4),
         bounty.token_name,
         ("($" + bounty.value_in_usdt + ")" if bounty.value_in_usdt else ""),
