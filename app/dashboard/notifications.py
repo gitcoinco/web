@@ -50,14 +50,15 @@ def maybe_market_to_twitter(bounty, event_name, txid):
         access_token_secret=settings.TWITTER_ACCESS_SECRET,
     )
 
-    new_tweet = "New funded issue worth {} {} \n\n{}".format(
+    new_tweet = "Earn {} {} {} now by completing this task: \n\n{}".format(
         round(bounty.get_natural_value(), 4),
         bounty.token_name,
+        ("($" + bounty.value_in_usdt + ")" if bounty.value_in_usdt else ""),
         bounty.get_absolute_url()
     )
     if bounty.keywords:
         for keyword in bounty.keywords.split(','):
-            _new_tweet = new_tweet + "#" + str(keyword).lower().strip()
+            _new_tweet = new_tweet + " #" + str(keyword).lower().strip()
             if len(_new_tweet) < 140:
                 new_tweet = _new_tweet
 
