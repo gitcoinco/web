@@ -11,7 +11,7 @@ from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 reload(sys)
 sys.setdefaultencoding('utf8')
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 w
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -72,9 +72,9 @@ def tip_email(tip, to_emails, is_new):
     if not tip or not tip.url or not tip.amount or not tip.tokenName:
         return
 
-    subject = "⚡️ New Tip Worth {} {}".format(round(tip.amount,2), tip.tokenName)
+    subject = "⚡️ New Tip Worth {} {}".format(round(tip.amount, 3), tip.tokenName)
     if not is_new:
-        subject = "🕐 New Tip Worth {} {} Expiring Soon".format(round(tip.amount,2), tip.tokenName)
+        subject = "🕐 New Tip Worth {} {} Expiring Soon".format(round(tip.amount, 3), tip.tokenName)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
