@@ -29,8 +29,8 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 
-from marketing.utils import invite_to_slack
 from marketing.mails import send_mail
+from marketing.utils import invite_to_slack
 from pyPdf import PdfFileReader, PdfFileWriter
 from ratelimit.decorators import ratelimit
 from reportlab.lib.colors import Color

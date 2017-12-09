@@ -13,7 +13,7 @@ requests
 requests_oauthlib
 Pillow==4.0.0
 premailer
-populus==2.0.0a4
+populus
 psycopg2
 PyPdf
 python-twitter==3.2
