@@ -99,7 +99,7 @@ def new_bounty(bounty, to_emails=[]):
 
 def weekly_roundup(to_emails=[]):
 
-    subject = "⚡️ Refer a Friend get ETH (bonus: Pilot Projects update)"
+    subject = "Gitcoin Weekly | Community Slack grows, Give feedback to help Gitcoin improve!"
     for to_email in to_emails:
         html, text = render_new_bounty_roundup(to_email)
         from_email = settings.PERSONAL_CONTACT_EMAIL
@@ -165,11 +165,12 @@ def bounty_expire_warning(bounty, to_emails=[]):
         return
 
     for to_email in to_emails:
-        unit = 'days'
+        unit = 'day'
         num = int(round((bounty.expires_date - timezone.now()).days, 0))
         if num == 0:
-            unit = 'hours'
+            unit = 'hour'
             num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
+        unit = unit + ("s" if num != 1 else "")
         subject = "😕 Your Funded Issue ({}) Expires In {} {} ... 😕".format(bounty.title_or_desc, num, unit)
 
         from_email = settings.CONTACT_EMAIL

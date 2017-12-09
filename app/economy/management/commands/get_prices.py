@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,24 +15,49 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import json
+
 from django.core.management.base import BaseCommand
 
 import ccxt
-import requests
 from dashboard.models import Bounty
 from economy.models import ConversionRate
+from websocket import create_connection
 
 
 class Command(BaseCommand):
+    """Define the management command to update currency conversion rates."""
 
     help = 'gets prices for all (or... as many as possible) tokens'
 
     def handle(self, *args, **options):
+        """Get the latest currency rates."""
+        count = 0
+        result = ''
 
-        r = requests.get('https://api.etherdelta.com/returnTicker')
-        tickers = r.json()
+        print('Attempting to connect to etherdelta API websocket...')
+        ws = create_connection('wss://socket.etherdelta.com/socket.io/?transport=websocket')
+        print('Sending getMarket message...')
+        ws.send('42["getMarket",{}]')
+        print('Sent getMarket message! Waiting on proper response...')
 
-        #etherdelta
+        # Wait for the getMarket response or timeout at 30.
+        while (result[:2] != "42" or count > 60):
+            result = ws.recv()
+            count += 1
+            print(count)
+
+        ws.close()  # Close the websocket connection.
+
+        try:
+            # Attempt to format the response data.
+            market_results = json.loads(result[2:])
+            tickers = market_results[1]['returnTicker']
+        except ValueError:
+            tickers = {}
+            print('Failed to retrieve etherdelta ticker data!')
+
+        # etherdelta
         for pair, result in tickers.items():
             from_currency = pair.split('_')[0]
             to_currency = pair.split('_')[1]
@@ -46,8 +71,8 @@ class Command(BaseCommand):
                     source='etherdelta',
                     from_currency=from_currency,
                     to_currency=to_currency,
-                    )
-                print('{}=>{}:{}'.format(from_currency, to_currency, to_amount))
+                )
+                print('Etherdelta: {}=>{}:{}'.format(from_currency, to_currency, to_amount))
             except Exception as e:
                 print(e)
 
@@ -65,8 +90,8 @@ class Command(BaseCommand):
                     source='poloniex',
                     from_currency=from_currency,
                     to_currency=to_currency,
-                    )
-                print('{}=>{}:{}'.format(from_currency, to_currency, to_amount))
+                )
+                print('Poloniex: {}=>{}:{}'.format(from_currency, to_currency, to_amount))
             except Exception as e:
                 print(e)
 

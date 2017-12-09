@@ -152,16 +152,20 @@ def render_new_bounty_roundup(to_email):
 
     bounties = [
         {
-            'obj': Bounty.objects.get(pk=127),
-            'primer': 'Piper Merriam is the force in open source.  Know python? This issue is for you.',
+            'obj': Bounty.objects.get(pk=187),
+            'primer': 'Get paid to help your friends get paid.  And disrupt recruing while you\'re at it! 💯 ~ @owocki',
+        },
+        {
+            'obj': Bounty.objects.get(pk=159),
+            'primer': 'Got Linux chops?  This Funded issue is you for.  ~ @owocki',
         },
         {
             'obj': Bounty.objects.get(pk=120),
-            'primer': 'Truffle is one of the most popular web3 development tools.  Heres an oppy to help them increase their speed',
+            'primer': 'Performance is a feature.  And Truffle is a hugely important piece of web3 infrastructure.  Earn 2 ETH to pushing it forward.  ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=168),
-            'primer': 'Here\'s an opportunity to recruit your friends and earn some ETH. (Recruiter Spammers need not apply!)',
+            'obj': Bounty.objects.get(pk=126),
+            'primer': 'Python dev? Here\'s an oppy to make an impact on web3py ~ @owocki',
         },
     ]
 

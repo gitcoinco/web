@@ -77,38 +77,62 @@
                     {% endif %}
                     <div>
                         <div>
-                        <h4>Funded Issues</h4>
+                        <h4>{{profile.handle}} has Participated in these Funded Issues</h4>
                             <ul class="bounties">
-                                {% for b in bounties %}
-                                    <li>
-                                        <a href="{{b.url}}">
-                                            <div class='status'>
-                                                <p>
-                                                    {{b.status}}
-                                                </p>
-                                            </div>
-                                            <div class="details">
-                                                <h6>
-                                                    {{b.title}}
-                                                </h6>
-                                                <p>
-                                                    {{b.desc}}
-                                                </p>
-                                            </div>
-                                            <div class="amount">
-                                                <a class="btn btn-sm btn-darkBlue font-smaller-2">
-                                                    {{b.value_true}} {{b.token_name}},
-                                                    {{b.value_in_usdt}}
-                                                    USD
-                                                </a>
-                                            </div>
-                                        </a>
-                                    </li>
-                                {% endfor %}
                                 {% if bounties|length == 0 %}
                                     <li>
                                         No funded issues found
                                     </li>
+                                {% endif %}
+                                {% if bounties|length > 0 %}
+                                        <li style="height:50px; font-weight: bold;">
+                                            <div class='relationship'>
+                                                Relationship
+                                            </div>
+                                            <div class='status'>
+                                                Status
+                                            </div>
+                                            <div class="details">
+                                                Details
+                                            </div>
+                                        </li>
+                                    {% for b in bounties %}
+                                        <li>
+                                            <a href="{{b.url}}">
+                                                <div class='relationship'>
+                                                    <p>
+                                                        {% if profile.handle == b.claimee_github_username %}
+                                                        Claimee
+                                                        {% elif profile.handle == b.bounty_owner_github_username %}
+                                                        Funder
+                                                        {% else %}
+                                                        Repo Owner
+                                                        {% endif %}
+                                                    </p>
+                                                </div>
+                                                <div class='status'>
+                                                    <p>
+                                                        {{b.status}}
+                                                    </p>
+                                                </div>
+                                                <div class="details">
+                                                    <h6>
+                                                        {{b.title_or_desc}}
+                                                    </h6>
+                                                    <p>
+                                                        {{b.desc}}
+                                                    </p>
+                                                </div>
+                                                <div class="amount">
+                                                    <a class="btn btn-sm btn-darkBlue font-smaller-2">
+                                                        {{b.value_true}} {{b.token_name}},
+                                                        {{b.value_in_usdt}}
+                                                        USD
+                                                    </a>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
                                 {% endif %}
                             </ul>
                         </div>

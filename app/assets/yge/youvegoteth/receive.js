@@ -1,6 +1,8 @@
 
 window.onload = function () {
 
+        _alert('Due to network congestion, there is a known issue with tips being received. <a href=https://github.com/gitcoinco/web/issues/101>Please see here for more details</a>', 'info');
+
         setTimeout(function(){
             if(!web3.currentProvider || !web3.currentProvider.isMetaMask){
                 $("step_zero").style.display = "block";
