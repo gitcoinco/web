@@ -54,7 +54,7 @@
                 <div class="col-10" style="padding-top: 0.5em;">     
                     <h3>{{title}}</h3>
                 </div>
-                <div class="col-2"> 
+                <div class="col-2 select"> 
                         <div class="form-group">
                             <select id="key" class="form-control">
                                 {% for this_title in titles.items %}
@@ -86,7 +86,7 @@
                                     @{{item.github_username}}
                                 </a>
                             </td>
-                            <td class="col-6" style="padding-top: 2.5em;">
+                            <td class="col-6 progress_container">
                                 <div class="progress ">
                                     {% with forloop.counter0 as index %}
                                         <div class="progress-bar progress-bar-striped bg-success" 
