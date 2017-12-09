@@ -1,3 +1,4 @@
+{% load email_obfuscator %}
 {% load humanize %} 
 <!DOCTYPE html>
 <html lang="en">
@@ -51,7 +52,7 @@
                             <li>
                             {% if profile.data.email %}
                                 </li>
-                                    <a href="mailto:{{profile.data.email}}">
+                                    <a href="mailto:{{profile.data.email | obfuscate}}">
                                         <img src='/static/v2/images/social/mail.png' alt='Medium'>
                                     </a>
                                 <li>

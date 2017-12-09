@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'tdi',
     'gas',
     'chartit',
+    'email_obfuscator',
 ]
 
 MIDDLEWARE = [
