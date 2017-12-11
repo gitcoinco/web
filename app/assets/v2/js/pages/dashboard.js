@@ -159,7 +159,7 @@ var refreshBounties = function(){
                 }
                 var divisor = 10**decimals;
                 result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
-                var is_expired = new Date(result['expires_date']) < new Date();
+                var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
 
                 //setup args to go into template
                 if(typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']){
