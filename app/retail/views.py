@@ -401,6 +401,10 @@ def browser_extension(request):
     return redirect('https://chrome.google.com/webstore/detail/gdocmelgnjeejhlphdnoocikeafdpaep')
 
 
+def ios(request):
+    return redirect('https://goo.gl/forms/HHOcMDKArCPo9Xas1')
+
+
 def slack(request):
     context = {
         'active': 'slack', 
