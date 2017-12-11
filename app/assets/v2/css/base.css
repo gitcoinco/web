@@ -899,6 +899,15 @@ body.bounty_details #title{
         max-width: 90%;
     }
 
+    body.slack .col-4{
+        display: none;
+    }
+    body.slack .col-6{
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+
     #team .row,
     #team .row .d-flex,
     .row.howworks .d-flex,
