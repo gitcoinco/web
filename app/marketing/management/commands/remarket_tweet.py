@@ -18,6 +18,7 @@
 '''
 #!/usr/bin/env python
 from django.core.management.base import BaseCommand
+
 from dashboard.models import Bounty
 from dashboard.notifications import maybe_market_to_twitter
 

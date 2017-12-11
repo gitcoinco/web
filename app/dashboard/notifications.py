@@ -6,6 +6,7 @@ import sys
 from urlparse import urlparse
 
 from django.conf import settings
+
 import requests
 import twitter
 from app.github import post_issue_comment
