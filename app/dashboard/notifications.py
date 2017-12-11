@@ -1,11 +1,11 @@
 # encoding=utf8
 import logging
+import random
 import re
 import sys
 from urlparse import urlparse
 
 from django.conf import settings
-import random
 import requests
 import twitter
 from app.github import post_issue_comment
