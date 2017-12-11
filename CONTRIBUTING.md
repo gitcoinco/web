@@ -75,40 +75,39 @@ So we ask you to ensure all these are met before you shoot out a PR.
 - Indentation is as follows
   - 1 tab = 2 spaces for `.html` files
   - 1 tab = 4 spaces for everything else
+  - __Linters will be added to make this easier.__
 
 ### Step 4: Commit
 
-1. The first line should:
-   - contain a short description of the change (preferably 50 characters or less
-     and no more than 72 characters)
-   - be prefixed with the name of the changed subsystem and start with an
-   imperative verb.
-   - If your commit can be explained in one line, then you can skip whats below
-
-   __Examples:__
-   - `doc: updated README.md`
-   - `ui: added design for testimonial page`
-
-2. Keep the second line blank.
-3. Wrap all other lines at 72 columns.
-4. If your PR fixed an issue, Use the `Fixes:` prefix and the full issue URL.
+1. List all your changes as a list if needed else simply give a brief
+  description on what the changes
+2. All lines at 100 columns.
+3. If your PR fixed an issue, Use the `Fixes:` prefix and the full issue URL.
   For other references use `Refs:`.
 
    __Examples:__
    - `Fixes: https://github.com/gitcoinco/web/issues/87`
    - `Refs: https://github.com/gitcoinco/web/issues/91`
 
-5. Sample commit
+4. __Sample commit A__
    ```txt
-   subsystem: explain the commit in one line
-
-   - list out your changes as points if there are many changes
-   - if needed you can also send it across as
+   if you can write down the changes explaining it in a paragraph which each
+   line wrapped within 100 lines.
 
    Fixes: https://github.com/gitcoinco/web/issues/87
    Refs: https://github.com/gitcoinco/web/issues/91
    ```
-6. Ensure your squash your commit to make our history neater and reviewing
+
+   __Sample commit B__
+   ```txt
+   - list out your changes as points if there are many changes
+   - if needed you can also send it across as
+   - all wrapped within 100 lines
+
+   Fixes: https://github.com/gitcoinco/web/issues/87
+   Refs: https://github.com/gitcoinco/web/issues/91
+   ```
+5. Ensure your squash your commit to make our history neater and reviewing
    easier.
 
 ### Step 5: Rebase
