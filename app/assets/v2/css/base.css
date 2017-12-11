@@ -628,6 +628,9 @@ body.bounty_details #title{
 .terms_container a{
     color:black;
 }
+.press_container {
+    background: white;
+}
 
 .press_container img{
     max-width:  200px;

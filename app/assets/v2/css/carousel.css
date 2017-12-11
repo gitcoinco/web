@@ -132,6 +132,7 @@
 .carousel .content {
   border-left: 4px solid #3e00ff;
   padding-left: 10px;
+  text-align: left;
 }
 
 #slides {

@@ -160,8 +160,6 @@ class Bounty(SuperModel):
                 if timezone.now() > self.expires_date and self.claimeee_address == '0x0000000000000000000000000000000000000000':
                     return 'expired'
                 return 'fulfilled'
-            if timezone.now() > self.expires_date:
-                return 'expired'
             if self.claimeee_address == '0x0000000000000000000000000000000000000000':
                 return 'open'
             if self.claimeee_address != '0x0000000000000000000000000000000000000000':
