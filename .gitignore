@@ -11,3 +11,4 @@ app/assets/other/wp.pdf
 app/assets/other/avatars/
 .idea/
 venv/
+.coverage

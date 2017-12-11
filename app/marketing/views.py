@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -22,18 +22,15 @@ import json
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.validators import validate_email
+from django.db.models import Max
 from django.http import Http404
-from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.utils import timezone
-from django.db.models import Max
 
 from chartit import Chart, DataPool
 from marketing.models import EmailSubscriber, Keyword, LeaderboardRank, Stat
 from marketing.utils import get_or_save_email_subscriber
 from retail.helpers import get_ip
-
-# Create your views here.
 
 
 def filter_types(types, _filters):
@@ -127,7 +124,7 @@ def stats(request):
                            'text': 'Time'}}})
 
         params['chart_list'].append(cht)
-    
+
     params['chart_list_str'] = ",".join(types)
     return TemplateResponse(request, 'stats.html', params)
 
@@ -212,7 +209,7 @@ def leaderboard(request, key):
     }
     if key not in titles.keys():
         raise Http404
-    
+
     leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
     amount = leadeboardranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
     items = leadeboardranks.order_by('-amount')
@@ -223,14 +220,14 @@ def leaderboard(request, key):
         top_earners = leadeboardranks.order_by('-amount')[0:3].values_list('github_username', flat=True)
         top_earners = ['@' + username for username in top_earners]
         top_earners = "The top earners of this period are " + ", ".join(top_earners)
-    else: 
+    else:
         amount_max = 0
- 
+
     if len(items) > 0:
         podium_items = items[:3]
     else:
         podium_items = []
-    
+
     context = {
         'items': items,
         'titles': titles,

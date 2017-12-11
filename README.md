@@ -2,6 +2,9 @@
 
 # Gitcoin
 
+[![Build Status](https://travis-ci.org/gitcoinco/web.svg?branch=master)](https://travis-ci.org/gitcoinco/web)
+[![codecov](https://codecov.io/gh/gitcoinco/web/branch/master/graph/badge.svg)](https://codecov.io/gh/gitcoinco/web)
+
 Gitcoin pushes Open Source Forward. Learn more at [https://gitcoin.co](https://gitcoin.co)
 
 [Star](https://github.com/gitcoinco/web/stargazers) and [watch](https://github.com/gitcoinco/web/watchers) this github repository to stay up to date, we're pushing new code several times per week!
@@ -40,12 +43,12 @@ Gitcoin provides a simple HTTPS API to access data without having to run your ow
 
 Beyond simple datatypes like `string` or `integer` the API returns datatypes like dates that are serialized in a very specific fashion.
 
-|  Datatype          |    Description                                            | Example 
+|  Datatype          |    Description                                            | Example
 |--------------------|-----------------------------------------------------------| --------------------------------------------------------------------------------------|
 | `date_time`        | Date and time represented in ISO 8601                     | `2017-09-24T18:59:53.964344Z`|
 | `ethereum_address` | An ethereum token address with the leading `0x`           | `0x636f3093258412b96c43bef3663f1b853253ec59` |
 | `token_type`       | The type of token offered as a reward. Ex: `ETH` or `GIT` | `ETH`                                        |
-   
+
 ### `bounties`
 
 The bounties endpoint provides a listing of bounties and their current status. There are two endpoints that access bounties:
@@ -55,46 +58,46 @@ The bounties endpoint provides a listing of bounties and their current status. T
 
 #### Fields
 
-| Field Key          |  Datatype          | Description                                                       | 
-|--------------------|--------------------|-------------------------------------------------------------------| 
-| `url`              | `string`           | URL for this specific bounty Ex: api/v0.1/bounties/9              | 
-| `created_on`       | `date_time`        | Creation timestamp                                                | 
-| `modified_on`      | `date_time`        | Last modified timestamp                                           | 
-| `title`            | `string`           | Title of the bounty                                               | 
-| `web3_created`     | `date_time`        | Creation timestamp for the transaction that holds this bounty     | 
-| `value_in_token`   | `integer`          | Amount of tokens rewarded for bounty                              | 
-| `token_name`       | `token_type`       | Type of token. Ex: `ETH`, `GIT`                                   | 
-| `token_address`    | `ethereum_address` | Address where the tokens are located                              | 
-| `bounty_type`      | `string`           | Type of bounty. Ex: `Bug`, `Feature`, `Security`                  | 
-| `project_length`   | `string`           | Relative length of project Ex: `Hours`, `Days`, `Weeks`, `Months` | 
-| `experience_level` | `string`           | Recommended experience level                                      | 
-| `github_url`       | `string`           | URL on GitHub where you can find the bounty description           | 
-| `current_bounty`   | `boolean`          | Whether this bounty is the most current revision one or not       | 
-| `expires_date`     | `date_time`        | Date before which the bounty must be compelted                    | 
-| `raw_data`         | `array`            | Raw contract data, see the example below for more information     | 
-| `value_in_eth`     | `integer`          | Value of the bounty in Ethereum                                   | 
-| `value_in_usdt`    | `float`            | Approximation of current value in USD                             | 
-| `now`              | `date_time`        | Current date_time on the server                                   | 
+| Field Key          |  Datatype          | Description                                                       |
+|--------------------|--------------------|-------------------------------------------------------------------|
+| `url`              | `string`           | URL for this specific bounty Ex: api/v0.1/bounties/9              |
+| `created_on`       | `date_time`        | Creation timestamp                                                |
+| `modified_on`      | `date_time`        | Last modified timestamp                                           |
+| `title`            | `string`           | Title of the bounty                                               |
+| `web3_created`     | `date_time`        | Creation timestamp for the transaction that holds this bounty     |
+| `value_in_token`   | `integer`          | Amount of tokens rewarded for bounty                              |
+| `token_name`       | `token_type`       | Type of token. Ex: `ETH`, `GIT`                                   |
+| `token_address`    | `ethereum_address` | Address where the tokens are located                              |
+| `bounty_type`      | `string`           | Type of bounty. Ex: `Bug`, `Feature`, `Security`                  |
+| `project_length`   | `string`           | Relative length of project Ex: `Hours`, `Days`, `Weeks`, `Months` |
+| `experience_level` | `string`           | Recommended experience level                                      |
+| `github_url`       | `string`           | URL on GitHub where you can find the bounty description           |
+| `current_bounty`   | `boolean`          | Whether this bounty is the most current revision one or not       |
+| `expires_date`     | `date_time`        | Date before which the bounty must be compelted                    |
+| `raw_data`         | `array`            | Raw contract data, see the example below for more information     |
+| `value_in_eth`     | `integer`          | Value of the bounty in Ethereum                                   |
+| `value_in_usdt`    | `float`            | Approximation of current value in USD                             |
+| `now`              | `date_time`        | Current date_time on the server                                   |
 
 **Current Status**
 
-| Field Key |  Datatype |  Description                                                                                                                                                                                               | 
-|-----------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------| 
-| `is_open` | `boolean` | True if the bounty has not been completed| 
-| `status`  | `string`  | Current status enum: (`open`, The bounty was created) (`claimed`, Someone claimed the bounty) (`fulfilled`, Someone claimed and completed the bounty) (`expired`, The bounty expired w/o completion) | 
+| Field Key |  Datatype |  Description                                                                                                                                                                                               |
+|-----------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `is_open` | `boolean` | True if the bounty has not been completed|
+| `status`  | `string`  | Current status enum: (`open`, The bounty was created) (`claimed`, Someone claimed the bounty) (`fulfilled`, Someone claimed and completed the bounty) (`expired`, The bounty expired w/o completion) |
 
 **Bounty Creator & Bounty Claimee**
 
-|  Field Key                     | Datatype           |  Description                                             | 
-|--------------------------------|--------------------|----------------------------------------------------------| 
-| `bounty_owner_address`         | `ethereum_address` | Address of the person who owns the bounty                | 
-| `bounty_owner_email`           | `string`           | Email of the bounty owner                                | 
-| `bounty_owner_github_username` | `string`           | Username of the bounty owner                             | 
-| `metadata`                     | `dictionary`       | Misc metadata about the bounty and the creator           | 
-| `claimeee_address`             | `ethereum_address` | Address of the person who claimed the bounty             | 
-| `claimee_email`                | `string`           | Email of the person claiming the bounty                  | 
-| `claimee_github_username`      | `string`           | Username of the claimee                                  | 
-| `claimee_metadata`             | `dictionary`       | `githubUsername` and `notificationEmail` for the claimee | 
+|  Field Key                     | Datatype           |  Description                                             |
+|--------------------------------|--------------------|----------------------------------------------------------|
+| `bounty_owner_address`         | `ethereum_address` | Address of the person who owns the bounty                |
+| `bounty_owner_email`           | `string`           | Email of the bounty owner                                |
+| `bounty_owner_github_username` | `string`           | Username of the bounty owner                             |
+| `metadata`                     | `dictionary`       | Misc metadata about the bounty and the creator           |
+| `claimeee_address`             | `ethereum_address` | Address of the person who claimed the bounty             |
+| `claimee_email`                | `string`           | Email of the person claiming the bounty                  |
+| `claimee_github_username`      | `string`           | Username of the claimee                                  |
+| `claimee_metadata`             | `dictionary`       | `githubUsername` and `notificationEmail` for the claimee |
 
 #### URL Parameters
 
@@ -107,7 +110,7 @@ You can filter the data returned from the API buy providing these keys as URL pa
 By passing an `order_by` parameter you can order the data by the provided key. Ex: `?order_by=expires_date`. To sort in the opposite direction you can add a `-` in from the the key `?order_by=-expires_date`.
 
 #### Example Request
-   
+
 ```
 ~ % curl "https://gitcoin.co/api/v0.1/bounties/?&order_by=web3_created"
 
@@ -157,7 +160,7 @@ By passing an `order_by` parameter you can order the data by the provided key. E
       "notificationEmail": "ksowocki@gmail.com"
     },
     "claimee_metadata": {
-      
+
     },
     "current_bounty": true,
     "value_in_eth": 1.0e+18,
@@ -199,19 +202,19 @@ _bountydetails function returns the following fields:
 
 #### Fields
 
-| Field Key          |  Datatype          | Description                                                       | 
-|--------------------|--------------------|-------------------------------------------------------------------| 
-| `amount`           | `float`            | Bounty amount in ETH or specified ERC20 token                     | 
-| `tokenAddress`     | `ethereum_address` | Address where the tokens are located                              | 
-| `bountyOwner`      | `ethereum_address` | Address of the person who owns the bounty                         | 
-| `claimee`          | `ethereum_address` | Address of the person who claimed the bounty                      | 
-| `open`             | `bool`             | True if the bounty has not been completed                         | 
-| `initialized`      | `bool`             | True if the bounty has been initialized                           | 
-| `issueURL`         | `string`           | URL on GitHub where you can find the bounty description           | 
-| `creationTime`     | `float`            | Creation timestamp                                                | 
-| `metaData`         | `string`           | Misc metadata about the bounty and the creator                    | 
-| `expirationTime`   | `float`            | Date before which the bounty must be completed                    | 
-| `claimee_metaData` | `string`           | githubUsername and notificationEmail for the claimee              |  
+| Field Key          |  Datatype          | Description                                                       |
+|--------------------|--------------------|-------------------------------------------------------------------|
+| `amount`           | `float`            | Bounty amount in ETH or specified ERC20 token                     |
+| `tokenAddress`     | `ethereum_address` | Address where the tokens are located                              |
+| `bountyOwner`      | `ethereum_address` | Address of the person who owns the bounty                         |
+| `claimee`          | `ethereum_address` | Address of the person who claimed the bounty                      |
+| `open`             | `bool`             | True if the bounty has not been completed                         |
+| `initialized`      | `bool`             | True if the bounty has been initialized                           |
+| `issueURL`         | `string`           | URL on GitHub where you can find the bounty description           |
+| `creationTime`     | `float`            | Creation timestamp                                                |
+| `metaData`         | `string`           | Misc metadata about the bounty and the creator                    |
+| `expirationTime`   | `float`            | Date before which the bounty must be completed                    |
+| `claimee_metaData` | `string`           | githubUsername and notificationEmail for the claimee              |
 
 # Running Locally
 
@@ -259,7 +262,7 @@ Have an ERC20 compatible token that you'ud like to add support for?  Great!
 # Legal
 
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published

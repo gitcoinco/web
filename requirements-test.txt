@@ -1,0 +1,9 @@
+-r requirements.txt
+pytest
+pytest-cov
+pytest-isort
+pytest-django
+pytest-sugar
+coverage
+django-coverage-plugin
+isort

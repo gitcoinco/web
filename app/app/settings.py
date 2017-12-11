@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -158,7 +158,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': '/var/log/django/debug.log',
-            'maxBytes': 1024 * 1024 * 10 , # 10 MB
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
             'backupCount': 100,  # max 100 logs
         },
         'mail_admins': {
@@ -204,8 +204,5 @@ SECURE_HSTS_SECONDS = 3600
 try:
     from .local_settings import *  # NOQA
     INSTALLED_APPS += DEBUG_APPS
-
 except ImportError as exp:
-    #print('Error loading local_settings! {}'.format(exp)) 
     pass
-
