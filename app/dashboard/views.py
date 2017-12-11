@@ -81,6 +81,7 @@ def receive_tip(request):
     params = {
         'issueURL': request.GET.get('source'),
         'title': 'Receive Tip',
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
     }
 
     return TemplateResponse(request, 'yge/receive.html', params)
