@@ -179,7 +179,7 @@ var callbacks = {
 
 
 var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
-        console.log("checking this issue for updates:"):
+        console.log("checking this issue for updates:");
         console.log(issueURL);
         //setup callbacks
         var changes_synced_callback = function(){
