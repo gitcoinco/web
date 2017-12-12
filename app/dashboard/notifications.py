@@ -89,18 +89,6 @@ def maybe_market_to_twitter(bounty, event_name, txid):
     return True
 
 
-def should_post_in_channel(channel, bounty):
-    if channel in ['focus-bounties', 'focus-dev']:
-        return True
-    if 'focus-' in channel:
-        keyword = channel.replace('focus-', '').replace('dev-', '').lower()
-        return keyword in str(bounty.title).lower() \
-            or keyword in str(bounty.keywords).lower() \
-            or keyword in str(bounty.github_url).lower()
-
-    return False
-
-
 def maybe_market_to_slack(bounty, event_name, txid):
     if not settings.SLACK_TOKEN:
         return False
@@ -113,16 +101,13 @@ def maybe_market_to_slack(bounty, event_name, txid):
     msg = "{} worth {} {}: {} \n\n{}&slack=1".format(event_name.replace('bounty', 'funded_issue'), round(bounty.get_natural_value(), 4), bounty.token_name, title, bounty.get_absolute_url())
 
     try:
+        channel = 'notif-gitcoin'
         sc = SlackClient(settings.SLACK_TOKEN)
-        channels = sc.api_call("channels.list")
-        channels = [chan['name'] for chan in channels['channels']]
-        channels_to_post_in = [channel for channel in channels if should_post_in_channel(channel, bounty)]
-        for channel in channels_to_post_in:
-            sc.api_call(
-              "chat.postMessage",
-              channel=channel,
-              text=msg,
-            )
+        sc.api_call(
+          "chat.postMessage",
+          channel=channel,
+          text=msg,
+        )
     except Exception as e:
         print(e)
         return False
