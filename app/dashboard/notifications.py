@@ -71,7 +71,7 @@ def maybe_market_to_twitter(bounty, event_name, txid):
     new_tweet = tweet_txt.format(
         round(bounty.get_natural_value(), 4),
         bounty.token_name,
-        ("($" + bounty.value_in_usdt + ")" if bounty.value_in_usdt else ""),
+        ("(${})".format(bounty.value_in_usdt) if bounty.value_in_usdt else ""),
         bounty.get_absolute_url()
     )
     if bounty.keywords:
