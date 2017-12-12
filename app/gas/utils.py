@@ -1,9 +1,12 @@
+from django.conf import settings
 from django.utils import timezone
 
 from gas.models import GasProfile
 
 
 def recommend_min_gas_price_to_confirm_in_time(minutes, default=5):
+    #if settings.DEBUG:
+    #    return 10
     try:
         gp = GasProfile.objects.filter(
             created_on__gt=(timezone.now()-timezone.timedelta(minutes=31)),

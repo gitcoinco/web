@@ -1,6 +1,8 @@
 
 window.onload = function () {
 
+        _alert('Due to network congestion, there is an intermittent issue with tips being received.  If you are affected, <a href=https://github.com/gitcoinco/web/issues/101>Please see here for more details</a>', 'info');
+
         setTimeout(function(){
             if(!web3.currentProvider || !web3.currentProvider.isMetaMask){
                 $("step_zero").style.display = "block";
@@ -82,6 +84,7 @@ window.onload = function () {
         //get form data
         var private_key = $("private_key").value;
         var _idx = '0x' + lightwallet.keystore._computeAddressFromPrivKey(private_key);
+        console.log("fromAccount: " + _idx);
         var forwarding_address = $("forwarding_address").value.trim();
 
         if(!forwarding_address || forwarding_address == '0x0'){
@@ -141,13 +144,24 @@ window.onload = function () {
                 //setup raw transaction
                 var estimate = 10**5;
                 var gasPrice = 10**9 * 1.7;
+                if(getParam('gasPrice')){
+                    var gasPrice = 10**9 * getParam('gasPrice');
+                }
                 var data = contract().claimTransfer.getData(_idx, forwarding_address);
                 var payloadData = data; //??
                 var fromAccount = _idx; //???
                 var gas = estimate;
+                // maximize the gas price
                 if(balance > (gas*gasPrice)){
-                    gasPrice = 10**9 * 1.4;
+                    gasPrice = balance / (gas + 1);
                 }
+                gasPrice =  parseInt(gasPrice);
+                console.log("balance: " + balance + " wei ");
+                console.log("balance: " + (balance / 10**18) + " eth ");
+                console.log("gas: " + gas);
+                console.log("gasPrice: " + gasPrice);
+                console.log("delta (needed - actual): " + (balance - (gas * gasPrice)) + " wei");
+                console.log("delta (needed - actual): " + ((balance - (gas * gasPrice))) / 10 **18 + " eth");
                 var gasLimit = gas + 1;
                 var rawTx = {
                     nonce: web3.toHex(nonce),

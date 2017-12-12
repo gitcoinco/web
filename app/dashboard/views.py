@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import json
 
 from django.http import Http404, JsonResponse
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -81,6 +82,7 @@ def receive_tip(request):
     params = {
         'issueURL': request.GET.get('source'),
         'title': 'Receive Tip',
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
     }
 
     return TemplateResponse(request, 'yge/receive.html', params)
@@ -383,24 +385,16 @@ def terms(request):
 
 
 def privacy(request):
-    params = {
-    }
-    return TemplateResponse(request, 'legal/privacy.txt', params)
+    return redirect('https://gitcoin.co/terms#privacy')
 
 
 def cookie(request):
-    params = {
-    }
-    return TemplateResponse(request, 'legal/cookie.txt', params)
+    return redirect('https://gitcoin.co/terms#privacy')
 
 
 def prirp(request):
-    params = {
-    }
-    return TemplateResponse(request, 'legal/prirp.txt', params)
+    return redirect('https://gitcoin.co/terms#privacy')
 
 
 def apitos(request):
-    params = {
-    }
-    return TemplateResponse(request, 'legal/apitos.txt', params)
+    return redirect('https://gitcoin.co/terms#privacy')

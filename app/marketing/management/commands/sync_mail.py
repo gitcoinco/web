@@ -27,6 +27,13 @@ class Command(BaseCommand):
     help = 'pulls mailchimp emails'
 
     def handle(self, *args, **options):
+
+        print("- match")
+        from marketing.models import Match
+        for match in Match.objects.all():
+            process_email(match.email, 'match')
+
+
         get_size = 50
         client = MailChimp(settings.MAILCHIMP_USER, settings.MAILCHIMP_API_KEY)
 

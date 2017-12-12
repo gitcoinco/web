@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -21,8 +21,12 @@ from dashboard.models import Bounty
 
 
 class Command(BaseCommand):
+    """Define the management command to refresh bounties."""
+
+    help = 'refreshes the triggers associated with current bounties'
 
     def add_arguments(self, parser):
+        """Add argument handling to the refresh command."""
         parser.add_argument(
             '-r', '--remote',
             action='store_true',
@@ -31,20 +35,22 @@ class Command(BaseCommand):
             help='Pulls remote info about bounty too'
         )
 
-    help = 'refreshes the triggers associated with current bounties'
-
     def handle(self, *args, **options):
+        """Refresh all bounties.
 
-        current_bounties = Bounty.objects.filter(current_bounty=True).all()
-        for b in current_bounties:
-            if options['remote']:
-                b.fetch_issue_description()
-            b.save()
-            print('1/ refreshed {}'.format(b.pk))
+        Attributes:
+            all_bounties (QuerySet of Bounty): The queryset of all Bounties.
+            fetch_remote (bool): Whether or not to fetch remote bounties.
+                Defaults to: `False` unless user passes the remote option.
 
+        """
         all_bounties = Bounty.objects.all()
-        for b in all_bounties:
-            if not b.avatar_url:
-                b.avatar_url = b.get_avatar_url()
-            b.save()
-            print('2/ refreshed {}'.format(b.pk))
+        fetch_remote = options['remote']
+        for bounty in all_bounties:
+            if fetch_remote and bounty.current_bounty:
+                bounty.fetch_issue_description()
+                print('1/ refreshed {}'.format(bounty.pk))
+            if not bounty.avatar_url:
+                bounty.avatar_url = bounty.get_avatar_url()
+                print('2/ refreshed {}'.format(bounty.pk))
+            bounty.save()

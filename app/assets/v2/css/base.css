@@ -628,6 +628,9 @@ body.bounty_details #title{
 .terms_container a{
     color:black;
 }
+.press_container {
+    background: white;
+}
 
 .press_container img{
     max-width:  200px;
@@ -645,6 +648,27 @@ body.bounty_details #title{
     -ms-filter: grayscale(0%);
     -o-filter: grayscale(0%);
 }
+.profile_details .dot
+{
+    border-radius: 6px; 
+    width: 12px; 
+    height: 12px;
+    margin-left: -55px;
+    float: left;
+    vertical-align: middle;
+    margin-top: 20px;
+}
+.profile_details li:nth-child(2n+0) .dot
+{
+    background: #919191; 
+}
+.profile_details li:nth-child(2n+1) .dot
+{
+    background: black; 
+}
+
+
+
 .profile_details #stats{
     padding-top: 5px;
     padding-left: 2px;
@@ -708,7 +732,6 @@ body.bounty_details #title{
     filter: invert(100%);
     margin: 10px;
 }
-
 .profile_details #hero .ctas img:hover{
     filter: invert(90%);
 }
@@ -730,7 +753,8 @@ body.bounty_details #title{
 .profile_details .bounties li a.btn{
     color: white;
 }
-.profile_details .bounties li div.status{
+.profile_details .bounties li div.status,
+.profile_details .bounties li div.relationship{
     height: 80px;
     width: 100px;
     display: inline-block;
@@ -739,8 +763,9 @@ body.bounty_details #title{
 }
 .profile_details .bounties li div.details{
     height: 80px;
-    width: 600px;
+    width: 500px;
     display: inline-block;
+    vertical-align: top;
 }
 .profile_details .bounties li div.details p{
     color: #919191;
@@ -776,72 +801,23 @@ body.bounty_details #title{
     padding-right: 10px;
 }
 .profile_details .dot, 
-#leaderboard .dot{
-    border-radius: 6px; 
-    width: 12px; 
-    height: 12px;
-    margin-left: -55px;
-    float: left;
-    vertical-align: middle;
-    margin-top: 20px;
-}
-.profile_details li:nth-child(2n+0) .dot,
-#leaderboard .leaderboard_entry:nth-child(2n+0) .dot
+
+.profile_details li:nth-child(2n+0) .dot
 {
     background: #919191; 
 }
-.profile_details li:nth-child(2n+1) .dot,
-#leaderboard .leaderboard_entry:nth-child(2n+1) .dot
+.profile_details li:nth-child(2n+1) .dot
 {
     background: black; 
 }
-#leaderboard .dot{
-    margin-left: 0px;
-    margin-top: 40px;
-}
-#leaderboard .leaderboard_entry{
-    padding: 10px 0px;
-}
-#leaderboard .leaderboard_entry:hover{
-    background-color: #fafafa;
-    cursor: pointer;
-} 
-#leaderboard .leaderboard_entry img{
-    max-height: 100px;
-    max-width: 100px;
-    border-radius: 45px;
-}
-#leaderboard .leaderboard_entry{
-    color: black;
-    text-decoration: none;
-}
-#leaderboard .leaderboard_entry div{
-    display: inline-block; 
-    width: 40%;
-}
-#leaderboard .leaderboard_entry h4{
-    padding-top: 0px;
-}
-#leaderboard .leaderboard_entry div:first-child{
-    width: 5%;
-}
-#leaderboard .leaderboard_entry div:nth-child(2){
-    width: 5%;
-}
-#leaderboard #key{
-    right: 0px;
-    display: block;
-    position: absolute;
-    margin-right: 10px;
-    margin-top: 5px;
-}
+
 #pull_gh {
     font-size: 12px
 }
 
 @media (max-width: 1350px) {
     .profile_details .bounties li div.details{
-        width: 500px;
+        width: 400px;
     }
 }
 @media (max-width: 1250px) {
@@ -850,13 +826,8 @@ body.bounty_details #title{
     }
 }
 @media (max-width: 1025px) {
-    #leaderboard .leaderboard_entry div{
-        width: 30%;
-    }
-    #leaderboard .leaderboard_entry div:nth-child(2){
-        width: 30%;
-    }
 
+    .profile_details .bounties li div.relationship,
     .profile_details .bounties li div.status,
     .profile_details .bounties li .amount{
         display: none;
@@ -931,6 +902,15 @@ body.bounty_details #title{
         max-width: 90%;
     }
 
+    body.slack .col-4{
+        display: none;
+    }
+    body.slack .col-6{
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+
     #team .row,
     #team .row .d-flex,
     .row.howworks .d-flex,
@@ -976,12 +956,8 @@ body.bounty_details #title{
     .bounty_def h5{
         font-size: 1.2rem;   
     }
-
 }
 @media (max-width: 481px) {
-    #leaderboard .leaderboard_entry h4{
-        font-size: 18px;
-    }
 
     .hide_min_viewport{
         display: none !important;
@@ -1087,4 +1063,3 @@ body.bounty_details #title{
         font-size: .8rem;   
     }
 }
-

@@ -1,5 +1,6 @@
+# encoding=utf8
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -26,7 +27,19 @@ from slackclient import SlackClient
 
 
 def index(request):
+    slides = [
+        ("Zack Coburn, EtherDelta","/static/v2/images/testimonials/zack.jpg", "Gitcoin is the catalyst open source development needs to move forward. The process is seamless and the results speak for themselves.", 'https://github.com/zackcoburn'),
+        ("Piper Merriam, web3py","/static/v2/images/testimonials/piper.png", "We have been trying out the Gitcoin bounty program in the Web3.py project and are very pleased with the results so far.  We’ve closed out four bountied issues ranging from smaller cleanup tasks to full fledged feature development.  So far the platform looks promising as a valuable addition to our development process.", 'https://github.com/pipermerriam'),
+        ("Phil Elsasser, Market","/static/v2/images/testimonials/phil.jpg", "Our first experiences with Gitcoin have been very positive.  It has helped MARKET to get new people involved quickly and in a cost effective manner.  Having fresh ideas and outside perspectives contribute to a new project is unbelievably valuable.", 'http://www.marketprotocol.io/'),
+        ("Aditya Anand", "/static/v2/images/testimonials/aditya.jpg", "It’s been a while since something has gotten me this riled up ! Love the concept and definitely sticking around to see this project through. Awesome community  + open source work + bounties", "https://github.com/thelostone-mc"),
+        ("Daniel Merrill", "/static/v2/images/testimonials/daniel.jpg", "Now that the internet of value is starting to be a thing, Gitcoin is adding a new layer of incentives into open source development, helping both the projects, by powering up their capacity, and the developers, by paying for their work.", "https://github.com/dmerrill6"),
+        ("Maurelian", "/static/v2/images/testimonials/maurelian.png", "Gitcoin helps us to finally close out the issues we’ve been meaning to get around to for too long.", "https://github.com/maurelian"),
+        ("Mark Beacom", "/static/v2/images/testimonials/mark.jpg", "Gitcoin is precisely what I’ve been looking for! It gives every developer a vehicle to make extra money or move their open source project ahead.", "https://github.com/mbeacom"),
+        ("Isaac Serafino", "/static/v2/images/testimonials/isaac.jpg", "I feel it is so awesome to have the opportunity through Gitcoin to do what I love and get paid for it, and to have reasonable freedom about the way I work, that it already seems too good to be true. ", "https://github.com/isaacserafino"),
+    ]
     context = {
+        'slides': slides,
+        'slideDurationInMs': 6000,
         'active': 'home',
     }
     return TemplateResponse(request, 'index.html', context)
@@ -75,12 +88,12 @@ def help(request):
             'a': """
 
 <p>
-<strong>A tip</strong> is a tool to send ether or any ethereum token to any github account.  The flow for tips looks like this: 
+<strong>A tip</strong> is a tool to send ether or any ethereum token to any github account.  The flow for tips looks like this:
 </p><p>
 > Send (party 1) => receive (party 2)
 </p><p>
 
-<strong>Funded Issues</strong> are a way to fund open source features, bugs, or security bounties.  The flow for funded issues looks like this: 
+<strong>Funded Issues</strong> are a way to fund open source features, bugs, or security bounties.  The flow for funded issues looks like this:
 </p><p>
 
 >  Fund Issue (party 1) => claim funds  (party 2) => accept (party 1)
@@ -88,7 +101,7 @@ def help(request):
 
 
             """
-        },        
+        },
         {
             'q': 'What kind of contributors are successful on the Gitcoin network?',
             'a': """
@@ -112,7 +125,7 @@ We value communication that is:
 
 <ul>
 <li>
-    Collaborative 
+    Collaborative
 </li>
 <li>
     Intellectual & Intellectually Honest
@@ -241,7 +254,7 @@ The best way to stay in touch is to
             'q': 'Why do I need metamask?',
             'a': """
 <p>
-You need <a href="https://metamask.io/">Metamask</a> in order to use Gitcoin.  
+You need <a href="https://metamask.io/">Metamask</a> in order to use Gitcoin.
 </p>
 <p>
 
@@ -268,7 +281,7 @@ Download Metamask <a href="https://metamask.io/">here</a> today.
 The reason gas is important is that it helps to ensure an appropriate fee is being paid by transactions submitted to the network. By requiring that a transaction pay for each operation it performs (or causes a contract to perform), we ensure that network doesn't become bogged down with performing a lot of intensive work that isn't valuable to anyone.
 </p>
 <p>
-Gas fees are paid to the maintainers of the Ethereum network, in return for securing all of the Ether and Ethereum-based transactions in the world.  Gas fees are not paid to Gitcoin Core directly or indirectly.  
+Gas fees are paid to the maintainers of the Ethereum network, in return for securing all of the Ether and Ethereum-based transactions in the world.  Gas fees are not paid to Gitcoin Core directly or indirectly.
 </p>
            """
         },
@@ -344,7 +357,7 @@ def handler400(request):
 
 def error(request, code):
     context = {
-        'active': 'error', 
+        'active': 'error',
         'code': code
     }
     context['title'] = "Error {}".format(code)
@@ -388,9 +401,13 @@ def browser_extension(request):
     return redirect('https://chrome.google.com/webstore/detail/gdocmelgnjeejhlphdnoocikeafdpaep')
 
 
+def ios(request):
+    return redirect('https://goo.gl/forms/HHOcMDKArCPo9Xas1')
+
+
 def slack(request):
     context = {
-
+        'active': 'slack', 
     }
 
     if request.POST.get('email', False):
@@ -412,7 +429,7 @@ def slack(request):
             context['msg'] = "Invalid email"
 
     return TemplateResponse(request, 'slack.html', context)
-    
+
 
 
 def btctalk(request):

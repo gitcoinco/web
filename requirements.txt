@@ -13,7 +13,7 @@ requests
 requests_oauthlib
 Pillow==4.0.0
 premailer
-populus==2.0.0a4
+populus
 psycopg2
 PyPdf2
 python-twitter==3.2
@@ -24,4 +24,5 @@ mailchimp3
 django_chartit==0.2.9
 MechanicalSoup==0.9.0.post4
 statistics
+django-email-obfuscator
 
