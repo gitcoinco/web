@@ -1,3 +1,4 @@
+/* eslint-disable */
 //helper functions
 var sidebar_keys = ['experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'idx_status', 'network'];
 
@@ -128,7 +129,7 @@ var process_stats = function(results){
         }
     }
     worth_usdt = worth_usdt.toFixed(2);
-    worth_eth = (worth_eth / 10 ** 18).toFixed(2);
+    worth_eth = (worth_eth / Math.pow(10, 18 )).toFixed(2);
     var stats = "" + num + " worth " + worth_usdt + " USD, " + worth_eth + " ETH";
     for(var token in currencies_to_value){
         stats += ", " + currencies_to_value[token].toFixed(2) + " " + token;
@@ -177,7 +178,7 @@ var refreshBounties = function(){
                 if(related_token_details && related_token_details.decimals){
                     decimals = related_token_details.decimals;
                 }
-                var divisor = 10**decimals;
+                var divisor = Math.pow( 10, decimals );
                 result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
                 var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
 
