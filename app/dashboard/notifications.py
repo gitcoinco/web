@@ -8,6 +8,7 @@ from urlparse import urlparse
 from django.conf import settings
 
 import requests
+import tinyurl
 import twitter
 from app.github import post_issue_comment
 from slackclient import SlackClient
@@ -72,7 +73,7 @@ def maybe_market_to_twitter(bounty, event_name, txid):
         round(bounty.get_natural_value(), 4),
         bounty.token_name,
         ("(${})".format(bounty.value_in_usdt) if bounty.value_in_usdt else ""),
-        bounty.get_absolute_url()
+        tinyurl.create_one(bounty.get_absolute_url())
     )
     if bounty.keywords:
         for keyword in bounty.keywords.split(','):
