@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 // helper functions
 
 /**

@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 load_tokens();
 var setUsdAmount= function (event) {
     var amount  = $('input[name=amount]').val();
@@ -84,7 +86,7 @@ $(document).ready(function(){
         var token = tokenAddressToDetails(tokenAddress);
         var decimals = token['decimals'];
         var tokenName = token['name'];
-        var decimalDivisor = 10**decimals;
+        var decimalDivisor = Math.pow( 10, decimals );
         var expirationTimeDelta = $('select[name=expirationTimeDelta').val();
 
        var metadata = {

@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 var tokens = function(network_id){
     // from https://github.com/etherdelta/etherdelta.github.io/blob/master/config/main.json
     var _tokens =  null
