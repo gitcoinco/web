@@ -29,13 +29,11 @@ w
 '''
 
 
-def send_mail(from_email, to_email, subject, body, html=False, from_name="Gitcoin.co", cc_emails=None):
+def send_mail(from_email, _to_email, subject, body, html=False, from_name="Gitcoin.co", cc_emails=None):
 
     # make sure this subscriber is saved
+    to_email = _to_email
     get_or_save_email_subscriber(to_email, 'internal')
-
-    # debug logs
-    print("-- Sending Mail '{}' to {}".format(subject, to_email))
 
     # setup
     sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
@@ -62,6 +60,10 @@ def send_mail(from_email, to_email, subject, body, html=False, from_name="Gitcoi
                 p.add_to(cc_addr)
     p.add_bcc(Email(settings.BCC_EMAIL))
     mail.add_personalization(p)
+
+    # debug logs
+    print("-- Sending Mail '{}' to {}".format(subject, _to_email))
+
 
     # send mails
     response = sg.client.mail.send.post(request_body=mail.get())
