@@ -43,7 +43,7 @@ def amount(request):
         amount = request.GET.get('amount')
         deonomination = request.GET.get('denomination', 'ETH')
         if deonomination == 'ETH':
-            amount_in_eth = amount
+            amount_in_eth = float(amount)
         else:
             amount_in_eth = convert_amount(amount, deonomination, 'ETH')
         amount_in_usdt = convert_amount(amount, 'ETH', 'USDT')

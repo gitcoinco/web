@@ -27,7 +27,7 @@ class Command(BaseCommand):
     help = 'the expiration notifications'
 
     def handle(self, *args, **options):
-        days = [1, 3, 5, 10]
+        days = [1, 2]
         for day in days:
             bounties = Bounty.objects.filter(
                 is_open=True,

@@ -134,6 +134,8 @@ def render_bounty_expire_warning(to_email, bounty):
         'num': num,
         'unit': unit,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
+        'is_claimee': (bounty.claimee_email if bounty.claimee_email else "").lower() == to_email.lower(),
+        'is_owner': bounty.bounty_owner_email.lower() == to_email.lower(),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty_expire_warning.html", params))

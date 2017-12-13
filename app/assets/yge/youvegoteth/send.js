@@ -26,8 +26,21 @@ var unPackAddresses = function(){
     };
     localStorage.setItem("addresses", null);
 }
+var updateEstimate = function(e){
+    var denomination = jQuery('#token option:selected').text();
+    var amount  = jQuery('#amount').val();
+    getUSDEstimate(amount, denomination, function(usdAmount){
+    if (usdAmount){
+        jQuery('#usd_amount').text(usdAmount);
+    } else {
+        jQuery('#usd_amount').html('</br>');
+    }
+    });
 
+};
 window.onload = function () {
+    jQuery('#amount').on('keyup blur change',updateEstimate);
+    jQuery('#token').on('change',updateEstimate);
 
     unPackAddresses();
 
@@ -55,10 +68,7 @@ window.onload = function () {
     if(localStorage['expires']){
         $("expires").selectedIndex = localStorage['expires'];
     }
-
-    jQuery("input[name=amount]").keyup(retrieveAmount);
-    jQuery("input[name=amount]").blur(retrieveAmount);
-
+    
     waitforWeb3(function(){
         tokens(document.web3network).forEach(function(ele){
             var option = document.createElement("option");

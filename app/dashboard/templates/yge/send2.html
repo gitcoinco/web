@@ -1,7 +1,8 @@
 {% extends 'yge/base.html' %}
-
+{% load staticfiles %}
 {% block 'scripts' %}
 
+<script src="{% static 'v2/js/amounts.js' %}"></script>
 <script src="/static/yge/youvegoteth/index.js"></script>
 <script src="/static/yge/youvegoteth/pre.js"></script>
 <script src="/static/yge/youvegoteth/tokens.js"></script>
@@ -34,8 +35,8 @@
                 <option value="0x0">ETH</option>
             </select>
             <input name="amount" type="text" placeholder="1.1" id="amount" value="" style="width: 170px; display: inline;">
-            <div id="usd_amount"></div>
         </div>
+        <div id="usd_amount"> &nbsp;</div>
         <div>
             To Github Username:
             <input type="text" placeholder="@username" id="username" value="" style="width: 400px; margin-left: auto; margin-right: auto;">

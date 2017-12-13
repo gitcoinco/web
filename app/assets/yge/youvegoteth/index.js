@@ -164,6 +164,9 @@ setTimeout(function(){
     page: document.location.pathname,
     web3: web3v,
   }
-  mixpanel.track("Pageview", params);
+  if (mixpanel){
+      mixpanel.track("Pageview", params);
+
+  }
 },300);
 
