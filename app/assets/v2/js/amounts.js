@@ -5,7 +5,8 @@ var getUSDEstimate = function (amount, denomination) {
         var request_url = '/sync/get_amount?amount=' + amount + '&denomination=' + denomination;
         jQuery.get(request_url, function (result) {
             var usd_amount = result['usdt'];
-            var conv_rate = amount / usd_amount;
+            var eth_amount = result['eth'];
+            var conv_rate = amount / usd_amount / eth_amount
             //store conv rate for later in cache
             if (typeof document.conversion_rates == 'undefined') {
                 document.conversion_rates = {}
