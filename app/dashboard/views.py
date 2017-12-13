@@ -145,9 +145,9 @@ def send_tip_2(request):
         did_post_to_github = maybe_market_tip_to_github(tip)
         maybe_market_tip_to_slack(tip, 'new_tip', tip.txid)
         tip_email(tip, set(emails), True)
-        if len(emails) == 0 and not did_post_to_github:
-            status = 'error'
-            message = 'Uh oh! No email addresses found via Github API and could not post to github'
+        if len(emails) == 0:
+                status = 'error'
+                message = 'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.'
 
         #http response
         response = {
