@@ -443,39 +443,50 @@ class Profile(SuperModel):
         acceptance_rate = 'N/A'
         loyalty_rate = 0
         claimees = []
+        total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.bounty_owner_github_username == self.handle])
+        total_claimed = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.claimee_github_username == self.handle])
+        print(total_claimed, total_funded)
+        role = 'newbie'
+        if total_funded > total_claimed:
+            role = 'funder'
+        else:
+            role = 'coder'
+
         for b in bounties:
             if b.claimeee_address in claimees:
                 loyalty_rate += 1
             claimees.append(b.claimeee_address)
-        success_rate = 0 
+        success_rate = 0
         if bounties.count() > 0:
-            success_rate = int(round(bounties.filter(idx_status__in=['fulfilled', 'claimed']).count() * 1.0 / bounties.count(), 2) * 100)
+            numer = bounties.filter(idx_status__in=['fulfilled', 'claimed']).count()
+            denom = bounties.exclude(idx_status__in=['open']).count()
+            success_rate = int(round(numer * 1.0 / denom, 2) * 100)
         if success_rate == 0:
             success_rate = 'N/A'
             loyalty_rate = 'N/A'
         else:
             success_rate = "{}%".format(success_rate)
             loyalty_rate = "{}x".format(loyalty_rate)
-        return [
-            (bounties.count(), 'Total Funded Issues'),
-            (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
-            (success_rate, 'Success Rate'),
-            (loyalty_rate, 'Loyalty Rate'),
-        ]
-        
-        if self.is_org:
+        if role == 'newbie':
             return [
-                ('100%', 'Acceptance Rate'),
-                ('0%', 'Kill Rate'),
-                ('15h', 'Acceptance Delay'),
-                ('3x', 'Loyalty Rate'),
+                (role, 'Status'),
+                (bounties.count(), 'Total Funded Issues'),
+                (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
+                (loyalty_rate, 'Loyalty Rate'),
             ]
-        else:
+        elif role == 'coder':
             return [
-                ('100%', 'Acceptance Ratio'),
-                ('10%', 'Revision Rate'),
-                ('15h', 'Acceptance Delay'),
-                ('3x', 'Loyalty Rate'),
+                (role, 'Primary Role'),
+                (bounties.count(), 'Total Funded Issues'),
+                (success_rate, 'Success Rate'),
+                (loyalty_rate, 'Loyalty Rate'),
+            ]
+        else: #funder
+            return [
+                (role, 'Primary Role'),
+                (bounties.count(), 'Total Funded Issues'),
+                (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
+                (success_rate, 'Success Rate'),
             ]
 
     @property
