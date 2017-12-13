@@ -25,13 +25,7 @@ from economy.models import ConversionRate
 from websocket import create_connection
 
 
-class Command(BaseCommand):
-    """Define the management command to update currency conversion rates."""
-
-    help = 'gets prices for all (or... as many as possible) tokens'
-
-    def handle(self, *args, **options):
-        """Get the latest currency rates."""
+def etherdelta():
         count = 0
         result = ''
 
@@ -76,31 +70,55 @@ class Command(BaseCommand):
             except Exception as e:
                 print(e)
 
-        tickers = ccxt.poloniex().load_markets()
-        for pair, result in tickers.items():
-            from_currency = pair.split('/')[0]
-            to_currency = pair.split('/')[1]
 
-            from_amount = 1
-            try:
-                to_amount = (float(result['info']['highestBid']) + float(result['info']['lowestAsk'])) / 2
-                ConversionRate.objects.create(
-                    from_amount=from_amount,
-                    to_amount=to_amount,
-                    source='poloniex',
-                    from_currency=from_currency,
-                    to_currency=to_currency,
-                )
-                print('Poloniex: {}=>{}:{}'.format(from_currency, to_currency, to_amount))
-            except Exception as e:
-                print(e)
+def polo():
+    tickers = ccxt.poloniex().load_markets()
+    for pair, result in tickers.items():
+        from_currency = pair.split('/')[0]
+        to_currency = pair.split('/')[1]
 
-        for b in Bounty.objects.all():
-            print('refreshed {}'.format(b.pk))
-            try:
-                b._val_usd_db = b.value_in_usdt
-                b.save()
-            except Exception as e:
-                print(e)
-                b._val_usd_db = 0
-                b.save()
+        from_amount = 1
+        try:
+            to_amount = (float(result['info']['highestBid']) + float(result['info']['lowestAsk'])) / 2
+            ConversionRate.objects.create(
+                from_amount=from_amount,
+                to_amount=to_amount,
+                source='poloniex',
+                from_currency=from_currency,
+                to_currency=to_currency,
+            )
+            print('Poloniex: {}=>{}:{}'.format(from_currency, to_currency, to_amount))
+        except Exception as e:
+            print(e)
+
+    for b in Bounty.objects.all():
+        print('refreshed {}'.format(b.pk))
+        try:
+            b._val_usd_db = b.value_in_usdt
+            b.save()
+        except Exception as e:
+            print(e)
+            b._val_usd_db = 0
+            b.save()    
+
+
+class Command(BaseCommand):
+    """Define the management command to update currency conversion rates."""
+
+    help = 'gets prices for all (or... as many as possible) tokens'
+
+    def handle(self, *args, **options):
+        """Get the latest currency rates."""
+
+        try:
+            print("ED")
+            etherdelta()
+        except Exception as e:
+            print(e)
+
+        try:
+            print("polo")
+            polo()
+        except Exception as e:
+            print(e)
+
