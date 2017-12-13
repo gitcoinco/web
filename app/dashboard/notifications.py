@@ -176,6 +176,12 @@ def maybe_market_to_github(bounty, event_name, txid):
     return True
 
 
+def amount_usdt_open_work():
+    from dashboard.models import Bounty
+    bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'claimed'])
+    return round(sum([b.value_in_usdt for b in bounties]), 2)
+
+
 def maybe_market_tip_to_github(tip):
     if not settings.GITHUB_CLIENT_ID:
         return False
@@ -188,7 +194,8 @@ def maybe_market_tip_to_github(tip):
     username = tip.username if '@' in tip.username else str('@' + tip.username)
     _from = " from {}".format(tip.from_name) if tip.from_name else ""
     warning = tip.network if tip.network != 'mainnet' else ""
-    msg = "⚡️ A tip worth {} {} {} has been granted to {} for this issue{}. ⚡️ \n\nNice work {}, check your email for further instructions. | <a href='https://gitcoin.co/tip'>Send a Tip</a>".format(round(tip.amount, 3), warning, tip.tokenName, username, _from, username)
+    msg = "⚡️ A tip worth {} {} {} {} has been granted to {} for this issue{}. ⚡️ \n\nNice work {}, check your email for further instructions. \n\n * ${} in Funded OSS Work Available at: https://gitcoin.co/explorer\n * Incentivize contributions to your repo: <a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+    msg = msg.format(round(tip.amount, 3), warning, tip.tokenName, "(${})".format(tip.value_in_usdt) if tip.value_in_usdt else "" , username, _from, username, amount_usdt_open_work())
 
     # actually post
     url = tip.github_url
