@@ -125,6 +125,29 @@ class Bounty(SuperModel):
         except Exception as e:
             return None
 
+    def is_hunter(self, handle):
+        target = self.claimee_github_username
+        if not handle:
+            return False
+        if not handle:
+            return False
+        handle = handle.lower().replace('@', '')
+        target = target.lower().replace('@', '')
+
+        return handle == target
+
+    def is_funder(self, handle):
+        target = self.bounty_owner_github_username
+        if not handle:
+            return False
+        if not handle:
+            return False
+        handle = handle.lower().replace('@', '')
+        target = target.lower().replace('@', '')
+
+        return handle == target
+
+
     @property
     def absolute_url(self):
         return self.get_absolute_url()
@@ -399,8 +422,8 @@ class Profile(SuperModel):
     @property
     def bounties(self):
         bounties = Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True)
-        bounties = bounties | Bounty.objects.filter(claimee_github_username=self.handle, current_bounty=True)
-        bounties = bounties | Bounty.objects.filter(bounty_owner_github_username=self.handle, current_bounty=True)
+        bounties = bounties | Bounty.objects.filter(claimee_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(claimee_github_username__iexact="@" + self.handle, current_bounty=True)
+        bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
         return bounties.order_by('-web3_created')
     
 
@@ -443,13 +466,13 @@ class Profile(SuperModel):
         acceptance_rate = 'N/A'
         loyalty_rate = 0
         claimees = []
-        total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.bounty_owner_github_username == self.handle])
-        total_claimed = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.claimee_github_username == self.handle])
-        print(total_claimed, total_funded)
+        total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_funder(self.handle)])
+        total_claimed = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
+        print(total_funded, total_claimed)
         role = 'newbie'
         if total_funded > total_claimed:
             role = 'funder'
-        else:
+        elif total_funded < total_claimed:
             role = 'coder'
 
         for b in bounties:
