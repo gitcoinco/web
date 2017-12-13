@@ -161,7 +161,7 @@ def maybe_market_to_github(bounty, event_name, txid):
             amount_usdt_open_work(),
             )
     elif event_name == 'new_claim':
-        msg = "__The funding of {} {} {} attached has been claimed {}.__ {} \n\n * Learn more at: {}\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = "__The funding of {} {} {} attached has been claimed {}.__ {} \n\n * Learn more [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
         msg = msg.format(
             round(bounty.get_natural_value(), 4),
             bounty.token_name,
@@ -175,7 +175,7 @@ def maybe_market_to_github(bounty, event_name, txid):
             amount_usdt_open_work(),
             )
     elif event_name == 'approved_claim':
-        msg = "__The funding of {} {} {} attached to this issue has been approved & issued {}.__  \n\n * Learn more at: {}\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = "__The funding of {} {} {} attached to this issue has been approved & issued {}.__  \n\n * Learn more at [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
         msg = msg.format(
             round(bounty.get_natural_value(), 4),
             bounty.token_name,
