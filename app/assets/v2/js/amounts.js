@@ -7,40 +7,39 @@ var estimate= function(amount, conv_rate) {
         } else if (estimateAmount > 1000) {
             estimateAmount = Math.round(estimateAmount / 100) / 10 + "k"
         }
-        return ('Approx: ' + estimateAmount + ' USD');
+        return 'Approx: ' + estimateAmount + ' USD';
     } else {
-        return null;
+        return 'Approx: Unknown amount';
     }
 };
 
-var getUSDEstimate = function (amount, denomination) {
+var getUSDEstimate = function (amount, denomination, callback) {
     var conv_rate;
-    var usd_amount;
+    var eth_usd;
     var eth_amount;
     try {
         amount = parseFloat(amount);
     } catch (e) {
-        return null;
+        return "Incorrect amount";
     }
 
     if (document.conversion_rates && document.conversion_rates[denomination]) {
         conv_rate = document.conversion_rates[denomination]
-        return estimate(amount, conv_rate)
+        return callback(estimate(amount, conv_rate))
     } else {
         var request_url = '/sync/get_amount?amount=' + amount + '&denomination=' + denomination;
         jQuery.get(request_url, function (result) {
-            usd_amount = result['usdt'];
+            eth_usd = result['usdt'];
             eth_amount = parseFloat(result['eth']);
-            conv_rate = (amount/eth_amount)*usd_amount;
+            conv_rate = (amount/eth_amount)*eth_usd;
             //store conv rate for later in cache
             if (typeof document.conversion_rates == 'undefined') {
                 document.conversion_rates = {}
             }
             document.conversion_rates[denomination] = conv_rate;
-            return estimate(amount, conv_rate)
-
+            return callback(estimate(amount, conv_rate))
         }).fail(function () {
-            return null
+            return callback('Approx: Unknown amount');
         });
     }
 

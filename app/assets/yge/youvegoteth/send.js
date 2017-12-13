@@ -26,17 +26,21 @@ var unPackAddresses = function(){
     };
     localStorage.setItem("addresses", null);
 }
+var updateEstimate = function(e){
+    var denomination = jQuery('#token option:selected').text();
+    var amount  = jQuery('#amount').val();
+    getUSDEstimate(amount, denomination, function(usdAmount){
+    if (usdAmount){
+        jQuery('#usd_amount').text(usdAmount);
+    } else {
+        jQuery('#usd_amount').html('</br>');
+    }
+    });
 
+};
 window.onload = function () {
-    jQuery('#amount').on('keyup keypress blur change', function(e){
-        var denomination = jQuery('#token option:selected').text();
-        var usdAmount = getUSDEstimate(e.target.value, denomination);
-        if (usdAmount){
-            jQuery('#usd_amount').text(usdAmount);
-        } else {
-            jQuery('#usd_amount').html('</br>');
-        }
-    })
+    jQuery('#amount').on('keyup blur change',updateEstimate);
+    jQuery('#token').on('change',updateEstimate);
 
     unPackAddresses();
 

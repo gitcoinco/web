@@ -2,8 +2,9 @@ load_tokens();
 var setUsdAmount= function (event) {
     var amount  = $('input[name=amount]').val();
     var denomination  = $('#token option:selected').text();
-    var estimate = getUSDEstimate(amount, denomination);
-    $('#usd_amount').html(estimate);
+    var estimate = getUSDEstimate(amount, denomination, function(estimate){
+        $('#usd_amount').html(estimate);
+    });
 };
 
 $(document).ready(function(){
