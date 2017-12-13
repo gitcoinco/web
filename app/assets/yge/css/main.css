@@ -10,6 +10,10 @@ body {
   width: 100%;
 }
 
+#yge {
+  overflow-y: hidden;
+}
+
 /*
 	Identity by HTML5 UP
 	html5up.net | @ajlkn
@@ -733,7 +737,7 @@ body {
     #main #send_eth #advanced div{
         padding-top: 10px;
     }
-    #main #send_eth input, 
+    #main #send_eth input,
     #main #send_eth select{
         font-size: 12px;
     }
@@ -904,7 +908,7 @@ body {
 			top:0px;
 			width: 100%;
 			z-index: 99999;
-		    background-color: #f44336; 
+		    background-color: #f44336;
 			color: white;
 			position: fixed;
 			text-align: center;
