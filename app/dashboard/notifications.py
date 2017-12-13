@@ -150,11 +150,40 @@ def maybe_market_to_github(bounty, event_name, txid):
 
     # prepare message
     msg = ''
+    usdt_value = "(" + str(round(bounty.value_in_usdt, 2)) + " USD)" if bounty.value_in_usdt else ""
     if event_name == 'new_bounty':
-        usdt_value = "(" + str(round(bounty.value_in_usdt, 2)) + " USD)" if bounty.value_in_usdt else ""
-        msg = "__This issue now has a funding of {} {} {} attached to it.__\n\n * If you would like to work on this issue you can claim it [here]({}).\n * If you've completed this issue and want to claim the bounty you can do so [here]({})\n".format(round(bounty.get_natural_value(), 4), bounty.token_name, usdt_value, bounty.get_absolute_url(), bounty.get_absolute_url())
+        msg = "__This issue now has a funding of {} {} {} attached to it.__\n\n * If you would like to work on this issue you can claim it [here]({}).\n * If you've completed this issue and want to claim the bounty you can do so [here]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = msg.format(
+            round(bounty.get_natural_value(), 4),
+            bounty.token_name, usdt_value,
+            bounty.get_absolute_url(),
+            bounty.get_absolute_url(),
+            amount_usdt_open_work(),
+            )
+    elif event_name == 'new_claim':
+        msg = "__The funding of {} {} {} attached has been claimed {}.__ {} \n\n * Learn more at: {}\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = msg.format(
+            round(bounty.get_natural_value(), 4),
+            bounty.token_name,
+            usdt_value,
+            "by @{}".format(bounty.claimee_github_username) if bounty.claimee_github_username else "",
+            "\n\n {}, please leave a comment to let the funder {} and the other parties involved your implementation plan.  If you don't leave a comment, the funder may expire your claim at their discretion.".format(
+                "@{}".format(bounty.claimee_github_username) if bounty.claimee_github_username else "If you are the claimee",
+                "(@{})".format(bounty.bounty_owner_github_username) if bounty.bounty_owner_github_username else "",
+                ),
+            bounty.get_absolute_url(),
+            amount_usdt_open_work(),
+            )
     elif event_name == 'approved_claim':
-        msg = "__The funding of {} {} attached to this issue has been approved & issued.__  \n\nLearn more at: {}".format(round(bounty.get_natural_value(), 4), bounty.token_name, bounty.get_absolute_url())
+        msg = "__The funding of {} {} {} attached to this issue has been approved & issued {}.__  \n\n * Learn more at: {}\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = msg.format(
+            round(bounty.get_natural_value(), 4),
+            bounty.token_name,
+            usdt_value,
+            "to @{}".format(bounty.claimee_github_username) if bounty.claimee_github_username else "",
+            bounty.get_absolute_url(),
+            amount_usdt_open_work(),
+            )
     else:
         return False
 
