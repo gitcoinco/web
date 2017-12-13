@@ -64,10 +64,7 @@ window.onload = function () {
     if(localStorage['expires']){
         $("expires").selectedIndex = localStorage['expires'];
     }
-
-    jQuery("input[name=amount]").keyup(retrieveAmount);
-    jQuery("input[name=amount]").blur(retrieveAmount);
-
+    
     waitforWeb3(function(){
         tokens(document.web3network).forEach(function(ele){
             var option = document.createElement("option");
