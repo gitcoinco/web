@@ -404,7 +404,7 @@ window.addEventListener('load', function() {
                 }
                 else {
                     $("#sidebar_head").html("Web3 disabled");
-                    $("#sidebar_p").html("Please install & nlock <a target=new href=https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en> Metamask</a>. ");
+                    $("#sidebar_p").html("Please install & unlock <a target=new href=https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en> Metamask</a>. ");
                 }
             })
         }

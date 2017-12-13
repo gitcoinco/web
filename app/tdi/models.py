@@ -25,6 +25,10 @@ from economy.models import SuperModel
 
 
 class AccessCodes(SuperModel):
+    
+    class Meta:
+        verbose_name_plural = 'Access codes'
+
     invitecode = models.CharField(max_length=30)
     maxuses = models.PositiveIntegerField(default=1)
 
@@ -37,6 +41,10 @@ class AccessCodes(SuperModel):
 
 
 class WhitepaperAccess(SuperModel):
+    
+    class Meta:
+        verbose_name_plural = 'Whitepaper access'
+
     invitecode = models.CharField(max_length=30)
     email = models.CharField(max_length=255)
     ip = models.CharField(max_length=30)

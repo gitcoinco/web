@@ -18,7 +18,7 @@
 
         <nav class="navbar navbar-expand-md navbar-dark">
             <a class="navbar-brand pt-0 pb-0" href="/explorer">
-                    <img id="logo" src="/static/v2/images//logo.png" width="141" height="35" />
+                    <img id="logo" src="/static/v2/images/logo_large.png" data-hover="/static/v2/images/logo_large_hover.gif" width="150" height="50" />
                 </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
@@ -29,9 +29,8 @@
                 <nav class="navbar-nav ml-auto mr-3">
                     <a class="nav-link" href="/">Home</a>
                     <a class="nav-link {% if active == 'dashboard' %}selected{%endif%}" href="/explorer">Issue Explorer</a>
-
-                    <a class="nav-link" href="/slack">
-                        <img style="max-width: 15px; max-height: 15px; margin-top:-3px; margin-right: 3px; filter: invert(100%);" src="/static/v2/images/social/slack2.png">Slack({{num_slack}})
+                    <a class="nav-link slack" href="/slack">
+                        <img src="/static/v2/images/social/slack2.png">Slack({{num_slack}})
                     </a>
                     <a class="nav-link" href="/help">Help</a>
                 </nav>

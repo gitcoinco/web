@@ -6,7 +6,8 @@ RUN mkdir /code && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /code
 COPY requirements.txt /code/
-RUN pip install -r requirements.txt
+COPY requirements-test.txt /code/
+RUN pip install -r requirements-test.txt
 COPY requirements-dev.txt /code/
 RUN pip install -r requirements-dev.txt && \
     apt-get purge -y --auto-remove gcc libc6-dev libc-dev libssl-dev

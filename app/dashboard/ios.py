@@ -17,7 +17,13 @@ def save(request):
 
     status = 422
     message = 'Please use a POST'
-    body = json.loads(request.body)
+    body = {}
+    try:
+        body = json.loads(request.body)
+    except:
+        status = 400
+        message = 'Bad Request'
+
     if body.get('bounty_id', False):
 
         # handle a POST

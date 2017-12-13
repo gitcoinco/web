@@ -11,7 +11,7 @@ from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 reload(sys)
 sys.setdefaultencoding('utf8')
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 w
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -29,13 +29,11 @@ w
 '''
 
 
-def send_mail(from_email, to_email, subject, body, html=False, from_name="Gitcoin.co", cc_emails=None):
+def send_mail(from_email, _to_email, subject, body, html=False, from_name="Gitcoin.co", cc_emails=None):
 
     # make sure this subscriber is saved
+    to_email = _to_email
     get_or_save_email_subscriber(to_email, 'internal')
-
-    # debug logs
-    print("-- Sending Mail '{}' to {}".format(subject, to_email))
 
     # setup
     sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
@@ -63,6 +61,10 @@ def send_mail(from_email, to_email, subject, body, html=False, from_name="Gitcoi
     p.add_bcc(Email(settings.BCC_EMAIL))
     mail.add_personalization(p)
 
+    # debug logs
+    print("-- Sending Mail '{}' to {}".format(subject, _to_email))
+
+
     # send mails
     response = sg.client.mail.send.post(request_body=mail.get())
     return response
@@ -72,9 +74,9 @@ def tip_email(tip, to_emails, is_new):
     if not tip or not tip.url or not tip.amount or not tip.tokenName:
         return
 
-    subject = "⚡️ New Tip Worth {} {}".format(round(tip.amount,2), tip.tokenName)
+    subject = "⚡️ New Tip Worth {} {}".format(round(tip.amount, 3), tip.tokenName)
     if not is_new:
-        subject = "🕐 New Tip Worth {} {} Expiring Soon".format(round(tip.amount,2), tip.tokenName)
+        subject = "🕐 New Tip Worth {} {} Expiring Soon".format(round(tip.amount, 3), tip.tokenName)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
@@ -87,7 +89,7 @@ def new_bounty(bounty, to_emails=[]):
     if not bounty or not bounty.value_in_usdt:
         return
 
-    subject = "⚡️ New Funded Issue Worth ${}".format(bounty.value_in_usdt)
+    subject = "⚡️ New Funded Issue Match worth ${} ({})".format(bounty.value_in_usdt, bounty.keywords)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
@@ -99,7 +101,7 @@ def new_bounty(bounty, to_emails=[]):
 
 def weekly_roundup(to_emails=[]):
 
-    subject = "⚡️ Refer a Friend get ETH (bonus: Pilot Projects update)"
+    subject = "Gitcoin Weekly | Community Slack grows, Give feedback to help Gitcoin improve!"
     for to_email in to_emails:
         html, text = render_new_bounty_roundup(to_email)
         from_email = settings.PERSONAL_CONTACT_EMAIL
@@ -165,11 +167,12 @@ def bounty_expire_warning(bounty, to_emails=[]):
         return
 
     for to_email in to_emails:
-        unit = 'days'
+        unit = 'day'
         num = int(round((bounty.expires_date - timezone.now()).days, 0))
         if num == 0:
-            unit = 'hours'
+            unit = 'hour'
             num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
+        unit = unit + ("s" if num != 1 else "")
         subject = "😕 Your Funded Issue ({}) Expires In {} {} ... 😕".format(bounty.title_or_desc, num, unit)
 
         from_email = settings.CONTACT_EMAIL

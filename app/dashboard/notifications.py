@@ -1,5 +1,6 @@
 # encoding=utf8
 import logging
+import random
 import re
 import sys
 from urlparse import urlparse
@@ -7,6 +8,7 @@ from urlparse import urlparse
 from django.conf import settings
 
 import requests
+import tinyurl
 import twitter
 from app.github import post_issue_comment
 from slackclient import SlackClient
@@ -36,7 +38,7 @@ def maybe_market_to_twitter(bounty, event_name, txid):
 
     if not settings.TWITTER_CONSUMER_KEY:
         return False
-    if event_name != 'new_bounty':
+    if event_name not in ['new_bounty', 'remarket_bounty']:
         return False
     if bounty.get_natural_value() < 0.0001:
         return False
@@ -49,12 +51,37 @@ def maybe_market_to_twitter(bounty, event_name, txid):
         access_token_key=settings.TWITTER_ACCESS_TOKEN,
         access_token_secret=settings.TWITTER_ACCESS_SECRET,
     )
+    tweet_txts = [
+        "Earn {} {} {} now by completing this task: \n\n{}",
+        "Oppy to earn {} {} {} for completing this task: \n\n{}",
+        "Is today the day you (a) boost your OSS rep (b) make some extra cash? 🤔 {} {} {} \n\n{}",
+    ]
+    if event_name == 'remarket_bounty':
+        tweet_txts = tweet_txts + [
+            "Gitcoin open task of the day is worth {} {} {} ⚡️ \n\n{}",
+            "Task of the day 💰 {} {} {} ⚡️ \n\n{}",
+        ]
+    if event_name == 'new_bounty':
+        tweet_txts = tweet_txts + [
+            "Extra! Extra 🗞🗞 New Funded Issue, Read all about it 👇  {} {} {} \n\n{}",
+            "Hot off the blockchain! 🔥🔥🔥 There's a new task worth {} {} {} \n\n{}",
+            "💰 New Task Alert.. 💰 Earn {} {} {} for working on this 👇 \n\n{}",
+        ]
 
-    new_tweet = "New funded issue worth {} {} \n\n{}".format(
+    random.shuffle(tweet_txts)
+    tweet_txt = tweet_txts[0]
+
+    new_tweet = tweet_txt.format(
         round(bounty.get_natural_value(), 4),
         bounty.token_name,
-        bounty.get_absolute_url()
+        ("(${})".format(bounty.value_in_usdt) if bounty.value_in_usdt else ""),
+        tinyurl.create_one(bounty.get_absolute_url())
     )
+    if bounty.keywords:
+        for keyword in bounty.keywords.split(','):
+            _new_tweet = new_tweet + " #" + str(keyword).lower().strip()
+            if len(_new_tweet) < 140:
+                new_tweet = _new_tweet
 
     try:
         api.PostUpdate(new_tweet)
@@ -63,18 +90,6 @@ def maybe_market_to_twitter(bounty, event_name, txid):
         return False
 
     return True
-
-
-def should_post_in_channel(channel, bounty):
-    if channel in ['focus-bounties', 'focus-dev']:
-        return True
-    if 'focus-' in channel:
-        keyword = channel.replace('focus-', '').replace('dev-', '').lower()
-        return keyword in str(bounty.title).lower() \
-            or keyword in str(bounty.keywords).lower() \
-            or keyword in str(bounty.github_url).lower()
-
-    return False
 
 
 def maybe_market_to_slack(bounty, event_name, txid):
@@ -89,16 +104,13 @@ def maybe_market_to_slack(bounty, event_name, txid):
     msg = "{} worth {} {}: {} \n\n{}&slack=1".format(event_name.replace('bounty', 'funded_issue'), round(bounty.get_natural_value(), 4), bounty.token_name, title, bounty.get_absolute_url())
 
     try:
+        channel = 'notif-gitcoin'
         sc = SlackClient(settings.SLACK_TOKEN)
-        channels = sc.api_call("channels.list")
-        channels = [chan['name'] for chan in channels['channels']]
-        channels_to_post_in = [channel for channel in channels if should_post_in_channel(channel, bounty)]
-        for channel in channels_to_post_in:
-            sc.api_call(
-              "chat.postMessage",
-              channel=channel,
-              text=msg,
-            )
+        sc.api_call(
+          "chat.postMessage",
+          channel=channel,
+          text=msg,
+        )
     except Exception as e:
         print(e)
         return False
@@ -140,11 +152,40 @@ def maybe_market_to_github(bounty, event_name, txid):
 
     # prepare message
     msg = ''
+    usdt_value = "(" + str(round(bounty.value_in_usdt, 2)) + " USD)" if bounty.value_in_usdt else ""
     if event_name == 'new_bounty':
-        usdt_value = "(" + str(round(bounty.value_in_usdt, 2)) + " USD)" if bounty.value_in_usdt else ""
-        msg = "__This issue now has a funding of {} {} {} attached to it.__\n\n * If you would like to work on this issue you can claim it [here]({}).\n * If you've completed this issue and want to claim the bounty you can do so [here]({})\n".format(round(bounty.get_natural_value(), 4), bounty.token_name, usdt_value, bounty.get_absolute_url(), bounty.get_absolute_url())
+        msg = "__This issue now has a funding of {} {} {} attached to it.__\n\n * If you would like to work on this issue you can claim it [here]({}).\n * If you've completed this issue and want to claim the bounty you can do so [here]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = msg.format(
+            round(bounty.get_natural_value(), 4),
+            bounty.token_name, usdt_value,
+            bounty.get_absolute_url(),
+            bounty.get_absolute_url(),
+            amount_usdt_open_work(),
+            )
+    elif event_name == 'new_claim':
+        msg = "__The funding of {} {} {} attached has been claimed {}.__ {} \n\n * Learn more [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = msg.format(
+            round(bounty.get_natural_value(), 4),
+            bounty.token_name,
+            usdt_value,
+            "by @{}".format(bounty.claimee_github_username) if bounty.claimee_github_username else "",
+            "\n\n {}, please leave a comment to let the funder {} and the other parties involved your implementation plan.  If you don't leave a comment, the funder may expire your claim at their discretion.".format(
+                "@{}".format(bounty.claimee_github_username) if bounty.claimee_github_username else "If you are the claimee",
+                "(@{})".format(bounty.bounty_owner_github_username) if bounty.bounty_owner_github_username else "",
+                ),
+            bounty.get_absolute_url(),
+            amount_usdt_open_work(),
+            )
     elif event_name == 'approved_claim':
-        msg = "__The funding of {} {} attached to this issue has been approved & issued.__  \n\nLearn more at: {}".format(round(bounty.get_natural_value(), 4), bounty.token_name, bounty.get_absolute_url())
+        msg = "__The funding of {} {} {} attached to this issue has been approved & issued {}.__  \n\n * Learn more at [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = msg.format(
+            round(bounty.get_natural_value(), 4),
+            bounty.token_name,
+            usdt_value,
+            "to @{}".format(bounty.claimee_github_username) if bounty.claimee_github_username else "",
+            bounty.get_absolute_url(),
+            amount_usdt_open_work(),
+            )
     else:
         return False
 
@@ -166,6 +207,12 @@ def maybe_market_to_github(bounty, event_name, txid):
     return True
 
 
+def amount_usdt_open_work():
+    from dashboard.models import Bounty
+    bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'claimed'])
+    return round(sum([b.value_in_usdt for b in bounties]), 2)
+
+
 def maybe_market_tip_to_github(tip):
     if not settings.GITHUB_CLIENT_ID:
         return False
@@ -178,7 +225,8 @@ def maybe_market_tip_to_github(tip):
     username = tip.username if '@' in tip.username else str('@' + tip.username)
     _from = " from {}".format(tip.from_name) if tip.from_name else ""
     warning = tip.network if tip.network != 'mainnet' else ""
-    msg = "⚡️ A tip worth {} {} {} has been granted to {} for this issue{}. ⚡️ \n\nNice work {}, check your email for further instructions. | <a href='https://gitcoin.co/tip'>Send a Tip</a>".format(round(tip.amount, 3), warning, tip.tokenName, username, _from, username)
+    msg = "⚡️ A tip worth {} {} {} {} has been granted to {} for this issue{}. ⚡️ \n\nNice work {}, check your email for further instructions. \n\n * ${} in Funded OSS Work Available at: https://gitcoin.co/explorer\n * Incentivize contributions to your repo: <a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+    msg = msg.format(round(tip.amount, 3), warning, tip.tokenName, "(${})".format(tip.value_in_usdt) if tip.value_in_usdt else "" , username, _from, username, amount_usdt_open_work())
 
     # actually post
     url = tip.github_url

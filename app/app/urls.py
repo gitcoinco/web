@@ -86,6 +86,7 @@ urlpatterns = [
     url(r'^help/?', retail.views.help, name='help'),
     url(r'^extension/?', retail.views.browser_extension, name='browser_extension'),
     url(r'^slack/?', retail.views.slack, name='slack'),
+    url(r'^ios/?', retail.views.ios, name='ios'),
     url(r'^btctalk/?', retail.views.btctalk, name='btctalk'),
     url(r'^reddit/?', retail.views.reddit, name='reddit'),
     url(r'^feedback/?', retail.views.feedback, name='feedback'),
@@ -118,7 +119,7 @@ urlpatterns = [
     #marketing views
     url(r'^email/settings/(.*)', marketing.views.email_settings, name='email_settings'),
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
-    url(r'^leaderboard', marketing.views.leaderboard, name='_leaderboard'),
+    url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),
     url(r'^_administration/stats$', marketing.views.stats, name='stats'),
 
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),

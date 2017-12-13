@@ -162,16 +162,25 @@ var callbacks = {
         return [ "updated" , timeDifference(new Date(result['now']), new Date(result['created_on']))];
     },
     'expires_date': function(key, val, result){
+        var label = "expires";
         expires_date = new Date(val);
         now = new Date(result['now']);
         var response = timeDifference(now, expires_date);
-        return [ "expires" , response];
+        if( new Date(val) < new Date()){
+            label = "expired";
+            if(result['is_open']){
+                response = "<span title='This issue is past its experation date, but it is still active.  Check with the submitter to see if they still want to see it fulfilled.'>"+response+"</span>";
+            }
+        }
+        return [ label , response];
     },
     
 }
 
 
 var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
+        console.log("checking this issue for updates:");
+        console.log(issueURL);
         //setup callbacks
         var changes_synced_callback = function(){
             document.location.href = document.location.href;

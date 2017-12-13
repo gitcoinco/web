@@ -2,14 +2,16 @@ version: '3'
 
 services:
   db:
-    image: postgres
+    image: postgres:10.1-alpine
+    restart: unless-stopped
     volumes:
       - pgdata:/var/lib/postgresql/data
   web:
-    restart: always
+    restart: unless-stopped
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/code/app
     build: .
     command: bash docker-command.bash
     volumes:

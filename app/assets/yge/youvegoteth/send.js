@@ -90,7 +90,7 @@ window.onload = function () {
         var _disableDeveloperTip = true;
         var accept_tos = $("tos").checked;
         var token = $("token").value;
-        var fees = 10**(9+5) * 2.01;
+        var fees = 10**(9+5) * ((defaultGasPrice * 1.001) / 10**9);
         var expires = parseInt($("expires").value);
         var isSendingETH = (token == '0x0' || token == '0x0000000000000000000000000000000000000000');
         var tokenDetails = tokenAddressToDetails(token);
@@ -126,7 +126,7 @@ window.onload = function () {
             return;
         }
         if(amountInEth < min_amount){
-            _alert('You can minimum of' + min_amount + ' '+tokenName+'.');
+            _alert('You can only send a minimum of ' + min_amount + ' '+tokenName+'.');
             return;
         }
         if(username == ''){
@@ -168,7 +168,7 @@ window.onload = function () {
                     $("send_eth_done").style.display = 'block';
                     $("trans_link").href = "https://"+etherscanDomain()+"/tx/" + result;
                     $("trans_link2").href = "https://"+etherscanDomain()+"/tx/" + result;
-                    var relative_link = "?n=" + document.web3network+ "&txid=" + txid + "&key=" + _private_key ;
+                    var relative_link = "?n=" + document.web3network+ "&txid=" + txid + "&key=" + _private_key + "&gasPrice=" + (defaultGasPrice / 10**9) ;
                     var base_url = document.location.href.split('?')[0].replace('send/2','receive').replace('#','');
                     var link = base_url + relative_link;
                     $('new_username').innerHTML = username;

@@ -79,6 +79,10 @@ class LeaderboardRank(SuperModel):
 
 
 class Match(SuperModel):
+
+    class Meta:
+        verbose_name_plural = 'Matches'
+
     email = models.EmailField(max_length=255)
     bounty = models.ForeignKey(Bounty, on_delete=models.CASCADE)
     direction = models.CharField(max_length=50)
