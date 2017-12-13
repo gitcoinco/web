@@ -54,6 +54,7 @@ def maybe_market_to_twitter(bounty, event_name, txid):
     tweet_txts = [
         "Earn {} {} {} now by completing this task: \n\n{}",
         "Oppy to earn {} {} {} for completing this task: \n\n{}",
+        "Is today the day you (a) boost your OSS rep (b) make some extra cash? 🤔 {} {} {} \n\n{}",
     ]
     if event_name == 'remarket_bounty':
         tweet_txts = tweet_txts + [
@@ -62,6 +63,7 @@ def maybe_market_to_twitter(bounty, event_name, txid):
         ]
     if event_name == 'new_bounty':
         tweet_txts = tweet_txts + [
+            "Extra! Extra 🗞🗞 New Funded Issue, Read all about it 👇  {} {} {} \n\n{}",
             "Hot off the blockchain! 🔥🔥🔥 There's a new task worth {} {} {} \n\n{}",
             "💰 New Task Alert.. 💰 Earn {} {} {} for working on this 👇 \n\n{}",
         ]
