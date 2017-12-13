@@ -1,4 +1,10 @@
 load_tokens();
+var setUsdAmount= function (event) {
+    var amount  = $('input[name=amount]').val();
+    var denomination  = $('#token option:selected').text();
+    var estimate = getUSDEstimate(amount, denomination);
+    $('#usd_amount').html(estimate);
+};
 
 $(document).ready(function(){
 
@@ -22,9 +28,9 @@ $(document).ready(function(){
         $('input[name=issueURL]').val(localStorage['issueURL']);
     }
     //fetch issue URL related info
-    $("input[name=amount]").keyup(retrieveAmount);
-    $("input[name=amount]").blur(retrieveAmount);
-    $("select[name=deonomination]").change(retrieveAmount);
+    $("input[name=amount]").keyup(setUsdAmount);
+    $("input[name=amount]").blur(setUsdAmount);
+    $("select[name=deonomination]").change(setUsdAmount);
     $("input[name=issueURL]").blur(retrieveTitle);
     $("input[name=issueURL]").blur(retrieveKeywords);
 
