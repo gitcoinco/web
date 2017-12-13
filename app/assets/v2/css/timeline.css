@@ -162,6 +162,11 @@
     margin-top: 20px;
 }
 
+.tline img {
+    margin: 10px 0;
+    width: 100%;
+}
+
 @media (max-width: 760px) {
     ul.tline:before {
         left: 41px;
