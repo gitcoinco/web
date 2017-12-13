@@ -37,9 +37,9 @@ general discussions are made. An contributor is allowed to create an issue,
 discuss and provide a fix if needed.
 
 ## Discussions And General Help
-As Gitcoin is still at it's early stages, drop by [gitcoin.co/slack](gitcoin.co/slack)
-and say hi to know what's next / to get your answers
-cleared up.
+As Gitcoin is still at its early stages, drop by
+[gitcoin.co/slack](gitcoin.co/slack) and say hi to know what's next / to get
+your answers cleared up.
 
 ## Pull Requests
 Pull Requests are the way in which concrete changes are made to the code and
@@ -85,11 +85,11 @@ So we ask you to ensure all these are met before you shoot out a PR.
 3. If your PR fixed an issue, Use the `Fixes:` prefix and the full issue URL.
   For other references use `Refs:`.
 
-   __Examples:__
+   _Examples:_
    - `Fixes: https://github.com/gitcoinco/web/issues/87`
    - `Refs: https://github.com/gitcoinco/web/issues/91`
 
-4. __Sample commit A__
+4. _Sample commit A_
    ```txt
    if you can write down the changes explaining it in a paragraph which each
    line wrapped within 100 lines.
@@ -98,7 +98,7 @@ So we ask you to ensure all these are met before you shoot out a PR.
    Refs: https://github.com/gitcoinco/web/issues/91
    ```
 
-   __Sample commit B__
+   _Sample commit B_
    ```txt
    - list out your changes as points if there are many changes
    - if needed you can also send it across as
@@ -107,12 +107,13 @@ So we ask you to ensure all these are met before you shoot out a PR.
    Fixes: https://github.com/gitcoinco/web/issues/87
    Refs: https://github.com/gitcoinco/web/issues/91
    ```
-5. Ensure your squash your commit to make our history neater and reviewing
-   easier.
+5. [Squashing](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History) and
+   [Merging](https://git-scm.com/docs/git-merge) your commits to make our
+   history neater is always welcomed.
 
 ### Step 5: Rebase
 
-Ensure you neat lil description on what your PR is for, so that it's
+Ensure you neat description on what your PR is for, so that it's
 easier for folks to understand the gist of it without before jumping to the
 the code / doc.
 
