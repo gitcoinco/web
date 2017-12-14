@@ -3,7 +3,7 @@ var gasPrice = 1;
 var gas = 100000 * 2;
 var gasLimit = gas * 2;
 var maxGas = 4468057;
-var recommendGas = 44857;
+var recommendGas = 448057;
 
 // Make alias of docuemtn.getElementById -> $
 function makeAlias(object, name) {
