@@ -129,18 +129,19 @@ class Bounty(SuperModel):
         target = self.claimee_github_username
         if not handle:
             return False
-        if not handle:
+        if not target:
             return False
         handle = handle.lower().replace('@', '')
         target = target.lower().replace('@', '')
 
         return handle == target
 
+    #TODO: DRY
     def is_funder(self, handle):
         target = self.bounty_owner_github_username
         if not handle:
             return False
-        if not handle:
+        if not target:
             return False
         handle = handle.lower().replace('@', '')
         target = target.lower().replace('@', '')
