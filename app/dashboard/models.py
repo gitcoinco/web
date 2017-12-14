@@ -484,7 +484,7 @@ class Profile(SuperModel):
         if bounties.count() > 0:
             numer = bounties.filter(idx_status__in=['fulfilled', 'claimed']).count()
             denom = bounties.exclude(idx_status__in=['open']).count()
-            success_rate = int(round(numer * 1.0 / denom, 2) * 100)
+            success_rate = int(round(numer * 1.0 / denom, 2) * 100) if denom != 0 else 'N/A'
         if success_rate == 0:
             success_rate = 'N/A'
             loyalty_rate = 'N/A'
