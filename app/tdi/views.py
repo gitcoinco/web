@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -23,6 +23,7 @@ from wsgiref.util import FileWrapper
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.http import HttpResponse
 from django.shortcuts import redirect
@@ -44,6 +45,7 @@ from .models import AccessCodes, WhitepaperAccess, WhitepaperAccessRequest
 def ratelimited(request, ratelimited=False):
     return whitepaper_access(request, ratelimited=True)
 
+
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def whitepaper_new(request, ratelimited=False):
 
@@ -52,7 +54,7 @@ def whitepaper_new(request, ratelimited=False):
         'title': 'Whitepaper',
         'minihero': 'Whitepaper',
         'suppress_logo': True,
-        }
+    }
     if not request.POST.get('submit', False):
         return TemplateResponse(request, 'whitepaper_new.html', context)
 
@@ -75,7 +77,7 @@ https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/
     """.format(context['email'], context['role'], context['comments'], ip)
     send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, "New Whitepaper Request", str(body))
 
-    war = WhitepaperAccessRequest.objects.create(
+    WhitepaperAccessRequest.objects.create(
         email=context['email'],
         role=context['role'],
         comments=context['comments'],
@@ -83,11 +85,11 @@ https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/
     )
 
     invite_to_slack(context['email'])
-    
+
     valid_email = True
     try:
         validate_email(request.POST.get('email', False))
-    except Exception as e:
+    except ValidationError:
         valid_email = False
 
     if not request.POST.get('email', False) or not valid_email:
@@ -115,7 +117,6 @@ def whitepaper_access(request, ratelimited=False):
         context['msg'] = "You're ratelimited. Please contact founders@gitcoin.co"
         return TemplateResponse(request, 'whitepaper_accesscode.html', context)
 
-
     context['accesskey'] = request.POST.get('accesskey')
     context['email'] = request.POST.get('email')
     access_codes = AccessCodes.objects.filter(invitecode=request.POST.get('accesskey'))
@@ -140,7 +141,7 @@ def whitepaper_access(request, ratelimited=False):
         return TemplateResponse(request, 'whitepaper_accesscode.html', context)
 
     ip = get_ip(request)
-   
+
     wa = WhitepaperAccess.objects.create(
         invitecode=request.POST.get('accesskey', False),
         email=request.POST.get('email', False),
@@ -165,7 +166,6 @@ def whitepaper_access(request, ratelimited=False):
     can.drawString(left, 7, msg)
     can.save()
 
-
     # middle watermark
     packet2 = StringIO.StringIO()
     can = canvas.Canvas(packet2, pagesize=letter)
@@ -180,9 +180,7 @@ def whitepaper_access(request, ratelimited=False):
     can.drawString(320, 50, msg)
     can.save()
 
-
-    #move to the beginning of the StringIO buffer
-    file_name = 'whitepaper.pdf'
+    # move to the beginning of the StringIO buffer
     path_to_file = 'assets/other/wp.pdf'
     new_pdf1 = PdfFileReader(packet1)
     new_pdf2 = PdfFileReader(packet2)
@@ -205,11 +203,12 @@ def whitepaper_access(request, ratelimited=False):
     output.write(outputStream)
     outputStream.close()
 
-    filename = outputfile                       
+    filename = outputfile
     wrapper = FileWrapper(file(filename))
     response = HttpResponse(wrapper, content_type='application/pdf')
     response['Content-Length'] = os.path.getsize(filename)
     return response
+
 
 @staff_member_required
 def process_accesscode_request(request, pk):
@@ -227,17 +226,17 @@ def process_accesscode_request(request, pk):
         h.update(h.hexdigest() + str(timezone.now()))
         invitecode = h.hexdigest()[:29]
 
-        code = AccessCodes.objects.create(
+        AccessCodes.objects.create(
             invitecode=invitecode,
             maxuses=1,
-            )
+        )
         obj.processed = True
         obj.save()
 
         from_email = settings.PERSONAL_CONTACT_EMAIL
         to_email = obj.email
         subject = request.POST.get('subject')
-        body = request.POST.get('body').replace('[code]',invitecode)
+        body = request.POST.get('body').replace('[code]', invitecode)
         send_mail(from_email, to_email, subject, body, from_name="Kevin from Gitcoin.co")
         messages.success(request, 'Invite sent')
 
