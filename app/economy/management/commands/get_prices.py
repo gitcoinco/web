@@ -121,4 +121,3 @@ class Command(BaseCommand):
             polo()
         except Exception as e:
             print(e)
-
