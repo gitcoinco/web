@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -22,7 +22,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from app.utils import sync_profile
-from dashboard.models import Bounty
+from dashboard.models import Bounty, Profile
 
 
 def does_need_refresh(handle):
@@ -35,6 +35,7 @@ def does_need_refresh(handle):
         needs_refresh = True
 
     return needs_refresh
+
 
 class Command(BaseCommand):
 
@@ -50,13 +51,12 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-
         # setup
         handles = set([b.org_name for b in Bounty.objects.filter(current_bounty=True)])
         for handle in handles:
             print(handle)
 
-            #does this handle need a refresh
+            # does this handle need a refresh
             needs_refresh = does_need_refresh(handle) or options['force_refresh']
 
             if not needs_refresh:
@@ -66,6 +66,6 @@ class Command(BaseCommand):
                     sync_profile(handle)
                 except Exception as e:
                     print(e)
-            
+
             if not settings.DEBUG:
                 time.sleep(60)
