@@ -1,5 +1,5 @@
 -r requirements.txt
-pytest
+pytest==3.2.5
 pytest-cov
 pytest-isort
 pytest-django
