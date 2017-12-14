@@ -53,8 +53,8 @@ def etherdelta():
 
         # etherdelta
         for pair, result in tickers.items():
-            from_currency = pair.split('_')[0]
-            to_currency = pair.split('_')[1]
+            from_currency = pair.split('_')[1]
+            to_currency = pair.split('_')[0]
 
             from_amount = 1
             to_amount = (result['bid'] + result['ask']) / 2
@@ -99,7 +99,7 @@ def polo():
         except Exception as e:
             print(e)
             b._val_usd_db = 0
-            b.save()    
+            b.save()
 
 
 class Command(BaseCommand):

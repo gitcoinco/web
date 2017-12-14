@@ -46,12 +46,12 @@ def amount(request):
             amount_in_eth = float(amount)
         else:
             amount_in_eth = convert_amount(amount, deonomination, 'ETH')
-        amount_in_usdt = convert_amount(amount, 'ETH', 'USDT')
+        amount_in_usdt = convert_amount(amount_in_eth, 'ETH', 'USDT')
         response = {
             'eth': amount_in_eth,
             'usdt': amount_in_usdt,
         }
-        return JsonResponse(response)        
+        return JsonResponse(response)    
     except Exception as e:
         print(e)
         raise Http404

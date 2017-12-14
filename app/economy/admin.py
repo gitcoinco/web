@@ -24,8 +24,9 @@ from .models import ConversionRate
 
 
 # Register your models here.
-class GeneralAdmin(admin.ModelAdmin):
+class ConvRateAdmin(admin.ModelAdmin):
     ordering = ['-id']
+    search_fields = ['from_currency', 'to_currency']
 
 
-admin.site.register(ConversionRate, GeneralAdmin)
+admin.site.register(ConversionRate, ConvRateAdmin)

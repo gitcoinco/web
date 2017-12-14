@@ -63,10 +63,14 @@ class ConversionRate(SuperModel):
 @receiver(post_save, sender=ConversionRate, dispatch_uid="ReverseConversionRate")
 def reverse_conversion_rate(sender, instance, **kwargs):
 
-    # to_user transaction
+    # 1 / # 0.000979
+    from_amount = float(instance.to_amount) / float(instance.from_amount)
+    to_amount = 1
+
+    # reverse transaction
     ConversionRate.objects.get_or_create(
-        from_amount=instance.to_amount,
-        to_amount=instance.from_amount,
+        from_amount=from_amount,
+        to_amount=to_amount,
         timestamp=instance.timestamp,
         source=instance.source,
         from_currency=instance.to_currency,

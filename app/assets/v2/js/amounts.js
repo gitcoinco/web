@@ -1,5 +1,5 @@
 var estimate= function(amount, conv_rate) {
-    var estimateAmount = amount / conv_rate;
+    var estimateAmount = amount * conv_rate;
     if (estimateAmount) {
         estimateAmount = Math.round(estimateAmount * 100) / 100;
         if (estimateAmount > 1000000) {
@@ -29,9 +29,9 @@ var getUSDEstimate = function (amount, denomination, callback) {
     } else {
         var request_url = '/sync/get_amount?amount=' + amount + '&denomination=' + denomination;
         jQuery.get(request_url, function (result) {
-            eth_usd = result['usdt'];
+            amount_usdt = result['usdt'];
             eth_amount = parseFloat(result['eth']);
-            conv_rate = (amount/eth_amount)*eth_usd;
+            conv_rate = amount_usdt/amount;
             //store conv rate for later in cache
             if (typeof document.conversion_rates == 'undefined') {
                 document.conversion_rates = {}
