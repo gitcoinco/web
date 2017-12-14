@@ -346,7 +346,7 @@ body #mc_embed_signup label {
 }
 
 input[type=text].loading{
-    background-image: url('/static/v2/images/loading.gif');
+    background-image: url('/static/v2/images/loading_v2.gif');
     background-repeat: no-repeat;
     background-position: right;
     background-size: 30px;

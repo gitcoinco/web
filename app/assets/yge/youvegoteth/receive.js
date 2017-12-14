@@ -100,7 +100,7 @@ window.onload = function () {
             _alert("Invalid Link.  Please check your link and try again");
             return;
         }
-        $("send_eth").innerHTML = "<img src='/static/yge/images/loading.gif' style='max-width: 70px; max-height: 70px;'><br><h4>Submitting to the blockchain..</h4>";
+        $("send_eth").innerHTML = "<img src='/static/yge/images/loading_v2.gif' style='max-width: 70px; max-height: 70px;'><br><h4>Submitting to the blockchain..</h4>";
         loading_button(jQuery("#receive"));       
         //set up callback to sendRawTransaction
         var callback = function(error, result){
@@ -112,7 +112,7 @@ window.onload = function () {
             } else {
                 startConfetti();
                 mixpanel.track("Tip Receive Success", {});
-                $("send_eth").innerHTML = "<h1>Success 🚀!</h1> <a target=new href='https://"+etherscanDomain()+"/tx/"+result+"'>See your transaction on the blockchain here</a>.<br><br><strong>Status:</strong> <span id=status>Confirming Transaction ... <br><img src='/static/yge/images/loading.gif' style='max-width: 30px; max-height: 30px;'></span><br><br><span id=mighttake>It might take a few minutes to sync, depending upon: <br> - network congestion<br> - network fees that sender allocated to transaction<br></span><br><a id='' class='button' href='/'>⬅ Back to Gitcoin.co</a>" ;
+                $("send_eth").innerHTML = "<h1>Success 🚀!</h1> <a target=new href='https://"+etherscanDomain()+"/tx/"+result+"'>See your transaction on the blockchain here</a>.<br><br><strong>Status:</strong> <span id=status>Confirming Transaction ... <br><img src='/static/yge/images/loading_v2.gif' style='max-width: 30px; max-height: 30px;'></span><br><br><span id=mighttake>It might take a few minutes to sync, depending upon: <br> - network congestion<br> - network fees that sender allocated to transaction<br></span><br><a id='' class='button' href='/'>⬅ Back to Gitcoin.co</a>" ;
                 const url = "/tip/receive";
                 fetch(url, {
                     method : "POST",
