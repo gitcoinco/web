@@ -288,7 +288,7 @@ class Tip(SuperModel):
 
     def __str__(self):
         from django.contrib.humanize.templatetags.humanize import naturalday
-        return "({}) - {} {} {} to {},  created: {}, expires: {}".format(self.network, "RECEIVED" if self.receive_txid else "" , self.amount, self.tokenName, self.username, naturalday(self.created_on), naturalday(self.expires_date))
+        return "({}) - {} {} {} {} to {},  created: {}, expires: {}".format(self.network, "RECEIVED" if self.receive_txid else "", "ORPHAN" if len(self.emails) == 0 else "", self.amount, self.tokenName, self.username, naturalday(self.created_on), naturalday(self.expires_date))
 
     #TODO: DRY
     @property
