@@ -1,7 +1,8 @@
 load_tokens();
 
+// Wait until page is loaded, then run the function
 $(document).ready(function(){
-
+    // Load sidebar radio buttons from localStorage
     if(getParam('source')){
         $('input[name=issueURL]').val(getParam('source'));
     }
@@ -118,24 +119,33 @@ $(document).ready(function(){
 
 
         //setup web3
+        // TODO: web3 is using the web3.js file.  In the future we will move
+        // to the node.js package.  github.com/ethereum/web3.js
         var isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
         var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
         var account = web3.eth.coinbase;
         amount = amount * decimalDivisor;
         var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+        // StandardBounties integration begins here
         var expire_date = (expirationTimeDelta + (new Date().getTime()/1000|0) );
+        // Set up Interplanetary file storage
+        // TODO: Where is ipfs definied?  Does something need to be imported?
+        // Looks like its pulling from ipfs.js
+        // IpfsApi is defined in the ipfs-api.js.
+        // Is it better to use this JS file than the node package?  github.com/ipfs/
         ipfs.ipfsApi = IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: "https", root:'/api/v0'});
         ipfs.setProvider({ host: 'ipfs.infura.io', port: 5001, protocol: 'https', root:'/api/v0'});
 
         var submit = {
           title: metadata['issueTitle'],
-          description: null,
-          sourceFileHash: null,
-          sourceFileName: null,
+          description: null,  // TODO:  Does this need to be filled out
+          sourceFileHash: null, // TODO: same comment
+          sourceFileName: null, // TODO: same comment
           contact: notificationEmail,
           categories: metadata['issueKeywords'],
           githubLink: issueURL,
         };
+        // Begin Callback hell
         ipfs.addJson(submit, function (error, result) {
             if(error){
                 mixpanel.track("New Bounty Error", {step: 'post_ipfs', error: error});
@@ -145,7 +155,9 @@ $(document).ready(function(){
                 return;
             }
 
-
+            // First estimate gas required to issue the bounty
+            // bounty is a web3.js eth.contract address
+            // The Ethereum network requires using ether to do stuff on it
             bounty.issueAndActivateBounty.estimateGas(
                 account, 
                 expire_date, 
@@ -154,14 +166,16 @@ $(document).ready(function(){
                 0x0, 
                 false, 
                 tokenAddress,
-                amount,
+                amount,  // TODO:  Why is amount added twice?
                 {
-                    from :account, 
-                    value:amount, 
+                    from :account,  // Seems arbitrary that we need this dictionary considering
+                    value:amount,   // both fields are already definied.
                 },
                 function(error,result){
-                    var gas = Math.round(result * gasMultiplier);
-                    var gasLimit = Math.round(gas * gasLimitMultiplier);
+                    var gas = Math.round(result * gasMultiplier);  // gasMultiplier comes from abi.js
+                    var gasLimit = Math.round(gas * gasLimitMultiplier);  //also from abi.js
+                    // Now we actually send the bounty transaction in this method call
+                    // We have the gas esimate from the previous function
                     bounty.issueAndActivateBounty.sendTransaction(
                         account, 
                         expire_date, 
@@ -176,7 +190,7 @@ $(document).ready(function(){
                             value:amount, 
                             gas:web3.toHex(gas), 
                             gasLimit: web3.toHex(gasLimit), 
-                            gasPrice:web3.toHex(defaultGasPrice),
+                            gasPrice:web3.toHex(defaultGasPrice),  //abi.js
                         },
                         function(error,result){
 
@@ -188,9 +202,9 @@ $(document).ready(function(){
                                 return;
                             }
 
-                            sync_web3(issueURL);
+                            sync_web3(issueURL);  //TODO:  What does `sync_web3` do?  Defined in shared.js
                             localStorage['txid'] = result;
-                            localStorage[issueURL] = timestamp();
+                            localStorage[issueURL] = timestamp();  // Why set issueURL to timestamp()?
                             add_to_watch_list(issueURL);
                             _alert({ message: "Submission sent to web3." }, 'info');
                             setTimeout(function(){
