@@ -238,7 +238,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
             }
             var msg = `<br>This funded issue has recently been updated and while the blockchain syncs it has `+pendingchanges+`.  
             Please wait a minute or two for web3 to sync `+this_transaction+`.
-            <br>(You can close the browser tab.  If not, this page will automatically refresh as soon as web3 is updated.)`
+            <br>(Please DO NOT close the browser tab.  If not, this page will automatically refresh as soon as web3 is updated.)`
             _alert({ title: title, message: msg},'info');
         }
 
