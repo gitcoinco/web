@@ -22,7 +22,6 @@ var getUSDEstimate = function (amount, denomination, callback) {
     } catch (e) {
         return "Incorrect amount";
     }
-
     if (document.conversion_rates && document.conversion_rates[denomination]) {
         conv_rate = document.conversion_rates[denomination]
         return callback(estimate(amount, conv_rate))

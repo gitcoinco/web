@@ -10,7 +10,8 @@ body {
   width: 100%;
 }
 
-#yge {
+#yge.receive,
+#yge.send {
   overflow-y: hidden;
 }
 
@@ -216,15 +217,15 @@ body {
 	}
 
 	h4 {
-		font-size: 1em;
+		font-size: 0.8em;
 	}
 
 	h5 {
-		font-size: 1em;
+		font-size: 0.7em;
 	}
 
 	h6 {
-		font-size: 1em;
+		font-size: 0.6em;
 	}
 
 	@media screen and (max-width: 480px) {

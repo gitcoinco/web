@@ -56,11 +56,20 @@ p, pre{
     </p>
 {% endif %}
 
-{% if comments and not tip.github_url %}
+{% if comments_priv %}
     <p>
-    They had the following comments: 
+    They had the following private comments: 
 <pre>
-    {{comments}}
+    {{comments_priv}}
+</pre>
+    </p>
+{% endif %}
+
+{% if comments_public %}
+    <p>
+    They had the following public comments: 
+<pre>
+    {{comments_public}}
 </pre>
     </p>
 {% endif %}

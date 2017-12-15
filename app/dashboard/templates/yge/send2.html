@@ -58,6 +58,10 @@
                 <input type="text" placeholder="Bobby Tables" id="fromName" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
             </div>
             <div>
+                From Email (optional):
+                <input type="text" placeholder="you@domain.co" id="fromEmail" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
+            </div>
+            <div>
                 Expires:
                 <select id="expires" style="width:400px; margin: 0px auto;" >
                     <option value="86400">1 day</option>
@@ -72,14 +76,18 @@
                 </select>
             </div>
             <div>
-                Comments (optional):
-                <textarea id="comments" style="width:400px; margin: 0px auto;" ></textarea>
+                Private Comments (optional):
+                <textarea id="comments_priv" style="width:400px; margin: 0px auto;" ></textarea>
+            </div>
+            <div>
+                Public Comments (optional):
+                <textarea id="comments_public" style="width:400px; margin: 0px auto;" ></textarea>
             </div>
         </div>
         <div>
             <br>
             <input type="checkbox" id="tos" value="1" >
-            <label for="tos">I understand & agree to the <a href="https://gitcoin.co/terms">terms of service</a>.</label>
+            <label for="tos">I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.</label>
 
         </div>
 

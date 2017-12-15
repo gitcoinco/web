@@ -45,6 +45,7 @@ def send_tip(request):
     params = {
         'issueURL': request.GET.get('source'),
         'title': 'Send Tip',
+        'class': 'send',
     }
 
     return TemplateResponse(request, 'yge/send1.html', params)
@@ -81,6 +82,7 @@ def receive_tip(request):
 
     params = {
         'issueURL': request.GET.get('source'),
+        'class': 'receive',
         'title': 'Receive Tip',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
     }
@@ -130,11 +132,13 @@ def send_tip_2(request):
             url=params['url'],
             tokenName=params['tokenName'],
             amount=params['amount'],
-            comments=params['comments'],
+            comments_priv=params['comments_priv'],
+            comments_public=params['comments_public'],
             ip=get_ip(request),
             expires_date=expires_date,
             github_url=params['github_url'],
             from_name=params['from_name'],
+            from_email=params['from_email'],
             username=params['username'],
             network=params['network'],
             tokenAddress=params['tokenAddress'],
@@ -158,6 +162,7 @@ def send_tip_2(request):
 
     params = {
         'issueURL': request.GET.get('source'),
+        'class': 'send2',
         'title': 'Send Tip',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
     }

@@ -29,9 +29,8 @@ window.onload = function () {
                         } else {
                             var active = result[0];
                             if(!active){
-                                $("loading").innerHTML = "error :("
+                                $("send_eth").innerHTML = "Need help?  Try asking <a href='/slack'>on slack</a>."
                                 $("step_zero").style.display = "none";
-                                $("send_eth").style.display = "none";
                                 console.error('tip_inactive', result)
                                 var error = "This tip is no longer active, it has probably already been claimed.";
                                 _alert(error)
