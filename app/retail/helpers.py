@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,6 +15,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+
+
 def get_ip(request):
     forward_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if forward_for:
