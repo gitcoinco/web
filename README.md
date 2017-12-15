@@ -2,22 +2,31 @@
 
 # Gitcoin
 
-[![Build Status](https://travis-ci.org/gitcoinco/web.svg?branch=master)](https://travis-ci.org/gitcoinco/web)
-[![codecov](https://codecov.io/gh/gitcoinco/web/branch/master/graph/badge.svg)](https://codecov.io/gh/gitcoinco/web)
-
 Gitcoin pushes Open Source Forward. Learn more at [https://gitcoin.co](https://gitcoin.co)
 
-[Star](https://github.com/gitcoinco/web/stargazers) and [watch](https://github.com/gitcoinco/web/watchers) this github repository to stay up to date, we're pushing new code several times per week!
-
-
-
-<a href="https://gitcoin.co/explorer/?q=https://github.com/gitcoinco/web">
-    <img src='https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco&v=2' />
-</a>
+[![Build Status](https://travis-ci.org/gitcoinco/web.svg?branch=master)](https://travis-ci.org/gitcoinco/web)
+[![codecov](https://codecov.io/gh/gitcoinco/web/branch/master/graph/badge.svg)](https://codecov.io/gh/gitcoinco/web)
 
 # web repo
 
 This is the website that is live at gitcoin.co
+
+## How to interact with this repo
+
+### On Github
+
+[Star](https://github.com/gitcoinco/web/stargazers) and [watch](https://github.com/gitcoinco/web/watchers) this github repository to stay up to date, we're pushing new code several times per week!
+
+Also, 
+
+* [check out the gitcoinco organization-wide repo](https://github.com/gitcoinco/gitcoinco).
+* check out the open issues list, especially the [discussion](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion) label and [easy-pickings](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Aeasy-pickings).
+
+### On Gitcoin
+
+<a href="https://gitcoin.co/explorer/?q=https://github.com/gitcoinco/web">
+    <img src='https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco&v=2' />
+</a>
 
 ## What
 
@@ -27,6 +36,8 @@ Functionally, the app has several key features:
 * Brochureware -- Describes the project.
 * Funded Issue Explorer -- A searchable index of all of the work available in the system.
 * Funded Issue Submission / Acceptance flow -- Interface between the application and web3.
+
+[More about how/why to interact with web3 here](https://github.com/gitcoinco/gitcoinco/issues/4).
 
 Technically, the system is architected:
 
