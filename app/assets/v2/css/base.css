@@ -76,26 +76,8 @@ div, p, a, span{
     text-transform: uppercase;
 }
 
-#mce-EMAIL {
-    font-size: 1rem !important;    
-    height: 45px !important;
-    padding: .1em 1em !important;
-    border: none !important;
-    border-radius: 3px 0 0 3px !important;
-}
-
 #mce-EMAIL:focus {
     outline:none;
-}
-
-#mc-embedded-subscribe {
-    transition: none;
-    font-size: 1.25rem;
-    padding: 0 20px;
-    height: 45px;    
-    border-radius: 0 3px 3px 0;
-    margin-left: -3px;
-    border:none;
 }
 
 #mc-embedded-subscribe:hover{
@@ -106,7 +88,25 @@ div, p, a, span{
     box-shadow: none;
 }
 
-#mc-embedded-subscribe i {
+#mc_embed_signup_scroll #mce-EMAIL {
+    font-size: 1rem !important;    
+    height: 45px !important;
+    padding: .1em 1em !important;
+    border: none !important;
+    border-radius: 3px 0 0 3px !important;
+}
+
+#mc_embed_signup_scroll #mc-embedded-subscribe {
+    transition: none;
+    font-size: 1.25rem;
+    padding: 0 20px;
+    height: 45px;    
+    border-radius: 0 3px 3px 0;
+    margin-left: -3px;
+    border:none;
+}
+
+#mc_embed_signup_scroll #mc-embedded-subscribe i {
     margin-left: 5px;
 }
 
@@ -1016,6 +1016,15 @@ body.bounty_details #title{
     }
     .bounty_def h5{
         font-size: 1.2rem;   
+    }
+
+    #mc_embed_signup_scroll #mce-EMAIL {
+        border-radius: 3px !important;
+    }
+    
+    #mc_embed_signup_scroll #mc-embedded-subscribe {
+        margin-top: 15px;
+        border-radius: 3px;
     }
 }
 @media (max-width: 481px) {
