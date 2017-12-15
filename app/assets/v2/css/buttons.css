@@ -110,5 +110,6 @@ button {
 button:hover, button:focus {
   border-color: var(--hover);
   color: #fff;
+  outline: none;
 }
 
