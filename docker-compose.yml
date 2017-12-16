@@ -6,6 +6,15 @@ services:
     restart: unless-stopped
     volumes:
       - pgdata:/var/lib/postgresql/data
+  pgweb:
+    image: sosedoff/pgweb
+    environment:
+        - DATABASE_URL=postgres://postgres:postgres@db:5432?sslmode=disable
+    links:
+        - db
+    ports:
+        - "8081:8081"
+    restart: "on-failure:10"
   web:
     restart: unless-stopped
     environment:
