@@ -377,15 +377,15 @@ window.addEventListener('load', function() {
 
                     // is this a supported networK?
                     var is_supported_network = true;
-                    var recommended_network = "mainnet or ropsten";
+                    var recommended_network = "mainnet or rinkeby";
 
-                    if(network == 'rinkeby' || network == 'kovan'){
+                    if(network == 'kovan'){
                         is_supported_network = false;
                     }
                     if(document.location.href.indexOf("https://gitcoin.co") != -1){
-                        if(network != 'mainnet' && network != 'ropsten'){
+                        if(network != 'mainnet' && network != 'rinkeby'){
                             is_supported_network = false;
-                            recommended_network = "mainnet or ropsten";
+                            recommended_network = "mainnet or rinkeby";
                         }
                     }
                     if(network == 'mainnet'){
