@@ -6,6 +6,8 @@ services:
     restart: unless-stopped
     volumes:
       - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
   pgweb:
     image: sosedoff/pgweb
     environment:
