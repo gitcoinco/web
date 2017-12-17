@@ -14,10 +14,10 @@ var bounty_address = function (){
             throw "not supported";
         break;
         case "rinkeby":
-            throw "0xd5ea74ad5bcec859ea7a7104401ea1c746c84074";
+            return "0xd5ea74ad5bcec859ea7a7104401ea1c746c84074";
         break;
         case "custom network":
-            return '0xbe716ab501a10d9ea0362bf20a9b77aba1bd2d88';
+            throw '0xbe716ab501a10d9ea0362bf20a9b77aba1bd2d88';
         break;
     }
 }
