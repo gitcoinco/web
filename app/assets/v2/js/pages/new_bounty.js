@@ -55,7 +55,6 @@ $(document).ready(function(){
             $(this).text('Advanced ⬇ ');
         }
     });
-
     
     //submit bounty button click
     $('#submitBounty').click(function(e){
@@ -132,6 +131,10 @@ $(document).ready(function(){
         var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
         var account = web3.eth.coinbase;
         amount = amount * decimalDivisor;
+        // Create the bounty object.
+        // This function instantiates a contract from the existing deployed Standard Bounties Contract.
+        // bounty_abi is a giant object containing the different network options
+        // bounty_address() is a function that looks up the name of the network and returns the hash code
         var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
         // StandardBounties integration begins here
         var expire_date = (expirationTimeDelta + (new Date().getTime()/1000|0) );
@@ -166,6 +169,7 @@ $(document).ready(function(){
             // First estimate gas required to issue the bounty
             // bounty is a web3.js eth.contract address
             // The Ethereum network requires using ether to do stuff on it
+            // How does the bounty object magically have the issueAndActivateBounty object in it?
             bounty.issueAndActivateBounty.estimateGas(
                 account, 
                 expire_date, 
