@@ -7,7 +7,6 @@ from urlparse import urlparse
 
 from django.conf import settings
 
-import requests
 import tinyurl
 import twitter
 from app.github import post_issue_comment
@@ -16,7 +15,7 @@ from slackclient import SlackClient
 reload(sys)
 sys.setdefaultencoding('utf8')
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -225,8 +224,9 @@ def maybe_market_tip_to_github(tip):
     username = tip.username if '@' in tip.username else str('@' + tip.username)
     _from = " from {}".format(tip.from_name) if tip.from_name else ""
     warning = tip.network if tip.network != 'mainnet' else ""
-    msg = "⚡️ A tip worth {} {} {} {} has been granted to {} for this issue{}. ⚡️ \n\nNice work {}, check your email for further instructions. \n\n * ${} in Funded OSS Work Available at: https://gitcoin.co/explorer\n * Incentivize contributions to your repo: <a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
-    msg = msg.format(round(tip.amount, 3), warning, tip.tokenName, "(${})".format(tip.value_in_usdt) if tip.value_in_usdt else "" , username, _from, username, amount_usdt_open_work())
+    _comments = "\n\nThe sender had the following public comments: \n> {}".format(tip.comments_public) if tip.comments_public else ""
+    msg = "⚡️ A tip worth {} {} {} {} has been granted to {} for this issue{}. ⚡️ {}\n\nNice work {}, check your email for further instructions. \n\n * ${} in Funded OSS Work Available at: https://gitcoin.co/explorer\n * Incentivize contributions to your repo: <a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+    msg = msg.format(round(tip.amount, 3), warning, tip.tokenName, "(${})".format(tip.value_in_usdt) if tip.value_in_usdt else "" , username, _from, _comments, username, amount_usdt_open_work())
 
     # actually post
     url = tip.github_url
@@ -286,36 +286,35 @@ def maybe_market_to_email(b, event_name, txid):
 
     return len(to_emails)
 
+
 def maybe_post_on_craigslist(bounty):
     CRAIGSLIST_URL = 'https://boulder.craigslist.org/'
     MAX_URLS = 10
 
     import mechanicalsoup
-    from random import randint
-    from app.utils import fetch_last_email_id,fetch_mails_since_id
+    from app.utils import fetch_last_email_id, fetch_mails_since_id
     import time
 
     browser = mechanicalsoup.StatefulBrowser()
-    browser.open(CRAIGSLIST_URL) # open craigslist
+    browser.open(CRAIGSLIST_URL)  # open craigslist
     post_link = browser.find_link(attrs={'id': 'post'})
-    page = browser.follow_link(post_link) # scraping the posting page link
+    page = browser.follow_link(post_link)  # scraping the posting page link
 
-    form = page.soup.form 
+    form = page.soup.form
     # select 'gig offered (I'm hiring for a short-term, small or odd job)'
     form.find('input', {'type': 'radio', 'value': 'go'})['checked'] = ''
     page = browser.submit(form, form['action'])
 
-    form = page.soup.form 
+    form = page.soup.form
     # select 'I want to hire someone'
     form.find('input', {'type': 'radio', 'value': 'G'})['checked'] = ''
     page = browser.submit(form, form['action'])
 
-    form = page.soup.form 
+    form = page.soup.form
     # select 'computer gigs (small web design, tech support, etc projects )'
     form.find('input', {'type': 'radio', 'value': '110'})['checked'] = ''
     page = browser.submit(form, form['action'])
-    form = page.soup.form 
-    
+    form = page.soup.form
 
     # keep selecting defaults for sub area etc till we reach edit page
     # this step is to ensure that we go over all the extra pages which appear on craigslist only in some locations
@@ -323,7 +322,7 @@ def maybe_post_on_craigslist(bounty):
     for i in range(MAX_URLS):
         if page.url.endswith('s=edit'):
             break
-        #Chooses the first default
+        # Chooses the first default
         if page.url.endswith('s=subarea'):
             form.find_all('input')[1]['checked'] = ''
         else:
@@ -363,7 +362,7 @@ def maybe_post_on_craigslist(bounty):
     for i in range(MAX_URLS):
         if page.url.endswith('s=preview'):
             break
-        #Chooses the first default
+        # Chooses the first default
         page = browser.submit(form, form['action'])
         form = page.soup.form
     else:
@@ -372,20 +371,19 @@ def maybe_post_on_craigslist(bounty):
         # hence return and don't proceed further
         return
 
-
     # submitting final form
-    form = page.soup.form 
-    #getting last email id
+    form = page.soup.form
+    # getting last email id
     last_email_id = fetch_last_email_id(settings.IMAP_EMAIL, settings.IMAP_PASSWORD)
     page = browser.submit(form, form['action'])
     time.sleep(10)
     last_email_id_new = fetch_last_email_id(settings.IMAP_EMAIL, settings.IMAP_PASSWORD)
-    #if no email has arrived wait for 5 seconds
-    if last_email_id==last_email_id_new:
+    # if no email has arrived wait for 5 seconds
+    if last_email_id == last_email_id_new:
         # could slow responses if called syncronously in a request
         time.sleep(5)
 
-    emails = fetch_mails_since_id( settings.IMAP_EMAIL, settings.IMAP_PASSWORD,last_email_id)
+    emails = fetch_mails_since_id(settings.IMAP_EMAIL, settings.IMAP_PASSWORD, last_email_id)
     for email_id, content in emails.items():
         if 'craigslist' in content['from']:
             for link in re.findall(r"(?:https?:\/\/[a-zA-Z0-9%]+[.]+craigslist+[.]+org/[a-zA-Z0-9\/\-]*)", content.as_string()):
@@ -393,7 +391,7 @@ def maybe_post_on_craigslist(bounty):
                 try:
                     browser = mechanicalsoup.StatefulBrowser()
                     page = browser.open(link)
-                    form = page.soup.form 
+                    form = page.soup.form
                     page = browser.submit(form, form['action'])
                     return link
                 except:

@@ -47,14 +47,17 @@ def render_tip_email(to_email, tip, is_new):
     warning = tip.network if tip.network != 'mainnet' else ""
     params = {
         'link': tip.url,
-        'amount': round(tip.amount,2),
+        'amount': round(tip.amount, 2),
         'tokenName': tip.tokenName,
-        'comments': tip.comments,
+        'comments_priv': tip.comments_priv,
+        'comments_public': tip.comments_public,
         'tip': tip,
         'show_expires': tip.expires_date < (timezone.now() + timezone.timedelta(days=365)),
         'is_new': is_new,
         'warning': warning,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
+        'is_sender': to_email not in tip.emails,
+        'is_receiver': to_email in tip.emails,
     }
 
     response_html = premailer_transform(render_to_string("emails/new_tip.html", params))

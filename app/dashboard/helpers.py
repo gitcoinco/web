@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -43,15 +43,15 @@ def amount(request):
         amount = request.GET.get('amount')
         deonomination = request.GET.get('denomination', 'ETH')
         if deonomination == 'ETH':
-            amount_in_eth = amount
+            amount_in_eth = float(amount)
         else:
             amount_in_eth = convert_amount(amount, deonomination, 'ETH')
-        amount_in_usdt = convert_amount(amount, 'ETH', 'USDT')
+        amount_in_usdt = convert_amount(amount_in_eth, 'ETH', 'USDT')
         response = {
             'eth': amount_in_eth,
             'usdt': amount_in_usdt,
         }
-        return JsonResponse(response)        
+        return JsonResponse(response)
     except Exception as e:
         print(e)
         raise Http404
@@ -214,7 +214,7 @@ def process_bounty_details(bountydetails, url, contract_address, network):
 
     with transaction.atomic():
         for old_bounty in old_bounties:
-            old_bounty.current_bounty = False;
+            old_bounty.current_bounty = False
             old_bounty.save()
         new_bounty = Bounty.objects.create(
             title=metadata.get('issueTitle',''),
@@ -256,7 +256,7 @@ def process_bounty_changes(old_bounty, new_bounty, txid):
     did_bsr = False
     for bsr in BountySyncRequest.objects.filter(processed=False, github_url=new_bounty.github_url):
         did_bsr = True
-        bsr.processed = True;
+        bsr.processed = True
         bsr.save()
 
     # new bounty

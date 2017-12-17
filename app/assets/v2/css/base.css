@@ -51,8 +51,6 @@ div, p, a, span{
 }
 .interior .body {
     background-color: white;
-}   
-.interior {
 }
 
 .interior .container-fluid{
@@ -72,19 +70,44 @@ div, p, a, span{
     text-transform: uppercase;
     font-size: 14px;
 }
+
 .search_bar, .bounty_def #mc-embedded-subscribe{
     display: inline;
     text-transform: uppercase;
 }
 
-#mce-EMAIL {
-  padding: 5px 10px;
-  border: none;
-  border-radius: 2px;
+#mce-EMAIL:focus {
+    outline:none;
 }
 
-#mc-embedded-subscribe {
-  margin: 0 5px 5px;
+#mc-embedded-subscribe:hover{
+    cursor: pointer;
+}
+
+#mc-embedded-subscribe:focus{
+    box-shadow: none;
+}
+
+#mc_embed_signup_scroll #mce-EMAIL {
+    font-size: 1rem !important;    
+    height: 45px !important;
+    padding: .1em 1em !important;
+    border: none !important;
+    border-radius: 3px 0 0 3px !important;
+}
+
+#mc_embed_signup_scroll #mc-embedded-subscribe {
+    transition: none;
+    font-size: 1.25rem;
+    padding: 0 20px;
+    height: 45px;    
+    border-radius: 0 3px 3px 0;
+    margin-left: -3px;
+    border:none;
+}
+
+#mc_embed_signup_scroll #mc-embedded-subscribe i {
+    margin-left: 5px;
 }
 
 .bounty_def h5{
@@ -216,13 +239,51 @@ p a {
     filter: invert(100%);
 }
 
-
-.btn{
-    cursor: pointer;    
+.btn-warning, .btn-success {
+    padding: 0.4rem 1.4rem;
+    font-size: 1.25rem;  
+    border: 2px solid #15003e;  
+    transition: none;    
 }
-#hero_cta a.btn{
+
+.btn-warning:hover, .btn-success:hover {
+cursor: pointer;
+}
+
+.btn-warning {
+    color: #15003e;
+}
+
+.btn-warning:hover {
+    background-color: #15003e;
+    border-color: #15003e;    
+    color: #ffce08;   
+}
+
+.btn-success {
+    color: #15003e;
+}
+
+.btn-success:hover {
+    background-color: #15003e;
+    border-color: #15003e;    
+    color: #25e899;   
+}
+
+.btn:focus {
+    box-shadow: none;
+}
+
+#hero_cta a.btn-warning {
     padding: 0.6rem 1.05rem;
-    font-size: 1.25rem;
+    background-color: #ffce08;
+    border-color: #ffce08;    
+    color: #15003e;
+}
+
+#hero_cta a.btn-warning:hover {
+    background-color: #15003e;
+    color: #ffce08;
 }
 
 #hero_cta a img{
@@ -346,7 +407,7 @@ body #mc_embed_signup label {
 }
 
 input[type=text].loading{
-    background-image: url('/static/v2/images/loading.gif');
+    background-image: url('/static/v2/images/loading_v2.gif');
     background-repeat: no-repeat;
     background-position: right;
     background-size: 30px;
@@ -955,6 +1016,15 @@ body.bounty_details #title{
     }
     .bounty_def h5{
         font-size: 1.2rem;   
+    }
+
+    #mc_embed_signup_scroll #mce-EMAIL {
+        border-radius: 3px !important;
+    }
+    
+    #mc_embed_signup_scroll #mc-embedded-subscribe {
+        margin-top: 15px;
+        border-radius: 3px;
     }
 }
 @media (max-width: 481px) {

@@ -63,6 +63,8 @@ class Command(BaseCommand):
         for tip in Tip.objects.all():
             for email in tip.emails:
                 process_email(email, 'tip_usage')
+            if tip.from_email:
+                process_email(tip.from_email, 'tip_usage')
 
         print("- bounty")
         from dashboard.models import Bounty

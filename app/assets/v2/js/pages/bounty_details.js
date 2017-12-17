@@ -174,9 +174,13 @@ var callbacks = {
         }
         return [ label , response];
     },
-    
+
 }
 
+var isBountyOwner = function(result) {
+    var bountyAddress = result['bounty_owner_address']
+    return (web3 && (web3.eth.coinbase == bountyAddress))
+}
 
 var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         console.log("checking this issue for updates:");
@@ -236,9 +240,9 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                 this_transaction = "<a target=new href='"+link_url+"'>"+this_transaction+"</a>"
                 title = "Your transaction has been posted to web3.";
             }
-            var msg = `<br>This funded issue has recently been updated and while the blockchain syncs it has `+pendingchanges+`.  
+            var msg = `<br>This funded issue has recently been updated and while the blockchain syncs it has `+pendingchanges+`.
             Please wait a minute or two for web3 to sync `+this_transaction+`.
-            <br>(You can close the browser tab.  If not, this page will automatically refresh as soon as web3 is updated.)`
+            <br>(Please DO NOT close the browser tab.  If not, this page will automatically refresh as soon as web3 is updated.)`
             _alert({ title: title, message: msg},'info');
         }
 
@@ -249,7 +253,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         var local_delta = parseInt(timestamp() - localStorage[issueURL]);
         var is_changing_local_recent = local_delta < (60 * 60); // less than one hour
 
-        //remote warning 
+        //remote warning
         var remote_delta = (new Date(now) - new Date(last_modified_time_remote)) / 1000;
         var is_changing_remote_recent = remote_delta < (60 * 60); // less than one minute
 
@@ -263,7 +267,6 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
     }
     return should_display_warning;
 };
-
 
 window.addEventListener('load', function() {
     setTimeout(function(){
@@ -331,7 +334,7 @@ window.addEventListener('load', function() {
                         }
                     }
                     actions.push(entry);
-                    if(result['status']=='open'){
+                    if(result['status']=='open' && !isBountyOwner(result) ){
                         var entry = {
                             href: '/funding/claim?source='+result['github_url'],
                             text: 'Claim Issue',
@@ -340,7 +343,7 @@ window.addEventListener('load', function() {
                         }
                         actions.push(entry);
                     }
-                    if(result['status']=='expired' && web3 && web3.eth.coinbase == result['bounty_owner_address'] ){
+                    if(result['status']=='expired' && isBountyOwner(result) ){
                         var entry = {
                             href: '/funding/clawback?source='+result['github_url'],
                             text: 'Clawback Expired Funds',
@@ -349,7 +352,7 @@ window.addEventListener('load', function() {
                         }
                         actions.push(entry);
                     }
-                    if(result['status']=='claimed'){
+                    if(result['status']=='claimed' && isBountyOwner(result) ){
                         var entry = {
                             href: '/funding/process?source='+result['github_url'],
                             text: 'Accept/Reject Issue',
@@ -358,7 +361,8 @@ window.addEventListener('load', function() {
                         }
                         actions.push(entry);
                     }
-                    if(is_on_watch_list(result['github_url'])){
+
+                    if (is_on_watch_list(result['github_url'])) {
                         var entry = {
                             href: '/unwatch',
                             text: 'Unwatch',
@@ -382,7 +386,7 @@ window.addEventListener('load', function() {
                         var html = tmpl.render(actions[l]);
                         $("#"+target).append(html);
                     }
-                    
+
                     //cleanup
                     document.result = result;
                     pendingChangesWarning(issueURL, result['created_on'], result['now']);
@@ -400,7 +404,7 @@ window.addEventListener('load', function() {
                 $("#primary_view").css('display','none');
         }).always(function(){
             $('.loading').css('display', 'none');
-        });        
+        });
 
     },100);
 });

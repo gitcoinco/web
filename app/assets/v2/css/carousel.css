@@ -9,11 +9,18 @@
   margin-top: 60px;
   margin-bottom: 40px;
 }
+.carousel .control:hover {
+  border-radius: 100%;
+  background-color: #15003e;
+  color: #ffce08;
+}
 
 .carousel .control {
   border-radius: 100%;
-  border: none;
+  border: 2px solid #15003e;
+  transition: none;
   background-color: #ffce08;
+  color: #15003e;
   width: 40px;
   height: 40px;
   cursor:pointer;
@@ -34,9 +41,8 @@
 }
 
 .carousel .control i {
-  margin: 12px auto;
   position: relative;
-  top: 1px;
+  top: 2px;
 }
 
 .carousel .prev .control i {
@@ -148,7 +154,7 @@
   width: 100%;
   height: 100%;
   opacity: 0;
-  transition: opacity 1.5s;
+  transition: opacity .5s;
 }
 
 .showing {

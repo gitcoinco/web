@@ -21,14 +21,10 @@
         <meta name="theme-color" content="#ffffff">
 
         <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-        
-
-<script src="/static/v2/js/jquery.select2.min.js"></script>
-{% block 'scripts' %}
-{% endblock %}
-
 	</head>
-	<body id="yge">
+	<body id="yge" class="{{class}}">
+            {% include 'shared/ga.html' %}
+
         {% block 'world' %}
         {% endblock %}
         {% include 'shared/rain.html' with class="color" %}
@@ -56,6 +52,8 @@
 			</div>
 
 		<!-- Scripts -->
+            {% block 'scripts' %}{% endblock %}
+            <script src="/static/v2/js/jquery.select2.min.js"></script>
 			<!--[if lte IE 8]><script src="/static/yge/js/respond.min.js"></script><![endif]-->
 			<script>
 				if ('addEventListener' in window) {
@@ -73,7 +71,6 @@
             {% endif %}
 
 
-        {% include 'shared/ga.html' %}
 
 	</body>
 </html>

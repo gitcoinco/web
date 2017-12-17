@@ -1,6 +1,6 @@
 import json
-import logging
 
+from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -32,16 +32,16 @@ def save(request):
         direction = body.get('direction')
         github_username = body.get('github_username')
 
-        #do validation
+        # do validation
         validation_failed = False
 
-        #email 
+        # email
         try:
             validate_email(email_address)
-        except Exception as e:
+        except ValidationError:
             validation_failed = 'email'
 
-        #bounty
+        # bounty
         if not Bounty.objects.filter(pk=bounty_id).exists():
             validation_failed = 'bounty does not exist'
 
@@ -59,15 +59,15 @@ def save(request):
             message = 'Validation failed: {}'.format(validation_failed)
         else:
             bounty = Bounty.objects.get(pk=bounty_id)
-            #save obj
+            # save obj
             Match.objects.create(
                 bounty=bounty,
                 email=email_address,
                 direction=direction,
                 github_username=github_username,
-                )
+            )
 
-            #send match email
+            # send match email
             if direction == '+':
                 to_emails = [email_address, bounty.bounty_owner_email]
                 new_match(to_emails, bounty, github_username)
@@ -75,7 +75,7 @@ def save(request):
             # response
             status = 200
             message = 'Success'
-    
+
     response = {
         'status': status,
         'message': message,

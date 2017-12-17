@@ -26,8 +26,21 @@ var unPackAddresses = function(){
     };
     localStorage.setItem("addresses", null);
 }
+var updateEstimate = function(e){
+    var denomination = jQuery('#token option:selected').text();
+    var amount  = jQuery('#amount').val();
+    getUSDEstimate(amount, denomination, function(usdAmount){
+        if (usdAmount){
+            jQuery('#usd_amount').text(usdAmount);
+        } else {
+            jQuery('#usd_amount').html('</br>');
+        }
+    });
 
+};
 window.onload = function () {
+    jQuery('#amount').on('keyup blur change',updateEstimate);
+    jQuery('#token').on('change',updateEstimate);
 
     unPackAddresses();
 
@@ -35,7 +48,6 @@ window.onload = function () {
 
     if(localStorage['amount']){
         $('amount').value = localStorage['amount'];
-        retrieveAmount();
     }
     if(localStorage['username']){
         $('username').value = localStorage['username'];
@@ -49,16 +61,19 @@ window.onload = function () {
     if(localStorage['fromName']){
         $('fromName').value = localStorage['fromName'];
     }
-    if(localStorage['comments']){
-        $('comments').value = localStorage['comments'];
+    if(localStorage['fromEmail']){
+        $('fromEmail').value = localStorage['fromEmail'];
+    }
+    if(localStorage['comments_priv']){
+        $('comments_priv').value = localStorage['comments_priv'];
+    }
+    if(localStorage['comments_public']){
+        $('comments_public').value = localStorage['comments_public'];
     }
     if(localStorage['expires']){
         $("expires").selectedIndex = localStorage['expires'];
     }
-
-    jQuery("input[name=amount]").keyup(retrieveAmount);
-    jQuery("input[name=amount]").blur(retrieveAmount);
-
+    
     waitforWeb3(function(){
         tokens(document.web3network).forEach(function(ele){
             var option = document.createElement("option");
@@ -102,14 +117,20 @@ window.onload = function () {
         }
         var amount = $("amount").value * weiConvert;
         var amountInEth = amount * 1.0 / weiConvert;
-        var comments = $('comments').value;
+        var comments_priv = $('comments_priv').value;
+        var comments_public = $('comments_public').value;
+        var from_email = $('fromEmail').value;
         //validation
         var hasEmail = email != '';
         var hasUsername = username != '';
 
         //validation
         if(hasEmail && !validateEmail(email)){
-            _alert('Email is optional, but if you enter an email, you must enter a valid email!');
+            _alert('To Email is optional, but if you enter an email, you must enter a valid email!');
+            return;
+        }
+        if(from_email != '' && !validateEmail(from_email)){
+            _alert('From Email is optional, but if you enter an email, you must enter a valid email!');
             return;
         }
         if(!isNumeric(amount) || amount == 0){
@@ -142,8 +163,10 @@ window.onload = function () {
         localStorage['username'] = username;
         localStorage['issueURL'] = github_url;
         localStorage['fromName'] = from_name;
+        localStorage['fromEmail'] = from_email;
         localStorage['email'] = email;
-        localStorage['comments'] = comments;
+        localStorage['comments_priv'] = comments_priv;
+        localStorage['comments_public'] = comments_public;
         localStorage['expires'] = $("expires").selectedIndex;
 
         loading_button(jQuery("#send"));       
@@ -185,9 +208,11 @@ window.onload = function () {
                             email: email,
                             tokenName: tokenName,
                             amount: amount/weiConvert,
-                            comments: comments,
+                            comments_priv: comments_priv,
+                            comments_public: comments_public,
                             expires_date: expires,
                             github_url: github_url,
+                            from_email: from_email,
                             from_name: from_name,
                             tokenAddress: token,
                             network: document.web3network,
@@ -210,7 +235,7 @@ window.onload = function () {
             //set up callback for web3 call to erc20 callback
             var erc20_callback = function(error, result){
                 if(error){
-                    console.log(error);
+                    console.error(error);
                     _alert('got an error :(');
                     unloading_button(jQuery("#send"));       
                 } else {

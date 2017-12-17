@@ -74,9 +74,10 @@ def tip_email(tip, to_emails, is_new):
     if not tip or not tip.url or not tip.amount or not tip.tokenName:
         return
 
-    subject = "⚡️ New Tip Worth {} {}".format(round(tip.amount, 3), tip.tokenName)
+    warning = '' if tip.network == 'mainnet' else "({})".format(tip.network)
+    subject = "⚡️ New Tip Worth {} {} {}".format(round(tip.amount, 3), warning, tip.tokenName)
     if not is_new:
-        subject = "🕐 New Tip Worth {} {} Expiring Soon".format(round(tip.amount, 3), tip.tokenName)
+        subject = "🕐 Tip Worth {} {} {} Expiring Soon".format(round(tip.amount, 3), warning, tip.tokenName)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL

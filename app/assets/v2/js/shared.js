@@ -245,7 +245,7 @@ var retrieveAmount = function(){
     var target_ele = $("#usd_amount");
 
     if (target_ele.html() == ""){
-        target_ele.html('<img style="width: 50px; height: 50px;" src=/static/v2/images/loading.gif>');
+        target_ele.html('<img style="width: 50px; height: 50px;" src=/static/v2/images/loading_v2.gif>');
     }
 
     var amount = $("input[name=amount]").val();

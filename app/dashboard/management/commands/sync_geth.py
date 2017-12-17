@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -36,7 +36,7 @@ def get_callback(web3, bounty_contract_address, realtime):
         didChange, old_bounty, new_bounty = syncBountywithWeb3(bountyContract, url, network)
         print("{} changed, {}".format(didChange, url))
         if didChange:
-            print("- processing changes");
+            print("- processing changes")
             process_bounty_changes(old_bounty, new_bounty, txid)
 
     def realtime_callback(transaction_hash):
@@ -54,10 +54,10 @@ def get_callback(web3, bounty_contract_address, realtime):
 
         for entry in log_entries:
             txid = entry['transactionHash']
-            result = web3.toAscii(entry['data']);
+            result = web3.toAscii(entry['data'])
             result = result[result.find('http'):]
             url = result[:result.find('\x00')]
-            process_change(bountyContract, url, txid, None) #TODO - pass options['network'] in 
+            process_change(bountyContract, url, txid, None)  # TODO - pass options['network'] in
 
     def faux_realtime_callback(block_id):
         bountyContract = getBountyContract(web3, bounty_contract_address)
@@ -65,7 +65,7 @@ def get_callback(web3, bounty_contract_address, realtime):
 
         for bsr in bsrs:
             url = bsr.github_url
-            process_change(bountyContract, url, None, None) #TODO - pass options['network'] in 
+            process_change(bountyContract, url, None, None)  # TODO - pass options['network'] in
 
         pass
 
@@ -105,7 +105,7 @@ class Command(BaseCommand):
         web3 = getWeb3(options['network'], options['provider'])
         end_time = int(timezone.now().strftime("%S"))
         connect_time = end_time - start_time
-        
+
         print("****************************************")
         print("connected to {} (took {} s)".format(web3.currentProvider.__class__, connect_time))
         print("****************************************")
@@ -126,6 +126,6 @@ class Command(BaseCommand):
                 blockNumber = web3.eth.blockNumber
                 if blockNumber != last_blockNumber:
                     print("-- new block: {}".format(blockNumber))
-                    callback(blockNumber) 
+                    callback(blockNumber)
                 last_blockNumber = blockNumber
                 time.sleep(POLL_SLEEP_TIME)
