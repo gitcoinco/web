@@ -145,11 +145,12 @@ $(document).ready(function(){
 
         var submit = {
           title: metadata['issueTitle'],
-          description: null,  // TODO:  Does this need to be filled out
-          sourceFileHash: null, // TODO: same comment
-          sourceFileName: null, // TODO: same comment
+          description: "test",  // Should probably add a form field for this
+          // These hashes are both empty at first.  I think they get filled in by IPFS
+          sourceFileHash: "", // Changed from null to "" to be consistent with BountiesFactory
+          sourceFileName: "", // Changed from null to "" to be consistent with BountiesFactory
           contact: notificationEmail,
-          categories: metadata['issueKeywords'],
+          categories: metadata['issueKeywords'].split(","),  // Turn this into an array to be consistent with BountiesFactory
           githubLink: issueURL,
         };
         // Begin Callback hell
