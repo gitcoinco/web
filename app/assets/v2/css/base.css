@@ -106,6 +106,11 @@ div, p, a, span{
     border:none;
 }
 
+#mc_embed_signup_scroll #mc-embedded-subscribe:hover {
+	background: #cf005a;
+	color: white;
+}
+
 #mc_embed_signup_scroll #mc-embedded-subscribe i {
     margin-left: 5px;
 }
@@ -239,15 +244,21 @@ p a {
     filter: invert(100%);
 }
 
-.btn-warning, .btn-success {
-    padding: 0.4rem 1.4rem;
-    font-size: 1.25rem;  
-    border: 2px solid #15003e;  
-    transition: none;    
+.btn-warning, .btn-success, .btn-info {
+	padding: 0.4rem 1.4rem;
+	font-size: 1.25rem;  
+	border: 2px solid #15003e;  
+	transition: none;    
 }
 
-.btn-warning:hover, .btn-success:hover {
-cursor: pointer;
+.btn-warning:hover, .btn-success:hover, .btn-info {
+      cursor: pointer;
+}
+
+.btn-info:hover {
+	background-color: #15003e;
+	border-color: #15003e;    
+	color: #f9006c;   
 }
 
 .btn-warning {
