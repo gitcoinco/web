@@ -136,6 +136,7 @@ $(document).ready(function(){
         // bounty_abi is a giant object containing the different network options
         // bounty_address() is a function that looks up the name of the network and returns the hash code
         var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+        console.log(bounty)
         // StandardBounties integration begins here
         var expire_date = (expirationTimeDelta + (new Date().getTime()/1000|0) );
         // Set up Interplanetary file storage
@@ -156,8 +157,57 @@ $(document).ready(function(){
           categories: metadata['issueKeywords'].split(","),  // Turn this into an array to be consistent with BountiesFactory
           githubLink: issueURL,
         };
-        // Begin Callback hell
-        ipfs.addJson(submit, function (error, result) {
+
+        // web3 callback
+        function web3Callback (error,result){
+
+            if(error){
+                mixpanel.track("New Bounty Error", {step: 'post_bounty', error: error});
+                console.error(error);
+                _alert({ message: "There was an error.  Please try again or contact support." });
+                $('#submitBounty').removeAttr('disabled');
+                return;
+            }
+
+            sync_web3(issueURL);  //TODO:  What does `sync_web3` do?  Defined in shared.js
+            localStorage['txid'] = result;
+            localStorage[issueURL] = timestamp();  // Why set issueURL to timestamp()?
+            add_to_watch_list(issueURL);
+            _alert({ message: "Submission sent to web3." }, 'info');
+            setTimeout(function(){
+                delete localStorage['issueURL'];
+                mixpanel.track("Submit New Bounty Success", {});
+                document.location.href= "/funding/details?url="+issueURL;
+            },1000);
+
+        }
+
+        function estimateGasCallback (error, result) {
+            var gas = Math.round(result * gasMultiplier);  // gasMultiplier comes from abi.js
+            var gasLimit = Math.round(gas * gasLimitMultiplier);  //also from abi.js
+            // Now we actually send the bounty transaction in this method call
+            // We have the gas esimate from the previous function
+            bounty.issueAndActivateBounty.sendTransaction(
+                account, 
+                expire_date, 
+                result, 
+                amount, 
+                0x0, 
+                false, 
+                tokenAddress,
+                amount,
+                {
+                    from :account, 
+                    value:amount, 
+                    gas:web3.toHex(gas), 
+                    gasLimit: web3.toHex(gasLimit), 
+                    gasPrice:web3.toHex(defaultGasPrice),  //abi.js
+                },
+                web3Callback
+            );
+        }
+
+        function ipfsCallback (error, result) {
             if(error){
                 mixpanel.track("New Bounty Error", {step: 'post_ipfs', error: error});
                 console.error(error);
@@ -183,52 +233,11 @@ $(document).ready(function(){
                     from :account,  // Seems arbitrary that we need this dictionary considering
                     value:amount,   // both fields are already definied.
                 },
-                function(error,result){
-                    var gas = Math.round(result * gasMultiplier);  // gasMultiplier comes from abi.js
-                    var gasLimit = Math.round(gas * gasLimitMultiplier);  //also from abi.js
-                    // Now we actually send the bounty transaction in this method call
-                    // We have the gas esimate from the previous function
-                    bounty.issueAndActivateBounty.sendTransaction(
-                        account, 
-                        expire_date, 
-                        result, 
-                        amount, 
-                        0x0, 
-                        false, 
-                        tokenAddress,
-                        amount,
-                        {
-                            from :account, 
-                            value:amount, 
-                            gas:web3.toHex(gas), 
-                            gasLimit: web3.toHex(gasLimit), 
-                            gasPrice:web3.toHex(defaultGasPrice),  //abi.js
-                        },
-                        function(error,result){
-
-                            if(error){
-                                mixpanel.track("New Bounty Error", {step: 'post_bounty', error: error});
-                                console.error(error);
-                                _alert({ message: "There was an error.  Please try again or contact support." });
-                                $('#submitBounty').removeAttr('disabled');
-                                return;
-                            }
-
-                            sync_web3(issueURL);  //TODO:  What does `sync_web3` do?  Defined in shared.js
-                            localStorage['txid'] = result;
-                            localStorage[issueURL] = timestamp();  // Why set issueURL to timestamp()?
-                            add_to_watch_list(issueURL);
-                            _alert({ message: "Submission sent to web3." }, 'info');
-                            setTimeout(function(){
-                                delete localStorage['issueURL'];
-                                mixpanel.track("Submit New Bounty Success", {});
-                                document.location.href= "/funding/details?url="+issueURL;
-                            },1000);
-
-                        }
-                    );
-                }
+                estimateGasCallback
             );
-        });
+        }
+
+        // Add data to IPFS and kick off all the callbacks.
+        ipfs.addJson(submit, ipfsCallback);
     });
 });
