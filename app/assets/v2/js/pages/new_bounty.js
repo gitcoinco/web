@@ -237,7 +237,37 @@ $(document).ready(function(){
             );
         }
 
+        function newIpfsCallback (error, result) {
+            if(error){
+                mixpanel.track("New Bounty Error", {step: 'post_ipfs', error: error});
+                console.error(error);
+                _alert({ message: "There was an error.  Please try again or contact support." });
+                $('#submitBounty').removeAttr('disabled');
+                return;
+            }
+
+            // First estimate gas required to issue the bounty
+            // bounty is a web3.js eth.contract address
+            // The Ethereum network requires using ether to do stuff on it
+            // How does the bounty object magically have the issueAndActivateBounty object in it?
+            bounty.issueAndActivateBounty(
+                account, 
+                expire_date, 
+                result, 
+                amount, 
+                0x0, 
+                false, 
+                tokenAddress,
+                amount,  // TODO:  Why is amount added twice?
+                {
+                    from :account,  // Seems arbitrary that we need this dictionary considering
+                    value:amount,   // both fields are already definied.
+                },
+                web3Callback
+            );
+        }
+
         // Add data to IPFS and kick off all the callbacks.
-        ipfs.addJson(submit, ipfsCallback);
+        ipfs.addJson(submit, newIpfsCallback);
     });
 });
