@@ -146,6 +146,7 @@ var callbacks = {
         return address_ize(key, val, result);
     },
     'bounty_owner_github_username': github_ize,
+    'claimee_github_username': github_ize,
     'value_in_eth': function(key, val, result){
         if(result['token_name'] == 'ETH' || val == null){
             return [null, null];
