@@ -14,7 +14,7 @@ var bounty_address = function (){
             throw "not supported";
         break;
         case "rinkeby":
-            return "0xd5ea74ad5bcec859ea7a7104401ea1c746c84074";
+            return "0xf209d2b723b6417cbf04c07e733bee776105a073";
         break;
         case "custom network":
             throw '0xbe716ab501a10d9ea0362bf20a9b77aba1bd2d88';
