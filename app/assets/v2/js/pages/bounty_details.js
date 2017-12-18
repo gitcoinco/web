@@ -180,7 +180,7 @@ var callbacks = {
 
 var isBountyOwner = function(result) {
     var bountyAddress = result['bounty_owner_address']
-    return (web3 && (web3.eth.coinbase == bountyAddress))
+    return (typeof web3 != 'undefined' && (web3.eth.coinbase == bountyAddress))
 }
 
 var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
