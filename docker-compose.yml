@@ -13,7 +13,7 @@ services:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/code/app
     build: .
-    command: bash docker-command.bash
+    command: bash bin/docker-command.bash
     volumes:
       - .:/code
     ports:
@@ -22,6 +22,11 @@ services:
       - db
     stdin_open: true
     tty: true
-
+  node:
+    image: node:9
+    working_dir: /code
+    volumes:
+      - .:/code
+    command: bash bin/docker-node.bash
 volumes:
   pgdata:
