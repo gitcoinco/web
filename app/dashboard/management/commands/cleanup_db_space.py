@@ -34,4 +34,3 @@ class Command(BaseCommand):
 
         GasProfile.objects.filter(created_on__lt=then_time).delete()
         ConversionRate.objects.filter(created_on__lt=then_time).delete()
-
