@@ -29,7 +29,7 @@ class Command(BaseCommand):
     help = 'the expiration notifications'
 
     def handle(self, *args, **options):
-        days = [1, 3, 14, 15, 13]
+        days = [1, 2]
         for day in days:
             tips = Tip.objects.filter(
                 expires_date__lt=(timezone.now() + timezone.timedelta(days=(day+1))),
