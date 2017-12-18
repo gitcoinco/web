@@ -30,7 +30,7 @@ class GeneralAdmin(admin.ModelAdmin):
 class TipAdmin(admin.ModelAdmin):
     ordering = ['-id']
     readonly_fields = ['resend']
-    search_fields = ['tokenName', 'comments', 'from_name', 'username', 'network', 'github_url', 'url', 'emails']
+    search_fields = ['tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url', 'emails']
 
     def resend(self, instance):
         html = "<a href='/_administration/email/new_tip/resend?pk={}'>resend</a>".format(instance.pk)

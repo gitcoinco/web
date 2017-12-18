@@ -400,6 +400,10 @@ def ios(request):
     return redirect('https://goo.gl/forms/HHOcMDKArCPo9Xas1')
 
 
+def schwag(request):
+    return redirect('https://goo.gl/forms/X3jAtOVUUNAumo072')
+
+
 def slack(request):
     context = {
         'active': 'slack',

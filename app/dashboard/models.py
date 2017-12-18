@@ -312,6 +312,15 @@ class Tip(SuperModel):
             return None
 
 
+@receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
+def normalize_usernames(sender, instance, **kwargs):
+
+    if instance.claimee_github_username:
+        instance.claimee_github_username = instance.claimee_github_username.replace("@", '')
+    if instance.bounty_owner_github_username:
+        instance.bounty_owner_github_username = instance.bounty_owner_github_username.replace("@", '')
+
+
 # method for updating
 @receiver(pre_save, sender=Bounty, dispatch_uid="psave_bounty")
 def psave_bounty(sender, instance, **kwargs):
@@ -528,3 +537,10 @@ class Profile(SuperModel):
 
     def get_relative_url(self, preceding_slash=True):
         return "{}profile/{}".format('/' if preceding_slash else '', self.handle)
+
+
+@receiver(pre_save, sender=Tip, dispatch_uid="normalize_tip_usernames")
+def normalize_tip_usernames(sender, instance, **kwargs):
+
+    if instance.username:
+        instance.username = instance.username.replace("@", '')
