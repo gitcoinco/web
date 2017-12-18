@@ -33,7 +33,7 @@ from economy.utils import convert_amount
 
 
 class Bounty(SuperModel):
-    
+
     class Meta:
         verbose_name_plural = 'Bounties'
 

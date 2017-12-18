@@ -290,7 +290,6 @@ var updateAmountUI = function(target_ele, usd_amount){
         target_ele.html('Approx: '+usd_amount+' USD');
 };
 
-
 var retrieveTitle = function(){
     var ele = $("input[name=issueURL]");
     var target_ele = $("input[name=title]");
@@ -313,6 +312,7 @@ var retrieveTitle = function(){
         target_ele.removeClass('loading');
     });
 };
+
 var retrieveKeywords = function(){
     var ele = $("input[name=issueURL]");
     var target_ele = $("input[name=keywords]");
