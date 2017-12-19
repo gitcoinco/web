@@ -8,6 +8,7 @@ services:
       - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+
   pgweb:
     image: sosedoff/pgweb
     environment:
@@ -19,6 +20,7 @@ services:
     depends_on:
       - db
     restart: "on-failure:10"
+
   web:
     restart: unless-stopped
     environment:
@@ -35,6 +37,7 @@ services:
       - db
     stdin_open: true
     tty: true
+
   testrpc:
     image: trufflesuite/ganache-cli
     ports:
