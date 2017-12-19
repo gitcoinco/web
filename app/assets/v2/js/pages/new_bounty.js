@@ -140,7 +140,7 @@ $(document).ready(function(){
         var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
         console.log(bounty)
         // StandardBounties integration begins here
-        var expire_date = (expirationTimeDelta + (new Date().getTime()/1000|0) );
+        var expire_date = (parseInt(expirationTimeDelta) + (new Date().getTime()/1000|0) );
         // Set up Interplanetary file storage
         // TODO: Where is ipfs definied?  Does something need to be imported?
         // Looks like its pulling from ipfs.js
