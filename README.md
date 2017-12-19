@@ -231,26 +231,24 @@ _bountydetails function returns the following fields:
 
 ## With Docker
 
-```
+```shell
 git clone https://github.com/gitcoinco/web.git
 cd web
-cp app/app/local_settings.py.dist app/app/local_settings.py
+cp app/app/local.env.dist app/app/.env
 docker-compose up
 ```
 
 ## Without Docker
 
-```
+```shell
 git clone https://github.com/gitcoinco/web.git
-cd web/app
-cp app/local_settings.py.dist app/local_settings.py
-
+cd web
+cp app/app/local.env.dist app/app/.env
 ```
 
 You will need to edit the `app/local_settings.py` file with your local settings. Look for config items that are marked `#required`.
 
-
-```
+```shell
 virtualenv gcoin
 source gcoin/bin/activate
 pip install -r ../requirements.txt

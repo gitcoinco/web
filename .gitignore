@@ -12,3 +12,4 @@ app/assets/other/avatars/
 .idea/
 venv/
 .coverage
+*.env
