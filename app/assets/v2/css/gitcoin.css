@@ -279,6 +279,15 @@ div.button-pink {
   font-weight: 300;
 }
 
+.gc-round-text-form {
+  border-radius: 16px;
+  height: 160px;
+  border: 1px solid #eee;
+  outline: none;
+  padding-left: 10px;
+  font-weight: 300;
+}
+
 .dash-link {
   font-size: 0.7rem;
   margin-top: 8px;

@@ -35,10 +35,12 @@ $(document).ready(function(){
     $("select[name=deonomination]").change(setUsdAmount);
     $("input[name=issueURL]").blur(retrieveTitle);
     $("input[name=issueURL]").blur(retrieveKeywords);
+    $("input[name=issueURL]").blur(retrieveDescription);
 
     if($("input[name=issueURL]").val()!=''){
         retrieveTitle();
         retrieveKeywords();
+        retrieveDescription();
     }
     $('input[name=issueURL]').focus();
 
@@ -75,6 +77,7 @@ $(document).ready(function(){
         var expirationTimeDelta = $('select[name=expirationTimeDelta').val();
         var metadata = {
             issueTitle : $('input[name=title').val(),
+            issueDescription: $('textarea[name=description').val(),
             issueKeywords : $('input[name=keywords').val(),
             tokenName : tokenName,
             githubUsername : githubUsername,
@@ -83,7 +86,6 @@ $(document).ready(function(){
             projectLength : $('select[name=projectLength').val(),
             bountyType : $('select[name=bountyType').val(),
         }
-        
         //validation
         var isError = false;
 
@@ -149,7 +151,7 @@ $(document).ready(function(){
 
         var submit = {
           title: metadata['issueTitle'],
-          description: "test",  // Should probably add a form field for this
+          description: metadata['issueDescription'],  // Added this to better match Standard Bounty format
           // These hashes are both empty at first.  I think they get filled in by IPFS
           sourceFileHash: "", // Changed from null to "" to be consistent with BountiesFactory
           sourceFileName: "", // Changed from null to "" to be consistent with BountiesFactory

@@ -109,6 +109,48 @@ def title(request):
     return JsonResponse(response)
 
 
+# gets description of remote html doc (github issue)
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+def description(request):
+    response = {}
+
+    url = request.GET.get('url')
+    urlVal = URLValidator()
+    try:
+        urlVal(url)
+    except ValidationError, e:
+        response['message'] = 'invalid arguments'
+        return JsonResponse(response)
+
+    if url.lower()[:19] != 'https://github.com/':
+        response['message'] = 'invalid arguments'
+        return JsonResponse(response)
+
+    # Web format:  https://github.com/jasonrhaas/slackcloud/issues/1
+    # API format:  https://api.github.com/repos/jasonrhaas/slackcloud/issues/1
+    gh_api = url.replace('github.com', 'api.github.com/repos')
+
+    try:
+        api_response = requests.get(gh_api)
+    except ValidationError, e:
+        response['message'] = 'could not pull back remote response'
+        return JsonResponse(response)
+
+    if api_response.status_code != 200:
+        response['message'] = 'there was a problem reaching the github api'
+        return JsonResponse(response)
+
+    try:
+        body = api_response.json()['body']
+    except ValueError as e:
+        response['message'] = e
+    except KeyError as e:
+        response['message'] = e
+    else:
+        response['description'] = body.replace('\n', '').strip()
+
+    return JsonResponse(response)
+
 # gets keywords of remote issue (github issue)
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def keywords(request):

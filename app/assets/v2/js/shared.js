@@ -313,6 +313,29 @@ var retrieveTitle = function(){
     });
 };
 
+var retrieveDescription = function(){
+    var ele = $("input[name=issueURL]");
+    var target_ele = $("textarea[name=description]");
+    var issue_url = ele.val();
+    if(typeof issue_url == 'undefined'){
+        return;
+    }
+    if(issue_url.length < 5 || issue_url.indexOf('github') == -1){
+        return;
+    }
+    var request_url = '/sync/get_issue_description?url=' + encodeURIComponent(issue_url);
+    target_ele.addClass('loading');
+    $.get(request_url, function(result){
+        result = sanitizeAPIResults(result);
+        target_ele.removeClass('loading');
+        if(result['description']){
+            target_ele.val(result['description']);
+        }
+    }).fail(function(){
+        target_ele.removeClass('loading');
+    });
+};
+
 var retrieveKeywords = function(){
     var ele = $("input[name=issueURL]");
     var target_ele = $("input[name=keywords]");
