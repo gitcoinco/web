@@ -16,19 +16,17 @@
 
 '''
 
-import time
-from datetime import datetime, timedelta
+from datetime import timedelta
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from app.utils import sync_profile
 from dashboard.models import Bounty
 from dashboard.notifications import maybe_post_on_craigslist
 
 
 class Command(BaseCommand):
+
     help = 'posts bounties created in provided hours on craigslist'
 
     def add_arguments(self, parser):
@@ -37,8 +35,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         hours = options['hours']
         one_hour_back = timezone.now()-timedelta(hours=hours)
-        bounties_to_post = Bounty.objects.filter(web3_created__gte=one_hour_back )
+        bounties_to_post = Bounty.objects.filter(web3_created__gte=one_hour_back)
         for bounty in bounties_to_post:
             # print (bounty)
-            link= maybe_post_on_craigslist(bounty)
+            link = maybe_post_on_craigslist(bounty)
             print("Posted {}".format(link))

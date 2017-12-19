@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,18 +15,22 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
-from django.contrib import admin
+from django.core.management.base import BaseCommand
+from django.utils import timezone
 
-from .models import ConversionRate
-
-
-# Register your models here.
-class ConvRateAdmin(admin.ModelAdmin):
-    ordering = ['-id']
-    search_fields = ['from_currency', 'to_currency']
+from economy.models import ConversionRate
+from gas.models import GasProfile
 
 
-admin.site.register(ConversionRate, ConvRateAdmin)
+class Command(BaseCommand):
+
+    help = 'cleans up database objects that are old'
+
+    def handle(self, *args, **options):
+
+        days_back = 7
+        then_time = timezone.now() - timezone.timedelta(days=days_back)
+
+        GasProfile.objects.filter(created_on__lt=then_time).delete()
+        ConversionRate.objects.filter(created_on__lt=then_time).delete()

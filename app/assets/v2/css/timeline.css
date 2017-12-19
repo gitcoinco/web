@@ -134,6 +134,7 @@
 .tline > li.tline_other > .tline_module:hover {
     border-right: 1px solid #d3d3d3;
     border-left: none;
+    padding-right: 16px;
 }
 .tline_module.contain1 {
     left: -21%;
@@ -160,6 +161,11 @@
 }
 .tline_module.mod2 {
     margin-top: 20px;
+}
+
+.tline img {
+    margin: 10px 0;
+    width: 100%;
 }
 
 @media (max-width: 760px) {

@@ -24,13 +24,11 @@ from retail.emails import *
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
 
-def send_mail(from_email, to_email, subject, body, html=False, from_name="Gitcoin.co", cc_emails=None):
+def send_mail(from_email, _to_email, subject, body, html=False, from_name="Gitcoin.co", cc_emails=None):
 
     # make sure this subscriber is saved
+    to_email = _to_email
     get_or_save_email_subscriber(to_email, 'internal')
-
-    # debug logs
-    print("-- Sending Mail '{}' to {}".format(subject, to_email))
 
     # setup
     sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
@@ -58,6 +56,10 @@ def send_mail(from_email, to_email, subject, body, html=False, from_name="Gitcoi
     p.add_bcc(Email(settings.BCC_EMAIL))
     mail.add_personalization(p)
 
+    # debug logs
+    print("-- Sending Mail '{}' to {}".format(subject, _to_email))
+
+
     # send mails
     response = sg.client.mail.send.post(request_body=mail.get())
     return response
@@ -67,9 +69,10 @@ def tip_email(tip, to_emails, is_new):
     if not tip or not tip.url or not tip.amount or not tip.tokenName:
         return
 
-    subject = "⚡️ New Tip Worth {} {}".format(round(tip.amount, 3), tip.tokenName)
+    warning = '' if tip.network == 'mainnet' else "({})".format(tip.network)
+    subject = "⚡️ New Tip Worth {} {} {}".format(round(tip.amount, 3), warning, tip.tokenName)
     if not is_new:
-        subject = "🕐 New Tip Worth {} {} Expiring Soon".format(round(tip.amount, 3), tip.tokenName)
+        subject = "🕐 Tip Worth {} {} {} Expiring Soon".format(round(tip.amount, 3), warning, tip.tokenName)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
@@ -82,7 +85,7 @@ def new_bounty(bounty, to_emails=[]):
     if not bounty or not bounty.value_in_usdt:
         return
 
-    subject = "⚡️ New Funded Issue Match worth ${} ({})".format(bounty.value_in_usdt, b.keywords)
+    subject = "⚡️ New Funded Issue Match worth ${} ({})".format(bounty.value_in_usdt, bounty.keywords)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL

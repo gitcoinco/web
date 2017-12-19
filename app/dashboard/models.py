@@ -125,6 +125,30 @@ class Bounty(SuperModel):
         except Exception as e:
             return None
 
+    def is_hunter(self, handle):
+        target = self.claimee_github_username
+        if not handle:
+            return False
+        if not target:
+            return False
+        handle = handle.lower().replace('@', '')
+        target = target.lower().replace('@', '')
+
+        return handle == target
+
+    #TODO: DRY
+    def is_funder(self, handle):
+        target = self.bounty_owner_github_username
+        if not handle:
+            return False
+        if not target:
+            return False
+        handle = handle.lower().replace('@', '')
+        target = target.lower().replace('@', '')
+
+        return handle == target
+
+
     @property
     def absolute_url(self):
         return self.get_absolute_url()
@@ -249,11 +273,13 @@ class Tip(SuperModel):
     tokenName = models.CharField(max_length=255)
     tokenAddress = models.CharField(max_length=255)
     amount = models.DecimalField(default=1, decimal_places=2, max_digits=50)
-    comments = models.TextField(default='')
+    comments_priv = models.TextField(default='')
+    comments_public = models.TextField(default='')
     ip = models.CharField(max_length=50)
     expires_date = models.DateTimeField()
     github_url = models.URLField(null=True)
     from_name = models.CharField(max_length=255, default='')
+    from_email = models.CharField(max_length=255, default='')
     username = models.CharField(max_length=255, default='')
     network = models.CharField(max_length=255, default='')
     txid = models.CharField(max_length=255, default='')
@@ -262,7 +288,7 @@ class Tip(SuperModel):
 
     def __str__(self):
         from django.contrib.humanize.templatetags.humanize import naturalday
-        return "({}) - {} {} to {},  created: {}, expires: {}".format(self.network, self.amount, self.tokenName, self.username, naturalday(self.created_on), naturalday(self.expires_date))
+        return "({}) - {} {} {} {} to {},  created: {}, expires: {}".format(self.network, "RECEIVED" if self.receive_txid else "", "ORPHAN" if len(self.emails) == 0 else "", self.amount, self.tokenName, self.username, naturalday(self.created_on), naturalday(self.expires_date))
 
     #TODO: DRY
     @property
@@ -284,6 +310,15 @@ class Tip(SuperModel):
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except:
             return None
+
+
+@receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
+def normalize_usernames(sender, instance, **kwargs):
+
+    if instance.claimee_github_username:
+        instance.claimee_github_username = instance.claimee_github_username.replace("@", '')
+    if instance.bounty_owner_github_username:
+        instance.bounty_owner_github_username = instance.bounty_owner_github_username.replace("@", '')
 
 
 # method for updating
@@ -399,8 +434,8 @@ class Profile(SuperModel):
     @property
     def bounties(self):
         bounties = Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True)
-        bounties = bounties | Bounty.objects.filter(claimee_github_username=self.handle, current_bounty=True)
-        bounties = bounties | Bounty.objects.filter(bounty_owner_github_username=self.handle, current_bounty=True)
+        bounties = bounties | Bounty.objects.filter(claimee_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(claimee_github_username__iexact="@" + self.handle, current_bounty=True)
+        bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
         return bounties.order_by('-web3_created')
     
 
@@ -443,39 +478,50 @@ class Profile(SuperModel):
         acceptance_rate = 'N/A'
         loyalty_rate = 0
         claimees = []
+        total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_funder(self.handle)])
+        total_claimed = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
+        print(total_funded, total_claimed)
+        role = 'newbie'
+        if total_funded > total_claimed:
+            role = 'funder'
+        elif total_funded < total_claimed:
+            role = 'coder'
+
         for b in bounties:
             if b.claimeee_address in claimees:
                 loyalty_rate += 1
             claimees.append(b.claimeee_address)
-        success_rate = 0 
+        success_rate = 0
         if bounties.count() > 0:
-            success_rate = int(round(bounties.filter(idx_status__in=['fulfilled', 'claimed']).count() * 1.0 / bounties.count(), 2) * 100)
+            numer = bounties.filter(idx_status__in=['fulfilled', 'claimed']).count()
+            denom = bounties.exclude(idx_status__in=['open']).count()
+            success_rate = int(round(numer * 1.0 / denom, 2) * 100) if denom != 0 else 'N/A'
         if success_rate == 0:
             success_rate = 'N/A'
             loyalty_rate = 'N/A'
         else:
             success_rate = "{}%".format(success_rate)
             loyalty_rate = "{}x".format(loyalty_rate)
-        return [
-            (bounties.count(), 'Total Funded Issues'),
-            (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
-            (success_rate, 'Success Rate'),
-            (loyalty_rate, 'Loyalty Rate'),
-        ]
-        
-        if self.is_org:
+        if role == 'newbie':
             return [
-                ('100%', 'Acceptance Rate'),
-                ('0%', 'Kill Rate'),
-                ('15h', 'Acceptance Delay'),
-                ('3x', 'Loyalty Rate'),
+                (role, 'Status'),
+                (bounties.count(), 'Total Funded Issues'),
+                (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
+                (loyalty_rate, 'Loyalty Rate'),
             ]
-        else:
+        elif role == 'coder':
             return [
-                ('100%', 'Acceptance Ratio'),
-                ('10%', 'Revision Rate'),
-                ('15h', 'Acceptance Delay'),
-                ('3x', 'Loyalty Rate'),
+                (role, 'Primary Role'),
+                (bounties.count(), 'Total Funded Issues'),
+                (success_rate, 'Success Rate'),
+                (loyalty_rate, 'Loyalty Rate'),
+            ]
+        else: #funder
+            return [
+                (role, 'Primary Role'),
+                (bounties.count(), 'Total Funded Issues'),
+                (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
+                (success_rate, 'Success Rate'),
             ]
 
     @property
@@ -491,3 +537,10 @@ class Profile(SuperModel):
 
     def get_relative_url(self, preceding_slash=True):
         return "{}profile/{}".format('/' if preceding_slash else '', self.handle)
+
+
+@receiver(pre_save, sender=Tip, dispatch_uid="normalize_tip_usernames")
+def normalize_tip_usernames(sender, instance, **kwargs):
+
+    if instance.username:
+        instance.username = instance.username.replace("@", '')

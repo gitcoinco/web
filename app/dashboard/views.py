@@ -45,6 +45,7 @@ def send_tip(request):
     params = {
         'issueURL': request.GET.get('source'),
         'title': 'Send Tip',
+        'class': 'send',
     }
 
     return TemplateResponse(request, 'yge/send1.html', params)
@@ -81,6 +82,7 @@ def receive_tip(request):
 
     params = {
         'issueURL': request.GET.get('source'),
+        'class': 'receive',
         'title': 'Receive Tip',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
     }
@@ -130,11 +132,13 @@ def send_tip_2(request):
             url=params['url'],
             tokenName=params['tokenName'],
             amount=params['amount'],
-            comments=params['comments'],
+            comments_priv=params['comments_priv'],
+            comments_public=params['comments_public'],
             ip=get_ip(request),
             expires_date=expires_date,
             github_url=params['github_url'],
             from_name=params['from_name'],
+            from_email=params['from_email'],
             username=params['username'],
             network=params['network'],
             tokenAddress=params['tokenAddress'],
@@ -145,9 +149,9 @@ def send_tip_2(request):
         did_post_to_github = maybe_market_tip_to_github(tip)
         maybe_market_tip_to_slack(tip, 'new_tip', tip.txid)
         tip_email(tip, set(emails), True)
-        if len(emails) == 0 and not did_post_to_github:
-            status = 'error'
-            message = 'Uh oh! No email addresses found via Github API and could not post to github'
+        if len(emails) == 0:
+                status = 'error'
+                message = 'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.'
 
         #http response
         response = {
@@ -158,6 +162,7 @@ def send_tip_2(request):
 
     params = {
         'issueURL': request.GET.get('source'),
+        'class': 'send2',
         'title': 'Send Tip',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
     }
@@ -326,7 +331,7 @@ def save_search(request):
     return TemplateResponse(request, 'save_search.html', context)
 
 @csrf_exempt
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='2/s', method=ratelimit.UNSAFE, block=True)
 def sync_web3(request):
 
     #setup

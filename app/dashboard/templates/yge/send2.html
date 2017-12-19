@@ -1,7 +1,8 @@
 {% extends 'yge/base.html' %}
-
+{% load staticfiles %}
 {% block 'scripts' %}
 
+<script src="{% static 'v2/js/amounts.js' %}"></script>
 <script src="/static/yge/youvegoteth/index.js"></script>
 <script src="/static/yge/youvegoteth/pre.js"></script>
 <script src="/static/yge/youvegoteth/tokens.js"></script>
@@ -34,8 +35,8 @@
                 <option value="0x0">ETH</option>
             </select>
             <input name="amount" type="text" placeholder="1.1" id="amount" value="" style="width: 170px; display: inline;">
-            <div id="usd_amount"></div>
         </div>
+        <div id="usd_amount"> &nbsp;</div>
         <div>
             To Github Username:
             <input type="text" placeholder="@username" id="username" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
@@ -57,6 +58,10 @@
                 <input type="text" placeholder="Bobby Tables" id="fromName" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
             </div>
             <div>
+                From Email (optional):
+                <input type="text" placeholder="you@domain.co" id="fromEmail" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
+            </div>
+            <div>
                 Expires:
                 <select id="expires" style="width:400px; margin: 0px auto;" >
                     <option value="86400">1 day</option>
@@ -71,14 +76,18 @@
                 </select>
             </div>
             <div>
-                Comments (optional):
-                <textarea id="comments" style="width:400px; margin: 0px auto;" ></textarea>
+                Private Comments (optional):
+                <textarea id="comments_priv" style="width:400px; margin: 0px auto;" ></textarea>
+            </div>
+            <div>
+                Public Comments (optional):
+                <textarea id="comments_public" style="width:400px; margin: 0px auto;" ></textarea>
             </div>
         </div>
         <div>
             <br>
             <input type="checkbox" id="tos" value="1" >
-            <label for="tos">I understand & agree to the <a href="https://gitcoin.co/terms">terms of service</a>.</label>
+            <label for="tos">I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.</label>
 
         </div>
 
@@ -92,7 +101,7 @@
         <p id="loading_trans">
             <a id="trans_link2" href="" target=new>The transaction is still pending.</a><br>This page will auto-update when the transaction is confirmed <br>(but you can close the browser window if you want).
             <br>    
-            <img src="/static/yge/images/loading.gif" style="max-width: 70px; max-height: 70px;">
+            <img src="/static/yge/images/loading_v2.gif" style="max-width: 70px; max-height: 70px;">
         </p>
         <hr>
         <h1><span id=new_username></span> has been notified</h1>

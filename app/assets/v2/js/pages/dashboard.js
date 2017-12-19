@@ -127,6 +127,16 @@ var process_stats = function(results){
 }
 
 var refreshBounties = function(){
+
+    //manage state
+    var keywords = $("#keywords").val();
+    var title = 'Issue Explorer | Gitcoin';
+    if(keywords){
+        title = keywords + " | " + title;
+    }
+    var currentState = history.state;
+    window.history.replaceState(currentState, title, '/explorer?q='+keywords);
+
     save_sidebar_latest();
     set_modifiers_sentence();
     $('.nonefound').css('display', 'none');

@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -18,12 +18,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.conf import settings
-from django.contrib.auth.models import User
-from django.contrib.contenttypes import fields
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.humanize.templatetags.humanize import naturaltime
-from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -63,10 +58,14 @@ class ConversionRate(SuperModel):
 @receiver(post_save, sender=ConversionRate, dispatch_uid="ReverseConversionRate")
 def reverse_conversion_rate(sender, instance, **kwargs):
 
-    # to_user transaction
+    # 1 / # 0.000979
+    from_amount = float(instance.to_amount) / float(instance.from_amount)
+    to_amount = 1
+
+    # reverse transaction
     ConversionRate.objects.get_or_create(
-        from_amount=instance.to_amount,
-        to_amount=instance.from_amount,
+        from_amount=from_amount,
+        to_amount=to_amount,
         timestamp=instance.timestamp,
         source=instance.source,
         from_currency=instance.to_currency,

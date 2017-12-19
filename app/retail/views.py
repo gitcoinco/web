@@ -16,14 +16,13 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
-from slackclient import SlackClient
 
 
 def index(request):
@@ -381,10 +380,6 @@ def help_dev(request):
     return redirect('https://docs.google.com/document/d/1S8BLKJF7J5RbrfFw-mX0iYcy4VSc6-a1aQXtKT_ta0Y/edit')
 
 
-def help_dev(request):
-    return redirect('https://docs.google.com/document/d/1S8BLKJF7J5RbrfFw-mX0iYcy4VSc6-a1aQXtKT_ta0Y/edit')
-
-
 def help_pilot(request):
     return redirect('https://docs.google.com/document/d/1R-qQKlIcW38d7l6GumehDlOhdmX1-6Ibab3gE06qotQ/edit')
 
@@ -405,9 +400,17 @@ def ios(request):
     return redirect('https://goo.gl/forms/HHOcMDKArCPo9Xas1')
 
 
+def casestudy(request):
+    return redirect('https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit#heading=h.fncqd9y7lo1h')
+
+
+def schwag(request):
+    return redirect('https://goo.gl/forms/X3jAtOVUUNAumo072')
+
+
 def slack(request):
     context = {
-        'active': 'slack', 
+        'active': 'slack',
     }
 
     if request.POST.get('email', False):
@@ -415,7 +418,7 @@ def slack(request):
         valid_email = True
         try:
             validate_email(request.POST.get('email', False))
-        except Exception as e:
+        except ValidationError:
             valid_email = False
 
         if valid_email:

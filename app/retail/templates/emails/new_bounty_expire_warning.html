@@ -24,10 +24,11 @@
 
 
 <p>
-    Heads up! The funded issue that you posted (below) is expiring in {{num}} {{unit}}.
+    Heads up! The funded issue that you {% if is_owner %}posted{% else %}claimed{% endif %} (below) is expiring in {{num}} {{unit}}.
 
     <br>
     <br>
+    {% if is_owner %}
     {% if bounty.status == 'claimed' %}
         There is a currently pending claim agains this funded issue. Please make sure you process them!
     {% endif %}
@@ -39,7 +40,22 @@
     <br>
     <h5>Look for this button</h5>
     <br>
-    <img src="https://gitcoin.co/static/v2/images/clawback.png">
+    <img src="https://gitcoin.co/static/v2/images/clawback.png"/ >
+
+    <br>
+    <br>
+    If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.
+
+    {% else %}
+
+        Why don't you leave a comment <a href="{{bounty.github_url}}">on github</a> and let the bounty owner know that you'd like to wrap this up soon? :)
+
+        <br>
+        <br>
+        If you have any problems, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.
+
+
+    {% endif %}
 
     <br>
     <h5>Funded Issue Details</h5>

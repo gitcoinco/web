@@ -32,6 +32,7 @@ class GeneralAdmin(admin.ModelAdmin):
 class TipAdmin(admin.ModelAdmin):
     ordering = ['-id']
     readonly_fields = ['resend']
+    search_fields = ['tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url', 'emails']
 
     def resend(self, instance):
         html = format_html('<a href="/_administration/email/new_tip/resend?pk={}">resend</a>', instance.pk)
@@ -42,6 +43,7 @@ class TipAdmin(admin.ModelAdmin):
 class Bounty_Admin(admin.ModelAdmin):
     ordering = ['-id']
 
+    search_fields = ['raw_data', 'title', 'claimee_github_username', 'bounty_owner_github_username', 'token_name']
     list_display = ['pk', 'img', 'what']
     readonly_fields = ['what', 'img']
 

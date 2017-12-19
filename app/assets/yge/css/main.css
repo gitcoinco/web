@@ -10,6 +10,11 @@ body {
   width: 100%;
 }
 
+#yge.receive,
+#yge.send {
+  overflow-y: hidden;
+}
+
 /*
 	Identity by HTML5 UP
 	html5up.net | @ajlkn
@@ -212,15 +217,15 @@ body {
 	}
 
 	h4 {
-		font-size: 1em;
+		font-size: 0.8em;
 	}
 
 	h5 {
-		font-size: 1em;
+		font-size: 0.7em;
 	}
 
 	h6 {
-		font-size: 1em;
+		font-size: 0.6em;
 	}
 
 	@media screen and (max-width: 480px) {
@@ -733,7 +738,7 @@ body {
     #main #send_eth #advanced div{
         padding-top: 10px;
     }
-    #main #send_eth input, 
+    #main #send_eth input,
     #main #send_eth select{
         font-size: 12px;
     }
@@ -904,7 +909,7 @@ body {
 			top:0px;
 			width: 100%;
 			z-index: 99999;
-		    background-color: #f44336; 
+		    background-color: #f44336;
 			color: white;
 			position: fixed;
 			text-align: center;
