@@ -16,6 +16,8 @@ services:
         - db
     ports:
         - "8081:8081"
+    depends_on:
+      - db
     restart: "on-failure:10"
   web:
     restart: unless-stopped
