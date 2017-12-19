@@ -11,7 +11,7 @@ reportlab==3.4.0
 requests==2.18.4
 requests_oauthlib==0.8.0
 Pillow==4.0.0
-premailer==3.3.1
+premailer==3.1.1
 populus==2.2.0
 psycopg2==2.7.3.2
 PyPdf==1.13
