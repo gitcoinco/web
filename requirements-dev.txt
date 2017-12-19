@@ -1,2 +1,2 @@
-ipdb
-django-extensions
+ipdb==0.10.3
+django-extensions==1.9.8
