@@ -23,7 +23,7 @@ web3
 mailchimp3
 django_chartit==0.2.9
 MechanicalSoup==0.9.0.post4
-tinyurl
+pyshorteners
 statistics
 django-email-obfuscator
 cytoolz==0.8.2

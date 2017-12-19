@@ -1,7 +1,7 @@
 import random
 import logging
 from django.conf import settings
-import tinyurl
+from pyshorteners import Shortener
 import twitter
 import requests
 from urllib import parse
@@ -65,11 +65,13 @@ def maybe_market_to_twitter(bounty, event_name, txid):
     random.shuffle(tweet_txts)
     tweet_txt = tweet_txts[0]
 
+    shortener = Shortener('Tinyurl')
+
     new_tweet = tweet_txt.format(
         round(bounty.get_natural_value(), 4),
         bounty.token_name,
         ("(${})".format(bounty.value_in_usdt) if bounty.value_in_usdt else ""),
-        tinyurl.create_one(bounty.get_absolute_url())
+        shortener.short(bounty.get_absolute_url())
     )
     if bounty.keywords:
         for keyword in bounty.keywords.split(','):
