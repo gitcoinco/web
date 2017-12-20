@@ -3,7 +3,7 @@
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    by the Free Software Foundation,either version 3 of the License,or
     (at your option) any later version.
 
     This program is distributed in the hope that it will be useful,
@@ -12,7 +12,7 @@
     GNU Affero General Public License for more details.
 
     You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+    along with this program. If not,see <http://www.gnu.org/licenses/>.
 
 '''
 from django.conf import settings
@@ -38,7 +38,7 @@ def slack_users_active():
 
     sc = SlackClient(settings.SLACK_TOKEN)
     ul = sc.api_call("users.list")
-    presence = [sc.api_call("users.getPresence", user=user['id']).get('presence',None) for user in ul['members']]
+    presence = [sc.api_call("users.getPresence",user=user['id']).get('presence',None) for user in ul['members']]
     num_active = len([item for item in presence if item == 'active'])
     num_away = len([item for item in presence if item == 'away'])
 
@@ -50,6 +50,22 @@ def slack_users_active():
     Stat.objects.create(
         key='slack_users_away',
         val=num_away,
+        )
+
+
+def chrome_ext_users():
+    import requests
+    from bs4 import BeautifulSoup
+
+    url = 'https://chrome.google.com/webstore/detail/gitcoin/gdocmelgnjeejhlphdnoocikeafdpaep'
+    html_response = requests.get(url)
+    soup = BeautifulSoup(html_response.text, 'html.parser')
+    classname = 'e-f-ih'
+    eles = soup.findAll("span", {"class": classname})
+    num_users = eles[0].text.replace(' users', '')
+    Stat.objects.create(
+        key='browser_ext_chrome',
+        val=num_users,
         )
 
 
@@ -90,8 +106,8 @@ def bounties():
 
 def bounties_fulfilled_pct():
     from dashboard.models import Bounty
-    for status in ['fulfilled', 'expired', 'open', 'claimed']:
-        eligible_bounties = Bounty.objects.filter(current_bounty=True, web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
+    for status in ['fulfilled','expired','open','claimed']:
+        eligible_bounties = Bounty.objects.filter(current_bounty=True,web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
         fulfilled_bounties = eligible_bounties.filter(idx_status=status)
         val = int(100 * (fulfilled_bounties.count()) / (eligible_bounties.count()))
 
@@ -104,10 +120,10 @@ def bounties_fulfilled_pct():
 def joe_dominance_index():
     from dashboard.models import Bounty
 
-    joe_addresses = ['0x4331B095bC38Dc3bCE0A269682b5eBAefa252929'.lower(), '0xe93d33CF8AaF56C64D23b5b248919EabD8c3c41E'.lower()]
+    joe_addresses = ['0x4331B095bC38Dc3bCE0A269682b5eBAefa252929'.lower(),'0xe93d33CF8AaF56C64D23b5b248919EabD8c3c41E'.lower()]
 
-    for days in [7, 30, 90, 360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True, web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+    for days in [7,30,90,360]:
+        all_bounties = Bounty.objects.filter(current_bounty=True,web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
         joe_bounties = all_bounties.filter(bounty_owner_address__in=joe_addresses)
         if not all_bounties.count():
             continue
@@ -130,8 +146,8 @@ def avg_time_bounty_turnaround():
     import statistics
     from dashboard.models import Bounty
 
-    for days in [7, 30, 90, 360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True, idx_status='fulfilled', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+    for days in [7,30,90,360]:
+        all_bounties = Bounty.objects.filter(current_bounty=True,idx_status='fulfilled',web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
         if not all_bounties.count():
             continue
 
@@ -152,7 +168,7 @@ def bounties_open():
 
     Stat.objects.create(
         key='bounties_open',
-        val=(Bounty.objects.filter(current_bounty=True, idx_status='open').count()),
+        val=(Bounty.objects.filter(current_bounty=True,idx_status='open').count()),
         )
 
 
@@ -244,20 +260,21 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         fs = [
-            slack_users, 
-            twitter_followers, 
-            bounties, 
-            tips, 
-            subs, 
-            whitepaper_access, 
-            whitepaper_access_request, 
-            tips_received, 
-            bounties_claimed, 
-            bounties_fulfilled, 
-            bounties_open, 
+            chrome_ext_users,
+            slack_users,
+            twitter_followers,
+            bounties,
+            tips,
+            subs,
+            whitepaper_access,
+            whitepaper_access_request,
+            tips_received,
+            bounties_claimed,
+            bounties_fulfilled,
+            bounties_open,
             bounties_fulfilled_pct,
-            subs_active, 
-            subs_newsletter, 
+            subs_active,
+            subs_newsletter,
             slack_users_active,
             joe_dominance_index,
             avg_time_bounty_turnaround
