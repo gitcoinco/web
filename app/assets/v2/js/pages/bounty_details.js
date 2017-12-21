@@ -236,6 +236,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
             var this_transaction = 'this transaction';
             var title = '';
             if(typeof localStorage['txid'] != 'undefined' && localStorage['txid'].indexOf('0x') != -1){
+                clearInterval(interval)
                 var link_url = etherscan_tx_url(localStorage['txid']);
                 pendingchanges = "<a target=new href='"+link_url+"'>"+pendingchanges+"</a>"
                 this_transaction = "<a target=new href='"+link_url+"'>"+this_transaction+"</a>"
@@ -243,8 +244,13 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
             }
             var msg = `<br>This funded issue has recently been updated and while the blockchain syncs it has `+pendingchanges+`.
             Please wait a minute or two for web3 to sync `+this_transaction+`.
-            <br>(Please DO NOT close the browser tab.  This page will automatically refresh as soon as the blockchain is updated.)`
+            <br>(Please DO NOT close the browser tab.  This page will automatically refresh as soon as the blockchain is updated.)
+            <br>INTERESTING QUOTE: <span class='waiting_room_entertainment'></span>`
             _alert({ title: title, message: msg},'info');
+
+            var secondsBetweenQuoteChanges = 30;
+            waitingRoomEntertainment();
+            var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
         }
 
 

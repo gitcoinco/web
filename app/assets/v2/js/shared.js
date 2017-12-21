@@ -182,8 +182,8 @@ function timeDifference(current, previous) {
         var unit = 'year';
     }
     var plural = amt != 1 ? 's' : '';
-    
-    return amt + ' '+unit+plural+' ago';   
+
+    return amt + ' '+unit+plural+' ago';
 };
 
 var sync_web3 = function(issueURL, bountydetails, callback){
@@ -252,7 +252,7 @@ var retrieveAmount = function(){
     var address = $('select[name=deonomination').val();
     var denomination = tokenAddressToDetails(address)['name'];
     var request_url = '/sync/get_amount?amount='+amount+'&denomination=' + denomination;
-    
+
     //use cached conv rate if possible.
     if(document.conversion_rates && document.conversion_rates[denomination]){
         var usd_amount = amount / document.conversion_rates[denomination];
@@ -441,3 +441,10 @@ window.addEventListener('load', function() {
     }, timeout_value);
 
 });
+
+var randomElement = function(array) {
+    var length = array.length;
+    var randomNumber = Math.random();
+    var randomIndex = Math.floor(randomNumber * length);
+    return array[randomIndex];
+}

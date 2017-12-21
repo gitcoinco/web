@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -99,7 +99,7 @@ def send_tip_2(request):
         message = 'Notification has been sent'
         params = json.loads(request.body)
         emails = []
-        
+
         #basic validation
         username = params['username']
 
@@ -228,7 +228,6 @@ def clawback_expired_bounty(request):
 
 
 def bounty_details(request):
-
     params = {
         'issueURL': request.GET.get('issue_'),
         'title': 'Issue Details',
@@ -280,7 +279,7 @@ def profile_keywords_helper(handle):
 
 def profile_keywords(request, handle):
     keywords = profile_keywords_helper(handle)
-    
+
     response = {
         'status': 200,
         'keywords': keywords,
