@@ -9,7 +9,7 @@ from django.conf import settings
 
 import tinyurl
 import twitter
-from app.github import post_issue_comment
+from app.github import delete_issue_comment, patch_issue_comment, post_issue_comment
 from slackclient import SlackClient
 
 reload(sys)
@@ -141,7 +141,7 @@ def maybe_market_tip_to_slack(tip, event_name, txid):
     return True
 
 
-def maybe_market_to_github(bounty, event_name, txid):
+def maybe_market_to_github(bounty, event_name, txid=None, interested=None):
     if not settings.GITHUB_CLIENT_ID:
         return False
     if bounty.get_natural_value() < 0.0001:
@@ -161,6 +161,21 @@ def maybe_market_to_github(bounty, event_name, txid):
             bounty.get_absolute_url(),
             amount_usdt_open_work(),
             )
+    elif event_name == 'new_interest':
+        msg = "__The funding of {} {} {} attached has been shown interest by: {}.__ {} \n\n * Learn more [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        # Build interested profiles string.
+        interested_profiles = ", ".join("[@%s](%s)" % interest for interest in interested)
+        msg = msg.format(
+            round(bounty.get_natural_value(), 4),
+            bounty.token_name,
+            usdt_value,
+            interested_profiles if interested_profiles else "",
+            "\n\n If you are interested, please leave a comment to let the funder {} and the other parties involved why you're interested in working on this issue and your plans to resolve it.  If you don't leave a comment, the funder may not think you're too interested.".format(
+                "(@{})".format(bounty.bounty_owner_github_username) if bounty.bounty_owner_github_username else "",
+                ),
+            bounty.get_absolute_url(),
+            amount_usdt_open_work(),
+        )
     elif event_name == 'new_claim':
         msg = "__The funding of {} {} {} attached has been claimed {}.__ {} \n\n * Learn more [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
         msg = msg.format(
@@ -197,7 +212,21 @@ def maybe_market_to_github(bounty, event_name, txid):
         repo = uri_array[2]
         issue_num = uri_array[4]
 
-        post_issue_comment(username, repo, issue_num, msg)
+        if event_name == 'new_interest' and interested:
+            if bounty.interested_comment is not None:
+                patch_issue_comment(bounty.interested_comment, username, repo,
+                                    issue_num, msg)
+            else:
+                response = post_issue_comment(username, repo, issue_num, msg)
+                if response.get('id'):
+                    bounty.interested_comment = response.get('id')
+                    bounty.save()
+        elif event_name == 'new_interest' and not interested:
+            delete_issue_comment(bounty.interested_comment, username, repo)
+            bounty.interested_comment = None
+            bounty.save()
+        else:
+            post_issue_comment(username, repo, issue_num, msg)
 
     except Exception as e:
         print(e)

@@ -78,6 +78,7 @@ var get_search_URI = function(){
             } else if(val == 'watched'){
                 key='github_url';
                 val = watch_list();
+                val = interested_list();
             } 
         }
         if(val!='any'){

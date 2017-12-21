@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -31,14 +31,10 @@ from dashboard.router import router
 from sitemap import sitemaps
 
 urlpatterns = [
-
-
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
     url(r'^api/v0.1/', include(router.urls)),
-
-
     # dashboard views
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
@@ -66,14 +62,12 @@ urlpatterns = [
     url(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     url(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
-
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
     url(r'^sync/get_issue_title?', dashboard.helpers.title, name='helpers_title'),
     url(r'^sync/get_amount?', dashboard.helpers.amount, name='helpers_amount'),
     url(r'^sync/get_issue_keywords?', dashboard.helpers.keywords, name='helpers_keywords'),
     url(r'^sync/search_save?', dashboard.views.save_search, name='save_search'),
-
     # brochureware views
     url(r'^about/?', retail.views.about, name='about'),
     url(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),
@@ -98,12 +92,9 @@ urlpatterns = [
     url(r'^github/?', retail.views.github, name='github'),
     url(r'^youtube/?', retail.views.youtube, name='youtube'),
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
-
-    #token distribution event
+    # token distribution event
     url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),
     url(r'^whitepaper/?', tdi.views.whitepaper_new, name='whitepaper'),
-
-
     # admin views
     url(r'^_administration/?', admin.site.urls, name='admin'),
     url(r'^_administration/email/new_bounty$', retail.emails.new_bounty, name='new_bounty'),
@@ -116,15 +107,20 @@ urlpatterns = [
     url(r'^_administration/email/bounty_expire_warning$', retail.emails.bounty_expire_warning, name='bounty_expire_warning'),
     url(r'^_administration/process_accesscode_request/(.*)$', tdi.views.process_accesscode_request, name='process_accesscode_request'),
     url(r'^_administration/email/new_tip/resend$', retail.emails.resend_new_tip, name='resend_new_tip'),
-
-    #marketing views
+    # marketing views
     url(r'^email/settings/(.*)', marketing.views.email_settings, name='email_settings'),
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
     url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),
     url(r'^_administration/stats$', marketing.views.stats, name='stats'),
-
+    # Sitemap
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-
+    # Github Integration
+    url(r'^_github/callback?', dashboard.views.github_callback, name='github_callback'),
+    url(r'^_github/auth?', dashboard.views.github_authentication, name='github_authentication'),
+    # Interests
+    url(r'^bounty/(?P<bounty_id>\d+)/interest/new/$', dashboard.views.new_interest, name='express-interest'),
+    url(r'^bounty/(?P<bounty_id>\d+)/interest/remove/$', dashboard.views.remove_interest, name='remove-interest'),
+    url(r'^bounty/(?P<bounty_id>\d+)/interest/$', dashboard.views.interested_profiles, name='interested-profiles'),
 ]
 
 handler403 = 'retail.views.handler403'
