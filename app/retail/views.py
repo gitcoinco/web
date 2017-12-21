@@ -372,6 +372,10 @@ def portal(request):
     return redirect('https://gitcoinhelp.zendesk.com/hc/en-us/')
 
 
+def ethdenver(request):
+    return redirect('https://goo.gl/forms/FQogarXntrISFCsJ2')
+
+
 def feedback(request):
     return redirect('https://goo.gl/forms/9rs9pNKJDnUDYEeA3')
 
