@@ -88,6 +88,7 @@ urlpatterns = [
     url(r'^slack/?', retail.views.slack, name='slack'),
     url(r'^ios/?', retail.views.ios, name='ios'),
     url(r'^casestudy/?', retail.views.casestudy, name='casestudy'),
+    url(r'^casestudies/?', retail.views.casestudy, name='casestudies'),
     url(r'^schwag/?', retail.views.schwag, name='schwag'),
     url(r'^btctalk/?', retail.views.btctalk, name='btctalk'),
     url(r'^reddit/?', retail.views.reddit, name='reddit'),
