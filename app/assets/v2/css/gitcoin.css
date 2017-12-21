@@ -222,6 +222,10 @@ div.button-pink {
   max-height: 150px;
 }
 
+.values-img-wrapper img {
+  max-height: 300px;
+}
+
 .avatar-img-wrapper {
   height: 200px;
 }
