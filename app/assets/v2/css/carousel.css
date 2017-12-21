@@ -162,6 +162,14 @@
   opacity: 1;
 }
 
+.carousel .pilot_projects{
+  
+}
+.carousel .pilot_projects img{
+    max-height: 100px;
+    max-width: 100%;
+}
+
 @media (max-width: 576px) {
   .prev, .next {
     visibility: hidden;
