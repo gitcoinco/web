@@ -26,4 +26,4 @@ MechanicalSoup==0.9.0.post4
 tinyurl
 statistics
 django-email-obfuscator
-cytoolz==0.8.2
+cytoolz==0.9.0
