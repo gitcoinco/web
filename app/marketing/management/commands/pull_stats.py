@@ -69,6 +69,21 @@ def chrome_ext_users():
         )
 
 
+def firefox_ext_users():
+    import requests
+    from bs4 import BeautifulSoup
+
+    url = 'https://addons.mozilla.org/en-US/firefox/addon/gitcoin/'
+    html_response = requests.get(url)
+    soup = BeautifulSoup(html_response.text, 'html.parser')
+    eles = soup.findAll("div", {"class": 'AddonMeta'})[0].findAll('dt',{"class": 'MetadataCard-title'})
+    num_users = eles[0].text.replace(' Users', '').replace('No', '0')
+    Stat.objects.create(
+        key='browser_ext_firefox',
+        val=num_users,
+        )
+
+
 def twitter_followers():
     if settings.DEBUG:
         return
@@ -261,6 +276,7 @@ class Command(BaseCommand):
 
         fs = [
             chrome_ext_users,
+            firefox_ext_users,
             slack_users,
             twitter_followers,
             bounties,
