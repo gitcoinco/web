@@ -6,7 +6,7 @@ env:
   - PYTHONPATH="$TRAVIS_BUILD_DIR/app/"
 install:
   - cp app/app/local_settings.py.dist app/app/local_settings.py
-  - pip install -r requirements-test.txt
+  - pip install -r requirements/test.txt
 script:
   - pytest
 after_success:

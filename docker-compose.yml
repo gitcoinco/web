@@ -23,10 +23,10 @@ services:
     stdin_open: true
     tty: true
   node:
-    image: node:9
-    working_dir: /code
+    image: node:9-alpine
+    working_dir: /node
     volumes:
-      - .:/code
-    command: bash bin/docker-node.bash
+      - .:/node
+    command: bin/docker-node.sh
 volumes:
   pgdata:
