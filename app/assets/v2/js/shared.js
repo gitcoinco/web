@@ -43,7 +43,7 @@ var sanitize = function(str){
     if(typeof str != "string"){
         return str;
     }
-    result = str.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/'/g, '&quot;');
+    result = str.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     return result;
 }
 
