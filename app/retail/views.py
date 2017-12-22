@@ -372,6 +372,10 @@ def portal(request):
     return redirect('https://gitcoinhelp.zendesk.com/hc/en-us/')
 
 
+def ethdenver(request):
+    return redirect('https://goo.gl/forms/FQogarXntrISFCsJ2')
+
+
 def feedback(request):
     return redirect('https://goo.gl/forms/9rs9pNKJDnUDYEeA3')
 
@@ -398,6 +402,10 @@ def browser_extension(request):
 
 def ios(request):
     return redirect('https://goo.gl/forms/HHOcMDKArCPo9Xas1')
+
+
+def casestudy(request):
+    return redirect('https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit#heading=h.fncqd9y7lo1h')
 
 
 def schwag(request):

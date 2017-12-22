@@ -25,5 +25,5 @@ MechanicalSoup==0.9.0.post4
 tinyurl==0.1.0
 statistics==1.0.3.5
 django-email-obfuscator==0.1.5
-cytoolz==0.8.2
+cytoolz==0.9.0
 django-environ==0.4.4

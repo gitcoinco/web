@@ -129,30 +129,45 @@ div, p, a, span{
     background-size: cover;
 }
 
+.tldr_container {
+    font-size: 4em;
+}
+.tldr_container img{
+    max-width: 300px;
+    max-height: 300px;
+    padding-bottom: 20px;
+}
+.whatisit_container,
 .howworks_container{
     background-color: white;
     padding-bottom: 40px;
     margin-top: 0px !important;
 }
 
+.whatisit,
 .howworks{
     margin-top: 20px;
 }
+.whatisit ol,
 .howworks ol{
     list-style: none;
 }
+.whatisit ol li,
 .howworks ol li {
     margin-bottom: 20px;
 }
+.whatisit ol li img,
 .howworks ol li img{
     float: left;
     width: 50px;
     height: 50px;
     margin-right: 20px;
 }
+.whatisit ol li.third img,
 .howworks ol li.third img{
     height: 40px;
 }
+.whatisit iframe,
 .howworks iframe{
     width: 560px; 
     height: 315px;
@@ -898,6 +913,10 @@ body.bounty_details #title{
     }
 }
 @media (max-width: 1025px) {
+    .tldr_container img{
+        max-width: 250px;
+        max-height: 250px;
+    }
 
     .profile_details .bounties li div.relationship,
     .profile_details .bounties li div.status,
@@ -916,6 +935,7 @@ body.bounty_details #title{
     .interior .col-3{
         display: none;
     }
+    .whatisit iframe,
     .howworks iframe{
         width: 460px; 
         height: 258px;
@@ -952,6 +972,10 @@ body.bounty_details #title{
     }
 }
 @media (max-width: 769px) {
+    .tldr_container img{
+        max-width: 180px;
+        max-height: 180px;
+    }
     .email_settings .col-4 {
         display: none;
     }
@@ -982,9 +1006,14 @@ body.bounty_details #title{
         max-width: 100%;
     }
 
+    .row.whatisit .explainer{
+        margin-top: 30px;
+    }
 
     #team .row,
     #team .row .d-flex,
+    .row.whatisit .d-flex,
+    .row.whatisit
     .row.howworks .d-flex,
     .row.howworks{
         display: block;
@@ -996,6 +1025,7 @@ body.bounty_details #title{
     #team .row img.img-fluid{
         float: none !important;
     }
+    .whatisit iframe,
     .howworks iframe{
         width: 460px; 
         height: 250px;
@@ -1039,6 +1069,10 @@ body.bounty_details #title{
     }
 }
 @media (max-width: 481px) {
+    .tldr_container img{
+        max-width: 110px;
+        max-height: 110px;
+    }
 
     .hide_min_viewport{
         display: none !important;
@@ -1084,14 +1118,17 @@ body.bounty_details #title{
         width: 100%;
         text-align: center;
     }
+    .row.whatisit .d-flex,
+    .row.whatisit,
     .row.howworks .d-flex,
     .row.howworks{
         text-align: left;
     }
-
+    .row.whatisit .font-bigger-2,
     .row.howworks .font-bigger-2{
         font-size: 1rem;
     }
+    .row.whatisit iframe,
     .row.howworks iframe{
         width: 280px; 
         height: 170px;
