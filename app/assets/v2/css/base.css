@@ -129,6 +129,14 @@ div, p, a, span{
     background-size: cover;
 }
 
+.tldr_container {
+    font-size: 4em;
+}
+.tldr_container img{
+    max-width: 300px;
+    max-height: 300px;
+
+}
 .whatisit_container,
 .howworks_container{
     background-color: white;
