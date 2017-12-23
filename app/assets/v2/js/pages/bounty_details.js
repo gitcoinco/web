@@ -338,9 +338,17 @@ window.addEventListener('load', function() {
                     if(result['status']=='open' && !isBountyOwner(result) ){
                         var entry = {
                             href: '/funding/claim?source='+result['github_url'],
-                            text: 'Claim Issue',
+                            text: 'Submit Work (formerly \' Claim \' )',
                             parent: 'right_actions',
                             color: 'darkBlue'
+                        }
+                        actions.push(entry);
+                        var entry = {
+                            href: '/express_interest',
+                            text: 'Express Interest',
+                            parent: 'right_actions',
+                            color: 'darkBlue',
+                            target: github_url,
                         }
                         actions.push(entry);
                     }
@@ -412,6 +420,13 @@ window.addEventListener('load', function() {
 
 
 $(document).ready(function(){
+
+    $("body").delegate('a[href="/express_interest"]', 'click', function(e){
+        alert("Please leave a comment on the pull request to express interest in performing the work. \n\nRedirecting you now..")
+        document.location.href = $(this).attr('target');
+        e.preventDefault();
+    });
+    
     $("body").delegate('a[href="/watch"], a[href="/unwatch"]', 'click', function(e){
         e.preventDefault();
         if($(this).attr('href') == '/watch'){
