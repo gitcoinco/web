@@ -175,6 +175,10 @@ Here are some of our values
             'a': "We'd love to help!  Please email <a href='mailto:founders@gitcoin.co'>founders@gitcoin.co</a> or join <a href=/slack>Gitcoin Community Slack</a>."
         },
         {
+            'q': 'Am I allowed to place bounties on projects I don\'t contribute to or own?',
+            'a': "TLDR: Yes you are.  But as OSS devs ourselves, our experience has been that if you want to get the product you work on merged into the upstream, you will need to work with the contributors or owners of that repo.  If not, you can always fork a repo and run your own roadmap."
+        },
+        {
             'category': "General",
             'q': 'Is Gitcoin open source?',
             'a': "Yes, all of Gitcoin's core software systems are open source and available at <a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  Please see the liscense.txt file in each repo for more details."
