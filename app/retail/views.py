@@ -251,6 +251,9 @@ The best way to stay in touch is to
 <p>When Sir Tim Berners-Lee first invented the World Wide Web in the late 1980s&nbsp;to make information sharing on the Internet easier, he did something very important. He specified an open protocol, the Hypertext Transfer Protocol or HTTP, that anyone could use to make information available and to access such information. &nbsp;</p>
 <p>Gitcoin is similarly built on an open protocol of smart contracts.</p>
 <p>By specifying a&nbsp;protocol, Tim Berners-Lee opened the way for anyone to build software, so-called web servers and browsers that would be compatible with this protocol. &nbsp; By specifying an open source protocol for Funding Issues and software development scoping &amp; payment, the Gitcoin Core team hopes to similarly inspire a generation of inventions in 21st century software.</p>
+<p>
+To learn more about blockchain, please checkout the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
+</p>
             """
         },
         {
@@ -271,6 +274,9 @@ In contrast to web2 where third parties own your data, in web3 you own your data
 
 Download Metamask <a href="https://metamask.io/">here</a> today.
 </p>
+<p>
+To learn more about Metamask, please checkout the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
+</p>
 
            """
         },
@@ -285,6 +291,9 @@ The reason gas is important is that it helps to ensure an appropriate fee is bei
 </p>
 <p>
 Gas fees are paid to the maintainers of the Ethereum network, in return for securing all of the Ether and Ethereum-based transactions in the world.  Gas fees are not paid to Gitcoin Core directly or indirectly.
+</p>
+<p>
+To learn more about gas, pleaes checkout the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
 </p>
            """
         },
@@ -309,6 +318,9 @@ Here are some of the advantages of Ethereum based applications:
     Get paid in protocol, utility, or application tokens; not just cash.
 </li>
 </ul>
+<p>
+To learn more about Ethereum based apps, please checkout the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
+</p>
 
 
            """
