@@ -266,9 +266,7 @@ Navigate to `http://localhost:8080/`.
 
 Have an ERC20 compatible token that you'ud like to add support for?  Great!
 
-1. Edit `web/app/assets/js/tokens.js` and add your token.
-1. Edit `web/app/dashboard/tokens.py` and add your token.
-1. Submit a PR against this repo.
+[Here is an example of how to do it](https://github.com/gitcoinco/web/pull/155)
 
 # Legal
 
