@@ -1,9 +1,9 @@
 -r requirements.txt
 pytest==3.2.5
-pytest-cov
-pytest-isort
-pytest-django
-pytest-sugar
-coverage
-django-coverage-plugin
-isort
+pytest-cov==2.5.1
+pytest-isort==0.1.0
+pytest-django==3.1.2
+pytest-sugar==0.9.0
+coverage==4.4.2
+django-coverage-plugin==1.5.0
+isort==4.2.15
