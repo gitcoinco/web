@@ -1,0 +1,270 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      {% include 'shared/head.html' %}
+      {% include 'shared/cards.html' %}
+  </head>
+  <body class="interior {{active}}">
+    <div class="container-fluid header dash">
+      {% include 'shared/nav_internal.html' %}
+      <div class="row no-gutter">
+        <div class="col-3" style="background: #eee; ">
+          {% include 'shared/current_balance.html' %}
+          {% include 'shared/sidebar_search.html' %}
+        </div>
+        <div class="col body">
+          <div class="container-fluid">
+            <div class = "toolbox">
+              <h2 class="title">Toolbox</h2>
+              <div class="row no-gutters">
+                <div class="col-md-5 col-12">
+                  <p class="description">Use the toolbox to make gitcoin your own
+                    by enabling only the tools that suite your need</p>
+                </div>
+              </div>
+            </div>
+            {% for actor in actors %}
+              <h3 class="sub-title">{{actor.title}}</h3>
+              <div class="row no-gutters">
+                <div class="col-md-5 col-12">
+                  <p class="description">{{actor.description}}</p>
+                </div>
+              </div>
+
+              <div class="cards">
+                {% for tool in actor.tools %}
+                  <div class="card">
+                    <div class="img">
+                      <img src="{{tool.img}}"/>
+                    </div>
+                    <div class="content">
+                      <div class="title">{{tool.name}}</div>
+                      <div class="description">
+                        {{tool.description}}
+                        <span><a href="{{tool.link}}">Learn More ></a>
+                      </div>
+                      <div class="toggle">
+                        <input type="checkbox" id="switch_{{tool.name}}">
+                        <label for="switch_{{tool.name}}"></label>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/ga.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+
+    <style>
+
+      @font-face {
+        font-family: "OpenSans Bold";
+        src: url('/static/v2/fonts/OpenSans/Bold.ttf');
+      }
+
+      @font-face {
+        font-family: "OpenSans SemiBold";
+        src: url('/static/v2/fonts/OpenSans/SemiBold.ttf');
+      }
+
+      @font-face {
+        font-family: "OpenSans";
+        src: url('/static/v2/fonts/OpenSans/Regular.ttf');
+      }
+
+      .body {
+        padding: 60px 100px !important;
+        background-color: #fefefe !important;
+        font-family: "OpenSans";
+      }
+
+      .description {
+        color: #8e8e8e;
+        font-size: 0.9em;
+      }
+
+      .title, .sub-title {
+        font-family: "OpenSans Bold";
+        text-transform: none;
+        font-weight: bolder;
+        letter-spacing: 0;
+      }
+
+      .toolbox {
+        border-bottom: 1px solid #eee;
+      }
+
+      .sub-title {
+        padding-top: 1em;
+        font-size: 1.4em;
+      }
+
+      .cards {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .card {
+        background: #fff;
+        border-radius: 6px;
+        display: inline-block;
+        height: 320px;
+        margin: 1em 2em 1em 0;
+        position: relative;
+        width: 240px;
+      }
+
+      .card {
+        box-shadow: 0 0px 2px rgba(0,0,0,0.12), 0 1px 1px rgba(0,0,0,0.24);
+        transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+      }
+
+      .card:hover {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.25), 0 1px 1px rgba(0,0,0,0.22);
+      }
+
+      .card .img {
+        height: 120px;
+        overflow: hidden;
+      }
+
+      .card img {
+        height: 240px;
+      }
+
+      .card .content {
+        margin: 15px 20px;
+      }
+
+      .card .content .title {
+        font-family: "OpenSans";
+        margin-bottom: 10px;
+      }
+
+      .card .content .description {
+        font-size: 0.73em;
+        height: 80px;
+      }
+
+      .card .content .description span a{
+        margin-top: 4px;
+        display: block;
+        text-decoration: none;
+        color: #6f43ff;
+      }
+
+      .toggle {
+        margin-top: 10px;
+      	display: flex;
+      	justify-content: center;
+      	align-items: center;
+        font-family: "OpenSans SemiBold";
+      }
+
+      .toggle input[type=checkbox] {
+        height: 0;
+        width: 0;
+        visibility: hidden;
+      }
+
+      .toggle label {
+        cursor: pointer;
+        width: 80px;
+        height: 35px;
+        background: #f6136e;
+        display: block;
+        border-radius: 18px;
+        position: relative;
+      }
+
+      .toggle label:after {
+        content: '';
+        border-radius: 18px;
+        transition: 0.3s;
+        background-color: #fff;
+        top: 2px;
+        left: 2px;
+        width: 35px;
+        height: 31px;
+        position: absolute;
+      }
+
+      .toggle input:checked + label {
+        background: #26cd7f;
+      }
+
+      .toggle input:checked + label:after {
+        left: calc(100% - 2px);
+        transform: translateX(-100%);
+      }
+
+      .toggle label:active:after {
+        width: 36px;
+      }
+
+      .toggle label:before {
+        transition-duration: .2s;
+        content: 'OFF';
+        width: 10px;
+        font-size: 11px;
+        color: #fff;
+        position: relative;
+        left: 50px;
+        top: 4px;
+      }
+
+      .toggle input:checked + label:before {
+        transition-duration: .2s;
+        content: 'ON';
+        left: 10px;
+        top: 4px;
+      }
+
+      @media (max-width: 991px) {
+        .body {
+          padding-left: 60px !important;
+          padding-right: 60px !important;
+        }
+      }
+
+      @media (max-width: 767px) {
+        .body {
+          padding-left: 30px !important;
+          padding-right: 30px !important;
+        }
+
+        .cards {
+          justify-content: center;
+        }
+
+        .card {
+          margin: 1em;
+        }
+      }
+
+    </style>
+  </body>
+</html>

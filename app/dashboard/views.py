@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -99,7 +99,7 @@ def send_tip_2(request):
         message = 'Notification has been sent'
         params = json.loads(request.body)
         emails = []
-        
+
         #basic validation
         username = params['username']
 
@@ -280,7 +280,7 @@ def profile_keywords_helper(handle):
 
 def profile_keywords(request, handle):
     keywords = profile_keywords_helper(handle)
-    
+
     response = {
         'status': 200,
         'keywords': keywords,
@@ -403,3 +403,65 @@ def prirp(request):
 
 def apitos(request):
     return redirect('https://gitcoin.co/terms#privacy')
+
+def toolbox(request):
+    actors = [{
+        "title": "Developers",
+        "description": "Solve issues. Collect bounties !",
+        "tools": [{
+            "name": "Useful Tool",
+            "img": "/static/v2/images/phrases/Phrases-10.png",
+            "description": '''Very helpful description of the tool.
+                            Should not be longer than 90 chars''',
+            "link": "#",
+            "active": "false"
+        }, {
+            "name": "Mauris Leo",
+            "img": "/static/v2/images/phrases/Phrases-04.png",
+            "description": '''Excepteur sint occaecat cupidatat non proident,
+                            sunt in culpa qui officia deserunt mollit.''',
+            "link": "#",
+            "active": "false"
+        }, {
+            "name": "Dolore Magna",
+            "img": "/static/v2/images/phrases/Phrases-03.png",
+            "description": '''Lorem ipsum dolor sit amet, consectetur
+                            adipiscing elit, sed do eiusmod tempor incididunt.''',
+            "link": "#",
+            "active": "false"
+        }]
+     },{
+         "title": "Repository Owners",
+         "description": "Take your open source to the next level !",
+         "tools": [{
+             "name": "Portitor Liguala",
+             "img": "/static/v2/images/phrases/Phrases-06.png",
+             "description": '''Ut enim ad minima veniam, quis nostrum
+                                exercitationem ullam corporis suscipit''',
+             "link": "#",
+             "active": "false"
+         }, {
+             "name": "Port Liguala",
+             "img": "/static/v2/images/phrases/Phrases-02.png",
+             "description": '''Nemo enim ipsam voluptatem quia voluptas sit
+                                aspernatur aut odit aut fugit, sed quia.''',
+             "link": "#",
+             "active": "false"
+         }]
+      }, {
+          "title": "Tools in Beta",
+          "description": "Take these fresh new tools for a test ride !",
+          "tools": [{
+              "name": "Donec Varius",
+              "img": "/static/v2/images/phrases/Phrases-05.png",
+              "description": '''Sed ut perspiciatis unde omnis iste natus error
+                                sit voluptatem accusantium doloremque laudantiu''',
+              "link": "#",
+              "active": "false"
+          }]
+       }]
+
+    context = {
+        'actors': actors,
+    }
+    return TemplateResponse(request, 'toolbox.html', context)
