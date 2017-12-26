@@ -914,8 +914,8 @@ body.bounty_details #title{
 }
 @media (max-width: 1025px) {
     .tldr_container img{
-        max-width: 250px;
-        max-height: 250px;
+        max-width: 300px;
+        max-height: 300px;
     }
 
     .profile_details .bounties li div.relationship,
@@ -973,8 +973,8 @@ body.bounty_details #title{
 }
 @media (max-width: 769px) {
     .tldr_container img{
-        max-width: 180px;
-        max-height: 180px;
+        max-width: 250px;
+        max-height: 250px;
     }
     .email_settings .col-4 {
         display: none;
@@ -1070,8 +1070,8 @@ body.bounty_details #title{
 }
 @media (max-width: 481px) {
     .tldr_container img{
-        max-width: 110px;
-        max-height: 110px;
+        max-width: 150px;
+        max-height: 150px;
     }
 
     .hide_min_viewport{
