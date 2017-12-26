@@ -1,15 +1,3 @@
-# encoding=utf8
-import sys
-
-from django.conf import settings
-
-import sendgrid
-from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
-from retail.emails import *
-from sendgrid.helpers.mail import Content, Email, Mail, Personalization
-
-reload(sys)
-sys.setdefaultencoding('utf8')
 '''
     Copyright (C) 2017 Gitcoin Core
 w
@@ -27,6 +15,13 @@ w
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+
+from django.conf import settings
+
+import sendgrid
+from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
+from retail.emails import *
+from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
 
 def send_mail(from_email, _to_email, subject, body, html=False, from_name="Gitcoin.co", cc_emails=None):
