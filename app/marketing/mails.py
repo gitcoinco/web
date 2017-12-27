@@ -115,7 +115,7 @@ def new_bounty_claim(bounty, to_emails=[]):
     if not bounty or not bounty.value_in_usdt:
         return
 
-    subject = "✉️ New Claim Inside ✉️"
+    subject = "✉️ New Claim Inside for {} ✉️".format(bounty.title_or_desc)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
@@ -129,7 +129,7 @@ def new_bounty_rejection(bounty, to_emails=[]):
     if not bounty or not bounty.value_in_usdt:
         return
 
-    subject = "😕 Claim Rejected 😕"
+    subject = "😕 Claim Rejected for {} 😕".format(bounty.title_or_desc)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
@@ -143,7 +143,7 @@ def new_bounty_acceptance(bounty, to_emails=[]):
     if not bounty or not bounty.value_in_usdt:
         return
 
-    subject = "🌈 Funds Paid! 🌈"
+    subject = "🌈 Funds Paid for {} 🌈".format(bounty.title_or_desc)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
