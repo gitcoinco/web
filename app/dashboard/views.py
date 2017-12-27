@@ -407,61 +407,92 @@ def apitos(request):
 def toolbox(request):
     actors = [{
         "title": "Developers",
-        "description": "Solve issues. Collect bounties !",
+        "description": "Solve issues. Collect bounties!",
         "tools": [{
-            "name": "Useful Tool",
-            "img": "/static/v2/images/phrases/Phrases-10.png",
-            "description": '''Very helpful description of the tool.
-                            Should not be longer than 90 chars''',
-            "link": "#",
-            "active": "false"
+            "name": "Issue Explorer",
+            "img": "/static/v2/images/why-different/code_great.png",
+            "description": '''A searchable index of all of the work available in
+                            the system.''',
+            "link": "https://gitcoin.co/explorer",
+            "active": "true"
         }, {
-            "name": "Mauris Leo",
-            "img": "/static/v2/images/phrases/Phrases-04.png",
-            "description": '''Excepteur sint occaecat cupidatat non proident,
-                            sunt in culpa qui officia deserunt mollit.''',
-            "link": "#",
-            "active": "false"
-        }, {
-            "name": "Dolore Magna",
-            "img": "/static/v2/images/phrases/Phrases-03.png",
-            "description": '''Lorem ipsum dolor sit amet, consectetur
-                            adipiscing elit, sed do eiusmod tempor incididunt.''',
-            "link": "#",
-            "active": "false"
+            "name": "API",
+            "img": "/static/v2/images/tools/api.jpg",
+            "description": '''Gitcoin provides a simple HTTPS API to access data
+                            without having to run your own Ethereum node.''',
+            "link": "https://github.com/gitcoinco/web#https-api",
+            "active": "true"
         }]
      },{
-         "title": "Repository Owners",
-         "description": "Take your open source to the next level !",
+         "title": "Repo Owners",
+         "description": "Take your open source to the next level!",
          "tools": [{
-             "name": "Portitor Liguala",
-             "img": "/static/v2/images/phrases/Phrases-06.png",
-             "description": '''Ut enim ad minima veniam, quis nostrum
-                                exercitationem ullam corporis suscipit''',
+             "name": "Bounties",
+             "img": "/static/v2/images/tldr/bounties.jpg",
+             "description": '''Create an issue and offer a bounty to get folks
+                            working on it''',
              "link": "#",
              "active": "false"
          }, {
-             "name": "Port Liguala",
-             "img": "/static/v2/images/phrases/Phrases-02.png",
-             "description": '''Nemo enim ipsam voluptatem quia voluptas sit
-                                aspernatur aut odit aut fugit, sed quia.''',
-             "link": "#",
+             "name": "Tips",
+             "img": "/static/v2/images/tldr/tips.jpg",
+             "description": '''Leave a tip to show thank someone for
+                        helping out''',
+             "link": "https://gitcoin.co/tips",
              "active": "false"
          }]
       }, {
-          "title": "Tools in Beta",
-          "description": "Take these fresh new tools for a test ride !",
+          "title": "For Everyone",
+          "description": "We've got something for everyone!",
           "tools": [{
-              "name": "Donec Varius",
-              "img": "/static/v2/images/phrases/Phrases-05.png",
-              "description": '''Sed ut perspiciatis unde omnis iste natus error
-                                sit voluptatem accusantium doloremque laudantiu''',
+              "name": "Slack Community",
+              "img": "/static/v2/images/tldr/community.jpg",
+              "description": '''Questions / Discussion / Just say hi ? Swing by
+                                our slack channel''',
+              "link": "https://gitcoincommunity.slack.com",
+              "active": "false"
+          }, {
+              "name": "Browser Extension",
+              "img": "/static/v2/images/tools/browser_extension.png",
+              "description": '''Nemo enim ipsam voluptatem quia voluptas sit
+                                 aspernatur aut odit aut fugit, sed quia.''',
+              "link": "#",
+              "active": "false"
+          }, {
+              "name": "iOS app",
+              "img": "/static/v2/images/tools/iOS.png",
+              "description": '''gitcoin is now on iOS. Get it installed and
+                    start solving real world problems.''',
               "link": "#",
               "active": "false"
           }]
-       }]
+       }, {
+          "title": "Tools in Beta",
+          "description": "Take these fresh new tools for a test ride !",
+          "tools": [{
+              "name": "Leaderboard",
+              "img": "/static/v2/images/tools/leaderboard.png",
+              "description": '''Sed ut perspiciatis unde omnis iste natus error
+                                sit voluptatem accusantium doloremque laudantiu''',
+              "link": "https://gitcoin.co/leaderboard/",
+              "active": "false"
+          }]
+       }, {
+           "title": "Just for Fun",
+           "description": "Cause all work and no play makes Jack a dull boy",
+           "tools": [{
+               "name": "Ethwallpaper",
+               "img": "/static/v2/images/tools/ethwallpaper.png",
+               "description": '''Experimental laboratory of gitcoin to generate
+                        ethereum wallpapers!''',
+               "link": "https://ethwallpaper.co",
+               "active": "false"
+           }]
+        }]
 
     context = {
+        'title': "Toolbox",
         'actors': actors,
+        'newsletter_headline': "Don't Miss New Tools!"
     }
     return TemplateResponse(request, 'toolbox.html', context)

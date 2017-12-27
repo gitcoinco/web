@@ -66,7 +66,7 @@ urlpatterns = [
     url(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     url(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
-    url(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
+    # url(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
 
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
