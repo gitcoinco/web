@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-import hashlib
+import codecs
 import os
 import StringIO
 from wsgiref.util import FileWrapper
@@ -222,9 +222,7 @@ def process_accesscode_request(request, pk):
         raise
 
     if request.POST.get('submit', False):
-        h = hashlib.new('ripemd160')
-        h.update(h.hexdigest() + str(timezone.now()))
-        invitecode = h.hexdigest()[:29]
+        invitecode = codecs.getencoder('hex')(os.urandom(16))[0][:29]
 
         AccessCodes.objects.create(
             invitecode=invitecode,
