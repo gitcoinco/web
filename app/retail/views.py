@@ -412,8 +412,12 @@ def help_faq(request):
     return redirect('https://gitcoin.co/help#faq')
 
 
-def browser_extension(request):
+def browser_extension_chrome(request):
     return redirect('https://chrome.google.com/webstore/detail/gdocmelgnjeejhlphdnoocikeafdpaep')
+
+
+def browser_extension_firefox(request):
+    return redirect('https://addons.mozilla.org/en-US/firefox/addon/gitcoin/')
 
 
 def ios(request):

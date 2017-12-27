@@ -84,7 +84,10 @@ urlpatterns = [
     url(r'^help/portal?', retail.views.portal, name='portal'),
     url(r'^help/pilot?', retail.views.help_pilot, name='help_pilot'),
     url(r'^help/?', retail.views.help, name='help'),
-    url(r'^extension/?', retail.views.browser_extension, name='browser_extension'),
+    url(r'^extension/chrome?', retail.views.browser_extension_chrome, name='browser_extension_chrome'),
+    url(r'^extension/firefox?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
+    url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
+
     url(r'^slack/?', retail.views.slack, name='slack'),
     url(r'^ios/?', retail.views.ios, name='ios'),
     url(r'^ethdenver/?', retail.views.ethdenver, name='ethdenver'),
