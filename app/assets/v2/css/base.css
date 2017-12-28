@@ -903,6 +903,19 @@ body.bounty_details #title{
 #mc_embed_signup_scroll #mc-embedded-subscribe{
     margin-top: -4px;
 }
+.waiting_room_entertainment{
+    background-color: #f6136e;
+    height: 30vh;
+    padding: 20px 20px 10vh 20px;
+    clip-path: polygon(0 0, 100% 0, 100% 21vh, 0 100%);
+    overflow-y: auto;
+}
+.waiting_room_entertainment .leader{
+    text-transform: uppercase;
+}
+.waiting_room_entertainment .dateline{
+    font-size: smaller;
+}
 @media (max-width: 1350px) {
     .profile_details .bounties li div.details{
         width: 400px;
@@ -1169,6 +1182,9 @@ body.bounty_details #title{
     }
     .bounty_def h5{
         font-size: .9rem;
+    }
+    .waiting_room_entertainment{
+        font-size: .7rem;
     }
 }
 @media (max-width: 350px) {
