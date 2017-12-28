@@ -40,49 +40,6 @@ def valid_date(v):
 
 GITHUB_REPO_PATTERN = re.compile('github.com/[\w-]+/([\w-]+)')
 
-def extract_github_repo(url):
-    match = GITHUB_REPO_PATTERN.search(url)
-    if not match:
-        raise Exception("malformed github url: %s", url)
-
-    return match.groups()[0]
-
-def format_bounty(bounty):
-    return {
-        'type': 'bounty',
-        'created_on': bounty.web3_created,
-        'last_activity': bounty.modified_on,
-        'amount': bounty.value_in_token,
-        'denomination': bounty.token_name,
-        'amount_eth': bounty.value_in_eth,
-        'amount_usdt': bounty.value_in_usdt,
-        'from_address': bounty.bounty_owner_address,
-        'claimee_address': bounty.claimee_address,
-        'repo': extract_github_repo(bounty.github_url),
-        'from_username': bounty.bounty_owner_github_username or '',
-        'claimee_github_username': bounty.claimee_github_username or '',
-        'status': bounty.status,
-        'comments': ''
-    }
-
-def format_tip(tip):
-    return {
-        'type': 'tip',
-        'created_on': tip.created_on,
-        'last_activity': tip.modified_on,
-        'amount': tip.amount,
-        'denomination': tip.tokenName,
-        'amount_eth': tip.value_in_eth,
-        'amount_usdt': tip.value_in_usdt,
-        'from_address': '',
-        'claimee_address': '',
-        'repo': extract_github_repo(tip.github_url) if tip.github_url else '',
-        'from_username': tip.from_email, # user tipper's email for now so tips are somewhat identifiable
-        'claimee_github_username': '', # don't know who recieves this tip at the moment
-        'status': tip.status,
-        'comments': ''
-    }
-
 
 class Command(BaseCommand):
 
@@ -91,6 +48,51 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('start_date', type=valid_date, help='Start of date range (inclusive) in YYYY/MM/DD format for activities to be collected')
         parser.add_argument('end_date', type=valid_date, help='End of date range (inclusive) in YYYY/MM/DD format for activities to be collected')
+
+    def extract_github_repo(self, url):
+        match = GITHUB_REPO_PATTERN.search(url)
+        if not match:
+            self.stdout.write(self.style.WARNING('WARNING: malformed github url: %s, using value as is' % url))
+            return url
+
+        return match.groups()[0]
+
+    def format_bounty(self, bounty):
+        return {
+            'type': 'bounty',
+            'created_on': bounty.web3_created,
+            'last_activity': bounty.modified_on,
+            'amount': bounty.value_in_token,
+            'denomination': bounty.token_name,
+            'amount_eth': bounty.value_in_eth,
+            'amount_usdt': bounty.value_in_usdt,
+            'from_address': bounty.bounty_owner_address,
+            'claimee_address': bounty.claimeee_address,
+            'repo': self.extract_github_repo(bounty.github_url),
+            'from_username': bounty.bounty_owner_github_username or '',
+            'claimee_github_username': bounty.claimee_github_username or '',
+            'status': bounty.status,
+            'comments': ''
+        }
+
+    def format_tip(self, tip):
+        return {
+            'type': 'tip',
+            'created_on': tip.created_on,
+            'last_activity': tip.modified_on,
+            'amount': tip.amount,
+            'denomination': tip.tokenName,
+            'amount_eth': tip.value_in_eth,
+            'amount_usdt': tip.value_in_usdt,
+            'from_address': '',
+            'claimee_address': '',
+            'repo': self.extract_github_repo(tip.github_url) if tip.github_url else '',
+            'from_username': tip.from_email, # user tipper's email for now so tips are somewhat identifiable
+            'claimee_github_username': '', # don't know who recieves this tip at the moment
+            'status': tip.status,
+            'comments': ''
+        }
+
 
     def handle(self, *args, **options):
         bounties = Bounty.objects.filter(
@@ -106,8 +108,8 @@ class Command(BaseCommand):
             created_on__lte=options['end_date']
         ).order_by('created_on', 'id')
 
-        formatted_bounties = imap(format_bounty, bounties)
-        formatted_tips = imap(format_tip, tips)
+        formatted_bounties = imap(self.format_bounty, bounties)
+        formatted_tips = imap(self.format_tip, tips)
 
         csvfile = StringIO.StringIO()
         csvwriter = csv.DictWriter(csvfile, fieldnames=[
