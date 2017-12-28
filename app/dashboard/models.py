@@ -290,6 +290,13 @@ class Tip(SuperModel):
         from django.contrib.humanize.templatetags.humanize import naturalday
         return "({}) - {} {} {} {} to {},  created: {}, expires: {}".format(self.network, "RECEIVED" if self.receive_txid else "", "ORPHAN" if len(self.emails) == 0 else "", self.amount, self.tokenName, self.username, naturalday(self.created_on), naturalday(self.expires_date))
 
+
+    #TODO: DRY
+    def get_natural_value(self):
+        token = addr_to_token(self.tokenAddress)
+        decimals = token['decimals']
+        return float(self.amount) / 10**decimals
+
     #TODO: DRY
     @property
     def value_in_eth(self):
