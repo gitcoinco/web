@@ -27,6 +27,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+from app.utils import itermerge
 from dashboard.models import Bounty, Tip
 from marketing.mails import send_mail
 
@@ -49,19 +50,19 @@ def extract_github_repo(url):
 def format_bounty(bounty):
     return {
         'type': 'bounty',
-        'created_on': bounty.created_on,
+        'created_on': bounty.web3_created,
         'last_activity': bounty.modified_on,
         'amount': bounty.value_in_token,
-        'denomnation': bounty.token_name,
+        'denomination': bounty.token_name,
         'amount_eth': bounty.value_in_eth,
         'amount_usdt': bounty.value_in_usdt,
         'from_address': bounty.bounty_owner_address,
-        'to_address': bounty.claimee_address,
+        'claimee_address': bounty.claimee_address,
         'repo': extract_github_repo(bounty.github_url),
-        'from_username': bounty.bounty_owner_github_username or '', # XXX owner can be null
-        'to_username': bounty.claimee_github_username or '', # XXX claimee can be null
+        'from_username': bounty.bounty_owner_github_username or '',
+        'claimee_github_username': bounty.claimee_github_username or '',
         'status': bounty.status,
-        'comments': 'no bounty comments right now' # XXX where does the PR link come from?
+        'comments': ''
     }
 
 def format_tip(tip):
@@ -70,57 +71,17 @@ def format_tip(tip):
         'created_on': tip.created_on,
         'last_activity': tip.modified_on,
         'amount': tip.amount,
-        'denomnation': tip.tokenName,
+        'denomination': tip.tokenName,
         'amount_eth': tip.value_in_eth,
         'amount_usdt': tip.value_in_usdt,
-        'from_address': 'tip has no owner address saved', # XXX owner address field can't be populated with current schema
-        'to_address': 'tip has no claimee', # XXX claimee address field doesn't make sense for tips
-        'repo': extract_github_repo(tip.github_url) if tip.github_url else '', # XXX url can be null
-        'from_username': tip.from_email, # XXX github owner field doesn't make sense for tips
-        'to_username': 'tip has no claimee', # XXX github claimee field doesn't make sense for tips
+        'from_address': '',
+        'claimee_address': '',
+        'repo': extract_github_repo(tip.github_url) if tip.github_url else '',
+        'from_username': tip.from_email, # user tipper's email for now so tips are somewhat identifiable
+        'claimee_github_username': '', # don't know who recieves this tip at the moment
         'status': tip.status,
-        'comments': 'no no tip comments right now' # XXX comment field doesn't make sense for tips
+        'comments': ''
     }
-
-def itermerge(gen_a, gen_b, key):
-    a = None
-    b = None
-
-    # yield items in order until first iterator is emptied
-    try:
-        while True:
-            if a is None:
-                a = gen_a.next()
-
-            if b is None:
-                b = gen_b.next()
-
-            if key(a) <= key(b):
-                yield a
-                a = None
-            else:
-                yield b
-                b = None
-    except StopIteration:
-        # yield last item to be pulled from non-empty iterator
-        if a is not None:
-            yield a
-
-        if b is not None:
-            yield b
-
-    # flush remaining items in non-empty iterator
-    try:
-        for a in gen_a:
-            yield a
-    except StopIteration:
-        pass
-
-    try:
-        for b in gen_b:
-            yield b
-    except StopIteration:
-        pass
 
 
 class Command(BaseCommand):
@@ -135,9 +96,9 @@ class Command(BaseCommand):
         bounties = Bounty.objects.filter(
             network='mainnet',
             current_bounty=True,
-            created_on__gte=options['start_date'],
-            created_on__lte=options['end_date']
-        ).order_by('created_on', 'id')
+            web3_created__gte=options['start_date'],
+            web3_created__lte=options['end_date']
+        ).order_by('web3_created', 'id')
 
         tips = Tip.objects.filter(
             network='mainnet',
@@ -151,8 +112,8 @@ class Command(BaseCommand):
         csvfile = StringIO.StringIO()
         csvwriter = csv.DictWriter(csvfile, fieldnames=[
             'type', 'created_on', 'last_activity', 'amount', 'denomination', 'amount_eth',
-            'amount_usdt', 'from_address', 'to_address', 'repo', 'from_username',
-            'to_username', 'status', 'comments'])
+            'amount_usdt', 'from_address', 'claimee_address', 'repo', 'from_username',
+            'claimee_github_username', 'status', 'comments'])
 
         has_rows = False
         for item in itermerge(formatted_bounties, formatted_tips, lambda x: x['created_on']):
