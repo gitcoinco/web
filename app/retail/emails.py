@@ -157,20 +157,16 @@ def render_new_bounty_roundup(to_email):
 
     bounties = [
         {
-            'obj': Bounty.objects.get(pk=328),
-            'primer': 'Into Design?  Help Gitcoin articulate our mission, culture, and values. 💯 ~ @owocki',
+            'obj': Bounty.objects.get(pk=387),
+            'primer': 'Truffle is 💯  Here\'s an oppy to contribute to their project! ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=301),
-            'primer': 'Got Solidity chops?  Into Testing?  This Funded issue is you for.  ~ @owocki',
+            'obj': Bounty.objects.get(pk=297),
+            'primer': 'Get paid for work in the intersection of VR / Open Source   ~ @owocki',
         },
         {
             'obj': Bounty.objects.get(pk=118),
             'primer': 'Security and documentation task below.  Good oppy to meet some of the web3 security folks out there.  ~ @owocki',
-        },
-        {
-            'obj': Bounty.objects.get(pk=159),
-            'primer': 'Linux head?  This issue is for you! 👇 ~ @owocki',
         },
     ]
 
