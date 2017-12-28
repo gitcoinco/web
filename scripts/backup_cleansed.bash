@@ -20,6 +20,7 @@ BACKUPSTR=`date +"%Y%m%d"`
 MONTH=`date +"%m"`
 DAY=`date +"%d"`
 YEAR=`date +"%Y"`
+#remove emails, keys from tips table
 sudo runuser -l postgres -c '/usr/bin/pg_dump gitcoin' | sed 's/[\.a-zA-z0-9]*\@/xxxxx@/g' | sed 's/\@[\.a-zA-z0-9]*/@DOMAIN.TLD/g' | sed 's/key=[\.a-zA-z0-9]*/key=XXXX/g' > /tmp/$BACKUPSTR.sql
 s3cmd put /tmp/$BACKUPSTR.sql s3://gitcoinbackups/$YEAR/$MONTH/$DAY/$BACKUPSTR-$(hostname)-cleansed.sql
 rm /tmp/$BACKUPSTR.sql
