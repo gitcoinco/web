@@ -897,11 +897,12 @@ body.bounty_details #title{
 {
     background: black;
 }
-
 #pull_gh {
     font-size: 12px
 }
-
+#mc_embed_signup_scroll #mc-embedded-subscribe{
+    margin-top: -4px;
+}
 @media (max-width: 1350px) {
     .profile_details .bounties li div.details{
         width: 400px;
