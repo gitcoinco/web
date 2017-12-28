@@ -272,7 +272,7 @@ class Tip(SuperModel):
     url = models.CharField(max_length=255, default='')
     tokenName = models.CharField(max_length=255)
     tokenAddress = models.CharField(max_length=255)
-    amount = models.DecimalField(default=1, decimal_places=2, max_digits=50)
+    amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
     comments_priv = models.TextField(default='')
     comments_public = models.TextField(default='')
     ip = models.CharField(max_length=50)
