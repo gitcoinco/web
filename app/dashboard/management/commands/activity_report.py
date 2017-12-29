@@ -29,7 +29,7 @@ from django.utils import timezone
 
 from app.utils import itermerge
 from dashboard.models import Bounty, Tip
-from marketing.mails import send_mail
+from marketing.mails import create_attachment, send_mail
 
 DATE_FORMAT = '%Y/%m/%d'
 def valid_date(v):
@@ -127,7 +127,10 @@ class Command(BaseCommand):
         end = options['end_date'].strftime(DATE_FORMAT)
         if has_rows:
             subject = 'Gitcoin Activity report from %s to %s' % (start, end)
-            send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, subject, csvfile.getvalue())
+            filename = 'activity_report_%s_%s.csv' % (start, end)
+            attachment = create_attachment(csvfile.getvalue(), 'text/plain', filename, "Gitcoin Activity report")
+
+            send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, subject, 'see attachment', attachments=[attachment])
 
             self.stdout.write(self.style.SUCCESS('Sent activity report from %s to %s to %s' % (start, end, settings.CONTACT_EMAIL)))
         else:

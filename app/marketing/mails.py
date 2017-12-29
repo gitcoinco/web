@@ -6,7 +6,7 @@ from django.conf import settings
 import sendgrid
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from retail.emails import *
-from sendgrid.helpers.mail import Content, Email, Mail, Personalization
+from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -29,7 +29,7 @@ w
 '''
 
 
-def send_mail(from_email, _to_email, subject, body, html=False, from_name="Gitcoin.co", cc_emails=None):
+def send_mail(from_email, _to_email, subject, body, html=False, from_name="Gitcoin.co", cc_emails=None, attachments=[]):
 
     # make sure this subscriber is saved
     to_email = _to_email
@@ -61,6 +61,9 @@ def send_mail(from_email, _to_email, subject, body, html=False, from_name="Gitco
     p.add_bcc(Email(settings.BCC_EMAIL))
     mail.add_personalization(p)
 
+    for attachment in attachments:
+        mail.add_attachment(attachment)
+
     # debug logs
     print("-- Sending Mail '{}' to {}".format(subject, _to_email))
 
@@ -68,6 +71,16 @@ def send_mail(from_email, _to_email, subject, body, html=False, from_name="Gitco
     # send mails
     response = sg.client.mail.send.post(request_body=mail.get())
     return response
+
+def create_attachment(content, attachment_type, filename, content_id):
+    attachment = Attachment()
+    attachment.content = content
+    attachment.type = attachment_type
+    attachment.filename = filename
+    attachment.disposition = 'attachment'
+    attachment.content_id = content_id
+
+    return attachment
 
 
 def tip_email(tip, to_emails, is_new):
