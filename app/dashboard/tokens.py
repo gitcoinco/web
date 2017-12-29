@@ -21,6 +21,8 @@ tokens = [
     {"addr": "0x2941deaad71adb02b944bd38ebce2f1f4c9a62dc", "name": "COLO", "decimals": 18},
     # from https://github.com/etherdelta/etherdelta.github.io/blob/master/config/main.json
     {"addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18},
+    # for backwards compat with old data, also accept 0x0 as ETH token address
+    {"addr": "0x0",                                        "name": "ETH", "decimals": 18},
     {"addr": "0xd8912c10681d8b21fd3742244f44658dba12264e", "name": "PLU", "decimals": 18},
     {"addr": "0xaf30d2a7e90d7dc361c8c4585e9bb7d2f6f15bc7", "name": "1ST", "decimals": 18},
     {"addr": "0x936f78b9852d12f5cb93177c1f84fb8513d06263", "name": "GNTW", "decimals": 18},

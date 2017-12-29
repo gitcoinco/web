@@ -62,7 +62,7 @@ class Command(BaseCommand):
             'type': 'bounty',
             'created_on': bounty.web3_created,
             'last_activity': bounty.modified_on,
-            'amount': bounty.value_in_token,
+            'amount': bounty.get_natural_value(),
             'denomination': bounty.token_name,
             'amount_eth': bounty.value_in_eth,
             'amount_usdt': bounty.value_in_usdt,
@@ -80,7 +80,7 @@ class Command(BaseCommand):
             'type': 'tip',
             'created_on': tip.created_on,
             'last_activity': tip.modified_on,
-            'amount': tip.amount,
+            'amount': tip.get_natural_value(),
             'denomination': tip.tokenName,
             'amount_eth': tip.value_in_eth,
             'amount_usdt': tip.value_in_usdt,
@@ -116,6 +116,7 @@ class Command(BaseCommand):
             'type', 'created_on', 'last_activity', 'amount', 'denomination', 'amount_eth',
             'amount_usdt', 'from_address', 'claimee_address', 'repo', 'from_username',
             'claimee_github_username', 'status', 'comments'])
+        csvwriter.writeheader()
 
         has_rows = False
         for item in itermerge(formatted_bounties, formatted_tips, lambda x: x['created_on']):
