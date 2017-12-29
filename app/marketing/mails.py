@@ -6,13 +6,13 @@ from django.conf import settings
 import sendgrid
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from retail.emails import *
-from sendgrid.helpers.mail import Attachment, Content, Email, Mail, Personalization
+from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
 reload(sys)
 sys.setdefaultencoding('utf8')
 '''
     Copyright (C) 2017 Gitcoin Core
-w
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
     by the Free Software Foundation, either version 3 of the License, or
@@ -29,7 +29,7 @@ w
 '''
 
 
-def send_mail(from_email, _to_email, subject, body, html=False, from_name="Gitcoin.co", cc_emails=None, attachments=[]):
+def send_mail(from_email, _to_email, subject, body, html=False, from_name="Gitcoin.co", cc_emails=None, add_bcc=True):
 
     # make sure this subscriber is saved
     to_email = _to_email
@@ -49,39 +49,25 @@ def send_mail(from_email, _to_email, subject, body, html=False, from_name="Gitco
     mail = Mail(from_email, subject, to_email, content)
 
     # build personalization (BCC + CC)
-    p = Personalization()
-    p.add_to(to_email)
-    if cc_emails: #only add CCif not in prod
-        for cc_addr in set(cc_emails):
-            cc_addr = Email(cc_addr)
-            if settings.DEBUG:
-                cc_addr = to_email
-            if cc_addr._email != to_email._email:
-                p.add_to(cc_addr)
-    p.add_bcc(Email(settings.BCC_EMAIL))
-    mail.add_personalization(p)
-
-    for attachment in attachments:
-        mail.add_attachment(attachment)
+    if add_bcc:
+        p = Personalization()
+        p.add_to(to_email)
+        if cc_emails: #only add CCif not in prod
+            for cc_addr in set(cc_emails):
+                cc_addr = Email(cc_addr)
+                if settings.DEBUG:
+                    cc_addr = to_email
+                if cc_addr._email != to_email._email:
+                    p.add_to(cc_addr)
+        p.add_bcc(Email(settings.BCC_EMAIL))
+        mail.add_personalization(p)
 
     # debug logs
     print("-- Sending Mail '{}' to {}".format(subject, _to_email))
 
-
     # send mails
     response = sg.client.mail.send.post(request_body=mail.get())
     return response
-
-def create_attachment(content, attachment_type, filename, content_id):
-    attachment = Attachment()
-    attachment.content = content
-    attachment.type = attachment_type
-    attachment.filename = filename
-    attachment.disposition = 'attachment'
-    attachment.content_id = content_id
-
-    return attachment
-
 
 def tip_email(tip, to_emails, is_new):
     if not tip or not tip.url or not tip.amount or not tip.tokenName:
