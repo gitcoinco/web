@@ -48,7 +48,7 @@ class Command(BaseCommand):
         fetch_remote = options['remote']
         for bounty in all_bounties:
             if fetch_remote and bounty.current_bounty:
-                bounty.fetch_issue_description()
+                bounty.fetch_issue_item()
                 print('1/ refreshed {}'.format(bounty.pk))
             if not bounty.avatar_url:
                 bounty.avatar_url = bounty.get_avatar_url()

@@ -296,6 +296,9 @@ window.addEventListener('load', function() {
                     result['title'] = result['network'] != 'mainnet' ? "(" + result['network'] + ") " + result['title'] : result['title'];
                     $('.title').html("Funded Issue Details: " + result['title']);
 
+                    // Find interest information
+                    var is_interested = is_on_interest_list(result['pk']);
+
                     //insert table onto page
                     for(var j=0; j< rows.length; j++){
                         var key = rows[j];
@@ -338,12 +341,30 @@ window.addEventListener('load', function() {
                     actions.push(entry);
                     if(result['status']=='open' && !isBountyOwner(result) ){
                         var entry = {
-                            href: '/funding/claim?source='+result['github_url'],
+                            href: '/_github/auth?redirect_uri=/funding/claim?source=' + result['github_url'],
                             text: 'Claim Issue',
                             parent: 'right_actions',
                             color: 'darkBlue'
                         }
                         actions.push(entry);
+
+                        if (is_interested) {
+                            var entry = {
+                                href: '/uninterested',
+                                text: 'Remove Interest',
+                                parent: 'right_actions',
+                                color: 'darkGrey'
+                            }
+                            actions.push(entry);
+                        } else {
+                            var entry = {
+                                href: '/interested',
+                                text: 'Express Interest',
+                                parent: 'right_actions',
+                                color: 'darkGrey'
+                            }
+                            actions.push(entry);
+                        }
                     }
                     if(result['status']=='expired' && isBountyOwner(result) ){
                         var entry = {
@@ -423,6 +444,18 @@ $(document).ready(function(){
             $(this).attr('href','/watch');
             $(this).find('span').text('Watch');
             remove_from_watch_list(document.result['github_url']);
+        }
+    });
+    $("body").delegate('a[href="/interested"], a[href="/uninterested"]', 'click', function (e) {
+        e.preventDefault();
+        if ($(this).attr('href') == '/interested') {
+            $(this).attr('href', '/uninterested');
+            $(this).find('span').text('Remove Interest');
+            add_interest(document.result['pk']);
+        } else {
+            $(this).attr('href', '/interested');
+            $(this).find('span').text('Express Interest');
+            remove_interest(document.result['pk']);
         }
     });
 });

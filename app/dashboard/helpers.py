@@ -242,7 +242,7 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             network=network,
             issue_description='',
             )
-        new_bounty.fetch_issue_description()
+        new_bounty.fetch_issue_item()
         if not new_bounty.avatar_url:
             new_bounty.avatar_url = new_bounty.get_avatar_url()
         new_bounty.save()
