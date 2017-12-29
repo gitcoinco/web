@@ -1,6 +1,13 @@
 //helper functions
 var sidebar_keys = ['experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'idx_status', 'network'];
 
+var localStorage;
+try {
+    localStorage = window.localStorage;
+} catch (e) {
+    localStorage = {};
+}
+
 //sets search information default
 var save_sidebar_latest = function(){
 
@@ -27,7 +34,7 @@ var set_sidebar_defaults = function(){
         ele.addClass('selected');
         ele.data('direction', localStorage['sort_direction']);
     }
-    
+
     for(var i=0;i<sidebar_keys.length;i++){
         var key = sidebar_keys[i];
         if(localStorage[key]){
@@ -78,7 +85,7 @@ var get_search_URI = function(){
             } else if(val == 'watched'){
                 key='github_url';
                 val = watch_list();
-            } 
+            }
         }
         if(val!='any'){
             uri += '&'+key+'='+val;
@@ -199,7 +206,7 @@ var refreshBounties = function(){
         _alert('got an error. please try again, or contact support@gitcoin.co');
     }).always(function(){
         $('.loading').css('display', 'none');
-    });        
+    });
 };
 
 window.addEventListener('load', function() {
@@ -280,7 +287,7 @@ $(document).ready(function(){
         if(e.which == 13) {
             refreshBounties();
             e.preventDefault();
-        }        
+        }
     });
 
     //sidebar filters
@@ -347,7 +354,7 @@ $(document).ready(function(){
         if(e.which == 13) {
             emailSubscribe();
             e.preventDefault();
-        }        
+        }
     });
     $("body").delegate("#save a.btn-darkBlue", 'click', function(e){
         emailSubscribe();
