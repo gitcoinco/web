@@ -40,13 +40,11 @@ class EmailSubscriber(SuperModel):
         return self.email
 
     def set_priv(self):
-        import hashlib
+        import codecs
+        import os
         from django.utils import timezone
 
-        h = hashlib.new('ripemd160')
-        h.update("{}-{}-{}".format(h.hexdigest(), timezone.now(), self.email))
-        self.priv = h.hexdigest()[:29]
-
+        self.priv = codecs.getencoder('hex')(os.urandom(16))[0][:29]
 
 class Stat(SuperModel):
     key = models.CharField(max_length=50, db_index=True)

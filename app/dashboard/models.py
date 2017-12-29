@@ -293,7 +293,7 @@ class Tip(SuperModel):
     url = models.CharField(max_length=255, default='')
     tokenName = models.CharField(max_length=255)
     tokenAddress = models.CharField(max_length=255)
-    amount = models.DecimalField(default=1, decimal_places=2, max_digits=50)
+    amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
     comments_priv = models.TextField(default='')
     comments_public = models.TextField(default='')
     ip = models.CharField(max_length=50)
@@ -312,7 +312,14 @@ class Tip(SuperModel):
         return "({}) - {} {} {} {} to {},  created: {}, expires: {}".format(
                self.network, "RECEIVED" if self.receive_txid else "", "ORPHAN" if len(self.emails) == 0 else "", self.amount, self.tokenName, self.username, naturalday(self.created_on), naturalday(self.expires_date))
 
-    # TODO: DRY
+
+    #TODO: DRY
+    def get_natural_value(self):
+        token = addr_to_token(self.tokenAddress)
+        decimals = token['decimals']
+        return float(self.amount) / 10**decimals
+
+    #TODO: DRY
     @property
     def value_in_eth(self):
         if self.tokenName == 'ETH':

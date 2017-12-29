@@ -28,7 +28,7 @@
     <div class="container-fluid header dash">
         {% include 'shared/nav_internal.html' %}
     </div>
-    <div class="row no-gutter  text-uppercase">
+    <div class="row no-gutter">
         <div class="col-3" style="background: #eee; ">
             {% include 'shared/current_balance.html' %}
             {% include 'shared/sidebar_search.html' %}
@@ -138,7 +138,10 @@
                                 <label for=terms>I have read, understand, and agree to, the <a href="/legal/terms" target=new>Terms of Service</a>:</label>
                             </div>
                             <div class="w-100 mt-2">
-                                <a class="btn btn-sm btn-info mt-3 mb-5 pulseClick float-right" role="button" id="submitBounty" href="#">Fund Issue</a>
+                                <a class="btn btn-sm btn-info mt-3 mb-1 pulseClick float-right" role="button" id="submitBounty" href="#">Fund Issue</a>
+                            </div>
+                            <div class="w-100 mb-5 mt-1">
+                                <a class="float-right" target=new href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
                             </div>
 
                         </div>

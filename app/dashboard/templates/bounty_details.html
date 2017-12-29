@@ -10,7 +10,7 @@
     <div class="container-fluid header dash">
         {% include 'shared/nav_internal.html' %}
     </div>
-    <div class="row no-gutter  text-uppercase">
+    <div class="row no-gutter">
         <div class="col-3" style="background: #eee; ">
             {% include 'shared/current_balance.html' %}
             {% include 'shared/sidebar_search.html' %}
@@ -27,6 +27,9 @@
                     <img src="/static/v2/images/shrug_bot.png">
                     <h3>No funded issue found.</h3>
                     <p>Please go back to the <a href="/explorer">Issue Explorer</a> and try again.</p>
+                    <br>
+                    <h6>Be the OSS Funding you wish to see in the world.</h6>
+                    <p id='submitsolicitation'>Looking to fund some work?  You can submit a new Funded Issue <a href="/funding/new">here</a>.</p>
                 </div>
                 <div class="row mt-4" id="bounty_details">
                     <div class="ml-2 mr-2 pl-4 pr-4 col-2 left_details">

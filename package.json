@@ -1,0 +1,22 @@
+{
+  "name": "gitcoin",
+  "version": "1.0.0",
+  "description": "pushing open source forward",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gitcoinco/web"
+  },
+  "author": "Gitcoin https://github.com/gitcoinco",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gitcoinco/web/issues"
+  },
+  "homepage": "https://github.com/gitcoinco/web#readme",
+  "scripts": {
+    "stylelint": "stylelint ./app/assets/**/**/*.*css"
+  },
+  "devDependencies": {
+    "stylelint": "^8.4.0",
+    "stylelint-config-recommended": "^2.0.1"
+  }
+}
