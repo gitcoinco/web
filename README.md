@@ -17,8 +17,9 @@ This is the website that is live at gitcoin.co
 
 [Star](https://github.com/gitcoinco/web/stargazers) and [watch](https://github.com/gitcoinco/web/watchers) this github repository to stay up to date, we're pushing new code several times per week!
 
-Also, 
+Also,
 
+* want to become a contributor ? Checkout our [guidelines](./docs/CONTRIBUTING.md).
 * [check out the gitcoinco organization-wide repo](https://github.com/gitcoinco/gitcoinco).
 * check out the open issues list, especially the [discussion](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion) label and [easy-pickings](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Aeasy-pickings).
 
@@ -266,9 +267,7 @@ Navigate to `http://localhost:8080/`.
 
 Have an ERC20 compatible token that you'ud like to add support for?  Great!
 
-1. Edit `web/app/assets/js/tokens.js` and add your token.
-1. Edit `web/app/dashboard/tokens.py` and add your token.
-1. Submit a PR against this repo.
+[Here is an example of how to do it](https://github.com/gitcoinco/web/pull/155)
 
 # Legal
 
@@ -290,7 +289,8 @@ Have an ERC20 compatible token that you'ud like to add support for?  Great!
 
 '''
 
-
+# License
+[GNU AFFERO GENERAL PUBLIC LICENSE](./docs/LICENSE)
 
 <!-- Google Analytics -->
 <img src='https://ga-beacon.appspot.com/UA-102304388-1/gitcoinco/web' style='width:1px; height:1px;' >

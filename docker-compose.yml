@@ -28,7 +28,7 @@ services:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/code/app
     build: .
-    command: bash docker-command.bash
+    command: bash bin/docker-command.bash
     volumes:
       - .:/code
     ports:
@@ -42,6 +42,13 @@ services:
     image: trufflesuite/ganache-cli
     ports:
       - "8545:8545"
+
+  node:
+    image: node:9-alpine
+    working_dir: /node
+    volumes:
+      - .:/node
+    command: bin/docker-node.sh
 
 volumes:
   pgdata:

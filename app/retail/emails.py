@@ -157,20 +157,16 @@ def render_new_bounty_roundup(to_email):
 
     bounties = [
         {
-            'obj': Bounty.objects.get(pk=187),
-            'primer': 'Get paid to help your friends get paid.  And disrupt recruing while you\'re at it! 💯 ~ @owocki',
+            'obj': Bounty.objects.get(pk=387),
+            'primer': 'Truffle is 💯  Here\'s an oppy to contribute to their project! ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=159),
-            'primer': 'Got Linux chops?  This Funded issue is you for.  ~ @owocki',
+            'obj': Bounty.objects.get(pk=297),
+            'primer': 'Get paid for work in the intersection of VR / Open Source   ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=120),
-            'primer': 'Performance is a feature.  And Truffle is a hugely important piece of web3 infrastructure.  Earn 2 ETH to pushing it forward.  ~ @owocki',
-        },
-        {
-            'obj': Bounty.objects.get(pk=126),
-            'primer': 'Python dev? Here\'s an oppy to make an impact on web3py ~ @owocki',
+            'obj': Bounty.objects.get(pk=118),
+            'primer': 'Security and documentation task below.  Good oppy to meet some of the web3 security folks out there.  ~ @owocki',
         },
     ]
 

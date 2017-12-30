@@ -31,10 +31,42 @@
         {% include 'shared/hero.html' %}
 
     </div>
+    <div class="container-fluid mt-3 whatisit_container">
+        <div class="row pb-1">
+            <div class="col text-center">
+                <h4 class="">What is Gitcoin?</h4>
+            </div>
+        </div>
+        <div class="row whatisit">
+            <div class="col d-flex flex-column align-items-center animatedParent youtube">
+                <iframe src="https://www.youtube.com/embed/DJartWzDn0E" class="animated fadeInRightShort" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <div class="col d-flex flex-column align-items-center explainer">
+                <ol class="animatedParent">
+                    <li class="animated fadeInLeftShort first">
+                        <img src="/static/v2/images/helmet_X.png"/>
+                    <div class="font-bigger-2 font-italic">1. It's *not* a token.</div>
+                    <div class="font-smaller-1">There is *no* native token on the Gitcoin community.  We're focused on honing our product/market fit.</div>
+                    </li>
+                    <li class="animated fadeInLeftShort second">
+                        <img src="/static/v2/images/why-different/relationships.png"/>
+                    <div class="font-bigger-2 font-italic">2. It's a community.</div>
+                    <div class="font-smaller-1">The Gitcoin toolset &amp; community allows you to (1) build skills (2) find (or give) economic opportunities and hopefully (3) make some lifelong friendships.</div>
+                    </li>
+                    <li class="animated fadeInLeftShort ">
+                        <img src="/static/v2/images/why-different/heart.png"  />
+                        <div class="font-bigger-2 font-italic">3. It's a mission.</div>
+                        <div class="font-smaller-1">Our mission is to "Push Open Source Forward".</div>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
     <div class="container-fluid mt-3 howworks_container">
         <div class="row pb-1">
             <div class="col text-center">
-                <h4 class="">How It Works</h4>
+                <h4 class="">But How Does it Work?</h4>
             </div>
         </div>
         <div class="row howworks">
@@ -42,31 +74,54 @@
                 <ol class="animatedParent">
                     <li class="animated fadeInLeftShort first">
                         <img src="/static/v2/images/why-different/projects.png"/>
-                    <div class="font-bigger-2 font-italic">1. Find a Project.</div>
-                    <div class="font-smaller-1">Bugs, Features, Security Issues. Gitcoin's Issue Explorer is the easiest way to find paid work in open source.</div>
+                    <div class="font-bigger-2 font-italic">1. Find Funded Github Issues.</div>
+                    <div class="font-smaller-1">Whether it's Bugs, Features, or Security Issues, <a href="/explorer">Gitcoin's Issue Explorer</a> is the easiest way to find paid work in open source.</div>
                     </li>
                     <li class="animated fadeInLeftShort second">
-                        <img src="/static/v2/images/why-different/spaceship.png"  />
-                    <div class="font-bigger-2 font-italic">2. Code Something Great.</div>
-                    <div class="font-smaller-1">Open Source is where the best &amp; the brightest sharpen their tools. Build something great, with the greats.</div>
+                        <img src="/static/v2/images/why-different/code_great.png"  />
+                    <div class="font-bigger-2 font-italic">2. Claim an Issue.</div>
+                    <div class="font-smaller-1">Claim the issue on Gitcoin via the Funded Issue Detail Page (<a href="https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/skunkworks/issues/14">Example</a>). </div>
                     </li>
                     <li class="animated fadeInLeftShort third">
+                        <img src="/static/v2/images/why-different/tools.png"  />
+                    <div class="font-bigger-2 font-italic">3. Build Something Great.</div>
+                    <div class="font-smaller-1"> Coordinate with the Bounty Submitter on Github.  Build something great! </div>
+                    </li>
+                    <li class="animated fadeInLeftShort fourth">
                             <img src="/static/v2/images/why-different/cash.png" />
-                        <div class="font-bigger-2 font-italic">3. Get Paid.</div>
-                        <div class="font-smaller-1">Payments are released automatically after code is accepted.</div>
+                        <div class="font-bigger-2 font-italic">4. Submit Your Work &amp; Get Paid.</div>
+                        <div class="font-smaller-1">Payments are Ethereum-based, &amp; released automatically after code is accepted by the bounty submitter.</div>
                     </li>
                 </ol>
             </div>
             <div class="col d-flex flex-column align-items-center animatedParent youtube">
-                <iframe src="https://www.youtube.com/embed/DJartWzDn0E" class="animated fadeInRightShort" frameborder="0" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/Y-gkxBG84TI" class="animated fadeInRightShort" frameborder="0" allowfullscreen></iframe>
             </div>
         </div>
     </div>
 
+    <div class="container-fluid mt-3 tldr_container">
+        <div class="row pb-1">
+            <div class="col text-center">
+                <h4 class="">What's the TLDR?</h4>
+            </div>
+        </div>
+        <div class="row pt-1">
+            <div class="col text-center">
+                <img src="/static/v2/images/tldr/tips.jpg"> +
+                <img src="/static/v2/images/tldr/bounties.jpg"> +
+                <img src="/static/v2/images/tldr/community.jpg"> =
+                <img src="/static/v2/images/tldr/insta-scale.gif"> +
+                <img src="/static/v2/images/tldr/earn.jpg"> 
+            </div>
+        </div>
+    </div>
+
+
     <div class="container-fluid mt-3 text-center white-light-bg why_gitcoin">
         <div class="row pb-1 pt-2 bg-white">
             <div class="col text-center">
-                <h4 class="">Why use Gitcoin</h4>
+                <h4 class="">Why use Gitcoin?</h4>
             </div>
         </div>
         <div class="row pt-5 mb-3 animatedParent">
@@ -108,46 +163,6 @@
         </div>
 
     {% include 'shared/testimonials.html' %}
-
-    <div class="container-fluid pt-3 press_container ">
-        <div class="row press">
-            <div class="col d-flex flex-column align-items-center">
-                <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
-                    <a target=new href="https://www.forbes.com/sites/curtissilver/2017/09/25/gitcoin-launches-today-pushing-open-source-forward-with-cryptocurrency-bounties/">
-                        <img src='/static/v2/images/press/forbes.png'>
-                    </a>
-                </div>
-            </div>
-            <div class="col d-flex flex-column align-items-center">
-                <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
-                    <a target=new href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6">
-                        <img src='/static/v2/images/consensys-logo-dark-small.png' >
-                    </a>
-                </div>
-            </div>
-            <div class="col d-flex flex-column align-items-center">
-                <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
-                    <a target=new href="https://btcmanager.com/solve-software-problems-git-bounty/">
-                        <img src='/static/v2/images/press/btcmanager2.png'>
-                    </a>
-                </div>
-            </div>
-            <div class="col d-flex flex-column align-items-center">
-                <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
-                    <a target=new href="http://www.builtincolorado.com/2017/10/19/boulder-tech-gitcoin-open-source-software">
-                        <img src='/static/v2/images/press/builtin.png'>
-                    </a>
-                </div>
-            </div>
-            <div class="col d-flex flex-column align-items-center">
-                <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
-                    <a target=new href="https://thebitcoinpodcast.com/an-ethereum-podcast-episode-8/">
-                        <img src='/static/v2/images/press/btc_podcast.jpg'>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
 
 
         <div class="row pt-5 bg-darkBlue white" id="mailchimp">
@@ -300,6 +315,54 @@
                 <a class="btn btn-lg btn-warning" role="button" href="/get">Get Started</a>
             </div>
         </div>
+
+        <div class="container-fluid pt-0 press_container ">
+            <div class="row pb-1">
+                <div class="col text-center">
+                    <h4 class="">Press</h4>
+                </div>
+            </div>
+
+            <div class="row press">
+                <div class="col d-flex flex-column align-items-center">
+                    <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
+                        <a target=new href="https://www.forbes.com/sites/curtissilver/2017/09/25/gitcoin-launches-today-pushing-open-source-forward-with-cryptocurrency-bounties/">
+                            <img src='/static/v2/images/press/forbes.png'>
+                        </a>
+                    </div>
+                </div>
+                <div class="col d-flex flex-column align-items-center">
+                    <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
+                        <a target=new href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6">
+                            <img src='/static/v2/images/consensys-logo-dark-small.png' >
+                        </a>
+                    </div>
+                </div>
+                <div class="col d-flex flex-column align-items-center">
+                    <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
+                        <a target=new href="https://btcmanager.com/solve-software-problems-git-bounty/">
+                            <img src='/static/v2/images/press/btcmanager2.png'>
+                        </a>
+                    </div>
+                </div>
+                <div class="col d-flex flex-column align-items-center">
+                    <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
+                        <a target=new href="http://www.builtincolorado.com/2017/10/19/boulder-tech-gitcoin-open-source-software">
+                            <img src='/static/v2/images/press/builtin.png'>
+                        </a>
+                    </div>
+                </div>
+                <div class="col d-flex flex-column align-items-center">
+                    <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
+                        <a target=new href="https://thebitcoinpodcast.com/an-ethereum-podcast-episode-8/">
+                            <img src='/static/v2/images/press/btc_podcast.jpg'>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 
     {% include 'shared/footer.html' %}

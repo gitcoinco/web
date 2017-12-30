@@ -1,5 +1,5 @@
 {% load email_obfuscator %}
-{% load humanize %} 
+{% load humanize %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,7 +11,7 @@
     <div class="container-fluid header dash">
         {% include 'shared/nav_internal.html' %}
     </div>
-    <div class="row no-gutter  text-uppercase">
+    <div class="row no-gutter">
         <div class="col-3" style="background: #eee; ">
             {% include 'shared/current_balance.html' %}
             {% include 'shared/sidebar_search.html' %}
@@ -58,7 +58,7 @@
                                 <li>
                             {% endif %}
                             </li>
-                                <a href="{{profile.data.html_url}}/repos">
+                                <a href="{{profile.data.html_url}}?tab=repositories">
                                     <img src='/static/v2/images/social/github.png' alt='Medium'>
                                 </a>
                             </li>
