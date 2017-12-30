@@ -167,7 +167,7 @@ $(document).ready(function(){
             amount,                       // value_in_token
             tokenAddress,                 // token_address
             account,                      // bounty_owner_address
-            '',                           // claimee_address
+            tokenAddress,                 // claimee_address
             'true',                       // is_open
             'true',                       // initialized
             issueURL,                     // github_url
