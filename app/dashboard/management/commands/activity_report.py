@@ -19,26 +19,31 @@
 import argparse
 import csv
 import datetime
+import os
 import re
 import StringIO
 from itertools import imap
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
+import boto
 from app.utils import itermerge
+from boto.s3.key import Key
 from dashboard.models import Bounty, Tip
 from marketing.mails import send_mail
 
 DATE_FORMAT = '%Y/%m/%d'
+DATE_FORMAT_HYPHENATED = '%Y-%m-%d'
+REPORT_URL_EXPIRATION_TIME = 60 * 60 * 24 * 30 # seconds
+
+GITHUB_REPO_PATTERN = re.compile('github.com/[\w-]+/([\w-]+)')
+
 def valid_date(v):
     try:
         return datetime.datetime.strptime(v, DATE_FORMAT)
     except ValueError:
         raise argparse.ArgumentTypeError('%s is not a date in YYYY/MM/DD format' % v)
-
-GITHUB_REPO_PATTERN = re.compile('github.com/[\w-]+/([\w-]+)')
 
 
 class Command(BaseCommand):
@@ -93,6 +98,16 @@ class Command(BaseCommand):
             'comments': ''
         }
 
+    def upload_to_s3(self, filename, contents):
+        s3 = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
+        bucket = s3.get_bucket(settings.S3_REPORT_BUCKET)
+
+        key = Key(bucket)
+        key.key = os.path.join(settings.S3_REPORT_PREFIX, filename)
+        key.set_contents_from_string(contents)
+
+        return key.generate_url(expires_in=REPORT_URL_EXPIRATION_TIME)
+
 
     def handle(self, *args, **options):
         bounties = Bounty.objects.filter(
@@ -123,12 +138,16 @@ class Command(BaseCommand):
             has_rows = True
             csvwriter.writerow(item)
 
-        start = options['start_date'].strftime(DATE_FORMAT)
-        end = options['end_date'].strftime(DATE_FORMAT)
+        start = options['start_date'].strftime(DATE_FORMAT_HYPHENATED)
+        end = options['end_date'].strftime(DATE_FORMAT_HYPHENATED)
+        now = str(datetime.datetime.now())
         if has_rows:
             subject = 'Gitcoin Activity report from %s to %s' % (start, end)
-            # by default sendgrid converts plaintext emails to html. double newlines become <p> tags
-            send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, subject, csvfile.getvalue().replace('\n', '\n\n'), add_bcc=False)
+
+            url = self.upload_to_s3('activity_report_%s_%s_generated_on_%s.csv' % (start, end, now), csvfile.getvalue())
+            body = '<a href="%s">%s</a>' % (url, url)
+
+            send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, subject, body='', html=body, add_bcc=False)
 
             self.stdout.write(self.style.SUCCESS('Sent activity report from %s to %s to %s' % (start, end, settings.CONTACT_EMAIL)))
         else:
