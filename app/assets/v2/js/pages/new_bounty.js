@@ -160,6 +160,22 @@ $(document).ready(function(){
           githubLink: issueURL,
         };
 
+        // create bountydetails array for database sync
+        // comments are the corresponding database fields for dashboard_bounty table
+        bountydetails = [
+            amount,                       // value_in_token
+            tokenAddress,                 // token_address
+            account,                      // bounty_owner_address
+            '',                           // claimee_address
+            'true',                       // is_open
+            'true',                       // initialized
+            issueURL,                     // github_url
+            new Date().getTime()/1000|0,  // web3_created
+            JSON.stringify(metadata),     // multiple fields
+            expire_date,                  // expires_date
+            '',                           // claimee_metadata
+        ]
+
         // web3 callback
         function web3Callback (error,result){
 
@@ -172,6 +188,7 @@ $(document).ready(function(){
             }
 
             sync_web3(issueURL);  //TODO:  What does `sync_web3` do?  Defined in shared.js
+            sync_web3(issueURL, bountydetails);  //Writes the bounty URL to the database
             localStorage['txid'] = result;
             localStorage[issueURL] = timestamp();  // Why set issueURL to timestamp()?
             add_to_watch_list(issueURL);
