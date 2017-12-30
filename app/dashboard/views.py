@@ -37,6 +37,9 @@ from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 confirm_time_minutes_target = 3
 
 
@@ -236,9 +239,9 @@ def bounty_details(request):
         'avatar_url': 'https://gitcoin.co/static/v2/images/helmet.png',
         'active': 'bounty_details',
     }
-
     try:
         b = Bounty.objects.get(github_url=request.GET.get('url'), current_bounty=True)
+        # Currently its not finding anyting in the database
         if b.title:
             params['card_title'] = "{} | {} Funded Issue Detail | Gitcoin".format(b.title, b.org_name)
             params['title'] = params['card_title']
@@ -246,6 +249,7 @@ def bounty_details(request):
         params['avatar_url'] = b.local_avatar_url
     except Exception as e:
         print(e)
+        logging.error(e)
         pass
 
     return TemplateResponse(request, 'bounty_details.html', params)
@@ -338,6 +342,7 @@ def sync_web3(request):
     result = {}
     issueURL = request.POST.get('issueURL', False)
     bountydetails = request.POST.getlist('bountydetails[]', [])
+    # import pdb; pdb.set_trace()
     if issueURL:
 
         issueURL = normalizeURL(issueURL)
@@ -349,17 +354,21 @@ def sync_web3(request):
                 existing_bsr.save()
         else:
             #normalize data
-            bountydetails[0] = int(bountydetails[0])
-            bountydetails[1] = str(bountydetails[1])
-            bountydetails[2] = str(bountydetails[2])
-            bountydetails[3] = str(bountydetails[3])
-            bountydetails[4] = bool(bountydetails[4] == 'true')
-            bountydetails[5] = bool(bountydetails[5] == 'true')
-            bountydetails[6] = str(bountydetails[6])
-            bountydetails[7] = int(bountydetails[7])
-            bountydetails[8] = str(bountydetails[8])
-            bountydetails[9] = int(bountydetails[9])
-            bountydetails[10] = str(bountydetails[10])
+            # Comments reference the field mapping for:
+            #  - database table dashboard_bounty
+            #  - (solidity parameter)
+            # If there is no database field, just the solidity field is referenced.
+            bountydetails[0] = int(bountydetails[0])  # value_in_token (amount)
+            bountydetails[1] = str(bountydetails[1])  # token_address (tokenAddress)
+            bountydetails[2] = str(bountydetails[2])  # bounty_owner_address (bountyOwner)
+            bountydetails[3] = str(bountydetails[3])  # claimee_address (claimee)
+            bountydetails[4] = bool(bountydetails[4] == 'true')  # is_open (open)
+            bountydetails[5] = bool(bountydetails[5] == 'true')  # (initialized)
+            bountydetails[6] = str(bountydetails[6])  # github_url (issueURL)
+            bountydetails[7] = int(bountydetails[7])  # web3_created (creationTime)
+            bountydetails[8] = str(bountydetails[8])  # multiple fields (metaData)
+            bountydetails[9] = int(bountydetails[9])  # expires_date (expirationTime)
+            bountydetails[10] = str(bountydetails[10])  # claimee_metadata (claimee_metaData)
             print(bountydetails)
             contract_address = request.POST.get('contract_address')
             network = request.POST.get('network')
@@ -367,9 +376,8 @@ def sync_web3(request):
 
             print("{} changed, {}".format(didChange, issueURL))
             if didChange:
-                print("- processing changes");
+                print("- processing changes")
                 process_bounty_changes(old_bounty, new_bounty, None)
-
 
         BountySyncRequest.objects.create(
             github_url=issueURL,
