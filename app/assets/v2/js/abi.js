@@ -17,7 +17,10 @@ var bounty_address = function (){
             return "0xf209d2b723b6417cbf04c07e733bee776105a073";
         break;
         case "custom network":
-            throw '0xbe716ab501a10d9ea0362bf20a9b77aba1bd2d88';
+            // This only works if you deploy the Standard Bounties contract locally
+            // Set the testrpc address to the address below in in the truffle.js file.
+            // In the Standard Bounties repo, `truffle deploy --network testrpc`
+            return '0x9ee228365ebc1da6a5d025fdf0939edf2bea21da';
         break;
     }
 }

@@ -1,4 +1,11 @@
 // helper functions
+
+/**
+ * Looks for a transaction receipt.  If it doesn't find one, it keeps running until it does.
+ * @callback
+ * @param {string} txhash - The transaction hash.
+ * @param {function} f - The function passed into this callback.
+ */
 var callFunctionWhenTransactionMined = function(txHash, f){
     var transactionReceipt = web3.eth.getTransactionReceipt(txHash, function(error, result){
         if(result){
