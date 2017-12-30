@@ -204,15 +204,49 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                 }
              });
         };
+
+        function getNumBountiesCallback(error, result){
+            if(error){
+                console.log(error)
+            } else{
+                console.log(result)
+            }
+
+        }
+
         var check_for_bounty_changed_updates_web3 = function(){
+            // This function will continue to be called, until the transaction receipt is found.
+            // Once it is found, it calls the function() defined below.
             callFunctionWhenTransactionMined(localStorage['txid'],function(){
                 var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+                // Waits one second, and try to pull up the bounty details.
+                // bounty.bountydetails does not exist in StandardBounties contract.
+                // it just grabs information about the bounty.
+                // bounty.getNumBounties(getNumBountiesCallback)
+                // bounty.getNumBounties((err, succ)=> {
+                //     var total = parseInt(succ, 10);
+                //     debugger;
+                //     // this.setState({total: total});
+                //     // for (var i = 0; i < total; i++){
+                //     //   this.getBounty(i, bounties, total);
+                //     }
+                // });
+                // debugger;
                 setTimeout(function(){
-                    bounty.bountydetails.call(issueURL, function(error, result){
+                    bounty.getBounty(bountyId, function(error, result){
                         if(error){
+                            // Wait one second, try it again.
                             setTimeout(check_for_bounty_changed_updates_web3, 1000);
                             console.error(error);
                         } else {
+                      //     return (bounties[_bountyId].issuer,
+                      //             bounties[_bountyId].deadline,
+                      //             bounties[_bountyId].fulfillmentAmount,
+                      //             bounties[_bountyId].paysTokens,
+                      //             uint(bounties[_bountyId].bountyStage),
+                      //             bounties[_bountyId].balance);
+                      // }
+                            // debugger;
                             result[0] = result[0].toNumber();
                             result[7] = result[7].toNumber();
                             result[9] = result[9].toNumber();
@@ -271,9 +305,9 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
 
 window.addEventListener('load', function() {
     setTimeout(function(){
-        var issueURL = getParam('url');
+        var issueURL = getParam('url');   // What is this url coming from?
         $("#submitsolicitation a").attr('href','/funding/new/?source=' + issueURL)
-        var uri = '/api/v0.1/bounties?';
+        var uri = '/api/v0.1/bounties?';  // Django API
         $.get(uri, function(results){
             results = sanitizeAPIResults(results);
             var nonefound = true;
@@ -413,6 +447,7 @@ window.addEventListener('load', function() {
 
 
 $(document).ready(function(){
+    // debugger;
     $("body").delegate('a[href="/watch"], a[href="/unwatch"]', 'click', function(e){
         e.preventDefault();
         if($(this).attr('href') == '/watch'){
