@@ -42,6 +42,7 @@ services:
     image: trufflesuite/ganache-cli
     ports:
       - "8545:8545"
+    command: "-a 1 --seed 2"
 
   node:
     image: node:9-alpine
