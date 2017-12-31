@@ -421,7 +421,11 @@ def browser_extension_firefox(request):
 
 
 def ios(request):
-    return redirect('https://goo.gl/forms/HHOcMDKArCPo9Xas1')
+    context = {
+        'active': 'ios',
+        'title': 'iOS',
+    }
+    return TemplateResponse(request, 'ios.html', context)
 
 
 def casestudy(request):
