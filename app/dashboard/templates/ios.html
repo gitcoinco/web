@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+</head>
+<body class="interior {{active}}">
+    <div class="container-fluid header dash">
+        {% include 'shared/nav_internal.html' %}
+    </div>
+    <div class="row no-gutter">
+        <div class="col-3" style="background: #eee; ">
+            {% include 'shared/current_balance.html' %}
+            {% include 'shared/sidebar_search.html' %}
+        </div>
+    </div>
+
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/ga.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+
+</body>
+
+
+<!-- jQuery -->
+<script src="{{STATIC_URL}}v2/js/abi.js"></script>
+<script src="{{STATIC_URL}}v2/js/tokens.js"></script>
+<script src="{{STATIC_URL}}v2/js/shared.js"></script>
+<script src="{{STATIC_URL}}v2/js/pages/claim_bounty.js"></script>
+
+
+</html>
