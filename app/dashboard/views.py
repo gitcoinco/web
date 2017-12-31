@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -99,7 +99,7 @@ def send_tip_2(request):
         message = 'Notification has been sent'
         params = json.loads(request.body)
         emails = []
-        
+
         #basic validation
         username = params['username']
 
@@ -280,7 +280,7 @@ def profile_keywords_helper(handle):
 
 def profile_keywords(request, handle):
     keywords = profile_keywords_helper(handle)
-    
+
     response = {
         'status': 200,
         'keywords': keywords,
@@ -403,3 +403,96 @@ def prirp(request):
 
 def apitos(request):
     return redirect('https://gitcoin.co/terms#privacy')
+
+def toolbox(request):
+    actors = [{
+        "title": "Developers",
+        "description": "Solve issues. Collect bounties!",
+        "tools": [{
+            "name": "Issue Explorer",
+            "img": "/static/v2/images/why-different/code_great.png",
+            "description": '''A searchable index of all of the work available in
+                            the system.''',
+            "link": "https://gitcoin.co/explorer",
+            "active": "true"
+        }, {
+            "name": "API",
+            "img": "/static/v2/images/tools/api.jpg",
+            "description": '''Gitcoin provides a simple HTTPS API to access data
+                            without having to run your own Ethereum node.''',
+            "link": "https://github.com/gitcoinco/web#https-api",
+            "active": "true"
+        }]
+     },{
+         "title": "Repo Owners",
+         "description": "Take your open source to the next level!",
+         "tools": [{
+             "name": "Bounties",
+             "img": "/static/v2/images/tldr/bounties.jpg",
+             "description": '''Create an issue and offer a bounty to get folks
+                            working on it''',
+             "link": "#",
+             "active": "false"
+         }, {
+             "name": "Tips",
+             "img": "/static/v2/images/tldr/tips.jpg",
+             "description": '''Leave a tip to show thank someone for
+                        helping out''',
+             "link": "https://gitcoin.co/tips",
+             "active": "false"
+         }]
+      }, {
+          "title": "For Everyone",
+          "description": "We've got something for everyone!",
+          "tools": [{
+              "name": "Slack Community",
+              "img": "/static/v2/images/tldr/community.jpg",
+              "description": '''Questions / Discussion / Just say hi ? Swing by
+                                our slack channel''',
+              "link": "https://gitcoincommunity.slack.com",
+              "active": "false"
+          }, {
+              "name": "Browser Extension",
+              "img": "/static/v2/images/tools/browser_extension.png",
+              "description": '''Nemo enim ipsam voluptatem quia voluptas sit
+                                 aspernatur aut odit aut fugit, sed quia.''',
+              "link": "#",
+              "active": "false"
+          }, {
+              "name": "iOS app",
+              "img": "/static/v2/images/tools/iOS.png",
+              "description": '''gitcoin is now on iOS. Get it installed and
+                    start solving real world problems.''',
+              "link": "#",
+              "active": "false"
+          }]
+       }, {
+          "title": "Tools in Beta",
+          "description": "Take these fresh new tools for a test ride !",
+          "tools": [{
+              "name": "Leaderboard",
+              "img": "/static/v2/images/tools/leaderboard.png",
+              "description": '''Sed ut perspiciatis unde omnis iste natus error
+                                sit voluptatem accusantium doloremque laudantiu''',
+              "link": "https://gitcoin.co/leaderboard/",
+              "active": "false"
+          }]
+       }, {
+           "title": "Just for Fun",
+           "description": "Cause all work and no play makes Jack a dull boy",
+           "tools": [{
+               "name": "Ethwallpaper",
+               "img": "/static/v2/images/tools/ethwallpaper.png",
+               "description": '''Experimental laboratory of gitcoin to generate
+                        ethereum wallpapers!''',
+               "link": "https://ethwallpaper.co",
+               "active": "false"
+           }]
+        }]
+
+    context = {
+        'title': "Toolbox",
+        'actors': actors,
+        'newsletter_headline': "Don't Miss New Tools!"
+    }
+    return TemplateResponse(request, 'toolbox.html', context)

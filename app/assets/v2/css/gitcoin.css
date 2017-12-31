@@ -3,8 +3,23 @@
     src: url("/static/v2/fonts/futura/font4.ttf") /* TTF file for CSS3 browsers */
 }
 
+@font-face {
+  font-family: "OpenSans Bold";
+  src: url('/static/v2/fonts/OpenSans/Bold.ttf');
+}
+
+@font-face {
+  font-family: "OpenSans SemiBold";
+  src: url('/static/v2/fonts/OpenSans/SemiBold.ttf');
+}
+
+@font-face {
+  font-family: "OpenSans";
+  src: url('/static/v2/fonts/OpenSans/Regular.ttf');
+}
+
 body {
-  font-family: "futura-pt", Futura !important;
+  font-family: "futura-pt", Futura;
   overflow-x: hidden;
   width: 100%;
 }
@@ -300,4 +315,3 @@ div.button-pink {
   /* IE 10+ */
   color: lightgray;
 }
-
