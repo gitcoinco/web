@@ -19,7 +19,7 @@
 <html lang="en">
   <head>
       {% include 'shared/head.html' %}
-      {% include 'shared/cards.html' %}
+      {% include 'shared/cards_pic.html' %}
       <link rel="stylesheet" href="static/v2/css/toolbox.css">
       <link rel="stylesheet" href="static/v2/css/card.css">
   </head>
@@ -37,8 +37,8 @@
               <h2 class="title">Toolbox</h2>
               <div class="row no-gutters">
                 <div class="col-md-5 col-12">
-                  <p class="description">Use the toolbox to make gitcoin your own
-                    by enabling only the tools that suite your need</p>
+                  <p class="description">Make gitcoin your own
+                    by enabling the tools that suit your needs.</p>
                 </div>
               </div>
             </div>
@@ -52,16 +52,20 @@
 
               <div class="cards">
                 {% for tool in actor.tools %}
-                  <div class="card">
+                  <div class="card {{tool.class}}">
                     <div class="img">
                       <img src="{{tool.img}}"/>
                     </div>
                     <div class="content">
                       <div class="title">{{tool.name}}</div>
                       <div class="description">
-                        {{tool.description}}
-                        <span><a href="{{tool.link}}">Learn More ></a>
+                        {{tool.description | safe}}
+                        
                       </div>
+                      <div>
+                        <a class="btn btn-sm btn-success pulseClick" role="button" href="{{tool.link}}">Try it ></a>
+                      </div>
+                      {% comment %}
                       <div class="toggle">
                         {% if tool.active == "true" %}
                           <input type="checkbox" id="switch_{{tool.name}}" checked>
@@ -70,6 +74,7 @@
                         {% endif %}
                         <label for="switch_{{tool.name}}"></label>
                       </div>
+                      {% endcomment %}
                     </div>
                   </div>
                 {% endfor %}

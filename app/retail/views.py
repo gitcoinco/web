@@ -479,6 +479,10 @@ def medium(request):
     return redirect('https://medium.com/gitcoin')
 
 
+def refer(request):
+    return redirect('https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/gitcoinco/issues/1')
+
+
 def gitter(request):
     return redirect('https://gitter.im/gitcoinco/Lobby')
 

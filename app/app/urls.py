@@ -66,7 +66,8 @@ urlpatterns = [
     url(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     url(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
-    # url(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
+    url(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
+    url(r'^tools/?', dashboard.views.toolbox, name='tools'),
 
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
@@ -101,6 +102,7 @@ urlpatterns = [
     url(r'^feedback/?', retail.views.feedback, name='feedback'),
     url(r'^twitter/?', retail.views.twitter, name='twitter'),
     url(r'^gitter/?', retail.views.gitter, name='gitter'),
+    url(r'^refer/?', retail.views.refer, name='refer'),
     url(r'^fb/?', retail.views.fb, name='fb'),
     url(r'^medium/?', retail.views.medium, name='medium'),
     url(r'^github/?', retail.views.github, name='github'),

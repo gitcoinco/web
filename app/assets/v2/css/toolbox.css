@@ -38,3 +38,9 @@
     padding-right: 30px !important;
   }
 }
+.card.new{
+  background-color: #f2f2f2;
+}
+.card.new a.btn{
+  display: none;
+}
