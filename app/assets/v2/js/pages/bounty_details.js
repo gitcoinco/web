@@ -13,11 +13,11 @@ var address_ize = function(key, val, result){
         }
         return [ key, "<a target=new href=https://etherscan.io/address/"+val+">"+val+"</a>"];
     };
-var github_ize = function(key, val, result){
+var gitcoin_ize = function(key, val, result){
         if(!_truthy(val)){
             return [null, null]
         }
-        return [ key, "<a target=new href=https://github.com/"+val+">@"+val.replace('@','')+"</a>"];
+        return [ key, "<a target=new href=https://gitcoin.co/profile/"+val+">@"+val.replace('@','')+"</a>"];
     };
 var email_ize = function(key, val, result){
         if(!_truthy(val)){
@@ -145,8 +145,8 @@ var callbacks = {
         }
         return address_ize(key, val, result);
     },
-    'bounty_owner_github_username': github_ize,
-    'claimee_github_username': github_ize,
+    'bounty_owner_github_username': gitcoin_ize,
+    'claimee_github_username': gitcoin_ize,
     'value_in_eth': function(key, val, result){
         if(result['token_name'] == 'ETH' || val == null){
             return [null, null];
