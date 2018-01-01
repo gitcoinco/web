@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'marketing',
     'economy',
     'dashboard',
+    'faucet',
     'tdi',
     'gas',
     'chartit',
@@ -200,6 +201,9 @@ CACHES = {
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_SECONDS = 3600
+
+# Faucet App config
+FAUCET_AMOUNT = .003
 
 # List of github usernames to not count as comments on an issue
 IGNORE_COMMENTS_FROM = ['gitcoinbot', ]

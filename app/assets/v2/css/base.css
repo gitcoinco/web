@@ -1035,6 +1035,22 @@ body.bounty_details #title {
     font-size: 12px
 }
 
+input.is-invalid {
+  border-color: red;
+}
+
+.faucet_response {
+  display:none;
+}
+
+.faucet_response .frheader {
+  font-size: xx-large;
+}
+
+.faucet_response .frmessage {
+  font-size: large;
+}
+
 .dashboard .w-75 .github-comment {
     background: url(/static/v2/images/icon-msg-16.png) no-repeat left;
     padding-left: 18px;
