@@ -48,7 +48,7 @@ $(document).ready(function() {
     });
 
     $('.faq_item h5').click(function(){
-      $(this).parents('.col').find('.answer').toggleClass('hidden');
+      $(this).parents('.faq_parent').find('.answer').toggleClass('hidden');
     });
 
     //mixpanel integration

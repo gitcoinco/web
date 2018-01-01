@@ -43,11 +43,11 @@ div, p, a, span{
     display: none;
 }
 .faq_item {
-    max-width: 600px;
     margin: 0px auto;
 }
 .faq_item h5{
     cursor: pointer;
+    text-transform: none;
 }
 .interior .body {
     background-color: white;
@@ -914,6 +914,10 @@ body.bounty_details #title{
     }
 }
 @media (max-width: 1025px) {
+    #faq .col-4{
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
     .tldr_container img{
         max-width: 300px;
         max-height: 300px;
