@@ -424,6 +424,7 @@ body #mc_embed_signup label {
     border-radius: 2px;
     padding-top: 20px;
     padding-bottom: 20px;
+    margin-bottom: 50px;
 }
 
 .form_container input[type=text],
