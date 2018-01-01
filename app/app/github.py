@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -31,19 +31,20 @@ v3headers = {
 }
 
 
-def search(q):
+def search(q, with_credentials=True):
     import requests
 
     params = (
         ('q', q),
         ('sort', 'updated'),
     )
-
-    response = requests.get('https://api.github.com/search/users', auth=_auth, headers=v3headers, params=params)
+    if with_credentials:
+      response = requests.get('https://api.github.com/search/users', auth=_auth, headers=v3headers, params=params)
+    else:
+      response = requests.get('https://api.github.com/search/users', headers=v3headers, params=params)
     #print(response.headers['X-RateLimit-Limit'])
     #print(response.headers['X-RateLimit-Remaining'])
     return response.json()
-
 
 def get_issue_comments(owner, repo):
     params = {
