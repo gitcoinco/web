@@ -297,6 +297,7 @@ def profile(request, handle):
 
     profile = profile_helper(handle)
     params['card_title'] = "@{} | Gitcoin".format(handle)
+    params['card_desc'] = profile.desc
     params['title'] = "@{}".format(handle)
     params['avatar_url'] = profile.local_avatar_url
     params['profile'] = profile
@@ -547,7 +548,7 @@ def toolbox(request):
 
     context = {
         "active": "tools",
-        'title': "Gitcoin Toolbox",
+        'title': "Toolbox",
         'card_title': "Gitcoin Toolbox",
         'avatar_url': 'https://gitcoin.co/static/v2/images/tools/api.jpg',
         "card_desc": "Accelerate your dev workflow with Gitcoin\'s incentivization tools.",

@@ -445,7 +445,6 @@ class Profile(SuperModel):
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
         return bounties.order_by('-web3_created')
     
-
     @property
     def tips(self):
         return Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')
@@ -477,6 +476,14 @@ class Profile(SuperModel):
         _return = list(set(_return))
         _return.sort()
         return _return[:limit_to_num]
+
+    @property
+    def desc(self):
+        stats = self.stats
+        role = stats[0][0]
+        total_funded_participated = stats[1][0]
+        plural = 's' if total_funded_participated != 1 else ''
+        return "@{} is a {} who has participated in {} funded issue{} on Gitcoin".format(self.handle, role, total_funded_participated, plural)
 
     @property
     def stats(self):
