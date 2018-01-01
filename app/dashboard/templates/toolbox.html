@@ -57,7 +57,7 @@
                 {% for tool in actor.tools %}
                   <div class="card {{tool.class}}">
                     <div class="img">
-                      <img src="{{tool.img}}"/>
+                      <img src="{{tool.img}}" {% if tool.stat_graph %} data-hover="/stats/{{tool.stat_graph}}" {% endif %} />
                     </div>
                     <div class="content">
                       <div class="title">{{tool.name}}</div>
@@ -96,5 +96,6 @@
     <script src="{{STATIC_URL}}v2/js/abi.js"></script>
     <script src="{{STATIC_URL}}v2/js/tokens.js"></script>
     <script src="{{STATIC_URL}}v2/js/shared.js"></script>
+    <script src="{{STATIC_URL}}v2/js/toolbox.js"></script>
   </body>
 </html>

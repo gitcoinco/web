@@ -63,13 +63,6 @@ def get_user(user, sub_path=''):
     return response.json()
 
 
-def get_repos(user, sub_path=''):
-    url = 'https://api.github.com/users/{}{}'.format(user.replace('@',''), sub_path)
-    response = requests.get(url, auth=_auth, headers=headers)
-
-    return response.json()
-
-
 def post_issue_comment(owner, repo, issue_num, comment):
 
     url = 'https://api.github.com/repos/{}/{}/issues/{}/comments'.format(owner, repo, issue_num)

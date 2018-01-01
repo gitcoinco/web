@@ -23,6 +23,41 @@ from marketing.models import Stat
 from slackclient import SlackClient
 
 
+def gitter():
+    from gitterpy.client import GitterClient
+
+    # Once create instance
+    gitter = GitterClient(settings.GITTER_TOKEN)
+
+    # Check_my id
+    val = gitter.rooms.grab_room('gitcoinco/Lobby')['userCount']
+
+    Stat.objects.create(
+        key='gitter_users',
+        val=val,
+        )
+
+def google_analytics():
+
+    from marketing.google_analytics import run
+
+    VIEW_ID = '166793585' #ethwallpaer
+    val = run(VIEW_ID)
+    print(val)
+    Stat.objects.create(
+        key='google_analytics_sessions_ethwallpaper',
+        val=val,
+        )
+
+    VIEW_ID = '154797887' #gitcoin
+    val = run(VIEW_ID)
+    print(val)
+    Stat.objects.create(
+        key='google_analytics_sessions_gitcoin',
+        val=val,
+        )
+
+
 def slack_users():
     sc = SlackClient(settings.SLACK_TOKEN)
     ul = sc.api_call("users.list")
@@ -51,6 +86,15 @@ def slack_users_active():
         key='slack_users_away',
         val=num_away,
         )
+
+
+def profiles_ingested():
+    from dashboard.models import Profile
+
+    Stat.objects.create(
+        key='profiles_ingested',
+        val=Profile.objects.count(),
+        )    
 
 
 def github_stars():
@@ -293,7 +337,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         fs = [
+            gitter,
+            google_analytics,
             github_stars,
+            profiles_ingested,
             chrome_ext_users,
             firefox_ext_users,
             slack_users,

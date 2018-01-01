@@ -415,21 +415,24 @@ def toolbox(request):
             "description": '''A searchable index of all of the funded work available in
                             the system.''',
             "link": "https://gitcoin.co/explorer",
-            "active": "true"
+            "active": "true",
+            'stat_graph': 'bounties_fulfilled',
         }, {
              "name": "Fund Work",
              "img": "/static/v2/images/tldr/bounties.jpg",
              "description": '''Got work that needs doing?  Create an issue and offer a bounty to get folks
                             working on it.''',
              "link": "/funding/new",
-             "active": "false"
+             "active": "false",
+             'stat_graph': 'bounties_fulfilled',
         }, {
              "name": "Tips",
              "img": "/static/v2/images/tldr/tips.jpg",
              "description": '''Leave a tip to thank someone for
                         helping out.''',
              "link": "https://gitcoin.co/tips",
-             "active": "false"
+             "active": "false",
+             'stat_graph': 'tips',
         } 
         ]
       }, {
@@ -441,7 +444,8 @@ def toolbox(request):
               "description": '''Browse Gitcoin where you already work.  
                     On Github''',
               "link": "/extension",
-              "active": "false"
+              "active": "false",
+              'stat_graph': 'browser_ext_chrome',
           },
           {
               "name": "iOS app",
@@ -449,7 +453,8 @@ def toolbox(request):
               "description": '''Gitcoin has an iOS app in alpha. Install it to 
                 browse funded work on-the-go.''',
               "link": "/ios",
-              "active": "false"
+              "active": "false",
+              'stat_graph': 'ios_app_users', #TODO
         }
           ]
       }, {
@@ -462,7 +467,8 @@ def toolbox(request):
               "description": '''Questions / Discussion / Just say hi ? Swing by
                                 our slack channel.''',
               "link": "/slack",
-              "active": "false"
+              "active": "false",
+              'stat_graph': 'slack_users',
          },
           {
               "name": "Gitter Community",
@@ -470,7 +476,8 @@ def toolbox(request):
               "description": '''The gitter channel is less active than slack, but
                 is still a good place to ask questions.''',
               "link": "/gitter",
-              "active": "false"
+              "active": "false",
+              'stat_graph': 'gitter_users',
         },
           {
               "name": "Refer a Friend",
@@ -479,7 +486,8 @@ def toolbox(request):
               Refer them to Gitcoin, and we\'ll happily give you a bonus for their
               first bounty. ''',
               "link": "/refer",
-              "active": "false"
+              "active": "false",
+              'stat_graph': 'email_subscriberse',
         },
           ]
        }, {
@@ -491,14 +499,16 @@ def toolbox(request):
               "description": '''Check out who is topping the charts in
                 the Gitcoin community this month.''',
               "link": "https://gitcoin.co/leaderboard/",
-              "active": "false"
+              "active": "false",
+              'stat_graph': 'bounties_fulfilled',
           },
            {
             "name": "Profiles",
             "img": "/static/v2/images/tools/profiles.png",
             "description": '''Browse the work that you\'ve done, and how your OSS repuation is growing. ''',
             "link": "/profile/mbeacom",
-            "active": "true"
+            "active": "true",
+            'stat_graph': 'profiles_ingested',
             },
           ]
        }, {
@@ -510,7 +520,8 @@ def toolbox(request):
               "description": '''All of our development is open source, and managed
               via Github.''',
               "link": "/github",
-              "active": "false"
+              "active": "false",
+              'stat_graph': 'github_stargazers_count',
           },
            {
             "name": "API",
@@ -518,7 +529,8 @@ def toolbox(request):
             "description": '''Gitcoin provides a simple HTTPS API to access data
                             without having to run your own Ethereum node.''',
             "link": "https://github.com/gitcoinco/web#https-api",
-            "active": "true"
+            "active": "true",
+            'stat_graph': 'github_forks_count',
             },
           {
               "class": 'new',
@@ -530,7 +542,7 @@ def toolbox(request):
                 or <a href="https://github.com/gitcoinco/gitcoinco/issues/new">our github repos</a>
                 .''',
               "link": "",
-              "active": "false"
+              "active": "false",
           }
           ]
        }, {
@@ -539,10 +551,11 @@ def toolbox(request):
            "tools": [{
                "name": "Ethwallpaper",
                "img": "/static/v2/images/tools/ethwallpaper.png",
-               "description": '''Experimental laboratory of
-                        Ethereum wallpapers!''',
+               "description": '''Repository of
+                        Ethereum wallpapers.''',
                "link": "https://ethwallpaper.co",
-               "active": "false"
+               "active": "false",
+               'stat_graph': 'google_analytics_sessions_ethwallpaper',
            }]
         }]
 

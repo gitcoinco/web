@@ -6,7 +6,9 @@ django-filter
 django-ratelimit
 djangorestframework==3.4.0
 django-filter
+gitterpy
 gunicorn
+matplotlib
 markdown
 reportlab
 requests
