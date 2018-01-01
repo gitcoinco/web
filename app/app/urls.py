@@ -25,11 +25,8 @@ import dashboard.embed
 import dashboard.helpers
 import dashboard.ios
 import dashboard.views
-<<<<<<< HEAD
 import linkshortener.views
-=======
 import faucet.views
->>>>>>> - add faucet routes
 import marketing.views
 import retail.emails
 import retail.views
