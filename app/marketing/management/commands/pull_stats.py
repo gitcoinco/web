@@ -53,6 +53,24 @@ def slack_users_active():
         )
 
 
+def github_stars():
+    from app.github import get_user
+    reops = get_user('gitcoinco', '/repos')
+    forks_count = sum([repo['forks_count'] for repo in reops])
+
+    Stat.objects.create(
+        key='github_forks_count',
+        val=forks_count,
+        )    
+
+    stargazers_count = sum([repo['stargazers_count'] for repo in reops])
+
+    Stat.objects.create(
+        key='github_stargazers_count',
+        val=stargazers_count,
+        )
+
+
 def chrome_ext_users():
     import requests
     from bs4 import BeautifulSoup
@@ -275,6 +293,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         fs = [
+            github_stars,
             chrome_ext_users,
             firefox_ext_users,
             slack_users,
