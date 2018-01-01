@@ -506,7 +506,7 @@ def toolbox(request):
           "description": "Gitcoin is built using Gitcoin.  Purdy cool, huh? ",
           "tools": [{
               "name": "Github Repos",
-              "img": "/static/v2/images/tools/tools.jpg",
+              "img": "/static/v2/images/tools/science.png",
               "description": '''All of our development is open source, and managed
               via Github.''',
               "link": "/github",

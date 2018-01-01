@@ -34,11 +34,14 @@
         <div class="col body">
           <div class="container-fluid">
             <div class = "toolbox">
-              <h2 class="title">Toolbox</h2>
               <div class="row no-gutters">
                 <div class="col-md-5 col-12">
-                  <p class="description">Make gitcoin your own
+                  <h2 class="title">Toolbox</h2>
+                  <p class="description">Make Gitcoin your own
                     by enabling the tools that suit your needs.</p>
+                </div>
+                <div id="tools_hero" class="col-2">
+                    <img src='/static/v2/images/tools/tools_noborder.jpg'>
                 </div>
               </div>
             </div>
@@ -62,8 +65,8 @@
                         {{tool.description | safe}}
                         
                       </div>
-                      <div>
-                        <a class="btn btn-sm btn-success pulseClick" role="button" href="{{tool.link}}">Try it ></a>
+                      <div class="button_container">
+                        <a class="btn btn-xs btn-success pulseClick" role="button" href="{{tool.link}}">Try it ></a>
                       </div>
                       {% comment %}
                       <div class="toggle">

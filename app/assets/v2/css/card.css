@@ -137,3 +137,13 @@
     margin: 1em;
   }
 }
+
+#tools_hero img{
+  max-width: 200px;
+}
+.button_container{
+  text-align: center;
+}
+.button_container a{
+  font-size: 14px;
+}
