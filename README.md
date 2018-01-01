@@ -250,6 +250,20 @@ cp app/local_settings.py.dist app/local_settings.py
 
 You will need to edit the `app/local_settings.py` file with your local settings. Look for config items that are marked `#required`.
 
+## Setup Database
+
+PostgreSQL is the database used by this application. You will need to provide your connection details in the local_settings.py for everything to work properly. Here are some instructions for installing PostgreSQL on various operating systems.
+
+[OSX](https://www.moncefbelyamani.com/how-to-install-postgresql-on-a-mac-with-homebrew-and-lunchy/)
+
+[Windows](http://www.postgresqltutorial.com/install-postgresql/)
+
+[Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
+
+NOTE: Once you have PostgreSQL installed and running on your system, you will need to [create a role](https://www.postgresql.org/docs/8.1/static/sql-createrole.html) to be used by the application.
+
+## Startup server
+
 
 ```
 virtualenv gcoin
