@@ -1155,6 +1155,22 @@ body.slack .justify-content-right img {
     filter: grayscale(100%);
 }
 
+input.is-invalid {
+  border-color: red;
+}
+
+.faucet_response {
+  display:none;
+}
+
+.faucet_response .frheader {
+  font-size: xx-large;
+}
+
+.faucet_response .frmessage {
+  font-size: large;
+}
+
 @media (max-width: 1350px) {
     .profile_details .bounties li div.details{
         width: 400px;
