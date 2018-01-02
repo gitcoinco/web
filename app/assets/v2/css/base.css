@@ -587,6 +587,15 @@ input[type=text].loading{
     width: 100%;
     margin-left: 0px;
 }
+.metamask_recc {
+    width: 45%; 
+    display: inline-block;
+}
+#metamask_context{
+    background-color: #fafafa; 
+    border-radius: 5px;
+}
+
 .bottom_notification a {
     color: white;
     text-decoration: underline;

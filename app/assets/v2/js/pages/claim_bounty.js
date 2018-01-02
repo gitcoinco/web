@@ -17,6 +17,47 @@ window.onload = function(){
             $('input[name=issueURL]').val(getParam('source'));
         }
 
+        var estimateGas = function(issueURL, claimee_metadata, success_callback, failure_calllback, final_callback){
+                var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+                bounty.claimBounty.estimateGas(
+                    issueURL, 
+                    claimee_metadata, 
+                    function(errors,result){
+                        var is_issue_taken = typeof result == 'undefined' || result > 403207;
+                        if(errors || is_issue_taken){
+                            failure_calllback()
+                            return;
+                        }
+                        var gas = Math.round(result * gasMultiplier);
+                        var gasLimit = Math.round(gas * gasLimitMultiplier);
+                        success_callback(gas, gasLimit, final_callback);
+                })    
+        }
+        //updates recommended metamask settings
+        var updateInlineGasEstimate = function(){
+            var notificationEmail = $('input[name=notificationEmail]').val();
+            var githubUsername = $('input[name=githubUsername]').val();
+            var issueURL = $('input[name=issueURL]').val();
+            var claimee_metadata = JSON.stringify({
+                notificationEmail : notificationEmail,
+                githubUsername : githubUsername,
+            });
+            var success_callback = function(gas, gasLimit, _){
+                $("#gasLimit").val(gas);
+            };
+            var failure_callback = function(){
+                $("#gasLimit").val('Unknown');
+            };
+            var final_callback = function(){};
+
+            estimateGas(issueURL, claimee_metadata, success_callback, failure_callback, final_callback);
+        };
+        setTimeout(function(){
+            updateInlineGasEstimate();
+        },100);
+        $('input').change(updateInlineGasEstimate);
+        $('input').keyup(updateInlineGasEstimate);
+
 
         $('#submitBounty').click(function(e){
             mixpanel.track("Claim Bounty Clicked", {});
@@ -83,7 +124,7 @@ window.onload = function(){
                     }
 
 
-                    var callback = function(error, result){
+                    var final_callback = function(error, result){
                         var next = function(){
                             localStorage['txid'] = result;
                             sync_web3(issueURL);
@@ -107,28 +148,37 @@ window.onload = function(){
                     };
 
                     setTimeout(function(){
+                        var failure_calllback = function(){
+                            _alert({ message: "This issue is no longer active.  Please leave a comment <a href=https://github.com/gitcoinco/web/issues/169>here</a> if you need help." });
+                            mixpanel.track("Claim Bounty Error", {step: 'estimateGas', error: errors});
+                            unloading_button($('#submitBounty'));
+                            return;                            
+                        }
+                        var success_callback = function(gas, gasLimit, final_callback){
+                            var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+                            bounty.claimBounty.sendTransaction(issueURL, 
+                                claimee_metadata,
+                                {
+                                    from : account,
+                                    gas:web3.toHex(gas), 
+                                    gasLimit: web3.toHex(gasLimit), 
+                                    gasPrice:web3.toHex(defaultGasPrice), 
+                                }, 
+                            final_callback);
+                        }
+                        estimateGas(issueURL, claimee_metadata, success_callback, failure_calllback);
                         bounty.claimBounty.estimateGas(
                             issueURL, 
                             claimee_metadata, 
                             function(errors,result){
                                 var is_issue_taken = typeof result == 'undefined' || result > 403207;
                                 if(errors || is_issue_taken){
-                                    _alert({ message: "This issue is no longer active.  Please leave a comment <a href=https://github.com/gitcoinco/web/issues/169>here</a> if you need help." });
-                                    mixpanel.track("Claim Bounty Error", {step: 'estimateGas', error: errors});
-                                    unloading_button($('#submitBounty'));
+                                    failure_calllback()
                                     return;
                                 }
                                 var gas = Math.round(result * gasMultiplier);
                                 var gasLimit = Math.round(gas * gasLimitMultiplier);
-                                bounty.claimBounty.sendTransaction(issueURL, 
-                                    claimee_metadata,
-                                    {
-                                        from : account,
-                                        gas:web3.toHex(gas), 
-                                        gasLimit: web3.toHex(gasLimit), 
-                                        gasPrice:web3.toHex(defaultGasPrice), 
-                                    }, 
-                                callback);
+                                success_callback(gas, gasLimit, final_callback);
                         });
                     },100);
                     e.preventDefault();
@@ -137,5 +187,4 @@ window.onload = function(){
             bounty.bountydetails.call(issueURL, _callback);
         });
     },100);
-
 };
