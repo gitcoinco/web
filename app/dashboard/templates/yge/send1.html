@@ -1,28 +1,28 @@
 {% extends 'yge/base.html' %}
 
 {% block 'scripts' %}
-<script src="/static/yge/ethereumjs/ethereumjs-accounts.js"></script>
-<script src="/static/yge/ethereumjs/web3.js"></script>
-<script src="/static/yge/ethereumjs/hooked-web3-provider.js"></script>
-<script src="/static/yge/youvegoteth/web3alert.js"></script>
-<script src="/static/yge/youvegoteth/index.js"></script>
-<script src="/static/yge/youvegoteth/pre.js"></script>
-<script src="/static/yge/youvegoteth/new.js"></script>
+    <script src="/static/yge/ethereumjs/ethereumjs-accounts.js"></script>
+    <script src="/static/yge/ethereumjs/web3.js"></script>
+    <script src="/static/yge/ethereumjs/hooked-web3-provider.js"></script>
+    <script src="/static/yge/youvegoteth/web3alert.js"></script>
+    <script src="/static/yge/youvegoteth/index.js"></script>
+    <script src="/static/yge/youvegoteth/pre.js"></script>
+    <script src="/static/yge/youvegoteth/new.js"></script>
 {% endblock %}
 
 <!-- Main -->
 {% block 'main' %}
-<section id="main">
-	<header>
-		<span class="avatar">
-            <a href='/'>
-                <img src="/static/v2/images/helmet.png" style="background-color: white; max-width: 100px; max-height: 100px;" />
-            </a>
-        </span>
-		<h1>Send Tip ⚡</h1>
-		<h3>It's Fast.  It's Easy.  It's Free.️</h3>
-        <p>(Supports any github username or email address)</p
-        <br>
+    <section id="main">
+      <header>
+        <span class="avatar">
+                <a href='/'>
+                    <img src="/static/v2/images/helmet.png" style="background-color: white; max-width: 100px; max-height: 100px;" />
+                </a>
+            </span>
+        <h1>Send Tip ⚡</h1>
+        <h3>It's Fast.  It's Easy.  It's Free.️</h3>
+            <p>(Supports any github username or email address)</p>
+            <br>
             <select id="batches" style="background:transparent; display: none; margin-bottom: 20px; margin-top: -20px" >
                 <option value="1">1 receipient</option>
                 <option value="5">5 receipients</option>
@@ -30,8 +30,8 @@
                 <option value="20">20 receipients</option>
                 <option value="50">50 receipients</option>
             </select>                            
-	</header>
-  <a href="#" id="neweth" class="button">Send Ether 💰</a> 
+      </header>
+      <a href="#" id="neweth" class="button">Send Ether 💰</a> 
 
-</section>
+    </section>
 {% endblock %}
