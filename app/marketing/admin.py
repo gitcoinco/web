@@ -35,7 +35,7 @@ class EmailSubscriberAdmin(admin.ModelAdmin):
 
 
 class SlackUserAdmin(admin.ModelAdmin):
-    ordering = ['last_seen']
+    ordering = ['-times_seen']
     search_fields = ['email', 'username']
     list_display = ['email', 'username', 'times_seen', 'last_seen']
 
