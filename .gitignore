@@ -13,3 +13,4 @@ app/assets/other/avatars/
 venv/
 .coverage
 node_modules/
+gcoin/
