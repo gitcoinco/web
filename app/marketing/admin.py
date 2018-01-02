@@ -28,8 +28,12 @@ from .models import EmailSubscriber, LeaderboardRank, Match, Stat
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
+class EmailSubscriberAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    search_fields = ['email', 'source']
+
 
 admin.site.register(Match, GeneralAdmin)
 admin.site.register(Stat, GeneralAdmin)
-admin.site.register(EmailSubscriber, GeneralAdmin)
+admin.site.register(EmailSubscriber, EmailSubscriberAdmin)
 admin.site.register(LeaderboardRank, GeneralAdmin)
