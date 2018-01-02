@@ -332,7 +332,8 @@ window.addEventListener('load', function() {
                             text: 'View on Github',
                             target: 'new',
                             parent: 'right_actions',
-                            color: 'darkBlue'
+                            color: 'darkBlue',
+                            title: 'Github is where the issue scope lives.  Its also a great place to collaborate with, and get to know, other developers (and sometimes even the repo maintainer themselves!).'
                         }
                     }
                     actions.push(entry);
@@ -344,7 +345,7 @@ window.addEventListener('load', function() {
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? '' : 'Can only be performed if you are not the funder.',
+                            title: enabled ? 'Claim an issue when you sincerely intend to work on it.\n\n It is not necessary to have started work when you claim an issue, but please (1) comment on the github thread after you claim it, (2) claim an issue only if you plan to start work within the next 12 hours  & (3) only claim it if you feel like you understand the scope and can see it to completion. ' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(entry);
                     }
