@@ -76,7 +76,7 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
-                    <div>
+                    <div style="width: 100%" class="pr-2">
                         <div>
                         <h4>{{profile.handle}} has Participated in these Funded Issues</h4>
                             <ul class="bounties">
@@ -117,7 +117,8 @@
                                                     </p>
                                                 </div>
                                                 <div class="details">
-                                                    <h6>
+                                                    <img style="max-width: 30px;" src="{{b.local_avatar_url}}">
+                                                    <h6 style="display: inline;">
                                                         {{b.title_or_desc}}
                                                     </h6>
                                                     <p>
