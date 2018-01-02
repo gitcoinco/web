@@ -206,16 +206,16 @@ def new_bounty(request):
     return TemplateResponse(request, 'submit_bounty.html', params)
 
 
-def claim_bounty(request):
+def fulfill_bounty(request):
 
     params = {
         'issueURL': request.GET.get('source'),
-        'title': 'Claim Issue',
-        'active': 'claim_bounty',
+        'title': 'Fulfill Issue',
+        'active': 'fulfill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
     }
 
-    return TemplateResponse(request, 'claim_bounty.html', params)
+    return TemplateResponse(request, 'fulfill_bounty.html', params)
 
 
 def clawback_expired_bounty(request):

@@ -372,8 +372,8 @@ window.addEventListener('load', function() {
                     actions.push(entry);
                     if(result['status']=='open' && !isBountyOwner(result) ){
                         var entry = {
-                            href: '/funding/claim?source='+result['github_url'],
-                            text: 'Claim Issue',
+                            href: '/funding/fulfill?source='+result['github_url'],
+                            text: 'Fulfill Bounty',
                             parent: 'right_actions',
                             color: 'darkBlue'
                         }
