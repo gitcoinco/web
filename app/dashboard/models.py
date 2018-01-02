@@ -443,11 +443,14 @@ class Profile(SuperModel):
         bounties = Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(claimee_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(claimee_github_username__iexact="@" + self.handle, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
+        bounties = bounties | Bounty.objects.filter(github_url__in=[url for url in self.tips.values_list('github_url', flat=True)], current_bounty=True)
         return bounties.order_by('-web3_created')
     
     @property
     def tips(self):
-        return Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')
+        on_repo = Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')
+        tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
+        return on_repo | tipped_for
 
     @property
     def authors(self):

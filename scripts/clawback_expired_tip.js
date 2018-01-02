@@ -5,5 +5,5 @@ var callback = function (error, result){
 var gasLimit = 79992;
 console.log(error,result);
 };
-var idx = '0x9599d43f1a183714e5c49fde33b196c79880dafb';
+var idx = '0xc1ca04bfc1d601cd1fb2f4d38b0ea780da16bc92';
 contract().expireTransfer(idx,callback);
