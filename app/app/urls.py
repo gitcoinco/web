@@ -92,6 +92,7 @@ urlpatterns = [
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
 
     url(r'^slack/?', retail.views.slack, name='slack'),
+    url(r'^iosfeedback/?', retail.views.iosfeedback, name='iosfeedback'),
     url(r'^ios/?', retail.views.ios, name='ios'),
     url(r'^ethdenver/?', retail.views.ethdenver, name='ethdenver'),
     url(r'^denver/?', retail.views.ethdenver, name='denver'),
