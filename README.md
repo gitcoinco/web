@@ -252,7 +252,7 @@ You will need to edit the `app/local_settings.py` file with your local settings.
 
 ## Setup Database
 
-PostgreSQL is the database used by this application. You will need to provide your connection details in the local_settings.py for everything to work properly. Here are some instructions for installing PostgreSQL on various operating systems.
+PostgreSQL is the database used by this application. Here are some instructions for installing PostgreSQL on various operating systems.
 
 [OSX](https://www.moncefbelyamani.com/how-to-install-postgresql-on-a-mac-with-homebrew-and-lunchy/)
 
@@ -260,7 +260,35 @@ PostgreSQL is the database used by this application. You will need to provide yo
 
 [Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
 
-NOTE: Once you have PostgreSQL installed and running on your system, you will need to [create a role](https://www.postgresql.org/docs/8.1/static/sql-createrole.html) to be used by the application.
+Once you have Postgres installed and running on your system, enter into a Postgres session.
+```
+psql
+```
+Create the database and a new privileged user.
+```sql
+CREATE DATABASE gitcoin;
+CREATE USER gitcoin_user WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE gitcoin TO gitcoin_user;
+```
+Exit Postgres session
+```
+\q
+```
+Update local_settings.py with the connection details.
+
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'gitcoin',
+        'USER': 'gitcoin_user',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': 5432,
+    }
+}
+```
+
 
 ## Startup server
 
