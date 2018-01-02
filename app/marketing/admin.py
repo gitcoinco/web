@@ -21,19 +21,27 @@ from __future__ import unicode_literals
 from django.contrib import admin
 
 # Register your models here.
-from .models import EmailSubscriber, LeaderboardRank, Match, Stat
+from .models import EmailSubscriber, LeaderboardRank, Match, Stat, SlackUser
 
 
 # Register your models here.
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
+
 class EmailSubscriberAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['email', 'source']
+
+
+class SlackUserAdmin(admin.ModelAdmin):
+    ordering = ['last_seen']
+    search_fields = ['email', 'username']
+    list_display = ['email', 'username', 'times_seen', 'last_seen']
 
 
 admin.site.register(Match, GeneralAdmin)
 admin.site.register(Stat, GeneralAdmin)
 admin.site.register(EmailSubscriber, EmailSubscriberAdmin)
 admin.site.register(LeaderboardRank, GeneralAdmin)
+admin.site.register(SlackUser, SlackUserAdmin)

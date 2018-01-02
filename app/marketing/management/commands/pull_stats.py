@@ -21,7 +21,7 @@ from django.utils import timezone
 
 from marketing.models import Stat
 from slackclient import SlackClient
-
+import time
 
 def gitter():
     from gitterpy.client import GitterClient
@@ -68,15 +68,54 @@ def slack_users():
 
 
 def slack_users_active():
-    if settings.DEBUG:
-        return
+    #if settings.DEBUG:
+    #    return
+    from marketing.models import SlackUser
 
     sc = SlackClient(settings.SLACK_TOKEN)
     ul = sc.api_call("users.list")
-    presence = [sc.api_call("users.getPresence",user=user['id']).get('presence',None) for user in ul['members']]
-    num_active = len([item for item in presence if item == 'active'])
-    num_away = len([item for item in presence if item == 'away'])
+    user = ul['members'][0]
 
+    num_active = 0
+    num_away = 0
+    for user in ul['members']:
+
+        # manage making request and still respecting rate limit
+        should_do_request = True
+        is_rate_limited = False
+        while should_do_request:
+            response = sc.api_call("users.getPresence", user=user['id'])
+            is_rate_limited = response.get('error', None) == 'ratelimited'
+            should_do_request = is_rate_limited
+            if is_rate_limited:
+                time.sleep(2)
+
+        # figure out the slack users' presence
+        pres = response.get('presence', None)
+        if pres == 'active':
+            num_active += 1
+        if pres == 'away':
+            num_away += 1
+
+        # save user by user 'lastseen' info
+        username = user['profile']['display_name']
+        email = user['profile']['email']
+        su, _ = SlackUser.objects.get_or_create(
+            username=username,
+            email=email,
+            defaults={
+                'profile': user['profile'],
+            }
+            )
+        if pres == 'active':
+            su.last_seen = timezone.now()
+            su.times_seen += 1
+        else:
+            su.last_unseen = timezone.now()
+            su.times_unseen += 1
+        su.save()
+
+    #create broader Stat object
     Stat.objects.create(
         key='slack_users_active',
         val=num_active,
