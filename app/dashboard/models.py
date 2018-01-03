@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -33,7 +33,7 @@ from economy.utils import convert_amount
 
 
 class Bounty(SuperModel):
-    
+
     class Meta:
         verbose_name_plural = 'Bounties'
 
@@ -288,7 +288,7 @@ class Tip(SuperModel):
 
     def __str__(self):
         from django.contrib.humanize.templatetags.humanize import naturalday
-        return "({}) - {} {} {} {} to {},  created: {}, expires: {}".format(self.network, "RECEIVED" if self.receive_txid else "", "ORPHAN" if len(self.emails) == 0 else "", self.amount, self.tokenName, self.username, naturalday(self.created_on), naturalday(self.expires_date))
+        return "({}) - {} {} {} {} to {},  created: {}, expires: {}".format(self.network, self.status, "ORPHAN" if len(self.emails) == 0 else "", self.amount, self.tokenName, self.username, naturalday(self.created_on), naturalday(self.expires_date))
 
 
     #TODO: DRY
@@ -318,6 +318,12 @@ class Tip(SuperModel):
         except:
             return None
 
+    @property
+    def status(self):
+        if self.receive_txid:
+            return "RECEIVED"
+        else:
+            return "PENDING"
 
 @receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
 def normalize_usernames(sender, instance, **kwargs):
@@ -445,7 +451,8 @@ class Profile(SuperModel):
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(github_url__in=[url for url in self.tips.values_list('github_url', flat=True)], current_bounty=True)
         return bounties.order_by('-web3_created')
-    
+
+
     @property
     def tips(self):
         on_repo = Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')

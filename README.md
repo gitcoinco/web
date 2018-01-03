@@ -296,7 +296,9 @@ DATABASES = {
 ```
 virtualenv gcoin
 source gcoin/bin/activate
-pip install -r ../requirements.txt
+pip install -r requirements/base.txt
+pip install -r requirements/dev.txt
+pip install -r requirements/test.txt
 ./manage.py migrate
 ./manage.py createcachetable
 ./manage.py runserver 0.0.0.0:8080
