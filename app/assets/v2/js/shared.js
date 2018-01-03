@@ -586,6 +586,29 @@ window.addEventListener('load', function() {
                 });
             };
         }
+        if($("#admin_faucet_form").length){
+            if(typeof web3 == 'undefined'){
+                $("#no_metamask_error").css('display', 'block');
+                $("#admin_faucet_form").remove();
+                mixpanel.track("No Metamask Error", params);
+                return;
+            } else {
+                if(!web3.eth.coinbase){
+                    $("#unlock_metamask_error").css('display', 'block');
+                    $("#admin_faucet_form").remove();
+                    mixpanel.track("Unlock Metamask Error", params);
+                    return;
+                }
+                 web3.eth.getBalance(web3.eth.coinbase, function(errors,result){
+                    var balance = result.toNumber();
+                    if(balance == 0){
+                        $("#zero_balance_error").css('display', 'block');
+                        $("#admin_faucet_form").remove();
+                        mixpanel.track("Zero Balance Metamask Error", params);
+                    }
+                });
+            };
+        }
     }, timeout_value);
 
 });
