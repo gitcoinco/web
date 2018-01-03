@@ -55,6 +55,70 @@ $(document).ready(function(){
         }
     });
 
+        var estimateGas = function(issueURL, success_callback, failure_calllback, final_callback){
+                //TODO: DRY
+                var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+                var githubUsername = $('input[name=githubUsername]').val();
+                var issueURL = $('input[name=issueURL]').val();
+                var notificationEmail = $('input[name=notificationEmail]').val();
+                var amount = $('input[name=amount]').val();
+                var tokenAddress = $('select[name=deonomination').val();
+                var token =  (tokenAddress);
+                var decimals = token['decimals'];
+                var tokenName = token['name'];
+                var decimalDivisor = 10**decimals;
+                var expirationTimeDelta = $('select[name=expirationTimeDelta').val();
+                var isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
+                var metadata = {
+                    issueTitle : $('input[name=title').val(),
+                    issueKeywords : $('input[name=keywords').val(),
+                    tokenName : tokenName,
+                    githubUsername : githubUsername,
+                    notificationEmail : notificationEmail,
+                    experienceLevel : $('select[name=experienceLevel').val(),
+                    projectLength : $('select[name=projectLength').val(),
+                    bountyType : $('select[name=bountyType').val(),
+                }
+                bounty.postBounty.estimateGas(issueURL, 
+                    amount, 
+                    tokenAddress, 
+                    expirationTimeDelta, 
+                    JSON.stringify(metadata),
+                    function(errors,result){
+                        var is_issue_taken = typeof result == 'undefined' || result > 12976605;
+                        if(errors || is_issue_taken){
+                            failure_calllback()
+                            return;
+                        }
+                        var gas = Math.round(result * gasMultiplier);
+                        var gasLimit = Math.round(gas * gasLimitMultiplier);
+                        // for some reason web3 was estimating 6699496 as the gas for standardtoken transfers
+                        if((gas > max_gas_for_erc20_bounty_post) && !isETH){
+                            gas = Math.round(max_gas_for_erc20_bounty_post * gasMultiplier);
+                            gasLimit = Math.round(gas * gasMultiplier);
+                        }
+
+                        success_callback(gas, gasLimit, final_callback);
+                });    
+        }
+        //updates recommended metamask settings
+        var updateInlineGasEstimate = function(){
+            var success_callback = function(gas, gasLimit, _){
+                $("#gasLimit").val(parseInt(gas/16.1));
+            };
+            var failure_callback = function(){
+                $("#gasLimit").val('Unknown');
+            };
+            var final_callback = function(){};
+
+            estimateGas(issueURL, success_callback, failure_callback, final_callback);
+        };
+        setTimeout(function(){
+            updateInlineGasEstimate();
+        },500);
+        $('input').change(updateInlineGasEstimate);
+
+
     
     //submit bounty button click
     $('#submitBounty').click(function(e){

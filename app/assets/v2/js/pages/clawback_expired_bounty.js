@@ -42,7 +42,6 @@ window.onload = function(){
             updateInlineGasEstimate();
         },100);
         $('input').change(updateInlineGasEstimate);
-        $('input').keyup(updateInlineGasEstimate);
 
         $('#submitBounty').click(function(e){
             mixpanel.track("Clawback Bounty Clicked", {});
