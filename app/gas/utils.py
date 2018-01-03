@@ -41,9 +41,7 @@ def conf_time_spread():
         gp = GasProfile.objects.filter(
             created_on__gt=(timezone.now()-timezone.timedelta(minutes=minutes)),
             ).order_by('gas_price').values_list('gas_price', 'mean_time_to_confirm_minutes' )
-        print(gp)
         return json.dumps(list(gp), cls=DjangoJSONEncoder)
     except Exception as e:
-        print(e)
         return json.dumps([])
 
