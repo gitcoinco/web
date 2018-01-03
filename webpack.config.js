@@ -1,6 +1,8 @@
 const path = require( 'path' );
 const webpack = require( 'webpack' );
 const BundleTracker = require( 'webpack-bundle-tracker' );
+const styleLintPlugin = require( 'stylelint-webpack-plugin' );
+
 
 module.exports = {
   devtool: 'inline-source-map',
@@ -44,6 +46,13 @@ module.exports = {
     new webpack.NoEmitOnErrorsPlugin(),
     new BundleTracker({
       filename: './webpack-stats.json'
+    }),
+    new styleLintPlugin({
+      configFile: '.stylelintrc',
+      context: 'app/assets/',
+      files: '**/**/*.*css',
+      failOnError: false,
+      quiet: false
     })
   ],
   resolve: {
