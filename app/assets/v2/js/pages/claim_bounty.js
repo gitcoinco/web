@@ -164,7 +164,7 @@ window.onload = function(){
                                     from : account,
                                     gas:web3.toHex(gas), 
                                     gasLimit: web3.toHex(gasLimit), 
-                                    gasPrice:web3.toHex(defaultGasPrice), 
+                                    gasPrice:web3.toHex($("#gasPrice").val() * 10**9), 
                                 }, 
                             final_callback);
                         }
