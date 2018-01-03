@@ -30,13 +30,31 @@
 {% block content %}
 
 <h1>Process Faucet Request For {{obj.github_username}}</h1>
-<form method=POST>
+<div id="no_metamask_error" style="display: none;">MetaMask Extension Not Detected</div>
+<div id="unlock_metamask_error" style="display: none;">Please Unlock MetaMask To Continue</div>
+<div id="zero_balance_error" style="display: none;">MetaMask Active Account Is Empty</div>
+<div class="row loading justify-content-center align-items-center loading_img" id="loadingImg"  style="display:none;">
+  <img src='/static/v2/images/loading_v2.gif' style="width: 6rem;" alt="loading...">
+</div>
+<div id="errResponse" style="display:none;">
+  Transaction Failed : <span id="failureReason"></span>
+</div>
+<form method=POST id="admin_faucet_form">
     {% csrf_token %}
 <p>By funding this faucet request, you will transfer {{ faucet_amount }} ETH to
 {{ obj.github_username }} with a wallet address of {{ obj.address }}</p>
 <br>
-<input type="submit" name="submit" value="Submit">
+<input type="hidden" name="destinationAccount" id="destinationAccount" value="{{ obj.address }}">
+<input type="hidden" name="faucetAmount" id="faucetAmount" value="{{ faucet_amount }}">
+<input type="submit" name="submitFaucet" id="submitFaucet" value="Submit">
 </form>
 
 {{pk}}
+
 {% endblock %}
+{% block extrahead %}{{ block.super }}
+  <script src="{{STATIC_URL}}v2/js/jquery.js"></script>
+  <script src="{{STATIC_URL}}v2/js/shared.js"></script>
+  <script src="{{STATIC_URL}}v2/js/pages/process_faucet.js"></script>
+{% endblock %}
+

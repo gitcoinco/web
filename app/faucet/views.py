@@ -112,11 +112,12 @@ def process_faucet_request(request, pk):
         'faucet_amount': faucet_amount
     }
 
+    print request.POST.get('destinationAccount')
+    print request.POST
     if obj.fulfilled:
         return redirect('/_administrationfaucet/faucetrequest/')
 
-    if request.POST.get('submit', False):
-
+    if request.POST.get('destinationAccount', False):
         obj.fulfilled = True
         obj.save()
 
