@@ -37,17 +37,16 @@ class Command(BaseCommand):
             print('syncing {} eles'.format(len(eles)))
             if len(eles) < 10:
                 raise
-
             for ele in eles:
                 if ele.find('th'):
                     continue
                 tds = ele.findAll('td')
-
+                #TODO: refactor this all to use an API instead of webscraping
                 gas_price = tds[0].text
-                mean_time_to_confirm_blocks = tds[1].text
-                mean_time_to_confirm_minutes = tds[2].text
-                _99confident_confirm_time_blocks = tds[3].text
-                _99confident_confirm_time_mins = tds[4].text
+                mean_time_to_confirm_blocks = 0
+                mean_time_to_confirm_minutes = str(tds[5].text).replace('> 2 hours', '120')
+                _99confident_confirm_time_blocks = 0
+                _99confident_confirm_time_mins = str(tds[6].text).replace('> 2 hours', '120')
                 GasProfile.objects.create(
                     gas_price=gas_price,
                     mean_time_to_confirm_blocks=mean_time_to_confirm_blocks,

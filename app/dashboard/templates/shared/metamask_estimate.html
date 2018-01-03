@@ -17,14 +17,37 @@
 {% endcomment %}
 
                             <div class="w-100 mt-2 p-2" id="metamask_context">
-                                <label for=notificationEmail><img src='/funding/avatar?repo=https://github.com/MetaMask&v=3' width="20px" height="20px">Gitcoin recommends the following MetaMask settings for &lt; a 5 min Ethereum transaction confirmation: <a target=new href="https://github.com/gitcoinco/gitcoinco/issues/12">(What is this?)</a></label>
+                                {% if recommend_gas_price > 1 %}
+                                    <div class="warning mb-2">Warning: the ethereum network is quite congested at the moment. <a target=new href="https://ethgasstation.info">[Stats]</a></div>
+                                {% endif %}
+                                <label><img src='/funding/avatar?repo=https://github.com/MetaMask&v=3' width="20px" height="20px">The following MetaMask settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount"></span> ETH (<span id="usdAmount"></span> USD): 
+                                </label>
                                 <br>
-                                <div class="metamask_recc">
-                                    <label for=gasPrice>Gas Price (gwei):</label>
-                                    <input name='gasPrice' id='gasPrice'  class="w-100 gc-round-text-input" type="text" disabled="" value="{{recommend_gas_price}}" />
-                                </div>
                                 <div class="metamask_recc">
                                     <label for=gasLimit>Gas Limit (units):</label>
                                     <input name='gasLimit' id='gasLimit'  class="w-100 gc-round-text-input" type="text" disabled="" value="Unknown" />
                                 </div>
+                                <div class="metamask_recc">
+                                    <label for=gasPrice>Gas Price (gwei):</label>
+                                    <input max=100 min=0 name='gasPrice' id='gasPrice'  class="w-100 gc-round-text-input" type="number" value="{{recommend_gas_price}}" />
+                                </div>
+                                <div>
+                                    <strong>Help:</strong>
+                                    <ul>
+                                        <li>
+                                            <a target=new href="https://github.com/gitcoinco/gitcoinco/issues/4">Why do I need metamask / gas?</a>
+                                        </li>
+                                        <li>
+                                            <a target=new href="https://github.com/gitcoinco/gitcoinco/issues/12">What gas price should I use?</a>
+                                        </li>
+                                        <li>
+                                            <a target=new href="https://ethgasstation.info/predictionTable.php">What are current network condtions?</a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
+
+<script>
+    document.eth_usd_conv_rate = {{eth_usd_conv_rate}};
+    document.conf_time_spread = {{conf_time_spread | safe}};
+</script>

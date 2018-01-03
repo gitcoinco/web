@@ -31,9 +31,11 @@ window.onload = function(){
             var issueURL = $('input[name=issueURL]').val();
             var success_callback = function(gas, gasLimit, _){
                 $("#gasLimit").val(gas);
+                update_metamask_conf_time_and_cost_estimate();
             };
             var failure_callback = function(){
                 $("#gasLimit").val('Unknown');
+                update_metamask_conf_time_and_cost_estimate();
             };
             var final_callback = function(){};
             estimateGas(issueURL, success_callback, failure_callback, final_callback);
@@ -42,6 +44,7 @@ window.onload = function(){
             updateInlineGasEstimate();
         },100);
         $('input').change(updateInlineGasEstimate);
+        $('#gasPrice').keyup(update_metamask_conf_time_and_cost_estimate);
 
         $('#submitBounty').click(function(e){
             mixpanel.track("Clawback Bounty Clicked", {});

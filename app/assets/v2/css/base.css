@@ -595,6 +595,15 @@ input[type=text].loading{
     background-color: #fafafa; 
     border-radius: 5px;
 }
+#metamask_context .warning{
+    text-align: center;
+    background-color: #ff9800;
+    border-radius: 5px;
+}
+#metamask_context .warning a{
+    color: black;
+    font-weight: bold;
+}
 
 .bottom_notification a {
     color: white;

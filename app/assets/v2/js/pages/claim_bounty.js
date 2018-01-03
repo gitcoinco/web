@@ -44,9 +44,11 @@ window.onload = function(){
             });
             var success_callback = function(gas, gasLimit, _){
                 $("#gasLimit").val(gas);
+                update_metamask_conf_time_and_cost_estimate();
             };
             var failure_callback = function(){
                 $("#gasLimit").val('Unknown');
+                update_metamask_conf_time_and_cost_estimate();
             };
             var final_callback = function(){};
 
@@ -56,6 +58,7 @@ window.onload = function(){
             updateInlineGasEstimate();
         },100);
         $('input').change(updateInlineGasEstimate);
+        $('#gasPrice').keyup(update_metamask_conf_time_and_cost_estimate);
 
 
         $('#submitBounty').click(function(e){

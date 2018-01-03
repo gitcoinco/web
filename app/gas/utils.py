@@ -1,5 +1,9 @@
 from django.conf import settings
 from django.utils import timezone
+from django.core.serializers.json import DjangoJSONEncoder
+
+from economy.utils import convert_amount
+import json
 
 from gas.models import GasProfile
 
@@ -22,3 +26,24 @@ def gas_price_to_confirm_time_minutes(gas_price):
         created_on__gt=(timezone.now()-timezone.timedelta(minutes=31)),
         gas_price=gas_price)
     return gp.mean_time_to_confirm_minutes
+
+
+def eth_usd_conv_rate():
+    from_amount = 1
+    from_currency = 'ETH'
+    to_currency = 'USDT'
+    return convert_amount(from_amount, from_currency, to_currency)
+
+
+def conf_time_spread():
+    try:
+        minutes = 31
+        gp = GasProfile.objects.filter(
+            created_on__gt=(timezone.now()-timezone.timedelta(minutes=minutes)),
+            ).order_by('gas_price').values_list('gas_price', 'mean_time_to_confirm_minutes' )
+        print(gp)
+        return json.dumps(list(gp), cls=DjangoJSONEncoder)
+    except Exception as e:
+        print(e)
+        return json.dumps([])
+

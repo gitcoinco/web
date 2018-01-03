@@ -32,11 +32,11 @@ window.onload = function(){
             var issueURL = $('input[name=issueURL]').val();
             var success_callback = function(gas, gasLimit, _){
                 $("#gasLimit").val(gas);
-                console.log('success', gas, gasLimit);
+                update_metamask_conf_time_and_cost_estimate();
             };
             var failure_callback = function(){
                 $("#gasLimit").val('Unknown');
-                console.log('fail');
+                update_metamask_conf_time_and_cost_estimate();
             };
             var final_callback = function(){};
             estimateGas(issueURL, bounty.approveBountyClaim, success_callback, failure_callback, final_callback);
@@ -45,6 +45,7 @@ window.onload = function(){
             updateInlineGasEstimate();
         },100);
         $('input').change(updateInlineGasEstimate);
+        $('#gasPrice').keyup(update_metamask_conf_time_and_cost_estimate);
 
         var bountyDetails = []
 
