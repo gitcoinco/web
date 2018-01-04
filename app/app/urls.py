@@ -69,6 +69,7 @@ urlpatterns = [
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
     url(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
+    url(r'^gas/?', dashboard.views.gas, name='gas'),
 
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),

@@ -10,6 +10,43 @@ window.onload = function(){
             $('input[name=terms]').attr('checked','checked');
         }
 
+        var estimateGas = function(issueURL, method, success_callback, failure_calllback, final_callback){
+            var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+            method.estimateGas(
+                issueURL, 
+                function(errors,result){
+                    console.log(errors,result);
+                    var is_issue_taken = typeof result == 'undefined' || result > 209568;
+                    if(errors || is_issue_taken){
+                        failure_calllback();
+                        return;
+                    }
+                    var gas = Math.round(result * gasMultiplier);
+                    var gasLimit = Math.round(gas * gasLimitMultiplier);
+                    success_callback(gas, gasLimit, final_callback);
+            });
+        };
+        //updates recommended metamask settings
+        var updateInlineGasEstimate = function(){
+            var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+            var issueURL = $('input[name=issueURL]').val();
+            var success_callback = function(gas, gasLimit, _){
+                $("#gasLimit").val(gas);
+                update_metamask_conf_time_and_cost_estimate();
+            };
+            var failure_callback = function(){
+                $("#gasLimit").val('Unknown');
+                update_metamask_conf_time_and_cost_estimate();
+            };
+            var final_callback = function(){};
+            estimateGas(issueURL, bounty.approveBountyClaim, success_callback, failure_callback, final_callback);
+        };
+        setTimeout(function(){
+            updateInlineGasEstimate();
+        },100);
+        $('input').change(updateInlineGasEstimate);
+        $('#gasPrice').keyup(update_metamask_conf_time_and_cost_estimate);
+
         var bountyDetails = []
 
         $('.submitBounty').click(function(e){
@@ -92,29 +129,24 @@ window.onload = function(){
                     if(whatAction != 'Accept'){
                         method = bounty.rejectBountyClaim;
                     }
-                    method.estimateGas(issueURL, {from :account}, 
-                            function(errors,result){
-                                if(errors){
-                                    console.error(errors);
-                                    mixpanel.track("Process Bounty Error", {step: 'estimateGas', error: error});
-                                    _alert({ message: "There was an error" });
-                                    unloading_button($('.submitBounty'));
-                                }
-                                mixpanel.track("Process Bounty Error", {step: 'estimateGas', error: errors});
-                                var gas = Math.round(result * gasMultiplier);
-                                var gasLimit = Math.round(gas * gasLimitMultiplier);
-                                var params = {from :account, 
-                                        gas:web3.toHex(gas), 
-                                        gasLimit: web3.toHex(gasLimit), 
-                                        gasPrice:web3.toHex(defaultGasPrice), 
-                                    };
-                                method.sendTransaction(issueURL, 
-                                    params, 
-                                    _callback);
-                            }
-                        );
+                    var failure_calllback = function(){
+                        mixpanel.track("Process Bounty Error", {step: 'estimateGas', error: error});
+                        _alert({ message: "There was an error" });
+                        unloading_button($('.submitBounty'));
+                        mixpanel.track("Process Bounty Error", {step: 'estimateGas', error: errors});
 
-
+                    }
+                    var success_callback = function(gas, gasLimit){
+                        var params = {from :account, 
+                                gas:web3.toHex(gas), 
+                                gasLimit: web3.toHex(gasLimit), 
+                                gasPrice:web3.toHex($("#gasPrice").val() * 10**9), 
+                            };
+                        method.sendTransaction(issueURL, 
+                            params, 
+                            _callback);
+                    };
+                    estimateGas(issueURL, method, success_callback, failure_calllback, _callback);
                 }
             };
             bounty.bountydetails.call(issueURL, callback);

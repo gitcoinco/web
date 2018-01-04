@@ -31,7 +31,7 @@ from app.utils import ellipses, sync_profile
 from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty, BountySyncRequest, Profile, Subscription, Tip
 from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack
-from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from gas.utils import recommend_min_gas_price_to_confirm_in_time, eth_usd_conv_rate, conf_time_spread
 from marketing.mails import tip_email
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
@@ -176,6 +176,8 @@ def process_bounty(request):
         'issueURL': request.GET.get('source'),
         'title': 'Process Issue',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
     }
 
     return TemplateResponse(request, 'process_bounty.html', params)
@@ -191,6 +193,14 @@ def dashboard(request):
     return TemplateResponse(request, 'dashboard.html', params)
 
 
+def gas(request):
+    context = {
+        'conf_time_spread': conf_time_spread(),
+        'title': 'Live Gas Usage => Predicted Conf Times'
+        }
+    return TemplateResponse(request, 'gas.html', context)
+
+
 def new_bounty(request):
 
     params = {
@@ -198,6 +208,8 @@ def new_bounty(request):
         'active': 'submit_bounty',
         'title': 'Create Funded Issue',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
     }
 
     return TemplateResponse(request, 'submit_bounty.html', params)
@@ -210,6 +222,8 @@ def claim_bounty(request):
         'title': 'Claim Issue',
         'active': 'claim_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
     }
 
     return TemplateResponse(request, 'claim_bounty.html', params)
@@ -222,6 +236,8 @@ def clawback_expired_bounty(request):
         'title': 'Clawback Expired Issue',
         'active': 'clawback_expired_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
     }
 
     return TemplateResponse(request, 'clawback_expired_bounty.html', params)

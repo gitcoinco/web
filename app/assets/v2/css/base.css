@@ -587,6 +587,24 @@ input[type=text].loading{
     width: 100%;
     margin-left: 0px;
 }
+.metamask_recc {
+    width: 45%; 
+    display: inline-block;
+}
+#metamask_context{
+    background-color: #fafafa; 
+    border-radius: 5px;
+}
+#metamask_context .warning{
+    text-align: center;
+    background-color: #ff9800;
+    border-radius: 5px;
+}
+#metamask_context .warning a{
+    color: black;
+    font-weight: bold;
+}
+
 .bottom_notification a {
     color: white;
     text-decoration: underline;

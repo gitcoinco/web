@@ -15,6 +15,31 @@ var loading_button = function(button){
     button.prepend('<img src=/static/v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
 }
 
+var update_metamask_conf_time_and_cost_estimate = function(){
+    var confTime = 'unknown';
+    var ethAmount = 'unknown';
+    var usdAmount = 'unknown';
+
+    var gasLimit = parseInt($("#gasLimit").val());
+    var gasPrice = parseFloat($("#gasPrice").val());
+    if(gasPrice){
+        ethAmount = Math.round(1000 * gasLimit * gasPrice / 10**9) / 1000 ;
+        usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
+    }
+
+    for(var i=0; i<document.conf_time_spread.length-1; i++){
+        var this_ele = (document.conf_time_spread[i]);
+        var next_ele = (document.conf_time_spread[i+1]);
+        if(gasPrice <= parseFloat(next_ele[0]) && gasPrice > parseFloat(this_ele[0])){
+            confTime = Math.round(10 * next_ele[1]) / 10;
+        }
+    }
+
+    $("#ethAmount").html(ethAmount);
+    $("#usdAmount").html(usdAmount);
+    $("#confTime").html(confTime);
+}
+
 var unloading_button = function(button){
     button.removeClass('disabled');
     button.find('img').remove();
