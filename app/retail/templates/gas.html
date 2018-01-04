@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style> /* set the CSS */
+
+.axis {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: .8em;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
+}
+
+.dot {
+  fill: steelblue;
+}
+
+div.tooltip {
+  position: absolute;
+  max-width: 300px;
+  padding: 3px 6px;
+  color: grey;
+  font-family: 'Droid Sans Mono', monospace;
+  font-size: .7em;
+  background: whitesmoke;
+  border: 1px solid grey;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+</style>
+<body>
+
+<h1> Predicted Confirmation Times vs Gas Usage </h1>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+var tooltip;
+
+tooltip = d3.select("body").append("div")
+  .attr("class", "tooltip")
+  .style("opacity", 0);
+
+var source = {{conf_time_spread | safe}};
+
+data = []
+source.forEach(function(d) {
+    d['confirmation_time'] = parseFloat(d[1])
+    d['gas_price'] = parseFloat(d[0]);
+    d.splice(0,2);
+    data.push(d);
+});
+
+var margin = {top: 20, right: 20, bottom: 50, left: 70},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var x = d3.scaleLinear().range([0, width]);
+var y = d3.scaleLinear().range([height, 0]);
+
+// define the line
+var valueline = d3.line()
+    .x(function(d) { return x(d.confirmation_time); })
+    .y(function(d) { return y(d.gas_price); });
+
+var svg = d3.select("body")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+x.domain([0, d3.max(data, function(d) { return d.confirmation_time; })]).nice();
+y.domain([0, d3.max(data, function(d) { return d.gas_price; })]).nice();
+
+svg.append("path")
+  .data([data])
+  .attr("class", "line")
+  .attr("d", valueline);
+
+svg.selectAll('circle').data(data)
+  .enter().append('circle')
+  .attr('class', 'dot')
+  .attr('r', 3)
+  .attr('cx', d => x(d.confirmation_time))
+  .attr('cy', d => y(d.gas_price))
+  .on('mouseover', function(d) {
+    var tooltip_msg = '<div>';
+    tooltip_msg = `Gas Price: ${d.gas_price}`;
+    tooltip_msg = tooltip_msg + `<br/>Confirmation time: ${d.confirmation_time} min`;
+    tooltip_msg = tooltip_msg + '</div>';
+    tooltip.transition().style("opacity", 1);
+    tooltip.html(tooltip_msg).style("left", (d3.event.pageX + 15) + "px").style("top", (d3.event.pageY - 28) + "px");
+  })
+  .on('mouseout', function(d) {
+    tooltip.style("opacity", 0);
+  });
+
+// x Axis
+svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x));
+
+// text label for the x axis
+svg.append("text")
+    .attr("transform",
+          "translate(" + (width/2) + " ," +
+                         (height + margin.top + 20) + ")")
+    .style("text-anchor", "middle")
+    .attr("class", "axis")
+    .text("Confirmation Time (minutes)");
+
+// y Axis
+svg.append("g")
+  .call(d3.axisLeft(y));
+
+// text label for the y axis
+svg.append("text")
+  .attr("transform", "rotate(-90)")
+  .attr("y", 0 - margin.left)
+  .attr("x",0 - (height / 2))
+  .attr("dy", "2em")
+  .attr("class", "axis")
+  .style("text-anchor", "middle")
+  .text("Gas Price");
+
+
+</script>
+<br>
+To see the data in chart format, check out <a href="https://ethgasstation.info/predictionTable.php">ETH Gas Station</a>
+</body>

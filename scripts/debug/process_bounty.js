@@ -1,4 +1,4 @@
-localStorage['txid'] = '0x274ba28a861463192cb894f7ebb589db4d5d9521dfbd5c9032757582a42f24fa'
-var issueURL = 'https://github.com/gitcoinco/web/issues/133'
+localStorage['txid'] = '0x6e260f7114c210b551b51a3e89995d8aa424bd4457a478120279eb30da0ccb97'
+var issueURL = 'https://github.com/gitcoinco/web/issues/175'
 localStorage[issueURL] = timestamp();
 document.location.href = document.location.href 

@@ -193,6 +193,13 @@ def dashboard(request):
     return TemplateResponse(request, 'dashboard.html', params)
 
 
+def gas(request):
+    context = {
+        'conf_time_spread': conf_time_spread(),
+        }
+    return TemplateResponse(request, 'gas.html', context)
+
+
 def new_bounty(request):
 
     params = {
