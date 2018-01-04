@@ -18,6 +18,9 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 1 */2 * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_profiles  >> /var/log/gitcoin/sync_profiles.log  2>&1
 1 4 * * * cd gitcoin/coin; bash scripts/run_management_command.bash cleanup_db_space  >> /var/log/gitcoin/cleanup_db_space.log  2>&1
 
+## REPORTING
+1 1 1 * * cd gitcoin/coin; bash scripts/run_management_command.bash activity_report $(date --date='-1 month' +%Y/%m/%d) $(date +%Y/%m/%d)  >> /var/log/gitcoin/activity_report.log  2>&1
+
 
 ## GITCOIN MARKETING 
 30 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_mail  >> /var/log/gitcoin/sync_mail.log  2>&1

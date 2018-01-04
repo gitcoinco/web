@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -99,7 +99,7 @@ def send_tip_2(request):
         message = 'Notification has been sent'
         params = json.loads(request.body)
         emails = []
-        
+
         #basic validation
         username = params['username']
 
@@ -280,7 +280,7 @@ def profile_keywords_helper(handle):
 
 def profile_keywords(request, handle):
     keywords = profile_keywords_helper(handle)
-    
+
     response = {
         'status': 200,
         'keywords': keywords,
@@ -297,6 +297,7 @@ def profile(request, handle):
 
     profile = profile_helper(handle)
     params['card_title'] = "@{} | Gitcoin".format(handle)
+    params['card_desc'] = profile.desc
     params['title'] = "@{}".format(handle)
     params['avatar_url'] = profile.local_avatar_url
     params['profile'] = profile
@@ -403,3 +404,168 @@ def prirp(request):
 
 def apitos(request):
     return redirect('https://gitcoin.co/terms#privacy')
+
+def toolbox(request):
+    actors = [{
+        "title": "The Basics",
+        "description": "Accelerate your dev workflow with Gitcoin\'s incentivization tools.",
+        "tools": [{
+            "name": "Issue Explorer",
+            "img": "/static/v2/images/why-different/code_great.png",
+            "description": '''A searchable index of all of the funded work available in
+                            the system.''',
+            "link": "https://gitcoin.co/explorer",
+            "active": "true",
+            'stat_graph': 'bounties_fulfilled',
+        }, {
+             "name": "Fund Work",
+             "img": "/static/v2/images/tldr/bounties.jpg",
+             "description": '''Got work that needs doing?  Create an issue and offer a bounty to get folks
+                            working on it.''',
+             "link": "/funding/new",
+             "active": "false",
+             'stat_graph': 'bounties_fulfilled',
+        }, {
+             "name": "Tips",
+             "img": "/static/v2/images/tldr/tips.jpg",
+             "description": '''Leave a tip to thank someone for
+                        helping out.''',
+             "link": "https://gitcoin.co/tips",
+             "active": "false",
+             'stat_graph': 'tips',
+        } 
+        ]
+      }, {
+          "title": "The Powertools",
+          "description": "Take your OSS game to the next level!",
+          "tools": [ {
+              "name": "Browser Extension",
+              "img": "/static/v2/images/tools/browser_extension.png",
+              "description": '''Browse Gitcoin where you already work.  
+                    On Github''',
+              "link": "/extension",
+              "active": "false",
+              'stat_graph': 'browser_ext_chrome',
+          },
+          {
+              "name": "iOS app",
+              "img": "/static/v2/images/tools/iOS.png",
+              "description": '''Gitcoin has an iOS app in alpha. Install it to 
+                browse funded work on-the-go.''',
+              "link": "/ios",
+              "active": "false",
+              'stat_graph': 'ios_app_users', #TODO
+        }
+          ]
+      }, {
+          "title": "Community Tools",
+          "description": "Friendship, mentorship, and community are all part of the process.",
+          "tools": [
+          {
+              "name": "Slack Community",
+              "img": "/static/v2/images/tldr/community.jpg",
+              "description": '''Questions / Discussion / Just say hi ? Swing by
+                                our slack channel.''',
+              "link": "/slack",
+              "active": "false",
+              'stat_graph': 'slack_users',
+         },
+          {
+              "name": "Gitter Community",
+              "img": "/static/v2/images/tools/community2.png",
+              "description": '''The gitter channel is less active than slack, but
+                is still a good place to ask questions.''',
+              "link": "/gitter",
+              "active": "false",
+              'stat_graph': 'gitter_users',
+        },
+          {
+              "name": "Refer a Friend",
+              "img": "/static/v2/images/freedom.jpg",
+              "description": '''Got a colleague who wants to level up their career? 
+              Refer them to Gitcoin, and we\'ll happily give you a bonus for their
+              first bounty. ''',
+              "link": "/refer",
+              "active": "false",
+              'stat_graph': 'email_subscriberse',
+        },
+          ]
+       }, {
+          "title": "Tools in Beta",
+          "description": "These fresh new tools are looking someone to test ride them!",
+          "tools": [{
+              "name": "Leaderboard",
+              "img": "/static/v2/images/tools/leaderboard.png",
+              "description": '''Check out who is topping the charts in
+                the Gitcoin community this month.''',
+              "link": "https://gitcoin.co/leaderboard/",
+              "active": "false",
+              'stat_graph': 'bounties_fulfilled',
+          },
+           {
+            "name": "Profiles",
+            "img": "/static/v2/images/tools/profiles.png",
+            "description": '''Browse the work that you\'ve done, and how your OSS repuation is growing. ''',
+            "link": "/profile/mbeacom",
+            "active": "true",
+            'stat_graph': 'profiles_ingested',
+            },
+          ]
+       }, {
+          "title": "Tools for Building Gitcoin",
+          "description": "Gitcoin is built using Gitcoin.  Purdy cool, huh? ",
+          "tools": [{
+              "name": "Github Repos",
+              "img": "/static/v2/images/tools/science.png",
+              "description": '''All of our development is open source, and managed
+              via Github.''',
+              "link": "/github",
+              "active": "false",
+              'stat_graph': 'github_stargazers_count',
+          },
+           {
+            "name": "API",
+            "img": "/static/v2/images/tools/api.jpg",
+            "description": '''Gitcoin provides a simple HTTPS API to access data
+                            without having to run your own Ethereum node.''',
+            "link": "https://github.com/gitcoinco/web#https-api",
+            "active": "true",
+            'stat_graph': 'github_forks_count',
+            },
+          {
+              "class": 'new',
+              "name": "Build your own",
+              "img": "/static/v2/images/dogfood.jpg",
+              "description": '''Dogfood.. Yum! Gitcoin is built using Gitcoin. 
+                Got something you want to see in the world? Let the community know 
+                <a href="/slack">on slack</a>
+                or <a href="https://github.com/gitcoinco/gitcoinco/issues/new">our github repos</a>
+                .''',
+              "link": "",
+              "active": "false",
+          }
+          ]
+       }, {
+           "title": "Just for Fun",
+           "description": "Some tools that the community built *just because* they should exist.",
+           "tools": [{
+               "name": "Ethwallpaper",
+               "img": "/static/v2/images/tools/ethwallpaper.png",
+               "description": '''Repository of
+                        Ethereum wallpapers.''',
+               "link": "https://ethwallpaper.co",
+               "active": "false",
+               'stat_graph': 'google_analytics_sessions_ethwallpaper',
+           }]
+        }]
+
+    context = {
+        "active": "tools",
+        'title': "Toolbox",
+        'card_title': "Gitcoin Toolbox",
+        'avatar_url': 'https://gitcoin.co/static/v2/images/tools/api.jpg',
+        "card_desc": "Accelerate your dev workflow with Gitcoin\'s incentivization tools.",
+        'actors': actors,
+        'newsletter_headline': "Don't Miss New Tools!"
+    }
+    return TemplateResponse(request, 'toolbox.html', context)

@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -110,6 +110,9 @@ TRACKJS_TOKEN=''
 
 MIXPANEL_TOKEN=''
 
+GOOGLE_ANALYTICS_AUTH_JSON = '' #get from https://developers.google.com/analytics/devguides/reporting/core/v4/quickstart/service-py
+
+GITTER_TOKEN = '' #https://developer.gitter.im/docs/authentication
 
 # optional: only needed if you slack things
 SLACK_TOKEN = 'TODO'
@@ -117,5 +120,11 @@ SLACK_TOKEN = 'TODO'
 # IMAP Settings
 IMAP_EMAIL='<email>'
 IMAP_PASSWORD='<password>'
+
+# optional: only needed if you run the activity-report management command
+AWS_ACCESS_KEY_ID = 'TODO'
+AWS_SECRET_ACCESS_KEY = 'TODO'
+S3_REPORT_BUCKET = 'TODO'
+S3_REPORT_PREFIX = 'TODO'
 
 ####################################################################

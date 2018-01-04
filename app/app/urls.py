@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -65,7 +65,10 @@ urlpatterns = [
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
     url(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     url(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
+    url(r'^stats/(.*)/?', dashboard.embed.stat, name='stat'),
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
+    url(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
+    url(r'^tools/?', dashboard.views.toolbox, name='tools'),
 
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
@@ -89,6 +92,7 @@ urlpatterns = [
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
 
     url(r'^slack/?', retail.views.slack, name='slack'),
+    url(r'^iosfeedback/?', retail.views.iosfeedback, name='iosfeedback'),
     url(r'^ios/?', retail.views.ios, name='ios'),
     url(r'^ethdenver/?', retail.views.ethdenver, name='ethdenver'),
     url(r'^denver/?', retail.views.ethdenver, name='denver'),
@@ -100,6 +104,7 @@ urlpatterns = [
     url(r'^feedback/?', retail.views.feedback, name='feedback'),
     url(r'^twitter/?', retail.views.twitter, name='twitter'),
     url(r'^gitter/?', retail.views.gitter, name='gitter'),
+    url(r'^refer/?', retail.views.refer, name='refer'),
     url(r'^fb/?', retail.views.fb, name='fb'),
     url(r'^medium/?', retail.views.medium, name='medium'),
     url(r'^github/?', retail.views.github, name='github'),

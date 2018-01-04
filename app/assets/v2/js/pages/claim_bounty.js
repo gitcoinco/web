@@ -111,9 +111,11 @@ window.onload = function(){
                             issueURL, 
                             claimee_metadata, 
                             function(errors,result){
-                                if(errors){
+                                var is_issue_taken = typeof result == 'undefined' || result > 403207;
+                                if(errors || is_issue_taken){
                                     _alert({ message: "This issue is no longer active.  Please leave a comment <a href=https://github.com/gitcoinco/web/issues/169>here</a> if you need help." });
                                     mixpanel.track("Claim Bounty Error", {step: 'estimateGas', error: errors});
+                                    unloading_button($('#submitBounty'));
                                     return;
                                 }
                                 var gas = Math.round(result * gasMultiplier);
