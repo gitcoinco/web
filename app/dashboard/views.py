@@ -526,6 +526,14 @@ def toolbox(request):
             "active": "true",
             'stat_graph': 'profiles_ingested',
             },
+           {
+            "name": "ETH Tx Time Predictor",
+            "img": "/static/v2/images/tradeoffs.png",
+            "description": '''Estimate Tradeoffs between Ethereum Network Tx Fees and Confirmation Times ''',
+            "link": "/gas",
+            "active": "true",
+            'stat_graph': 'gas_page',
+            },
           ]
        }, {
           "title": "Tools for Building Gitcoin",
