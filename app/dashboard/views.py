@@ -196,6 +196,7 @@ def dashboard(request):
 def gas(request):
     context = {
         'conf_time_spread': conf_time_spread(),
+        'title': 'Live Gas Usage => Predicted Conf Times'
         }
     return TemplateResponse(request, 'gas.html', context)
 
