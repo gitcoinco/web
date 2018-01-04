@@ -59,9 +59,9 @@ def about(request):
 
 
 def help(request):
-    faq = [
+    faq = {
+        'Product': [
         {
-            'category': "Product",
             'q': 'I am a developer, I want build more Open Source Software. Where can I start?',
             'a': "The <a href=https://gitcoin.co/explorer>Funded Issue Explorer</a> contains a handful of issues that are ready to be paid out as soon as they are turned around. Check out the developer guide at <a href=https://gitcoin.co/help/dev>https://gitcoin.co/help/dev</a>."
         },
@@ -178,8 +178,9 @@ Here are some of our values
             'q': 'Am I allowed to place bounties on projects I don\'t contribute to or own?',
             'a': "TLDR: Yes you are.  But as OSS devs ourselves, our experience has been that if you want to get the product you work on merged into the upstream, you will need to work with the contributors or owners of that repo.  If not, you can always fork a repo and run your own roadmap."
         },
+        ],
+     'General': [
         {
-            'category': "General",
             'q': 'Is Gitcoin open source?',
             'a': "Yes, all of Gitcoin's core software systems are open source and available at <a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  Please see the liscense.txt file in each repo for more details."
         },
@@ -234,6 +235,8 @@ The best way to stay in touch is to
 
             """
         },
+     ], 
+     'Web3': [
         {
             'category': "Web3",
             'q': 'What is the difference between Gitcoin and centralized hiring websites?',
@@ -333,10 +336,8 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
 
 """
         },
-
-
-
-    ]
+     ],
+    }
 
     context = {
         'active': 'help',
@@ -428,6 +429,10 @@ def ios(request):
     return TemplateResponse(request, 'ios.html', context)
 
 
+def iosfeedback(request):
+    return redirect('https://goo.gl/forms/UqegoAMh7HVibfuF3')
+
+
 def casestudy(request):
     return redirect('https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit#heading=h.fncqd9y7lo1h')
 
@@ -481,6 +486,10 @@ def fb(request):
 
 def medium(request):
     return redirect('https://medium.com/gitcoin')
+
+
+def refer(request):
+    return redirect('https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/gitcoinco/issues/1')
 
 
 def gitter(request):

@@ -23,48 +23,119 @@
         <div class=" row ">
             <div class="col-4 pb-4">
                 <div class="align-items-right justify-content-right" style="text-align: right;">
-                    <img src="/static/v2/images/regulus.png" style="max-width:300px;">
+                    <img src="/static/v2/images/divine.png" style="max-width:80%; margin: 0px auto;">
+                    <br>
+                    <img src="/static/v2/images/prime.png" style="max-width:80%; margin: 0px auto;">
+                    <br>
+                    <img src="/static/v2/images/regulus.png" style="max-width:80%; margin: 0px auto;">
                 </div>
             </div>
             <div class="col-1 pb-4">
             </div>
             <div class="col-6 pb-4">
-                <div class="form_container">
+                <div class="form_container pr-2 pl-2 ">
                     <div style="max-width: 500px; margin: 0px auto;">
-                    <p>Please submit your info below for access to the whitepaper. <a href="/whitepaper/accesscode">Already have an access code?</a> </p>
-                    {% if msg %}
-                        <p style="background-color: #fee856; padding: 5px 10px;">
-                            {{msg | safe}}
+                        <span style="text-align: center;">
+                            <h2>Hey, you!</h2>
+                        </span>
+                        <h4 class="pt-1">Gitcoin is *not* a token.</h4>
+                        <p>
+                            <br>
+                            Gitcoin is a distributed group of individuals focused:
                         </p>
-                    {% endif %}
-                    <form id=whitepaper  method=POST>
-                        <div class="form-group">
-                            <label for="email">Email address</label>
-                            <input type=text name=email class=form-control placeholder='you@somewhere'  value="{{email}}" required>
-                            <small id="emailHelp" class="form-text text-muted">Gitcoin will never share your email with anyone else.</small>
-                        </div>
-                        <div class="form-group">
-                        <label for="role">Interested as a</label>
-                            <select multiple class="form-control" id="role" name="role"  required>
-                              <option>Open Source Developer</option>
-                              <option>Open Source Repo Maintainer</option>
-                              <option>Token Purchaser</option>
-                              <option>Press</option>
-                              <option>Advisor</option>
-                              <option>Other</option>
-                            </select>
-                            <small id="role" class="form-text text-muted">Feel free to select more than one.</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="comments">Comments</label>
-                            <textarea class="form-control" id="comments" name="comments" rows="3" required>{{comments}}</textarea>
-                            <small id="comments" class="form-text text-muted">Who are you?  What is your interest in the whitepaper?</small>
-                        </div> 
-                        {% csrf_token %}
-                        <input class='btn btn-sm btn-success' type='submit' name='submit' value="Go">
-                    </form>
+                        <ul>
+                            <li>
+                                on being <i>relentlessly mission driven</i>. <a href="/mission"> (more on this here) </a>
+                            </li>
+                            <li>
+                                on working with the <i>best repos</i> in web3..  <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6"> (more on this here) </a>
+                            </li>
+                            <li>
+                                on building the <i>best tools</i> for them...  <a href="/toolbox"> (more on this here) </a>
+                            </li>
+                            <li>
+                                over a <i>long term</i> time horizon..  <a href="https://medium.com/gitcoin/blockchain-is-the-next-tcp-ip-6663b62b5654"> (more on this here) </a>
+                            </li>
+                            <li>
+                                and doing <i>something historic</i> in the space.  <a href="https://medium.com/gitcoin/playing-the-long-game-fbd78fb41de6"> (more on this here) </a>
+                            </li>
+                        </ul>
+                        <h4 class="pt-1">Quite Frankly... </h4>
+                        <p>
+                            The project hasn't really had time to partipate in token related activities.  🕑
+                        </p>
+                        <p>
+                            In fact, we're quite fatigued by the pervasiveness of tokens.  🗞
+                        </p>
+                        <p>
+                            Its exhausting to have to pay attention to all of the rumours, the drama, the speculation.  📈 📉 📉 📈 📉
+                        </p>
+                        <p>
+                            And there are *more whortwhile* uses of a completely-distributed trust-management supercomputer like the Ethereum blockchain. 🙌
+                        </p>
+                        <p>
+                            So we're choosing to ignore it all (for now) and focusing on building stuff. 🔧🛠
+                        </p>
+                        <h4 class="pt-1">But that could change..</h4>
+                        <p>
+                            It is possible that one day there will be tokens or other digital assets associated with the project.  Possible, but no promises. 🤔
+                        </p>
 
-                    {% endblock %}
+                        <h4 class="pt-1">Want to participate now? </h4>
+                        <p>Some ways to get involved now: </p>
+                        <ul>
+                            <li>
+                                <a href="/slack">Join the slack</a> 👋
+                            </li>
+                            <li>
+                                <a href="/twitter">Follow the twitter</a> 🐦
+                            </li>
+                            <li>
+                                <a href="/explore">Build something cool</a>  🔧
+                            </li>
+                            <li>
+                                <a href="/pitch">Pitch a new idea</a> ⚡️
+                            </li>
+                            <li>
+                                <a href="/tools">Learn a new tool</a> 🛠
+                            </li>
+                        </ul>
+                        <h4 class="pt-1">Still want whitepaper access? </h4>
+
+                        <p>Please submit your info below to receive access to the whitepaper if/when its available. <a href="/whitepaper/accesscode">Already have an access code?</a> </p>
+                        {% if msg %}
+                            <p style="background-color: #fee856; padding: 5px 10px;">
+                                {{msg | safe}}
+                            </p>
+                        {% endif %}
+                        <form id=whitepaper  method=POST>
+                            <div class="form-group">
+                                <label for="email">Email address</label>
+                                <input type=text name=email class=form-control placeholder='you@somewhere'  value="{{email}}" required>
+                                <small id="emailHelp" class="form-text text-muted">Gitcoin will never share your email with anyone else.</small>
+                            </div>
+                            <div class="form-group">
+                            <label for="role">Interested as a</label>
+                                <select multiple class="form-control" id="role" name="role"  required>
+                                  <option>Open Source Developer</option>
+                                  <option>Open Source Repo Maintainer</option>
+                                  <option>Token Purchaser</option>
+                                  <option>Press</option>
+                                  <option>Advisor</option>
+                                  <option>Other</option>
+                                </select>
+                                <small id="role" class="form-text text-muted">Feel free to select more than one.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="comments">Comments</label>
+                                <textarea class="form-control" id="comments" name="comments" rows="3" required>{{comments}}</textarea>
+                                <small id="comments" class="form-text text-muted">Who are you?  What is your interest in the whitepaper?</small>
+                            </div> 
+                            {% csrf_token %}
+                            <input class='btn btn-sm btn-success' type='submit' name='submit' value="Go">
+                        </form>
+
+                        {% endblock %}
 
                     </div>
                 </div>

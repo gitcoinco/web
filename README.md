@@ -250,11 +250,55 @@ cp app/local_settings.py.dist app/local_settings.py
 
 You will need to edit the `app/local_settings.py` file with your local settings. Look for config items that are marked `#required`.
 
+## Setup Database
+
+PostgreSQL is the database used by this application. Here are some instructions for installing PostgreSQL on various operating systems.
+
+[OSX](https://www.moncefbelyamani.com/how-to-install-postgresql-on-a-mac-with-homebrew-and-lunchy/)
+
+[Windows](http://www.postgresqltutorial.com/install-postgresql/)
+
+[Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
+
+Once you have Postgres installed and running on your system, enter into a Postgres session.
+```
+psql
+```
+Create the database and a new privileged user.
+```sql
+CREATE DATABASE gitcoin;
+CREATE USER gitcoin_user WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE gitcoin TO gitcoin_user;
+```
+Exit Postgres session
+```
+\q
+```
+Update local_settings.py with the connection details.
+
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'gitcoin',
+        'USER': 'gitcoin_user',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': 5432,
+    }
+}
+```
+
+
+## Startup server
+
 
 ```
 virtualenv gcoin
 source gcoin/bin/activate
-pip install -r ../requirements.txt
+pip install -r requirements/base.txt
+pip install -r requirements/dev.txt
+pip install -r requirements/test.txt
 ./manage.py migrate
 ./manage.py createcachetable
 ./manage.py runserver 0.0.0.0:8080

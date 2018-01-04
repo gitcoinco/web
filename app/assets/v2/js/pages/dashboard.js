@@ -257,8 +257,6 @@ $(document).ready(function(){
           return false;
         }
       });
-    next_announce = getNextDayOfWeek(new Date(), 2);
-    $("#announceIssues").html(timeDifference(new Date, next_announce))
 
     //sidebar clear
     $(".dashboard #clear").click(function(e){

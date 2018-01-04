@@ -1,0 +1,50 @@
+.newsletter {
+  margin-top: 1em;
+  border-top: 1px solid #eee;
+}
+
+.newsletter h4 {
+  letter-spacing: 0;
+  font-size: 20px;
+  font-family: "OpenSans Bold";
+  text-transform: none;
+}
+
+.newsletter label {
+  width: 100%;
+  font-size: 10px;
+  color: #888;
+}
+
+.newsletter #newsletter-input {
+  font-size: 12px;
+  text-align: center;
+  padding: 10px 40px;
+  border: 1px solid #eee;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.newsletter .addon {
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  top: 2px;
+  left: -4px;
+  width: 44px;
+  height: 40px;
+  background: linear-gradient(200deg, #8E2ABE 0%, #37EA9C 100%);
+  border: none;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.newsletter .addon i {
+  position: relative;
+  color: #fff;
+}
+
+::-webkit-input-placeholder { color: #999; }
+::-moz-placeholder { color: #999; }
+:-ms-input-placeholder { color: #999; }
+:-moz-placeholder { color: #999; }

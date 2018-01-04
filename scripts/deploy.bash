@@ -35,7 +35,7 @@ git pull origin $BRANCH
 
 #deploy hooks
 echo "- install req"
-pip install -r requirements.txt
+pip install -r requirements/base.txt
 echo "- install crontab"
 crontab scripts/crontab
 cd app

@@ -13,11 +13,11 @@ var address_ize = function(key, val, result){
         }
         return [ key, "<a target=new href=https://etherscan.io/address/"+val+">"+val+"</a>"];
     };
-var github_ize = function(key, val, result){
+var gitcoin_ize = function(key, val, result){
         if(!_truthy(val)){
             return [null, null]
         }
-        return [ key, "<a target=new href=https://github.com/"+val+">@"+val.replace('@','')+"</a>"];
+        return [ key, "<a target=new href=https://gitcoin.co/profile/"+val+">@"+val.replace('@','')+"</a>"];
     };
 var email_ize = function(key, val, result){
         if(!_truthy(val)){
@@ -145,8 +145,8 @@ var callbacks = {
         }
         return address_ize(key, val, result);
     },
-    'bounty_owner_github_username': github_ize,
-    'claimee_github_username': github_ize,
+    'bounty_owner_github_username': gitcoin_ize,
+    'claimee_github_username': gitcoin_ize,
     'value_in_eth': function(key, val, result){
         if(result['token_name'] == 'ETH' || val == null){
             return [null, null];
@@ -332,44 +332,59 @@ window.addEventListener('load', function() {
                             text: 'View on Github',
                             target: 'new',
                             parent: 'right_actions',
-                            color: 'darkGrey'
+                            color: 'darkBlue',
+                            title: 'Github is where the issue scope lives.  Its also a great place to collaborate with, and get to know, other developers (and sometimes even the repo maintainer themselves!).'
                         }
                     }
                     actions.push(entry);
-                    if(result['status']=='open' && !isBountyOwner(result) ){
+                    var enabled = !isBountyOwner(result);
+                    if(result['status']=='open' ){
                         var entry = {
                             href: '/funding/claim?source='+result['github_url'],
                             text: 'Claim Issue',
                             parent: 'right_actions',
-                            color: 'darkBlue'
-                        }
-                        actions.push(entry);
-                    }
-                    if(result['status']=='expired' && isBountyOwner(result) ){
-                        var entry = {
-                            href: '/funding/clawback?source='+result['github_url'],
-                            text: 'Clawback Expired Funds',
-                            parent: 'right_actions',
-                            color: 'darkBlue'
-                        }
-                        actions.push(entry);
-                    }
-                    if(result['status']=='claimed' && isBountyOwner(result) ){
-                        var entry = {
-                            href: '/funding/process?source='+result['github_url'],
-                            text: 'Accept/Reject Issue',
-                            parent: 'right_actions',
-                            color: 'darkBlue'
+                            color: enabled ? 'darkBlue' : 'darkGrey',
+                            extraClass: enabled ? '' : 'disabled',
+                            title: enabled ? 'Claim an issue when you sincerely intend to work on it.\n\n It is not necessary to have started work when you claim an issue, but please (1) comment on the github thread after you claim it, (2) claim an issue only if you plan to start work within the next 12 hours  & (3) only claim it if you feel like you understand the scope and can see it to completion. ' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(entry);
                     }
 
+                    var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
+                    if(is_expired){
+                        var enabled = isBountyOwner(result);
+                        var entry = {
+                            href: '/funding/clawback?source='+result['github_url'],
+                            text: 'Clawback Expired Funds',
+                            parent: 'right_actions',
+                            color: enabled ? 'darkBlue' : 'darkGrey',
+                            extraClass: enabled ? '' : 'disabled',
+                            title: enabled ? '' : 'Can only be performed if you are the funder.',
+                        }
+                        actions.push(entry);
+                    }
+                    if(result['status']=='claimed' ){
+                        var enabled = isBountyOwner(result);
+                        var entry = {
+                            href: '/funding/process?source='+result['github_url'],
+                            text: 'Accept/Reject Issue',
+                            parent: 'right_actions',
+                            color: enabled ? 'darkBlue' : 'darkGrey',
+                            extraClass: enabled ? '' : 'disabled',
+                            title: enabled ? '' : 'Can only be performed if you are the funder.',
+
+                        }
+                        actions.push(entry);
+                    }
+
+                    var watch_title = 'Watching an issue allows you to search for it again via the "other filters" in funded issue search.';
                     if (is_on_watch_list(result['github_url'])) {
                         var entry = {
                             href: '/unwatch',
                             text: 'Unwatch',
                             parent: 'left_actions',
-                            color: 'darkGrey'
+                            color: 'darkBlue' ,
+                            title: watch_title,
                         }
                         actions.push(entry);
                     } else {
@@ -377,7 +392,8 @@ window.addEventListener('load', function() {
                             href: '/watch',
                             text: 'Watch',
                             parent: 'left_actions',
-                            color: 'darkGrey'
+                            color: 'darkBlue',
+                            title: watch_title,
                         }
                         actions.push(entry);
                     }

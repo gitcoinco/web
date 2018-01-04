@@ -1,0 +1,101 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      {% include 'shared/head.html' %}
+      {% include 'shared/cards_pic.html' %}
+      <link rel="stylesheet" href="static/v2/css/toolbox.css">
+      <link rel="stylesheet" href="static/v2/css/card.css">
+  </head>
+  <body class="interior {{active}}">
+    <div class="container-fluid header dash">
+      {% include 'shared/nav_internal.html' %}
+      <div class="row no-gutter">
+        <div class="col-3" style="background: #eee; ">
+          {% include 'shared/current_balance.html' %}
+          {% include 'shared/sidebar_search.html' %}
+        </div>
+        <div class="col body">
+          <div class="container-fluid">
+            <div class = "toolbox">
+              <div class="row no-gutters">
+                <div class="col-md-5 col-12">
+                  <h2 class="title">Toolbox</h2>
+                  <p class="description">Make Gitcoin your own
+                    by enabling the tools that suit your needs.</p>
+                </div>
+                <div id="tools_hero" class="col-2">
+                    <img src='/static/v2/images/tools/tools_noborder.jpg'>
+                </div>
+              </div>
+            </div>
+            {% for actor in actors %}
+              <h3 class="sub-title">{{actor.title}}</h3>
+              <div class="row no-gutters">
+                <div class="col-md-5 col-12">
+                  <p class="description">{{actor.description}}</p>
+                </div>
+              </div>
+
+              <div class="cards">
+                {% for tool in actor.tools %}
+                  <div class="card {{tool.class}}">
+                    <div class="img">
+                      <img src="{{tool.img}}" {% if tool.stat_graph %} data-hover="/stats/{{tool.stat_graph}}" {% endif %} />
+                    </div>
+                    <div class="content">
+                      <div class="title">{{tool.name}}</div>
+                      <div class="description">
+                        {{tool.description | safe}}
+                        
+                      </div>
+                      <div class="button_container">
+                        <a class="btn btn-xs btn-success pulseClick" role="button" href="{{tool.link}}">Try it ></a>
+                      </div>
+                      {% comment %}
+                      <div class="toggle">
+                        {% if tool.active == "true" %}
+                          <input type="checkbox" id="switch_{{tool.name}}" checked>
+                        {% else %}
+                          <input type="checkbox" id="switch_{{tool.name}}">
+                        {% endif %}
+                        <label for="switch_{{tool.name}}"></label>
+                      </div>
+                      {% endcomment %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endfor %}
+            {% include 'shared/newsletter.html' %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/ga.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+
+    <script src="{{STATIC_URL}}v2/js/abi.js"></script>
+    <script src="{{STATIC_URL}}v2/js/tokens.js"></script>
+    <script src="{{STATIC_URL}}v2/js/shared.js"></script>
+    <script src="{{STATIC_URL}}v2/js/toolbox.js"></script>
+  </body>
+</html>
