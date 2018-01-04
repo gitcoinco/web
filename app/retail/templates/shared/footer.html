@@ -61,7 +61,7 @@
             </div>
         <div class="row " style="">
                 <a target=new href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" style=" margin: 10px auto;">
-                    <img src="/static/v2/images/consensys-logo-white-small.png" style="filter:none; width: 100px; height: 35px;"/>
+                    <img src="/static/v2/images/consensys-logo-white-small.png" style="filter:{% if request.path == '/ios' %}invert(100%);{%else%}none;{% endif %} width: 100px; height: 35px;"/>
                 </a>
         </div>
     </div>
