@@ -1,10 +1,10 @@
-from django.conf import settings
-from django.utils import timezone
-from django.core.serializers.json import DjangoJSONEncoder
-
-from economy.utils import convert_amount
 import json
 
+from django.conf import settings
+from django.core.serializers.json import DjangoJSONEncoder
+from django.utils import timezone
+
+from economy.utils import convert_amount
 from gas.models import GasProfile
 
 
@@ -44,4 +44,3 @@ def conf_time_spread():
         return json.dumps(list(gp), cls=DjangoJSONEncoder)
     except Exception as e:
         return json.dumps([])
-
