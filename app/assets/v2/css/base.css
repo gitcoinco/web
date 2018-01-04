@@ -941,6 +941,10 @@ body.bounty_details #title{
     color: #da086b;
 }
 
+#mission_hero .text {
+    margin-left: 2rem;
+}
+
 #mission_hero .font-bigger-4 {
     letter-spacing: 0.15rem;
 }
@@ -1240,8 +1244,12 @@ body.bounty_details #title{
     .bounty_def h5{
         font-size: .9rem;
     }
-
+    #mission_hero .text {
+        margin-top: 1rem;
+        margin-left: 0;
+    }
 }
+
 @media (max-width: 350px) {
     img#logo{
         width: 150px;

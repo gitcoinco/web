@@ -24,8 +24,7 @@
 <body class="{{ active }}">
 <div class="container-fluid header">
     {% include 'shared/nav.html' %}
-    {% include 'shared/minihero.html' with h1='Mission' %}
-
+    {% include 'shared/minihero.html' with h1='Mission' position_h1_below_logo=1 %}
 </div>
 
 
@@ -36,7 +35,7 @@
                 <img src="/static/v2/images/mission/hero.png" />
             </div>
 
-            <div class="ml-5">
+            <div class="text">
                 <div class="font-bigger-4">
                     GITCOIN IS A <span class="text-highlight-dark-blue">MISSION</span>
                     AND <span class="text-highlight-dark-blue">VALUE-ORIENTED</span>
