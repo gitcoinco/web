@@ -85,6 +85,7 @@ class Bounty(SuperModel):
     idx_status = models.CharField(max_length=50, default='')
     avatar_url = models.CharField(max_length=255, default='')
     issue_description = models.TextField(default='')
+    standard_bounties_id = models.IntegerField(default=0)
 
     def __str__(self):
         return "{}{} {} {} {}".format( "(CURRENT) " if self.current_bounty else "" , self.title, self.value_in_token, self.token_name, self.web3_created)
