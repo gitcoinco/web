@@ -200,6 +200,10 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_SECONDS = 3600
 
+# List of github usernames to not count as comments on an issue
+IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
+
+
 # Include local settings overrides
 try:
     from .local_settings import *  # NOQA
