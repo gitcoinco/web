@@ -10,7 +10,7 @@
         <div class="container-fluid header dash">
             {% include 'shared/nav_internal.html' %}
         </div>
-        <div class="row ml-5">
+        <div class="row ml-5 hidden-lg">
             <div class="col-6 header-line">
                 One Swipe Away From Your Next Bounty.
                 <div class="row no-gutter">
@@ -20,7 +20,7 @@
                 <h3>
                     Browse funded work in open source software from anywhere, at anytime.
                 </h3>
-                <a href="#">
+                <a href="/itunes">
                     <img class="iphone" src="/static/v2/images/ios/appstore.png"/>
                 </a>
             </div>
@@ -29,73 +29,101 @@
             </div>
             <div class="col-6 subheader-line"></div>
         </div>
-<!--         <div id="hero_cta" class="row">
-            <div class="col d-flex justify-content-end  mt-5 mb-5 mr-5">
-                <div style="text-align: center;">
-                    <div>
-                        <a class="btn btn-warning" role="button" href="/slack" target=new> <i class="fa fa-slack" aria-hidden="true"></i> Join Our Slack</a>
-                        <a class="btn btn-warning ml-3" role="button" href="/explorer"><i class="fa fa-globe" aria-hidden="true"></i> Explore Funded Issues</a>
-                    </div>
-                    <p style="margin: 10px auto;">
-                        <a style="color:#ffc900; " href='#mc_embed_signup_scroll'>Join Mailing List</a>
-                    </p>
+        <div class="row visible-md-down">
+            <div class="col-12 header-line">
+                One Swipe Away From Your Next Bounty.
+                <div class="row no-gutter">
+                    <div class="col-2" style="background: #fff; height:7px; margin:30px 0;"></div>
                 </div>
+                <h3>
+                    Browse funded work in open source software from anywhere, at anytime.
+                </h3>
+                <a href="/itunes">
+                    <img class="iphone" src="/static/v2/images/ios/appstore.png"/>
+                </a>
             </div>
         </div>
- -->    </div>
+<!--         <div class="row visible-md-down">
+            <div class="col-6 header-img">
+                <img src="/static/v2/images/ios/iPhone.png">
+            </div>
+        </div> -->
+    </div>
      <div class="row">
-        <div class="col-2"></div>
-        <div class="col-8 video__wrapper">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8 col-md-12 video__wrapper">
             <video class="video">
-                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                <source src="https://www.w3schools.com/html/mov_bbb.ogg" type="video/ogg">
+                <source src="/static/v2/vid/gitcoin_ios.mp4" type="video/mp4">
+                <source src="/static/v2/vid/gitcoin_ios.ogv" type="video/ogg">
             </video>
             <div class="playpause"></div>
         </div>
-        <div class="col-2"></div>
+        <div class="col-lg-2"></div>
     </div>
-
+    
     <div class="row tag-line">
         <div class="col-12">
-            <h3 class="text-center">It's Easy As 1-2-3 🎶</h3>
+            <h3 class="text-center">It's Easy As <span class="line-break">1-2-3 🎶</span></h3>
         </div>
     </div>
-
     <div class="row">
-        <div class="col-md-4" style="">          
-            <div class="text-center">
-                <div class="flat-card">
-                    <h4 class="ios-emoji">👤</h4>
-                    <h3>1. Sync</h3>
-                    <p>Sync your github profile with the gitcoin app.</p>
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-md-4" style="">
+                    <div class="text-center">
+                        <div class="cards">
+                              <div class="card">
+                                <div class="ios-emoji">👤</div>
+                                <div class="content">
+                                  <div class="title">1. Sync</div>
+                                  <div class="description">
+                                    Sync your github profile with the gitcoin app.
+                                  </div>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" style="">          
+                    <div class="text-center">
+                         <div class="cards">
+                              <div class="card">
+                                <div class="ios-emoji">👆</div>
+                                <div class="content">
+                                  <div class="title">2. Swipe</div>
+                                  <div class="description">
+                                    Swipe through funded work in open source software.
+                                  </div>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" style="">          
+                    <div class="text-center">
+                        <div class="cards">
+                              <div class="card">
+                                <div class="ios-emoji">🎉</div>
+                                <div class="content">
+                                  <div class="title">3. Match</div>
+                                  <div class="description">
+                                    The app will intro (via e-mail) you to the repository owners with whom you've matched with
+                                  </div>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4" style="">          
-            <div class="text-center">
-                <div class="flat-card">
-                    <h4 class="ios-emoji">👆</h4>
-                    <h3>2. Swipe</h3>
-                    <p>Swipe through funded work in open source software.</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4" style="">          
-            <div class="text-center">
-                <div class="flat-card">
-                    <h4 class="ios-emoji">🎉</h4>
-                    <h3>3. Match</h3>
-                    <p>The app will intro (via e-mail) you to the repository owners with whom you've matched with</p>
-                    
-                </div>
-            </div>
-        </div>
+        <div class="col-md-1"></div>
     </div>
 
     <div class="row tag-line text-center">
         <div class="col-12">
             <h3 class="text-center">Get it now.</h3>
-            <a href="#" target="_blank">
+            <a href="/itunes" target="_blank">
                 <img src="/static/v2/images/ios/appstore-gradient.png" height="115" />
             </a>
         </div>

@@ -420,6 +420,8 @@ def browser_extension_chrome(request):
 def browser_extension_firefox(request):
     return redirect('https://addons.mozilla.org/en-US/firefox/addon/gitcoin/')
 
+def itunes(request):
+    return redirect('https://itunes.apple.com/us/app/gitcoin/idXXXXXXXXX')
 
 def ios(request):
     context = {

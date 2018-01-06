@@ -94,6 +94,7 @@ urlpatterns = [
     url(r'^slack/?', retail.views.slack, name='slack'),
     url(r'^iosfeedback/?', retail.views.iosfeedback, name='iosfeedback'),
     url(r'^ios/?', retail.views.ios, name='ios'),
+    url(r'^itunes/?', retail.views.itunes, name='itunes'),
     url(r'^ethdenver/?', retail.views.ethdenver, name='ethdenver'),
     url(r'^denver/?', retail.views.ethdenver, name='denver'),
     url(r'^casestudy/?', retail.views.casestudy, name='casestudy'),
