@@ -12,9 +12,11 @@ window.onload = function(){
 
         var estimateGas = function(issueURL, method, success_callback, failure_calllback, final_callback){
             var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+            $("#gasLimit").addClass('loading');
             method.estimateGas(
                 issueURL, 
                 function(errors,result){
+                    $("#gasLimit").removeClass('loading');
                     console.log(errors,result);
                     var is_issue_taken = typeof result == 'undefined' || result > 209568;
                     if(errors || is_issue_taken){

@@ -79,12 +79,14 @@ $(document).ready(function(){
                     projectLength : $('select[name=projectLength').val(),
                     bountyType : $('select[name=bountyType').val(),
                 }
+                $("#gasLimit").addClass('loading');
                 bounty.postBounty.estimateGas(issueURL, 
                     amount, 
                     tokenAddress, 
                     expirationTimeDelta, 
                     JSON.stringify(metadata),
                     function(errors,result){
+                        $("#gasLimit").removeClass('loading');
                         var is_issue_taken = typeof result == 'undefined' || result > 12976605;
                         if(errors || is_issue_taken){
                             failure_calllback()
