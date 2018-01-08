@@ -27,7 +27,7 @@
     <div class="container-fluid header dash">
       {% include 'shared/nav_internal.html' %}
       <div class="row no-gutter">
-        <div class="col-3" style="background: #eee; ">
+        <div class="col-2" style="background: #eee; ">
           {% include 'shared/current_balance.html' %}
           {% include 'shared/sidebar_search.html' %}
         </div>
@@ -63,7 +63,7 @@
                       <div class="title">{{tool.name}}</div>
                       <div class="description">
                         {{tool.description | safe}}
-                        
+
                       </div>
                       <div class="button_container">
                         <a class="btn btn-xs btn-success pulseClick" role="button" href="{{tool.link}}">Try it ></a>
