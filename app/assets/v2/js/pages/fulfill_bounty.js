@@ -131,7 +131,7 @@ window.onload = function(){
                     },100);
                     e.preventDefault();
                 }
-            };
+            }; //_callback
             bounty.bountydetails.call(issueURL, _callback);
         });
     },100);

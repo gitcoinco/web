@@ -163,7 +163,7 @@ $(document).ready(function(){
 
         // create bountydetails array for database sync
         // comments are the corresponding database fields for dashboard_bounty table
-        bountydetails = [
+        bountyDetails = [
             amount,                       // value_in_token
             tokenAddress,                 // token_address
             account,                      // bounty_owner_address
@@ -175,7 +175,22 @@ $(document).ready(function(){
             JSON.stringify(metadata),     // multiple fields
             expire_date,                  // expires_date
             '',                           // claimee_metadata
+            0,                            // placeholder for standard_bounties_id
         ]
+
+        function syncDb() {
+            // Need to pass the bountydetails as well, since I can't grab it from the 
+            // Standard Bounties contract.
+            sync_web3(issueURL);  //Writes the bounty URL to the database
+            localStorage[issueURL] = timestamp();  // Why set issueURL to timestamp()?
+            add_to_watch_list(issueURL);
+            _alert({ message: "Submission sent to web3." }, 'info');
+            setTimeout(function(){
+                delete localStorage['issueURL'];  // oh this was just temporary
+                mixpanel.track("Submit New Bounty Success", {});
+                document.location.href= "/funding/details?url="+issueURL;
+            },1000);
+        }
 
         // web3 callback
         function web3Callback (error,result){
@@ -188,18 +203,9 @@ $(document).ready(function(){
                 return;
             }
 
-            // Need to pass the bountydetails as well, since I can't grab it from the 
-            // Standard Bounties contract.
-            sync_web3(issueURL, bountydetails);  //Writes the bounty URL to the database
             localStorage['txid'] = result;
-            localStorage[issueURL] = timestamp();  // Why set issueURL to timestamp()?
-            add_to_watch_list(issueURL);
-            _alert({ message: "Submission sent to web3." }, 'info');
-            setTimeout(function(){
-                delete localStorage['issueURL'];  // oh this was just temporary
-                mixpanel.track("Submit New Bounty Success", {});
-                document.location.href= "/funding/details?url="+issueURL;
-            },1000);
+            localStorage['bountyDetails'] = bountyDetails;
+            syncDb();
 
         }
 
@@ -266,7 +272,7 @@ $(document).ready(function(){
                 $('#submitBounty').removeAttr('disabled');
                 return;
             }
-
+            localStorage['dataHash'] = result;  // cache  data hash to find bountyId later
             // bounty is a web3.js eth.contract address
             // The Ethereum network requires using ether to do stuff on it
             // issueAndActivateBounty is a method definied in the StandardBounties solidity contract.
@@ -289,5 +295,6 @@ $(document).ready(function(){
 
         // Add data to IPFS and kick off all the callbacks.
         ipfs.addJson(submit, newIpfsCallback);
+        // getBountyId()
     });
 });
