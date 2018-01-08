@@ -37,7 +37,16 @@ class EmailSubscriberAdmin(admin.ModelAdmin):
 class SlackUserAdmin(admin.ModelAdmin):
     ordering = ['-times_seen']
     search_fields = ['email', 'username']
-    list_display = ['email', 'username', 'times_seen', 'last_seen']
+    list_display = ['email', 'username', 'times_seen', 'pct_seen', 'membership_length_in_days', 'last_seen']
+
+    def pct_seen(self, instance):
+        return "{}%".format(round(100 * (instance.times_seen / (instance.times_seen + instance.times_unseen))))
+
+    def membership_length_in_days(self, instance):
+        try:
+            return (instance.last_seen - instance.created_on).days
+        except:
+            return 'Unknown'
 
 
 admin.site.register(Match, GeneralAdmin)
