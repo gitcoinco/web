@@ -62,6 +62,9 @@ def mission(request):
   context = {
     'active': 'mission',
     'title': 'Mission',
+    'card_title': "Gitcoin is a mission-driven organization.",
+    'card_desc': "Our mission is to push open source forward.",
+    'avatar_url': '/static/v2/images/mission/hero.png',
   }
 
   return TemplateResponse(request, 'mission.html', context)
