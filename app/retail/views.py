@@ -58,6 +58,15 @@ def about(request):
     return TemplateResponse(request, 'about.html', context)
 
 
+def mission(request):
+  context = {
+    'active': 'mission',
+    'title': 'Mission',
+  }
+
+  return TemplateResponse(request, 'mission.html', context)
+
+
 def help(request):
     faq = {
         'Product': [
