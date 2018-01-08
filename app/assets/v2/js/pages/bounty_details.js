@@ -183,13 +183,15 @@ var isBountyOwner = function(result) {
     return (typeof web3 != 'undefined' && (web3.eth.coinbase == bountyAddress))
 }
 
+
+
 var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         console.log("checking this issue for updates:");
         console.log(issueURL);
         //setup callbacks
         var changes_synced_callback = function(){
             document.location.href = document.location.href;
-            //check_for_bounty_changed_updates_REST();
+            check_for_bounty_changed_updates_REST();
         };
         var check_for_bounty_changed_updates_REST = function(){
             var uri = '/api/v0.1/bounties?github_url='+issueURL;
@@ -205,63 +207,104 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
              });
         };
 
-        function getNumBountiesCallback(error, result){
-            if(error){
-                console.log(error)
-            } else{
-                console.log(result)
+        // Only run this after the transaction is confirmed to be on the blockchain
+        var getBountyId = function (callback) {
+            // Get total number of bounties on the contract
+            if (localStorage['bountyId'] != null) {
+                callback(null, localStorage['bountyId']);
             }
-
+            var transactionInfo;
+            var bountiesLength;
+            var bountyId;
+            // var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+            var bounty = web3.eth.contract(bounty_abi).at('0xf209d2b723b6417cbf04c07e733bee776105a073');  //hardcode to test
+            setTimeout(function() {
+                if (bounty['transactionHash'] == null) {
+                    console.log('Bounty not ready yet...');
+                    getBountyId(callback);
+                }
+            },1000)
+            bounty.getNumBounties(function(error, result){
+                console.log("Callback is now running...");
+                if (error){
+                    console.error(error);
+                    return;
+                }
+                bountiesLength = parseInt(result, 10);
+                console.log('Total bounties length: ' + bountiesLength.toString());
+                // Get bounty issuer
+                var i = bountiesLength - 1;
+                function getBountyLoop (i) {
+                    console.log('Trying bountyId: ' + i);
+                    bounty.getBounty(i, function(error, result2) {
+                        if (error) {
+                            console.error(error);
+                            return;
+                        }
+                        issuer = result2[0];
+                        console.log('issuer from stdb: ' + issuer);
+                        console.log('account from bountyDetails:' + localStorage['bountyDetails'].split(",")[2])
+                        // compare issuer to the submitting address
+                        if (issuer == localStorage['bountyDetails'].split(",")[2]) {
+                            bounty.getBountyData(i, function(error, result3) {
+                                if (error) {
+                                console.error(error);
+                                return;
+                                }
+                                dataHash = result3;
+                                console.log('dataHash from stdb: ' + dataHash);
+                                console.log('dataHash from cache: ' + localStorage['dataHash']);
+                                // compare resulting datahash from std bounties to cached dataHash
+                                if (dataHash == localStorage['dataHash']) {
+                                    var bountyId = i;
+                                    console.log('Found matching bountyId: '+ bountyId);
+                                    localStorage['bountyId'] = i;
+                                    callback(null, bountyId);
+                                } else {
+                                    i -= 1;
+                                    if (i == 0) {
+                                        console.log('bountyId not found.')
+                                        callback('bountyId not found', 0)
+                                    }
+                                    getBountyLoop(i);
+                                }
+                            })
+                        } else {
+                            i -= 1;
+                            if (i == 0) {
+                                console.log('bountyId not found.')
+                                callback('bountyId not found', 0)
+                            }
+                            getBountyLoop(i);
+                        }
+                    })
+                }
+                getBountyLoop(i)
+            })
         }
 
         var check_for_bounty_changed_updates_web3 = function(){
-            // This function will continue to be called, until the transaction receipt is found.
+            // callFunctionWhenTransactionMined continue to be called, until the transaction receipt is found.
             // Once it is found, it calls the function() defined below.
             callFunctionWhenTransactionMined(localStorage['txid'],function(){
-                var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-                // Waits one second, and try to pull up the bounty details.
-                // bounty.bountydetails does not exist in StandardBounties contract.
-                // it just grabs information about the bounty.
-                // bounty.getNumBounties(getNumBountiesCallback)
-                // bounty.getNumBounties((err, succ)=> {
-                //     var total = parseInt(succ, 10);
-                //     debugger;
-                //     // this.setState({total: total});
-                //     // for (var i = 0; i < total; i++){
-                //     //   this.getBounty(i, bounties, total);
-                //     }
-                // });
-                // debugger;
                 setTimeout(function(){
-                    bounty.getBounty(bountyId, function(error, result){
-                        if(error){
-                            // Wait one second, try it again.
-                            setTimeout(check_for_bounty_changed_updates_web3, 1000);
-                            console.error(error);
+                    // Add bountyId to localStorage['bountyDetails'][11]
+                    getBountyId(function(error, result) {
+                       if(result != 0){
+                            var bountyDetails = localStorage['bountyDetails'].split(",");
+                            // bountyDetails = bountyDetails + "," + result.toString();
+                            bountyDetails = bountyDetails.push(result);
+                            debugger;
+                            sync_web3(issueURL, bountyDetails, changes_synced_callback);
+                            console.log('success syncing with web3');
                         } else {
-                      //     return (bounties[_bountyId].issuer,
-                      //             bounties[_bountyId].deadline,
-                      //             bounties[_bountyId].fulfillmentAmount,
-                      //             bounties[_bountyId].paysTokens,
-                      //             uint(bounties[_bountyId].bountyStage),
-                      //             bounties[_bountyId].balance);
-                      // }
-                            // debugger;
-                            result[0] = result[0].toNumber();
-                            result[7] = result[7].toNumber();
-                            result[9] = result[9].toNumber();
-                            was_success = result[0] > 0;
-                            if(was_success){
-                                console.log('success syncing with web3');
-                                sync_web3(issueURL, result, changes_synced_callback);
-                            } else {
-                                console.error(result);
-                                var link_url = etherscan_tx_url(localStorage['txid']);
-                                _alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
-                            }
+                            // console.error(result);
+                            var link_url = etherscan_tx_url(localStorage['txid']);
+                            _alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
                         }
                     });
-                },1000);
+     
+                },1000)
             });
         };
 
@@ -313,6 +356,7 @@ window.addEventListener('load', function() {
             var nonefound = true;
             for(var i = 0; i<results.length; i++){
                 var result = results[i];
+                // if the result from the database matches the one in question..
                 if(normalizeURL(result['github_url']) == normalizeURL(issueURL)){
                     $("#bounty_details").css('display','flex');
                     nonefound = false;
@@ -447,7 +491,7 @@ window.addEventListener('load', function() {
 
 
 $(document).ready(function(){
-    // debugger;
+
     $("body").delegate('a[href="/watch"], a[href="/unwatch"]', 'click', function(e){
         e.preventDefault();
         if($(this).attr('href') == '/watch'){
