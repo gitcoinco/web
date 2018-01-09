@@ -227,15 +227,24 @@ def clawback_expired_bounty(request):
     return TemplateResponse(request, 'clawback_expired_bounty.html', params)
 
 
-def bounty_details(request):
+def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
 
-    params = {
-        'issueURL': request.GET.get('issue_'),
+    if ghissue==0:
+      params = {
+          'issueURL': request.GET.get('issue_'),
+          'title': 'Issue Details',
+          'card_title': 'Funded Issue Details | Gitcoin',
+          'avatar_url': 'https://gitcoin.co/static/v2/images/helmet.png',
+          'active': 'bounty_details',
+      }
+    else:
+      params = {
+        'issueURL': 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue,
         'title': 'Issue Details',
         'card_title': 'Funded Issue Details | Gitcoin',
         'avatar_url': 'https://gitcoin.co/static/v2/images/helmet.png',
         'active': 'bounty_details',
-    }
+      }
 
     try:
         b = Bounty.objects.get(github_url=request.GET.get('url'), current_bounty=True)
@@ -433,7 +442,7 @@ def toolbox(request):
              "link": "https://gitcoin.co/tips",
              "active": "false",
              'stat_graph': 'tips',
-        } 
+        }
         ]
       }, {
           "title": "The Powertools",
