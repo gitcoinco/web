@@ -9,6 +9,7 @@ from django.conf import settings
 
 import tinyurl
 import twitter
+from marketing.mails import tip_email
 from app.github import post_issue_comment
 from slackclient import SlackClient
 
@@ -114,6 +115,14 @@ def maybe_market_to_slack(bounty, event_name, txid):
         print(e)
         return False
 
+    return True
+
+
+def maybe_market_tip_to_email(tip, emails):
+    if tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        return False
+
+    tip_email(tip, set(emails), True)
     return True
 
 
@@ -250,8 +259,10 @@ def maybe_market_to_email(b, event_name, txid):
     from marketing.mails import new_bounty_claim, new_bounty_rejection, new_bounty_acceptance, new_bounty
     from marketing.models import EmailSubscriber
     to_emails = []
+    if b.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        return False
 
-    if event_name == 'new_bounty':
+    if event_name == 'new_bounty' and not settings.DEBUG:
         try:
             to_emails = []
             keywords = b.keywords.split(',')

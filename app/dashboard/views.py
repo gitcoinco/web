@@ -30,9 +30,8 @@ from app.github import get_user as get_github_user
 from app.utils import ellipses, sync_profile
 from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty, BountySyncRequest, Profile, Subscription, Tip
-from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack
+from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_tip_to_email
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
-from marketing.mails import tip_email
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -148,7 +147,7 @@ def send_tip_2(request):
         #notifications
         did_post_to_github = maybe_market_tip_to_github(tip)
         maybe_market_tip_to_slack(tip, 'new_tip', tip.txid)
-        tip_email(tip, set(emails), True)
+        maybe_market_tip_to_email(tip, emails)
         if len(emails) == 0:
                 status = 'error'
                 message = 'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.'

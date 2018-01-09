@@ -79,12 +79,17 @@ $(document).ready(function(){
                     projectLength : $('select[name=projectLength').val(),
                     bountyType : $('select[name=bountyType').val(),
                 }
+                var value = 0;
+                if(isETH){
+                    value = amount;
+                }
                 $("#gasLimit").addClass('loading');
                 bounty.postBounty.estimateGas(issueURL, 
                     amount, 
                     tokenAddress, 
                     expirationTimeDelta, 
                     JSON.stringify(metadata),
+                    {from :web3.eth.coinbase, value:value},
                     function(errors,result){
                         $("#gasLimit").removeClass('loading');
                         var is_issue_taken = typeof result == 'undefined' || result > 12976605;

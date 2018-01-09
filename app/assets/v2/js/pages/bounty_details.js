@@ -223,7 +223,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                             } else {
                                 console.error(result);
                                 var link_url = etherscan_tx_url(localStorage['txid']);
-                                _alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
+                                //_alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
                             }
                         }
                     });
