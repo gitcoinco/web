@@ -25,7 +25,10 @@ var save_sidebar_latest = function(){
 
 //saves search information default
 var set_sidebar_defaults = function(){
-    if(localStorage['keywords']){
+    var q = getParam('q');
+    if(q){
+        $("#keywords").val(q);
+    } else if(localStorage['keywords']){
         $("#keywords").val(localStorage['keywords']);
     }
     if(localStorage['sort']){
@@ -210,10 +213,6 @@ var refreshBounties = function(){
 };
 
 window.addEventListener('load', function() {
-    var q = getParam('q');
-    if(q){
-        $("#keywords").val(q);
-    }
     set_sidebar_defaults();
     refreshBounties();
 });
