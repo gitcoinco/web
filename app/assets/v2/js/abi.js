@@ -3,6 +3,10 @@ var bounty_abi = [{"constant":false,"inputs":[{"name":"_bountyId","type":"uint25
 
 
 var bounty_address = function (){
+    // workaround for document.web3network not working with rinkeby
+    if (document.web3network == null) {
+        document.web3network = 'rinkeby';
+    }
     switch(document.web3network){
         case "mainnet":
             return '0x066128b9f7557b5398db3d4ed141f2e64245ffa1';

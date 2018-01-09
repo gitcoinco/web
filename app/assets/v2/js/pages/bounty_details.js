@@ -210,20 +210,15 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         // Only run this after the transaction is confirmed to be on the blockchain
         var getBountyId = function (callback) {
             // Get total number of bounties on the contract
-            if (localStorage['bountyId'] != null) {
+            if (localStorage['bountyId']) {
                 callback(null, localStorage['bountyId']);
             }
             var transactionInfo;
             var bountiesLength;
             var bountyId;
             // var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-            var bounty = web3.eth.contract(bounty_abi).at('0xf209d2b723b6417cbf04c07e733bee776105a073');  //hardcode to test
-            setTimeout(function() {
-                if (bounty['transactionHash'] == null) {
-                    console.log('Bounty not ready yet...');
-                    getBountyId(callback);
-                }
-            },1000)
+            var bounty = web3.eth.contract(bounty_abi).at(bounty_address());  //hardcode to test
+
             bounty.getNumBounties(function(error, result){
                 console.log("Callback is now running...");
                 if (error){
@@ -242,10 +237,11 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                             return;
                         }
                         issuer = result2[0];
+                        var bountyDetails = JSON.parse(localStorage['bountyDetails']);
                         console.log('issuer from stdb: ' + issuer);
                         console.log('account from bountyDetails:' + localStorage['bountyDetails'].split(",")[2])
                         // compare issuer to the submitting address
-                        if (issuer == localStorage['bountyDetails'].split(",")[2]) {
+                        if (issuer == bountyDetails[2]) {
                             bounty.getBountyData(i, function(error, result3) {
                                 if (error) {
                                 console.error(error);
@@ -264,18 +260,22 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                                     i -= 1;
                                     if (i == 0) {
                                         console.log('bountyId not found.')
+                                        localStorage['bountyId'] = 0;
                                         callback('bountyId not found', 0)
-                                    }
+                                    } else {
                                     getBountyLoop(i);
+                                    }
                                 }
                             })
                         } else {
                             i -= 1;
                             if (i == 0) {
                                 console.log('bountyId not found.')
+                                localStorage['bountyId'] = 0;
                                 callback('bountyId not found', 0)
-                            }
+                            } else {
                             getBountyLoop(i);
+                            }
                         }
                     })
                 }
@@ -291,10 +291,11 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                     // Add bountyId to localStorage['bountyDetails'][11]
                     getBountyId(function(error, result) {
                        if(result != 0){
-                            var bountyDetails = localStorage['bountyDetails'].split(",");
-                            // bountyDetails = bountyDetails + "," + result.toString();
-                            bountyDetails = bountyDetails.push(result);
+                            var bountyDetails = JSON.parse(localStorage['bountyDetails']);
+                            // bountyDetails[8] = JSON.stringify(bountyDetails[8])
                             debugger;
+                            // bountyDetails = bountyDetails + "," + result.toString();
+                            bountyDetails[11] = result;
                             sync_web3(issueURL, bountyDetails, changes_synced_callback);
                             console.log('success syncing with web3');
                         } else {

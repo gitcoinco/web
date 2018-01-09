@@ -26,9 +26,9 @@ $(document).ready(function(){
     if(localStorage['bountyType']){
         $('select[name=bountyType] option:contains('+localStorage['bountyType']+')').prop('selected', true);
     }
-    if(localStorage['issueURL']){
-        $('input[name=issueURL]').val(localStorage['issueURL']);
-    }
+    // if(localStorage['issueURL']){
+    //     $('input[name=issueURL]').val(localStorage['issueURL']);
+    // }
     //fetch issue URL related info
     $("input[name=amount]").keyup(setUsdAmount);
     $("input[name=amount]").blur(setUsdAmount);
@@ -125,6 +125,7 @@ $(document).ready(function(){
         localStorage['experienceLevel'] = $('select[name=experienceLevel').val();
         localStorage['projectLength'] = $('select[name=projectLength').val();
         localStorage['bountyType'] = $('select[name=bountyType').val();
+        localStorage.removeItem('bountyId');
 
 
         //setup web3
@@ -204,7 +205,7 @@ $(document).ready(function(){
             }
 
             localStorage['txid'] = result;
-            localStorage['bountyDetails'] = bountyDetails;
+            localStorage['bountyDetails'] = JSON.stringify(bountyDetails);
             syncDb();
 
         }
@@ -294,6 +295,7 @@ $(document).ready(function(){
         }
 
         // Add data to IPFS and kick off all the callbacks.
+
         ipfs.addJson(submit, newIpfsCallback);
         // getBountyId()
     });

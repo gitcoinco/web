@@ -284,7 +284,6 @@ def profile_keywords_helper(handle):
 
 def profile_keywords(request, handle):
     keywords = profile_keywords_helper(handle)
-    
     response = {
         'status': 200,
         'keywords': keywords,
@@ -369,8 +368,10 @@ def sync_web3(request):
             bountydetails[8] = str(bountydetails[8])  # multiple fields (metaData)
             bountydetails[9] = int(bountydetails[9])  # expires_date (expirationTime)
             bountydetails[10] = str(bountydetails[10])  # claimee_metadata (claimee_metaData)
+            bountydetails[11] = int(bountydetails[11])  # standard_bounties_id (_bountyId)
             print(bountydetails)
             contract_address = request.POST.get('contract_address')
+            # import pdb; pdb.set_trace();
             network = request.POST.get('network')
             didChange, old_bounty, new_bounty = process_bounty_details(bountydetails, issueURL, contract_address, network)
 
