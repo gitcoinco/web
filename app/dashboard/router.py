@@ -36,7 +36,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
                   "claimee_github_username", "is_open", "expires_date", "raw_data", "metadata",
                   "claimee_metadata", "current_bounty", 'value_in_eth', 'value_in_usdt', 'status',
                   'now', 'avatar_url', 'value_true', 'issue_description', 'network', 'org_name',
-                  'pk', 'issue_description_text')
+                  'pk', 'issue_description_text', 'standard_bounties_id')
 
 
 # ViewSets define the view behavior.
