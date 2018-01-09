@@ -107,4 +107,3 @@ class SlackUser(SuperModel):
 
     def __str__(self):
         return "{}; lastseen => {}".format(self.username, self.last_seen)
-

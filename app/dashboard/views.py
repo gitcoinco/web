@@ -31,7 +31,7 @@ from app.utils import ellipses, sync_profile
 from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty, BountySyncRequest, Profile, Subscription, Tip
 from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack
-from gas.utils import recommend_min_gas_price_to_confirm_in_time, eth_usd_conv_rate, conf_time_spread
+from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from marketing.mails import tip_email
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
