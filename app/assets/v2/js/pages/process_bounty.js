@@ -41,7 +41,8 @@ window.onload = function(){
                 update_metamask_conf_time_and_cost_estimate();
             };
             var final_callback = function(){};
-            estimateGas(issueURL, bounty.approveBountyClaim, success_callback, failure_callback, final_callback);
+            //estimateGas(issueURL, bounty.approveBountyClaim, success_callback, failure_callback, final_callback);
+            success_callback(50531,50531,'');
         };
         setTimeout(function(){
             updateInlineGasEstimate();

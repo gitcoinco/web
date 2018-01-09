@@ -40,7 +40,8 @@ window.onload = function(){
                 update_metamask_conf_time_and_cost_estimate();
             };
             var final_callback = function(){};
-            estimateGas(issueURL, success_callback, failure_callback, final_callback);
+            //estimateGas(issueURL, success_callback, failure_callback, final_callback);
+            success_callback(86936,86936,'');
         };
         setTimeout(function(){
             updateInlineGasEstimate();

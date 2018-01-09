@@ -119,7 +119,8 @@ $(document).ready(function(){
                 update_metamask_conf_time_and_cost_estimate();
             };
             var final_callback = function(){};
-            estimateGas(issueURL, success_callback, failure_callback, final_callback);
+            //estimateGas(issueURL, success_callback, failure_callback, final_callback);
+            success_callback(682443,682443,'');
         };
         setTimeout(function(){
             updateInlineGasEstimate();
