@@ -92,6 +92,8 @@ urlpatterns = [
     url(r'^extension/chrome?', retail.views.browser_extension_chrome, name='browser_extension_chrome'),
     url(r'^extension/firefox?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
+    url(r'^press/?', retail.views.presskit, name='press'),
+    url(r'^presskit/?', retail.views.presskit, name='presskit'),
 
     url(r'^slack/?', retail.views.slack, name='slack'),
     url(r'^iosfeedback/?', retail.views.iosfeedback, name='iosfeedback'),
