@@ -1,8 +1,9 @@
 """Hello Analytics Reporting API V4."""
 
+from django.conf import settings
+
 from apiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
-from django.conf import settings
 
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
 auth_json = settings.GOOGLE_ANALYTICS_AUTH_JSON

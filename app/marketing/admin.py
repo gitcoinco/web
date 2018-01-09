@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 from django.contrib import admin
 
 # Register your models here.
-from .models import EmailSubscriber, LeaderboardRank, Match, Stat, SlackUser
+from .models import EmailSubscriber, LeaderboardRank, Match, SlackUser, Stat
 
 
 # Register your models here.
