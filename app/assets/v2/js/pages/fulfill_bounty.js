@@ -100,7 +100,7 @@ window.onload = function(){
                             var next = function(){
                                 localStorage['txid'] = result;
                                 sync_web3(issueURL);
-                                localStorage[issueURL] = timestamp();
+                                localStorage[issueURL] = timestamp();  //ipfs timestamp
                                 add_to_watch_list(issueURL);
                                 _alert({ message: "Fulfillment submitted to web3." },'info');
                                 setTimeout(function(){

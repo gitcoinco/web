@@ -336,7 +336,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         var is_changing_remote_recent = remote_delta < (60 * 60); // less than one minute
 
         should_display_warning = !last_modified_time_remote || ((is_changing_local_recent) && (remote_delta > local_delta));
-        should_display_warning = false;  // hack to work around the broken warning banner
+        // should_display_warning = false;  // hack to work around the broken warning banner
         if(should_display_warning){
 
             showWarningMessage();

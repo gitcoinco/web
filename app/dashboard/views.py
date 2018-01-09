@@ -385,8 +385,6 @@ def sync_web3(request):
             processed=False,
             )
 
-
-
     return JsonResponse(result)
 
 
