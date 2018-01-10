@@ -36,7 +36,7 @@ from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 
-confirm_time_minutes_target = 3
+confirm_time_minutes_target = 60
 
 
 def send_tip(request):
