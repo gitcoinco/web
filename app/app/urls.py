@@ -23,6 +23,7 @@ import dashboard.embed
 import dashboard.helpers
 import dashboard.ios
 import dashboard.views
+import linkshortener.views
 import marketing.views
 import retail.emails
 import retail.views
@@ -114,6 +115,9 @@ urlpatterns = [
     url(r'^github/?', retail.views.github, name='github'),
     url(r'^youtube/?', retail.views.youtube, name='youtube'),
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
+
+    # link shortener
+    url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),
 
     #token distribution event
     url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),
