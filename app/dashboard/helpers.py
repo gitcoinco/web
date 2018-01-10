@@ -227,7 +227,6 @@ def process_bounty_details(bountydetails, url, contract_address, network):
     #extract json
     metadata = None
     claimee_metadata = None
-    # import pdb; pdb.set_trace()
     try:
         metadata = json.loads(bountydetails[8])
     except Exception as e:
@@ -254,7 +253,6 @@ def process_bounty_details(bountydetails, url, contract_address, network):
     except Exception as e:
         print(e)
         didChange = True
-    # import pdb; pdb.set_trace();
 
     with transaction.atomic():
         for old_bounty in old_bounties:

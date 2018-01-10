@@ -341,7 +341,6 @@ def sync_web3(request):
     result = {}
     issueURL = request.POST.get('issueURL', False)
     bountydetails = request.POST.getlist('bountydetails[]', [])
-    # import pdb; pdb.set_trace()
     if issueURL:
 
         issueURL = normalizeURL(issueURL)
@@ -371,7 +370,6 @@ def sync_web3(request):
             bountydetails[11] = int(bountydetails[11])  # standard_bounties_id (_bountyId)
             print(bountydetails)
             contract_address = request.POST.get('contract_address')
-            # import pdb; pdb.set_trace();
             network = request.POST.get('network')
             didChange, old_bounty, new_bounty = process_bounty_details(bountydetails, issueURL, contract_address, network)
 

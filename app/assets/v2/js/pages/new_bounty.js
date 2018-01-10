@@ -144,8 +144,6 @@ $(document).ready(function(){
         // StandardBounties integration begins here
         var expire_date = (parseInt(expirationTimeDelta) + (new Date().getTime()/1000|0) );
         // Set up Interplanetary file storage
-        // TODO: Where is ipfs definied?  Does something need to be imported?
-        // Looks like its pulling from ipfs.js
         // IpfsApi is defined in the ipfs-api.js.
         // Is it better to use this JS file than the node package?  github.com/ipfs/
         ipfs.ipfsApi = IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: "https", root:'/api/v0'});
@@ -273,7 +271,7 @@ $(document).ready(function(){
                 $('#submitBounty').removeAttr('disabled');
                 return;
             }
-            localStorage['dataHash'] = result;  // cache  data hash to find bountyId later
+            localStorage['dataHash'] = result;  // cache data hash to find bountyId later
             // bounty is a web3.js eth.contract address
             // The Ethereum network requires using ether to do stuff on it
             // issueAndActivateBounty is a method definied in the StandardBounties solidity contract.
@@ -297,6 +295,5 @@ $(document).ready(function(){
         // Add data to IPFS and kick off all the callbacks.
 
         ipfs.addJson(submit, newIpfsCallback);
-        // getBountyId()
     });
 });

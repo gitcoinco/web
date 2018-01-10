@@ -77,25 +77,6 @@ window.onload = function(){
                 }
                 if(run_main){
                     if(!ignore_error){
-                        // var bountyAmount = result[0].toNumber();
-                        // bountyDetails = [bountyAmount, result[1], result[2], result[3]];
-                        // var fromAddress = result[2];
-                        // var claimeeAddress = result[3];
-                        // var open = result[4];
-                        // var initialized = result[5];
-
-                        // var errormsg = undefined;
-                        // if(bountyAmount == 0 || open == false || initialized == false){
-                        //     errormsg = "No active bounty found at this address.  Are you sure this is an active bounty?";
-                        // } 
-
-                        // if(errormsg){
-                        //     _alert({ message: errormsg });
-                        //     unloading_button($('#submitBounty'));
-                        //     return;
-                        // }
-                        // 
-                        // 
                         var web3Callback = function(error, result){
                             var next = function(){
                                 localStorage['txid'] = result;
@@ -129,36 +110,9 @@ window.onload = function(){
                             bounty.fulfillBounty(bountyId, localStorage['dataHash'], web3Callback);
                         })
                     }
-
-
-                    // execute along inside _callback function
-//                     setTimeout(function(){
-//                         bounty.claimBounty.estimateGas(
-//                             issueURL, 
-//                             claimee_metadata, 
-//                             function(errors,result){
-//                                 if(errors){
-//                                     _alert({ message: "This issue is no longer active.  Please leave a comment <a href=https://github.com/gitcoinco/web/issues/169>here</a> if you need help." });
-//                                     mixpanel.track("Claim Bounty Error", {step: 'estimateGas', error: errors});
-//                                     return;
-//                                 }
-//                                 var gas = Math.round(result * gasMultiplier);
-//                                 var gasLimit = Math.round(gas * gasLimitMultiplier);
-//                                 bounty.claimBounty.sendTransaction(issueURL, 
-//                                     claimee_metadata,
-//                                     {
-//                                         from : account,
-//                                         gas:web3.toHex(gas), 
-//                                         gasLimit: web3.toHex(gasLimit), 
-//                                         gasPrice:web3.toHex(defaultGasPrice), 
-//                                     }, 
-//                                 callback);
-//                         });
-//                     },100);
                     e.preventDefault();
                 }
             }; //_callback
-            // bounty.bountydetails.call(issueURL, _callback);
             ipfs.addJson(submit, _callback);
         });
     },100);

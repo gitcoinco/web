@@ -292,8 +292,6 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                     getBountyId(function(error, result) {
                        if(result != 0){
                             var bountyDetails = JSON.parse(localStorage['bountyDetails']);
-                            // bountyDetails[8] = JSON.stringify(bountyDetails[8])
-                            // bountyDetails = bountyDetails + "," + result.toString();
                             bountyDetails[11] = result;
                             sync_web3(issueURL, bountyDetails, changes_synced_callback);
                             console.log('success syncing with web3');

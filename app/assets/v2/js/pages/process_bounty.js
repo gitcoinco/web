@@ -117,6 +117,7 @@ window.onload = function(){
 
                 }
             };
+            // TODO: This call is no longer valid when using Standard Bounties
             bounty.bountydetails.call(issueURL, callback);
             e.preventDefault();
         });
