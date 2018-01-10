@@ -27,7 +27,7 @@ window.onload = function(){
                         $("#gasLimit").removeClass('loading');
                         var is_issue_taken = typeof result == 'undefined' || result > 403207;
                         if(errors || is_issue_taken){
-                            failure_calllback()
+                            failure_calllback(errors)
                             return;
                         }
                         var gas = Math.round(result * gasMultiplier);
@@ -153,7 +153,7 @@ window.onload = function(){
                     };
 
                     setTimeout(function(){
-                        var failure_calllback = function(){
+                        var failure_calllback = function(errors){
                             _alert({ message: "This issue is no longer active.  Please leave a comment <a href=https://github.com/gitcoinco/web/issues/169>here</a> if you need help." });
                             mixpanel.track("Claim Bounty Error", {step: 'estimateGas', error: errors});
                             unloading_button($('#submitBounty'));
@@ -178,7 +178,7 @@ window.onload = function(){
                             function(errors,result){
                                 var is_issue_taken = typeof result == 'undefined' || result > 403207;
                                 if(errors || is_issue_taken){
-                                    failure_calllback()
+                                    failure_calllback(errors)
                                     return;
                                 }
                                 var gas = Math.round(result * gasMultiplier);

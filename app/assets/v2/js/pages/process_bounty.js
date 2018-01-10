@@ -20,7 +20,7 @@ window.onload = function(){
                     console.log(errors,result);
                     var is_issue_taken = typeof result == 'undefined' || result > 209568;
                     if(errors || is_issue_taken){
-                        failure_calllback();
+                        failure_calllback(errors);
                         return;
                     }
                     var gas = Math.round(result * gasMultiplier);
@@ -132,11 +132,10 @@ window.onload = function(){
                     if(whatAction != 'Accept'){
                         method = bounty.rejectBountyClaim;
                     }
-                    var failure_calllback = function(){
-                        mixpanel.track("Process Bounty Error", {step: 'estimateGas', error: error});
+                    var failure_calllback = function(errors){
+                        mixpanel.track("Process Bounty Error", {step: 'estimateGas', error: errors});
                         _alert({ message: "There was an error" });
                         unloading_button($('.submitBounty'));
-                        mixpanel.track("Process Bounty Error", {step: 'estimateGas', error: errors});
 
                     }
                     var success_callback = function(gas, gasLimit){
