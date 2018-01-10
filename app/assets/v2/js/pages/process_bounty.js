@@ -42,7 +42,7 @@ window.onload = function(){
             };
             var final_callback = function(){};
             //estimateGas(issueURL, bounty.approveBountyClaim, success_callback, failure_callback, final_callback);
-            success_callback(50531,50531,'');
+            success_callback(50531*16,50531*16,'');
         };
         setTimeout(function(){
             updateInlineGasEstimate();

@@ -41,7 +41,7 @@ window.onload = function(){
             };
             var final_callback = function(){};
             //estimateGas(issueURL, success_callback, failure_callback, final_callback);
-            success_callback(86936,86936,'');
+            success_callback(86936*16,86936*16,'');
         };
         setTimeout(function(){
             updateInlineGasEstimate();
