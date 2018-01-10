@@ -334,7 +334,6 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         var is_changing_remote_recent = remote_delta < (60 * 60); // less than one minute
 
         should_display_warning = !last_modified_time_remote || ((is_changing_local_recent) && (remote_delta > local_delta));
-        // should_display_warning = false;  // hack to work around the broken warning banner
         if(should_display_warning){
 
             showWarningMessage();
@@ -347,7 +346,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
 
 window.addEventListener('load', function() {
     setTimeout(function(){
-        var issueURL = getParam('url');   // What is this url coming from?
+        var issueURL = getParam('url');
         $("#submitsolicitation a").attr('href','/funding/new/?source=' + issueURL)
         var uri = '/api/v0.1/bounties?';  // Django API
         $.get(uri, function(results){

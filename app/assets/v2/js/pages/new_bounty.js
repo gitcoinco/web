@@ -228,10 +228,10 @@ $(document).ready(function(){
                 0x0, 
                 false, 
                 tokenAddress,
-                amount,  // TODO:  Why is amount added twice?
+                amount,
                 {
-                    from :account,  // Seems arbitrary that we need this dictionary considering
-                    value:amount,   // both fields are already definied.
+                    from :account,
+                    value:amount,
                 },
                 web3Callback
             );

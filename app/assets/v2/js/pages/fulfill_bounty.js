@@ -52,8 +52,6 @@ window.onload = function(){
             ipfs.ipfsApi = IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: "https", root:'/api/v0'});
             ipfs.setProvider({ host: 'ipfs.infura.io', port: 5001, protocol: 'https', root:'/api/v0'});
 
-        // ipfs.addJSON({description: data, sourceFileName: this.state.sourceFileName, sourceDirectoryHash: this.state.sourceDirectoryHash, sourceFileHash: this.state.sourceFileHash, contact: contact}, (err, succ)=> {
-
             var submit = {
                 description: issueURL,
                 sourceFileName: "",
