@@ -456,7 +456,7 @@ def iosfeedback(request):
 
 
 def casestudy(request):
-    return redirect('https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit#heading=h.fncqd9y7lo1h')
+    return redirect('https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit')
 
 
 def schwag(request):
