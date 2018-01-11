@@ -440,9 +440,15 @@ def browser_extension_chrome(request):
 def browser_extension_firefox(request):
     return redirect('https://addons.mozilla.org/en-US/firefox/addon/gitcoin/')
 
+def itunes(request):
+    return redirect('https://itunes.apple.com/us/app/gitcoin/idXXXXXXXXX')
 
 def ios(request):
-    return redirect('https://goo.gl/forms/HHOcMDKArCPo9Xas1')
+    context = {
+        'active': 'ios',
+        'title': 'iOS',
+    }
+    return TemplateResponse(request, 'ios.html', context)
 
 
 def iosfeedback(request):
