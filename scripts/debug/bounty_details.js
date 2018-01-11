@@ -1,5 +1,5 @@
 //TODO -- accept stdin
-var issueURL = 'https://github.com/gitcoinco/web/issues/54'
+var issueURL = 'https://github.com/MarketProject/dApps/issues/7'
 localStorage[issueURL] = timestamp();
 
 var callback = function (error, result){

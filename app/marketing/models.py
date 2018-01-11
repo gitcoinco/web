@@ -46,6 +46,7 @@ class EmailSubscriber(SuperModel):
 
         self.priv = codecs.getencoder('hex')(os.urandom(16))[0][:29]
 
+
 class Stat(SuperModel):
     key = models.CharField(max_length=50, db_index=True)
     val = models.IntegerField()
@@ -54,6 +55,7 @@ class Stat(SuperModel):
         index_together = [
             ["created_on", "key"],
         ]
+
     def __str__(self):
         return "{}: {}".format(self.key, self.val)
 
@@ -92,3 +94,16 @@ class Match(SuperModel):
 
 class Keyword(SuperModel):
     keyword = models.CharField(max_length=255)
+
+
+class SlackUser(SuperModel):
+    username = models.CharField(max_length=500)
+    email = models.EmailField(max_length=255)
+    last_seen = models.DateTimeField(null=True)
+    last_unseen = models.DateTimeField(null=True)
+    profile = JSONField(default={})
+    times_seen = models.IntegerField(default=0)
+    times_unseen = models.IntegerField(default=0)
+
+    def __str__(self):
+        return "{}; lastseen => {}".format(self.username, self.last_seen)

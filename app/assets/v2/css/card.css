@@ -1,0 +1,149 @@
+@font-face {
+  font-family: "OpenSans";
+  src: url('/static/v2/fonts/OpenSans/Regular.ttf');
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: #fff;
+  border-radius: 6px;
+  display: inline-block;
+  height: 320px;
+  margin: 1em 2em 1em 0;
+  position: relative;
+  width: 240px;
+}
+
+.card {
+  box-shadow: 0 0px 2px rgba(0,0,0,0.12), 0 1px 1px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.card:hover {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25), 0 1px 1px rgba(0,0,0,0.22);
+}
+
+.card .img {
+  height: 120px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #eee;
+}
+
+.card img {
+  height: 115px;
+}
+
+.card .content {
+  margin: 15px 20px;
+}
+
+.card .content .title {
+  font-family: "OpenSans";
+  margin-bottom: 10px;
+}
+
+.card .content .description {
+  font-size: 0.73em;
+  height: 80px;
+}
+
+.card .content .description span a{
+  margin-top: 4px;
+  display: block;
+  text-decoration: none;
+  color: #6f43ff;
+}
+
+.toggle {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "OpenSans SemiBold";
+}
+
+.toggle input[type=checkbox] {
+  height: 0;
+  width: 0;
+  visibility: hidden;
+}
+
+.toggle label {
+  cursor: pointer;
+  width: 80px;
+  height: 35px;
+  background: #f6136e;
+  display: block;
+  border-radius: 18px;
+  position: relative;
+}
+
+.toggle label:after {
+  content: '';
+  border-radius: 18px;
+  transition: 0.3s;
+  background-color: #fff;
+  top: 2px;
+  left: 2px;
+  width: 35px;
+  height: 31px;
+  position: absolute;
+}
+
+.toggle input:checked + label {
+  background: #26cd7f;
+}
+
+.toggle input:checked + label:after {
+  left: calc(100% - 2px);
+  transform: translateX(-100%);
+}
+
+.toggle label:active:after {
+  width: 36px;
+}
+
+.toggle label:before {
+  transition-duration: .2s;
+  content: 'OFF';
+  width: 10px;
+  font-size: 11px;
+  color: #fff;
+  position: relative;
+  left: 50px;
+  top: 4px;
+}
+
+.toggle input:checked + label:before {
+  transition-duration: .2s;
+  content: 'ON';
+  left: 10px;
+  top: 4px;
+}
+
+@media (max-width: 767px) {
+  .cards {
+    justify-content: center;
+  }
+
+  .card {
+    margin: 1em;
+  }
+}
+
+#tools_hero img{
+  max-width: 200px;
+}
+.button_container{
+  text-align: center;
+}
+.button_container a{
+  font-size: 14px;
+}

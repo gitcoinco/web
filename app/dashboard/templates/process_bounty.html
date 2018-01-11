@@ -24,11 +24,12 @@
 </head>
 
 <body class="interior {{active}}">
+    {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
         {% include 'shared/nav_internal.html' %}
     </div>
     <div class="row no-gutter">
-        <div class="col-3" style="background: #eee; ">
+        <div class="col-2" style="background: #eee; ">
             {% include 'shared/current_balance.html' %}
             {% include 'shared/sidebar_search.html' %}
         </div>
@@ -56,6 +57,7 @@
                                 <input name='terms' id='terms' type="checkbox" value=1 />
                                 <label for=terms>I have read, understand, and agree to, the <a href="/legal/terms" target=new>Terms of Service</a>:</label>
                             </div>
+                            {% include 'shared/metamask_estimate.html' %}
                             <div class="w-100 mt-2">
                                 <a  id="rejectBounty" class="btn btn-sm btn-warning mt-3 mb-2 pulseClick submitBounty" name="submit" style="width: 49%; text-transform: uppercase;" >Reject</a>
                                 <a id="acceptBounty" class="btn btn-sm btn-info mt-3 mb-2 pulseClick submitBounty" name="submit" style="width: 49%; text-transform: uppercase; color: white;">

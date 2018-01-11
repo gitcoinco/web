@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -30,9 +30,8 @@ from app.github import get_user as get_github_user
 from app.utils import ellipses, sync_profile
 from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty, BountySyncRequest, Profile, Subscription, Tip
-from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack
-from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from marketing.mails import tip_email
+from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_tip_to_email
+from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -40,7 +39,7 @@ from retail.helpers import get_ip
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-confirm_time_minutes_target = 3
+confirm_time_minutes_target = 60
 
 
 def send_tip(request):
@@ -102,7 +101,7 @@ def send_tip_2(request):
         message = 'Notification has been sent'
         params = json.loads(request.body)
         emails = []
-        
+
         #basic validation
         username = params['username']
 
@@ -151,7 +150,7 @@ def send_tip_2(request):
         #notifications
         did_post_to_github = maybe_market_tip_to_github(tip)
         maybe_market_tip_to_slack(tip, 'new_tip', tip.txid)
-        tip_email(tip, set(emails), True)
+        maybe_market_tip_to_email(tip, emails)
         if len(emails) == 0:
                 status = 'error'
                 message = 'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.'
@@ -179,6 +178,8 @@ def process_bounty(request):
         'issueURL': request.GET.get('source'),
         'title': 'Process Issue',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
     }
 
     return TemplateResponse(request, 'process_bounty.html', params)
@@ -194,6 +195,14 @@ def dashboard(request):
     return TemplateResponse(request, 'dashboard.html', params)
 
 
+def gas(request):
+    context = {
+        'conf_time_spread': conf_time_spread(),
+        'title': 'Live Gas Usage => Predicted Conf Times'
+        }
+    return TemplateResponse(request, 'gas.html', context)
+
+
 def new_bounty(request):
 
     params = {
@@ -201,6 +210,8 @@ def new_bounty(request):
         'active': 'submit_bounty',
         'title': 'Create Funded Issue',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
     }
 
     return TemplateResponse(request, 'submit_bounty.html', params)
@@ -213,6 +224,8 @@ def fulfill_bounty(request):
         'title': 'Fulfill Issue',
         'active': 'fulfill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
     }
 
     return TemplateResponse(request, 'fulfill_bounty.html', params)
@@ -225,6 +238,8 @@ def clawback_expired_bounty(request):
         'title': 'Clawback Expired Issue',
         'active': 'clawback_expired_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
     }
 
     return TemplateResponse(request, 'clawback_expired_bounty.html', params)
@@ -284,6 +299,7 @@ def profile_keywords_helper(handle):
 
 def profile_keywords(request, handle):
     keywords = profile_keywords_helper(handle)
+
     response = {
         'status': 200,
         'keywords': keywords,
@@ -300,6 +316,7 @@ def profile(request, handle):
 
     profile = profile_helper(handle)
     params['card_title'] = "@{} | Gitcoin".format(handle)
+    params['card_desc'] = profile.desc
     params['title'] = "@{}".format(handle)
     params['avatar_url'] = profile.local_avatar_url
     params['profile'] = profile
@@ -408,3 +425,176 @@ def prirp(request):
 
 def apitos(request):
     return redirect('https://gitcoin.co/terms#privacy')
+
+def toolbox(request):
+    actors = [{
+        "title": "The Basics",
+        "description": "Accelerate your dev workflow with Gitcoin\'s incentivization tools.",
+        "tools": [{
+            "name": "Issue Explorer",
+            "img": "/static/v2/images/why-different/code_great.png",
+            "description": '''A searchable index of all of the funded work available in
+                            the system.''',
+            "link": "https://gitcoin.co/explorer",
+            "active": "true",
+            'stat_graph': 'bounties_fulfilled',
+        }, {
+             "name": "Fund Work",
+             "img": "/static/v2/images/tldr/bounties.jpg",
+             "description": '''Got work that needs doing?  Create an issue and offer a bounty to get folks
+                            working on it.''',
+             "link": "/funding/new",
+             "active": "false",
+             'stat_graph': 'bounties_fulfilled',
+        }, {
+             "name": "Tips",
+             "img": "/static/v2/images/tldr/tips.jpg",
+             "description": '''Leave a tip to thank someone for
+                        helping out.''',
+             "link": "https://gitcoin.co/tips",
+             "active": "false",
+             'stat_graph': 'tips',
+        } 
+        ]
+      }, {
+          "title": "The Powertools",
+          "description": "Take your OSS game to the next level!",
+          "tools": [ {
+              "name": "Browser Extension",
+              "img": "/static/v2/images/tools/browser_extension.png",
+              "description": '''Browse Gitcoin where you already work.  
+                    On Github''',
+              "link": "/extension",
+              "active": "false",
+              'stat_graph': 'browser_ext_chrome',
+          },
+          {
+              "name": "iOS app",
+              "img": "/static/v2/images/tools/iOS.png",
+              "description": '''Gitcoin has an iOS app in alpha. Install it to 
+                browse funded work on-the-go.''',
+              "link": "/ios",
+              "active": "false",
+              'stat_graph': 'ios_app_users', #TODO
+        }
+          ]
+      }, {
+          "title": "Community Tools",
+          "description": "Friendship, mentorship, and community are all part of the process.",
+          "tools": [
+          {
+              "name": "Slack Community",
+              "img": "/static/v2/images/tldr/community.jpg",
+              "description": '''Questions / Discussion / Just say hi ? Swing by
+                                our slack channel.''',
+              "link": "/slack",
+              "active": "false",
+              'stat_graph': 'slack_users',
+         },
+          {
+              "name": "Gitter Community",
+              "img": "/static/v2/images/tools/community2.png",
+              "description": '''The gitter channel is less active than slack, but
+                is still a good place to ask questions.''',
+              "link": "/gitter",
+              "active": "false",
+              'stat_graph': 'gitter_users',
+        },
+          {
+              "name": "Refer a Friend",
+              "img": "/static/v2/images/freedom.jpg",
+              "description": '''Got a colleague who wants to level up their career? 
+              Refer them to Gitcoin, and we\'ll happily give you a bonus for their
+              first bounty. ''',
+              "link": "/refer",
+              "active": "false",
+              'stat_graph': 'email_subscriberse',
+        },
+          ]
+       }, {
+          "title": "Tools in Beta",
+          "description": "These fresh new tools are looking someone to test ride them!",
+          "tools": [{
+              "name": "Leaderboard",
+              "img": "/static/v2/images/tools/leaderboard.png",
+              "description": '''Check out who is topping the charts in
+                the Gitcoin community this month.''',
+              "link": "https://gitcoin.co/leaderboard/",
+              "active": "false",
+              'stat_graph': 'bounties_fulfilled',
+          },
+           {
+            "name": "Profiles",
+            "img": "/static/v2/images/tools/profiles.png",
+            "description": '''Browse the work that you\'ve done, and how your OSS repuation is growing. ''',
+            "link": "/profile/mbeacom",
+            "active": "true",
+            'stat_graph': 'profiles_ingested',
+            },
+           {
+            "name": "ETH Tx Time Predictor",
+            "img": "/static/v2/images/tradeoffs.png",
+            "description": '''Estimate Tradeoffs between Ethereum Network Tx Fees and Confirmation Times ''',
+            "link": "/gas",
+            "active": "true",
+            'stat_graph': 'gas_page',
+            },
+          ]
+       }, {
+          "title": "Tools for Building Gitcoin",
+          "description": "Gitcoin is built using Gitcoin.  Purdy cool, huh? ",
+          "tools": [{
+              "name": "Github Repos",
+              "img": "/static/v2/images/tools/science.png",
+              "description": '''All of our development is open source, and managed
+              via Github.''',
+              "link": "/github",
+              "active": "false",
+              'stat_graph': 'github_stargazers_count',
+          },
+           {
+            "name": "API",
+            "img": "/static/v2/images/tools/api.jpg",
+            "description": '''Gitcoin provides a simple HTTPS API to access data
+                            without having to run your own Ethereum node.''',
+            "link": "https://github.com/gitcoinco/web#https-api",
+            "active": "true",
+            'stat_graph': 'github_forks_count',
+            },
+          {
+              "class": 'new',
+              "name": "Build your own",
+              "img": "/static/v2/images/dogfood.jpg",
+              "description": '''Dogfood.. Yum! Gitcoin is built using Gitcoin. 
+                Got something you want to see in the world? Let the community know 
+                <a href="/slack">on slack</a>
+                or <a href="https://github.com/gitcoinco/gitcoinco/issues/new">our github repos</a>
+                .''',
+              "link": "",
+              "active": "false",
+          }
+          ]
+       }, {
+           "title": "Just for Fun",
+           "description": "Some tools that the community built *just because* they should exist.",
+           "tools": [{
+               "name": "Ethwallpaper",
+               "img": "/static/v2/images/tools/ethwallpaper.png",
+               "description": '''Repository of
+                        Ethereum wallpapers.''',
+               "link": "https://ethwallpaper.co",
+               "active": "false",
+               'stat_graph': 'google_analytics_sessions_ethwallpaper',
+           }]
+        }]
+
+    context = {
+        "active": "tools",
+        'title': "Toolbox",
+        'card_title': "Gitcoin Toolbox",
+        'avatar_url': 'https://gitcoin.co/static/v2/images/tools/api.jpg',
+        "card_desc": "Accelerate your dev workflow with Gitcoin\'s incentivization tools.",
+        'actors': actors,
+        'newsletter_headline': "Don't Miss New Tools!"
+    }
+    return TemplateResponse(request, 'toolbox.html', context)

@@ -58,10 +58,22 @@ def about(request):
     return TemplateResponse(request, 'about.html', context)
 
 
+def mission(request):
+  context = {
+    'active': 'mission',
+    'title': 'Mission',
+    'card_title': "Gitcoin is a mission-driven organization.",
+    'card_desc': "Our mission is to push open source forward.",
+    'avatar_url': '/static/v2/images/mission/hero.png',
+  }
+
+  return TemplateResponse(request, 'mission.html', context)
+
+
 def help(request):
-    faq = [
+    faq = {
+        'Product': [
         {
-            'category': "Product",
             'q': 'I am a developer, I want build more Open Source Software. Where can I start?',
             'a': "The <a href=https://gitcoin.co/explorer>Funded Issue Explorer</a> contains a handful of issues that are ready to be paid out as soon as they are turned around. Check out the developer guide at <a href=https://gitcoin.co/help/dev>https://gitcoin.co/help/dev</a>."
         },
@@ -178,8 +190,9 @@ Here are some of our values
             'q': 'Am I allowed to place bounties on projects I don\'t contribute to or own?',
             'a': "TLDR: Yes you are.  But as OSS devs ourselves, our experience has been that if you want to get the product you work on merged into the upstream, you will need to work with the contributors or owners of that repo.  If not, you can always fork a repo and run your own roadmap."
         },
+        ],
+     'General': [
         {
-            'category': "General",
             'q': 'Is Gitcoin open source?',
             'a': "Yes, all of Gitcoin's core software systems are open source and available at <a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  Please see the liscense.txt file in each repo for more details."
         },
@@ -234,6 +247,8 @@ The best way to stay in touch is to
 
             """
         },
+     ], 
+     'Web3': [
         {
             'category': "Web3",
             'q': 'What is the difference between Gitcoin and centralized hiring websites?',
@@ -333,10 +348,8 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
 
 """
         },
-
-
-
-    ]
+     ],
+    }
 
     context = {
         'active': 'help',
@@ -388,8 +401,16 @@ def portal(request):
     return redirect('https://gitcoinhelp.zendesk.com/hc/en-us/')
 
 
+def onboard(request):
+    return redirect('https://docs.google.com/document/d/1DQvek5TwASIp1njx5VZeLKEgSxfvxm871vctx1l_33M/edit?')
+
+
 def ethdenver(request):
     return redirect('https://goo.gl/forms/FQogarXntrISFCsJ2')
+
+
+def presskit(request):
+    return redirect('https://www.dropbox.com/sh/bsjzbu0li2z0kr1/AACKgnQC3g6m52huYI3Gx3Ega?dl=0')
 
 
 def feedback(request):
@@ -419,9 +440,19 @@ def browser_extension_chrome(request):
 def browser_extension_firefox(request):
     return redirect('https://addons.mozilla.org/en-US/firefox/addon/gitcoin/')
 
+def itunes(request):
+    return redirect('https://itunes.apple.com/us/app/gitcoin/idXXXXXXXXX')
 
 def ios(request):
-    return redirect('https://goo.gl/forms/HHOcMDKArCPo9Xas1')
+    context = {
+        'active': 'ios',
+        'title': 'iOS',
+    }
+    return TemplateResponse(request, 'ios.html', context)
+
+
+def iosfeedback(request):
+    return redirect('https://goo.gl/forms/UqegoAMh7HVibfuF3')
 
 
 def casestudy(request):
@@ -477,6 +508,10 @@ def fb(request):
 
 def medium(request):
     return redirect('https://medium.com/gitcoin')
+
+
+def refer(request):
+    return redirect('https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/gitcoinco/issues/1')
 
 
 def gitter(request):

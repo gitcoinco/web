@@ -7,11 +7,12 @@
 </head>
 
 <body class="interior {{active}}">
+    {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
         {% include 'shared/nav_internal.html' %}
     </div>
     <div class="row no-gutter">
-        <div class="col-3" style="background: #eee; ">
+        <div class="col-2" style="background: #eee; ">
             {% include 'shared/current_balance.html' %}
             {% include 'shared/sidebar_search.html' %}
         </div>
@@ -65,7 +66,7 @@
                             <br>
                             Email: <span id="bounty_owner_email"></span>
                             <br>
-                            Github Profile: <span id="bounty_owner_github_username"></span>
+                            Gitcoin Profile: <span id="bounty_owner_github_username"></span>
                             <br>
                         </div>
                         <div id="claimee" style="width: 100%; display: block;">
@@ -75,7 +76,7 @@
                             <br>
                             Email: <span id="claimee_email"></span>
                             <br>
-                            Github Profile: <span id="claimee_github_username"></span>
+                            Gitcoin Profile: <span id="claimee_github_username"></span>
 
                         </div>
                     </div>
@@ -84,7 +85,11 @@
         </div>
 
       <script id="action" type="text/x-jsrender">
-        <a class="btn btn-sm btn-[[:color]]" role="button" href="[[:href]]" target="[[:target]]"> <span class="font-smaller-4">[[:text]]</span></a>
+        <span title='[[:title]]'>
+        <a class="btn btn-sm btn-[[:color]] [[:extraClass]]" role="button" href="[[:href]]" target="[[:target]]"> 
+            <span class="font-smaller-4">[[:text]]</span>
+        </a>
+        </span>
       </script>
 
     {% include 'shared/bottom_notification.html' %}

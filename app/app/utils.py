@@ -94,3 +94,44 @@ def fetch_mails_since_id( email_id, password,since_id=None, host='imap.gmail.com
         response, content = mailbox.fetch(str(id), '(RFC822)')
         emails[str(id)] = email.message_from_string(content[0][1])
     return emails
+
+
+def itermerge(gen_a, gen_b, key):
+    a = None
+    b = None
+
+    # yield items in order until first iterator is emptied
+    try:
+        while True:
+            if a is None:
+                a = gen_a.next()
+
+            if b is None:
+                b = gen_b.next()
+
+            if key(a) <= key(b):
+                yield a
+                a = None
+            else:
+                yield b
+                b = None
+    except StopIteration:
+        # yield last item to be pulled from non-empty iterator
+        if a is not None:
+            yield a
+
+        if b is not None:
+            yield b
+
+    # flush remaining items in non-empty iterator
+    try:
+        for a in gen_a:
+            yield a
+    except StopIteration:
+        pass
+
+    try:
+        for b in gen_b:
+            yield b
+    except StopIteration:
+        pass

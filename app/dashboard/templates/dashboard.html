@@ -25,23 +25,19 @@
 </head>
 
 <body class="interior {{active}}">
+    {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
         {% include 'shared/nav_internal.html' %}
 
     </div>
     <div class="row no-gutter">
-        <div class="col-3" style="background: #eee; ">
+        <div class="col-2" style="background: #eee; ">
             {% include 'shared/current_balance.html' %}
             {% include 'shared/sidebar_search.html' %}
         </div>
 
         <div class="col body">
             <div class="container-fluid" id="bounties">
-                <div class="row bottom_notification">
-                    <div class="col-10 ml-1" >
-                        Next batch of pilot program funded issues will be posted Tuesday, <span id="announceIssues"></span>. <a href="/save_search" class='save_search'>Get Notified</a>
-                    </div>
-                </div>
             {% include 'shared/search_bar.html' %}
 
 

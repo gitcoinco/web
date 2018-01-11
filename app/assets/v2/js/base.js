@@ -1,8 +1,8 @@
-$(document).ready(function(){
+$(document).ready(function() {
     $( document ).tooltip();
 
     //get started modal
-    $("a[href='/get']").click(function(e){
+    $("a[href='/get']").click(function(e) {
       e.preventDefault();
       var url = $(this).attr('href');
       setTimeout(function(){
@@ -23,6 +23,7 @@ $(document).ready(function(){
       $(this).attr('src', new_src);
       e.preventDefault();
     });
+
     $("#logo").mouseleave(function(e){
       $(this).attr('src', $(this).attr('old-src'));
     });
@@ -47,7 +48,7 @@ $(document).ready(function(){
     });
 
     $('.faq_item h5').click(function(){
-      $(this).parents('.col').find('.answer').toggleClass('hidden');
+      $(this).parents('.faq_parent').find('.answer').toggleClass('hidden');
     });
 
     //mixpanel integration
@@ -80,9 +81,10 @@ $(document).ready(function(){
       'help/portal',
       'help/faq',
     ]
-    for(var i=0;i<tos.length;i++){
+
+    for(var i=0;i<tos.length;i++) {
       var to = tos[i]
-      var callback = function(e){
+      var callback = function(e) {
         var _params = {
           'to': $(this).attr('href'),
         };
@@ -90,7 +92,8 @@ $(document).ready(function(){
       };
       $('body').delegate("a[href='/"+to+"']",'click', callback);
     }
-    $('body').delegate("a[href^='https://github.com/']", 'click', function(e){
+
+    $('body').delegate("a[href^='https://github.com/']", 'click', function(e) {
         var _params = {
           'to_domain': 'github.com',
           'to': $(this).attr('href'),
@@ -98,18 +101,20 @@ $(document).ready(function(){
         mixpanel.track("Outbound", _params);
       });
 
-    $("#mc-embedded-subscribe").click(function(){
+    // To be deprecrated with #newsletter-subscribe
+    $("#mc-embedded-subscribe").click(function() {
         mixpanel.track("Email Subscribe");
     });
 
-    $("body.whitepaper .btn-success").click(function(){
-        mixpanel.track("Whitepaper Request");
+    $("#newsletter-subscribe").click(() => {
+        mixpanel.track("Email Subscribe");
     });
 
-
+    $("body.whitepaper .btn-success").click(function() {
+        mixpanel.track("Whitepaper Request");
+    });
 });
 
 $(window).scroll(function(){
     var scrollPos = $(document).scrollTop();
-    //console.log(scrollPos);
 });

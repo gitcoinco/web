@@ -4,6 +4,8 @@ services:
   db:
     image: postgres:10.1-alpine
     restart: unless-stopped
+    ports:
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
