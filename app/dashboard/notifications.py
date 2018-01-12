@@ -85,7 +85,7 @@ def maybe_market_to_twitter(bounty, event_name, txid):
         ("(${})".format(bounty.value_in_usdt) if bounty.value_in_usdt else ""),
         tinyurl.create_one(bounty.get_absolute_url())
     )
-    new_tweet = new_tweet + github_org_to_twitter_tags(bounty.org_name) #twitter tags
+    new_tweet = new_tweet + " " + github_org_to_twitter_tags(bounty.org_name) #twitter tags
     if bounty.keywords: #hashtags
         for keyword in bounty.keywords.split(','):
             _new_tweet = new_tweet + " #" + str(keyword).lower().strip()
