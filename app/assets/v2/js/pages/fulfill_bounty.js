@@ -47,6 +47,7 @@ window.onload = function(){
                 return;
             }
 
+            var account = web3.eth.coinbase;
             var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
 
             ipfs.ipfsApi = IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: "https", root:'/api/v0'});
@@ -78,7 +79,18 @@ window.onload = function(){
                         var web3Callback = function(error, result){
                             var next = function(){
                                 localStorage['txid'] = result;
-                                sync_web3(issueURL);
+                                updates = {
+                                    claimee_email: notificationEmail,
+                                    claimee_github_username: githubUsername,
+                                    claimee_metadata: {},
+                                    claimeee_address: account,
+                                    is_open: false,
+                                    idx_status: 'fulfilled',
+
+                                }
+                                // Update the database directly with the fullfillment fields
+                                // See views.sync_web3
+                                sync_web3(issueURL, JSON.stringify(updates));
                                 localStorage[issueURL] = timestamp();  //ipfs timestamp
                                 add_to_watch_list(issueURL);
                                 _alert({ message: "Fulfillment submitted to web3." },'info');

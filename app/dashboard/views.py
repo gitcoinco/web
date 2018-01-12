@@ -353,14 +353,44 @@ def save_search(request):
 @csrf_exempt
 @ratelimit(key='ip', rate='2/s', method=ratelimit.UNSAFE, block=True)
 def sync_web3(request):
+    """ Sync up web3 with the database.  This function has a few different uses.  It is typically
+        called from the front end using the javascript `sync_web3` function.  The `issueURL` is
+        passed in first, followed optionally by a `bountydetails` argument.  It is used the following
+        ways:
 
+        1.  Create a new bounty.  `bountydetails` is passed as the second argument and the code
+            below is used to create the initial entry in the database.  In this case bountydetails
+            comes in as an array.  Also see **new_bounty.js**
+
+        2.  Fulfill a bounty.  If `bountydetails` is passed instead of a JSON string, it will assume
+            that you want to do an update to the database rather than a new bounty creation.  In this
+            case bountydetails comes in as a JSON string.  Also see **fulfill_bounty.js**.
+
+        Note: updates is a dictionary of fields to update an existing Bounty object.
+              This is done rather than a direct web3 sync because Standard Bounties doesn't
+              have the ability to sync up exactly with the database and the data in IPFS is
+              immutable once the contract is created.
+
+    Args:
+        request (str): The request string, typically and `issueURL`, followed an optional `bountydetails`
+                        object.
+
+    Returns:
+        JsonResponse: Django return object.
+    """
     #setup
     result = {}
     issueURL = request.POST.get('issueURL', False)
+    updates = request.POST.get('bountydetails')
     bountydetails = request.POST.getlist('bountydetails[]', [])
     if issueURL:
 
         issueURL = normalizeURL(issueURL)
+        if updates:
+            fields = json.loads(updates)
+            Bounty.objects.filter(github_url=issueURL).update(**fields)
+            result['status'] = 'OK'
+            return JsonResponse(result)
         if not len(bountydetails):
             #create a bounty sync request
             result['status'] = 'OK'
