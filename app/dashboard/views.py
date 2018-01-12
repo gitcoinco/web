@@ -401,7 +401,7 @@ def sync_web3(request):
             #normalize data
             # Comments reference the field mapping for:
             #  - database table dashboard_bounty
-            #  - (solidity parameter)
+            #  - (solidity parameter) from old smart contract
             # If there is no database field, just the solidity field is referenced.
             bountydetails[0] = int(bountydetails[0])  # value_in_token (amount)
             bountydetails[1] = str(bountydetails[1])  # token_address (tokenAddress)

@@ -140,7 +140,6 @@ $(document).ready(function(){
         // bounty_abi is a giant object containing the different network options
         // bounty_address() is a function that looks up the name of the network and returns the hash code
         var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-        console.log(bounty)
         // StandardBounties integration begins here
         var expire_date = (parseInt(expirationTimeDelta) + (new Date().getTime()/1000|0) );
         // Set up Interplanetary file storage
