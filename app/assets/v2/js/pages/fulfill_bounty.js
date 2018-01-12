@@ -84,7 +84,6 @@ window.onload = function(){
                                     claimee_github_username: githubUsername,
                                     claimee_metadata: {},
                                     claimeee_address: account,
-                                    is_open: false,
                                     idx_status: 'fulfilled',
 
                                 }
