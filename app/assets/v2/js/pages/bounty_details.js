@@ -439,7 +439,7 @@ window.addEventListener('load', function() {
                         }
                         actions.push(entry);
                     }
-                    if(result['status']=='claimed' ){
+                    if(result['status']=='fulfilled' ){
                         var enabled = isBountyOwner(result);
                         var entry = {
                             href: '/funding/process?source='+result['github_url'],
