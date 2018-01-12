@@ -84,10 +84,10 @@ var callbacks = {
     'status': function(key, val, result){
         var ui_status = val;
         if(ui_status=='open'){
-            ui_status = '<span style="color: #47913e;">active</span>';
+            ui_status = '<span style="color: #47913e;">open</span>';
         }
-        if(ui_status=='claimed'){
-            ui_status = '<span style="color: #3e00ff;">claimed</span>';
+        if(ui_status=='fulfilled'){
+            ui_status = '<span style="color: #3e00ff;">fulfilled</span>';
         }
         return [ 'status', ui_status];
     },
@@ -322,7 +322,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
             _alert({ title: title, message: msg},'info');
         }
 
-
+    // This part decides if a warning banner should be displayed
     var should_display_warning = false;
     if(localStorage[issueURL]){
         //local warning
