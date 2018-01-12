@@ -29,3 +29,4 @@ tinyurl
 statistics
 django-email-obfuscator
 cytoolz==0.9.0
+boto==2.48.0

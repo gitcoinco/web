@@ -55,6 +55,81 @@ $(document).ready(function(){
         }
     });
 
+        var estimateGas = function(issueURL, success_callback, failure_calllback, final_callback){
+                //TODO: DRY
+                var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+                var githubUsername = $('input[name=githubUsername]').val();
+                var issueURL = $('input[name=issueURL]').val();
+                var notificationEmail = $('input[name=notificationEmail]').val();
+                var amount = $('input[name=amount]').val();
+                var tokenAddress = $('select[name=deonomination').val();
+                var token =  (tokenAddress);
+                var decimals = token['decimals'];
+                var tokenName = token['name'];
+                var decimalDivisor = 10**decimals;
+                var expirationTimeDelta = $('select[name=expirationTimeDelta').val();
+                var isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
+                var metadata = {
+                    issueTitle : $('input[name=title').val(),
+                    issueKeywords : $('input[name=keywords').val(),
+                    tokenName : tokenName,
+                    githubUsername : githubUsername,
+                    notificationEmail : notificationEmail,
+                    experienceLevel : $('select[name=experienceLevel').val(),
+                    projectLength : $('select[name=projectLength').val(),
+                    bountyType : $('select[name=bountyType').val(),
+                }
+                var value = 0;
+                if(isETH){
+                    value = amount;
+                }
+                $("#gasLimit").addClass('loading');
+                bounty.postBounty.estimateGas(issueURL, 
+                    amount, 
+                    tokenAddress, 
+                    expirationTimeDelta, 
+                    JSON.stringify(metadata),
+                    {from :web3.eth.coinbase, value:value},
+                    function(errors,result){
+                        $("#gasLimit").removeClass('loading');
+                        var is_issue_taken = typeof result == 'undefined' || result > 12976605;
+                        if(errors || is_issue_taken){
+                            failure_calllback(errors)
+                            return;
+                        }
+                        var gas = Math.round(result * gasMultiplier);
+                        var gasLimit = Math.round(gas * gasLimitMultiplier);
+                        // for some reason web3 was estimating 6699496 as the gas for standardtoken transfers
+                        if((gas > max_gas_for_erc20_bounty_post) && !isETH){
+                            gas = Math.round(max_gas_for_erc20_bounty_post * gasMultiplier);
+                            gasLimit = Math.round(gas * gasMultiplier);
+                        }
+
+                        success_callback(gas, gasLimit, final_callback);
+                });    
+        }
+        //updates recommended metamask settings
+        var updateInlineGasEstimate = function(){
+            var success_callback = function(gas, gasLimit, _){
+                $("#gasLimit").val(parseInt(gas/16.1));
+                update_metamask_conf_time_and_cost_estimate();
+            };
+            var failure_callback = function(errors){
+                $("#gasLimit").val('Unknown');
+                update_metamask_conf_time_and_cost_estimate();
+            };
+            var final_callback = function(){};
+            //estimateGas(issueURL, success_callback, failure_callback, final_callback);
+            success_callback(682443*16,682443*16,'');
+        };
+        setTimeout(function(){
+            updateInlineGasEstimate();
+        },500);
+        $('input').change(updateInlineGasEstimate);
+        $('#gasPrice').keyup(update_metamask_conf_time_and_cost_estimate);
+
+
+
     
     //submit bounty button click
     $('#submitBounty').click(function(e){
@@ -183,7 +258,7 @@ $(document).ready(function(){
                         {from :account, 
                             gas:web3.toHex(gas), 
                             gasLimit: web3.toHex(gasLimit), 
-                            gasPrice:web3.toHex(defaultGasPrice), 
+                            gasPrice:web3.toHex($("#gasPrice").val() * 10**9), 
                             value:value},
                         post_bounty_callback);
 
@@ -226,7 +301,7 @@ $(document).ready(function(){
                         {from :account, 
                             gas:web3.toHex(gas), 
                             gasLimit: web3.toHex(gasLimit), 
-                            gasPrice:web3.toHex(defaultGasPrice), 
+                            gasPrice:web3.toHex($("#gasPrice").val() * 10**9), 
                         },
                         erc20_approve_callback);
                 });

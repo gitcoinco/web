@@ -236,8 +236,9 @@ _bountydetails function returns the following fields:
 git clone https://github.com/gitcoinco/web.git
 cd web
 cp app/app/local_settings.py.dist app/app/local_settings.py
-docker-compose up
+docker-compose up -d
 ```
+Navigate to `http://0.0.0.0:8000/`.
 
 ## Without Docker
 
@@ -296,7 +297,9 @@ DATABASES = {
 ```
 virtualenv gcoin
 source gcoin/bin/activate
-pip install -r ../requirements.txt
+pip install -r requirements/base.txt
+pip install -r requirements/dev.txt
+pip install -r requirements/test.txt
 ./manage.py migrate
 ./manage.py createcachetable
 ./manage.py runserver 0.0.0.0:8080

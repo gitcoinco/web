@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'gas',
     'chartit',
     'email_obfuscator',
+    'linkshortener',
 ]
 
 MIDDLEWARE = [
