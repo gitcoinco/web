@@ -78,7 +78,7 @@ class Bounty(SuperModel):
     claimee_metadata = JSONField(default={})
     current_bounty = models.BooleanField(default=False) # whether this bounty is the most current revision one or not
     _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=20)
-    contract_address = models.CharField(max_length=50,default='')
+    contract_address = models.CharField(max_length=50, default='')
     network = models.CharField(max_length=255, null=True)
     idx_experience_level = models.IntegerField(default=0, db_index=True)
     idx_project_length = models.IntegerField(default=0, db_index=True)

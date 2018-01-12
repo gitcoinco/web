@@ -157,16 +157,20 @@ def render_new_bounty_roundup(to_email):
 
     bounties = [
         {
-            'obj': Bounty.objects.get(pk=387),
-            'primer': 'Truffle is 💯  Here\'s an oppy to contribute to their project! ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/remix/issues/85'),
+            'primer': 'Oppy to do work for the Ethereum Foundation and get paid for it.. 💯 ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=297),
-            'primer': 'Get paid for work in the intersection of VR / Open Source   ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MyEtherWallet/MyEtherWallet/issues/774'),
+            'primer': 'MyEtherWallt is a great project... Enjoy!  ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=118),
-            'primer': 'Security and documentation task below.  Good oppy to meet some of the web3 security folks out there.  ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ProjectWyvern/dao.projectwyvern.com/issues/1'),
+            'primer': 'Here is a fun little solidity programming scope.. Great way to learn (and get paid for it!)  ~ @owocki',
+        },
+        {
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/browep/brower-walk/issues/1'),
+            'primer': 'Into graphics programming?  This issue could be for you..  ~ @owocki',
         },
     ]
 
@@ -174,7 +178,7 @@ def render_new_bounty_roundup(to_email):
         'bounties': bounties,
         'override_back_color': '#15003e',
         'invert_footer': True,
-       'hide_header': True,
+        'hide_header': True,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
