@@ -162,7 +162,7 @@ def render_new_bounty_roundup(to_email):
         },
         {
             'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MyEtherWallet/MyEtherWallet/issues/774'),
-            'primer': 'MyEtherWallt is a great project... Enjoy!  ~ @owocki',
+            'primer': 'MyEtherWallet is a great project... Enjoy!  ~ @owocki',
         },
         {
             'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ProjectWyvern/dao.projectwyvern.com/issues/1'),
