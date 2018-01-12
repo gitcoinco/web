@@ -157,20 +157,20 @@ def render_new_bounty_roundup(to_email):
 
     bounties = [
         {
-            'obj': Bounty.objects.get(pk=328),
-            'primer': 'Into Design?  Help Gitcoin articulate our mission, culture, and values. 💯 ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/remix/issues/85'),
+            'primer': 'Oppy to do work for the Ethereum Foundation and get paid for it.. 💯 ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=301),
-            'primer': 'Got Solidity chops?  Into Testing?  This Funded issue is you for.  ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MyEtherWallet/MyEtherWallet/issues/774'),
+            'primer': 'MyEtherWallet is a great project... Enjoy!  ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=118),
-            'primer': 'Security and documentation task below.  Good oppy to meet some of the web3 security folks out there.  ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ProjectWyvern/dao.projectwyvern.com/issues/1'),
+            'primer': 'Here is a fun little solidity programming scope.. Great way to learn (and get paid for it!)  ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=159),
-            'primer': 'Linux head?  This issue is for you! 👇 ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/browep/brower-walk/issues/1'),
+            'primer': 'Into graphics programming?  This issue could be for you..  ~ @owocki',
         },
     ]
 
@@ -178,7 +178,7 @@ def render_new_bounty_roundup(to_email):
         'bounties': bounties,
         'override_back_color': '#15003e',
         'invert_footer': True,
-       'hide_header': True,
+        'hide_header': True,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -252,7 +252,7 @@ def new_bounty(request):
 def new_bounty_claim(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty_claim(settings.CONTACT_EMAIL, Bounty.objects.all().last())
+    response_html, response_txt = render_new_bounty_claim(settings.CONTACT_EMAIL, Bounty.objects.filter(idx_status='claimed').last())
 
     return HttpResponse(response_html)
 

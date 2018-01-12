@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,6 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
+
         <nav class="navbar navbar-expand-md navbar-dark">
             <a class="navbar-brand pt-0 pb-0" href="/">
                     <img id="logo" src="/static/v2/images/logo_large.png" data-hover="/static/v2/images/logo_large_hover.gif" width="201" height="66" />
@@ -28,11 +29,14 @@
                 <nav class="navbar-nav ml-auto mr-3">
                     <a class="nav-link {% if active == 'home' %}selected{%endif%}" href="/">Home</a>
                     <a class="nav-link {% if active == 'about' %}selected{%endif%}" href="/about">About</a>
+                    <a class="nav-link" href="/tools">Tools</a>
                     <a class="nav-link" href="/explorer">Issue Explorer</a>
                     <a class="nav-link slack" href="/slack">
                         <img src="/static/v2/images/social/slack2.png">Slack({{num_slack}})
                     </a>
                     <a class="nav-link" href="/help">Help</a>
+                    <a class="nav-link" href="/ios">Mobile</a>
+
 
                 </nav>
                 <img class="mr-5" src="/static/v2/images/spaceship.png" width="93" height="81" />

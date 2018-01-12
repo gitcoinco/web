@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -17,8 +17,12 @@
 {% endcomment %}
 
         <nav class="navbar navbar-expand-md navbar-dark">
-            <a class="navbar-brand pt-0 pb-0" href="/explorer">
+            <a class="navbar-brand pt-0 pb-0" href="/">
+                {% if request.path == '/ios' %}
+                    <img id="logo" src="/static/v2/images/ios/gitcoin.svg" data-hover="/static/v2/images/ios/gitcoin_hover.gif" height="50" />
+                {%else%}
                     <img id="logo" src="/static/v2/images/logo_large.png" data-hover="/static/v2/images/logo_large_hover.gif" width="150" height="50" />
+                {%endif%}
                 </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                 aria-expanded="false" aria-label="Toggle navigation">
@@ -28,14 +32,18 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <nav class="navbar-nav ml-auto mr-3">
                     <a class="nav-link" href="/">Home</a>
+                    <a class="nav-link {% if active == 'tools' %}selected{%endif%}" href="/tools">Tools</a>
                     <a class="nav-link {% if active == 'dashboard' %}selected{%endif%}" href="/explorer">Issue Explorer</a>
                     <a class="nav-link slack" href="/slack">
                         <img src="/static/v2/images/social/slack2.png">Slack({{num_slack}})
                     </a>
                     <a class="nav-link" href="/help">Help</a>
+                    <!-- <a class="nav-link{% if request.path == '/ios' %} nav-link--active{% endif %}" href="/ios">Mobile</a> -->
                 </nav>
+                {% if not request.path == '/ios' %}
                 <img class="mr-5" src="/static/v2/images//spaceship.png" width="52" height="45" />
                 <a class="btn btn-outline-info pl-4 pr-4 pulseClick mr-2" role="button" href="/tip">+ Tip ⚡️</a>
-                <a class="btn btn-outline-info pl-4 pr-4 pulseClick" role="button" href="/funding/new">+ Fund Issue 🔥</a>
+                {% endif %}
+                <a class="btn btn-outline-info pl-4 pr-4 pulseClick" role="button" href="/funding/new">+ Fund Issue{% if not request.path == '/ios' %} 🔥{% endif %}</a>
             </div>
         </nav>

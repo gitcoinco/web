@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -33,7 +33,7 @@ from economy.utils import convert_amount
 
 
 class Bounty(SuperModel):
-    
+
     class Meta:
         verbose_name_plural = 'Bounties'
 
@@ -78,7 +78,7 @@ class Bounty(SuperModel):
     claimee_metadata = JSONField(default={})
     current_bounty = models.BooleanField(default=False) # whether this bounty is the most current revision one or not
     _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=20)
-    contract_address = models.CharField(max_length=50,default='')
+    contract_address = models.CharField(max_length=50, default='')
     network = models.CharField(max_length=255, null=True)
     idx_experience_level = models.IntegerField(default=0, db_index=True)
     idx_project_length = models.IntegerField(default=0, db_index=True)
@@ -272,7 +272,7 @@ class Tip(SuperModel):
     url = models.CharField(max_length=255, default='')
     tokenName = models.CharField(max_length=255)
     tokenAddress = models.CharField(max_length=255)
-    amount = models.DecimalField(default=1, decimal_places=2, max_digits=50)
+    amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
     comments_priv = models.TextField(default='')
     comments_public = models.TextField(default='')
     ip = models.CharField(max_length=50)
@@ -288,7 +288,14 @@ class Tip(SuperModel):
 
     def __str__(self):
         from django.contrib.humanize.templatetags.humanize import naturalday
-        return "({}) - {} {} {} {} to {},  created: {}, expires: {}".format(self.network, "RECEIVED" if self.receive_txid else "", "ORPHAN" if len(self.emails) == 0 else "", self.amount, self.tokenName, self.username, naturalday(self.created_on), naturalday(self.expires_date))
+        return "({}) - {} {} {} {} to {},  created: {}, expires: {}".format(self.network, self.status, "ORPHAN" if len(self.emails) == 0 else "", self.amount, self.tokenName, self.username, naturalday(self.created_on), naturalday(self.expires_date))
+
+
+    #TODO: DRY
+    def get_natural_value(self):
+        token = addr_to_token(self.tokenAddress)
+        decimals = token['decimals']
+        return float(self.amount) / 10**decimals
 
     #TODO: DRY
     @property
@@ -311,6 +318,12 @@ class Tip(SuperModel):
         except:
             return None
 
+    @property
+    def status(self):
+        if self.receive_txid:
+            return "RECEIVED"
+        else:
+            return "PENDING"
 
 @receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
 def normalize_usernames(sender, instance, **kwargs):
@@ -436,12 +449,15 @@ class Profile(SuperModel):
         bounties = Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(claimee_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(claimee_github_username__iexact="@" + self.handle, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
+        bounties = bounties | Bounty.objects.filter(github_url__in=[url for url in self.tips.values_list('github_url', flat=True)], current_bounty=True)
         return bounties.order_by('-web3_created')
-    
+
 
     @property
     def tips(self):
-        return Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')
+        on_repo = Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')
+        tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
+        return on_repo | tipped_for
 
     @property
     def authors(self):
@@ -470,6 +486,14 @@ class Profile(SuperModel):
         _return = list(set(_return))
         _return.sort()
         return _return[:limit_to_num]
+
+    @property
+    def desc(self):
+        stats = self.stats
+        role = stats[0][0]
+        total_funded_participated = stats[1][0]
+        plural = 's' if total_funded_participated != 1 else ''
+        return "@{} is a {} who has participated in {} funded issue{} on Gitcoin".format(self.handle, role, total_funded_participated, plural)
 
     @property
     def stats(self):

@@ -15,12 +15,49 @@
     along with this program. If not,see <http://www.gnu.org/licenses/>.
 
 '''
+import time
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from marketing.models import Stat
 from slackclient import SlackClient
+
+
+def gitter():
+    from gitterpy.client import GitterClient
+
+    # Once create instance
+    gitter = GitterClient(settings.GITTER_TOKEN)
+
+    # Check_my id
+    val = gitter.rooms.grab_room('gitcoinco/Lobby')['userCount']
+
+    Stat.objects.create(
+        key='gitter_users',
+        val=val,
+        )
+
+def google_analytics():
+
+    from marketing.google_analytics import run
+
+    VIEW_ID = '166793585' #ethwallpaer
+    val = run(VIEW_ID)
+    print(val)
+    Stat.objects.create(
+        key='google_analytics_sessions_ethwallpaper',
+        val=val,
+        )
+
+    VIEW_ID = '154797887' #gitcoin
+    val = run(VIEW_ID)
+    print(val)
+    Stat.objects.create(
+        key='google_analytics_sessions_gitcoin',
+        val=val,
+        )
 
 
 def slack_users():
@@ -35,21 +72,88 @@ def slack_users():
 def slack_users_active():
     if settings.DEBUG:
         return
+    from marketing.models import SlackUser
 
     sc = SlackClient(settings.SLACK_TOKEN)
     ul = sc.api_call("users.list")
-    presence = [sc.api_call("users.getPresence",user=user['id']).get('presence',None) for user in ul['members']]
-    num_active = len([item for item in presence if item == 'active'])
-    num_away = len([item for item in presence if item == 'away'])
+    user = ul['members'][0]
+
+    num_active = 0
+    num_away = 0
+    if int(time.strftime("%H")) == 0: #performance hack: only run this 1x per day since it runs very long
+        for user in ul['members']:
+
+            # manage making request and still respecting rate limit
+            should_do_request = True
+            is_rate_limited = False
+            while should_do_request:
+                response = sc.api_call("users.getPresence", user=user['id'])
+                is_rate_limited = response.get('error', None) == 'ratelimited'
+                should_do_request = is_rate_limited
+                if is_rate_limited:
+                    time.sleep(2)
+
+            # figure out the slack users' presence
+            pres = response.get('presence', None)
+            if pres == 'active':
+                num_active += 1
+            if pres == 'away':
+                num_away += 1
+
+            # save user by user 'lastseen' info
+            username = user['profile']['display_name']
+            email = user['profile']['email']
+            su, _ = SlackUser.objects.get_or_create(
+                username=username,
+                email=email,
+                defaults={
+                    'profile': user['profile'],
+                }
+                )
+            if pres == 'active':
+                su.last_seen = timezone.now()
+                su.times_seen += 1
+            else:
+                su.last_unseen = timezone.now()
+                su.times_unseen += 1
+            su.save()
+
+        #create broader Stat object
+        Stat.objects.create(
+            key='slack_users_active',
+            val=num_active,
+            )
+
+        Stat.objects.create(
+            key='slack_users_away',
+            val=num_away,
+            )
+
+
+def profiles_ingested():
+    from dashboard.models import Profile
 
     Stat.objects.create(
-        key='slack_users_active',
-        val=num_active,
-        )
+        key='profiles_ingested',
+        val=Profile.objects.count(),
+        )    
+
+
+def github_stars():
+    from app.github import get_user
+    reops = get_user('gitcoinco', '/repos')
+    forks_count = sum([repo['forks_count'] for repo in reops])
 
     Stat.objects.create(
-        key='slack_users_away',
-        val=num_away,
+        key='github_forks_count',
+        val=forks_count,
+        )    
+
+    stargazers_count = sum([repo['stargazers_count'] for repo in reops])
+
+    Stat.objects.create(
+        key='github_stargazers_count',
+        val=stargazers_count,
         )
 
 
@@ -65,6 +169,21 @@ def chrome_ext_users():
     num_users = eles[0].text.replace(' users', '')
     Stat.objects.create(
         key='browser_ext_chrome',
+        val=num_users,
+        )
+
+
+def firefox_ext_users():
+    import requests
+    from bs4 import BeautifulSoup
+
+    url = 'https://addons.mozilla.org/en-US/firefox/addon/gitcoin/'
+    html_response = requests.get(url)
+    soup = BeautifulSoup(html_response.text, 'html.parser')
+    eles = soup.findAll("div", {"class": 'AddonMeta'})[0].findAll('dt',{"class": 'MetadataCard-title'})
+    num_users = eles[0].text.replace(' Users', '').replace('No', '0')
+    Stat.objects.create(
+        key='browser_ext_firefox',
         val=num_users,
         )
 
@@ -260,7 +379,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         fs = [
+            gitter,
+            google_analytics,
+            github_stars,
+            profiles_ingested,
             chrome_ext_users,
+            firefox_ext_users,
             slack_users,
             twitter_followers,
             bounties,

@@ -4,6 +4,8 @@ services:
   db:
     image: postgres:10.1-alpine
     restart: unless-stopped
+    ports:
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
   web:
@@ -13,7 +15,7 @@ services:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/code/app
     build: .
-    command: bash docker-command.bash
+    command: bash bin/docker-command.bash
     volumes:
       - .:/code
     ports:
@@ -22,6 +24,11 @@ services:
       - db
     stdin_open: true
     tty: true
-
+  node:
+    image: node:9-alpine
+    working_dir: /node
+    volumes:
+      - .:/node
+    command: bin/docker-node.sh
 volumes:
   pgdata:

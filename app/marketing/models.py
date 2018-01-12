@@ -40,12 +40,11 @@ class EmailSubscriber(SuperModel):
         return self.email
 
     def set_priv(self):
-        import hashlib
+        import codecs
+        import os
         from django.utils import timezone
 
-        h = hashlib.new('ripemd160')
-        h.update("{}-{}-{}".format(h.hexdigest(), timezone.now(), self.email))
-        self.priv = h.hexdigest()[:29]
+        self.priv = codecs.getencoder('hex')(os.urandom(16))[0][:29]
 
 
 class Stat(SuperModel):
@@ -56,6 +55,7 @@ class Stat(SuperModel):
         index_together = [
             ["created_on", "key"],
         ]
+
     def __str__(self):
         return "{}: {}".format(self.key, self.val)
 
@@ -94,3 +94,25 @@ class Match(SuperModel):
 
 class Keyword(SuperModel):
     keyword = models.CharField(max_length=255)
+
+
+class SlackUser(SuperModel):
+    username = models.CharField(max_length=500)
+    email = models.EmailField(max_length=255)
+    last_seen = models.DateTimeField(null=True)
+    last_unseen = models.DateTimeField(null=True)
+    profile = JSONField(default={})
+    times_seen = models.IntegerField(default=0)
+    times_unseen = models.IntegerField(default=0)
+
+    def __str__(self):
+        return "{}; lastseen => {}".format(self.username, self.last_seen)
+
+
+class GithubOrgToTwitterHandleMapping(SuperModel):
+    github_orgname = models.CharField(max_length=500)
+    twitter_handle = models.CharField(max_length=500)
+
+    def __str__(self):
+        return "{} => {}".format(self.github_orgname, self.twitter_handle)
+

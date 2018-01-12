@@ -3,8 +3,23 @@
     src: url("/static/v2/fonts/futura/font4.ttf") /* TTF file for CSS3 browsers */
 }
 
+@font-face {
+  font-family: "OpenSans Bold";
+  src: url('/static/v2/fonts/OpenSans/Bold.ttf');
+}
+
+@font-face {
+  font-family: "OpenSans SemiBold";
+  src: url('/static/v2/fonts/OpenSans/SemiBold.ttf');
+}
+
+@font-face {
+  font-family: "OpenSans";
+  src: url('/static/v2/fonts/OpenSans/Regular.ttf');
+}
+
 body {
-  font-family: "futura-pt", Futura !important;
+  font-family: "futura-pt", Futura;
   overflow-x: hidden;
   width: 100%;
 }
@@ -222,6 +237,14 @@ div.button-pink {
   max-height: 150px;
 }
 
+.mission-img-wrapper {
+    height: 250px;
+}
+
+.mission-img-wrapper img {
+    max-height: 250px;
+}
+
 .avatar-img-wrapper {
   height: 200px;
 }
@@ -300,4 +323,3 @@ div.button-pink {
   /* IE 10+ */
   color: lightgray;
 }
-

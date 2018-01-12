@@ -13,7 +13,7 @@
 
 - [ ] linter status: 100% pass
 - [ ] changes don't break existing behavior
-- [ ] commit message follows [commit guidelines](https://github.com/gitcoinco/web/blob/contributing/CONTRIBUTING.md#step-4-commit)
+- [ ] commit message follows [commit guidelines](https://github.com/gitcoinco/web/blob/master/docs/CONTRIBUTING.md#step-4-commit)
 
 ##### Affected core subsystem(s)
 <!-- Provide affected core subsystem(s) (like doc, ui, crypto, etc). -->

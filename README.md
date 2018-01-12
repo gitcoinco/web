@@ -17,8 +17,9 @@ This is the website that is live at gitcoin.co
 
 [Star](https://github.com/gitcoinco/web/stargazers) and [watch](https://github.com/gitcoinco/web/watchers) this github repository to stay up to date, we're pushing new code several times per week!
 
-Also, 
+Also,
 
+* want to become a contributor ? Checkout our [guidelines](./docs/CONTRIBUTING.md).
 * [check out the gitcoinco organization-wide repo](https://github.com/gitcoinco/gitcoinco).
 * check out the open issues list, especially the [discussion](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion) label and [easy-pickings](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Aeasy-pickings).
 
@@ -235,8 +236,9 @@ _bountydetails function returns the following fields:
 git clone https://github.com/gitcoinco/web.git
 cd web
 cp app/app/local_settings.py.dist app/app/local_settings.py
-docker-compose up
+docker-compose up -d
 ```
+Navigate to `http://0.0.0.0:8000/`.
 
 ## Without Docker
 
@@ -249,11 +251,55 @@ cp app/local_settings.py.dist app/local_settings.py
 
 You will need to edit the `app/local_settings.py` file with your local settings. Look for config items that are marked `#required`.
 
+## Setup Database
+
+PostgreSQL is the database used by this application. Here are some instructions for installing PostgreSQL on various operating systems.
+
+[OSX](https://www.moncefbelyamani.com/how-to-install-postgresql-on-a-mac-with-homebrew-and-lunchy/)
+
+[Windows](http://www.postgresqltutorial.com/install-postgresql/)
+
+[Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-16-04)
+
+Once you have Postgres installed and running on your system, enter into a Postgres session.
+```
+psql
+```
+Create the database and a new privileged user.
+```sql
+CREATE DATABASE gitcoin;
+CREATE USER gitcoin_user WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE gitcoin TO gitcoin_user;
+```
+Exit Postgres session
+```
+\q
+```
+Update local_settings.py with the connection details.
+
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'gitcoin',
+        'USER': 'gitcoin_user',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': 5432,
+    }
+}
+```
+
+
+## Startup server
+
 
 ```
 virtualenv gcoin
 source gcoin/bin/activate
-pip install -r ../requirements.txt
+pip install -r requirements/base.txt
+pip install -r requirements/dev.txt
+pip install -r requirements/test.txt
 ./manage.py migrate
 ./manage.py createcachetable
 ./manage.py runserver 0.0.0.0:8080
@@ -266,9 +312,7 @@ Navigate to `http://localhost:8080/`.
 
 Have an ERC20 compatible token that you'ud like to add support for?  Great!
 
-1. Edit `web/app/assets/js/tokens.js` and add your token.
-1. Edit `web/app/dashboard/tokens.py` and add your token.
-1. Submit a PR against this repo.
+[Here is an example of how to do it](https://github.com/gitcoinco/web/pull/155)
 
 # Legal
 
@@ -290,7 +334,8 @@ Have an ERC20 compatible token that you'ud like to add support for?  Great!
 
 '''
 
-
+# License
+[GNU AFFERO GENERAL PUBLIC LICENSE](./docs/LICENSE)
 
 <!-- Google Analytics -->
 <img src='https://ga-beacon.appspot.com/UA-102304388-1/gitcoinco/web' style='width:1px; height:1px;' >

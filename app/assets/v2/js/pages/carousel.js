@@ -4,14 +4,14 @@ if(slides.length){
   slides[0].className = 'slide showing';
 
   function nextSlide() {
-    slides[currentSlide].className = 'slide';
+    slides[currentSlide].className = 'slide hide';
     currentSlide = (currentSlide+1) % slides.length;
     slides[currentSlide].className = 'slide showing';
     resetTimer();
   }
 
   function prevSlide() {
-    slides[currentSlide].className = 'slide';
+    slides[currentSlide].className = 'slide hide';
     if(currentSlide == 0)
       currentSlide = slides.length - 1;
     else
@@ -24,5 +24,5 @@ if(slides.length){
      clearInterval(interval);
      startTimer();
   }
-  
+
 }

@@ -15,6 +15,31 @@ var loading_button = function(button){
     button.prepend('<img src=/static/v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
 }
 
+var update_metamask_conf_time_and_cost_estimate = function(){
+    var confTime = 'unknown';
+    var ethAmount = 'unknown';
+    var usdAmount = 'unknown';
+
+    var gasLimit = parseInt($("#gasLimit").val());
+    var gasPrice = parseFloat($("#gasPrice").val());
+    if(gasPrice){
+        ethAmount = Math.round(1000 * gasLimit * gasPrice / 10**9) / 1000 ;
+        usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
+    }
+
+    for(var i=0; i<document.conf_time_spread.length-1; i++){
+        var this_ele = (document.conf_time_spread[i]);
+        var next_ele = (document.conf_time_spread[i+1]);
+        if(gasPrice <= parseFloat(next_ele[0]) && gasPrice > parseFloat(this_ele[0])){
+            confTime = Math.round(10 * next_ele[1]) / 10;
+        }
+    }
+
+    $("#ethAmount").html(ethAmount);
+    $("#usdAmount").html(usdAmount);
+    $("#confTime").html(confTime);
+}
+
 var unloading_button = function(button){
     button.removeClass('disabled');
     button.find('img').remove();
@@ -43,7 +68,7 @@ var sanitize = function(str){
     if(typeof str != "string"){
         return str;
     }
-    result = str.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/'/g, '&quot;');
+    result = str.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     return result;
 }
 
@@ -343,11 +368,11 @@ window.addEventListener('load', function() {
     var timeout_value = 100;
     setTimeout(function(){
         if (typeof web3 =='undefined'){
-            $("#sidebar_head").html("Web3 disabled <img src='/static/v2/images/icons/question.png'>");
-            $("#sidebar_p").html("Please install <a target=new href=https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en> Metamask</a>. ");
+            $("#sidebar_head").html("Web3 disabled <br> <img src='/static/v2/images/icons/question.png'>");
+            $("#sidebar_p").html("Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>.");
         } else if (typeof web3.eth.accounts[0] =='undefined'){
-            $("#sidebar_head").html("Web3 locked <img src='/static/v2/images/icons/lock.png'>");
-            $("#sidebar_p").html("Please unlock <a target=new href=https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en> Metamask</a>. ");
+            $("#sidebar_head").html("Web3 locked <br> <img src='/static/v2/images/icons/lock.png'>");
+            $("#sidebar_p").html("Please unlock <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>.");
         } else {
             web3.version.getNetwork((error, netId) => {
                 if(!error){
@@ -395,16 +420,16 @@ window.addEventListener('load', function() {
                     }
                     var sidebar_p = "Connected to " + network + ".";
                     if(is_supported_network){
-                        $("#sidebar_head").html("Web3 enabled <img src='/static/v2/images/icons/rss.png'>");
+                        $("#sidebar_head").html("Web3 enabled <br> <img src='/static/v2/images/icons/rss.png'>");
                     } else {
-                        $("#sidebar_head").html("Unsupported network <img src='/static/v2/images/icons/battery_empty.png'>");
+                        $("#sidebar_head").html("Unsupported network <br> <img src='/static/v2/images/icons/battery_empty.png'>");
                         sidebar_p += "<br>(try " + recommended_network + " instead)";
                     }
                     $("#sidebar_p").html(sidebar_p);
                 }
                 else {
                     $("#sidebar_head").html("Web3 disabled");
-                    $("#sidebar_p").html("Please install & unlock <a target=new href=https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en> Metamask</a>. ");
+                    $("#sidebar_p").html("Please install & unlock <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>. ");
                 }
             })
         }
