@@ -75,20 +75,26 @@ window.onload = function(){
 
             var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
             loading_button($(this));
-            var callback = function(error, result){
-                if(error){
+
+            var apiCallback = function(results, status){
+                if(status != "success"){
                     mixpanel.track("Process Bounty Error", {step: 'callback', error: error});
                     _alert({ message: "Could not get bounty details" });
                     console.error(error);
                     unloading_button($('.submitBounty'));
                     return;
                 } else {
-                    var bountyAmount = result[0].toNumber(); 
-                    bountyDetails = [bountyAmount, result[1], result[2], result[3]];
-                    var fromAddress = result[2];
-                    var claimeeAddress = result[3];
-                    var open = result[4];
-                    var initialized = result[5];
+                    results = sanitizeAPIResults(results);
+                    result = results[0];
+
+                    var bountyAmount = parseInt(result['value_in_token'], 10); 
+                    var fromAddress = result['bounty_owner_address'];
+                    var claimeeAddress = result['claimeee_address'];
+                    var open = result['is_open'];
+                    var initialized = true;
+                    var bountyId = result['standard_bounties_id'];
+
+                    // bountyDetails = [bountyAmount, result[1], result[2], result[3]];
 
                     var errormsg = undefined;
                     if(bountyAmount == 0 || open == false || initialized == false){
@@ -96,7 +102,7 @@ window.onload = function(){
                     } else if(claimeeAddress == '0x0000000000000000000000000000000000000000'){
                         errormsg = "No claimee found for this bounty.";
                     } else if(fromAddress != web3.eth.coinbase){
-                        errormsg = "You can only process a funded issue if you submitted it.";
+                        errormsg = "You can only process a funded issue if you submitted it initially.";
                     }
 
                     if(errormsg){
@@ -108,7 +114,11 @@ window.onload = function(){
                     var _callback = function(error, result){
                         var next = function(){
                             localStorage['txid'] = result;
-                            sync_web3(issueURL);
+                            updates = {
+                                is_open: false,  // Close out the bounty in the database
+                                idx_status: 'accepted',
+                            }
+                            sync_web3(issueURL, JSON.stringify(updates));
                             localStorage[issueURL] = timestamp();
                             add_to_watch_list(issueURL);
                             _alert({ message: "Submitted transaction to web3." }, 'info');
@@ -128,10 +138,19 @@ window.onload = function(){
                         }
                     };
 
-                    var method = bounty.approveBountyClaim;
-                    if(whatAction != 'Accept'){
-                        method = bounty.rejectBountyClaim;
-                    }
+                    // Standard Bounties can have multiple fulfillments by multiple people.
+                    // Gitcoin does not support this yet, it only allows one person to fulfill.
+                    // Just in case multilple fulfillments end up on the bounty, we will take 
+                    // the latest one, which will match up with what the database has.
+                    bounty.getNumFulfillments(bountyId, function (error, result) {
+                        var fulfillmentId = result - 1;
+                        bounty.acceptFulfillment(bountyId, fulfillmentId, _callback);
+                    });
+
+                    // var method = bounty.approveBountyClaim;
+                    // if(whatAction != 'Accept'){
+                    //     method = bounty.rejectBountyClaim;
+                    // }
                     var failure_calllback = function(errors){
                         mixpanel.track("Process Bounty Error", {step: 'estimateGas', error: errors});
                         _alert({ message: "There was an error" });
@@ -148,11 +167,12 @@ window.onload = function(){
                             params, 
                             _callback);
                     };
-                    estimateGas(issueURL, method, success_callback, failure_calllback, _callback);
+                    // estimateGas(issueURL, method, success_callback, failure_calllback, _callback);
                 }
             };
-            // TODO: This call is no longer valid when using Standard Bounties
-            bounty.bountydetails.call(issueURL, callback);
+            // Get bountyId from the database
+            var uri = '/api/v0.1/bounties?github_url='+issueURL;
+            $.get(uri, apiCallback); 
             e.preventDefault();
         });
     },100);

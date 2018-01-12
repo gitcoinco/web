@@ -89,6 +89,9 @@ var callbacks = {
         if(ui_status=='fulfilled'){
             ui_status = '<span style="color: #3e00ff;">fulfilled</span>';
         }
+        if(ui_status=='accepted'){
+            ui_status = '<span style="color: #f9006c;">accepted</span>';
+        }
         return [ 'status', ui_status];
     },
     'issue_description': function(key, val, result){
@@ -444,6 +447,19 @@ window.addEventListener('load', function() {
                         var entry = {
                             href: '/funding/process?source='+result['github_url'],
                             text: 'Accept/Reject Issue',
+                            parent: 'right_actions',
+                            color: enabled ? 'darkBlue' : 'darkGrey',
+                            extraClass: enabled ? '' : 'disabled',
+                            title: enabled ? '' : 'Can only be performed if you are the funder.',
+
+                        }
+                        actions.push(entry);
+                    }
+                    if(result['status']=='accepted' ){
+                        var enabled = isBountyOwner(result);
+                        var entry = {
+                            href: '',
+                            text: 'Accepted',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
