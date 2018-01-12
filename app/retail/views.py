@@ -18,7 +18,7 @@
 '''
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
@@ -440,10 +440,15 @@ def browser_extension_chrome(request):
 def browser_extension_firefox(request):
     return redirect('https://addons.mozilla.org/en-US/firefox/addon/gitcoin/')
 
+
 def itunes(request):
+    return HttpResponse('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)')
     return redirect('https://itunes.apple.com/us/app/gitcoin/idXXXXXXXXX')
 
+
 def ios(request):
+    return HttpResponse('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)')
+
     context = {
         'active': 'ios',
         'title': 'iOS',
