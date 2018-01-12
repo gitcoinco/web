@@ -224,7 +224,7 @@ def bounties():
 
 def bounties_fulfilled_pct():
     from dashboard.models import Bounty
-    for status in ['fulfilled','expired','open','claimed']:
+    for status in ['open', 'fulfilled', 'accepted', 'expired', 'claimed']:
         eligible_bounties = Bounty.objects.filter(current_bounty=True,web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
         fulfilled_bounties = eligible_bounties.filter(idx_status=status)
         val = int(100 * (fulfilled_bounties.count()) / (eligible_bounties.count()))
