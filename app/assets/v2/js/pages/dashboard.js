@@ -72,7 +72,7 @@ var set_modifiers_sentence = function(){
 };
 
 var get_search_URI = function(){
-    var uri = '/api/v0.1/bounties?';
+    var uri = '/api/v0.1/bounties/?';
     var keywords = $("#keywords").val();
     if(keywords){
         uri += '&raw_data='+keywords;
