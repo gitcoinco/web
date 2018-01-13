@@ -231,18 +231,18 @@ def fulfill_bounty(request):
     return TemplateResponse(request, 'fulfill_bounty.html', params)
 
 
-def clawback_expired_bounty(request):
+def kill_bounty(request):
 
     params = {
         'issueURL': request.GET.get('source'),
-        'title': 'Clawback Expired Issue',
-        'active': 'clawback_expired_bounty',
+        'title': 'Kill Bounty',
+        'active': 'kill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
     }
 
-    return TemplateResponse(request, 'clawback_expired_bounty.html', params)
+    return TemplateResponse(request, 'kill_bounty.html', params)
 
 
 def bounty_details(request):

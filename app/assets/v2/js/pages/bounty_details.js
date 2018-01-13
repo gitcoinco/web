@@ -92,6 +92,9 @@ var callbacks = {
         if(ui_status=='accepted'){
             ui_status = '<span style="color: #f9006c;">accepted</span>';
         }
+        if(ui_status=='dead'){
+            ui_status = '<span style="color: #0d023b;">dead</span>';
+        }
         return [ 'status', ui_status];
     },
     'issue_description': function(key, val, result){
@@ -416,6 +419,20 @@ window.addEventListener('load', function() {
                         }
                     }
                     actions.push(entry);
+
+                    if(result['status'] != 'accepted' ){
+                        var enabled = isBountyOwner(result);
+                        var entry = {
+                            href: '/funding/kill?source='+result['github_url'],
+                            text: 'Kill Bounty',
+                            parent: 'right_actions',
+                            color: enabled ? 'darkBlue' : 'darkGrey',
+                            extraClass: enabled ? '' : 'disabled',
+                            title: enabled ? '' : 'Can only be performed if you are the funder.',
+
+                        }
+                        actions.push(entry);
+                    }
                     var enabled = !isBountyOwner(result);
                     if(result['status']=='open' ){
                         var entry = {
@@ -433,8 +450,8 @@ window.addEventListener('load', function() {
                     if(is_expired){
                         var enabled = isBountyOwner(result);
                         var entry = {
-                            href: '/funding/clawback?source='+result['github_url'],
-                            text: 'Clawback Expired Funds',
+                            href: '/funding/kill?source='+result['github_url'],
+                            text: 'Kill Bounty',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
@@ -455,19 +472,7 @@ window.addEventListener('load', function() {
                         }
                         actions.push(entry);
                     }
-                    if(result['status']=='accepted' ){
-                        var enabled = isBountyOwner(result);
-                        var entry = {
-                            href: '',
-                            text: 'Accepted',
-                            parent: 'right_actions',
-                            color: enabled ? 'darkBlue' : 'darkGrey',
-                            extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? '' : 'Can only be performed if you are the funder.',
 
-                        }
-                        actions.push(entry);
-                    }
 
                     var watch_title = 'Watching an issue allows you to search for it again via the "other filters" in funded issue search.';
                     if (is_on_watch_list(result['github_url'])) {

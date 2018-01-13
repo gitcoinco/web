@@ -78,7 +78,7 @@ window.onload = function(){
 
             var apiCallback = function(results, status){
                 if(status != "success"){
-                    mixpanel.track("Process Bounty Error", {step: 'callback', error: error});
+                    mixpanel.track("Process Bounty Error", {step: 'apiCallback', error: error});
                     _alert({ message: "Could not get bounty details" });
                     console.error(error);
                     unloading_button($('.submitBounty'));
@@ -93,8 +93,6 @@ window.onload = function(){
                     var open = result['is_open'];
                     var initialized = true;
                     var bountyId = result['standard_bounties_id'];
-
-                    // bountyDetails = [bountyAmount, result[1], result[2], result[3]];
 
                     var errormsg = undefined;
                     if(bountyAmount == 0 || open == false || initialized == false){
@@ -111,7 +109,7 @@ window.onload = function(){
                         return;
                     }
 
-                    var _callback = function(error, result){
+                    var final_callback = function(error, result){
                         var next = function(){
                             localStorage['txid'] = result;
                             updates = {
@@ -129,7 +127,7 @@ window.onload = function(){
 
                         };
                         if(error){
-                            mixpanel.track("Process Bounty Error", {step: '_callback', error: error});
+                            mixpanel.track("Process Bounty Error", {step: 'final_callback', error: error});
                             _alert({ message: "There was an error" });
                             console.error(error);
                             unloading_button($('.submitBounty'));
@@ -144,7 +142,7 @@ window.onload = function(){
                     // the latest one, which will match up with what the database has.
                     bounty.getNumFulfillments(bountyId, function (error, result) {
                         var fulfillmentId = result - 1;
-                        bounty.acceptFulfillment(bountyId, fulfillmentId, _callback);
+                        bounty.acceptFulfillment(bountyId, fulfillmentId, final_callback);
                     });
 
                     // var method = bounty.approveBountyClaim;
