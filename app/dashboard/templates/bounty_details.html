@@ -20,7 +20,7 @@
         <div class="col body">
             <div class="container-fluid" id="bounty_detail">
             {% include 'shared/bounty_def.html' %}
-
+            </div>
                 <div class="row loading justify-content-center align-items-center loading_img">
                     <img src='/static/v2/images/loading_v2.gif'>
                 </div>
@@ -31,6 +31,12 @@
                     <br>
                     <h6>Be the OSS Funding you wish to see in the world.</h6>
                     <p id='submitsolicitation'>Looking to fund some work?  You can submit a new Funded Issue <a href="/funding/new">here</a>.</p>
+                </div>
+                <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none;">
+                    {% include 'shared/rain.html' with class="color" %}
+                    <h3 class="quote_text"></h3>
+                    <br /><br /><br />
+                    <h3 class="quote_author"></h3>
                 </div>
                 <div class="row mt-4" id="bounty_details">
                     <div class="ml-2 mr-2 pl-4 pr-4 col-2 left_details">
@@ -86,7 +92,7 @@
 
       <script id="action" type="text/x-jsrender">
         <span title='[[:title]]'>
-        <a class="btn btn-sm btn-[[:color]] [[:extraClass]]" role="button" href="[[:href]]" target="[[:target]]"> 
+        <a class="btn btn-sm btn-[[:color]] [[:extraClass]]" role="button" href="[[:href]]" target="[[:target]]">
             <span class="font-smaller-4">[[:text]]</span>
         </a>
         </span>

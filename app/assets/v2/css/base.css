@@ -747,6 +747,21 @@ body.bounty_details #title {
     padding-bottom: 20px;
 }
 
+.waiting_room_entertainment {
+    font-style: italic;
+    text-align: center;
+}
+
+.quote_text {
+    margin: auto;
+    margin-top: 5%;
+}
+
+.quote_author {
+    margin: auto;
+    color: #90ee90;
+}
+
 #gitcoin_buttons #example img {
     width: 500px;
     max-width: 100%

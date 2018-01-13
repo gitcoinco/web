@@ -28,12 +28,10 @@ var quotes =
   ];
 
 var waitingRoomEntertainment = function() {
-  var quote = randomElement(quotes)
-  var text = quoteFormatter(quote)
-  var div = $(".waiting_room_entertainment")
-  div.html(text);
-}
+  var quote = randomElement(quotes);
+  var quoteText = quote[0];
+  var quoteAuthor = quote[1];
 
-var quoteFormatter = function(quoteArray) {
-  return quoteArray[0] + "----" + quoteArray[1]
+  $(".quote_text").html(quoteText);
+  $(".quote_author").html(quoteAuthor);
 }

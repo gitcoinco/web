@@ -244,9 +244,17 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
             }
             var msg = `<br>This funded issue has recently been updated and while the blockchain syncs it has `+pendingchanges+`.
             Please wait a minute or two for web3 to sync `+this_transaction+`.
-            <br>(Please DO NOT close the browser tab.  This page will automatically refresh as soon as the blockchain is updated.)
-            <br>INTERESTING QUOTE: <span class='waiting_room_entertainment'></span>`
-            _alert({ title: title, message: msg},'info');
+            <br>(Please DO NOT close the browser tab.  This page will automatically refresh as soon as the blockchain is updated.)</span>`
+            // _alert({ title: title, message: msg},'info');
+            _alert({ title: title, message: msg, closeButton: false},'info');
+
+            $("#bounty_details").hide()
+            $(".waiting_room_entertainment").show()
+
+            var radioButtons = $(".sidebar_search input")
+            for (var i = radioButtons.length - 1; i >= 0; i--) {
+                radioButtons[i].disabled = true
+            };
 
             var secondsBetweenQuoteChanges = 30;
             waitingRoomEntertainment();
