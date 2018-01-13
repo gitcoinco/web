@@ -80,6 +80,7 @@ urlpatterns = [
     url(r'^sync/search_save?', dashboard.views.save_search, name='save_search'),
 
     # brochureware views
+    url(r'^community/?', retail.views.community, name='community'),
     url(r'^about/?', retail.views.about, name='about'),
     url(r'^mission/?', retail.views.mission, name='mission'),
     url(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),

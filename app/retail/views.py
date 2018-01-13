@@ -398,7 +398,11 @@ def error(request, code):
 
 
 def portal(request):
-    return redirect('https://gitcoinhelp.zendesk.com/hc/en-us/')
+    return redirect('https://gitcoin.co/help')
+
+
+def community(request):
+    return redirect('https://github.com/gitcoinco/community')
 
 
 def onboard(request):
