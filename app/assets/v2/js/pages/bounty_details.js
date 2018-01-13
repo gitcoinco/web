@@ -226,7 +226,6 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
             var bounty = web3.eth.contract(bounty_abi).at(bounty_address());  //hardcode to test
 
             bounty.getNumBounties(function(error, result){
-                console.log("Callback is now running...");
                 if (error){
                     console.error(error);
                     return;
@@ -236,7 +235,6 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                 // Get bounty issuer
                 var i = bountiesLength - 1;
                 function getBountyLoop (i) {
-                    console.log('Trying bountyId: ' + i);
                     bounty.getBounty(i, function(error, result2) {
                         if (error) {
                             console.error(error);
@@ -244,8 +242,6 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                         }
                         issuer = result2[0];
                         var bountyDetails = JSON.parse(localStorage['bountyDetails']);
-                        console.log('issuer from stdb: ' + issuer);
-                        console.log('account from bountyDetails:' + localStorage['bountyDetails'].split(",")[2])
                         // compare issuer to the submitting address
                         if (issuer == bountyDetails[2]) {
                             bounty.getBountyData(i, function(error, result3) {
@@ -254,8 +250,6 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                                 return;
                                 }
                                 dataHash = result3;
-                                console.log('dataHash from stdb: ' + dataHash);
-                                console.log('dataHash from cache: ' + localStorage['dataHash']);
                                 // compare resulting datahash from std bounties to cached dataHash
                                 if (dataHash == localStorage['dataHash']) {
                                     var bountyId = i;
