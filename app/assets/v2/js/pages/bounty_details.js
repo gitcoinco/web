@@ -176,7 +176,7 @@ var callbacks = {
         if( new Date(val) < new Date()){
             label = "expired";
             if(result['is_open']){
-                response = "<span title='This issue is past its experation date, but it is still active.  Check with the submitter to see if they still want to see it fulfilled.'>"+response+"</span>";
+                response = "<span title='This issue is past its expiration date, but it is still active.  Check with the submitter to see if they still want to see it fulfilled.'>"+response+"</span>";
             }
         }
         return [ label , response];
@@ -417,8 +417,8 @@ window.addEventListener('load', function() {
                             color: 'darkBlue',
                             title: 'Github is where the issue scope lives.  Its also a great place to collaborate with, and get to know, other developers (and sometimes even the repo maintainer themselves!).'
                         }
+                        actions.push(entry);
                     }
-                    actions.push(entry);
 
                     if(result['status'] != 'accepted' ){
                         var enabled = isBountyOwner(result);
@@ -433,6 +433,7 @@ window.addEventListener('load', function() {
                         }
                         actions.push(entry);
                     }
+
                     var enabled = !isBountyOwner(result);
                     if(result['status']=='open' ){
                         var entry = {
@@ -447,18 +448,7 @@ window.addEventListener('load', function() {
                     }
 
                     var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
-                    if(is_expired){
-                        var enabled = isBountyOwner(result);
-                        var entry = {
-                            href: '/funding/kill?source='+result['github_url'],
-                            text: 'Kill Bounty',
-                            parent: 'right_actions',
-                            color: enabled ? 'darkBlue' : 'darkGrey',
-                            extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? '' : 'Can only be performed if you are the funder.',
-                        }
-                        actions.push(entry);
-                    }
+
                     if(result['status']=='fulfilled' ){
                         var enabled = isBountyOwner(result);
                         var entry = {

@@ -183,11 +183,10 @@ class Bounty(SuperModel):
     @property
     def status(self):
         try:
+            if timezone.now() > self.expires_date and self.claimeee_address == '0x0000000000000000000000000000000000000000':
+                return 'expired'
             if not self.is_open:
-                if timezone.now() > self.expires_date and self.claimeee_address == '0x0000000000000000000000000000000000000000':
-                    return 'expired'
-                else:
-                    return self.idx_status
+                return self.idx_status
             if self.claimeee_address == '0x0000000000000000000000000000000000000000':
                 return 'open'
             if self.claimeee_address != '0x0000000000000000000000000000000000000000':
