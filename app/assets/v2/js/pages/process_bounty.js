@@ -52,6 +52,12 @@ window.onload = function(){
 
         var bountyDetails = []
 
+        $('#goBack').click(function(e) {
+            var url = window.location.href;
+            var new_url = url.replace('process?source', 'details?url');
+            window.location.href = new_url;
+        })
+
         $('#acceptBounty').click(function(e){
             mixpanel.track("Process Bounty Clicked", {});
             e.preventDefault();
