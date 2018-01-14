@@ -52,7 +52,7 @@ window.onload = function(){
 
         var bountyDetails = []
 
-        $('.submitBounty').click(function(e){
+        $('#acceptBounty').click(function(e){
             mixpanel.track("Process Bounty Clicked", {});
             e.preventDefault();
             var whatAction = $(this).html().trim()
@@ -145,10 +145,6 @@ window.onload = function(){
                         bounty.acceptFulfillment(bountyId, fulfillmentId, final_callback);
                     });
 
-                    // var method = bounty.approveBountyClaim;
-                    // if(whatAction != 'Accept'){
-                    //     method = bounty.rejectBountyClaim;
-                    // }
                     var failure_calllback = function(errors){
                         mixpanel.track("Process Bounty Error", {step: 'estimateGas', error: errors});
                         _alert({ message: "There was an error" });
@@ -165,7 +161,6 @@ window.onload = function(){
                             params, 
                             _callback);
                     };
-                    // estimateGas(issueURL, method, success_callback, failure_calllback, _callback);
                 }
             };
             // Get bountyId from the database
