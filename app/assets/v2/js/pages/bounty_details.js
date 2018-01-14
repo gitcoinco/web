@@ -414,7 +414,7 @@ window.addEventListener('load', function() {
                         actions.push(entry);
                     }
 
-                    if(result['status'] != 'accepted' ){
+                    if(result['status'] != 'accepted' && result['status'] != 'dead'){
                         var enabled = isBountyOwner(result);
                         var entry = {
                             href: '/funding/kill?source='+result['github_url'],
