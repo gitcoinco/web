@@ -31,6 +31,9 @@ from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import convert_amount
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class Bounty(SuperModel):
 
@@ -151,7 +154,6 @@ class Bounty(SuperModel):
 
         return handle == target
 
-
     @property
     def absolute_url(self):
         return self.get_absolute_url()
@@ -183,7 +185,7 @@ class Bounty(SuperModel):
     @property
     def status(self):
         try:
-            if timezone.now() > self.expires_date and self.claimeee_address == '0x0000000000000000000000000000000000000000':
+            if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.claimeee_address == '0x0000000000000000000000000000000000000000':
                 return 'expired'
             if not self.is_open:
                 return self.idx_status
@@ -193,6 +195,7 @@ class Bounty(SuperModel):
                 return 'fulfilled'
             return 'unknown'
         except Exception as e:
+            logger.warning(e)
             return 'unknown'
 
     @property
@@ -247,7 +250,6 @@ class Bounty(SuperModel):
             eles = soup.findAll("td", {"class": "comment-body"})
             if len(eles):
                 body = eles[0].prettify()
-
 
         except Exception as e:
             print(e)
@@ -360,6 +362,7 @@ def psave_bounty(sender, instance, **kwargs):
     instance._val_usd_db = instance.value_in_usdt if instance.value_in_usdt else 0
     instance.idx_experience_level = idx_experience_level.get(instance.experience_level, 0)
     instance.idx_project_length = idx_project_length.get(instance.project_length, 0)
+
 
 class Profile(SuperModel):
     data = JSONField()
