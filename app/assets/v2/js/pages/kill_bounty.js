@@ -73,57 +73,57 @@ window.onload = function(){
 
             var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
 
-            var _callback = function(error, result){
-                var ignore_error = false;
-                if(error){
+            var apiCallback = function(results, status){
+                if(status != "success"){
+                    mixpanel.track("Kill Bounty Error", {step: 'apiCallback', error: error});
+                    _alert({ message: "Could not get bounty details" });
                     console.error(error);
-                    mixpanel.track("Clawback Bounty Error", {step: '_callback', error: error});
-                    ignore_error = String(error).indexOf('BigNumber') != -1;
-                }
-                var run_main = !error || ignore_error;
-                if(error && !ignore_error){
-                    _alert({ message: "Could not get bounty details." });
-                    unloading_button($('#submitBounty'));
-                }
-                if(run_main){
-                    if(!ignore_error){
-                        var bountyAmount = result[0].toNumber();
-                        bountyDetails = [bountyAmount, result[1], result[2], result[3]];
-                        var fromAddress = result[2];
-                        var open = result[4];
-                        var initialized = result[5];
+                    unloading_button($('.submitBounty'));
+                    return;
+                } else {
+                    results = sanitizeAPIResults(results);
+                    result = results[0];
 
-                        var errormsg = undefined;
-                        if(bountyAmount == 0 || open == false || initialized == false){
-                            errormsg = "No active funded issue found at this address.  Are you sure this is an active funded issue?";
-                        } 
-                        if(fromAddress != web3.eth.coinbase){
-                            errormsg = "Only the address that submitted this funded issue may submit a clawback.";
-                        }
+                    var bountyAmount = parseInt(result['value_in_token'], 10); 
+                    var fromAddress = result['bounty_owner_address'];
+                    var claimeeAddress = result['claimeee_address'];
+                    var open = result['is_open'];
+                    var initialized = true;
+                    var bountyId = result['standard_bounties_id'];
 
-                        if(errormsg){
-                            _alert({ message: errormsg });
-                            unloading_button($('#submitBounty'));
-                            return;
-                        }
+                    var errormsg = undefined;
+                    if(bountyAmount == 0 || open == false || initialized == false){
+                        errormsg = "No active funded issue found at this address.  Are you sure this is an active funded issue?";
+                    } 
+                    if(fromAddress != web3.eth.coinbase){
+                        errormsg = "Only the address that submitted this funded issue may kill the bounty.";
                     }
 
+                    if(errormsg){
+                        _alert({ message: errormsg });
+                        unloading_button($('#submitBounty'));
+                        return;
+                    }
 
                     var final_callback = function(error, result){
                         var next = function(){
                             localStorage['txid'] = result;
-                            sync_web3(issueURL);
+                            updates = {
+                                is_open: false,  // Close out the bounty in the database
+                                idx_status: 'dead',
+                            }
+                            sync_web3(issueURL, JSON.stringify(updates));
                             localStorage[issueURL] = timestamp();
                             add_to_watch_list(issueURL);
-                            _alert({ message: "Clawback submitted to web3." },'info');
+                            _alert({ message: "Kill bounty submitted to web3." },'info');
                             setTimeout(function(){
-                                mixpanel.track("Clawback Bounty Success", {});
+                                mixpanel.track("Kill Bounty Success", {});
                                 document.location.href= "/funding/details?url="+issueURL;
                             },1000);
 
                         };
                         if(error){
-                            mixpanel.track("Clawback Bounty Error", {step: 'callback', error: error});
+                            mixpanel.track("Kill Bounty Error", {step: 'final_callback', error: error});
                             console.error("err", error);
                             _alert({ message: "There was an error" });
                             unloading_button($('#submitBounty'));
@@ -150,12 +150,16 @@ window.onload = function(){
                                 }, 
                             final_callback);
                         };
-                        estimateGas(issueURL, success_callback, failure_calllback, final_callback);
+                        // estimateGas(issueURL, success_callback, failure_calllback, final_callback);
                     },100);
+                    bounty.killBounty(bountyId, final_callback);
                     e.preventDefault();
                 }
             };
-            bounty.bountydetails.call(issueURL, _callback);
+            // Get bountyId from the database
+            var uri = '/api/v0.1/bounties?github_url='+issueURL;
+            $.get(uri, apiCallback); 
+            e.preventDefault();
         });
     },100);
 

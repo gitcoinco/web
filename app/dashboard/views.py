@@ -36,6 +36,9 @@ from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 confirm_time_minutes_target = 60
 
 
@@ -214,32 +217,32 @@ def new_bounty(request):
     return TemplateResponse(request, 'submit_bounty.html', params)
 
 
-def claim_bounty(request):
+def fulfill_bounty(request):
 
     params = {
         'issueURL': request.GET.get('source'),
-        'title': 'Claim Issue',
-        'active': 'claim_bounty',
+        'title': 'Fulfill Issue',
+        'active': 'fulfill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
     }
 
-    return TemplateResponse(request, 'claim_bounty.html', params)
+    return TemplateResponse(request, 'fulfill_bounty.html', params)
 
 
-def clawback_expired_bounty(request):
+def kill_bounty(request):
 
     params = {
         'issueURL': request.GET.get('source'),
-        'title': 'Clawback Expired Issue',
-        'active': 'clawback_expired_bounty',
+        'title': 'Kill Bounty',
+        'active': 'kill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
     }
 
-    return TemplateResponse(request, 'clawback_expired_bounty.html', params)
+    return TemplateResponse(request, 'kill_bounty.html', params)
 
 
 def bounty_details(request):
@@ -251,9 +254,9 @@ def bounty_details(request):
         'avatar_url': 'https://gitcoin.co/static/v2/images/helmet.png',
         'active': 'bounty_details',
     }
-
     try:
         b = Bounty.objects.get(github_url=request.GET.get('url'), current_bounty=True)
+        # Currently its not finding anyting in the database
         if b.title:
             params['card_title'] = "{} | {} Funded Issue Detail | Gitcoin".format(b.title, b.org_name)
             params['title'] = params['card_title']
@@ -261,6 +264,7 @@ def bounty_details(request):
         params['avatar_url'] = b.local_avatar_url
     except Exception as e:
         print(e)
+        logging.error(e)
         pass
 
     return TemplateResponse(request, 'bounty_details.html', params)
@@ -349,14 +353,44 @@ def save_search(request):
 @csrf_exempt
 @ratelimit(key='ip', rate='2/s', method=ratelimit.UNSAFE, block=True)
 def sync_web3(request):
+    """ Sync up web3 with the database.  This function has a few different uses.  It is typically
+        called from the front end using the javascript `sync_web3` function.  The `issueURL` is
+        passed in first, followed optionally by a `bountydetails` argument.  It is used the following
+        ways:
 
+        1.  Create a new bounty.  `bountydetails` is passed as the second argument and the code
+            below is used to create the initial entry in the database.  In this case bountydetails
+            comes in as an array.  Also see **new_bounty.js**
+
+        2.  Fulfill a bounty.  If `bountydetails` is passed instead of a JSON string, it will assume
+            that you want to do an update to the database rather than a new bounty creation.  In this
+            case bountydetails comes in as a JSON string.  Also see **fulfill_bounty.js**.
+
+        Note: updates is a dictionary of fields to update an existing Bounty object.
+              This is done rather than a direct web3 sync because Standard Bounties doesn't
+              have the ability to sync up exactly with the database and the data in IPFS is
+              immutable once the contract is created.
+
+    Args:
+        request (str): The request string, typically and `issueURL`, followed an optional `bountydetails`
+                        object.
+
+    Returns:
+        JsonResponse: Django return object.
+    """
     #setup
     result = {}
     issueURL = request.POST.get('issueURL', False)
+    updates = request.POST.get('bountydetails')
     bountydetails = request.POST.getlist('bountydetails[]', [])
     if issueURL:
 
         issueURL = normalizeURL(issueURL)
+        if updates:
+            fields = json.loads(updates)
+            Bounty.objects.filter(github_url=issueURL).update(**fields)
+            result['status'] = 'OK'
+            return JsonResponse(result)
         if not len(bountydetails):
             #create a bounty sync request
             result['status'] = 'OK'
@@ -365,17 +399,22 @@ def sync_web3(request):
                 existing_bsr.save()
         else:
             #normalize data
-            bountydetails[0] = int(bountydetails[0])
-            bountydetails[1] = str(bountydetails[1])
-            bountydetails[2] = str(bountydetails[2])
-            bountydetails[3] = str(bountydetails[3])
-            bountydetails[4] = bool(bountydetails[4] == 'true')
-            bountydetails[5] = bool(bountydetails[5] == 'true')
-            bountydetails[6] = str(bountydetails[6])
-            bountydetails[7] = int(bountydetails[7])
-            bountydetails[8] = str(bountydetails[8])
-            bountydetails[9] = int(bountydetails[9])
-            bountydetails[10] = str(bountydetails[10])
+            # Comments reference the field mapping for:
+            #  - database table dashboard_bounty
+            #  - (solidity parameter) from old smart contract
+            # If there is no database field, just the solidity field is referenced.
+            bountydetails[0] = int(bountydetails[0])  # value_in_token (amount)
+            bountydetails[1] = str(bountydetails[1])  # token_address (tokenAddress)
+            bountydetails[2] = str(bountydetails[2])  # bounty_owner_address (bountyOwner)
+            bountydetails[3] = str(bountydetails[3])  # claimee_address (claimee)
+            bountydetails[4] = bool(bountydetails[4] == 'true')  # is_open (open)
+            bountydetails[5] = bool(bountydetails[5] == 'true')  # (initialized)
+            bountydetails[6] = str(bountydetails[6])  # github_url (issueURL)
+            bountydetails[7] = int(bountydetails[7])  # web3_created (creationTime)
+            bountydetails[8] = str(bountydetails[8])  # multiple fields (metaData)
+            bountydetails[9] = int(bountydetails[9])  # expires_date (expirationTime)
+            bountydetails[10] = str(bountydetails[10])  # claimee_metadata (claimee_metaData)
+            bountydetails[11] = int(bountydetails[11])  # standard_bounties_id (_bountyId)
             print(bountydetails)
             contract_address = request.POST.get('contract_address')
             network = request.POST.get('network')
@@ -383,16 +422,13 @@ def sync_web3(request):
 
             print("{} changed, {}".format(didChange, issueURL))
             if didChange:
-                print("- processing changes");
+                print("- processing changes")
                 process_bounty_changes(old_bounty, new_bounty, None)
-
 
         BountySyncRequest.objects.create(
             github_url=issueURL,
             processed=False,
             )
-
-
 
     return JsonResponse(result)
 

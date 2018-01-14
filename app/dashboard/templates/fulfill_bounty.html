@@ -46,7 +46,7 @@
                         <div class="d-flex justify-content-center flex-column mt-5 w-50" id="primary_subform">
                             {% include 'shared/bounty_nav.html' with active_item=2 %}
                             <div class="w-100" style="text-align: center;">
-                                <h3>Claim Funds</h3>
+                                <h3>Fulfill Bounty</h3>
                                 <img src="/static/v2/images/prime.png">
                             </div>
                             {% include 'shared/network_status.html' %}
@@ -68,7 +68,7 @@
                             </div>
                             {% include 'shared/metamask_estimate.html' %}
                             <div class="w-80 mt-2">
-                                <a class="btn btn-sm btn-info mt-3 mb-0 pulseClick float-right claimissue" role="button" id="submitBounty" href="#">Claim Funds</a>
+                                <a class="btn btn-sm btn-info mt-3 mb-0 pulseClick float-right claimissue" role="button" id="submitBounty" href="#">Fulfill Bounty</a>
                             </div>
                             <div class="w-80 mb-5 mt-1">
                                 <a class="float-right" target=new href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
@@ -89,10 +89,12 @@
 
 
 <!-- jQuery -->
+<script src="{{STATIC_URL}}v2/js/ipfs-api.js"></script>
+<script src="{{STATIC_URL}}v2/js/ipfs.js"></script>
 <script src="{{STATIC_URL}}v2/js/abi.js"></script>
 <script src="{{STATIC_URL}}v2/js/tokens.js"></script>
 <script src="{{STATIC_URL}}v2/js/shared.js"></script>
-<script src="{{STATIC_URL}}v2/js/pages/claim_bounty.js"></script>
+<script src="{{STATIC_URL}}v2/js/pages/fulfill_bounty.js"></script>
 
 
 </html>

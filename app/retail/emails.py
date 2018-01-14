@@ -252,7 +252,7 @@ def new_bounty(request):
 def new_bounty_claim(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty_claim(settings.CONTACT_EMAIL, Bounty.objects.filter(idx_status='claimed').last())
+    response_html, response_txt = render_new_bounty_claim(settings.CONTACT_EMAIL, Bounty.objects.filter(idx_status='fulfilled').last())
 
     return HttpResponse(response_html)
 

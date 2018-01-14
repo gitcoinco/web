@@ -31,6 +31,9 @@ from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import convert_amount
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class Bounty(SuperModel):
 
@@ -56,6 +59,8 @@ class Bounty(SuperModel):
         ('Months', 'Months'),
         ('Unknown', 'Unknown'),
     ]
+    # TODO:  claimee == fulfiller for now.  Didn't change the database model because the names
+    # TODO   are used everywhere in the application.  Eventually we might want to standardize this.
     title = models.CharField(max_length=255)
     web3_created = models.DateTimeField()
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
@@ -85,6 +90,7 @@ class Bounty(SuperModel):
     idx_status = models.CharField(max_length=50, default='')
     avatar_url = models.CharField(max_length=255, default='')
     issue_description = models.TextField(default='')
+    standard_bounties_id = models.IntegerField(default=0)
 
     def __str__(self):
         return "{}{} {} {} {}".format( "(CURRENT) " if self.current_bounty else "" , self.title, self.value_in_token, self.token_name, self.web3_created)
@@ -148,7 +154,6 @@ class Bounty(SuperModel):
 
         return handle == target
 
-
     @property
     def absolute_url(self):
         return self.get_absolute_url()
@@ -180,16 +185,17 @@ class Bounty(SuperModel):
     @property
     def status(self):
         try:
+            if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.claimeee_address == '0x0000000000000000000000000000000000000000':
+                return 'expired'
             if not self.is_open:
-                if timezone.now() > self.expires_date and self.claimeee_address == '0x0000000000000000000000000000000000000000':
-                    return 'expired'
-                return 'fulfilled'
+                return self.idx_status
             if self.claimeee_address == '0x0000000000000000000000000000000000000000':
                 return 'open'
             if self.claimeee_address != '0x0000000000000000000000000000000000000000':
-                return 'claimed'
+                return 'fulfilled'
             return 'unknown'
         except Exception as e:
+            logger.warning(e)
             return 'unknown'
 
     @property
@@ -244,7 +250,6 @@ class Bounty(SuperModel):
             eles = soup.findAll("td", {"class": "comment-body"})
             if len(eles):
                 body = eles[0].prettify()
-
 
         except Exception as e:
             print(e)
@@ -357,6 +362,7 @@ def psave_bounty(sender, instance, **kwargs):
     instance._val_usd_db = instance.value_in_usdt if instance.value_in_usdt else 0
     instance.idx_experience_level = idx_experience_level.get(instance.experience_level, 0)
     instance.idx_project_length = idx_project_length.get(instance.project_length, 0)
+
 
 class Profile(SuperModel):
     data = JSONField()
