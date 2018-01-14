@@ -81,6 +81,7 @@ urlpatterns = [
     url(r'^sync/search_save?', dashboard.views.save_search, name='save_search'),
 
     # brochureware views
+    url(r'^community/?', retail.views.community, name='community'),
     url(r'^about/?', retail.views.about, name='about'),
     url(r'^mission/?', retail.views.mission, name='mission'),
     url(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),
@@ -100,7 +101,7 @@ urlpatterns = [
 
     url(r'^slack/?', retail.views.slack, name='slack'),
     url(r'^iosfeedback/?', retail.views.iosfeedback, name='iosfeedback'),
-    #url(r'^ios/?', retail.views.ios, name='ios'),
+    url(r'^ios/?', retail.views.ios, name='ios'),
     url(r'^itunes/?', retail.views.itunes, name='itunes'),
     url(r'^ethdenver/?', retail.views.ethdenver, name='ethdenver'),
     url(r'^denver/?', retail.views.ethdenver, name='denver'),

@@ -1,5 +1,5 @@
 //TODO -- accept stdin
-var issueURL = 'https://github.com/MarketProject/dApps/issues/7'
+var issueURL = 'https://github.com/GridPlus/trustless-relay/issues/1'
 localStorage[issueURL] = timestamp();
 
 var callback = function (error, result){
