@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                             <div class="w-100 mt-0">
-                                <input name='amount' id='amount'  class="gc-round-text-input" type="text" placeholder="Amount" value="{{amount}}" style="width: 20%; display: inline;" />
+                                <input name='amount' id='amount'  class="gc-round-text-input" type="text" placeholder="Amount" value="{% if amount %}{{amount}}{%endif%}" style="width: 20%; display: inline;" />
                                 <select name='deonomination' id='token' class="btn btn-sm btn-outline-dark" style="width: 77%;  display: inline;">
                                 </select>
                                 <div class="mt-1" id="usd_amount"></div>
@@ -92,7 +92,7 @@
                                             <option value="15552000">6 months</option>
                                             <option value="31536000" selected="">1 year</option>
                                             <option value="9999999999">Never</option>
-                                        </select>                            
+                                        </select>
                                 </div>
                                 <div class="w-100 mt-2">
                                     <label for=githubUsername>Github Username:</label>

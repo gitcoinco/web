@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -29,6 +29,7 @@ import retail.views
 import tdi.views
 from dashboard.router import router
 from sitemap import sitemaps
+import gitcoinbot.views
 
 urlpatterns = [
 
@@ -126,6 +127,8 @@ urlpatterns = [
 
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 
+    # gitcoinbot
+    url(r'^payload/', gitcoinbot.views.payload, name='payload'),
 ]
 
 handler403 = 'retail.views.handler403'
