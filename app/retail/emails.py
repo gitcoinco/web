@@ -26,7 +26,6 @@ from django.utils import timezone
 import premailer
 from marketing.utils import get_or_save_email_subscriber
 
-
 ### RENDERERS
 
 

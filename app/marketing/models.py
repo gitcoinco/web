@@ -115,4 +115,3 @@ class GithubOrgToTwitterHandleMapping(SuperModel):
 
     def __str__(self):
         return "{} => {}".format(self.github_orgname, self.twitter_handle)
-

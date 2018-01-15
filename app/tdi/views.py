@@ -29,9 +29,10 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
-from marketing.utils import invite_to_slack
+
 from marketing.mails import send_mail
-from PyPDF2 import PdfFileWriter, PdfFileReader
+from marketing.utils import invite_to_slack
+from PyPDF2 import PdfFileReader, PdfFileWriter
 from ratelimit.decorators import ratelimit
 from reportlab.lib.colors import Color
 from reportlab.lib.pagesizes import letter
@@ -39,7 +40,6 @@ from reportlab.pdfgen import canvas
 from retail.helpers import get_ip
 
 from .models import AccessCodes, WhitepaperAccess, WhitepaperAccessRequest
-
 
 
 def ratelimited(request, ratelimited=False):

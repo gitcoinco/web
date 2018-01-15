@@ -29,6 +29,7 @@ import retail.emails
 import retail.views
 import tdi.views
 from dashboard.router import router
+
 from .sitemaps import sitemaps
 
 urlpatterns = [
