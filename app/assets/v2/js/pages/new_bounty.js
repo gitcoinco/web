@@ -79,15 +79,22 @@ $(document).ready(function(){
                     projectLength : $('select[name=projectLength').val(),
                     bountyType : $('select[name=bountyType').val(),
                 }
+                var value = 0;
+                if(isETH){
+                    value = amount;
+                }
+                $("#gasLimit").addClass('loading');
                 bounty.postBounty.estimateGas(issueURL, 
                     amount, 
                     tokenAddress, 
                     expirationTimeDelta, 
                     JSON.stringify(metadata),
+                    {from :web3.eth.coinbase, value:value},
                     function(errors,result){
+                        $("#gasLimit").removeClass('loading');
                         var is_issue_taken = typeof result == 'undefined' || result > 12976605;
                         if(errors || is_issue_taken){
-                            failure_calllback()
+                            failure_calllback(errors)
                             return;
                         }
                         var gas = Math.round(result * gasMultiplier);
@@ -107,12 +114,13 @@ $(document).ready(function(){
                 $("#gasLimit").val(parseInt(gas/16.1));
                 update_metamask_conf_time_and_cost_estimate();
             };
-            var failure_callback = function(){
+            var failure_callback = function(errors){
                 $("#gasLimit").val('Unknown');
                 update_metamask_conf_time_and_cost_estimate();
             };
             var final_callback = function(){};
-            estimateGas(issueURL, success_callback, failure_callback, final_callback);
+            //estimateGas(issueURL, success_callback, failure_callback, final_callback);
+            success_callback(682443*16,682443*16,'');
         };
         setTimeout(function(){
             updateInlineGasEstimate();

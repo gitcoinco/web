@@ -23,6 +23,7 @@ import dashboard.embed
 import dashboard.helpers
 import dashboard.ios
 import dashboard.views
+import linkshortener.views
 import marketing.views
 import retail.emails
 import retail.views
@@ -79,7 +80,9 @@ urlpatterns = [
     url(r'^sync/search_save?', dashboard.views.save_search, name='save_search'),
 
     # brochureware views
+    url(r'^community/?', retail.views.community, name='community'),
     url(r'^about/?', retail.views.about, name='about'),
+    url(r'^mission/?', retail.views.mission, name='mission'),
     url(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),
     url(r'^$', retail.views.index, name='index'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
@@ -88,13 +91,17 @@ urlpatterns = [
     url(r'^help/portal?', retail.views.portal, name='portal'),
     url(r'^help/pilot?', retail.views.help_pilot, name='help_pilot'),
     url(r'^help/?', retail.views.help, name='help'),
+    url(r'^onboard/?', retail.views.onboard, name='onboard'),
     url(r'^extension/chrome?', retail.views.browser_extension_chrome, name='browser_extension_chrome'),
     url(r'^extension/firefox?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
+    url(r'^press/?', retail.views.presskit, name='press'),
+    url(r'^presskit/?', retail.views.presskit, name='presskit'),
 
     url(r'^slack/?', retail.views.slack, name='slack'),
     url(r'^iosfeedback/?', retail.views.iosfeedback, name='iosfeedback'),
     url(r'^ios/?', retail.views.ios, name='ios'),
+    url(r'^itunes/?', retail.views.itunes, name='itunes'),
     url(r'^ethdenver/?', retail.views.ethdenver, name='ethdenver'),
     url(r'^denver/?', retail.views.ethdenver, name='denver'),
     url(r'^casestudy/?', retail.views.casestudy, name='casestudy'),
@@ -111,6 +118,9 @@ urlpatterns = [
     url(r'^github/?', retail.views.github, name='github'),
     url(r'^youtube/?', retail.views.youtube, name='youtube'),
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
+
+    # link shortener
+    url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),
 
     #token distribution event
     url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),

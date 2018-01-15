@@ -223,7 +223,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                             } else {
                                 console.error(result);
                                 var link_url = etherscan_tx_url(localStorage['txid']);
-                                _alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
+                                //_alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
                             }
                         }
                     });
@@ -355,11 +355,11 @@ window.addEventListener('load', function() {
                     if(result['status']=='open' ){
                         var entry = {
                             href: '/funding/claim?source='+result['github_url'],
-                            text: 'Claim Issue',
+                            text: 'Claim Work',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Claim an issue when you sincerely intend to work on it.\n\n It is not necessary to have started work when you claim an issue, but please (1) comment on the github thread after you claim it, (2) claim an issue only if you plan to start work within the next 12 hours  & (3) only claim it if you feel like you understand the scope and can see it to completion. ' : 'Can only be performed if you are not the funder.',
+                            title: enabled ? 'Claim work when you sincerely intend to work on it.\n\n It is not necessary to have started work when you claim work on an issue, but please (1) comment on the github thread after you claim it, (2) claim work only if you plan to start work within the next 12 hours  & (3) only claim work if you feel like you understand the scope and can see it to completion. ' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(entry);
                     }

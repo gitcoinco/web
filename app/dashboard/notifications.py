@@ -9,6 +9,8 @@ from django.conf import settings
 
 import tinyurl
 import twitter
+from marketing.mails import tip_email
+from marketing.models import GithubOrgToTwitterHandleMapping
 from app.github import post_issue_comment
 from slackclient import SlackClient
 
@@ -31,6 +33,13 @@ sys.setdefaultencoding('utf8')
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+
+
+def github_org_to_twitter_tags(github_org):
+    twitter_handles = GithubOrgToTwitterHandleMapping.objects.filter(github_orgname__iexact=github_org)
+    twitter_handles = twitter_handles.values_list('twitter_handle', flat=True)
+    twitter_tags = " ".join(["@{}".format(ele) for ele in twitter_handles])
+    return twitter_tags
 
 
 def maybe_market_to_twitter(bounty, event_name, txid):
@@ -76,7 +85,8 @@ def maybe_market_to_twitter(bounty, event_name, txid):
         ("(${})".format(bounty.value_in_usdt) if bounty.value_in_usdt else ""),
         tinyurl.create_one(bounty.get_absolute_url())
     )
-    if bounty.keywords:
+    new_tweet = new_tweet + " " + github_org_to_twitter_tags(bounty.org_name) #twitter tags
+    if bounty.keywords: #hashtags
         for keyword in bounty.keywords.split(','):
             _new_tweet = new_tweet + " #" + str(keyword).lower().strip()
             if len(_new_tweet) < 140:
@@ -117,6 +127,14 @@ def maybe_market_to_slack(bounty, event_name, txid):
     return True
 
 
+def maybe_market_tip_to_email(tip, emails):
+    if tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        return False
+
+    tip_email(tip, set(emails), True)
+    return True
+
+
 def maybe_market_tip_to_slack(tip, event_name, txid):
     if not settings.SLACK_TOKEN:
         return False
@@ -154,6 +172,15 @@ def maybe_market_to_github(bounty, event_name, txid):
     usdt_value = "(" + str(round(bounty.value_in_usdt, 2)) + " USD)" if bounty.value_in_usdt else ""
     if event_name == 'new_bounty':
         msg = "__This issue now has a funding of {} {} {} attached to it.__\n\n * If you would like to work on this issue you can claim it [here]({}).\n * If you've completed this issue and want to claim the bounty you can do so [here]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = msg.format(
+            round(bounty.get_natural_value(), 4),
+            bounty.token_name, usdt_value,
+            bounty.get_absolute_url(),
+            bounty.get_absolute_url(),
+            amount_usdt_open_work(),
+            )
+    elif event_name == 'rejected_claim':
+        msg = "__This claim for the funding of {} {} {} attached to this issue has been **rejected** and can now be claimed by someone else.__\n\n * If you would like to work on this issue you can claim it [here]({}).\n * If you've completed this issue and want to claim the bounty you can do so [here]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
         msg = msg.format(
             round(bounty.get_natural_value(), 4),
             bounty.token_name, usdt_value,
@@ -250,8 +277,10 @@ def maybe_market_to_email(b, event_name, txid):
     from marketing.mails import new_bounty_claim, new_bounty_rejection, new_bounty_acceptance, new_bounty
     from marketing.models import EmailSubscriber
     to_emails = []
+    if b.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        return False
 
-    if event_name == 'new_bounty':
+    if event_name == 'new_bounty' and not settings.DEBUG:
         try:
             to_emails = []
             keywords = b.keywords.split(',')

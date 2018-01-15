@@ -17,8 +17,9 @@
 '''
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from slackclient import SlackClient
+
 from marketing.models import EmailSubscriber
+from slackclient import SlackClient
 
 
 def process_email(email):
@@ -59,6 +60,3 @@ class Command(BaseCommand):
             members = json.load(f)
             for member in members:
                 process_email(member['email'])
-
-
-

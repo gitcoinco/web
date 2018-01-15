@@ -207,8 +207,8 @@ function timeDifference(current, previous) {
         var unit = 'year';
     }
     var plural = amt != 1 ? 's' : '';
-    
-    return amt + ' '+unit+plural+' ago';   
+
+    return amt + ' '+unit+plural+' ago';
 };
 
 var sync_web3 = function(issueURL, bountydetails, callback){
@@ -277,7 +277,7 @@ var retrieveAmount = function(){
     var address = $('select[name=deonomination').val();
     var denomination = tokenAddressToDetails(address)['name'];
     var request_url = '/sync/get_amount?amount='+amount+'&denomination=' + denomination;
-    
+
     //use cached conv rate if possible.
     if(document.conversion_rates && document.conversion_rates[denomination]){
         var usd_amount = amount / document.conversion_rates[denomination];
@@ -368,11 +368,11 @@ window.addEventListener('load', function() {
     var timeout_value = 100;
     setTimeout(function(){
         if (typeof web3 =='undefined'){
-            $("#sidebar_head").html("Web3 disabled <img src='/static/v2/images/icons/question.png'>");
-            $("#sidebar_p").html("Please install <a target=new href=https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en> Metamask</a>. ");
+            $("#sidebar_head").html("Web3 disabled <br> <img src='/static/v2/images/icons/question.png'>");
+            $("#sidebar_p").html("Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>.");
         } else if (typeof web3.eth.accounts[0] =='undefined'){
-            $("#sidebar_head").html("Web3 locked <img src='/static/v2/images/icons/lock.png'>");
-            $("#sidebar_p").html("Please unlock <a target=new href=https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en> Metamask</a>. ");
+            $("#sidebar_head").html("Web3 locked <br> <img src='/static/v2/images/icons/lock.png'>");
+            $("#sidebar_p").html("Please unlock <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>.");
         } else {
             web3.version.getNetwork((error, netId) => {
                 if(!error){
@@ -420,16 +420,16 @@ window.addEventListener('load', function() {
                     }
                     var sidebar_p = "Connected to " + network + ".";
                     if(is_supported_network){
-                        $("#sidebar_head").html("Web3 enabled <img src='/static/v2/images/icons/rss.png'>");
+                        $("#sidebar_head").html("Web3 enabled <br> <img src='/static/v2/images/icons/rss.png'>");
                     } else {
-                        $("#sidebar_head").html("Unsupported network <img src='/static/v2/images/icons/battery_empty.png'>");
+                        $("#sidebar_head").html("Unsupported network <br> <img src='/static/v2/images/icons/battery_empty.png'>");
                         sidebar_p += "<br>(try " + recommended_network + " instead)";
                     }
                     $("#sidebar_p").html(sidebar_p);
                 }
                 else {
                     $("#sidebar_head").html("Web3 disabled");
-                    $("#sidebar_p").html("Please install & unlock <a target=new href=https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en> Metamask</a>. ");
+                    $("#sidebar_p").html("Please install & unlock <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>. ");
                 }
             })
         }

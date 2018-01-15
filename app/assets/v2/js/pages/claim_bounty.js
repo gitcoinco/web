@@ -19,13 +19,15 @@ window.onload = function(){
 
         var estimateGas = function(issueURL, claimee_metadata, success_callback, failure_calllback, final_callback){
                 var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+                $("#gasLimit").addClass('loading');
                 bounty.claimBounty.estimateGas(
                     issueURL, 
                     claimee_metadata, 
                     function(errors,result){
+                        $("#gasLimit").removeClass('loading');
                         var is_issue_taken = typeof result == 'undefined' || result > 403207;
                         if(errors || is_issue_taken){
-                            failure_calllback()
+                            failure_calllback(errors)
                             return;
                         }
                         var gas = Math.round(result * gasMultiplier);
@@ -52,7 +54,8 @@ window.onload = function(){
             };
             var final_callback = function(){};
 
-            estimateGas(issueURL, claimee_metadata, success_callback, failure_callback, final_callback);
+            //estimateGas(issueURL, claimee_metadata, success_callback, failure_callback, final_callback);
+            success_callback(186936,186936,'');
         };
         setTimeout(function(){
             updateInlineGasEstimate();
@@ -150,7 +153,7 @@ window.onload = function(){
                     };
 
                     setTimeout(function(){
-                        var failure_calllback = function(){
+                        var failure_calllback = function(errors){
                             _alert({ message: "This issue is no longer active.  Please leave a comment <a href=https://github.com/gitcoinco/web/issues/169>here</a> if you need help." });
                             mixpanel.track("Claim Bounty Error", {step: 'estimateGas', error: errors});
                             unloading_button($('#submitBounty'));
@@ -175,7 +178,7 @@ window.onload = function(){
                             function(errors,result){
                                 var is_issue_taken = typeof result == 'undefined' || result > 403207;
                                 if(errors || is_issue_taken){
-                                    failure_calllback()
+                                    failure_calllback(errors)
                                     return;
                                 }
                                 var gas = Math.round(result * gasMultiplier);
