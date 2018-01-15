@@ -588,11 +588,11 @@ input[type=text].loading{
     margin-left: 0px;
 }
 .metamask_recc {
-    width: 45%; 
+    width: 45%;
     display: inline-block;
 }
 #metamask_context{
-    background-color: #fafafa; 
+    background-color: #fafafa;
     border-radius: 5px;
 }
 #metamask_context .warning{
@@ -655,6 +655,16 @@ body.bounty_details .boldLabel{
 }
 body.bounty_details #bounty_details a.btn{
     border-radius: 0.2rem;
+}
+body.bounty_details a.btn-github-comment{
+    color: #000;
+    background: url(/static/v2/images/icon-msg-16.png) no-repeat left transparent;
+    display: block;
+    float: left;
+    padding-left: 20px;
+}
+body.bounty_details a.btn-github-comment:hover {
+    background: url(/static/v2/images/icon-msg-red-16.png) no-repeat left transparent;
 }
 body.bounty_details a.btn-darkGrey{
     background-color: #e7e7e7;
@@ -1117,6 +1127,12 @@ body.bounty_details #title{
     .dashboard .row.bounty_row .col-7 .w-75{
         width: 95% !important;
         padding-left: 3%;
+    }
+    .dashboard .row.bounty_row .col-7 .w-75 .github-comment{
+        background: url(/static/v2/images/icon-msg-16.png) no-repeat left;
+        padding-left: 18px;
+        margin-right: 10px;
+        display: inline-block;
     }
     .bounty_nav{
         display: none;
