@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='bounty',
             name='current_bounty',
-            field=models.BooleanField(default=False, help_text='whether this bounty is the most current revision one or not'),
+            field=models.BooleanField(default=False, help_text='Whether this bounty is the most current revision one or not'),
         ),
         migrations.AlterField(
             model_name='bounty',
