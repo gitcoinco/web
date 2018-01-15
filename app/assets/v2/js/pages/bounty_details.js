@@ -200,7 +200,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         check_for_bounty_changed_updates_REST();
     };
     var check_for_bounty_changed_updates_REST = function(){
-        var uri = '/api/v0.1/bounties?github_url='+issueURL;
+        var uri = '/api/v0.1/bounties/?github_url='+issueURL;
          $.get(uri, function(results){
             results = sanitizeAPIResults(results);
             var result = results[0];
@@ -348,7 +348,7 @@ window.addEventListener('load', function() {
     setTimeout(function(){
         var issueURL = getParam('url');
         $("#submitsolicitation a").attr('href','/funding/new/?source=' + issueURL)
-        var uri = '/api/v0.1/bounties?';  // Django API
+        var uri = '/api/v0.1/bounties/?';
         $.get(uri, function(results){
             results = sanitizeAPIResults(results);
             var nonefound = true;

@@ -110,7 +110,7 @@ window.onload = function(){
                         };
 
                         // Get bountyId from the database
-                        var uri = '/api/v0.1/bounties?github_url='+issueURL;
+                        var uri = '/api/v0.1/bounties/?github_url='+issueURL;
                         $.get(uri, function(results){
                             results = sanitizeAPIResults(results);
                             result = results[0];
