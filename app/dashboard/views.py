@@ -19,6 +19,7 @@
 from __future__ import print_function, unicode_literals
 
 import json
+import logging
 
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404, JsonResponse
@@ -40,7 +41,6 @@ from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 
-import logging
 logging.basicConfig(level=logging.DEBUG)
 
 confirm_time_minutes_target = 60

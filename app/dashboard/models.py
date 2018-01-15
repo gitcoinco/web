@@ -18,6 +18,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import logging
+
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import JSONField
@@ -34,7 +36,6 @@ from rest_framework import serializers
 
 from .signals import m2m_changed_interested
 
-import logging
 logger = logging.getLogger(__name__)
 
 
