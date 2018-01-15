@@ -18,6 +18,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import logging
+
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import JSONField
@@ -30,6 +32,9 @@ from dashboard.tokens import addr_to_token
 # Create your models here.
 from economy.models import SuperModel
 from economy.utils import convert_amount
+
+
+logger = logging.getLogger(__name__)
 
 
 class Bounty(SuperModel):
@@ -265,8 +270,7 @@ class Bounty(SuperModel):
         try:
             github_user, github_repo, _, github_issue = parsed_url.path.split('/')[1:5]
         except ValueError:
-            # TODO: update print statements to logger
-            print('Invalid github url')
+            logger.info('Invalid github url for Bounty: {} -- {}'.format(self.pk, self.github_url))
             return []
         comments = get_issue_comments(github_user, github_repo, github_issue)
         comment_count = 0
