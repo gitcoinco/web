@@ -249,7 +249,7 @@ class Bounty(SuperModel):
 
     def get_github_api_url(self):
         """Get the Github API URL associated with the bounty."""
-        from urlparse import urlparse
+        from urllib.parse import urlparse
         if self.github_url.lower()[:19] != 'https://github.com/':
             return
         url_path = urlparse(self.github_url).path
@@ -267,7 +267,7 @@ class Bounty(SuperModel):
         """
         issue_description = requests.get(
             self.get_github_api_url(),
-            auth=(settings.GIT_API_USER, settings.GITHUB_API_TOKEN))
+            auth=(settings.GITHUB_API_USER, settings.GITHUB_API_TOKEN))
         if issue_description.status == 200:
             item = issue_description.json()[item_type]
             if item_type == 'body':
