@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -44,8 +44,8 @@
                 <div class="row mt-2 mb-2">
                     <div class="col-10 ml-3 font-bigger-2" style="color: #3e24fb;padding-left: 1rem;">
                         <span id="modifiers">
-                            Funded Issues 
-                        </span> 
+                            Funded Issues
+                        </span>
                         <span id=stats class="font-bigger-1 pl-1"></span>
                     </div>
                     <div class="col-2"></div>
@@ -65,7 +65,7 @@
             </div>
         </div>
 
-      <!-- JSRender stuff --> 
+      <!-- JSRender stuff -->
       <script id="result" type="text/x-jsrender">
         <div class="row result bounty_row pt-2 [[:network]]" href="[[:action]]">
                 [[if my_bounty]]
@@ -93,7 +93,12 @@
                         ([[:network]])
                     [[/if]]
                     [[:title]]</div>
-                    <div class="font-smaller-2">[[:p]]</div>
+                    <div class="font-smaller-2">
+                        [[if github_comments]]
+                            <span class="github-comment">[[:github_comments]]</span>
+                        [[/if]]
+                        [[:p]]
+                    </div>
                 </div>
             </div>
             <div class="col-1 d-flex align-items-center">

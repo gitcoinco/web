@@ -728,6 +728,17 @@ body.bounty_details #bounty_details a.btn{
     border-radius: 0.2rem;
 }
 
+body.bounty_details a.btn-github-comment {
+    color: #000;
+    background: url(/static/v2/images/icon-msg-16.png) no-repeat left transparent;
+    display: block;
+    float: left;
+    padding-left: 20px;
+}
+body.bounty_details a.btn-github-comment:hover {
+    background: url(/static/v2/images/icon-msg-red-16.png) no-repeat left transparent;
+}
+
 body.bounty_details a.btn-darkGrey {
     background-color: #e7e7e7;
     color: #474747;
@@ -1022,6 +1033,13 @@ body.bounty_details #title {
 
 #pull_gh {
     font-size: 12px
+}
+
+.dashboard .w-75 .github-comment {
+    background: url(/static/v2/images/icon-msg-16.png) no-repeat left;
+    padding-left: 18px;
+    margin-right: 10px;
+    display: inline-block;
 }
 
 /* Mission Page */

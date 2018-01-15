@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -45,12 +45,15 @@ def search(q):
     return response.json()
 
 
-def get_issue_comments(owner, repo):
+def get_issue_comments(owner, repo, issue=None):
     params = {
         'sort': 'created',
         'direction': 'desc',
     }
-    url = 'https://api.github.com/repos/{}/{}/issues/comments'.format(owner, repo)
+    if issue:
+        url = 'https://api.github.com/repos/{}/{}/issues/{}/comments'.format(owner, repo, issue)
+    else:
+        url = 'https://api.github.com/repos/{}/{}/issues/comments'.format(owner, repo)
     response = requests.get(url, auth=_auth, headers=headers, params=params)
 
     return response.json()

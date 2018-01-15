@@ -327,6 +327,19 @@ window.addEventListener('load', function() {
                         // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
                         github_url = github_url.replace('pipermerriam/web3.py','ethereum/web3.py');
 
+                        if(result['github_comments']){
+                            var entry_comment = {
+                              href: github_url,
+                              text: result['github_comments'],
+                              target: 'new',
+                              parent: 'right_actions',
+                              color: 'github-comment'
+                            };
+                            actions.push(entry_comment);
+                        }
+
+
+
                         var entry = {
                             href: github_url,
                             text: 'View on Github',
@@ -335,8 +348,9 @@ window.addEventListener('load', function() {
                             color: 'darkBlue',
                             title: 'Github is where the issue scope lives.  Its also a great place to collaborate with, and get to know, other developers (and sometimes even the repo maintainer themselves!).'
                         }
+
+                        actions.push(entry);
                     }
-                    actions.push(entry);
                     var enabled = !isBountyOwner(result);
                     if(result['status']=='open' ){
                         var entry = {
