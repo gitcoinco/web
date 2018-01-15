@@ -118,7 +118,7 @@ def description(request):
     urlVal = URLValidator()
     try:
         urlVal(url)
-    except ValidationError, e:
+    except ValidationError as e:
         response['message'] = 'invalid arguments'
         return JsonResponse(response)
 
@@ -132,7 +132,7 @@ def description(request):
 
     try:
         api_response = requests.get(gh_api)
-    except ValidationError, e:
+    except ValidationError as e:
         response['message'] = 'could not pull back remote response'
         return JsonResponse(response)
 
@@ -186,7 +186,6 @@ def keywords(request):
     except AttributeError:
         response['message'] = 'could not pull back remote response'
         return JsonResponse(response)
-
 
     try:
         soup = BeautifulSoup(html_response.text, 'html.parser')
