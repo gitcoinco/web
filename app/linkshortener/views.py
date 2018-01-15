@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import redirect
 from django.http import Http404
+from django.shortcuts import redirect
 
 from linkshortener.models import Link
 
