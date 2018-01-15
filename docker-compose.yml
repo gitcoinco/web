@@ -8,6 +8,21 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  pgweb:
+    image: sosedoff/pgweb
+    environment:
+        - DATABASE_URL=postgres://postgres:postgres@db:5432?sslmode=disable
+    links:
+        - db
+    ports:
+        - "8081:8081"
+    depends_on:
+      - db
+    restart: "on-failure:10"
+
   web:
     restart: unless-stopped
     environment:
@@ -24,11 +39,19 @@ services:
       - db
     stdin_open: true
     tty: true
+
+  testrpc:
+    image: trufflesuite/ganache-cli
+    ports:
+      - "8545:8545"
+    command: "-a 1 --seed 2"
+
   node:
     image: node:9-alpine
     working_dir: /node
     volumes:
       - .:/node
     command: bin/docker-node.sh
+
 volumes:
   pgdata:

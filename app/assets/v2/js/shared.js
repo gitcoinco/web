@@ -1,4 +1,11 @@
 // helper functions
+
+/**
+ * Looks for a transaction receipt.  If it doesn't find one, it keeps running until it does.
+ * @callback
+ * @param {string} txhash - The transaction hash.
+ * @param {function} f - The function passed into this callback.
+ */
 var callFunctionWhenTransactionMined = function(txHash, f){
     var transactionReceipt = web3.eth.getTransactionReceipt(txHash, function(error, result){
         if(result){
@@ -315,7 +322,6 @@ var updateAmountUI = function(target_ele, usd_amount){
         target_ele.html('Approx: '+usd_amount+' USD');
 };
 
-
 var retrieveTitle = function(){
     var ele = $("input[name=issueURL]");
     var target_ele = $("input[name=title]");
@@ -338,6 +344,30 @@ var retrieveTitle = function(){
         target_ele.removeClass('loading');
     });
 };
+
+var retrieveDescription = function(){
+    var ele = $("input[name=issueURL]");
+    var target_ele = $("textarea[name=description]");
+    var issue_url = ele.val();
+    if(typeof issue_url == 'undefined'){
+        return;
+    }
+    if(issue_url.length < 5 || issue_url.indexOf('github') == -1){
+        return;
+    }
+    var request_url = '/sync/get_issue_description?url=' + encodeURIComponent(issue_url);
+    target_ele.addClass('loading');
+    $.get(request_url, function(result){
+        result = sanitizeAPIResults(result);
+        target_ele.removeClass('loading');
+        if(result['description']){
+            target_ele.val(result['description']);
+        }
+    }).fail(function(){
+        target_ele.removeClass('loading');
+    });
+};
+
 var retrieveKeywords = function(){
     var ele = $("input[name=issueURL]");
     var target_ele = $("input[name=keywords]");
@@ -402,15 +432,15 @@ window.addEventListener('load', function() {
 
                     // is this a supported networK?
                     var is_supported_network = true;
-                    var recommended_network = "mainnet or ropsten";
+                    var recommended_network = "mainnet or rinkeby";
 
-                    if(network == 'rinkeby' || network == 'kovan'){
+                    if(network == 'kovan'){
                         is_supported_network = false;
                     }
                     if(document.location.href.indexOf("https://gitcoin.co") != -1){
-                        if(network != 'mainnet' && network != 'ropsten'){
+                        if(network != 'mainnet' && network != 'rinkeby'){
                             is_supported_network = false;
-                            recommended_network = "mainnet or ropsten";
+                            recommended_network = "mainnet or rinkeby";
                         }
                     }
                     if(network == 'mainnet'){

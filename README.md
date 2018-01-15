@@ -302,6 +302,7 @@ pip install -r requirements/dev.txt
 pip install -r requirements/test.txt
 ./manage.py migrate
 ./manage.py createcachetable
+./manage.py get_prices
 ./manage.py runserver 0.0.0.0:8080
 ```
 
