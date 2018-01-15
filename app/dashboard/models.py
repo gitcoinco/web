@@ -252,7 +252,6 @@ class Bounty(SuperModel):
             if len(eles):
                 body = eles[0].prettify()
 
-
         except Exception as e:
             print(e)
             return
@@ -273,6 +272,9 @@ class Bounty(SuperModel):
             logger.info('Invalid github url for Bounty: {} -- {}'.format(self.pk, self.github_url))
             return []
         comments = get_issue_comments(github_user, github_repo, github_issue)
+        if type(comments) is dict and comments.get('message') == 'Not Found':
+            logger.info('Bounty {} contains an invalid github url {}'.format(self.pk, self.github_url))
+            return []
         comment_count = 0
         for comment in comments:
             if comment['user']['login'] not in settings.IGNORE_COMMENTS_FROM:
