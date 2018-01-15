@@ -54,7 +54,7 @@ def send_tip(request):
 @ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
 def receive_tip(request):
 
-    if request.body != '':
+    if request.body:
         status = 'OK'
         message = 'Tip has been received'
         params = json.loads(request.body)
@@ -93,7 +93,7 @@ def receive_tip(request):
 @ratelimit(key='ip', rate='1/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_2(request):
 
-    if request.body != '':
+    if request.body:
         status = 'OK'
         message = 'Notification has been sent'
         params = json.loads(request.body)

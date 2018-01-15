@@ -1,21 +1,19 @@
-# encoding=utf8
 import logging
 import random
 import re
-import sys
-from urlparse import urlparse
+from urllib import parse
 
 from django.conf import settings
 
-import tinyurl
+import requests
 import twitter
+from app.github import post_issue_comment
 from marketing.mails import tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
-from app.github import post_issue_comment
+from pyshorteners import Shortener
 from slackclient import SlackClient
 
-reload(sys)
-sys.setdefaultencoding('utf8')
+
 '''
     Copyright (C) 2017 Gitcoin Core
 
@@ -79,11 +77,13 @@ def maybe_market_to_twitter(bounty, event_name, txid):
     random.shuffle(tweet_txts)
     tweet_txt = tweet_txts[0]
 
+    shortener = Shortener('Tinyurl')
+
     new_tweet = tweet_txt.format(
         round(bounty.get_natural_value(), 4),
         bounty.token_name,
         ("(${})".format(bounty.value_in_usdt) if bounty.value_in_usdt else ""),
-        tinyurl.create_one(bounty.get_absolute_url())
+        shortener.short(bounty.get_absolute_url())
     )
     new_tweet = new_tweet + " " + github_org_to_twitter_tags(bounty.org_name) #twitter tags
     if bounty.keywords: #hashtags
@@ -217,7 +217,7 @@ def maybe_market_to_github(bounty, event_name, txid):
 
     # actually post
     url = bounty.github_url
-    uri = urlparse(url).path
+    uri = parse(url).path
     uri_array = uri.split('/')
     try:
         username = uri_array[1]
@@ -257,7 +257,7 @@ def maybe_market_tip_to_github(tip):
 
     # actually post
     url = tip.github_url
-    uri = urlparse(url).path
+    uri = parse(url).path
     uri_array = uri.split('/')
     try:
         username = uri_array[1]
