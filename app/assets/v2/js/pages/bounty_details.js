@@ -301,7 +301,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                         _alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
                     }
                 });
- 
+
             },1000)
         });
     };
@@ -372,6 +372,9 @@ window.addEventListener('load', function() {
                     result['title'] = result['network'] != 'mainnet' ? "(" + result['network'] + ") " + result['title'] : result['title'];
                     $('.title').html("Funded Issue Details: " + result['title']);
 
+                    // Find interest information
+                    var is_interested = is_on_interest_list(result['pk']);
+
                     //insert table onto page
                     for(var j=0; j< rows.length; j++){
                         var key = rows[j];
@@ -417,7 +420,7 @@ window.addEventListener('load', function() {
                     if(result['status'] != 'accepted' && result['status'] != 'dead'){
                         var enabled = isBountyOwner(result);
                         var entry = {
-                            href: '/funding/kill?source='+result['github_url'],
+                            href: '/_github/auth?redirect_uri=/funding/kill?source='+result['github_url'],
                             text: 'Kill Bounty',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
@@ -430,7 +433,7 @@ window.addEventListener('load', function() {
                     var enabled = !isBountyOwner(result);
                     if(result['status']=='open' ){
                         var entry = {
-                            href: '/funding/fulfill?source='+result['github_url'],
+                            href: '/_github/auth?redirect_uri=/funding/fulfill?source='+result['github_url'],
                             text: 'Fulfill Bounty',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
@@ -438,6 +441,24 @@ window.addEventListener('load', function() {
                             title: enabled ? 'Claim an issue when you sincerely intend to work on it.\n\n It is not necessary to have started work when you claim an issue, but please (1) comment on the github thread after you claim it, (2) claim an issue only if you plan to start work within the next 12 hours  & (3) only claim it if you feel like you understand the scope and can see it to completion. ' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(entry);
+
+                        if (is_interested) {
+                            var entry = {
+                                href: '/uninterested',
+                                text: 'Remove Interest',
+                                parent: 'right_actions',
+                                color: 'darkGrey'
+                            }
+                            actions.push(entry);
+                        } else {
+                            var entry = {
+                                href: '/interested',
+                                text: 'Express Interest',
+                                parent: 'right_actions',
+                                color: 'darkGrey'
+                            }
+                            actions.push(entry);
+                        }
                     }
 
                     var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
@@ -445,7 +466,7 @@ window.addEventListener('load', function() {
                     if(result['status']=='fulfilled' ){
                         var enabled = isBountyOwner(result);
                         var entry = {
-                            href: '/funding/process?source='+result['github_url'],
+                            href: '/_github/auth?redirect_uri=/funding/process?source='+result['github_url'],
                             text: 'Accept Bounty',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
@@ -520,6 +541,18 @@ $(document).ready(function(){
             $(this).attr('href','/watch');
             $(this).find('span').text('Watch');
             remove_from_watch_list(document.result['github_url']);
+        }
+    });
+    $("body").delegate('a[href="/interested"], a[href="/uninterested"]', 'click', function (e) {
+        e.preventDefault();
+        if ($(this).attr('href') == '/interested') {
+            $(this).attr('href', '/uninterested');
+            $(this).find('span').text('Remove Interest');
+            add_interest(document.result['pk']);
+        } else {
+            $(this).attr('href', '/interested');
+            $(this).find('span').text('Express Interest');
+            remove_interest(document.result['pk']);
         }
     });
 });

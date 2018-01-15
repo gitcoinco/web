@@ -16,20 +16,24 @@
 
 '''
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from __future__ import print_function, unicode_literals
 
 import json
 
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET, require_POST
 
-from app.github import get_user as get_github_user
+from app.github import (
+    get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, get_github_user_token,
+)
 from app.utils import ellipses, sync_profile
 from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
-from dashboard.models import Bounty, BountySyncRequest, Profile, Subscription, Tip
+from dashboard.models import Bounty, BountySyncRequest, Interest, Profile, ProfileSerializer, Subscription, Tip
 from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from marketing.models import Keyword
@@ -42,8 +46,53 @@ logging.basicConfig(level=logging.DEBUG)
 confirm_time_minutes_target = 60
 
 
-def send_tip(request):
+@require_GET
+def github_callback(request):
+    """Handle the Github authentication callback."""
+    # Get request parameters to handle authentication and the redirect.
+    code = request.GET.get('code', None)
+    redirect_uri = request.GET.get('redirect_uri')
 
+    if not code or not redirect_uri:
+        raise Http404
+
+    # Get OAuth token and github user data.
+    access_token = get_github_user_token(code)
+    github_user_data = get_github_user_data(access_token)
+    handle = github_user_data.get('login')
+
+    if handle:
+        # Create or update the Profile with the github user data.
+        user_profile, _ = Profile.objects.update_or_create(
+            handle=handle,
+            defaults={
+                'data': github_user_data or {},
+                'email': get_github_primary_email(access_token),
+                'github_access_token': access_token
+            })
+
+        # Update the user's session with handle and email info.
+        session_data = {
+            'handle': user_profile.handle,
+            'email': user_profile.email,
+            'access_token': user_profile.github_access_token,
+            'profile_id': user_profile.pk
+        }
+        for k, v in session_data.items():
+            request.session[k] = v
+
+    return redirect(redirect_uri)
+
+
+@require_GET
+def github_authentication(request):
+    """Handle Github authentication."""
+    redirect_uri = request.GET.get('redirect_uri', '/')
+    return redirect(get_auth_url(redirect_uri))
+
+
+def send_tip(request):
+    """Handle the first stage of sending a tip."""
     params = {
         'issueURL': request.GET.get('source'),
         'title': 'Send Tip',
@@ -53,20 +102,170 @@ def send_tip(request):
     return TemplateResponse(request, 'yge/send1.html', params)
 
 
+# @require_POST
+@csrf_exempt
+def new_interest(request, bounty_id):
+    """Express interest in a Bounty.
+
+    :request method: POST
+
+    Args:
+        post_id (int): ID of the Bounty.
+
+    Returns:
+        dict: An empty dictionary, if successful.
+
+    """
+    profile_id = request.session.get('profile_id')
+    if not profile_id:
+        return JsonResponse(
+            {'error': 'You must be authenticated!'},
+            status=401)
+
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        raise Http404
+
+    try:
+        Interest.objects.get(profile_id=profile_id, bounty=bounty)
+        return JsonResponse({
+            'error': 'You have already expressed interest in this bounty!',
+            'success': False},
+            status=401)
+    except Interest.DoesNotExist:
+        interest = Interest.objects.create(profile_id=profile_id)
+        bounty.interested.add(interest)
+    except Interest.MultipleObjectsReturned:
+        bounty_ids = bounty.interested \
+            .filter(profile_id=profile_id) \
+            .values_list('id', flat=True) \
+            .order_by('-created')[1:]
+
+        Interest.objects.filter(pk__in=list(bounty_ids)).delete()
+
+        return JsonResponse({
+            'error': 'You have already expressed interest in this bounty!',
+            'success': False},
+            status=401)
+
+    return JsonResponse({'success': True})
+
+
+# @require_POST
+@csrf_exempt
+def remove_interest(request, bounty_id):
+    """Remove interest from the Bounty.
+
+    :request method: POST
+
+    post_id (int): ID of the Bounty.
+
+    Returns:
+        dict: An empty dictionary, if successful.
+
+    """
+    profile_id = request.session.get('profile_id')
+    if not profile_id:
+        return JsonResponse(
+            {'error': 'You must be authenticated!'},
+            status=401)
+
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
+                            status=401)
+
+    try:
+        interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
+        bounty.interested.remove(interest)
+        interest.delete()
+    except Interest.DoesNotExist:
+        return JsonResponse({
+            'errors': ['You haven\'t expressed interest on this bounty.'],
+            'success': False},
+            status=401)
+    except Interest.MultipleObjectsReturned:
+        interest_ids = bounty.interested \
+            .filter(
+                profile_id=profile_id,
+                bounty=bounty
+            ).values_list('id', flat=True) \
+            .order_by('-created')
+
+        bounty.interested.remove(*interest_ids)
+        Interest.objects.filter(pk__in=list(interest_ids)).delete()
+
+    return JsonResponse({'success': True})
+
+
+@csrf_exempt
+@require_GET
+def interested_profiles(request, bounty_id):
+    """Retrieve memberships who like a Status in a community.
+
+    :request method: GET
+
+    Args:
+        bounty_id (int): ID of the Bounty.
+
+    Parameters:
+        page (int): The page number.
+        limit (int): The number of interests per page.
+
+    Returns:
+        django.core.paginator.Paginator: Paged interest results.
+
+    """
+    page = request.GET.get('page', 1)
+    limit = request.GET.get('limit', 10)
+    current_profile = request.session.get('profile_id')
+    profile_interested = False
+
+    # Get all interests for the Bounty.
+    interests = Interest.objects \
+        .filter(bounty__id=bounty_id) \
+        .select_related('profile')
+
+    # Check whether or not the current profile has already expressed interest.
+    if current_profile and interests.filter(profile__pk=current_profile).exists():
+        profile_interested = True
+
+    paginator = Paginator(interests, limit)
+    try:
+        interests = paginator.page(page)
+    except PageNotAnInteger:
+        interests = paginator.page(1)
+    except EmptyPage:
+        return JsonResponse([])
+
+    interests_data = []
+    for interest in interests:
+        interest_data = ProfileSerializer(interest.profile).data
+        interests_data.append(interest_data)
+
+    return JsonResponse({
+        'paginator': {
+            'num_pages': interests.paginator.num_pages,
+        },
+        'data': interests_data,
+        'profile_interested': profile_interested
+    })
+
+
 @csrf_exempt
 @ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
 def receive_tip(request):
-
+    """Receive a tip."""
     if request.body:
         status = 'OK'
         message = 'Tip has been received'
         params = json.loads(request.body)
 
-        #db mutations
+        # db mutations
         try:
-            tip = Tip.objects.get(
-                txid=params['txid'],
-                )
+            tip = Tip.objects.get(txid=params['txid'])
             tip.receive_txid = params['receive_txid']
             tip.received_on = timezone.now()
             tip.save()
@@ -74,13 +273,12 @@ def receive_tip(request):
             status = 'error'
             message = str(e)
 
-        #http response
+        # http response
         response = {
             'status': status,
             'message': message,
         }
         return JsonResponse(response)
-
 
     params = {
         'issueURL': request.GET.get('source'),
@@ -95,40 +293,26 @@ def receive_tip(request):
 @csrf_exempt
 @ratelimit(key='ip', rate='1/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_2(request):
+    """Handle the second stage of sending a tip."""
+    username = request.session.get('handle')
+    primary_email = request.session.get('email', '')
 
     if request.body:
-        status = 'OK'
-        message = 'Notification has been sent'
+        # http response
+        response = {
+            'status': 'OK',
+            'message': 'Notification has been sent',
+        }
         params = json.loads(request.body)
-        emails = []
 
-        #basic validation
-        username = params['username']
+        username = username or params['username']
+        access_token = request.session.get('access_token')
+        if access_token:
+            emails = get_github_emails(access_token) or [primary_email]
 
-        #get emails
-        if params['email']:
-            emails.append(params['email'])
-        gh_user = get_github_user(username)
-        user_full_name = gh_user['name']
-        if gh_user.get('email', False):
-            emails.append(gh_user['email'])
-        gh_user_events = get_github_user(username, '/events/public')
-        for event in gh_user_events:
-            commits = event.get('payload', {}).get('commits', [])
-            for commit in commits:
-                email = commit.get('author', {}).get('email', None)
-                #print(event['actor']['display_login'].lower() == username.lower())
-                #print(commit['author']['name'].lower() == user_full_name.lower())
-                #print('========')
-                if email and \
-                    event['actor']['display_login'].lower() == username.lower() and \
-                    commit['author']['name'].lower() == user_full_name.lower() and \
-                    'noreply.github.com' not in email and \
-                    email not in emails:
-                    emails.append(email)
         expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
 
-        #db mutations
+        # db mutations
         tip = Tip.objects.create(
             emails=emails,
             url=params['url'],
@@ -141,25 +325,19 @@ def send_tip_2(request):
             github_url=params['github_url'],
             from_name=params['from_name'],
             from_email=params['from_email'],
-            username=params['username'],
+            username=username,
             network=params['network'],
             tokenAddress=params['tokenAddress'],
             txid=params['txid'],
-            )
-
-        #notifications
-        did_post_to_github = maybe_market_tip_to_github(tip)
+        )
+        # notifications
+        maybe_market_tip_to_github(tip)
         maybe_market_tip_to_slack(tip, 'new_tip', tip.txid)
         maybe_market_tip_to_email(tip, emails)
         if len(emails) == 0:
-                status = 'error'
-                message = 'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.'
+            status = 'error'
+            message = 'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.'
 
-        #http response
-        response = {
-            'status': status,
-            'message': message,
-        }
         return JsonResponse(response)
 
     params = {
@@ -167,13 +345,15 @@ def send_tip_2(request):
         'class': 'send2',
         'title': 'Send Tip',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'from_email': primary_email,
+        'from_handle': username
     }
 
     return TemplateResponse(request, 'yge/send2.html', params)
 
 
 def process_bounty(request):
-
+    """Process the bounty."""
     params = {
         'issueURL': request.GET.get('source'),
         'title': 'Process Issue',
@@ -186,7 +366,7 @@ def process_bounty(request):
 
 
 def dashboard(request):
-
+    """Handle displaying the dashboard."""
     params = {
         'active': 'dashboard',
         'title': 'Issue Explorer',
@@ -204,7 +384,7 @@ def gas(request):
 
 
 def new_bounty(request):
-
+    """Create a new bounty."""
     params = {
         'issueURL': request.GET.get('source'),
         'active': 'submit_bounty',
@@ -212,13 +392,14 @@ def new_bounty(request):
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
+        'from_email': request.session.get('email', '')
     }
 
     return TemplateResponse(request, 'submit_bounty.html', params)
 
 
 def fulfill_bounty(request):
-
+    """Fulfill a bounty."""
     params = {
         'issueURL': request.GET.get('source'),
         'title': 'Fulfill Issue',
@@ -226,13 +407,15 @@ def fulfill_bounty(request):
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
+        'handle': request.session.get('handle', ''),
+        'email': request.session.get('email', '')
     }
 
     return TemplateResponse(request, 'fulfill_bounty.html', params)
 
 
 def kill_bounty(request):
-
+    """Kill an expired bounty."""
     params = {
         'issueURL': request.GET.get('source'),
         'title': 'Kill Bounty',
@@ -246,7 +429,7 @@ def kill_bounty(request):
 
 
 def bounty_details(request):
-
+    """Display the bounty details."""
     params = {
         'issueURL': request.GET.get('issue_'),
         'title': 'Issue Details',
@@ -262,6 +445,7 @@ def bounty_details(request):
             params['title'] = params['card_title']
             params['card_desc'] = ellipses(b.issue_description_text, 255)
         params['avatar_url'] = b.local_avatar_url
+        params['interested_profiles'] = b.interested.select_related('profile').all()
     except Exception as e:
         print(e)
         logging.error(e)
@@ -271,20 +455,20 @@ def bounty_details(request):
 
 
 def profile_helper(handle):
-
+    """Define the profile helper."""
     try:
         profile = Profile.objects.get(handle__iexact=handle)
-    except Profile.DoesNotExist as e:
+    except Profile.DoesNotExist:
         sync_profile(handle)
         try:
             profile = Profile.objects.get(handle__iexact=handle)
-        except Profile.DoesNotExist as e:
+        except Profile.DoesNotExist:
             raise Http404
-            print(e)
     return profile
 
 
 def profile_keywords_helper(handle):
+    """Define the profile keywords helper."""
     profile = profile_helper(handle)
 
     keywords = []
@@ -298,6 +482,7 @@ def profile_keywords_helper(handle):
 
 
 def profile_keywords(request, handle):
+    """Display profile keywords."""
     keywords = profile_keywords_helper(handle)
 
     response = {
@@ -308,7 +493,7 @@ def profile_keywords(request, handle):
 
 
 def profile(request, handle):
-
+    """Display profile details."""
     params = {
         'title': 'Profile',
         'active': 'profile_details',
@@ -329,7 +514,7 @@ def profile(request, handle):
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def save_search(request):
-
+    """Save the search."""
     email = request.POST.get('email')
     if email:
         raw_data = request.POST.get('raw_data')
@@ -337,7 +522,7 @@ def save_search(request):
             email=email,
             raw_data=raw_data,
             ip=get_ip(request),
-            )
+        )
         response = {
             'status': 200,
             'msg': 'Success!',
@@ -349,6 +534,7 @@ def save_search(request):
         'title': 'Save Search',
     }
     return TemplateResponse(request, 'save_search.html', context)
+
 
 @csrf_exempt
 @ratelimit(key='ip', rate='2/s', method=ratelimit.UNSAFE, block=True)
@@ -392,7 +578,7 @@ def sync_web3(request):
             result['status'] = 'OK'
             return JsonResponse(result)
         if not len(bountydetails):
-            #create a bounty sync request
+            # create a bounty sync request
             result['status'] = 'OK'
             for existing_bsr in BountySyncRequest.objects.filter(github_url=issueURL, processed=False):
                 existing_bsr.processed = True
@@ -418,7 +604,8 @@ def sync_web3(request):
             print(bountydetails)
             contract_address = request.POST.get('contract_address')
             network = request.POST.get('network')
-            didChange, old_bounty, new_bounty = process_bounty_details(bountydetails, issueURL, contract_address, network)
+            didChange, old_bounty, new_bounty = process_bounty_details(
+                bountydetails, issueURL, contract_address, network)
 
             print("{} changed, {}".format(didChange, issueURL))
             if didChange:
@@ -428,7 +615,7 @@ def sync_web3(request):
         BountySyncRequest.objects.create(
             github_url=issueURL,
             processed=False,
-            )
+        )
 
     return JsonResponse(result)
 
@@ -484,7 +671,7 @@ def toolbox(request):
              "link": "https://gitcoin.co/tips",
              "active": "false",
              'stat_graph': 'tips',
-        } 
+        }
         ]
       }, {
           "title": "The Powertools",
@@ -492,7 +679,7 @@ def toolbox(request):
           "tools": [ {
               "name": "Browser Extension",
               "img": "/static/v2/images/tools/browser_extension.png",
-              "description": '''Browse Gitcoin where you already work.  
+              "description": '''Browse Gitcoin where you already work.
                     On Github''',
               "link": "/extension",
               "active": "false",
@@ -501,7 +688,7 @@ def toolbox(request):
           {
               "name": "iOS app",
               "img": "/static/v2/images/tools/iOS.png",
-              "description": '''Gitcoin has an iOS app in alpha. Install it to 
+              "description": '''Gitcoin has an iOS app in alpha. Install it to
                 browse funded work on-the-go.''',
               "link": "/ios",
               "active": "false",
@@ -533,7 +720,7 @@ def toolbox(request):
           {
               "name": "Refer a Friend",
               "img": "/static/v2/images/freedom.jpg",
-              "description": '''Got a colleague who wants to level up their career? 
+              "description": '''Got a colleague who wants to level up their career?
               Refer them to Gitcoin, and we\'ll happily give you a bonus for their
               first bounty. ''',
               "link": "/refer",
@@ -595,8 +782,8 @@ def toolbox(request):
               "class": 'new',
               "name": "Build your own",
               "img": "/static/v2/images/dogfood.jpg",
-              "description": '''Dogfood.. Yum! Gitcoin is built using Gitcoin. 
-                Got something you want to see in the world? Let the community know 
+              "description": '''Dogfood.. Yum! Gitcoin is built using Gitcoin.
+                Got something you want to see in the world? Let the community know
                 <a href="/slack">on slack</a>
                 or <a href="https://github.com/gitcoinco/gitcoinco/issues/new">our github repos</a>
                 .''',

@@ -201,6 +201,11 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_SECONDS = 3600
 
+# Github
+GITHUB_API_BASE_URL = 'https://github.com/login/oauth/authorize'
+GITHUB_TOKEN_URL = 'https://github.com/login/oauth/access_token'
+GITHUB_SCOPE = 'user'
+
 # Include local settings overrides
 try:
     from .local_settings import *  # NOQA

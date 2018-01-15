@@ -56,11 +56,11 @@
                             </div>
                             <div class="w-100 mt-2">
                                 <label for=githubUsername>Github Username:</label>
-                                <input name='githubUsername' id="githubUsername" class="w-100 gc-round-text-input" type="text" placeholder="@you (optional)" value="{{githubUsername}}" />
+                                <input name='githubUsername' id="githubUsername" class="w-100 gc-round-text-input" type="text" placeholder="@you (optional)" value="{% if handle %}{{ handle }}{% else %}{{githubUsername}}{% endif %}" />
                             </div>
                             <div class="w-100 mt-2">
                                 <label for=notificationEmail>Notification Email:</label>
-                                <input name='notificationEmail' id='notificationEmail'  class="w-100 gc-round-text-input" type="text" placeholder="you@domain.co (optional, but recommended for notifications)" value="{{notificationEmail}}" />
+                                <input name='notificationEmail' id='notificationEmail'  class="w-100 gc-round-text-input" type="text" placeholder="you@domain.co (optional, but recommended for notifications)" value="{% if email %}{{ email }}{% else %}{{notificationEmail}}{% endif %}" />
                             </div>
                             <div class="w-100 mt-2 terms_container">
                                 <input name='terms' id='terms' type="checkbox" value=1 />

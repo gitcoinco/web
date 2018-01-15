@@ -31,15 +31,19 @@ def get_time():
 
 
 class SuperModel(models.Model):
+    """Define the base abstract model."""
+
+    class Meta:
+        """Define the model metadata."""
+
+        abstract = True
+
     created_on = models.DateTimeField(null=False, default=get_time, db_index=True)
     modified_on = models.DateTimeField(null=False, default=get_time)
 
     def save(self, *args, **kwargs):
         self.modified_on = get_time()
         return super(SuperModel, self).save(*args, **kwargs)
-
-    class Meta:
-        abstract = True
 
 
 class ConversionRate(SuperModel):
@@ -70,4 +74,4 @@ def reverse_conversion_rate(sender, instance, **kwargs):
         source=instance.source,
         from_currency=instance.to_currency,
         to_currency=instance.from_currency
-        )
+    )

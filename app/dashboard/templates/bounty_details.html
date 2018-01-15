@@ -79,6 +79,22 @@
                             Gitcoin Profile: <span id="claimee_github_username"></span>
 
                         </div>
+                        <div id="interest_list">
+                            <br>
+                            <h5>Interested Profiles</h5>
+                            {% if interested_profiles %}
+                            <ul>
+                                {% for interested in interested_profiles %}
+                                <li>
+                                    <img src="{{ interested.profile.local_avatar_url }}" class="avatar">
+                                    <a href="{{ interested.profile.get_relative_url }}">{{ interested.profile.handle }}</a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            No interested profiles... Be the first!
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
