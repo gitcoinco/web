@@ -447,7 +447,7 @@ window.addEventListener('load', function() {
                         var enabled = isBountyOwner(result);
                         var entry = {
                             href: '/funding/process?source='+result['github_url'],
-                            text: 'Accept/Reject Issue',
+                            text: 'Accept Bounty',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
