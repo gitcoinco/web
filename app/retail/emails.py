@@ -157,12 +157,8 @@ def render_new_bounty_roundup(to_email):
 
     bounties = [
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/remix/issues/85'),
-            'primer': 'Oppy to do work for the Ethereum Foundation and get paid for it.. 💯 ~ @owocki',
-        },
-        {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MyEtherWallet/MyEtherWallet/issues/774'),
-            'primer': 'MyEtherWallet is a great project... Enjoy!  ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/gitcoinco/web/issues/221'),
+            'primer': 'Gitcoin is built using Gitcoin.  Want to help out and get paid? 💯 ~ @owocki',
         },
         {
             'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ProjectWyvern/dao.projectwyvern.com/issues/1'),

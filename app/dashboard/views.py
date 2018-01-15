@@ -448,6 +448,14 @@ def toolbox(request):
              "link": "https://gitcoin.co/tips",
              "active": "false",
              'stat_graph': 'tips',
+        }, {
+             "name": "Code Sponsor",
+             "img": "/static/v2/images/codesponsor.jpg",
+             "description": '''CodeSponsor sustains open source
+                        by connecting sponsors with open source projects.''',
+             "link": "https://codesponsor.io",
+             "active": "false",
+             'stat_graph': 'codesponsor',
         } 
         ]
       }, {
