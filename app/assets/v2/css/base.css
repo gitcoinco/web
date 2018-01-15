@@ -931,6 +931,13 @@ body.bounty_details #title{
     font-size: 12px
 }
 
+.dashboard .w-75 .github-comment{
+    background: url(/static/v2/images/icon-msg-16.png) no-repeat left;
+    padding-left: 18px;
+    margin-right: 10px;
+    display: inline-block;
+}
+
 @media (max-width: 1350px) {
     .profile_details .bounties li div.details{
         width: 400px;
@@ -1127,12 +1134,6 @@ body.bounty_details #title{
     .dashboard .row.bounty_row .col-7 .w-75{
         width: 95% !important;
         padding-left: 3%;
-    }
-    .dashboard .row.bounty_row .col-7 .w-75 .github-comment{
-        background: url(/static/v2/images/icon-msg-16.png) no-repeat left;
-        padding-left: 18px;
-        margin-right: 10px;
-        display: inline-block;
     }
     .bounty_nav{
         display: none;
