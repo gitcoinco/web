@@ -650,12 +650,8 @@ input[type=text].loading {
     width: 45%;
     display: inline-block;
 }
-<<<<<<< HEAD
-#metamask_context{
-=======
 
 #metamask_context {
->>>>>>> master
     background-color: #fafafa;
     border-radius: 5px;
 }
@@ -731,8 +727,8 @@ body.bounty_details .boldLabel {
 body.bounty_details #bounty_details a.btn{
     border-radius: 0.2rem;
 }
-<<<<<<< HEAD
-body.bounty_details a.btn-github-comment{
+
+body.bounty_details a.btn-github-comment {
     color: #000;
     background: url(/static/v2/images/icon-msg-16.png) no-repeat left transparent;
     display: block;
@@ -742,11 +738,8 @@ body.bounty_details a.btn-github-comment{
 body.bounty_details a.btn-github-comment:hover {
     background: url(/static/v2/images/icon-msg-red-16.png) no-repeat left transparent;
 }
-body.bounty_details a.btn-darkGrey{
-=======
 
 body.bounty_details a.btn-darkGrey {
->>>>>>> master
     background-color: #e7e7e7;
     color: #474747;
 }
