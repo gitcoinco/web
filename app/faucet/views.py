@@ -6,6 +6,7 @@ from models import FaucetRequest
 from django.core.validators import validate_slug, validate_email
 from django.utils.html import strip_tags, escape
 from app.github import search
+from marketing.mails import send_mail
 import json
 
 def faucet(request):
@@ -98,7 +99,7 @@ def save_faucet(request):
     to_email = settings.SERVER_EMAIL
     subject = "New Faucet Request"
     body = "A new faucet request was completed. You may fund the request here : https://gitcoin.co/_administration/process_faucet_request/[pk]"
-    send_mail(from_email, to_email, subject, body.replace('[pk]', fr.pk), from_name="No Reply from Gitcoin.co")
+    send_mail(from_email, to_email, subject, body.replace('[pk]', str(fr.pk)), from_name="No Reply from Gitcoin.co")
     return JsonResponse({
       'message': 'Created.'
     }, status=201)
