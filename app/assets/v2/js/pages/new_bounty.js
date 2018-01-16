@@ -26,9 +26,10 @@ $(document).ready(function(){
     if(localStorage['bountyType']){
         $('select[name=bountyType] option:contains('+localStorage['bountyType']+')').prop('selected', true);
     }
-    // if(localStorage['issueURL']){
-    //     $('input[name=issueURL]').val(localStorage['issueURL']);
-    // }
+    if(localStorage['issueURL']){
+         $('input[name=issueURL]').val(localStorage['issueURL']);
+    }
+    
     //fetch issue URL related info
     $("input[name=amount]").keyup(setUsdAmount);
     $("input[name=amount]").blur(setUsdAmount);
@@ -219,6 +220,7 @@ $(document).ready(function(){
             // bounty is a web3.js eth.contract address
             // The Ethereum network requires using ether to do stuff on it
             // issueAndActivateBounty is a method definied in the StandardBounties solidity contract.
+
             var bountyIndex = bounty.issueAndActivateBounty(
                 account, 
                 expire_date, 

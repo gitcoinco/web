@@ -438,7 +438,7 @@ window.addEventListener('load', function() {
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? '' : 'Can only be performed if you are the funder.',
+                            title: enabled ? 'This will kill the bounty and return the funds.' : 'Can only be performed if you are the funder.',
                         }
                         actions.push(entry);
                     }
@@ -474,7 +474,7 @@ window.addEventListener('load', function() {
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? '' : 'Can only be performed if you are the funder.',
+                            title: enabled ? 'This will payout the bounty to the fulfiller.' : 'Can only be performed if you are the funder.',
 
                         }
                         actions.push(entry);
