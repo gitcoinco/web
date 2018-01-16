@@ -27,11 +27,11 @@ var quotes =
     ['Within large organizations a renewed focus on freeing up the creative and innovative potential of workers points in the same direction [as that of the entrepreneurial society] i.e. a new mindset of ownership, responsibility and autonomy.', 'Promotional site for the 2016 Drucker Forum']
   ];
 
-var waitingRoomEntertainment = function() {
+var waitingRoomEntertainment = function () {
   var quote = randomElement(quotes);
   var quoteText = quote[0];
   var quoteAuthor = quote[1];
 
-  $(".quote_text").html(quoteText);
+  $(".quote_text").html('"' + quoteText + '"');
   $(".quote_author").html(quoteAuthor);
-}
+};

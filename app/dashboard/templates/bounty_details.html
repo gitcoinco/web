@@ -21,82 +21,101 @@
             <div class="container-fluid" id="bounty_detail">
             {% include 'shared/bounty_def.html' %}
             </div>
-                <div class="row loading justify-content-center align-items-center loading_img">
-                    <img src='/static/v2/images/loading_v2.gif'>
+
+            <div class="alert info transaction-status" style="display:none;">
+                <strong style="font-size: 22px;">Your transaction has been posted to web3</strong>
+                <br>
+                This funded issue has recently been updated and while the blockchain syncs it has
+                <a target="_blank" href="javascript:void(0)" id="pending_changes">pending changes</a>.
+                <br>
+                Please wait a minute or two for web3 to sync
+                <a target="_blank" href="javascript:void(0)" id="transaction_url">this transaction</a>.
+                <br>
+                (Please DO NOT close the browser tab. This page will automatically refresh as soon as the blockchain is updated.)
+            </div>
+
+            <div class="row loading justify-content-center align-items-center loading_img">
+                <img src='/static/v2/images/loading_v2.gif'>
+            </div>
+
+            <div class="row nonefound" style="display:none;">
+                <img src="/static/v2/images/shrug_bot.png">
+                <h3>No funded issue found.</h3>
+                <p>Please go back to the <a href="/explorer">Issue Explorer</a> and try again.</p>
+                <br>
+                <h6>Be the OSS Funding you wish to see in the world.</h6>
+                <p id='submitsolicitation'>Looking to fund some work?  You can submit a new Funded Issue <a href="/funding/new">here</a>.</p>
+            </div>
+
+            <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none;">
+                {% include 'shared/rain.html' with class="color" %}
+                <div class="quote-container">
+                    <div class="quote_text"></div>
+                    <div class="quote_author"></div>
                 </div>
-                <div class="row nonefound" style="display:none;">
-                    <img src="/static/v2/images/shrug_bot.png">
-                    <h3>No funded issue found.</h3>
-                    <p>Please go back to the <a href="/explorer">Issue Explorer</a> and try again.</p>
-                    <br>
-                    <h6>Be the OSS Funding you wish to see in the world.</h6>
-                    <p id='submitsolicitation'>Looking to fund some work?  You can submit a new Funded Issue <a href="/funding/new">here</a>.</p>
-                </div>
-                <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none;">
-                    {% include 'shared/rain.html' with class="color" %}
-                    <h3 class="quote_text"></h3>
-                    <br /><br /><br />
-                    <h3 class="quote_author"></h3>
-                </div>
-                <div class="row mt-4" id="bounty_details">
-                    <div class="ml-2 mr-2 pl-4 pr-4 col-2 left_details">
-                        <div id="avatar_url">
-                        </div>
-                        <span class=boldLabel><span id="web3_created"></span></span>
-                        <div id="left_actions"></div>
-                        <a class="font-smaller-2" style="color: #212529;" href="/explorer">&lt; Issue Explorer</a>
+            </div>
+
+            <div class="row mt-4" id="bounty_details">
+                <div class="ml-2 mr-2 pl-4 pr-4 col-2 left_details">
+                    <div id="avatar_url">
                     </div>
-                    <div class="col-8 right_details">
-                        <span class=boldLabel>Status:</span> <span title="Funded issues can be in three status': 1: Active, 2: Claimed, 3:Fulfilled" id="status"></span>
+                    <span class="boldLabel"><span id="web3_created"></span></span>
+                    <div id="left_actions"></div>
+                    <a class="font-smaller-2" style="color: #212529;" href="/explorer">&lt; Issue Explorer</a>
+                </div>
 
-                        <h4 id="title">
-                        </h4>
-                        <span class=boldLabel>Funding Amount:</span> <span id="value_in_token"></span> <span id="value_in_usdt"></span> USD
-                        <div id="right_actions"></div>
-                        <h5>Issue Description</h5>
-                        <div id="issue_description"></div>
-                        <div style="width: 39%; display: inline-block;">
-                            <h5>Issue Info</h5>
-                            Experience Level: <span id="experience_level"></span>
-                            <br>
-                            Project Length: <span id="project_length"></span>
-                            <br>
-                            Issue Type: <span id="bounty_type"></span>
-                            <br>
-                            Expiration: <span id="expires_date"></span>
-                            <br>
-                        </div>
-                        <div style="width: 59%; display: inline-block;">
-                            <h5>Funder Info</h5>
-                            ETH Address: <span id="bounty_owner_address"></span>
-                            <br>
-                            Email: <span id="bounty_owner_email"></span>
-                            <br>
-                            Gitcoin Profile: <span id="bounty_owner_github_username"></span>
-                            <br>
-                        </div>
-                        <div id="claimee" style="width: 100%; display: block;">
-                            <br>
-                            <h5>Claimee Info</h5>
-                            ETH Address: <span id="claimeee_address"></span>
-                            <br>
-                            Email: <span id="claimee_email"></span>
-                            <br>
-                            Gitcoin Profile: <span id="claimee_github_username"></span>
+                <div class="col-8 right_details">
+                    <span class=boldLabel>Status:</span> <span title="Funded issues can be in three status': 1: Active, 2: Claimed, 3:Fulfilled" id="status"></span>
 
-                        </div>
+                    <h4 id="title"></h4>
+                    <span class=boldLabel>Funding Amount:</span> <span id="value_in_token"></span> <span id="value_in_usdt"></span> USD
+                    <div id="right_actions"></div>
+                    <h5>Issue Description</h5>
+                    <div id="issue_description"></div>
+
+                    <div style="width: 39%; display: inline-block;">
+                        <h5>Issue Info</h5>
+                        Experience Level: <span id="experience_level"></span>
+                        <br>
+                        Project Length: <span id="project_length"></span>
+                        <br>
+                        Issue Type: <span id="bounty_type"></span>
+                        <br>
+                        Expiration: <span id="expires_date"></span>
+                        <br>
+                    </div>
+
+                    <div style="width: 59%; display: inline-block;">
+                        <h5>Funder Info</h5>
+                        ETH Address: <span id="bounty_owner_address"></span>
+                        <br>
+                        Email: <span id="bounty_owner_email"></span>
+                        <br>
+                        Gitcoin Profile: <span id="bounty_owner_github_username"></span>
+                        <br>
+                    </div>
+
+                    <div id="claimee" style="width: 100%; display: block;">
+                        <br>
+                        <h5>Claimee Info</h5>
+                        ETH Address: <span id="claimeee_address"></span>
+                        <br>
+                        Email: <span id="claimee_email"></span>
+                        <br>
+                        Gitcoin Profile: <span id="claimee_github_username"></span>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-      <script id="action" type="text/x-jsrender">
+    <script id="action" type="text/x-jsrender">
         <span title='[[:title]]'>
-        <a class="btn btn-sm btn-[[:color]] [[:extraClass]]" role="button" href="[[:href]]" target="[[:target]]">
-            <span class="font-smaller-4">[[:text]]</span>
-        </a>
+            <a class="btn btn-sm btn-[[:color]] [[:extraClass]]" role="button" href="[[:href]]" target="[[:target]]">
+                <span class="font-smaller-4">[[:text]]</span>
+            </a>
         </span>
-      </script>
+    </script>
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/ga.html' %}

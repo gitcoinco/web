@@ -184,86 +184,85 @@ var isBountyOwner = function(result) {
 }
 
 var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
-        console.log("checking this issue for updates:");
-        console.log(issueURL);
-        //setup callbacks
-        var changes_synced_callback = function(){
-            document.location.href = document.location.href;
-            //check_for_bounty_changed_updates_REST();
-        };
-        var check_for_bounty_changed_updates_REST = function(){
-            var uri = '/api/v0.1/bounties?github_url='+issueURL;
-             $.get(uri, function(results){
-                results = sanitizeAPIResults(results);
-                var result = results[0];
-                // if remote entry has been modified, refresh the page.  if not, try again
-                if(typeof result == 'undefined' || result['modified_on'] == last_modified_time_remote){
-                    setTimeout(check_for_bounty_changed_updates_REST,2000);
-                } else {
-                    changes_synced_callback();
-                }
-             });
-        };
-        var check_for_bounty_changed_updates_web3 = function(){
-            callFunctionWhenTransactionMined(localStorage['txid'],function(){
-                var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-                setTimeout(function(){
-                    bounty.bountydetails.call(issueURL, function(error, result){
-                        if(error){
-                            setTimeout(check_for_bounty_changed_updates_web3, 1000);
-                            console.error(error);
-                        } else {
-                            result[0] = result[0].toNumber();
-                            result[7] = result[7].toNumber();
-                            result[9] = result[9].toNumber();
-                            was_success = result[0] > 0;
-                            if(was_success){
-                                console.log('success syncing with web3');
-                                sync_web3(issueURL, result, changes_synced_callback);
-                            } else {
-                                console.error(result);
-                                var link_url = etherscan_tx_url(localStorage['txid']);
-                                //_alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
-                            }
-                        }
-                    });
-                },1000);
-            });
-        };
+    console.log("checking this issue for updates:");
+    console.log(issueURL);
 
-        var showWarningMessage = function(){
-            var pendingchanges = 'pending changes';
-            var this_transaction = 'this transaction';
-            var title = '';
-            if(typeof localStorage['txid'] != 'undefined' && localStorage['txid'].indexOf('0x') != -1){
-                clearInterval(interval)
-                var link_url = etherscan_tx_url(localStorage['txid']);
-                pendingchanges = "<a target=new href='"+link_url+"'>"+pendingchanges+"</a>"
-                this_transaction = "<a target=new href='"+link_url+"'>"+this_transaction+"</a>"
-                title = "Your transaction has been posted to web3.";
+    //setup callbacks
+    var changes_synced_callback = function () {
+        document.location.href = document.location.href;
+        //check_for_bounty_changed_updates_REST();
+    };
+
+    var check_for_bounty_changed_updates_REST = function(){
+        var uri = '/api/v0.1/bounties?github_url='+issueURL;
+         $.get(uri, function(results){
+            results = sanitizeAPIResults(results);
+            var result = results[0];
+            // if remote entry has been modified, refresh the page.  if not, try again
+            if(typeof result == 'undefined' || result['modified_on'] == last_modified_time_remote){
+                setTimeout(check_for_bounty_changed_updates_REST, 2000);
+            } else {
+                changes_synced_callback();
             }
-            var msg = `<br>This funded issue has recently been updated and while the blockchain syncs it has `+pendingchanges+`.
-            Please wait a minute or two for web3 to sync `+this_transaction+`.
-            <br>(Please DO NOT close the browser tab.  This page will automatically refresh as soon as the blockchain is updated.)</span>`
-            // _alert({ title: title, message: msg},'info');
-            _alert({ title: title, message: msg, closeButton: false},'info');
+         });
+    };
 
-            $("#bounty_details").hide()
-            $(".waiting_room_entertainment").show()
+    var check_for_bounty_changed_updates_web3 = function(){
+        callFunctionWhenTransactionMined(localStorage['txid'],function(){
+            var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+            setTimeout(function(){
+                bounty.bountydetails.call(issueURL, function(error, result){
+                    if (error) {
+                        setTimeout(check_for_bounty_changed_updates_web3, 1000);
+                        console.error(error);
+                    } else {
+                        result[0] = result[0].toNumber();
+                        result[7] = result[7].toNumber();
+                        result[9] = result[9].toNumber();
+                        was_success = result[0] > 0;
 
-            var radioButtons = $(".sidebar_search input")
-            for (var i = radioButtons.length - 1; i >= 0; i--) {
-                radioButtons[i].disabled = true
-            };
+                        if (was_success) {
+                            console.log('success syncing with web3');
+                            sync_web3(issueURL, result, changes_synced_callback);
+                        } else {
+                            console.error(result);
+                            var link_url = etherscan_tx_url(localStorage['txid']);
+                            //_alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
+                        }
+                    }
+                });
+            },1000);
+        });
+    };
 
-            var secondsBetweenQuoteChanges = 30;
-            waitingRoomEntertainment();
-            var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
+    var showWarningMessage = function () {
+
+        if (typeof localStorage['txid'] != 'undefined' && localStorage['txid'].indexOf('0x') != -1) {
+            clearInterval(interval);
+            var link_url = etherscan_tx_url(localStorage['txid']);
+            $('#pending_changes').attr("href", link_url);
+            $('#transaction_url').attr("href", link_url);
         }
 
+        $("#bounty_details").hide();
+        $("#bounty_detail").hide();
+
+        $(".transaction-status").show();
+        $(".waiting_room_entertainment").show();
+
+        var radioButtons = $(".sidebar_search input");
+
+        for (var i = radioButtons.length - 1; i >= 0; i--) {
+            radioButtons[i].disabled = true;
+        }
+
+        var secondsBetweenQuoteChanges = 30;
+        waitingRoomEntertainment();
+        var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
+    };
 
     var should_display_warning = false;
-    if(localStorage[issueURL]){
+    if (localStorage[issueURL]) {
         //local warning
         var local_delta = parseInt(timestamp() - localStorage[issueURL]);
         var is_changing_local_recent = local_delta < (60 * 60); // less than one hour
@@ -273,13 +272,14 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         var is_changing_remote_recent = remote_delta < (60 * 60); // less than one minute
 
         should_display_warning = !last_modified_time_remote || ((is_changing_local_recent) && (remote_delta > local_delta));
-        if(should_display_warning){
 
+        if (should_display_warning) {
             showWarningMessage();
             showLoading();
             check_for_bounty_changed_updates_web3();
         }
     }
+
     return should_display_warning;
 };
 
@@ -426,7 +426,8 @@ window.addEventListener('load', function() {
                     return;
                 }
             }
-            if(nonefound){
+
+            if (nonefound) {
                 $(".nonefound").css('display','block');
                 $("#primary_view").css('display','none');
                 pendingChangesWarning(issueURL);
