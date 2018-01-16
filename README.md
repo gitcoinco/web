@@ -258,7 +258,9 @@ Navigate to: https://github.com/settings/applications/new and enter similar valu
 * Enter Application Name: `MyGitcoinApp`
 * Homepage URL: `http://localhost`
 * Application description: `My Gitcoin App`
-* Authorization callback URL: `http://localhost:8000/` (required)
+* Authorization callback URL: `http://localhost:8080/` (required)
+
+The authorization callback URL should match your `BASE_URL` value in `local_settings.py`
 
 Set `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, and `GITHUB_APP_NAME` to the returned values.
 

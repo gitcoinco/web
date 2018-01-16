@@ -117,7 +117,7 @@ def new_interest(request, bounty_id):
         post_id (int): ID of the Bounty.
 
     Returns:
-        dict: An empty dictionary, if successful.
+        dict: The success key with a boolean value and accompanying error.
 
     """
     profile_id = request.session.get('profile_id')
@@ -166,7 +166,7 @@ def remove_interest(request, bounty_id):
     post_id (int): ID of the Bounty.
 
     Returns:
-        dict: An empty dictionary, if successful.
+        dict: The success key with a boolean value and accompanying error.
 
     """
     profile_id = request.session.get('profile_id')
