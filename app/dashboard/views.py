@@ -311,9 +311,7 @@ def send_tip_2(request):
 
         username = username or params['username']
         access_token = request.session.get('access_token')
-        if access_token:
-            emails = get_github_emails(access_token) or [primary_email]
-
+        emails = get_github_emails(access_token) if access_token else [primary_email]
         expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
 
         # db mutations
@@ -396,7 +394,8 @@ def new_bounty(request):
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
-        'from_email': request.session.get('email', '')
+        'from_email': request.session.get('email', ''),
+        'from_handle': request.session.get('handle', '')
     }
 
     return TemplateResponse(request, 'submit_bounty.html', params)

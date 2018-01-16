@@ -153,14 +153,14 @@ var remove_from_watch_list = function(issueURL){
 }
 
 var interested_list = function () {
-    if (typeof localStorage['interests'] == 'undefined') {
+    if (typeof localStorage.interests == 'undefined') {
         return [];
     }
-    return localStorage['interests'].split(',');
+    return localStorage.interests.split(',');
 }
 
 var is_on_interest_list = function (bounty_pk) {
-    if (localStorage['interests'] && localStorage['interests'].indexOf(bounty_pk) != -1) {
+    if (localStorage.interests && localStorage.interests.indexOf(bounty_pk) != -1) {
         return true;
     }
     return false;
@@ -170,11 +170,11 @@ var add_interest = function (bounty_pk) {
     if(is_on_interest_list(bounty_pk)){
         return;
     }
-    localStorage['interests'] = localStorage['interests'] + "," + bounty_pk;
+    localStorage.interests = localStorage.interests + "," + bounty_pk;
     var request_url = '/bounty/' + bounty_pk + '/interest/new/';
     $.post(request_url, function (result) {
         result = sanitizeAPIResults(result);
-        if (result['success']) {
+        if (result.success) {
             return true;
         }
         return false;
@@ -185,11 +185,11 @@ var remove_interest = function (bounty_pk) {
     if (!is_on_interest_list(bounty_pk)) {
         return;
     }
-    localStorage['interests'] = localStorage['interests'].replace("," + bounty_pk, "");
+    localStorage.interests = localStorage.interests.replace("," + bounty_pk, "");
     var request_url = '/bounty/' + bounty_pk + '/interest/remove/';
     $.post(request_url, function (result) {
         result = sanitizeAPIResults(result);
-        if (result['success']) {
+        if (result.success) {
             return true;
         }
         return false;

@@ -455,23 +455,13 @@ window.addEventListener('load', function() {
                         }
                         actions.push(entry);
 
-                        if (is_interested) {
-                            var entry = {
-                                href: '/uninterested',
-                                text: 'Remove Interest',
-                                parent: 'right_actions',
-                                color: 'darkGrey'
-                            }
-                            actions.push(entry);
-                        } else {
-                            var entry = {
-                                href: '/interested',
-                                text: 'Express Interest',
-                                parent: 'right_actions',
-                                color: 'darkGrey'
-                            }
-                            actions.push(entry);
+                        var interestEntry = {
+                            href: is_interested ? '/uninterested' : '/interested',
+                            text: is_interested ? 'Remove Interest' : 'Express Interest',
+                            parent: 'right_actions',
+                            color: is_interested ? 'darkBlue' : 'darkGrey'
                         }
+                        actions.push(interestEntry);
                     }
 
                     var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
