@@ -21,6 +21,7 @@ from __future__ import print_function, unicode_literals
 import json
 import logging
 
+from django.conf import settings
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
@@ -88,6 +89,9 @@ def github_callback(request):
 def github_authentication(request):
     """Handle Github authentication."""
     redirect_uri = request.GET.get('redirect_uri', '/')
+    if settings.DEBUG and (not settings.GITHUB_CLIENT_ID or settings.GITHUB_CLIENT_ID == 'TODO'):
+        logging.info('GITHUB_CLIENT_ID is not set. Github integration is disabled!')
+        return redirect(redirect_uri)
     return redirect(get_auth_url(redirect_uri))
 
 

@@ -251,6 +251,24 @@ cp app/local_settings.py.dist app/local_settings.py
 
 You will need to edit the `app/local_settings.py` file with your local settings. Look for config items that are marked `#required`.
 
+## Setup Github OAuth2 App Integration
+
+Navigate to: https://github.com/settings/applications/new and enter similar values to:
+
+* Enter Application Name: `MyGitcoinApp`
+* Homepage URL: `http://localhost`
+* Application description: `My Gitcoin App`
+* Authorization callback URL: `http://localhost:8000/` (required)
+
+Set `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, and `GITHUB_APP_NAME` to the returned values.
+
+## Setup Github User Integration
+
+Navigate to:  https://github.com/settings/tokens/new
+At minimum, select `user` scope.
+Generate your token and copy it to:  `GITHUB_API_TOKEN`
+Copy your Github username to:  `GITHUB_API_USER`
+
 ## Setup Database
 
 PostgreSQL is the database used by this application. Here are some instructions for installing PostgreSQL on various operating systems.
