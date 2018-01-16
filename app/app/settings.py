@@ -206,6 +206,9 @@ GITHUB_API_BASE_URL = 'https://github.com/login/oauth/authorize'
 GITHUB_TOKEN_URL = 'https://github.com/login/oauth/access_token'
 GITHUB_SCOPE = 'user'
 
+# List of github usernames to not count as comments on an issue
+IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
+
 # Include local settings overrides
 try:
     from .local_settings import *  # NOQA

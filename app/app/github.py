@@ -156,14 +156,16 @@ def search(query):
     return response.json()
 
 
-def get_issue_comments(owner, repo):
+def get_issue_comments(owner, repo, issue=None):
     """Get the comments from issues on a respository."""
     params = {
         'sort': 'created',
         'direction': 'desc',
     }
-    url = 'https://api.github.com/repos/{}/{}/issues/comments' \
-          .format(owner, repo)
+    if issue:
+        url = 'https://api.github.com/repos/{}/{}/issues/{}/comments'.format(owner, repo, issue)
+    else:
+        url = 'https://api.github.com/repos/{}/{}/issues/comments'.format(owner, repo)
     response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
 
     return response.json()

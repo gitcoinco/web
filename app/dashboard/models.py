@@ -39,6 +39,9 @@ from .signals import m2m_changed_interested
 logger = logging.getLogger(__name__)
 
 
+logger = logging.getLogger(__name__)
+
+
 class Bounty(SuperModel):
     """Define the structure of a Bounty.
 
@@ -84,18 +87,20 @@ class Bounty(SuperModel):
     project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS)
     experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS)
     github_url = models.URLField()
+    github_comments = models.IntegerField(default=0)
     bounty_owner_address = models.CharField(max_length=50)
     bounty_owner_email = models.CharField(max_length=255, null=True)
     bounty_owner_github_username = models.CharField(max_length=255, null=True)
     claimeee_address = models.CharField(max_length=50)
     claimee_email = models.CharField(max_length=255, null=True)
     claimee_github_username = models.CharField(max_length=255, null=True)
-    is_open = models.BooleanField()
+    is_open = models.BooleanField(help_text='Whether the bounty has been filled')
     expires_date = models.DateTimeField()
     raw_data = JSONField()
     metadata = JSONField(default={})
     claimee_metadata = JSONField(default={})
-    current_bounty = models.BooleanField(default=False)  # whether this bounty is the most current revision one or not
+    current_bounty = models.BooleanField(default=False,
+                                         help_text='Whether this bounty is the most current revision one or not')
     _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=20)
     contract_address = models.CharField(max_length=50, default='')
     network = models.CharField(max_length=255, null=True)
@@ -276,6 +281,32 @@ class Bounty(SuperModel):
                 self.title = item
         else:
             return None
+
+    def fetch_issue_comments(self, save=True):
+        from urlparse import urlsplit
+        from app.github import get_issue_comments
+
+        if self.github_url.lower()[:19] != 'https://github.com/':
+            return
+
+        parsed_url = urlsplit(self.github_url)
+        try:
+            github_user, github_repo, _, github_issue = parsed_url.path.split('/')[1:5]
+        except ValueError:
+            logger.info('Invalid github url for Bounty: {} -- {}'.format(self.pk, self.github_url))
+            return []
+        comments = get_issue_comments(github_user, github_repo, github_issue)
+        if type(comments) is dict and comments.get('message') == 'Not Found':
+            logger.info('Bounty {} contains an invalid github url {}'.format(self.pk, self.github_url))
+            return []
+        comment_count = 0
+        for comment in comments:
+            if comment['user']['login'] not in settings.IGNORE_COMMENTS_FROM:
+                comment_count += 1
+        self.github_comments = comment_count
+        if save:
+            self.save()
+        return comments
 
 
 class BountySyncRequest(SuperModel):
