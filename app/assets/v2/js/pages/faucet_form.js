@@ -42,8 +42,8 @@
     $('#submitFaucet').on('click', function(e) {
       e.preventDefault()
       if(e.target.hasAttribute('disabled') ||
-       $('#githubProfile').hasAttribute('is-invalid') ||
-       $('#emailAddress').hasAttribute('is-invalid') ||
+       $('#githubProfile').is(['is-invalid']) ||
+       $('#emailAddress').is(['is-invalid']) ||
        $('#githubProfile').val()==='' ||
        $('#emailAddress').val()==='') {
         return;
