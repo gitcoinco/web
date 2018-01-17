@@ -243,7 +243,6 @@ def clawback_expired_bounty(request):
 
 
 def bounty_details(request):
-
     params = {
         'issueURL': request.GET.get('issue_'),
         'title': 'Issue Details',

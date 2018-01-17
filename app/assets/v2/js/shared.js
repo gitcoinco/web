@@ -95,13 +95,22 @@ var _alert = function (msg, _class){
     }
     var numAlertsAlready = $('.alert:visible').length;
     var top = numAlertsAlready * 66;
-    var html = '    <div class="alert '+_class+'" style="top: '+top+'px"> \
-      <span class="closebtn" >&times;</span> \
-      <strong>' + (typeof msg['title'] != 'undefined' ? msg['title'] : '') + '</strong>\
-      ' + msg['message'] + '\
+    var html = '    <div class="alert '+_class+'" style="top: '+top+'px">' + closeButton(msg)  + alertMessage(msg) + '\
     </div> \
 ';
     $('body').append(html);
+}
+
+var closeButton = function(msg) {
+    var html = (msg['closeButton'] === false ? '' : '<span class="closebtn" >&times;</span>');
+    return html
+}
+
+var alertMessage = function(msg) {
+    var html = '<strong>' + (typeof msg['title'] != 'undefined' ? msg['title'] : '') + '</strong>\
+    ' + msg['message']
+
+    return html
 }
 
 var timestamp = function(){
@@ -466,3 +475,10 @@ window.addEventListener('load', function() {
     }, timeout_value);
 
 });
+
+var randomElement = function(array) {
+    var length = array.length;
+    var randomNumber = Math.random();
+    var randomIndex = Math.floor(randomNumber * length);
+    return array[randomIndex];
+}
