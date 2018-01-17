@@ -9,9 +9,9 @@ from django.conf import settings
 
 import tinyurl
 import twitter
+from app.github import post_issue_comment
 from marketing.mails import tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
-from app.github import post_issue_comment
 from slackclient import SlackClient
 
 reload(sys)
