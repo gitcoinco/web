@@ -1,5 +1,5 @@
 //TODO -- accept stdin
-var issueURL = 'https://github.com/GridPlus/trustless-relay/issues/1'
+var issueURL = 'https://github.com/ConsenSys/smart-contract-best-practices/issues/113'
 localStorage[issueURL] = timestamp();
 
 var callback = function (error, result){
