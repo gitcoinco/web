@@ -142,8 +142,7 @@ urlpatterns = [
     # Sitemap
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     # Github Integration
-    url(r'^_github/callback?', dashboard.views.github_callback, name='github_callback'),
-    url(r'^_github/auth?', dashboard.views.github_authentication, name='github_authentication'),
+    url(r'^_github/', include('github.urls', namespace='github')),
     # Interests
     url(r'^bounty/(?P<bounty_id>\d+)/interest/new/$', dashboard.views.new_interest, name='express-interest'),
     url(r'^bounty/(?P<bounty_id>\d+)/interest/remove/$', dashboard.views.remove_interest, name='remove-interest'),

@@ -6,8 +6,8 @@ from django.conf import settings
 from django.utils import timezone
 
 import requests
-from app.github import get_user
 from dashboard.models import Bounty, Profile
+from github.utils import _AUTH, HEADERS, get_user
 
 
 def ellipses(data, _len=75):
@@ -15,23 +15,33 @@ def ellipses(data, _len=75):
 
 
 def add_contributors(repo_data):
+    """Add contributor data to repository data dictionary.
+
+    Args:
+        repo_data (dict): The repository data dictionary to be updated.
+
+    Returns:
+        dict: The updated repository data dictionary.
+
+    """
     if repo_data.get('fork', False):
         return repo_data
 
-    from app.github import _auth, headers
     params = {}
     url = repo_data['contributors_url']
-    response = requests.get(url, auth=_auth, headers=headers, params=params)
-    if response.status_code == 204: #no content
+    response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
+    if response.status_code == 204: # no content
         return repo_data
-    rate_limited = type(response.json()) == dict and 'documentation_url' in response.json().keys()
+
+    response_data = response.json()
+    rate_limited = (isinstance(response_data, dict) and 'documentation_url' in response_data.keys())
     if rate_limited:
-        #retry after rate limit
+        # retry after rate limit
         time.sleep(60)
         return add_contributors(repo_data)
 
     # no need for retry
-    repo_data['contributors'] = response.json()
+    repo_data['contributors'] = response_data
     return repo_data
 
 

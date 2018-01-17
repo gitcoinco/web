@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'dashboard',
     'tdi',
     'gas',
+    'github',
     'chartit',
     'email_obfuscator',
     'linkshortener',

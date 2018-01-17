@@ -30,14 +30,14 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from app.github import (
-    get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, get_github_user_token,
-)
 from app.utils import ellipses, sync_profile
 from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty, BountySyncRequest, Interest, Profile, ProfileSerializer, Subscription, Tip
 from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
+from github.utils import (
+    get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, get_github_user_token,
+)
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip

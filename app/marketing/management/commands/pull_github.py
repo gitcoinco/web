@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -19,8 +19,8 @@ import time
 
 from django.core.management.base import BaseCommand
 
-from app.github import search
 from dashboard.views import profile_keywords_helper
+from github.utils import search
 from marketing.models import EmailSubscriber
 
 
@@ -61,6 +61,6 @@ class Command(BaseCommand):
         print("pct: {}".format(round(success / emailsubscribers.count(), 2)))
 
 
-        print("success: {}".format(exceptions))
+        print("exceptions: {}".format(exceptions))
         print("total: {}".format(emailsubscribers.count()))
         print("pct: {}".format(round(exceptions / emailsubscribers.count(), 2)))

@@ -7,7 +7,7 @@ from django.conf import settings
 
 import requests
 import twitter
-from app.github import delete_issue_comment, patch_issue_comment, post_issue_comment
+from github.utils import delete_issue_comment, patch_issue_comment, post_issue_comment
 from marketing.mails import tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
 from pyshorteners import Shortener

@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 import logging
+from urllib.parse import urlsplit
 
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
@@ -32,6 +33,7 @@ import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import convert_amount
+from github.utils import get_issue_comments, get_user, org_name
 from rest_framework import serializers
 
 from .signals import m2m_changed_interested
@@ -151,7 +153,6 @@ class Bounty(SuperModel):
     @property
     def org_name(self):
         try:
-            from app.github import org_name
             _org_name = org_name(self.github_url)
             return _org_name
         except:
@@ -182,7 +183,6 @@ class Bounty(SuperModel):
 
     def get_avatar_url(self):
         try:
-            from app.github import get_user
             response = get_user(self.org_name)
             return response['avatar_url']
         except Exception as e:
@@ -283,9 +283,6 @@ class Bounty(SuperModel):
             return None
 
     def fetch_issue_comments(self, save=True):
-        from urlparse import urlsplit
-        from app.github import get_issue_comments
-
         if self.github_url.lower()[:19] != 'https://github.com/':
             return
 

@@ -1,8 +1,8 @@
 from django.http import HttpResponse, JsonResponse
 
 import requests
-from app.github import get_user, org_name
 from dashboard.models import Bounty
+from github.utils import get_user, org_name
 from PIL import Image, ImageDraw, ImageFont
 from ratelimit.decorators import ratelimit
 
@@ -35,7 +35,7 @@ def summarize_bounties(bounties):
 
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
 def stat(request, key):
-    
+
     from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
     from matplotlib.figure import Figure
     from matplotlib.dates import DateFormatter
