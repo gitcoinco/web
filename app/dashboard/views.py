@@ -30,7 +30,7 @@ from app.github import get_user as get_github_user
 from app.utils import ellipses, sync_profile
 from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty, BountySyncRequest, Profile, Subscription, Tip
-from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_tip_to_email
+from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
@@ -447,6 +447,14 @@ def toolbox(request):
              "link": "https://gitcoin.co/tips",
              "active": "false",
              'stat_graph': 'tips',
+        }, {
+             "name": "Code Sponsor",
+             "img": "/static/v2/images/codesponsor.jpg",
+             "description": '''CodeSponsor sustains open source
+                        by connecting sponsors with open source projects.''',
+             "link": "https://codesponsor.io",
+             "active": "false",
+             'stat_graph': 'codesponsor',
         } 
         ]
       }, {

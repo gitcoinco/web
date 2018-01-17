@@ -18,7 +18,7 @@
 '''
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
@@ -398,7 +398,11 @@ def error(request, code):
 
 
 def portal(request):
-    return redirect('https://gitcoinhelp.zendesk.com/hc/en-us/')
+    return redirect('https://gitcoin.co/help')
+
+
+def community(request):
+    return redirect('https://github.com/gitcoinco/community')
 
 
 def onboard(request):

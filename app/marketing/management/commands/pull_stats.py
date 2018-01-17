@@ -188,6 +188,21 @@ def firefox_ext_users():
         )
 
 
+def medium_subscribers():
+    import requests
+    import json
+
+    url = 'https://medium.com/gitcoin?format=json'
+    html_response = requests.get(url)
+    data = json.loads(html_response.text.replace('])}while(1);</x>',''))
+    num_users = data['payload']['references']['Collection']['d414fce43ce1']['metadata']['followerCount']
+    print(num_users)
+    Stat.objects.create(
+        key='medium_subscribers',
+        val=num_users,
+        )
+
+
 def twitter_followers():
     if settings.DEBUG:
         return
@@ -380,6 +395,7 @@ class Command(BaseCommand):
 
         fs = [
             gitter,
+            medium_subscribers,
             google_analytics,
             github_stars,
             profiles_ingested,

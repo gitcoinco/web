@@ -287,7 +287,7 @@ window.addEventListener('load', function() {
     setTimeout(function(){
         var issueURL = getParam('url');
         $("#submitsolicitation a").attr('href','/funding/new/?source=' + issueURL)
-        var uri = '/api/v0.1/bounties?';
+        var uri = '/api/v0.1/bounties/?';
         $.get(uri, function(results){
             results = sanitizeAPIResults(results);
             var nonefound = true;
@@ -341,6 +341,19 @@ window.addEventListener('load', function() {
                         // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
                         github_url = github_url.replace('pipermerriam/web3.py','ethereum/web3.py');
 
+                        if(result['github_comments']){
+                            var entry_comment = {
+                              href: github_url,
+                              text: result['github_comments'],
+                              target: 'new',
+                              parent: 'right_actions',
+                              color: 'github-comment'
+                            };
+                            actions.push(entry_comment);
+                        }
+
+
+
                         var entry = {
                             href: github_url,
                             text: 'View on Github',
@@ -349,17 +362,18 @@ window.addEventListener('load', function() {
                             color: 'darkBlue',
                             title: 'Github is where the issue scope lives.  Its also a great place to collaborate with, and get to know, other developers (and sometimes even the repo maintainer themselves!).'
                         }
+
+                        actions.push(entry);
                     }
-                    actions.push(entry);
                     var enabled = !isBountyOwner(result);
                     if(result['status']=='open' ){
                         var entry = {
                             href: '/funding/claim?source='+result['github_url'],
-                            text: 'Claim Issue',
+                            text: 'Claim Work',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Claim an issue when you sincerely intend to work on it.\n\n It is not necessary to have started work when you claim an issue, but please (1) comment on the github thread after you claim it, (2) claim an issue only if you plan to start work within the next 12 hours  & (3) only claim it if you feel like you understand the scope and can see it to completion. ' : 'Can only be performed if you are not the funder.',
+                            title: enabled ? 'Claim work when you sincerely intend to work on it.\n\n It is not necessary to have started work when you claim work on an issue, but please (1) comment on the github thread after you claim it, (2) claim work only if you plan to start work within the next 12 hours  & (3) only claim work if you feel like you understand the scope and can see it to completion. ' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(entry);
                     }
