@@ -306,25 +306,35 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         });
     };
 
-    var showWarningMessage = function(){
-        var pendingchanges = 'pending changes';
-        var this_transaction = 'this transaction';
-        var title = '';
-        if(typeof localStorage['txid'] != 'undefined' && localStorage['txid'].indexOf('0x') != -1){
+    var showWarningMessage = function () {
+
+        if (typeof localStorage['txid'] != 'undefined' && localStorage['txid'].indexOf('0x') != -1) {
+            clearInterval(interval);
             var link_url = etherscan_tx_url(localStorage['txid']);
-            pendingchanges = "<a target=new href='"+link_url+"'>"+pendingchanges+"</a>"
-            this_transaction = "<a target=new href='"+link_url+"'>"+this_transaction+"</a>"
-            title = "Your transaction has been posted to web3.";
+            $('#pending_changes').attr("href", link_url);
+            $('#transaction_url').attr("href", link_url);
         }
-        var msg = `<br>This funded issue has recently been updated and while the blockchain syncs it has `+pendingchanges+`.
-        Please wait a minute or two for web3 to sync `+this_transaction+`.
-        <br>(Please DO NOT close the browser tab.  This page will automatically refresh as soon as the blockchain is updated.)`
-        _alert({ title: title, message: msg},'info');
-    }
+
+        $("#bounty_details").hide();
+        $("#bounty_detail").hide();
+
+        $(".transaction-status").show();
+        $(".waiting_room_entertainment").show();
+
+        var radioButtons = $(".sidebar_search input");
+
+        for (var i = radioButtons.length - 1; i >= 0; i--) {
+            radioButtons[i].disabled = true;
+        }
+
+        var secondsBetweenQuoteChanges = 30;
+        waitingRoomEntertainment();
+        var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
+    };
 
     // This part decides if a warning banner should be displayed
     var should_display_warning = false;
-    if(localStorage[issueURL]){
+    if (localStorage[issueURL]) {
         //local warning
         var local_delta = parseInt(timestamp() - localStorage[issueURL]);
         var is_changing_local_recent = local_delta < (60 * 60); // less than one hour
@@ -334,13 +344,14 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         var is_changing_remote_recent = remote_delta < (60 * 60); // less than one minute
 
         should_display_warning = !last_modified_time_remote || ((is_changing_local_recent) && (remote_delta > local_delta));
-        if(should_display_warning){
 
+        if (should_display_warning) {
             showWarningMessage();
             showLoading();
             check_for_bounty_changed_updates_web3();
         }
     }
+
     return should_display_warning;
 };
 
@@ -516,7 +527,8 @@ window.addEventListener('load', function() {
                     return;
                 }
             }
-            if(nonefound){
+
+            if (nonefound) {
                 $(".nonefound").css('display','block');
                 $("#primary_view").css('display','none');
                 pendingChangesWarning(issueURL);
@@ -533,7 +545,6 @@ window.addEventListener('load', function() {
 
 
 $(document).ready(function(){
-
     $("body").delegate('a[href="/watch"], a[href="/unwatch"]', 'click', function(e){
         e.preventDefault();
         if($(this).attr('href') == '/watch'){
@@ -558,4 +569,4 @@ $(document).ready(function(){
             remove_interest(document.result['pk']);
         }
     });
-});
+})

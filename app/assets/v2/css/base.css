@@ -758,6 +758,44 @@ body.bounty_details #title {
     padding-bottom: 20px;
 }
 
+.transaction-status {
+    position: relative;
+    width: 80%;
+    left: 10%;
+    top: 30px;
+    margin-bottom: 30px;
+    border-radius: 2px;
+    padding: 3vh 5vw;
+    text-align: center;
+}
+
+.waiting_room_entertainment {
+    font-style: italic;
+    text-align: center;
+}
+
+.quote-container {
+    width: 65%;
+    margin: 5% auto;
+}
+
+.quote_text {
+    color: #4A4A4A;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 0.75px;
+}
+
+.quote_author {
+    color: #70EFBE;
+    margin-top: 20px;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 0.75px;
+}
+
 #gitcoin_buttons #example img {
     width: 500px;
     max-width: 100%
@@ -765,7 +803,6 @@ body.bounty_details #title {
 
 #gitcoin_buttons .flex-column {
     border-radius: 5px;
-
 }
 
 #gitcoin_buttons .btn.delta_1 {
