@@ -237,9 +237,19 @@ $(document).ready(function(){
                 web3Callback
             );
         }
-
-        // Add data to IPFS and kick off all the callbacks.
-
-        ipfs.addJson(submit, newIpfsCallback);
+        // Check if the bounty already exists
+        var uri = '/api/v0.1/bounties/?github_url='+issueURL;
+        $.get(uri, function(results, status){
+            results = sanitizeAPIResults(results);
+            var result = results[0];
+            if (result != null) {
+                _alert({ message: "A bounty already exists for that Github Issue." });
+                unloading_button($('#submitBounty'));
+                return;
+            } else {
+                // Add data to IPFS and kick off all the callbacks.
+                ipfs.addJson(submit, newIpfsCallback);
+            }
+        });
     });
 });
