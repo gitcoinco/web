@@ -18,7 +18,7 @@
 '''
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
