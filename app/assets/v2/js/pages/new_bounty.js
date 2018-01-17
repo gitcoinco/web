@@ -187,7 +187,7 @@ $(document).ready(function(){
             setTimeout(function(){
                 delete localStorage['issueURL'];  // oh this was just temporary
                 mixpanel.track("Submit New Bounty Success", {});
-                document.location.href= "/funding/details?url="+issueURL;
+                document.location.href= "/funding/details/?url="+issueURL;
             },1000);
         }
 
