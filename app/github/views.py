@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Handle github views.
 
-Copyright (C) 2017 Gitcoin Core
+Copyright (C) 2018 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published

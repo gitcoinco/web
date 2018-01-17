@@ -68,7 +68,7 @@ def get_response(response):
             for _, values in enumerate(dateRangeValues):
                 # print('Date range: ' + str(i))
                 for _, value in zip(metricHeaders, values.get('values')):
-                    # print metricHeader.get('name') + ': ' + value
+                    # print(metricHeader.get('name') + ': ' + value)
                     return value
 
 
