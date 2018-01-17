@@ -197,7 +197,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
     //setup callbacks
     var changes_synced_callback = function(){
         document.location.href = document.location.href;
-        check_for_bounty_changed_updates_REST();
+        // check_for_bounty_changed_updates_REST();
     };
     var check_for_bounty_changed_updates_REST = function(){
         var uri = '/api/v0.1/bounties/?github_url='+issueURL;
