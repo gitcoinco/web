@@ -21,23 +21,20 @@ from __future__ import print_function, unicode_literals
 import json
 import logging
 
-from django.conf import settings
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET
 
 from app.utils import ellipses, sync_profile
 from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty, BountySyncRequest, Interest, Profile, ProfileSerializer, Subscription, Tip
 from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
-from github.utils import (
-    get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, get_github_user_token,
-)
+from github.utils import get_github_emails
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -45,54 +42,6 @@ from retail.helpers import get_ip
 logging.basicConfig(level=logging.DEBUG)
 
 confirm_time_minutes_target = 60
-
-
-@require_GET
-def github_callback(request):
-    """Handle the Github authentication callback."""
-    # Get request parameters to handle authentication and the redirect.
-    code = request.GET.get('code', None)
-    redirect_uri = request.GET.get('redirect_uri')
-
-    if not code or not redirect_uri:
-        raise Http404
-
-    # Get OAuth token and github user data.
-    access_token = get_github_user_token(code)
-    github_user_data = get_github_user_data(access_token)
-    handle = github_user_data.get('login')
-
-    if handle:
-        # Create or update the Profile with the github user data.
-        user_profile, _ = Profile.objects.update_or_create(
-            handle=handle,
-            defaults={
-                'data': github_user_data or {},
-                'email': get_github_primary_email(access_token),
-                'github_access_token': access_token
-            })
-
-        # Update the user's session with handle and email info.
-        session_data = {
-            'handle': user_profile.handle,
-            'email': user_profile.email,
-            'access_token': user_profile.github_access_token,
-            'profile_id': user_profile.pk
-        }
-        for k, v in session_data.items():
-            request.session[k] = v
-
-    return redirect(redirect_uri)
-
-
-@require_GET
-def github_authentication(request):
-    """Handle Github authentication."""
-    redirect_uri = request.GET.get('redirect_uri', '/')
-    if settings.DEBUG and (not settings.GITHUB_CLIENT_ID or settings.GITHUB_CLIENT_ID == 'TODO'):
-        logging.info('GITHUB_CLIENT_ID is not set. Github integration is disabled!')
-        return redirect(redirect_uri)
-    return redirect(get_auth_url(redirect_uri))
 
 
 def send_tip(request):
