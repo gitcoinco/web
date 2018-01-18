@@ -151,7 +151,7 @@ def send_tip_2(request):
         tip_email(tip, set(emails), True)
         if len(emails) == 0:
                 status = 'error'
-                message = 'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.'
+                message = 'Uh oh! No email addresses for this user were found via Github API.  You\'ll have to let the tipee know manually about their tip.'
 
         #http response
         response = {

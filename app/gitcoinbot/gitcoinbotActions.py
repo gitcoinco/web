@@ -3,11 +3,15 @@ Methods for interacting with the Github API
 '''
 from django.conf import settings
 
+import datetime
 import json
+import jwt
 import requests
 import re
 
 _auth = (settings.GITHUB_API_USER, settings.GITHUB_API_TOKEN)
+GITCOINBOT_APP_ID = settings.GITCOINBOT_APP_ID
+SECRET_KEYSTRING = settings.SECRET_KEYSTRING
 
 headers = {
     'Accept': 'application/vnd.github.squirrel-girl-preview'
@@ -15,6 +19,10 @@ headers = {
 
 v3headers = {
     'Accept': 'application/vnd.github.v3.text-match+json'
+}
+
+githubAppHeaders= {
+    'Accept': 'application/vnd.github.machine-man-preview+json'
 }
 
 
@@ -96,6 +104,15 @@ def post_issue_comment_reaction(owner, repo, comment_id, content):
     print(response.json())
     return response.json()
 
+def create_token():
+    # Token expires after 10 minutes
+    payload = {
+        'iat': datetime.datetime.utcnow(),
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=600),
+        'iss': GITCOINBOT_APP_ID
+    }
+    token = jwt.encode(payload, SECRET_KEYSTRING, algorithm='RS256')
+    return token
 
 def determine_response(owner, repo, comment_id, comment_text, issue_id):
     help_regex = '@?[Gg]itcoinbot\s[Hh]elp'
