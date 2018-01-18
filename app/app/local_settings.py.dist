@@ -16,6 +16,7 @@
 
 '''
 
+import os
 ####################################################################
 # CONFIG
 ####################################################################
@@ -60,6 +61,10 @@ DATABASES = {
         'PORT': 5432,
     }
 }
+
+if 'TRAVIS' in os.environ:
+    DATABASES['default']['HOST'] = 'localhost'
+    DATABASES['default']['PORT'] = ''
 
 SENDGRID_API_KEY = 'TODO' # required only needed if you send emails
 SERVER_EMAIL = 'server@TODO.co'
