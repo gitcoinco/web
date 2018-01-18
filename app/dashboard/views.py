@@ -336,9 +336,9 @@ def send_tip_2(request):
         maybe_market_tip_to_github(tip)
         maybe_market_tip_to_slack(tip, 'new_tip', tip.txid)
         maybe_market_tip_to_email(tip, emails)
-        if len(emails) == 0:
-            status = 'error'
-            message = 'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.'
+        if not emails:
+            response['status'] = 'error'
+            response['message'] = 'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.'
 
         return JsonResponse(response)
 
@@ -452,7 +452,6 @@ def bounty_details(request):
     except Exception as e:
         print(e)
         logging.error(e)
-        pass
 
     return TemplateResponse(request, 'bounty_details.html', params)
 

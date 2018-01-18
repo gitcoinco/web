@@ -75,7 +75,7 @@ def stat(request, key):
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
 def embed(request):
     # default response
-    could_not_find = Image.new('RGBA', (1, 1), (0, 0, 0, 0))
+    could_not_find = Image.new('RGB', (1, 1), (0, 0, 0, 0))
     err_response = HttpResponse(content_type="image/jpeg")
     could_not_find.save(err_response, "JPEG")
 
@@ -105,7 +105,7 @@ def embed(request):
             with open(filepath, 'wb') as fd:
                 for chunk in r.iter_content(chunk_size):
                     fd.write(chunk)
-            avatar = Image.open(filepath, 'r').convert("RGBA")
+            avatar = Image.open(filepath, 'r').convert("RGB")
 
             # make transparent
             datas = avatar.getdata()
@@ -139,7 +139,7 @@ def embed(request):
         line = "".join(["_" for ele in range(0, 47)])
 
         # setup
-        img = Image.new("RGBA", (width, height), (255, 255, 255))
+        img = Image.new("RGB", (width, height), (255, 255, 255))
         black = (0, 0, 0)
         h1 = ImageFont.truetype(font_path + 'Futura-Bold.ttf', 28, encoding="unic")
         h2_thin = ImageFont.truetype(font_path + 'Futura-Normal.ttf', 22, encoding="unic")
@@ -267,7 +267,7 @@ def embed(request):
 
 def avatar(request):
     # default response
-    could_not_find = Image.new('RGBA', (1, 1), (0, 0, 0, 0))
+    could_not_find = Image.new('RGB', (1, 1), (0, 0, 0, 0))
     err_response = HttpResponse(content_type="image/jpeg")
     could_not_find.save(err_response, "JPEG")
 
@@ -296,7 +296,7 @@ def avatar(request):
             with open(filepath, 'wb') as fd:
                 for chunk in r.iter_content(chunk_size):
                     fd.write(chunk)
-            avatar = Image.open(filepath, 'r').convert("RGBA")
+            avatar = Image.open(filepath, 'r').convert("RGB")
 
             # make transparent
             datas = avatar.getdata()
@@ -312,7 +312,7 @@ def avatar(request):
             avatar.save(filepath, "PNG")
 
         width, height = (215, 215)
-        img = Image.new("RGBA", (width, height), (255, 255, 255))
+        img = Image.new("RGB", (width, height), (255, 255, 255))
 
         ## config
         icon_size = (215, 215)

@@ -16,6 +16,7 @@
 
 '''
 from django.conf.urls import handler400, handler403, handler404, handler500, include, url
+from django.urls import path
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 
@@ -142,11 +143,11 @@ urlpatterns = [
     # Sitemap
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     # Github Integration
-    url(r'^_github/', include('github.urls', namespace='github')),
+    path('_github/', include('github.urls', namespace='github')),
     # Interests
-    url(r'^bounty/(?P<bounty_id>\d+)/interest/new/$', dashboard.views.new_interest, name='express-interest'),
-    url(r'^bounty/(?P<bounty_id>\d+)/interest/remove/$', dashboard.views.remove_interest, name='remove-interest'),
-    url(r'^bounty/(?P<bounty_id>\d+)/interest/$', dashboard.views.interested_profiles, name='interested-profiles'),
+    path('bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
+    path('bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
+    path('bounty/<int:bounty_id>/interest/', dashboard.views.interested_profiles, name='interested-profiles'),
 ]
 
 handler403 = 'retail.views.handler403'

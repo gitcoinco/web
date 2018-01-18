@@ -18,12 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-from django.conf.urls import url
+from django.urls import path
 
 from .views import github_authentication, github_callback
 
 app_name = 'github'
 urlpatterns = [
-    url(r'^callback/$', github_callback, name='github_callback'),
-    url(r'^auth/$', github_authentication, name='github_auth'),
+    path('callback/', github_callback, name='github_callback'),
+    path('auth/', github_authentication, name='github_auth'),
 ]

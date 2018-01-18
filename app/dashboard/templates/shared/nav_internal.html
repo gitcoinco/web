@@ -32,16 +32,16 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <nav class="navbar-nav ml-auto mr-3">
                     <a class="nav-link" href="/">Home</a>
-                    <a class="nav-link {% if active == 'tools' %}selected{%endif%}" href="/tools">Tools</a>
-                    <a class="nav-link {% if active == 'dashboard' %}selected{%endif%}" href="/explorer">Issue Explorer</a>
-                    <a class="nav-link slack" href="/slack">
+                    <a class="nav-link {% if active == 'tools' %}selected{%endif%}" href="{% url 'tools' %}">Tools</a>
+                    <a class="nav-link {% if active == 'dashboard' %}selected{%endif%}" href="{% url 'explorer' %}">Issue Explorer</a>
+                    <a class="nav-link slack" href="{% url 'slack' %}">
                         <img src="/static/v2/images/social/slack2.png">Slack({{num_slack}})
                     </a>
-                    <a class="nav-link" href="/help">Help</a>
+                    <a class="nav-link" href="{% url 'help' %}">Help</a>
                     <!-- <a class="nav-link{% if request.path == '/ios' %} nav-link--active{% endif %}" href="/ios">Mobile</a> -->
                 </nav>
                 {% if not request.path == '/ios' %}
-                <img class="mr-5" src="/static/v2/images//spaceship.png" width="52" height="45" />
+                <img class="mr-5" src="/static/v2/images/spaceship.png" width="52" height="45" />
                 <a class="btn btn-outline-info pl-4 pr-4 pulseClick mr-2" role="button" href="/_github/auth?redirect_uri=/tip">+ Tip ⚡️</a>
                 {% endif %}
                 <a class="btn btn-outline-info pl-4 pr-4 pulseClick" role="button" href="/_github/auth?redirect_uri=/funding/new">+ Fund Issue{% if not request.path == '/ios' %} 🔥{% endif %}</a>

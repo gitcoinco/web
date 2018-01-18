@@ -41,7 +41,7 @@
             <div class="row nonefound" style="display:none;">
                 <img src="/static/v2/images/shrug_bot.png">
                 <h3>No funded issue found.</h3>
-                <p>Please go back to the <a href="/explorer">Issue Explorer</a> and try again.</p>
+                <p>Please go back to the <a href="{% url 'explorer' %}">Issue Explorer</a> and try again.</p>
                 <br>
                 <h6>Be the OSS Funding you wish to see in the world.</h6>
                 <p id='submitsolicitation'>Looking to fund some work?  You can submit a new Funded Issue <a href="/funding/new">here</a>.</p>
@@ -61,7 +61,7 @@
                     </div>
                     <span class="boldLabel"><span id="web3_created"></span></span>
                     <div id="left_actions"></div>
-                    <a class="font-smaller-2" style="color: #212529;" href="/explorer">&lt; Issue Explorer</a>
+                    <a class="font-smaller-2" style="color: #212529;" href="{% url 'explorer' %}">&lt; Issue Explorer</a>
                 </div>
                     <div class="col-8 right_details">
                         <span class=boldLabel>Status:</span> <span title="Possible states: 1: Open, 2: Fulfilled, 3: Accepted, 4: Expired, 5: Dead" id="status"></span>
