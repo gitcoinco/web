@@ -396,8 +396,13 @@ def bounty_details(request):
             params['card_title'] = "{} | {} Funded Issue Detail | Gitcoin".format(b.title, b.org_name)
             params['title'] = params['card_title']
             params['card_desc'] = ellipses(b.issue_description_text, 255)
+
+        interested_profiles = b.interested.select_related('profile').all()
+        profile_ids = list(interested_profiles.values_list('profile_id', flat=True))
+
         params['avatar_url'] = b.local_avatar_url
-        params['interested_profiles'] = b.interested.select_related('profile').all()
+        params['interested_profiles'] = interested_profiles
+        params['profile_interested'] = request.session['profile_id'] in profile_ids
     except Exception as e:
         print(e)
         logging.error(e)

@@ -16,9 +16,9 @@
 
 '''
 from django.conf.urls import handler400, handler403, handler404, handler500, include, url
-from django.urls import path
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
+from django.urls import path
 
 import dashboard.embed
 import dashboard.helpers

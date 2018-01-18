@@ -28,6 +28,9 @@ from github.utils import BASE_URI, get_auth_url, org_name, repo_url
 class GithubUtilitiesTest(TestCase):
     """Define tests for Github utils."""
 
+    @override_settings(GITHUB_CLIENT_ID='TEST')
+    @override_settings(GITHUB_SCOPE='user')
+    @override_settings(BASE_URL='http://localhost:8080')
     def test_get_auth_url(self):
         """Test the get_auth_url method."""
         redirect = '/funding/new'
