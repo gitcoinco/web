@@ -76,9 +76,10 @@ $(document).ready(function(){
         var tokenName = token['name'];
         var decimalDivisor = 10**decimals;
         var expirationTimeDelta = $('select[name=expirationTimeDelta').val();
-        var metadata = {
+
+       var metadata = {
             issueTitle : $('input[name=title').val(),
-            issueDescription: $('textarea[name=description').val(),
+            issueDescription : $('textarea[name=description').val(),
             issueKeywords : $('input[name=keywords').val(),
             tokenName : tokenName,
             githubUsername : githubUsername,
@@ -87,6 +88,26 @@ $(document).ready(function(){
             projectLength : $('select[name=projectLength').val(),
             bountyType : $('select[name=bountyType').val(),
         }
+
+        var ipfsBounty = {
+            // StandardBounties Fields
+            title: metadata.issueTitle,
+            description: metadata.issueDescription,
+            sourceFileHash: "",
+            sourceFileName: "",
+            contact: metadata.notificationEmail,
+            categories: metadata.issueKeywords.split(","),
+            githubLink: issueURL,
+            // Additional fields added for gitcoin
+            web3created: new Date().getTime()/1000|0,
+            tokenName : tokenName,
+            tokenAddress: tokenAddress,
+            metadata: metadata,
+            // Schema info
+            // See https://github.com/ConsenSys/StandardBounties/issues/21
+            schemaName: 'gitcoin_bounty',
+            schemaVersion: '0.1',
+        };
 
         //validation
         var isError = false;
@@ -149,45 +170,34 @@ $(document).ready(function(){
         ipfs.ipfsApi = IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: "https", root:'/api/v0'});
         ipfs.setProvider({ host: 'ipfs.infura.io', port: 5001, protocol: 'https', root:'/api/v0'});
 
-        var ipfs_bounty_submit = {
-          title: metadata['issueTitle'],
-          description: metadata['issueDescription'],  // Added this to better match Standard Bounty format
-          // These hashes are both empty at first.  I think they get filled in by IPFS
-          sourceFileHash: "", // Changed from null to "" to be consistent with BountiesFactory
-          sourceFileName: "", // Changed from null to "" to be consistent with BountiesFactory
-          contact: notificationEmail,
-          categories: metadata['issueKeywords'].split(","),  // Turn this into an array to be consistent with BountiesFactory
-          githubLink: issueURL,
-          bounty_network: 'gitcoin',
-        };
-
         // create bountydetails array for database sync
         // comments are the corresponding database fields for dashboard_bounty table
-        bountyDetails = [
-            amount,                       // value_in_token
-            tokenAddress,                 // token_address
-            account,                      // bounty_owner_address
-            tokenAddress,                 // claimee_address
-            'true',                       // is_open
-            'true',                       // initialized
-            issueURL,                     // github_url
-            new Date().getTime()/1000|0,  // web3_created
-            JSON.stringify(metadata),     // multiple fields
-            expire_date,                  // expires_date
-            '',                           // claimee_metadata
-            0,                            // placeholder for standard_bounties_id
-        ]
+//         bountyDetails = [
+//             amount,                       // value_in_token
+//             tokenAddress,                 // token_address
+//             account,                      // bounty_owner_address
+//             tokenAddress,                 // claimee_address
+//             'true',                       // is_open
+//             'true',                       // initialized
+//             issueURL,                     // github_url
+//             new Date().getTime()/1000|0,  // web3_created
+//             JSON.stringify(metadata),     // multiple fields
+//             expire_date,                  // expires_date
+//             '',                           // claimee_metadata
+//             0,                            // placeholder for standard_bounties_id
+//         ]
 
         function syncDb() {
             // Need to pass the bountydetails as well, since I can't grab it from the 
             // Standard Bounties contract.
             dataLayer.push({'event': 'fundissue'});
             sync_web3(issueURL);  //Writes the bounty URL to the database
-            localStorage[issueURL] = timestamp();  // Why set issueURL to timestamp()?
+            localStorage[issueURL] = timestamp();  // Used to figure out "local time delta" in bounty_details.js
+            localStorage['issuer'] = account;
             add_to_watch_list(issueURL);
             _alert({ message: "Submission sent to web3." }, 'info');
             setTimeout(function(){
-                delete localStorage['issueURL'];  // oh this was just temporary
+                delete localStorage['issueURL'];
                 mixpanel.track("Submit New Bounty Success", {});
                 document.location.href= "/funding/details/?url="+issueURL;
             },1000);
@@ -205,7 +215,7 @@ $(document).ready(function(){
             }
 
             localStorage['txid'] = result;
-            localStorage['bountyDetails'] = JSON.stringify(bountyDetails);
+            // localStorage['bountyDetails'] = JSON.stringify(bountyDetails);
             syncDb();
 
         }
@@ -224,19 +234,19 @@ $(document).ready(function(){
             // issueAndActivateBounty is a method definied in the StandardBounties solidity contract.
 
             var bountyIndex = bounty.issueAndActivateBounty(
-                account, 
-                expire_date, 
-                result, 
-                amount, 
-                0x0, 
-                false, 
-                tokenAddress,
-                amount,
-                {
+                account,            // _issuer
+                expire_date,        // _deadline
+                result,             // _data (ipfs hash)
+                amount,             // _fulfillmentAmount
+                0x0,                // _arbiter
+                false,              // _paysTokens
+                tokenAddress,       // _tokenContract
+                amount,             // _value
+                {                   // {from: x, to: y}
                     from :account,
                     value:amount,
                 },
-                web3Callback
+                web3Callback        // callback for web3
             );
         }
         // Check if the bounty already exists
@@ -250,7 +260,7 @@ $(document).ready(function(){
                 return;
             } else {
                 // Add data to IPFS and kick off all the callbacks.
-                ipfs.addJson(ipfs_bounty_submit, newIpfsCallback);
+                ipfs.addJson(ipfsBounty, newIpfsCallback);
             }
         });
     });
