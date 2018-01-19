@@ -33,7 +33,6 @@ from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import convert_amount
 
-
 logger = logging.getLogger(__name__)
 
 
