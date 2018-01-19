@@ -80,6 +80,7 @@ class Bounty(SuperModel):
     ]
     # TODO:  claimee == fulfiller for now.  Didn't change the database model because the names
     # TODO   are used everywhere in the application.  Eventually we might want to standardize this.
+    web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
     web3_created = models.DateTimeField()
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
