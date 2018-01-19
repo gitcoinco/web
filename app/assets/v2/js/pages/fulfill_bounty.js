@@ -28,6 +28,10 @@ window.onload = function(){
                 notificationEmail : notificationEmail,
                 githubUsername : githubUsername,
             });
+            var fulfillerMetadata = {
+                notificationEmail : notificationEmail,
+                githubUsername : githubUsername,
+            }
             localStorage['githubUsername'] = githubUsername;
 
             var isError = false;
@@ -52,12 +56,18 @@ window.onload = function(){
             ipfs.ipfsApi = IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: "https", root:'/api/v0'});
             ipfs.setProvider({ host: 'ipfs.infura.io', port: 5001, protocol: 'https', root:'/api/v0'});
 
-            var submit = {
+            var ipfsFulfill = {
+                // StandardBounties Fields
                 description: issueURL,
                 sourceFileName: "",
                 sourceFileHash: "",
                 sourceDirectoryHash: "",
                 contact: notificationEmail,
+                // Additional fields added for gitcoin
+                // fulfillerAddress: account,
+                fulfillerMetadata: fulfillerMetadata,
+                schemaName: 'gitcoin_fulfillment',
+                schemaVersion: '0.1'
             }
 
             var _callback = function(error, result){
@@ -78,18 +88,18 @@ window.onload = function(){
                         var web3Callback = function(error, result){
                             var next = function(){
                                 localStorage['txid'] = result;
-                                updates = {
-                                    claimee_email: notificationEmail,
-                                    claimee_github_username: githubUsername,
-                                    claimee_metadata: {},
-                                    claimeee_address: account,
-                                    idx_status: 'fulfilled',
+                                // updates = {
+                                //     claimee_email: notificationEmail,
+                                //     claimee_github_username: githubUsername,
+                                //     claimee_metadata: {},
+                                //     claimeee_address: account,
+                                //     idx_status: 'fulfilled',
 
-                                }
+                                // }
                                 // Update the database directly with the fullfillment fields
                                 // See views.sync_web3
                                 dataLayer.push({'event': 'claimissue'});
-                                sync_web3(issueURL, JSON.stringify(updates));
+                                sync_web3(issueURL);
                                 localStorage[issueURL] = timestamp();  //ipfs timestamp
                                 add_to_watch_list(issueURL);
                                 _alert({ message: "Fulfillment submitted to web3." },'info');
@@ -128,7 +138,7 @@ window.onload = function(){
                     e.preventDefault();
                 }
             }; //_callback
-            ipfs.addJson(submit, _callback);
+            ipfs.addJson(ipfsFulfill, _callback);
         });
     },100);
 
