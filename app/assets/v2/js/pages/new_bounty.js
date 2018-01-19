@@ -216,6 +216,7 @@ $(document).ready(function(){
                 $('#submitBounty').removeAttr('disabled');
             } else {
                 sync_web3(issueURL);
+                dataLayer.push({'event': 'fundissue'});
                 localStorage['txid'] = result;
                 localStorage[issueURL] = timestamp();
                 add_to_watch_list(issueURL);

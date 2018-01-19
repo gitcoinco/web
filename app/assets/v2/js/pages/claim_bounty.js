@@ -132,6 +132,7 @@ window.onload = function(){
                     var final_callback = function(error, result){
                         var next = function(){
                             localStorage['txid'] = result;
+                            dataLayer.push({'event': 'claimissue'});
                             sync_web3(issueURL);
                             localStorage[issueURL] = timestamp();
                             add_to_watch_list(issueURL);
