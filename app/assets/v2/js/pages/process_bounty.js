@@ -78,11 +78,7 @@ window.onload = function(){
                     var final_callback = function(error, result){
                         var next = function(){
                             localStorage['txid'] = result;
-                            updates = {
-                                is_open: false,  // Close out the bounty in the database
-                                idx_status: 'accepted',
-                            }
-                            sync_web3(issueURL, JSON.stringify(updates));
+                            sync_web3(issueURL);
                             localStorage[issueURL] = timestamp();
                             add_to_watch_list(issueURL);
                             _alert({ message: "Submitted transaction to web3." }, 'info');
