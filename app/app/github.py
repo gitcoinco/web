@@ -31,21 +31,22 @@ v3headers = {
 }
 
 
-def search(q):
+def search(q, with_credentials=True):
     import requests
 
     params = (
         ('q', q),
         ('sort', 'updated'),
     )
-
-    response = requests.get('https://api.github.com/search/users', auth=_auth, headers=v3headers, params=params)
+    if with_credentials:
+      response = requests.get('https://api.github.com/search/users', auth=_auth, headers=v3headers, params=params)
+    else:
+      response = requests.get('https://api.github.com/search/users', headers=v3headers, params=params)
     #print(response.headers['X-RateLimit-Limit'])
     #print(response.headers['X-RateLimit-Remaining'])
     return response.json()
 
-
-def get_issue_comments(owner, repo, issue=None):
+def get_issue_comments(owner, repo):
     params = {
         'sort': 'created',
         'direction': 'desc',
