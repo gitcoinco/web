@@ -219,3 +219,7 @@ except ImportError as exp:
 # Include test settings override
 if TEST:
     from .test_settings import *  # NOQA
+
+# Include Travis CI test settings override
+if 'TRAVIS' in os.environ:
+    from .travisci_test_settings import *  # NOQA

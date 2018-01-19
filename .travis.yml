@@ -9,6 +9,11 @@ services:
 install:
   - cp app/app/local_settings.py.dist app/app/local_settings.py
   - pip install -r requirements/test.txt
+sudo: required
+before_script:
+  - bin/install-postgres-10.sh
+  - psql -c 'create database travis_ci_test;' -U postgres
+  - python app/manage.py migrate
 script:
   - pytest
 after_success:
