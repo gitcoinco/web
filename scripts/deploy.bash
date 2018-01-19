@@ -25,14 +25,14 @@ DISTID=$2
 # setup
 cd 
 cd gitcoin/coin
-source ../gitcoinenv/bin/activate
+source ../gitcoin3env/bin/activate
 
 # pull from git
 git add .
 git stash
 # If no $BRANCH is specified, it will use the current one
 git checkout $BRANCH
-git pull origin $BRANCH
+git pull gitcoinco $BRANCH
 
 #deploy hooks
 echo "- install req"
