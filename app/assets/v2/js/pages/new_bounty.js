@@ -181,6 +181,7 @@ $(document).ready(function(){
         function syncDb() {
             // Need to pass the bountydetails as well, since I can't grab it from the 
             // Standard Bounties contract.
+            dataLayer.push({'event': 'fundissue'});
             sync_web3(issueURL);  //Writes the bounty URL to the database
             localStorage[issueURL] = timestamp();  // Why set issueURL to timestamp()?
             add_to_watch_list(issueURL);

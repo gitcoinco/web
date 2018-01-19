@@ -88,6 +88,7 @@ window.onload = function(){
                                 }
                                 // Update the database directly with the fullfillment fields
                                 // See views.sync_web3
+                                dataLayer.push({'event': 'claimissue'});
                                 sync_web3(issueURL, JSON.stringify(updates));
                                 localStorage[issueURL] = timestamp();  //ipfs timestamp
                                 add_to_watch_list(issueURL);
