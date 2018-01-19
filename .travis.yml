@@ -4,6 +4,8 @@ python:
   - "2.7"
 env:
   - PYTHONPATH="$TRAVIS_BUILD_DIR/app/"
+services:
+  - postgresql
 install:
   - cp app/app/local_settings.py.dist app/app/local_settings.py
   - pip install -r requirements/test.txt
