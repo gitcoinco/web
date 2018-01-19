@@ -44,6 +44,7 @@ echo "- collect static"
 ./manage.py collectstatic --noinput -i other
 rm -Rf ~/gitcoin/coin/app/static/other
 echo "- db"
+./manage.py makemigrations
 ./manage.py migrate
 ./manage.py createcachetable
 
