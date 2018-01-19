@@ -30,14 +30,13 @@ from app.github import get_user as get_github_user
 from app.utils import ellipses, sync_profile
 from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty, BountySyncRequest, Profile, Subscription, Tip
-from dashboard.notifications import maybe_market_tip_to_github, maybe_market_tip_to_slack
-from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from marketing.mails import tip_email
+from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
+from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 
-confirm_time_minutes_target = 3
+confirm_time_minutes_target = 60
 
 
 def send_tip(request):
@@ -148,7 +147,7 @@ def send_tip_2(request):
         #notifications
         did_post_to_github = maybe_market_tip_to_github(tip)
         maybe_market_tip_to_slack(tip, 'new_tip', tip.txid)
-        tip_email(tip, set(emails), True)
+        maybe_market_tip_to_email(tip, emails)
         if len(emails) == 0:
                 status = 'error'
                 message = 'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.'
@@ -176,6 +175,8 @@ def process_bounty(request):
         'issueURL': request.GET.get('source'),
         'title': 'Process Issue',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
     }
 
     return TemplateResponse(request, 'process_bounty.html', params)
@@ -191,6 +192,14 @@ def dashboard(request):
     return TemplateResponse(request, 'dashboard.html', params)
 
 
+def gas(request):
+    context = {
+        'conf_time_spread': conf_time_spread(),
+        'title': 'Live Gas Usage => Predicted Conf Times'
+        }
+    return TemplateResponse(request, 'gas.html', context)
+
+
 def new_bounty(request):
 
     params = {
@@ -198,6 +207,8 @@ def new_bounty(request):
         'active': 'submit_bounty',
         'title': 'Create Funded Issue',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
     }
 
     return TemplateResponse(request, 'submit_bounty.html', params)
@@ -210,6 +221,8 @@ def claim_bounty(request):
         'title': 'Claim Issue',
         'active': 'claim_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
     }
 
     return TemplateResponse(request, 'claim_bounty.html', params)
@@ -222,13 +235,14 @@ def clawback_expired_bounty(request):
         'title': 'Clawback Expired Issue',
         'active': 'clawback_expired_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
     }
 
     return TemplateResponse(request, 'clawback_expired_bounty.html', params)
 
 
 def bounty_details(request):
-
     params = {
         'issueURL': request.GET.get('issue_'),
         'title': 'Issue Details',
@@ -433,6 +447,14 @@ def toolbox(request):
              "link": "https://gitcoin.co/tips",
              "active": "false",
              'stat_graph': 'tips',
+        }, {
+             "name": "Code Sponsor",
+             "img": "/static/v2/images/codesponsor.jpg",
+             "description": '''CodeSponsor sustains open source
+                        by connecting sponsors with open source projects.''',
+             "link": "https://codesponsor.io",
+             "active": "false",
+             'stat_graph': 'codesponsor',
         } 
         ]
       }, {
@@ -509,6 +531,14 @@ def toolbox(request):
             "link": "/profile/mbeacom",
             "active": "true",
             'stat_graph': 'profiles_ingested',
+            },
+           {
+            "name": "ETH Tx Time Predictor",
+            "img": "/static/v2/images/tradeoffs.png",
+            "description": '''Estimate Tradeoffs between Ethereum Network Tx Fees and Confirmation Times ''',
+            "link": "/gas",
+            "active": "true",
+            'stat_graph': 'gas_page',
             },
           ]
        }, {

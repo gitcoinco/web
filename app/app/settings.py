@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'gas',
     'chartit',
     'email_obfuscator',
+    'linkshortener',
 ]
 
 MIDDLEWARE = [
@@ -203,6 +204,10 @@ SECURE_HSTS_SECONDS = 3600
 
 # Faucet App config
 FAUCET_AMOUNT = .003
+
+# List of github usernames to not count as comments on an issue
+IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
+
 
 # Include local settings overrides
 try:

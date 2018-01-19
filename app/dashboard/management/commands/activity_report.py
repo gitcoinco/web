@@ -69,7 +69,7 @@ class Command(BaseCommand):
             'last_activity': bounty.modified_on,
             'amount': bounty.get_natural_value(),
             'denomination': bounty.token_name,
-            'amount_eth': bounty.value_in_eth,
+            'amount_eth': bounty.value_in_eth / 10**18,
             'amount_usdt': bounty.value_in_usdt,
             'from_address': bounty.bounty_owner_address,
             'claimee_address': bounty.claimeee_address,
@@ -77,7 +77,7 @@ class Command(BaseCommand):
             'from_username': bounty.bounty_owner_github_username or '',
             'claimee_github_username': bounty.claimee_github_username or '',
             'status': bounty.status,
-            'comments': ''
+            'comments': bounty.github_url,
         }
 
     def format_tip(self, tip):
@@ -85,17 +85,17 @@ class Command(BaseCommand):
             'type': 'tip',
             'created_on': tip.created_on,
             'last_activity': tip.modified_on,
-            'amount': tip.get_natural_value(),
+            'amount': tip.get_natural_value() * 10**18,
             'denomination': tip.tokenName,
             'amount_eth': tip.value_in_eth,
             'amount_usdt': tip.value_in_usdt,
             'from_address': '',
             'claimee_address': '',
             'repo': self.extract_github_repo(tip.github_url) if tip.github_url else '',
-            'from_username': tip.from_email, # user tipper's email for now so tips are somewhat identifiable
-            'claimee_github_username': '', # don't know who recieves this tip at the moment
+            'from_username': tip.from_name,
+            'claimee_github_username': tip.username,
             'status': tip.status,
-            'comments': ''
+            'comments': tip.github_url,
         }
 
     def upload_to_s3(self, filename, contents):
@@ -146,6 +146,7 @@ class Command(BaseCommand):
 
             url = self.upload_to_s3('activity_report_%s_%s_generated_on_%s.csv' % (start, end, now), csvfile.getvalue())
             body = '<a href="%s">%s</a>' % (url, url)
+            print(url)
 
             send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, subject, body='', html=body, add_bcc=False)
 

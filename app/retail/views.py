@@ -18,7 +18,7 @@
 '''
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
@@ -56,6 +56,18 @@ def about(request):
         'title': 'About',
     }
     return TemplateResponse(request, 'about.html', context)
+
+
+def mission(request):
+  context = {
+    'active': 'mission',
+    'title': 'Mission',
+    'card_title': "Gitcoin is a mission-driven organization.",
+    'card_desc': "Our mission is to push open source forward.",
+    'avatar_url': '/static/v2/images/mission/hero.png',
+  }
+
+  return TemplateResponse(request, 'mission.html', context)
 
 
 def help(request):
@@ -386,11 +398,23 @@ def error(request, code):
 
 
 def portal(request):
-    return redirect('https://gitcoinhelp.zendesk.com/hc/en-us/')
+    return redirect('https://gitcoin.co/help')
+
+
+def community(request):
+    return redirect('https://github.com/gitcoinco/community')
+
+
+def onboard(request):
+    return redirect('https://docs.google.com/document/d/1DQvek5TwASIp1njx5VZeLKEgSxfvxm871vctx1l_33M/edit?')
 
 
 def ethdenver(request):
     return redirect('https://goo.gl/forms/FQogarXntrISFCsJ2')
+
+
+def presskit(request):
+    return redirect('https://www.dropbox.com/sh/bsjzbu0li2z0kr1/AACKgnQC3g6m52huYI3Gx3Ega?dl=0')
 
 
 def feedback(request):
@@ -421,8 +445,19 @@ def browser_extension_firefox(request):
     return redirect('https://addons.mozilla.org/en-US/firefox/addon/gitcoin/')
 
 
+def itunes(request):
+    return HttpResponse('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)')
+    return redirect('https://itunes.apple.com/us/app/gitcoin/idXXXXXXXXX')
+
+
 def ios(request):
-    return redirect('https://goo.gl/forms/HHOcMDKArCPo9Xas1')
+    return HttpResponse('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)')
+
+    context = {
+        'active': 'ios',
+        'title': 'iOS',
+    }
+    return TemplateResponse(request, 'ios.html', context)
 
 
 def iosfeedback(request):
@@ -430,7 +465,7 @@ def iosfeedback(request):
 
 
 def casestudy(request):
-    return redirect('https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit#heading=h.fncqd9y7lo1h')
+    return redirect('https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit')
 
 
 def schwag(request):

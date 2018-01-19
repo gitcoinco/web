@@ -108,3 +108,10 @@ class SlackUser(SuperModel):
     def __str__(self):
         return "{}; lastseen => {}".format(self.username, self.last_seen)
 
+
+class GithubOrgToTwitterHandleMapping(SuperModel):
+    github_orgname = models.CharField(max_length=500)
+    twitter_handle = models.CharField(max_length=500)
+
+    def __str__(self):
+        return "{} => {}".format(self.github_orgname, self.twitter_handle)

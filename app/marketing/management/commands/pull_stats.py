@@ -15,13 +15,15 @@
     along with this program. If not,see <http://www.gnu.org/licenses/>.
 
 '''
+import time
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from marketing.models import Stat
 from slackclient import SlackClient
-import time
+
 
 def gitter():
     from gitterpy.client import GitterClient
@@ -68,8 +70,8 @@ def slack_users():
 
 
 def slack_users_active():
-    #if settings.DEBUG:
-    #    return
+    if settings.DEBUG:
+        return
     from marketing.models import SlackUser
 
     sc = SlackClient(settings.SLACK_TOKEN)
@@ -78,53 +80,54 @@ def slack_users_active():
 
     num_active = 0
     num_away = 0
-    for user in ul['members']:
+    if int(time.strftime("%H")) == 0: #performance hack: only run this 1x per day since it runs very long
+        for user in ul['members']:
 
-        # manage making request and still respecting rate limit
-        should_do_request = True
-        is_rate_limited = False
-        while should_do_request:
-            response = sc.api_call("users.getPresence", user=user['id'])
-            is_rate_limited = response.get('error', None) == 'ratelimited'
-            should_do_request = is_rate_limited
-            if is_rate_limited:
-                time.sleep(2)
+            # manage making request and still respecting rate limit
+            should_do_request = True
+            is_rate_limited = False
+            while should_do_request:
+                response = sc.api_call("users.getPresence", user=user['id'])
+                is_rate_limited = response.get('error', None) == 'ratelimited'
+                should_do_request = is_rate_limited
+                if is_rate_limited:
+                    time.sleep(2)
 
-        # figure out the slack users' presence
-        pres = response.get('presence', None)
-        if pres == 'active':
-            num_active += 1
-        if pres == 'away':
-            num_away += 1
+            # figure out the slack users' presence
+            pres = response.get('presence', None)
+            if pres == 'active':
+                num_active += 1
+            if pres == 'away':
+                num_away += 1
 
-        # save user by user 'lastseen' info
-        username = user['profile']['display_name']
-        email = user['profile']['email']
-        su, _ = SlackUser.objects.get_or_create(
-            username=username,
-            email=email,
-            defaults={
-                'profile': user['profile'],
-            }
+            # save user by user 'lastseen' info
+            username = user['profile']['display_name']
+            email = user['profile']['email']
+            su, _ = SlackUser.objects.get_or_create(
+                username=username,
+                email=email,
+                defaults={
+                    'profile': user['profile'],
+                }
+                )
+            if pres == 'active':
+                su.last_seen = timezone.now()
+                su.times_seen += 1
+            else:
+                su.last_unseen = timezone.now()
+                su.times_unseen += 1
+            su.save()
+
+        #create broader Stat object
+        Stat.objects.create(
+            key='slack_users_active',
+            val=num_active,
             )
-        if pres == 'active':
-            su.last_seen = timezone.now()
-            su.times_seen += 1
-        else:
-            su.last_unseen = timezone.now()
-            su.times_unseen += 1
-        su.save()
 
-    #create broader Stat object
-    Stat.objects.create(
-        key='slack_users_active',
-        val=num_active,
-        )
-
-    Stat.objects.create(
-        key='slack_users_away',
-        val=num_away,
-        )
+        Stat.objects.create(
+            key='slack_users_away',
+            val=num_away,
+            )
 
 
 def profiles_ingested():
@@ -181,6 +184,21 @@ def firefox_ext_users():
     num_users = eles[0].text.replace(' Users', '').replace('No', '0')
     Stat.objects.create(
         key='browser_ext_firefox',
+        val=num_users,
+        )
+
+
+def medium_subscribers():
+    import requests
+    import json
+
+    url = 'https://medium.com/gitcoin?format=json'
+    html_response = requests.get(url)
+    data = json.loads(html_response.text.replace('])}while(1);</x>',''))
+    num_users = data['payload']['references']['Collection']['d414fce43ce1']['metadata']['followerCount']
+    print(num_users)
+    Stat.objects.create(
+        key='medium_subscribers',
         val=num_users,
         )
 
@@ -377,6 +395,7 @@ class Command(BaseCommand):
 
         fs = [
             gitter,
+            medium_subscribers,
             google_analytics,
             github_stars,
             profiles_ingested,

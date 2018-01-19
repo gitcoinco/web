@@ -237,6 +237,14 @@ div.button-pink {
   max-height: 150px;
 }
 
+.mission-img-wrapper {
+    height: 250px;
+}
+
+.mission-img-wrapper img {
+    max-height: 250px;
+}
+
 .avatar-img-wrapper {
   height: 200px;
 }

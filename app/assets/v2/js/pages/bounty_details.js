@@ -184,72 +184,85 @@ var isBountyOwner = function(result) {
 }
 
 var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
-        console.log("checking this issue for updates:");
-        console.log(issueURL);
-        //setup callbacks
-        var changes_synced_callback = function(){
-            document.location.href = document.location.href;
-            //check_for_bounty_changed_updates_REST();
-        };
-        var check_for_bounty_changed_updates_REST = function(){
-            var uri = '/api/v0.1/bounties?github_url='+issueURL;
-             $.get(uri, function(results){
-                results = sanitizeAPIResults(results);
-                var result = results[0];
-                // if remote entry has been modified, refresh the page.  if not, try again
-                if(typeof result == 'undefined' || result['modified_on'] == last_modified_time_remote){
-                    setTimeout(check_for_bounty_changed_updates_REST,2000);
-                } else {
-                    changes_synced_callback();
-                }
-             });
-        };
-        var check_for_bounty_changed_updates_web3 = function(){
-            callFunctionWhenTransactionMined(localStorage['txid'],function(){
-                var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-                setTimeout(function(){
-                    bounty.bountydetails.call(issueURL, function(error, result){
-                        if(error){
-                            setTimeout(check_for_bounty_changed_updates_web3, 1000);
-                            console.error(error);
-                        } else {
-                            result[0] = result[0].toNumber();
-                            result[7] = result[7].toNumber();
-                            result[9] = result[9].toNumber();
-                            was_success = result[0] > 0;
-                            if(was_success){
-                                console.log('success syncing with web3');
-                                sync_web3(issueURL, result, changes_synced_callback);
-                            } else {
-                                console.error(result);
-                                var link_url = etherscan_tx_url(localStorage['txid']);
-                                _alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
-                            }
-                        }
-                    });
-                },1000);
-            });
-        };
+    console.log("checking this issue for updates:");
+    console.log(issueURL);
 
-        var showWarningMessage = function(){
-            var pendingchanges = 'pending changes';
-            var this_transaction = 'this transaction';
-            var title = '';
-            if(typeof localStorage['txid'] != 'undefined' && localStorage['txid'].indexOf('0x') != -1){
-                var link_url = etherscan_tx_url(localStorage['txid']);
-                pendingchanges = "<a target=new href='"+link_url+"'>"+pendingchanges+"</a>"
-                this_transaction = "<a target=new href='"+link_url+"'>"+this_transaction+"</a>"
-                title = "Your transaction has been posted to web3.";
+    //setup callbacks
+    var changes_synced_callback = function () {
+        document.location.href = document.location.href;
+        //check_for_bounty_changed_updates_REST();
+    };
+
+    var check_for_bounty_changed_updates_REST = function(){
+        var uri = '/api/v0.1/bounties?github_url='+issueURL;
+         $.get(uri, function(results){
+            results = sanitizeAPIResults(results);
+            var result = results[0];
+            // if remote entry has been modified, refresh the page.  if not, try again
+            if(typeof result == 'undefined' || result['modified_on'] == last_modified_time_remote){
+                setTimeout(check_for_bounty_changed_updates_REST, 2000);
+            } else {
+                changes_synced_callback();
             }
-            var msg = `<br>This funded issue has recently been updated and while the blockchain syncs it has `+pendingchanges+`.
-            Please wait a minute or two for web3 to sync `+this_transaction+`.
-            <br>(Please DO NOT close the browser tab.  This page will automatically refresh as soon as the blockchain is updated.)`
-            _alert({ title: title, message: msg},'info');
+         });
+    };
+
+    var check_for_bounty_changed_updates_web3 = function(){
+        callFunctionWhenTransactionMined(localStorage['txid'],function(){
+            var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+            setTimeout(function(){
+                bounty.bountydetails.call(issueURL, function(error, result){
+                    if (error) {
+                        setTimeout(check_for_bounty_changed_updates_web3, 1000);
+                        console.error(error);
+                    } else {
+                        result[0] = result[0].toNumber();
+                        result[7] = result[7].toNumber();
+                        result[9] = result[9].toNumber();
+                        was_success = result[0] > 0;
+
+                        if (was_success) {
+                            console.log('success syncing with web3');
+                            sync_web3(issueURL, result, changes_synced_callback);
+                        } else {
+                            console.error(result);
+                            var link_url = etherscan_tx_url(localStorage['txid']);
+                            //_alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
+                        }
+                    }
+                });
+            },1000);
+        });
+    };
+
+    var showWarningMessage = function () {
+
+        if (typeof localStorage['txid'] != 'undefined' && localStorage['txid'].indexOf('0x') != -1) {
+            clearInterval(interval);
+            var link_url = etherscan_tx_url(localStorage['txid']);
+            $('#pending_changes').attr("href", link_url);
+            $('#transaction_url').attr("href", link_url);
         }
 
+        $("#bounty_details").hide();
+        $("#bounty_detail").hide();
+
+        $(".transaction-status").show();
+        $(".waiting_room_entertainment").show();
+
+        var radioButtons = $(".sidebar_search input");
+
+        for (var i = radioButtons.length - 1; i >= 0; i--) {
+            radioButtons[i].disabled = true;
+        }
+
+        var secondsBetweenQuoteChanges = 30;
+        waitingRoomEntertainment();
+        var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
+    };
 
     var should_display_warning = false;
-    if(localStorage[issueURL]){
+    if (localStorage[issueURL]) {
         //local warning
         var local_delta = parseInt(timestamp() - localStorage[issueURL]);
         var is_changing_local_recent = local_delta < (60 * 60); // less than one hour
@@ -259,13 +272,14 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         var is_changing_remote_recent = remote_delta < (60 * 60); // less than one minute
 
         should_display_warning = !last_modified_time_remote || ((is_changing_local_recent) && (remote_delta > local_delta));
-        if(should_display_warning){
 
+        if (should_display_warning) {
             showWarningMessage();
             showLoading();
             check_for_bounty_changed_updates_web3();
         }
     }
+
     return should_display_warning;
 };
 
@@ -273,7 +287,7 @@ window.addEventListener('load', function() {
     setTimeout(function(){
         var issueURL = getParam('url');
         $("#submitsolicitation a").attr('href','/funding/new/?source=' + issueURL)
-        var uri = '/api/v0.1/bounties?';
+        var uri = '/api/v0.1/bounties/?';
         $.get(uri, function(results){
             results = sanitizeAPIResults(results);
             var nonefound = true;
@@ -327,6 +341,19 @@ window.addEventListener('load', function() {
                         // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
                         github_url = github_url.replace('pipermerriam/web3.py','ethereum/web3.py');
 
+                        if(result['github_comments']){
+                            var entry_comment = {
+                              href: github_url,
+                              text: result['github_comments'],
+                              target: 'new',
+                              parent: 'right_actions',
+                              color: 'github-comment'
+                            };
+                            actions.push(entry_comment);
+                        }
+
+
+
                         var entry = {
                             href: github_url,
                             text: 'View on Github',
@@ -335,17 +362,18 @@ window.addEventListener('load', function() {
                             color: 'darkBlue',
                             title: 'Github is where the issue scope lives.  Its also a great place to collaborate with, and get to know, other developers (and sometimes even the repo maintainer themselves!).'
                         }
+
+                        actions.push(entry);
                     }
-                    actions.push(entry);
                     var enabled = !isBountyOwner(result);
                     if(result['status']=='open' ){
                         var entry = {
                             href: '/funding/claim?source='+result['github_url'],
-                            text: 'Claim Issue',
+                            text: 'Claim Work',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Claim an issue when you sincerely intend to work on it.\n\n It is not necessary to have started work when you claim an issue, but please (1) comment on the github thread after you claim it, (2) claim an issue only if you plan to start work within the next 12 hours  & (3) only claim it if you feel like you understand the scope and can see it to completion. ' : 'Can only be performed if you are not the funder.',
+                            title: enabled ? 'Claim work when you sincerely intend to work on it.\n\n It is not necessary to have started work when you claim work on an issue, but please (1) comment on the github thread after you claim it, (2) claim work only if you plan to start work within the next 12 hours  & (3) only claim work if you feel like you understand the scope and can see it to completion. ' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(entry);
                     }
@@ -412,7 +440,8 @@ window.addEventListener('load', function() {
                     return;
                 }
             }
-            if(nonefound){
+
+            if (nonefound) {
                 $(".nonefound").css('display','block');
                 $("#primary_view").css('display','none');
                 pendingChangesWarning(issueURL);

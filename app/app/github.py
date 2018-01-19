@@ -51,7 +51,10 @@ def get_issue_comments(owner, repo):
         'sort': 'created',
         'direction': 'desc',
     }
-    url = 'https://api.github.com/repos/{}/{}/issues/comments'.format(owner, repo)
+    if issue:
+        url = 'https://api.github.com/repos/{}/{}/issues/{}/comments'.format(owner, repo, issue)
+    else:
+        url = 'https://api.github.com/repos/{}/{}/issues/comments'.format(owner, repo)
     response = requests.get(url, auth=_auth, headers=headers, params=params)
 
     return response.json()
