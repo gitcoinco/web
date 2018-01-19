@@ -10,46 +10,6 @@ window.onload = function(){
             $('input[name=terms]').attr('checked','checked');
         }
 
-        var estimateGas = function(issueURL, method, success_callback, failure_calllback, final_callback){
-            var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-            $("#gasLimit").addClass('loading');
-            method.estimateGas(
-                issueURL, 
-                function(errors,result){
-                    $("#gasLimit").removeClass('loading');
-                    console.log(errors,result);
-                    var is_issue_taken = typeof result == 'undefined' || result > 209568;
-                    if(errors || is_issue_taken){
-                        failure_calllback(errors);
-                        return;
-                    }
-                    var gas = Math.round(result * gasMultiplier);
-                    var gasLimit = Math.round(gas * gasLimitMultiplier);
-                    success_callback(gas, gasLimit, final_callback);
-            });
-        };
-        //updates recommended metamask settings
-        var updateInlineGasEstimate = function(){
-            var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-            var issueURL = $('input[name=issueURL]').val();
-            var success_callback = function(gas, gasLimit, _){
-                $("#gasLimit").val(gas);
-                update_metamask_conf_time_and_cost_estimate();
-            };
-            var failure_callback = function(){
-                $("#gasLimit").val('Unknown');
-                update_metamask_conf_time_and_cost_estimate();
-            };
-            var final_callback = function(){};
-            //estimateGas(issueURL, bounty.approveBountyClaim, success_callback, failure_callback, final_callback);
-            success_callback(50531,50531,'');
-        };
-        setTimeout(function(){
-            updateInlineGasEstimate();
-        },100);
-        $('input').change(updateInlineGasEstimate);
-        $('#gasPrice').keyup(update_metamask_conf_time_and_cost_estimate);
-
         var bountyDetails = []
 
         $('#goBack').click(function(e) {

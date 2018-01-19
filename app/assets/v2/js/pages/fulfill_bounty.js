@@ -17,7 +17,6 @@ window.onload = function(){
             $('input[name=issueURL]').val(getParam('source'));
         }
 
-
         $('#submitBounty').click(function(e){
             mixpanel.track("Claim Bounty Clicked", {});
             loading_button($('#submitBounty'));

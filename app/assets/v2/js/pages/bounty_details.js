@@ -462,7 +462,7 @@ window.addEventListener('load', function() {
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Claim an issue when you sincerely intend to work on it.\n\n It is not necessary to have started work when you claim an issue, but please (1) comment on the github thread after you claim it, (2) claim an issue only if you plan to start work within the next 12 hours  & (3) only claim it if you feel like you understand the scope and can see it to completion. ' : 'Can only be performed if you are not the funder.',
+                            title: enabled ? 'Fulfill an issue when you sincerely intend to work on it.\n\n It is not necessary to have started work when you fulfill an issue, but please (1) comment on the github thread after you fulfill it, (2) fulfill an issue only if you plan to start work within the next 12 hours  & (3) only claim it if you feel like you understand the scope and can see it to completion. ' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(entry);
 
@@ -470,7 +470,9 @@ window.addEventListener('load', function() {
                             href: is_interested ? '/uninterested' : '/interested',
                             text: is_interested ? 'Remove Interest' : 'Express Interest',
                             parent: 'right_actions',
-                            color: is_interested ? 'darkBlue' : 'darkGrey'
+                            color: enabled ? 'darkBlue' : 'darkGrey',
+                            extraClass: enabled ? '' : 'disabled',
+                            title: enabled ? 'Express interest in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(interestEntry);
                     }

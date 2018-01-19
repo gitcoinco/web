@@ -11,46 +11,8 @@ window.onload = function(){
             $('input[name=issueURL]').val(getParam('source'));
         }
 
-        var estimateGas = function(issueURL, success_callback, failure_calllback, final_callback){
-            var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-            $("#gasLimit").addClass('loading');
-            bounty.clawbackExpiredBounty.estimateGas(
-                issueURL, 
-                function(errors,result){
-                    $("#gasLimit").removeClass('loading');
-                    var is_issue_taken = typeof result == 'undefined' || result > 403207;
-                    if(errors || is_issue_taken){
-                        failure_calllback(errors);
-                        return;
-                    }
-                    var gas = Math.round(result * gasMultiplier);
-                    var gasLimit = Math.round(gas * gasLimitMultiplier);
-                    success_callback(gas, gasLimit, final_callback);
-            });
-        };
-        //updates recommended metamask settings
-        var updateInlineGasEstimate = function(){
-            var issueURL = $('input[name=issueURL]').val();
-            var success_callback = function(gas, gasLimit, _){
-                $("#gasLimit").val(gas);
-                update_metamask_conf_time_and_cost_estimate();
-            };
-            var failure_callback = function(errors){
-                $("#gasLimit").val('Unknown');
-                update_metamask_conf_time_and_cost_estimate();
-            };
-            var final_callback = function(){};
-            //estimateGas(issueURL, success_callback, failure_callback, final_callback);
-            success_callback(86936,86936,'');
-        };
-        setTimeout(function(){
-            updateInlineGasEstimate();
-        },100);
-        $('input').change(updateInlineGasEstimate);
-        $('#gasPrice').keyup(update_metamask_conf_time_and_cost_estimate);
-
         $('#submitBounty').click(function(e){
-            mixpanel.track("Clawback Bounty Clicked", {});
+            mixpanel.track("Kill Bounty Clicked", {});
             loading_button($('#submitBounty'));
             e.preventDefault();
             var issueURL = $('input[name=issueURL]').val();
@@ -132,26 +94,6 @@ window.onload = function(){
                         }
                     };
 
-                    setTimeout(function(){
-                        var failure_calllback = function(errors){
-                            _alert({ message: "This issue cannot be clawed back.  Please leave a comment <a href=https://github.com/gitcoinco/web/issues/169>here</a> if you need help." });
-                            mixpanel.track("Claim Bounty Error", {step: 'estimateGas', error: errors});
-                            unloading_button($('#submitBounty'));
-                            return;                            
-                        }
-                        var success_callback = function(gas, gasLimit, final_callback){
-                            var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-                            bounty.clawbackExpiredBounty.sendTransaction(issueURL, 
-                                {
-                                    from : account,
-                                    gas:web3.toHex(gas), 
-                                    gasLimit: web3.toHex(gasLimit), 
-                                    gasPrice:web3.toHex($("#gasPrice").val() * 10**9), 
-                                }, 
-                            final_callback);
-                        };
-                        // estimateGas(issueURL, success_callback, failure_calllback, final_callback);
-                    },100);
                     bounty.killBounty(bountyId, final_callback);
                     e.preventDefault();
                 }
