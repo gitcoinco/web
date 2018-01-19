@@ -21,7 +21,7 @@
           $('#githubProfile').addClass('is-invalid-error');
           $('#githubProfileHelpBlock').html('We have a pending or processed faucet contribution for that Github user').show();
         }
-        document.getElementById("submitFaucet").removeAttribute("disabled");
+        $("#submitFaucet").removeAttr("disabled");
       });
     });
     $('#githubProfile').on('focus', function() {
