@@ -97,7 +97,7 @@ class Bounty(SuperModel):
     claimeee_address = models.CharField(max_length=50)
     claimee_email = models.CharField(max_length=255, null=True)
     claimee_github_username = models.CharField(max_length=255, null=True)
-    is_open = models.BooleanField(help_text='Whether the bounty has been filled')
+    is_open = models.BooleanField(help_text='Whether the bounty is still open for fulfillments.')
     expires_date = models.DateTimeField()
     raw_data = JSONField()
     metadata = JSONField(default={})
@@ -113,6 +113,9 @@ class Bounty(SuperModel):
     avatar_url = models.CharField(max_length=255, default='')
     issue_description = models.TextField(default='')
     standard_bounties_id = models.IntegerField(default=0)
+    num_fulfillments = models.IntegerField(default=0)
+    balance = models.DecimalField(default=0, decimal_places=2, max_digits=20)
+    accepted = models.BooleanField(default=False, help_text='Whether the bounty has been accepted')
     interested = models.ManyToManyField('dashboard.Interest')
     interested_comment = models.IntegerField(null=True)
 
@@ -208,10 +211,15 @@ class Bounty(SuperModel):
     @property
     def status(self):
         try:
-            if not self.is_open:
-                return self.idx_status
-            if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.claimeee_address == '0x0000000000000000000000000000000000000000':
-                return 'expired'
+            # if int(self.num_fulfillments) > 0:
+            #     return 'fulfilled'
+            if self.is_open is False:
+                if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.claimeee_address == '0x0000000000000000000000000000000000000000':
+                    return 'expired'
+                if self.accepted:
+                    return 'accepted'
+                # If its not expired or accepted, it must be dead.
+                return 'dead'
             if self.claimeee_address == '0x0000000000000000000000000000000000000000':
                 return 'open'
             if self.claimeee_address != '0x0000000000000000000000000000000000000000':

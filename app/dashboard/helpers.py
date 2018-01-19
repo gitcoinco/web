@@ -33,6 +33,8 @@ from dashboard.notifications import (
 from economy.utils import convert_amount
 from ratelimit.decorators import ratelimit
 
+from enum import Enum
+
 
 # gets amount of remote html doc (github issue)
 @ratelimit(key='ip', rate='100/m', method=ratelimit.UNSAFE, block=True)
@@ -220,30 +222,34 @@ def syncBountywithWeb3(bountyContract, url, network):
     return process_bounty_details(bountydetails, url, bountyContract.address)
 
 
+class BountyStage(Enum):
+    """ Python enum class that matches up with the Standard Bounties BountyStage enum.
+
+    Attributes:
+        Draft (int): Bounty is a draft.
+        Active (int): Bounty is active.
+        Dead (int): Bounty is dead.
+    """
+
+    Draft = 0
+    Active = 1
+    Dead = 2
+
+
 def process_bounty_details(bountydetails, url, contract_address, network):
     url = normalizeURL(url)
 
-    #extract json
-    metadata = None
-    claimee_metadata = None
-    try:
-        metadata = json.loads(bountydetails[8])
-    except Exception as e:
-        print(e)
-        metadata = {}
-    try:
-        claimee_metadata = json.loads(bountydetails[10])
-    except Exception as e:
-        print(e)
-        claimee_metadata = {}
+    metadata = bountydetails.get('metadata', {})
+    # Claimee metadata will be empty when bounty is first created
+    fulfiller_metadata = bountydetails.get('fulfillerMetadata', {})
 
-    #create new bounty (but only if things have changed)
+    # Create new bounty (but only if things have changed)
     didChange = False
     old_bounties = Bounty.objects.none()
     try:
         old_bounties = Bounty.objects.filter(
             github_url=url,
-            title=metadata.get('issueTitle'),
+            title=bountydetails.get('title'),
             current_bounty=True,
         ).order_by('-created_on')
         didChange = (bountydetails != old_bounties.first().raw_data)
@@ -253,36 +259,49 @@ def process_bounty_details(bountydetails, url, contract_address, network):
         print(e)
         didChange = True
 
+    # Possible Bounty Stages
+    # 0: Draft
+    # 1: Active
+    # 2: Dead
+
+    # If balance is zero, bounty has been fulfilled and accepted.
+    accepted = (bountydetails.get('accepted') == 'true')
+    is_open = True if (bountydetails.get('bountyStage') == 1 and not accepted) else False
+
     with transaction.atomic():
         for old_bounty in old_bounties:
             old_bounty.current_bounty = False
             old_bounty.save()
         new_bounty = Bounty.objects.create(
-            title=metadata.get('issueTitle',''),
-            web3_created=timezone.datetime.fromtimestamp(bountydetails[7]),
-            value_in_token=bountydetails[0],
-            token_name=metadata.get('tokenName'),
-            token_address=bountydetails[1],
+            title=bountydetails.get('title', ''),
+            web3_created=timezone.datetime.fromtimestamp(bountydetails.get('web3created')),
+            value_in_token=bountydetails.get('fulfillmentAmount'),
+            token_name=bountydetails.get('tokenName'),
+            token_address=bountydetails.get('tokenAddress', '0x0000000000000000000000000000000000000000'),
             bounty_type=metadata.get('bountyType'),
             project_length=metadata.get('projectLength'),
             experience_level=metadata.get('experienceLevel'),
             github_url=url,
-            bounty_owner_address=bountydetails[2],
-            bounty_owner_email=metadata.get('notificationEmail', None),
-            bounty_owner_github_username=metadata.get('githubUsername', None),
-            claimeee_address=bountydetails[3],
-            claimee_email=claimee_metadata.get('notificationEmail', None),
-            claimee_github_username=claimee_metadata.get('githubUsername', None),
-            is_open=bountydetails[4],
-            expires_date=timezone.datetime.fromtimestamp(bountydetails[9]),
+            bounty_owner_address=bountydetails.get('issuer'),
+            bounty_owner_email=metadata.get('notificationEmail'),
+            bounty_owner_github_username=metadata.get('githubUsername'),
+            claimeee_address=bountydetails.get('fulfiller', '0x0000000000000000000000000000000000000000'),
+            claimee_email=fulfiller_metadata.get('notificationEmail', ''),
+            claimee_github_username=fulfiller_metadata.get('githubUsername', ''),
+            # fulfillment_ipfs_hash='',
+            num_fulfillments=bountydetails.get('numFulfillments', 0),
+            is_open=is_open,
+            expires_date=timezone.datetime.fromtimestamp(bountydetails.get('deadline')),
             raw_data=bountydetails,
             metadata=metadata,
-            claimee_metadata=claimee_metadata,
+            claimee_metadata=fulfiller_metadata,
             current_bounty=True,
             contract_address=contract_address,
             network=network,
-            issue_description='',
-            standard_bounties_id=bountydetails[11],
+            issue_description=bountydetails.get('description'),
+            standard_bounties_id=bountydetails.get('bountyId'),
+            balance=bountydetails.get('balance'),
+            accepted=accepted
             )
         new_bounty.fetch_issue_item()
         if not new_bounty.avatar_url:
