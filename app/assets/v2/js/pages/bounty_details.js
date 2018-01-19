@@ -213,17 +213,25 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
          });
     };
 
+    // Might want to move this to a common location if possible
+    var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+    ipfs.ipfsApi = IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: "https", root:'/api/v0'});
+    ipfs.setProvider({ host: 'ipfs.infura.io', port: 5001, protocol: 'https', root:'/api/v0'});
+
     // Only run this after the transaction is confirmed to be on the blockchain
     var getBountyId = function (callback) {
-        // Get total number of bounties on the contract
-        if (localStorage['bountyId']) {
-            callback(null, localStorage['bountyId']);
-        }
+        // Check if the bountyId already exists for a given issueURL
+        var uri = '/api/v0.1/bounties/?github_url='+issueURL
+        $.get(uri, function(results) {
+            results = sanitizeAPIResults(results);
+            var result = results[0];
+            if ('standard_bounties_id' in result) {
+                callback(null, result.standard_bounties_id)
+            }
+        })
         var transactionInfo;
         var bountiesLength;
         var bountyId;
-        // var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-        var bounty = web3.eth.contract(bounty_abi).at(bounty_address());  //hardcode to test
 
         bounty.getNumBounties(function(error, result){
             if (error){
@@ -241,9 +249,8 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                         return;
                     }
                     issuer = result2[0];
-                    var bountyDetails = JSON.parse(localStorage['bountyDetails']);
                     // compare issuer to the submitting address
-                    if (issuer == bountyDetails[2]) {
+                    if (issuer == localStorage['issuer']) {
                         bounty.getBountyData(i, function(error, result3) {
                             if (error) {
                             console.error(error);
@@ -254,13 +261,11 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                             if (dataHash == localStorage['dataHash']) {
                                 var bountyId = i;
                                 console.log('Found matching bountyId: '+ bountyId);
-                                localStorage['bountyId'] = i;
                                 callback(null, bountyId);
                             } else {
                                 i -= 1;
                                 if (i == 0) {
                                     console.log('bountyId not found.')
-                                    localStorage['bountyId'] = 0;
                                     callback('bountyId not found', 0)
                                 } else {
                                 getBountyLoop(i);
@@ -271,7 +276,6 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                         i -= 1;
                         if (i == 0) {
                             console.log('bountyId not found.')
-                            localStorage['bountyId'] = 0;
                             callback('bountyId not found', 0)
                         } else {
                         getBountyLoop(i);
@@ -283,25 +287,63 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         })
     }
 
+
     var check_for_bounty_changed_updates_web3 = function(){
         // callFunctionWhenTransactionMined continue to be called, until the transaction receipt is found.
         // Once it is found, it calls the function() defined below.
+        var allBountyData = {};
         callFunctionWhenTransactionMined(localStorage['txid'],function(){
             setTimeout(function(){
-                // Add bountyId to localStorage['bountyDetails'][11]
-                getBountyId(function(error, result) {
-                   if(result != 0){
-                        var bountyDetails = JSON.parse(localStorage['bountyDetails']);
-                        bountyDetails[11] = result;
-                        sync_web3(issueURL, bountyDetails, changes_synced_callback);
-                        console.log('success syncing with web3');
+                getBountyId(function(error, bountyId) {
+                   if(bountyId != 0) {
+                        bounty.getBountyData(bountyId, function(error, bountyHash) {
+                            ipfs.catJson(bountyHash, function(error, bountyData) {
+                                bounty.getBounty(bountyId, function(error, bountyResults) {
+                                    // Collect all of the bounty data in one place
+                                    allBountyData = bountyData;
+                                    allBountyData['bountyId'] = bountyId;
+
+                                    allBountyData['issuer'] = bountyResults[0];
+                                    allBountyData['deadline'] = parseInt(bountyResults[1], 10);
+                                    allBountyData['fulfillmentAmount'] = parseInt(bountyResults[2], 10);
+                                    allBountyData['paysTokens'] = bountyResults[3];
+                                    allBountyData['bountyStage'] = parseInt(bountyResults[4]);
+                                    allBountyData['balance'] = parseInt(bountyResults[5], 10);
+
+                                    bounty.getNumFulfillments(bountyId, function(error, numFulfillments) {
+                                        allBountyData['numFulfillments'] = numFulfillments;
+                                        if (numFulfillments > 0) {
+                                            // Just get latest fullfillment data
+                                            // TODO:  Add support for multilple fulfillments
+                                            bounty.getFulfillment(bountyId, numFulfillments - 1, function(error, fulfillment) {
+                                                allBountyData['accepted'] = fulfillment[0];
+                                                allBountyData['fulfiller'] = fulfillment[1];
+                                                // allBountyData['fulfillmentHash'] = fulfillment[2];
+
+                                                ipfs.catJson(fulfillment[2], function(error, fulfillmentData) {
+                                                    allBountyData['fulfillerMetadata'] = fulfillmentData.fulfillerMetadata;
+                                                    allBountyData['fulfillerEmail'] = fulfillmentData.contact;
+
+                                                    sync_web3(issueURL, JSON.stringify(allBountyData), changes_synced_callback);
+                                                    console.log('success syncing with web3');
+                                                })
+                                            });
+                                        } else {
+                                            sync_web3(issueURL, JSON.stringify(allBountyData), changes_synced_callback);
+                                            console.log('success syncing with web3');
+                                        }
+                                    })
+                                });
+                            });
+                        });
+                        
+                        
                     } else {
                         // console.error(result);
                         var link_url = etherscan_tx_url(localStorage['txid']);
                         _alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
                     }
-                });
-
+                }); 
             },1000)
         });
     };
@@ -334,7 +376,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
 
     // This part decides if a warning banner should be displayed
     var should_display_warning = false;
-    if (localStorage[issueURL]) {
+    if (localStorage[issueURL]) {  // localStorage[issueURL] is the "local timestamp"
         //local warning
         var local_delta = parseInt(timestamp() - localStorage[issueURL]);
         var is_changing_local_recent = local_delta < (60 * 60); // less than one hour
@@ -363,6 +405,7 @@ window.addEventListener('load', function() {
         $.get(uri, function(results){
             results = sanitizeAPIResults(results);
             var nonefound = true;
+            // potentially make this a lot faster by only pulling the specific issue required
             for(var i = 0; i<results.length; i++){
                 var result = results[i];
                 // if the result from the database matches the one in question..
@@ -524,7 +567,7 @@ window.addEventListener('load', function() {
 
                     //cleanup
                     document.result = result;
-                    pendingChangesWarning(issueURL, result['now'], result['now']);
+                    pendingChangesWarning(issueURL, result['created_on'], result['now']);
                     add_to_watch_list(result['github_url']);
                     return;
                 }
