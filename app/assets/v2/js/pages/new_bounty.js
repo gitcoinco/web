@@ -149,7 +149,7 @@ $(document).ready(function(){
         ipfs.ipfsApi = IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: "https", root:'/api/v0'});
         ipfs.setProvider({ host: 'ipfs.infura.io', port: 5001, protocol: 'https', root:'/api/v0'});
 
-        var submit = {
+        var ipfs_bounty_submit = {
           title: metadata['issueTitle'],
           description: metadata['issueDescription'],  // Added this to better match Standard Bounty format
           // These hashes are both empty at first.  I think they get filled in by IPFS
@@ -158,6 +158,7 @@ $(document).ready(function(){
           contact: notificationEmail,
           categories: metadata['issueKeywords'].split(","),  // Turn this into an array to be consistent with BountiesFactory
           githubLink: issueURL,
+          bounty_network: 'gitcoin',
         };
 
         // create bountydetails array for database sync
@@ -248,7 +249,7 @@ $(document).ready(function(){
                 return;
             } else {
                 // Add data to IPFS and kick off all the callbacks.
-                ipfs.addJson(submit, newIpfsCallback);
+                ipfs.addJson(ipfs_bounty_submit, newIpfsCallback);
             }
         });
     });
