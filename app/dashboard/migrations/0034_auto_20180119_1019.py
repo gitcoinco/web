@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0032_auto_20180116_0746'),
+        ('dashboard', '0033_bounty_web3_type'),
     ]
 
     operations = [
-        migrations.AddField(
+        migrations.AlterField(
             model_name='bounty',
             name='web3_type',
-            field=models.CharField(default='legacy_gitcoin', max_length=50),
+            field=models.CharField(default='bounties_network', max_length=50),
         ),
     ]
