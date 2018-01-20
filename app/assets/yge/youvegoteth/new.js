@@ -15,6 +15,14 @@ window.onload = function () {
                 'pk': _private_key,
             }
         }
+        var url_string = window.location.href
+        var url = new URL(url_string)
+        var amount = url.searchParams.get("amount")
+        var username = url.searchParams.get("username")
+        if ( amount && username != null ) {
+            localStorage.setItem("amount", amount );
+            localStorage.setItem("username", username );
+        }
         localStorage.setItem("addresses", JSON.stringify(addresses));
         document.location.href = '/tip/send/2/';
         mixpanel.track("Tip Step 1 Click", {});

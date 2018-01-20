@@ -142,3 +142,5 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id):
         # Make sure to not respond after gitcoinbot comments...
         # post_issue_comment_reaction(owner, repo, comment_id, 'confused')
         # post_issue_comment(owner, repo, issue_id, tip_text())
+
+    # TODO run a pip freeze to update the dependencies aka PyJWT and cryptography
