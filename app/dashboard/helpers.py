@@ -256,6 +256,7 @@ def process_bounty_details(bountydetails, url, contract_address, network):
         if not didChange:
             return (didChange, old_bounties.first(), old_bounties.first())
     except Exception as e:
+        print('exception in process_bounty_details')
         print(e)
         didChange = True
 
@@ -267,7 +268,6 @@ def process_bounty_details(bountydetails, url, contract_address, network):
     # If balance is zero, bounty has been fulfilled and accepted.
     accepted = (bountydetails.get('accepted') == 'true')
     is_open = True if (bountydetails.get('bountyStage') == 1 and not accepted) else False
-
     with transaction.atomic():
         for old_bounty in old_bounties:
             old_bounty.current_bounty = False

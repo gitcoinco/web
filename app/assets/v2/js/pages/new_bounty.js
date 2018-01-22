@@ -233,18 +233,20 @@ $(document).ready(function(){
             // The Ethereum network requires using ether to do stuff on it
             // issueAndActivateBounty is a method definied in the StandardBounties solidity contract.
 
+            var eth_amount = isETH ? amount : 0
+            var _paysTokens = !isETH;
             var bountyIndex = bounty.issueAndActivateBounty(
                 account,            // _issuer
                 expire_date,        // _deadline
                 result,             // _data (ipfs hash)
                 amount,             // _fulfillmentAmount
                 0x0,                // _arbiter
-                false,              // _paysTokens
+                _paysTokens,              // _paysTokens
                 tokenAddress,       // _tokenContract
                 amount,             // _value
                 {                   // {from: x, to: y}
                     from :account,
-                    value:amount,
+                    value:eth_amount,
                 },
                 web3Callback        // callback for web3
             );
@@ -259,8 +261,18 @@ $(document).ready(function(){
                 unloading_button($('#submitBounty'));
                 return;
             } else {
-                // Add data to IPFS and kick off all the callbacks.
-                ipfs.addJson(ipfsBounty, newIpfsCallback);
+
+                var approve_success_callback = function(callback){
+                    // Add data to IPFS and kick off all the callbacks.
+                    ipfs.addJson(ipfsBounty, newIpfsCallback);
+                };
+                if(isETH){
+                    //no approvals needed for ETH
+                    approve_success_callback();
+                } else {
+                    token_contract.approve(bounty_address(), amount, {from:account, value:0}, approve_success_callback)
+                }
+
             }
         });
     });

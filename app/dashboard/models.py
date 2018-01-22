@@ -104,7 +104,7 @@ class Bounty(SuperModel):
     claimee_metadata = JSONField(default={})
     current_bounty = models.BooleanField(default=False,
                                          help_text='Whether this bounty is the most current revision one or not')
-    _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=20)
+    _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     contract_address = models.CharField(max_length=50, default='')
     network = models.CharField(max_length=255, null=True)
     idx_experience_level = models.IntegerField(default=0, db_index=True)
@@ -114,7 +114,7 @@ class Bounty(SuperModel):
     issue_description = models.TextField(default='')
     standard_bounties_id = models.IntegerField(default=0)
     num_fulfillments = models.IntegerField(default=0)
-    balance = models.DecimalField(default=0, decimal_places=2, max_digits=20)
+    balance = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     accepted = models.BooleanField(default=False, help_text='Whether the bounty has been accepted')
     interested = models.ManyToManyField('dashboard.Interest')
     interested_comment = models.IntegerField(null=True)
