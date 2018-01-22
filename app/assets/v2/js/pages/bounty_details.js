@@ -494,7 +494,7 @@ window.addEventListener('load', function() {
                     if(result['status'] != 'accepted' && result['status'] != 'dead'){
                         var enabled = isBountyOwner(result);
                         var entry = {
-                            href: '/_github/auth?redirect_uri=/funding/kill?source='+result['github_url'],
+                            href: '/funding/kill?source='+result['github_url'],
                             text: 'Kill Bounty',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
@@ -507,7 +507,7 @@ window.addEventListener('load', function() {
                     var enabled = !isBountyOwner(result);
                     if(result['status']=='open' ){
                         var entry = {
-                            href: '/_github/auth?redirect_uri=/funding/fulfill?source='+result['github_url'],
+                            href: '/funding/fulfill?source='+result['github_url'],
                             text: 'Fulfill Bounty',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
@@ -532,35 +532,13 @@ window.addEventListener('load', function() {
                     if(result['status']=='fulfilled' ){
                         var enabled = isBountyOwner(result);
                         var entry = {
-                            href: '/_github/auth?redirect_uri=/funding/process?source='+result['github_url'],
-                            text: 'Accept Bounty',
+                            href: '/funding/process?source='+result['github_url'],
+                            text: 'Accept Fulfillment',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
                             title: enabled ? 'This will payout the bounty to the fulfiller.' : 'Can only be performed if you are the funder.',
 
-                        }
-                        actions.push(entry);
-                    }
-
-
-                    var watch_title = 'Watching an issue allows you to search for it again via the "other filters" in funded issue search.';
-                    if (is_on_watch_list(result['github_url'])) {
-                        var entry = {
-                            href: '/unwatch',
-                            text: 'Unwatch',
-                            parent: 'left_actions',
-                            color: 'darkBlue' ,
-                            title: watch_title,
-                        }
-                        actions.push(entry);
-                    } else {
-                        var entry = {
-                            href: '/watch',
-                            text: 'Watch',
-                            parent: 'left_actions',
-                            color: 'darkBlue',
-                            title: watch_title,
                         }
                         actions.push(entry);
                     }
@@ -575,7 +553,6 @@ window.addEventListener('load', function() {
                     //cleanup
                     document.result = result;
                     pendingChangesWarning(issueURL, result['created_on'], result['now']);
-                    add_to_watch_list(result['github_url']);
                     return;
                 }
             }
@@ -602,11 +579,9 @@ $(document).ready(function(){
         if($(this).attr('href') == '/watch'){
             $(this).attr('href','/unwatch');
             $(this).find('span').text('Unwatch');
-            add_to_watch_list(document.result['github_url']);
         } else {
             $(this).attr('href','/watch');
             $(this).find('span').text('Watch');
-            remove_from_watch_list(document.result['github_url']);
         }
     });
     $("body").delegate('a[href="/interested"], a[href="/uninterested"]', 'click', function (e) {

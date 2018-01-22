@@ -72,7 +72,6 @@ window.onload = function(){
                             localStorage['txid'] = result;
                             sync_web3(issueURL);
                             localStorage[issueURL] = timestamp();
-                            add_to_watch_list(issueURL);
                             _alert({ message: "Kill bounty submitted to web3." },'info');
                             setTimeout(function(){
                                 mixpanel.track("Kill Bounty Success", {});
@@ -90,7 +89,7 @@ window.onload = function(){
                         }
                     };
 
-                    bounty.killBounty(bountyId, final_callback);
+                    bounty.killBounty(bountyId, {gasPrice:web3.toHex($("#gasPrice").val()) * 10**9}, final_callback);
                     e.preventDefault();
                 }
             };

@@ -80,7 +80,6 @@ window.onload = function(){
                             localStorage['txid'] = result;
                             sync_web3(issueURL);
                             localStorage[issueURL] = timestamp();
-                            add_to_watch_list(issueURL);
                             _alert({ message: "Submitted transaction to web3." }, 'info');
                             setTimeout(function(){
                                 mixpanel.track("Process Bounty Success", {});
@@ -104,25 +103,8 @@ window.onload = function(){
                     // the latest one, which will match up with what the database has.
                     bounty.getNumFulfillments(bountyId, function (error, result) {
                         var fulfillmentId = result - 1;
-                        bounty.acceptFulfillment(bountyId, fulfillmentId, final_callback);
+                        bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice:web3.toHex($("#gasPrice").val()) * 10**9}, final_callback);
                     });
-
-                    var failure_calllback = function(errors){
-                        mixpanel.track("Process Bounty Error", {step: 'estimateGas', error: errors});
-                        _alert({ message: "There was an error" });
-                        unloading_button($('.submitBounty'));
-
-                    }
-                    var success_callback = function(gas, gasLimit){
-                        var params = {from :account, 
-                                gas:web3.toHex(gas), 
-                                gasLimit: web3.toHex(gasLimit), 
-                                gasPrice:web3.toHex($("#gasPrice").val() * 10**9), 
-                            };
-                        method.sendTransaction(issueURL, 
-                            params, 
-                            _callback);
-                    };
                 }
             };
             // Get bountyId from the database

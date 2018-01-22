@@ -101,7 +101,6 @@ window.onload = function(){
                                 dataLayer.push({'event': 'claimissue'});
                                 sync_web3(issueURL);
                                 localStorage[issueURL] = timestamp();  //ipfs timestamp
-                                add_to_watch_list(issueURL);
                                 _alert({ message: "Fulfillment submitted to web3." },'info');
                                 setTimeout(function(){
                                     mixpanel.track("Fulfill Bounty Success", {});
@@ -132,7 +131,7 @@ window.onload = function(){
 
                             var bountyId = result['standard_bounties_id'];
 
-                            bounty.fulfillBounty(bountyId, localStorage['dataHash'], web3Callback);
+                            bounty.fulfillBounty(bountyId, localStorage['dataHash'], {gasPrice:web3.toHex($("#gasPrice").val()) * 10**9}, web3Callback);
                         })
                     }
                     e.preventDefault();

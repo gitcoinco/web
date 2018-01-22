@@ -194,7 +194,6 @@ $(document).ready(function(){
             sync_web3(issueURL);  //Writes the bounty URL to the database
             localStorage[issueURL] = timestamp();  // Used to figure out "local time delta" in bounty_details.js
             localStorage['issuer'] = account;
-            add_to_watch_list(issueURL);
             _alert({ message: "Submission sent to web3." }, 'info');
             setTimeout(function(){
                 delete localStorage['issueURL'];
@@ -246,7 +245,8 @@ $(document).ready(function(){
                 amount,             // _value
                 {                   // {from: x, to: y}
                     from :account,
-                    value:eth_amount,
+                    value: eth_amount,
+                    gasPrice: web3.toHex($("#gasPrice").val()) * 10**9,
                 },
                 web3Callback        // callback for web3
             );
@@ -270,7 +270,7 @@ $(document).ready(function(){
                     //no approvals needed for ETH
                     approve_success_callback();
                 } else {
-                    token_contract.approve(bounty_address(), amount, {from:account, value:0}, approve_success_callback)
+                    token_contract.approve(bounty_address(), amount, {from:account, value:0, gasPrice:web3.toHex($("#gasPrice").val()) * 10**9},, approve_success_callback)
                 }
 
             }

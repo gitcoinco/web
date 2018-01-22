@@ -702,7 +702,8 @@ body.bounty_details #right_actions {
 }
 
 body.bounty_details #bounty_details #left_actions {
-    padding-bottom: 25px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 body.bounty_details #left_actions a,
