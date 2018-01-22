@@ -1,8 +1,7 @@
 import logging
 import random
 import re
-from urllib import parse
-
+from urllib.parse import urlparse as parse
 from django.conf import settings
 
 import requests
@@ -177,6 +176,13 @@ def maybe_market_to_github(bounty, event_name, txid=None, interested=None):
             bounty.token_name, usdt_value,
             bounty.get_absolute_url(),
             bounty.get_absolute_url(),
+            amount_usdt_open_work(),
+            )
+    elif event_name == 'killed_bounty':
+        msg = "__The funding of {} {} {} attached to this issue has been **killed** by the bounty submitter__\n\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = msg.format(
+            round(bounty.get_natural_value(), 4),
+            bounty.token_name, usdt_value,
             amount_usdt_open_work(),
             )
     elif event_name == 'rejected_claim':

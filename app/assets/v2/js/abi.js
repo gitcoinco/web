@@ -9,7 +9,7 @@ var bounty_address = function (){
     }
     switch(document.web3network){
         case "mainnet":
-            return '0x066128b9f7557b5398db3d4ed141f2e64245ffa1';
+            return '0x2af47a65da8cd66729b4209c22017d6a5c2d2400';
         break;
         case "ropsten":
             throw "not supported";
