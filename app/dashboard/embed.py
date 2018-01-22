@@ -75,7 +75,7 @@ def stat(request, key):
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
 def embed(request):
     # default response
-    could_not_find = Image.new('RGB', (1, 1), (0, 0, 0, 0))
+    could_not_find = Image.new('RGBA', (1, 1), (0, 0, 0, 0))
     err_response = HttpResponse(content_type="image/jpeg")
     could_not_find.save(err_response, "JPEG")
 
@@ -93,7 +93,7 @@ def embed(request):
         filename = "{}.png".format(_org_name)
         filepath = 'assets/other/avatars/' + filename
         try:
-            avatar = Image.open(filepath, 'r')
+            avatar = Image.open(filepath, 'r').convert("RGBA")
         except IOError:
             remote_user = get_user(_org_name)
             if not remote_user.get('avatar_url', False):
@@ -105,7 +105,7 @@ def embed(request):
             with open(filepath, 'wb') as fd:
                 for chunk in r.iter_content(chunk_size):
                     fd.write(chunk)
-            avatar = Image.open(filepath, 'r').convert("RGB")
+            avatar = Image.open(filepath, 'r').convert("RGBA")
 
             # make transparent
             datas = avatar.getdata()
@@ -139,7 +139,7 @@ def embed(request):
         line = "".join(["_" for ele in range(0, 47)])
 
         # setup
-        img = Image.new("RGB", (width, height), (255, 255, 255))
+        img = Image.new("RGBA", (width, height), (255, 255, 255))
         black = (0, 0, 0)
         h1 = ImageFont.truetype(font_path + 'Futura-Bold.ttf', 28, encoding="unic")
         h2_thin = ImageFont.truetype(font_path + 'Futura-Normal.ttf', 22, encoding="unic")
@@ -149,7 +149,7 @@ def embed(request):
         ## config
         logo = 'assets/v2/images/header-bg-light.jpg'
         ## execute
-        back = Image.open(logo, 'r')
+        back = Image.open(logo, 'r').convert("RGBA")
         img_w, img_h = back.size
         bg_w, bg_h = img.size
         offset = 0, 0
@@ -169,7 +169,7 @@ def embed(request):
         ## config
         logo = 'assets/v2/images/gitcoinco.png'
         ## execute
-        back = Image.open(logo, 'r')
+        back = Image.open(logo, 'r').convert("RGBA")
         back.thumbnail(icon_size, Image.ANTIALIAS)
         img_w, img_h = back.size
         bg_w, bg_h = img.size
@@ -267,7 +267,7 @@ def embed(request):
 
 def avatar(request):
     # default response
-    could_not_find = Image.new('RGB', (1, 1), (0, 0, 0, 0))
+    could_not_find = Image.new('RGBA', (1, 1), (0, 0, 0, 0))
     err_response = HttpResponse(content_type="image/jpeg")
     could_not_find.save(err_response, "JPEG")
 
@@ -284,7 +284,7 @@ def avatar(request):
         filename = "{}.png".format(_org_name)
         filepath = 'assets/other/avatars/' + filename
         try:
-            avatar = Image.open(filepath, 'r')
+            avatar = Image.open(filepath, 'r').convert("RGBA")
         except IOError:
             remote_user = get_user(_org_name)
             if not remote_user.get('avatar_url', False):
@@ -296,7 +296,7 @@ def avatar(request):
             with open(filepath, 'wb') as fd:
                 for chunk in r.iter_content(chunk_size):
                     fd.write(chunk)
-            avatar = Image.open(filepath, 'r').convert("RGB")
+            avatar = Image.open(filepath, 'r').convert("RGBA")
 
             # make transparent
             datas = avatar.getdata()
@@ -312,7 +312,7 @@ def avatar(request):
             avatar.save(filepath, "PNG")
 
         width, height = (215, 215)
-        img = Image.new("RGB", (width, height), (255, 255, 255))
+        img = Image.new("RGBA", (width, height), (255, 255, 255))
 
         ## config
         icon_size = (215, 215)

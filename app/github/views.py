@@ -61,7 +61,8 @@ def github_callback(request):
             'handle': user_profile.handle,
             'email': user_profile.email,
             'access_token': user_profile.github_access_token,
-            'profile_id': user_profile.pk
+            'profile_id': user_profile.pk,
+            'profile_handle': user_profile.handle,
         }
         for k, v in session_data.items():
             request.session[k] = v

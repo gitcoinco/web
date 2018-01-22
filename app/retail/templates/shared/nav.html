@@ -35,12 +35,9 @@
                         <img src="/static/v2/images/social/slack2.png">Slack({{num_slack}})
                     </a>
                     <a class="nav-link" href="/help">Help</a>
-                    <a class="nav-link" href="/ios">Mobile</a>
-
 
                 </nav>
                 <img class="mr-5" src="/static/v2/images/spaceship.png" width="93" height="81" />
-                <a class="btn btn-outline-info pl-4 pr-4 pulseClick" role="button" href="/get">Get Started ⚡️</a>
-
+                {% include 'shared/nav_auth.html' with source='unauthed' %}
             </div>
         </nav>

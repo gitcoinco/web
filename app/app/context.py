@@ -14,5 +14,6 @@ def insert_settings(request):
         'trackjs_token': settings.TRACKJS_TOKEN,
         'STATIC_URL': settings.STATIC_URL,
         'num_slack': num_slack,
+        'github_handle': request.session.get('profile_handle', False),
     }
     return context
