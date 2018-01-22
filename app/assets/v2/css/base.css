@@ -9,7 +9,9 @@ div.body {
 div, p, a, span {
     word-wrap: break-word;
 }
-
+.nav_avatar{
+    cursor: pointer;
+}
 .navbar-nav .nav-link {
     border-radius: 2px;
 }

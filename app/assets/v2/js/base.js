@@ -1,7 +1,7 @@
 $(document).ready(function() {
     $( document ).tooltip();
 
-    $(".nav-link.dropdown-toggle").click(function(e){
+    $(".nav-link.dropdown-toggle, .nav_avatar").click(function(e){
       if($(".dropdown-menu").css('display') == 'block'){
         $(".dropdown-menu").css('display', 'none');        
       } else {
