@@ -52,6 +52,8 @@ def maybe_market_to_twitter(bounty, event_name, txid):
         return False
     if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
+    return False # per 2018/01/22 convo with vivek / kevin, these tweets have low engagement
+    # we are going to test manually promoting these tweets for a week and come back to revisit this
 
     api = twitter.Api(
         consumer_key=settings.TWITTER_CONSUMER_KEY,
