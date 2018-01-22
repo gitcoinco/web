@@ -22,15 +22,15 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     {% if source == 'authed' %}
-                          <a class="dropdown-item" href="/tip">Send Tip</a>
-                          <a class="dropdown-item" href="/funding/new">Fund Issue</a>
+                          <a class="dropdown-item" href="/tip"><img src="/static/v2/images/icons/paperplane.png" width=20px height=20px> Send Tip</a>
+                          <a class="dropdown-item" href="/funding/new"><img src="/static/v2/images/icons/accelerator.png" width=20px height=20px> Fund Issue</a>
                       {% else %}
-                          <a class="dropdown-item" href="/get">Get Started</a>
+                          <a class="dropdown-item" href="/get"><img src="/static/v2/images/icons/bolt.png" width=20px height=20px>  Get Started</a>
                       {% endif %}
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="/profile/{{github_handle}}">View Profile</a>
+                      <a class="dropdown-item" href="/profile/{{github_handle}}"><img src="/static/v2/images/icons/anchor.png" width=20px height=20px>  View Profile</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="/_github/logout">Log Out</a>
+                      <a class="dropdown-item" href="/_github/logout"><img src="/static/v2/images/icons/lock_open.png" width=20px height=20px>  Log Out</a>
                     </div>
                   </div>
                 {% else %}
