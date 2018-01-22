@@ -270,7 +270,7 @@ $(document).ready(function(){
                     //no approvals needed for ETH
                     approve_success_callback();
                 } else {
-                    token_contract.approve(bounty_address(), amount, {from:account, value:0, gasPrice:web3.toHex($("#gasPrice").val()) * 10**9},, approve_success_callback)
+                    token_contract.approve(bounty_address(), amount, {from:account, value:0, gasPrice:web3.toHex($("#gasPrice").val()) * 10**9}, approve_success_callback)
                 }
 
             }

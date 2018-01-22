@@ -266,7 +266,7 @@ def process_bounty_details(bountydetails, url, contract_address, network):
     # 2: Dead
 
     # If balance is zero, bounty has been fulfilled and accepted.
-    accepted = (bountydetails.get('accepted') == 'true')
+    accepted = bountydetails.get('accepted', False)
     is_open = True if (bountydetails.get('bountyStage') == 1 and not accepted) else False
     with transaction.atomic():
         for old_bounty in old_bounties:
