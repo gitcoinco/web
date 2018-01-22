@@ -327,6 +327,8 @@ def process_bounty_changes(old_bounty, new_bounty, txid):
     elif old_bounty.claimeee_address == null_address and new_bounty.claimeee_address != null_address:
         event_name = 'new_claim'
     elif old_bounty.is_open and not new_bounty.is_open:
+        if new_bounty.status == 'dead':
+            event_name = 'killed_bounty'
         event_name = 'approved_claim'
     elif old_bounty.claimeee_address != null_address and new_bounty.claimeee_address == null_address:
         event_name = 'rejected_claim'

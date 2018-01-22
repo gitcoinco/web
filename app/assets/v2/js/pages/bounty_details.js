@@ -225,10 +225,17 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         $.get(uri, function(results) {
             results = sanitizeAPIResults(results);
             var result = results[0];
-            if ('standard_bounties_id' in result) {
+            if (typeof result != 'undefined' && 'standard_bounties_id' in result) {
                 callback(null, result.standard_bounties_id)
+            } else {
+                //if the bounty id cannot be gotten from the REST API, then pull
+                //it from web3
+                getBountyIDFromWeb3(callback);
             }
-        })
+        });
+    };
+
+    var getBountyIDFromWeb3 = function(callback){
         var transactionInfo;
         var bountiesLength;
         var bountyId;
@@ -284,8 +291,9 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                 })
             }
             getBountyLoop(i)
-        })
-    }
+        })        
+    };
+
 
 
     var check_for_bounty_changed_updates_web3 = function(){
@@ -323,7 +331,6 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                                                 ipfs.catJson(fulfillment[2], function(error, fulfillmentData) {
                                                     allBountyData['fulfillerMetadata'] = fulfillmentData.fulfillerMetadata;
                                                     allBountyData['fulfillerEmail'] = fulfillmentData.contact;
-
                                                     sync_web3(issueURL, JSON.stringify(allBountyData), changes_synced_callback);
                                                     console.log('success syncing with web3');
                                                 })
