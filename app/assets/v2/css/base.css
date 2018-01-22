@@ -1135,6 +1135,9 @@ body.bounty_details #title {
         max-width: 300px;
         max-height: 300px;
     }
+    #bounty_details{
+        margin-left: 15px;
+    }
 
     .profile_details .bounties li div.relationship,
     .profile_details .bounties li div.status,
@@ -1252,6 +1255,9 @@ body.bounty_details #title {
 
     .row.whatisit .explainer {
         margin-top: 30px;
+    }
+    .bounty_def {
+        height: 160px;
     }
 
     #team .row,
@@ -1422,9 +1428,8 @@ body.bounty_details #title {
         padding-top: 20px;
     }
 
-    .bounty_def .col-7 {
-        padding-left: 40px !important;
-        font-size: .8rem;
+    .bounty_def {
+        display: none;
     }
 
     .search_bar span {
@@ -1441,9 +1446,6 @@ body.bounty_details #title {
         margin-top: 10px;
     }
 
-    .bounty_def h5 {
-        font-size: .9rem;
-    }
 
     #mission_hero .text {
         margin-top: 1rem;
