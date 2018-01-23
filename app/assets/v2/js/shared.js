@@ -459,7 +459,7 @@ window.addEventListener('load', function() {
                     var is_supported_network = true;
                     var recommended_network = "mainnet or rinkeby";
 
-                    if(network == 'kovan'){
+                    if(network == 'kovan' || network == 'ropsten'){
                         is_supported_network = false;
                     }
                     if(document.location.href.indexOf("https://gitcoin.co") != -1){
