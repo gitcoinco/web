@@ -253,7 +253,7 @@ def process_bounty_details(bountydetails, url, contract_address, network):
     try:
         old_bounties = Bounty.objects.filter(
             github_url=url,
-            title=bountydetails.get('title'),
+            title=bountyDataPayload.get('title'),
             current_bounty=True,
         ).order_by('-created_on')
         didChange = (bountydetails != old_bounties.first().raw_data)
