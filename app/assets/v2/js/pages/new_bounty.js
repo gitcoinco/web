@@ -58,6 +58,15 @@ $(document).ready(function(){
             $(this).text('Advanced ⬇ ');
         }
     });
+
+    // Disable the submitBounty button until all fields have been filled out
+    $("#primary_subform :input").blur(function () {
+        if($("input[name=title]").val()==''  || $("input[name=keywords]").val()==''){
+            $('#submitBounty').addClass('disabled');
+        } else {
+            $('#submitBounty').removeClass('disabled');
+        } 
+    });
     
     //submit bounty button click
     $('#submitBounty').click(function(e){
