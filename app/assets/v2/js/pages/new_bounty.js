@@ -112,7 +112,7 @@ $(document).ready(function(){
                     name: metadata.fullName,
                     email: metadata.notificationEmail,
                     githubUsername: metadata.githubUsername,
-                    address: '',
+                    address: '', // Fill this in later
                 },
                 funders:[
                 ],

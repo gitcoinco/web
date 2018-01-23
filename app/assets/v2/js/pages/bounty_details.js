@@ -340,8 +340,6 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                                             // TODO:  Add support for multilple fulfillments
                                             var fulfillmentId = numFulfillments - 1;
                                             bounty.getFulfillment(bountyId, fulfillmentId, function(error, fulfillment) {
-                                                // allFulfillmentData['fulfiller'] = fulfillment[1];
-                                                // allBountyData['fulfillmentHash'] = fulfillment[2];
                                                 ipfs.catJson(fulfillment[2], function(error, fulfillmentData) {
                                                     allFulfillmentData = fulfillmentData;
                                                     allFulfillmentData['accepted'] = fulfillment[0];

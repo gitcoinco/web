@@ -508,28 +508,7 @@ def save_search(request):
 def sync_web3(request):
     """ Sync up web3 with the database.  This function has a few different uses.  It is typically
         called from the front end using the javascript `sync_web3` function.  The `issueURL` is
-        passed in first, followed optionally by a `bountydetails` argument.  It is used the following
-        ways:
-
-        1.  Create a new bounty.  `bountydetails` is passed as the second argument and the code
-            below is used to create the initial entry in the database.  In this case bountydetails
-            comes in as an array.  Also see **new_bounty.js**
-
-        2.  Fulfill a bounty.  If `bountydetails` is passed instead of a JSON string, it will assume
-            that you want to do an update to the database rather than a new bounty creation.  In this
-            case bountydetails comes in as a JSON string.  Also see **fulfill_bounty.js**.
-
-        Note: updates is a dictionary of fields to update an existing Bounty object.
-              This is done rather than a direct web3 sync because Standard Bounties doesn't
-              have the ability to sync up exactly with the database and the data in IPFS is
-              immutable once the contract is created.
-
-    Args:
-        request (str): The request string, typically and `issueURL`, followed an optional `bountydetails`
-                        object.
-
-    Returns:
-        JsonResponse: Django return object.
+        passed in first, followed optionally by a `bountydetails` argument.
     """
     # setup
     result = {}
@@ -547,24 +526,6 @@ def sync_web3(request):
                 existing_bsr.processed = True
                 existing_bsr.save()
         else:
-            #normalize data
-            # Comments reference the field mapping for:
-            #  - database table dashboard_bounty
-            #  - (solidity parameter) from old smart contract
-            # If there is no database field, just the solidity field is referenced.
-            # bountydetails[0] = int(bountydetails[0])  # value_in_token (amount)
-            # bountydetails[1] = str(bountydetails[1])  # token_address (tokenAddress)
-            # bountydetails[2] = str(bountydetails[2])  # bounty_owner_address (bountyOwner)
-            # bountydetails[3] = str(bountydetails[3])  # claimee_address (claimee)
-            # bountydetails[4] = bool(bountydetails[4] == 'true')  # is_open (open)
-            # bountydetails[5] = bool(bountydetails[5] == 'true')  # (initialized)
-            # bountydetails[6] = str(bountydetails[6])  # github_url (issueURL)
-            # bountydetails[7] = int(bountydetails[7])  # web3_created (creationTime)
-            # bountydetails[8] = str(bountydetails[8])  # multiple fields (metaData)
-            # bountydetails[9] = int(bountydetails[9])  # expires_date (expirationTime)
-            # bountydetails[10] = str(bountydetails[10])  # claimee_metadata (claimee_metaData)
-            # bountydetails[11] = int(bountydetails[11])  # standard_bounties_id (_bountyId)
-
             contract_address = request.POST.get('contract_address')
             network = request.POST.get('network')
             didChange, old_bounty, new_bounty = process_bounty_details(
