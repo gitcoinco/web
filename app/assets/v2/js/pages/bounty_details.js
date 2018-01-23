@@ -297,9 +297,24 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
 
 
     var check_for_bounty_changed_updates_web3 = function(){
+
+        // This object contains all information about the bounty pulled from the web3 contract and ipfs.
+        // It is then passed to the database to do a sync.
+        var allBountyData = {
+            bountyId: 0,             // getBountyId() js function.  Bounty Id is calculated iterating through bounty id's and finding a match.
+            bountyData: {},          // getBountyData(_bountyId).  This is the data stored in ipfs.
+            bounty: {},              // getBounty(_bountyId).  The array retured by web3 contract call.
+            fulfillments: {
+                'total': 0,          // getNumFulfillments(_bountyId).  The number returned by web3 contract call.
+                'fulfillments': [],  // getFulfillment(_bountyId, _fulfillmentId).  Fulfillment information return by web3 contract call.
+            },
+        };
+
+        // The object will be pushed onto allBountyData.fulfillments.fulfillments
+        var allFulfillmentData = {};
+
         // callFunctionWhenTransactionMined continue to be called, until the transaction receipt is found.
         // Once it is found, it calls the function() defined below.
-        var allBountyData = {};
         callFunctionWhenTransactionMined(localStorage['txid'],function(){
             setTimeout(function(){
                 getBountyId(function(error, bountyId) {
@@ -308,29 +323,32 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                             ipfs.catJson(bountyHash, function(error, bountyData) {
                                 bounty.getBounty(bountyId, function(error, bountyResults) {
                                     // Collect all of the bounty data in one place
-                                    allBountyData = bountyData;
                                     allBountyData['bountyId'] = bountyId;
+                                    allBountyData['bountyData'] = bountyData;
 
-                                    allBountyData['issuer'] = bountyResults[0];
-                                    allBountyData['deadline'] = parseInt(bountyResults[1], 10);
-                                    allBountyData['fulfillmentAmount'] = parseInt(bountyResults[2], 10);
-                                    allBountyData['paysTokens'] = bountyResults[3];
-                                    allBountyData['bountyStage'] = parseInt(bountyResults[4]);
-                                    allBountyData['balance'] = parseInt(bountyResults[5], 10);
+                                    allBountyData['bounty']['issuer'] = bountyResults[0];
+                                    allBountyData['bounty']['deadline'] = parseInt(bountyResults[1], 10);
+                                    allBountyData['bounty']['fulfillmentAmount'] = parseInt(bountyResults[2], 10);
+                                    allBountyData['bounty']['paysTokens'] = bountyResults[3];
+                                    allBountyData['bounty']['bountyStage'] = parseInt(bountyResults[4]);
+                                    allBountyData['bounty']['balance'] = parseInt(bountyResults[5], 10);
 
                                     bounty.getNumFulfillments(bountyId, function(error, numFulfillments) {
-                                        allBountyData['numFulfillments'] = numFulfillments;
+                                        allBountyData['fulfillments']['total'] = numFulfillments;
                                         if (numFulfillments > 0) {
                                             // Just get latest fullfillment data
                                             // TODO:  Add support for multilple fulfillments
-                                            bounty.getFulfillment(bountyId, numFulfillments - 1, function(error, fulfillment) {
-                                                allBountyData['accepted'] = fulfillment[0];
-                                                allBountyData['fulfiller'] = fulfillment[1];
+                                            var fulfillmentId = numFulfillments - 1;
+                                            bounty.getFulfillment(bountyId, fulfillmentId, function(error, fulfillment) {
+                                                // allFulfillmentData['fulfiller'] = fulfillment[1];
                                                 // allBountyData['fulfillmentHash'] = fulfillment[2];
-
                                                 ipfs.catJson(fulfillment[2], function(error, fulfillmentData) {
-                                                    allBountyData['fulfillerMetadata'] = fulfillmentData.fulfillerMetadata;
-                                                    allBountyData['fulfillerEmail'] = fulfillmentData.contact;
+                                                    allFulfillmentData = fulfillmentData;
+                                                    allFulfillmentData['accepted'] = fulfillment[0];
+
+                                                    // Push the fulfillment onto the array
+                                                    allBountyData.fulfillments.fulfillments.push(allFulfillmentData);
+
                                                     sync_web3(issueURL, JSON.stringify(allBountyData), changes_synced_callback);
                                                     console.log('success syncing with web3');
                                                 })

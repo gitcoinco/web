@@ -25,14 +25,6 @@ window.onload = function(){
             var notificationEmail = $('input[name=notificationEmail]').val();
             var githubUsername = $('input[name=githubUsername]').val();
             var issueURL = $('input[name=issueURL]').val();
-            var claimee_metadata = JSON.stringify({
-                notificationEmail : notificationEmail,
-                githubUsername : githubUsername,
-            });
-            var fulfillerMetadata = {
-                notificationEmail : notificationEmail,
-                githubUsername : githubUsername,
-            }
             localStorage['githubUsername'] = githubUsername;
 
             var isError = false;
@@ -57,19 +49,27 @@ window.onload = function(){
             ipfs.ipfsApi = IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: "https", root:'/api/v0'});
             ipfs.setProvider({ host: 'ipfs.infura.io', port: 5001, protocol: 'https', root:'/api/v0'});
 
+            // https://github.com/ConsenSys/StandardBounties/issues/21
             var ipfsFulfill = {
-                // StandardBounties Fields
-                description: issueURL,
-                sourceFileName: "",
-                sourceFileHash: "",
-                sourceDirectoryHash: "",
-                contact: notificationEmail,
-                // Additional fields added for gitcoin
-                // fulfillerAddress: account,
-                fulfillerMetadata: fulfillerMetadata,
-                schemaName: 'gitcoin_fulfillment',
-                schemaVersion: '0.1'
-            }
+                payload: {
+                    description: issueURL,
+                    sourceFileName: "",
+                    sourceFileHash: "",
+                    sourceDirectoryHash: "",
+                    fulfiller: {
+                        name: fullName,
+                        email: notificationEmail,
+                        githubUsername: githubUsername,
+                        address: account,
+                    },
+                    metadata: {},
+                },
+                meta: {
+                    platform: 'gitcoin',
+                    schemaVersion: '0.1',
+                    schemaName: 'gitcoinFulfillment',
+                },
+            };
 
             var _callback = function(error, result){
                 var ignore_error = false;
@@ -89,15 +89,6 @@ window.onload = function(){
                         var web3Callback = function(error, result){
                             var next = function(){
                                 localStorage['txid'] = result;
-                                // updates = {
-                                //     claimee_email: notificationEmail,
-                                //     claimee_github_username: githubUsername,
-                                //     claimee_metadata: {},
-                                //     claimeee_address: account,
-                                //     idx_status: 'fulfilled',
-
-                                // }
-                                // Update the database directly with the fullfillment fields
                                 // See views.sync_web3
                                 dataLayer.push({'event': 'claimissue'});
                                 sync_web3(issueURL);

@@ -60,6 +60,7 @@ $(document).ready(function(){
     });
 
     // Disable the submitBounty button until all fields have been filled out
+    $('#submitBounty').addClass('disabled')
     $("#primary_subform :input").blur(function () {
         if($("input[name=title]").val()==''  || $("input[name=keywords]").val()==''){
             $('#submitBounty').addClass('disabled');
@@ -99,25 +100,36 @@ $(document).ready(function(){
             bountyType : $('select[name=bountyType').val(),
         }
 
+        // https://github.com/ConsenSys/StandardBounties/issues/21
         var ipfsBounty = {
-            // StandardBounties Fields
-            title: metadata.issueTitle,
-            description: metadata.issueDescription,
-            sourceFileHash: "",
-            sourceFileName: "",
-            contact: metadata.notificationEmail,
-            categories: metadata.issueKeywords.split(","),
-            githubLink: issueURL,
-            // Additional fields added for gitcoin
-            web3created: new Date().getTime()/1000|0,
-            tokenName : tokenName,
-            tokenAddress: tokenAddress,
-            metadata: metadata,
-            // Schema info
-            // See https://github.com/ConsenSys/StandardBounties/issues/21
-            schemaName: 'gitcoin_bounty',
-            schemaVersion: '0.1',
-        };
+            payload: {
+                title: metadata.issueTitle,
+                description: metadata.issueDescription,
+                sourceFileName: "",
+                sourceFileHash: "",
+                sourceDirectoryHash: "",
+                issuer: {
+                    name: metadata.fullName,
+                    email: metadata.notificationEmail,
+                    githubUsername: metadata.githubUsername,
+                    address: '',
+                },
+                funders:[
+                ],
+                categories: metadata.issueKeywords.split(","),
+                created: new Date().getTime()/1000|0,
+                webReferenceURL: issueURL,
+                // optional fields
+                metadata: metadata,
+                tokenName: tokenName,
+                tokenAddress: tokenAddress,
+            },
+            meta: {
+                platform: 'gitcoin',
+                schemaVersion: '0.1',
+                schemaName: 'gitcoinBounty',
+            },
+        }
 
         //validation
         var isError = false;
@@ -256,6 +268,7 @@ $(document).ready(function(){
 
                 var approve_success_callback = function(callback){
                     // Add data to IPFS and kick off all the callbacks.
+                    ipfsBounty.payload.issuer.address = account;
                     ipfs.addJson(ipfsBounty, newIpfsCallback);
                 };
                 if(isETH){

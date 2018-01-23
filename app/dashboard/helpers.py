@@ -238,9 +238,14 @@ class BountyStage(Enum):
 def process_bounty_details(bountydetails, url, contract_address, network):
     url = normalizeURL(url)
 
-    metadata = bountydetails.get('metadata', {})
+    # See Line 303 in bounty_details.js for original object
+    bountyId = bountydetails.get('bountyId', {})
+    bountyData = bountydetails.get('bountyData', {})
+    bountyDataPayload = bountyData.get('payload', {})
+    metadata = bountyDataPayload.get('metadata', {})
+    bounty = bountydetails.get('bounty', {})
     # Claimee metadata will be empty when bounty is first created
-    fulfiller_metadata = bountydetails.get('fulfillerMetadata', {})
+    fulfillments = bountydetails.get('fulfillments', {})
 
     # Create new bounty (but only if things have changed)
     didChange = False
@@ -259,48 +264,68 @@ def process_bounty_details(bountydetails, url, contract_address, network):
         print(e)
         didChange = True
 
+    # Check if we have any fulfillments.  If so, check if they are accepted.
+    # If there are no fulfillments, accepted is automatically False.
+    # Currently we are only considering the latest fulfillment.  Std bounties supports multiple.
+    fments = fulfillments['fulfillments']
+    accepted = fments[-1].get('accepted') if fments else False
+
+    if fments:
+        claimeee_address = fments[-1].get('payload', {}).get('fulfiller', {}).get('address', '0x0000000000000000000000000000000000000000')
+        claimee_email = fments[-1].get('payload', {}).get('fulfiller', {}).get('email', '')
+        claimee_github_username = fments[-1].get('payload', {}).get('fulfiller', {}).get('githubUsername', '')
+        claimee_name = fments[-1].get('payload', {}).get('fulfiller', {}).get('name', '')
+        claimee_metadata = fments[-1].get('payload', {}).get('metadata', {})
+    else:
+        claimeee_address = '0x0000000000000000000000000000000000000000'
+        claimee_email = ''
+        claimee_github_username = ''
+        claimee_name = ''
+        claimee_metadata = {}
+
     # Possible Bounty Stages
     # 0: Draft
     # 1: Active
     # 2: Dead
+    is_open = True if (bounty.get('bountyStage') == 1 and not accepted) else False
 
-    # If balance is zero, bounty has been fulfilled and accepted.
-    accepted = bountydetails.get('accepted', False)
-    is_open = True if (bountydetails.get('bountyStage') == 1 and not accepted) else False
     with transaction.atomic():
         for old_bounty in old_bounties:
             old_bounty.current_bounty = False
             old_bounty.save()
         new_bounty = Bounty.objects.create(
-            title=bountydetails.get('title', ''),
-            web3_created=timezone.datetime.fromtimestamp(bountydetails.get('web3created')),
-            value_in_token=bountydetails.get('fulfillmentAmount'),
-            token_name=bountydetails.get('tokenName'),
-            token_address=bountydetails.get('tokenAddress', '0x0000000000000000000000000000000000000000'),
-            bounty_type=metadata.get('bountyType'),
-            project_length=metadata.get('projectLength'),
-            experience_level=metadata.get('experienceLevel'),
-            github_url=url,
-            bounty_owner_address=bountydetails.get('issuer'),
-            bounty_owner_email=metadata.get('notificationEmail'),
-            bounty_owner_github_username=metadata.get('githubUsername'),
-            claimeee_address=bountydetails.get('fulfiller', '0x0000000000000000000000000000000000000000'),
-            claimee_email=fulfiller_metadata.get('notificationEmail', ''),
-            claimee_github_username=fulfiller_metadata.get('githubUsername', ''),
+            title=bountyDataPayload.get('title', ''),
+            issue_description=bountyDataPayload.get('description', ''),
+            web3_created=timezone.datetime.fromtimestamp(bountyDataPayload.get('created')),
+            value_in_token=bounty.get('fulfillmentAmount'),
+            token_name=bountyDataPayload.get('tokenName', ''),
+            token_address=bountyDataPayload.get('tokenAddress', '0x0000000000000000000000000000000000000000'),
+            bounty_type=metadata.get('bountyType', ''),
+            project_length=metadata.get('projectLength', ''),
+            experience_level=metadata.get('experienceLevel', ''),
+            github_url=url,  # Could also use payload.get('webReferenceURL')
+            bounty_owner_address=bountyDataPayload.get('issuer', {}).get('address', ''),
+            bounty_owner_email=bountyDataPayload.get('issuer', {}).get('email', ''),
+            bounty_owner_github_username=bountyDataPayload.get('issuer', {}).get('githubUsername', ''),
+            bounty_owner_name=bountyDataPayload.get('issuer', {}).get('name', ''),
             # fulfillment_ipfs_hash='',
-            num_fulfillments=bountydetails.get('numFulfillments', 0),
             is_open=is_open,
-            expires_date=timezone.datetime.fromtimestamp(bountydetails.get('deadline')),
             raw_data=bountydetails,
             metadata=metadata,
-            claimee_metadata=fulfiller_metadata,
             current_bounty=True,
             contract_address=contract_address,
             network=network,
-            issue_description=bountydetails.get('description'),
-            standard_bounties_id=bountydetails.get('bountyId'),
-            balance=bountydetails.get('balance'),
-            accepted=accepted
+            accepted=accepted,
+            # These fields are after initial bounty creation, in bounty_details.js
+            claimee_metadata=claimee_metadata,
+            claimeee_address=claimeee_address,
+            claimee_email=claimee_email,
+            claimee_github_username=claimee_github_username,
+            claimee_name=claimee_name,
+            expires_date=timezone.datetime.fromtimestamp(bounty.get('deadline')),
+            standard_bounties_id=bountyId,
+            balance=bounty.get('balance'),
+            num_fulfillments=fulfillments.get('total', 0),
             )
         new_bounty.fetch_issue_item()
         if not new_bounty.avatar_url:
