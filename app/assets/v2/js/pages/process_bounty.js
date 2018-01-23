@@ -52,6 +52,11 @@ window.onload = function(){
                 } else {
                     results = sanitizeAPIResults(results);
                     result = results[0];
+                    if (result == null){
+                        _alert({ message: "No active bounty found for this Github URL." });
+                        unloading_button($('.submitBounty'));
+                        return;
+                    }
 
                     var bountyAmount = parseInt(result['value_in_token'], 10); 
                     var fromAddress = result['bounty_owner_address'];
