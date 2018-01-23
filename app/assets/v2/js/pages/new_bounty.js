@@ -179,28 +179,11 @@ $(document).ready(function(){
         ipfs.ipfsApi = IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: "https", root:'/api/v0'});
         ipfs.setProvider({ host: 'ipfs.infura.io', port: 5001, protocol: 'https', root:'/api/v0'});
 
-        // create bountydetails array for database sync
-        // comments are the corresponding database fields for dashboard_bounty table
-//         bountyDetails = [
-//             amount,                       // value_in_token
-//             tokenAddress,                 // token_address
-//             account,                      // bounty_owner_address
-//             tokenAddress,                 // claimee_address
-//             'true',                       // is_open
-//             'true',                       // initialized
-//             issueURL,                     // github_url
-//             new Date().getTime()/1000|0,  // web3_created
-//             JSON.stringify(metadata),     // multiple fields
-//             expire_date,                  // expires_date
-//             '',                           // claimee_metadata
-//             0,                            // placeholder for standard_bounties_id
-//         ]
-
         function syncDb() {
             // Need to pass the bountydetails as well, since I can't grab it from the 
             // Standard Bounties contract.
             dataLayer.push({'event': 'fundissue'});
-            sync_web3(issueURL);  //Writes the bounty URL to the database
+            sync_web3(issueURL);  // Writes the bounty URL to the database
             localStorage[issueURL] = timestamp();  // Used to figure out "local time delta" in bounty_details.js
             localStorage['issuer'] = account;
             _alert({ message: "Submission sent to web3." }, 'info');
@@ -223,7 +206,6 @@ $(document).ready(function(){
             }
 
             localStorage['txid'] = result;
-            // localStorage['bountyDetails'] = JSON.stringify(bountyDetails);
             syncDb();
 
         }
