@@ -21,14 +21,13 @@ from __future__ import print_function, unicode_literals
 import json
 import logging
 
-from django.core import serializers
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import ellipses, sync_profile
 from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
@@ -56,7 +55,7 @@ def send_tip(request):
     return TemplateResponse(request, 'yge/send1.html', params)
 
 
-# @require_POST
+@require_POST
 @csrf_exempt
 def new_interest(request, bounty_id):
     """Express interest in a Bounty.
@@ -106,7 +105,7 @@ def new_interest(request, bounty_id):
     return JsonResponse({'success': True, 'profile': ProfileSerializer(interest.profile).data})
 
 
-# @require_POST
+@require_POST
 @csrf_exempt
 def remove_interest(request, bounty_id):
     """Remove interest from the Bounty.

@@ -19,12 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 from datetime import datetime, timedelta
-import dateutil.parser
 from urllib.parse import quote_plus, urlencode
 
 from django.conf import settings
 from django.utils import timezone
 
+import dateutil.parser
 import requests
 from rest_framework.reverse import reverse
 

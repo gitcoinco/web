@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 import logging
 from urllib.parse import urlsplit
 
-import requests
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import JSONField
@@ -29,13 +28,13 @@ from django.db import models
 from django.db.models.signals import m2m_changed, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
-from rest_framework import serializers
 
+import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import convert_amount
-from github.utils import (HEADERS, TOKEN_URL, build_auth_dict,
-                          get_issue_comments, get_user, org_name)
+from github.utils import HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, org_name
+from rest_framework import serializers
 
 from .signals import m2m_changed_interested
 

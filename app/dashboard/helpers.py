@@ -17,6 +17,7 @@
 '''
 import json
 import pprint
+from enum import Enum
 
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
@@ -32,8 +33,6 @@ from dashboard.notifications import (
 )
 from economy.utils import convert_amount
 from ratelimit.decorators import ratelimit
-
-from enum import Enum
 
 
 # gets amount of remote html doc (github issue)

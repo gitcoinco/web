@@ -29,9 +29,9 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET
 
 from dashboard.models import Profile
-from github.utils import (get_auth_url, get_github_primary_email,
-                          get_github_user_data, get_github_user_token,
-                          revoke_token)
+from github.utils import (
+    get_auth_url, get_github_primary_email, get_github_user_data, get_github_user_token, revoke_token,
+)
 
 
 @require_GET
