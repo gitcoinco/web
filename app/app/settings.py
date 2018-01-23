@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -64,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ratelimit.middleware.RatelimitMiddleware',
+    'github.middleware.GithubAuthMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -203,7 +204,8 @@ SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_SECONDS = 3600
 
 # Github
-GITHUB_API_BASE_URL = 'https://github.com/login/oauth/authorize'
+GITHUB_API_BASE_URL = 'https://api.github.com'
+GITHUB_AUTH_BASE_URL = 'https://github.com/login/oauth/authorize'
 GITHUB_TOKEN_URL = 'https://github.com/login/oauth/access_token'
 GITHUB_SCOPE = 'user'
 

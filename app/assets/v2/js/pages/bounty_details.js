@@ -291,7 +291,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                 })
             }
             getBountyLoop(i)
-        })        
+        })
     };
 
 
@@ -343,14 +343,14 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                                 });
                             });
                         });
-                        
-                        
+
+
                     } else {
                         // console.error(result);
                         var link_url = etherscan_tx_url(localStorage['txid']);
                         _alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
                     }
-                }); 
+                });
             },1000)
         });
     };
@@ -435,6 +435,7 @@ window.addEventListener('load', function() {
 
                     // Find interest information
                     var is_interested = is_on_interest_list(result['pk']);
+                    update_interest_list(result['pk']);
 
                     //insert table onto page
                     for(var j=0; j< rows.length; j++){
@@ -477,8 +478,6 @@ window.addEventListener('load', function() {
                             };
                             actions.push(entry_comment);
                         }
-
-
 
                         var entry = {
                             href: github_url,

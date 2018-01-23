@@ -133,6 +133,7 @@ var showLoading = function(){
     setTimeout(showLoading,10);
 };
 
+/** The local list of bounty PKs the current profile is interested in. */
 var interested_list = function () {
     if (typeof localStorage.interests == 'undefined') {
         return [];
@@ -140,6 +141,7 @@ var interested_list = function () {
     return localStorage.interests.split(',');
 }
 
+/** Check whether or not the current profile is interested in the bounty. */
 var is_on_interest_list = function (bounty_pk) {
     if (localStorage.interests && localStorage.interests.indexOf(bounty_pk) != -1) {
         return true;
@@ -147,6 +149,7 @@ var is_on_interest_list = function (bounty_pk) {
     return false;
 }
 
+/** Add the current profile to the interested profiles list. */
 var add_interest = function (bounty_pk) {
     if(is_on_interest_list(bounty_pk)){
         return;
@@ -156,12 +159,16 @@ var add_interest = function (bounty_pk) {
     $.post(request_url, function (result) {
         result = sanitizeAPIResults(result);
         if (result.success) {
+            var tmpl = $.templates("#interested");
+            var html = tmpl.render(result.profile);
+            $("#interest_list").append(html);
             return true;
         }
         return false;
     });
 }
 
+/** Remove the current profile from the interested profiles list. */
 var remove_interest = function (bounty_pk) {
     if (!is_on_interest_list(bounty_pk)) {
         return;
@@ -171,10 +178,31 @@ var remove_interest = function (bounty_pk) {
     $.post(request_url, function (result) {
         result = sanitizeAPIResults(result);
         if (result.success) {
+            update_interest_list(bounty_pk);
             return true;
         }
         return false;
     });
+}
+
+/** Update the list of interested profiles. */
+var update_interest_list = function (bounty_pk) {
+    profiles = [];
+    $.getJSON("/bounty/" + bounty_pk + "/interest/", function (data) {
+        data = sanitizeAPIResults(JSON.parse(data));
+        $.each(data, function (index, value) {
+            var profile = {
+                local_avatar_url: value.local_avatar_url,
+                handle: value.handle,
+                url: value.url
+            };
+            profiles.push(profile);
+        });
+        var tmpl = $.templates("#interested");
+        var html = tmpl.render(profiles);
+        $("#interest_list").html(html);
+    });
+    return profiles;
 }
 
 function validateEmail(email) {

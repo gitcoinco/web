@@ -47,7 +47,7 @@ def add_contributors(repo_data):
 
 def sync_profile(handle):
     data = get_user(handle)
-    is_error = not 'name' in data.keys()
+    is_error = 'name' not in data.keys()
     if is_error:
         print("- error main")
         return

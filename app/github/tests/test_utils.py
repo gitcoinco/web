@@ -17,10 +17,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+from urllib.parse import quote_plus, urlencode
 
 from django.conf import settings
 from django.test import TestCase
 from django.test.utils import override_settings
+from django.urls import reverse
 
 from github.utils import BASE_URI, get_auth_url, org_name, repo_url
 
@@ -34,11 +36,17 @@ class GithubUtilitiesTest(TestCase):
     def test_get_auth_url(self):
         """Test the get_auth_url method."""
         redirect = '/funding/new'
-        redirect_uri = BASE_URI + '/_github/callback?redirect_uri=' + BASE_URI + redirect
+        github_callback = reverse('github:github_callback')
+        redirect_params = {'redirect_uri': BASE_URI + redirect}
+        redirect_uri = urlencode(redirect_params, quote_via=quote_plus)
+        params = {
+            'client_id': settings.GITHUB_CLIENT_ID,
+            'scope': settings.GITHUB_SCOPE,
+            'redirect_uri': f'{BASE_URI}{github_callback}?{redirect_uri}'
+        }
+        auth_url = urlencode(params, quote_via=quote_plus)
 
-        assert get_auth_url(redirect) == 'https://github.com/login/oauth/authorize?' \
-            'client_id={}&scope={}&redirect_uri={}' \
-            .format(settings.GITHUB_CLIENT_ID, settings.GITHUB_SCOPE, redirect_uri)
+        assert get_auth_url(redirect) == f'{settings.GITHUB_AUTH_BASE_URL}?{auth_url}'
 
     def test_repo_url(self):
         """Test the repo_url method."""

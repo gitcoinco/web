@@ -2,6 +2,7 @@ import logging
 import random
 import re
 from urllib.parse import urlparse as parse
+
 from django.conf import settings
 
 import requests

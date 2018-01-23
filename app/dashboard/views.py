@@ -27,14 +27,14 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import ellipses, sync_profile
 from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty, BountySyncRequest, Interest, Profile, ProfileSerializer, Subscription, Tip
 from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
-from github.utils import get_github_emails
+from github.utils import get_auth_url, get_github_emails, is_github_token_valid
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -55,7 +55,7 @@ def send_tip(request):
     return TemplateResponse(request, 'yge/send1.html', params)
 
 
-# @require_POST
+@require_POST
 @csrf_exempt
 def new_interest(request, bounty_id):
     """Express interest in a Bounty.
@@ -102,10 +102,10 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
 
-    return JsonResponse({'success': True})
+    return JsonResponse({'success': True, 'profile': ProfileSerializer(interest.profile).data})
 
 
-# @require_POST
+@require_POST
 @csrf_exempt
 def remove_interest(request, bounty_id):
     """Remove interest from the Bounty.
@@ -179,7 +179,8 @@ def interested_profiles(request, bounty_id):
     # Get all interests for the Bounty.
     interests = Interest.objects \
         .filter(bounty__id=bounty_id) \
-        .select_related('profile')
+        .select_related('profile') \
+        .order_by('created')
 
     # Check whether or not the current profile has already expressed interest.
     if current_profile and interests.filter(profile__pk=current_profile).exists():
@@ -197,6 +198,9 @@ def interested_profiles(request, bounty_id):
     for interest in interests:
         interest_data = ProfileSerializer(interest.profile).data
         interests_data.append(interest_data)
+
+    if request.is_ajax():
+        return JsonResponse(json.dumps(interests_data), safe=False)
 
     return JsonResponse({
         'paginator': {
@@ -382,27 +386,34 @@ def kill_bounty(request):
 
 def bounty_details(request):
     """Display the bounty details."""
+    _access_token = request.session.get('access_token')
+    profile_id = request.session.get('profile_id')
     params = {
         'issueURL': request.GET.get('issue_'),
         'title': 'Issue Details',
         'card_title': 'Funded Issue Details | Gitcoin',
         'avatar_url': 'https://gitcoin.co/static/v2/images/helmet.png',
         'active': 'bounty_details',
+        'is_github_token_valid': is_github_token_valid(_access_token),
+        'github_auth_url': get_auth_url(request.path),
+        'profile_interested': False
     }
+
     try:
-        b = Bounty.objects.get(github_url=request.GET.get('url'), current_bounty=True)
+        b = Bounty.objects.current().get(github_url=request.GET.get('url'))
         # Currently its not finding anyting in the database
         if b.title:
-            params['card_title'] = "{} | {} Funded Issue Detail | Gitcoin".format(b.title, b.org_name)
+            params['card_title'] = f'{b.title} | {b.org_name} Funded Issue Detail | Gitcoin'
             params['title'] = params['card_title']
             params['card_desc'] = ellipses(b.issue_description_text, 255)
 
-        interested_profiles = b.interested.select_related('profile').all()
-        profile_ids = list(interested_profiles.values_list('profile_id', flat=True))
-
+        params['bounty_pk'] = b.pk
+        params['interested_profiles'] = b.interested.select_related('profile').all()
         params['avatar_url'] = b.local_avatar_url
-        params['interested_profiles'] = interested_profiles
-        params['profile_interested'] = request.session['profile_id'] in profile_ids
+
+        if profile_id:
+            profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
+            params['profile_interested'] = request.session.get('profile_id') in profile_ids
     except Exception as e:
         print(e)
         logging.error(e)
