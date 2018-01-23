@@ -184,6 +184,7 @@ window.onload = function () {
                     _alert('got an error :(');
                     unloading_button(jQuery("#send"));       
                 } else {
+                    dataLayer.push({'event': 'sendtip'});
                     mixpanel.track("Tip Step 2 Success", {});
                     var txid = result;
                     $("send_eth").style.display = 'none';
