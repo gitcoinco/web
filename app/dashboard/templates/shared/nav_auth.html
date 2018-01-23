@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -30,7 +30,7 @@
                       <div class="dropdown-divider"></div>
                       <a class="dropdown-item" href="/profile/{{github_handle}}"><img src="/static/v2/images/icons/anchor.png" width=20px height=20px>  View Profile</a>
                       <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="/_github/logout"><img src="/static/v2/images/icons/lock_open.png" width=20px height=20px>  Log Out</a>
+                      <a class="dropdown-item" href="/_github/logout/?redirect_uri={{ request.get_full_path }}"><img src="/static/v2/images/icons/lock_open.png" width=20px height=20px>  Log Out</a>
                     </div>
                   </div>
                 {% else %}

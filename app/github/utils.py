@@ -18,10 +18,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import json
+from datetime import datetime, timedelta
+import dateutil.parser
+from urllib.parse import quote_plus, urlencode
 
 from django.conf import settings
+from django.utils import timezone
 
 import requests
+from rest_framework.reverse import reverse
 
 _AUTH = (settings.GITHUB_API_USER, settings.GITHUB_API_TOKEN)
 BASE_URI = settings.BASE_URL.rstrip('/')
@@ -32,21 +37,120 @@ JSON_HEADER = {
     'User-Agent': settings.GITHUB_APP_NAME,
     'Origin': settings.BASE_URL
 }
+TOKEN_URL = '{api_url}/applications/{client_id}/tokens/{oauth_token}'
+
+
+def build_auth_dict(oauth_token):
+    """Collect authentication details.
+
+    Args:
+        oauth_token (str): The Github OAuth token.
+
+    Returns:
+        dict: An authentication dictionary.
+
+    """
+    return  {
+        'api_url': settings.GITHUB_API_BASE_URL,
+        'client_id': settings.GITHUB_CLIENT_ID,
+        'client_secret': settings.GITHUB_CLIENT_SECRET,
+        'oauth_token': oauth_token
+    }
+
+
+def is_github_token_valid(oauth_token=None, last_validated=None):
+    """Check whether or not a Github OAuth token is valid.
+
+    Args:
+        access_token (str): The Github OAuth token.
+
+    Returns:
+        bool: Whether or not the provided OAuth token is valid.
+
+    """
+    # If no OAuth token was provided, no checks necessary.
+    if not oauth_token:
+        return False
+
+    # If validation datetime string is passed, parse it to datetime.
+    if last_validated:
+        try:
+            last_validated = dateutil.parser.parse(last_validated)
+        except ValueError:
+            print('Validation of date failed.')
+            last_validated = None
+
+    # Check whether or not the user's access token has been validated recently.
+    if oauth_token and last_validated:
+        if (timezone.now() - last_validated) < timedelta(hours=1):
+            return True
+
+    _params = build_auth_dict(oauth_token)
+    _auth = (_params['client_id'], _params['client_secret'])
+    url = TOKEN_URL.format(**_params)
+    response = requests.get(url, auth=_auth, headers=HEADERS)
+
+    if response.status_code == 200:
+        return True
+    return False
+
+
+def revoke_token(oauth_token):
+    """Revoke the specified token."""
+    _params = build_auth_dict(oauth_token)
+    _auth = (_params['client_id'], _params['client_secret'])
+    url = TOKEN_URL.format(**_params)
+    response = requests.delete(url, auth=_auth, headers=HEADERS)
+    if response.status_code == 204:
+        return True
+    return False
+
+
+def reset_token(oauth_token):
+    """Reset the provided token.
+
+    Args:
+        access_token (str): The Github OAuth token.
+
+    Returns:
+        str: The new Github OAuth token.
+
+    """
+    _params = build_auth_dict(oauth_token)
+    _auth = (_params['client_id'], _params['client_secret'])
+    url = TOKEN_URL.format(**_params)
+    response = requests.post(url, auth=_auth, headers=HEADERS)
+    return response.json().get('token')
 
 
 def get_auth_url(redirect_uri='/'):
-    """Build Github authorization parameters."""
-    redirect_uri = BASE_URI + redirect_uri
-    request_params = {
-        'redirect_uri': '{}/_github/callback?redirect_uri={}'
-                        .format(BASE_URI, redirect_uri),
-        'client_id': settings.GITHUB_CLIENT_ID,
-        'scope': settings.GITHUB_SCOPE
-    }
+    """Build the Github authorization URL.
 
-    return settings.GITHUB_API_BASE_URL + \
-        '?client_id={client_id}&scope={scope}&redirect_uri={redirect_uri}' \
-        .format(**request_params)
+    Args:
+        redirect_uri (str): The redirect URI to be used during authentication.
+
+    Attributes:
+        github_callback (str): The local path to the Github callback view.
+        redirect_params (dict): The redirect paramaters to URL encode.
+        params (dict): The URL parameters to encode.
+        auth_url (str): The URL encoded Github authentication parameters.
+
+    Returns:
+        str: The Github authentication URL.
+
+    """
+    github_callback = reverse('github:github_callback')
+    redirect_params = {'redirect_uri': BASE_URI + redirect_uri}
+    redirect_uri = urlencode(redirect_params, quote_via=quote_plus)
+
+    params = {
+        'client_id': settings.GITHUB_CLIENT_ID,
+        'scope': settings.GITHUB_SCOPE,
+        'redirect_uri': f'{BASE_URI}{github_callback}?{redirect_uri}'
+    }
+    auth_url = urlencode(params, quote_via=quote_plus)
+
+    return settings.GITHUB_AUTH_BASE_URL + f'?{auth_url}'
 
 
 def get_github_user_token(code, **kwargs):
@@ -78,8 +182,7 @@ def get_github_user_data(oauth_token):
         requests.Response: The Github user response.
 
     """
-    headers = dict({'Authorization': 'token {}'.format(oauth_token)},
-                   **JSON_HEADER)
+    headers = dict({'Authorization': f'token {oauth_token}'}, **JSON_HEADER)
     response = requests.get('https://api.github.com/user', headers=headers)
     if response.status_code == 200:
         return response.json()
@@ -96,11 +199,8 @@ def get_github_primary_email(oauth_token):
         str: The user's primary github email address.
 
     """
-    email = ''
-    headers = dict({'Authorization': 'token {}'.format(oauth_token)},
-                   **JSON_HEADER)
-    response = requests.get('https://api.github.com/user/emails',
-                            headers=headers)
+    headers = dict({'Authorization': f'token {oauth_token}'}, **JSON_HEADER)
+    response = requests.get('https://api.github.com/user/emails', headers=headers)
 
     if response.status_code == 200:
         emails = response.json()
@@ -108,7 +208,7 @@ def get_github_primary_email(oauth_token):
             if email.get('primary'):
                 return email.get('email')
 
-    return email
+    return ''
 
 
 def get_github_emails(oauth_token):
@@ -122,10 +222,8 @@ def get_github_emails(oauth_token):
 
     """
     emails = []
-    headers = dict({'Authorization': 'token {}'.format(oauth_token)},
-                   **JSON_HEADER)
-    response = requests.get('https://api.github.com/user/emails',
-                            headers=headers)
+    headers = dict({'Authorization': f'token {oauth_token}'}, **JSON_HEADER)
+    response = requests.get('https://api.github.com/user/emails', headers=headers)
 
     if response.status_code == 200:
         emails = response.json()
@@ -165,9 +263,9 @@ def get_issue_comments(owner, repo, issue=None):
         'direction': 'desc',
     }
     if issue:
-        url = 'https://api.github.com/repos/{}/{}/issues/{}/comments'.format(owner, repo, issue)
+        url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/comments'
     else:
-        url = 'https://api.github.com/repos/{}/{}/issues/comments'.format(owner, repo)
+        url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments'
     response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
 
     return response.json()
@@ -175,8 +273,8 @@ def get_issue_comments(owner, repo, issue=None):
 
 def get_user(user, sub_path=''):
     """Get the github user details."""
-    url = 'https://api.github.com/users/{}{}' \
-          .format(user.replace('@', ''), sub_path)
+    user = user.replace('@', '')
+    url = f'https://api.github.com/users/{user}{sub_path}'
     response = requests.get(url, auth=_AUTH, headers=HEADERS)
 
     return response.json()
@@ -184,41 +282,30 @@ def get_user(user, sub_path=''):
 
 def post_issue_comment(owner, repo, issue_num, comment):
     """Post a comment on an issue."""
-    url = 'https://api.github.com/repos/{}/{}/issues/{}/comments' \
-          .format(owner, repo, issue_num)
-    response = requests.post(url, data=json.dumps({'body': comment}),
-                             auth=_AUTH)
+    url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_num}/comments'
+    response = requests.post(url, data=json.dumps({'body': comment}), auth=_AUTH)
     return response.json()
 
 
 def patch_issue_comment(comment_id, owner, repo, issue_num, comment):
     """Update a comment on an issue via patch."""
-    url = 'https://api.github.com/repos/{}/{}/issues/{}/comments/{}' \
-          .format(owner, repo, issue_num, comment_id)
-    response = requests.patch(url, data=json.dumps({'body': comment}),
-                              auth=_AUTH)
+    url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_num}/comments/{comment_id}'
+    response = requests.patch(url, data=json.dumps({'body': comment}), auth=_AUTH)
     return response.json()
 
 
 def delete_issue_comment(comment_id, owner, repo):
     """Remove a comment on an issue via delete."""
-    url = 'https://api.github.com/repos/{}/{}/issues/comments/{}' \
-          .format(owner, repo, comment_id)
+    url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
     response = requests.delete(url, auth=_AUTH)
     return response.json()
 
 
 def post_issue_comment_reaction(owner, repo, comment_id, content):
     """React to an issue comment."""
-    url = 'https://api.github.com/repos/{}/{}/issues/comments/{}/reactions' \
-          .format(owner, repo, comment_id)
+    url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions'
     response = requests.post(
-        url,
-        data=json.dumps({
-            'content': content
-        }),
-        auth=_AUTH,
-        headers=HEADERS)
+        url, data=json.dumps({'content': content}), auth=_AUTH, headers=HEADERS)
     return response.json()
 
 

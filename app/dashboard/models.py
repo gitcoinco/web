@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import logging
 from urllib.parse import urlsplit
 
+import requests
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import JSONField
@@ -28,20 +29,25 @@ from django.db import models
 from django.db.models.signals import m2m_changed, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
+from rest_framework import serializers
 
-import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import convert_amount
-from github.utils import get_issue_comments, get_user, org_name
-from rest_framework import serializers
+from github.utils import (HEADERS, TOKEN_URL, build_auth_dict,
+                          get_issue_comments, get_user, org_name)
 
 from .signals import m2m_changed_interested
 
 logger = logging.getLogger(__name__)
 
 
-logger = logging.getLogger(__name__)
+class BountyQuerySet(models.QuerySet):
+    """Handle the manager queryset for Bounties."""
+
+    def current(self):
+        """Filter results down to current bounties only."""
+        return self.filter(current_bounty=True)
 
 
 class Bounty(SuperModel):
@@ -119,6 +125,8 @@ class Bounty(SuperModel):
     interested = models.ManyToManyField('dashboard.Interest')
     interested_comment = models.IntegerField(null=True)
 
+    objects = BountyQuerySet.as_manager()
+
     def __str__(self):
         return "{}{} {} {} {}".format("(CURRENT) " if self.current_bounty else "", self.title, self.value_in_token,
                                       self.token_name, self.web3_created)
@@ -159,7 +167,7 @@ class Bounty(SuperModel):
         try:
             _org_name = org_name(self.github_url)
             return _org_name
-        except:
+        except Exception:
             return None
 
     def is_hunter(self, handle):
@@ -201,7 +209,7 @@ class Bounty(SuperModel):
     def keywords(self):
         try:
             return self.metadata.get('issueKeywords', False)
-        except:
+        except Exception:
             return False
 
     @property
@@ -239,7 +247,7 @@ class Bounty(SuperModel):
             return self.value_in_token
         try:
             return convert_amount(self.value_in_token, self.token_name, 'ETH')
-        except:
+        except Exception:
             return None
 
     @property
@@ -249,7 +257,7 @@ class Bounty(SuperModel):
             return self.value_in_token
         try:
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
-        except:
+        except Exception:
             return None
 
     @property
@@ -299,11 +307,11 @@ class Bounty(SuperModel):
         try:
             github_user, github_repo, _, github_issue = parsed_url.path.split('/')[1:5]
         except ValueError:
-            logger.info('Invalid github url for Bounty: {} -- {}'.format(self.pk, self.github_url))
+            logger.info('Invalid github url for Bounty: %s -- %s', self.pk, self.github_url)
             return []
         comments = get_issue_comments(github_user, github_repo, github_issue)
-        if type(comments) is dict and comments.get('message') == 'Not Found':
-            logger.info('Bounty {} contains an invalid github url {}'.format(self.pk, self.github_url))
+        if isinstance(comments, dict) and comments.get('message') == 'Not Found':
+            logger.info('Bounty %s contains an invalid github url %s', self.pk, self.github_url)
             return []
         comment_count = 0
         for comment in comments:
@@ -369,7 +377,7 @@ class Tip(SuperModel):
             return self.amount
         try:
             return convert_amount(self.amount, self.tokenName, 'ETH')
-        except:
+        except Exception:
             return None
 
     # TODO: DRY
@@ -380,7 +388,7 @@ class Tip(SuperModel):
             return self.amount
         try:
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
-        except:
+        except Exception:
             return None
 
     @property
@@ -637,6 +645,30 @@ class Profile(SuperModel):
     def absolute_url(self):
         return self.get_absolute_url()
 
+    def is_github_token_valid(self):
+        """Check whether or not a Github OAuth token is valid.
+
+        Args:
+            access_token (str): The Github OAuth token.
+
+        Returns:
+            bool: Whether or not the provided OAuth token is valid.
+
+        """
+        if not self.github_access_token:
+            return False
+
+        _params = build_auth_dict(self.github_access_token)
+        url = TOKEN_URL.format(**_params)
+        response = requests.get(
+            url,
+            auth=(_params['client_id'], _params['client_secret']),
+            headers=HEADERS)
+
+        if response.status_code == 200:
+            return True
+        return False
+
     def __str__(self):
         return self.handle
 
@@ -651,14 +683,24 @@ class ProfileSerializer(serializers.BaseSerializer):
     """Handle serializing the Profile object."""
 
     class Meta:
+        """Define the profile serializer metadata."""
+
         model = Profile
-        fields = ('email', 'handle', 'github_access_token')
+        fields = ('handle', 'github_access_token')
         extra_kwargs = {'github_access_token': {'write_only': True}}
 
     def to_representation(self, obj):
+        """Provide the serialized representation of the Profile.
+
+        Args:
+            obj (Profile): The Profile object to be serialized.
+
+        Returns:
+            dict: The serialized Profile.
+
+        """
         return {
             'handle': obj.handle,
-            'email': obj.email,
             'github_url': obj.github_url,
             'local_avatar_url': obj.local_avatar_url,
             'url': obj.get_relative_url()

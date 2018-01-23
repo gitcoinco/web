@@ -20,10 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from django.urls import path
 
-from .views import github_authentication, github_callback
+from .views import github_authentication, github_callback, github_logout
 
 app_name = 'github'
 urlpatterns = [
     path('callback/', github_callback, name='github_callback'),
     path('auth/', github_authentication, name='github_auth'),
+    path('logout/', github_logout, name='github_logout'),
 ]

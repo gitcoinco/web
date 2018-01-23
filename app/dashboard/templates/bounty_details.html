@@ -102,21 +102,11 @@
                             Gitcoin Profile: <span id="claimee_github_username"></span>
 
                         </div>
-                        <div id="interest_list">
-                            <br>
-                            <h5>Interested Profiles</h5>
-                            {% if interested_profiles %}
-                            <ul>
-                                {% for interested in interested_profiles %}
-                                <li>
-                                    <img src="{{ interested.profile.local_avatar_url }}" class="avatar">
-                                    <a href="{{ interested.profile.get_relative_url }}">{{ interested.profile.handle }}</a>
-                                </li>
-                                {% endfor %}
+                        <br>
+                        <h5>Interested Profiles</h5>
+                        <div>
+                            <ul id="interest_list">
                             </ul>
-                            {% else %}
-                            No interested profiles... Be the first!
-                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -132,14 +122,19 @@
         </span>
     </script>
 
+    <script id="interested" type="text/x-jsrender">
+        <li>
+            <img src="[[:local_avatar_url]]" class="avatar">
+            <a href="[[:url]]">[[:handle]]</a>
+        </li>
+    </script>
+
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/ga.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
 
 </body>
-
-
 
 <!-- jQuery -->
 <script src="{{STATIC_URL}}v2/js/ipfs-api.js"></script>
@@ -149,6 +144,5 @@
 <script src="{{STATIC_URL}}v2/js/shared.js"></script>
 <script src="{{STATIC_URL}}v2/js/waiting_room_entertainment.js"></script>
 <script src="{{STATIC_URL}}v2/js/pages/bounty_details.js"></script>
-
 
 </html>

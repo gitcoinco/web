@@ -25,10 +25,13 @@ import logging
 from django.conf import settings
 from django.http import Http404
 from django.shortcuts import redirect
+from django.utils import timezone
 from django.views.decorators.http import require_GET
 
 from dashboard.models import Profile
-from github.utils import get_auth_url, get_github_primary_email, get_github_user_data, get_github_user_token
+from github.utils import (get_auth_url, get_github_primary_email,
+                          get_github_user_data, get_github_user_token,
+                          revoke_token)
 
 
 @require_GET
@@ -62,7 +65,7 @@ def github_callback(request):
             'email': user_profile.email,
             'access_token': user_profile.github_access_token,
             'profile_id': user_profile.pk,
-            'profile_handle': user_profile.handle,
+            'access_token_last_validated': timezone.now().isoformat(),
         }
         for k, v in session_data.items():
             request.session[k] = v
@@ -74,7 +77,28 @@ def github_callback(request):
 def github_authentication(request):
     """Handle Github authentication."""
     redirect_uri = request.GET.get('redirect_uri', '/')
-    if settings.DEBUG and (not settings.GITHUB_CLIENT_ID or settings.GITHUB_CLIENT_ID == 'TODO'):
+
+    if not request.session.get('access_token'):
+        return redirect(get_auth_url(redirect_uri))
+
+    # Alert local developer that Github integration needs configured.
+    if settings.DEBUG and (not settings.GITHUB_CLIENT_ID or
+                           settings.GITHUB_CLIENT_ID == 'TODO'):
         logging.info('GITHUB_CLIENT_ID is not set. Github integration is disabled!')
-        return redirect(redirect_uri)
-    return redirect(get_auth_url(redirect_uri))
+
+    return redirect(redirect_uri)
+
+
+def github_logout(request):
+    """Handle Github logout."""
+    access_token = request.session.pop('access_token', '')
+    handle = request.session.pop('handle', '')
+    redirect_uri = request.GET.get('redirect_uri', '/')
+
+    if access_token:
+        revoke_token(access_token)
+        request.session.pop('access_token_last_validated')
+        Profile.objects.filter(handle=handle).update(github_access_token='')
+
+    request.session.modified = True
+    return redirect(redirect_uri)
