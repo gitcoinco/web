@@ -21,6 +21,7 @@ window.onload = function(){
             mixpanel.track("Claim Bounty Clicked", {});
             loading_button($('#submitBounty'));
             e.preventDefault();
+            var fullName = $('input[name=fullName]').val();
             var notificationEmail = $('input[name=notificationEmail]').val();
             var githubUsername = $('input[name=githubUsername]').val();
             var issueURL = $('input[name=issueURL]').val();

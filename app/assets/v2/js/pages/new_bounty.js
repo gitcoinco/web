@@ -93,6 +93,7 @@ $(document).ready(function(){
             tokenName : tokenName,
             githubUsername : githubUsername,
             notificationEmail : notificationEmail,
+            fullName: $('input[name=fullName').val(),
             experienceLevel : $('select[name=experienceLevel').val(),
             projectLength : $('select[name=projectLength').val(),
             bountyType : $('select[name=bountyType').val(),
