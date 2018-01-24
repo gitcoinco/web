@@ -1,0 +1,183 @@
+window.onload = function() {
+    setTimeout(function() {
+        if (!web3.currentProvider || !web3.currentProvider.isMetaMask) {
+            $("step_zero").style.display = "block";
+            $("send_eth").style.display = "none";
+            $("loading").style.display = "none";
+        } else {
+            var txid = getParam('txid');
+            var link = "https://" + etherscanDomain() + "/tx/" + txid;
+            $("loading_txt").innerHTML = "Waiting for <a href=" + link + " target=new>transaction</a> to be mined..";
+        }
+        callFunctionWhenTransactionMined(txid, function() {
+            $("loading").style.display = "none";
+            if (web3.currentProvider.isMetaMask) {
+                $("send_eth").style.display = "block";
+                $("step_zero").style.display = "none";
+                //TODO: replace address with wallet address
+                var private_key = $("private_key").value;
+                var address = '0x' + lightwallet.keystore._computeAddressFromPrivKey(private_key);
+                contract().getTransferDetails.call(address, function(errors, result) {
+                    if (errors) {
+                        $("step_zero").style.display = "block";
+                        $("send_eth").style.display = "none";
+                        mixpanel.track("Redeem Coin Error", {
+                            step: 'transferdetails',
+                            error: errors
+                        });
+                    } else {
+                        var active = result[0];
+                        if (!active) {
+                            $("send_eth").innerHTML = "Need help?  Try asking <a href='/slack'>on slack</a>."
+                            $("step_zero").style.display = "none";
+                            console.error('redeem_coin_inactive', result)
+                            var error = "This coin has probably already been claimed.";
+                            _alert(error)
+                            mixpanel.track("Redeem Coin Error", {
+                                step: 'transferdetails2',
+                                error: error
+                            });
+                            return;
+                        }
+                        
+                        var amount = result[1].toNumber();
+                        var developer_tip_pct = result[2].toNumber();
+                        var initialized = result[3];
+                        var expiration_time = result[4].toNumber();
+                        var from = result[5];
+                        var owner = result[6];
+                        var erc20contract = result[7];
+                        var token = 'COLO';
+                        var tokenDetails = tokenAddressToDetails(erc20contract);
+                        var decimals = 18;
+                        // if (tokenDetails) {
+                        //     token = tokenDetails.name;
+                        //     decimals = tokenDetails.decimals;
+                        // }
+                        var round_to = 10 ** 3;
+                        amount = Math.round(round_to * amount / (10 ** decimals)) / round_to;
+                        var _text = "You've Got " + amount + " " + token + "!";
+                        $("zeroh1").innerHTML = _text;
+                        $("oneh1").innerHTML = _text;
+                        $("tokenName").innerHTML = token;
+                        $("send_eth").style.display = "block";
+                    }
+                });
+            }
+        });
+    }, 500);
+
+    $("private_key").value = getParam('key');
+
+    // When 'Generate Account' is clicked
+    $("receive").onclick = function() {
+        mixpanel.track("Tip Receive Click", {});
+        metaMaskWarning();
+
+        var private_key = $("private_key").value;
+        var fromAddress = '0x' + lightwallet.keystore._computeAddressFromPrivKey(private_key);
+        var forwarding_address = $("forwarding_address").value.trim();
+
+        if (!forwarding_address || forwarding_address == '0x0') {
+            _alert("Not a valid forwarding address.");
+            return;
+        }
+
+        if(!fromAddress || fromAddress == '0x0'){
+            _alert("Invalid Link.  Please check your link and try again");
+            return;
+        }
+
+        if(!private_key){
+            _alert("Invalid Link.  Please check your link and try again");
+            return;
+        }
+
+        $("send_eth").innerHTML = "<img src='/static/yge/images/loading_v2.gif' style='max-width: 70px; max-height: 70px;'><br><h4>Submitting to the blockchain..</h4>";
+        loading_button(jQuery("#receive"));
+        //set up callback to sendRawTransaction
+        var callback = function(error, result) {
+            if (error) {
+                console.log(error);
+                _alert('got an error :(');
+                mixpanel.track("Tip Receive Error", {
+                    step: 'callback',
+                    error: error
+                });
+                unloading_button(jQuery("#receive"));
+            } else {
+                startConfetti();
+                mixpanel.track("Tip Receive Success", {});
+                $("send_eth").innerHTML = "<h1>Success 🚀!</h1> <a target=new href='https://" + etherscanDomain() + "/tx/" + result + "'>See your transaction on the blockchain here</a>.<br><br><strong>Status:</strong> <span id=status>Confirming Transaction ... <br><img src='/static/yge/images/loading_v2.gif' style='max-width: 30px; max-height: 30px;'></span><br><br><span id=mighttake>It might take a few minutes to sync, depending upon: <br> - network congestion<br> - network fees that sender allocated to transaction<br></span><br><a id='' class='button' href='/'>⬅ Check out Gitcoin.co</a>";
+                const url = "/coin/redeem";
+                fetch(url, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        txid: getParam('txid'),
+                        receive_txid: result,
+                    }),
+                });
+                callFunctionWhenTransactionMined(result, function() {
+                    $("status").innerHTML = "Confirmed ⚡️";
+                    $("mighttake").innerHTML = '';
+                });
+            }
+        };
+
+        //find the nonce
+        web3.eth.getTransactionCount(fromAddress, function(error, result) {
+            var nonce = result;
+            if (!nonce) {
+                nonce = 0;
+            }
+            web3.eth.getBalance(fromAddress, function(error, result) {
+                var balance = result.toNumber();
+                if (balance == 0) {
+                    _alert("You must wait until the senders transaction confirms.");
+                    return;
+                }
+
+                //setup raw transaction
+                var estimate = 10 ** 5;
+                var gasPrice = 10 ** 9 * 1.7;
+                if (getParam('gasPrice')) {
+                    var gasPrice = 10 ** 9 * getParam('gasPrice');
+                }
+                var payloadData = contract().claimTransfer.getData(fromAddress, forwarding_address);
+                var gas = estimate;
+                // maximize the gas price
+                if (balance > (gas * gasPrice)) {
+                    gasPrice = balance / (gas + 1);
+                }
+                gasPrice = parseInt(gasPrice);
+                console.log("balance: " + balance + " wei ");
+                console.log("balance: " + (balance / 10 ** 18) + " eth ");
+                console.log("gas: " + gas);
+                console.log("gasPrice: " + gasPrice);
+                console.log("delta (needed - actual): " + (balance - (gas * gasPrice)) + " wei");
+                console.log("delta (needed - actual): " + ((balance - (gas * gasPrice))) / 10 ** 18 + " eth");
+                var gasLimit = gas + 1;
+                // TODO: Update rawTx to send to ERC token
+                var rawTx = {
+                    nonce: web3.toHex(nonce),
+                    gasPrice: web3.toHex(gasPrice),
+                    gasLimit: web3.toHex(gasLimit),
+                    gas: web3.toHex(gas),
+                    to: contract_address(),
+                    from: fromAddress,
+                    value: '0x00',
+                    data: payloadData,
+                };
+                console.log("rawTx:", rawTx);
+                //sign & serialize raw transaction
+                var tx = new EthJS.Tx(rawTx);
+                tx.sign(new EthJS.Buffer.Buffer.from(private_key, 'hex'));
+                var serializedTx = tx.serialize();
+
+                //send raw transaction
+                web3.eth.sendRawTransaction('0x' + serializedTx.toString('hex'), callback);
+
+            });
+        });
+    };
+};

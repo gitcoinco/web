@@ -858,3 +858,38 @@ def toolbox(request):
         'newsletter_headline': "Don't Miss New Tools!"
     }
     return TemplateResponse(request, 'toolbox.html', context)
+
+# @csrf_exempt
+# @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def redeem_coin(request):
+    if request.body != '':
+        status = 'OK'
+        message = 'Colorodo Coin has been received'
+        params = json.loads(request.body)
+
+        try:
+            redeem = ''
+            # Check CoinRedemptiont table to check if coin has been issued
+            # redeem = CoinRedemption.objects.get(txid=params['txid'],)
+            # redeem.receive_txid = params['receive_txid']
+            # redeem.received_on = timezone.now()
+            # redeem.save()
+        except Exception as e:
+            status = 'error'
+            message = str(e)
+
+        #http response
+        response = {
+            'status': status,
+            'message': message,
+        }
+        return JsonResponse(response)
+
+    params = {
+        'issueURL': request.GET.get('source'),
+        'class': 'receive',
+        'title': 'Coin Redemption',
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
+    }
+
+    return TemplateResponse(request, 'yge/redeem_coin.html', params)
