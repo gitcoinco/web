@@ -58,7 +58,7 @@ window.onload = function(){
                         return;
                     }
 
-                    var bountyAmount = parseInt(result['value_in_token'], 10); 
+                    var bountyAmount = parseInt(result['value_in_token'], 10);
                     var fromAddress = result['bounty_owner_address'];
                     var claimeeAddress = result['claimeee_address'];
                     var open = result['is_open'];
@@ -104,7 +104,7 @@ window.onload = function(){
 
                     // Standard Bounties can have multiple fulfillments by multiple people.
                     // Gitcoin does not support this yet, it only allows one person to fulfill.
-                    // Just in case multilple fulfillments end up on the bounty, we will take 
+                    // Just in case multilple fulfillments end up on the bounty, we will take
                     // the latest one, which will match up with what the database has.
                     bounty.getNumFulfillments(bountyId, function (error, result) {
                         var fulfillmentId = result - 1;
@@ -114,7 +114,7 @@ window.onload = function(){
             };
             // Get bountyId from the database
             var uri = '/api/v0.1/bounties/?github_url='+issueURL;
-            $.get(uri, apiCallback); 
+            $.get(uri, apiCallback);
             e.preventDefault();
         });
     },100);

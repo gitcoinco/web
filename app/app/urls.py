@@ -148,6 +148,8 @@ urlpatterns = [
     path('bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
     path('bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
     path('bounty/<int:bounty_id>/interest/', dashboard.views.interested_profiles, name='interested-profiles'),
+    # Legacy Support
+    path('legacy/', include('legacy.urls', namespace='legacy')),
 ]
 
 handler403 = 'retail.views.handler403'

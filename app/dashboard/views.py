@@ -410,6 +410,7 @@ def bounty_details(request):
         params['bounty_pk'] = b.pk
         params['interested_profiles'] = b.interested.select_related('profile').all()
         params['avatar_url'] = b.local_avatar_url
+        params['is_legacy'] = b.is_legacy  # TODO: Remove this following legacy contract sunset.
 
         if profile_id:
             profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
