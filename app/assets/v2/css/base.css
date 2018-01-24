@@ -1159,7 +1159,10 @@ body.bounty_details #title {
     }
 
     .interior .col-2 {
-        display: none;
+        display: none !important;
+    }
+    .interior .col-7 {
+        margin-left: 5%;
     }
 
     .whatisit iframe,
