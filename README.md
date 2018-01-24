@@ -258,7 +258,7 @@ Navigate to: https://github.com/settings/applications/new and enter similar valu
 * Enter Application Name: `MyGitcoinApp`
 * Homepage URL: `http://localhost`
 * Application description: `My Gitcoin App`
-* Authorization callback URL: `http://localhost:8080/` (required)
+* Authorization callback URL: `http://localhost:8000/` (required)
 
 The authorization callback URL should match your `BASE_URL` value in `local_settings.py`
 
@@ -323,10 +323,10 @@ pip install -r requirements/test.txt
 ./manage.py migrate
 ./manage.py createcachetable
 ./manage.py get_prices
-./manage.py runserver 0.0.0.0:8080
+./manage.py runserver 0.0.0.0:8000
 ```
 
-Navigate to `http://localhost:8080/`.
+Navigate to `http://localhost:8000/`.
 
 
 # Adding your token to Gitcoin.
