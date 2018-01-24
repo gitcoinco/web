@@ -32,7 +32,7 @@ class GithubUtilitiesTest(TestCase):
 
     @override_settings(GITHUB_CLIENT_ID='TEST')
     @override_settings(GITHUB_SCOPE='user')
-    @override_settings(BASE_URL='http://localhost:8080')
+    @override_settings(BASE_URL='http://localhost:8000')
     def test_get_auth_url(self):
         """Test the get_auth_url method."""
         redirect = '/funding/new'
