@@ -323,10 +323,10 @@ pip install -r requirements/test.txt
 ./manage.py migrate
 ./manage.py createcachetable
 ./manage.py get_prices
-./manage.py runserver 0.0.0.0:8080
+./manage.py runserver 0.0.0.0:8000
 ```
 
-Navigate to `http://localhost:8080/`.
+Navigate to `http://localhost:8000/`.
 
 
 # Adding your token to Gitcoin.
