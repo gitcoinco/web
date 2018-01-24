@@ -1,4 +1,3 @@
-/* eslint-disable */
 $(document).ready(function(){
     $( document ).tooltip();
 

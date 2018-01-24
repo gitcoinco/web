@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 /*! JsRender v0.9.88 (Beta): http://jsviews.com/#jsrender */
 /*! **VERSION FOR WEB** (For NODE.JS see http://jsviews.com/download/jsrender-node.js) */
 /*

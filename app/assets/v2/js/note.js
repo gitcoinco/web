@@ -24,7 +24,7 @@ $( document ).ready( () => {
         startY = newvalueY;
       }
 
-      ele.css( 'background-position', `${newvalueX - startX}px     ${newvalueY - startY}px` );
+      ele.css( 'background-position', `${newvalueX - startX}px ${newvalueY - startY}px` );
     });
   });
 });

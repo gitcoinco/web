@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 load_tokens();
 var setUsdAmount= function (event) {
     var amount  = $('input[name=amount]').val();
@@ -142,10 +140,10 @@ $(document).ready(function(){
         } else {
             localStorage['acceptTOS'] = true;
         }
-        var is_issueURL_invalid = issueURL == '' 
-            || issueURL.indexOf('http') != 0 
-            || issueURL.indexOf('github') == -1 
-            || issueURL.indexOf('javascript:') != -1 
+        var is_issueURL_invalid = issueURL == ''
+            || issueURL.indexOf('http') != 0
+            || issueURL.indexOf('github') == -1
+            || issueURL.indexOf('javascript:') != -1
         ;
         if(is_issueURL_invalid){
             _alert({ message: "Please enter a valid github issue URL." });

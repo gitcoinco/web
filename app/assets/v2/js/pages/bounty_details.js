@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 var _truthy = function(val){
     if(!val){
         return false;

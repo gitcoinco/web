@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 var tokens = function(network_id){
     // from https://github.com/etherdelta/etherdelta.github.io/blob/master/config/main.json
     var _tokens =  null
@@ -169,7 +167,7 @@ var tokens = function(network_id){
         {"addr": "0x5cf4e9dfd975c52aa523fb5945a12235624923dc", "name": "MPRM", "decimals": 0 },
         {"addr": "0xb581e3a7db80fbaa821ab39342e9cbfd2ce33c23", "name": "ARCD", "decimals": 18},
         {"addr": "0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6", "name": "RDN", "decimals": 18}
-    ];  
+    ];
     } else if(network_id == "ropsten" ){ //ropsten
       _tokens = [
         { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
@@ -192,7 +190,7 @@ var tokens = function(network_id){
         { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
         ];
     }
-    
+
     _tokens.sort(function(a,b){
         if(a.name[0] < b.name[0]){
             return -1;
@@ -247,6 +245,5 @@ var load_tokens = function(){
                 $('input[name=terms]').attr('checked','checked');
             }
         });
-    });    
+    });
 }
-
