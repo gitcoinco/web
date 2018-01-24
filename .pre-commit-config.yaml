@@ -1,0 +1,11 @@
+repos:
+- repo: git://github.com/pre-commit/mirrors-isort
+  sha: 'v4.2.15'
+  hooks:
+  - id: isort
+    args:
+      - --check-only
+      - --recursive
+      - --settings-path
+      - ./setup.cfg
+      - .
