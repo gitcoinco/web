@@ -15,8 +15,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from datetime import datetime
 import os
 import socket
+
+from pytz import utc
+
 
 HOSTNAME = socket.gethostname()
 
@@ -27,9 +31,7 @@ RATELIMIT_ENABLE = True
 RATELIMIT_USE_CACHE = 'default'
 RATELIMIT_VIEW = 'tdi.views.ratelimited'
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -211,6 +213,10 @@ GITHUB_SCOPE = 'user'
 
 # List of github usernames to not count as comments on an issue
 IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
+
+# TODO: Remove following full deprecation of legacy bounties
+# Legacy contract migration date
+LEGACY_CONTRACT_SUNSET = utc.localize(datetime(year=2018, month=1, day=25))
 
 # Include local settings overrides
 try:

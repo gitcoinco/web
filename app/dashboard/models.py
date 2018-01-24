@@ -270,6 +270,19 @@ class Bounty(SuperModel):
     def turnaround_time(self):
         return (self.created_on - self.web3_created).total_seconds()
 
+    @property
+    def is_legacy(self):
+        """Determine if the Bounty is legacy based on sunset date.
+
+        Todo:
+            * Remove this method following legacy bounty sunsetting.
+
+        Returns:
+            bool: Whether or not the Bounty is using the legacy contract.
+
+        """
+        return (self.created_on < settings.LEGACY_CONTRACT_SUNSET)
+
     def get_github_api_url(self):
         """Get the Github API URL associated with the bounty."""
         from urllib.parse import urlparse
