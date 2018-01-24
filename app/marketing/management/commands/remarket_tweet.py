@@ -28,6 +28,8 @@ class Command(BaseCommand):
     help = 'sends bounties quotes to twitter'
 
     def handle(self, *args, **options):
+        return # per 2018/01/22 convo with vivek / kevin, these tweets have low engagement
+        # we are going to test manually promoting these tweets for a week and come back to revisit this
         bounties = Bounty.objects.filter(
             current_bounty=True,
             network='mainnet',
