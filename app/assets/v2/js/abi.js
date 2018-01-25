@@ -12,10 +12,10 @@ var bounty_address = function (){
             return '0x2af47a65da8cd66729b4209c22017d6a5c2d2400';
         break;
         case "ropsten":
-            throw "not supported";
+            throw "this network is not supported in bounty_address() for gitcoin";
         break;
         case "kovan":
-            throw "not supported";
+            throw "this network is not supported in bounty_address() for gitcoin";
         break;
         case "rinkeby":
             return "0xf209d2b723b6417cbf04c07e733bee776105a073";

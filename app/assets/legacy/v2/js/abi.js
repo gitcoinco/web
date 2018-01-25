@@ -11,10 +11,10 @@ var bounty_address = function (){
             return '0x3102118ba636942c82d1a6efa2e7d069dc2d14bd';
         break;
         case "kovan":
-            throw "not supported";
+            throw "this network is not supported in bounty_address() for gitcoin";
         break;
         case "rinkeby":
-            throw "0x361a451ea7ac6b21f4a5f24390405ad113de3f5b";
+            return "0x361a451ea7ac6b21f4a5f24390405ad113de3f5b";
         break;
         case "custom network":
             return '0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd';
