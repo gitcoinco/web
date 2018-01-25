@@ -187,7 +187,11 @@ var refreshBounties = function(){
                 } else if(result['claimeee_address'] != '0x0000000000000000000000000000000000000000'){
                     result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">'+result['status']+'</span></a>';
                 }
-                result['action'] = '/funding/details?url=' + result['github_url'];
+                if (result['web3_type'] == 'legacy_gitcoin') {
+                    result.action = '/legacy/funding/details?url=' + result.github_url;
+                } else {
+                    result.action = '/funding/details?url=' + result.github_url;
+                }
                 result['title'] = result['title'] ? result['title'] : result['github_url'];
                 result['p'] = timeDifference(new Date(), new Date(result['created_on']))+' - '+(result['project_length'] ? result['project_length'] : "Unknown Length")+' - '+(result['bounty_type'] ? result['bounty_type'] : "Unknown Type")+' - '+(result['experience_level'] ? result['experience_level'] : "Unknown Experience Level") + ( is_expired ? " - (Expired)" : "");
                 result['watch'] = 'Watch';

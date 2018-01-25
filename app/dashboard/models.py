@@ -281,13 +281,14 @@ class Bounty(SuperModel):
             bool: Whether or not the Bounty is using the legacy contract.
 
         """
-        return (self.created_on < settings.LEGACY_CONTRACT_SUNSET)
+        return (self.created_on < settings.LEGACY_CONTRACT_SUNSET or \
+                self.web3_type == 'gitcoin_legacy')
 
     def get_github_api_url(self):
         """Get the Github API URL associated with the bounty."""
         from urllib.parse import urlparse
         if self.github_url.lower()[:19] != 'https://github.com/':
-            return
+            return ''
         url_path = urlparse(self.github_url).path
         return 'https://api.github.com/repos/' + url_path
 
@@ -310,12 +311,13 @@ class Bounty(SuperModel):
                 self.issue_description = item
             elif item_type == 'title':
                 self.title = item
-        else:
-            return None
+            self.save()
+            return item
+        return ''
 
     def fetch_issue_comments(self, save=True):
         if self.github_url.lower()[:19] != 'https://github.com/':
-            return
+            return []
 
         parsed_url = urlsplit(self.github_url)
         try:
@@ -375,8 +377,10 @@ class Tip(SuperModel):
 
     def __str__(self):
         from django.contrib.humanize.templatetags.humanize import naturalday
-        return "({}) - {} {} {} {} to {},  created: {}, expires: {}".format(self.network, self.status, "ORPHAN" if len(self.emails) == 0 else "", self.amount, self.tokenName, self.username, naturalday(self.created_on), naturalday(self.expires_date))
-
+        return "({}) - {} {} {} {} to {},  created: {}, expires: {}" \
+               .format(self.network, self.status, "ORPHAN" if not self.emails else "",
+                       self.amount, self.tokenName, self.username, naturalday(self.created_on),
+                       naturalday(self.expires_date))
 
     #TODO: DRY
     def get_natural_value(self):
@@ -409,12 +413,11 @@ class Tip(SuperModel):
     def status(self):
         if self.receive_txid:
             return "RECEIVED"
-        else:
-            return "PENDING"
+        return "PENDING"
+
 
 @receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
 def normalize_usernames(sender, instance, **kwargs):
-
     if instance.claimee_github_username:
         instance.claimee_github_username = instance.claimee_github_username.replace("@", '')
     if instance.bounty_owner_github_username:
@@ -569,7 +572,7 @@ class Profile(SuperModel):
 
         for repo in sorted(self.repos_data, key=lambda repo: repo.get('contributions', -1), reverse=True):
             for c in repo.get('contributors', []):
-                if type(c) == dict and c.get('contributions', 0) > auto_include_contributors_with_count_gt:
+                if isinstance(c, dict) and c.get('contributions', 0) > auto_include_contributors_with_count_gt:
                     _return.append(c['login'])
 
         include_gitcoin_users = len(_return) < limit_to_num
@@ -639,13 +642,13 @@ class Profile(SuperModel):
                 (success_rate, 'Success Rate'),
                 (loyalty_rate, 'Loyalty Rate'),
             ]
-        else: #funder
-            return [
-                (role, 'Primary Role'),
-                (bounties.count(), 'Total Funded Issues'),
-                (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
-                (success_rate, 'Success Rate'),
-            ]
+        # funder
+        return [
+            (role, 'Primary Role'),
+            (bounties.count(), 'Total Funded Issues'),
+            (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
+            (success_rate, 'Success Rate'),
+        ]
 
     @property
     def github_url(self):
@@ -703,21 +706,21 @@ class ProfileSerializer(serializers.BaseSerializer):
         fields = ('handle', 'github_access_token')
         extra_kwargs = {'github_access_token': {'write_only': True}}
 
-    def to_representation(self, obj):
+    def to_representation(self, instance):
         """Provide the serialized representation of the Profile.
 
         Args:
-            obj (Profile): The Profile object to be serialized.
+            instance (Profile): The Profile object to be serialized.
 
         Returns:
             dict: The serialized Profile.
 
         """
         return {
-            'handle': obj.handle,
-            'github_url': obj.github_url,
-            'local_avatar_url': obj.local_avatar_url,
-            'url': obj.get_relative_url()
+            'handle': instance.handle,
+            'github_url': instance.github_url,
+            'local_avatar_url': instance.local_avatar_url,
+            'url': instance.get_relative_url()
         }
 
 
