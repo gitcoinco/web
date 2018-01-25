@@ -251,6 +251,21 @@ cp app/local_settings.py.dist app/local_settings.py
 
 You will need to edit the `app/local_settings.py` file with your local settings. Look for config items that are marked `#required`.
 
+## Rollbar Integration
+
+Error tracking is entirely optional and primarily for internal staging and production tracking.
+If you would like to track errors of your local environment, setup an account at: https://rollbar.
+
+Once you have access to your project access tokens, you can enable rollbar error tracking for both the backend and frontend one of two ways:
+
+* Environment Variables:
+  * `ROLLBAR_CLIENT_TOKEN`
+  * `ROLLBAR_SERVER_TOKEN`
+
+* Modifying `local_settings.py` to reflect:
+  * `ROLLBAR_CLIENT_TOKEN = os.environ.get('ROLLBAR_CLIENT_TOKEN', '<post_client_item>')`
+  * `ROLLBAR_SERVER_TOKEN = os.environ.get('ROLLBAR_SERVER_TOKEN', '<post_server_item>')`
+
 ## Setup Database
 
 PostgreSQL is the database used by this application. Here are some instructions for installing PostgreSQL on various operating systems.

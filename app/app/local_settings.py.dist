@@ -107,8 +107,6 @@ MAILCHIMP_USER = ''
 MAILCHIMP_API_KEY = ''
 MAILCHIMP_LIST_ID = ''
 
-TRACKJS_TOKEN=''
-
 MIXPANEL_TOKEN=''
 
 GOOGLE_ANALYTICS_AUTH_JSON = '' #get from https://developers.google.com/analytics/devguides/reporting/core/v4/quickstart/service-py
