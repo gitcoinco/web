@@ -117,6 +117,10 @@ GITTER_TOKEN = '' #https://developer.gitter.im/docs/authentication
 # optional: only needed if you slack things
 SLACK_TOKEN = 'TODO'
 
+# Rollbar tokens
+ROLLBAR_CLIENT_TOKEN = os.environ.get('ROLLBAR_CLIENT_TOKEN', '')
+ROLLBAR_SERVER_TOKEN = os.environ.get('ROLLBAR_SERVER_TOKEN', '')
+
 # IMAP Settings
 IMAP_EMAIL='<email>'
 IMAP_PASSWORD='<password>'

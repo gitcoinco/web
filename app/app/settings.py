@@ -18,6 +18,8 @@
 import os
 import socket
 
+import rollbar
+
 HOSTNAME = socket.gethostname()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -204,10 +206,18 @@ SECURE_HSTS_SECONDS = 3600
 # List of github usernames to not count as comments on an issue
 IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
 
-
 # Include local settings overrides
 try:
     from .local_settings import *  # NOQA
     INSTALLED_APPS += DEBUG_APPS
-except ImportError as exp:
+
+    if ROLLBAR_SERVER_TOKEN:
+        # Handle rollbar initialization.
+        ROLLBAR = {
+            'access_token': ROLLBAR_SERVER_TOKEN,
+            'environment': ENV,
+            'root': BASE_DIR,
+        }
+        MIDDLEWARE.append('rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
+except ImportError:
     pass

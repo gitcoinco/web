@@ -14,5 +14,7 @@ def insert_settings(request):
         'trackjs_token': settings.TRACKJS_TOKEN,
         'STATIC_URL': settings.STATIC_URL,
         'num_slack': num_slack,
+        'rollbar_client_token': settings.ROLLBAR_CLIENT_TOKEN,
+        'env': settings.ENV,
     }
     return context
