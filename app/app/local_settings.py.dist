@@ -15,6 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import os
 
 import os
 
@@ -113,8 +114,6 @@ MAILCHIMP_USER = ''
 MAILCHIMP_API_KEY = ''
 MAILCHIMP_LIST_ID = ''
 
-TRACKJS_TOKEN=''
-
 MIXPANEL_TOKEN=''
 
 GOOGLE_ANALYTICS_AUTH_JSON = '' #get from https://developers.google.com/analytics/devguides/reporting/core/v4/quickstart/service-py
@@ -123,6 +122,10 @@ GITTER_TOKEN = '' #https://developer.gitter.im/docs/authentication
 
 # optional: only needed if you slack things
 SLACK_TOKEN = 'TODO'
+
+# Rollbar tokens
+ROLLBAR_CLIENT_TOKEN = os.environ.get('ROLLBAR_CLIENT_TOKEN', '')
+ROLLBAR_SERVER_TOKEN = os.environ.get('ROLLBAR_SERVER_TOKEN', '')
 
 # IMAP Settings
 IMAP_EMAIL='<email>'

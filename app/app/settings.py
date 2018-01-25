@@ -15,12 +15,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from datetime import datetime
 import os
 import socket
+from datetime import datetime
 
+import rollbar
 from pytz import utc
-
 
 HOSTNAME = socket.gethostname()
 
@@ -223,5 +223,14 @@ LEGACY_CONTRACT_SUNSET = utc.localize(datetime(year=2018, month=1, day=25))
 try:
     from .local_settings import *  # NOQA
     INSTALLED_APPS += DEBUG_APPS
-except ImportError as exp:
+
+    if ROLLBAR_SERVER_TOKEN:
+        # Handle rollbar initialization.
+        ROLLBAR = {
+            'access_token': ROLLBAR_SERVER_TOKEN,
+            'environment': ENV,
+            'root': BASE_DIR,
+        }
+        MIDDLEWARE.append('rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
+except ImportError:
     pass
