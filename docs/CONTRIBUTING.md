@@ -45,6 +45,11 @@ your answers cleared up.
 Pull Requests are the way in which concrete changes are made to the code and
 documentation.
 
+## Prerequisites
+
+You must install [pre-commit](https://pre-commit.com/#install) in order to enable our
+precommit hooks and `pre-commit install` from your `gitcoinco/web` root directory.
+
 ### Step 1: Fork
 
 Fork the project [on GitHub](https://github.com/gitcoinco/web) and clone your
