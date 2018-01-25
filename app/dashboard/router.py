@@ -18,6 +18,8 @@
 
 from datetime import datetime
 
+from django.db.models import Q
+
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
 
@@ -31,7 +33,8 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         model = Bounty
         fields = ("url", "created_on", "modified_on", "title", "web3_created", "value_in_token",
                   "token_name", "token_address", "bounty_type", "project_length",
-                  "experience_level", "github_url", "github_comments", "bounty_owner_address", "bounty_owner_email",
+                  "experience_level", "github_url", "github_comments", "github_repository",
+                  "bounty_owner_address", "bounty_owner_email",
                   "bounty_owner_github_username", "claimeee_address", "claimee_email",
                   "claimee_github_username", "is_open", "expires_date", "raw_data", "metadata",
                   "claimee_metadata", "current_bounty", 'value_in_eth', 'value_in_usdt', 'status',
@@ -79,6 +82,14 @@ class BountyViewSet(viewsets.ModelViewSet):
         if 'github_url' in self.request.GET.keys():
             urls = self.request.GET.get('github_url').split(',')
             queryset = queryset.filter(github_url__in=urls)
+
+        # filter by github repository
+        if 'github_repository' in self.request.GET.keys():
+            repositories = self.request.GET.get('github_repository').lower().split(',')
+            q = Q()
+            for repository in repositories:
+                q |= Q(github_url__icontains = repository)
+            queryset = queryset.filter(q)
 
         # order
         order_by = self.request.GET.get('order_by')

@@ -16,7 +16,11 @@
 
 '''
 import os
+import sys
 import socket
+
+# Detect if in test env
+TEST = any('pytest' in arg for arg in sys.argv)
 
 HOSTNAME = socket.gethostname()
 
@@ -211,3 +215,11 @@ try:
     INSTALLED_APPS += DEBUG_APPS
 except ImportError as exp:
     pass
+
+# Include test settings override
+if TEST:
+    from .test_settings import *  # NOQA
+
+# Include Travis CI test settings override
+if 'TRAVIS' in os.environ:
+    from .travisci_test_settings import *  # NOQA

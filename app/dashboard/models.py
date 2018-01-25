@@ -229,6 +229,11 @@ class Bounty(SuperModel):
     def turnaround_time(self):
         return (self.created_on - self.web3_created).total_seconds()
 
+    @property
+    def github_repository(self):
+        paths = self.github_url.replace('https://github.com/', '').lower().split('/')
+        return '/'.join(paths[0:2])
+
     def fetch_issue_description(self):
         import requests
         from bs4 import BeautifulSoup
