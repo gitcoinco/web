@@ -6,7 +6,8 @@ from django.contrib import admin
 from linkshortener.models import Link
 
 
-class GeneralAdmin(admin.ModelAdmin):
+class LinkShortenerAdmin(admin.ModelAdmin):
     ordering = ['-id']
+    list_display = ['shortcode', 'uses']
 
-admin.site.register(Link, GeneralAdmin)
+admin.site.register(Link, LinkShortenerAdmin)
