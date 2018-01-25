@@ -1,4 +1,4 @@
-{% load humanize %} 
+{% load humanize %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -39,12 +39,12 @@
                             {% endif %}{% endif %}{% endif %}
                             </div>
                             <div class="col-8 " >
-                                <h5 style="color:white">  
+                                <h5 style="color:white">
                                     <a href="/profile/{{podium_item.github_username}}" target="_blank">
                                         {{podium_item.github_username}}
-                                    </a> 
+                                    </a>
                                 </h5>
-                                <h2 style="color:#86eec4" > ${{podium_item.amount}} </h2> 
+                                <h2 style="color:#86eec4" > ${{podium_item.amount}} </h2>
                             </div>
                         </div>
                     </div>
@@ -52,20 +52,20 @@
                 {% endfor %}
             </div>
             <div class="row mt-0 ml-1 pt-1 pl-1" style="height: 4em; padding: 0.5em;">
-                <div class="col-10" style="padding-top: 0.5em;">     
+                <div class="col-10" style="padding-top: 0.5em;">
                     <h3>{{title}}</h3>
                 </div>
-                <div class="col-2 select"> 
+                <div class="col-2 select">
                         <div class="form-group">
                             <select id="key" class="form-control">
                                 {% for this_title in titles.items %}
-                                    <option value="{{this_title.0}}" 
+                                    <option value="{{this_title.0}}"
                                     {% if selected == this_title.1 %}selected=selected{% endif %} >{{this_title.1}}
                                     </option>
                                 {% endfor %}
                             </select>
                         </div>
-                </div>  
+                </div>
             </div>
 
             {% if items|length == 0 %}
@@ -80,7 +80,7 @@
                         <tr class='clickable-row d-flex  align-items-stretch ' data-href="/profile/{{item.github_username}}">
                             <td class="col-1 d-flex align-items-center item-position">#{{forloop.counter}}</td>
                             <td class="col-1 d-flex align-items-center" >
-                                <img class="img-fluid"  src="{{item.local_avatar_url}}">                                
+                                <img class="img-fluid"  src="{{item.local_avatar_url}}">
                             </td>
                             <td class="col-2 d-flex align-items-center">
                                 <a href="/profile/{{item.github_username}}" target="_blank" >
@@ -90,9 +90,9 @@
                             <td class="col-6 progress_container">
                                 <div class="progress ">
                                     {% with forloop.counter0 as index %}
-                                        <div class="progress-bar progress-bar-striped bg-success" 
-                                        role="progressbar" 
-                                        aria-valuenow={{item.amount}} 
+                                        <div class="progress-bar progress-bar-striped bg-success"
+                                        role="progressbar"
+                                        aria-valuenow={{item.amount}}
                                         aria-valuemin=0
                                         aria-valuemax={{amount_max}}></div>
                                     {% endwith %}
@@ -114,6 +114,7 @@
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/ga.html' %}
     {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
 
 </body>
