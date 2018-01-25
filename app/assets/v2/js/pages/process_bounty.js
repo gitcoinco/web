@@ -66,6 +66,15 @@ window.onload = function(){
                     var bountyId = result['standard_bounties_id'];
 
                     var errormsg = undefined;
+
+                    bounty.getBounty(bountyId, (error, result) => {
+                      if(error || result == null) {
+                        _alert({ message: "No active bounty found on the blochain for this Github URL." });
+                        unloading_button($('.submitBounty'));
+                        return;
+                      }
+                    });
+
                     if(bountyAmount == 0 || open == false || initialized == false){
                         errormsg = "No active funding found at this address.  Are you sure this is an active funded issue?";
                     } else if(claimeeAddress == '0x0000000000000000000000000000000000000000'){

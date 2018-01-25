@@ -59,6 +59,15 @@ window.onload = function(){
                     var bountyId = result['standard_bounties_id'];
 
                     var errormsg = undefined;
+
+                    bounty.getBounty(bountyId, (error, result) => {
+                      if(error || result == null) {
+                        _alert({ message: "No active bounty found on the blockchain for this Github URL." });
+                        unloading_button($('#submitBounty'));
+                        return;
+                      }
+                    });
+
                     if(bountyAmount == 0 || open == false || initialized == false){
                         errormsg = "No active funded issue found at this address.  Are you sure this is an active funded issue?";
                     } 
