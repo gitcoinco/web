@@ -47,7 +47,8 @@ class Command(BaseCommand):
         all_bounties = Bounty.objects.all()
         fetch_remote = options['remote']
         for bounty in all_bounties:
-            if fetch_remote and bounty.current_bounty:
+
+            if bounty.current_bounty:
                 
                 #stopgap to make sure that older versions of this bounty 
                 # are marked as current_bounty=False
@@ -61,10 +62,11 @@ class Command(BaseCommand):
                     old_bounty.save()
                     print("stopgap fixed old_bounty {}".format(old_bounty.pk))
 
-                # 
-                bounty.fetch_issue_description()
-                bounty.fetch_issue_comments()
-                print('1/ refreshed {}'.format(bounty.pk))
+                if fetch_remote:
+                    bounty.fetch_issue_description()
+                    bounty.fetch_issue_comments()
+                    print('1/ refreshed {}'.format(bounty.pk))
+
             if not bounty.avatar_url:
                 bounty.avatar_url = bounty.get_avatar_url()
                 print('2/ refreshed {}'.format(bounty.pk))
