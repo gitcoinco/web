@@ -49,13 +49,14 @@ class Command(BaseCommand):
         for bounty in all_bounties:
 
             if bounty.current_bounty:
-                
+
                 #stopgap to make sure that older versions of this bounty 
                 # are marked as current_bounty=False
                 old_bounties = Bounty.objects.filter(
                     github_url=bounty.github_url,
                     title=bounty.title,
                     current_bounty=True,
+                    pk__lt=bounty.pk,
                 ).exclude(pk=bounty.pk).order_by('-created_on')
                 for old_bounty in old_bounties:
                     old_bounty.current_bounty = False
