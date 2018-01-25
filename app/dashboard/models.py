@@ -282,7 +282,7 @@ class Bounty(SuperModel):
 
         """
         return (self.created_on < settings.LEGACY_CONTRACT_SUNSET or \
-                self.web3_type == 'gitcoin_legacy')
+                self.web3_type == 'legacy_gitcoin')
 
     def get_github_api_url(self):
         """Get the Github API URL associated with the bounty."""
