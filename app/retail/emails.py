@@ -151,16 +151,16 @@ def render_new_bounty_roundup(to_email):
 
     bounties = [
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/gitcoinco/web/issues/221'),
-            'primer': 'Gitcoin is built using Gitcoin.  Want to help out and get paid? 💯 ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/web3.py/issues/549'),
+            'primer': 'This is a python issue for the Ethereum Foundation... 💯 ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ProjectWyvern/dao.projectwyvern.com/issues/1'),
-            'primer': 'Here is a fun little solidity programming scope.. Great way to learn (and get paid for it!)  ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/gitcoinco/web/issues/208'),
+            'primer': 'Want to help build Gitcoin?  Here\'s an opppy to do just that 👇\' ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/browep/brower-walk/issues/1'),
-            'primer': 'Into graphics programming?  This issue could be for you..  ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/btcsuite/btcd/issues/1089'),
+            'primer': 'Into Bitcoin and distributed programming?  This issue could be for you..  ~ @owocki',
         },
     ]
 
