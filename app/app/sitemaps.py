@@ -13,7 +13,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
         return [
             'dashboard',
             'new_funding',
-            'claim_funding',
+            'fulfill_funding',
             'process_funding',
             'funding_details',
             'tip',
