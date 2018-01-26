@@ -57,7 +57,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='bounty',
             name='web3_type',
-            field=models.CharField(default='bounties_network', max_length=50),
+            field=models.CharField(default='legacy_gitcoin', max_length=50),
         ),
         migrations.AddField(
             model_name='profile',
