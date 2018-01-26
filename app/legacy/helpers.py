@@ -71,6 +71,7 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             old_bounty.save()
         new_bounty = Bounty.objects.create(
             title=metadata.get('issueTitle',''),
+            web3_type='legacy_gitcoin',
             web3_created=timezone.datetime.fromtimestamp(bountydetails[7]),
             value_in_token=bountydetails[0],
             token_name=metadata.get('tokenName'),
@@ -80,11 +81,11 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             experience_level=metadata.get('experienceLevel'),
             github_url=url,
             bounty_owner_address=bountydetails[2],
-            bounty_owner_email=metadata.get('notificationEmail', None),
-            bounty_owner_github_username=metadata.get('githubUsername', None),
+            bounty_owner_email=metadata.get('notificationEmail', ''),
+            bounty_owner_github_username=metadata.get('githubUsername', ''),
             claimeee_address=bountydetails[3],
-            claimee_email=claimee_metadata.get('notificationEmail', None),
-            claimee_github_username=claimee_metadata.get('githubUsername', None),
+            claimee_email=claimee_metadata.get('notificationEmail', ''),
+            claimee_github_username=claimee_metadata.get('githubUsername', ''),
             is_open=bountydetails[4],
             expires_date=timezone.datetime.fromtimestamp(bountydetails[9]),
             raw_data=bountydetails,
