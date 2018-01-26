@@ -220,6 +220,78 @@ var remove_from_watch_list = function(issueURL){
     localStorage['watches'] = localStorage['watches'].replace("," + issueURL,"");
 }
 
+/** The local list of bounty PKs the current profile is interested in. */
+var interested_list = function () {
+    if (typeof localStorage.interests == 'undefined') {
+        return [];
+    }
+    return localStorage.interests.split(',');
+}
+
+/** Check whether or not the current profile is interested in the bounty. */
+var is_on_interest_list = function (bounty_pk) {
+    if (localStorage.interests && localStorage.interests.indexOf(bounty_pk) != -1) {
+        return true;
+    }
+    return false;
+}
+
+/** Add the current profile to the interested profiles list. */
+var add_interest = function (bounty_pk) {
+    if (is_on_interest_list(bounty_pk)) {
+        return;
+    }
+    localStorage.interests = localStorage.interests + "," + bounty_pk;
+    var request_url = '/bounty/' + bounty_pk + '/interest/new/';
+    $.post(request_url, function (result) {
+        result = sanitizeAPIResults(result);
+        if (result.success) {
+            var tmpl = $.templates("#interested");
+            var html = tmpl.render(result.profile);
+            $("#interest_list").append(html);
+            return true;
+        }
+        return false;
+    });
+}
+
+/** Remove the current profile from the interested profiles list. */
+var remove_interest = function (bounty_pk) {
+    if (!is_on_interest_list(bounty_pk)) {
+        return;
+    }
+    localStorage.interests = localStorage.interests.replace("," + bounty_pk, "");
+    var request_url = '/bounty/' + bounty_pk + '/interest/remove/';
+    $.post(request_url, function (result) {
+        result = sanitizeAPIResults(result);
+        if (result.success) {
+            update_interest_list(bounty_pk);
+            return true;
+        }
+        return false;
+    });
+}
+
+/** Update the list of interested profiles. */
+var update_interest_list = function (bounty_pk) {
+    profiles = [];
+    $.getJSON("/bounty/" + bounty_pk + "/interest/", function (data) {
+        data = sanitizeAPIResults(JSON.parse(data));
+        $.each(data, function (index, value) {
+            var profile = {
+                local_avatar_url: value.local_avatar_url,
+                handle: value.handle,
+                url: value.url
+            };
+            profiles.push(profile);
+        });
+        var tmpl = $.templates("#interested");
+        var html = tmpl.render(profiles);
+        $("#interest_list").html(html);
+    });
+    return profiles;
+}
+
 function validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
@@ -410,6 +482,28 @@ var retrieveTitle = function(){
             target_ele.val(result['title']);
         }
     }).fail(function(){
+        target_ele.removeClass('loading');
+    });
+};
+var retrieveDescription = function () {
+    var ele = $("input[name=issueURL]");
+    var target_ele = $("textarea[name=description]");
+    var issue_url = ele.val();
+    if (typeof issue_url == 'undefined') {
+        return;
+    }
+    if (issue_url.length < 5 || issue_url.indexOf('github') == -1) {
+        return;
+    }
+    var request_url = '/sync/get_issue_description?url=' + encodeURIComponent(issue_url);
+    target_ele.addClass('loading');
+    $.get(request_url, function (result) {
+        result = sanitizeAPIResults(result);
+        target_ele.removeClass('loading');
+        if (result['description']) {
+            target_ele.val(result['description']);
+        }
+    }).fail(function () {
         target_ele.removeClass('loading');
     });
 };

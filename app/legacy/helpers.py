@@ -24,6 +24,7 @@ import pprint
 from django.db import transaction
 from django.utils import timezone
 
+from dashboard.helpers import normalizeURL
 from dashboard.models import Bounty, BountySyncRequest
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
