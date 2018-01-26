@@ -22,6 +22,7 @@ import logging
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 
 from dashboard.models import BountySyncRequest
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time

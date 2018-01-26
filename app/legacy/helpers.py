@@ -30,6 +30,7 @@ from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
 )
 
+
 def normalizeURL(url):
     if url[-1] == '/':
         url = url[0:-1]
@@ -100,7 +101,6 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             network=network,
             issue_description='',
             )
-        new_bounty.fetch_issue_description()
         if not new_bounty.avatar_url:
             new_bounty.avatar_url = new_bounty.get_avatar_url()
         new_bounty.save()
