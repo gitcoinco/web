@@ -189,7 +189,7 @@ def maybe_market_to_github(bounty, event_name, txid=None, interested=None):
             amount_usdt_open_work(),
             )
     elif event_name == 'rejected_claim':
-        msg = "__This claim for the funding of {} {} {} attached to this issue has been **rejected** and can now be claimed by someone else.__\n\n * If you would like to work on this issue you can claim it [here]({}).\n * If you've completed this issue and want to claim the bounty you can do so [here]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = "__This fulfillment for the funding of {} {} {} attached to this issue has been **rejected** and can now be fulfilled by someone else.__\n\n * If you would like to work on this issue you can claim it [here]({}).\n * If you've completed this issue and want to claim the bounty you can do so [here]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
         msg = msg.format(
             round(bounty.get_natural_value(), 4),
             bounty.token_name, usdt_value,
