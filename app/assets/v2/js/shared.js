@@ -151,12 +151,12 @@ var is_on_interest_list = function (bounty_pk) {
 
 /** Add the current profile to the interested profiles list. */
 var add_interest = function (bounty_pk) {
-    if(is_on_interest_list(bounty_pk)){
+    if (is_on_interest_list(bounty_pk)) {
         return;
     }
-    localStorage.interests = localStorage.interests + "," + bounty_pk;
     var request_url = '/bounty/' + bounty_pk + '/interest/new/';
     $.post(request_url, function (result) {
+        localStorage.interests = localStorage.interests + "," + bounty_pk;
         result = sanitizeAPIResults(result);
         if (result.success) {
             var tmpl = $.templates("#interested");
@@ -165,6 +165,8 @@ var add_interest = function (bounty_pk) {
             return true;
         }
         return false;
+    }).fail(function(result){
+        alert("You must login via github to use this feature");
     });
 }
 
@@ -173,15 +175,17 @@ var remove_interest = function (bounty_pk) {
     if (!is_on_interest_list(bounty_pk)) {
         return;
     }
-    localStorage.interests = localStorage.interests.replace("," + bounty_pk, "");
     var request_url = '/bounty/' + bounty_pk + '/interest/remove/';
     $.post(request_url, function (result) {
+        localStorage.interests = localStorage.interests.replace("," + bounty_pk, "");
         result = sanitizeAPIResults(result);
         if (result.success) {
             update_interest_list(bounty_pk);
             return true;
         }
         return false;
+    }).fail(function(result){
+        alert("You must login via github to use this feature");
     });
 }
 

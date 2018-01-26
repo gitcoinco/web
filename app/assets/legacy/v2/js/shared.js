@@ -16,70 +16,6 @@ var loading_button = function(button){
 }
 
 
-/** Check whether or not the current profile is interested in the bounty. */
-var is_on_interest_list = function (bounty_pk) {
-    if (localStorage.interests && localStorage.interests.indexOf(bounty_pk) != -1) {
-        return true;
-    }
-    return false;
-}
-
-
-/** Add the current profile to the interested profiles list. */
-var add_interest = function (bounty_pk) {
-    if(is_on_interest_list(bounty_pk)){
-        return;
-    }
-    localStorage.interests = localStorage.interests + "," + bounty_pk;
-    var request_url = '/bounty/' + bounty_pk + '/interest/new/';
-    $.post(request_url, function (result) {
-        result = sanitizeAPIResults(result);
-        if (result.success) {
-            var tmpl = $.templates("#interested");
-            var html = tmpl.render(result.profile);
-            $("#interest_list").append(html);
-            return true;
-        }
-        return false;
-    });
-}
-
-/** Remove the current profile from the interested profiles list. */
-var remove_interest = function (bounty_pk) {
-    if (!is_on_interest_list(bounty_pk)) {
-        return;
-    }
-    localStorage.interests = localStorage.interests.replace("," + bounty_pk, "");
-    var request_url = '/bounty/' + bounty_pk + '/interest/remove/';
-    $.post(request_url, function (result) {
-        result = sanitizeAPIResults(result);
-        if (result.success) {
-            update_interest_list(bounty_pk);
-            return true;
-        }
-        return false;
-    });
-}
-
-/** Update the list of interested profiles. */
-var update_interest_list = function (bounty_pk) {
-    profiles = [];
-    $.getJSON("/bounty/" + bounty_pk + "/interest/", function (data) {
-        data = sanitizeAPIResults(JSON.parse(data));
-        $.each(data, function (index, value) {
-            var profile = {
-                local_avatar_url: value.local_avatar_url,
-                handle: value.handle,
-                url: value.url
-            };
-            profiles.push(profile);
-        });
-        var tmpl = $.templates("#interested");
-        var html = tmpl.render(profiles);
-        $("#interest_list").html(html);
-    });
-    return profiles;
-}
 
 var update_metamask_conf_time_and_cost_estimate = function(){
     var confTime = 'unknown';
@@ -241,9 +177,9 @@ var add_interest = function (bounty_pk) {
     if (is_on_interest_list(bounty_pk)) {
         return;
     }
-    localStorage.interests = localStorage.interests + "," + bounty_pk;
     var request_url = '/bounty/' + bounty_pk + '/interest/new/';
     $.post(request_url, function (result) {
+        localStorage.interests = localStorage.interests + "," + bounty_pk;
         result = sanitizeAPIResults(result);
         if (result.success) {
             var tmpl = $.templates("#interested");
@@ -252,6 +188,8 @@ var add_interest = function (bounty_pk) {
             return true;
         }
         return false;
+    }).fail(function(result){
+        alert("You must login via github to use this feature");
     });
 }
 
@@ -260,15 +198,17 @@ var remove_interest = function (bounty_pk) {
     if (!is_on_interest_list(bounty_pk)) {
         return;
     }
-    localStorage.interests = localStorage.interests.replace("," + bounty_pk, "");
     var request_url = '/bounty/' + bounty_pk + '/interest/remove/';
     $.post(request_url, function (result) {
+        localStorage.interests = localStorage.interests.replace("," + bounty_pk, "");
         result = sanitizeAPIResults(result);
         if (result.success) {
             update_interest_list(bounty_pk);
             return true;
         }
         return false;
+    }).fail(function(result){
+        alert("You must login via github to use this feature");
     });
 }
 
