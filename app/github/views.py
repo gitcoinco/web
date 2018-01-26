@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from __future__ import print_function, unicode_literals
 
 import logging
+import time
 
 from django.conf import settings
 from django.http import Http404
@@ -70,7 +71,9 @@ def github_callback(request):
         for k, v in session_data.items():
             request.session[k] = v
 
-    return redirect(redirect_uri)
+    response = redirect(redirect_uri)
+    response.set_cookie('last_github_auth_mutation', int(time.time()))
+    return response
 
 
 @require_GET
@@ -86,7 +89,9 @@ def github_authentication(request):
                            settings.GITHUB_CLIENT_ID == 'TODO'):
         logging.info('GITHUB_CLIENT_ID is not set. Github integration is disabled!')
 
-    return redirect(redirect_uri)
+    response = redirect(redirect_uri)
+    response.set_cookie('last_github_auth_mutation', int(time.time()))
+    return response
 
 
 def github_logout(request):
@@ -101,4 +106,6 @@ def github_logout(request):
         Profile.objects.filter(handle=handle).update(github_access_token='')
 
     request.session.modified = True
-    return redirect(redirect_uri)
+    response = redirect(redirect_uri)
+    response.set_cookie('last_github_auth_mutation', int(time.time()))
+    return response
