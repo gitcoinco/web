@@ -32,7 +32,7 @@ git add .
 git stash
 # If no $BRANCH is specified, it will use the current one
 git checkout $BRANCH
-git pull gitcoinco $BRANCH
+git pull origin $BRANCH
 
 #deploy hooks
 echo "- install req"
