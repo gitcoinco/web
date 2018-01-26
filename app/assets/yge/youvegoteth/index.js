@@ -36,7 +36,7 @@ var contract_address = function(){
         var contract_address = '0xb917e0f1fdebb89d37cbe053f59066a20b6794d6'; //ropsten v1
     } else {
         //mainnet
-        var contract_address = '0x8bcaadc84fd3bdea3cc5dd534cd85692a820a692'; //mainnet v1
+        var contract_address = '0x5479b8be3b8e9459616721f8b588df593c6e4178'; //mainnet v1
     }
     return contract_address;
 }
