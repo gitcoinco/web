@@ -197,7 +197,7 @@ def maybe_market_to_github(bounty, event_name, txid):
             bounty.token_name,
             usdt_value,
             "by @{}".format(bounty.claimee_github_username) if bounty.claimee_github_username else "",
-            "\n\n {}, please leave a comment to let the funder {} and the other parties involved your implementation plan.  If you don't leave a comment, the funder may expire your claim at their discretion.".format(
+            "\n\n {}, please leave a comment to let the funder {} (and the other parties involved) know of your implementation plan.  If you don't leave a comment, the funder may expire your claim at their discretion.".format(
                 "@{}".format(bounty.claimee_github_username) if bounty.claimee_github_username else "If you are the claimee",
                 "(@{})".format(bounty.bounty_owner_github_username) if bounty.bounty_owner_github_username else "",
                 ),
