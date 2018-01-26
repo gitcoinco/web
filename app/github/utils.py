@@ -288,9 +288,9 @@ def post_issue_comment(owner, repo, issue_num, comment):
     return response.json()
 
 
-def patch_issue_comment(comment_id, owner, repo, issue_num, comment):
+def patch_issue_comment(comment_id, owner, repo, comment):
     """Update a comment on an issue via patch."""
-    url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_num}/comments/{comment_id}'
+    url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
     response = requests.patch(url, data=json.dumps({'body': comment}), auth=_AUTH)
     return response.json()
 
