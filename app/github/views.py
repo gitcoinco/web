@@ -28,6 +28,7 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
+from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_GET
 
 from dashboard.models import Profile
@@ -36,6 +37,7 @@ from github.utils import (
 )
 
 
+@never_cache
 @require_GET
 def github_callback(request):
     """Handle the Github authentication callback."""
@@ -77,6 +79,7 @@ def github_callback(request):
     return response
 
 
+@never_cache
 @require_GET
 def github_authentication(request):
     """Handle Github authentication."""
@@ -95,6 +98,7 @@ def github_authentication(request):
     return response
 
 
+@never_cache
 def github_logout(request):
     """Handle Github logout."""
     access_token = request.session.pop('access_token', '')
