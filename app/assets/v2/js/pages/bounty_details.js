@@ -521,25 +521,25 @@ window.addEventListener('load', function() {
 
                     var enabled = !isBountyOwner(result);
                     if(result['status']=='open' ){
-                        var entry = {
-                            href: '/funding/fulfill?source='+result['github_url'],
-                            text: 'Fulfill Bounty',
-                            parent: 'right_actions',
-                            color: enabled ? 'darkBlue' : 'darkGrey',
-                            extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Fulfill an issue when you sincerely intend to work on it.\n\n It is not necessary to have started work when you fulfill an issue, but please (1) comment on the github thread after you fulfill it, (2) fulfill an issue only if you plan to start work within the next 12 hours  & (3) only claim it if you feel like you understand the scope and can see it to completion. ' : 'Can only be performed if you are not the funder.',
-                        }
-                        actions.push(entry);
-
                         var interestEntry = {
                             href: is_interested ? '/uninterested' : '/interested',
                             text: is_interested ? 'Unclaim Work' : 'Claim Work',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Claim Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.' : 'Can only be performed if you are not the funder.',
+                            title: enabled ? 'Claim Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.  Please leave a comment for the bounty submitter to let them know you are interested in workwith with them after you claim work' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(interestEntry);
+
+                        var entry = {
+                            href: '/funding/fulfill?source='+result['github_url'],
+                            text: 'Fulfill Work',
+                            parent: 'right_actions',
+                            color: enabled ? 'darkBlue' : 'darkGrey',
+                            extraClass: enabled ? '' : 'disabled',
+                            title: enabled ? 'Use Fulfill Work when you FINISH work on a bounty.   Use Claim Work when you START work.' : 'Can only be performed if you are not the funder.',
+                        }
+                        actions.push(entry);
                     }
 
                     var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
