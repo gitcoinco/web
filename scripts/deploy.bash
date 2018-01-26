@@ -36,7 +36,7 @@ git pull gitcoinco $BRANCH
 
 #deploy hooks
 echo "- install req"
-pip install -r requirements/base.txt
+pip install -r requirements/base.txt 2>&1 >> /dev/null
 echo "- install crontab"
 crontab scripts/crontab
 cd app
