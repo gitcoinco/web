@@ -15,9 +15,9 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-import codecs
 import os
 from io import BytesIO
+from secrets import token_hex
 from wsgiref.util import FileWrapper
 
 from django.conf import settings
@@ -28,7 +28,6 @@ from django.core.validators import validate_email
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.utils import timezone
 
 from marketing.mails import send_mail
 from marketing.utils import invite_to_slack
@@ -228,7 +227,7 @@ def process_accesscode_request(request, pk):
         raise
 
     if request.POST.get('submit', False):
-        invitecode = codecs.getencoder('hex')(os.urandom(16))[0][:29]
+        invitecode = token_hex(16)[:29]
 
         AccessCodes.objects.create(
             invitecode=invitecode,

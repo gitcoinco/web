@@ -18,6 +18,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from secrets import token_hex
+
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 
@@ -40,10 +42,7 @@ class EmailSubscriber(SuperModel):
         return self.email
 
     def set_priv(self):
-        import codecs
-        import os
-
-        self.priv = codecs.getencoder('hex')(os.urandom(16))[0][:29]
+        self.priv = token_hex(16)[:29]
 
 
 class Stat(SuperModel):

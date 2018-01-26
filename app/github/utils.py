@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import json
-from datetime import datetime, timedelta
+from datetime import timedelta
 from urllib.parse import quote_plus, urlencode
 
 from django.conf import settings
@@ -120,7 +120,9 @@ def reset_token(oauth_token):
     _auth = (_params['client_id'], _params['client_secret'])
     url = TOKEN_URL.format(**_params)
     response = requests.post(url, auth=_auth, headers=HEADERS)
-    return response.json().get('token')
+    if response.status_code == 200:
+        return response.json().get('token')
+    return ''
 
 
 def get_auth_url(redirect_uri='/'):
@@ -186,7 +188,7 @@ def get_github_user_data(oauth_token):
     response = requests.get('https://api.github.com/user', headers=headers)
     if response.status_code == 200:
         return response.json()
-    return response
+    return {}
 
 
 def get_github_primary_email(oauth_token):
@@ -206,7 +208,7 @@ def get_github_primary_email(oauth_token):
         emails = response.json()
         for email in emails:
             if email.get('primary'):
-                return email.get('email')
+                return email.get('email', '')
 
     return ''
 
@@ -226,8 +228,8 @@ def get_github_emails(oauth_token):
     response = requests.get('https://api.github.com/user/emails', headers=headers)
 
     if response.status_code == 200:
-        emails = response.json()
-        for email in emails:
+        email_data = response.json()
+        for email in email_data:
             email_address = email.get('email')
             if email_address and 'noreply.github.com' not in email_address:
                 emails.append(email_address)
@@ -250,9 +252,8 @@ def search(query):
         ('sort', 'updated'),
     )
 
-    response = requests.get(
-        'https://api.github.com/search/users',
-        auth=_AUTH, headers=V3HEADERS, params=params)
+    response = requests.get('https://api.github.com/search/users',
+                            auth=_AUTH, headers=V3HEADERS, params=params)
     return response.json()
 
 

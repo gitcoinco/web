@@ -7,3 +7,4 @@ pytest-sugar
 coverage
 django-coverage-plugin
 isort
+responses
