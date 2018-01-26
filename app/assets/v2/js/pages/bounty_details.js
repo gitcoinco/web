@@ -533,11 +533,11 @@ window.addEventListener('load', function() {
 
                         var interestEntry = {
                             href: is_interested ? '/uninterested' : '/interested',
-                            text: is_interested ? 'Remove Interest' : 'Express Interest',
+                            text: is_interested ? 'Unclaim Work' : 'Claim Work',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Express interest in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.' : 'Can only be performed if you are not the funder.',
+                            title: enabled ? 'Claim Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(interestEntry);
                     }
@@ -603,11 +603,11 @@ $(document).ready(function(){
         e.preventDefault();
         if ($(this).attr('href') == '/interested') {
             $(this).attr('href', '/uninterested');
-            $(this).find('span').text('Remove Interest');
+            $(this).find('span').text('Unclaim Work');
             add_interest(document.result['pk']);
         } else {
             $(this).attr('href', '/interested');
-            $(this).find('span').text('Express Interest');
+            $(this).find('span').text('Claim Work');
             remove_interest(document.result['pk']);
         }
     });

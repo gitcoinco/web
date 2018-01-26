@@ -58,7 +58,7 @@ def send_tip(request):
 @require_POST
 @csrf_exempt
 def new_interest(request, bounty_id):
-    """Express interest in a Bounty.
+    """Claim Work for a Bounty.
 
     :request method: POST
 
@@ -108,7 +108,7 @@ def new_interest(request, bounty_id):
 @require_POST
 @csrf_exempt
 def remove_interest(request, bounty_id):
-    """Remove interest from the Bounty.
+    """Unclaim work from the Bounty.
 
     :request method: POST
 
