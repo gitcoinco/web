@@ -29,6 +29,11 @@ from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
 )
 
+def normalizeURL(url):
+    if url[-1] == '/':
+        url = url[0:-1]
+    return url
+
 
 def process_bounty_details(bountydetails, url, contract_address, network):
     """Process legacy bounty details."""

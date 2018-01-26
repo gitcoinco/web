@@ -135,7 +135,6 @@ window.onload = function(){
                             dataLayer.push({'event': 'claimissue'});
                             sync_web3(issueURL);
                             localStorage[issueURL] = timestamp();
-                            add_to_watch_list(issueURL);
                             _alert({ message: "Claim submitted to web3." },'info');
                             setTimeout(function(){
                                 mixpanel.track("Claim Bounty Success", {});
@@ -172,7 +171,8 @@ window.onload = function(){
                                 }, 
                             final_callback);
                         }
-                        estimateGas(issueURL, claimee_metadata, success_callback, failure_calllback);
+                        //var final_callback = function(){};
+                        //estimateGas(issueURL, claimee_metadata, success_callback, failure_calllback, final_callback);
                         bounty.claimBounty.estimateGas(
                             issueURL, 
                             claimee_metadata, 

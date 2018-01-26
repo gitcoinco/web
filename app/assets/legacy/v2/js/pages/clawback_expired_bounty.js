@@ -114,7 +114,6 @@ window.onload = function(){
                             localStorage['txid'] = result;
                             sync_web3(issueURL);
                             localStorage[issueURL] = timestamp();
-                            add_to_watch_list(issueURL);
                             _alert({ message: "Clawback submitted to web3." },'info');
                             setTimeout(function(){
                                 mixpanel.track("Clawback Bounty Success", {});

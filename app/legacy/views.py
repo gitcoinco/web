@@ -23,7 +23,6 @@ from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.helpers import normalizeURL
 from dashboard.models import BountySyncRequest
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from ratelimit.decorators import ratelimit
@@ -33,6 +32,12 @@ from .helpers import process_bounty_changes, process_bounty_details
 logging.basicConfig(level=logging.DEBUG)
 
 confirm_time_minutes_target = 60
+
+
+def normalizeURL(url):
+    if url[-1] == '/':
+        url = url[0:-1]
+    return url
 
 
 @csrf_exempt
