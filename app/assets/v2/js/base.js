@@ -22,6 +22,13 @@ $(document).ready(function() {
       },300);
     });
 
+    // bust the cache every time the user interacts with github
+    $("[href^='/_github']").click(function(e) {
+      var timestamp = Date.now() / 1000 | 0
+      Cookies.set('last_github_auth_mutation', timestamp);
+    });
+
+
     //preload hover image
     var url = $("#logo").data('hover');
     $.get(url,function(){});
