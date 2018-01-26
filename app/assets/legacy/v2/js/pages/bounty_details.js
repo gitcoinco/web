@@ -376,11 +376,11 @@ window.addEventListener('load', function() {
                     if(result['status']=='open' ){
                         var entry = {
                             href: '/legacy/funding/claim?source='+result['github_url'],
-                            text: 'Claim Work',
+                            text: 'Fulfill Work',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Claim work when you sincerely intend to work on it.\n\n It is not necessary to have started work when you claim work on an issue, but please (1) comment on the github thread after you claim it, (2) claim work only if you plan to start work within the next 12 hours  & (3) only claim work if you feel like you understand the scope and can see it to completion. ' : 'Can only be performed if you are not the funder.',
+                            title: enabled ? 'Fulfill work when you sincerely intend to work on it.\n\n It is not necessary to have started work when you fulfill work on an issue, but please (1) comment on the github thread after you fulfill it, (2) fulfill work only if you plan to start work within the next 12 hours  & (3) only fulfill work if you feel like you understand the scope and can see it to completion. ' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(entry);
 

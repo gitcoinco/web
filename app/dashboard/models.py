@@ -219,24 +219,39 @@ class Bounty(SuperModel):
 
     @property
     def status(self):
-        try:
-            # if int(self.num_fulfillments) > 0:
-            #     return 'fulfilled'
-            if self.is_open is False:
-                if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.claimeee_address == '0x0000000000000000000000000000000000000000':
-                    return 'expired'
-                if self.accepted:
-                    return 'accepted'
-                # If its not expired or accepted, it must be dead.
-                return 'dead'
-            if self.claimeee_address == '0x0000000000000000000000000000000000000000':
-                return 'open'
-            if self.claimeee_address != '0x0000000000000000000000000000000000000000':
-                return 'fulfilled'
-            return 'unknown'
-        except Exception as e:
-            logger.warning(e)
-            return 'unknown'
+        if self.is_legacy:
+            # TODO: Remove following full deprecation of legacy bounties
+            try:
+                if not self.is_open:
+                    if timezone.now() > self.expires_date and self.claimeee_address == '0x0000000000000000000000000000000000000000':
+                        return 'expired'
+                    return 'fulfilled'
+                if self.claimeee_address == '0x0000000000000000000000000000000000000000':
+                    return 'open'
+                if self.claimeee_address != '0x0000000000000000000000000000000000000000':
+                    return 'claimed'
+                return 'unknown'
+            except Exception as e:
+                return 'unknown'
+        else:
+            try:
+                # if int(self.num_fulfillments) > 0:
+                #     return 'fulfilled'
+                if self.is_open is False:
+                    if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.claimeee_address == '0x0000000000000000000000000000000000000000':
+                        return 'expired'
+                    if self.accepted:
+                        return 'accepted'
+                    # If its not expired or accepted, it must be dead.
+                    return 'dead'
+                if self.claimeee_address == '0x0000000000000000000000000000000000000000':
+                    return 'open'
+                if self.claimeee_address != '0x0000000000000000000000000000000000000000':
+                    return 'fulfilled'
+                return 'unknown'
+            except Exception as e:
+                logger.warning(e)
+                return 'unknown'
 
     @property
     def value_true(self):
