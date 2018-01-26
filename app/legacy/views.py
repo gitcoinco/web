@@ -22,7 +22,6 @@ import logging
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
 
 from dashboard.helpers import normalizeURL
 from dashboard.models import BountySyncRequest

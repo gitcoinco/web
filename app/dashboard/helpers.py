@@ -218,7 +218,7 @@ def normalizeURL(url):
 # then new_bounty
 def syncBountywithWeb3(bountyContract, url, network):
     bountydetails = bountyContract.call().bountydetails(url)
-    return process_bounty_details(bountydetails, url, bountyContract.address)
+    return process_bounty_details(bountydetails, url, bountyContract.address, network)
 
 
 class BountyStage(Enum):
