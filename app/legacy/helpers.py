@@ -31,12 +31,6 @@ from dashboard.notifications import (
 )
 
 
-def normalizeURL(url):
-    if url[-1] == '/':
-        url = url[0:-1]
-    return url
-
-
 def process_bounty_details(bountydetails, url, contract_address, network):
     """Process legacy bounty details."""
     url = normalizeURL(url)
