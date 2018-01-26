@@ -1,6 +1,6 @@
-👇 New Funds Claim 👇
+👇 New Fulfillment 👇
 
-There is a new bounty *claim* submitted against your funded issue. Please check it out, below
+There is a new bounty *fulfillment* submitted against your funded issue. Please check it out, below
 
 {% include 'emails/bounty.txt' with bounty=bounty %}
 
