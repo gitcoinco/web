@@ -25,7 +25,7 @@ DISTID=$2
 # setup
 cd 
 cd gitcoin/coin
-source ../gitcoin3env/bin/activate
+source ../gitcoin-3/bin/activate
 
 # pull from git
 git add .
