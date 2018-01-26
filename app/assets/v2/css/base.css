@@ -9,7 +9,9 @@ div.body {
 div, p, a, span {
     word-wrap: break-word;
 }
-
+.nav_avatar{
+    cursor: pointer;
+}
 .navbar-nav .nav-link {
     border-radius: 2px;
 }
@@ -702,7 +704,8 @@ body.bounty_details #right_actions {
 }
 
 body.bounty_details #bounty_details #left_actions {
-    padding-bottom: 25px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 body.bounty_details #left_actions a,
@@ -1156,7 +1159,10 @@ body.bounty_details #title {
     }
 
     .interior .col-2 {
-        display: none;
+        display: none !important;
+    }
+    .interior .col-7 {
+        margin-left: 5%;
     }
 
     .whatisit iframe,

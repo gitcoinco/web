@@ -251,6 +251,26 @@ cp app/local_settings.py.dist app/local_settings.py
 
 You will need to edit the `app/local_settings.py` file with your local settings. Look for config items that are marked `#required`.
 
+## Setup Github OAuth2 App Integration
+
+Navigate to: https://github.com/settings/applications/new and enter similar values to:
+
+* Enter Application Name: `MyGitcoinApp`
+* Homepage URL: `http://localhost`
+* Application description: `My Gitcoin App`
+* Authorization callback URL: `http://localhost:8000/` (required)
+
+The authorization callback URL should match your `BASE_URL` value in `local_settings.py`
+
+Set `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, and `GITHUB_APP_NAME` to the returned values.
+
+## Setup Github User Integration
+
+Navigate to:  https://github.com/settings/tokens/new
+At minimum, select `user` scope.
+Generate your token and copy it to:  `GITHUB_API_TOKEN`
+Copy your Github username to:  `GITHUB_API_USER`
+
 ## Rollbar Integration
 
 Error tracking is entirely optional and primarily for internal staging and production tracking.
@@ -317,6 +337,7 @@ pip install -r requirements/dev.txt
 pip install -r requirements/test.txt
 ./manage.py migrate
 ./manage.py createcachetable
+./manage.py get_prices
 ./manage.py runserver 0.0.0.0:8000
 ```
 

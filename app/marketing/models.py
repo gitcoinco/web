@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -18,14 +18,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from secrets import token_hex
+
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 
-from dashboard.models import Bounty
 from economy.models import SuperModel
 
 
 class EmailSubscriber(SuperModel):
+
     email = models.EmailField(max_length=255)
     source = models.CharField(max_length=50)
     active = models.BooleanField(default=True)
@@ -40,11 +42,7 @@ class EmailSubscriber(SuperModel):
         return self.email
 
     def set_priv(self):
-        import codecs
-        import os
-        from django.utils import timezone
-
-        self.priv = codecs.getencoder('hex')(os.urandom(16))[0][:29]
+        self.priv = token_hex(16)[:29]
 
 
 class Stat(SuperModel):
@@ -84,7 +82,7 @@ class Match(SuperModel):
         verbose_name_plural = 'Matches'
 
     email = models.EmailField(max_length=255)
-    bounty = models.ForeignKey(Bounty, on_delete=models.CASCADE)
+    bounty = models.ForeignKey('dashboard.Bounty', on_delete=models.CASCADE)
     direction = models.CharField(max_length=50)
     github_username = models.CharField(max_length=255)
 

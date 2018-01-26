@@ -65,9 +65,14 @@
                                 </select>
                                 <div class="mt-1" id="usd_amount"></div>
                             </div>
+                            {% include 'shared/github_username.html' %}
                             <div class="w-100 mt-2">
                                 <label for=notificationEmail>Notification Email:</label>
-                                <input name='notificationEmail' id='notificationEmail'  class="w-100 gc-round-text-input" type="text" placeholder="you@domain.co (optional, but recommended for notifications)" value="{{notificationEmail}}" />
+                                <input name='notificationEmail' id='notificationEmail'  class="w-100 gc-round-text-input" type="text" placeholder="you@domain.co (optional, but recommended for notifications)" value="{% if from_email %}{{ from_email }}{% elif email %}{{ email }}{% else %}{{notificationEmail}}{% endif %}" />
+                            </div>
+                            <div class="w-100 mt-2">
+                                <label for=fullName>Full Name:</label>
+                                <input name='fullName' id='fullName'  class="w-100 gc-round-text-input" type="text" placeholder="John Smith (optional)" value="" />
                             </div>
                             <div id="advancedLink" class="mt-2">
                                 <a href="#">Advanced ⬇ </a>
@@ -77,6 +82,10 @@
                                     <label for=title>Issue Title:</label>
                                     <input name='title' id="title"  class="w-100 gc-round-text-input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" />
                                 </div>
+                                <div class="w-100 mt-2">
+                                    <label for="description">Issue Description:</label>
+                                    <textarea name="description" class="w-100 gc-round-text-form" id="description" placeholder="Add some new feature."></textarea>
+                               </div>
                                 <div class="w-100 mt-2">
                                     <label for=keywords>Keywords:</label>
                                     <input name='keywords' id='keywords'  class="w-100 gc-round-text-input" type="text" placeholder="python, solidity, html, javascript, react (optional)" value="{{keywords}}" />
@@ -94,10 +103,6 @@
                                             <option value="31536000" selected="">1 year</option>
                                             <option value="9999999999">Never</option>
                                         </select>
-                                </div>
-                                <div class="w-100 mt-2">
-                                    <label for=githubUsername>Github Username:</label>
-                                    <input name='githubUsername' id='githubUsername'  class="w-100 gc-round-text-input" type="text" placeholder="@you (optional)" value="{{githubUsername}}" />
                                 </div>
                                 <div class="w-100 mt-2 d-flex ">
                                     <div class="w-50 mt-2 mr-3 d-flex flex-column">
@@ -163,10 +168,13 @@
 
 
 <!-- jQuery -->
+<script src="{{STATIC_URL}}v2/js/ipfs-api.js"></script>
+<script src="{{STATIC_URL}}v2/js/ipfs.js"></script>
 <script src="{{STATIC_URL}}v2/js/amounts.js"></script>
 <script src="{{STATIC_URL}}v2/js/abi.js"></script>
 <script src="{{STATIC_URL}}v2/js/tokens.js"></script>
 <script src="{{STATIC_URL}}v2/js/shared.js"></script>
+<script src="{{STATIC_URL}}v2/js/pages/shared_bounty_mutation_estimate_gas.js"></script>
 <script src="{{STATIC_URL}}v2/js/pages/new_bounty.js"></script>
 
 

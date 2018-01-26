@@ -62,6 +62,10 @@ DATABASES = {
     }
 }
 
+if 'TRAVIS' in os.environ:
+    DATABASES['default']['HOST'] = 'localhost'
+    DATABASES['default']['PORT'] = ''
+
 SENDGRID_API_KEY = 'TODO' # required only needed if you send emails
 SERVER_EMAIL = 'server@TODO.co'
 ADMINS = (
@@ -93,6 +97,7 @@ GITHUB_CLIENT_ID = 'TODO'
 GITHUB_CLIENT_SECRET = 'TODO'
 GITHUB_API_USER = 'TODO'
 GITHUB_API_TOKEN = 'TODO'
+GITHUB_APP_NAME = 'TODO'
 
 #global on / off switch for notifciations
 ENABLE_NOTIFICATIONS_ON_NETWORK = False

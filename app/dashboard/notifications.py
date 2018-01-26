@@ -1,21 +1,19 @@
-# encoding=utf8
 import logging
 import random
 import re
-import sys
-from urlparse import urlparse
+from urllib.parse import urlparse as parse
 
 from django.conf import settings
 
-import tinyurl
+import requests
 import twitter
-from app.github import post_issue_comment
+from github.utils import delete_issue_comment, patch_issue_comment, post_issue_comment
 from marketing.mails import tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
+from pyshorteners import Shortener
 from slackclient import SlackClient
 
-reload(sys)
-sys.setdefaultencoding('utf8')
+
 '''
     Copyright (C) 2017 Gitcoin Core
 
@@ -81,11 +79,13 @@ def maybe_market_to_twitter(bounty, event_name, txid):
     random.shuffle(tweet_txts)
     tweet_txt = tweet_txts[0]
 
+    shortener = Shortener('Tinyurl')
+
     new_tweet = tweet_txt.format(
         round(bounty.get_natural_value(), 4),
         bounty.token_name,
         ("(${})".format(bounty.value_in_usdt) if bounty.value_in_usdt else ""),
-        tinyurl.create_one(bounty.get_absolute_url())
+        shortener.short(bounty.get_absolute_url())
     )
     new_tweet = new_tweet + " " + github_org_to_twitter_tags(bounty.org_name) #twitter tags
     if bounty.keywords: #hashtags
@@ -161,7 +161,7 @@ def maybe_market_tip_to_slack(tip, event_name, txid):
     return True
 
 
-def maybe_market_to_github(bounty, event_name, txid):
+def maybe_market_to_github(bounty, event_name, txid=None, interested=None):
     if not settings.GITHUB_CLIENT_ID:
         return False
     if bounty.get_natural_value() < 0.0001:
@@ -181,6 +181,13 @@ def maybe_market_to_github(bounty, event_name, txid):
             bounty.get_absolute_url(),
             amount_usdt_open_work(),
             )
+    elif event_name == 'killed_bounty':
+        msg = "__The funding of {} {} {} attached to this issue has been **killed** by the bounty submitter__\n\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = msg.format(
+            round(bounty.get_natural_value(), 4),
+            bounty.token_name, usdt_value,
+            amount_usdt_open_work(),
+            )
     elif event_name == 'rejected_claim':
         msg = "__This claim for the funding of {} {} {} attached to this issue has been **rejected** and can now be claimed by someone else.__\n\n * If you would like to work on this issue you can claim it [here]({}).\n * If you've completed this issue and want to claim the bounty you can do so [here]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
         msg = msg.format(
@@ -190,6 +197,21 @@ def maybe_market_to_github(bounty, event_name, txid):
             bounty.get_absolute_url(),
             amount_usdt_open_work(),
             )
+    elif event_name == 'new_interest':
+        msg = "__The funding of {} {} {} attached has been shown interest by: {}.__ {} \n\n * Learn more [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        # Build interested profiles string.
+        interested_profiles = ", ".join("[@%s](%s)" % interest for interest in interested)
+        msg = msg.format(
+            round(bounty.get_natural_value(), 4),
+            bounty.token_name,
+            usdt_value,
+            interested_profiles if interested_profiles else "",
+            "\n\n If you are interested, please leave a comment to let the funder {} and the other parties involved why you're interested in working on this issue and your plans to resolve it.  If you don't leave a comment, the funder may not think you're too interested.".format(
+                "(@{})".format(bounty.bounty_owner_github_username) if bounty.bounty_owner_github_username else "",
+                ),
+            bounty.get_absolute_url(),
+            amount_usdt_open_work(),
+        )
     elif event_name == 'new_claim':
         msg = "__The funding of {} {} {} attached has been claimed {}.__ {} \n\n * Learn more [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
         msg = msg.format(
@@ -219,14 +241,28 @@ def maybe_market_to_github(bounty, event_name, txid):
 
     # actually post
     url = bounty.github_url
-    uri = urlparse(url).path
+    uri = parse(url).path
     uri_array = uri.split('/')
     try:
         username = uri_array[1]
         repo = uri_array[2]
         issue_num = uri_array[4]
 
-        post_issue_comment(username, repo, issue_num, msg)
+        if event_name == 'new_interest' and interested:
+            if bounty.interested_comment is not None:
+                patch_issue_comment(bounty.interested_comment, username, repo,
+                                    issue_num, msg)
+            else:
+                response = post_issue_comment(username, repo, issue_num, msg)
+                if response.get('id'):
+                    bounty.interested_comment = response.get('id')
+                    bounty.save()
+        elif event_name == 'new_interest' and not interested:
+            delete_issue_comment(bounty.interested_comment, username, repo)
+            bounty.interested_comment = None
+            bounty.save()
+        else:
+            post_issue_comment(username, repo, issue_num, msg)
 
     except Exception as e:
         print(e)
@@ -237,7 +273,7 @@ def maybe_market_to_github(bounty, event_name, txid):
 
 def amount_usdt_open_work():
     from dashboard.models import Bounty
-    bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'claimed'])
+    bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'fulfilled', 'claimed'])
     return round(sum([b.value_in_usdt for b in bounties]), 2)
 
 
@@ -259,7 +295,7 @@ def maybe_market_tip_to_github(tip):
 
     # actually post
     url = tip.github_url
-    uri = urlparse(url).path
+    uri = parse(url).path
     uri_array = uri.split('/')
     try:
         username = uri_array[1]

@@ -172,7 +172,13 @@ var tokens = function(network_id){
       _tokens = [
         { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
         { "addr": "0x2941deaad71adb02b944bd38ebce2f1f4c9a62dc", "name": "COLO", "decimals": 18 },
-        { "addr": "0xeccb46ebe07c5a2b249586796f921ddfe0d46271", "name": "GIT", "decimals": 18 },
+        { "addr": "0xeccb46ebe07c5a2b249586796f921ddfe0d46271", "name": "FOO", "decimals": 18 },
+        ];
+    } else if(network_id == "rinkeby" ){ //ropsten
+      _tokens = [
+        { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
+        { "addr": "0x2941deaad71adb02b944bd38ebce2f1f4c9a62dc", "name": "COLO", "decimals": 18 },
+        { "addr": "0x408c49a91e46311ddc35737f8c1aaea6191f36e0", "name": "FOO", "decimals": 18 },
         ];
     } else if(network_id == "custom network" ){ //testrpc
       _tokens = [

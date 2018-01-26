@@ -18,6 +18,7 @@
 from django.conf.urls import handler400, handler403, handler404, handler500, include, url
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
+from django.urls import path
 
 import dashboard.embed
 import dashboard.helpers
@@ -29,29 +30,26 @@ import retail.emails
 import retail.views
 import tdi.views
 from dashboard.router import router
-from sitemap import sitemaps
+
+from .sitemaps import sitemaps
 
 urlpatterns = [
-
-
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
     url(r'^api/v0.1/', include(router.urls)),
-
-
     # dashboard views
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
-    url(r'^bounty/claim/?', dashboard.views.claim_bounty, name='claim_bounty'),
-    url(r'^funding/claim/?', dashboard.views.claim_bounty, name='claim_funding'),
+    url(r'^bounty/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
+    url(r'^funding/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_funding'),
     url(r'^bounty/process/?', dashboard.views.process_bounty, name='process_bounty'),
     url(r'^funding/process/?', dashboard.views.process_bounty, name='process_funding'),
     url(r'^bounty/details/?', dashboard.views.bounty_details, name='bounty_details'),
     url(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
-    url(r'^funding/clawback/?', dashboard.views.clawback_expired_bounty, name='clawback_expired_bounty'),
+    url(r'^funding/kill/?', dashboard.views.kill_bounty, name='kill_bounty'),
     url(r'^tip/receive/?', dashboard.views.receive_tip, name='receive_tip'),
     url(r'^tip/send/2/?', dashboard.views.send_tip_2, name='send_tip_2'),
     url(r'^tip/send/?', dashboard.views.send_tip, name='send_tip'),
@@ -75,10 +73,10 @@ urlpatterns = [
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
     url(r'^sync/get_issue_title?', dashboard.helpers.title, name='helpers_title'),
+    url(r'^sync/get_issue_description?', dashboard.helpers.description, name='helpers_description'),
     url(r'^sync/get_amount?', dashboard.helpers.amount, name='helpers_amount'),
     url(r'^sync/get_issue_keywords?', dashboard.helpers.keywords, name='helpers_keywords'),
     url(r'^sync/search_save?', dashboard.views.save_search, name='save_search'),
-
     # brochureware views
     url(r'^community/?', retail.views.community, name='community'),
     url(r'^about/?', retail.views.about, name='about'),
@@ -122,11 +120,9 @@ urlpatterns = [
     # link shortener
     url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),
 
-    #token distribution event
+    # token distribution event
     url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),
     url(r'^whitepaper/?', tdi.views.whitepaper_new, name='whitepaper'),
-
-
     # admin views
     url(r'^_administration/?', admin.site.urls, name='admin'),
     url(r'^_administration/email/new_bounty$', retail.emails.new_bounty, name='new_bounty'),
@@ -139,15 +135,21 @@ urlpatterns = [
     url(r'^_administration/email/bounty_expire_warning$', retail.emails.bounty_expire_warning, name='bounty_expire_warning'),
     url(r'^_administration/process_accesscode_request/(.*)$', tdi.views.process_accesscode_request, name='process_accesscode_request'),
     url(r'^_administration/email/new_tip/resend$', retail.emails.resend_new_tip, name='resend_new_tip'),
-
-    #marketing views
+    # marketing views
     url(r'^email/settings/(.*)', marketing.views.email_settings, name='email_settings'),
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
     url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),
     url(r'^_administration/stats$', marketing.views.stats, name='stats'),
-
+    # Sitemap
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-
+    # Github Integration
+    path('_github/', include('github.urls', namespace='github')),
+    # Interests
+    path('bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
+    path('bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
+    path('bounty/<int:bounty_id>/interest/', dashboard.views.interested_profiles, name='interested-profiles'),
+    # Legacy Support
+    path('legacy/', include('legacy.urls', namespace='legacy')),
 ]
 
 handler403 = 'retail.views.handler403'

@@ -1,6 +1,15 @@
 $(document).ready(function() {
     $( document ).tooltip();
 
+    $(".nav-link.dropdown-toggle, .nav_avatar").click(function(e){
+      if($(".dropdown-menu").css('display') == 'block'){
+        $(".dropdown-menu").css('display', 'none');        
+      } else {
+        $(".dropdown-menu").css('display', 'block');        
+      }
+      e.preventDefault();
+    });
+
     //get started modal
     $("a[href='/get']").click(function(e) {
       e.preventDefault();

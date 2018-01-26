@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -17,8 +17,10 @@
 '''
 import os
 import socket
+from datetime import datetime
 
 import rollbar
+from pytz import utc
 
 HOSTNAME = socket.gethostname()
 
@@ -29,9 +31,7 @@ RATELIMIT_ENABLE = True
 RATELIMIT_USE_CACHE = 'default'
 RATELIMIT_VIEW = 'tdi.views.ratelimited'
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'dashboard',
     'tdi',
     'gas',
+    'github',
+    'legacy',
     'chartit',
     'email_obfuscator',
     'linkshortener',
@@ -65,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ratelimit.middleware.RatelimitMiddleware',
+    'github.middleware.GithubAuthMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -202,6 +205,12 @@ CACHES = {
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_SECONDS = 3600
+
+# Github
+GITHUB_API_BASE_URL = 'https://api.github.com'
+GITHUB_AUTH_BASE_URL = 'https://github.com/login/oauth/authorize'
+GITHUB_TOKEN_URL = 'https://github.com/login/oauth/access_token'
+GITHUB_SCOPE = 'user'
 
 # List of github usernames to not count as comments on an issue
 IGNORE_COMMENTS_FROM = ['gitcoinbot', ]

@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -136,18 +136,18 @@ def profiles_ingested():
     Stat.objects.create(
         key='profiles_ingested',
         val=Profile.objects.count(),
-        )    
+        )
 
 
 def github_stars():
-    from app.github import get_user
+    from github.utils import get_user
     reops = get_user('gitcoinco', '/repos')
     forks_count = sum([repo['forks_count'] for repo in reops])
 
     Stat.objects.create(
         key='github_forks_count',
         val=forks_count,
-        )    
+        )
 
     stargazers_count = sum([repo['stargazers_count'] for repo in reops])
 
@@ -240,7 +240,7 @@ def bounties():
 
 def bounties_fulfilled_pct():
     from dashboard.models import Bounty
-    for status in ['fulfilled','expired','open','claimed']:
+    for status in ['open', 'fulfilled', 'accepted', 'expired', 'dead', 'claimed']:
         eligible_bounties = Bounty.objects.filter(current_bounty=True,web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
         fulfilled_bounties = eligible_bounties.filter(idx_status=status)
         val = int(100 * (fulfilled_bounties.count()) / (eligible_bounties.count()))

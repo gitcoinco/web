@@ -17,6 +17,7 @@
 '''
 import json
 import pprint
+from enum import Enum
 
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
@@ -67,7 +68,7 @@ def title(request):
     urlVal = URLValidator()
     try:
         urlVal(url)
-    except ValidationError, e:
+    except ValidationError:
         response['message'] = 'invalid arguments'
         return JsonResponse(response)
 
@@ -77,7 +78,7 @@ def title(request):
 
     try:
         html_response = requests.get(url)
-    except ValidationError, e:
+    except ValidationError:
         response['message'] = 'could not pull back remote response'
         return JsonResponse(response)
 
@@ -96,7 +97,7 @@ def title(request):
             for link in soup.find_all('h1'):
                 print(link.text)
 
-    except ValidationError, e:
+    except ValidationError:
         response['message'] = 'could not parse html'
         return JsonResponse(response)
 
@@ -109,6 +110,48 @@ def title(request):
     return JsonResponse(response)
 
 
+# gets description of remote html doc (github issue)
+@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
+def description(request):
+    response = {}
+
+    url = request.GET.get('url')
+    urlVal = URLValidator()
+    try:
+        urlVal(url)
+    except ValidationError as e:
+        response['message'] = 'invalid arguments'
+        return JsonResponse(response)
+
+    if url.lower()[:19] != 'https://github.com/':
+        response['message'] = 'invalid arguments'
+        return JsonResponse(response)
+
+    # Web format:  https://github.com/jasonrhaas/slackcloud/issues/1
+    # API format:  https://api.github.com/repos/jasonrhaas/slackcloud/issues/1
+    gh_api = url.replace('github.com', 'api.github.com/repos')
+
+    try:
+        api_response = requests.get(gh_api)
+    except ValidationError as e:
+        response['message'] = 'could not pull back remote response'
+        return JsonResponse(response)
+
+    if api_response.status_code != 200:
+        response['message'] = 'there was a problem reaching the github api'
+        return JsonResponse(response)
+
+    try:
+        body = api_response.json()['body']
+    except ValueError as e:
+        response['message'] = e
+    except KeyError as e:
+        response['message'] = e
+    else:
+        response['description'] = body.replace('\n', '').strip()
+
+    return JsonResponse(response)
+
 # gets keywords of remote issue (github issue)
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def keywords(request):
@@ -119,7 +162,7 @@ def keywords(request):
     urlVal = URLValidator()
     try:
         urlVal(url)
-    except ValidationError, e:
+    except ValidationError:
         response['message'] = 'invalid arguments'
         return JsonResponse(response)
 
@@ -138,13 +181,12 @@ def keywords(request):
         keywords.append(split_repo_url[-2])
 
         html_response = requests.get(repo_url)
-    except ValidationError, e:
+    except ValidationError:
         response['message'] = 'could not pull back remote response'
         return JsonResponse(response)
-    except AttributeError, e:
+    except AttributeError:
         response['message'] = 'could not pull back remote response'
         return JsonResponse(response)
-
 
     try:
         soup = BeautifulSoup(html_response.text, 'html.parser')
@@ -153,7 +195,7 @@ def keywords(request):
         for ele in eles:
             keywords.append(ele.text)
 
-    except ValidationError, e:
+    except ValidationError:
         response['message'] = 'could not parse html'
         return JsonResponse(response)
 
@@ -176,73 +218,116 @@ def normalizeURL(url):
 # then new_bounty
 def syncBountywithWeb3(bountyContract, url, network):
     bountydetails = bountyContract.call().bountydetails(url)
-    return process_bounty_details(bountydetails, url, bountyContract.address)
+    return process_bounty_details(bountydetails, url, bountyContract.address, network)
+
+
+class BountyStage(Enum):
+    """ Python enum class that matches up with the Standard Bounties BountyStage enum.
+
+    Attributes:
+        Draft (int): Bounty is a draft.
+        Active (int): Bounty is active.
+        Dead (int): Bounty is dead.
+    """
+
+    Draft = 0
+    Active = 1
+    Dead = 2
 
 
 def process_bounty_details(bountydetails, url, contract_address, network):
     url = normalizeURL(url)
 
-    #extract json
-    metadata = None
-    claimee_metadata = None
-    try:
-        metadata = json.loads(bountydetails[8])
-    except Exception as e:
-        print(e)
-        metadata = {}
-    try:
-        claimee_metadata = json.loads(bountydetails[10])
-    except Exception as e:
-        print(e)
-        claimee_metadata = {}
+    # See Line 303 in bounty_details.js for original object
+    bountyId = bountydetails.get('bountyId', {})
+    bountyData = bountydetails.get('bountyData', {})
+    bountyDataPayload = bountyData.get('payload', {})
+    metadata = bountyDataPayload.get('metadata', {})
+    bounty = bountydetails.get('bounty', {})
+    # Claimee metadata will be empty when bounty is first created
+    fulfillments = bountydetails.get('fulfillments', {})
 
-    #create new bounty (but only if things have changed)
+    # Create new bounty (but only if things have changed)
     didChange = False
     old_bounties = Bounty.objects.none()
     try:
         old_bounties = Bounty.objects.filter(
             github_url=url,
-            title=metadata.get('issueTitle'),
+            title=bountyDataPayload.get('title'),
             current_bounty=True,
         ).order_by('-created_on')
         didChange = (bountydetails != old_bounties.first().raw_data)
         if not didChange:
             return (didChange, old_bounties.first(), old_bounties.first())
     except Exception as e:
+        print('exception in process_bounty_details')
         print(e)
         didChange = True
+
+    # Check if we have any fulfillments.  If so, check if they are accepted.
+    # If there are no fulfillments, accepted is automatically False.
+    # Currently we are only considering the latest fulfillment.  Std bounties supports multiple.
+    fments = fulfillments['fulfillments']
+    accepted = fments[-1].get('accepted') if fments else False
+
+    if fments:
+        claimeee_address = fments[-1].get('payload', {}).get('fulfiller', {}).get('address', '0x0000000000000000000000000000000000000000')
+        claimee_email = fments[-1].get('payload', {}).get('fulfiller', {}).get('email', '')
+        claimee_github_username = fments[-1].get('payload', {}).get('fulfiller', {}).get('githubUsername', '')
+        claimee_name = fments[-1].get('payload', {}).get('fulfiller', {}).get('name', '')
+        claimee_metadata = fments[-1].get('payload', {}).get('metadata', {})
+    else:
+        claimeee_address = '0x0000000000000000000000000000000000000000'
+        claimee_email = ''
+        claimee_github_username = ''
+        claimee_name = ''
+        claimee_metadata = {}
+
+    # Possible Bounty Stages
+    # 0: Draft
+    # 1: Active
+    # 2: Dead
+    is_open = True if (bounty.get('bountyStage') == 1 and not accepted) else False
 
     with transaction.atomic():
         for old_bounty in old_bounties:
             old_bounty.current_bounty = False
             old_bounty.save()
         new_bounty = Bounty.objects.create(
-            title=metadata.get('issueTitle',''),
-            web3_created=timezone.datetime.fromtimestamp(bountydetails[7]),
-            value_in_token=bountydetails[0],
-            token_name=metadata.get('tokenName'),
-            token_address=bountydetails[1],
-            bounty_type=metadata.get('bountyType'),
-            project_length=metadata.get('projectLength'),
-            experience_level=metadata.get('experienceLevel'),
-            github_url=url,
-            bounty_owner_address=bountydetails[2],
-            bounty_owner_email=metadata.get('notificationEmail', None),
-            bounty_owner_github_username=metadata.get('githubUsername', None),
-            claimeee_address=bountydetails[3],
-            claimee_email=claimee_metadata.get('notificationEmail', None),
-            claimee_github_username=claimee_metadata.get('githubUsername', None),
-            is_open=bountydetails[4],
-            expires_date=timezone.datetime.fromtimestamp(bountydetails[9]),
+            title=bountyDataPayload.get('title', ''),
+            issue_description=bountyDataPayload.get('description', ''),
+            web3_created=timezone.datetime.fromtimestamp(bountyDataPayload.get('created')),
+            value_in_token=bounty.get('fulfillmentAmount'),
+            token_name=bountyDataPayload.get('tokenName', ''),
+            token_address=bountyDataPayload.get('tokenAddress', '0x0000000000000000000000000000000000000000'),
+            bounty_type=metadata.get('bountyType', ''),
+            project_length=metadata.get('projectLength', ''),
+            experience_level=metadata.get('experienceLevel', ''),
+            github_url=url,  # Could also use payload.get('webReferenceURL')
+            bounty_owner_address=bountyDataPayload.get('issuer', {}).get('address', ''),
+            bounty_owner_email=bountyDataPayload.get('issuer', {}).get('email', ''),
+            bounty_owner_github_username=bountyDataPayload.get('issuer', {}).get('githubUsername', ''),
+            bounty_owner_name=bountyDataPayload.get('issuer', {}).get('name', ''),
+            # fulfillment_ipfs_hash='',
+            is_open=is_open,
             raw_data=bountydetails,
             metadata=metadata,
-            claimee_metadata=claimee_metadata,
             current_bounty=True,
             contract_address=contract_address,
             network=network,
-            issue_description='',
+            accepted=accepted,
+            # These fields are after initial bounty creation, in bounty_details.js
+            claimee_metadata=claimee_metadata,
+            claimeee_address=claimeee_address,
+            claimee_email=claimee_email,
+            claimee_github_username=claimee_github_username,
+            claimee_name=claimee_name,
+            expires_date=timezone.datetime.fromtimestamp(bounty.get('deadline')),
+            standard_bounties_id=bountyId,
+            balance=bounty.get('balance'),
+            num_fulfillments=fulfillments.get('total', 0),
             )
-        new_bounty.fetch_issue_description()
+        new_bounty.fetch_issue_item()
         if not new_bounty.avatar_url:
             new_bounty.avatar_url = new_bounty.get_avatar_url()
         new_bounty.save()
@@ -266,7 +351,10 @@ def process_bounty_changes(old_bounty, new_bounty, txid):
     elif old_bounty.claimeee_address == null_address and new_bounty.claimeee_address != null_address:
         event_name = 'new_claim'
     elif old_bounty.is_open and not new_bounty.is_open:
-        event_name = 'approved_claim'
+        if new_bounty.status == 'dead':
+            event_name = 'killed_bounty'
+        else:
+            event_name = 'approved_claim'
     elif old_bounty.claimeee_address != null_address and new_bounty.claimeee_address == null_address:
         event_name = 'rejected_claim'
     else:

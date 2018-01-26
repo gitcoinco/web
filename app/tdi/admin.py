@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+from django.utils.html import format_html
 
 from .models import AccessCodes, WhitepaperAccess, WhitepaperAccessRequest
 
@@ -36,9 +37,8 @@ class WhitepaperAccessRequestAdmin(admin.ModelAdmin):
     def link(self, instance):
         if instance.processed:
             return 'n/a'
-        link = "<a href=/_administration/process_accesscode_request/{}>process me</a>".format(instance.pk)
+        link = format_html('<a href="/_administration/process_accesscode_request/{}">process me</a>', instance.pk)
         return link
-    link.allow_tags = True
 
 
 admin.site.register(WhitepaperAccessRequest, WhitepaperAccessRequestAdmin)

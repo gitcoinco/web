@@ -4,6 +4,12 @@ window.onload = function(){
     setTimeout(function(){
         var account = web3.eth.accounts[0];
 
+        if (typeof localStorage['githubUsername'] !='undefined'){
+            $('input[name=githubUsername]').val(localStorage['githubUsername']);
+        }
+        if (typeof localStorage['notificationEmail'] !='undefined'){
+            $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
+        }
         if (typeof localStorage['acceptTOS'] !='undefined' && localStorage['acceptTOS']){
             $('input[name=terms]').attr('checked','checked');
         }
@@ -11,37 +17,45 @@ window.onload = function(){
             $('input[name=issueURL]').val(getParam('source'));
         }
 
-        var estimateGas = function(issueURL, success_callback, failure_calllback, final_callback){
-            var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-            $("#gasLimit").addClass('loading');
-            bounty.clawbackExpiredBounty.estimateGas(
-                issueURL, 
-                function(errors,result){
-                    $("#gasLimit").removeClass('loading');
-                    var is_issue_taken = typeof result == 'undefined' || result > 403207;
-                    if(errors || is_issue_taken){
-                        failure_calllback(errors);
-                        return;
-                    }
-                    var gas = Math.round(result * gasMultiplier);
-                    var gasLimit = Math.round(gas * gasLimitMultiplier);
-                    success_callback(gas, gasLimit, final_callback);
-            });
-        };
+        var estimateGas = function(issueURL, claimee_metadata, success_callback, failure_calllback, final_callback){
+                var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+                $("#gasLimit").addClass('loading');
+                bounty.claimBounty.estimateGas(
+                    issueURL,
+                    claimee_metadata,
+                    function(errors,result){
+                        $("#gasLimit").removeClass('loading');
+                        var is_issue_taken = typeof result == 'undefined' || result > 403207;
+                        if(errors || is_issue_taken){
+                            failure_calllback(errors)
+                            return;
+                        }
+                        var gas = Math.round(result * gasMultiplier);
+                        var gasLimit = Math.round(gas * gasLimitMultiplier);
+                        success_callback(gas, gasLimit, final_callback);
+                })
+        }
         //updates recommended metamask settings
         var updateInlineGasEstimate = function(){
+            var notificationEmail = $('input[name=notificationEmail]').val();
+            var githubUsername = $('input[name=githubUsername]').val();
             var issueURL = $('input[name=issueURL]').val();
+            var claimee_metadata = JSON.stringify({
+                notificationEmail : notificationEmail,
+                githubUsername : githubUsername,
+            });
             var success_callback = function(gas, gasLimit, _){
                 $("#gasLimit").val(gas);
                 update_metamask_conf_time_and_cost_estimate();
             };
-            var failure_callback = function(errors){
+            var failure_callback = function(){
                 $("#gasLimit").val('Unknown');
                 update_metamask_conf_time_and_cost_estimate();
             };
             var final_callback = function(){};
-            //estimateGas(issueURL, success_callback, failure_callback, final_callback);
-            success_callback(86936,86936,'');
+
+            //estimateGas(issueURL, claimee_metadata, success_callback, failure_callback, final_callback);
+            success_callback(186936,186936,'');
         };
         setTimeout(function(){
             updateInlineGasEstimate();
@@ -49,11 +63,19 @@ window.onload = function(){
         $('input').change(updateInlineGasEstimate);
         $('#gasPrice').keyup(update_metamask_conf_time_and_cost_estimate);
 
+
         $('#submitBounty').click(function(e){
-            mixpanel.track("Clawback Bounty Clicked", {});
+            mixpanel.track("Claim Bounty Clicked", {});
             loading_button($('#submitBounty'));
             e.preventDefault();
+            var notificationEmail = $('input[name=notificationEmail]').val();
+            var githubUsername = $('input[name=githubUsername]').val();
             var issueURL = $('input[name=issueURL]').val();
+            var claimee_metadata = JSON.stringify({
+                notificationEmail : notificationEmail,
+                githubUsername : githubUsername,
+            });
+            localStorage['githubUsername'] = githubUsername;
 
             var isError = false;
             if($('#terms:checked').length == 0){
@@ -77,7 +99,7 @@ window.onload = function(){
                 var ignore_error = false;
                 if(error){
                     console.error(error);
-                    mixpanel.track("Clawback Bounty Error", {step: '_callback', error: error});
+                    mixpanel.track("Claim Bounty Error", {step: '_callback', error: error});
                     ignore_error = String(error).indexOf('BigNumber') != -1;
                 }
                 var run_main = !error || ignore_error;
@@ -90,15 +112,13 @@ window.onload = function(){
                         var bountyAmount = result[0].toNumber();
                         bountyDetails = [bountyAmount, result[1], result[2], result[3]];
                         var fromAddress = result[2];
+                        var claimeeAddress = result[3];
                         var open = result[4];
                         var initialized = result[5];
 
                         var errormsg = undefined;
                         if(bountyAmount == 0 || open == false || initialized == false){
-                            errormsg = "No active funded issue found at this address.  Are you sure this is an active funded issue?";
-                        } 
-                        if(fromAddress != web3.eth.coinbase){
-                            errormsg = "Only the address that submitted this funded issue may submit a clawback.";
+                            errormsg = "No active bounty found at this address.  Are you sure this is an active bounty?";
                         }
 
                         if(errormsg){
@@ -112,18 +132,18 @@ window.onload = function(){
                     var final_callback = function(error, result){
                         var next = function(){
                             localStorage['txid'] = result;
+                            dataLayer.push({'event': 'claimissue'});
                             sync_web3(issueURL);
                             localStorage[issueURL] = timestamp();
-                            add_to_watch_list(issueURL);
-                            _alert({ message: "Clawback submitted to web3." },'info');
+                            _alert({ message: "Claim submitted to web3." },'info');
                             setTimeout(function(){
-                                mixpanel.track("Clawback Bounty Success", {});
+                                mixpanel.track("Claim Bounty Success", {});
                                 document.location.href= "/funding/details?url="+issueURL;
                             },1000);
 
                         };
                         if(error){
-                            mixpanel.track("Clawback Bounty Error", {step: 'callback', error: error});
+                            mixpanel.track("Claim Bounty Error", {step: 'callback', error: error});
                             console.error("err", error);
                             _alert({ message: "There was an error" });
                             unloading_button($('#submitBounty'));
@@ -134,23 +154,38 @@ window.onload = function(){
 
                     setTimeout(function(){
                         var failure_calllback = function(errors){
-                            _alert({ message: "This issue cannot be clawed back.  Please leave a comment <a href=https://github.com/gitcoinco/web/issues/169>here</a> if you need help." });
+                            _alert({ message: "This issue is no longer active.  Please leave a comment <a href=https://github.com/gitcoinco/web/issues/169>here</a> if you need help." });
                             mixpanel.track("Claim Bounty Error", {step: 'estimateGas', error: errors});
                             unloading_button($('#submitBounty'));
-                            return;                            
+                            return;
                         }
                         var success_callback = function(gas, gasLimit, final_callback){
                             var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-                            bounty.clawbackExpiredBounty.sendTransaction(issueURL, 
+                            bounty.claimBounty.sendTransaction(issueURL,
+                                claimee_metadata,
                                 {
                                     from : account,
-                                    gas:web3.toHex(gas), 
-                                    gasLimit: web3.toHex(gasLimit), 
-                                    gasPrice:web3.toHex($("#gasPrice").val() * 10**9), 
-                                }, 
+                                    gas:web3.toHex(gas),
+                                    gasLimit: web3.toHex(gasLimit),
+                                    gasPrice:web3.toHex($("#gasPrice").val() * 10**9),
+                                },
                             final_callback);
-                        };
-                        estimateGas(issueURL, success_callback, failure_calllback, final_callback);
+                        }
+                        //var final_callback = function(){};
+                        //estimateGas(issueURL, claimee_metadata, success_callback, failure_calllback, final_callback);
+                        bounty.claimBounty.estimateGas(
+                            issueURL,
+                            claimee_metadata,
+                            function(errors,result){
+                                var is_issue_taken = typeof result == 'undefined' || result > 403207;
+                                if(errors || is_issue_taken){
+                                    failure_calllback(errors)
+                                    return;
+                                }
+                                var gas = Math.round(result * gasMultiplier);
+                                var gasLimit = Math.round(gas * gasLimitMultiplier);
+                                success_callback(gas, gasLimit, final_callback);
+                        });
                     },100);
                     e.preventDefault();
                 }
@@ -158,5 +193,4 @@ window.onload = function(){
             bounty.bountydetails.call(issueURL, _callback);
         });
     },100);
-
 };

@@ -13,6 +13,8 @@ def insert_settings(request):
         'mixpanel_token': settings.MIXPANEL_TOKEN,
         'STATIC_URL': settings.STATIC_URL,
         'num_slack': num_slack,
+        'github_handle': request.session.get('handle', False),
+        'email': request.session.get('email', False),
         'rollbar_client_token': settings.ROLLBAR_CLIENT_TOKEN,
         'env': settings.ENV,
     }

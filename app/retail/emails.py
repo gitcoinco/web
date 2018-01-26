@@ -1,18 +1,3 @@
-# encoding=utf8
-import sys
-
-from django.conf import settings
-from django.contrib.admin.views.decorators import staff_member_required
-from django.http import HttpResponse
-from django.template.loader import render_to_string
-from django.template.response import TemplateResponse
-from django.utils import timezone
-
-import premailer
-from marketing.utils import get_or_save_email_subscriber
-
-reload(sys)
-sys.setdefaultencoding('utf8')
 '''
     Copyright (C) 2017 Gitcoin Core 
 
@@ -31,6 +16,15 @@ sys.setdefaultencoding('utf8')
 
 '''
 
+from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.template.response import TemplateResponse
+from django.utils import timezone
+
+import premailer
+from marketing.utils import get_or_save_email_subscriber
 
 ### RENDERERS
 
@@ -248,7 +242,7 @@ def new_bounty(request):
 def new_bounty_claim(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty_claim(settings.CONTACT_EMAIL, Bounty.objects.filter(idx_status='claimed').last())
+    response_html, response_txt = render_new_bounty_claim(settings.CONTACT_EMAIL, Bounty.objects.filter(idx_status='fulfilled').last())
 
     return HttpResponse(response_html)
 

@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
             if bounty.current_bounty:
 
-                #stopgap to make sure that older versions of this bounty 
+                #stopgap to make sure that older versions of this bounty
                 # are marked as current_bounty=False
                 old_bounties = Bounty.objects.filter(
                     github_url=bounty.github_url,
@@ -64,7 +64,7 @@ class Command(BaseCommand):
                     print("stopgap fixed old_bounty {}".format(old_bounty.pk))
 
                 if fetch_remote:
-                    bounty.fetch_issue_description()
+                    bounty.fetch_issue_item()
                     bounty.fetch_issue_comments()
                     print('1/ refreshed {}'.format(bounty.pk))
 
