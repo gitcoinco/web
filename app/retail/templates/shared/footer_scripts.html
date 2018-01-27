@@ -40,7 +40,7 @@
         <script>
             let interval;
             let startTimer = () => {
-                interval = setInterval(() => nextSlide(), {{slideDurationInMs}});
+                interval = setInterval(() => typeof nextSlide != 'undefined' ? nextSlide() : function(){}, {{slideDurationInMs}});
             };
             startTimer();
         </script>
