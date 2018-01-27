@@ -1,11 +1,12 @@
 import logging
 import random
 import re
+import sys
 from urllib.parse import urlparse as parse
 
 from django.conf import settings
 
-import requests
+import rollbar
 import twitter
 from github.utils import delete_issue_comment, patch_issue_comment, post_issue_comment
 from marketing.mails import tip_email
@@ -250,8 +251,7 @@ def maybe_market_to_github(bounty, event_name, txid=None, interested=None):
 
         if event_name == 'new_interest' and interested:
             if bounty.interested_comment is not None:
-                patch_issue_comment(bounty.interested_comment, username, repo,
-                                    issue_num, msg)
+                patch_issue_comment(bounty.interested_comment, username, repo, msg)
             else:
                 response = post_issue_comment(username, repo, issue_num, msg)
                 if response.get('id'):
@@ -265,6 +265,8 @@ def maybe_market_to_github(bounty, event_name, txid=None, interested=None):
             post_issue_comment(username, repo, issue_num, msg)
 
     except Exception as e:
+        extra_data = {'github_url': url, 'bounty_id': bounty.pk, 'event_name': event_name}
+        rollbar.report_exc_info(sys.exc_info(), extra_data=extra_data)
         print(e)
         return False
 

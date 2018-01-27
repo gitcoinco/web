@@ -289,12 +289,11 @@ class GithubUtilitiesTest(TestCase):
     def test_patch_issue_comment(self):
         """Test the github utility patch_issue_comment method."""
         comment_id = 1
-        issue_num = 1
         owner = 'gitcoinco'
         repo = 'web'
-        url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_num}/comments/{comment_id}'
+        url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
         responses.add(responses.PATCH, url, headers=HEADERS, json={}, status=200)
-        result = patch_issue_comment(comment_id, owner, repo, issue_num, 'A comment.')
+        result = patch_issue_comment(comment_id, owner, repo, 'A comment.')
 
         assert responses.calls[0].request.url == url
         assert result == {}
