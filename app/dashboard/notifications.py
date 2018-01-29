@@ -364,7 +364,7 @@ def maybe_market_tip_to_github(tip):
     return True
 
 
-def maybe_market_to_email(b, event_name, txid):
+def maybe_market_to_email(b, event_name):
     from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance, new_bounty
     from marketing.models import EmailSubscriber
     to_emails = []
