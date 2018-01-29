@@ -107,6 +107,7 @@ var waitforWeb3 = function(callback){
 window.addEventListener('load', function() {
     var timeout_value = 100;
     setTimeout(function(){
+      if(typeof web3 != 'undefined'){
         web3.version.getNetwork((error, netId) => {
             if(!error){
 
@@ -132,8 +133,9 @@ window.addEventListener('load', function() {
                       network = "custom network";
                   }
                 document.web3network = network;
-            }
-        })
+              }
+          })
+        }
     }, timeout_value);
 });
 
