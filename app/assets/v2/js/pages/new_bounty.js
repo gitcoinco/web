@@ -80,7 +80,7 @@ $(document).ready(function(){
         var issueURL = $('input[name=issueURL]').val();
         var notificationEmail = $('input[name=notificationEmail]').val();
         var amount = $('input[name=amount]').val();
-        var tokenAddress = $('select[name=deonomination').val();
+        var tokenAddress = $('select[name=deonomination]').val();
         var token = tokenAddressToDetails(tokenAddress);
         var decimals = token['decimals'];
         var tokenName = token['name'];
