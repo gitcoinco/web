@@ -28,6 +28,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 
 from chartit import Chart, DataPool
+from dashboard.models import Profile
 from marketing.models import EmailSubscriber, Keyword, LeaderboardRank, Stat
 from marketing.utils import get_or_save_email_subscriber
 from retail.helpers import get_ip
@@ -130,6 +131,18 @@ def stats(request):
 
 
 def email_settings(request, key):
+    #handle 'noinput' case
+    if not key:
+        email = request.session.get('email', False)
+        if not email:
+            github_handle = request.session.get('handle', False)
+            profiles = Profile.objects.filter(handle=github_handle).exclude(email='')
+            if profiles.count():
+                email = profiles.first()
+        es = EmailSubscriber.objects.filter(email=email)
+        if not es.count():
+            raise Http404
+
     email = ''
     level = ''
     msg = ''
