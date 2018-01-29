@@ -28,6 +28,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
+        print("- profile")
+        from dashboard.models import Profile
+        for profile in Profile.objects.all():
+            print("proilfe logins")
+            if profile.email:
+                process_email(profile.email, 'profile_email')
+
         print("- match")
         from marketing.models import Match
         for match in Match.objects.all():

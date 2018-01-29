@@ -28,9 +28,11 @@ from .models import Bounty, BountySyncRequest, Profile, Subscription, Tip
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
+
 class ProfileAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['email', 'data']
+
 
 class TipAdmin(admin.ModelAdmin):
     ordering = ['-id']

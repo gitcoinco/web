@@ -27,6 +27,8 @@ def get_stat(key):
 
 
 def invite_to_slack(email):
+    if settings.DEBUG:
+        return False
     sc = SlackClient(settings.SLACK_TOKEN)
     response = sc.api_call('users.admin.invite', email=email)
     return response
