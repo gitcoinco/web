@@ -132,6 +132,10 @@ def stats(request):
 
 def email_settings(request, key):
     #handle 'noinput' case
+    es = EmailSubscriber.objects.none()
+    email = ''
+    level = ''
+    msg = ''
     if not key:
         email = request.session.get('email', False)
         if not email:
@@ -142,16 +146,13 @@ def email_settings(request, key):
         es = EmailSubscriber.objects.filter(email=email)
         if not es.count():
             raise Http404
-
-    email = ''
-    level = ''
-    msg = ''
-    es = EmailSubscriber.objects.filter(priv=key)
-    if es.exists():
-        email = es.first().email
-        level = es.first().preferences.get('level', False)
     else:
-        raise Http404
+        es = EmailSubscriber.objects.filter(priv=key)
+        if es.exists():
+            email = es.first().email
+            level = es.first().preferences.get('level', False)
+        else:
+            raise Http404
     es = es.first()
     if request.POST.get('email', False):
         level = request.POST.get('level')
@@ -189,6 +190,7 @@ def email_settings(request, key):
             es.save()
             msg = "Updated your preferences.  "
     context = {
+        'nav': 'auth',
         'active': 'email_settings',
         'title': 'Email Settings',
         'es': es,
