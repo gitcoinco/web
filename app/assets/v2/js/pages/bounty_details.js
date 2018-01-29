@@ -610,11 +610,11 @@ $(document).ready(function(){
         e.preventDefault();
         if ($(this).attr('href') == '/interested') {
             $(this).attr('href', '/uninterested');
-            $(this).find('span').text('Unclaim Work');
+            $(this).find('span').text('Stop Work');
             add_interest(document.result['pk']);
         } else {
             $(this).attr('href', '/interested');
-            $(this).find('span').text('Claim Work');
+            $(this).find('span').text('Start Work');
             remove_interest(document.result['pk']);
         }
     });

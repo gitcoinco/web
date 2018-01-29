@@ -84,10 +84,19 @@ var callbacks = {
     'status': function(key, val, result){
         var ui_status = val;
         if(ui_status=='open'){
-            ui_status = '<span style="color: #47913e;">active</span>';
+            ui_status = '<span style="color: #47913e;">open</span>';
         }
         if(ui_status=='started'){
-            ui_status = '<span style="color: #3e00ff;">claimed</span>';
+            ui_status = '<span style="color: #3e00ff;">work started</span>';
+        }
+        if(ui_status=='submitted'){
+            ui_status = '<span style="color: #3e00ff;">work submitted</span>';
+        }
+        if(ui_status=='done'){
+            ui_status = '<span style="color: #0d023b;">done</span>';
+        }
+        if(ui_status=='cancelled'){
+            ui_status = '<span style="color: #f9006c;">cancelled</span>';
         }
         return [ 'status', ui_status];
     },
@@ -409,7 +418,7 @@ window.addEventListener('load', function() {
                         }
                         actions.push(entry);
                     }
-                    if(result['status']=='started' ){
+                    if(result['status']=='submitted' ){
                         var enabled = isBountyOwner(result);
                         var entry = {
                             href: '/legacy/funding/process?source='+result['github_url'],
@@ -468,11 +477,11 @@ $(document).ready(function(){
         e.preventDefault();
         if ($(this).attr('href') == '/interested') {
             $(this).attr('href', '/uninterested');
-            $(this).find('span').text('Unclaim Work');
+            $(this).find('span').text('Stop Work');
             add_interest(document.result['pk']);
         } else {
             $(this).attr('href', '/interested');
-            $(this).find('span').text('Claim Work');
+            $(this).find('span').text('Start Work');
             remove_interest(document.result['pk']);
         }
     });
