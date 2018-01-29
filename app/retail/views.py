@@ -1,6 +1,6 @@
 # encoding=utf8
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -22,6 +22,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
+import rollbar
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
 
@@ -247,7 +248,7 @@ The best way to stay in touch is to
 
             """
         },
-     ], 
+     ],
      'Web3': [
         {
             'category': "Web3",
@@ -393,8 +394,7 @@ def error(request, code):
 
     if return_as_json:
         return JsonResponse(context, status=500)
-    else:
-        return TemplateResponse(request, 'error.html', context)
+    return TemplateResponse(request, 'error.html', context)
 
 
 def portal(request):
@@ -473,30 +473,28 @@ def schwag(request):
 
 
 def slack(request):
+    email = request.POST.get('email')
     context = {
         'active': 'slack',
+        'msg': 'You must provide an email address',
     }
 
-    if request.POST.get('email', False):
-        email = request.POST['email']
-        valid_email = True
+    if email:
+        context['msg'] = 'Your invite has been sent. '
         try:
-            validate_email(request.POST.get('email', False))
-        except ValidationError:
-            valid_email = False
-
-        if valid_email:
-            get_or_save_email_subscriber(email, 'slack')
+            validate_email(email)
+            get_or_save_email_subscriber(email, 'slack', send_slack_invite=False)
             response = invite_to_slack(email)
-            if response['ok']:
-                context['msg'] = "Your invite has been sent. "
-            else:
-                context['msg'] = response['error']
-        else:
-            context['msg'] = "Invalid email"
+
+            if not response.get('ok'):
+                context['msg'] = response.get('error', 'Unknown error')
+                rollbar.report_message(
+                    'Slack invitation failed', 'warning',
+                    extra_data={'slack_response': response})
+        except ValidationError:
+            context['msg'] = 'Invalid email'
 
     return TemplateResponse(request, 'slack.html', context)
-
 
 
 def btctalk(request):
