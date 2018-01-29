@@ -363,10 +363,10 @@ def process_bounty_changes(old_bounty, new_bounty, txid):
 
     # marketing
     print("============ posting ==============")
-    did_post_to_twitter = maybe_market_to_twitter(new_bounty, event_name, txid)
-    did_post_to_slack = maybe_market_to_slack(new_bounty, event_name, txid)
-    did_post_to_github = maybe_market_to_github(new_bounty, event_name, txid)
-    did_post_to_email = maybe_market_to_email(new_bounty, event_name, txid)
+    did_post_to_twitter = maybe_market_to_twitter(new_bounty, event_name)
+    did_post_to_slack = maybe_market_to_slack(new_bounty, event_name)
+    did_post_to_github = maybe_market_to_github(new_bounty, event_name)
+    did_post_to_email = maybe_market_to_email(new_bounty, event_name)
     print("============ done posting ==============")
 
     # what happened

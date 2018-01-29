@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -60,7 +60,7 @@ def render_tip_email(to_email, tip, is_new):
     return response_html, response_txt
 
 
-def render_match_email(to_email, bounty, github_username):
+def render_match_email(bounty, github_username):
     params = {
         'bounty': bounty,
         'github_username': github_username,
@@ -185,7 +185,7 @@ def render_new_bounty_roundup(to_email):
 def new_tip(request):
     from dashboard.models import Tip
     tip = Tip.objects.last()
-    response_html, response_txt = render_tip_email(settings.CONTACT_EMAIL, tip, True)
+    response_html, _ = render_tip_email(settings.CONTACT_EMAIL, tip, True)
 
     return HttpResponse(response_html)
 
@@ -193,7 +193,7 @@ def new_tip(request):
 @staff_member_required
 def new_match(request):
     from dashboard.models import Bounty
-    response_html, response_txt = render_match_email(settings.CONTACT_EMAIL, Bounty.objects.exclude(title='').last(), 'owocki')
+    response_html, _ = render_match_email(Bounty.objects.exclude(title='').last(), 'owocki')
 
     return HttpResponse(response_html)
 
@@ -233,8 +233,7 @@ def resend_new_tip(request):
 def new_bounty(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.all().last())
-
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.all().last())
     return HttpResponse(response_html)
 
 
@@ -242,8 +241,8 @@ def new_bounty(request):
 def new_bounty_claim(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty_claim(settings.CONTACT_EMAIL, Bounty.objects.filter(idx_status='fulfilled').last())
-
+    bounty = Bounty.objects.filter(idx_status='fulfilled').last()
+    response_html, _ = render_new_bounty_claim(settings.CONTACT_EMAIL, bounty)
     return HttpResponse(response_html)
 
 
@@ -251,8 +250,7 @@ def new_bounty_claim(request):
 def new_bounty_rejection(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty_rejection(settings.CONTACT_EMAIL, Bounty.objects.all().last())
-
+    response_html, _ = render_new_bounty_rejection(settings.CONTACT_EMAIL, Bounty.objects.all().last())
     return HttpResponse(response_html)
 
 
@@ -260,23 +258,18 @@ def new_bounty_rejection(request):
 def new_bounty_acceptance(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty_acceptance(settings.CONTACT_EMAIL, Bounty.objects.all().last())
-
+    response_html, _ = render_new_bounty_acceptance(settings.CONTACT_EMAIL, Bounty.objects.all().last())
     return HttpResponse(response_html)
 
 @staff_member_required
 def bounty_expire_warning(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_bounty_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last())
-
+    response_html, _ = render_bounty_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last())
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def roundup(request):
-    from dashboard.models import Bounty
-
-    response_html, response_txt = render_new_bounty_roundup(settings.CONTACT_EMAIL)
-
+    response_html, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
     return HttpResponse(response_html)
