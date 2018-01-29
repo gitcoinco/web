@@ -58,9 +58,9 @@ var rows = [
     'bounty_owner_email',
     'issue_description',
     'bounty_owner_github_username',
-    'claimeee_address',
-    'claimee_github_username',
-    'claimee_email',
+    'fulfiller_address',
+    'fulfiller_github_username',
+    'fulfiller_email',
     'experience_level',
     'project_length',
     'bounty_type',
@@ -70,7 +70,7 @@ var heads = {
     'avatar_url': 'Issue',
     'value_in_token': 'Issue Funding Info',
     'bounty_owner_address': 'Funder',
-    'claimeee_address': 'Claimee',
+    'fulfiller_address': 'Claimee',
     'experience_level': 'Meta',
 }
 var callbacks = {
@@ -132,21 +132,21 @@ var callbacks = {
         }
         return [ 'issue_description', ui_body];
     },
-    'claimeee_address': address_ize,
+    'fulfiller_address': address_ize,
     'bounty_owner_address': address_ize,
     'bounty_owner_email': email_ize,
-    'claimee_email': email_ize,
+    'fulfiller_email': email_ize,
     'experience_level': unknown_if_empty,
     'project_length': unknown_if_empty,
     'bounty_type': unknown_if_empty,
-    'claimee_email': function(key, val, result){
-        if(!_truthy(result['claimeee_address'])){
+    'fulfiller_email': function(key, val, result){
+        if(!_truthy(result['fulfiller_address'])){
             $("#claimee").addClass('hidden');
         }
         return address_ize(key, val, result);
     },
     'bounty_owner_github_username': gitcoin_ize,
-    'claimee_github_username': gitcoin_ize,
+    'fulfiller_github_username': gitcoin_ize,
     'value_in_eth': function(key, val, result){
         if(result['token_name'] == 'ETH' || val == null){
             return [null, null];

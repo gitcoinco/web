@@ -66,25 +66,25 @@ def sum_bounties(b, usernames):
             add_element('all_fulfilled', username, b._val_usd_db)
             if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
                 add_element('all_payers', username, b._val_usd_db)
-            if username == b.claimee_github_username and username not in IGNORE_EARNERS:
+            if username == b.fulfiller_github_username and username not in IGNORE_EARNERS:
                 add_element('all_earners', username, b._val_usd_db)
             if b.created_on > weekly_cutoff:
                 add_element('weekly_fulfilled', username, b._val_usd_db)
                 if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
                     add_element('weekly_payers', username, b._val_usd_db)
-                if username == b.claimee_github_username and username not in IGNORE_EARNERS:
+                if username == b.fulfiller_github_username and username not in IGNORE_EARNERS:
                     add_element('weekly_earners', username, b._val_usd_db)
             if b.created_on > monthly_cutoff:
                 add_element('monthly_fulfilled', username, b._val_usd_db)
                 if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
                     add_element('monthly_payers', username, b._val_usd_db)
-                if username == b.claimee_github_username and username not in IGNORE_EARNERS:
+                if username == b.fulfiller_github_username and username not in IGNORE_EARNERS:
                     add_element('monthly_earners', username, b._val_usd_db)
             if b.created_on > yearly_cutoff:
                 add_element('yearly_fulfilled', username, b._val_usd_db)
                 if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
                     add_element('yearly_payers', username, b._val_usd_db)
-                if username == b.claimee_github_username and username not in IGNORE_EARNERS:
+                if username == b.fulfiller_github_username and username not in IGNORE_EARNERS:
                     add_element('yearly_earners', username, b._val_usd_db)
 
         add_element('all_all', username, b._val_usd_db)
@@ -137,8 +137,8 @@ class Command(BaseCommand):
             usernames = []
             if b.bounty_owner_github_username:
                 usernames.append(b.bounty_owner_github_username)
-            if b.claimee_github_username:
-                usernames.append(b.claimee_github_username)
+            if b.fulfiller_github_username:
+                usernames.append(b.fulfiller_github_username)
 
             sum_bounties(b, usernames)
 

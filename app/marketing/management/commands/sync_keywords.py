@@ -34,7 +34,7 @@ class Command(BaseCommand):
         for bounty in Bounty.objects.all():
             keywords.append(bounty.org_name)
             keywords.append(bounty.bounty_owner_github_username)
-            keywords.append(bounty.claimee_github_username)
+            keywords.append(bounty.fulfiller_github_username)
             if bounty.keywords:
                 for keyword in bounty.keywords.split(','):
                     keywords.append(keyword)

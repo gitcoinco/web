@@ -48,7 +48,7 @@ class TipAdmin(admin.ModelAdmin):
 class Bounty_Admin(admin.ModelAdmin):
     ordering = ['-id']
 
-    search_fields = ['raw_data', 'title', 'claimee_github_username', 'bounty_owner_github_username', 'token_name']
+    search_fields = ['raw_data', 'title', 'fulfiller_github_username', 'bounty_owner_github_username', 'token_name']
     list_display = ['pk', 'img', 'what']
     readonly_fields = ['what', 'img']
 

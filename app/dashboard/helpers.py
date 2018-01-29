@@ -271,17 +271,17 @@ def process_bounty_details(bountydetails, url, contract_address, network):
     accepted = fments[-1].get('accepted') if fments else False
 
     if fments:
-        claimeee_address = fments[-1].get('payload', {}).get('fulfiller', {}).get('address', '0x0000000000000000000000000000000000000000')
-        claimee_email = fments[-1].get('payload', {}).get('fulfiller', {}).get('email', '')
-        claimee_github_username = fments[-1].get('payload', {}).get('fulfiller', {}).get('githubUsername', '')
-        claimee_name = fments[-1].get('payload', {}).get('fulfiller', {}).get('name', '')
-        claimee_metadata = fments[-1].get('payload', {}).get('metadata', {})
+        fulfiller_address = fments[-1].get('payload', {}).get('fulfiller', {}).get('address', '0x0000000000000000000000000000000000000000')
+        fulfiller_email = fments[-1].get('payload', {}).get('fulfiller', {}).get('email', '')
+        fulfiller_github_username = fments[-1].get('payload', {}).get('fulfiller', {}).get('githubUsername', '')
+        fulfiller_name = fments[-1].get('payload', {}).get('fulfiller', {}).get('name', '')
+        fulfiller_metadata = fments[-1].get('payload', {}).get('metadata', {})
     else:
-        claimeee_address = '0x0000000000000000000000000000000000000000'
-        claimee_email = ''
-        claimee_github_username = ''
-        claimee_name = ''
-        claimee_metadata = {}
+        fulfiller_address = '0x0000000000000000000000000000000000000000'
+        fulfiller_email = ''
+        fulfiller_github_username = ''
+        fulfiller_name = ''
+        fulfiller_metadata = {}
 
     # Possible Bounty Stages
     # 0: Draft
@@ -317,11 +317,11 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             network=network,
             accepted=accepted,
             # These fields are after initial bounty creation, in bounty_details.js
-            claimee_metadata=claimee_metadata,
-            claimeee_address=claimeee_address,
-            claimee_email=claimee_email,
-            claimee_github_username=claimee_github_username,
-            claimee_name=claimee_name,
+            fulfiller_metadata=fulfiller_metadata,
+            fulfiller_address=fulfiller_address,
+            fulfiller_email=fulfiller_email,
+            fulfiller_github_username=fulfiller_github_username,
+            fulfiller_name=fulfiller_name,
             expires_date=timezone.datetime.fromtimestamp(bounty.get('deadline')),
             standard_bounties_id=bountyId,
             balance=bounty.get('balance'),
@@ -348,14 +348,14 @@ def process_bounty_changes(old_bounty, new_bounty, txid):
     null_address = '0x0000000000000000000000000000000000000000'
     if (old_bounty is None and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
         event_name = 'new_bounty'
-    elif old_bounty.claimeee_address == null_address and new_bounty.claimeee_address != null_address:
-        event_name = 'new_claim'
+    elif old_bounty.fulfiller_address == null_address and new_bounty.fulfiller_address != null_address:
+        event_name = 'new_fulfillment'
     elif old_bounty.is_open and not new_bounty.is_open:
         if new_bounty.status == 'dead':
             event_name = 'killed_bounty'
         else:
             event_name = 'approved_claim'
-    elif old_bounty.claimeee_address != null_address and new_bounty.claimeee_address == null_address:
+    elif old_bounty.fulfiller_address != null_address and new_bounty.fulfiller_address == null_address:
         event_name = 'rejected_claim'
     else:
         event_name = 'unknown_event'

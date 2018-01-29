@@ -124,13 +124,13 @@
                     <span>
                         {{bounty.status}}
 
-                        {% if bounty.idx_status == 'claimed' or bounty.idx_status == 'fulfilled' %}
-                            {% if bounty.claimee_github_username %}
-                            ({{bounty.idx_status}} by <a href="https://gitcoin.co/profile/{{bounty.claimee_github_username}}">{{bounty.claimee_github_username}}</a>)
-                            {% elif bounty.claimee_email %}
-                            ({{bounty.idx_status}} by <a href="mailto:{{bounty.claimee_email}}">{{bounty.claimee_email}}</a>)
+                        {% if bounty.idx_status == 'fulfilled' %}
+                            {% if bounty.fulfiller_github_username %}
+                            ({{bounty.idx_status}} by <a href="https://gitcoin.co/profile/{{bounty.fulfiller_github_username}}">{{bounty.fulfiller_github_username}}</a>)
+                            {% elif bounty.fulfiller_email %}
+                            ({{bounty.idx_status}} by <a href="mailto:{{bounty.fulfiller_email}}">{{bounty.fulfiller_email}}</a>)
                             {% else %}
-                            ({{bounty.idx_status}} by <a href="https://etherscan.io/address/{{bounty.claimeee_address}}">{{bounty.claimeee_address}}</a>)
+                            ({{bounty.idx_status}} by <a href="https://etherscan.io/address/{{bounty.fulfiller_address}}">{{bounty.fulfiller_address}}</a>)
                             {% endif %}
                         {% endif %}
 

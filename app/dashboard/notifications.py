@@ -213,15 +213,15 @@ def maybe_market_to_github(bounty, event_name, txid=None, interested=None):
             bounty.get_absolute_url(),
             amount_usdt_open_work(),
         )
-    elif event_name == 'new_claim':
+    elif event_name == 'new_fulfillment':
         msg = "__The funding of {} {} {} attached has been fulfilled {}.__ {} \n\n * Learn more [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
         msg = msg.format(
             round(bounty.get_natural_value(), 4),
             bounty.token_name,
             usdt_value,
-            "by @{}".format(bounty.claimee_github_username) if bounty.claimee_github_username else "",
+            "by @{}".format(bounty.fulfiller_github_username) if bounty.fulfiller_github_username else "",
             "\n\n {}, please leave a comment to let the funder {} (and the other parties involved) that you've fulfilled the bounty.  If you don't leave a comment, the funder may expire your claim at their discretion.".format(
-                "@{}".format(bounty.claimee_github_username) if bounty.claimee_github_username else "If you are the claimee",
+                "@{}".format(bounty.fulfiller_github_username) if bounty.fulfiller_github_username else "If you are the claimee",
                 "(@{})".format(bounty.bounty_owner_github_username) if bounty.bounty_owner_github_username else "",
                 ),
             bounty.get_absolute_url(),
@@ -233,7 +233,7 @@ def maybe_market_to_github(bounty, event_name, txid=None, interested=None):
             round(bounty.get_natural_value(), 4),
             bounty.token_name,
             usdt_value,
-            "to @{}".format(bounty.claimee_github_username) if bounty.claimee_github_username else "",
+            "to @{}".format(bounty.fulfiller_github_username) if bounty.fulfiller_github_username else "",
             bounty.get_absolute_url(),
             amount_usdt_open_work(),
             )
@@ -275,7 +275,7 @@ def maybe_market_to_github(bounty, event_name, txid=None, interested=None):
 
 def amount_usdt_open_work():
     from dashboard.models import Bounty
-    bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'fulfilled', 'claimed'])
+    bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'fulfilled'])
     return round(sum([b.value_in_usdt for b in bounties]), 2)
 
 
@@ -331,7 +331,7 @@ def maybe_market_to_email(b, event_name, txid):
         except Exception as e:
             logging.exception(e)
             print(e)
-    if event_name == 'new_claim':
+    if event_name == 'new_fulfillment':
         try:
             to_emails = [b.bounty_owner_email]
             new_bounty_claim(b, to_emails)
@@ -340,14 +340,14 @@ def maybe_market_to_email(b, event_name, txid):
             print(e)
     if event_name == 'approved_claim':
         try:
-            to_emails = [b.bounty_owner_email, b.claimee_email]
+            to_emails = [b.bounty_owner_email, b.fulfiller_email]
             new_bounty_acceptance(b, to_emails)
         except Exception as e:
             logging.exception(e)
             print(e)
     if event_name == 'rejected_claim':
         try:
-            to_emails = [b.bounty_owner_email, b.claimee_email]
+            to_emails = [b.bounty_owner_email, b.fulfiller_email]
             new_bounty_rejection(b, to_emails)
         except Exception as e:
             logging.exception(e)

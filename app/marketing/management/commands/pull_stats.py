@@ -240,7 +240,7 @@ def bounties():
 
 def bounties_fulfilled_pct():
     from dashboard.models import Bounty
-    for status in ['open', 'fulfilled', 'accepted', 'expired', 'dead', 'claimed']:
+    for status in ['open', 'fulfilled', 'accepted', 'expired', 'dead']:
         eligible_bounties = Bounty.objects.filter(current_bounty=True,web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
         fulfilled_bounties = eligible_bounties.filter(idx_status=status)
         val = int(100 * (fulfilled_bounties.count()) / (eligible_bounties.count()))
@@ -295,23 +295,12 @@ def avg_time_bounty_turnaround():
             )
 
 
-
-
 def bounties_open():
     from dashboard.models import Bounty
 
     Stat.objects.create(
         key='bounties_open',
         val=(Bounty.objects.filter(current_bounty=True,idx_status='open').count()),
-        )
-
-
-def bounties_claimed():
-    from dashboard.models import Bounty
-
-    Stat.objects.create(
-        key='bounties_claimed',
-        val=(Bounty.objects.filter(current_bounty=True).exclude(claimeee_address='0x0000000000000000000000000000000000000000').count()),
         )
 
 
@@ -409,7 +398,6 @@ class Command(BaseCommand):
             whitepaper_access,
             whitepaper_access_request,
             tips_received,
-            bounties_claimed,
             bounties_fulfilled,
             bounties_open,
             bounties_fulfilled_pct,
