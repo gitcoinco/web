@@ -243,8 +243,8 @@ class Bounty(SuperModel):
                         return 'expired'
                     if self.accepted:
                         return 'done'
-                    # If its not expired or done, it must be dead.
-                    return 'dead'
+                    # If its not expired or done, it must be cancelled.
+                    return 'cancelled'
                 if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
                     if len(self.interested.all()) > 0:
                         return 'claimed'

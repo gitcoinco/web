@@ -20,8 +20,8 @@
             <div class="d-flex flex-column align-items-center sidebar_search">
                 <form>
 
-                    <div class="rowcol d-flex flex-column  mt-5">
-                        <div class="dash-filter-header mb-2">Status</div>
+                    <div class="rowcol d-flex flex-column mt-5">
+                        <div class="dash-filter-header mb-2" title='{%include "shared/status_tooltip.html" %}'>Status <img style="max-width: 15px;" src="/static/v2/images/icons/info.png"></div>
                         <div class="d-flex flex-column ml-3">
                             <div class="d-flex align-items-center form-line mb-2">
                                 <input name="idx_status" id="status_open" type="radio" value="open" val-ui='Open' checked />
@@ -59,9 +59,9 @@
                             </div>
 
                             <div class="d-flex align-items-center form-line mb-2">
-                                <input name="idx_status" id="status_dead" type="radio" value="dead" val-ui='Dead' />
+                                <input name="idx_status" id="status_canceled" type="radio" value="cancelled" val-ui='Cancelled' />
                                 <div class="dash-filter-label ml-2">
-                                    <label for=status_dead>6. Dead</label>
+                                    <label for=status_canceled>6. Cancelled</label>
                                 </div>
                             </div>
 
