@@ -227,7 +227,7 @@ class Bounty(SuperModel):
                         return 'expired'
                     return 'done'
                 if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
-                    if len(self.interested) > 0:
+                    if len(self.interested.all()) > 0:
                         return 'claimed'
                     else:
                         return 'open'
@@ -246,7 +246,7 @@ class Bounty(SuperModel):
                     # If its not expired or done, it must be dead.
                     return 'dead'
                 if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
-                    if len(self.interested) > 0:
+                    if len(self.interested.all()) > 0:
                         return 'claimed'
                     else:
                         return 'open'
