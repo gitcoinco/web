@@ -30,10 +30,12 @@ class Command(BaseCommand):
 
         print("- profile")
         from dashboard.models import Profile
-        for profile in Profile.objects.all():
-            print("proilfe logins")
-            if profile.email:
-                process_email(profile.email, 'profile_email')
+        # right now, we only take profiles that've given us an access token
+        profiles = Profile.objects.exclude(github_access_token='').exclude(email='').all()
+        # in the future, though, we could take ALL github profiles in the system and use those
+        # profiles = Profile.objects.exclude(email='').all()
+        for profile in profiles:
+            process_email(profile.email, 'profile_email')
 
         print("- match")
         from marketing.models import Match
