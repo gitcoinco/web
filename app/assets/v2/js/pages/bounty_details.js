@@ -89,8 +89,8 @@ var callbacks = {
         if(ui_status=='fulfilled'){
             ui_status = '<span style="color: #3e00ff;">fulfilled</span>';
         }
-        if(ui_status=='accepted'){
-            ui_status = '<span style="color: #f9006c;">accepted</span>';
+        if(ui_status=='done'){
+            ui_status = '<span style="color: #f9006c;">done</span>';
         }
         if(ui_status=='dead'){
             ui_status = '<span style="color: #0d023b;">dead</span>';
@@ -510,7 +510,7 @@ window.addEventListener('load', function() {
                         actions.push(entry);
                     }
 
-                    if(result['status'] != 'accepted' && result['status'] != 'dead'){
+                    if(result['status'] != 'done' && result['status'] != 'dead'){
                         var enabled = isBountyOwner(result);
                         var entry = {
                             href: '/funding/kill?source='+result['github_url'],

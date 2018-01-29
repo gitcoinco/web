@@ -122,7 +122,7 @@ class Bounty(SuperModel):
     standard_bounties_id = models.IntegerField(default=0)
     num_fulfillments = models.IntegerField(default=0)
     balance = models.DecimalField(default=0, decimal_places=2, max_digits=50)
-    accepted = models.BooleanField(default=False, help_text='Whether the bounty has been accepted')
+    accepted = models.BooleanField(default=False, help_text='Whether the bounty has been done')
     interested = models.ManyToManyField('dashboard.Interest', blank=True)
     interested_comment = models.IntegerField(null=True, blank=True)
 
@@ -225,7 +225,7 @@ class Bounty(SuperModel):
                 if not self.is_open:
                     if timezone.now() > self.expires_date and self.fulfiller_address == '0x0000000000000000000000000000000000000000':
                         return 'expired'
-                    return 'fulfilled'
+                    return 'done'
                 if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
                     if len(self.interested) > 0:
                         return 'claimed'
@@ -238,14 +238,12 @@ class Bounty(SuperModel):
                 return 'unknown'
         else:
             try:
-                # if int(self.num_fulfillments) > 0:
-                #     return 'fulfilled'
                 if self.is_open is False:
                     if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.fulfiller_address == '0x0000000000000000000000000000000000000000':
                         return 'expired'
                     if self.accepted:
-                        return 'accepted'
-                    # If its not expired or accepted, it must be dead.
+                        return 'done'
+                    # If its not expired or done, it must be dead.
                     return 'dead'
                 if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
                     if len(self.interested) > 0:
