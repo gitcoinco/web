@@ -1,4 +1,4 @@
-# encoding=utf8
+# -*- coding: utf-8 -*-
 '''
     Copyright (C) 2017 Gitcoin Core
 
@@ -45,9 +45,7 @@ def index(request):
 
 
 def robotstxt(request):
-    context = {
-    }
-    return TemplateResponse(request, 'robots.txt', context)
+    return TemplateResponse(request, 'robots.txt', {})
 
 
 def about(request):
@@ -59,15 +57,15 @@ def about(request):
 
 
 def mission(request):
-  context = {
-    'active': 'mission',
-    'title': 'Mission',
-    'card_title': "Gitcoin is a mission-driven organization.",
-    'card_desc': "Our mission is to push open source forward.",
-    'avatar_url': '/static/v2/images/mission/hero.png',
-  }
-
-  return TemplateResponse(request, 'mission.html', context)
+    """Render the Mission response."""
+    context = {
+        'active': 'mission',
+        'title': 'Mission',
+        'card_title': 'Gitcoin is a mission-driven organization.',
+        'card_desc': 'Our mission is to push open source forward.',
+        'avatar_url': '/static/v2/images/mission/hero.png',
+    }
+    return TemplateResponse(request, 'mission.html', context)
 
 
 def help(request):
@@ -247,7 +245,7 @@ The best way to stay in touch is to
 
             """
         },
-     ], 
+     ],
      'Web3': [
         {
             'category': "Web3",
