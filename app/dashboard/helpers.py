@@ -230,8 +230,8 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             bounty_owner_email=metadata.get('notificationEmail', None),
             bounty_owner_github_username=metadata.get('githubUsername', None),
             claimeee_address=bountydetails[3],
-            claimee_email=claimee_metadata.get('notificationEmail', None),
-            claimee_github_username=claimee_metadata.get('githubUsername', None),
+            claimee_email=claimee_metadata.get('notificationEmail', ''),
+            claimee_github_username=claimee_metadata.get('githubUsername', ''),
             is_open=bountydetails[4],
             expires_date=timezone.datetime.fromtimestamp(bountydetails[9]),
             raw_data=bountydetails,
@@ -241,6 +241,7 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             contract_address=contract_address,
             network=network,
             issue_description='',
+            
             )
         new_bounty.fetch_issue_description()
         if not new_bounty.avatar_url:
