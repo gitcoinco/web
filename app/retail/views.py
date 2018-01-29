@@ -367,19 +367,19 @@ def get_gitcoin(request):
     return TemplateResponse(request, 'getgitcoin.html', context)
 
 
-def handler403(request):
+def handler403(request, exception=None):
     return error(request, 403)
 
 
-def handler404(request):
+def handler404(request, exception=None):
     return error(request, 404)
 
 
-def handler500(request):
+def handler500(request, exception=None):
     return error(request, 500)
 
 
-def handler400(request):
+def handler400(request, exception=None):
     return error(request, 400)
 
 
