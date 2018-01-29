@@ -28,6 +28,9 @@ from .models import Bounty, BountySyncRequest, Profile, Subscription, Tip
 class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
+class ProfileAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    search_fields = ['email', 'data']
 
 class TipAdmin(admin.ModelAdmin):
     ordering = ['-id']
@@ -58,7 +61,7 @@ class Bounty_Admin(admin.ModelAdmin):
 
 
 admin.site.register(Subscription, GeneralAdmin)
-admin.site.register(Profile, GeneralAdmin)
+admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Bounty, Bounty_Admin)
 admin.site.register(BountySyncRequest, GeneralAdmin)
 admin.site.register(Tip, TipAdmin)
