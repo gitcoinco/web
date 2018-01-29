@@ -255,7 +255,7 @@ def maybe_market_to_github(bounty, event_name, txid=None, interested=None):
             else:
                 response = post_issue_comment(username, repo, issue_num, msg)
                 if response.get('id'):
-                    bounty.interested_comment = response.get('id')
+                    bounty.interested_comment = int(response.get('id'))
                     bounty.save()
         elif event_name == 'new_interest' and not interested:
             delete_issue_comment(bounty.interested_comment, username, repo)

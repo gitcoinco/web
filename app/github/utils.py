@@ -26,6 +26,7 @@ from django.utils import timezone
 
 import dateutil.parser
 import requests
+import rollbar
 from rest_framework.reverse import reverse
 
 _AUTH = (settings.GITHUB_API_USER, settings.GITHUB_API_TOKEN)
@@ -292,7 +293,13 @@ def patch_issue_comment(comment_id, owner, repo, comment):
     """Update a comment on an issue via patch."""
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
     response = requests.patch(url, data=json.dumps({'body': comment}), auth=_AUTH)
-    return response.json()
+    if response.status_code == 200:
+        return response.json()
+    rollbar.report_message(
+        'Github issue comment patch returned non-200 status code', 'warning',
+        request=response.request,
+        extra_data={'status_code': response.status_code, 'reason': response.reason})
+    return {}
 
 
 def delete_issue_comment(comment_id, owner, repo):
