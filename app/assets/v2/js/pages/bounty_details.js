@@ -90,10 +90,10 @@ var callbacks = {
             ui_status = '<span style="color: #3e00ff;">fulfilled</span>';
         }
         if(ui_status=='done'){
-            ui_status = '<span style="color: #f9006c;">done</span>';
+            ui_status = '<span style="color: #0d023b;">done</span>';
         }
         if(ui_status=='cancelled'){
-            ui_status = '<span style="color: #0d023b;">cancelled</span>';
+            ui_status = '<span style="color: #f9006c;">cancelled</span>';
         }
         return [ 'status', ui_status];
     },
@@ -147,7 +147,7 @@ var callbacks = {
     'bounty_type': unknown_if_empty,
     'fulfiller_email': function(key, val, result){
         if(!_truthy(result['fulfiller_address'])){
-            $("#claimee").addClass('hidden');
+            $("#fulfiller").addClass('hidden');
         }
         return address_ize(key, val, result);
     },
@@ -524,14 +524,14 @@ window.addEventListener('load', function() {
                     }
 
                     var enabled = !isBountyOwner(result);
-                    if(result['status']=='open' ){
+                    if(result['status']=='open' || result['status']=='claimed' ){
                         var interestEntry = {
                             href: is_interested ? '/uninterested' : '/interested',
                             text: is_interested ? 'Unclaim Work' : 'Claim Work',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Claim Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.  Please leave a comment for the bounty submitter to let them know you are interested in workwith with them after you claim work' : 'Can only be performed if you are not the funder.',
+                            title: enabled ? 'Claim Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.  Please leave a comment for the bounty submitter to let them know you are interested in workwith with them after you claim work.' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(interestEntry);
 

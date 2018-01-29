@@ -141,7 +141,7 @@ var callbacks = {
     'bounty_type': unknown_if_empty,
     'fulfiller_email': function(key, val, result){
         if(!_truthy(result['fulfiller_address'])){
-            $("#claimee").addClass('hidden');
+            $("#fulfiller").addClass('hidden');
         }
         return address_ize(key, val, result);
     },
@@ -373,7 +373,7 @@ window.addEventListener('load', function() {
                         actions.push(entry);
                     }
                     var enabled = !isBountyOwner(result);
-                    if(result['status']=='open' ){
+                    if(result['status']=='open' || result['status']=='claimed' ){
 
                         var interestEntry = {
                             href: is_interested ? '/uninterested' : '/interested',
