@@ -41,8 +41,8 @@ def github_org_to_twitter_tags(github_org):
     return twitter_tags
 
 
-def maybe_market_to_twitter(bounty, event_name, txid):
-
+def maybe_market_to_twitter(bounty, event_name):
+    """Tweet the specified Bounty event."""
     if not settings.TWITTER_CONSUMER_KEY:
         return False
     if event_name not in ['new_bounty', 'remarket_bounty']:
@@ -104,7 +104,17 @@ def maybe_market_to_twitter(bounty, event_name, txid):
     return True
 
 
-def maybe_market_to_slack(bounty, event_name, txid):
+def maybe_market_to_slack(bounty, event_name):
+    """Send a Slack message for the specified Bounty.
+
+    Args:
+        bounty (dashboard.models.Bounty): The Bounty to be marketed.
+        event_name (str): The name of the event.
+
+    Returns:
+        bool: Whether or not the Slack notification was sent successfully.
+
+    """
     if not settings.SLACK_TOKEN:
         return False
     if bounty.get_natural_value() < 0.0001:
@@ -119,9 +129,9 @@ def maybe_market_to_slack(bounty, event_name, txid):
         channel = 'notif-gitcoin'
         sc = SlackClient(settings.SLACK_TOKEN)
         sc.api_call(
-          "chat.postMessage",
-          channel=channel,
-          text=msg,
+            "chat.postMessage",
+            channel=channel,
+            text=msg,
         )
     except Exception as e:
         print(e)
@@ -131,6 +141,16 @@ def maybe_market_to_slack(bounty, event_name, txid):
 
 
 def maybe_market_tip_to_email(tip, emails):
+    """Send an email for the specified Tip.
+
+    Args:
+        tip (dashboard.models.Tip): The Tip to be marketed.
+        emails (list of str): The list of emails to notify.
+
+    Returns:
+        bool: Whether or not the email notification was sent successfully.
+
+    """
     if tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
 
@@ -138,7 +158,17 @@ def maybe_market_tip_to_email(tip, emails):
     return True
 
 
-def maybe_market_tip_to_slack(tip, event_name, txid):
+def maybe_market_tip_to_slack(tip, event_name):
+    """Send a Slack message for the specified Tip.
+
+    Args:
+        tip (dashboard.models.Tip): The Tip to be marketed.
+        event_name (str): The name of the event.
+
+    Returns:
+        bool: Whether or not the Slack notification was sent successfully.
+
+    """
     if not settings.SLACK_TOKEN:
         return False
     if tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
@@ -151,9 +181,9 @@ def maybe_market_tip_to_slack(tip, event_name, txid):
         sc = SlackClient(settings.SLACK_TOKEN)
         channel = 'bounties'
         sc.api_call(
-          "chat.postMessage",
-          channel=channel,
-          text=msg,
+            "chat.postMessage",
+            channel=channel,
+            text=msg,
         )
     except Exception as e:
         print(e)
@@ -162,7 +192,19 @@ def maybe_market_tip_to_slack(tip, event_name, txid):
     return True
 
 
-def maybe_market_to_github(bounty, event_name, txid=None, interested=None):
+def maybe_market_to_github(bounty, event_name, interested=None):
+    """Post a Github comment for the specified Bounty.
+
+    Args:
+        bounty (dashboard.models.Bounty): The Bounty to be marketed.
+        event_name (str): The name of the event.
+        interested (list of tuples): The list of username and profile page URL
+            tuple pairs.
+
+    Returns:
+        bool: Whether or not the Github comment was posted successfully.
+
+    """
     if not settings.GITHUB_CLIENT_ID:
         return False
     if bounty.get_natural_value() < 0.0001:
@@ -280,6 +322,15 @@ def amount_usdt_open_work():
 
 
 def maybe_market_tip_to_github(tip):
+    """Post a Github comment for the specified Tip.
+
+    Args:
+        tip (dashboard.models.Tip): The Tip to be marketed.
+
+    Returns:
+        bool: Whether or not the Github comment was posted successfully.
+
+    """
     if not settings.GITHUB_CLIENT_ID:
         return False
     if not tip.github_url:
@@ -322,7 +373,6 @@ def maybe_market_to_email(b, event_name, txid):
 
     if event_name == 'new_bounty' and not settings.DEBUG:
         try:
-            to_emails = []
             keywords = b.keywords.split(',')
             for keyword in keywords:
                 to_emails = to_emails + list(EmailSubscriber.objects.filter(keywords__contains=[keyword.strip()]).values_list('email', flat=True))
@@ -420,7 +470,7 @@ def maybe_post_on_craigslist(bounty):
     form.find('input', {'id': "remuneration"})['value'] = "{} {}".format(bounty.get_natural_value(), bounty.token_name)
     try:
         form.find('input', {'id': "wantamap"})['data-checked'] = ''
-    except:
+    except Exception:
         pass
     page = browser.submit(form, form['action'])
 
@@ -453,7 +503,7 @@ def maybe_post_on_craigslist(bounty):
         time.sleep(5)
 
     emails = fetch_mails_since_id(settings.IMAP_EMAIL, settings.IMAP_PASSWORD, last_email_id)
-    for email_id, content in emails.items():
+    for _, content in emails.items():
         if 'craigslist' in content['from']:
             for link in re.findall(r"(?:https?:\/\/[a-zA-Z0-9%]+[.]+craigslist+[.]+org/[a-zA-Z0-9\/\-]*)", content.as_string()):
                 # opening all links in the email
@@ -463,8 +513,8 @@ def maybe_post_on_craigslist(bounty):
                     form = page.soup.form
                     page = browser.submit(form, form['action'])
                     return link
-                except:
-                    # in case of inavalid links
-                    False
+                except Exception:
+                    # in case of invalid links
+                    return False
             else:
                 return False

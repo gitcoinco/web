@@ -17,14 +17,19 @@
 '''
 
 from django.conf import settings
+from django.utils import timezone
 
 import sendgrid
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
-from retail.emails import *
+from retail.emails import (
+    render_bounty_expire_warning, render_match_email, render_new_bounty, render_new_bounty_acceptance,
+    render_new_work_submission, render_new_bounty_rejection, render_new_bounty_roundup, render_tip_email,
+)
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
 
-def send_mail(from_email, _to_email, subject, body, html=False, from_name="Gitcoin.co", cc_emails=None, add_bcc=True):
+def send_mail(from_email, _to_email, subject, body, html=False,
+              from_name="Gitcoin.co", cc_emails=None, add_bcc=True):
 
     # make sure this subscriber is saved
     to_email = _to_email
@@ -81,9 +86,12 @@ def tip_email(tip, to_emails, is_new):
         send_mail(from_email, to_email, subject, text, html)
 
 
-def new_bounty(bounty, to_emails=[]):
+def new_bounty(bounty, to_emails=None):
     if not bounty or not bounty.value_in_usdt:
         return
+
+    if to_emails is None:
+        to_emails = []
 
     subject = "⚡️ New Funded Issue Match worth ${} ({})".format(bounty.value_in_usdt, bounty.keywords)
 
@@ -95,7 +103,9 @@ def new_bounty(bounty, to_emails=[]):
             send_mail(from_email, to_email, subject, text, html)
 
 
-def weekly_roundup(to_emails=[]):
+def weekly_roundup(to_emails=None):
+    if to_emails is None:
+        to_emails = []
 
     subject = "Gitcoin + Standard Bounties = 🔥"
     for to_email in to_emails:
@@ -106,9 +116,12 @@ def weekly_roundup(to_emails=[]):
             send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
 
 
-def new_work_submission(bounty, to_emails=[]):
+def new_work_submission(bounty, to_emails=None):
     if not bounty or not bounty.value_in_usdt:
         return
+
+    if to_emails is None:
+        to_emails = []
 
     subject = "✉️ New Work Submission Inside for {} ✉️".format(bounty.title_or_desc)
 
@@ -120,11 +133,14 @@ def new_work_submission(bounty, to_emails=[]):
             send_mail(from_email, to_email, subject, text, html)
 
 
-def new_bounty_rejection(bounty, to_emails=[]):
+def new_bounty_rejection(bounty, to_emails=None):
     if not bounty or not bounty.value_in_usdt:
         return
 
     subject = "😕 Work Submission Rejected for {} 😕".format(bounty.title_or_desc)
+
+    if to_emails is None:
+        to_emails = []
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
@@ -134,9 +150,12 @@ def new_bounty_rejection(bounty, to_emails=[]):
             send_mail(from_email, to_email, subject, text, html)
 
 
-def new_bounty_acceptance(bounty, to_emails=[]):
+def new_bounty_acceptance(bounty, to_emails=None):
     if not bounty or not bounty.value_in_usdt:
         return
+
+    if to_emails is None:
+        to_emails = []
 
     subject = "🌈 Funds Paid for {} 🌈".format(bounty.title_or_desc)
 
@@ -154,13 +173,16 @@ def new_match(to_emails, bounty, github_username):
 
     to_email = to_emails[0]
     from_email = settings.CONTACT_EMAIL
-    html, text = render_match_email(to_email, bounty, github_username)
+    html, text = render_match_email(bounty, github_username)
     send_mail(from_email, to_email, subject, text, html, cc_emails=to_emails)
 
 
-def bounty_expire_warning(bounty, to_emails=[]):
+def bounty_expire_warning(bounty, to_emails=None):
     if not bounty or not bounty.value_in_usdt:
         return
+
+    if to_emails is None:
+        to_emails = []
 
     for to_email in to_emails:
         unit = 'day'
