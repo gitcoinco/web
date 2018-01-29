@@ -26,10 +26,10 @@
 <body class="{{active}}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header">
-        {% if nav != 'auth' %}
+        {% if nav != 'internal' %}
             {% include 'shared/nav.html' %}
         {% else %}
-            {% include 'shared/nav_auth.html' %}
+            {% include 'shared/nav_internal.html' %}
         {% endif %}
         {% if minihero %}
             {% include 'shared/minihero.html' with h1=minihero %}

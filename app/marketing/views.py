@@ -190,7 +190,7 @@ def email_settings(request, key):
             es.save()
             msg = "Updated your preferences.  "
     context = {
-        'nav': 'auth',
+        'nav': 'internal',
         'active': 'email_settings',
         'title': 'Email Settings',
         'es': es,
