@@ -118,9 +118,9 @@ def process_bounty_changes(old_bounty, new_bounty, txid):
     if (old_bounty is None and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
         event_name = 'new_bounty'
     elif old_bounty.fulfiller_address == null_address and new_bounty.fulfiller_address != null_address:
-        event_name = 'new_fulfillment'
+        event_name = 'work_submitted'
     elif old_bounty.is_open and not new_bounty.is_open:
-        event_name = 'approved_claim'
+        event_name = 'work_done'
     elif old_bounty.fulfiller_address != null_address and new_bounty.fulfiller_address == null_address:
         event_name = 'rejected_claim'
     else:

@@ -1,6 +1,6 @@
-👇 New Fulfillment 👇
+👇 New Work Submission 👇
 
-There is a new bounty *fulfillment* submitted against your funded issue. Please check it out, below
+There is a new bounty *submission* against your funded issue. Please check it out, below
 
 {% include 'emails/bounty.txt' with bounty=bounty %}
 

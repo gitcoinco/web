@@ -84,15 +84,15 @@ def render_new_bounty(to_email, bounty):
     return response_html, response_txt
 
 
-def render_new_bounty_claim(to_email, bounty):
+def render_new_work_submission(to_email, bounty):
 
     params = {
         'bounty': bounty,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
-    response_html = premailer_transform(render_to_string("emails/new_bounty_claim.html", params))
-    response_txt = render_to_string("emails/new_bounty_claim.txt", params)
+    response_html = premailer_transform(render_to_string("emails/new_work_submission.html", params))
+    response_txt = render_to_string("emails/new_work_submission.txt", params)
 
     return response_html, response_txt
 
@@ -239,10 +239,10 @@ def new_bounty(request):
 
 
 @staff_member_required
-def new_bounty_claim(request):
+def new_work_submission(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty_claim(settings.CONTACT_EMAIL, Bounty.objects.filter(idx_status='fulfilled').last())
+    response_html, response_txt = render_new_work_submission(settings.CONTACT_EMAIL, Bounty.objects.filter(idx_status='submitted', current_bounty=True).last())
 
     return HttpResponse(response_html)
 

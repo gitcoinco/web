@@ -228,11 +228,11 @@ class Bounty(SuperModel):
                     return 'done'
                 if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
                     if len(self.interested.all()) > 0:
-                        return 'claimed'
+                        return 'started'
                     else:
                         return 'open'
                 if self.fulfiller_address != '0x0000000000000000000000000000000000000000':
-                    return 'fulfilled'
+                    return 'submitted'
                 return 'unknown'
             except Exception as e:
                 return 'unknown'
@@ -247,11 +247,11 @@ class Bounty(SuperModel):
                     return 'cancelled'
                 if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
                     if len(self.interested.all()) > 0:
-                        return 'claimed'
+                        return 'started'
                     else:
                         return 'open'
                 if self.fulfiller_address != '0x0000000000000000000000000000000000000000':
-                    return 'fulfilled'
+                    return 'submitted'
                 return 'unknown'
             except Exception as e:
                 logger.warning(e)
@@ -637,7 +637,7 @@ class Profile(SuperModel):
             claimees.append(b.fulfiller_address)
         success_rate = 0
         if bounties.count() > 0:
-            numer = bounties.filter(idx_status__in=['fulfilled', 'claimed']).count()
+            numer = bounties.filter(idx_status__in=['submitted', 'started']).count()
             denom = bounties.exclude(idx_status__in=['open']).count()
             success_rate = int(round(numer * 1.0 / denom, 2) * 100) if denom != 0 else 'N/A'
         if success_rate == 0:

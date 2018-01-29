@@ -240,7 +240,7 @@ def bounties():
 
 def bounties_fulfilled_pct():
     from dashboard.models import Bounty
-    for status in ['open', 'fulfilled', 'accepted', 'expired', 'cancelled']:
+    for status in ['open', 'submitted', 'accepted', 'expired', 'cancelled']:
         eligible_bounties = Bounty.objects.filter(current_bounty=True,web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
         fulfilled_bounties = eligible_bounties.filter(idx_status=status)
         val = int(100 * (fulfilled_bounties.count()) / (eligible_bounties.count()))
@@ -281,7 +281,7 @@ def avg_time_bounty_turnaround():
     from dashboard.models import Bounty
 
     for days in [7,30,90,360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True,idx_status='fulfilled',web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+        all_bounties = Bounty.objects.filter(current_bounty=True,idx_status='submitted',web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
         if not all_bounties.count():
             continue
 
@@ -309,7 +309,7 @@ def bounties_fulfilled():
 
     Stat.objects.create(
         key='bounties_fulfilled',
-        val=(Bounty.objects.filter(current_bounty=True,idx_status='fulfilled').count()),
+        val=(Bounty.objects.filter(current_bounty=True,idx_status='submitted').count()),
         )
 
 

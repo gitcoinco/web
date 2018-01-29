@@ -328,6 +328,9 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             num_fulfillments=fulfillments.get('total', 0),
             )
         new_bounty.fetch_issue_item()
+        for old_bounty in old_bounties:
+            for interested in old_bounty.interested.all():
+                new_bounty.interested.add(interested)
         if not new_bounty.avatar_url:
             new_bounty.avatar_url = new_bounty.get_avatar_url()
         new_bounty.save()
@@ -349,12 +352,12 @@ def process_bounty_changes(old_bounty, new_bounty, txid):
     if (old_bounty is None and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
         event_name = 'new_bounty'
     elif old_bounty.fulfiller_address == null_address and new_bounty.fulfiller_address != null_address:
-        event_name = 'new_fulfillment'
+        event_name = 'work_submitted'
     elif old_bounty.is_open and not new_bounty.is_open:
         if new_bounty.status == 'cancelled':
             event_name = 'killed_bounty'
         else:
-            event_name = 'approved_claim'
+            event_name = 'work_done'
     elif old_bounty.fulfiller_address != null_address and new_bounty.fulfiller_address == null_address:
         event_name = 'rejected_claim'
     else:

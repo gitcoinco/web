@@ -64,6 +64,7 @@ def send_mail(from_email, _to_email, subject, body, html=False, from_name="Gitco
     response = sg.client.mail.send.post(request_body=mail.get())
     return response
 
+
 def tip_email(tip, to_emails, is_new):
     if not tip or not tip.url or not tip.amount or not tip.tokenName:
         return
@@ -105,15 +106,15 @@ def weekly_roundup(to_emails=[]):
             send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
 
 
-def new_bounty_claim(bounty, to_emails=[]):
+def new_work_submission(bounty, to_emails=[]):
     if not bounty or not bounty.value_in_usdt:
         return
 
-    subject = "✉️ New Fulfillment Inside for {} ✉️".format(bounty.title_or_desc)
+    subject = "✉️ New Work Submission Inside for {} ✉️".format(bounty.title_or_desc)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
-        html, text = render_new_bounty_claim(to_email, bounty)
+        html, text = render_new_work_submission(to_email, bounty)
 
         if not should_suppress_notification_email(to_email):
             send_mail(from_email, to_email, subject, text, html)
@@ -123,7 +124,7 @@ def new_bounty_rejection(bounty, to_emails=[]):
     if not bounty or not bounty.value_in_usdt:
         return
 
-    subject = "😕 Fulfillment Rejected for {} 😕".format(bounty.title_or_desc)
+    subject = "😕 Work Submission Rejected for {} 😕".format(bounty.title_or_desc)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL

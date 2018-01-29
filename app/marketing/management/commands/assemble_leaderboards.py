@@ -62,7 +62,7 @@ def add_element(key, username, amount):
 def sum_bounties(b, usernames):
     for username in usernames:
         
-        if b.idx_status == 'fulfilled':
+        if b.idx_status == 'submitted':
             add_element('all_fulfilled', username, b._val_usd_db)
             if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
                 add_element('all_payers', username, b._val_usd_db)

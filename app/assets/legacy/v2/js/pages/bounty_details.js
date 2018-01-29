@@ -70,7 +70,7 @@ var heads = {
     'avatar_url': 'Issue',
     'value_in_token': 'Issue Funding Info',
     'bounty_owner_address': 'Funder',
-    'fulfiller_address': 'Claimee',
+    'fulfiller_address': 'Submitter',
     'experience_level': 'Meta',
 }
 var callbacks = {
@@ -86,7 +86,7 @@ var callbacks = {
         if(ui_status=='open'){
             ui_status = '<span style="color: #47913e;">active</span>';
         }
-        if(ui_status=='claimed'){
+        if(ui_status=='started'){
             ui_status = '<span style="color: #3e00ff;">claimed</span>';
         }
         return [ 'status', ui_status];
@@ -373,25 +373,25 @@ window.addEventListener('load', function() {
                         actions.push(entry);
                     }
                     var enabled = !isBountyOwner(result);
-                    if(result['status']=='open' || result['status']=='claimed' ){
+                    if(result['status']=='open' || result['status']=='started' ){
 
                         var interestEntry = {
                             href: is_interested ? '/uninterested' : '/interested',
-                            text: is_interested ? 'Unclaim Work' : 'Claim Work',
+                            text: is_interested ? 'Stop Work' : 'Start Work',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Claim Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.  Please leave a comment for the bounty submitter to let them know you are interested in workwith with them after you claim work' : 'Can only be performed if you are not the funder.',
+                            title: enabled ? 'Start Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.  Please leave a comment for the bounty submitter to let them know you are interested in workwith with them after you start work' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(interestEntry);
 
                         var entry = {
-                            href: '/legacy/funding/claim?source='+result['github_url'],
-                            text: 'Fulfill Work',
+                            href: '/legacy/funding/fulfill?source='+result['github_url'],
+                            text: 'Submit Work',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Use Fulfill Work when you FINISH work on a bounty.   Use Claim Work when you START work.' : 'Can only be performed if you are not the funder.',
+                            title: enabled ? 'Use Submit Work when you FINISH work on a bounty.   Use Claim Work when you START work.' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(entry);
                     }
@@ -409,11 +409,11 @@ window.addEventListener('load', function() {
                         }
                         actions.push(entry);
                     }
-                    if(result['status']=='claimed' ){
+                    if(result['status']=='started' ){
                         var enabled = isBountyOwner(result);
                         var entry = {
                             href: '/legacy/funding/process?source='+result['github_url'],
-                            text: 'Accept/Reject Issue',
+                            text: 'Accept/Reject Submission',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
