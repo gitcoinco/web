@@ -226,6 +226,8 @@ try:
             'access_token': ROLLBAR_SERVER_TOKEN,
             'environment': ENV,
             'root': BASE_DIR,
+            'patch_debugview': False,
+            'branch': 'master',
         }
         MIDDLEWARE.append('rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
 except ImportError:
