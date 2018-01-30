@@ -19,8 +19,8 @@
 from __future__ import unicode_literals
 
 import logging
-from urllib.parse import urlsplit
 
+import requests
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import JSONField
@@ -28,15 +28,16 @@ from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
+from rest_framework import serializers
+from urllib.parse import urlsplit
 
-import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import convert_amount
 from github.utils import _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, org_name
 from rest_framework import serializers
-
 from .signals import m2m_changed_interested
+from web3 import Web3
 
 logger = logging.getLogger(__name__)
 
@@ -865,3 +866,29 @@ class UserAction(SuperModel):
 
     def __str__(self):
         return "{} by {} at {}".format(self.action, self.profile, self.created_on)
+
+
+class CoinRedemption(SuperModel):
+    shortcode = models.CharField(max_length=255, default='')
+    url = models.URLField(null=True)
+    network = models.CharField(max_length=255, default='')
+    token_name = models.CharField(max_length=255)
+    contract_address = models.CharField(max_length=255)
+    amount = models.IntegerField(default=1)
+    expires_date = models.DateTimeField()
+
+
+@receiver(pre_save, sender=CoinRedemption, dispatch_uid="to_checksum_address")
+def to_checksum_address(sender, instance, **kwargs):
+
+    if instance.contract_address:
+        instance.contract_address = Web3.toChecksumAddress(instance.contract_address)
+        print(instance.contract_address)
+
+
+class CoinRedemptionRequest(SuperModel):
+    coin_redemption = models.OneToOneField(CoinRedemption, blank=False, on_delete=models.CASCADE)
+    ip = models.GenericIPAddressField(protocol='IPv4')
+    txid = models.CharField(max_length=255, default='')
+    txaddress = models.CharField(max_length=255)
+    sent_on = models.DateTimeField(null=True)

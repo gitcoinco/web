@@ -77,7 +77,7 @@ urlpatterns = [
     url(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
     url(r'^gas/?', dashboard.views.gas, name='gas'),
-    url(r'^coin/redeem/?', dashboard.views.redeem_coin, name='redeem'),
+    url(r'^coin/redeem/(.*)/?', dashboard.views.redeem_coin, name='redeem'),
 
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),

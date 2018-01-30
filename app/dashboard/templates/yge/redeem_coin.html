@@ -11,13 +11,11 @@
 <script src="/static/yge/redeem_coin.js"></script>
 <script src="/static/yge/youvegoteth/confetti.js"></script>
 <script src="/static/yge/youvegoteth/web3alert.js"></script>
-<script src="/static/yge/lightwallet.min.js"></script>
 {% endblock %}
 <!-- Main -->
 
 {% block 'world' %}
-    <canvas id="world" style="position:absolute; top:0px; left: 0px;">
-    </canvas>
+    <canvas id="world" style="position:absolute; top:0; left: 0;"></canvas>
 {% endblock %}
 
 {% block 'main' %}
@@ -29,6 +27,7 @@
             </a>
         </span>
     </header>
+
     <div id="loading">
         <h1>Loading</h1>
         <img src="/static/yge/images/loading.gif" style="max-width: 70px; max-height: 70px;">
@@ -46,30 +45,35 @@
 
     </div>
     <div id="send_eth" style="display:none;">
-        <h1 id="oneh1">You've got COLO(s)!</h1>
-
-        <div>
-            <input type="hidden" placeholder="idx_address" id="idx_address" value="">
-        </div>
-        <div>
-            <input type="hidden" placeholder="private_key" id="private_key" value="">
-        </div>
+        <h1 id="oneh1">You've got 1 COLO!</h1>
         <div>
             Enter a forwarding address
             <br>
-            <input type="text" placeholder="forwarding_address" id="forwarding_address" value="0x0">
+            <input type="text" placeholder="0x0" id="forwarding_address">
         </div>
         <div>
             <br>
-            <a href="#" id="receive" class="button">Claim 🙌</a>
+            <a href="javascript:void(0)" id="redeem" class="button" onclick="redeemCoin()">Claim 🙌</a>
             <br>
         </div>
     </div>
+
     <div id="send_eth_done" style="display:none;">
         <h1>Congrats!</h1>
-        <p>You've received a colorodo coin via transaction <span id="trans_id"></span>.</p>
+        <p>You've redeemed 1 COLO.<br /><span id="colo_txid"></span>.</p>
     </div>
 
+    {% if coin_status %}
+        <script type="text/javascript">
+            var coin_status = '{{ coin_status }}';
+        </script>
+    {% endif %}
+
+    {% if colo_txid %}
+        <script type="text/javascript">
+            var colo_txid = '{{ colo_txid }}';
+        </script>
+    {% endif %}
 </section>
 
 {% endblock %}
