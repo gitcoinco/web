@@ -83,8 +83,6 @@ class Bounty(SuperModel):
         ('Months', 'Months'),
         ('Unknown', 'Unknown'),
     ]
-    # TODO:  claimee == fulfiller for now.  Didn't change the database model because the names
-    # TODO   are used everywhere in the application.  Eventually we might want to standardize this.
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
     web3_created = models.DateTimeField()
@@ -100,15 +98,11 @@ class Bounty(SuperModel):
     bounty_owner_email = models.CharField(max_length=255, blank=True)
     bounty_owner_github_username = models.CharField(max_length=255, blank=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
-    fulfiller_address = models.CharField(max_length=50)
-    fulfiller_email = models.CharField(max_length=255, blank=True)
-    fulfiller_github_username = models.CharField(max_length=255, blank=True)
-    fulfiller_name = models.CharField(max_length=255, blank=True)
+    fulfillments = JSONField(default={})
     is_open = models.BooleanField(help_text='Whether the bounty is still open for fulfillments.')
     expires_date = models.DateTimeField()
     raw_data = JSONField()
     metadata = JSONField(default={})
-    fulfiller_metadata = JSONField(default={}, blank=True)
     current_bounty = models.BooleanField(default=False,
                                          help_text='Whether this bounty is the most current revision one or not')
     _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=50)
