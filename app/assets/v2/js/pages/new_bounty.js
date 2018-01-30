@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 load_tokens();
 var setUsdAmount= function (event) {
     var amount  = $('input[name=amount]').val();
@@ -252,7 +250,7 @@ $(document).ready(function(){
                 {                   // {from: x, to: y}
                     from :account,
                     value: eth_amount,
-                    gasPrice: web3.toHex($("#gasPrice").val()) * 10**9,
+                    gasPrice: web3.toHex($("#gasPrice").val()) * Math.pow( 10, 9 ),
                 },
                 web3Callback        // callback for web3
             );

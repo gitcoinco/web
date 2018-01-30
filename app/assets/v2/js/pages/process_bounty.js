@@ -109,7 +109,7 @@ window.onload = function(){
                     // the latest one, which will match up with what the database has.
                     bounty.getNumFulfillments(bountyId, function (error, result) {
                         var fulfillmentId = result - 1;
-                        bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice:web3.toHex($("#gasPrice").val()) * 10**9}, final_callback);
+                        bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice:web3.toHex($("#gasPrice").val()) * Math.pow( 10, 9 )}, final_callback);
                     });
                 }
             };
