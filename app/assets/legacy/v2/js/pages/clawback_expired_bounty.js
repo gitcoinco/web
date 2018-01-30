@@ -1,4 +1,3 @@
-/* eslint-disable */
 window.onload = function(){
     //a little time for web3 injection
     setTimeout(function(){
@@ -15,7 +14,7 @@ window.onload = function(){
             var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
             $("#gasLimit").addClass('loading');
             bounty.clawbackExpiredBounty.estimateGas(
-                issueURL, 
+                issueURL,
                 function(errors,result){
                     $("#gasLimit").removeClass('loading');
                     var is_issue_taken = typeof result == 'undefined' || result > 403207;
@@ -96,7 +95,7 @@ window.onload = function(){
                         var errormsg = undefined;
                         if(bountyAmount == 0 || open == false || initialized == false){
                             errormsg = "No active funded issue found at this address.  Are you sure this is an active funded issue?";
-                        } 
+                        }
                         if(fromAddress != web3.eth.coinbase){
                             errormsg = "Only the address that submitted this funded issue may submit a clawback.";
                         }
@@ -136,17 +135,17 @@ window.onload = function(){
                             _alert({ message: "This issue cannot be clawed back.  Please leave a comment <a href=https://github.com/gitcoinco/web/issues/169>here</a> if you need help." });
                             mixpanel.track("Claim Bounty Error", {step: 'estimateGas', error: errors});
                             unloading_button($('#submitBounty'));
-                            return;                            
+                            return;
                         }
                         var success_callback = function(gas, gasLimit, final_callback){
                             var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-                            bounty.clawbackExpiredBounty.sendTransaction(issueURL, 
+                            bounty.clawbackExpiredBounty.sendTransaction(issueURL,
                                 {
                                     from : account,
-                                    gas:web3.toHex(gas), 
-                                    gasLimit: web3.toHex(gasLimit), 
-                                    gasPrice:web3.toHex($("#gasPrice").val() * 10**9), 
-                                }, 
+                                    gas:web3.toHex(gas),
+                                    gasLimit: web3.toHex(gasLimit),
+                                    gasPrice:web3.toHex($("#gasPrice").val() * 10**9),
+                                },
                             final_callback);
                         };
                         estimateGas(issueURL, success_callback, failure_calllback, final_callback);

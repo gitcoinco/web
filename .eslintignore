@@ -19,3 +19,6 @@ app/assets/v2/js/pages/kill_bounty.js
 app/assets/v2/js/pages/new_bounty.js
 app/assets/v2/js/pages/shared_bounty_mutation_estimate_gas.js
 app/assets/v2/js/pages/process_bounty.js
+
+app/assets/legacy/v2/js/pages/claim_bounty.js
+app/assets/legacy/v2/js/pages/clawback_expired_bounty.js
