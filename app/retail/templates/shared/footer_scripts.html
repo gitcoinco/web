@@ -17,8 +17,10 @@
 {% endcomment %}
     <script src="/static/v2/js/jquery.js"></script>
     <script src="/static/v2/js/jquery.cookie.js"></script>
-    <script src="/static/v2/js/jquery-ui.js"></script>
-    <script src="/static/v2/js/tooltip.js"></script>
+    {% if not slim %}
+        <script src="/static/v2/js/jquery-ui.js"></script>
+        <script src="/static/v2/js/tooltip.js"></script>
+    {% endif %}
     <script src="/static/v2/js/jquery.modal.min.js"></script>
     <script src="/static/v2/js/jquery.select2.min.js"></script>
     <script src="/static/v2/js/jsrender.js"></script>
