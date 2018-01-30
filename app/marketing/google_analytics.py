@@ -11,6 +11,9 @@ AUTH_JSON = settings.GOOGLE_ANALYTICS_AUTH_JSON
 
 
 def initialize_analyticsreporting():
+    import logging
+
+    logging.getLogger('googleapicliet.discovery_cache').setLevel(logging.ERROR)
     """Initializes an Analytics Reporting API V4 service object.
 
     Returns:

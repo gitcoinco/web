@@ -32,3 +32,4 @@ cytoolz==0.9.0
 boto==2.48.0
 rollbar==0.13.17
 awscli
+google-api-python-client

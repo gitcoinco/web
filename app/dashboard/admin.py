@@ -22,7 +22,14 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import Bounty, BountySyncRequest, Profile, Subscription, Tip
+from .models import (
+    Bounty,
+    BountySyncRequest,
+    Profile,
+    Subscription,
+    Tip,
+    UserAction,
+    )
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -63,6 +70,7 @@ class Bounty_Admin(admin.ModelAdmin):
 
 
 admin.site.register(Subscription, GeneralAdmin)
+admin.site.register(UserAction, GeneralAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Bounty, Bounty_Admin)
 admin.site.register(BountySyncRequest, GeneralAdmin)
