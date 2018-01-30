@@ -233,18 +233,18 @@ class Bounty(SuperModel):
         else:
             try:
                 if self.is_open is False:
-                    if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.fulfiller_address == '0x0000000000000000000000000000000000000000':
+                    if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.num_fulfillments == 0:
                         return 'expired'
                     if self.accepted:
                         return 'done'
                     # If its not expired or done, it must be cancelled.
                     return 'cancelled'
-                if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
+                if self.num_fulfillments == 0:
                     if len(self.interested.all()) > 0:
                         return 'started'
                     else:
                         return 'open'
-                if self.fulfiller_address != '0x0000000000000000000000000000000000000000':
+                if self.num_fulfillments != 0:
                     return 'submitted'
                 return 'unknown'
             except Exception as e:
