@@ -34,7 +34,7 @@ from dashboard.helpers import normalizeURL, process_bounty_changes, process_boun
 from dashboard.models import Bounty, BountySyncRequest, Interest, Profile, ProfileSerializer, Subscription, Tip
 from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
-from github.utils import get_auth_url, get_github_emails, is_github_token_valid
+from github.utils import get_auth_url, get_github_emails, get_github_primary_email, is_github_token_valid
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -262,6 +262,7 @@ def send_tip_2(request):
     """
     from_username = request.session.get('handle', '')
     primary_from_email = request.session.get('email', '')
+    access_token = request.session.get('access_token')
     to_emails = []
 
     if request.body:
@@ -275,16 +276,21 @@ def send_tip_2(request):
         to_username = params['username'].lstrip('@')
         try:
             to_profile = Profile.objects.get(handle__iexact=to_username)
+            if to_profile.email:
+                to_emails.append(to_profile.email)
             if to_profile.github_access_token:
                 to_emails = get_github_emails(to_profile.github_access_token)
         except Profile.DoesNotExist:
-            to_profile = None
+            pass
 
-        if to_profile and to_profile.email:
-            to_emails.append(to_profile.email)
-
-        if params['email']:
+        if params.get('email'):
             to_emails.append(params['email'])
+
+        # If no primary email in session, try the POST data. If none, fetch from GH.
+        if params.get('fromEmail'):
+            primary_from_email = params['fromEmail']
+        elif access_token and not primary_from_email:
+            primary_from_email = get_github_primary_email(access_token)
 
         to_emails = list(set(to_emails))
         expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
