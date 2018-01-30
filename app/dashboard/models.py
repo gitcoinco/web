@@ -440,10 +440,11 @@ class Tip(SuperModel):
 
 @receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
 def normalize_usernames(sender, instance, **kwargs):
-    if instance.fulfiller_github_username:
-        instance.fulfiller_github_username = instance.fulfiller_github_username.replace("@", '')
-    if instance.bounty_owner_github_username:
-        instance.bounty_owner_github_username = instance.bounty_owner_github_username.replace("@", '')
+    pass
+    # if instance.fulfiller_github_username:
+    #     instance.fulfiller_github_username = instance.fulfiller_github_username.replace("@", '')
+    # if instance.bounty_owner_github_username:
+    #     instance.bounty_owner_github_username = instance.bounty_owner_github_username.replace("@", '')
 
 
 # method for updating
