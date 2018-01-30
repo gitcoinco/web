@@ -287,7 +287,7 @@ def send_tip_2(request):
         )
         # notifications
         maybe_market_tip_to_github(tip)
-        maybe_market_tip_to_slack(tip, 'new_tip', tip.txid)
+        maybe_market_tip_to_slack(tip, 'new_tip')
         maybe_market_tip_to_email(tip, emails)
         if not emails:
             response['status'] = 'error'
