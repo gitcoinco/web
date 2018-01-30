@@ -1,4 +1,3 @@
-/* eslint-disable */
 //helper functions
 var sidebar_keys = ['experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'idx_status', 'network'];
 

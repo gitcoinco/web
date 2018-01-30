@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 var _truthy = function(val){
     if(!val){
         return false;
@@ -197,7 +195,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
     if(typeof web3 == 'undefined'){
         return false;
     }
-    
+
     console.log("checking this issue for updates:");
     console.log(issueURL);
     //setup callbacks
