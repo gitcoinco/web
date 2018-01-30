@@ -33,7 +33,7 @@ class Command(BaseCommand):
     help = 'lets a user know that they expressed interest in an issue and kicks them to do something about it'
 
     def handle(self, *args, **options):
-        num_days_back_to_warn = 5
+        num_days_back_to_warn = 3
         num_days_back_to_delete_interest = 7
 
         days = [i * 3 for i in range(1, 15)]
