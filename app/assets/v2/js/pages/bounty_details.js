@@ -58,9 +58,10 @@ var rows = [
     'bounty_owner_email',
     'issue_description',
     'bounty_owner_github_username',
-    'fulfiller_address',
-    'fulfiller_github_username',
-    'fulfiller_email',
+    // 'fulfiller_address',
+    // 'fulfiller_github_username',
+    // 'fulfiller_email',
+    'fulfillments',
     'experience_level',
     'project_length',
     'bounty_type',
@@ -149,7 +150,9 @@ var callbacks = {
     'project_length': unknown_if_empty,
     'bounty_type': unknown_if_empty,
     'fulfiller_email': function(key, val, result){
-        if(!_truthy(result['fulfiller_address'])){
+        if(!_truthy(result['fulfillments'])){
+            var fulfiller = JSON.parse(result['fulfiller']);
+
             $("#fulfiller").addClass('hidden');
         }
         return address_ize(key, val, result);
@@ -348,21 +351,24 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                                             // Just get latest fullfillment data
                                             // TODO:  Add support for multilple fulfillments
                                             // i = fulfillmentId
-                                            for (let i = 0; i < numFulfillments; i++) {
-                                                bounty.getFulfillment(bountyId, i, function(error, fulfillment) {
+                                            var getFulfillmentData =  function (fulfillmentId, numFulfillments) {
+                                                bounty.getFulfillment(bountyId, fulfillmentId, function(error, fulfillment) {
                                                     ipfs.catJson(fulfillment[2], function(error, fulfillmentData) {
                                                         allFulfillmentData = fulfillmentData;
                                                         allFulfillmentData['accepted'] = fulfillment[0];
-                                                        allFulfillmentData['id'] = i;
+                                                        allFulfillmentData['id'] = fulfillmentId;
 
                                                         // Push the fulfillment onto the array
                                                         allBountyData.fulfillments.fulfillments.push(allFulfillmentData);
-                                                        if (i == numFulfillments - 1) {
+                                                        if (fulfillmentId == numFulfillments - 1) {
                                                             sync_web3(issueURL, JSON.stringify(allBountyData), changes_synced_callback);
                                                             console.log('success syncing with web3');
                                                         }
                                                     })
                                                 });
+                                            };
+                                            for (let i = 0; i < numFulfillments; i++) {
+                                                getFulfillmentData(i, numFulfillments);
                                             };
                                         } else {
                                             sync_web3(issueURL, JSON.stringify(allBountyData), changes_synced_callback);
@@ -533,7 +539,7 @@ window.addEventListener('load', function() {
                     }
 
                     var enabled = !isBountyOwner(result);
-                    if(result['status']=='open' || result['status']=='started' ){
+                    if(result['status']=='open' || result['status']=='started' || result['status']=='submitted' ){
                         var interestEntry = {
                             href: is_interested ? '/uninterested' : '/interested',
                             text: is_interested ? 'Stop Work' : 'Start Work',
