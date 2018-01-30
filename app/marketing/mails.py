@@ -69,14 +69,16 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     response = sg.client.mail.send.post(request_body=mail.get())
     return response
 
+
 def tip_email(tip, to_emails, is_new):
+    ROUND_DECIMALS = 5
     if not tip or not tip.url or not tip.amount or not tip.tokenName:
         return
 
     warning = '' if tip.network == 'mainnet' else "({})".format(tip.network)
-    subject = "⚡️ New Tip Worth {} {} {}".format(round(tip.amount, 3), warning, tip.tokenName)
+    subject = "⚡️ New Tip Worth {} {} {}".format(round(tip.amount, ROUND_DECIMALS), warning, tip.tokenName)
     if not is_new:
-        subject = "🕐 Tip Worth {} {} {} Expiring Soon".format(round(tip.amount, 3), warning, tip.tokenName)
+        subject = "🕐 Tip Worth {} {} {} Expiring Soon".format(round(tip.amount, ROUND_DECIMALS), warning, tip.tokenName)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL

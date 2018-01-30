@@ -51,7 +51,7 @@ window.onload = function () {
                                 token = tokenDetails.name;
                                 decimals = tokenDetails.decimals;
                             }
-                            var round_to = 10**3;
+                            var round_to = 10**5;
                             amount = Math.round( round_to * amount / (10**decimals)) / round_to;
                             var _text = "You've Received "+amount+" "+getWarning()+" "+token+"!";
                             $("zeroh1").innerHTML = _text;

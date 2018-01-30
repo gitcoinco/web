@@ -41,7 +41,7 @@ def render_tip_email(to_email, tip, is_new):
     warning = tip.network if tip.network != 'mainnet' else ""
     params = {
         'link': tip.url,
-        'amount': round(tip.amount, 2),
+        'amount': round(tip.amount, 5),
         'tokenName': tip.tokenName,
         'comments_priv': tip.comments_priv,
         'comments_public': tip.comments_public,
