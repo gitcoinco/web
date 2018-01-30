@@ -22,9 +22,9 @@ from django.utils import timezone
 import sendgrid
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from retail.emails import (
-    render_bounty_expire_warning, render_match_email, render_new_bounty, render_new_bounty_acceptance,
-    render_new_work_submission, render_new_bounty_rejection, render_new_bounty_roundup, render_tip_email,
-    render_bounty_startwork_expire_warning
+    render_bounty_expire_warning, render_bounty_startwork_expire_warning, render_match_email, render_new_bounty,
+    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
+    render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 

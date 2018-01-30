@@ -25,7 +25,7 @@ from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.db.models.signals import m2m_changed, pre_save, post_save, post_delete
+from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 

@@ -16,15 +16,14 @@
 
 '''
 
-from django.core.management.base import BaseCommand
-from django.utils import timezone
-from django.conf import settings
 from datetime import datetime
 
-from dashboard.models import Interest, Bounty
+from django.conf import settings
+from django.core.management.base import BaseCommand
+from django.utils import timezone
 
-from github.utils import get_issue_comments, org_name, repo_name, issue_number
-
+from dashboard.models import Bounty, Interest
+from github.utils import get_issue_comments, issue_number, org_name, repo_name
 from marketing.mails import bounty_startwork_expire_warning, bounty_startwork_expired
 
 
@@ -81,4 +80,3 @@ class Command(BaseCommand):
 
                     except Exception as e:
                         print(e)
-
