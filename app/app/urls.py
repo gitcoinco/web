@@ -69,7 +69,6 @@ urlpatterns = [
     url(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
     url(r'^gas/?', dashboard.views.gas, name='gas'),
-
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
     url(r'^sync/get_issue_title?', dashboard.helpers.title, name='helpers_title'),
@@ -78,7 +77,6 @@ urlpatterns = [
     url(r'^sync/get_issue_keywords?', dashboard.helpers.keywords, name='helpers_keywords'),
     url(r'^sync/search_save?', dashboard.views.save_search, name='save_search'),
     # brochureware views
-    url(r'^community/?', retail.views.community, name='community'),
     url(r'^about/?', retail.views.about, name='about'),
     url(r'^mission/?', retail.views.mission, name='mission'),
     url(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),
@@ -93,9 +91,10 @@ urlpatterns = [
     url(r'^extension/chrome?', retail.views.browser_extension_chrome, name='browser_extension_chrome'),
     url(r'^extension/firefox?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
+    # basic redirect retail views
     url(r'^press/?', retail.views.presskit, name='press'),
     url(r'^presskit/?', retail.views.presskit, name='presskit'),
-
+    url(r'^community/?', retail.views.community, name='community'),
     url(r'^slack/?', retail.views.slack, name='slack'),
     url(r'^iosfeedback/?', retail.views.iosfeedback, name='iosfeedback'),
     url(r'^ios/?', retail.views.ios, name='ios'),
@@ -115,7 +114,6 @@ urlpatterns = [
     url(r'^medium/?', retail.views.medium, name='medium'),
     url(r'^github/?', retail.views.github, name='github'),
     url(r'^youtube/?', retail.views.youtube, name='youtube'),
-    url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
 
     # link shortener
     url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),
@@ -142,14 +140,15 @@ urlpatterns = [
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
     url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),
     url(r'^_administration/stats$', marketing.views.stats, name='stats'),
-    # Sitemap
+    # for robots
+    url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     # Github Integration
     path('_github/', include('github.urls', namespace='github')),
     # Interests
-    path('bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
-    path('bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
-    path('bounty/<int:bounty_id>/interest/', dashboard.views.interested_profiles, name='interested-profiles'),
+    path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
+    path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
+    path('actions/bounty/<int:bounty_id>/interest/', dashboard.views.interested_profiles, name='interested-profiles'),
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
 ]
