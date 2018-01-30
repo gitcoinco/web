@@ -250,9 +250,19 @@ def receive_tip(request):
 @csrf_exempt
 @ratelimit(key='ip', rate='1/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_2(request):
-    """Handle the second stage of sending a tip."""
-    username = request.session.get('handle')
-    primary_email = request.session.get('email', '')
+    """Handle the second stage of sending a tip.
+
+    TODO:
+        * Convert this view-based logic to a django form.
+
+    Returns:
+        JsonResponse: If submitting tip, return response with success state.
+        TemplateResponse: Render the submission form.
+
+    """
+    from_username = request.session.get('handle', '')
+    primary_from_email = request.session.get('email', '')
+    to_emails = []
 
     if request.body:
         # http response
@@ -262,14 +272,26 @@ def send_tip_2(request):
         }
         params = json.loads(request.body)
 
-        username = username or params['username']
-        access_token = request.session.get('access_token')
-        emails = get_github_emails(access_token) if access_token else [primary_email]
+        to_username = params['username'].lstrip('@')
+        try:
+            to_profile = Profile.objects.get(handle__iexact=to_username)
+            if to_profile.github_access_token:
+                to_emails = get_github_emails(to_profile.github_access_token)
+        except Profile.DoesNotExist:
+            to_profile = None
+
+        if to_profile and to_profile.email:
+            to_emails.append(to_profile.email)
+
+        if params['email']:
+            to_emails.append(params['email'])
+
+        to_emails = list(set(to_emails))
         expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
 
         # db mutations
         tip = Tip.objects.create(
-            emails=emails,
+            emails=to_emails,
             url=params['url'],
             tokenName=params['tokenName'],
             amount=params['amount'],
@@ -280,7 +302,7 @@ def send_tip_2(request):
             github_url=params['github_url'],
             from_name=params['from_name'],
             from_email=params['from_email'],
-            username=username,
+            username=from_username,
             network=params['network'],
             tokenAddress=params['tokenAddress'],
             txid=params['txid'],
@@ -288,8 +310,8 @@ def send_tip_2(request):
         # notifications
         maybe_market_tip_to_github(tip)
         maybe_market_tip_to_slack(tip, 'new_tip')
-        maybe_market_tip_to_email(tip, emails)
-        if not emails:
+        maybe_market_tip_to_email(tip, to_emails)
+        if not to_emails:
             response['status'] = 'error'
             response['message'] = 'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.'
 
@@ -300,8 +322,8 @@ def send_tip_2(request):
         'class': 'send2',
         'title': 'Send Tip',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-        'from_email': primary_email,
-        'from_handle': username
+        'from_email': primary_from_email,
+        'from_handle': from_username,
     }
 
     return TemplateResponse(request, 'yge/send2.html', params)
