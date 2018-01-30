@@ -182,9 +182,7 @@ var add_interest = function (bounty_pk) {
         localStorage.interests = localStorage.interests + "," + bounty_pk;
         result = sanitizeAPIResults(result);
         if (result.success) {
-            var tmpl = $.templates("#interested");
-            var html = tmpl.render(result.profile);
-            $("#interest_list").append(html);
+            update_interest_list(bounty_pk);
             return true;
         }
         return false;
