@@ -19,6 +19,11 @@
 }
 
 @font-face {
+  font-family: "OpenSans Light";
+  src: url('/static/v2/fonts/OpenSans/Light.ttf');
+}
+
+@font-face {
   font-family: "Muli";
   src: url('/static/v2/fonts/Muli/Muli.ttf');
 }

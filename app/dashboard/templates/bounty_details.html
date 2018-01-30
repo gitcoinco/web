@@ -20,7 +20,7 @@
 
         <div class="col body">
             <div class="container-fluid" id="bounty_detail">
-            {% include 'shared/bounty_def.html' %}
+              {% include 'shared/newsletter.html' %}
             </div>
 
             <div class="alert info transaction-status" style="display:none;">
@@ -63,7 +63,7 @@
                     </div>
                     <span class="boldLabel"><span id="web3_created"></span></span>
                     <div id="left_actions"></div>
-                    <a class="font-smaller-2" style="color: #212529;" href="{% url 'explorer' %}">&lt; Issue Explorer</a>
+                    <a class="issue-nav-link" href="{% url 'explorer' %}">&lt; Issue Explorer</a>
                 </div>
                     <div class="col-8 right_details">
                         <span title="{%include "shared/status_tooltip.html" %}" class=boldLabel>Status <img style="max-width: 15px; " src="{% static "v2/images/icons/info.png" %}">:</span> <span  id="status">

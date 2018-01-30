@@ -1,0 +1,49 @@
+.bounty-heading {
+  font-family: "OpenSans SemiBold";
+  font-size: 16px;
+  margin-top: 1.5em;
+}
+
+.bounty_details #title,
+.bounty-subheading,
+.bounty-nav-link,
+.funding-amount,
+.status {
+  font-family: "OpenSans";
+}
+
+.bounty-subheading, .bounty-text {
+  font-size: 14px;
+}
+
+.issue-nav-link,
+.funding-amount,
+.status {
+  text-transform: uppercase;
+}
+
+.boldLabel,
+.bounty-text {
+  font-family: "OpenSans Light";
+}
+
+.status,
+.boldLabel,
+.funding-amount {
+  font-size: 12px;
+}
+
+.issue-nav-link {
+  font-size: 10px;
+  color: #212529;
+}
+
+.boldLabel {
+  text-transform: capitalize;
+}
+
+@media (max-width: 767px) {
+  .bounty_details #title {
+    font-size: 18px;
+  }
+}
