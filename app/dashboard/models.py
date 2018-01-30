@@ -761,4 +761,3 @@ class UserAction(SuperModel):
 
     def __str__(self):
         return "{} by {} at {}".format(self.action, self.profile, self.created_on)
-
