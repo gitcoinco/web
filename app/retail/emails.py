@@ -146,6 +146,34 @@ def render_bounty_expire_warning(to_email, bounty):
     return response_html, response_txt
 
 
+def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days):
+
+    params = {
+        'bounty': bounty,
+        'interest': interest,
+        'time_delta_days': time_delta_days,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/bounty_startwork_expire_warning.html", params))
+    response_txt = render_to_string("emails/bounty_startwork_expire_warning.txt", params)
+
+    return response_html, response_txt
+
+
+def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
+
+    params = {
+        'bounty': bounty,
+        'interest': interest,
+        'time_delta_days': time_delta_days,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/render_bounty_startwork_expired.html", params))
+    response_txt = render_to_string("emails/render_bounty_startwork_expired.txt", params)
+
+    return response_html, response_txt
+
+
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
 
@@ -266,6 +294,20 @@ def bounty_expire_warning(request):
     from dashboard.models import Bounty
 
     response_html, _ = render_bounty_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last())
+    return HttpResponse(response_html)
+
+@staff_member_required
+def start_work_expired(request):
+    from dashboard.models import Bounty, Interest
+
+    response_html, _ = render_bounty_startwork_expired(settings.CONTACT_EMAIL, Bounty.objects.all().last(), Interest.objects.all().last(), 5)
+    return HttpResponse(response_html)
+
+@staff_member_required
+def start_work_expire_warning(request):
+    from dashboard.models import Bounty, Interest
+
+    response_html, _ = render_bounty_startwork_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last(), Interest.objects.all().last(), 5)
     return HttpResponse(response_html)
 
 

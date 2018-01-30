@@ -24,6 +24,7 @@ from marketing.utils import get_or_save_email_subscriber, should_suppress_notifi
 from retail.emails import (
     render_bounty_expire_warning, render_match_email, render_new_bounty, render_new_bounty_acceptance,
     render_new_work_submission, render_new_bounty_rejection, render_new_bounty_roundup, render_tip_email,
+    render_bounty_startwork_expire_warning
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -198,3 +199,27 @@ def bounty_expire_warning(bounty, to_emails=None):
 
         if not should_suppress_notification_email(to_email):
             send_mail(from_email, to_email, subject, text, html)
+
+
+def bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days):
+    if not bounty or not bounty.value_in_usdt:
+        return
+
+    from_email = settings.CONTACT_EMAIL
+    html, text = render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
+    subject = "Are you still working on '{}' ? ".format(bounty.title_or_desc)
+
+    if not should_suppress_notification_email(to_email):
+        send_mail(from_email, to_email, subject, text, html)
+
+
+def bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
+    if not bounty or not bounty.value_in_usdt:
+        return
+
+    from_email = settings.CONTACT_EMAIL
+    html, text = render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
+    subject = "We've removed you from the task: '{}' ? ".format(bounty.title_or_desc)
+
+    if not should_suppress_notification_email(to_email):
+        send_mail(from_email, to_email, subject, text, html)

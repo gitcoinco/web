@@ -328,8 +328,9 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             num_fulfillments=fulfillments.get('total', 0),
             )
         new_bounty.fetch_issue_item()
-        for old_bounty in old_bounties:
-            for interested in old_bounty.interested.all():
+        if old_bounties.count() > 0: #pull the interested parties off the last old_bounty
+            last_bounty = old_bounties.order_by('-pk').first()
+            for interested in last_bounty.interested.all():
                 new_bounty.interested.add(interested)
         if not new_bounty.avatar_url:
             new_bounty.avatar_url = new_bounty.get_avatar_url()
