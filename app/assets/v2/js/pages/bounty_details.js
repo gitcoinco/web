@@ -315,6 +315,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         };
 
         // The object will be pushed onto allBountyData.fulfillments.fulfillments
+        // This is all data for one fulfillment
         var allFulfillmentData = {};
 
         // callFunctionWhenTransactionMined continue to be called, until the transaction receipt is found.
@@ -338,23 +339,28 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                                     allBountyData['bounty']['balance'] = parseInt(bountyResults[5], 10);
 
                                     bounty.getNumFulfillments(bountyId, function(error, numFulfillments) {
+                                        numFulfillments = parseInt(numFulfillments, 10);
                                         allBountyData['fulfillments']['total'] = numFulfillments;
                                         if (numFulfillments > 0) {
                                             // Just get latest fullfillment data
                                             // TODO:  Add support for multilple fulfillments
-                                            var fulfillmentId = numFulfillments - 1;
-                                            bounty.getFulfillment(bountyId, fulfillmentId, function(error, fulfillment) {
-                                                ipfs.catJson(fulfillment[2], function(error, fulfillmentData) {
-                                                    allFulfillmentData = fulfillmentData;
-                                                    allFulfillmentData['accepted'] = fulfillment[0];
+                                            // i = fulfillmentId
+                                            for (let i = 0; i < numFulfillments; i++) {
+                                                bounty.getFulfillment(bountyId, i, function(error, fulfillment) {
+                                                    ipfs.catJson(fulfillment[2], function(error, fulfillmentData) {
+                                                        allFulfillmentData = fulfillmentData;
+                                                        allFulfillmentData['accepted'] = fulfillment[0];
+                                                        allFulfillmentData['id'] = i;
 
-                                                    // Push the fulfillment onto the array
-                                                    allBountyData.fulfillments.fulfillments.push(allFulfillmentData);
-
-                                                    sync_web3(issueURL, JSON.stringify(allBountyData), changes_synced_callback);
-                                                    console.log('success syncing with web3');
-                                                })
-                                            });
+                                                        // Push the fulfillment onto the array
+                                                        allBountyData.fulfillments.fulfillments.push(allFulfillmentData);
+                                                        if (i == numFulfillments - 1) {
+                                                            sync_web3(issueURL, JSON.stringify(allBountyData), changes_synced_callback);
+                                                            console.log('success syncing with web3');
+                                                        }
+                                                    })
+                                                });
+                                            };
                                         } else {
                                             sync_web3(issueURL, JSON.stringify(allBountyData), changes_synced_callback);
                                             console.log('success syncing with web3');
