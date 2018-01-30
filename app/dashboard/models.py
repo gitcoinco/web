@@ -25,7 +25,7 @@ from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.db.models.signals import m2m_changed, pre_save
+from django.db.models.signals import m2m_changed, pre_save, post_save, post_delete
 from django.dispatch import receiver
 from django.utils import timezone
 
@@ -475,6 +475,15 @@ class Interest(models.Model):
     def __str__(self):
         """Define the string representation of an interested profile."""
         return self.profile.handle
+
+
+@receiver(post_save, sender=Interest, dispatch_uid="psave_interest")
+@receiver(post_delete, sender=Interest, dispatch_uid="pdel_interest")
+def psave_interest(sender, instance, **kwargs):
+    #when a new interest is saved, update the status on frontend
+    print("updating bounties")
+    for bounty in Bounty.objects.filter(interested=instance):
+        bounty.save()
 
 
 class Profile(SuperModel):
