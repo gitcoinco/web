@@ -59,11 +59,6 @@ class Bounty(SuperModel):
 
     """
 
-    class Meta:
-        """Define metadata associated with Bounty."""
-
-        verbose_name_plural = 'Bounties'
-
     BOUNTY_TYPES = [
         ('Bug', 'Bug'),
         ('Security', 'Security'),
@@ -129,6 +124,9 @@ class Bounty(SuperModel):
     objects = BountyQuerySet.as_manager()
 
     class Meta:
+        """Define metadata associated with Bounty."""
+
+        verbose_name_plural = 'Bounties'
         index_together = [
             ["network", "idx_status"],
         ]
