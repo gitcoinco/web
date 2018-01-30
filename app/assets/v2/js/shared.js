@@ -204,6 +204,9 @@ var update_interest_list = function (bounty_pk) {
         });
         var tmpl = $.templates("#interested");
         var html = tmpl.render(profiles);
+        if(profiles.length == 0){
+            html = "No one has started work on this issue yet.";
+        }
         $("#interest_list").html(html);
     });
     return profiles;

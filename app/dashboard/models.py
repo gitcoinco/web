@@ -100,15 +100,15 @@ class Bounty(SuperModel):
     bounty_owner_email = models.CharField(max_length=255, blank=True)
     bounty_owner_github_username = models.CharField(max_length=255, blank=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
-    claimeee_address = models.CharField(max_length=50)
-    claimee_email = models.CharField(max_length=255, blank=True)
-    claimee_github_username = models.CharField(max_length=255, blank=True)
-    claimee_name = models.CharField(max_length=255, blank=True)
+    fulfiller_address = models.CharField(max_length=50)
+    fulfiller_email = models.CharField(max_length=255, blank=True)
+    fulfiller_github_username = models.CharField(max_length=255, blank=True)
+    fulfiller_name = models.CharField(max_length=255, blank=True)
     is_open = models.BooleanField(help_text='Whether the bounty is still open for fulfillments.')
     expires_date = models.DateTimeField()
     raw_data = JSONField()
     metadata = JSONField(default={})
-    claimee_metadata = JSONField(default={}, blank=True)
+    fulfiller_metadata = JSONField(default={}, blank=True)
     current_bounty = models.BooleanField(default=False,
                                          help_text='Whether this bounty is the most current revision one or not')
     _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=50)
@@ -122,7 +122,7 @@ class Bounty(SuperModel):
     standard_bounties_id = models.IntegerField(default=0)
     num_fulfillments = models.IntegerField(default=0)
     balance = models.DecimalField(default=0, decimal_places=2, max_digits=50)
-    accepted = models.BooleanField(default=False, help_text='Whether the bounty has been accepted')
+    accepted = models.BooleanField(default=False, help_text='Whether the bounty has been done')
     interested = models.ManyToManyField('dashboard.Interest', blank=True)
     interested_comment = models.IntegerField(null=True, blank=True)
 
@@ -172,7 +172,7 @@ class Bounty(SuperModel):
             return None
 
     def is_hunter(self, handle):
-        target = self.claimee_github_username
+        target = self.fulfiller_github_username
         if not handle or not target:
             return False
         handle = handle.lower().replace('@', '')
@@ -223,31 +223,35 @@ class Bounty(SuperModel):
             # TODO: Remove following full deprecation of legacy bounties
             try:
                 if not self.is_open:
-                    if timezone.now() > self.expires_date and self.claimeee_address == '0x0000000000000000000000000000000000000000':
+                    if timezone.now() > self.expires_date and self.fulfiller_address == '0x0000000000000000000000000000000000000000':
                         return 'expired'
-                    return 'fulfilled'
-                if self.claimeee_address == '0x0000000000000000000000000000000000000000':
-                    return 'open'
-                if self.claimeee_address != '0x0000000000000000000000000000000000000000':
-                    return 'claimed'
+                    return 'done'
+                if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
+                    if len(self.interested.all()) > 0:
+                        return 'started'
+                    else:
+                        return 'open'
+                if self.fulfiller_address != '0x0000000000000000000000000000000000000000':
+                    return 'submitted'
                 return 'unknown'
             except Exception as e:
                 return 'unknown'
         else:
             try:
-                # if int(self.num_fulfillments) > 0:
-                #     return 'fulfilled'
                 if self.is_open is False:
-                    if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.claimeee_address == '0x0000000000000000000000000000000000000000':
+                    if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.fulfiller_address == '0x0000000000000000000000000000000000000000':
                         return 'expired'
                     if self.accepted:
-                        return 'accepted'
-                    # If its not expired or accepted, it must be dead.
-                    return 'dead'
-                if self.claimeee_address == '0x0000000000000000000000000000000000000000':
-                    return 'open'
-                if self.claimeee_address != '0x0000000000000000000000000000000000000000':
-                    return 'fulfilled'
+                        return 'done'
+                    # If its not expired or done, it must be cancelled.
+                    return 'cancelled'
+                if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
+                    if len(self.interested.all()) > 0:
+                        return 'started'
+                    else:
+                        return 'open'
+                if self.fulfiller_address != '0x0000000000000000000000000000000000000000':
+                    return 'submitted'
                 return 'unknown'
             except Exception as e:
                 logger.warning(e)
@@ -432,8 +436,8 @@ class Tip(SuperModel):
 
 @receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
 def normalize_usernames(sender, instance, **kwargs):
-    if instance.claimee_github_username:
-        instance.claimee_github_username = instance.claimee_github_username.replace("@", '')
+    if instance.fulfiller_github_username:
+        instance.fulfiller_github_username = instance.fulfiller_github_username.replace("@", '')
     if instance.bounty_owner_github_username:
         instance.bounty_owner_github_username = instance.bounty_owner_github_username.replace("@", '')
 
@@ -566,7 +570,7 @@ class Profile(SuperModel):
     @property
     def bounties(self):
         bounties = Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True)
-        bounties = bounties | Bounty.objects.filter(claimee_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(claimee_github_username__iexact="@" + self.handle, current_bounty=True)
+        bounties = bounties | Bounty.objects.filter(fulfiller_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(fulfiller_github_username__iexact="@" + self.handle, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(github_url__in=[url for url in self.tips.values_list('github_url', flat=True)], current_bounty=True)
         return bounties.order_by('-web3_created')
@@ -592,7 +596,7 @@ class Profile(SuperModel):
         include_gitcoin_users = len(_return) < limit_to_num
         if include_gitcoin_users:
             for b in self.bounties:
-                vals = [b.bounty_owner_github_username, b.claimee_github_username]
+                vals = [b.bounty_owner_github_username, b.fulfiller_github_username]
                 for val in vals:
                     if val:
                         _return.append(val.replace('@', ''))
@@ -619,21 +623,21 @@ class Profile(SuperModel):
         loyalty_rate = 0
         claimees = []
         total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_funder(self.handle)])
-        total_claimed = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
-        print(total_funded, total_claimed)
+        total_fulfilled = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
+        print(total_funded, total_fulfilled)
         role = 'newbie'
-        if total_funded > total_claimed:
+        if total_funded > total_fulfilled:
             role = 'funder'
-        elif total_funded < total_claimed:
+        elif total_funded < total_fulfilled:
             role = 'coder'
 
         for b in bounties:
-            if b.claimeee_address in claimees:
+            if b.fulfiller_address in claimees:
                 loyalty_rate += 1
-            claimees.append(b.claimeee_address)
+            claimees.append(b.fulfiller_address)
         success_rate = 0
         if bounties.count() > 0:
-            numer = bounties.filter(idx_status__in=['fulfilled', 'claimed']).count()
+            numer = bounties.filter(idx_status__in=['submitted', 'started']).count()
             denom = bounties.exclude(idx_status__in=['open']).count()
             success_rate = int(round(numer * 1.0 / denom, 2) * 100) if denom != 0 else 'N/A'
         if success_rate == 0:

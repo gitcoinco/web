@@ -1118,6 +1118,13 @@ body.bounty_details #title {
     border-color: black;
 }
 
+#interest_list{
+    margin-left: 0px;
+    padding-left: 0px;
+}
+#interest_list li{
+    list-style: none;
+}
 @media (max-width: 1350px) {
     .profile_details .bounties li div.details{
         width: 400px;

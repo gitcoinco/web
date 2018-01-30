@@ -37,17 +37,17 @@ def process_bounty_details(bountydetails, url, contract_address, network):
 
     #extract json
     metadata = None
-    claimee_metadata = None
+    fulfiller_metadata = None
     try:
         metadata = json.loads(bountydetails[8])
     except Exception as e:
         print(e)
         metadata = {}
     try:
-        claimee_metadata = json.loads(bountydetails[10])
+        fulfiller_metadata = json.loads(bountydetails[10])
     except Exception as e:
         print(e)
-        claimee_metadata = {}
+        fulfiller_metadata = {}
 
     #create new bounty (but only if things have changed)
     didChange = False
@@ -83,14 +83,14 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             bounty_owner_address=bountydetails[2],
             bounty_owner_email=metadata.get('notificationEmail', ''),
             bounty_owner_github_username=metadata.get('githubUsername', ''),
-            claimeee_address=bountydetails[3],
-            claimee_email=claimee_metadata.get('notificationEmail', ''),
-            claimee_github_username=claimee_metadata.get('githubUsername', ''),
+            fulfiller_address=bountydetails[3],
+            fulfiller_email=fulfiller_metadata.get('notificationEmail', ''),
+            fulfiller_github_username=fulfiller_metadata.get('githubUsername', ''),
             is_open=bountydetails[4],
             expires_date=timezone.datetime.fromtimestamp(bountydetails[9]),
             raw_data=bountydetails,
             metadata=metadata,
-            claimee_metadata=claimee_metadata,
+            fulfiller_metadata=fulfiller_metadata,
             current_bounty=True,
             contract_address=contract_address,
             network=network,
@@ -117,11 +117,11 @@ def process_bounty_changes(old_bounty, new_bounty, txid):
     null_address = '0x0000000000000000000000000000000000000000'
     if (old_bounty is None and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
         event_name = 'new_bounty'
-    elif old_bounty.claimeee_address == null_address and new_bounty.claimeee_address != null_address:
-        event_name = 'new_claim'
+    elif old_bounty.fulfiller_address == null_address and new_bounty.fulfiller_address != null_address:
+        event_name = 'work_submitted'
     elif old_bounty.is_open and not new_bounty.is_open:
-        event_name = 'approved_claim'
-    elif old_bounty.claimeee_address != null_address and new_bounty.claimeee_address == null_address:
+        event_name = 'work_done'
+    elif old_bounty.fulfiller_address != null_address and new_bounty.fulfiller_address == null_address:
         event_name = 'rejected_claim'
     else:
         event_name = 'unknown_event'

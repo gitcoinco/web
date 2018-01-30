@@ -65,7 +65,8 @@
                     <a class="font-smaller-2" style="color: #212529;" href="{% url 'explorer' %}">&lt; Issue Explorer</a>
                 </div>
                     <div class="col-8 right_details">
-                        <span class=boldLabel>Status:</span> <span title="Possible states: 1: Open, 2: Fulfilled, 3: Accepted, 4: Expired, 5: Dead" id="status"></span>
+                        <span title="{%include "shared/status_tooltip.html" %}" class=boldLabel>Status <img style="max-width: 15px; " src="/static/v2/images/icons/info.png">:</span> <span  id="status">
+                        </span>
 
                         <h4 id="title">
                         </h4>
@@ -93,18 +94,18 @@
                             Gitcoin Profile: <span id="bounty_owner_github_username"></span>
                             <br>
                         </div>
-                        <div id="claimee" style="width: 100%; display: block;">
+                        <div id="fulfiller" style="width: 100%; display: block;">
                             <br>
-                            <h5>Fulfiller Info</h5>
-                            ETH Address: <span id="claimeee_address"></span>
+                            <h5>Submitter Info</h5>
+                            ETH Address: <span id="fulfiller_address"></span>
                             <br>
-                            Email: <span id="claimee_email"></span>
+                            Email: <span id="fulfiller_email"></span>
                             <br>
-                            Gitcoin Profile: <span id="claimee_github_username"></span>
+                            Gitcoin Profile: <span id="fulfiller_github_username"></span>
 
                         </div>
                         <br>
-                        <h5>Claimees</h5>
+                        <h5>Started Work</h5>
                         <div>
                             <ul id="interest_list">
                             </ul>

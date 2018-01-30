@@ -358,7 +358,7 @@ def fulfill_bounty(request):
     """Fulfill a bounty."""
     params = {
         'issueURL': request.GET.get('source'),
-        'title': 'Fulfill Issue',
+        'title': 'Submit Work',
         'active': 'fulfill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
