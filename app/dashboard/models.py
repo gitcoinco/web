@@ -87,14 +87,14 @@ class Bounty(SuperModel):
     # TODO   are used everywhere in the application.  Eventually we might want to standardize this.
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
-    web3_created = models.DateTimeField()
+    web3_created = models.DateTimeField(db_index=True)
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
     token_address = models.CharField(max_length=50)
     bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES)
     project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS)
     experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS)
-    github_url = models.URLField()
+    github_url = models.URLField(db_index=True)
     github_comments = models.IntegerField(default=0)
     bounty_owner_address = models.CharField(max_length=50)
     bounty_owner_email = models.CharField(max_length=255, blank=True)
@@ -113,10 +113,10 @@ class Bounty(SuperModel):
                                          help_text='Whether this bounty is the most current revision one or not')
     _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     contract_address = models.CharField(max_length=50, default='')
-    network = models.CharField(max_length=255, blank=True)
+    network = models.CharField(max_length=255, blank=True, db_index=True)
     idx_experience_level = models.IntegerField(default=0, db_index=True)
     idx_project_length = models.IntegerField(default=0, db_index=True)
-    idx_status = models.CharField(max_length=50, default='')
+    idx_status = models.CharField(max_length=50, default='', db_index=True)
     avatar_url = models.CharField(max_length=255, default='')
     issue_description = models.TextField(default='', blank=True)
     standard_bounties_id = models.IntegerField(default=0)
@@ -127,6 +127,11 @@ class Bounty(SuperModel):
     interested_comment = models.IntegerField(null=True, blank=True)
 
     objects = BountyQuerySet.as_manager()
+
+    class Meta:
+        index_together = [
+            ["network", "idx_status"],
+        ]
 
     def __str__(self):
         return "{}{} {} {} {}".format("(CURRENT) " if self.current_bounty else "", self.title, self.value_in_token,
