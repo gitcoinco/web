@@ -58,9 +58,9 @@ var rows = [
     'bounty_owner_email',
     'issue_description',
     'bounty_owner_github_username',
-    'claimeee_address',
-    'claimee_github_username',
-    'claimee_email',
+    'fulfiller_address',
+    'fulfiller_github_username',
+    'fulfiller_email',
     'experience_level',
     'project_length',
     'bounty_type',
@@ -70,7 +70,7 @@ var heads = {
     'avatar_url': 'Issue',
     'value_in_token': 'Issue Funding Info',
     'bounty_owner_address': 'Funder',
-    'claimeee_address': 'Claimee',
+    'fulfiller_address': 'Submitter',
     'experience_level': 'Meta',
 }
 var callbacks = {
@@ -86,14 +86,17 @@ var callbacks = {
         if(ui_status=='open'){
             ui_status = '<span style="color: #47913e;">open</span>';
         }
-        if(ui_status=='fulfilled'){
-            ui_status = '<span style="color: #3e00ff;">fulfilled</span>';
+        if(ui_status=='started'){
+            ui_status = '<span style="color: #3e00ff;">work started</span>';
         }
-        if(ui_status=='accepted'){
-            ui_status = '<span style="color: #f9006c;">accepted</span>';
+        if(ui_status=='submitted'){
+            ui_status = '<span style="color: #3e00ff;">work submitted</span>';
         }
-        if(ui_status=='dead'){
-            ui_status = '<span style="color: #0d023b;">dead</span>';
+        if(ui_status=='done'){
+            ui_status = '<span style="color: #0d023b;">done</span>';
+        }
+        if(ui_status=='cancelled'){
+            ui_status = '<span style="color: #f9006c;">cancelled</span>';
         }
         return [ 'status', ui_status];
     },
@@ -138,21 +141,21 @@ var callbacks = {
         }
         return [ 'issue_description', ui_body];
     },
-    'claimeee_address': address_ize,
+    'fulfiller_address': address_ize,
     'bounty_owner_address': address_ize,
     'bounty_owner_email': email_ize,
-    'claimee_email': email_ize,
+    'fulfiller_email': email_ize,
     'experience_level': unknown_if_empty,
     'project_length': unknown_if_empty,
     'bounty_type': unknown_if_empty,
-    'claimee_email': function(key, val, result){
-        if(!_truthy(result['claimeee_address'])){
-            $("#claimee").addClass('hidden');
+    'fulfiller_email': function(key, val, result){
+        if(!_truthy(result['fulfiller_address'])){
+            $("#fulfiller").addClass('hidden');
         }
         return address_ize(key, val, result);
     },
     'bounty_owner_github_username': gitcoin_ize,
-    'claimee_github_username': gitcoin_ize,
+    'fulfiller_github_username': gitcoin_ize,
     'value_in_eth': function(key, val, result){
         if(result['token_name'] == 'ETH' || val == null){
             return [null, null];
@@ -510,7 +513,7 @@ window.addEventListener('load', function() {
                         actions.push(entry);
                     }
 
-                    if(result['status'] != 'accepted' && result['status'] != 'dead'){
+                    if(result['status'] != 'done' && result['status'] != 'cancelled'){
                         var enabled = isBountyOwner(result);
                         var entry = {
                             href: '/funding/kill?source='+result['github_url'],
@@ -524,35 +527,35 @@ window.addEventListener('load', function() {
                     }
 
                     var enabled = !isBountyOwner(result);
-                    if(result['status']=='open' ){
+                    if(result['status']=='open' || result['status']=='started' ){
                         var interestEntry = {
                             href: is_interested ? '/uninterested' : '/interested',
-                            text: is_interested ? 'Unclaim Work' : 'Claim Work',
+                            text: is_interested ? 'Stop Work' : 'Start Work',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Claim Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.  Please leave a comment for the bounty submitter to let them know you are interested in workwith with them after you claim work' : 'Can only be performed if you are not the funder.',
+                            title: enabled ? 'Start Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.  Please leave a comment for the bounty submitter to let them know you are interested in workwith with them after you start work.' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(interestEntry);
 
                         var entry = {
                             href: '/funding/fulfill?source='+result['github_url'],
-                            text: 'Fulfill Work',
+                            text: 'Submit Work',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Use Fulfill Work when you FINISH work on a bounty.   Use Claim Work when you START work.' : 'Can only be performed if you are not the funder.',
+                            title: enabled ? 'Use Submit Work when you FINISH work on a bounty.   Use Start Work when you START work.' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(entry);
                     }
 
                     var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
 
-                    if(result['status']=='fulfilled' ){
+                    if(result['status']=='submitted' ){
                         var enabled = isBountyOwner(result);
                         var entry = {
                             href: '/funding/process?source='+result['github_url'],
-                            text: 'Accept Fulfillment',
+                            text: 'Accept Submission',
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
@@ -607,11 +610,11 @@ $(document).ready(function(){
         e.preventDefault();
         if ($(this).attr('href') == '/interested') {
             $(this).attr('href', '/uninterested');
-            $(this).find('span').text('Unclaim Work');
+            $(this).find('span').text('Stop Work');
             add_interest(document.result['pk']);
         } else {
             $(this).attr('href', '/interested');
-            $(this).find('span').text('Claim Work');
+            $(this).find('span').text('Start Work');
             remove_interest(document.result['pk']);
         }
     });

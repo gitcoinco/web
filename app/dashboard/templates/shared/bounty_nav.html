@@ -21,25 +21,33 @@
                                     <li class="{% if active_item == 1 %}active{%endif%} submit" >
                                         1.
                                         {% if past_tense %}
-                                            Active
+                                            Open
                                         {%else%}
-                                            Create
+                                            Create Work
                                         {%endif%}
                                     </li>
                                     <li class="{% if active_item == 2 %}active{%endif%} fulfill">
                                         2.
                                         {% if past_tense %}
-                                            Fulfilled
+                                            Work Started
                                         {%else%}
-                                            Fulfill
+                                            Start Work
                                         {%endif%}
                                     </li>
-                                    <li class="{% if active_item == 3 %}active{%endif%} accept">
+                                    <li class="{% if active_item == 3 %}active{%endif%} fulfill">
                                         3.
                                         {% if past_tense %}
-                                            Accepted
+                                            Work Submitted
                                         {%else%}
-                                            Accept
+                                            Submit Work
+                                        {%endif%}
+                                    </li>
+                                    <li class="{% if active_item == 4 %}active{%endif%} accept">
+                                        4.
+                                        {% if past_tense %}
+                                            Work Done
+                                        {%else%}
+                                            Accept Work
                                         {%endif%}
                                     </li>
                                 </ol>

@@ -341,3 +341,29 @@ def org_name(issue_url):
 
     """
     return issue_url.split('/')[3]
+
+
+def repo_name(issue_url):
+    """Get the repo name from an issue URL.
+
+    Args:
+        issue_url (str): The Github issue URL.
+
+    Returns:
+        str: The Github repo name.
+
+    """
+    return issue_url.split('/')[4]
+
+
+def issue_number(issue_url):
+    """Get the issue_number from an issue URL.
+
+    Args:
+        issue_url (str): The Github issue URL.
+
+    Returns:
+        str: The Github issue_number
+
+    """
+    return issue_url.split('/')[6]

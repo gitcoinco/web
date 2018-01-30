@@ -271,7 +271,7 @@ def leaderboard(request, key):
         'title': "Monthly Leaderboard: " + titles[key],
         'card_title': "Monthly Leaderboard: " +titles[key],
         'card_desc': 'See the most valued members in the Gitcoin community this month. ' + top_earners,
-        'action_past_tense': 'Transacted' if 'fulfilled' in key else 'bountied',
+        'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
         'podium_items': podium_items
     }

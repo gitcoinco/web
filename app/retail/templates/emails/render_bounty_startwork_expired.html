@@ -20,42 +20,37 @@
 
 {% block content %}
 
-<h1>😕 Funded Issue Expiring ... 😕</h1>
+<h1>👇 You've been removed from this task ... 👇</h1>
 
 
 <p>
-    Heads up! The funded issue that you {% if is_owner %}posted{% else %}fulfilled{% endif %} (below) is expiring in {{num}} {{unit}}.
+    Hey there,
 
     <br>
     <br>
-    {% if is_owner %}
-    {% if bounty.status == 'submitted' %}
-        There is a currently pending claim agains this funded issue. Please make sure you process them!
-    {% endif %}
+
+     You <strong>started work upon</strong> a funded issue {{interest.created | naturaltime}}.  But we haven't heard from you on the github thread{% if time_delta_days %} in {{time_delta_days}} days{%endif%}.
 
     <br>
     <br>
-    After the funded issue has expired, you can still submit and accept work.  There will just be a new option for the funder to "Clawback" the funds on the funded issue detail page. 
+    Since we have a responsibility to the community to keep the list of claimees for this issue current, Gitcoin removed you from the task.
     <br>
     <br>
-    <h5>Look for this button</h5>
+
+    Do you still want to work on this?  No big deal!  We can help with that:
+    
     <br>
-    <img src="https://gitcoin.co/static/v2/images/clawback.png"/ >
+    <br>
+
+    Please leave a comment on the github thread to check in.
+    <br>
+    -AND-
+    <br>
+    Click 'Start Work' on the <a href="{{bounty.url}}">issue detail page</a>.
 
     <br>
     <br>
     If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.
-
-    {% else %}
-
-        Why don't you leave a comment <a href="{{bounty.github_url}}">on github</a> and let the bounty owner know that you'd like to wrap this up soon? :)
-
-        <br>
-        <br>
-        If you have any problems, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.
-
-
-    {% endif %}
 
     <br>
     <h5>Funded Issue Details</h5>

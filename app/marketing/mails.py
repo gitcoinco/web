@@ -22,8 +22,9 @@ from django.utils import timezone
 import sendgrid
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from retail.emails import (
-    render_bounty_expire_warning, render_match_email, render_new_bounty, render_new_bounty_acceptance,
-    render_new_bounty_claim, render_new_bounty_rejection, render_new_bounty_roundup, render_tip_email,
+    render_bounty_expire_warning, render_bounty_startwork_expire_warning, render_match_email, render_new_bounty,
+    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
+    render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -117,18 +118,18 @@ def weekly_roundup(to_emails=None):
             send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
 
 
-def new_bounty_claim(bounty, to_emails=None):
+def new_work_submission(bounty, to_emails=None):
     if not bounty or not bounty.value_in_usdt:
         return
 
     if to_emails is None:
         to_emails = []
 
-    subject = "✉️ New Fulfillment Inside for {} ✉️".format(bounty.title_or_desc)
+    subject = "✉️ New Work Submission Inside for {} ✉️".format(bounty.title_or_desc)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
-        html, text = render_new_bounty_claim(to_email, bounty)
+        html, text = render_new_work_submission(to_email, bounty)
 
         if not should_suppress_notification_email(to_email):
             send_mail(from_email, to_email, subject, text, html)
@@ -138,10 +139,10 @@ def new_bounty_rejection(bounty, to_emails=None):
     if not bounty or not bounty.value_in_usdt:
         return
 
+    subject = "😕 Work Submission Rejected for {} 😕".format(bounty.title_or_desc)
+
     if to_emails is None:
         to_emails = []
-
-    subject = "😕 Fulfillment Rejected for {} 😕".format(bounty.title_or_desc)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
@@ -199,3 +200,27 @@ def bounty_expire_warning(bounty, to_emails=None):
 
         if not should_suppress_notification_email(to_email):
             send_mail(from_email, to_email, subject, text, html)
+
+
+def bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days):
+    if not bounty or not bounty.value_in_usdt:
+        return
+
+    from_email = settings.CONTACT_EMAIL
+    html, text = render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
+    subject = "Are you still working on '{}' ? ".format(bounty.title_or_desc)
+
+    if not should_suppress_notification_email(to_email):
+        send_mail(from_email, to_email, subject, text, html)
+
+
+def bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
+    if not bounty or not bounty.value_in_usdt:
+        return
+
+    from_email = settings.CONTACT_EMAIL
+    html, text = render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
+    subject = "We've removed you from the task: '{}' ? ".format(bounty.title_or_desc)
+
+    if not should_suppress_notification_email(to_email):
+        send_mail(from_email, to_email, subject, text, html)

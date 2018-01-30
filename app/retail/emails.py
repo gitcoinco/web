@@ -84,15 +84,15 @@ def render_new_bounty(to_email, bounty):
     return response_html, response_txt
 
 
-def render_new_bounty_claim(to_email, bounty):
+def render_new_work_submission(to_email, bounty):
 
     params = {
         'bounty': bounty,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
-    response_html = premailer_transform(render_to_string("emails/new_bounty_claim.html", params))
-    response_txt = render_to_string("emails/new_bounty_claim.txt", params)
+    response_html = premailer_transform(render_to_string("emails/new_work_submission.html", params))
+    response_txt = render_to_string("emails/new_work_submission.txt", params)
 
     return response_html, response_txt
 
@@ -136,12 +136,40 @@ def render_bounty_expire_warning(to_email, bounty):
         'num': num,
         'unit': unit,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
-        'is_claimee': (bounty.claimee_email if bounty.claimee_email else "").lower() == to_email.lower(),
+        'is_claimee': (bounty.fulfiller_email if bounty.fulfiller_email else "").lower() == to_email.lower(),
         'is_owner': bounty.bounty_owner_email.lower() == to_email.lower(),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty_expire_warning.html", params))
     response_txt = render_to_string("emails/new_bounty_expire_warning.txt", params)
+
+    return response_html, response_txt
+
+
+def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days):
+
+    params = {
+        'bounty': bounty,
+        'interest': interest,
+        'time_delta_days': time_delta_days,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/bounty_startwork_expire_warning.html", params))
+    response_txt = render_to_string("emails/bounty_startwork_expire_warning.txt", params)
+
+    return response_html, response_txt
+
+
+def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
+
+    params = {
+        'bounty': bounty,
+        'interest': interest,
+        'time_delta_days': time_delta_days,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/render_bounty_startwork_expired.html", params))
+    response_txt = render_to_string("emails/render_bounty_startwork_expired.txt", params)
 
     return response_html, response_txt
 
@@ -238,11 +266,11 @@ def new_bounty(request):
 
 
 @staff_member_required
-def new_bounty_claim(request):
+def new_work_submission(request):
     from dashboard.models import Bounty
 
-    bounty = Bounty.objects.filter(idx_status='fulfilled').last()
-    response_html, _ = render_new_bounty_claim(settings.CONTACT_EMAIL, bounty)
+    bounty = Bounty.objects.filter(idx_status='submitted', current_bounty=True).last()
+    response_html, _ = render_new_work_submission(settings.CONTACT_EMAIL, bounty)
     return HttpResponse(response_html)
 
 
@@ -266,6 +294,20 @@ def bounty_expire_warning(request):
     from dashboard.models import Bounty
 
     response_html, _ = render_bounty_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last())
+    return HttpResponse(response_html)
+
+@staff_member_required
+def start_work_expired(request):
+    from dashboard.models import Bounty, Interest
+
+    response_html, _ = render_bounty_startwork_expired(settings.CONTACT_EMAIL, Bounty.objects.all().last(), Interest.objects.all().last(), 5)
+    return HttpResponse(response_html)
+
+@staff_member_required
+def start_work_expire_warning(request):
+    from dashboard.models import Bounty, Interest
+
+    response_html, _ = render_bounty_startwork_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last(), Interest.objects.all().last(), 5)
     return HttpResponse(response_html)
 
 
