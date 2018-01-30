@@ -357,6 +357,16 @@ class Bounty(SuperModel):
         return comments
 
 
+class BountyFulfillment(SuperModel):
+    fulfiller_address = models.CharField(max_length=50)
+    fulfiller_email = models.CharField(max_length=255, blank=True)
+    fulfiller_github_username = models.CharField(max_length=255, blank=True)
+    fulfiller_name = models.CharField(max_length=255, blank=True)
+    fulfiller_metadata = JSONField(default={}, blank=True)
+
+    bounty = models.ForeignKey(Bounty, on_delete=models.CASCADE)
+
+
 class BountySyncRequest(SuperModel):
 
     github_url = models.URLField()
