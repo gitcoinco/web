@@ -371,8 +371,9 @@ def gas(request):
 
 def new_bounty(request):
     """Create a new bounty."""
+    issue_url = request.GET.get('source') or request.GET.get('url', '')
     params = {
-        'issueURL': request.GET.get('source'),
+        'issueURL': issue_url,
         'active': 'submit_bounty',
         'title': 'Create Funded Issue',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
