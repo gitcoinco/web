@@ -9,11 +9,12 @@ $( document ).ready( () => {
     $( this ).css( 'width', `${width}%` )
   })
 
-  $( '.clickable-row' ).click( () => {
+  $( '.clickable-row' ).click( function(e){
     window.location = $( this ).data( 'href' )
+    e.preventDefault();
   });
 
-  $( '#key' ).change( () => {
+  $( '#key' ).change( function(){
     const val = $( this ).val();
 
     document.location.href = `/leaderboard/${val}`
