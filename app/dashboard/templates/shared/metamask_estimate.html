@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -18,9 +18,9 @@
 
                             <div class="w-100 mt-2 p-2" id="metamask_context">
                                 {% if recommend_gas_price > 30 %}
-                                    <div class="warning mb-2">Warning: the ethereum network is quite congested at the moment. <a target=new href="/gas">[Stats]</a></div>
+                                    <div class="warning mb-2">Warning: the ethereum network is quite congested at the moment. <a target=new href="{% url "gas" %}">[Stats]</a></div>
                                 {% endif %}
-                                <label><img src='/funding/avatar?repo=https://github.com/MetaMask&v=3' width="20px" height="20px">The following MetaMask settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD) <a target=new href="/gas">[view graph]</a> : 
+                                <label><img src="{% url "avatar" %}?repo=https://github.com/MetaMask&v=3" width="20px" height="20px">The following MetaMask settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD) <a target=new href="{% url "gas" %}">[view graph]</a> :
                                 </label>
                                 <br>
                                 <div class="metamask_recc">
@@ -41,7 +41,7 @@
                                             <a target=new href="https://github.com/gitcoinco/gitcoinco/issues/12">What gas price should I use?</a>
                                         </li>
                                         <li>
-                                            <a target=new href="/gas">What are current network condtions?</a>
+                                            <a target=new href="{% url "gas" %}">What are current network condtions?</a>
                                         </li>
                                     </ul>
                                 </div>

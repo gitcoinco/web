@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,18 +16,18 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-
+{% load static %}
 {% block body %}
 
     <div class="container-fluid" style="">
         <div class=" row ">
             <div class="col-4 pb-4">
                 <div class="align-items-right justify-content-right" style="text-align: right;">
-                    <img src="/static/v2/images/divine.png" style="max-width:80%; margin: 0px auto;">
+                    <img src="{% static "v2/images/divine.png" %}" style="max-width:80%; margin: 0px auto;">
                     <br>
-                    <img src="/static/v2/images/prime.png" style="max-width:80%; margin: 0px auto;">
+                    <img src="{% static "v2/images/prime.png" %}" style="max-width:80%; margin: 0px auto;">
                     <br>
-                    <img src="/static/v2/images/regulus.png" style="max-width:80%; margin: 0px auto;">
+                    <img src="{% static "v2/images/regulus.png" %}" style="max-width:80%; margin: 0px auto;">
                 </div>
             </div>
             <div class="col-1 pb-4">
@@ -45,13 +45,13 @@
                         </p>
                         <ul>
                             <li>
-                                on being <i>relentlessly mission driven</i>. <a href="/mission"> (more on this here) </a>
+                                on being <i>relentlessly mission driven</i>. <a href="{% url "mission" %}"> (more on this here) </a>
                             </li>
                             <li>
                                 on working with the <i>best repos</i> in web3..  <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6"> (more on this here) </a>
                             </li>
                             <li>
-                                on building the <i>best tools</i> for them...  <a href="/toolbox"> (more on this here) </a>
+                                on building the <i>best tools</i> for them...  <a href="{% url "toolbox" %}"> (more on this here) </a>
                             </li>
                             <li>
                                 over a <i>long term</i> time horizon..  <a href="https://medium.com/gitcoin/blockchain-is-the-next-tcp-ip-6663b62b5654"> (more on this here) </a>
@@ -85,24 +85,24 @@
                         <p>Some ways to get involved now: </p>
                         <ul>
                             <li>
-                                <a href="/slack">Join the slack</a> 👋
+                                <a href="{% url "slack" %}">Join the slack</a> 👋
                             </li>
                             <li>
-                                <a href="/twitter">Follow the twitter</a> 🐦
+                                <a href="{% url "twitter" %}">Follow the twitter</a> 🐦
                             </li>
                             <li>
-                                <a href="/explore">Build something cool</a>  🔧
+                                <a href="{% url "explore" %}">Build something cool</a>  🔧
                             </li>
                             <li>
                                 <a href="/pitch">Pitch a new idea</a> ⚡️
                             </li>
                             <li>
-                                <a href="/tools">Learn a new tool</a> 🛠
+                                <a href="{% url "tools" %}">Learn a new tool</a> 🛠
                             </li>
                         </ul>
                         <h4 class="pt-1">Still want whitepaper access? </h4>
 
-                        <p>Please submit your info below to receive access to the whitepaper if/when its available. <a href="/whitepaper/accesscode">Already have an access code?</a> </p>
+                        <p>Please submit your info below to receive access to the whitepaper if/when its available. <a href="{% url "whitepaper_access" %}">Already have an access code?</a> </p>
                         {% if msg %}
                             <p style="background-color: #fee856; padding: 5px 10px;">
                                 {{msg | safe}}
@@ -130,7 +130,7 @@
                                 <label for="comments">Comments</label>
                                 <textarea class="form-control" id="comments" name="comments" rows="3" required>{{comments}}</textarea>
                                 <small id="comments" class="form-text text-muted">Who are you?  What is your interest in the whitepaper?</small>
-                            </div> 
+                            </div>
                             {% csrf_token %}
                             <input class='btn btn-sm btn-success' type='submit' name='submit' value="Go">
                         </form>

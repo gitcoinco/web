@@ -61,6 +61,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -188,13 +189,13 @@ for ia in INSTALLED_APPS:
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
+STATICFILES_STORAGE = 'app.static_storage.SilentFileStorage'
 STATICFILES_DIRS = (
     'assets/',
 )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-
-STATIC_URL = '/static/'
+STATIC_URL = os.environ.get('DJANGO_STATIC_HOST', '') + '/static/'
 
 CACHES = {
     'default': {
