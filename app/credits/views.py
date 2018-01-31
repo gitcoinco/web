@@ -5,6 +5,7 @@ from django.http import Http404, HttpResponse
 
 from linkshortener.models import Link
 
+
 #TODO: delete this view (and the app) after ETHDenver
 def credits(request, shortcode):
 

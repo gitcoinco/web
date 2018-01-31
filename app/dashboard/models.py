@@ -230,13 +230,11 @@ class Bounty(SuperModel):
                         return 'expired'
                     return 'done'
                 if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
-                    if len(self.interested.all()) > 0:
+                    if self.pk and self.interested.all():
                         return 'started'
                     else:
                         return 'open'
-                if self.fulfiller_address != '0x0000000000000000000000000000000000000000':
-                    return 'submitted'
-                return 'unknown'
+                return 'submitted'
             except Exception as e:
                 return 'unknown'
         else:
@@ -249,13 +247,11 @@ class Bounty(SuperModel):
                     # If its not expired or done, it must be cancelled.
                     return 'cancelled'
                 if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
-                    if len(self.interested.all()) > 0:
+                    if self.pk and self.interested.all():
                         return 'started'
                     else:
                         return 'open'
-                if self.fulfiller_address != '0x0000000000000000000000000000000000000000':
-                    return 'submitted'
-                return 'unknown'
+                return 'submitted'
             except Exception as e:
                 logger.warning(e)
                 return 'unknown'
