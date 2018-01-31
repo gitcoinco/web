@@ -296,7 +296,7 @@ p a {
 }
 
 .btn-warning:hover, .btn-success:hover, .btn-info {
-      cursor: pointer;
+    cursor: pointer;
 }
 
 .btn-info:hover {
@@ -307,6 +307,10 @@ p a {
 
 .btn-warning {
     color: #15003e;
+}
+
+.btn {
+    cursor: pointer;
 }
 
 .btn-warning:hover {
@@ -1458,7 +1462,6 @@ body.bounty_details #title {
     #hero_cta a.btn{
         margin-top: 10px;
     }
-
 
     #mission_hero .text {
         margin-top: 1rem;

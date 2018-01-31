@@ -74,7 +74,7 @@ $(document).ready(function(){
         var token = tokenAddressToDetails(tokenAddress);
         var decimals = token['decimals'];
         var tokenName = token['name'];
-        var decimalDivisor = 10**decimals;
+        var decimalDivisor = Math.pow( 10, decimals );
         var expirationTimeDelta = $('select[name=expirationTimeDelta').val();
 
        var metadata = {
@@ -240,7 +240,7 @@ $(document).ready(function(){
                 {                   // {from: x, to: y}
                     from :account,
                     value: eth_amount,
-                    gasPrice: web3.toHex($("#gasPrice").val()) * 10**9,
+                    gasPrice: web3.toHex($("#gasPrice").val()) * Math.pow( 10, 9 ),
                 },
                 web3Callback        // callback for web3
             );
