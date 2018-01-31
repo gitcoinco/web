@@ -514,7 +514,7 @@ input[type=text].loading {
 .blocking_error {
     text-align: center;
     margin: 100px auto;
-    max-width: 500px;
+    max-width: 100%;
 }
 
 .blocking_error img {
