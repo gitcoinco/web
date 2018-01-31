@@ -182,13 +182,25 @@ $(document).ready(function(){
         ipfs.ipfsApi = IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: "https", root:'/api/v0'});
         ipfs.setProvider({ host: 'ipfs.infura.io', port: 5001, protocol: 'https', root:'/api/v0'});
 
+        // setup inter page state
+        localStorage[issueURL] = JSON.stringify({
+            'timestamp': null,
+            'dataHash': null,
+            'issuer': account,
+            'txid': null,
+        });  
+
         function syncDb() {
             // Need to pass the bountydetails as well, since I can't grab it from the 
             // Standard Bounties contract.
             dataLayer.push({'event': 'fundissue'});
             sync_web3(issueURL);  // Writes the bounty URL to the database
-            localStorage[issueURL] = timestamp();  // Used to figure out "local time delta" in bounty_details.js
-            localStorage['issuer'] = account;
+            
+            // update localStorage issuePackage
+            var issuePackage = JSON.parse(localStorage[issueURL]);
+            issuePackage['timestamp'] = timestamp();
+            localStorage[issueURL] = JSON.stringify(issuePackage);
+
             _alert({ message: "Submission sent to web3." }, 'info');
             setTimeout(function(){
                 delete localStorage['issueURL'];
@@ -208,7 +220,12 @@ $(document).ready(function(){
                 return;
             }
 
-            localStorage['txid'] = result;
+            // update localStorage issuePackage
+            var issuePackage = JSON.parse(localStorage[issueURL]);
+            issuePackage['txid'] = result;
+            localStorage[issueURL] = JSON.stringify(issuePackage);
+
+            //sync db
             syncDb();
 
         }
@@ -221,7 +238,13 @@ $(document).ready(function(){
                 $('#submitBounty').removeAttr('disabled');
                 return;
             }
-            localStorage['dataHash'] = result;  // cache data hash to find bountyId later
+
+            // cache data hash to find bountyId later
+            // update localStorage issuePackage
+            var issuePackage = JSON.parse(localStorage[issueURL]);
+            issuePackage['dataHash'] = result;
+            localStorage[issueURL] = JSON.stringify(issuePackage);
+            
             // bounty is a web3.js eth.contract address
             // The Ethereum network requires using ether to do stuff on it
             // issueAndActivateBounty is a method definied in the StandardBounties solidity contract.
