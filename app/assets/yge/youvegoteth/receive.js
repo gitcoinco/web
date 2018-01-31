@@ -118,6 +118,7 @@ window.onload = function () {
                     body: JSON.stringify({
                         txid: getParam('txid'),
                         receive_txid: result,
+                        receive_address: forwarding_address,
                     }),
                 });
                 callFunctionWhenTransactionMined(result, function(){

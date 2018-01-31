@@ -223,6 +223,7 @@ def receive_tip(request):
         # db mutations
         try:
             tip = Tip.objects.get(txid=params['txid'])
+            tip.receive_address = params['receive_address']
             tip.receive_txid = params['receive_txid']
             tip.received_on = timezone.now()
             tip.save()
@@ -308,10 +309,12 @@ def send_tip_2(request):
             github_url=params['github_url'],
             from_name=params['from_name'],
             from_email=params['from_email'],
-            username=from_username,
+            from_username=from_username,
+            username=params['username'],
             network=params['network'],
             tokenAddress=params['tokenAddress'],
             txid=params['txid'],
+            from_address=params['from_address'],
         )
         # notifications
         maybe_market_tip_to_github(tip)

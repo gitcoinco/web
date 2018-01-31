@@ -390,11 +390,14 @@ class Tip(SuperModel):
     github_url = models.URLField(null=True)
     from_name = models.CharField(max_length=255, default='')
     from_email = models.CharField(max_length=255, default='')
-    username = models.CharField(max_length=255, default='')
+    from_username = models.CharField(max_length=255, default='')
+    username = models.CharField(max_length=255, default='') #to username
     network = models.CharField(max_length=255, default='')
     txid = models.CharField(max_length=255, default='')
     receive_txid = models.CharField(max_length=255, default='')
     received_on = models.DateTimeField(null=True)
+    from_address = models.CharField(max_length=255, default='')
+    receive_address = models.CharField(max_length=255, default='')
 
     def __str__(self):
         from django.contrib.humanize.templatetags.humanize import naturalday
