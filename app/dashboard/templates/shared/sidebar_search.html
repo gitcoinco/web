@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,13 +15,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-
-
+{% load static %}
             <div class="d-flex flex-column align-items-center sidebar_search">
                 <form>
 
                     <div class="rowcol d-flex flex-column mt-5">
-                        <div class="dash-filter-header mb-2" title='{%include "shared/status_tooltip.html" %}'>Status <img style="max-width: 15px;" src="/static/v2/images/icons/info.png"></div>
+                        <div class="dash-filter-header mb-2" title='{%include "shared/status_tooltip.html" %}'>Status <img style="max-width: 15px;" src="{% static "v2/images/icons/info.png" %}"></div>
                         <div class="d-flex flex-column ml-3">
                             <div class="d-flex align-items-center form-line mb-2">
                                 <input name="idx_status" id="status_open" type="radio" value="open" val-ui='Open' checked />
@@ -50,7 +49,7 @@
                                     <label for=status_done>4. Work Done</label>
                                 </div>
                             </div>
-                            
+
                             <div class="d-flex align-items-center form-line mb-2">
                                 <input name="idx_status" id="status_expired" type="radio" value="expired" val-ui='Expired' />
                                 <div class="dash-filter-label ml-2">

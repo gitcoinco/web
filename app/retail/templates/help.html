@@ -15,6 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -36,12 +37,12 @@
                 <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
                     <h4 >Developer?</h4>
                     <h6 style="" >Check out the Gitcoin Developer guide</h6>
-                    <a href="/help/dev" target=new>
-                        <img class="animated fadeIn" src="/static/v2/images/guide_dev.png" style="max-width: 60%;  border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
+                    <a href="{% url "help_dev" %}" target=new>
+                        <img class="animated fadeIn" src="{% static "v2/images/guide_dev.png" %}" style="max-width: 60%;  border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
                     </a>
                     <div class="col animated pulse fast">
                         <br>
-                        <a class="btn btn-lg btn-warning  mb-4" role="button" target=new href="/help/dev">View Developer Guide</a>
+                        <a class="btn btn-lg btn-warning  mb-4" role="button" target=new href="{% url "help_dev" %}">View Developer Guide</a>
                     </div>
                 </div>
             </div>
@@ -49,12 +50,12 @@
                 <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
                     <h4>Repo Maintainer?</h4>
                     <h6 style="" >Check out the Gitcoin Repo Maintainer guide</h6>
-                    <a href="/help/repo" target=new>
-                        <img class="animated fadeIn" src="/static/v2/images/guide_repo.png" style="max-width: 60%; border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
+                    <a href="{% url "help_repo" %}" target=new>
+                        <img class="animated fadeIn" src="{% static "v2/images/guide_repo.png" %}" style="max-width: 60%; border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
                     </a>
                     <div class="col animated pulse fast">
                         <br>
-                        <a class="btn btn-lg btn-warning  mb-4" role="button" target=new href="/help/repo">View Repo Maintainer Guide</a>
+                        <a class="btn btn-lg btn-warning  mb-4" role="button" target=new href="{% url "help_repo" %}">View Repo Maintainer Guide</a>
                     </div>
                 </div>
             </div>
@@ -62,12 +63,12 @@
                 <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
                     <h4 >Does it work?</h4>
                     <h6 style="" >Check out the Gitcoin Case Study</h6>
-                    <a href="/casestudies" target=new>
-                        <img class="animated fadeIn" src="/static/v2/images/gudie_casestudy.png" style="max-width: 60%;  border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
+                    <a href="{% url "casestudies" %}" target=new>
+                        <img class="animated fadeIn" src="{% static "v2/images/gudie_casestudy.png" %}" style="max-width: 60%;  border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
                     </a>
                     <div class="col animated pulse fast">
                         <br>
-                        <a class="btn btn-lg btn-warning  mb-4" role="button" target=new href="/casestudies">View Case Studies</a>
+                        <a class="btn btn-lg btn-warning  mb-4" role="button" target=new href="{% url "casestudies" %}">View Case Studies</a>
                     </div>
                 </div>
             </div>
@@ -126,7 +127,7 @@
         <div class="row mt-2 mb-2 pb-3 animatedParent">
             <div class="col animated pulse fast">
                 <a class="btn btn-lg btn-warning " role="button" href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">View Github Repo</a>
-                <a class="btn btn-lg btn-warning " role="button" href="/slack"> <img src="/static/v2/images/social/slack2.png" style="max-width: 37px; margin: 5px 10px ; display: inline;">Ask on slack</a>
+                <a class="btn btn-lg btn-warning " role="button" href="{% url "slack" %}"> <img src="{% static "v2/images/social/slack2.png" %}" style="max-width: 37px; margin: 5px 10px ; display: inline;">Ask on slack</a>
                 <a class="btn btn-lg btn-warning " role="button" href="mailto:founders@gitcoin.co">Contact Gitcoin Core</a>
             </div>
         </div>

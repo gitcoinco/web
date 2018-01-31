@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,29 +15,30 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-<div id="save" class="white-light-bg  " style="background-image: url('/static/v2/images/light-bg.png'); background-size: contain;">
+{% load static %}
+<div id="save" class="white-light-bg  " style="background-image: url('{% static "v2/images/light-bg.png" %}'); background-size: contain;">
     <div class="container-fluid text-center" style='min-height: 450px;'>
         <h4 class="col mt-2 mb-2">Save This Search:</h4>
         <div class="row">
             <div class="col d-flex flex-column align-items-center ">
                 <div class=" d-flex flex-column w-60 " style="text-align: left;">
                     <div class="mt-3 mb-3" class=reason>
-                            <img src="/static/v2/images/icons/lock_open.png"> <p class="ml-2">Unlock your potential in Open Source.</p>
+                            <img src="{% static "v2/images/icons/lock_open.png" %}"> <p class="ml-2">Unlock your potential in Open Source.</p>
                     </div>
                     <div class="mt-3 mb-3" class=reason>
-                            <img src="/static/v2/images/icons/flag2.png"> <p class="ml-2">Be the first to know about new funded issues.</p>
+                            <img src="{% static "v2/images/icons/flag2.png" %}"> <p class="ml-2">Be the first to know about new funded issues.</p>
                     </div>
                     <div class="mt-3 mb-3" class=reason>
-                            <img src="/static/v2/images/icons/magnifier.png"> <p class="ml-2">Emails no more than 2x / week.</p>
+                            <img src="{% static "v2/images/icons/magnifier.png" %}"> <p class="ml-2">Emails no more than 2x / week.</p>
                     </div>
                     <div class="mt-3 mb-3" class=reason>
-                            <img src="/static/v2/images/icons/ban.png"> <p class="ml-2">Gitcoin Core will never sell your email address.</p>
+                            <img src="{% static "v2/images/icons/ban.png" %}"> <p class="ml-2">Gitcoin Core will never sell your email address.</p>
                     </div>
                     <div class="mt-2" style="text-align: center;">
                         <input type='email' name='email' id="save_email" value='' placeholder="you@somewhere.com" />
                     </div>
                     <div class="mt-4" style="text-align: center;">
-                        <a class="btn btn-darkBlue" role="button" href="/funding/new">Save Search</a>
+                        <a class="btn btn-darkBlue" role="button" href="{% url "new_funding" %}">Save Search</a>
                     </div>
                 </div>
             </div>

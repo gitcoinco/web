@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,17 +15,17 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-
+{% load static %}
 <meta name="twitter:domain" content="gitcoin.co" />
 <meta name="twitter:card" content="player" />
 <meta name="twitter:site" content="@getgitcoin" />
 <meta name="twitter:title" content="Gitcoin: Push Open Source Repos Forward" />
 <meta name="twitter:description" content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software." />
-<meta name="twitter:image" content="/static/v2/card/thumb.png" />
+<meta name="twitter:image" content="{% static "v2/card/thumb.png" %}" />
 <meta name="twitter:player" content="https://www.youtube.com/embed/DJartWzDn0E" />
 <meta name="twitter:player:width" content="560" />
 <meta name="twitter:player:height" content="315" />
-<meta name="twitter:player:stream" content="/static/v2/card/card.mp4" />
+<meta name="twitter:player:stream" content="{% static "v2/card/card.mp4" %}" />
 <meta name="twitter:player:stream:content_type" content="video/mp4" />
 
 
@@ -33,11 +33,11 @@
 <meta property=og:title content="Gitcoin: Push Open Source Repos Forward.">
 <meta property=og:url content="https://gitcoin.co/" >
 <meta property=og:description content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software.">
-<meta property=og:image content="https://gitcoin.co/static/v2/card/thumb.jpg">
+<meta property=og:image content="{% static "v2/card/thumb.jpg" %}">
 <meta property=og:type content="website">
 <meta property=og:site_name content="Gitcoin: Push Open Source Repos Forward.">
-<meta property="og:video" content="https://gitcoin.co/static/v2/card/card.mp4" />
-<meta property="og:video:secure_url" content="https://gitcoin.co/static/v2/card/card.mp4" />
+<meta property="og:video" content="{% static "v2/card/card.mp4" %}" />
+<meta property="og:video:secure_url" content="{% static "v2/card/card.mp4" %}" />
 <meta property="og:video:type" content="video/mp4" />
 <meta property="og:video:width" content="560" />
 <meta property="og:video:height" content="315" />

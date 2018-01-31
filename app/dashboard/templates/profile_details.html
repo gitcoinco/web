@@ -1,5 +1,6 @@
 {% load email_obfuscator %}
 {% load humanize %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -38,8 +39,8 @@
                         <ul class='authors'>
                             {% for author in profile.authors %}
                                 <li>
-                                    <a href="/profile/{{author}}" target=new title="{{author}}">
-                                    <img src="/funding/avatar?repo=https://github.com/{{author}}">
+                                    <a href="{% url "profile" %}{{author}}" target=new title="{{author}}">
+                                    <img src="{% url "avatar" %}?repo=https://github.com/{{author}}">
                                     </a>
                                 </li>
                             {% endfor %}
@@ -48,19 +49,19 @@
                         <ul class='ctas'>
                             <li>
                                 <a href="{{profile.data.blog}}">
-                                    <img src='/static/v2/images/social/web.png' alt='Medium'>
+                                    <img src="{% static "v2/images/social/web.png" %}" alt="Medium">
                                 </a>
                             <li>
                             {% if profile.data.email %}
                                 </li>
                                     <a href="mailto:{{profile.data.email | obfuscate}}">
-                                        <img src='/static/v2/images/social/mail.png' alt='Medium'>
+                                        <img src="{% static "v2/images/social/mail.png" %}" alt="Medium">
                                     </a>
                                 <li>
                             {% endif %}
                             </li>
                                 <a href="{{profile.data.html_url}}?tab=repositories">
-                                    <img src='/static/v2/images/social/github.png' alt='Medium'>
+                                    <img src="{% static "v2/images/social/github.png" %}" alt="Medium">
                                 </a>
                             </li>
                         </ul>
@@ -145,7 +146,7 @@
                                 {% for r in profile.repos_data %}
                                     <li>
                                         <div class="dot">&nbsp;</div>
-                                        <a href="/explorer/?q={{r.html_url}}">
+                                        <a href="{% url "explorer" %}?q={{r.html_url}}">
                                             <p class="meta mr-3">{{r.stargazers_count}} stars</p>
                                             <h6>
                                             {{r.full_name}}</h6>
@@ -179,10 +180,10 @@
 
 
 <!-- jQuery -->
-<script src="{{STATIC_URL}}v2/js/abi.js"></script>
-<script src="{{STATIC_URL}}v2/js/tokens.js"></script>
-<script src="{{STATIC_URL}}v2/js/shared.js"></script>
-<script src="{{STATIC_URL}}v2/js/pages/profile.js"></script>
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="{% static "v2/js/tokens.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
+<script src="{% static "v2/js/pages/profile.js" %}"></script>
 
 
 </html>

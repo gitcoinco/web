@@ -1,12 +1,12 @@
 {% load humanize %}
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 {% include 'shared/head.html' %}
 {% include 'shared/cards_pic.html' %}
-<link rel="stylesheet" href="/static/v2/css/leaderboard.css" />
+<link rel="stylesheet" href="{% static "v2/css/leaderboard.css" %}" />
 </head>
 
 <body class="interior {{active}}">
@@ -40,7 +40,7 @@
                             </div>
                             <div class="col-8 " >
                                 <h5 style="color:white">
-                                    <a href="/profile/{{podium_item.github_username}}" target="_blank">
+                                    <a href="{% url "profile" %}{{podium_item.github_username}}" target="_blank">
                                         {{podium_item.github_username}}
                                     </a>
                                 </h5>
@@ -77,13 +77,13 @@
             <table class="table table-striped table-hover leaderboard_entry">
                 <tbody>
                     {% for item in items %}
-                        <tr class='clickable-row d-flex  align-items-stretch ' data-href="/profile/{{item.github_username}}">
+                        <tr class='clickable-row d-flex  align-items-stretch ' data-href="{% url "profile" %}{{item.github_username}}">
                             <td class="col-1 d-flex align-items-center item-position">#{{forloop.counter}}</td>
                             <td class="col-1 d-flex align-items-center" >
                                 <img class="img-fluid"  src="{{item.local_avatar_url}}">
                             </td>
                             <td class="col-2 d-flex align-items-center">
-                                <a href="/profile/{{item.github_username}}" target="_blank" >
+                                <a href="{% url "profile" %}{{item.github_username}}" target="_blank" >
                                     @{{item.github_username}}
                                 </a>
                             </td>
@@ -122,10 +122,10 @@
 
 
 <!-- jQuery -->
-<script src="{{STATIC_URL}}v2/js/abi.js"></script>
-<script src="{{STATIC_URL}}v2/js/tokens.js"></script>
-<script src="{{STATIC_URL}}v2/js/shared.js"></script>
-<script src="{{STATIC_URL}}v2/js/pages/leaderboard.js"></script>
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="{% static "v2/js/tokens.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
+<script src="{% static "v2/js/pages/leaderboard.js" %}"></script>
 
 
 </html>
