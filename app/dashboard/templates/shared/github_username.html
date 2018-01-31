@@ -19,7 +19,7 @@
                                 <div class="w-100 mt-2">
                                     <label for=githubUsername>Github Username:</label>
                                     {% if not github_handle %}
-                                        <a href="/_github/auth">(Login)</a>
+                                        <a href="{% url "github:github_auth" %}">(Login)</a>
                                     {% else %}
                                     {% endif %}
                                     <input name='githubUsername' id='githubUsername'  class="w-100 gc-round-text-input" type="text" disabled="disabled" placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}" />

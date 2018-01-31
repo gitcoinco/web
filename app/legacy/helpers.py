@@ -49,21 +49,20 @@ def process_bounty_details(bountydetails, url, contract_address, network):
         print(e)
         fulfiller_metadata = {}
 
-    #create new bounty (but only if things have changed)
-    didChange = False
+    # create new bounty (but only if things have changed)
+    did_change = False
     old_bounties = Bounty.objects.none()
     try:
-        old_bounties = Bounty.objects.filter(
+        old_bounties = Bounty.objects.current().filter(
             github_url=url,
             title=metadata.get('issueTitle'),
-            current_bounty=True,
         ).order_by('-created_on')
-        didChange = (bountydetails != old_bounties.first().raw_data)
-        if not didChange:
-            return (didChange, old_bounties.first(), old_bounties.first())
+        did_change = (bountydetails != old_bounties.first().raw_data)
+        if not did_change:
+            return (did_change, old_bounties.first(), old_bounties.first())
     except Exception as e:
         print(e)
-        didChange = True
+        did_change = True
 
     with transaction.atomic():
         for old_bounty in old_bounties:
@@ -101,7 +100,7 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             new_bounty.avatar_url = new_bounty.get_avatar_url()
         new_bounty.save()
 
-    return (didChange, old_bounties.first(), new_bounty)
+    return (did_change, old_bounties.first(), new_bounty)
 
 
 def process_bounty_changes(old_bounty, new_bounty, txid):

@@ -1,4 +1,3 @@
-
 window.onload = function(){
     //a little time for web3 injection
     setTimeout(function(){
@@ -100,7 +99,7 @@ window.onload = function(){
                         }
                     };
 
-                    bounty.killBounty(bountyId, {gasPrice:web3.toHex($("#gasPrice").val()) * 10**9}, final_callback);
+                    bounty.killBounty(bountyId, {gasPrice:web3.toHex($("#gasPrice").val()) * Math.pow( 10, 9 )}, final_callback);
                     e.preventDefault();
                 }
             };

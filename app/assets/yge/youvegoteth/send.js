@@ -217,6 +217,7 @@ window.onload = function () {
                             from_name: from_name,
                             tokenAddress: token,
                             network: document.web3network,
+                            from_address: fromAccount,
                             txid: txid,
                         }),
                     }).then(function(response) {
@@ -262,9 +263,9 @@ window.onload = function () {
             var amountETHToSend = null;
             if(isSendingETH){
                 next_callback = final_callback;
-                amountETHToSend = amount + fees;
+                amountETHToSend = parseInt(amount + fees);
             } else {
-                amountETHToSend = min_send_amt_wei + fees;
+                amountETHToSend = parseInt(min_send_amt_wei + fees);
                 if(i==0){ //only need to call approve once for amount * numbatches
                     next_callback = erc20_callback;
                 } else {

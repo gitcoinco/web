@@ -286,6 +286,14 @@ Once you have access to your project access tokens, you can enable rollbar error
   * `ROLLBAR_CLIENT_TOKEN = os.environ.get('ROLLBAR_CLIENT_TOKEN', '<post_client_item>')`
   * `ROLLBAR_SERVER_TOKEN = os.environ.get('ROLLBAR_SERVER_TOKEN', '<post_server_item>')`
 
+## Static Asset Handling
+
+If you're testing in a staging or production style environment behind a CDN, pass the `DJANGO_STATIC_HOST` environment variable to your django web instance specifying the CDN URL.
+
+For example:
+
+`DJANGO_STATIC_HOST='https://gitcoin.co`
+
 ## Setup Database
 
 PostgreSQL is the database used by this application. Here are some instructions for installing PostgreSQL on various operating systems.

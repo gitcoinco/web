@@ -76,7 +76,7 @@ var heads = {
 var callbacks = {
     'github_url': link_ize,
     'value_in_token': function(key, val, result){
-        return [ 'amount', Math.round((parseInt(val) / 10**document.decimals) * 1000) / 1000 + " " + result['token_name']];
+        return [ 'amount', Math.round((parseInt(val) / Math.pow( 10, document.decimals )) * 1000) / 1000 + " " + result['token_name']];
     },
     'avatar_url': function(key, val, result){
         return [ 'avatar', '<a href="/profile/'+result['org_name']+'"><img class=avatar src="'+val+'"></a>'];
@@ -160,7 +160,7 @@ var callbacks = {
         if(result['token_name'] == 'ETH' || val == null){
             return [null, null];
         }
-        return [ "Amount (ETH)" , Math.round((parseInt(val) / 10**18) * 1000) / 1000];
+        return [ "Amount (ETH)" , Math.round((parseInt(val) / Math.pow( 10, 18 )) * 1000) / 1000];
     },
     'value_in_usdt': function(key, val, result){
         if(val == null){
@@ -198,7 +198,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
     if(typeof web3 == 'undefined'){
         return false;
     }
-    
+
     console.log("checking this issue for updates:");
     console.log(issueURL);
     //setup callbacks
@@ -538,7 +538,7 @@ window.addEventListener('load', function() {
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Start Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.  Please leave a comment for the bounty submitter to let them know you are interested in workwith with them after you start work.' : 'Can only be performed if you are not the funder.',
+                            title: enabled ? 'Start Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.  Please leave a comment for the bounty submitter to let them know you are interested in working with them after you start work.' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(interestEntry);
 

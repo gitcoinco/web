@@ -223,6 +223,7 @@ def receive_tip(request):
         # db mutations
         try:
             tip = Tip.objects.get(txid=params['txid'])
+            tip.receive_address = params['receive_address']
             tip.receive_txid = params['receive_txid']
             tip.received_on = timezone.now()
             tip.save()
@@ -308,10 +309,12 @@ def send_tip_2(request):
             github_url=params['github_url'],
             from_name=params['from_name'],
             from_email=params['from_email'],
-            username=from_username,
+            from_username=from_username,
+            username=params['username'],
             network=params['network'],
             tokenAddress=params['tokenAddress'],
             txid=params['txid'],
+            from_address=params['from_address'],
         )
         # notifications
         maybe_market_tip_to_github(tip)
@@ -368,8 +371,9 @@ def gas(request):
 
 def new_bounty(request):
     """Create a new bounty."""
+    issue_url = request.GET.get('source') or request.GET.get('url', '')
     params = {
-        'issueURL': request.GET.get('source'),
+        'issueURL': issue_url,
         'active': 'submit_bounty',
         'title': 'Create Funded Issue',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
@@ -416,6 +420,7 @@ def bounty_details(request):
     """Display the bounty details."""
     _access_token = request.session.get('access_token')
     profile_id = request.session.get('profile_id')
+    bounty_url = request.GET.get('url')
     params = {
         'issueURL': request.GET.get('issue_'),
         'title': 'Issue Details',
@@ -427,25 +432,28 @@ def bounty_details(request):
         'profile_interested': False
     }
 
-    try:
-        b = Bounty.objects.current().get(github_url=request.GET.get('url'))
-        # Currently its not finding anyting in the database
-        if b.title:
-            params['card_title'] = f'{b.title} | {b.org_name} Funded Issue Detail | Gitcoin'
-            params['title'] = params['card_title']
-            params['card_desc'] = ellipses(b.issue_description_text, 255)
+    if bounty_url:
+        try:
+            b = Bounty.objects.current().get(github_url=bounty_url)
+            # Currently its not finding anyting in the database
+            if b.title:
+                params['card_title'] = f'{b.title} | {b.org_name} Funded Issue Detail | Gitcoin'
+                params['title'] = params['card_title']
+                params['card_desc'] = ellipses(b.issue_description_text, 255)
 
-        params['bounty_pk'] = b.pk
-        params['interested_profiles'] = b.interested.select_related('profile').all()
-        params['avatar_url'] = b.local_avatar_url
-        params['is_legacy'] = b.is_legacy  # TODO: Remove this following legacy contract sunset.
+            params['bounty_pk'] = b.pk
+            params['interested_profiles'] = b.interested.select_related('profile').all()
+            params['avatar_url'] = b.local_avatar_url
+            params['is_legacy'] = b.is_legacy  # TODO: Remove this following legacy contract sunset.
 
-        if profile_id:
-            profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
-            params['profile_interested'] = request.session.get('profile_id') in profile_ids
-    except Exception as e:
-        print(e)
-        logging.error(e)
+            if profile_id:
+                profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
+                params['profile_interested'] = request.session.get('profile_id') in profile_ids
+        except Bounty.DoesNotExist:
+            pass
+        except Exception as e:
+            print(e)
+            logging.error(e)
 
     return TemplateResponse(request, 'bounty_details.html', params)
 
@@ -532,6 +540,7 @@ def save_search(request):
     return TemplateResponse(request, 'save_search.html', context)
 
 
+@require_POST
 @csrf_exempt
 @ratelimit(key='ip', rate='2/s', method=ratelimit.UNSAFE, block=True)
 def sync_web3(request):
@@ -545,7 +554,6 @@ def sync_web3(request):
     bountydetails = json.loads(request.POST.get('bountydetails', "{}"))
 
     if issueURL:
-
         issueURL = normalizeURL(issueURL)
 
         if not bountydetails:
@@ -557,11 +565,11 @@ def sync_web3(request):
         else:
             contract_address = request.POST.get('contract_address')
             network = request.POST.get('network')
-            didChange, old_bounty, new_bounty = process_bounty_details(
+            did_change, old_bounty, new_bounty = process_bounty_details(
                 bountydetails, issueURL, contract_address, network)
 
-            print("{} changed, {}".format(didChange, issueURL))
-            if didChange:
+            print("{} changed, {}".format(did_change, issueURL))
+            if did_change:
                 print("- processing changes")
                 process_bounty_changes(old_bounty, new_bounty, None)
 
@@ -576,9 +584,7 @@ def sync_web3(request):
 # LEGAL
 
 def terms(request):
-    params = {
-    }
-    return TemplateResponse(request, 'legal/terms.txt', params)
+    return TemplateResponse(request, 'legal/terms.txt', {})
 
 
 def privacy(request):

@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,12 +21,12 @@
                 <h3>
                     Browse funded work in open source software from anywhere, at anytime.
                 </h3>
-                <a href="/itunes">
-                    <img class="iphone" src="/static/v2/images/ios/appstore.png"/>
+                <a href="{% url "itunes" %}">
+                    <img class="iphone" src="{% static "v2/images/ios/appstore.png" %}"/>
                 </a>
             </div>
             <div class="col-6 header-img">
-                <img src="/static/v2/images/ios/iPhone.png">
+                <img src="{% static "v2/images/ios/iPhone.png" %}">
             </div>
             <div class="col-6 subheader-line"></div>
         </div>
@@ -39,13 +40,13 @@
                     Browse funded work in open source software from anywhere, at anytime.
                 </h3>
                 <a href="/itunes">
-                    <img class="iphone" src="/static/v2/images/ios/appstore.png"/>
+                    <img class="iphone" src="{% static "v2/images/ios/appstore.png" %}"/>
                 </a>
             </div>
         </div>
 <!--         <div class="row visible-md-down">
             <div class="col-6 header-img">
-                <img src="/static/v2/images/ios/iPhone.png">
+                <img src="{% static "v2/images/ios/iPhone.png" %}">
             </div>
         </div> -->
     </div>
@@ -53,8 +54,8 @@
         <div class="col-lg-2"></div>
         <div class="col-lg-8 col-md-12 video__wrapper">
             <video class="video">
-                <source src="/static/v2/vid/gitcoin_ios.mp4" type="video/mp4">
-                <source src="/static/v2/vid/gitcoin_ios.ogv" type="video/ogg">
+                <source src="{% static "v2/vid/gitcoin_ios.mp4" %}" type="video/mp4">
+                <source src="{% static "v2/vid/gitcoin_ios.ogv" %}" type="video/ogg">
             </video>
             <div class="playpause"></div>
         </div>
@@ -123,8 +124,8 @@
     <div class="row tag-line text-center">
         <div class="col-12">
             <h3 class="text-center">Get it now.</h3>
-            <a href="/itunes" target="_blank">
-                <img src="/static/v2/images/ios/appstore-gradient.png" height="115" />
+            <a href="{% url "itunes" %}" target="_blank">
+                <img src="{% static "v2/images/ios/appstore-gradient.png" %}" height="115" />
             </a>
         </div>
     </div>
@@ -137,10 +138,10 @@
 
 
 <!-- jQuery -->
-<script src="{{STATIC_URL}}v2/js/abi.js"></script>
-<script src="{{STATIC_URL}}v2/js/tokens.js"></script>
-<script src="{{STATIC_URL}}v2/js/shared.js"></script>
-<script src="{{STATIC_URL}}v2/js/pages/claim_bounty.js"></script>
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="{% static "v2/js/tokens.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
+<script src="{% static "v2/js/pages/claim_bounty.js" %}"></script>
 <script>
     $('.video').parent().click(function () {
     if($(this).children(".video").get(0).paused){

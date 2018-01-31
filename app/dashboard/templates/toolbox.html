@@ -15,13 +15,14 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
       {% include 'shared/head.html' %}
       {% include 'shared/cards_pic.html' %}
-      <link rel="stylesheet" href="static/v2/css/toolbox.css">
-      <link rel="stylesheet" href="static/v2/css/card.css">
+      <link rel="stylesheet" href="{% static "v2/css/toolbox.css" %}">
+      <link rel="stylesheet" href="{% static "v2/css/card.css" %}">
   </head>
   <body class="interior {{active}}">
     {% include 'shared/tag_manager_2.html' %}
@@ -42,7 +43,7 @@
                     by enabling the tools that suit your needs.</p>
                 </div>
                 <div id="tools_hero" class="col-2">
-                    <img src='/static/v2/images/tools/tools_noborder.jpg'>
+                    <img src="{% static "v2/images/tools/tools_noborder.jpg" %}">
                 </div>
               </div>
             </div>
@@ -58,7 +59,7 @@
                 {% for tool in actor.tools %}
                   <div class="card {{tool.class}}">
                     <div class="img">
-                      <img src="{{tool.img}}" {% if tool.stat_graph %} data-hover="/stats/{{tool.stat_graph}}" {% endif %} />
+                      <img src="{{tool.img}}" {% if tool.stat_graph %} data-hover="{% url "stat" "" %}{{tool.stat_graph}}" {% endif %} />
                     </div>
                     <div class="content">
                       <div class="title">{{tool.name}}</div>
@@ -95,9 +96,9 @@
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
 
-    <script src="{{STATIC_URL}}v2/js/abi.js"></script>
-    <script src="{{STATIC_URL}}v2/js/tokens.js"></script>
-    <script src="{{STATIC_URL}}v2/js/shared.js"></script>
-    <script src="{{STATIC_URL}}v2/js/toolbox.js"></script>
+    <script src="{% static "v2/js/abi.js" %}"></script>
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/shared.js" %}"></script>
+    <script src="{% static "v2/js/toolbox.js" %}"></script>
   </body>
 </html>

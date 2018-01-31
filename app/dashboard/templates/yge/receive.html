@@ -1,17 +1,18 @@
 {% extends 'yge/base.html' %}
+{% load static %}
 
 {% block 'scripts' %}
-<script src="/static/yge/ethereumjs/ethereumjs-accounts.js"></script>
-<script src="/static/yge/ethereumjs/web3.js"></script>
-<script src="/static/yge/ethereumjs/hooked-web3-provider.js"></script>
-<script src="/static/yge/ethereumjs/tx.js"></script>
-<script src="/static/yge/youvegoteth/index.js"></script>
-<script src="/static/yge/youvegoteth/tokens.js"></script>
-<script src="/static/yge/youvegoteth/pre.js"></script>
-<script src="/static/yge/youvegoteth/receive.js"></script>
-<script src="/static/yge/youvegoteth/confetti.js"></script>
-<script src="/static/yge/youvegoteth/web3alert.js"></script>
-<script src="/static/yge/lightwallet.min.js"></script>
+<script src="{% static "yge/ethereumjs/ethereumjs-accounts.js" %}"></script>
+<script src="{% static "yge/ethereumjs/web3.js" %}"></script>
+<script src="{% static "yge/ethereumjs/hooked-web3-provider.js" %}"></script>
+<script src="{% static "yge/ethereumjs/tx.js" %}"></script>
+<script src="{% static "yge/youvegoteth/index.js" %}"></script>
+<script src="{% static "yge/youvegoteth/tokens.js" %}"></script>
+<script src="{% static "yge/youvegoteth/pre.js" %}"></script>
+<script src="{% static "yge/youvegoteth/receive.js" %}"></script>
+<script src="{% static "yge/youvegoteth/confetti.js" %}"></script>
+<script src="{% static "yge/youvegoteth/web3alert.js" %}"></script>
+<script src="{% static "yge/lightwallet.min.js" %}"></script>
 {% endblock %}
 <!-- Main -->
 
@@ -24,14 +25,14 @@
 <section id="main">
     <header>
         <span class="avatar">
-            <a href='/'>
-                <img src="/static/v2/images/helmet.png" style="background-color: white; max-width: 100px; max-height: 100px;" />
+            <a href="{% url "tip" %}">
+                <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" />
             </a>
         </span>
     </header>
     <div id="loading">
         <h1>Loading</h1>
-        <img src="/static/yge/images/loading.gif" style="max-width: 70px; max-height: 70px;">
+        <img src="{% static "yge/images/loading.gif" %}" style="max-width: 70px; max-height: 70px;">
         <p id="loading_txt">waiting for web3...</p>
     </div>
 
@@ -47,7 +48,7 @@
     </div>
     <div id="send_eth" style="display:none;">
         <h1 id="oneh1">Receive Ethereum Now.</h1>
-        
+
         <div>
             <input type="hidden" placeholder="idx_address" id="idx_address" value="">
         </div>

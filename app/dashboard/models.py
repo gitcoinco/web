@@ -230,13 +230,11 @@ class Bounty(SuperModel):
                         return 'expired'
                     return 'done'
                 if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
-                    if len(self.interested.all()) > 0:
+                    if self.pk and self.interested.exists():
                         return 'started'
                     else:
                         return 'open'
-                if self.fulfiller_address != '0x0000000000000000000000000000000000000000':
-                    return 'submitted'
-                return 'unknown'
+                return 'submitted'
             except Exception as e:
                 return 'unknown'
         else:
@@ -249,13 +247,11 @@ class Bounty(SuperModel):
                     # If its not expired or done, it must be cancelled.
                     return 'cancelled'
                 if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
-                    if len(self.interested.all()) > 0:
+                    if self.pk and self.interested.exists():
                         return 'started'
                     else:
                         return 'open'
-                if self.fulfiller_address != '0x0000000000000000000000000000000000000000':
-                    return 'submitted'
-                return 'unknown'
+                return 'submitted'
             except Exception as e:
                 logger.warning(e)
                 return 'unknown'
@@ -390,11 +386,14 @@ class Tip(SuperModel):
     github_url = models.URLField(null=True)
     from_name = models.CharField(max_length=255, default='')
     from_email = models.CharField(max_length=255, default='')
-    username = models.CharField(max_length=255, default='')
+    from_username = models.CharField(max_length=255, default='')
+    username = models.CharField(max_length=255, default='') #to username
     network = models.CharField(max_length=255, default='')
     txid = models.CharField(max_length=255, default='')
     receive_txid = models.CharField(max_length=255, default='')
     received_on = models.DateTimeField(null=True)
+    from_address = models.CharField(max_length=255, default='')
+    receive_address = models.CharField(max_length=255, default='')
 
     def __str__(self):
         from django.contrib.humanize.templatetags.humanize import naturalday
