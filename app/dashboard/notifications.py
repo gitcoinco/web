@@ -241,7 +241,7 @@ def maybe_market_to_github(bounty, event_name, interested=None):
             amount_usdt_open_work(),
             )
     elif event_name == 'work_started':
-        msg = "__Work has been started on the {} {} {} funding by: __ \n {}. {} \n\n * Learn more [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = "__Work has been started on the {} {} {} funding by: __ \n 1. {}. {} \n\n * Learn more [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
         # Build interested profiles string.
         interested_profiles = "\n 1. ".join("[@%s](%s)" % interest for interest in interested)
         msg = msg.format(
