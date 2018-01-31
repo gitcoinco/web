@@ -1,0 +1,79 @@
+body {
+  font-family: "OpenSans";
+}
+
+h3 {
+  font-family: "OpenSans SemiBold";
+  font-size: 1.4em;
+}
+
+#gitcoin_buttons .btn {
+  font-weight: normal;
+}
+
+.heading {
+  font-family: "OpenSans SemiBold";
+  font-size: 1.3em;
+  text-align: center;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding-top: 10px;
+}
+
+.heading, .sub-heading {
+  text-transform: capitalize;
+  margin-bottom: 2em;
+}
+
+.sub-heading {
+  text-align: center;
+  font-size: 1em;
+}
+
+#feature_videos .video {
+  text-align: center;
+}
+
+.answer {
+  font-family: "OpenSans Light";
+  font-size: 15px;
+}
+
+.question {
+  font-size: 15px;
+}
+
+.show {
+  animation: .2s accordionIn;
+}
+
+.animated a {
+  font-size: 1em;
+}
+
+@keyframes accordionIn {
+  0% {
+    opacity: 0;
+    transform:scale(0.9) rotateX(-60deg);
+    transform-origin: 50% 0;
+  }
+  100% {
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+@media (max-width: 991px) {
+  .heading {
+    margin-top: 1em;
+  }
+
+  #feature_videos .video {
+    margin-bottom: 2em;
+    width: 100%;
+  }
+
+  #feature_videos iframe {
+    width: 100%;
+  }
+}
