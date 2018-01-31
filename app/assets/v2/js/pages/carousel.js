@@ -1,28 +1,27 @@
-const slides = document.querySelectorAll('#slides .slide');
+const slides = document.querySelectorAll( '#slides .slide' );
+
 let currentSlide = 0;
-if(slides.length){
-  slides[0].className = 'slide showing';
 
-  function nextSlide() {
-    slides[currentSlide].className = 'slide hide';
-    currentSlide = (currentSlide+1) % slides.length;
-    slides[currentSlide].className = 'slide showing';
-    resetTimer();
+function nextSlide() {
+  slides[currentSlide].className = 'slide hide';
+  currentSlide = ( currentSlide + 1 ) % slides.length;
+  slides[currentSlide].className = 'slide showing';
+  resetTimer();
+}
+
+function prevSlide() {
+  slides[currentSlide].className = 'slide hide';
+  if ( currentSlide == 0 ) {
+    currentSlide = slides.length - 1;
+  } else {
+    currentSlide = ( currentSlide - 1 ) % slides.length;
   }
 
-  function prevSlide() {
-    slides[currentSlide].className = 'slide hide';
-    if(currentSlide == 0)
-      currentSlide = slides.length - 1;
-    else
-      currentSlide = (currentSlide - 1) % slides.length;
-    slides[currentSlide].className = 'slide showing';
-    resetTimer();
-  }
+  slides[currentSlide].className = 'slide showing';
+  resetTimer();
+}
 
-  function resetTimer() {
-     clearInterval(interval);
-     startTimer();
-  }
-
+function resetTimer() {
+  clearInterval( interval );
+  startTimer();
 }

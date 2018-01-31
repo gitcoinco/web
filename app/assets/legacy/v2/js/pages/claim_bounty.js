@@ -1,4 +1,3 @@
-
 window.onload = function(){
     //a little time for web3 injection
     setTimeout(function(){
