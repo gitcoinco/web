@@ -188,7 +188,7 @@ for ia in INSTALLED_APPS:
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'app.static_storage.SilentFileStorage'
 STATICFILES_DIRS = (
     'assets/',
 )
