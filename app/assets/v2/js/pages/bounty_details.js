@@ -101,45 +101,8 @@ var callbacks = {
         return [ 'status', ui_status];
     },
     'issue_description': function(key, val, result){
-        var ui_body = val;
-        var allowed_tags = ['br', 'li', 'em', 'ol', 'ul', 'p', 'td', 'a', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code'];
-        var open_close = ['', '/'];
-        var replace_tags = {
-            'h1': 'h5',
-            'h2': 'h5',
-            'h3': 'h5',
-            'h4': 'h5',
-        }
-
-        for(var i=0; i<allowed_tags.length;i++){
-            var tag = allowed_tags[i];
-            for(var k=0; k<open_close.length;k++){
-                var oc = open_close[k];
-                var replace_tag = '&lt;'+ oc + tag +'.*&gt;';
-                var with_tag = '<'+ oc + tag +'>';
-                var re = new RegExp(replace_tag, 'g');
-                ui_body = ui_body.replace(re, with_tag);
-                var re = new RegExp(replace_tag.toUpperCase(), 'g');
-                ui_body = ui_body.replace(re, with_tag);
-            }
-        }
-        for(var key in replace_tags){
-            for(var k=0; k<open_close.length;k++){
-                var oc = open_close[k];
-                var replace = key;
-                var _with = replace_tags[key];
-                var replace_tag = '<'+ oc + replace +'>';
-                var with_tag = '<'+ oc + _with +'>';
-                var re = new RegExp(replace_tag, 'g');
-                ui_body = ui_body.replace(re, with_tag);
-            }
-        }
-
-        var max_len = 1000
-        if(ui_body.length > max_len){
-            ui_body = ui_body.substring(0, max_len) + '... <a target=new href="'+result['github_url']+'">See More</a> '
-        }
-        return [ 'issue_description', ui_body];
+        var converter = new showdown.Converter();
+        return [ 'issue_description', converter.makeHtml(val)];
     },
     'fulfiller_address': address_ize,
     'bounty_owner_address': address_ize,

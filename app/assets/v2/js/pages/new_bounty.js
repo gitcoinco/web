@@ -216,7 +216,7 @@ $(document).ready(function(){
                 mixpanel.track("New Bounty Error", {step: 'post_bounty', error: error});
                 console.error(error);
                 _alert({ message: "There was an error.  Please try again or contact support." });
-                $('#submitBounty').removeAttr('disabled');
+                unloading_button($('#submitBounty'));
                 return;
             }
 
@@ -235,7 +235,7 @@ $(document).ready(function(){
                 mixpanel.track("New Bounty Error", {step: 'post_ipfs', error: error});
                 console.error(error);
                 _alert({ message: "There was an error.  Please try again or contact support." });
-                $('#submitBounty').removeAttr('disabled');
+                unloading_button($('#submitBounty'));
                 return;
             }
 
