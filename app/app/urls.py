@@ -20,6 +20,7 @@ from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path
 
+import credits.views
 import dashboard.embed
 import dashboard.helpers
 import dashboard.ios
@@ -117,6 +118,7 @@ urlpatterns = [
 
     # link shortener
     url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),
+    url(r'^credit/(.*)$/?', credits.views.credits, name='credit'),
 
     # token distribution event
     url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),
