@@ -77,14 +77,11 @@ h4, .h4 {
   text-decoration: none;
   padding-right: 1rem !important;
   padding-left: 1rem !important;
+  font-size: 0.9rem !important;
 }
 
 .footer .nav-link {
   font-size: 0.8rem !important;
-}
-
-.dash .nav-link {
-  font-size: 0.9rem !important;
 }
 
 .nav-link:visited {

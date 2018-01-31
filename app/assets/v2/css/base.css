@@ -24,12 +24,8 @@ div, p, a, span {
     color: #4aeaa7 !important;
 }
 
-.navbar a.slack img {
-    max-width: 15px;
-    max-height: 15px;
-    margin-top:-3px;
+.navbar a.slack i {
     margin-right: 3px;
-    filter: invert(100%);
 }
 
 .footer .nav-link:hover {
