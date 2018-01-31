@@ -317,6 +317,10 @@ div.button-pink {
   letter-spacing: 0.1em;
 }
 
+#submitter_list {
+  padding-left: .5em;
+}
+
 *::-webkit-input-placeholder {
   color: lightgray;
 }

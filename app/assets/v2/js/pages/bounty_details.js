@@ -472,6 +472,9 @@ window.addEventListener('load', function() {
                     var is_interested = is_on_interest_list(result['pk']);
                     update_interest_list(result['pk']);
 
+                    // Find fulfiller information
+                    update_fulfiller_list(result['pk']);
+
                     //insert table onto page
                     for(var j=0; j< rows.length; j++){
                         var key = rows[j];
@@ -497,6 +500,8 @@ window.addEventListener('load', function() {
 
                     //actions
                     var actions = [];
+                    var fulfillmentActions = [];
+
                     if(result['github_url'].substring(0,4) == 'http'){
 
                         var github_url = result['github_url'];
@@ -568,19 +573,26 @@ window.addEventListener('load', function() {
                         var entry = {
                             href: '/funding/process?source='+result['github_url'],
                             text: 'Accept Submission',
-                            parent: 'right_actions',
+                            parent: 'submitter_list',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
                             title: enabled ? 'This will payout the bounty to the fulfiller.' : 'Can only be performed if you are the funder.',
 
                         }
-                        actions.push(entry);
+                        fulfillmentActions.push(entry);
                     }
 
                     for(var l=0; l< actions.length; l++){
                         var target = actions[l]['parent'];
                         var tmpl = $.templates("#action");
                         var html = tmpl.render(actions[l]);
+                        $("#"+target).append(html);
+                    }
+
+                    for(var l=0; l< fulfillmentActions.length; l++){
+                        var target = fulfillmentActions[l]['parent'];
+                        var tmpl = $.templates("#submitters");
+                        var html = tmpl.render(fulfillmentActions[l]);
                         $("#"+target).append(html);
                     }
 

@@ -94,22 +94,14 @@
                             Gitcoin Profile: <span id="bounty_owner_github_username"></span>
                             <br>
                         </div>
-                        <div id="fulfiller" style="width: 100%; display: block;">
-                            <br>
-                            <h5>Submitter Info</h5>
-                            ETH Address: <span id="fulfiller_address"></span>
-                            <br>
-                            Email: <span id="fulfiller_email"></span>
-                            <br>
-                            Gitcoin Profile: <span id="fulfiller_github_username"></span>
-
-                        </div>
                         <br>
                         <h5>Started Work</h5>
                         <div>
                             <ul id="interest_list">
                             </ul>
                         </div>
+                        <h5>Submitters</h5>
+                        <div id="submitter_list"></div>
                     </div>
                 </div>
             </div>
@@ -129,6 +121,32 @@
             <img src="[[:local_avatar_url]]" class="avatar">
             <a href="[[:url]]">[[:handle]]</a>
         </li>
+    </script>
+
+    <script id="submitters" type="text/x-jsrender">
+        <div class="row">
+            <div class="col-8">
+                <ul style="list-style-type:none" id="submitter_list">
+                    <li>ETH Address: <span id="fulfiller_address"> <a href="https://etherscan.io/address/[[:address]]">[[:address]]</a></span></li>
+                    <li>Email: <span id="fulfiller_email"> <a href="mailto:[[:email]]">[[:email]]</a></span></li>
+                    <li>Gitcoin Profile: <span id="fulfiller_github_username"> <a href="https://gitcoin.co/profile/[[:githubUsername]]">[[:githubUsername]]</a></span></li>
+                    <li>Name: <span id="fulfiller_name">[[:name]]</span></li>
+                </ul>
+            </div>
+            <div class="col-4">
+                <div class="row">
+                    <br>
+                </div>
+                <div class="row">
+                    <span title='[[:title]]'>
+                        <a class="btn btn-sm btn-[[:color]] [[:extraClass]]" role="button" href="[[:href]]" target="[[:target]]">
+                            <span class="font-smaller-4">[[:text]]</span>
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <br>
     </script>
 
     {% include 'shared/bottom_notification.html' %}
