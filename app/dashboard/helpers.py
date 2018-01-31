@@ -331,7 +331,7 @@ def process_bounty_details(bountydetails, url, contract_address, network):
         if not new_bounty.avatar_url:
             new_bounty.avatar_url = new_bounty.get_avatar_url()
         new_bounty.save()
-        if old_bounties:  # pull the interested parties off the last old_bounty
+        if old_bounties.exists():  # pull the interested parties off the last old_bounty
             last_bounty = old_bounties.order_by('-pk').first()
             for interested in last_bounty.interested.all():
                 new_bounty.interested.add(interested)

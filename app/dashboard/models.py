@@ -230,7 +230,7 @@ class Bounty(SuperModel):
                         return 'expired'
                     return 'done'
                 if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
-                    if self.pk and self.interested.all():
+                    if self.pk and self.interested.exists():
                         return 'started'
                     else:
                         return 'open'
@@ -247,7 +247,7 @@ class Bounty(SuperModel):
                     # If its not expired or done, it must be cancelled.
                     return 'cancelled'
                 if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
-                    if self.pk and self.interested.all():
+                    if self.pk and self.interested.exists():
                         return 'started'
                     else:
                         return 'open'
