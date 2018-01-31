@@ -1,6 +1,5 @@
-
 //preloading all images on a small interval
-var interval = 500; 
+var interval = 500;
 document.preloads = [];
 setInterval(function(){
     if(document.preloads.length){
