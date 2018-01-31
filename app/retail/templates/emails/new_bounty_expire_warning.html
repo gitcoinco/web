@@ -24,12 +24,12 @@
 
 
 <p>
-    Heads up! The funded issue that you {% if is_owner %}posted{% else %}claimed{% endif %} (below) is expiring in {{num}} {{unit}}.
+    Heads up! The funded issue that you {% if is_owner %}posted{% else %}fulfilled{% endif %} (below) is expiring in {{num}} {{unit}}.
 
     <br>
     <br>
     {% if is_owner %}
-    {% if bounty.status == 'fulfilled' %}
+    {% if bounty.status == 'submitted' %}
         There is a currently pending claim agains this funded issue. Please make sure you process them!
     {% endif %}
 

@@ -184,7 +184,7 @@ var refreshBounties = function(){
                 //setup args to go into template
                 if(typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']){
                     result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
-                } else if(result['claimeee_address'] != '0x0000000000000000000000000000000000000000'){
+                } else if(result['fulfiller_address'] != '0x0000000000000000000000000000000000000000'){
                     result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">'+result['status']+'</span></a>';
                 }
                 if (result['web3_type'] == 'legacy_gitcoin') {

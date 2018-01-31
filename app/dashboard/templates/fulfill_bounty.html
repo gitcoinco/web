@@ -44,9 +44,9 @@
                     {% include 'shared/unlock_metamask.html' %}
                     <div class="col d-flex align-items-center justify-content-center" id="primary_form">
                         <div class="d-flex justify-content-center flex-column mt-5 w-50" id="primary_subform">
-                            {% include 'shared/bounty_nav.html' with active_item=2 %}
+                            {% include 'shared/bounty_nav.html' with active_item=3 %}
                             <div class="w-100" style="text-align: center;">
-                                <h3>Fulfill Bounty</h3>
+                                <h3>Submit Work</h3>
                                 <img src="/static/v2/images/prime.png">
                             </div>
                             {% include 'shared/network_status.html' %}
@@ -69,7 +69,7 @@
                             </div>
                             {% include 'shared/metamask_estimate.html' %}
                             <div class="w-80 mt-2">
-                                <a class="btn btn-sm btn-info mt-3 mb-0 pulseClick float-right" role="button" id="submitBounty" href="#">Fulfill Bounty</a>
+                                <a class="btn btn-sm btn-info mt-3 mb-0 pulseClick float-right" role="button" id="submitBounty" href="#">Submit Work</a>
                             </div>
                             <div class="w-80 mb-5 mt-1">
                                 <a class="float-right" target=new href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
@@ -82,7 +82,7 @@
             </div>
         </div>
     {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/ga.html' %}
+    {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}

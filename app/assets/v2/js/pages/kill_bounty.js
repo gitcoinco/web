@@ -52,7 +52,7 @@ window.onload = function(){
 
                     var bountyAmount = parseInt(result['value_in_token'], 10); 
                     var fromAddress = result['bounty_owner_address'];
-                    var claimeeAddress = result['claimeee_address'];
+                    var claimeeAddress = result['fulfiller_address'];
                     var open = result['is_open'];
                     var initialized = true;
                     var bountyId = result['standard_bounties_id'];

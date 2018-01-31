@@ -1,5 +1,7 @@
-$(document).ready(function(){
-    $( document ).tooltip();
+$(document).ready(function() {
+    if(typeof ($( document ).tooltip) != 'undefined'){
+      $( document ).tooltip();
+    }
 
     $(".nav-link.dropdown-toggle, .nav_avatar").click(function(e){
       if($(".dropdown-menu").css('display') == 'block'){

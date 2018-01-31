@@ -58,13 +58,34 @@ def stats(request):
 
     # filters
     if _filter == 'Activity':
-        _filters = ['tip', 'bount']
+        _filters = [
+            'tip',
+            'bount'
+        ]
         types = filter_types(types, _filters)
     if _filter == 'Marketing':
-        _filters = ['slack', 'email', 'whitepaper', 'twitter']
+        _filters = [
+            'slack',
+            'email',
+            'whitepaper',
+            'twitter'
+        ]
         types = filter_types(types, _filters)
     if _filter == 'KPI':
-        _filters = ['browser_ext_chrome', 'medium_subscribers', 'slack_users', 'email_subscribers_active', 'bounties_open', 'bounties_ful', 'joe_dominance_index_30_count', 'joe_dominance_index_30_value', 'turnaround_time_hours_30_days_back', 'tips', 'twitter']
+        _filters = [
+            'browser_ext_chrome',
+            'medium_subscribers',
+            'github_stargazers_count',
+            'slack_users',
+            'email_subscribers_active',
+            'bounties_open',
+            'bounties_ful',
+            'joe_dominance_index_30_count',
+            'joe_dominance_index_30_value',
+            'turnaround_time_hours_30_days_back',
+            'tips',
+            'twitter'
+        ]
         types = filter_types(types, _filters)
 
     # params
@@ -250,7 +271,7 @@ def leaderboard(request, key):
         'title': "Monthly Leaderboard: " + titles[key],
         'card_title': "Monthly Leaderboard: " +titles[key],
         'card_desc': 'See the most valued members in the Gitcoin community this month. ' + top_earners,
-        'action_past_tense': 'Transacted' if 'fulfilled' in key else 'bountied',
+        'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
         'podium_items': podium_items
     }
