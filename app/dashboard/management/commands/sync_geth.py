@@ -33,9 +33,9 @@ def get_callback(web3, bounty_contract_address, realtime):
 
     def process_change(bountyContract, url, txid, network):
         url = normalizeURL(url)
-        didChange, old_bounty, new_bounty = syncBountywithWeb3(bountyContract, url, network)
-        print("{} changed, {}".format(didChange, url))
-        if didChange:
+        did_change, old_bounty, new_bounty = syncBountywithWeb3(bountyContract, url, network)
+        print("{} changed, {}".format(did_change, url))
+        if did_change:
             print("- processing changes")
             process_bounty_changes(old_bounty, new_bounty, txid)
 
