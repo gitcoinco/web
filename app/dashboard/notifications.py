@@ -249,7 +249,7 @@ def maybe_market_to_github(bounty, event_name, interested=None):
             bounty.token_name,
             usdt_value,
             interested_profiles if interested_profiles else "",
-            "\n\n __Please work together__ and coordinate delivery of the issue scope. Gitcoin doesn't know enough about everyones skillsets / free time to say who should work on what, but we trust that the community is smart and well-intentioned enough to work together.  As a general rule; if you start work first, youll be at the top of the above list ^^, and should have 'dibs' as long as you follow through. \n\n If you've started work, please leave a comment to let the funder {} and the other parties involved what you're working, with respect to this issue and your plans to resolve it.  If you don't leave a comment, the funder may expire your submission at their discretion.".format(
+            "\n\n __Please work together__ and coordinate delivery of the issue scope. Gitcoin doesn't know enough about everyones skillsets / free time to say who should work on what, but we trust that the community is smart and well-intentioned enough to work together.  As a general rule; if you start work first, youll be at the top of the above list ^^, and should have 'dibs' as long as you follow through. \n\n On the above list? Please leave a comment to let the funder {} and the other parties involved what you're working, with respect to this issue and your plans to resolve it.  If you don't leave a comment, the funder may expire your submission at their discretion.".format(
                 "(@{})".format(bounty.bounty_owner_github_username) if bounty.bounty_owner_github_username else "",
                 ),
             bounty.get_absolute_url(),
