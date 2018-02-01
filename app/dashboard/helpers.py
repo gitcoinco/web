@@ -32,6 +32,7 @@ from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
 )
 from economy.utils import convert_amount
+from pytz import UTC
 from ratelimit.decorators import ratelimit
 
 import logging
@@ -216,7 +217,7 @@ def normalizeURL(url):
         url = url[0:-1]
     return url
 
-# returns didChange if bounty has changed since last sync
+# returns did_change if bounty has changed since last sync
 # then old_bounty
 # then new_bounty
 def syncBountywithWeb3(bountyContract, url, network):
@@ -251,21 +252,20 @@ def process_bounty_details(bountydetails, url, contract_address, network):
     fulfillments = bountydetails.get('fulfillments', {})
 
     # Create new bounty (but only if things have changed)
-    didChange = False
+    did_change = False
     old_bounties = Bounty.objects.none()
     try:
-        old_bounties = Bounty.objects.filter(
+        old_bounties = Bounty.objects.current().filter(
             github_url=url,
             title=bountyDataPayload.get('title'),
-            current_bounty=True,
         ).order_by('-created_on')
-        didChange = (bountydetails != old_bounties.first().raw_data)
-        if not didChange:
-            return (didChange, old_bounties.first(), old_bounties.first())
+        did_change = (bountydetails != old_bounties.first().raw_data)
+        if not did_change:
+            return (did_change, old_bounties.first(), old_bounties.first())
     except Exception as e:
         print('exception in process_bounty_details')
         print(e)
-        didChange = True
+        did_change = True
 
     # Check if we have any fulfillments.  If so, check if they are accepted.
     # If there are no fulfillments, accepted is automatically False.
@@ -291,7 +291,7 @@ def process_bounty_details(bountydetails, url, contract_address, network):
         new_bounty = Bounty.objects.create(
             title=bountyDataPayload.get('title', ''),
             issue_description=bountyDataPayload.get('description', ''),
-            web3_created=timezone.datetime.fromtimestamp(bountyDataPayload.get('created')),
+            web3_created=timezone.make_aware(timezone.datetime.fromtimestamp(bountyDataPayload.get('created')), timezone=UTC),
             value_in_token=bounty.get('fulfillmentAmount'),
             token_name=bountyDataPayload.get('tokenName', ''),
             token_address=bountyDataPayload.get('tokenAddress', '0x0000000000000000000000000000000000000000'),
@@ -313,19 +313,19 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             network=network,
             accepted=accepted,
             # These fields are after initial bounty creation, in bounty_details.js
-            expires_date=timezone.datetime.fromtimestamp(bounty.get('deadline')),
+            expires_date=timezone.make_aware(timezone.datetime.fromtimestamp(bounty.get('deadline')), timezone=UTC),
             standard_bounties_id=bountyId,
             balance=bounty.get('balance'),
             num_fulfillments=fulfillments.get('total', 0),
-            )
+        )
         new_bounty.fetch_issue_item()
-        if old_bounties.count() > 0: #pull the interested parties off the last old_bounty
-            last_bounty = old_bounties.order_by('-pk').first()
-            for interested in last_bounty.interested.all():
-                new_bounty.interested.add(interested)
         if not new_bounty.avatar_url:
             new_bounty.avatar_url = new_bounty.get_avatar_url()
         new_bounty.save()
+        if old_bounties.exists():  # pull the interested parties off the last old_bounty
+            last_bounty = old_bounties.order_by('-pk').first()
+            for interested in last_bounty.interested.all():
+                new_bounty.interested.add(interested)
 
         if fments:
             for fment in fments:
@@ -348,7 +348,7 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             for inactive_bounty in inactive_bounties:
                 BountyFulfillment.objects.filter(bounty_id=inactive_bounty.id).delete()
 
-    return (didChange, old_bounties.first(), new_bounty)
+    return (did_change, old_bounties.first(), new_bounty)
 
 
 def process_bounty_changes(old_bounty, new_bounty, txid):

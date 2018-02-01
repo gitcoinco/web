@@ -1,4 +1,3 @@
-
 window.onload = function(){
     //a little time for web3 injection
     setTimeout(function(){
@@ -78,7 +77,7 @@ window.onload = function(){
                     mixpanel.track("Fulfill Bounty Error", {step: '_callback', error: error});
                     ignore_error = String(error).indexOf('BigNumber') != -1;
                 }
-                localStorage['dataHash'] = result;  // Cache IPFS data hash
+                document.ipfsDataHash = result;  // Cache IPFS data hash
                 var run_main = !error || ignore_error;
                 if(error && !ignore_error){
                     _alert({ message: "Could not get bounty details." });
@@ -88,11 +87,18 @@ window.onload = function(){
                     if(!ignore_error){
                         var web3Callback = function(error, result){
                             var next = function(){
-                                localStorage['txid'] = result;
+
+                                // setup inter page state
+                                localStorage[issueURL] = JSON.stringify({
+                                    'timestamp': timestamp(),
+                                    'dataHash': null,
+                                    'issuer': account,
+                                    'txid': result,
+                                });
+
                                 // See views.sync_web3
                                 dataLayer.push({'event': 'claimissue'});
                                 sync_web3(issueURL);
-                                localStorage[issueURL] = timestamp();  //ipfs timestamp
                                 _alert({ message: "Fulfillment submitted to web3." },'info');
                                 setTimeout(function(){
                                     mixpanel.track("Fulfill Bounty Success", {});
@@ -123,7 +129,7 @@ window.onload = function(){
 
                             var bountyId = result['standard_bounties_id'];
 
-                            bounty.fulfillBounty(bountyId, localStorage['dataHash'], {gasPrice:web3.toHex($("#gasPrice").val()) * 10**9}, web3Callback);
+                            bounty.fulfillBounty(bountyId, document.ipfsDataHash, {gasPrice:web3.toHex($("#gasPrice").val()) * Math.pow( 10, 9 )}, web3Callback);
                         })
                     }
                     e.preventDefault();

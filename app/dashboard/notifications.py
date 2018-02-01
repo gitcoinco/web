@@ -241,15 +241,15 @@ def maybe_market_to_github(bounty, event_name, interested=None):
             amount_usdt_open_work(),
             )
     elif event_name == 'work_started':
-        msg = "__Work has been started on {} {} {} by: {}.__ {} \n\n * Learn more [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = "__Work has been started on the {} {} {} funding by__: \n 1. {} {} \n\n * Learn more [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
         # Build interested profiles string.
-        interested_profiles = ", ".join("[@%s](%s)" % interest for interest in interested)
+        interested_profiles = "\n 1. ".join("[@%s](%s)" % interest for interest in interested)
         msg = msg.format(
             round(bounty.get_natural_value(), 4),
             bounty.token_name,
             usdt_value,
             interested_profiles if interested_profiles else "",
-            "\n\n If you've started work, please leave a comment to let the funder {} and the other parties involved what you're working, with respect to this issue and your plans to resolve it.  If you don't leave a comment, the funder may expire your submission at their discretion.".format(
+            "\n\n __Please work together__ and coordinate delivery of the issue scope. Gitcoin doesn't know enough about everyones skillsets / free time to say who should work on what, but we trust that the community is smart and well-intentioned enough to work together.  As a general rule; if you start work first, youll be at the top of the above list ^^, and should have 'dibs' as long as you follow through. \n\n On the above list? Please leave a comment to let the funder {} and the other parties involved what you're working, with respect to this issue and your plans to resolve it.  If you don't leave a comment, the funder may expire your submission at their discretion.".format(
                 "(@{})".format(bounty.bounty_owner_github_username) if bounty.bounty_owner_github_username else "",
                 ),
             bounty.get_absolute_url(),
@@ -344,7 +344,7 @@ def maybe_market_tip_to_github(tip):
     warning = tip.network if tip.network != 'mainnet' else ""
     _comments = "\n\nThe sender had the following public comments: \n> {}".format(tip.comments_public) if tip.comments_public else ""
     msg = "⚡️ A tip worth {} {} {} {} has been granted to {} for this issue{}. ⚡️ {}\n\nNice work {}, check your email for further instructions. \n\n * ${} in Funded OSS Work Available at: https://gitcoin.co/explorer\n * Incentivize contributions to your repo: <a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
-    msg = msg.format(round(tip.amount, 3), warning, tip.tokenName, "(${})".format(tip.value_in_usdt) if tip.value_in_usdt else "" , username, _from, _comments, username, amount_usdt_open_work())
+    msg = msg.format(round(tip.amount, 5), warning, tip.tokenName, "(${})".format(tip.value_in_usdt) if tip.value_in_usdt else "" , username, _from, _comments, username, amount_usdt_open_work())
 
     # actually post
     url = tip.github_url

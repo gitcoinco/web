@@ -25,7 +25,7 @@ from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.db.models.signals import m2m_changed, pre_save, post_save, post_delete
+from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 
@@ -59,11 +59,6 @@ class Bounty(SuperModel):
 
     """
 
-    class Meta:
-        """Define metadata associated with Bounty."""
-
-        verbose_name_plural = 'Bounties'
-
     BOUNTY_TYPES = [
         ('Bug', 'Bug'),
         ('Security', 'Security'),
@@ -85,14 +80,14 @@ class Bounty(SuperModel):
     ]
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
-    web3_created = models.DateTimeField()
+    web3_created = models.DateTimeField(db_index=True)
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
     token_address = models.CharField(max_length=50)
     bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES)
     project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS)
     experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS)
-    github_url = models.URLField()
+    github_url = models.URLField(db_index=True)
     github_comments = models.IntegerField(default=0)
     bounty_owner_address = models.CharField(max_length=50)
     bounty_owner_email = models.CharField(max_length=255, blank=True)
@@ -107,10 +102,10 @@ class Bounty(SuperModel):
                                          help_text='Whether this bounty is the most current revision one or not')
     _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     contract_address = models.CharField(max_length=50, default='')
-    network = models.CharField(max_length=255, blank=True)
+    network = models.CharField(max_length=255, blank=True, db_index=True)
     idx_experience_level = models.IntegerField(default=0, db_index=True)
     idx_project_length = models.IntegerField(default=0, db_index=True)
-    idx_status = models.CharField(max_length=50, default='')
+    idx_status = models.CharField(max_length=50, default='', db_index=True)
     avatar_url = models.CharField(max_length=255, default='')
     issue_description = models.TextField(default='', blank=True)
     standard_bounties_id = models.IntegerField(default=0)
@@ -121,6 +116,14 @@ class Bounty(SuperModel):
     interested_comment = models.IntegerField(null=True, blank=True)
 
     objects = BountyQuerySet.as_manager()
+
+    class Meta:
+        """Define metadata associated with Bounty."""
+
+        verbose_name_plural = 'Bounties'
+        index_together = [
+            ["network", "idx_status"],
+        ]
 
     def __str__(self):
         return "{}{} {} {} {}".format("(CURRENT) " if self.current_bounty else "", self.title, self.value_in_token,
@@ -221,13 +224,11 @@ class Bounty(SuperModel):
                         return 'expired'
                     return 'done'
                 if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
-                    if len(self.interested.all()) > 0:
+                    if self.pk and self.interested.exists():
                         return 'started'
                     else:
                         return 'open'
-                if self.fulfiller_address != '0x0000000000000000000000000000000000000000':
-                    return 'submitted'
-                return 'unknown'
+                return 'submitted'
             except Exception as e:
                 return 'unknown'
         else:
@@ -240,7 +241,7 @@ class Bounty(SuperModel):
                     # If its not expired or done, it must be cancelled.
                     return 'cancelled'
                 if self.num_fulfillments == 0:
-                    if len(self.interested.all()) > 0:
+                    if self.pk and self.interested.exists():
                         return 'started'
                     else:
                         return 'open'
@@ -391,11 +392,14 @@ class Tip(SuperModel):
     github_url = models.URLField(null=True)
     from_name = models.CharField(max_length=255, default='')
     from_email = models.CharField(max_length=255, default='')
-    username = models.CharField(max_length=255, default='')
+    from_username = models.CharField(max_length=255, default='')
+    username = models.CharField(max_length=255, default='') #to username
     network = models.CharField(max_length=255, default='')
     txid = models.CharField(max_length=255, default='')
     receive_txid = models.CharField(max_length=255, default='')
     received_on = models.DateTimeField(null=True)
+    from_address = models.CharField(max_length=255, default='')
+    receive_address = models.CharField(max_length=255, default='')
 
     def __str__(self):
         from django.contrib.humanize.templatetags.humanize import naturalday
@@ -688,7 +692,7 @@ class Profile(SuperModel):
 
     @property
     def local_avatar_url(self):
-        return "https://gitcoin.co/funding/avatar?repo={}&v=3".format(self.github_url)
+        return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
 
     @property
     def absolute_url(self):

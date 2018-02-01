@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,14 +16,14 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-
+{% load static %}
 {% block body %}
 
     <div class="container-fluid" style="">
         <div class=" row ">
             <div class="col-4 pb-4">
                 <div class="align-items-right justify-content-right" style="text-align: right;">
-                    <img id='side_img' src="/static/v2/images/regulus.png" style="max-width:300px;">
+                    <img id='side_img' src="{% static "v2/images/regulus.png" %}" style="max-width:300px;">
                 </div>
             </div>
             <div class="col-1 pb-4">
@@ -61,18 +61,18 @@
                             <label for="github">Github username</label>
                             <input type=text name=github class=form-control placeholder='@username'  value="{{es.github}}">
                             <small id="ghHelp" class="form-text text-muted">(so we know how to tag you on Github)</small>
-                        </div> 
+                        </div>
                         <div class="form-group">
                             <label for="keywords">Programming languages</label> <a href="#" id="pull_gh">(pull from github)</a>
                             <input type=text name=keywords class=form-control placeholder='comma, seperated, list'  value="{{keywords}}">
                             <small id="kwHelp" class="form-text text-muted">(so we know what funded work to route your way)</small>
-                        </div> 
+                        </div>
                         <div class="form-group">
                             <h5>Feedback</h5>
                             <label for="comments">Comments</label>
                             <textarea class="form-control" id="comments" name="comments" rows="3">{{es.metadata.comments}}</textarea>
                             <small id="comments" class="form-text text-muted">How are we doing?  What do you think?</small>
-                        </div> 
+                        </div>
                         {% csrf_token %}
                         <input class='btn btn-sm btn-success' type='submit' name='submit' value="Go">
                     </form>

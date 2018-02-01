@@ -74,7 +74,7 @@ $(document).ready(function(){
         var token = tokenAddressToDetails(tokenAddress);
         var decimals = token['decimals'];
         var tokenName = token['name'];
-        var decimalDivisor = 10**decimals;
+        var decimalDivisor = Math.pow( 10, decimals );
         var expirationTimeDelta = $('select[name=expirationTimeDelta').val();
 
        var metadata = {
@@ -182,13 +182,25 @@ $(document).ready(function(){
         ipfs.ipfsApi = IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: "https", root:'/api/v0'});
         ipfs.setProvider({ host: 'ipfs.infura.io', port: 5001, protocol: 'https', root:'/api/v0'});
 
+        // setup inter page state
+        localStorage[issueURL] = JSON.stringify({
+            'timestamp': null,
+            'dataHash': null,
+            'issuer': account,
+            'txid': null,
+        });  
+
         function syncDb() {
             // Need to pass the bountydetails as well, since I can't grab it from the 
             // Standard Bounties contract.
             dataLayer.push({'event': 'fundissue'});
             sync_web3(issueURL);  // Writes the bounty URL to the database
-            localStorage[issueURL] = timestamp();  // Used to figure out "local time delta" in bounty_details.js
-            localStorage['issuer'] = account;
+            
+            // update localStorage issuePackage
+            var issuePackage = JSON.parse(localStorage[issueURL]);
+            issuePackage['timestamp'] = timestamp();
+            localStorage[issueURL] = JSON.stringify(issuePackage);
+
             _alert({ message: "Submission sent to web3." }, 'info');
             setTimeout(function(){
                 delete localStorage['issueURL'];
@@ -204,11 +216,16 @@ $(document).ready(function(){
                 mixpanel.track("New Bounty Error", {step: 'post_bounty', error: error});
                 console.error(error);
                 _alert({ message: "There was an error.  Please try again or contact support." });
-                $('#submitBounty').removeAttr('disabled');
+                unloading_button($('#submitBounty'));
                 return;
             }
 
-            localStorage['txid'] = result;
+            // update localStorage issuePackage
+            var issuePackage = JSON.parse(localStorage[issueURL]);
+            issuePackage['txid'] = result;
+            localStorage[issueURL] = JSON.stringify(issuePackage);
+
+            //sync db
             syncDb();
 
         }
@@ -218,10 +235,16 @@ $(document).ready(function(){
                 mixpanel.track("New Bounty Error", {step: 'post_ipfs', error: error});
                 console.error(error);
                 _alert({ message: "There was an error.  Please try again or contact support." });
-                $('#submitBounty').removeAttr('disabled');
+                unloading_button($('#submitBounty'));
                 return;
             }
-            localStorage['dataHash'] = result;  // cache data hash to find bountyId later
+
+            // cache data hash to find bountyId later
+            // update localStorage issuePackage
+            var issuePackage = JSON.parse(localStorage[issueURL]);
+            issuePackage['dataHash'] = result;
+            localStorage[issueURL] = JSON.stringify(issuePackage);
+            
             // bounty is a web3.js eth.contract address
             // The Ethereum network requires using ether to do stuff on it
             // issueAndActivateBounty is a method definied in the StandardBounties solidity contract.
@@ -240,7 +263,7 @@ $(document).ready(function(){
                 {                   // {from: x, to: y}
                     from :account,
                     value: eth_amount,
-                    gasPrice: web3.toHex($("#gasPrice").val()) * 10**9,
+                    gasPrice: web3.toHex($("#gasPrice").val()) * Math.pow( 10, 9 ),
                 },
                 web3Callback        // callback for web3
             );

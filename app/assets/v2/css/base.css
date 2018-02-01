@@ -24,12 +24,8 @@ div, p, a, span {
     color: #4aeaa7 !important;
 }
 
-.navbar a.slack img {
-    max-width: 15px;
-    max-height: 15px;
-    margin-top:-3px;
+.navbar a.slack i {
     margin-right: 3px;
-    filter: invert(100%);
 }
 
 .footer .nav-link:hover {
@@ -296,7 +292,7 @@ p a {
 }
 
 .btn-warning:hover, .btn-success:hover, .btn-info {
-      cursor: pointer;
+    cursor: pointer;
 }
 
 .btn-info:hover {
@@ -307,6 +303,10 @@ p a {
 
 .btn-warning {
     color: #15003e;
+}
+
+.btn {
+    cursor: pointer;
 }
 
 .btn-warning:hover {
@@ -514,7 +514,7 @@ input[type=text].loading {
 .blocking_error {
     text-align: center;
     margin: 100px auto;
-    max-width: 500px;
+    max-width: 100%;
 }
 
 .blocking_error img {
@@ -695,6 +695,15 @@ body.bounty_details .avatar {
 
 #bounty_details{
     display: none;
+}
+#bounty_details #issue_description #h1,
+#bounty_details #issue_description #h2,
+#bounty_details #issue_description #h3,
+#bounty_details #issue_description #h4,
+#bounty_details #issue_description #h5,
+#bounty_details #issue_description #h6
+{
+    font-size: 16px;
 }
 
 body.bounty_details #left_actions,
@@ -1458,7 +1467,6 @@ body.bounty_details #title {
     #hero_cta a.btn{
         margin-top: 10px;
     }
-
 
     #mission_hero .text {
         margin-top: 1rem;

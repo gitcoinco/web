@@ -169,7 +169,7 @@ def get_github_user_token(code, **kwargs):
         settings.GITHUB_TOKEN_URL, headers=JSON_HEADER, params=_params)
     response = response.json()
     scope = response.get('scope', None)
-    if scope and scope == settings.GITHUB_SCOPE:
+    if scope:
         access_token = response.get('access_token', None)
         return access_token
     return None

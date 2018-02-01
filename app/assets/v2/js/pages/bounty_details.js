@@ -77,7 +77,7 @@ var heads = {
 var callbacks = {
     'github_url': link_ize,
     'value_in_token': function(key, val, result){
-        return [ 'amount', Math.round((parseInt(val) / 10**document.decimals) * 1000) / 1000 + " " + result['token_name']];
+        return [ 'amount', Math.round((parseInt(val) / Math.pow( 10, document.decimals )) * 1000) / 1000 + " " + result['token_name']];
     },
     'avatar_url': function(key, val, result){
         return [ 'avatar', '<a href="/profile/'+result['org_name']+'"><img class=avatar src="'+val+'"></a>'];
@@ -102,45 +102,8 @@ var callbacks = {
         return [ 'status', ui_status];
     },
     'issue_description': function(key, val, result){
-        var ui_body = val;
-        var allowed_tags = ['br', 'li', 'em', 'ol', 'ul', 'p', 'td', 'a', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code'];
-        var open_close = ['', '/'];
-        var replace_tags = {
-            'h1': 'h5',
-            'h2': 'h5',
-            'h3': 'h5',
-            'h4': 'h5',
-        }
-
-        for(var i=0; i<allowed_tags.length;i++){
-            var tag = allowed_tags[i];
-            for(var k=0; k<open_close.length;k++){
-                var oc = open_close[k];
-                var replace_tag = '&lt;'+ oc + tag +'.*&gt;';
-                var with_tag = '<'+ oc + tag +'>';
-                var re = new RegExp(replace_tag, 'g');
-                ui_body = ui_body.replace(re, with_tag);
-                var re = new RegExp(replace_tag.toUpperCase(), 'g');
-                ui_body = ui_body.replace(re, with_tag);
-            }
-        }
-        for(var key in replace_tags){
-            for(var k=0; k<open_close.length;k++){
-                var oc = open_close[k];
-                var replace = key;
-                var _with = replace_tags[key];
-                var replace_tag = '<'+ oc + replace +'>';
-                var with_tag = '<'+ oc + _with +'>';
-                var re = new RegExp(replace_tag, 'g');
-                ui_body = ui_body.replace(re, with_tag);
-            }
-        }
-
-        var max_len = 1000
-        if(ui_body.length > max_len){
-            ui_body = ui_body.substring(0, max_len) + '... <a target=new href="'+result['github_url']+'">See More</a> '
-        }
-        return [ 'issue_description', ui_body];
+        var converter = new showdown.Converter();
+        return [ 'issue_description', converter.makeHtml(val)];
     },
     'fulfiller_address': address_ize,
     'bounty_owner_address': address_ize,
@@ -163,7 +126,7 @@ var callbacks = {
         if(result['token_name'] == 'ETH' || val == null){
             return [null, null];
         }
-        return [ "Amount (ETH)" , Math.round((parseInt(val) / 10**18) * 1000) / 1000];
+        return [ "Amount (ETH)" , Math.round((parseInt(val) / Math.pow( 10, 18 )) * 1000) / 1000];
     },
     'value_in_usdt': function(key, val, result){
         if(val == null){
@@ -201,7 +164,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
     if(typeof web3 == 'undefined'){
         return false;
     }
-    
+
     console.log("checking this issue for updates:");
     console.log(issueURL);
     //setup callbacks
@@ -267,7 +230,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                     }
                     issuer = result2[0];
                     // compare issuer to the submitting address
-                    if (issuer == localStorage['issuer']) {
+                    if (issuer == document.pendingIssueMetadata['issuer']) {
                         bounty.getBountyData(i, function(error, result3) {
                             if (error) {
                             console.error(error);
@@ -275,7 +238,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                             }
                             dataHash = result3;
                             // compare resulting datahash from std bounties to cached dataHash
-                            if (dataHash == localStorage['dataHash']) {
+                            if (dataHash == document.pendingIssueMetadata['dataHash']) {
                                 var bountyId = i;
                                 console.log('Found matching bountyId: '+ bountyId);
                                 callback(null, bountyId);
@@ -326,7 +289,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
 
         // callFunctionWhenTransactionMined continue to be called, until the transaction receipt is found.
         // Once it is found, it calls the function() defined below.
-        callFunctionWhenTransactionMined(localStorage['txid'],function(){
+        callFunctionWhenTransactionMined(document.pendingIssueMetadata['txid'],function(){
             setTimeout(function(){
                 getBountyId(function(error, bountyId) {
                    if(bountyId != 0) {
@@ -371,7 +334,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                                                 getFulfillmentData(i, numFulfillments);
                                             };
                                         } else {
-                                            sync_web3(issueURL, JSON.stringify(allBountyData), changes_synced_callback);
+                                            sync_web3(document.issueURL, JSON.stringify(allBountyData), changes_synced_callback);
                                             console.log('success syncing with web3');
                                         }
                                     })
@@ -382,7 +345,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
 
                     } else {
                         // console.error(result);
-                        var link_url = etherscan_tx_url(localStorage['txid']);
+                        var link_url = etherscan_tx_url(document.pendingIssueMetadata['txid']);
                         _alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
                     }
                 });
@@ -392,9 +355,9 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
 
     var showWarningMessage = function () {
 
-        if (typeof localStorage['txid'] != 'undefined' && localStorage['txid'].indexOf('0x') != -1) {
+        if (typeof document.pendingIssueMetadata['txid'] != 'undefined' && document.pendingIssueMetadata['txid'].indexOf('0x') != -1) {
             clearInterval(interval);
-            var link_url = etherscan_tx_url(localStorage['txid']);
+            var link_url = etherscan_tx_url(document.pendingIssueMetadata['txid']);
             $('#pending_changes').attr("href", link_url);
             $('#transaction_url').attr("href", link_url);
         }
@@ -418,9 +381,9 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
 
     // This part decides if a warning banner should be displayed
     var should_display_warning = false;
-    if (localStorage[issueURL]) {  // localStorage[issueURL] is the "local timestamp"
+    if (document.pendingIssueMetadata) {  // localStorage[issueURL] is the "local timestamp"
         //local warning
-        var local_delta = parseInt(timestamp() - localStorage[issueURL]);
+        var local_delta = parseInt(timestamp() - document.pendingIssueMetadata['timestamp']);
         var is_changing_local_recent = local_delta < (60 * 60); // less than one hour
 
         //remote warning
@@ -441,8 +404,12 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
 
 window.addEventListener('load', function() {
     setTimeout(function(){
-        var issueURL = getParam('url');
-        $("#submitsolicitation a").attr('href','/funding/new/?source=' + issueURL)
+        document.issueURL = getParam('url');
+        if(localStorage[document.issueURL]){
+            document.pendingIssueMetadata = JSON.parse(localStorage[document.issueURL]);
+        }
+
+        $("#submitsolicitation a").attr('href','/funding/new/?source=' + document.issueURL)
         var uri = '/api/v0.1/bounties/?';
         $.get(uri, function(results){
             results = sanitizeAPIResults(results);
@@ -451,7 +418,7 @@ window.addEventListener('load', function() {
             for(var i = 0; i<results.length; i++){
                 var result = results[i];
                 // if the result from the database matches the one in question..
-                if(normalizeURL(result['github_url']) == normalizeURL(issueURL)){
+                if(normalizeURL(result['github_url']) == normalizeURL(document.issueURL)){
                     $("#bounty_details").css('display','flex');
                     nonefound = false;
 
@@ -551,7 +518,7 @@ window.addEventListener('load', function() {
                             parent: 'right_actions',
                             color: enabled ? 'darkBlue' : 'darkGrey',
                             extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Start Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.  Please leave a comment for the bounty submitter to let them know you are interested in workwith with them after you start work.' : 'Can only be performed if you are not the funder.',
+                            title: enabled ? 'Start Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.  Please leave a comment for the bounty submitter to let them know you are interested in working with them after you start work.' : 'Can only be performed if you are not the funder.',
                         }
                         actions.push(interestEntry);
 
@@ -612,7 +579,7 @@ window.addEventListener('load', function() {
 
                     //cleanup
                     document.result = result;
-                    pendingChangesWarning(issueURL, result['created_on'], result['now']);
+                    pendingChangesWarning(document.issueURL, result['created_on'], result['now']);
                     return;
                 }
             }
@@ -620,7 +587,7 @@ window.addEventListener('load', function() {
             if (nonefound) {
                 $(".nonefound").css('display','block');
                 $("#primary_view").css('display','none');
-                pendingChangesWarning(issueURL);
+                pendingChangesWarning(document.issueURL);
             }
         }).fail(function(){
             _alert('got an error. please try again, or contact support@gitcoin.co');

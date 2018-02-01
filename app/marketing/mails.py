@@ -22,9 +22,9 @@ from django.utils import timezone
 import sendgrid
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from retail.emails import (
-    render_bounty_expire_warning, render_match_email, render_new_bounty, render_new_bounty_acceptance,
-    render_new_work_submission, render_new_bounty_rejection, render_new_bounty_roundup, render_tip_email,
-    render_bounty_startwork_expire_warning
+    render_bounty_expire_warning, render_bounty_startwork_expire_warning, render_match_email, render_new_bounty,
+    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
+    render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -72,13 +72,14 @@ def send_mail(from_email, _to_email, subject, body, html=False,
 
 
 def tip_email(tip, to_emails, is_new):
+    ROUND_DECIMALS = 5
     if not tip or not tip.url or not tip.amount or not tip.tokenName:
         return
 
     warning = '' if tip.network == 'mainnet' else "({})".format(tip.network)
-    subject = "⚡️ New Tip Worth {} {} {}".format(round(tip.amount, 3), warning, tip.tokenName)
+    subject = "⚡️ New Tip Worth {} {} {}".format(round(tip.amount, ROUND_DECIMALS), warning, tip.tokenName)
     if not is_new:
-        subject = "🕐 Tip Worth {} {} {} Expiring Soon".format(round(tip.amount, 3), warning, tip.tokenName)
+        subject = "🕐 Tip Worth {} {} {} Expiring Soon".format(round(tip.amount, ROUND_DECIMALS), warning, tip.tokenName)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL

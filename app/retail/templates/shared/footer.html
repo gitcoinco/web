@@ -15,54 +15,55 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
+{% load static %}
     <div class="container-fluid footer ">
         <div class="row " style="margin-top: 25px; ">
             <div class="nav" style="margin:0px auto;">
                 <a class="nav-link " href="/ ">Home</a>
-                <a class="nav-link " href="/mission ">Mission</a>
-                <a class="nav-link " href="/about ">About</a>
-                <a class="nav-link " href="/about#jobs ">Jobs</a>
-                <a class="nav-link " href="/explorer">Issue Explorer</a>
-                <a class="nav-link hide_min_viewport" href="/tools">Tools</a>
-                <a class="nav-link " target=new href="/legal/terms">Terms</a>
-                <a class="nav-link " target=new href="/legal/privacy">Privacy</a>
-                <a class="nav-link" href="/help">Help</a>
+                <a class="nav-link " href="{% url "mission" %}">Mission</a>
+                <a class="nav-link " href="{% url "about" %}">About</a>
+                <a class="nav-link " href="{% url "about" %}#jobs ">Jobs</a>
+                <a class="nav-link " href="{% url "explorer" %}">Issue Explorer</a>
+                <a class="nav-link hide_min_viewport" href="{% url "tools" %}">Tools</a>
+                <a class="nav-link " target=new href="{% url "terms" %}">Terms</a>
+                <a class="nav-link " target=new href="{% url "privacy" %}">Privacy</a>
+                <a class="nav-link" href="{% url "help" %}">Help</a>
             </div>
         </div>
         <div class="row " style="margin-top: 5px; ">
                 <div class="nav" style="margin:0px auto;">
-                    <a class="nav-link " href="/medium">
-                        <img src='/static/v2/images/social/medium.png' alt='Medium'>
+                    <a class="nav-link " href="{% url "medium" %}">
+                        <img src="{% static "v2/images/social/medium.png" %}" alt="Medium">
                     </a>
-                    <a class="nav-link " href="/gitter">
-                        <img src='/static/v2/images/social/gitter.png' alt='Gitter'>
+                    <a class="nav-link " href="{% url "gitter" %}">
+                        <img src="{% static "v2/images/social/gitter.png" %}" alt="Gitter">
                     </a>
-                    <a class="nav-link " href="/github">
-                        <img src='/static/v2/images/social/github.png' alt='Github'>
+                    <a class="nav-link " href="{% url "github" %}">
+                        <img src="{% static "v2/images/social/github.png" %}" alt="Github">
                     </a>
-                    <a class="nav-link hide_min_viewport" href="/fb">
-                        <img src='/static/v2/images/social/facebook.png' alt='Facebook'>
+                    <a class="nav-link hide_min_viewport" href="{% url "fb" %}">
+                        <img src="{% static "v2/images/social/facebook.png" %}" alt="Facebook">
                     </a>
-                    <a class="nav-link " href="/twitter">
-                        <img src='/static/v2/images/social/twitter.png' alt='Twitter'>
+                    <a class="nav-link " href="{% url "twitter" %}">
+                        <img src="{% static "v2/images/social/twitter.png" %}" alt="Twitter">
                     </a>
-                    <a class="nav-link " href="/reddit">
-                        <img src='/static/v2/images/social/reddit.png' alt='Reddit'>
+                    <a class="nav-link " href="{% url "reddit" %}">
+                        <img src="{% static "v2/images/social/reddit.png" %}" alt="Reddit">
                     </a>
-                    <a class="nav-link " href="/slack">
-                        <img src='/static/v2/images/social/slack.png' alt='Slack'>
+                    <a class="nav-link " href="{% url "slack" %}">
+                        <img src="{% static "v2/images/social/slack.png" %}" alt="Slack">
                     </a>
-                    <a class="nav-link " href="/btctalk">
-                        <img src='/static/v2/images/bitcointalk.png' alt='Bitcoin'>
+                    <a class="nav-link " href="{% url "btctalk" %}">
+                        <img src="{% static "v2/images/bitcointalk.png" %}" alt="Bitcoin">
                     </a>
                     <a class="nav-link " href="mailto:founders@gitcoin.co">
-                        <img src='/static/v2/images/social/mail.png' alt='Mail'>
+                        <img src="{% static "v2/images/social/mail.png" %}" alt="Mail">
                     </a>
                 </div>
             </div>
         <div class="row " style="">
                 <a target=new href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" style=" margin: 10px auto;">
-                    <img src="/static/v2/images/consensys-logo-white-small.png" style="filter:{% if request.path == '/ios' %}invert(100%);{%else%}none;{% endif %} width: 100px; height: 35px;"/>
+                    <img src="{% static "v2/images/consensys-logo-white-small.png" %}" style="filter:{% if request.path == '/ios' %}invert(100%);{%else%}none;{% endif %} width: 100px; height: 35px;"/>
                 </a>
         </div>
     </div>

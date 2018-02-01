@@ -18,6 +18,9 @@
 ##### Affected core subsystem(s)
 <!-- Provide affected core subsystem(s) (like doc, ui, crypto, etc). -->
 
+##### Testing
+<!-- Why should the PR reviewer trust that this change doesn't break anything? How have you tested this change? -->
+
 ##### Refers/Fixes
 <!--
   Link to an issue if applicable. For example:

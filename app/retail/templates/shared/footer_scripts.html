@@ -15,18 +15,21 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-    <script src="/static/v2/js/jquery.js"></script>
-    <script src="/static/v2/js/jquery.cookie.js"></script>
-    <script src="/static/v2/js/jquery-ui.js"></script>
-    <script src="/static/v2/js/tooltip.js"></script>
-    <script src="/static/v2/js/jquery.modal.min.js"></script>
-    <script src="/static/v2/js/jquery.select2.min.js"></script>
-    <script src="/static/v2/js/jsrender.js"></script>
-    <script src="/static/v2/js/base.js"></script>
-    <script src="/static/v2/js/work_with_gitcoin.js"></script>
-    <script src="/static/v2/js/animate.min.js"></script>
-    <script src="/static/v2/js/note.js"></script>
-    <script src="/static/v2/js/pages/carousel.js"></script>
+{% load static %}
+    <script src="{% static "v2/js/jquery.js" %}"></script>
+    <script src="{% static "v2/js/jquery.cookie.js" %}"></script>
+    {% if not slim %}
+        <script src="{% static "v2/js/jquery-ui.js" %}"></script>
+        <script src="{% static "v2/js/tooltip.js" %}"></script>
+    {% endif %}
+    <script src="{% static "v2/js/jquery.modal.min.js" %}"></script>
+    <script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
+    <script src="{% static "v2/js/jsrender.js" %}"></script>
+    <script src="{% static "v2/js/base.js" %}"></script>
+    <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
+    <script src="{% static "v2/js/animate.min.js" %}"></script>
+    <script src="{% static "v2/js/note.js" %}"></script>
+    <script src="{% static "v2/js/pages/carousel.js" %}"></script>
 
     {% if recommend_gas_price %}
         <script type="text/javascript">

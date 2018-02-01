@@ -1,16 +1,16 @@
 {% extends 'yge/base.html' %}
-{% load staticfiles %}
+{% load static %}
 {% block 'scripts' %}
 
-<script src="{% static 'v2/js/amounts.js' %}"></script>
-<script src="/static/yge/youvegoteth/index.js"></script>
-<script src="/static/yge/youvegoteth/pre.js"></script>
-<script src="/static/yge/youvegoteth/tokens.js"></script>
-<script src="/static/yge/youvegoteth/shared.js"></script>
-<script src="/static/yge/youvegoteth/send.js"></script>
-<script src="/static/yge/youvegoteth/web3alert.js"></script>
-<script src="/static/yge/lightwallet.min.js"></script>
-<script src="/static/yge/qrcode.min.js"></script>
+<script src="{% static "v2/js/amounts.js" %}"></script>
+<script src="{% static "yge/youvegoteth/index.js" %}"></script>
+<script src="{% static "yge/youvegoteth/pre.js" %}"></script>
+<script src="{% static "yge/youvegoteth/tokens.js" %}"></script>
+<script src="{% static "yge/youvegoteth/shared.js" %}"></script>
+<script src="{% static "yge/youvegoteth/send.js" %}"></script>
+<script src="{% static "yge/youvegoteth/web3alert.js" %}"></script>
+<script src="{% static "yge/lightwallet.min.js" %}"></script>
+<script src="{% static "yge/qrcode.min.js" %}"></script>
 
 
 {% endblock %}
@@ -20,8 +20,8 @@
 <section id="main">
     <header>
         <span class="avatar">
-            <a href='/'>
-                <img src="/static/v2/images/helmet.png" style="background-color: white; max-width: 100px; max-height: 100px;" />
+            <a href="{% url "tip" %}">
+                <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" />
             </a>
         </span>
     </header>
@@ -30,7 +30,7 @@
     <h1>Send Tip.</h1>
         <div>
             <br>
-            Amount of  
+            Amount of
             <select id="token" style="width:100px; margin-bottom: 10px; display: inline;" >
                 <option value="0x0">ETH</option>
             </select>
@@ -100,14 +100,14 @@
         <h2>Your <span id="tokenName">ETH</span> has been sent <a id="trans_link" href="" target=new>to the blockchain</a>.</h2>
         <p id="loading_trans">
             <a id="trans_link2" href="" target=new>The transaction is still pending.</a><br>This page will auto-update when the transaction is confirmed <br>(but you can close the browser window if you want).
-            <br>    
-            <img src="/static/yge/images/loading_v2.gif" style="max-width: 70px; max-height: 70px;">
+            <br>
+            <img src="{% static "yge/images/loading_v2.gif" %}" style="max-width: 70px; max-height: 70px;">
         </p>
         <hr>
         <h1><span id=new_username></span> has been notified</h1>
         <h3>with instructions about how to receive their tip.</h1>
         <br>
-        <a id="" class="button" href="/tip/send">⬅ Start Over</a>
+        <a id="" class="button" href="{% url "send_tip" %}">⬅ Start Over</a>
     </div>
 
 </section>

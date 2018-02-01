@@ -22,7 +22,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import Bounty, BountySyncRequest, Profile, Subscription, Tip, Interest
+from .models import Bounty, BountySyncRequest, Interest, Profile, Subscription, Tip
 
 
 class GeneralAdmin(admin.ModelAdmin):
