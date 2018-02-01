@@ -562,14 +562,14 @@ window.addEventListener('load', function() {
                                 'id': value.id,
                             };
 
-                            var submitter_tmpl = $.templates("#submitter");
+                            var submitter_tmpl = $.templates("#submission");
                             var submitter_html = submitter_tmpl.render(submission);
 
-                            $("#submitter_list").append(submitter_html);
+                            $("#submission_list").append(submitter_html);
                         });
                     } else {
                         submitter_html = "No one has submitted work yet.";
-                        $("#submitter_list").html(submitter_html);
+                        $("#submission_list").html(submitter_html);
                     }
 
 
