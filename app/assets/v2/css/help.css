@@ -1,9 +1,4 @@
-body {
-  font-family: "OpenSans";
-}
-
 h3 {
-  font-family: "OpenSans SemiBold";
   font-size: 1.4em;
 }
 
@@ -12,7 +7,8 @@ h3 {
 }
 
 .heading {
-  font-family: "OpenSans SemiBold";
+  text-transform: uppercase;
+  font-weight: bolder;
   font-size: 1.3em;
   text-align: center;
   margin-top: 1em;
@@ -20,12 +16,9 @@ h3 {
   padding-top: 10px;
 }
 
-.heading, .sub-heading {
-  text-transform: capitalize;
-  margin-bottom: 2em;
-}
-
 .sub-heading {
+  margin-bottom: 2em;
+  text-transform: capitalize;
   text-align: center;
   font-size: 1em;
 }
@@ -35,12 +28,15 @@ h3 {
 }
 
 .answer {
-  font-family: "OpenSans Light";
   font-size: 15px;
 }
 
 .question {
-  font-size: 15px;
+  font-size: 18px;
+}
+
+.question:hover {
+  color: #3E00FF;
 }
 
 .show {

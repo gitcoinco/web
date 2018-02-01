@@ -22,7 +22,7 @@
 <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-    <link rel="stylesheet" href="/static/v2/css/help.css" />
+    <link rel="stylesheet" href="{% static "v2/css/help.css" %}">
 </head>
 <body class="{{active}}">
     {% include 'shared/tag_manager_2.html' %}
@@ -108,13 +108,14 @@
         {% for category, items in faq.items %}
             <div class="col col-4 text-left">
                 <h4 class="heading">{{category}}</h4>
-                    <ul>
+                  <ul>
                     {% for item in items %}
-                      <li>  <div class='faq_parent mb-4'>
-                            <p class="question">{{item.q}}</p>
-                            <div class='hidden answer'>{{item.a|safe}}
-                        </div>
-                    </div> </li>
+                      <li>
+                          <div class='faq_parent mb-4'>
+                              <p class="question">{{item.q}}</p>
+                              <div class='hidden answer'>{{item.a|safe}}</div>
+                          </div>
+                      </li>
                     {% endfor %}
                   </ul>
             </div>
