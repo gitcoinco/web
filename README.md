@@ -232,20 +232,20 @@ _bountydetails function returns the following fields:
 
 ## With Docker
 
-```
+```shell
 git clone https://github.com/gitcoinco/web.git
 cd web
-cp app/app/local_settings.py.dist app/app/local_settings.py
+cp app/app/local.env app/app/.env
 docker-compose up -d
 ```
 Navigate to `http://0.0.0.0:8000/`.
 
 ## Without Docker
 
-```
+```shell
 git clone https://github.com/gitcoinco/web.git
-cd web/app
-cp app/local_settings.py.dist app/local_settings.py
+cd web
+cp app/app/local.env app/app/.env
 
 ```
 
@@ -288,11 +288,11 @@ Once you have access to your project access tokens, you can enable rollbar error
 
 ## Static Asset Handling
 
-If you're testing in a staging or production style environment behind a CDN, pass the `DJANGO_STATIC_HOST` environment variable to your django web instance specifying the CDN URL.
+If you're testing in a staging or production style environment behind a CDN, pass the `STATIC_HOST` environment variable to your django web instance specifying the CDN URL.
 
 For example:
 
-`DJANGO_STATIC_HOST='https://gitcoin.co`
+`STATIC_HOST='https://gitcoin.co`
 
 ## Setup Database
 

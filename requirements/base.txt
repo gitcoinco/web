@@ -34,3 +34,4 @@ rollbar==0.13.17
 awscli
 whitenoise==3.3.1
 brotlipy==0.7.0
+django-environ==0.4.4
