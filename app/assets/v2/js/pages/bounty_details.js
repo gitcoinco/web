@@ -58,9 +58,6 @@ var rows = [
     'bounty_owner_email',
     'issue_description',
     'bounty_owner_github_username',
-    // 'fulfiller_address',
-    // 'fulfiller_github_username',
-    // 'fulfiller_email',
     'fulfillments',
     'experience_level',
     'project_length',
@@ -565,7 +562,6 @@ window.addEventListener('load', function() {
                                 'id': value.id,
                             };
 
-                            // Add submitter list
                             var submitter_tmpl = $.templates("#submitter");
                             var submitter_html = submitter_tmpl.render(submission);
 

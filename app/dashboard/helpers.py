@@ -267,9 +267,6 @@ def process_bounty_details(bountydetails, url, contract_address, network):
         print(e)
         did_change = True
 
-    # Check if we have any fulfillments.  If so, check if they are accepted.
-    # If there are no fulfillments, accepted is automatically False.
-    # Currently we are only considering the latest fulfillment.  Std bounties supports multiple.
     fments = fulfillments.get('fulfillments', [])
     logger.debug('Fulfillment data:')
     logger.debug(json.dumps(fments))
