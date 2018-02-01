@@ -317,8 +317,8 @@ div.button-pink {
   letter-spacing: 0.1em;
 }
 
-#submitter_list {
-  padding-left: .5em;
+#submitter_ul {
+  padding-left: 1em;
 }
 
 *::-webkit-input-placeholder {

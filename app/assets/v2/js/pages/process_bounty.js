@@ -23,6 +23,7 @@ window.onload = function(){
             e.preventDefault();
             var whatAction = $(this).html().trim()
             var issueURL = $('input[name=issueURL]').val();
+            var fulfillmentId = $('input[name=fulfillmentId]').val();
 
             var isError = false;
             if($('#terms:checked').length == 0){
@@ -33,6 +34,10 @@ window.onload = function(){
             }
             if(issueURL == ''){
                 _alert({ message: "Please enter a issue URL." });
+                isError = true;
+            }
+            if(fulfillmentId == ''){
+                _alert({ message: "Please enter a fulfillment Id." });
                 isError = true;
             }
             if(isError){
@@ -102,14 +107,7 @@ window.onload = function(){
                         }
                     };
 
-                    // Standard Bounties can have multiple fulfillments by multiple people.
-                    // Gitcoin does not support this yet, it only allows one person to fulfill.
-                    // Just in case multilple fulfillments end up on the bounty, we will take
-                    // the latest one, which will match up with what the database has.
-                    bounty.getNumFulfillments(bountyId, function (error, result) {
-                        var fulfillmentId = result - 1;
-                        bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice:web3.toHex($("#gasPrice").val()) * 10**9}, final_callback);
-                    });
+                    bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice:web3.toHex($("#gasPrice").val()) * 10**9}, final_callback);
                 }
             };
             // Get bountyId from the database

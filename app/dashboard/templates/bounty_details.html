@@ -122,31 +122,27 @@
             <a href="[[:url]]">[[:handle]]</a>
         </li>
     </script>
-
-    <script id="submitters" type="text/x-jsrender">
+ 
+    <script id="submitter" type="text/x-jsrender">
         <div class="row">
             <div class="col-8">
-                <ul style="list-style-type:none" id="submitter_list">
-                    <li>ETH Address: <span id="fulfiller_address"> <a href="https://etherscan.io/address/[[:address]]">[[:address]]</a></span></li>
-                    <li>Email: <span id="fulfiller_email"> <a href="mailto:[[:email]]">[[:email]]</a></span></li>
-                    <li>Gitcoin Profile: <span id="fulfiller_github_username"> <a href="https://gitcoin.co/profile/[[:githubUsername]]">[[:githubUsername]]</a></span></li>
-                    <li>Name: <span id="fulfiller_name">[[:name]]</span></li>
+                <ul style="list-style-type:none" id="submitter_ul">
+                    <li>Fulfillment ID: <span id="fulfillment_id">[[:id]]</span></li>
+                    <li>ETH Address: <span id="fulfiller_address"> <a href="https://etherscan.io/address/[[:fulfiller.address]]">[[:fulfiller.address]]</a></span></li>
+                    <li>Email: <span id="fulfiller_email"> <a href="mailto:[[:fulfiller.email]]">[[:fulfiller.email]]</a></span></li>
+                    <li>Gitcoin Profile: <span id="fulfiller_github_username"> <a href="https://gitcoin.co/profile/[[:fulfiller:githubUsername]]">[[:fulfiller.githubUsername]]</a></span></li>
+                    <li>Name: <span id="fulfiller_name">[[:fulfiller.name]]</span></li>
                 </ul>
             </div>
             <div class="col-4">
-                <div class="row">
-                    <br>
-                </div>
-                <div class="row">
-                    <span title='[[:title]]'>
-                        <a class="btn btn-sm btn-[[:color]] [[:extraClass]]" role="button" href="[[:href]]" target="[[:target]]">
-                            <span class="font-smaller-4">[[:text]]</span>
+                <div class="row">&nbsp;</div>
+                    <span title='[[:button.title]]'>
+                        <a class="btn btn-sm btn-[[:button.color]] [[:button.extraClass]]" role="button" href="[[:button.href]]" target="[[:button.target]]">
+                            <span class="font-smaller-4">[[:button.text]]</span>
                         </a>
                     </span>
-                </div>
+                <div class="row">&nbsp;</div>
             </div>
-        </div>
-        <br>
     </script>
 
     {% include 'shared/bottom_notification.html' %}

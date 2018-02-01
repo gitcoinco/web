@@ -472,8 +472,8 @@ window.addEventListener('load', function() {
                     var is_interested = is_on_interest_list(result['pk']);
                     update_interest_list(result['pk']);
 
-                    // Find fulfiller information
-                    update_fulfiller_list(result['pk']);
+                    // // Find fulfiller information
+                    // update_fulfiller_list(result['pk']);
 
                     //insert table onto page
                     for(var j=0; j< rows.length; j++){
@@ -568,20 +568,7 @@ window.addEventListener('load', function() {
 
                     var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
 
-                    if(result['status']=='submitted' ){
-                        var enabled = isBountyOwner(result);
-                        var entry = {
-                            href: '/funding/process?source='+result['github_url'],
-                            text: 'Accept Submission',
-                            parent: 'submitter_list',
-                            color: enabled ? 'darkBlue' : 'darkGrey',
-                            extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'This will payout the bounty to the fulfiller.' : 'Can only be performed if you are the funder.',
-
-                        }
-                        fulfillmentActions.push(entry);
-                    }
-
+                    // Add action buttons
                     for(var l=0; l< actions.length; l++){
                         var target = actions[l]['parent'];
                         var tmpl = $.templates("#action");
@@ -589,12 +576,39 @@ window.addEventListener('load', function() {
                         $("#"+target).append(html);
                     }
 
-                    for(var l=0; l< fulfillmentActions.length; l++){
-                        var target = fulfillmentActions[l]['parent'];
-                        var tmpl = $.templates("#submitters");
-                        var html = tmpl.render(fulfillmentActions[l]);
-                        $("#"+target).append(html);
+                    // Add submitter list and accept buttons
+                    if(result['status']=='submitted' ){
+                        var enabled = isBountyOwner(result);
+
+                        fulfillers = [];
+                        var submissions = result.fulfillments.fulfillments;
+
+                        $.each(submissions, function (index, value) {
+                            var acceptButton = {
+                                href: '/funding/process?source='+result['github_url']+"&id="+value.id,
+                                text: 'Accept Submission',
+                                color: enabled ? 'darkBlue' : 'darkGrey',
+                                extraClass: enabled ? '' : 'disabled',
+                                title: enabled ? 'This will payout the bounty to the submitter.' : 'Can only be performed if you are the funder.',
+                            };
+
+                            var submission = {
+                                'fulfiller': value.payload.fulfiller,
+                                'button': acceptButton,
+                                'id': value.id,
+                            };
+
+                            // Add submitter list
+                            var submitter_tmpl = $.templates("#submitter");
+                            var submitter_html = submitter_tmpl.render(submission);
+
+                            $("#submitter_list").append(submitter_html);
+                        });
+                    } else {
+                        submitter_html = "No one has submitted work yet.";
+                        $("#submitter_list").html(submitter_html);
                     }
+
 
                     //cleanup
                     document.result = result;

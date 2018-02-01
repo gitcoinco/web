@@ -311,6 +311,8 @@ def process_bounty(request):
     """Process the bounty."""
     params = {
         'issueURL': request.GET.get('source'),
+        'fulfillment_id': request.GET.get('id'),
+        'fulfiller_address': request.GET.get('address'),
         'title': 'Process Issue',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
