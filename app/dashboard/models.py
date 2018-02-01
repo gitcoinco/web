@@ -685,7 +685,7 @@ class Profile(SuperModel):
 
     @property
     def local_avatar_url(self):
-        return "https://gitcoin.co/funding/avatar?repo={}&v=3".format(self.github_url)
+        return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
 
     @property
     def absolute_url(self):
