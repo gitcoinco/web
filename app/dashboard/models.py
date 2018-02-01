@@ -359,7 +359,7 @@ class BountyFulfillment(SuperModel):
     fulfiller_name = models.CharField(max_length=255, blank=True)
     fulfiller_metadata = JSONField(default={}, blank=True)
 
-    bounty = models.ForeignKey(Bounty, on_delete=models.CASCADE)
+    bounty = models.ForeignKey(Bounty, related_name='fulfillment', on_delete=models.CASCADE)
 
 
 class BountySyncRequest(SuperModel):
