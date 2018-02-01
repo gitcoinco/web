@@ -3,7 +3,7 @@ from django.http import HttpResponse, JsonResponse
 import requests
 from dashboard.models import Bounty
 from github.utils import get_user, org_name
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 from ratelimit.decorators import ratelimit
 
 
@@ -316,8 +316,7 @@ def avatar(request):
         ## config
         icon_size = (215, 215)
         ## execute
-        img_w, img_h = avatar.size
-        avatar.thumbnail(icon_size, Image.ANTIALIAS)
+        avatar = ImageOps.fit(avatar, icon_size, Image.ANTIALIAS)
         bg_w, bg_h = img.size
         offset = 0, 0
         img.paste(avatar, offset, avatar)
