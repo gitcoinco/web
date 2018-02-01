@@ -16,6 +16,7 @@
 
 '''
 import json
+import logging
 import pprint
 from enum import Enum
 
@@ -27,15 +28,13 @@ from django.utils import timezone
 
 import requests
 from bs4 import BeautifulSoup
-from dashboard.models import Bounty, BountySyncRequest, BountyFulfillment
+from dashboard.models import Bounty, BountyFulfillment, BountySyncRequest
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
 )
 from economy.utils import convert_amount
 from pytz import UTC
 from ratelimit.decorators import ratelimit
-
-import logging
 
 logger = logging.getLogger(__name__)
 
