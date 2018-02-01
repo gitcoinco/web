@@ -94,7 +94,7 @@ window.onload = function(){
                                     'dataHash': null,
                                     'issuer': account,
                                     'txid': result,
-                                });  
+                                });
 
                                 // See views.sync_web3
                                 dataLayer.push({'event': 'claimissue'});
@@ -129,7 +129,7 @@ window.onload = function(){
 
                             var bountyId = result['standard_bounties_id'];
 
-                            bounty.fulfillBounty(bountyId, document.ipfsDataHash, {gasPrice:web3.toHex($("#gasPrice").val()) * Math( 10, 9 )}, web3Callback);
+                            bounty.fulfillBounty(bountyId, document.ipfsDataHash, {gasPrice:web3.toHex($("#gasPrice").val()) * Math.pow( 10, 9 )}, web3Callback);
                         })
                     }
                     e.preventDefault();
