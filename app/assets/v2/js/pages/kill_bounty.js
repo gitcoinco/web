@@ -1,4 +1,3 @@
-
 window.onload = function(){
     //a little time for web3 injection
     setTimeout(function(){
@@ -53,7 +52,7 @@ window.onload = function(){
 
                     var bountyAmount = parseInt(result['value_in_token'], 10); 
                     var fromAddress = result['bounty_owner_address'];
-                    var claimeeAddress = result['claimeee_address'];
+                    var claimeeAddress = result['fulfiller_address'];
                     var open = result['is_open'];
                     var initialized = true;
                     var bountyId = result['standard_bounties_id'];
@@ -74,9 +73,15 @@ window.onload = function(){
 
                     var final_callback = function(error, result){
                         var next = function(){
-                            localStorage['txid'] = result;
+                            // setup inter page state
+                            localStorage[issueURL] = JSON.stringify({
+                                'timestamp': timestamp(),
+                                'dataHash': null,
+                                'issuer': account,
+                                'txid': result,
+                            });  
+
                             sync_web3(issueURL);
-                            localStorage[issueURL] = timestamp();
                             _alert({ message: "Kill bounty submitted to web3." },'info');
                             setTimeout(function(){
                                 mixpanel.track("Kill Bounty Success", {});
@@ -94,7 +99,7 @@ window.onload = function(){
                         }
                     };
 
-                    bounty.killBounty(bountyId, {gasPrice:web3.toHex($("#gasPrice").val()) * 10**9}, final_callback);
+                    bounty.killBounty(bountyId, {gasPrice:web3.toHex($("#gasPrice").val()) * Math.pow( 10, 9 )}, final_callback);
                     e.preventDefault();
                 }
             };

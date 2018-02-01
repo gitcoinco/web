@@ -32,9 +32,9 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         fields = ("url", "created_on", "modified_on", "title", "web3_created", "value_in_token",
                   "token_name", "token_address", "bounty_type", "project_length",
                   "experience_level", "github_url", "github_comments", "bounty_owner_address", "bounty_owner_email",
-                  "bounty_owner_github_username", "claimeee_address", "claimee_email",
-                  "claimee_github_username", "is_open", "expires_date", "raw_data", "metadata",
-                  "claimee_metadata", "current_bounty", 'value_in_eth', 'value_in_usdt', 'status',
+                  "bounty_owner_github_username", "fulfiller_address", "fulfiller_email",
+                  "fulfiller_github_username", "is_open", "expires_date", "raw_data", "metadata",
+                  "fulfiller_metadata", "current_bounty", 'value_in_eth', 'value_in_usdt', 'status',
                   'now', 'avatar_url', 'value_true', 'issue_description', 'network', 'org_name',
                   'pk', 'issue_description_text', 'standard_bounties_id', 'web3_type')
 
@@ -47,7 +47,7 @@ class BountyViewSet(viewsets.ModelViewSet):
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
     def get_queryset(self):
-        queryset = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')
+        queryset = Bounty.objects.current().order_by('-web3_created')
 
         # filtering
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address',

@@ -1,4 +1,3 @@
-
 window.onload = function(){
     //a little time for web3 injection
     setTimeout(function(){
@@ -17,12 +16,12 @@ window.onload = function(){
             $('input[name=issueURL]').val(getParam('source'));
         }
 
-        var estimateGas = function(issueURL, claimee_metadata, success_callback, failure_calllback, final_callback){
+        var estimateGas = function(issueURL, fulfiller_metadata, success_callback, failure_calllback, final_callback){
                 var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
                 $("#gasLimit").addClass('loading');
                 bounty.claimBounty.estimateGas(
                     issueURL,
-                    claimee_metadata,
+                    fulfiller_metadata,
                     function(errors,result){
                         $("#gasLimit").removeClass('loading');
                         var is_issue_taken = typeof result == 'undefined' || result > 403207;
@@ -40,7 +39,7 @@ window.onload = function(){
             var notificationEmail = $('input[name=notificationEmail]').val();
             var githubUsername = $('input[name=githubUsername]').val();
             var issueURL = $('input[name=issueURL]').val();
-            var claimee_metadata = JSON.stringify({
+            var fulfiller_metadata = JSON.stringify({
                 notificationEmail : notificationEmail,
                 githubUsername : githubUsername,
             });
@@ -54,7 +53,7 @@ window.onload = function(){
             };
             var final_callback = function(){};
 
-            //estimateGas(issueURL, claimee_metadata, success_callback, failure_callback, final_callback);
+            //estimateGas(issueURL, fulfiller_metadata, success_callback, failure_callback, final_callback);
             success_callback(186936,186936,'');
         };
         setTimeout(function(){
@@ -71,7 +70,7 @@ window.onload = function(){
             var notificationEmail = $('input[name=notificationEmail]').val();
             var githubUsername = $('input[name=githubUsername]').val();
             var issueURL = $('input[name=issueURL]').val();
-            var claimee_metadata = JSON.stringify({
+            var fulfiller_metadata = JSON.stringify({
                 notificationEmail : notificationEmail,
                 githubUsername : githubUsername,
             });
@@ -162,7 +161,7 @@ window.onload = function(){
                         var success_callback = function(gas, gasLimit, final_callback){
                             var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
                             bounty.claimBounty.sendTransaction(issueURL,
-                                claimee_metadata,
+                                fulfiller_metadata,
                                 {
                                     from : account,
                                     gas:web3.toHex(gas),
@@ -172,10 +171,10 @@ window.onload = function(){
                             final_callback);
                         }
                         //var final_callback = function(){};
-                        //estimateGas(issueURL, claimee_metadata, success_callback, failure_calllback, final_callback);
+                        //estimateGas(issueURL, fulfiller_metadata, success_callback, failure_calllback, final_callback);
                         bounty.claimBounty.estimateGas(
                             issueURL,
-                            claimee_metadata,
+                            fulfiller_metadata,
                             function(errors,result){
                                 var is_issue_taken = typeof result == 'undefined' || result > 403207;
                                 if(errors || is_issue_taken){

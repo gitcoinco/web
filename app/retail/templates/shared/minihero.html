@@ -15,11 +15,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
+{% load static %}
         <div class="row pt-5 pb-5 text-center">
             {% if position_h1_below_logo %}
                 <div class="col">
                     {% if not suppress_logo %}
-                        <img class="about-pink-logo" src="/static/v2/images/logo_gitcoins.png" height="49" />
+                        <img class="about-pink-logo" src="{% static "v2/images/logo_gitcoins.png" %}" height="49" />
                     {% endif %}
                 </div>
                 <div class="w-100"></div>
@@ -29,7 +30,7 @@
                 <div class="w-100"></div>
                 <div class="col pb-5 pt-3">
                     {% if not suppress_logo %}
-                        <img class="about-pink-logo" src="/static/v2/images/pink-wordmark.png" height="49" />
+                        <img class="about-pink-logo" src="{% static "v2/images/pink-wordmark.png" %}" height="49" />
                     {% endif %}
                 </div>
             {% endif %}

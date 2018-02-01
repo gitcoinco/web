@@ -15,8 +15,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-
-<link rel="stylesheet" href="static/v2/css/newsletter.css">
+{% load static %}
+<link rel="stylesheet" href="{% static "v2/css/newsletter.css" %}">
 <div class="row newsletter text-center" >
   <form action="//gitcoin.us16.list-manage.com/subscribe/post?u=f9f93e162a8732673b942cbda&amp;id=791d905ad8"
     method="post" id="mc-embedded-subscribe-form" class="col-12 validate"

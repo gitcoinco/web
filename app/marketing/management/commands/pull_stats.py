@@ -256,10 +256,10 @@ def bounties():
 
 def bounties_fulfilled_pct():
     from dashboard.models import Bounty
-    for status in ['open', 'fulfilled', 'accepted', 'expired', 'dead', 'claimed']:
+    for status in ['open', 'submitted', 'started', 'done', 'expired', 'cancelled']:
         eligible_bounties = Bounty.objects.filter(current_bounty=True,web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
-        fulfilled_bounties = eligible_bounties.filter(idx_status=status)
-        val = int(100 * (fulfilled_bounties.count()) / (eligible_bounties.count()))
+        numerator_bounties = eligible_bounties.filter(idx_status=status)
+        val = int(100 * (numerator_bounties.count()) / (eligible_bounties.count()))
 
         Stat.objects.create(
             key='bounties_{}_pct'.format(status),
@@ -297,7 +297,7 @@ def avg_time_bounty_turnaround():
     from dashboard.models import Bounty
 
     for days in [7,30,90,360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True,idx_status='fulfilled',web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+        all_bounties = Bounty.objects.filter(current_bounty=True, idx_status='submitted', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
         if not all_bounties.count():
             continue
 
@@ -311,23 +311,12 @@ def avg_time_bounty_turnaround():
             )
 
 
-
-
 def bounties_open():
     from dashboard.models import Bounty
 
     Stat.objects.create(
         key='bounties_open',
-        val=(Bounty.objects.filter(current_bounty=True,idx_status='open').count()),
-        )
-
-
-def bounties_claimed():
-    from dashboard.models import Bounty
-
-    Stat.objects.create(
-        key='bounties_claimed',
-        val=(Bounty.objects.filter(current_bounty=True).exclude(claimeee_address='0x0000000000000000000000000000000000000000').count()),
+        val=(Bounty.objects.filter(current_bounty=True, idx_status='open').count()),
         )
 
 
@@ -336,7 +325,7 @@ def bounties_fulfilled():
 
     Stat.objects.create(
         key='bounties_fulfilled',
-        val=(Bounty.objects.filter(current_bounty=True,idx_status='fulfilled').count()),
+        val=(Bounty.objects.filter(current_bounty=True, idx_status='done').count()),
         )
 
 
@@ -425,7 +414,6 @@ class Command(BaseCommand):
             whitepaper_access,
             whitepaper_access_request,
             tips_received,
-            bounties_claimed,
             bounties_fulfilled,
             bounties_open,
             bounties_fulfilled_pct,

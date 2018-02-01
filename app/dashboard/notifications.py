@@ -232,7 +232,7 @@ def maybe_market_to_github(bounty, event_name, interested=None):
             amount_usdt_open_work(),
             )
     elif event_name == 'rejected_claim':
-        msg = "__This fulfillment for the funding of {} {} {} attached to this issue has been **rejected** and can now be fulfilled by someone else.__\n\n * If you would like to work on this issue you can claim it [here]({}).\n * If you've completed this issue and want to claim the bounty you can do so [here]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = "__The work submission for {} {} {} has been **rejected** and can now be submitted by someone else.__\n\n * If you would like to work on this issue you can claim it [here]({}).\n * If you've completed this issue and want to claim the bounty you can do so [here]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
         msg = msg.format(
             round(bounty.get_natural_value(), 4),
             bounty.token_name, usdt_value,
@@ -240,42 +240,42 @@ def maybe_market_to_github(bounty, event_name, interested=None):
             bounty.get_absolute_url(),
             amount_usdt_open_work(),
             )
-    elif event_name == 'new_interest':
-        msg = "__The funding of {} {} {} attached has been shown interest by: {}.__ {} \n\n * Learn more [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+    elif event_name == 'work_started':
+        msg = "__Work has been started on the {} {} {} funding by__: \n 1. {} {} \n\n * Learn more [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
         # Build interested profiles string.
-        interested_profiles = ", ".join("[@%s](%s)" % interest for interest in interested)
+        interested_profiles = "\n 1. ".join("[@%s](%s)" % interest for interest in interested)
         msg = msg.format(
             round(bounty.get_natural_value(), 4),
             bounty.token_name,
             usdt_value,
             interested_profiles if interested_profiles else "",
-            "\n\n If you are interested, please leave a comment to let the funder {} and the other parties involved why you're interested in working on this issue and your plans to resolve it.  If you don't leave a comment, the funder may not think you're too interested.".format(
+            "\n\n __Please work together__ and coordinate delivery of the issue scope. Gitcoin doesn't know enough about everyones skillsets / free time to say who should work on what, but we trust that the community is smart and well-intentioned enough to work together.  As a general rule; if you start work first, youll be at the top of the above list ^^, and should have 'dibs' as long as you follow through. \n\n On the above list? Please leave a comment to let the funder {} and the other parties involved what you're working, with respect to this issue and your plans to resolve it.  If you don't leave a comment, the funder may expire your submission at their discretion.".format(
                 "(@{})".format(bounty.bounty_owner_github_username) if bounty.bounty_owner_github_username else "",
                 ),
             bounty.get_absolute_url(),
             amount_usdt_open_work(),
         )
-    elif event_name == 'new_claim':
-        msg = "__The funding of {} {} {} attached has been fulfilled {}.__ {} \n\n * Learn more [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+    elif event_name == 'work_submitted':
+        msg = "__Work for {} {} {} has been submitted {}.__ {} \n\n * Learn more [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
         msg = msg.format(
             round(bounty.get_natural_value(), 4),
             bounty.token_name,
             usdt_value,
-            "by @{}".format(bounty.claimee_github_username) if bounty.claimee_github_username else "",
-            "\n\n {}, please leave a comment to let the funder {} (and the other parties involved) that you've fulfilled the bounty.  If you don't leave a comment, the funder may expire your claim at their discretion.".format(
-                "@{}".format(bounty.claimee_github_username) if bounty.claimee_github_username else "If you are the claimee",
+            "by @{}".format(bounty.fulfiller_github_username) if bounty.fulfiller_github_username else "",
+            "\n\n {}, please leave a comment to let the funder {} (and the other parties involved) that you've submitted you work.  If you don't leave a comment, the funder may expire your submission at their discretion.".format(
+                "@{}".format(bounty.fulfiller_github_username) if bounty.fulfiller_github_username else "If you are the claimee",
                 "(@{})".format(bounty.bounty_owner_github_username) if bounty.bounty_owner_github_username else "",
                 ),
             bounty.get_absolute_url(),
             amount_usdt_open_work(),
             )
-    elif event_name == 'approved_claim':
+    elif event_name == 'work_done':
         msg = "__The funding of {} {} {} attached to this issue has been approved & issued {}.__  \n\n * Learn more at [on the gitcoin issue page]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
         msg = msg.format(
             round(bounty.get_natural_value(), 4),
             bounty.token_name,
             usdt_value,
-            "to @{}".format(bounty.claimee_github_username) if bounty.claimee_github_username else "",
+            "to @{}".format(bounty.fulfiller_github_username) if bounty.fulfiller_github_username else "",
             bounty.get_absolute_url(),
             amount_usdt_open_work(),
             )
@@ -291,7 +291,7 @@ def maybe_market_to_github(bounty, event_name, interested=None):
         repo = uri_array[2]
         issue_num = uri_array[4]
 
-        if event_name == 'new_interest' and interested:
+        if event_name == 'work_started' and interested:
             if bounty.interested_comment is not None:
                 patch_issue_comment(bounty.interested_comment, username, repo, msg)
             else:
@@ -299,7 +299,7 @@ def maybe_market_to_github(bounty, event_name, interested=None):
                 if response.get('id'):
                     bounty.interested_comment = int(response.get('id'))
                     bounty.save()
-        elif event_name == 'new_interest' and not interested:
+        elif event_name == 'work_started' and not interested:
             delete_issue_comment(bounty.interested_comment, username, repo)
             bounty.interested_comment = None
             bounty.save()
@@ -317,7 +317,7 @@ def maybe_market_to_github(bounty, event_name, interested=None):
 
 def amount_usdt_open_work():
     from dashboard.models import Bounty
-    bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'fulfilled', 'claimed'])
+    bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
     return round(sum([b.value_in_usdt for b in bounties]), 2)
 
 
@@ -344,7 +344,7 @@ def maybe_market_tip_to_github(tip):
     warning = tip.network if tip.network != 'mainnet' else ""
     _comments = "\n\nThe sender had the following public comments: \n> {}".format(tip.comments_public) if tip.comments_public else ""
     msg = "⚡️ A tip worth {} {} {} {} has been granted to {} for this issue{}. ⚡️ {}\n\nNice work {}, check your email for further instructions. \n\n * ${} in Funded OSS Work Available at: https://gitcoin.co/explorer\n * Incentivize contributions to your repo: <a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
-    msg = msg.format(round(tip.amount, 3), warning, tip.tokenName, "(${})".format(tip.value_in_usdt) if tip.value_in_usdt else "" , username, _from, _comments, username, amount_usdt_open_work())
+    msg = msg.format(round(tip.amount, 5), warning, tip.tokenName, "(${})".format(tip.value_in_usdt) if tip.value_in_usdt else "" , username, _from, _comments, username, amount_usdt_open_work())
 
     # actually post
     url = tip.github_url
@@ -365,7 +365,7 @@ def maybe_market_tip_to_github(tip):
 
 
 def maybe_market_to_email(b, event_name):
-    from marketing.mails import new_bounty_claim, new_bounty_rejection, new_bounty_acceptance, new_bounty
+    from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance, new_bounty
     from marketing.models import EmailSubscriber
     to_emails = []
     if b.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
@@ -381,23 +381,23 @@ def maybe_market_to_email(b, event_name):
         except Exception as e:
             logging.exception(e)
             print(e)
-    if event_name == 'new_claim':
+    if event_name == 'work_submitted':
         try:
             to_emails = [b.bounty_owner_email]
-            new_bounty_claim(b, to_emails)
+            new_work_submission(b, to_emails)
         except Exception as e:
             logging.exception(e)
             print(e)
-    if event_name == 'approved_claim':
+    if event_name == 'work_done':
         try:
-            to_emails = [b.bounty_owner_email, b.claimee_email]
+            to_emails = [b.bounty_owner_email, b.fulfiller_email]
             new_bounty_acceptance(b, to_emails)
         except Exception as e:
             logging.exception(e)
             print(e)
     if event_name == 'rejected_claim':
         try:
-            to_emails = [b.bounty_owner_email, b.claimee_email]
+            to_emails = [b.bounty_owner_email, b.fulfiller_email]
             new_bounty_rejection(b, to_emails)
         except Exception as e:
             logging.exception(e)

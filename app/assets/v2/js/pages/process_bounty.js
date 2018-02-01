@@ -60,7 +60,7 @@ window.onload = function(){
 
                     var bountyAmount = parseInt(result['value_in_token'], 10);
                     var fromAddress = result['bounty_owner_address'];
-                    var claimeeAddress = result['claimeee_address'];
+                    var claimeeAddress = result['fulfiller_address'];
                     var open = result['is_open'];
                     var initialized = true;
                     var bountyId = result['standard_bounties_id'];
@@ -108,7 +108,7 @@ window.onload = function(){
                     // the latest one, which will match up with what the database has.
                     bounty.getNumFulfillments(bountyId, function (error, result) {
                         var fulfillmentId = result - 1;
-                        bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice:web3.toHex($("#gasPrice").val()) * 10**9}, final_callback);
+                        bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice:web3.toHex($("#gasPrice").val()) * Math.pow( 10, 9 )}, final_callback);
                     });
                 }
             };

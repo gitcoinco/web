@@ -72,10 +72,10 @@ class Command(BaseCommand):
             'amount_eth': bounty.value_in_eth / 10**18,
             'amount_usdt': bounty.value_in_usdt,
             'from_address': bounty.bounty_owner_address,
-            'claimee_address': bounty.claimeee_address,
+            'claimee_address': bounty.fulfiller_address,
             'repo': self.extract_github_repo(bounty.github_url),
             'from_username': bounty.bounty_owner_github_username or '',
-            'claimee_github_username': bounty.claimee_github_username or '',
+            'fulfiller_github_username': bounty.fulfiller_github_username or '',
             'status': bounty.status,
             'comments': bounty.github_url,
         }
@@ -89,11 +89,11 @@ class Command(BaseCommand):
             'denomination': tip.tokenName,
             'amount_eth': tip.value_in_eth,
             'amount_usdt': tip.value_in_usdt,
-            'from_address': '',
-            'claimee_address': '',
+            'from_address': tip.from_address,
+            'claimee_address': tip.receive_address,
             'repo': self.extract_github_repo(tip.github_url) if tip.github_url else '',
             'from_username': tip.from_name,
-            'claimee_github_username': tip.username,
+            'fulfiller_github_username': tip.username,
             'status': tip.status,
             'comments': tip.github_url,
         }
@@ -130,7 +130,7 @@ class Command(BaseCommand):
         csvwriter = csv.DictWriter(csvfile, fieldnames=[
             'type', 'created_on', 'last_activity', 'amount', 'denomination', 'amount_eth',
             'amount_usdt', 'from_address', 'claimee_address', 'repo', 'from_username',
-            'claimee_github_username', 'status', 'comments'])
+            'fulfiller_github_username', 'status', 'comments'])
         csvwriter.writeheader()
 
         has_rows = False

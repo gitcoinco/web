@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %} 
+{% load humanize %}
 
 {% block content %}
 
@@ -24,23 +24,23 @@
 
 
 <p>
-    Heads up! The funded issue that you {% if is_owner %}posted{% else %}claimed{% endif %} (below) is expiring in {{num}} {{unit}}.
+    Heads up! The funded issue that you {% if is_owner %}posted{% else %}fulfilled{% endif %} (below) is expiring in {{num}} {{unit}}.
 
     <br>
     <br>
     {% if is_owner %}
-    {% if bounty.status == 'fulfilled' %}
+    {% if bounty.status == 'submitted' %}
         There is a currently pending claim agains this funded issue. Please make sure you process them!
     {% endif %}
 
     <br>
     <br>
-    After the funded issue has expired, you can still submit and accept work.  There will just be a new option for the funder to "Clawback" the funds on the funded issue detail page. 
+    After the funded issue has expired, you can still submit and accept work.  There will just be a new option for the funder to "Clawback" the funds on the funded issue detail page.
     <br>
     <br>
     <h5>Look for this button</h5>
     <br>
-    <img src="https://gitcoin.co/static/v2/images/clawback.png"/ >
+    <img src="{% static "v2/images/clawback.png" %}" / >
 
     <br>
     <br>

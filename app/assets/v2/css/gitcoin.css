@@ -77,14 +77,11 @@ h4, .h4 {
   text-decoration: none;
   padding-right: 1rem !important;
   padding-left: 1rem !important;
+  font-size: 0.9rem !important;
 }
 
 .footer .nav-link {
   font-size: 0.8rem !important;
-}
-
-.dash .nav-link {
-  font-size: 0.9rem !important;
 }
 
 .nav-link:visited {
@@ -267,7 +264,7 @@ div.button-pink {
 .footer {
   overflow: hidden;
   height: 300px;
-  background-image: url(/static/v2/images/footer.png);
+  background-image: url(/static/v2/images/footer.jpg);
   background-color: #0d023b;
   background-size: contain;
   background-position: bottom;

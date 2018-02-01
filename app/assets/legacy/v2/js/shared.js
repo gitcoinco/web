@@ -177,14 +177,12 @@ var add_interest = function (bounty_pk) {
     if (is_on_interest_list(bounty_pk)) {
         return;
     }
-    var request_url = '/bounty/' + bounty_pk + '/interest/new/';
+    var request_url = '/actions/bounty/' + bounty_pk + '/interest/new/';
     $.post(request_url, function (result) {
         localStorage.interests = localStorage.interests + "," + bounty_pk;
         result = sanitizeAPIResults(result);
         if (result.success) {
-            var tmpl = $.templates("#interested");
-            var html = tmpl.render(result.profile);
-            $("#interest_list").append(html);
+            update_interest_list(bounty_pk);
             return true;
         }
         return false;
@@ -198,7 +196,7 @@ var remove_interest = function (bounty_pk) {
     if (!is_on_interest_list(bounty_pk)) {
         return;
     }
-    var request_url = '/bounty/' + bounty_pk + '/interest/remove/';
+    var request_url = '/actions/bounty/' + bounty_pk + '/interest/remove/';
     $.post(request_url, function (result) {
         localStorage.interests = localStorage.interests.replace("," + bounty_pk, "");
         result = sanitizeAPIResults(result);
@@ -215,7 +213,7 @@ var remove_interest = function (bounty_pk) {
 /** Update the list of interested profiles. */
 var update_interest_list = function (bounty_pk) {
     profiles = [];
-    $.getJSON("/bounty/" + bounty_pk + "/interest/", function (data) {
+    $.getJSON("/actions/bounty/" + bounty_pk + "/interest/", function (data) {
         data = sanitizeAPIResults(JSON.parse(data));
         $.each(data, function (index, value) {
             var profile = {
@@ -227,6 +225,9 @@ var update_interest_list = function (bounty_pk) {
         });
         var tmpl = $.templates("#interested");
         var html = tmpl.render(profiles);
+        if(profiles.length == 0){
+            html = "No one has started work on this issue yet.";
+        }
         $("#interest_list").html(html);
     });
     return profiles;

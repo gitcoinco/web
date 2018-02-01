@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.sitemaps',
@@ -56,10 +57,12 @@ INSTALLED_APPS = [
     'chartit',
     'email_obfuscator',
     'linkshortener',
+    'credits',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -187,13 +190,13 @@ for ia in INSTALLED_APPS:
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
+STATICFILES_STORAGE = 'app.static_storage.SilentFileStorage'
 STATICFILES_DIRS = (
     'assets/',
 )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-
-STATIC_URL = '/static/'
+STATIC_URL = os.environ.get('DJANGO_STATIC_HOST', '') + '/static/'
 
 CACHES = {
     'default': {
@@ -210,7 +213,7 @@ SECURE_HSTS_SECONDS = 3600
 GITHUB_API_BASE_URL = 'https://api.github.com'
 GITHUB_AUTH_BASE_URL = 'https://github.com/login/oauth/authorize'
 GITHUB_TOKEN_URL = 'https://github.com/login/oauth/access_token'
-GITHUB_SCOPE = 'user'
+GITHUB_SCOPE = 'read:user,user:email,read:org'
 
 # List of github usernames to not count as comments on an issue
 IGNORE_COMMENTS_FROM = ['gitcoinbot', ]

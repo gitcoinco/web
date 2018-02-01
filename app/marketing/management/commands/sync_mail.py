@@ -81,8 +81,8 @@ class Command(BaseCommand):
             email_list = []
             if b.bounty_owner_email:
                 email_list.append(b.bounty_owner_email)
-            if b.claimee_email:
-                email_list.append(b.claimee_email)
+            if b.fulfiller_email:
+                email_list.append(b.fulfiller_email)
             for email in email_list:
                 process_email(email, 'bounty_usage')
 

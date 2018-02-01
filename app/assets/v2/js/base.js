@@ -1,11 +1,13 @@
 $(document).ready(function() {
-    $( document ).tooltip();
+    if(typeof ($( document ).tooltip) != 'undefined'){
+      $( document ).tooltip();
+    }
 
     $(".nav-link.dropdown-toggle, .nav_avatar").click(function(e){
       if($(".dropdown-menu").css('display') == 'block'){
-        $(".dropdown-menu").css('display', 'none');        
+        $(".dropdown-menu").css('display', 'none');
       } else {
-        $(".dropdown-menu").css('display', 'block');        
+        $(".dropdown-menu").css('display', 'block');
       }
       e.preventDefault();
     });

@@ -67,11 +67,10 @@ def sync_web3(request):
             print(bountydetails)
             contract_address = request.POST.get('contract_address')
             network = request.POST.get('network')
-            didChange, old_bounty, new_bounty = process_bounty_details(
+            did_change, old_bounty, new_bounty = process_bounty_details(
                 bountydetails, issueURL, contract_address, network)
-
             print("LEGACY: {} changed, {}".format(didChange, issueURL))
-            if didChange:
+            if did_change:
                 print("- processing changes");
                 process_bounty_changes(old_bounty, new_bounty, None)
 

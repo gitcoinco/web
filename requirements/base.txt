@@ -33,3 +33,5 @@ boto==2.48.0
 rollbar==0.13.17
 awscli
 google-api-python-client
+whitenoise==3.3.1
+brotlipy==0.7.0

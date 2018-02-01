@@ -127,7 +127,7 @@ class GithubUtilitiesTest(TestCase):
     @responses.activate
     def test_get_github_user_token(self):
         """Test the github utility get_github_user_token method."""
-        data = {'access_token': self.user_oauth_token, 'scope': 'user'}
+        data = {'access_token': self.user_oauth_token, 'scope': 'read:user,user:email'}
         params = {
             'code': self.callback_code,
             'client_id': settings.GITHUB_CLIENT_ID,

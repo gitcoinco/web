@@ -34,7 +34,7 @@ from dashboard.helpers import normalizeURL, process_bounty_changes, process_boun
 from dashboard.models import Bounty, BountySyncRequest, Interest, Profile, ProfileSerializer, Subscription, Tip
 from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
-from github.utils import get_auth_url, get_github_emails, is_github_token_valid
+from github.utils import get_auth_url, get_github_emails, get_github_primary_email, is_github_token_valid
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -223,6 +223,7 @@ def receive_tip(request):
         # db mutations
         try:
             tip = Tip.objects.get(txid=params['txid'])
+            tip.receive_address = params['receive_address']
             tip.receive_txid = params['receive_txid']
             tip.received_on = timezone.now()
             tip.save()
@@ -250,9 +251,20 @@ def receive_tip(request):
 @csrf_exempt
 @ratelimit(key='ip', rate='1/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_2(request):
-    """Handle the second stage of sending a tip."""
-    username = request.session.get('handle')
-    primary_email = request.session.get('email', '')
+    """Handle the second stage of sending a tip.
+
+    TODO:
+        * Convert this view-based logic to a django form.
+
+    Returns:
+        JsonResponse: If submitting tip, return response with success state.
+        TemplateResponse: Render the submission form.
+
+    """
+    from_username = request.session.get('handle', '')
+    primary_from_email = request.session.get('email', '')
+    access_token = request.session.get('access_token')
+    to_emails = []
 
     if request.body:
         # http response
@@ -262,14 +274,31 @@ def send_tip_2(request):
         }
         params = json.loads(request.body)
 
-        username = username or params['username']
-        access_token = request.session.get('access_token')
-        emails = get_github_emails(access_token) if access_token else [primary_email]
+        to_username = params['username'].lstrip('@')
+        try:
+            to_profile = Profile.objects.get(handle__iexact=to_username)
+            if to_profile.email:
+                to_emails.append(to_profile.email)
+            if to_profile.github_access_token:
+                to_emails = get_github_emails(to_profile.github_access_token)
+        except Profile.DoesNotExist:
+            pass
+
+        if params.get('email'):
+            to_emails.append(params['email'])
+
+        # If no primary email in session, try the POST data. If none, fetch from GH.
+        if params.get('fromEmail'):
+            primary_from_email = params['fromEmail']
+        elif access_token and not primary_from_email:
+            primary_from_email = get_github_primary_email(access_token)
+
+        to_emails = list(set(to_emails))
         expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
 
         # db mutations
         tip = Tip.objects.create(
-            emails=emails,
+            emails=to_emails,
             url=params['url'],
             tokenName=params['tokenName'],
             amount=params['amount'],
@@ -280,16 +309,18 @@ def send_tip_2(request):
             github_url=params['github_url'],
             from_name=params['from_name'],
             from_email=params['from_email'],
-            username=username,
+            from_username=from_username,
+            username=params['username'],
             network=params['network'],
             tokenAddress=params['tokenAddress'],
             txid=params['txid'],
+            from_address=params['from_address'],
         )
         # notifications
         maybe_market_tip_to_github(tip)
         maybe_market_tip_to_slack(tip, 'new_tip')
-        maybe_market_tip_to_email(tip, emails)
-        if not emails:
+        maybe_market_tip_to_email(tip, to_emails)
+        if not to_emails:
             response['status'] = 'error'
             response['message'] = 'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.'
 
@@ -300,8 +331,8 @@ def send_tip_2(request):
         'class': 'send2',
         'title': 'Send Tip',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-        'from_email': primary_email,
-        'from_handle': username
+        'from_email': primary_from_email,
+        'from_handle': from_username,
     }
 
     return TemplateResponse(request, 'yge/send2.html', params)
@@ -340,8 +371,9 @@ def gas(request):
 
 def new_bounty(request):
     """Create a new bounty."""
+    issue_url = request.GET.get('source') or request.GET.get('url', '')
     params = {
-        'issueURL': request.GET.get('source'),
+        'issueURL': issue_url,
         'active': 'submit_bounty',
         'title': 'Create Funded Issue',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
@@ -358,7 +390,7 @@ def fulfill_bounty(request):
     """Fulfill a bounty."""
     params = {
         'issueURL': request.GET.get('source'),
-        'title': 'Fulfill Issue',
+        'title': 'Submit Work',
         'active': 'fulfill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
@@ -388,6 +420,7 @@ def bounty_details(request):
     """Display the bounty details."""
     _access_token = request.session.get('access_token')
     profile_id = request.session.get('profile_id')
+    bounty_url = request.GET.get('url')
     params = {
         'issueURL': request.GET.get('issue_'),
         'title': 'Issue Details',
@@ -399,25 +432,28 @@ def bounty_details(request):
         'profile_interested': False
     }
 
-    try:
-        b = Bounty.objects.current().get(github_url=request.GET.get('url'))
-        # Currently its not finding anyting in the database
-        if b.title:
-            params['card_title'] = f'{b.title} | {b.org_name} Funded Issue Detail | Gitcoin'
-            params['title'] = params['card_title']
-            params['card_desc'] = ellipses(b.issue_description_text, 255)
+    if bounty_url:
+        try:
+            b = Bounty.objects.current().get(github_url=bounty_url)
+            # Currently its not finding anyting in the database
+            if b.title:
+                params['card_title'] = f'{b.title} | {b.org_name} Funded Issue Detail | Gitcoin'
+                params['title'] = params['card_title']
+                params['card_desc'] = ellipses(b.issue_description_text, 255)
 
-        params['bounty_pk'] = b.pk
-        params['interested_profiles'] = b.interested.select_related('profile').all()
-        params['avatar_url'] = b.local_avatar_url
-        params['is_legacy'] = b.is_legacy  # TODO: Remove this following legacy contract sunset.
+            params['bounty_pk'] = b.pk
+            params['interested_profiles'] = b.interested.select_related('profile').all()
+            params['avatar_url'] = b.local_avatar_url
+            params['is_legacy'] = b.is_legacy  # TODO: Remove this following legacy contract sunset.
 
-        if profile_id:
-            profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
-            params['profile_interested'] = request.session.get('profile_id') in profile_ids
-    except Exception as e:
-        print(e)
-        logging.error(e)
+            if profile_id:
+                profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
+                params['profile_interested'] = request.session.get('profile_id') in profile_ids
+        except Bounty.DoesNotExist:
+            pass
+        except Exception as e:
+            print(e)
+            logging.error(e)
 
     return TemplateResponse(request, 'bounty_details.html', params)
 
@@ -504,6 +540,7 @@ def save_search(request):
     return TemplateResponse(request, 'save_search.html', context)
 
 
+@require_POST
 @csrf_exempt
 @ratelimit(key='ip', rate='2/s', method=ratelimit.UNSAFE, block=True)
 def sync_web3(request):
@@ -517,7 +554,6 @@ def sync_web3(request):
     bountydetails = json.loads(request.POST.get('bountydetails', "{}"))
 
     if issueURL:
-
         issueURL = normalizeURL(issueURL)
 
         if not bountydetails:
@@ -529,11 +565,11 @@ def sync_web3(request):
         else:
             contract_address = request.POST.get('contract_address')
             network = request.POST.get('network')
-            didChange, old_bounty, new_bounty = process_bounty_details(
+            did_change, old_bounty, new_bounty = process_bounty_details(
                 bountydetails, issueURL, contract_address, network)
 
-            print("{} changed, {}".format(didChange, issueURL))
-            if didChange:
+            print("{} changed, {}".format(did_change, issueURL))
+            if did_change:
                 print("- processing changes")
                 process_bounty_changes(old_bounty, new_bounty, None)
 
@@ -548,9 +584,7 @@ def sync_web3(request):
 # LEGAL
 
 def terms(request):
-    params = {
-    }
-    return TemplateResponse(request, 'legal/terms.txt', params)
+    return TemplateResponse(request, 'legal/terms.txt', {})
 
 
 def privacy(request):

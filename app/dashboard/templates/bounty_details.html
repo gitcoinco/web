@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,16 +36,16 @@
             </div>
 
             <div class="row loading justify-content-center align-items-center loading_img">
-                <img src='/static/v2/images/loading_v2.gif'>
+                <img src="{% static "v2/images/loading_v2.gif" %}">
             </div>
 
             <div class="row nonefound" style="display:none;">
-                <img src="/static/v2/images/shrug_bot.png">
+                <img src="{% static "v2/images/shrug_bot.png" %}">
                 <h3>No funded issue found.</h3>
                 <p>Please go back to the <a href="{% url 'explorer' %}">Issue Explorer</a> and try again.</p>
                 <br>
                 <h6>Be the OSS Funding you wish to see in the world.</h6>
-                <p id='submitsolicitation'>Looking to fund some work?  You can submit a new Funded Issue <a href="/funding/new">here</a>.</p>
+                <p id='submitsolicitation'>Looking to fund some work?  You can submit a new Funded Issue <a href="{% url 'new_funding' %}">here</a>.</p>
             </div>
 
             <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none;">
@@ -65,7 +66,8 @@
                     <a class="font-smaller-2" style="color: #212529;" href="{% url 'explorer' %}">&lt; Issue Explorer</a>
                 </div>
                     <div class="col-8 right_details">
-                        <span class=boldLabel>Status:</span> <span title="Possible states: 1: Open, 2: Fulfilled, 3: Accepted, 4: Expired, 5: Dead" id="status"></span>
+                        <span title="{%include "shared/status_tooltip.html" %}" class=boldLabel>Status <img style="max-width: 15px; " src="{% static "v2/images/icons/info.png" %}">:</span> <span  id="status">
+                        </span>
 
                         <h4 id="title">
                         </h4>
@@ -93,18 +95,18 @@
                             Gitcoin Profile: <span id="bounty_owner_github_username"></span>
                             <br>
                         </div>
-                        <div id="claimee" style="width: 100%; display: block;">
+                        <div id="fulfiller" style="width: 100%; display: block;">
                             <br>
-                            <h5>Fulfiller Info</h5>
-                            ETH Address: <span id="claimeee_address"></span>
+                            <h5>Submitter Info</h5>
+                            ETH Address: <span id="fulfiller_address"></span>
                             <br>
-                            Email: <span id="claimee_email"></span>
+                            Email: <span id="fulfiller_email"></span>
                             <br>
-                            Gitcoin Profile: <span id="claimee_github_username"></span>
+                            Gitcoin Profile: <span id="fulfiller_github_username"></span>
 
                         </div>
                         <br>
-                        <h5>Claimees</h5>
+                        <h5>Started Work</h5>
                         <div>
                             <ul id="interest_list">
                             </ul>
@@ -131,7 +133,7 @@
     </script>
 
     {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/ga.html' %}
+    {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
@@ -140,17 +142,18 @@
 
 <!-- jQuery -->
 {% if is_legacy %}
-<script src="{{STATIC_URL}}legacy/v2/js/abi.js"></script>
-<script src="{{STATIC_URL}}legacy/v2/js/tokens.js"></script>
-<script src="{{STATIC_URL}}legacy/v2/js/pages/bounty_details.js"></script>
-<script src="{{STATIC_URL}}legacy/v2/js/shared.js"></script>
+<script src="{% static "legacy/v2/js/abi.js" %}"></script>
+<script src="{% static "legacy/v2/js/tokens.js" %}"></script>
+<script src="{% static "legacy/v2/js/pages/bounty_details.js" %}"></script>
+<script src="{% static "legacy/v2/js/shared.js" %}"></script>
 {% else %}
-<script src="{{STATIC_URL}}v2/js/abi.js"></script>
-<script src="{{STATIC_URL}}v2/js/tokens.js"></script>
-<script src="{{STATIC_URL}}v2/js/pages/bounty_details.js"></script>
-<script src="{{STATIC_URL}}v2/js/shared.js"></script>
+<script src="{% static "v2/js/showdown.js" %}"></script>
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="{% static "v2/js/tokens.js" %}"></script>
+<script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
 {% endif %}
-<script src="{{STATIC_URL}}v2/js/ipfs-api.js"></script>
-<script src="{{STATIC_URL}}v2/js/ipfs.js"></script>
-<script src="{{STATIC_URL}}v2/js/waiting_room_entertainment.js"></script>
+<script src="{% static "v2/js/ipfs-api.js" %}"></script>
+<script src="{% static "v2/js/ipfs.js" %}"></script>
+<script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
 </html>

@@ -128,7 +128,7 @@ var process_stats = function(results){
         }
     }
     worth_usdt = worth_usdt.toFixed(2);
-    worth_eth = (worth_eth / 10 ** 18).toFixed(2);
+    worth_eth = (worth_eth / Math.pow(10, 18 )).toFixed(2);
     var stats = "" + num + " worth " + worth_usdt + " USD, " + worth_eth + " ETH";
     for(var token in currencies_to_value){
         stats += ", " + currencies_to_value[token].toFixed(2) + " " + token;
@@ -177,14 +177,14 @@ var refreshBounties = function(){
                 if(related_token_details && related_token_details.decimals){
                     decimals = related_token_details.decimals;
                 }
-                var divisor = 10**decimals;
+                var divisor = Math.pow( 10, decimals );
                 result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
                 var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
 
                 //setup args to go into template
                 if(typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']){
                     result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
-                } else if(result['claimeee_address'] != '0x0000000000000000000000000000000000000000'){
+                } else if(result['fulfiller_address'] != '0x0000000000000000000000000000000000000000'){
                     result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">'+result['status']+'</span></a>';
                 }
                 if (result['web3_type'] == 'legacy_gitcoin') {

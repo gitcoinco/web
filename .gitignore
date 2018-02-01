@@ -9,6 +9,7 @@ app/marketing/quotify/output/*
 app/output/*.pdf
 app/assets/other/wp.pdf
 app/assets/other/avatars/
+app/gcoin/
 .idea/
 venv/
 .coverage
@@ -16,3 +17,4 @@ venv/
 node_modules/
 gcoin/
 .cache/
+webpack-stats.json

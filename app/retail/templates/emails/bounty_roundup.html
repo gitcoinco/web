@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %} 
+{% load static humanize %}
 
 {% block content %}
 
@@ -42,7 +42,7 @@
 
 </style>
 
-<h1><img src="https://gitcoin.co/static/v2/images/helmet_emoji.png" width=40px height="40px"> The Gitcoin Weekly <img src="https://gitcoin.co/static/v2/images/helmet_emoji.png" width=40px height="40px"></h1>
+<h1><img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"> The Gitcoin Weekly <img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"></h1>
 
 <table>
     <tr>
@@ -51,7 +51,7 @@
                 Hi folks 👋
             </p>
             <p>
-            The Gitcoin Core Team continues to grow with the <a href="https://medium.com/gitcoin/mark-beacom-joins-gitcoin-core-team-16e71451714a">addition of Mark Beacom, early Gitcoin developer.</a> Mark is intimately familiar with our repo's and will have an immediate impact on the team. <strong>Welcome, Mark!</strong>   
+            The Gitcoin Core Team continues to grow with the <a href="https://medium.com/gitcoin/mark-beacom-joins-gitcoin-core-team-16e71451714a">addition of Mark Beacom, early Gitcoin developer.</a> Mark is intimately familiar with our repo's and will have an immediate impact on the team. <strong>Welcome, Mark!</strong>
             </p>
             <p>
             Alongside fellow Gitcoiner <a href="https://twitter.com/jasonrhaas">Jason Haas</a>, one of the first projects Mark has driven is the <a href="https://medium.com/gitcoin/integrating-standard-bounties-dc4cf62bf814">integration of Standard Bounties.</a> Integrating our smart contracts with Bounties Network has long been a strategic goal of Gitcoin's in order to bringing security, interoperability, and a richer feature-set to Gitcoin. We couldn't be more excited about what this development can bring for the future of the Gitcoin platform.
@@ -60,11 +60,11 @@
             The Standard Bounties contracts bring updates to the Gitcoin user experience, so please read through the article and let us know if you have any questions by reaching out <a href="https://gitcoin.co/slack">on slack</a> or <a href="https://github.com/gitcoinco/web/issues">on Github</a>.
             </p>
             <a href="https://twitter.com/owocki" style="float:right; padding-left: 10px;">
-                <img src="https://gitcoin.co/static/v2/images/avatar.png" width="77" height="137">
+                <img src="{% static "v2/images/avatar.png" %}" width="77" height="137">
             </a>
             <p>
                 Back to coding ! 🤖
-                <br> 
+                <br>
                 ✌️ <a href="https://twitter.com/owocki">@owocki</a>
             </p>
         </td>
