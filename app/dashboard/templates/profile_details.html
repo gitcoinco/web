@@ -105,11 +105,13 @@
                                                 <div class='relationship'>
                                                     <p>
                                                         {% if profile.handle == b.fulfiller_github_username %}
-                                                        Claimee
+                                                        Worker
                                                         {% elif profile.handle == b.bounty_owner_github_username %}
                                                         Funder
-                                                        {% else %}
+                                                        {% elif profile.handle == b.org_name %}
                                                         Repo Owner
+                                                        {% else %}
+                                                        Worker
                                                         {% endif %}
                                                     </p>
                                                 </div>
