@@ -65,8 +65,9 @@ $(document).ready(function() {
       setTimeout(callback,300);
     });
 
-    $('.faq_item h5').click(function(){
+    $('.faq_item .question').click(function(){
       $(this).parents('.faq_parent').find('.answer').toggleClass('hidden');
+      $(this).parents('.faq_parent').find('.answer').toggleClass('show');
     });
 
     //mixpanel integration
