@@ -325,11 +325,6 @@ div.button-pink {
   margin: 10px;
 }
 
-#submission_list {
-  border: 1px solid #C2C2C2;
-  border-radius: 15px;
-  padding: 12px;
-}
 
 *::-webkit-input-placeholder {
   color: lightgray;
