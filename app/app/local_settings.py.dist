@@ -93,6 +93,8 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # optional: only needed if you run the github management commands
+# Login/logout functionality will not work without defining these fields.
+# Setup instructions: https://github.com/gitcoinco/web#setup-github-oauth2-app-integration
 GITHUB_CLIENT_ID = 'TODO'
 GITHUB_CLIENT_SECRET = 'TODO'
 GITHUB_API_USER = 'TODO'
