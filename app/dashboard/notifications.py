@@ -14,7 +14,7 @@ from marketing.mails import tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
 from pyshorteners import Shortener
 from slackclient import SlackClient
-from economy.utils import convert_amount
+from economy.utils import get_eth_to_usdt
 
 
 '''
