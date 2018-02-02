@@ -87,9 +87,15 @@ window.onload = function(){
 
                     var final_callback = function(error, result){
                         var next = function(){
-                            localStorage['txid'] = result;
+                            // setup inter page state
+                            localStorage[issueURL] = JSON.stringify({
+                                'timestamp': timestamp(),
+                                'dataHash': null,
+                                'issuer': account,
+                                'txid': result,
+                            });  
+
                             sync_web3(issueURL);
-                            localStorage[issueURL] = timestamp();
                             _alert({ message: "Submitted transaction to web3." }, 'info');
                             setTimeout(function(){
                                 mixpanel.track("Process Bounty Success", {});

@@ -586,6 +586,9 @@ class Profile(SuperModel):
     @property
     def bounties(self):
         bounties = Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True)
+        for interested in self.interested.all():
+            bounties = bounties | Bounty.objects.filter(interested=interested, current_bounty=True)
+        bounties = bounties | Bounty.objects.filter(fulfiller_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(fulfiller_github_username__iexact="@" + self.handle, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(github_url__in=[url for url in self.tips.values_list('github_url', flat=True)], current_bounty=True)
         return bounties.order_by('-web3_created')
@@ -652,7 +655,7 @@ class Profile(SuperModel):
             claimees.append(b.fulfiller_address)
         success_rate = 0
         if bounties.count() > 0:
-            numer = bounties.filter(idx_status__in=['submitted', 'started']).count()
+            numer = bounties.filter(idx_status__in=['submitted', 'started', 'done']).count()
             denom = bounties.exclude(idx_status__in=['open']).count()
             success_rate = int(round(numer * 1.0 / denom, 2) * 100) if denom != 0 else 'N/A'
         if success_rate == 0:
