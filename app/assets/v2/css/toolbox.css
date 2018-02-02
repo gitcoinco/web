@@ -25,12 +25,6 @@
   font-size: 1.4em;
 }
 
-.line-break {
-  width: 100%;
-  margin-top: 1em;
-  border-top: 1px solid #eee;
-}
-
 @media (max-width: 991px) {
   .body {
     padding-left: 60px !important;
@@ -50,4 +44,3 @@
 .card.new a.btn{
   display: none;
 }
-
