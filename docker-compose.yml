@@ -30,7 +30,6 @@ services:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/code/app
     build: .
-    command: ["bash", "bin/docker-command.bash"]
     volumes:
       - .:/code
     ports:
