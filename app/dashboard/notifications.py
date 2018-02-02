@@ -13,6 +13,7 @@ from marketing.mails import tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
 from pyshorteners import Shortener
 from slackclient import SlackClient
+from economy.utils import convert_amount
 
 
 '''
@@ -214,7 +215,7 @@ def maybe_market_to_github(bounty, event_name, interested=None):
 
     # prepare message
     msg = ''
-    usdt_value = "(" + str(round(bounty.value_in_usdt, 2)) + " USD)" if bounty.value_in_usdt else ""
+    usdt_value = "(" + str(round(bounty.value_in_usdt, 2)) + " USD @ $" + str(round(convert_amount(1, 'ETH', 'USDT'), 2)) + "/ETH)" if bounty.value_in_usdt else ""
     if event_name == 'new_bounty':
         msg = "__This issue now has a funding of {} {} {} attached to it.__\n\n * If you would like to work on this issue you can claim it [here]({}).\n * If you've completed this issue and want to claim the bounty you can do so [here]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
         msg = msg.format(
