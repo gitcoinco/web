@@ -240,6 +240,8 @@ def process_bounty_details(bountydetails, url, contract_address, network):
     url = normalizeURL(url)
 
     # See Line 303 in bounty_details.js for original object
+    # See dashboard/utils.py:get_bounty from details on this data
+    import ipdb; ipdb.set_trace()
     bountyId = bountydetails.get('bountyId', {})
     bountyData = bountydetails.get('bountyData', {})
     bountyDataPayload = bountyData.get('payload', {})
