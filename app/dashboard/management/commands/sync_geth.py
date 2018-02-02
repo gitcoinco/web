@@ -18,6 +18,10 @@
 
 from django.core.management.base import BaseCommand
 from dashboard.utils import get_bounty, process_bounty, BountyNotFoundException, startIPFS
+from dashboard.helpers import UnsupportedSchemaException
+import warnings
+
+warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 
 class Command(BaseCommand):
@@ -28,6 +32,8 @@ class Command(BaseCommand):
         parser.add_argument('network')
 
     def handle(self, *args, **options):
+
+        # config
         network = options['network']
 
         # setup
@@ -41,8 +47,13 @@ class Command(BaseCommand):
 
                 # pull and process each bounty
                 bounty = get_bounty(bounty_enum, network)
+                print(f"Processing bounty {bounty_enum}")
                 process_bounty(bounty)
-                print("TODO: process this bounty")
 
             except BountyNotFoundException:
                 more_bounties = False
+            except UnsupportedSchemaException as e:
+                print(f"* {e}")
+            finally:
+                # prepare for next loop
+                bounty_enum += 1

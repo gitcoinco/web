@@ -83,7 +83,7 @@ def get_bounty(bounty_enum, network):
         ipfs = getIPFS()
         standard_bounties = getBountyContract(network)
         issuer, deadline, fulfillmentAmount, paysTokens, bountyStage, balance = standard_bounties.functions.getBounty(bounty_enum).call()
-        data = standard_bounties.functions.getBountyData(bounty_enum).call()
+        bountydata = standard_bounties.functions.getBountyData(bounty_enum).call()
         arbiter = standard_bounties.functions.getBountyArbiter(bounty_enum).call()
         token = standard_bounties.functions.getBountyToken(bounty_enum).call()
         fulfillments = []
@@ -100,19 +100,20 @@ def get_bounty(bounty_enum, network):
                     })
             except BadFunctionCallOutput:
                 more_fulfillments = False
-        bounty_enum += 1
 
         bounty = {
             'id': bounty_enum,
             'issuer': issuer,
             'deadline': deadline,
             'fulfillmentAmount': fulfillmentAmount,
-            'paysTokens': bountyStage,
+            'paysTokens': paysTokens,
+            'bountyStage': bountyStage,
             'balance': balance,
-            'data': json.loads(ipfs.cat(data)),
+            'data': json.loads(ipfs.cat(bountydata)),
             'arbiter': arbiter,
             'token': token,
             'fulfillments': fulfillments,
+            'network': network,
         }
         return bounty
     except BadFunctionCallOutput:
