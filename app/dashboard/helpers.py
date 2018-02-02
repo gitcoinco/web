@@ -242,7 +242,6 @@ class UnsupportedSchemaException(Exception):
 
 def process_bounty_details(bountydetails):
 
-    # See Line 303 in bounty_details.js for original object
     # See dashboard/utils.py:get_bounty from details on this data
     bountyId = bountydetails.get('id', {})
     bountyData = bountydetails.get('data', {})

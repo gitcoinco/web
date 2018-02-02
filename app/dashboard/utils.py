@@ -41,7 +41,7 @@ class IPFSCantConnectException(Exception):
     pass
 
 
-def startIPFS():
+def start_ipfs():
     subprocess.Popen(["ipfs", "daemon"], stdout=subprocess.PIPE)
     time.sleep(4) #time for IPFS to boot
 
@@ -168,7 +168,7 @@ def getBountyID_from_db(issueURL, network):
 def getBountyID_from_web3(issueURL, network, last_known_bounty_id):
     issueURL = normalizeURL(issueURL)
     web3 = getWeb3(network)
-    startIPFS()
+    start_ipfs()
 
     # iterate through all the bounties
     bounty_enum = last_known_bounty_id

@@ -21,7 +21,7 @@ import warnings
 from django.core.management.base import BaseCommand
 
 from dashboard.helpers import UnsupportedSchemaException
-from dashboard.utils import BountyNotFoundException, get_bounty, process_bounty, startIPFS
+from dashboard.utils import BountyNotFoundException, get_bounty, process_bounty, start_ipfs
 
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
@@ -39,7 +39,7 @@ class Command(BaseCommand):
         network = options['network']
 
         # setup
-        startIPFS()
+        start_ipfs()
 
         # iterate through all the bounties
         bounty_enum = 0
