@@ -179,7 +179,7 @@ def render_new_bounty_roundup(to_email):
 
     bounties = [
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/web3.py/issues/549'),
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/pyrlp/issues/44'),
             'primer': 'This is a python issue for the Ethereum Foundation... 💯 ~ @owocki',
         },
         {
