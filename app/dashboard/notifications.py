@@ -13,7 +13,7 @@ from marketing.mails import tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
 from pyshorteners import Shortener
 from slackclient import SlackClient
-from economy.utils import convert_amount
+from economy.utils import get_eth_to_usdt
 
 
 '''
@@ -86,7 +86,7 @@ def maybe_market_to_twitter(bounty, event_name):
     new_tweet = tweet_txt.format(
         round(bounty.get_natural_value(), 4),
         bounty.token_name,
-        ("(${})".format(bounty.value_in_usdt) if bounty.value_in_usdt else ""),
+        ("(${} @ {}/ETH)".format(bounty.value_in_usdt, get_eth_to_usdt()) if bounty.value_in_usdt else ""),
         shortener.short(bounty.get_absolute_url())
     )
     new_tweet = new_tweet + " " + github_org_to_twitter_tags(bounty.org_name) #twitter tags
@@ -124,7 +124,7 @@ def maybe_market_to_slack(bounty, event_name):
         return False
 
     title = bounty.title if bounty.title else bounty.github_url
-    msg = "{} worth {} {}: {} \n\n{}&slack=1".format(event_name.replace('bounty', 'funded_issue'), round(bounty.get_natural_value(), 4), bounty.token_name, title, bounty.get_absolute_url())
+    msg = "{} worth {} {} (${} @ {}/ETH): {} \n\n{}&slack=1".format(event_name.replace('bounty', 'funded_issue'), round(bounty.get_natural_value(), 4), bounty.value_in_usdt, get_eth_to_usdt(), bounty.token_name, title, bounty.get_absolute_url())
 
     try:
         channel = 'notif-gitcoin'
@@ -215,7 +215,7 @@ def maybe_market_to_github(bounty, event_name, interested=None):
 
     # prepare message
     msg = ''
-    usdt_value = "(" + str(round(bounty.value_in_usdt, 2)) + " USD @ $" + str(round(convert_amount(1, 'ETH', 'USDT'), 2)) + "/ETH)" if bounty.value_in_usdt else ""
+    usdt_value = "(" + str(round(bounty.value_in_usdt, 2)) + " USD @ $" + str(round(get_eth_to_usdt())) + "/ETH)" if bounty.value_in_usdt else ""
     if event_name == 'new_bounty':
         msg = "__This issue now has a funding of {} {} {} attached to it.__\n\n * If you would like to work on this issue you can claim it [here]({}).\n * If you've completed this issue and want to claim the bounty you can do so [here]({})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
         msg = msg.format(
@@ -344,8 +344,8 @@ def maybe_market_tip_to_github(tip):
     _from = " from {}".format(tip.from_name) if tip.from_name else ""
     warning = tip.network if tip.network != 'mainnet' else ""
     _comments = "\n\nThe sender had the following public comments: \n> {}".format(tip.comments_public) if tip.comments_public else ""
-    msg = "⚡️ A tip worth {} {} {} {} has been granted to {} for this issue{}. ⚡️ {}\n\nNice work {}, check your email for further instructions. \n\n * ${} in Funded OSS Work Available at: https://gitcoin.co/explorer\n * Incentivize contributions to your repo: <a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
-    msg = msg.format(round(tip.amount, 5), warning, tip.tokenName, "(${})".format(tip.value_in_usdt) if tip.value_in_usdt else "" , username, _from, _comments, username, amount_usdt_open_work())
+    msg = "⚡️ A tip worth {} {} (${} @ {}/ETH) {} {} has been granted to {} for this issue{}. ⚡️ {}\n\nNice work {}, check your email for further instructions. \n\n * ${} in Funded OSS Work Available at: https://gitcoin.co/explorer\n * Incentivize contributions to your repo: <a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+    msg = msg.format(round(tip.amount, 5), warning, bounty.value_in_usdt, get_eth_to_usdt(),  tip.tokenName, "(${})".format(tip.value_in_usdt) if tip.value_in_usdt else "" , username, _from, _comments, username, amount_usdt_open_work())
 
     # actually post
     url = tip.github_url
