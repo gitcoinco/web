@@ -3,9 +3,9 @@ var bounty_abi = [{"constant":false,"inputs":[{"name":"_bountyId","type":"uint25
 
 
 var bounty_address = function (){
-    // workaround for document.web3network not working with rinkeby
     if (document.web3network == null) {
-        document.web3network = 'rinkeby';
+        // default to mainnet if web3network isn't found in time
+        document.web3network = 'mainnet';
     }
     switch(document.web3network){
         case "mainnet":
