@@ -17,7 +17,7 @@ var unPackAddresses = function(){
     var addresses = JSON.parse(localStorage.getItem("addresses"));
     document.addresses = addresses;
     if(!addresses || addresses.length == 0){
-        _alert("Invalid addresss generated.  Please try again from the first page.");
+        _alert("Invalid addresses generated.  Please try again from the first page.");
         setTimeout(function(){
             if(document.location.href.indexOf('send') != -1){
                 document.location.href = '/tip/send';
@@ -73,7 +73,7 @@ window.onload = function () {
     if(localStorage['expires']){
         $("expires").selectedIndex = localStorage['expires'];
     }
-    
+
     waitforWeb3(function(){
         tokens(document.web3network).forEach(function(ele){
             var option = document.createElement("option");
@@ -169,7 +169,7 @@ window.onload = function () {
         localStorage['comments_public'] = comments_public;
         localStorage['expires'] = $("expires").selectedIndex;
 
-        loading_button(jQuery("#send"));       
+        loading_button(jQuery("#send"));
         var numBatches = document.addresses.length;
         var plural = numBatches > 1 ? 's' : '';
         var processTx = function(i){
@@ -182,7 +182,7 @@ window.onload = function () {
                 if(error){
                     mixpanel.track("Tip Step 2 Error", {step: 'final', error:error });
                     _alert('got an error :(');
-                    unloading_button(jQuery("#send"));       
+                    unloading_button(jQuery("#send"));
                 } else {
                     mixpanel.track("Tip Step 2 Success", {});
                     var txid = result;
@@ -224,7 +224,7 @@ window.onload = function () {
                         var is_success = json['status'] == 'OK';
                         var _class = is_success ? "info" : "error";
                         _alert(json['message'], _class);
-                    }); 
+                    });
 
                     if((i + 1) < numBatches){
                         processTx(i+1);
@@ -237,7 +237,7 @@ window.onload = function () {
                 if(error){
                     console.error(error);
                     _alert('got an error :(');
-                    unloading_button(jQuery("#send"));       
+                    unloading_button(jQuery("#send"));
                 } else {
                     var approve_amount = amount * numBatches;
                     token_contract(token).approve.estimateGas(contract_address(), approve_amount, function(error, result){
@@ -247,8 +247,8 @@ window.onload = function () {
                         }
                         var _gasLimit = _gas * 1.01;
                         token_contract(token).approve.sendTransaction(
-                            contract_address(), 
-                            approve_amount, 
+                            contract_address(),
+                            approve_amount,
                             {from :fromAccount, gas:gas, gasLimit: gasLimit},
                             final_callback);
                     });
