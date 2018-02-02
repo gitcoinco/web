@@ -93,7 +93,6 @@ class Bounty(SuperModel):
     bounty_owner_email = models.CharField(max_length=255, blank=True)
     bounty_owner_github_username = models.CharField(max_length=255, blank=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
-    fulfillments = JSONField(default={})
     is_open = models.BooleanField(help_text='Whether the bounty is still open for fulfillments.')
     expires_date = models.DateTimeField()
     raw_data = JSONField()
@@ -353,13 +352,41 @@ class Bounty(SuperModel):
 
 
 class BountyFulfillment(SuperModel):
+    """The structure of a fulfillment on a Bounty."""
+
     fulfiller_address = models.CharField(max_length=50)
     fulfiller_email = models.CharField(max_length=255, blank=True)
     fulfiller_github_username = models.CharField(max_length=255, blank=True)
     fulfiller_name = models.CharField(max_length=255, blank=True)
     fulfiller_metadata = JSONField(default={}, blank=True)
 
-    bounty = models.ForeignKey(Bounty, related_name='fulfillment', on_delete=models.CASCADE)
+    bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE)
+
+    def __str__(self):
+        """Define the string representation of BountyFulfillment.
+
+        Returns:
+            str: The string representation of the object.
+
+        """
+        return f'BountyFulfillment ID: ({self.pk}) - Bounty ID: ({self.bounty.pk})'
+
+    @property
+    def to_json(self):
+        """Define the JSON representation of BountyFulfillment.
+
+        Returns:
+            dict: A JSON representation of BountyFulfillment.
+
+        """
+        return {
+            'address': self.fulfiller_address,
+            'bounty_id': self.bounty.pk,
+            'email': self.fulfiller_email,
+            'githubUsername': self.fulfiller_github_username,
+            'metadata': self.fulfiller_metadata,
+            'name': self.fulfiller_name,
+        }
 
 
 class BountySyncRequest(SuperModel):

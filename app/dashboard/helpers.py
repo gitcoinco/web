@@ -299,7 +299,6 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             bounty_owner_email=bountyDataPayload.get('issuer', {}).get('email', ''),
             bounty_owner_github_username=bountyDataPayload.get('issuer', {}).get('githubUsername', ''),
             bounty_owner_name=bountyDataPayload.get('issuer', {}).get('name', ''),
-            fulfillments=fulfillments,
             # fulfillment_ipfs_hash='',
             is_open=is_open,
             raw_data=bountydetails,
@@ -332,8 +331,9 @@ def process_bounty_details(bountydetails, url, contract_address, network):
                     fulfiller_name=fment.get('payload', {}).get('fulfiller', {}).get('name', ''),
                     fulfiller_metadata=fment.get('payload', {}).get('metadata', {}),
                     bounty=new_bounty,
-                    )
+                )
                 new_fulfillment.save()
+                new_bounty.fulfillments.add(new_fulfillment)
 
             inactive_bounties = Bounty.objects.filter(
                 github_url=url,
