@@ -17,7 +17,7 @@
 '''
 
 from eth_utils import to_checksum_address
-from dashboard.helpers import process_bounty_details, normalizeURL
+from dashboard.helpers import process_bounty_details, normalizeURL, process_bounty_changes
 from dashboard.models import Bounty
 import json
 import subprocess
@@ -125,7 +125,13 @@ def get_bounty(bounty_enum, network):
 
 # processes a bounty returned by get_bounty
 def process_bounty(bounty_data):
-    return process_bounty_details(bounty_data)
+    did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
+
+    if did_change:
+        print("- processing changes")
+        process_bounty_changes(old_bounty, new_bounty, None)
+
+    return did_change, old_bounty, new_bounty
 
 
 def has_tx_mined(txid, network):
