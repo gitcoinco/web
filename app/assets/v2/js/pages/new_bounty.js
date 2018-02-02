@@ -12,6 +12,10 @@ $(document).ready(function(){
     // Load sidebar radio buttons from localStorage
     if(getParam('source')){
         $('input[name=issueURL]').val(getParam('source'));
+    } else if(getParam('url')){
+        $('input[name=issueURL]').val(getParam('url'));
+    } else if(localStorage['issueURL']){
+         $('input[name=issueURL]').val(localStorage['issueURL']);
     }
     if(localStorage['expirationTimeDelta']){
         $('select[name=expirationTimeDelta] option').prop('selected', false);
@@ -25,9 +29,6 @@ $(document).ready(function(){
     }
     if(localStorage['bountyType']){
         $('select[name=bountyType] option:contains('+localStorage['bountyType']+')').prop('selected', true);
-    }
-    if(localStorage['issueURL']){
-         $('input[name=issueURL]').val(localStorage['issueURL']);
     }
     
     //fetch issue URL related info
