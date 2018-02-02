@@ -31,10 +31,9 @@ def migrate_fulfillments(apps, schema_editor):
 def rollback_migration(apps, schema_editor):
     """Handle reversing the migration steps."""
     Bounty = apps.get_model('dashboard', 'Bounty')
-    BountyFulfillment = apps.get_model('dashboard', 'BountyFulfillment')
     db_alias = schema_editor.connection.alias
 
-    bounties = Bounty.objects \
+    bounties = Bounty.objects.using(db_alias) \
         .exclude(fulfiller_address__isnull=True) \
         .exclude(fulfiller_address__exact='') \
         .exclude(fulfiller_address='0x0000000000000000000000000000000000000000')

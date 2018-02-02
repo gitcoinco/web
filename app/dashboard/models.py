@@ -113,6 +113,7 @@ class Bounty(SuperModel):
     accepted = models.BooleanField(default=False, help_text='Whether the bounty has been done')
     interested = models.ManyToManyField('dashboard.Interest', blank=True)
     interested_comment = models.IntegerField(null=True, blank=True)
+    submissions_comment = models.IntegerField(null=True, blank=True)
 
     objects = BountyQuerySet.as_manager()
 
@@ -360,6 +361,7 @@ class BountyFulfillment(SuperModel):
     fulfiller_name = models.CharField(max_length=255, blank=True)
     fulfiller_metadata = JSONField(default={}, blank=True)
     fulfillment_id = models.IntegerField(null=True, blank=True)
+    accepted = models.BooleanField(default=False)
 
     bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE)
 
@@ -796,3 +798,4 @@ def normalize_tip_usernames(sender, instance, **kwargs):
 
 
 m2m_changed.connect(m2m_changed_interested, sender=Bounty.interested.through)
+# m2m_changed.connect(changed_fulfillments, sender=Bounty.fulfillments)
