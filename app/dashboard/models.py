@@ -359,6 +359,7 @@ class BountyFulfillment(SuperModel):
     fulfiller_github_username = models.CharField(max_length=255, blank=True)
     fulfiller_name = models.CharField(max_length=255, blank=True)
     fulfiller_metadata = JSONField(default={}, blank=True)
+    fulfillment_id = models.IntegerField(null=True, blank=True)
 
     bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE)
 

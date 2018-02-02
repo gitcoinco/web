@@ -541,7 +541,7 @@ window.addEventListener('load', function() {
                         var enabled = isBountyOwner(result);
 
                         fulfillers = [];
-                        var submissions = result.fulfillments.fulfillments;
+                        var submissions = result.fulfillments;
 
                         $.each(submissions, function (index, value) {
                             var acceptButton = {
@@ -553,9 +553,8 @@ window.addEventListener('load', function() {
                             };
 
                             var submission = {
-                                'fulfiller': value.payload.fulfiller,
+                                'fulfiller': value,
                                 'button': acceptButton,
-                                'id': value.id,
                             };
 
                             var submitter_tmpl = $.templates("#submission");

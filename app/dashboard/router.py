@@ -33,7 +33,7 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
         model = BountyFulfillment
         fields = ('fulfiller_address', 'fulfiller_email',
                   'fulfiller_github_username', 'fulfiller_metadata',
-                  'fulfiller_name')
+                  'fulfiller_name', 'fulfillment_id')
 
 
 # Serializers define the API representation.

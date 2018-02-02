@@ -24,6 +24,7 @@ class Migration(migrations.Migration):
                 ('fulfiller_github_username', models.CharField(blank=True, max_length=255)),
                 ('fulfiller_name', models.CharField(blank=True, max_length=255)),
                 ('fulfiller_metadata', django.contrib.postgres.fields.jsonb.JSONField(blank=True, default={})),
+                ('fulfillment_id', models.IntegerField(blank=True, null=True)),
                 ('bounty', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='fulfillments', to='dashboard.Bounty')),
             ],
             options={

@@ -330,6 +330,7 @@ def process_bounty_details(bountydetails, url, contract_address, network):
                     fulfiller_github_username=fment.get('payload', {}).get('fulfiller', {}).get('githubUsername', ''),
                     fulfiller_name=fment.get('payload', {}).get('fulfiller', {}).get('name', ''),
                     fulfiller_metadata=fment.get('payload', {}).get('metadata', {}),
+                    fulfillment_id=fment.get('id'),
                     bounty=new_bounty,
                 )
                 new_fulfillment.save()

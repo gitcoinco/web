@@ -215,9 +215,9 @@ var update_fulfiller_list = function (bounty_pk) {
     fulfillers = [];
     $.getJSON("/api/v0.1/bounties/" + bounty_pk, function (data) {
         data = sanitizeAPIResults(data);
-        var fulfillmentList = data.fulfillments.fulfillments;
+        var fulfillmentList = data.fulfillments;
         $.each(fulfillmentList, function (index, value) {
-            var fulfiller = value.payload.fulfiller;
+            var fulfiller = value;
             fulfillers.push(fulfiller);
         });
         var tmpl = $.templates("#submitters");
