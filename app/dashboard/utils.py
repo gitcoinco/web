@@ -16,17 +16,17 @@
 
 '''
 
-from eth_utils import to_checksum_address
-from dashboard.helpers import process_bounty_details, normalizeURL, process_bounty_changes
-from dashboard.models import Bounty
 import json
 import subprocess
 import time
-from web3 import Web3, HTTPProvider
+
 import ipfsapi
+from dashboard.helpers import UnsupportedSchemaException, normalizeURL, process_bounty_changes, process_bounty_details
+from dashboard.models import Bounty
+from eth_utils import to_checksum_address
+from web3 import HTTPProvider, Web3
 from web3.exceptions import BadFunctionCallOutput
 from web3.utils.datastructures import HexBytes
-from dashboard.helpers import UnsupportedSchemaException
 
 
 class BountyNotFoundException(Exception):
@@ -192,5 +192,3 @@ def getBountyID_from_web3(issueURL, network, last_known_bounty_id):
             bounty_enum += 1
 
     return None
-
-
