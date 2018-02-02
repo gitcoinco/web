@@ -44,64 +44,58 @@ def getBountyContract(web3):
     return getBountyContract
 
 
+def get_bounty(bounty_enum):
+    web3 = getWeb3()
+    ipfs = getIPFS()
+    standard_bounties = getBountyContract(web3)
+
+    issuer, deadline, fulfillmentAmount, paysTokens, bountyStage, balance = standard_bounties.functions.getBounty(bounty_enum).call()
+    data = standard_bounties.functions.getBountyData(bounty_enum).call()
+    arbiter = standard_bounties.functions.getBountyArbiter(bounty_enum).call()
+    token = standard_bounties.functions.getBountyToken(bounty_enum).call()
+    fulfillments = []
+    fulfill_enum = 0
+    more_fulfillments = True
+    while more_fulfillments:
+        try:
+            accepted, fulfiller, data = standard_bounties.functions.getFulfillment(bounty_enum, fulfill_enum).call()
+            fulfill_enum += 1
+            fulfillments.append({
+                'accepted': accepted,
+                'fulfiller': fulfiller,
+                'data': json.loads(ipfs.cat(data)),
+                })
+        except BadFunctionCallOutput:
+            more_fulfillments = False
+    bounty_enum += 1
+
+    bounty = {
+        'id': bounty_enum,
+        'issuer': issuer,
+        'deadline': deadline,
+        'fulfillmentAmount': fulfillmentAmount,
+        'paysTokens': bountyStage,
+        'balance': balance,
+        'data': json.loads(ipfs.cat(data)),
+        'arbiter': arbiter,
+        'token': token,
+        'fulfillments': fulfillments,
+    }
+    return bounty
+
+
 class Command(BaseCommand):
 
     help = 'syncs bounties with geth'
 
     def handle(self, *args, **options):
-        web3 = getWeb3()
-        ipfs = getIPFS()
-        standard_bounties = getBountyContract(web3)
-        json_file = ipfs.cat('QmPM18xxTSYkZUEAf7PSkQZbS7pB4u86McXL549MJwh66Q')
-
-        # http://web3py.readthedocs.io/en/latest/contracts.html?highlight=eventfilter#events
-        # https://github.com/ConsenSys/StandardBounties/blob/master/docs/documentation.md#events
-        # EDIT: seems to be broken right now per https://ethereum.stackexchange.com/questions/31428/cant-access-to-contract-functions-via-web3-py
-        ## bounties_filters = standard_bounties.eventFilter('PayoutIncreased', {
-        ##     'filter': {
-        ##         'fromBlock': 0,
-        ##         'toBlock': 'latest',
-        ##     },
-        ## })
-        ##  entries = bounties_filters.get_new_entries()
-
+        #iterate through all the bounties
         bounty_enum = 0
         more_bounties = True
         while more_bounties:
             try:
-                issuer, deadline, fulfillmentAmount, paysTokens, bountyStage, balance = standard_bounties.functions.getBounty(bounty_enum).call()
-                data = standard_bounties.functions.getBountyData(bounty_enum).call()
-                arbiter = standard_bounties.functions.getBountyArbiter(bounty_enum).call()
-                token = standard_bounties.functions.getBountyToken(bounty_enum).call()
-                fulfillments = []
-                fulfill_enum = 0
-                more_fulfillments = True
-                while more_fulfillments:
-                    try:
-                        accepted, fulfiller, data = standard_bounties.functions.getFulfillment(bounty_enum, fulfill_enum).call()
-                        fulfill_enum += 1
-                        fulfillments.append({
-                            'accepted': accepted,
-                            'fulfiller': fulfiller,
-                            'data': json.loads(ipfs.cat(data)),
-                            })
-                    except BadFunctionCallOutput:
-                        more_fulfillments = False
-                bounty_enum += 1
 
-                bounty = {
-                    'id': bounty_enum,
-                    'issuer': issuer,
-                    'deadline': deadline,
-                    'fulfillmentAmount': fulfillmentAmount,
-                    'paysTokens': bountyStage,
-                    'balance': balance,
-                    'data': json.loads(ipfs.cat(data)),
-                    'arbiter': arbiter,
-                    'token': token,
-                    'fulfillments': fulfillments,
-                }
-
+                bounty = get_bounty(bounty_enum)
                 print("TODO: process this bounty")
 
             except BadFunctionCallOutput:
