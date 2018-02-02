@@ -194,7 +194,6 @@ $(document).ready(function(){
             // Need to pass the bountydetails as well, since I can't grab it from the 
             // Standard Bounties contract.
             dataLayer.push({'event': 'fundissue'});
-            sync_web3(issueURL);  // Writes the bounty URL to the database
             
             // update localStorage issuePackage
             var issuePackage = JSON.parse(localStorage[issueURL]);

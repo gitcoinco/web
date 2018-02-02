@@ -17,13 +17,16 @@
 '''
 
 from eth_utils import to_checksum_address
-from dashboard.helpers import process_bounty_details
+from dashboard.helpers import process_bounty_details, normalizeURL
+from dashboard.models import Bounty
 import json
 import subprocess
 import time
 from web3 import Web3, HTTPProvider
 import ipfsapi
 from web3.exceptions import BadFunctionCallOutput
+from web3.utils.datastructures import HexBytes
+from dashboard.helpers import UnsupportedSchemaException
 
 
 class BountyNotFoundException(Exception):
@@ -122,6 +125,66 @@ def get_bounty(bounty_enum, network):
 
 # processes a bounty returned by get_bounty
 def process_bounty(bounty_data):
-    process_bounty_details(bounty_data)
-    pass
+    return process_bounty_details(bounty_data)
+
+
+def has_tx_mined(txid, network):
+    web3 = getWeb3(network)
+    try:
+        transaction = web3.eth.getTransaction(txid)
+        return transaction.blockHash != HexBytes('0x0000000000000000000000000000000000000000000000000000000000000000')
+    except:
+        return False
+
+
+def getBountyID(issueURL, network):
+    issueURL = normalizeURL(issueURL)
+    bounty_id = getBountyID_from_db(issueURL, network)
+    if bounty_id:
+        return bounty_id
+
+    all_known_stdbounties = Bounty.objects.filter(web3_type='bounties_network', network=network).order_by('-standard_bounties_id')
+    last_known_bounty_id = 0
+    if all_known_stdbounties.exists():
+        last_known_bounty_id = all_known_stdbounties.first().standard_bounties_id
+    bounty_id = getBountyID_from_web3(issueURL, network, last_known_bounty_id)
+    return bounty_id
+
+
+def getBountyID_from_db(issueURL, network):
+    issueURL = normalizeURL(issueURL)
+    bounties = Bounty.objects.filter(github_url=issueURL, network=network, web3_type='bounties_network')
+    if not bounties.count():
+        return None
+    return bounties.first().standard_bounties_id
+
+
+def getBountyID_from_web3(issueURL, network, last_known_bounty_id):
+    issueURL = normalizeURL(issueURL)
+    web3 = getWeb3(network)
+    startIPFS()
+
+    # iterate through all the bounties
+    bounty_enum = last_known_bounty_id
+    more_bounties = True
+    while more_bounties:
+        try:
+
+            # pull and process each bounty
+            print(f'looking at {bounty_enum}')
+            bounty = get_bounty(bounty_enum, network)
+            url = bounty.get('data', {}).get('payload', {}).get('webReferenceURL', False)
+            if url == issueURL:
+                return bounty['id']
+
+        except BountyNotFoundException:
+            more_bounties = False
+        except UnsupportedSchemaException as e:
+            pass
+        finally:
+            # prepare for next loop
+            bounty_enum += 1
+
+    return None
+
 

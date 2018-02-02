@@ -315,17 +315,40 @@ var paint_page = function(result){
 
     //cleanup
     document.result = result;
-    check_for_updates(result);
 }
 
 var check_for_updates = function(result){
     if(typeof document.pendingIssueMetadata != 'undefined'){
-        //TODO: modify this functionality to hit an endpoint that'll only return when the tx is synced to web3
         var txid = document.pendingIssueMetadata['txid'];
-        var uri = '/sync/web3/?github_url='+issueURL+'&txid='+txid;
-         $.get(uri, function(results){
-            
-         });
+        console.log('waiting for tx to be mined');
+        callFunctionWhenTransactionMined(txid,function(){
+            console.log('tx mined');
+            var data = {
+                url: document.issueURL,
+                txid: txid,
+                network: document.web3network,
+            }
+            var success = function(response){
+                if(response.status == "200"){
+                    console.log("success from sync/web", response);
+
+                    // clear local data 
+                    localStorage[document.issueURL] = "";
+                    document.location.href = document.location.href;
+                } else {
+                    console.log("error from sync/web", response);
+                }
+            }
+            console.log('syncing gitcoin with web3');
+            var uri = "/sync/web3/"
+            $.ajax({
+              type: "POST",
+              url: uri,
+              data: data,
+              success: success,
+              dataType: 'json'
+            });
+        })
     }
 };
 
@@ -378,8 +401,14 @@ $(document).ready(function(){
         }
 
         if (nonefound) {
-            $(".nonefound").css('display','block');
             $("#primary_view").css('display','none');
+            // is there a pending issue or not?
+            if(typeof document.pendingIssueMetadata != 'undefined'){
+                showWarningMessage();
+                check_for_updates(result);
+            } else {
+                $(".nonefound").css('display','block');
+            }
         }
     }).fail(function(){
         _alert('got an error. please try again, or contact support@gitcoin.co');

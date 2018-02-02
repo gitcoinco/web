@@ -96,9 +96,7 @@ window.onload = function(){
                                     'txid': result,
                                 });
 
-                                // See views.sync_web3
                                 dataLayer.push({'event': 'claimissue'});
-                                sync_web3(issueURL);
                                 _alert({ message: "Fulfillment submitted to web3." },'info');
                                 setTimeout(function(){
                                     mixpanel.track("Fulfill Bounty Success", {});

@@ -276,23 +276,6 @@ function timeDifference(current, previous) {
     return amt + ' '+unit+plural+' ago';
 };
 
-var sync_web3 = function(issueURL, bountydetails, callback){
-    var url = '/sync/web3';
-    args = {
-        'issueURL': issueURL,
-    }
-    if(typeof bountydetails != 'undefined'){
-        args['bountydetails'] = bountydetails;
-        args['contract_address'] = bounty_address();
-        args['network'] = document.web3network;
-    }
-    $.post(url, args, function(){
-        if(typeof callback != 'undefined'){
-            callback();
-        }
-    })
-}
-
 
 //sidebar
 $(document).ready(function(){
