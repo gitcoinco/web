@@ -445,10 +445,8 @@ class Tip(SuperModel):
 @receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
 def normalize_usernames(sender, instance, **kwargs):
     pass
-    # if instance.fulfiller_github_username:
-    #     instance.fulfiller_github_username = instance.fulfiller_github_username.replace("@", '')
-    # if instance.bounty_owner_github_username:
-    #     instance.bounty_owner_github_username = instance.bounty_owner_github_username.replace("@", '')
+    if instance.bounty_owner_github_username:
+        instance.bounty_owner_github_username = instance.bounty_owner_github_username.replace("@", '')
 
 
 # method for updating
@@ -588,7 +586,6 @@ class Profile(SuperModel):
     @property
     def bounties(self):
         bounties = Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True)
-        bounties = bounties | Bounty.objects.filter(fulfiller_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(fulfiller_github_username__iexact="@" + self.handle, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(github_url__in=[url for url in self.tips.values_list('github_url', flat=True)], current_bounty=True)
         return bounties.order_by('-web3_created')
@@ -614,7 +611,7 @@ class Profile(SuperModel):
         include_gitcoin_users = len(_return) < limit_to_num
         if include_gitcoin_users:
             for b in self.bounties:
-                vals = [b.bounty_owner_github_username, b.fulfiller_github_username]
+                vals = [b.bounty_owner_github_username]
                 for val in vals:
                     if val:
                         _return.append(val.replace('@', ''))

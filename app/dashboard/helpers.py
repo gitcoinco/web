@@ -272,7 +272,7 @@ def process_bounty_details(bountydetails, url, contract_address, network):
 
     fments_accepted = [fment.get('accepted') for fment in fments]
     # If any of the fulfillments have been accepted, the bounty is now accepted and complete.
-    accepted = True if True in fments_accepted else False
+    accepted = any(fments_accepted)
 
     # Possible Bounty Stages
     # 0: Draft

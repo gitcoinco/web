@@ -118,7 +118,6 @@ var callbacks = {
         return address_ize(key, val, result);
     },
     'bounty_owner_github_username': gitcoin_ize,
-    'fulfiller_github_username': gitcoin_ize,
     'value_in_eth': function(key, val, result){
         if(result['token_name'] == 'ETH' || val == null){
             return [null, null];
@@ -435,9 +434,6 @@ window.addEventListener('load', function() {
                     // Find interest information
                     var is_interested = is_on_interest_list(result['pk']);
                     update_interest_list(result['pk']);
-
-                    // // Find fulfiller information
-                    // update_fulfiller_list(result['pk']);
 
                     //insert table onto page
                     for(var j=0; j< rows.length; j++){
