@@ -11,9 +11,9 @@ Do you still want to work on this?
 
 If so, please leave a comment on the github thread to check in.
 -OR-
-If not, click 'Stop Work' on the <a href="{{bounty.url}}">issue detail page</a>.
+If not, click 'Stop Work' on at {{bounty.absolute_url}}
 
-If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.
+If you have any questions, feel free to reach out on slack => https://gitcoin.co/slack
 
 Funded Issue Details
 
