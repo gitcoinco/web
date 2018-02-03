@@ -1,5 +1,7 @@
-from django.conf import settings
 import json
+
+from django.conf import settings
+
 
 def insert_settings(request):
     from marketing.utils import get_stat
