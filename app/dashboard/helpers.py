@@ -16,6 +16,7 @@
 
 '''
 import json
+import logging
 import pprint
 from enum import Enum
 
@@ -27,13 +28,15 @@ from django.utils import timezone
 
 import requests
 from bs4 import BeautifulSoup
-from dashboard.models import Bounty, BountySyncRequest
+from dashboard.models import Bounty, BountyFulfillment, BountySyncRequest
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
 )
 from economy.utils import convert_amount
 from pytz import UTC
 from ratelimit.decorators import ratelimit
+
+logger = logging.getLogger(__name__)
 
 
 # gets amount of remote html doc (github issue)
@@ -57,7 +60,6 @@ def amount(request):
     except Exception as e:
         print(e)
         raise Http404
-
 
 
 # gets title of remote html doc (github issue)
@@ -264,24 +266,13 @@ def process_bounty_details(bountydetails, url, contract_address, network):
         print(e)
         did_change = True
 
-    # Check if we have any fulfillments.  If so, check if they are accepted.
-    # If there are no fulfillments, accepted is automatically False.
-    # Currently we are only considering the latest fulfillment.  Std bounties supports multiple.
-    fments = fulfillments['fulfillments']
-    accepted = fments[-1].get('accepted') if fments else False
+    fments = fulfillments.get('fulfillments', [])
+    logger.debug('Fulfillment data:')
+    logger.debug(json.dumps(fments))
 
-    if fments:
-        fulfiller_address = fments[-1].get('payload', {}).get('fulfiller', {}).get('address', '0x0000000000000000000000000000000000000000')
-        fulfiller_email = fments[-1].get('payload', {}).get('fulfiller', {}).get('email', '')
-        fulfiller_github_username = fments[-1].get('payload', {}).get('fulfiller', {}).get('githubUsername', '')
-        fulfiller_name = fments[-1].get('payload', {}).get('fulfiller', {}).get('name', '')
-        fulfiller_metadata = fments[-1].get('payload', {}).get('metadata', {})
-    else:
-        fulfiller_address = '0x0000000000000000000000000000000000000000'
-        fulfiller_email = ''
-        fulfiller_github_username = ''
-        fulfiller_name = ''
-        fulfiller_metadata = {}
+    fments_accepted = [fment.get('accepted') for fment in fments]
+    # If any of the fulfillments have been accepted, the bounty is now accepted and complete.
+    accepted = any(fments_accepted)
 
     # Possible Bounty Stages
     # 0: Draft
@@ -317,11 +308,6 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             network=network,
             accepted=accepted,
             # These fields are after initial bounty creation, in bounty_details.js
-            fulfiller_metadata=fulfiller_metadata,
-            fulfiller_address=fulfiller_address,
-            fulfiller_email=fulfiller_email,
-            fulfiller_github_username=fulfiller_github_username,
-            fulfiller_name=fulfiller_name,
             expires_date=timezone.make_aware(timezone.datetime.fromtimestamp(bounty.get('deadline')), timezone=UTC),
             standard_bounties_id=bountyId,
             balance=bounty.get('balance'),
@@ -336,6 +322,29 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             for interested in last_bounty.interested.all():
                 new_bounty.interested.add(interested)
 
+        if fments:
+            for fment in fments:
+                new_fulfillment = BountyFulfillment.objects.create(
+                    fulfiller_address=fment.get('payload', {}).get('fulfiller', {}).get('address', '0x0000000000000000000000000000000000000000'),
+                    fulfiller_email=fment.get('payload', {}).get('fulfiller', {}).get('email', ''),
+                    fulfiller_github_username=fment.get('payload', {}).get('fulfiller', {}).get('githubUsername', ''),
+                    fulfiller_name=fment.get('payload', {}).get('fulfiller', {}).get('name', ''),
+                    fulfiller_metadata=fment.get('payload', {}).get('metadata', {}),
+                    fulfillment_id=fment.get('id'),
+                    bounty=new_bounty,
+                )
+                new_fulfillment.save()
+                new_bounty.fulfillments.add(new_fulfillment)
+
+            inactive_bounties = Bounty.objects.filter(
+                github_url=url,
+                title=bountyDataPayload.get('title'),
+                current_bounty=False,
+            ).order_by('-created_on')
+
+            for inactive_bounty in inactive_bounties:
+                BountyFulfillment.objects.filter(bounty_id=inactive_bounty.id).delete()
+
     return (did_change, old_bounties.first(), new_bounty)
 
 
@@ -349,18 +358,15 @@ def process_bounty_changes(old_bounty, new_bounty, txid):
         bsr.save()
 
     # new bounty
-    null_address = '0x0000000000000000000000000000000000000000'
     if (old_bounty is None and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
         event_name = 'new_bounty'
-    elif old_bounty.fulfiller_address == null_address and new_bounty.fulfiller_address != null_address:
+    elif old_bounty.num_fulfillments == 0 and new_bounty.num_fulfillments > 0:
         event_name = 'work_submitted'
     elif old_bounty.is_open and not new_bounty.is_open:
         if new_bounty.status == 'cancelled':
             event_name = 'killed_bounty'
         else:
             event_name = 'work_done'
-    elif old_bounty.fulfiller_address != null_address and new_bounty.fulfiller_address == null_address:
-        event_name = 'rejected_claim'
     else:
         event_name = 'unknown_event'
     print(event_name)

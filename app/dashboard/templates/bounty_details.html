@@ -95,21 +95,14 @@
                             Gitcoin Profile: <span id="bounty_owner_github_username"></span>
                             <br>
                         </div>
-                        <div id="fulfiller" style="width: 100%; display: block;">
-                            <br>
-                            <h5>Submitter Info</h5>
-                            ETH Address: <span id="fulfiller_address"></span>
-                            <br>
-                            Email: <span id="fulfiller_email"></span>
-                            <br>
-                            Gitcoin Profile: <span id="fulfiller_github_username"></span>
-
-                        </div>
                         <br>
                         <h5>Started Work</h5>
                         <div>
                             <ul id="interest_list">
                             </ul>
+                        </div>
+                        <div id="submission_list">
+                            <h5>Submissions</h5>
                         </div>
                     </div>
                 </div>
@@ -130,6 +123,30 @@
             <img src="[[:local_avatar_url]]" class="avatar">
             <a href="[[:url]]">[[:handle]]</a>
         </li>
+    </script>
+
+    <script id="submission" type="text/x-jsrender">
+        <div class="row" id="submission_row">
+            <div class="col-10">
+                <ul style="list-style-type:none" id="submitter_ul">
+                    <li>Name: <span id="fulfiller_name">[[:fulfiller.fulfiller_name]]</span></li>
+                    <li>ETH Address: <span id="fulfiller_address"> <a href="https://etherscan.io/address/[[:fulfiller.address]]">[[:fulfiller.fulfiller_address]]</a></span></li>
+                    <li>Email: <span id="fulfiller_email"> <a href="mailto:[[:fulfiller.email]]">[[:fulfiller.fulfiller_email]]</a></span></li>
+                    <li>Gitcoin Profile: <span id="fulfiller_github_username"> <a href="https://gitcoin.co/profile/[[:fulfiller:githubUsername]]">[[:fulfiller.fulfiller_github_username]]</a></span></li>
+                    <li>Submission ID: <span id="fulfillment_id">[[:fulfiller.fulfillment_id]]</span></li>
+                </ul>
+            </div>
+            <div class="col-2">
+                <div class="row">&nbsp;</div>
+                <div class="row">&nbsp;</div>
+                    <span title='[[:button.title]]'>
+                        <a class="btn btn-sm btn-[[:button.color]] [[:button.extraClass]]" role="button" href="[[:button.href]]" target="[[:button.target]]">
+                            <span class="font-smaller-4">[[:button.text]]</span>
+                        </a>
+                    </span>
+                <div class="row">&nbsp;</div>
+            </div>
+        </div>
     </script>
 
     {% include 'shared/bottom_notification.html' %}

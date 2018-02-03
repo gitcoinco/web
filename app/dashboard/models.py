@@ -78,8 +78,6 @@ class Bounty(SuperModel):
         ('Months', 'Months'),
         ('Unknown', 'Unknown'),
     ]
-    # TODO:  claimee == fulfiller for now.  Didn't change the database model because the names
-    # TODO   are used everywhere in the application.  Eventually we might want to standardize this.
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
     web3_created = models.DateTimeField(db_index=True)
@@ -95,15 +93,10 @@ class Bounty(SuperModel):
     bounty_owner_email = models.CharField(max_length=255, blank=True)
     bounty_owner_github_username = models.CharField(max_length=255, blank=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
-    fulfiller_address = models.CharField(max_length=50)
-    fulfiller_email = models.CharField(max_length=255, blank=True)
-    fulfiller_github_username = models.CharField(max_length=255, blank=True)
-    fulfiller_name = models.CharField(max_length=255, blank=True)
     is_open = models.BooleanField(help_text='Whether the bounty is still open for fulfillments.')
     expires_date = models.DateTimeField()
     raw_data = JSONField()
     metadata = JSONField(default={})
-    fulfiller_metadata = JSONField(default={}, blank=True)
     current_bounty = models.BooleanField(default=False,
                                          help_text='Whether this bounty is the most current revision one or not')
     _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=50)
@@ -120,6 +113,7 @@ class Bounty(SuperModel):
     accepted = models.BooleanField(default=False, help_text='Whether the bounty has been done')
     interested = models.ManyToManyField('dashboard.Interest', blank=True)
     interested_comment = models.IntegerField(null=True, blank=True)
+    submissions_comment = models.IntegerField(null=True, blank=True)
 
     objects = BountyQuerySet.as_manager()
 
@@ -240,18 +234,20 @@ class Bounty(SuperModel):
         else:
             try:
                 if self.is_open is False:
-                    if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.fulfiller_address == '0x0000000000000000000000000000000000000000':
+                    if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.num_fulfillments == 0:
                         return 'expired'
                     if self.accepted:
                         return 'done'
                     # If its not expired or done, it must be cancelled.
                     return 'cancelled'
-                if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
+                if self.num_fulfillments == 0:
                     if self.pk and self.interested.exists():
                         return 'started'
                     else:
                         return 'open'
-                return 'submitted'
+                if self.num_fulfillments != 0:
+                    return 'submitted'
+                return 'unknown'
             except Exception as e:
                 logger.warning(e)
                 return 'unknown'
@@ -356,6 +352,46 @@ class Bounty(SuperModel):
         return comments
 
 
+class BountyFulfillment(SuperModel):
+    """The structure of a fulfillment on a Bounty."""
+
+    fulfiller_address = models.CharField(max_length=50)
+    fulfiller_email = models.CharField(max_length=255, blank=True)
+    fulfiller_github_username = models.CharField(max_length=255, blank=True)
+    fulfiller_name = models.CharField(max_length=255, blank=True)
+    fulfiller_metadata = JSONField(default={}, blank=True)
+    fulfillment_id = models.IntegerField(null=True, blank=True)
+    accepted = models.BooleanField(default=False)
+
+    bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE)
+
+    def __str__(self):
+        """Define the string representation of BountyFulfillment.
+
+        Returns:
+            str: The string representation of the object.
+
+        """
+        return f'BountyFulfillment ID: ({self.pk}) - Bounty ID: ({self.bounty.pk})'
+
+    @property
+    def to_json(self):
+        """Define the JSON representation of BountyFulfillment.
+
+        Returns:
+            dict: A JSON representation of BountyFulfillment.
+
+        """
+        return {
+            'address': self.fulfiller_address,
+            'bounty_id': self.bounty.pk,
+            'email': self.fulfiller_email,
+            'githubUsername': self.fulfiller_github_username,
+            'metadata': self.fulfiller_metadata,
+            'name': self.fulfiller_name,
+        }
+
+
 class BountySyncRequest(SuperModel):
 
     github_url = models.URLField()
@@ -438,8 +474,7 @@ class Tip(SuperModel):
 
 @receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
 def normalize_usernames(sender, instance, **kwargs):
-    if instance.fulfiller_github_username:
-        instance.fulfiller_github_username = instance.fulfiller_github_username.replace("@", '')
+    pass
     if instance.bounty_owner_github_username:
         instance.bounty_owner_github_username = instance.bounty_owner_github_username.replace("@", '')
 
@@ -609,7 +644,7 @@ class Profile(SuperModel):
         include_gitcoin_users = len(_return) < limit_to_num
         if include_gitcoin_users:
             for b in self.bounties:
-                vals = [b.bounty_owner_github_username, b.fulfiller_github_username]
+                vals = [b.bounty_owner_github_username]
                 for val in vals:
                     if val:
                         _return.append(val.replace('@', ''))
@@ -763,3 +798,4 @@ def normalize_tip_usernames(sender, instance, **kwargs):
 
 
 m2m_changed.connect(m2m_changed_interested, sender=Bounty.interested.through)
+# m2m_changed.connect(changed_fulfillments, sender=Bounty.fulfillments)

@@ -210,6 +210,26 @@ var update_interest_list = function (bounty_pk) {
     return profiles;
 }
 
+// Update the list of bounty submitters.
+var update_fulfiller_list = function (bounty_pk) {
+    fulfillers = [];
+    $.getJSON("/api/v0.1/bounties/" + bounty_pk, function (data) {
+        data = sanitizeAPIResults(data);
+        var fulfillmentList = data.fulfillments;
+        $.each(fulfillmentList, function (index, value) {
+            var fulfiller = value;
+            fulfillers.push(fulfiller);
+        });
+        var tmpl = $.templates("#submitters");
+        var html = tmpl.render(fulfillers);
+        if(fulfillers.length == 0){
+            html = "No one has submitted work yet.";
+        }
+        $("#submitter_list").html(html);
+    });
+    return fulfillers;
+}
+
 function validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
