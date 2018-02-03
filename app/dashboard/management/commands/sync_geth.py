@@ -16,6 +16,7 @@
 
 '''
 
+import logging
 import warnings
 
 from django.core.management.base import BaseCommand
@@ -24,6 +25,8 @@ from dashboard.helpers import UnsupportedSchemaException
 from dashboard.utils import BountyNotFoundException, get_bounty, process_bounty, start_ipfs
 
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -55,7 +58,7 @@ class Command(BaseCommand):
             except BountyNotFoundException:
                 more_bounties = False
             except UnsupportedSchemaException as e:
-                print(f"* {e}")
+                logger.info(f"* Unsupported Schema => {e}")
             finally:
                 # prepare for next loop
                 bounty_enum += 1

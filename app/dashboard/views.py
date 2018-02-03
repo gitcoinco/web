@@ -556,9 +556,9 @@ def sync_web3(request):
         'msg': "bad request"
     }
 
-    issueURL = request.POST.get('url', False)
-    txid = request.POST.get('txid', False)
-    network = request.POST.get('network', False)
+    issueURL = request.POST.get('url', None)
+    txid = request.POST.get('txid', None)
+    network = request.POST.get('network', None)
     
     goodRequest = issueURL and txid and network
     if goodRequest:

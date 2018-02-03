@@ -42,8 +42,9 @@ class IPFSCantConnectException(Exception):
 
 
 def start_ipfs():
-    subprocess.Popen(["ipfs", "daemon"], stdout=subprocess.PIPE)
-    time.sleep(4) #time for IPFS to boot
+    subp = subprocess.Popen(["ipfs", "daemon"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if "ipfs daemon is running." not in str(subp.stderr.read()):
+        time.sleep(4) #time for IPFS to boot
 
 
 def getIPFS():
@@ -82,45 +83,43 @@ def getBountyContract(network):
 
 
 def get_bounty(bounty_enum, network):
-    try:
-        ipfs = getIPFS()
-        standard_bounties = getBountyContract(network)
-        issuer, deadline, fulfillmentAmount, paysTokens, bountyStage, balance = standard_bounties.functions.getBounty(bounty_enum).call()
-        bountydata = standard_bounties.functions.getBountyData(bounty_enum).call()
-        arbiter = standard_bounties.functions.getBountyArbiter(bounty_enum).call()
-        token = standard_bounties.functions.getBountyToken(bounty_enum).call()
-        fulfillments = []
-        fulfill_enum = 0
-        more_fulfillments = True
-        while more_fulfillments:
-            try:
-                accepted, fulfiller, data = standard_bounties.functions.getFulfillment(bounty_enum, fulfill_enum).call()
-                fulfill_enum += 1
-                fulfillments.append({
-                    'accepted': accepted,
-                    'fulfiller': fulfiller,
-                    'data': json.loads(ipfs.cat(data)),
-                    })
-            except BadFunctionCallOutput:
-                more_fulfillments = False
+    ipfs = getIPFS()
+    standard_bounties = getBountyContract(network)
 
-        bounty = {
-            'id': bounty_enum,
-            'issuer': issuer,
-            'deadline': deadline,
-            'fulfillmentAmount': fulfillmentAmount,
-            'paysTokens': paysTokens,
-            'bountyStage': bountyStage,
-            'balance': balance,
-            'data': json.loads(ipfs.cat(bountydata)),
-            'arbiter': arbiter,
-            'token': token,
-            'fulfillments': fulfillments,
-            'network': network,
-        }
-        return bounty
+    try:
+        issuer, deadline, fulfillmentAmount, paysTokens, bountyStage, balance = standard_bounties.functions.getBounty(bounty_enum).call()
     except BadFunctionCallOutput:
         raise BountyNotFoundException
+
+    bountydata = standard_bounties.functions.getBountyData(bounty_enum).call()
+    arbiter = standard_bounties.functions.getBountyArbiter(bounty_enum).call()
+    token = standard_bounties.functions.getBountyToken(bounty_enum).call()
+    numFulfillments = int(standard_bounties.functions.getNumFulfillments(bounty_enum).call())
+    fulfillments = []
+    for fulfill_enum in range(0, numFulfillments):
+        accepted, fulfiller, data = standard_bounties.functions.getFulfillment(bounty_enum, fulfill_enum).call()
+        fulfill_enum += 1
+        fulfillments.append({
+            'accepted': accepted,
+            'fulfiller': fulfiller,
+            'data': json.loads(ipfs.cat(data)),
+            })
+
+    bounty = {
+        'id': bounty_enum,
+        'issuer': issuer,
+        'deadline': deadline,
+        'fulfillmentAmount': fulfillmentAmount,
+        'paysTokens': paysTokens,
+        'bountyStage': bountyStage,
+        'balance': balance,
+        'data': json.loads(ipfs.cat(bountydata)),
+        'arbiter': arbiter,
+        'token': token,
+        'fulfillments': fulfillments,
+        'network': network,
+    }
+    return bounty
 
 
 # processes a bounty returned by get_bounty
@@ -128,7 +127,7 @@ def process_bounty(bounty_data):
     did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
 
     if did_change:
-        print("- processing changes")
+        print(f"- processing changes, {old_bounty} => {new_bounty}")
         process_bounty_changes(old_bounty, new_bounty, None)
 
     return did_change, old_bounty, new_bounty
