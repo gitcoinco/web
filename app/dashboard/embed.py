@@ -5,7 +5,7 @@ from dashboard.models import Bounty
 from github.utils import get_user, org_name
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from ratelimit.decorators import ratelimit
-
+from economy.utils import get_eth_to_usdt
 
 def wrap_text(text, w=30):
     new_text = ""
@@ -218,9 +218,10 @@ def embed(request):
             i += 1
             value_eth = str(round(bounty.value_in_eth/10**18, 2)) + "ETH" if bounty.value_in_eth else ""
             value_in_usdt = str(round(bounty.value_in_usdt, 2)) + "USD" if bounty.value_in_usdt else ""
+            eth_value_in_usdt = str(round(get_eth_to_usdt(), 2)) + "/ETH"
             value_native = "{} {}".format(round(bounty.value_true, 2), bounty.token_name)
 
-            value = "{}, {}".format(value_eth, value_in_usdt)
+            value = "{}, (${} @ {})".format(value_eth, value_in_usdt, eth_value_in_usdt)
             if not value_eth:
                 value = value_native
             text = "{}{}\n{}\n\nWorth: {}".format("", line, wrap_text(bounty.title_or_desc, 30), value)
