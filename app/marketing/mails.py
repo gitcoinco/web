@@ -28,7 +28,6 @@ from retail.emails import (
     render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
-from economy.utils import get_eth_to_usdt
 
 
 def send_mail(from_email, _to_email, subject, body, html=False,
