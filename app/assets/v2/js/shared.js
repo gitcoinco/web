@@ -30,7 +30,7 @@ var update_metamask_conf_time_and_cost_estimate = function(){
     var gasLimit = parseInt($("#gasLimit").val());
     var gasPrice = parseFloat($("#gasPrice").val());
     if(gasPrice){
-        ethAmount = Math.round(1000 * gasLimit * gasPrice / 10**9) / 1000 ;
+        ethAmount = Math.round(1000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000 ;
         usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
     }
 
