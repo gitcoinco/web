@@ -63,17 +63,20 @@ class Command(BaseCommand):
                         else:
                             # example format: 2018-01-26T17:56:31Z'
                             time_format = '%Y-%m-%dT%H:%M:%SZ'
-                            last_comment_by_user = datetime.strptime(comments_by_interested_party[0]['created_at'], time_format)
+                            last_comment_by_user = max(datetime.strptime(comment['created_at'], time_format) for comment in comments_by_interested_party)
+                            if last_comment_by_user < interest.created.replace(tzinfo=None):
+                                last_comment_by_user = interest.created.replace(tzinfo=None)
                             delta_now_vs_last_comment = datetime.now() - last_comment_by_user
                             last_heard_from_user_days = delta_now_vs_last_comment.days
                             should_warn_user = last_heard_from_user_days >= num_days_back_to_warn
                             should_delete_interest = last_heard_from_user_days >= num_days_back_to_delete_interest
+
+                            print(f"- its been {last_heard_from_user_days} days since we heard from the user")
                         
                         if should_delete_interest:
                             print('executing should_delete_interest for {}'.format(interest.pk))
                             bounty_startwork_expired(interest.profile.email, bounty, interest, last_heard_from_user_days)
                             interest.delete()
-
                         elif should_warn_user:
                             print('executing should_warn_user for {}'.format(interest.pk))
                             bounty_startwork_expire_warning(interest.profile.email, bounty, interest, last_heard_from_user_days)
