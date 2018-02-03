@@ -391,6 +391,106 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
 };
 
 window.addEventListener('load', function() {
+
+    var do_actions = function(result){
+        // Find interest information
+        pull_interest_list(result['pk'], function(is_interested){
+
+        //actions
+        var actions = [];
+        if(result['github_url'].substring(0,4) == 'http'){
+
+            var github_url = result['github_url'];
+            // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
+            github_url = github_url.replace('pipermerriam/web3.py','ethereum/web3.py');
+
+            if(result['github_comments']){
+                var entry_comment = {
+                  href: github_url,
+                  text: result['github_comments'],
+                  target: 'new',
+                  parent: 'right_actions',
+                  color: 'github-comment'
+                };
+                actions.push(entry_comment);
+            }
+
+            var entry = {
+                href: github_url,
+                text: 'View on Github',
+                target: 'new',
+                parent: 'right_actions',
+                color: 'darkBlue',
+                title: 'Github is where the issue scope lives.  Its also a great place to collaborate with, and get to know, other developers (and sometimes even the repo maintainer themselves!).'
+            }
+            actions.push(entry);
+        }
+
+        if(result['status'] != 'done' && result['status'] != 'cancelled'){
+            var enabled = isBountyOwner(result);
+            var entry = {
+                href: '/funding/kill?source='+result['github_url'],
+                text: 'Kill Bounty',
+                parent: 'right_actions',
+                color: enabled ? 'darkBlue' : 'darkGrey',
+                extraClass: enabled ? '' : 'disabled',
+                title: enabled ? 'This will kill the bounty and return the funds.' : 'Can only be performed if you are the funder.',
+            }
+            actions.push(entry);
+        }
+
+        var enabled = !isBountyOwner(result);
+        if(result['status']=='open' || result['status']=='started' ){
+            var interestEntry = {
+                href: is_interested ? '/uninterested' : '/interested',
+                text: is_interested ? 'Stop Work' : 'Start Work',
+                parent: 'right_actions',
+                color: enabled ? 'darkBlue' : 'darkGrey',
+                extraClass: enabled ? '' : 'disabled',
+                title: enabled ? 'Start Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.  Please leave a comment for the bounty submitter to let them know you are interested in working with them after you start work.' : 'Can only be performed if you are not the funder.',
+            }
+            actions.push(interestEntry);
+
+            var entry = {
+                href: '/funding/fulfill?source='+result['github_url'],
+                text: 'Submit Work',
+                parent: 'right_actions',
+                color: enabled ? 'darkBlue' : 'darkGrey',
+                extraClass: enabled ? '' : 'disabled',
+                title: enabled ? 'Use Submit Work when you FINISH work on a bounty.   Use Start Work when you START work.' : 'Can only be performed if you are not the funder.',
+            }
+            actions.push(entry);
+        }
+
+        var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
+
+        if(result['status']=='submitted' ){
+            var enabled = isBountyOwner(result);
+            var entry = {
+                href: '/funding/process?source='+result['github_url'],
+                text: 'Accept Submission',
+                parent: 'right_actions',
+                color: enabled ? 'darkBlue' : 'darkGrey',
+                extraClass: enabled ? '' : 'disabled',
+                title: enabled ? 'This will payout the bounty to the fulfiller.' : 'Can only be performed if you are the funder.',
+
+            }
+            actions.push(entry);
+        }
+        render_actions(actions);
+
+        });
+    }
+
+    var render_actions = function(actions){
+        for(var l=0; l< actions.length; l++){
+            var target = actions[l]['parent'];
+            var tmpl = $.templates("#action");
+            var html = tmpl.render(actions[l]);
+            $("#"+target).append(html);
+        };      
+    }
+
     setTimeout(function(){
         document.issueURL = getParam('url');
         if(localStorage[document.issueURL]){
@@ -423,10 +523,6 @@ window.addEventListener('load', function() {
                     result['title'] = result['network'] != 'mainnet' ? "(" + result['network'] + ") " + result['title'] : result['title'];
                     $('.title').html("Funded Issue Details: " + result['title']);
 
-                    // Find interest information
-                    var is_interested = is_on_interest_list(result['pk']);
-                    update_interest_list(result['pk']);
-
                     //insert table onto page
                     for(var j=0; j< rows.length; j++){
                         var key = rows[j];
@@ -450,94 +546,7 @@ window.addEventListener('load', function() {
                         }
                     }
 
-                    //actions
-                    var actions = [];
-                    if(result['github_url'].substring(0,4) == 'http'){
-
-                        var github_url = result['github_url'];
-                        // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
-                        github_url = github_url.replace('pipermerriam/web3.py','ethereum/web3.py');
-
-                        if(result['github_comments']){
-                            var entry_comment = {
-                              href: github_url,
-                              text: result['github_comments'],
-                              target: 'new',
-                              parent: 'right_actions',
-                              color: 'github-comment'
-                            };
-                            actions.push(entry_comment);
-                        }
-
-                        var entry = {
-                            href: github_url,
-                            text: 'View on Github',
-                            target: 'new',
-                            parent: 'right_actions',
-                            color: 'darkBlue',
-                            title: 'Github is where the issue scope lives.  Its also a great place to collaborate with, and get to know, other developers (and sometimes even the repo maintainer themselves!).'
-                        }
-                        actions.push(entry);
-                    }
-
-                    if(result['status'] != 'done' && result['status'] != 'cancelled'){
-                        var enabled = isBountyOwner(result);
-                        var entry = {
-                            href: '/funding/kill?source='+result['github_url'],
-                            text: 'Kill Bounty',
-                            parent: 'right_actions',
-                            color: enabled ? 'darkBlue' : 'darkGrey',
-                            extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'This will kill the bounty and return the funds.' : 'Can only be performed if you are the funder.',
-                        }
-                        actions.push(entry);
-                    }
-
-                    var enabled = !isBountyOwner(result);
-                    if(result['status']=='open' || result['status']=='started' ){
-                        var interestEntry = {
-                            href: is_interested ? '/uninterested' : '/interested',
-                            text: is_interested ? 'Stop Work' : 'Start Work',
-                            parent: 'right_actions',
-                            color: enabled ? 'darkBlue' : 'darkGrey',
-                            extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Start Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.  Please leave a comment for the bounty submitter to let them know you are interested in working with them after you start work.' : 'Can only be performed if you are not the funder.',
-                        }
-                        actions.push(interestEntry);
-
-                        var entry = {
-                            href: '/funding/fulfill?source='+result['github_url'],
-                            text: 'Submit Work',
-                            parent: 'right_actions',
-                            color: enabled ? 'darkBlue' : 'darkGrey',
-                            extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Use Submit Work when you FINISH work on a bounty.   Use Start Work when you START work.' : 'Can only be performed if you are not the funder.',
-                        }
-                        actions.push(entry);
-                    }
-
-                    var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
-
-                    if(result['status']=='submitted' ){
-                        var enabled = isBountyOwner(result);
-                        var entry = {
-                            href: '/funding/process?source='+result['github_url'],
-                            text: 'Accept Submission',
-                            parent: 'right_actions',
-                            color: enabled ? 'darkBlue' : 'darkGrey',
-                            extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'This will payout the bounty to the fulfiller.' : 'Can only be performed if you are the funder.',
-
-                        }
-                        actions.push(entry);
-                    }
-
-                    for(var l=0; l< actions.length; l++){
-                        var target = actions[l]['parent'];
-                        var tmpl = $.templates("#action");
-                        var html = tmpl.render(actions[l]);
-                        $("#"+target).append(html);
-                    }
+                    do_actions(result);
 
                     //cleanup
                     document.result = result;
