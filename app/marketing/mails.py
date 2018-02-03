@@ -20,6 +20,7 @@ from django.conf import settings
 from django.utils import timezone
 
 import sendgrid
+from economy.utils import get_eth_to_usdt
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from retail.emails import (
     render_bounty_expire_warning, render_bounty_startwork_expire_warning, render_match_email, render_new_bounty,
@@ -27,7 +28,6 @@ from retail.emails import (
     render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
-from economy.utils import get_eth_to_usdt
 
 
 def send_mail(from_email, _to_email, subject, body, html=False,

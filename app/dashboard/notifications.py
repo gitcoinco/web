@@ -8,12 +8,12 @@ from django.conf import settings
 
 import rollbar
 import twitter
+from economy.utils import get_eth_to_usdt
 from github.utils import delete_issue_comment, patch_issue_comment, post_issue_comment
 from marketing.mails import tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
 from pyshorteners import Shortener
 from slackclient import SlackClient
-from economy.utils import get_eth_to_usdt
 
 
 '''
@@ -321,6 +321,10 @@ def amount_usdt_open_work():
     bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
     return round(sum([b.value_in_usdt for b in bounties]), 2)
 
+def eth_amount_usdt_open_work():
+    from dashboard.models import Bounty
+    bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
+    return round(sum([b.value_in_usdt for b in bounties]), 2)
 
 def maybe_market_tip_to_github(tip):
     """Post a Github comment for the specified Tip.
