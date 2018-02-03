@@ -58,9 +58,7 @@ var rows = [
     'bounty_owner_email',
     'issue_description',
     'bounty_owner_github_username',
-    'fulfiller_address',
-    'fulfiller_github_username',
-    'fulfiller_email',
+    'fulfillments',
     'experience_level',
     'project_length',
     'bounty_type',
@@ -112,13 +110,14 @@ var callbacks = {
     'project_length': unknown_if_empty,
     'bounty_type': unknown_if_empty,
     'fulfiller_email': function(key, val, result){
-        if(!_truthy(result['fulfiller_address'])){
+        if(!_truthy(result['fulfillments'])){
+            var fulfiller = JSON.parse(result['fulfiller']);
+
             $("#fulfiller").addClass('hidden');
         }
         return address_ize(key, val, result);
     },
     'bounty_owner_github_username': gitcoin_ize,
-    'fulfiller_github_username': gitcoin_ize,
     'value_in_eth': function(key, val, result){
         if(result['token_name'] == 'ETH' || val == null){
             return [null, null];
@@ -281,6 +280,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
         };
 
         // The object will be pushed onto allBountyData.fulfillments.fulfillments
+        // This is all data for one fulfillment
         var allFulfillmentData = {};
 
         // callFunctionWhenTransactionMined continue to be called, until the transaction receipt is found.
@@ -304,23 +304,31 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
                                     allBountyData['bounty']['balance'] = parseInt(bountyResults[5], 10);
 
                                     bounty.getNumFulfillments(bountyId, function(error, numFulfillments) {
+                                        numFulfillments = parseInt(numFulfillments, 10);
                                         allBountyData['fulfillments']['total'] = numFulfillments;
                                         if (numFulfillments > 0) {
                                             // Just get latest fullfillment data
                                             // TODO:  Add support for multilple fulfillments
-                                            var fulfillmentId = numFulfillments - 1;
-                                            bounty.getFulfillment(bountyId, fulfillmentId, function(error, fulfillment) {
-                                                ipfs.catJson(fulfillment[2], function(error, fulfillmentData) {
-                                                    allFulfillmentData = fulfillmentData;
-                                                    allFulfillmentData['accepted'] = fulfillment[0];
+                                            // i = fulfillmentId
+                                            var getFulfillmentData =  function (fulfillmentId, numFulfillments) {
+                                                bounty.getFulfillment(bountyId, fulfillmentId, function(error, fulfillment) {
+                                                    ipfs.catJson(fulfillment[2], function(error, fulfillmentData) {
+                                                        allFulfillmentData = fulfillmentData;
+                                                        allFulfillmentData['accepted'] = fulfillment[0];
+                                                        allFulfillmentData['id'] = fulfillmentId;
 
-                                                    // Push the fulfillment onto the array
-                                                    allBountyData.fulfillments.fulfillments.push(allFulfillmentData);
-
-                                                    sync_web3(document.issueURL, JSON.stringify(allBountyData), changes_synced_callback);
-                                                    console.log('success syncing with web3');
-                                                })
-                                            });
+                                                        // Push the fulfillment onto the array
+                                                        allBountyData.fulfillments.fulfillments.push(allFulfillmentData);
+                                                        if (fulfillmentId == numFulfillments - 1) {
+                                                            sync_web3(issueURL, JSON.stringify(allBountyData), changes_synced_callback);
+                                                            console.log('success syncing with web3');
+                                                        }
+                                                    })
+                                                });
+                                            };
+                                            for (let i = 0; i < numFulfillments; i++) {
+                                                getFulfillmentData(i, numFulfillments);
+                                            };
                                         } else {
                                             sync_web3(document.issueURL, JSON.stringify(allBountyData), changes_synced_callback);
                                             console.log('success syncing with web3');
@@ -452,6 +460,8 @@ window.addEventListener('load', function() {
 
                     //actions
                     var actions = [];
+                    var fulfillmentActions = [];
+
                     if(result['github_url'].substring(0,4) == 'http'){
 
                         var github_url = result['github_url'];
@@ -494,7 +504,7 @@ window.addEventListener('load', function() {
                     }
 
                     var enabled = !isBountyOwner(result);
-                    if(result['status']=='open' || result['status']=='started' ){
+                    if(result['status']=='open' || result['status']=='started' || result['status']=='submitted' ){
                         var interestEntry = {
                             href: is_interested ? '/uninterested' : '/interested',
                             text: is_interested ? 'Stop Work' : 'Start Work',
@@ -518,26 +528,45 @@ window.addEventListener('load', function() {
 
                     var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
 
-                    if(result['status']=='submitted' ){
-                        var enabled = isBountyOwner(result);
-                        var entry = {
-                            href: '/funding/process?source='+result['github_url'],
-                            text: 'Accept Submission',
-                            parent: 'right_actions',
-                            color: enabled ? 'darkBlue' : 'darkGrey',
-                            extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'This will payout the bounty to the fulfiller.' : 'Can only be performed if you are the funder.',
-
-                        }
-                        actions.push(entry);
-                    }
-
+                    // Add action buttons
                     for(var l=0; l< actions.length; l++){
                         var target = actions[l]['parent'];
                         var tmpl = $.templates("#action");
                         var html = tmpl.render(actions[l]);
                         $("#"+target).append(html);
                     }
+
+                    // Add submitter list and accept buttons
+                    if(result['status']=='submitted' ){
+                        var enabled = isBountyOwner(result);
+
+                        fulfillers = [];
+                        var submissions = result.fulfillments;
+
+                        $.each(submissions, function (index, value) {
+                            var acceptButton = {
+                                href: '/funding/process?source='+result['github_url']+"&id="+value.id,
+                                text: 'Accept Submission',
+                                color: enabled ? 'darkBlue' : 'darkGrey',
+                                extraClass: enabled ? '' : 'disabled',
+                                title: enabled ? 'This will payout the bounty to the submitter.' : 'Can only be performed if you are the funder.',
+                            };
+
+                            var submission = {
+                                'fulfiller': value,
+                                'button': acceptButton,
+                            };
+
+                            var submitter_tmpl = $.templates("#submission");
+                            var submitter_html = submitter_tmpl.render(submission);
+
+                            $("#submission_list").append(submitter_html);
+                        });
+                    } else {
+                        submitter_html = "No one has submitted work yet.";
+                        $("#submission_list").html(submitter_html);
+                    }
+
 
                     //cleanup
                     document.result = result;

@@ -314,6 +314,18 @@ div.button-pink {
   letter-spacing: 0.1em;
 }
 
+#submitter_ul {
+  padding-left: 1em;
+}
+
+#submission_row {
+  border: 1px solid #C2C2C2;
+  border-left: 3px solid #0d023b;
+  padding: 5px;
+  margin: 10px;
+}
+
+
 *::-webkit-input-placeholder {
   color: lightgray;
 }
