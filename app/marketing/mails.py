@@ -27,6 +27,7 @@ from retail.emails import (
     render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
+from economy.utils import get_eth_to_usdt
 
 
 def send_mail(from_email, _to_email, subject, body, html=False,
@@ -95,7 +96,7 @@ def new_bounty(bounty, to_emails=None):
     if to_emails is None:
         to_emails = []
 
-    subject = "⚡️ New Funded Issue Match worth ${} ({})".format(bounty.value_in_usdt, bounty.keywords)
+    subject = "⚡️ New Funded Issue Match worth ${} @ {}/ETH {})".format(bounty.value_in_usdt, get_eth_to_usdt(), bounty.keywords)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
