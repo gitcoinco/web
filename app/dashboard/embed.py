@@ -7,6 +7,7 @@ from github.utils import get_user, org_name
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from ratelimit.decorators import ratelimit
 
+
 def wrap_text(text, w=30):
     new_text = ""
     new_sentence = ""
