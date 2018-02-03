@@ -95,7 +95,6 @@ window.onload = function(){
                                 'txid': result,
                             });  
 
-                            sync_web3(issueURL);
                             _alert({ message: "Submitted transaction to web3." }, 'info');
                             setTimeout(function(){
                                 mixpanel.track("Process Bounty Success", {});

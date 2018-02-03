@@ -238,46 +238,65 @@ class BountyStage(Enum):
     Dead = 2
 
 
-def process_bounty_details(bountydetails, url, contract_address, network):
-    url = normalizeURL(url)
+class UnsupportedSchemaException(Exception):
+    pass
 
-    # See Line 303 in bounty_details.js for original object
-    bountyId = bountydetails.get('bountyId', {})
-    bountyData = bountydetails.get('bountyData', {})
+
+def process_bounty_details(bountydetails):
+
+    # See dashboard/utils.py:get_bounty from details on this data
+    bountyId = bountydetails.get('id', {})
+    bountyData = bountydetails.get('data', {})
     bountyDataPayload = bountyData.get('payload', {})
     metadata = bountyDataPayload.get('metadata', {})
-    bounty = bountydetails.get('bounty', {})
-    # Claimee metadata will be empty when bounty is first created
+    meta = bountyData.get('meta', {})
+
+    # fulfillments metadata will be empty when bounty is first created
     fulfillments = bountydetails.get('fulfillments', {})
+
+    # what schema are we workign with?
+    schemaName = meta.get('schemaName', "Unknown")
+    schemaVersion = meta.get('schemaVersion', "Unknown")
+
+    if schemaName is "Unknown":
+        raise UnsupportedSchemaException(f"Unknown Schema: {schemaName}")
+
+    # start to process out all the bounty data
+    url = bountyDataPayload.get('webReferenceURL', False)
+    if url:
+        url = normalizeURL(url)
+    else:
+        raise UnsupportedSchemaException(f"Schema is {schemaName} {schemaVersion}; but no webReferenceURL found so cannot continue")
+    contract_address = bountydetails.get('token')
+    network = bountydetails.get('network')
 
     # Create new bounty (but only if things have changed)
     did_change = False
     old_bounties = Bounty.objects.none()
     try:
         old_bounties = Bounty.objects.current().filter(
-            github_url=url,
-            title=bountyDataPayload.get('title'),
+            standard_bounties_id=bountyId,
         ).order_by('-created_on')
         did_change = (bountydetails != old_bounties.first().raw_data)
-        if not did_change:
-            return (did_change, old_bounties.first(), old_bounties.first())
     except Exception as e:
-        print('exception in process_bounty_details')
-        print(e)
         did_change = True
 
-    fments = fulfillments.get('fulfillments', [])
-    logger.debug('Fulfillment data:')
-    logger.debug(json.dumps(fments))
+    print(f"* Bounty did_change: {did_change}")
+    if not did_change:
+        return (did_change, old_bounties.first(), old_bounties.first())
 
-    fments_accepted = [fment.get('accepted') for fment in fments]
+    # Check if we have any fulfillments.  If so, check if they are accepted.
+    # If there are no fulfillments, accepted is automatically False.
+    # Currently we are only considering the latest fulfillment.  Std bounties supports multiple.
+    fments = fulfillments
     # If any of the fulfillments have been accepted, the bounty is now accepted and complete.
-    accepted = any(fments_accepted)
+    accepted = any([fment.get('accepted') for fment in fments])
 
     # Possible Bounty Stages
     # 0: Draft
     # 1: Active
     # 2: Dead
+    bounty = bountydetails
     is_open = True if (bounty.get('bountyStage') == 1 and not accepted) else False
 
     with transaction.atomic():
@@ -311,7 +330,7 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             expires_date=timezone.make_aware(timezone.datetime.fromtimestamp(bounty.get('deadline')), timezone=UTC),
             standard_bounties_id=bountyId,
             balance=bounty.get('balance'),
-            num_fulfillments=fulfillments.get('total', 0),
+            num_fulfillments=len(fulfillments),
         )
         new_bounty.fetch_issue_item()
         if not new_bounty.avatar_url:

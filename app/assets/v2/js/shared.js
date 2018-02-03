@@ -18,6 +18,21 @@ var callFunctionWhenTransactionMined = function(txHash, f){
     });
 };
 
+/**
+ * Looks for web3.  Won't call the fucntion until its there
+ * @callback
+ * @param {function} f - The function passed into this callback.
+ */
+var callFunctionWhenweb3Available = function(f){
+    if(typeof document.web3network != 'undefined'){
+        f();
+    } else {
+        setTimeout(function(){
+            callFunctionWhenweb3Available(f);
+        },1000);
+    }
+};
+
 var loading_button = function(button){
     button.prepend('<img src=/static/v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
 }
@@ -295,23 +310,6 @@ function timeDifference(current, previous) {
 
     return amt + ' '+unit+plural+' ago';
 };
-
-var sync_web3 = function(issueURL, bountydetails, callback){
-    var url = '/sync/web3';
-    args = {
-        'issueURL': issueURL,
-    }
-    if(typeof bountydetails != 'undefined'){
-        args['bountydetails'] = bountydetails;
-        args['contract_address'] = bounty_address();
-        args['network'] = document.web3network;
-    }
-    $.post(url, args, function(){
-        if(typeof callback != 'undefined'){
-            callback();
-        }
-    })
-}
 
 
 //sidebar
