@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+  </head>
+
+  <body class="interior {{active}} with-grey-background">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav_internal.html' %}
+    </div>
+
+    <div class="row no-gutter">
+      <div class="col-2">
+        <div class="fixed-balance">
+          {% include 'shared/current_balance.html' %}
+        </div>
+      </div>
+
+      <div class="col body">
+        <div class="container" id="bounties">
+          <header class="bounties-header">
+            <div class="bounties-header__title">
+              <h2 class="title">Bounties</h2>
+            </div>
+            <div class="bounties-header__search">
+              <div class="bounties-header__info">Listing 420 open bounties across the interwebs</div>
+              <div class="search_area">
+                <input class="gc-round-text-input gc-border-black w-100" type="text" placeholder="Search Bounties" />
+              </div>
+            </div>
+          </header>
+          <div class="main-content">
+            <aside class="aside">
+              <h3 class="sub-title">Categories</h3>
+              <div class="categories-list">
+                {% for i in "123456789" %}
+                  <div class="checkbox">
+                    <input class="checkbox-input" name="category" type="checkbox" id="name_{{i}}"/>
+                    <label class="checkbox-label" for="name_{{i}}">Label</label>
+                  </div>
+                {% endfor %}
+              </div>
+            </aside>
+            <main class="bounties-container">
+              {% for i in "123456789" %}
+                <div class="bounty">
+                  <div class="bounty__image">
+                      <img src="{% static "v2/images/mission/interact/1.png" %}" />
+                  </div>
+                  <div class="bounty__info">
+                    <h5 class="bounty__title">Title</h5>
+                    <p class="bounty__author">gitcoin</p>
+                    <div class="bounty__tags">
+                      {% for i in "1234" %}
+                        <span class="bounty__tag-pill">#tag{{i}}</span>
+                      {% endfor %}
+                    </div>
+                    <div class="bounty__price">
+                      <div class="bounty__crypto-price">
+                        <div class="bounty__crypto-price-pill">0.3 ETH</div>
+                        <div class="bounty__crypto-price-pill-behind"></div>
+                      </div>
+                      <div class="bounty__fiat-price">337.88 USD</div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </main>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/footer.html' %}
+
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/shared.js" %}"></script>
+    <script src="{% static "v2/js/pages/external_bounties.js" %}"></script>
+
+  </body>
+</html>

@@ -360,6 +360,14 @@ def dashboard(request):
     }
     return TemplateResponse(request, 'dashboard.html', params)
 
+def external_bounties(request):
+    """Handle Dummy External Bounties index page."""
+    params = {
+        'active': 'dashboard',
+        'title': 'Issue Explorer',
+    }
+    return TemplateResponse(request, 'external_bounties.html', params)
+
 
 def gas(request):
     context = {

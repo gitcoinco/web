@@ -1,0 +1,188 @@
+.fixed-balance {
+  position: fixed;
+  top: 83px;
+}
+
+.bounties-header {
+  align-items: center;
+  display: flex;
+  padding: 2rem 0;
+}
+
+.bounties-header__title {
+  margin-right: 30px;
+  width: 200px;
+}
+
+.bounties-header__search {
+  display: flex;
+  flex: 1 auto;
+  justify-content: space-between;
+}
+
+.bounties-header__info,
+.bounty__author {
+  color: #8e8e8e;
+}
+
+.bounties-header__info {
+  margin-bottom: 0;
+  margin-top: 0;
+  line-height: 2;
+}
+
+.bounties-header__search .search_area {
+  width: 300px;
+}
+
+.bounties-header__title .title,
+.bounties-header__title .sub-title,
+.aside .title,
+.aside .sub-title {
+  font-family: "OpenSans Bold";
+  text-transform: uppercase;
+  font-weight: bolder;
+  letter-spacing: 0;
+  margin-bottom: 0;
+}
+
+.bounties-header__title .title,
+.aside .title {
+  color: #f9006c;
+  font-size: 2em;
+}
+
+.bounties-header__title .sub-title,
+.aside .sub-title {
+  font-size: 1.2em;
+}
+
+.categories-list {
+  padding: 1em 0;
+}
+
+.categories-list .checkbox {
+  margin-bottom: 1rem;
+}
+
+.main-content {
+  align-items: flex-start;
+  display: flex;
+}
+
+.main-content .aside,
+.main-content .bounties-container {
+  -moz-box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.aside {
+  background-color: #fff;
+  margin-right: 30px;
+  padding: 1rem;
+  width: 200px;
+}
+
+.aside .sub-title {
+  margin-bottom: 0.5rem;
+}
+
+.bounties-container {
+  background-color: #fff;
+  flex: 1 auto;
+}
+
+.bounty {
+  display: flex;
+  padding: 2.5rem 0;
+}
+
+.bounty:not(:last-of-type) {
+  border-bottom: 1px solid #ECECEC;
+}
+
+.bounty__image {
+  margin: 0 2rem;
+  width: 100px;
+}
+
+.bounty__image img {
+  border-radius: 50%;
+  height: auto;
+  width: 100%;
+}
+
+.bounty__info {
+  flex: 1;
+  position: relative;
+}
+
+.bounty__title {
+  font-weight: bold;
+  margin-bottom: 0;
+  text-transform: none;
+}
+
+.bounty__author {
+  font-weight: bold;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+.bounty__tags {
+  margin-top: 1rem;
+}
+
+.bounty__tag-pill {
+  background-color: #eff4ee;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.2rem 0.8rem;
+}
+
+.bounty__price {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.bounty__crypto-price {
+  position: relative;
+}
+
+.bounty__crypto-price-pill {
+  align-items: center;
+  background-color: #333366;
+  border-radius: 30px 0 0 30px;
+  color: #fff;
+  display: flex;
+  height: 40px;
+  font-family: "OpenSans Bold";
+  font-weight: bolder;
+  justify-content: flex-end;
+  padding: 0 0.5em;
+  position: relative;
+  margin-bottom: 0.7rem;
+  z-index: 2;
+}
+
+.bounty__crypto-price-pill-behind {
+  background-color: #5F5FB6;
+  border-radius: 30px 0 0 30px;
+  display: block;
+  height: 40px;
+  left: 3px;
+  position: absolute;
+  top: 3px;
+  width: 100%;
+  z-index: 1;
+}
+
+.bounty__fiat-price {
+  color: #15D17C;
+  font-family: "OpenSans Bold";
+  font-weight: bolder;
+  padding: 0 0.5em;
+}
