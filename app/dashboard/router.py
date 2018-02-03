@@ -34,8 +34,8 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
                   "experience_level", "github_url", "github_comments", "bounty_owner_address", "bounty_owner_email",
                   "bounty_owner_github_username", "fulfiller_address", "fulfiller_email",
                   "fulfiller_github_username", "is_open", "expires_date", "raw_data", "metadata",
-                  "fulfiller_metadata", "current_bounty", 'value_in_eth', 'value_in_usdt', 'status',
-                  'now', 'avatar_url', 'value_true', 'issue_description', 'network', 'org_name',
+                  "fulfiller_metadata", "current_bounty", 'value_in_eth', 'value_in_usdt', 'eth_value_in_usdt',
+                  'status', 'now', 'avatar_url', 'value_true', 'issue_description', 'network', 'org_name',
                   'pk', 'issue_description_text', 'standard_bounties_id', 'web3_type')
 
 
