@@ -94,8 +94,16 @@
 }
 
 .bounty {
+  color: #212529;
   display: flex;
   padding: 2.5rem 0;
+}
+
+.bounty:hover {
+  background-color: #fafafa;
+  cursor: pointer;
+  color: currentColor;
+  text-decoration: none;
 }
 
 .bounty:not(:last-of-type) {
@@ -105,6 +113,10 @@
 .bounty__image {
   margin: 0 2rem;
   width: 100px;
+}
+
+.bounty__image a {
+  display: block;
 }
 
 .bounty__image img {
@@ -146,43 +158,104 @@
   position: absolute;
   right: 0;
   top: 0;
+  z-index: 1;
 }
 
 .bounty__crypto-price {
   position: relative;
+  margin-bottom: 0.5rem;
 }
 
 .bounty__crypto-price-pill {
-  align-items: center;
-  background-color: #333366;
   border-radius: 30px 0 0 30px;
   color: #fff;
-  display: flex;
-  height: 40px;
   font-family: "OpenSans Bold";
   font-weight: bolder;
-  justify-content: flex-end;
-  padding: 0 0.5em;
-  position: relative;
-  margin-bottom: 0.7rem;
-  z-index: 2;
+  text-align: right;
+  padding: 0.5rem 0.9rem;
 }
 
-.bounty__crypto-price-pill-behind {
-  background-color: #5F5FB6;
+.bounty__crypto-price-pill::after {
+  content: "";
   border-radius: 30px 0 0 30px;
-  display: block;
-  height: 40px;
+  height: 100%;
   left: 3px;
   position: absolute;
   top: 3px;
   width: 100%;
-  z-index: 1;
+  z-index: -1;
+}
+
+.bounty__crypto-price-pill--purple {
+  background-color: #333366;
+}
+
+.bounty__crypto-price-pill--purple::after {
+  background-color: #5F5FB6;
+}
+
+.bounty__crypto-price-pill--orange {
+  background-color: #F6921E;
+}
+
+.bounty__crypto-price-pill--orange::after {
+  background-color: #FFB967;
+}
+
+.bounty__crypto-price-pill--grey {
+  background-color: #9B9B9B;
+}
+
+.bounty__crypto-price-pill--grey::after {
+  background-color: #CDCDCD;
+}
+
+.bounty__price--mobile {
+  display: none;
 }
 
 .bounty__fiat-price {
   color: #15D17C;
   font-family: "OpenSans Bold";
+  font-size: 0.9rem;
   font-weight: bolder;
   padding: 0 0.5em;
+}
+
+@media (max-width: 992px) {
+  .bounties-header__search {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .bounties-header__info {
+    display: none;
+  }
+
+  .bounties-header__search .search_area {
+    width: 100%;
+  }
+
+  .bounty__tags {
+    display: none;
+  }
+
+  .bounty__price {
+    color: #fff;
+    position: relative;
+  }
+
+  .bounty__price--mobile {
+    display: block;
+  }
+
+  .bounty__price--desktop {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .aside {
+    display: none;
+  }
 }

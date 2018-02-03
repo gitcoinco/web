@@ -47,9 +47,9 @@
             </aside>
             <main class="bounties-container">
               {% for i in "123456789" %}
-                <div class="bounty">
+                <a href="/1" class="bounty">
                   <div class="bounty__image">
-                      <img src="{% static "v2/images/mission/interact/1.png" %}" />
+                    <img src="{% static "v2/images/mission/interact/1.png" %}" />
                   </div>
                   <div class="bounty__info">
                     <h5 class="bounty__title">Title</h5>
@@ -60,14 +60,19 @@
                       {% endfor %}
                     </div>
                     <div class="bounty__price">
-                      <div class="bounty__crypto-price">
-                        <div class="bounty__crypto-price-pill">0.3 ETH</div>
-                        <div class="bounty__crypto-price-pill-behind"></div>
+                      <div class="bounty__price--mobile">
+                        <button class="btn btn-sm btn-darkBlue font-smaller-2">0.3 ETH</button>
+                        <button class="btn btn-sm btn-darkBlue font-smaller-2">192.22 USD</button>
                       </div>
-                      <div class="bounty__fiat-price">337.88 USD</div>
+                      <div class="bounty__price--desktop">
+                        <div class="bounty__crypto-price">
+                          <div class="bounty__crypto-price-pill bounty__crypto-price-pill--purple">0.3 ETH</div>
+                        </div>
+                        <div class="bounty__fiat-price">337.88 USD</div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                </a>
               {% endfor %}
             </main>
           </div>
