@@ -295,10 +295,50 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
 
 window.addEventListener('load', function() {
 
+    var build_detail_page = function(result){
+
+        //setup
+        var decimals = 18;
+        var related_token_details = tokenAddressToDetails(result['token_address'])
+        if(related_token_details && related_token_details.decimals){
+            decimals = related_token_details.decimals;
+        }
+        document.decimals = decimals;
+        $("#bounty_details").css('display','flex');
+
+        // title
+        result['title'] = result['title'] ? result['title'] : result['github_url'];
+        result['title'] = result['network'] != 'mainnet' ? "(" + result['network'] + ") " + result['title'] : result['title'];
+        $('.title').html("Funded Issue Details: " + result['title']);
+
+        //insert table onto page
+        for(var j=0; j< rows.length; j++){
+            var key = rows[j];
+            var head = null;
+            var val = result[key];
+            if(heads[key]){
+                head = heads[key];
+            }
+            if(callbacks[key]){
+                _result = callbacks[key](key, val, result);
+                val = _result[1];
+            }
+            var entry = {
+                'head': head,
+                'key': key,
+                'val': val,
+            }
+            var id = '#' + key;
+            if($(id).length){
+                $(id).html(val);
+            }
+        }
+
+    };
+
     var do_actions = function(result){
 
     // Find interest information
-    var is_interested = document.interested
     pull_interest_list(result['pk'], function(is_interested){
 
         //actions
@@ -414,44 +454,9 @@ window.addEventListener('load', function() {
                 var result = results[i];
                 // if the result from the database matches the one in question.
                 if(normalizeURL(result['github_url']) == normalizeURL(issueURL)){
-                    $("#bounty_details").css('display','flex');
                     nonefound = false;
 
-                    //setup
-                    var decimals = 18;
-                    var related_token_details = tokenAddressToDetails(result['token_address'])
-                    if(related_token_details && related_token_details.decimals){
-                        decimals = related_token_details.decimals;
-                    }
-                    document.decimals = decimals;
-
-                    // title
-                    result['title'] = result['title'] ? result['title'] : result['github_url'];
-                    result['title'] = result['network'] != 'mainnet' ? "(" + result['network'] + ") " + result['title'] : result['title'];
-                    $('.title').html("Funded Issue Details: " + result['title']);
-
-                    //insert table onto page
-                    for(var j=0; j< rows.length; j++){
-                        var key = rows[j];
-                        var head = null;
-                        var val = result[key];
-                        if(heads[key]){
-                            head = heads[key];
-                        }
-                        if(callbacks[key]){
-                            _result = callbacks[key](key, val, result);
-                            val = _result[1];
-                        }
-                        var entry = {
-                            'head': head,
-                            'key': key,
-                            'val': val,
-                        }
-                        var id = '#' + key;
-                        if($(id).length){
-                            $(id).html(val);
-                        }
-                    }
+                    build_detail_page(result);
 
                     do_actions(result);
 
