@@ -128,34 +128,6 @@ var showLoading = function(){
     setTimeout(showLoading,10);
 };
 
-var watch_list = function(){
-    if(typeof localStorage['watches'] == 'undefined'){
-        return [];
-    }
-    return localStorage['watches'].split(',');
-}
-
-var is_on_watch_list = function(issueURL){
-    if(localStorage['watches'] && localStorage['watches'].indexOf(issueURL) != -1){
-        return true;
-    }
-    return false;
-}
-
-var add_to_watch_list = function(issueURL){
-    if(is_on_watch_list(issueURL)){
-        return;
-    }
-    localStorage['watches'] = localStorage['watches'] + "," + issueURL;
-}
-
-var remove_from_watch_list = function(issueURL){
-    if(!is_on_watch_list(issueURL)){
-        return;
-    }
-    localStorage['watches'] = localStorage['watches'].replace("," + issueURL,"");
-}
-
 /** The local list of bounty PKs the current profile is interested in. */
 var interested_list = function () {
     if (typeof localStorage.interests == 'undefined') {

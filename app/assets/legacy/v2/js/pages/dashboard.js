@@ -85,9 +85,6 @@ var get_search_URI = function(){
         if(key == 'bounty_filter'){
             if(val=='myself') {
                 key='bounty_owner_address';
-            } else if(val == 'watched'){
-                key='github_url';
-                val = watch_list();
             }
         }
         if(val!='any'){
