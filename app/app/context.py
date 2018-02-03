@@ -1,3 +1,5 @@
+import json
+
 from django.conf import settings
 
 
@@ -18,4 +20,6 @@ def insert_settings(request):
         'rollbar_client_token': settings.ROLLBAR_CLIENT_TOKEN,
         'env': settings.ENV,
     }
+    context['json_context'] = json.dumps(context)
+
     return context
