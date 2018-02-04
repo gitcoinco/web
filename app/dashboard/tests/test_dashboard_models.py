@@ -21,7 +21,7 @@ from datetime import date, datetime, timedelta
 
 from django.test import TestCase
 
-from dashboard.models import Bounty, Tip
+from dashboard.models import Bounty, Interest, Profile, Tip
 from economy.models import ConversionRate
 
 
@@ -85,10 +85,56 @@ class DashboardModelsTest(TestCase):
             username='fred',
             network='net',
             expires_date=date.today() + timedelta(days=1),
-            tokenAddress="0x0000000000000000000000000000000000000000",
+            tokenAddress='0x0000000000000000000000000000000000000000',
         )
         assert str(tip) == '(net) - PENDING  7 ETH to fred,  created: today, expires: tomorrow'
         assert tip.get_natural_value() == 7e-18
         assert tip.value_in_eth == 7
         assert tip.value_in_usdt == 14
-        assert tip.status == "PENDING"
+        assert tip.status == 'PENDING'
+
+    def test_interest(self):
+        """Test the dashboard Interest model."""
+        profile = Profile(
+            handle='foo',
+        )
+        interest = Interest(
+            profile=profile,
+        )
+        assert str(interest) == 'foo'
+
+    def test_profile(self):
+        """Test the dashboard Profile model."""
+        bounty = Bounty.objects.create(
+            github_url='https://github.com/gitcoinco/web',
+            web3_created=date.today(),
+            expires_date=date.today() + timedelta(days=1),
+            is_open=True,
+            raw_data={},
+            current_bounty=True,
+            bounty_owner_github_username='gitcoinco',
+        )
+        tip = Tip.objects.create(
+            emails=['foo@bar.com'],
+            github_url='https://github.com/gitcoinco/web',
+            expires_date=date.today() + timedelta(days=1),
+        )
+        profile = Profile(
+            handle='gitcoinco',
+            data={'type': 'Organization'},
+            repos_data=[{'contributors': [{'contributions': 50, 'login': 'foo'}]}],
+        )
+        assert str(profile) == 'gitcoinco'
+        assert profile.is_org == True
+        assert profile.bounties.first() == bounty
+        assert profile.tips.first() == tip
+        assert profile.authors == ['foo', 'gitcoinco']
+        assert profile.desc == '@gitcoinco is a newbie who has participated in 1 funded issue on Gitcoin'
+        assert profile.stats == [
+            ('newbie', 'Status'),
+            (1, 'Total Funded Issues'),
+            (0, 'Open Funded Issues'),
+            ('0x', 'Loyalty Rate'),
+        ]
+        assert profile.github_url == 'https://github.com/gitcoinco'
+        assert profile.get_relative_url() == '/profile/gitcoinco';
