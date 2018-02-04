@@ -17,11 +17,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from datetime import datetime
+from datetime import date, datetime, timedelta
 
 from django.test import TestCase
 
-from dashboard.models import Bounty
+from dashboard.models import Bounty, Tip
 from economy.models import ConversionRate
 
 
@@ -75,3 +75,20 @@ class DashboardModelsTest(TestCase):
         assert 'ago 5 Feature Intermediate' in bounty.desc
         assert bounty.is_legacy == False
         assert bounty.get_github_api_url() == 'https://api.github.com/repos/gitcoinco/web'
+
+    def test_tip(self):
+        """Test the dashboard Tip model."""
+        tip = Tip(
+            emails=['foo@bar.com'],
+            tokenName='ETH',
+            amount=7,
+            username='fred',
+            network='net',
+            expires_date=date.today() + timedelta(days=1),
+            tokenAddress="0x0000000000000000000000000000000000000000",
+        )
+        assert str(tip) == '(net) - PENDING  7 ETH to fred,  created: today, expires: tomorrow'
+        assert tip.get_natural_value() == 7e-18
+        assert tip.value_in_eth == 7
+        assert tip.value_in_usdt == 14
+        assert tip.status == "PENDING"
