@@ -43,6 +43,10 @@ class IPFSCantConnectException(Exception):
     pass
 
 
+class NoBountiesException(Exception):
+    pass
+
+
 def startIPFS():
     print('starting IPFS')
     subp = subprocess.Popen(["ipfs", "daemon"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -193,10 +197,18 @@ def getBountyID(issueURL, network):
         return bounty_id
 
     all_known_stdbounties = Bounty.objects.filter(web3_type='bounties_network', network=network).order_by('-standard_bounties_id')
-    last_known_bounty_id = 0
-    if all_known_stdbounties.exists():
-        last_known_bounty_id = all_known_stdbounties.first().standard_bounties_id
-    bounty_id = getBountyID_from_web3(issueURL, network, last_known_bounty_id)
+
+    methodology = 'start_from_web3_latest'
+    try:
+        highest_known_bounty_id = getHighestKnownBountyID(network)
+        bounty_id = getBountyID_from_web3(issueURL, network, highest_known_bounty_id, direction='down')
+    except NoBountiesException:
+        methodology = 'start_from_db'
+        last_known_bounty_id = 0
+        if all_known_stdbounties.exists():
+            last_known_bounty_id = all_known_stdbounties.first().standard_bounties_id
+        bounty_id = getBountyID_from_web3(issueURL, network, last_known_bounty_id, direction='up')
+
     return bounty_id
 
 
@@ -208,12 +220,20 @@ def getBountyID_from_db(issueURL, network):
     return bounties.first().standard_bounties_id
 
 
-def getBountyID_from_web3(issueURL, network, last_known_bounty_id):
+def getHighestKnownBountyID(network):
+    standard_bounties = getBountyContract(network)
+    num_bounties = int(standard_bounties.functions.getNumBounties().call())
+    if num_bounties == 0:
+        raise NoBountiesException()
+    return num_bounties - 1
+
+
+def getBountyID_from_web3(issueURL, network, start_bounty_id, direction='up'):
     issueURL = normalizeURL(issueURL)
     web3 = getWeb3(network)
 
     # iterate through all the bounties
-    bounty_enum = last_known_bounty_id
+    bounty_enum = start_bounty_id
     more_bounties = True
     while more_bounties:
         try:
@@ -231,6 +251,9 @@ def getBountyID_from_web3(issueURL, network, last_known_bounty_id):
             pass
         finally:
             # prepare for next loop
-            bounty_enum += 1
+            if direction == 'up':
+                bounty_enum += 1
+            else:
+                bounty_enum -= 1
 
     return None
