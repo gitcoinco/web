@@ -404,6 +404,7 @@ def external_bounties_show(request):
     bounty = {
         "title": "Simulate proposal execution and display execution results",
         "crypto_price": 0.5,
+        "crypto_label": "ETH",
         "fiat_price": 339.34,
         "source": "gitcoin.co",
         "content": "Lorem"

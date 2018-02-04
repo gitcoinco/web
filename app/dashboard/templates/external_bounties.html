@@ -85,13 +85,16 @@
 
                         {% if bounty.crypto_label == 'LTC' %}
                           <div class="bounty__crypto-price-pill bounty__crypto-price-pill--grey">
-                            <span class="icon">{% include 'svgs/bitcoin.svg' %}</span>
+                            <span class="icon">{% include 'svgs/litecoin.svg' %}</span>
                             <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
                           </div>
                         {% endif %}
 
                       </div>
-                      <div class="bounty__fiat-price">{{ bounty.fiat_price }} USD</div>
+                      <div class="bounty__fiat-price">
+                        <span class="icon">{% include 'svgs/money.svg' %}</span>
+                        {{ bounty.fiat_price }} USD
+                      </div>
                     </div>
                   </div>
                 </a>

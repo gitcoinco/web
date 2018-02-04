@@ -46,9 +46,13 @@
                   <h6 class="sub-title">Funding:</h6>
                   <div class="bounty__content">
                     <span class="bounty__crypto-price">
+                      {% if bounty.crypto_label == 'ETH' %}
+                        <span class="icon">{% include 'svgs/ethereum.svg' %}</span>
+                      {% endif %}
                       <span>{{ bounty.crypto_price }}</span>
                     </span>
                     <span class="bounty__fiat-price">
+                      <span class="icon">{% include 'svgs/money.svg' %}</span>
                       <span>{{ bounty.fiat_price }} USD</span>
                     </span>
                   </div>
