@@ -11,7 +11,7 @@
 
 .bounties-header__title {
   margin-right: 30px;
-  width: 200px;
+  flex: 0 0 200px;
 }
 
 .bounties-header__search {
@@ -21,7 +21,7 @@
 }
 
 .bounties-header__info,
-.bounty__author {
+.bounty__source {
   color: #8e8e8e;
 }
 
@@ -33,6 +33,27 @@
 
 .bounties-header__search .search_area {
   width: 300px;
+}
+
+.search_area--append {
+  position: relative;
+}
+
+.search_area--append .icon {
+  display: inline-block;
+  position: absolute;
+  right: 15px;
+  top: 5px;
+  width: 20px;
+}
+
+.search_area--append .icon svg {
+  fill: #000;
+  width: 100%
+}
+
+.search_area--append input {
+  padding-right: 40px;
 }
 
 .bounties-header__title .title,
@@ -81,7 +102,7 @@
   background-color: #fff;
   margin-right: 30px;
   padding: 1rem;
-  width: 200px;
+  flex: 0 0 200px;
 }
 
 .aside .sub-title {
@@ -96,7 +117,8 @@
 .bounty {
   color: #212529;
   display: flex;
-  padding: 2.5rem 0;
+  padding: 2.5rem;
+  position: relative;
 }
 
 .bounty:hover {
@@ -111,7 +133,6 @@
 }
 
 .bounty__image {
-  margin: 0 2rem;
   width: 100px;
 }
 
@@ -127,16 +148,23 @@
 
 .bounty__info {
   flex: 1;
+  padding: 0 2rem;
   position: relative;
+}
+
+.bounty__title-wrapper {
+  width: 80%;
 }
 
 .bounty__title {
   font-weight: bold;
   margin-bottom: 0;
+  padding-top: 0;
+  text-align: left;
   text-transform: none;
 }
 
-.bounty__author {
+.bounty__source {
   font-weight: bold;
   font-size: 0.9rem;
   letter-spacing: 1px;
@@ -154,10 +182,9 @@
   padding: 0.2rem 0.8rem;
 }
 
-.bounty__price {
+.bounty__price-wrapper {
   position: absolute;
   right: 0;
-  top: 0;
   z-index: 1;
 }
 
@@ -167,12 +194,14 @@
 }
 
 .bounty__crypto-price-pill {
+  align-items: center;
   border-radius: 30px 0 0 30px;
+  display: flex;
   color: #fff;
   font-family: "OpenSans Bold";
   font-weight: bolder;
   text-align: right;
-  padding: 0.5rem 0.9rem;
+  padding: 0.5rem;
 }
 
 .bounty__crypto-price-pill::after {
@@ -223,6 +252,14 @@
 }
 
 @media (max-width: 992px) {
+  .bounty__image {
+    display: none;
+  }
+
+  .bounty__info {
+    padding: 0;
+  }
+
   .bounties-header__search {
     flex-direction: column;
     justify-content: center;
@@ -258,4 +295,24 @@
   .aside {
     display: none;
   }
+}
+
+.icon {
+  display: inline-block;
+  line-height: 1;
+  width: 24px;
+}
+
+.bounty__crypto-price .icon {
+  margin-right: 0.5rem;
+}
+
+.bounty__crypto-price .icon svg {
+  fill: #fff;
+  height: auto;
+  width: 100%;
+}
+
+.link-red {
+  color: #f9006c;
 }

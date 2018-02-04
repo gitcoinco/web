@@ -28,8 +28,9 @@
             </div>
             <div class="bounties-header__search">
               <div class="bounties-header__info">Listing 420 open bounties across the interwebs</div>
-              <div class="search_area">
+              <div class="search_area search_area--append">
                 <input class="gc-round-text-input gc-border-black w-100" type="text" placeholder="Search Bounties" />
+                <span class="icon">{% include 'svgs/search.svg' %}</span>
               </div>
             </div>
           </header>
@@ -47,29 +48,35 @@
             </aside>
             <main class="bounties-container">
               {% for i in "123456789" %}
-                <a href="/1" class="bounty">
+                <a href="external_bounty/{{i}}" class="bounty">
                   <div class="bounty__image">
                     <img src="{% static "v2/images/mission/interact/1.png" %}" />
                   </div>
                   <div class="bounty__info">
-                    <h5 class="bounty__title">Title</h5>
-                    <p class="bounty__author">gitcoin</p>
+                    <div class="bounty__title-wrapper">
+                      <h5 class="bounty__title">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit</h5>
+                    </div>
+                    <p class="bounty__source">gitcoin</p>
+                    <div class="bounty__price--mobile">
+                      <button class="btn btn-sm btn-darkBlue font-smaller-2">
+                        0.3 ETH</button>
+                      <button class="btn btn-sm btn-darkBlue font-smaller-2">192.22 USD</button>
+                    </div>
                     <div class="bounty__tags">
                       {% for i in "1234" %}
                         <span class="bounty__tag-pill">#tag{{i}}</span>
                       {% endfor %}
                     </div>
-                    <div class="bounty__price">
-                      <div class="bounty__price--mobile">
-                        <button class="btn btn-sm btn-darkBlue font-smaller-2">0.3 ETH</button>
-                        <button class="btn btn-sm btn-darkBlue font-smaller-2">192.22 USD</button>
-                      </div>
-                      <div class="bounty__price--desktop">
-                        <div class="bounty__crypto-price">
-                          <div class="bounty__crypto-price-pill bounty__crypto-price-pill--purple">0.3 ETH</div>
+                  </div>
+                  <div class="bounty__price-wrapper">
+                    <div class="bounty__price--desktop">
+                      <div class="bounty__crypto-price">
+                        <div class="bounty__crypto-price-pill bounty__crypto-price-pill--purple">
+                          <span class="icon">{% include 'svgs/ethereum.svg' %}</span>
+                          <span>0.3 ETH</span>
                         </div>
-                        <div class="bounty__fiat-price">337.88 USD</div>
                       </div>
+                      <div class="bounty__fiat-price">337.88 USD</div>
                     </div>
                   </div>
                 </a>

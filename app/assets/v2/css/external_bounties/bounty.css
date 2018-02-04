@@ -1,0 +1,90 @@
+.bounty-container {
+  display: flex;
+  padding: 2rem;
+}
+
+.bounty-container .bounty__info {
+  padding-left: 2rem;
+  padding-right: 0;
+}
+
+.bounty-container .bounty__title {
+  letter-spacing: 1px;
+}
+
+.bounty-container .bounty__header {
+  margin-bottom: 2.5rem;
+  width: 70%;
+}
+
+.bounty-container .sub-title {
+  font-family: "OpenSans";
+  text-transform: none;
+  font-weight: bold;
+  letter-spacing: 0;
+  margin-bottom: 1rem;
+}
+
+.bounty__header-wrapper {
+  display: flex;
+}
+
+.bounty-header .bounty__image,
+.bounty-header .bounty__action {
+  flex: 1 auto;
+  flex-shrink: 0;
+}
+
+.bounty-container .bounty__title-wrapper {
+  padding: 0 2rem;
+}
+
+.bounty__action {
+  flex: 1 auto;
+  text-align: right;
+}
+
+.bounty__content {
+  background-color: #F8F8F8;
+  margin-bottom: 2.5rem;
+  padding: 0.5rem;
+}
+
+.bounty__crypto-price,
+.bounty__fiat-price {
+  font-family: "OpenSans Bold";
+  text-transform: none;
+  font-weight: bold;
+  letter-spacing: 0;
+}
+
+.bounty-container .bounty__crypto-price,
+.bounty-container .bounty__fiat-price {
+  align-items: center;
+  display: inline-flex;
+  margin-bottom: 0;
+}
+
+.bounty-container .bounty__crypto-price {
+  color: #5F5FB6;
+}
+
+.bounty-container .bounty__fiat-price {
+  color: #15D17C;
+}
+
+.bounty-container .bounty__fiat-price .icon {
+  width: 24px;
+}
+
+.bounty-container .bounty__crypto-price .icon svg {
+  fill: #5F5FB6;
+}
+
+.bounty-container .bounty__fiat-price .icon svg {
+  fill: #15D17C;
+}
+
+.bounty__footer {
+  text-align: center;
+}
