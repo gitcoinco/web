@@ -127,7 +127,16 @@
 
     <script id="submission" type="text/x-jsrender">
         <div class="row" id="submission_row">
-            <div class="col-10">
+            <div class="col-2 submitter_icon">
+                [[if fulfiller.fulfiller_github_username != '']]
+                    <a href="/profile/[[:fulfiller.fulfiller_github_username]]">
+                        <img src="http://localhost:8080/funding/avatar?repo=https://github.com/[[:fulfiller.fulfiller_github_username]]" class="avatar">
+                    </a>
+                [[else]]
+                    <img src="http://localhost:8080/funding/avatar?repo=https://github.com/self" class="avatar">
+                [[/if]]
+            </div>
+            <div class="col-8">
                 <ul style="list-style-type:none" id="submitter_ul">
                     <li>Name: <span id="fulfiller_name">[[:fulfiller.fulfiller_name]]</span></li>
                     <li>ETH Address: <span id="fulfiller_address"> <a href="https://etherscan.io/address/[[:fulfiller.address]]">[[:fulfiller.fulfiller_address]]</a></span></li>

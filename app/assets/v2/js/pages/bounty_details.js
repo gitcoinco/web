@@ -425,10 +425,9 @@ window.addEventListener('load', function() {
 
             fulfillers = [];
             var submissions = result.fulfillments;
-            console.log(submissions);
             $.each(submissions, function (index, value) {
                 var acceptButton = {
-                    href: '/funding/process?source='+result['github_url']+"&id="+value.id,
+                    href: '/funding/process?source='+result['github_url']+"&id="+value.fulfillment_id,
                     text: 'Accept Submission',
                     color: enabled ? 'darkBlue' : 'darkGrey',
                     extraClass: enabled ? '' : 'disabled',

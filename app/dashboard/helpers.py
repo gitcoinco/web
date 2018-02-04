@@ -344,11 +344,11 @@ def process_bounty_details(bountydetails):
         if fments:
             for fment in fments:
                 new_fulfillment = BountyFulfillment.objects.create(
-                    fulfiller_address=fment.get('payload', {}).get('fulfiller', {}).get('address', '0x0000000000000000000000000000000000000000'),
-                    fulfiller_email=fment.get('payload', {}).get('fulfiller', {}).get('email', ''),
-                    fulfiller_github_username=fment.get('payload', {}).get('fulfiller', {}).get('githubUsername', ''),
-                    fulfiller_name=fment.get('payload', {}).get('fulfiller', {}).get('name', ''),
-                    fulfiller_metadata=fment.get('payload', {}).get('metadata', {}),
+                    fulfiller_address=fment.get('fulfiller', '0x0000000000000000000000000000000000000000'),
+                    fulfiller_email=fment.get('data', {}).get('payload', {}).get('fulfiller', {}).get('email', ''),
+                    fulfiller_github_username=fment.get('data', {}).get('payload', {}).get('fulfiller', {}).get('githubUsername', ''),
+                    fulfiller_name=fment.get('data', {}).get('payload', {}).get('fulfiller', {}).get('name', ''),
+                    fulfiller_metadata=fment,
                     fulfillment_id=fment.get('id'),
                     bounty=new_bounty,
                 )

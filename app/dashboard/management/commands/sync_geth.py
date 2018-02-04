@@ -35,6 +35,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('network')
+        parser.add_argument('start_id', default=0)
 
     def handle(self, *args, **options):
 
@@ -42,7 +43,7 @@ class Command(BaseCommand):
         network = options['network']
 
         # iterate through all the bounties
-        bounty_enum = 0
+        bounty_enum = int(options['start_id'])
         more_bounties = True
         while more_bounties:
             try:

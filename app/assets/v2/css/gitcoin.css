@@ -317,7 +317,10 @@ div.button-pink {
 #submitter_ul {
   padding-left: 1em;
 }
-
+.submitter_icon {
+  text-align: center;
+  margin-top: 20px;
+}
 #submission_row {
   border: 1px solid #C2C2C2;
   border-left: 3px solid #0d023b;

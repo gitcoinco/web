@@ -143,6 +143,7 @@ def get_bounty(bounty_enum, network):
         accepted, fulfiller, data = standard_bounties.functions.getFulfillment(bounty_enum, fulfill_enum).call()
         fulfill_enum += 1
         fulfillments.append({
+            'id': fulfill_enum,
             'accepted': accepted,
             'fulfiller': fulfiller,
             'data': json.loads(ipfs_cat(data)),
