@@ -39,17 +39,17 @@ def m2m_changed_interested(sender, instance, action, reverse, model, **kwargs):
                                profile_pairs=profile_handles)
 
 
-# def changed_fulfillments(sender, instance, action, reverse, model, **kwargs):
-#     """Handle changes to Bounty fulfillments."""
-#     event_name = 'work_submitted'
-#     profile_handles = []
+def changed_fulfillments(sender, instance, action, reverse, model, **kwargs):
+    """Handle changes to Bounty fulfillments."""
+    event_name = 'work_submitted'
+    profile_handles = []
 
-#     fulfillments = instance.fulfillments.select_related('profile').all().order_by('pk')
-#     if fulfillments.filter(accepted=True).exists():
-#         event_name = 'work_done'
+    fulfillments = instance.fulfillments.select_related('profile').all().order_by('pk')
+    if fulfillments.filter(accepted=True).exists():
+        event_name = 'work_done'
 
-#     for fulfillment in fulfillments:
-#         profile_handles.append((fulfillment.profile.handle, fulfillment.profile.absolute_url))
+    for fulfillment in fulfillments:
+        profile_handles.append((fulfillment.profile.handle, fulfillment.profile.absolute_url))
 
-#     if action in ['post_add', 'post_remove']:
-#         maybe_market_to_github(instance, event_name, profile_pairs=profile_handles)
+    if action in ['post_add', 'post_remove']:
+        maybe_market_to_github(instance, event_name, profile_pairs=profile_handles)

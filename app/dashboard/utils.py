@@ -24,6 +24,7 @@ import ipfsapi
 from dashboard.helpers import UnsupportedSchemaException, normalizeURL, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty
 from eth_utils import to_checksum_address
+from ipfsapi.exceptions import CommunicationError
 from web3 import HTTPProvider, Web3
 from web3.exceptions import BadFunctionCallOutput
 from web3.utils.datastructures import HexBytes
@@ -43,8 +44,8 @@ class IPFSCantConnectException(Exception):
 
 def startIPFS():
     print('starting IPFS')
-    subp = subprocess.Popen(["ipfs", "daemon"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    time.sleep(5) #time for IPFS to boot
+    subprocess.Popen(["ipfs", "daemon"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    time.sleep(5)  # time for IPFS to boot
 
 
 def isIPFSrunning():
@@ -60,24 +61,33 @@ def getIPFS():
 
     try:
         return ipfsapi.connect('127.0.0.1', 5001)
-    except:
+    except CommunicationError:
         raise IPFSCantConnectException("IPFS is not running.  try running it with `ipfs daemon` before this script")
 
 
 def getWeb3(network):
-    if network == 'mainnet':
-        return Web3(HTTPProvider('https://mainnet.infura.io'))
-    if network == 'rinkeby':
-        return Web3(HTTPProvider('https://rinkeby.infura.io'))
-    if network == 'ropsten':
-        return Web3(HTTPProvider('https://ropsten.infura.io'))
+    """Get a Web3 session for the provided network.
+
+    Attributes:
+        network (str): The network to establish a session with.
+
+    Raises:
+        UnsupportedNetworkException: The exception is raised if the method
+            is passed an invalid network.
+
+    Returns:
+        web3.main.Web3: A web3 instance for the provided network.
+
+    """
+    if network in ['mainnet', 'rinkeby', 'ropsten']:
+        return Web3(HTTPProvider(f'https://{network}.infura.io'))
     raise UnsupportedNetworkException(network)
 
 
 def getStandardBountiesContractAddresss(network):
     if network == 'mainnet':
         return to_checksum_address('0x2af47a65da8cd66729b4209c22017d6a5c2d2400')
-    if network == 'rinkeby':
+    elif network == 'rinkeby':
         return to_checksum_address('0xf209d2b723b6417cbf04c07e733bee776105a073')
     raise UnsupportedNetworkException(network)
 
@@ -149,7 +159,7 @@ def has_tx_mined(txid, network):
     try:
         transaction = web3.eth.getTransaction(txid)
         return transaction.blockHash != HexBytes('0x0000000000000000000000000000000000000000000000000000000000000000')
-    except:
+    except Exception:
         return False
 
 
@@ -170,7 +180,7 @@ def getBountyID(issueURL, network):
 def getBountyID_from_db(issueURL, network):
     issueURL = normalizeURL(issueURL)
     bounties = Bounty.objects.filter(github_url=issueURL, network=network, web3_type='bounties_network')
-    if not bounties.count():
+    if not bounties.exists():
         return None
     return bounties.first().standard_bounties_id
 
@@ -194,7 +204,7 @@ def getBountyID_from_web3(issueURL, network, last_known_bounty_id):
 
         except BountyNotFoundException:
             more_bounties = False
-        except UnsupportedSchemaException as e:
+        except UnsupportedSchemaException:
             pass
         finally:
             # prepare for next loop
