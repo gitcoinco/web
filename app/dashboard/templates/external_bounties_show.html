@@ -14,10 +14,8 @@
     </div>
 
     <div class="row no-gutter">
-      <div class="col-2">
-        <div class="fixed-balance">
-          {% include 'shared/current_balance.html' %}
-        </div>
+      <div class="fixed-balance">
+        {% include 'shared/current_balance.html' with minimized=True %}
       </div>
 
       <div class="col body">
