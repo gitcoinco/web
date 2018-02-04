@@ -17,6 +17,7 @@
 '''
 
 import json
+import requests
 import subprocess
 import time
 
@@ -44,13 +45,13 @@ class IPFSCantConnectException(Exception):
 def startIPFS():
     print('starting IPFS')
     subp = subprocess.Popen(["ipfs", "daemon"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    time.sleep(5) #time for IPFS to boot
+    time.sleep(10) #time for IPFS to boot
 
 
 def isIPFSrunning():
     output = subprocess.check_output('pgrep -fl ipfs | wc -l', shell=True)
     is_running = output != b'       0\n'
-    print(f'is_running: {is_running}')
+    print(f'** ipfs is_running: {is_running}')
     return is_running
 
 
@@ -63,6 +64,29 @@ def getIPFS():
     except:
         raise IPFSCantConnectException("IPFS is not running.  try running it with `ipfs daemon` before this script")
 
+
+def ipfs_cat(key):
+    response = ipfs_cat_requests(key)
+    if response:
+        return response
+
+    response = ipfs_cat_ipfsapi(key)
+    if response:
+        return response
+
+    raise Exception("could not connect to IPFS")
+
+
+def ipfs_cat_ipfsapi(key):
+    ipfs = getIPFS()
+    return ipfs.cat(key)
+
+
+def ipfs_cat_requests(key):
+    url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
+    response = requests.get(url)
+    return response.text
+    
 
 def getWeb3(network):
     if network == 'mainnet':
@@ -93,7 +117,6 @@ def getBountyContract(network):
 
 
 def get_bounty(bounty_enum, network):
-    ipfs = getIPFS()
     standard_bounties = getBountyContract(network)
 
     try:
@@ -106,14 +129,13 @@ def get_bounty(bounty_enum, network):
     token = standard_bounties.functions.getBountyToken(bounty_enum).call()
     numFulfillments = int(standard_bounties.functions.getNumFulfillments(bounty_enum).call())
     fulfillments = []
-    print(numFulfillments)
     for fulfill_enum in range(0, numFulfillments):
         accepted, fulfiller, data = standard_bounties.functions.getFulfillment(bounty_enum, fulfill_enum).call()
         fulfill_enum += 1
         fulfillments.append({
             'accepted': accepted,
             'fulfiller': fulfiller,
-            'data': json.loads(ipfs.cat(data)),
+            'data': json.loads(ipfs_cat(data)),
             })
 
     bounty = {
@@ -124,7 +146,7 @@ def get_bounty(bounty_enum, network):
         'paysTokens': paysTokens,
         'bountyStage': bountyStage,
         'balance': balance,
-        'data': json.loads(ipfs.cat(bountydata)),
+        'data': json.loads(ipfs_cat(bountydata)),
         'arbiter': arbiter,
         'token': token,
         'fulfillments': fulfillments,
@@ -186,7 +208,7 @@ def getBountyID_from_web3(issueURL, network, last_known_bounty_id):
         try:
 
             # pull and process each bounty
-            print(f'looking at {bounty_enum}')
+            print(f'** getBountyID_from_web3; looking at {bounty_enum}')
             bounty = get_bounty(bounty_enum, network)
             url = bounty.get('data', {}).get('payload', {}).get('webReferenceURL', False)
             if url == issueURL:
