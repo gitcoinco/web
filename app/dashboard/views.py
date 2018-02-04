@@ -368,6 +368,14 @@ def external_bounties(request):
     }
     return TemplateResponse(request, 'external_bounties.html', params)
 
+def external_bounties_show(request):
+    """Handle Dummy External Bounties show page."""
+    params = {
+        'active': 'dashboard',
+        'title': 'Issue Explorer',
+    }
+    return TemplateResponse(request, 'external_bounties_show.html', params)
+
 
 def gas(request):
     context = {
