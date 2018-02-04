@@ -252,6 +252,10 @@
 }
 
 @media (max-width: 992px) {
+  .bounty__title-wrapper {
+    width: 100%;
+  }
+
   .bounty__image {
     display: none;
   }

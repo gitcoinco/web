@@ -88,3 +88,13 @@
 .bounty__footer {
   text-align: center;
 }
+
+@media (max-width: 992px) {
+  .bounty__action {
+    display: none;
+  }
+
+  .bounty-container .bounty__header {
+    width: 100%;
+  }
+}
