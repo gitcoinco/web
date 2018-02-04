@@ -25,7 +25,7 @@
               <h2 class="title">Bounties</h2>
             </div>
             <div class="bounties-header__search">
-              <div class="bounties-header__info">Listing 420 open bounties across the interwebs</div>
+              <div class="bounties-header__info">Listing {{ bounties|length }} open bounties across the interwebs</div>
               <div class="search_area search_area--append">
                 <input class="gc-round-text-input gc-border-black w-100" type="text" placeholder="Search Bounties" />
                 <span class="icon">{% include 'svgs/search.svg' %}</span>
@@ -36,45 +36,62 @@
             <aside class="aside">
               <h3 class="sub-title">Categories</h3>
               <div class="categories-list">
-                {% for i in "123456789" %}
+                {% for category in categories %}
                   <div class="checkbox">
-                    <input class="checkbox-input" name="category" type="checkbox" id="name_{{i}}"/>
-                    <label class="checkbox-label" for="name_{{i}}">Label</label>
+                    <input class="checkbox-input" name="category" type="checkbox" id="{{category}}"/>
+                    <label class="checkbox-label" for="{{category}}">{{category}}</label>
                   </div>
                 {% endfor %}
               </div>
             </aside>
             <main class="bounties-container">
-              {% for i in "123456789" %}
+              {% for bounty in bounties %}
                 <a href="external_bounty/{{i}}" class="bounty">
                   <div class="bounty__image">
                     <img src="{% static "v2/images/mission/interact/1.png" %}" />
                   </div>
                   <div class="bounty__info">
                     <div class="bounty__title-wrapper">
-                      <h5 class="bounty__title">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit</h5>
+                      <h5 class="bounty__title">{{ bounty.title }}</h5>
                     </div>
-                    <p class="bounty__source">gitcoin</p>
+                    <p class="bounty__source">{{ bounty.source }}</p>
                     <div class="bounty__price--mobile">
-                      <button class="btn btn-sm btn-darkBlue font-smaller-2">
-                        0.3 ETH</button>
-                      <button class="btn btn-sm btn-darkBlue font-smaller-2">192.22 USD</button>
+                      <button class="btn btn-sm btn-darkBlue font-smaller-2">{{ bounty.crypto_price }} {{ bounty.crypto_label }}</button>
+                      <button class="btn btn-sm btn-darkBlue font-smaller-2">{{ bounty.fiat_price }} {{ bounty.fiat_name }}</button>
                     </div>
                     <div class="bounty__tags">
-                      {% for i in "1234" %}
-                        <span class="bounty__tag-pill">#tag{{i}}</span>
+                      {% for tag in bounty.tags %}
+                        <span class="bounty__tag-pill">#{{ tag }}</span>
                       {% endfor %}
                     </div>
                   </div>
                   <div class="bounty__price-wrapper">
                     <div class="bounty__price--desktop">
                       <div class="bounty__crypto-price">
-                        <div class="bounty__crypto-price-pill bounty__crypto-price-pill--purple">
-                          <span class="icon">{% include 'svgs/ethereum.svg' %}</span>
-                          <span>0.3 ETH</span>
-                        </div>
+
+                        {% if bounty.crypto_label == 'ETH' %}
+                          <div class="bounty__crypto-price-pill bounty__crypto-price-pill--purple">
+                            <span class="icon">{% include 'svgs/ethereum.svg' %}</span>
+                            <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
+                          </div>
+                        {% endif %}
+
+                        {% if bounty.crypto_label == 'BTC' %}
+                          <div class="bounty__crypto-price-pill bounty__crypto-price-pill--orange">
+                            <span class="icon">{% include 'svgs/bitcoin.svg' %}</span>
+                            <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
+                          </div>
+                        {% endif %}
+
+                        {% if bounty.crypto_label == 'LTC' %}
+                          <div class="bounty__crypto-price-pill bounty__crypto-price-pill--grey">
+                            <span class="icon">{% include 'svgs/bitcoin.svg' %}</span>
+                            <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
+                          </div>
+                        {% endif %}
+
                       </div>
-                      <div class="bounty__fiat-price">337.88 USD</div>
+                      <div class="bounty__fiat-price">{{ bounty.fiat_price }} USD</div>
                     </div>
                   </div>
                 </a>
