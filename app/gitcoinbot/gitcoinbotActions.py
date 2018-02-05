@@ -190,5 +190,3 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id, install_
     else:
         post_issue_comment_reaction(owner, repo, comment_id, 'confused')
         post_gitcoin_app_comment(owner, repo, issue_id, confused_text(),install_id)
-
-    # TODO run a pip freeze to update the dependencies aka PyJWT and cryptography
