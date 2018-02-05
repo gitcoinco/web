@@ -250,6 +250,7 @@
   color: #fff;
   font-family: "OpenSans Bold";
   font-weight: bolder;
+  justify-content: space-around;
   text-align: right;
   padding: 0.5rem;
 }
