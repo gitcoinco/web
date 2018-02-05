@@ -17,28 +17,35 @@ headers = {
     'Accept': 'application/vnd.github.squirrel-girl-preview'
 }
 
-v3headers = {
-    'Accept': 'application/vnd.github.v3.text-match+json'
-}
-
-
-
-
 def help_text():
+    # TODO @owocki Add test bounties to dev environment to add claim/approve functionality
+    # help_text_response = "I am @{}, a bot that facilitates gitcoin bounties.\n".format(settings.GITHUB_API_USER) + \
+    #     "\n" +\
+    #     "<hr>" +\
+    #     "Here are the commands I understand:\n" +\
+    #     "\n" +\
+    #     " * `bounty <amount> ETH` -- receive link to gitcoin.co form to create bounty.\n" +\
+    #     " * `claim` -- receive link to gitcoin.co to claim bounty.\n" +\
+    #     " * `approve` -- receive link to gitcoin.co to approve bounty.\n" +\
+    #     " * `tip <user> <amount> ETH` -- receive link to complete tippping another github user *<amount>* ETH.\n" +\
+    #     " * `help` -- displays a help menu\n" +\
+    #     "\n" +\
+    #     "<br>" +\
+    #     "Learn more at: [https://gitcoin.co](https://gitcoin.co)\n" +\
+    #     ":zap::heart:, {}\n".format("@" + settings.GITHUB_API_USER)
+
     help_text_response = "I am @{}, a bot that facilitates gitcoin bounties.\n".format(settings.GITHUB_API_USER) + \
-        "\n" +\
-        "<hr>" +\
-        "Here are the commands I understand:\n" +\
-        "\n" +\
-        " * `bounty <amount> ETH` -- receive link to gitcoin.co form to create bounty.\n" +\
-        " * `claim` -- receive link to gitcoin.co to claim bounty.\n" +\
-        " * `approve` -- receive link to gitcoin.co to approve bounty.\n" +\
-        " * `tip <user> <amount> ETH` -- receive link to complete tippping another github user *<amount>* ETH.\n" +\
-        " * `help` -- displays a help menu\n" +\
-        "\n" +\
-        "<br>" +\
-        "Learn more at: [https://gitcoin.co](https://gitcoin.co)\n" +\
-        ":zap::heart:, {}\n".format("@" + settings.GITHUB_API_USER)
+    "\n" +\
+    "<hr>" +\
+    "Here are the commands I understand:\n" +\
+    "\n" +\
+    " * `bounty <amount> ETH` -- receive link to gitcoin.co form to create bounty.\n" +\
+    " * `tip <user> <amount> ETH` -- receive link to complete tippping another github user *<amount>* ETH.\n" +\
+    " * `help` -- displays a help menu\n" +\
+    "\n" +\
+    "<br>" +\
+    "Learn more at: [https://gitcoin.co](https://gitcoin.co)\n" +\
+    ":zap::heart:, {}\n".format("@" + settings.GITHUB_API_USER)
     return help_text_response
 
 def new_bounty_text(owner, repo, issue_id, comment_text):
@@ -125,37 +132,39 @@ def post_issue_comment_reaction(owner, repo, comment_id, content):
     print('reacting with a heart')
     return response.json()
 
-def post_gitcoin_app_comment(owner, repo, comment_id, content):
-    token = create_token()
-    url = 'https://api.github.com/repos/{}/{}/issues/comments/{}/reactions'.format(
-        owner, repo, comment_id)
+def post_gitcoin_app_comment(owner, repo, issue_id, content, install_id):
+    token = create_token(install_id)
+    url = 'https://api.github.com/repos/{}/{}/issues/{}/comments'.format(
+        owner, repo, issue_id)
     githubAppHeaders = {
-        'Authorization': 'Bearer ' + token,
+        'Authorization': 'token ' + token,
         'Accept': 'application/vnd.github.machine-man-preview+json'
     }
     body = {
-        'content': content
+        'body': content
     }
-    print('Attempting to post comment as githubapp')
-    response = requests.post(url, data=json.dumps(
-        body), headers=githubAppHeaders)
-    print(response)
-    print(response.content)
+
+    response = requests.post(url, data=json.dumps(body), headers=githubAppHeaders)
     return response.json
 
-def create_token():
+def create_token(install_id):
     # Token expires after 10 minutes
     payload = {
         'iat': datetime.datetime.utcnow(),
         'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=600),
         'iss': GITCOINBOT_APP_ID
     }
-    print('Creating token')
-    token = jwt.encode(payload, SECRET_KEYSTRING, algorithm='RS256')
-    print('here is the token, it expires in 10 minutes: {}'.format(token))
+    jwt_token = jwt.encode(payload, SECRET_KEYSTRING, algorithm='RS256')
+    url = 'https://api.github.com/installations/{}/access_tokens'.format(install_id)
+    githubAppHeaders = {
+        'Authorization': 'Bearer ' + jwt_token,
+        'Accept': 'application/vnd.github.machine-man-preview+json'
+    }
+    response = requests.post(url, headers=githubAppHeaders)
+    token = json.loads(response.content)['token']
     return token
 
-def determine_response(owner, repo, comment_id, comment_text, issue_id):
+def determine_response(owner, repo, comment_id, comment_text, issue_id, install_id):
     help_regex = '@?[Gg]itcoinbot\s[Hh]elp'
     bounty_regex = '@?[Gg]itcoinbot\s[Bb]ounty\s\d*\.?(\d+\s?)'
     claim_regex = '@?[Gg]itcoinbot\s[Cc]laim'
@@ -163,13 +172,12 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id):
     tip_regex = '@?[Gg]itcoinbot\s[Tt]ip\s@\w*\s\d*\.?(\d+\s?)'
 
     if re.match(help_regex, comment_text) is not None:
-        post_gitcoin_app_comment(owner, repo, issue_id, help_text())
         post_issue_comment_reaction(owner, repo, comment_id, '+1')
-        # post_issue_comment(owner, repo, issue_id, help_text())
+        post_gitcoin_app_comment(owner, repo, issue_id, help_text(), install_id)
     elif re.match(bounty_regex, comment_text) is not None:
         post_issue_comment_reaction(owner, repo, comment_id, '+1')
         bounty_text = new_bounty_text(owner, repo, issue_id, comment_text)
-        post_issue_comment(owner, repo, issue_id, bounty_text)
+        post_gitcoin_app_comment(owner, repo, issue_id, bounty_text, install_id)
     elif re.match(claim_regex, comment_text) is not None:
         post_issue_comment_reaction(owner, repo, comment_id, '+1')
         pass
@@ -178,11 +186,9 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id):
         pass
     elif re.match(tip_regex, comment_text) is not None:
         post_issue_comment_reaction(owner, repo, comment_id, 'heart')
-        post_issue_comment(owner, repo, issue_id, tip_text(comment_text))
+        post_gitcoin_app_comment(owner, repo, issue_id, tip_text(comment_text), install_id)
     else:
-        pass
-        # Make sure to not respond after gitcoinbot comments...
-        # post_issue_comment_reaction(owner, repo, comment_id, 'confused')
-        # post_issue_comment(owner, repo, issue_id, tip_text())
+        post_issue_comment_reaction(owner, repo, comment_id, 'confused')
+        post_gitcoin_app_comment(owner, repo, issue_id, confused_text(),install_id)
 
     # TODO run a pip freeze to update the dependencies aka PyJWT and cryptography

@@ -15,8 +15,7 @@ def payload(request):
 
     if request.method == "POST":
         requestJSON = json.loads(request.body.decode('utf8'))
-        # Add if author of comment was gitcoinbot to avoid feedback loop
-        if (requestJSON['action'] == 'deleted') or requestJSON['sender']['login'] == 'gitcoinbot':
+        if (requestJSON['action'] == 'deleted') or requestJSON['sender']['login'] == 'gitcoinbot[bot]':
             # Gitcoinbot should not process these actions
             return HttpResponse(status=204)
         else:
@@ -27,8 +26,10 @@ def payload(request):
             comment_text = requestJSON['comment']['body']
             issue_id = requestJSON['issue']['number']
             sender = requestJSON['sender']['login']
+            installation_id = requestJSON['installation']['id']
 
             gitcoinBot.determine_response(owner, repo, comment_id,
-                                          comment_text, issue_id)
+                                          comment_text, issue_id,
+                                          installation_id)
 
             return HttpResponse('Gitcoinbot Responded')
