@@ -338,7 +338,7 @@ class Bounty(SuperModel):
         if self.github_url.lower()[:19] != 'https://github.com/':
             return ''
         url_path = urlparse(self.github_url).path
-        return 'https://api.github.com/repos/' + url_path
+        return 'https://api.github.com/repos' + url_path
 
     def fetch_issue_item(self, item_type='body'):
         """Fetch the item type of an issue.
