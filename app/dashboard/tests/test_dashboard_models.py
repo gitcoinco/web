@@ -137,4 +137,4 @@ class DashboardModelsTest(TestCase):
             ('0x', 'Loyalty Rate'),
         ]
         assert profile.github_url == 'https://github.com/gitcoinco'
-        assert profile.get_relative_url() == '/profile/gitcoinco';
+        assert profile.get_relative_url() == '/profile/gitcoinco'
