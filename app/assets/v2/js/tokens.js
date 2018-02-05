@@ -166,7 +166,7 @@ var tokens = function(network_id){
         {"addr": "0xe5a7c12972f3bbfe70ed29521c8949b8af6a0970", "name": "BLX", "decimals": 18},
         {"addr": "0x5cf4e9dfd975c52aa523fb5945a12235624923dc", "name": "MPRM", "decimals": 0 },
         {"addr": "0xb581e3a7db80fbaa821ab39342e9cbfd2ce33c23", "name": "ARCD", "decimals": 18}
-    ];  
+    ];
     } else if(network_id == "ropsten" ){ //ropsten
       _tokens = [
         { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
@@ -183,7 +183,7 @@ var tokens = function(network_id){
         { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
         ];
     }
-    
+
     _tokens.sort(function(a,b){
         if(a.name[0] < b.name[0]){
             return -1;
@@ -225,8 +225,18 @@ var load_tokens = function(){
                 $("select[name=deonomination]").append($('<option>', select))
             }
             //if web3, set the values of some form variables
+            var url_string = window.location.href
+            var url = new URL(url_string)
+            var params_amount = url.searchParams.get("amount")
             if (typeof localStorage['amount'] !='undefined'){
-                $('input[name=amount]').val(localStorage['amount']);
+                if (params_amount != null){
+                    if ( localStorage['amount'] != params_amount){
+                        localStorage.setItem("amount", params_amount);
+                        $('input[name=amount]').val(params_amount);
+                    }
+                } else {
+                    $('input[name=amount]').val(localStorage['amount']);
+                }
             }
             if (typeof localStorage['githubUsername'] !='undefined'){
                 $('input[name=githubUsername]').val(localStorage['githubUsername']);
@@ -238,6 +248,6 @@ var load_tokens = function(){
                 $('input[name=terms]').attr('checked','checked');
             }
         });
-    });    
+    });
 }
 
