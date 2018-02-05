@@ -6,6 +6,7 @@ def migrate_fulfillments(apps, schema_editor):
     """Handle the data migration from bounty fulfillment fields."""
     Bounty = apps.get_model('dashboard', 'Bounty')
     BountyFulfillment = apps.get_model('dashboard', 'BountyFulfillment')
+    Profile = apps.get_model('dashboard', 'Profile')
     db_alias = schema_editor.connection.alias
 
     bounties = Bounty.objects \
@@ -14,7 +15,8 @@ def migrate_fulfillments(apps, schema_editor):
         .exclude(fulfiller_address='0x0000000000000000000000000000000000000000')
 
     for bounty in bounties:
-        if bounty.fulfiller_address:
+        if bounty.fulfiller_address and bounty.fulfiller_github_username:
+            profile = Profile.objects.filter(handle=bounty.fulfiller_github_username).first()
             fulfillment = BountyFulfillment.objects \
                 .using(db_alias) \
                 .create(
@@ -24,6 +26,7 @@ def migrate_fulfillments(apps, schema_editor):
                     fulfiller_github_username=bounty.fulfiller_github_username,
                     fulfiller_name=bounty.fulfiller_name,
                     fulfiller_metadata=bounty.fulfiller_metadata,
+                    fulfiller_profile_id=profile.pk,
                 )
             bounty.fulfillments.add(fulfillment)
 

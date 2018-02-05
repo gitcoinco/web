@@ -27,6 +27,7 @@ class Migration(migrations.Migration):
                 ('fulfillment_id', models.IntegerField(blank=True, null=True)),
                 ('accepted', models.BooleanField(default=False)),
                 ('bounty', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='fulfillments', to='dashboard.Bounty')),
+                ('fulfiller_profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='fulfilled', to='dashboard.Profile')),
             ],
             options={
                 'abstract': False,

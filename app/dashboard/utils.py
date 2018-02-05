@@ -17,11 +17,11 @@
 '''
 
 import json
-import requests
 import subprocess
 import time
 
 import ipfsapi
+import requests
 from dashboard.helpers import UnsupportedSchemaException, normalizeURL, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty
 from eth_utils import to_checksum_address
@@ -91,7 +91,7 @@ def ipfs_cat_requests(key):
     url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
     response = requests.get(url)
     return response.text
-    
+
 
 def getWeb3(network):
     """Get a Web3 session for the provided network.

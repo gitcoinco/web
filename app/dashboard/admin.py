@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -22,7 +22,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import Bounty, BountySyncRequest, BountyFulfillment, Interest, Profile, Subscription, Tip
+from .models import Bounty, BountyFulfillment, BountySyncRequest, Interest, Profile, Subscription, Tip
 
 
 class GeneralAdmin(admin.ModelAdmin):

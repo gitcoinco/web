@@ -405,6 +405,7 @@ class BountyFulfillment(SuperModel):
     accepted = models.BooleanField(default=False)
 
     bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE)
+    profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE)
 
     def __str__(self):
         """Define the string representation of BountyFulfillment.
@@ -693,12 +694,12 @@ class Profile(SuperModel):
                 vals = [b.bounty_owner_github_username]
                 for val in vals:
                     if val:
-                        _return.append(val.replace('@', ''))
+                        _return.append(val.lstrip('@'))
             for t in self.tips:
                 vals = [t.username]
                 for val in vals:
                     if val:
-                        _return.append(val.replace('@', ''))
+                        _return.append(val.lstrip('@'))
         _return = list(set(_return))
         _return.sort()
         return _return[:limit_to_num]
@@ -725,12 +726,9 @@ class Profile(SuperModel):
         elif total_funded < total_fulfilled:
             role = 'coder'
 
-        for b in bounties:
-            if b.fulfiller_address in claimees:
-                loyalty_rate += 1
-            claimees.append(b.fulfiller_address)
+        loyalty_rate = self.fulfilled.filter(accepted=True).count()
         success_rate = 0
-        if bounties.count() > 0:
+        if bounties.exists():
             numer = bounties.filter(idx_status__in=['submitted', 'started', 'done']).count()
             denom = bounties.exclude(idx_status__in=['open']).count()
             success_rate = int(round(numer * 1.0 / denom, 2) * 100) if denom != 0 else 'N/A'
