@@ -101,7 +101,7 @@
 .bounties-header__title .sub-title,
 .aside .title,
 .aside .sub-title {
-  font-family: "OpenSans Bold";
+  font-family: Futura;
   text-transform: uppercase;
   font-weight: bolder;
   letter-spacing: 0;
@@ -208,6 +208,7 @@
 
 .bounty__title {
   font-weight: bold;
+  letter-spacing: 1px;
   margin-bottom: 0;
   padding-top: 0;
   text-align: left;
@@ -248,7 +249,7 @@
   border-radius: 30px 0 0 30px;
   display: flex;
   color: #fff;
-  font-family: "OpenSans Bold";
+  font-family: Futura;
   font-weight: bolder;
   justify-content: space-around;
   text-align: right;
@@ -296,7 +297,7 @@
 
 .bounty__fiat-price {
   color: #15D17C;
-  font-family: "OpenSans Bold";
+  font-family: Futura;
   font-size: 0.9rem;
   font-weight: bolder;
   padding: 0 0.5em;
