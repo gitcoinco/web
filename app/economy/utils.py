@@ -30,6 +30,9 @@ def convert_amount(from_amount, from_currency, to_currency):
         ).order_by('-timestamp').first()
     return (float(latest_conversion_rate.to_amount) / float(latest_conversion_rate.from_amount)) * float(from_amount)
 
+def get_eth_to_usdt():
+    return convert_amount(1, "ETH", "USDT")
+
 
 def etherscan_link(txid):
     return 'https://etherscan.io/tx/' + txid

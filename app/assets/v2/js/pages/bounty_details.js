@@ -52,6 +52,7 @@ var rows = [
     'value_in_token',
     'value_in_eth',
     'value_in_usdt',
+    'eth_value_in_usdt',
     'web3_created',
     'status',
     'bounty_owner_address',
@@ -130,6 +131,12 @@ var callbacks = {
             return [null, null];
         }
         return [ "Amount_usd" , val];
+    },
+    'eth_value_in_usdt': function(key, val, result){
+        if(val == null){
+            return [null, null];
+        }
+        return [ "Eth_amount_usd" , val];
     },
     'web3_created': function(key, val, result){
         return [ "updated" , timeDifference(new Date(result['now']), new Date(result['created_on']))];
