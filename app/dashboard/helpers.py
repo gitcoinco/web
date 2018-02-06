@@ -36,6 +36,8 @@ from economy.utils import convert_amount
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 
+from .models import Profile
+
 logger = logging.getLogger(__name__)
 
 
@@ -343,6 +345,13 @@ def process_bounty_details(bountydetails):
 
         if fments:
             for fment in fments:
+                kwargs = {}
+                github_username = fment.get('data', {}).get('payload', {}).get('fulfiller', {}).get('githubUsername', '')
+                if github_username:
+                    try:
+                        kwargs['profile_id'] = Profile.objects.get(handle=github_username).pk
+                    except Profile.DoesNotExist:
+                        pass
                 new_fulfillment = BountyFulfillment.objects.create(
                     fulfiller_address=fment.get('fulfiller', '0x0000000000000000000000000000000000000000'),
                     fulfiller_email=fment.get('data', {}).get('payload', {}).get('fulfiller', {}).get('email', ''),
@@ -351,6 +360,7 @@ def process_bounty_details(bountydetails):
                     fulfiller_metadata=fment,
                     fulfillment_id=fment.get('id'),
                     bounty=new_bounty,
+                    **kwargs
                 )
                 new_fulfillment.save()
                 new_bounty.fulfillments.add(new_fulfillment)

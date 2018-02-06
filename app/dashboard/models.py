@@ -258,10 +258,10 @@ class Bounty(SuperModel):
             # TODO: Remove following full deprecation of legacy bounties
             try:
                 if not self.is_open:
-                    if timezone.now() > self.expires_date and self.fulfiller_address == '0x0000000000000000000000000000000000000000':
+                    if timezone.now() > self.expires_date and self.fulfillments.submitted().exists():
                         return 'expired'
                     return 'done'
-                if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
+                elif not self.fulfillments.submitted().exists():
                     if self.pk and self.interested.exists():
                         return 'started'
                     return 'open'
@@ -391,6 +391,10 @@ class BountyFulfillmentQuerySet(models.QuerySet):
     def accepted(self):
         """Filter results to accepted bounty fulfillments."""
         return self.filter(accepted=True)
+
+    def submitted(self):
+        """Exclude results that have not been submitted."""
+        return self.exclude(fulfiller_address='0x0000000000000000000000000000000000000000')
 
 
 class BountyFulfillment(SuperModel):
