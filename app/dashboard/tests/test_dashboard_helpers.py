@@ -41,14 +41,14 @@ class DashboardHelpersTest(TestCase):
 
     def test_amount(self):
         """Test the dashboard helper amount method."""
-        params = { 'amount': '5', 'denomination': 'ETH' }
+        params = {'amount': '5', 'denomination': 'ETH'}
         request = self.factory.get('/sync/get_amount', params)
         assert amount(request).content == b'{"eth": 5.0, "usdt": 10.0}'
 
     def test_title(self):
         """Test the dashboard helper title method."""
         sample_url = 'https://github.com/gitcoinco/web/issues/353'
-        params = { 'url': sample_url, 'denomination': 'ETH' }
+        params = {'url': sample_url, 'denomination': 'ETH'}
         with requests_mock.Mocker() as m:
             m.get(sample_url, text='<span class="js-issue-title refined-linkified-title">Increase Code Coverage by 4%</span>')
             request = self.factory.get('/sync/get_issue_title', params)
@@ -57,7 +57,7 @@ class DashboardHelpersTest(TestCase):
     def test_description(self):
         """Test the dashboard helper description method."""
         sample_url = 'https://github.com/gitcoinco/web/issues/353'
-        params = { 'url': sample_url }
+        params = {'url': sample_url}
         with requests_mock.Mocker() as m:
             m.get('https://api.github.com/repos/gitcoinco/web/issues/353', text='{"body": "This bounty will be paid out to anyone who meaningfully increases the code coverage of the repository by 4%."}')
             request = self.factory.get('/sync/get_issue_description', params)
@@ -66,7 +66,7 @@ class DashboardHelpersTest(TestCase):
     def test_keywords(self):
         """Test the dashboard helper keywords method."""
         sample_url = 'https://github.com/gitcoinco/web/issues/353'
-        params = { 'url': sample_url }
+        params = {'url': sample_url}
         with requests_mock.Mocker() as m:
             m.get('https://github.com/gitcoinco/web', text='<span class="lang">hello</span><span class="lang">world</span>')
             request = self.factory.get('/sync/get_issue_keywords', params)

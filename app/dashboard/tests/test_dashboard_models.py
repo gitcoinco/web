@@ -54,7 +54,7 @@ class DashboardModelsTest(TestCase):
             accepted=True,
             expires_date=datetime(2008, 11, 30),
             fulfiller_address="0x0000000000000000000000000000000000000000",
-            idx_project_length = 5,
+            idx_project_length=5,
             bounty_type='Feature',
             experience_level='Intermediate',
         )
@@ -63,17 +63,17 @@ class DashboardModelsTest(TestCase):
         assert bounty.title_or_desc == 'foo'
         assert bounty.issue_description_text == 'hello world'
         assert bounty.org_name == 'gitcoinco'
-        assert bounty.is_hunter('fred') == True
-        assert bounty.is_hunter('flintstone') == False
-        assert bounty.is_funder('fred') == False
-        assert bounty.is_funder('flintstone') == True
+        assert bounty.is_hunter('fred') is True
+        assert bounty.is_hunter('flintstone') is False
+        assert bounty.is_funder('fred') is False
+        assert bounty.is_funder('flintstone') is True
         assert bounty.get_avatar_url
         assert bounty.status == 'expired'
         assert bounty.value_true == 3e-18
         assert bounty.value_in_eth == 3
         assert bounty.value_in_usdt == 0
         assert 'ago 5 Feature Intermediate' in bounty.desc
-        assert bounty.is_legacy == False
+        assert bounty.is_legacy is False
         assert bounty.get_github_api_url() == 'https://api.github.com/repos/gitcoinco/web'
 
     def test_tip(self):
@@ -125,7 +125,7 @@ class DashboardModelsTest(TestCase):
             repos_data=[{'contributors': [{'contributions': 50, 'login': 'foo'}]}],
         )
         assert str(profile) == 'gitcoinco'
-        assert profile.is_org == True
+        assert profile.is_org is True
         assert profile.bounties.first() == bounty
         assert profile.tips.first() == tip
         assert profile.authors == ['foo', 'gitcoinco']
