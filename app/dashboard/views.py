@@ -468,6 +468,12 @@ def profile_helper(handle):
             profile = Profile.objects.get(handle__iexact=handle)
         except Profile.DoesNotExist:
             raise Http404
+    except Profile.MultipleObjectsReturned as e:
+        # Handle edge case where multiple Profile objects exist for the same handle.
+        # We should consider setting Profile.handle to unique.
+        # TODO: Should we handle merging or removing duplicate profiles?
+        profile = Profile.objects.filter(handle__iexact=handle).latest('id')
+        logging.error(e)
     return profile
 
 
