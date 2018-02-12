@@ -461,8 +461,9 @@ window.addEventListener('load', function() {
     var timeout_value = 100;
     setTimeout(function(){
         if (typeof web3 =='undefined'){
+            $("#upper_left").addClass('disabled');
             $("#sidebar_head").html("Web3 disabled <br> <img src='/static/v2/images/icons/question.png'>");
-            $("#sidebar_p").html("Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>.");
+            $("#sidebar_p").html("Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a> <br> <a target=new href='https://github.com/gitcoinco/gitcoinco/issues/4'>What is Metamask and why do I need it?</a>.");
         } else if (typeof web3 != 'undefined' && typeof web3.eth.accounts[0] =='undefined'){
             $("#sidebar_head").html("Web3 locked <br> <img src='/static/v2/images/icons/lock.png'>");
             $("#sidebar_p").html("Please unlock <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>.");
@@ -515,12 +516,14 @@ window.addEventListener('load', function() {
                     if(is_supported_network){
                         $("#sidebar_head").html("Web3 enabled <br> <img src='/static/v2/images/icons/rss.png'>");
                     } else {
+                        $("#upper_left").addClass('disabled');
                         $("#sidebar_head").html("Unsupported network <br> <img src='/static/v2/images/icons/battery_empty.png'>");
                         sidebar_p += "<br>(try " + recommended_network + " instead)";
                     }
                     $("#sidebar_p").html(sidebar_p);
                 }
                 else {
+                    $("#upper_left").addClass('disabled');
                     $("#sidebar_head").html("Web3 disabled");
                     $("#sidebar_p").html("Please install & unlock <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>. ");
                 }

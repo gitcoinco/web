@@ -492,6 +492,7 @@ input[type=text].loading {
 
 #upper_left {
     min-height: 140px;
+    background-color: #26cd7f;
 }
 
 #upper_left #sidebar_head {
@@ -509,6 +510,10 @@ input[type=text].loading {
     max-width: 40px;
     max-height: 40px;
     display: inline;
+}
+
+#upper_left.disabled {
+    background-color: red;
 }
 
 .blocking_error {
