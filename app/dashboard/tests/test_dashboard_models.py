@@ -124,7 +124,7 @@ class DashboardModelsTest(TestCase):
             repos_data=[{'contributors': [{'contributions': 50, 'login': 'foo'}]}],
         )
         assert str(profile) == 'gitcoinco'
-        assert profile.is_org == True
+        assert profile.is_org is True
         assert profile.bounties.first() == bounty
         assert profile.tips.first() == tip
         assert profile.authors == ['foo', 'gitcoinco']

@@ -248,7 +248,7 @@ def process_bounty_details(bountydetails):
 
     # See dashboard/utils.py:get_bounty from details on this data
     bountyId = bountydetails.get('id', {})
-    bountyData = bountydetails.get('data', {})
+    bountyData = bountydetails.get('data') or {}
     bountyDataPayload = bountyData.get('payload', {})
     metadata = bountyDataPayload.get('metadata', {})
     meta = bountyData.get('meta', {})
