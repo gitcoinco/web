@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
     """Define the migration from Bounty.fulfillment fields to BountyFulfillment."""
 
     dependencies = [
-        ('dashboard', '0039_bountyfulfillment'),
+        ('dashboard', '0040_bountyfulfillment'),
     ]
 
     operations = [

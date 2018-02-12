@@ -9,7 +9,7 @@ import economy.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0038_tip_from_username'),
+        ('dashboard', '0039_useraction'),
     ]
 
     operations = [
