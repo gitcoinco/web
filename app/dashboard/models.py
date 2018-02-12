@@ -409,7 +409,7 @@ class BountyFulfillment(SuperModel):
     accepted = models.BooleanField(default=False)
 
     bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE)
-    profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE)
+    profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         """Define the string representation of BountyFulfillment.

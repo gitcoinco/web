@@ -44,6 +44,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='bountyfulfillment',
             name='profile',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='fulfilled', to='dashboard.Profile'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='fulfilled', to='dashboard.Profile', null=True),
         ),
     ]
