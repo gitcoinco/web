@@ -38,9 +38,6 @@
   flex: 0 0 200px;
 }
 
-.bounties-header__title--active a {
-}
-
 .bounties-header__title--active:hover {
   opacity: 0.6;
 }
@@ -183,11 +180,8 @@
 }
 
 .bounty__image {
-  width: 100px;
-}
-
-.bounty__image a {
   display: block;
+  width: 100px;
 }
 
 .bounty__image img {
@@ -304,16 +298,17 @@
 }
 
 @media (max-width: 992px) {
-  .fixed-balance {
+  .fixed-balance,
+  .bounty__image,
+  .bounties-header__info,
+  .bounty__tags,
+  .bounty__price--desktop {
     display: none;
   }
 
-  .bounty__title-wrapper {
+  .bounty__title-wrapper,
+  .bounties-header__search .search_area {
     width: 100%;
-  }
-
-  .bounty__image {
-    display: none;
   }
 
   .bounty__info {
@@ -325,18 +320,6 @@
     justify-content: center;
   }
 
-  .bounties-header__info {
-    display: none;
-  }
-
-  .bounties-header__search .search_area {
-    width: 100%;
-  }
-
-  .bounty__tags {
-    display: none;
-  }
-
   .bounty__price {
     color: #fff;
     position: relative;
@@ -344,10 +327,6 @@
 
   .bounty__price--mobile {
     display: block;
-  }
-
-  .bounty__price--desktop {
-    display: none;
   }
 }
 

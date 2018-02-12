@@ -12,11 +12,9 @@
     <div class="container-fluid header dash">
       {% include 'shared/nav_internal.html' %}
     </div>
+    {% include 'shared/current_balance.html' with full=True %}
 
     <div class="row no-gutter">
-      <div class="fixed-balance">
-        {% include 'shared/current_balance.html' with minimized=True %}
-      </div>
 
       <div class="col body">
         <div class="container" id="bounties">
@@ -49,7 +47,7 @@
                       {% if bounty.crypto_label == 'ETH' %}
                         <span class="icon">{% include 'svgs/ethereum.svg' %}</span>
                       {% endif %}
-                      <span>{{ bounty.crypto_price }}</span>
+                      <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
                     </span>
                     <span class="bounty__fiat-price">
                       <span class="icon">{% include 'svgs/money.svg' %}</span>

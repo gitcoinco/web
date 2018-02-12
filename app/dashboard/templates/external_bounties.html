@@ -12,12 +12,9 @@
     <div class="container-fluid header dash">
       {% include 'shared/nav_internal.html' %}
     </div>
+    {% include 'shared/current_balance.html' with full=True %}
 
     <div class="row no-gutter">
-      <div class="fixed-balance">
-        {% include 'shared/current_balance.html' with minimized=True %}
-      </div>
-
       <div class="col body">
         <div class="container" id="bounties">
           <header class="bounties-header">
