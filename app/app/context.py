@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.utils import timezone
+from dashboard.models import Tip
 
 
 def insert_settings(request):
@@ -18,4 +20,11 @@ def insert_settings(request):
         'rollbar_client_token': settings.ROLLBAR_CLIENT_TOKEN,
         'env': settings.ENV,
     }
+    if context['github_handle']:
+        context['unclaimed_tips'] = Tip.objects.filter(
+            expires_date__gte=timezone.now(),
+            receive_txid='',
+            username__iexact=context['github_handle']
+            )
+
     return context
