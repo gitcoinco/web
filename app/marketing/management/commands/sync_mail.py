@@ -31,7 +31,7 @@ class Command(BaseCommand):
         print("- profile")
         from dashboard.models import Profile
         # right now, we only take profiles that've given us an access token
-        profiles = Profile.objects.exclude(github_access_token='').exclude(email='').all()
+        profiles = Profile.objects.exclude(email='').all()
         # in the future, though, we could take ALL github profiles in the system and use those
         # profiles = Profile.objects.exclude(email='').all()
         for profile in profiles:

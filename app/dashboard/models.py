@@ -763,3 +763,18 @@ def normalize_tip_usernames(sender, instance, **kwargs):
 
 
 m2m_changed.connect(m2m_changed_interested, sender=Bounty.interested.through)
+
+
+class UserAction(SuperModel):
+    """Records Actions that a user has taken ."""
+
+    ACTION_TYPES = [
+        ('Login', 'Login'),
+        ('Logout', 'Logout'),
+    ]
+    action = models.CharField(max_length=50, choices=ACTION_TYPES)
+    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE)
+    metadata = JSONField(default={})
+
+    def __str__(self):
+        return "{} by {} at {}".format(self.action, self.profile, self.created_on)
