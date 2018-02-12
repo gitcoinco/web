@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.utils import timezone
+
 from dashboard.models import Tip
 
 
