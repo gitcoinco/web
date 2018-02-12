@@ -139,6 +139,22 @@ def profiles_ingested():
         )
 
 
+def user_actions():
+    from dashboard.models import UserAction
+
+    for action_type in UserAction.ACTION_TYPES:
+        action_type = action_type[0]
+
+        val = UserAction.objects.filter(
+            action=action_type,
+            ).count()
+
+        Stat.objects.create(
+            key='user_action_{}'.format(action_type),
+            val=val,
+            )
+
+
 def github_stars():
     from github.utils import get_user
     reops = get_user('gitcoinco', '/repos')
@@ -405,7 +421,8 @@ class Command(BaseCommand):
             subs_newsletter,
             slack_users_active,
             joe_dominance_index,
-            avg_time_bounty_turnaround
+            avg_time_bounty_turnaround,
+            user_actions,
         ]
 
         for f in fs:

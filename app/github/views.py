@@ -29,7 +29,7 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.views.decorators.http import require_GET
 
-from dashboard.models import Profile
+from dashboard.models import Profile, UserAction
 from github.utils import (
     get_auth_url, get_github_primary_email, get_github_user_data, get_github_user_token, revoke_token,
 )
@@ -71,6 +71,13 @@ def github_callback(request):
         for k, v in session_data.items():
             request.session[k] = v
 
+        # record a useraction for this
+        UserAction.objects.create(
+            profile=user_profile,
+            action='Login',
+            metadata={},
+            )
+
     response = redirect(redirect_uri)
     response.set_cookie('last_github_auth_mutation', int(time.time()))
     return response
@@ -104,6 +111,14 @@ def github_logout(request):
         revoke_token(access_token)
         request.session.pop('access_token_last_validated')
         Profile.objects.filter(handle=handle).update(github_access_token='')
+
+        # record a useraction for this
+        if Profile.objects.filter(handle=handle).count():
+            UserAction.objects.create(
+                profile=Profile.objects.get(handle=handle),
+                action='Logout',
+                metadata={},
+                )
 
     request.session.modified = True
     response = redirect(redirect_uri)
