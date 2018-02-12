@@ -26,11 +26,24 @@ class Migration(migrations.Migration):
                 ('fulfiller_metadata', django.contrib.postgres.fields.jsonb.JSONField(blank=True, default={})),
                 ('fulfillment_id', models.IntegerField(blank=True, null=True)),
                 ('accepted', models.BooleanField(default=False)),
-                ('bounty', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='fulfillments', to='dashboard.Bounty')),
-                ('fulfiller_profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='fulfilled', to='dashboard.Profile')),
             ],
             options={
                 'abstract': False,
             },
+        ),
+        migrations.AddField(
+            model_name='bounty',
+            name='submissions_comment',
+            field=models.IntegerField(blank=True, null=True),
+        ),
+        migrations.AddField(
+            model_name='bountyfulfillment',
+            name='bounty',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='fulfillments', to='dashboard.Bounty'),
+        ),
+        migrations.AddField(
+            model_name='bountyfulfillment',
+            name='profile',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='fulfilled', to='dashboard.Profile'),
         ),
     ]

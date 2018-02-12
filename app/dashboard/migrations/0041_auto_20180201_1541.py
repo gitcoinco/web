@@ -30,9 +30,4 @@ class Migration(migrations.Migration):
             model_name='bounty',
             name='fulfiller_name',
         ),
-        migrations.AddField(
-            model_name='bounty',
-            name='submissions_comment',
-            field=models.IntegerField(blank=True, null=True),
-        ),
     ]
