@@ -25,10 +25,10 @@ import requests
 from dashboard.helpers import UnsupportedSchemaException, normalizeURL, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty
 from eth_utils import to_checksum_address
+from hexbytes import HexBytes
 from ipfsapi.exceptions import CommunicationError
 from web3 import HTTPProvider, Web3
 from web3.exceptions import BadFunctionCallOutput
-from web3.utils.datastructures import HexBytes
 
 
 class BountyNotFoundException(Exception):

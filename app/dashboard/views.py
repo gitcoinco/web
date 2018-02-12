@@ -564,36 +564,34 @@ def sync_web3(request):
         'msg': "bad request"
     }
 
-    issueURL = request.POST.get('url', None)
-    txid = request.POST.get('txid', None)
-    network = request.POST.get('network', None)
-    
-    goodRequest = issueURL and txid and network
-    if goodRequest:
+    issueURL = request.POST.get('url')
+    txid = request.POST.get('txid')
+    network = request.POST.get('network')
 
+    if issueURL and txid and network:
         # confirm txid has mined
-        print('* confirming tx has mined');
+        print('* confirming tx has mined')
         if not has_tx_mined(txid, network):
             result = {
                 'status': '400',
-                'msg': "tx has not mined yet"
+                'msg': 'tx has not mined yet'
             }
         else:
 
             # get bounty id
-            print('* getting bounty id');
+            print('* getting bounty id')
             bounty_id = getBountyID(issueURL, network)
             if not bounty_id:
                 result = {
                     'status': '400',
-                    'msg': "could not find bounty id"
+                    'msg': 'could not find bounty id'
                 }
             else:
                 # get/process bounty
-                print('* getting bounty');
+                print('* getting bounty')
                 bounty = get_bounty(bounty_id, network)
-                print('* processing bounty');
-                did_change, old_bounty, new_bounty = web3_process_bounty(bounty)
+                print('* processing bounty')
+                did_change, _, _ = web3_process_bounty(bounty)
                 result = {
                     'status': '200',
                     'msg': "success",
