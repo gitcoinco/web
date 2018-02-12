@@ -26,7 +26,7 @@ def migrate_fulfillments(apps, schema_editor):
                     fulfiller_github_username=bounty.fulfiller_github_username,
                     fulfiller_name=bounty.fulfiller_name,
                     fulfiller_metadata=bounty.fulfiller_metadata,
-                    fulfiller_profile_id=profile.pk,
+                    profile_id=profile.pk,
                 )
             bounty.fulfillments.add(fulfillment)
 
