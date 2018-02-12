@@ -701,14 +701,17 @@ body.bounty_details .avatar {
 #bounty_details{
     display: none;
 }
-#bounty_details #issue_description #h1,
-#bounty_details #issue_description #h2,
-#bounty_details #issue_description #h3,
-#bounty_details #issue_description #h4,
-#bounty_details #issue_description #h5,
-#bounty_details #issue_description #h6
+
+#bounty_details #issue_description h1,
+#bounty_details #issue_description h2,
+#bounty_details #issue_description h3,
+#bounty_details #issue_description h4,
+#bounty_details #issue_description h5,
+#bounty_details #issue_description h6
 {
     font-size: 16px;
+    margin-top: 15px;
+    text-transform: none;
 }
 
 body.bounty_details #left_actions,

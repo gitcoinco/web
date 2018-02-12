@@ -101,45 +101,15 @@ var callbacks = {
         return [ 'status', ui_status];
     },
     'issue_description': function(key, val, result){
+        var converter = new showdown.Converter();
+        var max_len = 1000;
         var ui_body = val;
-        var allowed_tags = ['br', 'li', 'em', 'ol', 'ul', 'p', 'td', 'a', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code'];
-        var open_close = ['', '/'];
-        var replace_tags = {
-            'h1': 'h5',
-            'h2': 'h5',
-            'h3': 'h5',
-            'h4': 'h5',
-        }
-
-        for(var i=0; i<allowed_tags.length;i++){
-            var tag = allowed_tags[i];
-            for(var k=0; k<open_close.length;k++){
-                var oc = open_close[k];
-                var replace_tag = '&lt;'+ oc + tag +'.*&gt;';
-                var with_tag = '<'+ oc + tag +'>';
-                var re = new RegExp(replace_tag, 'g');
-                ui_body = ui_body.replace(re, with_tag);
-                var re = new RegExp(replace_tag.toUpperCase(), 'g');
-                ui_body = ui_body.replace(re, with_tag);
-            }
-        }
-        for(var key in replace_tags){
-            for(var k=0; k<open_close.length;k++){
-                var oc = open_close[k];
-                var replace = key;
-                var _with = replace_tags[key];
-                var replace_tag = '<'+ oc + replace +'>';
-                var with_tag = '<'+ oc + _with +'>';
-                var re = new RegExp(replace_tag, 'g');
-                ui_body = ui_body.replace(re, with_tag);
-            }
-        }
-
-        var max_len = 1000
+        val = val.replace(/script/ig,'scr_i_pt');
         if(ui_body.length > max_len){
             ui_body = ui_body.substring(0, max_len) + '... <a target=new href="'+result['github_url']+'">See More</a> '
         }
-        return [ 'issue_description', ui_body];
+        ui_body = converter.makeHtml(ui_body);
+
     },
     'fulfiller_address': address_ize,
     'bounty_owner_address': address_ize,
@@ -383,7 +353,7 @@ window.addEventListener('load', function() {
                 parent: 'right_actions',
                 color: enabled ? 'darkBlue' : 'darkGrey',
                 extraClass: enabled ? '' : 'disabled',
-                title: enabled ? 'Start Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.  Please leave a comment for the bounty submitter to let them know you are interested in working with them after you start work' : 'Can only be performed if you are not the funder.',
+                title: enabled ? 'Start Work in an issue to let the issue funder know that youre starting work on this issue.' : 'Can only be performed if you are not the funder.',
             }
             actions.push(interestEntry);
 
@@ -397,7 +367,7 @@ window.addEventListener('load', function() {
             parent: 'right_actions',
             color: enabled ? 'darkBlue' : 'darkGrey',
             extraClass: enabled ? '' : 'disabled',
-            title: enabled ? 'Use Submit Work when you FINISH work on a bounty.   Use Claim Work when you START work.' : 'Can only be performed if you are not the funder.',
+            title: enabled ? 'Use Submit Work when you FINISH work on a bounty.  ' : 'Can only be performed if you are not the funder.',
         }
         actions.push(entry);
 
