@@ -413,24 +413,21 @@ def maybe_market_to_email(b, event_name):
         except Exception as e:
             logging.exception(e)
             print(e)
-    if event_name == 'work_submitted':
+    elif event_name == 'work_submitted':
         try:
             to_emails = [b.bounty_owner_email]
             new_work_submission(b, to_emails)
         except Exception as e:
             logging.exception(e)
             print(e)
-    if event_name == 'work_done':
+    elif event_name in ['work_done', 'rejected_claim']:
+        accepted_fulfillment = b.fulfillments.filter(accepted=True).latest('modified_on')
         try:
-            to_emails = [b.bounty_owner_email, b.fulfiller_email]
-            new_bounty_acceptance(b, to_emails)
-        except Exception as e:
-            logging.exception(e)
-            print(e)
-    if event_name == 'rejected_claim':
-        try:
-            to_emails = [b.bounty_owner_email, b.fulfiller_email]
-            new_bounty_rejection(b, to_emails)
+            to_emails = [b.bounty_owner_email, accepted_fulfillment]
+            if event_name == 'work_done':
+                new_bounty_acceptance(b, to_emails)
+            elif event_name == 'rejected_claim':
+                new_bounty_rejection(b, to_emails)
         except Exception as e:
             logging.exception(e)
             print(e)
@@ -439,15 +436,15 @@ def maybe_market_to_email(b, event_name):
 
 
 def maybe_post_on_craigslist(bounty):
-    CRAIGSLIST_URL = 'https://boulder.craigslist.org/'
-    MAX_URLS = 10
-
+    import time
     import mechanicalsoup
     from app.utils import fetch_last_email_id, fetch_mails_since_id
-    import time
+
+    craigslist_url = 'https://boulder.craigslist.org/'
+    max_urls = 10
 
     browser = mechanicalsoup.StatefulBrowser()
-    browser.open(CRAIGSLIST_URL)  # open craigslist
+    browser.open(craigslist_url)  # open craigslist
     post_link = browser.find_link(attrs={'id': 'post'})
     page = browser.follow_link(post_link)  # scraping the posting page link
 
@@ -470,7 +467,7 @@ def maybe_post_on_craigslist(bounty):
     # keep selecting defaults for sub area etc till we reach edit page
     # this step is to ensure that we go over all the extra pages which appear on craigslist only in some locations
     # this choose the default skip options in craigslist
-    for i in range(MAX_URLS):
+    for i in range(max_urls):
         if page.url.endswith('s=edit'):
             break
         # Chooses the first default
@@ -510,7 +507,7 @@ def maybe_post_on_craigslist(bounty):
     form = page.soup.find_all('form')[-1]
     page = browser.submit(form, form['action'])
 
-    for i in range(MAX_URLS):
+    for i in range(max_urls):
         if page.url.endswith('s=preview'):
             break
         # Chooses the first default
@@ -548,5 +545,4 @@ def maybe_post_on_craigslist(bounty):
                 except Exception:
                     # in case of invalid links
                     return False
-            else:
-                return False
+    return False

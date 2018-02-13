@@ -257,11 +257,14 @@ class Bounty(SuperModel):
         if self.is_legacy:
             # TODO: Remove following full deprecation of legacy bounties
             try:
+                fulfillments = self.fulfillments \
+                    .exclude(fulfiller_address='0x0000000000000000000000000000000000000000') \
+                    .exists()
                 if not self.is_open:
-                    if timezone.now() > self.expires_date and self.fulfillments.submitted().exists():
+                    if timezone.now() > self.expires_date and fulfillments:
                         return 'expired'
                     return 'done'
-                elif not self.fulfillments.submitted().exists():
+                elif not fulfillments:
                     if self.pk and self.interested.exists():
                         return 'started'
                     return 'open'

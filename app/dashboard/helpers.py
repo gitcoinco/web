@@ -15,7 +15,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-import json
 import logging
 import pprint
 from enum import Enum
@@ -91,7 +90,7 @@ def title(request):
     try:
         soup = BeautifulSoup(html_response.text, 'html.parser')
 
-        eles = soup.findAll("span", { "class" : "js-issue-title" })
+        eles = soup.findAll("span", {"class": "js-issue-title"})
         if len(eles):
             title = eles[0].text
 
@@ -157,6 +156,7 @@ def description(request):
 
     return JsonResponse(response)
 
+
 # gets keywords of remote issue (github issue)
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def keywords(request):
@@ -196,7 +196,7 @@ def keywords(request):
     try:
         soup = BeautifulSoup(html_response.text, 'html.parser')
 
-        eles = soup.findAll("span", {"class" : "lang"})
+        eles = soup.findAll("span", {"class": "lang"})
         for ele in eles:
             keywords.append(ele.text)
 
@@ -218,6 +218,7 @@ def normalizeURL(url):
         url = url[0:-1]
     return url
 
+
 # returns did_change if bounty has changed since last sync
 # then old_bounty
 # then new_bounty
@@ -227,12 +228,13 @@ def syncBountywithWeb3(bountyContract, url, network):
 
 
 class BountyStage(Enum):
-    """ Python enum class that matches up with the Standard Bounties BountyStage enum.
+    """Python enum class that matches up with the Standard Bounties BountyStage enum.
 
     Attributes:
         Draft (int): Bounty is a draft.
         Active (int): Bounty is active.
         Dead (int): Bounty is dead.
+
     """
 
     Draft = 0
@@ -245,30 +247,49 @@ class UnsupportedSchemaException(Exception):
 
 
 def process_bounty_details(bountydetails):
+    """Process bounty details.
 
+    Args:
+        bountydetails (dict): The Bounty details.
+
+    TODO:
+        * Simplify method and break out logic. Currently failing mccabe complexity.
+        * Too many local variables.
+
+    Raises:
+        UnsupportedSchemaException: Exception raised if the schema is unknown
+            or unsupported.
+
+    Returns:
+        tuple: A tuple of bounty change data.
+        tuple[0] (bool): Whether or not the Bounty changed.
+        tuple[1] (dashboard.models.Bounty): The first old bounty object.
+        tuple[2] (dashboard.models.Bounty): The new Bounty object.
+
+    """
     # See dashboard/utils.py:get_bounty from details on this data
-    bountyId = bountydetails.get('id', {})
-    bountyData = bountydetails.get('data') or {}
-    bountyDataPayload = bountyData.get('payload', {})
-    metadata = bountyDataPayload.get('metadata', {})
-    meta = bountyData.get('meta', {})
+    bounty_id = bountydetails.get('id', {})
+    bounty_data = bountydetails.get('data') or {}
+    bounty_payload = bounty_data.get('payload', {})
+    metadata = bounty_payload.get('metadata', {})
+    meta = bounty_data.get('meta', {})
 
     # fulfillments metadata will be empty when bounty is first created
     fulfillments = bountydetails.get('fulfillments', {})
 
     # what schema are we workign with?
-    schemaName = meta.get('schemaName', "Unknown")
-    schemaVersion = meta.get('schemaVersion', "Unknown")
+    schema_name = meta.get('schemaName', "Unknown")
+    schema_version = meta.get('schemaVersion', "Unknown")
 
-    if schemaName is "Unknown":
-        raise UnsupportedSchemaException(f"Unknown Schema: {schemaName}")
+    if schema_name == "Unknown":
+        raise UnsupportedSchemaException(f"Unknown Schema: {schema_name}")
 
     # start to process out all the bounty data
-    url = bountyDataPayload.get('webReferenceURL', False)
+    url = bounty_payload.get('webReferenceURL', False)
     if url:
         url = normalizeURL(url)
     else:
-        raise UnsupportedSchemaException(f"Schema is {schemaName} {schemaVersion}; but no webReferenceURL found so cannot continue")
+        raise UnsupportedSchemaException(f"Schema is {schema_name} {schema_version}; but no webReferenceURL found so cannot continue")
     contract_address = bountydetails.get('token')
     network = bountydetails.get('network')
 
@@ -277,10 +298,10 @@ def process_bounty_details(bountydetails):
     old_bounties = Bounty.objects.none()
     try:
         old_bounties = Bounty.objects.current().filter(
-            standard_bounties_id=bountyId,
+            standard_bounties_id=bounty_id,
         ).order_by('-created_on')
         did_change = (bountydetails != old_bounties.first().raw_data)
-    except Exception as e:
+    except Exception:
         did_change = True
 
     print(f"* Bounty did_change: {did_change}")
@@ -306,20 +327,20 @@ def process_bounty_details(bountydetails):
             old_bounty.current_bounty = False
             old_bounty.save()
         new_bounty = Bounty.objects.create(
-            title=bountyDataPayload.get('title', ''),
-            issue_description=bountyDataPayload.get('description', ''),
-            web3_created=timezone.make_aware(timezone.datetime.fromtimestamp(bountyDataPayload.get('created')), timezone=UTC),
+            title=bounty_payload.get('title', ''),
+            issue_description=bounty_payload.get('description', ''),
+            web3_created=timezone.make_aware(timezone.datetime.fromtimestamp(bounty_payload.get('created')), timezone=UTC),
             value_in_token=bounty.get('fulfillmentAmount'),
-            token_name=bountyDataPayload.get('tokenName', ''),
-            token_address=bountyDataPayload.get('tokenAddress', '0x0000000000000000000000000000000000000000'),
+            token_name=bounty_payload.get('tokenName', ''),
+            token_address=bounty_payload.get('tokenAddress', '0x0000000000000000000000000000000000000000'),
             bounty_type=metadata.get('bountyType', ''),
             project_length=metadata.get('projectLength', ''),
             experience_level=metadata.get('experienceLevel', ''),
             github_url=url,  # Could also use payload.get('webReferenceURL')
-            bounty_owner_address=bountyDataPayload.get('issuer', {}).get('address', ''),
-            bounty_owner_email=bountyDataPayload.get('issuer', {}).get('email', ''),
-            bounty_owner_github_username=bountyDataPayload.get('issuer', {}).get('githubUsername', ''),
-            bounty_owner_name=bountyDataPayload.get('issuer', {}).get('name', ''),
+            bounty_owner_address=bounty_payload.get('issuer', {}).get('address', ''),
+            bounty_owner_email=bounty_payload.get('issuer', {}).get('email', ''),
+            bounty_owner_github_username=bounty_payload.get('issuer', {}).get('githubUsername', ''),
+            bounty_owner_name=bounty_payload.get('issuer', {}).get('name', ''),
             # fulfillment_ipfs_hash='',
             is_open=is_open,
             raw_data=bountydetails,
@@ -330,7 +351,7 @@ def process_bounty_details(bountydetails):
             accepted=accepted,
             # These fields are after initial bounty creation, in bounty_details.js
             expires_date=timezone.make_aware(timezone.datetime.fromtimestamp(bounty.get('deadline')), timezone=UTC),
-            standard_bounties_id=bountyId,
+            standard_bounties_id=bounty_id,
             balance=bounty.get('balance'),
             num_fulfillments=len(fulfillments),
         )
@@ -367,7 +388,7 @@ def process_bounty_details(bountydetails):
 
             inactive_bounties = Bounty.objects.filter(
                 github_url=url,
-                title=bountyDataPayload.get('title'),
+                title=bounty_payload.get('title'),
                 current_bounty=False,
             ).order_by('-created_on')
 
