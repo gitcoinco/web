@@ -18,11 +18,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models
 from django.contrib.postgres.fields import JSONField
+from django.db import models
 
 # Create your models here.
 from economy.models import SuperModel
+
 
 class FaucetRequestManager(models.Manager):
     def user(self, profile):

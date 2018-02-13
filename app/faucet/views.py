@@ -1,19 +1,19 @@
-from app.github import search
+import json
+
 from django.conf import settings
-from django.shortcuts import redirect
-from faucet.models import FaucetRequest
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core.validators import validate_slug, validate_email
+from django.core.validators import validate_email, validate_slug
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.utils.html import strip_tags, escape
+from django.utils.html import escape, strip_tags
+
+import requests
+import sendgrid
+from app.github import search
+from faucet.models import FaucetRequest
 from marketing.mails import send_mail
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
-
-import sendgrid
-import json
-import requests
 
 
 def search_github(q):
