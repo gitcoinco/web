@@ -145,7 +145,6 @@ def get_bounty(bounty_enum, network):
     fulfillments = []
     for fulfill_enum in range(0, numFulfillments):
         accepted, fulfiller, data = standard_bounties.functions.getFulfillment(bounty_enum, fulfill_enum).call()
-        fulfill_enum += 1
         fulfillments.append({
             'id': fulfill_enum,
             'accepted': accepted,
