@@ -109,6 +109,7 @@ var callbacks = {
             ui_body = ui_body.substring(0, max_len) + '... <a target=new href="'+result['github_url']+'">See More</a> '
         }
         ui_body = converter.makeHtml(ui_body);
+        return [ 'issue_description', ui_body];
 
     },
     'fulfiller_address': address_ize,
@@ -275,7 +276,8 @@ window.addEventListener('load', function() {
         }
         document.decimals = decimals;
         $("#bounty_details").css('display','flex');
-
+        $("#submission_head").css('display', 'none');
+        
         // title
         result['title'] = result['title'] ? result['title'] : result['github_url'];
         result['title'] = result['network'] != 'mainnet' ? "(" + result['network'] + ") " + result['title'] : result['title'];
