@@ -117,8 +117,8 @@ div, p, a, span {
 }
 
 #mc_embed_signup_scroll #mc-embedded-subscribe:hover {
-	background: #cf005a;
-	color: white;
+    background: #cf005a;
+    color: white;
 }
 
 #mc_embed_signup_scroll #mc-embedded-subscribe i {
@@ -285,10 +285,10 @@ p a {
 }
 
 .btn-warning, .btn-success, .btn-info {
-	padding: 0.4rem 1.4rem;
-	font-size: 1.25rem;
-	border: 2px solid #15003e;
-	transition: none;
+    padding: 0.4rem 1.4rem;
+    font-size: 1.25rem;
+    border: 2px solid #15003e;
+    transition: none;
 }
 
 .btn-warning:hover, .btn-success:hover, .btn-info {
@@ -296,9 +296,9 @@ p a {
 }
 
 .btn-info:hover {
-	background-color: #15003e;
-	border-color: #15003e;
-	color: #f9006c;
+    background-color: #15003e;
+    border-color: #15003e;
+    color: #f9006c;
 }
 
 .btn-warning {
@@ -1082,22 +1082,6 @@ body.bounty_details #title {
 
 #pull_gh {
     font-size: 12px
-}
-
-input.is-invalid {
-  border-color: red;
-}
-
-.faucet_response {
-  display:none;
-}
-
-.faucet_response .frheader {
-  font-size: xx-large;
-}
-
-.faucet_response .frmessage {
-  font-size: large;
 }
 
 .dashboard .w-75 .github-comment {

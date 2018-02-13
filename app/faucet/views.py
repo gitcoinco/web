@@ -1,11 +1,17 @@
-from django.http import JsonResponse
-from django.template.response import TemplateResponse
+from app.github import search
 from django.conf import settings
 from django.shortcuts import redirect
 from faucet.models import FaucetRequest
+from django.contrib.admin.views.decorators import staff_member_required
 from django.core.validators import validate_slug, validate_email
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.template.response import TemplateResponse
 from django.utils.html import strip_tags, escape
 from marketing.mails import send_mail
+from sendgrid.helpers.mail import Content, Email, Mail, Personalization
+
+import sendgrid
 import json
 import requests
 
@@ -113,7 +119,7 @@ def save_faucet(request):
       'message': 'Created.'
     }, status=201)
 
-
+@staff_member_required
 def process_faucet_request(request, pk):
 
     obj = FaucetRequest.objects.get(pk=pk)
