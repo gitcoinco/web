@@ -8,6 +8,7 @@ Gitcoin pushes Open Source Forward. Learn more at [https://gitcoin.co](https://g
 
 [![Build Status](https://travis-ci.org/gitcoinco/web.svg?branch=master)](https://travis-ci.org/gitcoinco/web)
 [![codecov](https://codecov.io/gh/gitcoinco/web/branch/master/graph/badge.svg)](https://codecov.io/gh/gitcoinco/web)
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/gitcoinco/web.svg?columns=all)](https://waffle.io/gitcoinco/web)
 
 This is the website that is live at gitcoin.co
 
@@ -96,9 +97,9 @@ The bounties endpoint provides a listing of bounties and their current status. T
 | Field Key |  Datatype |  Description                                                                                                                                                                                               |
 |-----------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `is_open` | `boolean` | True if the bounty has not been completed|
-| `status`  | `string`  | Current status enum: (`open`, The bounty was created) (`claimed`, Someone claimed the bounty) (`fulfilled`, Someone claimed and completed the bounty) (`expired`, The bounty expired w/o completion) |
+| `status`  | `string`  | Current status enum: (`open`, The bounty was created), (`started`, The bounty was started) (`submitted`, Someone submitted work for the bounty) (`done`, Someone fulfilled and completed the bounty) (`expired`, The bounty expired w/o completion) |
 
-**Bounty Creator & Bounty Claimee**
+**Bounty Creator & Bounty Fulfiller**
 
 |  Field Key                     | Datatype           |  Description                                             |
 |--------------------------------|--------------------|----------------------------------------------------------|
@@ -106,10 +107,10 @@ The bounties endpoint provides a listing of bounties and their current status. T
 | `bounty_owner_email`           | `string`           | Email of the bounty owner                                |
 | `bounty_owner_github_username` | `string`           | Username of the bounty owner                             |
 | `metadata`                     | `dictionary`       | Misc metadata about the bounty and the creator           |
-| `claimeee_address`             | `ethereum_address` | Address of the person who claimed the bounty             |
-| `claimee_email`                | `string`           | Email of the person claiming the bounty                  |
-| `claimee_github_username`      | `string`           | Username of the claimee                                  |
-| `claimee_metadata`             | `dictionary`       | `githubUsername` and `notificationEmail` for the claimee |
+| `fulfiller_address`             | `ethereum_address` | Address of the person who fulfilled the bounty             |
+| `fulfiller_email`                | `string`           | Email of the person fulfilling the bounty                  |
+| `fulfiller_github_username`      | `string`           | Username of the fulfiller                                  |
+| `fulfiller_metadata`             | `dictionary`       | `githubUsername` and `notificationEmail` for the fulfiller |
 
 #### URL Parameters
 
@@ -143,9 +144,9 @@ By passing an `order_by` parameter you can order the data by the provided key. E
     "bounty_owner_address": "0xd3d280c2866eaa795fc72bd850c48e7cce166e23",
     "bounty_owner_email": "ksowocki@gmail.com",
     "bounty_owner_github_username": "owocki",
-    "claimeee_address": "0x0000000000000000000000000000000000000000",
-    "claimee_email": null,
-    "claimee_github_username": null,
+    "fulfiller_address": "0x0000000000000000000000000000000000000000",
+    "fulfiller_email": null,
+    "fulfiller_github_username": null,
     "is_open": true,
     "expires_date": "2017-09-23T01:42:04Z",
     "raw_data": [
@@ -171,7 +172,7 @@ By passing an `order_by` parameter you can order the data by the provided key. E
       "issueKeywords": "pytrader, owocki, Python, HTML, Shell",
       "notificationEmail": "ksowocki@gmail.com"
     },
-    "claimee_metadata": {
+    "fulfiller_metadata": {
 
     },
     "current_bounty": true,
@@ -226,7 +227,7 @@ _bountydetails function returns the following fields:
 | `creationTime`     | `float`            | Creation timestamp                                                |
 | `metaData`         | `string`           | Misc metadata about the bounty and the creator                    |
 | `expirationTime`   | `float`            | Date before which the bounty must be completed                    |
-| `claimee_metaData` | `string`           | githubUsername and notificationEmail for the claimee              |
+| `fulfiller_metadata` | `string`           | githubUsername and notificationEmail for the claimee              |
 
 # Running Locally
 
@@ -250,6 +251,49 @@ cp app/local_settings.py.dist app/local_settings.py
 ```
 
 You will need to edit the `app/local_settings.py` file with your local settings. Look for config items that are marked `#required`.
+
+## Setup Github OAuth2 App Integration
+
+Navigate to: https://github.com/settings/applications/new and enter similar values to:
+
+* Enter Application Name: `MyGitcoinApp`
+* Homepage URL: `http://localhost`
+* Application description: `My Gitcoin App`
+* Authorization callback URL: `http://localhost:8000/` (required)
+
+The authorization callback URL should match your `BASE_URL` value in `local_settings.py`
+
+Set `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, and `GITHUB_APP_NAME` to the returned values.
+
+## Setup Github User Integration
+
+Navigate to:  https://github.com/settings/tokens/new
+At minimum, select `user` scope.
+Generate your token and copy it to:  `GITHUB_API_TOKEN`
+Copy your Github username to:  `GITHUB_API_USER`
+
+## Rollbar Integration
+
+Error tracking is entirely optional and primarily for internal staging and production tracking.
+If you would like to track errors of your local environment, setup an account at: https://rollbar.
+
+Once you have access to your project access tokens, you can enable rollbar error tracking for both the backend and frontend one of two ways:
+
+* Environment Variables:
+  * `ROLLBAR_CLIENT_TOKEN`
+  * `ROLLBAR_SERVER_TOKEN`
+
+* Modifying `local_settings.py` to reflect:
+  * `ROLLBAR_CLIENT_TOKEN = os.environ.get('ROLLBAR_CLIENT_TOKEN', '<post_client_item>')`
+  * `ROLLBAR_SERVER_TOKEN = os.environ.get('ROLLBAR_SERVER_TOKEN', '<post_server_item>')`
+
+## Static Asset Handling
+
+If you're testing in a staging or production style environment behind a CDN, pass the `DJANGO_STATIC_HOST` environment variable to your django web instance specifying the CDN URL.
+
+For example:
+
+`DJANGO_STATIC_HOST='https://gitcoin.co`
 
 ## Setup Database
 
@@ -302,10 +346,11 @@ pip install -r requirements/dev.txt
 pip install -r requirements/test.txt
 ./manage.py migrate
 ./manage.py createcachetable
-./manage.py runserver 0.0.0.0:8080
+./manage.py get_prices
+./manage.py runserver 0.0.0.0:8000
 ```
 
-Navigate to `http://localhost:8080/`.
+Navigate to `http://localhost:8000/`.
 
 
 # Adding your token to Gitcoin.

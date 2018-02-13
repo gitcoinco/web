@@ -61,7 +61,7 @@ class Command(BaseCommand):
         if filter_startswith:
             queryset = queryset.filter(email__startswith=filter_startswith)
         queryset = queryset.order_by('email')
-        email_list = queryset.values_list('email', flat=True)
+        email_list = set(queryset.values_list('email', flat=True))
 
         print("got {} emails".format(len(email_list)))
 

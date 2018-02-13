@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -44,19 +44,19 @@
             <div class="col d-flex flex-column align-items-center explainer">
                 <ol class="animatedParent">
                     <li class="animated fadeInLeftShort first">
-                        <img src="/static/v2/images/helmet_X.png"/>
+                        <img src="{% static "v2/images/helmet_X.jpg" %}"/>
                     <div class="font-bigger-2 font-italic">1. It's *not* a token.</div>
                     <div class="font-smaller-1">There is *no* native token on the Gitcoin community.  We're focused on honing our product/market fit.</div>
                     </li>
                     <li class="animated fadeInLeftShort second">
-                        <img src="/static/v2/images/why-different/relationships.png"/>
+                        <img src="{% static "v2/images/why-different/relationships.jpg" %}"/>
                     <div class="font-bigger-2 font-italic">2. It's a community.</div>
                     <div class="font-smaller-1">The Gitcoin toolset &amp; community allows you to (1) build skills (2) find (or give) economic opportunities and hopefully (3) make some lifelong friendships.</div>
                     </li>
                     <li class="animated fadeInLeftShort ">
-                        <img src="/static/v2/images/why-different/heart.png"  />
+                        <img src="{% static "v2/images/why-different/heart.jpg" %}" />
                         <div class="font-bigger-2 font-italic">3. It's a mission.</div>
-                        <div class="font-smaller-1">Our mission is to "Push Open Source Forward". <a href="/mission">Read more</a></div>
+                        <div class="font-smaller-1">Our mission is to "Push Open Source Forward". <a href="{% url "mission" %}">Read more</a></div>
                     </li>
                 </ol>
             </div>
@@ -73,22 +73,22 @@
             <div class="col d-flex flex-column align-items-center">
                 <ol class="animatedParent">
                     <li class="animated fadeInLeftShort first">
-                        <img src="/static/v2/images/why-different/projects.png"/>
+                        <img src="{% static "v2/images/why-different/projects.jpg" %}"/>
                     <div class="font-bigger-2 font-italic">1. Find Funded Github Issues.</div>
-                    <div class="font-smaller-1">Whether it's Bugs, Features, or Security Issues, <a href="/explorer">Gitcoin's Issue Explorer</a> is the easiest way to find paid work in open source.</div>
+                    <div class="font-smaller-1">Whether it's Bugs, Features, or Security Issues, <a href="{% url "explorer" %}">Gitcoin's Issue Explorer</a> is the easiest way to find paid work in open source.</div>
                     </li>
                     <li class="animated fadeInLeftShort second">
-                        <img src="/static/v2/images/why-different/code_great.png"  />
+                        <img src="{% static "v2/images/why-different/code_great.jpg" %}"  />
                     <div class="font-bigger-2 font-italic">2. Claim an Issue.</div>
                     <div class="font-smaller-1">Claim the issue on Gitcoin via the Funded Issue Detail Page (<a href="https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/skunkworks/issues/14">Example</a>). </div>
                     </li>
                     <li class="animated fadeInLeftShort third">
-                        <img src="/static/v2/images/why-different/tools.png"  />
+                        <img src="{% static "v2/images/why-different/tools.jpg" %}"  />
                     <div class="font-bigger-2 font-italic">3. Build Something Great.</div>
                     <div class="font-smaller-1"> Coordinate with the Bounty Submitter on Github.  Build something great! </div>
                     </li>
                     <li class="animated fadeInLeftShort fourth">
-                            <img src="/static/v2/images/why-different/cash.png" />
+                            <img src="{% static "v2/images/why-different/cash.jpg" %}" />
                         <div class="font-bigger-2 font-italic">4. Submit Your Work &amp; Get Paid.</div>
                         <div class="font-smaller-1">Payments are Ethereum-based, &amp; released automatically after code is accepted by the bounty submitter.</div>
                     </li>
@@ -108,9 +108,9 @@
         </div>
         <div class="row pt-1">
             <div class="col text-center">
-                <img src="/static/v2/images/tldr/tips.jpg"> +
-                <img src="/static/v2/images/tldr/bounties.jpg"> =
-                <img src="/static/v2/images/tldr/accelerant.jpg">
+                <img src="{% static "v2/images/tldr/tips.jpg" %}"> +
+                <img src="{% static "v2/images/tldr/bounties.jpg" %}"> =
+                <img src="{% static "v2/images/tldr/accelerant.jpg" %}">
             </div>
         </div>
     </div>
@@ -125,14 +125,14 @@
         <div class="row pt-5 mb-3 animatedParent">
             <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
                 <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
-                    <img src="/static/v2/images/why-different/find-work.png" width="115" height="113" />
+                    <img src="{% static "v2/images/why-different/find-work.png" %}" width="115" height="113" />
                 </div>
                 <div class="font-bigger-1 font-italic">Find New &amp; Interesting Work</div>
                 <div class="font-smaller-2">Work only on repositories that strike a chord with _you_. Gitcoin allows you to try before you go full time.</div>
             </div>
             <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
                 <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
-                    <img src="/static/v2/images/why-different/relationships.png" width="128" height="113" />
+                    <img src="{% static "v2/images/why-different/relationships.png" %}" width="128" height="113" />
                 </div>
                 <div class="font-bigger-1 font-italic">Deepen Relationships</div>
                 <div class="font-smaller-2">Gitcoin is a way to meet and connect with open source developers.</div>
@@ -141,14 +141,14 @@
         <div class="row mb-3 animatedParent">
             <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
                 <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-                    <img src="/static/v2/images/why-different/projects.png" width="143" height="142" />
+                    <img src="{% static "v2/images/why-different/projects.png" %}" width="143" height="142" />
                 </div>
                 <div class="font-bigger-1 font-italic">Learn New Skills</div>
                 <div class="font-smaller-2">Gitcoin is the easiest way to find paid work in open source.</div>
             </div>
             <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
                 <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
-                    <img src="/static/v2/images/why-different/withdraw.png"  />
+                    <img src="{% static "v2/images/why-different/withdraw.png" %}" />
                 </div>
                 <div class="font-bigger-1 font-italic">Make Some Extra Cash</div>
                 <div class="font-smaller-2">You got into open source for the love of solving problems. Get paid for working on your passion.</div>
@@ -156,7 +156,7 @@
         </div>
         <div class="row mt-5 pb-3 why_gitcoin_cta animatedParent">
             <div class="col animated pulse fast">
-                <a class="btn btn-lg btn-warning" role="button" href="/get">Get Started</a>
+                <a class="btn btn-lg btn-warning" role="button" href="{% url "get_gitcoin" %}">Get Started</a>
             </div>
         </div>
 
@@ -199,7 +199,7 @@
                   <li class="animatedParent">
                     <div class="tline_badge animated pulse fast" style="background-color: #25e899;">
                         <i class="icon">
-                            <img src="/static/v2/images/icons/lightbulb.png">
+                            <img src="{% static "v2/images/icons/lightbulb.png" %}">
                         </i>
                     </div>
                     <div class="tline_module mod2 animated bounceInLeft">
@@ -215,7 +215,7 @@
                   <li class="animatedParent">
                     <div class="tline_badge animated pulse fast" style="background-color: #15003e;">
                         <i class="icon">
-                            <img src="/static/v2/images/icons/book_pen.png">
+                            <img src="{% static "v2/images/icons/book_pen.png" %}">
                         </i>
                     </div>
                     <div class="tline_module mod2 animated bounceInLeft">
@@ -231,7 +231,7 @@
                   <li class="tline_other animatedParent">
                     <div class="tline_badge animated pulse fast" style="background-color: #f9006c;">
                         <i class="icon">
-                            <img src="/static/v2/images/icons/gear.png">
+                            <img src="{% static "v2/images/icons/gear.png" %}">
                         </i>
                     </div>
                     <div class="tline_module contain1 animated bounceInRight">
@@ -246,7 +246,7 @@
                   <li class="animatedParent">
                     <div class="tline_badge animated pulse fast" style="background-color: #8e2abe;">
                         <i class="icon">
-                            <img src="/static/v2/images/icons/paperplane.png">
+                            <img src="{% static "v2/images/icons/paperplane.png" %}">
                         </i>
                     </div>
                     <div class="tline_module mod2 animated bounceInLeft">
@@ -261,14 +261,14 @@
                   <li class="tline_other animatedParent">
                     <div class="tline_badge animated pulse fast" style="background-color: #0fce7c;">
                         <i class="icon">
-                            <img src="/static/v2/images/icons/bolt.png">
+                            <img src="{% static "v2/images/icons/bolt.png" %}">
                         </i>
                     </div>
                     <div class="tline_module contain1 animated bounceInRight">
                       <div class="tline_heading">
                         <h5>Next: Gitcoin joins Consensys, launches Pilot Projects</h5>
-                        <a href="/explorer">
-                            <img src="/static/v2/images/pilot_projects_1.jpg" style="max-width: 370px;">
+                        <a href="{% url "explorer" %}">
+                            <img src="{% static "v2/images/pilot_projects_1.jpg" %}" style="max-width: 370px;">
                         </a>
                         <p class="pt-2">
                             Funded issues for EtherDelta, Consensys Security, Truffle, Metamask, and web3py are live at <a href="https://gitcoin.co/explorer">https://gitcoin.co/explorer</a>
@@ -287,16 +287,16 @@
                   <li class="animatedParent">
                     <div class="tline_badge animated pulse fast" style="background-color: #3e00ff;">
                         <i class="icon">
-                            <img src="/static/v2/images/icons/accelerator.png">
+                            <img src="{% static "v2/images/icons/accelerator.png" %}">
                         </i>
                     </div>
                     <div class="tline_module mod2 animated bounceInLeft">
                       <div class="tline_heading">
                         <h5>After that: Growth</h5>
-                        <a href="/slack">
-                            <img src="/static/v2/images/stats_slack.jpg" style="max-width: 370px; margin: 5px auto; display: block;">
+                        <a href="{% url "slack" %}">
+                            <img src="{% static "v2/images/stats_slack.jpg" %}" style="max-width: 370px; margin: 5px auto; display: block;">
                         </a>
-                        <p>The community, both on <a href="">the slack channel</a> and <a href="#mailchimp">the community mailing list</a> continue to grow.</p>
+                        <p>The community, both on <a href="{% url "slack" %}">the slack channel</a> and <a href="#mailchimp">the community mailing list</a> continue to grow.</p>
                         <p>The market for software jobs is massive, and Open Source software creates billions of dollars in economic value per year. </p>
                         <p>What will the world look like if decentralized ledger technology begins to disrupt the existing value systems in software? </p>
                       </div>
@@ -310,7 +310,7 @@
         </div>
         <div class="row mt-5 pb-3 animatedParent">
             <div class="col animated pulse fast">
-                <a class="btn btn-lg btn-warning" role="button" href="/get">Get Started</a>
+                <a class="btn btn-lg btn-warning" role="button" href="{% url "get_gitcoin" %}">Get Started</a>
             </div>
         </div>
 
@@ -324,36 +324,43 @@
             <div class="row press">
                 <div class="col d-flex flex-column align-items-center">
                     <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
+                        <a target=new href="https://changelog.com/podcast/281">
+                            <img src="{% static "v2/images/press/changelog.jpg" %}">
+                        </a>
+                    </div>
+                </div>
+                <div class="col d-flex flex-column align-items-center">
+                    <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
                         <a target=new href="https://www.forbes.com/sites/curtissilver/2017/09/25/gitcoin-launches-today-pushing-open-source-forward-with-cryptocurrency-bounties/">
-                            <img src='/static/v2/images/press/forbes.png'>
+                            <img src="{% static "v2/images/press/forbes.jpg" %}">
                         </a>
                     </div>
                 </div>
                 <div class="col d-flex flex-column align-items-center">
                     <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
                         <a target=new href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6">
-                            <img src='/static/v2/images/consensys-logo-dark-small.png' >
+                            <img src="{% static "v2/images/consensys-logo-dark-small.png" %}" >
                         </a>
                     </div>
                 </div>
                 <div class="col d-flex flex-column align-items-center">
                     <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
                         <a target=new href="https://btcmanager.com/solve-software-problems-git-bounty/">
-                            <img src='/static/v2/images/press/btcmanager2.png'>
+                            <img src="{% static "v2/images/press/btcmanager2.jpg" %}">
                         </a>
                     </div>
                 </div>
                 <div class="col d-flex flex-column align-items-center">
                     <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
                         <a target=new href="http://www.builtincolorado.com/2017/10/19/boulder-tech-gitcoin-open-source-software">
-                            <img src='/static/v2/images/press/builtin.png'>
+                            <img src="{% static "v2/images/press/builtin.jpg" %}">
                         </a>
                     </div>
                 </div>
                 <div class="col d-flex flex-column align-items-center">
                     <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
                         <a target=new href="https://thebitcoinpodcast.com/an-ethereum-podcast-episode-8/">
-                            <img src='/static/v2/images/press/btc_podcast.jpg'>
+                            <img src="{% static "v2/images/press/btc_podcast.jpg" %}">
                         </a>
                     </div>
                 </div>
@@ -364,11 +371,12 @@
     </div>
 
     {% include 'shared/footer.html' %}
-    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    {% include 'shared/rollbar.html' %}
 
 </body>
 
-{% include 'shared/ga.html' %}
+{% include 'shared/analytics.html' %}
 
 
 {% block scripts %}{% endblock %}

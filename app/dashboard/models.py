@@ -19,28 +19,45 @@
 from __future__ import unicode_literals
 
 import logging
+from urllib.parse import urlsplit
 
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.db.models.signals import pre_save
+from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 
+import requests
 from dashboard.tokens import addr_to_token
-# Create your models here.
 from economy.models import SuperModel
 from economy.utils import convert_amount
+from github.utils import HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, org_name
+from rest_framework import serializers
 
+from .signals import m2m_changed_interested
 
 logger = logging.getLogger(__name__)
 
 
-class Bounty(SuperModel):
+class BountyQuerySet(models.QuerySet):
+    """Handle the manager queryset for Bounties."""
 
-    class Meta:
-        verbose_name_plural = 'Bounties'
+    def current(self):
+        """Filter results down to current bounties only."""
+        return self.filter(current_bounty=True)
+
+
+class Bounty(SuperModel):
+    """Define the structure of a Bounty.
+
+    Attributes:
+        BOUNTY_TYPES (list of tuples): The valid bounty types.
+        EXPERIENCE_LEVELS (list of tuples): The valid experience levels.
+        PROJECT_LENGTHS (list of tuples): The possible project lengths.
+
+    """
 
     BOUNTY_TYPES = [
         ('Bug', 'Bug'),
@@ -61,40 +78,62 @@ class Bounty(SuperModel):
         ('Months', 'Months'),
         ('Unknown', 'Unknown'),
     ]
+    # TODO:  claimee == fulfiller for now.  Didn't change the database model because the names
+    # TODO   are used everywhere in the application.  Eventually we might want to standardize this.
+    web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
-    web3_created = models.DateTimeField()
+    web3_created = models.DateTimeField(db_index=True)
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
     token_address = models.CharField(max_length=50)
     bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES)
     project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS)
     experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS)
-    github_url = models.URLField()
+    github_url = models.URLField(db_index=True)
     github_comments = models.IntegerField(default=0)
     bounty_owner_address = models.CharField(max_length=50)
-    bounty_owner_email = models.CharField(max_length=255, null=True)
-    bounty_owner_github_username = models.CharField(max_length=255, null=True)
-    claimeee_address = models.CharField(max_length=50)
-    claimee_email = models.CharField(max_length=255, null=True)
-    claimee_github_username = models.CharField(max_length=255, null=True)
-    is_open = models.BooleanField(help_text='Whether the bounty has been filled')
+    bounty_owner_email = models.CharField(max_length=255, blank=True)
+    bounty_owner_github_username = models.CharField(max_length=255, blank=True)
+    bounty_owner_name = models.CharField(max_length=255, blank=True)
+    fulfiller_address = models.CharField(max_length=50)
+    fulfiller_email = models.CharField(max_length=255, blank=True)
+    fulfiller_github_username = models.CharField(max_length=255, blank=True)
+    fulfiller_name = models.CharField(max_length=255, blank=True)
+    is_open = models.BooleanField(help_text='Whether the bounty is still open for fulfillments.')
     expires_date = models.DateTimeField()
     raw_data = JSONField()
     metadata = JSONField(default={})
-    claimee_metadata = JSONField(default={})
+    fulfiller_metadata = JSONField(default={}, blank=True)
     current_bounty = models.BooleanField(default=False,
                                          help_text='Whether this bounty is the most current revision one or not')
-    _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=20)
+    _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     contract_address = models.CharField(max_length=50, default='')
-    network = models.CharField(max_length=255, null=True)
+    network = models.CharField(max_length=255, blank=True, db_index=True)
     idx_experience_level = models.IntegerField(default=0, db_index=True)
     idx_project_length = models.IntegerField(default=0, db_index=True)
-    idx_status = models.CharField(max_length=50, default='')
+    idx_status = models.CharField(max_length=50, default='', db_index=True)
     avatar_url = models.CharField(max_length=255, default='')
-    issue_description = models.TextField(default='')
+    issue_description = models.TextField(default='', blank=True)
+    standard_bounties_id = models.IntegerField(default=0)
+    num_fulfillments = models.IntegerField(default=0)
+    balance = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+    accepted = models.BooleanField(default=False, help_text='Whether the bounty has been done')
+    interested = models.ManyToManyField('dashboard.Interest', blank=True)
+    interested_comment = models.IntegerField(null=True, blank=True)
+
+    objects = BountyQuerySet.as_manager()
+
+    class Meta:
+        """Define metadata associated with Bounty."""
+
+        verbose_name_plural = 'Bounties'
+        index_together = [
+            ["network", "idx_status"],
+        ]
 
     def __str__(self):
-        return "{}{} {} {} {}".format( "(CURRENT) " if self.current_bounty else "" , self.title, self.value_in_token, self.token_name, self.web3_created)
+        return "{}{} {} {} {}".format("(CURRENT) " if self.current_bounty else "", self.title, self.value_in_token,
+                                      self.token_name, self.web3_created)
 
     def get_absolute_url(self):
         return settings.BASE_URL + self.get_relative_url(preceding_slash=False)
@@ -104,7 +143,9 @@ class Bounty(SuperModel):
 
     def get_natural_value(self):
         token = addr_to_token(self.token_address)
-        decimals = token['decimals']
+        if not token:
+            return 0
+        decimals = token.get('decimals', 0)
         return float(self.value_in_token) / 10**decimals
 
     @property
@@ -113,48 +154,44 @@ class Bounty(SuperModel):
 
     @property
     def title_or_desc(self):
-        return self.title if self.title else self.github_url
-
+        """Return the title of the issue."""
+        if not self.title:
+            title = self.fetch_issue_item('title') or self.github_url
+            return title
+        return self.title
 
     @property
     def issue_description_text(self):
-        import re, cgi
+        import re
         tag_re = re.compile(r'(<!--.*?-->|<[^>]*>)')
         return tag_re.sub('', self.issue_description).strip()
-
 
     @property
     def org_name(self):
         try:
-            from app.github import org_name
             _org_name = org_name(self.github_url)
             return _org_name
-        except Exception as e:
+        except Exception:
             return None
 
     def is_hunter(self, handle):
-        target = self.claimee_github_username
-        if not handle:
-            return False
-        if not target:
+        target = self.fulfiller_github_username
+        if not handle or not target:
             return False
         handle = handle.lower().replace('@', '')
         target = target.lower().replace('@', '')
 
         return handle == target
 
-    #TODO: DRY
+    # TODO: DRY
     def is_funder(self, handle):
         target = self.bounty_owner_github_username
-        if not handle:
-            return False
-        if not target:
+        if not handle or not target:
             return False
         handle = handle.lower().replace('@', '')
         target = target.lower().replace('@', '')
 
         return handle == target
-
 
     @property
     def absolute_url(self):
@@ -162,7 +199,6 @@ class Bounty(SuperModel):
 
     def get_avatar_url(self):
         try:
-            from app.github import get_user
             response = get_user(self.org_name)
             return response['avatar_url']
         except Exception as e:
@@ -177,7 +213,7 @@ class Bounty(SuperModel):
     def keywords(self):
         try:
             return self.metadata.get('issueKeywords', False)
-        except:
+        except Exception:
             return False
 
     @property
@@ -186,18 +222,39 @@ class Bounty(SuperModel):
 
     @property
     def status(self):
-        try:
-            if not self.is_open:
-                if timezone.now() > self.expires_date and self.claimeee_address == '0x0000000000000000000000000000000000000000':
-                    return 'expired'
-                return 'fulfilled'
-            if self.claimeee_address == '0x0000000000000000000000000000000000000000':
-                return 'open'
-            if self.claimeee_address != '0x0000000000000000000000000000000000000000':
-                return 'claimed'
-            return 'unknown'
-        except Exception as e:
-            return 'unknown'
+        if self.is_legacy:
+            # TODO: Remove following full deprecation of legacy bounties
+            try:
+                if not self.is_open:
+                    if timezone.now() > self.expires_date and self.fulfiller_address == '0x0000000000000000000000000000000000000000':
+                        return 'expired'
+                    return 'done'
+                if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
+                    if self.pk and self.interested.exists():
+                        return 'started'
+                    else:
+                        return 'open'
+                return 'submitted'
+            except Exception as e:
+                return 'unknown'
+        else:
+            try:
+                if self.is_open is False:
+                    if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.fulfiller_address == '0x0000000000000000000000000000000000000000':
+                        return 'expired'
+                    if self.accepted:
+                        return 'done'
+                    # If its not expired or done, it must be cancelled.
+                    return 'cancelled'
+                if self.fulfiller_address == '0x0000000000000000000000000000000000000000':
+                    if self.pk and self.interested.exists():
+                        return 'started'
+                    else:
+                        return 'open'
+                return 'submitted'
+            except Exception as e:
+                logger.warning(e)
+                return 'unknown'
 
     @property
     def value_true(self):
@@ -209,7 +266,7 @@ class Bounty(SuperModel):
             return self.value_in_token
         try:
             return convert_amount(self.value_in_token, self.token_name, 'ETH')
-        except:
+        except Exception:
             return None
 
     @property
@@ -219,61 +276,75 @@ class Bounty(SuperModel):
             return self.value_in_token
         try:
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
-        except:
+        except Exception:
             return None
 
     @property
     def desc(self):
-        return "{} {} {} {}".format(naturaltime(self.web3_created), self.idx_project_length, self.bounty_type, self.experience_level)
+        return "{} {} {} {}".format(naturaltime(self.web3_created), self.idx_project_length, self.bounty_type,
+                                    self.experience_level)
 
     @property
     def turnaround_time(self):
         return (self.created_on - self.web3_created).total_seconds()
 
-    def fetch_issue_description(self):
-        import requests
-        from bs4 import BeautifulSoup
+    @property
+    def is_legacy(self):
+        """Determine if the Bounty is legacy based on sunset date.
 
-        url = self.github_url
-        if url.lower()[:19] != 'https://github.com/':
-            return
+        Todo:
+            * Remove this method following legacy bounty sunsetting.
 
-        try:
-            html_response = requests.get(url)
-        except Exception as e:
-            print(e)
-            return
+        Returns:
+            bool: Whether or not the Bounty is using the legacy contract.
 
-        body = None
-        try:
-            soup = BeautifulSoup(html_response.text, 'html.parser')
+        """
+        return (self.web3_type == 'legacy_gitcoin')
 
-            eles = soup.findAll("td", {"class": "comment-body"})
-            if len(eles):
-                body = eles[0].prettify()
+    def get_github_api_url(self):
+        """Get the Github API URL associated with the bounty."""
+        from urllib.parse import urlparse
+        if self.github_url.lower()[:19] != 'https://github.com/':
+            return ''
+        url_path = urlparse(self.github_url).path
+        return 'https://api.github.com/repos' + url_path
 
-        except Exception as e:
-            print(e)
-            return
-        if body:
-            self.issue_description = body
+    def fetch_issue_item(self, item_type='body'):
+        """Fetch the item type of an issue.
+
+        Args:
+            type (str): The github API response body item to be fetched.
+
+        Returns:
+            str: The item content.
+
+        """
+        issue_description = requests.get(
+            self.get_github_api_url(),
+            auth=(settings.GITHUB_API_USER, settings.GITHUB_API_TOKEN))
+        if issue_description.status_code == 200:
+            item = issue_description.json()[item_type]
+            if item_type == 'body':
+                self.issue_description = item
+            elif item_type == 'title':
+                self.title = item
+            self.save()
+            return item
+        return ''
 
     def fetch_issue_comments(self, save=True):
-        from urlparse import urlsplit
-        from app.github import get_issue_comments
-
         if self.github_url.lower()[:19] != 'https://github.com/':
-            return
+            return []
 
         parsed_url = urlsplit(self.github_url)
         try:
             github_user, github_repo, _, github_issue = parsed_url.path.split('/')[1:5]
         except ValueError:
-            logger.info('Invalid github url for Bounty: {} -- {}'.format(self.pk, self.github_url))
+            logger.info('Invalid github url for Bounty: %s -- %s', self.pk, self.github_url)
             return []
         comments = get_issue_comments(github_user, github_repo, github_issue)
-        if type(comments) is dict and comments.get('message') == 'Not Found':
-            logger.info('Bounty {} contains an invalid github url {}'.format(self.pk, self.github_url))
+        if isinstance(comments, dict) and comments.get('message') == 'Not Found':
+            logger.info('Bounty %s contains an invalid github url %s', self.pk, self.github_url)
             return []
         comment_count = 0
         for comment in comments:
@@ -286,11 +357,13 @@ class Bounty(SuperModel):
 
 
 class BountySyncRequest(SuperModel):
+
     github_url = models.URLField()
     processed = models.BooleanField()
 
 
 class Subscription(SuperModel):
+
     email = models.EmailField(max_length=255)
     raw_data = models.TextField()
     ip = models.CharField(max_length=50)
@@ -300,6 +373,7 @@ class Subscription(SuperModel):
 
 
 class Tip(SuperModel):
+
     emails = JSONField()
     url = models.CharField(max_length=255, default='')
     tokenName = models.CharField(max_length=255)
@@ -312,16 +386,21 @@ class Tip(SuperModel):
     github_url = models.URLField(null=True)
     from_name = models.CharField(max_length=255, default='')
     from_email = models.CharField(max_length=255, default='')
-    username = models.CharField(max_length=255, default='')
+    from_username = models.CharField(max_length=255, default='')
+    username = models.CharField(max_length=255, default='') #to username
     network = models.CharField(max_length=255, default='')
     txid = models.CharField(max_length=255, default='')
     receive_txid = models.CharField(max_length=255, default='')
     received_on = models.DateTimeField(null=True)
+    from_address = models.CharField(max_length=255, default='')
+    receive_address = models.CharField(max_length=255, default='')
 
     def __str__(self):
         from django.contrib.humanize.templatetags.humanize import naturalday
-        return "({}) - {} {} {} {} to {},  created: {}, expires: {}".format(self.network, self.status, "ORPHAN" if len(self.emails) == 0 else "", self.amount, self.tokenName, self.username, naturalday(self.created_on), naturalday(self.expires_date))
-
+        return "({}) - {} {} {} {} to {},  created: {}, expires: {}" \
+               .format(self.network, self.status, "ORPHAN" if not self.emails else "",
+                       self.amount, self.tokenName, self.username, naturalday(self.created_on),
+                       naturalday(self.expires_date))
 
     #TODO: DRY
     def get_natural_value(self):
@@ -336,10 +415,10 @@ class Tip(SuperModel):
             return self.amount
         try:
             return convert_amount(self.amount, self.tokenName, 'ETH')
-        except:
+        except Exception:
             return None
 
-    #TODO: DRY
+    # TODO: DRY
     @property
     def value_in_usdt(self):
         decimals = 1
@@ -347,21 +426,20 @@ class Tip(SuperModel):
             return self.amount
         try:
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
-        except:
+        except Exception:
             return None
 
     @property
     def status(self):
         if self.receive_txid:
             return "RECEIVED"
-        else:
-            return "PENDING"
+        return "PENDING"
+
 
 @receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
 def normalize_usernames(sender, instance, **kwargs):
-
-    if instance.claimee_github_username:
-        instance.claimee_github_username = instance.claimee_github_username.replace("@", '')
+    if instance.fulfiller_github_username:
+        instance.fulfiller_github_username = instance.fulfiller_github_username.replace("@", '')
     if instance.bounty_owner_github_username:
         instance.bounty_owner_github_username = instance.bounty_owner_github_username.replace("@", '')
 
@@ -369,7 +447,6 @@ def normalize_usernames(sender, instance, **kwargs):
 # method for updating
 @receiver(pre_save, sender=Bounty, dispatch_uid="psave_bounty")
 def psave_bounty(sender, instance, **kwargs):
-
     idx_experience_level = {
         'Unknown': 1,
         'Beginner': 2,
@@ -390,10 +467,35 @@ def psave_bounty(sender, instance, **kwargs):
     instance.idx_experience_level = idx_experience_level.get(instance.experience_level, 0)
     instance.idx_project_length = idx_project_length.get(instance.project_length, 0)
 
+
+class Interest(models.Model):
+    """Define relationship for profiles expressing interest on a bounty."""
+
+    profile = models.ForeignKey('dashboard.Profile', related_name='interested', on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+    def __str__(self):
+        """Define the string representation of an interested profile."""
+        return self.profile.handle
+
+
+@receiver(post_save, sender=Interest, dispatch_uid="psave_interest")
+@receiver(post_delete, sender=Interest, dispatch_uid="pdel_interest")
+def psave_interest(sender, instance, **kwargs):
+    #when a new interest is saved, update the status on frontend
+    print("updating bounties")
+    for bounty in Bounty.objects.filter(interested=instance):
+        bounty.save()
+
+
 class Profile(SuperModel):
+    """Define the structure of the user profile."""
+
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True)
     last_sync_date = models.DateTimeField(null=True)
+    email = models.CharField(max_length=255, blank=True, db_index=True)
+    github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
 
     _sample_data = '''
         {
@@ -479,11 +581,12 @@ class Profile(SuperModel):
     @property
     def bounties(self):
         bounties = Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True)
-        bounties = bounties | Bounty.objects.filter(claimee_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(claimee_github_username__iexact="@" + self.handle, current_bounty=True)
+        for interested in self.interested.all():
+            bounties = bounties | Bounty.objects.filter(interested=interested, current_bounty=True)
+        bounties = bounties | Bounty.objects.filter(fulfiller_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(fulfiller_github_username__iexact="@" + self.handle, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(github_url__in=[url for url in self.tips.values_list('github_url', flat=True)], current_bounty=True)
         return bounties.order_by('-web3_created')
-
 
     @property
     def tips(self):
@@ -498,23 +601,23 @@ class Profile(SuperModel):
 
         _return = []
 
-        for repo in sorted(self.repos_data, key=lambda repo: repo.get('contributions',-1), reverse=True):
+        for repo in sorted(self.repos_data, key=lambda repo: repo.get('contributions', -1), reverse=True):
             for c in repo.get('contributors', []):
-                if type(c) == dict and c.get('contributions', 0) > auto_include_contributors_with_count_gt:
-                        _return.append(c['login'])
+                if isinstance(c, dict) and c.get('contributions', 0) > auto_include_contributors_with_count_gt:
+                    _return.append(c['login'])
 
         include_gitcoin_users = len(_return) < limit_to_num
         if include_gitcoin_users:
             for b in self.bounties:
-                vals = [b.bounty_owner_github_username, b.claimee_github_username]
+                vals = [b.bounty_owner_github_username, b.fulfiller_github_username]
                 for val in vals:
                     if val:
-                        _return.append(val.replace('@',''))
+                        _return.append(val.replace('@', ''))
             for t in self.tips:
                 vals = [t.username]
                 for val in vals:
                     if val:
-                        _return.append(val.replace('@',''))
+                        _return.append(val.replace('@', ''))
         _return = list(set(_return))
         _return.sort()
         return _return[:limit_to_num]
@@ -529,27 +632,25 @@ class Profile(SuperModel):
 
     @property
     def stats(self):
-
         bounties = self.bounties
-        acceptance_rate = 'N/A'
         loyalty_rate = 0
         claimees = []
         total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_funder(self.handle)])
-        total_claimed = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
-        print(total_funded, total_claimed)
+        total_fulfilled = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
+        print(total_funded, total_fulfilled)
         role = 'newbie'
-        if total_funded > total_claimed:
+        if total_funded > total_fulfilled:
             role = 'funder'
-        elif total_funded < total_claimed:
+        elif total_funded < total_fulfilled:
             role = 'coder'
 
         for b in bounties:
-            if b.claimeee_address in claimees:
+            if b.fulfiller_address in claimees:
                 loyalty_rate += 1
-            claimees.append(b.claimeee_address)
+            claimees.append(b.fulfiller_address)
         success_rate = 0
         if bounties.count() > 0:
-            numer = bounties.filter(idx_status__in=['fulfilled', 'claimed']).count()
+            numer = bounties.filter(idx_status__in=['submitted', 'started', 'done']).count()
             denom = bounties.exclude(idx_status__in=['open']).count()
             success_rate = int(round(numer * 1.0 / denom, 2) * 100) if denom != 0 else 'N/A'
         if success_rate == 0:
@@ -572,13 +673,13 @@ class Profile(SuperModel):
                 (success_rate, 'Success Rate'),
                 (loyalty_rate, 'Loyalty Rate'),
             ]
-        else: #funder
-            return [
-                (role, 'Primary Role'),
-                (bounties.count(), 'Total Funded Issues'),
-                (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
-                (success_rate, 'Success Rate'),
-            ]
+        # funder
+        return [
+            (role, 'Primary Role'),
+            (bounties.count(), 'Total Funded Issues'),
+            (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
+            (success_rate, 'Success Rate'),
+        ]
 
     @property
     def github_url(self):
@@ -586,7 +687,35 @@ class Profile(SuperModel):
 
     @property
     def local_avatar_url(self):
-        return "https://gitcoin.co/funding/avatar?repo={}&v=3".format(self.github_url)
+        return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
+
+    @property
+    def absolute_url(self):
+        return self.get_absolute_url()
+
+    def is_github_token_valid(self):
+        """Check whether or not a Github OAuth token is valid.
+
+        Args:
+            access_token (str): The Github OAuth token.
+
+        Returns:
+            bool: Whether or not the provided OAuth token is valid.
+
+        """
+        if not self.github_access_token:
+            return False
+
+        _params = build_auth_dict(self.github_access_token)
+        url = TOKEN_URL.format(**_params)
+        response = requests.get(
+            url,
+            auth=(_params['client_id'], _params['client_secret']),
+            headers=HEADERS)
+
+        if response.status_code == 200:
+            return True
+        return False
 
     def __str__(self):
         return self.handle
@@ -594,9 +723,58 @@ class Profile(SuperModel):
     def get_relative_url(self, preceding_slash=True):
         return "{}profile/{}".format('/' if preceding_slash else '', self.handle)
 
+    def get_absolute_url(self):
+        return settings.BASE_URL + self.get_relative_url(preceding_slash=False)
+
+
+class ProfileSerializer(serializers.BaseSerializer):
+    """Handle serializing the Profile object."""
+
+    class Meta:
+        """Define the profile serializer metadata."""
+
+        model = Profile
+        fields = ('handle', 'github_access_token')
+        extra_kwargs = {'github_access_token': {'write_only': True}}
+
+    def to_representation(self, instance):
+        """Provide the serialized representation of the Profile.
+
+        Args:
+            instance (Profile): The Profile object to be serialized.
+
+        Returns:
+            dict: The serialized Profile.
+
+        """
+        return {
+            'handle': instance.handle,
+            'github_url': instance.github_url,
+            'local_avatar_url': instance.local_avatar_url,
+            'url': instance.get_relative_url()
+        }
+
 
 @receiver(pre_save, sender=Tip, dispatch_uid="normalize_tip_usernames")
 def normalize_tip_usernames(sender, instance, **kwargs):
 
     if instance.username:
         instance.username = instance.username.replace("@", '')
+
+
+m2m_changed.connect(m2m_changed_interested, sender=Bounty.interested.through)
+
+
+class UserAction(SuperModel):
+    """Records Actions that a user has taken ."""
+
+    ACTION_TYPES = [
+        ('Login', 'Login'),
+        ('Logout', 'Logout'),
+    ]
+    action = models.CharField(max_length=50, choices=ACTION_TYPES)
+    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE)
+    metadata = JSONField(default={})
+
+    def __str__(self):
+        return "{} by {} at {}".format(self.action, self.profile, self.created_on)

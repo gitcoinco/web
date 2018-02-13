@@ -9,7 +9,9 @@ div.body {
 div, p, a, span {
     word-wrap: break-word;
 }
-
+.nav_avatar{
+    cursor: pointer;
+}
 .navbar-nav .nav-link {
     border-radius: 2px;
 }
@@ -22,12 +24,8 @@ div, p, a, span {
     color: #4aeaa7 !important;
 }
 
-.navbar a.slack img {
-    max-width: 15px;
-    max-height: 15px;
-    margin-top:-3px;
+.navbar a.slack i {
     margin-right: 3px;
-    filter: invert(100%);
 }
 
 .footer .nav-link:hover {
@@ -294,7 +292,7 @@ p a {
 }
 
 .btn-warning:hover, .btn-success:hover, .btn-info {
-      cursor: pointer;
+    cursor: pointer;
 }
 
 .btn-info:hover {
@@ -305,6 +303,10 @@ p a {
 
 .btn-warning {
     color: #15003e;
+}
+
+.btn {
+    cursor: pointer;
 }
 
 .btn-warning:hover {
@@ -512,7 +514,7 @@ input[type=text].loading {
 .blocking_error {
     text-align: center;
     margin: 100px auto;
-    max-width: 500px;
+    max-width: 100%;
 }
 
 .blocking_error img {
@@ -694,6 +696,15 @@ body.bounty_details .avatar {
 #bounty_details{
     display: none;
 }
+#bounty_details #issue_description #h1,
+#bounty_details #issue_description #h2,
+#bounty_details #issue_description #h3,
+#bounty_details #issue_description #h4,
+#bounty_details #issue_description #h5,
+#bounty_details #issue_description #h6
+{
+    font-size: 16px;
+}
 
 body.bounty_details #left_actions,
 body.bounty_details #right_actions {
@@ -702,7 +713,8 @@ body.bounty_details #right_actions {
 }
 
 body.bounty_details #bounty_details #left_actions {
-    padding-bottom: 25px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 body.bounty_details #left_actions a,
@@ -758,6 +770,44 @@ body.bounty_details #title {
     padding-bottom: 20px;
 }
 
+.transaction-status {
+    position: relative;
+    width: 80%;
+    left: 10%;
+    top: 30px;
+    margin-bottom: 30px;
+    border-radius: 2px;
+    padding: 3vh 5vw;
+    text-align: center;
+}
+
+.waiting_room_entertainment {
+    font-style: italic;
+    text-align: center;
+}
+
+.quote-container {
+    width: 65%;
+    margin: 5% auto;
+}
+
+.quote_text {
+    color: #4A4A4A;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 0.75px;
+}
+
+.quote_author {
+    color: #70EFBE;
+    margin-top: 20px;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 0.75px;
+}
+
 #gitcoin_buttons #example img {
     width: 500px;
     max-width: 100%
@@ -765,7 +815,6 @@ body.bounty_details #title {
 
 #gitcoin_buttons .flex-column {
     border-radius: 5px;
-
 }
 
 #gitcoin_buttons .btn.delta_1 {
@@ -1094,6 +1143,13 @@ input.is-invalid {
     border-color: black;
 }
 
+#interest_list{
+    margin-left: 0px;
+    padding-left: 0px;
+}
+#interest_list li{
+    list-style: none;
+}
 @media (max-width: 1350px) {
     .profile_details .bounties li div.details{
         width: 400px;
@@ -1114,6 +1170,9 @@ input.is-invalid {
         max-width: 300px;
         max-height: 300px;
     }
+    #bounty_details{
+        margin-left: 15px;
+    }
 
     .profile_details .bounties li div.relationship,
     .profile_details .bounties li div.status,
@@ -1132,7 +1191,10 @@ input.is-invalid {
     }
 
     .interior .col-2 {
-        display: none;
+        display: none !important;
+    }
+    .interior .col-7 {
+        margin-left: 5%;
     }
 
     .whatisit iframe,
@@ -1231,6 +1293,9 @@ input.is-invalid {
 
     .row.whatisit .explainer {
         margin-top: 30px;
+    }
+    .bounty_def {
+        height: 160px;
     }
 
     #team .row,
@@ -1401,9 +1466,8 @@ input.is-invalid {
         padding-top: 20px;
     }
 
-    .bounty_def .col-7 {
-        padding-left: 40px !important;
-        font-size: .8rem;
+    .bounty_def {
+        display: none;
     }
 
     .search_bar span {
@@ -1418,10 +1482,6 @@ input.is-invalid {
 
     #hero_cta a.btn{
         margin-top: 10px;
-    }
-
-    .bounty_def h5 {
-        font-size: .9rem;
     }
 
     #mission_hero .text {

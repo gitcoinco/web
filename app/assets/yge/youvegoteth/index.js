@@ -36,7 +36,7 @@ var contract_address = function(){
         var contract_address = '0xb917e0f1fdebb89d37cbe053f59066a20b6794d6'; //ropsten v1
     } else {
         //mainnet
-        var contract_address = '0x8bcaadc84fd3bdea3cc5dd534cd85692a820a692'; //mainnet v1
+        var contract_address = '0x5479b8be3b8e9459616721f8b588df593c6e4178'; //mainnet v1
     }
     return contract_address;
 }
@@ -107,6 +107,7 @@ var waitforWeb3 = function(callback){
 window.addEventListener('load', function() {
     var timeout_value = 100;
     setTimeout(function(){
+      if(typeof web3 != 'undefined'){
         web3.version.getNetwork((error, netId) => {
             if(!error){
 
@@ -132,8 +133,9 @@ window.addEventListener('load', function() {
                       network = "custom network";
                   }
                 document.web3network = network;
-            }
-        })
+              }
+          })
+        }
     }, timeout_value);
 });
 

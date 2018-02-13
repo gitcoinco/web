@@ -184,6 +184,7 @@ window.onload = function () {
                     _alert('got an error :(');
                     unloading_button(jQuery("#send"));       
                 } else {
+                    dataLayer.push({'event': 'sendtip'});
                     mixpanel.track("Tip Step 2 Success", {});
                     var txid = result;
                     $("send_eth").style.display = 'none';
@@ -216,6 +217,7 @@ window.onload = function () {
                             from_name: from_name,
                             tokenAddress: token,
                             network: document.web3network,
+                            from_address: fromAccount,
                             txid: txid,
                         }),
                     }).then(function(response) {
@@ -261,9 +263,9 @@ window.onload = function () {
             var amountETHToSend = null;
             if(isSendingETH){
                 next_callback = final_callback;
-                amountETHToSend = amount + fees;
+                amountETHToSend = parseInt(amount + fees);
             } else {
-                amountETHToSend = min_send_amt_wei + fees;
+                amountETHToSend = parseInt(min_send_amt_wei + fees);
                 if(i==0){ //only need to call approve once for amount * numbatches
                     next_callback = erc20_callback;
                 } else {

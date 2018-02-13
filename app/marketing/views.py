@@ -28,6 +28,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 
 from chartit import Chart, DataPool
+from dashboard.models import Profile
 from marketing.models import EmailSubscriber, Keyword, LeaderboardRank, Stat
 from marketing.utils import get_or_save_email_subscriber
 from retail.helpers import get_ip
@@ -57,13 +58,35 @@ def stats(request):
 
     # filters
     if _filter == 'Activity':
-        _filters = ['tip', 'bount']
+        _filters = [
+            'tip',
+            'bount'
+        ]
         types = filter_types(types, _filters)
     if _filter == 'Marketing':
-        _filters = ['slack', 'email', 'whitepaper', 'twitter']
+        _filters = [
+            'slack',
+            'email',
+            'whitepaper',
+            'twitter'
+        ]
         types = filter_types(types, _filters)
     if _filter == 'KPI':
-        _filters = ['browser_ext', 'slack_users', 'email_subscribers_active', 'bounties_open', 'bounties_ful', 'joe_dominance_index_30_count', 'joe_dominance_index_30_value', 'turnaround_time_hours_30_days_back', 'tips', 'twitter']
+        _filters = [
+            'browser_ext_chrome',
+            'medium_subscribers',
+            'github_stargazers_count',
+            'slack_users',
+            'email_subscribers_active',
+            'bounties_open',
+            'bounties_ful',
+            'joe_dominance_index_30_count',
+            'joe_dominance_index_30_value',
+            'turnaround_time_hours_30_days_back',
+            'tips',
+            'twitter',
+            'user_action_Login',
+        ]
         types = filter_types(types, _filters)
 
     # params
@@ -130,15 +153,28 @@ def stats(request):
 
 
 def email_settings(request, key):
+    #handle 'noinput' case
+    es = EmailSubscriber.objects.none()
     email = ''
     level = ''
     msg = ''
-    es = EmailSubscriber.objects.filter(priv=key)
-    if es.exists():
-        email = es.first().email
-        level = es.first().preferences.get('level', False)
+    if not key:
+        email = request.session.get('email', False)
+        if not email:
+            github_handle = request.session.get('handle', False)
+            profiles = Profile.objects.filter(handle=github_handle).exclude(email='')
+            if profiles.count():
+                email = profiles.first()
+        es = EmailSubscriber.objects.filter(email=email)
+        if not es.count():
+            raise Http404
     else:
-        raise Http404
+        es = EmailSubscriber.objects.filter(priv=key)
+        if es.exists():
+            email = es.first().email
+            level = es.first().preferences.get('level', False)
+        else:
+            raise Http404
     es = es.first()
     if request.POST.get('email', False):
         level = request.POST.get('level')
@@ -176,6 +212,7 @@ def email_settings(request, key):
             es.save()
             msg = "Updated your preferences.  "
     context = {
+        'nav': 'internal',
         'active': 'email_settings',
         'title': 'Email Settings',
         'es': es,
@@ -235,7 +272,7 @@ def leaderboard(request, key):
         'title': "Monthly Leaderboard: " + titles[key],
         'card_title': "Monthly Leaderboard: " +titles[key],
         'card_desc': 'See the most valued members in the Gitcoin community this month. ' + top_earners,
-        'action_past_tense': 'Transacted' if 'fulfilled' in key else 'bountied',
+        'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
         'podium_items': podium_items
     }

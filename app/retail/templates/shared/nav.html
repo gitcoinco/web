@@ -15,32 +15,28 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
+{% load static %}
+<nav class="navbar navbar-expand-md navbar-dark">
+  <a class="navbar-brand pt-0 pb-0" href="/">
+    <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-        <nav class="navbar navbar-expand-md navbar-dark">
-            <a class="navbar-brand pt-0 pb-0" href="/">
-                    <img id="logo" src="/static/v2/images/logo_large.png" data-hover="/static/v2/images/logo_large_hover.gif" width="201" height="66" />
-                </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
-                              <span class="navbar-toggler-icon"></span>
-                            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <nav class="navbar-nav ml-auto mr-3">
-                    <a class="nav-link {% if active == 'home' %}selected{%endif%}" href="/">Home</a>
-                    <a class="nav-link {% if active == 'about' %}selected{%endif%}" href="/about">About</a>
-                    <a class="nav-link" href="/tools">Tools</a>
-                    <a class="nav-link" href="/explorer">Issue Explorer</a>
-                    <a class="nav-link slack" href="/slack">
-                        <img src="/static/v2/images/social/slack2.png">Slack({{num_slack}})
-                    </a>
-                    <a class="nav-link" href="/help">Help</a>
-                    <a class="nav-link" href="/ios">Mobile</a>
-
-
-                </nav>
-                <img class="mr-5" src="/static/v2/images/spaceship.png" width="93" height="81" />
-                <a class="btn btn-outline-info pl-4 pr-4 pulseClick" role="button" href="/get">Get Started ⚡️</a>
-
-            </div>
-        </nav>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <nav class="navbar-nav ml-auto mr-3">
+      <a class="nav-link {% if active == 'home' %}selected{%endif%}" href="/">Home</a>
+      <a class="nav-link {% if active == 'about' %}selected{%endif%}" href="{% url "about" %}">About</a>
+      <a class="nav-link" href="{% url "tools" %}">Tools</a>
+      <a class="nav-link" href="{% url "explorer" %}">Issue Explorer</a>
+      <a class="nav-link slack" href="{% url "slack" %}">
+        <i class="fa fa-slack" aria-hidden="true"></i>Slack({{num_slack}})
+      </a>
+      <a class="nav-link" href="{% url "help" %}">Help</a>
+    </nav>
+    <img class="mr-5" src="{% static "v2/images/spaceship.png" %}" width="52" height="45" />
+    <a class="btn btn-outline-info pl-4 pr-4 pulseClick" role="button" href="{% url "get_gitcoin" %}">Get Started ⚡️</a>
+  </div>
+</nav>

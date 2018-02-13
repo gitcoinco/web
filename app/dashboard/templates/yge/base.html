@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -6,25 +7,26 @@
 		<meta charset="utf-8" />
     <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <meta name="theme-color" content="#ffffff">
-		<!--[if lte IE 8]><script src="/static/yge/js/html5shiv.js"></script><![endif]-->
-		<link rel="stylesheet" href="/static/v2/css/gitcoin.css" />
-		<link rel="stylesheet" href="/static/yge/css/main.css" />
-    <link rel="stylesheet" href="/static/v2/css/rain.css" />
-    <link rel="stylesheet" href="/static/v2/css/jquery.select2.min.css" />
-    <script src="/static/v2/js/jquery.js"></script>
-    <script src="/static/v2/js/work_with_gitcoin.js"></script>
-		<!--[if lte IE 9]><link rel="stylesheet" href="/static/yge/css/ie9.css" /><![endif]-->
-		<!--[if lte IE 8]><link rel="stylesheet" href="/static/yge/css/ie8.css" /><![endif]-->
-		<noscript><link rel="stylesheet" href="/static/yge/css/noscript.css" /></noscript>
+		<!--[if lte IE 8]><script src="{% static "yge/js/html5shiv.js" %}"></script><![endif]-->
+		<link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
+		<link rel="stylesheet" href="{% static "yge/css/main.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/rain.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
+    <script src="{% static "v2/js/jquery.js" %}"></script>
+    <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
+		<!--[if lte IE 9]><link rel="stylesheet" href="{% static "yge/css/ie9.css" %}" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="{% static "yge/css/ie8.css" %}" /><![endif]-->
+		<noscript><link rel="stylesheet" href="{% static "yge/css/noscript.css" %}" /></noscript>
 
-    <link rel="apple-touch-icon" sizes="180x180" href="/static/v2/images/favicon.ico/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/static/v2/images/favicon.ico/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/static/v2/images/favicon.ico/favicon-16x16.png">
-    <link rel="manifest" href="/static/v2/images/favicon.ico/manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static "v2/images/favicon.ico/apple-touch-icon.png" %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static "v2/images/favicon.ico/favicon-32x32.png" %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static "v2/images/favicon.ico/favicon-16x16.png" %}">
+    <link rel="manifest" href="{% static "v2/images/favicon.ico/manifest.json" %}">
+    {% include 'shared/rollbar.html' %}
 	</head>
 	<body id="yge" class="{{class}}">
         {% include 'shared/tag_manager_2.html' %}
-        {% include 'shared/ga.html' %}
+        {% include 'shared/analytics.html' %}
 
         {% block 'world' %}
         {% endblock %}
@@ -45,7 +47,7 @@
                                 <a href="/">&copy; Gitcoin.co</a>
                             </li>
                             <li>
-                                <a href="/tip">Send Tip</a>
+                                <a href="{% url "tip" %}">Send Tip</a>
                             </li>
 						</ul>
 					</footer>
@@ -54,8 +56,8 @@
 
 		<!-- Scripts -->
       {% block 'scripts' %}{% endblock %}
-      <script src="/static/v2/js/jquery.select2.min.js"></script>
-			<!--[if lte IE 8]><script src="/static/yge/js/respond.min.js"></script><![endif]-->
+      <script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
+			<!--[if lte IE 8]><script src="{% static "yge/js/respond.min.js" %}"></script><![endif]-->
 			<script>
 				if ('addEventListener' in window) {
 					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-loading\b/, ''); });
@@ -66,7 +68,7 @@
             {% if recommend_gas_price %}
                 <script type="text/javascript">
                     setInterval(function(){
-                        defaultGasPrice = parseInt(10**9 * {{recommend_gas_price}}); 
+                        defaultGasPrice = parseInt(10**9 * {{recommend_gas_price}});
                     },1000);
                 </script>
             {% endif %}

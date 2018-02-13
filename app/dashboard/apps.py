@@ -22,4 +22,11 @@ from django.apps import AppConfig
 
 
 class DashboardConfig(AppConfig):
+    """Define the Dashboard application configuration."""
+
     name = 'dashboard'
+    verbose_name = 'Dashboard'
+
+    def ready(self):
+        """Handle signals on ready."""
+        from .signals import m2m_changed_interested

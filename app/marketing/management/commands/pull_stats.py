@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -136,18 +136,34 @@ def profiles_ingested():
     Stat.objects.create(
         key='profiles_ingested',
         val=Profile.objects.count(),
-        )    
+        )
+
+
+def user_actions():
+    from dashboard.models import UserAction
+
+    for action_type in UserAction.ACTION_TYPES:
+        action_type = action_type[0]
+
+        val = UserAction.objects.filter(
+            action=action_type,
+            ).count()
+
+        Stat.objects.create(
+            key='user_action_{}'.format(action_type),
+            val=val,
+            )
 
 
 def github_stars():
-    from app.github import get_user
+    from github.utils import get_user
     reops = get_user('gitcoinco', '/repos')
     forks_count = sum([repo['forks_count'] for repo in reops])
 
     Stat.objects.create(
         key='github_forks_count',
         val=forks_count,
-        )    
+        )
 
     stargazers_count = sum([repo['stargazers_count'] for repo in reops])
 
@@ -184,6 +200,21 @@ def firefox_ext_users():
     num_users = eles[0].text.replace(' Users', '').replace('No', '0')
     Stat.objects.create(
         key='browser_ext_firefox',
+        val=num_users,
+        )
+
+
+def medium_subscribers():
+    import requests
+    import json
+
+    url = 'https://medium.com/gitcoin?format=json'
+    html_response = requests.get(url)
+    data = json.loads(html_response.text.replace('])}while(1);</x>',''))
+    num_users = data['payload']['references']['Collection']['d414fce43ce1']['metadata']['followerCount']
+    print(num_users)
+    Stat.objects.create(
+        key='medium_subscribers',
         val=num_users,
         )
 
@@ -225,10 +256,10 @@ def bounties():
 
 def bounties_fulfilled_pct():
     from dashboard.models import Bounty
-    for status in ['fulfilled','expired','open','claimed']:
+    for status in ['open', 'submitted', 'started', 'done', 'expired', 'cancelled']:
         eligible_bounties = Bounty.objects.filter(current_bounty=True,web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
-        fulfilled_bounties = eligible_bounties.filter(idx_status=status)
-        val = int(100 * (fulfilled_bounties.count()) / (eligible_bounties.count()))
+        numerator_bounties = eligible_bounties.filter(idx_status=status)
+        val = int(100 * (numerator_bounties.count()) / (eligible_bounties.count()))
 
         Stat.objects.create(
             key='bounties_{}_pct'.format(status),
@@ -266,7 +297,7 @@ def avg_time_bounty_turnaround():
     from dashboard.models import Bounty
 
     for days in [7,30,90,360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True,idx_status='fulfilled',web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+        all_bounties = Bounty.objects.filter(current_bounty=True, idx_status='submitted', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
         if not all_bounties.count():
             continue
 
@@ -280,23 +311,12 @@ def avg_time_bounty_turnaround():
             )
 
 
-
-
 def bounties_open():
     from dashboard.models import Bounty
 
     Stat.objects.create(
         key='bounties_open',
-        val=(Bounty.objects.filter(current_bounty=True,idx_status='open').count()),
-        )
-
-
-def bounties_claimed():
-    from dashboard.models import Bounty
-
-    Stat.objects.create(
-        key='bounties_claimed',
-        val=(Bounty.objects.filter(current_bounty=True).exclude(claimeee_address='0x0000000000000000000000000000000000000000').count()),
+        val=(Bounty.objects.filter(current_bounty=True, idx_status='open').count()),
         )
 
 
@@ -305,7 +325,7 @@ def bounties_fulfilled():
 
     Stat.objects.create(
         key='bounties_fulfilled',
-        val=(Bounty.objects.filter(current_bounty=True,idx_status='fulfilled').count()),
+        val=(Bounty.objects.filter(current_bounty=True, idx_status='done').count()),
         )
 
 
@@ -380,6 +400,7 @@ class Command(BaseCommand):
 
         fs = [
             gitter,
+            medium_subscribers,
             google_analytics,
             github_stars,
             profiles_ingested,
@@ -393,7 +414,6 @@ class Command(BaseCommand):
             whitepaper_access,
             whitepaper_access_request,
             tips_received,
-            bounties_claimed,
             bounties_fulfilled,
             bounties_open,
             bounties_fulfilled_pct,
@@ -401,7 +421,8 @@ class Command(BaseCommand):
             subs_newsletter,
             slack_users_active,
             joe_dominance_index,
-            avg_time_bounty_turnaround
+            avg_time_bounty_turnaround,
+            user_actions,
         ]
 
         for f in fs:

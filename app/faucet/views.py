@@ -2,12 +2,23 @@ from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.conf import settings
 from django.shortcuts import redirect
-from models import FaucetRequest
+from faucet.models import FaucetRequest
 from django.core.validators import validate_slug, validate_email
 from django.utils.html import strip_tags, escape
-from app.github import search
 from marketing.mails import send_mail
 import json
+import requests
+
+
+def search_github(q):
+
+    params = (
+        ('q', q),
+        ('sort', 'updated'),
+    )
+    response = requests.get('https://api.github.com/search/users', headers=v3headers, params=params)
+    return response.json()
+
 
 def faucet(request):
     faucet_amount = getattr(settings, "FAUCET_AMOUNT", .003)
@@ -17,6 +28,7 @@ def faucet(request):
     }
 
     return TemplateResponse(request, 'faucet_form.html', params)
+
 
 def github_profile(request, profile):
     if FaucetRequest.objects.user(profile):
@@ -29,12 +41,9 @@ def github_profile(request, profile):
       response = check_github(profile)
       return JsonResponse(response)
 
+
 def check_github(profile):
-  if settings.ENV == 'local':
-    creds = False
-  else:
-    creds = True
-  user = search(profile + ' in:login type:user', creds)
+  user = search_github(profile + ' in:login type:user')
   if len(user['items']) == 0 or user['items'][0]['login'].lower() != profile.lower():
     response = {
       'status': 200,
@@ -46,6 +55,7 @@ def check_github(profile):
       'user': user['items'][0]
     }
   return response
+
 
 def save_faucet(request):
     try:
@@ -73,7 +83,6 @@ def save_faucet(request):
     ethAddress = request.POST.get('ethAddress')
     comment = escape(strip_tags(request.POST.get('comment')))
     checkeduser = check_github(githubProfile)
-    print checkeduser
     if FaucetRequest.objects.user(githubProfile):
         return JsonResponse({
             'message': 'The submitted github profile shows a previous faucet distribution.'
@@ -104,6 +113,7 @@ def save_faucet(request):
       'message': 'Created.'
     }, status=201)
 
+
 def process_faucet_request(request, pk):
 
     obj = FaucetRequest.objects.get(pk=pk)
@@ -113,8 +123,7 @@ def process_faucet_request(request, pk):
         'faucet_amount': faucet_amount
     }
 
-    print request.POST.get('destinationAccount')
-    print request.POST
+
     if obj.fulfilled:
         return redirect('/_administrationfaucet/faucetrequest/')
 
