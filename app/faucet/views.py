@@ -10,7 +10,6 @@ from django.utils.html import escape, strip_tags
 
 import requests
 import sendgrid
-from app.github import search
 from faucet.models import FaucetRequest
 from marketing.mails import send_mail
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
