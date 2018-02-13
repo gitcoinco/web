@@ -40,7 +40,6 @@ class DashboardModelsTest(TestCase):
 
     def test_bounty(self):
         """Test the dashboard Bounty model."""
-
         fulfiller_profile = Profile.objects.create(
             data={},
             handle='fred',
