@@ -28,7 +28,6 @@ def migrate_fulfillments(apps, schema_editor):
                     fulfiller_email=bounty.fulfiller_email,
                     fulfiller_github_username=bounty.fulfiller_github_username,
                     fulfiller_name=bounty.fulfiller_name,
-                    fulfiller_metadata=bounty.fulfiller_metadata,
                     **kwargs
                 )
             bounty.fulfillments.add(fulfillment)
