@@ -442,7 +442,6 @@ class BountyFulfillment(SuperModel):
             'bounty_id': self.bounty.pk,
             'email': self.fulfiller_email,
             'githubUsername': self.fulfiller_github_username,
-            'metadata': self.fulfiller_metadata,
             'name': self.fulfiller_name,
         }
 
