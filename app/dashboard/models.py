@@ -668,10 +668,11 @@ class Profile(SuperModel):
 
     @property
     def bounties(self):
+        fulfilled_bounty_ids = self.fulfilled.all().values_list('bounty_id')
         bounties = Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True)
         for interested in self.interested.all():
             bounties = bounties | Bounty.objects.filter(interested=interested, current_bounty=True)
-        bounties = bounties | self.fulfilled.all()
+        bounties = bounties | Bounty.objects.filter(pk__in=fulfilled_bounty_ids)
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(github_url__in=[url for url in self.tips.values_list('github_url', flat=True)], current_bounty=True)
         return bounties.order_by('-web3_created')
