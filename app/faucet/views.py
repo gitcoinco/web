@@ -1,16 +1,30 @@
-from app.github import search
+import json
+
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
-from django.core.validators import validate_slug, validate_email
+from django.core.validators import validate_email, validate_slug
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.utils.html import strip_tags, escape
+from django.utils.html import escape, strip_tags
+
+import requests
+import sendgrid
+from app.github import search
+from faucet.models import FaucetRequest
 from marketing.mails import send_mail
-from models import FaucetRequest
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
-import json
+
+def search_github(q):
+
+    params = (
+        ('q', q),
+        ('sort', 'updated'),
+    )
+    response = requests.get('https://api.github.com/search/users', headers=v3headers, params=params)
+    return response.json()
+
 
 def faucet(request):
     faucet_amount = getattr(settings, "FAUCET_AMOUNT", .003)
