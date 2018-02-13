@@ -378,6 +378,7 @@ def process_bounty_details(bountydetails):
                     fulfiller_email=fment.get('data', {}).get('payload', {}).get('fulfiller', {}).get('email', ''),
                     fulfiller_github_username=fment.get('data', {}).get('payload', {}).get('fulfiller', {}).get('githubUsername', ''),
                     fulfiller_name=fment.get('data', {}).get('payload', {}).get('fulfiller', {}).get('name', ''),
+                    fulfiller_metadata=fment,
                     fulfillment_id=fment.get('id'),
                     bounty=new_bounty,
                     **kwargs

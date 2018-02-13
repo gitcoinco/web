@@ -407,6 +407,7 @@ class BountyFulfillment(SuperModel):
     fulfiller_email = models.CharField(max_length=255, blank=True)
     fulfiller_github_username = models.CharField(max_length=255, blank=True)
     fulfiller_name = models.CharField(max_length=255, blank=True)
+    fulfiller_metadata = JSONField(default={}, blank=True)
     fulfillment_id = models.IntegerField(null=True, blank=True)
     accepted = models.BooleanField(default=False)
 
@@ -441,6 +442,7 @@ class BountyFulfillment(SuperModel):
             'bounty_id': self.bounty.pk,
             'email': self.fulfiller_email,
             'githubUsername': self.fulfiller_github_username,
+            'metadata': self.fulfiller_metadata,
             'name': self.fulfiller_name,
         }
 
