@@ -41,7 +41,7 @@ echo "- install crontab"
 crontab scripts/crontab
 cd app
 echo "- collect static"
-source ../gitcoin-3/bin/activate; cd app; ./manage.py collectstatic --noinput -i other;
+./manage.py collectstatic --noinput -i other;
 rm -Rf ~/gitcoin/coin/app/static/other
 echo "- db"
 ./manage.py migrate
