@@ -152,11 +152,11 @@ var isBountyOwner = function(result) {
     return (typeof web3 != 'undefined' && (web3.eth.coinbase == bountyAddress))
 }
 
-var showWarningMessage = function () {
+var showWarningMessage = function (txid) {
 
-    if (typeof localStorage['txid'] != 'undefined' && localStorage['txid'].indexOf('0x') != -1) {
+    if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
         clearInterval(interval);
-        var link_url = etherscan_tx_url(localStorage['txid']);
+        var link_url = etherscan_tx_url(txid);
         $('#pending_changes').attr("href", link_url);
         $('#transaction_url').attr("href", link_url);
     }
@@ -178,7 +178,7 @@ var showWarningMessage = function () {
     var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
 };
 
-var check_for_updates = function(){
+var wait_for_tx_to_mine_and_then_ping_server = function(){
     console.log('checking for updates');
     if(typeof document.pendingIssueMetadata != 'undefined'){
         var txid = document.pendingIssueMetadata['txid'];
@@ -471,8 +471,9 @@ var main = function(){
         if(localStorage[document.issueURL]){
             //update from web3
             document.pendingIssueMetadata = JSON.parse(localStorage[document.issueURL]);
-            showWarningMessage();
-            check_for_updates();
+            var txid = document.pendingIssueMetadata['txid'];
+            showWarningMessage(txid);
+            wait_for_tx_to_mine_and_then_ping_server();
         } else {
             pull_bounty_from_api();
         }
