@@ -182,16 +182,16 @@ def render_new_bounty_roundup(to_email):
 
     bounties = [
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/pyrlp/issues/44'),
-            'primer': 'This is a python issue for the Ethereum Foundation... 💯 ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MetaMask/metamask-extension/issues/3249'),
+            'primer': 'This is a big one, and even better, its from the Metamask team! ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/gitcoinco/web/issues/208'),
-            'primer': 'Want to help build Gitcoin?  Here\'s an opppy to do just that 👇\' ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/gitcoinco/web/issues/445'),
+            'primer': 'Want to help tune the UX on Gitcoin?  Here\'s an opppy to do just that 👇\' ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/btcsuite/btcd/issues/1089'),
-            'primer': 'Into Bitcoin and distributed programming?  This issue could be for you..  ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/browser-solidity/issues/210'),
+            'primer': 'Want to do some work for the Ethereum Foundation?  This issue is for you  ~ @owocki',
         },
     ]
 
