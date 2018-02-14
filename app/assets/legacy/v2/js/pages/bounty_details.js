@@ -101,45 +101,16 @@ var callbacks = {
         return [ 'status', ui_status];
     },
     'issue_description': function(key, val, result){
+        var converter = new showdown.Converter();
+        var max_len = 1000;
         var ui_body = val;
-        var allowed_tags = ['br', 'li', 'em', 'ol', 'ul', 'p', 'td', 'a', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'code'];
-        var open_close = ['', '/'];
-        var replace_tags = {
-            'h1': 'h5',
-            'h2': 'h5',
-            'h3': 'h5',
-            'h4': 'h5',
-        }
-
-        for(var i=0; i<allowed_tags.length;i++){
-            var tag = allowed_tags[i];
-            for(var k=0; k<open_close.length;k++){
-                var oc = open_close[k];
-                var replace_tag = '&lt;'+ oc + tag +'.*&gt;';
-                var with_tag = '<'+ oc + tag +'>';
-                var re = new RegExp(replace_tag, 'g');
-                ui_body = ui_body.replace(re, with_tag);
-                var re = new RegExp(replace_tag.toUpperCase(), 'g');
-                ui_body = ui_body.replace(re, with_tag);
-            }
-        }
-        for(var key in replace_tags){
-            for(var k=0; k<open_close.length;k++){
-                var oc = open_close[k];
-                var replace = key;
-                var _with = replace_tags[key];
-                var replace_tag = '<'+ oc + replace +'>';
-                var with_tag = '<'+ oc + _with +'>';
-                var re = new RegExp(replace_tag, 'g');
-                ui_body = ui_body.replace(re, with_tag);
-            }
-        }
-
-        var max_len = 1000
+        val = val.replace(/script/ig,'scr_i_pt');
         if(ui_body.length > max_len){
             ui_body = ui_body.substring(0, max_len) + '... <a target=new href="'+result['github_url']+'">See More</a> '
         }
+        ui_body = converter.makeHtml(ui_body);
         return [ 'issue_description', ui_body];
+
     },
     'fulfiller_address': address_ize,
     'bounty_owner_address': address_ize,
@@ -294,6 +265,155 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now){
 };
 
 window.addEventListener('load', function() {
+
+    var build_detail_page = function(result){
+
+        //setup
+        var decimals = 18;
+        var related_token_details = tokenAddressToDetails(result['token_address'])
+        if(related_token_details && related_token_details.decimals){
+            decimals = related_token_details.decimals;
+        }
+        document.decimals = decimals;
+        $("#bounty_details").css('display','flex');
+        $("#submission_head").css('display', 'none');
+        
+        // title
+        result['title'] = result['title'] ? result['title'] : result['github_url'];
+        result['title'] = result['network'] != 'mainnet' ? "(" + result['network'] + ") " + result['title'] : result['title'];
+        $('.title').html("Funded Issue Details: " + result['title']);
+
+        //insert table onto page
+        for(var j=0; j< rows.length; j++){
+            var key = rows[j];
+            var head = null;
+            var val = result[key];
+            if(heads[key]){
+                head = heads[key];
+            }
+            if(callbacks[key]){
+                _result = callbacks[key](key, val, result);
+                val = _result[1];
+            }
+            var entry = {
+                'head': head,
+                'key': key,
+                'val': val,
+            }
+            var id = '#' + key;
+            if($(id).length){
+                $(id).html(val);
+            }
+        }
+
+    };
+
+    var do_actions = function(result){
+
+    // Find interest information
+    pull_interest_list(result['pk'], function(is_interested){
+
+        //actions
+        var actions = [];
+        if(result['github_url'].substring(0,4) == 'http'){
+
+            var github_url = result['github_url'];
+
+            // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
+            github_url = github_url.replace('pipermerriam/web3.py','ethereum/web3.py');
+
+            if(result['github_comments']){
+                var entry_comment = {
+                  href: github_url,
+                  text: result['github_comments'],
+                  target: 'new',
+                  parent: 'right_actions',
+                  color: 'github-comment'
+                };
+                actions.push(entry_comment);
+            }
+
+            var entry = {
+                href: github_url,
+                text: 'View on Github',
+                target: 'new',
+                parent: 'right_actions',
+                color: 'darkBlue',
+                title: 'Github is where the issue scope lives.  Its also a great place to collaborate with, and get to know, other developers (and sometimes even the repo maintainer themselves!).'
+            }
+
+            actions.push(entry);
+        }
+
+        if(result['status']=='open' || result['status']=='started' ){
+
+            // is enabled
+            var enabled = !isBountyOwner(result);
+            var interestEntry = {
+                href: is_interested ? '/uninterested' : '/interested',
+                text: is_interested ? 'Stop Work' : 'Start Work',
+                parent: 'right_actions',
+                color: enabled ? 'darkBlue' : 'darkGrey',
+                extraClass: enabled ? '' : 'disabled',
+                title: enabled ? 'Start Work in an issue to let the issue funder know that youre starting work on this issue.' : 'Can only be performed if you are not the funder.',
+            }
+            actions.push(interestEntry);
+
+        }
+
+        // is enabled
+        var enabled = !isBountyOwner(result);
+        var entry = {
+            href: '/legacy/funding/fulfill?source='+result['github_url'],
+            text: 'Submit Work',
+            parent: 'right_actions',
+            color: enabled ? 'darkBlue' : 'darkGrey',
+            extraClass: enabled ? '' : 'disabled',
+            title: enabled ? 'Use Submit Work when you FINISH work on a bounty.  ' : 'Can only be performed if you are not the funder.',
+        }
+        actions.push(entry);
+
+        var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
+        if(is_expired){
+            var enabled = isBountyOwner(result);
+            var entry = {
+                href: '/legacy/funding/clawback?source='+result['github_url'],
+                text: 'Clawback Expired Funds',
+                parent: 'right_actions',
+                color: enabled ? 'darkBlue' : 'darkGrey',
+                extraClass: enabled ? '' : 'disabled',
+                title: enabled ? '' : 'Can only be performed if you are the funder.',
+            }
+            actions.push(entry);
+        }
+        if(result['status']=='submitted' ){
+            var enabled = isBountyOwner(result);
+            var entry = {
+                href: '/legacy/funding/process?source='+result['github_url'],
+                text: 'Accept/Reject Submission',
+                parent: 'right_actions',
+                color: enabled ? 'darkBlue' : 'darkGrey',
+                extraClass: enabled ? '' : 'disabled',
+                title: enabled ? '' : 'Can only be performed if you are the funder.',
+
+            }
+            actions.push(entry);
+        }
+
+        render_actions(actions);     
+
+        });  
+    }
+
+    var render_actions = function(actions){
+        for(var l=0; l< actions.length; l++){
+            var target = actions[l]['parent'];
+            var tmpl = $.templates("#action");
+            var html = tmpl.render(actions[l]);
+            $("#"+target).append(html);
+        };      
+    }
+
     setTimeout(function(){
         var issueURL = getParam('url');
         $("#submitsolicitation a").attr('href','/funding/new/?source=' + issueURL)
@@ -306,138 +426,11 @@ window.addEventListener('load', function() {
                 var result = results[i];
                 // if the result from the database matches the one in question.
                 if(normalizeURL(result['github_url']) == normalizeURL(issueURL)){
-                    $("#bounty_details").css('display','flex');
                     nonefound = false;
 
-                    //setup
-                    var decimals = 18;
-                    var related_token_details = tokenAddressToDetails(result['token_address'])
-                    if(related_token_details && related_token_details.decimals){
-                        decimals = related_token_details.decimals;
-                    }
-                    document.decimals = decimals;
+                    build_detail_page(result);
 
-                    // title
-                    result['title'] = result['title'] ? result['title'] : result['github_url'];
-                    result['title'] = result['network'] != 'mainnet' ? "(" + result['network'] + ") " + result['title'] : result['title'];
-                    $('.title').html("Funded Issue Details: " + result['title']);
-
-                    // Find interest information
-                    var is_interested = is_on_interest_list(result['pk']);
-                    update_interest_list(result['pk']);
-
-                    //insert table onto page
-                    for(var j=0; j< rows.length; j++){
-                        var key = rows[j];
-                        var head = null;
-                        var val = result[key];
-                        if(heads[key]){
-                            head = heads[key];
-                        }
-                        if(callbacks[key]){
-                            _result = callbacks[key](key, val, result);
-                            val = _result[1];
-                        }
-                        var entry = {
-                            'head': head,
-                            'key': key,
-                            'val': val,
-                        }
-                        var id = '#' + key;
-                        if($(id).length){
-                            $(id).html(val);
-                        }
-                    }
-
-                    //actions
-                    var actions = [];
-                    if(result['github_url'].substring(0,4) == 'http'){
-
-                        var github_url = result['github_url'];
-                        // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
-                        github_url = github_url.replace('pipermerriam/web3.py','ethereum/web3.py');
-
-                        if(result['github_comments']){
-                            var entry_comment = {
-                              href: github_url,
-                              text: result['github_comments'],
-                              target: 'new',
-                              parent: 'right_actions',
-                              color: 'github-comment'
-                            };
-                            actions.push(entry_comment);
-                        }
-
-
-
-                        var entry = {
-                            href: github_url,
-                            text: 'View on Github',
-                            target: 'new',
-                            parent: 'right_actions',
-                            color: 'darkBlue',
-                            title: 'Github is where the issue scope lives.  Its also a great place to collaborate with, and get to know, other developers (and sometimes even the repo maintainer themselves!).'
-                        }
-
-                        actions.push(entry);
-                    }
-                    var enabled = !isBountyOwner(result);
-                    if(result['status']=='open' || result['status']=='started' ){
-
-                        var interestEntry = {
-                            href: is_interested ? '/uninterested' : '/interested',
-                            text: is_interested ? 'Stop Work' : 'Start Work',
-                            parent: 'right_actions',
-                            color: enabled ? 'darkBlue' : 'darkGrey',
-                            extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Start Work in an issue to let the issue funder know that youre interested in working with them.  Use this functionality when you START work.  Please leave a comment for the bounty submitter to let them know you are interested in working with them after you start work' : 'Can only be performed if you are not the funder.',
-                        }
-                        actions.push(interestEntry);
-
-                        var entry = {
-                            href: '/legacy/funding/fulfill?source='+result['github_url'],
-                            text: 'Submit Work',
-                            parent: 'right_actions',
-                            color: enabled ? 'darkBlue' : 'darkGrey',
-                            extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? 'Use Submit Work when you FINISH work on a bounty.   Use Claim Work when you START work.' : 'Can only be performed if you are not the funder.',
-                        }
-                        actions.push(entry);
-                    }
-
-                    var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
-                    if(is_expired){
-                        var enabled = isBountyOwner(result);
-                        var entry = {
-                            href: '/legacy/funding/clawback?source='+result['github_url'],
-                            text: 'Clawback Expired Funds',
-                            parent: 'right_actions',
-                            color: enabled ? 'darkBlue' : 'darkGrey',
-                            extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? '' : 'Can only be performed if you are the funder.',
-                        }
-                        actions.push(entry);
-                    }
-                    if(result['status']=='submitted' ){
-                        var enabled = isBountyOwner(result);
-                        var entry = {
-                            href: '/legacy/funding/process?source='+result['github_url'],
-                            text: 'Accept/Reject Submission',
-                            parent: 'right_actions',
-                            color: enabled ? 'darkBlue' : 'darkGrey',
-                            extraClass: enabled ? '' : 'disabled',
-                            title: enabled ? '' : 'Can only be performed if you are the funder.',
-
-                        }
-                        actions.push(entry);
-                    }
-
-                    for(var l=0; l< actions.length; l++){
-                        var target = actions[l]['parent'];
-                        var tmpl = $.templates("#action");
-                        var html = tmpl.render(actions[l]);
-                        $("#"+target).append(html);
-                    }
+                    do_actions(result);
 
                     //cleanup
                     document.result = result;

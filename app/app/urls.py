@@ -105,6 +105,7 @@ urlpatterns = [
     url(r'^iosfeedback/?', retail.views.iosfeedback, name='iosfeedback'),
     url(r'^ios/?', retail.views.ios, name='ios'),
     url(r'^itunes/?', retail.views.itunes, name='itunes'),
+    url(r'^ethdenverafterparty/?', retail.views.ethdenverafterparty, name='ethdenverafterparty'),
     url(r'^ethdenver/?', retail.views.ethdenver, name='ethdenver'),
     url(r'^denver/?', retail.views.ethdenver, name='denver'),
     url(r'^casestudy/?', retail.views.casestudy, name='casestudy'),

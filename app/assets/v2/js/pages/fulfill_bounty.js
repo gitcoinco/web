@@ -4,7 +4,9 @@ window.onload = function(){
         var account = web3.eth.accounts[0];
 
         if (typeof localStorage['githubUsername'] !='undefined'){
-            $('input[name=githubUsername]').val(localStorage['githubUsername']);
+            if(!$('input[name=githubUsername]').val()){
+                $('input[name=githubUsername]').val(localStorage['githubUsername']);
+            }
         }
         if (typeof localStorage['notificationEmail'] !='undefined'){
             $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
@@ -94,11 +96,9 @@ window.onload = function(){
                                     'dataHash': null,
                                     'issuer': account,
                                     'txid': result,
-                                });  
+                                });
 
-                                // See views.sync_web3
                                 dataLayer.push({'event': 'claimissue'});
-                                sync_web3(issueURL);
                                 _alert({ message: "Fulfillment submitted to web3." },'info');
                                 setTimeout(function(){
                                     mixpanel.track("Fulfill Bounty Success", {});
@@ -129,7 +129,7 @@ window.onload = function(){
 
                             var bountyId = result['standard_bounties_id'];
 
-                            bounty.fulfillBounty(bountyId, document.ipfsDataHash, {gasPrice:web3.toHex($("#gasPrice").val()) * Math( 10, 9 )}, web3Callback);
+                            bounty.fulfillBounty(bountyId, document.ipfsDataHash, {gasPrice:web3.toHex($("#gasPrice").val()) * Math.pow( 10, 9 )}, web3Callback);
                         })
                     }
                     e.preventDefault();

@@ -12,6 +12,10 @@ $(document).ready(function(){
     // Load sidebar radio buttons from localStorage
     if(getParam('source')){
         $('input[name=issueURL]').val(getParam('source'));
+    } else if(getParam('url')){
+        $('input[name=issueURL]').val(getParam('url'));
+    } else if(localStorage['issueURL']){
+         $('input[name=issueURL]').val(localStorage['issueURL']);
     }
     if(localStorage['expirationTimeDelta']){
         $('select[name=expirationTimeDelta] option').prop('selected', false);
@@ -25,9 +29,6 @@ $(document).ready(function(){
     }
     if(localStorage['bountyType']){
         $('select[name=bountyType] option:contains('+localStorage['bountyType']+')').prop('selected', true);
-    }
-    if(localStorage['issueURL']){
-         $('input[name=issueURL]').val(localStorage['issueURL']);
     }
     
     //fetch issue URL related info
@@ -194,7 +195,6 @@ $(document).ready(function(){
             // Need to pass the bountydetails as well, since I can't grab it from the 
             // Standard Bounties contract.
             dataLayer.push({'event': 'fundissue'});
-            sync_web3(issueURL);  // Writes the bounty URL to the database
             
             // update localStorage issuePackage
             var issuePackage = JSON.parse(localStorage[issueURL]);
@@ -216,7 +216,7 @@ $(document).ready(function(){
                 mixpanel.track("New Bounty Error", {step: 'post_bounty', error: error});
                 console.error(error);
                 _alert({ message: "There was an error.  Please try again or contact support." });
-                $('#submitBounty').removeAttr('disabled');
+                unloading_button($('#submitBounty'));
                 return;
             }
 
@@ -235,7 +235,7 @@ $(document).ready(function(){
                 mixpanel.track("New Bounty Error", {step: 'post_ipfs', error: error});
                 console.error(error);
                 _alert({ message: "There was an error.  Please try again or contact support." });
-                $('#submitBounty').removeAttr('disabled');
+                unloading_button($('#submitBounty'));
                 return;
             }
 

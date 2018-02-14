@@ -52,7 +52,7 @@
                     <form id=whitepaper  method=POST>
                         <div class="form-group">
                             <label for="email">Email address</label>
-                            <input type=text name=email class=form-control placeholder='you@somewhere'  value="{{email}}" required>
+                            <input type=text name=email class=form-control placeholder='you@somewhere'  value="{% if email %}{{email}}{%endif%}" required>
                             <small id="emailHelp" class="form-text text-muted">Gitcoin will never share your email with anyone else.</small>
                         </div>
                         {% csrf_token %}

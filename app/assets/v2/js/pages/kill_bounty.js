@@ -81,7 +81,6 @@ window.onload = function(){
                                 'txid': result,
                             });  
 
-                            sync_web3(issueURL);
                             _alert({ message: "Kill bounty submitted to web3." },'info');
                             setTimeout(function(){
                                 mixpanel.track("Kill Bounty Success", {});

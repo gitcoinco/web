@@ -124,6 +124,7 @@ def render_new_bounty_rejection(to_email, bounty):
 
 
 def render_bounty_expire_warning(to_email, bounty):
+    from django.db.models.functions import Lower
 
     unit = 'days'
     num = int(round((bounty.expires_date - timezone.now()).days, 0))
@@ -131,12 +132,14 @@ def render_bounty_expire_warning(to_email, bounty):
         unit = 'hours'
         num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
 
+    fulfiller_emails = list(bounty.fulfillments.annotate(lower_email=Lower('fulfiller_email')).values_list('lower_email'))
+
     params = {
         'bounty': bounty,
         'num': num,
         'unit': unit,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
-        'is_claimee': (bounty.fulfiller_email if bounty.fulfiller_email else "").lower() == to_email.lower(),
+        'is_claimee': (to_email.lower() in fulfiller_emails),
         'is_owner': bounty.bounty_owner_email.lower() == to_email.lower(),
     }
 
@@ -179,16 +182,16 @@ def render_new_bounty_roundup(to_email):
 
     bounties = [
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/web3.py/issues/549'),
-            'primer': 'This is a python issue for the Ethereum Foundation... 💯 ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MetaMask/metamask-extension/issues/3249'),
+            'primer': 'This is a big one, and even better, its from the Metamask team! ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/gitcoinco/web/issues/208'),
-            'primer': 'Want to help build Gitcoin?  Here\'s an opppy to do just that 👇\' ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/gitcoinco/web/issues/445'),
+            'primer': 'Want to help tune the UX on Gitcoin?  Here\'s an opppy to do just that 👇\' ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/btcsuite/btcd/issues/1089'),
-            'primer': 'Into Bitcoin and distributed programming?  This issue could be for you..  ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/browser-solidity/issues/210'),
+            'primer': 'Want to do some work for the Ethereum Foundation?  This issue is for you  ~ @owocki',
         },
     ]
 

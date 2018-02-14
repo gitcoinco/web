@@ -84,7 +84,8 @@ def stats(request):
             'joe_dominance_index_30_value',
             'turnaround_time_hours_30_days_back',
             'tips',
-            'twitter'
+            'twitter',
+            'user_action_Login',
         ]
         types = filter_types(types, _filters)
 

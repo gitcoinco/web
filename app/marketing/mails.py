@@ -109,7 +109,7 @@ def weekly_roundup(to_emails=None):
     if to_emails is None:
         to_emails = []
 
-    subject = "Gitcoin + Standard Bounties = 🔥"
+    subject = "Gitcoin Weekly | See you at ETHDenver! 🌄"
     for to_email in to_emails:
         html, text = render_new_bounty_roundup(to_email)
         from_email = settings.PERSONAL_CONTACT_EMAIL

@@ -3,9 +3,9 @@ var bounty_abi = [{"constant":false,"inputs":[{"name":"_bountyId","type":"uint25
 
 
 var bounty_address = function (){
-    // workaround for document.web3network not working with rinkeby
     if (document.web3network == null) {
-        document.web3network = 'rinkeby';
+        // default to mainnet if web3network isn't found in time
+        document.web3network = 'mainnet';
     }
     switch(document.web3network){
         case "mainnet":
@@ -56,5 +56,5 @@ var erc20_approve_gas = 560000;
 var max_gas_for_erc20_bounty_post = 517849;
 var gasLimitMultiplier = 4;
 var gasMultiplier = 1.3;
-var defaultGasPrice = 10**9 * 5; //5 gwei
-var weiPerEther = 10**18;
+var defaultGasPrice = Math.pow(10, 9) * 5; //5 gwei
+var weiPerEther = Math.pow(10, 18);

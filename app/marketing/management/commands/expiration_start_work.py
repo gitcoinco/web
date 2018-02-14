@@ -62,12 +62,14 @@ class Command(BaseCommand):
                             should_delete_interest = False
                         else:
                             # example format: 2018-01-26T17:56:31Z'
-                            time_format = '%Y-%m-%dT%H:%M:%SZ'
-                            last_comment_by_user = datetime.strptime(comments_by_interested_party[0]['created_at'], time_format)
+                            comment_times = [datetime.strptime(comment['created_at'], '%Y-%m-%dT%H:%M:%SZ') for comment in comments_by_interested_party]
+                            last_comment_by_user = max(comment_times)
                             delta_now_vs_last_comment = datetime.now() - last_comment_by_user
                             last_heard_from_user_days = delta_now_vs_last_comment.days
                             should_warn_user = last_heard_from_user_days >= num_days_back_to_warn
                             should_delete_interest = last_heard_from_user_days >= num_days_back_to_delete_interest
+
+                            print(f"- its been {last_heard_from_user_days} days since we heard from the user")
                         
                         if should_delete_interest:
                             print('executing should_delete_interest for {}'.format(interest.pk))
