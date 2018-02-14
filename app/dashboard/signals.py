@@ -52,4 +52,6 @@ def changed_fulfillments(sender, instance, action, reverse, model, **kwargs):
         profile_handles.append((fulfillment.profile.handle, fulfillment.profile.absolute_url))
 
     if action in ['post_add', 'post_remove']:
+        print('Changed fulfillments: ', fulfillments)
+        print('Changed Profile Pairs: ', profile_handles)
         maybe_market_to_github(instance, event_name, profile_pairs=profile_handles)
