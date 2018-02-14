@@ -5,6 +5,7 @@ import sys
 from urllib.parse import urlparse as parse
 
 from django.conf import settings
+from django.utils import timezone
 
 import rollbar
 import twitter
@@ -408,8 +409,13 @@ def maybe_market_to_email(b, event_name):
             keywords = b.keywords.split(',')
             for keyword in keywords:
                 to_emails = to_emails + list(EmailSubscriber.objects.filter(keywords__contains=[keyword.strip()]).values_list('email', flat=True))
-            for to_email in set(to_emails):
-                new_bounty(b, [to_email])
+
+            should_send_email = b.web3_created > (timezone.now() - timezone.timedelta(hours=5))
+            # only send if the bounty is reasonbly new
+
+            if should_send_email:
+                for to_email in set(to_emails):
+                    new_bounty(b, [to_email])
         except Exception as e:
             logging.exception(e)
             print(e)
