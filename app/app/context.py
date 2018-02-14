@@ -24,6 +24,8 @@ def insert_settings(request):
         'rollbar_client_token': settings.ROLLBAR_CLIENT_TOKEN,
         'env': settings.ENV,
     }
+    context['json_context'] = json.dumps(context)
+
     if context['github_handle']:
         context['unclaimed_tips'] = Tip.objects.filter(
             expires_date__gte=timezone.now(),
@@ -31,6 +33,5 @@ def insert_settings(request):
             username__iexact=context['github_handle']
             )
 
-    context['json_context'] = json.dumps(context)
 
     return context
