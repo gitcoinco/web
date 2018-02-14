@@ -373,6 +373,8 @@ def process_bounty_details(bountydetails):
                         kwargs['profile_id'] = Profile.objects.get(handle=github_username).pk
                     except Profile.DoesNotExist:
                         pass
+                if fment.get('accepted'):
+                    kwargs['accepted'] = True
                 new_fulfillment = BountyFulfillment.objects.create(
                     fulfiller_address=fment.get('fulfiller', '0x0000000000000000000000000000000000000000'),
                     fulfiller_email=fment.get('data', {}).get('payload', {}).get('fulfiller', {}).get('email', ''),
