@@ -40,6 +40,11 @@ urlpatterns = [
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
     url(r'^api/v0.1/', include(router.urls)),
     # dashboard views
+
+    # Dummy External Bounties index
+    # url(r'^external_bounties/?', dashboard.views.external_bounties, name='external_bounties'),
+    # url(r'^external_bounty/?', dashboard.views.external_bounties_show, name="external_bounties_show"),
+
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),

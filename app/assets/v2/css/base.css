@@ -65,6 +65,10 @@ div, p, a, span {
     padding-right: 0px;
 }
 
+.with-grey-background .body {
+    background-color: #eee !important;
+}
+
 .index .container-fluid {
     overflow-x: hidden;
 }
