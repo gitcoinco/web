@@ -401,7 +401,8 @@ def process_bounty_details(bountydetails):
 
 
 def process_bounty_changes(old_bounty, new_bounty, txid):
-
+    from dashboard.utils import build_profile_pairs
+    profile_pairs = None
     # process bounty sync requests
     did_bsr = False
     for bsr in BountySyncRequest.objects.filter(processed=False, github_url=new_bounty.github_url):
@@ -423,11 +424,15 @@ def process_bounty_changes(old_bounty, new_bounty, txid):
         event_name = 'unknown_event'
     print(event_name)
 
+    # Build profile pairs list
+    if new_bounty.fulfillments.exists():
+        profile_pairs = build_profile_pairs(new_bounty)
+
     # marketing
     print("============ posting ==============")
     did_post_to_twitter = maybe_market_to_twitter(new_bounty, event_name)
     did_post_to_slack = maybe_market_to_slack(new_bounty, event_name)
-    did_post_to_github = maybe_market_to_github(new_bounty, event_name)
+    did_post_to_github = maybe_market_to_github(new_bounty, event_name, profile_pairs)
     did_post_to_email = maybe_market_to_email(new_bounty, event_name)
     print("============ done posting ==============")
 
