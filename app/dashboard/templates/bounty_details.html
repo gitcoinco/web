@@ -121,7 +121,7 @@
     <script id="interested" type="text/x-jsrender">
         <li>
             <img src="[[:local_avatar_url]]" class="avatar">
-            <a href="[[:url]]">[[:handle]]</a>
+            <a target=new href="[[:url]]">[[:handle]]</a>
         </li>
     </script>
 
@@ -139,9 +139,9 @@
             <div class="col-8">
                 <ul style="list-style-type:none" id="submitter_ul">
                     <li>Name: <span id="fulfiller_name">[[:fulfiller.fulfiller_name]]</span></li>
-                    <li>ETH Address: <span id="fulfiller_address"> <a href="https://etherscan.io/address/[[:fulfiller.address]]">[[:fulfiller.fulfiller_address]]</a></span></li>
+                    <li>ETH Address: <span id="fulfiller_address"> <a target=new href="https://etherscan.io/address/[[:fulfiller.fulfiller_address]]">[[:fulfiller.fulfiller_address]]</a></span></li>
                     <li>Email: <span id="fulfiller_email"> <a href="mailto:[[:fulfiller.email]]">[[:fulfiller.fulfiller_email]]</a></span></li>
-                    <li>Gitcoin Profile: <span id="fulfiller_github_username"> <a href="{% url 'profile' %}[[:fulfiller.fulfiller_github_username]]">[[:fulfiller.fulfiller_github_username]]</a></span></li>
+                    <li>Gitcoin Profile: <span id="fulfiller_github_username"> <a target=new href="{% url 'profile' %}[[:fulfiller.fulfiller_github_username]]">[[:fulfiller.fulfiller_github_username]]</a></span></li>
                     <li>Submission ID: <span id="fulfillment_id">[[:fulfiller.fulfillment_id]]</span></li>
                 </ul>
             </div>
