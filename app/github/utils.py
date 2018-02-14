@@ -305,7 +305,10 @@ def patch_issue_comment(comment_id, owner, repo, comment):
 def delete_issue_comment(comment_id, owner, repo):
     """Remove a comment on an issue via delete."""
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
-    response = requests.delete(url, auth=_AUTH)
+    try:
+        response = requests.delete(url, auth=_AUTH)
+    except Exception:
+        return {}
     return response.json()
 
 
