@@ -66,6 +66,7 @@ def github_callback(request):
             'email': user_profile.email,
             'access_token': user_profile.github_access_token,
             'profile_id': user_profile.pk,
+            'name': user_profile.data.get('name', None),
             'access_token_last_validated': timezone.now().isoformat(),
         }
         for k, v in session_data.items():

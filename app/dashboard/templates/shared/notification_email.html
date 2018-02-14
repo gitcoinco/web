@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,12 +16,7 @@
 
 {% endcomment %}
 
-
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','{% if env == 'prod' %}GTM-M66Q83Q{% else %}GTM-XXXXXXX{% endif %}');</script>
-<!-- End Google Tag Manager -->
-
+                            <div class="w-100 mt-2">
+                                <label for=notificationEmail>Notification Email:</label>
+                                <input name='notificationEmail' id='notificationEmail'  class="w-100 gc-round-text-input" type="text" placeholder="you@domain.co (optional, but recommended for notifications)" value="{% if from_email %}{{ from_email }}{% elif email %}{{ email }}{% else %}{{notificationEmail}}{% endif %}" />
+                            </div>

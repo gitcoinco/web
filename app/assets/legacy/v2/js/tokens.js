@@ -230,7 +230,9 @@ var load_tokens = function(){
                 $('input[name=amount]').val(localStorage['amount']);
             }
             if (typeof localStorage['githubUsername'] !='undefined'){
-                $('input[name=githubUsername]').val(localStorage['githubUsername']);
+                if(!$('input[name=githubUsername]').val()){
+                    $('input[name=githubUsername]').val(localStorage['githubUsername']);
+                }
             }
             if (typeof localStorage['notificationEmail'] !='undefined'){
                 $('input[name=notificationEmail]').val(localStorage['notificationEmail']);

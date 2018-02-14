@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -77,12 +77,13 @@ class Command(BaseCommand):
 
         print("- bounty")
         from dashboard.models import Bounty
-        for b in Bounty.objects.all():
+        for b in Bounty.objects.prefetch_related('fulfillments').all():
             email_list = []
             if b.bounty_owner_email:
                 email_list.append(b.bounty_owner_email)
-            if b.fulfiller_email:
-                email_list.append(b.fulfiller_email)
+            for fulfiller in b.fulfillments.all():
+                if fulfiller.fulfiller_email:
+                    email_list.append(fulfiller.fulfiller_email)
             for email in email_list:
                 process_email(email, 'bounty_usage')
 

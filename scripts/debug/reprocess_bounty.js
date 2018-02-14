@@ -1,11 +1,11 @@
 //stdbounties
 
-var issueURL = 'https://github.com/ethereum/remix/issues/577'
+var issueURL = 'https://github.com/owocki/pytrader/issues/4'
 localStorage[issueURL] = JSON.stringify({
     'timestamp': timestamp(),
-    'dataHash': 'QmPM18xxTSYkZUEAf7PSkQZbS7pB4u86McXL549MJwh66Q',
+    'dataHash': null,
     'issuer': web3.eth.coinbase,
-    'txid': '0x926884369a8838bc766294bd52a84f2cad514ea82c159c0837ff923564b28cca',
+    'txid': '0xd2e45f7feea2e46d84e65ef3c1e5136ec7935252ba4b95dc4f170e067a9d9a75',
 });  
 document.location.href = document.location.href 
 

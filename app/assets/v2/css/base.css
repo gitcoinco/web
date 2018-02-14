@@ -492,6 +492,7 @@ input[type=text].loading {
 
 #upper_left {
     min-height: 140px;
+    background-color: #26cd7f;
 }
 
 #upper_left #sidebar_head {
@@ -509,6 +510,10 @@ input[type=text].loading {
     max-width: 40px;
     max-height: 40px;
     display: inline;
+}
+
+#upper_left.disabled {
+    background-color: red;
 }
 
 .blocking_error {
@@ -696,14 +701,17 @@ body.bounty_details .avatar {
 #bounty_details{
     display: none;
 }
-#bounty_details #issue_description #h1,
-#bounty_details #issue_description #h2,
-#bounty_details #issue_description #h3,
-#bounty_details #issue_description #h4,
-#bounty_details #issue_description #h5,
-#bounty_details #issue_description #h6
+
+#bounty_details #issue_description h1,
+#bounty_details #issue_description h2,
+#bounty_details #issue_description h3,
+#bounty_details #issue_description h4,
+#bounty_details #issue_description h5,
+#bounty_details #issue_description h6
 {
     font-size: 16px;
+    margin-top: 15px;
+    text-transform: none;
 }
 
 body.bounty_details #left_actions,

@@ -124,6 +124,7 @@ def render_new_bounty_rejection(to_email, bounty):
 
 
 def render_bounty_expire_warning(to_email, bounty):
+    from django.db.models.functions import Lower
 
     unit = 'days'
     num = int(round((bounty.expires_date - timezone.now()).days, 0))
@@ -131,12 +132,14 @@ def render_bounty_expire_warning(to_email, bounty):
         unit = 'hours'
         num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
 
+    fulfiller_emails = list(bounty.fulfillments.annotate(lower_email=Lower('fulfiller_email')).values_list('lower_email'))
+
     params = {
         'bounty': bounty,
         'num': num,
         'unit': unit,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
-        'is_claimee': (bounty.fulfiller_email if bounty.fulfiller_email else "").lower() == to_email.lower(),
+        'is_claimee': (to_email.lower() in fulfiller_emails),
         'is_owner': bounty.bounty_owner_email.lower() == to_email.lower(),
     }
 
