@@ -331,12 +331,13 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
                     bounty.save()
         # Handle deleting comments if no profiles are provided.
         elif event_name in ['work_started', 'work_done'] and not profile_pairs:
-            delete_issue_comment(comment_id, username, repo)
-            if event_name == 'work_started':
-                bounty.interested_comment = None
-            elif event_name == 'work_done':
-                bounty.submissions_comment = None
-            bounty.save()
+            if comment_id:
+                delete_issue_comment(comment_id, username, repo)
+                if event_name == 'work_started':
+                    bounty.interested_comment = None
+                elif event_name == 'work_done':
+                    bounty.submissions_comment = None
+                bounty.save()
         # If this isn't work_started/done, simply post the issue comment.
         else:
             post_issue_comment(username, repo, issue_num, msg)
