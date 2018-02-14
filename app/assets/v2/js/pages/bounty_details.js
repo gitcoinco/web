@@ -415,6 +415,29 @@ window.addEventListener('load', function() {
 
                 $("#submission_list").append(submitter_html);
             });
+        } else if (result['status']=='done') {
+            fulfillers = [];
+            var submissions = result.fulfillments;
+            $.each(submissions, function (index, value) {
+                var accepted = (value.accepted == 'true');
+                var acceptedButton = {
+                    href: '',
+                    text: accepted ? 'Accepted' : 'Not Accepted',
+                    color: accepted ? 'green' : 'darkGrey',
+                    extraClass: accepted ? '' : 'disabled',
+                    title: accepted ? 'This submisson has been accepted.' : 'This submission has not been accepted.',
+                };
+
+                var submission = {
+                    'fulfiller': value,
+                    'button': acceptedButton,
+                };
+
+                var submitter_tmpl = $.templates("#submission");
+                var submitter_html = submitter_tmpl.render(submission);
+
+                $("#submission_list").append(submitter_html);
+            });
         } else {
             submitter_html = "No one has submitted work yet.";
             $("#submission_list").html(submitter_html);
