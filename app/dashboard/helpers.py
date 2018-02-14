@@ -273,6 +273,7 @@ def process_bounty_details(bountydetails):
     bounty_payload = bounty_data.get('payload', {})
     metadata = bounty_payload.get('metadata', {})
     meta = bounty_data.get('meta', {})
+    submissions_comment_id = None
 
     # fulfillments metadata will be empty when bounty is first created
     fulfillments = bountydetails.get('fulfillments', {})
@@ -324,6 +325,8 @@ def process_bounty_details(bountydetails):
 
     with transaction.atomic():
         for old_bounty in old_bounties:
+            if old_bounty.current_bounty:
+                submissions_comment_id = old_bounty.submissions_comment
             old_bounty.current_bounty = False
             old_bounty.save()
         new_bounty = Bounty.objects.create(
@@ -354,6 +357,7 @@ def process_bounty_details(bountydetails):
             standard_bounties_id=bounty_id,
             balance=bounty.get('balance'),
             num_fulfillments=len(fulfillments),
+            submissions_comment=submissions_comment_id,
         )
         new_bounty.fetch_issue_item()
         if not new_bounty.avatar_url:

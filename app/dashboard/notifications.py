@@ -258,7 +258,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
                   "leave a comment, the funder may expire your submission at their discretion."
 
         msg = f"__Work for {natural_value} {bounty.token_name} {usdt_value} has been submitted by__: \n 1. " \
-              f"{profiles}.__ {sub_msg} \n\n * Learn more [on the gitcoin issue page]({absolute_url})\n * " \
+              f"{profiles} {sub_msg} \n\n * Learn more [on the gitcoin issue page]({absolute_url})\n * " \
               "Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * " \
               f"${amount_open_work} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
     elif event_name == 'work_done':
