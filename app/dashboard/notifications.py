@@ -411,7 +411,7 @@ def maybe_market_to_email(b, event_name):
             for keyword in keywords:
                 to_emails = to_emails + list(EmailSubscriber.objects.filter(keywords__contains=[keyword.strip()]).values_list('email', flat=True))
 
-            should_send_email = b.web3_created > (timezone.now() - timezone.timedelta(hours=5))
+            should_send_email = b.web3_created > (timezone.now() - timezone.timedelta(hours=15))
             # only send if the bounty is reasonbly new
 
             if should_send_email:
