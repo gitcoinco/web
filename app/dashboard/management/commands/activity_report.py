@@ -63,6 +63,15 @@ class Command(BaseCommand):
         return match.groups()[0]
 
     def format_bounty(self, bounty):
+        from dashboard.models import BountyFulfillment
+        try:
+            bounty_fulfillment = bounty.fulfillments.accepted().latest('created_on')
+            claimee_address = bounty_fulfillment.fulfiller_address
+            fulfiller_github_username = bounty_fulfillment.fulfiller_github_username
+        except BountyFulfillment.DoesNotExist:
+            claimee_address = ''
+            fulfiller_github_username = ''
+
         return {
             'type': 'bounty',
             'created_on': bounty.web3_created,
@@ -72,10 +81,10 @@ class Command(BaseCommand):
             'amount_eth': bounty.value_in_eth / 10**18,
             'amount_usdt': bounty.value_in_usdt,
             'from_address': bounty.bounty_owner_address,
-            'claimee_address': bounty.fulfiller_address,
+            'claimee_address': claimee_address,
             'repo': self.extract_github_repo(bounty.github_url),
             'from_username': bounty.bounty_owner_github_username or '',
-            'fulfiller_github_username': bounty.fulfiller_github_username or '',
+            'fulfiller_github_username': fulfiller_github_username,
             'status': bounty.status,
             'comments': bounty.github_url,
         }
@@ -110,7 +119,7 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **options):
-        bounties = Bounty.objects.filter(
+        bounties = Bounty.objects.prefetch_related('fulfillments').filter(
             network='mainnet',
             current_bounty=True,
             web3_created__gte=options['start_date'],

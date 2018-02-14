@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -61,30 +61,31 @@ def add_element(key, username, amount):
 
 def sum_bounties(b, usernames):
     for username in usernames:
-        
+
         if b.idx_status == 'submitted':
+            fulfiller_usernames = list(b.fulfillments.all().values_list('fulfiller_github_username'))
             add_element('all_fulfilled', username, b._val_usd_db)
             if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
                 add_element('all_payers', username, b._val_usd_db)
-            if username == b.fulfiller_github_username and username not in IGNORE_EARNERS:
+            if username in fulfiller_usernames and username not in IGNORE_EARNERS:
                 add_element('all_earners', username, b._val_usd_db)
             if b.created_on > weekly_cutoff:
                 add_element('weekly_fulfilled', username, b._val_usd_db)
                 if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
                     add_element('weekly_payers', username, b._val_usd_db)
-                if username == b.fulfiller_github_username and username not in IGNORE_EARNERS:
+                if username in fulfiller_usernames and username not in IGNORE_EARNERS:
                     add_element('weekly_earners', username, b._val_usd_db)
             if b.created_on > monthly_cutoff:
                 add_element('monthly_fulfilled', username, b._val_usd_db)
                 if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
                     add_element('monthly_payers', username, b._val_usd_db)
-                if username == b.fulfiller_github_username and username not in IGNORE_EARNERS:
+                if username in fulfiller_usernames and username not in IGNORE_EARNERS:
                     add_element('monthly_earners', username, b._val_usd_db)
             if b.created_on > yearly_cutoff:
                 add_element('yearly_fulfilled', username, b._val_usd_db)
                 if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
                     add_element('yearly_payers', username, b._val_usd_db)
-                if username == b.fulfiller_github_username and username not in IGNORE_EARNERS:
+                if username in fulfiller_usernames and username not in IGNORE_EARNERS:
                     add_element('yearly_earners', username, b._val_usd_db)
 
         add_element('all_all', username, b._val_usd_db)
@@ -122,12 +123,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-
         # get bounties
-        bounties = Bounty.objects.filter(
-            current_bounty=True,
-#            created_on__gt=weekly_cutoff,
-            )
+        bounties = Bounty.objects.current()
 
         # iterate
         for b in bounties:
@@ -137,15 +134,14 @@ class Command(BaseCommand):
             usernames = []
             if b.bounty_owner_github_username:
                 usernames.append(b.bounty_owner_github_username)
-            if b.fulfiller_github_username:
-                usernames.append(b.fulfiller_github_username)
+            for fulfiller in b.fulfillments.all():
+                if fulfiller.fulfiller_github_username:
+                    usernames.append(fulfiller.fulfiller_github_username)
 
             sum_bounties(b, usernames)
 
         # tips
-        tips = Tip.objects.filter(
-#            created_on__gt=weekly_cutoff,
-            )
+        tips = Tip.objects.all()
 
         for t in tips:
             if not t.value_in_usdt:

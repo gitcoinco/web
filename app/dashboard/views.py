@@ -33,6 +33,8 @@ from app.utils import ellipses, sync_profile
 from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty, BountySyncRequest, Interest, Profile, ProfileSerializer, Subscription, Tip
 from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
+from dashboard.utils import get_bounty, getBountyID, has_tx_mined
+from dashboard.utils import process_bounty as web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from github.utils import get_auth_url, get_github_emails, get_github_primary_email, is_github_token_valid
 from marketing.models import Keyword
@@ -342,6 +344,8 @@ def process_bounty(request):
     """Process the bounty."""
     params = {
         'issueURL': request.GET.get('source'),
+        'fulfillment_id': request.GET.get('id'),
+        'fulfiller_address': request.GET.get('address'),
         'title': 'Process Issue',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
@@ -548,43 +552,53 @@ def save_search(request):
 
 @require_POST
 @csrf_exempt
-@ratelimit(key='ip', rate='2/s', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='5/s', method=ratelimit.UNSAFE, block=True)
 def sync_web3(request):
     """ Sync up web3 with the database.  This function has a few different uses.  It is typically
         called from the front end using the javascript `sync_web3` function.  The `issueURL` is
         passed in first, followed optionally by a `bountydetails` argument.
     """
     # setup
-    result = {}
-    issueURL = request.POST.get('issueURL', False)
-    bountydetails = json.loads(request.POST.get('bountydetails', "{}"))
+    result = {
+        'status': '400',
+        'msg': "bad request"
+    }
 
-    if issueURL:
-        issueURL = normalizeURL(issueURL)
+    issueURL = request.POST.get('url')
+    txid = request.POST.get('txid')
+    network = request.POST.get('network')
 
-        if not bountydetails:
-            # create a bounty sync request
-            result['status'] = 'OK'
-            for existing_bsr in BountySyncRequest.objects.filter(github_url=issueURL, processed=False):
-                existing_bsr.processed = True
-                existing_bsr.save()
+    if issueURL and txid and network:
+        # confirm txid has mined
+        print('* confirming tx has mined')
+        if not has_tx_mined(txid, network):
+            result = {
+                'status': '400',
+                'msg': 'tx has not mined yet'
+            }
         else:
-            contract_address = request.POST.get('contract_address')
-            network = request.POST.get('network')
-            did_change, old_bounty, new_bounty = process_bounty_details(
-                bountydetails, issueURL, contract_address, network)
 
-            print("{} changed, {}".format(did_change, issueURL))
-            if did_change:
-                print("- processing changes")
-                process_bounty_changes(old_bounty, new_bounty, None)
+            # get bounty id
+            print('* getting bounty id')
+            bounty_id = getBountyID(issueURL, network)
+            if not bounty_id:
+                result = {
+                    'status': '400',
+                    'msg': 'could not find bounty id'
+                }
+            else:
+                # get/process bounty
+                print('* getting bounty')
+                bounty = get_bounty(bounty_id, network)
+                print('* processing bounty')
+                did_change, _, _ = web3_process_bounty(bounty)
+                result = {
+                    'status': '200',
+                    'msg': "success",
+                    'did_change': did_change
+                }
 
-        BountySyncRequest.objects.create(
-            github_url=issueURL,
-            processed=False,
-        )
-
-    return JsonResponse(result)
+    return JsonResponse(result, status=result['status'])
 
 
 # LEGAL

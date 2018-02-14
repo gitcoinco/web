@@ -411,6 +411,10 @@ def ethdenver(request):
     return redirect('https://goo.gl/forms/FQogarXntrISFCsJ2')
 
 
+def ethdenverafterparty(request):
+    return redirect('https://docs.google.com/document/d/1sjV60TN1gYzzSWHvh4UGdT_Mz6HBOt6AVK2y6d9_bm8/edit')
+
+
 def presskit(request):
     return redirect('https://www.dropbox.com/sh/bsjzbu0li2z0kr1/AACKgnQC3g6m52huYI3Gx3Ega?dl=0')
 

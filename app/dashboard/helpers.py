@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-import json
+import logging
 import pprint
 from enum import Enum
 
@@ -27,13 +27,17 @@ from django.utils import timezone
 
 import requests
 from bs4 import BeautifulSoup
-from dashboard.models import Bounty, BountySyncRequest
+from dashboard.models import Bounty, BountyFulfillment, BountySyncRequest
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
 )
 from economy.utils import convert_amount
 from pytz import UTC
 from ratelimit.decorators import ratelimit
+
+from .models import Profile
+
+logger = logging.getLogger(__name__)
 
 
 # gets amount of remote html doc (github issue)
@@ -57,7 +61,6 @@ def amount(request):
     except Exception as e:
         print(e)
         raise Http404
-
 
 
 # gets title of remote html doc (github issue)
@@ -87,7 +90,7 @@ def title(request):
     try:
         soup = BeautifulSoup(html_response.text, 'html.parser')
 
-        eles = soup.findAll("span", { "class" : "js-issue-title" })
+        eles = soup.findAll("span", {"class": "js-issue-title"})
         if len(eles):
             title = eles[0].text
 
@@ -153,6 +156,7 @@ def description(request):
 
     return JsonResponse(response)
 
+
 # gets keywords of remote issue (github issue)
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def keywords(request):
@@ -192,7 +196,7 @@ def keywords(request):
     try:
         soup = BeautifulSoup(html_response.text, 'html.parser')
 
-        eles = soup.findAll("span", {"class" : "lang"})
+        eles = soup.findAll("span", {"class": "lang"})
         for ele in eles:
             keywords.append(ele.text)
 
@@ -214,6 +218,7 @@ def normalizeURL(url):
         url = url[0:-1]
     return url
 
+
 # returns did_change if bounty has changed since last sync
 # then old_bounty
 # then new_bounty
@@ -223,12 +228,13 @@ def syncBountywithWeb3(bountyContract, url, network):
 
 
 class BountyStage(Enum):
-    """ Python enum class that matches up with the Standard Bounties BountyStage enum.
+    """Python enum class that matches up with the Standard Bounties BountyStage enum.
 
     Attributes:
         Draft (int): Bounty is a draft.
         Active (int): Bounty is active.
         Dead (int): Bounty is dead.
+
     """
 
     Draft = 0
@@ -236,57 +242,84 @@ class BountyStage(Enum):
     Dead = 2
 
 
-def process_bounty_details(bountydetails, url, contract_address, network):
-    url = normalizeURL(url)
+class UnsupportedSchemaException(Exception):
+    pass
 
-    # See Line 303 in bounty_details.js for original object
-    bountyId = bountydetails.get('bountyId', {})
-    bountyData = bountydetails.get('bountyData') or {}
-    bountyDataPayload = bountyData.get('payload', {})
-    metadata = bountyDataPayload.get('metadata', {})
-    bounty = bountydetails.get('bounty', {})
-    # Claimee metadata will be empty when bounty is first created
+
+def process_bounty_details(bountydetails):
+    """Process bounty details.
+
+    Args:
+        bountydetails (dict): The Bounty details.
+
+    TODO:
+        * Simplify method and break out logic. Currently failing mccabe complexity.
+        * Too many local variables.
+
+    Raises:
+        UnsupportedSchemaException: Exception raised if the schema is unknown
+            or unsupported.
+
+    Returns:
+        tuple: A tuple of bounty change data.
+        tuple[0] (bool): Whether or not the Bounty changed.
+        tuple[1] (dashboard.models.Bounty): The first old bounty object.
+        tuple[2] (dashboard.models.Bounty): The new Bounty object.
+
+    """
+    # See dashboard/utils.py:get_bounty from details on this data
+    bounty_id = bountydetails.get('id', {})
+    bounty_data = bountydetails.get('data') or {}
+    bounty_payload = bounty_data.get('payload', {})
+    metadata = bounty_payload.get('metadata', {})
+    meta = bounty_data.get('meta', {})
+
+    # fulfillments metadata will be empty when bounty is first created
     fulfillments = bountydetails.get('fulfillments', {})
+
+    # what schema are we workign with?
+    schema_name = meta.get('schemaName', "Unknown")
+    schema_version = meta.get('schemaVersion', "Unknown")
+
+    if schema_name == "Unknown":
+        raise UnsupportedSchemaException(f"Unknown Schema: {schema_name}")
+
+    # start to process out all the bounty data
+    url = bounty_payload.get('webReferenceURL', False)
+    if url:
+        url = normalizeURL(url)
+    else:
+        raise UnsupportedSchemaException(f"Schema is {schema_name} {schema_version}; but no webReferenceURL found so cannot continue")
+    contract_address = bountydetails.get('token')
+    network = bountydetails.get('network')
 
     # Create new bounty (but only if things have changed)
     did_change = False
     old_bounties = Bounty.objects.none()
     try:
         old_bounties = Bounty.objects.current().filter(
-            github_url=url,
-            title=bountyDataPayload.get('title', ''),
+            standard_bounties_id=bounty_id,
         ).order_by('-created_on')
         did_change = (bountydetails != old_bounties.first().raw_data)
-        if not did_change:
-            return (did_change, old_bounties.first(), old_bounties.first())
-    except Exception as e:
-        print('exception in process_bounty_details')
-        print(e)
+    except Exception:
         did_change = True
+
+    print(f"* Bounty did_change: {did_change}")
+    if not did_change:
+        return (did_change, old_bounties.first(), old_bounties.first())
 
     # Check if we have any fulfillments.  If so, check if they are accepted.
     # If there are no fulfillments, accepted is automatically False.
     # Currently we are only considering the latest fulfillment.  Std bounties supports multiple.
-    fments = fulfillments['fulfillments']
-    accepted = fments[-1].get('accepted') if fments else False
-
-    if fments:
-        fulfiller_address = fments[-1].get('payload', {}).get('fulfiller', {}).get('address', '0x0000000000000000000000000000000000000000')
-        fulfiller_email = fments[-1].get('payload', {}).get('fulfiller', {}).get('email', '')
-        fulfiller_github_username = fments[-1].get('payload', {}).get('fulfiller', {}).get('githubUsername', '')
-        fulfiller_name = fments[-1].get('payload', {}).get('fulfiller', {}).get('name', '')
-        fulfiller_metadata = fments[-1].get('payload', {}).get('metadata', {})
-    else:
-        fulfiller_address = '0x0000000000000000000000000000000000000000'
-        fulfiller_email = ''
-        fulfiller_github_username = ''
-        fulfiller_name = ''
-        fulfiller_metadata = {}
+    fments = fulfillments
+    # If any of the fulfillments have been accepted, the bounty is now accepted and complete.
+    accepted = any([fment.get('accepted') for fment in fments])
 
     # Possible Bounty Stages
     # 0: Draft
     # 1: Active
     # 2: Dead
+    bounty = bountydetails
     is_open = True if (bounty.get('bountyStage') == 1 and not accepted) else False
 
     with transaction.atomic():
@@ -294,20 +327,20 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             old_bounty.current_bounty = False
             old_bounty.save()
         new_bounty = Bounty.objects.create(
-            title=bountyDataPayload.get('title', ''),
-            issue_description=bountyDataPayload.get('description', ''),
-            web3_created=timezone.make_aware(timezone.datetime.fromtimestamp(bountyDataPayload.get('created')), timezone=UTC),
+            title=bounty_payload.get('title', ''),
+            issue_description=bounty_payload.get('description', ''),
+            web3_created=timezone.make_aware(timezone.datetime.fromtimestamp(bounty_payload.get('created')), timezone=UTC),
             value_in_token=bounty.get('fulfillmentAmount'),
-            token_name=bountyDataPayload.get('tokenName', ''),
-            token_address=bountyDataPayload.get('tokenAddress', '0x0000000000000000000000000000000000000000'),
+            token_name=bounty_payload.get('tokenName', ''),
+            token_address=bounty_payload.get('tokenAddress', '0x0000000000000000000000000000000000000000'),
             bounty_type=metadata.get('bountyType', ''),
             project_length=metadata.get('projectLength', ''),
             experience_level=metadata.get('experienceLevel', ''),
             github_url=url,  # Could also use payload.get('webReferenceURL')
-            bounty_owner_address=bountyDataPayload.get('issuer', {}).get('address', ''),
-            bounty_owner_email=bountyDataPayload.get('issuer', {}).get('email', ''),
-            bounty_owner_github_username=bountyDataPayload.get('issuer', {}).get('githubUsername', ''),
-            bounty_owner_name=bountyDataPayload.get('issuer', {}).get('name', ''),
+            bounty_owner_address=bounty_payload.get('issuer', {}).get('address', ''),
+            bounty_owner_email=bounty_payload.get('issuer', {}).get('email', ''),
+            bounty_owner_github_username=bounty_payload.get('issuer', {}).get('githubUsername', ''),
+            bounty_owner_name=bounty_payload.get('issuer', {}).get('name', ''),
             # fulfillment_ipfs_hash='',
             is_open=is_open,
             raw_data=bountydetails,
@@ -317,15 +350,10 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             network=network,
             accepted=accepted,
             # These fields are after initial bounty creation, in bounty_details.js
-            fulfiller_metadata=fulfiller_metadata,
-            fulfiller_address=fulfiller_address,
-            fulfiller_email=fulfiller_email,
-            fulfiller_github_username=fulfiller_github_username,
-            fulfiller_name=fulfiller_name,
             expires_date=timezone.make_aware(timezone.datetime.fromtimestamp(bounty.get('deadline')), timezone=UTC),
-            standard_bounties_id=bountyId,
+            standard_bounties_id=bounty_id,
             balance=bounty.get('balance'),
-            num_fulfillments=fulfillments.get('total', 0),
+            num_fulfillments=len(fulfillments),
         )
         new_bounty.fetch_issue_item()
         if not new_bounty.avatar_url:
@@ -335,6 +363,39 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             last_bounty = old_bounties.order_by('-pk').first()
             for interested in last_bounty.interested.all():
                 new_bounty.interested.add(interested)
+
+        if fments:
+            for fment in fments:
+                kwargs = {}
+                github_username = fment.get('data', {}).get('payload', {}).get('fulfiller', {}).get('githubUsername', '')
+                if github_username:
+                    try:
+                        kwargs['profile_id'] = Profile.objects.get(handle=github_username).pk
+                    except Profile.DoesNotExist:
+                        pass
+                if fment.get('accepted'):
+                    kwargs['accepted'] = True
+                new_fulfillment = BountyFulfillment.objects.create(
+                    fulfiller_address=fment.get('fulfiller', '0x0000000000000000000000000000000000000000'),
+                    fulfiller_email=fment.get('data', {}).get('payload', {}).get('fulfiller', {}).get('email', ''),
+                    fulfiller_github_username=fment.get('data', {}).get('payload', {}).get('fulfiller', {}).get('githubUsername', ''),
+                    fulfiller_name=fment.get('data', {}).get('payload', {}).get('fulfiller', {}).get('name', ''),
+                    fulfiller_metadata=fment,
+                    fulfillment_id=fment.get('id'),
+                    bounty=new_bounty,
+                    **kwargs
+                )
+                new_fulfillment.save()
+                new_bounty.fulfillments.add(new_fulfillment)
+
+            inactive_bounties = Bounty.objects.filter(
+                github_url=url,
+                title=bounty_payload.get('title'),
+                current_bounty=False,
+            ).order_by('-created_on')
+
+            for inactive_bounty in inactive_bounties:
+                BountyFulfillment.objects.filter(bounty_id=inactive_bounty.id).delete()
 
     return (did_change, old_bounties.first(), new_bounty)
 
@@ -349,18 +410,15 @@ def process_bounty_changes(old_bounty, new_bounty, txid):
         bsr.save()
 
     # new bounty
-    null_address = '0x0000000000000000000000000000000000000000'
     if (old_bounty is None and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
         event_name = 'new_bounty'
-    elif old_bounty.fulfiller_address == null_address and new_bounty.fulfiller_address != null_address:
+    elif old_bounty.num_fulfillments < new_bounty.num_fulfillments:
         event_name = 'work_submitted'
     elif old_bounty.is_open and not new_bounty.is_open:
         if new_bounty.status == 'cancelled':
             event_name = 'killed_bounty'
         else:
             event_name = 'work_done'
-    elif old_bounty.fulfiller_address != null_address and new_bounty.fulfiller_address == null_address:
-        event_name = 'rejected_claim'
     else:
         event_name = 'unknown_event'
     print(event_name)

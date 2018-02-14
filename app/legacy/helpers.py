@@ -35,19 +35,13 @@ def process_bounty_details(bountydetails, url, contract_address, network):
     """Process legacy bounty details."""
     url = normalizeURL(url)
 
-    #extract json
+    # extract json
     metadata = None
-    fulfiller_metadata = None
     try:
         metadata = json.loads(bountydetails[8])
     except Exception as e:
         print(e)
         metadata = {}
-    try:
-        fulfiller_metadata = json.loads(bountydetails[10])
-    except Exception as e:
-        print(e)
-        fulfiller_metadata = {}
 
     # create new bounty (but only if things have changed)
     did_change = False
@@ -65,11 +59,8 @@ def process_bounty_details(bountydetails, url, contract_address, network):
         did_change = True
 
     with transaction.atomic():
-        for old_bounty in old_bounties:
-            old_bounty.current_bounty = False
-            old_bounty.save()
         new_bounty = Bounty.objects.create(
-            title=metadata.get('issueTitle',''),
+            title=metadata.get('issueTitle', ''),
             web3_type='legacy_gitcoin',
             web3_created=timezone.datetime.fromtimestamp(bountydetails[7]),
             value_in_token=bountydetails[0],
@@ -82,19 +73,26 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             bounty_owner_address=bountydetails[2],
             bounty_owner_email=metadata.get('notificationEmail', ''),
             bounty_owner_github_username=metadata.get('githubUsername', ''),
-            fulfiller_address=bountydetails[3],
-            fulfiller_email=fulfiller_metadata.get('notificationEmail', ''),
-            fulfiller_github_username=fulfiller_metadata.get('githubUsername', ''),
             is_open=bountydetails[4],
             expires_date=timezone.datetime.fromtimestamp(bountydetails[9]),
             raw_data=bountydetails,
             metadata=metadata,
-            fulfiller_metadata=fulfiller_metadata,
             current_bounty=True,
             contract_address=contract_address,
             network=network,
             issue_description='',
-            )
+        )
+        for old_bounty in old_bounties:
+            if old_bounty.current_bounty:
+                old_num_fulfillments = old_bounty.fulfillments.count()
+                old_bounty.num_fulfillments = old_num_fulfillments
+                old_bounty.fulfillments.update(bounty=new_bounty)
+                if new_bounty.num_fulfillments < old_num_fulfillments or \
+                   new_bounty.num_fulfillments < new_bounty.fulfillments.count():
+                    new_bounty.num_fulfillments = new_bounty.fulfillments.count()
+                    new_bounty.save()
+            old_bounty.current_bounty = False
+            old_bounty.save()
         new_bounty.fetch_issue_item()
         if not new_bounty.avatar_url:
             new_bounty.avatar_url = new_bounty.get_avatar_url()
@@ -113,15 +111,15 @@ def process_bounty_changes(old_bounty, new_bounty, txid):
         bsr.save()
 
     # new bounty
-    null_address = '0x0000000000000000000000000000000000000000'
     if (old_bounty is None and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
         event_name = 'new_bounty'
-    elif old_bounty.fulfiller_address == null_address and new_bounty.fulfiller_address != null_address:
+    elif old_bounty.num_fulfillments == 0 and new_bounty.num_fulfillments > 0:
         event_name = 'work_submitted'
     elif old_bounty.is_open and not new_bounty.is_open:
-        event_name = 'work_done'
-    elif old_bounty.fulfiller_address != null_address and new_bounty.fulfiller_address == null_address:
-        event_name = 'rejected_claim'
+        if new_bounty.status == 'cancelled':
+            event_name = 'killed_bounty'
+        else:
+            event_name = 'work_done'
     else:
         event_name = 'unknown_event'
     print(event_name)

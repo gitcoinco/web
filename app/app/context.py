@@ -1,3 +1,5 @@
+import json
+
 from django.conf import settings
 from django.utils import timezone
 
@@ -18,6 +20,7 @@ def insert_settings(request):
         'num_slack': num_slack,
         'github_handle': request.session.get('handle', False),
         'email': request.session.get('email', False),
+        'name': request.session.get('name', False),
         'rollbar_client_token': settings.ROLLBAR_CLIENT_TOKEN,
         'env': settings.ENV,
     }
@@ -27,5 +30,7 @@ def insert_settings(request):
             receive_txid='',
             username__iexact=context['github_handle']
             )
+
+    context['json_context'] = json.dumps(context)
 
     return context

@@ -51,7 +51,7 @@ def build_auth_dict(oauth_token):
         dict: An authentication dictionary.
 
     """
-    return  {
+    return {
         'api_url': settings.GITHUB_API_BASE_URL,
         'client_id': settings.GITHUB_CLIENT_ID,
         'client_secret': settings.GITHUB_CLIENT_SECRET,
