@@ -373,7 +373,7 @@ var render_actions = function(actions){
 }
 
 var pull_bounty_from_api = function(){
-    var uri = '/api/v0.1/bounties/?';
+    var uri = '/actions/api/v0.1/bounties/?';
     $.get(uri, function(results){
         results = sanitizeAPIResults(results);
         var nonefound = true;

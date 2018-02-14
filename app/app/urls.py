@@ -39,6 +39,8 @@ urlpatterns = [
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
     url(r'^api/v0.1/', include(router.urls)),
+    url(r'^actions/api/v0.1/', include(router.urls)), # same as active, but not cached in cluodfront
+
     # dashboard views
 
     # Dummy External Bounties index
