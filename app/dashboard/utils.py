@@ -256,3 +256,19 @@ def getBountyID_from_web3(issueURL, network, start_bounty_id, direction='up'):
                 bounty_enum -= 1
 
     return None
+
+
+def build_profile_pairs(bounty):
+    """Build the profile pairs list of tuples for ingestion by notifications.
+
+    Args:
+        bounty (dashboard.models.Bounty): The Bounty to build profile pairs for.
+
+    Returns:
+        list of tuples: The list of profile pair tuples.
+
+    """
+    profile_handles = []
+    for fulfillment in bounty.fulfillments.select_related('profile').all().order_by('pk'):
+        profile_handles.append((fulfillment.profile.handle, fulfillment.profile.absolute_url))
+    return profile_handles
