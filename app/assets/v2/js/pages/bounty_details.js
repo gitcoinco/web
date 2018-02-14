@@ -217,7 +217,7 @@ var check_for_updates = function(){
     }
 };
 
-var render_work_actions = function(){
+var attach_work_actions = function(){
         $("body").delegate('a[href="/interested"], a[href="/uninterested"]', 'click', function (e) {
         e.preventDefault();
         if ($(this).attr('href') == '/interested') {
@@ -232,241 +232,242 @@ var render_work_actions = function(){
     });
 }
 
+var build_detail_page = function(result){
 
-window.addEventListener('load', function() {
-    render_work_actions();
+    //setup
+    var decimals = 18;
+    var related_token_details = tokenAddressToDetails(result['token_address'])
+    if(related_token_details && related_token_details.decimals){
+        decimals = related_token_details.decimals;
+    }
+    document.decimals = decimals;
+    $("#bounty_details").css('display','flex');
 
-    var build_detail_page = function(result){
+    // title
+    result['title'] = result['title'] ? result['title'] : result['github_url'];
+    result['title'] = result['network'] != 'mainnet' ? "(" + result['network'] + ") " + result['title'] : result['title'];
+    $('.title').html("Funded Issue Details: " + result['title']);
 
-        //setup
-        var decimals = 18;
-        var related_token_details = tokenAddressToDetails(result['token_address'])
-        if(related_token_details && related_token_details.decimals){
-            decimals = related_token_details.decimals;
+    //insert table onto page
+    for(var j=0; j< rows.length; j++){
+        var key = rows[j];
+        var head = null;
+        var val = result[key];
+        if(heads[key]){
+            head = heads[key];
         }
-        document.decimals = decimals;
-        $("#bounty_details").css('display','flex');
-
-        // title
-        result['title'] = result['title'] ? result['title'] : result['github_url'];
-        result['title'] = result['network'] != 'mainnet' ? "(" + result['network'] + ") " + result['title'] : result['title'];
-        $('.title').html("Funded Issue Details: " + result['title']);
-
-        //insert table onto page
-        for(var j=0; j< rows.length; j++){
-            var key = rows[j];
-            var head = null;
-            var val = result[key];
-            if(heads[key]){
-                head = heads[key];
-            }
-            if(callbacks[key]){
-                _result = callbacks[key](key, val, result);
-                val = _result[1];
-            }
-            var entry = {
-                'head': head,
-                'key': key,
-                'val': val,
-            }
-            var id = '#' + key;
-            if($(id).length){
-                $(id).html(val);
-            }
+        if(callbacks[key]){
+            _result = callbacks[key](key, val, result);
+            val = _result[1];
         }
+        var entry = {
+            'head': head,
+            'key': key,
+            'val': val,
+        }
+        var id = '#' + key;
+        if($(id).length){
+            $(id).html(val);
+        }
+    }
 
-    };
+};
 
-    var do_actions = function(result){
+var do_actions = function(result){
 
-    // Find interest information
-    pull_interest_list(result['pk'], function(is_interested){
+// Find interest information
+pull_interest_list(result['pk'], function(is_interested){
 
-        //actions
-        var actions = [];
-        if(result['github_url'].substring(0,4) == 'http'){
+    //actions
+    var actions = [];
+    if(result['github_url'].substring(0,4) == 'http'){
 
-            var github_url = result['github_url'];
+        var github_url = result['github_url'];
 
-            // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
-            github_url = github_url.replace('pipermerriam/web3.py','ethereum/web3.py');
+        // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
+        github_url = github_url.replace('pipermerriam/web3.py','ethereum/web3.py');
 
-            if(result['github_comments']){
-                var entry_comment = {
-                  href: github_url,
-                  text: result['github_comments'],
-                  target: 'new',
-                  parent: 'right_actions',
-                  color: 'github-comment'
-                };
-                actions.push(entry_comment);
-            }
-
-            var entry = {
-                href: github_url,
-                text: 'View on Github',
-                target: 'new',
-                parent: 'right_actions',
-                color: 'darkBlue',
-                title: 'Github is where the issue scope lives.  Its also a great place to collaborate with, and get to know, other developers (and sometimes even the repo maintainer themselves!).'
-            }
-
-            actions.push(entry);
+        if(result['github_comments']){
+            var entry_comment = {
+              href: github_url,
+              text: result['github_comments'],
+              target: 'new',
+              parent: 'right_actions',
+              color: 'github-comment'
+            };
+            actions.push(entry_comment);
         }
 
-        if(result['status']=='open' || result['status']=='started' || result['status']=='submitted' ){
-
-            // is enabled
-            var enabled = !isBountyOwner(result);
-            var interestEntry = {
-                href: is_interested ? '/uninterested' : '/interested',
-                text: is_interested ? 'Stop Work' : 'Start Work',
-                parent: 'right_actions',
-                color: enabled ? 'darkBlue' : 'darkGrey',
-                extraClass: enabled ? '' : 'disabled',
-                title: enabled ? 'Start Work in an issue to let the issue funder know that youre starting work on this issue.' : 'Can only be performed if you are not the funder.',
-            }
-            actions.push(interestEntry);
-
+        var entry = {
+            href: github_url,
+            text: 'View on Github',
+            target: 'new',
+            parent: 'right_actions',
+            color: 'darkBlue',
+            title: 'Github is where the issue scope lives.  Its also a great place to collaborate with, and get to know, other developers (and sometimes even the repo maintainer themselves!).'
         }
+
+        actions.push(entry);
+    }
+
+    if(result['status']=='open' || result['status']=='started' || result['status']=='submitted' ){
 
         // is enabled
         var enabled = !isBountyOwner(result);
-        var entry = {
-            href: '/funding/fulfill?source='+result['github_url'],
-            text: 'Submit Work',
+        var interestEntry = {
+            href: is_interested ? '/uninterested' : '/interested',
+            text: is_interested ? 'Stop Work' : 'Start Work',
             parent: 'right_actions',
             color: enabled ? 'darkBlue' : 'darkGrey',
             extraClass: enabled ? '' : 'disabled',
-            title: enabled ? 'Use Submit Work when you FINISH work on a bounty. ' : 'Can only be performed if you are not the funder.',
+            title: enabled ? 'Start Work in an issue to let the issue funder know that youre starting work on this issue.' : 'Can only be performed if you are not the funder.',
+        }
+        actions.push(interestEntry);
+
+    }
+
+    // is enabled
+    var enabled = !isBountyOwner(result);
+    var entry = {
+        href: '/funding/fulfill?source='+result['github_url'],
+        text: 'Submit Work',
+        parent: 'right_actions',
+        color: enabled ? 'darkBlue' : 'darkGrey',
+        extraClass: enabled ? '' : 'disabled',
+        title: enabled ? 'Use Submit Work when you FINISH work on a bounty. ' : 'Can only be performed if you are not the funder.',
+    }
+    actions.push(entry);
+
+    var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
+    if(is_expired){
+        var enabled = isBountyOwner(result);
+        var entry = {
+            href: '/funding/kill?source='+result['github_url'],
+            text: 'Kill Bounty',
+            parent: 'right_actions',
+            color: enabled ? 'darkBlue' : 'darkGrey',
+            extraClass: enabled ? '' : 'disabled',
+            title: enabled ? '' : 'Can only be performed if you are the funder.',
         }
         actions.push(entry);
+    }
 
-        var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
-        if(is_expired){
-            var enabled = isBountyOwner(result);
-            var entry = {
-                href: '/funding/kill?source='+result['github_url'],
-                text: 'Kill Bounty',
-                parent: 'right_actions',
+    render_actions(actions);     
+
+    });  
+}
+
+var render_actions = function(actions){
+    for(var l=0; l< actions.length; l++){
+        var target = actions[l]['parent'];
+        var tmpl = $.templates("#action");
+        var html = tmpl.render(actions[l]);
+        $("#"+target).append(html);
+    };      
+}
+
+var pull_bounty_from_api = function(){
+    var uri = '/api/v0.1/bounties/?';
+    $.get(uri, function(results){
+        results = sanitizeAPIResults(results);
+        var nonefound = true;
+        // potentially make this a lot faster by only pulling the specific issue required
+        for(var i = 0; i<results.length; i++){
+            var result = results[i];
+            // if the result from the database matches the one in question.
+            if(normalizeURL(result['github_url']) == normalizeURL(document.issueURL)){
+                nonefound = false;
+
+                build_detail_page(result);
+
+                do_actions(result);
+
+                render_fulfillments(result);
+
+                //cleanup
+                document.result = result;
+                return;
+            }
+        }
+        if (nonefound) {
+            $("#primary_view").css('display','none');
+            // is there a pending issue or not?
+            $(".nonefound").css('display','block');
+        }
+    }).fail(function(){
+        _alert('got an error. please try again, or contact support@gitcoin.co');
+            $("#primary_view").css('display','none');
+    }).always(function(){
+        $('.loading').css('display', 'none');
+    });        
+}
+
+var render_fulfillments = function(result){
+    // Add submitter list and accept buttons
+    if(result['status']=='submitted' ){
+        var enabled = isBountyOwner(result);
+
+        fulfillers = [];
+        var submissions = result.fulfillments;
+        $.each(submissions, function (index, value) {
+            var acceptButton = {
+                href: '/funding/process?source='+result['github_url']+"&id="+value.fulfillment_id,
+                text: 'Accept Submission',
                 color: enabled ? 'darkBlue' : 'darkGrey',
                 extraClass: enabled ? '' : 'disabled',
-                title: enabled ? '' : 'Can only be performed if you are the funder.',
-            }
-            actions.push(entry);
-        }
+                title: enabled ? 'This will payout the bounty to the submitter.' : 'Can only be performed if you are the funder.',
+            };
 
-        render_actions(actions);     
+            var submission = {
+                'fulfiller': value,
+                'button': acceptButton,
+            };
 
-        });  
+            var submitter_tmpl = $.templates("#submission");
+            var submitter_html = submitter_tmpl.render(submission);
+
+            $("#submission_list").append(submitter_html);
+        });
+    } else if (result['status']=='done') {
+        fulfillers = [];
+        var submissions = result.fulfillments;
+        $.each(submissions, function (index, value) {
+            var accepted = value.accepted;
+            var acceptedButton = {
+                href: '',
+                text: accepted ? 'Accepted' : 'Not Accepted',
+                color: accepted ? 'darkBlue' : 'darkGrey',
+                extraClass: accepted ? '' : 'disabled',
+                title: accepted ? 'This submisson has been accepted.' : 'This submission has not been accepted.',
+            };
+
+            var submission = {
+                'fulfiller': value,
+                'button': acceptedButton,
+            };
+
+            var submitter_tmpl = $.templates("#submission");
+            var submitter_html = submitter_tmpl.render(submission);
+
+            $("#submission_list").append(submitter_html);
+        });
+    } else {
+        submitter_html = "No one has submitted work yet.";
+        $("#submission_list").html(submitter_html);
     }
+}
 
-    var render_actions = function(actions){
-        for(var l=0; l< actions.length; l++){
-            var target = actions[l]['parent'];
-            var tmpl = $.templates("#action");
-            var html = tmpl.render(actions[l]);
-            $("#"+target).append(html);
-        };      
-    }
-
-    var pull_bounty_from_api = function(){
-        var uri = '/api/v0.1/bounties/?';
-        $.get(uri, function(results){
-            results = sanitizeAPIResults(results);
-            var nonefound = true;
-            // potentially make this a lot faster by only pulling the specific issue required
-            for(var i = 0; i<results.length; i++){
-                var result = results[i];
-                // if the result from the database matches the one in question.
-                if(normalizeURL(result['github_url']) == normalizeURL(document.issueURL)){
-                    nonefound = false;
-
-                    build_detail_page(result);
-
-                    do_actions(result);
-
-                    render_fulfillments(result);
-
-                    //cleanup
-                    document.result = result;
-                    return;
-                }
-            }
-            if (nonefound) {
-                $("#primary_view").css('display','none');
-                // is there a pending issue or not?
-                $(".nonefound").css('display','block');
-            }
-        }).fail(function(){
-            _alert('got an error. please try again, or contact support@gitcoin.co');
-                $("#primary_view").css('display','none');
-        }).always(function(){
-            $('.loading').css('display', 'none');
-        });        
-    }
-
-    var render_fulfillments = function(result){
-        // Add submitter list and accept buttons
-        if(result['status']=='submitted' ){
-            var enabled = isBountyOwner(result);
-
-            fulfillers = [];
-            var submissions = result.fulfillments;
-            $.each(submissions, function (index, value) {
-                var acceptButton = {
-                    href: '/funding/process?source='+result['github_url']+"&id="+value.fulfillment_id,
-                    text: 'Accept Submission',
-                    color: enabled ? 'darkBlue' : 'darkGrey',
-                    extraClass: enabled ? '' : 'disabled',
-                    title: enabled ? 'This will payout the bounty to the submitter.' : 'Can only be performed if you are the funder.',
-                };
-
-                var submission = {
-                    'fulfiller': value,
-                    'button': acceptButton,
-                };
-
-                var submitter_tmpl = $.templates("#submission");
-                var submitter_html = submitter_tmpl.render(submission);
-
-                $("#submission_list").append(submitter_html);
-            });
-        } else if (result['status']=='done') {
-            fulfillers = [];
-            var submissions = result.fulfillments;
-            $.each(submissions, function (index, value) {
-                var accepted = value.accepted;
-                var acceptedButton = {
-                    href: '',
-                    text: accepted ? 'Accepted' : 'Not Accepted',
-                    color: accepted ? 'darkBlue' : 'darkGrey',
-                    extraClass: accepted ? '' : 'disabled',
-                    title: accepted ? 'This submisson has been accepted.' : 'This submission has not been accepted.',
-                };
-
-                var submission = {
-                    'fulfiller': value,
-                    'button': acceptedButton,
-                };
-
-                var submitter_tmpl = $.templates("#submission");
-                var submitter_html = submitter_tmpl.render(submission);
-
-                $("#submission_list").append(submitter_html);
-            });
-        } else {
-            submitter_html = "No one has submitted work yet.";
-            $("#submission_list").html(submitter_html);
-        }
-    }
-
+var main = function(){
     setTimeout(function(){
-        var issueURL = getParam('url');
-        
-        $("#submitsolicitation a").attr('href','/funding/new/?source=' + issueURL);
+        //setup
+        attach_work_actions();
 
+        // pull issue URL
         document.issueURL = getParam('url');
+        $("#submitsolicitation a").attr('href','/funding/new/?source=' + document.issueURL);
+
+        // if theres a pending submission for this issue, show the warning message
+        // if not, pull the data from the API
         if(localStorage[document.issueURL]){
             //update from web3
             document.pendingIssueMetadata = JSON.parse(localStorage[document.issueURL]);
@@ -477,6 +478,11 @@ window.addEventListener('load', function() {
         }
 
     }, 100);
+};
+
+
+window.addEventListener('load', function() {
+    main();
 });
 
 
