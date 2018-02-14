@@ -217,7 +217,24 @@ var check_for_updates = function(){
     }
 };
 
+var render_work_actions = function(){
+        $("body").delegate('a[href="/interested"], a[href="/uninterested"]', 'click', function (e) {
+        e.preventDefault();
+        if ($(this).attr('href') == '/interested') {
+            $(this).attr('href', '/uninterested');
+            $(this).find('span').text('Stop Work');
+            add_interest(document.result['pk']);
+        } else {
+            $(this).attr('href', '/interested');
+            $(this).find('span').text('Start Work');
+            remove_interest(document.result['pk']);
+        }
+    });
+}
+
+
 window.addEventListener('load', function() {
+    render_work_actions();
 
     var build_detail_page = function(result){
 
@@ -463,27 +480,3 @@ window.addEventListener('load', function() {
 });
 
 
-$(document).ready(function(){
-    $("body").delegate('a[href="/watch"], a[href="/unwatch"]', 'click', function(e){
-        e.preventDefault();
-        if($(this).attr('href') == '/watch'){
-            $(this).attr('href','/unwatch');
-            $(this).find('span').text('Unwatch');
-        } else {
-            $(this).attr('href','/watch');
-            $(this).find('span').text('Watch');
-        }
-    });
-    $("body").delegate('a[href="/interested"], a[href="/uninterested"]', 'click', function (e) {
-        e.preventDefault();
-        if ($(this).attr('href') == '/interested') {
-            $(this).attr('href', '/uninterested');
-            $(this).find('span').text('Stop Work');
-            add_interest(document.result['pk']);
-        } else {
-            $(this).attr('href', '/interested');
-            $(this).find('span').text('Start Work');
-            remove_interest(document.result['pk']);
-        }
-    });
-});

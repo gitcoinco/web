@@ -17,6 +17,7 @@ def insert_settings(request):
         'num_slack': num_slack,
         'github_handle': request.session.get('handle', False),
         'email': request.session.get('email', False),
+        'name': request.session.get('name', False),
         'rollbar_client_token': settings.ROLLBAR_CLIENT_TOKEN,
         'env': settings.ENV,
     }

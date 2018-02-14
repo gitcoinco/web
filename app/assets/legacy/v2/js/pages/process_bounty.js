@@ -10,7 +10,7 @@ window.onload = function(){
             $('input[name=terms]').attr('checked','checked');
         }
 
-        $("#fulfillmentId").parents('.w-100').remove();
+        $("#bountyFulfillment").parents('.w-100').remove();
 
         var estimateGas = function(issueURL, method, success_callback, failure_calllback, final_callback){
             var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
