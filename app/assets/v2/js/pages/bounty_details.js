@@ -192,6 +192,10 @@ var wait_for_tx_to_mine_and_then_ping_server = function(){
                     txid: txid,
                     network: document.web3network,
                 }
+                var error = function(response){
+                    //refresh upon error
+                    document.location.href = document.location.href;
+                }
                 var success = function(response){
                     if(response.status == "200"){
                         console.log("success from sync/web", response);
@@ -201,6 +205,7 @@ var wait_for_tx_to_mine_and_then_ping_server = function(){
                         document.location.href = document.location.href;
                     } else {
                         console.log("error from sync/web", response);
+                        error(response);
                     }
                 }
                 console.log('syncing gitcoin with web3');
@@ -210,6 +215,7 @@ var wait_for_tx_to_mine_and_then_ping_server = function(){
                   url: uri,
                   data: data,
                   success: success,
+                  error: error,
                   dataType: 'json'
                 });
             });
