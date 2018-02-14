@@ -419,11 +419,11 @@ window.addEventListener('load', function() {
             fulfillers = [];
             var submissions = result.fulfillments;
             $.each(submissions, function (index, value) {
-                var accepted = (value.accepted == 'true');
+                var accepted = value.accepted;
                 var acceptedButton = {
                     href: '',
                     text: accepted ? 'Accepted' : 'Not Accepted',
-                    color: accepted ? 'green' : 'darkGrey',
+                    color: accepted ? 'darkBlue' : 'darkGrey',
                     extraClass: accepted ? '' : 'disabled',
                     title: accepted ? 'This submisson has been accepted.' : 'This submission has not been accepted.',
                 };
