@@ -123,6 +123,7 @@ urlpatterns = [
     url(r'^medium/?', retail.views.medium, name='medium'),
     url(r'^github/?', retail.views.github, name='github'),
     url(r'^youtube/?', retail.views.youtube, name='youtube'),
+    url(r'^web3/?', retail.views.web3, name='web3'),
 
     # link shortener
     url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),

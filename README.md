@@ -39,7 +39,7 @@ Functionally, the app has several key features:
 * Funded Issue Explorer -- A searchable index of all of the work available in the system.
 * Funded Issue Submission / Acceptance flow -- Interface between the application and web3.
 
-[More about how/why to interact with web3 here](https://github.com/gitcoinco/gitcoinco/issues/4).
+[More about how/why to interact with web3 here](https://gitcoin.co/web3).
 
 Technically, the system is architected:
 
