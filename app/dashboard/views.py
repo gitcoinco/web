@@ -494,7 +494,7 @@ def bounty_details(request):
 
     if bounty_url:
         try:
-            b = Bounty.objects.current().get(github_url=bounty_url)
+            b = Bounty.objects.current().filter(github_url=bounty_url).order_by('pk').first()
             # Currently its not finding anyting in the database
             if b.title:
                 params['card_title'] = f'{b.title} | {b.org_name} Funded Issue Detail | Gitcoin'
@@ -505,7 +505,6 @@ def bounty_details(request):
             params['interested_profiles'] = b.interested.select_related('profile').all()
             params['avatar_url'] = b.local_avatar_url
             params['is_legacy'] = b.is_legacy  # TODO: Remove this following legacy contract sunset.
-
             if profile_id:
                 profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
                 params['profile_interested'] = request.session.get('profile_id') in profile_ids
