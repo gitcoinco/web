@@ -125,7 +125,7 @@ $(document).ready(function() {
         mixpanel.track("Email Subscribe");
     });
 
-    $("#newsletter-subscribe").click(() => {
+    $("#newsletter-subscribe").click(function() {
         mixpanel.track("Email Subscribe");
     });
 

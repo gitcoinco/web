@@ -1,6 +1,6 @@
 /* eslint-disable no-invalid-this */
 
-$( document ).ready( () => {
+$( document ).ready( function() {
   $( '.leaderboard_entry .progress-bar' ).each( function (){
     const max = parseInt( $( this ).attr( 'aria-valuemax' ) );
     const now = parseInt( $( this ).attr( 'aria-valuenow' ) );
