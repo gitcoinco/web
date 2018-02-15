@@ -1,20 +1,13 @@
 window.onload = function() {
 
     setTimeout(function() {
-        if (!web3.currentProvider || !web3.currentProvider.isMetaMask) {
-            $("step_zero").style.display = "block";
-            $("send_eth").style.display = "none";
-            $("send_eth_done").style.display = "none";
-            $("loading").style.display = "none";
-        } else {
-            $("loading").style.display = "none";
+        $("loading").style.display = "none";
 
-            if (coin_status === 'INITIAL') {
-                $("send_eth").style.display = "block";
-            } else if (coin_status === 'PENDING') {
-                $("send_eth_done").style.display = "block";
-                $("colo_txid").innerHTML = "<a target=new href='https://" + etherscanDomain() + "/tx/" + colo_txid + "'>See your transaction on the blockchain here</a>";
-            }
+        if (coin_status === 'INITIAL') {
+            $("send_eth").style.display = "block";
+        } else if (coin_status === 'PENDING') {
+            $("send_eth_done").style.display = "block";
+            $("colo_txid").innerHTML = "<a target=new href='https://" + etherscanDomain() + "/tx/" + colo_txid + "'>See your transaction on the blockchain here</a>";
         }
     }, 500);
 };
@@ -26,14 +19,10 @@ function redeemCoin() {
     var forwarding_address = $("forwarding_address").value.trim();
 
     // Check for valid address
-    if (!forwarding_address || !web3.isAddress(forwarding_address)) {
+    isValidForwardingAddress = forwarding_address.indexOf('0x') != -1;
+    if (!forwarding_address || !isValidForwardingAddress) {
         _alert("Not a valid forwarding address.");
         return;
-    }
-
-    // Convert to checksum address
-    if (!web3.isChecksumAddress(forwarding_address)) {
-      forwarding_address = web3.toChecksumAddress(forwarding_address);
     }
 
     var sendEthInnerHTML = $("send_eth").innerHTML;
@@ -57,7 +46,7 @@ function redeemCoin() {
                     if (data.message.indexOf('Address has an invalid EIP checksum') !== -1) {
                         _alert('Please enter a valid checksum address.');
                     } else {
-                        _alert('got an error :(');
+                        _alert(data.message);
                     }
 
                     $("send_eth").innerHTML = sendEthInnerHTML;

@@ -880,6 +880,7 @@ def redeem_coin(request, shortcode):
 
         try:
             coin = CoinRedemption.objects.get(shortcode=shortcode)
+            address = Web3.toChecksumAddress(address)
 
             if hasattr(coin, 'coinredemptionrequest'):
                 status = 'error'
