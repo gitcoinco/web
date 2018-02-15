@@ -705,7 +705,9 @@ body.bounty_details .avatar {
 #bounty_details{
     display: none;
 }
-
+#bounty_details #issue_description img{
+    max-width: 100%;
+}
 #bounty_details #issue_description h1,
 #bounty_details #issue_description h2,
 #bounty_details #issue_description h3,
