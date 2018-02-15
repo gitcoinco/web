@@ -891,7 +891,7 @@ def redeem_coin(request, shortcode):
                 # Instantiate Colorado Coin contract
                 contract = w3.eth.contract(coin.contract_address, abi=abi)
 
-                tx = contract.functions.transfer(address, coin.amount * 10**16).buildTransaction({
+                tx = contract.functions.transfer(address, coin.amount * 10**18).buildTransaction({
                     'nonce': w3.eth.getTransactionCount(settings.COLO_ACCOUNT_ADDRESS),
                     'gas': 40000,
                     'gasPrice': recommend_min_gas_price_to_confirm_in_time(5) * 10**9
