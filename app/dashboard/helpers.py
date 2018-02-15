@@ -331,7 +331,7 @@ def process_bounty_details(bountydetails):
             old_bounty.save()
         new_bounty = Bounty.objects.create(
             title=bounty_payload.get('title', ''),
-            issue_description=bounty_payload.get('description', ''),
+            issue_description=bounty_payload.get('description', ' '),
             web3_created=timezone.make_aware(timezone.datetime.fromtimestamp(bounty_payload.get('created')), timezone=UTC),
             value_in_token=bounty.get('fulfillmentAmount'),
             token_name=bounty_payload.get('tokenName', ''),

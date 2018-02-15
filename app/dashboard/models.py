@@ -356,9 +356,9 @@ class Bounty(SuperModel):
         issue_description = requests.get(self.get_github_api_url(), auth=_AUTH)
         if issue_description.status_code == 200:
             item = issue_description.json()[item_type]
-            if item_type == 'body':
+            if item_type == 'body' and item:
                 self.issue_description = item
-            elif item_type == 'title':
+            elif item_type == 'title' and item:
                 self.title = item
             self.save()
             return item

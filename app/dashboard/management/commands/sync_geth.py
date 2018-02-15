@@ -35,7 +35,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('network')
-        parser.add_argument('start_id', default=0)
+        parser.add_argument('start_id', default=0, type=int)
+        parser.add_argument('end_id', default=99999999999, type=int)
 
     def handle(self, *args, **options):
 
@@ -57,6 +58,12 @@ class Command(BaseCommand):
                 more_bounties = False
             except UnsupportedSchemaException as e:
                 logger.info(f"* Unsupported Schema => {e}")
+            except Exception as e:
+                logger.exception(e)
+                logger.error(f"* Exception in sync_geth => {e}")
             finally:
                 # prepare for next loop
                 bounty_enum += 1
+
+                if bounty_enum > int(options['end_id']):
+                    more_bounties = False
