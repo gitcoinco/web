@@ -37,8 +37,8 @@ from dashboard.models import (
     Subscription, Tip,
 )
 from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
-from dashboard.utils import get_bounty, getBountyID, has_tx_mined
 from dashboard.utils import process_bounty as web3_process_bounty
+from dashboard.utils import get_bounty, getBountyID, has_tx_mined
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from github.utils import get_auth_url, get_github_emails, get_github_primary_email, is_github_token_valid
 from marketing.models import Keyword
