@@ -469,7 +469,9 @@ var main = function(){
         attach_work_actions();
 
         // pull issue URL
-        document.issueURL = getParam('url');
+        if(typeof document.issueURL == 'undefined'){
+            document.issueURL = getParam('url');
+        }
         $("#submitsolicitation a").attr('href','/funding/new/?source=' + document.issueURL);
 
         // if theres a pending submission for this issue, show the warning message

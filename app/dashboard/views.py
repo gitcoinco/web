@@ -476,13 +476,14 @@ def kill_bounty(request):
     return TemplateResponse(request, 'kill_bounty.html', params)
 
 
-def bounty_details(request):
+def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
     """Display the bounty details."""
     _access_token = request.session.get('access_token')
     profile_id = request.session.get('profile_id')
-    bounty_url = request.GET.get('url')
+    issueURL = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
+    bounty_url = issueURL
     params = {
-        'issueURL': request.GET.get('issue_'),
+        'issueURL': issueURL,
         'title': 'Issue Details',
         'card_title': 'Funded Issue Details | Gitcoin',
         'avatar_url': 'https://gitcoin.co/static/v2/images/helmet.png',

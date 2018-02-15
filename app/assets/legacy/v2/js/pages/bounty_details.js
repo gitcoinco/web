@@ -416,6 +416,9 @@ window.addEventListener('load', function() {
 
     setTimeout(function(){
         var issueURL = getParam('url');
+        if(typeof document.issueURL != 'undefined'){
+            issueURL = document.issueURL;
+        }
         $("#submitsolicitation a").attr('href','/funding/new/?source=' + issueURL)
         var uri = '/api/v0.1/bounties/?';
         $.get(uri, function(results){
