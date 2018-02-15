@@ -21,6 +21,7 @@ from __future__ import print_function, unicode_literals
 import json
 import logging
 
+from django.conf import settings
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
@@ -31,7 +32,10 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import ellipses, sync_profile
 from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
-from dashboard.models import Bounty, BountySyncRequest, Interest, Profile, ProfileSerializer, Subscription, Tip
+from dashboard.models import (
+    Bounty, BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer,
+    Subscription, Tip,
+)
 from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
 from dashboard.utils import get_bounty, getBountyID, has_tx_mined
 from dashboard.utils import process_bounty as web3_process_bounty
@@ -40,10 +44,14 @@ from github.utils import get_auth_url, get_github_emails, get_github_primary_ema
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
+from web3 import HTTPProvider, Web3
 
 logging.basicConfig(level=logging.DEBUG)
 
 confirm_time_minutes_target = 60
+
+# web3.py instance
+w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 
 def send_tip(request):
@@ -238,6 +246,7 @@ def receive_tip(request):
             'status': status,
             'message': message,
         }
+
         return JsonResponse(response)
 
     params = {
@@ -857,3 +866,79 @@ def toolbox(request):
         'newsletter_headline': "Don't Miss New Tools!"
     }
     return TemplateResponse(request, 'toolbox.html', context)
+
+
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def redeem_coin(request, shortcode):
+    if request.body:
+        status = 'OK'
+
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        address = body['address']
+
+        try:
+            coin = CoinRedemption.objects.get(shortcode=shortcode)
+
+            if hasattr(coin, 'coinredemptionrequest'):
+                status = 'error'
+                message = 'Bad request'
+            else:
+                abi = json.loads('[{"constant":true,"inputs":[],"name":"mintingFinished","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"mint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"version","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_subtractedValue","type":"uint256"}],"name":"decreaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"finishMinting","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_addedValue","type":"uint256"}],"name":"increaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"payable":false,"stateMutability":"nonpayable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Mint","type":"event"},{"anonymous":false,"inputs":[],"name":"MintFinished","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}]')
+
+                # Instantiate Colorado Coin contract
+                contract = w3.eth.contract(coin.contract_address, abi=abi)
+
+                tx = contract.functions.transfer(address, coin.amount * 10**16).buildTransaction({
+                    'nonce': w3.eth.getTransactionCount(settings.COLO_ACCOUNT_ADDRESS),
+                    'gas': 40000,
+                    'gasPrice': recommend_min_gas_price_to_confirm_in_time(5) * 10**9
+                })
+
+                signed = w3.eth.account.signTransaction(tx, settings.COLO_ACCOUNT_PRIVATE_KEY)
+                transaction_id = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+
+                CoinRedemptionRequest.objects.create(
+                    coin_redemption=coin,
+                    ip=get_ip(request),
+                    sent_on=timezone.now(),
+                    txid=transaction_id,
+                    txaddress=address
+                )
+
+                message = transaction_id
+        except CoinRedemption.DoesNotExist:
+            status = 'error'
+            message = 'Bad request'
+        except Exception as e:
+            status = 'error'
+            message = str(e)
+
+        #http response
+        response = {
+            'status': status,
+            'message': message,
+        }
+
+        return JsonResponse(response)
+
+
+    try:
+        coin = CoinRedemption.objects.get(shortcode=shortcode)
+
+        params = {
+            'class': 'redeem',
+            'title': 'Coin Redemption',
+            'coin_status': 'PENDING'
+        }
+
+        try:
+            coin_redeem_request = CoinRedemptionRequest.objects.get(coin_redemption=coin)
+            params['colo_txid'] = coin_redeem_request.txid
+        except CoinRedemptionRequest.DoesNotExist:
+            params['coin_status'] = 'INITIAL'
+
+        return TemplateResponse(request, 'yge/redeem_coin.html', params)
+    except CoinRedemption.DoesNotExist:
+        raise Http404

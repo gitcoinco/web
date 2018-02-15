@@ -29,7 +29,7 @@ function getParam(parameterName) {
 var contract_address = function(){
     if(document.web3network=='custom network'){
         //testrpc
-        var contract_address = '0x852624f8b99431a354bf11543b10762fd3cdfae3'; 
+        var contract_address = '0x852624f8b99431a354bf11543b10762fd3cdfae3';
     }
     else if(document.web3network=='ropsten'){
         //ropsten
@@ -62,9 +62,7 @@ var token_contract = function(token_address){
     return web3.eth.contract(tokenabi).at(token_address);
 }
 
-
-
-//background moving 
+//background moving
 var addMotion = function(){
   if(!$("yge")){
     return setTimeout(addMotion, 50);
