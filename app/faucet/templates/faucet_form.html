@@ -29,7 +29,7 @@
         {% include 'shared/nav_internal.html' %}
     </div>
     <div class="row no-gutter">
-        <div class="col-3" style="background: #eee; ">
+        <div class="col-2" style="background: #eee; ">
             {% include 'shared/current_balance.html' %}
             {% include 'shared/sidebar_search.html' %}
         </div>
@@ -37,72 +37,66 @@
         <div class="col body">
             <div class="container-fluid no-gutter">
             {% include 'shared/bounty_def.html' %}
-                <div class="row font-smaller-2" id="form_container">
+                <div class="form-container" id="form_container">
                     {% include 'shared/faucet_no_metamask_error.html' %}
                     {% include 'shared/faucet_over_balance_error.html' %}
                     {% include 'shared/faucet_unlock_metamask.html' %}
-                    <div class="col d-flex align-items-center justify-content-center" id="faucet_form">
-                        <div class="d-flex justify-content-center flex-column mt-5" id="faucet_subform">
-                            <div class="w-100" style="text-align: center;">
-                                <h3>Apply for a faucet distrubition</h3>
-                                <div class="w-50" style="margin:auto;font-size:1.07rem;">
-                                  Pursuant to making ethereum and Gitcoin broadly accessible to everyone
-                                  Gitcoin may provide a minimal faucet distribution of ether so you may easily
-                                  claim issues and gain more ether.
-                                </div>
-                                <img class="mt-4" style="width:475px;" src="/static/v2/images/community.jpg">
-                                <div class="w-50" style="margin:auto; font-size: larger;" id="main_form">
-                                    {% include 'shared/faucet_network_status.html' %}
-                                    <input type="hidden" id="currentFaucet" name="currentFaucet" value="{{ faucet_amount }}">
-                                    Please note, all input fields are required. Comment is optional.
-                                    {% csrf_token %}
-                                    <div class="w-100 mt-2">
-                                        <label for="githubProfile" class="float-left">Github Profile:</label>
-                                        <input name='githubProfile' id="githubProfile" class="w-100 gc-round-text-input"
-                                               type="text" placeholder="@you" />
-                                        <span id="githubProfileHelpBlock"
-                                              class="help-block" style="display:hidden;color:red;">
-                                        </span>
-                                    </div>
-                                    <div class="w-100 mt-2">
-                                        <label for="ethAddress" class="float-left">ETH Address:</label>
-                                        <input disabled id="ethAddress" class="w-100 gc-round-text-input"
-                                               type="text" value="{% if ethAddress %}{{ethAddress}}{%endif%}" />
-                                    </div>
-                                    <div class="w-100 mt-2">
-                                        <label for="emailAddress" class="float-left">Email Address:</label>
-                                        <input name='emailAddress' id="emailAddress" class="w-100 gc-round-text-input"
-                                               type="text" placeholder="you@example.com"/>
-                                        <span id="emailAddressHelpBlock"
-                                              class="help-block" style="display:hidden;color:red;">
-                                        </span>
-                                    </div>
-                                    <div class="w-100 mt-2">
-                                        <label for="comment" class="float-left">
-                                          Comment (<span id="charcount">500</span> char left):</label>
-                                        <textarea id="comment" class="w-100 gc-round-text-input"
-                                               rows="4" cols="50"></textarea>
-                                    </div>
-                                    <div class="w-100 mt-2">
-                                        <a class="btn btn-sm btn-info mt-3 mb-1 pulseClick float-right"
-                                           role="button" id="submitFaucet" href="#">Request Faucet</a>
-                                    </div>
-                                </div>
-                                <div id="success_container" class="faucet_response mt-3 w-50" style="margin:auto;">
-                                    <div class="frheader">Congratulations</div>
-                                    <div class="frmessage">You request for a faucet distribution has been received.
-                                    An administrator will review your request shortly and arrange a deposit if approved.
-                                    </div>
-                                </div>
-                                <div id="fail_container" class="faucet_response mt-3 w-50" style="margin:auto;">
-                                    <div class="frheader" style="color:red;">
-                                      Oops. Something went wrong submitting your request. The message returned was :
-                                    </div>
-                                    <div class="frmessage" id="fail_message">
-                                    </div>
+                    <div id="faucet_form">
+                        <div class="faucet-form" id="main-form">
+                            <h3>Faucet Request</h3>
+                            <p class="hidden-mobile">Pursuant to making ethereum and Gitcoin broadly accessible to everyone
+                            Gitcoin may provide a minimal faucet distribution of ether so you may easily
+                            claim issues and gain more ether.</p>
+                            <div class="faucet-form-img">
+                                <img class="hidden-mobile" src="/static/v2/images/community.jpg">
+                                <div class="hidden-desktop faucet-form-svg">
+                                    {% include 'svgs/gas.svg' %}
                                 </div>
                             </div>
+                            <div class="hidden-mobile">
+                                {% include 'shared/faucet_network_status.html' %}
+                            </div>
+                            <input type="hidden" id="currentFaucet" name="currentFaucet" value="{{ faucet_amount }}">
+                            <p class="hidden-mobile">
+                                Please note, all input fields are required. Comment is optional.
+                            </p>
+                            {% csrf_token %}
+                            <div class="faucet-input-group">
+                                <label for="githubProfile" class="float-left">Github Profile:</label>
+                                <input name='githubProfile' id="githubProfile" class="faucet-input" type="text" placeholder="@you" value="{{github_handle}}" />
+                                <span id="githubProfileHelpBlock" class="help-block" style="display:hidden;color:red;"> </span>
+                            </div>
+                            <div class="faucet-input-group">
+                                <label for="emailAddress" class="float-left" >Email Address:</label>
+                                <input name='emailAddress' id="emailAddress" class="faucet-input" type="text" placeholder="What is your email address?" />
+                                <span id="emailAddressHelpBlock" class="help-block" style="display:hidden;color:red;"></span>
+                            </div>
+                            <div class="faucet-input-group">
+                                <label for="comment" class="float-left"> Comment (<span id="charcount">500</span> char left):</label>
+                                <textarea id="comment" class="faucet-input faucet-comment" rows="4" cols="50" placeholder="Why do you need ETH?"></textarea>
+                            </div>
+                            <div class="faucet-input-group">
+                                <label for="ethAddress" class="float-left">ETH Address:</label>
+                                <input placeholder="0x0" disabled id="ethAddress" class="faucet-input" type="text" value="{% if ethAddress %}{{ethAddress}}{%endif%}" />
+                            </div>
+                            <div class="faucet-input-group">
+                                <a class="faucet-form-submit" role="button" id="submitFaucet" href="#">Submit</a>
+                            </div>
                         </div>
+                    </div>
+                    <div id="success_container" class="faucet_response">
+                        <h3>Request Received</h3>
+                        {% include 'svgs/success.svg' %}
+                        <div class="fail_header">Congratulations</div>
+                        <div class="fail_message">You request for a faucet distribution has been received.
+                        An administrator will review your request shortly and arrange a deposit if approved.
+                        </div>
+                    </div>
+                    <div id="fail_container" class="faucet_response">
+                        <div class="frheader" style="color:red;">
+                            Oops. Something went wrong submitting your request. The message returned was :
+                        </div>
+                        <div class="frmessage" id="fail_message"></div>
                     </div>
                 </div>
             </div>
