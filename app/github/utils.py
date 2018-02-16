@@ -41,6 +41,7 @@ JSON_HEADER = {
     'User-Agent': settings.GITHUB_APP_NAME,
     'Origin': settings.BASE_URL
 }
+TIMELINE_HEADERS = {'Accept': 'application/vnd.github.mockingbird-preview'}
 TOKEN_URL = '{api_url}/applications/{client_id}/tokens/{oauth_token}'
 
 
@@ -262,10 +263,21 @@ def search(query):
 
 
 def get_issue_comments(owner, repo, issue=None):
-    """Get the comments from issues on a respository."""
+    """Get the comments from issues on a respository.
+    PLEASE NOTE CURRENT LIMITATION OF 100 COMMENTS.
+
+    Args:
+        owner (str): Owner of the repo
+        repo (str): Name of the repo
+        issue (int): Issue number (optional)
+
+    Returns:
+        requests.Response: The GitHub comments response.
+    """
     params = {
         'sort': 'created',
         'direction': 'desc',
+        'per_page': 100, #TODO traverse/concat pages: https://developer.github.com/v3/guides/traversing-with-pagination/
     }
     if issue:
         url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/comments'
@@ -275,6 +287,30 @@ def get_issue_comments(owner, repo, issue=None):
 
     return response.json()
 
+def get_issue_timeline_events(owner, repo, issue):
+    """Get the timeline events for a given issue.
+    PLEASE NOTE CURRENT LIMITATION OF 100 EVENTS.
+    PLEASE NOTE GITHUB API FOR THIS IS SUBJECT TO CHANGE.
+    (See https://developer.github.com/changes/2016-05-23-timeline-preview-api/ for more info.)
+
+    Args:
+        owner (str): Owner of the repo
+        repo (str): Name of the repo
+        issue (int): Issue number
+
+    Returns:
+        requests.Response: The GitHub timeline response.
+    """
+    params = {
+        'sort': 'created',
+        'direction': 'desc',
+        'per_page': 100, #TODO traverse/concat pages: https://developer.github.com/v3/guides/traversing-with-pagination/
+    }
+    url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/timeline'
+    # Set special header to access timeline preview api
+    response = requests.get(url, auth=_AUTH, headers=TIMELINE_HEADERS, params=params)
+
+    return response.json()
 
 def get_user(user, sub_path=''):
     """Get the github user details."""

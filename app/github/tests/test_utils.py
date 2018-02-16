@@ -29,9 +29,9 @@ from django.utils import timezone
 import responses
 from github.utils import (
     BASE_URI, HEADERS, JSON_HEADER, TOKEN_URL, build_auth_dict, delete_issue_comment, get_auth_url, get_github_emails,
-    get_github_primary_email, get_github_user_data, get_github_user_token, get_issue_comments, get_user,
-    is_github_token_valid, org_name, patch_issue_comment, post_issue_comment, post_issue_comment_reaction, repo_url,
-    reset_token, revoke_token, search,
+    get_github_primary_email, get_github_user_data, get_github_user_token, get_issue_comments,
+    get_issue_timeline_events, get_user, is_github_token_valid, org_name, patch_issue_comment, post_issue_comment,
+    post_issue_comment_reaction, repo_url, reset_token, revoke_token, search,
 )
 
 
@@ -227,6 +227,7 @@ class GithubUtilitiesTest(TestCase):
         params = {
             'sort': 'created',
             'direction': 'desc',
+            'per_page': 100,
         }
         params = urlencode(params, quote_via=quote_plus)
         owner = 'gitcoinco'
@@ -243,6 +244,7 @@ class GithubUtilitiesTest(TestCase):
         params = {
             'sort': 'created',
             'direction': 'desc',
+            'per_page': 100,
         }
         params = urlencode(params, quote_via=quote_plus)
         owner = 'gitcoinco'
@@ -252,6 +254,25 @@ class GithubUtilitiesTest(TestCase):
         url = url + '?' + params
         responses.add(responses.GET, url, headers=HEADERS, json={}, status=200)
         get_issue_comments(owner, repo, issue)
+
+        assert responses.calls[0].request.url == url
+
+    @responses.activate
+    def test_get_issue_timeline_events(self):
+        """Test the github utility get_issue_timeline_events method."""
+        params = {
+            'sort': 'created',
+            'direction': 'desc',
+            'per_page': 100,
+        }
+        params = urlencode(params, quote_via=quote_plus)
+        owner = 'gitcoinco'
+        repo = 'web'
+        issue = 1
+        url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/timeline'
+        url = url + '?' + params
+        responses.add(responses.GET, url, headers=HEADERS, json={}, status=200)
+        get_issue_timeline_events(owner, repo, issue)
 
         assert responses.calls[0].request.url == url
 
