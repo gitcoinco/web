@@ -37,8 +37,8 @@ from dashboard.models import (
     Subscription, Tip,
 )
 from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
-from dashboard.utils import process_bounty as web3_process_bounty
 from dashboard.utils import get_bounty, getBountyID, has_tx_mined
+from dashboard.utils import process_bounty as web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from github.utils import get_auth_url, get_github_emails, get_github_primary_email, is_github_token_valid
 from marketing.models import Keyword
@@ -377,7 +377,7 @@ def external_bounties(request):
     """Handle Dummy External Bounties index page."""
 
     bounties = [
-        { 
+        {
             "title": "Add Web3 1.0 Support",
             "source": "www.google.com",
             "crypto_price": 0.3,
@@ -385,16 +385,16 @@ def external_bounties(request):
             "crypto_label": "ETH",
             "tags": ["javascript", "python", "eth"],
         },
-        { 
+        {
             "title": "Simulate proposal execution and display execution results",
             "source": "gitcoin.com",
             "crypto_price": 1,
             "fiat_price": 23.23,
             "crypto_label": "BTC",
-            "tags": ["ruby", "js", "btc"] 
+            "tags": ["ruby", "js", "btc"]
         },
-        { 
-            "title": "Build out Market contract explorer", 
+        {
+            "title": "Build out Market contract explorer",
             "crypto_price": 22,
             "fiat_price": 203.23,
             "crypto_label": "LTC",
