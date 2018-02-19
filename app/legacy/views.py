@@ -72,7 +72,7 @@ def sync_web3(request):
             print("LEGACY: {} changed, {}".format(did_change, issueURL))
             if did_change:
                 print("- processing changes");
-                process_bounty_changes(old_bounty, new_bounty, None)
+                process_bounty_changes(old_bounty, new_bounty)
 
         BountySyncRequest.objects.create(
             github_url=issueURL,
