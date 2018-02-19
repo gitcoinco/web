@@ -7,13 +7,14 @@ from dashboard.models import Tip
 
 
 def insert_settings(request):
+    """Handle inserting pertinent data into the current context."""
     from marketing.utils import get_stat
     try:
         num_slack = int(get_stat('slack_users'))
-    except:
+    except Exception:
         num_slack = 0
     if num_slack > 1000:
-        num_slack = u'{}k'.format(str(round((num_slack)/1000, 1)))
+        num_slack = f'{str(round((num_slack) / 1000, 1))}k'
     context = {
         'mixpanel_token': settings.MIXPANEL_TOKEN,
         'STATIC_URL': settings.STATIC_URL,
@@ -30,8 +31,6 @@ def insert_settings(request):
         context['unclaimed_tips'] = Tip.objects.filter(
             expires_date__gte=timezone.now(),
             receive_txid='',
-            username__iexact=context['github_handle']
-            )
-
+            username__iexact=context['github_handle'])
 
     return context
