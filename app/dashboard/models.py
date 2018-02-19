@@ -241,6 +241,7 @@ class Bounty(SuperModel):
 
     @property
     def now(self):
+        """Return the time now in the current timezone."""
         return timezone.now()
 
     @property
@@ -337,7 +338,12 @@ class Bounty(SuperModel):
         return (self.web3_type == 'legacy_gitcoin')
 
     def get_github_api_url(self):
-        """Get the Github API URL associated with the bounty."""
+        """Get the Github API URL associated with the bounty.
+
+        Returns:
+            str: The Github API URL associated with the issue.
+
+        """
         from urllib.parse import urlparse
         if self.github_url.lower()[:19] != 'https://github.com/':
             return ''
@@ -356,7 +362,7 @@ class Bounty(SuperModel):
         """
         issue_description = requests.get(self.get_github_api_url(), auth=_AUTH)
         if issue_description.status_code == 200:
-            item = issue_description.json()[item_type]
+            item = issue_description.json().get(item_type, '')
             if item_type == 'body' and item:
                 self.issue_description = item
             elif item_type == 'title' and item:
@@ -366,6 +372,15 @@ class Bounty(SuperModel):
         return ''
 
     def fetch_issue_comments(self, save=True):
+        """Fetch issue comments for the associated Github issue.
+
+        Args:
+            save (bool): Whether or not to save the Bounty after fetching.
+
+        Returns:
+            dict: The comments data dictionary provided by Github.
+
+        """
         if self.github_url.lower()[:19] != 'https://github.com/':
             return []
 
@@ -844,7 +859,7 @@ class ProfileSerializer(serializers.BaseSerializer):
 
 @receiver(pre_save, sender=Tip, dispatch_uid="normalize_tip_usernames")
 def normalize_tip_usernames(sender, instance, **kwargs):
-
+    """Handle pre-save signals from Tips to normalize Github usernames."""
     if instance.username:
         instance.username = instance.username.replace("@", '')
 
@@ -869,6 +884,13 @@ class UserAction(SuperModel):
 
 
 class CoinRedemption(SuperModel):
+    """Define the coin redemption schema."""
+
+    class Meta:
+        """Define metadata associated with CoinRedemption."""
+
+        verbose_name_plural = 'Coin Redemptions'
+
     shortcode = models.CharField(max_length=255, default='')
     url = models.URLField(null=True)
     network = models.CharField(max_length=255, default='')
@@ -880,13 +902,20 @@ class CoinRedemption(SuperModel):
 
 @receiver(pre_save, sender=CoinRedemption, dispatch_uid="to_checksum_address")
 def to_checksum_address(sender, instance, **kwargs):
-
+    """Handle pre-save signals from CoinRemptions to normalize the contract address."""
     if instance.contract_address:
         instance.contract_address = Web3.toChecksumAddress(instance.contract_address)
         print(instance.contract_address)
 
 
 class CoinRedemptionRequest(SuperModel):
+    """Define the coin redemption request schema."""
+
+    class Meta:
+        """Define metadata associated with CoinRedemptionRequest."""
+
+        verbose_name_plural = 'Coin Redemption Requests'
+
     coin_redemption = models.OneToOneField(CoinRedemption, blank=False, on_delete=models.CASCADE)
     ip = models.GenericIPAddressField(protocol='IPv4')
     txid = models.CharField(max_length=255, default='')

@@ -22,7 +22,10 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import Bounty, BountyFulfillment, BountySyncRequest, Interest, Profile, Subscription, Tip, UserAction
+from .models import (
+    Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Interest, Profile,
+    Subscription, Tip, UserAction,
+)
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -67,7 +70,6 @@ class Bounty_Admin(admin.ModelAdmin):
         return mark_safe(f"<a href={url}>{copy}</a>")
 
 
-
 admin.site.register(Subscription, GeneralAdmin)
 admin.site.register(UserAction, GeneralAdmin)
 admin.site.register(Interest, GeneralAdmin)
@@ -76,3 +78,5 @@ admin.site.register(Bounty, Bounty_Admin)
 admin.site.register(BountyFulfillment, GeneralAdmin)
 admin.site.register(BountySyncRequest, GeneralAdmin)
 admin.site.register(Tip, TipAdmin)
+admin.site.register(CoinRedemption, GeneralAdmin)
+admin.site.register(CoinRedemptionRequest, GeneralAdmin)
