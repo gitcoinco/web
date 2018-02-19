@@ -101,8 +101,14 @@ def process_bounty_details(bountydetails, url, contract_address, network):
     return (did_change, old_bounties.first(), new_bounty)
 
 
-def process_bounty_changes(old_bounty, new_bounty, txid):
-    """Process legacy bounty changes."""
+def process_bounty_changes(old_bounty, new_bounty):
+    """Process legacy bounty changes.
+
+    Args:
+        old_bounty (dashboard.models.Bounty): The old Bounty object.
+        new_bounty (dashboard.models.Bounty): The new Bounty object.
+
+    """
     # process bounty sync requests
     did_bsr = False
     for bsr in BountySyncRequest.objects.filter(processed=False, github_url=new_bounty.github_url):
