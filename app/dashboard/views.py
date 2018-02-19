@@ -31,13 +31,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import ellipses, sync_profile
-from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
 from dashboard.models import (
-    Bounty, BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer,
-    Subscription, Tip,
+    Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
 )
 from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
-from dashboard.utils import get_bounty, getBountyID, has_tx_mined
+from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined
 from dashboard.utils import process_bounty as web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from github.utils import get_auth_url, get_github_emails, get_github_primary_email, is_github_token_valid
@@ -503,20 +501,22 @@ def bounty_details(request):
 
     if bounty_url:
         try:
-            b = Bounty.objects.current().filter(github_url=bounty_url).order_by('pk').first()
-            # Currently its not finding anyting in the database
-            if b.title:
-                params['card_title'] = f'{b.title} | {b.org_name} Funded Issue Detail | Gitcoin'
-                params['title'] = params['card_title']
-                params['card_desc'] = ellipses(b.issue_description_text, 255)
+            bounties = Bounty.objects.current().filter(github_url=bounty_url)
+            if bounties:
+                bounty = bounties.order_by('pk').first()
+                # Currently its not finding anyting in the database
+                if bounty.title and bounty.org_name:
+                    params['card_title'] = f'{bounty.title} | {bounty.org_name} Funded Issue Detail | Gitcoin'
+                    params['title'] = params['card_title']
+                    params['card_desc'] = ellipses(bounty.issue_description_text, 255)
 
-            params['bounty_pk'] = b.pk
-            params['interested_profiles'] = b.interested.select_related('profile').all()
-            params['avatar_url'] = b.local_avatar_url
-            params['is_legacy'] = b.is_legacy  # TODO: Remove this following legacy contract sunset.
-            if profile_id:
-                profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
-                params['profile_interested'] = request.session.get('profile_id') in profile_ids
+                params['bounty_pk'] = bounty.pk
+                params['interested_profiles'] = bounty.interested.select_related('profile').all()
+                params['avatar_url'] = bounty.local_avatar_url
+                params['is_legacy'] = bounty.is_legacy  # TODO: Remove this following legacy contract sunset.
+                if profile_id:
+                    profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
+                    params['profile_interested'] = request.session.get('profile_id') in profile_ids
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
@@ -578,9 +578,9 @@ def profile(request, handle):
     }
 
     profile = profile_helper(handle)
-    params['card_title'] = "@{} | Gitcoin".format(handle)
+    params['card_title'] = f"@{handle} | Gitcoin"
     params['card_desc'] = profile.desc
-    params['title'] = "@{}".format(handle)
+    params['title'] = f"@{handle}"
     params['avatar_url'] = profile.local_avatar_url
     params['profile'] = profile
     params['stats'] = profile.stats
@@ -628,11 +628,11 @@ def sync_web3(request):
         'msg': "bad request"
     }
 
-    issueURL = request.POST.get('url')
+    issue_url = request.POST.get('url')
     txid = request.POST.get('txid')
     network = request.POST.get('network')
 
-    if issueURL and txid and network:
+    if issue_url and txid and network:
         # confirm txid has mined
         print('* confirming tx has mined')
         if not has_tx_mined(txid, network):
@@ -644,7 +644,7 @@ def sync_web3(request):
 
             # get bounty id
             print('* getting bounty id')
-            bounty_id = getBountyID(issueURL, network)
+            bounty_id = get_bounty_id(issue_url, network)
             if not bounty_id:
                 result = {
                     'status': '400',
