@@ -51,10 +51,9 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             github_url=url,
             title=metadata.get('issueTitle'),
         ).distinct().order_by('-created_on')
-        old_bounty = old_bounties.first()
-        did_change = (bountydetails != old_bounty.raw_data)
+        did_change = (bountydetails != old_bounties.first().raw_data)
         if not did_change:
-            return (did_change, old_bounty, old_bounty)
+            return (did_change, old_bounties.first(), old_bounties.first())
     except Exception as e:
         print(e)
         did_change = True

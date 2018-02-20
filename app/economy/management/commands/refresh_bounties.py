@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
             if bounty.current_bounty:
 
-                # stopgap to make sure that older versions of this bounty
+                #stopgap to make sure that older versions of this bounty
                 # are marked as current_bounty=False
                 old_bounties = Bounty.objects.filter(
                     github_url=bounty.github_url,
