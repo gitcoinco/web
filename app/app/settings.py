@@ -31,6 +31,15 @@ RATELIMIT_ENABLE = True
 RATELIMIT_USE_CACHE = 'default'
 RATELIMIT_VIEW = 'tdi.views.ratelimited'
 
+# Gitcoinbot Account Information
+GITHUB_API_USER = os.environ.get('GITHUB_API_USER')
+GITHUB_API_TOKEN = os.environ.get('GITHUB_API_TOKEN')
+
+# Gitcoinbot APP Information
+GITCOINBOT_APP_ID =  os.environ.get('GITCOINBOT_APP_ID')
+github_pem_file = open("gitcoinbot-test.2017-12-27.private-key.pem", 'r')
+SECRET_KEYSTRING = github_pem_file.read()
+github_pem_file.close()
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -58,6 +67,7 @@ INSTALLED_APPS = [
     'email_obfuscator',
     'linkshortener',
     'credits',
+    'gitcoinbot'
 ]
 
 MIDDLEWARE = [
@@ -102,8 +112,12 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'gitcoin',
+        'USER': 'gitcoin_user',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': 5432,
     }
 }
 
