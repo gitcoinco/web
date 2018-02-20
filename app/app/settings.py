@@ -161,7 +161,6 @@ LOGGING = {
             '()': 'django.utils.log.RequireDebugFalse'
         },
     },
-    'disable_existing_loggers': False,
     'handlers': {
         'rotatingfilehandler': {
             'level': 'DEBUG',
