@@ -250,14 +250,16 @@ def bounties():
 
     Stat.objects.create(
         key='bounties',
-        val=(Bounty.objects.filter(current_bounty=True).count()),
+        val=(Bounty.objects.filter(current_bounty=True).distinct().count()),
         )
 
 
 def bounties_fulfilled_pct():
     from dashboard.models import Bounty
     for status in ['open', 'submitted', 'started', 'done', 'expired', 'cancelled']:
-        eligible_bounties = Bounty.objects.filter(current_bounty=True,web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
+        eligible_bounties = Bounty.objects.filter(
+            current_bounty=True,
+            web3_created__lt=(timezone.now() - timezone.timedelta(days=7))).distinct()
         numerator_bounties = eligible_bounties.filter(idx_status=status)
         val = int(100 * (numerator_bounties.count()) / (eligible_bounties.count()))
 
@@ -270,10 +272,13 @@ def bounties_fulfilled_pct():
 def joe_dominance_index():
     from dashboard.models import Bounty
 
-    joe_addresses = ['0x4331B095bC38Dc3bCE0A269682b5eBAefa252929'.lower(),'0xe93d33CF8AaF56C64D23b5b248919EabD8c3c41E'.lower()]
+    joe_addresses = ['0x4331B095bC38Dc3bCE0A269682b5eBAefa252929'.lower(),
+                     '0xe93d33CF8AaF56C64D23b5b248919EabD8c3c41E'.lower()]
 
-    for days in [7,30,90,360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True,web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+    for days in [7, 30, 90, 360]:
+        all_bounties = Bounty.objects.filter(
+            current_bounty=True,
+            web3_created__gt=(timezone.now() - timezone.timedelta(days=days))).distinct()
         joe_bounties = all_bounties.filter(bounty_owner_address__in=joe_addresses)
         if not all_bounties.count():
             continue
@@ -296,14 +301,17 @@ def avg_time_bounty_turnaround():
     import statistics
     from dashboard.models import Bounty
 
-    for days in [7,30,90,360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True, idx_status='submitted', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+    for days in [7, 30, 90, 360]:
+        all_bounties = Bounty.objects.filter(
+            current_bounty=True,
+            idx_status='submitted',
+            web3_created__gt=(timezone.now() - timezone.timedelta(days=days))).distinct()
         if not all_bounties.count():
             continue
 
         turnaround_times = [b.turnaround_time for b in all_bounties]
 
-        val = int(statistics.median(turnaround_times) / 60 / 60) #seconds to hours
+        val = int(statistics.median(turnaround_times) / 60 / 60)  # seconds to hours
 
         Stat.objects.create(
             key='turnaround_time_hours_{}_days_back'.format(days),
@@ -316,7 +324,7 @@ def bounties_open():
 
     Stat.objects.create(
         key='bounties_open',
-        val=(Bounty.objects.filter(current_bounty=True, idx_status='open').count()),
+        val=(Bounty.objects.filter(current_bounty=True, idx_status='open').distinct().count()),
         )
 
 
@@ -325,7 +333,7 @@ def bounties_fulfilled():
 
     Stat.objects.create(
         key='bounties_fulfilled',
-        val=(Bounty.objects.filter(current_bounty=True, idx_status='done').count()),
+        val=(Bounty.objects.filter(current_bounty=True, idx_status='done').distinct().count()),
         )
 
 

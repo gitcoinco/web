@@ -83,7 +83,7 @@ class BountyViewSet(viewsets.ModelViewSet):
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
     def get_queryset(self):
-        queryset = Bounty.objects.current().order_by('-web3_created')
+        queryset = Bounty.objects.current().distinct().order_by('-web3_created')
 
         # filtering
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address',

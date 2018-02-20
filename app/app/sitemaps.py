@@ -40,7 +40,7 @@ class IssueSitemap(Sitemap):
     priority = 0.9
 
     def items(self):
-        return Bounty.objects.current()
+        return Bounty.objects.current().distinct()
 
     def lastmod(self, obj):
         return obj.modified_on

@@ -124,7 +124,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # get bounties
-        bounties = Bounty.objects.current()
+        bounties = Bounty.objects.current().distinct()
 
         # iterate
         for b in bounties:

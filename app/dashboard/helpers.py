@@ -261,7 +261,7 @@ def bounty_did_change(bounty_id, new_bounty_details):
     did_change = False
     old_bounties = Bounty.objects.none()
     try:
-        old_bounties = Bounty.objects.current() \
+        old_bounties = Bounty.objects.current().distinct() \
             .filter(standard_bounties_id=bounty_id).order_by('-created_on')
         did_change = (new_bounty_details != old_bounties.first().raw_data)
     except Exception:
@@ -408,7 +408,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
         if fulfillments:
             handle_bounty_fulfillments(fulfillments, new_bounty)
-            for inactive in Bounty.objects.filter(current_bounty=False, github_url=url).order_by('-created_on'):
+            for inactive in Bounty.objects.filter(current_bounty=False, github_url=url) \
+                                          .distinct().order_by('-created_on'):
                 BountyFulfillment.objects.filter(bounty_id=inactive.id).delete()
     return new_bounty
 
