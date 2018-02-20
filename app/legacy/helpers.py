@@ -29,6 +29,7 @@ from dashboard.models import Bounty, BountySyncRequest
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
 )
+from dashboard.utils import build_profile_pairs
 
 
 def process_bounty_details(bountydetails, url, contract_address, network):
@@ -117,9 +118,9 @@ def process_bounty_changes(old_bounty, new_bounty):
         bsr.save()
 
     # new bounty
-    if (old_bounty is None and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
+    if (not old_bounty and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
         event_name = 'new_bounty'
-    elif old_bounty.num_fulfillments == 0 and new_bounty.num_fulfillments > 0:
+    elif old_bounty.num_fulfillments < new_bounty.num_fulfillments:
         event_name = 'work_submitted'
     elif old_bounty.is_open and not new_bounty.is_open:
         if new_bounty.status == 'cancelled':
@@ -130,23 +131,30 @@ def process_bounty_changes(old_bounty, new_bounty):
         event_name = 'unknown_event'
     print(event_name)
 
+    # Build profile pairs list
+    if new_bounty.fulfillments.exists():
+        profile_pairs = build_profile_pairs(new_bounty)
+
     # marketing
-    print("============ posting ==============")
-    did_post_to_twitter = maybe_market_to_twitter(new_bounty, event_name)
-    did_post_to_slack = maybe_market_to_slack(new_bounty, event_name)
-    did_post_to_github = maybe_market_to_github(new_bounty, event_name)
-    did_post_to_email = maybe_market_to_email(new_bounty, event_name)
-    print("============ done posting ==============")
+    if event_name != 'unknown_event':
+        print("============ posting ==============")
+        did_post_to_twitter = maybe_market_to_twitter(new_bounty, event_name)
+        did_post_to_slack = maybe_market_to_slack(new_bounty, event_name)
+        did_post_to_github = maybe_market_to_github(new_bounty, event_name, profile_pairs)
+        did_post_to_email = maybe_market_to_email(new_bounty, event_name)
+        print("============ done posting ==============")
 
-    # what happened
-    what_happened = {
-        'did_bsr': did_bsr,
-        'did_post_to_email': did_post_to_email,
-        'did_post_to_github': did_post_to_github,
-        'did_post_to_slack': did_post_to_slack,
-        'did_post_to_twitter': did_post_to_twitter,
-    }
+        # what happened
+        what_happened = {
+            'did_bsr': did_bsr,
+            'did_post_to_email': did_post_to_email,
+            'did_post_to_github': did_post_to_github,
+            'did_post_to_slack': did_post_to_slack,
+            'did_post_to_twitter': did_post_to_twitter,
+        }
 
-    print("changes processed: ")
-    pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(what_happened)
+        print("Legacy changes processed: ")
+        pp = pprint.PrettyPrinter(indent=4)
+        pp.pprint(what_happened)
+    else:
+        print('No notifications sent - Legacy Event Type Unknown = did_bsr: ', did_bsr)

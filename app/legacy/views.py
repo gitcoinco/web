@@ -46,13 +46,13 @@ def sync_web3(request):
     if issueURL:
         issueURL = normalizeURL(issueURL)
         if not bountydetails:
-            #create a bounty sync request
+            # create a bounty sync request
             result['status'] = 'OK'
             for existing_bsr in BountySyncRequest.objects.filter(github_url=issueURL, processed=False):
                 existing_bsr.processed = True
                 existing_bsr.save()
         else:
-            #normalize data
+            # normalize data
             bountydetails[0] = int(bountydetails[0])
             bountydetails[1] = str(bountydetails[1])
             bountydetails[2] = str(bountydetails[2])
