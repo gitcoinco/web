@@ -501,7 +501,7 @@ def bounty_details(request):
 
     if bounty_url:
         try:
-            bounties = Bounty.objects.current().filter(github_url=bounty_url).distinct()
+            bounties = Bounty.objects.current().filter(github_url=bounty_url)
             if bounties:
                 bounty = bounties.order_by('pk').first()
                 # Currently its not finding anyting in the database

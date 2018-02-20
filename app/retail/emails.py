@@ -224,7 +224,7 @@ def new_tip(request):
 @staff_member_required
 def new_match(request):
     from dashboard.models import Bounty
-    response_html, _ = render_match_email(Bounty.objects.exclude(title='').distinct().last(), 'owocki')
+    response_html, _ = render_match_email(Bounty.objects.exclude(title='').last(), 'owocki')
 
     return HttpResponse(response_html)
 
@@ -272,7 +272,7 @@ def new_bounty(request):
 def new_work_submission(request):
     from dashboard.models import Bounty
 
-    bounty = Bounty.objects.filter(idx_status='submitted', current_bounty=True).distinct().last()
+    bounty = Bounty.objects.filter(idx_status='submitted', current_bounty=True).last()
     response_html, _ = render_new_work_submission(settings.CONTACT_EMAIL, bounty)
     return HttpResponse(response_html)
 

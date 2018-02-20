@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2017 Gitcoin Core 
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -32,6 +32,6 @@ class Command(BaseCommand):
         for sub in Subscription.objects.all():
             url = "https://gitcoin.co/" + sub.raw_data
             bounties_pks = [b['pk'] for b in requests.get(url).json()]
-            for bounty in Bounty.objects.filter(pk__in=bounties_pks, idx_status='open').distinct():
+            for bounty in Bounty.objects.filter(pk__in=bounties_pks, idx_status='open'):
                 if bounty.web3_created > (timezone.now() - timezone.timedelta(hours=24)):
                     new_bounty(bounty, to_emails=[sub.email])

@@ -588,7 +588,7 @@ class Interest(models.Model):
 def psave_interest(sender, instance, **kwargs):
     #when a new interest is saved, update the status on frontend
     print("updating bounties")
-    for bounty in Bounty.objects.filter(interested=instance).distinct():
+    for bounty in Bounty.objects.filter(interested=instance):
         bounty.save()
 
 
@@ -691,7 +691,7 @@ class Profile(SuperModel):
         bounties = bounties | Bounty.objects.filter(pk__in=fulfilled_bounty_ids)
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(github_url__in=[url for url in self.tips.values_list('github_url', flat=True)], current_bounty=True)
-        return bounties.distinct().order_by('-web3_created')
+        return bounties.order_by('-web3_created')
 
     @property
     def tips(self):

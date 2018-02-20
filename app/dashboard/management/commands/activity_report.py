@@ -124,7 +124,7 @@ class Command(BaseCommand):
             current_bounty=True,
             web3_created__gte=options['start_date'],
             web3_created__lte=options['end_date']
-        ).distinct().order_by('web3_created', 'id')
+        ).order_by('web3_created', 'id')
 
         tips = Tip.objects.filter(
             network='mainnet',

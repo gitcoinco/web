@@ -57,7 +57,7 @@ class Command(BaseCommand):
                     title=bounty.title,
                     current_bounty=True,
                     pk__lt=bounty.pk,
-                ).exclude(pk=bounty.pk).distinct().order_by('-created_on')
+                ).exclude(pk=bounty.pk).order_by('-created_on')
                 for old_bounty in old_bounties:
                     old_bounty.current_bounty = False
                     old_bounty.save()

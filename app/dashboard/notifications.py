@@ -351,11 +351,7 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
 
 def amount_usdt_open_work():
     from dashboard.models import Bounty
-    bounties = Bounty.objects.filter(
-        network='mainnet',
-        current_bounty=True,
-        idx_status__in=['open', 'submitted']) \
-        .distinct()
+    bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
     return round(sum([b.value_in_usdt for b in bounties]), 2)
 
 

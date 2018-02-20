@@ -50,7 +50,7 @@ def process_bounty_details(bountydetails, url, contract_address, network):
         old_bounties = Bounty.objects.current().filter(
             github_url=url,
             title=metadata.get('issueTitle'),
-        ).distinct().order_by('-created_on')
+        ).order_by('-created_on')
         did_change = (bountydetails != old_bounties.first().raw_data)
         if not did_change:
             return (did_change, old_bounties.first(), old_bounties.first())

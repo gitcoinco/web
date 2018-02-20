@@ -34,7 +34,7 @@ class Command(BaseCommand):
                 current_bounty=True,
                 expires_date__lt=(timezone.now() + timezone.timedelta(days=(day+1))),
                 expires_date__gte=(timezone.now() + timezone.timedelta(days=day)),
-            ).distinct()
+            ).all()
             print('day {} got {} bounties'.format(day, bounties.count()))
             for b in bounties:
                 email_list = []
