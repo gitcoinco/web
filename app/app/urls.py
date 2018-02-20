@@ -31,10 +31,7 @@ import retail.emails
 import retail.views
 import tdi.views
 from dashboard.router import router
-from sitemap import sitemaps
 import gitcoinbot.views
-
-urlpatterns = [
 
 from .sitemaps import sitemaps
 
