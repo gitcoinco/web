@@ -1,0 +1,38 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load static %}
+<link rel="stylesheet" href="{% static "v2/css/newsletter.css" %}">
+<div class="row newsletter text-center" >
+  <form action="//gitcoin.us16.list-manage.com/subscribe/post?u=f9f93e162a8732673b942cbda&amp;id=791d905ad8"
+    method="post" id="mc-embedded-subscribe-form" class="col-12 validate"
+    name="mc-embedded-subscribe-form" target="_blank" novalidate>
+
+    <h4 class="col-12" id="title">
+      {%if newsletter_headline %}
+        {{newsletter_headline}}
+      {% else %}
+        Join Our Newsletter !
+      {% endif %}
+    </h4>
+    <label for="newsletter-input">(Emails once a week max, & we never sell your data)</label>
+    <div class="col-12">
+      <input name="EMAIL" placeholder="you@domain.com" id="newsletter-input" required>
+      <button id="newsletter-subscribe" type="submit" class="addon subscribe"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+    </div>
+  </form>
+</div>

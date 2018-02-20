@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,23 +15,23 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-
+{% load static %}
                     <div id="no_metamask_error" class="blocking_error" style="display: none">
                         {% include 'shared/bounty_nav.html' with active_item=1 %}
-                        <img src="/static/v2/images/prime.png">
+                        <img src="{% static "v2/images/prime.png" %}">
                         <br>
                         <h3>To continue, enable Web3.</h3>
                         <p>
                             Web3 is the same web you know and love, but with Ethereum-enabled functionality.
                         </p>
                         <p>
-                            The fastest and easiest way to add Web3 to your browser is to install <a target=new href=https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en> Metamask</a>. To continue submitting a bounty, please install Metamask and return to this page.
+                            The fastest and easiest way to add Web3 to your browser is to install <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">Metamask</a>. To continue submitting a bounty, please install Metamask and return to this page.
                         </p>
                         <p class="float-right">
-                            <a class="btn btn-sm btn-info mt-3 pulseClick" role="button" id="submit" href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en">Install MetaMask</a>
+                            <a class="btn btn-sm btn-info mt-3 pulseClick" role="button" id="submit" href="https://metamask.io">Install MetaMask</a>
                             <br>
                             - or -
                             <br>
-                            <a target=new href="https://github.com/gitcoinco/gitcoinco/issues/4">Can't get web3 to work?  Get help here.</a>
+                            <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/gitcoinco/issues/4">Can't get web3 to work?  Get help here.</a>
                         </p>
                     </div>

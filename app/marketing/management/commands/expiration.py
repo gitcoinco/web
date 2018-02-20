@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -40,6 +40,7 @@ class Command(BaseCommand):
                 email_list = []
                 if b.bounty_owner_email:
                     email_list.append(b.bounty_owner_email)
-                if b.claimee_email:
-                    email_list.append(b.claimee_email)
+                for fulfiller in b.fulfillments.all():
+                    if fulfiller.fulfiller_email:
+                        email_list.append(fulfiller.fulfiller_email)
                 bounty_expire_warning(b, email_list)

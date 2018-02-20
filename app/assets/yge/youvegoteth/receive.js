@@ -1,8 +1,6 @@
 
 window.onload = function () {
 
-        _alert('Due to network congestion, there is an intermittent issue with tips being received.  If you are affected, <a href=https://github.com/gitcoinco/web/issues/101>Please see here for more details</a>', 'info');
-
         setTimeout(function(){
             if(!web3.currentProvider || !web3.currentProvider.isMetaMask){
                 $("step_zero").style.display = "block";
@@ -51,7 +49,7 @@ window.onload = function () {
                                 token = tokenDetails.name;
                                 decimals = tokenDetails.decimals;
                             }
-                            var round_to = 10**3;
+                            var round_to = 10**5;
                             amount = Math.round( round_to * amount / (10**decimals)) / round_to;
                             var _text = "You've Received "+amount+" "+getWarning()+" "+token+"!";
                             $("zeroh1").innerHTML = _text;
@@ -118,6 +116,7 @@ window.onload = function () {
                     body: JSON.stringify({
                         txid: getParam('txid'),
                         receive_txid: result,
+                        receive_address: forwarding_address,
                     }),
                 });
                 callFunctionWhenTransactionMined(result, function(){

@@ -1,20 +1,5 @@
-# encoding=utf8
-import sys
-
-from django.conf import settings
-from django.contrib.admin.views.decorators import staff_member_required
-from django.http import HttpResponse
-from django.template.loader import render_to_string
-from django.template.response import TemplateResponse
-from django.utils import timezone
-
-import premailer
-from marketing.utils import get_or_save_email_subscriber
-
-reload(sys)
-sys.setdefaultencoding('utf8')
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -31,6 +16,15 @@ sys.setdefaultencoding('utf8')
 
 '''
 
+from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.template.response import TemplateResponse
+from django.utils import timezone
+
+import premailer
+from marketing.utils import get_or_save_email_subscriber
 
 ### RENDERERS
 
@@ -47,7 +41,7 @@ def render_tip_email(to_email, tip, is_new):
     warning = tip.network if tip.network != 'mainnet' else ""
     params = {
         'link': tip.url,
-        'amount': round(tip.amount, 2),
+        'amount': round(tip.amount, 5),
         'tokenName': tip.tokenName,
         'comments_priv': tip.comments_priv,
         'comments_public': tip.comments_public,
@@ -66,7 +60,7 @@ def render_tip_email(to_email, tip, is_new):
     return response_html, response_txt
 
 
-def render_match_email(to_email, bounty, github_username):
+def render_match_email(bounty, github_username):
     params = {
         'bounty': bounty,
         'github_username': github_username,
@@ -90,15 +84,15 @@ def render_new_bounty(to_email, bounty):
     return response_html, response_txt
 
 
-def render_new_bounty_claim(to_email, bounty):
+def render_new_work_submission(to_email, bounty):
 
     params = {
         'bounty': bounty,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
-    response_html = premailer_transform(render_to_string("emails/new_bounty_claim.html", params))
-    response_txt = render_to_string("emails/new_bounty_claim.txt", params)
+    response_html = premailer_transform(render_to_string("emails/new_work_submission.html", params))
+    response_txt = render_to_string("emails/new_work_submission.txt", params)
 
     return response_html, response_txt
 
@@ -130,6 +124,7 @@ def render_new_bounty_rejection(to_email, bounty):
 
 
 def render_bounty_expire_warning(to_email, bounty):
+    from django.db.models.functions import Lower
 
     unit = 'days'
     num = int(round((bounty.expires_date - timezone.now()).days, 0))
@@ -137,12 +132,14 @@ def render_bounty_expire_warning(to_email, bounty):
         unit = 'hours'
         num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
 
+    fulfiller_emails = list(bounty.fulfillments.annotate(lower_email=Lower('fulfiller_email')).values_list('lower_email'))
+
     params = {
         'bounty': bounty,
         'num': num,
         'unit': unit,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
-        'is_claimee': (bounty.claimee_email if bounty.claimee_email else "").lower() == to_email.lower(),
+        'is_claimee': (to_email.lower() in fulfiller_emails),
         'is_owner': bounty.bounty_owner_email.lower() == to_email.lower(),
     }
 
@@ -152,25 +149,49 @@ def render_bounty_expire_warning(to_email, bounty):
     return response_html, response_txt
 
 
+def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days):
+
+    params = {
+        'bounty': bounty,
+        'interest': interest,
+        'time_delta_days': time_delta_days,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/bounty_startwork_expire_warning.html", params))
+    response_txt = render_to_string("emails/bounty_startwork_expire_warning.txt", params)
+
+    return response_html, response_txt
+
+
+def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
+
+    params = {
+        'bounty': bounty,
+        'interest': interest,
+        'time_delta_days': time_delta_days,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/render_bounty_startwork_expired.html", params))
+    response_txt = render_to_string("emails/render_bounty_startwork_expired.txt", params)
+
+    return response_html, response_txt
+
+
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
 
     bounties = [
         {
-            'obj': Bounty.objects.get(pk=328),
-            'primer': 'Into Design?  Help Gitcoin articulate our mission, culture, and values. 💯 ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MetaMask/metamask-extension/issues/3249'),
+            'primer': 'This is a big one, and even better, its from the Metamask team! ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=301),
-            'primer': 'Got Solidity chops?  Into Testing?  This Funded issue is you for.  ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/gitcoinco/web/issues/445'),
+            'primer': 'Want to help tune the UX on Gitcoin?  Here\'s an opppy to do just that 👇\' ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(pk=118),
-            'primer': 'Security and documentation task below.  Good oppy to meet some of the web3 security folks out there.  ~ @owocki',
-        },
-        {
-            'obj': Bounty.objects.get(pk=159),
-            'primer': 'Linux head?  This issue is for you! 👇 ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/browser-solidity/issues/210'),
+            'primer': 'Want to do some work for the Ethereum Foundation?  This issue is for you  ~ @owocki',
         },
     ]
 
@@ -178,7 +199,7 @@ def render_new_bounty_roundup(to_email):
         'bounties': bounties,
         'override_back_color': '#15003e',
         'invert_footer': True,
-       'hide_header': True,
+        'hide_header': True,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -195,7 +216,7 @@ def render_new_bounty_roundup(to_email):
 def new_tip(request):
     from dashboard.models import Tip
     tip = Tip.objects.last()
-    response_html, response_txt = render_tip_email(settings.CONTACT_EMAIL, tip, True)
+    response_html, _ = render_tip_email(settings.CONTACT_EMAIL, tip, True)
 
     return HttpResponse(response_html)
 
@@ -203,7 +224,7 @@ def new_tip(request):
 @staff_member_required
 def new_match(request):
     from dashboard.models import Bounty
-    response_html, response_txt = render_match_email(settings.CONTACT_EMAIL, Bounty.objects.exclude(title='').last(), 'owocki')
+    response_html, _ = render_match_email(Bounty.objects.exclude(title='').last(), 'owocki')
 
     return HttpResponse(response_html)
 
@@ -243,17 +264,16 @@ def resend_new_tip(request):
 def new_bounty(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.all().last())
-
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.all().last())
     return HttpResponse(response_html)
 
 
 @staff_member_required
-def new_bounty_claim(request):
+def new_work_submission(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty_claim(settings.CONTACT_EMAIL, Bounty.objects.all().last())
-
+    bounty = Bounty.objects.filter(idx_status='submitted', current_bounty=True).last()
+    response_html, _ = render_new_work_submission(settings.CONTACT_EMAIL, bounty)
     return HttpResponse(response_html)
 
 
@@ -261,8 +281,7 @@ def new_bounty_claim(request):
 def new_bounty_rejection(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty_rejection(settings.CONTACT_EMAIL, Bounty.objects.all().last())
-
+    response_html, _ = render_new_bounty_rejection(settings.CONTACT_EMAIL, Bounty.objects.all().last())
     return HttpResponse(response_html)
 
 
@@ -270,23 +289,32 @@ def new_bounty_rejection(request):
 def new_bounty_acceptance(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_new_bounty_acceptance(settings.CONTACT_EMAIL, Bounty.objects.all().last())
-
+    response_html, _ = render_new_bounty_acceptance(settings.CONTACT_EMAIL, Bounty.objects.all().last())
     return HttpResponse(response_html)
 
 @staff_member_required
 def bounty_expire_warning(request):
     from dashboard.models import Bounty
 
-    response_html, response_txt = render_bounty_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last())
+    response_html, _ = render_bounty_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last())
+    return HttpResponse(response_html)
 
+@staff_member_required
+def start_work_expired(request):
+    from dashboard.models import Bounty, Interest
+
+    response_html, _ = render_bounty_startwork_expired(settings.CONTACT_EMAIL, Bounty.objects.all().last(), Interest.objects.all().last(), 5)
+    return HttpResponse(response_html)
+
+@staff_member_required
+def start_work_expire_warning(request):
+    from dashboard.models import Bounty, Interest
+
+    response_html, _ = render_bounty_startwork_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last(), Interest.objects.all().last(), 5)
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def roundup(request):
-    from dashboard.models import Bounty
-
-    response_html, response_txt = render_new_bounty_roundup(settings.CONTACT_EMAIL)
-
+    response_html, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
     return HttpResponse(response_html)

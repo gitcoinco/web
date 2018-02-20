@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -27,6 +27,15 @@ class Command(BaseCommand):
     help = 'pulls mailchimp emails'
 
     def handle(self, *args, **options):
+
+        print("- profile")
+        from dashboard.models import Profile
+        # right now, we only take profiles that've given us an access token
+        profiles = Profile.objects.exclude(email='').all()
+        # in the future, though, we could take ALL github profiles in the system and use those
+        # profiles = Profile.objects.exclude(email='').all()
+        for profile in profiles:
+            process_email(profile.email, 'profile_email')
 
         print("- match")
         from marketing.models import Match
@@ -68,12 +77,13 @@ class Command(BaseCommand):
 
         print("- bounty")
         from dashboard.models import Bounty
-        for b in Bounty.objects.all():
+        for b in Bounty.objects.prefetch_related('fulfillments').all():
             email_list = []
             if b.bounty_owner_email:
                 email_list.append(b.bounty_owner_email)
-            if b.claimee_email:
-                email_list.append(b.claimee_email)
+            for fulfiller in b.fulfillments.all():
+                if fulfiller.fulfiller_email:
+                    email_list.append(fulfiller.fulfiller_email)
             for email in email_list:
                 process_email(email, 'bounty_usage')
 

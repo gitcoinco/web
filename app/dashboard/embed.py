@@ -1,9 +1,9 @@
 from django.http import HttpResponse, JsonResponse
 
 import requests
-from app.github import get_user, org_name
 from dashboard.models import Bounty
-from PIL import Image, ImageDraw, ImageFont
+from github.utils import get_user, org_name
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 from ratelimit.decorators import ratelimit
 
 
@@ -34,6 +34,45 @@ def summarize_bounties(bounties):
 
 
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
+def stat(request, key):
+
+    from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+    from matplotlib.figure import Figure
+    from matplotlib.dates import DateFormatter
+    from marketing.models import Stat
+    from django.utils import timezone
+    limit = 10
+    weekly_stats = Stat.objects.filter(key=key).order_by('created_on')
+    weekly_stats = weekly_stats.filter(created_on__hour=1, created_on__week_day=1).filter(created_on__gt=(timezone.now() - timezone.timedelta(weeks=7))) #weekly stats only
+
+    daily_stats = Stat.objects.filter(key=key).filter(created_on__gt=(timezone.now() - timezone.timedelta(days=7))).order_by('created_on')
+    daily_stats = daily_stats.filter(created_on__hour=1) #daily stats only
+
+    stats = weekly_stats if weekly_stats.count() < limit else daily_stats
+
+    fig = Figure(figsize=(1.6, 1.5), dpi=80, facecolor='w', edgecolor='k')
+    ax = fig.add_subplot(111)
+    x = []
+    y = []
+    for stat in stats:
+        x.append(stat.created_on)
+        y.append(stat.val)
+    x = x[-1 * limit:]
+    y = y[-1 * limit:]
+    ax.plot_date(x, y, '-')
+    ax.set_axis_off()
+    ax.xaxis.set_major_formatter(DateFormatter('%Y-%m-%d'))
+    if stats.count() > 1:
+        ax.set_title("Usage over time", y=0.9)
+    else:
+        ax.set_title("(Not enough data)", y=0.3)
+    fig.autofmt_xdate()
+    canvas = FigureCanvas(fig)
+    response = HttpResponse(content_type='image/png')
+    canvas.print_png(response)
+    return response
+
+@ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
 def embed(request):
     # default response
     could_not_find = Image.new('RGBA', (1, 1), (0, 0, 0, 0))
@@ -54,7 +93,7 @@ def embed(request):
         filename = "{}.png".format(_org_name)
         filepath = 'assets/other/avatars/' + filename
         try:
-            avatar = Image.open(filepath, 'r')
+            avatar = Image.open(filepath, 'r').convert("RGBA")
         except IOError:
             remote_user = get_user(_org_name)
             if not remote_user.get('avatar_url', False):
@@ -83,9 +122,8 @@ def embed(request):
 
         # get issues
         length = request.GET.get('len', 10)
-        super_bounties = Bounty.objects.filter(
+        super_bounties = Bounty.objects.current().filter(
             github_url__startswith=repo_url,
-            current_bounty=True,
             network='mainnet',
             idx_status='open').order_by('-_val_usd_db')
         bounties = super_bounties[:length]
@@ -110,7 +148,7 @@ def embed(request):
         ## config
         logo = 'assets/v2/images/header-bg-light.jpg'
         ## execute
-        back = Image.open(logo, 'r')
+        back = Image.open(logo, 'r').convert("RGBA")
         img_w, img_h = back.size
         bg_w, bg_h = img.size
         offset = 0, 0
@@ -130,7 +168,7 @@ def embed(request):
         ## config
         logo = 'assets/v2/images/gitcoinco.png'
         ## execute
-        back = Image.open(logo, 'r')
+        back = Image.open(logo, 'r').convert("RGBA")
         back.thumbnail(icon_size, Image.ANTIALIAS)
         img_w, img_h = back.size
         bg_w, bg_h = img.size
@@ -245,7 +283,7 @@ def avatar(request):
         filename = "{}.png".format(_org_name)
         filepath = 'assets/other/avatars/' + filename
         try:
-            avatar = Image.open(filepath, 'r')
+            avatar = Image.open(filepath, 'r').convert("RGBA")
         except IOError:
             remote_user = get_user(_org_name)
             if not remote_user.get('avatar_url', False):
@@ -278,8 +316,7 @@ def avatar(request):
         ## config
         icon_size = (215, 215)
         ## execute
-        img_w, img_h = avatar.size
-        avatar.thumbnail(icon_size, Image.ANTIALIAS)
+        avatar = ImageOps.fit(avatar, icon_size, Image.ANTIALIAS)
         bg_w, bg_h = img.size
         offset = 0, 0
         img.paste(avatar, offset, avatar)

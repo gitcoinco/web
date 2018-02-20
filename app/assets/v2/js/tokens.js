@@ -165,13 +165,21 @@ var tokens = function(network_id){
         {"addr": "0x9214ec02cb71cba0ada6896b8da260736a67ab10", "name": "REAL", "decimals": 18},
         {"addr": "0xe5a7c12972f3bbfe70ed29521c8949b8af6a0970", "name": "BLX", "decimals": 18},
         {"addr": "0x5cf4e9dfd975c52aa523fb5945a12235624923dc", "name": "MPRM", "decimals": 0 },
-        {"addr": "0xb581e3a7db80fbaa821ab39342e9cbfd2ce33c23", "name": "ARCD", "decimals": 18}
+        {"addr": "0xb581e3a7db80fbaa821ab39342e9cbfd2ce33c23", "name": "ARCD", "decimals": 18},
+        {"addr": "0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6", "name": "RDN", "decimals": 18},
+        {"addr": "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359", "name": "DAI", "decimals": 18},
     ];
     } else if(network_id == "ropsten" ){ //ropsten
       _tokens = [
         { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
         { "addr": "0x2941deaad71adb02b944bd38ebce2f1f4c9a62dc", "name": "COLO", "decimals": 18 },
-        { "addr": "0xeccb46ebe07c5a2b249586796f921ddfe0d46271", "name": "GIT", "decimals": 18 },
+        { "addr": "0xeccb46ebe07c5a2b249586796f921ddfe0d46271", "name": "FOO", "decimals": 18 },
+        ];
+    } else if(network_id == "rinkeby" ){ //ropsten
+      _tokens = [
+        { "addr": "0x0000000000000000000000000000000000000000", "name": "ETH", "decimals": 18 },
+        { "addr": "0x2941deaad71adb02b944bd38ebce2f1f4c9a62dc", "name": "COLO", "decimals": 18 },
+        { "addr": "0x408c49a91e46311ddc35737f8c1aaea6191f36e0", "name": "FOO", "decimals": 18 },
         ];
     } else if(network_id == "custom network" ){ //testrpc
       _tokens = [
@@ -239,7 +247,9 @@ var load_tokens = function(){
                 }
             }
             if (typeof localStorage['githubUsername'] !='undefined'){
-                $('input[name=githubUsername]').val(localStorage['githubUsername']);
+                if(!$('input[name=githubUsername]').val()){
+                    $('input[name=githubUsername]').val(localStorage['githubUsername']);
+                }
             }
             if (typeof localStorage['notificationEmail'] !='undefined'){
                 $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
@@ -250,4 +260,3 @@ var load_tokens = function(){
         });
     });
 }
-

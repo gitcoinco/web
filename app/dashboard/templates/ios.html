@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+</head>
+<body class="interior {{active}}">
+    <div class="{{active}}-hero__container">
+        <div class="container-fluid header dash">
+            {% include 'shared/nav_internal.html' %}
+        </div>
+        <div class="row ml-5 hidden-lg">
+            <div class="col-6 header-line">
+                One Swipe Away From Your Next Bounty.
+                <div class="row no-gutter">
+            <div class="col-2" style="background: #fff; height:7px; margin:30px 0;">
+                </div>
+                </div>
+                <h3>
+                    Browse funded work in open source software from anywhere, at anytime.
+                </h3>
+                <a href="{% url "itunes" %}">
+                    <img class="iphone" src="{% static "v2/images/ios/appstore.png" %}"/>
+                </a>
+            </div>
+            <div class="col-6 header-img">
+                <img src="{% static "v2/images/ios/iphone.png" %}">
+            </div>
+            <div class="col-6 subheader-line"></div>
+        </div>
+        <div class="row visible-md-down">
+            <div class="col-12 header-line">
+                One Swipe Away From Your Next Bounty.
+                <div class="row no-gutter">
+                    <div class="col-2" style="background: #fff; height:7px; margin:30px 0;"></div>
+                </div>
+                <h3>
+                    Browse funded work in open source software from anywhere, at anytime.
+                </h3>
+                <a href="/itunes">
+                    <img class="iphone" src="{% static "v2/images/ios/appstore.png" %}"/>
+                </a>
+            </div>
+        </div>
+<!--         <div class="row visible-md-down">
+            <div class="col-6 header-img">
+                <img src="{% static "v2/images/ios/iPhone.png" %}">
+            </div>
+        </div> -->
+    </div>
+     <div class="row">
+        <div class="col-lg-2"></div>
+        <div class="col-lg-8 col-md-12 video__wrapper">
+            <video class="video">
+                <source src="{% static "v2/vid/gitcoin_ios.mp4" %}" type="video/mp4">
+                <source src="{% static "v2/vid/gitcoin_ios.ogv" %}" type="video/ogg">
+            </video>
+            <div class="playpause"></div>
+        </div>
+        <div class="col-lg-2"></div>
+    </div>
+
+    <div class="row tag-line">
+        <div class="col-12">
+            <h3 class="text-center">It's Easy As <span class="line-break">1-2-3 🎶</span></h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-md-4" style="">
+                    <div class="text-center">
+                        <div class="cards">
+                              <div class="card">
+                                <div class="ios-emoji">👤</div>
+                                <div class="content">
+                                  <div class="title">1. Sync</div>
+                                  <div class="description">
+                                    Sync your github profile with the gitcoin app.
+                                  </div>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" style="">
+                    <div class="text-center">
+                         <div class="cards">
+                              <div class="card">
+                                <div class="ios-emoji">👆</div>
+                                <div class="content">
+                                  <div class="title">2. Swipe</div>
+                                  <div class="description">
+                                    Swipe through funded work in open source software.
+                                  </div>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4" style="">
+                    <div class="text-center">
+                        <div class="cards">
+                              <div class="card">
+                                <div class="ios-emoji">🎉</div>
+                                <div class="content">
+                                  <div class="title">3. Match</div>
+                                  <div class="description">
+                                    The app will intro (via e-mail) you to the repository owners with whom you've matched with
+                                  </div>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+
+    <div class="row tag-line text-center">
+        <div class="col-12">
+            <h3 class="text-center">Get it now.</h3>
+            <a href="{% url "itunes" %}" target="_blank">
+                <img src="{% static "v2/images/ios/appstore-gradient.png" %}" height="115" />
+            </a>
+        </div>
+    </div>
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/footer.html' %}
+
+</body>
+
+
+<!-- jQuery -->
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="{% static "v2/js/tokens.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
+<script src="{% static "v2/js/pages/claim_bounty.js" %}"></script>
+<script>
+    $('.video').parent().click(function () {
+    if($(this).children(".video").get(0).paused){
+        $(this).children(".video").get(0).play();
+        $(this).children(".playpause").fadeOut();
+    }else{
+       $(this).children(".video").get(0).pause();
+        $(this).children(".playpause").fadeIn();
+    }
+});
+</script>
+
+</html>

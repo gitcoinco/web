@@ -23,16 +23,20 @@
         <div class=" row ">
             <div class="col-4 pb-4">
                 <div class="align-items-right justify-content-right" style="text-align: right;">
-                    <img src="/static/v2/images/regulus.png" style="max-width:300px;">
+                    <img src="/static/v2/images/tools/community2.png" style="max-width:80%;">
+                    <br>
+                    <img src="/static/v2/images/tools/crosshairs.png" style="max-width:80%;">
+                    <br>
+                    <img src="/static/v2/images/tools/science.png" style="max-width:80%;">
                 </div>
             </div>
             <div class="col-1 pb-4">
             </div>
-            <div class="col-6 pb-4 pl-2 pr-2 form_container">
+            <div class="col-6 pr-2 pl-2 pb-4 form_container">
                 <div class="">
                     <div style="max-width: 500px; margin: 0px auto;">
-                    <h4><img src='/static/v2/images/social/slack2.png' style="max-height: 40px;" alt='Slack'> Gitcoin Slack Community</h4>
-                    <h4 class="font-smaller-1 pt-0">({{num_slack}} online now)</h4>
+                    <h4><i class="fa fa-slack" aria-hidden="true" style="position:relative; top: 2px; margin-right: 5px;"></i>Gitcoin Slack Community</h4>
+                    <h4 class="font-smaller-1 pt-0">({{num_slack}} online)</h4>
                     {% if msg %}
                         <p style="background-color: #fee856; padding: 5px 10px;">
                             {{msg | safe}}
@@ -48,11 +52,11 @@
                     <form id=whitepaper  method=POST>
                         <div class="form-group">
                             <label for="email">Email address</label>
-                            <input type=text name=email class=form-control placeholder='you@somewhere'  value="{{email}}" required>
+                            <input type=text name=email class=form-control placeholder='you@somewhere'  value="{% if email %}{{email}}{%endif%}" required>
                             <small id="emailHelp" class="form-text text-muted">Gitcoin will never share your email with anyone else.</small>
                         </div>
                         {% csrf_token %}
-                        <input class='btn btn-sm btn-success' type='submit' name='submit' value="Sign Up">
+                        <input class='btn btn-sm btn-success joinslack' type='submit' name='submit' value="Sign Up">
                     </form>
 
                     {% endblock %}

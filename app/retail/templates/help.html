@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,118 +15,124 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/help.css" %}">
 </head>
 <body class="{{active}}">
+    {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header">
         {% include 'shared/nav.html' %}
         {% include 'shared/minihero.html' with h1='Help' suppress_logo=1 %}
-
     </div>
 
     <div class="container-fluid white-light-bg text-center" style="">
-        <div class="row pb-5 pt-5">
-            <div class="col pb-4">
-                <h4 >Developer?</h4>
-                <h6 style="" >Check out the Gitcoin Developer guide</h6>
-            </div>
-        </div>
         <div class=" row ">
             <div class="col pb-4">
                 <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
-                    <a href="/help/dev" target=new>
-                        <img class="animated fadeIn" src="/static/v2/images/guide_dev.png" style="max-width: 60%;  border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
+                    <h4 class="heading">Developer?</h4>
+                    <h6 class="sub-heading">Check out the Gitcoin Developer guide</h6>
+                    <a href="{% url "help_dev" %}" target=new>
+                        <img class="animated fadeIn" src="{% static "v2/images/guide_dev.png" %}" style="max-width: 60%;  border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
                     </a>
+                    <div class="col animated pulse fast">
+                        <br>
+                        <a class="btn btn-lg btn-warning  mb-4" role="button" target=new href="{% url "help_dev" %}">View Developer Guide</a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row mt-5 pb-3 animatedParent">
-            <div class="col animated pulse fast">
-                <a class="btn btn-lg btn-warning  mb-4" role="button" target=new href="/help/dev">View Developer Guide</a>
-            </div>
-        </div>
-    </div>
-    <div class="container-fluid text-center" style="background: white;">
-        <div class="row pb-5 pt-5">
-            <div class="col pb-4">
-                <h4>Repo Maintainer</h4>
-                <h6 style="" >Check out the Gitcoin Repo Maintainer guide</h6>
-            </div>
-        </div>
-        <div class=" row ">
             <div class="col pb-4">
                 <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
-                    <a href="/help/repo" target=new>
-                        <img class="animated fadeIn" src="/static/v2/images/guide_repo.png" style="max-width: 60%; border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
+                    <h4 class="heading">Repo Maintainer?</h4>
+                    <h6 class="sub-heading">Check out the Gitcoin Repo Maintainer guide</h6>
+                    <a href="{% url "help_repo" %}" target=new>
+                        <img class="animated fadeIn" src="{% static "v2/images/guide_repo.png" %}" style="max-width: 60%; border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
                     </a>
+                    <div class="col animated pulse fast">
+                        <br>
+                        <a class="btn btn-lg btn-warning  mb-4" role="button" target=new href="{% url "help_repo" %}">View Repo Maintainer Guide</a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row mt-5 pb-3 animatedParent">
-            <div class="col animated pulse fast">
-                <a class="btn btn-lg btn-warning  mb-4" role="button" target=new href="/help/repo">View Repo Maintainer Guide</a>
+            <div class="col pb-4">
+                <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
+                    <h4 class="heading">Does it work?</h4>
+                    <h6 class="sub-heading">Check out the Gitcoin Case Study</h6>
+                    <a href="{% url "casestudies" %}" target=new>
+                        <img class="animated fadeIn" src="{% static "v2/images/gudie_casestudy.png" %}" style="max-width: 60%;  border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
+                    </a>
+                    <div class="col animated pulse fast">
+                        <br>
+                        <a class="btn btn-lg btn-warning  mb-4" role="button" target=new href="{% url "casestudies" %}">View Case Studies</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
 
-    <div class="container-fluid white-light-bg"  id="feature_videos">
+    <div class="container-fluid white-light-bg" id="feature_videos">
         <div class="row">
-            <div class="col pb-4">
-                <h4>Feature Videos </h4>
+            <div class="col">
+                <h4 class="heading">Feature Videos</h4>
             </div>
         </div>
-
         <div class="row mt-3light-bg animatedParent">
-            <div class="col d-flex flex-column align-items-center justify-content-center animated fadeInLeftShort">
-                <h6>Funded Issues</h6>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/WoL3qc1z7xU" frameborder="0" allowfullscreen></iframe>
+            <div class="col-12 col-lg-6 align-items-center justify-content-center animated fadeInLeftShort">
+                <div class="video">
+                  <h6 class="sub-heading">How it works</h6>
+                  <iframe width="560" height="315" src="https://www.youtube.com/embed/Y-gkxBG84TI" frameborder="0" allowfullscreen></iframe>
+                </div>
             </div>
-            <div class="col d-flex flex-column align-items-center justify-content-center animated fadeInRightShort">
-                <h6>Tipping</h6>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/yq4A1wRaHL4" frameborder="0" allowfullscreen></iframe>
+            <div class="col-12 col-lg-6 align-items-center justify-content-center animated fadeInLeftShort">
+                <div class="video">
+                  <h6 class="sub-heading">Product Demo</h6>
+                  <iframe width="560" height="315" src="https://www.youtube.com/embed/7UE_ysCC4js" frameborder="0" allowfullscreen></iframe>
+                </div>
             </div>
         </div>
     </div>
 
-
-    <div id=faq class="container-fluid text-center white-light-bg" id="gitcoin_buttons">
-        <div class="row">
-            <div class="col pb-4">
-                <h4 >FAQ</h4>
+    <div id=faq class="container-fluid text-center white-light-bg" id="faq">
+        <div class="row mt-5">
+            <div class="col">
+                <h3>FAQ</h3>
             </div>
         </div>
-        {% for item in faq %}
-        {% if item.category %}
-            <div class="row mt-2 mb-2 pb-3 faq_item">
-                <div class="col text-left   ">
-                    <h4 class="font-bigger-2 text-left  ">{{item.category}}</h4>
-                </div>
-            </div>
-        {% endif %}
         <div class="row mt-2 mb-2 pb-3 faq_item">
-            <div class="col text-left   ">
-                <h5>{{item.q}}</h5>
-                <div class='hidden answer'>{{item.a|safe}}
-                </div>
+        {% for category, items in faq.items %}
+            <div class="col col-4 text-left">
+                <h4 class="heading">{{category}}</h4>
+                  <ul>
+                    {% for item in items %}
+                      <li>
+                          <div class='faq_parent mb-4'>
+                              <p class="question">{{item.q}}</p>
+                              <div class='hidden answer'>{{item.a|safe}}</div>
+                          </div>
+                      </li>
+                    {% endfor %}
+                  </ul>
             </div>
-        </div>
         {% endfor %}
+        </div>
     </div>
 
-    <div class="container-fluid text-center " id="gitcoin_buttons" style="background-color: white;">
-        <div class="row">
-            <div class="col pb-4">
-                <h4 >Got another question?</h4>
+    <div class="container-fluid text-center" id="gitcoin_buttons" style="background-color: white;">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h4 class="heading">Got another question?</h4>
             </div>
         </div>
         <div class="row mt-2 mb-2 pb-3 animatedParent">
             <div class="col animated pulse fast">
+                <a class="btn btn-lg btn-warning " role="button" href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">View Github Repo</a>
+                <a class="btn btn-lg btn-warning " role="button" href="{% url "slack" %}"> <i class="fa fa-slack" style="margin-right: 5px; position: relative; top: 2px;" aria-hidden="true"></i>Ask on slack</a>
                 <a class="btn btn-lg btn-warning " role="button" href="mailto:founders@gitcoin.co">Contact Gitcoin Core</a>
             </div>
         </div>
@@ -134,8 +140,9 @@
 
 
     {% include 'shared/footer.html' %}
-    {% include 'shared/ga.html' %}
+    {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
 
 </body>
 

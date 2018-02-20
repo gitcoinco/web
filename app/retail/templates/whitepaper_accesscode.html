@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,22 +16,24 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-
+{% load static %}
 {% block body %}
 
     <div class="container-fluid" style="">
         <div class=" row ">
             <div class="col-4 pb-4">
                 <div class="align-items-right justify-content-right" style="text-align: right;">
-                    <img src="/static/v2/images/prime.png" style="max-width:300px;">
+                    <img src="{% static "v2/images/divine.png" %}" style="max-width:300px; margin: 0px auto;">
                 </div>
             </div>
             <div class="col-1 pb-4">
             </div>
             <div class="col-6 pb-4">
-                <div class="form_container">
+                <div class="form_container pl-2 pr-2">
+                    <h4 class='mb-0 pt-1'>Got an access code? </h4>
+                    <h4 class="mt-0 pt-1 font-smaller-1">Good for you.</h4>
                     <div style="max-width: 500px; margin: 0px auto;">
-                    <p>Please submit your info below for access to the whitepaper.</a> </p>
+                    <p>Please submit your info below for access to the draft whitepaper.</a> </p>
                     {% if msg %}
                         <p style="background-color: #fee856; padding: 5px 10px;">
                             {{msg | safe}}

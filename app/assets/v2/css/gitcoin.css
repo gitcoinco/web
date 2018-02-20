@@ -3,8 +3,23 @@
     src: url("/static/v2/fonts/futura/font4.ttf") /* TTF file for CSS3 browsers */
 }
 
+@font-face {
+  font-family: "OpenSans Bold";
+  src: url('/static/v2/fonts/OpenSans/Bold.ttf');
+}
+
+@font-face {
+  font-family: "OpenSans SemiBold";
+  src: url('/static/v2/fonts/OpenSans/SemiBold.ttf');
+}
+
+@font-face {
+  font-family: "OpenSans";
+  src: url('/static/v2/fonts/OpenSans/Regular.ttf');
+}
+
 body {
-  font-family: "futura-pt", Futura !important;
+  font-family: "futura-pt", Futura;
   overflow-x: hidden;
   width: 100%;
 }
@@ -62,14 +77,11 @@ h4, .h4 {
   text-decoration: none;
   padding-right: 1rem !important;
   padding-left: 1rem !important;
+  font-size: 0.9rem !important;
 }
 
 .footer .nav-link {
   font-size: 0.8rem !important;
-}
-
-.dash .nav-link {
-  font-size: 0.9rem !important;
 }
 
 .nav-link:visited {
@@ -222,6 +234,14 @@ div.button-pink {
   max-height: 150px;
 }
 
+.mission-img-wrapper {
+    height: 250px;
+}
+
+.mission-img-wrapper img {
+    max-height: 250px;
+}
+
 .avatar-img-wrapper {
   height: 200px;
 }
@@ -244,7 +264,7 @@ div.button-pink {
 .footer {
   overflow: hidden;
   height: 300px;
-  background-image: url(/static/v2/images/footer.png);
+  background-image: url(/static/v2/images/footer.jpg);
   background-color: #0d023b;
   background-size: contain;
   background-position: bottom;
@@ -279,11 +299,35 @@ div.button-pink {
   font-weight: 300;
 }
 
+.gc-round-text-form {
+  border-radius: 16px;
+  height: 160px;
+  border: 1px solid #eee;
+  outline: none;
+  padding-left: 10px;
+  font-weight: 300;
+}
+
 .dash-link {
   font-size: 0.7rem;
   margin-top: 8px;
   letter-spacing: 0.1em;
 }
+
+#submitter_ul {
+  padding-left: 1em;
+}
+.submitter_icon {
+  text-align: center;
+  margin-top: 20px;
+}
+#submission_row {
+  border: 1px solid #C2C2C2;
+  border-left: 3px solid #0d023b;
+  padding: 5px;
+  margin: 10px;
+}
+
 
 *::-webkit-input-placeholder {
   color: lightgray;
@@ -300,4 +344,3 @@ div.button-pink {
   /* IE 10+ */
   color: lightgray;
 }
-

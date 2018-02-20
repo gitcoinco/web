@@ -1,0 +1,53 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load static %}
+                {% if github_handle %}
+                  <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {{github_handle}}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    {% if source == 'authed' %}
+                          <a class="dropdown-item" href="{% url "tip" %}"><img src="{% static "v2/images/icons/paperplane.png" %}" width=20px height=20px> Send Tip</a>
+                          <a class="dropdown-item" href="{% url "new_funding" %}"><img src="{% static "v2/images/icons/accelerator.png" %}" width=20px height=20px> Fund Issue</a>
+                      {% else %}
+                          <a class="dropdown-item" href="{% url "get_gitcoin" %}"><img src="{% static "v2/images/icons/bolt.png" %}" width=20px height=20px>  Get Started</a>
+                      {% endif %}
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url "profile" %}{{github_handle}}"><img src="{% static "v2/images/icons/anchor.png" %}" width=20px height=20px>  View Profile</a>
+                      <a class="dropdown-item" href="{% url "email_settings" "" %}"><img src="{% static "v2/images/icons/mail.png" %}" width=20px height=20px>  Email Settings</a>
+
+                      {% if unclaimed_tips %}
+
+                          <div class="dropdown-divider"></div>
+                          {% for tip in unclaimed_tips %}
+                            <a class="dropdown-item" href="{{tip.url}}"><img src="{% static "v2/images/icons/cards_diamonds.png" %}" width=20px height=20px> Claim ${{tip.value_in_usdt}} Tip</a>
+                          {% endfor %}
+
+                      {% endif %}
+
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url "github:github_logout" %}?redirect_uri={{ request.get_full_path }}"><img src="{% static "v2/images/icons/lock_open.png" %}" width=20px height=20px>  Log Out</a>
+                    </div>
+                  </div>
+                {% else %}
+                <a class="nav-link" href="{% url "github:github_auth" %}?redirect_uri={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
+                    Login
+                </a>
+                {% endif %}
+                <img class="nav_avatar" src="{% url "avatar" %}?repo=https://github.com/{% if github_handle %}{{github_handle}}{%else%}Self{%endif%}" width=50 height=50 >

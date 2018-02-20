@@ -1,6 +1,13 @@
 //helper functions
 var sidebar_keys = ['experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'idx_status', 'network'];
 
+var localStorage;
+try {
+    localStorage = window.localStorage;
+} catch (e) {
+    localStorage = {};
+}
+
 //sets search information default
 var save_sidebar_latest = function(){
 
@@ -18,7 +25,10 @@ var save_sidebar_latest = function(){
 
 //saves search information default
 var set_sidebar_defaults = function(){
-    if(localStorage['keywords']){
+    var q = getParam('q');
+    if(q){
+        $("#keywords").val(q);
+    } else if(localStorage['keywords']){
         $("#keywords").val(localStorage['keywords']);
     }
     if(localStorage['sort']){
@@ -27,7 +37,7 @@ var set_sidebar_defaults = function(){
         ele.addClass('selected');
         ele.data('direction', localStorage['sort_direction']);
     }
-    
+
     for(var i=0;i<sidebar_keys.length;i++){
         var key = sidebar_keys[i];
         if(localStorage[key]){
@@ -62,7 +72,7 @@ var set_modifiers_sentence = function(){
 };
 
 var get_search_URI = function(){
-    var uri = '/api/v0.1/bounties?';
+    var uri = '/api/v0.1/bounties/?';
     var keywords = $("#keywords").val();
     if(keywords){
         uri += '&raw_data='+keywords;
@@ -77,8 +87,8 @@ var get_search_URI = function(){
                 key='bounty_owner_address';
             } else if(val == 'watched'){
                 key='github_url';
-                val = watch_list();
-            } 
+                val = interested_list();
+            }
         }
         if(val!='any'){
             uri += '&'+key+'='+val;
@@ -118,7 +128,7 @@ var process_stats = function(results){
         }
     }
     worth_usdt = worth_usdt.toFixed(2);
-    worth_eth = (worth_eth / 10 ** 18).toFixed(2);
+    worth_eth = (worth_eth / Math.pow(10, 18 )).toFixed(2);
     var stats = "" + num + " worth " + worth_usdt + " USD, " + worth_eth + " ETH";
     for(var token in currencies_to_value){
         stats += ", " + currencies_to_value[token].toFixed(2) + " " + token;
@@ -167,22 +177,25 @@ var refreshBounties = function(){
                 if(related_token_details && related_token_details.decimals){
                     decimals = related_token_details.decimals;
                 }
-                var divisor = 10**decimals;
+                var divisor = Math.pow( 10, decimals );
                 result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
                 var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
 
                 //setup args to go into template
                 if(typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']){
                     result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
-                } else if(result['claimeee_address'] != '0x0000000000000000000000000000000000000000'){
+                } else if(result['fulfiller_address'] != '0x0000000000000000000000000000000000000000'){
                     result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">'+result['status']+'</span></a>';
-                } else if(is_on_watch_list(result['github_url'])) {
-                    result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">watched</span></a>';
                 }
-                result['action'] = '/funding/details?url=' + result['github_url'];
+                if (result['web3_type'] == 'legacy_gitcoin') {
+                    result.action = '/legacy/funding/details?url=' + result.github_url;
+                } else {
+                    result.action = '/funding/details?url=' + result.github_url;
+                }
                 result['title'] = result['title'] ? result['title'] : result['github_url'];
                 result['p'] = timeDifference(new Date(), new Date(result['created_on']))+' - '+(result['project_length'] ? result['project_length'] : "Unknown Length")+' - '+(result['bounty_type'] ? result['bounty_type'] : "Unknown Type")+' - '+(result['experience_level'] ? result['experience_level'] : "Unknown Experience Level") + ( is_expired ? " - (Expired)" : "");
                 result['watch'] = 'Watch';
+
                 //render the template
                 var tmpl = $.templates("#result");
                 var html = tmpl.render(result);
@@ -191,7 +204,9 @@ var refreshBounties = function(){
         }
         $(".bounty_row.result").each(function(){
             var href = $(this).attr('href');
-            $(this).changeElementType('a'); // hack so that users can right click on the element
+            if (typeof $(this).changeElementType !== "undefined") {
+              $(this).changeElementType('a'); // hack so that users can right click on the element
+            }
             $(this).attr('href', href);
         })
         process_stats(results);
@@ -199,14 +214,10 @@ var refreshBounties = function(){
         _alert('got an error. please try again, or contact support@gitcoin.co');
     }).always(function(){
         $('.loading').css('display', 'none');
-    });        
+    });
 };
 
 window.addEventListener('load', function() {
-    var q = getParam('q');
-    if(q){
-        $("#keywords").val(q);
-    }
     set_sidebar_defaults();
     refreshBounties();
 });
@@ -257,8 +268,6 @@ $(document).ready(function(){
           return false;
         }
       });
-    next_announce = getNextDayOfWeek(new Date(), 2);
-    $("#announceIssues").html(timeDifference(new Date, next_announce))
 
     //sidebar clear
     $(".dashboard #clear").click(function(e){
@@ -280,7 +289,7 @@ $(document).ready(function(){
         if(e.which == 13) {
             refreshBounties();
             e.preventDefault();
-        }        
+        }
     });
 
     //sidebar filters
@@ -347,7 +356,7 @@ $(document).ready(function(){
         if(e.which == 13) {
             emailSubscribe();
             e.preventDefault();
-        }        
+        }
     });
     $("body").delegate("#save a.btn-darkBlue", 'click', function(e){
         emailSubscribe();

@@ -1,0 +1,11 @@
+-r base.txt
+pytest==3.2.5
+pytest-cov
+pytest-isort
+pytest-django
+pytest-sugar
+coverage
+django-coverage-plugin
+isort
+responses
+requests_mock

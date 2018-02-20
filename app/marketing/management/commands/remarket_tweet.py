@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -28,6 +28,8 @@ class Command(BaseCommand):
     help = 'sends bounties quotes to twitter'
 
     def handle(self, *args, **options):
+        return # per 2018/01/22 convo with vivek / kevin, these tweets have low engagement
+        # we are going to test manually promoting these tweets for a week and come back to revisit this
         bounties = Bounty.objects.filter(
             current_bounty=True,
             network='mainnet',
@@ -37,5 +39,5 @@ class Command(BaseCommand):
             return
         bounty = bounties.order_by('?').first()
         print(bounty)
-        did_tweet = maybe_market_to_twitter(bounty, 'remarket_bounty', '0x0')
+        did_tweet = maybe_market_to_twitter(bounty, 'remarket_bounty')
         print(did_tweet)

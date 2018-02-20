@@ -6,8 +6,8 @@ from django.conf import settings
 from django.utils import timezone
 
 import requests
-from app.github import get_user
 from dashboard.models import Bounty, Profile
+from github.utils import _AUTH, HEADERS, get_user
 
 
 def ellipses(data, _len=75):
@@ -15,29 +15,39 @@ def ellipses(data, _len=75):
 
 
 def add_contributors(repo_data):
+    """Add contributor data to repository data dictionary.
+
+    Args:
+        repo_data (dict): The repository data dictionary to be updated.
+
+    Returns:
+        dict: The updated repository data dictionary.
+
+    """
     if repo_data.get('fork', False):
         return repo_data
 
-    from app.github import _auth, headers
     params = {}
     url = repo_data['contributors_url']
-    response = requests.get(url, auth=_auth, headers=headers, params=params)
-    if response.status_code == 204: #no content
+    response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
+    if response.status_code == 204: # no content
         return repo_data
-    rate_limited = type(response.json()) == dict and 'documentation_url' in response.json().keys()
+
+    response_data = response.json()
+    rate_limited = (isinstance(response_data, dict) and 'documentation_url' in response_data.keys())
     if rate_limited:
-        #retry after rate limit
+        # retry after rate limit
         time.sleep(60)
         return add_contributors(repo_data)
 
     # no need for retry
-    repo_data['contributors'] = response.json()
+    repo_data['contributors'] = response_data
     return repo_data
 
 
 def sync_profile(handle):
     data = get_user(handle)
-    is_error = not 'name' in data.keys()
+    is_error = 'name' not in data.keys()
     if is_error:
         print("- error main")
         return
@@ -94,3 +104,44 @@ def fetch_mails_since_id( email_id, password,since_id=None, host='imap.gmail.com
         response, content = mailbox.fetch(str(id), '(RFC822)')
         emails[str(id)] = email.message_from_string(content[0][1])
     return emails
+
+
+def itermerge(gen_a, gen_b, key):
+    a = None
+    b = None
+
+    # yield items in order until first iterator is emptied
+    try:
+        while True:
+            if a is None:
+                a = gen_a.next()
+
+            if b is None:
+                b = gen_b.next()
+
+            if key(a) <= key(b):
+                yield a
+                a = None
+            else:
+                yield b
+                b = None
+    except StopIteration:
+        # yield last item to be pulled from non-empty iterator
+        if a is not None:
+            yield a
+
+        if b is not None:
+            yield b
+
+    # flush remaining items in non-empty iterator
+    try:
+        for a in gen_a:
+            yield a
+    except StopIteration:
+        pass
+
+    try:
+        for b in gen_b:
+            yield b
+    except StopIteration:
+        pass

@@ -16,11 +16,14 @@
 
 '''
 import time
+import warnings
 
 from django.core.management.base import BaseCommand
 
 from marketing.mails import weekly_roundup
 from marketing.models import EmailSubscriber
+
+warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 
 class Command(BaseCommand):
@@ -61,7 +64,7 @@ class Command(BaseCommand):
         if filter_startswith:
             queryset = queryset.filter(email__startswith=filter_startswith)
         queryset = queryset.order_by('email')
-        email_list = queryset.values_list('email', flat=True)
+        email_list = set(queryset.values_list('email', flat=True))
 
         print("got {} emails".format(len(email_list)))
 

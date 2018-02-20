@@ -1,0 +1,47 @@
+.body {
+  padding: 60px 100px !important;
+  background-color: #fefefe !important;
+  font-family: "OpenSans";
+}
+
+.description {
+  color: #8e8e8e;
+  font-size: 0.9em;
+}
+
+.title, .sub-title {
+  font-family: "OpenSans Bold";
+  text-transform: none;
+  font-weight: bolder;
+  letter-spacing: 0;
+}
+
+.toolbox {
+  border-bottom: 1px solid #eee;
+}
+
+.sub-title {
+  padding-top: 1em;
+  font-size: 1.4em;
+}
+
+@media (max-width: 991px) {
+  .body {
+    padding-left: 60px !important;
+    padding-right: 60px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .body {
+    padding-left: 30px !important;
+    padding-right: 30px !important;
+  }
+}
+.card.new{
+  background-color: #f2f2f2;
+}
+.card.new a.btn{
+  display: none;
+}
+

@@ -33,7 +33,7 @@ class Command(BaseCommand):
         new_match([settings.CONTACT_EMAIL, 'ksowocki@gmail.com'], b, 'owocki')
         #weekly_roundup([settings.CONTACT_EMAIL])
         #new_bounty(b, [settings.CONTACT_EMAIL])
-        #new_bounty_claim(b, [settings.CONTACT_EMAIL])
+        #new_work_submission(b, [settings.CONTACT_EMAIL])
         #new_bounty_rejection(b, [settings.CONTACT_EMAIL])
         #new_bounty_acceptance(b, [settings.CONTACT_EMAIL])
         #bounty_expire_warning(b, [settings.CONTACT_EMAIL])

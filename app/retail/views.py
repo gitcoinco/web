@@ -1,6 +1,6 @@
-# encoding=utf8
+# -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -18,21 +18,22 @@
 '''
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
+import rollbar
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
 
 def index(request):
     slides = [
         ("Zack Coburn, EtherDelta","/static/v2/images/testimonials/zack.jpg", "Gitcoin is the catalyst open source development needs to move forward. The process is seamless and the results speak for themselves.", 'https://github.com/zackcoburn'),
-        ("Piper Merriam, web3py","/static/v2/images/testimonials/piper.png", "We have been trying out the Gitcoin bounty program in the Web3.py project and are very pleased with the results so far.  We’ve closed out four bountied issues ranging from smaller cleanup tasks to full fledged feature development.  So far the platform looks promising as a valuable addition to our development process.", 'https://github.com/pipermerriam'),
+        ("Piper Merriam, web3py","/static/v2/images/testimonials/piper.jpg", "We have been trying out the Gitcoin bounty program in the Web3.py project and are very pleased with the results so far.  We’ve closed out four bountied issues ranging from smaller cleanup tasks to full fledged feature development.  So far the platform looks promising as a valuable addition to our development process.", 'https://github.com/pipermerriam'),
         ("Phil Elsasser, Market","/static/v2/images/testimonials/phil.jpg", "Our first experiences with Gitcoin have been very positive.  It has helped MARKET to get new people involved quickly and in a cost effective manner.  Having fresh ideas and outside perspectives contribute to a new project is unbelievably valuable.", 'http://www.marketprotocol.io/'),
         ("Aditya Anand", "/static/v2/images/testimonials/aditya.jpg", "It’s been a while since something has gotten me this riled up ! Love the concept and definitely sticking around to see this project through. Awesome community  + open source work + bounties", "https://github.com/thelostone-mc"),
         ("Daniel Merrill", "/static/v2/images/testimonials/daniel.jpg", "Now that the internet of value is starting to be a thing, Gitcoin is adding a new layer of incentives into open source development, helping both the projects, by powering up their capacity, and the developers, by paying for their work.", "https://github.com/dmerrill6"),
-        ("Maurelian", "/static/v2/images/testimonials/maurelian.png", "Gitcoin helps us to finally close out the issues we’ve been meaning to get around to for too long.", "https://github.com/maurelian"),
+        ("Maurelian", "/static/v2/images/testimonials/maurelian.jpg", "Gitcoin helps us to finally close out the issues we’ve been meaning to get around to for too long.", "https://github.com/maurelian"),
         ("Mark Beacom", "/static/v2/images/testimonials/mark.jpg", "Gitcoin is precisely what I’ve been looking for! It gives every developer a vehicle to make extra money or move their open source project ahead.", "https://github.com/mbeacom"),
         ("Isaac Serafino", "/static/v2/images/testimonials/isaac.jpg", "I feel it is so awesome to have the opportunity through Gitcoin to do what I love and get paid for it, and to have reasonable freedom about the way I work, that it already seems too good to be true. ", "https://github.com/isaacserafino"),
     ]
@@ -45,9 +46,7 @@ def index(request):
 
 
 def robotstxt(request):
-    context = {
-    }
-    return TemplateResponse(request, 'robots.txt', context)
+    return TemplateResponse(request, 'robots.txt', {})
 
 
 def about(request):
@@ -58,10 +57,22 @@ def about(request):
     return TemplateResponse(request, 'about.html', context)
 
 
+def mission(request):
+    """Render the Mission response."""
+    context = {
+        'active': 'mission',
+        'title': 'Mission',
+        'card_title': 'Gitcoin is a mission-driven organization.',
+        'card_desc': 'Our mission is to push open source forward.',
+        'avatar_url': '/static/v2/images/mission/hero.png',
+    }
+    return TemplateResponse(request, 'mission.html', context)
+
+
 def help(request):
-    faq = [
+    faq = {
+        'Product': [
         {
-            'category': "Product",
             'q': 'I am a developer, I want build more Open Source Software. Where can I start?',
             'a': "The <a href=https://gitcoin.co/explorer>Funded Issue Explorer</a> contains a handful of issues that are ready to be paid out as soon as they are turned around. Check out the developer guide at <a href=https://gitcoin.co/help/dev>https://gitcoin.co/help/dev</a>."
         },
@@ -175,7 +186,12 @@ Here are some of our values
             'a': "We'd love to help!  Please email <a href='mailto:founders@gitcoin.co'>founders@gitcoin.co</a> or join <a href=/slack>Gitcoin Community Slack</a>."
         },
         {
-            'category': "General",
+            'q': 'Am I allowed to place bounties on projects I don\'t contribute to or own?',
+            'a': "TLDR: Yes you are.  But as OSS devs ourselves, our experience has been that if you want to get the product you work on merged into the upstream, you will need to work with the contributors or owners of that repo.  If not, you can always fork a repo and run your own roadmap."
+        },
+        ],
+     'General': [
+        {
             'q': 'Is Gitcoin open source?',
             'a': "Yes, all of Gitcoin's core software systems are open source and available at <a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  Please see the liscense.txt file in each repo for more details."
         },
@@ -230,6 +246,8 @@ The best way to stay in touch is to
 
             """
         },
+     ],
+     'Web3': [
         {
             'category': "Web3",
             'q': 'What is the difference between Gitcoin and centralized hiring websites?',
@@ -247,6 +265,9 @@ The best way to stay in touch is to
 <p>When Sir Tim Berners-Lee first invented the World Wide Web in the late 1980s&nbsp;to make information sharing on the Internet easier, he did something very important. He specified an open protocol, the Hypertext Transfer Protocol or HTTP, that anyone could use to make information available and to access such information. &nbsp;</p>
 <p>Gitcoin is similarly built on an open protocol of smart contracts.</p>
 <p>By specifying a&nbsp;protocol, Tim Berners-Lee opened the way for anyone to build software, so-called web servers and browsers that would be compatible with this protocol. &nbsp; By specifying an open source protocol for Funding Issues and software development scoping &amp; payment, the Gitcoin Core team hopes to similarly inspire a generation of inventions in 21st century software.</p>
+<p>
+To learn more about blockchain, please checkout the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
+</p>
             """
         },
         {
@@ -267,6 +288,9 @@ In contrast to web2 where third parties own your data, in web3 you own your data
 
 Download Metamask <a href="https://metamask.io/">here</a> today.
 </p>
+<p>
+To learn more about Metamask, please checkout the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
+</p>
 
            """
         },
@@ -281,6 +305,9 @@ The reason gas is important is that it helps to ensure an appropriate fee is bei
 </p>
 <p>
 Gas fees are paid to the maintainers of the Ethereum network, in return for securing all of the Ether and Ethereum-based transactions in the world.  Gas fees are not paid to Gitcoin Core directly or indirectly.
+</p>
+<p>
+To learn more about gas, pleaes checkout the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
 </p>
            """
         },
@@ -305,6 +332,9 @@ Here are some of the advantages of Ethereum based applications:
     Get paid in protocol, utility, or application tokens; not just cash.
 </li>
 </ul>
+<p>
+To learn more about Ethereum based apps, please checkout the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
+</p>
 
 
            """
@@ -317,10 +347,8 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
 
 """
         },
-
-
-
-    ]
+     ],
+    }
 
     context = {
         'active': 'help',
@@ -338,19 +366,19 @@ def get_gitcoin(request):
     return TemplateResponse(request, 'getgitcoin.html', context)
 
 
-def handler403(request):
+def handler403(request, exception=None):
     return error(request, 403)
 
 
-def handler404(request):
+def handler404(request, exception=None):
     return error(request, 404)
 
 
-def handler500(request):
+def handler500(request, exception=None):
     return error(request, 500)
 
 
-def handler400(request):
+def handler400(request, exception=None):
     return error(request, 400)
 
 
@@ -364,12 +392,31 @@ def error(request, code):
 
     if return_as_json:
         return JsonResponse(context, status=500)
-    else:
-        return TemplateResponse(request, 'error.html', context)
+    return TemplateResponse(request, 'error.html', context)
 
 
 def portal(request):
-    return redirect('https://gitcoinhelp.zendesk.com/hc/en-us/')
+    return redirect('https://gitcoin.co/help')
+
+
+def community(request):
+    return redirect('https://github.com/gitcoinco/community')
+
+
+def onboard(request):
+    return redirect('https://docs.google.com/document/d/1DQvek5TwASIp1njx5VZeLKEgSxfvxm871vctx1l_33M/edit?')
+
+
+def ethdenver(request):
+    return redirect('https://goo.gl/forms/FQogarXntrISFCsJ2')
+
+
+def ethdenverafterparty(request):
+    return redirect('https://docs.google.com/document/d/1sjV60TN1gYzzSWHvh4UGdT_Mz6HBOt6AVK2y6d9_bm8/edit')
+
+
+def presskit(request):
+    return redirect('https://www.dropbox.com/sh/bsjzbu0li2z0kr1/AACKgnQC3g6m52huYI3Gx3Ega?dl=0')
 
 
 def feedback(request):
@@ -392,16 +439,35 @@ def help_faq(request):
     return redirect('https://gitcoin.co/help#faq')
 
 
-def browser_extension(request):
+def browser_extension_chrome(request):
     return redirect('https://chrome.google.com/webstore/detail/gdocmelgnjeejhlphdnoocikeafdpaep')
 
 
+def browser_extension_firefox(request):
+    return redirect('https://addons.mozilla.org/en-US/firefox/addon/gitcoin/')
+
+
+def itunes(request):
+    return HttpResponse('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)')
+    return redirect('https://itunes.apple.com/us/app/gitcoin/idXXXXXXXXX')
+
+
 def ios(request):
-    return redirect('https://goo.gl/forms/HHOcMDKArCPo9Xas1')
+    #return HttpResponse('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)')
+
+    context = {
+        'active': 'ios',
+        'title': 'iOS',
+    }
+    return TemplateResponse(request, 'ios.html', context)
+
+
+def iosfeedback(request):
+    return redirect('https://goo.gl/forms/UqegoAMh7HVibfuF3')
 
 
 def casestudy(request):
-    return redirect('https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit#heading=h.fncqd9y7lo1h')
+    return redirect('https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit')
 
 
 def schwag(request):
@@ -411,28 +477,28 @@ def schwag(request):
 def slack(request):
     context = {
         'active': 'slack',
+        'msg': None,
     }
 
-    if request.POST.get('email', False):
-        email = request.POST['email']
-        valid_email = True
-        try:
-            validate_email(request.POST.get('email', False))
-        except ValidationError:
-            valid_email = False
+    if request.POST:
+        email = request.POST.get('email')
+        context['msg'] = 'You must provide an email address'
+        if email:
+            context['msg'] = 'Your invite has been sent.'
+            try:
+                validate_email(email)
+                get_or_save_email_subscriber(email, 'slack', send_slack_invite=False)
+                response = invite_to_slack(email)
 
-        if valid_email:
-            get_or_save_email_subscriber(email, 'slack')
-            response = invite_to_slack(email)
-            if response['ok']:
-                context['msg'] = "Your invite has been sent. "
-            else:
-                context['msg'] = response['error']
-        else:
-            context['msg'] = "Invalid email"
+                if not response.get('ok'):
+                    context['msg'] = response.get('error', 'Unknown error')
+                    rollbar.report_message(
+                        'Slack invitation failed', 'warning',
+                        extra_data={'slack_response': response})
+            except ValidationError:
+                context['msg'] = 'Invalid email'
 
     return TemplateResponse(request, 'slack.html', context)
-
 
 
 def btctalk(request):
@@ -453,6 +519,10 @@ def fb(request):
 
 def medium(request):
     return redirect('https://medium.com/gitcoin')
+
+
+def refer(request):
+    return redirect('https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/gitcoinco/issues/1')
 
 
 def gitter(request):

@@ -123,6 +123,29 @@
                 <td width="400">
                     <span>
                         {{bounty.status}}
+
+                        {% if bounty.status == 'submitted' %}
+                            ({{bounty.status}} by 
+                            {% for fulfillment in bounty.fulfillments.all %}
+                                {% if fulfillment.fulfiller_github_username %}
+                                    <a href="https://gitcoin.co/profile/{{fulfillment.fulfiller_github_username}}">{{fulfillment.fulfiller_github_username}}</a>
+                                {% elif fulfillment.fulfiller_email %}
+                                    <a href="mailto:{{fulfillment.fulfiller_email}}">{{fulfillment.fulfiller_email}}</a>
+                                {% else %}
+                                    <a href="https://etherscan.io/address/{{fulfillment.fulfiller_address}}">{{fulfillment.fulfiller_address}}</a>
+                                {% endif %}
+                            {% endfor %}
+                            )
+                        {% elif bounty.status == 'started' %}
+                            {% if bounty.interested.all|length > 0 %}
+                                by 
+                            {% endif %}
+                            {% for interested in bounty.interested.all %}
+                            <a href="https://gitcoin.co/profile/{{interested.profile.handle}}"> {{interested}}</a>
+                            {% endfor %}
+                        {% endif %}
+
+
                     </span>
                 </td>
             </tr>

@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -17,6 +17,10 @@
 '''
 import os
 import socket
+from datetime import datetime
+
+import rollbar
+from pytz import utc
 
 HOSTNAME = socket.gethostname()
 
@@ -27,15 +31,14 @@ RATELIMIT_ENABLE = True
 RATELIMIT_USE_CACHE = 'default'
 RATELIMIT_VIEW = 'tdi.views.ratelimited'
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.sitemaps',
@@ -49,12 +52,17 @@ INSTALLED_APPS = [
     'dashboard',
     'tdi',
     'gas',
+    'github',
+    'legacy',
     'chartit',
     'email_obfuscator',
+    'linkshortener',
+    'credits',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -62,6 +70,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ratelimit.middleware.RatelimitMiddleware',
+    'github.middleware.GithubAuthMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -152,7 +161,6 @@ LOGGING = {
             '()': 'django.utils.log.RequireDebugFalse'
         },
     },
-    'disable_existing_loggers': False,
     'handlers': {
         'rotatingfilehandler': {
             'level': 'DEBUG',
@@ -181,13 +189,13 @@ for ia in INSTALLED_APPS:
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
+STATICFILES_STORAGE = 'app.static_storage.SilentFileStorage'
 STATICFILES_DIRS = (
     'assets/',
 )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-
-STATIC_URL = '/static/'
+STATIC_URL = os.environ.get('DJANGO_STATIC_HOST', '') + '/static/'
 
 CACHES = {
     'default': {
@@ -200,9 +208,29 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_SECONDS = 3600
 
+# Github
+GITHUB_API_BASE_URL = 'https://api.github.com'
+GITHUB_AUTH_BASE_URL = 'https://github.com/login/oauth/authorize'
+GITHUB_TOKEN_URL = 'https://github.com/login/oauth/access_token'
+GITHUB_SCOPE = 'read:user,user:email,read:org'
+
+# List of github usernames to not count as comments on an issue
+IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
+
 # Include local settings overrides
 try:
     from .local_settings import *  # NOQA
     INSTALLED_APPS += DEBUG_APPS
-except ImportError as exp:
+
+    if ROLLBAR_SERVER_TOKEN:
+        # Handle rollbar initialization.
+        ROLLBAR = {
+            'access_token': ROLLBAR_SERVER_TOKEN,
+            'environment': ENV,
+            'root': BASE_DIR,
+            'patch_debugview': False,
+            'branch': 'master',
+        }
+        MIDDLEWARE.append('rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
+except ImportError:
     pass
