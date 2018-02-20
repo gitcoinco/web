@@ -261,10 +261,13 @@ def bounty_did_change(bounty_id, new_bounty_details):
     did_change = False
     old_bounties = Bounty.objects.none()
     try:
-        old_bounties = Bounty.objects.current().distinct() \
-            .filter(standard_bounties_id=bounty_id).order_by('-created_on')
-        did_change = (new_bounty_details != old_bounties.first().raw_data)
-    except Exception:
+        old_bounties = Bounty.objects.current() \
+            .filter(standard_bounties_id=bounty_id).distinct().order_by('-created_on')
+        if old_bounties.exists():
+            did_change = (new_bounty_details != old_bounties.first().raw_data)
+        did_change = True
+    except Exception as e:
+        logger.error(f'{e} during bounty_did_change check for {bounty_id}')
         did_change = True
 
     print('* Bounty did_change:', did_change)
@@ -313,7 +316,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty):
             new_fulfillment.save()
             new_bounty.fulfillments.add(new_fulfillment)
         except Exception as e:
-            logging.error(f'{e} during new fulfillment creation for {new_bounty}')
+            logger.error(f'{e} during new fulfillment creation for {new_bounty}')
             continue
     return new_bounty.fulfillments.all()
 
@@ -403,7 +406,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     new_bounty.interested.add(interested)
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
-            logging.error(f'{e} encountered during new bounty creation for: {url}')
+            logger.error(f'{e} encountered during new bounty creation for: {url}')
             new_bounty = None
 
         if fulfillments:
