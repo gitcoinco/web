@@ -298,9 +298,18 @@ function timeDifference(current, previous) {
     return amt + ' '+unit+plural+' ago';
 };
 
+var force_no_www = function(){
+    if(document.location.href.indexOf('https://www.gitcoin.co') != -1 ){
+        var new_url = document.location.href.replace('www.gitcoin.co','gitcoin.co');
+        document.location.href = new_url;
+    }
+};
+
 
 //sidebar
 $(document).ready(function(){
+
+    force_no_www();
 
     (function($) {
         $.fn.changeElementType = function(newType) {
