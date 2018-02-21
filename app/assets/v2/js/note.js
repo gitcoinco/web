@@ -1,30 +1,26 @@
-/* eslint-disable no-invalid-this */
-
-$( document ).ready( function() {
+$(document).ready(function() {
   let startX = null;
   let startY = null;
   const movementStrength = 25;
-  const height = movementStrength / $( window ).height();
-  const width = movementStrength / $( window ).width();
+  const height = movementStrength / $(window).height();
+  const width = movementStrength / $(window).width();
 
-  $( '.header, .white-light-bg' ).each( function(){
-    const ele = $( this );
+  $('.header, .white-light-bg').each(function(index, element) {
+    $(element).mousemove(e => {
+      const pageX = e.pageX - ($(window).width() / 2);
+      const pageY = e.pageY - ($(window).height() / 2);
+      const newvalueX = width * (pageX - startX) * -1 - 25;
+      const newvalueY = height * (pageY - startY) * -1 - 50;
 
-    ele.mousemove( e => {
-      const pageX = e.pageX - ( $( window ).width() / 2 );
-      const pageY = e.pageY - ( $( window ).height() / 2 );
-      const newvalueX = width * ( pageX - startX ) * -1 - 25;
-      const newvalueY = height * ( pageY - startY ) * -1 - 50;
-
-      if ( !startX ) {
+      if (!startX) {
         startX = newvalueX;
       }
 
-      if ( !startY ) {
+      if (!startY) {
         startY = newvalueY;
       }
 
-      ele.css( 'background-position', `${newvalueX - startX}px     ${newvalueY - startY}px` );
+      $(element).css('background-position', `${newvalueX - startX}px ${newvalueY - startY}px`);
     });
   });
 });
