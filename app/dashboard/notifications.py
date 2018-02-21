@@ -497,9 +497,9 @@ def maybe_post_on_craigslist(bounty):
         return
 
     posting_title = bounty.title
-    if posting_title is None or posting_title == "":
-        posting_title = "Please turn around {}’s issue".format(bounty.org_name)
-    posting_body = "Solve this github issue: {}".format(bounty.github_url)
+    if not posting_title:
+        posting_title = f"Please turn around {bounty.org_name}’s issue"
+    posting_body = f"Solve this github issue: {bounty.github_url}"
 
     # Final form filling
     form.find('input', {'id': "PostingTitle"})['value'] = posting_title
@@ -509,7 +509,7 @@ def maybe_post_on_craigslist(bounty):
     for postal_code_input in form.find_all('input', {'id': "postal_code"}):
         postal_code_input['value'] = '94105'
     form.find('input', {'value': 'pay', 'name': 'remuneration_type'})['checked'] = ''
-    form.find('input', {'id': "remuneration"})['value'] = "{} {}".format(bounty.get_natural_value(), bounty.token_name)
+    form.find('input', {'id': "remuneration"})['value'] = f"{bounty.get_natural_value()} {bounty.token_name}"
     try:
         form.find('input', {'id': "wantamap"})['data-checked'] = ''
     except Exception:
