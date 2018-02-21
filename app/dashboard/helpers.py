@@ -1,20 +1,22 @@
-'''
-    Copyright (C) 2017 Gitcoin Core
+# -*- coding: utf-8 -*-
+"""Handle dashboard helpers and related logic.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 import logging
 import pprint
 from enum import Enum
@@ -222,9 +224,10 @@ def normalizeURL(url):
 # returns did_change if bounty has changed since last sync
 # then old_bounty
 # then new_bounty
-def syncBountywithWeb3(bountyContract, url, network):
-    bountydetails = bountyContract.call().bountydetails(url)
-    return process_bounty_details(bountydetails, url, bountyContract.address, network)
+def sync_bounty_with_web3(bounty_contract, url):
+    """Sync the Bounty with Web3."""
+    bountydetails = bounty_contract.call().bountydetails(url)
+    return process_bounty_details(bountydetails)
 
 
 class BountyStage(Enum):
@@ -474,7 +477,7 @@ def process_bounty_changes(old_bounty, new_bounty):
         bsr.save()
 
     # new bounty
-    if (old_bounty is None and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
+    if (not old_bounty and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
         event_name = 'new_bounty'
     elif old_bounty.num_fulfillments < new_bounty.num_fulfillments:
         event_name = 'work_submitted'
@@ -492,22 +495,25 @@ def process_bounty_changes(old_bounty, new_bounty):
         profile_pairs = build_profile_pairs(new_bounty)
 
     # marketing
-    print("============ posting ==============")
-    did_post_to_twitter = maybe_market_to_twitter(new_bounty, event_name)
-    did_post_to_slack = maybe_market_to_slack(new_bounty, event_name)
-    did_post_to_github = maybe_market_to_github(new_bounty, event_name, profile_pairs)
-    did_post_to_email = maybe_market_to_email(new_bounty, event_name)
-    print("============ done posting ==============")
+    if event_name != 'unknown_event':
+        print("============ posting ==============")
+        did_post_to_twitter = maybe_market_to_twitter(new_bounty, event_name)
+        did_post_to_slack = maybe_market_to_slack(new_bounty, event_name)
+        did_post_to_github = maybe_market_to_github(new_bounty, event_name, profile_pairs)
+        did_post_to_email = maybe_market_to_email(new_bounty, event_name)
+        print("============ done posting ==============")
 
-    # what happened
-    what_happened = {
-        'did_bsr': did_bsr,
-        'did_post_to_email': did_post_to_email,
-        'did_post_to_github': did_post_to_github,
-        'did_post_to_slack': did_post_to_slack,
-        'did_post_to_twitter': did_post_to_twitter,
-    }
+        # what happened
+        what_happened = {
+            'did_bsr': did_bsr,
+            'did_post_to_email': did_post_to_email,
+            'did_post_to_github': did_post_to_github,
+            'did_post_to_slack': did_post_to_slack,
+            'did_post_to_twitter': did_post_to_twitter,
+        }
 
-    print("changes processed: ")
-    pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(what_happened)
+        print("changes processed: ")
+        pp = pprint.PrettyPrinter(indent=4)
+        pp.pprint(what_happened)
+    else:
+        print('No notifications sent - Event Type Unknown = did_bsr: ', did_bsr)

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
     Copyright (C) 2017 Gitcoin Core
 
@@ -15,7 +16,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 import json
@@ -45,6 +45,7 @@ def filter_types(types, _filters):
             return_me.append(t)
 
     return return_me
+
 
 @staff_member_required
 def stats(request):
@@ -97,7 +98,6 @@ def stats(request):
     }
 
     for t in types:
-
         source = Stat.objects.filter(key=t)
         if rollup == 'daily':
             source = source.filter(created_on__hour=1)
@@ -108,7 +108,7 @@ def stats(request):
         else:
             source = source.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=2)))
 
-        #compute avg
+        # compute avg
         total = 0
         count = source.count() - 1
         avg = "NA"
@@ -118,34 +118,34 @@ def stats(request):
             avg = round(total / count, 1)
             avg = str("+{}".format(avg) if avg > 0 else avg)
 
-
-        chartdata = \
-            DataPool(
-               series=
-                [{'options': {
-                   'source': source},
-                  'terms': [
-                    'created_on',
-                    'val']}
-                 ])
+        chartdata = DataPool(series=[{
+            'options': {'source': source},
+            'terms': [
+                'created_on',
+                'val'
+            ]}])
 
         cht = Chart(
-                datasource=chartdata,
-                series_options=
-                  [{'options':{
-                      'type': 'line',
-                      'stacking': False},
-                    'terms':{
-                      'created_on': [
-                        'val']
-                      }}],
-                chart_options =
-                  {'title': {
-                       'text': t + ' trend ({} avg)'.format(avg) },
-                   'xAxis': {
-                        'title': {
-                           'text': 'Time'}}})
-
+            datasource=chartdata,
+            series_options=[{
+                'options': {
+                    'type': 'line',
+                    'stacking': False
+                },
+                'terms': {
+                    'created_on': ['val']
+                }
+            }],
+            chart_options={
+                'title': {
+                    'text': f'{t} trend ({avg} avg)'
+                },
+                'xAxis': {
+                    'title': {
+                        'text': 'Time'
+                    }
+                }
+            })
         params['chart_list'].append(cht)
 
     params['chart_list_str'] = ",".join(types)
@@ -153,7 +153,7 @@ def stats(request):
 
 
 def email_settings(request, key):
-    #handle 'noinput' case
+    # handle 'noinput' case
     es = EmailSubscriber.objects.none()
     email = ''
     level = ''
@@ -162,11 +162,11 @@ def email_settings(request, key):
         email = request.session.get('email', False)
         if not email:
             github_handle = request.session.get('handle', False)
-            profiles = Profile.objects.filter(handle=github_handle).exclude(email='')
-            if profiles.count():
+            profiles = Profile.objects.filter(handle__iexact=github_handle).exclude(email='')
+            if profiles.exists():
                 email = profiles.first()
-        es = EmailSubscriber.objects.filter(email=email)
-        if not es.count():
+        es = EmailSubscriber.objects.filter(email__iexact=email)
+        if not es.exists():
             raise Http404
     else:
         es = EmailSubscriber.objects.filter(priv=key)
@@ -218,7 +218,8 @@ def email_settings(request, key):
         'es': es,
         'keywords': ",".join(es.keywords),
         'msg': msg,
-        'autocomplete_keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+        'autocomplete_keywords': json.dumps(
+            [str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'email_settings.html', context)
 
@@ -232,17 +233,17 @@ def leaderboard(request, key):
         key = 'monthly_earners'
 
     titles = {
-#        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
-#        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
-#        'monthly_fulfilled': 'Monthly Leaderboard',
-         'monthly_payers': 'Top Payers',
-         'monthly_earners': 'Top Earners',
-#        'monthly_all': 'Monthly Leaderboard: All Funded Issues',
-#        'yearly_fulfilled': 'Yearly Leaderboard: Fulfilled Funded Issues',
-#        'yearly_all': 'Yearly Leaderboard: All Funded Issues',
-#        'all_fulfilled': 'All-Time Leaderboard: Fulfilled Funded Issues',
-#        'all_all': 'All-Time Leaderboard: All Funded Issues',
-#TODO - also include options for weekly, yearly, and all cadences of earning
+        'monthly_payers': 'Top Payers',
+        'monthly_earners': 'Top Earners',
+        #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
+        #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
+        #        'monthly_fulfilled': 'Monthly Leaderboard',
+        #        'monthly_all': 'Monthly Leaderboard: All Funded Issues',
+        #        'yearly_fulfilled': 'Yearly Leaderboard: Fulfilled Funded Issues',
+        #        'yearly_all': 'Yearly Leaderboard: All Funded Issues',
+        #        'all_fulfilled': 'All-Time Leaderboard: Fulfilled Funded Issues',
+        #        'all_all': 'All-Time Leaderboard: All Funded Issues',
+        # TODO - also include options for weekly, yearly, and all cadences of earning
     }
     if key not in titles.keys():
         raise Http404
@@ -252,7 +253,7 @@ def leaderboard(request, key):
     items = leadeboardranks.order_by('-amount')
     top_earners = ''
 
-    if len(amount) > 0:
+    if amount:
         amount_max = amount[0][0]
         top_earners = leadeboardranks.order_by('-amount')[0:3].values_list('github_username', flat=True)
         top_earners = ['@' + username for username in top_earners]
@@ -260,7 +261,7 @@ def leaderboard(request, key):
     else:
         amount_max = 0
 
-    if len(items) > 0:
+    if items:
         podium_items = items[:3]
     else:
         podium_items = []
@@ -270,12 +271,10 @@ def leaderboard(request, key):
         'titles': titles,
         'selected': titles[key],
         'title': "Monthly Leaderboard: " + titles[key],
-        'card_title': "Monthly Leaderboard: " +titles[key],
+        'card_title': "Monthly Leaderboard: " + titles[key],
         'card_desc': 'See the most valued members in the Gitcoin community this month. ' + top_earners,
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
         'podium_items': podium_items
     }
-
-
     return TemplateResponse(request, 'leaderboard.html', context)
