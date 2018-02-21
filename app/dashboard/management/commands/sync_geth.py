@@ -21,10 +21,11 @@ import warnings
 
 from django.core.management.base import BaseCommand
 
+import rollbar
 from dashboard.helpers import UnsupportedSchemaException
 from dashboard.utils import BountyNotFoundException, get_bounty, process_bounty
 
-warnings.filterwarnings("ignore", category=DeprecationWarning) 
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 logger = logging.getLogger(__name__)
 
@@ -48,7 +49,6 @@ class Command(BaseCommand):
         more_bounties = True
         while more_bounties:
             try:
-
                 # pull and process each bounty
                 bounty = get_bounty(bounty_enum, network)
                 print(f"Processing bounty {bounty_enum}")
@@ -59,7 +59,12 @@ class Command(BaseCommand):
             except UnsupportedSchemaException as e:
                 logger.info(f"* Unsupported Schema => {e}")
             except Exception as e:
-                logger.exception(e)
+                extra_data = {
+                    'bounty_enum': bounty_enum,
+                    'more_bounties': more_bounties,
+                    'network': network
+                }
+                rollbar.report_exc_info(sys.exc_info(), extra_data=extra_data)
                 logger.error(f"* Exception in sync_geth => {e}")
             finally:
                 # prepare for next loop

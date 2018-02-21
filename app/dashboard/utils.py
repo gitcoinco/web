@@ -270,5 +270,6 @@ def build_profile_pairs(bounty):
     """
     profile_handles = []
     for fulfillment in bounty.fulfillments.select_related('profile').all().order_by('pk'):
-        profile_handles.append((fulfillment.profile.handle, fulfillment.profile.absolute_url))
+        if fulfillment.profile and fulfillment.profile.handle and fulfillment.profile.absolute_url:
+            profile_handles.append((fulfillment.profile.handle, fulfillment.profile.absolute_url))
     return profile_handles
