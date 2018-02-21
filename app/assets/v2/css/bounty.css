@@ -55,7 +55,51 @@
   font-family: "Futura" !important;
 }
 
+#submitter_ul {
+  padding-left: 1em;
+}
+
+.submitter_icon {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.interested_icon {
+  text-align: center;
+}
+
+#interest_list .row {
+  margin: 20px 10px;
+}
+
+#submission_row {
+  margin: 20px 10px;
+  border-bottom: 2px solid #eee;
+}
+
+#submission_row:last-child {
+  border-bottom: none;
+}
+
+.interested a {
+  margin: auto;
+  font-family: "Futura" !important;
+}
+
 @media (max-width: 767px) {
+
+  .actions {
+    margin-bottom: 20px;
+  }
+
+  #submitter_ul {
+    padding-left: 0;
+  }
+
+  .submitter_icon, .interested_icon {
+    text-align: left;
+  }
+
   .bounty_details #title {
     font-size: 18px;
   }

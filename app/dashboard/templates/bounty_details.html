@@ -141,15 +141,24 @@
     </script>
 
     <script id="interested" type="text/x-jsrender">
-        <li>
+      <li>
+        <div class="row">
+          <div class="col-sm-12 col-md-2 interested_icon">
             <img src="[[:local_avatar_url]]" class="avatar">
-            <a target=new href="[[:url]]">[[:handle]]</a>
-        </li>
+          </div>
+          <div class="col-sm-12 col-md-10">
+            <span class="bounty-subheading">Gitcoin Profile :</span>
+            <span class="bounty-text">
+              <a target=new href="[[:url]]">[[:handle]]</a>
+            </span>
+          </div>
+        </div>
+      </li>
     </script>
 
     <script id="submission" type="text/x-jsrender">
         <div class="row" id="submission_row">
-            <div class="col-2 submitter_icon">
+            <div class="col-sm-12 col-md-2 submitter_icon">
                 [[if fulfiller.fulfiller_github_username != '']]
                     <a href="/profile/[[:fulfiller.fulfiller_github_username]]">
                         <img src="{% url 'avatar' %}?repo=https://github.com/[[:fulfiller.fulfiller_github_username]]" class="avatar">
@@ -158,25 +167,46 @@
                     <img src="{% url 'avatar' %}?repo=https://github.com/self" class="avatar">
                 [[/if]]
             </div>
-            <div class="col-8">
+            <div class="col-sm-12 col-md-8">
                 <ul style="list-style-type:none" id="submitter_ul">
-                    <li>Name: <span id="fulfiller_name">[[:fulfiller.fulfiller_name]]</span></li>
-                    <li>ETH Address: <span id="fulfiller_address"> <a target=new href="https://etherscan.io/address/[[:fulfiller.fulfiller_address]]">[[:fulfiller.fulfiller_address]]</a></span></li>
-                    <li>Email: <span id="fulfiller_email"> <a href="mailto:[[:fulfiller.email]]">[[:fulfiller.fulfiller_email]]</a></span></li>
-                    <li>Gitcoin Profile: <span id="fulfiller_github_username"> <a target=new href="{% url 'profile' %}[[:fulfiller.fulfiller_github_username]]">[[:fulfiller.fulfiller_github_username]]</a></span></li>
-                    <li>Submission ID: <span id="fulfillment_id">[[:fulfiller.fulfillment_id]]</span></li>
-                    <li>Created: <span id="fulfillment_created">[[:fulfiller.created_on]]</span></li>
+                    <li>
+                      <span class="bounty-subheading">Name :</span>
+                      <span id="fulfiller_name" class="bounty-text">[[:fulfiller.fulfiller_name]]</span>
+                    </li>
+                    <li>
+                      <span class="bounty-subheading">ETH Address :</span>
+                      <span class="bounty-text" id="fulfiller_address">
+                        <a target=new href="https://etherscan.io/address/[[:fulfiller.fulfiller_address]]">[[:fulfiller.fulfiller_address]]</a>
+                      </span>
+                    </li>
+                    <li>
+                      <span class="bounty-subheading">Email :</span>
+                      <span class="bounty-text" id="fulfiller_email">
+                        <a href="mailto:[[:fulfiller.email]]">[[:fulfiller.fulfiller_email]]</a>
+                      </span>
+                    </li>
+                    <li>
+                      <span class="bounty-subheading">Gitcoin Profile :</span>
+                      <span class="bounty-text" id="fulfiller_github_username">
+                        <a target=new href="{% url 'profile' %}[[:fulfiller.fulfiller_github_username]]">[[:fulfiller.fulfiller_github_username]]</a>
+                      </span>
+                    </li>
+                    <li>
+                      <span class="bounty-subheading">Submission ID :</span>
+                      <span class="bounty-text" id="fulfillment_id">[[:fulfiller.fulfillment_id]]</span>
+                    </li>
+                    <li>
+                      <span class="bounty-subheading">Created :</span>
+                      <span class="bounty-text" id="fulfillment_created">[[:fulfiller.created_on]]</span>
+                    </li>
                 </ul>
             </div>
-            <div class="col-2">
-                <div class="row">&nbsp;</div>
-                <div class="row">&nbsp;</div>
-                    <span title='[[:button.title]]'>
-                        <a class="btn btn-sm btn-[[:button.color]] [[:button.extraClass]]" role="button" href="[[:button.href]]" target="[[:button.target]]">
-                            <span class="font-smaller-4">[[:button.text]]</span>
-                        </a>
-                    </span>
-                <div class="row">&nbsp;</div>
+            <div class="col-sm-12 col-md-2 text-center actions">
+              <span title='[[:button.title]]'>
+                <a class="btn btn-sm btn-[[:button.color]] [[:button.extraClass]]" role="button" href="[[:button.href]]" target="[[:button.target]]">
+                  <span class="font-smaller-4">[[:button.text]]</span>
+                </a>
+              </span>
             </div>
         </div>
     </script>
