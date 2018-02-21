@@ -433,17 +433,21 @@ def maybe_market_to_email(b, event_name):
         except Exception as e:
             logging.exception(e)
             print(e)
-    elif event_name in ['work_done', 'rejected_claim']:
+    elif event_name == 'work_done':
         accepted_fulfillment = b.fulfillments.filter(accepted=True).latest('modified_on')
         try:
             to_emails = [b.bounty_owner_email, accepted_fulfillment]
-            if event_name == 'work_done':
-                new_bounty_acceptance(b, to_emails)
-            elif event_name == 'rejected_claim':
-                new_bounty_rejection(b, to_emails)
+            new_bounty_acceptance(b, to_emails)
         except Exception as e:
             logging.exception(e)
             print(e)
+    elif event_name == 'rejected_claim':
+        try:
+            rejected_fulfillment = b.fulfillments.filter(accepted=False).latest('modified_on')
+            to_emails = [b.bounty_owner_email, rejected_fulfillment]
+            new_bounty_rejection(b, to_emails)
+        except Exception as e:
+            logging.exception(e)
 
     return len(to_emails)
 
