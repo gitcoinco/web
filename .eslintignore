@@ -1,6 +1,9 @@
-app/assets/v2/js/*.min.js
+*.min.js
+
 app/assets/v2/js/ipfs-api.js
 app/assets/v2/js/jquery*.js
 app/assets/v2/js/jsrender.js
 app/assets/v2/js/showdown.js
 app/assets/v2/js/tooltip.js
+
+app/assets/yge/youvegoteth/confetti.js

@@ -311,7 +311,7 @@ var do_actions = function(result) {
       github_url = github_url.replace('pipermerriam/web3.py', 'ethereum/web3.py');
 
       if (result['github_comments']) {
-        var entry_comment = {
+        var entryComment = {
           href: github_url,
           text: result['github_comments'],
           target: 'new',
@@ -319,10 +319,10 @@ var do_actions = function(result) {
           color: 'github-comment'
         };
 
-        actions.push(entry_comment);
+        actions.push(entryComment);
       }
 
-      var entry = {
+      var entryGithub = {
         href: github_url,
         text: 'View on Github',
         target: 'new',
@@ -331,7 +331,7 @@ var do_actions = function(result) {
         title: 'Github is where the issue scope lives.  Its also a great place to collaborate with, and get to know, other developers (and sometimes even the repo maintainer themselves!).'
       };
 
-      actions.push(entry);
+      actions.push(entryGithub);
     }
 
     if (result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted') {
