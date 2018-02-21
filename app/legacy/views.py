@@ -41,14 +41,14 @@ def sync_web3(request):
     """Sync web3 for legacy."""
     # setup
     result = {}
-    issueURL = request.POST.get('issueURL', False)
+    issue_url = request.POST.get('issueURL', False)
     bountydetails = request.POST.getlist('bountydetails[]', [])
-    if issueURL:
-        issueURL = normalizeURL(issueURL)
+    if issue_url:
+        issue_url = normalizeURL(issue_url)
         if not bountydetails:
             # create a bounty sync request
             result['status'] = 'OK'
-            for existing_bsr in BountySyncRequest.objects.filter(github_url=issueURL, processed=False):
+            for existing_bsr in BountySyncRequest.objects.filter(github_url=issue_url, processed=False):
                 existing_bsr.processed = True
                 existing_bsr.save()
         else:
@@ -68,14 +68,14 @@ def sync_web3(request):
             contract_address = request.POST.get('contract_address')
             network = request.POST.get('network')
             did_change, old_bounty, new_bounty = process_bounty_details(
-                bountydetails, issueURL, contract_address, network)
-            print("LEGACY: {} changed, {}".format(did_change, issueURL))
+                bountydetails, issue_url, contract_address, network)
+            print(f"LEGACY: {did_change} changed, {issue_url}")
             if did_change:
-                print("- processing changes");
+                print("- processing changes")
                 process_bounty_changes(old_bounty, new_bounty)
 
         BountySyncRequest.objects.create(
-            github_url=issueURL,
+            github_url=issue_url,
             processed=False)
 
     return JsonResponse(result)
