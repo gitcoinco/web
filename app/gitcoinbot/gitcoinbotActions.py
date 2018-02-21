@@ -1,6 +1,6 @@
-'''
+"""
 Methods for interacting with the Github API
-'''
+"""
 from django.conf import settings
 
 import datetime
@@ -19,20 +19,8 @@ headers = {
 
 def help_text():
     # TODO @owocki Add test bounties to dev environment to add claim/approve functionality
-    # help_text_response = "I am @{}, a bot that facilitates gitcoin bounties.\n".format(settings.GITHUB_API_USER) + \
-    #     "\n" +\
-    #     "<hr>" +\
-    #     "Here are the commands I understand:\n" +\
-    #     "\n" +\
-    #     " * `bounty <amount> ETH` -- receive link to gitcoin.co form to create bounty.\n" +\
     #     " * `claim` -- receive link to gitcoin.co to claim bounty.\n" +\
     #     " * `approve` -- receive link to gitcoin.co to approve bounty.\n" +\
-    #     " * `tip <user> <amount> ETH` -- receive link to complete tippping another github user *<amount>* ETH.\n" +\
-    #     " * `help` -- displays a help menu\n" +\
-    #     "\n" +\
-    #     "<br>" +\
-    #     "Learn more at: [https://gitcoin.co](https://gitcoin.co)\n" +\
-    #     ":zap::heart:, {}\n".format("@" + settings.GITHUB_API_USER)
 
     help_text_response = "I am @{}, a bot that facilitates gitcoin bounties.\n".format(settings.GITHUB_API_USER) + \
     "\n" +\
@@ -109,8 +97,7 @@ def claim_bounty_text(comment_text, sender):
     )
 
 def confused_text():
-    response = 'Sorry I did not understand that request. Please try again'
-    return response
+    return 'Sorry I did not understand that request. Please try again'
 
 def post_issue_comment(owner, repo, issue_id, comment):
     url = 'https://api.github.com/repos/{}/{}/issues/{}/comments'.format(
@@ -136,7 +123,7 @@ def post_gitcoin_app_comment(owner, repo, issue_id, content, install_id):
     token = create_token(install_id)
     url = 'https://api.github.com/repos/{}/{}/issues/{}/comments'.format(
         owner, repo, issue_id)
-    githubAppHeaders = {
+    github_app_headers = {
         'Authorization': 'token ' + token,
         'Accept': 'application/vnd.github.machine-man-preview+json'
     }
@@ -144,7 +131,7 @@ def post_gitcoin_app_comment(owner, repo, issue_id, content, install_id):
         'body': content
     }
 
-    response = requests.post(url, data=json.dumps(body), headers=githubAppHeaders)
+    response = requests.post(url, data=json.dumps(body), headers=github_app_headers)
     return response.json
 
 def create_token(install_id):
@@ -157,11 +144,11 @@ def create_token(install_id):
     jwt_token = jwt.encode(payload, SECRET_KEYSTRING, algorithm='RS256')
     jwt_token_string = jwt_token.decode('utf-8')
     url = 'https://api.github.com/installations/{}/access_tokens'.format(install_id)
-    githubAppHeaders = {
+    github_app_headers = {
         'Authorization': 'Bearer ' + jwt_token_string,
         'Accept': 'application/vnd.github.machine-man-preview+json'
     }
-    response = requests.post(url, headers=githubAppHeaders)
+    response = requests.post(url, headers=github_app_headers)
     token = json.loads(response.content)['token']
     return token
 

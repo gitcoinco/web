@@ -51,14 +51,13 @@ STATIC_URL = '/static/'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # required
-SECRET_KEY = 'thisisasecret'
+SECRET_KEY = 'TODO'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'gitcoin',
-        'USER': 'gitcoin_user',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'HOST': 'db',
         'PORT': 5432,
     }
 }
