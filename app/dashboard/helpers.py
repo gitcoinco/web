@@ -224,9 +224,10 @@ def normalizeURL(url):
 # returns did_change if bounty has changed since last sync
 # then old_bounty
 # then new_bounty
-def syncBountywithWeb3(bountyContract, url, network):
-    bountydetails = bountyContract.call().bountydetails(url)
-    return process_bounty_details(bountydetails, url, bountyContract.address, network)
+def sync_bounty_with_web3(bounty_contract, url):
+    """Sync the Bounty with Web3."""
+    bountydetails = bounty_contract.call().bountydetails(url)
+    return process_bounty_details(bountydetails)
 
 
 class BountyStage(Enum):
