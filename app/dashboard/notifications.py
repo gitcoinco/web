@@ -412,6 +412,8 @@ def maybe_market_to_email(b, event_name):
 
     if event_name == 'new_bounty' and not settings.DEBUG:
         try:
+            # this doesnt scale because there are typically like 600 matches.. need to move to a background job
+            return
             keywords = b.keywords.split(',')
             for keyword in keywords:
                 to_emails = to_emails + list(EmailSubscriber.objects.filter(
