@@ -21,6 +21,7 @@ import sys
 import warnings
 
 from django.core.management.base import BaseCommand
+import datetime
 
 from app.rollbar import rollbar
 from dashboard.helpers import UnsupportedSchemaException
@@ -46,6 +47,9 @@ class Command(BaseCommand):
 
         # config
         network = options['network']
+        hour = datetime.datetime.now().hour
+        day = datetime.datetime.now().day
+        month = datetime.datetime.now().month
 
         # iterate through all the bounties
         bounty_enum = int(options['start_id'])
@@ -54,7 +58,7 @@ class Command(BaseCommand):
             try:
                 # pull and process each bounty
                 bounty = get_bounty(bounty_enum, network)
-                print(f"Processing bounty {bounty_enum}")
+                print(f"[{month}/{day} {hour}:00] Processing bounty {bounty_enum}")
                 process_bounty(bounty)
 
             except BountyNotFoundException:
