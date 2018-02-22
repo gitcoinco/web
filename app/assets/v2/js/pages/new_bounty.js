@@ -144,6 +144,14 @@ $(document).ready(function(){
             _alert({ message: "Please enter an amount." });
             isError = true;
         }
+        if(metadata.issueTitle == ''){
+            _alert({ message: "Please enter an title." });
+            isError = true;
+        }
+        if(metadata.issueDescription == ''){
+            _alert({ message: "Please enter an description." });
+            isError = true;
+        }
         if(isError){
             unloading_button($(this));
             return;
