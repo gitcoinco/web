@@ -28,6 +28,7 @@ from dashboard.utils import BountyNotFoundException, get_bounty, process_bounty
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
