@@ -17,6 +17,7 @@
 '''
 
 import logging
+import sys
 import warnings
 
 from django.core.management.base import BaseCommand
@@ -40,7 +41,7 @@ class Command(BaseCommand):
         parser.add_argument('end_id', default=99999999999, type=int)
 
     def handle(self, *args, **options):
-        
+
         # config
         network = options['network']
 
