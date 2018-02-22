@@ -16,12 +16,12 @@
 
 '''
 
+import datetime
 import logging
 import sys
 import warnings
 
 from django.core.management.base import BaseCommand
-import datetime
 
 from app.rollbar import rollbar
 from dashboard.helpers import UnsupportedSchemaException
