@@ -18,6 +18,8 @@
 
 BRANCH=$1
 DISTID=$2
+COLLECTSTATIC=$3
+
 # deploy script
 # assumes that gitcoin repo lives at $HOME/gitcoin
 # and that gitcoinenv is the virtualenv under which it lives
@@ -41,7 +43,9 @@ echo "- install crontab"
 crontab scripts/crontab
 cd app
 echo "- collect static"
-./manage.py collectstatic --noinput -i other;
+if [ $COLLECTSTATIC ]; then
+    ./manage.py collectstatic --noinput -i other;
+fi
 rm -Rf ~/gitcoin/coin/app/static/other
 echo "- db"
 ./manage.py migrate
