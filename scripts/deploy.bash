@@ -18,7 +18,7 @@
 
 BRANCH=$1
 DISTID=$2
-COLLECTSTATIC=$3
+ISFRONTENDPUSH=$3
 
 # deploy script
 # assumes that gitcoin repo lives at $HOME/gitcoin
@@ -43,7 +43,7 @@ echo "- install crontab"
 crontab scripts/crontab
 cd app
 echo "- collect static"
-if [ $COLLECTSTATIC ]; then
+if [ $ISFRONTENDPUSH ]; then
     ./manage.py collectstatic --noinput -i other;
 fi
 rm -Rf ~/gitcoin/coin/app/static/other
@@ -56,8 +56,10 @@ echo "- gunicorn"
 sudo systemctl restart gunicorn
 
 # invalidate cloudfront
-if [ $DISTID ]; then
-    aws cloudfront create-invalidation --distribution-id $DISTID --invalidation-batch="Paths={Quantity=1,Items=["/*"]},CallerReference=$(date)"
+if [ $ISFRONTENDPUSH ]; then
+    if [ $DISTID ]; then
+        aws cloudfront create-invalidation --distribution-id $DISTID --invalidation-batch="Paths={Quantity=1,Items=["/*"]},CallerReference=$(date)"
+    fi
 fi
 
 # ping google
