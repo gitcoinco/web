@@ -268,8 +268,9 @@ def bounty_did_change(bounty_id, new_bounty_details):
     try:
         old_bounties = Bounty.objects.filter(standard_bounties_id=bounty_id, network=network, current_bounty=True).order_by('-created_on')
         did_change = (new_bounty_details != old_bounties.first().raw_data)
-    except Exception:
+    except Exception as e:
         did_change = True
+        print(f"asserting did change because got the following exception: e")
 
     print('* Bounty did_change:', did_change)
 
