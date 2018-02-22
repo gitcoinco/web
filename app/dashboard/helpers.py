@@ -357,6 +357,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         for old_bounty in old_bounties:
             if old_bounty.current_bounty:
                 submissions_comment_id = old_bounty.submissions_comment
+                interested_comment_id = old_bounty.interested_comment
             old_bounty.current_bounty = False
             old_bounty.save()
         try:
@@ -386,6 +387,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 contract_address=bounty_details.get('token'),
                 network=bounty_details.get('network'),
                 accepted=accepted,
+                interested_comment=interested_comment_id,
                 submissions_comment=submissions_comment_id,
                 # These fields are after initial bounty creation, in bounty_details.js
                 expires_date=timezone.make_aware(
@@ -398,12 +400,12 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             new_bounty.fetch_issue_item()
             if not new_bounty.avatar_url:
                 new_bounty.avatar_url = new_bounty.get_avatar_url()
-            new_bounty.save()
 
             # Pull the interested parties off the last old_bounty
-            if old_bounties.exists():
+            if old_bounties:
                 for interested in old_bounties.order_by('-pk').first().interested.all():
                     new_bounty.interested.add(interested)
+            new_bounty.save()
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
             logging.error(f'{e} encountered during new bounty creation for: {url}')
@@ -449,14 +451,16 @@ def process_bounty_details(bounty_details):
 
     # Create new bounty (but only if things have changed)
     did_change, old_bounties = bounty_did_change(bounty_id, bounty_details)
+    latest_old_bounty = old_bounties.order_by('-pk').first()
+
     if not did_change:
-        return (did_change, old_bounties.first(), old_bounties.first())
+        return (did_change, latest_old_bounty, latest_old_bounty)
 
     new_bounty = create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id)
 
     if new_bounty:
-        return (did_change, old_bounties.first(), new_bounty)
-    return (did_change, old_bounties.first(), old_bounties.first())
+        return (did_change, latest_old_bounty, new_bounty)
+    return (did_change, latest_old_bounty, latest_old_bounty)
 
 
 def process_bounty_changes(old_bounty, new_bounty):
