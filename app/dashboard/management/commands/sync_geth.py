@@ -22,7 +22,7 @@ import warnings
 
 from django.core.management.base import BaseCommand
 
-import rollbar
+from app.rollbar import rollbar
 from dashboard.helpers import UnsupportedSchemaException
 from dashboard.utils import BountyNotFoundException, get_bounty, process_bounty
 

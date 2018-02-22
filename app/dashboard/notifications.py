@@ -26,7 +26,7 @@ from urllib.parse import urlparse as parse
 from django.conf import settings
 from django.utils import timezone
 
-import rollbar
+from app.rollbar import rollbar
 import twitter
 from github.utils import delete_issue_comment, patch_issue_comment, post_issue_comment
 from marketing.mails import tip_email

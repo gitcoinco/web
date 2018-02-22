@@ -27,7 +27,7 @@ from django.utils import timezone
 
 import dateutil.parser
 import requests
-import rollbar
+from app.rollbar import rollbar
 from rest_framework.reverse import reverse
 
 logger = logging.getLogger(__name__)
