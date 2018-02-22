@@ -312,7 +312,7 @@ def delete_issue_comment(comment_id, owner, repo):
         response = requests.delete(url, auth=_AUTH)
         return response.json()
     except ValueError:
-        logger.error(f"could not delete issue comment because JSON response could not be decoded: {comment_id}, {owner}, {repo}.  {r.status_code}, {r.text} ")
+        logger.error(f"could not delete issue comment because JSON response could not be decoded: {comment_id}, {owner}, {repo}.  {response.status_code}, {response.text} ")
     except Exception:
         return {}
 
