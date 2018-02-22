@@ -27,6 +27,7 @@ from dashboard.helpers import UnsupportedSchemaException
 from dashboard.utils import BountyNotFoundException, get_bounty, process_bounty
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+logging.getLogger("requests").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
