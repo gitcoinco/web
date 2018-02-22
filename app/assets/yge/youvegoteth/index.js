@@ -74,19 +74,21 @@ var addMotion = function(){
   var _width = 1000;
   var height = movementStrength / _height;
   var width = movementStrength / _width;
-  $("yge").addEventListener("mousemove",function(e){
-        var pageX = e.pageX - (_height / 2);
-        var pageY = e.pageY - (_width / 2);
-        var newvalueX = width * (pageX - startX) * -1 - 25;
-        var newvalueY = height * (pageY - startY) * -1 - 50;
-        if(!startX){
-          startX = newvalueX;
-        }
-        if(!startY){
-          startY = newvalueY;
-        }
-        $("yge").style.backgroundPosition =  (newvalueX - startX - 10)+"px     "+(newvalueY - startY - 10)+"px";
-  });
+  if(typeof $("yge").addEventListener != 'undefined'){
+    $("yge").addEventListener("mousemove",function(e){
+          var pageX = e.pageX - (_height / 2);
+          var pageY = e.pageY - (_width / 2);
+          var newvalueX = width * (pageX - startX) * -1 - 25;
+          var newvalueY = height * (pageY - startY) * -1 - 50;
+          if(!startX){
+            startX = newvalueX;
+          }
+          if(!startY){
+            startY = newvalueY;
+          }
+          $("yge").style.backgroundPosition =  (newvalueX - startX - 10)+"px     "+(newvalueY - startY - 10)+"px";
+    });
+  }
 };
 setTimeout(addMotion, 5);
 
