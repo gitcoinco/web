@@ -428,7 +428,7 @@ var render_fulfillments = function(result){
                 'fulfiller': value,
                 'button': acceptButton,
             };
-
+            submission['fulfiller']['created_on'] = timeDifference(new Date(), new Date(submission['fulfiller']['created_on']));
             var submitter_tmpl = $.templates("#submission");
             var submitter_html = submitter_tmpl.render(submission);
 
