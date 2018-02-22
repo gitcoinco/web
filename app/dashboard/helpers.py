@@ -338,6 +338,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
     # fulfillments metadata will be empty when bounty is first created
     fulfillments = bounty_details.get('fulfillments', {})
     submissions_comment_id = None
+    interested_comment_id = None
 
     # start to process out all the bounty data
     url = bounty_payload.get('webReferenceURL')

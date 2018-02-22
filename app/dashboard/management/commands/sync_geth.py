@@ -40,7 +40,7 @@ class Command(BaseCommand):
         parser.add_argument('end_id', default=99999999999, type=int)
 
     def handle(self, *args, **options):
-        return #KO - disable sync_geth until we get to the bottom of 2018/02/21 triage
+        
         # config
         network = options['network']
 
