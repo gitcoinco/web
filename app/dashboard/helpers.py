@@ -488,6 +488,7 @@ def process_bounty_changes(old_bounty, new_bounty):
     # new bounty
     if not old_bounty or (not old_bounty and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
         event_name = 'new_bounty'
+        import ipdb; ipdb.set_trace()
     elif old_bounty.num_fulfillments < new_bounty.num_fulfillments:
         event_name = 'work_submitted'
     elif old_bounty.is_open and not new_bounty.is_open:

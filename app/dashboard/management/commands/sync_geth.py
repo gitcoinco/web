@@ -57,6 +57,7 @@ class Command(BaseCommand):
         while more_bounties:
             try:
                 # pull and process each bounty
+                print(f"[{month}/{day} {hour}:00] Getting bounty {bounty_enum}")
                 bounty = get_bounty(bounty_enum, network)
                 print(f"[{month}/{day} {hour}:00] Processing bounty {bounty_enum}")
                 process_bounty(bounty)
