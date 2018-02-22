@@ -463,7 +463,7 @@ var render_fulfillments = function (result) {
 
         $("#submission_list").append(submitter_html);
     } else if (result['status'] == 'done') {
-        var accepted = result.fulfillments[0].accepted;
+        var accepted = result.fulfillments.length && result.fulfillments[0].accepted;
         var acceptedButton = {
             href: '',
             text: accepted ? 'Accepted' : 'Not Accepted',
