@@ -138,20 +138,39 @@ def get_bounty(bounty_enum, network):
     except BadFunctionCallOutput:
         raise BountyNotFoundException
 
+    # pull from blockchain
     bountydata = standard_bounties.functions.getBountyData(bounty_enum).call()
     arbiter = standard_bounties.functions.getBountyArbiter(bounty_enum).call()
     token = standard_bounties.functions.getBountyToken(bounty_enum).call()
+    bounty_data_str = ipfs_cat(bountydata)
+    bounty_data = json.loads(bounty_data_str)
+
+    # fulfillments
     num_fulfillments = int(standard_bounties.functions.getNumFulfillments(bounty_enum).call())
     fulfillments = []
     for fulfill_enum in range(0, num_fulfillments):
+
+        # pull from blockchain
         accepted, fulfiller, data = standard_bounties.functions.getFulfillment(bounty_enum, fulfill_enum).call()
+        data_str = ipfs_cat(data)
+        data = json.loads(data_str)
+
+        # validation
+        if 'Failed to get block' in data_str:
+            raise IPFSCantConnectException("Failed to connect to IPFS")
+
         fulfillments.append({
             'id': fulfill_enum,
             'accepted': accepted,
             'fulfiller': fulfiller,
-            'data': json.loads(ipfs_cat(data)),
+            'data': data,
         })
 
+    # validation
+    if 'Failed to get block' in bounty_data_str:
+        raise IPFSCantConnectException("Failed to connect to IPFS")
+
+    # assemble the data
     bounty = {
         'id': bounty_enum,
         'issuer': issuer,
@@ -160,7 +179,7 @@ def get_bounty(bounty_enum, network):
         'paysTokens': paysTokens,
         'bountyStage': bountyStage,
         'balance': balance,
-        'data': json.loads(ipfs_cat(bountydata)),
+        'data': bounty_data,
         'arbiter': arbiter,
         'token': token,
         'fulfillments': fulfillments,
