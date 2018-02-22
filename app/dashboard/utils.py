@@ -174,7 +174,8 @@ def process_bounty(bounty_data):
     did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
 
     if did_change:
-        print(f"- processing changes, {old_bounty} => {new_bounty}")
+        _from = old_bounty.pk if old_bounty else None
+        print(f"- processing changes, {_from} => {new_bounty.pk}")
         process_bounty_changes(old_bounty, new_bounty)
 
     return did_change, old_bounty, new_bounty
