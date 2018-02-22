@@ -161,7 +161,7 @@ def email_settings(request, key):
     if not key:
         email = request.session.get('email', False)
         if not email:
-            github_handle = request.session.get('handle', False)
+            github_handle = request.session.get('handle', '')
             profiles = Profile.objects.filter(handle__iexact=github_handle).exclude(email='')
             if profiles.exists():
                 email = profiles.first()
