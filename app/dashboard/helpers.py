@@ -357,7 +357,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         [fulfillment.get('accepted') for fulfillment in fulfillments])
 
     with transaction.atomic():
-        for old_bounty in old_bounties:
+        for old_bounty in old_bounties.order_by('created_on'):
             if old_bounty.current_bounty:
                 submissions_comment_id = old_bounty.submissions_comment
                 interested_comment_id = old_bounty.interested_comment
