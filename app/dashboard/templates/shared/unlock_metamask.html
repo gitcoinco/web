@@ -13,22 +13,20 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 {% endcomment %}
+
 {% load static %}
-                    <div id="unlock_metamask_error" class="blocking_error" style="display: none">
-                        {% include 'shared/bounty_nav.html' with active_item=1 %}
-                        <img src="{% static "v2/images/prime.png" %}">
-                        <br>
-                        <h3>You're almost there!</h3>
-                        <p>
-                            In order to continue, you'll need to unlock metamask.
-                        </p>
-                        <p>
-                            Please unlock Metamask and refresh the page.
-                            <br>
-                            - or -
-                            <br>
-                            <a target=new href="https://github.com/gitcoinco/gitcoinco/issues/4">Can't get web3 to work?  Get help here.</a>
-                        </p>
-                    </div>
+
+<div id="unlock_metamask_error" class="blocking_error" style="display: none">
+  {% include 'shared/bounty_nav.html' with active_item=1 %}
+  <img src="{% static "v2/images/prime.png" %}">
+  <h3 class="mt-2">You're almost there!</h3>
+  <h6 class="h6 mt-3">In order to continue, you'll need to <strong class="text-info">unlock metamask</strong>.</h6>
+  <p class="mt-4">
+    Please unlock Metamask and refresh the page.
+    <br>
+    - or -
+    <br>
+    <a target=new href="https://github.com/gitcoinco/gitcoinco/issues/4">Can't get web3 to work?  Get help here.</a>
+  </p>
+</div>

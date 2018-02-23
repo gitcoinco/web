@@ -13,42 +13,41 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 {% endcomment %}
 
-                            <div class="w-100" style="text-align: center;">
-                                <ol class="bounty_nav">
-                                    <li class="{% if active_item == 1 %}active{%endif%} submit" >
-                                        1.
-                                        {% if past_tense %}
-                                            Open
-                                        {%else%}
-                                            Create Work
-                                        {%endif%}
-                                    </li>
-                                    <li class="{% if active_item == 2 %}active{%endif%} fulfill">
-                                        2.
-                                        {% if past_tense %}
-                                            Work Started
-                                        {%else%}
-                                            Start Work
-                                        {%endif%}
-                                    </li>
-                                    <li class="{% if active_item == 3 %}active{%endif%} fulfill">
-                                        3.
-                                        {% if past_tense %}
-                                            Work Submitted
-                                        {%else%}
-                                            Submit Work
-                                        {%endif%}
-                                    </li>
-                                    <li class="{% if active_item == 4 %}active{%endif%} accept">
-                                        4.
-                                        {% if past_tense %}
-                                            Work Done
-                                        {%else%}
-                                            Accept Work
-                                        {%endif%}
-                                    </li>
-                                </ol>
-                            </div>
+<div class="w-100 text-center">
+    <ol class="bounty_nav">
+        <li class="{% if active_item == 1 %}active{%endif%} submit" >
+            1.
+            {% if past_tense %}
+                Open
+            {%else%}
+                Fund Issue
+            {%endif%}
+        </li>
+        <li class="{% if active_item == 2 %}active{%endif%} fulfill">
+            2.
+            {% if past_tense %}
+                Work Started
+            {%else%}
+                Start Work
+            {%endif%}
+        </li>
+        <li class="{% if active_item == 3 %}active{%endif%} fulfill">
+            3.
+            {% if past_tense %}
+                Work Submitted
+            {%else%}
+                Submit Work
+            {%endif%}
+        </li>
+        <li class="{% if active_item == 4 %}active{%endif%} accept">
+            4.
+            {% if past_tense %}
+                Work Done
+            {%else%}
+                Accept Work
+            {%endif%}
+        </li>
+    </ol>
+</div>

@@ -13,41 +13,58 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 {% endcomment %}
 
-                            <div class="w-100 mt-2 p-2" id="metamask_context">
-                                {% if recommend_gas_price > 30 %}
-                                    <div class="warning mb-2">Warning: the ethereum network is quite congested at the moment. <a target=new href="{% url "gas" %}">[Stats]</a></div>
-                                {% endif %}
-                                <label><img src="{% url "avatar" %}?repo=https://github.com/MetaMask&v=3" width="20px" height="20px">The following MetaMask settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD) <a target=new href="{% url "gas" %}">[view graph]</a> :
-                                </label>
-                                <br>
-                                <div class="metamask_recc">
-                                    <label for=gasLimit>Gas Limit (units):</label>
-                                    <input name='gasLimit' id='gasLimit'  class="w-100 gc-round-text-input" type="text" disabled="" value="Unknown" />
-                                </div>
-                                <div class="metamask_recc">
-                                    <label for=gasPrice>Gas Price (gwei):</label>
-                                    <input max=100 min=0 name='gasPrice' id='gasPrice'  class="w-100 gc-round-text-input" type="number" value="{{recommend_gas_price}}" />
-                                </div>
-                                <div>
-                                    <strong>Help:</strong>
-                                    <ul>
-                                        <li>
-                                            <a target=new href="https://github.com/gitcoinco/gitcoinco/issues/4">Why do I need metamask / gas?</a>
-                                        </li>
-                                        <li>
-                                            <a target=new href="https://github.com/gitcoinco/gitcoinco/issues/12">What gas price should I use?</a>
-                                        </li>
-                                        <li>
-                                            <a target=new href="{% url "gas" %}">What are current network condtions?</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+<div class="w-100 mt-2 p-4" id="metamask_context">
+  
+  {% if recommend_gas_price > 30 %}
+    <div class="warning mb-2">
+      Warning: the ethereum network is quite congested at the moment.
+      <a target=new href="{% url "gas" %}">[Stats]</a>
+    </div>
+  {% endif %}
+
+  <div class="pb-3">
+    <img src="{% url "avatar" %}?repo=https://github.com/MetaMask&v=3" width="20px" height="20px" />
+    The following MetaMask settings should give a <span id="confTime">5</span> min confirmation for
+    <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD)
+    <a target=new href="{% url "gas" %}">[view graph]</a>
+  </div>
+
+  <div class="form-group">
+    <div class="form-row">
+      <div class="col-md-6">
+        <label for="gasLimit">Gas Limit (units):</label>
+        <input name='gasLimit' id='gasLimit'
+               class="w-100 gc-round-text-input"
+               type="text" disabled="" value="Unknown" />
+      </div>
+      <div class="col-md-6">
+        <label for=gasPrice>Gas Price (gwei):</label>
+        <input max=100 min=0 name='gasPrice' id='gasPrice'
+               class="w-100 gc-round-text-input" type="number"
+               value="{{recommend_gas_price}}" />
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <strong>Help:</strong>
+    <ul>
+      <li>
+        <a target=new href="https://github.com/gitcoinco/gitcoinco/issues/4">Why do I need metamask / gas?</a>
+      </li>
+      <li>
+        <a target=new href="https://github.com/gitcoinco/gitcoinco/issues/12">What gas price should I use?</a>
+      </li>
+      <li>
+        <a target=new href="{% url "gas" %}">What are current network condtions?</a>
+      </li>
+    </ul>
+  </div>
+</div>
 
 <script>
-    document.eth_usd_conv_rate = {{eth_usd_conv_rate}};
-    document.conf_time_spread = {{conf_time_spread | safe}};
+  document.eth_usd_conv_rate = {{eth_usd_conv_rate}};
+  document.conf_time_spread = {{conf_time_spread | safe}};
 </script>

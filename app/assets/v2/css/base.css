@@ -496,13 +496,15 @@ input[type=text].loading {
 }
 
 #upper_left {
-    min-height: 140px;
+    height: 140px;
+    overflow: hidden;
     background-color: #26cd7f;
 }
 
 #upper_left #sidebar_head {
     text-align: center;
     line-height: 1.3em;
+    font-size: 1.5rem;
 }
 
 #upper_left a {
@@ -548,7 +550,7 @@ input[type=text].loading {
 
 .bounty_nav {
     border-bottom: 2px solid #212529;
-    padding-bottom: 4px;
+    padding-bottom: 3px;
 }
 
 .bounty_nav li {
@@ -564,6 +566,8 @@ input[type=text].loading {
 .bounty_nav li.active {
     background-color: #212529;
     color: white;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .submit_bounty #network_status div {
