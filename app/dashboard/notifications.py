@@ -26,8 +26,8 @@ from urllib.parse import urlparse as parse
 from django.conf import settings
 from django.utils import timezone
 
-import rollbar
 import twitter
+from app.rollbar import rollbar
 from github.utils import delete_issue_comment, patch_issue_comment, post_issue_comment
 from marketing.mails import tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
@@ -412,6 +412,8 @@ def maybe_market_to_email(b, event_name):
 
     if event_name == 'new_bounty' and not settings.DEBUG:
         try:
+            # this doesnt scale because there are typically like 600 matches.. need to move to a background job
+            return
             keywords = b.keywords.split(',')
             for keyword in keywords:
                 to_emails = to_emails + list(EmailSubscriber.objects.filter(

@@ -34,6 +34,7 @@ from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
 )
 from economy.utils import convert_amount
+from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 
@@ -263,12 +264,13 @@ def bounty_did_change(bounty_id, new_bounty_details):
     """
     did_change = False
     old_bounties = Bounty.objects.none()
+    network = new_bounty_details['network']
     try:
-        old_bounties = Bounty.objects.current() \
-            .filter(standard_bounties_id=bounty_id).order_by('-created_on')
+        old_bounties = Bounty.objects.filter(standard_bounties_id=bounty_id, network=network, current_bounty=True).order_by('-created_on')
         did_change = (new_bounty_details != old_bounties.first().raw_data)
-    except Exception:
+    except Exception as e:
         did_change = True
+        print(f"asserting did change because got the following exception: {e}. args; bounty_id: {bounty_id}, network: {network} ")
 
     print('* Bounty did_change:', did_change)
 
@@ -338,6 +340,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
     # fulfillments metadata will be empty when bounty is first created
     fulfillments = bounty_details.get('fulfillments', {})
     submissions_comment_id = None
+    interested_comment_id = None
 
     # start to process out all the bounty data
     url = bounty_payload.get('webReferenceURL')
@@ -480,8 +483,14 @@ def process_bounty_changes(old_bounty, new_bounty):
         bsr.processed = True
         bsr.save()
 
+    # get json diff
+    json_diff = diff(old_bounty.raw_data, new_bounty.raw_data) if old_bounty else None
+
     # new bounty
-    if (not old_bounty and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
+    if not old_bounty or (not old_bounty and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
+        is_greater_than_x_days_old = new_bounty.web3_created < (timezone.now() - timezone.timedelta(hours=24))
+        if is_greater_than_x_days_old:
+            raise Exception('attempting to create a new bounty when is_greater_than_x_days_old = True')
         event_name = 'new_bounty'
     elif old_bounty.num_fulfillments < new_bounty.num_fulfillments:
         event_name = 'work_submitted'
@@ -492,7 +501,9 @@ def process_bounty_changes(old_bounty, new_bounty):
             event_name = 'work_done'
     else:
         event_name = 'unknown_event'
-    print(event_name)
+        logging.error(f'got an unknown event from bounty {old_bounty.pk} => {new_bounty.pk}: {json_diff}')
+    
+    print(f"- {event_name} event; diff => {json_diff}")
 
     # Build profile pairs list
     if new_bounty.fulfillments.exists():
