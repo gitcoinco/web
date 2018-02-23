@@ -914,6 +914,10 @@ body.bounty_details #title {
     -o-filter: grayscale(0%);
 }
 
+.body {
+  padding-bottom: 4em;
+}
+
 .profile_details .dot {
     border-radius: 6px;
     width: 12px;
