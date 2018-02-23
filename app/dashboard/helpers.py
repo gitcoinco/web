@@ -270,7 +270,7 @@ def bounty_did_change(bounty_id, new_bounty_details):
         did_change = (new_bounty_details != old_bounties.first().raw_data)
     except Exception as e:
         did_change = True
-        print(f"asserting did change because got the following exception: {e}")
+        print(f"asserting did change because got the following exception: {e}. args; bounty_id: {bounty_id}, network: {network} ")
 
     print('* Bounty did_change:', did_change)
 
