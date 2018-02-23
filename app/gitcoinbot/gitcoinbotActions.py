@@ -51,8 +51,7 @@ def new_bounty_text(owner, repo, issue_id, comment_text):
     )
 
     new_bounty_response = "To create the bounty please [visit this link]({}).\n".format(bounty_link) +\
-    "\n" +\
-    "PS Make sure you're logged in to Metamask!"
+    "\n PS Make sure you're logged in to Metamask!"
     return new_bounty_response
 
 
@@ -79,7 +78,7 @@ def tip_text(comment_text):
     tip_link = 'http://localhost:8000/tip/?amount={}&username={}'.format(
         tip_amount, username)
     tip_response = 'To complete the tip, please [visit this link]({}).'.format(
-        tip_link)
+        tip_link) + "\n PS Make sure you're logged in to Metamask!"
 
     return tip_response
 
