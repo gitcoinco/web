@@ -489,7 +489,7 @@ def process_bounty_changes(old_bounty, new_bounty):
     # new bounty
     if not old_bounty or (not old_bounty and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
         is_greater_than_x_days_old = new_bounty.web3_created < (timezone.now() - timezone.timedelta(hours=24))
-        if is_greater_than_x_days_old:
+        if is_greater_than_x_days_old and not settings.DEBUG:
             msg = 'attempting to create a new bounty ({new_bounty.standard_bounties_id}) when is_greater_than_x_days_old = True'
             print(msg)
             raise Exception(msg)
