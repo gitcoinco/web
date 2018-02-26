@@ -345,7 +345,8 @@ pull_interest_list(result['pk'], function(is_interested){
     actions.push(entry);
 
     var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
-    if(is_expired){
+    var is_done = result['status']=='done';
+    if(!is_done){
         var enabled = isBountyOwner(result);
         var entry = {
             href: '/funding/kill?source='+result['github_url'],
