@@ -230,11 +230,11 @@ def _leaderboard(request):
 
 def leaderboard(request, key):
     if not key:
-        key = 'monthly_earners'
+        key = 'quarterly_earners'
 
     titles = {
-        'monthly_payers': 'Top Payers',
-        'monthly_earners': 'Top Earners',
+        'quarterly_payers': 'Top Payers',
+        'quarterly_earners': 'Top Earners',
         #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
         #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
         #        'monthly_fulfilled': 'Monthly Leaderboard',
@@ -270,8 +270,8 @@ def leaderboard(request, key):
         'items': items,
         'titles': titles,
         'selected': titles[key],
-        'title': "Monthly Leaderboard: " + titles[key],
-        'card_title': "Monthly Leaderboard: " + titles[key],
+        'title': "Leaderboard: " + titles[key],
+        'card_title': "Leaderboard: " + titles[key],
         'card_desc': 'See the most valued members in the Gitcoin community this month. ' + top_earners,
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
