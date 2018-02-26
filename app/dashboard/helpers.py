@@ -266,7 +266,7 @@ def bounty_did_change(bounty_id, new_bounty_details):
     old_bounties = Bounty.objects.none()
     network = new_bounty_details['network']
     try:
-        old_bounties = Bounty.objects.filter(standard_bounties_id=bounty_id, network=network, current_bounty=True).order_by('-created_on')
+        old_bounties = Bounty.objects.filter(standard_bounties_id=bounty_id, network=network).order_by('-created_on')
         did_change = (new_bounty_details != old_bounties.first().raw_data)
     except Exception as e:
         did_change = True
@@ -357,7 +357,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         [fulfillment.get('accepted') for fulfillment in fulfillments])
 
     with transaction.atomic():
-        for old_bounty in old_bounties:
+        for old_bounty in old_bounties.order_by('created_on'):
             if old_bounty.current_bounty:
                 submissions_comment_id = old_bounty.submissions_comment
                 interested_comment_id = old_bounty.interested_comment
@@ -490,7 +490,9 @@ def process_bounty_changes(old_bounty, new_bounty):
     if not old_bounty or (not old_bounty and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
         is_greater_than_x_days_old = new_bounty.web3_created < (timezone.now() - timezone.timedelta(hours=24))
         if is_greater_than_x_days_old:
-            raise Exception('attempting to create a new bounty when is_greater_than_x_days_old = True')
+            msg = 'attempting to create a new bounty ({new_bounty.standard_bounties_id}) when is_greater_than_x_days_old = True'
+            print(msg)
+            raise Exception(msg)
         event_name = 'new_bounty'
     elif old_bounty.num_fulfillments < new_bounty.num_fulfillments:
         event_name = 'work_submitted'
