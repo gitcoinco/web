@@ -473,7 +473,7 @@ var render_fulfillments = function (result) {
         };
 
         var submission = {
-            'fulfiller': value,
+            'fulfiller': result.fulfillments[0],
             'button': acceptedButton,
         };
 
