@@ -1,7 +1,10 @@
 """
-Methods for interacting with the Github API
+Methods for interacting with the Github API as a Github App
 """
 from django.conf import settings
+from github.utils import (
+    post_issue_comment, post_issue_comment_reaction
+)
 
 import datetime
 import json
@@ -9,18 +12,15 @@ import jwt
 import requests
 import re
 
-_auth = (settings.GITHUB_API_USER, settings.GITHUB_API_TOKEN)
+
 GITCOINBOT_APP_ID = settings.GITCOINBOT_APP_ID
 SECRET_KEYSTRING = settings.SECRET_KEYSTRING
 
-headers = {
-    'Accept': 'application/vnd.github.squirrel-girl-preview'
-}
-
 def help_text():
-    # TODO @owocki Add test bounties to dev environment to add claim/approve functionality
-    #     " * `claim` -- receive link to gitcoin.co to claim bounty.\n" +\
-    #     " * `approve` -- receive link to gitcoin.co to approve bounty.\n" +\
+    # TODO @owocki Add test bounties to dev environment to add claim/approve
+    # functionality
+    # " * `claim` -- receive link to gitcoin.co to claim bounty.\n" +\
+    # " * `approve` -- receive link to gitcoin.co to approve bounty.\n" +\
 
     help_text_response = "I am @{}, a bot that facilitates gitcoin bounties.\n".format(settings.GITHUB_API_USER) + \
     "\n" +\
@@ -41,24 +41,17 @@ def new_bounty_text(owner, repo, issue_id, comment_text):
                                                             repo,
                                                             issue_id )
     bounty_amount = parse_comment_amount(comment_text)
-    # prod
-    # bounty_link = "https://gitcoin.co/funding/new?source={}&amount={}".format(
-    #     issue_link, bounty_amount
-    # )
-    #dev
-    bounty_link = "http://localhost:8000/funding/new?source={}&amount={}".format(
-        issue_link, bounty_amount
+    bounty_link = "{}funding/new?source={}&amount={}".format(
+        settings.BASE_URL, issue_link, bounty_amount
     )
 
     new_bounty_response = "To create the bounty please [visit this link]({}).\n".format(bounty_link) +\
     "\n PS Make sure you're logged in to Metamask!"
     return new_bounty_response
 
-
 def parse_comment_amount(comment_text):
-    re_amount = r'\d+\.?\d+'
+    re_amount = r'\d*\.?\d+'
     result = re.findall(re_amount, comment_text)
-
     return result[0]
 
 def parse_tippee_username(comment_text):
@@ -70,26 +63,16 @@ def parse_tippee_username(comment_text):
 def tip_text(comment_text):
     tip_amount = parse_comment_amount(comment_text)
     username = parse_tippee_username(comment_text)
-
-    # prod
-    # tip_link = 'https://gitcoin.co/tip/?amount={}&username={}'.format(
-    #   tip_amount, username)
-    # dev
-    tip_link = 'http://localhost:8000/tip/?amount={}&username={}'.format(
-        tip_amount, username)
+    tip_link = '{}tip/?amount={}&username={}'.format(
+        settings.BASE_URL, tip_amount, username)
     tip_response = 'To complete the tip, please [visit this link]({}).'.format(
         tip_link) + "\n PS Make sure you're logged in to Metamask!"
 
     return tip_response
 
 def claim_bounty_text(comment_text, sender):
-    #prod
-    # claim_link = 'https://gitcoin.co/funding/claim?source={}&githubUsername={}'.format(
-    #     url, sender
-    # )
-    #dev
-    claim_link = 'http://localhost:8000/claim?source={}&githubUsername={}'.format(
-        url, sender
+    claim_link = '{}claim?source={}&githubUsername={}'.format(
+        settings.BASE_URL, url, sender
     )
     claim_response = 'To finish claiming this bounty please [visit this link]({})'.format(
         claim_link
@@ -97,26 +80,6 @@ def claim_bounty_text(comment_text, sender):
 
 def confused_text():
     return 'Sorry I did not understand that request. Please try again'
-
-def post_issue_comment(owner, repo, issue_id, comment):
-    url = 'https://api.github.com/repos/{}/{}/issues/{}/comments'.format(
-        owner, repo, issue_id)
-    body = {
-        'body': comment,
-    }
-    response = requests.post(url, data=json.dumps(body), auth=_auth)
-    return response.json()
-
-def post_issue_comment_reaction(owner, repo, comment_id, content):
-    url = 'https://api.github.com/repos/{}/{}/issues/comments/{}/reactions'.format(
-        owner, repo, comment_id)
-    body = {
-        'content': content
-    }
-    response = requests.post(url, data=json.dumps(
-        body), auth=_auth, headers=headers)
-    print('reacting with a heart')
-    return response.json()
 
 def post_gitcoin_app_comment(owner, repo, issue_id, content, install_id):
     token = create_token(install_id)
@@ -165,12 +128,12 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id, install_
         post_issue_comment_reaction(owner, repo, comment_id, '+1')
         bounty_text = new_bounty_text(owner, repo, issue_id, comment_text)
         post_gitcoin_app_comment(owner, repo, issue_id, bounty_text, install_id)
-    elif re.match(claim_regex, comment_text) is not None:
-        post_issue_comment_reaction(owner, repo, comment_id, '+1')
-        pass
-    elif re.match(approve_regex, comment_text) is not None:
-        post_issue_comment_reaction(owner, repo, comment_id, 'hooray')
-        pass
+    # elif re.match(claim_regex, comment_text) is not None:
+    #     post_issue_comment_reaction(owner, repo, comment_id, '+1')
+    #     pass
+    # elif re.match(approve_regex, comment_text) is not None:
+    #     post_issue_comment_reaction(owner, repo, comment_id, 'hooray')
+    #     pass
     elif re.match(tip_regex, comment_text) is not None:
         post_issue_comment_reaction(owner, repo, comment_id, 'heart')
         post_gitcoin_app_comment(owner, repo, issue_id, tip_text(comment_text), install_id)
