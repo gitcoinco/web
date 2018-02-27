@@ -462,7 +462,7 @@ var render_fulfillments = function (result) {
         var submitter_html = submitter_tmpl.render(submission);
 
         $("#submission_list").append(submitter_html);
-    } else if (result['status'] == 'done') {
+    } else if (result['status'] == 'done' && result.fulfillments.length) {
         var accepted = result.fulfillments.length && result.fulfillments[0].accepted;
         var acceptedButton = {
             href: '',
@@ -477,12 +477,18 @@ var render_fulfillments = function (result) {
             'button': acceptedButton,
         };
 
+        console.log(result.fulfillments);
+
         var submitter_tmpl = $.templates("#submission");
         var submitter_html = submitter_tmpl.render(submission);
 
         $("#submission_list").append(submitter_html);
     } else {
-        submitter_html = "No one has submitted work yet.";
+        if(result['status'] == 'done'){
+            submitter_html = "";
+        } else {
+            submitter_html = "No one has submitted work yet.";
+        }
         $("#submission_list").html(submitter_html);
     }
 }
