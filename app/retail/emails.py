@@ -186,12 +186,16 @@ def render_new_bounty_roundup(to_email):
             'primer': 'This is a big one, and even better, its from the Metamask team! ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/gitcoinco/web/issues/445'),
-            'primer': 'Want to help tune the UX on Gitcoin?  Here\'s an opppy to do just that 👇\' ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/TrustWallet/trust-wallet-ios/issues/367'),
+            'primer': 'Trust wallet is new to the Gitcoin platform.  Let\'s show them we\'re here to help! 👇\' ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/browser-solidity/issues/210'),
-            'primer': 'Want to do some work for the Ethereum Foundation?  This issue is for you  ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MarketProject/Dapp/issues/53'),
+            'primer': 'Market Protocol has a $300 bounty up;  Good oppy to play with the Binance API.  ~ @owocki',
+        },
+        {
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MetaMask/metamask-extension/issues/3133'),
+            'primer': 'Last, but certainly not least -- Metamask has a new bounty up!  ~ @owocki',
         },
     ]
 
