@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-$( document ).ready( () => {
+$( document ).ready( function(){
   if ( console && console.log ) {
     console.log( '############################################' );
     console.log( '# Hi there technical person,' );

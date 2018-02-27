@@ -22,7 +22,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
-import rollbar
+from app.rollbar import rollbar
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
 

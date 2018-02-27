@@ -1,13 +1,13 @@
 /* eslint-disable no-invalid-this */
 
-$( document ).ready( () => {
+$( document ).ready( function() {
   let startX = null;
   let startY = null;
   const movementStrength = 25;
   const height = movementStrength / $( window ).height();
   const width = movementStrength / $( window ).width();
 
-  $( '.header, .white-light-bg' ).each( () => {
+  $( '.header, .white-light-bg' ).each( function(){
     const ele = $( this );
 
     ele.mousemove( e => {

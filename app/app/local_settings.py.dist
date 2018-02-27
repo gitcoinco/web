@@ -137,4 +137,11 @@ AWS_SECRET_ACCESS_KEY = 'TODO'
 S3_REPORT_BUCKET = 'TODO'
 S3_REPORT_PREFIX = 'TODO'
 
+# WEB3
+WEB3_HTTP_PROVIDER = 'https://mainnet.infura.io'
+
+# COLO Coin
+COLO_ACCOUNT_ADDRESS = 'TODO'
+COLO_ACCOUNT_PRIVATE_KEY = 'TODO'
+
 ####################################################################

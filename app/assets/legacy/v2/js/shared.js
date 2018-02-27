@@ -487,6 +487,7 @@ window.addEventListener('load', function() {
                     if(network == 'mainnet'){
                         if(document.location.href.indexOf("https://gitcoin.co") == -1){
                             is_supported_network = false;
+                            recommended_network = "custom rpc by using ganache-cli or rinkeby"
                         }
                     }
                     var sidebar_p = "Connected to " + network + ".";

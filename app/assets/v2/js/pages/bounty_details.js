@@ -345,7 +345,8 @@ pull_interest_list(result['pk'], function(is_interested){
     actions.push(entry);
 
     var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
-    if(is_expired){
+    var is_done = result['status']=='done';
+    if(!is_done && !is_expired){
         var enabled = isBountyOwner(result);
         var entry = {
             href: '/funding/kill?source='+result['github_url'],
@@ -373,7 +374,7 @@ var render_actions = function(actions){
 }
 
 var pull_bounty_from_api = function(){
-    var uri = '/actions/api/v0.1/bounties/?';
+    var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
     $.get(uri, function(results){
         results = sanitizeAPIResults(results);
         var nonefound = true;
@@ -428,7 +429,7 @@ var render_fulfillments = function(result){
                 'fulfiller': value,
                 'button': acceptButton,
             };
-
+            submission['fulfiller']['created_on'] = timeDifference(new Date(), new Date(submission['fulfiller']['created_on']));
             var submitter_tmpl = $.templates("#submission");
             var submitter_html = submitter_tmpl.render(submission);
 

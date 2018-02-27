@@ -1,3 +1,22 @@
+# -*- coding: utf-8 -*-
+"""Handle dashboard related notifications.
+
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 import logging
 import random
 import re
@@ -7,8 +26,8 @@ from urllib.parse import urlparse as parse
 from django.conf import settings
 from django.utils import timezone
 
-import rollbar
 import twitter
+from app.rollbar import rollbar
 from github.utils import delete_issue_comment, patch_issue_comment, post_issue_comment
 from marketing.mails import tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
@@ -16,41 +35,35 @@ from pyshorteners import Shortener
 from slackclient import SlackClient
 
 
-'''
-    Copyright (C) 2017 Gitcoin Core
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-'''
-
-
 def github_org_to_twitter_tags(github_org):
+    """Build a string of github organization twitter tags.
+
+    Args:
+        github_org (str): The Github organization.
+
+    Returns:
+        str: The concatenated string of twitter tags.
+
+    """
     twitter_handles = GithubOrgToTwitterHandleMapping.objects.filter(github_orgname__iexact=github_org)
     twitter_handles = twitter_handles.values_list('twitter_handle', flat=True)
-    twitter_tags = " ".join(["@{}".format(ele) for ele in twitter_handles])
+    twitter_tags = " ".join([f"@{ele}" for ele in twitter_handles])
     return twitter_tags
 
 
 def maybe_market_to_twitter(bounty, event_name):
-    """Tweet the specified Bounty event."""
-    if not settings.TWITTER_CONSUMER_KEY:
-        return False
-    if event_name not in ['new_bounty', 'remarket_bounty']:
-        return False
-    if bounty.get_natural_value() < 0.0001:
-        return False
-    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+    """Tweet the specified Bounty event.
+
+    Args:
+        bounty (dashboard.models.Bounty): The Bounty to be marketed.
+        event_name (str): The name of the event.
+
+    Returns:
+        bool: Whether or not the twitter notification was sent successfully.
+
+    """
+    if not settings.TWITTER_CONSUMER_KEY or (event_name not in ['new_bounty', 'remarket_bounty']) or (
+       bounty.get_natural_value() < 0.0001) or (bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
     return False  # per 2018/01/22 convo with vivek / kevin, these tweets have low engagement
     # we are going to test manually promoting these tweets for a week and come back to revisit this
@@ -101,7 +114,6 @@ def maybe_market_to_twitter(bounty, event_name):
     except Exception as e:
         print(e)
         return False
-
     return True
 
 
@@ -124,20 +136,16 @@ def maybe_market_to_slack(bounty, event_name):
         return False
 
     title = bounty.title if bounty.title else bounty.github_url
-    msg = "{} worth {} {}: {} \n\n{}&slack=1".format(event_name.replace('bounty', 'funded_issue'), round(bounty.get_natural_value(), 4), bounty.token_name, title, bounty.get_absolute_url())
+    msg = f"{event_name.replace('bounty', 'funded_issue')} worth {round(bounty.get_natural_value(), 4)} " \
+          f"{bounty.token_name}: {title} \n\n{bounty.get_absolute_url()}&slack=1"
 
     try:
         channel = 'notif-gitcoin'
         sc = SlackClient(settings.SLACK_TOKEN)
-        sc.api_call(
-            "chat.postMessage",
-            channel=channel,
-            text=msg,
-        )
+        sc.api_call("chat.postMessage", channel=channel, text=msg)
     except Exception as e:
         print(e)
         return False
-
     return True
 
 
@@ -170,26 +178,19 @@ def maybe_market_tip_to_slack(tip, event_name):
         bool: Whether or not the Slack notification was sent successfully.
 
     """
-    if not settings.SLACK_TOKEN:
-        return False
-    if tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+    if not settings.SLACK_TOKEN or (tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
 
     title = tip.github_url
-    msg = "{} worth {} {}: {} \n\n{}".format(event_name, round(tip.amount, 4), tip.tokenName, title, tip.github_url)
+    msg = f"{event_name} worth {round(tip.amount, 4)} {tip.tokenName}: {title} \n\n{tip.github_url}"
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
         channel = 'bounties'
-        sc.api_call(
-            "chat.postMessage",
-            channel=channel,
-            text=msg,
-        )
+        sc.api_call("chat.postMessage", channel=channel, text=msg)
     except Exception as e:
         print(e)
         return False
-
     return True
 
 
@@ -207,7 +208,6 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
 
     """
     from dashboard.models import BountyFulfillment
-
     msg = ''
     usdt_value = f"({round(bounty.value_in_usdt, 2)} USD)" if bounty.value_in_usdt else ""
     natural_value = round(bounty.get_natural_value(), 4)
@@ -289,11 +289,8 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         bool: Whether or not the Github comment was posted successfully.
 
     """
-    if not settings.GITHUB_CLIENT_ID:
-        return False
-    if bounty.get_natural_value() < 0.0001:
-        return False
-    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+    if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
+       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
 
     # Define posting specific variables.
@@ -350,6 +347,12 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
 
 
 def amount_usdt_open_work():
+    """Get the amount in USDT of all current open and submitted work.
+
+    Returns:
+        float: The sum of all USDT values rounded to the nearest 2 decimals.
+
+    """
     from dashboard.models import Bounty
     bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
     return round(sum([b.value_in_usdt for b in bounties]), 2)
@@ -365,20 +368,25 @@ def maybe_market_tip_to_github(tip):
         bool: Whether or not the Github comment was posted successfully.
 
     """
-    if not settings.GITHUB_CLIENT_ID:
-        return False
-    if not tip.github_url:
-        return False
-    if tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+    if (not settings.GITHUB_CLIENT_ID) or (not tip.github_url) or (
+       tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
 
     # prepare message
-    username = tip.username if '@' in tip.username else str('@' + tip.username)
-    _from = " from {}".format(tip.from_name) if tip.from_name else ""
+    username = tip.username if '@' in tip.username else f'@{tip.username}'
+    _from = f" from {tip.from_name}" if tip.from_name else ""
     warning = tip.network if tip.network != 'mainnet' else ""
-    _comments = "\n\nThe sender had the following public comments: \n> {}".format(tip.comments_public) if tip.comments_public else ""
-    msg = "⚡️ A tip worth {} {} {} {} has been granted to {} for this issue{}. ⚡️ {}\n\nNice work {}! To redeem your tip, login to Gitcoin at https://gitcoin.co/explorer and select 'Claim Tip' from dropdown menu in the top right, or check your email for a link to the tip redemption page. \n\n * ${} in Funded OSS Work Available at: https://gitcoin.co/explorer\n * Incentivize contributions to your repo: <a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
-    msg = msg.format(round(tip.amount, 5), warning, tip.tokenName, "(${})".format(tip.value_in_usdt) if tip.value_in_usdt else "" , username, _from, _comments, username, amount_usdt_open_work())
+    _comments = "\n\nThe sender had the following public comments: \n> " \
+                f"{tip.comments_public}" if tip.comments_public else ""
+    value_in_usd = f"(${tip.value_in_usdt})" if tip.value_in_usdt else ""
+    msg = f"⚡️ A tip worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has been " \
+          f"granted to {username} for this issue{_from}. ⚡️ {_comments}\n\nNice work {username}! To " \
+          "redeem your tip, login to Gitcoin at https://gitcoin.co/explorer and select 'Claim Tip' " \
+          "from dropdown menu in the top right, or check your email for a link to the tip redemption " \
+          "page. \n\n * ${amount_usdt_open_work()} in Funded OSS Work Available at: " \
+          "https://gitcoin.co/explorer\n * Incentivize contributions to your repo: " \
+          "<a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>" \
+          "Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
 
     # actually post
     url = tip.github_url
@@ -388,13 +396,10 @@ def maybe_market_tip_to_github(tip):
         username = uri_array[1]
         repo = uri_array[2]
         issue_num = uri_array[4]
-
         post_issue_comment(username, repo, issue_num, msg)
-
     except Exception as e:
         print(e)
         return False
-
     return True
 
 
@@ -407,9 +412,12 @@ def maybe_market_to_email(b, event_name):
 
     if event_name == 'new_bounty' and not settings.DEBUG:
         try:
+            # this doesnt scale because there are typically like 600 matches.. need to move to a background job
+            return
             keywords = b.keywords.split(',')
             for keyword in keywords:
-                to_emails = to_emails + list(EmailSubscriber.objects.filter(keywords__contains=[keyword.strip()]).values_list('email', flat=True))
+                to_emails = to_emails + list(EmailSubscriber.objects.filter(
+                    keywords__contains=[keyword.strip()]).values_list('email', flat=True))
 
             should_send_email = b.web3_created > (timezone.now() - timezone.timedelta(hours=15))
             # only send if the bounty is reasonbly new
@@ -427,17 +435,21 @@ def maybe_market_to_email(b, event_name):
         except Exception as e:
             logging.exception(e)
             print(e)
-    elif event_name in ['work_done', 'rejected_claim']:
+    elif event_name == 'work_done':
         accepted_fulfillment = b.fulfillments.filter(accepted=True).latest('modified_on')
         try:
             to_emails = [b.bounty_owner_email, accepted_fulfillment]
-            if event_name == 'work_done':
-                new_bounty_acceptance(b, to_emails)
-            elif event_name == 'rejected_claim':
-                new_bounty_rejection(b, to_emails)
+            new_bounty_acceptance(b, to_emails)
         except Exception as e:
             logging.exception(e)
             print(e)
+    elif event_name == 'rejected_claim':
+        try:
+            rejected_fulfillment = b.fulfillments.filter(accepted=False).latest('modified_on')
+            to_emails = [b.bounty_owner_email, rejected_fulfillment]
+            new_bounty_rejection(b, to_emails)
+        except Exception as e:
+            logging.exception(e)
 
     return len(to_emails)
 
@@ -491,9 +503,9 @@ def maybe_post_on_craigslist(bounty):
         return
 
     posting_title = bounty.title
-    if posting_title is None or posting_title == "":
-        posting_title = "Please turn around {}’s issue".format(bounty.org_name)
-    posting_body = "Solve this github issue: {}".format(bounty.github_url)
+    if not posting_title:
+        posting_title = f"Please turn around {bounty.org_name}’s issue"
+    posting_body = f"Solve this github issue: {bounty.github_url}"
 
     # Final form filling
     form.find('input', {'id': "PostingTitle"})['value'] = posting_title
@@ -503,7 +515,7 @@ def maybe_post_on_craigslist(bounty):
     for postal_code_input in form.find_all('input', {'id': "postal_code"}):
         postal_code_input['value'] = '94105'
     form.find('input', {'value': 'pay', 'name': 'remuneration_type'})['checked'] = ''
-    form.find('input', {'id': "remuneration"})['value'] = "{} {}".format(bounty.get_natural_value(), bounty.token_name)
+    form.find('input', {'id': "remuneration"})['value'] = f"{bounty.get_natural_value()} {bounty.token_name}"
     try:
         form.find('input', {'id': "wantamap"})['data-checked'] = ''
     except Exception:

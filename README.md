@@ -352,6 +352,13 @@ pip install -r requirements/test.txt
 
 Navigate to `http://localhost:8000/`.
 
+## Optional: Import bounty data from web3 to your database
+
+This can be useful if you'd like data to test with:
+
+```
+./manage.py sync_geth mainnet 0 99999999999
+```
 
 # Adding your token to Gitcoin.
 

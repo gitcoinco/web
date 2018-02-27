@@ -58,9 +58,7 @@ var rows = [
     'bounty_owner_email',
     'issue_description',
     'bounty_owner_github_username',
-    'fulfiller_address',
-    'fulfiller_github_username',
-    'fulfiller_email',
+    'fulfillments',
     'experience_level',
     'project_length',
     'bounty_type',
@@ -76,7 +74,7 @@ var heads = {
 var callbacks = {
     'github_url': link_ize,
     'value_in_token': function(key, val, result){
-        return [ 'amount', Math.round((parseInt(val) / 10**document.decimals) * 1000) / 1000 + " " + result['token_name']];
+        return [ 'amount', Math.round((parseInt(val) / Math.pow(10, document.decimals)) * 1000) / 1000 + " " + result['token_name']];
     },
     'avatar_url': function(key, val, result){
         return [ 'avatar', '<a href="/profile/'+result['org_name']+'"><img class=avatar src="'+val+'"></a>'];
@@ -103,30 +101,21 @@ var callbacks = {
     'issue_description': function(key, val, result){
         var converter = new showdown.Converter();
         var max_len = 1000;
-        var ui_body = val;
         val = val.replace(/script/ig,'scr_i_pt');
+        var ui_body = val;
         if(ui_body.length > max_len){
             ui_body = ui_body.substring(0, max_len) + '... <a target=new href="'+result['github_url']+'">See More</a> '
         }
         ui_body = converter.makeHtml(ui_body);
-        return [ 'issue_description', ui_body];
 
+        return [ 'issue_description', ui_body];
     },
-    'fulfiller_address': address_ize,
     'bounty_owner_address': address_ize,
     'bounty_owner_email': email_ize,
-    'fulfiller_email': email_ize,
     'experience_level': unknown_if_empty,
     'project_length': unknown_if_empty,
     'bounty_type': unknown_if_empty,
-    'fulfiller_email': function(key, val, result){
-        if(!_truthy(result['fulfiller_address'])){
-            $("#fulfiller").addClass('hidden');
-        }
-        return address_ize(key, val, result);
-    },
     'bounty_owner_github_username': gitcoin_ize,
-    'fulfiller_github_username': gitcoin_ize,
     'value_in_eth': function(key, val, result){
         if(result['token_name'] == 'ETH' || val == null){
             return [null, null];
@@ -276,8 +265,7 @@ window.addEventListener('load', function() {
         }
         document.decimals = decimals;
         $("#bounty_details").css('display','flex');
-        $("#submission_head").css('display', 'none');
-        
+
         // title
         result['title'] = result['title'] ? result['title'] : result['github_url'];
         result['title'] = result['network'] != 'mainnet' ? "(" + result['network'] + ") " + result['title'] : result['title'];
@@ -345,7 +333,7 @@ window.addEventListener('load', function() {
             actions.push(entry);
         }
 
-        if(result['status']=='open' || result['status']=='started' ){
+        if (result['status'] == 'open' || result['status'] == 'started'){
 
             // is enabled
             var enabled = !isBountyOwner(result);
@@ -359,19 +347,16 @@ window.addEventListener('load', function() {
             }
             actions.push(interestEntry);
 
+            var entry = {
+                href: '/legacy/funding/fulfill?source=' + result['github_url'],
+                text: 'Submit Work',
+                parent: 'right_actions',
+                color: enabled ? 'darkBlue' : 'darkGrey',
+                extraClass: enabled ? '' : 'disabled',
+                title: enabled ? 'Use Submit Work when you FINISH work on a bounty.  ' : 'Can only be performed if you are not the funder.',
+            }
+            actions.push(entry);
         }
-
-        // is enabled
-        var enabled = !isBountyOwner(result);
-        var entry = {
-            href: '/legacy/funding/fulfill?source='+result['github_url'],
-            text: 'Submit Work',
-            parent: 'right_actions',
-            color: enabled ? 'darkBlue' : 'darkGrey',
-            extraClass: enabled ? '' : 'disabled',
-            title: enabled ? 'Use Submit Work when you FINISH work on a bounty.  ' : 'Can only be performed if you are not the funder.',
-        }
-        actions.push(entry);
 
         var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
         if(is_expired){
@@ -400,9 +385,9 @@ window.addEventListener('load', function() {
             actions.push(entry);
         }
 
-        render_actions(actions);     
+        render_actions(actions);
 
-        });  
+        });
     }
 
     var render_actions = function(actions){
@@ -411,13 +396,13 @@ window.addEventListener('load', function() {
             var tmpl = $.templates("#action");
             var html = tmpl.render(actions[l]);
             $("#"+target).append(html);
-        };      
+        };
     }
 
     setTimeout(function(){
         var issueURL = getParam('url');
         $("#submitsolicitation a").attr('href','/funding/new/?source=' + issueURL)
-        var uri = '/api/v0.1/bounties/?';
+        var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
         $.get(uri, function(results){
             results = sanitizeAPIResults(results);
             var nonefound = true;
@@ -431,6 +416,8 @@ window.addEventListener('load', function() {
                     build_detail_page(result);
 
                     do_actions(result);
+
+                    render_fulfillments(result);
 
                     //cleanup
                     document.result = result;
@@ -454,6 +441,51 @@ window.addEventListener('load', function() {
     },100);
 });
 
+var render_fulfillments = function (result) {
+    // Add submitter list and accept buttons
+    if (result['status'] == 'submitted') {
+        var enabled = isBountyOwner(result);
+        var acceptButton = {
+            href: '/legacy/funding/process?source=' + result['github_url'],
+            text: 'Accept Submission',
+            color: enabled ? 'darkBlue' : 'darkGrey',
+            extraClass: enabled ? '' : 'disabled',
+            title: enabled ? 'This will payout the bounty to the submitter.' : 'Can only be performed if you are the funder.',
+        };
+
+        var submission = {
+            'fulfiller': result.fulfillments[0],
+            'button': acceptButton,
+        };
+
+        var submitter_tmpl = $.templates("#submission");
+        var submitter_html = submitter_tmpl.render(submission);
+
+        $("#submission_list").append(submitter_html);
+    } else if (result['status'] == 'done') {
+        var accepted = result.fulfillments.length && result.fulfillments[0].accepted;
+        var acceptedButton = {
+            href: '',
+            text: accepted ? 'Accepted' : 'Not Accepted',
+            color: accepted ? 'darkBlue' : 'darkGrey',
+            extraClass: accepted ? '' : 'disabled',
+            title: accepted ? 'This submisson has been accepted.' : 'This submission has not been accepted.',
+        };
+
+        var submission = {
+            'fulfiller': value,
+            'button': acceptedButton,
+        };
+
+        var submitter_tmpl = $.templates("#submission");
+        var submitter_html = submitter_tmpl.render(submission);
+
+        $("#submission_list").append(submitter_html);
+    } else {
+        submitter_html = "No one has submitted work yet.";
+        $("#submission_list").html(submitter_html);
+    }
+}
 
 $(document).ready(function(){
     $("body").delegate('a[href="/watch"], a[href="/unwatch"]', 'click', function(e){

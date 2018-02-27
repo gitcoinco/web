@@ -1,5 +1,6 @@
-{% comment %}
-    Copyright (C) 2017 Gitcoin Core
+# -*- coding: utf-8 -*-
+'''
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -14,8 +15,11 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-{% endcomment %}
-        <div class="row bottom_notification">
-            <strong>2018 Feb 21</strong> - Have you seen our latest Medium post, <a style="margin-right: 5px;" href="https://medium.com/gitcoin/oss-today-some-wins-some-losses-89d1ab46ceb6">Open Source Today: Some Wins, Some Losses
-</a>?.
-        </div>
+'''
+from django.conf import settings
+
+import rollbar
+
+environment = 'production' if settings.ENV == 'prod' else 'development'
+token = settings.ROLLBAR_SERVER_TOKEN
+rollbar.init(token, environment)  # access_token, environment

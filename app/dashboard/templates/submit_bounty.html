@@ -68,10 +68,7 @@
                             {% include 'shared/github_username.html' %}
                             {% include 'shared/notification_email.html' %}
                             {% include 'shared/name.html' %}
-                            <div id="advancedLink" class="mt-2">
-                                <a href="#">Advanced ⬇ </a>
-                            </div>
-                            <div id="advanced_container" style="display: none;">
+                            <div id="advanced_container">
                                 <div class="w-100 mt-2">
                                     <label for=title>Issue Title:</label>
                                     <input name='title' id="title"  class="w-100 gc-round-text-input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" />
