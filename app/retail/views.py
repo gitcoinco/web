@@ -21,6 +21,7 @@ from django.core.validators import validate_email
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 
 from app.rollbar import rollbar
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
@@ -266,9 +267,9 @@ The best way to stay in touch is to
 <p>Gitcoin is similarly built on an open protocol of smart contracts.</p>
 <p>By specifying a&nbsp;protocol, Tim Berners-Lee opened the way for anyone to build software, so-called web servers and browsers that would be compatible with this protocol. &nbsp; By specifying an open source protocol for Funding Issues and software development scoping &amp; payment, the Gitcoin Core team hopes to similarly inspire a generation of inventions in 21st century software.</p>
 <p>
-To learn more about blockchain, please checkout <a href="/web3">this video about web3</a> or the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
+To learn more about blockchain, please checkout <a href="{}">this video about web3</a> or the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
 </p>
-            """
+            """.format(reverse('web3'))
         },
         {
             'q': 'Why do I need metamask?',
@@ -289,10 +290,10 @@ In contrast to web2 where third parties own your data, in web3 you own your data
 Download Metamask <a href="https://metamask.io/">here</a> today.
 </p>
 <p>
-To learn more about Metamask, please checkout <a href="/web3">this video about web3</a> or the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
+To learn more about Metamask, please checkout <a href="{}">this video about web3</a> or the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
 </p>
 
-           """
+           """.format(reverse('web3'))
         },
         {
             'q': 'Why do I need to pay gas?',
@@ -333,11 +334,11 @@ Here are some of the advantages of Ethereum based applications:
 </li>
 </ul>
 <p>
-To learn more about Ethereum based apps, please checkout <a href="/web3">this video about web3</a> or the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
+To learn more about Ethereum based apps, please checkout <a href="{}">this video about web3</a> or the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
 </p>
 
 
-           """
+           """.format(reverse('web3'))
         },
         {
             'q': 'I still dont get it.  Help!',
