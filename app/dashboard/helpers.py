@@ -21,6 +21,7 @@ import logging
 import pprint
 from enum import Enum
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
