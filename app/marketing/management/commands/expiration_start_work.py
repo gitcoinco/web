@@ -45,7 +45,7 @@ class Command(BaseCommand):
             ).all()
             print('day {} got {} interests'.format(day, interests.count()))
             for interest in interests:
-                for bounty in Bounty.objects.filter(interested=interest, current_bounty=True, idx_status__in=['open', 'started', 'submitted']):
+                for bounty in Bounty.objects.filter(interested=interest, current_bounty=True, idx_status__in=['open', 'started']):
                     print("{} is interested in {}".format(interest, bounty))
                     try:
                         owner = org_name(bounty.github_url)
@@ -64,8 +64,17 @@ class Command(BaseCommand):
                             # example format: 2018-01-26T17:56:31Z'
                             comment_times = [datetime.strptime(comment['created_at'], '%Y-%m-%dT%H:%M:%SZ') for comment in comments_by_interested_party]
                             last_comment_by_user = max(comment_times)
+
+                            # if user hasn't commented since they expressed interest, handled this condition
+                            # per https://github.com/gitcoinco/web/issues/462#issuecomment-368384384
+                            if last_comment_by_user < interest.created_at.replace(tzinfo=None):
+                                last_comment_by_user = interest.created_at.replace(tzinfo=None)
+
+                            # some small calcs
                             delta_now_vs_last_comment = datetime.now() - last_comment_by_user
                             last_heard_from_user_days = delta_now_vs_last_comment.days
+
+                            # decide action params
                             should_warn_user = last_heard_from_user_days >= num_days_back_to_warn
                             should_delete_interest = last_heard_from_user_days >= num_days_back_to_delete_interest
 
