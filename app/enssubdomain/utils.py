@@ -6,4 +6,3 @@ def register_ens_subdomain():
 
 def delete_ens_subdomain():
     pass
-

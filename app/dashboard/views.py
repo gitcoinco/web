@@ -347,6 +347,17 @@ def send_tip_2(request):
     return TemplateResponse(request, 'yge/send2.html', params)
 
 
+def ens_subdomain_registration(request):
+    """Register ENS Subdomain."""
+    github_handle = request.session.get('handle', '')
+    params = {
+        'title': 'ENS Subdomain',
+        'github_handle' : github_handle,
+    }
+    github_handle = request.session.get('handle', '')
+    return TemplateResponse(request, 'ens/subdomain.html', params)
+
+
 def process_bounty(request):
     """Process the bounty."""
     params = {

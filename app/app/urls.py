@@ -52,7 +52,7 @@ urlpatterns = [
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
-    
+
     url(r'^bounty/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
     url(r'^funding/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_funding'),
     url(r'^bounty/process/?', dashboard.views.process_bounty, name='process_bounty'),
@@ -80,6 +80,8 @@ urlpatterns = [
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
     url(r'^gas/?', dashboard.views.gas, name='gas'),
     url(r'^coin/redeem/(.*)/?', dashboard.views.redeem_coin, name='redeem'),
+    url(r'^ens_subdomain_registrar/?', dashboard.views.ens_subdomain_registration, name='ens_subdomain_registration'),
+
 
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
