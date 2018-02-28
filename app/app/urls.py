@@ -25,13 +25,13 @@ import dashboard.embed
 import dashboard.helpers
 import dashboard.ios
 import dashboard.views
+import gitcoinbot.views
 import linkshortener.views
 import marketing.views
 import retail.emails
 import retail.views
 import tdi.views
 from dashboard.router import router
-import gitcoinbot.views
 
 from .sitemaps import sitemaps
 
