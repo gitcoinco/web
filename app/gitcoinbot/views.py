@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.shortcuts import render
+
+import json
+
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 import gitcoinbot.gitcoinbotActions as gitcoinBot
-import json
 
 
 @csrf_exempt

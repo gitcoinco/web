@@ -1,33 +1,28 @@
 """
 Methods for interacting with the Github API as a Github App
 """
-from django.conf import settings
-from github.utils import (
-    post_issue_comment, post_issue_comment_reaction
-)
-
 import datetime
 import json
-import jwt
-import requests
 import re
 
+from django.conf import settings
+
+import jwt
+import requests
+from github.utils import post_issue_comment, post_issue_comment_reaction
 
 GITCOINBOT_APP_ID = settings.GITCOINBOT_APP_ID
 SECRET_KEYSTRING = settings.SECRET_KEYSTRING
 
 def help_text():
-    # TODO @owocki Add test bounties to dev environment to add claim/approve
-    # functionality
-    # " * `claim` -- receive link to gitcoin.co to claim bounty.\n" +\
-    # " * `approve` -- receive link to gitcoin.co to approve bounty.\n" +\
-
     help_text_response = "I am @{}, a bot that facilitates gitcoin bounties.\n".format(settings.GITHUB_API_USER) + \
     "\n" +\
     "<hr>" +\
     "Here are the commands I understand:\n" +\
     "\n" +\
     " * `bounty <amount> ETH` -- receive link to gitcoin.co form to create bounty.\n" +\
+    " * `claim` -- receive link to gitcoin.co to claim bounty.\n" +\
+    " * `approve` -- receive link to gitcoin.co to approve bounty.\n" +\
     " * `tip <user> <amount> ETH` -- receive link to complete tippping another github user *<amount>* ETH.\n" +\
     " * `help` -- displays a help menu\n" +\
     "\n" +\
@@ -60,11 +55,14 @@ def parse_tippee_username(comment_text):
 
     return username[-1]
 
-def tip_text(comment_text):
+def new_tip_text(owner, repo, issue_id, comment_text):
     tip_amount = parse_comment_amount(comment_text)
     username = parse_tippee_username(comment_text)
-    tip_link = '{}tip/?amount={}&username={}'.format(
-        settings.BASE_URL, tip_amount, username)
+    issue_url = "https://github.com/{}/{}/issues/{}".format(owner,
+                                                            repo,
+                                                            issue_id)
+    tip_link = '{}tip/?amount={}&username={}&source={}'.format(
+        settings.BASE_URL, tip_amount, username, issue_url)
     tip_response = 'To complete the tip, please [visit this link]({}).'.format(
         tip_link) + "\n PS Make sure you're logged in to Metamask!"
 
@@ -101,7 +99,7 @@ def create_token(install_id):
     payload = {
         'iat': datetime.datetime.utcnow(),
         'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=500),
-        'iss': GITCOINBOT_APP_ID
+        'iss': '7735'
     }
     jwt_token = jwt.encode(payload, SECRET_KEYSTRING, algorithm='RS256')
     jwt_token_string = jwt_token.decode('utf-8')
@@ -128,15 +126,16 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id, install_
         post_issue_comment_reaction(owner, repo, comment_id, '+1')
         bounty_text = new_bounty_text(owner, repo, issue_id, comment_text)
         post_gitcoin_app_comment(owner, repo, issue_id, bounty_text, install_id)
-    # elif re.match(claim_regex, comment_text) is not None:
-    #     post_issue_comment_reaction(owner, repo, comment_id, '+1')
-    #     pass
-    # elif re.match(approve_regex, comment_text) is not None:
-    #     post_issue_comment_reaction(owner, repo, comment_id, 'hooray')
-    #     pass
+    elif re.match(claim_regex, comment_text) is not None:
+        post_issue_comment_reaction(owner, repo, comment_id, '+1')
+        pass
+    elif re.match(approve_regex, comment_text) is not None:
+        post_issue_comment_reaction(owner, repo, comment_id, 'hooray')
+        pass
     elif re.match(tip_regex, comment_text) is not None:
         post_issue_comment_reaction(owner, repo, comment_id, 'heart')
-        post_gitcoin_app_comment(owner, repo, issue_id, tip_text(comment_text), install_id)
+        tip_text = new_tip_text(owner, repo, issue_id, comment_text)
+        post_gitcoin_app_comment(owner, repo, issue_id, tip_text, install_id)
     else:
         post_issue_comment_reaction(owner, repo, comment_id, 'confused')
         post_gitcoin_app_comment(owner, repo, issue_id, confused_text(),install_id)
