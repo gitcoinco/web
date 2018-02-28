@@ -15,7 +15,6 @@ GITCOINBOT_APP_ID = settings.GITCOINBOT_APP_ID
 SECRET_KEYSTRING = settings.SECRET_KEYSTRING
 
 def help_text():
-    # " * `approve` -- receive link to gitcoin.co to approve bounty.\n" +\
     help_text_response = "I am @{}, a bot that facilitates gitcoin bounties.\n".format(settings.GITHUB_API_USER) + \
     "\n" +\
     "<hr>" +\
@@ -112,7 +111,6 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id, install_
     help_regex = r'@?[Gg]itcoinbot\s[Hh]elp'
     bounty_regex = r'@?[Gg]itcoinbot\s[Bb]ounty\s\d*\.?(\d+\s?)'
     claim_regex = r'@?[Gg]itcoinbot\s[Cc]laim'
-    approve_regex = r'@?[Gg]itcoinbot\s[Aa]pprove'
     tip_regex = r'@?[Gg]itcoinbot\s[Tt]ip\s@\w*\s\d*\.?(\d+\s?)'
 
     if re.match(help_regex, comment_text) is not None:
@@ -126,9 +124,6 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id, install_
         post_issue_comment_reaction(owner, repo, comment_id, '+1')
         claim_text = claim_bounty_text(owner, repo, issue_id)
         post_gitcoin_app_comment(owner, repo, issue_id, claim_text, install_id)
-    # elif re.match(approve_regex, comment_text) is not None:
-    #     post_issue_comment_reaction(owner, repo, comment_id, 'hooray')
-    #     pass
     elif re.match(tip_regex, comment_text) is not None:
         post_issue_comment_reaction(owner, repo, comment_id, 'heart')
         tip_text = new_tip_text(owner, repo, issue_id, comment_text)
