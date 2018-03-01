@@ -1,0 +1,29 @@
+.form__input {
+  border-radius: 3px;
+  border: 1px solid #0D0764;
+  font-size: 14px;
+  padding: 7px;
+  width: 100%;
+}
+
+.form__input:disabled {
+  background-color: #EAEAEA;
+  border: 1px solid #979797;
+  color: #9B9B9B;
+}
+
+.form__input::-webkit-input-placeholder {
+  color: rgba(0, 0, 0, 0.38);
+}
+
+.form__input::-moz-placeholder {
+  color: rgba(0, 0, 0, 0.38);
+}
+
+.form__input:-ms-input-placeholder {
+  color: rgba(0, 0, 0, 0.38);
+}
+
+.form__input:-moz-placeholder {
+  color: rgba(0, 0, 0, 0.38);
+}

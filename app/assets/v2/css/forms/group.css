@@ -1,0 +1,24 @@
+.form__group {
+  display: flex;
+}
+
+.form__group__item {
+  flex: 1;
+}
+
+.form__group__item:not(:last-of-type) {
+  margin-right: 1rem;
+}
+
+.form__flex-group {
+  display: flex;
+}
+
+.form__flex-item {
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.select2-selection.select2-selection--multiple {
+  min-height: 37px;
+}

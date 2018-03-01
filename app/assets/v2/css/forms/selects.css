@@ -1,0 +1,76 @@
+.form__select,
+.form__select2 {
+  position: relative;
+  outline: none;
+}
+
+.form__select__icon {
+  align-items: center;
+  background: #fff;
+  border-radius: 0 3px 3px 0;
+  border: 1px solid #0D0764;
+  border-left: none;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 40px;
+}
+
+.form__select select {
+  background-color: #fff;
+  border: 1px solid #0D0764;
+  border-radius: 3px;
+  display: inline-block;
+  font-size: 14px;
+  height: 37px;
+  outline: none;
+}
+
+.form__select select:disabled {
+  background-color: #D2D2D2;
+  border: 1px solid #D2D2D2;
+  color: #9B9B9B;
+}
+
+/* For Select2 */
+.form__select2 {
+  height: 100%;
+}
+
+.form__select2 .select2-container {
+  display: inline-block !important;
+  width: 100% !important;
+  height: 100%;
+}
+
+.form__select2 .select2-container--default .select2-selection--single {
+  align-items: center;
+  border: 1px solid #0D0764;
+  display: flex;
+  height: 100%;
+}
+
+.form__select2 .select2-container--default .select2-selection--single .select2-selection__rendered {
+  line-height: normal;
+}
+
+.form__select2 .select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: 100%;
+}
+
+.form__select2 .select2-container--default.select2-container--disabled .select2-selection--single {
+  background-color: #EAEAEA;
+  border: 1px solid #EAEAEA;
+}
+
+.form__select2 .select2-container--default.select2-container--disabled .select2-selection--single .select2-selection__rendered {
+  color: #9B9B9B;
+}
+
+.form__select2 .select2-container--disabled + .form__select__icon {
+  background-color: #EAEAEA;
+  border: 1px solid #EAEAEA;
+}
