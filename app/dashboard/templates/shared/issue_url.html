@@ -15,17 +15,10 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 
-{% load static %}
-
-<div class="bounty_def">
-    <div class="row mt-4  mb-4 align-items-center ml-4" >
-        <div class="col-1">
-            <img src="{% static "v2/images/icons/message_txt.png" %}" />
-        </div>
-        <div class="col-7">
-            <h5>Be the first to know about new funded issues.</h5>
-            {% include 'shared/mailchimp.html' %}
-        </div>
-    </div>
+<div class="form-group">
+  <label for="amount">Issue URL:</label>
+  <input name="issueURL" id="issueURL"
+         class="w-100 gc-round-text-input" type="text"
+         placeholder="https://github.com/user/repo/pull/n"
+         value="{% if issueURL %}{{issueURL}}{%endif%}" />
 </div>
-
