@@ -115,6 +115,7 @@ class Bounty(SuperModel):
     interested = models.ManyToManyField('dashboard.Interest', blank=True)
     interested_comment = models.IntegerField(null=True, blank=True)
     submissions_comment = models.IntegerField(null=True, blank=True)
+    override_status = models.CharField(max_length=255, blank=True)
 
     objects = BountyQuerySet.as_manager()
 
@@ -256,6 +257,8 @@ class Bounty(SuperModel):
             str: The status of the Bounty.
 
         """
+        if self.override_status:
+            return self.override_status
         if self.is_legacy:
             # TODO: Remove following full deprecation of legacy bounties
             try:
