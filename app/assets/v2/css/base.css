@@ -481,12 +481,6 @@ body #mc_embed_signup label {
     margin-bottom: 50px;
 }
 
-.form_container input[type=text],
-.form_container select,
-.form_container textarea {
-    background-color: #eee;
-}
-
 textarea.loading,
 input[type=text].loading {
     background-image: url('/static/v2/images/loading_v2.gif');

@@ -27,6 +27,7 @@
   font-size: 14px;
   height: 37px;
   outline: none;
+  width: 100%;
 }
 
 .form__select select:disabled {
