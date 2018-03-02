@@ -232,7 +232,7 @@ try:
             'root': BASE_DIR,
             'patch_debugview': False,
             'branch': 'master',
-            'exception_level_filters': [(Http404, 'warning')]
+            'exception_level_filters': [(Http404, 'info')]
         }
         MIDDLEWARE.append('rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
 except ImportError:

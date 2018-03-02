@@ -73,9 +73,9 @@ def title(request):
     response = {}
 
     url = request.GET.get('url')
-    urlVal = URLValidator()
+    url_val = URLValidator()
     try:
-        urlVal(url)
+        url_val(url)
     except ValidationError:
         response['message'] = 'invalid arguments'
         return JsonResponse(response)
@@ -124,9 +124,9 @@ def description(request):
     response = {}
 
     url = request.GET.get('url')
-    urlVal = URLValidator()
+    url_val = URLValidator()
     try:
-        urlVal(url)
+        url_val(url)
     except ValidationError as e:
         response['message'] = 'invalid arguments'
         return JsonResponse(response)
@@ -141,7 +141,7 @@ def description(request):
 
     try:
         api_response = requests.get(gh_api)
-    except ValidationError as e:
+    except ValidationError:
         response['message'] = 'could not pull back remote response'
         return JsonResponse(response)
 
@@ -152,9 +152,9 @@ def description(request):
     try:
         body = api_response.json()['body']
     except ValueError as e:
-        response['message'] = e
+        response['message'] = str(e)
     except KeyError as e:
-        response['message'] = e
+        response['message'] = str(e)
     else:
         response['description'] = body.replace('\n', '').strip()
 
@@ -168,9 +168,9 @@ def keywords(request):
     keywords = []
 
     url = request.GET.get('url')
-    urlVal = URLValidator()
+    url_val = URLValidator()
     try:
-        urlVal(url)
+        url_val(url)
     except ValidationError:
         response['message'] = 'invalid arguments'
         return JsonResponse(response)
