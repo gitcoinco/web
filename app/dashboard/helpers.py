@@ -534,7 +534,6 @@ def process_bounty_changes(old_bounty, new_bounty):
     # record a useraction for this
     record_user_action(event_name, old_bounty, new_bounty)
 
-
     # Build profile pairs list
     if new_bounty.fulfillments.exists():
         profile_pairs = build_profile_pairs(new_bounty)

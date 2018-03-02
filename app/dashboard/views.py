@@ -63,35 +63,20 @@ def send_tip(request):
     return TemplateResponse(request, 'yge/send1.html', params)
 
 
-def record_user_tip_action(profile_handle, event_name, tip_pk):
+def record_user_action(profile_handle, event_name, instance):
+    instance_class = instance.__class__.__name__.lower()
+
     try:
         user_profile = get_profile(profile_handle)
         UserAction.objects.create(
             profile=user_profile,
             action=event_name,
             metadata={
-                'tip_pk': tip_pk,
-            },
-            )
+                f'{instance_class}_pk': instance.pk,
+            })
     except Exception as e:
-        # TODO: get_profile?
-        logging.error(f"error in record_user_tip_action: {e}")
-
-
-def record_user_action(profile_id, event_name, interest_pk):
-    try:
-        user_profile = Profile.objects.get(pk=profile_id)
-        UserAction.objects.create(
-            profile=user_profile,
-            action=event_name,
-            metadata={
-                'interest_pk': interest_pk,
-            },
-            )
-    except Exception as e:
-        # TODO: get_profile?
-        logging.error(f"error in record_user_action: {e}")
-
+        # TODO: sync_profile?
+        logging.error(f"error in record_action: {e} - {event_name} - {instance}")
 
 @require_POST
 @csrf_exempt
@@ -127,7 +112,7 @@ def new_interest(request, bounty_id):
     except Interest.DoesNotExist:
         interest = Interest.objects.create(profile_id=profile_id)
         bounty.interested.add(interest)
-        record_user_action(profile_id, 'start_work', interest.pk)
+        record_user_action(Profile.objects.get(profile_id).handle, 'start_work', interest.pk)
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \
@@ -171,7 +156,7 @@ def remove_interest(request, bounty_id):
 
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
-        record_user_action(profile_id, 'stop_work', interest.pk)
+        record_user_action(Profile.objects.get(profile_id).handle, 'stop_work', interest.pk)
         bounty.interested.remove(interest)
         interest.delete()
     except Interest.DoesNotExist:
@@ -267,7 +252,7 @@ def receive_tip(request):
             tip.receive_txid = params['receive_txid']
             tip.received_on = timezone.now()
             tip.save()
-            record_user_tip_action(tip.username, 'receive_tip', tip.pk)
+            record_user_action(tip.username, 'receive_tip', tip.pk)
         except Exception as e:
             status = 'error'
             message = str(e)
@@ -362,7 +347,7 @@ def send_tip_2(request):
         maybe_market_tip_to_github(tip)
         maybe_market_tip_to_slack(tip, 'new_tip')
         maybe_market_tip_to_email(tip, to_emails)
-        record_user_tip_action(tip.from_username, 'send_tip', tip.pk)
+        record_user_action(tip.username, 'send_tip', tip.pk)
         if not to_emails:
             response['status'] = 'error'
             response['message'] = 'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.'
