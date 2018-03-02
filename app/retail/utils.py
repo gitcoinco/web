@@ -15,6 +15,9 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import cgi
+import re
+
 from django.conf import settings
 
 from requests_oauthlib import OAuth2Session
@@ -30,3 +33,20 @@ def get_github_user_profile(token):
     creds = github.get('https://api.github.com/user').json()
     print(creds)
     return creds
+
+
+def strip_html(html):
+
+    tag_re = re.compile(r'(<!--.*?-->|<[^>]*>)')
+    no_tags = tag_re.sub('', html)
+    txt = cgi.escape(no_tags)
+
+    return txt
+
+
+def strip_double_chars(txt, char=' '):
+    new_txt = txt.replace(char+char, char)
+    if new_txt == txt:
+        return new_txt
+    else:
+        return strip_double_chars(new_txt, char)

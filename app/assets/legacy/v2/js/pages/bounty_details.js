@@ -74,7 +74,7 @@ var heads = {
 var callbacks = {
     'github_url': link_ize,
     'value_in_token': function(key, val, result){
-        return [ 'amount', Math.round((parseInt(val) / Math.pow(10, document.decimals)) * 1000) / 1000 + " " + result['token_name']];
+        return [ 'amount', "$" + Math.round((parseInt(val) / Math.pow(10, document.decimals)) * 1000) / 1000 + "/" + result['token_name']];
     },
     'avatar_url': function(key, val, result){
         return [ 'avatar', '<a href="/profile/'+result['org_name']+'"><img class=avatar src="'+val+'"></a>'];

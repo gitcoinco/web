@@ -18,7 +18,7 @@
 from django.conf.urls import handler400, handler403, handler404, handler500, include, url
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
-from django.urls import path
+from django.urls import path, re_path
 
 import credits.views
 import dashboard.embed
@@ -129,6 +129,7 @@ urlpatterns = [
     url(r'^medium/?', retail.views.medium, name='medium'),
     url(r'^github/?', retail.views.github, name='github'),
     url(r'^youtube/?', retail.views.youtube, name='youtube'),
+    re_path(r'^web3/?', retail.views.web3, name='web3'),
 
     # link shortener
     url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),

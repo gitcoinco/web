@@ -32,7 +32,7 @@ from django.utils import timezone
 import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
-from economy.utils import convert_amount
+from economy.utils import convert_amount, convert_token_to_usdt
 from github.utils import _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, org_name
 from rest_framework import serializers
 from web3 import Web3
@@ -115,6 +115,7 @@ class Bounty(SuperModel):
     interested = models.ManyToManyField('dashboard.Interest', blank=True)
     interested_comment = models.IntegerField(null=True, blank=True)
     submissions_comment = models.IntegerField(null=True, blank=True)
+    override_status = models.CharField(max_length=255, blank=True)
 
     objects = BountyQuerySet.as_manager()
 
@@ -256,6 +257,8 @@ class Bounty(SuperModel):
             str: The status of the Bounty.
 
         """
+        if self.override_status:
+            return self.override_status
         if self.is_legacy:
             # TODO: Remove following full deprecation of legacy bounties
             try:
@@ -314,6 +317,10 @@ class Bounty(SuperModel):
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except Exception:
             return None
+
+    @property
+    def token_value_in_usdt(self):
+        return round(convert_token_to_usdt(self.token_name), 2)
 
     @property
     def desc(self):
@@ -534,6 +541,11 @@ class Tip(SuperModel):
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except Exception:
             return None
+
+    # TODO: DRY
+    @property
+    def token_value_in_usdt(self):
+        return round(convert_token_to_usdt(self.token_name), 2)
 
     @property
     def status(self):
