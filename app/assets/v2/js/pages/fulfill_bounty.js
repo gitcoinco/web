@@ -128,6 +128,13 @@ window.onload = function(){
                             }
 
                             var bountyId = result['standard_bounties_id'];
+                            bounty.getBounty(bountyId, (error, result) => {
+                              if(error || result == null) {
+                                _alert({ message: "No active bounty found on the blockchain for this Github URL." });
+                                unloading_button($('#submitBounty'));
+                                return;
+                              }
+                            });
 
                             bounty.fulfillBounty(bountyId, document.ipfsDataHash, {gasPrice:web3.toHex($("#gasPrice").val()) * Math.pow( 10, 9 )}, web3Callback);
                         })
