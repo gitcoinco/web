@@ -30,19 +30,13 @@
         {% include 'shared/nav_internal.html' %}
     </div>
     <div class="row no-gutter">
-        <div class="col-2" style="background: #eee; ">
-            {% include 'shared/current_balance.html' %}
-            {% include 'shared/sidebar_search.html' %}
-        </div>
-
-        <div class="col body">
+        <div class="col-12 body">
             <div class="container-fluid no-gutter">
-            {% include 'shared/bounty_def.html' %}
                 <div class="row font-smaller-2" id="form_container">
                     {% include 'shared/no_metamask_error.html' %}
                     {% include 'shared/zero_balance_error.html' %}
                     {% include 'shared/unlock_metamask.html' %}
-                    <div class="col d-flex align-items-center justify-content-center" id="primary_form">
+                    <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
                         <div class="d-flex justify-content-center flex-column mt-5 w-50" id="primary_subform">
                             {% include 'shared/bounty_nav.html' with active_item=1 %}
                             <div class="w-100" style="text-align: center;">
@@ -111,7 +105,7 @@
                                 </div>
                                 <div class="form__group">
                                     <div class="form__select form__group__item">
-                                        <select class="w-100" name=experienceLevel>
+                                        <select class="w-100" name="experienceLevel">
                                             <option value="">-- Experience Level -- </option>
                                             <option>Beginner</option>
                                             <option>Intermediate</option>
@@ -160,9 +154,8 @@
                                 <br />
                                 <a target=new href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
                             </div>
-
+                            {% include 'shared/newsletter.html' %}
                         </div>
-
                     </div>
                 </div>
             </div>

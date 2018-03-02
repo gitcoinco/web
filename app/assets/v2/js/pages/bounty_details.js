@@ -161,6 +161,7 @@ var showWarningMessage = function (txid) {
         $('#transaction_url').attr("href", link_url);
     }
 
+    $(".left-rails").hide();
     $("#bounty_details").hide();
     $("#bounty_detail").hide();
 
@@ -200,7 +201,7 @@ var wait_for_tx_to_mine_and_then_ping_server = function(){
                     if(response.status == "200"){
                         console.log("success from sync/web", response);
 
-                        // clear local data 
+                        // clear local data
                         localStorage[document.issueURL] = "";
                         document.location.href = document.location.href;
                     } else {
@@ -344,9 +345,10 @@ pull_interest_list(result['pk'], function(is_interested){
     }
     actions.push(entry);
 
-    var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
-    var is_done = result['status']=='done';
-    if(!is_done && !is_expired){
+    var is_date_expired = (new Date(result['now']) > new Date(result['expires_date']));
+    var is_status_expired = result['status']=='expired';
+    var is_status_done = result['status']=='done';
+    if(!is_status_done && !is_status_expired){
         var enabled = isBountyOwner(result);
         var entry = {
             href: '/funding/kill?source='+result['github_url'],
@@ -359,9 +361,9 @@ pull_interest_list(result['pk'], function(is_interested){
         actions.push(entry);
     }
 
-    render_actions(actions);     
+    render_actions(actions);
 
-    });  
+    });
 }
 
 var render_actions = function(actions){
@@ -370,7 +372,7 @@ var render_actions = function(actions){
         var tmpl = $.templates("#action");
         var html = tmpl.render(actions[l]);
         $("#"+target).append(html);
-    };      
+    };
 }
 
 var pull_bounty_from_api = function(){
@@ -406,7 +408,7 @@ var pull_bounty_from_api = function(){
             $("#primary_view").css('display','none');
     }).always(function(){
         $('.loading').css('display', 'none');
-    });        
+    });
 }
 
 var render_fulfillments = function(result){
@@ -492,5 +494,3 @@ var main = function(){
 window.addEventListener('load', function() {
     main();
 });
-
-

@@ -73,9 +73,9 @@ def title(request):
     response = {}
 
     url = request.GET.get('url')
-    urlVal = URLValidator()
+    url_val = URLValidator()
     try:
-        urlVal(url)
+        url_val(url)
     except ValidationError:
         response['message'] = 'invalid arguments'
         return JsonResponse(response)
@@ -124,9 +124,9 @@ def description(request):
     response = {}
 
     url = request.GET.get('url')
-    urlVal = URLValidator()
+    url_val = URLValidator()
     try:
-        urlVal(url)
+        url_val(url)
     except ValidationError as e:
         response['message'] = 'invalid arguments'
         return JsonResponse(response)
@@ -141,7 +141,7 @@ def description(request):
 
     try:
         api_response = requests.get(gh_api)
-    except ValidationError as e:
+    except ValidationError:
         response['message'] = 'could not pull back remote response'
         return JsonResponse(response)
 
@@ -152,9 +152,9 @@ def description(request):
     try:
         body = api_response.json()['body']
     except ValueError as e:
-        response['message'] = e
+        response['message'] = str(e)
     except KeyError as e:
-        response['message'] = e
+        response['message'] = str(e)
     else:
         response['description'] = body.replace('\n', '').strip()
 
@@ -168,9 +168,9 @@ def keywords(request):
     keywords = []
 
     url = request.GET.get('url')
-    urlVal = URLValidator()
+    url_val = URLValidator()
     try:
-        urlVal(url)
+        url_val(url)
     except ValidationError:
         response['message'] = 'invalid arguments'
         return JsonResponse(response)
@@ -488,7 +488,7 @@ def process_bounty_changes(old_bounty, new_bounty):
     json_diff = diff(old_bounty.raw_data, new_bounty.raw_data) if old_bounty else None
 
     # new bounty
-    if not old_bounty or (not old_bounty and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty.is_open):
+    if not old_bounty or (not old_bounty and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty and new_bounty.is_open):
         is_greater_than_x_days_old = new_bounty.web3_created < (timezone.now() - timezone.timedelta(hours=24))
         if is_greater_than_x_days_old and not settings.DEBUG:
             msg = 'attempting to create a new bounty ({new_bounty.standard_bounties_id}) when is_greater_than_x_days_old = True'
@@ -505,7 +505,7 @@ def process_bounty_changes(old_bounty, new_bounty):
     else:
         event_name = 'unknown_event'
         logging.error(f'got an unknown event from bounty {old_bounty.pk} => {new_bounty.pk}: {json_diff}')
-    
+
     print(f"- {event_name} event; diff => {json_diff}")
 
     # Build profile pairs list
