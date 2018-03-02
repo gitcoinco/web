@@ -2,11 +2,17 @@
   display: flex;
 }
 
-.form__group__item {
-  flex: 1;
+.form__amount-wrapper {
+  width: 20%;
+  margin-right: 1rem;
 }
 
-.form__group__item:not(:last-of-type) {
+.form__group-item {
+  flex: 1;
+  position: relative;
+}
+
+.form__group-item:not(:last-of-type) {
   margin-right: 1rem;
 }
 
@@ -16,7 +22,6 @@
 
 .form__flex-item {
   flex: 1;
-  margin-left: 1rem;
 }
 
 .form__footer {

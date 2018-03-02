@@ -4,7 +4,7 @@
   border: 1px solid #0D0764;
   font-size: 14px;
   font-family: 'Muli', sans-serif;
-  padding: 7px;
+  padding: 5px 7px;
   width: 100%;
 }
 
@@ -35,4 +35,10 @@
   font-size: 12px;
   font-family: 'Muli', sans-serif;
   margin-left: .5rem;
+}
+
+.form__input-help--dynamic {
+  position: absolute;
+  bottom: -20px;
+  left: 0;
 }

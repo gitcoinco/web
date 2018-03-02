@@ -26,7 +26,7 @@
   display: inline-block;
   font-size: 14px;
   font-family: 'Muli', sans-serif;
-  height: 37px;
+  height: 30px;
   outline: none;
   width: 100%;
 }
@@ -80,4 +80,8 @@
 .form__select2 .select2-container--disabled + .form__select__icon {
   background-color: #EAEAEA;
   border: 1px solid #EAEAEA;
+}
+
+.form__select2 .select2-container--default .select2-selection--single .select2-selection__arrow {
+  display: none;
 }
