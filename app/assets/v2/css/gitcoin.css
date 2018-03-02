@@ -18,6 +18,56 @@
   src: url('/static/v2/fonts/OpenSans/Regular.ttf');
 }
 
+@font-face {
+  font-family: "Muli";
+  src: url('/static/v2/fonts/Muli/Muli.ttf');
+}
+
+@font-face {
+  font-family: "Muli-Bold";
+  src: url('/static/v2/fonts/Muli/Muli-Bold.ttf');
+}
+
+@font-face {
+  font-family: "Muli-ExtraLight";
+  src: url('/static/v2/fonts/Muli/Muli-ExtraLight.ttf');
+}
+
+@font-face {
+  font-family: "Muli-SemiBold";
+  src: url('/static/v2/fonts/Muli/Muli-SemiBold.ttf');
+}
+
+@font-face {
+  font-family: "Muli-Light";
+  src: url('/static/v2/fonts/Muli/Muli-Light.ttf');
+}
+
+@font-face {
+  font-family: "Muli-Italic";
+  src: url('/static/v2/fonts/Muli/Muli-Italic.ttf');
+}
+
+@font-face {
+  font-family: "Muli-BoldItalic";
+  src: url('/static/v2/fonts/Muli/Muli-BoldItalic.ttf');
+}
+
+@font-face {
+  font-family: "Muli-ExtraLightItalic";
+  src: url('/static/v2/fonts/Muli/Muli-ExtraLightItalic.ttf');
+}
+
+@font-face {
+  font-family: "Muli-Semi-BoldItalic";
+  src: url('/static/v2/fonts/Muli/Muli-Semi-BoldItalic.ttf');
+}
+
+@font-face {
+  font-family: "Muli-LightItalic";
+  src: url('/static/v2/fonts/Muli/Muli-LightItalic.ttf');
+}
+
 body {
   font-family: "futura-pt", Futura;
   overflow-x: hidden;
