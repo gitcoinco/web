@@ -3,6 +3,7 @@
   border-radius: 3px;
   border: 1px solid #0D0764;
   font-size: 14px;
+  font-family: 'Muli', sans-serif;
   padding: 7px;
   width: 100%;
 }
@@ -30,6 +31,8 @@
 }
 
 .form__input-help {
+  color: #868e96;
   font-size: 12px;
+  font-family: 'Muli', sans-serif;
   margin-left: .5rem;
 }

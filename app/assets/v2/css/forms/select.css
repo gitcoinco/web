@@ -25,9 +25,14 @@
   border-radius: 3px;
   display: inline-block;
   font-size: 14px;
+  font-family: 'Muli', sans-serif;
   height: 37px;
   outline: none;
   width: 100%;
+}
+
+.form__select select[multiple] {
+  height: auto;
 }
 
 .form__select select:disabled {
@@ -38,6 +43,7 @@
 
 /* For Select2 */
 .form__select2 {
+  font-family: 'Muli', sans-serif;
   height: 100%;
 }
 
