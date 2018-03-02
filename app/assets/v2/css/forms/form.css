@@ -19,6 +19,15 @@
   margin-left: 1rem;
 }
 
-.select2-selection.select2-selection--multiple {
-  min-height: 37px;
+.form__footer {
+  margin-top: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.form__footer button {
+  margin-bottom: .5rem;
+}
+
+.form__footer--right {
+  text-align: right;
 }

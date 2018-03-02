@@ -30,5 +30,6 @@
 }
 
 .form__input-help {
+  font-size: 12px;
   margin-left: .5rem;
 }

@@ -55,7 +55,7 @@
                                 <input name='issueURL' id="issueURL" class="w-100 form__input" type="url" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
                             </div>
                             <div class="w-100 mt-2">
-                                <label for=amount>Amount:</label>
+                                <label class="form__label" for="amount">Amount:</label>
                                 <div class="form__flex-group">
                                     <input name='amount' id='amount'  class="form__input" type="number" placeholder="Amount" value="{{amount}}" style="width: 20%; display: inline;" />
                                     <div class="form__flex-item">
@@ -74,19 +74,19 @@
                             {% include 'shared/name.html' %}
                             <div id="advanced_container">
                                 <div class="w-100 mt-2">
-                                    <label for=title>Issue Title:</label>
+                                    <label class="form__label" for="title">Issue Title:</label>
                                     <input name='title' id="title"  class="w-100 form__input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" />
                                 </div>
                                 <div class="w-100 mt-2">
-                                    <label for="description">Issue Description:</label>
+                                    <label class="form__label" for="description">Issue Description:</label>
                                     <textarea name="description" class="w-100 form__input" id="description" placeholder="Add some new feature."></textarea>
                                </div>
                                 <div class="w-100 mt-2">
-                                    <label for=keywords>Keywords:</label>
+                                    <label class="form__label" for="keywords">Keywords:</label>
                                     <input name='keywords' id='keywords'  class="w-100 form__input" type="text" placeholder="python, solidity, html, javascript, react (optional)" value="{{keywords}}" />
                                 </div>
                                 <div class="w-100 mt-2">
-                                    <label for=expirationTimeDelta>Expires in:</label>
+                                    <label class="form__label" for="expirationTimeDelta">Expires in:</label>
                                         <div class="form__select">
                                             <select class="w-100" name=expirationTimeDelta >
                                                 <option value="86400">1 day</option>
@@ -106,7 +106,7 @@
                                 </div>
                                 <div class="w-100 mt-2 d-flex ">
                                     <div class="w-50 mt-2 mr-3 d-flex flex-column">
-                                        <label>Issue Details</label>
+                                        <label class="form__label">Issue Details</label>
                                     </div>
                                 </div>
                                 <div class="form__group">
@@ -155,11 +155,10 @@
                                 </div>
                             </div>
                             {% include 'shared/metamask_estimate.html' %}
-                            <div class="w-100 mt-2">
-                                <a class="btn btn-sm btn-info mt-3 mb-1 pulseClick float-right" role="button" id="submitBounty" href="#">Fund Issue</a>
-                            </div>
-                            <div class="w-100 mb-5 mt-1">
-                                <a class="float-right" target=new href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
+                            <div class="form__footer form__footer--right">
+                                <button class="button button--primary" type="submit" id="submitBounty">Fund Issue</button>
+                                <br />
+                                <a target=new href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
                             </div>
 
                         </div>

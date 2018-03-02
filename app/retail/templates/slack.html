@@ -51,12 +51,12 @@
                     <h3>Sign up</h3>
                     <form id=whitepaper  method=POST>
                         <div class="form-group">
-                            <label for="email">Email address</label>
+                            <label class="form__label" for="email">Email address</label>
                             <input type="text" name="email" class="form__input" placeholder='you@somewhere'  value="{% if email %}{{email}}{%endif%}" required>
                             <small id="emailHelp" class="form__input-help">Gitcoin will never share your email with anyone else.</small>
                         </div>
                         {% csrf_token %}
-                        <input class='btn btn-sm btn-success joinslack' type='submit' name='submit' value="Sign Up">
+                        <input class='button button--primary joinslack' type='submit' name='submit' value="Sign Up">
                     </form>
 
                     {% endblock %}
