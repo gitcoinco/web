@@ -53,7 +53,7 @@ def sync_profile(handle):
     is_error = 'name' not in data.keys()
     if is_error:
         print("- error main")
-        return
+        return None
 
     repos_data = get_user(handle, '/repos')
     repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
