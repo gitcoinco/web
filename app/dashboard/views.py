@@ -30,7 +30,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from app.utils import ellipses, sync_profile
+from app.utils import ellipses, get_profile
 from dashboard.models import (
     Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip, UserAction,
 )
@@ -65,7 +65,7 @@ def send_tip(request):
 
 def record_user_tip_action(profile_handle, event_name, tip_pk):
     try:
-        user_profile = Profile.objects.get(handle=profile_handle)
+        user_profile = get_profile(profile_handle)
         UserAction.objects.create(
             profile=user_profile,
             action=event_name,
@@ -74,7 +74,7 @@ def record_user_tip_action(profile_handle, event_name, tip_pk):
             },
             )
     except Exception as e:
-        # TODO: sync_profile?
+        # TODO: get_profile?
         logging.error(f"error in record_user_tip_action: {e}")
 
 
@@ -89,7 +89,7 @@ def record_user_action(profile_id, event_name, interest_pk):
             },
             )
     except Exception as e:
-        # TODO: sync_profile?
+        # TODO: get_profile?
         logging.error(f"error in record_user_action: {e}")
 
 
@@ -318,7 +318,7 @@ def send_tip_2(request):
 
         to_username = params['username'].lstrip('@')
         try:
-            to_profile = Profile.objects.get(handle__iexact=to_username)
+            to_profile = get_profile(to_username)
             if to_profile.email:
                 to_emails.append(to_profile.email)
             if to_profile.github_access_token:
@@ -563,11 +563,11 @@ def bounty_details(request):
 def profile_helper(handle):
     """Define the profile helper."""
     try:
-        profile = Profile.objects.get(handle__iexact=handle)
+        profile = get_profile(handle)
     except Profile.DoesNotExist:
-        sync_profile(handle)
+        get_profile(handle)
         try:
-            profile = Profile.objects.get(handle__iexact=handle)
+            profile = get_profile(handle)
         except Profile.DoesNotExist:
             raise Http404
     except Profile.MultipleObjectsReturned as e:

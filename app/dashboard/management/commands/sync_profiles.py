@@ -21,7 +21,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from app.utils import sync_profile
+from app.utils import get_profile
 from dashboard.models import Bounty, Profile
 
 
@@ -63,7 +63,7 @@ class Command(BaseCommand):
                 print('- no refresh needed')
             else:
                 try:
-                    sync_profile(handle)
+                    get_profile(handle)
                 except Exception as e:
                     print(e)
 

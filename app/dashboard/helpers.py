@@ -29,6 +29,7 @@ from django.http import Http404, JsonResponse
 from django.utils import timezone
 
 import requests
+from app.utils import get_profile
 from bs4 import BeautifulSoup
 from dashboard.models import Bounty, BountyFulfillment, BountySyncRequest, UserAction
 from dashboard.notifications import (
@@ -296,8 +297,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty):
                 'githubUsername', '')
         if github_username:
             try:
-                kwargs['profile_id'] = Profile.objects.get(
-                    handle=github_username).pk
+                kwargs['profile_id'] = get_profile(github_username).pk
             except Profile.DoesNotExist:
                 pass
         if fulfillment.get('accepted'):
@@ -471,10 +471,10 @@ def record_user_action(event_name, old_bounty, new_bounty):
     user_profile = None
     try:
         if event_name in ['new_bounty', 'killed_bounty', 'work_done']:
-            user_profile = Profile.objects.get(handle=new_bounty.bounty_owner_github_username)
+            user_profile = get_profile(new_bounty.bounty_owner_github_username)
         if event_name in ['work_submitted']:
             fulfillment = new_bounty.fulfillments.order_by('pk').first()
-            user_profile = Profile.objects.get(handle=fulfillment.fulfiller_github_username)
+            user_profile = get_profile(fulfiller_github_username)
     except Exception as e:
         logging.error(f'{e} during record_user_action for {new_bounty}')
         # TODO: create a profile if one does not exist already?

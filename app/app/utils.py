@@ -45,21 +45,27 @@ def add_contributors(repo_data):
     return repo_data
 
 
-def sync_profile(handle):
-    data = get_user(handle)
-    is_error = 'name' not in data.keys()
+def get_profile(handle, sync=True):
+    data = get_user(handle) if sync else {}
+    is_error = 'name' not in data.keys() if sync else False
     if is_error:
-        print("- error main")
+        # print("- error main")
         return
 
-    repos_data = get_user(handle, '/repos')
-    repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
-    repos_data = [add_contributors(repo_data) for repo_data in repos_data]
+    repos_data = {}
+    if sync:
+        repos_data = get_user(handle, '/repos')
+        repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
+        repos_data = [add_contributors(repo_data) for repo_data in repos_data]
+
+    # make handle case-insensitive
+    other_profiles = Profile.objects.filter(handle_iexact=handle)
+    handle = other_profiles.first().handle if other_profiles.exists() else handle
 
     # store the org info in postgres
     org, _ = Profile.objects.get_or_create(
         handle=handle,
-        defaults = {
+        defaults={
             'last_sync_date': timezone.now(),
             'data': data,
             'repos_data': repos_data,
@@ -69,7 +75,8 @@ def sync_profile(handle):
     org.data = data
     org.repos_data = repos_data
     org.save()
-    print("- updated")
+    # print("- updated")
+    return org
 
 
 def fetch_last_email_id(email_id, password, host='imap.gmail.com', folder='INBOX'):
