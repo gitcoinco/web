@@ -23,7 +23,6 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
-from app.rollbar import rollbar
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
 
@@ -493,9 +492,6 @@ def slack(request):
 
                 if not response.get('ok'):
                     context['msg'] = response.get('error', 'Unknown error')
-                    rollbar.report_message(
-                        'Slack invitation failed', 'warning',
-                        extra_data={'slack_response': response})
             except ValidationError:
                 context['msg'] = 'Invalid email'
 
