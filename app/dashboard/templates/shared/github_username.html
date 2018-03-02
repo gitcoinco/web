@@ -22,5 +22,5 @@
                                         <a href="{% url "github:github_auth" %}?redirect_uri={{ request.get_full_path }}">(Login)</a>
                                     {% else %}
                                     {% endif %}
-                                    <input name='githubUsername' id='githubUsername'  class="w-100 form__input" type="text" disabled placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}" />
+                                    <input name='githubUsername' id='githubUsername'  class="form__input" type="text" disabled placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}" />
                                 </div>
