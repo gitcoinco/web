@@ -1,5 +1,5 @@
 //helper functions
-var sidebar_keys = ['experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'idx_status', 'network'];
+var sidebar_keys = ['experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'network'];
 
 var localStorage;
 try {
@@ -46,6 +46,11 @@ var set_sidebar_defaults = function(){
     }
 
 };
+
+var set_filter_header = function() {
+  var filter_status = $("input[name=idx_status]:checked").attr('val-ui');
+  $("#filter").html(filter_status);
+}
 
 var set_modifiers_sentence = function(){
     var _modifiers = [];
@@ -133,7 +138,7 @@ var process_stats = function(results){
     for(var token in currencies_to_value){
         stats += ", " + currencies_to_value[token].toFixed(2) + " " + token;
     }
-    $("#stats").html("("+stats+")");
+    $("#stats").html("( "+ stats +" )");
 }
 
 var refreshBounties = function(){
@@ -149,6 +154,7 @@ var refreshBounties = function(){
 
     save_sidebar_latest();
     set_modifiers_sentence();
+    set_filter_header();
     $('.nonefound').css('display', 'none');
     $('.loading').css('display', 'block');
     $('.bounty_row').remove();

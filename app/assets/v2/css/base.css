@@ -375,19 +375,9 @@ p a {
     text-align: center;
 }
 
-.dashboard .body .bounty_row {
-    color: #212529;
-}
-
 .dashboard .body .bounty_row.local,
 .dashboard .body .bounty_row.ropsten {
     border-left: 1px solid red;
-}
-
-.dashboard .body .bounty_row:hover {
-    background-color: #fafafa;
-    cursor: pointer;
-    text-decoration: none;;
 }
 
 .dashboard .body .sort_option {
@@ -435,16 +425,6 @@ p a {
     background: #eee;
 }
 
-.dashboard #clear {
-    cursor: pointer;
-    margin-top: 30px;
-}
-
-.sidebar_search label {
-    margin-bottom: 0px;
-    cursor: pointer;
-}
-
 #mailchimp {
     overflow: hidden;
 }
@@ -487,32 +467,6 @@ input[type=text].loading {
     background-repeat: no-repeat;
     background-position: right;
     background-size: 30px;
-}
-
-#upper_left {
-    min-height: 140px;
-    background-color: #26cd7f;
-}
-
-#upper_left #sidebar_head {
-    text-align: center;
-    line-height: 1.3em;
-}
-
-#upper_left a {
-    color: white;
-    text-decoration: underline;;
-}
-
-#upper_left img {
-    filter: invert(100%);
-    max-width: 40px;
-    max-height: 40px;
-    display: inline;
-}
-
-#upper_left.disabled {
-    background-color: red;
 }
 
 .blocking_error {
@@ -1341,10 +1295,6 @@ body.slack .justify-content-right img {
 
     .search_bar {
         height: 90px ;
-    }
-
-    .dash-filter-header {
-        font-size: 1rem;
     }
 
     #hero_cta a.btn {

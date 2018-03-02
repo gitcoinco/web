@@ -465,11 +465,11 @@ window.addEventListener('load', function() {
     setTimeout(function(){
         if (typeof web3 =='undefined'){
             $("#upper_left").addClass('disabled');
-            $("#sidebar_head").html("Web3 disabled <br> <img src='/static/v2/images/icons/question.png'>");
-            $("#sidebar_p").html("Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a> <br> <a target=new href='/web3'>What is Metamask and why do I need it?</a>.");
+            $("#sidebar_head").html("<i class='fa fa-question'></i>");
+            $("#sidebar_p").html("<p>Web3 disabled</p><p>Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a> <br> <a target=new href='/web3'>What is Metamask and why do I need it?</a>.</p>");
         } else if (typeof web3 != 'undefined' && typeof web3.eth.accounts[0] =='undefined'){
-            $("#sidebar_head").html("Web3 locked <br> <img src='/static/v2/images/icons/lock.png'>");
-            $("#sidebar_p").html("Please unlock <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>.");
+            $("#sidebar_head").html("<i class='fa fa-lock'></i>");
+            $("#sidebar_p").html("<p>Web3 locked</p><p>Please unlock <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>.<p>");
         } else {
             web3.version.getNetwork((error, netId) => {
                 if(!error){
@@ -517,20 +517,20 @@ window.addEventListener('load', function() {
                             recommended_network = "custom rpc by using ganache-cli or rinkeby"
                         }
                     }
-                    var sidebar_p = "Connected to " + network + ".";
+                    var sidebar_p = "<p>Connected to " + network + ".</p>";
                     if(is_supported_network){
-                        $("#sidebar_head").html("Web3 enabled <br> <img src='/static/v2/images/icons/rss.png'>");
+                        $("#sidebar_head").html("<i class='fa fa-wifi'></i>");
+                        $("#sidebar_p").html("<p>Web3 enabled<p>" + sidebar_p);
                     } else {
                         $("#upper_left").addClass('disabled');
-                        $("#sidebar_head").html("Unsupported network <br> <img src='/static/v2/images/icons/battery_empty.png'>");
-                        sidebar_p += "<br>(try " + recommended_network + " instead)";
+                        $("#sidebar_head").html("<i class='fa fa-battery-empty'></i>");
+                        sidebar_p += "<p>(try " + recommended_network + " instead)</p>";
+                        $("#sidebar_p").html("<p>Unsupported network</p>" + sidebar_p);
                     }
-                    $("#sidebar_p").html(sidebar_p);
                 }
                 else {
                     $("#upper_left").addClass('disabled');
-                    $("#sidebar_head").html("Web3 disabled");
-                    $("#sidebar_p").html("Please install & unlock <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>. ");
+                    $("#sidebar_p").html("<p>Web3 disabled</p><p>Please install & unlock <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>.</p>");
                 }
             })
         }

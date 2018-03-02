@@ -135,6 +135,22 @@ h4, .h4 {
   font-size: 0.9rem !important;
 }
 
+.font-title {
+  font-size: 20px;
+}
+
+.font-subheader {
+  font-size: 16px;
+}
+
+.font-body {
+  font-size: 14px;
+}
+
+.font-caption {
+  font-size: 12px;
+}
+
 .footer .nav-link {
   font-size: 0.8rem !important;
 }
