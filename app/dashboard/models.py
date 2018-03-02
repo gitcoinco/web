@@ -32,7 +32,7 @@ from django.utils import timezone
 import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
-from economy.utils import convert_amount
+from economy.utils import convert_amount, convert_token_to_usdt
 from github.utils import _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, org_name
 from rest_framework import serializers
 from web3 import Web3
@@ -319,6 +319,10 @@ class Bounty(SuperModel):
             return None
 
     @property
+    def token_value_in_usdt(self):
+        return round(convert_token_to_usdt(self.token_name), 2)
+
+    @property
     def desc(self):
         return "{} {} {} {}".format(naturaltime(self.web3_created), self.idx_project_length, self.bounty_type,
                                     self.experience_level)
@@ -537,6 +541,11 @@ class Tip(SuperModel):
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except Exception:
             return None
+
+    # TODO: DRY
+    @property
+    def token_value_in_usdt(self):
+        return round(convert_token_to_usdt(self.token_name), 2)
 
     @property
     def status(self):

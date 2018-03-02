@@ -53,10 +53,10 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
                   'bounty_owner_email', 'bounty_owner_github_username',
                   'fulfillments', 'is_open', 'expires_date', 'raw_data',
                   'metadata', 'current_bounty', 'value_in_eth',
-                  'value_in_usdt', 'status', 'now', 'avatar_url', 'value_true',
-                  'issue_description', 'network', 'org_name', 'pk',
-                  'issue_description_text', 'standard_bounties_id',
-                  'web3_type')
+                  'token_value_in_usdt', 'value_in_usdt', 'status', 'now',
+                  'avatar_url', 'value_true', 'issue_description', 'network',
+                  'org_name', 'pk', 'issue_description_text',
+                  'standard_bounties_id', 'web3_type')
 
     def create(self, validated_data):
         """Handle creation of m2m relationships and other custom operations."""
