@@ -1,4 +1,7 @@
 window.onload = function(){
+
+    $("#bountyFulfillment").parents('.w-100').remove();
+    
     //a little time for web3 injection
     setTimeout(function(){
         var account = web3.eth.accounts[0];

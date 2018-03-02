@@ -111,9 +111,8 @@ def weekly_roundup(to_emails=None):
     if to_emails is None:
         to_emails = []
 
-    subject = "Gitcoin Weekly | ETHDenver Wrap Up Edition! 🌄"
     for to_email in to_emails:
-        html, text = render_new_bounty_roundup(to_email)
+        html, text, subject = render_new_bounty_roundup(to_email)
         from_email = settings.PERSONAL_CONTACT_EMAIL
 
         if not should_suppress_notification_email(to_email):

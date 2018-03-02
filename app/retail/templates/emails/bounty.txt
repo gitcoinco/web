@@ -1,4 +1,3 @@
-
 * Github URL: {{bounty.github_url}}
 * Value: {{bounty.value_true}} {{bounty.token_name}}
 {% if bounty.value_in_usdt %}

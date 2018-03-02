@@ -268,13 +268,16 @@ def bounty_did_change(bounty_id, new_bounty_details):
     network = new_bounty_details['network']
     try:
         old_bounties = Bounty.objects.filter(standard_bounties_id=bounty_id, network=network).order_by('-created_on')
-        did_change = (new_bounty_details != old_bounties.first().raw_data)
+
+        if old_bounties.exists():
+            did_change = (new_bounty_details != old_bounties.first().raw_data)
+        else:
+            did_change = True
     except Exception as e:
         did_change = True
-        print(f"asserting did change because got the following exception: {e}. args; bounty_id: {bounty_id}, network: {network} ")
+        print(f"asserting did change because got the following exception: {e}. args; bounty_id: {bounty_id}, network: {network}")
 
     print('* Bounty did_change:', did_change)
-
     return did_change, old_bounties
 
 
@@ -296,14 +299,13 @@ def handle_bounty_fulfillments(fulfillments, new_bounty):
                 'githubUsername', '')
         if github_username:
             try:
-                kwargs['profile_id'] = Profile.objects.get(
-                    handle=github_username).pk
+                kwargs['profile_id'] = Profile.objects.get(handle=github_username).pk
             except Profile.DoesNotExist:
                 pass
         if fulfillment.get('accepted'):
             kwargs['accepted'] = True
         try:
-            new_fulfillment = BountyFulfillment.objects.create(
+            new_bounty.fulfillments.create(
                 fulfiller_address=fulfillment.get(
                     'fulfiller',
                     '0x0000000000000000000000000000000000000000'),
@@ -314,10 +316,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty):
                     'payload', {}).get('fulfiller', {}).get('name', ''),
                 fulfiller_metadata=fulfillment,
                 fulfillment_id=fulfillment.get('id'),
-                bounty=new_bounty,
                 **kwargs)
-            new_fulfillment.save()
-            new_bounty.fulfillments.add(new_fulfillment)
         except Exception as e:
             logging.error(f'{e} during new fulfillment creation for {new_bounty}')
             continue
@@ -354,11 +353,11 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
     # If there are no fulfillments, accepted is automatically False.
     # Currently we are only considering the latest fulfillment.  Std bounties supports multiple.
     # If any of the fulfillments have been accepted, the bounty is now accepted and complete.
-    accepted = any(
-        [fulfillment.get('accepted') for fulfillment in fulfillments])
+    accepted = any([fulfillment.get('accepted') for fulfillment in fulfillments])
 
     with transaction.atomic():
-        for old_bounty in old_bounties.order_by('created_on'):
+        old_bounties = old_bounties.distinct().order_by('created_on')
+        for old_bounty in old_bounties:
             if old_bounty.current_bounty:
                 submissions_comment_id = old_bounty.submissions_comment
                 interested_comment_id = old_bounty.interested_comment
@@ -400,16 +399,17 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 standard_bounties_id=bounty_id,
                 balance=bounty_details.get('balance'),
                 num_fulfillments=len(fulfillments),
+                override_status=old_bounties.last().override_status if old_bounties.exists() else '',
             )
             new_bounty.fetch_issue_item()
             if not new_bounty.avatar_url:
                 new_bounty.avatar_url = new_bounty.get_avatar_url()
+                new_bounty.save()
 
             # Pull the interested parties off the last old_bounty
             if old_bounties:
-                for interested in old_bounties.order_by('-pk').first().interested.all():
-                    new_bounty.interested.add(interested)
-            new_bounty.save()
+                for interest in old_bounties.first().interested.all():
+                    new_bounty.interested.add(interest)
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
             logging.error(f'{e} encountered during new bounty creation for: {url}')
@@ -485,7 +485,7 @@ def process_bounty_changes(old_bounty, new_bounty):
         bsr.save()
 
     # get json diff
-    json_diff = diff(old_bounty.raw_data, new_bounty.raw_data) if old_bounty else None
+    json_diff = diff(old_bounty.raw_data, new_bounty.raw_data) if (old_bounty and new_bounty) else None
 
     # new bounty
     if not old_bounty or (not old_bounty and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty and new_bounty.is_open):
