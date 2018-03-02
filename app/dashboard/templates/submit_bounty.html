@@ -45,11 +45,11 @@
                             </div>
                             {% include 'shared/network_status.html' %}
                             <div class="w-100">
-                                <label class="form__label" for=issueURL>Issue URL:</label>
+                                <label class="form__label" for=issueURL>Issue URL</label>
                                 <input name='issueURL' id="issueURL" class="w-100 form__input" type="url" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
                             </div>
                             <div class="w-100 mt-2">
-                                <label class="form__label" for="amount">Amount:</label>
+                                <label class="form__label" for="amount">Amount</label>
                                 <div class="form__flex-group">
                                     <input name='amount' id='amount'  class="form__input" type="number" placeholder="Amount" value="{{amount}}" style="width: 20%; display: inline;" />
                                     <div class="form__flex-item">
@@ -59,7 +59,7 @@
                                                 {% include 'svgs/arrow-down.svg' %}
                                             </div>
                                         </div>
-                                        <div class="mt-2" id="usd_amount"></div>
+                                        <small class="form__input-help" id="usd_amount"></small>
                                     </div>
                                 </div>
                             </div>
@@ -68,19 +68,19 @@
                             {% include 'shared/name.html' %}
                             <div id="advanced_container">
                                 <div class="w-100 mt-2">
-                                    <label class="form__label" for="title">Issue Title:</label>
+                                    <label class="form__label" for="title">Issue Title</label>
                                     <input name='title' id="title"  class="w-100 form__input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" />
                                 </div>
                                 <div class="w-100 mt-2">
-                                    <label class="form__label" for="description">Issue Description:</label>
+                                    <label class="form__label" for="description">Issue Description</label>
                                     <textarea name="description" class="w-100 form__input" id="description" placeholder="Add some new feature."></textarea>
                                </div>
                                 <div class="w-100 mt-2">
-                                    <label class="form__label" for="keywords">Keywords:</label>
+                                    <label class="form__label" for="keywords">Keywords</label>
                                     <input name='keywords' id='keywords'  class="w-100 form__input" type="text" placeholder="python, solidity, html, javascript, react (optional)" value="{{keywords}}" />
                                 </div>
                                 <div class="w-100 mt-2">
-                                    <label class="form__label" for="expirationTimeDelta">Expires in:</label>
+                                    <label class="form__label" for="expirationTimeDelta">Expires in</label>
                                         <div class="form__select">
                                             <select class="w-100" name=expirationTimeDelta >
                                                 <option value="86400">1 day</option>
