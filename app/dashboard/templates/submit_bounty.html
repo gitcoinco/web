@@ -51,15 +51,17 @@
                             <div class="w-100 mt-2">
                                 <label class="form__label" for="amount">Amount</label>
                                 <div class="form__flex-group">
-                                    <input name='amount' id='amount'  class="form__input" type="number" placeholder="Amount" value="{{amount}}" style="width: 20%; display: inline;" />
-                                    <div class="form__flex-item">
+                                    <div class="form__amount-wrapper">
+                                        <input name='amount' id='amount'  class="form__input" type="number" placeholder="Amount" value="{{amount}}" />
+                                    </div>
+                                    <div class="form__group-item">
                                         <div class="form__select2">
                                             <select name='deonomination' id='token'></select>
                                             <div class="form__select__icon">
                                                 {% include 'svgs/arrow-down.svg' %}
                                             </div>
                                         </div>
-                                        <small class="form__input-help" id="usd_amount"></small>
+                                        <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
                                     </div>
                                 </div>
                             </div>
@@ -104,7 +106,7 @@
                                     </div>
                                 </div>
                                 <div class="form__group">
-                                    <div class="form__select form__group__item">
+                                    <div class="form__select form__group-item">
                                         <select class="w-100" name="experienceLevel">
                                             <option value="">-- Experience Level -- </option>
                                             <option>Beginner</option>
@@ -115,7 +117,7 @@
                                             {% include 'svgs/arrow-down.svg' %}
                                         </div>
                                     </div>
-                                    <div class="form__select form__group__item">
+                                    <div class="form__select form__group-item">
                                         <select class="w-100" name=projectLength >
                                             <option value="Unknown">-- Project Length -- </option>
                                             <option>Hours</option>
@@ -127,7 +129,7 @@
                                             {% include 'svgs/arrow-down.svg' %}
                                         </div>
                                     </div>
-                                    <div class="form__select form__group__item">
+                                    <div class="form__select form__group-item">
                                         <select class="w-100" name=bountyType >
                                             <option value="">-- Bounty Type -- </option>
                                             <option>Bug</option>
