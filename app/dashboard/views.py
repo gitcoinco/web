@@ -497,7 +497,8 @@ def bounty_details(request):
         'active': 'bounty_details',
         'is_github_token_valid': is_github_token_valid(_access_token),
         'github_auth_url': get_auth_url(request.path),
-        'profile_interested': False
+        'profile_interested': False,
+        "newsletter_headline": "Be the first to know about new funded issues."
     }
 
     if bounty_url:

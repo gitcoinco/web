@@ -19,6 +19,11 @@
 }
 
 @font-face {
+  font-family: "OpenSans Light";
+  src: url('/static/v2/fonts/OpenSans/Light.ttf');
+}
+
+@font-face {
   font-family: "Muli";
   src: url('/static/v2/fonts/Muli/Muli.ttf');
 }
@@ -363,21 +368,6 @@ div.button-pink {
   margin-top: 8px;
   letter-spacing: 0.1em;
 }
-
-#submitter_ul {
-  padding-left: 1em;
-}
-.submitter_icon {
-  text-align: center;
-  margin-top: 20px;
-}
-#submission_row {
-  border: 1px solid #C2C2C2;
-  border-left: 3px solid #0d023b;
-  padding: 5px;
-  margin: 10px;
-}
-
 
 *::-webkit-input-placeholder {
   color: lightgray;

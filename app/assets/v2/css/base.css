@@ -690,7 +690,7 @@ body.bounty_details .col.body{
 }
 
 body.bounty_details .left_details {
-    text-align: right;
+    text-align: center;
 }
 
 body.bounty_details .avatar {
@@ -1175,8 +1175,9 @@ body.bounty_details #title {
         max-width: 300px;
         max-height: 300px;
     }
+
     #bounty_details{
-        margin-left: 15px;
+        margin: 15px;
     }
 
     .profile_details .bounties li div.relationship,
@@ -1195,9 +1196,6 @@ body.bounty_details #title {
         display: none;
     }
 
-    .interior .col-2 {
-        display: none !important;
-    }
     .interior .col-7 {
         margin-left: 5%;
     }
@@ -1275,10 +1273,6 @@ body.bounty_details #title {
 
     .profile_details #hero {
         height: 400px;
-    }
-
-    body.bounty_details .left_details {
-        display: none;
     }
 
     body.bounty_details .right_details {
