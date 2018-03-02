@@ -400,6 +400,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 standard_bounties_id=bounty_id,
                 balance=bounty_details.get('balance'),
                 num_fulfillments=len(fulfillments),
+                override_status=old_bounties.order_by('created_on').last().override_status if old_bounties.order_by('created_on').exists() else '',
             )
             new_bounty.fetch_issue_item()
             if not new_bounty.avatar_url:
