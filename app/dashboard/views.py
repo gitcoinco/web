@@ -447,7 +447,8 @@ def new_bounty(request):
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
         'from_email': request.session.get('email', ''),
-        'from_handle': request.session.get('handle', '')
+        'from_handle': request.session.get('handle', ''),
+        'newsletter_headline': 'Be the first to know about new funded issues.'
     }
 
     return TemplateResponse(request, 'submit_bounty.html', params)
@@ -573,6 +574,7 @@ def profile(request, handle):
     params = {
         'title': 'Profile',
         'active': 'profile_details',
+        'newsletter_headline': 'Be the first to know about new funded issues.',
     }
 
     profile = profile_helper(handle)

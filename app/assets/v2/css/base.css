@@ -914,6 +914,10 @@ body.bounty_details #title {
     -o-filter: grayscale(0%);
 }
 
+.body {
+  padding-bottom: 4em;
+}
+
 .profile_details .dot {
     border-radius: 6px;
     width: 12px;
@@ -950,6 +954,7 @@ body.bounty_details #title {
     font-size: 32px;
     font-weight: bold;
     border-radius: 3px;
+    margin-top: 10px;
 }
 
 .profile_details #stats li span {
@@ -1507,4 +1512,36 @@ body.bounty_details #title {
     .bounty_def h5 {
         font-size: .8rem;
     }
+}
+
+@media (max-width: 576px) {
+  .profile_details #stats {
+    padding-right: 10px;
+  }
+
+  .profile_details .repos {
+    padding-right: 40px;
+  }
+
+  .profile_details .repos li {
+    margin-bottom: 1em;
+  }
+
+  .issue_details {
+    flex-direction: column;
+  }
+
+  .issue_details div {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .bounty_nav {
+    padding-left: 0;
+  }
+
+  .bounty_nav li{
+    display: block;
+  }
 }
