@@ -46,11 +46,13 @@ def add_contributors(repo_data):
 
 
 def get_profile(handle, sync=True):
-    data = get_user(handle) if sync else {}
-    is_error = 'name' not in data.keys() if sync else False
-    if is_error:
-        # print("- error main")
-        return
+    data = {}
+    if sync:
+        data = get_user(handle)
+        is_error = 'name' not in data.keys() 
+        if is_error:
+            # print("- error main")
+            return
 
     repos_data = {}
     if sync:
@@ -69,11 +71,12 @@ def get_profile(handle, sync=True):
             'last_sync_date': timezone.now(),
             'data': data,
             'repos_data': repos_data,
-        },
+            },
         )
     org.handle = handle
-    org.data = data
-    org.repos_data = repos_data
+    if sync:
+        org.data = data
+        org.repos_data = repos_data
     org.save()
     # print("- updated")
     return org
