@@ -473,7 +473,7 @@ def record_user_action(event_name, old_bounty, new_bounty):
         if event_name in ['new_bounty', 'killed_bounty', 'work_done']:
             user_profile = Profile.objects.get(handle=new_bounty.bounty_owner_github_username)
         if event_name in ['work_submitted']:
-            fulfillment = bounty.fulfillments.order_by('pk').first()
+            fulfillment = new_bounty.fulfillments.order_by('pk').first()
             user_profile = Profile.objects.get(handle=fulfillment.fulfiller_github_username)
     except Exception as e:
         logging.error(f'{e} during record_user_action for {new_bounty}')
