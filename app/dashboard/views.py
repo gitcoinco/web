@@ -914,14 +914,13 @@ def redeem_coin(request, shortcode):
             status = 'error'
             message = str(e)
 
-        #http response
+        # http response
         response = {
             'status': status,
             'message': message,
         }
 
         return JsonResponse(response)
-
 
     try:
         coin = CoinRedemption.objects.get(shortcode=shortcode)

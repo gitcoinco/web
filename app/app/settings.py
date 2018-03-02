@@ -19,6 +19,8 @@ import os
 import socket
 from datetime import datetime
 
+from django.http import Http404
+
 import rollbar
 from pytz import utc
 
@@ -230,6 +232,7 @@ try:
             'root': BASE_DIR,
             'patch_debugview': False,
             'branch': 'master',
+            'exception_level_filters': [(Http404, 'warning')]
         }
         MIDDLEWARE.append('rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
 except ImportError:
