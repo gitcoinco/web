@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'marketing',
     'economy',
     'dashboard',
+    'faucet',
     'tdi',
     'gas',
     'github',
@@ -209,6 +210,9 @@ CACHES = {
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_SECONDS = 3600
+
+# Faucet App config
+FAUCET_AMOUNT = .003
 
 # Github
 GITHUB_API_BASE_URL = 'https://api.github.com'

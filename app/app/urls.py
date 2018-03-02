@@ -25,6 +25,7 @@ import dashboard.embed
 import dashboard.helpers
 import dashboard.ios
 import dashboard.views
+import faucet.views
 import linkshortener.views
 import marketing.views
 import retail.emails
@@ -38,6 +39,8 @@ urlpatterns = [
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
+    url(r'^api/v0.1/faucet/githubProfile/(?P<profile>[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38})', faucet.views.github_profile, name='github_profile'),
+    url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(router.urls)),
     url(r'^actions/api/v0.1/', include(router.urls)), # same as active, but not cached in cluodfront
 
@@ -136,6 +139,10 @@ urlpatterns = [
     # token distribution event
     url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),
     url(r'^whitepaper/?', tdi.views.whitepaper_new, name='whitepaper'),
+
+    #faucet views
+    url(r'^faucet/?', faucet.views.faucet, name='faucet'),
+
     # admin views
     url(r'^_administration/?', admin.site.urls, name='admin'),
     url(r'^_administration/email/new_bounty$', retail.emails.new_bounty, name='new_bounty'),
@@ -150,6 +157,8 @@ urlpatterns = [
     url(r'^_administration/email/start_work_expired$', retail.emails.start_work_expired, name='start_work_expired'),
     url(r'^_administration/process_accesscode_request/(.*)$', tdi.views.process_accesscode_request, name='process_accesscode_request'),
     url(r'^_administration/email/new_tip/resend$', retail.emails.resend_new_tip, name='resend_new_tip'),
+    url(r'^_administration/process_faucet_request/(.*)$', faucet.views.process_faucet_request, name='process_faucet_request'),
+
     # marketing views
     url(r'^email/settings/(.*)', marketing.views.email_settings, name='email_settings'),
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),

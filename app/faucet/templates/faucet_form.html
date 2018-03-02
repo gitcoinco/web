@@ -1,0 +1,126 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+</head>
+
+<body class="interior {{active}}">
+    <div class="container-fluid header dash">
+        {% include 'shared/nav_internal.html' %}
+    </div>
+    <div class="row no-gutter">
+        <div class="col-3" style="background: #eee; ">
+            {% include 'shared/current_balance.html' %}
+            {% include 'shared/sidebar_search.html' %}
+        </div>
+
+        <div class="col body">
+            <div class="container-fluid no-gutter">
+            {% include 'shared/bounty_def.html' %}
+                <div class="row font-smaller-2" id="form_container">
+                    {% include 'shared/faucet_no_metamask_error.html' %}
+                    {% include 'shared/faucet_over_balance_error.html' %}
+                    {% include 'shared/faucet_unlock_metamask.html' %}
+                    <div class="col d-flex align-items-center justify-content-center" id="faucet_form">
+                        <div class="d-flex justify-content-center flex-column mt-5" id="faucet_subform">
+                            <div class="w-100" style="text-align: center;">
+                                <h3>Apply for a faucet distrubition</h3>
+                                <div class="w-50" style="margin:auto;font-size:1.07rem;">
+                                  Pursuant to making ethereum and Gitcoin broadly accessible to everyone
+                                  Gitcoin may provide a minimal faucet distribution of ether so you may easily
+                                  claim issues and gain more ether.
+                                </div>
+                                <img class="mt-4" style="width:475px;" src="/static/v2/images/community.jpg">
+                                <div class="w-50" style="margin:auto; font-size: larger;" id="main_form">
+                                    {% include 'shared/faucet_network_status.html' %}
+                                    <input type="hidden" id="currentFaucet" name="currentFaucet" value="{{ faucet_amount }}">
+                                    Please note, all input fields are required. Comment is optional.
+                                    {% csrf_token %}
+                                    <div class="w-100 mt-2">
+                                        <label for="githubProfile" class="float-left">Github Profile:</label>
+                                        <input name='githubProfile' id="githubProfile" class="w-100 gc-round-text-input"
+                                               type="text" placeholder="@you" />
+                                        <span id="githubProfileHelpBlock"
+                                              class="help-block" style="display:hidden;color:red;">
+                                        </span>
+                                    </div>
+                                    <div class="w-100 mt-2">
+                                        <label for="ethAddress" class="float-left">ETH Address:</label>
+                                        <input disabled id="ethAddress" class="w-100 gc-round-text-input"
+                                               type="text" value="{% if ethAddress %}{{ethAddress}}{%endif%}" />
+                                    </div>
+                                    <div class="w-100 mt-2">
+                                        <label for="emailAddress" class="float-left">Email Address:</label>
+                                        <input name='emailAddress' id="emailAddress" class="w-100 gc-round-text-input"
+                                               type="text" placeholder="you@example.com"/>
+                                        <span id="emailAddressHelpBlock"
+                                              class="help-block" style="display:hidden;color:red;">
+                                        </span>
+                                    </div>
+                                    <div class="w-100 mt-2">
+                                        <label for="comment" class="float-left">
+                                          Comment (<span id="charcount">500</span> char left):</label>
+                                        <textarea id="comment" class="w-100 gc-round-text-input"
+                                               rows="4" cols="50"></textarea>
+                                    </div>
+                                    <div class="w-100 mt-2">
+                                        <a class="btn btn-sm btn-info mt-3 mb-1 pulseClick float-right"
+                                           role="button" id="submitFaucet" href="#">Request Faucet</a>
+                                    </div>
+                                </div>
+                                <div id="success_container" class="faucet_response mt-3 w-50" style="margin:auto;">
+                                    <div class="frheader">Congratulations</div>
+                                    <div class="frmessage">You request for a faucet distribution has been received.
+                                    An administrator will review your request shortly and arrange a deposit if approved.
+                                    </div>
+                                </div>
+                                <div id="fail_container" class="faucet_response mt-3 w-50" style="margin:auto;">
+                                    <div class="frheader" style="color:red;">
+                                      Oops. Something went wrong submitting your request. The message returned was :
+                                    </div>
+                                    <div class="frmessage" id="fail_message">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/ga.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+
+</body>
+
+
+<!-- jQuery -->
+<script src="{{STATIC_URL}}v2/js/amounts.js"></script>
+<script src="{{STATIC_URL}}v2/js/abi.js"></script>
+<script src="{{STATIC_URL}}v2/js/tokens.js"></script>
+<script src="{{STATIC_URL}}v2/js/shared.js"></script>
+<script src="{{STATIC_URL}}v2/js/pages/faucet_form.js"></script>
+
+</html>
