@@ -1,5 +1,6 @@
 import email
 import imaplib
+import logging
 import time
 
 from django.conf import settings
@@ -8,6 +9,8 @@ from django.utils import timezone
 import requests
 from dashboard.models import Bounty, Profile
 from github.utils import _AUTH, HEADERS, get_user
+
+logger = logging.getLogger(__name__)
 
 
 def ellipses(data, _len=75):
@@ -30,7 +33,7 @@ def add_contributors(repo_data):
     params = {}
     url = repo_data['contributors_url']
     response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
-    if response.status_code == 204: # no content
+    if response.status_code == 204:  # no content
         return repo_data
 
     response_data = response.json()
@@ -57,19 +60,19 @@ def sync_profile(handle):
     repos_data = [add_contributors(repo_data) for repo_data in repos_data]
 
     # store the org info in postgres
-    org, _ = Profile.objects.get_or_create(
-        handle=handle,
-        defaults = {
-            'last_sync_date': timezone.now(),
-            'data': data,
-            'repos_data': repos_data,
-        },
-        )
-    org.handle = handle
-    org.data = data
-    org.repos_data = repos_data
-    org.save()
-    print("- updated")
+    try:
+        profile, created = Profile.objects.update_or_create(
+            handle=handle,
+            defaults={
+                'last_sync_date': timezone.now(),
+                'data': data,
+                'repos_data': repos_data,
+            })
+        print("Profile:", profile, "- created" if created else "- updated")
+    except Exception as e:
+        logger.error(e)
+        return None
+    return profile
 
 
 def fetch_last_email_id(email_id, password, host='imap.gmail.com', folder='INBOX'):
@@ -78,13 +81,13 @@ def fetch_last_email_id(email_id, password, host='imap.gmail.com', folder='INBOX
         mailbox.login(email_id, password)
     except imaplib.IMAP4.error:
         return None
-    response, last_message_set_id=mailbox.select(folder)
-    if response!='OK':
+    response, last_message_set_id = mailbox.select(folder)
+    if response != 'OK':
         return None
     return last_message_set_id[0].decode('utf-8')
 
 
-def fetch_mails_since_id( email_id, password,since_id=None, host='imap.gmail.com', folder='INBOX'):
+def fetch_mails_since_id(email_id, password, since_id=None, host='imap.gmail.com', folder='INBOX'):
     # searching via id becuase imap does not support time based search and has only date based search
     mailbox = imaplib.IMAP4_SSL(host)
     try:
