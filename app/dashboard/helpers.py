@@ -408,7 +408,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
             # Pull the interested parties off the last old_bounty
             if old_bounties:
-                for interest in old_bounties.first().interested.all():
+                for interest in old_bounties.last().interested.all():
                     new_bounty.interested.add(interest)
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
