@@ -466,7 +466,8 @@ def new_bounty(request):
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
         'from_email': request.session.get('email', ''),
-        'from_handle': request.session.get('handle', '')
+        'from_handle': request.session.get('handle', ''),
+        'newsletter_headline': 'Be the first to know about new funded issues.'
     }
 
     return TemplateResponse(request, 'submit_bounty.html', params)
@@ -515,7 +516,8 @@ def bounty_details(request):
         'active': 'bounty_details',
         'is_github_token_valid': is_github_token_valid(_access_token),
         'github_auth_url': get_auth_url(request.path),
-        'profile_interested': False
+        'profile_interested': False,
+        "newsletter_headline": "Be the first to know about new funded issues."
     }
 
     if bounty_url:
@@ -548,12 +550,10 @@ def bounty_details(request):
 def profile_helper(handle):
     """Define the profile helper."""
     try:
-        profile = get_profile(handle)
+        profile = get_profile(handle, sync=False)
     except Profile.DoesNotExist:
-        get_profile(handle)
-        try:
-            profile = get_profile(handle)
-        except Profile.DoesNotExist:
+        profile = get_profile(handle, sync=True)
+        if not profile:
             raise Http404
     except Profile.MultipleObjectsReturned as e:
         # Handle edge case where multiple Profile objects exist for the same handle.
@@ -594,6 +594,7 @@ def profile(request, handle):
     params = {
         'title': 'Profile',
         'active': 'profile_details',
+        'newsletter_headline': 'Be the first to know about new funded issues.',
     }
 
     profile = profile_helper(handle)
@@ -935,14 +936,13 @@ def redeem_coin(request, shortcode):
             status = 'error'
             message = str(e)
 
-        #http response
+        # http response
         response = {
             'status': status,
             'message': message,
         }
 
         return JsonResponse(response)
-
 
     try:
         coin = CoinRedemption.objects.get(shortcode=shortcode)
