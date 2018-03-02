@@ -3,11 +3,11 @@ import imaplib
 import logging
 import time
 
-from django.conf import settings
 from django.utils import timezone
 
 import requests
-from dashboard.models import Bounty, Profile
+import rollbar
+from dashboard.models import Profile
 from github.utils import _AUTH, HEADERS, get_user
 
 logger = logging.getLogger(__name__)
@@ -53,6 +53,7 @@ def sync_profile(handle):
     is_error = 'name' not in data.keys()
     if is_error:
         print("- error main")
+        rollbar.report_message('Failed to fetch github username', 'warning', extra_data=data)
         return None
 
     repos_data = get_user(handle, '/repos')
@@ -95,7 +96,7 @@ def fetch_mails_since_id(email_id, password, since_id=None, host='imap.gmail.com
     except imaplib.IMAP4.error:
         return None
     mailbox.select(folder)
-    resp,all_ids = mailbox.search(None, "ALL")
+    _, all_ids = mailbox.search(None, "ALL")
     all_ids = all_ids[0].decode("utf-8").split()
     print(all_ids)
     if since_id:
@@ -103,8 +104,8 @@ def fetch_mails_since_id(email_id, password, since_id=None, host='imap.gmail.com
     else:
         ids = all_ids
     emails = {}
-    for id in ids:
-        response, content = mailbox.fetch(str(id), '(RFC822)')
+    for fetched_id in ids:
+        _, content = mailbox.fetch(str(fetched_id), '(RFC822)')
         emails[str(id)] = email.message_from_string(content[0][1])
     return emails
 
