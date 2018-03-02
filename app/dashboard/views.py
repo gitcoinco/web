@@ -576,7 +576,7 @@ def profile(request, handle):
     params = {
         'title': 'Profile',
         'active': 'profile_details',
-        'newsletter_headline': "Be the first to know about new funded issues.",
+        'newsletter_headline': 'Be the first to know about new funded issues.',
     }
 
     profile = profile_helper(handle)
