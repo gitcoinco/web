@@ -14,6 +14,7 @@ from github.utils import post_issue_comment, post_issue_comment_reaction
 GITCOINBOT_APP_ID = settings.GITCOINBOT_APP_ID
 SECRET_KEYSTRING = settings.SECRET_KEYSTRING
 
+
 def help_text():
     help_text_response = "I am @{}, a bot that facilitates gitcoin bounties.\n".format(settings.GITHUB_API_USER) + \
     "\n" +\

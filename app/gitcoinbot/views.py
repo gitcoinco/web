@@ -1,37 +1,35 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import json
 
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
-import gitcoinbot.gitcoinbotActions as gitcoinBot
+from gitcoinbot.actions import determine_response
 
 
 @csrf_exempt
 def payload(request):
-    # parse request.body bytes into json and parse out relevant info and
-    # respond with appropriate message
+    '''Parse request.body bytes from github into json, retrieve relevant info
+    and respond with appropriate message from gitcoinbot actions
+    '''
 
     if request.method == "POST":
-        requestJSON = json.loads(request.body.decode('utf8'))
-        if (requestJSON['action'] == 'deleted') or requestJSON['sender']['login'] == 'gitcoinbot[bot]':
+        request_json = json.loads(request.body.decode('utf8'))
+        if (request_json['action'] == 'deleted') or request_json['sender']['login'] == 'gitcoinbot[bot]':
             # Gitcoinbot should not process these actions
             return HttpResponse(status=204)
         else:
-            issueURL = requestJSON['comment']['url']
-            owner = requestJSON['repository']['owner']['login']
-            repo = requestJSON['repository']['name']
-            comment_id = requestJSON['comment']['id']
-            comment_text = requestJSON['comment']['body']
-            issue_id = requestJSON['issue']['number']
-            sender = requestJSON['sender']['login']
-            installation_id = requestJSON['installation']['id']
+            issueURL = request_json['comment']['url']
+            owner = request_json['repository']['owner']['login']
+            repo = request_json['repository']['name']
+            comment_id = request_json['comment']['id']
+            comment_text = request_json['comment']['body']
+            issue_id = request_json['issue']['number']
+            sender = request_json['sender']['login']
+            installation_id = request_json['installation']['id']
 
-            gitcoinBot.determine_response(owner, repo, comment_id,
-                                          comment_text, issue_id,
-                                          installation_id)
+            determine_response(owner, repo, comment_id,comment_text, issue_id,
+                installation_id)
 
             return HttpResponse('Gitcoinbot Responded')
