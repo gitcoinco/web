@@ -1,5 +1,5 @@
 //helper functions
-var sidebar_keys = ['experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'network'];
+var sidebar_keys = ['experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'network', 'idx_status'];
 
 var localStorage;
 try {
@@ -52,6 +52,18 @@ var set_filter_header = function() {
   $("#filter").html(filter_status);
 }
 
+var getFilters = function() {
+  var _filters = [];
+  for(var i = 0; i < sidebar_keys.length; i++) {
+      var key = sidebar_keys[i];
+      $.each($("input[name=" + key + "]:checked"), function() {
+        if($(this).attr('val-ui'))
+          _filters.push($(this).attr('val-ui'));
+      });
+  };
+  console.log(_filters);
+}
+
 var set_modifiers_sentence = function(){
     var _modifiers = [];
     for(var i=0;i<sidebar_keys.length;i++){
@@ -84,7 +96,13 @@ var get_search_URI = function(){
     }
     for(var i=0;i<sidebar_keys.length;i++){
         var key = sidebar_keys[i];
-        var val = $("input[name="+key+"]:checked").val()
+        var filters= [];
+        $.each($("input[name=" + key + "]:checked"), function() {
+            if($(this).val()) {
+              filters.push($(this).val());
+            }
+        });
+        var val = filters.toString();
 
         //special casing. TODO: clean this up
         if(key == 'bounty_filter'){
@@ -153,8 +171,9 @@ var refreshBounties = function(){
     window.history.replaceState(currentState, title, '/explorer?q='+keywords);
 
     save_sidebar_latest();
-    set_modifiers_sentence();
+    // set_modifiers_sentence();
     set_filter_header();
+    getFilters();
     $('.nonefound').css('display', 'none');
     $('.loading').css('display', 'block');
     $('.bounty_row').remove();
@@ -300,6 +319,12 @@ $(document).ready(function(){
 
     //sidebar filters
     $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e){
+        refreshBounties();
+        e.preventDefault();
+    });
+
+    //sidebar filters
+    $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
         refreshBounties();
         e.preventDefault();
     });

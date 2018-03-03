@@ -29,19 +29,19 @@
   margin-bottom: 0;
 }
 
+#upper_left.disabled {
+  background-color: #ff3232;
+}
+
 /* Refactor needed  */
 #upper_left a {
-    color: white;
-    text-decoration: underline;
+  color: black;
+  text-decoration: underline;
 }
 
 #upper_left img {
-    filter: invert(100%);
-    max-width: 40px;
-    max-height: 40px;
-    display: inline;
-}
-
-#upper_left.disabled {
-    background-color: red;
+  filter: invert(100%);
+  max-width: 40px;
+  max-height: 40px;
+  display: inline;
 }

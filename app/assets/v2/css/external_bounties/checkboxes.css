@@ -1,3 +1,62 @@
+/* Using checkbox
+  <div class="checkbox_container">
+    <input name="network" id="foobar" type="checkbox" />
+    <span class="checkbox"></span>
+    <div class="filter-label">
+      <label for=foobar>gitcoin</label>
+    </div>
+  </div>
+*/
+
+.checkbox_container input {
+  position: absolute;
+  opacity: 0;
+  height: 20px;
+  width: 100%;
+  z-index: 1;
+}
+
+.checkbox {
+  position: relative;
+  display: inline-block !important;
+  left: 0px;
+  top: 3px;
+  height: 15px;
+  width: 15px;
+  background-color: #F2F6F9;
+  border: 1px solid black;
+  border-radius: 2px;
+}
+
+.checkbox_container input:checked ~ .checkbox {
+  background-color: black;
+}
+
+.checkbox:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox_container input:checked ~ .checkbox:after {
+    display: block;
+}
+
+.checkbox_container .checkbox:after {
+    left: 4px;
+    top: 0px;
+    width: 5px;
+    height: 11px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+
+/* Below needs refactoring */
+
 .checkbox {
   display: flex;
 }
