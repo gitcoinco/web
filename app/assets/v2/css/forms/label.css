@@ -5,5 +5,5 @@ label {
 
 .form__label {
   font-size: 12px;
-  margin: .5rem;
+  margin: .5rem 0;
 }
