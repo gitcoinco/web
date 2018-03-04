@@ -48,7 +48,7 @@ var set_sidebar_defaults = function(){
 };
 
 var set_filter_header = function() {
-  var filter_status = $("input[name=idx_status]:checked").attr('val-ui');
+  var filter_status = $("input[name=idx_status]:checked").attr('val-ui') ? $("input[name=idx_status]:checked").attr('val-ui') : 'All';
   $("#filter").html(filter_status);
 }
 
@@ -63,30 +63,6 @@ var getFilters = function() {
   };
   $(".filter-tags").html(_filters);
 }
-
-var set_modifiers_sentence = function(){
-    var _modifiers = [];
-    for(var i=0;i<sidebar_keys.length;i++){
-        var key = sidebar_keys[i];
-        var val = $("input[name="+key+"]:checked").attr('val-ui');
-        if(val != ''){
-            _modifiers.push(val);
-        }
-    };
-    var sentence = _modifiers.join(" ") + " Funded Issues";
-    var keywords = $("#keywords").val();
-    var plural = 's';
-    if(keywords.split(',').length == 2){
-        plural = '';
-    }
-    if(keywords){
-        var encoded_keywords = encodeURIComponent(keywords.split(',').join(" ")).split('%20').join(" ");
-        sentence += ' w. keyword'+plural+' ' + encoded_keywords;
-    }
-
-
-    $("#modifiers").html(sentence);
-};
 
 var get_search_URI = function(){
     var uri = '/api/v0.1/bounties/?';
@@ -171,7 +147,6 @@ var refreshBounties = function(){
     window.history.replaceState(currentState, title, '/explorer?q='+keywords);
 
     save_sidebar_latest();
-    // set_modifiers_sentence();
     set_filter_header();
     getFilters();
     $('.nonefound').css('display', 'none');

@@ -10,10 +10,12 @@
 
 .search-area {
   display: inline-block;
+  margin-top: 20px;
 }
 
 .filter-tags {
-  margin-top: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .filter-tag {
@@ -24,6 +26,7 @@
   border-radius: 5px;
   font-size: 10px;
   padding: 5px;
+  display: inline-block;
 }
 
 .filter-tag i {

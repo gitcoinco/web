@@ -514,7 +514,7 @@ window.addEventListener('load', function() {
                     if(network == 'mainnet'){
                         if(document.location.href.indexOf("https://gitcoin.co") == -1){
                             is_supported_network = false;
-                            recommended_network = "custom rpc by using ganache-cli or rinkeby"
+                            recommended_network = "custom rpc via ganache-cli / rinkeby"
                         }
                     }
                     var sidebar_p = "<p>Connected to " + network + ".</p>";
@@ -524,7 +524,7 @@ window.addEventListener('load', function() {
                     } else {
                         $("#upper_left").addClass('disabled');
                         $("#sidebar_head").html("<i class='fa fa-battery-empty'></i>");
-                        sidebar_p += "<p>(try " + recommended_network + " instead)</p>";
+                        sidebar_p += "<p>(try " + recommended_network + ")</p>";
                         $("#sidebar_p").html("<p>Unsupported network</p>" + sidebar_p);
                     }
                 }

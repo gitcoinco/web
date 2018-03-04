@@ -31,6 +31,16 @@
 
 #upper_left.disabled {
   background-color: #ff3232;
+  color: white;
+}
+
+#upper_left.disabled p {
+  font-size: 10px !important;
+}
+
+#upper_left.disabled #sidebar_head i{
+  color: #ff3232;
+  background-color: white;
 }
 
 /* Refactor needed  */

@@ -2,9 +2,9 @@ body {
   font-family: "Muli";
 }
 
-
 .title-row {
   display: flex;
+  margin-top: 2em;
   padding-bottom: 5px;
   border-bottom: 2px solid #3E24FB;
 }
@@ -67,4 +67,25 @@ body {
 
 .tags {
   display: flex;
+}
+
+@media (max-width: 767px) {
+  #filter {
+    padding-left: 20px;
+  }
+
+  .bounty_row {
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+  }
+
+  .bounty-info {
+    top: 10px;
+    font-size: 10px;
+    text-align: left;
+  }
+
+  #stats {
+    font-size: 10px;
+  }
 }

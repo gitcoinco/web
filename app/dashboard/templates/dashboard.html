@@ -32,20 +32,20 @@
       {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-      <div class="col-2" id="sidebar_container" style="background: #F2F6F9;">
+      <div class="col-12 col-md-2" id="sidebar_container" style="background: #F2F6F9;">
         {% include 'shared/current_balance.html' %}
         {% include 'shared/sidebar_search.html' %}
       </div>
 
-      <div class="col-10 body">
+      <div class="col-12 col-md-10 body">
         <div class="container-fluid" id="bounties">
           {% include 'shared/search_bar.html' %}
           <div class="row mt-2 mb-2">
-            <div class="offset-1 col-10 title-row">
+            <div class="col-12 offset-md-1 col-md-10 title-row">
               <div class="col-4">
                 <span id="filter" class="font-title"></span>
               </div>
-              <div class="bounty-info col-8">
+              <div class="col-8 bounty-info">
                 <span id="modifiers">Funded Issues</span>
                 <span id=stats class="font-body"></span>
               </div>
@@ -80,7 +80,7 @@
                 <div class="experience [[:experience_level]]">&nbsp;</div>
             </div>
           [[/if]]
-        <div class="col-8 d-flex flex-column">
+        <div class="col-12 col-md-8 d-flex flex-column">
           <div class="bounty-detail">
             <div class="title font-subheader">
               [[if network != 'mainnet']]
@@ -98,7 +98,7 @@
             </div>
           </div>
         </div>
-        <div class="tags font-caption col-2 align-items-center">
+        <div class="col-12 col-md-2 tags font-caption align-items-center">
           <div class="tag token">
             <p>
               [[:rounded_amount]]
