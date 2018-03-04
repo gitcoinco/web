@@ -1,0 +1,31 @@
+.search_bar {
+  min-height: 100px;
+  background-color: #F2F6F9;
+}
+
+.save_search {
+  color: #000;
+  font-family: "Muli-SemiBold";
+}
+
+.search-area {
+  display: inline-block;
+}
+
+.filter-tags {
+  margin-top: 20px;
+}
+
+.filter-tag {
+  margin: 2px;
+  text-transform: lowercase;
+  background-color: black;
+  color: white !important;
+  border-radius: 5px;
+  font-size: 10px;
+  padding: 5px;
+}
+
+.filter-tag i {
+  margin-left: 8px;
+}

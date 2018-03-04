@@ -58,10 +58,10 @@ var getFilters = function() {
       var key = sidebar_keys[i];
       $.each($("input[name=" + key + "]:checked"), function() {
         if($(this).attr('val-ui'))
-          _filters.push($(this).attr('val-ui'));
+          _filters.push("<a class=filter-tag>" + $(this).attr('val-ui') + "<i class='fa fa-times'></i></a>");
       });
   };
-  console.log(_filters);
+  $(".filter-tags").html(_filters);
 }
 
 var set_modifiers_sentence = function(){

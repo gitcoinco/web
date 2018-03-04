@@ -73,19 +73,19 @@ div, p, a, span {
     overflow-x: hidden;
 }
 
-.search_bar, .bounty_def{
+.bounty_def{
     background-color: #eee;
     height: 140px;
     padding-top: 10px;
 }
 
-.search_bar, .bounty_def #mce-EMAIL{
+.bounty_def #mce-EMAIL{
     display: inline;
     text-transform: uppercase;
     font-size: 14px;
 }
 
-.search_bar, .bounty_def #mc-embedded-subscribe{
+.bounty_def #mc-embedded-subscribe{
     display: inline;
     text-transform: uppercase;
 }
@@ -1291,10 +1291,6 @@ body.slack .justify-content-right img {
     }
     .search_bar .sort_row {
         display: none !important;
-    }
-
-    .search_bar {
-        height: 90px ;
     }
 
     #hero_cta a.btn {
