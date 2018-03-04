@@ -17,10 +17,6 @@
 }
 
 .sidebar_search .options {
-  margin-bottom: 10px;
-}
-
-.sidebar_search .options {
   font-size: 14px;
 }
 
@@ -42,10 +38,13 @@
 }
 
 .sidebar_search .col {
-  padding-bottom: 10px;
   border-bottom: 1px solid #D3D6E2;
 }
 
 .sidebar_search .col:last-child {
   border-bottom: none;
+}
+
+.accordion:after {
+  color: #5B5C5C;
 }

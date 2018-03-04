@@ -408,3 +408,30 @@ div.button-pink {
   /* IE 10+ */
   color: lightgray;
 }
+
+.accordion {
+  cursor: pointer;
+  width: 100%;
+  outline: none;
+  transition: 0.4s;
+}
+
+.panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+.accordion:after {
+  margin-right: 2px;
+  margin-top: 1px;
+  font-family: FontAwesome;
+  font-weight: bold;
+  font-size: 15px;
+  content: '\f107';
+  float: right;
+}
+
+.active:after {
+  content: "\f106";
+}

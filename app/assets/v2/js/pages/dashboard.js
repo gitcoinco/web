@@ -298,7 +298,13 @@ $(document).ready(function(){
     $(".dashboard #clear").click(function(e){
         for(var i=0;i<sidebar_keys.length;i++){
             var key = sidebar_keys[i];
-            var val = $("input[name="+key+"][value=any]").prop("checked", true);
+            var tag = ($("input[name=" + key + "][value]"));
+            for(var j = 0; j < tag.length; j++) {
+              if(tag[j].value == 'any')
+                $("input[name="+key+"][value=any]").prop("checked", true);
+              else
+                $("input[name=" + key + "][value=" + tag[j].value + "]").prop("checked", false);
+            }
         };
         refreshBounties();
         e.preventDefault();
