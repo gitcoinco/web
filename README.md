@@ -233,21 +233,24 @@ _bountydetails function returns the following fields:
 
 ## With Docker
 
-```
+```shell
 git clone https://github.com/gitcoinco/web.git
 cd web
 cp app/app/local_settings.py.dist app/app/local_settings.py
 docker-compose up -d
 ```
+
 Navigate to `http://0.0.0.0:8000/`.
+
+*Note: Running `docker-compose logs --tail=50 -f <optional container_name>` will follow all container output in the active terminal window, while specifying a container name will follow that specific container's output. `--tail` is optional.*
+Check out the [Docker Compose CLI Reference](https://docs.docker.com/compose/reference/) for more information.
 
 ## Without Docker
 
-```
+```shell
 git clone https://github.com/gitcoinco/web.git
 cd web/app
 cp app/local_settings.py.dist app/local_settings.py
-
 ```
 
 You will need to edit the `app/local_settings.py` file with your local settings. Look for config items that are marked `#required`.
