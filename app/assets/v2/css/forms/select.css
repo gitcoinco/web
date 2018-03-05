@@ -14,6 +14,7 @@
   height: 100%;
   justify-content: center;
   position: absolute;
+  pointer-events: none;
   right: 0;
   top: 0;
   width: 40px;
