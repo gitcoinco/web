@@ -24,6 +24,21 @@
   margin-bottom: 2px;
 }
 
+.option label:before, .option label:after {
+  width: 16px;
+  height: 16px;
+  top: 3px;
+}
+
+.option label {
+  padding-left: 20px;
+}
+
+.option label:after {
+  border: 1px solid #000;
+  background: #F2F6F9;
+}
+
 .sidebar_search label, .sidebar_search #clear {
   cursor: pointer;
 }
