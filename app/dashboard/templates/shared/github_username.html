@@ -17,10 +17,10 @@
 {% endcomment %}
 
                                 <div class="w-100 mt-2">
-                                    <label for=githubUsername>Github Username:</label>
+                                    <label class="form__label" for="githubUsername">Github Username</label>
                                     {% if not github_handle %}
                                         <a href="{% url "github:github_auth" %}?redirect_uri={{ request.get_full_path }}">(Login)</a>
                                     {% else %}
                                     {% endif %}
-                                    <input name='githubUsername' id='githubUsername'  class="w-100 gc-round-text-input" type="text" disabled="disabled" placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}" />
+                                    <input name='githubUsername' id='githubUsername'  class="form__input" type="text" disabled placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}" />
                                 </div>
