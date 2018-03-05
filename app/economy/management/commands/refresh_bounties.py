@@ -54,9 +54,9 @@ class Command(BaseCommand):
                 # are marked as current_bounty=False
                 old_bounties = Bounty.objects.filter(
                     github_url=bounty.github_url,
-                    title=bounty.title,
                     current_bounty=True,
                     pk__lt=bounty.pk,
+                    network=bounty.network,
                 ).exclude(pk=bounty.pk).order_by('-created_on')
                 for old_bounty in old_bounties:
                     old_bounty.current_bounty = False
