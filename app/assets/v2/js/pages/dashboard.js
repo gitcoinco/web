@@ -52,6 +52,27 @@ var set_filter_header = function() {
   $("#filter").html(filter_status);
 }
 
+// TODO: Refactor function :
+// Deselect option 'any' when another filter is selected
+// Selects option 'any' when no filter is applied
+// TODO : Disable other filters when 'any' is selected
+var disableAny = function () {
+  for(var i = 0; i < sidebar_keys.length; i++) {
+    var key = sidebar_keys[i];
+    var tag = ($("input[name=" + key + "][value]"));
+    tag.map(function(index, input) {
+      if($(input).prop('checked')) {
+        if(input.value == 'any')
+          $("input[name=" + key + "][value=any]").prop("checked", true);
+        else if(input.value != 'any')
+          $("input[name=" + key + "][value=any]").prop("checked", false);
+        }
+    });
+    if($('input[name='+ key +']:checked').length == 0)
+      $("input[name=" + key + "][value=any]").prop("checked", true);
+  };
+}
+
 var getFilters = function() {
   var _filters = [];
   for(var i = 0; i < sidebar_keys.length; i++) {
@@ -148,6 +169,7 @@ var refreshBounties = function(){
 
     save_sidebar_latest();
     set_filter_header();
+    disableAny();
     getFilters();
     $('.nonefound').css('display', 'none');
     $('.loading').css('display', 'block');
