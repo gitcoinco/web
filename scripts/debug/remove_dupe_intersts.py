@@ -1,4 +1,5 @@
 from dashboard.models import Bounty
+
 mock = True
 current_bounties = Bounty.objects.filter(current_bounty=True).order_by('-pk')
 for current_bounty in current_bounties:

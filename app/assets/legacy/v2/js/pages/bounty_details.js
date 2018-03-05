@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
-
 var _truthy = function(val) {
   if (!val) {
     return false;
@@ -14,13 +13,13 @@ var address_ize = function(key, val, result) {
   if (!_truthy(val)) {
     return [ null, null ];
   }
-  return [ key, '<a target="_blank" href=https://etherscan.io/address/' + val + '>' + val + '</a>' ];
+  return [ key, '<a target=new href=https://etherscan.io/address/' + val + '>' + val + '</a>' ];
 };
 var gitcoin_ize = function(key, val, result) {
   if (!_truthy(val)) {
     return [ null, null ];
   }
-  return [ key, '<a target="_blank" href=https://gitcoin.co/profile/' + val + '>@' + val.replace('@', '') + '</a>' ];
+  return [ key, '<a target=new href=https://gitcoin.co/profile/' + val + '>@' + val.replace('@', '') + '</a>' ];
 };
 var email_ize = function(key, val, result) {
   if (!_truthy(val)) {
@@ -77,7 +76,7 @@ var heads = {
 var callbacks = {
   'github_url': link_ize,
   'value_in_token': function(key, val, result) {
-    return [ 'amount', Math.round((parseInt(val) / Math.pow(10, document.decimals)) * 1000) / 1000 + ' ' + result['token_name'] ];
+    return [ 'amount', '$' + Math.round((parseInt(val) / Math.pow(10, document.decimals)) * 1000) / 1000 + '/' + result['token_name'] ];
   },
   'avatar_url': function(key, val, result) {
     return [ 'avatar', '<a href="/profile/' + result['org_name'] + '"><img class=avatar src="' + val + '"></a>' ];
@@ -110,7 +109,7 @@ var callbacks = {
     var ui_body = val;
 
     if (ui_body.length > max_len) {
-      ui_body = ui_body.substring(0, max_len) + '... <a target="_blank" href="' + result['github_url'] + '">See More</a> ';
+      ui_body = ui_body.substring(0, max_len) + '... <a target=new href="' + result['github_url'] + '">See More</a> ';
     }
     ui_body = converter.makeHtml(ui_body);
 
@@ -318,9 +317,9 @@ window.addEventListener('load', function() {
 
     // Find interest information
     pull_interest_list(result['pk'], function(is_interested) {
-      // actions
-      var actions = [];
 
+        // actions
+      var actions = [];
       var enabled;
 
       if (result['github_url'].substring(0, 4) == 'http') {
@@ -398,7 +397,7 @@ window.addEventListener('load', function() {
       }
       if (result['status'] == 'submitted') {
         enabled = isBountyOwner(result);
-        var entryAcceptRejectSubmission = {
+        var entryAcceptReject = {
           href: '/legacy/funding/process?source=' + result['github_url'],
           text: 'Accept/Reject Submission',
           parent: 'right_actions',
@@ -408,7 +407,7 @@ window.addEventListener('load', function() {
 
         };
 
-        actions.push(entryAcceptRejectSubmission);
+        actions.push(entryAcceptReject);
       }
 
       render_actions(actions);
@@ -476,7 +475,7 @@ var render_fulfillments = function(result) {
   var submission;
   var submitter_tmpl;
   var submitter_html;
-  // Add submitter list and accept buttons
+    // Add submitter list and accept buttons
 
   if (result['status'] == 'submitted') {
     var enabled = isBountyOwner(result);
