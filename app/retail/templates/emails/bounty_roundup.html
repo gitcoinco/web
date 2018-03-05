@@ -41,6 +41,12 @@
         font-size: normal;;
         margin-bottom: 5px;
     }
+    #highlights {
+        
+    }
+    #highlights tr td {
+        font-size: 12px;
+    }
 
 </style>
 
@@ -49,47 +55,46 @@
 <table>
     <tr>
         <td id="welcome" colspan=6 valign="top" style='padding: 5px 10px 0px;'>
-            <p>
-                Hi folks 👋
-            </p>
-            <p>
-            The Gitcoin  Team has made another hire for the core team with the <a href="https://medium.com/gitcoin/alisa-march-joins-gitcoin-core-team-1e1a2853a553">addition of Alisa March as a Product Design Lead</a>.  Alisa has done a few design bounties already, and we are elated to have her on the Gitcoin Team. <strong>Welcome, Alisa!</strong>
-            </p>
-            <p>
-                This week, we've reorganized the bounty flow to make it more clear whats being worked on and what's not.  
-            </p>  
-            <ol>
-                <li>
-                    <strong>Open</strong>: Bounty is funded, and available for a new developer to come tackle. 
-                </li>
-                <li>
-                    <strong>Work Started</strong> Bounty is funded, Coding has been started by at least one developer.
-                </li>
-                <li>
-                    <strong>Work Submitted</strong>: Bounty is funded, Code has been completed, and bounty hunters have *submitted* a claim
-                </li>
-                <li>
-                    <strong>Work Done</strong>: The funder has accepted the work submission.  The staked funds have been paid out.
-                </li>
-            </ol>
-            <p>
-                With the addition of Alisa to team, we are looking to tighten up the usability across the community.  If you've got feedback, <a href="https://gitcoin.co/slack">we'd love to hear it</a>.
-            </p>
+
+            {{ intro | safe}}
+
             <a href="https://twitter.com/owocki" style="float:right; padding-left: 10px;">
                 <img src="{% static "v2/images/avatar.png" %}" width="77" height="137">
             </a>
             <p>
-                See you on slack, or on the community livestream today at 3pm MST ! 🤖
+                👋
                 <br>
-                ✌️ <a href="https://twitter.com/owocki">@owocki</a>
+                <a href="https://twitter.com/owocki">@owocki</a>
             </p>
         </td>
     </tr>
 </table>
 
+{% if highlights %}
+
+<h3>Last Week's Highlights</h3>
+<h5>Community Members growing open source🌳</h5>
+
+    <table id="highlights">
+        <tr >
+            <td style='padding: 5px 10px 0px; text-align: left; width: 540px;'>
+                {% for highlight in highlights %}
+                    <li>
+                        <a href="https://gitcoin.co/profile/{{highlight.who}}">{{highlight.who}}</a> - {{highlight.what}}
+                        {% if highlight.link %}
+                            <a href="{{highlight.link}}">{{highlight.link_copy}}</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
+    <hr>
+
+{% endif %}
 
 <h3>Open Funded Issues</h3>
-<h5>Push Open Source Forward ⚡️ Make Extra Cash 💰</h5>
+<h5>Grow Open Source ⚡️ Make Some ETH 💰</h5>
 
 <br>
 

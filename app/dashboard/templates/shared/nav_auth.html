@@ -31,6 +31,16 @@
                       <div class="dropdown-divider"></div>
                       <a class="dropdown-item" href="{% url "profile" %}{{github_handle}}"><img src="{% static "v2/images/icons/anchor.png" %}" width=20px height=20px>  View Profile</a>
                       <a class="dropdown-item" href="{% url "email_settings" "" %}"><img src="{% static "v2/images/icons/mail.png" %}" width=20px height=20px>  Email Settings</a>
+
+                      {% if unclaimed_tips %}
+
+                          <div class="dropdown-divider"></div>
+                          {% for tip in unclaimed_tips %}
+                            <a class="dropdown-item" href="{{tip.url}}"><img src="{% static "v2/images/icons/cards_diamonds.png" %}" width=20px height=20px> Claim ${{tip.value_in_usdt}} Tip</a>
+                          {% endfor %}
+
+                      {% endif %}
+
                       <div class="dropdown-divider"></div>
                       <a class="dropdown-item" href="{% url "github:github_logout" %}?redirect_uri={{ request.get_full_path }}"><img src="{% static "v2/images/icons/lock_open.png" %}" width=20px height=20px>  Log Out</a>
                     </div>

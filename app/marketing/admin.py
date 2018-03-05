@@ -32,6 +32,7 @@ class GeneralAdmin(admin.ModelAdmin):
 class EmailSubscriberAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['email', 'source']
+    list_display = ['email', 'created_on', 'source']
 
 
 class SlackUserAdmin(admin.ModelAdmin):

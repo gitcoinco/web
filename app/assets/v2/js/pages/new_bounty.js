@@ -46,7 +46,7 @@ $(document).ready(function(){
     }
     $('input[name=issueURL]').focus();
 
-    $('select[name=deonomination').select2();
+    $('select[name=deonomination]').select2();
 
     $('#advancedLink a').click(function(e){
         e.preventDefault();
@@ -144,6 +144,14 @@ $(document).ready(function(){
             _alert({ message: "Please enter an amount." });
             isError = true;
         }
+        if(metadata.issueTitle == ''){
+            _alert({ message: "Please enter an title." });
+            isError = true;
+        }
+        if(metadata.issueDescription == ''){
+            _alert({ message: "Please enter an description." });
+            isError = true;
+        }
         if(isError){
             unloading_button($(this));
             return;
@@ -195,7 +203,6 @@ $(document).ready(function(){
             // Need to pass the bountydetails as well, since I can't grab it from the 
             // Standard Bounties contract.
             dataLayer.push({'event': 'fundissue'});
-            sync_web3(issueURL);  // Writes the bounty URL to the database
             
             // update localStorage issuePackage
             var issuePackage = JSON.parse(localStorage[issueURL]);

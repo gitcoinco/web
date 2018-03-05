@@ -30,19 +30,13 @@
         {% include 'shared/nav_internal.html' %}
     </div>
     <div class="row no-gutter">
-        <div class="col-2" style="background: #eee; ">
-            {% include 'shared/current_balance.html' %}
-            {% include 'shared/sidebar_search.html' %}
-        </div>
-
-        <div class="col body">
+        <div class="col-12 body">
             <div class="container-fluid no-gutter">
-            {% include 'shared/bounty_def.html' %}
                 <div class="row font-smaller-2" id="form_container">
                     {% include 'shared/no_metamask_error.html' %}
                     {% include 'shared/zero_balance_error.html' %}
                     {% include 'shared/unlock_metamask.html' %}
-                    <div class="col d-flex align-items-center justify-content-center" id="primary_form">
+                    <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
                         <div class="d-flex justify-content-center flex-column mt-5 w-50" id="primary_subform">
                             {% include 'shared/bounty_nav.html' with active_item=1 %}
                             <div class="w-100" style="text-align: center;">
@@ -51,108 +45,119 @@
                             </div>
                             {% include 'shared/network_status.html' %}
                             <div class="w-100">
-                                <label for=issueURL>Issue URL:</label>
-                                <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
+                                <label class="form__label" for=issueURL>Issue URL</label>
+                                <input name='issueURL' id="issueURL" class="w-100 form__input" type="url" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
                             </div>
-                            <div class="w-100 mt-2 d-flex ">
-                                <div class="w-50 mt-2 mr-3 d-flex flex-column">
-                                <label for=amount>Amount:</label>
+                            <div class="w-100 mt-2">
+                                <label class="form__label" for="amount">Amount</label>
+                                <div class="form__flex-group">
+                                    <div class="form__amount-wrapper">
+                                        <input name='amount' id='amount'  class="form__input" type="number" placeholder="Amount" value="{{amount}}" />
+                                    </div>
+                                    <div class="form__group-item">
+                                        <div class="form__select2">
+                                            <select name='deonomination' id='token'></select>
+                                            <div class="form__select__icon">
+                                                {% include 'svgs/arrow-down.svg' %}
+                                            </div>
+                                        </div>
+                                        <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="w-100 mt-0">
-                                <input name='amount' id='amount'  class="gc-round-text-input" type="text" placeholder="Amount" value="{{amount}}" style="width: 20%; display: inline;" />
-                                <select name='deonomination' id='token' class="btn btn-sm btn-outline-dark" style="width: 77%;  display: inline;">
-                                </select>
-                                <div class="mt-1" id="usd_amount"></div>
                             </div>
                             {% include 'shared/github_username.html' %}
-                            <div class="w-100 mt-2">
-                                <label for=notificationEmail>Notification Email:</label>
-                                <input name='notificationEmail' id='notificationEmail'  class="w-100 gc-round-text-input" type="text" placeholder="you@domain.co (optional, but recommended for notifications)" value="{% if from_email %}{{ from_email }}{% elif email %}{{ email }}{% else %}{{notificationEmail}}{% endif %}" />
-                            </div>
-                            <div class="w-100 mt-2">
-                                <label for=fullName>Full Name:</label>
-                                <input name='fullName' id='fullName'  class="w-100 gc-round-text-input" type="text" placeholder="John Smith (optional)" value="" />
-                            </div>
-                            <div id="advancedLink" class="mt-2">
-                                <a href="#">Advanced ⬇ </a>
-                            </div>
-                            <div id="advanced_container" style="display: none;">
+                            {% include 'shared/notification_email.html' %}
+                            {% include 'shared/name.html' %}
+                            <div id="advanced_container">
                                 <div class="w-100 mt-2">
-                                    <label for=title>Issue Title:</label>
-                                    <input name='title' id="title"  class="w-100 gc-round-text-input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" />
+                                    <label class="form__label" for="title">Issue Title</label>
+                                    <input name='title' id="title"  class="w-100 form__input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" />
                                 </div>
                                 <div class="w-100 mt-2">
-                                    <label for="description">Issue Description:</label>
-                                    <textarea name="description" class="w-100 gc-round-text-form" id="description" placeholder="Add some new feature."></textarea>
+                                    <label class="form__label" for="description">Issue Description</label>
+                                    <textarea name="description" class="w-100 form__input" id="description" placeholder="Add some new feature."></textarea>
                                </div>
                                 <div class="w-100 mt-2">
-                                    <label for=keywords>Keywords:</label>
-                                    <input name='keywords' id='keywords'  class="w-100 gc-round-text-input" type="text" placeholder="python, solidity, html, javascript, react (optional)" value="{{keywords}}" />
+                                    <label class="form__label" for="keywords">Keywords</label>
+                                    <input name='keywords' id='keywords'  class="w-100 form__input" type="text" placeholder="python, solidity, html, javascript, react (optional)" value="{{keywords}}" />
                                 </div>
                                 <div class="w-100 mt-2">
-                                    <label for=expirationTimeDelta>Expires in:</label>
-                                        <select class="w-100 btn btn-sm btn-outline-dark" name=expirationTimeDelta >
-                                            <option value="86400">1 day</option>
-                                            <option value="259200">3 days</option>
-                                            <option value="604800">1 week</option>
-                                            <option value="1209600">2 weeks</option>
-                                            <option value="2592000">1 month</option>
-                                            <option value="7776000">3 months</option>
-                                            <option value="15552000">6 months</option>
-                                            <option value="31536000" selected="">1 year</option>
-                                            <option value="9999999999">Never</option>
-                                        </select>
+                                    <label class="form__label" for="expirationTimeDelta">Expires in</label>
+                                        <div class="form__select">
+                                            <select class="w-100" name=expirationTimeDelta >
+                                                <option value="86400">1 day</option>
+                                                <option value="259200">3 days</option>
+                                                <option value="604800">1 week</option>
+                                                <option value="1209600">2 weeks</option>
+                                                <option value="2592000">1 month</option>
+                                                <option value="7776000">3 months</option>
+                                                <option value="15552000">6 months</option>
+                                                <option value="31536000" selected="">1 year</option>
+                                                <option value="9999999999">Never</option>
+                                            </select>
+                                            <div class="form__select__icon">
+                                                {% include 'svgs/arrow-down.svg' %}
+                                            </div>
+                                        </div>
                                 </div>
                                 <div class="w-100 mt-2 d-flex ">
                                     <div class="w-50 mt-2 mr-3 d-flex flex-column">
-                                        <label>Issue Details</label>
+                                        <label class="form__label">Issue Details</label>
                                     </div>
                                 </div>
-                                <div class="w-100 mt-0 d-flex ">
-                                    <div class="w-50 mt-2 mr-3 d-flex flex-column">
-                                        <select class="w-100 btn btn-sm btn-outline-dark" name=experienceLevel >
-                                            <option value="">-- Experience Level -- </option>
+                                <div class="form__group">
+                                    <div class="form__select form__group-item">
+                                        <select class="w-100" name="experienceLevel">
+                                            <option value="">Experience Level</option>
                                             <option>Beginner</option>
                                             <option>Intermediate</option>
                                             <option>Advanced</option>
                                         </select>
+                                        <div class="form__select__icon">
+                                            {% include 'svgs/arrow-down.svg' %}
+                                        </div>
                                     </div>
-                                    <div class="w-50 mt-2 mr-3 d-flex flex-column">
-                                        <select class="w-100 btn btn-sm btn-outline-dark" name=projectLength >
-                                            <option value="Unknown">-- Project Length -- </option>
+                                    <div class="form__select form__group-item">
+                                        <select class="w-100" name=projectLength >
+                                            <option value="Unknown">Project Length</option>
                                             <option>Hours</option>
                                             <option>Days</option>
                                             <option>Weeks</option>
                                             <option>Months</option>
                                         </select>
+                                        <div class="form__select__icon">
+                                            {% include 'svgs/arrow-down.svg' %}
+                                        </div>
                                     </div>
-                                    <div class="w-50 mt-2 mr-3 d-flex flex-column">
-                                        <select class="w-100 btn btn-sm btn-outline-dark" name=bountyType >
-                                            <option value="">-- Bounty Type -- </option>
+                                    <div class="form__select form__group-item">
+                                        <select class="w-100" name=bountyType >
+                                            <option value="">Bounty Type</option>
                                             <option>Bug</option>
                                             <option>Feature</option>
                                             <option>Security</option>
                                             <option>Other</option>
                                         </select>
+                                        <div class="form__select__icon">
+                                            {% include 'svgs/arrow-down.svg' %}
+                                        </div>
                                     </div>
                                 </div>
 
                             </div>
                             <div class="w-100 mt-2 terms_container">
-                                <input name='terms' id='terms' type="checkbox" value=1 />
-                                <label for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>:</label>
+                                <div class="form__checkbox">
+                                    <input name='terms' id='terms' type="checkbox" value=1 />
+                                    <label class="form__label" for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>:</label>
+                                </div>
                             </div>
                             {% include 'shared/metamask_estimate.html' %}
-                            <div class="w-100 mt-2">
-                                <a class="btn btn-sm btn-info mt-3 mb-1 pulseClick float-right" role="button" id="submitBounty" href="#">Fund Issue</a>
+                            <div class="form__footer form__footer--right">
+                                <button class="button button--primary" type="submit" id="submitBounty">Fund Issue</button>
+                                <br />
+                                <a target=new href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
                             </div>
-                            <div class="w-100 mb-5 mt-1">
-                                <a class="float-right" target=new href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
-                            </div>
-
+                            {% include 'shared/newsletter.html' %}
                         </div>
-
                     </div>
                 </div>
             </div>

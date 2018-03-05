@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -34,7 +34,9 @@ class Command(BaseCommand):
         for bounty in Bounty.objects.all():
             keywords.append(bounty.org_name)
             keywords.append(bounty.bounty_owner_github_username)
-            keywords.append(bounty.fulfiller_github_username)
+            for fulfiller in bounty.fulfillments.all():
+                if fulfiller.fulfiller_github_username:
+                    keywords.append(fulfiller.fulfiller_github_username)
             if bounty.keywords:
                 for keyword in bounty.keywords.split(','):
                     keywords.append(keyword)

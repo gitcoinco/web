@@ -21,7 +21,7 @@ from datetime import date, datetime, timedelta
 
 from django.test import TestCase
 
-from dashboard.models import Bounty, Interest, Profile, Tip
+from dashboard.models import Bounty, BountyFulfillment, Interest, Profile, Tip
 from economy.models import ConversionRate
 
 
@@ -40,7 +40,12 @@ class DashboardModelsTest(TestCase):
 
     def test_bounty(self):
         """Test the dashboard Bounty model."""
-        bounty = Bounty(
+        fulfiller_profile = Profile.objects.create(
+            data={},
+            handle='fred',
+            email='fred@localhost'
+        )
+        bounty = Bounty.objects.create(
             title='foo',
             value_in_token=3,
             token_name='ETH',
@@ -48,16 +53,25 @@ class DashboardModelsTest(TestCase):
             github_url='https://github.com/gitcoinco/web',
             token_address='0x0',
             issue_description='hello world',
-            fulfiller_github_username='fred',
             bounty_owner_github_username='flintstone',
             is_open=False,
             accepted=True,
             expires_date=datetime(2008, 11, 30),
-            fulfiller_address="0x0000000000000000000000000000000000000000",
             idx_project_length=5,
+            project_length='Months',
             bounty_type='Feature',
             experience_level='Intermediate',
+            raw_data={},
         )
+        bounty_fulfillment = BountyFulfillment.objects.create(
+            fulfiller_address='0x0000000000000000000000000000000000000000',
+            fulfiller_email='',
+            fulfiller_github_username='fred',
+            fulfiller_name='Fred',
+            bounty=bounty,
+            profile=fulfiller_profile,
+        )
+
         assert str(bounty) == 'foo 3 ETH 2008-10-31 00:00:00'
         assert bounty.url == '/funding/details?url=https://github.com/gitcoinco/web'
         assert bounty.title_or_desc == 'foo'
@@ -75,6 +89,8 @@ class DashboardModelsTest(TestCase):
         assert 'ago 5 Feature Intermediate' in bounty.desc
         assert bounty.is_legacy is False
         assert bounty.get_github_api_url() == 'https://api.github.com/repos/gitcoinco/web'
+        assert bounty_fulfillment.profile.handle == 'fred'
+        assert bounty_fulfillment.bounty.title == 'foo'
 
     def test_tip(self):
         """Test the dashboard Tip model."""
@@ -87,7 +103,7 @@ class DashboardModelsTest(TestCase):
             expires_date=date.today() + timedelta(days=1),
             tokenAddress='0x0000000000000000000000000000000000000000',
         )
-        assert str(tip) == '(net) - PENDING  7 ETH to fred,  created: today, expires: tomorrow'
+        assert str(tip) == '(net) - PENDING 7 ETH to fred, created: today, expires: tomorrow'
         assert tip.get_natural_value() == 7e-18
         assert tip.value_in_eth == 7
         assert tip.value_in_usdt == 14
@@ -133,7 +149,7 @@ class DashboardModelsTest(TestCase):
         assert profile.stats == [
             ('newbie', 'Status'),
             (1, 'Total Funded Issues'),
-            (0, 'Open Funded Issues'),
+            (1, 'Open Funded Issues'),
             ('0x', 'Loyalty Rate'),
         ]
         assert profile.github_url == 'https://github.com/gitcoinco'

@@ -18,7 +18,7 @@
 from django.conf.urls import handler400, handler403, handler404, handler500, include, url
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
-from django.urls import path
+from django.urls import path, re_path
 
 import credits.views
 import dashboard.embed
@@ -42,11 +42,20 @@ urlpatterns = [
     url(r'^api/v0.1/faucet/githubProfile/(?P<profile>[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38})', faucet.views.github_profile, name='github_profile'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(router.urls)),
+    url(r'^actions/api/v0.1/', include(router.urls)), # same as active, but not cached in cluodfront
+
     # dashboard views
+
+    # Dummy External Bounties index
+    # url(r'^external_bounties/?', dashboard.views.external_bounties, name='external_bounties'),
+    # url(r'^external_bounty/?', dashboard.views.external_bounties_show, name="external_bounties_show"),
+
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
+    url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
+    
     url(r'^bounty/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
     url(r'^funding/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_funding'),
     url(r'^bounty/process/?', dashboard.views.process_bounty, name='process_bounty'),
@@ -73,6 +82,8 @@ urlpatterns = [
     url(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
     url(r'^gas/?', dashboard.views.gas, name='gas'),
+    url(r'^coin/redeem/(.*)/?', dashboard.views.redeem_coin, name='redeem'),
+
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
     url(r'^sync/get_issue_title?', dashboard.helpers.title, name='helpers_title'),
@@ -119,6 +130,7 @@ urlpatterns = [
     url(r'^medium/?', retail.views.medium, name='medium'),
     url(r'^github/?', retail.views.github, name='github'),
     url(r'^youtube/?', retail.views.youtube, name='youtube'),
+    re_path(r'^web3/?', retail.views.web3, name='web3'),
 
     # link shortener
     url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),

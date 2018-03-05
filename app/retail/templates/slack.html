@@ -33,33 +33,31 @@
             <div class="col-1 pb-4">
             </div>
             <div class="col-6 pr-2 pl-2 pb-4 form_container">
-                <div class="">
+                <div>
                     <div style="max-width: 500px; margin: 0px auto;">
-                    <h4><i class="fa fa-slack" aria-hidden="true" style="position:relative; top: 2px; margin-right: 5px;"></i>Gitcoin Slack Community</h4>
-                    <h4 class="font-smaller-1 pt-0">({{num_slack}} online)</h4>
-                    {% if msg %}
-                        <p style="background-color: #fee856; padding: 5px 10px;">
-                            {{msg | safe}}
-                        </p>
-                    {% endif %}
-                    <br>
-                    <h3>Sign In</h3>
-                    <p>
-                        Already a member?  <a href="https://gitcoincommunity.slack.com">Sign in here</a>.
-                    </p>
-                    <br>
-                    <h3>Sign up</h3>
-                    <form id=whitepaper  method=POST>
-                        <div class="form-group">
-                            <label for="email">Email address</label>
-                            <input type=text name=email class=form-control placeholder='you@somewhere'  value="{% if email %}{{email}}{%endif%}" required>
-                            <small id="emailHelp" class="form-text text-muted">Gitcoin will never share your email with anyone else.</small>
+                        <h4>
+                            <i class="fa fa-slack" aria-hidden="true" style="position:relative; top: 2px; margin-right: 5px;"></i>Gitcoin Slack Community
+                        </h4>
+                        <h4 class="font-smaller-1 pt-0">({{num_slack}} online)</h4>
+                        {% if msg %}
+                            <p style="background-color: #fee856; padding: 5px 10px;">
+                                {{msg | safe}}
+                            </p>
+                        {% endif %}
+                        <form class="mt-5" id="whitepaper" method="POST">
+                            <div class="form-group">
+                                <label class="form__label" for="email">Email address</label>
+                                <input type="text" name="email" class="form__input" placeholder='you@somewhere'  value="{% if email %}{{email}}{%endif%}" required>
+                                <small id="emailHelp" class="form__input-help">Gitcoin will never share your email with anyone else.</small>
+                            </div>
+                            {% csrf_token %}
+                            <input class='button button--primary joinslack mt-2' type='submit' name='submit' value="Sign Up">
+                        </form>
+                        <div class="text-center mt-5">
+                            <p>Already a member? <a href="https://gitcoincommunity.slack.com">Sign in here</a>.</p>
                         </div>
-                        {% csrf_token %}
-                        <input class='btn btn-sm btn-success joinslack' type='submit' name='submit' value="Sign Up">
-                    </form>
 
-                    {% endblock %}
+                        {% endblock %}
 
                     </div>
                 </div>

@@ -1,4 +1,7 @@
 window.onload = function(){
+
+    $("#bountyFulfillment").parents('.w-100').remove();
+    
     //a little time for web3 injection
     setTimeout(function(){
         var account = web3.eth.accounts[0];
@@ -14,7 +17,7 @@ window.onload = function(){
             var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
             $("#gasLimit").addClass('loading');
             method.estimateGas(
-                issueURL, 
+                issueURL,
                 function(errors,result){
                     $("#gasLimit").removeClass('loading');
                     console.log(errors,result);
@@ -83,7 +86,7 @@ window.onload = function(){
                     unloading_button($('.submitBounty'));
                     return;
                 } else {
-                    var bountyAmount = result[0].toNumber(); 
+                    var bountyAmount = result[0].toNumber();
                     bountyDetails = [bountyAmount, result[1], result[2], result[3]];
                     var fromAddress = result[2];
                     var claimeeAddress = result[3];
@@ -113,7 +116,7 @@ window.onload = function(){
                             _alert({ message: "Submitted transaction to web3." }, 'info');
                             setTimeout(function(){
                                 mixpanel.track("Process Bounty Success", {});
-                                document.location.href= "/funding/details?url="+issueURL;
+                                document.location.href= "/legacy/funding/details?url="+issueURL;
                             },1000);
 
                         };
@@ -138,13 +141,13 @@ window.onload = function(){
 
                     }
                     var success_callback = function(gas, gasLimit){
-                        var params = {from :account, 
-                                gas:web3.toHex(gas), 
-                                gasLimit: web3.toHex(gasLimit), 
-                                gasPrice:web3.toHex($("#gasPrice").val() * 10**9), 
+                        var params = {from :account,
+                                gas:web3.toHex(gas),
+                                gasLimit: web3.toHex(gasLimit),
+                                gasPrice:web3.toHex($("#gasPrice").val() * 10**9),
                             };
-                        method.sendTransaction(issueURL, 
-                            params, 
+                        method.sendTransaction(issueURL,
+                            params,
                             _callback);
                     };
                     estimateGas(issueURL, method, success_callback, failure_calllback, _callback);

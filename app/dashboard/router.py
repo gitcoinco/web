@@ -21,22 +21,58 @@ from datetime import datetime
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
 
-from .models import Bounty
+from .models import Bounty, BountyFulfillment
+
+
+class BountyFulfillmentSerializer(serializers.ModelSerializer):
+    """Handle serializing the BountyFulfillment object."""
+
+    class Meta:
+        """Define the bounty fulfillment serializer metadata."""
+
+        model = BountyFulfillment
+        fields = ('fulfiller_address', 'fulfiller_email',
+                  'fulfiller_github_username', 'fulfiller_name',
+                  'fulfillment_id', 'accepted', 'profile', 'created_on')
 
 
 # Serializers define the API representation.
 class BountySerializer(serializers.HyperlinkedModelSerializer):
+    """Handle serializing the Bounty object."""
+
+    fulfillments = BountyFulfillmentSerializer(many=True)
 
     class Meta:
+        """Define the bounty serializer metadata."""
+
         model = Bounty
-        fields = ("url", "created_on", "modified_on", "title", "web3_created", "value_in_token",
-                  "token_name", "token_address", "bounty_type", "project_length",
-                  "experience_level", "github_url", "github_comments", "bounty_owner_address", "bounty_owner_email",
-                  "bounty_owner_github_username", "fulfiller_address", "fulfiller_email",
-                  "fulfiller_github_username", "is_open", "expires_date", "raw_data", "metadata",
-                  "fulfiller_metadata", "current_bounty", 'value_in_eth', 'value_in_usdt', 'status',
-                  'now', 'avatar_url', 'value_true', 'issue_description', 'network', 'org_name',
-                  'pk', 'issue_description_text', 'standard_bounties_id', 'web3_type')
+        fields = ('url', 'created_on', 'modified_on', 'title', 'web3_created',
+                  'value_in_token', 'token_name', 'token_address',
+                  'bounty_type', 'project_length', 'experience_level',
+                  'github_url', 'github_comments', 'bounty_owner_address',
+                  'bounty_owner_email', 'bounty_owner_github_username',
+                  'fulfillments', 'is_open', 'expires_date', 'raw_data',
+                  'metadata', 'current_bounty', 'value_in_eth',
+                  'token_value_in_usdt', 'value_in_usdt', 'status', 'now',
+                  'avatar_url', 'value_true', 'issue_description', 'network',
+                  'org_name', 'pk', 'issue_description_text',
+                  'standard_bounties_id', 'web3_type')
+
+    def create(self, validated_data):
+        """Handle creation of m2m relationships and other custom operations."""
+        fulfillments_data = validated_data.pop('fulfillments')
+        bounty = Bounty.objects.create(**validated_data)
+        for fulfillment_data in fulfillments_data:
+            BountyFulfillment.objects.create(bounty=bounty, **fulfillment_data)
+        return bounty
+
+    def update(self, validated_data):
+        """Handle updating of m2m relationships and other custom operations."""
+        fulfillments_data = validated_data.pop('fulfillments')
+        bounty = Bounty.objects.update(**validated_data)
+        for fulfillment_data in fulfillments_data:
+            BountyFulfillment.objects.update(bounty=bounty, **fulfillment_data)
+        return bounty
 
 
 # ViewSets define the view behavior.

@@ -18,93 +18,77 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-</head>
-
-<body class="interior {{active}}">
+  </head>
+  <body class="interior {{active}}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
-        {% include 'shared/nav_internal.html' %}
+      {% include 'shared/nav_internal.html' %}
     </div>
     <div class="row no-gutter">
-        <div class="col-2" style="background: #eee; ">
-            {% include 'shared/current_balance.html' %}
-            {% include 'shared/sidebar_search.html' %}
-        </div>
-
-        <div class="col body">
-            <div class="container-fluid no-gutter">
-            {% include 'shared/bounty_def.html' %}
-                <div class="row font-smaller-2" id="form_container">
-                    {% include 'shared/no_metamask_error.html' %}
-                    {% include 'shared/zero_balance_error.html' %}
-                    {% include 'shared/unlock_metamask.html' %}
-                    <div class="col d-flex align-items-center justify-content-center" id="primary_form">
-                        <div class="d-flex justify-content-center flex-column mt-5 w-50" id="primary_subform">
-                            {% include 'shared/bounty_nav.html' with active_item=3 %}
-                            <div class="w-100" style="text-align: center;">
-                                <h3>Submit Work</h3>
-                                <img src="{% static "v2/images/prime.png" %}">
-                            </div>
-                            {% include 'shared/network_status.html' %}
-                            <div class="w-100">
-                                <label for=issueURL>Issue URL:</label>
-                                <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
-                            </div>
-                            {% include 'shared/github_username.html' %}
-                            <div class="w-100 mt-2">
-                                <label for=notificationEmail>Notification Email:</label>
-                                <input name='notificationEmail' id='notificationEmail'  class="w-100 gc-round-text-input" type="text" placeholder="you@domain.co (optional, but recommended for notifications)" value="{% if email %}{{ email }}{% else %}{{notificationEmail}}{% endif %}" />
-                            </div>
-                            <div class="w-100 mt-2">
-                                <label for=fullName>Full Name:</label>
-                                <input name='fullName' id='fullName'  class="w-100 gc-round-text-input" type="text" placeholder="John Smith (optional)" value="" />
-                            </div>
-                            <div class="w-100 mt-2 terms_container">
-                                <input name='terms' id='terms' type="checkbox" value=1 />
-                                <label for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>:</label>
-                            </div>
-                            {% include 'shared/metamask_estimate.html' %}
-                            <div class="w-80 mt-2">
-                                <a class="btn btn-sm btn-info mt-3 mb-0 pulseClick float-right" role="button" id="submitBounty" href="#">Submit Work</a>
-                            </div>
-                            <div class="w-80 mb-5 mt-1">
-                                <a class="float-right" target=new href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
-                            </div>
-
-                        </div>
-
+      <div class="col-12 body">
+        <div class="container-fluid no-gutter">
+          <div class="row font-smaller-2" id="form_container">
+            {% include 'shared/no_metamask_error.html' %}
+            {% include 'shared/zero_balance_error.html' %}
+            {% include 'shared/unlock_metamask.html' %}
+            <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
+              <div class="d-flex justify-content-center flex-column mt-5 w-50" id="primary_subform">
+                {% include 'shared/bounty_nav.html' with active_item=3 %}
+                <div class="w-100" style="text-align: center;">
+                  <h3>Submit Work</h3>
+                  <img src="{% static "v2/images/prime.png" %}">
+                </div>
+                {% include 'shared/network_status.html' %}
+                <div class="w-100">
+                  <label class="form__label" for="issueURL">Issue URL</label>
+                  <input name='issueURL' id="issueURL" class="form__input" type="text" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
+                </div>
+                {% include 'shared/github_username.html' %}
+                {% include 'shared/notification_email.html' %}
+                {% include 'shared/name.html' %}
+                <div class="w-100 mt-2 terms_container">
+                    <div class="form__checkbox">
+                        <input name='terms' id='terms' type="checkbox" value=1 />
+                        <label class="form__label" for="terms">I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>:</label>
                     </div>
                 </div>
+                {% include 'shared/metamask_estimate.html' %}
+                <div class="form__footer form__footer--right">
+                    <button class="button button--primary" role="button" id="submitBounty" href="#">Submit Work</button>
+                    <br />
+                    <a target=new href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
+    </div>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
+  </body>
 
-</body>
-
-
-<!-- jQuery -->
-{% if is_legacy %}
-<script src="{% static "legacy/v2/js/abi.js" %}"></script>
-<script src="{% static "legacy/v2/js/tokens.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
-<script src="{% static "legacy/v2/js/pages/claim_bounty.js" %}"></script>
-<script src="{% static "legacy/v2/js/shared.js" %}"></script>
-{% else %}
-<script src="{% static "v2/js/abi.js" %}"></script>
-<script src="{% static "v2/js/tokens.js" %}"></script>
-<script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
-<script src="{% static "v2/js/pages/fulfill_bounty.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
-{% endif %}
-<script src="{% static "v2/js/ipfs-api.js" %}"></script>
-<script src="{% static "v2/js/ipfs.js" %}"></script>
+  <!-- jQuery -->
+  {% if is_legacy %}
+  <script src="{% static "legacy/v2/js/abi.js" %}"></script>
+  <script src="{% static "legacy/v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "legacy/v2/js/pages/claim_bounty.js" %}"></script>
+  <script src="{% static "legacy/v2/js/shared.js" %}"></script>
+  {% else %}
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/pages/fulfill_bounty.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  {% endif %}
+  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
 
 </html>
