@@ -19,7 +19,8 @@
 
 .search-area {
   display: inline-block;
-  margin-top: 20px;
+  margin-top: 15px;
+  margin-left: 10px;
 }
 
 .filter-tags {
@@ -32,9 +33,9 @@
   text-transform: lowercase;
   background-color: black;
   color: white !important;
-  border-radius: 5px;
+  border-radius: 2px;
   font-size: 10px;
-  padding: 5px;
+  padding: 4px 5px;
   display: inline-block;
 }
 
@@ -45,5 +46,6 @@
 @media (max-width: 767px) {
   .search-area {
     margin-bottom: 10px;
+    margin-left: 0px;
   }
 }

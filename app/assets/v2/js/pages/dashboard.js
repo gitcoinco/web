@@ -392,7 +392,7 @@ $(document).ready(function(){
             e.preventDefault();
         }
     });
-    $("body").delegate("#save a.btn-darkBlue", 'click', function(e){
+    $("body").delegate("#save a", 'click', function(e){
         emailSubscribe();
         e.preventDefault();
     });

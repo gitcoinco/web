@@ -468,6 +468,7 @@ window.addEventListener('load', function() {
             $("#sidebar_head").html("<i class='fa fa-question'></i>");
             $("#sidebar_p").html("<p>Web3 disabled</p><p>Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a> <br> <a target=new href='/web3'>What is Metamask and why do I need it?</a>.</p>");
         } else if (typeof web3 != 'undefined' && typeof web3.eth.accounts[0] =='undefined'){
+            $("#upper_left").addClass('disabled');
             $("#sidebar_head").html("<i class='fa fa-lock'></i>");
             $("#sidebar_p").html("<p>Web3 locked</p><p>Please unlock <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>.<p>");
         } else {

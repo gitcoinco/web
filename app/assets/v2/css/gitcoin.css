@@ -432,6 +432,6 @@ div.button-pink {
   float: right;
 }
 
-.active:after {
+.accordion.active:after {
   content: "\f106";
 }

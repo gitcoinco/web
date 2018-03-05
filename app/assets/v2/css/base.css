@@ -12,6 +12,11 @@ div, p, a, span {
 .nav_avatar{
     cursor: pointer;
 }
+
+.navbar {
+  font-family: "futura-pt", "Futura";
+}
+
 .navbar-nav .nav-link {
     border-radius: 2px;
 }
