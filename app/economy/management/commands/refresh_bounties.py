@@ -50,6 +50,10 @@ class Command(BaseCommand):
 
             if bounty.current_bounty:
 
+                # IMPORTANT -- if you change the criteria for deriving old_bounties
+                # make sure it is updated in dashboard.helpers/bounty_did_change
+                # AND
+                # refresh_bounties/handle
                 #stopgap to make sure that older versions of this bounty
                 # are marked as current_bounty=False
                 old_bounties = Bounty.objects.filter(
