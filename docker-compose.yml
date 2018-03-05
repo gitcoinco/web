@@ -34,6 +34,7 @@ services:
       - .:/code
     ports:
       - "8000:8000"
+      - "5330:5330"
     depends_on:
       - db
     stdin_open: true

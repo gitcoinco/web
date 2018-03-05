@@ -33,6 +33,7 @@ from django.views.decorators.http import require_GET, require_POST
 from app.utils import ellipses, sync_profile
 from dashboard.models import (
     Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
+    ExternalBounty
 )
 from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
 from dashboard.utils import process_bounty as web3_process_bounty
@@ -374,57 +375,92 @@ def dashboard(request):
 def external_bounties(request):
     """Handle Dummy External Bounties index page."""
 
-    bounties = [
-        {
-            "title": "Add Web3 1.0 Support",
-            "source": "www.google.com",
-            "crypto_price": 0.3,
-            "fiat_price": 337.88,
-            "crypto_label": "ETH",
-            "tags": ["javascript", "python", "eth"],
-        },
-        {
-            "title": "Simulate proposal execution and display execution results",
-            "source": "gitcoin.com",
-            "crypto_price": 1,
-            "fiat_price": 23.23,
-            "crypto_label": "BTC",
-            "tags": ["ruby", "js", "btc"]
-        },
-        {
-            "title": "Build out Market contract explorer",
-            "crypto_price": 22,
-            "fiat_price": 203.23,
-            "crypto_label": "LTC",
-            "tags": ["ruby on rails", "ios", "mobile", "design"]
-        },
-    ]
-
+    # bounties = [
+    #     {
+    #         "title": "Add Web3 1.0 Support",
+    #         "source": "www.google.com",
+    #         "crypto_price": 0.3,
+    #         "fiat_price": 337.88,
+    #         "crypto_label": "ETH",
+    #         "tags": ["javascript", "python", "eth"],
+    #     },
+    #     {
+    #         "title": "Simulate proposal execution and display execution results",
+    #         "source": "gitcoin.com",
+    #         "crypto_price": 1,
+    #         "fiat_price": 23.23,
+    #         "crypto_label": "BTC",
+    #         "tags": ["ruby", "js", "btc"]
+    #     },
+    #     {
+    #         "title": "Build out Market contract explorer",
+    #         "crypto_price": 22,
+    #         "fiat_price": 203.23,
+    #         "crypto_label": "LTC",
+    #         "tags": ["ruby on rails", "ios", "mobile", "design"]
+    #     },
+    # ]
+    external_bounties_results = []
     categories = ["Blockchain", "Web Development", "Design", "Browser Extension", "Beginner"]
+
+    try:
+        external_bounties_results = ExternalBounty.objects.current()
+        if external_bounties_results:
+            for external_bounty_result in external_bounties_results:
+                external_bounty = {
+                    "title": external_bounty_result.title,
+                    "source": external_bounty_result.source_project,
+                    "crypto_price": external_bounty_result.amount,
+                    "fiat_price": external_bounty_result.amount,
+                    "crypto_label": external_bounty_result.amount_denomination,
+                    #"tags": ["javascript", "python", "eth"],
+                }
+                external_bounties_results.append(external_bounty)
+    except ExternalBounty.DoesNotExist:
+        pass
+    except Exception as e:
+        print(e)
+        logging.error(e)
 
     params = {
         'active': 'dashboard',
         'title': 'Issue Explorer',
-        'bounties': bounties,
+        'bounties': external_bounties_results,
         'categories': categories
     }
+
     return TemplateResponse(request, 'external_bounties.html', params)
+
 
 def external_bounties_show(request):
     """Handle Dummy External Bounties show page."""
-    bounty = {
-        "title": "Simulate proposal execution and display execution results",
-        "crypto_price": 0.5,
-        "crypto_label": "ETH",
-        "fiat_price": 339.34,
-        "source": "gitcoin.co",
-        "content": "Lorem"
-    }
+
+    bounty_url = request.GET.get('url')
+    external_bounty = {}
+
+    if bounty_url:
+        try:
+            bounties = ExternalBounty.objects.current().filter(github_url=bounty_url)
+            if bounties:
+                external_bounty_result = bounties.order_by('pk').first()
+                external_bounty['title'] = external_bounty_result.title
+                external_bounty['crypto_price'] = external_bounty_result.amount
+                external_bounty['crypto_label'] = external_bounty_result.amount_denomination
+                external_bounty['fiat_price'] = external_bounty_result.amount
+                external_bounty['source'] = external_bounty_result.project_source
+                external_bounty['content'] = external_bounty_result.description
+        except ExternalBounty.DoesNotExist:
+            pass
+        except Exception as e:
+            print(e)
+            logging.error(e)
+
     params = {
-        'active': 'dashboard',
-        'title': 'Issue Explorer',
-        "bounty": bounty,
-    }
+            'active': 'dashboard',
+            'title': 'Issue Explorer',
+            "bounty": external_bounty,
+        }
+
     return TemplateResponse(request, 'external_bounties_show.html', params)
 
 

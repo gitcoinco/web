@@ -10,6 +10,7 @@ gitterpy
 gunicorn
 matplotlib
 markdown
+lxml
 reportlab
 requests
 requests_oauthlib
@@ -38,3 +39,4 @@ brotlipy==0.7.0
 ipfsapi
 eth-utils==1.0.0b2
 jsondiff==1.1.1
+urlextract
