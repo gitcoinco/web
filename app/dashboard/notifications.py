@@ -138,7 +138,7 @@ def maybe_market_to_slack(bounty, event_name):
 
     title = bounty.title if bounty.title else bounty.github_url
     msg = f"{event_name.replace('bounty', 'funded_issue')} worth {round(bounty.get_natural_value(), 4)} {bounty.token_name} " \
-          f"({bounty.value_in_usdt} USD @ (${convert_token_to_usdt(bounty.token_name)}/{bounty.token_name}) " \
+          f"({bounty.value_in_usdt} USD @ (${round(convert_token_to_usdt(bounty.token_name),2)}/{bounty.token_name}) " \
           f"{bounty.token_name}: {title} \n\n{bounty.get_absolute_url()}&slack=1"
 
     try:
