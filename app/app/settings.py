@@ -235,5 +235,6 @@ try:
             'exception_level_filters': [(Http404, 'info')]
         }
         MIDDLEWARE.append('rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
+        rollbar.init(**ROLLBAR)
 except ImportError:
     pass
