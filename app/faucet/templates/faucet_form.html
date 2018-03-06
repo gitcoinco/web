@@ -62,25 +62,25 @@
                             </p>
                             {% csrf_token %}
                             <div class="faucet-input-group">
-                                <label for="githubProfile" class="float-left">Github Profile:</label>
-                                <input name='githubProfile' id="githubProfile" class="faucet-input" type="text" placeholder="@you" value="{{github_handle}}" />
+                                <label for="githubProfile" class="form__label float-left">Github Profile:</label>
+                                <input name='githubProfile' id="githubProfile" class="form__input" type="text" placeholder="@you" value="{{github_handle}}" />
                                 <span id="githubProfileHelpBlock" class="help-block" style="display:hidden;color:red;"> </span>
                             </div>
                             <div class="faucet-input-group">
-                                <label for="emailAddress" class="float-left" >Email Address:</label>
-                                <input name='emailAddress' id="emailAddress" class="faucet-input" type="text" placeholder="What is your email address?" />
+                                <label for="emailAddress" class="form__label float-left" >Email Address:</label>
+                                <input name='emailAddress' id="emailAddress" class="form__input" type="text" placeholder="What is your email address?" />
                                 <span id="emailAddressHelpBlock" class="help-block" style="display:hidden;color:red;"></span>
                             </div>
                             <div class="faucet-input-group">
-                                <label for="comment" class="float-left"> Comment (<span id="charcount">500</span> char left):</label>
-                                <textarea id="comment" class="faucet-input faucet-comment" rows="4" cols="50" placeholder="Why do you need ETH?"></textarea>
+                                <label for="comment" class="form__label float-left"> Comment (<span id="charcount">500</span> char left):</label>
+                                <textarea id="comment" class="form__input" rows="4" cols="50" placeholder="Why do you need ETH?"></textarea>
                             </div>
                             <div class="faucet-input-group">
-                                <label for="ethAddress" class="float-left">ETH Address:</label>
-                                <input placeholder="0x0" disabled id="ethAddress" class="faucet-input" type="text" value="{% if ethAddress %}{{ethAddress}}{%endif%}" />
+                                <label for="ethAddress" class="form__label float-left">ETH Address:</label>
+                                <input placeholder="0x0" disabled id="ethAddress" class="form__input" type="text" value="{% if ethAddress %}{{ethAddress}}{%endif%}" />
                             </div>
-                            <div class="faucet-input-group">
-                                <a class="faucet-form-submit" role="button" id="submitFaucet" href="#">Submit</a>
+                            <div class="form__footer">
+                                <a class="button button--primary" role="button" id="submitFaucet" href="#">Submit</a>
                             </div>
                         </div>
                     </div>

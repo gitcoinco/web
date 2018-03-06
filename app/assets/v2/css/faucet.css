@@ -12,16 +12,6 @@
   margin-bottom: 15px;
 }
 
-.faucet-input {
-  border: 1px solid #eee;
-  border-radius: 36px;
-  font-weight: 300;
-  height: 40px;
-  outline: none;
-  padding-left: 10px;
-  width: 100%;
-}
-
 .faucet-form-img {
   margin: 0 auto;
   max-width: 475px;
@@ -33,16 +23,6 @@
 
 .faucet_response {
   display: none;
-}
-
-.faucet-form-submit {
-  background-color: #37ea9c;
-  border-radius: 4px;
-  color: #fff;
-  display: inline-block;
-  font-size: 1.5em;
-  padding: 5px;
-  min-width: 250px;
 }
 
 .hidden-desktop {

@@ -580,7 +580,7 @@ window.addEventListener('load', function() {
                     $('#ethAddress').val(web3.eth.accounts[0]);
                     if(balance >= faucet_amount){
                         $("#over_balance_error").css('display', 'block');
-                        $("#faucet-form").remove();
+                        $("#faucet_form").remove();
                         mixpanel.track("Faucet Available Funds Metamask Error", params);
                     }
                 });
