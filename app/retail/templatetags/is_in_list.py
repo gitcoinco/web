@@ -1,4 +1,5 @@
-"""Define the Dashboard application configuration.
+# -*- coding: utf-8 -*-
+"""Define the is_in_list template tag to allow if in list checking in templates.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -16,18 +17,25 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from django import template
 
-from django.apps import AppConfig
+register = template.Library()
 
 
-class DashboardConfig(AppConfig):
-    """Define the Dashboard application configuration."""
+@register.filter
+def is_in_list(value, input_list):
+    """Determine whether or not the value is in the provided list.
 
-    name = 'dashboard'
-    verbose_name = 'Dashboard'
+    Args:
+        value: Any value that could be a member of the provided list.
+        input_list (list): A list of any primitive types to be checked.
 
-    def ready(self):
-        """Handle signals on ready."""
-        from .signals import m2m_changed_interested
+    Usage:
+        {% if '<value>'|is_in_list:'about,slack,home,help,mission' %}
+
+    Returns:
+        bool: Whether or not the value exists in the input_list.
+
+    """
+    value = str(value)
+    return value in input_list.split(',')

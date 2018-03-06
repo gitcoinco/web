@@ -76,8 +76,7 @@ def github_callback(request):
         UserAction.objects.create(
             profile=user_profile,
             action='Login',
-            metadata={},
-            )
+            metadata={})
 
     response = redirect(redirect_uri)
     response.set_cookie('last_github_auth_mutation', int(time.time()))
@@ -111,15 +110,18 @@ def github_logout(request):
     if access_token:
         revoke_token(access_token)
         request.session.pop('access_token_last_validated')
-        Profile.objects.filter(handle=handle).update(github_access_token='')
+
+    try:
+        # If the profile exists, clear the github access token.
+        profile = Profile.objects.get(handle=handle).update(github_access_token='')
 
         # record a useraction for this
-        if Profile.objects.filter(handle=handle).count():
-            UserAction.objects.create(
-                profile=Profile.objects.get(handle=handle),
-                action='Logout',
-                metadata={},
-                )
+        UserAction.objects.create(
+            profile=profile,
+            action='Logout',
+            metadata={})
+    except Profile.DoesNotExist:
+        pass
 
     request.session.modified = True
     response = redirect(redirect_uri)
