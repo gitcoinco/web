@@ -25,7 +25,6 @@ import dashboard.embed
 import dashboard.helpers
 import dashboard.ios
 import dashboard.views
-import faucet.views
 import linkshortener.views
 import faucet.views
 import marketing.views

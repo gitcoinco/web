@@ -216,8 +216,6 @@ GITHUB_API_BASE_URL = 'https://api.github.com'
 GITHUB_AUTH_BASE_URL = 'https://github.com/login/oauth/authorize'
 GITHUB_TOKEN_URL = 'https://github.com/login/oauth/access_token'
 GITHUB_SCOPE = 'read:user,user:email,read:org'
-# Faucet App config
-FAUCET_AMOUNT = .003
 
 # List of github usernames to not count as comments on an issue
 IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
