@@ -162,6 +162,10 @@ var isBountyOwner = function(result) {
 
 var showWarningMessage = function (txid) {
 
+    var title_text = $('title').text();
+    title_text = '(...)' + title_text;
+    $('title').text(title_text);
+
     if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
         clearInterval(interval);
         var link_url = etherscan_tx_url(txid);
