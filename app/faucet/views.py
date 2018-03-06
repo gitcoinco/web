@@ -89,7 +89,6 @@ def save_faucet(request):
     ethAddress = request.POST.get('ethAddress')
     comment = escape(strip_tags(request.POST.get('comment')))
     checkeduser = check_github(githubProfile)
-    print checkeduser
     if FaucetRequest.objects.user(githubProfile):
         return JsonResponse({
             'message': 'The submitted github profile shows a previous faucet distribution.'
@@ -130,8 +129,6 @@ def process_faucet_request(request, pk):
         'faucet_amount': faucet_amount
     }
 
-    print request.POST.get('destinationAccount')
-    print request.POST
     if obj.fulfilled:
         return redirect('/_administrationfaucet/faucetrequest/')
 
