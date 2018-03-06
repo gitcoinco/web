@@ -15,61 +15,23 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-import time
 
-from django.conf import settings
+import datetime
+import logging
+import sys
+import warnings
+
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
-import requests
-from dashboard.helpers import normalizeURL, process_bounty_changes, syncBountywithWeb3
-from dashboard.models import BountySyncRequest
-from economy.eth import get_network_details, getBountyContract, getWeb3
+from app.rollbar import rollbar
+from dashboard.helpers import UnsupportedSchemaException
+from dashboard.utils import BountyNotFoundException, get_bounty, process_bounty
 
-POLL_SLEEP_TIME = 3
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 
-
-def get_callback(web3, bounty_contract_address, realtime):
-
-    def process_change(bountyContract, url, txid, network):
-        url = normalizeURL(url)
-        did_change, old_bounty, new_bounty = syncBountywithWeb3(bountyContract, url, network)
-        print("{} changed, {}".format(did_change, url))
-        if did_change:
-            print("- processing changes")
-            process_bounty_changes(old_bounty, new_bounty, txid)
-
-    def realtime_callback(transaction_hash):
-        block = web3.eth.getBlock('latest')
-        fromBlock = block['number'] - 1
-        _filter = web3.eth.filter({
-            "fromBlock": fromBlock,
-            "toBlock": "latest",
-            "address": bounty_contract_address,
-        })
-        bountyContract = getBountyContract(web3, bounty_contract_address)
-
-        log_entries = _filter.get(False)
-        print('got {} log entrires from web3'.format(len(log_entries)))
-
-        for entry in log_entries:
-            txid = entry['transactionHash']
-            result = web3.toAscii(entry['data'])
-            result = result[result.find('http'):]
-            url = result[:result.find('\x00')]
-            process_change(bountyContract, url, txid, None)  # TODO - pass options['network'] in
-
-    def faux_realtime_callback(block_id):
-        bountyContract = getBountyContract(web3, bounty_contract_address)
-        bsrs = BountySyncRequest.objects.filter(processed=False)
-
-        for bsr in bsrs:
-            url = bsr.github_url
-            process_change(bountyContract, url, None, None)  # TODO - pass options['network'] in
-
-        pass
-
-    return realtime_callback if realtime else faux_realtime_callback
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -77,55 +39,44 @@ class Command(BaseCommand):
     help = 'syncs bounties with geth'
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            '--network',
-            dest='network',
-            type=str,
-            default=settings.DEFAULT_NETWORK,
-            help="network (optional)",
-        )
-
-        parser.add_argument(
-            '--provider',
-            dest='provider',
-            type=str,
-            default='default',
-            help="provider (optional)",
-        )
+        parser.add_argument('network')
+        parser.add_argument('start_id', default=0, type=int)
+        parser.add_argument('end_id', default=99999999999, type=int)
 
     def handle(self, *args, **options):
 
-        # setup
-        bounty_contract_address, infura_host, custom_geth_details, is_testnet = get_network_details(options['network'])
-        print("****************************************")
-        print("connecting {} {} ....".format(options['network'], options['provider']))
-        print("****************************************")
+        # config
+        network = options['network']
+        hour = datetime.datetime.now().hour
+        day = datetime.datetime.now().day
+        month = datetime.datetime.now().month
 
-        start_time = int(timezone.now().strftime("%S"))
-        web3 = getWeb3(options['network'], options['provider'])
-        end_time = int(timezone.now().strftime("%S"))
-        connect_time = end_time - start_time
+        # iterate through all the bounties
+        bounty_enum = int(options['start_id'])
+        more_bounties = True
+        while more_bounties:
+            try:
+                # pull and process each bounty
+                print(f"[{month}/{day} {hour}:00] Getting bounty {bounty_enum}")
+                bounty = get_bounty(bounty_enum, network)
+                print(f"[{month}/{day} {hour}:00] Processing bounty {bounty_enum}")
+                process_bounty(bounty)
 
-        print("****************************************")
-        print("connected to {} (took {} s)".format(web3.currentProvider.__class__, connect_time))
-        print("****************************************")
+            except BountyNotFoundException:
+                more_bounties = False
+            except UnsupportedSchemaException as e:
+                logger.info(f"* Unsupported Schema => {e}")
+            except Exception as e:
+                extra_data = {
+                    'bounty_enum': bounty_enum,
+                    'more_bounties': more_bounties,
+                    'network': network
+                }
+                rollbar.report_exc_info(sys.exc_info(), extra_data=extra_data)
+                logger.error(f"* Exception in sync_geth => {e}")
+            finally:
+                # prepare for next loop
+                bounty_enum += 1
 
-        # get past event topics
-        try:
-            print('- attempting realtime')
-            callback = get_callback(web3, bounty_contract_address, True)
-            web3.eth.filter('pending').watch(callback)
-            print('- sleeping')
-            while True:
-                time.sleep(1)
-        except requests.exceptions.HTTPError:
-            print("- realtime not working. attempting to faux realtime! #YOLO")
-            callback = get_callback(web3, bounty_contract_address, False)
-            last_blockNumber = 0
-            while True:
-                blockNumber = web3.eth.blockNumber
-                if blockNumber != last_blockNumber:
-                    print("-- new block: {}".format(blockNumber))
-                    callback(blockNumber)
-                last_blockNumber = blockNumber
-                time.sleep(POLL_SLEEP_TIME)
+                if bounty_enum > int(options['end_id']):
+                    more_bounties = False

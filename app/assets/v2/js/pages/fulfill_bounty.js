@@ -4,7 +4,9 @@ window.onload = function(){
         var account = web3.eth.accounts[0];
 
         if (typeof localStorage['githubUsername'] !='undefined'){
-            $('input[name=githubUsername]').val(localStorage['githubUsername']);
+            if(!$('input[name=githubUsername]').val()){
+                $('input[name=githubUsername]').val(localStorage['githubUsername']);
+            }
         }
         if (typeof localStorage['notificationEmail'] !='undefined'){
             $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
@@ -96,9 +98,7 @@ window.onload = function(){
                                     'txid': result,
                                 });
 
-                                // See views.sync_web3
                                 dataLayer.push({'event': 'claimissue'});
-                                sync_web3(issueURL);
                                 _alert({ message: "Fulfillment submitted to web3." },'info');
                                 setTimeout(function(){
                                     mixpanel.track("Fulfill Bounty Success", {});

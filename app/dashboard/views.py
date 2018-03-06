@@ -21,6 +21,7 @@ from __future__ import print_function, unicode_literals
 import json
 import logging
 
+from django.conf import settings
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
@@ -30,18 +31,25 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import ellipses, sync_profile
-from dashboard.helpers import normalizeURL, process_bounty_changes, process_bounty_details
-from dashboard.models import Bounty, BountySyncRequest, Interest, Profile, ProfileSerializer, Subscription, Tip
+from dashboard.models import (
+    Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
+)
 from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
+from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined
+from dashboard.utils import process_bounty as web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from github.utils import get_auth_url, get_github_emails, get_github_primary_email, is_github_token_valid
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
+from web3 import HTTPProvider, Web3
 
 logging.basicConfig(level=logging.DEBUG)
 
 confirm_time_minutes_target = 60
+
+# web3.py instance
+w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 
 def send_tip(request):
@@ -236,6 +244,7 @@ def receive_tip(request):
             'status': status,
             'message': message,
         }
+
         return JsonResponse(response)
 
     params = {
@@ -342,6 +351,8 @@ def process_bounty(request):
     """Process the bounty."""
     params = {
         'issueURL': request.GET.get('source'),
+        'fulfillment_id': request.GET.get('id'),
+        'fulfiller_address': request.GET.get('address'),
         'title': 'Process Issue',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
@@ -359,6 +370,62 @@ def dashboard(request):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'dashboard.html', params)
+
+def external_bounties(request):
+    """Handle Dummy External Bounties index page."""
+
+    bounties = [
+        {
+            "title": "Add Web3 1.0 Support",
+            "source": "www.google.com",
+            "crypto_price": 0.3,
+            "fiat_price": 337.88,
+            "crypto_label": "ETH",
+            "tags": ["javascript", "python", "eth"],
+        },
+        {
+            "title": "Simulate proposal execution and display execution results",
+            "source": "gitcoin.com",
+            "crypto_price": 1,
+            "fiat_price": 23.23,
+            "crypto_label": "BTC",
+            "tags": ["ruby", "js", "btc"]
+        },
+        {
+            "title": "Build out Market contract explorer",
+            "crypto_price": 22,
+            "fiat_price": 203.23,
+            "crypto_label": "LTC",
+            "tags": ["ruby on rails", "ios", "mobile", "design"]
+        },
+    ]
+
+    categories = ["Blockchain", "Web Development", "Design", "Browser Extension", "Beginner"]
+
+    params = {
+        'active': 'dashboard',
+        'title': 'Issue Explorer',
+        'bounties': bounties,
+        'categories': categories
+    }
+    return TemplateResponse(request, 'external_bounties.html', params)
+
+def external_bounties_show(request):
+    """Handle Dummy External Bounties show page."""
+    bounty = {
+        "title": "Simulate proposal execution and display execution results",
+        "crypto_price": 0.5,
+        "crypto_label": "ETH",
+        "fiat_price": 339.34,
+        "source": "gitcoin.co",
+        "content": "Lorem"
+    }
+    params = {
+        'active': 'dashboard',
+        'title': 'Issue Explorer',
+        "bounty": bounty,
+    }
+    return TemplateResponse(request, 'external_bounties_show.html', params)
 
 
 def gas(request):
@@ -380,7 +447,8 @@ def new_bounty(request):
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
         'from_email': request.session.get('email', ''),
-        'from_handle': request.session.get('handle', '')
+        'from_handle': request.session.get('handle', ''),
+        'newsletter_headline': 'Be the first to know about new funded issues.'
     }
 
     return TemplateResponse(request, 'submit_bounty.html', params)
@@ -429,26 +497,28 @@ def bounty_details(request):
         'active': 'bounty_details',
         'is_github_token_valid': is_github_token_valid(_access_token),
         'github_auth_url': get_auth_url(request.path),
-        'profile_interested': False
+        'profile_interested': False,
+        "newsletter_headline": "Be the first to know about new funded issues."
     }
 
     if bounty_url:
         try:
-            b = Bounty.objects.current().get(github_url=bounty_url)
-            # Currently its not finding anyting in the database
-            if b.title:
-                params['card_title'] = f'{b.title} | {b.org_name} Funded Issue Detail | Gitcoin'
-                params['title'] = params['card_title']
-                params['card_desc'] = ellipses(b.issue_description_text, 255)
+            bounties = Bounty.objects.current().filter(github_url=bounty_url)
+            if bounties:
+                bounty = bounties.order_by('pk').first()
+                # Currently its not finding anyting in the database
+                if bounty.title and bounty.org_name:
+                    params['card_title'] = f'{bounty.title} | {bounty.org_name} Funded Issue Detail | Gitcoin'
+                    params['title'] = params['card_title']
+                    params['card_desc'] = ellipses(bounty.issue_description_text, 255)
 
-            params['bounty_pk'] = b.pk
-            params['interested_profiles'] = b.interested.select_related('profile').all()
-            params['avatar_url'] = b.local_avatar_url
-            params['is_legacy'] = b.is_legacy  # TODO: Remove this following legacy contract sunset.
-
-            if profile_id:
-                profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
-                params['profile_interested'] = request.session.get('profile_id') in profile_ids
+                params['bounty_pk'] = bounty.pk
+                params['interested_profiles'] = bounty.interested.select_related('profile').all()
+                params['avatar_url'] = bounty.local_avatar_url
+                params['is_legacy'] = bounty.is_legacy  # TODO: Remove this following legacy contract sunset.
+                if profile_id:
+                    profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
+                    params['profile_interested'] = request.session.get('profile_id') in profile_ids
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
@@ -463,10 +533,8 @@ def profile_helper(handle):
     try:
         profile = Profile.objects.get(handle__iexact=handle)
     except Profile.DoesNotExist:
-        sync_profile(handle)
-        try:
-            profile = Profile.objects.get(handle__iexact=handle)
-        except Profile.DoesNotExist:
+        profile = sync_profile(handle)
+        if not profile:
             raise Http404
     except Profile.MultipleObjectsReturned as e:
         # Handle edge case where multiple Profile objects exist for the same handle.
@@ -507,12 +575,13 @@ def profile(request, handle):
     params = {
         'title': 'Profile',
         'active': 'profile_details',
+        'newsletter_headline': 'Be the first to know about new funded issues.',
     }
 
     profile = profile_helper(handle)
-    params['card_title'] = "@{} | Gitcoin".format(handle)
+    params['card_title'] = f"@{handle} | Gitcoin"
     params['card_desc'] = profile.desc
-    params['title'] = "@{}".format(handle)
+    params['title'] = f"@{handle}"
     params['avatar_url'] = profile.local_avatar_url
     params['profile'] = profile
     params['stats'] = profile.stats
@@ -548,43 +617,53 @@ def save_search(request):
 
 @require_POST
 @csrf_exempt
-@ratelimit(key='ip', rate='2/s', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='5/s', method=ratelimit.UNSAFE, block=True)
 def sync_web3(request):
     """ Sync up web3 with the database.  This function has a few different uses.  It is typically
         called from the front end using the javascript `sync_web3` function.  The `issueURL` is
         passed in first, followed optionally by a `bountydetails` argument.
     """
     # setup
-    result = {}
-    issueURL = request.POST.get('issueURL', False)
-    bountydetails = json.loads(request.POST.get('bountydetails', "{}"))
+    result = {
+        'status': '400',
+        'msg': "bad request"
+    }
 
-    if issueURL:
-        issueURL = normalizeURL(issueURL)
+    issue_url = request.POST.get('url')
+    txid = request.POST.get('txid')
+    network = request.POST.get('network')
 
-        if not bountydetails:
-            # create a bounty sync request
-            result['status'] = 'OK'
-            for existing_bsr in BountySyncRequest.objects.filter(github_url=issueURL, processed=False):
-                existing_bsr.processed = True
-                existing_bsr.save()
+    if issue_url and txid and network:
+        # confirm txid has mined
+        print('* confirming tx has mined')
+        if not has_tx_mined(txid, network):
+            result = {
+                'status': '400',
+                'msg': 'tx has not mined yet'
+            }
         else:
-            contract_address = request.POST.get('contract_address')
-            network = request.POST.get('network')
-            did_change, old_bounty, new_bounty = process_bounty_details(
-                bountydetails, issueURL, contract_address, network)
 
-            print("{} changed, {}".format(did_change, issueURL))
-            if did_change:
-                print("- processing changes")
-                process_bounty_changes(old_bounty, new_bounty, None)
+            # get bounty id
+            print('* getting bounty id')
+            bounty_id = get_bounty_id(issue_url, network)
+            if not bounty_id:
+                result = {
+                    'status': '400',
+                    'msg': 'could not find bounty id'
+                }
+            else:
+                # get/process bounty
+                print('* getting bounty')
+                bounty = get_bounty(bounty_id, network)
+                print('* processing bounty')
+                did_change, _, _ = web3_process_bounty(bounty)
+                result = {
+                    'status': '200',
+                    'msg': "success",
+                    'did_change': did_change
+                }
 
-        BountySyncRequest.objects.create(
-            github_url=issueURL,
-            processed=False,
-        )
-
-    return JsonResponse(result)
+    return JsonResponse(result, status=result['status'])
 
 
 # LEGAL
@@ -788,3 +867,79 @@ def toolbox(request):
         'newsletter_headline': "Don't Miss New Tools!"
     }
     return TemplateResponse(request, 'toolbox.html', context)
+
+
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def redeem_coin(request, shortcode):
+    if request.body:
+        status = 'OK'
+
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        address = body['address']
+
+        try:
+            coin = CoinRedemption.objects.get(shortcode=shortcode)
+            address = Web3.toChecksumAddress(address)
+
+            if hasattr(coin, 'coinredemptionrequest'):
+                status = 'error'
+                message = 'Bad request'
+            else:
+                abi = json.loads('[{"constant":true,"inputs":[],"name":"mintingFinished","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"mint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"version","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_subtractedValue","type":"uint256"}],"name":"decreaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"finishMinting","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_addedValue","type":"uint256"}],"name":"increaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"payable":false,"stateMutability":"nonpayable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Mint","type":"event"},{"anonymous":false,"inputs":[],"name":"MintFinished","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}]')
+
+                # Instantiate Colorado Coin contract
+                contract = w3.eth.contract(coin.contract_address, abi=abi)
+
+                tx = contract.functions.transfer(address, coin.amount * 10**18).buildTransaction({
+                    'nonce': w3.eth.getTransactionCount(settings.COLO_ACCOUNT_ADDRESS),
+                    'gas': 100000,
+                    'gasPrice': recommend_min_gas_price_to_confirm_in_time(5) * 10**9
+                })
+
+                signed = w3.eth.account.signTransaction(tx, settings.COLO_ACCOUNT_PRIVATE_KEY)
+                transaction_id = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+
+                CoinRedemptionRequest.objects.create(
+                    coin_redemption=coin,
+                    ip=get_ip(request),
+                    sent_on=timezone.now(),
+                    txid=transaction_id,
+                    txaddress=address
+                )
+
+                message = transaction_id
+        except CoinRedemption.DoesNotExist:
+            status = 'error'
+            message = 'Bad request'
+        except Exception as e:
+            status = 'error'
+            message = str(e)
+
+        # http response
+        response = {
+            'status': status,
+            'message': message,
+        }
+
+        return JsonResponse(response)
+
+    try:
+        coin = CoinRedemption.objects.get(shortcode=shortcode)
+
+        params = {
+            'class': 'redeem',
+            'title': 'Coin Redemption',
+            'coin_status': 'PENDING'
+        }
+
+        try:
+            coin_redeem_request = CoinRedemptionRequest.objects.get(coin_redemption=coin)
+            params['colo_txid'] = coin_redeem_request.txid
+        except CoinRedemptionRequest.DoesNotExist:
+            params['coin_status'] = 'INITIAL'
+
+        return TemplateResponse(request, 'yge/redeem_coin.html', params)
+    except CoinRedemption.DoesNotExist:
+        raise Http404

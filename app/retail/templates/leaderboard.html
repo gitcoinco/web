@@ -2,114 +2,107 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-{% include 'shared/head.html' %}
-{% include 'shared/cards_pic.html' %}
-<link rel="stylesheet" href="{% static "v2/css/leaderboard.css" %}" />
-</head>
-
-<body class="interior {{active}}">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/leaderboard.css" %}" />
+  </head>
+  <body class="interior {{active}}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
-        {% include 'shared/nav_internal.html' %}
+      {% include 'shared/nav_internal.html' %}
     </div>
     <div class="row no-gutter">
-        <div class="col-2" style="background: #eee; ">
-            {% include 'shared/current_balance.html' %}
-            {% include 'shared/sidebar_search.html' %}
-        </div>
-        <div class="col body">
-            <div class="container-fluid" id="leaderboard">
-            {% include 'shared/bounty_def.html' %}
-            <div class="row mt-0 ml-1 pt-1 pl-1 podium">
-                {% for podium_item in podium_items %}
-                <div class="col-4 winner ">
-                    <img class="img-fluid"  src="{{podium_item.local_avatar_url}}" >
-                    <div class="container winner-content">
-                        <div class="row align-items-center">
-                            {% if forloop.counter == 1 %}
-                                <div class="col-4 winner-position winner-position-first">
-                            {% else %}
-                            {% if forloop.counter == 2 %}
-                                <div class="col-4 winner-position winner-position-second">
-                            {% else %}
-                            {% if forloop.counter == 3 %}
-                            <div class="col-4 winner-position winner-position-third">
-                            {% endif %}{% endif %}{% endif %}
-                            </div>
-                            <div class="col-8 " >
-                                <h5 style="color:white">
-                                    <a href="{% url "profile" %}{{podium_item.github_username}}" target="_blank">
-                                        {{podium_item.github_username}}
-                                    </a>
-                                </h5>
-                                <h2 style="color:#86eec4" > ${{podium_item.amount}} </h2>
-                            </div>
-                        </div>
+      <div class="col body">
+        <div class="container-fluid" id="leaderboard">
+          <div class="offset-md-1 col-sm-12 col-md-10">
+            <div class="row mt-0 mb-2 pt-1 podium">
+              {% for podium_item in podium_items %}
+                <div class="col-4 winner">
+                  <img class="img-fluid"  src="{{podium_item.local_avatar_url}}" >
+                  <div class="container winner-content">
+                    <div class="row align-items-center">
+                      {% if forloop.counter == 1 %}
+                        <div class="col-4 winner-position winner-position-first"></div>
+                      {% else %}
+                      {% if forloop.counter == 2 %}
+                        <div class="col-4 winner-position winner-position-second"></div>
+                      {% else %}
+                      {% if forloop.counter == 3 %}
+                        <div class="col-4 winner-position winner-position-third"></div>
+                      {% endif %}{% endif %}{% endif %}
+
+                      <div class="col-8 " >
+                        <h5 style="color:white">
+                          <a href="{% url "profile" %}{{podium_item.github_username}}" target="_blank">
+                            {{podium_item.github_username}}
+                          </a>
+                        </h5>
+                        <h2 style="color:#86eec4" > ${{podium_item.amount}} </h2>
+                      </div>
                     </div>
+                  </div>
                 </div>
-                {% endfor %}
+              {% endfor %}
             </div>
             <div class="row mt-0 ml-1 pt-1 pl-1" style="height: 4em; padding: 0.5em;">
-                <div class="col-10" style="padding-top: 0.5em;">
-                    <h3>{{title}}</h3>
+              <div class="col-10" style="padding-top: 0.5em;">
+                <h3>{{title}}</h3>
+              </div>
+              <div class="col-2 select">
+                <div class="form-group">
+                  <select id="key" class="form-control">
+                    {% for this_title in titles.items %}
+                      <option value="{{this_title.0}}"
+                        {% if selected == this_title.1 %}selected=selected{% endif %} >{{this_title.1}}
+                      </option>
+                    {% endfor %}
+                  </select>
                 </div>
-                <div class="col-2 select">
-                        <div class="form-group">
-                            <select id="key" class="form-control">
-                                {% for this_title in titles.items %}
-                                    <option value="{{this_title.0}}"
-                                    {% if selected == this_title.1 %}selected=selected{% endif %} >{{this_title.1}}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                </div>
+              </div>
             </div>
 
             {% if items|length == 0 %}
-                <div class="row mt-0 ml-0 pl-3">
-                    None found.
-                </div>
+              <div class="row mt-0 ml-0 pl-3">
+                None found.
+              </div>
             {% endif %}
 
             <table class="table table-striped table-hover leaderboard_entry">
-                <tbody>
-                    {% for item in items %}
-                        <tr class='clickable-row d-flex  align-items-stretch ' data-href="{% url "profile" %}{{item.github_username}}">
-                            <td class="col-1 d-flex align-items-center item-position">#{{forloop.counter}}</td>
-                            <td class="col-1 d-flex align-items-center" >
-                                <img class="img-fluid"  src="{{item.local_avatar_url}}">
-                            </td>
-                            <td class="col-2 d-flex align-items-center">
-                                <a href="{% url "profile" %}{{item.github_username}}" target="_blank" >
-                                    @{{item.github_username}}
-                                </a>
-                            </td>
-                            <td class="col-6 progress_container">
-                                <div class="progress ">
-                                    {% with forloop.counter0 as index %}
-                                        <div class="progress-bar progress-bar-striped bg-success"
-                                        role="progressbar"
-                                        aria-valuenow={{item.amount}}
-                                        aria-valuemin=0
-                                        aria-valuemax={{amount_max}}></div>
-                                    {% endwith %}
-                                </div>
-                            </td>
-                            <td class="col-2 d-flex align-items-center item-amount">
-                                ${{item.amount}}
-                            </td>
-                        </tr>
-
+              <tbody>
+                {% for item in items %}
+                  <tr class='clickable-row d-flex  align-items-stretch ' data-href="{% url "profile" %}{{item.github_username}}">
+                    <td class="col-1 d-flex align-items-center item-position">#{{forloop.counter}}</td>
+                    <td class="col-1 d-flex align-items-center" >
+                      <img class="img-fluid"  src="{{item.local_avatar_url}}">
+                    </td>
+                    <td class="col-2 d-flex align-items-center">
+                      <a href="{% url "profile" %}{{item.github_username}}" target="_blank" >
+                        @{{item.github_username}}
+                      </a>
+                    </td>
+                    <td class="col-6 progress_container">
+                      <div class="progress ">
+                        {% with forloop.counter0 as index %}
+                          <div class="progress-bar progress-bar-striped bg-success"
+                            role="progressbar"
+                            aria-valuenow={{item.amount}}
+                            aria-valuemin=0
+                            aria-valuemax={{amount_max}}>
+                          </div>
+                        {% endwith %}
+                      </div>
+                    </td>
+                    <td class="col-2 d-flex align-items-center item-amount">
+                      ${{item.amount}}
+                    </td>
+                  </tr>
                 {% endfor %}
-                </tbody>
-            </table>
-
+              </tbody>
+          </table>
         </div>
+      </div>
     </div>
-
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
@@ -117,15 +110,12 @@
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
 
-</body>
+  </body>
 
-
-
-<!-- jQuery -->
-<script src="{% static "v2/js/abi.js" %}"></script>
-<script src="{% static "v2/js/tokens.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
-<script src="{% static "v2/js/pages/leaderboard.js" %}"></script>
-
+  <!-- jQuery -->
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/pages/leaderboard.js" %}"></script>
 
 </html>

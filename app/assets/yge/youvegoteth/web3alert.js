@@ -20,8 +20,10 @@ var _alert = function(msg, addClassName){
     setTimeout(callback,5000);
 };
 var metaMaskWarning = function(){
-    if(typeof web3 == 'undefined' || !web3.currentProvider || !web3.currentProvider.isMetaMask){   
-        _alert("You must install <a href=https://metamask.io/>Metamask</a> to use this tool.");        
+    if(typeof web3 == 'undefined' || !web3.currentProvider || !web3.currentProvider.isMetaMask){  
+        if(typeof document.suppressweb3alert != 'undefined') {
+            _alert("You must install <a href=https://metamask.io/>Metamask</a> to use this tool.");        
+        }
         return true;
     } else if (web3.eth.accounts.length == 0){
         _alert("Please unlock Metamask.");        

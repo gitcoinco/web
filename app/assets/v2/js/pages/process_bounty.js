@@ -12,6 +12,43 @@ window.onload = function(){
 
         var bountyDetails = []
 
+        var fulfillmentCallback = function (results, status) {
+            if(status != "success"){
+                mixpanel.track("Process Bounty Error", {step: 'fulfillmentCallback', error: error});
+                _alert({ message: "Could not get fulfillment details" });
+                console.error(error);
+                unloading_button($('.submitBounty'));
+                return;
+            } else {
+                results = sanitizeAPIResults(results);
+                result = results[0];
+                if (result == null){
+                    _alert({ message: "No bounty fulfillments found for this Github URL." });
+                    unloading_button($('.submitBounty'));
+                    return;
+                }
+                $('#bountyFulfillment').html('');
+                $("body").append($("<select>").append($("<option>").attr('value',"bla bla bla")));
+                $.each(result['fulfillments'], function(index, value) {
+                    // option to build each selector-option:
+                    var option = $("<option>");
+                    option.attr("value", value.fulfillment_id);
+                    var short_addr = value.fulfiller_address.slice(0,7).concat('...');
+                    option.text("Id: " + value.fulfillment_id + ",  " + "Username: " + value.fulfiller_github_username + ",  " + "Address: " + short_addr);
+                    $("#bountyFulfillment").append(option);
+                })
+
+                if(getParam('id')){
+                    selectedFulfillment = getParam('id');
+                    $("#bountyFulfillment").find("option[value=" + selectedFulfillment +"]").attr("selected", "");
+                }
+            }
+        }
+
+        var issueURL = $('input[name=issueURL]').val();
+        var uri = '/api/v0.1/bounties/?github_url='+issueURL;
+        $.get(uri, fulfillmentCallback);
+
         $('#goBack').click(function(e) {
             var url = window.location.href;
             var new_url = url.replace('process?source', 'details?url');
@@ -23,6 +60,8 @@ window.onload = function(){
             e.preventDefault();
             var whatAction = $(this).html().trim()
             var issueURL = $('input[name=issueURL]').val();
+            var fulfillmentId = $('select[name=bountyFulfillment').val();
+            console.log(fulfillmentId);
 
             var isError = false;
             if($('#terms:checked').length == 0){
@@ -33,6 +72,10 @@ window.onload = function(){
             }
             if(issueURL == ''){
                 _alert({ message: "Please enter a issue URL." });
+                isError = true;
+            }
+            if(fulfillmentId == null){
+                _alert({ message: "Please enter a fulfillment Id." });
                 isError = true;
             }
             if(isError){
@@ -90,7 +133,6 @@ window.onload = function(){
                                 'txid': result,
                             });  
 
-                            sync_web3(issueURL);
                             _alert({ message: "Submitted transaction to web3." }, 'info');
                             setTimeout(function(){
                                 mixpanel.track("Process Bounty Success", {});
@@ -108,14 +150,7 @@ window.onload = function(){
                         }
                     };
 
-                    // Standard Bounties can have multiple fulfillments by multiple people.
-                    // Gitcoin does not support this yet, it only allows one person to fulfill.
-                    // Just in case multilple fulfillments end up on the bounty, we will take
-                    // the latest one, which will match up with what the database has.
-                    bounty.getNumFulfillments(bountyId, function (error, result) {
-                        var fulfillmentId = result - 1;
-                        bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice:web3.toHex($("#gasPrice").val()) * Math.pow( 10, 9 )}, final_callback);
-                    });
+                    bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice:web3.toHex($("#gasPrice").val()) * 10**9}, final_callback);
                 }
             };
             // Get bountyId from the database
