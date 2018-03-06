@@ -44,9 +44,17 @@ from .models import Profile
 logger = logging.getLogger(__name__)
 
 
-# gets amount of remote html doc (github issue)
 @ratelimit(key='ip', rate='100/m', method=ratelimit.UNSAFE, block=True)
 def amount(request):
+    """Determine the value of the provided denomination and amount in ETH and USD.
+
+    Raises:
+        Http404: The exception is raised if any error is encountered.
+
+    Returns:
+        JsonResponse: A JSON response containing ETH and USDT values.
+
+    """
     response = {}
 
     try:
@@ -70,6 +78,12 @@ def amount(request):
 # gets title of remote html doc (github issue)
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def title(request):
+    """Determine the Github issue title of the specified Github issue URL.
+
+    Returns:
+        JsonResponse: A JSON response containing the Github issue title.
+
+    """
     response = {}
 
     url = request.GET.get('url')
@@ -95,7 +109,7 @@ def title(request):
         soup = BeautifulSoup(html_response.text, 'html.parser')
 
         eles = soup.findAll("span", {"class": "js-issue-title"})
-        if len(eles):
+        if eles:
             title = eles[0].text
 
         if not title and soup.title:
@@ -121,6 +135,12 @@ def title(request):
 # gets description of remote html doc (github issue)
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def description(request):
+    """Determine the Github issue description of the specified Github issue URL.
+
+    Returns:
+        JsonResponse: A JSON response containing the Github issue description.
+
+    """
     response = {}
 
     url = request.GET.get('url')
@@ -164,6 +184,12 @@ def description(request):
 # gets keywords of remote issue (github issue)
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def keywords(request):
+    """Determine the Github issue keywords of the specified Github issue or PR URL.
+
+    Returns:
+        JsonResponse: A JSON response containing the Github issue or PR keywords.
+
+    """
     response = {}
     keywords = []
 
@@ -217,17 +243,35 @@ def keywords(request):
     return JsonResponse(response)
 
 
-def normalizeURL(url):
+def normalize_url(url):
+    """Normalize the URL.
+
+    Args:
+        url (str): The URL to be normalized.
+
+    Returns:
+        str: The normalized URL.
+
+    """
     if url[-1] == '/':
         url = url[0:-1]
     return url
 
 
-# returns did_change if bounty has changed since last sync
-# then old_bounty
-# then new_bounty
 def sync_bounty_with_web3(bounty_contract, url):
-    """Sync the Bounty with Web3."""
+    """Sync the Bounty with Web3.
+
+    Args:
+        bounty_contract (Web3): The Web3 contract instance.
+        url (str): The bounty URL.
+
+    Returns:
+        tuple: A tuple of bounty change data.
+        tuple[0] (bool): Whether or not the Bounty changed.
+        tuple[1] (dashboard.models.Bounty): The first old bounty object.
+        tuple[2] (dashboard.models.Bounty): The new Bounty object.
+
+    """
     bountydetails = bounty_contract.call().bountydetails(url)
     return process_bounty_details(bountydetails)
 
@@ -248,6 +292,8 @@ class BountyStage(Enum):
 
 
 class UnsupportedSchemaException(Exception):
+    """Define unsupported schema exception handling."""
+
     pass
 
 
@@ -343,13 +389,14 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
     metadata = bounty_payload.get('metadata', {})
     # fulfillments metadata will be empty when bounty is first created
     fulfillments = bounty_details.get('fulfillments', {})
+    interested_comment_id = None
     submissions_comment_id = None
     interested_comment_id = None
 
     # start to process out all the bounty data
     url = bounty_payload.get('webReferenceURL')
     if url:
-        url = normalizeURL(url)
+        url = normalize_url(url)
     else:
         raise UnsupportedSchemaException('No webReferenceURL found. Cannot continue!')
 
@@ -361,12 +408,14 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
     with transaction.atomic():
         old_bounties = old_bounties.distinct().order_by('created_on')
+        latest_old_bounty = None
         for old_bounty in old_bounties:
             if old_bounty.current_bounty:
                 submissions_comment_id = old_bounty.submissions_comment
                 interested_comment_id = old_bounty.interested_comment
             old_bounty.current_bounty = False
             old_bounty.save()
+            latest_old_bounty = old_bounty
         try:
             new_bounty = Bounty.objects.create(
                 title=bounty_payload.get('title', ''),
@@ -376,8 +425,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     timezone=UTC),
                 value_in_token=bounty_details.get('fulfillmentAmount'),
                 token_name=bounty_payload.get('tokenName', ''),
-                token_address=bounty_payload.get(
-                    'tokenAddress', '0x0000000000000000000000000000000000000000'),
+                token_address=bounty_payload.get('tokenAddress', '0x0000000000000000000000000000000000000000'),
                 bounty_type=metadata.get('bountyType', ''),
                 project_length=metadata.get('projectLength', ''),
                 experience_level=metadata.get('experienceLevel', ''),
@@ -386,8 +434,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 bounty_owner_email=bounty_issuer.get('email', ''),
                 bounty_owner_github_username=bounty_issuer.get('githubUsername', ''),
                 bounty_owner_name=bounty_issuer.get('name', ''),
-                is_open=True if (bounty_details.get('bountyStage') == 1
-                                 and not accepted) else False,
+                is_open=True if (bounty_details.get('bountyStage') == 1 and not accepted) else False,
                 raw_data=bounty_details,
                 metadata=metadata,
                 current_bounty=True,
@@ -411,8 +458,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 new_bounty.save()
 
             # Pull the interested parties off the last old_bounty
-            if old_bounties:
-                for interest in old_bounties.last().interested.all():
+            if latest_old_bounty:
+                for interest in latest_old_bounty.interested.all():
                     new_bounty.interested.add(interest)
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)

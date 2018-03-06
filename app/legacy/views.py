@@ -23,7 +23,7 @@ from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.helpers import normalizeURL
+from dashboard.helpers import normalize_url
 from dashboard.models import BountySyncRequest
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from ratelimit.decorators import ratelimit
@@ -44,7 +44,7 @@ def sync_web3(request):
     issue_url = request.POST.get('issueURL', False)
     bountydetails = request.POST.getlist('bountydetails[]', [])
     if issue_url:
-        issue_url = normalizeURL(issue_url)
+        issue_url = normalize_url(issue_url)
         if not bountydetails:
             # create a bounty sync request
             result['status'] = 'OK'

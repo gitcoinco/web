@@ -584,7 +584,7 @@ window.addEventListener('load', function() {
           mixpanel.track('Zero Balance Metamask Error', params);
         }
       });
-
+      
     }
   }, timeout_value);
 
