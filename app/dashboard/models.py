@@ -521,6 +521,10 @@ class Tip(SuperModel):
         decimals = token['decimals']
         return float(self.amount) / 10**decimals
 
+    @property
+    def value_true(self):
+        return self.get_natural_value()
+
     #TODO: DRY
     @property
     def value_in_eth(self):
