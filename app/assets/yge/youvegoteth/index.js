@@ -156,6 +156,7 @@ var loading_button = function(button){
 }
 
 var unloading_button = function(button){
+    button.prop('disabled',false);
     button.removeClass('disabled');
     button.find('img').remove();
 }

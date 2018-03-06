@@ -43,6 +43,7 @@ var update_metamask_conf_time_and_cost_estimate = function(){
 }
 
 var unloading_button = function(button){
+    button.prop('disabled',false);
     button.removeClass('disabled');
     button.find('img').remove();
 }
