@@ -81,9 +81,9 @@
          $('#success_container').show();
        })
 
-       .fail(function (e) {
+       .fail(function (XMLHttpRequest, textStatus, errorThrown) {
          $('#main-form').hide();
-         $('#fail_message').html(e.responseJSON.message);
+         $('#fail_message').html(errorThrown);
          $('#fail_container').show();
        });
    })
