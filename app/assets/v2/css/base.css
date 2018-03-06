@@ -519,10 +519,16 @@ input[type=text].loading {
 
 /* The alert message box */
 .alert {
-    background-color: #f44336;
+    align-items: center;
+    background-color: #3E00FF;
     border-radius: 0px;
-    padding: 20px;
+    box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.24);
     color: white;
+    display: flex;
+    font-family: 'Muli', sans-serif;
+    justify-content: space-between;
+    padding: 20px;
+    position: relative;
     margin-bottom: 1px;
     position: fixed;
     top: 0px;
@@ -530,21 +536,57 @@ input[type=text].loading {
     z-index: 999999;
 }
 
-.alert a{
+.alert .message {
+    align-items: center;
+    display: flex;
+}
+
+.alert .message::before {
+    content: url('/static/v2/images/info.svg');
+}
+
+.alert .message::before {
+    margin-right: 10px;
+}
+
+.alert a {
   color: white;
   text-decoration: underline;;
 }
 
+.alert.error {
+    background-color: #C70018;
+}
+
+.alert.error .message::before {
+    content: url('/static/v2/images/close.svg');
+}
+
 .alert.success {
-    background-color: #4CAF50;
+    background-color: #00A652;
+}
+
+.alert.success .message::before {
+    content: url('/static/v2/images/success.svg');
+    height: 30px;
 }
 
 .alert.info {
-    background-color: #2196F3;
+    background-color: #008EFF;
+}
+
+.alert.info .message::before {
+    content: url('/static/v2/images/info.svg');
+    height: 30px;
 }
 
 .alert.warning {
-    background-color: #ff9800;
+    background-color: #F2A700
+}
+
+.alert.warning .message::before {
+    content: url('/static/v2/images/warning.svg');
+    height: 28px;
 }
 
 /* The close button */
