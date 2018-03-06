@@ -18,6 +18,61 @@
   src: url('/static/v2/fonts/OpenSans/Regular.ttf');
 }
 
+@font-face {
+  font-family: "OpenSans Light";
+  src: url('/static/v2/fonts/OpenSans/Light.ttf');
+}
+
+@font-face {
+  font-family: "Muli";
+  src: url('/static/v2/fonts/Muli/Muli.ttf');
+}
+
+@font-face {
+  font-family: "Muli-Bold";
+  src: url('/static/v2/fonts/Muli/Muli-Bold.ttf');
+}
+
+@font-face {
+  font-family: "Muli-ExtraLight";
+  src: url('/static/v2/fonts/Muli/Muli-ExtraLight.ttf');
+}
+
+@font-face {
+  font-family: "Muli-SemiBold";
+  src: url('/static/v2/fonts/Muli/Muli-SemiBold.ttf');
+}
+
+@font-face {
+  font-family: "Muli-Light";
+  src: url('/static/v2/fonts/Muli/Muli-Light.ttf');
+}
+
+@font-face {
+  font-family: "Muli-Italic";
+  src: url('/static/v2/fonts/Muli/Muli-Italic.ttf');
+}
+
+@font-face {
+  font-family: "Muli-BoldItalic";
+  src: url('/static/v2/fonts/Muli/Muli-BoldItalic.ttf');
+}
+
+@font-face {
+  font-family: "Muli-ExtraLightItalic";
+  src: url('/static/v2/fonts/Muli/Muli-ExtraLightItalic.ttf');
+}
+
+@font-face {
+  font-family: "Muli-Semi-BoldItalic";
+  src: url('/static/v2/fonts/Muli/Muli-Semi-BoldItalic.ttf');
+}
+
+@font-face {
+  font-family: "Muli-LightItalic";
+  src: url('/static/v2/fonts/Muli/Muli-LightItalic.ttf');
+}
+
 body {
   font-family: "futura-pt", Futura;
   overflow-x: hidden;
@@ -251,8 +306,16 @@ div.button-pink {
 }
 
 .dash-filter-header {
+  align-items: center;
+  display: flex;
   font-size: 1.2rem;
   letter-spacing: 0.1em;
+  margin-bottom: 1.2rem;
+  text-transform: uppercase
+}
+
+.dash-filter-header img {
+  margin-left: .5rem;
 }
 
 .dash-filter-label {
@@ -313,21 +376,6 @@ div.button-pink {
   margin-top: 8px;
   letter-spacing: 0.1em;
 }
-
-#submitter_ul {
-  padding-left: 1em;
-}
-.submitter_icon {
-  text-align: center;
-  margin-top: 20px;
-}
-#submission_row {
-  border: 1px solid #C2C2C2;
-  border-left: 3px solid #0d023b;
-  padding: 5px;
-  margin: 10px;
-}
-
 
 *::-webkit-input-placeholder {
   color: lightgray;

@@ -3,6 +3,14 @@ $(document).ready(function() {
       $( document ).tooltip();
     }
 
+    var force_no_www = function(){
+        if(document.location.href.indexOf('https://www.gitcoin.co') != -1 ){
+            var new_url = document.location.href.replace('www.gitcoin.co','gitcoin.co');
+            document.location.href = new_url;
+        }
+    };
+    force_no_www();
+
     $(".nav-link.dropdown-toggle, .nav_avatar").click(function(e){
       if($(".dropdown-menu").css('display') == 'block'){
         $(".dropdown-menu").css('display', 'none');
@@ -125,7 +133,7 @@ $(document).ready(function() {
         mixpanel.track("Email Subscribe");
     });
 
-    $("#newsletter-subscribe").click(() => {
+    $("#newsletter-subscribe").click(function() {
         mixpanel.track("Email Subscribe");
     });
 

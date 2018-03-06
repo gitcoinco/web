@@ -41,40 +41,46 @@
                     <form id=whitepaper  method=POST>
                         <div class="form-group">
                             <h5>Basic Preferences</h5>
-                            <label for="email">Email address</label>
-                            <input type=text name=email class=form-control placeholder='you@somewhere'  value="{{es.email}}" required>
-                            <small id="emailHelp" class="form-text text-muted">(we will never share your email with anyone else)</small>
+                            <label class="form__label" for="email">Email address</label>
+                            <input type="text" name="email" class="form__input" placeholder='you@somewhere' value="{{es.email}}" required>
+                            <small id="emailHelp" class="form__input-help">We will never share your email with anyone else</small>
                         </div>
                         <div class="form-group">
-                        <label for="level">Send me</label>
-                            <select class="form-control" id="level" name="level"  required>
-                              <option value="regular" {% if es.preferences.level == 'regular'%}selected{%endif%} >Regular: Weekly Roundups, Notifications, etc</option>
-                              <option value="lite1" {% if es.preferences.level == 'lite1'%}selected{%endif%}>Lite 1: Just Roundups</option>
-                              <option value="lite" {% if es.preferences.level == 'lite'%}selected{%endif%}>Lite 2: Just Notifications</option>
-                              <option value="nothing" {% if es.preferences.level == 'nothing'%}selected{%endif%}>Nothing: Don't Email</option>
-                            </select>
-                            <small id="level" class="form-text text-muted">(roundup emails once a week)</small>
-                            <small id="level" class="form-text text-muted">(notifications up to twice a day)</small>
+                            <label class="form__label" for="level">Send me</label>
+                            <div class="form__select">
+                                <select id="level" name="level" required>
+                                    <option value="regular"  {% if es.preferences.level == 'regular'%}selected{%endif%}>Regular: Weekly Roundups, Notifications, etc</option>
+                                    <option value="lite1" {% if es.preferences.level == 'lite1'%}selected{%endif%}>Lite 1: Just Roundups</option>
+                                    <option value="lite" {% if es.preferences.level == 'lite'%}selected{%endif%}>Lite 2: Just Notifications</option>
+                                    <option value="nothing" {% if es.preferences.level == 'nothing'%}selected{%endif%}>Nothing: Don't Email</option>
+                                </select>
+                                <div class="form__select__icon">
+                                    {% include 'svgs/arrow-down.svg' %}
+                                </div>
+                            </div>
+                            <small id="level" class="form__input-help">roundup emails once a week</small>
+                            <small id="level" class="form__input-help">notifications up to twice a day</small>
                         </div>
                         <div class="form-group">
                             <h5>Matching Preferences</h5>
-                            <label for="github">Github username</label>
-                            <input type=text name=github class=form-control placeholder='@username'  value="{{es.github}}">
-                            <small id="ghHelp" class="form-text text-muted">(so we know how to tag you on Github)</small>
+                            <label class="form__label" for="github">Github username</label>
+                            <input type="text" name="github" class="form__input" placeholder='@username' value="{{es.github}}">
+                            <small id="ghHelp" class="form__input-help">so we know how to tag you on Github</small>
                         </div>
                         <div class="form-group">
-                            <label for="keywords">Programming languages</label> <a href="#" id="pull_gh">(pull from github)</a>
-                            <input type=text name=keywords class=form-control placeholder='comma, seperated, list'  value="{{keywords}}">
-                            <small id="kwHelp" class="form-text text-muted">(so we know what funded work to route your way)</small>
+                            <label class="form__label" for="keywords">Programming languages</label>
+                            <a href="#" id="pull_gh">(pull from github)</a>
+                            <input type="text" name="keywords" class="form__input" placeholder='comma, seperated, list'  value="{{keywords}}">
+                            <small id="kwHelp" class="form__input-help">so we know what funded work to route your way</small>
                         </div>
                         <div class="form-group">
                             <h5>Feedback</h5>
-                            <label for="comments">Comments</label>
-                            <textarea class="form-control" id="comments" name="comments" rows="3">{{es.metadata.comments}}</textarea>
-                            <small id="comments" class="form-text text-muted">How are we doing?  What do you think?</small>
+                            <label class="form__label" for="comments">Comments</label>
+                            <textarea class="form__input" id="comments" name="comments" rows="3">{{es.metadata.comments}}</textarea>
+                            <small id="comments" class="form__input-help">How are we doing?  What do you think?</small>
                         </div>
                         {% csrf_token %}
-                        <input class='btn btn-sm btn-success' type='submit' name='submit' value="Go">
+                        <input class='button button--primary' type='submit' name='submit' value="Go">
                     </form>
 
                     {% endblock %}

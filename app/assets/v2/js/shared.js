@@ -344,7 +344,7 @@ var retrieveAmount = function(){
     }
 
     var amount = $("input[name=amount]").val();
-    var address = $('select[name=deonomination').val();
+    var address = $('select[name=deonomination]').val();
     var denomination = tokenAddressToDetails(address)['name'];
     var request_url = '/sync/get_amount?amount='+amount+'&denomination=' + denomination;
 
@@ -463,7 +463,7 @@ window.addEventListener('load', function() {
         if (typeof web3 =='undefined'){
             $("#upper_left").addClass('disabled');
             $("#sidebar_head").html("Web3 disabled <br> <img src='/static/v2/images/icons/question.png'>");
-            $("#sidebar_p").html("Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a> <br> <a target=new href='https://github.com/gitcoinco/gitcoinco/issues/4'>What is Metamask and why do I need it?</a>.");
+            $("#sidebar_p").html("Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a> <br> <a target=new href='/web3'>What is Metamask and why do I need it?</a>.");
         } else if (typeof web3 != 'undefined' && typeof web3.eth.accounts[0] =='undefined'){
             $("#sidebar_head").html("Web3 locked <br> <img src='/static/v2/images/icons/lock.png'>");
             $("#sidebar_p").html("Please unlock <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>.");
@@ -496,6 +496,7 @@ window.addEventListener('load', function() {
 
                     // is this a supported networK?
                     var is_supported_network = true;
+
                     var recommended_network = "mainnet or rinkeby";
 
                     if(network == 'kovan' || network == 'ropsten'){
@@ -510,6 +511,7 @@ window.addEventListener('load', function() {
                     if(network == 'mainnet'){
                         if(document.location.href.indexOf("https://gitcoin.co") == -1){
                             is_supported_network = false;
+                            recommended_network = "custom rpc by using ganache-cli or rinkeby"
                         }
                     }
                     var sidebar_p = "Connected to " + network + ".";

@@ -32,11 +32,10 @@ from django.utils import timezone
 import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
-from economy.utils import convert_amount
-from github.utils import (
-    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, issue_number, org_name, repo_name,
-)
+from economy.utils import convert_amount, convert_token_to_usdt
+from github.utils import _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, org_name, repo_name, issue_number
 from rest_framework import serializers
+from web3 import Web3
 
 from .signals import m2m_changed_interested
 
@@ -116,6 +115,7 @@ class Bounty(SuperModel):
     interested = models.ManyToManyField('dashboard.Interest', blank=True)
     interested_comment = models.IntegerField(null=True, blank=True)
     submissions_comment = models.IntegerField(null=True, blank=True)
+    override_status = models.CharField(max_length=255, blank=True)
 
     objects = BountyQuerySet.as_manager()
 
@@ -245,6 +245,7 @@ class Bounty(SuperModel):
 
     @property
     def now(self):
+        """Return the time now in the current timezone."""
         return timezone.now()
 
     @property
@@ -259,6 +260,8 @@ class Bounty(SuperModel):
             str: The status of the Bounty.
 
         """
+        if self.override_status:
+            return self.override_status
         if self.is_legacy:
             # TODO: Remove following full deprecation of legacy bounties
             try:
@@ -319,6 +322,10 @@ class Bounty(SuperModel):
             return None
 
     @property
+    def token_value_in_usdt(self):
+        return round(convert_token_to_usdt(self.token_name), 2)
+
+    @property
     def desc(self):
         return "{} {} {} {}".format(naturaltime(self.web3_created), self.idx_project_length, self.bounty_type,
                                     self.experience_level)
@@ -341,7 +348,12 @@ class Bounty(SuperModel):
         return (self.web3_type == 'legacy_gitcoin')
 
     def get_github_api_url(self):
-        """Get the Github API URL associated with the bounty."""
+        """Get the Github API URL associated with the bounty.
+
+        Returns:
+            str: The Github API URL associated with the issue.
+
+        """
         from urllib.parse import urlparse
         if self.github_url.lower()[:19] != 'https://github.com/':
             return ''
@@ -360,16 +372,25 @@ class Bounty(SuperModel):
         """
         issue_description = requests.get(self.get_github_api_url(), auth=_AUTH)
         if issue_description.status_code == 200:
-            item = issue_description.json()[item_type]
-            if item_type == 'body':
+            item = issue_description.json().get(item_type, '')
+            if item_type == 'body' and item:
                 self.issue_description = item
-            elif item_type == 'title':
+            elif item_type == 'title' and item:
                 self.title = item
             self.save()
             return item
         return ''
 
     def fetch_issue_comments(self, save=True):
+        """Fetch issue comments for the associated Github issue.
+
+        Args:
+            save (bool): Whether or not to save the Bounty after fetching.
+
+        Returns:
+            dict: The comments data dictionary provided by Github.
+
+        """
         if self.github_url.lower()[:19] != 'https://github.com/':
             return []
 
@@ -475,21 +496,21 @@ class Tip(SuperModel):
     tokenName = models.CharField(max_length=255)
     tokenAddress = models.CharField(max_length=255)
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
-    comments_priv = models.TextField(default='')
-    comments_public = models.TextField(default='')
+    comments_priv = models.TextField(default='', blank=True)
+    comments_public = models.TextField(default='', blank=True)
     ip = models.CharField(max_length=50)
     expires_date = models.DateTimeField()
-    github_url = models.URLField(null=True)
-    from_name = models.CharField(max_length=255, default='')
-    from_email = models.CharField(max_length=255, default='')
-    from_username = models.CharField(max_length=255, default='')
+    github_url = models.URLField(null=True, blank=True)
+    from_name = models.CharField(max_length=255, default='', blank=True)
+    from_email = models.CharField(max_length=255, default='', blank=True)
+    from_username = models.CharField(max_length=255, default='', blank=True)
     username = models.CharField(max_length=255, default='') #to username
     network = models.CharField(max_length=255, default='')
     txid = models.CharField(max_length=255, default='')
-    receive_txid = models.CharField(max_length=255, default='')
-    received_on = models.DateTimeField(null=True)
-    from_address = models.CharField(max_length=255, default='')
-    receive_address = models.CharField(max_length=255, default='')
+    receive_txid = models.CharField(max_length=255, default='', blank=True)
+    received_on = models.DateTimeField(null=True, blank=True)
+    from_address = models.CharField(max_length=255, default='', blank=True)
+    receive_address = models.CharField(max_length=255, default='', blank=True)
 
     def __str__(self):
         """Return the string representation for a tip."""
@@ -523,6 +544,11 @@ class Tip(SuperModel):
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except Exception:
             return None
+
+    # TODO: DRY
+    @property
+    def token_value_in_usdt(self):
+        return round(convert_token_to_usdt(self.token_name), 2)
 
     @property
     def status(self):
@@ -677,7 +703,7 @@ class Profile(SuperModel):
         bounties = Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True)
         for interested in self.interested.all():
             bounties = bounties | Bounty.objects.filter(interested=interested, current_bounty=True)
-        bounties = bounties | Bounty.objects.filter(pk__in=fulfilled_bounty_ids)
+        bounties = bounties | Bounty.objects.filter(pk__in=fulfilled_bounty_ids, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(github_url__in=[url for url in self.tips.values_list('github_url', flat=True)], current_bounty=True)
         return bounties.order_by('-web3_created')
@@ -848,7 +874,7 @@ class ProfileSerializer(serializers.BaseSerializer):
 
 @receiver(pre_save, sender=Tip, dispatch_uid="normalize_tip_usernames")
 def normalize_tip_usernames(sender, instance, **kwargs):
-
+    """Handle pre-save signals from Tips to normalize Github usernames."""
     if instance.username:
         instance.username = instance.username.replace("@", '')
 
@@ -870,3 +896,43 @@ class UserAction(SuperModel):
 
     def __str__(self):
         return "{} by {} at {}".format(self.action, self.profile, self.created_on)
+
+
+class CoinRedemption(SuperModel):
+    """Define the coin redemption schema."""
+
+    class Meta:
+        """Define metadata associated with CoinRedemption."""
+
+        verbose_name_plural = 'Coin Redemptions'
+
+    shortcode = models.CharField(max_length=255, default='')
+    url = models.URLField(null=True)
+    network = models.CharField(max_length=255, default='')
+    token_name = models.CharField(max_length=255)
+    contract_address = models.CharField(max_length=255)
+    amount = models.IntegerField(default=1)
+    expires_date = models.DateTimeField()
+
+
+@receiver(pre_save, sender=CoinRedemption, dispatch_uid="to_checksum_address")
+def to_checksum_address(sender, instance, **kwargs):
+    """Handle pre-save signals from CoinRemptions to normalize the contract address."""
+    if instance.contract_address:
+        instance.contract_address = Web3.toChecksumAddress(instance.contract_address)
+        print(instance.contract_address)
+
+
+class CoinRedemptionRequest(SuperModel):
+    """Define the coin redemption request schema."""
+
+    class Meta:
+        """Define metadata associated with CoinRedemptionRequest."""
+
+        verbose_name_plural = 'Coin Redemption Requests'
+
+    coin_redemption = models.OneToOneField(CoinRedemption, blank=False, on_delete=models.CASCADE)
+    ip = models.GenericIPAddressField(protocol='IPv4')
+    txid = models.CharField(max_length=255, default='')
+    txaddress = models.CharField(max_length=255)
+    sent_on = models.DateTimeField(null=True)

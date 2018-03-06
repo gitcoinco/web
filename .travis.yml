@@ -8,7 +8,7 @@ install:
   - cp app/app/local_settings.py.dist app/app/local_settings.py
   - pip install -r requirements/test.txt
 script:
-  - pytest
+  - pytest -p no:ethereum
 after_success:
   - pip install codecov
   - codecov

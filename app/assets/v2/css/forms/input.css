@@ -1,0 +1,44 @@
+.form__input {
+  background-color: #fff;
+  border-radius: 3px;
+  border: 1px solid #0D0764;
+  font-size: 14px;
+  font-family: 'Muli', sans-serif;
+  padding: 5px 7px;
+  width: 100%;
+}
+
+.form__input:disabled {
+  background-color: #EAEAEA;
+  border: 1px solid #979797;
+  color: #9B9B9B;
+}
+
+.form__input::-webkit-input-placeholder {
+  color: rgba(0, 0, 0, 0.38);
+}
+
+.form__input::-moz-placeholder {
+  color: rgba(0, 0, 0, 0.38);
+}
+
+.form__input:-ms-input-placeholder {
+  color: rgba(0, 0, 0, 0.38);
+}
+
+.form__input:-moz-placeholder {
+  color: rgba(0, 0, 0, 0.38);
+}
+
+.form__input-help {
+  color: #868e96;
+  font-size: 12px;
+  font-family: 'Muli', sans-serif;
+  margin-left: .5rem;
+}
+
+.form__input-help--dynamic {
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+}

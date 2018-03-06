@@ -46,7 +46,7 @@ $(document).ready(function(){
     }
     $('input[name=issueURL]').focus();
 
-    $('select[name=deonomination').select2();
+    $('select[name=deonomination]').select2();
 
     $('#advancedLink a').click(function(e){
         e.preventDefault();
@@ -142,6 +142,14 @@ $(document).ready(function(){
         }
         if(amount == ''){
             _alert({ message: "Please enter an amount." });
+            isError = true;
+        }
+        if(metadata.issueTitle == ''){
+            _alert({ message: "Please enter an title." });
+            isError = true;
+        }
+        if(metadata.issueDescription == ''){
+            _alert({ message: "Please enter an description." });
             isError = true;
         }
         if(isError){

@@ -93,7 +93,7 @@ def ipfs_cat_requests(key):
     return response.text
 
 
-def getWeb3(network):
+def get_web3(network):
     """Get a Web3 session for the provided network.
 
     Attributes:
@@ -122,7 +122,7 @@ def getStandardBountiesContractAddresss(network):
 
 # http://web3py.readthedocs.io/en/latest/contracts.html
 def getBountyContract(network):
-    web3 = getWeb3(network)
+    web3 = get_web3(network)
     standardbounties_abi = '[{"constant":false,"inputs":[{"name":"_bountyId","type":"uint256"}],"name":"killBounty","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_bountyId","type":"uint256"}],"name":"getBountyToken","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_bountyId","type":"uint256"},{"name":"_data","type":"string"}],"name":"fulfillBounty","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_bountyId","type":"uint256"},{"name":"_newDeadline","type":"uint256"}],"name":"extendDeadline","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getNumBounties","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_bountyId","type":"uint256"},{"name":"_fulfillmentId","type":"uint256"},{"name":"_data","type":"string"}],"name":"updateFulfillment","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_bountyId","type":"uint256"},{"name":"_newFulfillmentAmount","type":"uint256"},{"name":"_value","type":"uint256"}],"name":"increasePayout","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"name":"_bountyId","type":"uint256"},{"name":"_newFulfillmentAmount","type":"uint256"}],"name":"changeBountyFulfillmentAmount","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_bountyId","type":"uint256"},{"name":"_newIssuer","type":"address"}],"name":"transferIssuer","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_bountyId","type":"uint256"},{"name":"_value","type":"uint256"}],"name":"activateBounty","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"name":"_issuer","type":"address"},{"name":"_deadline","type":"uint256"},{"name":"_data","type":"string"},{"name":"_fulfillmentAmount","type":"uint256"},{"name":"_arbiter","type":"address"},{"name":"_paysTokens","type":"bool"},{"name":"_tokenContract","type":"address"}],"name":"issueBounty","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_issuer","type":"address"},{"name":"_deadline","type":"uint256"},{"name":"_data","type":"string"},{"name":"_fulfillmentAmount","type":"uint256"},{"name":"_arbiter","type":"address"},{"name":"_paysTokens","type":"bool"},{"name":"_tokenContract","type":"address"},{"name":"_value","type":"uint256"}],"name":"issueAndActivateBounty","outputs":[{"name":"","type":"uint256"}],"payable":true,"stateMutability":"payable","type":"function"},{"constant":true,"inputs":[{"name":"_bountyId","type":"uint256"}],"name":"getBountyArbiter","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_bountyId","type":"uint256"},{"name":"_value","type":"uint256"}],"name":"contribute","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_bountyId","type":"uint256"},{"name":"_newPaysTokens","type":"bool"},{"name":"_newTokenContract","type":"address"}],"name":"changeBountyPaysTokens","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_bountyId","type":"uint256"}],"name":"getBountyData","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_bountyId","type":"uint256"},{"name":"_fulfillmentId","type":"uint256"}],"name":"getFulfillment","outputs":[{"name":"","type":"bool"},{"name":"","type":"address"},{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_bountyId","type":"uint256"},{"name":"_newArbiter","type":"address"}],"name":"changeBountyArbiter","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_bountyId","type":"uint256"},{"name":"_newDeadline","type":"uint256"}],"name":"changeBountyDeadline","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_bountyId","type":"uint256"},{"name":"_fulfillmentId","type":"uint256"}],"name":"acceptFulfillment","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"bounties","outputs":[{"name":"issuer","type":"address"},{"name":"deadline","type":"uint256"},{"name":"data","type":"string"},{"name":"fulfillmentAmount","type":"uint256"},{"name":"arbiter","type":"address"},{"name":"paysTokens","type":"bool"},{"name":"bountyStage","type":"uint8"},{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_bountyId","type":"uint256"}],"name":"getBounty","outputs":[{"name":"","type":"address"},{"name":"","type":"uint256"},{"name":"","type":"uint256"},{"name":"","type":"bool"},{"name":"","type":"uint256"},{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_bountyId","type":"uint256"},{"name":"_newData","type":"string"}],"name":"changeBountyData","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_bountyId","type":"uint256"}],"name":"getNumFulfillments","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_owner","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"bountyId","type":"uint256"}],"name":"BountyIssued","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"bountyId","type":"uint256"},{"indexed":false,"name":"issuer","type":"address"}],"name":"BountyActivated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"bountyId","type":"uint256"},{"indexed":true,"name":"fulfiller","type":"address"},{"indexed":true,"name":"_fulfillmentId","type":"uint256"}],"name":"BountyFulfilled","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_bountyId","type":"uint256"},{"indexed":false,"name":"_fulfillmentId","type":"uint256"}],"name":"FulfillmentUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"bountyId","type":"uint256"},{"indexed":true,"name":"fulfiller","type":"address"},{"indexed":true,"name":"_fulfillmentId","type":"uint256"}],"name":"FulfillmentAccepted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"bountyId","type":"uint256"},{"indexed":true,"name":"issuer","type":"address"}],"name":"BountyKilled","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"bountyId","type":"uint256"},{"indexed":true,"name":"contributor","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"ContributionAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"bountyId","type":"uint256"},{"indexed":false,"name":"newDeadline","type":"uint256"}],"name":"DeadlineExtended","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"bountyId","type":"uint256"}],"name":"BountyChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_bountyId","type":"uint256"},{"indexed":true,"name":"_newIssuer","type":"address"}],"name":"IssuerTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"_bountyId","type":"uint256"},{"indexed":false,"name":"_newFulfillmentAmount","type":"uint256"}],"name":"PayoutIncreased","type":"event"}]';
     standardbounties_addr = getStandardBountiesContractAddresss(network)
     bounty_abi = json.loads(standardbounties_abi)
@@ -138,20 +138,39 @@ def get_bounty(bounty_enum, network):
     except BadFunctionCallOutput:
         raise BountyNotFoundException
 
+    # pull from blockchain
     bountydata = standard_bounties.functions.getBountyData(bounty_enum).call()
     arbiter = standard_bounties.functions.getBountyArbiter(bounty_enum).call()
     token = standard_bounties.functions.getBountyToken(bounty_enum).call()
-    numFulfillments = int(standard_bounties.functions.getNumFulfillments(bounty_enum).call())
+    bounty_data_str = ipfs_cat(bountydata)
+    bounty_data = json.loads(bounty_data_str)
+
+    # fulfillments
+    num_fulfillments = int(standard_bounties.functions.getNumFulfillments(bounty_enum).call())
     fulfillments = []
-    for fulfill_enum in range(0, numFulfillments):
+    for fulfill_enum in range(0, num_fulfillments):
+
+        # pull from blockchain
         accepted, fulfiller, data = standard_bounties.functions.getFulfillment(bounty_enum, fulfill_enum).call()
+        data_str = ipfs_cat(data)
+        data = json.loads(data_str)
+
+        # validation
+        if 'Failed to get block' in data_str:
+            raise IPFSCantConnectException("Failed to connect to IPFS")
+
         fulfillments.append({
             'id': fulfill_enum,
             'accepted': accepted,
             'fulfiller': fulfiller,
-            'data': json.loads(ipfs_cat(data)),
-            })
+            'data': data,
+        })
 
+    # validation
+    if 'Failed to get block' in bounty_data_str:
+        raise IPFSCantConnectException("Failed to connect to IPFS")
+
+    # assemble the data
     bounty = {
         'id': bounty_enum,
         'issuer': issuer,
@@ -160,7 +179,7 @@ def get_bounty(bounty_enum, network):
         'paysTokens': paysTokens,
         'bountyStage': bountyStage,
         'balance': balance,
-        'data': json.loads(ipfs_cat(bountydata)),
+        'data': bounty_data,
         'arbiter': arbiter,
         'token': token,
         'fulfillments': fulfillments,
@@ -173,15 +192,16 @@ def get_bounty(bounty_enum, network):
 def process_bounty(bounty_data):
     did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
 
-    if did_change:
-        print(f"- processing changes, {old_bounty} => {new_bounty}")
-        process_bounty_changes(old_bounty, new_bounty, None)
+    if did_change and new_bounty:
+        _from = old_bounty.pk if old_bounty else None
+        print(f"- processing changes, {_from} => {new_bounty.pk}")
+        process_bounty_changes(old_bounty, new_bounty)
 
     return did_change, old_bounty, new_bounty
 
 
 def has_tx_mined(txid, network):
-    web3 = getWeb3(network)
+    web3 = get_web3(network)
     try:
         transaction = web3.eth.getTransaction(txid)
         return transaction.blockHash != HexBytes('0x0000000000000000000000000000000000000000000000000000000000000000')
@@ -189,9 +209,9 @@ def has_tx_mined(txid, network):
         return False
 
 
-def getBountyID(issueURL, network):
-    issueURL = normalizeURL(issueURL)
-    bounty_id = getBountyID_from_db(issueURL, network)
+def get_bounty_id(issue_url, network):
+    issue_url = normalizeURL(issue_url)
+    bounty_id = get_bounty_id_from_db(issue_url, network)
     if bounty_id:
         return bounty_id
 
@@ -199,27 +219,27 @@ def getBountyID(issueURL, network):
 
     methodology = 'start_from_web3_latest'
     try:
-        highest_known_bounty_id = getHighestKnownBountyID(network)
-        bounty_id = getBountyID_from_web3(issueURL, network, highest_known_bounty_id, direction='down')
+        highest_known_bounty_id = get_highest_known_bounty_id(network)
+        bounty_id = get_bounty_id_from_web3(issue_url, network, highest_known_bounty_id, direction='down')
     except NoBountiesException:
         methodology = 'start_from_db'
         last_known_bounty_id = 0
         if all_known_stdbounties.exists():
             last_known_bounty_id = all_known_stdbounties.first().standard_bounties_id
-        bounty_id = getBountyID_from_web3(issueURL, network, last_known_bounty_id, direction='up')
+        bounty_id = get_bounty_id_from_web3(issue_url, network, last_known_bounty_id, direction='up')
 
     return bounty_id
 
 
-def getBountyID_from_db(issueURL, network):
-    issueURL = normalizeURL(issueURL)
-    bounties = Bounty.objects.filter(github_url=issueURL, network=network, web3_type='bounties_network')
+def get_bounty_id_from_db(issue_url, network):
+    issue_url = normalizeURL(issue_url)
+    bounties = Bounty.objects.filter(github_url=issue_url, network=network, web3_type='bounties_network')
     if not bounties.exists():
         return None
     return bounties.first().standard_bounties_id
 
 
-def getHighestKnownBountyID(network):
+def get_highest_known_bounty_id(network):
     standard_bounties = getBountyContract(network)
     num_bounties = int(standard_bounties.functions.getNumBounties().call())
     if num_bounties == 0:
@@ -227,9 +247,9 @@ def getHighestKnownBountyID(network):
     return num_bounties - 1
 
 
-def getBountyID_from_web3(issueURL, network, start_bounty_id, direction='up'):
-    issueURL = normalizeURL(issueURL)
-    web3 = getWeb3(network)
+def get_bounty_id_from_web3(issue_url, network, start_bounty_id, direction='up'):
+    issue_url = normalizeURL(issue_url)
+    web3 = get_web3(network)
 
     # iterate through all the bounties
     bounty_enum = start_bounty_id
@@ -238,10 +258,10 @@ def getBountyID_from_web3(issueURL, network, start_bounty_id, direction='up'):
         try:
 
             # pull and process each bounty
-            print(f'** getBountyID_from_web3; looking at {bounty_enum}')
+            print(f'** get_bounty_id_from_web3; looking at {bounty_enum}')
             bounty = get_bounty(bounty_enum, network)
             url = bounty.get('data', {}).get('payload', {}).get('webReferenceURL', False)
-            if url == issueURL:
+            if url == issue_url:
                 return bounty['id']
 
         except BountyNotFoundException:
@@ -270,5 +290,6 @@ def build_profile_pairs(bounty):
     """
     profile_handles = []
     for fulfillment in bounty.fulfillments.select_related('profile').all().order_by('pk'):
-        profile_handles.append((fulfillment.profile.handle, fulfillment.profile.absolute_url))
+        if fulfillment.profile and fulfillment.profile.handle and fulfillment.profile.absolute_url:
+            profile_handles.append((fulfillment.profile.handle, fulfillment.profile.absolute_url))
     return profile_handles

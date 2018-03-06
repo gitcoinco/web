@@ -25,6 +25,7 @@ from django.utils import timezone
 
 import premailer
 from marketing.utils import get_or_save_email_subscriber
+from retail.utils import strip_double_chars, strip_html
 
 ### RENDERERS
 
@@ -177,8 +178,45 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
     return response_html, response_txt
 
 
+## ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
+
+    subject = "Gitcoin Weekly | ETHDenver Wrap Up Edition! 🌄"
+
+    intro = '''
+
+<p>
+    Hi there.
+</p>
+<p>
+    It was great meeting many of you at <a href="https://ethdenver.com">ETHDenver</a> this past weekend.  ETHDenver was a 1200 person hackathon with dozens of new teams formed during the weekend; and Gitcoin is proud to say that <a href="https://medium.com/gitcoin/gitcoin-ethdenver-wrap-up-cc52d9874b38">we sponosored bounties for much of what was built there!</a>.  We are also happy to show off <a href="https://medium.com/gitcoin/coloradocoin-ethdenver-wrap-up-94fabb667c61">ColoradoCoin</a> -- a physical Ethereum ERC20 token that was built using Gitcoin bounties.
+</p>
+<p>
+    What else is new?  
+    <ul>
+        <li>
+            <a href="https://medium.com/gitcoin/post-mortem-production-issues-2018-02-20-3b4bb4ea003e">
+                Post Mortem — Production Issues 2018/02/20
+            </a>
+        </li>
+        <li>
+            <a href="https://medium.com/gitcoin/oss-today-some-wins-some-losses-89d1ab46ceb6">
+                OSS Today -- Some Wins, Some Losses
+            </a>
+        </li>
+        <li>
+            <a href="https://gitcoin.co/community">
+                gitcoin.co/community - An index of community calls since Gitcoin was started
+            </a>
+        </li>
+    </ul>
+</p>
+<p>
+    I hope to see you <a href="https://gitcoin.co/slack">on slack</a>, or on the community livestream this Friday at 3pm MST ! 🤖
+</p>
+
+'''
 
     bounties = [
         {
@@ -186,27 +224,54 @@ def render_new_bounty_roundup(to_email):
             'primer': 'This is a big one, and even better, its from the Metamask team! ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/gitcoinco/web/issues/445'),
-            'primer': 'Want to help tune the UX on Gitcoin?  Here\'s an opppy to do just that 👇\' ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/TrustWallet/trust-wallet-ios/issues/367'),
+            'primer': 'Trust wallet is new to the Gitcoin platform.  Let\'s show them we\'re here to help! 👇\' ~ @owocki',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/browser-solidity/issues/210'),
-            'primer': 'Want to do some work for the Ethereum Foundation?  This issue is for you  ~ @owocki',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MarketProject/Dapp/issues/53'),
+            'primer': 'Market Protocol has a $300 bounty up;  Good oppy to play with the Binance API.  ~ @owocki',
+        },
+        {
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MetaMask/metamask-extension/issues/3133'),
+            'primer': 'Last, but certainly not least -- Metamask has a new bounty up!  ~ @owocki',
+        },
+    ]
+    highlights = [
+        {
+            'who': 'thelostone-mc',
+            'what': 'doing XYZ - ABC.',
+            'link': 'https://github.com/GridPlus/cryptobridge-contracts/issues/11',
+            'link_copy': 'View more here',
+        },
+        {
+            'who': 'vs77bb',
+            'what': 'doing XYZ to the ZBC.',
+            'link': 'https://github.com/GridPlus/cryptobridge-contracts/issues/11',
+            'link_copy': 'View more here',
+        },
+        {
+            'who': 'Demetri',
+            'what': 'doing foo to the bar and doing a great job at ',
+            'link': 'https://github.com/GridPlus/cryptobridge-contracts/issues/11',
+            'link_copy': 'View the PR here here.',
         },
     ]
 
     params = {
+        'intro': intro,
+        'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
         'bounties': bounties,
         'override_back_color': '#15003e',
         'invert_footer': True,
         'hide_header': True,
+        'highlights': highlights,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
     response_txt = render_to_string("emails/bounty_roundup.txt", params)
 
-    return response_html, response_txt
+    return response_html, response_txt, subject
 
 
 ### DJANGO REQUESTS
@@ -316,5 +381,5 @@ def start_work_expire_warning(request):
 
 @staff_member_required
 def roundup(request):
-    response_html, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
+    response_html, txt, subject = render_new_bounty_roundup(settings.CONTACT_EMAIL)
     return HttpResponse(response_html)

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import json
+import logging
 from datetime import timedelta
 from urllib.parse import quote_plus, urlencode
 
@@ -26,8 +27,10 @@ from django.utils import timezone
 
 import dateutil.parser
 import requests
-import rollbar
+from app.rollbar import rollbar
 from rest_framework.reverse import reverse
+
+logger = logging.getLogger(__name__)
 
 _AUTH = (settings.GITHUB_API_USER, settings.GITHUB_API_TOKEN)
 BASE_URI = settings.BASE_URL.rstrip('/')
@@ -307,9 +310,11 @@ def delete_issue_comment(comment_id, owner, repo):
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
     try:
         response = requests.delete(url, auth=_AUTH)
+        return response.json()
+    except ValueError:
+        logger.error(f"could not delete issue comment because JSON response could not be decoded: {comment_id}, {owner}, {repo}.  {response.status_code}, {response.text} ")
     except Exception:
         return {}
-    return response.json()
 
 
 def post_issue_comment_reaction(owner, repo, comment_id, content):

@@ -335,7 +335,7 @@ $(document).ready(function(){
             var url = '/sync/search_save';
             $.post(url, {
                 email: email,
-                raw_data, raw_data,
+                raw_data: raw_data,
             }, function(response){
                 var status = response['status'];
                 if(status == 200){

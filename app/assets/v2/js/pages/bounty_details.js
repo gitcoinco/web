@@ -52,6 +52,7 @@ var rows = [
     'value_in_token',
     'value_in_eth',
     'value_in_usdt',
+    'token_value_in_usdt',
     'web3_created',
     'status',
     'bounty_owner_address',
@@ -74,7 +75,7 @@ var heads = {
 var callbacks = {
     'github_url': link_ize,
     'value_in_token': function(key, val, result){
-        return [ 'amount', Math.round((parseInt(val) / 10**document.decimals) * 1000) / 1000 + " " + result['token_name']];
+        return [ 'amount', Math.round((parseInt(val) / Math.pow(10, document.decimals)) * 1000) / 1000 + " " + result['token_name']];
     },
     'avatar_url': function(key, val, result){
         return [ 'avatar', '<a href="/profile/'+result['org_name']+'"><img class=avatar src="'+val+'"></a>'];
@@ -128,6 +129,13 @@ var callbacks = {
         }
         return [ "Amount_usd" , val];
     },
+    'token_value_in_usdt': function(key, val, result){
+        if(val == null){
+            $('#value_in_usdt_wrapper').addClass('hidden');
+            return [null, null];
+        }
+        return [ "Token_amount_usd" , "$" + val + "/" + result['token_name']];
+    },
     'web3_created': function(key, val, result){
         return [ "updated" , timeDifference(new Date(result['now']), new Date(result['created_on']))];
     },
@@ -161,6 +169,7 @@ var showWarningMessage = function (txid) {
         $('#transaction_url').attr("href", link_url);
     }
 
+    $(".left-rails").hide();
     $("#bounty_details").hide();
     $("#bounty_detail").hide();
 
@@ -200,7 +209,7 @@ var wait_for_tx_to_mine_and_then_ping_server = function(){
                     if(response.status == "200"){
                         console.log("success from sync/web", response);
 
-                        // clear local data 
+                        // clear local data
                         localStorage[document.issueURL] = "";
                         document.location.href = document.location.href;
                     } else {
@@ -344,8 +353,10 @@ pull_interest_list(result['pk'], function(is_interested){
     }
     actions.push(entry);
 
-    var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
-    if(is_expired){
+    var is_date_expired = (new Date(result['now']) > new Date(result['expires_date']));
+    var is_status_expired = result['status']=='expired';
+    var is_status_done = result['status']=='done';
+    if(!is_status_done && !is_status_expired){
         var enabled = isBountyOwner(result);
         var entry = {
             href: '/funding/kill?source='+result['github_url'],
@@ -358,9 +369,9 @@ pull_interest_list(result['pk'], function(is_interested){
         actions.push(entry);
     }
 
-    render_actions(actions);     
+    render_actions(actions);
 
-    });  
+    });
 }
 
 var render_actions = function(actions){
@@ -369,11 +380,11 @@ var render_actions = function(actions){
         var tmpl = $.templates("#action");
         var html = tmpl.render(actions[l]);
         $("#"+target).append(html);
-    };      
+    };
 }
 
 var pull_bounty_from_api = function(){
-    var uri = '/actions/api/v0.1/bounties/?';
+    var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
     $.get(uri, function(results){
         results = sanitizeAPIResults(results);
         var nonefound = true;
@@ -405,7 +416,7 @@ var pull_bounty_from_api = function(){
             $("#primary_view").css('display','none');
     }).always(function(){
         $('.loading').css('display', 'none');
-    });        
+    });
 }
 
 var render_fulfillments = function(result){
@@ -428,7 +439,7 @@ var render_fulfillments = function(result){
                 'fulfiller': value,
                 'button': acceptButton,
             };
-
+            submission['fulfiller']['created_on'] = timeDifference(new Date(), new Date(submission['fulfiller']['created_on']));
             var submitter_tmpl = $.templates("#submission");
             var submitter_html = submitter_tmpl.render(submission);
 
@@ -493,5 +504,3 @@ var main = function(){
 window.addEventListener('load', function() {
     main();
 });
-
-
