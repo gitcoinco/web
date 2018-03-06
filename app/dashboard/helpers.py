@@ -361,12 +361,14 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
     with transaction.atomic():
         old_bounties = old_bounties.distinct().order_by('created_on')
+        latest_old_bounty = None
         for old_bounty in old_bounties:
             if old_bounty.current_bounty:
                 submissions_comment_id = old_bounty.submissions_comment
                 interested_comment_id = old_bounty.interested_comment
             old_bounty.current_bounty = False
             old_bounty.save()
+            latest_old_bounty = old_bounty
         try:
             new_bounty = Bounty.objects.create(
                 title=bounty_payload.get('title', ''),
@@ -411,8 +413,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 new_bounty.save()
 
             # Pull the interested parties off the last old_bounty
-            if old_bounties:
-                for interest in old_bounties.last().interested.all():
+            if latest_old_bounty:
+                for interest in latest_old_bounty.interested.all():
                     new_bounty.interested.add(interest)
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
