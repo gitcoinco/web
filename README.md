@@ -18,6 +18,8 @@ This is the website that is live at gitcoin.co
 
 [Star](https://github.com/gitcoinco/web/stargazers) and [watch](https://github.com/gitcoinco/web/watchers) this github repository to stay up to date, we're pushing new code several times per week!
 
+Check out the [CHANGELOG](./CHANGELOG.md) for details about recent changes to this repository.
+
 Also,
 
 * want to become a contributor ? Checkout our [guidelines](./docs/CONTRIBUTING.md).
