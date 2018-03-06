@@ -132,6 +132,7 @@ var callbacks = {
     },
     'token_value_in_usdt': function(key, val, result){
         if(val == null){
+            $('#value_in_usdt_wrapper').addClass('hidden');
             return [null, null];
         }
         return [ "Token_amount_usd" , "$" + val + "/" + result['token_name']];

@@ -110,29 +110,31 @@
                         {% endif %}
                         <form id=whitepaper  method=POST>
                             <div class="form-group">
-                                <label for="email">Email address</label>
-                                <input type=text name=email class=form-control placeholder='you@somewhere'  value="{{email}}" required>
-                                <small id="emailHelp" class="form-text text-muted">Gitcoin will never share your email with anyone else.</small>
+                                <label class="form__label" for="email">Email address</label>
+                                <input type=text name=email class="form__input" placeholder='you@somewhere'  value="{{email}}" required>
+                                <small id="emailHelp" class="form__input-help">Gitcoin will never share your email with anyone else.</small>
                             </div>
                             <div class="form-group">
-                            <label for="role">Interested as a</label>
-                                <select multiple class="form-control" id="role" name="role"  required>
-                                  <option>Open Source Developer</option>
-                                  <option>Open Source Repo Maintainer</option>
-                                  <option>Token Purchaser</option>
-                                  <option>Press</option>
-                                  <option>Advisor</option>
-                                  <option>Other</option>
-                                </select>
-                                <small id="role" class="form-text text-muted">Feel free to select more than one.</small>
+                                <label class="form__label" for="role">Interested as a</label>
+                                <div class="form__select">
+                                    <select multiple class="form-control" id="role" name="role"  required>
+                                        <option>Open Source Developer</option>
+                                        <option>Open Source Repo Maintainer</option>
+                                        <option>Token Purchaser</option>
+                                        <option>Press</option>
+                                        <option>Advisor</option>
+                                        <option>Other</option>
+                                    </select>
+                                </div>
+                                <small id="role" class="form__input-help">Feel free to select more than one.</small>
                             </div>
                             <div class="form-group">
-                                <label for="comments">Comments</label>
-                                <textarea class="form-control" id="comments" name="comments" rows="3" required>{{comments}}</textarea>
-                                <small id="comments" class="form-text text-muted">Who are you?  What is your interest in the whitepaper?</small>
+                                <label class="form__label" for="comments">Comments</label>
+                                <textarea class="form__input" id="comments" name="comments" rows="3" required>{{comments}}</textarea>
+                                <small id="comments" class="form__input-help">Who are you?  What is your interest in the whitepaper?</small>
                             </div>
                             {% csrf_token %}
-                            <input class='btn btn-sm btn-success' type='submit' name='submit' value="Go">
+                            <input class='button button--primary' type='submit' name='submit' value="Go">
                         </form>
 
                         {% endblock %}

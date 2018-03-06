@@ -267,6 +267,10 @@ def bounty_did_change(bounty_id, new_bounty_details):
     old_bounties = Bounty.objects.none()
     network = new_bounty_details['network']
     try:
+        # IMPORTANT -- if you change the criteria for deriving old_bounties
+        # make sure it is updated in dashboard.helpers/bounty_did_change
+        # AND
+        # refresh_bounties/handle
         old_bounties = Bounty.objects.filter(standard_bounties_id=bounty_id, network=network).order_by('-created_on')
 
         if old_bounties.exists():

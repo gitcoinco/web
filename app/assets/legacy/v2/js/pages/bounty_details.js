@@ -64,7 +64,8 @@ var rows = [
   'experience_level',
   'project_length',
   'bounty_type',
-  'expires_date'
+  'expires_date',
+  'token_value_in_usdt'
 ];
 var heads = {
   'avatar_url': 'Issue',
@@ -132,6 +133,12 @@ var callbacks = {
       return [ null, null ];
     }
     return [ 'Amount_usd', val ];
+  },
+  'token_value_in_usdt': function(key, val, result) {
+    if (val === null) {
+      return [ null, null ];
+    }
+    return [ 'Token_amount_usd', '$' + val + '/' + result['token_name'] ];
   },
   'web3_created': function(key, val, result) {
     return [ 'updated', timeDifference(new Date(result['now']), new Date(result['created_on'])) ];
