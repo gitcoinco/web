@@ -20,6 +20,7 @@ from django.conf import settings
 from django.utils import timezone
 
 import sendgrid
+from economy.utils import convert_token_to_usdt
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from retail.emails import (
     render_bounty_expire_warning, render_bounty_startwork_expire_warning, render_match_email, render_new_bounty,
@@ -95,7 +96,8 @@ def new_bounty(bounty, to_emails=None):
     if to_emails is None:
         to_emails = []
 
-    subject = "⚡️ New Funded Issue Match worth ${} ({})".format(bounty.value_in_usdt, bounty.keywords)
+    subject = f"⚡️ New Funded Issue Match worth {bounty.value_in_usdt} USD @ " \
+              f"${convert_token_to_usdt(bounty.token_name)}/{bounty.token_name} {bounty.keywords})"
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
@@ -109,9 +111,8 @@ def weekly_roundup(to_emails=None):
     if to_emails is None:
         to_emails = []
 
-    subject = "Gitcoin Weekly | See you at ETHDenver! 🌄"
     for to_email in to_emails:
-        html, text = render_new_bounty_roundup(to_email)
+        html, text, subject = render_new_bounty_roundup(to_email)
         from_email = settings.PERSONAL_CONTACT_EMAIL
 
         if not should_suppress_notification_email(to_email):

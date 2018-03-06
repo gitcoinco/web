@@ -270,7 +270,11 @@ def bounties_fulfilled_pct():
 def joe_dominance_index():
     from dashboard.models import Bounty
 
-    joe_addresses = ['0x4331B095bC38Dc3bCE0A269682b5eBAefa252929'.lower(),'0xe93d33CF8AaF56C64D23b5b248919EabD8c3c41E'.lower()]
+    joe_addresses = ['0x4331B095bC38Dc3bCE0A269682b5eBAefa252929'.lower(),'0xe93d33CF8AaF56C64D23b5b248919EabD8c3c41E'.lower()] #kevin
+    joe_addresses = joe_addresses + ['0x28e21609ca8542Ce5A363CBf339529204b043eDe'.lower()] #eric
+    joe_addresses = joe_addresses + ['0x60206c1F2B51Ac470cB0f71323474f7f9e4772e1'.lower()] #vivek
+    joe_addresses = joe_addresses + ['0x93d0deF1d76B510e2a7A6d01Cf18c54ec23f4253'.lower()] #mark beacom
+    joe_addresses = joe_addresses + ['0x58dC037f0A5c6C03D0f9477aea3198648CF0D263'.lower()] #alisa
 
     for days in [7,30,90,360]:
         all_bounties = Bounty.objects.filter(current_bounty=True,web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))

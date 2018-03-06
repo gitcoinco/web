@@ -32,7 +32,7 @@ from django.utils import timezone
 import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
-from economy.utils import convert_amount
+from economy.utils import convert_amount, convert_token_to_usdt
 from github.utils import _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, org_name
 from rest_framework import serializers
 from web3 import Web3
@@ -115,6 +115,7 @@ class Bounty(SuperModel):
     interested = models.ManyToManyField('dashboard.Interest', blank=True)
     interested_comment = models.IntegerField(null=True, blank=True)
     submissions_comment = models.IntegerField(null=True, blank=True)
+    override_status = models.CharField(max_length=255, blank=True)
 
     objects = BountyQuerySet.as_manager()
 
@@ -256,6 +257,8 @@ class Bounty(SuperModel):
             str: The status of the Bounty.
 
         """
+        if self.override_status:
+            return self.override_status
         if self.is_legacy:
             # TODO: Remove following full deprecation of legacy bounties
             try:
@@ -314,6 +317,10 @@ class Bounty(SuperModel):
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except Exception:
             return None
+
+    @property
+    def token_value_in_usdt(self):
+        return round(convert_token_to_usdt(self.token_name), 2)
 
     @property
     def desc(self):
@@ -486,21 +493,21 @@ class Tip(SuperModel):
     tokenName = models.CharField(max_length=255)
     tokenAddress = models.CharField(max_length=255)
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
-    comments_priv = models.TextField(default='')
-    comments_public = models.TextField(default='')
+    comments_priv = models.TextField(default='', blank=True)
+    comments_public = models.TextField(default='', blank=True)
     ip = models.CharField(max_length=50)
     expires_date = models.DateTimeField()
-    github_url = models.URLField(null=True)
-    from_name = models.CharField(max_length=255, default='')
-    from_email = models.CharField(max_length=255, default='')
-    from_username = models.CharField(max_length=255, default='')
+    github_url = models.URLField(null=True, blank=True)
+    from_name = models.CharField(max_length=255, default='', blank=True)
+    from_email = models.CharField(max_length=255, default='', blank=True)
+    from_username = models.CharField(max_length=255, default='', blank=True)
     username = models.CharField(max_length=255, default='') #to username
     network = models.CharField(max_length=255, default='')
     txid = models.CharField(max_length=255, default='')
-    receive_txid = models.CharField(max_length=255, default='')
-    received_on = models.DateTimeField(null=True)
-    from_address = models.CharField(max_length=255, default='')
-    receive_address = models.CharField(max_length=255, default='')
+    receive_txid = models.CharField(max_length=255, default='', blank=True)
+    received_on = models.DateTimeField(null=True, blank=True)
+    from_address = models.CharField(max_length=255, default='', blank=True)
+    receive_address = models.CharField(max_length=255, default='', blank=True)
 
     def __str__(self):
         """Return the string representation for a tip."""
@@ -534,6 +541,11 @@ class Tip(SuperModel):
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except Exception:
             return None
+
+    # TODO: DRY
+    @property
+    def token_value_in_usdt(self):
+        return round(convert_token_to_usdt(self.token_name), 2)
 
     @property
     def status(self):
@@ -688,7 +700,7 @@ class Profile(SuperModel):
         bounties = Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True)
         for interested in self.interested.all():
             bounties = bounties | Bounty.objects.filter(interested=interested, current_bounty=True)
-        bounties = bounties | Bounty.objects.filter(pk__in=fulfilled_bounty_ids)
+        bounties = bounties | Bounty.objects.filter(pk__in=fulfilled_bounty_ids, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(github_url__in=[url for url in self.tips.values_list('github_url', flat=True)], current_bounty=True)
         return bounties.order_by('-web3_created')

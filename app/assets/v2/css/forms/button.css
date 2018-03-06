@@ -1,0 +1,35 @@
+.button {
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: 'Muli', sans-serif;
+  padding: 10px 20px;
+  -webkit-appearance: none;
+}
+
+.button:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+.button:disabled,
+.button:disabled:hover {
+  background-color: rgba(79, 79, 79, 0.26);
+  box-shadow: none;
+  color: rgba(0, 0, 0, 0.26);
+}
+
+.button--primary {
+  background-color: #0D0764;
+}
+
+.button--primary:hover {
+  background-color: #280076;
+}
+
+.button--primary:active {
+  background-color: #1B0050;
+}

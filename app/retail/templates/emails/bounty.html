@@ -108,7 +108,7 @@
                 <span>
                     {{bounty.value_true}} {{bounty.token_name}}
                     {% if bounty.value_in_usdt %}
-                        (about ${{bounty.value_in_usdt}} USDT)
+                        (about {{bounty.value_in_usdt}} USD @ ${{bounty.token_value_in_usdt}}/{{bounty.token_name}})
                     {% endif %}
                 </span>
             </td>

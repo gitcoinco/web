@@ -18,169 +18,206 @@
 {% load static %}
             <div class="d-flex flex-column align-items-center sidebar_search">
                 <form>
-
-                    <div class="rowcol d-flex flex-column mt-5">
+                    <div class="rowcol d-flex flex-column mt-4">
                         <div class="dash-filter-header mb-2" title='{%include "shared/status_tooltip.html" %}'>Status <img style="max-width: 15px;" src="{% static "v2/images/icons/info.png" %}"></div>
-                        <div class="d-flex flex-column ml-3">
+                        <div class="d-flex flex-column">
                             <div class="d-flex align-items-center form-line mb-2">
-                                <input name="idx_status" id="status_open" type="radio" value="open" val-ui='Open' checked />
-                                <div class="dash-filter-label ml-2">
-                                    <label for=status_open>1. Open</label>
+                                <div class="form__radio">
+                                    <input name="idx_status" id="status_open" type="radio" value="open" val-ui='Open' checked />
+                                    <label for="status_open">1. Open</label>
                                 </div>
                             </div>
 
                             <div class="d-flex align-items-center form-line mb-2">
-                                <input name="idx_status" id="status_started" type="radio" value="started" val-ui='Started' />
-                                <div class="dash-filter-label ml-2">
-                                    <label for=status_started>2. Work Started</label>
+                                <div class="form__radio">
+                                    <input name="idx_status" id="status_started" type="radio" value="started" val-ui='Started' />
+                                    <label for="status_started">2. Work Started</label>
                                 </div>
                             </div>
 
                             <div class="d-flex align-items-center form-line mb-2">
-                                <input name="idx_status" id="status_submitted" type="radio" value="submitted" val-ui='Submitted' />
-                                <div class="dash-filter-label ml-2">
-                                    <label for=status_submitted>3. Work Submitted</label>
+                                <div class="form__radio">
+                                    <input name="idx_status" id="status_submitted" type="radio" value="submitted" val-ui='Submitted' />
+                                    <label for="status_submitted">3. Work Submitted</label>
                                 </div>
                             </div>
 
                             <div class="d-flex align-items-center form-line mb-2">
+                                <div class="form__radio">
                                 <input name="idx_status" id="status_done" type="radio" value="done" val-ui='Done' />
-                                <div class="dash-filter-label ml-2">
-                                    <label for=status_done>4. Work Done</label>
+                                    <label for="status_done">4. Work Done</label>
                                 </div>
                             </div>
 
                             <div class="d-flex align-items-center form-line mb-2">
-                                <input name="idx_status" id="status_expired" type="radio" value="expired" val-ui='Expired' />
-                                <div class="dash-filter-label ml-2">
-                                    <label for=status_expired>5. Expired</label>
+                                <div class="form__radio">
+                                    <input name="idx_status" id="status_expired" type="radio" value="expired" val-ui='Expired' />
+                                    <label for="status_expired">5. Expired</label>
                                 </div>
                             </div>
 
                             <div class="d-flex align-items-center form-line mb-2">
-                                <input name="idx_status" id="status_canceled" type="radio" value="cancelled" val-ui='Cancelled' />
-                                <div class="dash-filter-label ml-2">
-                                    <label for=status_canceled>6. Cancelled</label>
+                                <div class="form__radio">
+                                    <input name="idx_status" id="status_canceled" type="radio" value="cancelled" val-ui='Cancelled' />
+                                    <label for="status_canceled">6. Cancelled</label>
                                 </div>
                             </div>
 
 
                             <div class="d-flex align-items-center form-line  mb-2">
-                                <input name="idx_status" id="any_status" type="radio" value="any" />
-                                <div class="dash-filter-label ml-2"><label for=any_status>Any</label></div>
+                                <div class="form__radio">
+                                    <input name="idx_status" id="any_status" type="radio" value="any" />
+                                    <label for="any_status">Any</label>
+                                </div>
                             </div>
 
                         </div>
                     </div>
 
-
-                    <div class="rowcol d-flex flex-column  mt-5">
+                    <div class="rowcol d-flex flex-column mt-4">
                         <div class="dash-filter-header mb-2">Experience Level</div>
-                        <div class="d-flex flex-column ml-3">
+                        <div class="d-flex flex-column">
                             <div class="d-flex align-items-center form-line mb-2">
-                                <input name="experience_level" id="beginner" type="radio" value="beginner" val-ui='Beginner' />
-                                <div class="dash-filter-label ml-2"><label for=beginner>Beginner</label></div>
-                            </div>
-                            <div class="d-flex align-items-center form-line  mb-2">
-                                <input name="experience_level" id="intermediate" type="radio" value="intermediate" val-ui='Intermediate' />
-                                <div class="dash-filter-label ml-2"><label for=intermediate>Intermediate</label></div>
-                            </div>
-                            <div class="d-flex align-items-center form-line  mb-2">
-                                <input name="experience_level" id="advanced" type="radio" value="advanced" val-ui='Advanced' />
-                                <div class="dash-filter-label ml-2"><label for=advanced>Advanced</label></div>
-                            </div>
-                            <div class="d-flex align-items-center form-line  mb-2">
-                                <input name="experience_level" id="any_xp" type="radio" value="any" checked />
-                                <div class="dash-filter-label ml-2"><label for=any_xp>Any</label></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="rowcol d-flex flex-column mt-5">
-                        <div class="dash-filter-header mb-2">Project Length</div>
-                        <div class="d-flex flex-column ml-3">
-                            <div class="d-flex align-items-center form-line mb-2">
-                                <input name="project_length" id="hours" type="radio" value="hours" val-ui='Hours-Long' />
-                                <div class="dash-filter-label ml-2"><label for=hours>Hours</label></div>
-                            </div>
-                            <div class="d-flex align-items-center form-line mb-2">
-                                <input name="project_length" id="days" type="radio" value="days" val-ui='Days-Long' />
-                                <div class="dash-filter-label ml-2"><label for=days>Days</label></div>
-                            </div>
-                            <div class="d-flex align-items-center form-line mb-2">
-                                <input name="project_length" id="weeks" type="radio"  value="weeks" val-ui='Weeks-Long' />
-                                <div class="dash-filter-label ml-2"><label for=weeks>Weeks</label></div>
-                            </div>
-                            <div class="d-flex align-items-center form-line  mb-2">
-                                <input name="project_length" id="months" type="radio"  value="months" val-ui='Months-Long' />
-                                <div class="dash-filter-label ml-2"><label for=months>Months</label></div>
-                            </div>
-                            <div class="d-flex align-items-center form-line  mb-2">
-                                <input name="project_length" id="any_length" type="radio" value="any" checked />
-                                <div class="dash-filter-label ml-2"><label for=any_length>Any</label></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="rowcol d-flex flex-column mt-5 text-left">
-                        <div class="dash-filter-header mb-2">Type</div>
-                        <div class="d-flex flex-column ml-3">
-                            <div class="d-flex align-items-center form-line mb-2">
-                                <input name="bounty_type" id="bug" type="radio" value="bug" val-ui='Bug' />
-                                <div class="dash-filter-label ml-2"><label for=bug>Bug</label></div>
-                            </div>
-                            <div class="d-flex align-items-center form-line  mb-2">
-                                <input name="bounty_type" id="feature" type="radio" value="feature" val-ui='Feature' />
-                                <div class="dash-filter-label ml-2"><label for=feature>Feature</label></div>
-                            </div>
-                            <div class="d-flex align-items-center form-line  mb-2">
-                                <input name="bounty_type" id="security" type="radio" value="security" val-ui='Security' />
-                                <div class="dash-filter-label ml-2"><label for=security>Security</label></div>
-                            </div>
-                            <div class="d-flex align-items-center form-line  mb-2">
-                                <input name="bounty_type" id="any_bt" type="radio" value="any" checked />
-                                <div class="dash-filter-label ml-2"><label for=any_bt>Any</label></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="rowcol d-flex flex-column  mt-5">
-                        <div class="dash-filter-header mb-2">Other Filters</div>
-                        <div class="d-flex flex-column ml-3">
-                            <div class="d-flex align-items-center form-line mb-2">
-                                <input name="bounty_filter" id="Myself" type="radio" value="myself" val-ui='Submitted by Me' />
-                                <div class="dash-filter-label ml-2">
-                                    <label for=Myself>Submitted By Myself</label>
+                                <div class="form__radio">
+                                    <input name="experience_level" id="beginner" type="radio" value="beginner" val-ui='Beginner' />
+                                    <label for="beginner">Beginner</label>
                                 </div>
                             </div>
                             <div class="d-flex align-items-center form-line  mb-2">
-                                <input name="bounty_filter" id="any_author" type="radio" value="any" checked />
-                                <div class="dash-filter-label ml-2"><label for=any_author>Any</label></div>
+                                <div class="form__radio">
+                                    <input name="experience_level" id="intermediate" type="radio" value="intermediate" val-ui='Intermediate' />
+                                    <label for="intermediate">Intermediate</label>
+                                </div>
                             </div>
-
+                            <div class="d-flex align-items-center form-line  mb-2">
+                                <div class="form__radio">
+                                    <input name="experience_level" id="advanced" type="radio" value="advanced" val-ui='Advanced' />
+                                    <label for=advanced>Advanced</label>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center form-line  mb-2">
+                                <div class="form__radio">
+                                    <input name="experience_level" id="any_xp" type="radio" value="any" checked />
+                                    <label for=any_xp>Any</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rowcol d-flex flex-column mt-4">
+                        <div class="dash-filter-header mb-2">Project Length</div>
+                        <div class="d-flex flex-column">
+                            <div class="d-flex align-items-center form-line mb-2">
+                                <div class="form__radio">
+                                    <input name="project_length" id="hours" type="radio" value="hours" val-ui='Hours-Long' />
+                                    <label for="hours">Hours</label>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center form-line mb-2">
+                                <div class="form__radio">
+                                    <input name="project_length" id="days" type="radio" value="days" val-ui='Days-Long' />
+                                    <label for="days">Days</label>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center form-line mb-2">
+                                <div class="form__radio">
+                                    <input name="project_length" id="weeks" type="radio"  value="weeks" val-ui='Weeks-Long' />
+                                    <label for="weeks">Weeks</label>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center form-line  mb-2">
+                                <div class="form__radio">
+                                    <input name="project_length" id="months" type="radio"  value="months" val-ui='Months-Long' />
+                                    <label for="months">Months</label>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center form-line  mb-2">
+                                <div class="form__radio">
+                                    <input name="project_length" id="any_length" type="radio" value="any" checked />
+                                    <label for="any_length">Any</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rowcol d-flex flex-column mt-4">
+                        <div class="dash-filter-header mb-2">Type</div>
+                        <div class="d-flex flex-column">
+                            <div class="d-flex align-items-center form-line mb-2">
+                                <div class="form__radio">
+                                    <input name="bounty_type" id="bug" type="radio" value="bug" val-ui='Bug' />
+                                    <label for="bug">Bug</label>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center form-line mb-2">
+                                <div class="form__radio">
+                                    <input name="bounty_type" id="feature" type="radio" value="feature" val-ui='Feature' />
+                                    <label for="feature">Feature</label>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center form-line mb-2">
+                                <div class="form__radio">
+                                    <input name="bounty_type" id="security" type="radio" value="security" val-ui='Security' />
+                                    <label for="security">Security</label>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center form-line  mb-2">
+                                <div class="form__radio">
+                                    <input name="bounty_type" id="any_bt" type="radio" value="any" checked />
+                                    <label for="any_bt">Any</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="rowcol d-flex flex-column mt-5 text-left">
-                        <div class="dash-filter-header mb-2">Network</div>
-                        <div class="d-flex flex-column ml-3">
+                    <div class="rowcol d-flex flex-column mt-4">
+                        <div class="dash-filter-header mb-2">Other Filters</div>
+                        <div class="d-flex flex-column">
                             <div class="d-flex align-items-center form-line mb-2">
-                                <input name="network" id="local" type="radio" value="local" val-ui='Custom Network' />
-                                <div class="dash-filter-label ml-2"><label for=local>Custom</label></div>
+                                <div class="form__radio">
+                                    <input name="bounty_filter" id="Myself" type="radio" value="myself" val-ui='Submitted by Me' />
+                                    <label for="Myself">Submitted By Myself</label>
+                                </div>
                             </div>
                             <div class="d-flex align-items-center form-line  mb-2">
-                                <input name="network" id="ropsten" type="radio" value="ropsten" val-ui='Ropsten' />
-                                <div class="dash-filter-label ml-2"><label for=ropsten>Ropsten</label></div>
+                                <div class="form__radio">
+                                    <input name="bounty_filter" id="any_author" type="radio" value="any" checked />
+                                    <label for="any_author">Any</label>
+                                </div>
                             </div>
-                            <div class="d-flex align-items-center form-line  mb-2">
-                                <input name="network" id="rinkeby" type="radio" value="rinkeby" val-ui='Rinkeby' />
-                                <div class="dash-filter-label ml-2"><label for=rinkeby>Rinkeby</label></div>
+                        </div>
+                    </div>
+
+                    <div class="rowcol d-flex flex-column mt-4">
+                        <div class="dash-filter-header mb-2">Network</div>
+                        <div class="d-flex flex-column">
+                            <div class="d-flex align-items-center form-line mb-2">
+                                <div class="form__radio">
+                                    <input name="network" id="local" type="radio" value="local" val-ui='Custom Network' />
+                                    <label for="local">Custom</label>
+                                </div>
                             </div>
-                            <div class="d-flex align-items-center form-line  mb-2">
-                                <input name="network" id="mainnet" type="radio" value="mainnet" val-ui='Mainnet' checked />
-                                <div class="dash-filter-label ml-2"><label for=mainnet>Mainnet</label></div>
+                            <div class="d-flex align-items-center form-line mb-2">
+                                <div class="form__radio">
+                                    <input name="network" id="ropsten" type="radio" value="ropsten" val-ui='Ropsten' />
+                                    <label for="ropsten">Ropsten</label>
+                                </div>
                             </div>
-                            <div class="d-flex align-items-center form-line  mb-2">
-                                <input name="network" id="any_network" type="radio" value="any" />
-                                <div class="dash-filter-label ml-2"><label for=any_network>Any</label></div>
+                            <div class="d-flex align-items-center form-line mb-2">
+                                <div class="form__radio">
+                                    <input name="network" id="rinkeby" type="radio" value="rinkeby" val-ui='Rinkeby' />
+                                    <label for="rinkeby">Rinkeby</label>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center form-line mb-2">
+                                <div class="form__radio">
+                                    <input name="network" id="mainnet" type="radio" value="mainnet" val-ui='Mainnet' checked />
+                                    <label for="mainnet">Mainnet</label>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center form-line mb-2">
+                                <div class="form__radio">
+                                    <input name="network" id="any_network" type="radio" value="any" />
+                                    <label for="any_network">Any</label>
+                                </div>
                             </div>
                         </div>
                     </div>

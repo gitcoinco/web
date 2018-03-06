@@ -1,20 +1,22 @@
-'''
-    Copyright (C) 2017 Gitcoin Core
+# -*- coding: utf-8 -*-
+"""Define the management command to refresh bounty data.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
 
-'''
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+"""
 from django.core.management.base import BaseCommand
 
 from dashboard.models import Bounty
@@ -49,26 +51,30 @@ class Command(BaseCommand):
         for bounty in all_bounties:
 
             if bounty.current_bounty:
-
-                #stopgap to make sure that older versions of this bounty
+                # IMPORTANT -- if you change the criteria for deriving old_bounties
+                # make sure it is updated in dashboard.helpers/bounty_did_change
+                # AND
+                # refresh_bounties/handle
+                # stopgap to make sure that older versions of this bounty
                 # are marked as current_bounty=False
                 old_bounties = Bounty.objects.filter(
                     github_url=bounty.github_url,
-                    title=bounty.title,
                     current_bounty=True,
                     pk__lt=bounty.pk,
+                    network=bounty.network,
                 ).exclude(pk=bounty.pk).order_by('-created_on')
                 for old_bounty in old_bounties:
                     old_bounty.current_bounty = False
                     old_bounty.save()
-                    print("stopgap fixed old_bounty {}".format(old_bounty.pk))
+                    print('stopgap fixed old_bounty', old_bounty.pk)
 
                 if fetch_remote:
+                    bounty.fetch_issue_item('title')
                     bounty.fetch_issue_item()
                     bounty.fetch_issue_comments()
-                    print('1/ refreshed {}'.format(bounty.pk))
+                    print('1/ refreshed', bounty.pk')
 
             if not bounty.avatar_url:
                 bounty.avatar_url = bounty.get_avatar_url()
-                print('2/ refreshed {}'.format(bounty.pk))
+                print('2/ refreshed', bounty.pk)
             bounty.save()

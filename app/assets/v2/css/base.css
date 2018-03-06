@@ -481,12 +481,7 @@ body #mc_embed_signup label {
     margin-bottom: 50px;
 }
 
-.form_container input[type=text],
-.form_container select,
-.form_container textarea {
-    background-color: #eee;
-}
-
+textarea.loading,
 input[type=text].loading {
     background-image: url('/static/v2/images/loading_v2.gif');
     background-repeat: no-repeat;
@@ -689,7 +684,7 @@ body.bounty_details .col.body{
 }
 
 body.bounty_details .left_details {
-    text-align: right;
+    text-align: center;
 }
 
 body.bounty_details .avatar {
@@ -704,6 +699,7 @@ body.bounty_details .avatar {
 
 #bounty_details{
     display: none;
+    margin-bottom: 2em;
 }
 #bounty_details #issue_description img{
     max-width: 100%;
@@ -912,6 +908,10 @@ body.bounty_details #title {
     -o-filter: grayscale(0%);
 }
 
+.body {
+  padding-bottom: 4em;
+}
+
 .profile_details .dot {
     border-radius: 6px;
     width: 12px;
@@ -948,6 +948,7 @@ body.bounty_details #title {
     font-size: 32px;
     font-weight: bold;
     border-radius: 3px;
+    margin-top: 10px;
 }
 
 .profile_details #stats li span {
@@ -1148,6 +1149,12 @@ body.bounty_details #title {
 #interest_list li{
     list-style: none;
 }
+
+body.slack .justify-content-right img {
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+}
+
 @media (max-width: 1350px) {
     .profile_details .bounties li div.details{
         width: 400px;
@@ -1168,8 +1175,9 @@ body.bounty_details #title {
         max-width: 300px;
         max-height: 300px;
     }
+
     #bounty_details{
-        margin-left: 15px;
+        margin: 15px;
     }
 
     .profile_details .bounties li div.relationship,
@@ -1188,9 +1196,6 @@ body.bounty_details #title {
         display: none;
     }
 
-    .interior .col-2 {
-        display: none !important;
-    }
     .interior .col-7 {
         margin-left: 5%;
     }
@@ -1268,10 +1273,6 @@ body.bounty_details #title {
 
     .profile_details #hero {
         height: 400px;
-    }
-
-    body.bounty_details .left_details {
-        display: none;
     }
 
     body.bounty_details .right_details {
@@ -1505,4 +1506,36 @@ body.bounty_details #title {
     .bounty_def h5 {
         font-size: .8rem;
     }
+}
+
+@media (max-width: 576px) {
+  .profile_details #stats {
+    padding-right: 10px;
+  }
+
+  .profile_details .repos {
+    padding-right: 40px;
+  }
+
+  .profile_details .repos li {
+    margin-bottom: 1em;
+  }
+
+  .issue_details {
+    flex-direction: column;
+  }
+
+  .issue_details div {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .bounty_nav {
+    padding-left: 0;
+  }
+
+  .bounty_nav li{
+    display: block;
+  }
 }

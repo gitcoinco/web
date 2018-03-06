@@ -74,19 +74,21 @@ var addMotion = function(){
   var _width = 1000;
   var height = movementStrength / _height;
   var width = movementStrength / _width;
-  $("yge").addEventListener("mousemove",function(e){
-        var pageX = e.pageX - (_height / 2);
-        var pageY = e.pageY - (_width / 2);
-        var newvalueX = width * (pageX - startX) * -1 - 25;
-        var newvalueY = height * (pageY - startY) * -1 - 50;
-        if(!startX){
-          startX = newvalueX;
-        }
-        if(!startY){
-          startY = newvalueY;
-        }
-        $("yge").style.backgroundPosition =  (newvalueX - startX - 10)+"px     "+(newvalueY - startY - 10)+"px";
-  });
+  if(typeof $("yge").addEventListener != 'undefined'){
+    $("yge").addEventListener("mousemove",function(e){
+          var pageX = e.pageX - (_height / 2);
+          var pageY = e.pageY - (_width / 2);
+          var newvalueX = width * (pageX - startX) * -1 - 25;
+          var newvalueY = height * (pageY - startY) * -1 - 50;
+          if(!startX){
+            startX = newvalueX;
+          }
+          if(!startY){
+            startY = newvalueY;
+          }
+          $("yge").style.backgroundPosition =  (newvalueX - startX - 10)+"px     "+(newvalueY - startY - 10)+"px";
+    });
+  }
 };
 setTimeout(addMotion, 5);
 
@@ -150,10 +152,13 @@ var callFunctionWhenTransactionMined = function(txHash, f){
 };
 
 var loading_button = function(button){
+    button.prop('disabled',true);
+    button.addClass('disabled');
     button.prepend('<img src=/static/v2/images/loading_v2.gif style="max-width:10px; max-height: 10px; margin-right: 5px">').addClass('disabled');
 }
 
 var unloading_button = function(button){
+    button.prop('disabled',false);
     button.removeClass('disabled');
     button.find('img').remove();
 }

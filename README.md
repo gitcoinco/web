@@ -18,6 +18,8 @@ This is the website that is live at gitcoin.co
 
 [Star](https://github.com/gitcoinco/web/stargazers) and [watch](https://github.com/gitcoinco/web/watchers) this github repository to stay up to date, we're pushing new code several times per week!
 
+Check out the [CHANGELOG](./CHANGELOG.md) for details about recent changes to this repository.
+
 Also,
 
 * want to become a contributor ? Checkout our [guidelines](./docs/CONTRIBUTING.md).
@@ -39,7 +41,7 @@ Functionally, the app has several key features:
 * Funded Issue Explorer -- A searchable index of all of the work available in the system.
 * Funded Issue Submission / Acceptance flow -- Interface between the application and web3.
 
-[More about how/why to interact with web3 here](https://github.com/gitcoinco/gitcoinco/issues/4).
+[More about how/why to interact with web3 here](https://gitcoin.co/web3).
 
 Technically, the system is architected:
 
@@ -233,21 +235,24 @@ _bountydetails function returns the following fields:
 
 ## With Docker
 
-```
+```shell
 git clone https://github.com/gitcoinco/web.git
 cd web
 cp app/app/local_settings.py.dist app/app/local_settings.py
 docker-compose up -d
 ```
+
 Navigate to `http://0.0.0.0:8000/`.
+
+*Note: Running `docker-compose logs --tail=50 -f <optional container_name>` will follow all container output in the active terminal window, while specifying a container name will follow that specific container's output. `--tail` is optional.*
+Check out the [Docker Compose CLI Reference](https://docs.docker.com/compose/reference/) for more information.
 
 ## Without Docker
 
-```
+```shell
 git clone https://github.com/gitcoinco/web.git
 cd web/app
 cp app/local_settings.py.dist app/local_settings.py
-
 ```
 
 You will need to edit the `app/local_settings.py` file with your local settings. Look for config items that are marked `#required`.
@@ -352,6 +357,13 @@ pip install -r requirements/test.txt
 
 Navigate to `http://localhost:8000/`.
 
+## Optional: Import bounty data from web3 to your database
+
+This can be useful if you'd like data to test with:
+
+```
+./manage.py sync_geth mainnet 0 99999999999
+```
 
 # Adding your token to Gitcoin.
 

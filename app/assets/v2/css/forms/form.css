@@ -1,0 +1,38 @@
+.form__group {
+  display: flex;
+}
+
+.form__amount-wrapper {
+  width: 20%;
+  margin-right: 1rem;
+}
+
+.form__group-item {
+  flex: 1;
+  position: relative;
+}
+
+.form__group-item:not(:last-of-type) {
+  margin-right: 1rem;
+}
+
+.form__flex-group {
+  display: flex;
+}
+
+.form__flex-item {
+  flex: 1;
+}
+
+.form__footer {
+  margin-top: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.form__footer button {
+  margin-bottom: .5rem;
+}
+
+.form__footer--right {
+  text-align: right;
+}

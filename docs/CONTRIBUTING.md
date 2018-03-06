@@ -33,7 +33,7 @@ faith and everyone is working towards a common goal.
 
 ## Issues
 Issues in `gitcoin/web` are the primary means by which bug reports and
-general discussions are made. An contributor is allowed to create an issue,
+general discussions are made. A contributor is allowed to create an issue,
 discuss and provide a fix if needed.
 
 ## Discussions And General Help
@@ -85,7 +85,7 @@ So we ask you to ensure all these are met before you shoot out a PR.
 ### Step 4: Commit
 
 1. List all your changes as a list if needed else simply give a brief
-  description on what the changes
+  description on what the changes are.
 2. All lines at 100 columns.
 3. If your PR fixed an issue, Use the `Fixes:` prefix and the full issue URL.
   For other references use `Refs:`.
@@ -119,7 +119,7 @@ So we ask you to ensure all these are met before you shoot out a PR.
 ### Step 5: Rebase
 
 Ensure you neat description on what your PR is for, so that it's
-easier for folks to understand the gist of it without before jumping to the
+easier for folks to understand the gist of it before jumping to the
 the code / doc.
 
 As a best practice, once you have committed your changes, it is a good idea
