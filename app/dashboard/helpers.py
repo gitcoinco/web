@@ -45,9 +45,17 @@ from .models import Profile
 logger = logging.getLogger(__name__)
 
 
-# gets amount of remote html doc (github issue)
 @ratelimit(key='ip', rate='100/m', method=ratelimit.UNSAFE, block=True)
 def amount(request):
+    """Determine the value of the provided denomination and amount in ETH and USD.
+
+    Raises:
+        Http404: The exception is raised if any error is encountered.
+
+    Returns:
+        JsonResponse: A JSON response containing ETH and USDT values.
+
+    """
     response = {}
 
     try:
@@ -71,6 +79,12 @@ def amount(request):
 # gets title of remote html doc (github issue)
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def title(request):
+    """Determine the Github issue title of the specified Github issue URL.
+
+    Returns:
+        JsonResponse: A JSON response containing the Github issue title.
+
+    """
     response = {}
 
     url = request.GET.get('url')
@@ -96,7 +110,7 @@ def title(request):
         soup = BeautifulSoup(html_response.text, 'html.parser')
 
         eles = soup.findAll("span", {"class": "js-issue-title"})
-        if len(eles):
+        if eles:
             title = eles[0].text
 
         if not title and soup.title:
@@ -122,6 +136,12 @@ def title(request):
 # gets description of remote html doc (github issue)
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def description(request):
+    """Determine the Github issue description of the specified Github issue URL.
+
+    Returns:
+        JsonResponse: A JSON response containing the Github issue description.
+
+    """
     response = {}
 
     url = request.GET.get('url')
@@ -165,6 +185,12 @@ def description(request):
 # gets keywords of remote issue (github issue)
 @ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
 def keywords(request):
+    """Determine the Github issue keywords of the specified Github issue or PR URL.
+
+    Returns:
+        JsonResponse: A JSON response containing the Github issue or PR keywords.
+
+    """
     response = {}
     keywords = []
 
@@ -218,17 +244,35 @@ def keywords(request):
     return JsonResponse(response)
 
 
-def normalizeURL(url):
+def normalize_url(url):
+    """Normalize the URL.
+
+    Args:
+        url (str): The URL to be normalized.
+
+    Returns:
+        str: The normalized URL.
+
+    """
     if url[-1] == '/':
         url = url[0:-1]
     return url
 
 
-# returns did_change if bounty has changed since last sync
-# then old_bounty
-# then new_bounty
 def sync_bounty_with_web3(bounty_contract, url):
-    """Sync the Bounty with Web3."""
+    """Sync the Bounty with Web3.
+
+    Args:
+        bounty_contract (Web3): The Web3 contract instance.
+        url (str): The bounty URL.
+
+    Returns:
+        tuple: A tuple of bounty change data.
+        tuple[0] (bool): Whether or not the Bounty changed.
+        tuple[1] (dashboard.models.Bounty): The first old bounty object.
+        tuple[2] (dashboard.models.Bounty): The new Bounty object.
+
+    """
     bountydetails = bounty_contract.call().bountydetails(url)
     return process_bounty_details(bountydetails)
 
@@ -249,6 +293,8 @@ class BountyStage(Enum):
 
 
 class UnsupportedSchemaException(Exception):
+    """Define unsupported schema exception handling."""
+
     pass
 
 
@@ -268,14 +314,21 @@ def bounty_did_change(bounty_id, new_bounty_details):
     old_bounties = Bounty.objects.none()
     network = new_bounty_details['network']
     try:
+        # IMPORTANT -- if you change the criteria for deriving old_bounties
+        # make sure it is updated in dashboard.helpers/bounty_did_change
+        # AND
+        # refresh_bounties/handle
         old_bounties = Bounty.objects.filter(standard_bounties_id=bounty_id, network=network).order_by('-created_on')
-        did_change = (new_bounty_details != old_bounties.first().raw_data)
+
+        if old_bounties.exists():
+            did_change = (new_bounty_details != old_bounties.first().raw_data)
+        else:
+            did_change = True
     except Exception as e:
         did_change = True
-        print(f"asserting did change because got the following exception: {e}. args; bounty_id: {bounty_id}, network: {network} ")
+        print(f"asserting did change because got the following exception: {e}. args; bounty_id: {bounty_id}, network: {network}")
 
     print('* Bounty did_change:', did_change)
-
     return did_change, old_bounties
 
 
@@ -303,7 +356,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty):
         if fulfillment.get('accepted'):
             kwargs['accepted'] = True
         try:
-            new_fulfillment = BountyFulfillment.objects.create(
+            new_bounty.fulfillments.create(
                 fulfiller_address=fulfillment.get(
                     'fulfiller',
                     '0x0000000000000000000000000000000000000000'),
@@ -314,10 +367,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty):
                     'payload', {}).get('fulfiller', {}).get('name', ''),
                 fulfiller_metadata=fulfillment,
                 fulfillment_id=fulfillment.get('id'),
-                bounty=new_bounty,
                 **kwargs)
-            new_fulfillment.save()
-            new_bounty.fulfillments.add(new_fulfillment)
         except Exception as e:
             logging.error(f'{e} during new fulfillment creation for {new_bounty}')
             continue
@@ -340,13 +390,14 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
     metadata = bounty_payload.get('metadata', {})
     # fulfillments metadata will be empty when bounty is first created
     fulfillments = bounty_details.get('fulfillments', {})
+    interested_comment_id = None
     submissions_comment_id = None
     interested_comment_id = None
 
     # start to process out all the bounty data
     url = bounty_payload.get('webReferenceURL')
     if url:
-        url = normalizeURL(url)
+        url = normalize_url(url)
     else:
         raise UnsupportedSchemaException('No webReferenceURL found. Cannot continue!')
 
@@ -354,16 +405,18 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
     # If there are no fulfillments, accepted is automatically False.
     # Currently we are only considering the latest fulfillment.  Std bounties supports multiple.
     # If any of the fulfillments have been accepted, the bounty is now accepted and complete.
-    accepted = any(
-        [fulfillment.get('accepted') for fulfillment in fulfillments])
+    accepted = any([fulfillment.get('accepted') for fulfillment in fulfillments])
 
     with transaction.atomic():
-        for old_bounty in old_bounties.order_by('created_on'):
+        old_bounties = old_bounties.distinct().order_by('created_on')
+        latest_old_bounty = None
+        for old_bounty in old_bounties:
             if old_bounty.current_bounty:
                 submissions_comment_id = old_bounty.submissions_comment
                 interested_comment_id = old_bounty.interested_comment
             old_bounty.current_bounty = False
             old_bounty.save()
+            latest_old_bounty = old_bounty
         try:
             new_bounty = Bounty.objects.create(
                 title=bounty_payload.get('title', ''),
@@ -373,8 +426,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     timezone=UTC),
                 value_in_token=bounty_details.get('fulfillmentAmount'),
                 token_name=bounty_payload.get('tokenName', ''),
-                token_address=bounty_payload.get(
-                    'tokenAddress', '0x0000000000000000000000000000000000000000'),
+                token_address=bounty_payload.get('tokenAddress', '0x0000000000000000000000000000000000000000'),
                 bounty_type=metadata.get('bountyType', ''),
                 project_length=metadata.get('projectLength', ''),
                 experience_level=metadata.get('experienceLevel', ''),
@@ -383,8 +435,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 bounty_owner_email=bounty_issuer.get('email', ''),
                 bounty_owner_github_username=bounty_issuer.get('githubUsername', ''),
                 bounty_owner_name=bounty_issuer.get('name', ''),
-                is_open=True if (bounty_details.get('bountyStage') == 1
-                                 and not accepted) else False,
+                is_open=True if (bounty_details.get('bountyStage') == 1 and not accepted) else False,
                 raw_data=bounty_details,
                 metadata=metadata,
                 current_bounty=True,
@@ -400,17 +451,17 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 standard_bounties_id=bounty_id,
                 balance=bounty_details.get('balance'),
                 num_fulfillments=len(fulfillments),
-                override_status=old_bounties.order_by('created_on').last().override_status if old_bounties.order_by('created_on').exists() else '',
+                override_status=old_bounties.last().override_status if old_bounties.exists() else '',
             )
             new_bounty.fetch_issue_item()
             if not new_bounty.avatar_url:
                 new_bounty.avatar_url = new_bounty.get_avatar_url()
+                new_bounty.save()
 
             # Pull the interested parties off the last old_bounty
-            if old_bounties:
-                for interested in old_bounties.order_by('-pk').first().interested.all():
-                    new_bounty.interested.add(interested)
-            new_bounty.save()
+            if latest_old_bounty:
+                for interest in latest_old_bounty.interested.all():
+                    new_bounty.interested.add(interest)
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
             logging.error(f'{e} encountered during new bounty creation for: {url}')
@@ -509,7 +560,7 @@ def process_bounty_changes(old_bounty, new_bounty):
         bsr.save()
 
     # get json diff
-    json_diff = diff(old_bounty.raw_data, new_bounty.raw_data) if old_bounty else None
+    json_diff = diff(old_bounty.raw_data, new_bounty.raw_data) if (old_bounty and new_bounty) else None
 
     # new bounty
     if not old_bounty or (not old_bounty and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty and new_bounty.is_open):

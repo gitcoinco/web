@@ -63,6 +63,7 @@ var rows = [
     'project_length',
     'bounty_type',
     'expires_date',
+    'token_value_in_usdt',
 ]
 var heads = {
     'avatar_url': 'Issue',
@@ -74,7 +75,7 @@ var heads = {
 var callbacks = {
     'github_url': link_ize,
     'value_in_token': function(key, val, result){
-        return [ 'amount', Math.round((parseInt(val) / Math.pow(10, document.decimals)) * 1000) / 1000 + " " + result['token_name']];
+        return [ 'amount', "$" + Math.round((parseInt(val) / Math.pow(10, document.decimals)) * 1000) / 1000 + "/" + result['token_name']];
     },
     'avatar_url': function(key, val, result){
         return [ 'avatar', '<a href="/profile/'+result['org_name']+'"><img class=avatar src="'+val+'"></a>'];
@@ -127,6 +128,12 @@ var callbacks = {
             return [null, null];
         }
         return [ "Amount_usd" , val];
+    },
+    'token_value_in_usdt': function(key, val, result){
+        if(val == null){
+            return [null, null];
+        }
+        return [ "Token_amount_usd" , "$" + val + "/" + result['token_name']];
     },
     'web3_created': function(key, val, result){
         return [ "updated" , timeDifference(new Date(result['now']), new Date(result['created_on']))];

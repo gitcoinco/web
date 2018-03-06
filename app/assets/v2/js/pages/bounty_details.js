@@ -52,6 +52,7 @@ var rows = [
     'value_in_token',
     'value_in_eth',
     'value_in_usdt',
+    'token_value_in_usdt',
     'web3_created',
     'status',
     'bounty_owner_address',
@@ -128,6 +129,13 @@ var callbacks = {
         }
         return [ "Amount_usd" , val];
     },
+    'token_value_in_usdt': function(key, val, result){
+        if(val == null){
+            $('#value_in_usdt_wrapper').addClass('hidden');
+            return [null, null];
+        }
+        return [ "Token_amount_usd" , "$" + val + "/" + result['token_name']];
+    },
     'web3_created': function(key, val, result){
         return [ "updated" , timeDifference(new Date(result['now']), new Date(result['created_on']))];
     },
@@ -153,6 +161,10 @@ var isBountyOwner = function(result) {
 }
 
 var showWarningMessage = function (txid) {
+
+    var title_text = $('title').text();
+    title_text = '(...)' + title_text;
+    $('title').text(title_text);
 
     if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
         clearInterval(interval);

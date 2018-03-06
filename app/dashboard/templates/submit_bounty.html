@@ -45,39 +45,43 @@
                             </div>
                             {% include 'shared/network_status.html' %}
                             <div class="w-100">
-                                <label for=issueURL>Issue URL:</label>
-                                <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
+                                <label class="form__label" for=issueURL>Issue URL</label>
+                                <input name='issueURL' id="issueURL" class="w-100 form__input" type="url" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
                             </div>
-                            <div class="w-100 mt-2 d-flex ">
-                                <div class="w-50 mt-2 mr-3 d-flex flex-column">
-                                <label for=amount>Amount:</label>
+                            <div class="w-100 mt-2">
+                                <label class="form__label" for="amount">Amount</label>
+                                <div class="form__flex-group">
+                                    <div class="form__amount-wrapper">
+                                        <input name='amount' id='amount'  class="form__input" type="number" placeholder="Amount" value="{{amount}}" />
+                                    </div>
+                                    <div class="form__group-item">
+                                        <div class="form__select2">
+                                            <select name='deonomination' id='token'></select>
+                                        </div>
+                                        <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="w-100 mt-0">
-                                <input name='amount' id='amount'  class="gc-round-text-input" type="text" placeholder="Amount" value="{{amount}}" style="width: 20%; display: inline;" />
-                                <select name='deonomination' id='token' class="btn btn-sm btn-outline-dark" style="width: 77%;  display: inline;">
-                                </select>
-                                <div class="mt-1" id="usd_amount"></div>
                             </div>
                             {% include 'shared/github_username.html' %}
                             {% include 'shared/notification_email.html' %}
                             {% include 'shared/name.html' %}
                             <div id="advanced_container">
                                 <div class="w-100 mt-2">
-                                    <label for=title>Issue Title:</label>
-                                    <input name='title' id="title"  class="w-100 gc-round-text-input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" />
+                                    <label class="form__label" for="title">Issue Title</label>
+                                    <input name='title' id="title"  class="w-100 form__input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" />
                                 </div>
                                 <div class="w-100 mt-2">
-                                    <label for="description">Issue Description:</label>
-                                    <textarea name="description" class="w-100 gc-round-text-form" id="description" placeholder="Add some new feature."></textarea>
+                                    <label class="form__label" for="description">Issue Description</label>
+                                    <textarea name="description" class="w-100 form__input" id="description" placeholder="Add some new feature."></textarea>
                                </div>
                                 <div class="w-100 mt-2">
-                                    <label for=keywords>Keywords:</label>
-                                    <input name='keywords' id='keywords'  class="w-100 gc-round-text-input" type="text" placeholder="python, solidity, html, javascript, react (optional)" value="{{keywords}}" />
+                                    <label class="form__label" for="keywords">Keywords</label>
+                                    <input name='keywords' id='keywords'  class="w-100 form__input" type="text" placeholder="python, solidity, html, javascript, react (optional)" value="{{keywords}}" />
                                 </div>
                                 <div class="w-100 mt-2">
-                                    <label for=expirationTimeDelta>Expires in:</label>
-                                        <select class="w-100 btn btn-sm btn-outline-dark" name=expirationTimeDelta >
+                                    <label class="form__label" for="expirationTimeDelta">Expires in</label>
+                                    <div class="form__select2">
+                                        <select class="w-100 js-select2" name="expirationTimeDelta">
                                             <option value="86400">1 day</option>
                                             <option value="259200">3 days</option>
                                             <option value="604800">1 week</option>
@@ -88,33 +92,34 @@
                                             <option value="31536000" selected="">1 year</option>
                                             <option value="9999999999">Never</option>
                                         </select>
+                                    </div>
                                 </div>
                                 <div class="w-100 mt-2 d-flex ">
                                     <div class="w-50 mt-2 mr-3 d-flex flex-column">
-                                        <label>Issue Details</label>
+                                        <label class="form__label">Issue Details</label>
                                     </div>
                                 </div>
-                                <div class="w-100 mt-0 d-flex issue_details ">
-                                    <div class="w-50 mt-2 mr-3 d-flex flex-column">
-                                        <select class="w-100 btn btn-sm btn-outline-dark" name=experienceLevel >
-                                            <option value="">-- Experience Level -- </option>
+                                <div class="form__group">
+                                    <div class="form__select2 form__group-item">
+                                        <select class="w-100 js-select2" name="experienceLevel">
+                                            <option value="">Experience Level</option>
                                             <option>Beginner</option>
                                             <option>Intermediate</option>
                                             <option>Advanced</option>
                                         </select>
                                     </div>
-                                    <div class="w-50 mt-2 mr-3 d-flex flex-column">
-                                        <select class="w-100 btn btn-sm btn-outline-dark" name=projectLength >
-                                            <option value="Unknown">-- Project Length -- </option>
+                                    <div class="form__select2 form__group-item">
+                                        <select class="w-100 js-select2" name="projectLength">
+                                            <option value="Unknown">Project Length</option>
                                             <option>Hours</option>
                                             <option>Days</option>
                                             <option>Weeks</option>
                                             <option>Months</option>
                                         </select>
                                     </div>
-                                    <div class="w-50 mt-2 mr-3 d-flex flex-column">
-                                        <select class="w-100 btn btn-sm btn-outline-dark" name=bountyType >
-                                            <option value="">-- Bounty Type -- </option>
+                                    <div class="form__select2 form__group-item">
+                                        <select class="w-100 js-select2" name="bountyType">
+                                            <option value="">Bounty Type</option>
                                             <option>Bug</option>
                                             <option>Feature</option>
                                             <option>Security</option>
@@ -125,15 +130,16 @@
 
                             </div>
                             <div class="w-100 mt-2 terms_container">
-                                <input name='terms' id='terms' type="checkbox" value=1 />
-                                <label for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>:</label>
+                                <div class="form__checkbox">
+                                    <input name='terms' id='terms' type="checkbox" value=1 />
+                                    <label class="form__label" for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>:</label>
+                                </div>
                             </div>
                             {% include 'shared/metamask_estimate.html' %}
-                            <div class="w-100 mt-2">
-                                <a class="btn btn-sm btn-info mt-3 mb-1 pulseClick float-right" role="button" id="submitBounty" href="#">Fund Issue</a>
-                            </div>
-                            <div class="w-100 mb-5 mt-1">
-                                <a class="float-right" target=new href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
+                            <div class="form__footer form__footer--right">
+                                <button class="button button--primary" type="submit" id="submitBounty">Fund Issue</button>
+                                <br />
+                                <a target=new href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
                             </div>
                             {% include 'shared/newsletter.html' %}
                         </div>

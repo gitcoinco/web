@@ -43,22 +43,23 @@
                 </div>
                 {% include 'shared/network_status.html' %}
                 <div class="w-100">
-                  <label for=issueURL>Issue URL:</label>
-                  <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
+                  <label class="form__label" for="issueURL">Issue URL</label>
+                  <input name='issueURL' id="issueURL" class="form__input" type="text" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
                 </div>
                 {% include 'shared/github_username.html' %}
                 {% include 'shared/notification_email.html' %}
                 {% include 'shared/name.html' %}
                 <div class="w-100 mt-2 terms_container">
-                  <input name='terms' id='terms' type="checkbox" value=1 />
-                  <label for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>:</label>
+                    <div class="form__checkbox">
+                        <input name='terms' id='terms' type="checkbox" value=1 />
+                        <label class="form__label" for="terms">I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>:</label>
+                    </div>
                 </div>
                 {% include 'shared/metamask_estimate.html' %}
-                <div class="w-80 mt-2">
-                  <a class="btn btn-sm btn-info mt-3 mb-0 pulseClick float-right" role="button" id="submitBounty" href="#">Submit Work</a>
-                </div>
-                <div class="w-80 mb-5 mt-1">
-                  <a class="float-right" target=new href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
+                <div class="form__footer form__footer--right">
+                    <button class="button button--primary" role="button" id="submitBounty" href="#">Submit Work</button>
+                    <br />
+                    <a target=new href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
                 </div>
               </div>
             </div>

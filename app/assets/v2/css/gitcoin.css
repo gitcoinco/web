@@ -306,8 +306,16 @@ div.button-pink {
 }
 
 .dash-filter-header {
+  align-items: center;
+  display: flex;
   font-size: 1.2rem;
   letter-spacing: 0.1em;
+  margin-bottom: 1.2rem;
+  text-transform: uppercase
+}
+
+.dash-filter-header img {
+  margin-left: .5rem;
 }
 
 .dash-filter-label {

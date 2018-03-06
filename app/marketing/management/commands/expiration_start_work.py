@@ -67,8 +67,8 @@ class Command(BaseCommand):
 
                             # if user hasn't commented since they expressed interest, handled this condition
                             # per https://github.com/gitcoinco/web/issues/462#issuecomment-368384384
-                            if last_comment_by_user < interest.created_at.replace(tzinfo=None):
-                                last_comment_by_user = interest.created_at.replace(tzinfo=None)
+                            if last_comment_by_user < interest.created.replace(tzinfo=None):
+                                last_comment_by_user = interest.created.replace(tzinfo=None)
 
                             # some small calcs
                             delta_now_vs_last_comment = datetime.now() - last_comment_by_user
