@@ -1,20 +1,22 @@
-'''
-    Copyright (C) 2017 Gitcoin Core
+# -*- coding: utf-8 -*-
+"""Define Dashboard related utilities and miscellaneous logic.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 
 import json
 import subprocess
@@ -22,7 +24,7 @@ import time
 
 import ipfsapi
 import requests
-from dashboard.helpers import UnsupportedSchemaException, normalizeURL, process_bounty_changes, process_bounty_details
+from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty
 from eth_utils import to_checksum_address
 from hexbytes import HexBytes
@@ -50,7 +52,7 @@ class NoBountiesException(Exception):
 def startIPFS():
     print('starting IPFS')
     subp = subprocess.Popen(["ipfs", "daemon"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    time.sleep(10) #time for IPFS to boot
+    time.sleep(10)  # time for IPFS to boot
 
 
 def isIPFSrunning():
@@ -210,7 +212,7 @@ def has_tx_mined(txid, network):
 
 
 def get_bounty_id(issue_url, network):
-    issue_url = normalizeURL(issue_url)
+    issue_url = normalize_url(issue_url)
     bounty_id = get_bounty_id_from_db(issue_url, network)
     if bounty_id:
         return bounty_id
@@ -232,7 +234,7 @@ def get_bounty_id(issue_url, network):
 
 
 def get_bounty_id_from_db(issue_url, network):
-    issue_url = normalizeURL(issue_url)
+    issue_url = normalize_url(issue_url)
     bounties = Bounty.objects.filter(github_url=issue_url, network=network, web3_type='bounties_network')
     if not bounties.exists():
         return None
@@ -248,7 +250,7 @@ def get_highest_known_bounty_id(network):
 
 
 def get_bounty_id_from_web3(issue_url, network, start_bounty_id, direction='up'):
-    issue_url = normalizeURL(issue_url)
+    issue_url = normalize_url(issue_url)
     web3 = get_web3(network)
 
     # iterate through all the bounties
