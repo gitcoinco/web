@@ -33,7 +33,9 @@ import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import convert_amount, convert_token_to_usdt
-from github.utils import _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, org_name, repo_name, issue_number
+from github.utils import (
+    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, issue_number, org_name, repo_name,
+)
 from rest_framework import serializers
 from web3 import Web3
 
