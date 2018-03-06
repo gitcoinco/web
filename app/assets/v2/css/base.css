@@ -1009,6 +1009,11 @@ body.bounty_details #title {
 .profile_details #hero p {
     color: #919191;
 }
+.profile_details .tips li:first-child:hover,
+.profile_details .bounties li:first-child:hover{
+    cursor: none;
+    background-color: white;
+}
 
 .profile_details .tips li ,
 .profile_details .bounties li {
@@ -1046,7 +1051,7 @@ body.bounty_details #title {
 
 .profile_details .tips div.url,
 .profile_details .tips li div.url{
-    width: 400px;
+    width: 600px;
 }
 
 .profile_details .tips li div.details,
@@ -1175,6 +1180,10 @@ body.slack .justify-content-right img {
 @media (max-width: 1350px) {
     .profile_details .tips li div.details,
     .profile_details .bounties li div.details{
+        width: 300px;
+    }
+    .profile_details .tips div.url,
+    .profile_details .tips li div.url{
         width: 400px;
     }
 }
@@ -1199,9 +1208,8 @@ body.slack .justify-content-right img {
         margin: 15px;
     }
 
-    .profile_details .tips li div.from_username,
-    .profile_details .tips li div.url,
-    .profile_details .tips li .amount,
+    .profile_details .tips li div.details,
+    .profile_details .tips li .url,
     .profile_details .bounties li div.relationship,
     .profile_details .bounties li div.status,
     .profile_details .bounties li .amount {
@@ -1550,6 +1558,9 @@ body.slack .justify-content-right img {
 
   .issue_details div {
     width: 100% !important;
+  }
+  .profile_details .tips li div.url{
+    display: none;
   }
 }
 
