@@ -157,7 +157,7 @@ class Bounty(SuperModel):
             str: The relative URL for the Bounty.
 
         """
-        return f"{'/' if preceding_slash else ''}funding/details?url={self.github_url}"
+        return f"{'/' if preceding_slash else ''}{'legacy/' if self.is_legacy else ''}funding/details?url={self.github_url}"
 
     def get_natural_value(self):
         token = addr_to_token(self.token_address)
