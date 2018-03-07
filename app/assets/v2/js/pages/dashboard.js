@@ -1,5 +1,5 @@
 //helper functions
-var sidebar_keys = ['experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'idx_status', 'network'];
+var sidebar_keys = ['experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'network', 'idx_status'];
 
 var localStorage;
 try {
@@ -47,29 +47,43 @@ var set_sidebar_defaults = function(){
 
 };
 
-var set_modifiers_sentence = function(){
-    var _modifiers = [];
-    for(var i=0;i<sidebar_keys.length;i++){
-        var key = sidebar_keys[i];
-        var val = $("input[name="+key+"]:checked").attr('val-ui');
-        if(val != ''){
-            _modifiers.push(val);
+var set_filter_header = function() {
+  var filter_status = $("input[name=idx_status]:checked").attr('val-ui') ? $("input[name=idx_status]:checked").attr('val-ui') : 'All';
+  $("#filter").html(filter_status);
+}
+
+// TODO: Refactor function :
+// Deselect option 'any' when another filter is selected
+// Selects option 'any' when no filter is applied
+// TODO : Disable other filters when 'any' is selected
+var disableAny = function () {
+  for(var i = 0; i < sidebar_keys.length; i++) {
+    var key = sidebar_keys[i];
+    var tag = ($("input[name=" + key + "][value]"));
+    tag.map(function(index, input) {
+      if($(input).prop('checked')) {
+        if(input.value == 'any')
+          $("input[name=" + key + "][value=any]").prop("checked", true);
+        else if(input.value != 'any')
+          $("input[name=" + key + "][value=any]").prop("checked", false);
         }
-    };
-    var sentence = _modifiers.join(" ") + " Funded Issues";
-    var keywords = $("#keywords").val();
-    var plural = 's';
-    if(keywords.split(',').length == 2){
-        plural = '';
-    }
-    if(keywords){
-        var encoded_keywords = encodeURIComponent(keywords.split(',').join(" ")).split('%20').join(" ");
-        sentence += ' w. keyword'+plural+' ' + encoded_keywords;
-    }
+    });
+    if($('input[name='+ key +']:checked').length == 0)
+      $("input[name=" + key + "][value=any]").prop("checked", true);
+  };
+}
 
-
-    $("#modifiers").html(sentence);
-};
+var getFilters = function() {
+  var _filters = [];
+  for(var i = 0; i < sidebar_keys.length; i++) {
+      var key = sidebar_keys[i];
+      $.each($("input[name=" + key + "]:checked"), function() {
+        if($(this).attr('val-ui'))
+          _filters.push("<a class=filter-tag>" + $(this).attr('val-ui') + "<i class='fa fa-times'></i></a>");
+      });
+  };
+  $(".filter-tags").html(_filters);
+}
 
 var get_search_URI = function(){
     var uri = '/api/v0.1/bounties/?';
@@ -79,7 +93,13 @@ var get_search_URI = function(){
     }
     for(var i=0;i<sidebar_keys.length;i++){
         var key = sidebar_keys[i];
-        var val = $("input[name="+key+"]:checked").val()
+        var filters= [];
+        $.each($("input[name=" + key + "]:checked"), function() {
+            if($(this).val()) {
+              filters.push($(this).val());
+            }
+        });
+        var val = filters.toString();
 
         //special casing. TODO: clean this up
         if(key == 'bounty_filter'){
@@ -133,7 +153,7 @@ var process_stats = function(results){
     for(var token in currencies_to_value){
         stats += ", " + currencies_to_value[token].toFixed(2) + " " + token;
     }
-    $("#stats").html("("+stats+")");
+    $("#stats").html("( "+ stats +" )");
 }
 
 var refreshBounties = function(){
@@ -148,7 +168,9 @@ var refreshBounties = function(){
     window.history.replaceState(currentState, title, '/explorer?q='+keywords);
 
     save_sidebar_latest();
-    set_modifiers_sentence();
+    set_filter_header();
+    disableAny();
+    getFilters();
     $('.nonefound').css('display', 'none');
     $('.loading').css('display', 'block');
     $('.bounty_row').remove();
@@ -273,7 +295,13 @@ $(document).ready(function(){
     $(".dashboard #clear").click(function(e){
         for(var i=0;i<sidebar_keys.length;i++){
             var key = sidebar_keys[i];
-            var val = $("input[name="+key+"][value=any]").prop("checked", true);
+            var tag = ($("input[name=" + key + "][value]"));
+            for(var j = 0; j < tag.length; j++) {
+              if(tag[j].value == 'any')
+                $("input[name="+key+"][value=any]").prop("checked", true);
+              else
+                $("input[name=" + key + "][value=" + tag[j].value + "]").prop("checked", false);
+            }
         };
         refreshBounties();
         e.preventDefault();
@@ -294,6 +322,12 @@ $(document).ready(function(){
 
     //sidebar filters
     $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e){
+        refreshBounties();
+        e.preventDefault();
+    });
+
+    //sidebar filters
+    $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
         refreshBounties();
         e.preventDefault();
     });
@@ -358,7 +392,7 @@ $(document).ready(function(){
             e.preventDefault();
         }
     });
-    $("body").delegate("#save a.btn-darkBlue", 'click', function(e){
+    $("body").delegate("#save a", 'click', function(e){
         emailSubscribe();
         e.preventDefault();
     });

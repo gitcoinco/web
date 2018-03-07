@@ -1,5 +1,6 @@
 /* eslint-disable no-loop-func */
 /* eslint-disable no-console */
+/* eslint-disable nonblock-statement-body-position */
 $(document).ready(function() {
   if (typeof ($(document).tooltip) != 'undefined') {
     $(document).tooltip();
@@ -155,6 +156,19 @@ $(document).ready(function() {
 
   $('body.whitepaper .btn-success').click(function() {
     mixpanel.track('Whitepaper Request');
+  });
+
+  $('.accordion').click(function() {
+    this.classList.toggle('active');
+    var panel = this.nextElementSibling;
+
+    if (panel.style.maxHeight) {
+      panel.style.maxHeight = null;
+      panel.style.marginBottom = 0 + 'px';
+    } else {
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+      panel.style.marginBottom = 10 + 'px';
+    }
   });
 });
 
