@@ -88,9 +88,10 @@
               [[/if]]
               [[:title]]
             </div>
-            <div class="font-smaller-2">
+            <div class="bounty-summary">
               [[if github_comments]]
-                <span class="github-comment">[[:github_comments]]</span>
+                <img src={% static "v2/images/comment.svg" %}>
+                <span class="github-comment font-caption">[[:github_comments]]</span>
               [[/if]]
               <div class="info font-caption">
                 [[:p]]

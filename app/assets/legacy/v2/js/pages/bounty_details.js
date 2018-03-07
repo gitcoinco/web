@@ -434,18 +434,20 @@ window.addEventListener('load', function() {
 
   setTimeout(function() {
     var issueURL = getParam('url');
-
+    if(typeof document.issueURL != 'undefined'){
+      issueURL = document.issueURL;
+    }
     $('#submitsolicitation a').attr('href', '/funding/new/?source=' + issueURL);
     var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
 
     $.get(uri, function(results) {
       results = sanitizeAPIResults(results);
       var nonefound = true;
-            // potentially make this a lot faster by only pulling the specific issue required
+      // potentially make this a lot faster by only pulling the specific issue required
 
       for (var i = 0; i < results.length; i++) {
         var result = results[i];
-                // if the result from the database matches the one in question.
+        // if the result from the database matches the one in question.
 
         if (normalizeURL(result['github_url']) == normalizeURL(issueURL)) {
           nonefound = false;
@@ -456,7 +458,7 @@ window.addEventListener('load', function() {
 
           render_fulfillments(result);
 
-                    // cleanup
+          // cleanup
           document.result = result;
           pendingChangesWarning(issueURL, result['created_on'], result['now']);
           return;
@@ -482,7 +484,7 @@ var render_fulfillments = function(result) {
   var submission;
   var submitter_tmpl;
   var submitter_html;
-    // Add submitter list and accept buttons
+   // Add submitter list and accept buttons
 
   if (result['status'] == 'submitted') {
     var enabled = isBountyOwner(result);

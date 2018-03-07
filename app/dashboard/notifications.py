@@ -146,7 +146,7 @@ def maybe_market_to_slack(bounty, event_name):
     title = bounty.title if bounty.title else bounty.github_url
     msg = f"{event_name.replace('bounty', 'funded_issue')} worth {round(bounty.get_natural_value(), 4)} {bounty.token_name} " \
           f"{usdt_details}" \
-          f"{bounty.token_name}: {title} \n\n{bounty.get_absolute_url()}&slack=1"
+          f"{bounty.token_name}: {title} \n\n{bounty.get_absolute_url()}"
 
     try:
         channel = 'notif-gitcoin'

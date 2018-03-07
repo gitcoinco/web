@@ -1109,10 +1109,6 @@ body.bounty_details #title {
     list-style: none;
 }
 
-body.slack .justify-content-right img {
-    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
-    filter: grayscale(100%);
-}
 
 @media (max-width: 1350px) {
     .profile_details .bounties li div.details{

@@ -161,11 +161,27 @@ var isBountyOwner = function(result) {
     return (typeof web3 != 'undefined' && (web3.eth.coinbase == bountyAddress))
 }
 
-var showWarningMessage = function (txid) {
+var update_title = function(){
+    document.original_title_text = $('title').text();
+    setInterval(function(){
+        if(document.prepend_title == '(...)'){
+            document.prepend_title = '(*..)';
+        }
+        else if(document.prepend_title == '(*..)'){
+            document.prepend_title = '(.*.)';
+        }
+        else if(document.prepend_title == '(.*.)'){
+            document.prepend_title = '(..*)';
+        } else {
+            document.prepend_title = '(...)';
+        }
+        $('title').text(document.prepend_title + ' ' + document.original_title_text);
+    },2000);
+}
 
-    var title_text = $('title').text();
-    title_text = '(...)' + title_text;
-    $('title').text(title_text);
+var showWarningMessage = function (txid) {
+    
+    update_title();
 
     if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
         clearInterval(interval);
@@ -485,7 +501,9 @@ var main = function(){
         attach_work_actions();
 
         // pull issue URL
-        document.issueURL = getParam('url');
+        if(typeof document.issueURL == 'undefined'){
+            document.issueURL = getParam('url');
+        }
         $("#submitsolicitation a").attr('href','/funding/new/?source=' + document.issueURL);
 
         // if theres a pending submission for this issue, show the warning message

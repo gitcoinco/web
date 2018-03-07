@@ -57,64 +57,79 @@ var set_filter_header = function() {
 // Selects option 'any' when no filter is applied
 // TODO : Disable other filters when 'any' is selected
 var disableAny = function () {
-  for(var i = 0; i < sidebar_keys.length; i++) {
+  for (var i = 0; i < sidebar_keys.length; i++) {
     var key = sidebar_keys[i];
     var tag = ($("input[name=" + key + "][value]"));
+
     tag.map(function(index, input) {
-      if($(input).prop('checked')) {
-        if(input.value == 'any')
+      if ($(input).prop('checked')) {
+        if (input.value === 'any') {
           $("input[name=" + key + "][value=any]").prop("checked", true);
-        else if(input.value != 'any')
+        } else {
           $("input[name=" + key + "][value=any]").prop("checked", false);
         }
+      }
     });
-    if($('input[name='+ key +']:checked').length == 0)
+
+    if ($('input[name='+ key +']:checked').length === 0) {
       $("input[name=" + key + "][value=any]").prop("checked", true);
-  };
+    }
+  }
 }
 
 var getFilters = function() {
   var _filters = [];
-  for(var i = 0; i < sidebar_keys.length; i++) {
+  for (var i = 0; i < sidebar_keys.length; i++) {
       var key = sidebar_keys[i];
       $.each($("input[name=" + key + "]:checked"), function() {
-        if($(this).attr('val-ui'))
-          _filters.push("<a class=filter-tag>" + $(this).attr('val-ui') + "<i class='fa fa-times'></i></a>");
+          if ($(this).attr('val-ui'))
+              _filters.push('<a class=filter-tag>' + $(this).attr("val-ui") +
+                  '<i class="fa fa-times" onclick="removeFilter(\'' + key + '\', \'' + $(this).attr("value") + '\')"></i></a>');
       });
-  };
+  }
   $(".filter-tags").html(_filters);
-}
+};
+
+var removeFilter = function(key, value) {
+    $("input[name=" + key + "][value=" + value + "]").prop('checked', false);
+    refreshBounties();
+};
 
 var get_search_URI = function(){
     var uri = '/api/v0.1/bounties/?';
     var keywords = $("#keywords").val();
-    if(keywords){
-        uri += '&raw_data='+keywords;
+
+    if (keywords) {
+        uri += '&raw_data=' + keywords;
     }
-    for(var i=0;i<sidebar_keys.length;i++){
+
+    for (var i = 0; i <sidebar_keys.length; i++) {
         var key = sidebar_keys[i];
         var filters= [];
-        $.each($("input[name=" + key + "]:checked"), function() {
-            if($(this).val()) {
+
+        $.each ($("input[name=" + key + "]:checked"), function() {
+            if ($(this).val()) {
               filters.push($(this).val());
             }
         });
+
         var val = filters.toString();
 
         //special casing. TODO: clean this up
-        if(key == 'bounty_filter'){
-            if(val=='myself') {
-                key='bounty_owner_address';
-            } else if(val == 'watched'){
+        if (key === 'bounty_filter') {
+            if (val === 'myself') {
+                key = 'bounty_owner_address';
+            } else if (val === 'watched') {
                 key='github_url';
                 val = interested_list();
             }
         }
-        if(val!='any'){
-            uri += '&'+key+'='+val;
+
+        if (val !== 'any') {
+            uri += '&' + key + '=' + val;
         }
     }
-    if(typeof web3 != 'undefined' && web3.eth.coinbase){
+    if (typeof web3 != 'undefined' && web3.eth.coinbase) {
         uri += '&coinbase='+web3.eth.coinbase;
     } else {
         uri += '&coinbase=unknown';
@@ -123,8 +138,9 @@ var get_search_URI = function(){
     var selected_option = $('.sort_option.selected');
     var direction = selected_option.data('direction');
     var order_by = selected_option.data('key');
-    if(order_by){
-        uri += '&order_by='+(direction == "-" ? direction : "")+order_by;
+
+    if (order_by){
+        uri += '&order_by=' + (direction === "-" ? direction : "") + order_by;
     }
 
     return uri;
@@ -135,35 +151,41 @@ var process_stats = function(results){
     var worth_usdt = 0;
     var worth_eth = 0;
     var currencies_to_value = {};
-    for(var i = 0; i<results.length; i++){
+
+    for (var i = 0; i<results.length; i++) {
         var result = results[i];
         worth_usdt += result['value_in_usdt'];
         worth_eth += result['value_in_eth'];
-        var token = result['token_name']
-        if(token != 'ETH'){
-            if(!currencies_to_value[token]){
+        var token = result['token_name'];
+
+        if (token !== 'ETH'){
+            if (!currencies_to_value[token]) {
                 currencies_to_value[token] = 0
             }
             currencies_to_value[token] += result['value_true'];
         }
     }
+
     worth_usdt = worth_usdt.toFixed(2);
     worth_eth = (worth_eth / Math.pow(10, 18 )).toFixed(2);
     var stats = "" + num + " worth " + worth_usdt + " USD, " + worth_eth + " ETH";
-    for(var token in currencies_to_value){
-        stats += ", " + currencies_to_value[token].toFixed(2) + " " + token;
+
+    for (var t in currencies_to_value){
+        stats += ", " + currencies_to_value[t].toFixed(2) + " " + t;
     }
+
     $("#stats").html("( "+ stats +" )");
-}
+};
 
-var refreshBounties = function(){
-
+var refreshBounties = function() {
     //manage state
     var keywords = $("#keywords").val();
     var title = 'Issue Explorer | Gitcoin';
-    if(keywords){
+
+    if (keywords){
         title = keywords + " | " + title;
     }
+
     var currentState = history.state;
     window.history.replaceState(currentState, title, '/explorer?q='+keywords);
 
@@ -171,6 +193,7 @@ var refreshBounties = function(){
     set_filter_header();
     disableAny();
     getFilters();
+
     $('.nonefound').css('display', 'none');
     $('.loading').css('display', 'block');
     $('.bounty_row').remove();
@@ -179,58 +202,60 @@ var refreshBounties = function(){
     var uri = get_search_URI();
 
     //analytics
-    var params = {
-        uri : uri,
-    }
-    mixpanel.track("Refresh Bounties", params);
+    var params = { uri : uri };
 
+    mixpanel.track("Refresh Bounties", params);
 
     //order
     $.get(uri, function(results){
         results = sanitizeAPIResults(results);
-        if(results.length==0){
+
+        if (results.length === 0) {
             $(".nonefound").css('display','block');
         }
-        for(var i = 0; i<results.length; i++){
-                //setup
-                var result = results[i];
-                var related_token_details = tokenAddressToDetails(result['token_address'])
-                var decimals = 18;
-                if(related_token_details && related_token_details.decimals){
-                    decimals = related_token_details.decimals;
-                }
-                var divisor = Math.pow( 10, decimals );
-                result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
-                var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
 
-                //setup args to go into template
-                if(typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']){
-                    result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
-                } else if(result['fulfiller_address'] != '0x0000000000000000000000000000000000000000'){
-                    result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">'+result['status']+'</span></a>';
-                }
-                if (result['web3_type'] == 'legacy_gitcoin') {
-                    result.action = '/legacy/funding/details?url=' + result.github_url;
-                } else {
-                    result.action = '/funding/details?url=' + result.github_url;
-                }
-                result['title'] = result['title'] ? result['title'] : result['github_url'];
-                result['p'] = timeDifference(new Date(), new Date(result['created_on']))+' - '+(result['project_length'] ? result['project_length'] : "Unknown Length")+' - '+(result['bounty_type'] ? result['bounty_type'] : "Unknown Type")+' - '+(result['experience_level'] ? result['experience_level'] : "Unknown Experience Level") + ( is_expired ? " - (Expired)" : "");
-                result['watch'] = 'Watch';
+        for (var i = 0; i<results.length; i++) {
+            //setup
+            var result = results[i];
+            var related_token_details = tokenAddressToDetails(result['token_address']);
+            var decimals = 18;
 
-                //render the template
-                var tmpl = $.templates("#result");
-                var html = tmpl.render(result);
+            if (related_token_details && related_token_details.decimals) {
+                decimals = related_token_details.decimals;
+            }
 
-                $("#bounties").append(html);
+            var divisor = Math.pow( 10, decimals );
+            result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
+            var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
+
+            //setup args to go into template
+            if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
+                result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
+            } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
+                result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">'+result['status']+'</span></a>';
+            }
+            result.action = result['url'];
+            result['title'] = result['title'] ? result['title'] : result['github_url'];
+            result['p'] = timeDifference(new Date(), new Date(result['created_on']))+' - '+(result['project_length'] ? result['project_length'] : "Unknown Length")+' - '+(result['bounty_type'] ? result['bounty_type'] : "Unknown Type")+' - '+(result['experience_level'] ? result['experience_level'] : "Unknown Experience Level") + ( is_expired ? " - (Expired)" : "");
+            result['watch'] = 'Watch';
+
+            //render the template
+            var tmpl = $.templates("#result");
+            var html = tmpl.render(result);
+
+            $("#bounties").append(html);
         }
-        $(".bounty_row.result").each(function(){
+
+        $(".bounty_row.result").each(function() {
             var href = $(this).attr('href');
+
             if (typeof $(this).changeElementType !== "undefined") {
               $(this).changeElementType('a'); // hack so that users can right click on the element
             }
+
             $(this).attr('href', href);
-        })
+        });
+
         process_stats(results);
     }).fail(function(){
         _alert('got an error. please try again, or contact support@gitcoin.co');
@@ -245,10 +270,10 @@ window.addEventListener('load', function() {
 });
 
 var getNextDayOfWeek = function(date, dayOfWeek) {
-        var resultDate = new Date(date.getTime());
-        resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay() - 1) % 7 +1);
-        return resultDate;
-    }
+    var resultDate = new Date(date.getTime());
+    resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay() - 1) % 7 +1);
+    return resultDate;
+};
 
 $(document).ready(function(){
 
@@ -302,7 +327,7 @@ $(document).ready(function(){
               else
                 $("input[name=" + key + "][value=" + tag[j].value + "]").prop("checked", false);
             }
-        };
+        }
         refreshBounties();
         e.preventDefault();
     });

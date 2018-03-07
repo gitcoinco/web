@@ -64,6 +64,7 @@ def whitepaper_new(request, ratelimited=False):
     context['role'] = request.POST.getlist('role')
     context['email'] = request.POST.get('email')
     context['comments'] = request.POST.get('comments')
+    context['success'] = True
     ip = get_ip(request)
     body = """
 Email: {} \n
@@ -96,6 +97,7 @@ https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/
 
     if not request.POST.get('email', False) or not valid_email:
         context['msg'] = "Invalid Email. Please contact founders@gitcoin.co"
+        context['success'] = False
         return TemplateResponse(request, 'whitepaper_new.html', context)
 
     context['msg'] = "Your request has been sent.  <a href=/slack>Meantime, why don't you check out the slack channel?</a>"

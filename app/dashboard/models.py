@@ -33,7 +33,9 @@ import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import convert_amount, convert_token_to_usdt
-from github.utils import _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, org_name
+from github.utils import (
+    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, issue_number, org_name, repo_name,
+)
 from rest_framework import serializers
 from web3 import Web3
 
@@ -157,7 +159,13 @@ class Bounty(SuperModel):
             str: The relative URL for the Bounty.
 
         """
-        return f"{'/' if preceding_slash else ''}{'legacy/' if self.is_legacy else ''}funding/details?url={self.github_url}"
+        try:
+            _org_name = org_name(self.github_url)
+            _issue_num = issue_number(self.github_url)
+            _repo_name = repo_name(self.github_url)
+            return f"{'/' if preceding_slash else ''}{'legacy/' if self.is_legacy else ''}issue/{_org_name}/{_repo_name}/{_issue_num}"
+        except:
+            return f"{'/' if preceding_slash else ''}{'legacy/' if self.is_legacy else ''}funding/details?url={self.github_url}"
 
     def get_natural_value(self):
         token = addr_to_token(self.token_address)
