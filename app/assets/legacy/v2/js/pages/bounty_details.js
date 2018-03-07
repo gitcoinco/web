@@ -366,8 +366,7 @@ window.addEventListener('load', function() {
         }
 
         var is_expired = result['status']=='expired' || (new Date(result['now']) > new Date(result['expires_date']));
-        var is_status_done = result['status'] == 'done';
-        if(!is_status_done || is_expired){
+        if(is_expired){
             var enabled = isBountyOwner(result);
             var entry = {
                 href: '/legacy/funding/clawback?source='+result['github_url'],
