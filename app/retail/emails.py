@@ -239,11 +239,11 @@ def render_new_bounty_roundup(to_email):
             'primer': 'An oppy to help Metamask with porting to Firefox 👇',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://gitcoin.co/issue/ethereum/py-evm/362'),
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/py-evm/issues/362'),
             'primer': 'Help @piper at py-EVM formalize an API for a computation object (0.48 ETH, ~$350) ',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://gitcoin.co/issue/ethgasstation/ethgasstation-backend/19'),
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethgasstation/ethgasstation-backend/issues/19'),
             'primer': 'ETHGasStation is on Gitcoin! See if you can help out and earn 0.25ETH along the way :) ',
         },
     ]
