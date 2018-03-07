@@ -1,0 +1,25 @@
+.tag {
+  text-align: center;
+  min-width: 90px;
+  border-radius: 2px;
+  margin: 4px;
+}
+
+.tag span {
+  margin-left: 2px;
+}
+
+.tag p {
+  padding: 5px 2px;
+  margin-bottom: 0;
+}
+
+.tag.usd {
+  background-color: #D6FBEB;
+  color: #00A55E;
+}
+
+.tag.token {
+  background-color: #E7F0FA;
+  color: #775EC7;
+}

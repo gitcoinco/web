@@ -12,6 +12,11 @@ div, p, a, span {
 .nav_avatar{
     cursor: pointer;
 }
+
+.navbar {
+  font-family: "futura-pt", "Futura";
+}
+
 .navbar-nav .nav-link {
     border-radius: 2px;
 }
@@ -73,19 +78,19 @@ div, p, a, span {
     overflow-x: hidden;
 }
 
-.search_bar, .bounty_def{
+.bounty_def{
     background-color: #eee;
     height: 140px;
     padding-top: 10px;
 }
 
-.search_bar, .bounty_def #mce-EMAIL{
+.bounty_def #mce-EMAIL{
     display: inline;
     text-transform: uppercase;
     font-size: 14px;
 }
 
-.search_bar, .bounty_def #mc-embedded-subscribe{
+.bounty_def #mc-embedded-subscribe{
     display: inline;
     text-transform: uppercase;
 }
@@ -375,19 +380,9 @@ p a {
     text-align: center;
 }
 
-.dashboard .body .bounty_row {
-    color: #212529;
-}
-
 .dashboard .body .bounty_row.local,
 .dashboard .body .bounty_row.ropsten {
     border-left: 1px solid red;
-}
-
-.dashboard .body .bounty_row:hover {
-    background-color: #fafafa;
-    cursor: pointer;
-    text-decoration: none;;
 }
 
 .dashboard .body .sort_option {
@@ -435,16 +430,6 @@ p a {
     background: #eee;
 }
 
-.dashboard #clear {
-    cursor: pointer;
-    margin-top: 30px;
-}
-
-.sidebar_search label {
-    margin-bottom: 0px;
-    cursor: pointer;
-}
-
 #mailchimp {
     overflow: hidden;
 }
@@ -487,32 +472,6 @@ input[type=text].loading {
     background-repeat: no-repeat;
     background-position: right;
     background-size: 30px;
-}
-
-#upper_left {
-    min-height: 140px;
-    background-color: #26cd7f;
-}
-
-#upper_left #sidebar_head {
-    text-align: center;
-    line-height: 1.3em;
-}
-
-#upper_left a {
-    color: white;
-    text-decoration: underline;;
-}
-
-#upper_left img {
-    filter: invert(100%);
-    max-width: 40px;
-    max-height: 40px;
-    display: inline;
-}
-
-#upper_left.disabled {
-    background-color: red;
 }
 
 .blocking_error {
@@ -1150,10 +1109,6 @@ body.bounty_details #title {
     list-style: none;
 }
 
-body.slack .justify-content-right img {
-    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
-    filter: grayscale(100%);
-}
 
 @media (max-width: 1350px) {
     .profile_details .bounties li div.details{
@@ -1337,14 +1292,6 @@ body.slack .justify-content-right img {
     }
     .search_bar .sort_row {
         display: none !important;
-    }
-
-    .search_bar {
-        height: 90px ;
-    }
-
-    .dash-filter-header {
-        font-size: 1rem;
     }
 
     #hero_cta a.btn {

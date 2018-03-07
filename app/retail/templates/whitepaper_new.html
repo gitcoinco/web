@@ -23,11 +23,7 @@
         <div class=" row ">
             <div class="col-4 pb-4">
                 <div class="align-items-right justify-content-right" style="text-align: right;">
-                    <img src="{% static "v2/images/divine.png" %}" style="max-width:80%; margin: 0px auto;">
-                    <br>
-                    <img src="{% static "v2/images/prime.png" %}" style="max-width:80%; margin: 0px auto;">
-                    <br>
-                    <img src="{% static "v2/images/regulus.png" %}" style="max-width:80%; margin: 0px auto;">
+                    <img src="{% static "v2/images/tree/dark.png" %}" style="max-width:80%; margin: 0px auto;">
                 </div>
             </div>
             <div class="col-1 pb-4">
@@ -100,7 +96,7 @@
                                 <a href="{% url "tools" %}">Learn a new tool</a> 🛠
                             </li>
                         </ul>
-                        <h4 class="pt-1">Still want whitepaper access? </h4>
+                        <h4 id="still" class="pt-1">Still want whitepaper access? </h4>
 
                         <p>Please submit your info below to receive access to the whitepaper if/when its available. <a href="{% url "whitepaper_access" %}">Already have an access code?</a> </p>
                         {% if msg %}
@@ -108,7 +104,12 @@
                                 {{msg | safe}}
                             </p>
                         {% endif %}
-                        <form id=whitepaper  method=POST>
+                        {% if success %}
+                            <div style="text-align: center; margin-bottom: 10px">
+                                <img src="{% static "v2/images/tree/party_robot.jpg" %}" style="max-width:60%; margin: 0px auto;">
+                            </div>
+                        {% endif %}                        
+                        <form id=whitepaper action="{% url 'whitepaper' %}#still"  method=POST>
                             <div class="form-group">
                                 <label class="form__label" for="email">Email address</label>
                                 <input type=text name=email class="form__input" placeholder='you@somewhere'  value="{{email}}" required>
