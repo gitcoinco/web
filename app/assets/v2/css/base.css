@@ -1509,6 +1509,9 @@ body.slack .justify-content-right img {
 }
 
 @media (max-width: 576px) {
+  #sidebar_container {
+    display: none;
+  }
   .profile_details #stats {
     padding-right: 10px;
   }

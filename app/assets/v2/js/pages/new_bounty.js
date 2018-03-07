@@ -11,7 +11,7 @@ var setUsdAmount = function(event) {
 
 // Wait until page is loaded, then run the function
 $(document).ready(function() {
-    // Load sidebar radio buttons from localStorage
+  // Load sidebar radio buttons from localStorage
   if (getParam('source')) {
     $('input[name=issueURL]').val(getParam('source'));
   } else if (getParam('url')) {
@@ -33,7 +33,7 @@ $(document).ready(function() {
     $('select[name=bountyType] option:contains(' + localStorage['bountyType'] + ')').prop('selected', true);
   }
 
-    // fetch issue URL related info
+  // fetch issue URL related info
   $('input[name=amount]').keyup(setUsdAmount);
   $('input[name=amount]').blur(setUsdAmount);
   $('select[name=deonomination]').change(setUsdAmount);
@@ -49,6 +49,9 @@ $(document).ready(function() {
   $('input[name=issueURL]').focus();
 
   $('select[name=deonomination]').select2();
+  $('.js-select2').each(function() {
+    $(this).select2();
+  });
 
   $('#advancedLink a').click(function(e) {
     e.preventDefault();
@@ -63,11 +66,11 @@ $(document).ready(function() {
     }
   });
 
-    // submit bounty button click
+  // submit bounty button click
   $('#submitBounty').click(function(e) {
     mixpanel.track('Submit New Bounty Clicked', {});
 
-        // setup
+    // setup
     e.preventDefault();
     loading_button($(this));
     var githubUsername = $('input[name=githubUsername]').val();
@@ -79,22 +82,22 @@ $(document).ready(function() {
     var decimals = token['decimals'];
     var tokenName = token['name'];
     var decimalDivisor = Math.pow(10, decimals);
-    var expirationTimeDelta = $('select[name=expirationTimeDelta').val();
+    var expirationTimeDelta = $('select[name=expirationTimeDelta]').val();
 
     var metadata = {
-      issueTitle: $('input[name=title').val(),
-      issueDescription: $('textarea[name=description').val(),
-      issueKeywords: $('input[name=keywords').val(),
+      issueTitle: $('input[name=title]').val(),
+      issueDescription: $('textarea[name=description]').val(),
+      issueKeywords: $('input[name=keywords]').val(),
       tokenName: tokenName,
       githubUsername: githubUsername,
       notificationEmail: notificationEmail,
-      fullName: $('input[name=fullName').val(),
-      experienceLevel: $('select[name=experienceLevel').val(),
-      projectLength: $('select[name=projectLength').val(),
-      bountyType: $('select[name=bountyType').val()
+      fullName: $('input[name=fullName]').val(),
+      experienceLevel: $('select[name=experienceLevel]').val(),
+      projectLength: $('select[name=projectLength]').val(),
+      bountyType: $('select[name=bountyType]').val()
     };
 
-        // https://github.com/ConsenSys/StandardBounties/issues/21
+    // https://github.com/ConsenSys/StandardBounties/issues/21
     var ipfsBounty = {
       payload: {
         title: metadata.issueTitle,
@@ -113,7 +116,7 @@ $(document).ready(function() {
         categories: metadata.issueKeywords.split(','),
         created: new Date().getTime() / 1000 | 0,
         webReferenceURL: issueURL,
-                // optional fields
+        // optional fields
         metadata: metadata,
         tokenName: tokenName,
         tokenAddress: tokenAddress
@@ -125,7 +128,7 @@ $(document).ready(function() {
       }
     };
 
-        // validation
+    // validation
     var isError = false;
 
     if ($('#terms:checked').length == 0) {
@@ -162,42 +165,42 @@ $(document).ready(function() {
     }
     $(this).attr('disabled', 'disabled');
 
-        // save off local state for later
+    // save off local state for later
     localStorage['issueURL'] = issueURL;
     localStorage['amount'] = amount;
     localStorage['notificationEmail'] = notificationEmail;
     localStorage['githubUsername'] = githubUsername;
     localStorage['tokenAddress'] = tokenAddress;
-    localStorage['expirationTimeDelta'] = $('select[name=expirationTimeDelta').val();
-    localStorage['experienceLevel'] = $('select[name=experienceLevel').val();
-    localStorage['projectLength'] = $('select[name=projectLength').val();
-    localStorage['bountyType'] = $('select[name=bountyType').val();
+    localStorage['expirationTimeDelta'] = $('select[name=expirationTimeDelta]').val();
+    localStorage['experienceLevel'] = $('select[name=experienceLevel]').val();
+    localStorage['projectLength'] = $('select[name=projectLength]').val();
+    localStorage['bountyType'] = $('select[name=bountyType]').val();
     localStorage.removeItem('bountyId');
 
 
-        // setup web3
-        // TODO: web3 is using the web3.js file.  In the future we will move
-        // to the node.js package.  github.com/ethereum/web3.js
+    // setup web3
+    // TODO: web3 is using the web3.js file.  In the future we will move
+    // to the node.js package.  github.com/ethereum/web3.js
     var isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
     var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
     var account = web3.eth.coinbase;
 
     amount = amount * decimalDivisor;
-        // Create the bounty object.
-        // This function instantiates a contract from the existing deployed Standard Bounties Contract.
-        // bounty_abi is a giant object containing the different network options
-        // bounty_address() is a function that looks up the name of the network and returns the hash code
+    // Create the bounty object.
+    // This function instantiates a contract from the existing deployed Standard Bounties Contract.
+    // bounty_abi is a giant object containing the different network options
+    // bounty_address() is a function that looks up the name of the network and returns the hash code
     var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
         // StandardBounties integration begins here
     var expire_date = (parseInt(expirationTimeDelta) + (new Date().getTime() / 1000 | 0));
-        // Set up Interplanetary file storage
-        // IpfsApi is defined in the ipfs-api.js.
-        // Is it better to use this JS file than the node package?  github.com/ipfs/
+    // Set up Interplanetary file storage
+    // IpfsApi is defined in the ipfs-api.js.
+    // Is it better to use this JS file than the node package?  github.com/ipfs/
 
     ipfs.ipfsApi = IpfsApi({host: 'ipfs.infura.io', port: '5001', protocol: 'https', root: '/api/v0'});
     ipfs.setProvider({ host: 'ipfs.infura.io', port: 5001, protocol: 'https', root: '/api/v0'});
 
-        // setup inter page state
+    // setup inter page state
     localStorage[issueURL] = JSON.stringify({
       'timestamp': null,
       'dataHash': null,
@@ -206,11 +209,11 @@ $(document).ready(function() {
     });
 
     function syncDb() {
-            // Need to pass the bountydetails as well, since I can't grab it from the
-            // Standard Bounties contract.
+      // Need to pass the bountydetails as well, since I can't grab it from the
+      // Standard Bounties contract.
       dataLayer.push({'event': 'fundissue'});
 
-            // update localStorage issuePackage
+      // update localStorage issuePackage
       var issuePackage = JSON.parse(localStorage[issueURL]);
 
       issuePackage['timestamp'] = timestamp();
@@ -224,7 +227,7 @@ $(document).ready(function() {
       }, 1000);
     }
 
-        // web3 callback
+    // web3 callback
     function web3Callback(error, result) {
 
       if (error) {
@@ -235,13 +238,13 @@ $(document).ready(function() {
         return;
       }
 
-            // update localStorage issuePackage
+      // update localStorage issuePackage
       var issuePackage = JSON.parse(localStorage[issueURL]);
 
       issuePackage['txid'] = result;
       localStorage[issueURL] = JSON.stringify(issuePackage);
 
-            // sync db
+      // sync db
       syncDb();
 
     }
@@ -255,16 +258,16 @@ $(document).ready(function() {
         return;
       }
 
-            // cache data hash to find bountyId later
-            // update localStorage issuePackage
+      // cache data hash to find bountyId later
+      // update localStorage issuePackage
       var issuePackage = JSON.parse(localStorage[issueURL]);
 
       issuePackage['dataHash'] = result;
       localStorage[issueURL] = JSON.stringify(issuePackage);
 
-            // bounty is a web3.js eth.contract address
-            // The Ethereum network requires using ether to do stuff on it
-            // issueAndActivateBounty is a method definied in the StandardBounties solidity contract.
+      // bounty is a web3.js eth.contract address
+      // The Ethereum network requires using ether to do stuff on it
+      // issueAndActivateBounty is a method definied in the StandardBounties solidity contract.
 
       var eth_amount = isETH ? amount : 0;
       var _paysTokens = !isETH;
@@ -274,7 +277,7 @@ $(document).ready(function() {
                 result,             // _data (ipfs hash)
                 amount,             // _fulfillmentAmount
                 0x0,                // _arbiter
-                _paysTokens,              // _paysTokens
+                _paysTokens,        // _paysTokens
                 tokenAddress,       // _tokenContract
                 amount,             // _value
         {                   // {from: x, to: y}
@@ -285,7 +288,7 @@ $(document).ready(function() {
                 web3Callback        // callback for web3
             );
     }
-        // Check if the bounty already exists
+    // Check if the bounty already exists
     var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
 
     $.get(uri, function(results, status) {
@@ -299,19 +302,17 @@ $(document).ready(function() {
       }
 
       var approve_success_callback = function(callback) {
-                    // Add data to IPFS and kick off all the callbacks.
+        // Add data to IPFS and kick off all the callbacks.
         ipfsBounty.payload.issuer.address = account;
         ipfs.addJson(ipfsBounty, newIpfsCallback);
       };
 
       if (isETH) {
-                    // no approvals needed for ETH
+        // no approvals needed for ETH
         approve_success_callback();
       } else {
         token_contract.approve(bounty_address(), amount, {from: account, value: 0, gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)}, approve_success_callback);
       }
-
-
     });
   });
 });

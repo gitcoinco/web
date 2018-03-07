@@ -490,13 +490,27 @@ var main = function(){
 
         // if theres a pending submission for this issue, show the warning message
         // if not, pull the data from the API
+        var isPending = false;
         if(localStorage[document.issueURL]){
-            //update from web3
+            //validate pending issue metadata
             document.pendingIssueMetadata = JSON.parse(localStorage[document.issueURL]);
-            var txid = document.pendingIssueMetadata['txid'];
-            showWarningMessage(txid);
-            wait_for_tx_to_mine_and_then_ping_server();
-        } else {
+            if(typeof document.pendingIssueMetadata != 'undefined' && typeof document.pendingIssueMetadata['timestamp'] != 'undefined'){
+                //validate that the pending tx is within the last little while
+                var then = parseInt(document.pendingIssueMetadata['timestamp']);
+                var now = timestamp();
+                var acceptableTimeDeltaSeconds = 60 * 60; // 1 hour
+                var isWithinAcceptableTimeRange = (now - then) < acceptableTimeDeltaSeconds;
+                if(isWithinAcceptableTimeRange){
+                    //update from web3
+                    var txid = document.pendingIssueMetadata['txid'];
+                    showWarningMessage(txid);
+                    wait_for_tx_to_mine_and_then_ping_server();
+                    isPending = true;
+                }
+            }
+        }
+        // show the actual bounty page
+        if(!isPending){
             pull_bounty_from_api();
         }
 
