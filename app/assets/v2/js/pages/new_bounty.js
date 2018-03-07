@@ -47,6 +47,9 @@ $(document).ready(function(){
     $('input[name=issueURL]').focus();
 
     $('select[name=deonomination]').select2();
+    $('.js-select2').each(function() {
+        $(this).select2();
+    });
 
     $('#advancedLink a').click(function(e){
         e.preventDefault();
@@ -76,19 +79,19 @@ $(document).ready(function(){
         var decimals = token['decimals'];
         var tokenName = token['name'];
         var decimalDivisor = Math.pow( 10, decimals );
-        var expirationTimeDelta = $('select[name=expirationTimeDelta').val();
+        var expirationTimeDelta = $('select[name=expirationTimeDelta]').val();
 
        var metadata = {
-            issueTitle : $('input[name=title').val(),
-            issueDescription : $('textarea[name=description').val(),
-            issueKeywords : $('input[name=keywords').val(),
+            issueTitle : $('input[name=title]').val(),
+            issueDescription : $('textarea[name=description]').val(),
+            issueKeywords : $('input[name=keywords]').val(),
             tokenName : tokenName,
             githubUsername : githubUsername,
             notificationEmail : notificationEmail,
-            fullName: $('input[name=fullName').val(),
-            experienceLevel : $('select[name=experienceLevel').val(),
-            projectLength : $('select[name=projectLength').val(),
-            bountyType : $('select[name=bountyType').val(),
+            fullName: $('input[name=fullName]').val(),
+            experienceLevel : $('select[name=experienceLevel]').val(),
+            projectLength : $('select[name=projectLength]').val(),
+            bountyType : $('select[name=bountyType]').val(),
         }
 
         // https://github.com/ConsenSys/StandardBounties/issues/21
@@ -164,10 +167,10 @@ $(document).ready(function(){
         localStorage['notificationEmail'] = notificationEmail;
         localStorage['githubUsername'] = githubUsername;
         localStorage['tokenAddress'] = tokenAddress;
-        localStorage['expirationTimeDelta'] = $('select[name=expirationTimeDelta').val();
-        localStorage['experienceLevel'] = $('select[name=experienceLevel').val();
-        localStorage['projectLength'] = $('select[name=projectLength').val();
-        localStorage['bountyType'] = $('select[name=bountyType').val();
+        localStorage['expirationTimeDelta'] = $('select[name=expirationTimeDelta]').val();
+        localStorage['experienceLevel'] = $('select[name=experienceLevel]').val();
+        localStorage['projectLength'] = $('select[name=projectLength]').val();
+        localStorage['bountyType'] = $('select[name=bountyType]').val();
         localStorage.removeItem('bountyId');
 
 

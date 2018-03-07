@@ -27,10 +27,10 @@
   <body class="interior {{active}}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
-      {% include 'shared/nav_internal.html' %}
+      {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-      <div class="col-2" style="background: #eee; ">
+      <div class="col-2" id="sidebar_container" style="background: #eee; ">
         {% include 'shared/current_balance.html' %}
         {% include 'shared/sidebar_search.html' %}
       </div>

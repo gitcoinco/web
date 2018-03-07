@@ -26,8 +26,8 @@ from urllib.parse import urlparse as parse
 from django.conf import settings
 from django.utils import timezone
 
+import rollbar
 import twitter
-from app.rollbar import rollbar
 from economy.utils import convert_token_to_usdt
 from github.utils import delete_issue_comment, patch_issue_comment, post_issue_comment
 from marketing.mails import tip_email
@@ -392,8 +392,8 @@ def maybe_market_tip_to_github(tip):
                 f"{tip.comments_public}" if tip.comments_public else ""
     try:
         value_in_usd = f"({tip.value_in_usdt} USD @ ${convert_token_to_usdt(tip.tokenName)}/{tip.tokenName})" if tip.value_in_usdt else ""
-    except:
-        pass # no USD conv rate 
+    except Exception:
+        pass  # no USD conv rate
     msg = f"⚡️ A tip worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has been " \
           f"granted to {username} for this issue{_from}. ⚡️ {_comments}\n\nNice work {username}! To " \
           "redeem your tip, login to Gitcoin at https://gitcoin.co/explorer and select 'Claim Tip' " \

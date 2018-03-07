@@ -16,9 +16,14 @@
 
 {% endcomment %}
 {% load static %}
+{% load is_in_list %}
 <nav class="navbar navbar-expand-md navbar-dark">
   <a class="navbar-brand pt-0 pb-0" href="/">
-    <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
+    {% if request.path == '/ios' %}
+      <img id="logo" src="{% static "v2/images/ios/gitcoin.svg" %}" data-hover="{% static "v2/images/ios/gitcoin_hover.gif" %}" height="50" />
+    {% else %}
+      <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
+    {% endif %}
   </a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,14 +34,18 @@
     <nav class="navbar-nav ml-auto mr-3">
       <a class="nav-link {% if active == 'home' %}selected{%endif%}" href="/">Home</a>
       <a class="nav-link {% if active == 'about' %}selected{%endif%}" href="{% url "about" %}">About</a>
-      <a class="nav-link" href="{% url "tools" %}">Tools</a>
-      <a class="nav-link" href="{% url "explorer" %}">Issue Explorer</a>
-      <a class="nav-link slack" href="{% url "slack" %}">
+      <a class="nav-link{% if active == 'tools' %} selected{% endif %}" href="{% url "tools" %}">Tools</a>
+      <a class="nav-link{% if active == 'dashboard' %} selected{% endif %}" href="{% url "explorer" %}">Issue Explorer</a>
+      <a class="nav-link slack{% if active == 'slack' %} selected{% endif %}" href="{% url "slack" %}">
         <i class="fa fa-slack" aria-hidden="true"></i>Slack({{num_slack}})
       </a>
-      <a class="nav-link" href="{% url "help" %}">Help</a>
+      <a class="nav-link{% if active == 'help' %} selected{% endif %}" href="{% url "help" %}">Help</a>
     </nav>
     <img class="mr-5" src="{% static "v2/images/spaceship.png" %}" width="52" height="45" />
-    <a class="btn btn-outline-info pl-4 pr-4 pulseClick" role="button" href="{% url "get_gitcoin" %}">Get Started ⚡️</a>
+    {% if active|is_in_list:'about,slack,home,help,mission' %}
+      <a class="btn btn-outline-info pl-4 pr-4 pulseClick" role="button" href="{% url 'get_gitcoin' %}">Get Started ⚡️</a>
+    {% else %}
+      {% include 'shared/nav_auth.html' with source='authed' %}
+    {% endif %}
   </div>
 </nav>

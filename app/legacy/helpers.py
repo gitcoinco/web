@@ -24,7 +24,7 @@ import pprint
 from django.db import transaction
 from django.utils import timezone
 
-from dashboard.helpers import normalizeURL
+from dashboard.helpers import normalize_url
 from dashboard.models import Bounty, BountySyncRequest
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
@@ -34,7 +34,7 @@ from dashboard.utils import build_profile_pairs
 
 def process_bounty_details(bountydetails, url, contract_address, network):
     """Process legacy bounty details."""
-    url = normalizeURL(url)
+    url = normalize_url(url)
 
     # extract json
     metadata = None
@@ -83,17 +83,19 @@ def process_bounty_details(bountydetails, url, contract_address, network):
             network=network,
             issue_description='',
         )
-        for old_bounty in old_bounties:
-            if old_bounty.current_bounty:
-                old_num_fulfillments = old_bounty.fulfillments.count()
-                old_bounty.num_fulfillments = old_num_fulfillments
-                old_bounty.fulfillments.update(bounty=new_bounty)
-                if new_bounty.num_fulfillments < old_num_fulfillments or \
-                   new_bounty.num_fulfillments < new_bounty.fulfillments.count():
-                    new_bounty.num_fulfillments = new_bounty.fulfillments.count()
-                    new_bounty.save()
-            old_bounty.current_bounty = False
-            old_bounty.save()
+        # only xfr fulfilments to new bounty if new bounty has fulfillments
+        if bountydetails[3] != '0x0000000000000000000000000000000000000000':
+            for old_bounty in old_bounties:
+                if old_bounty.current_bounty:
+                    old_num_fulfillments = old_bounty.fulfillments.count()
+                    old_bounty.num_fulfillments = old_num_fulfillments
+                    old_bounty.fulfillments.update(bounty=new_bounty)
+                    if new_bounty.num_fulfillments < old_num_fulfillments or \
+                       new_bounty.num_fulfillments < new_bounty.fulfillments.count():
+                        new_bounty.num_fulfillments = new_bounty.fulfillments.count()
+                        new_bounty.save()
+                old_bounty.current_bounty = False
+                old_bounty.save()
         new_bounty.fetch_issue_item()
         if not new_bounty.avatar_url:
             new_bounty.avatar_url = new_bounty.get_avatar_url()
