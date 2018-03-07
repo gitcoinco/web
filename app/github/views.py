@@ -113,7 +113,9 @@ def github_logout(request):
 
     try:
         # If the profile exists, clear the github access token.
-        profile = Profile.objects.get(handle=handle).update(github_access_token='')
+        profile = Profile.objects.get(handle=handle)
+        profile.github_access_token = ''
+        profile.save()
 
         # record a useraction for this
         UserAction.objects.create(
