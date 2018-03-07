@@ -39,7 +39,7 @@ def new_bounty_text(owner, repo, issue_id, comment_text):
     bounty_link = "{}funding/new?source={}&amount={}".format(
         settings.BASE_URL, issue_link, bounty_amount)
     new_bounty_response = "To create the bounty please [visit this link]({}).\n".format(bounty_link) +\
-    "\n PS Make sure you're logged in to Metamask!"
+    "\n PS Make sure you're logged into Metamask!"
     return new_bounty_response
 
 def parse_comment_amount(comment_text):
@@ -61,7 +61,7 @@ def new_tip_text(owner, repo, issue_id, comment_text):
     tip_link = '{}tip/?amount={}&username={}&source={}'.format(
         settings.BASE_URL, tip_amount, username, issue_url)
     tip_response = 'To complete the tip, please [visit this link]({}).'.format(
-        tip_link) + "\n PS Make sure you're logged in to Metamask!"
+        tip_link) + "\n PS Make sure you're logged into Metamask!"
     return tip_response
 
 def claim_bounty_text(owner, repo, issue_id):
