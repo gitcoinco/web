@@ -132,4 +132,4 @@ $ git rebase upstream/master
 ```
 
 <img src='https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png'/>
-Welcome to the gitcoin community. Lets Grow Open Source software.
+Welcome to the gitcoin community. Lets Grow Open Source Software.

@@ -108,7 +108,7 @@ def whitepaper_access(request, ratelimited=False):
 
     context = {
         'active': 'whitepaper',
-        'title': 'Whitepaper',
+        ' title': 'Whitepaper',
         'minihero': 'Whitepaper',
         'suppress_logo': True,
         }
