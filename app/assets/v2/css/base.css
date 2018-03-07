@@ -560,6 +560,7 @@ input[type=text].loading {
 
 .alert.error .message::before {
     content: url('/static/v2/images/close.svg');
+    height: 30px;
 }
 
 .alert.success {
@@ -581,7 +582,7 @@ input[type=text].loading {
 }
 
 .alert.warning {
-    background-color: #F2A700
+    background-color: #F2A700;
 }
 
 .alert.warning .message::before {
