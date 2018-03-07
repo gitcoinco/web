@@ -38,6 +38,8 @@ REPORT_URL_EXPIRATION_TIME = 60 * 60 * 24 * 30 # seconds
 
 GITHUB_REPO_PATTERN = re.compile('github.com/[\w-]+/([\w-]+)')
 
+imap = map
+
 def valid_date(v):
     try:
         return datetime.datetime.strptime(v, DATE_FORMAT)
@@ -64,7 +66,7 @@ class Command(BaseCommand):
     def format_bounty(self, bounty):
         from dashboard.models import BountyFulfillment
         try:
-            bounty_fulfillment = bounty.fulfillments.accepted().latest('created_on')
+            bounty_fulfillment = bounty.fulfillments.filter(accepted=True).latest('created_on')
             claimee_address = bounty_fulfillment.fulfiller_address
             fulfiller_github_username = bounty_fulfillment.fulfiller_github_username
         except BountyFulfillment.DoesNotExist:
@@ -131,18 +133,23 @@ class Command(BaseCommand):
             created_on__lte=options['end_date']
         ).order_by('created_on', 'id')
 
-        formatted_bounties = map(self.format_bounty, bounties)
-        formatted_tips = map(self.format_tip, tips)
+        formatted_bounties = imap(self.format_bounty, bounties)
+        formatted_tips = imap(self.format_tip, tips)
 
-        csvfile = StringIO.StringIO()
+        # python3 list hack
+        formatted_bounties = [x for x in formatted_bounties]
+        formatted_tips = [x for x in formatted_tips]
+
+        csvfile = StringIO()
         csvwriter = csv.DictWriter(csvfile, fieldnames=[
             'type', 'created_on', 'last_activity', 'amount', 'denomination', 'amount_eth',
             'amount_usdt', 'from_address', 'claimee_address', 'repo', 'from_username',
             'fulfiller_github_username', 'status', 'comments'])
         csvwriter.writeheader()
 
+        items = sorted(formatted_bounties + formatted_tips, key=lambda x: x['created_on'])
         has_rows = False
-        for item in itermerge(formatted_bounties, formatted_tips, lambda x: x['created_on']):
+        for item in items:
             has_rows = True
             csvwriter.writerow(item)
 
