@@ -22,7 +22,6 @@ import datetime
 import os
 import re
 from io import StringIO
-from itertools import imap
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -132,8 +131,8 @@ class Command(BaseCommand):
             created_on__lte=options['end_date']
         ).order_by('created_on', 'id')
 
-        formatted_bounties = imap(self.format_bounty, bounties)
-        formatted_tips = imap(self.format_tip, tips)
+        formatted_bounties = map(self.format_bounty, bounties)
+        formatted_tips = map(self.format_tip, tips)
 
         csvfile = StringIO.StringIO()
         csvwriter = csv.DictWriter(csvfile, fieldnames=[
