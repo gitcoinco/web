@@ -21,7 +21,7 @@ import csv
 import datetime
 import os
 import re
-import StringIO
+from io import StringIO
 from itertools import imap
 
 from django.conf import settings
