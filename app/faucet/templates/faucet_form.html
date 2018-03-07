@@ -36,7 +36,6 @@
 
         <div class="col body">
             <div class="container-fluid no-gutter">
-            {% include 'shared/bounty_def.html' %}
                 <div class="form-container" id="form_container">
                     {% include 'shared/faucet_no_metamask_error.html' %}
                     {% include 'shared/faucet_over_balance_error.html' %}
@@ -48,8 +47,7 @@
                             Gitcoin may provide a minimal faucet distribution of ether so you may easily
                             claim issues and gain more ether.</p>
                             <div class="faucet-form-img">
-                                <img class="hidden-mobile" src="/static/v2/images/community.jpg">
-                                <div class="hidden-desktop faucet-form-svg">
+                                <div class="faucet-form-svg">
                                     {% include 'svgs/gas.svg' %}
                                 </div>
                             </div>
@@ -98,6 +96,9 @@
                         </div>
                         <div class="frmessage" id="fail_message"></div>
                     </div>
+                </div>
+                <div class="col-12 offset-md-1 col-md-10">
+                    {% include 'shared/newsletter.html' %}
                 </div>
             </div>
         </div>
