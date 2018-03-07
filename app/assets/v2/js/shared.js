@@ -569,7 +569,6 @@ window.addEventListener('load', function() {
     if ($('#primary_form').length) {
       if (typeof web3 == 'undefined') {
         $('#no_metamask_error').css('display', 'block');
-        $('#primary_form').remove();
         mixpanel.track('No Metamask Error', params);
         return;
       }

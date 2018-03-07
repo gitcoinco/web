@@ -15,23 +15,34 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
+{% load static %}
 
-                            <div class="w-100 mt-2 p-2" id="metamask_context">
+
+                            <div class="mt-2 p-4" id="metamask_context">
+                            <div class="row">
                                 {% if recommend_gas_price > 30 %}
                                     <div class="warning mb-2">Warning: the ethereum network is quite congested at the moment. <a target=new href="{% url "gas" %}">[Stats]</a></div>
                                 {% endif %}
-                                <label><img src="{% url "avatar" %}?repo=https://github.com/MetaMask&v=3" width="20px" height="20px">The following MetaMask settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD) <a target=new href="{% url "gas" %}">[view graph]</a> :
-                                </label>
-                                <br>
-                                <div class="metamask_recc">
+                                <div class="col-6 my-4">
+                                <img class="mx-auto d-block" src="{% static "v2/images/gas.svg" %}">
+                                </div>
+                                <div class="col-12 text-center my-3">
+                                <span>The following MetaMask settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD) <a target=new href="{% url "gas" %}">[view graph]</a> :
+                                </span>
+                                </div>
+                                <div class="col-12">
+                                <div class="form-row">
+                                <div class="col">
                                     <label class="form__label" for="gasLimit">Gas Limit (units)</label>
                                     <input name='gasLimit' id='gasLimit' class="form__input" type="text" disabled="" value="Unknown" />
                                 </div>
-                                <div class="metamask_recc">
+                                <div class="col">
                                     <label class="form__label" for="gasPrice">Gas Price (gwei)</label>
                                     <input max=100 min=0 name='gasPrice' id='gasPrice' class="form__input" type="number" value="{{recommend_gas_price}}" />
                                 </div>
-                                <div>
+                                </div>
+                                </div>
+                                <div class="col my-3">
                                     <strong>Help:</strong>
                                     <ul>
                                         <li>
@@ -44,6 +55,7 @@
                                             <a target=new href="{% url "gas" %}">What are current network condtions?</a>
                                         </li>
                                     </ul>
+                                </div>
                                 </div>
                             </div>
 
