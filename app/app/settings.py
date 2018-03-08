@@ -42,9 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
+    'social_django',  # AUTH
     'django.contrib.humanize',
     'django.contrib.sitemaps',
     'django.contrib.sites',
+    # Internal
     'app',
     'retail',
     'rest_framework',
@@ -56,6 +58,7 @@ INSTALLED_APPS = [
     'gas',
     'github',
     'legacy',
+    # Third party
     'chartit',
     'email_obfuscator',
     'linkshortener',
@@ -72,10 +75,26 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ratelimit.middleware.RatelimitMiddleware',
-    'github.middleware.GithubAuthMiddleware',
+    # 'github.middleware.GithubAuthMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+
+SOCIAL_AUTH_GITHUB_SCOPE = [
+    'read:public_repo',
+    'read:org',
+    'read:user',
+    'user:email',
+]
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.github.GithubOAuth2',  # for Github authentication
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 TEMPLATES = [
     {
@@ -89,6 +108,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'app.context.insert_settings',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },

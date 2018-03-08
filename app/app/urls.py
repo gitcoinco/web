@@ -17,6 +17,7 @@
 '''
 from django.conf.urls import handler400, handler403, handler404, handler500, include, url
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
 
@@ -52,7 +53,7 @@ urlpatterns = [
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
-    
+
     url(r'^bounty/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
     url(r'^funding/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_funding'),
     url(r'^bounty/process/?', dashboard.views.process_bounty, name='process_bounty'),
@@ -169,6 +170,8 @@ urlpatterns = [
     path('actions/bounty/<int:bounty_id>/interest/', dashboard.views.interested_profiles, name='interested-profiles'),
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
+    re_path(r'^logout/$', auth_views.logout, name='logout'),
+    re_path(r'^auth/', include('social_django.urls', namespace='social')),
 ]
 
 handler403 = 'retail.views.handler403'

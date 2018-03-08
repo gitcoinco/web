@@ -3,6 +3,7 @@ import imaplib
 import logging
 import time
 
+from django.contrib.auth.models import User
 from django.utils import timezone
 
 import requests
@@ -48,7 +49,7 @@ def add_contributors(repo_data):
     return repo_data
 
 
-def sync_profile(handle):
+def sync_profile(handle, user=None):
     data = get_user(handle)
     is_error = 'name' not in data.keys()
     if is_error:
@@ -60,15 +61,19 @@ def sync_profile(handle):
     repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
     repos_data = [add_contributors(repo_data) for repo_data in repos_data]
 
+    defaults = {
+        'last_sync_date': timezone.now(),
+        'data': data,
+        'repos_data': repos_data,
+    }
+
+    if user and isinstance(user, User):
+        defaults['user'] = user
+        defaults['github_access_token'] = user.get_access_token()
+
     # store the org info in postgres
     try:
-        profile, created = Profile.objects.update_or_create(
-            handle=handle,
-            defaults={
-                'last_sync_date': timezone.now(),
-                'data': data,
-                'repos_data': repos_data,
-            })
+        profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
         print("Profile:", profile, "- created" if created else "- updated")
     except Exception as e:
         logger.error(e)

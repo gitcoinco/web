@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -81,6 +82,7 @@ def sync_web3(request):
     return JsonResponse(result)
 
 
+@login_required
 def fulfill_bounty(request):
     """Claim a legacy bounty."""
     params = {
@@ -90,8 +92,8 @@ def fulfill_bounty(request):
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
-        'handle': request.session.get('handle', ''),
-        'email': request.session.get('email', ''),
+        'handle': request.user.username,
+        'email': request.user.email,
         'is_legacy': True,
     }
 
