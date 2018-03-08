@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
     Copyright (C) 2017 Gitcoin Core
 
@@ -15,7 +16,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 from secrets import token_hex
@@ -46,10 +46,12 @@ class EmailSubscriber(SuperModel):
 
 
 class Stat(SuperModel):
+
     key = models.CharField(max_length=50, db_index=True)
     val = models.IntegerField()
 
     class Meta:
+
         index_together = [
             ["created_on", "key"],
         ]
@@ -59,6 +61,7 @@ class Stat(SuperModel):
 
 
 class LeaderboardRank(SuperModel):
+
     github_username = models.CharField(max_length=255)
     leaderboard = models.CharField(max_length=255)
     amount = models.FloatField()
@@ -79,6 +82,7 @@ class LeaderboardRank(SuperModel):
 class Match(SuperModel):
 
     class Meta:
+
         verbose_name_plural = 'Matches'
 
     email = models.EmailField(max_length=255)
@@ -91,10 +95,12 @@ class Match(SuperModel):
 
 
 class Keyword(SuperModel):
+
     keyword = models.CharField(max_length=255)
 
 
 class SlackUser(SuperModel):
+
     username = models.CharField(max_length=500)
     email = models.EmailField(max_length=255)
     last_seen = models.DateTimeField(null=True)
@@ -128,6 +134,7 @@ class GithubEvent(SuperModel):
 
 
 class GithubOrgToTwitterHandleMapping(SuperModel):
+
     github_orgname = models.CharField(max_length=500)
     twitter_handle = models.CharField(max_length=500)
 

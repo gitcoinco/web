@@ -19,9 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 
-from django.db.models.signals import m2m_changed
-from django.dispatch import receiver
-
 from .notifications import maybe_market_to_github
 
 logger = logging.getLogger(__name__)

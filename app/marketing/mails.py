@@ -46,7 +46,7 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     # build content
     content = Content(contenttype, html) if html else Content(contenttype, body)
     if settings.DEBUG:
-        to_email = Email(settings.CONTACT_EMAIL) #just to be double secret sure of what were doing in dev
+        to_email = Email(settings.CONTACT_EMAIL)  # just to be double secret sure of what were doing in dev
         subject = "[DEBUG] " + subject
     mail = Mail(from_email, subject, to_email, content)
 
@@ -54,7 +54,7 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     if add_bcc:
         p = Personalization()
         p.add_to(to_email)
-        if cc_emails: #only add CCif not in prod
+        if cc_emails:  # only add CCif not in prod
             for cc_addr in set(cc_emails):
                 cc_addr = Email(cc_addr)
                 if settings.DEBUG:
@@ -73,14 +73,14 @@ def send_mail(from_email, _to_email, subject, body, html=False,
 
 
 def tip_email(tip, to_emails, is_new):
-    ROUND_DECIMALS = 5
+    round_decimals = 5
     if not tip or not tip.url or not tip.amount or not tip.tokenName:
         return
 
     warning = '' if tip.network == 'mainnet' else "({})".format(tip.network)
-    subject = "⚡️ New Tip Worth {} {} {}".format(round(tip.amount, ROUND_DECIMALS), warning, tip.tokenName)
+    subject = "⚡️ New Tip Worth {} {} {}".format(round(tip.amount, round_decimals), warning, tip.tokenName)
     if not is_new:
-        subject = "🕐 Tip Worth {} {} {} Expiring Soon".format(round(tip.amount, ROUND_DECIMALS), warning, tip.tokenName)
+        subject = "🕐 Tip Worth {} {} {} Expiring Soon".format(round(tip.amount, round_decimals), warning, tip.tokenName)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
