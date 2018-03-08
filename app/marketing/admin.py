@@ -21,7 +21,9 @@ from __future__ import unicode_literals
 from django.contrib import admin
 
 # Register your models here.
-from .models import EmailSubscriber, GithubOrgToTwitterHandleMapping, LeaderboardRank, Match, SlackUser, Stat
+from .models import (
+    EmailSubscriber, GithubOrgToTwitterHandleMapping, LeaderboardRank, Match, SlackPresence, SlackUser, Stat,
+)
 
 
 # Register your models here.
@@ -55,4 +57,5 @@ admin.site.register(Stat, GeneralAdmin)
 admin.site.register(EmailSubscriber, EmailSubscriberAdmin)
 admin.site.register(LeaderboardRank, GeneralAdmin)
 admin.site.register(SlackUser, SlackUserAdmin)
+admin.site.register(SlackPresence, GeneralAdmin)
 admin.site.register(GithubOrgToTwitterHandleMapping, GeneralAdmin)
