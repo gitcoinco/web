@@ -70,64 +70,22 @@ def slack_users():
 
 
 def slack_users_active():
-    if settings.DEBUG:
-        return
     from marketing.models import SlackUser
 
-    sc = SlackClient(settings.SLACK_TOKEN)
-    ul = sc.api_call("users.list")
-    user = ul['members'][0]
+    one_day_ago = timezone.now() - timezone.timedelta(hours=24)
+    num_active = SlackUser.objects.filter(last_seen__gt=one_day_ago).count()
+    num_away = SlackUser.objects.filter(last_seen__lt=one_day_ago).count()
 
-    num_active = 0
-    num_away = 0
-    if int(time.strftime("%H")) == 0: #performance hack: only run this 1x per day since it runs very long
-        for user in ul['members']:
+    # create broader Stat object
+    Stat.objects.create(
+        key='slack_users_active',
+        val=num_active,
+        )
 
-            # manage making request and still respecting rate limit
-            should_do_request = True
-            is_rate_limited = False
-            while should_do_request:
-                response = sc.api_call("users.getPresence", user=user['id'])
-                is_rate_limited = response.get('error', None) == 'ratelimited'
-                should_do_request = is_rate_limited
-                if is_rate_limited:
-                    time.sleep(2)
-
-            # figure out the slack users' presence
-            pres = response.get('presence', None)
-            if pres == 'active':
-                num_active += 1
-            if pres == 'away':
-                num_away += 1
-
-            # save user by user 'lastseen' info
-            username = user['profile']['display_name']
-            email = user['profile']['email']
-            su, _ = SlackUser.objects.get_or_create(
-                username=username,
-                email=email,
-                defaults={
-                    'profile': user['profile'],
-                }
-                )
-            if pres == 'active':
-                su.last_seen = timezone.now()
-                su.times_seen += 1
-            else:
-                su.last_unseen = timezone.now()
-                su.times_unseen += 1
-            su.save()
-
-        #create broader Stat object
-        Stat.objects.create(
-            key='slack_users_active',
-            val=num_active,
-            )
-
-        Stat.objects.create(
-            key='slack_users_away',
-            val=num_away,
-            )
+    Stat.objects.create(
+        key='slack_users_away',
+        val=num_away,
+        )
 
 
 def profiles_ingested():
@@ -423,7 +381,6 @@ class Command(BaseCommand):
             bounties_fulfilled_pct,
             subs_active,
             subs_newsletter,
-            slack_users_active,
             joe_dominance_index,
             avg_time_bounty_turnaround,
             user_actions,

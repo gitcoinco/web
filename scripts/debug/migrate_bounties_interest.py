@@ -9,7 +9,8 @@ for current_bounty in current_bounties:
         didchange = False
         for interested in other_bounties.first().interested.all():
             if interested not in current_bounty.interested.all():
-                current_bounty.interested.add(interested)
+                if not mock:
+                    current_bounty.interested.add(interested)
                 didchange = True
         if mock:
             if didchange:

@@ -26,8 +26,8 @@ from urllib.parse import urlparse as parse
 from django.conf import settings
 from django.utils import timezone
 
+import rollbar
 import twitter
-from app.rollbar import rollbar
 from economy.utils import convert_token_to_usdt
 from github.utils import delete_issue_comment, patch_issue_comment, post_issue_comment
 from marketing.mails import tip_email
@@ -136,10 +136,17 @@ def maybe_market_to_slack(bounty, event_name):
     if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
 
+    conv_details = ""
+    usdt_details = ""
+    try:
+        conv_details = f"@ (${round(convert_token_to_usdt(bounty.token_name),2)}/{bounty.token_name})"
+        usdt_details = f"({bounty.value_in_usdt} USD {conv_details} "
+    except:
+        pass #no USD conversion rate
     title = bounty.title if bounty.title else bounty.github_url
     msg = f"{event_name.replace('bounty', 'funded_issue')} worth {round(bounty.get_natural_value(), 4)} {bounty.token_name} " \
-          f"({bounty.value_in_usdt} USD @ (${convert_token_to_usdt(bounty.token_name)}/{bounty.token_name}) " \
-          f"{bounty.token_name}: {title} \n\n{bounty.get_absolute_url()}&slack=1"
+          f"{usdt_details}" \
+          f"{bounty.token_name}: {title} \n\n{bounty.get_absolute_url()}"
 
     try:
         channel = 'notif-gitcoin'
@@ -211,7 +218,11 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     """
     from dashboard.models import BountyFulfillment
     msg = ''
-    usdt_value = f"({round(bounty.value_in_usdt, 2)} USD @ ${round(convert_token_to_usdt(bounty.token_name), 2)}/{bounty.token_name})" if bounty.value_in_usdt else ""
+    usdt_value = ""
+    try:
+        usdt_value = f"({round(bounty.value_in_usdt, 2)} USD @ ${round(convert_token_to_usdt(bounty.token_name), 2)}/{bounty.token_name})" if bounty.value_in_usdt else ""
+    except:
+        pass # no USD conv rate available
     natural_value = round(bounty.get_natural_value(), 4)
     absolute_url = bounty.get_absolute_url()
     amount_open_work = amount_usdt_open_work()
@@ -357,7 +368,7 @@ def amount_usdt_open_work():
     """
     from dashboard.models import Bounty
     bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
-    return round(sum([b.value_in_usdt for b in bounties]), 2)
+    return round(sum([b.value_in_usdt for b in bounties if b.value_in_usdt]), 2)
 
 def maybe_market_tip_to_github(tip):
     """Post a Github comment for the specified Tip.
@@ -379,7 +390,10 @@ def maybe_market_tip_to_github(tip):
     warning = tip.network if tip.network != 'mainnet' else ""
     _comments = "\n\nThe sender had the following public comments: \n> " \
                 f"{tip.comments_public}" if tip.comments_public else ""
-    value_in_usd = f"({tip.value_in_usdt} USD @ ${convert_token_to_usdt(tip.tokenName)}/{tip.tokenName})" if tip.value_in_usdt else ""
+    try:
+        value_in_usd = f"({tip.value_in_usdt} USD @ ${convert_token_to_usdt(tip.tokenName)}/{tip.tokenName})" if tip.value_in_usdt else ""
+    except Exception:
+        pass  # no USD conv rate
     msg = f"⚡️ A tip worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has been " \
           f"granted to {username} for this issue{_from}. ⚡️ {_comments}\n\nNice work {username}! To " \
           "redeem your tip, login to Gitcoin at https://gitcoin.co/explorer and select 'Claim Tip' " \
@@ -439,7 +453,7 @@ def maybe_market_to_email(b, event_name):
     elif event_name == 'work_done':
         accepted_fulfillment = b.fulfillments.filter(accepted=True).latest('modified_on')
         try:
-            to_emails = [b.bounty_owner_email, accepted_fulfillment]
+            to_emails = [b.bounty_owner_email, accepted_fulfillment.fulfiller_email]
             new_bounty_acceptance(b, to_emails)
         except Exception as e:
             logging.exception(e)
@@ -447,7 +461,7 @@ def maybe_market_to_email(b, event_name):
     elif event_name == 'rejected_claim':
         try:
             rejected_fulfillment = b.fulfillments.filter(accepted=False).latest('modified_on')
-            to_emails = [b.bounty_owner_email, rejected_fulfillment]
+            to_emails = [b.bounty_owner_email, rejected_fulfillment.fulfiller_email]
             new_bounty_rejection(b, to_emails)
         except Exception as e:
             logging.exception(e)

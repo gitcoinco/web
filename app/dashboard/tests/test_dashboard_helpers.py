@@ -21,7 +21,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 
 import requests_mock
-from dashboard.helpers import amount, description, keywords, normalizeURL, title
+from dashboard.helpers import amount, description, keywords, normalize_url, title
 from economy.models import ConversionRate
 
 
@@ -73,5 +73,5 @@ class DashboardHelpersTest(TestCase):
             assert keywords(request).content == b'{"keywords": ["web", "gitcoinco", "hello", "world"]}'
 
     def test_normalize_url(self):
-        """Test the dashboard helper normalizeURL method."""
-        assert normalizeURL('https://gitcoin.co/') == 'https://gitcoin.co'
+        """Test the dashboard helper normalize_url method."""
+        assert normalize_url('https://gitcoin.co/') == 'https://gitcoin.co'

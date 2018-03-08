@@ -63,6 +63,7 @@ var rows = [
     'project_length',
     'bounty_type',
     'expires_date',
+    'token_value_in_usdt',
 ]
 var heads = {
     'avatar_url': 'Issue',
@@ -127,6 +128,12 @@ var callbacks = {
             return [null, null];
         }
         return [ "Amount_usd" , val];
+    },
+    'token_value_in_usdt': function(key, val, result){
+        if(val == null){
+            return [null, null];
+        }
+        return [ "Token_amount_usd" , "$" + val + "/" + result['token_name']];
     },
     'web3_created': function(key, val, result){
         return [ "updated" , timeDifference(new Date(result['now']), new Date(result['created_on']))];
@@ -401,6 +408,9 @@ window.addEventListener('load', function() {
 
     setTimeout(function(){
         var issueURL = getParam('url');
+        if(typeof document.issueURL != 'undefined'){
+            issueURL = document.issueURL;
+        }
         $("#submitsolicitation a").attr('href','/funding/new/?source=' + issueURL)
         var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
         $.get(uri, function(results){

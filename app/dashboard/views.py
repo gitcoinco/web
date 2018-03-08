@@ -35,8 +35,8 @@ from dashboard.models import (
     Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
 )
 from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
-from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined
 from dashboard.utils import process_bounty as web3_process_bounty
+from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from github.utils import get_auth_url, get_github_emails, get_github_primary_email, is_github_token_valid
 from marketing.models import Keyword
@@ -495,13 +495,14 @@ def kill_bounty(request):
     return TemplateResponse(request, 'kill_bounty.html', params)
 
 
-def bounty_details(request):
+def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
     """Display the bounty details."""
     _access_token = request.session.get('access_token')
     profile_id = request.session.get('profile_id')
-    bounty_url = request.GET.get('url')
+    issueURL = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
+    bounty_url = issueURL
     params = {
-        'issueURL': request.GET.get('issue_'),
+        'issueURL': issueURL,
         'title': 'Issue Details',
         'card_title': 'Funded Issue Details | Gitcoin',
         'avatar_url': 'https://gitcoin.co/static/v2/images/helmet.png',

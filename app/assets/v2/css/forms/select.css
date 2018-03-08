@@ -1,0 +1,117 @@
+.form__select,
+.form__select2 {
+  position: relative;
+  outline: none;
+}
+
+.form__select2 {
+  display: flex;
+}
+
+.form__select__icon {
+  align-items: center;
+  background: #fff;
+  border-radius: 0 3px 3px 0;
+  border: 1px solid #0D0764;
+  border-left: none;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  position: absolute;
+  pointer-events: none;
+  right: 0;
+  top: 0;
+  width: 40px;
+}
+
+.form__select select {
+  background-color: #fff;
+  border: 1px solid #0D0764;
+  border-radius: 3px;
+  display: inline-block;
+  font-size: 14px;
+  font-family: 'Muli', sans-serif;
+  height: 37px;
+  outline: none;
+  width: 100%;
+}
+
+.form__select select[multiple] {
+  height: auto;
+}
+
+.form__select select:disabled {
+  background-color: #D2D2D2;
+  border: 1px solid #D2D2D2;
+  color: #9B9B9B;
+}
+
+/* For Select2 */
+.form__select2 {
+  font-family: 'Muli', sans-serif;
+  height: 100%;
+}
+
+.form__select2 select {
+  display: none;
+}
+
+.form__select2 .select2-container {
+  display: inline-block !important;
+  width: 100% !important;
+  height: 100%;
+}
+
+.form__select2 .select2-container--default .select2-selection--single {
+  align-items: center;
+  border: 1px solid #0D0764;
+  display: flex;
+  height: 100%;
+  min-height: 37px;
+}
+
+.form__select2 .select2-container--default .select2-selection--single .select2-selection__rendered {
+  line-height: normal;
+}
+
+.form__select2 .select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: 100%;
+}
+
+.form__select2 .select2-container--default.select2-container--disabled .select2-selection--single {
+  background-color: #EAEAEA;
+  border: 1px solid #EAEAEA;
+}
+
+.form__select2 .select2-container--default.select2-container--disabled .select2-selection--single .select2-selection__rendered {
+  color: #9B9B9B;
+}
+
+.form__select2 .select2-container--disabled + .form__select__icon {
+  background-color: #EAEAEA;
+  border: 1px solid #EAEAEA;
+}
+
+.form__select2 .select2-container--default .select2-selection--single .select2-selection__arrow {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 33px;
+}
+
+.form__select2 .select2-container--default .select2-selection--single .select2-selection__arrow::after {
+  background-image: url('/static/v2/images/arrow-down.png');
+  background-size: contain;
+  content: '';
+  display: block; 
+  height: 7px;
+  width: 10px;
+}
+
+.form__select2 .select2-container--default .select2-selection--single .select2-selection__arrow b {
+  display: none;
+}
+
+.form__select2 .select2-container--default .select2-selection--single {
+  border-radius: 2px;
+}

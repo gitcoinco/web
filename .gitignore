@@ -18,3 +18,13 @@ node_modules/
 gcoin/
 .cache/
 webpack-stats.json
+
+#  Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# .tfvars files
+*.tfvars

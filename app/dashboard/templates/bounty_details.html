@@ -10,10 +10,10 @@
 <body class="interior {{active}}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
-        {% include 'shared/nav_internal.html' %}
+        {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-        <div class="col-2 left-rails" style="background: #eee; ">
+        <div class="col-12 col-md-2 left-rails" style="background: #F2F6F9;">
             {% include 'shared/current_balance.html' %}
             {% include 'shared/sidebar_search.html' %}
         </div>
@@ -74,7 +74,9 @@
                     <div class="col-12 funding-amount">
                         <span class=boldLabel>Funding Amount:</span>
                         <span id="value_in_token"></span>
-                        (<span id="value_in_usdt"></span> USD @ <span id="token_value_in_usdt"></span>)
+                        <span id="value_in_usdt_wrapper">
+                            (<span id="value_in_usdt"></span> USD @ <span id="token_value_in_usdt"></span>)
+                        </span>
                     </div>
                     <div class="col-12" id="right_actions"></div>
                     <div class="col-12">
@@ -218,6 +220,10 @@
     {% include 'shared/footer.html' %}
 
 </body>
+
+<script>
+    document.issueURL = '{{issueURL}}';
+</script>
 
 <!-- jQuery -->
 <script src="{% static "v2/js/showdown.js" %}"></script>
