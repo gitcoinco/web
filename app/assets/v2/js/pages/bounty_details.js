@@ -345,7 +345,7 @@ pull_interest_list(result['pk'], function(is_interested){
         actions.push(entry);
     }
 
-    if(result['status']=='open' || result['status']=='started' || result['status']=='submitted' ){
+    if(result['status']=='open' || result['status']=='started' || result['status']=='submitted' ){ // TODO -- do we want to change how this functions if expired due to https://github.com/gitcoinco/web/pull/566 ?
 
         // is enabled
         var enabled = !isBountyOwner(result);
@@ -376,7 +376,7 @@ pull_interest_list(result['pk'], function(is_interested){
     var is_date_expired = (new Date(result['now']) > new Date(result['expires_date']));
     var is_status_expired = result['status']=='expired';
     var is_status_done = result['status']=='done';
-    if(!is_status_done && !is_status_expired){
+    if(!is_status_done && !is_status_expired){ // TODO -- do we want to change how this functions if expired due to https://github.com/gitcoinco/web/pull/566 ?
         var enabled = isBountyOwner(result);
         var entry = {
             href: '/funding/kill?source='+result['github_url'],
