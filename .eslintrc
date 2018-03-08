@@ -50,7 +50,7 @@
     "guard-for-in": "error",
     "indent": [
       "error",
-      4, {
+      2, {
         "SwitchCase": 1,
         "VariableDeclarator": {
           "var": 2,

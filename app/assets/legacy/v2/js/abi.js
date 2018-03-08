@@ -3,35 +3,35 @@ var bounty_abi = [{'inputs': [{'type': 'uint256', 'name': ''}], 'constant': true
 
 
 var bounty_address = function() {
-    switch (document.web3network) {
-        case 'mainnet':
-            return '0xb10700b5ece20a3c65b047f76fd3dc13720bd30e';
-        case 'ropsten':
-            return '0x3102118ba636942c82d1a6efa2e7d069dc2d14bd';
-        case 'kovan':
-            throw 'this network is not supported in bounty_address() for gitcoin';
-        case 'rinkeby':
-            return '0x361a451ea7ac6b21f4a5f24390405ad113de3f5b';
-        case 'custom network':
-            return '0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd';
-    }
+  switch (document.web3network) {
+    case 'mainnet':
+      return '0xb10700b5ece20a3c65b047f76fd3dc13720bd30e';
+    case 'ropsten':
+      return '0x3102118ba636942c82d1a6efa2e7d069dc2d14bd';
+    case 'kovan':
+      throw 'this network is not supported in bounty_address() for gitcoin';
+    case 'rinkeby':
+      return '0x361a451ea7ac6b21f4a5f24390405ad113de3f5b';
+    case 'custom network':
+      return '0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd';
+  }
 };
 
 var etherscan_tx_url = function(txid) {
-    switch (document.web3network) {
-        case 'mainnet':
-            return 'https://etherscan.io/tx/' + txid;
-        case 'ropsten':
-            return 'https://ropsten.etherscan.io/tx/' + txid;
-        case 'kovan':
-            return 'https://kovan.etherscan.io/tx/' + txid;
-        case 'rinkeby':
-            return 'https://rinkeby.etherscan.io/tx/' + txid;
-        case 'custom network':
-            return 'https://localhost/tx/' + txid;
-        default:
-            return 'https://etherscan.io/tx/' + txid;
-    }
+  switch (document.web3network) {
+    case 'mainnet':
+      return 'https://etherscan.io/tx/' + txid;
+    case 'ropsten':
+      return 'https://ropsten.etherscan.io/tx/' + txid;
+    case 'kovan':
+      return 'https://kovan.etherscan.io/tx/' + txid;
+    case 'rinkeby':
+      return 'https://rinkeby.etherscan.io/tx/' + txid;
+    case 'custom network':
+      return 'https://localhost/tx/' + txid;
+    default:
+      return 'https://etherscan.io/tx/' + txid;
+  }
 };
 
 var erc20_approve_gas = 560000;

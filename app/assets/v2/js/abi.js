@@ -3,42 +3,42 @@ var bounty_abi = [{'constant': false, 'inputs': [{'name': '_bountyId', 'type': '
 
 
 var bounty_address = function() {
-    if (document.web3network === null) {
+  if (document.web3network === null) {
     // default to mainnet if web3network isn't found in time
-        document.web3network = 'mainnet';
-    }
-    switch (document.web3network) {
-        case 'mainnet':
-            return '0x2af47a65da8cd66729b4209c22017d6a5c2d2400';
-        case 'ropsten':
-            throw 'this network is not supported in bounty_address() for gitcoin';
-        case 'kovan':
-            throw 'this network is not supported in bounty_address() for gitcoin';
-        case 'rinkeby':
-            return '0xf209d2b723b6417cbf04c07e733bee776105a073';
-        case 'custom network':
-            // This only works if you deploy the Standard Bounties contract locally
-            // Set the testrpc address to the address below in in the truffle.js file.
-            // In the Standard Bounties repo, `truffle deploy --network testrpc`
-            return '0x9ee228365ebc1da6a5d025fdf0939edf2bea21da';
-    }
+    document.web3network = 'mainnet';
+  }
+  switch (document.web3network) {
+    case 'mainnet':
+      return '0x2af47a65da8cd66729b4209c22017d6a5c2d2400';
+    case 'ropsten':
+      throw 'this network is not supported in bounty_address() for gitcoin';
+    case 'kovan':
+      throw 'this network is not supported in bounty_address() for gitcoin';
+    case 'rinkeby':
+      return '0xf209d2b723b6417cbf04c07e733bee776105a073';
+    case 'custom network':
+      // This only works if you deploy the Standard Bounties contract locally
+      // Set the testrpc address to the address below in in the truffle.js file.
+      // In the Standard Bounties repo, `truffle deploy --network testrpc`
+      return '0x9ee228365ebc1da6a5d025fdf0939edf2bea21da';
+  }
 };
 
 var etherscan_tx_url = function(txid) {
-    switch (document.web3network) {
-        case 'mainnet':
-            return 'https://etherscan.io/tx/' + txid;
-        case 'ropsten':
-            return 'https://ropsten.etherscan.io/tx/' + txid;
-        case 'kovan':
-            return 'https://kovan.etherscan.io/tx/' + txid;
-        case 'rinkeby':
-            return 'https://rinkeby.etherscan.io/tx/' + txid;
-        case 'custom network':
-            return 'https://localhost/tx/' + txid;
-        default:
-            return 'https://etherscan.io/tx/' + txid;
-    }
+  switch (document.web3network) {
+    case 'mainnet':
+      return 'https://etherscan.io/tx/' + txid;
+    case 'ropsten':
+      return 'https://ropsten.etherscan.io/tx/' + txid;
+    case 'kovan':
+      return 'https://kovan.etherscan.io/tx/' + txid;
+    case 'rinkeby':
+      return 'https://rinkeby.etherscan.io/tx/' + txid;
+    case 'custom network':
+      return 'https://localhost/tx/' + txid;
+    default:
+      return 'https://etherscan.io/tx/' + txid;
+  }
 };
 
 var erc20_approve_gas = 560000;

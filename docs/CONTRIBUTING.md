@@ -78,7 +78,7 @@ To keep the style of the Javascript code consistent we have a basic linting conf
 - Use the preconfigured eslint for Javascript
 - Avoid trailing whitespace & un-necessary white lines
 - Indentation is as follows
-  - 1 tab = 2 spaces for `.html` files
+  - 1 tab = 2 spaces for `.html` and `.js` files
   - 1 tab = 4 spaces for everything else
 
 ### Step 4: Commit
