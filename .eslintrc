@@ -29,9 +29,9 @@
       }
     ],
     "block-scoped-var": "error",
-    "block-spacing": 2,
+    "block-spacing": "error",
     "brace-style": "error",
-    "camelcase": 0,
+    "camelcase": "off",
     "class-methods-use-this": "error",
     "comma-dangle": [
       "error",
@@ -50,7 +50,7 @@
     "guard-for-in": "error",
     "indent": [
       "error",
-      2, {
+      4, {
         "SwitchCase": 1,
         "VariableDeclarator": {
           "var": 2,
