@@ -11,7 +11,6 @@ from django.views.generic import View
 import pytz
 from marketing.models import EmailEvent
 
-
 # https://sendgrid.com/docs/API_Reference/Webhooks/event.html 
 example = """
 [
