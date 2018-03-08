@@ -75,7 +75,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ratelimit.middleware.RatelimitMiddleware',
-    # 'github.middleware.GithubAuthMiddleware',
 ]
 
 ROOT_URLCONF = 'app.urls'

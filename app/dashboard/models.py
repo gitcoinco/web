@@ -852,6 +852,18 @@ class Profile(SuperModel):
         return settings.BASE_URL + self.get_relative_url(preceding_slash=False)
 
     def get_access_token(self, save=True):
+        """Get the Github access token from User.
+
+        Args:
+            save (bool): Whether or not to save the User access token to the profile.
+
+        Raises:
+            Exception: The exception is raised in the event of any error and returns an empty string.
+
+        Returns:
+            str: The Github access token.
+
+        """
         try:
             access_token = self.user.social_auth.filter(provider='github').latest('pk').access_token
             if save:
@@ -864,6 +876,7 @@ class Profile(SuperModel):
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, created, **kwargs):
+    """Handle actions to take after User is saved."""
     if created:
         from app.utils import sync_profile
         handle = instance.username.lstrip('@')
@@ -874,6 +887,7 @@ def save_user_profile(sender, instance, created, **kwargs):
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
+    """Handle actions to take on user login."""
     UserAction.objects.create(
         profile=user.profile,
         action='Login',
@@ -882,6 +896,7 @@ def post_login(sender, request, user, **kwargs):
 
 @receiver(user_logged_out)
 def post_logout(sender, request, user, **kwargs):
+    """Handle actions to take on user logout."""
     UserAction.objects.create(
         profile=user.profile,
         action='Logout',
