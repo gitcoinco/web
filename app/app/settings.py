@@ -219,6 +219,8 @@ GITHUB_SCOPE = 'read:user,user:email,read:org'
 # List of github usernames to not count as comments on an issue
 IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
 
+SENDGRID_EVENT_HOOK_URL = 'sg_event_process'
+
 # Include local settings overrides
 try:
     from .local_settings import *  # NOQA
