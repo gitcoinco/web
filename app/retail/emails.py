@@ -29,8 +29,6 @@ from django.utils import timezone
 
 import cssutils
 import premailer
-from dashboard.models import Bounty, Interest, Tip
-from marketing.mails import tip_email
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
 
@@ -178,6 +176,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
 
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
+    from dashboard.models import Bounty
     subject = "Gitcoin Weekly | Welcome to Web3 "
 
     intro = '''
@@ -266,6 +265,7 @@ def render_new_bounty_roundup(to_email):
 
 @staff_member_required
 def new_tip(request):
+    from dashboard.models import Tip
     tip = Tip.objects.last()
     response_html, _ = render_tip_email(settings.CONTACT_EMAIL, tip, True)
 
@@ -274,6 +274,7 @@ def new_tip(request):
 
 @staff_member_required
 def new_match(request):
+    from dashboard.models import Bounty
     response_html, _ = render_match_email(Bounty.objects.exclude(title='').last(), 'owocki')
 
     return HttpResponse(response_html)
@@ -281,6 +282,8 @@ def new_match(request):
 
 @staff_member_required
 def resend_new_tip(request):
+    from dashboard.models import Tip
+    from marketing.mails import tip_email
     pk = request.POST.get('pk', request.GET.get('pk'))
     params = {
         'pk': pk,
@@ -307,12 +310,14 @@ def resend_new_tip(request):
 
 @staff_member_required
 def new_bounty(request):
+    from dashboard.models import Bounty
     response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.all().last())
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def new_work_submission(request):
+    from dashboard.models import Bounty
     bounty = Bounty.objects.filter(idx_status='submitted', current_bounty=True).last()
     response_html, _ = render_new_work_submission(settings.CONTACT_EMAIL, bounty)
     return HttpResponse(response_html)
@@ -320,30 +325,35 @@ def new_work_submission(request):
 
 @staff_member_required
 def new_bounty_rejection(request):
+    from dashboard.models import Bounty
     response_html, _ = render_new_bounty_rejection(settings.CONTACT_EMAIL, Bounty.objects.all().last())
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def new_bounty_acceptance(request):
+    from dashboard.models import Bounty
     response_html, _ = render_new_bounty_acceptance(settings.CONTACT_EMAIL, Bounty.objects.all().last())
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def bounty_expire_warning(request):
+    from dashboard.models import Bounty
     response_html, _ = render_bounty_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last())
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def start_work_expired(request):
+    from dashboard.models import Bounty, Interest
     response_html, _ = render_bounty_startwork_expired(settings.CONTACT_EMAIL, Bounty.objects.all().last(), Interest.objects.all().last(), 5)
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def start_work_expire_warning(request):
+    from dashboard.models import Bounty, Interest
     response_html, _ = render_bounty_startwork_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last(), Interest.objects.all().last(), 5)
     return HttpResponse(response_html)
 
