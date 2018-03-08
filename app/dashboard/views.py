@@ -45,7 +45,7 @@ from web3 import HTTPProvider, Web3
 
 logging.basicConfig(level=logging.DEBUG)
 
-confirm_time_minutes_target = 60
+confirm_time_minutes_target = 4
 
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
