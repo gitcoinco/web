@@ -204,10 +204,10 @@ var pull_interest_list = function(bounty_pk, callback) {
         handle: value.handle,
         url: value.url
       };
-            // add to template
+      // add to template
 
       profiles.push(profile);
-            // update document.interested
+      // update document.interested
       if (profile.handle == document.contxt.github_handle) {
         document.interested = true;
       }
@@ -261,12 +261,12 @@ function getParam(parameterName) {
   var tmp = [];
 
   location.search
-        .substr(1)
-        .split('&')
-        .forEach(function(item) {
-          tmp = item.split('=');
-          if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
-        });
+    .substr(1)
+    .split('&')
+    .forEach(function(item) {
+      tmp = item.split('=');
+      if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+    });
   return result;
 }
 
@@ -362,7 +362,7 @@ var retrieveAmount = function() {
   var denomination = tokenAddressToDetails(address)['name'];
   var request_url = '/sync/get_amount?amount=' + amount + '&denomination=' + denomination;
 
-    // use cached conv rate if possible.
+  // use cached conv rate if possible.
   if (document.conversion_rates && document.conversion_rates[denomination]) {
     var usd_amount = amount / document.conversion_rates[denomination];
 
@@ -370,16 +370,16 @@ var retrieveAmount = function() {
     return;
   }
 
-    // if not, use remote one
+  // if not, use remote one
   $.get(request_url, function(result) {
 
-        // update UI
+    // update UI
     var usd_amount = result['usdt'];
     var conv_rate = amount / usd_amount;
 
     updateAmountUI(target_ele, usd_amount);
 
-        // store conv rate for later in cache
+    // store conv rate for later in cache
     if (typeof document.conversion_rates == 'undefined') {
       document.conversion_rates = {};
     }
@@ -387,7 +387,7 @@ var retrieveAmount = function() {
 
   }).fail(function() {
     target_ele.html(' ');
-        // target_ele.html('Unable to find USDT amount');
+    // target_ele.html('Unable to find USDT amount');
   });
 };
 
@@ -497,7 +497,7 @@ window.addEventListener('load', function() {
       web3.version.getNetwork((error, netId) => {
         if (!error) {
 
-                    // figure out which network we're on
+          // figure out which network we're on
           var network = 'unknown';
 
           switch (netId) {
@@ -521,7 +521,7 @@ window.addEventListener('load', function() {
           }
           document.web3network = network;
 
-                    // is this a supported networK?
+          // is this a supported networK?
           var is_supported_network = true;
 
           var recommended_network = 'mainnet or rinkeby';
@@ -561,7 +561,7 @@ window.addEventListener('load', function() {
   }, timeout_value);
 
   setTimeout(function() {
-        // detect web3, and if not, display a form telling users they must be web3 enabled.
+    // detect web3, and if not, display a form telling users they must be web3 enabled.
     var params = {
       page: document.location.pathname
     };

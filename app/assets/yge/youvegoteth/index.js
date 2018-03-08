@@ -18,12 +18,12 @@ function getParam(parameterName) {
   var tmp = [];
 
   location.search
-        .substr(1)
-        .split('&')
-        .forEach(function(item) {
-          tmp = item.split('=');
-          if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
-        });
+    .substr(1)
+    .split('&')
+    .forEach(function(item) {
+      tmp = item.split('=');
+      if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+    });
   return result;
 }
 
@@ -33,13 +33,13 @@ var contract_address = function() {
   var contract_address;
 
   if (document.web3network == 'custom network') {
-        // testrpc
+    // testrpc
     contract_address = '0x852624f8b99431a354bf11543b10762fd3cdfae3';
   } else if (document.web3network == 'ropsten') {
-        // ropsten
+    // ropsten
     contract_address = '0xb917e0f1fdebb89d37cbe053f59066a20b6794d6'; // ropsten v1
   } else {
-        // mainnet
+    // mainnet
     contract_address = '0x5479b8be3b8e9459616721f8b588df593c6e4178'; // mainnet v1
   }
   return contract_address;
@@ -48,13 +48,13 @@ var etherscanDomain = function() {
   var etherscanDomain = 'etherscan.io';
 
   if (document.web3network == 'custom network') {
-        // testrpc
+    // testrpc
     etherscanDomain = 'localhost';
   } else if (document.web3network == 'ropsten') {
-        // ropsten
+    // ropsten
     etherscanDomain = 'ropsten.etherscan.io';
   } else {
-        // mainnet
+    // mainnet
   }
   return etherscanDomain;
 };
@@ -119,7 +119,7 @@ window.addEventListener('load', function() {
       web3.version.getNetwork((error, netId) => {
         if (!error) {
 
-                // figure out which network we're on
+          // figure out which network we're on
           var network = 'unknown';
 
           switch (netId) {

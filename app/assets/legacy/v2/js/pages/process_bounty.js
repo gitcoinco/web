@@ -4,7 +4,7 @@ window.onload = function() {
 
   $('#bountyFulfillment').parents('.w-100').remove();
 
-    // a little time for web3 injection
+  // a little time for web3 injection
   setTimeout(function() {
     var account = web3.eth.accounts[0];
 
@@ -20,21 +20,21 @@ window.onload = function() {
 
       $('#gasLimit').addClass('loading');
       method.estimateGas(
-                issueURL,
-                function(errors, result) {
-                  $('#gasLimit').removeClass('loading');
-                  console.log(errors, result);
-                  var is_issue_taken = typeof result == 'undefined' || result > 209568;
+        issueURL,
+        function(errors, result) {
+          $('#gasLimit').removeClass('loading');
+          console.log(errors, result);
+          var is_issue_taken = typeof result == 'undefined' || result > 209568;
 
-                  if (errors || is_issue_taken) {
-                    failure_calllback(errors);
-                    return;
-                  }
-                  var gas = Math.round(result * gasMultiplier);
-                  var gasLimit = Math.round(gas * gasLimitMultiplier);
+          if (errors || is_issue_taken) {
+            failure_calllback(errors);
+            return;
+          }
+          var gas = Math.round(result * gasMultiplier);
+          var gasLimit = Math.round(gas * gasLimitMultiplier);
 
-                  success_callback(gas, gasLimit, final_callback);
-                });
+          success_callback(gas, gasLimit, final_callback);
+        });
     };
         // updates recommended metamask settings
     var updateInlineGasEstimate = function() {
@@ -51,7 +51,7 @@ window.onload = function() {
       var final_callback = function() {
         // …
       };
-            // estimateGas(issueURL, bounty.approveBountyClaim, success_callback, failure_callback, final_callback);
+      // estimateGas(issueURL, bounty.approveBountyClaim, success_callback, failure_callback, final_callback);
 
       success_callback(50531, 50531, '');
     };
@@ -163,8 +163,8 @@ window.onload = function() {
           };
 
           method.sendTransaction(issueURL,
-                            params,
-                            _callback);
+            params,
+            _callback);
         };
 
         estimateGas(issueURL, method, success_callback, failure_calllback, _callback);

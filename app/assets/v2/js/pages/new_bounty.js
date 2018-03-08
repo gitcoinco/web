@@ -191,7 +191,7 @@ $(document).ready(function() {
     // bounty_abi is a giant object containing the different network options
     // bounty_address() is a function that looks up the name of the network and returns the hash code
     var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-        // StandardBounties integration begins here
+    // StandardBounties integration begins here
     var expire_date = (parseInt(expirationTimeDelta) + (new Date().getTime() / 1000 | 0));
     // Set up Interplanetary file storage
     // IpfsApi is defined in the ipfs-api.js.
@@ -272,21 +272,21 @@ $(document).ready(function() {
       var eth_amount = isETH ? amount : 0;
       var _paysTokens = !isETH;
       var bountyIndex = bounty.issueAndActivateBounty(
-                account,            // _issuer
-                expire_date,        // _deadline
-                result,             // _data (ipfs hash)
-                amount,             // _fulfillmentAmount
-                0x0,                // _arbiter
-                _paysTokens,        // _paysTokens
-                tokenAddress,       // _tokenContract
-                amount,             // _value
-        {                   // {from: x, to: y}
+        account, // _issuer
+        expire_date, // _deadline
+        result, // _data (ipfs hash)
+        amount, // _fulfillmentAmount
+        0x0, // _arbiter
+        _paysTokens, // _paysTokens
+        tokenAddress, // _tokenContract
+        amount, // _value
+        { // {from: x, to: y}
           from: account,
           value: eth_amount,
           gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
         },
-                web3Callback        // callback for web3
-            );
+        web3Callback // callback for web3
+      );
     }
     // Check if the bounty already exists
     var uri = '/api/v0.1/bounties/?github_url=' + issueURL;

@@ -171,10 +171,10 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now) {
   console.log('checking this issue for updates:');
   console.log(issueURL);
 
-    // setup callbacks
+  // setup callbacks
   var changes_synced_callback = function() {
     document.location.href = document.location.href;
-        // check_for_bounty_changed_updates_REST();
+    // check_for_bounty_changed_updates_REST();
   };
 
   var check_for_bounty_changed_updates_REST = function() {
@@ -183,7 +183,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now) {
     $.get(uri, function(results) {
       results = sanitizeAPIResults(results);
       var result = results[0];
-            // if remote entry has been modified, refresh the page.  if not, try again
+      // if remote entry has been modified, refresh the page.  if not, try again
 
       if (typeof result == 'undefined' || result['modified_on'] == last_modified_time_remote) {
         setTimeout(check_for_bounty_changed_updates_REST, 2000);
@@ -214,7 +214,7 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now) {
             } else {
               console.error(result);
               var link_url = etherscan_tx_url(localStorage['txid']);
-                            // _alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
+              // _alert("<a target=new href='"+link_url+"'>There was an error executing the transaction.</a>  Please <a href='#' onclick='window.history.back();'>try again</a> with a higher gas value.  ")
             }
           }
         });
@@ -250,15 +250,15 @@ var pendingChangesWarning = function(issueURL, last_modified_time_remote, now) {
     var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
   };
 
-    // This part decides if a warning banner should be displayed
+  // This part decides if a warning banner should be displayed
   var should_display_warning = false;
 
-  if (localStorage[issueURL]) {  // localStorage[issueURL] is the "local timestamp"
-        // local warning
+  if (localStorage[issueURL]) { // localStorage[issueURL] is the "local timestamp"
+    // local warning
     var local_delta = parseInt(timestamp() - localStorage[issueURL]);
     var is_changing_local_recent = local_delta < (60 * 60); // less than one hour
 
-        // remote warning
+    // remote warning
     var remote_delta = (new Date(now) - new Date(last_modified_time_remote)) / 1000;
     var is_changing_remote_recent = remote_delta < (60 * 60); // less than one minute
 
@@ -278,7 +278,7 @@ window.addEventListener('load', function() {
 
   var build_detail_page = function(result) {
 
-        // setup
+    // setup
     var decimals = 18;
     var related_token_details = tokenAddressToDetails(result['token_address']);
 
@@ -288,12 +288,12 @@ window.addEventListener('load', function() {
     document.decimals = decimals;
     $('#bounty_details').css('display', 'flex');
 
-        // title
+    // title
     result['title'] = result['title'] ? result['title'] : result['github_url'];
     result['title'] = result['network'] != 'mainnet' ? '(' + result['network'] + ') ' + result['title'] : result['title'];
     $('.title').html('Funded Issue Details: ' + result['title']);
 
-        // insert table onto page
+    // insert table onto page
     for (var j = 0; j < rows.length; j++) {
       var key = rows[j];
       var head = null;
@@ -325,7 +325,7 @@ window.addEventListener('load', function() {
     // Find interest information
     pull_interest_list(result['pk'], function(is_interested) {
 
-        // actions
+      // actions
       var actions = [];
       var enabled;
 
@@ -333,7 +333,7 @@ window.addEventListener('load', function() {
 
         var github_url = result['github_url'];
 
-            // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
+        // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
         github_url = github_url.replace('pipermerriam/web3.py', 'ethereum/web3.py');
 
         if (result['github_comments']) {
@@ -362,7 +362,7 @@ window.addEventListener('load', function() {
 
       if (result['status'] == 'open' || result['status'] == 'started') {
 
-            // is enabled
+        // is enabled
         enabled = !isBountyOwner(result);
         var entryInterest = {
           href: is_interested ? '/uninterested' : '/interested',
@@ -434,7 +434,8 @@ window.addEventListener('load', function() {
 
   setTimeout(function() {
     var issueURL = getParam('url');
-    if(typeof document.issueURL != 'undefined'){
+
+    if (typeof document.issueURL != 'undefined') {
       issueURL = document.issueURL;
     }
     $('#submitsolicitation a').attr('href', '/funding/new/?source=' + issueURL);
@@ -484,7 +485,7 @@ var render_fulfillments = function(result) {
   var submission;
   var submitter_tmpl;
   var submitter_html;
-   // Add submitter list and accept buttons
+  // Add submitter list and accept buttons
 
   if (result['status'] == 'submitted') {
     var enabled = isBountyOwner(result);
