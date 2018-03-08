@@ -107,6 +107,27 @@ class SlackUser(SuperModel):
         return "{}; lastseen => {}".format(self.username, self.last_seen)
 
 
+class SlackPresence(SuperModel):
+
+    slackuser = models.ForeignKey('marketing.SlackUser', on_delete=models.CASCADE, related_name='presences')
+    status = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"{self.slackuser.username} / {self.status} / {self.created_on}"
+
+
+class GithubEvent(SuperModel):
+
+    profile = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='github_events')
+    what = models.CharField(max_length=500, default='', blank=True)
+    repo = models.CharField(max_length=500, default='', blank=True)
+    payload = JSONField(default={})
+
+    def __str__(self):
+        return f"{self.profile.handle} / {self.what} / {self.created_on}"
+
+
+
 class GithubOrgToTwitterHandleMapping(SuperModel):
     github_orgname = models.CharField(max_length=500)
     twitter_handle = models.CharField(max_length=500)
