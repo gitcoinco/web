@@ -12,6 +12,15 @@
   padding: 8px;
 }
 
+.form__input + label.error {
+  display: block;
+  font-size: 12px;
+}
+
+.form__input.error {
+  color: #D50000;
+}
+
 .form__input:disabled {
   background-color: #EAEAEA;
   border: 1px solid #979797;
@@ -38,11 +47,16 @@
   color: #868e96;
   font-size: 12px;
   font-family: 'Muli', sans-serif;
-  margin-left: .5rem;
 }
 
 .form__input-help--dynamic {
   position: absolute;
   bottom: -20px;
   left: 0;
+}
+
+.form__input + label.error {
+  color: #D50000;
+  margin-bottom: 0;
+  margin-top: .5rem 0;
 }
