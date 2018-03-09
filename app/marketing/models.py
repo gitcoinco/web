@@ -127,10 +127,19 @@ class GithubEvent(SuperModel):
         return f"{self.profile.handle} / {self.what} / {self.created_on}"
 
 
-
 class GithubOrgToTwitterHandleMapping(SuperModel):
     github_orgname = models.CharField(max_length=500)
     twitter_handle = models.CharField(max_length=500)
 
     def __str__(self):
         return "{} => {}".format(self.github_orgname, self.twitter_handle)
+
+
+class EmailEvent(SuperModel):
+
+    email = models.EmailField(max_length=255, db_index=True)
+    event = models.CharField(max_length=255, db_index=True)
+    payload = JSONField(default={})
+
+    def __str__(self):
+        return f"{self.email} - {self.event} - {self.created_on}"
