@@ -391,7 +391,7 @@ def maybe_market_tip_to_github(tip):
     _comments = "\n\nThe sender had the following public comments: \n> " \
                 f"{tip.comments_public}" if tip.comments_public else ""
     try:
-        value_in_usd = f"({tip.value_in_usdt} USD @ ${convert_token_to_usdt(tip.tokenName)}/{tip.tokenName})" if tip.value_in_usdt else ""
+        value_in_usd = f"({tip.value_in_usdt} USD @ ${round(convert_token_to_usdt(tip.tokenName), 2)}/{tip.tokenName})" if tip.value_in_usdt else ""
     except Exception:
         pass  # no USD conv rate
     msg = f"⚡️ A tip worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has been " \
