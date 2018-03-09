@@ -183,18 +183,12 @@ def interested_profiles(request, bounty_id):
     """
     page = request.GET.get('page', 1)
     limit = request.GET.get('limit', 10)
-    current_profile = request.user.profile.pk if request.user.is_authenticated else False
-    profile_interested = False
 
     # Get all interests for the Bounty.
     interests = Interest.objects \
         .filter(bounty__id=bounty_id) \
         .select_related('profile') \
         .order_by('created')
-
-    # Check whether or not the current profile has already expressed interest.
-    if current_profile and interests.filter(profile__pk=current_profile).exists():
-        profile_interested = True
 
     paginator = Paginator(interests, limit)
     try:
@@ -217,7 +211,6 @@ def interested_profiles(request, bounty_id):
             'num_pages': interests.paginator.num_pages,
         },
         'data': interests_data,
-        'profile_interested': profile_interested
     })
 
 
@@ -507,7 +500,6 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
     is_user_authenticated = request.user.is_authenticated
     _access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
 
-    profile_id = request.user.profile.pk if is_user_authenticated else ''
     issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
     params = {
         'issueURL': issue_url,
@@ -516,7 +508,6 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
         'avatar_url': 'https://gitcoin.co/static/v2/images/helmet.png',
         'active': 'bounty_details',
         'is_github_token_valid': is_github_token_valid(_access_token),
-        'profile_interested': False,
         "newsletter_headline": "Be the first to know about new funded issues."
     }
 
@@ -535,9 +526,6 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.local_avatar_url
                 params['is_legacy'] = bounty.is_legacy  # TODO: Remove this following legacy contract sunset.
-                if profile_id:
-                    profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
-                    params['profile_interested'] = profile_id in profile_ids
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
