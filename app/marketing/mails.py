@@ -95,9 +95,6 @@ def new_faucet_request(fr):
     subject = "New Faucet Request"
     body = f"A new faucet request was completed. You may fund the request here : https://gitcoin.co/_administration/process_faucet_request/{fr.pk}"
     send_mail(from_email, to_email, subject, body, from_name="No Reply from Gitcoin.co")
-    return JsonResponse({
-      'message': 'Created.'
-    }, status=201)
 
 
 def processed_faucet_request(fr):
