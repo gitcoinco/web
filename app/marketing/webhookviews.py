@@ -1,12 +1,8 @@
 import json
 from datetime import datetime
 
-from django.conf import settings
 from django.http import HttpResponse
-from django.utils.decorators import method_decorator
-from django.utils.timezone import utc
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import View
 
 import pytz
 from marketing.models import EmailEvent
