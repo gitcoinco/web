@@ -103,11 +103,11 @@ def process_faucet_request(request, pk):
 
     if faucet_request.fulfilled:
         messages.info(request, 'already fulfilled')
-        return redirect(reverse('process_faucet_request'))
+        return redirect(reverse('admin:index'))
 
     if faucet_request.rejected:
         messages.info(request, 'already rejected')
-        return redirect(reverse('process_faucet_request'))
+        return redirect(reverse('admin:index'))
 
     if request.POST.get('reject_comments', False):
         faucet_request.comment_admin = request.POST.get('reject_comments', False)
@@ -116,7 +116,7 @@ def process_faucet_request(request, pk):
         reject_faucet_request(faucet_request)
         messages.success(request, 'rejected')
 
-        return redirect(reverse('process_faucet_request'))
+        return redirect(reverse('admin:index'))
 
     if request.POST.get('destinationAccount', False):
         faucet_request.fulfilled = True
@@ -125,7 +125,7 @@ def process_faucet_request(request, pk):
         processed_faucet_request(faucet_request)
         messages.success(request, 'sent')
 
-        return redirect(reverse('process_faucet_request'))
+        return redirect(reverse('admin:index'))
 
     faucet_amount = settings.FAUCET_AMOUNT
     context = {'obj': faucet_request, 'faucet_amount': faucet_amount}
