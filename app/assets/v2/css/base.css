@@ -1029,7 +1029,7 @@ body.bounty_details #title {
     color: #919191;
 }
 
-.profile_details .tips li .amount, 
+.profile_details .tips li .amount,
 .profile_details .bounties li .amount {
     height: 80px;
     width: 200px;
@@ -1146,6 +1146,38 @@ input.is-invalid {
 
 .faucet_response .frmessage {
   font-size: large;
+}
+
+.tooltip-info {
+  font-family: "Muli";
+  padding: 20px;
+  margin: 0;
+  width: 25em;
+}
+
+.tooltip-info p {
+  margin-bottom: 10px;
+}
+
+.tooltip-info span {
+  font-family: "Muli-SemiBold";
+}
+
+.tooltip-info ol {
+  counter-reset: item;
+  padding-left: 15px;
+}
+
+.tooltip-info ol li {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.tooltip-info ol li:before {
+    content: counter(item) " ";
+    counter-increment: item;
+    font-weight: bold;
+    padding-right: 10px;
 }
 
 @media (max-width: 1350px) {
@@ -1366,6 +1398,10 @@ input.is-invalid {
     }
     #mission_hero .mission-img-wrapper img {
         max-height: 150px;
+    }
+
+    .tooltip-info {
+      display: none;
     }
 }
 @media (max-width: 481px) {
