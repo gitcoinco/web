@@ -15,7 +15,7 @@ $(document).ready(function(){
     } else if(getParam('url')){
         $('input[name=issueURL]').val(getParam('url'));
     } else if(localStorage['issueURL']){
-         $('input[name=issueURL]').val(localStorage['issueURL']);
+        $('input[name=issueURL]').val(localStorage['issueURL']);
     }
     if(localStorage['expirationTimeDelta']){
         $('select[name=expirationTimeDelta] option').prop('selected', false);
@@ -81,7 +81,7 @@ $(document).ready(function(){
         var decimalDivisor = Math.pow( 10, decimals );
         var expirationTimeDelta = $('select[name=expirationTimeDelta]').val();
 
-       var metadata = {
+        var metadata = {
             issueTitle : $('input[name=title]').val(),
             issueDescription : $('textarea[name=description]').val(),
             issueKeywords : $('input[name=keywords]').val(),
