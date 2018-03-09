@@ -229,7 +229,7 @@ def render_new_bounty_roundup(to_email):
         },
         {
             'who': 'prabhu',
-            'what': ' did some phenomenal work at ETH Denver building out ETHAnswer, a Gitcoin like application for Stack Overflow. Check out his demo on our Weekly Livestream tomorrow! ',
+            'what': ' did some phenomenal work at ETH Denver building out ETHAnswer, a Gitcoin like application for Stack Overflow. Check out his demo on our Weekly Livestream today! ',
         },
     ]
 
