@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,7 +24,7 @@
     {% include 'shared/cards.html' %}
 </head>
 
-<body class="interior {{active}}">
+<body class="interior {{ active }}">
     <div class="container-fluid header dash">
         {% include 'shared/nav.html' %}
     </div>
@@ -55,17 +55,17 @@
                                 Please note, all input fields are required. Comment is optional.
                             </p>
                             <div class="faucet-input-group">
-                                <label for="githubProfile" class="form__label float-left">Github Profile 
-                                   {% if not github_handle %}
-                                   (<a href="{% url "github:github_auth" %}?redirect_uri={{ request.get_full_path }}">Login</a>):
-                                   {% endif %}
+                                <label for="githubProfile" class="form__label float-left">Github Profile
+                                    {% if not github_handle %}
+                                    (<a href="{% url "github:github_auth" %}?redirect_uri={{ request.get_full_path }}">Login</a>):
+                                    {% endif %}
                                 </label>
-                                <input name='githubProfile' id="githubProfile" class="form__input" type="text" placeholder="@you" value="{% if github_handle %}{{github_handle}}{% endif %}" disabled=disabled />
+                                <input name='githubProfile' id="githubProfile" class="form__input" type="text" placeholder="@you" value="{% if github_handle %}{{ github_handle }}{% endif %}" disabled=disabled />
                                 <span id="githubProfileHelpBlock" class="help-block" style="display:hidden;color:red;"> </span>
                             </div>
                             <div class="faucet-input-group">
                                 <label for="emailAddress" class="form__label float-left" >Email Address:</label>
-                                <input name='emailAddress' id="emailAddress" class="form__input" type="text" placeholder="What is your email address?" value={{email}} />
+                                <input name='emailAddress' id="emailAddress" class="form__input" type="text" placeholder="What is your email address?" value="{% if email %}{{ email }}{% endif %}" />
                                 <span id="emailAddressHelpBlock" class="help-block" style="display:hidden;color:red;"></span>
                             </div>
                             <div class="faucet-input-group">
@@ -74,7 +74,7 @@
                             </div>
                             <div class="faucet-input-group">
                                 <label for="ethAddress" class="form__label float-left">ETH Address:</label>
-                                <input placeholder="0x0" disabled id="ethAddress" class="form__input" type="text" value="{% if ethAddress %}{{ethAddress}}{%endif%}" />
+                                <input placeholder="0x0" disabled id="ethAddress" class="form__input" type="text" value="{% if ethAddress %}{{ ethAddress }}{% endif %}" />
                             </div>
                             <div class="form__footer">
                                 <a class="button button--primary" role="button" id="submitFaucet" href="#">Proceed</a>
@@ -120,10 +120,10 @@ var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 
 
 <!-- jQuery -->
-<script src="{{STATIC_URL}}v2/js/amounts.js"></script>
-<script src="{{STATIC_URL}}v2/js/abi.js"></script>
-<script src="{{STATIC_URL}}v2/js/tokens.js"></script>
-<script src="{{STATIC_URL}}v2/js/shared.js"></script>
-<script src="{{STATIC_URL}}v2/js/pages/faucet_form.js"></script>
+<script src="{% static "v2/js/amounts.js" %}"></script>
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="{% static "v2/js/tokens.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
+<script src="{% static "v2/js/pages/faucet_form.js" %}"></script>
 
 </html>
