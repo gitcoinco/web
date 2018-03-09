@@ -101,6 +101,7 @@ def processed_faucet_request(fr):
     from_email = settings.SERVER_EMAIL
     subject = "Faucet Request Processed"
     html, text = render_faucet_request(fr)
+    to_email = fr.email
 
     send_mail(from_email, to_email, subject, text, html)
 
