@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
-
 // helper functions
 
 /**
@@ -39,7 +38,7 @@ var callFunctionWhenweb3Available = function(f) {
 var loading_button = function(button) {
   button.prop('disabled', true);
   button.addClass('disabled');
-  button.prepend('<img src="/static/v2/images/loading_white.gif" style="max-width:20px; max-height: 20px">').addClass('disabled');
+  button.prepend('<img src=/static/v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
 };
 
 var update_metamask_conf_time_and_cost_estimate = function() {
@@ -265,7 +264,8 @@ function getParam(parameterName) {
     .split('&')
     .forEach(function(item) {
       tmp = item.split('=');
-      if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+      if (tmp[0] === parameterName)
+        result = decodeURIComponent(tmp[1]);
     });
   return result;
 }
@@ -579,12 +579,66 @@ window.addEventListener('load', function() {
         mixpanel.track('Unlock Metamask Error', params);
         return;
       }
+      var is_zero_balance_okay = document.location.href.indexOf('/faucet') == -1;
+
+      if (is_zero_balance_okay) {
+        web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+          var balance = result.toNumber();
+
+          if (balance == 0) {
+            $('#zero_balance_error').css('display', 'block');
+            $('#primary_form').remove();
+            mixpanel.track('Zero Balance Metamask Error', params);
+          }
+        });
+      }
+
+    }
+    if ($('#faucet_form').length) {
+      if (typeof web3 == 'undefined') {
+        $('#no_metamask_error').css('display', 'block');
+        $('#faucet_form').remove();
+        mixpanel.track('No Metamask Error', params);
+        return;
+      }
+      if (!web3.eth.coinbase) {
+        $('#unlock_metamask_error').css('display', 'block');
+        $('#-faucet-form').remove();
+        mixpanel.track('Unlock Metamask Error', params);
+        return;
+      }
+      web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+        var balance = result.toNumber();
+        var faucet_amount = $('#currentFaucet').val();
+
+        $('#ethAddress').val(web3.eth.accounts[0]);
+        if (balance >= faucet_amount) {
+          $('#over_balance_error').css('display', 'block');
+          $('#faucet_form').remove();
+          mixpanel.track('Faucet Available Funds Metamask Error', params);
+        }
+      });
+
+    }
+    if ($('#admin_faucet_form').length) {
+      if (typeof web3 == 'undefined') {
+        $('#no_metamask_error').css('display', 'block');
+        $('#admin_faucet_form').remove();
+        mixpanel.track('No Metamask Error', params);
+        return;
+      }
+      if (!web3.eth.coinbase) {
+        $('#unlock_metamask_error').css('display', 'block');
+        $('#admin_faucet_form').remove();
+        mixpanel.track('Unlock Metamask Error', params);
+        return;
+      }
       web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
         var balance = result.toNumber();
 
         if (balance == 0) {
           $('#zero_balance_error').css('display', 'block');
-          $('#primary_form').remove();
+          $('#admin_faucet_form').remove();
           mixpanel.track('Zero Balance Metamask Error', params);
         }
       });

@@ -20,7 +20,7 @@ def save(request):
     body = {}
     try:
         body = json.loads(request.body)
-    except:
+    except Exception:
         status = 400
         message = 'Bad Request'
 

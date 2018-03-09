@@ -7,6 +7,8 @@ from .models import GasProfile
 
 
 class GeneralAdmin(admin.ModelAdmin):
+
     ordering = ['-id']
+
 
 admin.site.register(GasProfile, GeneralAdmin)

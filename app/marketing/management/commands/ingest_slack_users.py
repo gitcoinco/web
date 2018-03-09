@@ -40,7 +40,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         sc = SlackClient(settings.SLACK_TOKEN)
         ul = sc.api_call("users.list")
-        #accepted invites
+        # accepted invites
         for member in ul['members']:
             try:
                 email = member['profile']['email']
