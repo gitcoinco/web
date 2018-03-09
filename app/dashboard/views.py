@@ -586,6 +586,7 @@ def profile(request, handle):
     params['profile'] = profile
     params['stats'] = profile.stats
     params['bounties'] = profile.bounties
+    params['tips'] = Tip.objects.filter(username=handle)
 
     return TemplateResponse(request, 'profile_details.html', params)
 
