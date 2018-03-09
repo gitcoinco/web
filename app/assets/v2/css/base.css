@@ -385,20 +385,6 @@ p a {
     border-left: 1px solid red;
 }
 
-.dashboard .body .sort_option {
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 5px;
-}
-
-.dashboard .body .sort_option:hover {
-    background-color: #fafafa;
-}
-
-.dashboard .body .sort_option.selected {
-    border: 1px solid #212529;
-}
-
 .dashboard .body .experience {
     border-radius: 6px;
     width: 12px;
