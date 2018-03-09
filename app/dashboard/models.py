@@ -640,7 +640,7 @@ class Profile(SuperModel):
           "location": "Boulder, CO",
           "type": "Organization",
           "email": "founders@gitcoin.co",
-          "bio": "Push Open Source Forward.",
+          "bio": "Grow Open Source",
           "gists_url": "https:\/\/api.github.com\/users\/gitcoinco\/gists{\/gist_id}",
           "company": null,
           "events_url": "https:\/\/api.github.com\/users\/gitcoinco\/events{\/privacy}",
