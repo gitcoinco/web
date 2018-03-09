@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
     Copyright (C) 2018 Gitcoin Core
 
@@ -15,7 +16,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-# -*- coding: utf-8 -*-
 from django.conf import settings
 
 from marketing.models import EmailSubscriber, Stat

@@ -58,7 +58,7 @@ sudo systemctl restart gunicorn
 # invalidate cloudfront
 if [ $ISFRONTENDPUSH ]; then
     if [ $DISTID ]; then
-        aws cloudfront create-invalidation --distribution-id $DISTID --invalidation-batch="Paths={Quantity=1,Items=["/*"]},CallerReference=$(date)"
+        cd ~/gitcoin/coin; bash scripts/bustcache.bash $DISTID
     fi
 fi
 

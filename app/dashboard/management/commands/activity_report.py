@@ -27,18 +27,18 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 import boto
-from app.utils import itermerge
 from boto.s3.key import Key
 from dashboard.models import Bounty, Tip
 from marketing.mails import send_mail
 
 DATE_FORMAT = '%Y/%m/%d'
 DATE_FORMAT_HYPHENATED = '%Y-%m-%d'
-REPORT_URL_EXPIRATION_TIME = 60 * 60 * 24 * 30 # seconds
+REPORT_URL_EXPIRATION_TIME = 60 * 60 * 24 * 30  # seconds
 
 GITHUB_REPO_PATTERN = re.compile('github.com/[\w-]+/([\w-]+)')
 
 imap = map
+
 
 def valid_date(v):
     try:
@@ -117,7 +117,6 @@ class Command(BaseCommand):
         key.set_contents_from_string(contents)
 
         return key.generate_url(expires_in=REPORT_URL_EXPIRATION_TIME)
-
 
     def handle(self, *args, **options):
         bounties = Bounty.objects.prefetch_related('fulfillments').filter(

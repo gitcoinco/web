@@ -19,16 +19,25 @@
 <link rel="stylesheet" href={% static "v2/css/search_bar.css" %}>
 <div class="row search_bar">
   <div class="offset-1 col-10">
-    <div class="col-12">
-      <div class="search-area col-12 col-sm-8 col-md-5">
-        <input class="form__input" id="keywords" type="text" placeholder="keyword1, keyword2, keyword3" />
+    <div class="row">
+      <div class="search-area col-12 col-md-6 col-lg-7">
+        <input class="form__input form__input_lg" id="keywords" type="text" placeholder="keyword1, keyword2, keyword3" />
       </div>
-      <a class="button button--primary" role="button" id="new_search" href="#">Search</a>
-      <a class="save_search font-caption" href="/save_search">Save Search</a>
+      <div class="col-2 col-md-1">
+        <a class="button button--primary" role="button" id="new_search" href="#">Search</a>
+      </div>
+      <div class="col-10 col-md-5 col-lg-4 font-caption order_by">
+          <div>SORT: </div>
+          <a class="sort_option selected" data-key='web3_created' data-direction="-">Created</a>
+          <a class="sort_option" data-key='_val_usd_db' data-direction="-">Value</a>
+      </div>
     </div>
     <div class="row">
-      <div class="col-12">
+      <div class="col-12 col-md-6">
         <div class="filter-tags"></div> <!-- Populate the filters -->
+      </div>
+      <div class="col-12 col-md-2">
+        <a class="save_search font-caption" href="/save_search">Save Search</a>
       </div>
     </div>
   </div>
