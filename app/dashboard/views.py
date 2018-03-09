@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
     Copyright (C) 2017 Gitcoin Core
 
@@ -15,7 +16,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-# -*- coding: utf-8 -*-
 from __future__ import print_function, unicode_literals
 
 import json
@@ -370,6 +370,7 @@ def dashboard(request):
     }
     return TemplateResponse(request, 'dashboard.html', params)
 
+
 def external_bounties(request):
     """Handle Dummy External Bounties index page."""
 
@@ -408,6 +409,7 @@ def external_bounties(request):
         'categories': categories
     }
     return TemplateResponse(request, 'external_bounties.html', params)
+
 
 def external_bounties_show(request):
     """Handle Dummy External Bounties show page."""
@@ -699,6 +701,7 @@ def prirp(request):
 def apitos(request):
     return redirect('https://gitcoin.co/terms#privacy')
 
+
 def toolbox(request):
     actors = [{
         "title": "The Basics",
@@ -740,7 +743,7 @@ def toolbox(request):
       }, {
           "title": "The Powertools",
           "description": "Take your OSS game to the next level!",
-          "tools": [ {
+          "tools": [{
               "name": "Browser Extension",
               "img": "/static/v2/images/tools/browser_extension.png",
               "description": '''Browse Gitcoin where you already work.
@@ -756,7 +759,7 @@ def toolbox(request):
                 browse funded work on-the-go.''',
               "link": "/ios",
               "active": "false",
-              'stat_graph': 'ios_app_users', #TODO
+              'stat_graph': 'ios_app_users',  # TODO
         }
           ]
       }, {

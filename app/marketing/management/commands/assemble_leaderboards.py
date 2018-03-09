@@ -23,7 +23,7 @@ from dashboard.models import Bounty, Tip
 from marketing.models import LeaderboardRank
 
 IGNORE_PAYERS = []
-IGNORE_EARNERS = ['owocki'] #sometimes owocki pays to himself. what a jerk!
+IGNORE_EARNERS = ['owocki']  # sometimes owocki pays to himself. what a jerk!
 
 days_back = 7
 if settings.DEBUG:

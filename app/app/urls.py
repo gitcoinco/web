@@ -16,7 +16,7 @@
 
 '''
 from django.conf import settings
-from django.conf.urls import handler400, handler403, handler404, handler500, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
@@ -44,7 +44,7 @@ urlpatterns = [
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(router.urls)),
-    url(r'^actions/api/v0.1/', include(router.urls)), # same as active, but not cached in cluodfront
+    url(r'^actions/api/v0.1/', include(router.urls)),  # same as active, but not cached in cluodfront
 
     # dashboard views
 
@@ -57,7 +57,7 @@ urlpatterns = [
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
-    
+
     url(r'^bounty/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
     url(r'^funding/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_funding'),
     url(r'^bounty/process/?', dashboard.views.process_bounty, name='process_bounty'),
@@ -145,14 +145,15 @@ urlpatterns = [
     url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),
     url(r'^whitepaper/?', tdi.views.whitepaper_new, name='whitepaper'),
 
-    #faucet views
+    # faucet views
     url(r'^faucet/?', faucet.views.faucet, name='faucet'),
 
     # admin views
     url(r'^_administration/?', admin.site.urls, name='admin'),
     url(r'^_administration/email/new_bounty$', retail.emails.new_bounty, name='new_bounty'),
     url(r'^_administration/email/roundup$', retail.emails.roundup, name='roundup'),
-    url(r'^_administration/email/faucet$', retail.emails.faucet, name='faucet'),
+    url(r'^_administration/email/faucet_rejected$', retail.emails.faucet_rejected, name='email_faucet_rejected'),
+    url(r'^_administration/email/faucet$', retail.emails.faucet, name='email_faucet'),
     url(r'^_administration/email/new_tip$', retail.emails.new_tip, name='new_tip'),
     url(r'^_administration/email/new_match$', retail.emails.new_match, name='new_match'),
     url(r'^_administration/email/new_work_submission$', retail.emails.new_work_submission, name='new_work_submission'),
