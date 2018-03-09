@@ -91,4 +91,3 @@ class Command(BaseCommand):
             except Exception as e:
                 print(e)
         print("DONE at {}".format(timezone.now().strftime("%Y-%m-%d %H:%M")))
-

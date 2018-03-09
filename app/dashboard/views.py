@@ -789,7 +789,7 @@ def toolbox(request):
               "img": "/static/v2/images/tools/leaderboard.png",
               "description": '''Check out who is topping the charts in
                 the Gitcoin community this month.''',
-              "link": "https://gitcoin.co/leaderboard/",
+              "link": "/leaderboard",
               "active": "false",
               'stat_graph': 'bounties_fulfilled',
           },
