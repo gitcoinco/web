@@ -223,8 +223,6 @@ IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
 # Faucet App config
 FAUCET_AMOUNT = .001
 
-CSRF_USE_SESSIONS = True
-
 SENDGRID_EVENT_HOOK_URL = 'sg_event_process'
 
 # Include local settings overrides
