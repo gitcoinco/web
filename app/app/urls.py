@@ -145,14 +145,15 @@ urlpatterns = [
     url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),
     url(r'^whitepaper/?', tdi.views.whitepaper_new, name='whitepaper'),
 
-    #faucet views
+    # faucet views
     url(r'^faucet/?', faucet.views.faucet, name='faucet'),
 
     # admin views
     url(r'^_administration/?', admin.site.urls, name='admin'),
     url(r'^_administration/email/new_bounty$', retail.emails.new_bounty, name='new_bounty'),
     url(r'^_administration/email/roundup$', retail.emails.roundup, name='roundup'),
-    url(r'^_administration/email/faucet$', retail.emails.faucet, name='faucet'),
+    url(r'^_administration/email/faucet_rejected$', retail.emails.faucet_rejected, name='email_faucet_rejected'),
+    url(r'^_administration/email/faucet$', retail.emails.faucet, name='email_faucet'),
     url(r'^_administration/email/new_tip$', retail.emails.new_tip, name='new_tip'),
     url(r'^_administration/email/new_match$', retail.emails.new_match, name='new_match'),
     url(r'^_administration/email/new_work_submission$', retail.emails.new_work_submission, name='new_work_submission'),
