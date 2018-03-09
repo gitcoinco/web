@@ -38,6 +38,8 @@ def faucet(request):
     faucet_amount = getattr(settings, "FAUCET_AMOUNT", .003)
     params = {
         'title': 'Faucet',
+        'card_title': 'Gitcoin Faucet',
+        'card_desc': 'Request a distribution of ETH so you can use the Ethereum network and Gitcoin.',
         'faucet_amount': faucet_amount
     }
 
