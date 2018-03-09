@@ -11,7 +11,7 @@
 <body class="interior {{active}}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
-        {% include 'shared/nav_internal.html' %}
+        {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
         <div class="col body">
@@ -72,6 +72,63 @@
                                 {% endfor %}
                             </ul>
                         {% endif %}
+                        <div style="width: 100%" class="pr-2">
+                            <div>
+                                <h4>{{profile.handle}} has received these tips</h4>
+                                {% if tips|length == 0 %}
+                                    <li>
+                                        No tips found
+                                    </li>
+                                {% endif %}
+                                <ul class="tips">
+                                    {% if bounties|length > 0 %}
+                                            <li style="height:50px; font-weight: bold;">
+                                                <div class='from_username'>
+                                                    From
+                                                </div>
+                                                <div class='url'>
+                                                    Related Issue
+                                                </div>
+                                                <div class="details">
+                                                    Details
+                                                </div>
+                                            </li>
+                                    {% for tip in tips %}
+                                        <li>
+                                            <a href="{{tip.github_url}}">
+                                                <div class='from_username'>
+                                                    <p>
+                                                        {% if tip.from_username %}
+                                                            {{tip.from_username}}
+                                                        {% else %}
+                                                            Unknown
+                                                        {% endif %}
+                                                    </p>
+                                                </div>
+                                                <div class='url'>
+                                                    <p>
+                                                        <a href="{{tip.github_url}}">{{tip.github_url}}</a>
+                                                    </p>
+                                                </div>
+                                                <div class="amount">
+                                                    <a class="btn btn-sm btn-darkBlue font-smaller-2">
+                                                        {{tip.amount}} {{tip.tokenName}},
+                                                        {{tip.value_in_usdt}}
+                                                        USD
+                                                    </a>
+                                                    <p>
+                                                        {% if tip.comments_public %} Comments: 
+                                                        {{tip.comments_public}}
+                                                        {% endif %}
+                                                    </p>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                {% endif %}     
+                                </ul>                       
+                            </div>
+                        </div>
                         <div style="width: 100%" class="pr-2">
                             <div>
                             <h4>{{profile.handle}} has Participated in these Funded Issues</h4>

@@ -16,6 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
+{% load static %}
 
 {% block body %}
 
@@ -23,11 +24,7 @@
         <div class=" row ">
             <div class="col-4 pb-4">
                 <div class="align-items-right justify-content-right" style="text-align: right;">
-                    <img src="/static/v2/images/tools/community2.png" style="max-width:80%;">
-                    <br>
-                    <img src="/static/v2/images/tools/crosshairs.png" style="max-width:80%;">
-                    <br>
-                    <img src="/static/v2/images/tools/science.png" style="max-width:80%;">
+                    <img src="{% static "v2/images/tree/dark.png" %}" style="max-width:80%; margin: 0px auto;">
                 </div>
             </div>
             <div class="col-1 pb-4">
@@ -44,8 +41,14 @@
                                 {{msg | safe}}
                             </p>
                         {% endif %}
+                        {% if success %}
+                            <div style="text-align: center; margin-bottom: 10px">
+                                <img src="{% static "v2/images/tree/party_robot.jpg" %}" style="max-width:60%; margin: 0px auto;">
+                            </div>
+                        {% endif %}
                         <form class="mt-5" id="whitepaper" method="POST">
                             <div class="form-group">
+                                <p>Meet software developers, futurists, and funders who are building web3.</p>
                                 <label class="form__label" for="email">Email address</label>
                                 <input type="text" name="email" class="form__input" placeholder='you@somewhere'  value="{% if email %}{{email}}{%endif%}" required>
                                 <small id="emailHelp" class="form__input-help">Gitcoin will never share your email with anyone else.</small>

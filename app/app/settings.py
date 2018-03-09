@@ -223,6 +223,9 @@ IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
 # Faucet App config
 FAUCET_AMOUNT = .003
 
+
+SENDGRID_EVENT_HOOK_URL = 'sg_event_process'
+
 # Include local settings overrides
 try:
     from .local_settings import *  # NOQA
@@ -239,5 +242,6 @@ try:
             'exception_level_filters': [(Http404, 'info')]
         }
         MIDDLEWARE.append('rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
+        rollbar.init(**ROLLBAR)
 except ImportError:
     pass

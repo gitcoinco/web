@@ -15,6 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from django.conf import settings
 from django.conf.urls import handler400, handler403, handler404, handler500, include, url
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
@@ -28,6 +29,7 @@ import dashboard.views
 import faucet.views
 import linkshortener.views
 import marketing.views
+import marketing.webhookviews
 import retail.emails
 import retail.views
 import tdi.views
@@ -59,6 +61,9 @@ urlpatterns = [
     url(r'^funding/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_funding'),
     url(r'^bounty/process/?', dashboard.views.process_bounty, name='process_bounty'),
     url(r'^funding/process/?', dashboard.views.process_bounty, name='process_funding'),
+    url(r'^bounty/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='bounty_details_new'),
+    url(r'^funding/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='funding_details_new'),
+    url(r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='issue_details_new2'),
     url(r'^bounty/details/?', dashboard.views.bounty_details, name='bounty_details'),
     url(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
     url(r'^funding/kill/?', dashboard.views.kill_bounty, name='kill_bounty'),
@@ -175,6 +180,9 @@ urlpatterns = [
     path('actions/bounty/<int:bounty_id>/interest/', dashboard.views.interested_profiles, name='interested-profiles'),
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
+    # sendgrid webhook processing
+    path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
+
 ]
 
 handler403 = 'retail.views.handler403'

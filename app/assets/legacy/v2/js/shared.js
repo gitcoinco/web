@@ -12,6 +12,8 @@ var callFunctionWhenTransactionMined = function(txHash, f){
 };
 
 var loading_button = function(button){
+    button.prop('disabled',true);
+    button.addClass('disabled');
     button.prepend('<img src=/static/v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
 }
 
@@ -43,6 +45,7 @@ var update_metamask_conf_time_and_cost_estimate = function(){
 }
 
 var unloading_button = function(button){
+    button.prop('disabled',false);
     button.removeClass('disabled');
     button.find('img').remove();
 }

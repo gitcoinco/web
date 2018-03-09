@@ -52,6 +52,7 @@ def stats(request):
     # get param
     _filter = request.GET.get('filter')
     rollup = request.GET.get('rollup')
+    _format = request.GET.get('format', 'chart')
 
     # types
     types = list(Stat.objects.distinct('key').values_list('key', flat=True))
@@ -92,12 +93,16 @@ def stats(request):
 
     # params
     params = {
+        'format': _format,
         'types': types,
         'chart_list': [],
-        'filter_params': "?filter={}&rollup={}".format(_filter, rollup),
+        'filter_params': f"?filter={_filter}&format={_format}&rollup={rollup}",
+        'tables': {},
     }
 
     for t in types:
+
+        # get data
         source = Stat.objects.filter(key=t)
         if rollup == 'daily':
             source = source.filter(created_on__hour=1)
@@ -108,6 +113,10 @@ def stats(request):
         else:
             source = source.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=2)))
 
+        # tables
+        params['tables'][t] = source
+
+        # charts
         # compute avg
         total = 0
         count = source.count() - 1

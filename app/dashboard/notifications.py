@@ -26,8 +26,8 @@ from urllib.parse import urlparse as parse
 from django.conf import settings
 from django.utils import timezone
 
+import rollbar
 import twitter
-from app.rollbar import rollbar
 from economy.utils import convert_token_to_usdt
 from github.utils import delete_issue_comment, patch_issue_comment, post_issue_comment
 from marketing.mails import tip_email
@@ -146,7 +146,7 @@ def maybe_market_to_slack(bounty, event_name):
     title = bounty.title if bounty.title else bounty.github_url
     msg = f"{event_name.replace('bounty', 'funded_issue')} worth {round(bounty.get_natural_value(), 4)} {bounty.token_name} " \
           f"{usdt_details}" \
-          f"{bounty.token_name}: {title} \n\n{bounty.get_absolute_url()}&slack=1"
+          f"{bounty.token_name}: {title} \n\n{bounty.get_absolute_url()}"
 
     try:
         channel = 'notif-gitcoin'
@@ -391,14 +391,14 @@ def maybe_market_tip_to_github(tip):
     _comments = "\n\nThe sender had the following public comments: \n> " \
                 f"{tip.comments_public}" if tip.comments_public else ""
     try:
-        value_in_usd = f"({tip.value_in_usdt} USD @ ${convert_token_to_usdt(tip.tokenName)}/{tip.tokenName})" if tip.value_in_usdt else ""
-    except:
-        pass # no USD conv rate 
+        value_in_usd = f"({tip.value_in_usdt} USD @ ${round(convert_token_to_usdt(tip.tokenName), 2)}/{tip.tokenName})" if tip.value_in_usdt else ""
+    except Exception:
+        pass  # no USD conv rate
     msg = f"⚡️ A tip worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has been " \
           f"granted to {username} for this issue{_from}. ⚡️ {_comments}\n\nNice work {username}! To " \
           "redeem your tip, login to Gitcoin at https://gitcoin.co/explorer and select 'Claim Tip' " \
           "from dropdown menu in the top right, or check your email for a link to the tip redemption " \
-          "page. \n\n * ${amount_usdt_open_work()} in Funded OSS Work Available at: " \
+          f"page. \n\n * ${amount_usdt_open_work()} in Funded OSS Work Available at: " \
           "https://gitcoin.co/explorer\n * Incentivize contributions to your repo: " \
           "<a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>" \
           "Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
