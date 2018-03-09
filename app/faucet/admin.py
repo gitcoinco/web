@@ -31,7 +31,7 @@ class GeneralAdmin(admin.ModelAdmin):
 
 class FaucetRequestAdmin(admin.ModelAdmin):
     ordering = ['-created_on']
-    list_display = ['created_on', 'fulfilled', 'link', 'github_username', 'comment', 'address', 'email', 'comment']
+    list_display = ['created_on', 'fulfilled', 'link', 'github_username', 'address', 'email', 'comment']
 
     def link(self, instance):
         if instance.fulfilled:

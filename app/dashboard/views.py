@@ -501,6 +501,14 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
     _access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
 
     issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
+    # try the /pulls url if it doesnt exist in /issues
+    try:
+        assert Bounty.objects.current().filter(github_url=issue_url).exists()
+    except:
+        issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue if ghissue else request.GET.get('url')
+        print(issue_url)
+        pass
+
     params = {
         'issueURL': issue_url,
         'title': 'Issue Details',

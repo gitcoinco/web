@@ -29,6 +29,10 @@
   display: none;
 }
 
+a#submitFaucet.disabled{
+  background-color: grey;
+}
+
 @media (max-width: 481px) {
   .form-container {
     width: 90%;

@@ -90,25 +90,20 @@ def tip_email(tip, to_emails, is_new):
 
 
 def new_faucet_request(fr):
-    from_email = settings.PERSONAL_CONTACT_EMAIL
-    to_email = settings.SERVER_EMAIL
+    to_email = settings.PERSONAL_CONTACT_EMAIL
+    from_email = settings.SERVER_EMAIL
     subject = "New Faucet Request"
     body = f"A new faucet request was completed. You may fund the request here : https://gitcoin.co/_administration/process_faucet_request/{fr.pk}"
     send_mail(from_email, to_email, subject, body, from_name="No Reply from Gitcoin.co")
-    return JsonResponse({
-      'message': 'Created.'
-    }, status=201)
 
 
 def processed_faucet_request(fr):
     from_email = settings.SERVER_EMAIL
     subject = "Faucet Request Processed"
-    html, text = render_faucet_request(to_email, bounty)
+    html, text = render_faucet_request(fr)
+    to_email = fr.email
 
     send_mail(from_email, to_email, subject, text, html)
-    return JsonResponse({
-      'message': 'Created.'
-    }, status=201)
 
 
 def new_bounty(bounty, to_emails=None):

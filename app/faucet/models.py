@@ -41,10 +41,4 @@ class FaucetRequest(SuperModel):
     objects = FaucetRequestManager()
 
     def __str__(self):
-        return "{} / {} / {} / {} / {} / {} on {}".format(self.fulfilled,
-                                           self.github_username,
-                                           self.github_meta,
-                                           self.address,
-                                           self.email,
-                                           self.comment,
-                                           self.created_on)
+        return f"{self.github_username} / {self.created_on}"

@@ -58,7 +58,7 @@ sudo systemctl restart gunicorn
 # invalidate cloudfront
 if [ $ISFRONTENDPUSH ]; then
     if [ $DISTID ]; then
-        bash scripts/bustcache.bash $DISTID
+        cd ~/gitcoin/coin; bash scripts/bustcache.bash $DISTID
     fi
 fi
 

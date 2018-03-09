@@ -555,14 +555,17 @@ window.addEventListener('load', function() {
                     mixpanel.track("Unlock Metamask Error", params);
                     return;
                 }
-                web3.eth.getBalance(web3.eth.coinbase, function(errors,result){
-                    var balance = result.toNumber();
-                    if(balance == 0){
-                        $("#zero_balance_error").css('display', 'block');
-                        $("#primary_form").remove();
-                        mixpanel.track("Zero Balance Metamask Error", params);
-                    }
-                });
+                var is_zero_balance_okay = document.location.href.indexOf('/faucet') == -1
+                if(is_zero_balance_okay){
+                    web3.eth.getBalance(web3.eth.coinbase, function(errors,result){
+                        var balance = result.toNumber();
+                        if(balance == 0){
+                            $("#zero_balance_error").css('display', 'block');
+                            $("#primary_form").remove();
+                            mixpanel.track("Zero Balance Metamask Error", params);
+                        }
+                    });
+                }
             };
         }
         if($("#faucet_form").length){
