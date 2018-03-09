@@ -15,7 +15,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.conf.urls import handler400, handler403, handler404, handler500, include, url
+from django.conf import settings
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
@@ -25,9 +26,11 @@ import dashboard.embed
 import dashboard.helpers
 import dashboard.ios
 import dashboard.views
+import faucet.views
 import gitcoinbot.views
 import linkshortener.views
 import marketing.views
+import marketing.webhookviews
 import retail.emails
 import retail.views
 import tdi.views
@@ -39,8 +42,9 @@ urlpatterns = [
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
+    url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(router.urls)),
-    url(r'^actions/api/v0.1/', include(router.urls)), # same as active, but not cached in cluodfront
+    url(r'^actions/api/v0.1/', include(router.urls)),  # same as active, but not cached in cluodfront
 
     # dashboard views
 
@@ -53,11 +57,14 @@ urlpatterns = [
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
-    
+
     url(r'^bounty/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
     url(r'^funding/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_funding'),
     url(r'^bounty/process/?', dashboard.views.process_bounty, name='process_bounty'),
     url(r'^funding/process/?', dashboard.views.process_bounty, name='process_funding'),
+    url(r'^bounty/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='bounty_details_new'),
+    url(r'^funding/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='funding_details_new'),
+    url(r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='issue_details_new2'),
     url(r'^bounty/details/?', dashboard.views.bounty_details, name='bounty_details'),
     url(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
     url(r'^funding/kill/?', dashboard.views.kill_bounty, name='kill_bounty'),
@@ -137,10 +144,16 @@ urlpatterns = [
     # token distribution event
     url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),
     url(r'^whitepaper/?', tdi.views.whitepaper_new, name='whitepaper'),
+
+    # faucet views
+    url(r'^faucet/?', faucet.views.faucet, name='faucet'),
+
     # admin views
     url(r'^_administration/?', admin.site.urls, name='admin'),
     url(r'^_administration/email/new_bounty$', retail.emails.new_bounty, name='new_bounty'),
     url(r'^_administration/email/roundup$', retail.emails.roundup, name='roundup'),
+    url(r'^_administration/email/faucet_rejected$', retail.emails.faucet_rejected, name='email_faucet_rejected'),
+    url(r'^_administration/email/faucet$', retail.emails.faucet, name='email_faucet'),
     url(r'^_administration/email/new_tip$', retail.emails.new_tip, name='new_tip'),
     url(r'^_administration/email/new_match$', retail.emails.new_match, name='new_match'),
     url(r'^_administration/email/new_work_submission$', retail.emails.new_work_submission, name='new_work_submission'),
@@ -151,7 +164,9 @@ urlpatterns = [
     url(r'^_administration/email/start_work_expired$', retail.emails.start_work_expired, name='start_work_expired'),
     url(r'^_administration/process_accesscode_request/(.*)$', tdi.views.process_accesscode_request, name='process_accesscode_request'),
     url(r'^_administration/email/new_tip/resend$', retail.emails.resend_new_tip, name='resend_new_tip'),
-    # marketing views
+    url(r'^_administration/process_faucet_request/(.*)$', faucet.views.process_faucet_request, name='process_faucet_request'),
+
+    #marketing views
     url(r'^email/settings/(.*)', marketing.views.email_settings, name='email_settings'),
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
     url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),
@@ -170,6 +185,9 @@ urlpatterns = [
     path('actions/bounty/<int:bounty_id>/interest/', dashboard.views.interested_profiles, name='interested-profiles'),
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
+    # sendgrid webhook processing
+    path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
+
 ]
 
 handler403 = 'retail.views.handler403'

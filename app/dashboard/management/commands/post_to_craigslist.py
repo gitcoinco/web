@@ -39,4 +39,4 @@ class Command(BaseCommand):
         for bounty in bounties_to_post:
             # print(bounty)
             link = maybe_post_on_craigslist(bounty)
-            print("Posted {}".format(link))
+            print("Posted", link)

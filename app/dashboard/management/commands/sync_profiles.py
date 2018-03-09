@@ -31,7 +31,7 @@ def does_need_refresh(handle):
     try:
         org = Profile.objects.get(handle=handle)
         org.last_sync_date > timezone.now() - timezone.timedelta(weeks=1)
-    except:
+    except Exception:
         needs_refresh = True
 
     return needs_refresh

@@ -450,7 +450,9 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 standard_bounties_id=bounty_id,
                 balance=bounty_details.get('balance'),
                 num_fulfillments=len(fulfillments),
-                override_status=old_bounties.last().override_status if old_bounties.exists() else '',
+                # info to xfr over from latest_old_bounty
+                github_comments=latest_old_bounty.github_comments if latest_old_bounty else 0,
+                override_status=latest_old_bounty.override_status if latest_old_bounty else '',
             )
             new_bounty.fetch_issue_item()
             if not new_bounty.avatar_url:
@@ -542,7 +544,7 @@ def process_bounty_changes(old_bounty, new_bounty):
     if not old_bounty or (not old_bounty and new_bounty and new_bounty.is_open) or (not old_bounty.is_open and new_bounty and new_bounty.is_open):
         is_greater_than_x_days_old = new_bounty.web3_created < (timezone.now() - timezone.timedelta(hours=24))
         if is_greater_than_x_days_old and not settings.DEBUG:
-            msg = 'attempting to create a new bounty ({new_bounty.standard_bounties_id}) when is_greater_than_x_days_old = True'
+            msg = f"attempting to create a new bounty ({new_bounty.standard_bounties_id}) when is_greater_than_x_days_old = True"
             print(msg)
             raise Exception(msg)
         event_name = 'new_bounty'

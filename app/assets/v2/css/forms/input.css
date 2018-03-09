@@ -8,6 +8,10 @@
   width: 100%;
 }
 
+.form__input_lg {
+  padding: 8px;
+}
+
 .form__input:disabled {
   background-color: #EAEAEA;
   border: 1px solid #979797;

@@ -33,7 +33,9 @@ import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import convert_amount, convert_token_to_usdt
-from github.utils import _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, org_name
+from github.utils import (
+    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, issue_number, org_name, repo_name,
+)
 from rest_framework import serializers
 from web3 import Web3
 
@@ -157,7 +159,13 @@ class Bounty(SuperModel):
             str: The relative URL for the Bounty.
 
         """
-        return f"{'/' if preceding_slash else ''}funding/details?url={self.github_url}"
+        try:
+            _org_name = org_name(self.github_url)
+            _issue_num = issue_number(self.github_url)
+            _repo_name = repo_name(self.github_url)
+            return f"{'/' if preceding_slash else ''}{'legacy/' if self.is_legacy else ''}issue/{_org_name}/{_repo_name}/{_issue_num}"
+        except Exception:
+            return f"{'/' if preceding_slash else ''}{'legacy/' if self.is_legacy else ''}funding/details?url={self.github_url}"
 
     def get_natural_value(self):
         token = addr_to_token(self.token_address)
@@ -501,7 +509,7 @@ class Tip(SuperModel):
     from_name = models.CharField(max_length=255, default='', blank=True)
     from_email = models.CharField(max_length=255, default='', blank=True)
     from_username = models.CharField(max_length=255, default='', blank=True)
-    username = models.CharField(max_length=255, default='') #to username
+    username = models.CharField(max_length=255, default='')  # to username
     network = models.CharField(max_length=255, default='')
     txid = models.CharField(max_length=255, default='')
     receive_txid = models.CharField(max_length=255, default='', blank=True)
@@ -515,13 +523,17 @@ class Tip(SuperModel):
                f"{self.tokenName} to {self.username}, created: {naturalday(self.created_on)}, " \
                f"expires: {naturalday(self.expires_date)}"
 
-    #TODO: DRY
+    # TODO: DRY
     def get_natural_value(self):
         token = addr_to_token(self.tokenAddress)
         decimals = token['decimals']
         return float(self.amount) / 10**decimals
 
-    #TODO: DRY
+    @property
+    def value_true(self):
+        return self.get_natural_value()
+
+    # TODO: DRY
     @property
     def value_in_eth(self):
         if self.tokenName == 'ETH':
@@ -598,7 +610,7 @@ class Interest(models.Model):
 @receiver(post_save, sender=Interest, dispatch_uid="psave_interest")
 @receiver(post_delete, sender=Interest, dispatch_uid="pdel_interest")
 def psave_interest(sender, instance, **kwargs):
-    #when a new interest is saved, update the status on frontend
+    # when a new interest is saved, update the status on frontend
     print("updating bounties")
     for bounty in Bounty.objects.filter(interested=instance):
         bounty.save()
@@ -628,7 +640,7 @@ class Profile(SuperModel):
           "location": "Boulder, CO",
           "type": "Organization",
           "email": "founders@gitcoin.co",
-          "bio": "Push Open Source Forward.",
+          "bio": "Grow Open Source",
           "gists_url": "https:\/\/api.github.com\/users\/gitcoinco\/gists{\/gist_id}",
           "company": null,
           "events_url": "https:\/\/api.github.com\/users\/gitcoinco\/events{\/privacy}",
@@ -703,6 +715,7 @@ class Profile(SuperModel):
         bounties = bounties | Bounty.objects.filter(pk__in=fulfilled_bounty_ids, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(github_url__in=[url for url in self.tips.values_list('github_url', flat=True)], current_bounty=True)
+        bounties = bounties.distinct()
         return bounties.order_by('-web3_created')
 
     @property
@@ -751,7 +764,6 @@ class Profile(SuperModel):
     def stats(self):
         bounties = self.bounties
         loyalty_rate = 0
-        claimees = []
         total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_funder(self.handle)])
         total_fulfilled = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
         print(total_funded, total_fulfilled)

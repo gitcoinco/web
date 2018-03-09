@@ -17,4 +17,4 @@ class GasProfile(SuperModel):
     def __str__(self):
         if not self:
             return "none"
-        return "gas_price: {}, mean_time_to_confirm_minutes: {} ".format(self.gas_price, self.mean_time_to_confirm_minutes)
+        return f"gas_price: {self.gas_price}, mean_time_to_confirm_minutes: {self.mean_time_to_confirm_minutes} "
