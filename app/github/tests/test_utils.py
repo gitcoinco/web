@@ -27,10 +27,9 @@ from django.utils import timezone
 
 import responses
 from github.utils import (
-    BASE_URI, HEADERS, JSON_HEADER, TOKEN_URL, build_auth_dict, delete_issue_comment, get_auth_url, get_github_emails,
-    get_github_primary_email, get_github_user_data, get_github_user_token, get_issue_comments, get_user,
-    is_github_token_valid, org_name, patch_issue_comment, post_issue_comment, post_issue_comment_reaction, repo_url,
-    reset_token, revoke_token, search,
+    HEADERS, JSON_HEADER, TOKEN_URL, build_auth_dict, delete_issue_comment, get_github_emails, get_github_primary_email,
+    get_github_user_data, get_github_user_token, get_issue_comments, get_user, is_github_token_valid, org_name,
+    patch_issue_comment, post_issue_comment, post_issue_comment_reaction, repo_url, reset_token, revoke_token, search,
 )
 
 
