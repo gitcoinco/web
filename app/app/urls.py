@@ -15,6 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from django.conf import settings
 from django.conf.urls import handler400, handler403, handler404, handler500, include, url
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
@@ -27,6 +28,7 @@ import dashboard.ios
 import dashboard.views
 import linkshortener.views
 import marketing.views
+import marketing.webhookviews
 import retail.emails
 import retail.views
 import tdi.views
@@ -169,6 +171,9 @@ urlpatterns = [
     path('actions/bounty/<int:bounty_id>/interest/', dashboard.views.interested_profiles, name='interested-profiles'),
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
+    # sendgrid webhook processing
+    path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
+
 ]
 
 handler403 = 'retail.views.handler403'
