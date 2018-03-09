@@ -127,7 +127,6 @@ class GithubEvent(SuperModel):
         return f"{self.profile.handle} / {self.what} / {self.created_on}"
 
 
-
 class GithubOrgToTwitterHandleMapping(SuperModel):
     github_orgname = models.CharField(max_length=500)
     twitter_handle = models.CharField(max_length=500)
