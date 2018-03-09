@@ -24,7 +24,7 @@
 {% elif title %}
     <meta name="twitter:title" content="{{title}}" />
 {% else %}
-    <meta name="twitter:title" content="Gitcoin: Push Open Source Repos Forward" />
+    <meta name="twitter:title" content="Gitcoin: Grow Open Source" />
 {% endif %}
 {% if card_desc %}
     <meta name="twitter:description" content="{{card_desc}}" />
@@ -45,10 +45,13 @@
 <meta property=fb:app_id content="118275288856850">
 {% if card_title %}
     <meta property=og:title content="{{card_title}}">
+    <meta property=og:site_name content="{{card_title}}">
 {% elif title %}
     <meta property=og:title content="{{title}}">
+    <meta property=og:site_name content="{{title}}">
 {% else %}
-    <meta property=og:title content="Gitcoin: Push Open Source Repos Forward.">
+    <meta property=og:title content="Gitcoin: Grow Open Source.">
+    <meta property=og:site_name content="Gitcoin: Grow Open Source.">
 {% endif %}
 <meta property=og:url content="https://gitcoin.co/" >
 {% if card_desc %}
@@ -62,4 +65,3 @@
     <meta property=og:image content="{% static "v2/images/helmet.png" %}">
 {% endif %}
 <meta property=og:type content="website">
-<meta property=og:site_name content="Gitcoin: Push Open Source Repos Forward.">
