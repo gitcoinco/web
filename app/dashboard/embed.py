@@ -205,7 +205,7 @@ def embed(request):
 
         # config
         show_value, value = summarize_bounties(super_bounties)
-        text = '{}\nPush Open Source Forward | Powered by Gitcoin.co'.format(wrap_text(value, 45) if show_value else "")
+        text = '{}\nGrow Open Source | Powered by Gitcoin.co'.format(wrap_text(value, 45) if show_value else "")
         # execute
         draw = ImageDraw.Draw(img)
         img_w, img_h = img.size

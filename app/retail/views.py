@@ -63,8 +63,8 @@ def mission(request):
         'active': 'mission',
         'title': 'Mission',
         'card_title': 'Gitcoin is a mission-driven organization.',
-        'card_desc': 'Our mission is to push open source forward.',
-        'avatar_url': '/static/v2/images/mission/hero.png',
+        'card_desc': 'Our mission is to grow open source.',
+        'avatar_url': '/static/v2/images/grow_open_source.png',
     }
     return TemplateResponse(request, 'mission.html', context)
 
@@ -207,7 +207,7 @@ Here are some of our values
             'a': """
 Gitcoin Core LLC is the legal entity that manages the software development of the Gitcoin Network (Gitcoin).
 
-The Gitcoin Network is a series of smart contracts that helps Push Open Source Forward, but enabling developers to easily post and manage funded issues.            """
+The Gitcoin Network is a series of smart contracts that helps Grow Open Source, but enabling developers to easily post and manage funded issues.            """
         },
         {
             'q': 'Who is the team at Gitcoin Core?',
@@ -222,7 +222,7 @@ The Gitcoin Network is a series of smart contracts that helps Push Open Source F
         {
             'q': 'What is the mission of Gitcoin Core?',
             'a': """
-The mission of Gitcoin is "Push Open Source Forward".
+The mission of Gitcoin is "Grow Open Source".
 
             """
         },

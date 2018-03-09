@@ -45,7 +45,7 @@ from web3 import HTTPProvider, Web3
 
 logging.basicConfig(level=logging.DEBUG)
 
-confirm_time_minutes_target = 60
+confirm_time_minutes_target = 4
 
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
@@ -490,6 +490,15 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
     _access_token = request.session.get('access_token')
     profile_id = request.session.get('profile_id')
     issueURL = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
+    
+    # try the /pulls url if it doesnt exist in /issues
+    try:
+        assert Bounty.objects.current().filter(github_url=issueURL).exists()
+    except:
+        issueURL = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue if ghissue else request.GET.get('url')
+        print(issueURL)
+        pass
+
     bounty_url = issueURL
     params = {
         'issueURL': issueURL,
@@ -588,6 +597,7 @@ def profile(request, handle):
     params['profile'] = profile
     params['stats'] = profile.stats
     params['bounties'] = profile.bounties
+    params['tips'] = Tip.objects.filter(username=handle)
 
     return TemplateResponse(request, 'profile_details.html', params)
 
@@ -791,7 +801,7 @@ def toolbox(request):
               "img": "/static/v2/images/tools/leaderboard.png",
               "description": '''Check out who is topping the charts in
                 the Gitcoin community this month.''',
-              "link": "https://gitcoin.co/leaderboard/",
+              "link": "/leaderboard",
               "active": "false",
               'stat_graph': 'bounties_fulfilled',
           },

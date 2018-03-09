@@ -57,7 +57,7 @@ class Stat(SuperModel):
         ]
 
     def __str__(self):
-        return "{}: {}".format(self.key, self.val)
+        return f"{self.key}: {self.val}"
 
 
 class LeaderboardRank(SuperModel):
@@ -68,15 +68,15 @@ class LeaderboardRank(SuperModel):
     active = models.BooleanField()
 
     def __str__(self):
-        return "{}, {}: {}".format(self.leaderboard, self.github_username, self.amount)
+        return f"{self.leaderboard}, {self.github_username}: {self.amount}"
 
     @property
     def github_url(self):
-        return "https://github.com/{}".format(self.github_username)
+        return f"https://github.com/{self.github_username}"
 
     @property
     def local_avatar_url(self):
-        return "/funding/avatar?repo={}&v=3".format(self.github_url)
+        return f"/funding/avatar?repo={self.github_url}&v=3"
 
 
 class Match(SuperModel):
@@ -91,7 +91,7 @@ class Match(SuperModel):
     github_username = models.CharField(max_length=255)
 
     def __str__(self):
-        return "{}: {}; {}".format(self.email, self.bounty, self.direction)
+        return f"{self.email}: {self.bounty}; {self.direction}"
 
 
 class Keyword(SuperModel):
@@ -110,7 +110,7 @@ class SlackUser(SuperModel):
     times_unseen = models.IntegerField(default=0)
 
     def __str__(self):
-        return "{}; lastseen => {}".format(self.username, self.last_seen)
+        return f"{self.username}; lastseen => {self.last_seen}"
 
 
 class SlackPresence(SuperModel):
@@ -139,4 +139,14 @@ class GithubOrgToTwitterHandleMapping(SuperModel):
     twitter_handle = models.CharField(max_length=500)
 
     def __str__(self):
-        return "{} => {}".format(self.github_orgname, self.twitter_handle)
+        return f"{self.github_orgname} => {self.twitter_handle}"
+
+
+class EmailEvent(SuperModel):
+
+    email = models.EmailField(max_length=255, db_index=True)
+    event = models.CharField(max_length=255, db_index=True)
+    payload = JSONField(default={})
+
+    def __str__(self):
+        return f"{self.email} - {self.event} - {self.created_on}"
