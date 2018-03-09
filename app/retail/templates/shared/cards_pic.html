@@ -21,6 +21,8 @@
 <meta name="twitter:site" content="@getgitcoin" />
 {% if card_title %}
     <meta name="twitter:title" content="{{card_title}}" />
+{% elif title %}
+    <meta name="twitter:title" content="{{title}}" />
 {% else %}
     <meta name="twitter:title" content="Gitcoin: Push Open Source Repos Forward" />
 {% endif %}
@@ -43,6 +45,8 @@
 <meta property=fb:app_id content="118275288856850">
 {% if card_title %}
     <meta property=og:title content="{{card_title}}">
+{% elif title %}
+    <meta property=og:title content="{{title}}">
 {% else %}
     <meta property=og:title content="Gitcoin: Push Open Source Repos Forward.">
 {% endif %}
