@@ -49,7 +49,8 @@ class FaucetRequest(SuperModel):
     github_meta = JSONField()
     address = models.CharField(max_length=50)
     email = models.CharField(max_length=255)
-    comment = models.TextField(max_length=500)
+    comment = models.TextField(max_length=500, blank=True)
+    fulfill_date = models.DateTimeField(null=True, blank=True)
 
     objects = FaucetRequestManager()
 

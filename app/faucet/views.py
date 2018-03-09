@@ -24,6 +24,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.html import escape, strip_tags
 from django.views.decorators.csrf import csrf_exempt
 
@@ -94,6 +95,7 @@ def process_faucet_request(request, pk):
 
     if request.POST.get('destinationAccount', False):
         faucet_request.fulfilled = True
+        faucet_request.fulfill_date = timezone.now()
         faucet_request.save()
         processed_faucet_request(faucet_request)
 
