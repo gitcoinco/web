@@ -5,6 +5,7 @@ from django.core.validators import validate_email, validate_slug
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.utils import timezone
 from django.utils.html import escape, strip_tags
 from django.views.decorators.csrf import csrf_exempt
 
@@ -113,6 +114,7 @@ def process_faucet_request(request, pk):
 
     if request.POST.get('destinationAccount', False):
         obj.fulfilled = True
+        obj.fulfill_date = timezone.now()
         obj.save()
         processed_faucet_request(obj)
 
