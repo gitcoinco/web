@@ -164,7 +164,7 @@ class Bounty(SuperModel):
             _issue_num = issue_number(self.github_url)
             _repo_name = repo_name(self.github_url)
             return f"{'/' if preceding_slash else ''}{'legacy/' if self.is_legacy else ''}issue/{_org_name}/{_repo_name}/{_issue_num}"
-        except:
+        except Exception:
             return f"{'/' if preceding_slash else ''}{'legacy/' if self.is_legacy else ''}funding/details?url={self.github_url}"
 
     def get_natural_value(self):
@@ -509,7 +509,7 @@ class Tip(SuperModel):
     from_name = models.CharField(max_length=255, default='', blank=True)
     from_email = models.CharField(max_length=255, default='', blank=True)
     from_username = models.CharField(max_length=255, default='', blank=True)
-    username = models.CharField(max_length=255, default='') #to username
+    username = models.CharField(max_length=255, default='')  # to username
     network = models.CharField(max_length=255, default='')
     txid = models.CharField(max_length=255, default='')
     receive_txid = models.CharField(max_length=255, default='', blank=True)
@@ -523,7 +523,7 @@ class Tip(SuperModel):
                f"{self.tokenName} to {self.username}, created: {naturalday(self.created_on)}, " \
                f"expires: {naturalday(self.expires_date)}"
 
-    #TODO: DRY
+    # TODO: DRY
     def get_natural_value(self):
         token = addr_to_token(self.tokenAddress)
         decimals = token['decimals']
@@ -533,7 +533,7 @@ class Tip(SuperModel):
     def value_true(self):
         return self.get_natural_value()
 
-    #TODO: DRY
+    # TODO: DRY
     @property
     def value_in_eth(self):
         if self.tokenName == 'ETH':
@@ -610,7 +610,7 @@ class Interest(models.Model):
 @receiver(post_save, sender=Interest, dispatch_uid="psave_interest")
 @receiver(post_delete, sender=Interest, dispatch_uid="pdel_interest")
 def psave_interest(sender, instance, **kwargs):
-    #when a new interest is saved, update the status on frontend
+    # when a new interest is saved, update the status on frontend
     print("updating bounties")
     for bounty in Bounty.objects.filter(interested=instance):
         bounty.save()
@@ -764,7 +764,6 @@ class Profile(SuperModel):
     def stats(self):
         bounties = self.bounties
         loyalty_rate = 0
-        claimees = []
         total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_funder(self.handle)])
         total_fulfilled = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
         print(total_funded, total_fulfilled)

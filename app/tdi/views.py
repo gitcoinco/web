@@ -104,7 +104,6 @@ https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/
     return TemplateResponse(request, 'whitepaper_new.html', context)
 
 
-#@ratelimit(key='ip', rate='1/m', block=True)
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def whitepaper_access(request, ratelimited=False):
 

@@ -17,12 +17,10 @@
 '''
 import os
 import socket
-from datetime import datetime
 
 from django.http import Http404
 
 import rollbar
-from pytz import utc
 
 HOSTNAME = socket.gethostname()
 

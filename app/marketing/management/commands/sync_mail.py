@@ -40,7 +40,6 @@ def pull_to_db():
     for match in Match.objects.all():
         process_email(match.email, 'match')
 
-
     get_size = 50
     client = MailChimp(settings.MAILCHIMP_USER, settings.MAILCHIMP_API_KEY)
 
@@ -86,10 +85,10 @@ def pull_to_db():
     print("- tdi")
     from tdi.models import WhitepaperAccess, WhitepaperAccessRequest
     for wa in WhitepaperAccess.objects.all():
-            process_email(wa.email, 'whitepaperaccess')
+        process_email(wa.email, 'whitepaperaccess')
 
     for wa in WhitepaperAccessRequest.objects.all():
-            process_email(wa.email, 'whitepaperaccessrequest')
+        process_email(wa.email, 'whitepaperaccessrequest')
 
     print('/pull_to_db')
 
@@ -104,16 +103,15 @@ def push_to_mailchimp():
         email = es.email
         print(email)
         try:
-            response = client.lists.members.create(settings.MAILCHIMP_LIST_ID, {
+            client.lists.members.create(settings.MAILCHIMP_LIST_ID, {
                 'email_address': email,
                 'status': 'subscribed'
             })
             print('pushed_to_list')
-        except Exception as e:
-            #print("already on the list")
+        except Exception:
+            # print("already on the list")
             pass
     print('/push_to_mailchimp')
-    pass
 
 
 class Command(BaseCommand):

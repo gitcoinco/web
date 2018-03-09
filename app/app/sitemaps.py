@@ -6,6 +6,7 @@ from dashboard.models import Bounty, Profile
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
+
     priority = 0.5
     changefreq = 'weekly'
 

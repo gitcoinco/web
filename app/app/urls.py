@@ -16,7 +16,7 @@
 
 '''
 from django.conf import settings
-from django.conf.urls import handler400, handler403, handler404, handler500, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
@@ -43,7 +43,7 @@ urlpatterns = [
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(router.urls)),
-    url(r'^actions/api/v0.1/', include(router.urls)), # same as active, but not cached in cluodfront
+    url(r'^actions/api/v0.1/', include(router.urls)),  # same as active, but not cached in cluodfront
 
     # dashboard views
 
