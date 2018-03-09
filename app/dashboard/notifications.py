@@ -398,7 +398,7 @@ def maybe_market_tip_to_github(tip):
           f"granted to {username} for this issue{_from}. ⚡️ {_comments}\n\nNice work {username}! To " \
           "redeem your tip, login to Gitcoin at https://gitcoin.co/explorer and select 'Claim Tip' " \
           "from dropdown menu in the top right, or check your email for a link to the tip redemption " \
-          "page. \n\n * ${amount_usdt_open_work()} in Funded OSS Work Available at: " \
+          f"page. \n\n * ${amount_usdt_open_work()} in Funded OSS Work Available at: " \
           "https://gitcoin.co/explorer\n * Incentivize contributions to your repo: " \
           "<a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>" \
           "Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
