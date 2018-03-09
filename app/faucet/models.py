@@ -55,5 +55,4 @@ class FaucetRequest(SuperModel):
 
     def __str__(self):
         """Return the string representation of FaucetRequest."""
-        return f"{self.fulfilled} / {self.github_username} / {self.github_meta} / {self.address} / {self.email} / " \
-               f"{self.comment} on {self.created_on}"
+        return f"{self.github_username} / {self.created_on}"

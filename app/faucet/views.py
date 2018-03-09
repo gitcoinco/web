@@ -25,6 +25,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.html import escape, strip_tags
+from django.views.decorators.csrf import csrf_exempt
 
 from faucet.models import FaucetRequest
 from github.utils import search_github
@@ -49,6 +50,7 @@ def check_github(profile):
     return response
 
 
+@csrf_exempt
 def save_faucet(request):
     github_profile = request.POST.get('githubProfile')
     email_address = request.POST.get('emailAddress')
