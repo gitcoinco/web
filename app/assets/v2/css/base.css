@@ -9,6 +9,13 @@ div.body {
 div, p, a, span {
     word-wrap: break-word;
 }
+.nav_avatar{
+    cursor: pointer;
+}
+
+.navbar {
+  font-family: "futura-pt", "Futura";
+}
 
 .navbar-nav .nav-link {
     border-radius: 2px;
@@ -22,12 +29,8 @@ div, p, a, span {
     color: #4aeaa7 !important;
 }
 
-.navbar a.slack img {
-    max-width: 15px;
-    max-height: 15px;
-    margin-top:-3px;
+.navbar a.slack i {
     margin-right: 3px;
-    filter: invert(100%);
 }
 
 .footer .nav-link:hover {
@@ -67,23 +70,27 @@ div, p, a, span {
     padding-right: 0px;
 }
 
+.with-grey-background .body {
+    background-color: #eee !important;
+}
+
 .index .container-fluid {
     overflow-x: hidden;
 }
 
-.search_bar, .bounty_def{
+.bounty_def{
     background-color: #eee;
     height: 140px;
     padding-top: 10px;
 }
 
-.search_bar, .bounty_def #mce-EMAIL{
+.bounty_def #mce-EMAIL{
     display: inline;
     text-transform: uppercase;
     font-size: 14px;
 }
 
-.search_bar, .bounty_def #mc-embedded-subscribe{
+.bounty_def #mc-embedded-subscribe{
     display: inline;
     text-transform: uppercase;
 }
@@ -294,7 +301,7 @@ p a {
 }
 
 .btn-warning:hover, .btn-success:hover, .btn-info {
-      cursor: pointer;
+    cursor: pointer;
 }
 
 .btn-info:hover {
@@ -305,6 +312,10 @@ p a {
 
 .btn-warning {
     color: #15003e;
+}
+
+.btn {
+    cursor: pointer;
 }
 
 .btn-warning:hover {
@@ -369,19 +380,9 @@ p a {
     text-align: center;
 }
 
-.dashboard .body .bounty_row {
-    color: #212529;
-}
-
 .dashboard .body .bounty_row.local,
 .dashboard .body .bounty_row.ropsten {
     border-left: 1px solid red;
-}
-
-.dashboard .body .bounty_row:hover {
-    background-color: #fafafa;
-    cursor: pointer;
-    text-decoration: none;;
 }
 
 .dashboard .body .sort_option {
@@ -429,16 +430,6 @@ p a {
     background: #eee;
 }
 
-.dashboard #clear {
-    cursor: pointer;
-    margin-top: 30px;
-}
-
-.sidebar_search label {
-    margin-bottom: 0px;
-    cursor: pointer;
-}
-
 #mailchimp {
     overflow: hidden;
 }
@@ -475,12 +466,7 @@ body #mc_embed_signup label {
     margin-bottom: 50px;
 }
 
-.form_container input[type=text],
-.form_container select,
-.form_container textarea {
-    background-color: #eee;
-}
-
+textarea.loading,
 input[type=text].loading {
     background-image: url('/static/v2/images/loading_v2.gif');
     background-repeat: no-repeat;
@@ -488,31 +474,10 @@ input[type=text].loading {
     background-size: 30px;
 }
 
-#upper_left {
-    min-height: 140px;
-}
-
-#upper_left #sidebar_head {
-    text-align: center;
-    line-height: 1.3em;
-}
-
-#upper_left a {
-    color: white;
-    text-decoration: underline;;
-}
-
-#upper_left img {
-    filter: invert(100%);
-    max-width: 40px;
-    max-height: 40px;
-    display: inline;
-}
-
 .blocking_error {
     text-align: center;
     margin: 100px auto;
-    max-width: 500px;
+    max-width: 100%;
 }
 
 .blocking_error img {
@@ -678,7 +643,7 @@ body.bounty_details .col.body{
 }
 
 body.bounty_details .left_details {
-    text-align: right;
+    text-align: center;
 }
 
 body.bounty_details .avatar {
@@ -693,6 +658,21 @@ body.bounty_details .avatar {
 
 #bounty_details{
     display: none;
+    margin-bottom: 2em;
+}
+#bounty_details #issue_description img{
+    max-width: 100%;
+}
+#bounty_details #issue_description h1,
+#bounty_details #issue_description h2,
+#bounty_details #issue_description h3,
+#bounty_details #issue_description h4,
+#bounty_details #issue_description h5,
+#bounty_details #issue_description h6
+{
+    font-size: 16px;
+    margin-top: 15px;
+    text-transform: none;
 }
 
 body.bounty_details #left_actions,
@@ -702,7 +682,8 @@ body.bounty_details #right_actions {
 }
 
 body.bounty_details #bounty_details #left_actions {
-    padding-bottom: 25px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 body.bounty_details #left_actions a,
@@ -886,6 +867,10 @@ body.bounty_details #title {
     -o-filter: grayscale(0%);
 }
 
+.body {
+  padding-bottom: 4em;
+}
+
 .profile_details .dot {
     border-radius: 6px;
     width: 12px;
@@ -922,6 +907,7 @@ body.bounty_details #title {
     font-size: 32px;
     font-weight: bold;
     border-radius: 3px;
+    margin-top: 10px;
 }
 
 .profile_details #stats li span {
@@ -982,26 +968,37 @@ body.bounty_details #title {
 .profile_details #hero p {
     color: #919191;
 }
+.profile_details .tips li:first-child:hover,
+.profile_details .bounties li:first-child:hover{
+    cursor: none;
+    background-color: white;
+}
 
+.profile_details .tips li ,
 .profile_details .bounties li {
     list-style: none;
     padding-top: 10px;
     height: 80px;
 }
 
+.profile_details .tips li:hover,
 .profile_details .bounties li:hover {
     background-color: #fafafa;
     cursor: pointer;
 }
 
+.profile_details .tips li a,
 .profile_details .bounties li a {
     color: black;
 }
 
+.profile_details .tips li a.btn,
 .profile_details .bounties li a.btn {
     color: white;
 }
 
+.profile_details .tips li div.url,
+.profile_details .tips li div.from_username,
 .profile_details .bounties li div.status,
 .profile_details .bounties li div.relationship {
     height: 80px;
@@ -1011,17 +1008,28 @@ body.bounty_details #title {
     text-align: center;
 }
 
+.profile_details .tips div.url,
+.profile_details .tips li div.url{
+    width: 600px;
+}
+
+.profile_details .tips li div.details,
 .profile_details .bounties li div.details {
     height: 80px;
     width: 500px;
     display: inline-block;
     vertical-align: top;
 }
+.profile_details .tips li div.details{
+    width: 200px;
+}
 
+.profile_details .tips li div.details p,
 .profile_details .bounties li div.details p {
     color: #919191;
 }
 
+.profile_details .tips li .amount, 
 .profile_details .bounties li .amount {
     height: 80px;
     width: 200px;
@@ -1115,12 +1123,43 @@ body.bounty_details #title {
     border-color: black;
 }
 
+#interest_list{
+    margin-left: 0px;
+    padding-left: 0px;
+}
+#interest_list li{
+    list-style: none;
+}
+
+
+input.is-invalid {
+  border-color: red;
+}
+
+.faucet_response {
+  display:none;
+}
+
+.faucet_response .frheader {
+  font-size: xx-large;
+}
+
+.faucet_response .frmessage {
+  font-size: large;
+}
+
 @media (max-width: 1350px) {
+    .profile_details .tips li div.details,
     .profile_details .bounties li div.details{
+        width: 300px;
+    }
+    .profile_details .tips div.url,
+    .profile_details .tips li div.url{
         width: 400px;
     }
 }
 @media (max-width: 1250px) {
+    .profile_details .tips li div.details,
     .profile_details .bounties li div.details{
         width: 400px;
     }
@@ -1136,12 +1175,19 @@ body.bounty_details #title {
         max-height: 300px;
     }
 
+    #bounty_details{
+        margin: 15px;
+    }
+
+    .profile_details .tips li div.details,
+    .profile_details .tips li .url,
     .profile_details .bounties li div.relationship,
     .profile_details .bounties li div.status,
     .profile_details .bounties li .amount {
         display: none;
     }
 
+    .profile_details .tips li div.details,
     .profile_details .repos li,
     .profile_details .bounties li div.details {
         padding-left: 0px;
@@ -1152,8 +1198,8 @@ body.bounty_details #title {
         display: none;
     }
 
-    .interior .col-2 {
-        display: none;
+    .interior .col-7 {
+        margin-left: 5%;
     }
 
     .whatisit iframe,
@@ -1231,10 +1277,6 @@ body.bounty_details #title {
         height: 400px;
     }
 
-    body.bounty_details .left_details {
-        display: none;
-    }
-
     body.bounty_details .right_details {
         margin-left: 30px;
         width: 100%;
@@ -1252,6 +1294,9 @@ body.bounty_details #title {
 
     .row.whatisit .explainer {
         margin-top: 30px;
+    }
+    .bounty_def {
+        height: 160px;
     }
 
     #team .row,
@@ -1294,14 +1339,6 @@ body.bounty_details #title {
     }
     .search_bar .sort_row {
         display: none !important;
-    }
-
-    .search_bar {
-        height: 90px ;
-    }
-
-    .dash-filter-header {
-        font-size: 1rem;
     }
 
     #hero_cta a.btn {
@@ -1422,9 +1459,8 @@ body.bounty_details #title {
         padding-top: 20px;
     }
 
-    .bounty_def .col-7 {
-        padding-left: 40px !important;
-        font-size: .8rem;
+    .bounty_def {
+        display: none;
     }
 
     .search_bar span {
@@ -1439,10 +1475,6 @@ body.bounty_details #title {
 
     #hero_cta a.btn{
         margin-top: 10px;
-    }
-
-    .bounty_def h5 {
-        font-size: .9rem;
     }
 
     #mission_hero .text {
@@ -1468,4 +1500,42 @@ body.bounty_details #title {
     .bounty_def h5 {
         font-size: .8rem;
     }
+}
+
+@media (max-width: 576px) {
+  #sidebar_container {
+    display: none;
+  }
+  .profile_details #stats {
+    padding-right: 10px;
+  }
+
+  .profile_details .repos {
+    padding-right: 40px;
+  }
+
+  .profile_details .repos li {
+    margin-bottom: 1em;
+  }
+
+  .issue_details {
+    flex-direction: column;
+  }
+
+  .issue_details div {
+    width: 100% !important;
+  }
+  .profile_details .tips li div.url{
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .bounty_nav {
+    padding-left: 0;
+  }
+
+  .bounty_nav li{
+    display: block;
+  }
 }

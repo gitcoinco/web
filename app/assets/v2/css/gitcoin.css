@@ -18,6 +18,61 @@
   src: url('/static/v2/fonts/OpenSans/Regular.ttf');
 }
 
+@font-face {
+  font-family: "OpenSans Light";
+  src: url('/static/v2/fonts/OpenSans/Light.ttf');
+}
+
+@font-face {
+  font-family: "Muli";
+  src: url('/static/v2/fonts/Muli/Muli.ttf');
+}
+
+@font-face {
+  font-family: "Muli-Bold";
+  src: url('/static/v2/fonts/Muli/Muli-Bold.ttf');
+}
+
+@font-face {
+  font-family: "Muli-ExtraLight";
+  src: url('/static/v2/fonts/Muli/Muli-ExtraLight.ttf');
+}
+
+@font-face {
+  font-family: "Muli-SemiBold";
+  src: url('/static/v2/fonts/Muli/Muli-SemiBold.ttf');
+}
+
+@font-face {
+  font-family: "Muli-Light";
+  src: url('/static/v2/fonts/Muli/Muli-Light.ttf');
+}
+
+@font-face {
+  font-family: "Muli-Italic";
+  src: url('/static/v2/fonts/Muli/Muli-Italic.ttf');
+}
+
+@font-face {
+  font-family: "Muli-BoldItalic";
+  src: url('/static/v2/fonts/Muli/Muli-BoldItalic.ttf');
+}
+
+@font-face {
+  font-family: "Muli-ExtraLightItalic";
+  src: url('/static/v2/fonts/Muli/Muli-ExtraLightItalic.ttf');
+}
+
+@font-face {
+  font-family: "Muli-Semi-BoldItalic";
+  src: url('/static/v2/fonts/Muli/Muli-Semi-BoldItalic.ttf');
+}
+
+@font-face {
+  font-family: "Muli-LightItalic";
+  src: url('/static/v2/fonts/Muli/Muli-LightItalic.ttf');
+}
+
 body {
   font-family: "futura-pt", Futura;
   overflow-x: hidden;
@@ -77,14 +132,27 @@ h4, .h4 {
   text-decoration: none;
   padding-right: 1rem !important;
   padding-left: 1rem !important;
+  font-size: 0.9rem !important;
+}
+
+.font-title {
+  font-size: 20px;
+}
+
+.font-subheader {
+  font-size: 16px;
+}
+
+.font-body {
+  font-size: 14px;
+}
+
+.font-caption {
+  font-size: 12px;
 }
 
 .footer .nav-link {
   font-size: 0.8rem !important;
-}
-
-.dash .nav-link {
-  font-size: 0.9rem !important;
 }
 
 .nav-link:visited {
@@ -254,8 +322,16 @@ div.button-pink {
 }
 
 .dash-filter-header {
+  align-items: center;
+  display: flex;
   font-size: 1.2rem;
   letter-spacing: 0.1em;
+  margin-bottom: 1.2rem;
+  text-transform: uppercase
+}
+
+.dash-filter-header img {
+  margin-left: .5rem;
 }
 
 .dash-filter-label {
@@ -267,7 +343,7 @@ div.button-pink {
 .footer {
   overflow: hidden;
   height: 300px;
-  background-image: url(/static/v2/images/footer.png);
+  background-image: url(/static/v2/images/footer.jpg);
   background-color: #0d023b;
   background-size: contain;
   background-position: bottom;
@@ -302,6 +378,15 @@ div.button-pink {
   font-weight: 300;
 }
 
+.gc-round-text-form {
+  border-radius: 16px;
+  height: 160px;
+  border: 1px solid #eee;
+  outline: none;
+  padding-left: 10px;
+  font-weight: 300;
+}
+
 .dash-link {
   font-size: 0.7rem;
   margin-top: 8px;
@@ -322,4 +407,31 @@ div.button-pink {
 *:-ms-input-placeholder {
   /* IE 10+ */
   color: lightgray;
+}
+
+.accordion {
+  cursor: pointer;
+  width: 100%;
+  outline: none;
+  transition: 0.4s;
+}
+
+.panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+.accordion:after {
+  margin-right: 2px;
+  margin-top: 1px;
+  font-family: FontAwesome;
+  font-weight: bold;
+  font-size: 15px;
+  content: '\f107';
+  float: right;
+}
+
+.accordion.active:after {
+  content: "\f106";
 }

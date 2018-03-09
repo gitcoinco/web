@@ -18,40 +18,49 @@
 
 BRANCH=$1
 DISTID=$2
-#deploy script
-#assumes that gitcoin repo lives at $HOME/gitcoin
+ISFRONTENDPUSH=$3
+
+# deploy script
+# assumes that gitcoin repo lives at $HOME/gitcoin
 # and that gitcoinenv is the virtualenv under which it lives
 
-#setup
+# setup
 cd 
 cd gitcoin/coin
-source ../gitcoinenv/bin/activate
+source ../gitcoin-3/bin/activate
 
-#pull from git
+# pull from git
 git add .
 git stash
+# If no $BRANCH is specified, it will use the current one
 git checkout $BRANCH
 git pull origin $BRANCH
 
 #deploy hooks
 echo "- install req"
-pip install -r requirements/base.txt
+pip install -r requirements/base.txt 2>&1 >> /dev/null
 echo "- install crontab"
 crontab scripts/crontab
 cd app
 echo "- collect static"
-./manage.py collectstatic --noinput -i other
+if [ $ISFRONTENDPUSH ]; then
+    ./manage.py collectstatic --noinput -i other;
+fi
 rm -Rf ~/gitcoin/coin/app/static/other
 echo "- db"
 ./manage.py migrate
 ./manage.py createcachetable
 
-#let gunicorn know its ok to restart
+# let gunicorn know its ok to restart
 echo "- gunicorn"
 sudo systemctl restart gunicorn
 
 # invalidate cloudfront
-aws cloudfront create-invalidation --distribution-id $DISTID --invalidation-batch="Paths={Quantity=1,Items=["/*"]},CallerReference=$(date)"
+if [ $ISFRONTENDPUSH ]; then
+    if [ $DISTID ]; then
+        cd ~/gitcoin/coin; bash scripts/bustcache.bash $DISTID
+    fi
+fi
 
 # ping google
 cd ~/gitcoin/coin; bash scripts/run_management_command.bash ping_google

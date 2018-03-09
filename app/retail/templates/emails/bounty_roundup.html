@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,12 +16,13 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %} 
+{% load static humanize %}
 
 {% block content %}
 
 <style>
     body  p,
+    body  li,
     body  span,
     body  a{
       font-family: "Arial";
@@ -33,51 +34,78 @@
       color: black;
       font-size: 14px;
       letter-spacing: 0.1em;
+      line-height: 18px;
     }
     body li {
         font-weight: normal;;
         font-size: normal;;
         margin-bottom: 5px;
     }
+    #highlights {
+        
+    }
+    #highlights li {
+        list-style: none;
+    }
+    #highlights img {
+        border-radius: 15px;
+        display: inline;;
+        margin-bottom: -5px;
+    }
+    #highlights tr td a,
+    #highlights tr td {
+        font-size: 14px;
+        line-height: 18px;
+    }
 
 </style>
 
-<h1><img src="https://gitcoin.co/static/v2/images/helmet_emoji.png" width=40px height="40px"> The Gitcoin Weekly <img src="https://gitcoin.co/static/v2/images/helmet_emoji.png" width=40px height="40px"></h1>
+<h1><img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"> The Gitcoin Weekly <img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"></h1>
 
 <table>
     <tr>
         <td id="welcome" colspan=6 valign="top" style='padding: 5px 10px 0px;'>
-            <p>
-                Hi folks 👋
-            </p>
-            <p>
-            Gitcoin is thrilled to <a href="https://medium.com/@coderberry/5684c4adf4b4">add Open Source advocate and developer Eric Berry to our ranks! </a>
 
-            </p>
-            <p>
-            Eric is a leader in the open source space, with 20+ years of software experience, and will be joining Gitcoin full-time as our <strong>OSS Sustainability Lead</strong>. 
-            </p>
-            <p>
-            Day to day, he will continue growing <a href="https://codesponsor.io/">Code Sponsor</a>, where he has already helped generate over $10,000 in funding for open source projects. As Code Sponsor and Gitcoin join forces, we’re excited about the opportunities we'll have to collaborate towards a shared mission to grow open source. 
-            </p>
-            <p>
-                If you get a chance, say hey to Eric <a href="https://gitcoin.co/slack">on slack</a> or <a href="https://twitter.com/coderberry">on twitter</a>. 
-            </p>
+            {{ intro | safe}}
+
             <a href="https://twitter.com/owocki" style="float:right; padding-left: 10px;">
-                <img src="https://gitcoin.co/static/v2/images/avatar.png" width="77" height="137">
+                <img src="{% static "v2/images/avatar.png" %}" width="77" height="137">
             </a>
             <p>
-                Back to coding ! 🤖
-                <br> 
-                ✌️ <a href="https://twitter.com/owocki">@owocki</a>
+                👋
+                <br>
+                <a href="https://twitter.com/owocki">@owocki</a>
             </p>
         </td>
     </tr>
 </table>
 
+{% if highlights %}
+
+<h3>Last Week's Highlights</h3>
+<h5>Community Members growing open source🌳</h5>
+
+    <table id="highlights">
+        <tr >
+            <td style='padding: 5px 10px 0px; text-align: left; width: 540px;'>
+                {% for highlight in highlights %}
+                    <li>
+                        <img src="https://gitcoin.co/funding/avatar?repo=https://github.com/{{highlight.who}}" width=30px height=30px>
+                        <a href="https://gitcoin.co/profile/{{highlight.who}}">{{highlight.who}}</a> - {{highlight.what}}
+                        {% if highlight.link %}
+                            <a href="{{highlight.link}}">{{highlight.link_copy}}</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
+    <hr>
+
+{% endif %}
 
 <h3>Open Funded Issues</h3>
-<h5>Push Open Source Forward ⚡️ Make Extra Cash 💰</h5>
+<h5>Grow Open Source ⚡️ Make Some ETH 💰</h5>
 
 <br>
 

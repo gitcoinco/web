@@ -9,8 +9,22 @@ app/marketing/quotify/output/*
 app/output/*.pdf
 app/assets/other/wp.pdf
 app/assets/other/avatars/
+app/gcoin/
 .idea/
 venv/
 .coverage
+.vscode/
 node_modules/
 gcoin/
+.cache/
+webpack-stats.json
+
+#  Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# .tfvars files
+*.tfvars

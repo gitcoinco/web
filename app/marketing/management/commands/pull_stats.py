@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -70,64 +70,22 @@ def slack_users():
 
 
 def slack_users_active():
-    if settings.DEBUG:
-        return
     from marketing.models import SlackUser
 
-    sc = SlackClient(settings.SLACK_TOKEN)
-    ul = sc.api_call("users.list")
-    user = ul['members'][0]
+    one_day_ago = timezone.now() - timezone.timedelta(hours=24)
+    num_active = SlackUser.objects.filter(last_seen__gt=one_day_ago).count()
+    num_away = SlackUser.objects.filter(last_seen__lt=one_day_ago).count()
 
-    num_active = 0
-    num_away = 0
-    if int(time.strftime("%H")) == 0: #performance hack: only run this 1x per day since it runs very long
-        for user in ul['members']:
+    # create broader Stat object
+    Stat.objects.create(
+        key='slack_users_active',
+        val=num_active,
+        )
 
-            # manage making request and still respecting rate limit
-            should_do_request = True
-            is_rate_limited = False
-            while should_do_request:
-                response = sc.api_call("users.getPresence", user=user['id'])
-                is_rate_limited = response.get('error', None) == 'ratelimited'
-                should_do_request = is_rate_limited
-                if is_rate_limited:
-                    time.sleep(2)
-
-            # figure out the slack users' presence
-            pres = response.get('presence', None)
-            if pres == 'active':
-                num_active += 1
-            if pres == 'away':
-                num_away += 1
-
-            # save user by user 'lastseen' info
-            username = user['profile']['display_name']
-            email = user['profile']['email']
-            su, _ = SlackUser.objects.get_or_create(
-                username=username,
-                email=email,
-                defaults={
-                    'profile': user['profile'],
-                }
-                )
-            if pres == 'active':
-                su.last_seen = timezone.now()
-                su.times_seen += 1
-            else:
-                su.last_unseen = timezone.now()
-                su.times_unseen += 1
-            su.save()
-
-        #create broader Stat object
-        Stat.objects.create(
-            key='slack_users_active',
-            val=num_active,
-            )
-
-        Stat.objects.create(
-            key='slack_users_away',
-            val=num_away,
-            )
+    Stat.objects.create(
+        key='slack_users_away',
+        val=num_away,
+        )
 
 
 def profiles_ingested():
@@ -136,18 +94,34 @@ def profiles_ingested():
     Stat.objects.create(
         key='profiles_ingested',
         val=Profile.objects.count(),
-        )    
+        )
+
+
+def user_actions():
+    from dashboard.models import UserAction
+
+    for action_type in UserAction.ACTION_TYPES:
+        action_type = action_type[0]
+
+        val = UserAction.objects.filter(
+            action=action_type,
+            ).count()
+
+        Stat.objects.create(
+            key='user_action_{}'.format(action_type),
+            val=val,
+            )
 
 
 def github_stars():
-    from app.github import get_user
+    from github.utils import get_user
     reops = get_user('gitcoinco', '/repos')
     forks_count = sum([repo['forks_count'] for repo in reops])
 
     Stat.objects.create(
         key='github_forks_count',
         val=forks_count,
-        )    
+        )
 
     stargazers_count = sum([repo['stargazers_count'] for repo in reops])
 
@@ -240,10 +214,10 @@ def bounties():
 
 def bounties_fulfilled_pct():
     from dashboard.models import Bounty
-    for status in ['fulfilled','expired','open','claimed']:
+    for status in ['open', 'submitted', 'started', 'done', 'expired', 'cancelled']:
         eligible_bounties = Bounty.objects.filter(current_bounty=True,web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
-        fulfilled_bounties = eligible_bounties.filter(idx_status=status)
-        val = int(100 * (fulfilled_bounties.count()) / (eligible_bounties.count()))
+        numerator_bounties = eligible_bounties.filter(idx_status=status)
+        val = int(100 * (numerator_bounties.count()) / (eligible_bounties.count()))
 
         Stat.objects.create(
             key='bounties_{}_pct'.format(status),
@@ -254,7 +228,11 @@ def bounties_fulfilled_pct():
 def joe_dominance_index():
     from dashboard.models import Bounty
 
-    joe_addresses = ['0x4331B095bC38Dc3bCE0A269682b5eBAefa252929'.lower(),'0xe93d33CF8AaF56C64D23b5b248919EabD8c3c41E'.lower()]
+    joe_addresses = ['0x4331B095bC38Dc3bCE0A269682b5eBAefa252929'.lower(),'0xe93d33CF8AaF56C64D23b5b248919EabD8c3c41E'.lower()] #kevin
+    joe_addresses = joe_addresses + ['0x28e21609ca8542Ce5A363CBf339529204b043eDe'.lower()] #eric
+    joe_addresses = joe_addresses + ['0x60206c1F2B51Ac470cB0f71323474f7f9e4772e1'.lower()] #vivek
+    joe_addresses = joe_addresses + ['0x93d0deF1d76B510e2a7A6d01Cf18c54ec23f4253'.lower()] #mark beacom
+    joe_addresses = joe_addresses + ['0x58dC037f0A5c6C03D0f9477aea3198648CF0D263'.lower()] #alisa
 
     for days in [7,30,90,360]:
         all_bounties = Bounty.objects.filter(current_bounty=True,web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
@@ -281,7 +259,7 @@ def avg_time_bounty_turnaround():
     from dashboard.models import Bounty
 
     for days in [7,30,90,360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True,idx_status='fulfilled',web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+        all_bounties = Bounty.objects.filter(current_bounty=True, idx_status='submitted', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
         if not all_bounties.count():
             continue
 
@@ -295,23 +273,12 @@ def avg_time_bounty_turnaround():
             )
 
 
-
-
 def bounties_open():
     from dashboard.models import Bounty
 
     Stat.objects.create(
         key='bounties_open',
-        val=(Bounty.objects.filter(current_bounty=True,idx_status='open').count()),
-        )
-
-
-def bounties_claimed():
-    from dashboard.models import Bounty
-
-    Stat.objects.create(
-        key='bounties_claimed',
-        val=(Bounty.objects.filter(current_bounty=True).exclude(claimeee_address='0x0000000000000000000000000000000000000000').count()),
+        val=(Bounty.objects.filter(current_bounty=True, idx_status='open').count()),
         )
 
 
@@ -320,7 +287,7 @@ def bounties_fulfilled():
 
     Stat.objects.create(
         key='bounties_fulfilled',
-        val=(Bounty.objects.filter(current_bounty=True,idx_status='fulfilled').count()),
+        val=(Bounty.objects.filter(current_bounty=True, idx_status='done').count()),
         )
 
 
@@ -409,15 +376,14 @@ class Command(BaseCommand):
             whitepaper_access,
             whitepaper_access_request,
             tips_received,
-            bounties_claimed,
             bounties_fulfilled,
             bounties_open,
             bounties_fulfilled_pct,
             subs_active,
             subs_newsletter,
-            slack_users_active,
             joe_dominance_index,
-            avg_time_bounty_turnaround
+            avg_time_bounty_turnaround,
+            user_actions,
         ]
 
         for f in fs:

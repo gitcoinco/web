@@ -1,4 +1,11 @@
 // helper functions
+
+/**
+ * Looks for a transaction receipt.  If it doesn't find one, it keeps running until it does.
+ * @callback
+ * @param {string} txhash - The transaction hash.
+ * @param {function} f - The function passed into this callback.
+ */
 var callFunctionWhenTransactionMined = function(txHash, f){
     var transactionReceipt = web3.eth.getTransactionReceipt(txHash, function(error, result){
         if(result){
@@ -11,7 +18,24 @@ var callFunctionWhenTransactionMined = function(txHash, f){
     });
 };
 
+/**
+ * Looks for web3.  Won't call the fucntion until its there
+ * @callback
+ * @param {function} f - The function passed into this callback.
+ */
+var callFunctionWhenweb3Available = function(f){
+    if(typeof document.web3network != 'undefined'){
+        f();
+    } else {
+        setTimeout(function(){
+            callFunctionWhenweb3Available(f);
+        },1000);
+    }
+};
+
 var loading_button = function(button){
+    button.prop('disabled',true);
+    button.addClass('disabled');
     button.prepend('<img src=/static/v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
 }
 
@@ -23,7 +47,7 @@ var update_metamask_conf_time_and_cost_estimate = function(){
     var gasLimit = parseInt($("#gasLimit").val());
     var gasPrice = parseFloat($("#gasPrice").val());
     if(gasPrice){
-        ethAmount = Math.round(1000 * gasLimit * gasPrice / 10**9) / 1000 ;
+        ethAmount = Math.round(1000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000 ;
         usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
     }
 
@@ -41,6 +65,7 @@ var update_metamask_conf_time_and_cost_estimate = function(){
 }
 
 var unloading_button = function(button){
+    button.prop('disabled',false);
     button.removeClass('disabled');
     button.find('img').remove();
 }
@@ -126,32 +151,88 @@ var showLoading = function(){
     setTimeout(showLoading,10);
 };
 
-var watch_list = function(){
-    if(typeof localStorage['watches'] == 'undefined'){
-        return [];
-    }
-    return localStorage['watches'].split(',');
-}
-
-var is_on_watch_list = function(issueURL){
-    if(localStorage['watches'] && localStorage['watches'].indexOf(issueURL) != -1){
-        return true;
-    }
-    return false;
-}
-
-var add_to_watch_list = function(issueURL){
-    if(is_on_watch_list(issueURL)){
+/** Add the current profile to the interested profiles list. */
+var add_interest = function (bounty_pk) {
+    if (document.interested) {
         return;
     }
-    localStorage['watches'] = localStorage['watches'] + "," + issueURL;
+    mutate_interest(bounty_pk,'new');
 }
 
-var remove_from_watch_list = function(issueURL){
-    if(!is_on_watch_list(issueURL)){
+/** Remove the current profile from the interested profiles list. */
+var remove_interest = function (bounty_pk) {
+    if (!document.interested) {
         return;
     }
-    localStorage['watches'] = localStorage['watches'].replace("," + issueURL,"");
+    mutate_interest(bounty_pk,'remove');
+}
+
+/** Helper function -- mutates interests in either direction. */
+var mutate_interest = function (bounty_pk, direction) {
+    var request_url = '/actions/bounty/' + bounty_pk + '/interest/'+direction+'/';
+    $.post(request_url, function (result) {
+        result = sanitizeAPIResults(result);
+        if (result.success) {
+            pull_interest_list(bounty_pk);
+            return true;
+        }
+        return false;
+    }).fail(function(result){
+        alert("You must login via github to use this feature");
+    });
+}
+
+/** Pulls the list of interested profiles from the server. */
+var pull_interest_list = function (bounty_pk, callback) {
+    profiles = [];
+    document.interested = false
+    $.getJSON("/actions/bounty/" + bounty_pk + "/interest/", function (data) {
+        data = sanitizeAPIResults(JSON.parse(data));
+        $.each(data, function (index, value) {
+            var profile = {
+                local_avatar_url: value.local_avatar_url,
+                handle: value.handle,
+                url: value.url
+            };
+            // add to template
+            profiles.push(profile);
+            // update document.interested
+            if(profile.handle == document.contxt.github_handle){
+                document.interested = true
+            }
+
+        });
+        var tmpl = $.templates("#interested");
+        var html = tmpl.render(profiles);
+        if(profiles.length == 0){
+            html = "No one has started work on this issue yet.";
+        }
+        $("#interest_list").html(html);
+        if(typeof callback != 'undefined'){
+            callback(document.interested);
+        }
+    });
+    return profiles;
+}
+
+// Update the list of bounty submitters.
+var update_fulfiller_list = function (bounty_pk) {
+    fulfillers = [];
+    $.getJSON("/api/v0.1/bounties/" + bounty_pk, function (data) {
+        data = sanitizeAPIResults(data);
+        var fulfillmentList = data.fulfillments;
+        $.each(fulfillmentList, function (index, value) {
+            var fulfiller = value;
+            fulfillers.push(fulfiller);
+        });
+        var tmpl = $.templates("#submitters");
+        var html = tmpl.render(fulfillers);
+        if(fulfillers.length == 0){
+            html = "No one has submitted work yet.";
+        }
+        $("#submitter_list").html(html);
+    });
+    return fulfillers;
 }
 
 function validateEmail(email) {
@@ -220,23 +301,6 @@ function timeDifference(current, previous) {
     return amt + ' '+unit+plural+' ago';
 };
 
-var sync_web3 = function(issueURL, bountydetails, callback){
-    var url = '/sync/web3';
-    args = {
-        'issueURL': issueURL,
-    }
-    if(typeof bountydetails != 'undefined'){
-        args['bountydetails'] = bountydetails;
-        args['contract_address'] = bounty_address();
-        args['network'] = document.web3network;
-    }
-    $.post(url, args, function(){
-        if(typeof callback != 'undefined'){
-            callback();
-        }
-    })
-}
-
 
 //sidebar
 $(document).ready(function(){
@@ -283,7 +347,7 @@ var retrieveAmount = function(){
     }
 
     var amount = $("input[name=amount]").val();
-    var address = $('select[name=deonomination').val();
+    var address = $('select[name=deonomination]').val();
     var denomination = tokenAddressToDetails(address)['name'];
     var request_url = '/sync/get_amount?amount='+amount+'&denomination=' + denomination;
 
@@ -324,7 +388,6 @@ var updateAmountUI = function(target_ele, usd_amount){
         target_ele.html('Approx: '+usd_amount+' USD');
 };
 
-
 var retrieveTitle = function(){
     var ele = $("input[name=issueURL]");
     var target_ele = $("input[name=title]");
@@ -347,6 +410,30 @@ var retrieveTitle = function(){
         target_ele.removeClass('loading');
     });
 };
+
+var retrieveDescription = function(){
+    var ele = $("input[name=issueURL]");
+    var target_ele = $("textarea[name=description]");
+    var issue_url = ele.val();
+    if(typeof issue_url == 'undefined'){
+        return;
+    }
+    if(issue_url.length < 5 || issue_url.indexOf('github') == -1){
+        return;
+    }
+    var request_url = '/sync/get_issue_description?url=' + encodeURIComponent(issue_url);
+    target_ele.addClass('loading');
+    $.get(request_url, function(result){
+        result = sanitizeAPIResults(result);
+        target_ele.removeClass('loading');
+        if(result['description']){
+            target_ele.val(result['description']);
+        }
+    }).fail(function(){
+        target_ele.removeClass('loading');
+    });
+};
+
 var retrieveKeywords = function(){
     var ele = $("input[name=issueURL]");
     var target_ele = $("input[name=keywords]");
@@ -377,11 +464,13 @@ window.addEventListener('load', function() {
     var timeout_value = 100;
     setTimeout(function(){
         if (typeof web3 =='undefined'){
-            $("#sidebar_head").html("Web3 disabled <br> <img src='/static/v2/images/icons/question.png'>");
-            $("#sidebar_p").html("Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>.");
-        } else if (typeof web3.eth.accounts[0] =='undefined'){
-            $("#sidebar_head").html("Web3 locked <br> <img src='/static/v2/images/icons/lock.png'>");
-            $("#sidebar_p").html("Please unlock <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>.");
+            $("#upper_left").addClass('disabled');
+            $("#sidebar_head").html("<i class='fa fa-question'></i>");
+            $("#sidebar_p").html("<p>Web3 disabled</p><p>Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a> <br> <a target=new href='/web3'>What is Metamask and why do I need it?</a>.</p>");
+        } else if (typeof web3 != 'undefined' && typeof web3.eth.accounts[0] =='undefined'){
+            $("#upper_left").addClass('disabled');
+            $("#sidebar_head").html("<i class='fa fa-lock'></i>");
+            $("#sidebar_p").html("<p>Web3 locked</p><p>Please unlock <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>.<p>");
         } else {
             web3.version.getNetwork((error, netId) => {
                 if(!error){
@@ -411,34 +500,38 @@ window.addEventListener('load', function() {
 
                     // is this a supported networK?
                     var is_supported_network = true;
-                    var recommended_network = "mainnet or ropsten";
 
-                    if(network == 'rinkeby' || network == 'kovan'){
+                    var recommended_network = "mainnet or rinkeby";
+
+                    if(network == 'kovan' || network == 'ropsten'){
                         is_supported_network = false;
                     }
                     if(document.location.href.indexOf("https://gitcoin.co") != -1){
-                        if(network != 'mainnet' && network != 'ropsten'){
+                        if(network != 'mainnet' && network != 'rinkeby'){
                             is_supported_network = false;
-                            recommended_network = "mainnet or ropsten";
+                            recommended_network = "mainnet or rinkeby";
                         }
                     }
                     if(network == 'mainnet'){
                         if(document.location.href.indexOf("https://gitcoin.co") == -1){
                             is_supported_network = false;
+                            recommended_network = "custom rpc via ganache-cli / rinkeby"
                         }
                     }
-                    var sidebar_p = "Connected to " + network + ".";
+                    var sidebar_p = "<p>Connected to " + network + ".</p>";
                     if(is_supported_network){
-                        $("#sidebar_head").html("Web3 enabled <br> <img src='/static/v2/images/icons/rss.png'>");
+                        $("#sidebar_head").html("<i class='fa fa-wifi'></i>");
+                        $("#sidebar_p").html("<p>Web3 enabled<p>" + sidebar_p);
                     } else {
-                        $("#sidebar_head").html("Unsupported network <br> <img src='/static/v2/images/icons/battery_empty.png'>");
-                        sidebar_p += "<br>(try " + recommended_network + " instead)";
+                        $("#upper_left").addClass('disabled');
+                        $("#sidebar_head").html("<i class='fa fa-battery-empty'></i>");
+                        sidebar_p += "<p>(try " + recommended_network + ")</p>";
+                        $("#sidebar_p").html("<p>Unsupported network</p>" + sidebar_p);
                     }
-                    $("#sidebar_p").html(sidebar_p);
                 }
                 else {
-                    $("#sidebar_head").html("Web3 disabled");
-                    $("#sidebar_p").html("Please install & unlock <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>. ");
+                    $("#upper_left").addClass('disabled');
+                    $("#sidebar_p").html("<p>Web3 disabled</p><p>Please install & unlock <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>.</p>");
                 }
             })
         }
@@ -462,11 +555,62 @@ window.addEventListener('load', function() {
                     mixpanel.track("Unlock Metamask Error", params);
                     return;
                 }
+                var is_zero_balance_okay = document.location.href.indexOf('/faucet') == -1
+                if(is_zero_balance_okay){
+                    web3.eth.getBalance(web3.eth.coinbase, function(errors,result){
+                        var balance = result.toNumber();
+                        if(balance == 0){
+                            $("#zero_balance_error").css('display', 'block');
+                            $("#primary_form").remove();
+                            mixpanel.track("Zero Balance Metamask Error", params);
+                        }
+                    });
+                }
+            };
+        }
+        if($("#faucet_form").length){
+            if(typeof web3 == 'undefined'){
+                $("#no_metamask_error").css('display', 'block');
+                $("#faucet_form").remove();
+                mixpanel.track("No Metamask Error", params);
+                return;
+            } else {
+                if(!web3.eth.coinbase){
+                    $("#unlock_metamask_error").css('display', 'block');
+                    $("#-faucet-form").remove();
+                    mixpanel.track("Unlock Metamask Error", params);
+                    return;
+                }
                 web3.eth.getBalance(web3.eth.coinbase, function(errors,result){
+                    var balance = result.toNumber();
+                    var faucet_amount = $("#currentFaucet").val();
+                    $('#ethAddress').val(web3.eth.accounts[0]);
+                    if(balance >= faucet_amount){
+                        $("#over_balance_error").css('display', 'block');
+                        $("#faucet_form").remove();
+                        mixpanel.track("Faucet Available Funds Metamask Error", params);
+                    }
+                });
+            };
+        }
+        if($("#admin_faucet_form").length){
+            if(typeof web3 == 'undefined'){
+                $("#no_metamask_error").css('display', 'block');
+                $("#admin_faucet_form").remove();
+                mixpanel.track("No Metamask Error", params);
+                return;
+            } else {
+                if(!web3.eth.coinbase){
+                    $("#unlock_metamask_error").css('display', 'block');
+                    $("#admin_faucet_form").remove();
+                    mixpanel.track("Unlock Metamask Error", params);
+                    return;
+                }
+                 web3.eth.getBalance(web3.eth.coinbase, function(errors,result){
                     var balance = result.toNumber();
                     if(balance == 0){
                         $("#zero_balance_error").css('display', 'block');
-                        $("#primary_form").remove();
+                        $("#admin_faucet_form").remove();
                         mixpanel.track("Zero Balance Metamask Error", params);
                     }
                 });

@@ -1,9 +1,10 @@
 from django.http import HttpResponse, JsonResponse
 
 import requests
-from app.github import get_user, org_name
 from dashboard.models import Bounty
-from PIL import Image, ImageDraw, ImageFont
+from economy.utils import convert_token_to_usdt
+from github.utils import get_user, org_name
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 from ratelimit.decorators import ratelimit
 
 
@@ -35,7 +36,7 @@ def summarize_bounties(bounties):
 
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
 def stat(request, key):
-    
+
     from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
     from matplotlib.figure import Figure
     from matplotlib.dates import DateFormatter
@@ -93,7 +94,7 @@ def embed(request):
         filename = "{}.png".format(_org_name)
         filepath = 'assets/other/avatars/' + filename
         try:
-            avatar = Image.open(filepath, 'r')
+            avatar = Image.open(filepath, 'r').convert("RGBA")
         except IOError:
             remote_user = get_user(_org_name)
             if not remote_user.get('avatar_url', False):
@@ -122,9 +123,8 @@ def embed(request):
 
         # get issues
         length = request.GET.get('len', 10)
-        super_bounties = Bounty.objects.filter(
+        super_bounties = Bounty.objects.current().filter(
             github_url__startswith=repo_url,
-            current_bounty=True,
             network='mainnet',
             idx_status='open').order_by('-_val_usd_db')
         bounties = super_bounties[:length]
@@ -149,7 +149,7 @@ def embed(request):
         ## config
         logo = 'assets/v2/images/header-bg-light.jpg'
         ## execute
-        back = Image.open(logo, 'r')
+        back = Image.open(logo, 'r').convert("RGBA")
         img_w, img_h = back.size
         bg_w, bg_h = img.size
         offset = 0, 0
@@ -169,7 +169,7 @@ def embed(request):
         ## config
         logo = 'assets/v2/images/gitcoinco.png'
         ## execute
-        back = Image.open(logo, 'r')
+        back = Image.open(logo, 'r').convert("RGBA")
         back.thumbnail(icon_size, Image.ANTIALIAS)
         img_w, img_h = back.size
         bg_w, bg_h = img.size
@@ -217,14 +217,9 @@ def embed(request):
         i = 0
         for bounty in bounties:
             i += 1
-            value_eth = str(round(bounty.value_in_eth/10**18, 2)) + "ETH" if bounty.value_in_eth else ""
-            value_in_usdt = str(round(bounty.value_in_usdt, 2)) + "USD" if bounty.value_in_usdt else ""
-            value_native = "{} {}".format(round(bounty.value_true, 2), bounty.token_name)
-
-            value = "{}, {}".format(value_eth, value_in_usdt)
-            if not value_eth:
-                value = value_native
-            text = "{}{}\n{}\n\nWorth: {}".format("", line, wrap_text(bounty.title_or_desc, 30), value)
+            text = f"{line}\n{wrap_text(bounty.title_or_desc, 30)}\n\nWorth: " \
+                   f"{round(bounty.value_true, 2)} {bounty.token_name} ({round(bounty.value_in_usdt, 2)} USD " \
+                   f"@ ${round(convert_token_to_usdt(bounty.token_name), 2)}/{bounty.token_name})"
             # execute
             draw = ImageDraw.Draw(img)
             img_w, img_h = img.size
@@ -284,7 +279,7 @@ def avatar(request):
         filename = "{}.png".format(_org_name)
         filepath = 'assets/other/avatars/' + filename
         try:
-            avatar = Image.open(filepath, 'r')
+            avatar = Image.open(filepath, 'r').convert("RGBA")
         except IOError:
             remote_user = get_user(_org_name)
             if not remote_user.get('avatar_url', False):
@@ -317,8 +312,7 @@ def avatar(request):
         ## config
         icon_size = (215, 215)
         ## execute
-        img_w, img_h = avatar.size
-        avatar.thumbnail(icon_size, Image.ANTIALIAS)
+        avatar = ImageOps.fit(avatar, icon_size, Image.ANTIALIAS)
         bg_w, bg_h = img.size
         offset = 0, 0
         img.paste(avatar, offset, avatar)

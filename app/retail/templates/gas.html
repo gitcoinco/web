@@ -1,15 +1,15 @@
 {% extends 'yge/base.html' %}
-
+{% load static %}
 {% block 'scripts' %}
-<script src="/static/yge/ethereumjs/ethereumjs-accounts.js"></script>
-<script src="/static/yge/ethereumjs/web3.js"></script>
-<script src="/static/yge/ethereumjs/hooked-web3-provider.js"></script>
-<script src="/static/yge/ethereumjs/tx.js"></script>
-<script src="/static/yge/youvegoteth/index.js"></script>
-<script src="/static/yge/youvegoteth/tokens.js"></script>
-<script src="/static/yge/youvegoteth/pre.js"></script>
-<script src="/static/yge/youvegoteth/web3alert.js"></script>
-<script src="/static/yge/lightwallet.min.js"></script>
+<script src="{% static "yge/ethereumjs/ethereumjs-accounts.js" %}"></script>
+<script src="{% static "yge/ethereumjs/web3.js" %}"></script>
+<script src="{% static "yge/ethereumjs/hooked-web3-provider.js" %}"></script>
+<script src="{% static "yge/ethereumjs/tx.js" %}"></script>
+<script src="{% static "yge/youvegoteth/index.js" %}"></script>
+<script src="{% static "yge/youvegoteth/tokens.js" %}"></script>
+<script src="{% static "yge/youvegoteth/pre.js" %}"></script>
+<script src="{% static "yge/youvegoteth/web3alert.js" %}"></script>
+<script src="{% static "yge/lightwallet.min.js" %}"></script>
 
 <style> /* set the CSS */
 
@@ -58,7 +58,7 @@ div.tooltip {
 <header>
     <span class="avatar">
         <a href='/'>
-            <img src="/static/v2/images/helmet.png" style="background-color: white; max-width: 100px; max-height: 100px;" />
+            <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" />
         </a>
     </span>
 </header>

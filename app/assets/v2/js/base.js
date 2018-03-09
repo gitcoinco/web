@@ -1,5 +1,24 @@
 $(document).ready(function() {
-    $( document ).tooltip();
+    if(typeof ($( document ).tooltip) != 'undefined'){
+      $( document ).tooltip();
+    }
+
+    var force_no_www = function(){
+        if(document.location.href.indexOf('https://www.gitcoin.co') != -1 ){
+            var new_url = document.location.href.replace('www.gitcoin.co','gitcoin.co');
+            document.location.href = new_url;
+        }
+    };
+    force_no_www();
+
+    $(".nav-link.dropdown-toggle, .nav_avatar").click(function(e){
+      if($(".dropdown-menu").css('display') == 'block'){
+        $(".dropdown-menu").css('display', 'none');
+      } else {
+        $(".dropdown-menu").css('display', 'block');
+      }
+      e.preventDefault();
+    });
 
     //get started modal
     $("a[href='/get']").click(function(e) {
@@ -12,6 +31,13 @@ $(document).ready(function() {
         });
       },300);
     });
+
+    // bust the cache every time the user interacts with github
+    $("[href^='/_github']").click(function(e) {
+      var timestamp = Date.now() / 1000 | 0
+      Cookies.set('last_github_auth_mutation', timestamp);
+    });
+
 
     //preload hover image
     var url = $("#logo").data('hover');
@@ -47,8 +73,9 @@ $(document).ready(function() {
       setTimeout(callback,300);
     });
 
-    $('.faq_item h5').click(function(){
+    $('.faq_item .question').click(function(){
       $(this).parents('.faq_parent').find('.answer').toggleClass('hidden');
+      $(this).parents('.faq_parent').find('.answer').toggleClass('show');
     });
 
     //mixpanel integration
@@ -106,12 +133,24 @@ $(document).ready(function() {
         mixpanel.track("Email Subscribe");
     });
 
-    $("#newsletter-subscribe").click(() => {
+    $("#newsletter-subscribe").click(function() {
         mixpanel.track("Email Subscribe");
     });
 
     $("body.whitepaper .btn-success").click(function() {
         mixpanel.track("Whitepaper Request");
+    });
+
+    $(".accordion").click(function() {
+      this.classList.toggle("active");
+      var panel = this.nextElementSibling;
+      if (panel.style.maxHeight) {
+        panel.style.maxHeight = null;
+        panel.style.marginBottom = 0 + "px";
+      } else {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+        panel.style.marginBottom = 10 + "px";
+      }
     });
 });
 

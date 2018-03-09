@@ -18231,7 +18231,7 @@ $.widget( "ui.tooltip", {
       var title = $( this ).attr( "title" ) || "";
 
       // Escape title, since we're going from an attribute to raw HTML
-      return $( "<a>" ).text( title ).html();
+      return $( "<a>" ).html( title ).html();
     },
     hide: true,
 

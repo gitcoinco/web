@@ -207,5 +207,7 @@ var factory = function factory(web3) {
 if (typeof module !== 'undefined') {
   module.exports = factory(require("web3"));
 } else {
-  window.HookedWeb3Provider = factory(web3);
+  if(typeof web3 != 'undefined'){
+    window.HookedWeb3Provider = factory(web3);
+  }
 }

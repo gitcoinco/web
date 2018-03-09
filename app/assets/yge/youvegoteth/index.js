@@ -29,14 +29,14 @@ function getParam(parameterName) {
 var contract_address = function(){
     if(document.web3network=='custom network'){
         //testrpc
-        var contract_address = '0x852624f8b99431a354bf11543b10762fd3cdfae3'; 
+        var contract_address = '0x852624f8b99431a354bf11543b10762fd3cdfae3';
     }
     else if(document.web3network=='ropsten'){
         //ropsten
         var contract_address = '0xb917e0f1fdebb89d37cbe053f59066a20b6794d6'; //ropsten v1
     } else {
         //mainnet
-        var contract_address = '0x8bcaadc84fd3bdea3cc5dd534cd85692a820a692'; //mainnet v1
+        var contract_address = '0x5479b8be3b8e9459616721f8b588df593c6e4178'; //mainnet v1
     }
     return contract_address;
 }
@@ -62,9 +62,7 @@ var token_contract = function(token_address){
     return web3.eth.contract(tokenabi).at(token_address);
 }
 
-
-
-//background moving 
+//background moving
 var addMotion = function(){
   if(!$("yge")){
     return setTimeout(addMotion, 50);
@@ -76,19 +74,21 @@ var addMotion = function(){
   var _width = 1000;
   var height = movementStrength / _height;
   var width = movementStrength / _width;
-  $("yge").addEventListener("mousemove",function(e){
-        var pageX = e.pageX - (_height / 2);
-        var pageY = e.pageY - (_width / 2);
-        var newvalueX = width * (pageX - startX) * -1 - 25;
-        var newvalueY = height * (pageY - startY) * -1 - 50;
-        if(!startX){
-          startX = newvalueX;
-        }
-        if(!startY){
-          startY = newvalueY;
-        }
-        $("yge").style.backgroundPosition =  (newvalueX - startX - 10)+"px     "+(newvalueY - startY - 10)+"px";
-  });
+  if(typeof $("yge").addEventListener != 'undefined'){
+    $("yge").addEventListener("mousemove",function(e){
+          var pageX = e.pageX - (_height / 2);
+          var pageY = e.pageY - (_width / 2);
+          var newvalueX = width * (pageX - startX) * -1 - 25;
+          var newvalueY = height * (pageY - startY) * -1 - 50;
+          if(!startX){
+            startX = newvalueX;
+          }
+          if(!startY){
+            startY = newvalueY;
+          }
+          $("yge").style.backgroundPosition =  (newvalueX - startX - 10)+"px     "+(newvalueY - startY - 10)+"px";
+    });
+  }
 };
 setTimeout(addMotion, 5);
 
@@ -107,6 +107,7 @@ var waitforWeb3 = function(callback){
 window.addEventListener('load', function() {
     var timeout_value = 100;
     setTimeout(function(){
+      if(typeof web3 != 'undefined'){
         web3.version.getNetwork((error, netId) => {
             if(!error){
 
@@ -132,8 +133,9 @@ window.addEventListener('load', function() {
                       network = "custom network";
                   }
                 document.web3network = network;
-            }
-        })
+              }
+          })
+        }
     }, timeout_value);
 });
 
@@ -150,10 +152,13 @@ var callFunctionWhenTransactionMined = function(txHash, f){
 };
 
 var loading_button = function(button){
+    button.prop('disabled',true);
+    button.addClass('disabled');
     button.prepend('<img src=/static/v2/images/loading_v2.gif style="max-width:10px; max-height: 10px; margin-right: 5px">').addClass('disabled');
 }
 
 var unloading_button = function(button){
+    button.prop('disabled',false);
     button.removeClass('disabled');
     button.find('img').remove();
 }

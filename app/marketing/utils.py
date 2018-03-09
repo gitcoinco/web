@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -27,6 +27,8 @@ def get_stat(key):
 
 
 def invite_to_slack(email):
+    if settings.DEBUG:
+        return {}
     sc = SlackClient(settings.SLACK_TOKEN)
     response = sc.api_call('users.admin.invite', email=email)
     return response
@@ -39,7 +41,7 @@ def should_suppress_notification_email(email):
     return False
 
 
-def get_or_save_email_subscriber(email, source):
+def get_or_save_email_subscriber(email, source, send_slack_invite=True):
     queryset = EmailSubscriber.objects.filter(email__iexact=email)
     if not queryset.exists():
         es = EmailSubscriber.objects.create(
@@ -48,7 +50,7 @@ def get_or_save_email_subscriber(email, source):
             )
         es.set_priv()
         es.save()
-        invite_to_slack(email)
+        if send_slack_invite:
+            invite_to_slack(email)
         return es.priv
-    else:
-        return queryset.first().priv
+    return queryset.first().priv

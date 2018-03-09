@@ -15,121 +15,120 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+  <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-</head>
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+  </head>
 
-<body class="interior {{active}}">
+  <body class="interior {{active}}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
-        {% include 'shared/nav_internal.html' %}
-
+      {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-        <div class="col-2" style="background: #eee; ">
-            {% include 'shared/current_balance.html' %}
-            {% include 'shared/sidebar_search.html' %}
+      <div class="col-12 col-md-2" id="sidebar_container" style="background: #F2F6F9;">
+        {% include 'shared/current_balance.html' %}
+        {% include 'shared/sidebar_search.html' %}
+      </div>
+
+      <div class="col-12 col-md-10 body">
+        <div class="container-fluid" id="bounties">
+          {% include 'shared/search_bar.html' %}
+          <div class="row mt-2 mb-2">
+            <div class="col-12 offset-md-1 col-md-10 title-row">
+              <div class="col-4">
+                <span id="filter" class="font-title"></span>
+              </div>
+              <div class="col-8 bounty-info">
+                <span id="modifiers">Funded Issues</span>
+                <span id="stats" class="font-body"></span>
+              </div>
+            </div>
+          </div>
+          <div class="row loading justify-content-center align-items-center loading_img">
+            <img src="{% static "v2/images/loading_v2.gif" %}">
+          </div>
+          <div class="row nonefound" style="display:none;">
+              <img src="{% static "v2/images/shrug_bot.png" %}">
+              <h3>No results found.</h3>
+              <p>Please try another query</p>
+              <p>- or -</p>
+              <p>
+                <a href="#" class="save_search">save search</a>
+                to be notified when results do appear.
+              </p>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <div class="col body">
-            <div class="container-fluid" id="bounties">
-            {% include 'shared/search_bar.html' %}
-
-
-                <div class="row mt-2 mb-2">
-                    <div class="col-10 ml-3 font-bigger-2" style="color: #3e24fb;padding-left: 1rem;">
-                        <span id="modifiers">
-                            Funded Issues
-                        </span>
-                        <span id=stats class="font-bigger-1 pl-1"></span>
-                    </div>
-                    <div class="col-2"></div>
-                </div>
-                <div class="row loading justify-content-center align-items-center loading_img">
-                    <img src='/static/v2/images/loading_v2.gif'>
-                </div>
-                <div class="row nonefound" style="display:none;">
-                    <img src="static/v2/images/shrug_bot.png">
-                    <h3>No results found.</h3>
-                    <p>Please try another query</p>
-                    <p>- or -</p>
-                    <p>
-                         <a href="#" class="save_search">save search</a> to be notified when results do appear.
-                     </p>
-                </div>
+    <!-- JSRender stuff -->
+    <script id="result" type="text/x-jsrender">
+      <div class="row result bounty_row [[:network]]" href="[[:action]]">
+          [[if avatar_url]]
+            <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
+              <img src='[[:avatar_url]]' class='avatar'>
             </div>
+          [[else]]
+            <div class="avatar-container col-1 justify-content-center">
+                <div class="experience [[:experience_level]]">&nbsp;</div>
+            </div>
+          [[/if]]
+        <div class="col-12 col-md-8 d-flex flex-column">
+          <div class="bounty-detail">
+            <div class="title font-subheader">
+              [[if network != 'mainnet']]
+                [[[:network]]]
+              [[/if]]
+              [[:title]]
+            </div>
+            <div class="bounty-summary">
+              [[if github_comments]]
+                <img src={% static "v2/images/comment.svg" %}>
+                <span class="github-comment font-caption">[[:github_comments]]</span>
+              [[/if]]
+              <div class="info font-caption">
+                [[:p]]
+              </div>
+            </div>
+          </div>
         </div>
-
-      <!-- JSRender stuff -->
-      <script id="result" type="text/x-jsrender">
-        <div class="row result bounty_row pt-2 [[:network]]" href="[[:action]]">
-                [[if my_bounty]]
-                    <div class="col-2 justify-content-center special_tag hide_min_viewport" style="text-align: center">
-                        [[if avatar_url]]
-                            <img src='[[:avatar_url]]' style="margin: 0px auto 5px; display: block;" class='avatar'>
-                        [[/if]]
-                        [[:my_bounty]]
-                    </div>
-                [[else]]
-                    [[if avatar_url]]
-                        <div class="col-2 d-flex justify-content-center special_tag hide_min_viewport">
-                            <img src='[[:avatar_url]]' class='avatar'>
-                        </div>
-                    [[else]]
-                        <div class="col-2 pt-3 d-flex justify-content-center">
-                            <div class="experience [[:experience_level]]">&nbsp;</div>
-                        </div>
-                    [[/if]]
-                [[/if]]
-            <div class="col-7 d-flex flex-column">
-                <div class="w-75 d-flex flex-column pb-2" style="border-bottom: 1px solid #f9f9f9">
-                    <div class="font-bigger-1">
-                    [[if network != 'mainnet']]
-                        ([[:network]])
-                    [[/if]]
-                    [[:title]]</div>
-                    <div class="font-smaller-2">
-                        [[if github_comments]]
-                            <span class="github-comment">[[:github_comments]]</span>
-                        [[/if]]
-                        [[:p]]
-                    </div>
-                </div>
+        <div class="col-12 col-md-2 tags font-caption align-items-center">
+          <div class="tag token">
+            <p>
+              [[:rounded_amount]]
+              <span>[[:token_name]]</span>
+            </p>
+          </div>
+          [[if value_in_usdt]]
+            <div class="tag usd">
+              <p>
+                [[:value_in_usdt]]
+                <span>USD</span>
+              </p>
             </div>
-            <div class="col-1 d-flex align-items-center">
-                <a class="btn btn-sm btn-darkBlue font-smaller-2" role="button" href="#">
-                    [[:rounded_amount]] <span class="font-smaller-4">[[:token_name]]</span>
-                </a>
-            </div>
-            <div class="col-1 d-flex align-items-center">
-                [[if value_in_usdt]]
-                    <a class="btn btn-sm btn-darkBlue font-smaller-2 hide_min_viewport" role="button" href="#">
-                            [[:value_in_usdt]] <span class="font-smaller-4">USD</span>
-                    </a>
-                [[/if]]
-            </div>
+          [[/if]]
         </div>
-
-      </script>
-
+      </div>
+    </script>
 
     {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/ga.html' %}
+    {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
 
-<script src="{{STATIC_URL}}v2/js/tokens.js"></script>
-<script src="{{STATIC_URL}}v2/js/pages/dashboard.js"></script>
-<script src="{{STATIC_URL}}v2/js/shared.js"></script>
-
-<script>
-    document.keywords = {{keywords | safe}};
-</script>
-
-</body>
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/pages/dashboard.js" %}"></script>
+    <script src="{% static "v2/js/shared.js" %}"></script>
+    <script>
+        document.keywords = {{keywords | safe}};
+    </script>
+  </body>
 </html>

@@ -20,7 +20,14 @@ BACKUPSTR=`date +"%Y%m%d"`
 MONTH=`date +"%m"`
 DAY=`date +"%d"`
 YEAR=`date +"%Y"`
-sudo runuser -l postgres -c '/usr/bin/pg_dump gitcoin' > /tmp/$BACKUPSTR.sql
-s3cmd put /tmp/$BACKUPSTR.sql s3://gitcoinbackups/$YEAR/$MONTH/$DAY/$BACKUPSTR-$(hostname).sql
-rm /tmp/$BACKUPSTR.sql
+PG_DUMP="/usr/lib/postgresql/9.6/bin/pg_dump"
+export PGPASSWORD=$(cat app/app/local_settings.py | grep "'PASSWORD'" | awk '{print $2}' | sed "s/'//g" | sed "s/,//g")
+export HOST=$(cat app/app/local_settings.py | grep "'HOST'" | awk '{print $2}' | sed "s/'//g" | sed "s/,//g")
+IS_PROD=$(cat app/app/local_settings.py | grep ENV | grep prod | wc -l)
+if [ "$IS_PROD" -eq "1" ]; then
+    $PG_DUMP gitcoin -U gitcoin -h $HOST | s3cmd put - s3://gitcoinbackups/$YEAR/$MONTH/$DAY/$BACKUPSTR-$(hostname).sql
+else
+    echo "not prod"
+fi
+
 

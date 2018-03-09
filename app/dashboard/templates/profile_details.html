@@ -1,5 +1,6 @@
 {% load email_obfuscator %}
 {% load humanize %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,18 +11,11 @@
 <body class="interior {{active}}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
-        {% include 'shared/nav_internal.html' %}
+        {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-        <div class="col-2" style="background: #eee; ">
-            {% include 'shared/current_balance.html' %}
-            {% include 'shared/sidebar_search.html' %}
-        </div>
-
         <div class="col body">
             <div class="container-fluid" id="profile_detail">
-            {% include 'shared/bounty_def.html' %}
-
                 <div class="row mt-0 ml-0" id="profile_details">
 
                     <div id="hero" class="pt-4">
@@ -38,8 +32,8 @@
                         <ul class='authors'>
                             {% for author in profile.authors %}
                                 <li>
-                                    <a href="/profile/{{author}}" target=new title="{{author}}">
-                                    <img src="/funding/avatar?repo=https://github.com/{{author}}">
+                                    <a href="{% url "profile" %}{{author}}" target=new title="{{author}}">
+                                    <img src="{% url "avatar" %}?repo=https://github.com/{{author}}">
                                     </a>
                                 </li>
                             {% endfor %}
@@ -48,120 +42,182 @@
                         <ul class='ctas'>
                             <li>
                                 <a href="{{profile.data.blog}}">
-                                    <img src='/static/v2/images/social/web.png' alt='Medium'>
+                                    <img src="{% static "v2/images/social/web.png" %}" alt="Medium">
                                 </a>
                             <li>
                             {% if profile.data.email %}
                                 </li>
                                     <a href="mailto:{{profile.data.email | obfuscate}}">
-                                        <img src='/static/v2/images/social/mail.png' alt='Medium'>
+                                        <img src="{% static "v2/images/social/mail.png" %}" alt="Medium">
                                     </a>
                                 <li>
                             {% endif %}
                             </li>
                                 <a href="{{profile.data.html_url}}?tab=repositories">
-                                    <img src='/static/v2/images/social/github.png' alt='Medium'>
+                                    <img src="{% static "v2/images/social/github.png" %}" alt="Medium">
                                 </a>
                             </li>
                         </ul>
                     </div>
-                    {% if stats|length > 0 %}
-                        <ul id="stats">
-                            {% for stat in stats %}
-                                <li>
-                                    {{stat.0}}
-                                    <span>
-                                        {{stat.1}}
-                                    </span>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    <div style="width: 100%" class="pr-2">
-                        <div>
-                        <h4>{{profile.handle}} has Participated in these Funded Issues</h4>
-                            <ul class="bounties">
-                                {% if bounties|length == 0 %}
+                    <div class="offset-md-2 col-sm-12 col-md-8">
+                        {% if stats|length > 0 %}
+                            <ul id="stats">
+                                {% for stat in stats %}
                                     <li>
-                                        No funded issues found
+                                        {{stat.0}}
+                                        <span>
+                                            {{stat.1}}
+                                        </span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        <div style="width: 100%" class="pr-2">
+                            <div>
+                                <h4>{{profile.handle}} has received these tips</h4>
+                                {% if tips|length == 0 %}
+                                    <li>
+                                        No tips found
                                     </li>
                                 {% endif %}
-                                {% if bounties|length > 0 %}
-                                        <li style="height:50px; font-weight: bold;">
-                                            <div class='relationship'>
-                                                Relationship
-                                            </div>
-                                            <div class='status'>
-                                                Status
-                                            </div>
-                                            <div class="details">
-                                                Details
-                                            </div>
-                                        </li>
-                                    {% for b in bounties %}
+                                <ul class="tips">
+                                    {% if bounties|length > 0 %}
+                                            <li style="height:50px; font-weight: bold;">
+                                                <div class='from_username'>
+                                                    From
+                                                </div>
+                                                <div class='url'>
+                                                    Related Issue
+                                                </div>
+                                                <div class="details">
+                                                    Details
+                                                </div>
+                                            </li>
+                                    {% for tip in tips %}
                                         <li>
-                                            <a href="{{b.url}}">
-                                                <div class='relationship'>
+                                            <a href="{{tip.github_url}}">
+                                                <div class='from_username'>
                                                     <p>
-                                                        {% if profile.handle == b.claimee_github_username %}
-                                                        Claimee
-                                                        {% elif profile.handle == b.bounty_owner_github_username %}
-                                                        Funder
+                                                        {% if tip.from_username %}
+                                                            {{tip.from_username}}
                                                         {% else %}
-                                                        Repo Owner
+                                                            Unknown
                                                         {% endif %}
                                                     </p>
                                                 </div>
-                                                <div class='status'>
+                                                <div class='url'>
                                                     <p>
-                                                        {{b.status}}
-                                                    </p>
-                                                </div>
-                                                <div class="details">
-                                                    <img style="max-width: 30px;" src="{{b.local_avatar_url}}">
-                                                    <h6 style="display: inline;">
-                                                        {{b.title_or_desc}}
-                                                    </h6>
-                                                    <p>
-                                                        {{b.desc}}
+                                                        <a href="{{tip.github_url}}">{{tip.github_url}}</a>
                                                     </p>
                                                 </div>
                                                 <div class="amount">
                                                     <a class="btn btn-sm btn-darkBlue font-smaller-2">
-                                                        {{b.value_true}} {{b.token_name}},
-                                                        {{b.value_in_usdt}}
+                                                        {{tip.amount}} {{tip.tokenName}},
+                                                        {{tip.value_in_usdt}}
                                                         USD
                                                     </a>
+                                                    <p>
+                                                        {% if tip.comments_public %} Comments: 
+                                                        {{tip.comments_public}}
+                                                        {% endif %}
+                                                    </p>
                                                 </div>
                                             </a>
                                         </li>
                                     {% endfor %}
-                                {% endif %}
-                            </ul>
+                                {% endif %}     
+                                </ul>                       
+                            </div>
                         </div>
-                        <div>
-                        <h4>Repos</h4>
-                            <ul class="repos">
-                                {% for r in profile.repos_data %}
-                                    <li>
-                                        <div class="dot">&nbsp;</div>
-                                        <a href="/explorer/?q={{r.html_url}}">
-                                            <p class="meta mr-3">{{r.stargazers_count}} stars</p>
-                                            <h6>
-                                            {{r.full_name}}</h6>
-                                            {% if r.description %}
-                                            <p class="mb-1">{{r.description}}</p>
-                                            {% endif %}
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                                {% if profile.repos_data|length == 0 %}
-                                    <li>
-                                        No repos
-                                    </li>
-                                {% endif %}
-                            </ul>
+                        <div style="width: 100%" class="pr-2">
+                            <div>
+                            <h4>{{profile.handle}} has Participated in these Funded Issues</h4>
+                                <ul class="bounties">
+                                    {% if bounties|length == 0 %}
+                                        <li>
+                                            No funded issues found
+                                        </li>
+                                    {% endif %}
+                                    {% if bounties|length > 0 %}
+                                            <li style="height:50px; font-weight: bold;">
+                                                <div class='relationship'>
+                                                    Relationship
+                                                </div>
+                                                <div class='status'>
+                                                    Status
+                                                </div>
+                                                <div class="details">
+                                                    Details
+                                                </div>
+                                            </li>
+                                        {% for b in bounties %}
+                                            <li>
+                                                <a href="{{b.url}}">
+                                                    <div class='relationship'>
+                                                        <p>
+                                                            {% if profile.handle == b.fulfiller_github_username %}
+                                                            Worker
+                                                            {% elif profile.handle == b.bounty_owner_github_username %}
+                                                            Funder
+                                                            {% elif profile.handle == b.org_name %}
+                                                            Repo Owner
+                                                            {% else %}
+                                                            Worker
+                                                            {% endif %}
+                                                        </p>
+                                                    </div>
+                                                    <div class='status'>
+                                                        <p>
+                                                            {{b.status}}
+                                                        </p>
+                                                    </div>
+                                                    <div class="details">
+                                                        <img style="max-width: 30px;" src="{{b.local_avatar_url}}">
+                                                        <h6 style="display: inline;">
+                                                            {{b.title_or_desc}}
+                                                        </h6>
+                                                        <p>
+                                                            {{b.desc}}
+                                                        </p>
+                                                    </div>
+                                                    <div class="amount">
+                                                        <a class="btn btn-sm btn-darkBlue font-smaller-2">
+                                                            {{b.value_true}} {{b.token_name}},
+                                                            {{b.value_in_usdt}}
+                                                            USD
+                                                        </a>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            <div>
+                            <h4>Repos</h4>
+                                <ul class="repos">
+                                    {% for r in profile.repos_data %}
+                                        <li>
+                                            <div class="dot">&nbsp;</div>
+                                            <a href="{% url "explorer" %}?q={{r.html_url}}">
+                                                <p class="meta mr-3">{{r.stargazers_count}} stars</p>
+                                                <h6>
+                                                {{r.full_name}}</h6>
+                                                {% if r.description %}
+                                                <p class="mb-1">{{r.description}}</p>
+                                                {% endif %}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                    {% if profile.repos_data|length == 0 %}
+                                        <li>
+                                            No repos
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
                         </div>
+                        {% include 'shared/newsletter.html' %}
                     </div>
                 </div>
             </div>
@@ -169,8 +225,9 @@
 
 
     {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/ga.html' %}
+    {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
 
 </body>
@@ -178,10 +235,10 @@
 
 
 <!-- jQuery -->
-<script src="{{STATIC_URL}}v2/js/abi.js"></script>
-<script src="{{STATIC_URL}}v2/js/tokens.js"></script>
-<script src="{{STATIC_URL}}v2/js/shared.js"></script>
-<script src="{{STATIC_URL}}v2/js/pages/profile.js"></script>
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="{% static "v2/js/tokens.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
+<script src="{% static "v2/js/pages/profile.js" %}"></script>
 
 
 </html>

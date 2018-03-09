@@ -1,5 +1,5 @@
 //TODO -- accept stdin
-var issueURL = 'https://github.com/ConsenSys/smart-contract-best-practices/issues/113'
+var issueURL = 'https://github.com/ethereum/web3.py/issues/549'
 localStorage[issueURL] = timestamp();
 
 var callback = function (error, result){
