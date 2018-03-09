@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from .models import FaucetRequest
 
@@ -30,12 +31,12 @@ class GeneralAdmin(admin.ModelAdmin):
 
 class FaucetRequestAdmin(admin.ModelAdmin):
     ordering = ['-created_on']
-    list_display = ['created_on', 'fulfilled', 'link', 'github_username', 'github_meta', 'address', 'email', 'comment']
+    list_display = ['created_on', 'fulfilled', 'link', 'github_username', 'comment', 'address', 'email', 'comment']
 
     def link(self, instance):
         if instance.fulfilled:
             return 'n/a'
-        link = "<a href=/_administration/process_faucet_request/{}>process me</a>".format(instance.pk)
+        link = mark_safe("<a href=/_administration/process_faucet_request/{}>process me</a>".format(instance.pk))
         return link
     link.allow_tags = True
 

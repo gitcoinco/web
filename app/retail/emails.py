@@ -164,6 +164,19 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
     return response_html, response_txt
 
 
+def render_faucet_request(fr):
+
+    params = {
+        'fr': fr,
+        'amount': settings.FAUCET_AMOUNT,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/faucet_request.html", params))
+    response_txt = render_to_string("emails/faucet_request.txt", params)
+
+    return response_html, response_txt
+
+
 def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
 
     params = {
@@ -376,6 +389,14 @@ def start_work_expire_warning(request):
     from dashboard.models import Bounty, Interest
 
     response_html, _ = render_bounty_startwork_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last(), Interest.objects.all().last(), 5)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def faucet(request):
+    from faucet.models import FaucetRequest
+    fr = FaucetRequest.objects.last()
+    response_html, txt = render_faucet_request(fr)
     return HttpResponse(response_html)
 
 

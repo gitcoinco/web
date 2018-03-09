@@ -13,30 +13,6 @@
 
    });
 
-   $('#githubProfile').on('change', function () {
-     var cleanedUser = this.value.replace('@', '').toLowerCase();
-     request_url = '/api/v0.1/faucet/githubProfile/' + cleanedUser;
-
-     document.getElementById("submitFaucet").setAttribute("disabled", "disabled");
-
-     $.get(request_url, function (result) {
-       result = sanitizeAPIResults(result);
-
-       if (result.user === false) {
-         $('#githubProfile').addClass('is-invalid');
-         $('#githubProfileHelpBlock').html('We could not find that user in Github').show();
-
-       } else if (result.name === cleanedUser) {
-         $('#githubProfile').addClass('is-invalid-error');
-         $('#githubProfileHelpBlock').html('We have a pending or processed faucet contribution for that Github user').show();
-
-       }
-
-       $("#submitFaucet").removeAttr("disabled");
-     });
-
-   });
-
    $('#githubProfile').on('focus', function () {
      $('#githubProfileHelpBlock').hide();
      $('#githubProfile').removeClass('is-invalid');
@@ -64,6 +40,7 @@
        $('#emailAddress').is(['is-invalid']) ||
        $('#githubProfile').val() === '' ||
        $('#emailAddress').val() === '') {
+       _alert("Please make sure to fill out all fields.")
        return;
      }
 
@@ -77,13 +54,14 @@
 
      $.post('/api/v0.1/faucet/save', faucetRequestData)
        .done(function (d) {
-         $('#main-form').hide();
+         $('#primary_form').hide();
          $('#success_container').show();
        })
 
-       .fail(function (XMLHttpRequest, textStatus, errorThrown) {
-         $('#main-form').hide();
-         $('#fail_message').html(errorThrown);
+       .fail(function (response) {
+        var message = response.responseJSON.message;
+         $('#primary_form').hide();
+         $('#fail_message').html(message);
          $('#fail_container').show();
        });
    })

@@ -1,5 +1,6 @@
+{% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2017 Gitcoin Core 
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,16 +16,35 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
+{% load humanize %} 
 
-                    <div id="over_balance_error" class="blocking_error" style="display: none">
-                        <img src="/static/v2/images/prime.png">
-                        <br>
-                        <h3>You Appear to Have Ether!</h3>
-                        <p>
-                            Thank you for your interest in receiving a faucet distribution.
-                        </p>
-                        <p>
-                            You have more ether currently in your wallet than the distribution would provide.
-                            Please use that ether to pay the transaction cost.
-                        </p>
-                    </div>
+{% block content %}
+
+<h1>Faucet Request Processed⛽️</h1>
+
+<img src="https://gitcoin.co/static/v2/images/gas.png" width=200px height=200px >
+
+<p>
+    Hey @{{fr.github_username}},
+
+    <br>
+    <br>
+
+    Gitcoin has distributed your faucet request for {{amount}} ETH to <a href=https://etherscan.io/address/{{fr.address}}>{{fr.address}}</a>.
+
+    <br>
+    <br>
+
+    This should be enough gas to send your first Ethereum Transaction.  We hope you'll consider using it on Gitcoin!
+
+</p>
+
+<p>
+    Keep Pushing Open Source Forward,
+    <br>
+    -- Gitcoin Core
+</p>
+
+
+
+{% endblock %}

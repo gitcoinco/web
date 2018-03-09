@@ -62,6 +62,16 @@ def build_auth_dict(oauth_token):
     }
 
 
+def search_github(q):
+
+    params = (
+        ('q', q),
+        ('sort', 'updated'),
+    )
+    response = requests.get('https://api.github.com/search/users', headers=HEADERS, params=params)
+    return response.json()
+
+
 def is_github_token_valid(oauth_token=None, last_validated=None):
     """Check whether or not a Github OAuth token is valid.
 

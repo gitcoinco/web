@@ -29,6 +29,7 @@ class FaucetRequestManager(models.Manager):
     def user(self, profile):
         return self.filter(github_username = profile)
 
+
 class FaucetRequest(SuperModel):
     fulfilled = models.BooleanField(default=False)
     github_username = models.CharField(max_length=255, db_index=True)

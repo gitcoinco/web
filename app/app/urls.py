@@ -25,8 +25,8 @@ import dashboard.embed
 import dashboard.helpers
 import dashboard.ios
 import dashboard.views
-import linkshortener.views
 import faucet.views
+import linkshortener.views
 import marketing.views
 import retail.emails
 import retail.views
@@ -39,7 +39,6 @@ urlpatterns = [
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
-    url(r'^api/v0.1/faucet/githubProfile/(?P<profile>[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38})', faucet.views.github_profile, name='github_profile'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(router.urls)),
     url(r'^actions/api/v0.1/', include(router.urls)), # same as active, but not cached in cluodfront
@@ -147,6 +146,7 @@ urlpatterns = [
     url(r'^_administration/?', admin.site.urls, name='admin'),
     url(r'^_administration/email/new_bounty$', retail.emails.new_bounty, name='new_bounty'),
     url(r'^_administration/email/roundup$', retail.emails.roundup, name='roundup'),
+    url(r'^_administration/email/faucet$', retail.emails.faucet, name='faucet'),
     url(r'^_administration/email/new_tip$', retail.emails.new_tip, name='new_tip'),
     url(r'^_administration/email/new_match$', retail.emails.new_match, name='new_match'),
     url(r'^_administration/email/new_work_submission$', retail.emails.new_work_submission, name='new_work_submission'),

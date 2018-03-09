@@ -29,10 +29,6 @@
         {% include 'shared/nav_internal.html' %}
     </div>
     <div class="row no-gutter">
-        <div class="col-2" style="background: #eee; ">
-            {% include 'shared/current_balance.html' %}
-            {% include 'shared/sidebar_search.html' %}
-        </div>
 
         <div class="col body">
             <div class="container-fluid no-gutter">
@@ -41,7 +37,7 @@
                     {% include 'shared/faucet_over_balance_error.html' %}
                     {% include 'shared/faucet_unlock_metamask.html' %}
                     <div id="faucet_form">
-                        <div class="faucet-form" id="main-form">
+                        <div class="faucet-form" id="primary_form">
                             <h3>Faucet Request</h3>
                             <p class="hidden-mobile">Pursuant to making ethereum and Gitcoin broadly accessible to everyone
                             Gitcoin may provide a minimal faucet distribution of ether so you may easily
@@ -60,13 +56,17 @@
                             </p>
                             {% csrf_token %}
                             <div class="faucet-input-group">
-                                <label for="githubProfile" class="form__label float-left">Github Profile:</label>
-                                <input name='githubProfile' id="githubProfile" class="form__input" type="text" placeholder="@you" value="{{github_handle}}" />
+                                <label for="githubProfile" class="form__label float-left">Github Profile 
+                                   {% if not github_handle %}
+                                   (<a href="{% url "github:github_auth" %}?redirect_uri={{ request.get_full_path }}">Login</a>):
+                                   {% endif %}
+                                </label>
+                                <input name='githubProfile' id="githubProfile" class="form__input" type="text" placeholder="@you" value="{% if github_handle %}{{github_handle}}{% endif %}" disabled=disabled />
                                 <span id="githubProfileHelpBlock" class="help-block" style="display:hidden;color:red;"> </span>
                             </div>
                             <div class="faucet-input-group">
                                 <label for="emailAddress" class="form__label float-left" >Email Address:</label>
-                                <input name='emailAddress' id="emailAddress" class="form__input" type="text" placeholder="What is your email address?" />
+                                <input name='emailAddress' id="emailAddress" class="form__input" type="text" placeholder="What is your email address?" value={{email}} />
                                 <span id="emailAddressHelpBlock" class="help-block" style="display:hidden;color:red;"></span>
                             </div>
                             <div class="faucet-input-group">
@@ -78,7 +78,7 @@
                                 <input placeholder="0x0" disabled id="ethAddress" class="form__input" type="text" value="{% if ethAddress %}{{ethAddress}}{%endif%}" />
                             </div>
                             <div class="form__footer">
-                                <a class="button button--primary" role="button" id="submitFaucet" href="#">Submit</a>
+                                <a class="button button--primary" role="button" id="submitFaucet" href="#">Proceed</a>
                             </div>
                         </div>
                     </div>
@@ -92,9 +92,12 @@
                     </div>
                     <div id="fail_container" class="faucet_response">
                         <div class="frheader" style="color:red;">
-                            Oops. Something went wrong submitting your request. The message returned was :
+                            There was an error:
                         </div>
-                        <div class="frmessage" id="fail_message"></div>
+                        <div style="font-size: 18px">
+                            Something went wrong submitting your request:
+                        </div>
+                        <div class="frmessage" id="fail_message" style="font-size: 16px"></div>
                     </div>
                 </div>
                 <div class="col-12 offset-md-1 col-md-10">

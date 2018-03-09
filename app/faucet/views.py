@@ -1,4 +1,3 @@
-import json
 
 from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
@@ -8,21 +7,9 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils.html import escape, strip_tags
 
-import requests
-import sendgrid
 from faucet.models import FaucetRequest
-from marketing.mails import send_mail
-from sendgrid.helpers.mail import Content, Email, Mail, Personalization
-
-
-def search_github(q):
-
-    params = (
-        ('q', q),
-        ('sort', 'updated'),
-    )
-    response = requests.get('https://api.github.com/search/users', headers=v3headers, params=params)
-    return response.json()
+from github.utils import search_github
+from marketing.mails import new_faucet_request, processed_faucet_request
 
 
 def faucet(request):
@@ -34,34 +21,25 @@ def faucet(request):
 
     return TemplateResponse(request, 'faucet_form.html', params)
 
-def github_profile(request, profile):
-    if FaucetRequest.objects.user(profile):
-      response = {
-          'status': 200,
-          'name': profile
-      }
-      return JsonResponse(response)
-    else:
-      response = check_github(profile)
-      return JsonResponse(response)
 
 def check_github(profile):
-  if settings.ENV == 'local':
-    creds = False
-  else:
-    creds = True
-  user = search(profile + ' in:login type:user', creds)
-  if len(user['items']) == 0 or user['items'][0]['login'].lower() != profile.lower():
-    response = {
-      'status': 200,
-      'user': False
-    }
-  else:
-    response = {
-      'status': 200,
-      'user': user['items'][0]
-    }
-  return response
+    if settings.ENV == 'local':
+        creds = False
+    else:
+        creds = True
+    user = search_github(profile + ' in:login type:user')
+    if len(user['items']) == 0 or user['items'][0]['login'].lower() != profile.lower():
+       response = {
+        'status': 200,
+        'user': False
+      }
+    else:
+       response = {
+        'status': 200,
+        'user': user['items'][0]
+      }
+    return response
+
 
 def save_faucet(request):
     try:
@@ -94,36 +72,35 @@ def save_faucet(request):
             'message': 'The submitted github profile shows a previous faucet distribution.'
         }, status=403)
     elif checkeduser == False:
-      return JsonResponse({
-        'message': 'The submitted github profile could not be found on github.'
-      }, status=400)
+        return JsonResponse({
+          'message': 'The submitted github profile could not be found on github.'
+        }, status=400)
     else:
-      githubMeta = checkeduser
+        githubMeta = checkeduser
 
     fr = FaucetRequest(
         fulfilled=False,
-        github_username = githubProfile,
-        github_meta = githubMeta,
-        address = ethAddress,
-        email = emailAddress,
-        comment = comment
+        github_username=githubProfile,
+        github_meta=githubMeta,
+        address=ethAddress,
+        email=emailAddress,
+        comment=comment
     )
 
     fr.save()
-    from_email = settings.PERSONAL_CONTACT_EMAIL
-    to_email = settings.SERVER_EMAIL
-    subject = "New Faucet Request"
-    body = "A new faucet request was completed. You may fund the request here : https://gitcoin.co/_administration/process_faucet_request/[pk]"
-    send_mail(from_email, to_email, subject, body.replace('[pk]', str(fr.pk)), from_name="No Reply from Gitcoin.co")
+
+    new_faucet_request(fr)
+
     return JsonResponse({
       'message': 'Created.'
     }, status=201)
+
 
 @staff_member_required
 def process_faucet_request(request, pk):
 
     obj = FaucetRequest.objects.get(pk=pk)
-    faucet_amount = getattr(settings, "FAUCET_AMOUNT", .003)
+    faucet_amount = settings.FAUCET_AMOUNT
     context = {
         'obj': obj,
         'faucet_amount': faucet_amount
@@ -135,6 +112,7 @@ def process_faucet_request(request, pk):
     if request.POST.get('destinationAccount', False):
         obj.fulfilled = True
         obj.save()
+        processed_faucet_request(obj)
 
         return redirect('/_administrationfaucet/faucetrequest/')
 
