@@ -1,0 +1,60 @@
+{% extends "admin/base_site.html" %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+
+<h1>Process Faucet Request For {{obj.github_username}}</h1>
+<div id="no_metamask_error" style="display: none;">MetaMask Extension Not Detected</div>
+<div id="unlock_metamask_error" style="display: none;">Please Unlock MetaMask To Continue</div>
+<div id="zero_balance_error" style="display: none;">MetaMask Active Account Is Empty</div>
+<div class="row loading justify-content-center align-items-center loading_img" id="loadingImg"  style="display:none;">
+  <img src='/static/v2/images/loading_v2.gif' style="width: 6rem;" alt="loading...">
+</div>
+<div id="errResponse" style="display:none;">
+  Transaction Failed : <span id="failureReason"></span>
+</div>
+<form method=POST id="admin_faucet_form">
+    {% csrf_token %}
+<p>By funding this faucet request, you will transfer {{ faucet_amount }} ETH to
+{{ obj.github_username }} with a wallet address of {{ obj.address }}</p>
+<br>
+<input type="hidden" name="destinationAccount" id="destinationAccount" value="{{ obj.address }}">
+<input type="hidden" name="faucetAmount" id="faucetAmount" value="{{ faucet_amount }}">
+<input type="submit" name="submitFaucet" id="submitFaucet" value="Submit">
+</form>
+
+{{pk}}
+
+{% endblock %}
+{% block extrahead %}{{ block.super }}
+  <script src="{{STATIC_URL}}v2/js/jquery.js"></script>
+  <script src="{{STATIC_URL}}v2/js/shared.js"></script>
+  <script src="{{STATIC_URL}}v2/js/pages/process_faucet.js"></script>
+{% endblock %}
+
