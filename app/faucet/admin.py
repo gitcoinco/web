@@ -47,7 +47,7 @@ class FaucetRequestAdmin(admin.ModelAdmin):
             str: The HTML element for the faucet request link.
 
         """
-        if instance.fulfilled:
+        if instance.fulfilled or instance.rejected:
             return 'n/a'
         link = mark_safe(f"<a href=/_administration/process_faucet_request/{instance.pk}>process me</a>")
         return link
