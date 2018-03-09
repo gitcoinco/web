@@ -164,6 +164,19 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
     return response_html, response_txt
 
 
+def render_faucet_rejected(fr):
+
+    params = {
+        'fr': fr,
+        'amount': settings.FAUCET_AMOUNT,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/faucet_request_rejected.html", params))
+    response_txt = render_to_string("emails/faucet_request_rejected.txt", params)
+
+    return response_html, response_txt
+
+
 def render_faucet_request(fr):
 
     params = {
@@ -388,6 +401,14 @@ def faucet(request):
     from faucet.models import FaucetRequest
     fr = FaucetRequest.objects.last()
     response_html, txt = render_faucet_request(fr)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def faucet_rejected(request):
+    from faucet.models import FaucetRequest
+    fr = FaucetRequest.objects.last()
+    response_html, txt = render_faucet_rejected(fr)
     return HttpResponse(response_html)
 
 

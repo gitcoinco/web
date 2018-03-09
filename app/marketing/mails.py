@@ -23,9 +23,9 @@ import sendgrid
 from economy.utils import convert_token_to_usdt
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from retail.emails import (
-    render_bounty_expire_warning, render_bounty_startwork_expire_warning, render_faucet_request, render_match_email,
-    render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
-    render_new_work_submission, render_tip_email,
+    render_bounty_expire_warning, render_bounty_startwork_expire_warning, render_faucet_rejected, render_faucet_request,
+    render_match_email, render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection,
+    render_new_bounty_roundup, render_new_work_submission, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -101,6 +101,15 @@ def processed_faucet_request(fr):
     from_email = settings.SERVER_EMAIL
     subject = "Faucet Request Processed"
     html, text = render_faucet_request(fr)
+    to_email = fr.email
+
+    send_mail(from_email, to_email, subject, text, html)
+
+
+def reject_faucet_request(fr):
+    from_email = settings.SERVER_EMAIL
+    subject = "Faucet Request Rejected"
+    html, text = render_faucet_rejected(fr)
     to_email = fr.email
 
     send_mail(from_email, to_email, subject, text, html)

@@ -1,5 +1,6 @@
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.validators import validate_email, validate_slug
 from django.http import JsonResponse
@@ -11,7 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from faucet.models import FaucetRequest
 from github.utils import search_github
-from marketing.mails import new_faucet_request, processed_faucet_request
+from marketing.mails import new_faucet_request, processed_faucet_request, reject_faucet_request
 
 
 def faucet(request):
@@ -70,9 +71,13 @@ def save_faucet(request):
     ethAddress = request.POST.get('ethAddress')
     comment = escape(strip_tags(request.POST.get('comment')))
     checkeduser = check_github(githubProfile)
-    if FaucetRequest.objects.user(githubProfile):
+    if FaucetRequest.objects.filter(fulfilled=True, github_username=githubProfile):
         return JsonResponse({
             'message': 'The submitted github profile shows a previous faucet distribution.'
+        }, status=403)
+    elif FaucetRequest.objects.filter(github_username=githubProfile, rejected=False):
+        return JsonResponse({
+            'message': 'The submitted github profile shows a pending faucet distribution.'
         }, status=403)
     elif checkeduser == False:
         return JsonResponse({
@@ -110,13 +115,28 @@ def process_faucet_request(request, pk):
     }
 
     if obj.fulfilled:
+        messages.info(request, 'already fulfilled')
         return redirect('/_administrationfaucet/faucetrequest/')
 
-    if request.POST.get('destinationAccount', False):
+    if obj.rejected:
+        messages.info(request, 'already rejected')
+        return redirect('/_administrationfaucet/faucetrequest/')
+
+    if request.POST.get('reject_comments', False):
+        obj.comment_admin = request.POST.get('reject_comments', False)
+        obj.rejected = True
+        obj.save()
+        reject_faucet_request(obj)
+        messages.success(request, 'rejected')
+
+        return redirect('/_administrationfaucet/faucetrequest/')
+
+    elif request.POST.get('destinationAccount', False):
         obj.fulfilled = True
         obj.fulfill_date = timezone.now()
         obj.save()
         processed_faucet_request(obj)
+        messages.success(request, 'sent')
 
         return redirect('/_administrationfaucet/faucetrequest/')
 
