@@ -34,7 +34,6 @@ BASE_URL = 'http://localhost:8000/'
 #optional
 TWITTER_USERNAME = 'TODO'
 CONTACT_EMAIL = 'TODO'
-BCC_EMAIL = 'TODO'
 PERSONAL_CONTACT_EMAIL = 'you@foo.bar'
 
 # -------------------------------------------------------

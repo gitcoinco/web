@@ -31,7 +31,7 @@ from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
 
 def send_mail(from_email, _to_email, subject, body, html=False,
-              from_name="Gitcoin.co", cc_emails=None, add_bcc=True):
+              from_name="Gitcoin.co", cc_emails=None):
 
     # make sure this subscriber is saved
     to_email = _to_email
@@ -50,19 +50,17 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         subject = "[DEBUG] " + subject
     mail = Mail(from_email, subject, to_email, content)
 
-    # build personalization (BCC + CC)
-    if add_bcc:
-        p = Personalization()
-        p.add_to(to_email)
-        if cc_emails: #only add CCif not in prod
-            for cc_addr in set(cc_emails):
-                cc_addr = Email(cc_addr)
-                if settings.DEBUG:
-                    cc_addr = to_email
-                if cc_addr._email != to_email._email:
-                    p.add_to(cc_addr)
-        p.add_bcc(Email(settings.BCC_EMAIL))
-        mail.add_personalization(p)
+    # build personalization
+    p = Personalization()
+    p.add_to(to_email)
+    if cc_emails: #only add CCif not in prod
+        for cc_addr in set(cc_emails):
+            cc_addr = Email(cc_addr)
+            if settings.DEBUG:
+                cc_addr = to_email
+            if cc_addr._email != to_email._email:
+                p.add_to(cc_addr)
+    mail.add_personalization(p)
 
     # debug logs
     print("-- Sending Mail '{}' to {}".format(subject, _to_email))
