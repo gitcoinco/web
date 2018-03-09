@@ -1,5 +1,5 @@
-'''
-    Copyright (C) 2017 Gitcoin Core 
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -14,20 +14,11 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
-date
-BACKUPSTR=`date +"%Y%m%d"`
-MONTH=`date +"%m"`
-DAY=`date +"%d"`
-YEAR=`date +"%Y"`
-PG_DUMP="/usr/lib/postgresql/9.6/bin/pg_dump"
-export PGPASSWORD=$(cat app/app/local_settings.py | grep "'PASSWORD'" | awk '{print $2}' | sed "s/'//g" | sed "s/,//g")
-export HOST=$(cat app/app/local_settings.py | grep "'HOST'" | awk '{print $2}' | sed "s/'//g" | sed "s/,//g")
-IS_PROD=$(cat app/app/local_settings.py | grep ENV | grep prod | wc -l)
-if [ "$IS_PROD" -eq "1" ]; then
-    $PG_DUMP gitcoin -U gitcoin -h $HOST | s3cmd put - s3://gitcoinbackups/$YEAR/$MONTH/$DAY/$BACKUPSTR-$(hostname).sql
-else
-    echo "not prod"
-fi
-
-
+{% endcomment %}
+                            <div id=network_status class="w-100" style="text-align: center;font-size: smaller;">
+                                <div class="w-40">
+                                        Web3: <span>☑ - Enabled</span>
+                                        <br>
+                                        Eth: <span>☑ - About Zero</span>
+                                </div>
+                            </div>

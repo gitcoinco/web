@@ -52,7 +52,7 @@ class Bounty_Admin(admin.ModelAdmin):
     ordering = ['-id']
 
     search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
-    list_display = ['pk', 'img', 'network_link', 'standard_bounties_id_link', 'what']
+    list_display = ['pk', 'img', 'idx_status', 'network_link', 'standard_bounties_id_link', 'what']
     readonly_fields = ['what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'network_link']
 
     def img(self, instance):

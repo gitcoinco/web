@@ -1,4 +1,5 @@
-'''
+{% extends 'emails/template.html' %}
+{% comment %}
     Copyright (C) 2017 Gitcoin Core 
 
     This program is free software: you can redistribute it and/or modify
@@ -14,20 +15,36 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-'''
-date
-BACKUPSTR=`date +"%Y%m%d"`
-MONTH=`date +"%m"`
-DAY=`date +"%d"`
-YEAR=`date +"%Y"`
-PG_DUMP="/usr/lib/postgresql/9.6/bin/pg_dump"
-export PGPASSWORD=$(cat app/app/local_settings.py | grep "'PASSWORD'" | awk '{print $2}' | sed "s/'//g" | sed "s/,//g")
-export HOST=$(cat app/app/local_settings.py | grep "'HOST'" | awk '{print $2}' | sed "s/'//g" | sed "s/,//g")
-IS_PROD=$(cat app/app/local_settings.py | grep ENV | grep prod | wc -l)
-if [ "$IS_PROD" -eq "1" ]; then
-    $PG_DUMP gitcoin -U gitcoin -h $HOST | s3cmd put - s3://gitcoinbackups/$YEAR/$MONTH/$DAY/$BACKUPSTR-$(hostname).sql
-else
-    echo "not prod"
-fi
+{% endcomment %}
+{% load humanize %} 
+
+{% block content %}
+
+<h1>Faucet Request Processed⛽️</h1>
+
+<img src="https://gitcoin.co/static/v2/images/gas.png" width=200px height=200px >
+
+<p>
+    Hey @{{fr.github_username}},
+
+    <br>
+    <br>
+
+    Gitcoin has distributed your faucet request for {{amount}} ETH to <a href=https://etherscan.io/address/{{fr.address}}>{{fr.address}}</a>.
+
+    <br>
+    <br>
+
+    This should be enough gas to send your first Ethereum Transaction.  We hope you'll consider using it on Gitcoin!
+
+</p>
+
+<p>
+    Keep Pushing Open Source Forward,
+    <br>
+    -- Gitcoin Core
+</p>
 
 
+
+{% endblock %}

@@ -23,9 +23,9 @@ import sendgrid
 from economy.utils import convert_token_to_usdt
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from retail.emails import (
-    render_bounty_expire_warning, render_bounty_startwork_expire_warning, render_match_email, render_new_bounty,
-    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
-    render_tip_email,
+    render_bounty_expire_warning, render_bounty_startwork_expire_warning, render_faucet_request, render_match_email,
+    render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
+    render_new_work_submission, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -87,6 +87,28 @@ def tip_email(tip, to_emails, is_new):
         html, text = render_tip_email(to_email, tip, is_new)
 
         send_mail(from_email, to_email, subject, text, html)
+
+
+def new_faucet_request(fr):
+    from_email = settings.PERSONAL_CONTACT_EMAIL
+    to_email = settings.SERVER_EMAIL
+    subject = "New Faucet Request"
+    body = f"A new faucet request was completed. You may fund the request here : https://gitcoin.co/_administration/process_faucet_request/{fr.pk}"
+    send_mail(from_email, to_email, subject, body, from_name="No Reply from Gitcoin.co")
+    return JsonResponse({
+      'message': 'Created.'
+    }, status=201)
+
+
+def processed_faucet_request(fr):
+    from_email = settings.SERVER_EMAIL
+    subject = "Faucet Request Processed"
+    html, text = render_faucet_request(to_email, bounty)
+
+    send_mail(from_email, to_email, subject, text, html)
+    return JsonResponse({
+      'message': 'Created.'
+    }, status=201)
 
 
 def new_bounty(bounty, to_emails=None):

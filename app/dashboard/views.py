@@ -46,7 +46,7 @@ from web3 import HTTPProvider, Web3
 
 logging.basicConfig(level=logging.DEBUG)
 
-confirm_time_minutes_target = 60
+confirm_time_minutes_target = 4
 
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
@@ -622,6 +622,7 @@ def profile(request, handle):
     params['profile'] = profile
     params['stats'] = profile.stats
     params['bounties'] = profile.bounties
+    params['tips'] = Tip.objects.filter(username=handle)
 
     return TemplateResponse(request, 'profile_details.html', params)
 
@@ -824,7 +825,7 @@ def toolbox(request):
               "img": "/static/v2/images/tools/leaderboard.png",
               "description": '''Check out who is topping the charts in
                 the Gitcoin community this month.''',
-              "link": "https://gitcoin.co/leaderboard/",
+              "link": "/leaderboard",
               "active": "false",
               'stat_graph': 'bounties_fulfilled',
           },
