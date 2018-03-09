@@ -32,8 +32,24 @@
      }
    });
 
+  function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+  });
+
    $('#submitFaucet').on('click', function (e) {
      e.preventDefault()
+     if($(this).hasClass('disabled')){
+      return;
+     }
+     $('#submitFaucet').addClass('disabled');
 
      if (e.target.hasAttribute('disabled') ||
        $('#githubProfile').is(['is-invalid']) ||
@@ -41,6 +57,7 @@
        $('#githubProfile').val() === '' ||
        $('#emailAddress').val() === '') {
        _alert("Please make sure to fill out all fields.")
+       $('#submitFaucet').removeClass('disabled');
        return;
      }
 
@@ -49,17 +66,21 @@
        'ethAddress': $('#ethAddress').val(),
        'emailAddress': $('#emailAddress').val(),
        'comment': $('#comment').val(),
-       'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
      }
 
      $.post('/api/v0.1/faucet/save', faucetRequestData)
        .done(function (d) {
          $('#primary_form').hide();
          $('#success_container').show();
+         $('#submitFaucet').removeClass('disabled');
        })
 
        .fail(function (response) {
-        var message = response.responseJSON.message;
+        var message = "Got an unexpected error";
+        if(response && response.responseJSON && response.responseJSON.message){
+          message = response.responseJSON.message;
+        }
+         $('#submitFaucet').removeClass('disabled');
          $('#primary_form').hide();
          $('#fail_message').html(message);
          $('#fail_container').show();
