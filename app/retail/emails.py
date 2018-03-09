@@ -164,6 +164,19 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
     return response_html, response_txt
 
 
+def render_faucet_request(fr):
+
+    params = {
+        'fr': fr,
+        'amount': settings.FAUCET_AMOUNT,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/faucet_request.html", params))
+    response_txt = render_to_string("emails/faucet_request.txt", params)
+
+    return response_html, response_txt
+
+
 def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
 
     params = {
@@ -182,78 +195,69 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
 
-    subject = "Gitcoin Weekly | ETHDenver Wrap Up Edition! 🌄"
+    subject = "Gitcoin Weekly | Welcome to Web3 "
 
     intro = '''
 
 <p>
-    Hi there.
+    Hi there 👋
 </p>
 <p>
-    It was great meeting many of you at <a href="https://ethdenver.com">ETHDenver</a> this past weekend.  ETHDenver was a 1200 person hackathon with dozens of new teams formed during the weekend; and Gitcoin is proud to say that <a href="https://medium.com/gitcoin/gitcoin-ethdenver-wrap-up-cc52d9874b38">we sponosored bounties for much of what was built there!</a>.  We are also happy to show off <a href="https://medium.com/gitcoin/coloradocoin-ethdenver-wrap-up-94fabb667c61">ColoradoCoin</a> -- a physical Ethereum ERC20 token that was built using Gitcoin bounties.
+    Many people ask me why web3 matters, philosophically, and how to use it, tactically. @vivek wrote up his thoughts on how <a href=https://media.consensys.net/a-warm-welcome-to-web3-89d49e61a7c5>web3 aims to improve upon our Internet</a> as we near the web’s 30th birthday. Give it a read and let us know what you think. 
+</p>
+<p>
+    We also created a <a href=https://www.youtube.com/watch?time_continue=1&v=cZZMDOrIo2k>two-minute video explaining how to interact with web3</a>, namely using MetaMask and ETHGasStation to interact with Ethereum’s blockchain. Hope you enjoy! 
 </p>
 <p>
     What else is new?  
     <ul>
         <li>
-            <a href="https://medium.com/gitcoin/post-mortem-production-issues-2018-02-20-3b4bb4ea003e">
-                Post Mortem — Production Issues 2018/02/20
-            </a>
+            Code Sponsor is on track for re-launch April 1. Follow the progress <a href=https://github.com/codesponsor/web>here</a>! 
         </li>
         <li>
-            <a href="https://medium.com/gitcoin/oss-today-some-wins-some-losses-89d1ab46ceb6">
-                OSS Today -- Some Wins, Some Losses
-            </a>
+            We’ll be at SXSW this week! If you’re in town, <a href=https://etherealsxswmaster.splashthat.com/>RSVP here to hang</a>. 
         </li>
         <li>
-            <a href="https://gitcoin.co/community">
-                gitcoin.co/community - An index of community calls since Gitcoin was started
-            </a>
+            Have you heard about <a href=https://etherealsummit.com/>Ethereal NY</a>? We’ll be there in May and would love to see you.  
         </li>
     </ul>
 </p>
 <p>
-    I hope to see you <a href="https://gitcoin.co/slack">on slack</a>, or on the community livestream this Friday at 3pm MST ! 🤖
+    I hope to see you <a href="https://gitcoin.co/slack">on slack</a>, or on the community livestream TODAY at 3pm MST ! 🤖
 </p>
 
 '''
-
-    bounties = [
-        {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MetaMask/metamask-extension/issues/3249'),
-            'primer': 'This is a big one, and even better, its from the Metamask team! ~ @owocki',
-        },
-        {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/TrustWallet/trust-wallet-ios/issues/367'),
-            'primer': 'Trust wallet is new to the Gitcoin platform.  Let\'s show them we\'re here to help! 👇\' ~ @owocki',
-        },
-        {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MarketProject/Dapp/issues/53'),
-            'primer': 'Market Protocol has a $300 bounty up;  Good oppy to play with the Binance API.  ~ @owocki',
-        },
-        {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MetaMask/metamask-extension/issues/3133'),
-            'primer': 'Last, but certainly not least -- Metamask has a new bounty up!  ~ @owocki',
-        },
-    ]
     highlights = [
         {
             'who': 'thelostone-mc',
-            'what': 'doing XYZ - ABC.',
-            'link': 'https://github.com/GridPlus/cryptobridge-contracts/issues/11',
+            'what': 'built out a new look for our premier product, the Issue Explorer! Excited for this to go live soon..',
+            'link': 'https://github.com/gitcoinco/web/pull/523',
+            'link_copy': 'See more here',
+        },
+        {
+            'who': 'kennethashley',
+            'what': 'added consistent form styles across Gitcoin.',
+            'link': 'https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/web/issues/498&slack=1',
             'link_copy': 'View more here',
         },
         {
-            'who': 'vs77bb',
-            'what': 'doing XYZ to the ZBC.',
-            'link': 'https://github.com/GridPlus/cryptobridge-contracts/issues/11',
-            'link_copy': 'View more here',
+            'who': 'prabhu',
+            'what': ' did some phenomenal work at ETH Denver building out ETHAnswer, a Gitcoin like application for Stack Overflow. Check out his demo on our Weekly Livestream today! ',
+        },
+    ]
+
+    bounties = [
+        {
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MetaMask/metamask-extension/issues/3133'),
+            'primer': 'An oppy to help Metamask with porting to Firefox 👇',
         },
         {
-            'who': 'Demetri',
-            'what': 'doing foo to the bar and doing a great job at ',
-            'link': 'https://github.com/GridPlus/cryptobridge-contracts/issues/11',
-            'link_copy': 'View the PR here here.',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/py-evm/issues/362'),
+            'primer': 'Help @piper at py-EVM formalize an API for a computation object (0.48 ETH, ~$350) ',
+        },
+        {
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethgasstation/ethgasstation-backend/issues/19'),
+            'primer': 'ETHGasStation is on Gitcoin! See if you can help out and earn 0.25ETH along the way :) ',
         },
     ]
 
@@ -376,6 +380,14 @@ def start_work_expire_warning(request):
     from dashboard.models import Bounty, Interest
 
     response_html, _ = render_bounty_startwork_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last(), Interest.objects.all().last(), 5)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def faucet(request):
+    from faucet.models import FaucetRequest
+    fr = FaucetRequest.objects.last()
+    response_html, txt = render_faucet_request(fr)
     return HttpResponse(response_html)
 
 

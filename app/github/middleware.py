@@ -41,6 +41,8 @@ class GithubAuthMiddleware(MiddlewareMixin):
                 request.session.pop('access_token', '')
                 request.session.pop('handle', '')
                 request.session.pop('access_token_last_validated', '')
-                Profile.objects.filter(handle=handle).update(github_access_token='')
+                profile = Profile.objects.filter(handle=handle).first()
+                profile.github_access_token = ''
+                profile.save()
             request.session.modified = True
         return response

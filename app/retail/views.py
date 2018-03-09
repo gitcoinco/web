@@ -485,6 +485,7 @@ def slack(request):
         context['msg'] = 'You must provide an email address'
         if email:
             context['msg'] = 'Your invite has been sent.'
+            context['success'] = True
             try:
                 validate_email(email)
                 get_or_save_email_subscriber(email, 'slack', send_slack_invite=False)
@@ -492,6 +493,7 @@ def slack(request):
 
                 if not response.get('ok'):
                     context['msg'] = response.get('error', 'Unknown error')
+                context['success'] = False
             except ValidationError:
                 context['msg'] = 'Invalid email'
 

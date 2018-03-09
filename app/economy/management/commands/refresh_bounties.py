@@ -72,7 +72,7 @@ class Command(BaseCommand):
                     bounty.fetch_issue_item('title')
                     bounty.fetch_issue_item()
                     bounty.fetch_issue_comments()
-                    print('1/ refreshed', bounty.pk')
+                    print('1/ refreshed', bounty.pk)
 
             if not bounty.avatar_url:
                 bounty.avatar_url = bounty.get_avatar_url()

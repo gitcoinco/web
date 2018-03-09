@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
+from django.conf.urls import url
 from django.urls import re_path
 
 from dashboard.views import bounty_details
@@ -39,6 +40,7 @@ urlpatterns = [
     re_path(r'^funding/process/?', process_bounty, name='legacy_process_funding'),
     re_path(r'^bounty/details/?', bounty_details, name='legacy_bounty_details'),
     re_path(r'^funding/details/?', bounty_details, name='legacy_funding_details'),
+    url(r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', bounty_details, name='legacy_issue_details_new2'),
     # sync methods
     re_path(r'^sync/web3', sync_web3, name='legacy_sync_web3'),
 ]

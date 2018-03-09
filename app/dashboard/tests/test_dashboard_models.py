@@ -50,7 +50,7 @@ class DashboardModelsTest(TestCase):
             value_in_token=3,
             token_name='ETH',
             web3_created=datetime(2008, 10, 31),
-            github_url='https://github.com/gitcoinco/web',
+            github_url='https://github.com/gitcoinco/web/issues/11',
             token_address='0x0',
             issue_description='hello world',
             bounty_owner_github_username='flintstone',
@@ -71,9 +71,8 @@ class DashboardModelsTest(TestCase):
             bounty=bounty,
             profile=fulfiller_profile,
         )
-
         assert str(bounty) == 'foo 3 ETH 2008-10-31 00:00:00'
-        assert bounty.url == '/funding/details?url=https://github.com/gitcoinco/web'
+        assert bounty.url == '/issue/gitcoinco/web/11'
         assert bounty.title_or_desc == 'foo'
         assert bounty.issue_description_text == 'hello world'
         assert bounty.org_name == 'gitcoinco'
@@ -88,7 +87,7 @@ class DashboardModelsTest(TestCase):
         assert bounty.value_in_usdt == 0
         assert 'ago 5 Feature Intermediate' in bounty.desc
         assert bounty.is_legacy is False
-        assert bounty.get_github_api_url() == 'https://api.github.com/repos/gitcoinco/web'
+        assert bounty.get_github_api_url() == 'https://api.github.com/repos/gitcoinco/web/issues/11'
         assert bounty_fulfillment.profile.handle == 'fred'
         assert bounty_fulfillment.bounty.title == 'foo'
 

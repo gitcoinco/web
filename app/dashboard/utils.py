@@ -191,7 +191,7 @@ def get_bounty(bounty_enum, network):
 
 
 # processes a bounty returned by get_bounty
-def process_bounty(bounty_data):
+def web3_process_bounty(bounty_data):
     did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
 
     if did_change and new_bounty:
