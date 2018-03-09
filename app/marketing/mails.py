@@ -100,12 +100,9 @@ def new_faucet_request(fr):
 def processed_faucet_request(fr):
     from_email = settings.SERVER_EMAIL
     subject = "Faucet Request Processed"
-    html, text = render_faucet_request(to_email, bounty)
+    html, text = render_faucet_request(fr)
 
     send_mail(from_email, to_email, subject, text, html)
-    return JsonResponse({
-      'message': 'Created.'
-    }, status=201)
 
 
 def new_bounty(bounty, to_emails=None):
