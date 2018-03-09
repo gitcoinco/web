@@ -66,7 +66,6 @@ def add_element(key, username, amount):
 
 def sum_bounties(b, usernames):
     for username in usernames:
-
         if b.idx_status == 'done':
             fulfiller_usernames = list(b.fulfillments.all().values_list('fulfiller_github_username'))
             add_element('all_fulfilled', username, b._val_usd_db)
@@ -136,7 +135,6 @@ class Command(BaseCommand):
     help = 'creates leaderboard objects'
 
     def handle(self, *args, **options):
-
         # get bounties
         bounties = Bounty.objects.current()
 

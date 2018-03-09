@@ -164,6 +164,19 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
     return response_html, response_txt
 
 
+def render_faucet_request(fr):
+
+    params = {
+        'fr': fr,
+        'amount': settings.FAUCET_AMOUNT,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/faucet_request.html", params))
+    response_txt = render_to_string("emails/faucet_request.txt", params)
+
+    return response_html, response_txt
+
+
 def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
 
     params = {
@@ -190,7 +203,7 @@ def render_new_bounty_roundup(to_email):
     Hi there 👋
 </p>
 <p>
-    Many people ask me why web3 matters, philosophically, and how to use it, tactically. @vivek wrote up his thoughts on how <a href=https://medium.com/@vivek.m.singh/welcome-to-web3-89d49e61a7c5>web3 aims to improve upon our Internet</a> as we near the web’s 30th birthday. Give it a read and let us know what you think. 
+    Many people ask me why web3 matters, philosophically, and how to use it, tactically. @vivek wrote up his thoughts on how <a href=https://media.consensys.net/a-warm-welcome-to-web3-89d49e61a7c5>web3 aims to improve upon our Internet</a> as we near the web’s 30th birthday. Give it a read and let us know what you think. 
 </p>
 <p>
     We also created a <a href=https://www.youtube.com/watch?time_continue=1&v=cZZMDOrIo2k>two-minute video explaining how to interact with web3</a>, namely using MetaMask and ETHGasStation to interact with Ethereum’s blockchain. Hope you enjoy! 
@@ -210,7 +223,7 @@ def render_new_bounty_roundup(to_email):
     </ul>
 </p>
 <p>
-    I hope to see you <a href="https://gitcoin.co/slack">on slack</a>, or on the community livestream this Friday at 3pm MST ! 🤖
+    I hope to see you <a href="https://gitcoin.co/slack">on slack</a>, or on the community livestream TODAY at 3pm MST ! 🤖
 </p>
 
 '''
@@ -229,7 +242,7 @@ def render_new_bounty_roundup(to_email):
         },
         {
             'who': 'prabhu',
-            'what': ' did some phenomenal work at ETH Denver building out ETHAnswer, a Gitcoin like application for Stack Overflow. Check out his demo on our Weekly Livestream tomorrow! ',
+            'what': ' did some phenomenal work at ETH Denver building out ETHAnswer, a Gitcoin like application for Stack Overflow. Check out his demo on our Weekly Livestream today! ',
         },
     ]
 
@@ -367,6 +380,14 @@ def start_work_expire_warning(request):
     from dashboard.models import Bounty, Interest
 
     response_html, _ = render_bounty_startwork_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last(), Interest.objects.all().last(), 5)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def faucet(request):
+    from faucet.models import FaucetRequest
+    fr = FaucetRequest.objects.last()
+    response_html, txt = render_faucet_request(fr)
     return HttpResponse(response_html)
 
 

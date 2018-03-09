@@ -968,26 +968,37 @@ body.bounty_details #title {
 .profile_details #hero p {
     color: #919191;
 }
+.profile_details .tips li:first-child:hover,
+.profile_details .bounties li:first-child:hover{
+    cursor: none;
+    background-color: white;
+}
 
+.profile_details .tips li ,
 .profile_details .bounties li {
     list-style: none;
     padding-top: 10px;
     height: 80px;
 }
 
+.profile_details .tips li:hover,
 .profile_details .bounties li:hover {
     background-color: #fafafa;
     cursor: pointer;
 }
 
+.profile_details .tips li a,
 .profile_details .bounties li a {
     color: black;
 }
 
+.profile_details .tips li a.btn,
 .profile_details .bounties li a.btn {
     color: white;
 }
 
+.profile_details .tips li div.url,
+.profile_details .tips li div.from_username,
 .profile_details .bounties li div.status,
 .profile_details .bounties li div.relationship {
     height: 80px;
@@ -997,17 +1008,28 @@ body.bounty_details #title {
     text-align: center;
 }
 
+.profile_details .tips div.url,
+.profile_details .tips li div.url{
+    width: 600px;
+}
+
+.profile_details .tips li div.details,
 .profile_details .bounties li div.details {
     height: 80px;
     width: 500px;
     display: inline-block;
     vertical-align: top;
 }
+.profile_details .tips li div.details{
+    width: 200px;
+}
 
+.profile_details .tips li div.details p,
 .profile_details .bounties li div.details p {
     color: #919191;
 }
 
+.profile_details .tips li .amount, 
 .profile_details .bounties li .amount {
     height: 80px;
     width: 200px;
@@ -1110,12 +1132,34 @@ body.bounty_details #title {
 }
 
 
+input.is-invalid {
+  border-color: red;
+}
+
+.faucet_response {
+  display:none;
+}
+
+.faucet_response .frheader {
+  font-size: xx-large;
+}
+
+.faucet_response .frmessage {
+  font-size: large;
+}
+
 @media (max-width: 1350px) {
+    .profile_details .tips li div.details,
     .profile_details .bounties li div.details{
+        width: 300px;
+    }
+    .profile_details .tips div.url,
+    .profile_details .tips li div.url{
         width: 400px;
     }
 }
 @media (max-width: 1250px) {
+    .profile_details .tips li div.details,
     .profile_details .bounties li div.details{
         width: 400px;
     }
@@ -1135,12 +1179,15 @@ body.bounty_details #title {
         margin: 15px;
     }
 
+    .profile_details .tips li div.details,
+    .profile_details .tips li .url,
     .profile_details .bounties li div.relationship,
     .profile_details .bounties li div.status,
     .profile_details .bounties li .amount {
         display: none;
     }
 
+    .profile_details .tips li div.details,
     .profile_details .repos li,
     .profile_details .bounties li div.details {
         padding-left: 0px;
@@ -1477,6 +1524,9 @@ body.bounty_details #title {
 
   .issue_details div {
     width: 100% !important;
+  }
+  .profile_details .tips li div.url{
+    display: none;
   }
 }
 

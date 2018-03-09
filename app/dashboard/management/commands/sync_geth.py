@@ -25,7 +25,7 @@ from django.core.management.base import BaseCommand
 
 import rollbar
 from dashboard.helpers import UnsupportedSchemaException
-from dashboard.utils import BountyNotFoundException, get_bounty, process_bounty
+from dashboard.utils import BountyNotFoundException, get_bounty, web3_process_bounty
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -60,7 +60,7 @@ class Command(BaseCommand):
                 print(f"[{month}/{day} {hour}:00] Getting bounty {bounty_enum}")
                 bounty = get_bounty(bounty_enum, network)
                 print(f"[{month}/{day} {hour}:00] Processing bounty {bounty_enum}")
-                process_bounty(bounty)
+                web3_process_bounty(bounty)
 
             except BountyNotFoundException:
                 more_bounties = False

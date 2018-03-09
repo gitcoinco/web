@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'marketing',
     'economy',
     'dashboard',
+    'faucet',
     'tdi',
     'gas',
     'github',
@@ -218,6 +219,12 @@ GITHUB_SCOPE = 'read:user,user:email,read:org'
 
 # List of github usernames to not count as comments on an issue
 IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
+
+# Faucet App config
+FAUCET_AMOUNT = .003
+
+
+SENDGRID_EVENT_HOOK_URL = 'sg_event_process'
 
 # Include local settings overrides
 try:
