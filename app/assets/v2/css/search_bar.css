@@ -39,6 +39,10 @@
   text-align: right;
 }
 
+.order_by .sort_option:last-child {
+  margin-right: 10px;
+}
+
 .order_by div:first-child {
   margin-right: 5px;
   display: inline;
@@ -93,6 +97,10 @@
   .search_bar #new_search,
   .order_by {
     margin-top: 0;
+  }
+
+  .order_by .sort_option:last-child {
+    margin-right: 0px;
   }
 
   .search_bar div {
