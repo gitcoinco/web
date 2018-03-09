@@ -56,7 +56,7 @@ urlpatterns = [
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
-    
+
     url(r'^bounty/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
     url(r'^funding/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_funding'),
     url(r'^bounty/process/?', dashboard.views.process_bounty, name='process_bounty'),
@@ -144,7 +144,7 @@ urlpatterns = [
     url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),
     url(r'^whitepaper/?', tdi.views.whitepaper_new, name='whitepaper'),
 
-    #faucet views
+    # faucet views
     url(r'^faucet/?', faucet.views.faucet, name='faucet'),
 
     # admin views
