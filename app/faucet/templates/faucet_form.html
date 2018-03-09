@@ -54,7 +54,6 @@
                             <p class="hidden-mobile">
                                 Please note, all input fields are required. Comment is optional.
                             </p>
-                            {% csrf_token %}
                             <div class="faucet-input-group">
                                 <label for="githubProfile" class="form__label float-left">Github Profile 
                                    {% if not github_handle %}
@@ -110,6 +109,12 @@
     {% include 'shared/ga.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
+
+{% csrf_token %}
+<script type="text/javascript">
+// using jQuery
+var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+</script>
 
 </body>
 

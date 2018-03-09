@@ -32,6 +32,18 @@
      }
    });
 
+  function csrfSafeMethod(method) {
+      // these HTTP methods do not require CSRF protection
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  $.ajaxSetup({
+      beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+      }
+  });
+
    $('#submitFaucet').on('click', function (e) {
      e.preventDefault()
      if($(this).hasClass('disabled')){
@@ -54,7 +66,6 @@
        'ethAddress': $('#ethAddress').val(),
        'emailAddress': $('#emailAddress').val(),
        'comment': $('#comment').val(),
-       'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val()
      }
 
      $.post('/api/v0.1/faucet/save', faucetRequestData)
