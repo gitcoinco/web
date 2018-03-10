@@ -526,7 +526,6 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
                 params['bounty_pk'] = bounty.pk
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.local_avatar_url
-                params['is_legacy'] = bounty.is_legacy  # TODO: Remove this following legacy contract sunset.
                 if profile_id:
                     profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
                     params['profile_interested'] = request.session.get('profile_id') in profile_ids
