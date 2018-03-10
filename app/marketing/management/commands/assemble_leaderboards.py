@@ -33,28 +33,31 @@ monthly_cutoff = timezone.now() - timezone.timedelta(days=30)
 quarterly_cutoff = timezone.now() - timezone.timedelta(days=90)
 yearly_cutoff = timezone.now() - timezone.timedelta(days=365)
 
-ranks = {
-    'weekly_fulfilled': {},
-    'weekly_all': {},
-    'weekly_payers': {},
-    'weekly_earners': {},
-    'monthly_fulfilled': {},
-    'monthly_all': {},
-    'monthly_payers': {},
-    'monthly_earners': {},
-    'quarterly_fulfilled': {},
-    'quarterly_all': {},
-    'quarterly_payers': {},
-    'quarterly_earners': {},
-    'yearly_fulfilled': {},
-    'yearly_all': {},
-    'yearly_payers': {},
-    'yearly_earners': {},
-    'all_fulfilled': {},
-    'all_all': {},
-    'all_payers': {},
-    'all_earners': {},
-}
+def default_ranks():
+    return {
+        'weekly_fulfilled': {},
+        'weekly_all': {},
+        'weekly_payers': {},
+        'weekly_earners': {},
+        'monthly_fulfilled': {},
+        'monthly_all': {},
+        'monthly_payers': {},
+        'monthly_earners': {},
+        'quarterly_fulfilled': {},
+        'quarterly_all': {},
+        'quarterly_payers': {},
+        'quarterly_earners': {},
+        'yearly_fulfilled': {},
+        'yearly_all': {},
+        'yearly_payers': {},
+        'yearly_earners': {},
+        'all_fulfilled': {},
+        'all_all': {},
+        'all_payers': {},
+        'all_earners': {},
+    }
+
+ranks = default_ranks()
 
 
 def add_element(key, username, amount):
