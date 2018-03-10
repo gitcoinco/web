@@ -440,7 +440,12 @@ div.button-pink {
   background-color: #FAFAFA;
   font-family: "Muli";
   border-radius: 0px;
+  padding: 0;
   left: 4px;
+}
+
+.dropdown-menu .dropdown-divider {
+  margin: 0;
 }
 
 .dropdown-menu  .dropdown-item:hover {
@@ -449,7 +454,7 @@ div.button-pink {
 }
 
 .dropdown-menu .dropdown-item  {
-  padding: 10px 25px;
+  padding: 12px 25px;
 }
 
 .dropdown-menu .dropdown-item i {

@@ -25,7 +25,7 @@
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
       {% if source == 'authed' %}
         <a class="dropdown-item" href="{% url "tip" %}">
-          <i class="fa fa-paper-plane"></i>
+          <i class="fa fa-paper-plane-o"></i>
           Send Tip
         </a>
         <a class="dropdown-item" href="{% url "new_funding" %}">
@@ -40,7 +40,7 @@
       {% endif %}
       <div class="dropdown-divider"></div>
       <a class="dropdown-item" href="{% url "profile" %}{{github_handle}}">
-        <i class="fa fa-anchor"></i>
+        <i class="fa fa-user"></i>
         View Profile
       </a>
       <a class="dropdown-item" href="{% url "email_settings" "" %}">
