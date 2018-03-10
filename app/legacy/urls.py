@@ -20,9 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from django.urls import re_path
 
-from dashboard.views import bounty_details
-
-from dashboard.views import kill_bounty, fulfill_bounty, process_bounty, sync_web3
+from dashboard.views import bounty_details, fulfill_bounty, kill_bounty, process_bounty, sync_web3
 
 app_name = 'legacy'
 urlpatterns = [
