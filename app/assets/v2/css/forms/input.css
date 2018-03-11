@@ -19,6 +19,18 @@
 
 .form__input.error {
   color: #D50000;
+  background-image: url('/static/v2/images/close-red.png');
+  background-repeat: no-repeat;
+  background-size: auto 70%;
+  background-position: center right 7px;
+}
+
+.form__input.valid {
+  color: #0FCE7C;
+  background-image: url('/static/v2/images/success.png');
+  background-repeat: no-repeat;
+  background-size: auto 21px;
+  background-position: top 5px right 7px;
 }
 
 .form__input:disabled {
