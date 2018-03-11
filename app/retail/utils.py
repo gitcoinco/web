@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -24,7 +25,6 @@ from requests_oauthlib import OAuth2Session
 
 
 def get_github_user_profile(token):
-
     github = OAuth2Session(
         settings.GITHUB_CLIENT_ID,
         token=token,
@@ -36,7 +36,6 @@ def get_github_user_profile(token):
 
 
 def strip_html(html):
-
     tag_re = re.compile(r'(<!--.*?-->|<[^>]*>)')
     no_tags = tag_re.sub('', html)
     txt = cgi.escape(no_tags)
@@ -48,5 +47,4 @@ def strip_double_chars(txt, char=' '):
     new_txt = txt.replace(char+char, char)
     if new_txt == txt:
         return new_txt
-    else:
-        return strip_double_chars(new_txt, char)
+    return strip_double_chars(new_txt, char)

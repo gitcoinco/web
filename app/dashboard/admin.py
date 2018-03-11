@@ -48,11 +48,11 @@ class TipAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
-class Bounty_Admin(admin.ModelAdmin):
+class BountyAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
     search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
-    list_display = ['pk', 'img', 'network_link', 'standard_bounties_id_link', 'what']
+    list_display = ['pk', 'img', 'idx_status', 'network_link', 'standard_bounties_id_link', 'what']
     readonly_fields = ['what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'network_link']
 
     def img(self, instance):
@@ -80,12 +80,11 @@ class Bounty_Admin(admin.ModelAdmin):
         return mark_safe(f"<a href={url}>{copy}</a>")
 
 
-
 admin.site.register(Subscription, GeneralAdmin)
 admin.site.register(UserAction, GeneralAdmin)
 admin.site.register(Interest, GeneralAdmin)
 admin.site.register(Profile, ProfileAdmin)
-admin.site.register(Bounty, Bounty_Admin)
+admin.site.register(Bounty, BountyAdmin)
 admin.site.register(BountyFulfillment, GeneralAdmin)
 admin.site.register(BountySyncRequest, GeneralAdmin)
 admin.site.register(Tip, TipAdmin)

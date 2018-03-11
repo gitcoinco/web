@@ -23,9 +23,9 @@ import sendgrid
 from economy.utils import convert_token_to_usdt
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from retail.emails import (
-    render_bounty_expire_warning, render_bounty_startwork_expire_warning, render_match_email, render_new_bounty,
-    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
-    render_tip_email,
+    render_bounty_expire_warning, render_bounty_startwork_expire_warning, render_faucet_rejected, render_faucet_request,
+    render_match_email, render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection,
+    render_new_bounty_roundup, render_new_work_submission, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -46,7 +46,7 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     # build content
     content = Content(contenttype, html) if html else Content(contenttype, body)
     if settings.DEBUG:
-        to_email = Email(settings.CONTACT_EMAIL) #just to be double secret sure of what were doing in dev
+        to_email = Email(settings.CONTACT_EMAIL)  # just to be double secret sure of what were doing in dev
         subject = "[DEBUG] " + subject
     mail = Mail(from_email, subject, to_email, content)
 
@@ -54,7 +54,7 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     if add_bcc:
         p = Personalization()
         p.add_to(to_email)
-        if cc_emails: #only add CCif not in prod
+        if cc_emails:  # only add CCif not in prod
             for cc_addr in set(cc_emails):
                 cc_addr = Email(cc_addr)
                 if settings.DEBUG:
@@ -73,20 +73,46 @@ def send_mail(from_email, _to_email, subject, body, html=False,
 
 
 def tip_email(tip, to_emails, is_new):
-    ROUND_DECIMALS = 5
+    round_decimals = 5
     if not tip or not tip.url or not tip.amount or not tip.tokenName:
         return
 
     warning = '' if tip.network == 'mainnet' else "({})".format(tip.network)
-    subject = "⚡️ New Tip Worth {} {} {}".format(round(tip.amount, ROUND_DECIMALS), warning, tip.tokenName)
+    subject = "⚡️ New Tip Worth {} {} {}".format(round(tip.amount, round_decimals), warning, tip.tokenName)
     if not is_new:
-        subject = "🕐 Tip Worth {} {} {} Expiring Soon".format(round(tip.amount, ROUND_DECIMALS), warning, tip.tokenName)
+        subject = "🕐 Tip Worth {} {} {} Expiring Soon".format(round(tip.amount, round_decimals), warning, tip.tokenName)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
         html, text = render_tip_email(to_email, tip, is_new)
 
         send_mail(from_email, to_email, subject, text, html)
+
+
+def new_faucet_request(fr):
+    to_email = settings.PERSONAL_CONTACT_EMAIL
+    from_email = settings.SERVER_EMAIL
+    subject = "New Faucet Request"
+    body = f"A new faucet request was completed. You may fund the request here : https://gitcoin.co/_administration/process_faucet_request/{fr.pk}"
+    send_mail(from_email, to_email, subject, body, from_name="No Reply from Gitcoin.co")
+
+
+def processed_faucet_request(fr):
+    from_email = settings.SERVER_EMAIL
+    subject = "Faucet Request Processed"
+    html, text = render_faucet_request(fr)
+    to_email = fr.email
+
+    send_mail(from_email, to_email, subject, text, html)
+
+
+def reject_faucet_request(fr):
+    from_email = settings.SERVER_EMAIL
+    subject = "Faucet Request Rejected"
+    html, text = render_faucet_rejected(fr)
+    to_email = fr.email
+
+    send_mail(from_email, to_email, subject, text, html)
 
 
 def new_bounty(bounty, to_emails=None):

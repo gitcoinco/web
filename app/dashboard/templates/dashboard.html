@@ -32,20 +32,20 @@
       {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-      <div class="col-12 col-md-2" id="sidebar_container" style="background: #F2F6F9;">
+      <div class="col-12 col-lg-2" id="sidebar_container" style="background: #F2F6F9;">
         {% include 'shared/current_balance.html' %}
         {% include 'shared/sidebar_search.html' %}
       </div>
 
-      <div class="col-12 col-md-10 body">
+      <div class="col-12 col-lg-10 body">
         <div class="container-fluid" id="bounties">
           {% include 'shared/search_bar.html' %}
           <div class="row mt-2 mb-2">
             <div class="col-12 offset-md-1 col-md-10 title-row">
-              <div class="col-4">
+              <div class="col-3 col-sm-4">
                 <span id="filter" class="font-title"></span>
               </div>
-              <div class="col-8 bounty-info">
+              <div class="col-9 col-sm-8 bounty-info">
                 <span id="modifiers">Funded Issues</span>
                 <span id="stats" class="font-body"></span>
               </div>
@@ -88,10 +88,12 @@
               [[/if]]
               [[:title]]
             </div>
-            <div class="bounty-summary">
+            <div class="bounty-summary col-12">
               [[if github_comments]]
-                <img src={% static "v2/images/comment.svg" %}>
-                <span class="github-comment font-caption">[[:github_comments]]</span>
+                <div class="col-xs-1">
+                  <img src={% static "v2/images/comment.svg" %}>
+                  <span class="github-comment font-caption">[[:github_comments]]</span>
+                </div>
               [[/if]]
               <div class="info font-caption">
                 [[:p]]

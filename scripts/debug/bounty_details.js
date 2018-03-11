@@ -1,5 +1,5 @@
 //TODO -- accept stdin
-var issueURL = 'https://github.com/owocki/pytrader/issues/33'
+var issueURL = 'https://github.com/ethereum/web3.py/issues/549'
 localStorage[issueURL] = timestamp();
 
 var callback = function (error, result){

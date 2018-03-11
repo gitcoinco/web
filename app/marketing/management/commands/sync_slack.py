@@ -65,7 +65,7 @@ class Command(BaseCommand):
                 # save user by user 'lastseen' info
                 username = user['profile']['display_name']
                 email = user['profile']['email']
-                #print(username, email)
+                # print(username, email)
                 su, _ = SlackUser.objects.get_or_create(
                     username=username,
                     email=email,
@@ -76,13 +76,18 @@ class Command(BaseCommand):
                 if pres == 'active':
                     su.last_seen = timezone.now()
                     su.times_seen += 1
+                    # 3/8/2017
+                    # to manage the scale of the DB, a SlackUser will be assumbed to be
+                    # away unless a SlackPresence Object exists
+                    SlackPresence.objects.create(
+                        slackuser=su,
+                        status=pres,
+                        )
+
                 else:
                     su.last_unseen = timezone.now()
                     su.times_unseen += 1
                 su.save()
-                SlackPresence.objects.create(
-                    slackuser=su,
-                    status=pres,
-                    )
             except Exception as e:
                 print(e)
+        print("DONE at {}".format(timezone.now().strftime("%Y-%m-%d %H:%M")))
