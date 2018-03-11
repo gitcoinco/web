@@ -26,6 +26,7 @@
 }
 
 .form__input.valid {
+  color: #0FCE7C;
   background-image: url('/static/v2/images/success.png');
   background-repeat: no-repeat;
   background-size: auto 21px;
