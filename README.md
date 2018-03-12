@@ -60,6 +60,15 @@ Technically, the system is architected:
 
 [For more information on running the app locally, please view the running locally README](readme_runninglocally.md)
 
+# Trying out Gitcoin: Posting your first issue
+
+If you 
+
+* have some work on your Github Issues board that you don't have time (or skills) to do.
+* are dependant upon an upstream repo for something, and you'd like to incentivize them to work onit.
+
+try posting a funded issue at [https://gitcoin.co/new](https://gitcoin.co/new). 
+
 
 # Adding your token to Gitcoin.
 
