@@ -40,17 +40,22 @@ def payload(request):
 
     """
     request_json = json.loads(request.body.decode('utf8'))
-    does_address_gitcoinbot = f"@{settings.GITHUB_API_USER}" in request_json['comment']['body']
-    if (request_json['action'] == 'deleted') or request_json['sender']['login'] == 'gitcoinbot[bot]' or not does_address_gitcoinbot:
-        # Gitcoinbot should not process these actions
+    comment_dict = request_json.get('comment', {})
+    repo_dict = request_json.get('repository', {})
+    sender_dict = request_json.get('sender', {})
+    action = request_json.get('action', '')
+
+    does_address_gitcoinbot = f"@{settings.GITHUB_API_USER}" in comment_dict.get('body')
+    if (action == 'deleted') or sender_dict.get('login', '') == 'gitcoinbot[bot]' or not does_address_gitcoinbot:
+        # Gitcoinbot shoulsd not process these actions
         return HttpResponse(status=204)
     else:
-        owner = request_json['repository']['owner']['login']
-        repo = request_json['repository']['name']
-        comment_id = request_json['comment']['id']
-        comment_text = request_json['comment']['body']
-        issue_id = request_json['issue']['number']
-        installation_id = request_json['installation']['id']
+        owner = repo_dict.get('owner', {}).get('login')
+        repo = repo_dict.get('name')
+        comment_id = comment_dict.get('id')
+        comment_text = comment_dict.get('body')
+        issue_id = request_json.get('issue', {}).get('number')
+        installation_id = request_json.get('installation', {}).get('id')
         # sender = request_json['sender']['login']
         # issueURL = request_json['comment']['url']
         determine_response(owner, repo, comment_id, comment_text, issue_id, installation_id)
