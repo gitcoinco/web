@@ -27,6 +27,7 @@ import dashboard.helpers
 import dashboard.ios
 import dashboard.views
 import faucet.views
+import gitcoinbot.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
@@ -173,6 +174,9 @@ urlpatterns = [
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+
+    # gitcoinbot
+    url(r'^payload/', gitcoinbot.views.payload, name='payload'),
     # Github Integration
     path('_github/', include('github.urls', namespace='github')),
     # Interests

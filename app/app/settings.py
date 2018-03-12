@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'email_obfuscator',
     'linkshortener',
     'credits',
+    'gitcoinbot'
 ]
 
 MIDDLEWARE = [
