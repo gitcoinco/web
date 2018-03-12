@@ -438,7 +438,7 @@ var retrieveKeywords = function(){
 
 //figure out what version of web3 this is
 window.addEventListener('load', function() {
-    var timeout_value = 100;
+    var timeout_value = 150;
     setTimeout(function(){
         if (typeof web3 =='undefined'){
             $("#upper_left").addClass('disabled');
