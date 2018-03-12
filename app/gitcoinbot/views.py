@@ -4,6 +4,7 @@ import json
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
 
 from gitcoinbot.actions import determine_response
 
@@ -16,7 +17,8 @@ def payload(request):
 
     if request.method == "POST":
         request_json = json.loads(request.body.decode('utf8'))
-        if (request_json['action'] == 'deleted') or request_json['sender']['login'] == 'gitcoinbot[bot]':
+        does_address_gitcoinbot = '@{settings.GITHUB_API_USER}' in request_json['comment']['body']
+        if (request_json['action'] == 'deleted') or request_json['sender']['login'] == 'gitcoinbot[bot]' or not does_address_gitcoinbot:
             # Gitcoinbot should not process these actions
             return HttpResponse(status=204)
         else:

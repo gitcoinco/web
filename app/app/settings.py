@@ -224,6 +224,8 @@ FAUCET_AMOUNT = .001
 
 SENDGRID_EVENT_HOOK_URL = 'sg_event_process'
 
+GITHUB_EVENT_HOOK_URL = 'github/payload/'
+
 # Include local settings overrides
 try:
     from .local_settings import *  # NOQA

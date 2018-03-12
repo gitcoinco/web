@@ -176,7 +176,7 @@ urlpatterns = [
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 
     # gitcoinbot
-    url(r'^payload/', gitcoinbot.views.payload, name='payload'),
+    url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
     # Github Integration
     path('_github/', include('github.urls', namespace='github')),
     # Interests

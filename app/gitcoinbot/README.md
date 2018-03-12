@@ -1,6 +1,6 @@
 # Gitcoinbot is a Github App for Gitcoin.co
 
-## Usage instructinos
+## Usage instructions
 
 [Gitcoinbot](https://github.com/Gitcoinbot) is a bot that allows you to interact with gitcoin via the github comments, like follows:
 
@@ -27,4 +27,3 @@ Congrats on installing @gitcoinbot.  This bot facilitates gitcoin bounties via g
 
  Go ahead and open up a test issue and give it a try!
 
- 
