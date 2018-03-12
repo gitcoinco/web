@@ -174,7 +174,7 @@ window.onload = function () {
         var plural = numBatches > 1 ? 's' : '';
         var processTx = function(i){
             //generate ephemeral account
-            var _owner = '0x' + lightwallet.keystore._computeAddressFromPrivKey(document.addresses[i].pk);
+            var _owner = document.addresses[i]['address'];
             var _private_key = document.addresses[i]['pk'];
 
             //set up callback for web3 call to final transfer
