@@ -54,11 +54,11 @@ Technically, the system is architected:
 
 # HTTPS API
 
-[For more information on the HTTPS API, please view the api README][readme_api.md]
+[For more information on the HTTPS API, please view the api README](readme_api.md)
 
 # Running Locally
 
-[For more information on running the app locally, please view the running locally README][readme_runninglocally.md]
+[For more information on running the app locally, please view the running locally README](readme_runninglocally.md)
 
 
 # Adding your token to Gitcoin.
