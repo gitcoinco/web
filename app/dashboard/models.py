@@ -30,7 +30,6 @@ from django.dispatch import receiver
 from django.utils import timezone
 
 import requests
-from dashboard.notifications import maybe_market_to_slack
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import convert_amount, convert_token_to_usdt
@@ -615,21 +614,6 @@ def psave_interest(sender, instance, **kwargs):
     print("signal: updating bounties psave_interest")
     for bounty in Bounty.objects.filter(interested=instance):
         bounty.save()
-
-
-@receiver(post_save, sender=Interest, dispatch_uid="psave_interest2")
-def psave_interest_slack(sender, instance, **kwargs):
-    print("signal: psave_interest_slack")
-    for bounty in Bounty.objects.filter(interested=instance):
-        maybe_market_to_slack(bounty, 'start_work')
-
-
-@receiver(post_delete, sender=Interest, dispatch_uid="pdel_interest2")
-def pdel_interest_slack2(sender, instance, **kwargs):
-    print("signal: pdel_interest_slack")
-    for bounty in Bounty.objects.filter(interested=instance):
-        maybe_market_to_slack(bounty, 'stop_work')
-
 
 
 class Profile(SuperModel):
