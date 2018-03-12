@@ -26,6 +26,7 @@ import dashboard.embed
 import dashboard.helpers
 import dashboard.ios
 import dashboard.views
+import enssubdomain.views
 import faucet.views
 import linkshortener.views
 import marketing.views
@@ -87,9 +88,6 @@ urlpatterns = [
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
     url(r'^gas/?', dashboard.views.gas, name='gas'),
     url(r'^coin/redeem/(.*)/?', dashboard.views.redeem_coin, name='redeem'),
-    url(r'^ens_subdomain_registrar/?', dashboard.views.ens_subdomain_registration, name='ens_subdomain_registration'),
-
-
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
     url(r'^sync/get_issue_title?', dashboard.helpers.title, name='helpers_title'),
@@ -185,7 +183,9 @@ urlpatterns = [
     path('legacy/', include('legacy.urls', namespace='legacy')),
     # sendgrid webhook processing
     path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
-
+    # ENS urls
+    url(r'^ens/register/', enssubdomain.views.ens_subdomain_registration, name='ens_subdomain_registration'),
+    url(r'^ens/delete/', enssubdomain.views.ens_subdomain_delete, name='ens_subdomain_delete'),
 ]
 
 handler403 = 'retail.views.handler403'

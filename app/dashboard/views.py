@@ -50,7 +50,6 @@ confirm_time_minutes_target = 4
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
-
 def send_tip(request):
     """Handle the first stage of sending a tip."""
     params = {
@@ -346,17 +345,6 @@ def send_tip_2(request):
     return TemplateResponse(request, 'yge/send2.html', params)
 
 
-def ens_subdomain_registration(request):
-    """Register ENS Subdomain."""
-    github_handle = request.session.get('handle', '')
-    params = {
-        'title': 'ENS Subdomain',
-        'github_handle' : github_handle,
-    }
-    github_handle = request.session.get('handle', '')
-    return TemplateResponse(request, 'ens/subdomain.html', params)
-
-
 def process_bounty(request):
     """Process the bounty."""
     params = {
@@ -501,7 +489,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
     _access_token = request.session.get('access_token')
     profile_id = request.session.get('profile_id')
     issueURL = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
-    
+
     # try the /pulls url if it doesnt exist in /issues
     try:
         assert Bounty.objects.current().filter(github_url=issueURL).exists()
@@ -836,7 +824,7 @@ def toolbox(request):
             "name": "ENS Subdomain Registrar",
             "img": "/static/v2/images/ens.png",
             "description": '''Register ENS Subdomain''',
-            "link": "/ens_subdomain_registrar",
+            "link": "ens/register",
             "active": "true",
             'stat_graph': 'ens_subdomain_registration_count',
             },

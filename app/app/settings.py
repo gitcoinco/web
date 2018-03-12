@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'marketing',
     'economy',
     'dashboard',
+    'enssubdomain',
     'faucet',
     'tdi',
     'gas',
