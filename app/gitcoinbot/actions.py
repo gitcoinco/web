@@ -75,7 +75,7 @@ def claim_bounty_text(owner, repo, issue_id):
     return claim_response
 
 def confused_text():
-    return 'Sorry I did not understand that request. Please try again'
+    return 'Sorry I did not understand that request. Please try again or use `@gitcoinbot help` to see supported commands.'
 
 def post_gitcoin_app_comment(owner, repo, issue_id, content, install_id):
     token = create_token(install_id)

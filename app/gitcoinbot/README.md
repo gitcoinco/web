@@ -14,3 +14,17 @@
 
 To get it running on your repo, you can install it [here](https://github.com/apps/gitcoinbot)
 
+## Post Installation.
+
+Congrats on installing @gitcoinbot.  This bot facilitates gitcoin bounties via github commands.
+
+<hr>Here are the commands it understands:
+
+ * `bounty <amount> ETH` -- receive link to gitcoin.co form to create bounty.
+ * `claim` -- receive link to gitcoin.co to start work on a bounty.
+ * `tip <user> <amount> ETH` -- receive link to complete tippping another github user *<amount>* ETH.
+ * `help` -- displays a help menu
+
+ Go ahead and open up a test issue and give it a try!
+
+ 

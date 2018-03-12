@@ -87,4 +87,4 @@ class gitcoinbotActions(TestCase):
     def test_confused_text(self):
         """Gitcoinbot can respond that it's confused"""
         self.assertEqual(confused_text(),
-            'Sorry I did not understand that request. Please try again')
+            'Sorry I did not understand that request. Please try again or use `@gitcoinbot help` to see supported commands.')
