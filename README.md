@@ -70,6 +70,13 @@ If you
 try posting a funded issue at [https://gitcoin.co/new](https://gitcoin.co/new). 
 
 
+# Adding GitcoinBot to your repo
+
+Gitcoinbot will allow you to add issues straight from github.
+
+[Check out the gitcoinbot readme to learn how](app/gitcoinbot/)
+
+
 # Adding your token to Gitcoin.
 
 Have an ERC20 compatible token that you'ud like to add support for?  Great!
