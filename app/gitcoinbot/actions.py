@@ -31,6 +31,7 @@ def help_text():
     ":zap::heart:, {}\n".format("@" + settings.GITHUB_API_USER)
     return help_text_response
 
+
 def new_bounty_text(owner, repo, issue_id, comment_text):
     issue_link = "https://github.com/{}/{}/issues/{}".format(owner,
                                                             repo,
@@ -42,15 +43,18 @@ def new_bounty_text(owner, repo, issue_id, comment_text):
     "\n PS Make sure you're logged into Metamask!"
     return new_bounty_response
 
+
 def parse_comment_amount(comment_text):
     re_amount = r'\d*\.?\d+'
     result = re.findall(re_amount, comment_text)
     return result[0]
 
+
 def parse_tippee_username(comment_text):
     re_username = r'[@][a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}'
     username = re.findall(re_username, comment_text)
     return username[-1]
+
 
 def new_tip_text(owner, repo, issue_id, comment_text):
     tip_amount = parse_comment_amount(comment_text)
@@ -64,6 +68,7 @@ def new_tip_text(owner, repo, issue_id, comment_text):
         tip_link) + "\n PS Make sure you're logged into Metamask!"
     return tip_response
 
+
 def claim_bounty_text(owner, repo, issue_id):
     issue_url = "https://github.com/{}/{}/issues/{}".format(owner,
                                                             repo,
@@ -74,23 +79,10 @@ def claim_bounty_text(owner, repo, issue_id):
         claim_link)
     return claim_response
 
+
 def confused_text():
     return 'Sorry I did not understand that request. Please try again or use `@gitcoinbot help` to see supported commands.'
 
-def post_gitcoin_app_comment(owner, repo, issue_id, content, install_id):
-    token = create_token(install_id)
-    url = 'https://api.github.com/repos/{}/{}/issues/{}/comments'.format(
-        owner, repo, issue_id)
-    github_app_headers = {
-        'Authorization': 'token ' + token,
-        'Accept': 'application/vnd.github.machine-man-preview+json'
-    }
-    body = {
-        'body': content
-    }
-
-    response = requests.post(url, data=json.dumps(body), headers=github_app_headers)
-    return response.json
 
 def create_token(install_id):
     # Token expires after 10 minutes
@@ -107,6 +99,23 @@ def create_token(install_id):
     response = requests.post(url, headers=github_app_headers)
     token = json.loads(response.content)['token']
     return token
+
+
+def post_gitcoin_app_comment(owner, repo, issue_id, content, install_id):
+    token = create_token(install_id)
+    url = 'https://api.github.com/repos/{}/{}/issues/{}/comments'.format(
+        owner, repo, issue_id)
+    github_app_headers = {
+        'Authorization': 'token ' + token,
+        'Accept': 'application/vnd.github.machine-man-preview+json'
+    }
+    body = {
+        'body': content
+    }
+
+    response = requests.post(url, data=json.dumps(body), headers=github_app_headers)
+    return response.json
+
 
 def determine_response(owner, repo, comment_id, comment_text, issue_id, install_id):
     help_regex = r'@?[Gg]itcoinbot\s[Hh]elp'
