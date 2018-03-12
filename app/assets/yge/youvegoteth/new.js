@@ -13,7 +13,17 @@ window.onload = function () {
             addresses[i] = {
                 'address': address,
                 'pk': _private_key,
-            }
+            };
+        }
+        var url_string = window.location.href
+        var url = new URL(url_string)
+        var amount = url.searchParams.get("amount")
+        var username = url.searchParams.get("username")
+        var issueURL = url.searchParams.get("source")
+        if ( amount && username != null ) {
+            localStorage.setItem("amount", amount );
+            localStorage.setItem("username", username );
+            localStorage.setItem("issueURL", issueURL);
         }
         localStorage.setItem("addresses", JSON.stringify(addresses));
         document.location.href = '/tip/send/2/';

@@ -2,10 +2,55 @@
 
 ## [HEAD](https://github.com/gitcoinco/web/tree/HEAD)
 
-[Full Changelog](https://github.com/gitcoinco/web/compare/prefebint...HEAD)
+[Full Changelog](https://github.com/gitcoinco/web/compare/pre_faucet...HEAD)
+
+**Closed issues:**
+
+- Upgrade to the latest Django revision [\#583](https://github.com/gitcoinco/web/issues/583)
+- Uncaught Error: Web3ProviderEngine does not support synchronous requests. [\#340](https://github.com/gitcoinco/web/issues/340)
+- addd logo to metamask contract metadata repo [\#320](https://github.com/gitcoinco/web/issues/320)
+- In tip flow, sometimes we are not able to get the email address of the user from github [\#75](https://github.com/gitcoinco/web/issues/75)
+
+**Merged pull requests:**
+
+- General faucet cleanup [\#582](https://github.com/gitcoinco/web/pull/582) ([mbeacom](https://github.com/mbeacom))
+- Feature/faucet -- with kevin's changes [\#581](https://github.com/gitcoinco/web/pull/581) ([owocki](https://github.com/owocki))
+- explorer: added sort feature [\#578](https://github.com/gitcoinco/web/pull/578) ([thelostone-mc](https://github.com/thelostone-mc))
+- Cleanup syntax and linting issues for backend code [\#577](https://github.com/gitcoinco/web/pull/577) ([mbeacom](https://github.com/mbeacom))
+- css: refactored media queries [\#573](https://github.com/gitcoinco/web/pull/573) ([thelostone-mc](https://github.com/thelostone-mc))
+
+## [pre_faucet](https://github.com/gitcoinco/web/tree/pre_faucet) (2018-03-09)
+[Full Changelog](https://github.com/gitcoinco/web/compare/pre-clean-urls...pre_faucet)
 
 **Implemented enhancements:**
 
+- show tips on leaderboard / profiles [\#544](https://github.com/gitcoinco/web/pull/544) ([owocki](https://github.com/owocki))
+
+**Closed issues:**
+
+- IndexError: list index out of range [\#564](https://github.com/gitcoinco/web/issues/564)
+- Explorer changes followup [\#555](https://github.com/gitcoinco/web/issues/555)
+- Update Issue Explorer Front End [\#503](https://github.com/gitcoinco/web/issues/503)
+- Show consistent top navigation across the app [\#415](https://github.com/gitcoinco/web/issues/415)
+- Clear Distinction Between Web 3 States [\#413](https://github.com/gitcoinco/web/issues/413)
+
+**Merged pull requests:**
+
+- sendgrid event hooks [\#568](https://github.com/gitcoinco/web/pull/568) ([owocki](https://github.com/owocki))
+
+## [pre-clean-urls](https://github.com/gitcoinco/web/tree/pre-clean-urls) (2018-03-07)
+[Full Changelog](https://github.com/gitcoinco/web/compare/pre-clean-urls2...pre-clean-urls)
+
+**Implemented enhancements:**
+
+- cleaner funded issue urls [\#452](https://github.com/gitcoinco/web/pull/452) ([owocki](https://github.com/owocki))
+
+## [pre-clean-urls2](https://github.com/gitcoinco/web/tree/pre-clean-urls2) (2018-03-07)
+[Full Changelog](https://github.com/gitcoinco/web/compare/prefebint...pre-clean-urls2)
+
+**Implemented enhancements:**
+
+- As a user, I want the navigation bar to be consistent [\#548](https://github.com/gitcoinco/web/issues/548)
 - Add form styles [\#514](https://github.com/gitcoinco/web/pull/514) ([KennethAshley](https://github.com/KennethAshley))
 - Adding token conversion rate to bounties [\#387](https://github.com/gitcoinco/web/pull/387) ([bhenze](https://github.com/bhenze))
 
@@ -16,6 +61,8 @@
 - AttributeError: 'NoneType' object has no attribute 'pk' [\#483](https://github.com/gitcoinco/web/issues/483)
 - Integration branch triage issues [\#474](https://github.com/gitcoinco/web/issues/474)
 - CRITICAL Bounty resets after Submitting Work [\#462](https://github.com/gitcoinco/web/issues/462)
+- Added remove filter functionality for Search Tags [\#562](https://github.com/gitcoinco/web/pull/562) ([eswarasai](https://github.com/eswarasai))
+- css : fixed display for devices below 380px [\#559](https://github.com/gitcoinco/web/pull/559) ([thelostone-mc](https://github.com/thelostone-mc))
 - FIX: Replace selects with select2 and update arrow [\#539](https://github.com/gitcoinco/web/pull/539) ([KennethAshley](https://github.com/KennethAshley))
 
 **Closed issues:**
@@ -57,6 +104,7 @@
 - standardbounties cleanup: multiple fulfillments [\#308](https://github.com/gitcoinco/web/issues/308)
 - standardbounties cleanup: state issues [\#284](https://github.com/gitcoinco/web/issues/284)
 - Coloradocoin receive page \(due Feb 1\) [\#261](https://github.com/gitcoinco/web/issues/261)
+- Push Open Source Forward =\> Grow Open Source [\#238](https://github.com/gitcoinco/web/issues/238)
 - design- /pitch page - where people can pitch project ideas [\#198](https://github.com/gitcoinco/web/issues/198)
 - link profile in nav somewhere [\#191](https://github.com/gitcoinco/web/issues/191)
 - show conv rate rate at time of posting [\#165](https://github.com/gitcoinco/web/issues/165)
@@ -65,8 +113,13 @@
 
 **Merged pull requests:**
 
+- review: added feedback for the explorer page [\#558](https://github.com/gitcoinco/web/pull/558) ([thelostone-mc](https://github.com/thelostone-mc))
+- Unify navbar template [\#549](https://github.com/gitcoinco/web/pull/549) ([mbeacom](https://github.com/mbeacom))
+- Add initial changelog [\#545](https://github.com/gitcoinco/web/pull/545) ([mbeacom](https://github.com/mbeacom))
+- WIP: Feature/faucet [\#541](https://github.com/gitcoinco/web/pull/541) ([KennethAshley](https://github.com/KennethAshley))
 - Fix unselectable icons on select2 selects [\#532](https://github.com/gitcoinco/web/pull/532) ([KennethAshley](https://github.com/KennethAshley))
 - Add Wyvern \(WYV\) token [\#525](https://github.com/gitcoinco/web/pull/525) ([protinam](https://github.com/protinam))
+- core:  Rebirth of the explorer [\#523](https://github.com/gitcoinco/web/pull/523) ([thelostone-mc](https://github.com/thelostone-mc))
 - dashboard: base setup [\#505](https://github.com/gitcoinco/web/pull/505) ([thelostone-mc](https://github.com/thelostone-mc))
 - Update web3 and eth-utils to fix issue 488 [\#489](https://github.com/gitcoinco/web/pull/489) ([jasonrhaas](https://github.com/jasonrhaas))
 - html: removed left rails [\#486](https://github.com/gitcoinco/web/pull/486) ([thelostone-mc](https://github.com/thelostone-mc))
@@ -366,5 +419,7 @@
 - Send tips in one step via Gitcoin.co [\#10](https://github.com/gitcoinco/web/pull/10) ([owocki](https://github.com/owocki))
 - Fix instruction for running locally [\#9](https://github.com/gitcoinco/web/pull/9) ([cifvts](https://github.com/cifvts))
 - Documents API Fields & Filter/Sort URL Parameters [\#6](https://github.com/gitcoinco/web/pull/6) ([anglinb](https://github.com/anglinb))
+
+
 
 \* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*

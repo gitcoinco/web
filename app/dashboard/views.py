@@ -442,6 +442,7 @@ def new_bounty(request):
     issue_url = request.GET.get('source') or request.GET.get('url', '')
     params = {
         'issueURL': issue_url,
+        'amount': request.GET.get('amount'),
         'active': 'submit_bounty',
         'title': 'Create Funded Issue',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
@@ -459,6 +460,7 @@ def fulfill_bounty(request):
     """Fulfill a bounty."""
     params = {
         'issueURL': request.GET.get('source'),
+        'githubUsername': request.GET.get('githubUsername'),
         'title': 'Submit Work',
         'active': 'fulfill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
