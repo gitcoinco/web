@@ -17,7 +17,7 @@ def payload(request):
 
     if request.method == "POST":
         request_json = json.loads(request.body.decode('utf8'))
-        does_address_gitcoinbot = '@{settings.GITHUB_API_USER}' in request_json['comment']['body']
+        does_address_gitcoinbot = f"@{settings.GITHUB_API_USER}" in request_json['comment']['body']
         if (request_json['action'] == 'deleted') or request_json['sender']['login'] == 'gitcoinbot[bot]' or not does_address_gitcoinbot:
             # Gitcoinbot should not process these actions
             return HttpResponse(status=204)
