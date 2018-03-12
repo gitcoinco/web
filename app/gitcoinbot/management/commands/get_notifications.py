@@ -50,8 +50,11 @@ class Command(BaseCommand):
                     _issue_number = issue_number(url)
                     _comment_id = latest_comment_url.split('/')[-1]
                     comment = get_issue_comments(_org_name, _repo_name, _issue_number, _comment_id)
+                    does_mention_gitcoinbot = settings.GITHUB_API_USER in comment.get('body','')
                     if comment.get('message','') == "Not Found":
                         print("comment was not found")
+                    elif not does_mention_gitcoinbot:
+                        print("does not mention gitcoinbot")
                     else:
                         comment_from = comment['user']['login']
                         num_reactions = comment['reactions']['total_count']
