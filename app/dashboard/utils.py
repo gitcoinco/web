@@ -22,8 +22,10 @@ import json
 import subprocess
 import time
 
+import backoff
 import ipfsapi
 import requests
+from app.utils import bad_request_response
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty
 from eth_utils import to_checksum_address
@@ -46,6 +48,11 @@ class IPFSCantConnectException(Exception):
 
 
 class NoBountiesException(Exception):
+    pass
+
+class Web3BadResponse(Exception):
+    """Handle HTTPError bad response errors from Web3."""
+
     pass
 
 
@@ -72,9 +79,15 @@ def getIPFS():
         raise IPFSCantConnectException("IPFS is not running.  try running it with `ipfs daemon` before this script")
 
 
+@backoff.on_exception(
+    backoff.expo,
+    requests.exceptions.HTTPError,
+    max_tries=5,
+    giveup=bad_request_response)
 def ipfs_cat(key):
     response = ipfs_cat_requests(key)
     if response:
+        response.raise_for_status()  # If 40x/50x response, raise the HTTPError
         return response
 
     response = ipfs_cat_ipfsapi(key)
@@ -145,6 +158,14 @@ def get_bounty(bounty_enum, network):
     arbiter = standard_bounties.functions.getBountyArbiter(bounty_enum).call()
     token = standard_bounties.functions.getBountyToken(bounty_enum).call()
     bounty_data_str = ipfs_cat(bountydata)
+
+    # validation
+    if 'Failed to get block' in bounty_data_str:
+        raise IPFSCantConnectException("Failed to connect to IPFS")
+    elif 'Gateway' in bounty_data_str:
+        # Catch bad gateway or timeouts if retrying attempts failed.
+        raise Web3BadResponse("Failed to fetch bounty details from Web3!")
+
     bounty_data = json.loads(bounty_data_str)
 
     # fulfillments
@@ -167,10 +188,6 @@ def get_bounty(bounty_enum, network):
             'fulfiller': fulfiller,
             'data': data,
         })
-
-    # validation
-    if 'Failed to get block' in bounty_data_str:
-        raise IPFSCantConnectException("Failed to connect to IPFS")
 
     # assemble the data
     bounty = {

@@ -13,6 +13,19 @@ from github.utils import _AUTH, HEADERS, get_user
 logger = logging.getLogger(__name__)
 
 
+def bad_request_response(e):
+    """Determine whether or not the response status_code represents a bad response.
+
+    Args:
+        e (Exception): The exception raised during the request.
+
+    Returns:
+        bool: Whether or not the response was valid.
+
+    """
+    return 400 <= e.response.status_code < 500
+
+
 def ellipses(data, _len=75):
     return (data[:_len] + '..') if len(data) > _len else data
 
