@@ -50,15 +50,18 @@ class Command(BaseCommand):
                     _issue_number = issue_number(url)
                     _comment_id = latest_comment_url.split('/')[-1]
                     comment = get_issue_comments(_org_name, _repo_name, _issue_number, _comment_id)
-                    comment_from = comment['user']['login']
-                    num_reactions = comment['reactions']['total_count']
-                    print(_org_name, _repo_name, _issue_number, _comment_id, num_reactions, comment_from)
-                    is_from_gitcoinbot = settings.GITHUB_API_USER in comment_from
-                    if num_reactions == 0 and not is_from_gitcoinbot:
-                        print("unprocessed")
-                        post_issue_comment_reaction(_org_name, _repo_name, _comment_id, 'heart')
-                        comment = f"@{comment_from}. :wave: thanks for the atMention, but you need to [install @gitcoinbot on this repo for me to be able to respond](https://github.com/apps/gitcoinbot).  More details [in the documentation](https://github.com/gitcoinco/web/tree/master/app/gitcoinbot).\n\n:v:\n@gitcoinbot"
-                        post_issue_comment(_org_name, _repo_name, _issue_number, comment)
+                    if comment.get('message','') == "Not Found":
+                        print("comment was not found")
+                    else:
+                        comment_from = comment['user']['login']
+                        num_reactions = comment['reactions']['total_count']
+                        print(_org_name, _repo_name, _issue_number, _comment_id, num_reactions, comment_from)
+                        is_from_gitcoinbot = settings.GITHUB_API_USER in comment_from
+                        if num_reactions == 0 and not is_from_gitcoinbot:
+                            print("unprocessed")
+                            post_issue_comment_reaction(_org_name, _repo_name, _comment_id, 'heart')
+                            comment = f"@{comment_from}. :wave: thanks for the atMention, but you need to [install @gitcoinbot on this repo for me to be able to respond](https://github.com/apps/gitcoinbot).  More details [in the documentation](https://github.com/gitcoinco/web/tree/master/app/gitcoinbot).\n\n:v:\n@gitcoinbot"
+                            post_issue_comment(_org_name, _repo_name, _issue_number, comment)
                 except Exception as e:
                     logging.exception(e)
                     print(e)
