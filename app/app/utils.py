@@ -48,32 +48,45 @@ def add_contributors(repo_data):
     return repo_data
 
 
-def sync_profile(handle):
-    data = get_user(handle)
-    is_error = 'name' not in data.keys()
-    if is_error:
-        print("- error main")
-        rollbar.report_message('Failed to fetch github username', 'warning', extra_data=data)
-        return None
+def get_profile(handle, sync=True):
+    data = {}
+    if sync:
+        data = get_user(handle)
+        is_error = 'name' not in data.keys() 
+        if is_error:
+            # print("- error main")
+            rollbar.report_message('Failed to fetch github username', 'warning', extra_data=data)
+            return
 
-    repos_data = get_user(handle, '/repos')
-    repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
-    repos_data = [add_contributors(repo_data) for repo_data in repos_data]
+    repos_data = {}
+    if sync:
+        repos_data = get_user(handle, '/repos')
+        repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
+        repos_data = [add_contributors(repo_data) for repo_data in repos_data]
+
+    # make handle case-insensitive
+    other_profiles = Profile.objects.filter(handle_iexact=handle)
+    handle = other_profiles.first().handle if other_profiles.exists() else handle
 
     # store the org info in postgres
+
     try:
+        defaults = {
+            'last_sync_date': timezone.now(),
+        }
+        if sync:
+            defaults['data'] = data
+            defaults['repos_data'] = repos_data
         profile, created = Profile.objects.update_or_create(
             handle=handle,
-            defaults={
-                'last_sync_date': timezone.now(),
-                'data': data,
-                'repos_data': repos_data,
-            })
+            defaults=defaults
+            )
         print("Profile:", profile, "- created" if created else "- updated")
+        return profile
     except Exception as e:
         logger.error(e)
         return None
-    return profile
+
 
 
 def fetch_last_email_id(email_id, password, host='imap.gmail.com', folder='INBOX'):
