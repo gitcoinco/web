@@ -45,7 +45,7 @@ def payload(request):
     sender_dict = request_json.get('sender', {})
     action = request_json.get('action', '')
 
-    does_address_gitcoinbot = f"@{settings.GITHUB_API_USER}" in comment_dict.get('body')
+    does_address_gitcoinbot = f"@{settings.GITHUB_API_USER}" in comment_dict.get('body', '')
     if (action == 'deleted') or sender_dict.get('login', '') == 'gitcoinbot[bot]' or not does_address_gitcoinbot:
         # Gitcoinbot shoulsd not process these actions
         return HttpResponse(status=204)

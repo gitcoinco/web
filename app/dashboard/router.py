@@ -91,7 +91,7 @@ class BountyViewSet(viewsets.ModelViewSet):
             if key in self.request.GET.keys():
                 # special hack just for looking up bounties posted by a certain person
                 request_key = key if key != 'bounty_owner_address' else 'coinbase'
-                val = self.request.GET.get(request_key)
+                val = self.request.GET.get(request_key, '')
 
                 vals = val.strip().split(',')
                 _queryset = queryset.none()
