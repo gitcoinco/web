@@ -611,7 +611,7 @@ class Interest(models.Model):
 @receiver(post_delete, sender=Interest, dispatch_uid="pdel_interest")
 def psave_interest(sender, instance, **kwargs):
     # when a new interest is saved, update the status on frontend
-    print("updating bounties")
+    print("signal: updating bounties psave_interest")
     for bounty in Bounty.objects.filter(interested=instance):
         bounty.save()
 
