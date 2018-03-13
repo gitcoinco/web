@@ -44,5 +44,7 @@ class Command(BaseCommand):
                 accepted_fulfillment = accepted_fulfillments.first()
                 fulfiller_email = accepted_fulfillment.fulfiller_email
                 fulfillment_pks = BountyFulfillment.objects.filter(accepted=True, fulfiller_email=fulfiller_email).values__list('pk', flat=True)
-                bounties_last_timeperiod = Bounty.objects.filter(modified_on__gt=start_time, idx_status__in=statues, fulfillments__pk__in=fulfillment_pks)
-                bounty_feedback(bounty, 'funder')
+                previous_bounties = Bounty.objects.filter(modified_on__gt=start_time, idx_status__in=statues, fulfillments__pk__in=fulfillment_pks)
+                has_been_sent_before_to_persona = previous_bounties.count()
+                if not has_been_sent_before_to_persona:
+                    bounty_feedback(bounty, 'funder')
