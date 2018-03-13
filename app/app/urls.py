@@ -28,6 +28,7 @@ import dashboard.ios
 import dashboard.views
 import enssubdomain.views
 import faucet.views
+import gitcoinbot.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
@@ -173,6 +174,7 @@ urlpatterns = [
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+
     # Github Integration
     path('_github/', include('github.urls', namespace='github')),
     # Interests
@@ -181,11 +183,17 @@ urlpatterns = [
     path('actions/bounty/<int:bounty_id>/interest/', dashboard.views.interested_profiles, name='interested-profiles'),
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
+
+    # webhook routes
     # sendgrid webhook processing
     path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
+
     # ENS urls
     url(r'^ens/register/', enssubdomain.views.ens_subdomain_registration, name='ens_subdomain_registration'),
     url(r'^ens/delete/', enssubdomain.views.ens_subdomain_delete, name='ens_subdomain_delete'),
+
+    # gitcoinbot
+    url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
 ]
 
 handler403 = 'retail.views.handler403'

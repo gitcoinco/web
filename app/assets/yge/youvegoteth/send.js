@@ -17,7 +17,7 @@ var unPackAddresses = function(){
     var addresses = JSON.parse(localStorage.getItem("addresses"));
     document.addresses = addresses;
     if(!addresses || addresses.length == 0){
-        _alert("Invalid addresss generated.  Please try again from the first page.");
+        _alert("Invalid addresses generated.  Please try again from the first page.");
         setTimeout(function(){
             if(document.location.href.indexOf('send') != -1){
                 document.location.href = '/tip/send';

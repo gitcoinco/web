@@ -234,8 +234,18 @@ var load_tokens = function(){
                 $("select[name=deonomination]").append($('<option>', select))
             }
             //if web3, set the values of some form variables
+            var url_string = window.location.href
+            var url = new URL(url_string)
+            var params_amount = url.searchParams.get("amount")
             if (typeof localStorage['amount'] !='undefined'){
-                $('input[name=amount]').val(localStorage['amount']);
+                if (params_amount != null){
+                    if ( localStorage['amount'] != params_amount){
+                        localStorage.setItem("amount", params_amount);
+                        $('input[name=amount]').val(params_amount);
+                    }
+                } else {
+                    $('input[name=amount]').val(localStorage['amount']);
+                }
             }
             if (typeof localStorage['githubUsername'] !='undefined'){
                 if(!$('input[name=githubUsername]').val()){

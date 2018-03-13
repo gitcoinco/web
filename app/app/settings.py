@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'email_obfuscator',
     'linkshortener',
     'credits',
+    'gitcoinbot'
 ]
 
 MIDDLEWARE = [
@@ -223,6 +224,8 @@ IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
 FAUCET_AMOUNT = .001
 
 SENDGRID_EVENT_HOOK_URL = 'sg_event_process'
+
+GITHUB_EVENT_HOOK_URL = 'github/payload/'
 
 # Include local settings overrides
 try:
