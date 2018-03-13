@@ -79,12 +79,10 @@ def save_faucet(request):
         return JsonResponse({
             'message': 'The submitted github profile shows a pending faucet distribution.'
         }, status=403)
-    elif checkeduser == False:
+    elif not checkeduser:
         return JsonResponse({
           'message': 'The submitted github profile could not be found on github.'
         }, status=400)
-    else:
-        githubMeta = checkeduser
 
     fr = FaucetRequest.objects.create(
         fulfilled=False,
