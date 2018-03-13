@@ -179,6 +179,10 @@ class Bounty(SuperModel):
         return self.get_relative_url()
 
     @property
+    def can_submit_after_expiration_date(self):
+        return self.is_legacy or self.raw_data.get('payload', {}).get('expire_date', False)
+
+    @property
     def title_or_desc(self):
         """Return the title of the issue."""
         if not self.title:
