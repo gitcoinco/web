@@ -70,6 +70,18 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     return response
 
 
+def bounty_feedback(bounty, persona='submitter'):
+    from_email = settings.PERSONAL_CONTACT_EMAIL
+    to_email = bounty.bounty_owner_email
+    if persona != 'submitter':
+        accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
+        to_email = accepted_fulfillments.first().fulfiller_email if accepted_fulfillments.exists() else ""
+
+    subject = bounty.github_url
+    html, text = render_tip_email(bounty, persona)
+    send_mail(from_email, to_email, subject, body)
+
+
 def tip_email(tip, to_emails, is_new):
     round_decimals = 5
     if not tip or not tip.url or not tip.amount or not tip.tokenName:

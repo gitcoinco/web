@@ -74,6 +74,58 @@ def render_match_email(bounty, github_username):
     return response_html, response_txt
 
 
+def render_bounty_feedback(bounty, persona='submitter'):
+    if persona != 'submitter':
+        accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
+        github_username = " @" + accepted_fulfillments.first().fulfiller_github_username if accepted_fulfillments.exists() else ""
+        txt = f"""
+hi{github_username},
+
+thanks for turning around this bounty.  we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH. 
+
+in that spirit,  i have a few questions for you.
+
+> what would you say your blended hourly rate was for these bounties?
+
+> what was the best thing about working on the platform?  what was the worst?
+
+> would you use gitcoin again?
+
+thanks again for being a member of the community.
+kevin
+
+"""
+    else:
+        github_username = " @" + bounty.bounty_owner_github_username if bounty.bounty_owner_github_username else ""
+        txt = f"""
+
+hi{github_username},
+
+thanks for putting this bounty on gitcoin.  i'm glad to see it was turned around.
+
+we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH. 
+
+in that spirit,  i have a few questions for you:
+
+> how much coaching/communication did it take the counterparty to turn around the issue?  was this burdensome?
+
+> what was the best thing about working on the platform?  what was the worst?
+
+> would you use gitcoin again?
+
+thanks for being a member of the community.
+kevin
+"""
+
+    params = {
+        'txt': txt,
+    }
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    response_txt = render_to_string("emails/txt.txt", params)
+
+    return response_html, response_txt
+
+
 def render_new_bounty(to_email, bounty):
     params = {
         'bounty': bounty,
@@ -360,6 +412,13 @@ def new_bounty_rejection(request):
 def new_bounty_acceptance(request):
     from dashboard.models import Bounty
     response_html, _ = render_new_bounty_acceptance(settings.CONTACT_EMAIL, Bounty.objects.all().last())
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def bounty_feedback(request):
+    from dashboard.models import Bounty
+    response_html, _ = render_bounty_feedback(Bounty.objects.all().last(), 'foo')
     return HttpResponse(response_html)
 
 
