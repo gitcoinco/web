@@ -17,7 +17,7 @@ window.onload = function(){
                 issueURL,
                 function(errors,result){
                     $("#gasLimit").removeClass('loading');
-                    var is_issue_taken = typeof result == 'undefined' || result > 403207;
+                    var is_issue_taken = typeof result == 'undefined' || result > 1403207;
                     if(errors || is_issue_taken){
                         failure_calllback(errors);
                         return;
