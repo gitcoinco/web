@@ -1,5 +1,6 @@
 bs4
 ccxt
+cryptography==2.1.4
 django==2.0.3
 django-bootstrap3==8.2.3
 django-filter
@@ -17,6 +18,7 @@ Pillow==4.0.0
 premailer
 populus
 psycopg2
+PyJWT==1.5.3
 PyPdf2
 python-twitter==3.2
 sendgrid

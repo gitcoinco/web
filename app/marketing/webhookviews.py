@@ -8,7 +8,7 @@ import pytz
 from marketing.models import EmailEvent
 
 
-# https://sendgrid.com/docs/API_Reference/Webhooks/event.html 
+# https://sendgrid.com/docs/API_Reference/Webhooks/event.html
 example = """
 [
   {
@@ -47,7 +47,7 @@ example = """
 
 @csrf_exempt
 def process(request):
-
+    """Process email webhook callback data."""
     events = []
     response = json.loads(request.body)
 

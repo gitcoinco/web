@@ -34,7 +34,6 @@ BASE_URL = 'http://localhost:8000/'
 #optional
 TWITTER_USERNAME = 'TODO'
 CONTACT_EMAIL = 'TODO'
-BCC_EMAIL = 'TODO'
 PERSONAL_CONTACT_EMAIL = 'you@foo.bar'
 
 # -------------------------------------------------------
@@ -100,6 +99,15 @@ GITHUB_CLIENT_SECRET = 'TODO'
 GITHUB_API_USER = 'TODO'
 GITHUB_API_TOKEN = 'TODO'
 GITHUB_APP_NAME = 'TODO'
+
+# optional: only needed if you run the gitcoinbot app
+# Setup instructions: https://github.com/gitcoinco/web/blob/master/app/gitcoinbot/README.md
+GITCOINBOT_APP_ID = 'TODO'
+SECRET_KEYSTRING = 'TODO'
+# Example:
+#with open('pem_file') as f:
+#    SECRET_KEYSTRING = f.read()
+
 
 #global on / off switch for notifciations
 ENABLE_NOTIFICATIONS_ON_NETWORK = False

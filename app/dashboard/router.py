@@ -56,7 +56,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
                   'token_value_in_usdt', 'value_in_usdt', 'status', 'now',
                   'avatar_url', 'value_true', 'issue_description', 'network',
                   'org_name', 'pk', 'issue_description_text',
-                  'standard_bounties_id', 'web3_type')
+                  'standard_bounties_id', 'web3_type', 'can_submit_after_expiration_date')
 
     def create(self, validated_data):
         """Handle creation of m2m relationships and other custom operations."""
@@ -105,6 +105,10 @@ class BountyViewSet(viewsets.ModelViewSet):
         # filter by PK
         if 'pk__gt' in self.request.GET.keys():
             queryset = queryset.filter(pk__gt=self.request.GET.get('pk__gt'))
+
+        # filter by who is interested
+        if 'started' in self.request.GET.keys():
+            queryset = queryset.filter(interested__profile__handle__in=[self.request.GET.get('started')])
 
         # filter by is open or not
         if 'is_open' in self.request.GET.keys():

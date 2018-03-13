@@ -97,7 +97,10 @@ $(document).ready(function() {
       bountyType: $('select[name=bountyType]').val()
     };
 
-        // https://github.com/ConsenSys/StandardBounties/issues/21
+    var expire_date = (parseInt(expirationTimeDelta) + (new Date().getTime() / 1000 | 0));
+    var mock_expire_date = 9999999999; // 11/20/2286, https://github.com/Bounties-Network/StandardBounties/issues/25
+
+    // https://github.com/ConsenSys/StandardBounties/issues/21
     var ipfsBounty = {
       payload: {
         title: metadata.issueTitle,
@@ -119,7 +122,8 @@ $(document).ready(function() {
         // optional fields
         metadata: metadata,
         tokenName: tokenName,
-        tokenAddress: tokenAddress
+        tokenAddress: tokenAddress,
+        expire_date: expire_date
       },
       meta: {
         platform: 'gitcoin',
@@ -128,7 +132,7 @@ $(document).ready(function() {
       }
     };
 
-        // validation
+    // validation
     var isError = false;
 
     if ($('#terms:checked').length == 0) {
@@ -192,7 +196,6 @@ $(document).ready(function() {
     // bounty_address() is a function that looks up the name of the network and returns the hash code
     var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
     // StandardBounties integration begins here
-    var expire_date = (parseInt(expirationTimeDelta) + (new Date().getTime() / 1000 | 0));
     // Set up Interplanetary file storage
     // IpfsApi is defined in the ipfs-api.js.
     // Is it better to use this JS file than the node package?  github.com/ipfs/
@@ -273,7 +276,7 @@ $(document).ready(function() {
       var _paysTokens = !isETH;
       var bountyIndex = bounty.issueAndActivateBounty(
         account, // _issuer
-        expire_date, // _deadline
+        mock_expire_date, // _deadline
         result, // _data (ipfs hash)
         amount, // _fulfillmentAmount
         0x0, // _arbiter
@@ -313,6 +316,8 @@ $(document).ready(function() {
       } else {
         token_contract.approve(bounty_address(), amount, {from: account, value: 0, gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)}, approve_success_callback);
       }
+
+
     });
   });
 });

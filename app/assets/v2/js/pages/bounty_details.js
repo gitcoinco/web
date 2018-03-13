@@ -328,7 +328,6 @@ var do_actions = function(result) {
 
     // actions
     var actions = [];
-
     var enabled;
 
     if (result['github_url'].substring(0, 4) == 'http') {
@@ -337,6 +336,7 @@ var do_actions = function(result) {
 
       // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
       github_url = github_url.replace('pipermerriam/web3.py', 'ethereum/web3.py');
+      github_url = github_url.replace('ethereum/browser-solidity', 'ethereum/remix-ide');
 
       if (result['github_comments']) {
         var entryComment = {
@@ -361,12 +361,14 @@ var do_actions = function(result) {
 
       actions.push(entryGithub);
     }
+    var can_submit_after_expiration_date = result['can_submit_after_expiration_date'];
+    var is_still_on_happy_path = result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted' || (can_submit_after_expiration_date && result['status'] == 'expired');
 
-    if (result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted') {
+    if (is_still_on_happy_path) {
 
       // is enabled
       enabled = !isBountyOwner(result);
-      var interestEntry = {
+      var entryInterest = {
         href: is_interested ? '/uninterested' : '/interested',
         text: is_interested ? 'Stop Work' : 'Start Work',
         parent: 'right_actions',
@@ -375,28 +377,29 @@ var do_actions = function(result) {
         title: enabled ? 'Start Work in an issue to let the issue funder know that youre starting work on this issue.' : 'Can only be performed if you are not the funder.'
       };
 
-      actions.push(interestEntry);
+      actions.push(entryInterest);
+
+      // is enabled
+      enabled = !isBountyOwner(result);
+      var entrySubmitWork = {
+        href: '/funding/fulfill?source=' + result['github_url'],
+        text: 'Submit Work',
+        parent: 'right_actions',
+        color: enabled ? 'darkBlue' : 'darkGrey',
+        extraClass: enabled ? '' : 'disabled',
+        title: enabled ? 'Use Submit Work when you FINISH work on a bounty. ' : 'Can only be performed if you are not the funder.'
+      };
+
+      actions.push(entrySubmitWork);
 
     }
-
-    // is enabled
-    enabled = !isBountyOwner(result);
-    var entrySubmitWork = {
-      href: '/funding/fulfill?source=' + result['github_url'],
-      text: 'Submit Work',
-      parent: 'right_actions',
-      color: enabled ? 'darkBlue' : 'darkGrey',
-      extraClass: enabled ? '' : 'disabled',
-      title: enabled ? 'Use Submit Work when you FINISH work on a bounty. ' : 'Can only be performed if you are not the funder.'
-    };
-
-    actions.push(entrySubmitWork);
 
     var is_date_expired = (new Date(result['now']) > new Date(result['expires_date']));
     var is_status_expired = result['status'] == 'expired';
     var is_status_done = result['status'] == 'done';
+    var can_be_killed = !is_status_done && !is_status_expired;
 
-    if (!is_status_done && !is_status_expired) {
+    if (can_be_killed) {
       enabled = isBountyOwner(result);
       var entryKillBounty = {
         href: '/funding/kill?source=' + result['github_url'],
