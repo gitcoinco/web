@@ -27,7 +27,7 @@ class Command(BaseCommand):
     help = 'pulls mailchimp emails'
 
     def handle(self, *args, **options):
-        start_time = timezone.now() - timezone.timedelta(hours=48)
+        start_time = timezone.now() - timezone.timedelta(hours=24)
         statues = ['done']
         bounties_last_timeperiod = Bounty.objects.filter(modified_on__gt=start_time, idx_status__in=statues)
         print(bounties_last_timeperiod.count())
