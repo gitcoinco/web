@@ -21,6 +21,7 @@ from django.utils import timezone
 from dashboard.models import Bounty, BountyFulfillment
 from marketing.mails import bounty_feedback
 
+
 class Command(BaseCommand):
 
     help = 'pulls mailchimp emails'
