@@ -49,8 +49,10 @@ def faucet(request):
 def check_github(profile):
     user = search_github(profile + ' in:login type:user')
     response = {'status': 200, 'user': False}
-    if not len(user['items']) == 0 or not user['items'][0]['login'].lower() != profile.lower():
-        response['user'] = user['items'][0]
+    user_items = user.get('items', [])
+
+    if user_items and user_items[0].get('login', '').lower() == profile.lower():
+        response['user'] = user_items[0]
     return response
 
 
