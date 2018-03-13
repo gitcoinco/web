@@ -17,15 +17,15 @@
 
 '''
 
-from dashboard.views import w3
 from django.conf import settings
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from ens import ENS
 
+from dashboard.views import w3
+from ens import ENS
 
 ns = ENS.fromWeb3(w3)
 
