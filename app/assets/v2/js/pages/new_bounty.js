@@ -15,7 +15,7 @@ $(document).ready(function(){
     } else if(getParam('url')){
         $('input[name=issueURL]').val(getParam('url'));
     } else if(localStorage['issueURL']){
-         $('input[name=issueURL]').val(localStorage['issueURL']);
+        $('input[name=issueURL]').val(localStorage['issueURL']);
     }
     if(localStorage['expirationTimeDelta']){
         $('select[name=expirationTimeDelta] option').prop('selected', false);
@@ -30,7 +30,7 @@ $(document).ready(function(){
     if(localStorage['bountyType']){
         $('select[name=bountyType] option:contains('+localStorage['bountyType']+')').prop('selected', true);
     }
-    
+
     //fetch issue URL related info
     $("input[name=amount]").keyup(setUsdAmount);
     $("input[name=amount]").blur(setUsdAmount);
@@ -62,7 +62,7 @@ $(document).ready(function(){
             $(this).text('Advanced ⬇ ');
         }
     });
-    
+
     //submit bounty button click
     $('#submitBounty').click(function(e){
         mixpanel.track("Submit New Bounty Clicked", {});
@@ -81,7 +81,7 @@ $(document).ready(function(){
         var decimalDivisor = Math.pow( 10, decimals );
         var expirationTimeDelta = $('select[name=expirationTimeDelta]').val();
 
-       var metadata = {
+        var metadata = {
             issueTitle : $('input[name=title]').val(),
             issueDescription : $('textarea[name=description]').val(),
             issueKeywords : $('input[name=keywords]').val(),
@@ -94,7 +94,7 @@ $(document).ready(function(){
             bountyType : $('select[name=bountyType]').val(),
         }
 
-        var expire_date = (parseInt(expirationTimeDelta) + (new Date().getTime()/1000|0) );
+        var expire_date = (parseInt(expirationTimeDelta) + (new Date().getTime()/1000|0));
         var mock_expire_date = 9999999999; // 11/20/2286, https://github.com/Bounties-Network/StandardBounties/issues/25
 
         // https://github.com/ConsenSys/StandardBounties/issues/21
@@ -138,10 +138,10 @@ $(document).ready(function(){
         } else {
             localStorage['acceptTOS'] = true;
         }
-        var is_issueURL_invalid = issueURL == '' 
-            || issueURL.indexOf('http') != 0 
-            || issueURL.indexOf('github') == -1 
-            || issueURL.indexOf('javascript:') != -1 
+        var is_issueURL_invalid = issueURL == ''
+            || issueURL.indexOf('http') != 0
+            || issueURL.indexOf('github') == -1
+            || issueURL.indexOf('javascript:') != -1
         ;
         if(is_issueURL_invalid){
             _alert({ message: "Please enter a valid github issue URL." });
@@ -203,13 +203,13 @@ $(document).ready(function(){
             'dataHash': null,
             'issuer': account,
             'txid': null,
-        });  
+        });
 
         function syncDb() {
-            // Need to pass the bountydetails as well, since I can't grab it from the 
+            // Need to pass the bountydetails as well, since I can't grab it from the
             // Standard Bounties contract.
             dataLayer.push({'event': 'fundissue'});
-            
+
             // update localStorage issuePackage
             var issuePackage = JSON.parse(localStorage[issueURL]);
             issuePackage['timestamp'] = timestamp();
@@ -258,7 +258,7 @@ $(document).ready(function(){
             var issuePackage = JSON.parse(localStorage[issueURL]);
             issuePackage['dataHash'] = result;
             localStorage[issueURL] = JSON.stringify(issuePackage);
-            
+
             // bounty is a web3.js eth.contract address
             // The Ethereum network requires using ether to do stuff on it
             // issueAndActivateBounty is a method definied in the StandardBounties solidity contract.
@@ -267,11 +267,11 @@ $(document).ready(function(){
             var _paysTokens = !isETH;
             var bountyIndex = bounty.issueAndActivateBounty(
                 account,            // _issuer
-                mock_expire_date,        // _deadline
+                mock_expire_date,   // _deadline
                 result,             // _data (ipfs hash)
                 amount,             // _fulfillmentAmount
                 0x0,                // _arbiter
-                _paysTokens,              // _paysTokens
+                _paysTokens,        // _paysTokens
                 tokenAddress,       // _tokenContract
                 amount,             // _value
                 {                   // {from: x, to: y}
