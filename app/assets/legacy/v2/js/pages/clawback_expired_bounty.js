@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+/* eslint-disable no-empty-function */
 window.onload = function() {
   // a little time for web3 injection
   setTimeout(function() {
@@ -42,9 +43,7 @@ window.onload = function() {
         $('#gasLimit').val('Unknown');
         update_metamask_conf_time_and_cost_estimate();
       };
-      var final_callback = function() {
-        // …
-      };
+      var final_callback = function() { };
       // estimateGas(issueURL, success_callback, failure_callback, final_callback);
 
       success_callback(86936, 86936, '');
