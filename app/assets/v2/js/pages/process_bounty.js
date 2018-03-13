@@ -23,7 +23,7 @@ window.onload = function() {
       }
       results = sanitizeAPIResults(results);
       result = results[0];
-      if (result === null) {
+      if (result == null) {
         _alert({ message: 'No bounty fulfillments found for this Github URL.' });
         unloading_button($('.submitBounty'));
         return;
@@ -81,7 +81,7 @@ window.onload = function() {
         _alert({ message: 'Please enter a issue URL.' });
         isError = true;
       }
-      if (fulfillmentId === null) {
+      if (fulfillmentId == null) {
         _alert({ message: 'Please enter a fulfillment Id.' });
         isError = true;
       }
@@ -103,7 +103,7 @@ window.onload = function() {
         }
         results = sanitizeAPIResults(results);
         result = results[0];
-        if (result === null) {
+        if (result == null) {
           _alert({ message: 'No active bounty found for this Github URL.' });
           unloading_button($('.submitBounty'));
           return;

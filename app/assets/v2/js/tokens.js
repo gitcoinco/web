@@ -243,7 +243,7 @@ var load_tokens = function() {
       var params_amount = url.searchParams.get('amount');
 
       if (typeof localStorage['amount'] != 'undefined') {
-        if (params_amount !== null) {
+        if (params_amount != null) {
           if (localStorage['amount'] != params_amount) {
             localStorage.setItem('amount', params_amount);
             $('input[name=amount]').val(params_amount);

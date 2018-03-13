@@ -122,19 +122,19 @@ var callbacks = {
   'bounty_type': unknown_if_empty,
   'bounty_owner_github_username': gitcoin_ize,
   'value_in_eth': function(key, val, result) {
-    if (result['token_name'] == 'ETH' || val === null) {
+    if (result['token_name'] == 'ETH' || val == null) {
       return [ null, null ];
     }
     return [ 'Amount (ETH)', Math.round((parseInt(val) / Math.pow(10, 18)) * 1000) / 1000 ];
   },
   'value_in_usdt': function(key, val, result) {
-    if (val === null) {
+    if (val == null) {
       return [ null, null ];
     }
     return [ 'Amount_usd', val ];
   },
   'token_value_in_usdt': function(key, val, result) {
-    if (val === null) {
+    if (val == null) {
       $('#value_in_usdt_wrapper').addClass('hidden');
       return [ null, null ];
     }

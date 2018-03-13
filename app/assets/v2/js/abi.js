@@ -3,7 +3,7 @@ var bounty_abi = [{'constant': false, 'inputs': [{'name': '_bountyId', 'type': '
 
 
 var bounty_address = function() {
-  if (document.web3network === null) {
+  if (document.web3network == null) {
     // default to mainnet if web3network isn't found in time
     document.web3network = 'mainnet';
   }

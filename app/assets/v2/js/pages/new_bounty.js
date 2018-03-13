@@ -298,7 +298,7 @@ $(document).ready(function() {
       results = sanitizeAPIResults(results);
       var result = results[0];
 
-      if (result !== null) {
+      if (result != null) {
         _alert({ message: 'A bounty already exists for that Github Issue.' });
         unloading_button($('#submitBounty'));
         return;

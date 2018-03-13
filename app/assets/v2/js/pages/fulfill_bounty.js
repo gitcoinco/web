@@ -128,7 +128,7 @@ window.onload = function() {
             $.get(uri, function(results, status) {
               results = sanitizeAPIResults(results);
               result = results[0];
-              if (result === null) {
+              if (result == null) {
                 _alert({ message: 'No active bounty found for this Github URL.' });
                 unloading_button($('#submitBounty'));
                 return;
