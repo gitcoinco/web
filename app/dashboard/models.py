@@ -179,6 +179,10 @@ class Bounty(SuperModel):
         return self.get_relative_url()
 
     @property
+    def can_submit_after_expiration_date(self):
+        return self.is_legacy or self.raw_data.get('payload', {}).get('expire_date', False)
+
+    @property
     def title_or_desc(self):
         """Return the title of the issue."""
         if not self.title:
@@ -611,7 +615,7 @@ class Interest(models.Model):
 @receiver(post_delete, sender=Interest, dispatch_uid="pdel_interest")
 def psave_interest(sender, instance, **kwargs):
     # when a new interest is saved, update the status on frontend
-    print("updating bounties")
+    print("signal: updating bounties psave_interest")
     for bounty in Bounty.objects.filter(interested=instance):
         bounty.save()
 

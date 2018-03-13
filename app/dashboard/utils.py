@@ -189,6 +189,11 @@ def get_bounty(bounty_enum, network):
             'data': data,
         })
 
+    # https://github.com/Bounties-Network/StandardBounties/issues/25
+    override_deadline = bounty_data.get('payload', {}).get('expire_date', False)
+    if override_deadline:
+        deadline = override_deadline
+
     # assemble the data
     bounty = {
         'id': bounty_enum,

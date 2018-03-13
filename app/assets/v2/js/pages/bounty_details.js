@@ -345,8 +345,9 @@ pull_interest_list(result['pk'], function(is_interested){
 
         actions.push(entry);
     }
-
-    if(result['status']=='open' || result['status']=='started' || result['status']=='submitted' ){
+    var can_submit_after_expiration_date = result['can_submit_after_expiration_date'];
+    var is_still_on_happy_path = result['status']=='open' || result['status']=='started' || result['status']=='submitted' || (can_submit_after_expiration_date && result['status']=='expired');
+    if(is_still_on_happy_path){
 
         // is enabled
         var enabled = !isBountyOwner(result);
@@ -360,24 +361,25 @@ pull_interest_list(result['pk'], function(is_interested){
         }
         actions.push(interestEntry);
 
-    }
+        // is enabled
+        var enabled = !isBountyOwner(result);
+        var entry = {
+            href: '/funding/fulfill?source='+result['github_url'],
+            text: 'Submit Work',
+            parent: 'right_actions',
+            color: enabled ? 'darkBlue' : 'darkGrey',
+            extraClass: enabled ? '' : 'disabled',
+            title: enabled ? 'Use Submit Work when you FINISH work on a bounty. ' : 'Can only be performed if you are not the funder.',
+        }
+        actions.push(entry);
 
-    // is enabled
-    var enabled = !isBountyOwner(result);
-    var entry = {
-        href: '/funding/fulfill?source='+result['github_url'],
-        text: 'Submit Work',
-        parent: 'right_actions',
-        color: enabled ? 'darkBlue' : 'darkGrey',
-        extraClass: enabled ? '' : 'disabled',
-        title: enabled ? 'Use Submit Work when you FINISH work on a bounty. ' : 'Can only be performed if you are not the funder.',
     }
-    actions.push(entry);
 
     var is_date_expired = (new Date(result['now']) > new Date(result['expires_date']));
     var is_status_expired = result['status']=='expired';
     var is_status_done = result['status']=='done';
-    if(!is_status_done && !is_status_expired){
+    var can_be_killed = !is_status_done && !is_status_expired;
+    if(can_be_killed){ 
         var enabled = isBountyOwner(result);
         var entry = {
             href: '/funding/kill?source='+result['github_url'],
