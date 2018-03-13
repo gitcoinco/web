@@ -133,7 +133,8 @@ window.onload = function(){
                     setTimeout(function(){
                         var failure_calllback = function(errors){
                             _alert({ message: "This issue cannot be clawed back.  Please leave a comment <a href=https://github.com/gitcoinco/web/issues/169>here</a> if you need help." });
-                            mixpanel.track("Claim Bounty Error", {step: 'estimateGas', error: errors});
+                            console.error(errors);
+                            mixpanel.track("Clawback Bounty Error", {step: 'estimateGas', error: errors});
                             unloading_button($('#submitBounty'));
                             return;
                         }
