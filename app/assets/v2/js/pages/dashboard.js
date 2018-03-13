@@ -177,8 +177,8 @@ var process_stats = function(results) {
   }
 
   worth_usdt = worth_usdt.toFixed(2);
-  worth_eth = (worth_eth / Math.pow(10, 18)).toFixed(2);
-  var stats = '' + num + ' worth ' + worth_usdt + ' USD, ' + worth_eth + ' ETH';
+  worth_eth = (worth_eth / Math.pow(10, 18 )).toFixed(2);
+  var stats =  worth_usdt + " USD, " + worth_eth + " ETH";
 
   for (var t in currencies_to_value) {
     if (Object.prototype.hasOwnProperty.call(currencies_to_value, t)) {
@@ -186,7 +186,19 @@ var process_stats = function(results) {
     }
   }
 
-  $('#stats').html('( ' + stats + ' )');
+  switch(num) {
+    case 0:
+      $("#matches").html("No Results");
+      $("#funding-info").html("");
+      break;
+    case 1:
+      $("#matches").html(num + " Matching Result");
+      $("#funding-info").html("<span id='modifiers'>Funded Issue</span><span id='stats' class='font-body'>("+ stats +")</span>");
+      break;
+    default:
+      $("#matches").html(num + " Matching Results");
+      $("#funding-info").html("<span id='modifiers'>Funded Issues</span><span id='stats' class='font-body'>("+ stats +")</span>");
+  }
 };
 
 var refreshBounties = function() {
@@ -250,7 +262,8 @@ var refreshBounties = function() {
       }
       result.action = result['url'];
       result['title'] = result['title'] ? result['title'] : result['github_url'];
-      result['p'] = timeDifference(new Date(), new Date(result['created_on'])) + ' - ' + (result['project_length'] ? result['project_length'] : 'Unknown Length') + ' - ' + (result['bounty_type'] ? result['bounty_type'] : 'Unknown Type') + ' - ' + (result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + (is_expired ? ' - (Expired)' : '');
+      var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
+      result['p'] = ((result['experience_level'] ? result['experience_level'] : "Unknown Experience Level") + " &bull; " + ( is_expired ? " Expired" : ("Expires in " + timeLeft) ));
       result['watch'] = 'Watch';
 
       // render the template

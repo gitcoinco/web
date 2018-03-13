@@ -24,6 +24,11 @@ body {
   color: #7A7A7A;
 }
 
+#matches {
+  font-family: "Muli-Light";
+  padding-left: 10px;
+}
+
 .title {
   text-transform: capitalize;
 }
