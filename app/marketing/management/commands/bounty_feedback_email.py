@@ -24,7 +24,7 @@ from marketing.mails import bounty_feedback
 
 class Command(BaseCommand):
 
-    help = 'pulls mailchimp emails'
+    help = 'sends feedback emails to bounties that were closed in last xx hours, but only if its the first time a bounty has been accepted by taht persona'
 
     def handle(self, *args, **options):
         start_time = timezone.now() - timezone.timedelta(hours=24)
