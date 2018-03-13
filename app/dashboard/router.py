@@ -106,6 +106,10 @@ class BountyViewSet(viewsets.ModelViewSet):
         if 'pk__gt' in self.request.GET.keys():
             queryset = queryset.filter(pk__gt=self.request.GET.get('pk__gt'))
 
+        # filter by who is interested
+        if 'started' in self.request.GET.keys():
+            queryset = queryset.filter(interested__profile__handle__in=[self.request.GET.get('started')])
+
         # filter by is open or not
         if 'is_open' in self.request.GET.keys():
             queryset = queryset.filter(is_open=self.request.GET.get('is_open') == 'True')

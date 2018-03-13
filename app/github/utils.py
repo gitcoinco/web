@@ -63,6 +63,16 @@ def build_auth_dict(oauth_token):
     }
 
 
+def search_github(q):
+
+    params = (
+        ('q', q),
+        ('sort', 'updated'),
+    )
+    response = requests.get('https://api.github.com/search/users', headers=HEADERS, params=params)
+    return response.json()
+
+
 def is_github_token_valid(oauth_token=None, last_validated=None):
     """Check whether or not a Github OAuth token is valid.
 
@@ -269,16 +279,20 @@ def search(query):
     return response.json()
 
 
-def get_issue_comments(owner, repo, issue=None):
+def get_issue_comments(owner, repo, issue=None, comment_id=None):
     """Get the comments from issues on a respository."""
     params = {
         'sort': 'created',
         'direction': 'desc',
     }
     if issue:
-        url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/comments'
+        if comment_id:
+            url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
+        else:
+            url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/comments'
     else:
         url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments'
+
     response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
 
     return response.json()
@@ -288,6 +302,14 @@ def get_user(user, sub_path=''):
     """Get the github user details."""
     user = user.replace('@', '')
     url = f'https://api.github.com/users/{user}{sub_path}'
+    response = requests.get(url, auth=_AUTH, headers=HEADERS)
+
+    return response.json()
+
+
+def get_notifications():
+    """Get the github notifications."""
+    url = f'https://api.github.com/notifications?all=1'
     response = requests.get(url, auth=_AUTH, headers=HEADERS)
 
     return response.json()

@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,13 +16,15 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 from django.contrib import admin
 
 # Register your models here.
-from .models import EmailSubscriber, GithubOrgToTwitterHandleMapping, LeaderboardRank, Match, SlackUser, Stat
+from .models import (
+    EmailEvent, EmailSubscriber, GithubEvent, GithubOrgToTwitterHandleMapping, LeaderboardRank, Match, SlackPresence,
+    SlackUser, Stat,
+)
 
 
 # Register your models here.
@@ -46,13 +49,16 @@ class SlackUserAdmin(admin.ModelAdmin):
     def membership_length_in_days(self, instance):
         try:
             return (instance.last_seen - instance.created_on).days
-        except:
+        except Exception:
             return 'Unknown'
 
 
+admin.site.register(GithubEvent, GeneralAdmin)
 admin.site.register(Match, GeneralAdmin)
 admin.site.register(Stat, GeneralAdmin)
+admin.site.register(EmailEvent, GeneralAdmin)
 admin.site.register(EmailSubscriber, EmailSubscriberAdmin)
 admin.site.register(LeaderboardRank, GeneralAdmin)
 admin.site.register(SlackUser, SlackUserAdmin)
+admin.site.register(SlackPresence, GeneralAdmin)
 admin.site.register(GithubOrgToTwitterHandleMapping, GeneralAdmin)

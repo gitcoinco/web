@@ -321,6 +321,7 @@ pull_interest_list(result['pk'], function(is_interested){
 
         // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
         github_url = github_url.replace('pipermerriam/web3.py','ethereum/web3.py');
+        github_url = github_url.replace('ethereum/browser-solidity','ethereum/remix-ide');
 
         if(result['github_comments']){
             var entry_comment = {
