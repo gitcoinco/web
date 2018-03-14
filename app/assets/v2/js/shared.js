@@ -137,7 +137,7 @@ var _alert = function(msg, _class) {
         ${closeButton(msg)}
       </div>;`
     );
-};
+  };
 
   $('body').append(html);
 };
