@@ -468,6 +468,7 @@ var trigger_sidebar_web3_disabled = function(){
 };
 
 var trigger_sidebar_web3_locked = function(){
+  $('#upper_left').addClass('disabled');
   $('#sidebar_head').html("Web3 locked <br> <img src='/static/v2/images/icons/lock.png'>");
   $('#sidebar_p').html('Please unlock <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">Metamask</a>.');
 };
@@ -496,6 +497,7 @@ var trigger_sidebar_web3 = function(network){
   }
   var sidebar_p = 'Connected to ' + network + '.';
   if (is_supported_network) {
+    $('#upper_left').removeClass('disabled');
     $('#sidebar_head').html("Web3 enabled <br> <img src='/static/v2/images/icons/rss.png'>");
   } else {
     $('#upper_left').addClass('disabled');
@@ -505,11 +507,45 @@ var trigger_sidebar_web3 = function(network){
   $('#sidebar_p').html(sidebar_p);
 }
 
+
+var trigger_primary_form_web3_hooks = function() {
+  // detect web3, and if not, display a form telling users they must be web3 enabled.
+  var params = {
+    page: document.location.pathname
+  };
+
+  if ($('#primary_form').length) {
+    if (typeof web3 == 'undefined') {
+      $('#no_metamask_error').css('display', 'block');
+      $('#primary_form').remove();
+      mixpanel.track('No Metamask Error', params);
+      return;
+    }
+    if (!web3.eth.coinbase) {
+      $('#unlock_metamask_error').css('display', 'block');
+      $('#primary_form').remove();
+      mixpanel.track('Unlock Metamask Error', params);
+      return;
+    }
+    web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+      var balance = result.toNumber();
+
+      if (balance == 0) {
+        $('#zero_balance_error').css('display', 'block');
+        $('#primary_form').remove();
+        mixpanel.track('Zero Balance Metamask Error', params);
+      }
+    });
+
+  }
+};
+
 // figure out what version of web3 this is
-var register_web3 = function() {
+var listen_for_web3_changes = function() {
+  console.log('listen_for_web3_changes');
   if (typeof web3 == 'undefined') {
     trigger_sidebar_web3_disabled();
-  } else if (typeof web3.eth.accounts[0] == 'undefined') {
+  } else if (!web3.eth.coinbase) {
     trigger_sidebar_web3_locked();
   } else {
     web3.version.getNetwork((error, netId) => {
@@ -544,43 +580,13 @@ var register_web3 = function() {
   }
 };
 
-var trigger_primary_form_web3_hooks = function() {
-  // detect web3, and if not, display a form telling users they must be web3 enabled.
-  var params = {
-    page: document.location.pathname
-  };
-
-  if ($('#primary_form').length) {
-    if (typeof web3 == 'undefined') {
-      $('#no_metamask_error').css('display', 'block');
-      $('#primary_form').remove();
-      mixpanel.track('No Metamask Error', params);
-      return;
-    }
-    if (!web3.eth.coinbase) {
-      $('#unlock_metamask_error').css('display', 'block');
-      $('#primary_form').remove();
-      mixpanel.track('Unlock Metamask Error', params);
-      return;
-    }
-    web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-      var balance = result.toNumber();
-
-      if (balance == 0) {
-        $('#zero_balance_error').css('display', 'block');
-        $('#primary_form').remove();
-        mixpanel.track('Zero Balance Metamask Error', params);
-      }
-    });
-
-  }
-};
-
 $(document).ready(function() {
   sidebar_redirect_triggers();
   attach_change_element_type();
   attach_close_button();
-
-  var timeout_value = 150;
-  setTimeout(register_web3, timeout_value);
 });
+
+window.addEventListener('load', function() {
+  setInterval(listen_for_web3_changes, 100);
+});
+
