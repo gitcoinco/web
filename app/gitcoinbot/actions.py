@@ -76,8 +76,7 @@ def new_tip_text(owner, repo, issue_id, comment_text):
 
 
 def claim_bounty_text(owner, repo, issue_id):
-    issue_url = f'https://github.com/{owner}/{repo}/issues/{issue_id}'
-    claim_link = f'{settings.BASE_URL}funding/details/?url={issue_url}'
+    claim_link = f'{settings.BASE_URL}issue/{owner}/{repo}/{issue_id}'
     claim_response = f'To finish claiming this bounty please [visit this link]({claim_link})'
     return claim_response
 

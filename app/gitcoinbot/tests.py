@@ -89,8 +89,7 @@ class gitcoinbotActions(TestCase):
 
     def test_claim_bounty_text(self):
         """Test Gitcoinbot can respond with link to claim bounty."""
-        issue_url = "https://github.com/test_owner/gitcoin/issues/1234"
-        claim_link = f"{settings.BASE_URL}funding/details/?url={issue_url}"
+        claim_link = f"{settings.BASE_URL}issue/test_owner/gitcoin/1234"
         target_text = f"To finish claiming this bounty please [visit this link]({claim_link})"
         text = claim_bounty_text("test_owner", "gitcoin", "1234")
         self.assertEqual(text, target_text)
