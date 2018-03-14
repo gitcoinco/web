@@ -309,13 +309,34 @@ var build_detail_page = function(result){
 };
 
 var do_actions = function(result){
+    
+    // helper vars
+    var is_legacy = result['web3_type'] == "legacy_gitcoin";
+    var is_date_expired = (new Date(result['now']) > new Date(result['expires_date']));
+    var is_status_expired = result['status']=='expired';
+    var is_status_done = result['status']=='done';
 
-// Find interest information
-pull_interest_list(result['pk'], function(is_interested){
+    // Find interest information
+    pull_interest_list(result['pk'], function(is_interested){
+
+    // which actions should we show?
+    var show_start_stop_work = result['status']=='open' || result['status']=='started' || result['status']=='submitted';
+    var show_github_link = result['github_url'].substring(0,4) == 'http';
+    var show_submit_work = true;
+    var show_kill_bounty = !is_status_done && !is_status_expired;
+    var kill_bounty_enabled = isBountyOwner(result);
+    var submit_work_enabled = !isBountyOwner(result);
+    var start_stop_work_enabled = !isBountyOwner(result);
+    if(is_legacy){
+        show_start_stop_work = false;
+        show_github_link = true;
+        show_submit_work = false;
+        show_kill_bounty = true;
+    }
 
     //actions
     var actions = [];
-    if(result['github_url'].substring(0,4) == 'http'){
+    if(show_github_link){
 
         var github_url = result['github_url'];
 
@@ -346,10 +367,10 @@ pull_interest_list(result['pk'], function(is_interested){
         actions.push(entry);
     }
 
-    if(result['status']=='open' || result['status']=='started' || result['status']=='submitted' ){
+    if(show_start_stop_work){
 
         // is enabled
-        var enabled = !isBountyOwner(result);
+        var enabled = start_stop_work_enabled
         var interestEntry = {
             href: is_interested ? '/uninterested' : '/interested',
             text: is_interested ? 'Stop Work' : 'Start Work',
@@ -362,23 +383,22 @@ pull_interest_list(result['pk'], function(is_interested){
 
     }
 
-    // is enabled
-    var enabled = !isBountyOwner(result);
-    var entry = {
-        href: '/funding/fulfill?source='+result['github_url'],
-        text: 'Submit Work',
-        parent: 'right_actions',
-        color: enabled ? 'darkBlue' : 'darkGrey',
-        extraClass: enabled ? '' : 'disabled',
-        title: enabled ? 'Use Submit Work when you FINISH work on a bounty. ' : 'Can only be performed if you are not the funder.',
+    if (show_submit_work){
+        // is enabled
+        var enabled = submit_work_enabled
+        var entry = {
+            href: '/funding/fulfill?source='+result['github_url'],
+            text: 'Submit Work',
+            parent: 'right_actions',
+            color: enabled ? 'darkBlue' : 'darkGrey',
+            extraClass: enabled ? '' : 'disabled',
+            title: enabled ? 'Use Submit Work when you FINISH work on a bounty. ' : 'Can only be performed if you are not the funder.',
+        }
+        actions.push(entry);
     }
-    actions.push(entry);
 
-    var is_date_expired = (new Date(result['now']) > new Date(result['expires_date']));
-    var is_status_expired = result['status']=='expired';
-    var is_status_done = result['status']=='done';
-    if(!is_status_done && !is_status_expired){
-        var enabled = isBountyOwner(result);
+    if(show_kill_bounty){
+        var enabled = kill_bounty_enabled;
         var entry = {
             href: '/funding/kill?source='+result['github_url'],
             text: 'Kill Bounty',
