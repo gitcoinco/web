@@ -72,12 +72,16 @@ def amount_greater_than_zero(*args, **kwargs):
 
 def help_text():
     github_bot_user = f"@{settings.GITHUB_API_USER}"
+
+
+    currencies = ', '.join(CURRENCIES[0:10]) 
     help_text_response = f"I am {github_bot_user}, a bot that facilitates gitcoin bounties.\n" \
         "\n<hr>Here are the commands I understand:\n\n " \
-        "* `bounty <amount> ETH` -- receive link to gitcoin.co form to create bounty.\n " \
+        "* `bounty <amount> <currency>` -- receive link to gitcoin.co form to create bounty.\n " \
         "* `claim` -- receive link to gitcoin.co to start work on a bounty.\n " \
-        "* `tip <user> <amount> ETH` -- receive link to complete tippping another github user *<amount>* ETH.\n " \
+        "* `tip <user> <amount> <currency>` -- receive link to complete tippping another github user *<amount>* <currency>.\n " \
         "* `help` -- displays a help menu\n\n<br>" \
+        f"Some currencies I support: \n{currencies}\n\n<br>" \
         "Learn more at: [https://gitcoin.co](https://gitcoin.co)\n" \
         f":zap::heart:, {github_bot_user}\n"
     return help_text_response
