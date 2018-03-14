@@ -56,7 +56,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
                   'token_value_in_usdt', 'value_in_usdt', 'status', 'now',
                   'avatar_url', 'value_true', 'issue_description', 'network',
                   'org_name', 'pk', 'issue_description_text',
-                  'standard_bounties_id', 'web3_type')
+                  'standard_bounties_id', 'web3_type', 'can_submit_after_expiration_date')
 
     def create(self, validated_data):
         """Handle creation of m2m relationships and other custom operations."""
@@ -87,11 +87,11 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         # filtering
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address',
-                    'idx_status', 'network']:
-            if key in self.request.GET.keys():
+                    'idx_status', 'network', 'bounty_owner_github_username']:
+            if key in self.request.query_params.keys():
                 # special hack just for looking up bounties posted by a certain person
                 request_key = key if key != 'bounty_owner_address' else 'coinbase'
-                val = self.request.GET.get(request_key)
+                val = self.request.query_params.get(request_key, '')
 
                 vals = val.strip().split(',')
                 _queryset = queryset.none()
@@ -103,25 +103,25 @@ class BountyViewSet(viewsets.ModelViewSet):
                 queryset = _queryset
 
         # filter by PK
-        if 'pk__gt' in self.request.GET.keys():
-            queryset = queryset.filter(pk__gt=self.request.GET.get('pk__gt'))
+        if 'pk__gt' in self.request.query_params.keys():
+            queryset = queryset.filter(pk__gt=self.request.query_params.get('pk__gt'))
 
         # filter by who is interested
-        if 'started' in self.request.GET.keys():
-            queryset = queryset.filter(interested__profile__handle__in=[self.request.GET.get('started')])
+        if 'started' in self.request.query_params.keys():
+            queryset = queryset.filter(interested__profile__handle__in=[self.request.query_params.get('started')])
 
         # filter by is open or not
-        if 'is_open' in self.request.GET.keys():
-            queryset = queryset.filter(is_open=self.request.GET.get('is_open') == 'True')
+        if 'is_open' in self.request.query_params.keys():
+            queryset = queryset.filter(is_open=self.request.query_params.get('is_open') == 'True')
             queryset = queryset.filter(expires_date__gt=datetime.now())
 
         # filter by urls
-        if 'github_url' in self.request.GET.keys():
-            urls = self.request.GET.get('github_url').split(',')
+        if 'github_url' in self.request.query_params.keys():
+            urls = self.request.query_params.get('github_url').split(',')
             queryset = queryset.filter(github_url__in=urls)
 
         # order
-        order_by = self.request.GET.get('order_by')
+        order_by = self.request.query_params.get('order_by')
         if order_by:
             queryset = queryset.order_by(order_by)
 

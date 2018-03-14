@@ -172,6 +172,11 @@ def get_bounty(bounty_enum, network):
     if 'Failed to get block' in bounty_data_str:
         raise IPFSCantConnectException("Failed to connect to IPFS")
 
+    # https://github.com/Bounties-Network/StandardBounties/issues/25
+    override_deadline = bounty_data.get('payload', {}).get('expire_date', False)
+    if override_deadline:
+        deadline = override_deadline
+
     # assemble the data
     bounty = {
         'id': bounty_enum,
@@ -292,6 +297,9 @@ def build_profile_pairs(bounty):
     """
     profile_handles = []
     for fulfillment in bounty.fulfillments.select_related('profile').all().order_by('pk'):
-        if fulfillment.profile and fulfillment.profile.handle and fulfillment.profile.absolute_url:
+        if fulfillment.profile and fulfillment.profile.handle.strip() and fulfillment.profile.absolute_url:
             profile_handles.append((fulfillment.profile.handle, fulfillment.profile.absolute_url))
+        else:
+            addr = f"https://etherscan.io/address/{fulfillment.fulfiller_address}"
+            profile_handles.append((fulfillment.fulfiller_address, addr))
     return profile_handles

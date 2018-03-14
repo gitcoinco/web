@@ -1,4 +1,3 @@
-/* eslint-disable nonblock-statement-body-position */
 var tokens = function(network_id) {
   // from https://github.com/etherdelta/etherdelta.github.io/blob/master/config/main.json
   var _tokens = null;
@@ -167,9 +166,7 @@ var tokens = function(network_id) {
       {'addr': '0xe5a7c12972f3bbfe70ed29521c8949b8af6a0970', 'name': 'BLX', 'decimals': 18},
       {'addr': '0x5cf4e9dfd975c52aa523fb5945a12235624923dc', 'name': 'MPRM', 'decimals': 0 },
       {'addr': '0xb581e3a7db80fbaa821ab39342e9cbfd2ce33c23', 'name': 'ARCD', 'decimals': 18},
-      {'addr': '0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6', 'name': 'RDN', 'decimals': 18},
-      {'addr': '0x056017c55aE7AE32d12AeF7C679dF83A85ca75Ff', 'name': 'WYV', 'decimals': 18},
-      {'addr': '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', 'name': 'DAI', 'decimals': 18}
+      {'addr': '0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6', 'name': 'RDN', 'decimals': 18}
     ];
   } else if (network_id == 'ropsten') { // ropsten
     _tokens = [
@@ -187,7 +184,7 @@ var tokens = function(network_id) {
       { 'addr': '0x0000000000000000000000000000000000000000', 'name': 'ETH', 'decimals': 18 }
     ];
   }
-
+    
   _tokens.sort(function(a, b) {
     if (a.name[0] < b.name[0]) {
       return -1;
@@ -198,8 +195,6 @@ var tokens = function(network_id) {
   return _tokens;
 };
 
-
-
 var tokenAddressToDetails = function(addr) {
   var _tokens = tokens(document.web3network);
 
@@ -209,5 +204,47 @@ var tokenAddressToDetails = function(addr) {
     }
   }
   return null;
+};
+
+var load_tokens = function() {
+  window.addEventListener('load', function() {
+    waitforWeb3(function() {
+      // add tokens to the submission form
+      var tokenAddress = localStorage['tokenAddress'];
+
+      if (!tokenAddress) {
+        tokenAddress = '0x0000000000000000000000000000000000000000';
+      }
+      var _tokens = tokens(document.web3network);
+
+      for (var i = 0; i < _tokens.length; i++) {
+        var token = _tokens[i];
+        var select = {
+          value: token['addr'],
+          text: token['name']
+        };
+
+        if (token['addr'] == tokenAddress) {
+          select['selected'] = 'selected';
+        }
+        $('select[name=deonomination]').append($('<option>', select));
+      }
+      // if web3, set the values of some form variables
+      if (typeof localStorage['amount'] != 'undefined') {
+        $('input[name=amount]').val(localStorage['amount']);
+      }
+      if (typeof localStorage['githubUsername'] != 'undefined') {
+        if (!$('input[name=githubUsername]').val()) {
+          $('input[name=githubUsername]').val(localStorage['githubUsername']);
+        }
+      }
+      if (typeof localStorage['notificationEmail'] != 'undefined') {
+        $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
+      }
+      if (typeof localStorage['acceptTOS'] != 'undefined' && localStorage['acceptTOS']) {
+        $('input[name=terms]').attr('checked', 'checked');
+      }
+    });
+  });
 };
 

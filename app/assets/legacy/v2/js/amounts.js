@@ -11,6 +11,7 @@ var estimate = function(amount, conv_rate) {
     return 'Approx: ' + estimateAmount + ' USD';
   }
   return 'Approx: Unknown amount';
+    
 };
 
 var getUSDEstimate = function(amount, denomination, callback) {
@@ -27,7 +28,7 @@ var getUSDEstimate = function(amount, denomination, callback) {
     conv_rate = document.conversion_rates[denomination];
     return callback(estimate(amount, conv_rate));
   }
-  var request_url = '/sync/get_amount?amount=' + amount + '&denomination=' + denomination;
+  var request_url = '/legacy/sync/get_amount?amount=' + amount + '&denomination=' + denomination;
 
   jQuery.get(request_url, function(result) {
     amount_usdt = result['usdt'];
@@ -42,4 +43,7 @@ var getUSDEstimate = function(amount, denomination, callback) {
   }).fail(function() {
     return callback('Approx: Unknown amount');
   });
+    
+
+
 };
