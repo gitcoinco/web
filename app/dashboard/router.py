@@ -23,7 +23,7 @@ from datetime import datetime
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
 
-from .models import Bounty, BountyFulfillment
+from .models import Bounty, BountyFulfillment, Interest, ProfileSerializer
 
 
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
@@ -38,11 +38,24 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
                   'fulfillment_id', 'accepted', 'profile', 'created_on')
 
 
+class InterestSerializer(serializers.ModelSerializer):
+    """Handle serializing the Interest object."""
+
+    profile = ProfileSerializer()
+
+    class Meta:
+        """Define the Interest serializer metadata."""
+
+        model = Interest
+        fields = ('profile', 'created')
+
+
 # Serializers define the API representation.
 class BountySerializer(serializers.HyperlinkedModelSerializer):
     """Handle serializing the Bounty object."""
 
     fulfillments = BountyFulfillmentSerializer(many=True)
+    interested = InterestSerializer(many=True)
 
     class Meta:
         """Define the bounty serializer metadata."""
@@ -53,7 +66,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
                   'bounty_type', 'project_length', 'experience_level',
                   'github_url', 'github_comments', 'bounty_owner_address',
                   'bounty_owner_email', 'bounty_owner_github_username',
-                  'fulfillments', 'is_open', 'expires_date', 'raw_data',
+                  'fulfillments', 'interested', 'is_open', 'expires_date', 'raw_data',
                   'metadata', 'current_bounty', 'value_in_eth',
                   'token_value_in_usdt', 'value_in_usdt', 'status', 'now',
                   'avatar_url', 'value_true', 'issue_description', 'network',
@@ -80,7 +93,9 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
 class BountyViewSet(viewsets.ModelViewSet):
     """Handle the Bounty view behavior."""
 
-    queryset = Bounty.objects.prefetch_related('fulfillments').all().order_by('-web3_created')
+    queryset = Bounty.objects.prefetch_related(
+        'fulfillments', 'interested', 'interested__profile') \
+        .all().order_by('-web3_created')
     serializer_class = BountySerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
@@ -91,7 +106,9 @@ class BountyViewSet(viewsets.ModelViewSet):
             QuerySet: The Bounty queryset.
 
         """
-        queryset = Bounty.objects.prefetch_related('fulfillments').current().order_by('-web3_created')
+        queryset = Bounty.objects.prefetch_related(
+            'fulfillments', 'interested', 'interested__profile') \
+            .current().order_by('-web3_created')
         param_keys = self.request.query_params.keys()
 
         # filtering
@@ -133,6 +150,12 @@ class BountyViewSet(viewsets.ModelViewSet):
         if 'fulfiller_github_username' in param_keys:
             queryset = queryset.filter(
                 fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfiller_github_username')
+            )
+
+        # Retrieve all interested bounties by profile handle
+        if 'interested_github_username' in param_keys:
+            queryset = queryset.filter(
+                interested__profile__handle__iexact=self.request.query_params.get('interested_github_username')
             )
 
         # order
