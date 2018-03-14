@@ -47,6 +47,14 @@ from .signals import m2m_changed_interested
 logger = logging.getLogger(__name__)
 
 
+class Grant(SuperModel):
+    """Define the structure of a Grant."""
+
+    title = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.title
+
 class BountyQuerySet(models.QuerySet):
     """Handle the manager queryset for Bounties."""
 

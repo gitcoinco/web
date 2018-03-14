@@ -49,6 +49,11 @@ urlpatterns = [
     url(r'^api/v0.1/', include(ebrouter.urls)),
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cluodfront
 
+    # grant views
+    url(r'^grants/new?', dashboard.views.new_grant, name='new_grant'),
+    url(r'^grants/explorer/?', dashboard.views.grants_explorer, name='grants_explorer'),
+    url(r'^grants/?', dashboard.views.grants, name='grants'),
+
     # dashboard views
 
     # Dummy offchain index
