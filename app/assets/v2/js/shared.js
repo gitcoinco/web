@@ -679,3 +679,11 @@ $(document).ready(function() {
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 300);
 });
+
+var setUsdAmount = function(event) {
+  var amount = $('input[name=amount]').val();
+  var denomination = $('#token option:selected').text();
+  var estimate = getUSDEstimate(amount, denomination, function(estimate) {
+    $('#usd_amount').html(estimate);
+  });
+};

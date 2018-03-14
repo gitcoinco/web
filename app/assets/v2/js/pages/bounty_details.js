@@ -342,9 +342,11 @@ var do_actions = function(result) {
     var show_github_link = result['github_url'].substring(0, 4) == 'http';
     var show_submit_work = true;
     var show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
+    var show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
     var kill_bounty_enabled = isBountyOwner(result);
     var submit_work_enabled = !isBountyOwner(result);
     var start_stop_work_enabled = !isBountyOwner(result);
+    var increase_bounty_enabled = isBountyOwner(result);
 
     if (is_legacy) {
       show_start_stop_work = false;
@@ -415,6 +417,19 @@ var do_actions = function(result) {
         color: enabled ? 'darkBlue' : 'darkGrey',
         extraClass: enabled ? '' : 'disabled',
         title: enabled ? 'Use Submit Work when you FINISH work on a bounty. ' : 'Can only be performed if you are not the funder.'
+      };
+
+      actions.push(_entry);
+    }
+
+    if (show_increase_bounty) {
+      var _entry = {
+        href: '/funding/increase?source=' + result['github_url'],
+        text: 'Add Contribution',
+        parent: 'right_actions',
+        color: increase_bounty_enabled ? 'darkBlue' : 'darkGrey',
+        extraClass: increase_bounty_enabled ? '' : 'disabled',
+        title: increase_bounty_enabled ? 'Increase the funding of this bounty' : 'Can only be performed if you are the funder.'
       };
 
       actions.push(_entry);
