@@ -74,6 +74,59 @@ def render_match_email(bounty, github_username):
     return response_html, response_txt
 
 
+def render_bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
+    previous_bounties_str = ", ".join([bounty.github_url for bounty in previous_bounties])
+    if persona != 'submitter':
+        accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
+        github_username = " @" + accepted_fulfillments.first().fulfiller_github_username if accepted_fulfillments.exists() else ""
+        txt = f"""
+hi{github_username},
+
+thanks for turning around this bounty.  we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH. 
+
+in that spirit,  i have a few questions for you.
+
+> what would you say your blended hourly rate was for this bounty? {bounty.github_url}
+
+> what was the best thing about working on the platform?  what was the worst?
+
+> would you use gitcoin again?
+
+thanks again for being a member of the community.
+kevin
+
+"""
+    else:
+        github_username = " @" + bounty.bounty_owner_github_username if bounty.bounty_owner_github_username else ""
+        txt = f"""
+
+hi{github_username},
+
+thanks for putting this bounty ({bounty.github_url}) on gitcoin.  i'm glad to see it was turned around.
+
+we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH. 
+
+in that spirit,  i have a few questions for you:
+
+> how much coaching/communication did it take the counterparty to turn around the issue?  was this burdensome?
+
+> what was the best thing about working on the platform?  what was the worst?
+
+> would you use gitcoin again?
+
+thanks for being a member of the community.
+kevin
+"""
+
+    params = {
+        'txt': txt,
+    }
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    response_txt = render_to_string("emails/txt.txt", params)
+
+    return response_html, response_txt
+
+
 def render_new_bounty(to_email, bounty):
     params = {
         'bounty': bounty,
@@ -337,7 +390,7 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.all().last())
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.last())
     return HttpResponse(response_html)
 
 
@@ -352,35 +405,42 @@ def new_work_submission(request):
 @staff_member_required
 def new_bounty_rejection(request):
     from dashboard.models import Bounty
-    response_html, _ = render_new_bounty_rejection(settings.CONTACT_EMAIL, Bounty.objects.all().last())
+    response_html, _ = render_new_bounty_rejection(settings.CONTACT_EMAIL, Bounty.objects.last())
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def new_bounty_acceptance(request):
     from dashboard.models import Bounty
-    response_html, _ = render_new_bounty_acceptance(settings.CONTACT_EMAIL, Bounty.objects.all().last())
+    response_html, _ = render_new_bounty_acceptance(settings.CONTACT_EMAIL, Bounty.objects.last())
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def bounty_feedback(request):
+    from dashboard.models import Bounty
+    response_html, _ = render_bounty_feedback(Bounty.objects.filter(idx_status='done', current_bounty=True).last(), 'foo')
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def bounty_expire_warning(request):
     from dashboard.models import Bounty
-    response_html, _ = render_bounty_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last())
+    response_html, _ = render_bounty_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.last())
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def start_work_expired(request):
     from dashboard.models import Bounty, Interest
-    response_html, _ = render_bounty_startwork_expired(settings.CONTACT_EMAIL, Bounty.objects.all().last(), Interest.objects.all().last(), 5)
+    response_html, _ = render_bounty_startwork_expired(settings.CONTACT_EMAIL, Bounty.objects.last(), Interest.objects.all().last(), 5)
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def start_work_expire_warning(request):
     from dashboard.models import Bounty, Interest
-    response_html, _ = render_bounty_startwork_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last(), Interest.objects.all().last(), 5)
+    response_html, _ = render_bounty_startwork_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.last(), Interest.objects.all().last(), 5)
     return HttpResponse(response_html)
 
 
