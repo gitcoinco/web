@@ -7,8 +7,8 @@ node_js:
 env:
   - PYTHONPATH="$TRAVIS_BUILD_DIR/app/"
 cache:
-  - pip
   directories:
+    - $HOME/.cache/pip
     - node_modules
 install:
   - npm install
