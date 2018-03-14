@@ -284,10 +284,16 @@ var sync_web3 = function(issueURL, bountydetails, callback) {
   });
 };
 
+var sidebar_redirect_triggers = function(){
+  $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e) {
+    if (document.location.href.indexOf('/dashboard') == -1 && document.location.href.indexOf('/explorer') == -1) {
+      document.location.href = '/explorer';
+      e.preventDefault();
+    }
+  });  
+}
 
-// sidebar
-$(document).ready(function() {
-
+var attach_change_element_type = function(){
   (function($) {
     $.fn.changeElementType = function(newType) {
       var attrs = {};
@@ -301,14 +307,9 @@ $(document).ready(function() {
       });
     };
   })(jQuery);
+};
 
-  $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e) {
-    if (document.location.href.indexOf('/dashboard') == -1 && document.location.href.indexOf('/explorer') == -1) {
-      document.location.href = '/explorer';
-      e.preventDefault();
-    }
-  });
-
+var attach_close_button = function(){
   $('body').delegate('.alert .closebtn', 'click', function(e) {
     $(this).parents('.alert').remove();
     $('.alert').each(function() {
@@ -318,7 +319,8 @@ $(document).ready(function() {
       $(this).css('top', new_top);
     });
   });
-});
+};
+
 
 // callbacks that can retrieve various metadata about a github issue URL
 
@@ -451,119 +453,6 @@ var retrieveKeywords = function() {
   });
 };
 
-
-// figure out what version of web3 this is
-window.addEventListener('load', function() {
-  var timeout_value = 150;
-
-  setTimeout(function() {
-    if (typeof web3 == 'undefined') {
-      $('#upper_left').addClass('disabled');
-      $('#sidebar_head').html("Web3 disabled <br> <img src='/static/v2/images/icons/question.png'>");
-      $('#sidebar_p').html("Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a> <br> <a target=new href='/web3'>What is Metamask and why do I need it?</a>.");
-    } else if (typeof web3.eth.accounts[0] == 'undefined') {
-      $('#sidebar_head').html("Web3 locked <br> <img src='/static/v2/images/icons/lock.png'>");
-      $('#sidebar_p').html('Please unlock <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">Metamask</a>.');
-    } else {
-      web3.version.getNetwork((error, netId) => {
-        if (!error) {
-
-          // figure out which network we're on
-          var network = 'unknown';
-
-          switch (netId) {
-            case '1':
-              network = 'mainnet';
-              break;
-            case '2':
-              network = 'morden';
-              break;
-            case '3':
-              network = 'ropsten';
-              break;
-            case '4':
-              network = 'rinkeby';
-              break;
-            case '42':
-              network = 'kovan';
-              break;
-            default:
-              network = 'custom network';
-          }
-          document.web3network = network;
-
-          // is this a supported networK?
-          var is_supported_network = true;
-          var recommended_network = 'mainnet or rinkeby';
-
-          if (network == 'kovan' || network == 'ropsten') {
-            is_supported_network = false;
-          }
-          if (document.location.href.indexOf('https://gitcoin.co') != -1) {
-            if (network != 'mainnet' && network != 'rinkeby') {
-              is_supported_network = false;
-              recommended_network = 'mainnet or rinkeby';
-            }
-          }
-          if (network == 'mainnet') {
-            if (document.location.href.indexOf('https://gitcoin.co') == -1) {
-              is_supported_network = false;
-              recommended_network = 'custom rpc by using ganache-cli or rinkeby';
-            }
-          }
-          var sidebar_p = 'Connected to ' + network + '.';
-
-          if (is_supported_network) {
-            $('#sidebar_head').html("Web3 enabled <br> <img src='/static/v2/images/icons/rss.png'>");
-          } else {
-            $('#upper_left').addClass('disabled');
-            $('#sidebar_head').html("Unsupported network <br> <img src='/static/v2/images/icons/battery_empty.png'>");
-            sidebar_p += '<br>(try ' + recommended_network + ' instead)';
-          }
-          $('#sidebar_p').html(sidebar_p);
-        } else {
-          $('#upper_left').addClass('disabled');
-          $('#sidebar_head').html('Web3 disabled');
-          $('#sidebar_p').html('Please install & unlock <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">Metamask</a>. ');
-        }
-      });
-    }
-  }, timeout_value);
-
-  setTimeout(function() {
-    // detect web3, and if not, display a form telling users they must be web3 enabled.
-    var params = {
-      page: document.location.pathname
-    };
-
-    if ($('#primary_form').length) {
-      if (typeof web3 == 'undefined') {
-        $('#no_metamask_error').css('display', 'block');
-        $('#primary_form').remove();
-        mixpanel.track('No Metamask Error', params);
-        return;
-      }
-      if (!web3.eth.coinbase) {
-        $('#unlock_metamask_error').css('display', 'block');
-        $('#primary_form').remove();
-        mixpanel.track('Unlock Metamask Error', params);
-        return;
-      }
-      web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-        var balance = result.toNumber();
-
-        if (balance == 0) {
-          $('#zero_balance_error').css('display', 'block');
-          $('#primary_form').remove();
-          mixpanel.track('Zero Balance Metamask Error', params);
-        }
-      });
-
-    }
-  }, timeout_value);
-
-});
-
 var randomElement = function(array) {
   var length = array.length;
   var randomNumber = Math.random();
@@ -571,3 +460,127 @@ var randomElement = function(array) {
 
   return array[randomIndex];
 };
+
+var trigger_sidebar_web3_disabled = function(){
+  $('#upper_left').addClass('disabled');
+  $('#sidebar_head').html("Web3 disabled <br> <img src='/static/v2/images/icons/question.png'>");
+  $('#sidebar_p').html("Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a> <br> <a target=new href='/web3'>What is Metamask and why do I need it?</a>.");
+};
+
+var trigger_sidebar_web3_locked = function(){
+  $('#sidebar_head').html("Web3 locked <br> <img src='/static/v2/images/icons/lock.png'>");
+  $('#sidebar_p').html('Please unlock <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">Metamask</a>.');
+};
+
+var trigger_sidebar_web3 = function(network){
+  document.web3network = network;
+
+  // is this a supported networK?
+  var is_supported_network = true;
+  var recommended_network = 'mainnet or rinkeby';
+
+  if (network == 'kovan' || network == 'ropsten') {
+    is_supported_network = false;
+  }
+  if (document.location.href.indexOf('https://gitcoin.co') != -1) {
+    if (network != 'mainnet' && network != 'rinkeby') {
+      is_supported_network = false;
+      recommended_network = 'mainnet or rinkeby';
+    }
+  }
+  if (network == 'mainnet') {
+    if (document.location.href.indexOf('https://gitcoin.co') == -1) {
+      is_supported_network = false;
+      recommended_network = 'custom rpc by using ganache-cli or rinkeby';
+    }
+  }
+  var sidebar_p = 'Connected to ' + network + '.';
+  if (is_supported_network) {
+    $('#sidebar_head').html("Web3 enabled <br> <img src='/static/v2/images/icons/rss.png'>");
+  } else {
+    $('#upper_left').addClass('disabled');
+    $('#sidebar_head').html("Unsupported network <br> <img src='/static/v2/images/icons/battery_empty.png'>");
+    sidebar_p += '<br>(try ' + recommended_network + ' instead)';
+  }
+  $('#sidebar_p').html(sidebar_p);
+}
+
+// figure out what version of web3 this is
+var register_web3 = function() {
+  if (typeof web3 == 'undefined') {
+    trigger_sidebar_web3_disabled();
+  } else if (typeof web3.eth.accounts[0] == 'undefined') {
+    trigger_sidebar_web3_locked();
+  } else {
+    web3.version.getNetwork((error, netId) => {
+      if (error) {
+        trigger_sidebar_web3_disabled();
+      } else {
+        // figure out which network we're on
+        var network = 'unknown';
+        switch (netId) {
+          case '1':
+            network = 'mainnet';
+            break;
+          case '2':
+            network = 'morden';
+            break;
+          case '3':
+            network = 'ropsten';
+            break;
+          case '4':
+            network = 'rinkeby';
+            break;
+          case '42':
+            network = 'kovan';
+            break;
+          default:
+            network = 'custom network';
+        }
+        trigger_sidebar_web3(network);
+        trigger_primary_form_web3_hooks();
+      } 
+    });
+  }
+};
+
+var trigger_primary_form_web3_hooks = function() {
+  // detect web3, and if not, display a form telling users they must be web3 enabled.
+  var params = {
+    page: document.location.pathname
+  };
+
+  if ($('#primary_form').length) {
+    if (typeof web3 == 'undefined') {
+      $('#no_metamask_error').css('display', 'block');
+      $('#primary_form').remove();
+      mixpanel.track('No Metamask Error', params);
+      return;
+    }
+    if (!web3.eth.coinbase) {
+      $('#unlock_metamask_error').css('display', 'block');
+      $('#primary_form').remove();
+      mixpanel.track('Unlock Metamask Error', params);
+      return;
+    }
+    web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+      var balance = result.toNumber();
+
+      if (balance == 0) {
+        $('#zero_balance_error').css('display', 'block');
+        $('#primary_form').remove();
+        mixpanel.track('Zero Balance Metamask Error', params);
+      }
+    });
+
+  }
+};
+
+$(document).ready(function() {
+  sidebar_redirect_triggers();
+  attach_change_element_type();
+  attach_close_button();
+
+  var timeout_value = 150;
+  setTimeout(register_web3, timeout_value);
+});
