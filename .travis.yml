@@ -3,7 +3,7 @@ language: python
 python:
   - "3.6"
 node_js:
-  - "7"
+  - "8"
 env:
   - PYTHONPATH="$TRAVIS_BUILD_DIR/app/"
 install:
@@ -12,7 +12,6 @@ install:
   - pip install -r requirements/test.txt
 script:
   - npm run eslint
-  - npm run stylelint
   - pytest -p no:ethereum
 after_success:
   - pip install codecov
