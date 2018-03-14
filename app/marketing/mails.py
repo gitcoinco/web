@@ -23,9 +23,9 @@ import sendgrid
 from economy.utils import convert_token_to_usdt
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from retail.emails import (
-    render_bounty_expire_warning, render_bounty_startwork_expire_warning, render_faucet_rejected, render_faucet_request,
-    render_match_email, render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection,
-    render_new_bounty_roundup, render_new_work_submission, render_tip_email,
+    render_bounty_expire_warning, render_bounty_feedback, render_bounty_startwork_expire_warning,
+    render_faucet_rejected, render_faucet_request, render_match_email, render_new_bounty, render_new_bounty_acceptance,
+    render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -70,7 +70,7 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     return response
 
 
-def bounty_feedback(bounty, persona='submitter'):
+def bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
     from_email = settings.PERSONAL_CONTACT_EMAIL
     to_email = bounty.bounty_owner_email
     if persona != 'submitter':
@@ -78,8 +78,9 @@ def bounty_feedback(bounty, persona='submitter'):
         to_email = accepted_fulfillments.first().fulfiller_email if accepted_fulfillments.exists() else ""
 
     subject = bounty.github_url
-    html, text = render_tip_email(bounty, persona)
-    send_mail(from_email, to_email, subject, body)
+    html, text = render_bounty_feedback(bounty, persona, previous_bounties)
+    cc_emails = [from_email]
+    send_mail(from_email, to_email, subject, body, cc_emails=cc_emails)
 
 
 def tip_email(tip, to_emails, is_new):

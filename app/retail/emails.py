@@ -74,7 +74,8 @@ def render_match_email(bounty, github_username):
     return response_html, response_txt
 
 
-def render_bounty_feedback(bounty, persona='submitter'):
+def render_bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
+    previous_bounties_str = ", ".join([bounty.github_url for bounty in previous_bounties])
     if persona != 'submitter':
         accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
         github_username = " @" + accepted_fulfillments.first().fulfiller_github_username if accepted_fulfillments.exists() else ""
@@ -85,7 +86,7 @@ thanks for turning around this bounty.  we're hyperfocused on making gitcoin a g
 
 in that spirit,  i have a few questions for you.
 
-> what would you say your blended hourly rate was for these bounties?
+> what would you say your blended hourly rate was for this bounty? {bounty.github_url}
 
 > what was the best thing about working on the platform?  what was the worst?
 
@@ -101,7 +102,7 @@ kevin
 
 hi{github_username},
 
-thanks for putting this bounty on gitcoin.  i'm glad to see it was turned around.
+thanks for putting this bounty ({bounty.github_url}) on gitcoin.  i'm glad to see it was turned around.
 
 we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH. 
 
@@ -418,7 +419,7 @@ def new_bounty_acceptance(request):
 @staff_member_required
 def bounty_feedback(request):
     from dashboard.models import Bounty
-    response_html, _ = render_bounty_feedback(Bounty.objects.last(), 'foo')
+    response_html, _ = render_bounty_feedback(Bounty.objects.filter(idx_status='done', current_bounty=True).last(), 'foo')
     return HttpResponse(response_html)
 
 
