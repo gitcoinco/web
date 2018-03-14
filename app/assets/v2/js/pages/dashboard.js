@@ -149,7 +149,6 @@ var get_search_URI = function() {
         key !== 'bounty_owner_address') {
       uri += '&' + key + '=' + val;
     }
-    console.log(uri);
   }
 
   if (typeof web3 != 'undefined' && web3.eth.coinbase) {
