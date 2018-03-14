@@ -136,7 +136,7 @@ $(document).ready(function() {
     var isError = false;
 
     if ($('#terms:checked').length == 0) {
-      _alert({ message: 'Please accept the terms of service.' });
+      _alert({ message: 'Please accept the terms of service.' }, 'warning');
       isError = true;
     } else {
       localStorage['acceptTOS'] = true;
@@ -148,19 +148,19 @@ $(document).ready(function() {
 
         ;
     if (is_issueURL_invalid) {
-      _alert({ message: 'Please enter a valid github issue URL.' });
+      _alert({ message: 'Please enter a valid github issue URL.' }, 'warning');
       isError = true;
     }
     if (amount == '') {
-      _alert({ message: 'Please enter an amount.' });
+      _alert({ message: 'Please enter an amount.' }, 'warning');
       isError = true;
     }
     if (metadata.issueTitle == '') {
-      _alert({ message: 'Please enter an title.' });
+      _alert({ message: 'Please enter an title.' }, 'warning');
       isError = true;
     }
     if (metadata.issueDescription == '') {
-      _alert({ message: 'Please enter an description.' });
+      _alert({ message: 'Please enter an description.' }, 'warningj');
       isError = true;
     }
     if (isError) {
@@ -236,7 +236,7 @@ $(document).ready(function() {
       if (error) {
         mixpanel.track('New Bounty Error', {step: 'post_bounty', error: error});
         console.error(error);
-        _alert({ message: 'There was an error.  Please try again or contact support.' });
+        _alert({ message: 'There was an error.  Please try again or contact support.' }, 'error');
         unloading_button($('#submitBounty'));
         return;
       }
@@ -256,7 +256,7 @@ $(document).ready(function() {
       if (error) {
         mixpanel.track('New Bounty Error', {step: 'post_ipfs', error: error});
         console.error(error);
-        _alert({ message: 'There was an error.  Please try again or contact support.' });
+        _alert({ message: 'There was an error.  Please try again or contact support.' }, 'error');
         unloading_button($('#submitBounty'));
         return;
       }
@@ -299,7 +299,7 @@ $(document).ready(function() {
       var result = results[0];
 
       if (result != null) {
-        _alert({ message: 'A bounty already exists for that Github Issue.' });
+        _alert({ message: 'A bounty already exists for that Github Issue.' }, 'info');
         unloading_button($('#submitBounty'));
         return;
       }
