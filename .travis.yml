@@ -6,6 +6,10 @@ node_js:
   - "8"
 env:
   - PYTHONPATH="$TRAVIS_BUILD_DIR/app/"
+cache:
+  - pip
+  directories:
+    - node_modules
 install:
   - npm install
   - cp app/app/local_settings.py.dist app/app/local_settings.py
