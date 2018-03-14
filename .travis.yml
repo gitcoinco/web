@@ -2,12 +2,17 @@ sudo: false
 language: python
 python:
   - "3.6"
+node_js:
+  - "7"
 env:
   - PYTHONPATH="$TRAVIS_BUILD_DIR/app/"
 install:
+  - npm install
   - cp app/app/local_settings.py.dist app/app/local_settings.py
   - pip install -r requirements/test.txt
 script:
+  - npm run eslint
+  - npm run stylelint
   - pytest -p no:ethereum
 after_success:
   - pip install codecov
