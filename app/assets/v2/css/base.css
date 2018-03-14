@@ -769,6 +769,7 @@ body.bounty_details #title {
 }
 
 .transaction-status {
+    display: block;
     position: relative;
     width: 80%;
     left: 10%;
