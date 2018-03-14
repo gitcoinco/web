@@ -496,7 +496,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
     _access_token = request.session.get('access_token')
     profile_id = request.session.get('profile_id')
     issueURL = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
-    
+
     # try the /pulls url if it doesnt exist in /issues
     try:
         assert Bounty.objects.current().filter(github_url=issueURL).exists()
@@ -589,6 +589,11 @@ def profile_keywords(request, handle):
 
 def profile(request, handle):
     """Display profile details."""
+    handle = handle or request.session.get('handle')
+
+    if not handle:
+        raise Http404
+
     params = {
         'title': 'Profile',
         'active': 'profile_details',
