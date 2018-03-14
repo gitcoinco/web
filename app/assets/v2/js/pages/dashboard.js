@@ -112,11 +112,11 @@ var get_search_URI = function() {
     uri += '&raw_data=' + keywords;
   }
 
-  for (var i = 0; i < sidebar_keys.length; i++) {
+  for (var i = 0; i <sidebar_keys.length; i++) {
     var key = sidebar_keys[i];
-    var filters = [];
+    var filters= [];
 
-    $.each ($('input[name=' + key + ']:checked'), function() {
+    $.each ($("input[name=" + key + "]:checked"), function() {
       if ($(this).val()) {
         filters.push($(this).val());
       }
@@ -124,20 +124,34 @@ var get_search_URI = function() {
 
     var val = filters.toString();
 
-    // special casing. TODO: clean this up
-    if (key === 'bounty_filter') {
-      if (val === 'myself') {
+    if((key === 'bounty_filter') && val) {
+      var values = val.split(',');
+      values.forEach(function(_value) {
+        var _key;
+        if (_value === 'createdByMe') {
+          _key = 'bounty_owner_github_username';
+          _value = document.contxt.github_handle;
+        } else if (_value === 'claimedByMe') {
+          _key = 'fulfiller_github_username';
+          _value = document.contxt.github_handle;
+        }
+        uri += '&' + _key + '=' + _value;
+      });
+
+      // TODO: Check if value myself is needed for coinbase
+      if (val === 'claimedByMe') {
         key = 'bounty_owner_address';
-      } else if (val === 'watched') {
-        key = 'github_url';
-        val = interested_list();
+        val = 'myself';
       }
     }
-
-    if (val !== 'any') {
+    if (val !== 'any' &&
+        key !== 'bounty_filter'&&
+        key !== 'bounty_owner_address') {
       uri += '&' + key + '=' + val;
     }
+    console.log(uri);
   }
+
   if (typeof web3 != 'undefined' && web3.eth.coinbase) {
     uri += '&coinbase=' + web3.eth.coinbase;
   } else {
