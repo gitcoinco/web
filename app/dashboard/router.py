@@ -130,7 +130,7 @@ class BountyViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(github_url__in=urls)
 
         # Retrieve all fullfilled bounties by fulfiller_username
-        if 'fulfill_github_username' in param_keys:
+        if 'fulfiller_github_username' in param_keys:
             queryset = queryset.filter(
                 fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfill_github_username')
             )
