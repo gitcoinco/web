@@ -26,9 +26,48 @@ from django.conf import settings
 import jwt
 import requests
 from github.utils import post_issue_comment_reaction
+from dashboard.tokens import tokens
 
 GITCOINBOT_APP_ID = settings.GITCOINBOT_APP_ID
 SECRET_KEYSTRING = settings.SECRET_KEYSTRING
+
+
+MIN_AMOUNT = 0
+CURRENCIES = set(tokens.map(lambda currency: currency["name"]))
+
+class Bounds(object):
+    def __init__(self, *args):
+        self.bounds = args
+
+    def __call__(self, f):
+        def wrapped_f(*args, **kwargs):
+            for bound in self.bounds: # Check if every bound is complained
+		(valid, msg) = bound(*args, **kwargs):
+                if not valid:
+                    return msg # especify what bound failed and why
+
+            f(*args, **kwargs)
+    
+	return caller
+
+    return check_bounds_on
+
+
+def amount_greater_than_zero(*args, **kwargs):
+    # No negatives and greater than 0
+    comment_text = args[-1]
+    amount = parse_comment_amount(comment_text)
+    currency = parse_comment_currency(comment_text)
+    response =  f'The amount should be greater than {MIN_AMOUNT} {tip_currency}'
+
+    try:
+      f_amount = float(amount)
+      if f_amount > MIN_AMOUNT:
+        return (True, '')
+    except:
+      pass
+
+    return (False,  response)
 
 
 def help_text():
@@ -44,12 +83,13 @@ def help_text():
     return help_text_response
 
 
+@Bound(amount_greater_than_zero)
 def new_bounty_text(owner, repo, issue_id, comment_text):
     issue_link = f"https://github.com/{owner}/{repo}/issues/{issue_id}"
     bounty_amount = parse_comment_amount(comment_text)
     bounty_link = f"{settings.BASE_URL}funding/new?source={issue_link}&amount={bounty_amount}"
     new_bounty_response = f"To create the bounty please [visit this link]({bounty_link}).\n\n " \
-        "PS Make sure you're logged into Metamask!"
+          "PS Make sure you're logged into Metamask!"
     return new_bounty_response
 
 
@@ -59,14 +99,24 @@ def parse_comment_amount(comment_text):
     return result[0]
 
 
+def parse_comment_currency(comment_text):
+    or_currencies = r'|'.join(CURRENCIES) 
+    re_currencies = r'({})'.format(or_currencies)
+    result = re.findall(re_currencies, comment_text)
+
+    return result[0]
+
+
 def parse_tippee_username(comment_text):
     re_username = r'[@][a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}'
     username = re.findall(re_username, comment_text)
     return username[-1]
 
 
+@Bound(amount_greater_than_zero)
 def new_tip_text(owner, repo, issue_id, comment_text):
     tip_amount = parse_comment_amount(comment_text)
+    tip_currency = parse_comment_currency(comment_text)
     username = parse_tippee_username(comment_text)
     issue_url = f'https://github.com/{owner}/{repo}/issues/{issue_id}'
     tip_link = f'{settings.BASE_URL}tip/?amount={tip_amount}&username={username}&source={issue_url}'
