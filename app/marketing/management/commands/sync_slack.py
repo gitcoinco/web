@@ -65,7 +65,7 @@ class Command(BaseCommand):
                 # save user by user 'lastseen' info
                 username = user['profile']['display_name']
                 email = user['profile']['email']
-                #print(username, email)
+                # print(username, email)
                 su, _ = SlackUser.objects.get_or_create(
                     username=username,
                     email=email,
@@ -77,7 +77,7 @@ class Command(BaseCommand):
                     su.last_seen = timezone.now()
                     su.times_seen += 1
                     # 3/8/2017
-                    # to manage the scale of the DB, a SlackUser will be assumbed to be 
+                    # to manage the scale of the DB, a SlackUser will be assumbed to be
                     # away unless a SlackPresence Object exists
                     SlackPresence.objects.create(
                         slackuser=su,

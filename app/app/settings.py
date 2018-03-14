@@ -17,12 +17,10 @@
 '''
 import os
 import socket
-from datetime import datetime
 
 from django.http import Http404
 
 import rollbar
-from pytz import utc
 
 HOSTNAME = socket.gethostname()
 
@@ -64,6 +62,7 @@ INSTALLED_APPS = [
     'email_obfuscator',
     'linkshortener',
     'credits',
+    'gitcoinbot'
 ]
 
 MIDDLEWARE = [
@@ -243,9 +242,9 @@ IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
 # Faucet App config
 FAUCET_AMOUNT = .001
 
-CSRF_USE_SESSIONS = True
-
 SENDGRID_EVENT_HOOK_URL = 'sg_event_process'
+
+GITHUB_EVENT_HOOK_URL = 'github/payload/'
 
 # Include local settings overrides
 try:

@@ -31,7 +31,7 @@ from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
 
 def send_mail(from_email, _to_email, subject, body, html=False,
-              from_name="Gitcoin.co", cc_emails=None, add_bcc=True):
+              from_name="Gitcoin.co", cc_emails=None):
 
     # make sure this subscriber is saved
     to_email = _to_email
@@ -46,23 +46,21 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     # build content
     content = Content(contenttype, html) if html else Content(contenttype, body)
     if settings.DEBUG:
-        to_email = Email(settings.CONTACT_EMAIL) #just to be double secret sure of what were doing in dev
+        to_email = Email(settings.CONTACT_EMAIL)  # just to be double secret sure of what were doing in dev
         subject = "[DEBUG] " + subject
     mail = Mail(from_email, subject, to_email, content)
 
-    # build personalization (BCC + CC)
-    if add_bcc:
-        p = Personalization()
-        p.add_to(to_email)
-        if cc_emails: #only add CCif not in prod
-            for cc_addr in set(cc_emails):
-                cc_addr = Email(cc_addr)
-                if settings.DEBUG:
-                    cc_addr = to_email
-                if cc_addr._email != to_email._email:
-                    p.add_to(cc_addr)
-        p.add_bcc(Email(settings.BCC_EMAIL))
-        mail.add_personalization(p)
+    # build personalization
+    p = Personalization()
+    p.add_to(to_email)
+    if cc_emails: # only add CCif not in prod
+        for cc_addr in set(cc_emails):
+            cc_addr = Email(cc_addr)
+            if settings.DEBUG:
+                cc_addr = to_email
+            if cc_addr._email != to_email._email:
+                p.add_to(cc_addr)
+    mail.add_personalization(p)
 
     # debug logs
     print("-- Sending Mail '{}' to {}".format(subject, _to_email))
@@ -73,14 +71,14 @@ def send_mail(from_email, _to_email, subject, body, html=False,
 
 
 def tip_email(tip, to_emails, is_new):
-    ROUND_DECIMALS = 5
+    round_decimals = 5
     if not tip or not tip.url or not tip.amount or not tip.tokenName:
         return
 
     warning = '' if tip.network == 'mainnet' else "({})".format(tip.network)
-    subject = "⚡️ New Tip Worth {} {} {}".format(round(tip.amount, ROUND_DECIMALS), warning, tip.tokenName)
+    subject = "⚡️ New Tip Worth {} {} {}".format(round(tip.amount, round_decimals), warning, tip.tokenName)
     if not is_new:
-        subject = "🕐 Tip Worth {} {} {} Expiring Soon".format(round(tip.amount, ROUND_DECIMALS), warning, tip.tokenName)
+        subject = "🕐 Tip Worth {} {} {} Expiring Soon".format(round(tip.amount, round_decimals), warning, tip.tokenName)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL

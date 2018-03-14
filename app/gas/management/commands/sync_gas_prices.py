@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -30,18 +30,18 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         with transaction.atomic():
-            
+
             response = requests.get('http://ethgasstation.info/predictionTable.php')
             soup = BeautifulSoup(response.text, 'html.parser')
             eles = soup.findAll("tr",)
-            print('syncing {} eles'.format(len(eles)))
+            print(f'syncing {len(eles)} eles')
             if len(eles) < 10:
                 raise
             for ele in eles:
                 if ele.find('th'):
                     continue
                 tds = ele.findAll('td')
-                #TODO: refactor this all to use an API instead of webscraping
+                # TODO: refactor this all to use an API instead of webscraping
                 gas_price = tds[0].text
                 mean_time_to_confirm_blocks = 0
                 mean_time_to_confirm_minutes = str(tds[5].text).replace('> 2 hours', '120')

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
     Copyright (C) 2017 Gitcoin Core
 
@@ -15,7 +16,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-# -*- coding: utf-8 -*-
 from __future__ import print_function, unicode_literals
 
 import json
@@ -35,7 +35,9 @@ from app.utils import ellipses, sync_profile
 from dashboard.models import (
     Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
 )
-from dashboard.notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
+from dashboard.notifications import (
+    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
+)
 from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from github.utils import get_auth_url, get_github_emails, get_github_primary_email, is_github_token_valid
@@ -98,6 +100,7 @@ def new_interest(request, bounty_id):
     except Interest.DoesNotExist:
         interest = Interest.objects.create(profile_id=profile_id)
         bounty.interested.add(interest)
+        maybe_market_to_slack(bounty, 'start_work')
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \
@@ -143,6 +146,7 @@ def remove_interest(request, bounty_id):
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         bounty.interested.remove(interest)
+        maybe_market_to_slack(bounty, 'stop_work')
         interest.delete()
     except Interest.DoesNotExist:
         return JsonResponse({
@@ -367,6 +371,7 @@ def dashboard(request):
     }
     return TemplateResponse(request, 'dashboard.html', params)
 
+
 def external_bounties(request):
     """Handle Dummy External Bounties index page."""
 
@@ -406,6 +411,7 @@ def external_bounties(request):
     }
     return TemplateResponse(request, 'external_bounties.html', params)
 
+
 def external_bounties_show(request):
     """Handle Dummy External Bounties show page."""
     bounty = {
@@ -438,6 +444,7 @@ def new_bounty(request):
     is_user_authenticated = request.user.is_authenticated
     params = {
         'issueURL': issue_url,
+        'amount': request.GET.get('amount'),
         'active': 'submit_bounty',
         'title': 'Create Funded Issue',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
@@ -456,6 +463,7 @@ def fulfill_bounty(request):
     is_user_authenticated = request.user.is_authenticated
     params = {
         'issueURL': request.GET.get('source'),
+        'githubUsername': request.GET.get('githubUsername'),
         'title': 'Submit Work',
         'active': 'fulfill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
@@ -616,6 +624,11 @@ def profile(request, handle):
         handle (str): The profile handle.
 
     """
+    handle = handle or request.session.get('handle')
+
+    if not handle:
+        raise Http404
+
     params = {
         'title': 'Profile',
         'active': 'profile_details',
@@ -732,6 +745,7 @@ def prirp(request):
 def apitos(request):
     return redirect('https://gitcoin.co/terms#privacy')
 
+
 def toolbox(request):
     actors = [{
         "title": "The Basics",
@@ -773,7 +787,7 @@ def toolbox(request):
       }, {
           "title": "The Powertools",
           "description": "Take your OSS game to the next level!",
-          "tools": [ {
+          "tools": [{
               "name": "Browser Extension",
               "img": "/static/v2/images/tools/browser_extension.png",
               "description": '''Browse Gitcoin where you already work.

@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,7 +16,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 from django.contrib import admin
@@ -24,12 +24,13 @@ from django.utils.html import format_html
 from .models import AccessCodes, WhitepaperAccess, WhitepaperAccessRequest
 
 
-# Register your models here.
 class GeneralAdmin(admin.ModelAdmin):
+
     ordering = ['-id']
 
 
 class WhitepaperAccessRequestAdmin(admin.ModelAdmin):
+
     ordering = ['-id']
     list_display = ['pk', 'link', 'role', 'processed', 'comments', 'email', 'created_on']
     readonly_fields = ['link']

@@ -38,6 +38,8 @@ def faucet(request):
     faucet_amount = getattr(settings, "FAUCET_AMOUNT", .003)
     params = {
         'title': 'Faucet',
+        'card_title': 'Gitcoin Faucet',
+        'card_desc': 'Request a distribution of ETH so you can use the Ethereum network and Gitcoin.',
         'faucet_amount': faucet_amount
     }
 
@@ -47,8 +49,10 @@ def faucet(request):
 def check_github(profile):
     user = search_github(profile + ' in:login type:user')
     response = {'status': 200, 'user': False}
-    if not len(user['items']) == 0 or not user['items'][0]['login'].lower() != profile.lower():
-        response['user'] = user['items'][0]
+    user_items = user.get('items', [])
+
+    if user_items and user_items[0].get('login', '').lower() == profile.lower():
+        response['user'] = user_items[0]
     return response
 
 
@@ -75,12 +79,10 @@ def save_faucet(request):
         return JsonResponse({
             'message': 'The submitted github profile shows a pending faucet distribution.'
         }, status=403)
-    elif checkeduser == False:
+    elif not checkeduser:
         return JsonResponse({
           'message': 'The submitted github profile could not be found on github.'
         }, status=400)
-    else:
-        githubMeta = checkeduser
 
     fr = FaucetRequest.objects.create(
         fulfilled=False,
@@ -103,11 +105,11 @@ def process_faucet_request(request, pk):
 
     if faucet_request.fulfilled:
         messages.info(request, 'already fulfilled')
-        return redirect(reverse('process_faucet_request'))
+        return redirect(reverse('admin:index'))
 
     if faucet_request.rejected:
         messages.info(request, 'already rejected')
-        return redirect(reverse('process_faucet_request'))
+        return redirect(reverse('admin:index'))
 
     if request.POST.get('reject_comments', False):
         faucet_request.comment_admin = request.POST.get('reject_comments', False)
@@ -116,7 +118,7 @@ def process_faucet_request(request, pk):
         reject_faucet_request(faucet_request)
         messages.success(request, 'rejected')
 
-        return redirect(reverse('process_faucet_request'))
+        return redirect(reverse('admin:index'))
 
     if request.POST.get('destinationAccount', False):
         faucet_request.fulfilled = True
@@ -125,7 +127,7 @@ def process_faucet_request(request, pk):
         processed_faucet_request(faucet_request)
         messages.success(request, 'sent')
 
-        return redirect(reverse('process_faucet_request'))
+        return redirect(reverse('admin:index'))
 
     faucet_amount = settings.FAUCET_AMOUNT
     context = {'obj': faucet_request, 'faucet_amount': faucet_amount}

@@ -16,7 +16,7 @@
 
 '''
 from django.conf import settings
-from django.conf.urls import handler400, handler403, handler404, handler500, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
@@ -28,6 +28,7 @@ import dashboard.helpers
 import dashboard.ios
 import dashboard.views
 import faucet.views
+import gitcoinbot.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
@@ -44,7 +45,7 @@ urlpatterns = [
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(router.urls)),
-    url(r'^actions/api/v0.1/', include(router.urls)), # same as active, but not cached in cluodfront
+    url(r'^actions/api/v0.1/', include(router.urls)),  # same as active, but not cached in cluodfront
 
     # dashboard views
 
@@ -182,8 +183,11 @@ urlpatterns = [
     path('legacy/', include('legacy.urls', namespace='legacy')),
     re_path(r'^logout/$', auth_views.logout, name='logout'),
     re_path(r'^auth/', include('social_django.urls', namespace='social')),
+    # webhook routes
     # sendgrid webhook processing
     path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
+    # gitcoinbot
+    url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
 ]
 
 handler403 = 'retail.views.handler403'
