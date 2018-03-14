@@ -1,24 +1,9 @@
-**/*{.,-}min.js
+*.min.js
 
-app/assets/v2/js/abi.js
-app/assets/v2/js/amounts.js
-app/assets/v2/js/base.js
-app/assets/v2/js/jquery-ui.js
-app/assets/v2/js/jquery.js
+app/assets/v2/js/ipfs-api.js
+app/assets/v2/js/jquery*.js
 app/assets/v2/js/jsrender.js
-app/assets/v2/js/shared.js
-app/assets/v2/js/tokens.js
+app/assets/v2/js/showdown.js
 app/assets/v2/js/tooltip.js
-app/assets/v2/js/waiting_room_entertainment.js
 
-app/assets/v2/js/pages/bounty_details.js
-app/assets/v2/js/pages/claim_bounty.js
-app/assets/v2/js/pages/dashboard.js
-app/assets/v2/js/pages/fulfill_bounty.js
-app/assets/v2/js/pages/kill_bounty.js
-app/assets/v2/js/pages/new_bounty.js
-app/assets/v2/js/pages/shared_bounty_mutation_estimate_gas.js
-app/assets/v2/js/pages/process_bounty.js
-
-app/assets/legacy/v2/js/pages/claim_bounty.js
-app/assets/legacy/v2/js/pages/clawback_expired_bounty.js
+app/assets/yge/youvegoteth/confetti.js
