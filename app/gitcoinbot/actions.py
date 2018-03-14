@@ -91,7 +91,8 @@ def help_text():
 def new_bounty_text(owner, repo, issue_id, comment_text):
     issue_link = f"https://github.com/{owner}/{repo}/issues/{issue_id}"
     bounty_amount = parse_comment_amount(comment_text)
-    bounty_link = f"{settings.BASE_URL}funding/new?source={issue_link}&amount={bounty_amount}"
+    token_name = parse_comment_currency(comment_text)
+    bounty_link = f"{settings.BASE_URL}funding/new?source={issue_link}&amount={bounty_amount}&tokenName={token_name}"
     new_bounty_response = f"To create the bounty please [visit this link]({bounty_link}).\n\n " \
           "PS Make sure you're logged into Metamask!"
     return new_bounty_response
@@ -123,7 +124,7 @@ def new_tip_text(owner, repo, issue_id, comment_text):
     tip_currency = parse_comment_currency(comment_text)
     username = parse_tippee_username(comment_text)
     issue_url = f'https://github.com/{owner}/{repo}/issues/{issue_id}'
-    tip_link = f'{settings.BASE_URL}tip/?amount={tip_amount}&username={username}&source={issue_url}'
+    tip_link = f'{settings.BASE_URL}tip/?amount={tip_amount}&tokenName={tip_currency}&username={username}&source={issue_url}'
     tip_response = f'To complete the tip, please [visit this link]({tip_link}).\n ' \
         'PS Make sure you\'re logged into Metamask!'
     return tip_response
