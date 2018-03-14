@@ -80,7 +80,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
 class BountyViewSet(viewsets.ModelViewSet):
     """Handle the Bounty view behavior."""
 
-    queryset = Bounty.objects.all().order_by('-web3_created')
+    queryset = Bounty.objects.prefetch_related('fulfillments').all().order_by('-web3_created')
     serializer_class = BountySerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
@@ -91,7 +91,7 @@ class BountyViewSet(viewsets.ModelViewSet):
             QuerySet: The Bounty queryset.
 
         """
-        queryset = Bounty.objects.current().order_by('-web3_created')
+        queryset = Bounty.objects.prefetch_related('fulfillments').current().order_by('-web3_created')
         param_keys = self.request.query_params.keys()
 
         # filtering
@@ -132,7 +132,7 @@ class BountyViewSet(viewsets.ModelViewSet):
         # Retrieve all fullfilled bounties by fulfiller_username
         if 'fulfiller_github_username' in param_keys:
             queryset = queryset.filter(
-                fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfill_github_username')
+                fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfiller_github_username')
             )
 
         # order
