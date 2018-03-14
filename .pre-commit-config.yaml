@@ -9,3 +9,10 @@ repos:
       - --settings-path
       - ./setup.cfg
       - .
+- repo: local
+  hooks:
+  - id: eslint
+    name: eslint
+    language: system
+    entry: sh -c 'npm run eslint'
+    files: .js$
