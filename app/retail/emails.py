@@ -389,7 +389,7 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.all().last())
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.last())
     return HttpResponse(response_html)
 
 
@@ -404,42 +404,42 @@ def new_work_submission(request):
 @staff_member_required
 def new_bounty_rejection(request):
     from dashboard.models import Bounty
-    response_html, _ = render_new_bounty_rejection(settings.CONTACT_EMAIL, Bounty.objects.all().last())
+    response_html, _ = render_new_bounty_rejection(settings.CONTACT_EMAIL, Bounty.objects.last())
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def new_bounty_acceptance(request):
     from dashboard.models import Bounty
-    response_html, _ = render_new_bounty_acceptance(settings.CONTACT_EMAIL, Bounty.objects.all().last())
+    response_html, _ = render_new_bounty_acceptance(settings.CONTACT_EMAIL, Bounty.objects.last())
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def bounty_feedback(request):
     from dashboard.models import Bounty
-    response_html, _ = render_bounty_feedback(Bounty.objects.all().last(), 'foo')
+    response_html, _ = render_bounty_feedback(Bounty.objects.last(), 'foo')
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def bounty_expire_warning(request):
     from dashboard.models import Bounty
-    response_html, _ = render_bounty_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last())
+    response_html, _ = render_bounty_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.last())
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def start_work_expired(request):
     from dashboard.models import Bounty, Interest
-    response_html, _ = render_bounty_startwork_expired(settings.CONTACT_EMAIL, Bounty.objects.all().last(), Interest.objects.all().last(), 5)
+    response_html, _ = render_bounty_startwork_expired(settings.CONTACT_EMAIL, Bounty.objects.last(), Interest.objects.all().last(), 5)
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def start_work_expire_warning(request):
     from dashboard.models import Bounty, Interest
-    response_html, _ = render_bounty_startwork_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.all().last(), Interest.objects.all().last(), 5)
+    response_html, _ = render_bounty_startwork_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.last(), Interest.objects.all().last(), 5)
     return HttpResponse(response_html)
 
 
