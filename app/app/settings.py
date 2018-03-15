@@ -164,14 +164,19 @@ if not ENV == 'local':
                 '()': 'django.utils.log.RequireDebugFalse'
             },
         },
-    },
-    'handlers': {
-        'rotatingfilehandler': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': '/var/log/django/debug.log',
-            'maxBytes': 1024 * 1024 * 10,  # 10 MB
-            'backupCount': 100,  # max 100 logs
+        'handlers': {
+            'rotatingfilehandler': {
+                'level': 'DEBUG',
+                'class': 'logging.handlers.RotatingFileHandler',
+                'filename': '/var/log/django/debug.log',
+                'maxBytes': 1024 * 1024 * 10,  # 10 MB
+                'backupCount': 100,  # max 100 logs
+            },
+            'mail_admins': {
+                'level': 'ERROR',
+                'class': 'django.utils.log.AdminEmailHandler',
+                'include_html': True,
+            }
         },
         'loggers': {
             'django': {
@@ -231,19 +236,6 @@ MAILCHIMP_USER = env('MAILCHIMP_USER', default='')
 MAILCHIMP_API_KEY = env('MAILCHIMP_API_KEY', default='')
 MAILCHIMP_LIST_ID = env('MAILCHIMP_LIST_ID', default='')
 
-# GETH Integration
-# optional:  only if you're syncing web3 (mostly used for bounty flow)
-CUSTOM_MAINNET_GETH_HOST = env('CUSTOM_MAINNET_GETH_HOST', default='TODO')
-CUSTOM_MAINNET_GETH_PORT = env('CUSTOM_MAINNET_GETH_PORT', default='8545')
-CUSTOM_RINKEBY_GETH_HOST = env('CUSTOM_RINKEBY_GETH_HOST', default='TODO')
-CUSTOM_RINKEBY_GETH_PORT = env('CUSTOM_RINKEBY_GETH_PORT', default='8545')
-CUSTOM_TESTRPC_GETH_HOST = env('CUSTOM_TESTRPC_GETH_HOST', default='localhost')
-CUSTOM_TESTRPC_GETH_PORT = env('CUSTOM_TESTRPC_GETH_PORT', default='8545')
-# Run `scripts/testrpc.bash` and `scripts/prepTestRPC.bash` from https://github.com/gitcoinco/smart_contracts
-TESRPC_CONTRACT_ADDRESS = env('TESRPC_CONTRACT_ADDRESS', default='0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd')
-DEFAULT_NETWORK = env('DEFAULT_NETWORK', default='testrpc')
-INFURA_KEY = env('INFURA_KEY', default='TODO')  # Requied only needed if you use infura
-
 # Github
 GITHUB_API_BASE_URL = env('GITHUB_API_BASE_URL', default='https://api.github.com')
 GITHUB_AUTH_BASE_URL = env('GITHUB_AUTH_BASE_URL', default='https://github.com/login/oauth/authorize')
@@ -253,12 +245,12 @@ GITHUB_CLIENT_ID = env('GITHUB_CLIENT_ID', default='TODO')
 GITHUB_CLIENT_SECRET = env('GITHUB_CLIENT_SECRET', default='TODO')
 GITHUB_API_USER = env('GITHUB_API_USER', default='TODO')
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='TODO')
-GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin')
+GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
 # optional: only needed if you run the gitcoinbot app
 # Setup instructions: https://github.com/gitcoinco/web/blob/master/app/gitcoinbot/README.md
-GITCOINBOT_APP_ID = 'TODO'
-SECRET_KEYSTRING = 'TODO'
+GITCOINBOT_APP_ID = env('BOT_APP_ID', default='')
+SECRET_KEYSTRING = env('BOT_SECRET_KEYSTRING', default='')
 # Example:
 # with open('pem_file') as f:
 #     SECRET_KEYSTRING = f.read()
@@ -318,16 +310,17 @@ S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='TODO')
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='TODO')
 
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
+
 # Faucet App config
 FAUCET_AMOUNT = .001
 
-SENDGRID_EVENT_HOOK_URL = 'sg_event_process'
+SENDGRID_EVENT_HOOK_URL = env('SENDGRID_EVENT_HOOK_URL', default='sg_event_process')
 
-GITHUB_EVENT_HOOK_URL = 'github/payload/'
+GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')
 
 # Web3
-WEB3_HTTP_PROVIDER = ''
+WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://mainnet.infura.io')
 
 # COLO Coin
-COLO_ACCOUNT_ADDRESS = ''
-COLO_ACCOUNT_PRIVATE_KEY = ''
+COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')
+COLO_ACCOUNT_PRIVATE_KEY = env('COLO_ACCOUNT_PRIVATE_KEY', default='')
