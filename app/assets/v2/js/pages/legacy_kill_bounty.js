@@ -115,11 +115,12 @@ window.onload = function() {
                 _alert('Got an error.  Please screencap your console and reach out to @owocki on slack.');
                 unloading_button($('#submitBounty'));
                 return;
-                _alert('Please wait for tx to confirm.', 'info');
-                callFunctionWhenTransactionMined(result, function() {
-                  accept_bounty();
-                });
               }
+              _alert('Please wait for tx to confirm.', 'info');
+              callFunctionWhenTransactionMined(result, function() {
+                accept_bounty();
+              });
+              
             });
           };
 

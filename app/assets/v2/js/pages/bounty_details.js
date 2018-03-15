@@ -121,7 +121,7 @@ var callbacks = {
         if(result['token_name'] == 'ETH' || val == null){
             return [null, null];
         }
-        return [ "Amount (ETH)" , Math.round((parseInt(val) / 10**18) * 1000) / 1000];
+        return [ "Amount (ETH)" , Math.round((parseInt(val) / Math.pow(10,18)) * 1000) / 1000];
     },
     'value_in_usdt': function(key, val, result){
         if(val == null){

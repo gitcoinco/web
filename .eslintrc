@@ -83,7 +83,7 @@
     "newline-after-var": [
       "error", "always"
     ],
-    "no-console": "error",
+    "no-console": "warn",
     "no-div-regex": "error",
     "no-else-return": "error",
     "no-empty": [
