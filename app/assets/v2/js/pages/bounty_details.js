@@ -1,3 +1,7 @@
+/* eslint block-scoped-var: "warn" */
+/* eslint no-redeclare: "warn" */
+
+
 var _truthy = function(val) {
   if (!val) {
     return false;
@@ -306,7 +310,7 @@ var build_detail_page = function(result) {
       _result = callbacks[key](key, val, result);
       val = _result[1];
     }
-    var entry = {
+    var _entry = {
       'head': head,
       'key': key,
       'val': val
@@ -361,7 +365,7 @@ var do_actions = function(result) {
       github_url = github_url.replace('ethereum/browser-solidity', 'ethereum/remix-ide');
 
       if (result['github_comments']) {
-        var entry_comment = {
+        var _entry_comment = {
           href: github_url,
           text: result['github_comments'],
           target: 'new',
@@ -369,10 +373,10 @@ var do_actions = function(result) {
           color: 'github-comment'
         };
 
-        actions.push(entry_comment);
+        actions.push(_entry_comment);
       }
 
-      var entry = {
+      var _entry = {
         href: github_url,
         text: 'View on Github',
         target: 'new',
@@ -381,14 +385,14 @@ var do_actions = function(result) {
         title: 'Github is where the issue scope lives.  Its also a great place to collaborate with, and get to know, other developers (and sometimes even the repo maintainer themselves!).'
       };
 
-      actions.push(entry);
+      actions.push(_entry);
     }
 
     if (show_start_stop_work) {
 
       // is enabled
       var enabled = start_stop_work_enabled;
-      var interestEntry = {
+      var interest_entry = {
         href: is_interested ? '/uninterested' : '/interested',
         text: is_interested ? 'Stop Work' : 'Start Work',
         parent: 'right_actions',
@@ -397,14 +401,14 @@ var do_actions = function(result) {
         title: enabled ? 'Start Work in an issue to let the issue funder know that youre starting work on this issue.' : 'Can only be performed if you are not the funder.'
       };
 
-      actions.push(interestEntry);
+      actions.push(interest_entry);
 
     }
 
     if (show_submit_work) {
       // is enabled
       var enabled = submit_work_enabled;
-      var entry = {
+      var _entry = {
         href: '/funding/fulfill?source=' + result['github_url'],
         text: 'Submit Work',
         parent: 'right_actions',
@@ -413,12 +417,12 @@ var do_actions = function(result) {
         title: enabled ? 'Use Submit Work when you FINISH work on a bounty. ' : 'Can only be performed if you are not the funder.'
       };
 
-      actions.push(entry);
+      actions.push(_entry);
     }
 
     if (show_kill_bounty) {
       var enabled = kill_bounty_enabled;
-      var entry = {
+      var _entry = {
         href: '/funding/kill?source=' + result['github_url'],
         text: 'Kill Bounty',
         parent: 'right_actions',
@@ -427,7 +431,7 @@ var do_actions = function(result) {
         title: enabled ? '' : 'Can only be performed if you are the funder.'
       };
 
-      actions.push(entry);
+      actions.push(_entry);
     }
 
     render_actions(actions);
