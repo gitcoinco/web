@@ -16,115 +16,121 @@ var legacy_bounty_address = function() {
   }
 };
 
-window.onload = function(){
-    //a little time for web3 injection
-    setTimeout(function(){
-        var account = web3.eth.accounts[0];
+window.onload = function() {
+  // a little time for web3 injection
+  setTimeout(function() {
+    var account = web3.eth.accounts[0];
 
-        if (typeof localStorage['acceptTOS'] !='undefined' && localStorage['acceptTOS']){
-            $('input[name=terms]').attr('checked','checked');
+    if (typeof localStorage['acceptTOS'] != 'undefined' && localStorage['acceptTOS']) {
+      $('input[name=terms]').attr('checked', 'checked');
+    }
+    if (getParam('source')) {
+      $('input[name=issueURL]').val(getParam('source'));
+    }
+
+    $('#submitBounty').click(function(e) {
+      mixpanel.track('Kill Bounty Clicked', {});
+      loading_button($('#submitBounty'));
+      e.preventDefault();
+      var issueURL = $('input[name=issueURL]').val();
+
+      var isError = false;
+
+      if ($('#terms:checked').length == 0) {
+        _alert({ message: 'Please accept the terms of service.' });
+        isError = true;
+      } else {
+        localStorage['acceptTOS'] = true;
+      }
+      if (issueURL == '') {
+        _alert({ message: 'Please enter a issue URL.' });
+        isError = true;
+      }
+      if (isError) {
+        unloading_button($('#submitBounty'));
+        return;
+      }
+
+      var bounty = web3.eth.contract(legacy_bounty_abi).at(legacy_bounty_address());
+
+      var bountydetails_callback = function(error, result) {
+        console.log('bountydetails_callback');
+        if (error) {
+          console.error(error);
+          _alert('Got an error.  Please screencap your console and reach out to @owocki on slack.');
+          unloading_button($('#submitBounty'));
+          return;
         }
-        if(getParam('source')){
-            $('input[name=issueURL]').val(getParam('source'));
+        var is_open = result[4];
+
+        if (!is_open) {
+          _alert('this issue is no longer active (already been paid or already been killed)');
+          unloading_button($('#submitBounty'));
+          return;
         }
+        var claimee_address = result[3];
+        var is_claimed = claimee_address != '0x0000000000000000000000000000000000000000' && claimee_address != '0x0';
+        var expiration_time = result[9].toNumber();
+        var is_expired = timestamp() > expiration_time;
 
-        $('#submitBounty').click(function(e){
-            mixpanel.track("Kill Bounty Clicked", {});
-            loading_button($('#submitBounty'));
-            e.preventDefault();
-            var issueURL = $('input[name=issueURL]').val();
+        if (is_expired) {
+          // expired: kill bounty
+          console.log('1. expired: kill bounty');
+          _alert('Please confirm this 1 transaction to clawback the bounty.', 'info');
+          bounty.clawbackExpiredBounty.sendTransaction(issueURL, function(error, result) {
+            if (error) {
+              console.error(error);
+              _alert('Got an error.  Please screencap your console and reach out to @owocki on slack.');
+              unloading_button($('#submitBounty'));
+              return;
+            }
+            var etherscan_url = etherscan_tx_url(result);
 
-            var isError = false;
-            if($('#terms:checked').length == 0){
-                _alert({ message: "Please accept the terms of service." });
-                isError = true;
-            } else {
-                localStorage['acceptTOS'] = true;
-            }
-            if(issueURL == ''){
-                _alert({ message: "Please enter a issue URL." });
-                isError = true;
-            }
-            if(isError){
+            _alert('Your funds will be returned to you when <a href=' + etherscan_url + '>this transaction</a> is confirmed.', 'info');
+          });
+        } else {
+          // not expired: submit and accept bounty
+          console.log('1. not expired: submit and accept bounty');
+          var accept_bounty = function() {
+            console.log('accept_bounty');
+            _alert('Please confirm this 1 transaction to finish killing the bounty.', 'info');
+            bounty.approveBountyClaim.sendTransaction(issueURL, {}, function(error, result) {
+              if (error) {
+                console.error(error);
+                _alert('Got an error.  Please screencap your console and reach out to @owocki on slack.');
                 unloading_button($('#submitBounty'));
                 return;
-            }
+              }
+              var etherscan_url = etherscan_tx_url(result);
 
-            var bounty = web3.eth.contract(legacy_bounty_abi).at(legacy_bounty_address());
+              _alert('Your funds will be returned to you when <a href=' + etherscan_url + '>this transaction</a> is confirmed.', 'info');
+            });
+          };
+          var submit_bounty = function() {
+            console.log('submit_bounty');
+            _alert('Please confirm these 2 transactions to kill the bounty.', 'info');
+            bounty.claimBounty.sendTransaction(issueURL, {}, function(error, result) {
+              if (error) {
+                console.error(error);
+                _alert('Got an error.  Please screencap your console and reach out to @owocki on slack.');
+                unloading_button($('#submitBounty'));
+                return;
+                _alert('Please wait for tx to confirm.', 'info');
+                callFunctionWhenTransactionMined(result, function() {
+                  accept_bounty();
+                });
+              }
+            });
+          };
 
-            var bountydetails_callback = function (error, result){
-                console.log('bountydetails_callback');
-                if(error){
-                    console.error(error);
-                    _alert("Got an error.  Please screencap your console and reach out to @owocki on slack.");
-                    unloading_button($('#submitBounty'));
-                    return;
-                }
-                var is_open = result[4];
-                if(!is_open){
-                    _alert('this issue is no longer active (already been paid or already been killed)');
-                    unloading_button($('#submitBounty'));
-                    return;
-                }
-                var claimee_address = result[3];
-                var is_claimed = claimee_address != '0x0000000000000000000000000000000000000000' && claimee_address != '0x0' ;
-                var expiration_time = result[9].toNumber();
-                var is_expired = timestamp() > expiration_time;
-                if(is_expired){
-                    // expired: kill bounty
-                    console.log('1. expired: kill bounty');
-                    _alert("Please confirm this 1 transaction to clawback the bounty.", 'info');
-                    bounty.clawbackExpiredBounty.sendTransaction(issueURL,function(error, result){
-                        if(error){
-                            console.error(error);
-                            _alert("Got an error.  Please screencap your console and reach out to @owocki on slack.");
-                            unloading_button($('#submitBounty'));
-                            return;
-                        }
-                        var etherscan_url = etherscan_tx_url(result);
-                        _alert("Your funds will be returned to you when <a href="+etherscan_url+">this transaction</a> is confirmed.", 'info');
-                    });
-                } else {
-                    //not expired: submit and accept bounty
-                    console.log('1. not expired: submit and accept bounty');
-                    var accept_bounty = function(){
-                        console.log('accept_bounty');
-                        _alert("Please confirm this 1 transaction to finish killing the bounty.", 'info');
-                        bounty.approveBountyClaim.sendTransaction(issueURL, {}, function(error, result){
-                            if(error){
-                                console.error(error);
-                                _alert("Got an error.  Please screencap your console and reach out to @owocki on slack.");
-                                unloading_button($('#submitBounty'));
-                                return;
-                            }
-                            var etherscan_url = etherscan_tx_url(result);
-                            _alert("Your funds will be returned to you when <a href="+etherscan_url+">this transaction</a> is confirmed.", 'info');
-                        });
-                    };
-                    var submit_bounty = function(){
-                        console.log('submit_bounty');
-                        _alert("Please confirm these 2 transactions to kill the bounty.", 'info');
-                        bounty.claimBounty.sendTransaction(issueURL, {}, function(error, result){
-                            if(error){
-                                console.error(error);
-                                _alert("Got an error.  Please screencap your console and reach out to @owocki on slack.");
-                                unloading_button($('#submitBounty'));
-                                return;
-                                _alert("Please wait for tx to confirm.", 'info');
-                                callFunctionWhenTransactionMined(result,function(){
-                                    accept_bounty();
-                                });
-                            }
-                        });                        
-                    };
+        }
+      };
 
-                }
-            };
-            bounty.bountydetails.call(issueURL, bountydetails_callback);
+      bounty.bountydetails.call(issueURL, bountydetails_callback);
 
 
 
-        });
-    },100);
+    });
+  }, 100);
 
 };
