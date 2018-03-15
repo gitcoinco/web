@@ -350,7 +350,7 @@ var do_actions = function(result) {
       show_start_stop_work = false;
       show_github_link = true;
       show_submit_work = false;
-      show_kill_bounty = true;
+      show_kill_bounty = false;
     }
 
     // actions
