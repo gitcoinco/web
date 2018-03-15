@@ -314,16 +314,16 @@ function timeDifference(current, previous) {
 
 
 
-var sidebar_redirect_triggers = function(){
+var sidebar_redirect_triggers = function() {
   $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e) {
     if (document.location.href.indexOf('/dashboard') == -1 && document.location.href.indexOf('/explorer') == -1) {
       document.location.href = '/explorer';
       e.preventDefault();
     }
-  });  
-}
+  });
+};
 
-var attach_change_element_type = function(){
+var attach_change_element_type = function() {
   (function($) {
     $.fn.changeElementType = function(newType) {
       var attrs = {};
@@ -339,7 +339,7 @@ var attach_change_element_type = function(){
   })(jQuery);
 };
 
-var attach_close_button = function(){
+var attach_close_button = function() {
   $('body').delegate('.alert .closebtn', 'click', function(e) {
     $(this).parents('.alert').remove();
     $('.alert').each(function() {
@@ -493,25 +493,25 @@ var randomElement = function(array) {
   return array[randomIndex];
 };
 
-var trigger_sidebar_web3_disabled = function(){
+var trigger_sidebar_web3_disabled = function() {
   $('#upper_left').addClass('disabled');
   $('#sidebar_head').html("<i class='fa fa-question'></i>");
   $('#sidebar_p').html("<p>Web3 disabled</p><p>Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a> <br> <a target=new href='/web3'>What is Metamask and why do I need it?</a>.</p>");
 };
 
-var trigger_sidebar_web3_locked = function(){
+var trigger_sidebar_web3_locked = function() {
   $('#upper_left').addClass('disabled');
   $('#sidebar_head').html("<i class='fa fa-lock'></i>");
   $('#sidebar_p').html('<p>Web3 locked</p><p>Please unlock <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">Metamask</a>.<p>');
 };
 
-var mixpanel_track_once = function(event, params){
-  if(document.listen_for_web3_iterations==1 && mixpanel){
+var mixpanel_track_once = function(event, params) {
+  if (document.listen_for_web3_iterations == 1 && mixpanel) {
     mixpanel.track(event, params);
   }
-}
+};
 
-var trigger_sidebar_web3 = function(network){
+var trigger_sidebar_web3 = function(network) {
   document.web3network = network;
 
   // is this a supported networK?
@@ -545,7 +545,7 @@ var trigger_sidebar_web3 = function(network){
     sidebar_p += '<p>(try ' + recommended_network + ')</p>';
     $('#sidebar_p').html('<p>Unsupported network</p>' + sidebar_p);
   }
-}
+};
 
 
 var trigger_primary_form_web3_hooks = function() {
@@ -556,6 +556,7 @@ var trigger_primary_form_web3_hooks = function() {
 
   if ($('#primary_form').length) {
     var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
+
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#primary_form').addClass('hidden');
@@ -564,10 +565,10 @@ var trigger_primary_form_web3_hooks = function() {
       $('#unlock_metamask_error').css('display', 'block');
       $('#primary_form').addClass('hidden');
       mixpanel_track_once('Unlock Metamask Error', params);
-    } else if (is_zero_balance_not_okay && document.balance  == 0) {
-        $('#zero_balance_error').css('display', 'block');
-        $('#primary_form').addClass('hidden');
-        mixpanel_track_once('Zero Balance Metamask Error', params);
+    } else if (is_zero_balance_not_okay && document.balance == 0) {
+      $('#zero_balance_error').css('display', 'block');
+      $('#primary_form').addClass('hidden');
+      mixpanel_track_once('Zero Balance Metamask Error', params);
     } else {
       $('#zero_balance_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'none');
@@ -579,11 +580,14 @@ var trigger_primary_form_web3_hooks = function() {
 
 
 var trigger_faucet_form_web3_hooks = function() {
+  var params = {};
+
   if ($('#faucet_form').length) {
     var balance = document.balance;
+
     $('#ethAddress').val(web3.eth.accounts[0]);
-    var faucet_amount = parseInt($('#currentFaucet').val() * (Math.pow(10,18)));
-    var params = {};
+    var faucet_amount = parseInt($('#currentFaucet').val() * (Math.pow(10, 18)));
+
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
@@ -630,17 +634,17 @@ var trigger_faucet_form_web3_hooks = function() {
       }
     });
   }
-}
+};
 
-var trigger_form_hooks = function(){
-    trigger_primary_form_web3_hooks();
-    trigger_faucet_form_web3_hooks()
+var trigger_form_hooks = function() {
+  trigger_primary_form_web3_hooks();
+  trigger_faucet_form_web3_hooks();
 };
 
 // figure out what version of web3 this is, whether we're logged in, etc..
 var listen_for_web3_changes = function() {
 
-  if(!document.listen_for_web3_iterations){
+  if (!document.listen_for_web3_iterations) {
     document.listen_for_web3_iterations = 1;
   } else {
     document.listen_for_web3_iterations += 1;
@@ -663,6 +667,7 @@ var listen_for_web3_changes = function() {
       } else {
         // figure out which network we're on
         var network = 'unknown';
+
         switch (netId) {
           case '1':
             network = 'mainnet';
@@ -684,7 +689,7 @@ var listen_for_web3_changes = function() {
         }
         trigger_sidebar_web3(network);
         trigger_form_hooks();
-      } 
+      }
     });
   }
 };
