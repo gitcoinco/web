@@ -441,6 +441,8 @@ div.button-pink {
   font-family: "Muli";
   border-radius: 0px;
   padding: 0;
+  right: 0;
+  left: auto;
 }
 
 .dropdown-menu .dropdown-divider {
