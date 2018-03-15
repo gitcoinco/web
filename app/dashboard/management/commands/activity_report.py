@@ -21,23 +21,24 @@ import csv
 import datetime
 import os
 import re
-import StringIO
-from itertools import imap
+from io import StringIO
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
 import boto
-from app.utils import itermerge
 from boto.s3.key import Key
 from dashboard.models import Bounty, Tip
 from marketing.mails import send_mail
 
 DATE_FORMAT = '%Y/%m/%d'
 DATE_FORMAT_HYPHENATED = '%Y-%m-%d'
-REPORT_URL_EXPIRATION_TIME = 60 * 60 * 24 * 30 # seconds
+REPORT_URL_EXPIRATION_TIME = 60 * 60 * 24 * 30  # seconds
 
 GITHUB_REPO_PATTERN = re.compile('github.com/[\w-]+/([\w-]+)')
+
+imap = map
+
 
 def valid_date(v):
     try:
@@ -63,19 +64,28 @@ class Command(BaseCommand):
         return match.groups()[0]
 
     def format_bounty(self, bounty):
+        from dashboard.models import BountyFulfillment
+        try:
+            bounty_fulfillment = bounty.fulfillments.filter(accepted=True).latest('created_on')
+            claimee_address = bounty_fulfillment.fulfiller_address
+            fulfiller_github_username = bounty_fulfillment.fulfiller_github_username
+        except BountyFulfillment.DoesNotExist:
+            claimee_address = ''
+            fulfiller_github_username = ''
+
         return {
             'type': 'bounty',
             'created_on': bounty.web3_created,
             'last_activity': bounty.modified_on,
             'amount': bounty.get_natural_value(),
             'denomination': bounty.token_name,
-            'amount_eth': bounty.value_in_eth / 10**18,
+            'amount_eth': bounty.value_in_eth / 10**18 if bounty.value_in_eth else None,
             'amount_usdt': bounty.value_in_usdt,
             'from_address': bounty.bounty_owner_address,
-            'claimee_address': bounty.fulfiller_address,
+            'claimee_address': claimee_address,
             'repo': self.extract_github_repo(bounty.github_url),
             'from_username': bounty.bounty_owner_github_username or '',
-            'fulfiller_github_username': bounty.fulfiller_github_username or '',
+            'fulfiller_github_username': fulfiller_github_username,
             'status': bounty.status,
             'comments': bounty.github_url,
         }
@@ -108,9 +118,8 @@ class Command(BaseCommand):
 
         return key.generate_url(expires_in=REPORT_URL_EXPIRATION_TIME)
 
-
     def handle(self, *args, **options):
-        bounties = Bounty.objects.filter(
+        bounties = Bounty.objects.prefetch_related('fulfillments').filter(
             network='mainnet',
             current_bounty=True,
             web3_created__gte=options['start_date'],
@@ -126,15 +135,20 @@ class Command(BaseCommand):
         formatted_bounties = imap(self.format_bounty, bounties)
         formatted_tips = imap(self.format_tip, tips)
 
-        csvfile = StringIO.StringIO()
+        # python3 list hack
+        formatted_bounties = [x for x in formatted_bounties]
+        formatted_tips = [x for x in formatted_tips]
+
+        csvfile = StringIO()
         csvwriter = csv.DictWriter(csvfile, fieldnames=[
             'type', 'created_on', 'last_activity', 'amount', 'denomination', 'amount_eth',
             'amount_usdt', 'from_address', 'claimee_address', 'repo', 'from_username',
             'fulfiller_github_username', 'status', 'comments'])
         csvwriter.writeheader()
 
+        items = sorted(formatted_bounties + formatted_tips, key=lambda x: x['created_on'])
         has_rows = False
-        for item in itermerge(formatted_bounties, formatted_tips, lambda x: x['created_on']):
+        for item in items:
             has_rows = True
             csvwriter.writerow(item)
 
@@ -148,7 +162,7 @@ class Command(BaseCommand):
             body = '<a href="%s">%s</a>' % (url, url)
             print(url)
 
-            send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, subject, body='', html=body, add_bcc=False)
+            send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, subject, body='', html=body)
 
             self.stdout.write(self.style.SUCCESS('Sent activity report from %s to %s to %s' % (start, end, settings.CONTACT_EMAIL)))
         else:

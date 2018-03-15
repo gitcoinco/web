@@ -16,11 +16,14 @@
 
 '''
 import time
+import warnings
 
 from django.core.management.base import BaseCommand
 
 from marketing.mails import weekly_roundup
 from marketing.models import EmailSubscriber
+
+warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 
 class Command(BaseCommand):

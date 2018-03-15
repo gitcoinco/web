@@ -12,9 +12,9 @@ Do you still want to work on this?  No big deal!  We can help with that:
 
 Please leave a comment on the github thread to check in.
 -AND-
-Click 'Start Work' on the <a href="{{bounty.url}}">issue detail page</a>.
+Click 'Start Work' at {{bounty.absolute_url}}
 
-If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.
+If you have any questions, feel free to reach out on slack => https://gitcoin.co/slack
 
 Funded Issue Details
 

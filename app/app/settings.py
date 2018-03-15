@@ -17,6 +17,8 @@
 '''
 import socket
 
+from django.http import Http404
+
 import rollbar
 
 import environ
@@ -64,6 +66,7 @@ INSTALLED_APPS = [
     'marketing',
     'economy',
     'dashboard',
+    'faucet',
     'tdi',
     'gas',
     'github',
@@ -72,6 +75,7 @@ INSTALLED_APPS = [
     'email_obfuscator',
     'linkshortener',
     'credits',
+    'gitcoinbot'
 ]
 
 MIDDLEWARE = [
@@ -160,20 +164,14 @@ if not ENV == 'local':
                 '()': 'django.utils.log.RequireDebugFalse'
             },
         },
-        'disable_existing_loggers': False,
-        'handlers': {
-            'rotatingfilehandler': {
-                'level': 'DEBUG',
-                'class': 'logging.handlers.RotatingFileHandler',
-                'filename': '/var/log/django/debug.log',
-                'maxBytes': 1024 * 1024 * 10,  # 10 MB
-                'backupCount': 100,  # max 100 logs
-            },
-            'mail_admins': {
-                'level': 'ERROR',
-                'class': 'django.utils.log.AdminEmailHandler',
-                'include_html': True,
-            }
+    },
+    'handlers': {
+        'rotatingfilehandler': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': '/var/log/django/debug.log',
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
+            'backupCount': 100,  # max 100 logs
         },
         'loggers': {
             'django': {
@@ -257,6 +255,14 @@ GITHUB_API_USER = env('GITHUB_API_USER', default='TODO')
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='TODO')
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin')
 
+# optional: only needed if you run the gitcoinbot app
+# Setup instructions: https://github.com/gitcoinco/web/blob/master/app/gitcoinbot/README.md
+GITCOINBOT_APP_ID = 'TODO'
+SECRET_KEYSTRING = 'TODO'
+# Example:
+# with open('pem_file') as f:
+#     SECRET_KEYSTRING = f.read()
+
 # Twitter Integration
 TWITTER_CONSUMER_KEY = env('TWITTER_CONSUMER_KEY', default='TODO')
 TWITTER_CONSUMER_SECRET = env('TWITTER_CONSUMER_SECRET', default='TODO')
@@ -297,8 +303,10 @@ if ROLLBAR_SERVER_TOKEN:
         'root': BASE_DIR,
         'patch_debugview': False,  # Disable debug view patching.
         'branch': 'master',
+        'exception_level_filters': [(Http404, 'info')]
     }
     MIDDLEWARE.append('rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
+    rollbar.init(**ROLLBAR)
 
 # List of github usernames to not count as comments on an issue
 IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
@@ -310,3 +318,16 @@ S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='TODO')
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='TODO')
 
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
+# Faucet App config
+FAUCET_AMOUNT = .001
+
+SENDGRID_EVENT_HOOK_URL = 'sg_event_process'
+
+GITHUB_EVENT_HOOK_URL = 'github/payload/'
+
+# Web3
+WEB3_HTTP_PROVIDER = ''
+
+# COLO Coin
+COLO_ACCOUNT_ADDRESS = ''
+COLO_ACCOUNT_PRIVATE_KEY = ''

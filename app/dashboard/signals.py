@@ -19,9 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 
-from django.db.models.signals import m2m_changed
-from django.dispatch import receiver
-
 from .notifications import maybe_market_to_github
 
 logger = logging.getLogger(__name__)
@@ -36,4 +33,20 @@ def m2m_changed_interested(sender, instance, action, reverse, model, **kwargs):
 
     if action in ['post_add', 'post_remove']:
         maybe_market_to_github(instance, 'work_started',
-                               interested=profile_handles)
+                               profile_pairs=profile_handles)
+
+
+def changed_fulfillments(sender, instance, action, reverse, model, **kwargs):
+    """Handle changes to Bounty fulfillments."""
+    event_name = 'work_submitted'
+    profile_handles = []
+
+    fulfillments = instance.fulfillments.select_related('profile').all().order_by('pk')
+    if fulfillments.filter(accepted=True).exists():
+        event_name = 'work_done'
+
+    for fulfillment in fulfillments:
+        profile_handles.append((fulfillment.profile.handle, fulfillment.profile.absolute_url))
+
+    if action in ['post_add', 'post_remove']:
+        maybe_market_to_github(instance, event_name, profile_pairs=profile_handles)

@@ -1,6 +1,7 @@
 .newsletter {
   margin-top: 1em;
   border-top: 1px solid #eee;
+  font-family: "OpenSans";
 }
 
 .newsletter h4 {
@@ -48,3 +49,9 @@
 ::-moz-placeholder { color: #999; }
 :-ms-input-placeholder { color: #999; }
 :-moz-placeholder { color: #999; }
+
+@media (max-width: 575px) {
+  .newsletter h4 {
+    font-family: "OpenSans SemiBold";
+  }
+}

@@ -1,6 +1,6 @@
 repos:
 - repo: git://github.com/pre-commit/mirrors-isort
-  sha: 'v4.2.15'
+  sha: 'v4.3.3'
   hooks:
   - id: isort
     args:
@@ -9,3 +9,10 @@ repos:
       - --settings-path
       - ./setup.cfg
       - .
+- repo: local
+  hooks:
+  - id: eslint
+    name: eslint
+    language: system
+    entry: sh -c 'npm run eslint'
+    files: .js$
