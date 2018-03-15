@@ -16,38 +16,58 @@
 
 {% endcomment %}
 {% load static %}
-                {% if github_handle %}
-                  <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      {{github_handle}}
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    {% if source == 'authed' %}
-                          <a class="dropdown-item" href="{% url "tip" %}"><img src="{% static "v2/images/icons/paperplane.png" %}" width=20px height=20px> Send Tip</a>
-                          <a class="dropdown-item" href="{% url "new_funding" %}"><img src="{% static "v2/images/icons/accelerator.png" %}" width=20px height=20px> Fund Issue</a>
-                      {% else %}
-                          <a class="dropdown-item" href="{% url "get_gitcoin" %}"><img src="{% static "v2/images/icons/bolt.png" %}" width=20px height=20px>  Get Started</a>
-                      {% endif %}
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="{% url "profile" %}{{github_handle}}"><img src="{% static "v2/images/icons/anchor.png" %}" width=20px height=20px>  View Profile</a>
-                      <a class="dropdown-item" href="{% url "email_settings" "" %}"><img src="{% static "v2/images/icons/mail.png" %}" width=20px height=20px>  Email Settings</a>
-
-                      {% if unclaimed_tips %}
-
-                          <div class="dropdown-divider"></div>
-                          {% for tip in unclaimed_tips %}
-                            <a class="dropdown-item" href="{{tip.url}}"><img src="{% static "v2/images/icons/cards_diamonds.png" %}" width=20px height=20px> Claim ${{tip.value_in_usdt}} Tip</a>
-                          {% endfor %}
-
-                      {% endif %}
-
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="{% url "github:github_logout" %}?redirect_uri={{ request.get_full_path }}"><img src="{% static "v2/images/icons/lock_open.png" %}" width=20px height=20px>  Log Out</a>
-                    </div>
-                  </div>
-                {% else %}
-                <a class="nav-link" href="{% url "github:github_auth" %}?redirect_uri={{ request.get_full_path }}" onclick="dataLayer.push({'event': 'login'});">
-                    Login
-                </a>
-                {% endif %}
-                <img class="nav_avatar" src="{% url "avatar" %}?repo=https://github.com/{% if github_handle %}{{github_handle}}{%else%}Self{%endif%}" width=50 height=50 >
+{% if github_handle %}
+  <div class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      {{github_handle}}
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+      {% if source == 'authed' %}
+        <a class="dropdown-item" href="{% url "tip" %}">
+          <i class="fa fa-paper-plane-o"></i>
+          Send Tip
+        </a>
+        <a class="dropdown-item" href="{% url "new_funding" %}">
+          <i class="fa fa-credit-card"></i>
+          Fund Issue
+        </a>
+      {% else %}
+        <a class="dropdown-item" href="{% url "get_gitcoin" %}">
+          <i class="fa fa-bolt"></i>
+          Get Started
+        </a>
+      {% endif %}
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="{% url "profile" %}{{github_handle}}">
+        <i class="fa fa-user"></i>
+        View Profile
+      </a>
+      <a class="dropdown-item" href="{% url "email_settings" "" %}">
+        <i class="fa fa-envelope-o"></i>
+        Email Settings
+      </a>
+      {% if unclaimed_tips %}
+        <div class="dropdown-divider"></div>
+        {% for tip in unclaimed_tips %}
+          <a class="dropdown-item" href="{{tip.url}}">
+            <i class="fa fa-usd"></i>
+            Claim ${{tip.value_in_usdt}} Tip
+          </a>
+        {% endfor %}
+      {% endif %}
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="{% url "github:github_logout" %}?redirect_uri={{ request.get_full_path }}">
+        <i class="fa fa-lock"></i>
+        Log Out
+      </a>
+    </div>
+  </div>
+{% else %}
+<a class="nav-link" href="{% url "github:github_auth" %}?redirect_uri={{ request.get_full_path }}"
+    onclick="dataLayer.push({'event': 'login'});">
+    Login
+</a>
+{% endif %}
+<img class="nav_avatar" width=50 height=50
+    src="{% url "avatar" %}?repo=https://github.com/{% if github_handle %}{{github_handle}}{%else%}Self{%endif%}">
