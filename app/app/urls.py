@@ -67,6 +67,7 @@ urlpatterns = [
     url(r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='issue_details_new2'),
     url(r'^bounty/details/?', dashboard.views.bounty_details, name='bounty_details'),
     url(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
+    url(r'^legacy/funding/details/?', dashboard.views.bounty_details, name='legacy_funding_details'),
     url(r'^funding/kill/?', dashboard.views.kill_bounty, name='kill_bounty'),
     url(r'^tip/receive/?', dashboard.views.receive_tip, name='receive_tip'),
     url(r'^tip/send/2/?', dashboard.views.send_tip_2, name='send_tip_2'),
