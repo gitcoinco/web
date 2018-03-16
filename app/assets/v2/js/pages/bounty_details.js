@@ -1,4 +1,7 @@
-/* eslint-disable no-console */
+/* eslint block-scoped-var: "warn" */
+/* eslint no-redeclare: "warn" */
+
+
 var _truthy = function(val) {
   if (!val) {
     return false;
@@ -122,19 +125,19 @@ var callbacks = {
   'bounty_type': unknown_if_empty,
   'bounty_owner_github_username': gitcoin_ize,
   'value_in_eth': function(key, val, result) {
-    if (result['token_name'] == 'ETH' || val == null) {
+    if (result['token_name'] == 'ETH' || val === null) {
       return [ null, null ];
     }
     return [ 'Amount (ETH)', Math.round((parseInt(val) / Math.pow(10, 18)) * 1000) / 1000 ];
   },
   'value_in_usdt': function(key, val, result) {
-    if (val == null) {
+    if (val === null) {
       return [ null, null ];
     }
     return [ 'Amount_usd', val ];
   },
   'token_value_in_usdt': function(key, val, result) {
-    if (val == null) {
+    if (val === null) {
       $('#value_in_usdt_wrapper').addClass('hidden');
       return [ null, null ];
     }
@@ -184,7 +187,7 @@ var update_title = function() {
 };
 
 var showWarningMessage = function(txid) {
-
+    
   update_title();
 
   if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
@@ -307,7 +310,7 @@ var build_detail_page = function(result) {
       _result = callbacks[key](key, val, result);
       val = _result[1];
     }
-    var entry = {
+    var _entry = {
       'head': head,
       'key': key,
       'val': val
@@ -322,15 +325,38 @@ var build_detail_page = function(result) {
 };
 
 var do_actions = function(result) {
+    
+  // helper vars
+  var is_legacy = result['web3_type'] == 'legacy_gitcoin';
+  var is_date_expired = (new Date(result['now']) > new Date(result['expires_date']));
+  var is_status_expired = result['status'] == 'expired';
+  var is_status_done = result['status'] == 'done';
+  var can_submit_after_expiration_date = result['can_submit_after_expiration_date'];
+  var is_still_on_happy_path = result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted' || (can_submit_after_expiration_date && result['status'] == 'expired');
 
-// Find interest information
+  // Find interest information
   pull_interest_list(result['pk'], function(is_interested) {
+
+    // which actions should we show?
+    var show_start_stop_work = is_still_on_happy_path;
+    var show_github_link = result['github_url'].substring(0, 4) == 'http';
+    var show_submit_work = true;
+    var show_kill_bounty = !is_status_done && !is_status_expired;
+    var kill_bounty_enabled = isBountyOwner(result);
+    var submit_work_enabled = !isBountyOwner(result);
+    var start_stop_work_enabled = !isBountyOwner(result);
+
+    if (is_legacy) {
+      show_start_stop_work = false;
+      show_github_link = true;
+      show_submit_work = false;
+      show_kill_bounty = false;
+    }
 
     // actions
     var actions = [];
-    var enabled;
 
-    if (result['github_url'].substring(0, 4) == 'http') {
+    if (show_github_link) {
 
       var github_url = result['github_url'];
 
@@ -339,7 +365,7 @@ var do_actions = function(result) {
       github_url = github_url.replace('ethereum/browser-solidity', 'ethereum/remix-ide');
 
       if (result['github_comments']) {
-        var entryComment = {
+        var _entry_comment = {
           href: github_url,
           text: result['github_comments'],
           target: 'new',
@@ -347,10 +373,10 @@ var do_actions = function(result) {
           color: 'github-comment'
         };
 
-        actions.push(entryComment);
+        actions.push(_entry_comment);
       }
 
-      var entryGithub = {
+      var _entry = {
         href: github_url,
         text: 'View on Github',
         target: 'new',
@@ -359,16 +385,14 @@ var do_actions = function(result) {
         title: 'Github is where the issue scope lives.  Its also a great place to collaborate with, and get to know, other developers (and sometimes even the repo maintainer themselves!).'
       };
 
-      actions.push(entryGithub);
+      actions.push(_entry);
     }
-    var can_submit_after_expiration_date = result['can_submit_after_expiration_date'];
-    var is_still_on_happy_path = result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted' || (can_submit_after_expiration_date && result['status'] == 'expired');
 
-    if (is_still_on_happy_path) {
+    if (show_start_stop_work) {
 
       // is enabled
-      enabled = !isBountyOwner(result);
-      var entryInterest = {
+      var enabled = start_stop_work_enabled;
+      var interest_entry = {
         href: is_interested ? '/uninterested' : '/interested',
         text: is_interested ? 'Stop Work' : 'Start Work',
         parent: 'right_actions',
@@ -377,11 +401,14 @@ var do_actions = function(result) {
         title: enabled ? 'Start Work in an issue to let the issue funder know that youre starting work on this issue.' : 'Can only be performed if you are not the funder.'
       };
 
-      actions.push(entryInterest);
+      actions.push(interest_entry);
 
+    }
+
+    if (show_submit_work) {
       // is enabled
-      enabled = !isBountyOwner(result);
-      var entrySubmitWork = {
+      var enabled = submit_work_enabled;
+      var _entry = {
         href: '/funding/fulfill?source=' + result['github_url'],
         text: 'Submit Work',
         parent: 'right_actions',
@@ -390,18 +417,12 @@ var do_actions = function(result) {
         title: enabled ? 'Use Submit Work when you FINISH work on a bounty. ' : 'Can only be performed if you are not the funder.'
       };
 
-      actions.push(entrySubmitWork);
-
+      actions.push(_entry);
     }
 
-    var is_date_expired = (new Date(result['now']) > new Date(result['expires_date']));
-    var is_status_expired = result['status'] == 'expired';
-    var is_status_done = result['status'] == 'done';
-    var can_be_killed = !is_status_done && !is_status_expired;
-
-    if (can_be_killed) {
-      enabled = isBountyOwner(result);
-      var entryKillBounty = {
+    if (show_kill_bounty) {
+      var enabled = kill_bounty_enabled;
+      var _entry = {
         href: '/funding/kill?source=' + result['github_url'],
         text: 'Kill Bounty',
         parent: 'right_actions',
@@ -410,7 +431,7 @@ var do_actions = function(result) {
         title: enabled ? '' : 'Can only be performed if you are the funder.'
       };
 
-      actions.push(entryKillBounty);
+      actions.push(_entry);
     }
 
     render_actions(actions);
@@ -468,14 +489,12 @@ var pull_bounty_from_api = function() {
 };
 
 var render_fulfillments = function(result) {
-  var submissions;
   // Add submitter list and accept buttons
-
   if (result['status'] == 'submitted') {
     var enabled = isBountyOwner(result);
 
     fulfillers = [];
-    submissions = result.fulfillments;
+    var submissions = result.fulfillments;
 
     $.each(submissions, function(index, value) {
       var acceptButton = {
@@ -499,7 +518,7 @@ var render_fulfillments = function(result) {
     });
   } else if (result['status'] == 'done') {
     fulfillers = [];
-    submissions = result.fulfillments;
+    var submissions = result.fulfillments;
 
     $.each(submissions, function(index, value) {
       var accepted = value.accepted;
@@ -569,6 +588,7 @@ var main = function() {
 
   }, 100);
 };
+
 
 window.addEventListener('load', function() {
   main();

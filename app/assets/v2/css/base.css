@@ -1113,7 +1113,7 @@ body.bounty_details #title {
     margin-left: 0px;
     padding-left: 0px;
 }
-#interest_list li{
+#interest_list li {
     list-style: none;
 }
 
@@ -1136,34 +1136,29 @@ input.is-invalid {
 
 .tooltip-info {
   font-family: "Muli";
-  padding: 20px;
+  padding: 10px 20px;
   margin: 0;
   width: 25em;
+}
+
+.ui-widget-shadow {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1) !important;
 }
 
 .tooltip-info p {
   margin-bottom: 10px;
 }
 
-.tooltip-info span {
-  font-family: "Muli-SemiBold";
+.tooltip-info .font-subheader {
+  margin-top: 10px;
 }
 
-.tooltip-info ol {
-  counter-reset: item;
-  padding-left: 15px;
+.tooltip-info .row {
+  margin-bottom: 15px;
 }
 
-.tooltip-info ol li {
-  display: block;
-  margin-bottom: 10px;
-}
-
-.tooltip-info ol li:before {
-    content: counter(item) " ";
-    counter-increment: item;
-    font-weight: bold;
-    padding-right: 10px;
+.tooltip-info .col-11 {
+  padding-left: 0px;
 }
 
 @media (max-width: 1350px) {

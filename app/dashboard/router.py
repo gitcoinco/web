@@ -1,27 +1,29 @@
-'''
-    Copyright (C) 2017 Gitcoin Core
+# -*- coding: utf-8 -*-
+"""Define dashboard specific DRF API routes.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 
 from datetime import datetime
 
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
 
-from .models import Bounty, BountyFulfillment
+from .models import Bounty, BountyFulfillment, Interest, ProfileSerializer
 
 
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
@@ -36,11 +38,24 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
                   'fulfillment_id', 'accepted', 'profile', 'created_on')
 
 
+class InterestSerializer(serializers.ModelSerializer):
+    """Handle serializing the Interest object."""
+
+    profile = ProfileSerializer()
+
+    class Meta:
+        """Define the Interest serializer metadata."""
+
+        model = Interest
+        fields = ('profile', 'created')
+
+
 # Serializers define the API representation.
 class BountySerializer(serializers.HyperlinkedModelSerializer):
     """Handle serializing the Bounty object."""
 
     fulfillments = BountyFulfillmentSerializer(many=True)
+    interested = InterestSerializer(many=True)
 
     class Meta:
         """Define the bounty serializer metadata."""
@@ -51,7 +66,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
                   'bounty_type', 'project_length', 'experience_level',
                   'github_url', 'github_comments', 'bounty_owner_address',
                   'bounty_owner_email', 'bounty_owner_github_username',
-                  'fulfillments', 'is_open', 'expires_date', 'raw_data',
+                  'fulfillments', 'interested', 'is_open', 'expires_date', 'raw_data',
                   'metadata', 'current_bounty', 'value_in_eth',
                   'token_value_in_usdt', 'value_in_usdt', 'status', 'now',
                   'avatar_url', 'value_true', 'issue_description', 'network',
@@ -75,20 +90,31 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         return bounty
 
 
-# ViewSets define the view behavior.
 class BountyViewSet(viewsets.ModelViewSet):
+    """Handle the Bounty view behavior."""
 
-    queryset = Bounty.objects.all().order_by('-web3_created')
+    queryset = Bounty.objects.prefetch_related(
+        'fulfillments', 'interested', 'interested__profile') \
+        .all().order_by('-web3_created')
     serializer_class = BountySerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
     def get_queryset(self):
-        queryset = Bounty.objects.current().order_by('-web3_created')
+        """Get the queryset for Bounty.
+
+        Returns:
+            QuerySet: The Bounty queryset.
+
+        """
+        queryset = Bounty.objects.prefetch_related(
+            'fulfillments', 'interested', 'interested__profile') \
+            .current().order_by('-web3_created')
+        param_keys = self.request.query_params.keys()
 
         # filtering
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address',
                     'idx_status', 'network', 'bounty_owner_github_username']:
-            if key in self.request.query_params.keys():
+            if key in param_keys:
                 # special hack just for looking up bounties posted by a certain person
                 request_key = key if key != 'bounty_owner_address' else 'coinbase'
                 val = self.request.query_params.get(request_key, '')
@@ -103,29 +129,41 @@ class BountyViewSet(viewsets.ModelViewSet):
                 queryset = _queryset
 
         # filter by PK
-        if 'pk__gt' in self.request.query_params.keys():
+        if 'pk__gt' in param_keys:
             queryset = queryset.filter(pk__gt=self.request.query_params.get('pk__gt'))
 
         # filter by who is interested
-        if 'started' in self.request.query_params.keys():
+        if 'started' in param_keys:
             queryset = queryset.filter(interested__profile__handle__in=[self.request.query_params.get('started')])
 
         # filter by is open or not
-        if 'is_open' in self.request.query_params.keys():
+        if 'is_open' in param_keys:
             queryset = queryset.filter(is_open=self.request.query_params.get('is_open') == 'True')
             queryset = queryset.filter(expires_date__gt=datetime.now())
 
         # filter by urls
-        if 'github_url' in self.request.query_params.keys():
+        if 'github_url' in param_keys:
             urls = self.request.query_params.get('github_url').split(',')
             queryset = queryset.filter(github_url__in=urls)
+
+        # Retrieve all fullfilled bounties by fulfiller_username
+        if 'fulfiller_github_username' in param_keys:
+            queryset = queryset.filter(
+                fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfiller_github_username')
+            )
+
+        # Retrieve all interested bounties by profile handle
+        if 'interested_github_username' in param_keys:
+            queryset = queryset.filter(
+                interested__profile__handle__iexact=self.request.query_params.get('interested_github_username')
+            )
 
         # order
         order_by = self.request.query_params.get('order_by')
         if order_by:
             queryset = queryset.order_by(order_by)
 
-        return queryset
+        return queryset.distinct()
 
 
 # Routers provide an easy way of automatically determining the URL conf.

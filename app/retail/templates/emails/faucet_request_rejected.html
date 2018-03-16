@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,13 +16,14 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %} 
+{% load humanize %}
+{% load static %}
 
 {% block content %}
 
 <h1>Faucet Request Rejected ‼️</h1>
 
-<img src="https://gitcoin.co/static/v2/images/gas.png" width=200px height=200px >
+<img src="{% static 'v2/images/gas.png' %}" width=200px height=200px >
 
 <p>
     Hey @{{fr.github_username}},
@@ -34,7 +35,7 @@
 
     <br>
     <br>
-    
+
     {% if fr.comment_admin %}
 
     Here are somme comments from the administrator:

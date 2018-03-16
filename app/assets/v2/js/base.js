@@ -32,7 +32,6 @@ $(document).ready(function() {
 
     setTimeout(function() {
       $.get(url, function(newHTML) {
-        console.log('got' + newHTML);
         $(newHTML).appendTo('body').modal();
       });
     }, 300);
