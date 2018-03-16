@@ -51,10 +51,10 @@
                         <p style="max-width: 700px">{{idea.description}}</p>
                         <div style="display: flex; justify-content: space-between; max-width: 700px">
                             <div>
-                            Submitted by {{idea.submitter}}
+                                <span style="line-height: 42px">Submitted by {{idea.submitter}}</span>
                             </div>
                             <div style="display: flex">
-                                Has
+                                <span style="line-height: 42px; margin-right: 0.5em">Has</span>
                                 {% for has in idea.has %}
                                 <div style="background-color: #E7F0FA; color: #775EC7; text-align: center; min-width: 90px; border-radius: 2px; margin: 4px">
                                     <p style="padding: 5px 2px; margin-bottom: 0">
@@ -62,9 +62,13 @@
                                     </p>
                                 </div>
                                 {% endfor %}
-                                Needs
+                                <span style="line-height: 42px; margin-left: 1em; margin-right: 0.5em">Needs</span>
                                 {% for needs in idea.needs %}
-                                {{needs}}
+                                <div style="background-color: #D6FBEB; color: #00A55E; text-align: center; min-width: 90px; border-radius: 2px; margin: 4px">
+                                    <p style="padding: 5px 2px; margin-bottom: 0">
+                                        <span style="margin-left: 2px">{{needs}}</span>
+                                    </p>
+                                </div>
                                 {% endfor %}
                             </div>
                         </div>                                      
