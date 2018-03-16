@@ -308,7 +308,7 @@ function timeDifference(current, previous, remaining) {
   }
   var plural = amt != 1 ? 's' : '';
 
-  if(remaining) return amt + ' ' + unit + plural;
+  if (remaining) return amt + ' ' + unit + plural;
   return amt + ' ' + unit + plural + ' ago';
 }
 

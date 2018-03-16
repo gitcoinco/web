@@ -112,11 +112,11 @@ var get_search_URI = function() {
     uri += '&raw_data=' + keywords;
   }
 
-  for (var i = 0; i <sidebar_keys.length; i++) {
+  for (var i = 0; i < sidebar_keys.length; i++) {
     var key = sidebar_keys[i];
-    var filters= [];
+    var filters = [];
 
-    $.each ($("input[name=" + key + "]:checked"), function() {
+    $.each ($('input[name=' + key + ']:checked'), function() {
       if ($(this).val()) {
         filters.push($(this).val());
       }
@@ -124,14 +124,16 @@ var get_search_URI = function() {
 
     var val = filters.toString();
 
-    if((key === 'bounty_filter') && val) {
+    if ((key === 'bounty_filter') && val) {
       var values = val.split(',');
+
       values.forEach(function(_value) {
         var _key;
+
         if (_value === 'createdByMe') {
           _key = 'bounty_owner_github_username';
           _value = document.contxt.github_handle;
-        } else if(_value === 'startedByMe') {
+        } else if (_value === 'startedByMe') {
           _key = 'interested_github_username';
           _value = document.contxt.github_handle;
         } else if (_value === 'fulfilledByMe') {
@@ -139,7 +141,7 @@ var get_search_URI = function() {
           _value = document.contxt.github_handle;
         }
 
-        if(_value !== 'any')
+        if (_value !== 'any')
           uri += '&' + _key + '=' + _value;
       });
 
@@ -150,7 +152,7 @@ var get_search_URI = function() {
       }
     }
     if (val !== 'any' &&
-        key !== 'bounty_filter'&&
+        key !== 'bounty_filter' &&
         key !== 'bounty_owner_address') {
       uri += '&' + key + '=' + val;
     }
@@ -195,8 +197,8 @@ var process_stats = function(results) {
   }
 
   worth_usdt = worth_usdt.toFixed(2);
-  worth_eth = (worth_eth / Math.pow(10, 18 )).toFixed(2);
-  var stats =  worth_usdt + " USD, " + worth_eth + " ETH";
+  worth_eth = (worth_eth / Math.pow(10, 18)).toFixed(2);
+  var stats = worth_usdt + ' USD, ' + worth_eth + ' ETH';
 
   for (var t in currencies_to_value) {
     if (Object.prototype.hasOwnProperty.call(currencies_to_value, t)) {
@@ -204,18 +206,18 @@ var process_stats = function(results) {
     }
   }
 
-  switch(num) {
+  switch (num) {
     case 0:
-      $("#matches").html("No Results");
-      $("#funding-info").html("");
+      $('#matches').html('No Results');
+      $('#funding-info').html('');
       break;
     case 1:
-      $("#matches").html(num + " Matching Result");
-      $("#funding-info").html("<span id='modifiers'>Funded Issue</span><span id='stats' class='font-body'>("+ stats +")</span>");
+      $('#matches').html(num + ' Matching Result');
+      $('#funding-info').html("<span id='modifiers'>Funded Issue</span><span id='stats' class='font-body'>(" + stats + ')</span>');
       break;
     default:
-      $("#matches").html(num + " Matching Results");
-      $("#funding-info").html("<span id='modifiers'>Funded Issues</span><span id='stats' class='font-body'>("+ stats +")</span>");
+      $('#matches').html(num + ' Matching Results');
+      $('#funding-info').html("<span id='modifiers'>Funded Issues</span><span id='stats' class='font-body'>(" + stats + ')</span>');
   }
 };
 
@@ -281,7 +283,8 @@ var refreshBounties = function() {
       result.action = result['url'];
       result['title'] = result['title'] ? result['title'] : result['github_url'];
       var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
-      result['p'] = ((result['experience_level'] ? result['experience_level'] : "Unknown Experience Level") + " &bull; " + ( is_expired ? " Expired" : ("Expires in " + timeLeft) ));
+
+      result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ' + (is_expired ? ' Expired' : ('Expires in ' + timeLeft)));
       result['watch'] = 'Watch';
 
       // render the template
