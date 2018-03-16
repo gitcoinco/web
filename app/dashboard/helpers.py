@@ -75,10 +75,13 @@ def amount(request):
         raise Http404
 
 
-# gets keywords of remote issue (github issue)
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
 def issue_details(request):
     """Determine the Github issue keywords of the specified Github issue or PR URL.
+
+    Todo:
+        * Modify the view to only use the Github API (remove BeautifulSoup).
+        * Simplify the view logic.
 
     Returns:
         JsonResponse: A JSON response containing the Github issue or PR keywords.
@@ -115,14 +118,11 @@ def issue_details(request):
     try:
         response = api_response.json()
         body = response['body']
-    except ValueError as e:
-        response['message'] = str(e)
-    except KeyError as e:
+    except (KeyError, ValueError) as e:
         response['message'] = str(e)
     else:
         response['description'] = body.replace('\n', '').strip()
         response['title'] = response['title']
-
 
     keywords = []
 
@@ -149,10 +149,7 @@ def issue_details(request):
         keywords.append(split_repo_url[-2])
 
         html_response = requests.get(repo_url)
-    except ValidationError:
-        response['message'] = 'could not pull back remote response'
-        return JsonResponse(response)
-    except AttributeError:
+    except (AttributeError, ValidationError):
         response['message'] = 'could not pull back remote response'
         return JsonResponse(response)
 
