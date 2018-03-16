@@ -463,6 +463,52 @@ def browser_extension_chrome(request):
 def browser_extension_firefox(request):
     return redirect('https://addons.mozilla.org/en-US/firefox/addon/gitcoin/')
 
+def new_idea(request):
+    """TODO: MAKE A DESCRIPTIVE COMMENT"""
+    # params = {
+    #     'active': 'dashboard',
+    #     'title': 'Issue Explorer',
+    #     'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+    # }
+    params = {}
+    return TemplateResponse(request, 'submit_idea.html', params)
+
+def ideas_list(request):
+    """TODO: MAKE A DESCRIPTIVE COMMENT"""
+    ideas = [
+        {
+            "title": "Find cheap, one-way flights within a departure data range",
+            "description": "Discover alternate routes & cheap, one-way flights within a departure data range. Made for digital nomads, remote workers & flexible travelers.",
+            "submitter": "Seth Mcleod",
+            "comments": 17,
+            "likes": 237,
+            "has": ["Capital", "Designer"],
+            "needs": ["Builder", "Customer"]
+        },
+        {
+            "title": "Zero-fee cryptocurrency trading",
+            "description": "On Robinhood you'll never miss out on an investment opportunity again. Get instant access to your funds when you deposit or sell stocks to buy cryptocurrencies. We use cutting-edge security measures to protect your assets and your personal information. Bitcoin and other...",
+            "submitter": "Brad Frost",
+            "comments": 34,
+            "likes": 186,
+            "has": ["Capital", "Builder", "Designer"],
+            "needs": ["Customer"]
+        },
+        {
+            "title": "A free AI that gets you more right swipes",
+            "description": "That's right, you read that correctly. Our revolutionary algorithm will without a doubt help your game... Ok, maybe we can't promise that, but this will definitely up your Tinder game.",
+            "submitter": "Towhid Zaman",
+            "comments": 873,
+            "likes": 12000,
+            "has": ["Designer"],
+            "needs": ["Capital", "Builder", "Customer"]
+        },
+    ]
+    params = {
+        'ideas': ideas
+    }
+    return TemplateResponse(request, 'ideas_list.html', params)
+
 
 def itunes(request):
     return HttpResponse('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)')
