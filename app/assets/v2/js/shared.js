@@ -271,7 +271,7 @@ function getParam(parameterName) {
   return result;
 }
 
-function timeDifference(current, previous) {
+function timeDifference(current, previous, remaining) {
 
   if (current < previous) {
     return 'in ' + timeDifference(previous, current).replace(' ago', '');
@@ -309,6 +309,7 @@ function timeDifference(current, previous) {
   }
   var plural = amt != 1 ? 's' : '';
 
+  if (remaining) return amt + ' ' + unit + plural;
   return amt + ' ' + unit + plural + ' ago';
 }
 

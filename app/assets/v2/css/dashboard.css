@@ -24,6 +24,11 @@ body {
   color: #7A7A7A;
 }
 
+#matches {
+  font-family: "Muli-Light";
+  padding-left: 10px;
+}
+
 .title {
   text-transform: capitalize;
 }
@@ -70,7 +75,7 @@ body {
 }
 
 .bounty-summary .col-xs-1 {
-  margin-right: 25px;
+  margin-right: 2em;
 }
 
 .bounty-summary .github-comment {
