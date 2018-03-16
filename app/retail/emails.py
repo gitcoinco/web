@@ -256,7 +256,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    subject = "Gitcoin Weekly | Welcome to Web3 "
+    subject = "Growing The Gitcoin Toolset"
 
     intro = '''
 
@@ -264,22 +264,21 @@ def render_new_bounty_roundup(to_email):
     Hi there 👋
 </p>
 <p>
-    Many people ask me why web3 matters, philosophically, and how to use it, tactically. @vivek wrote up his thoughts on how <a href=https://media.consensys.net/a-warm-welcome-to-web3-89d49e61a7c5>web3 aims to improve upon our Internet</a> as we near the web’s 30th birthday. Give it a read and let us know what you think.
+    Want to work an issue, but don’t have any ETH to make an initial submission? Last week, <a href="https://gitcoin.co/faucet">the Gitcoin faucet</a> was launched! Send a request in to the faucet if you’re looking to make a claim, and we'll send back just enough ETH for you to make your first Ethereum transaction.  
 </p>
 <p>
-    We also created a <a href=https://www.youtube.com/watch?time_continue=1&v=cZZMDOrIo2k>two-minute video explaining how to interact with web3</a>, namely using MetaMask and ETHGasStation to interact with Ethereum’s blockchain. Hope you enjoy!
-</p>
+    We're quite enamoured with helping developers envision the future of web3.  So we figured we’d share our web3 content pieces from last week again. Here’s the <a href="https://twitter.com/GetGitcoin/status/971816917618044928">two-minute video</a> on MetaMask and our <a href="https://media.consensys.net/a-warm-welcome-to-web3-89d49e61a7c5">web3 vision piece</a>. </p>
 <p>
     What else is new?
     <ul>
         <li>
-            Code Sponsor is on track for re-launch April 1. Follow the progress <a href=https://github.com/codesponsor/web>here</a>!
+            <a href="https://twitter.com/GetGitcoin/status/974291955860627457">I was on FLOSS Weekly</a> last week to discuss Gitcoin’s place in open source 
         </li>
         <li>
-            We’ll be at SXSW this week! If you’re in town, <a href=https://etherealsxswmaster.splashthat.com/>RSVP here to hang</a>.
+            This week, we launched a repo called <a href="https://github.com/gitcoinco/GIPs">GIPS -- Gitcoin Improvement Proposals</a>.  Got an idea for the future of Open Source Incentivization? Submit it as a GIP.
         </li>
         <li>
-            Have you heard about <a href=https://etherealsummit.com/>Ethereal NY</a>? We’ll be there in May and would love to see you.
+            SXSW was great fun! Vivek presented Gitcoin at the Ethereal Lounge to good reception. Next up: <a href="https://etherealsummit.com/">Ethereal NY</a> and <a href="http://boulderstartupweek.com/">Boulder Startup Week</a> in May. Until then, #buidl! 
         </li>
     </ul>
 </p>
@@ -290,35 +289,38 @@ def render_new_bounty_roundup(to_email):
 '''
     highlights = [
         {
-            'who': 'thelostone-mc',
-            'what': 'built out a new look for our premier product, the Issue Explorer! Excited for this to go live soon..',
-            'link': 'https://github.com/gitcoinco/web/pull/523',
+            'who': 'KennethAshley',
+            'who_link': True,
+            'what': 'or getting the Gitcoin Faucet across the finish line. Appreciate you lowering the barriers to entry for others, Kenneth!',
+            'link': 'https://github.com/gitcoinco/web/pull/407',
             'link_copy': 'See more here',
         },
         {
-            'who': 'kennethashley',
-            'what': 'added consistent form styles across Gitcoin.',
-            'link': 'https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/web/issues/498&slack=1',
+            'who': 'mapmeld',
+            'who_link': True,
+            'what': 'Built internationalization into MetaMask',
+            'link': 'https://gitcoin.co/legacy/issue/MetaMask/metamask-extension/437',
             'link_copy': 'View more here',
         },
         {
-            'who': 'prabhu',
-            'what': ' did some phenomenal work at ETH Denver building out ETHAnswer, a Gitcoin like application for Stack Overflow. Check out his demo on our Weekly Livestream today! ',
+            'who': 'Tammy, Brian, and Gillian ',
+            'who_link': False,
+            'what': 'built Bountyful, a chrome extension for Stack Overflow. They’ll be on the Weekly Livestream today to show it off! ',
         },
     ]
 
     bounties = [
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MetaMask/metamask-extension/issues/3133'),
-            'primer': 'An oppy to help Metamask with porting to Firefox 👇',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/TrustWallet/trust-wallet-ios/issues/483'),
+            'primer': 'Trust Wallet is on Gitcoin! Help them refactor and earn some ETH along the way :) ',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/py-evm/issues/362'),
-            'primer': 'Help @piper at py-EVM formalize an API for a computation object (0.48 ETH, ~$350) ',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/gitcoinco/web/issues/623'),
+            'primer': 'Work with @mbeacom and I on refactoring the Gitcoin API',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethgasstation/ethgasstation-backend/issues/19'),
-            'primer': 'ETHGasStation is on Gitcoin! See if you can help out and earn 0.25ETH along the way :) ',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MetaMask/metamask-extension/issues/3249'),
+            'primer': 'Biggest open bounty, you ask? 1.1 ETH to work with the great developers at MetaMask on a customizable keyring format ',
         },
     ]
 

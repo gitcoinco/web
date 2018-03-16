@@ -20,9 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from django.urls import re_path
 
-from dashboard.views import bounty_details
-
-from .views import clawback_bounty, fulfill_bounty, process_bounty, sync_web3
+from dashboard.views import bounty_details, fulfill_bounty, kill_bounty, process_bounty, sync_web3
 
 app_name = 'legacy'
 urlpatterns = [
@@ -31,7 +29,7 @@ urlpatterns = [
     re_path(r'^funding/claim/?', fulfill_bounty, name='legacy_claim_funding'),
     re_path(r'^funding/fulfill/?', fulfill_bounty, name='legacy_claim_funding1'),
     re_path(r'^bounty/fulfill/?', fulfill_bounty, name='legacy_claim_funding2'),
-    re_path(r'^funding/clawback/?', clawback_bounty, name='legacy_clawback_expired_bounty'),
+    re_path(r'^funding/clawback/?', kill_bounty, name='legacy_clawback_expired_bounty'),
 
     # Endpoints that need to support old logic.
     # Bounties
