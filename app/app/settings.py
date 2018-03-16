@@ -207,8 +207,7 @@ STATIC_URL = STATIC_HOST + env('STATIC_URL', default='/static/')
 CACHES = {'default': env.cache()}
 
 # HTTPS Handling
-SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool(
-    'SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True)
 SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD', default=True)
 SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS', default=3600)
 SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=False)
@@ -224,8 +223,7 @@ X_FRAME_OPTIONS = env('X_FRAME_OPTIONS', default='DENY')
 CONTACT_EMAIL = env('CONTACT_EMAIL', default='TODO')
 BCC_EMAIL = env('BCC_EMAIL', default='TODO')
 PERSONAL_CONTACT_EMAIL = env('PERSONAL_CONTACT_EMAIL', default='you@foo.bar')
-SENDGRID_API_KEY = env(
-    'SENDGRID_API_KEY', default='TODO')  # Required to send email.
+SENDGRID_API_KEY = env('SENDGRID_API_KEY', default='TODO')  # Required to send email.
 EMAIL_HOST = env('EMAIL_HOST', default='smtp.sendgrid.net')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='TODO')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='TODO')
