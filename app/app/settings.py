@@ -257,7 +257,7 @@ GITCOINBOT_APP_ID = env('BOT_APP_ID', default='')
 GITCOIN_BOT_CERT_PATH = env('GITCOIN_BOT_CERT_PATH', default='')
 SECRET_KEYSTRING = ''
 if GITCOIN_BOT_CERT_PATH:
-    with open(GITCOIN_BOT_CERT_PATH) as f:
+    with open(str(root.path(GITCOIN_BOT_CERT_PATH))) as f:
         SECRET_KEYSTRING = f.read()
 
 # Twitter Integration
@@ -277,7 +277,7 @@ MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
 GA_PRIVATE_KEY_PATH = env('GA_PRIVATE_KEY_PATH', default='')
 GA_PRIVATE_KEY = ''
 if GA_PRIVATE_KEY_PATH:
-    with open(GA_PRIVATE_KEY_PATH) as cert_file:
+    with open(str(root.path(GA_PRIVATE_KEY_PATH))) as cert_file:
         GA_PRIVATE_KEY = cert_file.read()
 
 # https://developers.google.com/analytics/devguides/reporting/core/v4/quickstart/service-py

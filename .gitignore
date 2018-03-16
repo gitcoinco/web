@@ -21,7 +21,7 @@ webpack-stats.json
 
 # Sensitive environment files
 .env
-.pem
+*.pem
 
 #  Local .terraform directories
 **/.terraform/*
