@@ -83,7 +83,7 @@
     "newline-after-var": [
       "error", "always"
     ],
-    "no-console": "error",
+    "no-console": "warn",
     "no-div-regex": "error",
     "no-else-return": "error",
     "no-empty": [
@@ -92,7 +92,7 @@
       }
     ],
     "no-empty-function": "error",
-    "no-eq-null": "error",
+    "no-eq-null": "warn",
     "no-extra-bind": "error",
     "no-extra-label": "error",
     "no-implicit-globals": "error",

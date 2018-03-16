@@ -435,3 +435,32 @@ div.button-pink {
 .accordion.active:after {
   content: "\f106";
 }
+
+.dropdown-menu {
+  background-color: #FAFAFA;
+  font-family: "Muli";
+  border-radius: 0px;
+  padding: 0;
+  right: 0;
+  left: auto;
+}
+
+.dropdown-menu .dropdown-divider {
+  margin: 0;
+}
+
+.dropdown-menu  .dropdown-item:hover {
+  background-color: #0D0764;
+  color: #FFFFFF;
+}
+
+.dropdown-menu .dropdown-item  {
+  padding: 12px 25px;
+}
+
+.dropdown-menu .dropdown-item i {
+  text-align: center;
+  margin-left: 0px;
+  margin-right: 20px;
+  width: 15px;
+}

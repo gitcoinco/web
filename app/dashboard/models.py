@@ -163,9 +163,9 @@ class Bounty(SuperModel):
             _org_name = org_name(self.github_url)
             _issue_num = issue_number(self.github_url)
             _repo_name = repo_name(self.github_url)
-            return f"{'/' if preceding_slash else ''}{'legacy/' if self.is_legacy else ''}issue/{_org_name}/{_repo_name}/{_issue_num}"
+            return f"{'/' if preceding_slash else ''}issue/{_org_name}/{_repo_name}/{_issue_num}"
         except Exception:
-            return f"{'/' if preceding_slash else ''}{'legacy/' if self.is_legacy else ''}funding/details?url={self.github_url}"
+            return f"{'/' if preceding_slash else ''}funding/details?url={self.github_url}"
 
     def get_natural_value(self):
         token = addr_to_token(self.token_address)
@@ -851,7 +851,7 @@ class Profile(SuperModel):
         return self.handle
 
     def get_relative_url(self, preceding_slash=True):
-        return "{}profile/{}".format('/' if preceding_slash else '', self.handle)
+        return f"{'/' if preceding_slash else ''}profile/{self.handle}"
 
     def get_absolute_url(self):
         return settings.BASE_URL + self.get_relative_url(preceding_slash=False)
