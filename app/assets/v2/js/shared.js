@@ -429,7 +429,6 @@ var retrieveIssueDetails = function() {
   });
   $.get(request_url, function(result) {
     result = sanitizeAPIResults(result);
-    console.log(result);
     if (result['keywords']) {
       var keywords = result['keywords'];
       target_eles['keywords'].val(keywords.join(', '));
