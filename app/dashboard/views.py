@@ -22,10 +22,12 @@ import json
 import logging
 
 from django.conf import settings
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
@@ -509,7 +511,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
         'issueURL': issueURL,
         'title': 'Issue Details',
         'card_title': 'Funded Issue Details | Gitcoin',
-        'avatar_url': 'https://gitcoin.co/static/v2/images/helmet.png',
+        'avatar_url': static('v2/images/helmet.png'),
         'active': 'bounty_details',
         'is_github_token_valid': is_github_token_valid(_access_token),
         'github_auth_url': get_auth_url(request.path),
@@ -531,7 +533,6 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
                 params['bounty_pk'] = bounty.pk
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.local_avatar_url
-                params['is_legacy'] = bounty.is_legacy  # TODO: Remove this following legacy contract sunset.
                 if profile_id:
                     profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
                     params['profile_interested'] = request.session.get('profile_id') in profile_ids
@@ -588,6 +589,11 @@ def profile_keywords(request, handle):
 
 def profile(request, handle):
     """Display profile details."""
+    handle = handle or request.session.get('handle')
+
+    if not handle:
+        raise Http404
+
     params = {
         'title': 'Profile',
         'active': 'profile_details',
@@ -711,31 +717,31 @@ def toolbox(request):
         "description": "Accelerate your dev workflow with Gitcoin\'s incentivization tools.",
         "tools": [{
             "name": "Issue Explorer",
-            "img": "/static/v2/images/why-different/code_great.png",
+            "img": static("v2/images/why-different/code_great.png"),
             "description": '''A searchable index of all of the funded work available in
                             the system.''',
-            "link": "https://gitcoin.co/explorer",
+            "link": reverse("explorer"),
             "active": "true",
             'stat_graph': 'bounties_fulfilled',
         }, {
              "name": "Fund Work",
-             "img": "/static/v2/images/tldr/bounties.jpg",
+             "img": static("v2/images/tldr/bounties.jpg"),
              "description": '''Got work that needs doing?  Create an issue and offer a bounty to get folks
                             working on it.''',
-             "link": "/funding/new",
+             "link": reverse("new_funding"),
              "active": "false",
              'stat_graph': 'bounties_fulfilled',
         }, {
              "name": "Tips",
-             "img": "/static/v2/images/tldr/tips.jpg",
+             "img": static("v2/images/tldr/tips.jpg"),
              "description": '''Leave a tip to thank someone for
                         helping out.''',
-             "link": "https://gitcoin.co/tips",
+             "link": reverse("tip"),
              "active": "false",
              'stat_graph': 'tips',
         }, {
              "name": "Code Sponsor",
-             "img": "/static/v2/images/codesponsor.jpg",
+             "img": static("v2/images/codesponsor.jpg"),
              "description": '''CodeSponsor sustains open source
                         by connecting sponsors with open source projects.''',
              "link": "https://codesponsor.io",
@@ -748,19 +754,19 @@ def toolbox(request):
           "description": "Take your OSS game to the next level!",
           "tools": [{
               "name": "Browser Extension",
-              "img": "/static/v2/images/tools/browser_extension.png",
+              "img": static("v2/images/tools/browser_extension.png"),
               "description": '''Browse Gitcoin where you already work.
                     On Github''',
-              "link": "/extension",
+              "link": reverse("browser_extension"),
               "active": "false",
               'stat_graph': 'browser_ext_chrome',
           },
           {
               "name": "iOS app",
-              "img": "/static/v2/images/tools/iOS.png",
+              "img": static("v2/images/tools/iOS.png"),
               "description": '''Gitcoin has an iOS app in alpha. Install it to
                 browse funded work on-the-go.''',
-              "link": "/ios",
+              "link": reverse("ios"),
               "active": "false",
               'stat_graph': 'ios_app_users',  # TODO
         }
@@ -771,29 +777,29 @@ def toolbox(request):
           "tools": [
           {
               "name": "Slack Community",
-              "img": "/static/v2/images/tldr/community.jpg",
+              "img": static("v2/images/tldr/community.jpg"),
               "description": '''Questions / Discussion / Just say hi ? Swing by
                                 our slack channel.''',
-              "link": "/slack",
+              "link": reverse("slack"),
               "active": "false",
               'stat_graph': 'slack_users',
          },
           {
               "name": "Gitter Community",
-              "img": "/static/v2/images/tools/community2.png",
+              "img": static("v2/images/tools/community2.png"),
               "description": '''The gitter channel is less active than slack, but
                 is still a good place to ask questions.''',
-              "link": "/gitter",
+              "link": reverse("gitter"),
               "active": "false",
               'stat_graph': 'gitter_users',
         },
           {
               "name": "Refer a Friend",
-              "img": "/static/v2/images/freedom.jpg",
+              "img": static("v2/images/freedom.jpg"),
               "description": '''Got a colleague who wants to level up their career?
               Refer them to Gitcoin, and we\'ll happily give you a bonus for their
               first bounty. ''',
-              "link": "/refer",
+              "link": reverse("refer"),
               "active": "false",
               'stat_graph': 'email_subscriberse',
         },
@@ -803,26 +809,26 @@ def toolbox(request):
           "description": "These fresh new tools are looking someone to test ride them!",
           "tools": [{
               "name": "Leaderboard",
-              "img": "/static/v2/images/tools/leaderboard.png",
+              "img": static("v2/images/tools/leaderboard.png"),
               "description": '''Check out who is topping the charts in
                 the Gitcoin community this month.''',
-              "link": "/leaderboard",
+              "link": reverse("_leaderboard"),
               "active": "false",
               'stat_graph': 'bounties_fulfilled',
           },
            {
             "name": "Profiles",
-            "img": "/static/v2/images/tools/profiles.png",
+            "img": static("v2/images/tools/profiles.png"),
             "description": '''Browse the work that you\'ve done, and how your OSS repuation is growing. ''',
-            "link": "/profile/mbeacom",
+            "link": reverse("profile"),
             "active": "true",
             'stat_graph': 'profiles_ingested',
             },
            {
             "name": "ETH Tx Time Predictor",
-            "img": "/static/v2/images/tradeoffs.png",
+            "img": static("v2/images/tradeoffs.png"),
             "description": '''Estimate Tradeoffs between Ethereum Network Tx Fees and Confirmation Times ''',
-            "link": "/gas",
+            "link": reverse("gas"),
             "active": "true",
             'stat_graph': 'gas_page',
             },
@@ -840,26 +846,26 @@ def toolbox(request):
           "description": "Gitcoin is built using Gitcoin.  Purdy cool, huh? ",
           "tools": [{
               "name": "Github Repos",
-              "img": "/static/v2/images/tools/science.png",
+              "img": static("v2/images/tools/science.png"),
               "description": '''All of our development is open source, and managed
               via Github.''',
-              "link": "/github",
+              "link": reverse("github"),
               "active": "false",
               'stat_graph': 'github_stargazers_count',
           },
            {
             "name": "API",
-            "img": "/static/v2/images/tools/api.jpg",
+            "img": static("v2/images/tools/api.jpg"),
             "description": '''Gitcoin provides a simple HTTPS API to access data
                             without having to run your own Ethereum node.''',
-            "link": "https://github.com/gitcoinco/web#https-api",
+            "link": "https://github.com/gitcoinco/web/blob/master/readme_api.md#https-api",
             "active": "true",
             'stat_graph': 'github_forks_count',
             },
           {
               "class": 'new',
               "name": "Build your own",
-              "img": "/static/v2/images/dogfood.jpg",
+              "img": static("v2/images/dogfood.jpg"),
               "description": '''Dogfood.. Yum! Gitcoin is built using Gitcoin.
                 Got something you want to see in the world? Let the community know
                 <a href="/slack">on slack</a>
@@ -874,7 +880,7 @@ def toolbox(request):
            "description": "Some tools that the community built *just because* they should exist.",
            "tools": [{
                "name": "Ethwallpaper",
-               "img": "/static/v2/images/tools/ethwallpaper.png",
+               "img": static("v2/images/tools/ethwallpaper.png"),
                "description": '''Repository of
                         Ethereum wallpapers.''',
                "link": "https://ethwallpaper.co",
@@ -887,7 +893,7 @@ def toolbox(request):
         "active": "tools",
         'title': "Toolbox",
         'card_title': "Gitcoin Toolbox",
-        'avatar_url': 'https://gitcoin.co/static/v2/images/tools/api.jpg',
+        'avatar_url': static('v2/images/tools/api.jpg'),
         "card_desc": "Accelerate your dev workflow with Gitcoin\'s incentivization tools.",
         'actors': actors,
         'newsletter_headline': "Don't Miss New Tools!"
