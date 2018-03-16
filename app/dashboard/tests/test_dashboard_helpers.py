@@ -17,6 +17,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import json
+
 from django.test import TestCase
 from django.test.client import RequestFactory
 
@@ -52,8 +54,9 @@ class DashboardHelpersTest(TestCase):
         with requests_mock.Mocker() as m:
             m.get(sample_url, text='<span class="js-issue-title refined-linkified-title">Increase Code Coverage by 4%</span>')
             request = self.factory.get('/sync/get_issue_details', params)
-            assert issue_details(request).content == b'{"title": "Increase Code Coverage by 4%"}'
-
+            response = json.loads(issue_details(request).content)
+            assert response['title'] == "Increase Code Coverage by 4%"
+ 
     def test_description(self):
         """Test the dashboard helper description method."""
         sample_url = 'https://github.com/gitcoinco/web/issues/353'
@@ -61,7 +64,8 @@ class DashboardHelpersTest(TestCase):
         with requests_mock.Mocker() as m:
             m.get('https://api.github.com/repos/gitcoinco/web/issues/353', text='{"body": "This bounty will be paid out to anyone who meaningfully increases the code coverage of the repository by 4%."}')
             request = self.factory.get('/sync/get_issue_details', params)
-            assert issue_details(request).content == b'{"description": "This bounty will be paid out to anyone who meaningfully increases the code coverage of the repository by 4%."}'
+            response = json.loads(issue_details(request).content)
+            assert response['description'] == "This bounty will be paid out to anyone who meaningfully increases the code coverage of the repository by 4%."
 
     def test_keywords(self):
         """Test the dashboard helper keywords method."""
@@ -70,7 +74,8 @@ class DashboardHelpersTest(TestCase):
         with requests_mock.Mocker() as m:
             m.get('https://github.com/gitcoinco/web', text='<span class="lang">hello</span><span class="lang">world</span>')
             request = self.factory.get('/sync/get_issue_details', params)
-            assert issue_details(request).content == b'{"keywords": ["web", "gitcoinco", "hello", "world"]}'
+            response = json.loads(issue_details(request).content)
+            assert response['keywords'] == ["web", "gitcoinco", "hello", "world"]
 
     def test_normalize_url(self):
         """Test the dashboard helper normalize_url method."""
