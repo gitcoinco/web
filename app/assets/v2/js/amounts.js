@@ -40,6 +40,6 @@ var getUSDEstimate = function(amount, denomination, callback) {
     document.conversion_rates[denomination] = conv_rate;
     return callback(estimate(amount, conv_rate));
   }).fail(function() {
-    return callback('Approx: Unknown amount');
+    return callback(new Error('Approx: Unknown amount'));
   });
 };
