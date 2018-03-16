@@ -131,7 +131,10 @@ var get_search_URI = function() {
         if (_value === 'createdByMe') {
           _key = 'bounty_owner_github_username';
           _value = document.contxt.github_handle;
-        } else if (_value === 'claimedByMe') {
+        } else if(_value === 'startedByMe') {
+          _key = 'interested_github_username';
+          _value = document.contxt.github_handle;
+        } else if (_value === 'submittedByMe') {
           _key = 'fulfiller_github_username';
           _value = document.contxt.github_handle;
         }
@@ -139,7 +142,7 @@ var get_search_URI = function() {
       });
 
       // TODO: Check if value myself is needed for coinbase
-      if (val === 'claimedByMe') {
+      if (val === 'submittedByMe') {
         key = 'bounty_owner_address';
         val = 'myself';
       }
