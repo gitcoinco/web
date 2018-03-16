@@ -255,6 +255,7 @@ GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 # Setup instructions: https://github.com/gitcoinco/web/blob/master/app/gitcoinbot/README.md
 GITCOINBOT_APP_ID = env('BOT_APP_ID', default='')
 GITCOIN_BOT_CERT_PATH = env('GITCOIN_BOT_CERT_PATH', default='')
+SECRET_KEYSTRING = ''
 if GITCOIN_BOT_CERT_PATH:
     with open(GITCOIN_BOT_CERT_PATH) as f:
         SECRET_KEYSTRING = f.read()
@@ -274,6 +275,7 @@ SLACK_TOKEN = env('SLACK_TOKEN', default='TODO')
 MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
 
 GA_PRIVATE_KEY_PATH = env('GA_PRIVATE_KEY_PATH', default='')
+GA_PRIVATE_KEY = ''
 if GA_PRIVATE_KEY_PATH:
     with open(GA_PRIVATE_KEY_PATH) as cert_file:
         GA_PRIVATE_KEY = cert_file.read()
