@@ -271,7 +271,7 @@ function getParam(parameterName) {
   return result;
 }
 
-function timeDifference(current, previous) {
+function timeDifference(current, previous, remaining) {
 
   if (current < previous) {
     return 'in ' + timeDifference(previous, current).replace(' ago', '');
@@ -309,6 +309,7 @@ function timeDifference(current, previous) {
   }
   var plural = amt != 1 ? 's' : '';
 
+  if (remaining) return amt + ' ' + unit + plural;
   return amt + ' ' + unit + plural + ' ago';
 }
 
@@ -407,9 +408,13 @@ var updateAmountUI = function(target_ele, usd_amount) {
   target_ele.html('Approx: ' + usd_amount + ' USD');
 };
 
-var retrieveTitle = function() {
+var retrieveIssueDetails = function() {
   var ele = $('input[name=issueURL]');
-  var target_ele = $('input[name=title]');
+  var target_eles = {
+    'title': $('input[name=title]'),
+    'keywords': $('input[name=keywords]'),
+    'description': $('textarea[name=description]')
+  };
   var issue_url = ele.val();
 
   if (typeof issue_url == 'undefined') {
@@ -418,69 +423,31 @@ var retrieveTitle = function() {
   if (issue_url.length < 5 || issue_url.indexOf('github') == -1) {
     return;
   }
-  var request_url = '/sync/get_issue_title?url=' + encodeURIComponent(issue_url);
+  var request_url = '/sync/get_issue_details?url=' + encodeURIComponent(issue_url);
 
-  target_ele.addClass('loading');
-  $.get(request_url, function(result) {
-    result = sanitizeAPIResults(result);
-    target_ele.removeClass('loading');
-    if (result['title']) {
-      target_ele.val(result['title']);
-    }
-  }).fail(function() {
-    target_ele.removeClass('loading');
+  $.each(target_eles, function(i, ele) {
+    ele.addClass('loading');
   });
-};
-
-var retrieveDescription = function() {
-  var ele = $('input[name=issueURL]');
-  var target_ele = $('textarea[name=description]');
-  var issue_url = ele.val();
-
-  if (typeof issue_url == 'undefined') {
-    return;
-  }
-  if (issue_url.length < 5 || issue_url.indexOf('github') == -1) {
-    return;
-  }
-  var request_url = '/sync/get_issue_description?url=' + encodeURIComponent(issue_url);
-
-  target_ele.addClass('loading');
   $.get(request_url, function(result) {
     result = sanitizeAPIResults(result);
-    target_ele.removeClass('loading');
-    if (result['description']) {
-      target_ele.val(result['description']);
-    }
-  }).fail(function() {
-    target_ele.removeClass('loading');
-  });
-};
-
-var retrieveKeywords = function() {
-  var ele = $('input[name=issueURL]');
-  var target_ele = $('input[name=keywords]');
-  var issue_url = ele.val();
-
-  if (typeof issue_url == 'undefined') {
-    return;
-  }
-  if (issue_url.length < 5 || issue_url.indexOf('github') == -1) {
-    return;
-  }
-  var request_url = '/sync/get_issue_keywords?url=' + encodeURIComponent(issue_url);
-
-  target_ele.addClass('loading');
-  $.get(request_url, function(result) {
-    result = sanitizeAPIResults(result);
-    target_ele.removeClass('loading');
     if (result['keywords']) {
       var keywords = result['keywords'];
 
-      target_ele.val(keywords.join(', '));
+      target_eles['keywords'].val(keywords.join(', '));
     }
+    if (result['description']) {
+      target_eles['description'].val(result['description']);
+    }
+    if (result['title']) {
+      target_eles['title'].val(result['title']);
+    }
+    $.each(target_eles, function(i, ele) {
+      ele.removeClass('loading');
+    });
   }).fail(function() {
-    target_ele.removeClass('loading');
+    $.each(target_eles, function(i, ele) {
+      ele.removeClass('loading');
+    });
   });
 };
 
