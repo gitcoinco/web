@@ -75,70 +75,13 @@ def amount(request):
         raise Http404
 
 
-# gets title of remote html doc (github issue)
-@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
-def title(request):
-    """Determine the Github issue title of the specified Github issue URL.
+# gets keywords of remote issue (github issue)
+@ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
+def issue_details(request):
+    """Determine the Github issue keywords of the specified Github issue or PR URL.
 
     Returns:
-        JsonResponse: A JSON response containing the Github issue title.
-
-    """
-    response = {}
-
-    url = request.GET.get('url')
-    url_val = URLValidator()
-    try:
-        url_val(url)
-    except ValidationError:
-        response['message'] = 'invalid arguments'
-        return JsonResponse(response)
-
-    if url.lower()[:19] != 'https://github.com/':
-        response['message'] = 'invalid arguments'
-        return JsonResponse(response)
-
-    try:
-        html_response = requests.get(url)
-    except ValidationError:
-        response['message'] = 'could not pull back remote response'
-        return JsonResponse(response)
-
-    title = None
-    try:
-        soup = BeautifulSoup(html_response.text, 'html.parser')
-
-        eles = soup.findAll("span", {"class": "js-issue-title"})
-        if eles:
-            title = eles[0].text
-
-        if not title and soup.title:
-            title = soup.title.text
-
-        if not title:
-            for link in soup.find_all('h1'):
-                print(link.text)
-
-    except ValidationError:
-        response['message'] = 'could not parse html'
-        return JsonResponse(response)
-
-    try:
-        response['title'] = title.replace('\n', '').strip()
-    except Exception as e:
-        print(e)
-        response['message'] = 'could not find a title'
-
-    return JsonResponse(response)
-
-
-# gets description of remote html doc (github issue)
-@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
-def description(request):
-    """Determine the Github issue description of the specified Github issue URL.
-
-    Returns:
-        JsonResponse: A JSON response containing the Github issue description.
+        JsonResponse: A JSON response containing the Github issue or PR keywords.
 
     """
     response = {}
@@ -170,27 +113,17 @@ def description(request):
         return JsonResponse(response)
 
     try:
-        body = api_response.json()['body']
+        response = api_response.json()
+        body = response['body']
     except ValueError as e:
         response['message'] = str(e)
     except KeyError as e:
         response['message'] = str(e)
     else:
         response['description'] = body.replace('\n', '').strip()
+        response['title'] = response['title']
 
-    return JsonResponse(response)
 
-
-# gets keywords of remote issue (github issue)
-@ratelimit(key='ip', rate='10/m', method=ratelimit.UNSAFE, block=True)
-def keywords(request):
-    """Determine the Github issue keywords of the specified Github issue or PR URL.
-
-    Returns:
-        JsonResponse: A JSON response containing the Github issue or PR keywords.
-
-    """
-    response = {}
     keywords = []
 
     url = request.GET.get('url')
