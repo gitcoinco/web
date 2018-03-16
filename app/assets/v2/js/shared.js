@@ -412,7 +412,7 @@ var retrieveIssueDetails = function() {
   var target_eles = {
     'title': $('input[name=title]'),
     'keywords': $('input[name=keywords]'),
-    'description': $('textarea[name=description]'),
+    'description': $('textarea[name=description]')
   };
   var issue_url = ele.val();
 
@@ -424,13 +424,14 @@ var retrieveIssueDetails = function() {
   }
   var request_url = '/sync/get_issue_details?url=' + encodeURIComponent(issue_url);
 
-  $.each(target_eles, function(i, ele){
+  $.each(target_eles, function(i, ele) {
     ele.addClass('loading');
   });
   $.get(request_url, function(result) {
     result = sanitizeAPIResults(result);
     if (result['keywords']) {
       var keywords = result['keywords'];
+
       target_eles['keywords'].val(keywords.join(', '));
     }
     if (result['description']) {
@@ -439,11 +440,11 @@ var retrieveIssueDetails = function() {
     if (result['title']) {
       target_eles['title'].val(result['title']);
     }
-    $.each(target_eles, function(i, ele){
+    $.each(target_eles, function(i, ele) {
       ele.removeClass('loading');
     });
   }).fail(function() {
-    $.each(target_eles, function(i, ele){
+    $.each(target_eles, function(i, ele) {
       ele.removeClass('loading');
     });
   });
