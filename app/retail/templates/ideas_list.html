@@ -53,10 +53,14 @@
                             <div>
                             Submitted by {{idea.submitter}}
                             </div>
-                            <div>
+                            <div style="display: flex">
                                 Has
                                 {% for has in idea.has %}
-                                {{has}}
+                                <div style="background-color: #E7F0FA; color: #775EC7; text-align: center; min-width: 90px; border-radius: 2px; margin: 4px">
+                                    <p style="padding: 5px 2px; margin-bottom: 0">
+                                        <span style="margin-left: 2px">{{has}}</span>
+                                    </p>
+                                </div>
                                 {% endfor %}
                                 Needs
                                 {% for needs in idea.needs %}
