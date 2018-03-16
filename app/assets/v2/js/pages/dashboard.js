@@ -93,7 +93,7 @@ var getFilters = function() {
     $.each($('input[name=' + key + ']:checked'), function() {
       if ($(this).attr('val-ui'))
         _filters.push('<a class=filter-tag>' + $(this).attr('val-ui') +
-                  '<i class="fa fa-times" onclick="removeFilter(\'' + key + '\', \'' + $(this).attr('value') + '\')"></i></a>');
+                  '<i class="fas fa-times" onclick="removeFilter(\'' + key + '\', \'' + $(this).attr('value') + '\')"></i></a>');
     });
   }
   $('.filter-tags').html(_filters);

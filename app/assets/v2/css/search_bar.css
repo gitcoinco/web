@@ -79,7 +79,7 @@
   display: inline-block;
 }
 
-.filter-tag i {
+.filter-tag svg {
   margin-left: 7px;
   font-size: 9px;
 }

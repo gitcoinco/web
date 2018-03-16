@@ -29,7 +29,7 @@ div, p, a, span {
     color: #4aeaa7 !important;
 }
 
-.navbar a.slack i {
+.navbar a.slack svg {
     margin-right: 3px;
 }
 
@@ -130,7 +130,7 @@ div, p, a, span {
 	color: white;
 }
 
-#mc_embed_signup_scroll #mc-embedded-subscribe i {
+#mc_embed_signup_scroll #mc-embedded-subscribe svg {
     margin-left: 5px;
 }
 
