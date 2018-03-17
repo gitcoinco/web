@@ -2,7 +2,7 @@ const path = require( 'path' );
 const webpack = require( 'webpack' );
 const BundleTracker = require( 'webpack-bundle-tracker' );
 const styleLintPlugin = require( 'stylelint-webpack-plugin' );
-const ImageminPlugin = require( 'imagemin-webpack-plugin' );
+const ImageminPlugin = require( 'imagemin-webpack-plugin' ).default;
 
 module.exports = {
   devtool: 'inline-source-map',
