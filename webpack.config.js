@@ -2,7 +2,7 @@ const path = require( 'path' );
 const webpack = require( 'webpack' );
 const BundleTracker = require( 'webpack-bundle-tracker' );
 const styleLintPlugin = require( 'stylelint-webpack-plugin' );
-
+const ImageminPlugin = require( 'imagemin-webpack-plugin' );
 
 module.exports = {
   devtool: 'inline-source-map',
@@ -53,6 +53,15 @@ module.exports = {
       files: '**/**/*.*css',
       failOnError: false,
       quiet: false
+    }),
+    new ImageminPlugin({
+      disable: process.env.NODE_ENV !== 'production',
+      optipng: {
+        optimizationLevel: 3
+      },
+      gifsicle: {
+        optimizationLevel: 1
+      }
     })
   ],
   resolve: {
