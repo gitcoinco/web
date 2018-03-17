@@ -37,14 +37,10 @@ $(document).ready(function() {
   $('input[name=amount]').keyup(setUsdAmount);
   $('input[name=amount]').blur(setUsdAmount);
   $('select[name=deonomination]').change(setUsdAmount);
-  $('input[name=issueURL]').blur(retrieveTitle);
-  $('input[name=issueURL]').blur(retrieveKeywords);
-  $('input[name=issueURL]').blur(retrieveDescription);
+  $('input[name=issueURL]').blur(retrieveIssueDetails);
 
   if ($('input[name=issueURL]').val() != '') {
-    retrieveTitle();
-    retrieveKeywords();
-    retrieveDescription();
+    retrieveIssueDetails();
   }
   $('input[name=issueURL]').focus();
 

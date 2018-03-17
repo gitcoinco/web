@@ -12,7 +12,7 @@ cache:
     - node_modules
 install:
   - npm install
-  - cp app/app/local_settings.py.dist app/app/local_settings.py
+  - cp app/app/travis.env app/app/.env
   - pip install -r requirements/test.txt
 script:
   - npm run eslint

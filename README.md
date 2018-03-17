@@ -1,4 +1,4 @@
-<img src='https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png'/>
+![Gitcoin Helmet](https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png)
 
 # Gitcoin
 
@@ -28,9 +28,7 @@ Also,
 
 ### On Gitcoin
 
-<a href="https://gitcoin.co/explorer/?q=https://github.com/gitcoinco/web">
-    Check out the available open issues on Gitcoin.
-</a>
+[Check out the available open issues on Gitcoin](https://gitcoin.co/explorer/?q=https://github.com/gitcoinco/web).
 
 ## What
 
@@ -62,13 +60,12 @@ Technically, the system is architected:
 
 # Trying out Gitcoin: Posting your first issue
 
-If you 
+If you
 
 * have some work on your Github Issues board that you don't have time (or skills) to do.
 * are dependant upon an upstream repo for something, and you'd like to incentivize them to work onit.
 
-try posting a funded issue at [https://gitcoin.co/new](https://gitcoin.co/new). 
-
+try posting a funded issue at [https://gitcoin.co/new](https://gitcoin.co/new).
 
 # Adding GitcoinBot to your repo
 
@@ -76,8 +73,7 @@ Gitcoinbot will allow you to add issues straight from github.
 
 [Check out the gitcoinbot readme to learn how](app/gitcoinbot/)
 
-
-# Adding your token to Gitcoin.
+# Adding your token to Gitcoin
 
 Have an ERC20 compatible token that you'ud like to add support for?  Great!
 
@@ -104,6 +100,7 @@ Have an ERC20 compatible token that you'ud like to add support for?  Great!
 '''
 
 # License
+
 [GNU AFFERO GENERAL PUBLIC LICENSE](./docs/LICENSE)
 
 <!-- Google Analytics -->
