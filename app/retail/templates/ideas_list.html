@@ -35,7 +35,20 @@
             <div class="container-fluid no-gutter" id="ideas">
                 <div class="col d-flex align-items-center justify-content-center">
                     <div class="d-flex justify-content-center flex-column mt-5 w-50">
-                    {% for idea in ideas %}
+                        <div class="form-group">
+                            <label class="form__label" for="sort">Sort by:</label>
+                            <span class="form__select">
+                                <select id="sort" name="sort" style="margin-left: 1em; width: 160px">
+                                    <option value="trending">Trending</option>
+                                    <option value="most_comments">Most Comments</option>
+                                    <option value="most_likes">Most Likes</option>
+                                </select>
+                                <div class="form__select__icon" style="border-style: hidden">
+                                    {% include 'svgs/arrow-down.svg' %}
+                                </div>
+                            </span>
+                        </div>
+                        {% for idea in ideas %}
                         <div class="idea-list">
                             <div style="display: flex; justify-content: space-between; max-width: 700px"> 
                                 <p style="font-family: 'Muli', sans-serif; font-size: 1.15em; display: in-line">{{idea.title}}
@@ -55,7 +68,7 @@
                                     <span style="line-height: 42px">Submitted by {{idea.submitter}}</span>
                                 </div>
                                 <div style="display: flex">
-                                    <span style="line-height: 42px; margin-right: 0.5em">Has</span>
+                                    <span style="line-height: 42px; margin-right: 0.5em">Has:</span>
                                     {% for has in idea.has %}
                                     <div style="background-color: #E7F0FA; color: #775EC7; text-align: center; min-width: 90px; border-radius: 2px; margin: 4px">
                                         <p style="padding: 5px 2px; margin-bottom: 0">
@@ -63,7 +76,7 @@
                                         </p>
                                     </div>
                                     {% endfor %}
-                                    <span style="line-height: 42px; margin-left: 1em; margin-right: 0.5em">Needs</span>
+                                    <span style="line-height: 42px; margin-left: 1em; margin-right: 0.5em">Needs:</span>
                                     {% for needs in idea.needs %}
                                     <div style="background-color: #D6FBEB; color: #00A55E; text-align: center; min-width: 90px; border-radius: 2px; margin: 4px">
                                         <p style="padding: 5px 2px; margin-bottom: 0">

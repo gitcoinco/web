@@ -1,4 +1,5 @@
 .idea-list {
+	width: 750px;
 	padding: 1em 1.5em; 
 	margin-bottom: 1.5em; 
 	border-style: solid; 
@@ -15,6 +16,4 @@
 
 .idea-list:hover {
 	border-color: purple;
-
-
 }
