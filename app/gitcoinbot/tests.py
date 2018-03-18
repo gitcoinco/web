@@ -23,7 +23,7 @@ from django.test import TestCase
 from gitcoinbot.actions import (
     submit_work_text, confused_text, help_text, new_bounty_text, new_tip_text, parse_comment_amount,
     parse_tippee_username,
-    submit_work_or_new_bounty_text)
+    submit_work_or_new_bounty_text, start_work_text)
 
 
 class gitcoinbotActions(TestCase):
@@ -97,6 +97,12 @@ class gitcoinbotActions(TestCase):
         submit_link = f"{settings.BASE_URL}issue/test_owner/gitcoin/1234"
         target_text = f"To finish claiming this bounty please [visit this link]({submit_link})"
         text = submit_work_text("test_owner", "gitcoin", "1234")
+        self.assertEqual(text, target_text)
+
+    def test_start_work_text(self):
+        start_work_link = f"{settings.BASE_URL}issue/test_owner/gitcoin/1234"
+        target_text = f"To show this bounty as started please [visit this link]({start_work_link})"
+        text = start_work_text("test_owner", "gitcoin", "1234")
         self.assertEqual(text, target_text)
 
     def test_confused_text(self):

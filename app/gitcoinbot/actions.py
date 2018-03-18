@@ -26,7 +26,6 @@ from django.conf import settings
 
 import jwt
 import requests
-from itertools import islice
 
 from dashboard.models import Bounty
 from github.utils import post_issue_comment_reaction
@@ -144,6 +143,12 @@ def new_tip_text(owner, repo, issue_id, comment_text):
     return tip_response
 
 
+def start_work_text(owner, repo, issue_id):
+    start_work_link = f'{settings.BASE_URL}issue/{owner}/{repo}/{issue_id}'
+    start_work_response = f"To show this bounty as started please [visit this link]({start_work_link})"
+    return start_work_response
+
+
 def submit_work_text(owner, repo, issue_id):
     submit_link = f'{settings.BASE_URL}issue/{owner}/{repo}/{issue_id}'
     submit_response = f'To finish claiming this bounty please [visit this link]({submit_link})'
@@ -200,6 +205,7 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id, install_
     bounty_regex = r'@?[Gg]itcoinbot\s[Bb]ounty\s\d*\.?(\d+\s?)'
     submit_work_regex = r'@?[Gg]itcoinbot\s[Ss]ubmit(\s[Ww]ork)?'
     tip_regex = r'@?[Gg]itcoinbot\s[Tt]ip\s@\w*\s\d*\.?(\d+\s?)'
+    start_work_regex = r'@?[Gg]itcoinbot\s[Ss]tart(\s[Ww]ork)?'
 
     if re.match(help_regex, comment_text) is not None:
         post_issue_comment_reaction(owner, repo, comment_id, '+1')
@@ -216,6 +222,10 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id, install_
         post_issue_comment_reaction(owner, repo, comment_id, 'heart')
         tip_text = new_tip_text(owner, repo, issue_id, comment_text)
         post_gitcoin_app_comment(owner, repo, issue_id, tip_text, install_id)
+    elif re.match(start_work_regex, comment_text) is not None:
+        post_issue_comment_reaction(owner, repo, comment_id, 'heart')
+        start_text = start_work_text(owner, repo, issue_id)
+        post_gitcoin_app_comment(owner, repo, issue_id, start_text, install_id)
     else:
         post_issue_comment_reaction(owner, repo, comment_id, 'confused')
         post_gitcoin_app_comment(owner, repo, issue_id, confused_text(), install_id)
