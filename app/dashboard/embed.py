@@ -178,7 +178,7 @@ def embed(request):
             line_size = 2
 
             text = f"{bounty.title_or_desc}"
-            # Limit text to
+            # Limit text to 28 chars
             text = (text[:28] + '...') if len(text) > 28 else text
 
             x = 620 + (int((i-1)/line_size) * (bounty_width))
@@ -191,7 +191,9 @@ def embed(request):
                 unit = 'hour'
                 num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
             unit = unit + ("s" if num != 1 else "")
-            draw.multiline_text(align="left", xy=(x, y-40), text=f"Expires in {num} {unit}", fill=gray, font=p, spacing=spacing)
+            draw.multiline_text(align="left", xy=(x, y-40), text=f"Expires in {num} {unit}:", fill=gray, font=p, spacing=spacing)
+
+
             # draw = ImageDraw.Draw(img)
 
             bounty_eth_background = Image.new("RGBA", (200, 56), (231, 240, 250))
@@ -199,6 +201,17 @@ def embed(request):
 
             img.paste(bounty_eth_background, (x, y + 50))
             img.paste(bounty_usd_background, (x + 210, y + 50))
+
+            tmp = ImageDraw.Draw(img)
+
+            bounty_value_size = tmp.textsize(f"{round(bounty.value_true, 2)} {bounty.token_name}", p)
+
+            draw.multiline_text(align="left", xy=(x + 100 - bounty_value_size[0]/2, y + 67), text=f"{round(bounty.value_true, 2)} {bounty.token_name}", fill=(44, 35, 169), font=p, spacing=spacing)
+
+            bounty_value_size = tmp.textsize(f"{round(bounty.value_in_usdt, 2)} USD", p)
+
+            draw.multiline_text(align="left", xy=(x + 310 - bounty_value_size[0]/2, y + 67), text=f"{round(bounty.value_in_usdt, 2)} USD", fill=(45, 168, 116), font=p, spacing=spacing)
+
 
         # blank slate
         if bounties.count() == 0:
@@ -217,7 +230,8 @@ def embed(request):
             x = 64
             y = height - 70
             draw.multiline_text(align="center", xy=(x, y), text=text, fill=gray, font=p, spacing=spacing)
-            draw = ImageDraw.Draw(img)
+
+            draw.multiline_text(align="left", xy=(624, 120), text="Recently funded issues:", fill=(62, 36, 251), font=p, spacing=spacing)
 
         # Resize back to output size for better anti-alias
         img = img.resize((888, 288), Image.LANCZOS)
