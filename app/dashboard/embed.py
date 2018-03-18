@@ -160,10 +160,10 @@ def embed(request):
         offset = 195, 148
         img.paste(avatar, offset, avatar)
 
-        img_user_name = ImageDraw.Draw(img)
-        org_name_width = img_user_name.textsize(_org_name, h1)
+        img_org_name = ImageDraw.Draw(img)
+        img_org_name_size = img_org_name.textsize(_org_name, h1)
 
-        img_user_name.multiline_text(align="left", xy=(287 - org_name_width[0]/2, 360), text=_org_name, fill=black, font=h1, spacing=spacing)
+        img_org_name.multiline_text(align="left", xy=(287 - img_org_name_size[0]/2, 360), text=_org_name, fill=black, font=h1, spacing=spacing)
 
         # put bounty list in there
         i = 0
