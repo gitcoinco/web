@@ -28,6 +28,7 @@ import jwt
 import requests
 
 from dashboard.models import Bounty
+from gitcoinbot.models import GitcoinBotResponses
 from github.utils import post_issue_comment_reaction
 from dashboard.tokens import tokens
 
@@ -200,7 +201,15 @@ def create_token(install_id):
     return token
 
 
-def determine_response(owner, repo, comment_id, comment_text, issue_id, install_id):
+def get_text_from_query_responses(comment_text, sender):
+    comment_text_low = comment_text.casefold()
+    result_text = GitcoinBotResponses.objects.filter(request=comment_text_low)
+    if result_text:
+        return f'@{sender} {result_text[0].response}'
+
+
+
+def determine_response(owner, repo, comment_id, comment_text, issue_id, install_id, sender):
     help_regex = r'@?[Gg]itcoinbot\s[Hh]elp'
     bounty_regex = r'@?[Gg]itcoinbot\s[Bb]ounty\s\d*\.?(\d+\s?)'
     submit_work_regex = r'@?[Gg]itcoinbot\s[Ss]ubmit(\s[Ww]ork)?'
@@ -227,5 +236,11 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id, install_
         start_text = start_work_text(owner, repo, issue_id)
         post_gitcoin_app_comment(owner, repo, issue_id, start_text, install_id)
     else:
-        post_issue_comment_reaction(owner, repo, comment_id, 'confused')
-        post_gitcoin_app_comment(owner, repo, issue_id, confused_text(), install_id)
+        text_response = get_text_from_query_responses(comment_text, sender)
+
+        if text_response:
+            post_issue_comment_reaction(owner, repo, comment_id, 'hooray')
+            post_gitcoin_app_comment(owner, repo, issue_id, text_response, install_id)
+        else:
+            post_issue_comment_reaction(owner, repo, comment_id, 'confused')
+            post_gitcoin_app_comment(owner, repo, issue_id, confused_text(), install_id)

@@ -23,7 +23,8 @@ from django.test import TestCase
 from gitcoinbot.actions import (
     submit_work_text, confused_text, help_text, new_bounty_text, new_tip_text, parse_comment_amount,
     parse_tippee_username,
-    submit_work_or_new_bounty_text, start_work_text)
+    submit_work_or_new_bounty_text, start_work_text, get_text_from_query_responses)
+from gitcoinbot.models import GitcoinBotResponses
 
 
 class gitcoinbotActions(TestCase):
@@ -147,3 +148,13 @@ class gitcoinbotActions(TestCase):
 
         text = submit_work_or_new_bounty_text("test_owner", "gitcoin", "1234")
         self.assertEqual(text, target_text)
+
+    def test_get_text_from_responses_when_doesnt_exist(self):
+        response = get_text_from_query_responses('Party trap', 'sender')
+        self.assertEqual(response, None)
+
+    def test_get_text_from_responses_when_exists(self):
+        GitcoinBotResponses.objects.create(request='speedy gonzales', response='The Fastest Mouse in all Mexico')
+        response = get_text_from_query_responses('Speedy Gonzales', 'ACME')
+        self.assertEqual(response, '@ACME The Fastest Mouse in all Mexico')
+
