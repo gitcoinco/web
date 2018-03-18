@@ -31,20 +31,25 @@ class gitcoinbotActions(TestCase):
 
     def test_help_text(self):
         """Test that help_text function returns the correct text."""
+        self.maxDiff = None
         text = help_text()
+        currencies = ', '.join(['ETH', 'GIT',
+                                'TIME & [more](https://github.com/gitcoinco/web/blob/master/app/dashboard/tokens.py)'])
         target_text = f"I am @{settings.GITHUB_API_USER}, a bot that facilitates gitcoin bounties.\n\n<hr>" \
             "Here are the commands I understand:\n\n " \
-            "* `bounty <amount> ETH` -- receive link to gitcoin.co form to create bounty.\n " \
+            "* `bounty <amount> <currency>` -- receive link to gitcoin.co form to create bounty.\n " \
             "* `claim` -- receive link to gitcoin.co to start work on a bounty.\n " \
-            "* `tip <user> <amount> ETH` -- receive link to complete tippping another github user *<amount>* ETH.\n " \
-            "* `help` -- displays a help menu\n\n<br>Learn more at: [https://gitcoin.co](https://gitcoin.co)\n" \
+            "* `tip <user> <amount> <currency>` -- receive link to complete tippping another github user *<amount>* <currency>.\n " \
+            "* `help` -- displays a help menu\n\n<br>" \
+            f"Some currencies I support: \n{currencies}\n\n<br>" \
+            "Learn more at: [https://gitcoin.co](https://gitcoin.co)\n" \
             f":zap::heart:, @{settings.GITHUB_API_USER}\n"
         self.assertEqual(text, target_text)
 
     def test_new_bounty_text(self):
         """Test that new_bounty_text returns the correct text."""
         issue_link = "https://github.com/test_owner/gitcoin/issues/1234"
-        bounty_link = f"{settings.BASE_URL}funding/new?source={issue_link}&amount=3.3"
+        bounty_link = f"{settings.BASE_URL}funding/new?source={issue_link}&amount=3.3&tokenName=ETH"
         target_text = "To create the bounty please [visit this link]" +\
         f"({bounty_link}).\n\n PS Make sure you're logged into Metamask!"
         text = new_bounty_text("test_owner", "gitcoin", "1234", "3.3 ETH")
@@ -81,7 +86,7 @@ class gitcoinbotActions(TestCase):
     def test_new_tip_text(self):
         """Test Gitcoinbot can respond with link to complete a tip."""
         issue_url = "https://github.com/test_owner/gitcoin/issues/1234"
-        tip_link = f"{settings.BASE_URL}tip/?amount=3.3&username=@user&source={issue_url}"
+        tip_link = f'{settings.BASE_URL}tip/?amount=3.3&tokenName=ETH&username=@user&source={issue_url}'
         target_text = f"To complete the tip, please [visit this link]({tip_link}).\n " \
             "PS Make sure you're logged into Metamask!"
         text = new_tip_text("test_owner", "gitcoin", "1234", "@user 3.3 ETH")
