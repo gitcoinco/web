@@ -1,4 +1,5 @@
 from django.http import HttpResponse, JsonResponse
+from django.utils import timezone
 
 import requests
 from dashboard.models import Bounty
@@ -130,10 +131,9 @@ def embed(request):
         bounties = super_bounties[:length]
 
         # config
-        bounty_height = 145
-        bounty_width = 400
+        bounty_height = 200
+        bounty_width = 572
         font_path = 'marketing/quotify/fonts/'
-        main_font = 'assets/v2/fonts/futura/font1.ttf'
         width = 1776
         height = 576
         spacing = 0
@@ -144,7 +144,7 @@ def embed(request):
         black = (0, 0, 0)
         gray = (102, 102, 102)
         h1 = ImageFont.truetype(font_path + 'Futura-Bold.ttf', 36, encoding="unic")
-        h2_thin = ImageFont.truetype(font_path + 'Futura-Normal.ttf', 32, encoding="unic")
+        h2_thin = ImageFont.truetype(font_path + 'Futura-Normal.ttf', 36, encoding="unic")
         p = ImageFont.truetype(font_path + 'Futura-Normal.ttf', 24, encoding="unic")
 
         # background
@@ -162,18 +162,32 @@ def embed(request):
 
         # put bounty list in there
         i = 0
-        for bounty in bounties:
+        for bounty in bounties[:4]:
+            # text = f"{line}\n{wrap_text(bounty.title_or_desc, 30)}\n\nWorth: " \
+            #        f"{round(bounty.value_true, 2)} {bounty.token_name} ({round(bounty.value_in_usdt, 2)} USD " \
+            #        f"@ ${round(convert_token_to_usdt(bounty.token_name), 2)}/{bounty.token_name})"
+
             i += 1
-            text = f"{line}\n{wrap_text(bounty.title_or_desc, 30)}\n\nWorth: " \
-                   f"{round(bounty.value_true, 2)} {bounty.token_name} ({round(bounty.value_in_usdt, 2)} USD " \
-                   f"@ ${round(convert_token_to_usdt(bounty.token_name), 2)}/{bounty.token_name})"
             # execute
             draw = ImageDraw.Draw(img)
             line_size = 2
-            x = 500 + (int((i-1)/line_size) * (bounty_width))
-            y = 30 + (abs(i % line_size-1) * bounty_height)
-            draw.multiline_text(align="left", xy=(x, y), text=text, fill=black, font=p, spacing=spacing)
-            draw = ImageDraw.Draw(img)
+
+            text = f"{bounty.title_or_desc}"
+            # Limit text to
+            text = (text[:28] + '...') if len(text) > 28 else text
+
+            x = 620 + (int((i-1)/line_size) * (bounty_width))
+            y = 230 + (abs(i % line_size-1) * bounty_height)
+            draw.multiline_text(align="left", xy=(x, y), text=text, fill=black, font=h2_thin, spacing=spacing)
+
+            unit = 'day'
+            num = int(round((bounty.expires_date - timezone.now()).days, 0))
+            if num == 0:
+                unit = 'hour'
+                num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
+            unit = unit + ("s" if num != 1 else "")
+            draw.multiline_text(align="left", xy=(x, y-40), text=f"Expires in {num} {unit}", fill=black, font=p, spacing=spacing)
+            # draw = ImageDraw.Draw(img)
 
         # blank slate
         if bounties.count() == 0:
