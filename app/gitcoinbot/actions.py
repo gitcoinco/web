@@ -20,11 +20,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import datetime
 import json
 import re
+from functools import wraps
 
 from django.conf import settings
 
 import jwt
 import requests
+from itertools import islice
+
+from dashboard.models import Bounty
 from github.utils import post_issue_comment_reaction
 from dashboard.tokens import tokens
 
@@ -33,31 +37,32 @@ SECRET_KEYSTRING = settings.SECRET_KEYSTRING
 
 
 MIN_AMOUNT = 0
-CURRENCIES = set(tokens.map(lambda currency: currency["name"]))
+CURRENCIES = set(map(lambda currency: currency["name"], tokens))
 
-class Bounds(object):
+
+class Bound(object):
     def __init__(self, *args):
         self.bounds = args
 
     def __call__(self, f):
+        wraps(f)
+
         def wrapped_f(*args, **kwargs):
-            for bound in self.bounds: # Check if every bound is complained
-		(valid, msg) = bound(*args, **kwargs):
+            for bound in self.bounds:  # Check if every bound is complained
+                (valid, msg) = bound(*args, **kwargs)
                 if not valid:
-                    return msg # especify what bound failed and why
+                    return msg  # especify what bound failed and why
 
-            f(*args, **kwargs)
-    
-	return caller
+            return f(*args, **kwargs)
 
-    return check_bounds_on
+        return wrapped_f
 
 
 def amount_greater_than_zero(*args, **kwargs):
     # No negatives and greater than 0
     comment_text = args[-1]
     amount = parse_comment_amount(comment_text)
-    currency = parse_comment_currency(comment_text)
+    tip_currency = parse_comment_currency(comment_text)
     response =  f'The amount should be greater than {MIN_AMOUNT} {tip_currency}'
 
     try:
@@ -73,8 +78,8 @@ def amount_greater_than_zero(*args, **kwargs):
 def help_text():
     github_bot_user = f"@{settings.GITHUB_API_USER}"
 
-
-    currencies = ', '.join(CURRENCIES[0:10]) 
+    currencies = ', '.join(['ETH', 'GIT',
+                           'TIME & [more](https://github.com/gitcoinco/web/blob/master/app/dashboard/tokens.py)'])
     help_text_response = f"I am {github_bot_user}, a bot that facilitates gitcoin bounties.\n" \
         "\n<hr>Here are the commands I understand:\n\n " \
         "* `bounty <amount> <currency>` -- receive link to gitcoin.co form to create bounty.\n " \
@@ -98,6 +103,15 @@ def new_bounty_text(owner, repo, issue_id, comment_text):
     return new_bounty_response
 
 
+def no_active_bounty(owner, repo, issue_id):
+    issue_link = f"https://github.com/{owner}/{repo}/issues/{issue_id}"
+    bounty_link = f"{settings.BASE_URL}funding/new?source={issue_link}"
+    no_active_bounty_response = f"No active bounty for this issue, consider create the bounty please [visit this link]({bounty_link}).\n\n " \
+                 "PS Make sure you're logged into Metamask!"
+
+    return no_active_bounty_response
+
+
 def parse_comment_amount(comment_text):
     re_amount = r'\d*\.?\d+'
     result = re.findall(re_amount, comment_text)
@@ -105,7 +119,7 @@ def parse_comment_amount(comment_text):
 
 
 def parse_comment_currency(comment_text):
-    or_currencies = r'|'.join(CURRENCIES) 
+    or_currencies = r'|'.join(CURRENCIES)
     re_currencies = r'({})'.format(or_currencies)
     result = re.findall(re_currencies, comment_text)
 
@@ -134,6 +148,17 @@ def claim_bounty_text(owner, repo, issue_id):
     claim_link = f'{settings.BASE_URL}issue/{owner}/{repo}/{issue_id}'
     claim_response = f'To finish claiming this bounty please [visit this link]({claim_link})'
     return claim_response
+
+
+def claim_or_new_bounty_text(owner, repo, issue_id):
+    issue_counter = Bounty.objects.filter(github_url=f'https://github.com/{owner}/{repo}/issues/{issue_id}').count()
+
+    if issue_counter > 0:
+        response_text = claim_bounty_text(owner, repo, issue_id)
+    else:
+        response_text = no_active_bounty(owner, repo, issue_id)
+
+    return response_text
 
 
 def confused_text():
@@ -185,7 +210,7 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id, install_
         post_gitcoin_app_comment(owner, repo, issue_id, bounty_text, install_id)
     elif re.match(claim_regex, comment_text) is not None:
         post_issue_comment_reaction(owner, repo, comment_id, '+1')
-        claim_text = claim_bounty_text(owner, repo, issue_id)
+        claim_text = claim_or_new_bounty_text(owner, repo, issue_id)
         post_gitcoin_app_comment(owner, repo, issue_id, claim_text, install_id)
     elif re.match(tip_regex, comment_text) is not None:
         post_issue_comment_reaction(owner, repo, comment_id, 'heart')

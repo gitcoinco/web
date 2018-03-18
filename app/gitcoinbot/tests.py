@@ -23,7 +23,7 @@ from django.test import TestCase
 from gitcoinbot.actions import (
     claim_bounty_text, confused_text, help_text, new_bounty_text, new_tip_text, parse_comment_amount,
     parse_tippee_username,
-)
+    claim_or_new_bounty_text)
 
 
 class gitcoinbotActions(TestCase):
@@ -103,3 +103,41 @@ class gitcoinbotActions(TestCase):
         """Test Gitcoinbot can respond that it's confused."""
         self.assertEqual(confused_text(),
             'Sorry I did not understand that request. Please try again or use `@gitcoinbot help` to see supported commands.')
+
+    def test_claim_bounty_when_bounty_exists(self):
+        from dashboard.models import Bounty
+        from datetime import datetime
+        Bounty.objects.create(
+            title='foo',
+            value_in_token=3,
+            token_name='ETH',
+            web3_created=datetime(2008, 10, 31),
+            github_url='https://github.com/test_owner/gitcoin/issues/1234',
+            token_address='0x0',
+            issue_description='hello world',
+            bounty_owner_github_username='flintstone',
+            is_open=False,
+            accepted=True,
+            expires_date=datetime(2008, 11, 30),
+            idx_project_length=5,
+            project_length='Months',
+            bounty_type='Feature',
+            experience_level='Intermediate',
+            raw_data={},
+        )
+
+        claim_link = f"{settings.BASE_URL}issue/test_owner/gitcoin/1234"
+        target_text = f"To finish claiming this bounty please [visit this link]({claim_link})"
+        text = claim_or_new_bounty_text("test_owner", "gitcoin", "1234")
+        self.assertEqual(text, target_text)
+
+
+
+    def test_claim_bounty_when_bounty_no_exists(self):
+        issue_link = f"https://github.com/test_owner/gitcoin/issues/1234"
+        bounty_link = f"{settings.BASE_URL}funding/new?source={issue_link}"
+        target_text = f"No active bounty for this issue, consider create the bounty please [visit this link]({bounty_link}).\n\n " \
+                                    "PS Make sure you're logged into Metamask!"
+
+        text = claim_or_new_bounty_text("test_owner", "gitcoin", "1234")
+        self.assertEqual(text, target_text)
