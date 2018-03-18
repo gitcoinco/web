@@ -136,8 +136,6 @@ def embed(request):
         font = 'assets/v2/fonts/futura/FuturaStd-Medium.otf'
         width = 1776
         height = 576
-        spacing = 0
-        # line = "".join(["_" for ele in range(0, 47)])
 
         # setup
         img = Image.new("RGBA", (width, height), (255, 255, 255))
@@ -164,9 +162,9 @@ def embed(request):
         img_org_name = ImageDraw.Draw(img)
         img_org_name_size = img_org_name.textsize(_org_name, h1)
 
-        img_org_name.multiline_text(align="left", xy=(287 - img_org_name_size[0]/2, 360), text=_org_name, fill=black, font=h1, spacing=spacing)
+        img_org_name.multiline_text(align="left", xy=(287 - img_org_name_size[0]/2, 360), text=_org_name, fill=black, font=h1)
 
-        draw.multiline_text(align="left", xy=(110, 410), text="supports funded issues", fill=black, font=h1, spacing=spacing)
+        draw.multiline_text(align="left", xy=(110, 410), text="supports funded issues", fill=black, font=h1)
 
         # put bounty list in there
         i = 0
@@ -181,7 +179,7 @@ def embed(request):
 
             x = 620 + (int((i-1)/line_size) * (bounty_width))
             y = 230 + (abs(i % line_size-1) * bounty_height)
-            draw.multiline_text(align="left", xy=(x, y), text=text, fill=black, font=h2_thin, spacing=spacing)
+            draw.multiline_text(align="left", xy=(x, y), text=text, fill=black, font=h2_thin)
 
             unit = 'day'
             num = int(round((bounty.expires_date - timezone.now()).days, 0))
@@ -189,7 +187,7 @@ def embed(request):
                 unit = 'hour'
                 num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
             unit = unit + ("s" if num != 1 else "")
-            draw.multiline_text(align="left", xy=(x, y-40), text=f"Expires in {num} {unit}:", fill=gray, font=p, spacing=spacing)
+            draw.multiline_text(align="left", xy=(x, y-40), text=f"Expires in {num} {unit}:", fill=gray, font=p)
 
             bounty_eth_background = Image.new("RGBA", (200, 56), (231, 240, 250))
             bounty_usd_background = Image.new("RGBA", (200, 56), (214, 251, 235))
@@ -201,28 +199,28 @@ def embed(request):
 
             bounty_value_size = tmp.textsize(f"{round(bounty.value_true, 2)} {bounty.token_name}", p)
 
-            draw.multiline_text(align="left", xy=(x + 100 - bounty_value_size[0]/2, y + 67), text=f"{round(bounty.value_true, 2)} {bounty.token_name}", fill=(44, 35, 169), font=p, spacing=spacing)
+            draw.multiline_text(align="left", xy=(x + 100 - bounty_value_size[0]/2, y + 67), text=f"{round(bounty.value_true, 2)} {bounty.token_name}", fill=(44, 35, 169), font=p)
 
             bounty_value_size = tmp.textsize(f"{round(bounty.value_in_usdt, 2)} USD", p)
 
-            draw.multiline_text(align="left", xy=(x + 310 - bounty_value_size[0]/2, y + 67), text=f"{round(bounty.value_in_usdt, 2)} USD", fill=(45, 168, 116), font=p, spacing=spacing)
+            draw.multiline_text(align="left", xy=(x + 310 - bounty_value_size[0]/2, y + 67), text=f"{round(bounty.value_in_usdt, 2)} USD", fill=(45, 168, 116), font=p)
 
 
         # blank slate
         if bounties.count() == 0:
-            draw.multiline_text(align="left", xy=(780, 300), text="No active issues. Post a funded issue at: https://gitcoin.co", fill=gray, font=h1, spacing=spacing)
+            draw.multiline_text(align="left", xy=(760, 320), text="No active issues. Post a funded issue at: https://gitcoin.co", fill=gray, font=h1)
 
         if bounties.count() != 0:
             text = 'Browse issues at: https://gitcoin.co/explorer'
-            draw.multiline_text(align="left", xy=(64, height - 70), text=text, fill=gray, font=p, spacing=spacing)
+            draw.multiline_text(align="left", xy=(64, height - 70), text=text, fill=gray, font=p)
 
-            draw.multiline_text(align="left", xy=(624, 120), text="Recently funded issues:", fill=(62, 36, 251), font=p, spacing=spacing)
+            draw.multiline_text(align="left", xy=(624, 120), text="Recently funded issues:", fill=(62, 36, 251), font=p)
 
             show_value, value = summarize_bounties(super_bounties)
 
             value_size = tmp.textsize(value, p)
 
-            draw.multiline_text(align="left", xy=(1725 - value_size[0], 120), text=value, fill=gray, font=p, spacing=spacing)
+            draw.multiline_text(align="left", xy=(1725 - value_size[0], 120), text=value, fill=gray, font=p)
 
             line_table_header = Image.new("RGBA", (1100, 6), (62, 36, 251))
 
