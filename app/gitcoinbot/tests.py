@@ -21,9 +21,9 @@ from django.conf import settings
 from django.test import TestCase
 
 from gitcoinbot.actions import (
-    submit_work_text, confused_text, help_text, new_bounty_text, new_tip_text, parse_comment_amount,
-    parse_tippee_username,
-    submit_work_or_new_bounty_text, start_work_text, get_text_from_query_responses)
+    confused_text, get_text_from_query_responses, help_text, new_bounty_text, new_tip_text, parse_comment_amount,
+    parse_tippee_username, start_work_text, submit_work_or_new_bounty_text, submit_work_text,
+)
 from gitcoinbot.models import GitcoinBotResponses
 
 
@@ -157,4 +157,3 @@ class gitcoinbotActions(TestCase):
         GitcoinBotResponses.objects.create(request='speedy gonzales', response='The Fastest Mouse in all Mexico')
         response = get_text_from_query_responses('Speedy Gonzales', 'ACME')
         self.assertEqual(response, '@ACME The Fastest Mouse in all Mexico')
-

@@ -26,11 +26,10 @@ from django.conf import settings
 
 import jwt
 import requests
-
 from dashboard.models import Bounty
+from dashboard.tokens import tokens
 from gitcoinbot.models import GitcoinBotResponses
 from github.utils import post_issue_comment_reaction
-from dashboard.tokens import tokens
 
 GITCOINBOT_APP_ID = settings.GITCOINBOT_APP_ID
 SECRET_KEYSTRING = settings.SECRET_KEYSTRING
