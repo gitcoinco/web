@@ -133,7 +133,7 @@ def embed(request):
         # config
         bounty_height = 200
         bounty_width = 572
-        font_path = 'marketing/quotify/fonts/'
+        font = 'assets/v2/fonts/futura/FuturaStd-Medium.otf'
         width = 1776
         height = 576
         spacing = 0
@@ -143,9 +143,9 @@ def embed(request):
         img = Image.new("RGBA", (width, height), (255, 255, 255))
         black = (0, 0, 0)
         gray = (102, 102, 102)
-        h1 = ImageFont.truetype(font_path + 'Futura-Bold.ttf', 36, encoding="unic")
-        h2_thin = ImageFont.truetype(font_path + 'Futura-Normal.ttf', 36, encoding="unic")
-        p = ImageFont.truetype(font_path + 'Futura-Normal.ttf', 24, encoding="unic")
+        h1 = ImageFont.truetype(font, 36, encoding="unic")
+        h2_thin = ImageFont.truetype(font, 36, encoding="unic")
+        p = ImageFont.truetype(font, 24, encoding="unic")
 
         # background
         background_image = 'assets/v2/images/embed-widget/background.png'
@@ -159,6 +159,11 @@ def embed(request):
         avatar.thumbnail(icon_size, Image.ANTIALIAS)
         offset = 195, 148
         img.paste(avatar, offset, avatar)
+
+        img_user_name = ImageDraw.Draw(img)
+        org_name_width = img_user_name.textsize(_org_name, h1)
+
+        img_user_name.multiline_text(align="left", xy=(287 - org_name_width[0]/2, 360), text=_org_name, fill=black, font=h1, spacing=spacing)
 
         # put bounty list in there
         i = 0
@@ -186,8 +191,14 @@ def embed(request):
                 unit = 'hour'
                 num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
             unit = unit + ("s" if num != 1 else "")
-            draw.multiline_text(align="left", xy=(x, y-40), text=f"Expires in {num} {unit}", fill=black, font=p, spacing=spacing)
+            draw.multiline_text(align="left", xy=(x, y-40), text=f"Expires in {num} {unit}", fill=gray, font=p, spacing=spacing)
             # draw = ImageDraw.Draw(img)
+
+            bounty_eth_background = Image.new("RGBA", (200, 56), (231, 240, 250))
+            bounty_usd_background = Image.new("RGBA", (200, 56), (214, 251, 235))
+
+            img.paste(bounty_eth_background, (x, y + 50))
+            img.paste(bounty_usd_background, (x + 210, y + 50))
 
         # blank slate
         if bounties.count() == 0:
@@ -201,18 +212,19 @@ def embed(request):
             # draw = ImageDraw.Draw(img)
 
         if bounties.count() != 0:
-            # config
             text = 'Browse issues at: https://gitcoin.co/explorer'
-            # execute
-            # text = wrap_text(text, 20)
             draw = ImageDraw.Draw(img)
-            x = 72
+            x = 64
             y = height - 70
             draw.multiline_text(align="center", xy=(x, y), text=text, fill=gray, font=p, spacing=spacing)
             draw = ImageDraw.Draw(img)
 
-        response = HttpResponse(content_type="image/jpeg")
-        img.save(response, "JPEG")
+        # Resize back to output size for better anti-alias
+        img = img.resize((888, 288), Image.LANCZOS)
+
+        # Return image with right content-type
+        response = HttpResponse(content_type="image/png")
+        img.save(response, "PNG")
         return response
     except IOError as e:
         print(e)
