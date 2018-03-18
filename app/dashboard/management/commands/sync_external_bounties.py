@@ -17,19 +17,21 @@
 '''
 
 import logging
-import re
 import warnings
-import requests
 import markdown
 from urllib.parse import urlparse as parse
 from urlextract import URLExtract
-from lxml import etree
+import locale
+
 
 from django.core.management.base import BaseCommand
 
 from github.utils import get_issues
 from dashboard.models import ExternalBounty
 from bs4 import BeautifulSoup
+import spacy
+from textacy import doc as textacy_doc
+from textacy import extract as text_extract
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -54,7 +56,7 @@ class Command(BaseCommand):
         parser.add_argument('source_github_url')
 
     def handle(self, *args, **options):
-
+        nlp = spacy.load('en_core_web_sm')
         source_gh_url = 'https://github.com/JGcarv/ethereum-bounty-hunters'
         uri = parse(source_gh_url).path
         uri_array = uri.split('/')
@@ -64,20 +66,38 @@ class Command(BaseCommand):
         gh_issues = get_issues(username,repo)
 
         for gh_issue in gh_issues:
+
+            mkd_text = markdown.markdown(gh_issue.get('body'))
+            soup = BeautifulSoup(mkd_text, "lxml")
+            just_text = ''.join(soup.findAll(text=True))
+            print(just_text)
+            doc = nlp(just_text)
+            textacy_parsed_doc = textacy_doc.Doc(doc)
+
+            named_enties = list(text_extract.named_entities(textacy_parsed_doc, include_types=['MONEY']))
+            for named_entity in named_enties:
+                print('named entity for bounty amount {0}'.format(named_entity.text))
+            if len(named_enties) == 0:
+                last_entity = 0
+            elif len(named_enties) == 1:
+                last_entity = named_enties[0]
+            else:
+                last_entity = named_enties[-1:]
+            print(last_entity.text)
+            eurs = text_extract.semistructured_statements(textacy_parsed_doc, "EUR")
+
+            for eur in list(eurs):
+                print('eur for bounty amount {0}'.format(eur.text))
+
             eb = ExternalBounty.objects.create(
                 title=gh_issue.get('title'),
                 url=gh_issue.get('html_url'),
                 description=markdown.markdown(gh_issue.get('body')),
-                amount=0.00,
+                amount=int(last_entity.text),
                 amount_denomination='USD',
                 created_on=gh_issue.get('created_at'),
 
             )
-            mkd_text = markdown.markdown(gh_issue.get('body'))
-            #print(mkd_text)
-            soup = BeautifulSoup(mkd_text, "lxml")
-            for link in soup.find_all('a'):
-                print(link.get('href'))
 
-            #for url in urls:
-            #    content = requests.get(url).content
+            print('---------------------')
+

@@ -10,19 +10,15 @@
 <body class="interior {{active}}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
-        {% include 'shared/nav_internal.html' %}
+        {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-        <div class="col-2" style="background: #eee; ">
+        <div class="col-12 col-md-2 left-rails" style="background: #F2F6F9;">
             {% include 'shared/current_balance.html' %}
             {% include 'shared/sidebar_search.html' %}
         </div>
 
         <div class="col body">
-            <div class="container-fluid" id="bounty_detail">
-            {% include 'shared/bounty_def.html' %}
-            </div>
-
             <div class="alert info transaction-status" style="display:none;">
                 <strong style="font-size: 22px;">Your transaction has been posted to web3</strong>
                 <br>
@@ -57,54 +53,82 @@
                 </div>
             </div>
 
-            <div class="row mt-4" id="bounty_details">
-                <div class="ml-2 mr-2 pl-4 pr-4 col-2 left_details">
-                    <div id="avatar_url">
-                    </div>
-                    <span class="boldLabel"><span id="web3_created"></span></span>
+            <div class="row" id="bounty_details">
+                <div class="col-12 col-md-2 left_details">
+                    <div id="avatar_url"></div>
+                    <span><span id="web3_created"></span></span>
                     <div id="left_actions"></div>
-                    <a class="font-smaller-2" style="color: #212529;" href="{% url 'explorer' %}">&lt; Issue Explorer</a>
+                    <a class="issue-nav-link" href="{% url 'explorer' %}">&lt; Issue Explorer</a>
                 </div>
-                    <div class="col-8 right_details">
-                        <span title="{%include "shared/status_tooltip.html" %}" class=boldLabel>Status <img style="max-width: 15px; " src="{% static "v2/images/icons/info.png" %}">:</span> <span  id="status">
+                <div class="col-12 col-md-8 right_details">
+                  <div class="row">
+                    <div class="col-12">
+                        <span title='{% include "shared/status_tooltip.html" %}' class="boldLabel">
+                          STATUS <i class="fa fa-info-circle"></i>:
                         </span>
-
-                        <h4 id="title">
-                        </h4>
-                        <span class=boldLabel>Funding Amount:</span> <span id="value_in_token"></span> <span id="value_in_usdt"></span> USD
-                        <div id="right_actions"></div>
-                        <h5>Issue Description</h5>
-                        <div id="issue_description"></div>
-                        <div style="width: 39%; display: inline-block;">
-                            <h5>Issue Info</h5>
-                            Experience Level: <span id="experience_level"></span>
-                            <br>
-                            Project Length: <span id="project_length"></span>
-                            <br>
-                            Issue Type: <span id="bounty_type"></span>
-                            <br>
-                            Expiration: <span id="expires_date"></span>
-                            <br>
-                        </div>
-                        <div style="width: 59%; display: inline-block;">
-                            <h5>Funder Info</h5>
-                            ETH Address: <span id="bounty_owner_address"></span>
-                            <br>
-                            Email: <span id="bounty_owner_email"></span>
-                            <br>
-                            Gitcoin Profile: <span id="bounty_owner_github_username"></span>
-                            <br>
-                        </div>
-                        <br>
-                        <h5>Started Work</h5>
+                        <span id="status"></span>
+                    </div>
+                    <div class="col-12">
+                        <h4 id="title"></h4>
+                    </div>
+                    <div class="col-12 funding-amount">
+                        <span class="boldLabel">Funding Amount:</span>
+                        <span id="value_in_token"></span>
+                        <span id="value_in_usdt_wrapper">
+                            (<span id="value_in_usdt"></span> USD @ <span id="token_value_in_usdt"></span>)
+                        </span>
+                    </div>
+                    <div class="col-12" id="right_actions"></div>
+                    <div class="col-12">
+                        <h5 class="bounty-heading">Issue Description</h5>
+                        <div class="bounty-text" id="issue_description"></div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <h5 class="bounty-heading">Issue Info</h5>
                         <div>
-                            <ul id="interest_list">
-                            </ul>
+                            <span class="bounty-subheading">Experience Level :</span>
+                            <span class="bounty-text" id="experience_level"></span>
                         </div>
-                        <h5 id="submission_head">Submissions</h5>
-                        <div id="submission_list">
+                        <div>
+                            <span class="bounty-subheading">Project Length : </span>
+                            <span class="bounty-text" id="project_length"></span>
+                        </div>
+                        <div>
+                            <span class="bounty-subheading">Issue Type : </span>
+                            <span class="bounty-text" id="bounty_type"></span>
+                        </div>
+                        <div>
+                            <span class="bounty-subheading">Expiration : </span>
+                            <span class="bounty-text" id="expires_date"></span>
                         </div>
                     </div>
+                    <div class="col-12 col-md-6">
+                        <h5 class="bounty-heading">Funder Info</h5>
+                        <div>
+                            <span class="bounty-subheading">ETH Address : </span>
+                            <span class="bounty-text" id="bounty_owner_address"></span>
+                        </div>
+                        <div>
+                            <span class="bounty-subheading">Email :</span>
+                            <span class="bounty-text" id="bounty_owner_email"></span>
+                        </div>
+                        <div>
+                            <span class="bounty-subheading">Gitcoin Profile : </span>
+                            <span class="bounty-text" id="bounty_owner_github_username"></span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                      <h5 class="bounty-heading">Started Work</h5>
+                      <div><ul id="interest_list"></ul></div>
+                    </div>
+                    <div class="col-12">
+                      <h5 id="submission_head" class="bounty-heading">Submissions</h5>
+                      <div id="submission_list"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 offset-md-1 col-md-10">
+                  {% include 'shared/newsletter.html' %}
                 </div>
             </div>
         </div>
@@ -119,15 +143,24 @@
     </script>
 
     <script id="interested" type="text/x-jsrender">
-        <li>
+      <li>
+        <div class="row">
+          <div class="col-sm-12 col-md-2 interested_icon">
             <img src="[[:local_avatar_url]]" class="avatar">
-            <a target=new href="[[:url]]">[[:handle]]</a>
-        </li>
+          </div>
+          <div class="col-sm-12 col-md-10">
+            <span class="bounty-subheading">Gitcoin Profile :</span>
+            <span class="bounty-text">
+              <a target=new href="[[:url]]">[[:handle]]</a>
+            </span>
+          </div>
+        </div>
+      </li>
     </script>
 
     <script id="submission" type="text/x-jsrender">
         <div class="row" id="submission_row">
-            <div class="col-2 submitter_icon">
+            <div class="col-sm-12 col-md-2 submitter_icon">
                 [[if fulfiller.fulfiller_github_username != '']]
                     <a href="/profile/[[:fulfiller.fulfiller_github_username]]">
                         <img src="{% url 'avatar' %}?repo=https://github.com/[[:fulfiller.fulfiller_github_username]]" class="avatar">
@@ -136,25 +169,46 @@
                     <img src="{% url 'avatar' %}?repo=https://github.com/self" class="avatar">
                 [[/if]]
             </div>
-            <div class="col-8">
+            <div class="col-sm-12 col-md-8">
                 <ul style="list-style-type:none" id="submitter_ul">
-                    <li>Name: <span id="fulfiller_name">[[:fulfiller.fulfiller_name]]</span></li>
-                    <li>ETH Address: <span id="fulfiller_address"> <a target=new href="https://etherscan.io/address/[[:fulfiller.fulfiller_address]]">[[:fulfiller.fulfiller_address]]</a></span></li>
-                    <li>Email: <span id="fulfiller_email"> <a href="mailto:[[:fulfiller.email]]">[[:fulfiller.fulfiller_email]]</a></span></li>
-                    <li>Gitcoin Profile: <span id="fulfiller_github_username"> <a target=new href="{% url 'profile' %}[[:fulfiller.fulfiller_github_username]]">[[:fulfiller.fulfiller_github_username]]</a></span></li>
-                    <li>Submission ID: <span id="fulfillment_id">[[:fulfiller.fulfillment_id]]</span></li>
-                    <li>Created: <span id="fulfillment_created">[[:fulfiller.created_on]]</span></li>
+                    <li>
+                      <span class="bounty-subheading">Name :</span>
+                      <span id="fulfiller_name" class="bounty-text">[[:fulfiller.fulfiller_name]]</span>
+                    </li>
+                    <li>
+                      <span class="bounty-subheading">ETH Address :</span>
+                      <span class="bounty-text" id="fulfiller_address">
+                        <a target=new href="https://etherscan.io/address/[[:fulfiller.fulfiller_address]]">[[:fulfiller.fulfiller_address]]</a>
+                      </span>
+                    </li>
+                    <li>
+                      <span class="bounty-subheading">Email :</span>
+                      <span class="bounty-text" id="fulfiller_email">
+                        <a href="mailto:[[:fulfiller.email]]">[[:fulfiller.fulfiller_email]]</a>
+                      </span>
+                    </li>
+                    <li>
+                      <span class="bounty-subheading">Gitcoin Profile :</span>
+                      <span class="bounty-text" id="fulfiller_github_username">
+                        <a target=new href="{% url 'profile' %}[[:fulfiller.fulfiller_github_username]]">[[:fulfiller.fulfiller_github_username]]</a>
+                      </span>
+                    </li>
+                    <li>
+                      <span class="bounty-subheading">Submission ID :</span>
+                      <span class="bounty-text" id="fulfillment_id">[[:fulfiller.fulfillment_id]]</span>
+                    </li>
+                    <li>
+                      <span class="bounty-subheading">Created :</span>
+                      <span class="bounty-text" id="fulfillment_created">[[:fulfiller.created_on]]</span>
+                    </li>
                 </ul>
             </div>
-            <div class="col-2">
-                <div class="row">&nbsp;</div>
-                <div class="row">&nbsp;</div>
-                    <span title='[[:button.title]]'>
-                        <a class="btn btn-sm btn-[[:button.color]] [[:button.extraClass]]" role="button" href="[[:button.href]]" target="[[:button.target]]">
-                            <span class="font-smaller-4">[[:button.text]]</span>
-                        </a>
-                    </span>
-                <div class="row">&nbsp;</div>
+            <div class="col-sm-12 col-md-2 text-center actions">
+              <span title='[[:button.title]]'>
+                <a class="btn btn-sm btn-[[:button.color]] [[:button.extraClass]]" role="button" href="[[:button.href]]" target="[[:button.target]]">
+                  <span class="font-smaller-4">[[:button.text]]</span>
+                </a>
+              </span>
             </div>
         </div>
     </script>
@@ -167,19 +221,16 @@
 
 </body>
 
+<script>
+    document.issueURL = '{{issueURL}}';
+</script>
+
 <!-- jQuery -->
 <script src="{% static "v2/js/showdown.js" %}"></script>
-{% if is_legacy %}
-<script src="{% static "legacy/v2/js/abi.js" %}"></script>
-<script src="{% static "legacy/v2/js/tokens.js" %}"></script>
-<script src="{% static "legacy/v2/js/pages/bounty_details.js" %}"></script>
-<script src="{% static "legacy/v2/js/shared.js" %}"></script>
-{% else %}
 <script src="{% static "v2/js/abi.js" %}"></script>
 <script src="{% static "v2/js/tokens.js" %}"></script>
 <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
 <script src="{% static "v2/js/shared.js" %}"></script>
-{% endif %}
 <script src="{% static "v2/js/ipfs-api.js" %}"></script>
 <script src="{% static "v2/js/ipfs.js" %}"></script>
 <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>

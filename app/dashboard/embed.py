@@ -2,6 +2,7 @@ from django.http import HttpResponse, JsonResponse
 
 import requests
 from dashboard.models import Bounty
+from economy.utils import convert_token_to_usdt
 from github.utils import get_user, org_name
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from ratelimit.decorators import ratelimit
@@ -43,10 +44,10 @@ def stat(request, key):
     from django.utils import timezone
     limit = 10
     weekly_stats = Stat.objects.filter(key=key).order_by('created_on')
-    weekly_stats = weekly_stats.filter(created_on__hour=1, created_on__week_day=1).filter(created_on__gt=(timezone.now() - timezone.timedelta(weeks=7))) #weekly stats only
+    weekly_stats = weekly_stats.filter(created_on__hour=1, created_on__week_day=1).filter(created_on__gt=(timezone.now() - timezone.timedelta(weeks=7)))  # weekly stats only
 
     daily_stats = Stat.objects.filter(key=key).filter(created_on__gt=(timezone.now() - timezone.timedelta(days=7))).order_by('created_on')
-    daily_stats = daily_stats.filter(created_on__hour=1) #daily stats only
+    daily_stats = daily_stats.filter(created_on__hour=1)  # daily stats only
 
     stats = weekly_stats if weekly_stats.count() < limit else daily_stats
 
@@ -71,6 +72,7 @@ def stat(request, key):
     response = HttpResponse(content_type='image/png')
     canvas.print_png(response)
     return response
+
 
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
 def embed(request):
@@ -110,14 +112,14 @@ def embed(request):
             # make transparent
             datas = avatar.getdata()
 
-            newData = []
+            new_data = []
             for item in datas:
                 if item[0] == 255 and item[1] == 255 and item[2] == 255:
-                    newData.append((255, 255, 255, 0))
+                    new_data.append((255, 255, 255, 0))
                 else:
-                    newData.append(item)
+                    new_data.append(item)
 
-            avatar.putdata(newData)
+            avatar.putdata(new_data)
             avatar.save(filepath, "PNG")
 
         # get issues
@@ -145,9 +147,9 @@ def embed(request):
         p = ImageFont.truetype(font_path + 'Futura-LightBT.ttf', 20, encoding="unic")
 
         # background
-        ## config
+        # config
         logo = 'assets/v2/images/header-bg-light.jpg'
-        ## execute
+        # execute
         back = Image.open(logo, 'r').convert("RGBA")
         img_w, img_h = back.size
         bg_w, bg_h = img.size
@@ -155,9 +157,9 @@ def embed(request):
         img.paste(back, offset)
 
         # repo logo
-        ## config
+        # config
         icon_size = (215, 215)
-        ## execute
+        # execute
         img_w, img_h = avatar.size
         avatar.thumbnail(icon_size, Image.ANTIALIAS)
         bg_w, bg_h = img.size
@@ -165,9 +167,9 @@ def embed(request):
         img.paste(avatar, offset, avatar)
 
         # gitcoin logo
-        ## config
+        # config
         logo = 'assets/v2/images/gitcoinco.png'
-        ## execute
+        # execute
         back = Image.open(logo, 'r').convert("RGBA")
         back.thumbnail(icon_size, Image.ANTIALIAS)
         img_w, img_h = back.size
@@ -177,7 +179,7 @@ def embed(request):
             img.paste(back, offset, back)
 
         # plus sign
-        ## config
+        # config
         if not is_org_gitcoin:
             text = '+'
             # execute
@@ -190,7 +192,7 @@ def embed(request):
             draw = ImageDraw.Draw(img)
 
         # header
-        ## config
+        # config
         text = '{} Supports Funded Issues'.format(_org_name.title())
         # execute
         text = wrap_text(text, 30)
@@ -201,9 +203,9 @@ def embed(request):
         draw.multiline_text(align="left", xy=(x, y), text=text, fill=black, font=h1, spacing=spacing)
         draw = ImageDraw.Draw(img)
 
-        ## config
+        # config
         show_value, value = summarize_bounties(super_bounties)
-        text = '{}\nPush Open Source Forward | Powered by Gitcoin.co'.format(wrap_text(value, 45) if show_value else "")
+        text = '{}\nGrow Open Source | Powered by Gitcoin.co'.format(wrap_text(value, 45) if show_value else "")
         # execute
         draw = ImageDraw.Draw(img)
         img_w, img_h = img.size
@@ -216,14 +218,9 @@ def embed(request):
         i = 0
         for bounty in bounties:
             i += 1
-            value_eth = str(round(bounty.value_in_eth/10**18, 2)) + "ETH" if bounty.value_in_eth else ""
-            value_in_usdt = str(round(bounty.value_in_usdt, 2)) + "USD" if bounty.value_in_usdt else ""
-            value_native = "{} {}".format(round(bounty.value_true, 2), bounty.token_name)
-
-            value = "{}, {}".format(value_eth, value_in_usdt)
-            if not value_eth:
-                value = value_native
-            text = "{}{}\n{}\n\nWorth: {}".format("", line, wrap_text(bounty.title_or_desc, 30), value)
+            text = f"{line}\n{wrap_text(bounty.title_or_desc, 30)}\n\nWorth: " \
+                   f"{round(bounty.value_true, 2)} {bounty.token_name} ({round(bounty.value_in_usdt, 2)} USD " \
+                   f"@ ${round(convert_token_to_usdt(bounty.token_name), 2)}/{bounty.token_name})"
             # execute
             draw = ImageDraw.Draw(img)
             img_w, img_h = img.size
@@ -245,7 +242,7 @@ def embed(request):
             draw = ImageDraw.Draw(img)
 
         if bounties.count() != 0:
-            ## config
+            # config
             text = 'Browse Issues @ https://gitcoin.co/explorer'
             # execute
             text = wrap_text(text, 20)
@@ -300,22 +297,22 @@ def avatar(request):
             # make transparent
             datas = avatar.getdata()
 
-            newData = []
+            new_data = []
             for item in datas:
                 if item[0] == 255 and item[1] == 255 and item[2] == 255:
-                    newData.append((255, 255, 255, 0))
+                    new_data.append((255, 255, 255, 0))
                 else:
-                    newData.append(item)
+                    new_data.append(item)
 
-            avatar.putdata(newData)
+            avatar.putdata(new_data)
             avatar.save(filepath, "PNG")
 
         width, height = (215, 215)
         img = Image.new("RGBA", (width, height), (255, 255, 255))
 
-        ## config
+        # config
         icon_size = (215, 215)
-        ## execute
+        # execute
         avatar = ImageOps.fit(avatar, icon_size, Image.ANTIALIAS)
         bg_w, bg_h = img.size
         offset = 0, 0

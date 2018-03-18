@@ -36,7 +36,7 @@ class DashboardNotificationsTestCase(TestCase):
             value_in_token=3,
             token_name='ETH',
             web3_created=datetime(2008, 10, 31, tzinfo=UTC),
-            github_url='https://github.com/gitcoinco/web',
+            github_url='https://github.com/gitcoinco/web/issues/11',
             token_address='0x0',
             issue_description='hello world',
             bounty_owner_github_username='flintstone',

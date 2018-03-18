@@ -23,7 +23,7 @@ from dashboard.models import Bounty, Tip
 from marketing.models import LeaderboardRank
 
 IGNORE_PAYERS = []
-IGNORE_EARNERS = ['owocki'] #sometimes owocki pays to himself. what a jerk!
+IGNORE_EARNERS = ['owocki']  # sometimes owocki pays to himself. what a jerk!
 
 days_back = 7
 if settings.DEBUG:
@@ -33,28 +33,31 @@ monthly_cutoff = timezone.now() - timezone.timedelta(days=30)
 quarterly_cutoff = timezone.now() - timezone.timedelta(days=90)
 yearly_cutoff = timezone.now() - timezone.timedelta(days=365)
 
-ranks = {
-    'weekly_fulfilled': {},
-    'weekly_all': {},
-    'weekly_payers': {},
-    'weekly_earners': {},
-    'monthly_fulfilled': {},
-    'monthly_all': {},
-    'monthly_payers': {},
-    'monthly_earners': {},
-    'quarterly_fulfilled': {},
-    'quarterly_all': {},
-    'quarterly_payers': {},
-    'quarterly_earners': {},
-    'yearly_fulfilled': {},
-    'yearly_all': {},
-    'yearly_payers': {},
-    'yearly_earners': {},
-    'all_fulfilled': {},
-    'all_all': {},
-    'all_payers': {},
-    'all_earners': {},
-}
+def default_ranks():
+    return {
+        'weekly_fulfilled': {},
+        'weekly_all': {},
+        'weekly_payers': {},
+        'weekly_earners': {},
+        'monthly_fulfilled': {},
+        'monthly_all': {},
+        'monthly_payers': {},
+        'monthly_earners': {},
+        'quarterly_fulfilled': {},
+        'quarterly_all': {},
+        'quarterly_payers': {},
+        'quarterly_earners': {},
+        'yearly_fulfilled': {},
+        'yearly_all': {},
+        'yearly_payers': {},
+        'yearly_earners': {},
+        'all_fulfilled': {},
+        'all_all': {},
+        'all_payers': {},
+        'all_earners': {},
+    }
+
+ranks = default_ranks()
 
 
 def add_element(key, username, amount):
@@ -66,7 +69,6 @@ def add_element(key, username, amount):
 
 def sum_bounties(b, usernames):
     for username in usernames:
-
         if b.idx_status == 'done':
             fulfiller_usernames = list(b.fulfillments.all().values_list('fulfiller_github_username'))
             add_element('all_fulfilled', username, b._val_usd_db)
@@ -136,7 +138,6 @@ class Command(BaseCommand):
     help = 'creates leaderboard objects'
 
     def handle(self, *args, **options):
-
         # get bounties
         bounties = Bounty.objects.current()
 

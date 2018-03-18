@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -56,7 +56,7 @@ class Command(BaseCommand):
                         should_warn_user = False
                         should_delete_interest = False
                         last_heard_from_user_days = None
-                        
+
                         if len(comments_by_interested_party) == 0:
                             should_warn_user = True
                             should_delete_interest = False
@@ -67,8 +67,8 @@ class Command(BaseCommand):
 
                             # if user hasn't commented since they expressed interest, handled this condition
                             # per https://github.com/gitcoinco/web/issues/462#issuecomment-368384384
-                            if last_comment_by_user < interest.created_at.replace(tzinfo=None):
-                                last_comment_by_user = interest.created_at.replace(tzinfo=None)
+                            if last_comment_by_user < interest.created.replace(tzinfo=None):
+                                last_comment_by_user = interest.created.replace(tzinfo=None)
 
                             # some small calcs
                             delta_now_vs_last_comment = datetime.now() - last_comment_by_user
@@ -79,7 +79,7 @@ class Command(BaseCommand):
                             should_delete_interest = last_heard_from_user_days >= num_days_back_to_delete_interest
 
                             print(f"- its been {last_heard_from_user_days} days since we heard from the user")
-                        
+
                         if should_delete_interest:
                             print('executing should_delete_interest for {}'.format(interest.pk))
                             bounty_startwork_expired(interest.profile.email, bounty, interest, last_heard_from_user_days)

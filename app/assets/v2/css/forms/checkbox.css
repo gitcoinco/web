@@ -1,0 +1,31 @@
+.form__checkbox {
+  display: flex;
+  position: relative;
+}
+
+.form__checkbox input {
+  position: absolute;
+  opacity: 0;
+}
+
+.form__checkbox label {
+  cursor: pointer;
+}
+
+.form__checkbox input:checked + label::before {
+  background-color: #0D0764;
+  border-color: #0D0764;
+}
+
+.form__checkbox label::before {
+  background: #fff;
+  border: 1px solid #dbdbdb;
+  border-radius: 2px;
+  content: url('/static/v2/images/check.svg');
+  display: inline-flex;
+  justify-content: center;
+  height: 18px;
+  margin-right: 10px;
+  vertical-align: text-top;
+  width: 18px;
+  }

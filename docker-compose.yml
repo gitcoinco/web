@@ -29,6 +29,8 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/code/app
+    env_file:
+      - app/app/local.env
     build: .
     volumes:
       - .:/code
