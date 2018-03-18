@@ -83,7 +83,7 @@ def help_text():
     help_text_response = f"I am {github_bot_user}, a bot that facilitates gitcoin bounties.\n" \
         "\n<hr>Here are the commands I understand:\n\n " \
         "* `bounty <amount> <currency>` -- receive link to gitcoin.co form to create bounty.\n " \
-        "* `claim` -- receive link to gitcoin.co to start work on a bounty.\n " \
+        "* `submit work` -- receive link to gitcoin.co to start work on a bounty.\n " \
         "* `tip <user> <amount> <currency>` -- receive link to complete tippping another github user *<amount>* <currency>.\n " \
         "* `help` -- displays a help menu\n\n<br>" \
         f"Some currencies I support: \n{currencies}\n\n<br>" \
@@ -144,17 +144,17 @@ def new_tip_text(owner, repo, issue_id, comment_text):
     return tip_response
 
 
-def claim_bounty_text(owner, repo, issue_id):
-    claim_link = f'{settings.BASE_URL}issue/{owner}/{repo}/{issue_id}'
-    claim_response = f'To finish claiming this bounty please [visit this link]({claim_link})'
-    return claim_response
+def submit_work_text(owner, repo, issue_id):
+    submit_link = f'{settings.BASE_URL}issue/{owner}/{repo}/{issue_id}'
+    submit_response = f'To finish claiming this bounty please [visit this link]({submit_link})'
+    return submit_response
 
 
-def claim_or_new_bounty_text(owner, repo, issue_id):
+def submit_work_or_new_bounty_text(owner, repo, issue_id):
     issue_counter = Bounty.objects.filter(github_url=f'https://github.com/{owner}/{repo}/issues/{issue_id}').count()
 
     if issue_counter > 0:
-        response_text = claim_bounty_text(owner, repo, issue_id)
+        response_text = submit_work_text(owner, repo, issue_id)
     else:
         response_text = no_active_bounty(owner, repo, issue_id)
 
@@ -198,7 +198,7 @@ def create_token(install_id):
 def determine_response(owner, repo, comment_id, comment_text, issue_id, install_id):
     help_regex = r'@?[Gg]itcoinbot\s[Hh]elp'
     bounty_regex = r'@?[Gg]itcoinbot\s[Bb]ounty\s\d*\.?(\d+\s?)'
-    claim_regex = r'@?[Gg]itcoinbot\s[Cc]laim'
+    submit_work_regex = r'@?[Gg]itcoinbot\s[Ss]ubmit(\s[Ww]ork)?'
     tip_regex = r'@?[Gg]itcoinbot\s[Tt]ip\s@\w*\s\d*\.?(\d+\s?)'
 
     if re.match(help_regex, comment_text) is not None:
@@ -208,10 +208,10 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id, install_
         post_issue_comment_reaction(owner, repo, comment_id, '+1')
         bounty_text = new_bounty_text(owner, repo, issue_id, comment_text)
         post_gitcoin_app_comment(owner, repo, issue_id, bounty_text, install_id)
-    elif re.match(claim_regex, comment_text) is not None:
+    elif re.match(submit_work_regex, comment_text) is not None:
         post_issue_comment_reaction(owner, repo, comment_id, '+1')
-        claim_text = claim_or_new_bounty_text(owner, repo, issue_id)
-        post_gitcoin_app_comment(owner, repo, issue_id, claim_text, install_id)
+        submit_work_text = submit_work_or_new_bounty_text(owner, repo, issue_id)
+        post_gitcoin_app_comment(owner, repo, issue_id, submit_work_text, install_id)
     elif re.match(tip_regex, comment_text) is not None:
         post_issue_comment_reaction(owner, repo, comment_id, 'heart')
         tip_text = new_tip_text(owner, repo, issue_id, comment_text)

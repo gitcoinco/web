@@ -21,9 +21,9 @@ from django.conf import settings
 from django.test import TestCase
 
 from gitcoinbot.actions import (
-    claim_bounty_text, confused_text, help_text, new_bounty_text, new_tip_text, parse_comment_amount,
+    submit_work_text, confused_text, help_text, new_bounty_text, new_tip_text, parse_comment_amount,
     parse_tippee_username,
-    claim_or_new_bounty_text)
+    submit_work_or_new_bounty_text)
 
 
 class gitcoinbotActions(TestCase):
@@ -38,7 +38,7 @@ class gitcoinbotActions(TestCase):
         target_text = f"I am @{settings.GITHUB_API_USER}, a bot that facilitates gitcoin bounties.\n\n<hr>" \
             "Here are the commands I understand:\n\n " \
             "* `bounty <amount> <currency>` -- receive link to gitcoin.co form to create bounty.\n " \
-            "* `claim` -- receive link to gitcoin.co to start work on a bounty.\n " \
+            "* `submit work` -- receive link to gitcoin.co to start work on a bounty.\n " \
             "* `tip <user> <amount> <currency>` -- receive link to complete tippping another github user *<amount>* <currency>.\n " \
             "* `help` -- displays a help menu\n\n<br>" \
             f"Some currencies I support: \n{currencies}\n\n<br>" \
@@ -92,11 +92,11 @@ class gitcoinbotActions(TestCase):
         text = new_tip_text("test_owner", "gitcoin", "1234", "@user 3.3 ETH")
         self.assertEqual(text, target_text)
 
-    def test_claim_bounty_text(self):
-        """Test Gitcoinbot can respond with link to claim bounty."""
-        claim_link = f"{settings.BASE_URL}issue/test_owner/gitcoin/1234"
-        target_text = f"To finish claiming this bounty please [visit this link]({claim_link})"
-        text = claim_bounty_text("test_owner", "gitcoin", "1234")
+    def test_submit_work_text(self):
+        """Test Gitcoinbot can respond with link to submit your work."""
+        submit_link = f"{settings.BASE_URL}issue/test_owner/gitcoin/1234"
+        target_text = f"To finish claiming this bounty please [visit this link]({submit_link})"
+        text = submit_work_text("test_owner", "gitcoin", "1234")
         self.assertEqual(text, target_text)
 
     def test_confused_text(self):
@@ -104,7 +104,7 @@ class gitcoinbotActions(TestCase):
         self.assertEqual(confused_text(),
             'Sorry I did not understand that request. Please try again or use `@gitcoinbot help` to see supported commands.')
 
-    def test_claim_bounty_when_bounty_exists(self):
+    def test_submit_work_or_new_bounty_when_bounty_exists(self):
         from dashboard.models import Bounty
         from datetime import datetime
         Bounty.objects.create(
@@ -126,18 +126,18 @@ class gitcoinbotActions(TestCase):
             raw_data={},
         )
 
-        claim_link = f"{settings.BASE_URL}issue/test_owner/gitcoin/1234"
-        target_text = f"To finish claiming this bounty please [visit this link]({claim_link})"
-        text = claim_or_new_bounty_text("test_owner", "gitcoin", "1234")
+        submit_link = f"{settings.BASE_URL}issue/test_owner/gitcoin/1234"
+        target_text = f"To finish claiming this bounty please [visit this link]({submit_link})"
+        text = submit_work_or_new_bounty_text("test_owner", "gitcoin", "1234")
         self.assertEqual(text, target_text)
 
 
 
-    def test_claim_bounty_when_bounty_no_exists(self):
+    def test_submit_work_or_new_bounty_when_bounty_doesnt_exist(self):
         issue_link = f"https://github.com/test_owner/gitcoin/issues/1234"
         bounty_link = f"{settings.BASE_URL}funding/new?source={issue_link}"
         target_text = f"No active bounty for this issue, consider create the bounty please [visit this link]({bounty_link}).\n\n " \
                                     "PS Make sure you're logged into Metamask!"
 
-        text = claim_or_new_bounty_text("test_owner", "gitcoin", "1234")
+        text = submit_work_or_new_bounty_text("test_owner", "gitcoin", "1234")
         self.assertEqual(text, target_text)
