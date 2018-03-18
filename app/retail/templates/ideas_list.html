@@ -35,17 +35,22 @@
             <div class="container-fluid no-gutter" id="ideas">
                 <div class="col d-flex align-items-center justify-content-center">
                     <div class="d-flex justify-content-center flex-column mt-5 w-50">
-                        <div class="form-group">
-                            <label class="form__label" for="sort">Sort by:</label>
-                            <span class="form__select">
-                                <select id="sort" name="sort" style="margin-left: 1em; width: 160px">
-                                    <option value="trending">Trending</option>
-                                    <option value="most_comments">Most Comments</option>
-                                    <option value="most_likes">Most Likes</option>
-                                </select>
-                                <div class="form__select__icon" style="border-style: hidden">
-                                    {% include 'svgs/arrow-down.svg' %}
-                                </div>
+                        <div class="form-group" style="display: flex; justify-content: space-between; width: 750px">
+                            <div>
+                                <label class="form__label" for="sort">Sort by:</label>
+                                <span class="form__select">
+                                    <select id="sort" name="sort" style="margin-left: 1em; width: 160px; border-style: none">
+                                        <option value="trending">Trending Ideas</option>
+                                        <option value="most_comments">Most Comments</option>
+                                        <option value="most_likes">Most Likes</option>
+                                    </select>
+                                    <div class="form__select__icon" style="border-style: hidden">
+                                        {% include 'svgs/arrow-down.svg' %}
+                                    </div>
+                                </span>
+                            </div>
+                            <span>
+                                <button class="button button--primary" type="add" id="add">Add Idea</button>
                             </span>
                         </div>
                         {% for idea in ideas %}
@@ -88,6 +93,9 @@
                             </div>  
                         </div>                                    
                         {% endfor %}
+                        <div class="form__footer form__footer--right">
+                            <button class="button button--primary" type="load" id="load" style="margin: 0 auto; display: block; background-color: #f9006c">Load More</button>
+                        </div>
                     </div>
                 </div>
             </div>
