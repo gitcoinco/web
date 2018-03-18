@@ -36,42 +36,44 @@
                 <div class="col d-flex align-items-center justify-content-center">
                     <div class="d-flex justify-content-center flex-column mt-5 w-50">
                     {% for idea in ideas %}
-                        <div style="display: flex; justify-content: space-between; max-width: 700px"> 
-                            <p style="font-family: 'Muli', sans-serif; font-size: 1.15em; display: in-line">{{idea.title}}
-                            </p>
-                            <div>
-                                <span class="col-xs-1" style="vertical-align: middle">
-                                    <img src="https://gitcoin.co/static/v2/images/comment.092f558598ed.svg" style="width: 15px">
-                                    <span class="github-comment font-caption" style="margin-left: 0.5em">{{idea.comments}}</span>
-                                </span>
-                                <span class="fa fa-heart" style="vertical-align: middle; margin-left: 1em"></span>
-                                <span class="github-comment font-caption" style="vertical-align: middle; margin-left: 0.5em">{{idea.likes}}</span>
-                            </div>
-                        </div>
-                        <p style="max-width: 700px">{{idea.description}}</p>
-                        <div style="display: flex; justify-content: space-between; max-width: 700px">
-                            <div>
-                                <span style="line-height: 42px">Submitted by {{idea.submitter}}</span>
-                            </div>
-                            <div style="display: flex">
-                                <span style="line-height: 42px; margin-right: 0.5em">Has</span>
-                                {% for has in idea.has %}
-                                <div style="background-color: #E7F0FA; color: #775EC7; text-align: center; min-width: 90px; border-radius: 2px; margin: 4px">
-                                    <p style="padding: 5px 2px; margin-bottom: 0">
-                                        <span style="margin-left: 2px">{{has}}</span>
-                                    </p>
+                        <div style="padding: 1em 1.5em; margin-bottom: 1.5em; border-style: solid; border-width: 1px; border-color: rgb(204, 204, 204); border-radius: 5px">
+                            <div style="display: flex; justify-content: space-between; max-width: 700px"> 
+                                <p style="font-family: 'Muli', sans-serif; font-size: 1.15em; display: in-line">{{idea.title}}
+                                </p>
+                                <div>
+                                    <span class="col-xs-1" style="vertical-align: middle">
+                                        <img src="https://gitcoin.co/static/v2/images/comment.092f558598ed.svg" style="width: 15px">
+                                        <span class="github-comment font-caption" style="margin-left: 0.5em">{{idea.comments}}</span>
+                                    </span>
+                                    <span class="fa fa-heart" style="vertical-align: middle; margin-left: 1em"></span>
+                                    <span class="github-comment font-caption" style="vertical-align: middle; margin-left: 0.5em">{{idea.likes}}</span>
                                 </div>
-                                {% endfor %}
-                                <span style="line-height: 42px; margin-left: 1em; margin-right: 0.5em">Needs</span>
-                                {% for needs in idea.needs %}
-                                <div style="background-color: #D6FBEB; color: #00A55E; text-align: center; min-width: 90px; border-radius: 2px; margin: 4px">
-                                    <p style="padding: 5px 2px; margin-bottom: 0">
-                                        <span style="margin-left: 2px">{{needs}}</span>
-                                    </p>
-                                </div>
-                                {% endfor %}
                             </div>
-                        </div>                                      
+                            <p style="max-width: 700px">{{idea.description}}</p>
+                            <div style="display: flex; justify-content: space-between; max-width: 700px">
+                                <div>
+                                    <span style="line-height: 42px">Submitted by {{idea.submitter}}</span>
+                                </div>
+                                <div style="display: flex">
+                                    <span style="line-height: 42px; margin-right: 0.5em">Has</span>
+                                    {% for has in idea.has %}
+                                    <div style="background-color: #E7F0FA; color: #775EC7; text-align: center; min-width: 90px; border-radius: 2px; margin: 4px">
+                                        <p style="padding: 5px 2px; margin-bottom: 0">
+                                            <span style="margin-left: 2px">{{has}}</span>
+                                        </p>
+                                    </div>
+                                    {% endfor %}
+                                    <span style="line-height: 42px; margin-left: 1em; margin-right: 0.5em">Needs</span>
+                                    {% for needs in idea.needs %}
+                                    <div style="background-color: #D6FBEB; color: #00A55E; text-align: center; min-width: 90px; border-radius: 2px; margin: 4px">
+                                        <p style="padding: 5px 2px; margin-bottom: 0">
+                                            <span style="margin-left: 2px">{{needs}}</span>
+                                        </p>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>  
+                        </div>                                    
                         {% endfor %}
                     </div>
                 </div>
