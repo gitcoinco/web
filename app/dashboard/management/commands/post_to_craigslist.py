@@ -44,6 +44,9 @@ class Command(BaseCommand):
         bounties_to_post = Bounty.objects.filter(web3_created__gte=one_hour_back)
         for bounty in bounties_to_post:
             # print(bounty)
-            print(f'attempting to post {bounty.github_url}')
-            link = maybe_post_on_craigslist(bounty)
-            print("Posted", link)
+            try:
+                print(f'attempting to post {bounty.github_url}')
+                link = maybe_post_on_craigslist(bounty)
+                print("Posted", link)
+            except Exception as e:
+                print(e)
