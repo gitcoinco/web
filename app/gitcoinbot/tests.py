@@ -36,75 +36,75 @@ class gitcoinbotActions(TestCase):
         text = help_text()
         currencies = ', '.join(['ETH', 'GIT',
                                 'TIME & [more](https://github.com/gitcoinco/web/blob/master/app/dashboard/tokens.py)'])
-        target_text = f"I am @{settings.GITHUB_API_USER}, a bot that facilitates gitcoin bounties.\n\n<hr>" \
-            "Here are the commands I understand:\n\n " \
-            "* `bounty <amount> <currency>` -- receive link to gitcoin.co form to create bounty.\n " \
-            "* `submit work` -- receive link to gitcoin.co to start work on a bounty.\n " \
-            "* `tip <user> <amount> <currency>` -- receive link to complete tippping another " \
-                      "github user *<amount>* <currency>.\n " \
-            "* `help` -- displays a help menu\n\n<br>" \
-            f"Some currencies I support: \n{currencies}\n\n<br>" \
-            "Learn more at: [https://gitcoin.co](https://gitcoin.co)\n" \
-            f":zap::heart:, @{settings.GITHUB_API_USER}\n"
+        target_text = f'I am @{settings.GITHUB_API_USER}, a bot that facilitates gitcoin bounties.\n\n<hr>' \
+            'Here are the commands I understand:\n\n ' \
+            '* `bounty <amount> <currency>` -- receive link to gitcoin.co form to create bounty.\n ' \
+            '* `submit work` -- receive link to gitcoin.co to start work on a bounty.\n ' \
+            '* `tip <user> <amount> <currency>` -- receive link to complete tippping another ' \
+                      'github user *<amount>* <currency>.\n ' \
+            '* `help` -- displays a help menu\n\n<br>' \
+            f'Some currencies I support: \n{currencies}\n\n<br>' \
+            'Learn more at: [https://gitcoin.co](https://gitcoin.co)\n' \
+            f':zap::heart:, @{settings.GITHUB_API_USER}\n'
         self.assertEqual(text, target_text)
 
     def test_new_bounty_text(self):
         """Test that new_bounty_text returns the correct text."""
-        issue_link = "https://github.com/test_owner/gitcoin/issues/1234"
-        bounty_link = f"{settings.BASE_URL}funding/new?source={issue_link}&amount=3.3&tokenName=ETH"
-        target_text = "To create the bounty please [visit this link]" \
-                      f"({bounty_link}).\n\n PS Make sure you're logged into Metamask!"
-        text = new_bounty_text("test_owner", "gitcoin", "1234", "3.3 ETH")
+        issue_link = 'https://github.com/test_owner/gitcoin/issues/1234'
+        bounty_link = f'{settings.BASE_URL}funding/new?source={issue_link}&amount=3.3&tokenName=ETH'
+        target_text = 'To create the bounty please [visit this link]' \
+                      f'({bounty_link}).\n\n PS Make sure you\'re logged into Metamask!'
+        text = new_bounty_text('test_owner', 'gitcoin', '1234', '3.3 ETH')
         self.assertEqual(text, target_text)
 
     def test_parse_comment_amount(self):
         """Test parse_comment_amount can retrieve amount when they're whole numbers."""
-        amount = parse_comment_amount("@gitcoinbot bounty 234 ETH")
-        self.assertEqual(amount, "234")
-        amount2 = parse_comment_amount("@gitcoinbot bounty 1 ETH")
-        self.assertEqual(amount2, "1")
-        amount3 = parse_comment_amount("@gitcoinbot bounty 1741852963 ETH")
-        self.assertEqual(amount3, "1741852963")
+        amount = parse_comment_amount('@gitcoinbot bounty 234 ETH')
+        self.assertEqual(amount, '234')
+        amount2 = parse_comment_amount('@gitcoinbot bounty 1 ETH')
+        self.assertEqual(amount2, '1')
+        amount3 = parse_comment_amount('@gitcoinbot bounty 1741852963 ETH')
+        self.assertEqual(amount3, '1741852963')
 
     def test_parse_comment_amount_decimal(self):
         """Test parse_comment_amount can retrieve amount when it includes decimals."""
-        amount = parse_comment_amount("@gitcoinbot bounty 2.34 ETH")
-        self.assertEqual(amount, "2.34")
-        amount = parse_comment_amount("@gitcoinbot bounty .23 ETH")
-        self.assertEqual(amount, ".23")
-        amount = parse_comment_amount("@gitcoinbot bounty 1.333334 ETH")
-        self.assertEqual(amount, "1.333334")
+        amount = parse_comment_amount('@gitcoinbot bounty 2.34 ETH')
+        self.assertEqual(amount, '2.34')
+        amount = parse_comment_amount('@gitcoinbot bounty .23 ETH')
+        self.assertEqual(amount, '.23')
+        amount = parse_comment_amount('@gitcoinbot bounty 1.333334 ETH')
+        self.assertEqual(amount, '1.333334')
 
     def test_parse_comment_amount_spaces(self):
         """Test parse_comment_amount returns first instance of amount."""
-        amount = parse_comment_amount("@gitcoinbot bounty 2.2 34 ETH")
-        self.assertEqual(amount, "2.2")
+        amount = parse_comment_amount('@gitcoinbot bounty 2.2 34 ETH')
+        self.assertEqual(amount, '2.2')
 
     def test_parse_tipee_username(self):
         """Test parse_tippe_username out from gitcoinbot command text."""
-        username = parse_tippee_username("@gitcoinbot tip @user123 20 ETH")
-        self.assertEqual(username, "@user123")
+        username = parse_tippee_username('@gitcoinbot tip @user123 20 ETH')
+        self.assertEqual(username, '@user123')
 
     def test_new_tip_text(self):
         """Test Gitcoinbot can respond with link to complete a tip."""
-        issue_url = "https://github.com/test_owner/gitcoin/issues/1234"
+        issue_url = 'https://github.com/test_owner/gitcoin/issues/1234'
         tip_link = f'{settings.BASE_URL}tip/?amount=3.3&tokenName=ETH&username=@user&source={issue_url}'
-        target_text = f"To complete the tip, please [visit this link]({tip_link}).\n " \
-            "PS Make sure you're logged into Metamask!"
-        text = new_tip_text("test_owner", "gitcoin", "1234", "@user 3.3 ETH")
+        target_text = f'To complete the tip, please [visit this link]({tip_link}).\n ' \
+                      'PS Make sure you\'re logged into Metamask!'
+        text = new_tip_text('test_owner', 'gitcoin', '1234', '@user 3.3 ETH')
         self.assertEqual(text, target_text)
 
     def test_submit_work_text(self):
         """Test Gitcoinbot can respond with link to submit your work."""
-        submit_link = f"{settings.BASE_URL}issue/test_owner/gitcoin/1234"
-        target_text = f"To finish claiming this bounty please [visit this link]({submit_link})"
-        text = submit_work_text("test_owner", "gitcoin", "1234")
+        submit_link = f'{settings.BASE_URL}issue/test_owner/gitcoin/1234'
+        target_text = f'To finish claiming this bounty please [visit this link]({submit_link})'
+        text = submit_work_text('test_owner', 'gitcoin', '1234')
         self.assertEqual(text, target_text)
 
     def test_start_work_text(self):
-        start_work_link = f"{settings.BASE_URL}issue/test_owner/gitcoin/1234"
-        target_text = f"To show this bounty as started please [visit this link]({start_work_link})"
-        text = start_work_text("test_owner", "gitcoin", "1234")
+        start_work_link = f'{settings.BASE_URL}issue/test_owner/gitcoin/1234'
+        target_text = f'To show this bounty as started please [visit this link]({start_work_link})'
+        text = start_work_text('test_owner', 'gitcoin', '1234')
         self.assertEqual(text, target_text)
 
     def test_confused_text(self):
@@ -114,7 +114,7 @@ class gitcoinbotActions(TestCase):
                          'to see supported commands.')
 
     def test_submit_work_or_new_bounty_when_bounty_exists(self):
-        """Test submit_work_or_new_bounty_text when bounty is active"""
+        """Test submit_work_or_new_bounty_text when bounty is active."""
         from dashboard.models import Bounty
         from datetime import datetime
         Bounty.objects.create(
@@ -135,28 +135,28 @@ class gitcoinbotActions(TestCase):
             experience_level='Intermediate',
             raw_data={},
         )
-        submit_link = f"{settings.BASE_URL}issue/test_owner/gitcoin/1234"
-        target_text = f"To finish claiming this bounty please [visit this link]({submit_link})"
-        text = submit_work_or_new_bounty_text("test_owner", "gitcoin", "1234")
+        submit_link = f'{settings.BASE_URL}issue/test_owner/gitcoin/1234'
+        target_text = f'To finish claiming this bounty please [visit this link]({submit_link})'
+        text = submit_work_or_new_bounty_text('test_owner', 'gitcoin', '1234')
         self.assertEqual(text, target_text)
-        
+
     def test_submit_work_or_new_bounty_when_bounty_doesnt_exist(self):
-        """Test submit_work_or_new_bounty_text when bounty isn't active"""
-        issue_link = f"https://github.com/test_owner/gitcoin/issues/1234"
-        bounty_link = f"{settings.BASE_URL}funding/new?source={issue_link}"
-        target_text = "No active bounty for this issue, consider create the bounty please"\
-                      f" [visit this link]({bounty_link}).\n\n " \
-                      "PS Make sure you're logged into Metamask!"
-        text = submit_work_or_new_bounty_text("test_owner", "gitcoin", "1234")
+        """Test submit_work_or_new_bounty_text when bounty isn't active."""
+        issue_link = f'https://github.com/test_owner/gitcoin/issues/1234'
+        bounty_link = f'{settings.BASE_URL}funding/new?source={issue_link}'
+        target_text = 'No active bounty for this issue, consider create the bounty please'\
+                      f' [visit this link]({bounty_link}).\n\n ' \
+                      'PS Make sure you\'re logged into Metamask!'
+        text = submit_work_or_new_bounty_text('test_owner', 'gitcoin', '1234')
         self.assertEqual(text, target_text)
 
     def test_get_text_from_responses_when_doesnt_exist(self):
-        """Test get_text_from_query_responses when a response isn't exists"""
+        """Test get_text_from_query_responses when a response isn't exists."""
         response = get_text_from_query_responses('Party trap', 'sender')
-        self.assertEqual(response, "")
+        self.assertEqual(response, '')
 
     def test_get_text_from_responses_when_exists(self):
-        """Test get_text_from_query_responses when a response exists"""
+        """Test get_text_from_query_responses when a response exists."""
         GitcoinBotResponses.objects.create(request='speedy gonzales', response='The Fastest Mouse in all Mexico')
         response = get_text_from_query_responses('Speedy Gonzales', 'ACME')
         self.assertEqual(response, '@ACME The Fastest Mouse in all Mexico')
