@@ -321,7 +321,6 @@ function timeDifference(current, previous, remaining) {
 }
 
 
-
 var sidebar_redirect_triggers = function() {
   $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e) {
     if (document.location.href.indexOf('/dashboard') == -1 && document.location.href.indexOf('/explorer') == -1) {
@@ -677,5 +676,4 @@ $(document).ready(function() {
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 300);
 });
-
 
