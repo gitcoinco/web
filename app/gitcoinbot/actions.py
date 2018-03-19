@@ -26,13 +26,12 @@ from django.conf import settings
 
 import jwt
 import requests
+import rollbar
 from dashboard.models import Bounty
 from dashboard.tokens import tokens
 from gitcoinbot.models import GitcoinBotResponses
 from github.utils import post_issue_comment_reaction
 
-GITCOINBOT_APP_ID = settings.GITCOINBOT_APP_ID
-SECRET_KEYSTRING = settings.SECRET_KEYSTRING
 MIN_AMOUNT = 0
 CURRENCIES = set(map(lambda currency: currency["name"], tokens))
 
@@ -180,6 +179,9 @@ def confused_text():
 
 def post_gitcoin_app_comment(owner, repo, issue_id, content, install_id):
     token = create_token(install_id)
+    if not token:
+        rollbar.report_message('Failed to create Github Bot token', 'warning')
+        return {}
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_id}/comments'
     github_app_headers = {
         'Authorization': 'token ' + token,
@@ -195,15 +197,16 @@ def create_token(install_id):
     payload = {
         'iat': datetime.datetime.utcnow(),
         'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=500),
-        'iss': GITCOINBOT_APP_ID}
-    jwt_token = jwt.encode(payload, SECRET_KEYSTRING, algorithm='RS256')
+        'iss': settings.GITCOINBOT_APP_ID,
+    }
+    jwt_token = jwt.encode(payload, settings.SECRET_KEYSTRING, algorithm='RS256')
     jwt_token_string = jwt_token.decode('utf-8')
     url = f'https://api.github.com/installations/{install_id}/access_tokens'
     github_app_headers = {
         'Authorization': f'Bearer {jwt_token_string}',
         'Accept': 'application/vnd.github.machine-man-preview+json'}
     response = requests.post(url, headers=github_app_headers)
-    token = json.loads(response.content)['token']
+    token = json.loads(response.content).get('token', '')
     return token
 
 

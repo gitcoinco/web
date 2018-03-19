@@ -39,6 +39,10 @@
   text-align: right;
 }
 
+.order_by .heading {
+  color: #5B5C5C;
+}
+
 .order_by .sort_option:last-child {
   margin-right: 10px;
 }
@@ -60,8 +64,8 @@
 }
 
 .filter-tags {
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: 9px;
+  margin-bottom: 9px;
 }
 
 .filter-tag {

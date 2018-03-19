@@ -519,10 +519,16 @@ input[type=text].loading {
 
 /* The alert message box */
 .alert {
-    background-color: #f44336;
+    align-items: center;
+    background-color: #3E00FF;
     border-radius: 0px;
-    padding: 20px;
+    box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.24);
     color: white;
+    display: flex;
+    font-family: 'Muli', sans-serif;
+    justify-content: space-between;
+    padding: 20px;
+    position: relative;
     margin-bottom: 1px;
     position: fixed;
     top: 0px;
@@ -530,21 +536,58 @@ input[type=text].loading {
     z-index: 999999;
 }
 
-.alert a{
+.alert .message {
+    align-items: center;
+    display: flex;
+}
+
+.alert .message::before {
+    content: url('/static/v2/images/info.svg');
+}
+
+.alert .message::before {
+    margin-right: 10px;
+}
+
+.alert a {
   color: white;
   text-decoration: underline;;
 }
 
+.alert.error {
+    background-color: #C70018;
+}
+
+.alert.error .message::before {
+    content: url('/static/v2/images/close.svg');
+    height: 30px;
+}
+
 .alert.success {
-    background-color: #4CAF50;
+    background-color: #00A652;
+}
+
+.alert.success .message::before {
+    content: url('/static/v2/images/success.svg');
+    height: 30px;
 }
 
 .alert.info {
-    background-color: #2196F3;
+    background-color: #008EFF;
+}
+
+.alert.info .message::before {
+    content: url('/static/v2/images/info.svg');
+    height: 30px;
 }
 
 .alert.warning {
-    background-color: #ff9800;
+    background-color: #F2A700;
+}
+
+.alert.warning .message::before {
+    content: url('/static/v2/images/warning.svg');
+    height: 28px;
 }
 
 /* The close button */
@@ -1113,7 +1156,7 @@ body.bounty_details #title {
     margin-left: 0px;
     padding-left: 0px;
 }
-#interest_list li{
+#interest_list li {
     list-style: none;
 }
 
@@ -1136,34 +1179,29 @@ input.is-invalid {
 
 .tooltip-info {
   font-family: "Muli";
-  padding: 20px;
+  padding: 10px 20px;
   margin: 0;
   width: 25em;
+}
+
+.ui-widget-shadow {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1) !important;
 }
 
 .tooltip-info p {
   margin-bottom: 10px;
 }
 
-.tooltip-info span {
-  font-family: "Muli-SemiBold";
+.tooltip-info .font-subheader {
+  margin-top: 10px;
 }
 
-.tooltip-info ol {
-  counter-reset: item;
-  padding-left: 15px;
+.tooltip-info .row {
+  margin-bottom: 15px;
 }
 
-.tooltip-info ol li {
-  display: block;
-  margin-bottom: 10px;
-}
-
-.tooltip-info ol li:before {
-    content: counter(item) " ";
-    counter-increment: item;
-    font-weight: bold;
-    padding-right: 10px;
+.tooltip-info .col-11 {
+  padding-left: 0px;
 }
 
 @media (max-width: 1350px) {
