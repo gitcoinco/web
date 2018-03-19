@@ -1,3 +1,18 @@
+.title {
+	text-align: center; 
+	font-family: 'Muli', sans-serif;
+}
+
+.submit-title {
+	font-size: 1.75rem
+}
+
+.submit-text {
+	font-size: 1rem; 
+	max-width: 525px; 
+	margin: 0px auto
+}
+
 .idea-list {
 	width: 750px;
 	padding: 1em 1.5em; 
@@ -11,9 +26,9 @@
     -ms-transition:     border-color 0.25s;
     -o-transition:      border-color 0.25s;
     transition:         border-color 0.25s;
-	
 }
 
 .idea-list:hover {
 	border-color: purple;
 }
+
