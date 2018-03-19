@@ -92,8 +92,7 @@ def github_authentication(request):
         return redirect(get_auth_url(redirect_uri))
 
     # Alert local developer that Github integration needs configured.
-    if settings.DEBUG and (not settings.GITHUB_CLIENT_ID or
-                           settings.GITHUB_CLIENT_ID == 'TODO'):
+    if settings.ENV == 'local' and (not settings.GITHUB_CLIENT_ID or settings.GITHUB_CLIENT_ID == 'TODO'):
         logging.info('GITHUB_CLIENT_ID is not set. Github integration is disabled!')
 
     response = redirect(redirect_uri)

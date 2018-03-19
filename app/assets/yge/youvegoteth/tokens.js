@@ -199,7 +199,6 @@ var tokens = function(network_id) {
 };
 
 
-
 var tokenAddressToDetails = function(addr) {
   var _tokens = tokens(document.web3network);
 

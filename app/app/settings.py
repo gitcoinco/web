@@ -31,6 +31,8 @@ env.read_env(str(root.path('app/.env')))  # reading .env file
 
 DEBUG = env.bool('DEBUG', default=True)
 ENV = env('ENV', default='local')
+DEBUG_ENVS = env.list('DEBUG_ENVS', default=['local', 'stage', 'test'])
+IS_DEBUG_ENV = ENV in DEBUG_ENVS
 HOSTNAME = env('HOSTNAME', default=socket.gethostname())
 BASE_URL = env('BASE_URL', default='http://localhost:8000/')
 SECRET_KEY = env('SECRET_KEY', default='YOUR-SupEr-SecRet-KeY')
@@ -159,7 +161,7 @@ USE_L10N = env.bool('USE_L10N', default=True)
 USE_TZ = env.bool('USE_TZ', default=True)
 TIME_ZONE = env.str('TIME_ZONE', default='MST')
 
-if not ENV == 'local':
+if not ENV in ['local', 'test']:
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
@@ -254,7 +256,7 @@ GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
 # optional: only needed if you run the gitcoinbot app
 # Setup instructions: https://github.com/gitcoinco/web/blob/master/app/gitcoinbot/README.md
-GITCOINBOT_APP_ID = env('BOT_APP_ID', default='')
+GITCOINBOT_APP_ID = env('GITCOINBOT_APP_ID', default='')
 GITCOIN_BOT_CERT_PATH = env('GITCOIN_BOT_CERT_PATH', default='')
 SECRET_KEYSTRING = ''
 if GITCOIN_BOT_CERT_PATH:

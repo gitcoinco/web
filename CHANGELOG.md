@@ -2,22 +2,135 @@
 
 ## [HEAD](https://github.com/gitcoinco/web/tree/HEAD)
 
-[Full Changelog](https://github.com/gitcoinco/web/compare/pre_faucet...HEAD)
+[Full Changelog](https://github.com/gitcoinco/web/compare/pre_web3_awareness_reafctor...HEAD)
+
+**Implemented enhancements:**
+
+- standardbounties: automatically cross-process bounties posted to bounties.network to gitcoin [\#268](https://github.com/gitcoinco/web/issues/268)
+- Static handling and cache invalidation [\#262](https://github.com/gitcoinco/web/issues/262)
+
+**Fixed bugs:**
+
+- loading page is busted [\#653](https://github.com/gitcoinco/web/issues/653)
+- KeyError: 'token' [\#649](https://github.com/gitcoinco/web/issues/649)
+- standard bounties: multiple bounties per issue URL [\#251](https://github.com/gitcoinco/web/issues/251)
+- standardbounties: if you try to fulfill a bounty that doesnt exist it spins forever [\#250](https://github.com/gitcoinco/web/issues/250)
+
+**Closed issues:**
+
+- test 123 [\#654](https://github.com/gitcoinco/web/issues/654)
+- Emails with DEBUG header in prod [\#650](https://github.com/gitcoinco/web/issues/650)
+- Faucet giving 500 when submissino [\#646](https://github.com/gitcoinco/web/issues/646)
+- Tidy Up Issue Explorer [\#601](https://github.com/gitcoinco/web/issues/601)
+- as an administrator, id like to add faucet distributions to activity\_report, so i can track them [\#600](https://github.com/gitcoinco/web/issues/600)
+- Add Gitcoin Newsletter Page [\#584](https://github.com/gitcoinco/web/issues/584)
+- Remove Subscribe to Funded Issues at top of Issue Detail Page [\#504](https://github.com/gitcoinco/web/issues/504)
+- Longer titles are profile page overflow their bounds [\#501](https://github.com/gitcoinco/web/issues/501)
+- gitcoinbot did not comment on github when `work\_done` event fired  [\#495](https://github.com/gitcoinco/web/issues/495)
+- BadFunctionCallOutput: Could not decode contract function call getFulfillment return data b'' for output_types [\#490](https://github.com/gitcoinco/web/issues/490)
+- Exception: attempting to create a new bounty when is\_greater\_than\_x\_days\_old = True [\#485](https://github.com/gitcoinco/web/issues/485)
+- JSONDecodeError: Expecting value: line 1 column 1 \(char 0\) [\#467](https://github.com/gitcoinco/web/issues/467)
+- Standardbounties expiration date treated differently than Gitcoin expiration date [\#393](https://github.com/gitcoinco/web/issues/393)
+- Uncaught ReferenceError: getParam is not defined [\#390](https://github.com/gitcoinco/web/issues/390)
+- Uncaught TypeError: Cannot read property 'coinbase' of undefined [\#389](https://github.com/gitcoinco/web/issues/389)
+- Uncaught TypeError: Cannot read property 'accounts' of undefined [\#388](https://github.com/gitcoinco/web/issues/388)
+- \(unknown\): 구문 오류 [\#385](https://github.com/gitcoinco/web/issues/385)
+- \(unknown\): ':' is required. [\#383](https://github.com/gitcoinco/web/issues/383)
+- JSONDecodeError: Expecting value: line 1 column 1 \(char 0\) [\#382](https://github.com/gitcoinco/web/issues/382)
+- Error: Access is denied. [\#381](https://github.com/gitcoinco/web/issues/381)
+- \(unknown\): Syntax error [\#376](https://github.com/gitcoinco/web/issues/376)
+- \(CODE\) as a user, i want to see bounties from other platforms, so i can work on bounties outside of the gitcoin ecosysstem [\#372](https://github.com/gitcoinco/web/issues/372)
+- Error: MetaMask detected another web3.
+     MetaMask will not work reliably with another web3 extension.
+     This usually happens if you have two MetaMasks installed,
+     or MetaMask and another web3 extension. Please remove one
+     and try again. [\#368](https://github.com/gitcoinco/web/issues/368)
+- \(unknown\): Uncaught this network is not supported in bounty\_address\(\) for gitcoin [\#362](https://github.com/gitcoinco/web/issues/362)
+- TypeError: an integer is required \(got type NoneType\) [\#360](https://github.com/gitcoinco/web/issues/360)
+- Uncaught SyntaxError: Identifier 'slides' has already been declared [\#352](https://github.com/gitcoinco/web/issues/352)
+- Uncaught SyntaxError: Identifier 'slides' has already been declared [\#349](https://github.com/gitcoinco/web/issues/349)
+- Cannot read property '2' of null when submitting bounty [\#342](https://github.com/gitcoinco/web/issues/342)
+- Test Issue [\#341](https://github.com/gitcoinco/web/issues/341)
+- SyntaxError: expected expression, got '\*' [\#339](https://github.com/gitcoinco/web/issues/339)
+- Uncaught ReferenceError: web3 is not defined [\#336](https://github.com/gitcoinco/web/issues/336)
+- \(unknown\): uncaught exception: not supported [\#324](https://github.com/gitcoinco/web/issues/324)
+- Uncaught TypeError: Cannot read property 'accounts' of undefined [\#318](https://github.com/gitcoinco/web/issues/318)
+- Error: Web3ProviderEngine does not support synchronous requests. [\#307](https://github.com/gitcoinco/web/issues/307)
+- Error: Syntax error, unrecognized expression: select\[name=deonomination [\#306](https://github.com/gitcoinco/web/issues/306)
+- Uncaught ReferenceError: nextSlide is not defined [\#305](https://github.com/gitcoinco/web/issues/305)
+- Uncaught ReferenceError: web3 is not defined [\#303](https://github.com/gitcoinco/web/issues/303)
+- Uncaught SyntaxError: Unexpected token \* [\#302](https://github.com/gitcoinco/web/issues/302)
+- \(unknown\): Syntax error [\#300](https://github.com/gitcoinco/web/issues/300)
+- \(unknown\): Script error. [\#297](https://github.com/gitcoinco/web/issues/297)
+- ReferenceError: Can't find variable: nextSlide [\#295](https://github.com/gitcoinco/web/issues/295)
+- Uncaught ReferenceError: nextSlide is not defined [\#294](https://github.com/gitcoinco/web/issues/294)
+- ReferenceError: Can't find variable: nextSlide [\#293](https://github.com/gitcoinco/web/issues/293)
+- Uncaught ReferenceError: nextSlide is not defined [\#292](https://github.com/gitcoinco/web/issues/292)
+- Uncaught TypeError: Cannot read property 'coinbase' of undefined [\#287](https://github.com/gitcoinco/web/issues/287)
+- StandardBounties: The ability to ingest Bounties.Network Bounties [\#264](https://github.com/gitcoinco/web/issues/264)
+- ERC20 batch tip send [\#233](https://github.com/gitcoinco/web/issues/233)
+- improvement - filtering bounties for repository [\#232](https://github.com/gitcoinco/web/issues/232)
+- Issue Explorer Usability tweak [\#227](https://github.com/gitcoinco/web/issues/227)
+- Treat claimed issues as open [\#225](https://github.com/gitcoinco/web/issues/225)
+- Detect profile from Metamask/Github [\#214](https://github.com/gitcoinco/web/issues/214)
+- funded issue links are long and clunky [\#201](https://github.com/gitcoinco/web/issues/201)
+- Environment variable based settings [\#144](https://github.com/gitcoinco/web/issues/144)
+
+**Merged pull requests:**
+
+- use AGPLv3 license [\#638](https://github.com/gitcoinco/web/pull/638) ([gasolin](https://github.com/gasolin))
+- Refactors 3 requests down to 1 [\#634](https://github.com/gitcoinco/web/pull/634) ([owocki](https://github.com/owocki))
+- Refactors shared.js / web3 awareness code for more sanity [\#625](https://github.com/gitcoinco/web/pull/625) ([owocki](https://github.com/owocki))
+- explorer: updated view [\#621](https://github.com/gitcoinco/web/pull/621) ([thelostone-mc](https://github.com/thelostone-mc))
+- Update all alerts to include new alert style [\#553](https://github.com/gitcoinco/web/pull/553) ([KennethAshley](https://github.com/KennethAshley))
+- Environment variable setting handling [\#359](https://github.com/gitcoinco/web/pull/359) ([mbeacom](https://github.com/mbeacom))
+
+## [pre_web3_awareness_reafctor](https://github.com/gitcoinco/web/tree/pre_web3_awareness_reafctor) (2018-03-16)
+[Full Changelog](https://github.com/gitcoinco/web/compare/pre_faucet...pre_web3_awareness_reafctor)
+
+**Implemented enhancements:**
+
+- nav: redesigned the dropdown [\#629](https://github.com/gitcoinco/web/pull/629) ([thelostone-mc](https://github.com/thelostone-mc))
+- explorer: updated tooltip [\#585](https://github.com/gitcoinco/web/pull/585) ([thelostone-mc](https://github.com/thelostone-mc))
+
+**Fixed bugs:**
+
+- AttributeError: 'NoneType' object has no attribute 'strip' [\#616](https://github.com/gitcoinco/web/issues/616)
+- IndexError: list index out of range [\#613](https://github.com/gitcoinco/web/issues/613)
+- profile\_details.html references nonexistent profile.js resulting in Http404 [\#612](https://github.com/gitcoinco/web/issues/612)
+- KeyError: 'comment' [\#598](https://github.com/gitcoinco/web/issues/598)
+- fix for empty github notification [\#622](https://github.com/gitcoinco/web/pull/622) ([owocki](https://github.com/owocki))
+- Check dict existence in gitcoin bot payload view [\#599](https://github.com/gitcoinco/web/pull/599) ([mbeacom](https://github.com/mbeacom))
 
 **Closed issues:**
 
 - Upgrade to the latest Django revision [\#583](https://github.com/gitcoinco/web/issues/583)
+- Increase Code Coverage by 5% [\#408](https://github.com/gitcoinco/web/issues/408)
+- Reminder to remove the legacy/\* application once those bounties are done [\#406](https://github.com/gitcoinco/web/issues/406)
 - Uncaught Error: Web3ProviderEngine does not support synchronous requests. [\#340](https://github.com/gitcoinco/web/issues/340)
 - addd logo to metamask contract metadata repo [\#320](https://github.com/gitcoinco/web/issues/320)
+- Bot / Github integration Revamp MVP [\#152](https://github.com/gitcoinco/web/issues/152)
 - In tip flow, sometimes we are not able to get the email address of the user from github [\#75](https://github.com/gitcoinco/web/issues/75)
 
 **Merged pull requests:**
 
+- css: dropdown fix [\#630](https://github.com/gitcoinco/web/pull/630) ([thelostone-mc](https://github.com/thelostone-mc))
+- Enable ESLint in pre-commit and on Travis CI [\#624](https://github.com/gitcoinco/web/pull/624) ([mbeacom](https://github.com/mbeacom))
+-     Sends followup emails after 48 emails to bounty fulfiller and submitter [\#610](https://github.com/gitcoinco/web/pull/610) ([owocki](https://github.com/owocki))
+- tooltip: updated as per review comments [\#606](https://github.com/gitcoinco/web/pull/606) ([thelostone-mc](https://github.com/thelostone-mc))
+- slack notifications upon start / stop work [\#591](https://github.com/gitcoinco/web/pull/591) ([owocki](https://github.com/owocki))
+- destroys legacy bounty handling code \(except for on legacy kill bounty page\) [\#589](https://github.com/gitcoinco/web/pull/589) ([owocki](https://github.com/owocki))
+- nav: redesigned the dropdown [\#586](https://github.com/gitcoinco/web/pull/586) ([thelostone-mc](https://github.com/thelostone-mc))
 - General faucet cleanup [\#582](https://github.com/gitcoinco/web/pull/582) ([mbeacom](https://github.com/mbeacom))
 - Feature/faucet -- with kevin's changes [\#581](https://github.com/gitcoinco/web/pull/581) ([owocki](https://github.com/owocki))
+- removes optional add\_bcc option from mailer [\#579](https://github.com/gitcoinco/web/pull/579) ([owocki](https://github.com/owocki))
 - explorer: added sort feature [\#578](https://github.com/gitcoinco/web/pull/578) ([thelostone-mc](https://github.com/thelostone-mc))
 - Cleanup syntax and linting issues for backend code [\#577](https://github.com/gitcoinco/web/pull/577) ([mbeacom](https://github.com/mbeacom))
 - css: refactored media queries [\#573](https://github.com/gitcoinco/web/pull/573) ([thelostone-mc](https://github.com/thelostone-mc))
+- mocks expiration date on standardbounties [\#566](https://github.com/gitcoinco/web/pull/566) ([owocki](https://github.com/owocki))
+- Writing coverage for marketing model, increasing coverage to 33% [\#524](https://github.com/gitcoinco/web/pull/524) ([leonprou](https://github.com/leonprou))
+- ESLint configuration to help code with more style [\#468](https://github.com/gitcoinco/web/pull/468) ([michelgotta](https://github.com/michelgotta))
+- BOT / GITHUB INTEGRATION REVAMP MVP [\#236](https://github.com/gitcoinco/web/pull/236) ([romanjesus](https://github.com/romanjesus))
 
 ## [pre_faucet](https://github.com/gitcoinco/web/tree/pre_faucet) (2018-03-09)
 [Full Changelog](https://github.com/gitcoinco/web/compare/pre-clean-urls...pre_faucet)
@@ -31,6 +144,7 @@
 - IndexError: list index out of range [\#564](https://github.com/gitcoinco/web/issues/564)
 - Explorer changes followup [\#555](https://github.com/gitcoinco/web/issues/555)
 - Update Issue Explorer Front End [\#503](https://github.com/gitcoinco/web/issues/503)
+- void [\#455](https://github.com/gitcoinco/web/issues/455)
 - Show consistent top navigation across the app [\#415](https://github.com/gitcoinco/web/issues/415)
 - Clear Distinction Between Web 3 States [\#413](https://github.com/gitcoinco/web/issues/413)
 
