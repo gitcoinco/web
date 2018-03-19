@@ -81,7 +81,7 @@ def save_faucet(request):
         }, status=403)
     elif not checkeduser:
         return JsonResponse({
-          'message': 'The submitted github profile could not be found on github.'
+            'message': 'The submitted github profile could not be found on github.'
         }, status=400)
 
     fr = FaucetRequest.objects.create(

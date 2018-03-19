@@ -92,10 +92,8 @@ urlpatterns = [
 
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
-    url(r'^sync/get_issue_title?', dashboard.helpers.title, name='helpers_title'),
-    url(r'^sync/get_issue_description?', dashboard.helpers.description, name='helpers_description'),
     url(r'^sync/get_amount?', dashboard.helpers.amount, name='helpers_amount'),
-    url(r'^sync/get_issue_keywords?', dashboard.helpers.keywords, name='helpers_keywords'),
+    url(r'^sync/get_issue_details?', dashboard.helpers.issue_details, name='helpers_issue_details'),
     url(r'^sync/search_save?', dashboard.views.save_search, name='save_search'),
     # brochureware views
     url(r'^about/?', retail.views.about, name='about'),

@@ -109,6 +109,14 @@
       "error",
       "smart-tabs"
     ],
+    "no-multiple-empty-lines": [
+      "error",
+      {
+        "max": 2,
+        "maxEOF": 1,
+        "maxBOF": 1
+      }
+    ],
     "no-multi-spaces": "error",
     "no-new": "error",
     "no-new-func": "error",

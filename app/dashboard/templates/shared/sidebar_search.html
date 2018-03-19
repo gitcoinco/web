@@ -62,6 +62,28 @@
     </div>
 
     <div class="col">
+      <div class="col-12 subheading font-body accordion">MY PROJECTS</div>
+      <div class="col-12 options panel">
+        <div class="form__radio option">
+          <input name="bounty_filter" id="createdByMe" type="radio" value="createdByMe" val-ui='Created'/>
+          <label class="filter-label" for=createdByMe>Created By Me</label>
+        </div>
+        <div class="form__radio option">
+          <input name="bounty_filter" id="startedByMe" type="radio" value="startedByMe" val-ui='Started'/>
+          <label class="filter-label" for=startedByMe>Started By Me</label>
+        </div>
+        <div class="form__radio option">
+          <input name="bounty_filter" id="FulfilledByMe" type="radio" value="fulfilledByMe" val-ui='Fulfilled'/>
+          <label class="filter-label" for=FulfilledByMe>Fulfilled By Me</label>
+        </div>
+        <div class="form__radio option">
+          <input name="bounty_filter" id="all_bounty" type="radio" value="any" checked/>
+          <label class="filter-label" for=all_bounty>All</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
       <div class="col-12 subheading font-body accordion">Experience Level</div>
       <div class="col-12 panel options">
         <div class="checkbox_container">
@@ -165,26 +187,6 @@
           <span class="checkbox"></span>
           <div class="filter-label">
             <label for=any_bt>Any</label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="col-12 subheading font-body accordion">Submitted By</div>
-      <div class="col-12 options panel">
-        <div class="checkbox_container">
-          <input name="bounty_filter" id="Myself" type="checkbox" value="myself" val-ui='Submitted by Me' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=Myself>Myself</label>
-          </div>
-        </div>
-        <div class="checkbox_container">
-          <input name="bounty_filter" id="any_author" type="checkbox" value="any" checked />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=any_author>Any</label>
           </div>
         </div>
       </div>
