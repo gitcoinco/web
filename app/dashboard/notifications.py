@@ -515,6 +515,7 @@ def maybe_post_on_craigslist(bounty):
         # for-else magic
         # if the loop completes normally that means we are still not at the edit page
         # hence return and don't proceed further
+        print('returning at first return')
         return
 
     posting_title = bounty.title
@@ -551,6 +552,7 @@ def maybe_post_on_craigslist(bounty):
         # for-else magic
         # if the loop completes normally that means we are still not at the edit page
         # hence return and don't proceed further
+        print('returning at 2nd return')
         return
 
     # submitting final form
