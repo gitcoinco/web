@@ -12,6 +12,9 @@
     "jQuery",
     "$"
   },
+  "plugins": [
+    "html"
+  ],
   "parserOptions": {
     "sourceType": "module",
     "babel-eslint",
