@@ -565,6 +565,7 @@ var main = function() {
       // validate pending issue metadata
       document.pendingIssueMetadata = JSON.parse(localStorage[document.issueURL]);
       var is_metadata_valid = typeof document.pendingIssueMetadata != 'undefined' && document.pendingIssueMetadata !== null && typeof document.pendingIssueMetadata['timestamp'] != 'undefined';
+
       if (is_metadata_valid) {
         // validate that the pending tx is within the last little while
         var then = parseInt(document.pendingIssueMetadata['timestamp']);
