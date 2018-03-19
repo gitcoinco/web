@@ -110,6 +110,7 @@ urlpatterns = [
     url(r'^help/?', retail.views.help, name='help'),
     url(r'^ideas/new/?', retail.views.new_idea, name='new_idea'),
     url(r'^ideas/list/?', retail.views.ideas_list, name='ideas_list'),
+    url(r'^ideas/detail/?', retail.views.ideas_detail, name='ideas_detail'),
     url(r'^onboard/?', retail.views.onboard, name='onboard'),
     url(r'^extension/chrome?', retail.views.browser_extension_chrome, name='browser_extension_chrome'),
     url(r'^extension/firefox?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),

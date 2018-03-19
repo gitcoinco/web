@@ -463,6 +463,17 @@ def browser_extension_chrome(request):
 def browser_extension_firefox(request):
     return redirect('https://addons.mozilla.org/en-US/firefox/addon/gitcoin/')
 
+def ideas_detail(request):
+    """TODO: MAKE A DESCRIPTIVE COMMENT"""
+    # params = {
+    #     'active': 'dashboard',
+    #     'title': 'Issue Explorer',
+    #     'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+    # }
+    params = {}
+    return TemplateResponse(request, 'ideas_detail.html', params)
+
+
 def new_idea(request):
     """TODO: MAKE A DESCRIPTIVE COMMENT"""
     # params = {
