@@ -255,7 +255,7 @@ GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
 # optional: only needed if you run the gitcoinbot app
 # Setup instructions: https://github.com/gitcoinco/web/blob/master/app/gitcoinbot/README.md
-GITCOINBOT_APP_ID = env('BOT_APP_ID', default='')
+GITCOINBOT_APP_ID = env('GITCOINBOT_APP_ID', default='')
 GITCOIN_BOT_CERT_PATH = env('GITCOIN_BOT_CERT_PATH', default='')
 SECRET_KEYSTRING = ''
 if GITCOIN_BOT_CERT_PATH:
