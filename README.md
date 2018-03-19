@@ -2,7 +2,11 @@
 
 # Gitcoin
 
-Gitcoin pushes Open Source Forward. Learn more at [https://gitcoin.co](https://gitcoin.co)
+Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co)
+
+<a href="https://gitcoin.co/explorer?q=gitcoinco">
+    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco/web">
+</a>
 
 # web repo
 
