@@ -424,12 +424,8 @@ def onboard(request):
     return redirect('https://docs.google.com/document/d/1DQvek5TwASIp1njx5VZeLKEgSxfvxm871vctx1l_33M/edit?')
 
 
-def ethdenver(request):
-    return redirect('https://goo.gl/forms/FQogarXntrISFCsJ2')
-
-
-def ethdenverafterparty(request):
-    return redirect('https://docs.google.com/document/d/1sjV60TN1gYzzSWHvh4UGdT_Mz6HBOt6AVK2y6d9_bm8/edit')
+def podcast(request):
+    return redirect('https://itunes.apple.com/us/podcast/gitcoin-community/id1360536677')
 
 
 def presskit(request):
