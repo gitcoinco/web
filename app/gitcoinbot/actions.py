@@ -33,13 +33,12 @@ from github.utils import post_issue_comment_reaction
 
 GITCOINBOT_APP_ID = settings.GITCOINBOT_APP_ID
 SECRET_KEYSTRING = settings.SECRET_KEYSTRING
-
-
 MIN_AMOUNT = 0
 CURRENCIES = set(map(lambda currency: currency["name"], tokens))
 
 
-class Bound(object):
+class Bound:
+    """Validate every bound before call the annotated function"""
     def __init__(self, *args):
         self.bounds = args
 
@@ -50,7 +49,7 @@ class Bound(object):
             for bound in self.bounds:  # Check if every bound is complained
                 (valid, msg) = bound(*args, **kwargs)
                 if not valid:
-                    return msg  # especify what bound failed and why
+                    return msg  # specify what bound failed and why
 
             return f(*args, **kwargs)
 
@@ -58,20 +57,20 @@ class Bound(object):
 
 
 def amount_greater_than_zero(*args, **kwargs):
-    # No negatives and greater than 0
+    """Validate if the specified amount is not negative and greater than zero"""
     comment_text = args[-1]
     amount = parse_comment_amount(comment_text)
     tip_currency = parse_comment_currency(comment_text)
-    response =  f'The amount should be greater than {MIN_AMOUNT} {tip_currency}'
+    response = f'The amount should be greater than {MIN_AMOUNT} {tip_currency}'
 
     try:
-      f_amount = float(amount)
-      if f_amount > MIN_AMOUNT:
-        return (True, '')
-    except:
-      pass
+        f_amount = float(amount)
+        if f_amount > MIN_AMOUNT:
+            return True, ''
+    except ValueError:
+        pass
 
-    return (False,  response)
+    return False, response
 
 
 def help_text():
@@ -83,7 +82,8 @@ def help_text():
         "\n<hr>Here are the commands I understand:\n\n " \
         "* `bounty <amount> <currency>` -- receive link to gitcoin.co form to create bounty.\n " \
         "* `submit work` -- receive link to gitcoin.co to start work on a bounty.\n " \
-        "* `tip <user> <amount> <currency>` -- receive link to complete tippping another github user *<amount>* <currency>.\n " \
+        "* `tip <user> <amount> <currency>` -- receive link to complete tippping another " \
+                         "github user *<amount>* <currency>.\n " \
         "* `help` -- displays a help menu\n\n<br>" \
         f"Some currencies I support: \n{currencies}\n\n<br>" \
         "Learn more at: [https://gitcoin.co](https://gitcoin.co)\n" \
@@ -93,20 +93,23 @@ def help_text():
 
 @Bound(amount_greater_than_zero)
 def new_bounty_text(owner, repo, issue_id, comment_text):
+    """Based on comment_text generate instructions to create a bounty with the specified amount and token"""
     issue_link = f"https://github.com/{owner}/{repo}/issues/{issue_id}"
     bounty_amount = parse_comment_amount(comment_text)
     token_name = parse_comment_currency(comment_text)
     bounty_link = f"{settings.BASE_URL}funding/new?source={issue_link}&amount={bounty_amount}&tokenName={token_name}"
     new_bounty_response = f"To create the bounty please [visit this link]({bounty_link}).\n\n " \
-          "PS Make sure you're logged into Metamask!"
+                          "PS Make sure you're logged into Metamask!"
     return new_bounty_response
 
 
 def no_active_bounty(owner, repo, issue_id):
+    """Instruct to create a bounty"""
     issue_link = f"https://github.com/{owner}/{repo}/issues/{issue_id}"
     bounty_link = f"{settings.BASE_URL}funding/new?source={issue_link}"
-    no_active_bounty_response = f"No active bounty for this issue, consider create the bounty please [visit this link]({bounty_link}).\n\n " \
-                 "PS Make sure you're logged into Metamask!"
+    no_active_bounty_response = "No active bounty for this issue, consider create the bounty please " \
+                                f"[visit this link]({bounty_link}).\n\n " \
+                                "PS Make sure you're logged into Metamask!"
 
     return no_active_bounty_response
 
@@ -118,6 +121,7 @@ def parse_comment_amount(comment_text):
 
 
 def parse_comment_currency(comment_text):
+    """Get the first token defined in comment_text"""
     or_currencies = r'|'.join(CURRENCIES)
     re_currencies = r'({})'.format(or_currencies)
     result = re.findall(re_currencies, comment_text)
@@ -137,13 +141,15 @@ def new_tip_text(owner, repo, issue_id, comment_text):
     tip_currency = parse_comment_currency(comment_text)
     username = parse_tippee_username(comment_text)
     issue_url = f'https://github.com/{owner}/{repo}/issues/{issue_id}'
-    tip_link = f'{settings.BASE_URL}tip/?amount={tip_amount}&tokenName={tip_currency}&username={username}&source={issue_url}'
+    tip_link = f'{settings.BASE_URL}tip/?'\
+               f'amount={tip_amount}&tokenName={tip_currency}&username={username}&source={issue_url}'
     tip_response = f'To complete the tip, please [visit this link]({tip_link}).\n ' \
         'PS Make sure you\'re logged into Metamask!'
     return tip_response
 
 
 def start_work_text(owner, repo, issue_id):
+    """Instructions to start work on current bounty"""
     start_work_link = f'{settings.BASE_URL}issue/{owner}/{repo}/{issue_id}'
     start_work_response = f"To show this bounty as started please [visit this link]({start_work_link})"
     return start_work_response
@@ -156,9 +162,10 @@ def submit_work_text(owner, repo, issue_id):
 
 
 def submit_work_or_new_bounty_text(owner, repo, issue_id):
-    issue_counter = Bounty.objects.filter(github_url=f'https://github.com/{owner}/{repo}/issues/{issue_id}').count()
+    """Submit work if the bounty exists else show instructions to create one"""
+    bounties = Bounty.objects.filter(github_url=f'https://github.com/{owner}/{repo}/issues/{issue_id}').exists()
 
-    if issue_counter > 0:
+    if bounties:
         response_text = submit_work_text(owner, repo, issue_id)
     else:
         response_text = no_active_bounty(owner, repo, issue_id)
@@ -168,7 +175,7 @@ def submit_work_or_new_bounty_text(owner, repo, issue_id):
 
 def confused_text():
     return 'Sorry I did not understand that request. Please try again or use `@gitcoinbot help` ' \
-        'to see supported commands.'
+           'to see supported commands.'
 
 
 def post_gitcoin_app_comment(owner, repo, issue_id, content, install_id):
@@ -201,11 +208,12 @@ def create_token(install_id):
 
 
 def get_text_from_query_responses(comment_text, sender):
+    """Based on comment_text an assigned response is returned"""
     comment_text_low = comment_text.casefold()
     result_text = GitcoinBotResponses.objects.filter(request=comment_text_low)
-    if result_text:
-        return f'@{sender} {result_text[0].response}'
-
+    if result_text.exists():
+        return f'@{sender} {result_text.first().response}'
+    return ""
 
 
 def determine_response(owner, repo, comment_id, comment_text, issue_id, install_id, sender):
@@ -224,8 +232,8 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id, install_
         post_gitcoin_app_comment(owner, repo, issue_id, bounty_text, install_id)
     elif re.match(submit_work_regex, comment_text) is not None:
         post_issue_comment_reaction(owner, repo, comment_id, '+1')
-        submit_work_text = submit_work_or_new_bounty_text(owner, repo, issue_id)
-        post_gitcoin_app_comment(owner, repo, issue_id, submit_work_text, install_id)
+        result_text = submit_work_or_new_bounty_text(owner, repo, issue_id)
+        post_gitcoin_app_comment(owner, repo, issue_id, result_text, install_id)
     elif re.match(tip_regex, comment_text) is not None:
         post_issue_comment_reaction(owner, repo, comment_id, 'heart')
         tip_text = new_tip_text(owner, repo, issue_id, comment_text)
@@ -235,7 +243,8 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id, install_
         start_text = start_work_text(owner, repo, issue_id)
         post_gitcoin_app_comment(owner, repo, issue_id, start_text, install_id)
     else:
-        text_response = get_text_from_query_responses(comment_text, sender)
+        only_message = re.sub(r'@?[Gg]itcoinbot\s', "", comment_text)
+        text_response = get_text_from_query_responses(re.sub(r"</?\[\d+>", "", only_message), sender)
 
         if text_response:
             post_issue_comment_reaction(owner, repo, comment_id, 'hooray')

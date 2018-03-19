@@ -40,7 +40,8 @@ class gitcoinbotActions(TestCase):
             "Here are the commands I understand:\n\n " \
             "* `bounty <amount> <currency>` -- receive link to gitcoin.co form to create bounty.\n " \
             "* `submit work` -- receive link to gitcoin.co to start work on a bounty.\n " \
-            "* `tip <user> <amount> <currency>` -- receive link to complete tippping another github user *<amount>* <currency>.\n " \
+            "* `tip <user> <amount> <currency>` -- receive link to complete tippping another " \
+                      "github user *<amount>* <currency>.\n " \
             "* `help` -- displays a help menu\n\n<br>" \
             f"Some currencies I support: \n{currencies}\n\n<br>" \
             "Learn more at: [https://gitcoin.co](https://gitcoin.co)\n" \
@@ -51,8 +52,8 @@ class gitcoinbotActions(TestCase):
         """Test that new_bounty_text returns the correct text."""
         issue_link = "https://github.com/test_owner/gitcoin/issues/1234"
         bounty_link = f"{settings.BASE_URL}funding/new?source={issue_link}&amount=3.3&tokenName=ETH"
-        target_text = "To create the bounty please [visit this link]" +\
-        f"({bounty_link}).\n\n PS Make sure you're logged into Metamask!"
+        target_text = "To create the bounty please [visit this link]" \
+                      f"({bounty_link}).\n\n PS Make sure you're logged into Metamask!"
         text = new_bounty_text("test_owner", "gitcoin", "1234", "3.3 ETH")
         self.assertEqual(text, target_text)
 
@@ -109,9 +110,11 @@ class gitcoinbotActions(TestCase):
     def test_confused_text(self):
         """Test Gitcoinbot can respond that it's confused."""
         self.assertEqual(confused_text(),
-            'Sorry I did not understand that request. Please try again or use `@gitcoinbot help` to see supported commands.')
+                         'Sorry I did not understand that request. Please try again or use `@gitcoinbot help` '
+                         'to see supported commands.')
 
     def test_submit_work_or_new_bounty_when_bounty_exists(self):
+        """Test submit_work_or_new_bounty_text when bounty is active"""
         from dashboard.models import Bounty
         from datetime import datetime
         Bounty.objects.create(
@@ -132,28 +135,28 @@ class gitcoinbotActions(TestCase):
             experience_level='Intermediate',
             raw_data={},
         )
-
         submit_link = f"{settings.BASE_URL}issue/test_owner/gitcoin/1234"
         target_text = f"To finish claiming this bounty please [visit this link]({submit_link})"
         text = submit_work_or_new_bounty_text("test_owner", "gitcoin", "1234")
         self.assertEqual(text, target_text)
-
-
-
+        
     def test_submit_work_or_new_bounty_when_bounty_doesnt_exist(self):
+        """Test submit_work_or_new_bounty_text when bounty isn't active"""
         issue_link = f"https://github.com/test_owner/gitcoin/issues/1234"
         bounty_link = f"{settings.BASE_URL}funding/new?source={issue_link}"
-        target_text = f"No active bounty for this issue, consider create the bounty please [visit this link]({bounty_link}).\n\n " \
-                                    "PS Make sure you're logged into Metamask!"
-
+        target_text = "No active bounty for this issue, consider create the bounty please"\
+                      f" [visit this link]({bounty_link}).\n\n " \
+                      "PS Make sure you're logged into Metamask!"
         text = submit_work_or_new_bounty_text("test_owner", "gitcoin", "1234")
         self.assertEqual(text, target_text)
 
     def test_get_text_from_responses_when_doesnt_exist(self):
+        """Test get_text_from_query_responses when a response isn't exists"""
         response = get_text_from_query_responses('Party trap', 'sender')
-        self.assertEqual(response, None)
+        self.assertEqual(response, "")
 
     def test_get_text_from_responses_when_exists(self):
+        """Test get_text_from_query_responses when a response exists"""
         GitcoinBotResponses.objects.create(request='speedy gonzales', response='The Fastest Mouse in all Mexico')
         response = get_text_from_query_responses('Speedy Gonzales', 'ACME')
         self.assertEqual(response, '@ACME The Fastest Mouse in all Mexico')
