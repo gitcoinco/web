@@ -7,10 +7,20 @@
 	font-size: 1.75rem
 }
 
+.justify-content-space-between {
+	display: flex; 
+	justify-content: space-between
+}
+
 .submit-text {
 	font-size: 1rem; 
 	max-width: 525px; 
 	margin: 0px auto
+}
+
+.center-button {
+	margin: 0 auto; 
+	display: block
 }
 
 .idea-list {
