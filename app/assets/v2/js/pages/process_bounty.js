@@ -16,7 +16,7 @@ window.onload = function() {
     var fulfillmentCallback = function(results, status) {
       if (status != 'success') {
         mixpanel.track('Process Bounty Error', {step: 'fulfillmentCallback', error: error});
-        _alert({ message: 'Could not get fulfillment details' });
+        _alert({ message: 'Could not get fulfillment details' }, 'warning');
         console.error(error);
         unloading_button($('.submitBounty'));
         return;
@@ -24,7 +24,7 @@ window.onload = function() {
       results = sanitizeAPIResults(results);
       result = results[0];
       if (result == null) {
-        _alert({ message: 'No bounty fulfillments found for this Github URL.' });
+        _alert({ message: 'No bounty fulfillments found for this Github URL.' }, 'warning');
         unloading_button($('.submitBounty'));
         return;
       }
@@ -72,17 +72,17 @@ window.onload = function() {
       var isError = false;
 
       if ($('#terms:checked').length == 0) {
-        _alert({ message: 'Please accept the terms of service.' });
+        _alert({ message: 'Please accept the terms of service.' }, 'warning');
         isError = true;
       } else {
         localStorage['acceptTOS'] = true;
       }
       if (issueURL == '') {
-        _alert({ message: 'Please enter a issue URL.' });
+        _alert({ message: 'Please enter a issue URL.' }, 'warning');
         isError = true;
       }
       if (fulfillmentId == null) {
-        _alert({ message: 'Please enter a fulfillment Id.' });
+        _alert({ message: 'Please enter a fulfillment Id.' }, 'warning');
         isError = true;
       }
       if (isError) {
@@ -96,7 +96,7 @@ window.onload = function() {
       var apiCallback = function(results, status) {
         if (status != 'success') {
           mixpanel.track('Process Bounty Error', {step: 'apiCallback', error: error});
-          _alert({ message: 'Could not get bounty details' });
+          _alert({ message: 'Could not get bounty details' }, 'warning');
           console.error(error);
           unloading_button($('.submitBounty'));
           return;
@@ -104,7 +104,7 @@ window.onload = function() {
         results = sanitizeAPIResults(results);
         result = results[0];
         if (result == null) {
-          _alert({ message: 'No active bounty found for this Github URL.' });
+          _alert({ message: 'No active bounty found for this Github URL.' }, 'info');
           unloading_button($('.submitBounty'));
           return;
         }
@@ -127,7 +127,7 @@ window.onload = function() {
         }
 
         if (errormsg) {
-          _alert({ message: errormsg });
+          _alert({ message: errormsg }, 'error');
           unloading_button($('.submitBounty'));
           return;
         }
@@ -152,7 +152,7 @@ window.onload = function() {
 
           if (error) {
             mixpanel.track('Process Bounty Error', {step: 'final_callback', error: error});
-            _alert({ message: 'There was an error' });
+            _alert({ message: 'There was an error' }, 'error');
             console.error(error);
             unloading_button($('.submitBounty'));
           } else {

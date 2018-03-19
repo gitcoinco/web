@@ -127,9 +127,17 @@ var _alert = function(msg, _class) {
   }
   var numAlertsAlready = $('.alert:visible').length;
   var top = numAlertsAlready * 66;
-  var html = '    <div class="alert ' + _class + '" style="top: ' + top + 'px">' + closeButton(msg) + alertMessage(msg) + '\
-    </div> \
-';
+
+  var html = function() {
+    return (
+      `<div class="alert ${_class}" style="top: ${top}px">
+        <div class="message">
+          ${alertMessage(msg)}
+        </div>
+        ${closeButton(msg)}
+      </div>;`
+    );
+  };
 
   $('body').append(html);
 };
@@ -141,8 +149,7 @@ var closeButton = function(msg) {
 };
 
 var alertMessage = function(msg) {
-  var html = '<strong>' + (typeof msg['title'] != 'undefined' ? msg['title'] : '') + '</strong>\
-    ' + msg['message'];
+  var html = `<strong>${typeof msg['title'] !== 'undefined' ? msg['title'] : ''}</strong>${msg['message']}`;
 
   return html;
 };
