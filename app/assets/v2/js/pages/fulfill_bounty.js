@@ -33,13 +33,13 @@ window.onload = function() {
       var isError = false;
 
       if ($('#terms:checked').length == 0) {
-        _alert({message: 'Please accept the terms of service.'});
+        _alert({message: 'Please accept the terms of service.'}, 'warning');
         isError = true;
       } else {
         localStorage['acceptTOS'] = true;
       }
       if (issueURL == '') {
-        _alert({ message: 'Please enter a issue URL.' });
+        _alert({ message: 'Please enter a issue URL.' }, 'warning');
         isError = true;
       }
       if (isError) {
@@ -87,7 +87,7 @@ window.onload = function() {
         var run_main = !error || ignore_error;
 
         if (error && !ignore_error) {
-          _alert({ message: 'Could not get bounty details.' });
+          _alert({ message: 'Could not get bounty details.' }, 'error');
           unloading_button($('#submitBounty'));
         }
         if (run_main) {
@@ -115,7 +115,7 @@ window.onload = function() {
               if (error) {
                 mixpanel.track('Fulfill Bounty Error', {step: 'callback', error: error});
                 console.error('err', error);
-                _alert({ message: 'There was an error' });
+                _alert({ message: 'There was an error' }, 'error');
                 unloading_button($('#submitBounty'));
               } else {
                 next();
@@ -129,7 +129,7 @@ window.onload = function() {
               results = sanitizeAPIResults(results);
               result = results[0];
               if (result == null) {
-                _alert({ message: 'No active bounty found for this Github URL.' });
+                _alert({ message: 'No active bounty found for this Github URL.' }, 'info');
                 unloading_button($('#submitBounty'));
                 return;
               }

@@ -12,6 +12,9 @@
     "jQuery",
     "$"
   },
+  "plugins": [
+    "html"
+  ],
   "parserOptions": {
     "sourceType": "module",
     "babel-eslint",
@@ -108,6 +111,14 @@
     "no-mixed-spaces-and-tabs": [
       "error",
       "smart-tabs"
+    ],
+    "no-multiple-empty-lines": [
+      "error",
+      {
+        "max": 2,
+        "maxEOF": 1,
+        "maxBOF": 1
+      }
     ],
     "no-multi-spaces": "error",
     "no-new": "error",

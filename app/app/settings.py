@@ -31,6 +31,8 @@ env.read_env(str(root.path('app/.env')))  # reading .env file
 
 DEBUG = env.bool('DEBUG', default=True)
 ENV = env('ENV', default='local')
+DEBUG_ENVS = env.list('DEBUG_ENVS', default=['local', 'stage', 'test'])
+IS_DEBUG_ENV = ENV in DEBUG_ENVS
 HOSTNAME = env('HOSTNAME', default=socket.gethostname())
 BASE_URL = env('BASE_URL', default='http://localhost:8000/')
 SECRET_KEY = env('SECRET_KEY', default='YOUR-SupEr-SecRet-KeY')
