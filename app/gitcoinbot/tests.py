@@ -21,8 +21,9 @@ from django.conf import settings
 from django.test import TestCase
 
 from gitcoinbot.actions import (
-    confused_text, get_text_from_query_responses, help_text, new_bounty_text, new_tip_text, parse_comment_amount,
-    parse_tippee_username, start_work_text, submit_work_or_new_bounty_text, submit_work_text,
+    FALLBACK_CURRENCY, confused_text, get_text_from_query_responses, help_text, new_bounty_text, new_tip_text,
+    parse_comment_amount, parse_comment_currency, parse_tippee_username, start_work_text,
+    submit_work_or_new_bounty_text, submit_work_text,
 )
 from gitcoinbot.models import GitcoinBotResponses
 
@@ -65,6 +66,15 @@ class gitcoinbotActions(TestCase):
         self.assertEqual(amount2, '1')
         amount3 = parse_comment_amount('@gitcoinbot bounty 1741852963 ETH')
         self.assertEqual(amount3, '1741852963')
+
+    def test_parse_comment_currency(self):
+        """Test parse_comment_amount can retrieve amount when they're whole numbers."""
+        currency = parse_comment_currency('@gitcoinbot bounty 234')
+        self.assertEqual(currency, FALLBACK_CURRENCY)  # Default behavior should fallback to DEFAULT_CURRENCY
+        currency2 = parse_comment_currency('@gitcoinbot bounty 1 TIME')
+        self.assertEqual(currency2, 'TIME')  # specified in tokens.py
+        currency3 = parse_comment_currency('@gitcoinbot bounty 1741852963 BTW')
+        self.assertEqual(currency3, FALLBACK_CURRENCY)  # Unknown currency should fallback to DEFAULT_CURRENCY
 
     def test_parse_comment_amount_decimal(self):
         """Test parse_comment_amount can retrieve amount when it includes decimals."""
