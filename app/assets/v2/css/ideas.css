@@ -23,6 +23,20 @@
 	display: block
 }
 
+.w-750px {
+	width: 750px;
+}
+
+.w-700px {
+	width: 700px;
+}
+
+#sort-ideas {
+	margin-left: 1em; 
+	width: 160px; 
+	border-style: none;
+}
+
 .idea-list {
 	width: 750px;
 	padding: 1em 1.5em; 
@@ -42,3 +56,8 @@
 	border-color: purple;
 }
 
+.idea-title {
+	font-family: 'Muli', sans-serif; 
+	font-size: 1.15em; 
+	display: in-line
+}
