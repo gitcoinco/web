@@ -160,7 +160,7 @@ USE_L10N = env.bool('USE_L10N', default=True)
 USE_TZ = env.bool('USE_TZ', default=True)
 TIME_ZONE = env.str('TIME_ZONE', default='MST')
 
-if not ENV == 'local':
+if not ENV in ['local', 'test']:
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
