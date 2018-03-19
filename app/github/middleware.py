@@ -17,11 +17,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import logging
+
+from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.timezone import now
 
+from app.utils import get_location_from_ip
 from dashboard.models import Profile
 from github.utils import is_github_token_valid
+from ipware.ip import get_real_ip
+
+logger = logging.getLogger(__name__)
 
 
 class GithubAuthMiddleware(MiddlewareMixin):
@@ -32,9 +39,15 @@ class GithubAuthMiddleware(MiddlewareMixin):
         token = request.session.get('access_token')
         expiration = request.session.get('access_token_last_validated')
         handle = request.session.get('handle')
+        ip_address = '24.210.224.38' if settings.DEBUG else get_real_ip(request)
 
         if token and handle:
             is_valid = is_github_token_valid(token, expiration)
+            if ip_address:
+                geolocation_dict = get_location_from_ip(ip_address)
+                if geolocation_dict:
+                    geolocation_dict.update({'ip_address': ip_address})
+                    request.session['GEOLOCATION'] = geolocation_dict
             if is_valid:
                 request.session['access_token_last_validated'] = now().isoformat()
             else:

@@ -905,10 +905,12 @@ class UserAction(SuperModel):
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
     profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE)
+    ip_address = models.GenericIPAddressField(null=True)
+    location_data = JSONField(default={})
     metadata = JSONField(default={})
 
     def __str__(self):
-        return "{} by {} at {}".format(self.action, self.profile, self.created_on)
+        return f"{self.action} by {self.profile} at {self.created_on}"
 
 
 class CoinRedemption(SuperModel):

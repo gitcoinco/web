@@ -17,6 +17,7 @@ Check out the [Docker Compose CLI Reference](https://docs.docker.com/compose/ref
 ## Without Docker
 
 ```shell
+brew install libmaxminddb
 git clone https://github.com/gitcoinco/web.git
 cd web/app
 cp app/app/local.env app/app/.env
