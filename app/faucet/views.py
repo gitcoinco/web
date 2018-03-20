@@ -58,27 +58,25 @@ def check_github(profile):
 
 @csrf_exempt
 def save_faucet(request):
+    github_profile = request.POST.get('githubProfile')
     email_address = request.POST.get('emailAddress')
     eth_address = request.POST.get('ethAddress')
     profile_handle = request.session.get('handle', '')
 
     try:
-        if not profile_handle:
-            raise Exception('You must be authenticated with Github to use the faucet')
-
-        validate_slug(profile_handle)
+        validate_slug(github_profile)
         validate_email(email_address)
         validate_slug(eth_address)
     except Exception as e:
         return JsonResponse({'message': str(e)}, status=400)
 
     comment = escape(strip_tags(request.POST.get('comment')))
-    checkeduser = check_github(profile_handle)
-    if FaucetRequest.objects.filter(fulfilled=True, github_username=profile_handle):
+    checkeduser = check_github(github_profile)
+    if FaucetRequest.objects.filter(fulfilled=True, github_username=github_profile):
         return JsonResponse({
             'message': 'The submitted github profile shows a previous faucet distribution.'
         }, status=403)
-    elif FaucetRequest.objects.filter(github_username=profile_handle, rejected=False):
+    elif FaucetRequest.objects.filter(github_username=github_profile, rejected=False):
         return JsonResponse({
             'message': 'The submitted github profile shows a pending faucet distribution.'
         }, status=403)
@@ -89,7 +87,8 @@ def save_faucet(request):
 
     fr = FaucetRequest.objects.create(
         fulfilled=False,
-        github_username=profile_handle,
+        github_username=github_profile,
+        input_github_username=profile_handle,
         github_meta=checkeduser,
         address=eth_address,
         email=email_address,
