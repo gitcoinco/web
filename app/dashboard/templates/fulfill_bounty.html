@@ -52,8 +52,8 @@
                   {% include 'shared/name.html' %}
                   <div class="w-100 mt-2 terms_container">
                       <div class="form__checkbox">
-                          <input name='terms' id='terms' type="checkbox" value=1 />
-                          <label class="form__label" required for="terms">I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>:</label>
+                          <input name='terms' required id='terms' type="checkbox" value=1 />
+                          <label class="form__label" for="terms">I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>:</label>
                       </div>
                   </div>
                   {% include 'shared/metamask_estimate.html' %}
