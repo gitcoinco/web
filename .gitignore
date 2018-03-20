@@ -32,3 +32,4 @@ webpack-stats.json
 
 # .tfvars files
 *.tfvars
+app/celerybeat.pid

@@ -22,6 +22,8 @@ import json
 import subprocess
 import time
 
+from django.conf import settings
+
 import ipfsapi
 import requests
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
