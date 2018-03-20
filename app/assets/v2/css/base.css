@@ -1204,6 +1204,11 @@ input.is-invalid {
   padding-left: 0px;
 }
 
+#gitcoinTestimonials{
+    height:288px; 
+    width:500px;
+}
+
 @media (max-width: 1350px) {
     .profile_details .tips li div.details,
     .profile_details .bounties li div.details{
@@ -1311,6 +1316,11 @@ input.is-invalid {
     }
 }
 @media (max-width: 769px) {
+    #gitcoinTestimonials{
+        height:202px; 
+        width:350px;
+    }
+
     .tldr_container img{
         max-width: 250px;
         max-height: 250px;
@@ -1429,6 +1439,11 @@ input.is-invalid {
     }
 }
 @media (max-width: 481px) {
+
+    #gitcoinTestimonials{
+        height:144px; 
+        width:250px;
+    }
     .tldr_container img {
         max-width: 150px;
         max-height: 150px;
