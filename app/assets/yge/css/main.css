@@ -140,9 +140,9 @@ body {
 	body, input, select, textarea {
 		color: #414f57;
 		font-size: 14pt;
-		font-weight: 300;
+		font-weight: 400;
 		line-height: 2;
-		letter-spacing: 0.2em;
+		letter-spacing: 0.1em;
 	}
 
 		@media screen and (max-width: 1680px) {
@@ -202,8 +202,9 @@ body {
 		}
 
 	h1 {
+		font-weight: 300;
 		font-size: 1.85em;
-		letter-spacing: 0.22em;
+		letter-spacing: 0.2em;
 		margin: 0 0 0.525em 0;
 	}
 
@@ -709,10 +710,11 @@ body {
 /* Main */
 
 	#main {
+		font-family: "Muli";
 		position: relative;
 		max-width: 100%;
 		min-width: 27em;
-		padding: 4.5em 3em 3em 3em ;
+		padding: 4.5em 3em 3em 3em;
 		background: #ffffff;
 		border-radius: 4px;
 		cursor: default;
