@@ -58,7 +58,7 @@ def check_github(profile):
 
 @csrf_exempt
 def save_faucet(request):
-    github_profile = request.POST.get('githubProfile')
+    github_profile = request.POST.get('githubProfile', '')
     email_address = request.POST.get('emailAddress')
     eth_address = request.POST.get('ethAddress')
 
