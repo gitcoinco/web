@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 
 from django.contrib.postgres.fields import JSONField
 from django.db import models
-
+from django.conf import settings
 from economy.models import SuperModel
 
 
@@ -53,6 +53,7 @@ class FaucetRequest(SuperModel):
     comment = models.TextField(max_length=500, blank=True)
     comment_admin = models.TextField(max_length=500, blank=True)
     fulfill_date = models.DateTimeField(null=True, blank=True)
+    amount = models.FloatField(default=settings.FAUCET_AMOUNT)
 
     objects = FaucetRequestManager()
 
