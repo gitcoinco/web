@@ -188,6 +188,7 @@ def interested_profiles(request, bounty_id):
     limit = request.GET.get('limit', 10)
     current_profile = request.session.get('profile_id')
     profile_interested = False
+    bounty = Bounty.objects.get(pk=bounty_id)
 
     # Get all interests for the Bounty.
     interests = Interest.objects \
@@ -212,15 +213,13 @@ def interested_profiles(request, bounty_id):
         interest_data = ProfileSerializer(interest.profile).data
         interests_data.append(interest_data)
 
-    if request.is_ajax():
-        return JsonResponse(json.dumps(interests_data), safe=False)
-
     return JsonResponse({
         'paginator': {
             'num_pages': interests.paginator.num_pages,
         },
         'data': interests_data,
-        'profile_interested': profile_interested
+        'profile_interested': profile_interested,
+        'bounty_owner_github_username': bounty.bounty_owner_github_username,
     })
 
 
