@@ -1,21 +1,45 @@
 @font-face {
-    font-family: "futura-pt";
-    src: url("/static/v2/fonts/futura/font4.ttf") /* TTF file for CSS3 browsers */
+  font-family: "futura-pt";
+  src: url("/static/v2/fonts/futura/font4.ttf") /* TTF file for CSS3 browsers */
 }
 
 @font-face {
   font-family: "OpenSans Bold";
-  src: url('/static/v2/fonts/OpenSans/Bold.ttf');
+  src: url("/static/v2/fonts/OpenSans/Bold.ttf");
 }
 
 @font-face {
   font-family: "OpenSans SemiBold";
-  src: url('/static/v2/fonts/OpenSans/SemiBold.ttf');
+  src: url("/static/v2/fonts/OpenSans/SemiBold.ttf");
 }
 
 @font-face {
   font-family: "OpenSans";
-  src: url('/static/v2/fonts/OpenSans/Regular.ttf');
+  src: url("/static/v2/fonts/OpenSans/Regular.ttf");
+}
+
+@font-face {
+  font-family: "Muli";
+  font-weight: 300;
+  src: url("static/v2/fonts/Muli/Light.ttf");
+}
+
+@font-face {
+  font-family: "Muli";
+  font-weight: 400;
+  src: url("static/v2/fonts/Muli/Regular.ttf");
+}
+
+@font-face {
+  font-family: "Muli";
+  font-weight: 700;
+  src: url("static/v2/fonts/Muli/SemiBold.ttf");
+}
+
+@font-face {
+  font-family: "Muli";
+  font-weight: 900;
+  src: url("static/v2/fonts/Muli/Bold.ttf");
 }
 
 body {
