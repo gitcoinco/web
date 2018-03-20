@@ -52,12 +52,10 @@ def github_callback(request):
     github_user_data = get_github_user_data(access_token)
     handle = github_user_data.get('login')
     ip_address = '24.210.224.38' if settings.DEBUG else get_real_ip(request)
-    geolocation_data = request.session.get('GEOLOCATION', {})
+    geolocation_data = {}
 
-    if (geolocation_data and ip_address != geolocation_data.get('ip_address')) or not geolocation_data:
+    if ip_address:
         geolocation_data = get_location_from_ip(ip_address)
-        geolocation_data.update({'ip_address': ip_address})
-        request.session['GEOLOCATION'] = geolocation_data
 
     if handle:
         # Create or update the Profile with the github user data.
@@ -116,8 +114,11 @@ def github_logout(request):
     access_token = request.session.pop('access_token', '')
     handle = request.session.pop('handle', '')
     redirect_uri = request.GET.get('redirect_uri', '/')
-    geolocation_data = request.session.pop('GEOLOCATION', {})
-    ip_address = geolocation_data.get('ip_address', get_real_ip(request))
+    geolocation_data = {}
+    ip_address = '24.210.224.38' if settings.DEBUG else get_real_ip(request)
+
+    if ip_address:
+        geolocation_data = get_location_from_ip(ip_address)
 
     if access_token:
         revoke_token(access_token)

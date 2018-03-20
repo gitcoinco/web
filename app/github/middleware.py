@@ -39,15 +39,9 @@ class GithubAuthMiddleware(MiddlewareMixin):
         token = request.session.get('access_token')
         expiration = request.session.get('access_token_last_validated')
         handle = request.session.get('handle')
-        ip_address = '24.210.224.38' if settings.DEBUG else get_real_ip(request)
 
         if token and handle:
             is_valid = is_github_token_valid(token, expiration)
-            if ip_address:
-                geolocation_dict = get_location_from_ip(ip_address)
-                if geolocation_dict:
-                    geolocation_dict.update({'ip_address': ip_address})
-                    request.session['GEOLOCATION'] = geolocation_dict
             if is_valid:
                 request.session['access_token_last_validated'] = now().isoformat()
             else:
