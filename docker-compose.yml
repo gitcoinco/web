@@ -8,8 +8,14 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:3-alpine
+    restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "6379:6379"
+    volumes:
+      - 'redisdata:/data'
 
   pgweb:
     image: sosedoff/pgweb
@@ -29,9 +35,11 @@ services:
       - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/code/app
+      - SERVICE_TYPE=web
     env_file:
       - app/app/local.env
     build: .
+    image: 'web'
     volumes:
       - .:/code
     ports:
@@ -39,6 +47,31 @@ services:
     depends_on:
       - db
     stdin_open: true
+
+  celery_worker:
+    image: 'web'
+    env_file: 'app/app/.env'
+    environment:
+      - SERVICE_TYPE=worker
+      - CELERY_APP=app
+    volumes:
+      - .:/code
+    depends_on:
+      - web
+    entrypoint: /bin/worker.bash
+
+  celery_beat:
+    image: 'web'
+    env_file: 'app/app/.env'
+    environment:
+      - CELERY_BEAT_ENABLED=on
+      - SERVICE_TYPE=beat
+      - CELERY_APP=app
+    volumes:
+      - .:/code
+    depends_on:
+      - web
+    entrypoint: /bin/worker.bash
 
   testrpc:
     image: trufflesuite/ganache-cli
@@ -55,3 +88,4 @@ services:
 
 volumes:
   pgdata:
+  redisdata:

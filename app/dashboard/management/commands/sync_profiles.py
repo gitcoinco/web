@@ -1,43 +1,29 @@
-'''
-    Copyright (C) 2017 Gitcoin Core
+# -*- coding: utf-8 -*-
+"""Define the management command to sync profile data.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
-import time
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf import settings
+"""
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
-from app.utils import sync_profile
-from dashboard.models import Bounty, Profile
-
-
-def does_need_refresh(handle):
-    needs_refresh = False
-    org = None
-    try:
-        org = Profile.objects.get(handle=handle)
-        org.last_sync_date > timezone.now() - timezone.timedelta(weeks=1)
-    except Exception:
-        needs_refresh = True
-
-    return needs_refresh
+from dashboard.tasks import sync_profile_data
 
 
 class Command(BaseCommand):
+    """Sync Profile data based on current bounties."""
 
     help = 'syncs orgs with github'
 
@@ -51,21 +37,4 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        # setup
-        handles = set([b.org_name for b in Bounty.objects.filter(current_bounty=True)])
-        for handle in handles:
-            print(handle)
-
-            # does this handle need a refresh
-            needs_refresh = does_need_refresh(handle) or options['force_refresh']
-
-            if not needs_refresh:
-                print('- no refresh needed')
-            else:
-                try:
-                    sync_profile(handle)
-                except Exception as e:
-                    print(e)
-
-            if not settings.DEBUG:
-                time.sleep(60)
+        sync_profile_data(options['force_refresh'])

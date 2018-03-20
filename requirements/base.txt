@@ -39,3 +39,5 @@ django-environ==0.4.4
 ipfsapi
 eth-utils==1.0.0b2
 jsondiff==1.1.1
+celery[redis]==4.1.0
+django-celery-beat==1.1.1

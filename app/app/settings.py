@@ -18,12 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import socket
+from datetime import timedelta
 
 from django.http import Http404
 
-import rollbar
-
 import environ
+import rollbar
 
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
 env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'retail',
     'rest_framework',
     'bootstrap3',
+    'django_celery_beat',
     'marketing',
     'economy',
     'dashboard',
@@ -160,7 +161,7 @@ USE_L10N = env.bool('USE_L10N', default=True)
 USE_TZ = env.bool('USE_TZ', default=True)
 TIME_ZONE = env.str('TIME_ZONE', default='MST')
 
-if not ENV in ['local', 'test']:
+if ENV not in ['local', 'test']:
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
@@ -300,6 +301,8 @@ GOOGLE_ANALYTICS_AUTH_JSON = {
 # Rollbar - https://rollbar.com/docs/notifier/pyrollbar/#django
 ROLLBAR_CLIENT_TOKEN = env('ROLLBAR_CLIENT_TOKEN', default='')  # post_client_item
 ROLLBAR_SERVER_TOKEN = env('ROLLBAR_SERVER_TOKEN', default='')  # post_server_item
+ROLLBAR = {}
+
 if ROLLBAR_SERVER_TOKEN:
     # Handle rollbar initialization.
     ROLLBAR = {
@@ -336,3 +339,31 @@ WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://mainnet.infura.i
 # COLO Coin
 COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')
 COLO_ACCOUNT_PRIVATE_KEY = env('COLO_ACCOUNT_PRIVATE_KEY', default='')
+
+# Redis
+REDIS_HOST = env('REDIS_HOST', default='redis')
+REDIS_PORT = env('REDIS_PORT', default='6379')
+REDIS_DB = env('REDIS_DB', default='0')
+
+# Celery Configuration
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', default=f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_VISIBILITY_TIMEOUT = env.int('CELERY_VISIBILITY_TIMEOUT', default=3600)  # Default: 1 hour.
+CELERY_POLLING_INTERVAL = env.int('CELERY_POLLING_INTERVAL', default=20)
+CELERY_RESULT_BACKEND = env.str('CELERY_RESULT_BACKEND', default=CELERY_BROKER_URL)
+CELERY_FANOUT_PATTERNS = env.bool('CELERY_FANOUT_PATTERNS', default=True)
+CELERY_FANOUT_PREFIX = env.bool('CELERY_FANOUT_PREFIX', default=False)
+BROKER_TRANSPORT_OPTIONS = {
+    'fanout_patterns': CELERY_FANOUT_PATTERNS,
+    'fanout_prefix': CELERY_FANOUT_PREFIX,
+    'polling_interval': CELERY_POLLING_INTERVAL,
+    'visibility_timeout': CELERY_VISIBILITY_TIMEOUT,
+}
+CELERY_BEAT_SCHEDULE = {
+    'session-cleanup': {
+        'task': 'dashboard.tasks.sync_profile_data',
+        'schedule': timedelta(hours=2)
+    }
+}
