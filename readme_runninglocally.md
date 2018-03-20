@@ -19,7 +19,7 @@ Check out the [Docker Compose CLI Reference](https://docs.docker.com/compose/ref
 ```shell
 git clone https://github.com/gitcoinco/web.git
 cd web/app
-cp app/app/local.env app/app/.env
+cp app/local.env app/.env
 ```
 
 You will need to edit the `app/.env` file with your local environment variables. Look for config items that are marked `# required`.
