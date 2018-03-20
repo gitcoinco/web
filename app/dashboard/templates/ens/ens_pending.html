@@ -1,0 +1,25 @@
+{% extends 'ens/ens.html' %}
+{% load static %}
+{% block 'ens_script' %}
+
+<script src="{% static 'ens/delete.js' %}"></script>
+
+{% endblock %}
+
+{% block 'body_block' %}
+    <h1>Manage your ENS subdomain</h1>
+        <div>
+            <br>
+            <h2><label id="githubHandle">{{ github_handle }}</label><label>.gitcoin.eth</label></h2>
+            <h2><label>Pending Txn: <a href="https://etherscan.io/tx/{{ txn_hash }}">{{ txn_hash_partial }}</label></h2>
+        </div>
+
+      <div style="display:block;">
+        <p id="loading_trans">
+            <a id="trans_link2" href="" target=new>The transaction is still pending.</a><br>This page will auto-update when the transaction is confirmed <br>(but you can close the browser window if you want).
+            <br>
+            <img src="{% static "yge/images/loading_v2.gif" %}" style="max-width: 70px; max-height: 70px;">
+        </p>
+        <hr>
+    </div>
+{% endblock %}

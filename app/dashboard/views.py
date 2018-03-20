@@ -838,7 +838,7 @@ def toolbox(request):
             "description": '''Register ENS Subdomain''',
             "link": "ens/register",
             "active": "true",
-            'stat_graph': 'ens_subdomain_registration_count',
+            'stat_graph': 'ens_subdomain_count',
             },
           ]
        }, {

@@ -2,7 +2,7 @@
 {% load static %}
 {% block 'ens_script' %}
 
-<script src="{% static 'ens/delete.js' %}"></script>
+<script src="{% static 'ens/register.js' %}"></script>
 
 {% endblock %}
 
@@ -15,10 +15,8 @@
         </div>
         <div>
             <br>
-            <input type="checkbox" id="tos" value="1" >
-            <label for="tos">I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.</label>
+            Only 1 request allowed per week, please try again later.
 
         </div>
 
-      <a href="#" id="delete" class="button">Delete ⚡️</a>
 {% endblock %}

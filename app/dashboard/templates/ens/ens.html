@@ -17,7 +17,7 @@
 
     <header>
         <span class="avatar">
-            <a href="{% url 'ens_subdomain_registration' %}">
+            <a href="{% url 'ens_subdomain' %}">
                 <img src="{% static 'v2/images/ens.png' %}" style="background-color: white; max-width: 150px; max-height: 150px;" />
             </a>
         </span>
@@ -30,20 +30,6 @@
 
     </div>
 
-    <div id="send_eth_done" style="display:none;">
-        <h1>Woo hoo!</h1>
-        <h2>Your <span id="tokenName">ETH</span> has been sent <a id="trans_link" href="" target=new>to the blockchain</a>.</h2>
-        <p id="loading_trans">
-            <a id="trans_link2" href="" target=new>The transaction is still pending.</a><br>This page will auto-update when the transaction is confirmed <br>(but you can close the browser window if you want).
-            <br>
-            <img src="{% static "yge/images/loading_v2.gif" %}" style="max-width: 70px; max-height: 70px;">
-        </p>
-        <hr>
-        <h1><span id=new_username></span> has been notified</h1>
-        <h3>with instructions about how to receive their tip.</h1>
-        <br>
-        <a id="" class="button" href="{% url "ens_subdomain_registration" %}">⬅ Start Over</a>
-    </div>
 
 </section>
 

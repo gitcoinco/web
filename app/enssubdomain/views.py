@@ -17,59 +17,71 @@
 
 '''
 
+import datetime
+
 from django.conf import settings
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.views import w3
 from ens import ENS
 
+from .models import ENSSubdomainRegistration
+
 ns = ENS.fromWeb3(w3)
 
 @csrf_exempt
-def ens_subdomain_registration(request):
+def ens_subdomain(request):
     """Register ENS Subdomain."""
-    github_handle = request.session.get('handle', None)
-    owner = ns.address("{}.{}".format(github_handle, settings.ENS_TLD))
-    if request.method == "POST":
-        signedMsg = request.POST.get('signedMsg', '')
-        signer = request.POST.get('singer', '').lower()
-        if signedMsg and signer:
-            recovered_signer = w3.eth.account.recoverMessage(text="Github Username : {}".format(github_handle), signature=signedMsg).lower()
-            print(recovered_signer,signer)
-            if recovered_signer == signer:
-                ns.setup_address("{}.{}".format(github_handle, settings.ENS_TLD), recovered_signer)
-                return JsonResponse({'success': 'false', 'msg': 'Created Successfully! Please wait for the transaction to mine!'})
-            else:
-                return JsonResponse({'success': 'false', 'msg': 'Sign Mismatch Error'})
-    params = {
-        'title': 'ENS Subdomain',
-        'github_handle' : 'scottydelta',
-    }
-    return TemplateResponse(request, 'ens/ens_register.html', params)
+    github_handle = request.session.get('handle', 'None')
+    try:
+        last_request = ENSSubdomainRegistration.objects.filter(github_handle=github_handle).latest('created_on')
+        request_reset_time = timezone.now() - datetime.timedelta(days=7)
+        if last_request.pending:
+            params = {
+                'title': 'ENS Subdomain',
+                'txn_hash': last_request.txn_hash,
+                'txn_hash_partial': '{}...'.format(last_request.txn_hash[:20]),
+                'github_handle': github_handle,
+            }
+            return TemplateResponse(request, 'ens/ens_pending.html', params)
+        elif request_reset_time > last_request.created_on:
+            if request.method == "POST":
+                signedMsg = request.POST.get('signedMsg', '')
+                signer = request.POST.get('singer', '').lower()
+                if signedMsg and signer:
+                    recovered_signer = w3.eth.account.recoverMessage(text="Github Username : {}".format(github_handle),
+                                                                     signature=signedMsg).lower()
+                    if recovered_signer == signer:
+                        txn_hash = ns.setup_address("{}.{}".format(github_handle, settings.ENS_TLD), recovered_signer)
+                        ENSSubdomainRegistration.objects.create(github_handle=github_handle,
+                                                                subdomain_wallet_address=signer, txn_hash=txn_hash,
+                                                                pending=True).save()
+                        return JsonResponse(
+                            {'success': 'false', 'msg': 'Created Successfully! Please wait for the transaction to mine!'})
+                    else:
+                        return JsonResponse({'success': 'false', 'msg': 'Sign Mismatch Error'})
 
-
-@csrf_exempt
-def ens_subdomain_delete(request):
-    """Delete ENS Subdomain."""
-    github_handle = request.session.get('handle', None)
-    owner = ns.address("{}.{}".format(github_handle, settings.ENS_TLD))
-    if request.method == "POST":
-        signedMsg = request.POST.get('signedMsg', '')
-        signer = request.POST.get('singer', '').lower()
-        if signedMsg and signer:
-            recovered_signer = w3.eth.account.recoverMessage(text="Github Username : {}".format(github_handle), signature=signedMsg).lower()
-            print(recovered_signer,signer,owner)
-            if (recovered_signer == signer) and (signer == owner.lower()):
-                ns.setup_address("{}.{}".format(github_handle, settings.ENS_TLD), '')
-                return JsonResponse({'success': 'false', 'msg': 'Deleted Successfully! Please wait for the transaction to mine!'})
-            else:
-                return JsonResponse({'success': 'false', 'msg': 'Sign Mismatch Error'})
-    params = {
-        'title': 'ENS Subdomain',
-        'owner': owner,
-    }
-    return TemplateResponse(request, 'ens/ens_delete.html', params)
+            params = {
+                'title': 'ENS Subdomain',
+                'owner': last_request.subdomain_wallet_address,
+                'github_handle': github_handle,
+            }
+            return TemplateResponse(request, 'ens/ens_edit.html', params)
+        else:
+            params = {
+                'title': 'ENS Subdomain',
+                'owner': last_request.subdomain_wallet_address,
+                'github_handle': github_handle,
+            }
+            return TemplateResponse(request, 'ens/ens_trylater.html', params)
+    except ENSSubdomainRegistration.DoesNotExist:
+        params = {
+            'title': 'ENS Subdomain',
+            'github_handle': github_handle,
+        }
+        return TemplateResponse(request, 'ens/ens_register.html', params)

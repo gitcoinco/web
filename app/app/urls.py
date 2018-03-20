@@ -187,8 +187,7 @@ urlpatterns = [
     path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
 
     # ENS urls
-    url(r'^ens/register/', enssubdomain.views.ens_subdomain_registration, name='ens_subdomain_registration'),
-    url(r'^ens/delete/', enssubdomain.views.ens_subdomain_delete, name='ens_subdomain_delete'),
+    url(r'^ens/', enssubdomain.views.ens_subdomain, name='ens_subdomain'),
 
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),

@@ -14,13 +14,12 @@ def get_time():
     return localtime(timezone.now())
 
 
-class ensSubdomainReg(SuperModel):
+class ENSSubdomainRegistration(SuperModel):
     # Defines the schema for storing ENS sub-domain registration
 
-    github_handle = models.CharField(max_length=255, blank=False)
-    wallet_address = models.CharField(max_length=50)
-    txn_hash = models.CharField()
-    timestamp = models.DateTimeField(null=False, default=get_time, db_index=True)
+    github_handle = models.CharField(max_length=255, blank=False, db_index=True)
+    subdomain_wallet_address = models.CharField(max_length=50)
+    txn_hash = models.CharField(max_length=255)
     pending = models.BooleanField()
 
     def __str__(self):
