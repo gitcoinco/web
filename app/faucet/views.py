@@ -123,6 +123,7 @@ def process_faucet_request(request, pk):
     if request.POST.get('destinationAccount', False):
         faucet_request.fulfilled = True
         faucet_request.fulfill_date = timezone.now()
+        faucet_request.amount = settings.FAUCET_AMOUNT
         faucet_request.save()
         processed_faucet_request(faucet_request)
         messages.success(request, 'sent')

@@ -19,9 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.conf import settings
+
 from economy.models import SuperModel
 
 
