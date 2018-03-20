@@ -47,10 +47,8 @@ urlpatterns = [
     url(r'^actions/api/v0.1/', include(router.urls)),  # same as active, but not cached in cluodfront
 
     # dashboard views
-
-    # Dummy External Bounties index
-    # url(r'^external_bounties/?', dashboard.views.external_bounties, name='external_bounties'),
-    # url(r'^external_bounty/?', dashboard.views.external_bounties_show, name="external_bounties_show"),
+    url(r'^external_bounties/?', dashboard.views.external_bounties, name='external_bounties'),
+    url(r'^external_bounty/?', dashboard.views.external_bounties_show, name="external_bounties_show"),
 
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),

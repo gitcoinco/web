@@ -488,6 +488,21 @@ class BountySyncRequest(SuperModel):
     processed = models.BooleanField()
 
 
+class ExternalBounty(SuperModel):
+    url = models.URLField(db_index=True)
+    active = models.BooleanField(default=True)
+    title = models.CharField(max_length=255)
+    description = models.TextField(default='', blank=True)
+    source_project = models.CharField(max_length=255)
+    amount = models.IntegerField(default=1)
+    amount_denomination = models.CharField(max_length=255)
+    created_on = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    last_sync_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+    def __str__(self):
+        return "{} {} {}".format(self.title, self.active, self.created_on)
+
+
 class Subscription(SuperModel):
 
     email = models.EmailField(max_length=255)

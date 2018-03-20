@@ -279,6 +279,25 @@ def search(query):
     return response.json()
 
 
+
+def get_issues(owner, repo, use_auth=False, per_page_count=1000):
+    """Get the issues from a repository."""
+    params = {
+        'sort': 'created',
+        'direction': 'desc',
+    }
+
+    url = f'https://api.github.com/repos/{owner}/{repo}/issues?per_page={per_page_count}&state=all'
+    if use_auth:
+        response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
+    else:
+        response = requests.get(url, headers=HEADERS, params=params)
+    if response.status_code != 200:
+        raise Exception(response.status_code)
+    return response.json()
+
+
+
 def get_issue_comments(owner, repo, issue=None, comment_id=None):
     """Get the comments from issues on a respository."""
     params = {
