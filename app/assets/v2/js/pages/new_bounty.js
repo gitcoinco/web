@@ -153,6 +153,9 @@ $(document).ready(function() {
         }
       };
 
+      // validation
+      var isError = false;
+
       $(this).attr('disabled', 'disabled');
 
       // save off local state for later
@@ -309,7 +312,7 @@ $(document).ready(function() {
         var result = results[0];
 
         if (result != null) {
-          _alert({message: 'A bounty already exists for that Github Issue.'});
+          _alert({ message: 'A bounty already exists for that Github Issue.' });
           unloading_button($('#submitBounty'));
           return;
         }
@@ -324,9 +327,17 @@ $(document).ready(function() {
           // no approvals needed for ETH
           approve_success_callback();
         } else {
-          token_contract.approve(bounty_address(), amount, {from: account, value: 0, gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)}, approve_success_callback);
+          token_contract.approve(
+            bounty_address(),
+            amount,
+            {
+              from: account,
+              value: 0,
+              gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
+            },
+            approve_success_callback
+          );
         }
-        
       });
     }
   });
