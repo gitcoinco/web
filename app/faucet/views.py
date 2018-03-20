@@ -66,8 +66,11 @@ def save_faucet(request):
         validate_slug(github_profile)
         validate_email(email_address)
         validate_slug(eth_address)
+
+        if github_profile != request.session.get('handle'):
+            raise Exception("Could not authenticate your github profile")
     except Exception as e:
-        return JsonResponse({'message': e.messages[0]}, status=400)
+        return JsonResponse({'message': str(e)}, status=400)
 
     comment = escape(strip_tags(request.POST.get('comment')))
     checkeduser = check_github(github_profile)
