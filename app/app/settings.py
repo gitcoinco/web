@@ -367,3 +367,10 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': timedelta(hours=2)
     }
 }
+
+IPFS_HOST = env('IPFS_HOST', default='ipfs')
+IPFS_SWARM_PORT = env.int('IPFS_SWARM_PORT', default=4001)
+IPFS_UTP_PORT = env.int('IPFS_UTP_PORT', default=4002)
+IPFS_API_PORT = env.int('IPFS_API_PORT', default=5001)
+IPFS_GATEWAY_PORT = env.int('IPFS_GATEWAY_PORT', default=8080)
+IPFS_SWARM_WS_PORT = env.int('IPFS_SWARM_WS_PORT', default=8081)

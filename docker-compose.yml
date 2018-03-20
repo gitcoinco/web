@@ -17,6 +17,17 @@ services:
     volumes:
       - 'redisdata:/data'
 
+  ipfs:
+    image: ipfs/go-ipfs:release
+    restart: unless-stopped
+    volumes:
+      - 'ipfsexport:/export'
+      - 'ipfsdata:/data/ipfs'
+    ports:
+      - "4001:4001"
+      - "5001:5001"
+      - "8080:8080"
+
   pgweb:
     image: sosedoff/pgweb
     environment:
@@ -89,3 +100,5 @@ services:
 volumes:
   pgdata:
   redisdata:
+  ipfsdata:
+  ipfsexport:

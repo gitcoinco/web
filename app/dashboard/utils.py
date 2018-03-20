@@ -49,25 +49,9 @@ class NoBountiesException(Exception):
     pass
 
 
-def startIPFS():
-    print('starting IPFS')
-    subprocess.Popen(["ipfs", "daemon"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    time.sleep(10)  # time for IPFS to boot
-
-
-def isIPFSrunning():
-    output = subprocess.check_output('pgrep -fl ipfs | wc -l', shell=True)
-    is_running = output != b'       0\n'
-    print(f'** ipfs is_running: {is_running}')
-    return is_running
-
-
 def getIPFS():
-    if not isIPFSrunning():
-        startIPFS()
-
     try:
-        return ipfsapi.connect('127.0.0.1', 5001)
+        return ipfsapi.connect(settings.IPFS_HOST, settings.IPFS_API_PORT)
     except CommunicationError:
         raise IPFSCantConnectException("IPFS is not running.  try running it with `ipfs daemon` before this script")
 
