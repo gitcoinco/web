@@ -41,6 +41,7 @@ div, p, a, span {
 
 .modal {
     z-index: 9;
+    border-radius: 4px !important;
 }
 
 .hidden {
@@ -237,26 +238,44 @@ p a {
     display: none !important;
 }
 
-.iama{
-    background: #0d023b;
-    color: white;
+.iama {
+    font-family: "Muli";
     cursor: pointer;
+    -moz-transition: background-color 0.2s ease-in-out;
+    -webkit-transition: background-color 0.2s ease-in-out;
+    -ms-transition: background-color 0.2s ease-in-out;
+    transition: background-color 0.2s ease-in-out;
 }
 
-.iama a{
-    color: white;
-    font-weight: lighter;;
+.iama .button {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    -moz-transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    -webkit-transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    -ms-transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    display: inline-block;
+    height: 2.75em;
+    line-height: 2.75em;
+    padding: 0 1.5em;
+    background-color: transparent;
+    border-radius: 4px;
+    border: solid 1px #c8cccf;
+    color: #414f57 !important;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
 }
 
-.iama a.btn{
-    color: #f9006c;
+.iama .button:hover {
+    border-color: #ff7496;
+    color: #ff7496 !important;
 }
 
-.iama a.btn:hover{
-    color: white;
-}
-
-.iama .mt-3{
+.iama .mt-3 {
     width: 40px;
     height: 40px;
     border-radius: 20px;
@@ -264,7 +283,7 @@ p a {
 
 .iama:hover,
 .iama.clicked {
-    background: #3e24fb; color: #fff
+    background: #f5f5f5;
 }
 
 .iama:hover .mt-3,
@@ -275,17 +294,16 @@ p a {
 }
 
 .iama:first-child {
-    border-right: 1px dotted #29eb98;
+    border-right: 1px solid #c8cccf;
 }
 
 .iama:last-child {
-    border-left: 1px dotted #29eb98;
+    border-left: 1px solid #c8cccf;
 }
 
 .iama img {
     width: 30px;
     height: 30px;
-    filter: invert(100%);
 }
 
 .btn-warning, .btn-success, .btn-info {
