@@ -51,7 +51,7 @@ class NoBountiesException(Exception):
     pass
 
 
-def getIPFS():
+def get_ipfs():
     try:
         return ipfsapi.connect(settings.IPFS_HOST, settings.IPFS_API_PORT)
     except CommunicationError:
@@ -71,7 +71,7 @@ def ipfs_cat(key):
 
 
 def ipfs_cat_ipfsapi(key):
-    ipfs = getIPFS()
+    ipfs = get_ipfs()
     return ipfs.cat(key)
 
 
