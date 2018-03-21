@@ -194,7 +194,6 @@ var showWarningMessage = function(txid) {
     clearInterval(interval);
     var link_url = etherscan_tx_url(txid);
 
-    $('#pending_changes').attr('href', link_url);
     $('#transaction_url').attr('href', link_url);
   }
 
