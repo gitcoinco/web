@@ -20,6 +20,7 @@ from __future__ import print_function, unicode_literals
 
 import json
 import logging
+from django.utils.text import slugify
 
 from django.conf import settings
 from django.contrib.staticfiles.templatetags.staticfiles import static
@@ -406,64 +407,6 @@ def dashboard(request):
     return TemplateResponse(request, 'dashboard.html', params)
 
 
-def external_bounties(request):
-    """Handle Dummy External Bounties index page."""
-
-    bounties = [
-        {
-            "title": "Add Web3 1.0 Support",
-            "source": "www.google.com",
-            "crypto_price": 0.3,
-            "fiat_price": 337.88,
-            "crypto_label": "ETH",
-            "tags": ["javascript", "python", "eth"],
-        },
-        {
-            "title": "Simulate proposal execution and display execution results",
-            "source": "gitcoin.com",
-            "crypto_price": 1,
-            "fiat_price": 23.23,
-            "crypto_label": "BTC",
-            "tags": ["ruby", "js", "btc"]
-        },
-        {
-            "title": "Build out Market contract explorer",
-            "crypto_price": 22,
-            "fiat_price": 203.23,
-            "crypto_label": "LTC",
-            "tags": ["ruby on rails", "ios", "mobile", "design"]
-        },
-    ]
-
-    categories = ["Blockchain", "Web Development", "Design", "Browser Extension", "Beginner"]
-
-    params = {
-        'active': 'dashboard',
-        'title': 'Issue Explorer',
-        'bounties': bounties,
-        'categories': categories
-    }
-    return TemplateResponse(request, 'external_bounties.html', params)
-
-
-def external_bounties_show(request):
-    """Handle Dummy External Bounties show page."""
-    bounty = {
-        "title": "Simulate proposal execution and display execution results",
-        "crypto_price": 0.5,
-        "crypto_label": "ETH",
-        "fiat_price": 339.34,
-        "source": "gitcoin.co",
-        "content": "Lorem"
-    }
-    params = {
-        'active': 'dashboard',
-        'title': 'Issue Explorer',
-        "bounty": bounty,
-    }
-    return TemplateResponse(request, 'external_bounties_show.html', params)
-
-
 def gas(request):
     context = {
         'conf_time_spread': conf_time_spread(),
@@ -743,7 +686,7 @@ def apitos(request):
 
 def toolbox(request):
     actors = [{
-        "title": "The Basics",
+        "title": "Basics",
         "description": "Accelerate your dev workflow with Gitcoin\'s incentivization tools.",
         "tools": [{
             "name": "Issue Explorer",
@@ -751,6 +694,7 @@ def toolbox(request):
             "description": '''A searchable index of all of the funded work available in
                             the system.''',
             "link": reverse("explorer"),
+             'link_copy': 'Try It',
             "active": "true",
             'stat_graph': 'bounties_fulfilled',
         }, {
@@ -759,6 +703,7 @@ def toolbox(request):
              "description": '''Got work that needs doing?  Create an issue and offer a bounty to get folks
                             working on it.''',
              "link": reverse("new_funding"),
+             'link_copy': 'Try It',
              "active": "false",
              'stat_graph': 'bounties_fulfilled',
         }, {
@@ -767,6 +712,7 @@ def toolbox(request):
              "description": '''Leave a tip to thank someone for
                         helping out.''',
              "link": reverse("tip"),
+             'link_copy': 'Try It',
              "active": "false",
              'stat_graph': 'tips',
         }, {
@@ -775,103 +721,68 @@ def toolbox(request):
              "description": '''CodeSponsor sustains open source
                         by connecting sponsors with open source projects.''',
              "link": "https://codesponsor.io",
+             'link_copy': 'Try It',
              "active": "false",
              'stat_graph': 'codesponsor',
         }
         ]
       }, {
-          "title": "The Powertools",
+          "title": "Advanced",
           "description": "Take your OSS game to the next level!",
           "tools": [{
-              "name": "Browser Extension",
+              "name": "Chrome Browser Extension",
               "img": static("v2/images/tools/browser_extension.png"),
               "description": '''Browse Gitcoin where you already work.
                     On Github''',
               "link": reverse("browser_extension"),
+              'link_copy': 'Try It',
               "active": "false",
               'stat_graph': 'browser_ext_chrome',
-          },
-          {
-              "name": "iOS app",
-              "img": static("v2/images/tools/iOS.png"),
-              "description": '''Gitcoin has an iOS app in alpha. Install it to
-                browse funded work on-the-go.''',
-              "link": reverse("ios"),
+          },{
+              "name": "gitcoinbot",
+              "img": static("v2/images/helmet.png"),
+              "description": '''Chat Interface available on Github''',
+              "link": 'https://github.com/gitcoinco/web/tree/master/app/gitcoinbot',
+              'link_copy': 'Try It',
               "active": "false",
-              'stat_graph': 'ios_app_users',  # TODO
-        }
+              'stat_graph': 'bot',
+          },
           ]
       }, {
-          "title": "Community Tools",
+          "title": "Community",
           "description": "Friendship, mentorship, and community are all part of the process.",
           "tools": [
           {
               "name": "Slack Community",
-              "img": static("v2/images/tldr/community.jpg"),
+              "img": static("v2/images/social/slack2.png"),
               "description": '''Questions / Discussion / Just say hi ? Swing by
                                 our slack channel.''',
               "link": reverse("slack"),
+              'link_copy': 'Try It',
               "active": "false",
               'stat_graph': 'slack_users',
          },
           {
               "name": "Gitter Community",
-              "img": static("v2/images/tools/community2.png"),
+              "img": static("v2/images/social/gitter.png"),
               "description": '''The gitter channel is less active than slack, but
                 is still a good place to ask questions.''',
               "link": reverse("gitter"),
+              'link_copy': 'Try It',
               "active": "false",
               'stat_graph': 'gitter_users',
         },
-          {
-              "name": "Refer a Friend",
-              "img": static("v2/images/freedom.jpg"),
-              "description": '''Got a colleague who wants to level up their career?
-              Refer them to Gitcoin, and we\'ll happily give you a bonus for their
-              first bounty. ''',
-              "link": reverse("refer"),
-              "active": "false",
-              'stat_graph': 'email_subscriberse',
-        },
           ]
        }, {
-          "title": "Tools in Beta",
-          "description": "These fresh new tools are looking someone to test ride them!",
-          "tools": [{
-              "name": "Leaderboard",
-              "img": static("v2/images/tools/leaderboard.png"),
-              "description": '''Check out who is topping the charts in
-                the Gitcoin community this month.''',
-              "link": reverse("_leaderboard"),
-              "active": "false",
-              'stat_graph': 'bounties_fulfilled',
-          },
-           {
-            "name": "Profiles",
-            "img": static("v2/images/tools/profiles.png"),
-            "description": '''Browse the work that you\'ve done, and how your OSS repuation is growing. ''',
-            "link": reverse("profile"),
-            "active": "true",
-            'stat_graph': 'profiles_ingested',
-            },
-           {
-            "name": "ETH Tx Time Predictor",
-            "img": static("v2/images/tradeoffs.png"),
-            "description": '''Estimate Tradeoffs between Ethereum Network Tx Fees and Confirmation Times ''',
-            "link": reverse("gas"),
-            "active": "true",
-            'stat_graph': 'gas_page',
-            },
-          ]
-       }, {
-          "title": "Tools for Building Gitcoin",
+          "title": "BUIDL Gitcoin",
           "description": "Gitcoin is built using Gitcoin.  Purdy cool, huh? ",
           "tools": [{
               "name": "Github Repos",
-              "img": static("v2/images/tools/science.png"),
+              "img": static("v2/images/social/github.png"),
               "description": '''All of our development is open source, and managed
               via Github.''',
               "link": reverse("github"),
+             'link_copy': 'Try It',
               "active": "false",
               'stat_graph': 'github_stargazers_count',
           },
@@ -881,12 +792,13 @@ def toolbox(request):
             "description": '''Gitcoin provides a simple HTTPS API to access data
                             without having to run your own Ethereum node.''',
             "link": "https://github.com/gitcoinco/web/blob/master/readme_api.md#https-api",
+           'link_copy': 'Try It',
             "active": "true",
             'stat_graph': 'github_forks_count',
             },
           {
               "class": 'new',
-              "name": "Build your own",
+              "name": "BUIDL your own",
               "img": static("v2/images/dogfood.jpg"),
               "description": '''Dogfood.. Yum! Gitcoin is built using Gitcoin.
                 Got something you want to see in the world? Let the community know
@@ -898,6 +810,134 @@ def toolbox(request):
           }
           ]
        }, {
+          "title": "Coming Soon: Beta",
+          "description": "These fresh new tools are looking someone to test ride them!",
+          "tools": [{
+              "name": "Leaderboard",
+              "img": static("v2/images/tools/leaderboard.png"),
+              "description": '''Check out who is topping the charts in
+                the Gitcoin community this month.''',
+              "link": reverse("_leaderboard"),
+              'link_copy': 'Try It',
+              "active": "false",
+              'stat_graph': 'bounties_fulfilled',
+          },
+           {
+            "name": "Profiles",
+            "img": static("v2/images/tools/profiles.png"),
+            "description": '''Browse the work that you\'ve done, and how your OSS repuation is growing. ''',
+            "link": reverse("profile"),
+            'link_copy': 'Try It',
+            "active": "true",
+            'stat_graph': 'profiles_ingested',
+            },
+           {
+            "name": "ETH Tx Time Predictor",
+            "img": static("v2/images/tradeoffs.png"),
+            "description": '''Estimate Tradeoffs between Ethereum Network Tx Fees and Confirmation Times ''',
+            "link": reverse("gas"),
+            'link_copy': 'Try It',
+            "active": "true",
+            'stat_graph': 'gas_page',
+            },
+           {
+            "name": "Faucet",
+            "img": static("v2/images/gas.svg"),
+            "description": '''Get Mainnet ETH which can be used in Gitcoin or other dapps.''',
+            "link": reverse("faucet"),
+            'link_copy': 'Try It',
+            "active": "true",
+            'stat_graph': 'faucet_page',
+            },
+          ]
+       }, {
+           "title": "Coming Soon: Alpha",
+           "description": "These tools will be ready soon.  They'll get here sooner if you help BUIDL them :)",
+           "tools": [
+              {
+                  "name": "iOS app",
+                  "img": static("v2/images/tools/iOS.png"),
+                  "description": '''Gitcoin has an iOS app in alpha. Install it to
+                    browse funded work on-the-go.''',
+                  "link": reverse("ios"),
+                  'link_copy': 'Details',
+                  "active": "false",
+                  'stat_graph': 'ios_app_users',  # TODO
+            },
+            {
+                  "name": "Firefox Browser Extension",
+                  "img": static("v2/images/tools/comingsoon.png"),
+                  "description": '''Firefox version of our browser extension''',
+                  "link": 'https://github.com/gitcoinco/chrome_ext/issues/1',
+                  'link_copy': 'Details',
+                  "active": "false",
+                  'stat_graph': 'na',  # TODO
+            },
+              {
+                  "name": "Cold Outreach Email Generator",
+                  "img": static("v2/images/tools/comingsoon.png"),
+                  "description": '''Disrupt recruiters with this recruitment tool''',
+                  "link": 'https://github.com/gitcoinco/skunkworks/issues/20',
+                  'link_copy': 'Details',
+                  "active": "false",
+                  'stat_graph': 'na',  # TODO
+            },
+              {
+                  "name": "Mentorship Matcher",
+                  "img": static("v2/images/tools/comingsoon.png"),
+                  "description": '''Matches Devs with Coaches''',
+                  "link": 'https://github.com/gitcoinco/web/issues/565',
+                  'link_copy': 'Details',
+                  "active": "false",
+                  'stat_graph': 'na',  # TODO
+            },
+              {
+                  "name": "ETHAvatar",
+                  "img": static("v2/images/tools/comingsoon.png"),
+                  "description": '''gravatar but for Ethereum addresses''',
+                  "link": 'https://github.com/gitcoinco/skunkworks/issues/63',
+                  'link_copy': 'Details',
+                  "active": "false",
+                  'stat_graph': 'na',  # TODO
+            },
+              {
+                  "name": "Pitch Page",
+                  "img": static("v2/images/tools/comingsoon.png"),
+                  "description": '''Matches Entrepeneurs to Coding Tasks''',
+                  "link": 'https://github.com/gitcoinco/web/issues/506',
+                  'link_copy': 'Details',
+                  "active": "false",
+                  'stat_graph': 'na',  # TODO
+            },
+              {
+                  "name": "Job Board",
+                  "img": static("v2/images/tools/comingsoon.png"),
+                  "description": '''What it sounds like!''',
+                  "link": 'https://github.com/gitcoinco/web/issues/540',
+                  'link_copy': 'Details',
+                  "active": "false",
+                  'stat_graph': 'na',  # TODO
+            },
+              {
+                  "name": "<handle>.gitcoin.eth subdomains",
+                  "img": static("v2/images/tools/comingsoon.png"),
+                  "description": '''Make it easy for friends to find you on ENS''',
+                  "link": 'https://github.com/gitcoinco/web/issues/450',
+                  'link_copy': 'Details',
+                  "active": "false",
+                  'stat_graph': 'na',  # TODO
+            },
+              {
+                  "name": "Offchain Bounties",
+                  "img": static("v2/images/tools/comingsoon.png"),
+                  "description": '''Bounties from around the pre-blockchain internet''',
+                  "link": 'https://github.com/gitcoinco/web/issues/447',
+                  'link_copy': 'Details',
+                  "active": "false",
+                  'stat_graph': 'na',  # TODO
+            },
+           ],
+       }, {
            "title": "Just for Fun",
            "description": "Some tools that the community built *just because* they should exist.",
            "tools": [{
@@ -906,10 +946,16 @@ def toolbox(request):
                "description": '''Repository of
                         Ethereum wallpapers.''',
                "link": "https://ethwallpaper.co",
+               'link_copy': 'Try It',
                "active": "false",
                'stat_graph': 'google_analytics_sessions_ethwallpaper',
-           }]
-        }]
+           }],
+        }
+        ]
+
+    # setup slug
+    for key in range(0, len(actors)):
+        actors[key]['slug'] = slugify(actors[key]['title'])
 
     context = {
         "active": "tools",
