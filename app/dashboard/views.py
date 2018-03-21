@@ -849,6 +849,15 @@ def toolbox(request):
             "active": "true",
             'stat_graph': 'faucet_page',
             },
+            {
+              "name": "Offchain Bounties",
+              "img": static("v2/images/why-different/projects.jpg"),
+              "description": '''Bounties from around the pre-blockchain internet''',
+              "link": reverse("offchain_index"),
+              'link_copy': 'Details',
+              "active": "false",
+              'stat_graph': 'na',  # TODO
+            },
           ]
        }, {
            "title": "Coming Soon: Alpha",
@@ -923,15 +932,6 @@ def toolbox(request):
                   "img": static("v2/images/tools/comingsoon.png"),
                   "description": '''Make it easy for friends to find you on ENS''',
                   "link": 'https://github.com/gitcoinco/web/issues/450',
-                  'link_copy': 'Details',
-                  "active": "false",
-                  'stat_graph': 'na',  # TODO
-            },
-              {
-                  "name": "Offchain Bounties",
-                  "img": static("v2/images/tools/comingsoon.png"),
-                  "description": '''Bounties from around the pre-blockchain internet''',
-                  "link": 'https://github.com/gitcoinco/web/issues/447',
                   'link_copy': 'Details',
                   "active": "false",
                   'stat_graph': 'na',  # TODO
