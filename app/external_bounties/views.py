@@ -15,6 +15,7 @@ def external_bounties_index(request):
     bounties = ExternalBounty.objects.filter(active=True)
     for external_bounty_result in bounties:
         external_bounty = {
+            "created_on": external_bounty_result.created_on,
             "avatar": external_bounty_result.avatar,
             "title": external_bounty_result.title,
             "source": external_bounty_result.source_project,
@@ -70,6 +71,7 @@ def external_bounties_show(request, issuenum, slug):
 
     external_bounty = {}
     external_bounty_result = bounty
+    external_bounty['created_on'] = external_bounty_result.created_on
     external_bounty['title'] = external_bounty_result.title
     external_bounty['crypto_price'] = external_bounty_result.amount
     external_bounty['crypto_label'] = external_bounty_result.amount_denomination

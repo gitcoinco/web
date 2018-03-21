@@ -88,6 +88,7 @@
   justify-content: space-between;
 }
 
+.bounties-header__info a,
 .bounties-header__info,
 .bounty__source {
   color: #8e8e8e;

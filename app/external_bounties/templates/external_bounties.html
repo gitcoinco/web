@@ -1,3 +1,4 @@
+{% load humanize %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +23,11 @@
               <h2 class="title">OffChain</h2>
             </div>
             <div class="bounties-header__search">
-              <div class="bounties-header__info">Listing {{ bounties|length }} open offchain bounties across the interwebs
+              <div class="bounties-header__info">
+                <a href="/api/v0.1/offchain/">
+                    [ View API ]
+                </a> | 
+                Listing {{ bounties|length }} open offchain bounties across the interwebs
               </div>
               <div class="search_area search_area--append">
                 <input class="gc-round-text-input gc-border-black w-100" type="text" placeholder="Search Bounties" />
@@ -56,7 +61,7 @@
                     <div class="bounty__title-wrapper">
                       <h5 class="bounty__title">{{ bounty.title }}</h5>
                     </div>
-                    <p class="bounty__source">{{ bounty.source }}</p>
+                    <p class="bounty__source">{{ bounty.created_on | naturaltime}} {% if bounty.source %} | {{ bounty.source }} {% endif %} </p>
                     <div class="bounty__price--mobile">
                       <button class="btn btn-sm btn-darkBlue font-smaller-2">{{ bounty.crypto_price }} {{ bounty.crypto_label }}</button>
                       <button class="btn btn-sm btn-darkBlue font-smaller-2">{{ bounty.fiat_price }} {{ bounty.fiat_name }}</button>

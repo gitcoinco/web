@@ -1,3 +1,4 @@
+{% load humanize %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -35,6 +36,8 @@
                   <div class="bounty__header-wrapper">
                     <div class="bounty__header">
                       <h3 class="bounty__title">{{ bounty.title }}</h3>
+
+                      <div class="bounty__source">created: {{ bounty.created_on | naturaltime}}</div>
                       {% if bounty.source %}
                         <div class="bounty__source">source: {{ bounty.source }}</div>
                       {% endif %}
