@@ -1,1 +1,10 @@
+{% if form %}
+  <p>{{ form.title }}</p>
+{% endif %}
+
 <h1>new grants</h1>
+<form action="/grants/new" method="POST">
+  {% csrf_token %}
+  <input type="text" name="title" />
+  <button>Submit</button>
+</form>

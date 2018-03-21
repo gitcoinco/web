@@ -1445,29 +1445,42 @@ def new_bounty(request):
     )
     return TemplateResponse(request, 'bounty/new.html', params)
 
+def grant_show(request, grant_id):
+    grant = Grant.objects.get(pk=grant_id)
+    params = {
+        'active': 'dashboard',
+        'title': 'Grant Show',
+        'grant': grant,
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+    }
+    return TemplateResponse(request, 'grants/show.html', params)
+
 def new_grant(request):
     """Handle new grant."""
+
+    if request.method == "POST":
+        grant = Grant()
+        grant.title = request.POST.get('title')
+    else:
+        grant = {}
+
     params = {
         'active': 'dashboard',
         'title': 'New Grant',
+        'grant': grant,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
+
     return TemplateResponse(request, 'grants/new.html', params)
 
 def grants_explorer(request):
     """Handle grants explorer."""
+    grants = Grant.objects.all();
+
     params = {
         'active': 'dashboard',
         'title': 'Grants Explorer',
+        'grants': grants,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'grants/index.html', params)
-
-def grants(request):
-    """Handle grants."""
-    params = {
-        'active': 'dashboard',
-        'title': 'Grants Initiative',
-        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
-    }
-    return TemplateResponse(request, 'grants/initiative.html', params)
