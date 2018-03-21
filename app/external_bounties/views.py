@@ -17,12 +17,34 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+from html.parser import HTMLParser
+
 from django.http import Http404
 from django.template.response import TemplateResponse
 
 from external_bounties.forms import ExternalBountyForm
 from external_bounties.models import ExternalBounty
 from marketing.mails import new_external_bounty
+
+
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.strict = False
+        self.convert_charrefs= True
+        self.fed = []
+
+    def handle_data(self, d):
+        self.fed.append(d)
+
+    def get_data(self):
+        return ''.join(self.fed)
+
+
+def strip_html(html):
+    s = MLStripper()
+    s.feed(html)
+    return s.get_data()
 
 
 def external_bounties_index(request):
@@ -34,7 +56,7 @@ def external_bounties_index(request):
     """
     tags = []
     external_bounties_results = []
-    bounties = ExternalBounty.objects.filter(active=True)
+    bounties = ExternalBounty.objects.filter(active=True).order_by('-created_on')
     for external_bounty_result in bounties:
         external_bounty = {
             "created_on": external_bounty_result.created_on,
@@ -113,7 +135,7 @@ def external_bounties_show(request, issuenum, slug):
     external_bounty['crypto_label'] = external_bounty_result.amount_denomination
     external_bounty['fiat_price'] = external_bounty_result.amount
     external_bounty['source'] = external_bounty_result.source_project
-    external_bounty['content'] = external_bounty_result.description
+    external_bounty['content'] = strip_html(external_bounty_result.description)
     external_bounty['action_url'] = external_bounty_result.action_url
     external_bounty['avatar'] = external_bounty_result.avatar
     external_bounty['fiat_price'] = external_bounty_result.fiat_price

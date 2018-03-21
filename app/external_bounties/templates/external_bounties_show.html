@@ -55,12 +55,14 @@
                           {% endif %}
                           {% if bounty.crypto_price %}
                               <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
+                          {% else %}
+                              <span>{{ bounty.payout_str }}</span>
                           {% endif %}
                         </span>
                         <span class="bounty__fiat-price">
-                          <span class="icon">{% include 'svgs/money.svg' %}</span>
-                              {% if bounty.fiat_price %}
-                          <span>{{ bounty.fiat_price }} USD</span>
+                          {% if bounty.fiat_price %}
+                              <span class="icon">{% include 'svgs/money.svg' %}</span>
+                              <span>{{ bounty.fiat_price }} USD</span>
                           {% endif %}
                         </span>
                       </div>

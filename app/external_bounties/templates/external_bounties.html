@@ -81,19 +81,26 @@
                             <span class="icon">{% include 'svgs/ethereum.svg' %}</span>
                             <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
                           </div>
-                        {% endif %}
 
-                        {% if bounty.crypto_label == 'BTC' %}
+                        {% elif bounty.crypto_label == 'BTC' %}
                           <div class="bounty__crypto-price-pill bounty__crypto-price-pill--orange">
                             <span class="icon">{% include 'svgs/bitcoin.svg' %}</span>
                             <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
                           </div>
-                        {% endif %}
 
-                        {% if bounty.crypto_label == 'LTC' %}
+                        {% elif bounty.crypto_label == 'LTC' %}
                           <div class="bounty__crypto-price-pill bounty__crypto-price-pill--grey">
                             <span class="icon">{% include 'svgs/litecoin.svg' %}</span>
                             <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
+                          </div>
+                        {% else %}
+
+                          <div class="bounty__crypto-price-pill bounty__crypto-price-pill--grey">
+                            {% if bounty.crypto_price %}
+                            <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
+                            {% else %}
+                            <span>{{ bounty.payout_str }}</span>
+                            {% endif %}
                           </div>
                         {% endif %}
 

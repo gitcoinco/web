@@ -1,9 +1,15 @@
 $(document).ready(function() {
   $('.checkbox .checkbox-label').click(function() {
-
+    if ($(this).parents('.checkbox').find('.checkbox-input').is(':checked')) {
+      $(this).parents('.checkbox').find('.checkbox-input').prop('checked', false);
+      $('.bounties-container a.bounty').each(function() {
+        $(this).removeClass('hidden');
+      });
+      return false;
+    }
     $('.checkbox .checkbox-input:checked').prop('checked', false);
 
-    var text = $(this).text();
+    var text = $(this).text().toLowerCase();
     var isSelected = $(this).parents('.checkbox').find('.checkbox-input:checked').length;
 
     if (isSelected) {
@@ -13,7 +19,7 @@ $(document).ready(function() {
     } else {
       $('.bounties-container a.bounty').each(function() {
         var this_text = $(this).text().toLowerCase();
-        var does_contain_text = this_text.indexOf(text) != -1;
+        var does_contain_text = this_text.toLowerCase().indexOf(text) != -1;
 
         if (does_contain_text) {
           $(this).removeClass('hidden');
@@ -31,7 +37,7 @@ $(document).ready(function() {
 
     $('.bounties-container a.bounty').each(function() {
       var this_text = $(this).text().toLowerCase();
-      var does_contain_text = this_text.indexOf(text) != -1;
+      var does_contain_text = this_text.toLowerCase().indexOf(text) != -1;
 
       if (does_contain_text || is_empty) {
         $(this).removeClass('hidden');

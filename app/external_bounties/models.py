@@ -35,12 +35,13 @@ class ExternalBounty(SuperModel):
     title = models.CharField(max_length=255)
     description = models.TextField(default='', blank=True, help_text="Plainext only please!")
     source_project = models.CharField(max_length=255, help_text="The upstream project being linked it..")
-    amount = models.IntegerField(default=1)
-    amount_denomination = models.CharField(max_length=255, help_text="ex: ETH, LTC, BTC")
+    amount = models.IntegerField(default=1, null=True)
+    amount_denomination = models.CharField(max_length=255, blank=True, help_text="ex: ETH, LTC, BTC")
     created_on = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     last_sync_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     tags = ArrayField(models.CharField(max_length=200), blank=True, default=[], help_text="comma delimited")
     github_handle = models.CharField(max_length=255, blank=True)
+    payout_str = models.CharField(max_length=255, default='', help_text="string representation of the payout (only needed it amount/denomination cannot be filled out")
 
     def __str__(self):
         """Return the string representation of an ExternalBounty."""
@@ -72,8 +73,8 @@ class ExternalBounty(SuperModel):
             return self.github_avatar_url
         except Exception:
             icons = [
-                'paperplane.png', 'mixer2.png', 'lock.png', 'link.png', 'laptop.png', 'life_buoy.png', 'keyword.png',
-                'lightbulk.png', 'pencil_ruler.png', 'pin1.png', 'pin2.png'
+                'paperplane.png', 'mixer2.png', 'lock.png', 'link.png', 'laptop.png', 'life_buoy.png',
+                'lightbulb.png', 'pencil_ruler.png', 'pin1.png', 'pin2.png'
             ]
             i = self.pk % len(icons)
             icon = icons[i]
@@ -82,6 +83,9 @@ class ExternalBounty(SuperModel):
     @property
     def fiat_price(self):
         """Return the fiat price."""
+        if self.amount_denomination.lower() in ['usd', 'usdt']:
+            return self.amount
+
         fiat_price = None
         try:
             fiat_price = round(convert_amount(self.amount, self.amount_denomination, 'USDT'), 2)
