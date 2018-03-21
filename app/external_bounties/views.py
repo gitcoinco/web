@@ -1,10 +1,12 @@
-from django.template.response import TemplateResponse
-from external_bounties.models import ExternalBounty, ExternalBountyForm
 from django.http import Http404
 from django.shortcuts import redirect
+from django.template.response import TemplateResponse
 from django.urls import reverse
+
 from economy.utils import convert_amount
+from external_bounties.models import ExternalBounty, ExternalBountyForm
 from marketing.mails import new_external_bounty
+
 
 def external_bounties_index(request):
     """Handle External Bounties index page."""

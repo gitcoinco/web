@@ -20,9 +20,7 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 
-from .models import (
-    ExternalBounty
-)
+from .models import ExternalBounty
 
 
 class GeneralAdmin(admin.ModelAdmin):

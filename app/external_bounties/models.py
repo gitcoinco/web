@@ -1,9 +1,10 @@
-from django.db import models
-from economy.models import SuperModel
-from django.contrib.postgres.fields import ArrayField
-from django.template.defaultfilters import slugify
-from django.forms import ModelForm
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
+from django.forms import ModelForm
+from django.template.defaultfilters import slugify
+
+from economy.models import SuperModel
 from github.utils import org_name, repo_name
 
 
