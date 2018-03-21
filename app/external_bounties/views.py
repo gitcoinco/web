@@ -49,8 +49,8 @@ def external_bounties_index(request):
         }
         tags = tags + external_bounty_result.tags
         external_bounties_results.append(external_bounty)
-        categories = list(set(tags))
-        categories.sort()
+    categories = list(set(tags))
+    categories.sort()
 
     params = {
         'active': 'offchain',
