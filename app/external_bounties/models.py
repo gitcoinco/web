@@ -1,12 +1,13 @@
+import random
+
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.forms import ModelForm
 from django.template.defaultfilters import slugify
-import random
-from economy.utils import convert_amount
 
 from economy.models import SuperModel
+from economy.utils import convert_amount
 from github.utils import org_name, repo_name
 
 

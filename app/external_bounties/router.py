@@ -23,6 +23,7 @@ from rest_framework import routers, serializers, viewsets
 
 from .models import ExternalBounty
 
+
 # Serializers define the API representation.
 class ExternalBountySerializer(serializers.HyperlinkedModelSerializer):
     """Handle serializing the ExternalBounty object."""
