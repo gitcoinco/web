@@ -70,7 +70,7 @@ def record_user_action(profile_handle, event_name, instance):
     instance_class = instance.__class__.__name__.lower()
 
     try:
-        user_profile = get_profile(profile_handle)
+        user_profile = Profile.objects.filter(handle__iexact=profile_handle).first()
         UserAction.objects.create(
             profile=user_profile,
             action=event_name,

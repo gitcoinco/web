@@ -452,12 +452,11 @@ def process_bounty_details(bounty_details):
 
 def record_user_action(event_name, old_bounty, new_bounty):
     user_profile = None
+    fulfillment = None
     try:
-        if event_name in ['new_bounty', 'killed_bounty', 'work_done']:
-            user_profile = get_profile(new_bounty.bounty_owner_github_username)
-        if event_name in ['work_submitted']:
-            fulfillment = new_bounty.fulfillments.order_by('pk').first()
-            user_profile = get_profile(fulfiller_github_username)
+        user_profile = Profile.objects.filter(handle__iexact=new_bounty.bounty_owner_github_username).first()
+        fulfillment = new_bounty.fulfillments.order_by('pk').first()
+
     except Exception as e:
         logging.error(f'{e} during record_user_action for {new_bounty}')
         # TODO: create a profile if one does not exist already?
@@ -469,6 +468,7 @@ def record_user_action(event_name, old_bounty, new_bounty):
             metadata={
                 'new_bounty': new_bounty.pk if new_bounty else None,
                 'old_bounty': old_bounty.pk if old_bounty else None,
+                'fulfillment': fulfillment,
                 },
             )
 
