@@ -195,7 +195,7 @@ var mutate_interest = function(bounty_pk, direction) {
     }
     return false;
   }).fail(function(result) {
-    alert('You must login via github to use this feature');
+    alert(result.responseJSON.error);
   });
 };
 
