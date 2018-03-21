@@ -19,8 +19,11 @@
     {% include 'shared/tag_manager_1.html' %}
 
     <meta charset="utf-8">
+    <script>
+      FontAwesomeConfig = { searchPseudoElements: true };
+    </script>      
+    <script defer src="{% static "v2/js/fontawesome-all.min.js" %}"></script>
     <link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static "yge/css/font-awesome.min.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />

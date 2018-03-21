@@ -45,7 +45,7 @@
   text-transform: capitalize;
 }
 
-.boldLabel i {
+.boldLabel svg {
   position: relative;
   top: 1px;
   margin-right: 4px;
@@ -106,7 +106,7 @@
 }
 
 @media (max-width: 575px) {
-  .boldLabel i {
+  .boldLabel svg {
     top: 0px;
   }
 

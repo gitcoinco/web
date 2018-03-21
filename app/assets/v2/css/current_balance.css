@@ -5,11 +5,11 @@
   color: #000000;
 }
 
-#upper_left i {
+#upper_left svg {
   border-radius: 100%;
   height: 30px;
   width: 30px;
-  padding-top: 7px;
+  padding: 6px;
   background-color: #000000;
   color: #00e676;
 }
@@ -42,7 +42,7 @@
   font-size: 10px !important;
 }
 
-#upper_left.disabled #sidebar_head i{
+#upper_left.disabled #sidebar_head svg {
   color: #ff3232;
   background-color: white;
 }
