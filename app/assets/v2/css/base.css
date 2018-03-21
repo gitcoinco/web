@@ -582,7 +582,7 @@ input[type=text].loading {
 }
 
 .alert.warning {
-    background-color: #F2A700;
+    background-color: #F2A700
 }
 
 .alert.warning .message::before {
@@ -769,6 +769,7 @@ body.bounty_details #title {
 }
 
 .transaction-status {
+    display: block;
     position: relative;
     width: 80%;
     left: 10%;
