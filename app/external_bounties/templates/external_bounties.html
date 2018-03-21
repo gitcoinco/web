@@ -23,7 +23,6 @@
             </div>
             <div class="bounties-header__search">
               <div class="bounties-header__info">Listing {{ bounties|length }} open offchain bounties across the interwebs
-                <a class="button right btn-info" href="/offchain/new/">New >> </a>
               </div>
               <div class="search_area search_area--append">
                 <input class="gc-round-text-input gc-border-black w-100" type="text" placeholder="Search Bounties" />
@@ -44,6 +43,10 @@
               </div>
             </aside>
             <main class="bounties-container">
+                <div style="float: right; padding-right: 10px; padding-top: 20px; margin-bottom: 20px;">
+                    <a class="button right btn-info" href="/offchain/new/">Post New >> </a>
+                </div>
+                <br style="clear:both;">
               {% for bounty in bounties %}
                 <a href="{{bounty.url}}" class="bounty">
                   <div class="bounty__image">

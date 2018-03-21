@@ -3,7 +3,6 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
-from economy.utils import convert_amount
 from external_bounties.models import ExternalBounty, ExternalBountyForm
 from marketing.mails import new_external_bounty
 
@@ -15,42 +14,40 @@ def external_bounties_index(request):
     external_bounties_results = []
     bounties = ExternalBounty.objects.filter(active=True)
     for external_bounty_result in bounties:
-        fiat_price = None
-        try:
-            fiat_price = round(convert_amount(external_bounty_result.amount, external_bounty_result.amount_denomination, 'USDT'),2)
-        except:
-            pass
         external_bounty = {
             "avatar": external_bounty_result.avatar,
             "title": external_bounty_result.title,
             "source": external_bounty_result.source_project,
             "crypto_price": external_bounty_result.amount,
-            "fiat_price": fiat_price,
+            "fiat_price": external_bounty_result.fiat_price,
             "crypto_label": external_bounty_result.amount_denomination,
             "tags": external_bounty_result.tags,
             "url": external_bounty_result.url,
         }
         tags = tags + external_bounty_result.tags
         external_bounties_results.append(external_bounty)
+        categories = list(set(tags))
+        categories.sort()
 
     params = {
         'active': 'offchain',
         'title': 'Offchain Bounty Explorer',
         'bounties': external_bounties_results,
-        'categories': tags
+        'categories': categories,
     }
     return TemplateResponse(request, 'external_bounties.html', params)
 
 
 def external_bounties_new(request):
     params = {
-        'active': 'offchain_new',
+        'active': 'offchain',
         'title': 'New Offchain Bounty',
         'formset': ExternalBountyForm,
     }
 
     if request.POST:
         new_eb = ExternalBountyForm(request.POST)
+        new_eb.github_handle = request.session.get('handle')
         new_eb.save()
         new_external_bounty()
         params['msg'] = "An email has been sent to an administrator to approve your submission"
@@ -67,7 +64,7 @@ def external_bounties_show(request, issuenum, slug):
         return external_bounties_index(request)
 
     try:
-        bounty = ExternalBounty.objects.get(pk=issuenum)
+        bounty = ExternalBounty.objects.get(pk=issuenum, active=True)
     except:
         raise Http404
 
@@ -81,6 +78,7 @@ def external_bounties_show(request, issuenum, slug):
     external_bounty['content'] = external_bounty_result.description
     external_bounty['action_url'] = external_bounty_result.action_url
     external_bounty['avatar'] = external_bounty_result.avatar
+    external_bounty['fiat_price'] = external_bounty_result.fiat_price
 
     params = {
         'active': 'offchain',

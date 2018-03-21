@@ -7,7 +7,7 @@
     {% include 'shared/cards.html' %}
   </head>
 
-  <body class="interior {{active}} with-grey-background">
+  <body class="interior {{active}} offchain_show with-grey-background">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
@@ -35,30 +35,36 @@
                   <div class="bounty__header-wrapper">
                     <div class="bounty__header">
                       <h3 class="bounty__title">{{ bounty.title }}</h3>
-                      <div class="bounty__source">website: <a href="{{ bounty.source }}">{{ bounty.source }}</a></div>
+                      {% if bounty.source %}
+                        <div class="bounty__source">source: {{ bounty.source }}</div>
+                      {% endif %}
                     </div>
                     <div class="bounty__action">
                       <a href="{{bounty.action_url}}" class="btn btn-success">View Bounty</a>
                     </div>
                   </div>
-                  <h6 class="sub-title">Funding:</h6>
-                  <div class="bounty__content">
-                    <span class="bounty__crypto-price">
-                      {% if bounty.crypto_label == 'ETH' %}
-                        <span class="icon">{% include 'svgs/ethereum.svg' %}</span>
-                      {% endif %}
-                      <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
-                    </span>
-                    <span class="bounty__fiat-price">
-                      <span class="icon">{% include 'svgs/money.svg' %}</span>
-                      <span>{{ bounty.fiat_price }} USD</span>
-                    </span>
-                  </div>
+                  {% if bounty.crypto_price or bounty.fiat_price %}
+                      <h6 class="sub-title">Funding:</h6>
+                      <div class="bounty__content">
+                        <span class="bounty__crypto-price">
+                          {% if bounty.crypto_label == 'ETH' %}
+                            <span class="icon">{% include 'svgs/ethereum.svg' %}</span>
+                          {% endif %}
+                          {% if bounty.crypto_price %}
+                              <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
+                          {% endif %}
+                        </span>
+                        <span class="bounty__fiat-price">
+                          <span class="icon">{% include 'svgs/money.svg' %}</span>
+                              {% if bounty.fiat_price %}
+                          <span>{{ bounty.fiat_price }} USD</span>
+                          {% endif %}
+                        </span>
+                      </div>
+                  {% endif %}
                   <h6 class="sub-title">Description:</h6>
                   <div class="bounty__content">
-                  <pre>
-                      {{ bounty.content }}
-                  </pre>
+                  <pre>{{ bounty.content }}</pre>
                   </div>
                   <div class="bounty__footer">
                     <a class="link-red" href="/offchain">Go Back</a>
