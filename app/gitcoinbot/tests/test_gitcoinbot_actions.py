@@ -18,15 +18,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from django.conf import settings
-from django.test import TestCase
 
 from gitcoinbot.actions import (
     claim_bounty_text, confused_text, help_text, new_bounty_text, new_tip_text, parse_comment_amount,
     parse_tippee_username,
 )
+from test_plus.test import TestCase
 
 
-class gitcoinbotActions(TestCase):
+class GitcoinBotActionsTest(TestCase):
     """Define the Gitcoin Bot actions TestCase."""
 
     def test_help_text(self):

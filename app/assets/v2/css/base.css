@@ -29,7 +29,7 @@ div, p, a, span {
     color: #4aeaa7 !important;
 }
 
-.navbar a.slack i {
+.navbar a.slack svg {
     margin-right: 3px;
 }
 
@@ -130,7 +130,7 @@ div, p, a, span {
 	color: white;
 }
 
-#mc_embed_signup_scroll #mc-embedded-subscribe i {
+#mc_embed_signup_scroll #mc-embedded-subscribe svg {
     margin-left: 5px;
 }
 
@@ -582,7 +582,7 @@ input[type=text].loading {
 }
 
 .alert.warning {
-    background-color: #F2A700;
+    background-color: #F2A700
 }
 
 .alert.warning .message::before {
@@ -769,6 +769,7 @@ body.bounty_details #title {
 }
 
 .transaction-status {
+    display: block;
     position: relative;
     width: 80%;
     left: 10%;

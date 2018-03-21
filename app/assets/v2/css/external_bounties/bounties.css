@@ -5,6 +5,28 @@
   z-index: 1;
 }
 
+.body{
+  background-image: url('/static/v2/images/background.png');
+  background-repeat: repeat;
+}
+
+.offchain .alternative-balance{
+  display: none !important;
+}
+.offchain_new .body .container{
+  background-color: white;
+  padding: 20px;
+}
+
+#msg {
+  padding: 10px;
+  background-color: #29cd7f;
+  color: white;
+  text-align: center;
+  width: 100%;
+  display: block;
+}
+
 .alternative-balance #sidebar_p {
   padding: 0;
 }
@@ -36,6 +58,15 @@
   display: flex;
   margin-right: 30px;
   flex: 0 0 200px;
+  max-width: 100%;
+}
+
+.offchain_show .bounties-header__title,
+.offchain_new .bounties-header__title {
+  flex: none;
+}
+.offchain_new form{
+  margin: 0px auto;
 }
 
 .bounties-header__title--active:hover {
@@ -58,6 +89,7 @@
   justify-content: space-between;
 }
 
+.bounties-header__info a,
 .bounties-header__info,
 .bounty__source {
   color: #8e8e8e;
@@ -129,8 +161,16 @@
   padding: 1em 0;
 }
 
-.categories-list .checkbox {
+#bounties .categories-list .checkbox {
   margin-bottom: 1rem;
+  display: block !important;
+  line-height: 15px;
+  margin-bottom: 35px;
+  background-color: white;
+  border: none;
+}
+#bounties .categories-list .checkbox-label{
+  padding-left: 20px;
 }
 
 .main-content {
@@ -159,6 +199,7 @@
 .bounties-container {
   background-color: #fff;
   flex: 1 auto;
+  min-height: 400px;
 }
 
 .bounty {
@@ -182,12 +223,13 @@
 .bounty__image {
   display: block;
   width: 100px;
+  text-align: center;
 }
 
 .bounty__image img {
   border-radius: 50%;
   height: auto;
-  width: 100%;
+  max-width: 100px;
 }
 
 .bounty__info {
@@ -296,6 +338,11 @@
   font-weight: bolder;
   padding: 0 0.5em;
 }
+
+label {
+    display: block;
+}
+
 
 @media (max-width: 992px) {
   .fixed-balance,

@@ -298,6 +298,20 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None):
     return response.json()
 
 
+def get_issues(owner, repo):
+    """Get the open issues on a respository."""
+    params = {
+        'state': 'open',
+        'sort': 'created',
+        'direction': 'desc',
+    }
+    url = f'https://api.github.com/repos/{owner}/{repo}/issues'
+
+    response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
+
+    return response.json()
+
+
 def get_user(user, sub_path=''):
     """Get the github user details."""
     user = user.replace('@', '')
