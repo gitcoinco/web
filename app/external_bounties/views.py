@@ -15,7 +15,7 @@ def external_bounties_index(request):
     for external_bounty_result in bounties:
         fiat_price = None
         try:
-            fiat_price = convert_amount(external_bounty_result.amount, external_bounty_result.amount_denomination, 'USDT')
+            fiat_price = round(convert_amount(external_bounty_result.amount, external_bounty_result.amount_denomination, 'USDT'),2)
         except:
             pass
         external_bounty = {
