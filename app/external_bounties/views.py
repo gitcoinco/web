@@ -1,64 +1,88 @@
 from django.template.response import TemplateResponse
+from external_bounties.models import ExternalBounty, ExternalBountyForm
+from django.http import Http404
+from django.shortcuts import redirect
+from django.urls import reverse
+from economy.utils import convert_amount
 
 
 def external_bounties_index(request):
-    """Handle Dummy External Bounties index page."""
+    """Handle External Bounties index page."""
 
-    bounties = [
-        {
-            "title": "Add Web3 1.0 Support",
-            "source": "www.google.com",
-            "crypto_price": 0.3,
-            "fiat_price": 337.88,
-            "crypto_label": "ETH",
-            "tags": ["javascript", "python", "eth"],
-        },
-        {
-            "title": "Simulate proposal execution and display execution results",
-            "source": "gitcoin.com",
-            "crypto_price": 1,
-            "fiat_price": 23.23,
-            "crypto_label": "BTC",
-            "tags": ["ruby", "js", "btc"]
-        },
-        {
-            "title": "Build out Market contract explorer",
-            "crypto_price": 22,
-            "fiat_price": 203.23,
-            "crypto_label": "LTC",
-            "tags": ["ruby on rails", "ios", "mobile", "design"]
-        },
-    ]
-
-    categories = ["Blockchain", "Web Development", "Design", "Browser Extension", "Beginner"]
+    tags = []
+    external_bounties_results = []
+    bounties = ExternalBounty.objects.filter(active=True)
+    for external_bounty_result in bounties:
+        fiat_price = None
+        try:
+            fiat_price = convert_amount(external_bounty_result.amount, external_bounty_result.amount_denomination, 'USDT')
+        except:
+            pass
+        external_bounty = {
+            "avatar": external_bounty_result.avatar,
+            "title": external_bounty_result.title,
+            "source": external_bounty_result.source_project,
+            "crypto_price": external_bounty_result.amount,
+            "fiat_price": fiat_price,
+            "crypto_label": external_bounty_result.amount_denomination,
+            "tags": external_bounty_result.tags,
+            "url": external_bounty_result.url,
+        }
+        tags = tags + external_bounty_result.tags
+        external_bounties_results.append(external_bounty)
 
     params = {
-        'active': 'dashboard',
+        'active': 'offchain',
         'title': 'Offchain Bounty Explorer',
-        'bounties': bounties,
-        'categories': categories
+        'bounties': external_bounties_results,
+        'categories': tags
     }
     return TemplateResponse(request, 'external_bounties.html', params)
 
 
-def external_bounties_show(request, issuenum):
+def external_bounties_new(request):
+    params = {
+        'active': 'offchain_new',
+        'title': 'New Offchain Bounty',
+        'formset': ExternalBountyForm,
+    }
+
+    if request.POST:
+        new_eb = ExternalBountyForm(request.POST)
+        new_eb.save()
+        params['msg'] = "An email has been sent to an administrator to approve your submission"
+        return redirect(reverse('offchain_new'))
+
+    return TemplateResponse(request, 'external_bounties_new.html', params)
+
+
+def external_bounties_show(request, issuenum, slug):
+    """Handle Dummy External Bounties show page."""
+
     print('************')
     print(issuenum)
     if issuenum == '':
         return external_bounties_index(request)
 
-    """Handle Dummy External Bounties show page."""
-    bounty = {
-        "title": "Simulate proposal execution and display execution results",
-        "crypto_price": 0.5,
-        "crypto_label": "ETH",
-        "fiat_price": 339.34,
-        "source": "gitcoin.co",
-        "content": "Lorem"
-    }
+    try:
+        bounty = ExternalBounty.objects.get(pk=issuenum)
+    except:
+        raise Http404
+
+    external_bounty = {}
+    external_bounty_result = bounty
+    external_bounty['title'] = external_bounty_result.title
+    external_bounty['crypto_price'] = external_bounty_result.amount
+    external_bounty['crypto_label'] = external_bounty_result.amount_denomination
+    external_bounty['fiat_price'] = external_bounty_result.amount
+    external_bounty['source'] = external_bounty_result.source_project
+    external_bounty['content'] = external_bounty_result.description
+    external_bounty['action_url'] = external_bounty_result.action_url
+    external_bounty['avatar'] = external_bounty_result.avatar
+
     params = {
-        'active': 'dashboard',
+        'active': 'offchain',
         'title': 'Offchain Bounty Explorer',
-        "bounty": bounty,
+        "bounty": external_bounty,
     }
     return TemplateResponse(request, 'external_bounties_show.html', params)

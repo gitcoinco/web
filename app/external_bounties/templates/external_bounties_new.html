@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+  </head>
+
+  <body class="interior {{active}} with-grey-background">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+    {% include 'shared/current_balance.html' with full=True %}
+    {% if msg %}
+        <div class="row no-gutter">
+          <div class="col">
+            <span id="msg">{{msg}}</span>
+          </div>
+        </div>
+    {% endif %}
+    <div class="row no-gutter">
+      <div class="col body">
+        <div class="container" id="bounties">
+          <header class="bounties-header">
+            <div class="bounties-header__title">
+              <h2 class="title">Create New OffChain Bounty</h2>
+            </div>
+          </header>
+          <div class="main-content">
+            <form method="post" >
+                {% csrf_token %}
+                {{ formset }}
+                <br>
+                <br>
+                <br>
+                <input class="button btn-info" type="submit" value="Submit"/>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/footer.html' %}
+
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/shared.js" %}"></script>
+  </body>
+</html>

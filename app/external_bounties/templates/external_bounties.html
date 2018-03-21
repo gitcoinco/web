@@ -22,7 +22,9 @@
               <h2 class="title">OffChain</h2>
             </div>
             <div class="bounties-header__search">
-              <div class="bounties-header__info">Listing {{ bounties|length }} open offchain bounties across the interwebs</div>
+              <div class="bounties-header__info">Listing {{ bounties|length }} open offchain bounties across the interwebs
+                <a class="button right btn-info" href="/offchain/new/">New >> </a>
+              </div>
               <div class="search_area search_area--append">
                 <input class="gc-round-text-input gc-border-black w-100" type="text" placeholder="Search Bounties" />
                 <span class="icon">{% include 'svgs/search.svg' %}</span>
@@ -43,9 +45,9 @@
             </aside>
             <main class="bounties-container">
               {% for bounty in bounties %}
-                <a href="offchain/{{bounty}}" class="bounty">
+                <a href="{{bounty.url}}" class="bounty">
                   <div class="bounty__image">
-                    <img src="{% static "v2/images/mission/interact/1.png" %}" />
+                    <img src="{{bounty.avatar}}" />
                   </div>
                   <div class="bounty__info">
                     <div class="bounty__title-wrapper">
@@ -89,8 +91,10 @@
 
                       </div>
                       <div class="bounty__fiat-price">
-                        <span class="icon">{% include 'svgs/money.svg' %}</span>
-                        {{ bounty.fiat_price }} USD
+                      {% if bounty.fiat_price %}
+                            <span class="icon">{% include 'svgs/money.svg' %}</span>
+                            {{ bounty.fiat_price }} USD
+                        {% endif %}
                       </div>
                     </div>
                   </div>

@@ -5,6 +5,19 @@
   z-index: 1;
 }
 
+.offchain_new .alternative-balance{
+  display: none !important;
+}
+
+#msg {
+  padding: 10px;
+  background-color: #29cd7f;
+  color: white;
+  text-align: center;
+  width: 100%;
+  display: block;
+}
+
 .alternative-balance #sidebar_p {
   padding: 0;
 }
@@ -303,6 +316,15 @@
   font-size: 0.9rem;
   font-weight: bolder;
   padding: 0 0.5em;
+}
+
+label {
+    display: block;
+}
+
+.offchain_new .body .container{
+  background-color: white;
+  padding: 20px;
 }
 
 @media (max-width: 992px) {

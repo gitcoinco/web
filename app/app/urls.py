@@ -50,7 +50,8 @@ urlpatterns = [
     # dashboard views
 
     # Dummy offchain index
-    url(r'^offchain/(?P<issuenum>.*)/?', external_bounties.views.external_bounties_show, name='offchain'),
+    url(r'^offchain/new/?', external_bounties.views.external_bounties_new, name="offchain_new"),
+    url(r'^offchain/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='offchain'),
     url(r'^offchain/?', external_bounties.views.external_bounties_index, name="offchain_index"),
 
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),

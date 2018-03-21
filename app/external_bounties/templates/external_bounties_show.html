@@ -29,7 +29,7 @@
             <main class="bounties-container">
               <div class="bounty-container">
                 <div class="bounty__image">
-                  <img src="{% static "v2/images/mission/interact/1.png" %}" />
+                  <img src="{{bounty.avatar}}"/>
                 </div>
                 <div class="bounty__info">
                   <div class="bounty__header-wrapper">
@@ -38,7 +38,7 @@
                       <div class="bounty__source">website: <a href="{{ bounty.source }}">{{ bounty.source }}</a></div>
                     </div>
                     <div class="bounty__action">
-                      <button class="btn btn-success">View Bounty</button>
+                      <a href="{{bounty.action_url}}" class="btn btn-success">View Bounty</a>
                     </div>
                   </div>
                   <h6 class="sub-title">Funding:</h6>
@@ -57,7 +57,7 @@
                   <h6 class="sub-title">Description:</h6>
                   <div class="bounty__content">{{ bounty.content }}</div>
                   <div class="bounty__footer">
-                    <a class="link-red" href="/external_bounties">Go Back</a>
+                    <a class="link-red" href="/offchain">Go Back</a>
                   </div>
                 </div>
               </div>
