@@ -92,9 +92,9 @@ def new_interest(request, bounty_id):
         raise Http404
 
     num_issues = 3
-    active_bounties = Bounty.objects.filter(idx_status__in=['open', 'started'])
+    active_bounties = Bounty.objects.current().filter(idx_status__in=['open', 'started'])
     num_active = Interest.objects.filter(profile_id=profile_id, bounty__in=active_bounties).count()
-    is_working_on_too_much_stuff = num_active > num_issues
+    is_working_on_too_much_stuff = num_active >= num_issues
     if is_working_on_too_much_stuff:
         return JsonResponse({
             'error': f'You may only work on max of {num_issues} issues at once.',
