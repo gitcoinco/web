@@ -306,7 +306,7 @@ var refreshBounties = function() {
 
     process_stats(results);
   }).fail(function() {
-    _alert({ message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
+    _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
   }).always(function() {
     $('.loading').css('display', 'none');
   });
@@ -457,10 +457,10 @@ $(document).ready(function() {
         var status = response['status'];
 
         if (status == 200) {
-          _alert({ message: "You're in! Keep an eye on your inbox for the next funding listing."}, 'success');
+          _alert({message: "You're in! Keep an eye on your inbox for the next funding listing."}, 'success');
           $.modal.close();
         } else {
-          _alert({ message: response['msg']}, 'error');
+          _alert({message: response['msg']}, 'error');
         }
       });
     }

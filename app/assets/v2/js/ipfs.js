@@ -22,7 +22,7 @@
 
   function ensureProvider(callback) {
     if (!ipfs.api) {
-      callback('No provider set', null);
+      callback(new Error('No provider set'));
       return false;
     }
     return true;

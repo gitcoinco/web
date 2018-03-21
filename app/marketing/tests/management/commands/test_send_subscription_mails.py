@@ -20,12 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from datetime import datetime
 from unittest.mock import patch
 
-from django.test import TestCase
 from django.utils import timezone
 
 import requests_mock
 from dashboard.models import Bounty, Subscription
 from marketing.management.commands.send_subscription_mails import Command
+from test_plus.test import TestCase
 
 
 class TestSendSubsciptionMails(TestCase):

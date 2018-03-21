@@ -19,11 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from datetime import datetime
 
-from django.test import TestCase
-
 from dashboard.models import Bounty
 from dashboard.notifications import amount_usdt_open_work, build_github_notification
 from pytz import UTC
+from test_plus.test import TestCase
 
 
 class DashboardNotificationsTestCase(TestCase):

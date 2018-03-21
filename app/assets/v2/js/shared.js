@@ -195,7 +195,7 @@ var mutate_interest = function(bounty_pk, direction) {
     }
     return false;
   }).fail(function(result) {
-    alert('You must login via github to use this feature');
+    alert(result.responseJSON.error);
   });
 };
 
@@ -319,7 +319,6 @@ function timeDifference(current, previous, remaining) {
   if (remaining) return amt + ' ' + unit + plural;
   return amt + ' ' + unit + plural + ' ago';
 }
-
 
 
 var sidebar_redirect_triggers = function() {
@@ -632,7 +631,9 @@ var listen_for_web3_changes = function() {
     trigger_form_hooks();
   } else {
     web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-      document.balance = result.toNumber();
+      if (typeof result != 'undefined') {
+        document.balance = result.toNumber();
+      }
     });
 
     web3.version.getNetwork((error, netId) => {
@@ -677,5 +678,4 @@ $(document).ready(function() {
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 300);
 });
-
 

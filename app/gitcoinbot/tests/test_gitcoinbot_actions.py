@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from django.conf import settings
-from django.test import TestCase
 
 from gitcoinbot.actions import (
     FALLBACK_CURRENCY, confused_text, get_text_from_query_responses, help_text, new_bounty_text, new_tip_text,
@@ -26,9 +25,10 @@ from gitcoinbot.actions import (
     submit_work_or_new_bounty_text, submit_work_text,
 )
 from gitcoinbot.models import GitcoinBotResponses
+from test_plus.test import TestCase
 
 
-class gitcoinbotActions(TestCase):
+class GitcoinBotActionsTest(TestCase):
     """Define the Gitcoin Bot actions TestCase."""
 
     def test_help_text(self):
