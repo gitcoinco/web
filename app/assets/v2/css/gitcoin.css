@@ -19,82 +19,58 @@
 }
 
 @font-face {
-  font-family: "Muli";
-  font-weight: 300;
-  src: url("static/v2/fonts/Muli/Light.ttf");
-}
-
-@font-face {
-  font-family: "Muli";
-  font-weight: 400;
-  src: url("static/v2/fonts/Muli/Regular.ttf");
-}
-
-@font-face {
-  font-family: "Muli";
-  font-weight: 700;
-  src: url("static/v2/fonts/Muli/SemiBold.ttf");
-}
-
-@font-face {
-  font-family: "Muli";
-  font-weight: 900;
-  src: url("static/v2/fonts/Muli/Bold.ttf");
-}
-
-@font-face {
   font-family: "OpenSans Light";
-  src: url('/static/v2/fonts/OpenSans/Light.ttf');
+  src: url("/static/v2/fonts/OpenSans/Light.ttf");
 }
 
 @font-face {
   font-family: "Muli";
-  src: url('/static/v2/fonts/Muli/Muli.ttf');
+  src: url("/static/v2/fonts/Muli/Muli.ttf");
 }
 
 @font-face {
   font-family: "Muli-Bold";
-  src: url('/static/v2/fonts/Muli/Muli-Bold.ttf');
+  src: url("/static/v2/fonts/Muli/Muli-Bold.ttf");
 }
 
 @font-face {
   font-family: "Muli-ExtraLight";
-  src: url('/static/v2/fonts/Muli/Muli-ExtraLight.ttf');
+  src: url("/static/v2/fonts/Muli/Muli-ExtraLight.ttf");
 }
 
 @font-face {
   font-family: "Muli-SemiBold";
-  src: url('/static/v2/fonts/Muli/Muli-SemiBold.ttf');
+  src: url("/static/v2/fonts/Muli/Muli-SemiBold.ttf");
 }
 
 @font-face {
   font-family: "Muli-Light";
-  src: url('/static/v2/fonts/Muli/Muli-Light.ttf');
+  src: url("/static/v2/fonts/Muli/Muli-Light.ttf");
 }
 
 @font-face {
   font-family: "Muli-Italic";
-  src: url('/static/v2/fonts/Muli/Muli-Italic.ttf');
+  src: url("/static/v2/fonts/Muli/Muli-Italic.ttf");
 }
 
 @font-face {
   font-family: "Muli-BoldItalic";
-  src: url('/static/v2/fonts/Muli/Muli-BoldItalic.ttf');
+  src: url("/static/v2/fonts/Muli/Muli-BoldItalic.ttf");
 }
 
 @font-face {
   font-family: "Muli-ExtraLightItalic";
-  src: url('/static/v2/fonts/Muli/Muli-ExtraLightItalic.ttf');
+  src: url("/static/v2/fonts/Muli/Muli-ExtraLightItalic.ttf");
 }
 
 @font-face {
   font-family: "Muli-Semi-BoldItalic";
-  src: url('/static/v2/fonts/Muli/Muli-Semi-BoldItalic.ttf');
+  src: url("/static/v2/fonts/Muli/Muli-Semi-BoldItalic.ttf");
 }
 
 @font-face {
   font-family: "Muli-LightItalic";
-  src: url('/static/v2/fonts/Muli/Muli-LightItalic.ttf');
+  src: url("/static/v2/fonts/Muli/Muli-LightItalic.ttf");
 }
 
 body {
@@ -452,7 +428,7 @@ div.button-pink {
   font-family: FontAwesome;
   font-weight: bold;
   font-size: 15px;
-  content: '\f107';
+  content: "\f107";
   float: right;
 }
 

@@ -3,6 +3,10 @@
     font-family: "futura-pt";
     src: url("/static/v2/fonts/futura/font4.ttf") /* TTF file for CSS3 browsers */
 }
+@font-face {
+  font-family: "Muli";
+  src: url("/static/v2/fonts/Muli/Muli.ttf");
+}
 
 body {
   font-family: "futura-pt", Futura !important;
