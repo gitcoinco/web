@@ -100,7 +100,7 @@ ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['retail/templates/'],
+        'DIRS': ['retail/templates/', 'external_bounties/templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

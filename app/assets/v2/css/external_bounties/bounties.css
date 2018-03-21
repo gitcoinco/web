@@ -129,8 +129,16 @@
   padding: 1em 0;
 }
 
-.categories-list .checkbox {
+#bounties .categories-list .checkbox {
   margin-bottom: 1rem;
+  display: block !important;
+  line-height: 15px;
+  margin-bottom: 35px;
+  background-color: white;
+  border: none;
+}
+#bounties .categories-list .checkbox-label{
+  padding-left: 20px;
 }
 
 .main-content {

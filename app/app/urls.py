@@ -26,6 +26,7 @@ import dashboard.embed
 import dashboard.helpers
 import dashboard.ios
 import dashboard.views
+import external_bounties.views
 import faucet.views
 import gitcoinbot.views
 import linkshortener.views
@@ -48,9 +49,9 @@ urlpatterns = [
 
     # dashboard views
 
-    # Dummy External Bounties index
-    # url(r'^external_bounties/?', dashboard.views.external_bounties, name='external_bounties'),
-    # url(r'^external_bounty/?', dashboard.views.external_bounties_show, name="external_bounties_show"),
+    # Dummy offchain index
+    url(r'^offchain/(?P<issuenum>.*)/?', external_bounties.views.external_bounties_show, name='offchain'),
+    url(r'^offchain/?', external_bounties.views.external_bounties_index, name="offchain_index"),
 
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),

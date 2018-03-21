@@ -3,7 +3,7 @@
   display: none;
 }
 
-.bounty-container {
+#bounties .bounty-container {
   display: flex;
   padding: 2rem;
 }

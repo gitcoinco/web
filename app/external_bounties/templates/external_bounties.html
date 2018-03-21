@@ -19,10 +19,10 @@
         <div class="container" id="bounties">
           <header class="bounties-header">
             <div class="bounties-header__title">
-              <h2 class="title">Bounties</h2>
+              <h2 class="title">OffChain</h2>
             </div>
             <div class="bounties-header__search">
-              <div class="bounties-header__info">Listing {{ bounties|length }} open bounties across the interwebs</div>
+              <div class="bounties-header__info">Listing {{ bounties|length }} open offchain bounties across the interwebs</div>
               <div class="search_area search_area--append">
                 <input class="gc-round-text-input gc-border-black w-100" type="text" placeholder="Search Bounties" />
                 <span class="icon">{% include 'svgs/search.svg' %}</span>
@@ -43,7 +43,7 @@
             </aside>
             <main class="bounties-container">
               {% for bounty in bounties %}
-                <a href="external_bounty/{{i}}" class="bounty">
+                <a href="offchain/{{bounty}}" class="bounty">
                   <div class="bounty__image">
                     <img src="{% static "v2/images/mission/interact/1.png" %}" />
                   </div>
@@ -109,6 +109,7 @@
     {% include 'shared/footer.html' %}
 
     <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/pages/offchain_bounties.js" %}"></script>
     <script src="{% static "v2/js/shared.js" %}"></script>
 
   </body>
