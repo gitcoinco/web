@@ -52,7 +52,6 @@ def external_bounties_new(request):
         new_eb.save()
         new_external_bounty()
         params['msg'] = "An email has been sent to an administrator to approve your submission"
-        return redirect(reverse('offchain_new'))
 
     return TemplateResponse(request, 'external_bounties_new.html', params)
 
