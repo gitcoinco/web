@@ -58,6 +58,7 @@
   display: flex;
   margin-right: 30px;
   flex: 0 0 200px;
+  max-width: 100%;
 }
 
 .offchain_show .bounties-header__title,
