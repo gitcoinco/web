@@ -19,14 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 
-from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.timezone import now
 
-from app.utils import get_location_from_ip
 from dashboard.models import Profile
 from github.utils import is_github_token_valid
-from ipware.ip import get_real_ip
 
 logger = logging.getLogger(__name__)
 
