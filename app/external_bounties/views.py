@@ -22,6 +22,7 @@ from html.parser import HTMLParser
 from django.http import Http404
 from django.template.response import TemplateResponse
 
+from app.utils import ellipses
 from external_bounties.forms import ExternalBountyForm
 from external_bounties.models import ExternalBounty
 from marketing.mails import new_external_bounty
@@ -77,6 +78,7 @@ def external_bounties_index(request):
     params = {
         'active': 'offchain',
         'title': 'Offchain Bounty Explorer',
+        'card_desc': 'Bounties for Software Work from across the internets.',
         'bounties': external_bounties_results,
         'categories': categories,
     }
@@ -93,6 +95,7 @@ def external_bounties_new(request):
     params = {
         'active': 'offchain',
         'title': 'New Offchain Bounty',
+        'card_desc': 'Create a new Bounty for Software Work from across the internets.',
         'formset': ExternalBountyForm,
     }
 
@@ -143,6 +146,7 @@ def external_bounties_show(request, issuenum, slug):
     params = {
         'active': 'offchain',
         'title': 'Offchain Bounty Explorer',
+        'card_desc': ellipses(external_bounty['content'], 300),
         "bounty": external_bounty,
     }
     return TemplateResponse(request, 'external_bounties_show.html', params)
