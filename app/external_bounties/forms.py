@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Define the external bounty admin.
+"""Define external bounty related forms.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -17,17 +17,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from __future__ import unicode_literals
-
-from django.contrib import admin
+from django.forms import ModelForm
 
 from .models import ExternalBounty
 
 
-class GeneralAdmin(admin.ModelAdmin):
-    """Define the admin display of External Bounties."""
+class ExternalBountyForm(ModelForm):
+    """Define the External Bounty form handling."""
 
-    ordering = ['-id']
+    class Meta:
+        """Define the ExternalBounty form metadata."""
 
-
-admin.site.register(ExternalBounty, GeneralAdmin)
+        model = ExternalBounty
+        fields = ['title', 'description', 'amount', 'amount_denomination', 'source_project', 'tags', 'action_url']

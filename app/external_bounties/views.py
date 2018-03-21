@@ -1,15 +1,37 @@
-from django.http import Http404
-from django.shortcuts import redirect
-from django.template.response import TemplateResponse
-from django.urls import reverse
+# -*- coding: utf-8 -*-
+"""Define external bounty related views.
 
-from external_bounties.models import ExternalBounty, ExternalBountyForm
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
+from django.http import Http404
+from django.template.response import TemplateResponse
+
+from external_bounties.forms import ExternalBountyForm
+from external_bounties.models import ExternalBounty
 from marketing.mails import new_external_bounty
 
 
 def external_bounties_index(request):
-    """Handle External Bounties index page."""
+    """Handle External Bounties index page.
 
+    Returns:
+        django.TemplateResponse: The external bounty index view.
+
+    """
     tags = []
     external_bounties_results = []
     bounties = ExternalBounty.objects.filter(active=True)
@@ -40,6 +62,12 @@ def external_bounties_index(request):
 
 
 def external_bounties_new(request):
+    """Create a new external bounty.
+
+    Returns:
+        django.TemplateResponse: The new external bounty form or submission status.
+
+    """
     params = {
         'active': 'offchain',
         'title': 'New Offchain Bounty',
@@ -57,8 +85,16 @@ def external_bounties_new(request):
 
 
 def external_bounties_show(request, issuenum, slug):
-    """Handle Dummy External Bounties show page."""
+    """Handle Dummy External Bounties show page.
 
+    Args:
+        issuenum (int): The Github issue number.
+        slug (str): The external bounty slug represenation.
+
+    Returns:
+        django.TemplateResponse: The external bounty details view.
+
+    """
     print('************')
     print(issuenum)
     if issuenum == '':
@@ -66,7 +102,7 @@ def external_bounties_show(request, issuenum, slug):
 
     try:
         bounty = ExternalBounty.objects.get(pk=issuenum, active=True)
-    except:
+    except Exception:
         raise Http404
 
     external_bounty = {}

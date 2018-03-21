@@ -29,10 +29,13 @@ class ExternalBountySerializer(serializers.HyperlinkedModelSerializer):
     """Handle serializing the ExternalBounty object."""
 
     class Meta:
-        """Define the extrnal bounty serializer metadata."""
+        """Define the external bounty serializer metadata."""
 
         model = ExternalBounty
-        fields = ('title', 'description', 'created_on', 'action_url', 'source_project', 'amount', 'amount_denomination', 'tags')
+        fields = (
+            'title', 'description', 'created_on', 'action_url', 'source_project', 'amount', 'amount_denomination',
+            'tags',
+        )
 
 
 class ExternalBountyViewSet(viewsets.ModelViewSet):
@@ -40,7 +43,8 @@ class ExternalBountyViewSet(viewsets.ModelViewSet):
 
     queryset = ExternalBounty.objects.filter(active=True).order_by('-pk')
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
-    serializer_class= ExternalBountySerializer
+    serializer_class = ExternalBountySerializer
+
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
