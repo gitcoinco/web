@@ -67,13 +67,15 @@
                         </span>
                       </div>
                   {% endif %}
-                  <h6 class="sub-title">Description:</h6>
-                  <div class="bounty__content">
-                  <pre>{{ bounty.content }}</pre>
-                  </div>
-                  <div class="bounty__footer">
-                    <a class="link-red" href="{% url "offchain_index" %}">Go Back</a>
-                  </div>
+                  {% if bounty.content %}
+                      <h6 class="sub-title">Description:</h6>
+                      <div class="bounty__content">
+                      <pre>{{ bounty.content }}</pre>
+                      </div>
+                      <div class="bounty__footer">
+                        <a class="link-red" href="{% url "offchain_index" %}">Go Back</a>
+                      </div>
+                  {% endif %}
                 </div>
               </div>
             </main>
