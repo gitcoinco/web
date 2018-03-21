@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 import json
-import subprocess
-import time
 
 from django.conf import settings
 
@@ -51,9 +49,22 @@ class NoBountiesException(Exception):
     pass
 
 
-def get_ipfs():
+def get_ipfs(host=settings.IPFS_HOST, port=settings.IPFS_API_PORT):
+    """Establish a connection to IPFS.
+
+    Args:
+        host (str): The IPFS host to connect to. Defaults to environment variable: IPFS_HOST.
+        port (int): The IPFS port to connect to. Defaults to environment variable: env IPFS_API_PORT.
+
+    Raises:
+        IPFSCantConnectException: The exception is raised when there is a communication error with IPFS.
+
+    Returns:
+        ipfsapi.client.Client: The IPFS connection client.
+
+    """
     try:
-        return ipfsapi.connect(settings.IPFS_HOST, settings.IPFS_API_PORT)
+        return ipfsapi.connect(host, port)
     except CommunicationError:
         raise IPFSCantConnectException("IPFS is not running.  try running it with `ipfs daemon` before this script")
 
