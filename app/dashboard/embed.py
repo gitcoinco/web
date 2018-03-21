@@ -1,4 +1,5 @@
 from django.http import HttpResponse, JsonResponse
+from django.utils import timezone
 
 import requests
 from dashboard.models import Bounty
@@ -89,7 +90,6 @@ def embed(request):
     try:
         # get avatar of repo
         _org_name = org_name(repo_url)
-        is_org_gitcoin = _org_name == 'gitcoinco'
 
         avatar = None
         filename = "{}.png".format(_org_name)
@@ -131,130 +131,107 @@ def embed(request):
         bounties = super_bounties[:length]
 
         # config
-        bounty_height = 145
-        bounty_width = 400
-        font_path = 'marketing/quotify/fonts/'
-        width = 1350
-        height = 350
-        spacing = 0
-        line = "".join(["_" for ele in range(0, 47)])
+        bounty_height = 200
+        bounty_width = 572
+        font = 'assets/v2/fonts/futura/FuturaStd-Medium.otf'
+        width = 1776
+        height = 576
 
         # setup
         img = Image.new("RGBA", (width, height), (255, 255, 255))
+        draw = ImageDraw.Draw(img)
         black = (0, 0, 0)
-        h1 = ImageFont.truetype(font_path + 'Futura-Bold.ttf', 28, encoding="unic")
-        h2_thin = ImageFont.truetype(font_path + 'Futura-Normal.ttf', 22, encoding="unic")
-        p = ImageFont.truetype(font_path + 'Futura-LightBT.ttf', 20, encoding="unic")
+        gray = (102, 102, 102)
+        h1 = ImageFont.truetype(font, 36, encoding="unic")
+        h2_thin = ImageFont.truetype(font, 36, encoding="unic")
+        p = ImageFont.truetype(font, 24, encoding="unic")
 
         # background
-        # config
-        logo = 'assets/v2/images/header-bg-light.jpg'
-        # execute
-        back = Image.open(logo, 'r').convert("RGBA")
+        background_image = 'assets/v2/images/embed-widget/background.png'
+        back = Image.open(background_image, 'r').convert("RGBA")
         img_w, img_h = back.size
-        bg_w, bg_h = img.size
         offset = 0, 0
         img.paste(back, offset)
 
         # repo logo
-        # config
-        icon_size = (215, 215)
-        # execute
-        img_w, img_h = avatar.size
+        icon_size = (184, 184)
         avatar.thumbnail(icon_size, Image.ANTIALIAS)
-        bg_w, bg_h = img.size
-        offset = 10, 10
+        offset = 195, 148
         img.paste(avatar, offset, avatar)
 
-        # gitcoin logo
-        # config
-        logo = 'assets/v2/images/gitcoinco.png'
-        # execute
-        back = Image.open(logo, 'r').convert("RGBA")
-        back.thumbnail(icon_size, Image.ANTIALIAS)
-        img_w, img_h = back.size
-        bg_w, bg_h = img.size
-        offset = 250, 10
-        if not is_org_gitcoin:
-            img.paste(back, offset, back)
+        img_org_name = ImageDraw.Draw(img)
+        img_org_name_size = img_org_name.textsize(_org_name, h1)
 
-        # plus sign
-        # config
-        if not is_org_gitcoin:
-            text = '+'
-            # execute
-            text = wrap_text(text, 20)
-            draw = ImageDraw.Draw(img)
-            img_w, img_h = img.size
-            x = 225
-            y = 60
-            draw.multiline_text(align="center", xy=(x, y), text=text, fill=black, font=h1, spacing=spacing)
-            draw = ImageDraw.Draw(img)
+        img_org_name.multiline_text(align="left", xy=(287 - img_org_name_size[0]/2, 360), text=_org_name, fill=black, font=h1)
 
-        # header
-        # config
-        text = '{} Supports Funded Issues'.format(_org_name.title())
-        # execute
-        text = wrap_text(text, 30)
-        draw = ImageDraw.Draw(img)
-        img_w, img_h = img.size
-        x = 10
-        y = 200
-        draw.multiline_text(align="left", xy=(x, y), text=text, fill=black, font=h1, spacing=spacing)
-        draw = ImageDraw.Draw(img)
-
-        # config
-        show_value, value = summarize_bounties(super_bounties)
-        text = '{}\nGrow Open Source | Powered by Gitcoin.co'.format(wrap_text(value, 45) if show_value else "")
-        # execute
-        draw = ImageDraw.Draw(img)
-        img_w, img_h = img.size
-        x = 10
-        y = 225
-        draw.multiline_text(align="left", xy=(x, y), text=text, fill=black, font=h2_thin, spacing=12)
-        draw = ImageDraw.Draw(img)
+        draw.multiline_text(align="left", xy=(110, 410), text="supports funded issues", fill=black, font=h1)
 
         # put bounty list in there
         i = 0
-        for bounty in bounties:
+        for bounty in bounties[:4]:
             i += 1
-            text = f"{line}\n{wrap_text(bounty.title_or_desc, 30)}\n\nWorth: " \
-                   f"{round(bounty.value_true, 2)} {bounty.token_name} ({round(bounty.value_in_usdt, 2)} USD " \
-                   f"@ ${round(convert_token_to_usdt(bounty.token_name), 2)}/{bounty.token_name})"
             # execute
-            draw = ImageDraw.Draw(img)
-            img_w, img_h = img.size
             line_size = 2
-            x = 500 + (int((i-1)/line_size) * (bounty_width))
-            y = 30 + (abs(i % line_size-1) * bounty_height)
-            draw.multiline_text(align="left", xy=(x, y), text=text, fill=black, font=p, spacing=spacing)
-            draw = ImageDraw.Draw(img)
 
+            # Limit text to 28 chars
+            text = f"{bounty.title_or_desc}"
+            text = (text[:28] + '...') if len(text) > 28 else text
+
+            x = 620 + (int((i-1)/line_size) * (bounty_width))
+            y = 230 + (abs(i % line_size-1) * bounty_height)
+            draw.multiline_text(align="left", xy=(x, y), text=text, fill=black, font=h2_thin)
+
+            unit = 'day'
+            num = int(round((bounty.expires_date - timezone.now()).days, 0))
+            if num == 0:
+                unit = 'hour'
+                num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
+            unit = unit + ("s" if num != 1 else "")
+            draw.multiline_text(align="left", xy=(x, y-40), text=f"Expires in {num} {unit}:", fill=gray, font=p)
+
+            bounty_eth_background = Image.new("RGBA", (200, 56), (231, 240, 250))
+            bounty_usd_background = Image.new("RGBA", (200, 56), (214, 251, 235))
+
+            img.paste(bounty_eth_background, (x, y + 50))
+            img.paste(bounty_usd_background, (x + 210, y + 50))
+
+            tmp = ImageDraw.Draw(img)
+
+            bounty_value_size = tmp.textsize(f"{round(bounty.value_true, 2)} {bounty.token_name}", p)
+
+            draw.multiline_text(align="left", xy=(x + 100 - bounty_value_size[0]/2, y + 67), text=f"{round(bounty.value_true, 2)} {bounty.token_name}", fill=(44, 35, 169), font=p)
+
+            bounty_value_size = tmp.textsize(f"{round(bounty.value_in_usdt, 2)} USD", p)
+
+            draw.multiline_text(align="left", xy=(x + 310 - bounty_value_size[0]/2, y + 67), text=f"{round(bounty.value_in_usdt, 2)} USD", fill=(45, 168, 116), font=p)
+
+
+        # blank slate
         if bounties.count() == 0:
-
-            text = "{}\n\n{}\n\n{}".format(line, wrap_text("No active issues. Post a funded issue at https://gitcoin.co", 50), line)
-            # execute
-            draw = ImageDraw.Draw(img)
-            img_w, img_h = img.size
-            x = 10
-            y = 320
-            draw.multiline_text(align="left", xy=(x, y), text=text, fill=black, font=p, spacing=spacing)
-            draw = ImageDraw.Draw(img)
+            draw.multiline_text(align="left", xy=(760, 320), text="No active issues. Post a funded issue at: https://gitcoin.co", fill=gray, font=h1)
 
         if bounties.count() != 0:
-            # config
-            text = 'Browse Issues @ https://gitcoin.co/explorer'
-            # execute
-            text = wrap_text(text, 20)
-            draw = ImageDraw.Draw(img)
-            img_w, img_h = img.size
-            x = 10
-            y = height - 50
-            draw.multiline_text(align="center", xy=(x, y), text=text, fill=black, font=h2_thin, spacing=spacing)
-            draw = ImageDraw.Draw(img)
+            text = 'Browse issues at: https://gitcoin.co/explorer'
+            draw.multiline_text(align="left", xy=(64, height - 70), text=text, fill=gray, font=p)
 
-        response = HttpResponse(content_type="image/jpeg")
-        img.save(response, "JPEG")
+            draw.multiline_text(align="left", xy=(624, 120), text="Recently funded issues:", fill=(62, 36, 251), font=p)
+
+            show_value, value = summarize_bounties(super_bounties)
+
+            value_size = tmp.textsize(value, p)
+
+            draw.multiline_text(align="left", xy=(1725 - value_size[0], 120), text=value, fill=gray, font=p)
+
+            line_table_header = Image.new("RGBA", (1100, 6), (62, 36, 251))
+
+            img.paste(line_table_header, (624, 155))
+
+        # Resize back to output size for better anti-alias
+        img = img.resize((888, 288), Image.LANCZOS)
+
+        # Return image with right content-type
+        response = HttpResponse(content_type="image/png")
+        img.save(response, "PNG")
         return response
     except IOError as e:
         print(e)
@@ -314,7 +291,6 @@ def avatar(request):
         icon_size = (215, 215)
         # execute
         avatar = ImageOps.fit(avatar, icon_size, Image.ANTIALIAS)
-        bg_w, bg_h = img.size
         offset = 0, 0
         img.paste(avatar, offset, avatar)
 

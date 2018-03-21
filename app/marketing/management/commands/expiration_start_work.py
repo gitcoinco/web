@@ -32,6 +32,11 @@ class Command(BaseCommand):
     help = 'lets a user know that they expressed interest in an issue and kicks them to do something about it'
 
     def handle(self, *args, **options):
+
+        if settings.DEBUG:
+            print('not running bc DEBUG is on')
+            return
+
         num_days_back_to_warn = 3
         num_days_back_to_delete_interest = 7
 

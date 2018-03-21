@@ -9,3 +9,4 @@ django-coverage-plugin
 isort
 responses
 requests_mock
+django-test-plus

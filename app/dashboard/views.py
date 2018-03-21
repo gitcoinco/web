@@ -35,7 +35,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import ellipses, sync_profile
 from dashboard.models import (
-    Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
+    Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip, UserAction,
 )
 from dashboard.notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
@@ -67,6 +67,22 @@ def send_tip(request):
     return TemplateResponse(request, 'yge/send1.html', params)
 
 
+def record_user_action(profile_handle, event_name, instance):
+    instance_class = instance.__class__.__name__.lower()
+
+    try:
+        user_profile = Profile.objects.filter(handle__iexact=profile_handle).first()
+        UserAction.objects.create(
+            profile=user_profile,
+            action=event_name,
+            metadata={
+                f'{instance_class}_pk': instance.pk,
+            })
+    except Exception as e:
+        # TODO: sync_profile?
+        logging.error(f"error in record_action: {e} - {event_name} - {instance}")
+
+
 @csrf_exempt
 @login_required
 @require_POST
@@ -85,13 +101,23 @@ def new_interest(request, bounty_id):
     profile_id = request.user.profile.pk
     if not profile_id:
         return JsonResponse(
-            {'error': 'You must be authenticated!'},
+            {'error': 'You must be authenticated via github to use this feature!'},
             status=401)
 
     try:
         bounty = Bounty.objects.get(pk=bounty_id)
     except Bounty.DoesNotExist:
         raise Http404
+
+    num_issues = 3
+    active_bounties = Bounty.objects.current().filter(idx_status__in=['open', 'started'])
+    num_active = Interest.objects.filter(profile_id=profile_id, bounty__in=active_bounties).count()
+    is_working_on_too_much_stuff = num_active >= num_issues
+    if is_working_on_too_much_stuff:
+        return JsonResponse({
+            'error': f'You may only work on max of {num_issues} issues at once.',
+            'success': False},
+            status=401)
 
     try:
         Interest.objects.get(profile_id=profile_id, bounty=bounty)
@@ -102,6 +128,7 @@ def new_interest(request, bounty_id):
     except Interest.DoesNotExist:
         interest = Interest.objects.create(profile_id=profile_id)
         bounty.interested.add(interest)
+        record_user_action(Profile.objects.get(pk=profile_id).handle, 'start_work', interest)
         maybe_market_to_slack(bounty, 'start_work')
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
@@ -136,7 +163,7 @@ def remove_interest(request, bounty_id):
     profile_id = request.user.profile.pk
     if not profile_id:
         return JsonResponse(
-            {'error': 'You must be authenticated!'},
+            {'error': 'You must be authenticated via github to use this feature!'},
             status=401)
 
     try:
@@ -147,6 +174,7 @@ def remove_interest(request, bounty_id):
 
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
+        record_user_action(Profile.objects.get(pk=profile_id).handle, 'stop_work', interest)
         bounty.interested.remove(interest)
         maybe_market_to_slack(bounty, 'stop_work')
         interest.delete()
@@ -236,6 +264,7 @@ def receive_tip(request):
             tip.receive_txid = params['receive_txid']
             tip.received_on = timezone.now()
             tip.save()
+            record_user_action(tip.username, 'receive_tip', tip)
         except Exception as e:
             status = 'error'
             message = str(e)
@@ -331,6 +360,7 @@ def send_tip_2(request):
         maybe_market_tip_to_github(tip)
         maybe_market_tip_to_slack(tip, 'new_tip')
         maybe_market_tip_to_email(tip, to_emails)
+        record_user_action(tip.username, 'send_tip', tip)
         if not to_emails:
             response['status'] = 'error'
             response['message'] = 'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.'

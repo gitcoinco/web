@@ -73,7 +73,6 @@ def slack_users_active():
     one_day_ago = timezone.now() - timezone.timedelta(hours=24)
     num_active = SlackUser.objects.filter(last_seen__gt=one_day_ago).count()
     num_away = SlackUser.objects.filter(last_seen__lt=one_day_ago).count()
-
     # create broader Stat object
     Stat.objects.create(
         key='slack_users_active',
@@ -92,6 +91,30 @@ def profiles_ingested():
     Stat.objects.create(
         key='profiles_ingested',
         val=Profile.objects.count(),
+        )
+
+
+def faucet():
+    from faucet.models import FaucetRequest
+
+    Stat.objects.create(
+        key='FaucetRequest',
+        val=FaucetRequest.objects.count(),
+        )
+
+    Stat.objects.create(
+        key='FaucetRequest_rejected',
+        val=FaucetRequest.objects.filter(rejected=True).count(),
+        )
+
+    Stat.objects.create(
+        key='FaucetRequest_fulfilled',
+        val=FaucetRequest.objects.filter(fulfilled=True).count(),
+        )
+
+    Stat.objects.create(
+        key='FaucetRequest_pending',
+        val=FaucetRequest.objects.filter(fulfilled=False, rejected=False).count(),
         )
 
 
@@ -367,6 +390,7 @@ class Command(BaseCommand):
             chrome_ext_users,
             firefox_ext_users,
             slack_users,
+            slack_users_active,
             twitter_followers,
             bounties,
             tips,
@@ -382,6 +406,7 @@ class Command(BaseCommand):
             joe_dominance_index,
             avg_time_bounty_turnaround,
             user_actions,
+            faucet,
         ]
 
         for f in fs:

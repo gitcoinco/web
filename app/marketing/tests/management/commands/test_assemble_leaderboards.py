@@ -19,12 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from datetime import date, datetime, timedelta
 
-from django.test import TestCase
-
 from dashboard.models import Bounty, BountyFulfillment, Profile, Tip
 from marketing.management.commands import assemble_leaderboards
 from marketing.management.commands.assemble_leaderboards import Command, default_ranks, sum_bounties, sum_tips
 from marketing.models import LeaderboardRank
+from test_plus.test import TestCase
 
 
 class TestAssembleLeaderboards(TestCase):

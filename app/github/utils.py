@@ -106,7 +106,7 @@ def is_github_token_valid(oauth_token=None, last_validated=None):
     try:
         response = requests.get(url, auth=_auth, headers=HEADERS)
     except ConnectionError as e:
-        if not settings.DEBUG:
+        if not settings.ENV == 'local':
             logger.error(e)
         else:
             print(e, '- No connection available. Unable to authenticate with Github.')

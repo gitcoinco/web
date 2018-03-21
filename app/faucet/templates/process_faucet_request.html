@@ -30,7 +30,13 @@
 {% block content %}
 
 <div>
-    <h1>Process Faucet Request For {{obj.github_username}}</h1>
+    <h1>Process Faucet Request {{obj.pk}}</h1>
+    <div style="border: 1px solid black; padding: 5px;">
+        Github Profile: <a href="https://github.com/{{obj.github_username}}
+        ">@{{obj.github_username}}</a>
+        <br>
+        Comments {{obj.comment}}
+    </div>
     <div id="no_metamask_error" style="display: none;">MetaMask Extension Not Detected</div>
     <div id="unlock_metamask_error" style="display: none;">Please Unlock MetaMask To Continue</div>
     <div id="zero_balance_error" style="display: none;">MetaMask Active Account Is Empty</div>

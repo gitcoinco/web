@@ -17,7 +17,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from django.test import TestCase
 from django.test.client import RequestFactory
 
 from economy.models import ConversionRate
@@ -25,6 +24,7 @@ from gas.models import GasProfile
 from gas.utils import (
     conf_time_spread, eth_usd_conv_rate, gas_price_to_confirm_time_minutes, recommend_min_gas_price_to_confirm_in_time,
 )
+from test_plus.test import TestCase
 
 
 class GasUtilsTest(TestCase):

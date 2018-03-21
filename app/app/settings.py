@@ -31,6 +31,8 @@ env.read_env(str(root.path('app/.env')))  # reading .env file
 
 DEBUG = env.bool('DEBUG', default=True)
 ENV = env('ENV', default='local')
+DEBUG_ENVS = env.list('DEBUG_ENVS', default=['local', 'stage', 'test'])
+IS_DEBUG_ENV = ENV in DEBUG_ENVS
 HOSTNAME = env('HOSTNAME', default=socket.gethostname())
 BASE_URL = env('BASE_URL', default='http://localhost:8000/')
 SECRET_KEY = env('SECRET_KEY', default='YOUR-SupEr-SecRet-KeY')
@@ -178,7 +180,7 @@ USE_L10N = env.bool('USE_L10N', default=True)
 USE_TZ = env.bool('USE_TZ', default=True)
 TIME_ZONE = env.str('TIME_ZONE', default='MST')
 
-if not ENV == 'local':
+if not ENV in ['local', 'test']:
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
@@ -271,9 +273,12 @@ GITHUB_API_USER = env('GITHUB_API_USER', default='TODO')
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='TODO')
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
+# Gitter
+GITTER_TOKEN = env('GITTER_TOKEN', default=False)
+
 # optional: only needed if you run the gitcoinbot app
 # Setup instructions: https://github.com/gitcoinco/web/blob/master/app/gitcoinbot/README.md
-GITCOINBOT_APP_ID = env('BOT_APP_ID', default='')
+GITCOINBOT_APP_ID = env('GITCOINBOT_APP_ID', default='')
 GITCOIN_BOT_CERT_PATH = env('GITCOIN_BOT_CERT_PATH', default='')
 SECRET_KEYSTRING = ''
 if GITCOIN_BOT_CERT_PATH:
@@ -343,7 +348,7 @@ S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='TODO')
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 
 # Faucet App config
-FAUCET_AMOUNT = env.float('FAUCET_AMOUNT', default=.001)
+FAUCET_AMOUNT = env.float('FAUCET_AMOUNT', default=.0005)
 
 SENDGRID_EVENT_HOOK_URL = env('SENDGRID_EVENT_HOOK_URL', default='sg_event_process')
 GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')

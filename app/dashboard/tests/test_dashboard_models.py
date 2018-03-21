@@ -19,10 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from datetime import date, datetime, timedelta
 
-from django.test import TestCase
-
 from dashboard.models import Bounty, BountyFulfillment, Interest, Profile, Tip
 from economy.models import ConversionRate
+from test_plus.test import TestCase
 
 
 class DashboardModelsTest(TestCase):

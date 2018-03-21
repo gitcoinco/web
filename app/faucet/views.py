@@ -61,13 +61,14 @@ def save_faucet(request):
     github_profile = request.POST.get('githubProfile')
     email_address = request.POST.get('emailAddress')
     eth_address = request.POST.get('ethAddress')
+    profile_handle = request.session.get('handle', '')
 
     try:
         validate_slug(github_profile)
         validate_email(email_address)
         validate_slug(eth_address)
     except Exception as e:
-        return JsonResponse({'message': e.messages[0]}, status=400)
+        return JsonResponse({'message': str(e)}, status=400)
 
     comment = escape(strip_tags(request.POST.get('comment')))
     checkeduser = check_github(github_profile)
@@ -87,6 +88,7 @@ def save_faucet(request):
     fr = FaucetRequest.objects.create(
         fulfilled=False,
         github_username=github_profile,
+        input_github_username=profile_handle,
         github_meta=checkeduser,
         address=eth_address,
         email=email_address,
@@ -123,6 +125,7 @@ def process_faucet_request(request, pk):
     if request.POST.get('destinationAccount', False):
         faucet_request.fulfilled = True
         faucet_request.fulfill_date = timezone.now()
+        faucet_request.amount = settings.FAUCET_AMOUNT
         faucet_request.save()
         processed_faucet_request(faucet_request)
         messages.success(request, 'sent')

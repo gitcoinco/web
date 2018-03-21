@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 
@@ -47,12 +48,14 @@ class FaucetRequest(SuperModel):
     fulfilled = models.BooleanField(default=False)
     rejected = models.BooleanField(default=False)
     github_username = models.CharField(max_length=255, db_index=True)
+    input_github_username = models.CharField(max_length=255, blank=True)
     github_meta = JSONField()
     address = models.CharField(max_length=50)
     email = models.CharField(max_length=255)
     comment = models.TextField(max_length=500, blank=True)
     comment_admin = models.TextField(max_length=500, blank=True)
     fulfill_date = models.DateTimeField(null=True, blank=True)
+    amount = models.FloatField(default=settings.FAUCET_AMOUNT)
 
     objects = FaucetRequestManager()
 

@@ -114,51 +114,54 @@ def stats(request):
         else:
             source = source.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=2)))
 
-        # tables
-        params['tables'][t] = source
+        if source.count():
+            # tables
+            params['tables'][t] = source
 
-        # charts
-        # compute avg
-        total = 0
-        count = source.count() - 1
-        avg = "NA"
-        if count > 1:
-            for i in range(0, count):
-                total += (source[i+1].val - source[i].val)
-            avg = round(total / count, 1)
-            avg = str("+{}".format(avg) if avg > 0 else avg)
+            # charts
+            # compute avg
+            total = 0
+            count = source.count() - 1
+            avg = "NA"
+            if count > 1:
+                for i in range(0, count):
+                    total += (source[i+1].val - source[i].val)
+                avg = round(total / count, 1)
+                avg = str("+{}".format(avg) if avg > 0 else avg)
 
-        chartdata = DataPool(series=[{
-            'options': {'source': source},
-            'terms': [
-                'created_on',
-                'val'
-            ]}])
+            chartdata = DataPool(series=[{
+                'options': {'source': source},
+                'terms': [
+                    'created_on',
+                    'val'
+                ]}])
 
-        cht = Chart(
-            datasource=chartdata,
-            series_options=[{
-                'options': {
-                    'type': 'line',
-                    'stacking': False
-                },
-                'terms': {
-                    'created_on': ['val']
-                }
-            }],
-            chart_options={
-                'title': {
-                    'text': f'{t} trend ({avg} avg)'
-                },
-                'xAxis': {
-                    'title': {
-                        'text': 'Time'
+            cht = Chart(
+                datasource=chartdata,
+                series_options=[{
+                    'options': {
+                        'type': 'line',
+                        'stacking': False
+                    },
+                    'terms': {
+                        'created_on': ['val']
                     }
-                }
-            })
-        params['chart_list'].append(cht)
+                }],
+                chart_options={
+                    'title': {
+                        'text': f'{t} trend ({avg} avg)'
+                    },
+                    'xAxis': {
+                        'title': {
+                            'text': 'Time'
+                        }
+                    }
+                })
+            params['chart_list'].append(cht)
 
+    types = params['tables'].keys()
     params['chart_list_str'] = ",".join(types)
+    params['types'] = types
     return TemplateResponse(request, 'stats.html', params)
 
 

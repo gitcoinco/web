@@ -35,7 +35,10 @@ class FaucetRequestAdmin(admin.ModelAdmin):
     """Setup the FaucetRequest admin results display."""
 
     ordering = ['-created_on']
-    list_display = ['created_on', 'fulfilled', 'rejected', 'link', 'github_username', 'address', 'email', 'comment']
+    list_display = [
+        'created_on', 'fulfilled', 'rejected', 'link', 'github_username',
+        'input_github_username', 'address', 'email', 'comment'
+    ]
 
     def link(self, instance):
         """Handle faucet request specific links.

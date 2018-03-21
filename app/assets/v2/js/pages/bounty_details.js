@@ -194,7 +194,6 @@ var showWarningMessage = function(txid) {
     clearInterval(interval);
     var link_url = etherscan_tx_url(txid);
 
-    $('#pending_changes').attr('href', link_url);
     $('#transaction_url').attr('href', link_url);
   }
 
@@ -481,7 +480,7 @@ var pull_bounty_from_api = function() {
       $('.nonefound').css('display', 'block');
     }
   }).fail(function() {
-    _alert('got an error. please try again, or contact support@gitcoin.co');
+    _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
     $('#primary_view').css('display', 'none');
   }).always(function() {
     $('.loading').css('display', 'none');
@@ -564,7 +563,9 @@ var main = function() {
     if (localStorage[document.issueURL]) {
       // validate pending issue metadata
       document.pendingIssueMetadata = JSON.parse(localStorage[document.issueURL]);
-      if (typeof document.pendingIssueMetadata != 'undefined' && typeof document.pendingIssueMetadata['timestamp'] != 'undefined') {
+      var is_metadata_valid = typeof document.pendingIssueMetadata != 'undefined' && document.pendingIssueMetadata !== null && typeof document.pendingIssueMetadata['timestamp'] != 'undefined';
+
+      if (is_metadata_valid) {
         // validate that the pending tx is within the last little while
         var then = parseInt(document.pendingIssueMetadata['timestamp']);
         var now = timestamp();
