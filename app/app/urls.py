@@ -26,6 +26,7 @@ import dashboard.embed
 import dashboard.helpers
 import dashboard.ios
 import dashboard.views
+import external_bounties.views
 import faucet.views
 import gitcoinbot.views
 import linkshortener.views
@@ -34,7 +35,8 @@ import marketing.webhookviews
 import retail.emails
 import retail.views
 import tdi.views
-from dashboard.router import router
+from dashboard.router import router as dbrouter
+from external_bounties.router import router as ebrouter
 
 from .sitemaps import sitemaps
 
@@ -43,14 +45,16 @@ urlpatterns = [
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
-    url(r'^api/v0.1/', include(router.urls)),
-    url(r'^actions/api/v0.1/', include(router.urls)),  # same as active, but not cached in cluodfront
+    url(r'^api/v0.1/', include(dbrouter.urls)),
+    url(r'^api/v0.1/', include(ebrouter.urls)),
+    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cluodfront
 
     # dashboard views
 
-    # Dummy External Bounties index
-    # url(r'^external_bounties/?', dashboard.views.external_bounties, name='external_bounties'),
-    # url(r'^external_bounty/?', dashboard.views.external_bounties_show, name="external_bounties_show"),
+    # Dummy offchain index
+    url(r'^offchain/new/?', external_bounties.views.external_bounties_new, name="offchain_new"),
+    url(r'^offchain/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='offchain'),
+    url(r'^offchain/?', external_bounties.views.external_bounties_index, name="offchain_index"),
 
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
