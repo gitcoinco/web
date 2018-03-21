@@ -256,6 +256,9 @@ GITHUB_API_USER = env('GITHUB_API_USER', default='TODO')
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='TODO')
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
+# Gitter
+GITTER_TOKEN = env('GITTER_TOKEN', default=False)
+
 # optional: only needed if you run the gitcoinbot app
 # Setup instructions: https://github.com/gitcoinco/web/blob/master/app/gitcoinbot/README.md
 GITCOINBOT_APP_ID = env('GITCOINBOT_APP_ID', default='')

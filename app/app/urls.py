@@ -147,7 +147,7 @@ urlpatterns = [
 
     # admin views
     url(r'^_administration/?', admin.site.urls, name='admin'),
-    url(r'^_administration/email/new_bounty$', retail.emails.new_bounty, name='new_bounty'),
+    url(r'^_administration/email/new_bounty$', retail.emails.new_bounty, name='admin_new_bounty'),
     url(r'^_administration/email/roundup$', retail.emails.roundup, name='roundup'),
     url(r'^_administration/email/faucet_rejected$', retail.emails.faucet_rejected, name='email_faucet_rejected'),
     url(r'^_administration/email/faucet$', retail.emails.faucet, name='email_faucet'),
@@ -164,7 +164,7 @@ urlpatterns = [
     url(r'^_administration/process_accesscode_request/(.*)$', tdi.views.process_accesscode_request, name='process_accesscode_request'),
     url(r'^_administration/process_faucet_request/(.*)$', faucet.views.process_faucet_request, name='process_faucet_request'),
 
-    #marketing views
+    # marketing views
     url(r'^email/settings/(.*)', marketing.views.email_settings, name='email_settings'),
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
     url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),

@@ -30,7 +30,7 @@ from django.utils import timezone
 
 import requests
 from bs4 import BeautifulSoup
-from dashboard.models import Bounty, BountyFulfillment, BountySyncRequest
+from dashboard.models import Bounty, BountyFulfillment, BountySyncRequest, UserAction
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
 )
@@ -450,6 +450,28 @@ def process_bounty_details(bounty_details):
     return (did_change, latest_old_bounty, latest_old_bounty)
 
 
+def record_user_action(event_name, old_bounty, new_bounty):
+    user_profile = None
+    fulfillment = None
+    try:
+        user_profile = Profile.objects.filter(handle__iexact=new_bounty.bounty_owner_github_username).first()
+        fulfillment = new_bounty.fulfillments.order_by('pk').first()
+
+    except Exception as e:
+        logging.error(f'{e} during record_user_action for {new_bounty}')
+        # TODO: create a profile if one does not exist already?
+
+    if user_profile:
+        UserAction.objects.create(
+            profile=user_profile,
+            action=event_name,
+            metadata={
+                'new_bounty': new_bounty.pk if new_bounty else None,
+                'old_bounty': old_bounty.pk if old_bounty else None,
+                'fulfillment': fulfillment.to_json if fulfillment else None,
+            })
+
+
 def process_bounty_changes(old_bounty, new_bounty):
     """Process Bounty changes.
 
@@ -490,6 +512,9 @@ def process_bounty_changes(old_bounty, new_bounty):
         logging.error(f'got an unknown event from bounty {old_bounty.pk} => {new_bounty.pk}: {json_diff}')
 
     print(f"- {event_name} event; diff => {json_diff}")
+
+    # record a useraction for this
+    record_user_action(event_name, old_bounty, new_bounty)
 
     # Build profile pairs list
     if new_bounty.fulfillments.exists():
