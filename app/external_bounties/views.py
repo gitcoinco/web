@@ -4,7 +4,7 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
 from economy.utils import convert_amount
-
+from marketing.mails import new_external_bounty
 
 def external_bounties_index(request):
     """Handle External Bounties index page."""
@@ -50,6 +50,7 @@ def external_bounties_new(request):
     if request.POST:
         new_eb = ExternalBountyForm(request.POST)
         new_eb.save()
+        new_external_bounty()
         params['msg'] = "An email has been sent to an administrator to approve your submission"
         return redirect(reverse('offchain_new'))
 

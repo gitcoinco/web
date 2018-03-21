@@ -49,4 +49,4 @@ class ExternalBounty(SuperModel):
 class ExternalBountyForm(ModelForm):
     class Meta:
         model = ExternalBounty
-        fields = ['title', 'description', 'amount', 'amount_denomination', 'tags', 'action_url']
+        fields = ['title', 'description', 'amount', 'amount_denomination', 'source_project', 'tags', 'action_url']
