@@ -82,7 +82,8 @@ def help_text():
     help_text_response = f'I am {github_bot_user}, a bot that facilitates gitcoin bounties.\n' \
         '\n<hr>Here are the commands I understand:\n\n ' \
         '* `bounty <amount> <currency>` -- receive link to gitcoin.co form to create bounty.\n ' \
-        '* `submit work` -- receive link to gitcoin.co to start work on a bounty.\n ' \
+        '* `submit work` -- receive link to gitcoin.co to submit work on a bounty.\n ' \
+        '* `start work` -- receive link to gitcoin.co to start work on a bounty.\n ' \
         '* `tip <user> <amount> <currency>` -- receive link to complete tippping another ' \
                          'github user *<amount>* <currency>.\n ' \
         '* `help` -- displays a help menu\n\n<br>' \
