@@ -20,11 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from datetime import datetime, timedelta
 from unittest.mock import patch
 
-from django.test import TestCase
 from django.utils import timezone
 
 from dashboard.models import Bounty, BountyFulfillment, Profile
 from marketing.management.commands.expiration import Command
+from test_plus.test import TestCase
 
 
 class TestExpiration(TestCase):

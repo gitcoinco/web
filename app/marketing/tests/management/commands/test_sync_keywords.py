@@ -19,12 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from datetime import datetime, timedelta
 
-from django.test import TestCase
 from django.utils import timezone
 
 from dashboard.models import Bounty, BountyFulfillment
 from marketing.management.commands.sync_keywords import Command
 from marketing.models import Keyword
+from test_plus.test import TestCase
 
 
 class TestSyncKeywords(TestCase):

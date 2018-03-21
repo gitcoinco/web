@@ -21,7 +21,6 @@ from datetime import timedelta
 from urllib.parse import quote_plus, urlencode
 
 from django.conf import settings
-from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 from django.utils import timezone
@@ -33,6 +32,7 @@ from github.utils import (
     is_github_token_valid, org_name, patch_issue_comment, post_issue_comment, post_issue_comment_reaction, repo_url,
     reset_token, revoke_token, search,
 )
+from test_plus.test import TestCase
 
 
 @override_settings(BASE_URL='http://localhost:8000')

@@ -17,9 +17,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from django.test import TestCase
-
 from dashboard.utils import get_web3
+from test_plus.test import TestCase
 from web3.main import Web3
 from web3.providers.rpc import HTTPProvider
 

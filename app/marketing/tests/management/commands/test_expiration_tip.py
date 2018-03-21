@@ -20,11 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from datetime import timedelta
 from unittest.mock import patch
 
-from django.test import TestCase
 from django.utils import timezone
 
 from dashboard.models import Tip
 from marketing.management.commands.expiration_tip import Command
+from test_plus.test import TestCase
 
 
 class TestExpirationTip(TestCase):
