@@ -22,7 +22,7 @@
           <header class="bounties-header">
             <div class="bounties-header__title bounties-header__title--active">
               <h2 class="title">
-                <a href="/offchain">Offchain Bounties</a>
+                <a href="{% url "offchain_index" %}">Offchain Bounties</a>
               </h2>
             </div>
           </header>
@@ -70,7 +70,7 @@
                   <pre>{{ bounty.content }}</pre>
                   </div>
                   <div class="bounty__footer">
-                    <a class="link-red" href="/offchain">Go Back</a>
+                    <a class="link-red" href="{% url "offchain_index" %}">Go Back</a>
                   </div>
                 </div>
               </div>
