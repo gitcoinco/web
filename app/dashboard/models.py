@@ -887,6 +887,7 @@ class ProfileSerializer(serializers.BaseSerializer):
 
         """
         return {
+            'id': instance.id,
             'handle': instance.handle,
             'github_url': instance.github_url,
             'local_avatar_url': instance.local_avatar_url,

@@ -204,9 +204,26 @@ var mutate_interest = function(bounty_pk, direction) {
   });
 };
 
+
+var uninterested = function(bounty_pk, profileId) {
+  var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + profileId + '/uninterested/';
+
+  $.post(request_url, function(result) {
+    result = sanitizeAPIResults(result);
+    if (result.success) {
+      _alert({message: 'Contributor removed from bounty.'}, 'success');
+      pull_interest_list(bounty_pk);
+      return true;
+    }
+    return false;
+  }).fail(function(result) {
+    _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
+  });
+};
+
+
 /** Pulls the list of interested profiles from the server. */
 var pull_interest_list = function(bounty_pk, callback) {
-  profiles = [];
   document.interested = false;
   var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
   var started = [];
@@ -218,41 +235,26 @@ var pull_interest_list = function(bounty_pk, callback) {
 
       interested.forEach(function(_interested) {
         started.push(
-          '<a href="https://gitcoin.co/profile/' +
-            _interested.profile.handle +
-            '" target="_blank">' +
-            _interested.profile.handle + '</a>'
+          profileHtml(_interested.profile.handle)
         );
+        if (_interested.profile.handle == document.contxt.github_handle) {
+          document.interested = true;
+        }
       });
     }
     if (started.length == 0) {
       started.push('<i class="fas fa-minus"></i>');
     }
     $('#started_owners_username').html(started);
-  });
-  $.getJSON('/actions/bounty/' + bounty_pk + '/interest/', function(data) {
-    data = sanitizeAPIResults(JSON.parse(data));
-    $.each(data, function(index, value) {
-      var profile = {
-        local_avatar_url: value.local_avatar_url,
-        handle: value.handle,
-        url: value.url
-      };
-
-      profiles.push(profile);
-      // update document.interested
-      if (profile.handle == document.contxt.github_handle) {
-        document.interested = true;
-      }
-    });
-    if (profiles.length == 0) {
-      html = 'No one has started work on this issue yet.';
-    }
     if (typeof callback != 'undefined') {
       callback(document.interested);
     }
   });
-  return profiles;
+};
+
+var profileHtml = function(handle) {
+  return '<span><a href="https://gitcoin.co/profile/' +
+    handle + '" target="_blank">' + handle;
 };
 
 // Update the list of bounty submitters.

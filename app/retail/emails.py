@@ -213,6 +213,16 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
 
     return response_html, response_txt
 
+def render_bounty_unintersted(to_email, bounty, interest):
+    params = {
+        'bounty': bounty,
+        'interest': interest,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/bounty_uninterested.html", params))
+    response_txt = render_to_string("emails/bounty_uninterested.txt", params)
+
+    return response_html, response_txt
 
 def render_faucet_rejected(fr):
 
