@@ -468,14 +468,14 @@ var randomElement = function(array) {
 
 var trigger_sidebar_web3_disabled = function() {
   $('#upper_left').addClass('disabled');
-  $('#sidebar_head').html("<i class='fa fa-question'></i>");
-  $('#sidebar_p').html("<p>Web3 disabled</p><p>Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a> <br> <a target=new href='/web3'>What is Metamask and why do I need it?</a>.</p>");
+  $('#sidebar_head').html('<i class="fa fa-question"></i>');
+  $('#sidebar_p').html('<p>Web3 disabled</p><p>Please install <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a> <br> <a href="/web3" target="_blank" rel="noopener noreferrer">What is Metamask and why do I need it?</a>.</p>");
 };
 
 var trigger_sidebar_web3_locked = function() {
   $('#upper_left').addClass('disabled');
-  $('#sidebar_head').html("<i class='fa fa-lock'></i>");
-  $('#sidebar_p').html('<p>Web3 locked</p><p>Please unlock <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">Metamask</a>.<p>');
+  $('#sidebar_head').html('<i class="fa fa-lock"></i>');
+  $('#sidebar_p').html('<p>Web3 locked</p><p>Please unlock <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>.<p>');
 };
 
 var mixpanel_track_once = function(event, params) {
