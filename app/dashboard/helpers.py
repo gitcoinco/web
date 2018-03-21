@@ -468,7 +468,7 @@ def record_user_action(event_name, old_bounty, new_bounty):
             metadata={
                 'new_bounty': new_bounty.pk if new_bounty else None,
                 'old_bounty': old_bounty.pk if old_bounty else None,
-                'fulfillment': fulfillment.to_json,
+                'fulfillment': fulfillment.to_json if fulfillment else None,
             })
 
 
