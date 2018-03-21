@@ -1,1 +1,7 @@
-<h1>index</h1>
+{% if grants %}
+  <ul>
+      {% for grant in grants %}
+      <li>{{ grant.title }}</li>
+      {% endfor %}
+  </ul>
+{% endif %}

@@ -35,7 +35,7 @@ from django.views.decorators.http import require_POST
 
 from app.utils import ellipses, sync_profile
 from dashboard.models import (
-    Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip, UserAction,
+    Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip, UserAction, Grant
 )
 from dashboard.notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
@@ -430,20 +430,42 @@ def dashboard(request):
     }
     return TemplateResponse(request, 'dashboard.html', params)
 
+def grant_show(request, grant_id):
+    grant = Grant.objects.get(pk=grant_id)
+    params = {
+        'active': 'dashboard',
+        'title': 'Grant Show',
+        'grant': grant,
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+    }
+    return TemplateResponse(request, 'grants/show.html', params)
+
 def new_grant(request):
     """Handle new grant."""
+
+    if request.method == "POST":
+        grant = Grant()
+        grant.title = request.POST.get('title')
+    else:
+        grant = {}
+
     params = {
         'active': 'dashboard',
         'title': 'New Grant',
+        'grant': grant,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
+
     return TemplateResponse(request, 'grants/new.html', params)
 
 def grants_explorer(request):
     """Handle grants explorer."""
+    grants = Grant.objects.all();
+
     params = {
         'active': 'dashboard',
         'title': 'Grants Explorer',
+        'grants': grants,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'grants/index.html', params)

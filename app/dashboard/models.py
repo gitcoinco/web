@@ -51,9 +51,25 @@ class Grant(SuperModel):
     """Define the structure of a Grant."""
 
     title = models.CharField(max_length=255)
+    description = models.TextField(default='', blank=True)
+    reference_url = models.URLField(db_index=True)
+    current_funding = models.DecimalField(default=1, decimal_places=4, max_digits=50)
+    goal_funding = models.DecimalField(default=1, decimal_places=4, max_digits=50)
+    stakeholders = models.ManyToManyField('dashboard.Stakeholder', blank=True)
 
     def __str__(self):
         return self.title
+
+class Stakeholder(models.Model):
+    """Define relationship for profiles expressing interest on a bounty."""
+
+    eth_address = models.CharField(max_length=50)
+    name = models.CharField(max_length=255, blank=True)
+    role = models.CharField(max_length=255, blank=True)
+    url = models.URLField(db_index=True)
+
+    def __str__(self):
+        return self.name
 
 class BountyQuerySet(models.QuerySet):
     """Handle the manager queryset for Bounties."""
