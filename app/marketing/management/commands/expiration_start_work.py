@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -32,6 +32,11 @@ class Command(BaseCommand):
     help = 'lets a user know that they expressed interest in an issue and kicks them to do something about it'
 
     def handle(self, *args, **options):
+
+        if settings.DEBUG:
+            print('not running bc DEBUG is on')
+            return
+
         num_days_back_to_warn = 3
         num_days_back_to_delete_interest = 7
 
@@ -45,7 +50,7 @@ class Command(BaseCommand):
             ).all()
             print('day {} got {} interests'.format(day, interests.count()))
             for interest in interests:
-                for bounty in Bounty.objects.filter(interested=interest, current_bounty=True, idx_status__in=['open', 'started', 'submitted']):
+                for bounty in Bounty.objects.filter(interested=interest, current_bounty=True, idx_status__in=['open', 'started']):
                     print("{} is interested in {}".format(interest, bounty))
                     try:
                         owner = org_name(bounty.github_url)
@@ -56,7 +61,7 @@ class Command(BaseCommand):
                         should_warn_user = False
                         should_delete_interest = False
                         last_heard_from_user_days = None
-                        
+
                         if len(comments_by_interested_party) == 0:
                             should_warn_user = True
                             should_delete_interest = False
@@ -64,13 +69,22 @@ class Command(BaseCommand):
                             # example format: 2018-01-26T17:56:31Z'
                             comment_times = [datetime.strptime(comment['created_at'], '%Y-%m-%dT%H:%M:%SZ') for comment in comments_by_interested_party]
                             last_comment_by_user = max(comment_times)
+
+                            # if user hasn't commented since they expressed interest, handled this condition
+                            # per https://github.com/gitcoinco/web/issues/462#issuecomment-368384384
+                            if last_comment_by_user < interest.created.replace(tzinfo=None):
+                                last_comment_by_user = interest.created.replace(tzinfo=None)
+
+                            # some small calcs
                             delta_now_vs_last_comment = datetime.now() - last_comment_by_user
                             last_heard_from_user_days = delta_now_vs_last_comment.days
+
+                            # decide action params
                             should_warn_user = last_heard_from_user_days >= num_days_back_to_warn
                             should_delete_interest = last_heard_from_user_days >= num_days_back_to_delete_interest
 
                             print(f"- its been {last_heard_from_user_days} days since we heard from the user")
-                        
+
                         if should_delete_interest:
                             print('executing should_delete_interest for {}'.format(interest.pk))
                             bounty_startwork_expired(interest.profile.email, bounty, interest, last_heard_from_user_days)

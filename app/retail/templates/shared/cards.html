@@ -19,8 +19,18 @@
 <meta name="twitter:domain" content="gitcoin.co" />
 <meta name="twitter:card" content="player" />
 <meta name="twitter:site" content="@getgitcoin" />
-<meta name="twitter:title" content="Gitcoin: Push Open Source Repos Forward" />
-<meta name="twitter:description" content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software." />
+{% if card_title %}
+    <meta name="twitter:title" content="{{card_title}}" />
+{% elif title %}
+    <meta name="twitter:title" content="{{title}}" />
+{% else %}
+    <meta name="twitter:title" content="Gitcoin: Grow Open Source">
+{% endif %}
+{% if card_desc %}
+    <meta name="twitter:description" content="{{card_desc}}" />
+{% else %}
+    <meta name="twitter:description" content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software." />
+{% endif %}
 <meta name="twitter:image" content="{% static "v2/card/thumb.png" %}" />
 <meta name="twitter:player" content="https://www.youtube.com/embed/DJartWzDn0E" />
 <meta name="twitter:player:width" content="560" />
@@ -30,12 +40,22 @@
 
 
 <meta property=fb:app_id content="118275288856850">
-<meta property=og:title content="Gitcoin: Push Open Source Repos Forward.">
+{% if card_title %}
+    <meta property=og:title content="{{card_title}}">
+{% elif title %}
+    <meta property=og:title content="{{title}}">
+{% else %}
+    <meta property=og:title content="Gitcoin: Grow Open Source">
+{% endif %}
 <meta property=og:url content="https://gitcoin.co/" >
-<meta property=og:description content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software.">
+{% if card_desc %}
+    <meta property=og:description content="Gitcoin is the easiest way to monetize or incentivize work in Open Source Software.">
+{% else %}
+    <meta property=og:description content="{{card_desc}}">
+{% endif %}
 <meta property=og:image content="{% static "v2/card/thumb.jpg" %}">
 <meta property=og:type content="website">
-<meta property=og:site_name content="Gitcoin: Push Open Source Repos Forward.">
+<meta property=og:site_name content="Gitcoin: Grow Open Source">
 <meta property="og:video" content="{% static "v2/card/card.mp4" %}" />
 <meta property="og:video:secure_url" content="{% static "v2/card/card.mp4" %}" />
 <meta property="og:video:type" content="video/mp4" />

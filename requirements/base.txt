@@ -1,11 +1,11 @@
 bs4
 ccxt
-django==2.0
+cryptography==2.1.4
+django==2.0.3
 django-bootstrap3==8.2.3
 django-filter
 django-ratelimit
 djangorestframework==3.7.3
-django-filter
 gitterpy
 gunicorn
 matplotlib
@@ -17,6 +17,7 @@ Pillow==4.0.0
 premailer
 populus
 psycopg2
+PyJWT==1.5.3
 PyPdf2
 python-twitter==3.2
 sendgrid
@@ -30,11 +31,11 @@ statistics
 django-email-obfuscator
 cytoolz==0.9.0
 boto==2.48.0
-rollbar==0.13.17
+rollbar==0.13.18
 awscli
 google-api-python-client
 whitenoise==3.3.1
-brotlipy==0.7.0
+django-environ==0.4.4
 ipfsapi
 eth-utils==1.0.0b2
 jsondiff==1.1.1

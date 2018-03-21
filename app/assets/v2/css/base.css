@@ -12,6 +12,11 @@ div, p, a, span {
 .nav_avatar{
     cursor: pointer;
 }
+
+.navbar {
+  font-family: "futura-pt", "Futura";
+}
+
 .navbar-nav .nav-link {
     border-radius: 2px;
 }
@@ -74,19 +79,19 @@ div, p, a, span {
     overflow-x: hidden;
 }
 
-.search_bar, .bounty_def{
+.bounty_def{
     background-color: #eee;
     height: 140px;
     padding-top: 10px;
 }
 
-.search_bar, .bounty_def #mce-EMAIL{
+.bounty_def #mce-EMAIL{
     display: inline;
     text-transform: uppercase;
     font-size: 14px;
 }
 
-.search_bar, .bounty_def #mc-embedded-subscribe{
+.bounty_def #mc-embedded-subscribe{
     display: inline;
     text-transform: uppercase;
 }
@@ -393,33 +398,9 @@ p a {
     text-align: center;
 }
 
-.dashboard .body .bounty_row {
-    color: #212529;
-}
-
 .dashboard .body .bounty_row.local,
 .dashboard .body .bounty_row.ropsten {
     border-left: 1px solid red;
-}
-
-.dashboard .body .bounty_row:hover {
-    background-color: #fafafa;
-    cursor: pointer;
-    text-decoration: none;;
-}
-
-.dashboard .body .sort_option {
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 5px;
-}
-
-.dashboard .body .sort_option:hover {
-    background-color: #fafafa;
-}
-
-.dashboard .body .sort_option.selected {
-    border: 1px solid #212529;
 }
 
 .dashboard .body .experience {
@@ -451,16 +432,6 @@ p a {
 
 .dashboard .body .experienence.unknown {
     background: #eee;
-}
-
-.dashboard #clear {
-    cursor: pointer;
-    margin-top: 30px;
-}
-
-.sidebar_search label {
-    margin-bottom: 0px;
-    cursor: pointer;
 }
 
 #mailchimp {
@@ -499,44 +470,12 @@ body #mc_embed_signup label {
     margin-bottom: 50px;
 }
 
-.form_container input[type=text],
-.form_container select,
-.form_container textarea {
-    background-color: #eee;
-}
-
 textarea.loading,
 input[type=text].loading {
     background-image: url('/static/v2/images/loading_v2.gif');
     background-repeat: no-repeat;
     background-position: right;
     background-size: 30px;
-}
-
-#upper_left {
-    min-height: 140px;
-    background-color: #26cd7f;
-}
-
-#upper_left #sidebar_head {
-    text-align: center;
-    line-height: 1.3em;
-}
-
-#upper_left a {
-    color: white;
-    text-decoration: underline;;
-}
-
-#upper_left img {
-    filter: invert(100%);
-    max-width: 40px;
-    max-height: 40px;
-    display: inline;
-}
-
-#upper_left.disabled {
-    background-color: red;
 }
 
 .blocking_error {
@@ -598,10 +537,16 @@ input[type=text].loading {
 
 /* The alert message box */
 .alert {
-    background-color: #f44336;
+    align-items: center;
+    background-color: #3E00FF;
     border-radius: 0px;
-    padding: 20px;
+    box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.24);
     color: white;
+    display: flex;
+    font-family: 'Muli', sans-serif;
+    justify-content: space-between;
+    padding: 20px;
+    position: relative;
     margin-bottom: 1px;
     position: fixed;
     top: 0px;
@@ -609,21 +554,58 @@ input[type=text].loading {
     z-index: 999999;
 }
 
-.alert a{
+.alert .message {
+    align-items: center;
+    display: flex;
+}
+
+.alert .message::before {
+    content: url('/static/v2/images/info.svg');
+}
+
+.alert .message::before {
+    margin-right: 10px;
+}
+
+.alert a {
   color: white;
   text-decoration: underline;;
 }
 
+.alert.error {
+    background-color: #C70018;
+}
+
+.alert.error .message::before {
+    content: url('/static/v2/images/close.svg');
+    height: 30px;
+}
+
 .alert.success {
-    background-color: #4CAF50;
+    background-color: #00A652;
+}
+
+.alert.success .message::before {
+    content: url('/static/v2/images/success.svg');
+    height: 30px;
 }
 
 .alert.info {
-    background-color: #2196F3;
+    background-color: #008EFF;
+}
+
+.alert.info .message::before {
+    content: url('/static/v2/images/info.svg');
+    height: 30px;
 }
 
 .alert.warning {
-    background-color: #ff9800;
+    background-color: #F2A700;
+}
+
+.alert.warning .message::before {
+    content: url('/static/v2/images/warning.svg');
+    height: 28px;
 }
 
 /* The close button */
@@ -708,7 +690,7 @@ body.bounty_details .col.body{
 }
 
 body.bounty_details .left_details {
-    text-align: right;
+    text-align: center;
 }
 
 body.bounty_details .avatar {
@@ -723,6 +705,7 @@ body.bounty_details .avatar {
 
 #bounty_details{
     display: none;
+    margin-bottom: 2em;
 }
 #bounty_details #issue_description img{
     max-width: 100%;
@@ -932,6 +915,10 @@ body.bounty_details #title {
     -o-filter: grayscale(0%);
 }
 
+.body {
+  padding-bottom: 4em;
+}
+
 .profile_details .dot {
     border-radius: 6px;
     width: 12px;
@@ -968,6 +955,7 @@ body.bounty_details #title {
     font-size: 32px;
     font-weight: bold;
     border-radius: 3px;
+    margin-top: 10px;
 }
 
 .profile_details #stats li span {
@@ -1028,26 +1016,37 @@ body.bounty_details #title {
 .profile_details #hero p {
     color: #919191;
 }
+.profile_details .tips li:first-child:hover,
+.profile_details .bounties li:first-child:hover{
+    cursor: none;
+    background-color: white;
+}
 
+.profile_details .tips li ,
 .profile_details .bounties li {
     list-style: none;
     padding-top: 10px;
     height: 80px;
 }
 
+.profile_details .tips li:hover,
 .profile_details .bounties li:hover {
     background-color: #fafafa;
     cursor: pointer;
 }
 
+.profile_details .tips li a,
 .profile_details .bounties li a {
     color: black;
 }
 
+.profile_details .tips li a.btn,
 .profile_details .bounties li a.btn {
     color: white;
 }
 
+.profile_details .tips li div.url,
+.profile_details .tips li div.from_username,
 .profile_details .bounties li div.status,
 .profile_details .bounties li div.relationship {
     height: 80px;
@@ -1057,17 +1056,28 @@ body.bounty_details #title {
     text-align: center;
 }
 
+.profile_details .tips div.url,
+.profile_details .tips li div.url{
+    width: 600px;
+}
+
+.profile_details .tips li div.details,
 .profile_details .bounties li div.details {
     height: 80px;
     width: 500px;
     display: inline-block;
     vertical-align: top;
 }
+.profile_details .tips li div.details{
+    width: 200px;
+}
 
+.profile_details .tips li div.details p,
 .profile_details .bounties li div.details p {
     color: #919191;
 }
 
+.profile_details .tips li .amount,
 .profile_details .bounties li .amount {
     height: 80px;
     width: 200px;
@@ -1165,15 +1175,71 @@ body.bounty_details #title {
     margin-left: 0px;
     padding-left: 0px;
 }
-#interest_list li{
+#interest_list li {
     list-style: none;
 }
+
+
+input.is-invalid {
+  border-color: red;
+}
+
+.faucet_response {
+  display:none;
+}
+
+.faucet_response .frheader {
+  font-size: xx-large;
+}
+
+.faucet_response .frmessage {
+  font-size: large;
+}
+
+.tooltip-info {
+  font-family: "Muli";
+  padding: 10px 20px;
+  margin: 0;
+  width: 25em;
+}
+
+.ui-widget-shadow {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.tooltip-info p {
+  margin-bottom: 10px;
+}
+
+.tooltip-info .font-subheader {
+  margin-top: 10px;
+}
+
+.tooltip-info .row {
+  margin-bottom: 15px;
+}
+
+.tooltip-info .col-11 {
+  padding-left: 0px;
+}
+
+#gitcoinTestimonials{
+    height:288px; 
+    width:500px;
+}
+
 @media (max-width: 1350px) {
+    .profile_details .tips li div.details,
     .profile_details .bounties li div.details{
+        width: 300px;
+    }
+    .profile_details .tips div.url,
+    .profile_details .tips li div.url{
         width: 400px;
     }
 }
 @media (max-width: 1250px) {
+    .profile_details .tips li div.details,
     .profile_details .bounties li div.details{
         width: 400px;
     }
@@ -1188,16 +1254,20 @@ body.bounty_details #title {
         max-width: 300px;
         max-height: 300px;
     }
+
     #bounty_details{
-        margin-left: 15px;
+        margin: 15px;
     }
 
+    .profile_details .tips li div.details,
+    .profile_details .tips li .url,
     .profile_details .bounties li div.relationship,
     .profile_details .bounties li div.status,
     .profile_details .bounties li .amount {
         display: none;
     }
 
+    .profile_details .tips li div.details,
     .profile_details .repos li,
     .profile_details .bounties li div.details {
         padding-left: 0px;
@@ -1208,9 +1278,6 @@ body.bounty_details #title {
         display: none;
     }
 
-    .interior .col-2 {
-        display: none !important;
-    }
     .interior .col-7 {
         margin-left: 5%;
     }
@@ -1268,6 +1335,11 @@ body.bounty_details #title {
     }
 }
 @media (max-width: 769px) {
+    #gitcoinTestimonials{
+        height:202px; 
+        width:350px;
+    }
+
     .tldr_container img{
         max-width: 250px;
         max-height: 250px;
@@ -1288,10 +1360,6 @@ body.bounty_details #title {
 
     .profile_details #hero {
         height: 400px;
-    }
-
-    body.bounty_details .left_details {
-        display: none;
     }
 
     body.bounty_details .right_details {
@@ -1358,14 +1426,6 @@ body.bounty_details #title {
         display: none !important;
     }
 
-    .search_bar {
-        height: 90px ;
-    }
-
-    .dash-filter-header {
-        font-size: 1rem;
-    }
-
     #hero_cta a.btn {
         padding: .5rem .75rem;
         font-size: 1rem;
@@ -1392,8 +1452,17 @@ body.bounty_details #title {
     #mission_hero .mission-img-wrapper img {
         max-height: 150px;
     }
+
+    .tooltip-info {
+      display: none;
+    }
 }
 @media (max-width: 481px) {
+
+    #gitcoinTestimonials{
+        height:144px; 
+        width:250px;
+    }
     .tldr_container img {
         max-width: 150px;
         max-height: 150px;
@@ -1525,4 +1594,42 @@ body.bounty_details #title {
     .bounty_def h5 {
         font-size: .8rem;
     }
+}
+
+@media (max-width: 576px) {
+  #sidebar_container {
+    display: none;
+  }
+  .profile_details #stats {
+    padding-right: 10px;
+  }
+
+  .profile_details .repos {
+    padding-right: 40px;
+  }
+
+  .profile_details .repos li {
+    margin-bottom: 1em;
+  }
+
+  .issue_details {
+    flex-direction: column;
+  }
+
+  .issue_details div {
+    width: 100% !important;
+  }
+  .profile_details .tips li div.url{
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .bounty_nav {
+    padding-left: 0;
+  }
+
+  .bounty_nav li{
+    display: block;
+  }
 }

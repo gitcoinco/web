@@ -4,7 +4,8 @@
   "description": "Gitcoin is the easiest way to monetize or incentivize work in Open Source Software",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "eslint": "eslint --quiet --config .eslintrc ./app/assets/v2/js/**/*.js",
+    "eslint": "./node_modules/eslint/bin/eslint.js --quiet --config .eslintrc ./app/assets/v2/js/*.js ./app/assets/v2/js/**/*.js ./app/assets/legacy/v2/js/*.js ./app/assets/legacy/v2/js/**/*.js ./app/assets/yge/*.js ./app/assets/yge/youvegoteth/*.js",
+    "eslint:fix": "./node_modules/eslint/bin/eslint.js --quiet --fix --config .eslintrc ./app/assets/v2/js/*.js ./app/assets/v2/js/**/*.js ./app/assets/legacy/v2/js/*.js ./app/assets/legacy/v2/js/**/*.js ./app/assets/yge/*.js ./app/assets/yge/youvegoteth/*.js",
     "stylelint": "stylelint ./app/assets/**/**/*.*css",
     "build": "webpack --config webpack.config.js --progress --colors"
   },
@@ -13,7 +14,7 @@
     "url": "https://github.com/gitcoinco/web"
   },
   "author": "Gitcoin https://github.com/gitcoinco",
-  "license": "ISC",
+  "license": "AGPLv3",
   "bugs": {
     "url": "https://github.com/gitcoinco/web/issues"
   },
@@ -26,6 +27,7 @@
     "eslint": "^4.13.1",
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-loader": "^1.9.0",
+    "eslint-plugin-html": "^4.0.2",
     "stylelint": "^8.4.0",
     "stylelint-config-recommended": "^2.0.1",
     "stylelint-webpack-plugin": "^0.9.0",

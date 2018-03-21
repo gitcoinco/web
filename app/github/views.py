@@ -76,8 +76,7 @@ def github_callback(request):
         UserAction.objects.create(
             profile=user_profile,
             action='Login',
-            metadata={},
-            )
+            metadata={})
 
     response = redirect(redirect_uri)
     response.set_cookie('last_github_auth_mutation', int(time.time()))
@@ -93,8 +92,7 @@ def github_authentication(request):
         return redirect(get_auth_url(redirect_uri))
 
     # Alert local developer that Github integration needs configured.
-    if settings.DEBUG and (not settings.GITHUB_CLIENT_ID or
-                           settings.GITHUB_CLIENT_ID == 'TODO'):
+    if settings.ENV == 'local' and (not settings.GITHUB_CLIENT_ID or settings.GITHUB_CLIENT_ID == 'TODO'):
         logging.info('GITHUB_CLIENT_ID is not set. Github integration is disabled!')
 
     response = redirect(redirect_uri)
@@ -111,15 +109,20 @@ def github_logout(request):
     if access_token:
         revoke_token(access_token)
         request.session.pop('access_token_last_validated')
-        Profile.objects.filter(handle=handle).update(github_access_token='')
+
+    try:
+        # If the profile exists, clear the github access token.
+        profile = Profile.objects.get(handle=handle)
+        profile.github_access_token = ''
+        profile.save()
 
         # record a useraction for this
-        if Profile.objects.filter(handle=handle).count():
-            UserAction.objects.create(
-                profile=Profile.objects.get(handle=handle),
-                action='Logout',
-                metadata={},
-                )
+        UserAction.objects.create(
+            profile=profile,
+            action='Logout',
+            metadata={})
+    except Profile.DoesNotExist:
+        pass
 
     request.session.modified = True
     response = redirect(redirect_uri)

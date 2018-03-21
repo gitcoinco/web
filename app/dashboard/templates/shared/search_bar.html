@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,33 +15,30 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-
-                <div class="search_bar">
-                <div class="row mt-4 align-items-center " >
-                    <div class="col-1"></div>
-                    <div class="col-5">
-                        <div class="search-area d-flex justify-content-center">
-                            <input class="gc-round-text-input gc-border-black w-100" id="keywords" type="text" placeholder="keyword1, keyword2, keyword3" />
-                        </div>
-                    </div>
-                    <div class="col-1"></div>
-                    <div class="col-2">
-                        <a class="btn btn-outline-dark pl-4 pr-4" role="button" id="new_search" href="#">Search</a>
-                    </div>
-                </div>
-                <div class="row mt-3 sort_row">
-                    <div class="col-1"></div>
-                    <div class="col-6 d-flex align-items-center order_by">
-                        <div class="ml-3">Sort:</div>
-                        <div class="ml-5 font-smaller-2 sort_option selected" data-key='web3_created' data-direction="-">Created</div>
-                        <div class="ml-4 font-smaller-2 sort_option" data-key='_val_usd_db' data-direction="-">Value</div>
-                        <div class="ml-4 font-smaller-2 sort_option" data-key='idx_experience_level'>Difficulty</div>
-                        <div class="ml-4 font-smaller-2 sort_option" data-key='idx_project_length'>Length</div>
-                    </div>
-                    <div class="col-2">
-                        <a class="pl-4 pr-4 font-smaller-2 save_search" href="/save_search" style="color: #000;">Save Search</a>
-                    </div>
-                </div>
-                </div>
-                
-                
+{% load static %}
+<link rel="stylesheet" href={% static "v2/css/search_bar.css" %}>
+<div class="row search_bar">
+  <div class="offset-1 col-10">
+    <div class="row">
+      <div class="search-area col-12 col-md-6 col-lg-7">
+        <input class="form__input form__input_lg" id="keywords" type="text" placeholder="keyword1, keyword2, keyword3" />
+      </div>
+      <div class="col-2 col-md-1">
+        <a class="button button--primary" role="button" id="new_search" href="#">Search</a>
+      </div>
+      <div class="col-10 col-md-5 col-lg-4 font-caption order_by">
+          <div class="heading">SORT </div>
+          <a class="sort_option selected" data-key='web3_created' data-direction="-">Created</a>
+          <a class="sort_option" data-key='_val_usd_db' data-direction="-">Value</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <div class="filter-tags"></div> <!-- Populate the filters -->
+      </div>
+      <div class="col-12 col-md-2">
+        <a class="save_search font-caption" href="/save_search">Save Search</a>
+      </div>
+    </div>
+  </div>
+</div>

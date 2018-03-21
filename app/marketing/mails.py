@@ -20,17 +20,18 @@ from django.conf import settings
 from django.utils import timezone
 
 import sendgrid
+from economy.utils import convert_token_to_usdt
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from retail.emails import (
-    render_bounty_expire_warning, render_bounty_startwork_expire_warning, render_match_email, render_new_bounty,
-    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
-    render_tip_email,
+    render_bounty_expire_warning, render_bounty_feedback, render_bounty_startwork_expire_warning,
+    render_faucet_rejected, render_faucet_request, render_match_email, render_new_bounty, render_new_bounty_acceptance,
+    render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
 
 def send_mail(from_email, _to_email, subject, body, html=False,
-              from_name="Gitcoin.co", cc_emails=None, add_bcc=True):
+              from_name="Gitcoin.co", cc_emails=None):
 
     # make sure this subscriber is saved
     to_email = _to_email
@@ -44,24 +45,22 @@ def send_mail(from_email, _to_email, subject, body, html=False,
 
     # build content
     content = Content(contenttype, html) if html else Content(contenttype, body)
-    if settings.DEBUG:
-        to_email = Email(settings.CONTACT_EMAIL) #just to be double secret sure of what were doing in dev
+    if settings.IS_DEBUG_ENV:
+        to_email = Email(settings.CONTACT_EMAIL)  # just to be double secret sure of what were doing in dev
         subject = "[DEBUG] " + subject
     mail = Mail(from_email, subject, to_email, content)
 
-    # build personalization (BCC + CC)
-    if add_bcc:
-        p = Personalization()
-        p.add_to(to_email)
-        if cc_emails: #only add CCif not in prod
-            for cc_addr in set(cc_emails):
-                cc_addr = Email(cc_addr)
-                if settings.DEBUG:
-                    cc_addr = to_email
-                if cc_addr._email != to_email._email:
-                    p.add_to(cc_addr)
-        p.add_bcc(Email(settings.BCC_EMAIL))
-        mail.add_personalization(p)
+    # build personalization
+    p = Personalization()
+    p.add_to(to_email)
+    if cc_emails:  # only add CCif not in prod
+        for cc_addr in set(cc_emails):
+            cc_addr = Email(cc_addr)
+            if settings.IS_DEBUG_ENV:
+                cc_addr = to_email
+            if cc_addr._email != to_email._email:
+                p.add_to(cc_addr)
+    mail.add_personalization(p)
 
     # debug logs
     print("-- Sending Mail '{}' to {}".format(subject, _to_email))
@@ -71,21 +70,60 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     return response
 
 
+def bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
+    from_email = settings.PERSONAL_CONTACT_EMAIL
+    to_email = bounty.bounty_owner_email
+    if persona != 'submitter':
+        accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
+        to_email = accepted_fulfillments.first().fulfiller_email if accepted_fulfillments.exists() else ""
+
+    subject = bounty.github_url
+    html, text = render_bounty_feedback(bounty, persona, previous_bounties)
+    cc_emails = [from_email]
+    send_mail(from_email, to_email, subject, body, cc_emails=cc_emails)
+
+
 def tip_email(tip, to_emails, is_new):
-    ROUND_DECIMALS = 5
+    round_decimals = 5
     if not tip or not tip.url or not tip.amount or not tip.tokenName:
         return
 
     warning = '' if tip.network == 'mainnet' else "({})".format(tip.network)
-    subject = "⚡️ New Tip Worth {} {} {}".format(round(tip.amount, ROUND_DECIMALS), warning, tip.tokenName)
+    subject = "⚡️ New Tip Worth {} {} {}".format(round(tip.amount, round_decimals), warning, tip.tokenName)
     if not is_new:
-        subject = "🕐 Tip Worth {} {} {} Expiring Soon".format(round(tip.amount, ROUND_DECIMALS), warning, tip.tokenName)
+        subject = "🕐 Tip Worth {} {} {} Expiring Soon".format(round(tip.amount, round_decimals), warning, tip.tokenName)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
         html, text = render_tip_email(to_email, tip, is_new)
 
         send_mail(from_email, to_email, subject, text, html)
+
+
+def new_faucet_request(fr):
+    to_email = settings.PERSONAL_CONTACT_EMAIL
+    from_email = settings.SERVER_EMAIL
+    subject = "New Faucet Request"
+    body = f"A new faucet request was completed. You may fund the request here : https://gitcoin.co/_administration/process_faucet_request/{fr.pk}"
+    send_mail(from_email, to_email, subject, body, from_name="No Reply from Gitcoin.co")
+
+
+def processed_faucet_request(fr):
+    from_email = settings.SERVER_EMAIL
+    subject = "Faucet Request Processed"
+    html, text = render_faucet_request(fr)
+    to_email = fr.email
+
+    send_mail(from_email, to_email, subject, text, html)
+
+
+def reject_faucet_request(fr):
+    from_email = settings.SERVER_EMAIL
+    subject = "Faucet Request Rejected"
+    html, text = render_faucet_rejected(fr)
+    to_email = fr.email
+
+    send_mail(from_email, to_email, subject, text, html)
 
 
 def new_bounty(bounty, to_emails=None):
@@ -95,7 +133,8 @@ def new_bounty(bounty, to_emails=None):
     if to_emails is None:
         to_emails = []
 
-    subject = "⚡️ New Funded Issue Match worth ${} ({})".format(bounty.value_in_usdt, bounty.keywords)
+    subject = f"⚡️ New Funded Issue Match worth {bounty.value_in_usdt} USD @ " \
+              f"${convert_token_to_usdt(bounty.token_name)}/{bounty.token_name} {bounty.keywords})"
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
@@ -109,9 +148,8 @@ def weekly_roundup(to_emails=None):
     if to_emails is None:
         to_emails = []
 
-    subject = "Gitcoin Weekly | See you at ETHDenver! 🌄"
     for to_email in to_emails:
-        html, text = render_new_bounty_roundup(to_email)
+        html, text, subject = render_new_bounty_roundup(to_email)
         from_email = settings.PERSONAL_CONTACT_EMAIL
 
         if not should_suppress_notification_email(to_email):

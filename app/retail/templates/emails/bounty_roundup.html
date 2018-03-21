@@ -41,6 +41,22 @@
         font-size: normal;;
         margin-bottom: 5px;
     }
+    #highlights {
+
+    }
+    #highlights li {
+        list-style: none;
+    }
+    #highlights img {
+        border-radius: 15px;
+        display: inline;;
+        margin-bottom: -5px;
+    }
+    #highlights tr td a,
+    #highlights tr td {
+        font-size: 14px;
+        line-height: 18px;
+    }
 
 </style>
 
@@ -49,20 +65,12 @@
 <table>
     <tr>
         <td id="welcome" colspan=6 valign="top" style='padding: 5px 10px 0px;'>
-            <p>
-                Howdy doo, 
-            </p>
-            <p>
-                The entire Gitcoin Foundation team will be at <a href="https://ethdenver.com">ETHDenver</a> this weekend.  If you are coming, we hope to see you there.  If not, be sure to check out the livestream at <a href="https://ethdenver.com">ETHDenver.com</a>.
-            </p>
-            <p>
-                Meantime, we'll see you <a href="https://gitcoin.co/slack">on slack</a>, or on the community livestream this Friday at 3pm MST ! 🤖
-            </p>
+
+            {{ intro | safe}}
+
             <a href="https://twitter.com/owocki" style="float:right; padding-left: 10px;">
                 <img src="{% static "v2/images/avatar.png" %}" width="77" height="137">
             </a>
-            <p>  Can't make the community livestream?  NBD -- Participate <a href="https://gitcoin.co/slack">on slack</a> in the <i>#community-random</i> channel;  This weeks conversation topic is <i>What got you into blockchain?</i>.
-            </p>  
             <p>
                 👋
                 <br>
@@ -72,6 +80,34 @@
     </tr>
 </table>
 
+{% if highlights %}
+
+<h3>Last Week's Highlights</h3>
+<h5>Community Members growing open source🌳</h5>
+
+    <table id="highlights">
+        <tr >
+            <td style='padding: 5px 10px 0px; text-align: left; width: 540px;'>
+                {% for highlight in highlights %}
+                    <li>
+                        {% if highlight.who_link %}
+                            <img src="https://gitcoin.co/funding/avatar?repo=https://github.com/{{highlight.who}}" width=30px height=30px>
+                            <a href="https://gitcoin.co/profile/{{highlight.who}}">{{highlight.who}}</a>
+                        {% else %}
+                            * <strong>{{highlight.who}}</strong>
+                        {% endif %}
+                         - {{highlight.what}}
+                        {% if highlight.link %}
+                            <a href="{{highlight.link}}">{{highlight.link_copy}}</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </td>
+        </tr>
+    </table>
+    <hr>
+
+{% endif %}
 
 <h3>Open Funded Issues</h3>
 <h5>Grow Open Source ⚡️ Make Some ETH 💰</h5>
@@ -103,7 +139,7 @@
 </p>
 
 <p>
-    Keep Pushing Open Source Forward,
+    Keep Growing Open Source,
     <br>
     -- Gitcoin Core
 </p>

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 '''
     Copyright (C) 2017 Gitcoin Core
 
@@ -16,7 +17,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-#!/usr/bin/env python
 from django.core.management.base import BaseCommand
 
 from dashboard.models import Bounty
@@ -28,7 +28,7 @@ class Command(BaseCommand):
     help = 'sends bounties quotes to twitter'
 
     def handle(self, *args, **options):
-        return # per 2018/01/22 convo with vivek / kevin, these tweets have low engagement
+        return  # per 2018/01/22 convo with vivek / kevin, these tweets have low engagement
         # we are going to test manually promoting these tweets for a week and come back to revisit this
         bounties = Bounty.objects.filter(
             current_bounty=True,
