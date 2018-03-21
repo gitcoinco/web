@@ -6,7 +6,10 @@
 {% endblock %}
 
 {% block 'body_block' %}
-    <h1>Register your ENS subdomain</h1>
+    {% if github_handle == None %}
+        <a href="{% url "github:github_auth" %}?redirect_uri={{ request.get_full_path }}" class="button">Login using Github to continue</a>
+    {% else %}
+        <h1>Register your ENS subdomain</h1>
         <div>
             <br>
             <h2><label id="githubHandle">{{ github_handle }}</label><label>.gitcoin.eth</label></h2>
@@ -15,8 +18,7 @@
             <br>
             <input type="checkbox" id="tos" value="1" >
             <label for="tos">I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.</label>
-
         </div>
-
-      <a href="#" id="register" class="button">Register ⚡️</a>
+        <a href="#" id="register" class="button">Register ⚡️</a>
+    {% endif %}
 {% endblock %}
