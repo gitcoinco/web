@@ -20,7 +20,6 @@ from __future__ import print_function, unicode_literals
 
 import json
 import logging
-from django.utils.text import slugify
 
 from django.conf import settings
 from django.contrib.staticfiles.templatetags.staticfiles import static
@@ -30,6 +29,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.text import slugify
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
