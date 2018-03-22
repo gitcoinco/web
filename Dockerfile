@@ -22,8 +22,7 @@ RUN mkdir -p /usr/share/GeoIP/ && \
     wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz && \
     gunzip GeoLite2-City.mmdb.gz && \
     gunzip GeoLite2-Country.mmdb.gz && \
-    mv *.mmdb /usr/share/GeoIP/ && \
-    rm *.mmdb.gz
+    mv *.mmdb /usr/share/GeoIP/
 
 WORKDIR /code
 COPY requirements/ /code/
