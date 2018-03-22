@@ -801,7 +801,7 @@ def toolbox(request):
           }
           ]
        }, {
-          "title": "Tools in Beta",
+          "title": "Tools in Alpha",
           "description": "These fresh new tools are looking someone to test ride them!",
           "tools": [{
               "name": "Leaderboard",
@@ -860,7 +860,7 @@ def toolbox(request):
             },
           ]
        }, {
-           "title": "Tools in Alpha",
+           "title": "Tools Coming Soon",
            "description": "These tools will be ready soon.  They'll get here sooner if you help BUIDL them :)",
            "tools": [
               {
@@ -933,6 +933,13 @@ def toolbox(request):
                   "description": '''Make it easy for friends to find you on ENS''',
                   "link": 'https://github.com/gitcoinco/web/issues/450',
                   'link_copy': 'Details',
+                  "active": "false",
+                  'stat_graph': 'na',  # TODO
+            },
+              {
+                  "name": "Top Secret Project 001",
+                  "img": static("v2/images/tools/comingsoon.png"),
+                  "description": '''We can\'t talk about what it is yet :) ''',
                   "active": "false",
                   'stat_graph': 'na',  # TODO
             },
