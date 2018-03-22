@@ -131,9 +131,9 @@ def user_actions():
             ).count()
 
         Stat.objects.create(
-            key='user_action_{}'.format(action_type),
+            key=f'user_action_{action_type}',
             val=val,
-            )
+        )
 
 
 def github_stars():

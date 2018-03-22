@@ -3,11 +3,13 @@ import imaplib
 import logging
 import time
 
+from django.contrib.gis.geoip2 import GeoIP2
 from django.utils import timezone
 
 import requests
 import rollbar
 from dashboard.models import Profile
+from geoip2.errors import AddressNotFoundError
 from github.utils import _AUTH, HEADERS, get_user
 
 logger = logging.getLogger(__name__)
@@ -149,3 +151,28 @@ def itermerge(gen_a, gen_b, key):
             yield b
     except StopIteration:
         pass
+
+
+def get_location_from_ip(ip_address):
+    """Get the location associated with the provided IP address.
+
+    Args:
+        ip_address (str): The IP address to lookup.
+
+    Returns:
+        dict: The GeoIP location data dictionary.
+
+    """
+    city = None
+    if not ip_address:
+        return city
+
+    try:
+        geo = GeoIP2()
+        try:
+            city = geo.city(ip_address)
+        except AddressNotFoundError:
+            pass
+    except Exception as e:
+        logger.warning(f'Encountered ({e}) while attempting to retrieve a user\'s geolocation')
+    return city
