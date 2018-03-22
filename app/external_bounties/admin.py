@@ -24,10 +24,12 @@ from django.contrib import admin
 from .models import ExternalBounty
 
 
-class GeneralAdmin(admin.ModelAdmin):
+class ExternalBountyAdmin(admin.ModelAdmin):
     """Define the admin display of External Bounties."""
 
     ordering = ['-id']
+    list_display = ['pk', 'active', 'source_project', 'title']
+    search_fields = ['title', 'description', 'tags', 'action_url', 'source_project']
 
 
-admin.site.register(ExternalBounty, GeneralAdmin)
+admin.site.register(ExternalBounty, ExternalBountyAdmin)

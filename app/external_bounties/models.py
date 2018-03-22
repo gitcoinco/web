@@ -41,7 +41,7 @@ class ExternalBounty(SuperModel):
     last_sync_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     tags = ArrayField(models.CharField(max_length=200), blank=True, default=[], help_text="comma delimited")
     github_handle = models.CharField(max_length=255, blank=True)
-    payout_str = models.CharField(max_length=255, default='', help_text="string representation of the payout (only needed it amount/denomination cannot be filled out")
+    payout_str = models.CharField(max_length=255, blank=True, default='', help_text="string representation of the payout (only needed it amount/denomination cannot be filled out")
 
     def __str__(self):
         """Return the string representation of an ExternalBounty."""
