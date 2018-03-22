@@ -18,6 +18,14 @@
   padding: 20px;
 }
 
+#sort_options{
+  padding: 5px 10px;
+  text-align: right;
+  font-size: 12px;
+}
+#sort_options .active{
+  font-weight: bold;
+}
 #msg {
   padding: 10px;
   background-color: #29cd7f;

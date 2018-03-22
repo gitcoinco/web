@@ -48,6 +48,21 @@ def strip_html(html):
     return s.get_data()
 
 
+
+def sort_index(request, bounties):
+    direction = "" if request.GET.get('direction') == 'asc' else '-'
+    column = 'created_on'
+    sort = request.GET.get('sort')
+    if sort == 'Created':
+        column = 'created_on'
+    if sort == 'Value':
+        column = 'idx_fiat_price'
+
+    bounties = bounties.order_by(f"{direction}{column}")
+
+    return bounties, sort, direction
+
+
 def external_bounties_index(request):
     """Handle External Bounties index page.
 
@@ -58,6 +73,8 @@ def external_bounties_index(request):
     tags = []
     external_bounties_results = []
     bounties = ExternalBounty.objects.filter(active=True).order_by('-created_on')
+    bounties, sorted_by, sort_direction = sort_index(request, bounties)
+    print(sorted_by)
     for external_bounty_result in bounties:
         external_bounty = {
             "created_on": external_bounty_result.created_on,
@@ -81,6 +98,8 @@ def external_bounties_index(request):
         'card_desc': 'Bounties for Software Work from across the internets.',
         'bounties': external_bounties_results,
         'categories': categories,
+        'sort_direction': sort_direction,
+        'sorted_by': sorted_by,
     }
     return TemplateResponse(request, 'external_bounties.html', params)
 

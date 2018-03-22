@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 
 from economy.models import SuperModel
@@ -42,6 +44,7 @@ class ExternalBounty(SuperModel):
     tags = ArrayField(models.CharField(max_length=200), blank=True, default=[], help_text="comma delimited")
     github_handle = models.CharField(max_length=255, blank=True)
     payout_str = models.CharField(max_length=255, blank=True, default='', help_text="string representation of the payout (only needed it amount/denomination cannot be filled out")
+    idx_fiat_price = models.DecimalField(default=0, decimal_places=4, max_digits=50)
 
     def __str__(self):
         """Return the string representation of an ExternalBounty."""
@@ -92,3 +95,10 @@ class ExternalBounty(SuperModel):
         except Exception:
             pass
         return fiat_price
+
+
+@receiver(pre_save, sender=ExternalBounty, dispatch_uid="psave_exbounty")
+def psave_exbounty(sender, instance, **kwargs):
+    instance.idx_fiat_price = instance.fiat_price
+    if not instance.idx_fiat_price:
+        instance.idx_fiat_price = 0

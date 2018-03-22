@@ -32,6 +32,13 @@
               <div class="search_area search_area--append">
                 <input class="gc-round-text-input gc-border-black w-100" type="text" placeholder="Search Bounties" />
                 <span class="icon">{% include 'svgs/search.svg' %}</span>
+                <div id="sort_options">
+                    Sort by 
+                        <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/offchain?sort=Created&direction=asc">Oldest</a> | 
+                        <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/offchain?sort=Created&direction=desc">Newest</a> | 
+                        <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/offchain?sort=Value&direction=desc">Highest Value</a> | 
+                        <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/offchain?sort=Value&direction=asc">Lowest Value</a> 
+                </div>
               </div>
             </div>
           </header>
