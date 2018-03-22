@@ -204,13 +204,27 @@ var pull_interest_list = function(bounty_pk, callback) {
   profiles = [];
   document.interested = false;
   $.getJSON('/actions/bounty/' + bounty_pk + '/interest/', function(data) {
-    data = sanitizeAPIResults(JSON.parse(data));
+    var bounty_owner_github_username = data['bounty_owner_github_username'];
+    data = sanitizeAPIResults(data['data']);
     $.each(data, function(index, value) {
+      console.log(value);
       var profile = {
         local_avatar_url: value.local_avatar_url,
         handle: value.handle,
-        url: value.url
+        url: value.url,
       };
+      var is_me = value['handle'] == document.contxt['github_handle'];
+      var is_me_fullfiller = document.contxt['github_handle'] = bounty_owner_github_username;
+      var button_enabled = is_me || is_me_fullfiller;
+      if(button_enabled){
+        profile['button'] = {
+          href: '/uninterested/'+value.handle+'/',
+          text: 'Stop Work',
+          parent: 'right_actions',
+          color: 'darkBlue',
+          title: 'Remove this user\'s started work on the bounty'
+        };        
+      }
       // add to template
 
       profiles.push(profile);

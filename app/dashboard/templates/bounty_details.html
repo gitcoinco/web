@@ -152,6 +152,15 @@
               <a href="[[:url]]" target="_blank" rel="noopener noreferrer">[[:handle]]</a>
             </span>
           </div>
+            [[if button]]
+            <div class="col-sm-12 col-md-2 text-center actions">
+              <span title='[[:button.title]]'>
+                <a class="btn btn-sm btn-[[:button.color]] [[:button.extraClass]]" role="button" href="[[:button.href]]" target="[[:button.target]]">
+                  <span class="font-smaller-4">[[:button.text]]</span>
+                </a>
+              </span>
+            </div>
+            [[/if]]
         </div>
       </li>
     </script>
