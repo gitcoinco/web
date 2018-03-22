@@ -39,3 +39,4 @@ django-environ==0.4.4
 ipfsapi
 eth-utils==1.0.0b2
 jsondiff==1.1.1
+backoff==1.4.3
