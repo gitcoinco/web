@@ -108,6 +108,15 @@ def new_faucet_request(fr):
     send_mail(from_email, to_email, subject, body, from_name="No Reply from Gitcoin.co")
 
 
+def new_external_bounty():
+    """Send a new external bounty email notification."""
+    to_email = settings.PERSONAL_CONTACT_EMAIL
+    from_email = settings.SERVER_EMAIL
+    subject = "New External Bounty"
+    body = f"https://gitcoin.co/_administrationexternal_bounties/externalbounty"
+    send_mail(from_email, to_email, subject, body, from_name="No Reply from Gitcoin.co")
+
+
 def processed_faucet_request(fr):
     from_email = settings.SERVER_EMAIL
     subject = "Faucet Request Processed"

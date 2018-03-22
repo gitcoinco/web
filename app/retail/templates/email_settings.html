@@ -38,11 +38,11 @@
                             {{msg | safe}}
                         </p>
                     {% endif %}
-                    <form id=whitepaper  method=POST>
+                    <form id="whitepaper" method="POST">
                         <div class="form-group">
                             <h5>Basic Preferences</h5>
                             <label class="form__label" for="email">Email address</label>
-                            <input type="text" name="email" class="form__input" placeholder='you@somewhere' value="{{es.email}}" required>
+                            <input type="email" name="email" class="form__input" placeholder='you@somewhere' value="{{es.email}}" required>
                             <small id="emailHelp" class="form__input-help">We will never share your email with anyone else</small>
                         </div>
                         <div class="form-group">
@@ -101,6 +101,7 @@
 <script>
     document.keywords = {{autocomplete_keywords | safe}};
     $(document).ready(function() {
+        $("#whitepaper").validate();
 
 
      // TODO: DRY
