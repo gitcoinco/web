@@ -379,15 +379,17 @@ class Bounty(SuperModel):
             str: The item content.
 
         """
-        issue_description = requests.get(self.get_github_api_url(), auth=_AUTH)
-        if issue_description.status_code == 200:
-            item = issue_description.json().get(item_type, '')
-            if item_type == 'body' and item:
-                self.issue_description = item
-            elif item_type == 'title' and item:
-                self.title = item
-            self.save()
-            return item
+        github_url = self.get_github_api_url()
+        if github_url:
+            issue_description = requests.get(github_url, auth=_AUTH)
+            if issue_description.status_code == 200:
+                item = issue_description.json().get(item_type, '')
+                if item_type == 'body' and item:
+                    self.issue_description = item
+                elif item_type == 'title' and item:
+                    self.title = item
+                self.save()
+                return item
         return ''
 
     def fetch_issue_comments(self, save=True):
