@@ -715,15 +715,6 @@ def toolbox(request):
              'link_copy': 'Try It',
              "active": "false",
              'stat_graph': 'tips',
-        }, {
-             "name": "Code Sponsor",
-             "img": static("v2/images/codesponsor.jpg"),
-             "description": '''CodeSponsor sustains open source
-                        by connecting sponsors with open source projects.''',
-             "link": "https://codesponsor.io",
-             'link_copy': 'Try It',
-             "active": "false",
-             'stat_graph': 'codesponsor',
         }
         ]
       }, {
@@ -774,7 +765,7 @@ def toolbox(request):
         },
           ]
        }, {
-          "title": "BUIDL Gitcoin",
+          "title": "Tools to BUIDL Gitcoin",
           "description": "Gitcoin is built using Gitcoin.  Purdy cool, huh? ",
           "tools": [{
               "name": "Github Repos",
@@ -810,7 +801,7 @@ def toolbox(request):
           }
           ]
        }, {
-          "title": "Coming Soon: Beta",
+          "title": "Tools in Beta",
           "description": "These fresh new tools are looking someone to test ride them!",
           "tools": [{
               "name": "Leaderboard",
@@ -848,6 +839,15 @@ def toolbox(request):
             'link_copy': 'Try It',
             "active": "true",
             'stat_graph': 'faucet_page',
+            }, {
+             "name": "Code Sponsor",
+             "img": static("v2/images/codesponsor.jpg"),
+             "description": '''CodeSponsor sustains open source
+                        by connecting sponsors with open source projects.''',
+             "link": "https://codesponsor.io",
+             'link_copy': 'Try It',
+             "active": "false",
+             'stat_graph': 'codesponsor',
             },
             {
               "name": "Offchain Bounties",
@@ -860,7 +860,7 @@ def toolbox(request):
             },
           ]
        }, {
-           "title": "Coming Soon: Alpha",
+           "title": "Tools in Alpha",
            "description": "These tools will be ready soon.  They'll get here sooner if you help BUIDL them :)",
            "tools": [
               {
