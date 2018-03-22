@@ -330,6 +330,7 @@ var do_actions = function(result) {
   var is_date_expired = (new Date(result['now']) > new Date(result['expires_date']));
   var is_status_expired = result['status'] == 'expired';
   var is_status_done = result['status'] == 'done';
+  var is_status_cancelled = result['status'] == 'cancelled';
   var can_submit_after_expiration_date = result['can_submit_after_expiration_date'];
   var is_still_on_happy_path = result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted' || (can_submit_after_expiration_date && result['status'] == 'expired');
 
@@ -340,7 +341,7 @@ var do_actions = function(result) {
     var show_start_stop_work = is_still_on_happy_path;
     var show_github_link = result['github_url'].substring(0, 4) == 'http';
     var show_submit_work = true;
-    var show_kill_bounty = !is_status_done && !is_status_expired;
+    var show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
     var kill_bounty_enabled = isBountyOwner(result);
     var submit_work_enabled = !isBountyOwner(result);
     var start_stop_work_enabled = !isBountyOwner(result);
