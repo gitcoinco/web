@@ -409,15 +409,15 @@ class Bounty(SuperModel):
         try:
             github_user, github_repo, _, github_issue = parsed_url.path.split('/')[1:5]
         except ValueError:
-            logger.info('Invalid github url for Bounty: %s -- %s', self.pk, self.github_url)
+            logger.info(f'Invalid github url for Bounty: {self.pk} -- {self.github_url}')
             return []
         comments = get_issue_comments(github_user, github_repo, github_issue)
-        if isinstance(comments, dict) and comments.get('message') == 'Not Found':
-            logger.info('Bounty %s contains an invalid github url %s', self.pk, self.github_url)
+        if isinstance(comments, dict) and comments.get('message', '') == 'Not Found':
+            logger.info(f'Bounty {self.pk} contains an invalid github url {self.github_url}')
             return []
         comment_count = 0
         for comment in comments:
-            if comment['user']['login'] not in settings.IGNORE_COMMENTS_FROM:
+            if (isinstance(comment, dict) and comment.get('user', {}).get('login', '') not in settings.IGNORE_COMMENTS_FROM):
                 comment_count += 1
         self.github_comments = comment_count
         if save:
