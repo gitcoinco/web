@@ -15,19 +15,19 @@ var address_ize = function(key, val, result) {
   if (!_truthy(val)) {
     return [ null, null ];
   }
-  return [ key, '<a target=new href=https://etherscan.io/address/' + val + '>' + val + '</a>' ];
+  return [ key, '<a href="https://etherscan.io/address/' + val + '" target="_blank" rel="noopener noreferrer">' + val + '</a>' ];
 };
 var gitcoin_ize = function(key, val, result) {
   if (!_truthy(val)) {
     return [ null, null ];
   }
-  return [ key, '<a target=new href=https://gitcoin.co/profile/' + val + '>@' + val.replace('@', '') + '</a>' ];
+  return [ key, '<a href="https://gitcoin.co/profile/' + val + '" target="_blank" rel="noopener noreferrer">@' + val.replace('@', '') + '</a>' ];
 };
 var email_ize = function(key, val, result) {
   if (!_truthy(val)) {
     return [ null, null ];
   }
-  return [ key, '<a href=mailto:' + val + '>' + val + '</a>' ];
+  return [ key, '<a href="mailto:' + val + '">' + val + '</a>' ];
 };
 var hide_if_empty = function(key, val, result) {
   if (!_truthy(val)) {
@@ -45,7 +45,7 @@ var link_ize = function(key, val, result) {
   if (!_truthy(val)) {
     return [ null, null ];
   }
-  return [ key, '<a taget=new href=' + val + '>' + val + '</a>' ];
+  return [ key, '<a href="' + val + '" target="_blank" rel="noopener noreferrer">' + val + '</a>' ];
 };
 
 // rows in the 'about' page
@@ -112,7 +112,7 @@ var callbacks = {
     var ui_body = val;
 
     if (ui_body.length > max_len) {
-      ui_body = ui_body.substring(0, max_len) + '... <a target=new href="' + result['github_url'] + '">See More</a> ';
+      ui_body = ui_body.substring(0, max_len) + '... <a href="' + result['github_url'] + '" target="_blank" rel="noopener noreferrer">See More</a> ';
     }
     ui_body = converter.makeHtml(ui_body);
 
