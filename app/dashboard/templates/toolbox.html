@@ -74,9 +74,11 @@
                         {{tool.description | safe}}
 
                       </div>
-                      <div class="button_container">
-                        <a class="btn btn-xs btn-success pulseClick" role="button" href="{{tool.link}}">{{tool.link_copy}} ></a>
-                      </div>
+                      {% if tool.link_copy %}
+                          <div class="button_container">
+                            <a class="btn btn-xs btn-success pulseClick" role="button" href="{{tool.link}}">{{tool.link_copy}} ></a>
+                          </div>
+                      {% endif %}
                       {% comment %}
                       <div class="toggle">
                         {% if tool.active == "true" %}

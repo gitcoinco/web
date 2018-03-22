@@ -943,6 +943,15 @@ def toolbox(request):
                   "active": "false",
                   'stat_graph': 'na',  # TODO
             },
+              {
+                  "name": "Web3 Coding School",
+                  "img": static("v2/images/tools/comingsoon.png"),
+                  "description": '''Onboard developers from web2 to web3 with these coding challenges ''',
+                  "link": 'https://github.com/gitcoinco/web/issues/631',
+                  'link_copy': 'Details',
+                  "active": "false",
+                  'stat_graph': 'na',  # TODO
+            },
            ],
        }, {
            "title": "Just for Fun",
