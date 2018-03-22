@@ -17,10 +17,9 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from django.test import TestCase
-
 from marketing.models import EmailSubscriber, Stat
 from marketing.utils import get_or_save_email_subscriber, get_stat, should_suppress_notification_email
+from test_plus.test import TestCase
 
 
 class MarketingStatUtilsTest(TestCase):

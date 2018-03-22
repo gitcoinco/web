@@ -34,13 +34,14 @@
   left: -4px;
   width: 44px;
   height: 40px;
+  color: #FFFFFF;
   background: linear-gradient(200deg, #8E2ABE 0%, #37EA9C 100%);
   border: none;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
 }
 
-.newsletter .addon i {
+.newsletter .addon svg {
   position: relative;
   color: #fff;
 }

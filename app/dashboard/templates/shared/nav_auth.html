@@ -25,40 +25,40 @@
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
       {% if source == 'authed' %}
         <a class="dropdown-item" href="{% url "tip" %}">
-          <i class="fa fa-paper-plane-o"></i>
+          <i class="far fa-paper-plane"></i>
           Send Tip
         </a>
         <a class="dropdown-item" href="{% url "new_funding" %}">
-          <i class="fa fa-credit-card"></i>
+          <i class="fas fa-credit-card"></i>
           Fund Issue
         </a>
       {% else %}
         <a class="dropdown-item" href="{% url "get_gitcoin" %}">
-          <i class="fa fa-bolt"></i>
+          <i class="fas fa-bolt"></i>
           Get Started
         </a>
       {% endif %}
       <div class="dropdown-divider"></div>
       <a class="dropdown-item" href="{% url "profile" %}{{github_handle}}">
-        <i class="fa fa-user"></i>
+        <i class="fas fa-user"></i>
         View Profile
       </a>
       <a class="dropdown-item" href="{% url "email_settings" "" %}">
-        <i class="fa fa-envelope-o"></i>
+        <i class="far fa-envelope"></i>
         Email Settings
       </a>
       {% if unclaimed_tips %}
         <div class="dropdown-divider"></div>
         {% for tip in unclaimed_tips %}
           <a class="dropdown-item" href="{{tip.url}}">
-            <i class="fa fa-usd"></i>
+            <i class="fas fa-dollar-sign"></i>
             Claim ${{tip.value_in_usdt}} Tip
           </a>
         {% endfor %}
       {% endif %}
       <div class="dropdown-divider"></div>
       <a class="dropdown-item" href="{% url "github:github_logout" %}?redirect_uri={{ request.get_full_path }}">
-        <i class="fa fa-lock"></i>
+        <i class="fas fa-lock"></i>
         Log Out
       </a>
     </div>

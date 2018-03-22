@@ -80,7 +80,8 @@ INSTALLED_APPS = [
     'email_obfuscator',
     'linkshortener',
     'credits',
-    'gitcoinbot'
+    'gitcoinbot',
+    'external_bounties',
 ]
 
 MIDDLEWARE = [
@@ -101,7 +102,7 @@ ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['retail/templates/'],
+        'DIRS': ['retail/templates/', 'external_bounties/templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -256,7 +257,6 @@ GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
 # Gitter
 GITTER_TOKEN = env('GITTER_TOKEN', default=False)
-
 
 # optional: only needed if you run the gitcoinbot app
 # Setup instructions: https://github.com/gitcoinco/web/blob/master/app/gitcoinbot/README.md
