@@ -43,7 +43,7 @@ $(document).ready(function() {
         var target_selector = href;
 
         if ($(target_selector).isInViewport()) {
-          if ($('toc a.active').length < 1) {
+          if ($('#toc a.active').length < 1) {
             $(this).addClass('active');
           }
         }
