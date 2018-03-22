@@ -163,15 +163,16 @@ def get_location_from_ip(ip_address):
         dict: The GeoIP location data dictionary.
 
     """
+    city = None
     if not ip_address:
-        return None
+        return city
 
     try:
         geo = GeoIP2()
         try:
             city = geo.city(ip_address)
         except AddressNotFoundError:
-            city = None
+            pass
     except Exception as e:
         logger.warning(f'Encountered ({e}) while attempting to retrieve a user\'s geolocation')
     return city
