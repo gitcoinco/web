@@ -952,6 +952,15 @@ def toolbox(request):
                   "active": "false",
                   'stat_graph': 'na',  # TODO
             },
+              {
+                  "name": "Cold Outreach",
+                  "img": static("v2/images/tools/comingsoon.png"),
+                  "description": '''Cold Outreach emails that don't stink ''',
+                  "link": 'https://github.com/gitcoinco/coldoutreach',
+                  'link_copy': 'Details',
+                  "active": "false",
+                  'stat_graph': 'na',  # TODO
+            },
            ],
        }, {
            "title": "Just for Fun",
