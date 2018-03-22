@@ -1,0 +1,97 @@
+{% load humanize %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+  </head>
+
+  <body class="interior {{active}} offchain_show with-grey-background">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+    {% include 'shared/current_balance.html' with full=True %}
+
+    <div class="row no-gutter">
+
+      <div class="col body">
+        <div class="container" id="bounties">
+          <header class="bounties-header">
+            <div class="bounties-header__title bounties-header__title--active">
+              <h2 class="title">
+                <a href="{% url "offchain_index" %}">Offchain Bounties</a>
+              </h2>
+            </div>
+          </header>
+          <div class="main-content">
+            <main class="bounties-container">
+              <div class="bounty-container">
+                <div class="bounty__image">
+                  <img src="{{bounty.avatar}}"/>
+                </div>
+                <div class="bounty__info">
+                  <div class="bounty__header-wrapper">
+                    <div class="bounty__header">
+                      <h3 class="bounty__title">{{ bounty.title }}</h3>
+
+                      <div class="bounty__source">created: {{ bounty.created_on | naturaltime}}</div>
+                      {% if bounty.source %}
+                        <div class="bounty__source">source: {{ bounty.source }}</div>
+                      {% endif %}
+                    </div>
+                    <div class="bounty__action">
+                      <a href="{{bounty.action_url}}" class="btn btn-success">View Bounty</a>
+                    </div>
+                  </div>
+                  {% if bounty.crypto_price or bounty.fiat_price %}
+                      <h6 class="sub-title">Funding:</h6>
+                      <div class="bounty__content">
+                        <span class="bounty__crypto-price">
+                          {% if bounty.crypto_label == 'ETH' %}
+                            <span class="icon">{% include 'svgs/ethereum.svg' %}</span>
+                          {% endif %}
+                          {% if bounty.crypto_price %}
+                              <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
+                          {% else %}
+                              <span>{{ bounty.payout_str }}</span>
+                          {% endif %}
+                        </span>
+                        <span class="bounty__fiat-price">
+                          {% if bounty.fiat_price %}
+                              <span class="icon">{% include 'svgs/money.svg' %}</span>
+                              <span>{{ bounty.fiat_price }} USD</span>
+                          {% endif %}
+                        </span>
+                      </div>
+                  {% endif %}
+                  {% if bounty.content %}
+                      <h6 class="sub-title">Description:</h6>
+                      <div class="bounty__content">
+                      <pre>{{ bounty.content }}</pre>
+                      </div>
+                      <div class="bounty__footer">
+                        <a class="link-red" href="{% url "offchain_index" %}">Go Back</a>
+                      </div>
+                  {% endif %}
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/footer.html' %}
+
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/shared.js" %}"></script>
+
+  </body>
+</html>

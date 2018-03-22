@@ -1,3 +1,4 @@
+{% load humanize %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -19,13 +20,25 @@
         <div class="container" id="bounties">
           <header class="bounties-header">
             <div class="bounties-header__title">
-              <h2 class="title">Bounties</h2>
+              <h2 class="title">OffChain Bounties</h2>
             </div>
             <div class="bounties-header__search">
-              <div class="bounties-header__info">Listing {{ bounties|length }} open bounties across the interwebs</div>
+              <div class="bounties-header__info">
+                <a href="{% url "externalbounty-list" %}">
+                    [ View API ]
+                </a> |
+                Listing {{ bounties|length }} open offchain bounties across the interwebs
+              </div>
               <div class="search_area search_area--append">
                 <input class="gc-round-text-input gc-border-black w-100" type="text" placeholder="Search Bounties" />
                 <span class="icon">{% include 'svgs/search.svg' %}</span>
+                <div id="sort_options">
+                    Sort by 
+                        <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/offchain?sort=Created&direction=asc">Oldest</a> | 
+                        <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/offchain?sort=Created&direction=desc">Newest</a> | 
+                        <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/offchain?sort=Value&direction=desc">Highest Value</a> | 
+                        <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/offchain?sort=Value&direction=asc">Lowest Value</a> 
+                </div>
               </div>
             </div>
           </header>
@@ -42,16 +55,20 @@
               </div>
             </aside>
             <main class="bounties-container">
+                <div style="float: right; padding-right: 10px; padding-top: 20px; margin-bottom: 20px;">
+                    <a class="button right btn-info" href="{% url "offchain_new" %}">Post New >> </a>
+                </div>
+                <br style="clear:both;">
               {% for bounty in bounties %}
-                <a href="external_bounty/{{i}}" class="bounty">
+                <a href="{{bounty.url}}" class="bounty">
                   <div class="bounty__image">
-                    <img src="{% static "v2/images/mission/interact/1.png" %}" />
+                    <img src="{{bounty.avatar}}" />
                   </div>
                   <div class="bounty__info">
                     <div class="bounty__title-wrapper">
                       <h5 class="bounty__title">{{ bounty.title }}</h5>
                     </div>
-                    <p class="bounty__source">{{ bounty.source }}</p>
+                    <p class="bounty__source">{{ bounty.created_on | naturaltime}} {% if bounty.source %} | {{ bounty.source }} {% endif %} </p>
                     <div class="bounty__price--mobile">
                       <button class="btn btn-sm btn-darkBlue font-smaller-2">{{ bounty.crypto_price }} {{ bounty.crypto_label }}</button>
                       <button class="btn btn-sm btn-darkBlue font-smaller-2">{{ bounty.fiat_price }} {{ bounty.fiat_name }}</button>
@@ -71,26 +88,35 @@
                             <span class="icon">{% include 'svgs/ethereum.svg' %}</span>
                             <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
                           </div>
-                        {% endif %}
 
-                        {% if bounty.crypto_label == 'BTC' %}
+                        {% elif bounty.crypto_label == 'BTC' %}
                           <div class="bounty__crypto-price-pill bounty__crypto-price-pill--orange">
                             <span class="icon">{% include 'svgs/bitcoin.svg' %}</span>
                             <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
                           </div>
-                        {% endif %}
 
-                        {% if bounty.crypto_label == 'LTC' %}
+                        {% elif bounty.crypto_label == 'LTC' %}
                           <div class="bounty__crypto-price-pill bounty__crypto-price-pill--grey">
                             <span class="icon">{% include 'svgs/litecoin.svg' %}</span>
                             <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
+                          </div>
+                        {% else %}
+
+                          <div class="bounty__crypto-price-pill bounty__crypto-price-pill--grey">
+                            {% if bounty.crypto_price %}
+                            <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
+                            {% else %}
+                            <span>{{ bounty.payout_str }}</span>
+                            {% endif %}
                           </div>
                         {% endif %}
 
                       </div>
                       <div class="bounty__fiat-price">
-                        <span class="icon">{% include 'svgs/money.svg' %}</span>
-                        {{ bounty.fiat_price }} USD
+                      {% if bounty.fiat_price %}
+                            <span class="icon">{% include 'svgs/money.svg' %}</span>
+                            {{ bounty.fiat_price }} USD
+                        {% endif %}
                       </div>
                     </div>
                   </div>
@@ -109,6 +135,7 @@
     {% include 'shared/footer.html' %}
 
     <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/pages/offchain_bounties.js" %}"></script>
     <script src="{% static "v2/js/shared.js" %}"></script>
 
   </body>
