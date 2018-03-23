@@ -3,10 +3,7 @@
 
 
 var _truthy = function(val) {
-  if (!val) {
-    return false;
-  }
-  if (val == '0x0000000000000000000000000000000000000000') {
+  if (!val || val == '0x0000000000000000000000000000000000000000') {
     return false;
   }
   return true;
@@ -111,14 +108,10 @@ var callbacks = {
   },
   'issue_description': function(key, val, result) {
     var converter = new showdown.Converter();
-    var max_len = 1000;
 
     val = val.replace(/script/ig, 'scr_i_pt');
     var ui_body = val;
 
-    if (ui_body.length > max_len) {
-      ui_body = ui_body.substring(0, max_len) + '... <a href="' + result['github_url'] + '" target="_blank" rel="noopener noreferrer">See More</a> ';
-    }
     ui_body = converter.makeHtml(ui_body);
 
     return [ 'issue_description', ui_body ];
@@ -137,7 +130,7 @@ var callbacks = {
     var tags = [];
 
     keywords.forEach(function(keyword) {
-      tags.push('<div class="tag keyword">' + keyword + '</div>');
+      tags.push('<a href="/explorer/?q=' + keyword.trim() + '"><div class="tag keyword">' + keyword + '</div></a>');
     });
     return [ 'issue_keywords', tags ];
   },
@@ -192,6 +185,9 @@ var callbacks = {
             _interested.profile.handle + '</a>'
         );
       });
+      if (started.length == 0) {
+        started.push('<i class="fas fa-minus"></i>');
+      }
     }
     return [ 'started_owners_username', started ];
   },
@@ -209,6 +205,9 @@ var callbacks = {
             _submitted.fulfiller_github_username + '</a>'
         );
       });
+      if (accepted.length == 0) {
+        accepted.push('<i class="fas fa-minus"></i>');
+      }
     }
     return [ 'submitted_owners_username', accepted ];
   },
@@ -228,6 +227,9 @@ var callbacks = {
           );
         }
       });
+      if (accepted.length == 0) {
+        accepted.push('<i class="fas fa-minus"></i>');
+      }
     }
     return [ 'fulfilled_owners_username', accepted ];
   }
@@ -441,7 +443,7 @@ var do_actions = function(result) {
       if (result['github_comments']) {
         $('#github-link').html(
           ('<span title="').concat("<div class='tooltip-info tooltip-sm'>") + github_tooltip + '</div>"><a class="btn btn-small font-caption" role="button" target="_blank" id="github-btn" href="' +
-            github_url + ('">View On Github').concat('<span class="github-comment>') + result['github_comments'] + '</span></a></span>'
+            github_url + ('">View On Github').concat('<span class="github-comment">') + result['github_comments'] + '</span></a></span>'
         );
       } else {
         $('#github-link').html(
@@ -460,7 +462,7 @@ var do_actions = function(result) {
         href: is_interested ? '/uninterested' : '/interested',
         text: is_interested ? 'Stop Work' : 'Start Work',
         parent: 'right_actions',
-        title: enabled ? 'Start Work in an issue to let the issue funder know that youre starting work on this issue.' : 'Can only be performed if you are not the funder.'
+        title: 'Start Work in an issue to let the issue funder know that youre starting work on this issue.'
       };
 
       actions.push(interest_entry);
@@ -475,7 +477,7 @@ var do_actions = function(result) {
         href: '/funding/fulfill?source=' + result['github_url'],
         text: 'Submit Work',
         parent: 'right_actions',
-        title: enabled ? 'Use Submit Work when you FINISH work on a bounty. ' : 'Can only be performed if you are not the funder.'
+        title: 'Use Submit Work when you FINISH work on a bounty. '
       };
 
       actions.push(_entry);
@@ -501,7 +503,7 @@ var do_actions = function(result) {
         href: '/funding/kill?source=' + result['github_url'],
         text: 'Kill Bounty',
         parent: 'right_actions',
-        title: enabled ? '' : 'Can only be performed if you are the funder.'
+        title: 'Use Kill Bounty if you want to CANCEL your bounty'
       };
 
       actions.push(_entry);
@@ -515,7 +517,7 @@ var do_actions = function(result) {
         enabled: enabled,
         href: '/funding/process?source=' + result['github_url'],
         text: 'Accept Submission',
-        title: enabled ? 'This will payout the bounty to the submitter.' : 'Can only be performed if you are the funder.',
+        title: 'This will payout the bounty to the submitter.',
         parent: 'right_actions',
         pending_acceptance: pending_acceptance
       };
@@ -559,7 +561,6 @@ var pull_bounty_from_api = function() {
 
         render_activity(result);
 
-        // cleanup
         document.result = result;
         return;
       }
@@ -620,8 +621,13 @@ var render_activity = function(result) {
     return a['created_on'] < b['created_on'] ? -1 : 1;
   }).reverse();
 
-  var template = $.templates('#activity_template');
-  var html = template.render(activities);
+  var html = '<div class="row box activity"><div class="col-12 empty"><p>There\'s no activity yet!</p></div></div>';
+
+  if (activities.length > 0) {
+    var template = $.templates('#activity_template');
+
+    html = template.render(activities);
+  }
 
   $('#activities').html(html);
 };

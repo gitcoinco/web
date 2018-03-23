@@ -39,6 +39,23 @@ body {
   margin: 0;
 }
 
+.box .empty {
+  text-align: center;
+  font-size: 16px;
+  color: #7A7A7A;
+  font-family: "Muli-SemiBold";
+}
+
+.box .empty p {
+  margin: 1rem;
+}
+
+.contributor-box .fa-minus {
+  font-size: 14px;
+  margin: 0;
+  color: #7A7A7A;
+}
+
 .bounty-heading {
   font-family: "Muli-SemiBold";
   margin-bottom: 1em;
@@ -198,11 +215,12 @@ a.btn{
 
 #github-btn .github-comment {
   border-left: 1px solid #979797;
-  padding-left: 4px;
+  padding-left: 12px;
+  margin-left: 5px;
 }
 
 .activity {
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
 }
 
 .fulfilled .activity-status {
@@ -225,7 +243,7 @@ a.btn{
 
 .activity .bounty-subheading,
 .activity .bounty-text {
-  font-size: 12px; 
+  font-size: 12px;
 }
 
 .bounty_details .avatar {
@@ -278,14 +296,14 @@ a.btn{
   #bounty_details .row {
     margin: 0px;
     padding-left: 10px;
-    padding-right: 10px;  
+    padding-right: 10px;
   }
 
   .contributor-box,
   #bounty_details .row.activity {
     margin-bottom: 10px;
   }
-  
+
   .contributor-box {
     border: 1px solid #DBDBDB;
   }
@@ -295,7 +313,7 @@ a.btn{
   }
 }
 
-@media (max-width: 991.98px) { 
+@media (max-width: 991.98px) {
   .explorer {
     display: none;
   }

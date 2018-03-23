@@ -190,6 +190,11 @@ var mutate_interest = function(bounty_pk, direction) {
   $.post(request_url, function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
+      if (direction === 'new')
+        _alert({message: "Thanks for letting us know that you're ready to start work."}, 'success');
+      else if (direction === 'remove')
+        _alert({message: "You've stopped working on this, thanks for letting us know."}, 'success');
+
       pull_interest_list(bounty_pk);
       return true;
     }
@@ -219,6 +224,9 @@ var pull_interest_list = function(bounty_pk, callback) {
             _interested.profile.handle + '</a>'
         );
       });
+    }
+    if (started.length == 0) {
+      started.push('<i class="fas fa-minus"></i>');
     }
     $('#started_owners_username').html(started);
   });
