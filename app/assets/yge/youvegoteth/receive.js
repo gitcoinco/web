@@ -12,7 +12,7 @@ window.onload = function() {
       txid = getParam('txid');
       var link = 'https://' + etherscanDomain() + '/tx/' + txid;
 
-      $('loading_txt').innerHTML = 'Waiting for <a href=' + link + ' target=new>transaction</a> to be mined..';
+      $('loading_txt').innerHTML = 'Waiting for <a href="' + link + '" target="_blank" rel="noopener noreferrer">transaction</a> to be mined..';
     }
     callFunctionWhenTransactionMined(txid, function() {
       $('loading').style.display = 'none';
@@ -32,7 +32,7 @@ window.onload = function() {
             var active = result[0];
 
             if (!active) {
-              $('send_eth').innerHTML = "Need help?  Try asking <a href='/slack'>on slack</a>.";
+              $('send_eth').innerHTML = 'Need help?  Try asking <a href="/slack">on slack</a>.';
               $('step_zero').style.display = 'none';
               console.error('tip_inactive', result);
               var error = 'This tip is no longer active, it has probably already been claimed.';
@@ -59,7 +59,7 @@ window.onload = function() {
             var round_to = Math.pow(10, 5);
 
             amount = Math.round(round_to * amount / Math.pow(10, decimals)) / round_to;
-            var _text = "You've Received " + amount + ' ' + getWarning() + ' ' + token + '!';
+            var _text = 'You\'ve Received ' + amount + ' ' + getWarning() + ' ' + token + '!';
 
             $('zeroh1').innerHTML = _text;
             $('oneh1').innerHTML = _text;
@@ -119,7 +119,7 @@ window.onload = function() {
       } else {
         startConfetti();
         mixpanel.track('Tip Receive Success', {});
-        $('send_eth').innerHTML = "<h1>Success 🚀!</h1> <a target=new href='https://" + etherscanDomain() + '/tx/' + result + "'>See your transaction on the blockchain here</a>.<br><br><strong>Status:</strong> <span id=status>Confirming Transaction ... <br><img src='/static/yge/images/loading_v2.gif' style='max-width: 30px; max-height: 30px;'></span><br><br><span id=mighttake>It might take a few minutes to sync, depending upon: <br> - network congestion<br> - network fees that sender allocated to transaction<br></span><br><a id='' class='button' href='/'>⬅ Back to Gitcoin.co</a>";
+        $('send_eth').innerHTML = '<h1>Success 🚀!</h1> <a href="https://' + etherscanDomain() + '/tx/' + result + '">See your transaction on the blockchain here</a>.<br><br><strong>Status:</strong> <span id="status">Confirming Transaction … <br><img src="/static/yge/images/loading_v2.gif" style="max-width: 30px; max-height: 30px;"></span><br><br><span id="mighttake">It might take a few minutes to sync, depending upon: <br> - network congestion<br> - network fees that sender allocated to transaction<br></span><br><a href="/" class="button">⬅ Back to Gitcoin.co</a>';
         const url = '/tip/receive';
 
         fetch(url, {

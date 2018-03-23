@@ -32,7 +32,7 @@
                         <ul class='authors'>
                             {% for author in profile.authors %}
                                 <li>
-                                    <a href="{% url "profile" %}{{author}}" target=new title="{{author}}">
+                                    <a href="{% url "profile" %}{{author}}" title="{{author}}" target="_blank" rel="noopener noreferrer">
                                     <img src="{% url "avatar" %}?repo=https://github.com/{{author}}">
                                     </a>
                                 </li>
