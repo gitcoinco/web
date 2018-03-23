@@ -44,9 +44,9 @@ imap = map
 
 def get_bio(handle):
     try:
-        profile = Profile.objects.filter(handle).first()
+        profile = Profile.objects.filter(handle=handle.replace('@','')).first()
         return profile.data.get('bio', 'unknown'), profile.data.get('location', 'unknown')
-    except:
+    except Exception as e:
         return 'unknown', 'unknown'
 
 
