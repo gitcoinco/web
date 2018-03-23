@@ -488,6 +488,12 @@ input[type=text].loading {
     -o-filter: grayscale(100%);
 }
 
+#primary_form {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 0 4em;
+}
+
 #primary_form img {
     max-width: 100px;
 }
@@ -495,13 +501,13 @@ input[type=text].loading {
 .bounty_nav {
     border-bottom: 2px solid #212529;
     padding-bottom: 4px;
+    padding: 0;
+    display: flex;
+    justify-content: space-around;
 }
 
 .bounty_nav li {
     display: inline;
-    margin-left: 30px;
-    margin-right: 30px;
-    margin-bottom: 5px;
     padding: 5px;
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
@@ -1117,7 +1123,7 @@ input.is-invalid {
 }
 
 #gitcoinTestimonials{
-    height:288px; 
+    height:288px;
     width:500px;
 }
 
@@ -1245,7 +1251,7 @@ input.is-invalid {
 }
 @media (max-width: 769px) {
     #gitcoinTestimonials{
-        height:202px; 
+        height:202px;
         width:350px;
     }
 
@@ -1366,10 +1372,17 @@ input.is-invalid {
       display: none;
     }
 }
+
+@media (max-width: 540px) {
+    #primary_form {
+        max-width: 100%;
+    }
+}
+
 @media (max-width: 481px) {
 
     #gitcoinTestimonials{
-        height:144px; 
+        height:144px;
         width:250px;
     }
     .tldr_container img {
