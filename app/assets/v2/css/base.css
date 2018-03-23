@@ -464,6 +464,7 @@ input[type=text].loading {
     text-align: center;
     margin: 100px auto;
     max-width: 100%;
+    padding: 0 4em;
 }
 
 .blocking_error img {
@@ -1206,7 +1207,7 @@ input.is-invalid {
 }
 
 #gitcoinTestimonials{
-    height:288px; 
+    height:288px;
     width:500px;
 }
 
@@ -1318,7 +1319,7 @@ input.is-invalid {
 }
 @media (max-width: 769px) {
     #gitcoinTestimonials{
-        height:202px; 
+        height:202px;
         width:350px;
     }
 
@@ -1442,7 +1443,7 @@ input.is-invalid {
 @media (max-width: 481px) {
 
     #gitcoinTestimonials{
-        height:144px; 
+        height:144px;
         width:250px;
     }
     .tldr_container img {
