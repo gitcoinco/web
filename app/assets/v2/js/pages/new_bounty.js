@@ -245,7 +245,7 @@ $(document).ready(function() {
             },
             'error'
           );
-          unloading_button($('#submitBounty'));
+          unloading_button($('.js-submit'));
           return;
         }
 
@@ -269,7 +269,7 @@ $(document).ready(function() {
           _alert({
             message: 'There was an error.  Please try again or contact support.'
           });
-          unloading_button($('#submitBounty'));
+          unloading_button($('.js-submit'));
           return;
         }
 
@@ -313,7 +313,7 @@ $(document).ready(function() {
 
         if (result != null) {
           _alert({ message: 'A bounty already exists for that Github Issue.' });
-          unloading_button($('#submitBounty'));
+          unloading_button($('.js-submit'));
           return;
         }
 
