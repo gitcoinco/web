@@ -18,6 +18,26 @@ This is the website that is live at gitcoin.co
 
 ## How to interact with this repo
 
+### Table of Contents
+
+- [Gitcoin](#gitcoin)
+- [web repo](#web-repo)
+  * [How to interact with this repo](#how-to-interact-with-this-repo)
+    + [On Github](#on-github)
+    + [On Gitcoin](#on-gitcoin)
+  * [What](#what)
+- [Developing](#developing)
+  * [HTTPS API](#https-api)
+  * [Running Locally](#running-locally)
+- [Trying out Gitcoin](#trying-out-gitcoin)
+  * [Posting your first issue](#posting-your-first-issue)
+- [Integrating Gitcoin](#integrating-gitcoin)
+  * [Integrating the 'available work widget' on your repo.](#integrating-the--available-work-widget--on-your-repo)
+  * [Adding GitcoinBot to your repo](#adding-gitcoinbot-to-your-repo)
+  * [Adding your token to Gitcoin](#adding-your-token-to-gitcoin)
+- [Legal](#legal)
+- [License](#license)
+
 ### On Github
 
 [Star](https://github.com/gitcoinco/web/stargazers) and [watch](https://github.com/gitcoinco/web/watchers) this github repository to stay up to date, we're pushing new code several times per week!
