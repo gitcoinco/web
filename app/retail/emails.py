@@ -256,7 +256,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    subject = "Metamask Internationalization | From a Gitcoin Bounty to an Epic "
+    subject = "MetaMask Internationalization | From a Gitcoin Bounty to an Epic "
 
     intro = '''
 
@@ -281,7 +281,7 @@ Revamped <a href="https://gitcoin.co/tools">Tools Page</a> is Up! We just launch
 Looking for the next ETH Hackathon? Check out <a href="http://hackital.io/">Hackital</a>, in Washington DC on April 27- April 29th.
         </li>
         <li>
-A <a href="https://gitcoin.co/funding/embed?repo=https://github.com/MetaMask/metamask-extension">wild Gitcoin Widget</a> appears for your Github read-me! Looking to get more OSS contributors to your repo? This will quickly show any Gitcoin issues you have open. 
+A <a href="https://github.com/gitcoinco/web/blob/master/readme_widget.md">wild Gitcoin Widget</a> appears for your Github read-me! Looking to get more OSS contributors to your repo? This will quickly show any Gitcoin issues you have open. 
         </li>
     </ul>
 </p>
