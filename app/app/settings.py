@@ -338,7 +338,7 @@ SENDGRID_EVENT_HOOK_URL = env('SENDGRID_EVENT_HOOK_URL', default='sg_event_proce
 GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')
 
 # Web3
-WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://mainnet.infura.io')
+WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://rinkeby.infura.io')
 
 # COLO Coin
 COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')
