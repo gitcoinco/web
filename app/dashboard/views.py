@@ -850,10 +850,10 @@ def toolbox(request):
              'stat_graph': 'codesponsor',
             },
             {
-              "name": "Offchain Bounties",
+              "name": "Bounties Universe",
               "img": static("v2/images/why-different/projects.jpg"),
-              "description": '''Bounties from around the pre-blockchain internet''',
-              "link": reverse("offchain_index"),
+              "description": '''Bounties from around the internet''',
+              "link": reverse("universe_index"),
               'link_copy': 'Details',
               "active": "false",
               'stat_graph': 'na',  # TODO

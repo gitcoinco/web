@@ -53,7 +53,7 @@ class ExternalBounty(SuperModel):
     @property
     def url(self):
         """Return the URL associated with the external bounty."""
-        return f'/offchain/{self.pk}/{slugify(self.title)}'
+        return f'/universe/{self.pk}/{slugify(self.title)}'
 
     @property
     def github_url(self):

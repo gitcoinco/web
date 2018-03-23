@@ -176,8 +176,8 @@ _bountydetails function returns the following fields:
 | `source_project`         | `string`           | Source Project the bounty came from           |
 | `tags`         | `strings`           | tags to classify the bounthy           |
 
-# Offchain Bounties API
+# Bounties Universe API
 
-Access it at `https://gitcoin.co/api/v0.1/offchain`
+Access it at `https://gitcoin.co/api/v0.1/universe`
 
-The offchain bounties API lists all bounties that have not yet been put into the blockchain :)
+The bounties universe API lists all bounties (offchain) that have not yet been put into the blockchain or (onchain) that aren't in standard bounties :)

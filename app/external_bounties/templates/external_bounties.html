@@ -20,24 +20,24 @@
         <div class="container" id="bounties">
           <header class="bounties-header">
             <div class="bounties-header__title">
-              <h2 class="title">OffChain Bounties</h2>
+              <h2 class="title">Bounties Universe</h2>
             </div>
             <div class="bounties-header__search">
               <div class="bounties-header__info">
                 <a href="{% url "externalbounty-list" %}">
                     [ View API ]
                 </a> |
-                Listing {{ bounties|length }} open offchain bounties across the interwebs
+                Listing {{ bounties| length | intcomma }} universal bounties.
               </div>
               <div class="search_area search_area--append">
                 <input class="gc-round-text-input gc-border-black w-100" type="text" placeholder="Search Bounties" />
                 <span class="icon">{% include 'svgs/search.svg' %}</span>
                 <div id="sort_options">
                     Sort by 
-                        <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/offchain?sort=Created&direction=asc">Oldest</a> | 
-                        <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/offchain?sort=Created&direction=desc">Newest</a> | 
-                        <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/offchain?sort=Value&direction=desc">Highest Value</a> | 
-                        <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/offchain?sort=Value&direction=asc">Lowest Value</a> 
+                        <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/universe?sort=Created&direction=asc">Oldest</a> | 
+                        <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/universe?sort=Created&direction=desc">Newest</a> | 
+                        <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/universe?sort=Value&direction=desc">Highest Value</a> | 
+                        <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/universe?sort=Value&direction=asc">Lowest Value</a> 
                 </div>
               </div>
             </div>
@@ -56,7 +56,7 @@
             </aside>
             <main class="bounties-container">
                 <div style="float: right; padding-right: 10px; padding-top: 20px; margin-bottom: 20px;">
-                    <a class="button right btn-info" href="{% url "offchain_new" %}">Post New >> </a>
+                    <a class="button right btn-info" href="{% url "universe_new" %}">Post New >> </a>
                 </div>
                 <br style="clear:both;">
               {% for bounty in bounties %}

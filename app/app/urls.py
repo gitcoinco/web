@@ -55,6 +55,9 @@ urlpatterns = [
     url(r'^offchain/new/?', external_bounties.views.external_bounties_new, name="offchain_new"),
     url(r'^offchain/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='offchain'),
     url(r'^offchain/?', external_bounties.views.external_bounties_index, name="offchain_index"),
+    url(r'^universe/new/?', external_bounties.views.external_bounties_new, name="universe_new"),
+    url(r'^universe/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='universe'),
+    url(r'^universe/?', external_bounties.views.external_bounties_index, name="universe_index"),
 
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),

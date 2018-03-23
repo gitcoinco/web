@@ -34,7 +34,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
             'faucet',
             'mission',
             'slack',
-            'offchain_index',
+            'universe_index',
         ]
 
     def location(self, item):
@@ -86,6 +86,6 @@ class ExternalBountySitemap(Sitemap):
 sitemaps = {
     'static': StaticViewSitemap,
     'issues': IssueSitemap,
-    'offchain': ExternalBountySitemap,
+    'universe': ExternalBountySitemap,
     'orgs': ProfileSitemap,
 }

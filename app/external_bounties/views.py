@@ -94,7 +94,7 @@ def external_bounties_index(request):
 
     params = {
         'active': 'offchain',
-        'title': 'Offchain Bounty Explorer',
+        'title': 'Bounty Universe Explorer',
         'card_desc': 'Bounties for Software Work from across the internets.',
         'bounties': external_bounties_results,
         'categories': categories,
@@ -113,7 +113,7 @@ def external_bounties_new(request):
     """
     params = {
         'active': 'offchain',
-        'title': 'New Offchain Bounty',
+        'title': 'New Universal Bounty',
         'card_desc': 'Create a new Bounty for Software Work from across the internets.',
         'formset': ExternalBountyForm,
     }
@@ -164,7 +164,7 @@ def external_bounties_show(request, issuenum, slug):
 
     params = {
         'active': 'offchain',
-        'title': 'Offchain Bounty Explorer',
+        'title': 'Bounty Universe Explorer',
         'card_desc': ellipses(external_bounty['content'], 300),
         "bounty": external_bounty,
     }

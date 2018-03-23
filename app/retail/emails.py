@@ -275,7 +275,7 @@ def render_new_bounty_roundup(to_email):
 Which blockchain based, open-source projects would you like to see on Gitcoin? <a href="https://docs.google.com/forms/d/e/1FAIpQLSfUDnLRXu03eGldeb3twlgdccg4xvRI22XwRo7pm60pemDEpw/viewform">We’re offering a 15% finders fee</a> if an intro you make leads to a funded issue!
         </li>
         <li>
-Revamped <a href="https://gitcoin.co/tools">Tools Page</a> is Up! We just launched an <a href="https://gitcoin.co/offchain">Offchain Bounties tool in alpha</a>.
+Revamped <a href="https://gitcoin.co/tools">Tools Page</a> is Up! We just launched an <a href="https://gitcoin.co/universe">Offchain Bounties tool in alpha</a>.
         </li>
         <li>
 Looking for the next ETH Hackathon? Check out <a href="http://hackital.io/">Hackital</a>, in Washington DC on April 27- April 29th.
