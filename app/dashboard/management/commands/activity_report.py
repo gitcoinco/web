@@ -28,7 +28,7 @@ from django.core.management.base import BaseCommand
 
 import boto
 from boto.s3.key import Key
-from dashboard.models import Bounty, Tip, Profile
+from dashboard.models import Bounty, Profile, Tip
 from economy.utils import convert_amount
 from faucet.models import FaucetRequest
 from marketing.mails import send_mail
