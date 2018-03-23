@@ -204,21 +204,23 @@ var pull_interest_list = function(bounty_pk, callback) {
   profiles = [];
   document.interested = false;
   var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
-  var started = []; 
+  var started = [];
+
   $.get(uri, function(results) {
     render_activity(results[0]);
-    if(results[0].interested) {
+    if (results[0].interested) {
       var interested = results[0].interested;
+
       interested.forEach(function(_interested) {
         started.push(
-          '<a href="https://gitcoin.co/profile/' + 
-            _interested.profile.handle + 
-            '" target="_blank">' + 
+          '<a href="https://gitcoin.co/profile/' +
+            _interested.profile.handle +
+            '" target="_blank">' +
             _interested.profile.handle + '</a>'
         );
       });
     }
-    $("#started_owners_username").html(started);
+    $('#started_owners_username').html(started);
   });
   $.getJSON('/actions/bounty/' + bounty_pk + '/interest/', function(data) {
     data = sanitizeAPIResults(JSON.parse(data));

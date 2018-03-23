@@ -130,11 +130,12 @@ var callbacks = {
   'bounty_type': unknown_if_empty,
   'bounty_owner_github_username': gitcoin_ize,
   'bounty_owner_name': function(key, val, result) {
-    return ['bounty_owner_name', result.metadata.fullName];
+    return [ 'bounty_owner_name', result.metadata.fullName ];
   },
   'issue_keywords': function(key, val, result) {
     var keywords = result.metadata.issueKeywords.split(',');
     var tags = [];
+
     keywords.forEach(function(keyword) {
       tags.push('<div class="tag keyword">' + keyword + '</div>');
     });
@@ -179,8 +180,10 @@ var callbacks = {
   },
   'started_owners_username': function(key, val, result) {
     var started = [];
-    if(result.interested) {
+
+    if (result.interested) {
       var interested = result.interested;
+
       interested.forEach(function(_interested) {
         started.push(
           '<a href="https://gitcoin.co/profile/' +
@@ -194,8 +197,10 @@ var callbacks = {
   },
   'submitted_owners_username': function(key, val, result) {
     var accepted = [];
-    if(result.fulfillments) {
+
+    if (result.fulfillments) {
       var submitted = result.fulfillments;
+
       submitted.forEach(function(_submitted) {
         accepted.push(
           '<a href="https://gitcoin.co/profile/' +
@@ -209,10 +214,12 @@ var callbacks = {
   },
   'fulfilled_owners_username': function(key, val, result) {
     var accepted = [];
-    if(result.fulfillments) {
+
+    if (result.fulfillments) {
       var fulfillments = result.fulfillments;
+
       fulfillments.forEach(function(fufillment) {
-        if(fufillment.accepted == true) {
+        if (fufillment.accepted == true) {
           accepted.push(
             '<a href="https://gitcoin.co/profile/' +
               fufillment.fulfiller_github_username +
@@ -433,13 +440,13 @@ var do_actions = function(result) {
 
       if (result['github_comments']) {
         $('#github-link').html(
-          '<span title="' + "<div class='tooltip-info tooltip-sm'>" + github_tooltip + '</div>"><a class="btn btn-small font-caption" role="button" target="_blank" id="github-btn" href="' +
-            github_url + '">View On Github' + '<span class="github-comment>' + result['github_comments'] + '</span></a></span>'
+          ('<span title="').concat("<div class='tooltip-info tooltip-sm'>") + github_tooltip + '</div>"><a class="btn btn-small font-caption" role="button" target="_blank" id="github-btn" href="' +
+            github_url + ('">View On Github').concat('<span class="github-comment>') + result['github_comments'] + '</span></a></span>'
         );
       } else {
         $('#github-link').html(
-          '<span title="' + "<div class='tooltip-info tooltip-sm'>" + github_tooltip + '</div>"><a class="btn btn-small font-caption" role="button" target="_blank" id="github-btn" href="' +
-            github_url + '">View On Github' + '</a></span>'
+          ('<span title="').concat("<div class='tooltip-info tooltip-sm'>") + github_tooltip + '</div>"><a class="btn btn-small font-caption" role="button" target="_blank" id="github-btn" href="' +
+            github_url + ('">View On Github').concat('</a></span>')
         );
       }
     }
@@ -512,6 +519,7 @@ var do_actions = function(result) {
         parent: 'right_actions',
         pending_acceptance: pending_acceptance
       };
+
       actions.push(_entry);
     }
 
@@ -573,9 +581,9 @@ var pull_bounty_from_api = function() {
 var render_activity = function(result) {
   var activities = [];
 
-  if(result.fulfillments) {
+  if (result.fulfillments) {
     result.fulfillments.forEach(function(fulfillment) {
-      if(fulfillment.accepted == true) {
+      if (fulfillment.accepted == true) {
         activities.push({
           name: fulfillment.fulfiller_github_username,
           address: fulfillment.fulfiller_address,
@@ -584,20 +592,20 @@ var render_activity = function(result) {
           text: 'Work Accepted',
           created_on: fulfillment.created_on,
           age: timeDifference(new Date(result['now']), new Date(fulfillment.created_on)),
-          status: "accepted"
-        })
+          status: 'accepted'
+        });
       }
       activities.push({
         name: fulfillment.fulfiller_github_username,
         text: 'Work Submitted',
         created_on: fulfillment.created_on,
         age: timeDifference(new Date(result['now']), new Date(fulfillment.created_on)),
-        status: "submitted"
-      })
+        status: 'submitted'
+      });
     });
   }
 
-  if(result.interested) {
+  if (result.interested) {
     result.interested.forEach(function(_interested) {
       activities.push({
         name: _interested.profile.handle,
@@ -608,14 +616,15 @@ var render_activity = function(result) {
     });
   }
 
-  activities = activities.slice().sort(function (a, b) {
+  activities = activities.slice().sort(function(a, b) {
     return a['created_on'] < b['created_on'] ? -1 : 1;
   }).reverse();
 
   var template = $.templates('#activity_template');
   var html = template.render(activities);
-  $("#activities").html(html);
-}
+
+  $('#activities').html(html);
+};
 
 var main = function() {
   setTimeout(function() {
