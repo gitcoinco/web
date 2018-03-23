@@ -6,6 +6,10 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    {% if no_index %}
+        <meta name="robots" content="noindex">
+    {% endif %}
+
   </head>
 
   <body class="interior {{active}} offchain_show with-grey-background">

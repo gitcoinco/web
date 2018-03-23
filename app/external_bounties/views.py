@@ -185,4 +185,15 @@ def external_bounties_show(request, issuenum, slug):
         'card_desc': ellipses(external_bounty['content'], 300),
         "bounty": external_bounty,
     }
+
+    # determine whether this should be a no_index_or_not
+    # the below list may want to keep their SEO juice
+    no_index_tag_list = ['HackerOne', 'OpenBounty', 'Bounty0x', 'BountySource']
+    no_index = False
+    for tag in no_index_tag_list:
+        if tag in bounty.tags:
+            no_index = True
+    if no_index:
+        params['no_index'] = True
+
     return TemplateResponse(request, 'external_bounties_show.html', params)
