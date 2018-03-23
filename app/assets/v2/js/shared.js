@@ -510,6 +510,7 @@ var trigger_sidebar_web3 = function(network) {
   var sidebar_p = '<p>Connected to ' + network + '.</p>';
 
   if (is_supported_network) {
+    $('#upper_left').removeClass('disabled');
     $('#sidebar_head').html("<i class='fa fa-wifi'></i>");
     $('#sidebar_p').html('<p>Web3 enabled<p>' + sidebar_p);
   } else {
