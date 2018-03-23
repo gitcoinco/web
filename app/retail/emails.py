@@ -267,7 +267,7 @@ def render_new_bounty_roundup(to_email):
     Last week, we saw a bounty on MetaMask snowball into an epic -- all set to be built with Gitcoin bounties. <a href="https://medium.com/gitcoin/metamask-internationalizes-via-gitcoin-bf1390c0301c">Read more</a> on how MetaMask’s internationalization strategy started with a contribution from one Gitcoiner, @mapmeld. 
 </p>
 <p>
-    The <a href="http://gitcoin.co/faucet">Gitcoin Faucet</a> is live for those interested in a small ETH distribution to interact with Gitcoin’s mainnet for the first time. The first batch of distributions have been made! If using Gitcoin, the <a href="https://gitcoin.co/explorer">open issues page</a> is the best place to start. 
+    The <a href="http://gitcoin.co/faucet">Gitcoin Faucet</a> is live for those interested in a small ETH distribution to interact with Ethereum's mainnet for the first time. The first batch of distributions have been made! Want to use your distribution on Gitcoin?  The <a href="https://gitcoin.co/explorer">open issues page</a> is the best place to start. 
 <p>
     What else is new?
     <ul>

@@ -34,3 +34,16 @@ Example:
 </a>
 ```
 
+## More Examples
+
+<a href="https://gitcoin.co/explorer?q=metamask">
+    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/MetaMask/metamask-extension/issues/2350">
+</a>
+
+<a href="https://gitcoin.co/explorer?q=web3">
+    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/ethereum/web3.py">
+</a>
+
+<a href="https://gitcoin.co/explorer?q=MARKETProtocol">
+    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/MARKETProtocol/MARKETProtocol">
+</a>
