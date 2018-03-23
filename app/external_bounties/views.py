@@ -77,7 +77,12 @@ def external_bounties_index(request):
     if search_query == 'False':
         search_query = None
     if search_query:
-        bounties = bounties.filter(title__contains=search_query) | bounties.filter(description__contains=search_query) | bounties.filter(source_project__contains=search_query)
+        master_bounties = bounties
+        bounties = master_bounties.filter(title__contains=search_query) 
+        bounties = bounties | master_bounties.filter(description__contains=search_query) 
+        bounties = bounties | master_bounties.filter(source_project__contains=search_query) 
+        bounties = bounties | master_bounties.filter(tags__overlap=[search_query])
+        bounties = bounties.distinct()
     bounties, sorted_by, sort_direction = sort_index(request, bounties)
     num_bounties = bounties.count()
     page = request.GET.get('page', 1)
