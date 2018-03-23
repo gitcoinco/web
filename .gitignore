@@ -2,7 +2,6 @@
 *.pyc
 static/*
 sftp-config.json
-app/app/local_settings.py
 app/static/*
 app/external_bounties/management/commands/
 app/mydatabase
@@ -33,4 +32,5 @@ webpack-stats.json
 
 # .tfvars files
 *.tfvars
-app/celerybeat.pid
+*.pid
+celerybeat-schedule
