@@ -271,14 +271,18 @@ a.btn{
     float: none;
   }
 
-  #bounty_details .row{
+  #github-link {
+    display: inline-flex;
+  }
+
+  #bounty_details .row {
     margin: 0px;
     padding-left: 10px;
     padding-right: 10px;  
   }
 
   .contributor-box,
-  .activity {
+  #bounty_details .row.activity {
     margin-bottom: 10px;
   }
   
