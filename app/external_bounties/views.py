@@ -74,7 +74,9 @@ def external_bounties_index(request):
     external_bounties_results = []
     bounties = ExternalBounty.objects.filter(active=True).order_by('-created_on')
     search_query = request.GET.get('q', False)
-    if search_query and search_query != 'False':
+    if search_query == 'False':
+        search_query = None
+    if search_query:
         bounties = bounties.filter(title__contains=search_query) | bounties.filter(description__contains=search_query) | bounties.filter(source_project__contains=search_query)
     bounties, sorted_by, sort_direction = sort_index(request, bounties)
     num_bounties = bounties.count()
