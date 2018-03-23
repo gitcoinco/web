@@ -409,15 +409,15 @@ class Bounty(SuperModel):
         try:
             github_user, github_repo, _, github_issue = parsed_url.path.split('/')[1:5]
         except ValueError:
-            logger.info('Invalid github url for Bounty: %s -- %s', self.pk, self.github_url)
+            logger.info(f'Invalid github url for Bounty: {self.pk} -- {self.github_url}')
             return []
         comments = get_issue_comments(github_user, github_repo, github_issue)
-        if isinstance(comments, dict) and comments.get('message') == 'Not Found':
-            logger.info('Bounty %s contains an invalid github url %s', self.pk, self.github_url)
+        if isinstance(comments, dict) and comments.get('message', '') == 'Not Found':
+            logger.info(f'Bounty {self.pk} contains an invalid github url {self.github_url}')
             return []
         comment_count = 0
         for comment in comments:
-            if comment['user']['login'] not in settings.IGNORE_COMMENTS_FROM:
+            if (isinstance(comment, dict) and comment.get('user', {}).get('login', '') not in settings.IGNORE_COMMENTS_FROM):
                 comment_count += 1
         self.github_comments = comment_count
         if save:
@@ -907,10 +907,12 @@ class UserAction(SuperModel):
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
     profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE)
+    ip_address = models.GenericIPAddressField(null=True)
+    location_data = JSONField(default={})
     metadata = JSONField(default={})
 
     def __str__(self):
-        return "{} by {} at {}".format(self.action, self.profile, self.created_on)
+        return f"{self.action} by {self.profile} at {self.created_on}"
 
 
 class CoinRedemption(SuperModel):
