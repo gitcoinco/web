@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from html.parser import HTMLParser
 
+from django.core.paginator import Paginator
 from django.http import Http404
 from django.template.response import TemplateResponse
 
@@ -32,7 +33,7 @@ class MLStripper(HTMLParser):
     def __init__(self):
         self.reset()
         self.strict = False
-        self.convert_charrefs= True
+        self.convert_charrefs = True
         self.fed = []
 
     def handle_data(self, d):
@@ -46,7 +47,6 @@ def strip_html(html):
     s = MLStripper()
     s.feed(html)
     return s.get_data()
-
 
 
 def sort_index(request, bounties):
@@ -73,9 +73,17 @@ def external_bounties_index(request):
     tags = []
     external_bounties_results = []
     bounties = ExternalBounty.objects.filter(active=True).order_by('-created_on')
+    search_query = request.GET.get('q', False)
+    if search_query and search_query != 'False':
+        bounties = bounties.filter(title__contains=search_query) | bounties.filter(description__contains=search_query) | bounties.filter(source_project__contains=search_query)
     bounties, sorted_by, sort_direction = sort_index(request, bounties)
-    print(sorted_by)
-    for external_bounty_result in bounties:
+    num_bounties = bounties.count()
+    page = request.GET.get('page', 1)
+    for bounty in bounties:
+        tags = tags + bounty.tags
+    bounties = Paginator(bounties, 25)
+    bounties_paginator = bounties.get_page(page)
+    for external_bounty_result in bounties_paginator:
         external_bounty = {
             "created_on": external_bounty_result.created_on,
             "avatar": external_bounty_result.avatar,
@@ -87,11 +95,9 @@ def external_bounties_index(request):
             "tags": external_bounty_result.tags,
             "url": external_bounty_result.url,
         }
-        tags = tags + external_bounty_result.tags
         external_bounties_results.append(external_bounty)
     categories = list(set(tags))
     categories.sort()
-
     params = {
         'active': 'offchain',
         'title': 'Bounty Universe Explorer',
@@ -100,6 +106,10 @@ def external_bounties_index(request):
         'categories': categories,
         'sort_direction': sort_direction,
         'sorted_by': sorted_by,
+        'q': search_query,
+        'page': page,
+        'num_bounties': num_bounties,
+        'bounties_paginator': bounties_paginator,
     }
     return TemplateResponse(request, 'external_bounties.html', params)
 

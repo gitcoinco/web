@@ -27,10 +27,15 @@
                 <a href="{% url "externalbounty-list" %}">
                     [ View API ]
                 </a> |
-                Listing {{ bounties| length | intcomma }} universal bounties.
+                Listing {{ num_bounties | intcomma }} universal bounties.
               </div>
               <div class="search_area search_area--append">
-                <input class="gc-round-text-input gc-border-black w-100" type="text" placeholder="Search Bounties" />
+                <form id="search_form" method=GET>
+                    <input type="hidden" name="sort" value="{{sorted_by}}">
+                    <input type="hidden" name="direction" value="{{sort_direction}}">
+                    <input type="hidden" name="page" value="{{page}}">
+                    <input class="gc-round-text-input gc-border-black w-100" name="q" type="text" value="{%if q%}{{q}}{% endif %}" placeholder="Search Bounties" />
+                </form>
                 <span class="icon">{% include 'svgs/search.svg' %}</span>
                 <div id="sort_options">
                     Sort by 
@@ -48,7 +53,7 @@
               <div class="categories-list">
                 {% for category in categories %}
                   <div class="checkbox">
-                    <input class="checkbox-input" name="category" type="checkbox" id="{{category}}"/>
+                    <input class="checkbox-input" name="category" type="checkbox" id="{{category}}" {% if category == q %} checked="checked" {% endif %} />
                     <label class="checkbox-label" for="{{category}}">{{category}}</label>
                   </div>
                 {% endfor %}
@@ -122,6 +127,25 @@
                   </div>
                 </a>
               {% endfor %}
+
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if bounties_paginator.has_previous %}
+                            <a href="?sort={{sorted_by}}&direction={{sort_direction}}&q={{q}}&page=1">&laquo; first</a>
+                            <a href="?sort={{sorted_by}}&direction={{sort_direction}}&q={{q}}&page={{ bounties.previous_page_number }}">previous</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Page {{ bounties_paginator.number }} of {{ bounties_paginator.paginator.num_pages }}.
+                        </span>
+
+                        {% if bounties_paginator.has_next %}
+                            <a href="?sort={{sorted_by}}&direction={{sort_direction}}&q={{q}}&page={{ bounties_paginator.next_page_number }}">next</a>
+                            <a href="?sort={{sorted_by}}&direction={{sort_direction}}&q={{q}}&page={{ bounties_paginator.paginator.num_pages }}">last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+
             </main>
           </div>
         </div>
