@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 import logging
+from datetime import datetime
 from urllib.parse import urlsplit
 
 from django.conf import settings
@@ -29,6 +30,7 @@ from django.db.models.signals import m2m_changed, post_delete, post_save, pre_sa
 from django.dispatch import receiver
 from django.utils import timezone
 
+import pytz
 import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
@@ -118,7 +120,7 @@ class Bounty(SuperModel):
     interested_comment = models.IntegerField(null=True, blank=True)
     submissions_comment = models.IntegerField(null=True, blank=True)
     override_status = models.CharField(max_length=255, blank=True)
-
+    last_comment_date = models.DateTimeField(null=True)
     objects = BountyQuerySet.as_manager()
 
     class Meta:
@@ -420,6 +422,11 @@ class Bounty(SuperModel):
             if (isinstance(comment, dict) and comment.get('user', {}).get('login', '') not in settings.IGNORE_COMMENTS_FROM):
                 comment_count += 1
         self.github_comments = comment_count
+        if comment_count:
+            comment_times = [datetime.strptime(comment['created_at'], '%Y-%m-%dT%H:%M:%SZ') for comment in comments]
+            max_comment_time = max(comment_times)
+            max_comment_time = max_comment_time.replace(tzinfo=pytz.utc)
+            self.last_comment_date = max_comment_time
         if save:
             self.save()
         return comments

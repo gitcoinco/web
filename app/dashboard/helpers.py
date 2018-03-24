@@ -383,6 +383,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 # info to xfr over from latest_old_bounty
                 github_comments=latest_old_bounty.github_comments if latest_old_bounty else 0,
                 override_status=latest_old_bounty.override_status if latest_old_bounty else '',
+                last_comment_date=old_bounty.last_comment_date,
             )
             new_bounty.fetch_issue_item()
             if not new_bounty.avatar_url:
