@@ -18,10 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
+from django.utils import timezone
 
 from .models import Bounty, BountyFulfillment, Interest, ProfileSerializer
 
@@ -64,7 +65,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'created_on', 'modified_on', 'title', 'web3_created',
                   'value_in_token', 'token_name', 'token_address',
                   'bounty_type', 'project_length', 'experience_level',
-                  'github_url', 'github_comments', 'bounty_owner_address',
+                  'github_url', 'github_comments', 'last_comment_date', 'bounty_owner_address',
                   'bounty_owner_email', 'bounty_owner_github_username',
                   'fulfillments', 'interested', 'is_open', 'expires_date', 'raw_data',
                   'metadata', 'current_bounty', 'value_in_eth',
@@ -157,6 +158,12 @@ class BountyViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 interested__profile__handle__iexact=self.request.query_params.get('interested_github_username')
             )
+
+        # Retrieve all bounties that haven't been commented on in the last x days. Get x from the last_updated parameter.
+        if 'last_updated' in param_keys:
+            updated_days = self.request.query_params.get('last_updated')
+            if updated_days is not None and updated_days.isnumeric():
+                queryset = queryset.filter(last_comment_date__lt=timezone.now() - timedelta(days=int(updated_days)))
 
         # order
         order_by = self.request.query_params.get('order_by')

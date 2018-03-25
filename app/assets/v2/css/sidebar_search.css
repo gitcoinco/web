@@ -63,3 +63,7 @@
 .accordion:after {
   color: #5B5C5C;
 }
+
+.form__radio .wrap {
+    width: auto;
+}
