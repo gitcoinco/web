@@ -239,8 +239,8 @@ window.onload = function() {
           }).then(function(json) {
             var is_success = json['status'] == 'OK';
             var _class = is_success ? 'info' : 'error';
-
-            _alert(json['message'], _class);
+            
+            _alert(json, _class);
           });
 
           if ((i + 1) < numBatches) {
