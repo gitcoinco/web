@@ -126,7 +126,9 @@ def maybe_market_to_twitter(bounty, event_name):
         try:
             if not is_short:
                 shortener = Shortener(shortener)
-                url = shortener.short(url)
+                response = shortener.short(url)
+                if response != 'Error' and 'http' in response:
+                    url = response
                 is_short = True
         except:
             pass
