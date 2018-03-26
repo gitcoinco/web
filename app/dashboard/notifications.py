@@ -84,16 +84,35 @@ def maybe_market_to_twitter(bounty, event_name):
             "Gitcoin open task of the day is worth {} {} {} ⚡️ \n\n{}",
             "Task of the day 💰 {} {} {} ⚡️ \n\n{}",
         ]
-    if event_name == 'new_bounty':
+    elif event_name == 'new_bounty':
         tweet_txts = tweet_txts + [
             "Extra! Extra 🗞🗞 New Funded Issue, Read all about it 👇  {} {} {} \n\n{}",
             "Hot off the blockchain! 🔥🔥🔥 There's a new task worth {} {} {} \n\n{}",
             "💰 New Task Alert.. 💰 Earn {} {} {} for working on this 👇 \n\n{}",
         ]
-    if event_name  == 'increased_bounty':
-        tweet_txts = tweet_txts + [
-            "Looking for paid Open Source work? Earn {} {} {} and boost your reputation by completing this task \n\n{}",
-            "Ding ding ding!! A bounty was just increased to {} {} {}! Someone must really want you to work on this task \n\n{}"
+    elif event_name == 'increase_payout':
+        tweet_txts = [
+            'Increased Payout on {} {} {}'
+        ]
+    elif event_name == 'start_work':
+        tweet_txts = [
+            'Work started on {} {} {}'
+        ]
+    elif event_name == 'stop_work':
+        tweet_txts = [
+            'Work stopped on {} {} {}'
+        ]
+    elif event_name == 'work_done':
+        tweet_txts = [
+            'Work done on {} {} {}'
+        ]
+    elif event_name == 'work_submitted':
+        tweet_txts = [
+            'Work submitted on {} {} {}'
+        ]
+    elif event_name == 'killed_bounty':
+        tweet_txts = [
+            'Bounty killed on {} {} {}'
         ]
 
     random.shuffle(tweet_txts)
