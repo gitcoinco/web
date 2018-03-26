@@ -167,7 +167,7 @@ def stats(request):
 
 
 def cohort_helper_users(start_time, end_time, data_source):
-    if 'github' in data_source:
+    if 'profile' in data_source:
         users = Profile.objects.filter(created_on__gte=start_time, created_on__lt=end_time).exclude(github_access_token='').distinct()
     elif data_source == 'slack-online':
         users = SlackUser.objects.filter(created_on__gte=start_time, created_on__lt=end_time).distinct()
