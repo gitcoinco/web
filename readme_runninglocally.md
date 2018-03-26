@@ -6,8 +6,10 @@
 git clone https://github.com/gitcoinco/web.git
 cd web
 cp app/app/local.env app/app/.env
-docker-compose up -d
+docker-compose up -d --build
 ```
+
+Create a Django admin user: `docker-compose exec web python3 app/manage.py createsuperuser`
 
 Navigate to `http://0.0.0.0:8000/`.
 
@@ -24,6 +26,8 @@ cp app/local.env app/.env
 ```
 
 You will need to edit the `app/.env` file with your local environment variables. Look for config items that are marked `# required`.
+
+Create a Django admin user: `python3 manage.py createsuperuser`
 
 ## Setup Github OAuth2 App Integration
 
