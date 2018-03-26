@@ -99,7 +99,7 @@ window.onload = function() {
 
           if (error && !ignore_error) {
             _alert({ message: 'Could not get bounty details.' });
-            unloading_button($('#submitBounty'));
+            unloading_button($('.js-submit'));
           }
           if (run_main) {
             if (!ignore_error) {
@@ -128,7 +128,7 @@ window.onload = function() {
                   });
                   console.error('err', error);
                   _alert({ message: 'There was an error' });
-                  unloading_button($('#submitBounty'));
+                  unloading_button($('.js-submit'));
                 } else {
                   next();
                 }
@@ -144,7 +144,7 @@ window.onload = function() {
                   _alert({
                     message: 'No active bounty found for this Github URL.'
                   });
-                  unloading_button($('#submitBounty'));
+                  unloading_button($('.js-submit'));
                   return;
                 }
 

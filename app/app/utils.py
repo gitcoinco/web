@@ -163,7 +163,7 @@ def get_location_from_ip(ip_address):
         dict: The GeoIP location data dictionary.
 
     """
-    city = None
+    city = {}
     if not ip_address:
         return city
 

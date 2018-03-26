@@ -1,7 +1,7 @@
 $(document).ready(function() {
   var post_receipt = function(err, res) {
     $('#loadingImg').hide();
-    $('#submitBounty').removeAttr('disabled');
+    $('.js-submit').removeAttr('disabled');
     if (err != null) {
       $('#failureReason').html(err.message);
       $('#errResponse').show();
@@ -12,7 +12,7 @@ $(document).ready(function() {
 
   $('#submitFaucet').click(function(e) {
     e.preventDefault();
-    $('#submitBounty').attr('disabled', 'disabled');
+    $('.js-submit').attr('disabled', 'disabled');
     $('#loadingImg').show();
     var fundingAccount = web3.eth.coinbase;
     var destinationAccount = $('#destinationAccount').val();

@@ -18,6 +18,26 @@ This is the website that is live at gitcoin.co
 
 ## How to interact with this repo
 
+### Table of Contents
+
+- [Gitcoin](#gitcoin)
+- [web repo](#web-repo)
+  * [How to interact with this repo](#how-to-interact-with-this-repo)
+    + [On Github](#on-github)
+    + [On Gitcoin](#on-gitcoin)
+  * [What](#what)
+- [Developing](#developing)
+  * [HTTPS API](#https-api)
+  * [Running Locally](#running-locally)
+- [Trying out Gitcoin](#trying-out-gitcoin)
+  * [Posting your first issue](#posting-your-first-issue)
+- [Integrating Gitcoin](#integrating-gitcoin)
+  * [Integrating the 'available work widget' on your repo.](#integrating-the--available-work-widget--on-your-repo)
+  * [Adding GitcoinBot to your repo](#adding-gitcoinbot-to-your-repo)
+  * [Adding your token to Gitcoin](#adding-your-token-to-gitcoin)
+- [Legal](#legal)
+- [License](#license)
+
 ### On Github
 
 [Star](https://github.com/gitcoinco/web/stargazers) and [watch](https://github.com/gitcoinco/web/watchers) this github repository to stay up to date, we're pushing new code several times per week!
@@ -54,15 +74,18 @@ Technically, the system is architected:
 * __Web 3 Bridge__ This is the bridge between web3 and the rest of the application. Mostly built in javascript(web3js) and python(web3py).
 * __Brochureware__ Just a nice little landing page telling folks what the Gitcoin project is.
 
-# HTTPS API
+# Developing 
+
+## HTTPS API
 
 [For more information on the HTTPS API, please view the api README](readme_api.md)
 
-# Running Locally
+## Running Locally
 
 [For more information on running the app locally, please view the running locally README](readme_runninglocally.md)
 
-# Trying out Gitcoin: Posting your first issue
+# Trying out Gitcoin
+## Posting your first issue
 
 If you
 
@@ -71,13 +94,21 @@ If you
 
 try posting a funded issue at [https://gitcoin.co/new](https://gitcoin.co/new).
 
-# Adding GitcoinBot to your repo
+# Integrating Gitcoin
+
+## Integrating the 'available work widget' on your repo.
+
+This widget will help you advertise that you support Gitcoin bounties, so that your community knows the best place to contribute.
+
+[Check out the widget readme to learn how](readme_widget.md)
+
+## Adding GitcoinBot to your repo
 
 Gitcoinbot will allow you to add issues straight from github.
 
 [Check out the gitcoinbot readme to learn how](app/gitcoinbot/)
 
-# Adding your token to Gitcoin
+## Adding your token to Gitcoin
 
 Have an ERC20 compatible token that you'ud like to add support for?  Great!
 

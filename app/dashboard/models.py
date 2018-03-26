@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 import logging
+from datetime import datetime
 from urllib.parse import urlsplit
 
 from django.conf import settings
@@ -29,6 +30,7 @@ from django.db.models.signals import m2m_changed, post_delete, post_save, pre_sa
 from django.dispatch import receiver
 from django.utils import timezone
 
+import pytz
 import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
@@ -87,9 +89,9 @@ class Bounty(SuperModel):
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
     token_address = models.CharField(max_length=50)
-    bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES)
-    project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS)
-    experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS)
+    bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES, blank=True)
+    project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True)
+    experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True)
     github_url = models.URLField(db_index=True)
     github_comments = models.IntegerField(default=0)
     bounty_owner_address = models.CharField(max_length=50)
@@ -118,7 +120,7 @@ class Bounty(SuperModel):
     interested_comment = models.IntegerField(null=True, blank=True)
     submissions_comment = models.IntegerField(null=True, blank=True)
     override_status = models.CharField(max_length=255, blank=True)
-
+    last_comment_date = models.DateTimeField(null=True, blank=True)
     objects = BountyQuerySet.as_manager()
 
     class Meta:
@@ -161,7 +163,7 @@ class Bounty(SuperModel):
         """
         try:
             _org_name = org_name(self.github_url)
-            _issue_num = issue_number(self.github_url)
+            _issue_num = int(issue_number(self.github_url))
             _repo_name = repo_name(self.github_url)
             return f"{'/' if preceding_slash else ''}issue/{_org_name}/{_repo_name}/{_issue_num}"
         except Exception:
@@ -420,6 +422,11 @@ class Bounty(SuperModel):
             if (isinstance(comment, dict) and comment.get('user', {}).get('login', '') not in settings.IGNORE_COMMENTS_FROM):
                 comment_count += 1
         self.github_comments = comment_count
+        if comment_count:
+            comment_times = [datetime.strptime(comment['created_at'], '%Y-%m-%dT%H:%M:%SZ') for comment in comments]
+            max_comment_time = max(comment_times)
+            max_comment_time = max_comment_time.replace(tzinfo=pytz.utc)
+            self.last_comment_date = max_comment_time
         if save:
             self.save()
         return comments

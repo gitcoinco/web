@@ -1,3 +1,6 @@
+.pagination .step-links {
+  margin: 10px auto;
+}
 .fixed-balance {
   position: fixed;
   left: 0px;

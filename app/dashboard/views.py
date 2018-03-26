@@ -39,6 +39,7 @@ from dashboard.models import (
 )
 from dashboard.notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
+    maybe_market_to_twitter,
 )
 from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
@@ -128,6 +129,7 @@ def new_interest(request, bounty_id):
         bounty.interested.add(interest)
         record_user_action(Profile.objects.get(pk=profile_id).handle, 'start_work', interest)
         maybe_market_to_slack(bounty, 'start_work')
+        maybe_market_to_twitter(bounty, 'start_work')
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \
@@ -173,8 +175,9 @@ def remove_interest(request, bounty_id):
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         record_user_action(Profile.objects.get(pk=profile_id).handle, 'stop_work', interest)
         bounty.interested.remove(interest)
-        maybe_market_to_slack(bounty, 'stop_work')
         interest.delete()
+        maybe_market_to_slack(bounty, 'stop_work')
+        maybe_market_to_twitter(bounty, 'stop_work')
     except Interest.DoesNotExist:
         return JsonResponse({
             'errors': ['You haven\'t expressed interest on this bounty.'],
@@ -450,6 +453,34 @@ def fulfill_bounty(request):
 
     return TemplateResponse(request, 'fulfill_bounty.html', params)
 
+def increase_bounty(request):
+    """Increase a bounty (funder)"""
+    issue_url = request.GET.get('source')
+    params = {
+        'issue_url': issue_url,
+        'title': 'Increase Bounty',
+        'active': 'increase_bounty',
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+    }
+
+    try:
+        bounties = Bounty.objects.current().filter(github_url=issue_url)
+        if bounties:
+            bounty = bounties.order_by('pk').first()
+            params['standard_bounties_id'] = bounty.standard_bounties_id
+            params['bounty_owner_address'] = bounty.bounty_owner_address
+            params['value_in_token'] = bounty.value_in_token
+            params['token_address'] = bounty.token_address
+    except Bounty.DoesNotExist:
+        pass
+    except Exception as e:
+        print(e)
+        logging.error(e)
+
+    return TemplateResponse(request, 'increase_bounty.html', params)
+
 
 def kill_bounty(request):
     """Kill an expired bounty."""
@@ -581,7 +612,7 @@ def profile(request, handle):
     params['profile'] = profile
     params['stats'] = profile.stats
     params['bounties'] = profile.bounties
-    params['tips'] = Tip.objects.filter(username=handle)
+    params['tips'] = Tip.objects.filter(username=handle, network='mainnet')
 
     return TemplateResponse(request, 'profile_details.html', params)
 
@@ -652,7 +683,16 @@ def sync_web3(request):
                 print('* getting bounty')
                 bounty = get_bounty(bounty_id, network)
                 print('* processing bounty')
-                did_change, _, _ = web3_process_bounty(bounty)
+                did_change = False
+                max_tries_attempted = False
+                counter = 0
+                while not did_change and not max_tries_attempted:
+                    did_change, _, _ = web3_process_bounty(bounty)
+                    if not did_change:
+                        print("RETRYING")
+                        time.sleep(3)
+                        counter += 1
+                        max_tries_attempted = counter > 3
                 result = {
                     'status': '200',
                     'msg': "success",
@@ -802,7 +842,7 @@ def toolbox(request):
           ]
        }, {
           "title": "Tools in Alpha",
-          "description": "These fresh new tools are looking someone to test ride them!",
+          "description": "These fresh new tools are looking for someone to test ride them!",
           "tools": [{
               "name": "Leaderboard",
               "img": static("v2/images/tools/leaderboard.png"),
@@ -850,10 +890,10 @@ def toolbox(request):
              'stat_graph': 'codesponsor',
             },
             {
-              "name": "Offchain Bounties",
+              "name": "Bounties Universe",
               "img": static("v2/images/why-different/projects.jpg"),
-              "description": '''Bounties from around the pre-blockchain internet''',
-              "link": reverse("offchain_index"),
+              "description": '''Bounties from around the internet''',
+              "link": reverse("universe_index"),
               'link_copy': 'Details',
               "active": "false",
               'stat_graph': 'na',  # TODO

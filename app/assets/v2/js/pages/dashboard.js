@@ -10,6 +10,26 @@ try {
   localStorage = {};
 }
 
+function debounce(func, wait, immediate) {
+  var timeout;
+
+  return function() {
+    var context = this;
+    var args = arguments;
+    var later = function() {
+      timeout = null;
+      if (!immediate)
+        func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow)
+      func.apply(context, args);
+  };
+}
+
 // sets search information default
 var save_sidebar_latest = function() {
 
@@ -221,6 +241,52 @@ var process_stats = function(results) {
   }
 };
 
+var paint_bounties_in_viewport = function(start, max) {
+  document.is_painting_now = true;
+  var num_bounties = document.bounties_html.length;
+
+  for (var i = start; i < num_bounties && i < max; i++) {
+    var html = document.bounties_html[i];
+
+    document.last_bounty_rendered = i;
+    $('#bounties').append(html);
+  }
+
+  $('div.bounty_row.result').each(function() {
+    var href = $(this).attr('href');
+
+    if (typeof $(this).changeElementType !== 'undefined') {
+      $(this).changeElementType('a'); // hack so that users can right click on the element
+    }
+
+    $(this).attr('href', href);
+  });
+  document.is_painting_now = false;
+};
+
+var trigger_scroll = debounce(function() {
+  if (typeof document.bounties_html == 'undefined' || document.bounties_html.length == 0) {
+    return;
+  }
+  var scrollPos = $(document).scrollTop();
+  var last_active_bounty = $('.bounty_row.result:last-child');
+
+  if (last_active_bounty.length == 0) {
+    return;
+  }
+  var window_height = $(window).height();
+  var have_painted_all_bounties = document.bounties_html.length <= document.last_bounty_rendered;
+  var buffer = 500;
+  var does_need_to_paint_more = !document.is_painting_now && !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
+
+  if (does_need_to_paint_more) {
+    paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + 6);
+  }
+}, 200);
+
+$(window).scroll(trigger_scroll);
+$('body').bind('touchmove', trigger_scroll);
+
 var refreshBounties = function() {
   // manage state
   var keywords = $('#keywords').val();
@@ -258,7 +324,9 @@ var refreshBounties = function() {
     if (results.length === 0) {
       $('.nonefound').css('display', 'block');
     }
-
+    document.is_painting_now = false;
+    document.last_bounty_rendered = 0;
+    document.bounties_html = [];
     for (var i = 0; i < results.length; i++) {
       // setup
       var result = results[i];
@@ -291,18 +359,9 @@ var refreshBounties = function() {
       var tmpl = $.templates('#result');
       var html = tmpl.render(result);
 
-      $('#bounties').append(html);
+      document.bounties_html[i] = html;
     }
-
-    $('.bounty_row.result').each(function() {
-      var href = $(this).attr('href');
-
-      if (typeof $(this).changeElementType !== 'undefined') {
-        $(this).changeElementType('a'); // hack so that users can right click on the element
-      }
-
-      $(this).attr('href', href);
-    });
+    paint_bounties_in_viewport(0, 10);
 
     process_stats(results);
   }).fail(function() {

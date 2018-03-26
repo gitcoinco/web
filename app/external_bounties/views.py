@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from html.parser import HTMLParser
 
+from django.core.paginator import Paginator
 from django.http import Http404
 from django.template.response import TemplateResponse
 
@@ -32,7 +33,7 @@ class MLStripper(HTMLParser):
     def __init__(self):
         self.reset()
         self.strict = False
-        self.convert_charrefs= True
+        self.convert_charrefs = True
         self.fed = []
 
     def handle_data(self, d):
@@ -46,7 +47,6 @@ def strip_html(html):
     s = MLStripper()
     s.feed(html)
     return s.get_data()
-
 
 
 def sort_index(request, bounties):
@@ -73,9 +73,24 @@ def external_bounties_index(request):
     tags = []
     external_bounties_results = []
     bounties = ExternalBounty.objects.filter(active=True).order_by('-created_on')
+    search_query = request.GET.get('q', False)
+    if search_query == 'False':
+        search_query = None
+    if search_query:
+        master_bounties = bounties
+        bounties = master_bounties.filter(title__contains=search_query) 
+        bounties = bounties | master_bounties.filter(description__contains=search_query) 
+        bounties = bounties | master_bounties.filter(source_project__contains=search_query) 
+        bounties = bounties | master_bounties.filter(tags__overlap=[search_query])
+        bounties = bounties.distinct()
     bounties, sorted_by, sort_direction = sort_index(request, bounties)
-    print(sorted_by)
-    for external_bounty_result in bounties:
+    num_bounties = bounties.count()
+    page = request.GET.get('page', 1)
+    for bounty in bounties:
+        tags = tags + bounty.tags
+    bounties = Paginator(bounties, 25)
+    bounties_paginator = bounties.get_page(page)
+    for external_bounty_result in bounties_paginator:
         external_bounty = {
             "created_on": external_bounty_result.created_on,
             "avatar": external_bounty_result.avatar,
@@ -87,19 +102,21 @@ def external_bounties_index(request):
             "tags": external_bounty_result.tags,
             "url": external_bounty_result.url,
         }
-        tags = tags + external_bounty_result.tags
         external_bounties_results.append(external_bounty)
     categories = list(set(tags))
     categories.sort()
-
     params = {
         'active': 'offchain',
-        'title': 'Offchain Bounty Explorer',
+        'title': 'Bounty Universe Explorer',
         'card_desc': 'Bounties for Software Work from across the internets.',
         'bounties': external_bounties_results,
         'categories': categories,
         'sort_direction': sort_direction,
         'sorted_by': sorted_by,
+        'q': search_query,
+        'page': page,
+        'num_bounties': num_bounties,
+        'bounties_paginator': bounties_paginator,
     }
     return TemplateResponse(request, 'external_bounties.html', params)
 
@@ -113,7 +130,7 @@ def external_bounties_new(request):
     """
     params = {
         'active': 'offchain',
-        'title': 'New Offchain Bounty',
+        'title': 'New Universal Bounty',
         'card_desc': 'Create a new Bounty for Software Work from across the internets.',
         'formset': ExternalBountyForm,
     }
@@ -164,8 +181,19 @@ def external_bounties_show(request, issuenum, slug):
 
     params = {
         'active': 'offchain',
-        'title': 'Offchain Bounty Explorer',
+        'title': 'Bounty Universe Explorer',
         'card_desc': ellipses(external_bounty['content'], 300),
         "bounty": external_bounty,
     }
+
+    # determine whether this should be a no_index_or_not
+    # the below list may want to keep their SEO juice
+    no_index_tag_list = ['HackerOne', 'OpenBounty', 'Bounty0x', 'BountySource']
+    no_index = False
+    for tag in no_index_tag_list:
+        if tag in bounty.tags:
+            no_index = True
+    if no_index:
+        params['no_index'] = True
+
     return TemplateResponse(request, 'external_bounties_show.html', params)
