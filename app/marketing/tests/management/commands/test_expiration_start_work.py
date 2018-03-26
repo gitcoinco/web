@@ -31,13 +31,15 @@ actions_expired = [
         'user': {
             'login': 'fred'
         },
-        'created_at': (timezone.now() - timedelta(days=10)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        'created_at': (timezone.now() - timedelta(days=10)).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'event': 'commented',
     },
     {
         'user': {
             'login': 'paul'
         },
-        'created_at': (timezone.now() - timedelta(days=10)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        'created_at': (timezone.now() - timedelta(days=10)).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'event': 'commented',
     }
 ]
 
@@ -46,7 +48,8 @@ actions_warning = [
         'user': {
             'login': 'fred'
         },
-        'created_at': (timezone.now() - timedelta(days=5)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        'created_at': (timezone.now() - timedelta(days=5)).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'event': 'commented',
     }
 ]
 
