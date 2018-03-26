@@ -261,12 +261,13 @@ def bounty_did_change(bounty_id, new_bounty_details):
     return did_change, old_bounties
 
 
-def handle_bounty_fulfillments(fulfillments, new_bounty):
+def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
     """Handle BountyFulfillment creation for new bounties.
 
     Args:
         fulfillments (dict): The fulfillments data dictionary.
         new_bounty (dashboard.models.Bounty): The new Bounty object.
+        old_bounty (dashboard.models.Bounty): The old Bounty object.
 
     Returns:
         QuerySet: The BountyFulfillments queryset.
@@ -285,6 +286,14 @@ def handle_bounty_fulfillments(fulfillments, new_bounty):
         if fulfillment.get('accepted'):
             kwargs['accepted'] = True
         try:
+            created_on = timezone.now()
+            modified_on = timezone.now()
+            if old_bounty:
+                old_fulfillments = old_bounty.fulfillments.filter(fulfillment_id=fulfillment.get('id'))
+                if old_fulfillments.exists():
+                    old_fulfillment = old_fulfillments.first()
+                    created_on = old_fulfillment.created_on
+                    modified_on = old_fulfillment.modified_on
             new_bounty.fulfillments.create(
                 fulfiller_address=fulfillment.get(
                     'fulfiller',
@@ -296,6 +305,8 @@ def handle_bounty_fulfillments(fulfillments, new_bounty):
                     'payload', {}).get('fulfiller', {}).get('name', ''),
                 fulfiller_metadata=fulfillment,
                 fulfillment_id=fulfillment.get('id'),
+                created_on=created_on,
+                modified_on=modified_on,
                 **kwargs)
         except Exception as e:
             logging.error(f'{e} during new fulfillment creation for {new_bounty}')
@@ -400,7 +411,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             new_bounty = None
 
         if fulfillments:
-            handle_bounty_fulfillments(fulfillments, new_bounty)
+            handle_bounty_fulfillments(fulfillments, new_bounty, latest_old_bounty)
             for inactive in Bounty.objects.filter(current_bounty=False, github_url=url).order_by('-created_on'):
                 BountyFulfillment.objects.filter(bounty_id=inactive.id).delete()
     return new_bounty

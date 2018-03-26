@@ -89,9 +89,9 @@ class Bounty(SuperModel):
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
     token_address = models.CharField(max_length=50)
-    bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES)
-    project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS)
-    experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS)
+    bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES, blank=True)
+    project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True)
+    experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True)
     github_url = models.URLField(db_index=True)
     github_comments = models.IntegerField(default=0)
     bounty_owner_address = models.CharField(max_length=50)
@@ -120,7 +120,7 @@ class Bounty(SuperModel):
     interested_comment = models.IntegerField(null=True, blank=True)
     submissions_comment = models.IntegerField(null=True, blank=True)
     override_status = models.CharField(max_length=255, blank=True)
-    last_comment_date = models.DateTimeField(null=True)
+    last_comment_date = models.DateTimeField(null=True, blank=True)
     objects = BountyQuerySet.as_manager()
 
     class Meta:
