@@ -46,18 +46,18 @@
 	border-color: rgb(204, 204, 204); 
 	border-radius: 5px;
 	-webkit-transition: border-color 0.25s;
-    -moz-transition:    border-color 0.25s;
-    -ms-transition:     border-color 0.25s;
-    -o-transition:      border-color 0.25s;
-    transition:         border-color 0.25s;
+    -moz-transition: border-color 0.25s;
+    -ms-transition: border-color 0.25s;
+    -o-transition: border-color 0.25s;
+    transition: border-color 0.25s;
 }
 
 .idea-list:hover {
-	border-color: purple;
+	border-color: #3e24fb;
 }
 
 .idea-title {
 	font-family: 'Muli', sans-serif; 
 	font-size: 1.15em; 
-	display: in-line
+	display: inline
 }
