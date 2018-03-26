@@ -39,6 +39,7 @@ from dashboard.models import (
 )
 from dashboard.notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
+    maybe_market_to_twitter,
 )
 from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
@@ -128,6 +129,7 @@ def new_interest(request, bounty_id):
         bounty.interested.add(interest)
         record_user_action(Profile.objects.get(pk=profile_id).handle, 'start_work', interest)
         maybe_market_to_slack(bounty, 'start_work')
+        maybe_market_to_twitter(bounty, 'start_work')
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \
@@ -173,8 +175,9 @@ def remove_interest(request, bounty_id):
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         record_user_action(Profile.objects.get(pk=profile_id).handle, 'stop_work', interest)
         bounty.interested.remove(interest)
-        maybe_market_to_slack(bounty, 'stop_work')
         interest.delete()
+        maybe_market_to_slack(bounty, 'stop_work')
+        maybe_market_to_twitter(bounty, 'stop_work')
     except Interest.DoesNotExist:
         return JsonResponse({
             'errors': ['You haven\'t expressed interest on this bounty.'],

@@ -28,8 +28,6 @@ class Command(BaseCommand):
     help = 'sends bounties quotes to twitter'
 
     def handle(self, *args, **options):
-        return  # per 2018/01/22 convo with vivek / kevin, these tweets have low engagement
-        # we are going to test manually promoting these tweets for a week and come back to revisit this
         bounties = Bounty.objects.filter(
             current_bounty=True,
             network='mainnet',
@@ -40,4 +38,4 @@ class Command(BaseCommand):
         bounty = bounties.order_by('?').first()
         print(bounty)
         did_tweet = maybe_market_to_twitter(bounty, 'remarket_bounty')
-        print(did_tweet)
+        print("did tweet", did_tweet)

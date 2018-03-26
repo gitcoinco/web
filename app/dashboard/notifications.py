@@ -66,7 +66,6 @@ def maybe_market_to_twitter(bounty, event_name):
     if not settings.TWITTER_CONSUMER_KEY or (event_name not in ['new_bounty', 'remarket_bounty']) or (
        bounty.get_natural_value() < 0.0001) or (bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
-    return False  # per 2018/01/22 convo with vivek / kevin, these tweets have low engagement
     # we are going to test manually promoting these tweets for a week and come back to revisit this
 
     api = twitter.Api(
@@ -100,13 +99,22 @@ def maybe_market_to_twitter(bounty, event_name):
     random.shuffle(tweet_txts)
     tweet_txt = tweet_txts[0]
 
-    shortener = Shortener('Tinyurl')
+    url = bounty.get_absolute_url()
+    is_short = False
+    for shortener in ['Tinyurl', 'Adfly', 'Isgd', 'QrCx']:
+        try:
+            if not is_short:
+                shortener = Shortener(shortener)
+                url = shortener.short(url)
+                is_short = True
+        except:
+            pass
 
     new_tweet = tweet_txt.format(
         round(bounty.get_natural_value(), 4),
         bounty.token_name,
-        f"({bounty.value_in_usdt} USD @ ${convert_token_to_usdt(bounty.token_name)}/{bounty.token_name})" if bounty.value_in_usdt else "",
-        shortener.short(bounty.get_absolute_url())
+        f"({bounty.value_in_usdt} USD @ ${round(convert_token_to_usdt(bounty.token_name),2)}/{bounty.token_name})" if bounty.value_in_usdt else "",
+        url
     )
     new_tweet = new_tweet + " " + github_org_to_twitter_tags(bounty.org_name)  # twitter tags
     if bounty.keywords:  # hashtags
