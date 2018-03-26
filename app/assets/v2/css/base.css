@@ -1050,6 +1050,11 @@ body.bounty_details #title {
     display: inline-block;
     vertical-align: top;
 }
+.profile_details .bounties li div.details h6 {
+    display: inline-block;
+    word-wrap: break-word;
+    max-width: 440px;
+}
 .profile_details .tips li div.details{
     width: 200px;
 }
