@@ -680,7 +680,16 @@ def sync_web3(request):
                 print('* getting bounty')
                 bounty = get_bounty(bounty_id, network)
                 print('* processing bounty')
-                did_change, _, _ = web3_process_bounty(bounty)
+                did_change = False
+                max_tries_attempted = False
+                counter = 0
+                while not did_change and not max_tries_attempted:
+                    did_change, _, _ = web3_process_bounty(bounty)
+                    if not did_change:
+                        print("RETRYING")
+                        time.sleep(3)
+                        counter += 1
+                        max_tries_attempted = counter > 3
                 result = {
                     'status': '200',
                     'msg': "success",
