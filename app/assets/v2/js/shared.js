@@ -190,6 +190,11 @@ var mutate_interest = function(bounty_pk, direction) {
   $.post(request_url, function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
+      if (direction === 'new')
+        _alert({message: "Thanks for letting us know that you're ready to start work."}, 'success');
+      else if (direction === 'remove')
+        _alert({message: "You've stopped working on this, thanks for letting us know."}, 'success');
+
       pull_interest_list(bounty_pk);
       return true;
     }
@@ -203,6 +208,28 @@ var mutate_interest = function(bounty_pk, direction) {
 var pull_interest_list = function(bounty_pk, callback) {
   profiles = [];
   document.interested = false;
+  var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
+  var started = [];
+
+  $.get(uri, function(results) {
+    render_activity(results[0]);
+    if (results[0].interested) {
+      var interested = results[0].interested;
+
+      interested.forEach(function(_interested) {
+        started.push(
+          '<a href="https://gitcoin.co/profile/' +
+            _interested.profile.handle +
+            '" target="_blank">' +
+            _interested.profile.handle + '</a>'
+        );
+      });
+    }
+    if (started.length == 0) {
+      started.push('<i class="fas fa-minus"></i>');
+    }
+    $('#started_owners_username').html(started);
+  });
   $.getJSON('/actions/bounty/' + bounty_pk + '/interest/', function(data) {
     data = sanitizeAPIResults(JSON.parse(data));
     $.each(data, function(index, value) {
@@ -211,22 +238,16 @@ var pull_interest_list = function(bounty_pk, callback) {
         handle: value.handle,
         url: value.url
       };
-      // add to template
 
       profiles.push(profile);
       // update document.interested
       if (profile.handle == document.contxt.github_handle) {
         document.interested = true;
       }
-
     });
-    var tmpl = $.templates('#interested');
-    var html = tmpl.render(profiles);
-
     if (profiles.length == 0) {
       html = 'No one has started work on this issue yet.';
     }
-    $('#interest_list').html(html);
     if (typeof callback != 'undefined') {
       callback(document.interested);
     }
