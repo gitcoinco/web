@@ -46,12 +46,14 @@
     <script src="{% static "v2/js/jquery.js" %}"></script>
 </head>
 
-<h1>Cohort Analysis Tool</h1>
-
 <body>
     <form method=GET>
         Data Source: <select name=data_source>
-            <option {% if args.data_source == "slack-online" %}selected{%endif%} >slack</option>
+            <option {% if args.data_source == "profile-startwork" %}selected{%endif%} >profile-startwork</option>
+            <option {% if args.data_source == "profile-new_bounty" %}selected{%endif%} >profile-new_bounty</option>
+            <option {% if args.data_source == "profile-login" %}selected{%endif%} >profile-login</option>
+            <option {% if args.data_source == "profile-githubinteraction" %}selected{%endif%} >profile-githubinteraction</option>
+            <option {% if args.data_source == "slack-online" %}selected{%endif%} >slack-online</option>
             <option {% if args.data_source == "email-open" %}selected{%endif%} >email-open</option>
             <option {% if args.data_source == "email-click" %}selected{%endif%} >email-click</option>
             <option {% if args.data_source == "email-delivered" %}selected{%endif%}>email-delivered</option>

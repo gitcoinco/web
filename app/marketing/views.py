@@ -28,8 +28,10 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 
 from chartit import Chart, DataPool
-from dashboard.models import Profile
-from marketing.models import EmailEvent, EmailSubscriber, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat
+from dashboard.models import Profile, UserAction
+from marketing.models import (
+    EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
+)
 from marketing.utils import get_or_save_email_subscriber
 from retail.helpers import get_ip
 
@@ -165,7 +167,9 @@ def stats(request):
 
 
 def cohort_helper_users(start_time, end_time, data_source):
-    if data_source == 'slack-online':
+    if 'github' in data_source:
+        users = Profile.objects.filter(created_on__gte=start_time, created_on__lt=end_time).exclude(github_access_token='').distinct()
+    elif data_source == 'slack-online':
         users = SlackUser.objects.filter(created_on__gte=start_time, created_on__lt=end_time).distinct()
     else:
         users = EmailSubscriber.objects.filter(created_on__gte=start_time, created_on__lt=end_time).distinct()
@@ -173,7 +177,26 @@ def cohort_helper_users(start_time, end_time, data_source):
 
 
 def cohort_helper_num(inner_start_time, inner_end_time, data_source, users):
-    if data_source == 'slack-online':
+    if 'profile' in data_source:
+        if data_source == 'profile-githubinteraction':
+            num = GithubEvent.objects.filter(
+                profile__in=users,
+                created_on__gte=inner_start_time,
+                created_on__lt=inner_end_time,
+                ).distinct('profile').count()
+        else:
+            event = 'start_work'
+            if data_source == 'profile-login':
+                event = 'Login'
+            if data_source == 'profile-new_bounty':
+                event = 'new_bounty'
+            num = UserAction.objects.filter(
+                profile__in=users,
+                created_on__gte=inner_start_time,
+                created_on__lt=inner_end_time,
+                action=event,
+                ).distinct('profile').count()
+    elif data_source == 'slack-online':
         num = SlackPresence.objects.filter(
             slackuser__in=users,
             created_on__gte=inner_start_time,
@@ -237,6 +260,7 @@ def cohort(request):
         }
 
     params = {
+        'title': "Cohort Analysis",
         'cohorts': cohorts,
         'title_rows': range(1, num_periods-1),
         'args': {
