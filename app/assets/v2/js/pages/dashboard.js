@@ -14,8 +14,8 @@ function debounce(func, wait, immediate) {
   var timeout;
 
   return function() {
-    var context = this,
-        args = arguments;
+    var context = this;
+    var args = arguments;
     var later = function() {
       timeout = null;
       if (!immediate)
@@ -249,7 +249,6 @@ var paint_bounties_in_viewport = function(start, max) {
     var html = document.bounties_html[i];
 
     document.last_bounty_rendered = i;
-    console.log(i, max);
     $('#bounties').append(html);
   }
 
@@ -271,7 +270,8 @@ var trigger_scroll = debounce(function() {
   }
   var scrollPos = $(document).scrollTop();
   var last_active_bounty = $('.bounty_row.result:last-child');
-  if(last_active_bounty.length == 0){
+
+  if (last_active_bounty.length == 0) {
     return;
   }
   var window_height = $(window).height();
