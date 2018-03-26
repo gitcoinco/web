@@ -91,6 +91,11 @@ def maybe_market_to_twitter(bounty, event_name):
             "Hot off the blockchain! 🔥🔥🔥 There's a new task worth {} {} {} \n\n{}",
             "💰 New Task Alert.. 💰 Earn {} {} {} for working on this 👇 \n\n{}",
         ]
+    if event_name  == 'increased_bounty':
+        tweet_txts = tweet_txts + [
+            "Looking for paid Open Source work? Earn {} {} {} and boost your reputation by completing this task \n\n{}",
+            "Ding ding ding!! A bounty was just increased to {} {} {}! Someone must really want you to work on this task \n\n{}"
+        ]
 
     random.shuffle(tweet_txts)
     tweet_txt = tweet_txts[0]
@@ -234,6 +239,14 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     if event_name == 'new_bounty':
         msg = f"__This issue now has a funding of {natural_value} " \
               f"{bounty.token_name} {usdt_value} attached to it.__\n\n * If you would " \
+              f"like to work on this issue you can claim it [here]({absolute_url}).\n " \
+              "* If you've completed this issue and want to claim the bounty you can do so " \
+              f"[here]({absolute_url})\n * Questions? Get help on the " \
+              f"<a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${amount_open_work}" \
+              " more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+    if event_name == 'increased_bounty':
+        msg = f"__The funding of this issue was increased to {natural_value} " \
+              f"{bounty.token_name} {usdt_value}.__\n\n * If you would " \
               f"like to work on this issue you can claim it [here]({absolute_url}).\n " \
               "* If you've completed this issue and want to claim the bounty you can do so " \
               f"[here]({absolute_url})\n * Questions? Get help on the " \

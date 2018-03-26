@@ -508,6 +508,8 @@ def process_bounty_changes(old_bounty, new_bounty):
             event_name = 'killed_bounty'
         else:
             event_name = 'work_done'
+    elif old_bounty.value_in_token < new_bounty.value_in_token:
+        event_name = 'increased_bounty'
     else:
         event_name = 'unknown_event'
         logging.error(f'got an unknown event from bounty {old_bounty.pk} => {new_bounty.pk}: {json_diff}')

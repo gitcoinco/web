@@ -450,6 +450,34 @@ def fulfill_bounty(request):
 
     return TemplateResponse(request, 'fulfill_bounty.html', params)
 
+def increase_bounty(request):
+    """Increase a bounty (funder)"""
+    issue_url = request.GET.get('source')
+    params = {
+        'issue_url': issue_url,
+        'title': 'Increase Bounty',
+        'active': 'increase_bounty',
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+    }
+
+    try:
+        bounties = Bounty.objects.current().filter(github_url=issue_url)
+        if bounties:
+            bounty = bounties.order_by('pk').first()
+            params['standard_bounties_id'] = bounty.standard_bounties_id
+            params['bounty_owner_address'] = bounty.bounty_owner_address
+            params['value_in_token'] = bounty.value_in_token
+            params['token_address'] = bounty.token_address
+    except Bounty.DoesNotExist:
+        pass
+    except Exception as e:
+        print(e)
+        logging.error(e)
+
+    return TemplateResponse(request, 'increase_bounty.html', params)
+
 
 def kill_bounty(request):
     """Kill an expired bounty."""

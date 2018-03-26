@@ -69,6 +69,14 @@ class DashboardNotificationsTestCase(TestCase):
         assert 'Questions?' in message
         assert f'${self.amount_open_work}' in message
 
+    def test_build_github_notification_increased_bounty(self):
+        """Test the dashboard helper build_github_notification method with new_bounty."""
+        message = build_github_notification(self.bounty, 'increased_bounty')
+        assert message.startswith(f'__The funding of this issue was increased to {self.natural_value} {self.bounty.token_name}')
+        assert self.usdt_value in message
+        assert f'[here]({self.absolute_url})' in message
+        assert f'${self.amount_open_work}' in message
+
     def tearDown(self):
         """Perform cleanup for the testcase."""
         self.bounty.delete()
