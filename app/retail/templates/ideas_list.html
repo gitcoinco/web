@@ -52,63 +52,61 @@
                 <span>
                     <button class="button button--primary" type="add" id="add">Add Idea</button>
                 </span>
-                </div>
-                {% for idea in ideas %}
-                  <div class="idea-list">
-                    <div class="justify-content-space-between"> 
-                      <p class="idea-title">{{idea.title}}</p>
-                      <div>
-                        <span class="col-xs-1" style="vertical-align: middle">
-                          <img src="https://gitcoin.co/static/v2/images/comment.092f558598ed.svg" style="width: 15px">
-                            <span class="github-comment font-caption" style="margin-left: 0.5em">{{idea.comments}}</span>
-                        </span>
-                        <span class="fa fa-heart" style="vertical-align: middle; margin-left: 1em"></span>
-                        <span class="github-comment font-caption" style="vertical-align: middle; margin-left: 0.5em">{{idea.likes}}</span>
-                      </div>
+              </div>
+              {% for idea in ideas %}
+              <div class="idea-list">
+                <div class="justify-content-space-between"> 
+                  <p class="idea-title">{{idea.title}}</p>
+                    <div>
+                      <span class="col-xs-1" style="vertical-align: middle">
+                        <img src="https://gitcoin.co/static/v2/images/comment.092f558598ed.svg" style="width: 15px">
+                        <span class="github-comment font-caption" style="margin-left: 0.5em">{{idea.comments}}</span>
+                      </span>
+                      <span class="fa fa-heart" style="vertical-align: middle; margin-left: 1em"></span>
+                      <span class="github-comment font-caption" style="vertical-align: middle; margin-left: 0.5em">{{idea.likes}}</span>
                     </div>
-                    <p class-".w-700px">{{idea.description}}</p>
+                  </div>
+                  <p class-".w-700px">{{idea.description}}</p>
                     <div class="justify-content-space-between .w-700px">
                       <div>
                         <span style="line-height: 42px">Submitted by {{idea.submitter}}</span>
                       </div>
                       <div style="display: flex">
-                      <span style="line-height: 42px; margin-right: 0.5em">Has:</span>
-                      {% for has in idea.has %}
-                      <div style="background-color: #E7F0FA; color: #775EC7; text-align: center; min-width: 90px; border-radius: 2px; margin: 4px">
-                      <!-- class="tag token" doesn't work here? -->
-                        <p style="padding: 5px 2px; margin-bottom: 0">
-                          <span style="margin-left: 2px">{{has}}</span>
-                        </p>
-                      </div>
-                    {% endfor %}
-                    <span style="line-height: 42px; margin-left: 1em; margin-right: 0.5em">Needs:</span>
-                    {% for needs in idea.needs %}
-                    <div style="background-color: #D6FBEB; color: #00A55E; text-align: center; min-width: 90px; border-radius: 2px; margin: 4px"> 
+                        <span style="line-height: 42px; margin-right: 0.5em">Has:</span>
+                        {% for has in idea.has %}
+                        <div style="background-color: #E7F0FA; color: #775EC7; text-align: center; min-width: 90px; border-radius: 2px; margin: 4px">
+                        <!-- class="tag token" doesn't work here? -->
+                          <p style="padding: 5px 2px; margin-bottom: 0">
+                            <span style="margin-left: 2px">{{has}}</span>
+                          </p>
+                        </div>
+                        {% endfor %}
+                        <span style="line-height: 42px; margin-left: 1em; margin-right: 0.5em">Needs:</span>
+                        {% for needs in idea.needs %}
+                        <div style="background-color: #D6FBEB; color: #00A55E; text-align: center; min-width: 90px; border-radius: 2px; margin: 4px"> 
                         <!-- class="tag usd" doesn't work here? -->
-                      <p style="padding: 5px 2px; margin-bottom: 0">
-                        <span style="margin-left: 2px">{{needs}}</span>
-                      </p>
-                    </div>
-                    {% endfor %}
-                  </div>
-                </div>  
-              </div>                                    
-                {% endfor %}
-            <div class="form__footer form__footer--right">
-              <button class="button button--primary center-button" type="load" id="load" style="background-color: #f9006c">Load More</button>
+                          <p style="padding: 5px 2px; margin-bottom: 0">
+                            <span style="margin-left: 2px">{{needs}}</span>
+                          </p>
+                        </div>
+                        {% endfor %}
+                      </div>
+                    </div>  
+                  </div>                                    
+                  {% endfor %}
+                  <div class="form__footer form__footer--right">
+                <button class="button button--primary center-button" type="load" id="load" style="background-color: #f9006c">Load More</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-    
-    
-  {% include 'shared/bottom_notification.html' %}
-  {% include 'shared/analytics.html' %}
-  {% include 'shared/footer_scripts.html' %}
-  {% include 'shared/rollbar.html' %}
-  {% include 'shared/footer.html' %}
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/footer.html' %}
   </body>
 
 </html>
