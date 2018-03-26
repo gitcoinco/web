@@ -154,7 +154,7 @@ var callbacks = {
     return [ 'Token_amount_usd', '$' + val + '/' + result['token_name'] ];
   },
   'web3_created': function(key, val, result) {
-    return [ 'updated', timeDifference(new Date(result['now']), new Date(result['created_on'])) ];
+    return [ 'updated', timeDifference(new Date(result['now']), new Date(result['web3_created'])) ];
   },
   'expires_date': function(key, val, result) {
     var label = 'expires';
