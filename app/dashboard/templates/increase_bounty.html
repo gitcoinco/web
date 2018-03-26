@@ -57,7 +57,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   <label class="form__label" for="amount">Amount</label>
                   <div class="form__flex-group">
                     <div class="form__amount-wrapper">
-                      <input name='amount' id='amount'  class="form__input" type="number" placeholder="Amount" />
+                      <input name='amount' id='amount' step="0.0001" class="form__input" type="number" placeholder="Amount" />
                     </div>
                     <div class="form__group-item">
                       <div class="form__select2">
@@ -67,7 +67,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     </div>
                   </div>
                 </div>
-                <div class="w-100 mt-2 terms_container">
+                <div class="w-100 mt-2 terms_container" style="padding-top:5px;">
                   <div class="form__checkbox">
                     <input name='terms' id='terms' type="checkbox" value=1 />
                     <label class="form__label" for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>:</label>
