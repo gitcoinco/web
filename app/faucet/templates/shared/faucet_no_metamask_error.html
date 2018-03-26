@@ -15,25 +15,25 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
                     <div id="no_metamask_error" class="blocking_error" style="display: none; min-height: 500px;">
                         <div class="w-100" style="text-align: center;">
-                            <h3>Apply for a faucet distribution</h3>
+                            <h3>{% trans "Apply for a faucet distribution" %}</h3>
                         </div>
                         <img src="{% static "v2/images/prime.png" %}">
                         <br>
-                        <h3>To continue, enable Web3.</h3>
+                        <h3>{% trans "To continue, enable Web3." %}</h3>
                         <p>
-                            Web3 is the same web you know and love, but with Ethereum-enabled functionality.
+                            {% trans "Web3 is the same web you know and love, but with Ethereum-enabled functionality." %}
                         </p>
                         <p>
-                            The fastest and easiest way to add Web3 to your browser is to install <a href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en" target="_blank" rel="noopener noreferrer"> Metamask</a>. To continue submitting a bounty, please install Metamask and return to this page.
+                            {% blocktrans %}The fastest and easiest way to add Web3 to your browser is to install <a href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en" target="_blank" rel="noopener noreferrer"> Metamask</a>. To continue submitting a bounty, please install Metamask and return to this page.{% endblocktrans %}
                         </p>
                         <p class="float-right">
-                            <a class="btn btn-sm btn-info mt-3 pulseClick" role="button" id="submit" href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en">Install MetaMask</a>
+                            <a class="btn btn-sm btn-info mt-3 pulseClick" role="button" id="submit" href="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en">{% trans "Install MetaMask" %}</a>
                             <br>
-                            - or -
+                            - {% trans "or" %} -
                             <br>
-                            <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">Can't get web3 to work?  Get help here.</a>
+                            <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Can't get web3 to work?  Get help here." %}</a>
                         </p>
                     </div>

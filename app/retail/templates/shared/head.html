@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
     {% include 'shared/tag_manager_1.html' %}
 
     <meta charset="utf-8">
@@ -58,7 +58,7 @@
     <link rel="stylesheet" href="{% static "v2/css/ios.css" %}" />
     {% endif %}
 
-    <title>{% if title %}{{title}}{% else %}Grow Open Source{% endif %} | Gitcoin</title>
+    <title>{% if title %}{{title}}{% else %}{% trans "Grow Open Source" %}{% endif %} | Gitcoin</title>
 
     {% include 'shared/favicon.html' %}
 

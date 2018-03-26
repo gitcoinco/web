@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -55,12 +55,12 @@
           </div>
           <div class="row nonefound" style="display:none;">
               <img src="{% static "v2/images/shrug_bot.png" %}">
-              <h3>No results found.</h3>
-              <p>Please try another query</p>
-              <p>- or -</p>
+              <h3>{% trans "No results found." %}</h3>
+              <p>{% trans "Please try another query" %}</p>
+              <p>- {% trans "or" %} -</p>
               <p>
-                <a href="#" class="save_search">save search</a>
-                to be notified when results do appear.
+                {% blocktrans %}<a href="#" class="save_search">save search</a>
+                to be notified when results do appear.{% endblocktrans %}
               </p>
           </div>
         </div>

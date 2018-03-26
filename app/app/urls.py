@@ -20,6 +20,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
+from django.views.i18n import JavaScriptCatalog
 
 import credits.views
 import dashboard.embed
@@ -41,6 +42,9 @@ from external_bounties.router import router as ebrouter
 from .sitemaps import sitemaps
 
 urlpatterns = [
+
+    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),

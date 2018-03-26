@@ -1,5 +1,5 @@
 {% extends 'yge/base.html' %}
-{% load static %}
+{% load i18n static %}
 
 {% block 'scripts' %}
 <script src="{% static "yge/ethereumjs/ethereumjs-accounts.js" %}"></script>
@@ -20,19 +20,19 @@
                 <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" />
             </a>
         </span>
-		<h1>Send Tip ⚡</h1>
-		<h3>It's Fast.  It's Easy.  It's Free.️</h3>
-        <p>(Supports any github username or email address)</p>
+		<h1>{% trans "Send Tip" %} ⚡</h1>
+		<h3>{% trans "It's Fast.  It's Easy.  It's Free.️" %}</h3>
+        <p>({% trans "Supports any github username or email address" %})</p>
         <br>
             <select id="batches" style="background:transparent; display: none; margin-bottom: 20px; margin-top: -20px" >
-                <option value="1">1 receipient</option>
-                <option value="5">5 receipients</option>
-                <option value="10">10 receipients</option>
-                <option value="20">20 receipients</option>
-                <option value="50">50 receipients</option>
+                <option value="1">1 {% trans "receipient" %}</option>
+                <option value="5">5 {% trans "receipients" %}</option>
+                <option value="10">10 {% trans "receipients" %}</option>
+                <option value="20">20 {% trans "receipients" %}</option>
+                <option value="50">50 {% trans "receipients" %}</option>
             </select>
 	</header>
-  <a href="#" id="neweth" class="button">Send Ether 💰</a>
+  <a href="#" id="neweth" class="button">{% trans "Send Ether" %} 💰</a>
 
 </section>
 {% endblock %}

@@ -15,19 +15,19 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
     <div class="container-fluid footer ">
         <div class="row" style="margin-top: 25px; ">
             <div class="nav" style="margin:0px auto;">
-                <a class="nav-link" href="/ ">Home</a>
-                <a class="nav-link" href="{% url "mission" %}">Mission</a>
-                <a class="nav-link" href="{% url "about" %}">About</a>
-                <a class="nav-link" href="{% url "about" %}#jobs ">Jobs</a>
-                <a class="nav-link" href="{% url "explorer" %}">Issue Explorer</a>
-                <a class="nav-link hide_min_viewport" href="{% url "tools" %}">Tools</a>
-                <a class="nav-link" href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">Terms</a>
-                <a class="nav-link" href="{% url "privacy" %}" target="_blank" rel="noopener noreferrer">Privacy</a>
-                <a class="nav-link" href="{% url "help" %}">Help</a>
+                <a class="nav-link" href="/ ">{% trans "Home" %}</a>
+                <a class="nav-link" href="{% url "mission" %}">{% trans "Mission" %}</a>
+                <a class="nav-link" href="{% url "about" %}">{% trans "About" %}</a>
+                <a class="nav-link" href="{% url "about" %}#jobs ">{% trans "Jobs" %}</a>
+                <a class="nav-link" href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
+                <a class="nav-link hide_min_viewport" href="{% url "tools" %}">{% trans "Tools" %}</a>
+                <a class="nav-link" href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms" %}</a>
+                <a class="nav-link" href="{% url "privacy" %}" target="_blank" rel="noopener noreferrer">{% trans "Privacy" %}</a>
+                <a class="nav-link" href="{% url "help" %}">{% trans "Help" %}</a>
             </div>
         </div>
         <div class="row" style="margin-top: 5px; ">
