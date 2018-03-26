@@ -109,7 +109,7 @@ $(document).ready(function() {
         issueTitle: data.title,
         issueDescription: data.description,
         issueKeywords: data.keywords,
-        githubUsername: data.githubUsernam,
+        githubUsername: data.githubUsername,
         notificationEmail: data.notificationEmail,
         fullName: data.fullName,
         experienceLevel: data.experienceLevel,
