@@ -92,27 +92,27 @@ def maybe_market_to_twitter(bounty, event_name):
         ]
     elif event_name == 'increase_payout':
         tweet_txts = [
-            'Increased Payout on {} {} {}'
+            'Increased Payout on {} {} {}\n{}'
         ]
     elif event_name == 'start_work':
         tweet_txts = [
-            'Work started on {} {} {}'
+            'Work started on {} {} {}\n{}'
         ]
     elif event_name == 'stop_work':
         tweet_txts = [
-            'Work stopped on {} {} {}'
+            'Work stopped on {} {} {}\n{}'
         ]
     elif event_name == 'work_done':
         tweet_txts = [
-            'Work done on {} {} {}'
+            'Work done on {} {} {}\n{}'
         ]
     elif event_name == 'work_submitted':
         tweet_txts = [
-            'Work submitted on {} {} {}'
+            'Work submitted on {} {} {}\n{}'
         ]
     elif event_name == 'killed_bounty':
         tweet_txts = [
-            'Bounty killed on {} {} {}'
+            'Bounty killed on {} {} {}\n{}'
         ]
 
     random.shuffle(tweet_txts)
