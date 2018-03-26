@@ -22,9 +22,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from datetime import datetime, timedelta
 from django.utils import timezone
 
+from django.utils import timezone
+
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
-from django.utils import timezone
 
 from .models import Bounty, BountyFulfillment, Interest, ProfileSerializer
 
