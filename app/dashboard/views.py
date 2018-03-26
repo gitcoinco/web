@@ -802,7 +802,7 @@ def toolbox(request):
           ]
        }, {
           "title": "Tools in Alpha",
-          "description": "These fresh new tools are looking someone to test ride them!",
+          "description": "These fresh new tools are looking for someone to test ride them!",
           "tools": [{
               "name": "Leaderboard",
               "img": static("v2/images/tools/leaderboard.png"),

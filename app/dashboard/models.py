@@ -163,7 +163,7 @@ class Bounty(SuperModel):
         """
         try:
             _org_name = org_name(self.github_url)
-            _issue_num = issue_number(self.github_url)
+            _issue_num = int(issue_number(self.github_url))
             _repo_name = repo_name(self.github_url)
             return f"{'/' if preceding_slash else ''}issue/{_org_name}/{_repo_name}/{_issue_num}"
         except Exception:
