@@ -484,13 +484,13 @@ var do_actions = function(result) {
     }
 
     if (show_increase_bounty) {
+      var enabled = increase_bounty_enabled;
       var _entry = {
+        enabled: enabled,
         href: '/funding/increase?source=' + result['github_url'],
         text: 'Add Contribution',
         parent: 'right_actions',
-        color: increase_bounty_enabled ? 'darkBlue' : 'darkGrey',
-        extraClass: increase_bounty_enabled ? '' : 'disabled',
-        title: increase_bounty_enabled ? 'Increase the funding of this bounty' : 'Can only be performed if you are the funder.'
+        title: 'Increase the funding of this bounty'
       };
 
       actions.push(_entry);
