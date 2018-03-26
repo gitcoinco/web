@@ -63,10 +63,12 @@ def maybe_market_to_twitter(bounty, event_name):
         bool: Whether or not the twitter notification was sent successfully.
 
     """
-    if not settings.TWITTER_CONSUMER_KEY or (event_name not in ['new_bounty', 'remarket_bounty']) or (
-       bounty.get_natural_value() < 0.0001) or (bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+    if not settings.TWITTER_CONSUMER_KEY:
         return False
-    # we are going to test manually promoting these tweets for a week and come back to revisit this
+    if bounty.get_natural_value() < 0.0001:
+        return False
+    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        return False
 
     api = twitter.Api(
         consumer_key=settings.TWITTER_CONSUMER_KEY,
