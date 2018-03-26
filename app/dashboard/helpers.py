@@ -503,6 +503,8 @@ def process_bounty_changes(old_bounty, new_bounty):
         event_name = 'new_bounty'
     elif old_bounty.num_fulfillments < new_bounty.num_fulfillments:
         event_name = 'work_submitted'
+    elif old_bounty.value_in_token < new_bounty.value_in_token:
+        event_name = 'increase_payout'
     elif old_bounty.is_open and not new_bounty.is_open:
         if new_bounty.status == 'cancelled':
             event_name = 'killed_bounty'
