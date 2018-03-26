@@ -1,0 +1,117 @@
+body {
+  font-family: "Muli";
+}
+
+.title-row {
+  display: flex;
+  margin-top: 2em;
+  padding-bottom: 5px;
+  border-bottom: 2px solid #3E24FB;
+}
+
+#filter {
+  color: #3e24fb;
+}
+
+.bounty-info {
+  top: 4px;
+  text-align: right;
+}
+
+#stats {
+  padding-left: 5px;
+  font-family: "Muli-Light";
+  color: #7A7A7A;
+}
+
+#matches {
+  font-family: "Muli-Light";
+  padding-left: 10px;
+}
+
+.title {
+  text-transform: capitalize;
+}
+
+.bounty_row {
+  color: #000000;
+  text-decoration: none;
+  padding: 10px 20px 10px 4em;
+}
+
+.bounty_row .avatar-container {
+  text-align: right;
+}
+
+.bounty_row img {
+  margin-top: 6px;
+  margin-right: 20px;
+}
+
+.bounty_row .title {
+  margin-bottom: 2px;
+}
+
+.bounty_row:hover {
+  color: #000000;
+  text-decoration: none;
+  background-color: #F9F9F9;
+}
+
+.bounty-detail {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.bounty-summary {
+  display: inline-flex;
+}
+
+.bounty-summary img {
+  position: absolute;
+  width: 20px;
+  margin: 0;
+  top: 2px;
+}
+
+.bounty-summary .col-xs-1 {
+  margin-right: 2em;
+}
+
+.bounty-summary .github-comment {
+  position: absolute;
+  text-align: center;
+  color: white;
+  width: 20px;
+  top: 0px;
+}
+
+.bounty-detail .info {
+  font-family: "Muli-Light";
+  color: #666666;
+}
+
+.tags {
+  display: flex;
+}
+
+@media (max-width: 768px) {
+  #filter {
+    padding-left: 20px;
+  }
+
+  .bounty_row {
+    padding-left: 1em;
+    padding-right: 2em;
+  }
+
+  .bounty-info {
+    top: 10px;
+    font-size: 10px;
+    text-align: left;
+  }
+
+  #stats {
+    font-size: 10px;
+  }
+}

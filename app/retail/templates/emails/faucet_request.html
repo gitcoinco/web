@@ -1,0 +1,51 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load humanize %}
+{% load static %}
+
+{% block content %}
+
+<h1>Faucet Request Processed⛽️</h1>
+
+<img src="{% static 'v2/images/gas.png' %}" width=200px height=200px >
+
+<p>
+    Hey @{{fr.github_username}},
+
+    <br>
+    <br>
+
+    Gitcoin has distributed your faucet request for {{amount}} ETH to <a href=https://etherscan.io/address/{{fr.address}}>{{fr.address}}</a>.
+
+    <br>
+    <br>
+
+    This should be enough gas to send your first Ethereum Transaction.  We hope you'll consider using it on Gitcoin!
+
+</p>
+
+<p>
+    Keep Pushing Open Source Forward,
+    <br>
+    -- Gitcoin Core
+</p>
+
+
+
+{% endblock %}

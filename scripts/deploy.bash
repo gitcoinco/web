@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -25,7 +25,7 @@ ISFRONTENDPUSH=$3
 # and that gitcoinenv is the virtualenv under which it lives
 
 # setup
-cd 
+cd
 cd gitcoin/coin
 source ../gitcoin-3/bin/activate
 
@@ -39,6 +39,8 @@ git pull origin $BRANCH
 #deploy hooks
 echo "- install req"
 pip install -r requirements/base.txt 2>&1 >> /dev/null
+echo "- cleaning up pyc files"
+find . -name \*.pyc -delete
 echo "- install crontab"
 crontab scripts/crontab
 cd app
@@ -58,7 +60,7 @@ sudo systemctl restart gunicorn
 # invalidate cloudfront
 if [ $ISFRONTENDPUSH ]; then
     if [ $DISTID ]; then
-        aws cloudfront create-invalidation --distribution-id $DISTID --invalidation-batch="Paths={Quantity=1,Items=["/*"]},CallerReference=$(date)"
+        cd ~/gitcoin/coin; bash scripts/bustcache.bash $DISTID
     fi
 fi
 

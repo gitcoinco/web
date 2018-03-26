@@ -16,26 +16,43 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 
-from app.rollbar import rollbar
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
 
 def index(request):
     slides = [
-        ("Zack Coburn, EtherDelta","/static/v2/images/testimonials/zack.jpg", "Gitcoin is the catalyst open source development needs to move forward. The process is seamless and the results speak for themselves.", 'https://github.com/zackcoburn'),
-        ("Piper Merriam, web3py","/static/v2/images/testimonials/piper.jpg", "We have been trying out the Gitcoin bounty program in the Web3.py project and are very pleased with the results so far.  We’ve closed out four bountied issues ranging from smaller cleanup tasks to full fledged feature development.  So far the platform looks promising as a valuable addition to our development process.", 'https://github.com/pipermerriam'),
-        ("Phil Elsasser, Market","/static/v2/images/testimonials/phil.jpg", "Our first experiences with Gitcoin have been very positive.  It has helped MARKET to get new people involved quickly and in a cost effective manner.  Having fresh ideas and outside perspectives contribute to a new project is unbelievably valuable.", 'http://www.marketprotocol.io/'),
-        ("Aditya Anand", "/static/v2/images/testimonials/aditya.jpg", "It’s been a while since something has gotten me this riled up ! Love the concept and definitely sticking around to see this project through. Awesome community  + open source work + bounties", "https://github.com/thelostone-mc"),
-        ("Daniel Merrill", "/static/v2/images/testimonials/daniel.jpg", "Now that the internet of value is starting to be a thing, Gitcoin is adding a new layer of incentives into open source development, helping both the projects, by powering up their capacity, and the developers, by paying for their work.", "https://github.com/dmerrill6"),
-        ("Maurelian", "/static/v2/images/testimonials/maurelian.jpg", "Gitcoin helps us to finally close out the issues we’ve been meaning to get around to for too long.", "https://github.com/maurelian"),
-        ("Mark Beacom", "/static/v2/images/testimonials/mark.jpg", "Gitcoin is precisely what I’ve been looking for! It gives every developer a vehicle to make extra money or move their open source project ahead.", "https://github.com/mbeacom"),
-        ("Isaac Serafino", "/static/v2/images/testimonials/isaac.jpg", "I feel it is so awesome to have the opportunity through Gitcoin to do what I love and get paid for it, and to have reasonable freedom about the way I work, that it already seems too good to be true. ", "https://github.com/isaacserafino"),
+        ("Zack Coburn, EtherDelta", static("v2/images/testimonials/zack.jpg"),
+         "Gitcoin is the catalyst open source development needs to move forward. The process is seamless and the results speak for themselves.",
+         'https://github.com/zackcoburn'),
+        ("Piper Merriam, web3py", static("v2/images/testimonials/piper.jpg"),
+         "We have been trying out the Gitcoin bounty program in the Web3.py project and are very pleased with the results so far.  We’ve closed out four bountied issues ranging from smaller cleanup tasks to full fledged feature development.  So far the platform looks promising as a valuable addition to our development process.",
+         'https://github.com/pipermerriam'),
+        ("Phil Elsasser, Market", static("v2/images/testimonials/phil.jpg"),
+         "Our first experiences with Gitcoin have been very positive.  It has helped MARKET to get new people involved quickly and in a cost effective manner.  Having fresh ideas and outside perspectives contribute to a new project is unbelievably valuable.",
+         'http://www.marketprotocol.io/'),
+        ("Aditya Anand", static("v2/images/testimonials/aditya.jpg"),
+         "It’s been a while since something has gotten me this riled up ! Love the concept and definitely sticking around to see this project through. Awesome community  + open source work + bounties",
+         "https://github.com/thelostone-mc"),
+        ("Daniel Merrill", static("v2/images/testimonials/daniel.jpg"),
+         "Now that the internet of value is starting to be a thing, Gitcoin is adding a new layer of incentives into open source development, helping both the projects, by powering up their capacity, and the developers, by paying for their work.",
+         "https://github.com/dmerrill6"),
+        ("Maurelian", static("v2/images/testimonials/maurelian.jpg"),
+         "Gitcoin helps us to finally close out the issues we’ve been meaning to get around to for too long.",
+         "https://github.com/maurelian"),
+        ("Mark Beacom", static("v2/images/testimonials/mark.jpg"),
+         "Gitcoin is precisely what I’ve been looking for! It gives every developer a vehicle to make extra money or move their open source project ahead.",
+         "https://github.com/mbeacom"),
+        ("Isaac Serafino", static("v2/images/testimonials/isaac.jpg"),
+         "I feel it is so awesome to have the opportunity through Gitcoin to do what I love and get paid for it, and to have reasonable freedom about the way I work, that it already seems too good to be true. ",
+         "https://github.com/isaacserafino"),
     ]
     context = {
         'slides': slides,
@@ -63,8 +80,8 @@ def mission(request):
         'active': 'mission',
         'title': 'Mission',
         'card_title': 'Gitcoin is a mission-driven organization.',
-        'card_desc': 'Our mission is to push open source forward.',
-        'avatar_url': '/static/v2/images/mission/hero.png',
+        'card_desc': 'Our mission is to grow open source.',
+        'avatar_url': static('v2/images/grow_open_source.png'),
     }
     return TemplateResponse(request, 'mission.html', context)
 
@@ -207,7 +224,7 @@ Here are some of our values
             'a': """
 Gitcoin Core LLC is the legal entity that manages the software development of the Gitcoin Network (Gitcoin).
 
-The Gitcoin Network is a series of smart contracts that helps Push Open Source Forward, but enabling developers to easily post and manage funded issues.            """
+The Gitcoin Network is a series of smart contracts that helps Grow Open Source, but enabling developers to easily post and manage funded issues.            """
         },
         {
             'q': 'Who is the team at Gitcoin Core?',
@@ -222,7 +239,7 @@ The Gitcoin Network is a series of smart contracts that helps Push Open Source F
         {
             'q': 'What is the mission of Gitcoin Core?',
             'a': """
-The mission of Gitcoin is "Push Open Source Forward".
+The mission of Gitcoin is "Grow Open Source".
 
             """
         },
@@ -266,9 +283,9 @@ The best way to stay in touch is to
 <p>Gitcoin is similarly built on an open protocol of smart contracts.</p>
 <p>By specifying a&nbsp;protocol, Tim Berners-Lee opened the way for anyone to build software, so-called web servers and browsers that would be compatible with this protocol. &nbsp; By specifying an open source protocol for Funding Issues and software development scoping &amp; payment, the Gitcoin Core team hopes to similarly inspire a generation of inventions in 21st century software.</p>
 <p>
-To learn more about blockchain, please checkout the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
+To learn more about blockchain, please checkout <a href="{}">this video about web3</a> or the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
 </p>
-            """
+            """.format(reverse('web3'))
         },
         {
             'q': 'Why do I need metamask?',
@@ -289,10 +306,10 @@ In contrast to web2 where third parties own your data, in web3 you own your data
 Download Metamask <a href="https://metamask.io/">here</a> today.
 </p>
 <p>
-To learn more about Metamask, please checkout the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
+To learn more about Metamask, please checkout <a href="{}">this video about web3</a> or the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
 </p>
 
-           """
+           """.format(reverse('web3'))
         },
         {
             'q': 'Why do I need to pay gas?',
@@ -333,11 +350,11 @@ Here are some of the advantages of Ethereum based applications:
 </li>
 </ul>
 <p>
-To learn more about Ethereum based apps, please checkout the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
+To learn more about Ethereum based apps, please checkout <a href="{}">this video about web3</a> or the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
 </p>
 
 
-           """
+           """.format(reverse('web3'))
         },
         {
             'q': 'I still dont get it.  Help!',
@@ -407,12 +424,8 @@ def onboard(request):
     return redirect('https://docs.google.com/document/d/1DQvek5TwASIp1njx5VZeLKEgSxfvxm871vctx1l_33M/edit?')
 
 
-def ethdenver(request):
-    return redirect('https://goo.gl/forms/FQogarXntrISFCsJ2')
-
-
-def ethdenverafterparty(request):
-    return redirect('https://docs.google.com/document/d/1sjV60TN1gYzzSWHvh4UGdT_Mz6HBOt6AVK2y6d9_bm8/edit')
+def podcast(request):
+    return redirect('https://itunes.apple.com/us/podcast/gitcoin-community/id1360536677')
 
 
 def presskit(request):
@@ -485,6 +498,7 @@ def slack(request):
         context['msg'] = 'You must provide an email address'
         if email:
             context['msg'] = 'Your invite has been sent.'
+            context['success'] = True
             try:
                 validate_email(email)
                 get_or_save_email_subscriber(email, 'slack', send_slack_invite=False)
@@ -492,9 +506,7 @@ def slack(request):
 
                 if not response.get('ok'):
                     context['msg'] = response.get('error', 'Unknown error')
-                    rollbar.report_message(
-                        'Slack invitation failed', 'warning',
-                        extra_data={'slack_response': response})
+                context['success'] = False
             except ValidationError:
                 context['msg'] = 'Invalid email'
 
@@ -535,3 +547,7 @@ def github(request):
 
 def youtube(request):
     return redirect('https://www.youtube.com/watch?v=DJartWzDn0E')
+
+
+def web3(request):
+    return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')

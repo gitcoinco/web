@@ -32,6 +32,11 @@ class Command(BaseCommand):
     help = 'lets a user know that they expressed interest in an issue and kicks them to do something about it'
 
     def handle(self, *args, **options):
+
+        if settings.DEBUG:
+            print('not running bc DEBUG is on')
+            return
+
         num_days_back_to_warn = 3
         num_days_back_to_delete_interest = 7
         # Define which timeline events demonstrate that the user is still interested in working on the issue
@@ -48,7 +53,7 @@ class Command(BaseCommand):
             ).all()
             print('day {} got {} interests'.format(day, interests.count()))
             for interest in interests:
-                for bounty in Bounty.objects.filter(interested=interest, current_bounty=True, idx_status__in=['open', 'started', 'submitted']):
+                for bounty in Bounty.objects.filter(interested=interest, current_bounty=True, idx_status__in=['open', 'started']):
                     print("{} is interested in {}".format(interest, bounty))
                     try:
                         owner = org_name(bounty.github_url)
@@ -78,8 +83,17 @@ class Command(BaseCommand):
                             # example format: 2018-01-26T17:56:31Z'
                             action_times = [datetime.strptime(action['created_at'], '%Y-%m-%dT%H:%M:%SZ') for action in actions_by_interested_party]
                             last_action_by_user = max(action_times)
+
+                            # if user hasn't commented since they expressed interest, handled this condition
+                            # per https://github.com/gitcoinco/web/issues/462#issuecomment-368384384
+                            if last_action_by_user < interest.created.replace(tzinfo=None):
+                                last_action_by_user = interest.created.replace(tzinfo=None)
+
+                            # some small calcs
                             delta_now_vs_last_action = datetime.now() - last_action_by_user
                             last_heard_from_user_days = delta_now_vs_last_action.days
+
+                            # decide action params
                             should_warn_user = last_heard_from_user_days >= num_days_back_to_warn
                             should_delete_interest = last_heard_from_user_days >= num_days_back_to_delete_interest
 

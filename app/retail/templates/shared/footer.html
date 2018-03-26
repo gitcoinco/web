@@ -17,52 +17,52 @@
 {% endcomment %}
 {% load static %}
     <div class="container-fluid footer ">
-        <div class="row " style="margin-top: 25px; ">
+        <div class="row" style="margin-top: 25px; ">
             <div class="nav" style="margin:0px auto;">
-                <a class="nav-link " href="/ ">Home</a>
-                <a class="nav-link " href="{% url "mission" %}">Mission</a>
-                <a class="nav-link " href="{% url "about" %}">About</a>
-                <a class="nav-link " href="{% url "about" %}#jobs ">Jobs</a>
-                <a class="nav-link " href="{% url "explorer" %}">Issue Explorer</a>
+                <a class="nav-link" href="/ ">Home</a>
+                <a class="nav-link" href="{% url "mission" %}">Mission</a>
+                <a class="nav-link" href="{% url "about" %}">About</a>
+                <a class="nav-link" href="{% url "about" %}#jobs ">Jobs</a>
+                <a class="nav-link" href="{% url "explorer" %}">Issue Explorer</a>
                 <a class="nav-link hide_min_viewport" href="{% url "tools" %}">Tools</a>
-                <a class="nav-link " target=new href="{% url "terms" %}">Terms</a>
-                <a class="nav-link " target=new href="{% url "privacy" %}">Privacy</a>
+                <a class="nav-link" href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">Terms</a>
+                <a class="nav-link" href="{% url "privacy" %}" target="_blank" rel="noopener noreferrer">Privacy</a>
                 <a class="nav-link" href="{% url "help" %}">Help</a>
             </div>
         </div>
-        <div class="row " style="margin-top: 5px; ">
+        <div class="row" style="margin-top: 5px; ">
                 <div class="nav" style="margin:0px auto;">
-                    <a class="nav-link " href="{% url "medium" %}">
+                    <a class="nav-link" href="{% url "medium" %}">
                         <img src="{% static "v2/images/social/medium.png" %}" alt="Medium">
                     </a>
-                    <a class="nav-link " href="{% url "gitter" %}">
+                    <a class="nav-link" href="{% url "gitter" %}">
                         <img src="{% static "v2/images/social/gitter.png" %}" alt="Gitter">
                     </a>
-                    <a class="nav-link " href="{% url "github" %}">
+                    <a class="nav-link" href="{% url "github" %}">
                         <img src="{% static "v2/images/social/github.png" %}" alt="Github">
                     </a>
                     <a class="nav-link hide_min_viewport" href="{% url "fb" %}">
                         <img src="{% static "v2/images/social/facebook.png" %}" alt="Facebook">
                     </a>
-                    <a class="nav-link " href="{% url "twitter" %}">
+                    <a class="nav-link" href="{% url "twitter" %}">
                         <img src="{% static "v2/images/social/twitter.png" %}" alt="Twitter">
                     </a>
-                    <a class="nav-link " href="{% url "reddit" %}">
+                    <a class="nav-link" href="{% url "reddit" %}">
                         <img src="{% static "v2/images/social/reddit.png" %}" alt="Reddit">
                     </a>
-                    <a class="nav-link " href="{% url "slack" %}">
+                    <a class="nav-link" href="{% url "slack" %}">
                         <img src="{% static "v2/images/social/slack.png" %}" alt="Slack">
                     </a>
-                    <a class="nav-link " href="{% url "btctalk" %}">
+                    <a class="nav-link" href="{% url "btctalk" %}">
                         <img src="{% static "v2/images/bitcointalk.png" %}" alt="Bitcoin">
                     </a>
-                    <a class="nav-link " href="mailto:founders@gitcoin.co">
+                    <a class="nav-link" href="mailto:founders@gitcoin.co">
                         <img src="{% static "v2/images/social/mail.png" %}" alt="Mail">
                     </a>
                 </div>
             </div>
-        <div class="row " style="">
-                <a target=new href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" style=" margin: 10px auto;">
+        <div class="row">
+                <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" style="margin: 10px auto;" target="_blank" rel="noopener noreferrer">
                     <img src="{% static "v2/images/consensys-logo-white-small.png" %}" style="filter:{% if request.path == '/ios' %}invert(100%);{%else%}none;{% endif %} width: 100px; height: 35px;"/>
                 </a>
         </div>

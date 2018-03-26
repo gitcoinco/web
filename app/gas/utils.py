@@ -1,6 +1,5 @@
 import json
 
-from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils import timezone
 
@@ -9,15 +8,15 @@ from gas.models import GasProfile
 
 
 def recommend_min_gas_price_to_confirm_in_time(minutes, default=5):
-    #if settings.DEBUG:
-    #    return 10
+    # if settings.DEBUG:
+    #     return 10
     try:
         gp = GasProfile.objects.filter(
             created_on__gt=(timezone.now()-timezone.timedelta(minutes=31)),
             mean_time_to_confirm_minutes__lt=minutes
             ).order_by('gas_price').first()
         return max(gp.gas_price, 1)
-    except Exception as e:
+    except Exception:
         return default
 
 
@@ -40,7 +39,7 @@ def conf_time_spread():
         minutes = 31
         gp = GasProfile.objects.filter(
             created_on__gt=(timezone.now()-timezone.timedelta(minutes=minutes)),
-            ).order_by('gas_price').values_list('gas_price', 'mean_time_to_confirm_minutes' )
+            ).order_by('gas_price').values_list('gas_price', 'mean_time_to_confirm_minutes')
         return json.dumps(list(gp), cls=DjangoJSONEncoder)
-    except Exception as e:
+    except Exception:
         return json.dumps([])

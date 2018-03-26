@@ -32,5 +32,7 @@ def insert_settings(request):
             expires_date__gte=timezone.now(),
             receive_txid='',
             username__iexact=context['github_handle'])
+        if not settings.DEBUG:
+            context['unclaimed_tips'] = context['unclaimed_tips'].filter(network='mainnet')
 
     return context

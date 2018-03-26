@@ -1,0 +1,126 @@
+#web3_created {
+  font-size: 12px;
+}
+
+#bounty_details {
+  margin-top: 4em;
+}
+
+.bounty-heading {
+  font-family: "Futura";
+  font-size: 16px;
+  margin-top: 1.5em;
+}
+
+.bounty_details #title,
+.bounty-subheading,
+.bounty-nav-link,
+.funding-amount,
+#status {
+  font-weight: bold;
+}
+
+.bounty-subheading, .bounty-text {
+  font-size: 15px;
+}
+
+.issue-nav-link,
+.funding-amount,
+#status {
+  text-transform: uppercase;
+}
+
+#status,
+.boldLabel,
+.funding-amount {
+  font-size: 12px;
+}
+
+.issue-nav-link {
+  font-size: 10px;
+  color: #212529;
+}
+
+.boldLabel {
+  text-transform: capitalize;
+}
+
+.boldLabel svg {
+  position: relative;
+  top: 1px;
+  margin-right: 4px;
+}
+
+.newsletter, .newsletter #newsletter-title {
+  font-family: "Futura" !important;
+}
+
+#submitter_ul {
+  padding-left: 1em;
+}
+
+.submitter_icon {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.interested_icon {
+  text-align: center;
+}
+
+#interest_list .row {
+  margin: 20px 10px;
+}
+
+#submission_row {
+  margin: 20px 10px;
+  border-bottom: 2px solid #eee;
+}
+
+#submission_row:last-child {
+  border-bottom: none;
+}
+
+.interested a {
+  margin: auto;
+  font-family: "Futura" !important;
+}
+
+@media (max-width: 767px) {
+
+  .actions {
+    margin-bottom: 20px;
+  }
+
+  #submitter_ul {
+    padding-left: 0;
+  }
+
+  .submitter_icon, .interested_icon {
+    text-align: left;
+  }
+
+  .bounty_details #title {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 575px) {
+  .boldLabel svg {
+    top: 0px;
+  }
+
+  .newsletter {
+    margin-bottom: 2em;
+  }
+
+  .newsletter #newsletter-title {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 728px) and (max-width: 1199px) {
+  .right_details {
+    margin-left: 6%;
+  }
+}

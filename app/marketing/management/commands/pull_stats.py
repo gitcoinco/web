@@ -15,8 +15,6 @@
     along with this program. If not,see <http://www.gnu.org/licenses/>.
 
 '''
-import time
-
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -39,20 +37,20 @@ def gitter():
         val=val,
         )
 
-def google_analytics():
 
+def google_analytics():
     from marketing.google_analytics import run
 
-    VIEW_ID = '166793585' #ethwallpaer
-    val = run(VIEW_ID)
+    view_id = '166793585'  # ethwallpaer
+    val = run(view_id)
     print(val)
     Stat.objects.create(
         key='google_analytics_sessions_ethwallpaper',
         val=val,
         )
 
-    VIEW_ID = '154797887' #gitcoin
-    val = run(VIEW_ID)
+    view_id = '154797887'  # gitcoin
+    val = run(view_id)
     print(val)
     Stat.objects.create(
         key='google_analytics_sessions_gitcoin',
@@ -70,64 +68,23 @@ def slack_users():
 
 
 def slack_users_active():
-    if settings.DEBUG:
-        return
     from marketing.models import SlackUser
 
-    sc = SlackClient(settings.SLACK_TOKEN)
-    ul = sc.api_call("users.list")
-    user = ul['members'][0]
+    one_day_ago = timezone.now() - timezone.timedelta(hours=24)
+    num_active = SlackUser.objects.filter(last_seen__gt=one_day_ago).count()
+    num_away = SlackUser.objects.filter(last_seen__lt=one_day_ago).count()
+    num_away += SlackUser.objects.filter(last_seen=None).count()
 
-    num_active = 0
-    num_away = 0
-    if int(time.strftime("%H")) == 0: #performance hack: only run this 1x per day since it runs very long
-        for user in ul['members']:
+    # create broader Stat object
+    Stat.objects.create(
+        key='slack_users_active',
+        val=num_active,
+        )
 
-            # manage making request and still respecting rate limit
-            should_do_request = True
-            is_rate_limited = False
-            while should_do_request:
-                response = sc.api_call("users.getPresence", user=user['id'])
-                is_rate_limited = response.get('error', None) == 'ratelimited'
-                should_do_request = is_rate_limited
-                if is_rate_limited:
-                    time.sleep(2)
-
-            # figure out the slack users' presence
-            pres = response.get('presence', None)
-            if pres == 'active':
-                num_active += 1
-            if pres == 'away':
-                num_away += 1
-
-            # save user by user 'lastseen' info
-            username = user['profile']['display_name']
-            email = user['profile']['email']
-            su, _ = SlackUser.objects.get_or_create(
-                username=username,
-                email=email,
-                defaults={
-                    'profile': user['profile'],
-                }
-                )
-            if pres == 'active':
-                su.last_seen = timezone.now()
-                su.times_seen += 1
-            else:
-                su.last_unseen = timezone.now()
-                su.times_unseen += 1
-            su.save()
-
-        #create broader Stat object
-        Stat.objects.create(
-            key='slack_users_active',
-            val=num_active,
-            )
-
-        Stat.objects.create(
-            key='slack_users_away',
-            val=num_away,
-            )
+    Stat.objects.create(
+        key='slack_users_away',
+        val=num_away,
+        )
 
 
 def profiles_ingested():
@@ -136,6 +93,30 @@ def profiles_ingested():
     Stat.objects.create(
         key='profiles_ingested',
         val=Profile.objects.count(),
+        )
+
+
+def faucet():
+    from faucet.models import FaucetRequest
+
+    Stat.objects.create(
+        key='FaucetRequest',
+        val=FaucetRequest.objects.count(),
+        )
+
+    Stat.objects.create(
+        key='FaucetRequest_rejected',
+        val=FaucetRequest.objects.filter(rejected=True).count(),
+        )
+
+    Stat.objects.create(
+        key='FaucetRequest_fulfilled',
+        val=FaucetRequest.objects.filter(fulfilled=True).count(),
+        )
+
+    Stat.objects.create(
+        key='FaucetRequest_pending',
+        val=FaucetRequest.objects.filter(fulfilled=False, rejected=False).count(),
         )
 
 
@@ -150,9 +131,9 @@ def user_actions():
             ).count()
 
         Stat.objects.create(
-            key='user_action_{}'.format(action_type),
+            key=f'user_action_{action_type}',
             val=val,
-            )
+        )
 
 
 def github_stars():
@@ -196,7 +177,7 @@ def firefox_ext_users():
     url = 'https://addons.mozilla.org/en-US/firefox/addon/gitcoin/'
     html_response = requests.get(url)
     soup = BeautifulSoup(html_response.text, 'html.parser')
-    eles = soup.findAll("div", {"class": 'AddonMeta'})[0].findAll('dt',{"class": 'MetadataCard-title'})
+    eles = soup.findAll("div", {"class": 'AddonMeta'})[0].findAll('dt', {"class": 'MetadataCard-title'})
     num_users = eles[0].text.replace(' Users', '').replace('No', '0')
     Stat.objects.create(
         key='browser_ext_firefox',
@@ -210,7 +191,7 @@ def medium_subscribers():
 
     url = 'https://medium.com/gitcoin?format=json'
     html_response = requests.get(url)
-    data = json.loads(html_response.text.replace('])}while(1);</x>',''))
+    data = json.loads(html_response.text.replace('])}while(1);</x>', ''))
     num_users = data['payload']['references']['Collection']['d414fce43ce1']['metadata']['followerCount']
     print(num_users)
     Stat.objects.create(
@@ -257,7 +238,7 @@ def bounties():
 def bounties_fulfilled_pct():
     from dashboard.models import Bounty
     for status in ['open', 'submitted', 'started', 'done', 'expired', 'cancelled']:
-        eligible_bounties = Bounty.objects.filter(current_bounty=True,web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
+        eligible_bounties = Bounty.objects.filter(current_bounty=True, web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
         numerator_bounties = eligible_bounties.filter(idx_status=status)
         val = int(100 * (numerator_bounties.count()) / (eligible_bounties.count()))
 
@@ -270,14 +251,14 @@ def bounties_fulfilled_pct():
 def joe_dominance_index():
     from dashboard.models import Bounty
 
-    joe_addresses = ['0x4331B095bC38Dc3bCE0A269682b5eBAefa252929'.lower(),'0xe93d33CF8AaF56C64D23b5b248919EabD8c3c41E'.lower()] #kevin
-    joe_addresses = joe_addresses + ['0x28e21609ca8542Ce5A363CBf339529204b043eDe'.lower()] #eric
-    joe_addresses = joe_addresses + ['0x60206c1F2B51Ac470cB0f71323474f7f9e4772e1'.lower()] #vivek
-    joe_addresses = joe_addresses + ['0x93d0deF1d76B510e2a7A6d01Cf18c54ec23f4253'.lower()] #mark beacom
-    joe_addresses = joe_addresses + ['0x58dC037f0A5c6C03D0f9477aea3198648CF0D263'.lower()] #alisa
+    joe_addresses = ['0x4331B095bC38Dc3bCE0A269682b5eBAefa252929'.lower(), '0xe93d33CF8AaF56C64D23b5b248919EabD8c3c41E'.lower()]  # kevin
+    joe_addresses = joe_addresses + ['0x28e21609ca8542Ce5A363CBf339529204b043eDe'.lower()]  # eric
+    joe_addresses = joe_addresses + ['0x60206c1F2B51Ac470cB0f71323474f7f9e4772e1'.lower()]  # vivek
+    joe_addresses = joe_addresses + ['0x93d0deF1d76B510e2a7A6d01Cf18c54ec23f4253'.lower()]  # mark beacom
+    joe_addresses = joe_addresses + ['0x58dC037f0A5c6C03D0f9477aea3198648CF0D263'.lower()]  # alisa
 
-    for days in [7,30,90,360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True,web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+    for days in [7, 30, 90, 360]:
+        all_bounties = Bounty.objects.filter(current_bounty=True, web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
         joe_bounties = all_bounties.filter(bounty_owner_address__in=joe_addresses)
         if not all_bounties.count():
             continue
@@ -289,7 +270,7 @@ def joe_dominance_index():
             val=val,
             )
 
-        val = int(100 * sum([(b.value_in_usdt if b.value_in_usdt else 0) for b in joe_bounties]) / sum([(b.value_in_usdt if b.value_in_usdt else 0) for b in all_bounties]) )
+        val = int(100 * sum([(b.value_in_usdt if b.value_in_usdt else 0) for b in joe_bounties]) / sum([(b.value_in_usdt if b.value_in_usdt else 0) for b in all_bounties]))
         Stat.objects.create(
             key='joe_dominance_index_{}_value'.format(days),
             val=val,
@@ -300,14 +281,14 @@ def avg_time_bounty_turnaround():
     import statistics
     from dashboard.models import Bounty
 
-    for days in [7,30,90,360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True, idx_status='submitted', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+    for days in [7, 30, 90, 360]:
+        all_bounties = Bounty.objects.filter(current_bounty=True, idx_status='done', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
         if not all_bounties.count():
             continue
 
         turnaround_times = [b.turnaround_time for b in all_bounties]
 
-        val = int(statistics.median(turnaround_times) / 60 / 60) #seconds to hours
+        val = int(statistics.median(turnaround_times) / 60 / 60)  # seconds to hours
 
         Stat.objects.create(
             key='turnaround_time_hours_{}_days_back'.format(days),
@@ -411,6 +392,7 @@ class Command(BaseCommand):
             chrome_ext_users,
             firefox_ext_users,
             slack_users,
+            slack_users_active,
             twitter_followers,
             bounties,
             tips,
@@ -423,10 +405,10 @@ class Command(BaseCommand):
             bounties_fulfilled_pct,
             subs_active,
             subs_newsletter,
-            slack_users_active,
             joe_dominance_index,
             avg_time_bounty_turnaround,
             user_actions,
+            faucet,
         ]
 
         for f in fs:

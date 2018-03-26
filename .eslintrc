@@ -12,6 +12,9 @@
     "jQuery",
     "$"
   },
+  "plugins": [
+    "html"
+  ],
   "parserOptions": {
     "sourceType": "module",
     "babel-eslint",
@@ -29,9 +32,9 @@
       }
     ],
     "block-scoped-var": "error",
-    "block-spacing": 2,
+    "block-spacing": "error",
     "brace-style": "error",
-    "camelcase": 0,
+    "camelcase": "off",
     "class-methods-use-this": "error",
     "comma-dangle": [
       "error",
@@ -74,11 +77,6 @@
         "after": true
       }
     ],
-    "line-comment-position": [
-      "error", {
-        "position": "above"
-      }
-    ],
     "lines-around-directive": [
       "error", {
         "before": "always",
@@ -88,8 +86,7 @@
     "newline-after-var": [
       "error", "always"
     ],
-    "no-alert": "error",
-    "no-console": "error",
+    "no-console": "warn",
     "no-div-regex": "error",
     "no-else-return": "error",
     "no-empty": [
@@ -98,12 +95,10 @@
       }
     ],
     "no-empty-function": "error",
-    "no-eq-null": "error",
+    "no-eq-null": "warn",
     "no-extra-bind": "error",
     "no-extra-label": "error",
     "no-implicit-globals": "error",
-    "no-inline-comments": "error",
-    "no-invalid-this": "error",
     "no-labels": [
       "error", {
         "allowLoop": true,
@@ -116,6 +111,14 @@
     "no-mixed-spaces-and-tabs": [
       "error",
       "smart-tabs"
+    ],
+    "no-multiple-empty-lines": [
+      "error",
+      {
+        "max": 2,
+        "maxEOF": 1,
+        "maxBOF": 1
+      }
     ],
     "no-multi-spaces": "error",
     "no-new": "error",
@@ -132,28 +135,15 @@
     "no-unneeded-ternary": "error",
     "no-unused-vars": 0,
     "no-useless-concat": "error",
-    "no-useless-escape": "error",
+    "no-useless-escape": "warn",
     "no-whitespace-before-property": "error",
     "nonblock-statement-body-position": [
       "error",
       "below"
     ],
-    "object-curly-newline": [
-      "error", {
-        "minProperties": 1,
-        "multiline": true
-      }
-    ],
-    "object-curly-spacing": [
-      "error",
-      "always", {
-        "objectsInObjects": false
-      }
-    ],
-    "object-property-newline": "error",
     "one-var": [
       "error", {
-        "var": "always",
+        "var": "never",
         "let": "never",
         "const": "never"
       }
@@ -185,6 +175,10 @@
         "unnecessary": false
       }
     ],
+    "semi": [
+      "error",
+      "always"
+    ],
     "semi-spacing": [
       "error", {
         "after": true,
@@ -201,13 +195,9 @@
     ],
     "space-in-parens": [
       "error",
-      "always", {
-        "exceptions": [
-          "empty",
-          "{}"
-        ]
-      }
+      "never"
     ],
+    "space-infix-ops": "error",
     "space-unary-ops": [
       "error", {
         "nonwords": false,

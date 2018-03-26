@@ -50,6 +50,8 @@ documentation.
 You must install [pre-commit](https://pre-commit.com/#install) in order to enable our
 precommit hooks and `pre-commit install` from your `gitcoinco/web` root directory.
 
+In order to make use of the `pre-commit` hooks used for this repository, you should have a valid installation of `node`/`npm`, `isort` (`pip install isort`), and `eslint`.
+
 ### Step 1: Fork
 
 Fork the project [on GitHub](https://github.com/gitcoinco/web) and clone your
@@ -74,27 +76,27 @@ $ git checkout -b my-branch -t upstream/master
 
 ### Step 3: Code
 
-As of now, we don't have any sort of design style / lint to validate things.
-So we ask you to ensure all these are met before you shoot out a PR.
+To keep the style of the Javascript code consistent we have a basic linting configured. To check your contributed code for errors run `npm run eslint`. To make life easy use the automatic fixing by running `npm run eslint:fix` before your commit.
+- Use the preconfigured eslint for Javascript
 - Avoid trailing whitespace & un-necessary white lines
 - Indentation is as follows
-  - 1 tab = 2 spaces for `.html` files
+  - 1 tab = 2 spaces for `.html` and `.js` files
   - 1 tab = 4 spaces for everything else
-  - __Linters will be added to make this easier.__
 
 ### Step 4: Commit
 
-1. List all your changes as a list if needed else simply give a brief
+1. Ensure your code changes adhere to our styling and linting standards: `npm run eslint:fix; isort -rc --atomic .`
+2. List all your changes as a list if needed else simply give a brief
   description on what the changes are.
-2. All lines at 100 columns.
-3. If your PR fixed an issue, Use the `Fixes:` prefix and the full issue URL.
+3. All lines at 100 columns.
+4. If your PR fixed an issue, Use the `Fixes:` prefix and the full issue URL.
   For other references use `Refs:`.
 
    _Examples:_
    - `Fixes: https://github.com/gitcoinco/web/issues/87`
    - `Refs: https://github.com/gitcoinco/web/issues/91`
 
-4. _Sample commit A_
+5. _Sample commit A_
    ```txt
    if you can write down the changes explaining it in a paragraph which each
    line wrapped within 100 lines.
@@ -112,7 +114,7 @@ So we ask you to ensure all these are met before you shoot out a PR.
    Fixes: https://github.com/gitcoinco/web/issues/87
    Refs: https://github.com/gitcoinco/web/issues/91
    ```
-5. [Squashing](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History) and
+6. [Squashing](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History) and
    [Merging](https://git-scm.com/docs/git-merge) your commits to make our
    history neater is always welcomed.
 
@@ -132,4 +134,4 @@ $ git rebase upstream/master
 ```
 
 <img src='https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png'/>
-Welcome to the gitcoin community. Lets push Open Source Forward.
+Welcome to the gitcoin community. Lets Grow Open Source Software.

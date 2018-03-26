@@ -56,7 +56,7 @@
                     <li class="animated fadeInLeftShort ">
                         <img src="{% static "v2/images/why-different/heart.jpg" %}" />
                         <div class="font-bigger-2 font-italic">3. It's a mission.</div>
-                        <div class="font-smaller-1">Our mission is to "Push Open Source Forward". <a href="{% url "mission" %}">Read more</a></div>
+                        <div class="font-smaller-1">Our mission is to "Grow Open Source". <a href="{% url "mission" %}">Read more</a></div>
                     </li>
                 </ol>
             </div>
@@ -124,14 +124,14 @@
         </div>
         <div class="row pt-5 mb-3 animatedParent">
             <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
-                <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
+                <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
                     <img src="{% static "v2/images/why-different/find-work.png" %}" width="115" height="113" />
                 </div>
                 <div class="font-bigger-1 font-italic">Find New &amp; Interesting Work</div>
                 <div class="font-smaller-2">Work only on repositories that strike a chord with _you_. Gitcoin allows you to try before you go full time.</div>
             </div>
             <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
-                <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
+                <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
                     <img src="{% static "v2/images/why-different/relationships.png" %}" width="128" height="113" />
                 </div>
                 <div class="font-bigger-1 font-italic">Deepen Relationships</div>
@@ -147,7 +147,7 @@
                 <div class="font-smaller-2">Gitcoin is the easiest way to find paid work in open source.</div>
             </div>
             <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
-                <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
+                <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
                     <img src="{% static "v2/images/why-different/withdraw.png" %}" />
                 </div>
                 <div class="font-bigger-1 font-italic">Make Some Extra Cash</div>
@@ -205,7 +205,7 @@
                     <div class="tline_module mod2 animated bounceInLeft">
                       <div class="tline_heading">
                         <h5>2016-2017: Experimentation</h5>
-                        <p>Founder Kevin Owocki experiments with Ethereum mining, building <a target=new href="https://github.com/owocki/" target="new">a handful of Open Source projects in the space</a>, investing, and <a target=new href="https://www.meetup.com/Boulder-Blockchain/">community organizing</a>.</p>
+                        <p>Founder Kevin Owocki experiments with Ethereum mining, building <a href="https://github.com/owocki/" target="_blank" rel="noopener noreferrer">a handful of Open Source projects in the space</a>, investing, and <a href="https://www.meetup.com/Boulder-Blockchain/" target="_blank" rel="noopener noreferrer">community organizing</a>.</p>
                       </div>
 
                     </div>
@@ -221,7 +221,7 @@
                     <div class="tline_module mod2 animated bounceInLeft">
                       <div class="tline_heading">
                         <h5>Q2 2017: Ideation</h5>
-                        <p>With the mentorship of Open Source Developers from the Boulder CO tech community, the idea of a decentralized network designed to <i>Push Open Source Repos Forward</i> is conceived. What if recruitment for software projects could be completely decentralized and automated?  What if developers could try projects before they commit?  What if repo maintainers had a way to bring new developers onto their projects?  </p>
+                        <p>With the mentorship of Open Source Developers from the Boulder CO tech community, the idea of a decentralized network designed to <i>Grow Open Source</i> is conceived. What if recruitment for software projects could be completely decentralized and automated?  What if developers could try projects before they commit?  What if repo maintainers had a way to bring new developers onto their projects?  </p>
                       </div>
 
                     </div>
@@ -252,7 +252,7 @@
                     <div class="tline_module mod2 animated bounceInLeft">
                       <div class="tline_heading">
                         <h5>Q4 2017: Launch</h5>
-                        <p>The Issues Explorer goes live. The code behind the project is released open source. For the first time, coders can monetize their open-source work without a centralized middleman, and an incentive is provided to the open-source community to <i>Push Open Source Repos Forward</i>, together.</p>
+                        <p>The Issues Explorer goes live. The code behind the project is released open source. For the first time, coders can monetize their open-source work without a centralized middleman, and an incentive is provided to the open-source community to <i>Grow Open Source</i>, together.</p>
                       </div>
 
                     </div>
@@ -304,6 +304,39 @@
                     </div>
                   </li>
 
+                  <li class="tline_other animatedParent">
+                    <div class="tline_badge animated pulse fast" style="background-color: #f9006c;">
+                        <i class="icon">
+                            <img src="{% static "v2/images/icons/hammer.png" %}">
+                        </i>
+                    </div>
+                    <div class="tline_module contain1 animated bounceInRight">
+                      <div class="tline_heading">
+                        <h5>Shipping New Tools Every Month</h5>
+                        <a href="{% url "explorer" %}">
+                            <img src="{% static "v2/images/tools/tools_noborder.jpg" %}" style="max-width: 200px;">
+                        </a>
+                        <p class="pt-2">
+                            Bounties are just the first tool we're launching.  We've got a bunch of new tools in the pipeline, including:
+
+                            <ul>
+                                <li>
+                                    Dev Grants
+                                </li>
+                                <li>
+                                    Code Funding
+                                </li>
+                                <li>
+                                    Mentorship Matching
+                                </li>
+                            </ul>
+                            <br>
+                            Want to learn about them?  <a href="{% url "toolbox" %}">Click here</a>.
+                        </p>
+                      </div>
+
+                    </div>
+                  </li>
 
                 </ul>
             </div>
@@ -323,50 +356,57 @@
 
             <div class="row press">
                 <div class="col d-flex flex-column align-items-center">
-                    <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
-                        <a target=new href="https://changelog.com/podcast/281">
+                    <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
+                        <a href="https://twit.tv/shows/floss-weekly/episodes/474" target="_blank" rel="noopener noreferrer">
+                            <img src="{% static "v2/images/press/floss_weekly.jpg" %}">
+                        </a>
+                    </div>
+                </div>
+                <div class="col d-flex flex-column align-items-center">
+                    <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
+                        <a href="https://changelog.com/podcast/281" target="_blank" rel="noopener noreferrer">
                             <img src="{% static "v2/images/press/changelog.jpg" %}">
                         </a>
                     </div>
                 </div>
                 <div class="col d-flex flex-column align-items-center">
-                    <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
-                        <a target=new href="https://www.forbes.com/sites/curtissilver/2017/09/25/gitcoin-launches-today-pushing-open-source-forward-with-cryptocurrency-bounties/">
+                    <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
+                        <a href="https://www.forbes.com/sites/curtissilver/2017/09/25 target="_blank" rel="noopener noreferrer"/gitcoin-launches-today-pushing-open-source-forward-with-cryptocurrency-bounties/">
                             <img src="{% static "v2/images/press/forbes.jpg" %}">
                         </a>
                     </div>
                 </div>
                 <div class="col d-flex flex-column align-items-center">
-                    <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
-                        <a target=new href="https://www.coloradotechcast.com/kevin-owocki-gitcoin/">
+                    <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
+                        <a href="https://www.coloradotechcast.com/kevin-owocki-gitcoin/" target="_blank" rel="noopener noreferrer">
                             <img src="{% static "v2/images/press/coloradotechcast.jpg" %}">
                         </a>
                     </div>
                 </div>
                 <div class="col d-flex flex-column align-items-center">
-                    <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
-                        <a target=new href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6">
+                    <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
+                        <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" target="_blank" rel="noopener noreferrer">
                             <img src="{% static "v2/images/consensys-logo-dark-small.png" %}" >
                         </a>
                     </div>
                 </div>
                 <div class="col d-flex flex-column align-items-center">
-                    <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
-                        <a target=new href="https://btcmanager.com/solve-software-problems-git-bounty/">
+                    <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
+                        <a href="https://btcmanager.com/solve-software-problems-git-bounty/" target="_blank" rel="noopener noreferrer">
                             <img src="{% static "v2/images/press/btcmanager2.jpg" %}">
                         </a>
                     </div>
                 </div>
                 <div class="col d-flex flex-column align-items-center">
-                    <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
-                        <a target=new href="http://www.builtincolorado.com/2017/10/19/boulder-tech-gitcoin-open-source-software">
+                    <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
+                        <a href="http://www.builtincolorado.com/2017/10/19/boulder-tech-gitcoin-open-source-software" target="_blank" rel="noopener noreferrer">
                             <img src="{% static "v2/images/press/builtin.jpg" %}">
                         </a>
                     </div>
                 </div>
                 <div class="col d-flex flex-column align-items-center">
-                    <div class="explain-img-wrapper mb-3  d-flex justify-content-center align-items-center">
-                        <a target=new href="https://thebitcoinpodcast.com/an-ethereum-podcast-episode-8/">
+                    <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
+                        <a href="https://thebitcoinpodcast.com/an-ethereum-podcast-episode-8/" target="_blank" rel="noopener noreferrer">
                             <img src="{% static "v2/images/press/btc_podcast.jpg" %}">
                         </a>
                     </div>

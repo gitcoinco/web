@@ -3,9 +3,11 @@ from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
 from dashboard.models import Bounty, Profile
+from external_bounties.models import ExternalBounty
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
+
     priority = 0.5
     changefreq = 'weekly'
 
@@ -29,6 +31,10 @@ class StaticViewSitemap(sitemaps.Sitemap):
             'whitepaper_access',
             '_leaderboard',
             'ios',
+            'faucet',
+            'mission',
+            'slack',
+            'universe_index',
         ]
 
     def location(self, item):
@@ -63,8 +69,23 @@ class ProfileSitemap(Sitemap):
         return item.get_relative_url()
 
 
+class ExternalBountySitemap(Sitemap):
+    changefreq = "weekly"
+    priority = 0.8
+
+    def items(self):
+        return ExternalBounty.objects.filter(active=True)
+
+    def lastmod(self, obj):
+        return obj.modified_on
+
+    def location(self, item):
+        return item.url
+
+
 sitemaps = {
     'static': StaticViewSitemap,
     'issues': IssueSitemap,
+    'universe': ExternalBountySitemap,
     'orgs': ProfileSitemap,
 }

@@ -1,0 +1,68 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load humanize %}
+{% load static %}
+
+{% block content %}
+
+<h1>Faucet Request Rejected ‼️</h1>
+
+<img src="{% static 'v2/images/gas.png' %}" width=200px height=200px >
+
+<p>
+    Hey @{{fr.github_username}},
+
+    <br>
+    <br>
+
+    Gitcoin *could not* approve your faucet request for {{amount}} ETH to <a href=https://etherscan.io/address/{{fr.address}}>{{fr.address}}</a>.
+
+    <br>
+    <br>
+
+    {% if fr.comment_admin %}
+
+    Here are somme comments from the administrator:
+
+    <br>
+    <br>
+
+        > {{fr.comment_admin}}
+
+    <br>
+    <br>
+
+    {% endif %}
+
+    You are welcome to re-apply at <a href="https://gitcoin.co/faucet">https://gitcoin.co/faucet</a>
+
+    <br>
+    <br>
+
+</p>
+
+<p>
+    Keep Pushing Open Source Forward,
+    <br>
+    -- Gitcoin Core
+</p>
+
+
+
+{% endblock %}

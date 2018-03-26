@@ -1,6 +1,7 @@
 .newsletter {
   margin-top: 1em;
   border-top: 1px solid #eee;
+  font-family: "OpenSans";
 }
 
 .newsletter h4 {
@@ -33,13 +34,14 @@
   left: -4px;
   width: 44px;
   height: 40px;
+  color: #FFFFFF;
   background: linear-gradient(200deg, #8E2ABE 0%, #37EA9C 100%);
   border: none;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
 }
 
-.newsletter .addon i {
+.newsletter .addon svg {
   position: relative;
   color: #fff;
 }
@@ -48,3 +50,9 @@
 ::-moz-placeholder { color: #999; }
 :-ms-input-placeholder { color: #999; }
 :-moz-placeholder { color: #999; }
+
+@media (max-width: 575px) {
+  .newsletter h4 {
+    font-family: "OpenSans SemiBold";
+  }
+}

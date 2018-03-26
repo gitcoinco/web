@@ -17,11 +17,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from django.test import TestCase
 from django.test.client import RequestFactory
 
 from economy.models import ConversionRate
 from economy.utils import convert_amount, etherscan_link
+from test_plus.test import TestCase
 
 
 class EconomyUtilsTest(TestCase):

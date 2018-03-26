@@ -29,10 +29,12 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.views.decorators.http import require_GET
 
+from app.utils import get_location_from_ip
 from dashboard.models import Profile, UserAction
 from github.utils import (
     get_auth_url, get_github_primary_email, get_github_user_data, get_github_user_token, revoke_token,
 )
+from ipware.ip import get_real_ip
 
 
 @require_GET
@@ -49,6 +51,11 @@ def github_callback(request):
     access_token = get_github_user_token(code)
     github_user_data = get_github_user_data(access_token)
     handle = github_user_data.get('login')
+    ip_address = '24.210.224.38' if settings.DEBUG else get_real_ip(request)
+    geolocation_data = {}
+
+    if ip_address:
+        geolocation_data = get_location_from_ip(ip_address)
 
     if handle:
         # Create or update the Profile with the github user data.
@@ -77,7 +84,8 @@ def github_callback(request):
             profile=user_profile,
             action='Login',
             metadata={},
-            )
+            ip_address=ip_address,
+            location_data=geolocation_data)
 
     response = redirect(redirect_uri)
     response.set_cookie('last_github_auth_mutation', int(time.time()))
@@ -93,8 +101,7 @@ def github_authentication(request):
         return redirect(get_auth_url(redirect_uri))
 
     # Alert local developer that Github integration needs configured.
-    if settings.DEBUG and (not settings.GITHUB_CLIENT_ID or
-                           settings.GITHUB_CLIENT_ID == 'TODO'):
+    if settings.ENV == 'local' and (not settings.GITHUB_CLIENT_ID or settings.GITHUB_CLIENT_ID == 'TODO'):
         logging.info('GITHUB_CLIENT_ID is not set. Github integration is disabled!')
 
     response = redirect(redirect_uri)
@@ -107,19 +114,31 @@ def github_logout(request):
     access_token = request.session.pop('access_token', '')
     handle = request.session.pop('handle', '')
     redirect_uri = request.GET.get('redirect_uri', '/')
+    geolocation_data = {}
+    ip_address = '24.210.224.38' if settings.DEBUG else get_real_ip(request)
+
+    if ip_address:
+        geolocation_data = get_location_from_ip(ip_address)
 
     if access_token:
         revoke_token(access_token)
         request.session.pop('access_token_last_validated')
-        Profile.objects.filter(handle=handle).update(github_access_token='')
+
+    try:
+        # If the profile exists, clear the github access token.
+        profile = Profile.objects.get(handle=handle)
+        profile.github_access_token = ''
+        profile.save()
 
         # record a useraction for this
-        if Profile.objects.filter(handle=handle).count():
-            UserAction.objects.create(
-                profile=Profile.objects.get(handle=handle),
-                action='Logout',
-                metadata={},
-                )
+        UserAction.objects.create(
+            profile=profile,
+            action='Logout',
+            metadata={},
+            ip_address=ip_address,
+            location_data=geolocation_data)
+    except Profile.DoesNotExist:
+        pass
 
     request.session.modified = True
     response = redirect(redirect_uri)

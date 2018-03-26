@@ -27,7 +27,8 @@ from django.utils import timezone
 
 import dateutil.parser
 import requests
-from app.rollbar import rollbar
+import rollbar
+from requests.exceptions import ConnectionError
 from rest_framework.reverse import reverse
 
 logger = logging.getLogger(__name__)
@@ -63,6 +64,16 @@ def build_auth_dict(oauth_token):
     }
 
 
+def search_github(q):
+
+    params = (
+        ('q', q),
+        ('sort', 'updated'),
+    )
+    response = requests.get('https://api.github.com/search/users', headers=HEADERS, params=params)
+    return response.json()
+
+
 def is_github_token_valid(oauth_token=None, last_validated=None):
     """Check whether or not a Github OAuth token is valid.
 
@@ -93,7 +104,14 @@ def is_github_token_valid(oauth_token=None, last_validated=None):
     _params = build_auth_dict(oauth_token)
     _auth = (_params['client_id'], _params['client_secret'])
     url = TOKEN_URL.format(**_params)
-    response = requests.get(url, auth=_auth, headers=HEADERS)
+    try:
+        response = requests.get(url, auth=_auth, headers=HEADERS)
+    except ConnectionError as e:
+        if not settings.ENV == 'local':
+            logger.error(e)
+        else:
+            print(e, '- No connection available. Unable to authenticate with Github.')
+        return False
 
     if response.status_code == 200:
         return True
@@ -262,7 +280,7 @@ def search(query):
     return response.json()
 
 
-def get_issue_comments(owner, repo, issue=None):
+def get_issue_comments(owner, repo, issue=None, comment_id=None):
     """Get the comments from issues on a respository.
     PLEASE NOTE CURRENT LIMITATION OF 100 COMMENTS.
 
@@ -280,9 +298,27 @@ def get_issue_comments(owner, repo, issue=None):
         'per_page': 100, #TODO traverse/concat pages: https://developer.github.com/v3/guides/traversing-with-pagination/
     }
     if issue:
-        url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/comments'
+        if comment_id:
+            url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
+        else:
+            url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/comments'
     else:
         url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments'
+
+    response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
+
+    return response.json()
+
+
+def get_issues(owner, repo):
+    """Get the open issues on a respository."""
+    params = {
+        'state': 'open',
+        'sort': 'created',
+        'direction': 'desc',
+    }
+    url = f'https://api.github.com/repos/{owner}/{repo}/issues'
+
     response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
 
     return response.json()
@@ -316,6 +352,14 @@ def get_user(user, sub_path=''):
     """Get the github user details."""
     user = user.replace('@', '')
     url = f'https://api.github.com/users/{user}{sub_path}'
+    response = requests.get(url, auth=_AUTH, headers=HEADERS)
+
+    return response.json()
+
+
+def get_notifications():
+    """Get the github notifications."""
+    url = f'https://api.github.com/notifications?all=1'
     response = requests.get(url, auth=_AUTH, headers=HEADERS)
 
     return response.json()

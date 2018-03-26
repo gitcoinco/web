@@ -31,6 +31,11 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 15 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration_start_work  >> /var/log/gitcoin/expiration_start_work.log  2>&1
 1 11 * * * cd gitcoin/coin; bash scripts/run_management_command.bash send_subscription_mails  >> /var/log/gitcoin/send_subscription_mails.log  2>&1
 1 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_keywords  >> /var/log/gitcoin/sync_keywords.log  2>&1
+1 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_slack  >> /var/log/gitcoin/sync_slack.log  2>&1
+1 1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_github  >> /var/log/gitcoin/sync_github.log  2>&1
+*/15 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash get_notifications  >> /var/log/gitcoin/get_notifications.log  2>&1
+15 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash bounty_feedback_email  >> /var/log/gitcoin/bounty_feedback_email.log  2>&1
+
 
 1 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration_tip  >> /var/log/gitcoin/expiration_tip.log  2>&1
 1 10 * * 1 cd gitcoin/coin; bash scripts/run_management_command.bash assemble_leaderboards  >> /var/log/gitcoin/assemble_leaderboards.log  2>&1

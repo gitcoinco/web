@@ -52,6 +52,7 @@ def stats(request):
     # get param
     _filter = request.GET.get('filter')
     rollup = request.GET.get('rollup')
+    _format = request.GET.get('format', 'chart')
 
     # types
     types = list(Stat.objects.distinct('key').values_list('key', flat=True))
@@ -92,12 +93,16 @@ def stats(request):
 
     # params
     params = {
+        'format': _format,
         'types': types,
         'chart_list': [],
-        'filter_params': "?filter={}&rollup={}".format(_filter, rollup),
+        'filter_params': f"?filter={_filter}&format={_format}&rollup={rollup}",
+        'tables': {},
     }
 
     for t in types:
+
+        # get data
         source = Stat.objects.filter(key=t)
         if rollup == 'daily':
             source = source.filter(created_on__hour=1)
@@ -108,47 +113,54 @@ def stats(request):
         else:
             source = source.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=2)))
 
-        # compute avg
-        total = 0
-        count = source.count() - 1
-        avg = "NA"
-        if count > 1:
-            for i in range(0, count):
-                total += (source[i+1].val - source[i].val)
-            avg = round(total / count, 1)
-            avg = str("+{}".format(avg) if avg > 0 else avg)
+        if source.count():
+            # tables
+            params['tables'][t] = source
 
-        chartdata = DataPool(series=[{
-            'options': {'source': source},
-            'terms': [
-                'created_on',
-                'val'
-            ]}])
+            # charts
+            # compute avg
+            total = 0
+            count = source.count() - 1
+            avg = "NA"
+            if count > 1:
+                for i in range(0, count):
+                    total += (source[i+1].val - source[i].val)
+                avg = round(total / count, 1)
+                avg = str("+{}".format(avg) if avg > 0 else avg)
 
-        cht = Chart(
-            datasource=chartdata,
-            series_options=[{
-                'options': {
-                    'type': 'line',
-                    'stacking': False
-                },
-                'terms': {
-                    'created_on': ['val']
-                }
-            }],
-            chart_options={
-                'title': {
-                    'text': f'{t} trend ({avg} avg)'
-                },
-                'xAxis': {
-                    'title': {
-                        'text': 'Time'
+            chartdata = DataPool(series=[{
+                'options': {'source': source},
+                'terms': [
+                    'created_on',
+                    'val'
+                ]}])
+
+            cht = Chart(
+                datasource=chartdata,
+                series_options=[{
+                    'options': {
+                        'type': 'line',
+                        'stacking': False
+                    },
+                    'terms': {
+                        'created_on': ['val']
                     }
-                }
-            })
-        params['chart_list'].append(cht)
+                }],
+                chart_options={
+                    'title': {
+                        'text': f'{t} trend ({avg} avg)'
+                    },
+                    'xAxis': {
+                        'title': {
+                            'text': 'Time'
+                        }
+                    }
+                })
+            params['chart_list'].append(cht)
 
+    types = params['tables'].keys()
     params['chart_list_str'] = ",".join(types)
+    params['types'] = types
     return TemplateResponse(request, 'stats.html', params)
 
 
@@ -159,7 +171,7 @@ def email_settings(request, key):
     level = ''
     msg = ''
     if not key:
-        email = request.session.get('email', False)
+        email = request.session.get('email', '')
         if not email:
             github_handle = request.session.get('handle', '')
             profiles = Profile.objects.filter(handle__iexact=github_handle).exclude(email='')
@@ -228,13 +240,22 @@ def _leaderboard(request):
     return leaderboard(request, '')
 
 
-def leaderboard(request, key):
+def leaderboard(request, key=''):
+    """Display the leaderboard for top earning or paying profiles.
+
+    Args:
+        key (str): The leaderboard display type. Defaults to: quarterly_earners.
+
+    Returns:
+        TemplateResponse: The leaderboard template response.
+
+    """
     if not key:
-        key = 'monthly_earners'
+        key = 'quarterly_earners'
 
     titles = {
-        'monthly_payers': 'Top Payers',
-        'monthly_earners': 'Top Earners',
+        'quarterly_payers': 'Top Payers',
+        'quarterly_earners': 'Top Earners',
         #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
         #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
         #        'monthly_fulfilled': 'Monthly Leaderboard',
@@ -248,6 +269,7 @@ def leaderboard(request, key):
     if key not in titles.keys():
         raise Http404
 
+    title = titles[key]
     leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
     amount = leadeboardranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
     items = leadeboardranks.order_by('-amount')
@@ -257,24 +279,19 @@ def leaderboard(request, key):
         amount_max = amount[0][0]
         top_earners = leadeboardranks.order_by('-amount')[0:3].values_list('github_username', flat=True)
         top_earners = ['@' + username for username in top_earners]
-        top_earners = "The top earners of this period are " + ", ".join(top_earners)
+        top_earners = f'The top earners of this period are {", ".join(top_earners)}'
     else:
         amount_max = 0
-
-    if items:
-        podium_items = items[:3]
-    else:
-        podium_items = []
 
     context = {
         'items': items,
         'titles': titles,
-        'selected': titles[key],
-        'title': "Monthly Leaderboard: " + titles[key],
-        'card_title': "Monthly Leaderboard: " + titles[key],
-        'card_desc': 'See the most valued members in the Gitcoin community this month. ' + top_earners,
+        'selected': title,
+        'title': f'Leaderboard: {title}',
+        'card_title': f'Leaderboard: {title}',
+        'card_desc': f'See the most valued members in the Gitcoin community this month. {top_earners}',
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
-        'podium_items': podium_items
+        'podium_items': items[:3] if items else []
     }
     return TemplateResponse(request, 'leaderboard.html', context)
