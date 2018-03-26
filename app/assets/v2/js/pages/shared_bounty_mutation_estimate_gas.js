@@ -10,6 +10,10 @@ $(document).ready(function() {
   if (document.location.href.indexOf('funding/new') != -1) {
     gasLimitEstimate = 318730;
   }
+  // new fulfill funding page
+  if (document.location.href.indexOf('funding/increase') != -1) {
+    gasLimitEstimate = 56269;
+  }
   // new process funding page
   if (document.location.href.indexOf('funding/process') != -1) {
     gasLimitEstimate = 103915;

@@ -32,7 +32,7 @@
                         <ul class='authors'>
                             {% for author in profile.authors %}
                                 <li>
-                                    <a href="{% url "profile" %}{{author}}" target=new title="{{author}}">
+                                    <a href="{% url "profile" %}{{author}}" title="{{author}}" target="_blank" rel="noopener noreferrer">
                                     <img src="{% url "avatar" %}?repo=https://github.com/{{author}}">
                                     </a>
                                 </li>
@@ -107,7 +107,11 @@
                                                 </div>
                                                 <div class='url'>
                                                     <p>
-                                                        <a href="{{tip.github_url}}">{{tip.github_url}}</a>
+                                                        {% if tip.github_url %}
+                                                            <a href="{{tip.github_url}}">{{tip.github_url}}</a>
+                                                        {% else %}
+                                                            Unknown
+                                                        {% endif %}
                                                     </p>
                                                 </div>
                                                 <div class="amount">
@@ -173,8 +177,8 @@
                                                     </div>
                                                     <div class="details">
                                                         <img style="max-width: 30px;" src="{{b.local_avatar_url}}">
-                                                        <h6 style="display: inline;">
-                                                            {{b.title_or_desc}}
+                                                        <h6>
+                                                            {{b.title_or_desc | truncatechars:50}}
                                                         </h6>
                                                         <p>
                                                             {{b.desc}}

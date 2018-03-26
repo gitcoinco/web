@@ -79,13 +79,15 @@ INSTALLED_APPS = [
     'email_obfuscator',
     'linkshortener',
     'credits',
-    'gitcoinbot'
+    'gitcoinbot',
+    'external_bounties',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -100,7 +102,7 @@ ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['retail/templates/'],
+        'DIRS': ['retail/templates/', 'external_bounties/templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -197,6 +199,8 @@ if not ENV in ['local', 'test']:
 else:
     LOGGING = {}
 
+GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
@@ -252,6 +256,9 @@ GITHUB_CLIENT_SECRET = env('GITHUB_CLIENT_SECRET', default='TODO')
 GITHUB_API_USER = env('GITHUB_API_USER', default='TODO')
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='TODO')
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
+
+# Gitter
+GITTER_TOKEN = env('GITTER_TOKEN', default=False)
 
 # optional: only needed if you run the gitcoinbot app
 # Setup instructions: https://github.com/gitcoinco/web/blob/master/app/gitcoinbot/README.md
@@ -331,7 +338,7 @@ SENDGRID_EVENT_HOOK_URL = env('SENDGRID_EVENT_HOOK_URL', default='sg_event_proce
 GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')
 
 # Web3
-WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://mainnet.infura.io')
+WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://rinkeby.infura.io')
 
 # COLO Coin
 COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')

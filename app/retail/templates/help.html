@@ -37,12 +37,12 @@
                 <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
                     <h4 class="heading">Developer?</h4>
                     <h6 class="sub-heading">Check out the Gitcoin Developer guide</h6>
-                    <a href="{% url "help_dev" %}" target=new>
+                    <a href="{% url "help_dev" %}" target="_blank" rel="noopener noreferrer">
                         <img class="animated fadeIn" src="{% static "v2/images/guide_dev.png" %}" style="max-width: 60%;  border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
                     </a>
                     <div class="col animated pulse fast">
                         <br>
-                        <a class="btn btn-lg btn-warning  mb-4" role="button" target=new href="{% url "help_dev" %}">View Developer Guide</a>
+                        <a class="btn btn-lg btn-warning  mb-4" role="button" target="_blank" rel="noopener noreferrer" href="{% url "help_dev" %}">View Developer Guide</a>
                     </div>
                 </div>
             </div>
@@ -50,12 +50,12 @@
                 <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
                     <h4 class="heading">Repo Maintainer?</h4>
                     <h6 class="sub-heading">Check out the Gitcoin Repo Maintainer guide</h6>
-                    <a href="{% url "help_repo" %}" target=new>
+                    <a href="{% url "help_repo" %}" target="_blank" rel="noopener noreferrer">
                         <img class="animated fadeIn" src="{% static "v2/images/guide_repo.png" %}" style="max-width: 60%; border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
                     </a>
                     <div class="col animated pulse fast">
                         <br>
-                        <a class="btn btn-lg btn-warning  mb-4" role="button" target=new href="{% url "help_repo" %}">View Repo Maintainer Guide</a>
+                        <a class="btn btn-lg btn-warning mb-4" role="button" href="{% url "help_repo" %}" target="_blank" rel="noopener noreferrer">View Repo Maintainer Guide</a>
                     </div>
                 </div>
             </div>
@@ -63,12 +63,12 @@
                 <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
                     <h4 class="heading">Does it work?</h4>
                     <h6 class="sub-heading">Check out the Gitcoin Case Study</h6>
-                    <a href="{% url "casestudies" %}" target=new>
+                    <a href="{% url "casestudies" %}" target="_blank" rel="noopener noreferrer">
                         <img class="animated fadeIn" src="{% static "v2/images/gudie_casestudy.png" %}" style="max-width: 60%;  border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
                     </a>
                     <div class="col animated pulse fast">
                         <br>
-                        <a class="btn btn-lg btn-warning  mb-4" role="button" target=new href="{% url "casestudies" %}">View Case Studies</a>
+                        <a class="btn btn-lg btn-warning mb-4" role="button" href="{% url "casestudies" %}" target="_blank" rel="noopener noreferrer">View Case Studies</a>
                     </div>
                 </div>
             </div>
@@ -138,7 +138,7 @@
         <div class="row mt-2 mb-2 pb-3 animatedParent">
             <div class="col animated pulse fast">
                 <a class="btn btn-lg btn-warning " role="button" href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">View Github Repo</a>
-                <a class="btn btn-lg btn-warning " role="button" href="{% url "slack" %}"> <i class="fa fa-slack" style="margin-right: 5px; position: relative; top: 2px;" aria-hidden="true"></i>Ask on slack</a>
+                <a class="btn btn-lg btn-warning " role="button" href="{% url "slack" %}"> <i class="fab fa-slack-hash" style="margin-right: 5px; position: relative; top: 2px;" aria-hidden="true"></i>Ask on slack</a>
                 <a class="btn btn-lg btn-warning " role="button" href="mailto:founders@gitcoin.co">Contact Gitcoin Core</a>
             </div>
         </div>

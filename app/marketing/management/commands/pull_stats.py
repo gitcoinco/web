@@ -73,6 +73,7 @@ def slack_users_active():
     one_day_ago = timezone.now() - timezone.timedelta(hours=24)
     num_active = SlackUser.objects.filter(last_seen__gt=one_day_ago).count()
     num_away = SlackUser.objects.filter(last_seen__lt=one_day_ago).count()
+    num_away += SlackUser.objects.filter(last_seen=None).count()
 
     # create broader Stat object
     Stat.objects.create(
@@ -130,9 +131,9 @@ def user_actions():
             ).count()
 
         Stat.objects.create(
-            key='user_action_{}'.format(action_type),
+            key=f'user_action_{action_type}',
             val=val,
-            )
+        )
 
 
 def github_stars():
@@ -281,7 +282,7 @@ def avg_time_bounty_turnaround():
     from dashboard.models import Bounty
 
     for days in [7, 30, 90, 360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True, idx_status='submitted', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+        all_bounties = Bounty.objects.filter(current_bounty=True, idx_status='done', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
         if not all_bounties.count():
             continue
 
@@ -391,6 +392,7 @@ class Command(BaseCommand):
             chrome_ext_users,
             firefox_ext_users,
             slack_users,
+            slack_users_active,
             twitter_followers,
             bounties,
             tips,

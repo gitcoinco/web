@@ -29,10 +29,12 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.views.decorators.http import require_GET
 
+from app.utils import get_location_from_ip
 from dashboard.models import Profile, UserAction
 from github.utils import (
     get_auth_url, get_github_primary_email, get_github_user_data, get_github_user_token, revoke_token,
 )
+from ipware.ip import get_real_ip
 
 
 @require_GET
@@ -49,6 +51,11 @@ def github_callback(request):
     access_token = get_github_user_token(code)
     github_user_data = get_github_user_data(access_token)
     handle = github_user_data.get('login')
+    ip_address = '24.210.224.38' if settings.DEBUG else get_real_ip(request)
+    geolocation_data = {}
+
+    if ip_address:
+        geolocation_data = get_location_from_ip(ip_address)
 
     if handle:
         # Create or update the Profile with the github user data.
@@ -76,7 +83,9 @@ def github_callback(request):
         UserAction.objects.create(
             profile=user_profile,
             action='Login',
-            metadata={})
+            metadata={},
+            ip_address=ip_address,
+            location_data=geolocation_data)
 
     response = redirect(redirect_uri)
     response.set_cookie('last_github_auth_mutation', int(time.time()))
@@ -105,6 +114,11 @@ def github_logout(request):
     access_token = request.session.pop('access_token', '')
     handle = request.session.pop('handle', '')
     redirect_uri = request.GET.get('redirect_uri', '/')
+    geolocation_data = {}
+    ip_address = '24.210.224.38' if settings.DEBUG else get_real_ip(request)
+
+    if ip_address:
+        geolocation_data = get_location_from_ip(ip_address)
 
     if access_token:
         revoke_token(access_token)
@@ -120,7 +134,9 @@ def github_logout(request):
         UserAction.objects.create(
             profile=profile,
             action='Logout',
-            metadata={})
+            metadata={},
+            ip_address=ip_address,
+            location_data=geolocation_data)
     except Profile.DoesNotExist:
         pass
 

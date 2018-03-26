@@ -17,11 +17,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import logging
+
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.timezone import now
 
 from dashboard.models import Profile
 from github.utils import is_github_token_valid
+
+logger = logging.getLogger(__name__)
 
 
 class GithubAuthMiddleware(MiddlewareMixin):

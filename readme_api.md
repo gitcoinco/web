@@ -168,14 +168,16 @@ _bountydetails function returns the following fields:
 | Field Key          |  Datatype          | Description                                                       |
 |--------------------|--------------------|-------------------------------------------------------------------|
 | `amount`           | `float`            | Bounty amount in ETH or specified ERC20 token                     |
-| `tokenAddress`     | `ethereum_address` | Address where the tokens are located                              |
-| `bountyOwner`      | `ethereum_address` | Address of the person who owns the bounty                         |
-| `claimee`          | `ethereum_address` | Address of the person who claimed the bounty                      |
-| `open`             | `bool`             | True if the bounty has not been completed                         |
-| `initialized`      | `bool`             | True if the bounty has been initialized                           |
-| `issueURL`         | `string`           | URL on GitHub where you can find the bounty description           |
-| `creationTime`     | `float`            | Creation timestamp                                                |
-| `metaData`         | `string`           | Misc metadata about the bounty and the creator                    |
-| `expirationTime`   | `float`            | Date before which the bounty must be completed                    |
-| `fulfiller_metadata` | `string`           | githubUsername and notificationEmail for the claimee              |
+| `amount_denomination`     | `string` | Denomination of the bounty                              |
+| `action_url`         | `string`           | URL of the bounty           |
+| `title`         | `string`           | Title of hte bounty           |
+| `description`         | `string`           | Description of the bounty           |
+| `created_on`     | `datetime`            | Creation timestamp                                                |
+| `source_project`         | `string`           | Source Project the bounty came from           |
+| `tags`         | `strings`           | tags to classify the bounthy           |
 
+# Bounties Universe API
+
+Access it at `https://gitcoin.co/api/v0.1/universe`
+
+The bounties universe API lists all bounties (offchain) that have not yet been put into the blockchain or (onchain) that aren't in standard bounties :)

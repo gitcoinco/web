@@ -33,4 +33,4 @@ class Command(BaseCommand):
         then_time = timezone.now() - timezone.timedelta(days=days_back)
 
         GasProfile.objects.filter(created_on__lt=then_time).delete()
-        ConversionRate.objects.filter(created_on__lt=then_time).delete()
+        ConversionRate.objects.filter(created_on__lt=then_time).exclude(from_currency='ETH', to_currency='USDT').exclude(from_currency='USDT', to_currency='ETH').delete()

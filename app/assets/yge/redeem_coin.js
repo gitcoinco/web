@@ -8,7 +8,7 @@ window.onload = function() {
       $('send_eth').style.display = 'block';
     } else if (coin_status === 'PENDING') {
       $('send_eth_done').style.display = 'block';
-      $('colo_txid').innerHTML = "<a target=new href='https://" + etherscanDomain() + '/tx/' + colo_txid + "'>See your transaction on the blockchain here</a>";
+      $('colo_txid').innerHTML = '<a href="https://' + etherscanDomain() + '/tx/' + colo_txid + '" target="_blank" rel="noopener noreferrer">See your transaction on the blockchain here</a>';
     }
   }, 500);
 };
@@ -22,13 +22,13 @@ function redeemCoin() {
   // Check for valid address
   isValidForwardingAddress = forwarding_address.indexOf('0x') != -1;
   if (!forwarding_address || !isValidForwardingAddress) {
-    _alert({ message: 'Not a valid forwarding address.'}, 'error');
+    _alert({message: 'Not a valid forwarding address.'}, 'error');
     return;
   }
 
   var sendEthInnerHTML = $('send_eth').innerHTML;
 
-  $('send_eth').innerHTML = "<img src='/static/yge/images/loading_v2.gif' style='max-width: 70px; max-height: 70px;'><br><h4>Submitting to the blockchain...</h4>";
+  $('send_eth').innerHTML = '<img src="/static/yge/images/loading_v2.gif" style="max-width: 70px; max-height: 70px;"><br><h4>Submitting to the blockchain...</h4>';
 
   fetch(window.location.href, {
     method: 'POST',
@@ -42,12 +42,12 @@ function redeemCoin() {
           if (data.status === 'OK') {
             mixpanel.track('Redeem COLO Coin Success', {});
             startConfetti();
-            $('send_eth').innerHTML = "<h1>Success 🚀!</h1> <a target=new href='https://" + etherscanDomain() + '/tx/' + data.message + "'>See your transaction on the blockchain here</a>.<br><br><span id=mighttake>It might take a few minutes to sync, depending upon: <br> - network congestion<br> - network fees that sender allocated to transaction<br></span><br><a id='' class='button' href='/'>⬅ Check out Gitcoin.co</a>";
+            $('send_eth').innerHTML = '<h1>Success 🚀!</h1> <a href="https://' + etherscanDomain() + '/tx/' + data.message + '" target="_blank" rel="noopener noreferrer">See your transaction on the blockchain here</a>.<br><br><span id="mighttake">It might take a few minutes to sync, depending upon: <br> - network congestion<br> - network fees that sender allocated to transaction<br></span><br><a href="/" class="button">⬅ Check out Gitcoin.co</a>';
           } else {
             if (data.message.indexOf('Address has an invalid EIP checksum') !== -1) {
-              _alert({ message: 'Please enter a valid checksum address.'}, 'warning');
+              _alert({message: 'Please enter a valid checksum address.'}, 'warning');
             } else {
-              _alert({ message: data.message}, 'error');
+              _alert({message: data.message}, 'error');
             }
 
             $('send_eth').innerHTML = sendEthInnerHTML;

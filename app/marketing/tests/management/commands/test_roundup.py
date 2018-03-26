@@ -19,10 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from unittest.mock import patch
 
-from django.test import TestCase
-
 from marketing.management.commands.roundup import Command
 from marketing.models import EmailSubscriber
+from test_plus.test import TestCase
 
 
 class TestRoundup(TestCase):
