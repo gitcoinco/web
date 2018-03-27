@@ -89,7 +89,6 @@
             <div class="col-12 bounty-actions">
                 <div class="col-12 col-md-8">
                   <div id="right_actions"></div>
-                  <div id="github-link"></div>
                 </div>
                 <div class="col-12 col-md-4">
                   <div class="tags font-caption align-items-center">
@@ -142,7 +141,7 @@
             <div class="col-12">
               <h5 class="bounty-heading">Funder</h5>
               <div class="row box">
-                <div class="col-12 col-md-1">
+                <div class="col-12 col-md-1 funder-avatar">
                   <div id="avatar_url"></div>
                 </div>
                 <div class="col-12 col-md-11">
@@ -173,6 +172,19 @@
           [[if pending_acceptance]]
             <a class="button button--primary accept" role="button" href="[[:href]]" target="[[:target]]">
               <span class="font-caption">[[:text]] ( [[:pending_acceptance]] )</span>
+            </a>
+          [[else color == 'white']]
+            <a class="btn btn-small" id="btn-white" role="button" href="[[:href]]" target="[[:target]]">
+              [[if comments]]
+                <span class="font-caption">
+                  [[:text]]
+                  <span class="github-comment">
+                    [[:comments]]
+                  </span>
+                </span>
+              [[else]]
+                <span class="font-caption">[[:text]]</span>
+              [[/if]]
             </a>
           [[else]]
             <a class="button button--primary" role="button" href="[[:href]]" target="[[:target]]">
