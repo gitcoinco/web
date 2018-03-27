@@ -18,8 +18,8 @@
 
 from django.core.management.base import BaseCommand
 
-from external_bounties.models import ExternalBounty
 from dashboard.models import Bounty
+from external_bounties.models import ExternalBounty
 
 
 class Command(BaseCommand):
