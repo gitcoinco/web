@@ -84,6 +84,12 @@ pip install -r requirements/test.txt
 
 Navigate to `http://localhost:8000/`.
 
+## Create Django Admin
+
+```shell
+./manage.py createsuperuser
+```
+
 ## Optional: Import bounty data from web3 to your database
 
 This can be useful if you'd like data to test with:
