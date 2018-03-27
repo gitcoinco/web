@@ -11,7 +11,7 @@ Provide a general summary of the issue in the title above
 
 ### User Story
 
-As a <user type>, I want to <task> so that <goal>.
+[comment]: # (As a <user type>, I want to <task> so that <goal>.)
 
 ### Description
 
