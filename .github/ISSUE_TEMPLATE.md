@@ -1,12 +1,12 @@
 <!--
-Thank you for reporting an issue.
+Hello Gitcoiner!
 
-This issue tracker is for bugs and issues found within gitcoin.
+Please use the template below for issue ideas or bugs found within Gitcoin.
 If it is general support you need, reach out to us at
 gitcoin.co/slack
 
-Please fill in as much of the template below as you're able.
-Provide a general summary of the issue in the title above
+Provide a general summary of the issue in the title above and use relevant fields below to define the problem.
+
 -->
 
 ### User Story
@@ -21,10 +21,10 @@ Provide a general summary of the issue in the title above
 [comment]: # (Describe the problem and why this task is needed. Provide description of the current state, what you would like to happen, and what actually happen)
 *Summary*:
 
-### Actual behavior
+### Current Behavior
 [comment]: # (Describe what actually happened.)
 
-### Expected behavior
+### Expected Behavior
 [comment]: # (Describe what you expected to happen.)
 
 ### Reproduction
@@ -35,7 +35,7 @@ Provide a general summary of the issue in the title above
 *Summary*:
 
 ### Definition of Done
-[comment]: # (Any other information that would be useful.)
+[comment]: # (Any other information that would be useful, bullets are helpful.)
 
 ### Additional Information
-[comment]: # (Any other information that would be useful.)
+[comment]: # (Any other information that would be useful, content, screenshots, etc.)
