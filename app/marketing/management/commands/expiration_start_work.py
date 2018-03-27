@@ -23,7 +23,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import Bounty, Interest
-from github.utils import get_interested_actions, get_issue_timeline_events, issue_number, org_name, repo_name
+from github.utils import get_interested_actions
 from marketing.mails import bounty_startwork_expire_warning, bounty_startwork_expired
 
 
