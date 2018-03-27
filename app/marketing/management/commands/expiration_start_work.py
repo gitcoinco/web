@@ -86,12 +86,12 @@ class Command(BaseCommand):
                             print(f"- its been {last_heard_from_user_days} days since we heard from the user")
 
                         if should_delete_interest:
-                            print(f'executing should_delete_interest for {interest.pk}')
+                            print(f'executing should_delete_interest for {interest.profile} / {bounty.github_url} ')
                             bounty_startwork_expired(interest.profile.email, bounty, interest, last_heard_from_user_days)
                             interest.delete()
 
                         elif should_warn_user:
-                            print(f'executing should_warn_user for {interest.pk}')
+                            print(f'executing should_warn_user for {interest.profile} / {bounty.github_url} ')
                             bounty_startwork_expire_warning(interest.profile.email, bounty, interest, last_heard_from_user_days)
 
                     except Exception as e:
