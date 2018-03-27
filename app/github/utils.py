@@ -295,7 +295,7 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None):
     params = {
         'sort': 'created',
         'direction': 'desc',
-        'per_page': 100, #TODO traverse/concat pages: https://developer.github.com/v3/guides/traversing-with-pagination/
+        'per_page': 100,  # TODO traverse/concat pages: https://developer.github.com/v3/guides/traversing-with-pagination/
     }
     if issue:
         if comment_id:
@@ -323,6 +323,7 @@ def get_issues(owner, repo):
 
     return response.json()
 
+
 def get_issue_timeline_events(owner, repo, issue):
     """Get the timeline events for a given issue.
     PLEASE NOTE CURRENT LIMITATION OF 100 EVENTS.
@@ -340,13 +341,56 @@ def get_issue_timeline_events(owner, repo, issue):
     params = {
         'sort': 'created',
         'direction': 'desc',
-        'per_page': 100, #TODO traverse/concat pages: https://developer.github.com/v3/guides/traversing-with-pagination/
+        'per_page': 100,  # TODO traverse/concat pages: https://developer.github.com/v3/guides/traversing-with-pagination/
     }
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/timeline'
     # Set special header to access timeline preview api
     response = requests.get(url, auth=_AUTH, headers=TIMELINE_HEADERS, params=params)
 
     return response.json()
+
+
+def get_interested_actions(github_url, username, email=''):
+    activity_event_types = [
+        'commented', 'cross-referenced', 'merged', 'referenced',
+        'review_requested',
+    ]
+
+    owner = org_name(github_url)
+    repo = repo_name(github_url)
+    issue_num = issue_number(github_url)
+    actions = get_issue_timeline_events(owner, repo, issue_num)
+    actions_by_interested_party = []
+
+    for action in actions:
+        gh_user = None
+        gh_email = None
+        # GitHub might populate actor OR user OR neither for some events
+        if 'actor' in action:
+            gh_user = action['actor']['login']
+        elif 'user' in action:
+            gh_user = action['user']['login']
+
+        if action['event'] == 'cross-referenced':
+            pr_num = action.get('source', {}).get('issue', {}).get('number', '')
+            pr_repo_owner, pr_repo = action.get('source', {}).get('issue', {}) \
+                .get('repository', {}).get('full_name', '/').split('/')
+            pr_actions = get_issue_timeline_events(pr_repo_owner, pr_repo, pr_num)
+
+            for pr_action in pr_actions:
+                if 'actor' in pr_action:
+                    gh_user = pr_action['actor']['login']
+                    if gh_user == username and pr_action['event'] in activity_event_types:
+                        actions_by_interested_party.append(pr_action)
+                elif 'committer' in pr_action:
+                    gh_email = pr_action['committer']['email']
+                    if gh_email and gh_email == email:
+                        actions_by_interested_party.append(pr_action)
+
+        if gh_user and gh_user == username and action['event'] in activity_event_types:
+            actions_by_interested_party.append(action)
+    return actions_by_interested_party
+
 
 def get_user(user, sub_path=''):
     """Get the github user details."""
