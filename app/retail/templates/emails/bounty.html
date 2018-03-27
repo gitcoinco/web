@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,12 +15,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %} 
+{% load humanize %}
 
 <style>
 
 .bounty{
-    
+
 }
 .bounty tr{
     height: 40px;
@@ -29,7 +29,7 @@
 .bounty tr td.label{
     text-align: right;
     padding-right: 5px;
-    vertical-align: 
+    vertical-align:
 }
 .bounty tr td.label span{
     font-weight: bold;
@@ -40,8 +40,8 @@
 }
 </style>
 
-    
-    <table cellspacing="0" cellpadding="0" border="0" class='bounty'> 
+
+    <table cellspacing="0" cellpadding="0" border="0" class='bounty'>
         {% if primer %}
         <tr class="odd">
             <td width="460" colspan="2" style="text-align: center;">
@@ -125,7 +125,7 @@
                         {{bounty.status}}
 
                         {% if bounty.status == 'submitted' %}
-                            ({{bounty.status}} by 
+                            ({{bounty.status}} by
                             {% for fulfillment in bounty.fulfillments.all %}
                                 {% if fulfillment.fulfiller_github_username %}
                                     <a href="https://gitcoin.co/profile/{{fulfillment.fulfiller_github_username}}">{{fulfillment.fulfiller_github_username}}</a>
@@ -138,7 +138,7 @@
                             )
                         {% elif bounty.status == 'started' %}
                             {% if bounty.interested.all|length > 0 %}
-                                by 
+                                by
                             {% endif %}
                             {% for interested in bounty.interested.all %}
                             <a href="https://gitcoin.co/profile/{{interested.profile.handle}}"> {{interested}}</a>
@@ -185,11 +185,11 @@
         <tr class="cta">
             <td width="60" class="label">
                 <span>
-                    
+
                 </span>
             </td>
             <td width="400">
-                <a class="button" href="{{bounty.absolute_url}}" style="float:right;">View on Gitcoin.co</a>
+                <a class="button" href="{{bounty.absolute_url}}" style="float:right;">View on Gitcoin</a>
             </td>
         </tr>
 
