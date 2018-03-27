@@ -4,6 +4,7 @@
 <html lang="en">
 
   <head>
+    <link rel="stylesheet" href="{% static "v2/css/external_bounties/bounty.css" %}" />
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     {% if no_index %}
@@ -26,7 +27,7 @@
           <header class="bounties-header">
             <div class="bounties-header__title bounties-header__title--active">
               <h2 class="title">
-                <a href="{% url "universe_index" %}">Bounties Universe</a>
+                <a href="{% url "universe_index" %}">Bounties Universe<span id="alpha">Alpha</span></a>
               </h2>
             </div>
           </header>

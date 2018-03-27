@@ -30,12 +30,12 @@ class Command(BaseCommand):
         start_time = timezone.now() - timezone.timedelta(hours=48)
         end_time = timezone.now() - timezone.timedelta(hours=24)
         statues = ['done']
-        bounties_last_timeperiod = Bounty.objects.filter(modified_on__gt=start_time, modified_on__lt=end_time, idx_status__in=statues)
+        bounties_last_timeperiod = Bounty.objects.filter(created_on__gt=start_time, created_on__lt=end_time, idx_status__in=statues)
         print(bounties_last_timeperiod.count())
         for bounty in bounties_last_timeperiod:
 
             submitter_email = bounty.bounty_owner_email
-            previous_bounties = Bounty.objects.filter(modified_on__lt=start_time, idx_status__in=statues, bounty_owner_email=submitter_email, current_bounty=True).exclude(pk=bounty.pk).distinct()
+            previous_bounties = Bounty.objects.filter(created_on__lt=start_time, idx_status__in=statues, bounty_owner_email=submitter_email, current_bounty=True).exclude(pk=bounty.pk).distinct()
             has_been_sent_before_to_persona = previous_bounties.count()
             if not has_been_sent_before_to_persona:
                 bounty_feedback(bounty, 'submitter', previous_bounties)
@@ -45,7 +45,7 @@ class Command(BaseCommand):
                 accepted_fulfillment = accepted_fulfillments.first()
                 fulfiller_email = accepted_fulfillment.fulfiller_email
                 fulfillment_pks = BountyFulfillment.objects.filter(accepted=True, fulfiller_email=fulfiller_email).values__list('pk', flat=True)
-                previous_bounties = Bounty.objects.filter(modified_on__gt=start_time, idx_status__in=statues, fulfillments__pk__in=fulfillment_pks, current_bounty=True).exclude(pk=bounty.pk).distinct()
+                previous_bounties = Bounty.objects.filter(created_on__gt=start_time, idx_status__in=statues, fulfillments__pk__in=fulfillment_pks, current_bounty=True).exclude(pk=bounty.pk).distinct()
                 has_been_sent_before_to_persona = previous_bounties.count()
                 if not has_been_sent_before_to_persona:
                     bounty_feedback(bounty, 'funder', previous_bounties)

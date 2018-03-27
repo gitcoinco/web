@@ -11,5 +11,5 @@ trim_trailing_whitespace = true
 
 
 # 4 space indentation
-[*.{css,html,scss,py}]
+[*.{css,scss,py}]
 indent_size = 4

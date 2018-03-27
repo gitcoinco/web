@@ -28,8 +28,10 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 
 from chartit import Chart, DataPool
-from dashboard.models import Profile
-from marketing.models import EmailSubscriber, Keyword, LeaderboardRank, Stat
+from dashboard.models import Profile, UserAction
+from marketing.models import (
+    EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
+)
 from marketing.utils import get_or_save_email_subscriber
 from retail.helpers import get_ip
 
@@ -162,6 +164,112 @@ def stats(request):
     params['chart_list_str'] = ",".join(types)
     params['types'] = types
     return TemplateResponse(request, 'stats.html', params)
+
+
+def cohort_helper_users(start_time, end_time, data_source):
+    if 'profile' in data_source:
+        users = Profile.objects.filter(created_on__gte=start_time, created_on__lt=end_time).exclude(github_access_token='').distinct()
+    elif data_source == 'slack-online':
+        users = SlackUser.objects.filter(created_on__gte=start_time, created_on__lt=end_time).distinct()
+    else:
+        users = EmailSubscriber.objects.filter(created_on__gte=start_time, created_on__lt=end_time).distinct()
+    return users
+
+
+def cohort_helper_num(inner_start_time, inner_end_time, data_source, users):
+    if 'profile' in data_source:
+        if data_source == 'profile-githubinteraction':
+            num = GithubEvent.objects.filter(
+                profile__in=users,
+                created_on__gte=inner_start_time,
+                created_on__lt=inner_end_time,
+                ).distinct('profile').count()
+        else:
+            event = 'start_work'
+            if data_source == 'profile-login':
+                event = 'Login'
+            if data_source == 'profile-new_bounty':
+                event = 'new_bounty'
+            num = UserAction.objects.filter(
+                profile__in=users,
+                created_on__gte=inner_start_time,
+                created_on__lt=inner_end_time,
+                action=event,
+                ).distinct('profile').count()
+    elif data_source == 'slack-online':
+        num = SlackPresence.objects.filter(
+            slackuser__in=users,
+            created_on__gte=inner_start_time,
+            created_on__lt=inner_end_time,
+            status='active',
+            ).distinct('slackuser').count()
+    else:
+        event = 'click'
+        if data_source == 'email-open':
+            event = 'open'
+        if data_source == 'email-delivered':
+            event = 'delivered'
+        num = EmailEvent.objects.filter(
+            email__in=users.values_list('email', flat=True),
+            created_on__gte=inner_start_time,
+            created_on__lt=inner_end_time,
+            event=event,
+            ).distinct('email').count()
+    return num
+
+
+def cohort_helper_timedelta(i, period_size):
+    if period_size == 'months':
+        return {'weeks': 4*i}
+    elif period_size == 'quarters':
+        return {'weeks': 4*3*i}
+    else:
+        return {period_size: i}
+
+
+@staff_member_required
+def cohort(request):
+    cohorts = {}
+
+    data_source = request.GET.get('data_source', 'Slack')
+    num_periods = request.GET.get('num_periods', 10)
+    period_size = request.GET.get('period_size', 'weeks')
+    kwargs = {}
+
+    for i in range(1, num_periods):
+        start_time = timezone.now() - timezone.timedelta(**cohort_helper_timedelta(i, period_size))
+        end_time = timezone.now() - timezone.timedelta(**cohort_helper_timedelta(i-1, period_size))
+        users = cohort_helper_users(start_time, end_time, data_source)
+        num_entries = users.count()
+        usage_by_time_period = {}
+        for k in range(1, i):
+            inner_start_time = timezone.now() - timezone.timedelta(**cohort_helper_timedelta(k, period_size))
+            inner_end_time = timezone.now() - timezone.timedelta(**cohort_helper_timedelta(k-1, period_size))
+            num = cohort_helper_num(inner_start_time, inner_end_time, data_source, users)
+            pct = round(num/num_entries, 2) if num_entries else 0
+            usage_by_time_period[k] = {
+                'num': num,
+                'pct_float': pct,
+                'pct_int': int(pct * 100),
+            }
+        cohorts[i] = {
+            'num': num_entries,
+            'start_time': start_time,
+            'end_time': end_time,
+            'cohort_progression': usage_by_time_period,
+        }
+
+    params = {
+        'title': "Cohort Analysis",
+        'cohorts': cohorts,
+        'title_rows': range(1, num_periods-1),
+        'args': {
+            'data_source': data_source,
+            'num_periods': num_periods,
+            'period_size': period_size,
+        }
+    }
+    return TemplateResponse(request, 'cohort.html', params)
 
 
 def email_settings(request, key):
