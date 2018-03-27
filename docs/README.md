@@ -74,17 +74,22 @@ Technically, the system is architected:
 * __Web 3 Bridge__ This is the bridge between web3 and the rest of the application. Mostly built in javascript(web3js) and python(web3py).
 * __Brochureware__ Just a nice little landing page telling folks what the Gitcoin project is.
 
-# Developing 
+# Developing
 
 ## HTTPS API
 
-[For more information on the HTTPS API, please view the api README](readme_api.md)
+[For more information on the HTTPS API, please view the api README](API.md)
 
-## Running Locally
+## Running Locally with Docker (Recommended)
 
-[For more information on running the app locally, please view the running locally README](readme_runninglocally.md)
+[For more information on running the app locally, please view the running locally README](RUNNING_LOCALLY_DOCKER.md)
+
+## Running Locally without Docker
+
+[For more information on running the app locally, please view the running locally README](RUNNING_LOCALLY.md)
 
 # Trying out Gitcoin
+
 ## Posting your first issue
 
 If you
@@ -100,7 +105,7 @@ try posting a funded issue at [https://gitcoin.co/new](https://gitcoin.co/new).
 
 This widget will help you advertise that you support Gitcoin bounties, so that your community knows the best place to contribute.
 
-[Check out the widget readme to learn how](readme_widget.md)
+[Check out the widget readme to learn how](WIDGET.md)
 
 ## Adding GitcoinBot to your repo
 
@@ -117,7 +122,7 @@ Have an ERC20 compatible token that you'ud like to add support for?  Great!
 # Legal
 
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -136,7 +141,7 @@ Have an ERC20 compatible token that you'ud like to add support for?  Great!
 
 # License
 
-[GNU AFFERO GENERAL PUBLIC LICENSE](./docs/LICENSE)
+[GNU AFFERO GENERAL PUBLIC LICENSE](../LICENSE)
 
 <!-- Google Analytics -->
 <img src='https://ga-beacon.appspot.com/UA-102304388-1/gitcoinco/web' style='width:1px; height:1px;' >
