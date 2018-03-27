@@ -23,7 +23,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import Bounty, Interest
-from github.utils import get_issue_timeline_events, issue_number, org_name, repo_name
+from github.utils import get_interested_actions, get_issue_timeline_events, issue_number, org_name, repo_name
 from marketing.mails import bounty_startwork_expire_warning, bounty_startwork_expired
 
 
@@ -32,16 +32,12 @@ class Command(BaseCommand):
     help = 'lets a user know that they expressed interest in an issue and kicks them to do something about it'
 
     def handle(self, *args, **options):
-
         if settings.DEBUG:
-            print('not running bc DEBUG is on')
+            print('not running start work expiration because DEBUG is on')
             return
 
         num_days_back_to_warn = 3
         num_days_back_to_delete_interest = 7
-        # Define which timeline events demonstrate that the user is still interested in working on the issue
-        # See https://developer.github.com/v3/issues/timeline/ for list of possible event types.
-        activity_event_types = ['commented', 'cross-referenced', 'merged', 'referenced', 'review_requested']
 
         days = [i * 3 for i in range(1, 15)]
         if settings.DEBUG:
@@ -50,38 +46,28 @@ class Command(BaseCommand):
             interests = Interest.objects.filter(
                 created__gte=(timezone.now() - timezone.timedelta(days=(day+1))),
                 created__lt=(timezone.now() - timezone.timedelta(days=day)),
-            ).all()
-            print('day {} got {} interests'.format(day, interests.count()))
+            )
+            print(f'day {day} got {interests.count()} interests')
             for interest in interests:
-                for bounty in Bounty.objects.filter(interested=interest, current_bounty=True, idx_status__in=['open', 'started']):
-                    print("{} is interested in {}".format(interest, bounty))
+                bounties = Bounty.objects.filter(
+                    interested=interest,
+                    current_bounty=True,
+                    idx_status__in=['open', 'started'])
+                for bounty in bounties:
+                    print(f"{interest} is interested in {bounty}")
                     try:
-                        owner = org_name(bounty.github_url)
-                        repo = repo_name(bounty.github_url)
-                        issue_num = issue_number(bounty.github_url)
-                        timeline = get_issue_timeline_events(owner, repo, issue_num)
-                        actions_by_interested_party = []
-
-                        for action in timeline:
-                            gh_user = None
-                            # GitHub might populate actor OR user OR neither for some events
-                            if 'actor' in action:
-                                gh_user = action['actor']['login']
-                            elif 'user' in action:
-                                gh_user = action['user']['login']
-
-                            if gh_user == interest.profile.handle and action['event'] in activity_event_types:
-                                actions_by_interested_party.append(action)
+                        actions = get_interested_actions(
+                            bounty.github_url, interest.profile.handle, interest.profile.email)
                         should_warn_user = False
                         should_delete_interest = False
                         last_heard_from_user_days = None
 
-                        if len(actions_by_interested_party) == 0:
+                        if not actions:
                             should_warn_user = True
                             should_delete_interest = False
                         else:
                             # example format: 2018-01-26T17:56:31Z'
-                            action_times = [datetime.strptime(action['created_at'], '%Y-%m-%dT%H:%M:%SZ') for action in actions_by_interested_party]
+                            action_times = [datetime.strptime(action['created_at'], '%Y-%m-%dT%H:%M:%SZ') for action in actions]
                             last_action_by_user = max(action_times)
 
                             # if user hasn't commented since they expressed interest, handled this condition
@@ -100,12 +86,12 @@ class Command(BaseCommand):
                             print(f"- its been {last_heard_from_user_days} days since we heard from the user")
 
                         if should_delete_interest:
-                            print('executing should_delete_interest for {}'.format(interest.pk))
+                            print(f'executing should_delete_interest for {interest.pk}')
                             bounty_startwork_expired(interest.profile.email, bounty, interest, last_heard_from_user_days)
                             interest.delete()
 
                         elif should_warn_user:
-                            print('executing should_warn_user for {}'.format(interest.pk))
+                            print(f'executing should_warn_user for {interest.pk}')
                             bounty_startwork_expire_warning(interest.profile.email, bounty, interest, last_heard_from_user_days)
 
                     except Exception as e:
