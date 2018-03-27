@@ -82,11 +82,11 @@ Technically, the system is architected:
 
 ## Running Locally with Docker (Recommended)
 
-[For more information on running the app locally, please view the running locally README](./docs/RUNNING_LOCALLY_DOCKER.md)
+[For more information on running the app locally, please view the running locally README](RUNNING_LOCALLY_DOCKER.md)
 
 ## Running Locally without Docker
 
-[For more information on running the app locally, please view the running locally README](./docs/RUNNING_LOCALLY.md)
+[For more information on running the app locally, please view the running locally README](RUNNING_LOCALLY.md)
 
 # Trying out Gitcoin
 
@@ -105,7 +105,7 @@ try posting a funded issue at [https://gitcoin.co/new](https://gitcoin.co/new).
 
 This widget will help you advertise that you support Gitcoin bounties, so that your community knows the best place to contribute.
 
-[Check out the widget readme to learn how](./docs/WIDGET.md)
+[Check out the widget readme to learn how](WIDGET.md)
 
 ## Adding GitcoinBot to your repo
 
@@ -141,7 +141,7 @@ Have an ERC20 compatible token that you'ud like to add support for?  Great!
 
 # License
 
-[GNU AFFERO GENERAL PUBLIC LICENSE](./LICENSE)
+[GNU AFFERO GENERAL PUBLIC LICENSE](../LICENSE)
 
 <!-- Google Analytics -->
 <img src='https://ga-beacon.appspot.com/UA-102304388-1/gitcoinco/web' style='width:1px; height:1px;' >
