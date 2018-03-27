@@ -20,6 +20,7 @@ from __future__ import print_function, unicode_literals
 
 import json
 import logging
+import time
 
 from django.conf import settings
 from django.contrib.staticfiles.templatetags.staticfiles import static
