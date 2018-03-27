@@ -69,6 +69,7 @@ urlpatterns = [
     url(r'^funding/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_funding'),
     url(r'^bounty/process/?', dashboard.views.process_bounty, name='process_bounty'),
     url(r'^funding/process/?', dashboard.views.process_bounty, name='process_funding'),
+    url(r'^issue/(?P<title_slug>.*)', dashboard.views.bounty_details, name='issue_details_new3'),
     url(r'^bounty/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='bounty_details_new'),
     url(r'^funding/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='funding_details_new'),
     url(r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='issue_details_new2'),
