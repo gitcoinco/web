@@ -65,6 +65,13 @@ div, p, a, span {
     background-color: white;
 }
 
+.interior .body.loading {
+    max-width: 100%;
+    display: block;
+    flex:none;
+    max-width: none;
+    margin-left: 0px;
+}
 .interior .container-fluid {
     padding-left: 0px;
     padding-right: 0px;

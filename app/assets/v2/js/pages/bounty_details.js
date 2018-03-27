@@ -260,6 +260,7 @@ var update_title = function() {
 var showWarningMessage = function(txid) {
 
   update_title();
+  $('.interior .body').addClass('loading');
 
   if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
     clearInterval(interval);
