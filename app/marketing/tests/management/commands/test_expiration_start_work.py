@@ -66,7 +66,7 @@ class TestExpiraionStartWork(TestCase):
         assert mock_bounty_startwork_expired.call_count == 0
         assert mock_bounty_startwork_expire_warning.call_count == 0
 
-    @patch('marketing.management.commands.expiration_start_work.get_issue_timeline_events', return_value=actions_expired)
+    @patch('marketing.management.commands.expiration_start_work.get_interested_actions', return_value=actions_expired)
     @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expire_warning')
     @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expired')
     def test_handle_expired(self, mock_bounty_startwork_expired, mock_bounty_startwork_expire_warning, *args):
@@ -112,7 +112,7 @@ class TestExpiraionStartWork(TestCase):
         assert mock_bounty_startwork_expire_warning.call_count == 0
         assert mock_bounty_startwork_expired.call_count == 1
 
-    @patch('marketing.management.commands.expiration_start_work.get_issue_timeline_events', return_value=actions_warning)
+    @patch('marketing.management.commands.expiration_start_work.get_interested_actions', return_value=actions_warning)
     @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expire_warning')
     @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expired')
     def test_handle_expire_warning(self, mock_bounty_startwork_expired, mock_bounty_startwork_expire_warning, *args):
