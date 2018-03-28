@@ -2,7 +2,7 @@
 
 
 <a href="https://github.com/apps/gitcoinbot">
-    <img src="install.gif">
+    <img src="https://github.com/gitcoinco/web/raw/master/app/gitcoinbot/install.jpg">
 </a>
 
 ## Usage instructions
@@ -20,7 +20,7 @@
 To get it running on your repo, you can install it [here](https://github.com/apps/gitcoinbot) or click the install button blow
 
 <a href="https://github.com/apps/gitcoinbot">
-    <img src="install.gif">
+    <img src="https://github.com/gitcoinco/web/raw/master/app/gitcoinbot/install.jpg">
 </a>
 
 ## Post Installation.
