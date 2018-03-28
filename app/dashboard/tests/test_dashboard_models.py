@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from datetime import date, datetime, timedelta
 
+from django.utils.text import slugify
+
 from dashboard.models import Bounty, BountyFulfillment, Interest, Profile, Tip
 from economy.models import ConversionRate
 from test_plus.test import TestCase
@@ -71,7 +73,7 @@ class DashboardModelsTest(TestCase):
             profile=fulfiller_profile,
         )
         assert str(bounty) == 'foo 3 ETH 2008-10-31 00:00:00'
-        assert bounty.url == '/issue/gitcoinco/web/11'
+        assert bounty.url == f'/issue/{bounty.pk}-foo' 
         assert bounty.title_or_desc == 'foo'
         assert bounty.issue_description_text == 'hello world'
         assert bounty.org_name == 'gitcoinco'
