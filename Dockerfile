@@ -32,7 +32,7 @@ RUN pip install -r test.txt
 ADD . /code/
 
 RUN pip install -r dev.txt && \
-    dos2unix /bin/docker-command.bash && \
+    dos2unix /code/bin/docker-command.bash && \
     apt-get purge -y --auto-remove dos2unix wget gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev
 
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
