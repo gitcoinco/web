@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %} 
+{% load humanize %}
 
 {% block content %}
 
@@ -47,7 +47,7 @@ p, pre{
     <p>
     {% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{tip.github_url}}">{{tip.github_url}}</a>.
         {% if comments %}
-            They had the following comments: 
+            They had the following comments:
         <pre>
             {{comments}}
         </pre>
@@ -58,7 +58,7 @@ p, pre{
 
 {% if comments_priv %}
     <p>
-    They had the following private comments: 
+    They had the following private comments:
 <pre>
     {{comments_priv}}
 </pre>
@@ -67,7 +67,7 @@ p, pre{
 
 {% if comments_public %}
     <p>
-    They had the following public comments: 
+    They had the following public comments:
 <pre>
     {{comments_public}}
 </pre>
@@ -87,13 +87,6 @@ p, pre{
 <br>
 
 <a class="button" href="{{link}}" style="">Redeem Tip</a>
-
-<p>
-    Keep Pushing Open Source Forward,
-    <br>
-    -- Gitcoin Core
-</p>
-
 
 
 {% endblock %}

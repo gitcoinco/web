@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %} 
+{% load humanize %}
 
 {% block content %}
 
@@ -40,20 +40,20 @@ p, pre{
 
 <table>
     <tr>
-        <td width="140" style="text-align: center;"> 
+        <td width="140" style="text-align: center;">
             <a href="https://github.com/{{github_username}}"><img src="https://gitcoin.co/funding/avatar?repo=https://github.com/{{github_username}}" width="100" height="100" /></a>
             <br>
             <a href="https://github.com/{{github_username}}">
                 @{{github_username}}
             </a>
         </td>
-        <td>   
+        <td>
             &lt;&gt;
         </td>
-        <td width="140" style="text-align: center;">   
+        <td width="140" style="text-align: center;">
             <a href="https://github.com/{{bounty.org_name}}"><img src="{{bounty.local_avatar_url}}" width="100" height="100"></a>
             <br>
-            <a href="https://github.com/{{bounty.org_name}}">  
+            <a href="https://github.com/{{bounty.org_name}}">
                 {{bounty.org_name}}
             </a>
         </td>
@@ -67,13 +67,7 @@ p, pre{
 {% include 'emails/bounty.html' with bounty=bounty %}
 
 <p>
-    You are both CCed on this email.  Feel free to reply all and say hey. 
-</p>
-
-<p>
-    Keep Pushing Open Source Forward,
-    <br>
-    -- Gitcoin Core
+    You are both CCed on this email.  Feel free to reply all and say hey.
 </p>
 
 
