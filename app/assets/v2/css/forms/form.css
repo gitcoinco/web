@@ -36,3 +36,14 @@
 .form__footer--right {
   text-align: right;
 }
+
+@media (max-width: 540px) {
+    .form__group {
+        flex-direction: column;
+    }
+
+    .form__group-item {
+        margin-bottom: 1em;
+        width: 100%;
+    }
+}
