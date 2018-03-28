@@ -20,7 +20,6 @@ from __future__ import print_function, unicode_literals
 
 import json
 import logging
-import time
 
 from django.conf import settings
 from django.contrib.staticfiles.templatetags.staticfiles import static
@@ -497,7 +496,7 @@ def kill_bounty(request):
     return TemplateResponse(request, 'kill_bounty.html', params)
 
 
-def bounty_details(request, ghuser='', ghrepo='', ghissue=0, title_slug=''):
+def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
     """Display the bounty details."""
     _access_token = request.session.get('access_token')
     profile_id = request.session.get('profile_id')
@@ -701,7 +700,7 @@ def sync_web3(request):
                 max_tries_attempted = False
                 counter = 0
                 while not did_change and not max_tries_attempted:
-                    did_change, _, new_bounty = web3_process_bounty(bounty)
+                    did_change, _, _ = web3_process_bounty(bounty)
                     if not did_change:
                         print("RETRYING")
                         time.sleep(3)
@@ -710,8 +709,7 @@ def sync_web3(request):
                 result = {
                     'status': '200',
                     'msg': "success",
-                    'did_change': did_change,
-                    'bounty_url': new_bounty.url,
+                    'did_change': did_change
                 }
 
     return JsonResponse(result, status=result['status'])

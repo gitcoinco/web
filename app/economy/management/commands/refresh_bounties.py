@@ -57,17 +57,16 @@ class Command(BaseCommand):
                 # refresh_bounties/handle
                 # stopgap to make sure that older versions of this bounty
                 # are marked as current_bounty=False
-                if not bounty.is_legacy:
-                    old_bounties = Bounty.objects.filter(
-                        standard_bounties_id=bounty.standard_bounties_id,
-                        current_bounty=True,
-                        pk__lt=bounty.pk,
-                        network=bounty.network,
-                    ).exclude(pk=bounty.pk).order_by('-created_on')
-                    for old_bounty in old_bounties:
-                        old_bounty.current_bounty = False
-                        old_bounty.save()
-                        print('stopgap fixed old_bounty', old_bounty.pk)
+                old_bounties = Bounty.objects.filter(
+                    github_url=bounty.github_url,
+                    current_bounty=True,
+                    pk__lt=bounty.pk,
+                    network=bounty.network,
+                ).exclude(pk=bounty.pk).order_by('-created_on')
+                for old_bounty in old_bounties:
+                    old_bounty.current_bounty = False
+                    old_bounty.save()
+                    print('stopgap fixed old_bounty', old_bounty.pk)
 
                 if fetch_remote:
                     bounty.fetch_issue_item('title')
