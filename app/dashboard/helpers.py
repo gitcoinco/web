@@ -275,6 +275,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
     """
     for fulfillment in fulfillments:
         kwargs = {}
+        accepted_on = None
         github_username = fulfillment.get('data', {}).get(
             'payload', {}).get('fulfiller', {}).get(
                 'githubUsername', '')
@@ -285,6 +286,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                 pass
         if fulfillment.get('accepted'):
             kwargs['accepted'] = True
+            accepted_on = timezone.now()
         try:
             created_on = timezone.now()
             modified_on = timezone.now()
@@ -294,6 +296,8 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                     old_fulfillment = old_fulfillments.first()
                     created_on = old_fulfillment.created_on
                     modified_on = old_fulfillment.modified_on
+                    if old_fulfillment.accepted:
+                        accepted_on = old_fulfillment.accepted_on
             new_bounty.fulfillments.create(
                 fulfiller_address=fulfillment.get(
                     'fulfiller',
@@ -307,6 +311,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                 fulfillment_id=fulfillment.get('id'),
                 created_on=created_on,
                 modified_on=modified_on,
+                accepted_on=accepted_on,
                 **kwargs)
         except Exception as e:
             logging.error(f'{e} during new fulfillment creation for {new_bounty}')

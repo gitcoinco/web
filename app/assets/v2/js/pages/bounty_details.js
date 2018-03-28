@@ -594,8 +594,7 @@ var render_activity = function(result) {
           email: fulfillment.fulfiller_email,
           fulfillment_id: fulfillment.fulfillment_id,
           text: 'Work Accepted',
-          created_on: fulfillment.created_on,
-          age: timeDifference(new Date(result['now']), new Date(fulfillment.created_on)),
+          age: timeDifference(new Date(result['now']), new Date(fulfillment.accepted_on)),
           status: 'accepted'
         });
       }
