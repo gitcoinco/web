@@ -3,7 +3,12 @@
   display: none;
 }
 
-.bounty-container {
+.body{
+  background-image: url('/static/v2/images/background.png');
+  background-repeat: repeat;
+}
+
+#bounties .bounty-container {
   display: flex;
   padding: 2rem;
 }
@@ -96,6 +101,14 @@
 
 .bounty__footer {
   text-align: center;
+}
+
+pre{
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;     
 }
 
 @media (max-width: 992px) {

@@ -21,7 +21,7 @@
                     <div id="hero" class="pt-4">
                         <img class="avatar" src="{{profile.local_avatar_url}}">
                         <h2 class="mt-3">
-                            {{profile.handle}}
+                           Profile: {{profile.handle}} <span id="alpha" class="small">Alpha</span>
                         </h2>
                         {% if profile.data.bio %}
                         <p>
@@ -29,15 +29,17 @@
                         </p>
                         {% endif %}
 
-                        <ul class='authors'>
-                            {% for author in profile.authors %}
-                                <li>
-                                    <a href="{% url "profile" %}{{author}}" target=new title="{{author}}">
-                                    <img src="{% url "avatar" %}?repo=https://github.com/{{author}}">
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                        {% if profile.authors|length %}
+                            <ul class='authors'>
+                                Works with: {% for author in profile.authors %}
+                                    <li>
+                                        <a href="{% url "profile" %}{{author}}" title="{{author}}" target="_blank" rel="noopener noreferrer">
+                                        <img src="{% url "avatar" %}?repo=https://github.com/{{author}}">
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
 
                         <ul class='ctas'>
                             <li>
@@ -107,7 +109,11 @@
                                                 </div>
                                                 <div class='url'>
                                                     <p>
-                                                        <a href="{{tip.github_url}}">{{tip.github_url}}</a>
+                                                        {% if tip.github_url %}
+                                                            <a href="{{tip.github_url}}">{{tip.github_url}}</a>
+                                                        {% else %}
+                                                            Unknown
+                                                        {% endif %}
                                                     </p>
                                                 </div>
                                                 <div class="amount">
@@ -173,8 +179,8 @@
                                                     </div>
                                                     <div class="details">
                                                         <img style="max-width: 30px;" src="{{b.local_avatar_url}}">
-                                                        <h6 style="display: inline;">
-                                                            {{b.title_or_desc}}
+                                                        <h6>
+                                                            {{b.title_or_desc | truncatechars:50}}
                                                         </h6>
                                                         <p>
                                                             {{b.desc}}

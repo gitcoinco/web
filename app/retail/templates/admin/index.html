@@ -69,11 +69,27 @@
 
 {% block sidebar %}
 
-<div id="links-related">
+<div id="content-related">
     <div class="module" id="-some-custom-links">
-        <h2>{% trans 'Links' %}</h2>
+        <h2>{% trans 'Stats' %}</h2>
         <ul>
+            <a href="{% url 'stats' %}">Stats</a>
         </ul>
+        <ul>
+            <a href="{% url 'cohort' %}">Cohort Analysis</a>
+        </ul>
+        <h2>{% trans 'Administrative Tasks' %}</h2>
+
+        <ul>
+            <a href="/_administrationfaucet/faucetrequest/">Process Faucet Requests</a>
+        </ul>
+        <ul>
+            <a href="/_administrationexternal_bounties/externalbounty/">Process Universal Bounties</a>
+        </ul>
+        <ul>
+            <a href="/_administrationtdi/whitepaperaccessrequest/">Process Whitepaper Requests</a>
+        </ul>
+
     </div>
 
 

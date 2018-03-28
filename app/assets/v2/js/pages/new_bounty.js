@@ -1,13 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 load_tokens();
-var setUsdAmount = function(event) {
-  var amount = $('input[name=amount]').val();
-  var denomination = $('#token option:selected').text();
-  var estimate = getUSDEstimate(amount, denomination, function(estimate) {
-    $('#usd_amount').html(estimate);
-  });
-};
 
 // Wait until page is loaded, then run the function
 $(document).ready(function() {
@@ -109,7 +102,7 @@ $(document).ready(function() {
         issueTitle: data.title,
         issueDescription: data.description,
         issueKeywords: data.keywords,
-        githubUsername: data.githubUsernam,
+        githubUsername: data.githubUsername,
         notificationEmail: data.notificationEmail,
         fullName: data.fullName,
         experienceLevel: data.experienceLevel,
@@ -245,7 +238,7 @@ $(document).ready(function() {
             },
             'error'
           );
-          unloading_button($('#submitBounty'));
+          unloading_button($('.js-submit'));
           return;
         }
 
@@ -269,7 +262,7 @@ $(document).ready(function() {
           _alert({
             message: 'There was an error.  Please try again or contact support.'
           });
-          unloading_button($('#submitBounty'));
+          unloading_button($('.js-submit'));
           return;
         }
 
@@ -304,41 +297,27 @@ $(document).ready(function() {
           web3Callback // callback for web3
         );
       }
-      // Check if the bounty already exists
-      var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
+      var approve_success_callback = function(callback) {
+        // Add data to IPFS and kick off all the callbacks.
+        ipfsBounty.payload.issuer.address = account;
+        ipfs.addJson(ipfsBounty, newIpfsCallback);
+      };
 
-      $.get(uri, function(results, status) {
-        results = sanitizeAPIResults(results);
-        var result = results[0];
-
-        if (result != null) {
-          _alert({ message: 'A bounty already exists for that Github Issue.' });
-          unloading_button($('#submitBounty'));
-          return;
-        }
-
-        var approve_success_callback = function(callback) {
-          // Add data to IPFS and kick off all the callbacks.
-          ipfsBounty.payload.issuer.address = account;
-          ipfs.addJson(ipfsBounty, newIpfsCallback);
-        };
-
-        if (isETH) {
-          // no approvals needed for ETH
-          approve_success_callback();
-        } else {
-          token_contract.approve(
-            bounty_address(),
-            amount,
-            {
-              from: account,
-              value: 0,
-              gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
-            },
-            approve_success_callback
-          );
-        }
-      });
+      if (isETH) {
+        // no approvals needed for ETH
+        approve_success_callback();
+      } else {
+        token_contract.approve(
+          bounty_address(),
+          amount,
+          {
+            from: account,
+            value: 0,
+            gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
+          },
+          approve_success_callback
+        );
+      }
     }
   });
 });

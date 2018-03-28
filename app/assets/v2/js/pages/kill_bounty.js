@@ -50,7 +50,7 @@ window.onload = function() {
             _alert({
               message: 'No active bounty found for this Github URL.'
             });
-            unloading_button($('#submitBounty'));
+            unloading_button($('.js-submit'));
             return;
           }
 
@@ -74,7 +74,7 @@ window.onload = function() {
 
           if (errormsg) {
             _alert({ message: errormsg });
-            unloading_button($('#submitBounty'));
+            unloading_button($('.js-submit'));
             return;
           }
 
@@ -102,7 +102,7 @@ window.onload = function() {
               });
               console.error('err', error);
               _alert({ message: 'There was an error' });
-              unloading_button($('#submitBounty'));
+              unloading_button($('.js-submit'));
             } else {
               next();
             }

@@ -29,7 +29,7 @@ div, p, a, span {
     color: #4aeaa7 !important;
 }
 
-.navbar a.slack i {
+.navbar a.slack svg {
     margin-right: 3px;
 }
 
@@ -65,6 +65,13 @@ div, p, a, span {
     background-color: white;
 }
 
+.interior .body.loading {
+    max-width: 100%;
+    display: block;
+    flex:none;
+    max-width: none;
+    margin-left: 0px;
+}
 .interior .container-fluid {
     padding-left: 0px;
     padding-right: 0px;
@@ -130,7 +137,7 @@ div, p, a, span {
 	color: white;
 }
 
-#mc_embed_signup_scroll #mc-embedded-subscribe i {
+#mc_embed_signup_scroll #mc-embedded-subscribe svg {
     margin-left: 5px;
 }
 
@@ -667,107 +674,6 @@ input[type=text].loading {
     margin-left: 5px;
 }
 
-body.bounty_details .col.body{
-    min-height: 1200px;
-}
-
-body.bounty_details .left_details {
-    text-align: center;
-}
-
-body.bounty_details .avatar {
-    max-width: 90px;
-    max-height: 90px;
-    margin: 0px auto;
-    border: 1px solid #eaeaea;
-    border-radius: 50px;
-    margin-top: 0px;
-    margin-bottom: 10px;
-}
-
-#bounty_details{
-    display: none;
-    margin-bottom: 2em;
-}
-#bounty_details #issue_description img{
-    max-width: 100%;
-}
-#bounty_details #issue_description h1,
-#bounty_details #issue_description h2,
-#bounty_details #issue_description h3,
-#bounty_details #issue_description h4,
-#bounty_details #issue_description h5,
-#bounty_details #issue_description h6
-{
-    font-size: 16px;
-    margin-top: 15px;
-    text-transform: none;
-}
-
-body.bounty_details #left_actions,
-body.bounty_details #right_actions {
-    padding-top: 20px;
-    padding-bottom: 10px;
-}
-
-body.bounty_details #bounty_details #left_actions {
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
-body.bounty_details #left_actions a,
-body.bounty_details #right_actions a {
-    margin: 0px auto;
-}
-
-body.bounty_details #right_actions a {
-    margin-right: 20px;
-    margin-bottom: 20px;
-}
-
-body.bounty_details #right_actions h5 {
-    font-weight: 900;
-}
-
-body.bounty_details .boldLabel {
-    color: #999999;
-    font-weight: 900;
-}
-
-body.bounty_details #bounty_details a.btn{
-    border-radius: 0.2rem;
-}
-
-body.bounty_details a.btn-github-comment {
-    color: #000;
-    background: url(/static/v2/images/icon-msg-16.png) no-repeat left transparent;
-    display: block;
-    float: left;
-    padding-left: 20px;
-}
-body.bounty_details a.btn-github-comment:hover {
-    background: url(/static/v2/images/icon-msg-red-16.png) no-repeat left transparent;
-}
-
-body.bounty_details a.btn-darkGrey {
-    background-color: #e7e7e7;
-    color: #474747;
-}
-
-body.bounty_details a.btn-darkGrey:hover {
-    background-color: #eee;
-}
-
-body.bounty_details a.btn-darkBlue:hover {
-    background-color: #0a012b;
-}
-
-body.bounty_details #title {
-    text-align: left;
-    padding-top: 20px;
-    padding-bottom: 20px;
-}
-
 .transaction-status {
     display: block;
     position: relative;
@@ -1050,6 +956,11 @@ body.bounty_details #title {
     display: inline-block;
     vertical-align: top;
 }
+.profile_details .bounties li div.details h6 {
+    display: inline-block;
+    word-wrap: break-word;
+    max-width: 440px;
+}
 .profile_details .tips li div.details{
     width: 200px;
 }
@@ -1210,6 +1121,22 @@ input.is-invalid {
     width:500px;
 }
 
+#alpha{
+    color: #a78600;
+    background-color: #ffce05;
+    border-radius: 4px;
+    text-transform: uppercase;;
+    font-size: 14px;
+    padding: 5px 7px;
+    font-weight: 100;
+    margin: 5px;
+    vertical-align: top;
+}
+#alpha.small{
+    font-size: 8px;
+    padding: 3px 5px;
+    margin: 2px;
+}
 @media (max-width: 1350px) {
     .profile_details .tips li div.details,
     .profile_details .bounties li div.details{

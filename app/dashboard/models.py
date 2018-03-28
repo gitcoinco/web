@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 import logging
+from datetime import datetime
 from urllib.parse import urlsplit
 
 from django.conf import settings
@@ -30,7 +31,9 @@ from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.utils.text import slugify
 
+import pytz
 import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
@@ -89,9 +92,9 @@ class Bounty(SuperModel):
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
     token_address = models.CharField(max_length=50)
-    bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES)
-    project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS)
-    experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS)
+    bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES, blank=True)
+    project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True)
+    experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True)
     github_url = models.URLField(db_index=True)
     github_comments = models.IntegerField(default=0)
     bounty_owner_address = models.CharField(max_length=50)
@@ -120,7 +123,7 @@ class Bounty(SuperModel):
     interested_comment = models.IntegerField(null=True, blank=True)
     submissions_comment = models.IntegerField(null=True, blank=True)
     override_status = models.CharField(max_length=255, blank=True)
-
+    last_comment_date = models.DateTimeField(null=True, blank=True)
     objects = BountyQuerySet.as_manager()
 
     class Meta:
@@ -161,13 +164,7 @@ class Bounty(SuperModel):
             str: The relative URL for the Bounty.
 
         """
-        try:
-            _org_name = org_name(self.github_url)
-            _issue_num = issue_number(self.github_url)
-            _repo_name = repo_name(self.github_url)
-            return f"{'/' if preceding_slash else ''}issue/{_org_name}/{_repo_name}/{_issue_num}"
-        except Exception:
-            return f"{'/' if preceding_slash else ''}funding/details?url={self.github_url}"
+        return f"{'/' if preceding_slash else ''}issue/{self.pk}-{slugify(self.title)}"
 
     def get_natural_value(self):
         token = addr_to_token(self.token_address)
@@ -381,15 +378,17 @@ class Bounty(SuperModel):
             str: The item content.
 
         """
-        issue_description = requests.get(self.get_github_api_url(), auth=_AUTH)
-        if issue_description.status_code == 200:
-            item = issue_description.json().get(item_type, '')
-            if item_type == 'body' and item:
-                self.issue_description = item
-            elif item_type == 'title' and item:
-                self.title = item
-            self.save()
-            return item
+        github_url = self.get_github_api_url()
+        if github_url:
+            issue_description = requests.get(github_url, auth=_AUTH)
+            if issue_description.status_code == 200:
+                item = issue_description.json().get(item_type, '')
+                if item_type == 'body' and item:
+                    self.issue_description = item
+                elif item_type == 'title' and item:
+                    self.title = item
+                self.save()
+                return item
         return ''
 
     def fetch_issue_comments(self, save=True):
@@ -409,17 +408,22 @@ class Bounty(SuperModel):
         try:
             github_user, github_repo, _, github_issue = parsed_url.path.split('/')[1:5]
         except ValueError:
-            logger.info('Invalid github url for Bounty: %s -- %s', self.pk, self.github_url)
+            logger.info(f'Invalid github url for Bounty: {self.pk} -- {self.github_url}')
             return []
         comments = get_issue_comments(github_user, github_repo, github_issue)
-        if isinstance(comments, dict) and comments.get('message') == 'Not Found':
-            logger.info('Bounty %s contains an invalid github url %s', self.pk, self.github_url)
+        if isinstance(comments, dict) and comments.get('message', '') == 'Not Found':
+            logger.info(f'Bounty {self.pk} contains an invalid github url {self.github_url}')
             return []
         comment_count = 0
         for comment in comments:
-            if comment['user']['login'] not in settings.IGNORE_COMMENTS_FROM:
+            if (isinstance(comment, dict) and comment.get('user', {}).get('login', '') not in settings.IGNORE_COMMENTS_FROM):
                 comment_count += 1
         self.github_comments = comment_count
+        if comment_count:
+            comment_times = [datetime.strptime(comment['created_at'], '%Y-%m-%dT%H:%M:%SZ') for comment in comments]
+            max_comment_time = max(comment_times)
+            max_comment_time = max_comment_time.replace(tzinfo=pytz.utc)
+            self.last_comment_date = max_comment_time
         if save:
             self.save()
         return comments
@@ -960,10 +964,12 @@ class UserAction(SuperModel):
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
     user = models.ForeignKey(User, related_name='actions', on_delete=models.CASCADE, null=True)
     profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE)
+    ip_address = models.GenericIPAddressField(null=True)
+    location_data = JSONField(default={})
     metadata = JSONField(default={})
 
     def __str__(self):
-        return "{} by {} at {}".format(self.action, self.profile, self.created_on)
+        return f"{self.action} by {self.profile} at {self.created_on}"
 
 
 class CoinRedemption(SuperModel):

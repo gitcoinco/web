@@ -190,6 +190,11 @@ var mutate_interest = function(bounty_pk, direction) {
   $.post(request_url, function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
+      if (direction === 'new')
+        _alert({message: "Thanks for letting us know that you're ready to start work."}, 'success');
+      else if (direction === 'remove')
+        _alert({message: "You've stopped working on this, thanks for letting us know."}, 'success');
+
       pull_interest_list(bounty_pk);
       return true;
     }
@@ -203,6 +208,28 @@ var mutate_interest = function(bounty_pk, direction) {
 var pull_interest_list = function(bounty_pk, callback) {
   profiles = [];
   document.interested = false;
+  var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
+  var started = [];
+
+  $.get(uri, function(results) {
+    render_activity(results[0]);
+    if (results[0].interested) {
+      var interested = results[0].interested;
+
+      interested.forEach(function(_interested) {
+        started.push(
+          '<a href="https://gitcoin.co/profile/' +
+            _interested.profile.handle +
+            '" target="_blank">' +
+            _interested.profile.handle + '</a>'
+        );
+      });
+    }
+    if (started.length == 0) {
+      started.push('<i class="fas fa-minus"></i>');
+    }
+    $('#started_owners_username').html(started);
+  });
   $.getJSON('/actions/bounty/' + bounty_pk + '/interest/', function(data) {
     data = sanitizeAPIResults(JSON.parse(data));
     $.each(data, function(index, value) {
@@ -211,22 +238,16 @@ var pull_interest_list = function(bounty_pk, callback) {
         handle: value.handle,
         url: value.url
       };
-      // add to template
 
       profiles.push(profile);
       // update document.interested
       if (profile.handle == document.contxt.github_handle) {
         document.interested = true;
       }
-
     });
-    var tmpl = $.templates('#interested');
-    var html = tmpl.render(profiles);
-
     if (profiles.length == 0) {
       html = 'No one has started work on this issue yet.';
     }
-    $('#interest_list').html(html);
     if (typeof callback != 'undefined') {
       callback(document.interested);
     }
@@ -468,14 +489,14 @@ var randomElement = function(array) {
 
 var trigger_sidebar_web3_disabled = function() {
   $('#upper_left').addClass('disabled');
-  $('#sidebar_head').html("<i class='fa fa-question'></i>");
-  $('#sidebar_p').html("<p>Web3 disabled</p><p>Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a> <br> <a target=new href='/web3'>What is Metamask and why do I need it?</a>.</p>");
+  $('#sidebar_head').html('<i class="fa fa-question"></i>');
+  $('#sidebar_p').html('<p>Web3 disabled</p><p>Please install <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a> <br> <a href="/web3" target="_blank" rel="noopener noreferrer">What is Metamask and why do I need it?</a>.</p>');
 };
 
 var trigger_sidebar_web3_locked = function() {
   $('#upper_left').addClass('disabled');
-  $('#sidebar_head').html("<i class='fa fa-lock'></i>");
-  $('#sidebar_p').html('<p>Web3 locked</p><p>Please unlock <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">Metamask</a>.<p>');
+  $('#sidebar_head').html('<i class="fa fa-lock"></i>');
+  $('#sidebar_p').html('<p>Web3 locked</p><p>Please unlock <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>.<p>');
 };
 
 var mixpanel_track_once = function(event, params) {
@@ -510,6 +531,7 @@ var trigger_sidebar_web3 = function(network) {
   var sidebar_p = '<p>Connected to ' + network + '.</p>';
 
   if (is_supported_network) {
+    $('#upper_left').removeClass('disabled');
     $('#sidebar_head').html("<i class='fa fa-wifi'></i>");
     $('#sidebar_p').html('<p>Web3 enabled<p>' + sidebar_p);
   } else {
@@ -679,3 +701,10 @@ window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 300);
 });
 
+var setUsdAmount = function(event) {
+  var amount = $('input[name=amount]').val();
+  var denomination = $('#token option:selected').text();
+  var estimate = getUSDEstimate(amount, denomination, function(estimate) {
+    $('#usd_amount').html(estimate);
+  });
+};

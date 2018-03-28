@@ -2,213 +2,251 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+  <head>
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}" />
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-</head>
+  </head>
 
-<body class="interior {{active}}">
+  <body class="interior {{active}}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
-        {% include 'shared/nav.html' %}
+      {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-        <div class="col-12 col-md-2 left-rails" style="background: #F2F6F9;">
-            {% include 'shared/current_balance.html' %}
-            {% include 'shared/sidebar_search.html' %}
+      <div class="col-12 col-md-2 left-rails text-center" style="background: #F2F6F9;">
+        {% include 'shared/current_balance.html' %}
+        <div class="explorer font-body">
+          <a href="{% url 'explorer' %}"><i class="fa fa-chevron-left"></i> Back to Issue Explorer</a>
+        </div>
+      </div>
+
+      <div class="col-12 offset-md-1 col-md-8 body">
+        <div class="alert info transaction-status" style="display:none;">
+          <div style='width:100%; font-size: 16px;'>
+            <strong style="font-size: 22px;">Your transaction has been posted to web3</strong>
+            <br>
+            Please wait a minute or two for web3 to sync
+            <a target="_blank" href="javascript:void(0)" id="transaction_url">this transaction</a>.
+            <br>
+            <br>
+            This page will automatically refresh as soon as the blockchain is updated.
+            (You may close the browser tab.)
+          </div>
         </div>
 
-        <div class="col body">
-            <div class="alert info transaction-status" style="display:none;">
-                <div style='width:100%; font-size: 16px;'>
-                    <strong style="font-size: 22px;">Your transaction has been posted to web3</strong>
-                    <br>
-                    Please wait a minute or two for web3 to sync
-                    <a target="_blank" href="javascript:void(0)" id="transaction_url">this transaction</a>.
-                    (You may close the browser tab. This page will automatically refresh as soon as the blockchain is updated.)
+        <div class="row loading justify-content-center align-items-center loading_img">
+          <img src="{% static "v2/images/loading_v2.gif" %}">
+        </div>
+
+        <div class="row nonefound" style="display:none;">
+          <img src="{% static "v2/images/shrug_bot.png" %}">
+          <h3>No funded issue found.</h3>
+          <p>Check out the <a href="{% url 'explorer' %}">Issue Explorer</a></p>
+          <br>
+          <h6>Be the OSS Funding you wish to see in the world.</h6>
+          <p id='submitsolicitation'>Looking to fund some work?  You can submit a new Funded Issue <a href="{% url 'new_funding' %}">here</a>.</p>
+        </div>
+
+        <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none;">
+          {% include 'shared/rain.html' with class="color" %}
+          <div class="quote-container">
+            <div class="quote_text"></div>
+            <div class="quote_author"></div>
+            <input id="quoteRefresh" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
+          </div>
+        </div>
+
+        <div class="col-12" id="bounty_details">
+          <div class="row font-body">
+            <div class="col-12">
+              <h4 id="title" class="font-title"></h4>
+            </div>
+            <div class="col-12">
+              <div id="status"></div>
+            </div>
+            <div class="col-12 bounty-info">
+              <div>
+                <span class="bounty-info-heading">Expires In </span>
+                <span class="bounty-info-text" id="expires_date"></span>
+              </div>
+              <div>
+                <span class="bounty-info-heading">Opened </span>
+                <span class="bounty-info-text" id="web3_created"></span>
+              </div>
+              <div>
+                <span class="bounty-info-heading">Experience Level </span>
+                <span class="bounty-info-text" id="experience_level"></span>
+              </div>
+              <div>
+                <span class="bounty-info-heading">Issue Type </span>
+                <span class="bounty-info-text" id="bounty_type"></span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 bounty-actions">
+                <div class="col-12 col-md-8">
+                  <div id="right_actions"></div>
                 </div>
-            </div>
-
-            <div class="row loading justify-content-center align-items-center loading_img">
-                <img src="{% static "v2/images/loading_v2.gif" %}">
-            </div>
-
-            <div class="row nonefound" style="display:none;">
-                <img src="{% static "v2/images/shrug_bot.png" %}">
-                <h3>No funded issue found.</h3>
-                <p>Please go back to the <a href="{% url 'explorer' %}">Issue Explorer</a> and try again.</p>
-                <br>
-                <h6>Be the OSS Funding you wish to see in the world.</h6>
-                <p id='submitsolicitation'>Looking to fund some work?  You can submit a new Funded Issue <a href="{% url 'new_funding' %}">here</a>.</p>
-            </div>
-
-            <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none;">
-                {% include 'shared/rain.html' with class="color" %}
-                <div class="quote-container">
-                    <div class="quote_text"></div>
-                    <div class="quote_author"></div>
-                    <input id="quoteRefresh" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
-                </div>
-            </div>
-
-            <div class="row" id="bounty_details">
-                <div class="col-12 col-md-2 left_details">
-                    <div id="avatar_url"></div>
-                    <span><span id="web3_created"></span></span>
-                    <div id="left_actions"></div>
-                    <a class="issue-nav-link" href="{% url 'explorer' %}">&lt; Issue Explorer</a>
-                </div>
-                <div class="col-12 col-md-8 right_details">
-                  <div class="row">
-                    <div class="col-12">
-                        <span title='{% include "shared/status_tooltip.html" %}' class="boldLabel">
-                          STATUS <i class="fa fa-info-circle"></i>:
-                        </span>
-                        <span id="status"></span>
-                    </div>
-                    <div class="col-12">
-                        <h4 id="title"></h4>
-                    </div>
-                    <div class="col-12 funding-amount">
-                        <span class="boldLabel">Funding Amount:</span>
+                <div class="col-12 col-md-4">
+                  <div class="tags font-caption align-items-center">
+                    <div class="tag token">
+                      <p>
                         <span id="value_in_token"></span>
-                        <span id="value_in_usdt_wrapper">
-                            (<span id="value_in_usdt"></span> USD @ <span id="token_value_in_usdt"></span>)
-                        </span>
+                      </p>
                     </div>
-                    <div class="col-12" id="right_actions"></div>
-                    <div class="col-12">
-                        <h5 class="bounty-heading">Issue Description</h5>
-                        <div class="bounty-text" id="issue_description"></div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <h5 class="bounty-heading">Issue Info</h5>
-                        <div>
-                            <span class="bounty-subheading">Experience Level :</span>
-                            <span class="bounty-text" id="experience_level"></span>
-                        </div>
-                        <div>
-                            <span class="bounty-subheading">Project Length : </span>
-                            <span class="bounty-text" id="project_length"></span>
-                        </div>
-                        <div>
-                            <span class="bounty-subheading">Issue Type : </span>
-                            <span class="bounty-text" id="bounty_type"></span>
-                        </div>
-                        <div>
-                            <span class="bounty-subheading">Expiration : </span>
-                            <span class="bounty-text" id="expires_date"></span>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <h5 class="bounty-heading">Funder Info</h5>
-                        <div>
-                            <span class="bounty-subheading">ETH Address : </span>
-                            <span class="bounty-text" id="bounty_owner_address"></span>
-                        </div>
-                        <div>
-                            <span class="bounty-subheading">Email :</span>
-                            <span class="bounty-text" id="bounty_owner_email"></span>
-                        </div>
-                        <div>
-                            <span class="bounty-subheading">Gitcoin Profile : </span>
-                            <span class="bounty-text" id="bounty_owner_github_username"></span>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                      <h5 class="bounty-heading">Started Work</h5>
-                      <div><ul id="interest_list"></ul></div>
-                    </div>
-                    <div class="col-12">
-                      <h5 id="submission_head" class="bounty-heading">Submissions</h5>
-                      <div id="submission_list"></div>
+                    <div class="tag usd">
+                      <p>
+                        <span id="value_in_usdt"></span>
+                        <span>USD @ </span>
+                        <span id="token_value_in_usdt"></span>
+                      </p>
                     </div>
                   </div>
                 </div>
-                <div class="col-12 offset-md-1 col-md-10">
-                  {% include 'shared/newsletter.html' %}
-                </div>
             </div>
+            <div class="col-12">
+              <h5 class="bounty-heading" id="description">Description</h5>
+              <div class="bounty-text" id="issue_description"></div>
+            </div>
+            <div class="col-12">
+              <div id="issue_keywords"></div>
+            </div>
+            <div class="col-12">
+              <h5 class="bounty-heading">Contributors</h5>
+              <div class="row contributors-info">
+                <div class="col-12 col-md-4 contributor-box">
+                  <i class="far fa-clock"></i>
+                  <h6>Work Started</h6>
+                  <ul id="started_owners_username" class="font-body"></ul>
+                </div>
+                <div class="col-12 col-md-4 contributor-box">
+                  <i class="fas fa-desktop"></i>
+                  <h6>Work Submitted</h6>
+                  <ul id="submitted_owners_username" class="font-body"></ul>
+                </div>
+                <div class="col-12 col-md-4 contributor-box">
+                  <i class="fab fa-ethereum"></i>
+                  <h6>Work Accepted</h6>
+                  <ul id="fulfilled_owners_username" class="font-body"></ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <h5 class="bounty-heading">All Activity</h5>
+              <div id="activities" class="font-body"></div>
+            </div>
+            <div class="col-12">
+              <h5 class="bounty-heading">Funder</h5>
+              <div class="row box">
+                <div class="col-12 col-md-1 funder-avatar">
+                  <div id="avatar_url"></div>
+                </div>
+                <div class="col-12 col-md-11">
+                  <div id="bounty_owner_name" class="font-subheader"></div>
+                  <div>
+                    <span class="bounty-subheading">Funder :</span>
+                    <span class="bounty-text" id="bounty_owner_address"></span>
+                  </div>
+                  <div>
+                    <span class="bounty-subheading">Email :</span>
+                    <span class="bounty-text" id="bounty_owner_email"></span>
+                  </div>
+                  <div>
+                    <span class="bounty-subheading">Gitcoin Profile :</span>
+                    <span class="bounty-text" id="bounty_owner_github_username"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
 
     <script id="action" type="text/x-jsrender">
-        <span title='[[:title]]'>
-            <a class="btn btn-sm btn-[[:color]] [[:extraClass]]" role="button" href="[[:href]]" target="[[:target]]">
-                <span class="font-smaller-4">[[:text]]</span>
+      [[if enabled]]
+        <span title='<div class="tooltip-info tooltip-sm">[[:title]]</div>'>
+          [[if pending_acceptance]]
+            <a class="button button--primary accept" role="button" href="[[:href]]" target="[[:target]]">
+              <span class="font-caption">[[:text]] ( [[:pending_acceptance]] )</span>
             </a>
+          [[else color == 'white']]
+            <a class="btn btn-small" id="btn-white" role="button" href="[[:href]]" target="[[:target]]">
+              [[if comments]]
+                <span class="font-caption">
+                  [[:text]]
+                  <span class="github-comment">
+                    [[:comments]]
+                  </span>
+                </span>
+              [[else]]
+                <span class="font-caption">[[:text]]</span>
+              [[/if]]
+            </a>
+          [[else]]
+            <a class="button button--primary" role="button" href="[[:href]]" target="[[:target]]">
+              <span class="font-caption">[[:text]]</span>
+            </a>
+          [[/if]]
         </span>
+      [[/if]]
     </script>
 
-    <script id="interested" type="text/x-jsrender">
-      <li>
-        <div class="row">
-          <div class="col-sm-12 col-md-2 interested_icon">
-            <img src="[[:local_avatar_url]]" class="avatar">
-          </div>
-          <div class="col-sm-12 col-md-10">
-            <span class="bounty-subheading">Gitcoin Profile :</span>
-            <span class="bounty-text">
-              <a target=new href="[[:url]]">[[:handle]]</a>
-            </span>
+    <script id="activity_template" type="text/x-jsrender">
+      <div class="row box activity">
+        <div class="col-12 col-md-1">
+          <div class="activity-avatar">
+            <img class="avatar" src="/funding/avatar?repo=https://github.com/[[:name]]"/>
           </div>
         </div>
-      </li>
-    </script>
-
-    <script id="submission" type="text/x-jsrender">
-        <div class="row" id="submission_row">
-            <div class="col-sm-12 col-md-2 submitter_icon">
-                [[if fulfiller.fulfiller_github_username != '']]
-                    <a href="/profile/[[:fulfiller.fulfiller_github_username]]">
-                        <img src="{% url 'avatar' %}?repo=https://github.com/[[:fulfiller.fulfiller_github_username]]" class="avatar">
-                    </a>
-                [[else]]
-                    <img src="{% url 'avatar' %}?repo=https://github.com/self" class="avatar">
-                [[/if]]
+        <div class="col-12 col-md-2">
+          <div class="activity-name">
+            <a href="https://gitcoin.co/profile/'[[:name]]" target="_blank">
+              [[:name]]
+            </a>
+          </div>
+        </div>
+        [[if status == 'accepted']]
+          <div class="col-12 col-md-7 fulfilled">
+            <div class="activity-status">
+              [[:text]]
+              <i class="far fa-check-circle"></i>
             </div>
-            <div class="col-sm-12 col-md-8">
-                <ul style="list-style-type:none" id="submitter_ul">
-                    <li>
-                      <span class="bounty-subheading">Name :</span>
-                      <span id="fulfiller_name" class="bounty-text">[[:fulfiller.fulfiller_name]]</span>
-                    </li>
-                    <li>
-                      <span class="bounty-subheading">ETH Address :</span>
-                      <span class="bounty-text" id="fulfiller_address">
-                        <a target=new href="https://etherscan.io/address/[[:fulfiller.fulfiller_address]]">[[:fulfiller.fulfiller_address]]</a>
-                      </span>
-                    </li>
-                    <li>
-                      <span class="bounty-subheading">Email :</span>
-                      <span class="bounty-text" id="fulfiller_email">
-                        <a href="mailto:[[:fulfiller.email]]">[[:fulfiller.fulfiller_email]]</a>
-                      </span>
-                    </li>
-                    <li>
-                      <span class="bounty-subheading">Gitcoin Profile :</span>
-                      <span class="bounty-text" id="fulfiller_github_username">
-                        <a target=new href="{% url 'profile' %}[[:fulfiller.fulfiller_github_username]]">[[:fulfiller.fulfiller_github_username]]</a>
-                      </span>
-                    </li>
-                    <li>
-                      <span class="bounty-subheading">Submission ID :</span>
-                      <span class="bounty-text" id="fulfillment_id">[[:fulfiller.fulfillment_id]]</span>
-                    </li>
-                    <li>
-                      <span class="bounty-subheading">Created :</span>
-                      <span class="bounty-text" id="fulfillment_created">[[:fulfiller.created_on]]</span>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-sm-12 col-md-2 text-center actions">
-              <span title='[[:button.title]]'>
-                <a class="btn btn-sm btn-[[:button.color]] [[:button.extraClass]]" role="button" href="[[:button.href]]" target="[[:button.target]]">
-                  <span class="font-smaller-4">[[:button.text]]</span>
-                </a>
+            <div>
+              <span class="bounty-subheading">ETH Address :</span>
+              <span class="bounty-text">
+                <a href="https://etherscan.io/address/[[:address]]">[[:address]]</a>
               </span>
             </div>
+            <div>
+              <span class="bounty-subheading">Email :</span>
+              <span class="bounty-text">
+                <a href="mailto:[[:email]]">[[:email]]</a>
+              </span>
+            </div>
+            <div>
+              <span class="bounty-subheading">Submission Id :</span>
+              <span class="bounty-text">[[:fulfillment_id]]</span>
+            </div>
+            <div>
+              <span class="bounty-subheading">Created :</span>
+              <span class="bounty-text">[[:created_on]]</span>
+            </div>
+          </div>
+        [[else]]
+          <div class="col-12 col-md-7">
+            <div class="activity-status">
+              [[:text]]
+            </div>
+          </div>
+        [[/if]]
+        <div class="col-12 col-md-2">
+          <div class="activity-time">[[:age]]</div>
         </div>
+      </div>
     </script>
 
     {% include 'shared/bottom_notification.html' %}
@@ -216,20 +254,19 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
+  </body>
 
-</body>
-
-<script>
+  <script>
     document.issueURL = '{{issueURL}}';
-</script>
+  </script>
 
-<!-- jQuery -->
-<script src="{% static "v2/js/showdown.js" %}"></script>
-<script src="{% static "v2/js/abi.js" %}"></script>
-<script src="{% static "v2/js/tokens.js" %}"></script>
-<script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
-<script src="{% static "v2/js/ipfs-api.js" %}"></script>
-<script src="{% static "v2/js/ipfs.js" %}"></script>
-<script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+  <!-- jQuery -->
+  <script src="{% static "v2/js/showdown.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
 </html>

@@ -79,23 +79,33 @@
   display: inline-block;
 }
 
-.filter-tag i {
+.filter-tag svg {
   margin-left: 7px;
   font-size: 9px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
+
+  .title-row {
+    display: inline-block;
+  }
+
+  .title-row .bounty-info {
+    margin-bottom: 10px;
+  }
+
+  .title-row .bounty-info #modifiers {
+    padding-left: 20px;
+  }
+
   .search-area {
     margin-bottom: 10px;
     margin-left: 0px;
   }
 
-  .save_search {
-    margin-left: 0;
-  }
-
   .search_bar #new_search {
     margin-left: 0;
+    margin-bottom: 10px;
   }
 
   .search_bar #new_search,
@@ -111,6 +121,7 @@
     padding-right: 15px;
   }
 
+  .save_search,
   .filter-tags {
     display: none;
   }

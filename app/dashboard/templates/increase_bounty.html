@@ -1,0 +1,109 @@
+{% comment %}
+Copyright (C) 2017 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+  </head>
+
+  <body class="interior {{active}}">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="row no-gutter">
+      <div class="col-12 body">
+        <div class="container-fluid no-gutter">
+          <div class="row font-smaller-2" id="form_container">
+            {% include 'shared/no_metamask_error.html' %}
+            {% include 'shared/zero_balance_error.html' %}
+            {% include 'shared/unlock_metamask.html' %}
+            <input type="hidden" name="standardBountiesId"
+              value="{{standard_bounties_id}}">
+            <input type="hidden" name="bountyOwnerAddress"
+              value="{{bounty_owner_address}}">
+            <input type="hidden" name="valueInToken"
+              value="{{value_in_token}}">
+            <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
+              <div class="d-flex justify-content-center flex-column mt-5 w-50" id="primary_subform">
+                <div class="w-100" style="text-align: center;">
+                  <h3>Increase Funding</h3>
+                  <img src="{% static "v2/images/prime.png" %}">
+                </div>
+                {% include 'shared/network_status.html' %}
+                <div class="w-100">
+                  <label class="form__label" for=issueURL>Issue URL</label>
+                  <input name='issueURL' id="issueURL" class="w-100 form__input" type="url" placeholder="https://github.com/user/repo/pull/n" value="{% if issue_url %}{{issue_url}}{%endif%}" disabled/>
+                </div>
+                <div class="w-100 mt-2">
+                  <label class="form__label" for="amount">Amount</label>
+                  <div class="form__flex-group">
+                    <div class="form__amount-wrapper">
+                      <input name='amount' id='amount' step="0.0001" class="form__input" type="number" placeholder="Amount" />
+                    </div>
+                    <div class="form__group-item">
+                      <div class="form__select2">
+                        <select name='deonomination' id='token' data-token-address='{{token_address}}' disabled></select>
+                      </div>
+                      <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
+                    </div>
+                  </div>
+                </div>
+                <div class="w-100 mt-2 terms_container" style="padding-top:5px;">
+                  <div class="form__checkbox">
+                    <input name='terms' id='terms' type="checkbox" value=1 />
+                    <label class="form__label" for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>:</label>
+                  </div>
+                </div>
+                {% include 'shared/metamask_estimate.html' %}
+                <div class="form__footer form__footer--right">
+                  <button class="button button--primary" type="submit" id="submitBounty">Increase Funding</button>
+                  <br />
+                  <a target=new href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
+                </div>
+                {% include 'shared/newsletter.html' %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/footer.html' %}
+
+  </body>
+
+
+  <!-- jQuery -->
+  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/amounts.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/pages/increase_bounty.js" %}"></script>
+
+
+</html>

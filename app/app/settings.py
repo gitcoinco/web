@@ -82,13 +82,15 @@ INSTALLED_APPS = [
     'email_obfuscator',
     'linkshortener',
     'credits',
-    'gitcoinbot'
+    'gitcoinbot',
+    'external_bounties',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -118,7 +120,7 @@ AUTHENTICATION_BACKENDS = (
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['retail/templates/'],
+        'DIRS': ['retail/templates/', 'external_bounties/templates/'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -216,6 +218,8 @@ if not ENV in ['local', 'test']:
         LOGGING['loggers'][ia] = LOGGING['loggers']['django']
 else:
     LOGGING = {}
+
+GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -354,7 +358,7 @@ SENDGRID_EVENT_HOOK_URL = env('SENDGRID_EVENT_HOOK_URL', default='sg_event_proce
 GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')
 
 # Web3
-WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://mainnet.infura.io')
+WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://rinkeby.infura.io')
 
 # COLO Coin
 COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')

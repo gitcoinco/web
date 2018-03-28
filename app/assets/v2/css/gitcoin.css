@@ -423,12 +423,15 @@ div.button-pink {
 }
 
 .accordion:after {
-  margin-right: 2px;
-  margin-top: 1px;
-  font-family: FontAwesome;
-  font-weight: bold;
-  font-size: 15px;
+  display: none;
+  font-family: "Font Awesome 5 Solid";
   content: '\f107';
+}
+
+.accordion svg {
+  font-size: 16px;
+  margin-right: 6px;
+  margin-top: 4px;
   float: right;
 }
 
@@ -458,7 +461,7 @@ div.button-pink {
   padding: 12px 25px;
 }
 
-.dropdown-menu .dropdown-item i {
+.dropdown-menu .dropdown-item svg {
   text-align: center;
   margin-left: 0px;
   margin-right: 20px;
