@@ -222,7 +222,7 @@ def twitter_followers():
         user = api.GetUser(screen_name=username)
 
         Stat.objects.create(
-            key='twitter_followers_{}'.format(gitcoinfeed),
+            key='twitter_followers_{}'.format(username),
             val=(user.followers_count),
             )
 
