@@ -22,6 +22,7 @@ from django.utils import timezone
 import sendgrid
 from economy.utils import convert_token_to_usdt
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
+from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     render_bounty_expire_warning, render_bounty_feedback, render_bounty_startwork_expire_warning,
     render_faucet_rejected, render_faucet_request, render_match_email, render_new_bounty, render_new_bounty_acceptance,
@@ -32,7 +33,7 @@ from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
 def send_mail(from_email, _to_email, subject, body, html=False,
               from_name="Gitcoin.co", cc_emails=None):
-
+    """Send email via SendGrid."""
     # make sure this subscriber is saved
     to_email = _to_email
     get_or_save_email_subscriber(to_email, 'internal')
@@ -49,6 +50,7 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         to_email = Email(settings.CONTACT_EMAIL)  # just to be double secret sure of what were doing in dev
         subject = "[DEBUG] " + subject
     mail = Mail(from_email, subject, to_email, content)
+    response = None
 
     # build personalization
     p = Personalization()
@@ -63,10 +65,16 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     mail.add_personalization(p)
 
     # debug logs
-    print("-- Sending Mail '{}' to {}".format(subject, _to_email))
+    print(f"-- Sending Mail '{subject}' to {_to_email}")
 
     # send mails
-    response = sg.client.mail.send.post(request_body=mail.get())
+    try:
+        response = sg.client.mail.send.post(request_body=mail.get())
+    except UnauthorizedError:
+        print(f'-- Sendgrid Mail failure - Unauthorized - Check sendgrid credentials')
+    except HTTPError as e:
+        print(f'-- Sendgrid Mail failure - {e}')
+
     return response
 
 

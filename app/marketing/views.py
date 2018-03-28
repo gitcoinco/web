@@ -204,11 +204,7 @@ def cohort_helper_num(inner_start_time, inner_end_time, data_source, users):
             status='active',
             ).distinct('slackuser').count()
     else:
-        event = 'click'
-        if data_source == 'email-open':
-            event = 'open'
-        if data_source == 'email-delivered':
-            event = 'delivered'
+        event = data_source.split('-')[1]
         num = EmailEvent.objects.filter(
             email__in=users.values_list('email', flat=True),
             created_on__gte=inner_start_time,

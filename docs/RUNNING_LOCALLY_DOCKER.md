@@ -64,5 +64,5 @@ docker-compose exec web python3 app/manage.py createsuperuser
 This can be useful if you'd like data to test with:
 
 ```shell
-docker-compose exec web python3 app/manage.py sync_geth mainnet 400 99999999999
+docker-compose exec web python3 app/manage.py sync_geth mainnet 40 99999999999
 ```
