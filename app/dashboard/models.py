@@ -454,6 +454,7 @@ class BountyFulfillment(SuperModel):
     fulfiller_metadata = JSONField(default={}, blank=True)
     fulfillment_id = models.IntegerField(null=True, blank=True)
     accepted = models.BooleanField(default=False)
+    accepted_on = models.DateTimeField(null=True, blank=True)
 
     bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE)
     profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE, null=True)
