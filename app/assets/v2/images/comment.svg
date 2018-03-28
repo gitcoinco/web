@@ -1,15 +1,1 @@
-
-<svg width="19px" height="19px" viewBox="0 0 19 19" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Gitcoin-Design-Stickersheet" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="components" transform="translate(-3721.000000, -2716.000000)" fill="#15003E">
-            <g id="text-fields" transform="translate(2258.000000, 176.000000)">
-                <g id="text-fields-labeled-light" transform="translate(0.000000, 1482.000000)">
-                    <path d="M1480.05054,1058 L1464.949,1058 C1463.87293,1058 1463,1058.87247 1463,1059.94854 L1463,1070.13001 C1463,1071.20699 1463.87293,1072.07901 1464.949,1072.07901 L1467.87387,1072.07901 L1467.87387,1076.27576 L1472.07063,1072.07901 L1480.05054,1072.07901 C1481.12753,1072.07901 1482,1071.20699 1482,1070.13001 L1482,1059.94854 C1482,1058.87247 1481.12753,1058 1480.05054,1058 Z" id="Page-1-Copy" transform="translate(1472.500000, 1067.137880) scale(-1, 1) translate(-1472.500000, -1067.137880) "></path>
-                </g>
-            </g>
-        </g>
-    </g>
-</svg>
+<svg width="19" height="19" xmlns="http://www.w3.org/2000/svg"><path d="M1.95 0H17.05C18.127 0 19 .872 19 1.949V12.13a1.949 1.949 0 0 1-1.949 1.949h-2.925v4.197L9.93 14.079H1.95A1.949 1.949 0 0 1 0 12.13V1.949C0 .872.872 0 1.95 0z" fill="#15003E" fill-rule="evenodd"/></svg>
