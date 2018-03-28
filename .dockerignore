@@ -1,0 +1,9 @@
+docs/
+.cache/
+.git
+.github
+*.DS_Store*
+.gitignore
+.gitmodules
+*.md
+static/
