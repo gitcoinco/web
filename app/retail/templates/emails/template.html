@@ -17,14 +17,12 @@
 {% endcomment %}
 {% load static %}
 <!doctype html><html>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting" />
 
-<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
-<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css">
-<style>
-    * { -webkit-padding-start: 0;   }
+<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
 
+<style>
     @font-face {
         font-family: "futura-pt";
         src: url("{% static "v2/fonts/futura/font4.ttf" %}") /* TTF file for CSS3 browsers */
@@ -82,9 +80,14 @@
 
     #grow_oss {
         display: inline-block;
-        max-width: 200px;
+        max-width: 100%;
     }
 
+    @media screen and (max-width: 35.5em) {
+        #header, #footer {
+            padding: 1em;
+        }
+    }
     #header {
         height: 200px;
     }
@@ -102,16 +105,17 @@
         padding-top: 0.5em;
     }
 
-    #social img{
-        {% if invert_footer %}
-        filter: invert(100%);
-        {% endif %}
+    @media screen and (min-width: 35.5em) {
+        .social_img {
+            max-height: 50px;
+            max-width: 50px;
+        }
     }
-
-    #social {
-        height: 100px;
-        margin-top: 10px;
-        margin-bottom: 50px;
+    @media screen and (max-width: 35.5em) {
+        .social_img {
+            max-height: 45px;
+            max-width: 45px;
+        }
     }
 
     a {
@@ -155,28 +159,28 @@
     {% endif %}
 
     <div class="pure-g">
-        <div class="pure-u-1-5 pure-u-md-3-24 pure-u-sm-1-24"></div>
-        <div class="pure-u-3-5 pure-u-md-18-24 pure-u-sm-22-24">
+        <div class="pure-u-1-5"></div>
+        <div class="pure-u-3-5">
             <div class="primary_content centered_contents">
                 {% block content %}
                 {% endblock %}
                 <img id="grow_oss" class="pure-img" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
             </div>
         </div>
-        <div class="pure-u-1-5 pure-u-md-3-24 pure-u-sm-1-24"></div>
+        <div class="pure-u-1-5"></div>
     </div>
 
     <div id="footer" class="pure-g">
         <div class="pure-u-1-1">
-            <a href="https://www.twitter.com/GetGitcoin"><img height="50" width="50" src="{% static "v2/images/social/twitter_new.png" %}"></a>
+            <a href="https://www.twitter.com/GetGitcoin"><img class="social_img" src="{% static "v2/images/social/twitter_new.png" %}"></a>
 
-            <a href="https://www.medium.com/gitcoin"><img height="50" width="50" src="{% static "v2/images/social/medium_new.png" %}"></a>
+            <a href="https://www.medium.com/gitcoin"><img class="social_img" src="{% static "v2/images/social/medium_new.png" %}"></a>
 
-            <a href="https://www.facebook.com/GetGitcoin"><img height="50" width="50" src="{% static "v2/images/social/facebook_new.png" %}"></a>
+            <a href="https://www.facebook.com/GetGitcoin"><img class="social_img" src="{% static "v2/images/social/facebook_new.png" %}"></a>
 
-            <a href="https://reddit.com/r/gitcoincommunity"><img height="50" width="50" src="{% static "v2/images/social/reddit_new.png" %}"></a>
+            <a href="https://reddit.com/r/gitcoincommunity"><img class="social_img" src="{% static "v2/images/social/reddit_new.png" %}"></a>
 
-            <a href="https://gitcoin.co/slack"><img height="50" width="50" src="{% static "v2/images/social/slack_new.png" %}"></a>
+            <a href="https://gitcoin.co/slack"><img class="social_img" src="{% static "v2/images/social/slack_new.png" %}"></a>
         </div>
         <div class="pure-u-1-1">
             <div id="copyright">
