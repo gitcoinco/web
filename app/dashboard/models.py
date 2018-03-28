@@ -29,7 +29,6 @@ from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
-from django.utils.text import slugify
 
 import pytz
 import requests
@@ -162,7 +161,13 @@ class Bounty(SuperModel):
             str: The relative URL for the Bounty.
 
         """
-        return f"{'/' if preceding_slash else ''}issue/{self.pk}-{slugify(self.title)}"
+        try:
+            _org_name = org_name(self.github_url)
+            _issue_num = int(issue_number(self.github_url))
+            _repo_name = repo_name(self.github_url)
+            return f"{'/' if preceding_slash else ''}issue/{_org_name}/{_repo_name}/{_issue_num}"
+        except Exception:
+            return f"{'/' if preceding_slash else ''}funding/details?url={self.github_url}"
 
     def get_natural_value(self):
         token = addr_to_token(self.token_address)

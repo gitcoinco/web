@@ -316,7 +316,7 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
 
             // clear local data
             localStorage[document.issueURL] = '';
-            document.location.href = response.bounty_url;
+            document.location.href = document.location.href;
           } else {
             console.log('error from sync/web', response);
             error(response);
