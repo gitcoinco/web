@@ -54,9 +54,15 @@
             <option {% if args.data_source == "profile-login" %}selected{%endif%} >profile-login</option>
             <option {% if args.data_source == "profile-githubinteraction" %}selected{%endif%} >profile-githubinteraction</option>
             <option {% if args.data_source == "slack-online" %}selected{%endif%} >slack-online</option>
+            <option {% if args.data_source == "email-processed" %}selected{%endif%} >email-processed</option>
+            <option {% if args.data_source == "email-dropped" %}selected{%endif%} >email-dropped</option>
+            <option {% if args.data_source == "email-deferred" %}selected{%endif%} >email-deferred</option>
+            <option {% if args.data_source == "email-delivered" %}selected{%endif%}>email-delivered</option>
+            <option {% if args.data_source == "email-bounce" %}selected{%endif%} >email-bounce</option>
             <option {% if args.data_source == "email-open" %}selected{%endif%} >email-open</option>
             <option {% if args.data_source == "email-click" %}selected{%endif%} >email-click</option>
-            <option {% if args.data_source == "email-delivered" %}selected{%endif%}>email-delivered</option>
+            <option {% if args.data_source == "email-spamreport" %}selected{%endif%} >email-spamreport</option>
+            <option {% if args.data_source == "email-unsubscribe" %}selected{%endif%} >email-unsubscribe</option>
         </select>
         <br>
         Time Period Granularity: <select name="period_size">
