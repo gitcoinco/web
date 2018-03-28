@@ -29,12 +29,6 @@ WORKDIR /code
 COPY requirements/ /code/
 RUN pip install -r test.txt
 
-# Handle scripts
-COPY bin/docker-command.bash /bin/docker-command.bash
-COPY bin/celery/*.bash /bin/
-RUN sed -i 's/\r//' /bin/*.bash && \
-    chmod +x /bin/*.bash
-
 RUN pip install -r dev.txt && \
     dos2unix /bin/docker-command.bash && \
     apt-get purge -y --auto-remove dos2unix wget gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev
