@@ -218,11 +218,10 @@ def has_tx_mined(txid, network):
 
 def get_bounty_id(issue_url, network):
     issue_url = normalize_url(issue_url)
-    bounty_id = get_bounty_id_from_db(issue_url, network)
-    if bounty_id:
-        return bounty_id
-
-    all_known_stdbounties = Bounty.objects.filter(web3_type='bounties_network', network=network).order_by('-standard_bounties_id')
+    bounty_id = None
+    #bounty_id = get_bounty_id_from_db(issue_url, network)
+    #if bounty_id:
+    #    return bounty_id
 
     methodology = 'start_from_web3_latest'
     try:
@@ -231,6 +230,7 @@ def get_bounty_id(issue_url, network):
     except NoBountiesException:
         methodology = 'start_from_db'
         last_known_bounty_id = 0
+        all_known_stdbounties = Bounty.objects.filter(web3_type='bounties_network', network=network).order_by('-standard_bounties_id')
         if all_known_stdbounties.exists():
             last_known_bounty_id = all_known_stdbounties.first().standard_bounties_id
         bounty_id = get_bounty_id_from_web3(issue_url, network, last_known_bounty_id, direction='up')

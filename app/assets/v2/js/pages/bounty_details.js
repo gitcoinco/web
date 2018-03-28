@@ -267,9 +267,11 @@ var showWarningMessage = function(txid) {
 
   if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
     clearInterval(interval);
-    var link_url = etherscan_tx_url(txid);
+    setInterval(function(){
+      var link_url = etherscan_tx_url(txid);
 
-    $('#transaction_url').attr('href', link_url);
+      $('#transaction_url').attr('href', link_url);
+    }, 1000)
   }
 
   $('.left-rails').hide();
@@ -545,7 +547,10 @@ var render_actions = function(actions) {
 
 var pull_bounty_from_api = function() {
   var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
-
+  if(document.issuePK){
+    var uri = '/actions/api/v0.1/bounties/?pk=' + document.issuePK;
+  }
+  
   $.get(uri, function(results) {
     results = sanitizeAPIResults(results);
     var nonefound = true;

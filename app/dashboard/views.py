@@ -501,11 +501,12 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, title_slug=''):
     """Display the bounty details."""
     _access_token = request.session.get('access_token')
     profile_id = request.session.get('profile_id')
+    prefer_pk = None
     if title_slug and not ghuser and not ghissue and not ghrepo:
         try:
             title_slug = title_slug.split('-')
-            pk = title_slug[0]
-            bounty = Bounty.objects.get(pk=pk)
+            prefer_pk = title_slug[0]
+            bounty = Bounty.objects.get(pk=prefer_pk)
             issueURL = bounty.github_url
         except:
             raise Http404
@@ -537,6 +538,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, title_slug=''):
     if bounty_url:
         try:
             bounties = Bounty.objects.current().filter(github_url=bounty_url)
+            if prefer_pk:
+                bounties = bounties.filter(pk=prefer_pk)
             if bounties:
                 bounty = bounties.order_by('pk').first()
                 # Currently its not finding anyting in the database
