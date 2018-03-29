@@ -3,6 +3,10 @@ body {
   background-color: #FFF;
 }
 
+.none {
+  display: none;
+}
+
 .explorer {
   font-family: "Muli-SemiBold";
   margin-top: 2em;

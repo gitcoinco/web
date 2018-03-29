@@ -187,6 +187,7 @@ var remove_interest = function(bounty_pk) {
 var mutate_interest = function(bounty_pk, direction) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
+  $('#submit').toggleClass('none');
   $.post(request_url, function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
