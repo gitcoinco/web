@@ -329,15 +329,15 @@ What open source projects do you want to see on Gitcoin? Let us know by replying
 
     bounties = [
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/TrustWallet/trust-wallet-ios/issues/493'),
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/TrustWallet/trust-wallet-ios/issues/493'),
             'primer': 'Work with TrustWallet to improve their CoinTicker functionality (from CoinMarketCap)   ',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MARKETProtocol/Dapp/issues/53'),
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/MarketProject/Dapp/issues/53'),
             'primer': 'Create a guided deployment between Binance and MARKET Protocol ',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MetaMask/metamask-extension/issues/3249'),
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/MetaMask/metamask-extension/issues/3249'),
             'primer': '1.1 ETH bounty on a Customizable Keyring Format alongside the great developers at MetaMask ',
         },
     ]
