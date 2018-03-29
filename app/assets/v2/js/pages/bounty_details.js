@@ -228,7 +228,7 @@ var callbacks = {
           var name = (position == accepted_fufillments.length - 1) ?
             github_username : github_username.concat(',');
 
-          accepted.push(profileHtml(fufillment.fulfiller_github_username, name));
+          accepted.push(profileHtml(github_username, name));
         });
       }
     }

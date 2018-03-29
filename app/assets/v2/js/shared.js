@@ -254,7 +254,7 @@ var pull_interest_list = function(bounty_pk, callback) {
 
 var profileHtml = function(handle, name) {
   return '<span><a href="https://gitcoin.co/profile/' +
-    handle + '" target="_blank">' + name ? name : handle;
+    handle + '" target="_blank">' + (name ? name : handle) + '</span></a>';
 };
 
 // Update the list of bounty submitters.
