@@ -16,18 +16,26 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import json
+
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ValidationError
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.validators import validate_email
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
+
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET, require_POST
+
 
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+from retail.models import Idea, IdeaSerializer
 
 
 def index(request):
@@ -536,6 +544,62 @@ def browser_extension_chrome(request):
 
 def browser_extension_firefox(request):
     return redirect('https://addons.mozilla.org/en-US/firefox/addon/gitcoin/')
+
+def idea_show(request, idea_id):        
+    return TemplateResponse(request, 'idea.html', {})
+
+@csrf_exempt
+def new_idea(request):    
+    return TemplateResponse(request, 'new_idea.html', {})
+
+@require_POST
+@csrf_exempt
+def create_idea(request):        
+    idea = Idea(**json.loads(request.body))
+    idea.load_avatar_url()
+    idea.save(force_insert=True)    
+    return JsonResponse({'success': True, 'ideaId': idea.id}) 
+
+@require_GET
+@csrf_exempt
+def idea_get(request, idea_id):  
+    idea = Idea.objects.get(pk=idea_id)
+
+    return JsonResponse({
+        'idea': IdeaSerializer(idea).data,
+        'success': True
+    })
+
+@require_GET
+@csrf_exempt
+def ideas_fetch(request):
+    page = request.GET.get('page', 1)
+    size = request.GET.get('size', 10)
+    ideas = Idea.objects.order_by('created_on')
+
+    paginator = Paginator(ideas, size)
+    try:
+        ideas = paginator.page(page)
+    except PageNotAnInteger:
+        ideas = paginator.page(1)
+    except EmptyPage:
+        return JsonResponse([])
+
+
+    ideas_data = []
+    for idea in ideas:
+        idea_data = IdeaSerializer(idea).data
+        ideas_data.append(idea_data);    
+
+    return JsonResponse( {
+        'total_pages': ideas.paginator.num_pages,
+        'ideas': ideas_data,
+        'success': True
+     })    
+
+def ideas_list(request):
+
+    return TemplateResponse(request, 'ideas_list.html', {})
 
 
 def itunes(request):

@@ -1,0 +1,120 @@
+{% comment %} Copyright (C) 2017 Gitcoin Core This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
+General Public License for more details. You should have received a copy of the GNU Affero General Public License along with
+this program. If not, see
+<http://www.gnu.org/licenses/>. {% endcomment %} {% load static %}
+<html lang="en">
+
+<head>
+  {% include 'shared/head.html' %}
+</head>
+
+<body class="interior {{active}}">
+  {% include 'shared/tag_manager_2.html' %}
+  <div class="container-fluid header dash">
+    {% include 'shared/nav.html' %}
+    {% include 'shared/minihero.html' with h1='<span style="color: #f9006c">Project</span> Ideas' suppress_logo=1 %}
+  </div>
+  <div class="row no-gutter">
+    <div class="col body">
+      <div class="container-fluid no-gutter">
+        <div class="row font-smaller-2" id="form_container">
+          <div class="col d-flex align-items-center justify-content-center" id="primary_form">
+            <div class="d-flex justify-content-center flex-column mt-5 w-50" id="primary_subform">
+              <div class="w-100 title">
+                <p class="submit-title">Submit your project idea</p>
+                <p class="submit-text">We love ideas and hate using lorem ipsum text. Use the form below to submit your project idea and (hopefully)
+                  get some feedback!</p>
+              </div>
+              <form>
+                {% include 'shared/name.html' %}
+                <div class="form__group" style="justify-content: space-between">
+                  <div class- "form__group-item">
+                    <label class="form__label" for="email">Email address</label>
+                    <input type=text id="email" name=email class="form__input" placeholder='you@somewhere' value="{{email}}" required>
+                  </div>
+                  <div class- "form__group-item">
+                    <label class="form__label" for="githubUsernam">Github Username</label>
+                    {% if not github_handle %}
+                    <a href="{% url " github:github_auth " %}?redirect_uri={{ request.get_full_path }}">(Login)</a>
+                    {% else %} {% endif %}
+                    <input name="githubUsername" id="github_username" type=text class="form__input" placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="d-flex justify-content-between">
+                    <label for="summary" class="form__label">Summarize your idea</label>
+                    <div style="margin: 0.5rem" class="form__label">
+                      <span id="summary_chars">0</span>/100
+                    </div>
+                  </div>
+                  <textarea class="form__input" id="summary" name="summary" rows="1" maxlength="100" required>{{summary}}</textarea>
+                </div>
+                <div class="form-group">
+                  <div class="d-flex justify-content-between">
+                    <label class="form__label" for="more_info">Tell us more</label>
+                    <div style="margin: 0.5rem" class="form__label">
+                      <span id="more_info_chars" class="form__label">0</span>/500 </div>
+                  </div>
+                  <textarea class="form__input" id="more_info" name="more_info" rows="3" maxlength="500" required>{{more_info}}</textarea>
+                </div>
+                <div id="looking_for" class="form-group">
+                  <label class="form__label" for="looking_for">What are you looking for? (select all that apply)</label>
+                  <div class="d-flex justify-content-between">
+                    <div class="form-check form-check-inline">
+                      <input type="checkbox" class="form-check-input" id="capital_looking">
+                      <label class="form-check-label" for="capital_looking">Capital</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input type="checkbox" class="form-check-input" id="builders_looking">
+                      <label class="form-check-label" for="builders_looking">Builders</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input type="checkbox" class="form-check-input" id="designers_looking">
+                      <label class="form-check-label" for="designers_looking">Designers</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input type="checkbox" class="form-check-input" id="customers_looking">
+                      <label class="form-check-label" for="customers_looking">Customers</label>
+                    </div>
+                  </div>
+                </div>
+                <div id="already_have" class="form-group">
+                  <label class="form__label">What do you have already? (select all that apply)</label>
+                  <div class="d-flex justify-content-between">
+                    <div class="form-check form-check-inline">
+                      <input type="checkbox" class="form-check-input" id="capital_exists">
+                      <label class="form-check-label" for="capital_exists">Capital</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input type="checkbox" class="form-check-input" id="builders_exists">
+                      <label class="form-check-label" for="builders_exists">Builders</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input type="checkbox" class="form-check-input" id="designers_exists">
+                      <label class="form-check-label" for="designers_exists">Designers</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input type="checkbox" class="form-check-input" id="customers_exists">
+                      <label class="form-check-label" for="customers_exists">Customers</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form__footer form__footer--right">
+                  <button class="button button--primary center-button" type="button" id="create_idea">Submit</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include 'shared/bottom_notification.html' %} {% include 'shared/analytics.html' %} {% include 'shared/footer_scripts.html'%}
+  {% include 'shared/rollbar.html' %} {% include 'shared/footer.html' %}  
+  <script src="{% static "v2/js/pages/new_idea.js" %}"></script>
+</body>
+
+</html>

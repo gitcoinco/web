@@ -1,0 +1,62 @@
+{% comment %} Copyright (C) 2017 Gitcoin Core This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
+General Public License for more details. You should have received a copy of the GNU Affero General Public License along with
+this program. If not, see
+<http://www.gnu.org/licenses/>. {% endcomment %} {% load static %}
+<html lang="en">
+
+<head>
+  {% include 'shared/head.html' %}
+</head>
+
+<body class="interior {{active}}">
+  {% include 'shared/tag_manager_2.html' %}
+  <div class="container-fluid header dash">
+    {% include 'shared/nav.html' %} {% include 'shared/minihero.html' with h1='<span style="color: #f9006c">Project</span> Ideas' suppress_logo=1 %}
+  </div>
+
+  <div class="body">
+    <div class="container">
+      <div class="row pb-5 pt-5">
+        <div class="col pb-4">
+          <div class="form-group d-flex justify-content-between">
+            <div>
+              <label class="form__label" for="sort">Sort by:</label>
+              <span class="form__select">
+                <select id="sort_ideas" name="sort">
+                  <option value="trending">Trending Ideas</option>
+                  <option value="most_comments">Most Comments</option>
+                  <option value="most_likes">Most Likes</option>
+                </select>
+                <div class="form__select__icon hidden-border" style="border-style: hidden">
+                  {% include 'svgs/arrow-down.svg' %}
+                </div>
+              </span>
+            </div>
+            <div>
+              <span class="button button--primary" type="add" id="add">Add Idea</span>
+            </div>
+          </div>
+
+          <div id="ideas">
+            <div id="loader" class="row loading justify-content-center align-items-center loading_img">
+              <img src="{% static "v2/images/loading_v2.gif" %}">
+            </div>
+          </div>
+          <div class="form__footer form__footer--right">
+            <button class="button button--primary center-button invisible" type="load" id="load_more" data-list-size="{{ideas|length}}" style="background-color: #f9006c">Load More</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include 'shared/bottom_notification.html' %} {% include 'shared/analytics.html' %} {% include 'shared/footer_scripts.html'%}
+  {% include 'shared/rollbar.html' %} {% include 'shared/footer.html' %} {% include 'idea_template.html' %}
+  <script src="{% static "v2/js/pages/disqus_config.js" %}"></script>
+  <script src="{% static "v2/js/pages/idea_shared.js" %}"></script>
+  <script src="{% static "v2/js/pages/ideas_list.js" %}"></script>  
+</body>
+
+</html>

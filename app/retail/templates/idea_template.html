@@ -1,0 +1,51 @@
+<script id="idea_template" type="text/x-jsrender">
+    <div id="idea_[[:id]]" data-idea-id="[[:id]]" class="idea">
+        <div class="d-flex justify-content-between pb-3">
+          <div class="idea-title">[[:summary]]</div>
+          <div>            
+            <span class="align-middle"><i class="far fa-comment"></i></span>
+            <span>[[:posts]]</span>
+            <span class="align-middle"><i class="far fa-heart"></i></span>[[:likes]]            
+          </div>
+        </div>
+        <p>More info: [[:more_info]]</p>
+        <div class="d-flex justify-content-between">
+          <div style="line-height: 42px">
+            <img src='[[:avatar_url]]' class='user-avatar'> Submitted by <strong>[[:full_name]]</strong>
+          </div>
+          
+          <div class="d-flex justify-content-between">
+            <div style="padding:0px 10px">
+              <span style="line-height: 42px;">Has:</span>
+                        [[if capital_exists]]            
+                        <span class="badge badge-success">Capital</span>
+                        [[/if]] 
+                        [[if builders_exists]]                        
+                        <span class="badge badge-success">Builders</span>            
+                        [[/if]] 
+                        [[if designers_exists]]            
+                        <span class="badge badge-success">Designers</span>            
+                        [[/if]] 
+                        [[if customer_exists]]
+                        <span class="badge badge-success">Customer</span>            
+                        [[/if]]
+                    </div>   
+                    <div style="padding:0px 10px">
+                        <span style="line-height: 42px;">Needs:</span>
+                        [[if looking_for_capital]]
+                        <span class="badge badge-warning">Capital</span>
+                        [[/if]] 
+                        [[if looking_for_builders]]
+                        <span class="badge badge-warning">Builders</span>            
+                        [[/if]]
+                        [[if looking_for_designers]]
+                        <span class="badge badge-warning">Designers</span>            
+                        [[/if]]
+                         [[if looking_for_customers]]
+                         <span class="badge badge-warning">Customers</span>            
+                        [[/if]]
+                    </div>
+        </div>
+        </div>
+      </div>
+  </script>
