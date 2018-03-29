@@ -149,15 +149,41 @@ window.onload = function() {
                 }
 
                 var bountyId = result['standard_bounties_id'];
+                var bountyNetwork = result['network'];
 
-                bounty.fulfillBounty(
-                  bountyId,
-                  document.ipfsDataHash,
-                  {
-                    gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
-                  },
-                  web3Callback
-                );
+                // before committing to transaction prompt,
+                // retrieve bounty owner's address since a
+                // creator cannot fulfill their own bounty.
+                var fromAddress = result['bounty_owner_address'];
+
+                if (fromAddress == account) {
+                  _alert({ message: 'The address that funded an issue cannot fulfill it.' });
+                  unloading_button($('.js-submit'));
+                  return;
+                }
+
+                // Determine if browser and bounty networks match
+                var browserNetwork = 'unknown';
+
+                web3.version.getNetwork((error, netId) => {
+                  browserNetwork = web3NetworkIdToString(netId);
+
+                  if (browserNetwork != bountyNetwork) {
+                    _alert({ message: 'The browser must be connected to same Ethereum network that the bounty was deployed to.' });
+                    unloading_button($('.js-submit'));
+                    return;
+                  }
+
+                  // If all tests pass, attempt tx
+                  bounty.fulfillBounty(
+                    bountyId,
+                    document.ipfsDataHash,
+                    {
+                      gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
+                    },
+                    web3Callback
+                  );
+                });
               });
             }
           }
