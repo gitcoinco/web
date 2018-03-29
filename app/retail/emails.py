@@ -329,11 +329,11 @@ What open source projects do you want to see on Gitcoin? Let us know by replying
 
     bounties = [
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://gitcoin.co/issue/TrustWallet/trust-wallet-ios/493'),
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/TrustWallet/trust-wallet-ios/issues/493'),
             'primer': 'Work with TrustWallet to improve their CoinTicker functionality (from CoinMarketCap)   ',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://gitcoin.co/issue/MarketProject/Dapp/53'),
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MARKETProtocol/Dapp/issues/53'),
             'primer': 'Create a guided deployment between Binance and MARKET Protocol ',
         },
         {
