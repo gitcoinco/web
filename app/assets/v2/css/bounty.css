@@ -146,12 +146,25 @@ body {
 #submitted_owners_username {
   padding-left:0;
   margin: 10px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 #started_owners_username a,
 #fulfilled_owners_username a,
-#submitted_owners_username a {
-  margin: 15px;
+#submitted_owners_username a,
+#started_owners_username svg,
+#fulfilled_owners_username svg,
+#submitted_owners_username svg  {
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+#started_owners_username svg,
+#fulfilled_owners_username svg,
+#submitted_owners_username svg {
+  margin-top: 5px;
 }
 
 #bounty_owner_name {
