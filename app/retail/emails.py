@@ -256,7 +256,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    subject = "MetaMask Internationalization | From a Gitcoin Bounty to an Epic "
+    subject = "Gitcoin Q1 Updates "
 
     intro = '''
 
@@ -264,68 +264,71 @@ def render_new_bounty_roundup(to_email):
     Hi there 👋
 </p>
 <p>
-    Last week, we saw a bounty on MetaMask snowball into an epic -- all set to be built with Gitcoin bounties. <a href="https://medium.com/gitcoin/metamask-internationalizes-via-gitcoin-bf1390c0301c">Read more</a> on how MetaMask’s internationalization strategy started with a contribution from one Gitcoiner, @mapmeld. 
+    This week, Gitcoin Core gave a <a href="https://medium.com/gitcoin/gitcoin-q1-2018-update-1edaf09da3a">Q1 update and a look ahead</a> to what’s up next in 2018. Here are some of the key results.
 </p>
-<p>
-    The <a href="http://gitcoin.co/faucet">Gitcoin Faucet</a> is live for those interested in a small ETH distribution to interact with Ethereum's mainnet for the first time. The first batch of distributions have been made! Want to use your distribution on Gitcoin?  The <a href="https://gitcoin.co/explorer">open issues page</a> is the best place to start. 
-<p>
-    What else is new?
     <ul>
         <li>
-Which blockchain based, open-source projects would you like to see on Gitcoin? <a href="https://docs.google.com/forms/d/e/1FAIpQLSfUDnLRXu03eGldeb3twlgdccg4xvRI22XwRo7pm60pemDEpw/viewform">We’re offering a 15% finders fee</a> if an intro you make leads to a funded issue!
+$20K (42ETH) in funded issues has made its way through the platform in the first 6 months of launch, leading 14.5k lines of (good) code on Pilot Projects like MetaMask, Truffle, web3py, MyCryptoWallet and more :)          </li>
+        <li>
+We’ve reached 4,000+ Gitcoiners on the Newsletter / 2,000+ Gitcoiners on Slack & Twitter, respectively
         </li>
         <li>
-Revamped <a href="https://gitcoin.co/tools">Tools Page</a> is Up! We just launched an <a href="https://gitcoin.co/universe">Offchain Bounties tool in alpha</a>.
+Our <a href="https://github.com/gitcoinco/GIPs/blob/570c2681cacdeaef7f4c73caad1c199b7aa27a9f/GIPS/gip-3.md">Q2 OKR’s are finalized</a>. We intend to scale our core product, <a href="http://gitcoin.co/explorer">the Issue Explorer</a>, and add more to the toolset useful to the mission to grow open source        </li>
+        </li>
+    </ul>
+<p>
+    What else is new?
+</p>
+    <ul>
+        <li>
+Want to be the first to know when new open issues are added? We launched <a href="https://twitter.com/gitcoinfeed">@gitcoinfeed on Twitter</a> which provides updates on all new activity on Gitcoin. 
         </li>
         <li>
-Looking for the next ETH Hackathon? Check out <a href="http://hackital.io/">Hackital</a>, in Washington DC on April 27- April 29th.
-        </li>
-        <li>
-A <a href="https://github.com/gitcoinco/web/blob/master/readme_widget.md">wild Gitcoin Widget</a> appears for your Github read-me! Looking to get more OSS contributors to your repo? This will quickly show any Gitcoin issues you have open. 
+What open source projects do you want to see on Gitcoin? Let us know by replying back to this email... We’re offering a 15% finders fee if an intro you make leads to a funded issue!
         </li>
     </ul>
 </p>
 <p>
-    I hope to see you <a href="https://gitcoin.co/slack">on slack</a>, or on the community livestream TODAY at 3pm MST ! Agenda items for this week: demo’s from @coderberry at Code Sponsor and 8trac, SXSW Hackathon  winner, as well as more simulation theory conversations, as always 🤖
+    I hope to see you <a href="https://gitcoin.co/slack">on slack</a>, or on the community livestream TODAY at 3pm MST ! We’ll have a demo from Nick Neuman on <a href="https://medium.com/@nickneuman/keysplit-private-key-security-for-cryptocurrency-owners-d1653ea9631d">KeySplit</a> as well as more conversations on <a href="http://www.weekinethereum.com/">Week In Ethereum News</a> and other nerdy stuff, as always 🤖
 </p>
 
 '''
     highlights = [
         {
-            'who': 'murduk',
+            'who': 'zoek',
             'who_link': True,
-            'what': 'On last week’s newsletter, this was an open bounty. Now, it is in the Ethereum Foundation’s py-evm. Great work!',
-            'link': 'https://gitcoin.co/issue/ethereum/py-evm/362',
+            'what': 'Gave our good friend Gitcoin Bot a much needed tune up! Thank you for your efforts.',
+            'link': 'https://gitcoin.co/issue/gitcoinco/web/596',
             'link_copy': 'See more',
         },
         {
-            'who': 'maektwain',
+            'who': 'cassidypignatello',
             'who_link': True,
-            'what': 'Allowed any ERC20 token to be displayed on MARKET Protocol’s dApp',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/Dapp/71',
+            'what': 'Image compression work across the Gitcoin platform',
+            'link': 'https://gitcoin.co/issue/gitcoinco/web/608',
             'link_copy': 'View more',
         },
         {
-            'who': 'michelgotta',
+            'who': 'msuess',
             'who_link': True,
-            'what': 'built the beautiful Gitcoin widget headlined above. Appreciate your effforts!',
-            'link': 'https://gitcoin.co/issue/gitcoinco/web/594',
+            'what': 'Implemented the contribute() method from StandardBounties, allowing Gitcoin funders to increase the funding amount for any bounty!',
+            'link': 'https://gitcoin.co/issue/gitcoinco/web/617',
             'link_copy': 'See more',
         },
     ]
 
     bounties = [
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ipld/js-cid/issues/38'),
-            'primer': 'We want more projects on Gitcoin. Gitcoin Requests is one hypothesis on how to get there. Earn .3ETH along the way!  ',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://gitcoin.co/issue/TrustWallet/trust-wallet-ios/493'),
+            'primer': 'Work with TrustWallet to improve their CoinTicker functionality (from CoinMarketCap)   ',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/ethereum/web3.py/issues/666'),
-            'primer': 'The Ethereum Foundation’s web3py needs help with Constructor Functions. Any ideas? 0.4 ETH available upon merge. ',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://gitcoin.co/issue/MarketProject/Dapp/53'),
+            'primer': 'Create a guided deployment between Binance and MARKET Protocol ',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/gitcoinco/web/issues/671'),
-            'primer': 'Have Webpack experience? IPLD is working on linked data and could use a hand.',
+            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MetaMask/metamask-extension/issues/3249'),
+            'primer': '1.1 ETH bounty on a Customizable Keyring Format alongside the great developers at MetaMask ',
         },
     ]
 
