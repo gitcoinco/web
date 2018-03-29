@@ -43,7 +43,9 @@ from dashboard.notifications import (
 )
 from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
-from github.utils import get_auth_url, get_github_emails, get_github_primary_email, is_github_token_valid
+from github.utils import (
+    get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
+)
 from marketing.mails import bounty_uninterested
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
@@ -84,6 +86,16 @@ def record_user_action(profile_handle, event_name, instance):
         # TODO: sync_profile?
         logging.error(f"error in record_action: {e} - {event_name} - {instance}")
 
+
+def helper_handle_access_token(request, access_token):
+    # https://gist.github.com/owocki/614a18fbfec7a5ed87c97d37de70b110
+    # interest API via token
+    github_user_data = get_github_user_data(access_token)
+    request.session['handle'] = github_user_data['login']
+    profile = Profile.objects.filter(handle__iexact=request.session['handle']).first()
+    request.session['profile_id'] = profile.pk
+
+
 @require_POST
 @csrf_exempt
 def new_interest(request, bounty_id):
@@ -98,6 +110,10 @@ def new_interest(request, bounty_id):
         dict: The success key with a boolean value and accompanying error.
 
     """
+    access_token = request.GET.get('token')
+    if access_token and is_github_token_valid(access_token):
+        helper_handle_access_token(request, access_token)
+
     profile_id = request.session.get('profile_id')
     if not profile_id:
         return JsonResponse(
@@ -160,6 +176,11 @@ def remove_interest(request, bounty_id):
         dict: The success key with a boolean value and accompanying error.
 
     """
+    access_token = request.GET.get('token')
+    if access_token and is_github_token_valid(access_token):
+        helper_handle_access_token(request, access_token)
+
+
     profile_id = request.session.get('profile_id')
     if not profile_id:
         return JsonResponse(
