@@ -18,10 +18,6 @@
   bottom: 2px;
 }
 
-.save_search {
-  margin-left: 12px;
-}
-
 .search-area, .search_bar #new_search, .order_by {
   display: inline-block;
 }
@@ -121,7 +117,6 @@
     padding-right: 15px;
   }
 
-  .save_search,
   .filter-tags {
     display: none;
   }

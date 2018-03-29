@@ -316,7 +316,7 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
 
             // clear local data
             localStorage[document.issueURL] = '';
-            document.location.href = response.bounty_url;
+            document.location.href = document.location.href;
           } else {
             console.log('error from sync/web', response);
             error(response);
@@ -594,8 +594,7 @@ var render_activity = function(result) {
           email: fulfillment.fulfiller_email,
           fulfillment_id: fulfillment.fulfillment_id,
           text: gettext('Work Accepted'),
-          created_on: fulfillment.created_on,
-          age: timeDifference(new Date(result['now']), new Date(fulfillment.created_on)),
+          age: timeDifference(new Date(result['now']), new Date(fulfillment.accepted_on)),
           status: 'accepted'
         });
       }

@@ -67,17 +67,6 @@
                     <div class="img">
                       <img src="{{tool.img}}" {% if tool.stat_graph %} data-hover="{% url "stat" "" %}{{tool.stat_graph}}" {% endif %} />
                     </div>
-                    <div>
-                        <div style="width: 40%; display: inline-block; text-align: center; background-color: #dfdfdf;">
-                            ⬆
-                        </div>
-                        <div style="width: 10%; display: inline-block; text-align: center; background-color: white;">
-                            4
-                        </div>
-                        <div style="width: 40%; display: inline-block; text-align: center; background-color: #efefef;">
-                            ⬇
-                        </div>
-                    </div>
                     <div class="content">
                       <div class="title">{{tool.name}}</div>
                       <div class="description">
