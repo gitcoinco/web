@@ -3,10 +3,10 @@
 <html lang="en">
 
   <head>
-    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}" />
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}" />
   </head>
 
   <body class="interior {{active}}">
@@ -204,7 +204,7 @@
         </div>
         <div class="col-12 col-md-2">
           <div class="activity-name">
-            <a href="https://gitcoin.co/profile/'[[:name]]" target="_blank">
+            <a href="https://gitcoin.co/profile/[[:name]]" target="_blank">
               [[:name]]
             </a>
           </div>
@@ -231,6 +231,21 @@
               <span class="bounty-subheading">Submission Id :</span>
               <span class="bounty-text">[[:fulfillment_id]]</span>
             </div>
+          </div>
+        [[else status == 'started']]
+          <div class="col-12 col-md-7 started-status-column">
+            <div class="activity-status">
+              [[:text]]
+            </div>
+            [[if uninterest_possible]]
+              <div>
+                <span title="Remove this user's started work on the bounty">
+                  <a id="remove-[[:name]]" class="button button--primary" role="button" href="remove-handle">
+                    <span class="font-smaller-4">Stop work</span>
+                  </a>
+                </span>
+              </div>
+            [[/if]]
           </div>
         [[else]]
           <div class="col-12 col-md-7">

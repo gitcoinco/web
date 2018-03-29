@@ -182,10 +182,7 @@ var callbacks = {
 
       interested.forEach(function(_interested) {
         started.push(
-          '<a href="https://gitcoin.co/profile/' +
-            _interested.profile.handle +
-            '" target="_blank">' +
-            _interested.profile.handle + '</a>'
+          profileHtml(_interested.profile.handle)
         );
       });
       if (started.length == 0) {
@@ -202,10 +199,7 @@ var callbacks = {
 
       submitted.forEach(function(_submitted) {
         accepted.push(
-          '<a href="https://gitcoin.co/profile/' +
-            _submitted.fulfiller_github_username +
-            '" target="_blank">' +
-            _submitted.fulfiller_github_username + '</a>'
+          profileHtml(_submitted.fulfiller_github_username)
         );
       });
       if (accepted.length == 0) {
@@ -223,10 +217,7 @@ var callbacks = {
       fulfillments.forEach(function(fufillment) {
         if (fufillment.accepted == true) {
           accepted.push(
-            '<a href="https://gitcoin.co/profile/' +
-              fufillment.fulfiller_github_username +
-              '" target="_blank">' +
-              fufillment.fulfiller_github_username + '</a>'
+            profileHtml(fufillment.fulfiller_github_username)
           );
         }
       });
@@ -399,7 +390,6 @@ var build_detail_page = function(result) {
 };
 
 var do_actions = function(result) {
-
   // helper vars
   var is_legacy = result['web3_type'] == 'legacy_gitcoin';
   var is_date_expired = (new Date(result['now']) > new Date(result['expires_date']));
@@ -611,10 +601,13 @@ var render_activity = function(result) {
   if (result.interested) {
     result.interested.forEach(function(_interested) {
       activities.push({
+        profileId: _interested.profile.id,
         name: _interested.profile.handle,
         text: 'Work Started',
         created_on: _interested.created,
-        age: timeDifference(new Date(result['now']), new Date(_interested.created))
+        age: timeDifference(new Date(result['now']), new Date(_interested.created)),
+        status: 'started',
+        uninterest_possible: isBountyOwner(result)
       });
     });
   }
@@ -630,8 +623,17 @@ var render_activity = function(result) {
 
     html = template.render(activities);
   }
-
   $('#activities').html(html);
+
+  activities.filter(function(activity) {
+    return activity.uninterest_possible;
+  }).forEach(function(activity) {
+    $('#remove-' + activity.name).click(() => {
+      uninterested(result.pk, activity.profileId);
+      return false;
+    });
+  });
+
 };
 
 var main = function() {

@@ -207,6 +207,7 @@ a.btn{
 }
 
 #right_actions .button--primary,
+.started-status-column .button--primary,
 #btn-white {
   padding: 6px 15px;
   box-shadow: none;
@@ -261,6 +262,11 @@ a.btn{
   margin-top: 0px;
 }
 
+.started-status-column div {
+  display: inline-block;
+  margin: 5px;
+}
+
 #bounty_details {
   display: none;
   margin-bottom: 2em;
@@ -279,6 +285,10 @@ a.btn{
   font-size: 16px;
   margin-top: 15px;
   text-transform: none;
+}
+
+.uninterest-button {
+  margin: 5px;
 }
 
 @media (max-width: 767px) {
