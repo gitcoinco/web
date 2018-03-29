@@ -29,6 +29,7 @@ from django.utils import timezone
 
 from chartit import Chart, DataPool
 from dashboard.models import Profile, UserAction
+from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
@@ -269,7 +270,15 @@ def cohort(request):
 
 
 def email_settings(request, key):
+
+    # setup
+    github_handle = request.session.get('handle', '')
+    is_logged_in = bool(github_handle)
+    profiles = Profile.objects.filter(handle__iexact=github_handle).exclude(email='')
+    profile = None if not profiles.exists() else profiles.first()
+
     # handle 'noinput' case
+    suppress_leaderboard = False
     es = EmailSubscriber.objects.none()
     email = ''
     level = ''
@@ -277,10 +286,8 @@ def email_settings(request, key):
     if not key:
         email = request.session.get('email', '')
         if not email:
-            github_handle = request.session.get('handle', '')
-            profiles = Profile.objects.filter(handle__iexact=github_handle).exclude(email='')
-            if profiles.exists():
-                email = profiles.first()
+            if profile:
+                email = profile.email
         es = EmailSubscriber.objects.filter(email__iexact=email)
         if not es.exists():
             raise Http404
@@ -291,15 +298,19 @@ def email_settings(request, key):
             level = es.first().preferences.get('level', False)
         else:
             raise Http404
+    suppress_leaderboard = profile.suppress_leaderboard if profile else False
     es = es.first()
     if request.POST.get('email', False):
         level = request.POST.get('level')
         comments = request.POST.get('comments')[:255]
         email = request.POST.get('email')
         github = request.POST.get('github')
-        print(es.github)
         keywords = request.POST.get('keywords').split(',')
         validation_passed = True
+        if profile:
+            profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
+            suppress_leaderboard = profile.suppress_leaderboard
+            profile.save()
         try:
             validate_email(email)
         except Exception as e:
@@ -314,6 +325,9 @@ def email_settings(request, key):
             key = get_or_save_email_subscriber(email, 'settings')
             es = EmailSubscriber.objects.get(priv=key)
             es.preferences['level'] = level
+            has_comment_changed = comments != es.metadata['comments']
+            if has_comment_changed:
+                new_feedback(es.email, comments)
             es.metadata['comments'] = comments
             es.github = github
             es.keywords = keywords
@@ -334,6 +348,8 @@ def email_settings(request, key):
         'es': es,
         'keywords': ",".join(es.keywords),
         'msg': msg,
+        'suppress_leaderboard': suppress_leaderboard,
+        'is_logged_in': is_logged_in,
         'autocomplete_keywords': json.dumps(
             [str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
