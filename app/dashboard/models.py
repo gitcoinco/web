@@ -327,9 +327,9 @@ class Bounty(SuperModel):
     def value_in_usdt(self):
         decimals = 10**18
         if self.token_name == 'USDT':
-            return self.value_in_token
+            return float(self.value_in_token)
         if self.token_name == 'DAI':
-            return decimal.Decimal(self.value_in_token / 10**18)
+            return float(self.value_in_token / 10**18)
         try:
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except Exception:
@@ -565,9 +565,9 @@ class Tip(SuperModel):
     def value_in_usdt(self):
         decimals = 1
         if self.tokenName == 'USDT':
-            return self.amount
+            return float(self.amount)
         if self.tokenName == 'DAI':
-            return decimal.Decimal(self.amount / 10**18)
+            return float(self.amount / 10**18)
         try:
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except Exception:
