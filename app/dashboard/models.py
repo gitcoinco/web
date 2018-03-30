@@ -18,6 +18,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import decimal
 import logging
 from datetime import datetime
 from urllib.parse import urlsplit
@@ -29,7 +30,6 @@ from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
-from django.utils.text import slugify
 
 import pytz
 import requests
@@ -162,7 +162,13 @@ class Bounty(SuperModel):
             str: The relative URL for the Bounty.
 
         """
-        return f"{'/' if preceding_slash else ''}issue/{self.pk}-{slugify(self.title)}"
+        try:
+            _org_name = org_name(self.github_url)
+            _issue_num = int(issue_number(self.github_url))
+            _repo_name = repo_name(self.github_url)
+            return f"{'/' if preceding_slash else ''}issue/{_org_name}/{_repo_name}/{_issue_num}"
+        except Exception:
+            return f"{'/' if preceding_slash else ''}funding/details?url={self.github_url}"
 
     def get_natural_value(self):
         token = addr_to_token(self.token_address)
@@ -321,7 +327,9 @@ class Bounty(SuperModel):
     def value_in_usdt(self):
         decimals = 10**18
         if self.token_name == 'USDT':
-            return self.value_in_token
+            return float(self.value_in_token)
+        if self.token_name == 'DAI':
+            return float(self.value_in_token / 10**18)
         try:
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except Exception:
@@ -449,6 +457,7 @@ class BountyFulfillment(SuperModel):
     fulfiller_metadata = JSONField(default={}, blank=True)
     fulfillment_id = models.IntegerField(null=True, blank=True)
     accepted = models.BooleanField(default=False)
+    accepted_on = models.DateTimeField(null=True, blank=True)
 
     bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE)
     profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE, null=True)
@@ -556,7 +565,9 @@ class Tip(SuperModel):
     def value_in_usdt(self):
         decimals = 1
         if self.tokenName == 'USDT':
-            return self.amount
+            return float(self.amount)
+        if self.tokenName == 'DAI':
+            return float(self.amount / 10**18)
         try:
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except Exception:
@@ -882,6 +893,7 @@ class ProfileSerializer(serializers.BaseSerializer):
 
         """
         return {
+            'id': instance.id,
             'handle': instance.handle,
             'github_url': instance.github_url,
             'local_avatar_url': instance.local_avatar_url,

@@ -615,7 +615,7 @@ input[type=text].loading {
 }
 
 .modal#save{
-    width: 50%;
+    width: 100%;
 }
 
 .modal#save img {
@@ -625,6 +625,10 @@ input[type=text].loading {
 
 .modal#save p {
     display: inline;;
+}
+
+.row.nonefound {
+    margin-right: 0px;
 }
 
 .row.nonefound img {

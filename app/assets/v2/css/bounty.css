@@ -3,6 +3,10 @@ body {
   background-color: #FFF;
 }
 
+.none {
+  display: none;
+}
+
 .explorer {
   font-family: "Muli-SemiBold";
   margin-top: 2em;
@@ -146,12 +150,25 @@ body {
 #submitted_owners_username {
   padding-left:0;
   margin: 10px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 #started_owners_username a,
 #fulfilled_owners_username a,
-#submitted_owners_username a {
-  margin: 15px;
+#submitted_owners_username a,
+#started_owners_username svg,
+#fulfilled_owners_username svg,
+#submitted_owners_username svg  {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+#started_owners_username svg,
+#fulfilled_owners_username svg,
+#submitted_owners_username svg {
+  margin-top: 5px;
 }
 
 #bounty_owner_name {
@@ -207,6 +224,7 @@ a.btn{
 }
 
 #right_actions .button--primary,
+.started-status-column .button--primary,
 #btn-white {
   padding: 6px 15px;
   box-shadow: none;
@@ -261,6 +279,11 @@ a.btn{
   margin-top: 0px;
 }
 
+.started-status-column div {
+  display: inline-block;
+  margin: 5px;
+}
+
 #bounty_details {
   display: none;
   margin-bottom: 2em;
@@ -279,6 +302,10 @@ a.btn{
   font-size: 16px;
   margin-top: 15px;
   text-transform: none;
+}
+
+.uninterest-button {
+  margin: 5px;
 }
 
 @media (max-width: 767px) {

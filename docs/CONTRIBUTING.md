@@ -52,6 +52,14 @@ precommit hooks and `pre-commit install` from your `gitcoinco/web` root director
 
 In order to make use of the `pre-commit` hooks used for this repository, you should have a valid installation of `node`/`npm`, `isort` (`pip install isort`), and `eslint`.
 
+User facing copy / text should be run through [Django Translation Framework](https://docs.djangoproject.com/en/2.0/topics/i18n/translation/). For example, 
+
+1. HTML user-facing pieces of copy are in `{% blocktrans %}` or `{% trans %}` fields.
+2. javascript user-facing pieces of copy are in `ngettext ` fields.
+3. each of the `views.py` user-facing pieces of copy are in `gettext_lazy` fields
+4. each of the models `help_text`s are internationalized
+5. as are all the emails in `marketing/mails.py`
+
 ### Step 1: Fork
 
 Fork the project [on GitHub](https://github.com/gitcoinco/web) and clone your
