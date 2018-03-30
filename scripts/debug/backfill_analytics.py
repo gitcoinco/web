@@ -1,4 +1,5 @@
 from django.utils import timezone
+
 from marketing.models import EmailEvent, Stat
 
 events = EmailEvent.objects.distinct('event').values_list('event',flat=True)
@@ -15,6 +16,3 @@ while True:
         if not val:
             break
         print(that_time, val)
-
-
-
