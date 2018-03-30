@@ -423,10 +423,14 @@ def process_bounty(request):
 
 def dashboard(request):
     """Handle displaying the dashboard."""
+
+    handle = request.session.get('handle')
+
     params = {
         'active': 'dashboard',
         'title': 'Issue Explorer',
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+        'profile': Profile.objects.filter(handle=handle).first()
     }
     return TemplateResponse(request, 'dashboard.html', params)
 
@@ -570,7 +574,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
     return TemplateResponse(request, 'bounty_details.html', params)
 
 
-def profile_helper(handle):
+def elper(handle):
     """Define the profile helper."""
     try:
         profile = Profile.objects.get(handle__iexact=handle)
