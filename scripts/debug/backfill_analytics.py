@@ -13,7 +13,7 @@ while True:
             val=(val),
             )
         if not val:
-            return
+            break
         print(that_time, val)
 
 
