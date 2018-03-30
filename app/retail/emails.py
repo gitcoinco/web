@@ -93,6 +93,7 @@ in that spirit,  i have a few questions for you.
 > would you use gitcoin again?
 
 thanks again for being a member of the community.
+
 kevin
 
 """
@@ -115,6 +116,7 @@ in that spirit,  i have a few questions for you:
 > would you use gitcoin again?
 
 thanks for being a member of the community.
+
 kevin
 """
 
@@ -122,7 +124,7 @@ kevin
         'txt': txt,
     }
     response_html = premailer_transform(render_to_string("emails/txt.html", params))
-    response_txt = render_to_string("emails/txt.txt", params)
+    response_txt = txt
 
     return response_html, response_txt
 
