@@ -50,7 +50,6 @@ def github_callback(request):
     # Get OAuth token and github user data.
     access_token = get_github_user_token(code)
     github_user_data = get_github_user_data(access_token)
-    import ipdb; ipdb.set_trace()
     handle = github_user_data.get('login')
     ip_address = '24.210.224.38' if settings.DEBUG else get_real_ip(request)
     geolocation_data = {}
