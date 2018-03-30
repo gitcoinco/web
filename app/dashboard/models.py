@@ -51,6 +51,7 @@ class Grant(SuperModel):
     """Define the structure of a Grant."""
 
     title = models.CharField(max_length=255)
+    pitch = models.CharField(max_length=255)
     description = models.TextField(default='', blank=True)
     reference_url = models.URLField(db_index=True)
     current_funding = models.DecimalField(default=1, decimal_places=4, max_digits=50)

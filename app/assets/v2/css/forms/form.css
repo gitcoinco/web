@@ -1,5 +1,24 @@
+.form__intro {
+  margin: 40px 0;
+}
+
+.form__intro h1 {
+  font-size: 24px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .form__group {
   display: flex;
+}
+
+.form__img {
+  margin-top: 70px;
+}
+
+.form__group-horizontal {
+  width: 100%;
+  margin-bottom: 12px;
 }
 
 .form__amount-wrapper {
