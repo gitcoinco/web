@@ -283,7 +283,7 @@ $20K (42ETH) in funded issues has made its way through the platform in the first
 We’ve reached 4,000+ Gitcoiners on the Newsletter / 2,000+ Gitcoiners on Slack & Twitter, respectively
         </li>
         <li>
-Our <a href="https://github.com/gitcoinco/GIPs/blob/570c2681cacdeaef7f4c73caad1c199b7aa27a9f/GIPS/gip-3.md">Q2 OKR’s are finalized</a>. We intend to scale our core product, <a href="http://gitcoin.co/explorer">the Issue Explorer</a>, and add more to the toolset useful to the mission to grow open source        </li>
+Our <a href="https://github.com/gitcoinco/GIPs/blob/master/GIPS/gip-3.md">Q2 OKR’s are finalized</a>. We intend to scale our core product, <a href="http://gitcoin.co/explorer">the Issue Explorer</a>, and add more to the toolset useful to the mission to grow open source        </li>
         </li>
     </ul>
 <p>
@@ -294,7 +294,7 @@ Our <a href="https://github.com/gitcoinco/GIPs/blob/570c2681cacdeaef7f4c73caad1c
 Want to be the first to know when new open issues are added? We launched <a href="https://twitter.com/gitcoinfeed">@gitcoinfeed on Twitter</a> which provides updates on all new activity on Gitcoin. 
         </li>
         <li>
-What open source projects do you want to see on Gitcoin? Let us know by replying back to this email... We’re offering a 15% finders fee if an intro you make leads to a funded issue!
+What open source projects do you want to see on Gitcoin? <a href="https://docs.google.com/forms/d/1AeiKhCO2TefXo8wAbFerjxe2Vgci3ueqzzUpa-PFPLo/edit">Let us know!</a> We’re offering a 15% finders fee if an intro you make leads to a funded issue!
         </li>
     </ul>
 </p>
