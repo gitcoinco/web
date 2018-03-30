@@ -18,6 +18,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import decimal
 import logging
 from datetime import datetime
 from urllib.parse import urlsplit
@@ -328,7 +329,7 @@ class Bounty(SuperModel):
         if self.token_name == 'USDT':
             return self.value_in_token
         if self.token_name == 'DAI':
-            return self.value_in_token / 10**18
+            return decimal.Decimal(self.value_in_token / 10**18)
         try:
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except Exception:
@@ -566,7 +567,7 @@ class Tip(SuperModel):
         if self.tokenName == 'USDT':
             return self.amount
         if self.tokenName == 'DAI':
-            return self.amount / 10**18
+            return decimal.Decimal(self.amount / 10**18)
         try:
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except Exception:
