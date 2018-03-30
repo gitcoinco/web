@@ -178,6 +178,7 @@ urlpatterns = [
     url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),
     url(r'^_administration/stats$', marketing.views.stats, name='stats'),
     url(r'^_administration/cohort$', marketing.views.cohort, name='cohort'),
+    url(r'^_administration/funnel$', marketing.views.funnel, name='funnel'),
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
