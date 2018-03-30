@@ -280,7 +280,7 @@ def render_new_bounty_roundup(to_email):
         <li>
 $20K (42ETH) in funded issues has made its way through the platform in the first 6 months of launch, leading 14.5k lines of (good) code on Pilot Projects like MetaMask, Truffle, web3py, MyCryptoWallet and more :)          </li>
         <li>
-We’ve reached 4,000+ Gitcoiners on the Newsletter / 2,000+ Gitcoiners on Slack & Twitter, respectively
+We’ve reached over 4096 Gitcoiners on the Newsletter & over 2048 Gitcoiners on Slack & Twitter, respectively
         </li>
         <li>
 Our <a href="https://github.com/gitcoinco/GIPs/blob/master/GIPS/gip-3.md">Q2 OKR’s are finalized</a>. We intend to scale our core product, <a href="http://gitcoin.co/explorer">the Issue Explorer</a>, and add more to the toolset useful to the mission to grow open source        </li>
