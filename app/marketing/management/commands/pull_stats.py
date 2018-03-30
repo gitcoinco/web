@@ -129,8 +129,8 @@ def faucet():
 def user_actions():
     from dashboard.models import UserAction
 
-    for action_type in UserAction.ACTION_TYPES:
-        action_type = action_type[0]
+    action_types = UserAction.objects.distinct('action').values_list('action', flat=True)
+    for action_type in action_types:
 
         val = UserAction.objects.filter(
             action=action_type,
