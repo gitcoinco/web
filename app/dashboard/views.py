@@ -445,7 +445,14 @@ def new_grant(request):
 
     if request.method == "POST":
         grant = Grant()
+
         grant.title = request.POST.get('title')
+        grant.pitch = request.POST.get('pitch')
+        grant.description = request.POST.get('description')
+        grant.reference_url = request.POST.get('reference_url');
+        grant.goal_funding = request.POST.get('goal_funding')
+
+        grant.save()
     else:
         grant = {}
 
