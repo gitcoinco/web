@@ -69,21 +69,36 @@ services:
     volumes:
       - .:/code
     depends_on:
+      - redis
+      - db
       - web
-    entrypoint: /bin/worker.bash
+    command: ["/code/bin/celery/worker.bash"]
 
   celery_beat:
     image: 'web'
     env_file: 'app/app/.env'
     environment:
-      - CELERY_BEAT_ENABLED=on
       - SERVICE_TYPE=beat
       - CELERY_APP=app
     volumes:
       - .:/code
     depends_on:
-      - web
-    entrypoint: /bin/worker.bash
+      - celery_worker
+    command: ["/code/bin/celery/worker.bash"]
+
+  celery_flower:
+    image: 'web'
+    env_file: 'app/app/.env'
+    environment:
+      - SERVICE_TYPE=flower
+      - CELERY_APP=app
+    volumes:
+      - .:/code
+    depends_on:
+      - celery_worker
+    ports:
+      - "5555:5555"
+    command: ["/code/bin/celery/worker.bash"]
 
   testrpc:
     image: trufflesuite/ganache-cli

@@ -37,4 +37,4 @@ RUN pip install -r dev.txt && \
     apt-get purge -y --auto-remove dos2unix wget gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev
 
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
-CMD ["bash", "/bin/docker-command.bash"]
+CMD ["bash", "/code/bin/docker-command.bash"]
