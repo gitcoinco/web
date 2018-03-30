@@ -89,7 +89,7 @@ def bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
     subject = bounty.github_url
     html, text = render_bounty_feedback(bounty, persona, previous_bounties)
     cc_emails = [from_email]
-    send_mail(from_email, to_email, subject, body, cc_emails=cc_emails)
+    send_mail(from_email, to_email, subject, html, cc_emails=cc_emails)
 
 
 def tip_email(tip, to_emails, is_new):
