@@ -227,7 +227,7 @@ def cohort_helper_timedelta(i, period_size):
 def cohort(request):
     cohorts = {}
 
-    data_source = request.GET.get('data_source', 'Slack')
+    data_source = request.GET.get('data_source', 'slack-online')
     num_periods = request.GET.get('num_periods', 10)
     period_size = request.GET.get('period_size', 'weeks')
     kwargs = {}
