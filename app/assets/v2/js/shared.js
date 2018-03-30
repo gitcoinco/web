@@ -187,14 +187,15 @@ var remove_interest = function(bounty_pk) {
 var mutate_interest = function(bounty_pk, direction) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
+  $('#submit').toggleClass('none');
+  if (direction === 'new')
+    _alert({message: "Thanks for letting us know that you're ready to start work."}, 'success');
+  else if (direction === 'remove')
+    _alert({message: "You've stopped working on this, thanks for letting us know."}, 'success');
+
   $.post(request_url, function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
-      if (direction === 'new')
-        _alert({message: "Thanks for letting us know that you're ready to start work."}, 'success');
-      else if (direction === 'remove')
-        _alert({message: "You've stopped working on this, thanks for letting us know."}, 'success');
-
       pull_interest_list(bounty_pk);
       return true;
     }
