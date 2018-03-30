@@ -48,8 +48,7 @@ services:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/code/app
       - SERVICE_TYPE=web
-    env_file:
-      - app/app/local.env
+    env_file: 'app/app/.env'
     build: .
     image: 'web'
     volumes:
@@ -62,6 +61,7 @@ services:
 
   celery_worker:
     image: 'web'
+    restart: unless-stopped
     env_file: 'app/app/.env'
     environment:
       - SERVICE_TYPE=worker
@@ -75,8 +75,10 @@ services:
     command: ["/code/bin/celery/worker.bash"]
 
   celery_beat:
-    image: 'web'
-    env_file: 'app/app/.env'
+    image: web
+    restart: unless-stopped
+    env_file:
+      - app/app/.env
     environment:
       - SERVICE_TYPE=beat
       - CELERY_APP=app
@@ -85,10 +87,13 @@ services:
     depends_on:
       - celery_worker
     command: ["/code/bin/celery/worker.bash"]
+    restart: unless-stopped
 
   celery_flower:
-    image: 'web'
-    env_file: 'app/app/.env'
+    image: web
+    restart: unless-stopped
+    env_file:
+      - app/app/.env
     environment:
       - SERVICE_TYPE=flower
       - CELERY_APP=app
@@ -102,6 +107,7 @@ services:
 
   testrpc:
     image: trufflesuite/ganache-cli
+    restart: unless-stopped
     ports:
       - "8545:8545"
     command: "-a 1 --seed 2"

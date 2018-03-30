@@ -173,12 +173,8 @@ if ENV not in ['local', 'test']:
             },
         },
         'handlers': {
-            'rotatingfilehandler': {
-                'level': 'DEBUG',
-                'class': 'logging.handlers.RotatingFileHandler',
-                'filename': '/var/log/django/debug.log',
-                'maxBytes': 1024 * 1024 * 10,  # 10 MB
-                'backupCount': 100,  # max 100 logs
+            'console': {
+                'class': 'logging.StreamHandler',
             },
             'mail_admins': {
                 'level': 'ERROR',
@@ -188,9 +184,10 @@ if ENV not in ['local', 'test']:
         },
         'loggers': {
             'django': {
-                'handlers': ['rotatingfilehandler', 'mail_admins'],
+                'handlers': ['console', 'mail_admins'],
                 'propagate': True,
                 'filters': ['require_debug_is_false'],
+                'level': env('DJANGO_LOG_LEVEL', default='INFO'),
             },
         },
     }
