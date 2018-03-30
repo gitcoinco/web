@@ -18,101 +18,121 @@
 {% load humanize %}
 
 <style>
-    .bounty_box {
+    a.button{
+        color: #fff;
+        background-color: #15003e;
+        box-shadow: 0px 2px rgba(0, 0, 0, 0.5);
+        padding: 6px 20px;
+        font-size: 14px;
+        line-height: 1.5;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .bounty-box {
+        margin-bottom: 2em;
         border-style: solid;
         border-width: 1px;
         border-color: #e0e0e0;
-        margin-bottom: 2em;
     }
-
-    .bounty_avatar {
-        max-height: 50px;
-        max-width: 50px;
+    .bounty-avatar {
+        text-align: right;
         margin: 1em;
     }
-
-    .bounty_contents {
+    .bounty-avatar img {
+        max-height: 50px;
+        max-width: 100%;
+    }
+    .bounty-contents {
         text-align: left;
+    }
+    .bounty {
+        display: flex;
+        padding: 2em;
     }
 </style>
 
-<div class="centered_contents" style="margin-bottom: 2em;">
-    <div class="pure-g bounty_box">
+<div class="centered-contents bounty-box">
+    <div class="bounty">
         {% if primer %}
             <p>
             {{primer}}
             <p>
         {% endif %}
 
-        <div class="pure-u-3-24">
-            <img class="pure-img bounty_avatar" src="{{bounty.local_avatar_url}}">
+        <div class="bounty-avatar">
+            <!-- <img src="{{bounty.local_avatar_url}}"> -->
+            <img src="https://avatars0.githubusercontent.com/u/513929?s=88&v=4">
         </div>
-        <div class="pure-u-21-24 bounty_contents">
-                {% if bounty.title %}
-                    <p>
-                        <b>{{bounty.org_name}}</b>: {{bounty.title}}
-                    </p>
-                {% endif %}
 
-                {% if not small %}
-                    {% if bounty.keywords %}
-                    <p>
-                        <b>Keywords:</b> {{bounty.keywords}}
-                    </p>
-                    {% endif %}
+        <div class="bounty-contents">
+            {% if bounty.title %}
+                <p>
+                    <b>{{bounty.org_name}}</b>: {{bounty.title}}
+                </p>
+            {% endif %}
 
-                    <p>
-                        <b>Github:</b> <a href="{{bounty.github_url}}">{{bounty.github_url}}</a>
-                    </p>
+            {% if not small %}
+                {% if bounty.keywords %}
+                <p>
+                    <b>Keywords:</b> {{bounty.keywords}}
+                </p>
                 {% endif %}
 
                 <p>
-                    <b>Amount:</b> {{bounty.value_true}} {{bounty.token_name}}
-                    {% if bounty.value_in_usdt %}
-                        (about {{bounty.value_in_usdt}} USD @ ${{bounty.token_value_in_usdt}}/{{bounty.token_name}})
+                    <b>Github:</b> <a href="{{bounty.github_url}}">{{bounty.github_url}}</a>
+                </p>
+            {% endif %}
+
+            <p>
+                <b>Amount:</b> {{bounty.value_true}} {{bounty.token_name}}
+                {% if bounty.value_in_usdt %}
+                    (about {{bounty.value_in_usdt}} USD @ ${{bounty.token_value_in_usdt}}/{{bounty.token_name}})
+                {% endif %}
+            </p>
+
+            {% if not small %}
+                <p>
+                    <b>Status:</b> {{bounty.status}}
+                    {% if bounty.status == 'submitted' %}
+                        ({{bounty.status}} by
+                        {% for fulfillment in bounty.fulfillments.all %}
+                            {% if fulfillment.fulfiller_github_username %}
+                                <a href="https://gitcoin.co/profile/{{fulfillment.fulfiller_github_username}}">{{fulfillment.fulfiller_github_username}}</a>
+                            {% elif fulfillment.fulfiller_email %}
+                                <a href="mailto:{{fulfillment.fulfiller_email}}">{{fulfillment.fulfiller_email}}</a>
+                            {% else %}
+                                <a href="https://etherscan.io/address/{{fulfillment.fulfiller_address}}">{{fulfillment.fulfiller_address}}</a>
+                            {% endif %}
+                        {% endfor %}
+                        )
+                    {% elif bounty.status == 'started' %}
+                        {% if bounty.interested.all|length > 0 %}
+                            by
+                        {% endif %}
+                        {% for interested in bounty.interested.all %}
+                        <a href="https://gitcoin.co/profile/{{interested.profile.handle}}"> {{interested}}</a>
+                        {% endfor %}
                     {% endif %}
                 </p>
 
-                {% if not small %}
-                    <p>
-                        <b>Status:</b> {{bounty.status}}
-                        {% if bounty.status == 'submitted' %}
-                            ({{bounty.status}} by
-                            {% for fulfillment in bounty.fulfillments.all %}
-                                {% if fulfillment.fulfiller_github_username %}
-                                    <a href="https://gitcoin.co/profile/{{fulfillment.fulfiller_github_username}}">{{fulfillment.fulfiller_github_username}}</a>
-                                {% elif fulfillment.fulfiller_email %}
-                                    <a href="mailto:{{fulfillment.fulfiller_email}}">{{fulfillment.fulfiller_email}}</a>
-                                {% else %}
-                                    <a href="https://etherscan.io/address/{{fulfillment.fulfiller_address}}">{{fulfillment.fulfiller_address}}</a>
-                                {% endif %}
-                            {% endfor %}
-                            )
-                        {% elif bounty.status == 'started' %}
-                            {% if bounty.interested.all|length > 0 %}
-                                by
-                            {% endif %}
-                            {% for interested in bounty.interested.all %}
-                            <a href="https://gitcoin.co/profile/{{interested.profile.handle}}"> {{interested}}</a>
-                            {% endfor %}
-                        {% endif %}
-                    </p>
+                <p>
+                    <b>Expires:</b> {{bounty.expires_date | naturaltime}}
+                </p>
 
-                    <p>
-                        <b>Expires:</b> {{bounty.expires_date | naturaltime}}
-                    </p>
-
-                    <p>
-                        <b>Specs:</b><br>
-                        Project Length: {% if bounty.project_length %}{{bounty.project_length}}{%else%}Not specified{%endif%}
-                        <br>
-                        Type: {% if bounty.bounty_type %}{{bounty.bounty_type}}{%else%}Not specified{%endif%}
-                        <br>
-                        Experience Level: {% if bounty.experience_level %}{{bounty.experience_level}}{%else%}Not specified{%endif%}
-                    </p>
-                {% endif %}
+                <p>
+                    <b>Specs:</b><br>
+                    Project Length: {% if bounty.project_length %}{{bounty.project_length}}{%else%}Not specified{%endif%}
+                    <br>
+                    Type: {% if bounty.bounty_type %}{{bounty.bounty_type}}{%else%}Not specified{%endif%}
+                    <br>
+                    Experience Level: {% if bounty.experience_level %}{{bounty.experience_level}}{%else%}Not specified{%endif%}
+                </p>
+            {% endif %}
         </div>
     </div>
 
-    <a class="button" href="{{bounty.absolute_url}}">View on Gitcoin</a>
+    <div style="margin-bottom: 2em;">
+        <a class="button" href="{{bounty.absolute_url}}">View on Gitcoin</a>
+    </div>
 </div>

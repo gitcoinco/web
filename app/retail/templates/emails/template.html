@@ -20,8 +20,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting" />
 
-<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
-
 <style>
     @font-face {
         font-family: "futura-pt";
@@ -31,10 +29,6 @@
       font-family: "futura-pt", Futura !important;
       margin: 0px;
       padding: 0px;
-    }
-    html, button, input, select, textarea,
-    .pure-g [class *= "pure-u"] {
-        font-family: "futura-pt", Futura;
     }
 
     h1, h2, h3, h4, h5, h6,
@@ -76,43 +70,37 @@
         vertical-align: middle;
         display: inline-block;
         max-height: 120px;
+        max-width: 100%;
     }
 
-    #grow_oss {
+    #grow-oss {
         display: inline-block;
         max-width: 100%;
     }
 
-    @media screen and (max-width: 35.5em) {
-        #header, #footer {
-            padding: 1em;
-        }
-    }
     #header {
         height: 200px;
-    }
-    #footer {
-        height: 300px;
     }
     #header, #footer {
         color: white;
         background-color: #15003e;
         align-content: center;
         text-align: center;
+        padding: 2em;
     }
 
-    #copyright, #legal_contact {
+    #copyright, #legal-contact {
         padding-top: 0.5em;
     }
 
     @media screen and (min-width: 35.5em) {
-        .social_img {
+        .social-img {
             max-height: 50px;
             max-width: 50px;
         }
     }
     @media screen and (max-width: 35.5em) {
-        .social_img {
+        .social-img {
             max-height: 45px;
             max-width: 45px;
         }
@@ -120,6 +108,7 @@
 
     a {
         color: #70b2ff;
+        text-decoration: none;
     }
     p, a, span{
         font-size: 12px;
@@ -128,24 +117,31 @@
         line-height: 18px;
     }
 
-    a.button{
-        color: #fff;
-        background-color: #15003e;
-        box-shadow: 0px 2px rgba(0, 0, 0, 0.5);
-        padding: 6px 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        text-align: center;
-        text-decoration: none;
-    }
-
-    .centered_contents {
+    .centered-contents {
         text-align: center;
     }
 
-    .primary_content {
+    .primary-content {
         padding: 2em;
         background-color: white;
+    }
+    @media screen and (min-width: 35.5em) {
+        .primary-content {
+            margin-left: 20%;
+            margin-right: 20%;
+        }
+    }
+    @media screen and (min-width: 48em) {
+        .primary-content {
+            margin-left: 10%;
+            margin-right: 10%;
+        }
+    }
+    @media screen and (max-width: 48em) {
+        .primary-content {
+            margin-left: 0;
+            margin-right: 0;
+        }
     }
 </style>
 
@@ -153,42 +149,36 @@
     {% if not hide_header %}
     <div id="header">
         <a href="https://gitcoin.co">
-            <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" class="pure-img" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin Logo" title="Gitcoin Logo">
+            <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin Logo" title="Gitcoin Logo">
         </a>
     </div>
     {% endif %}
 
-    <div class="pure-g">
-        <div class="pure-u-1-5"></div>
-        <div class="pure-u-3-5">
-            <div class="primary_content centered_contents">
-                {% block content %}
-                {% endblock %}
-                <img id="grow_oss" class="pure-img" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
-            </div>
-        </div>
-        <div class="pure-u-1-5"></div>
+    <div class="primary-content centered-contents">
+        {% block content %}
+        {% endblock %}
+        <img id="grow-oss" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
     </div>
 
-    <div id="footer" class="pure-g">
-        <div class="pure-u-1-1">
-            <a href="https://www.twitter.com/GetGitcoin"><img class="social_img" src="{% static "v2/images/social/twitter_new.png" %}"></a>
+    <div id="footer" class="centered-contents">
+        <div>
+            <a href="https://www.twitter.com/GetGitcoin"><img class="social-img" src="{% static "v2/images/social/twitter_new.png" %}"></a>
 
-            <a href="https://www.medium.com/gitcoin"><img class="social_img" src="{% static "v2/images/social/medium_new.png" %}"></a>
+            <a href="https://www.medium.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/medium_new.png" %}"></a>
 
-            <a href="https://www.facebook.com/GetGitcoin"><img class="social_img" src="{% static "v2/images/social/facebook_new.png" %}"></a>
+            <a href="https://www.facebook.com/GetGitcoin"><img class="social-img" src="{% static "v2/images/social/facebook_new.png" %}"></a>
 
-            <a href="https://reddit.com/r/gitcoincommunity"><img class="social_img" src="{% static "v2/images/social/reddit_new.png" %}"></a>
+            <a href="https://reddit.com/r/gitcoincommunity"><img class="social-img" src="{% static "v2/images/social/reddit_new.png" %}"></a>
 
-            <a href="https://gitcoin.co/slack"><img class="social_img" src="{% static "v2/images/social/slack_new.png" %}"></a>
+            <a href="https://gitcoin.co/slack"><img class="social-img" src="{% static "v2/images/social/slack_new.png" %}"></a>
         </div>
-        <div class="pure-u-1-1">
+        <div>
             <div id="copyright">
                 <p>
                     <span>Copyright &copy; 2018 Gitcoin, All rights reserved.</span>
                 </p>
             </div>
-            <div id="legal_contact">
+            <div id="legal-contact">
                 <p>
                     Want to change how you receive these emails?
                     <br>
