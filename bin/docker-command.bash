@@ -19,10 +19,13 @@ fi
 python manage.py createcachetable
 python manage.py collectstatic --noinput -i "$COLLECTSTATIC_IGNORE" &
 python manage.py migrate
-python manage.py get_prices
+# python manage.py get_prices
 
+echo "Environment: ($ENV)"
 if [[ "$ENV" == "prod" ]] || [[ "$ENV" == "stage" ]]; then
-    exec gunicorn app.wsgi:application -c python:gunicorn_conf
+    echo "Running Gunicorn!"
+    exec gunicorn app.wsgi:application -c /code/app/gunicorn_conf.py -p /code/app/gunicorn.pid
 else
+    echo "Running Django Testserver!"
     exec python3 manage.py "${WEB_RUNNER:-runserver}" "${WEB_BIND_INTERFACE:-0.0.0.0:8000}"
 fi
