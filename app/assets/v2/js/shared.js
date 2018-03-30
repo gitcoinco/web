@@ -714,3 +714,7 @@ var setUsdAmount = function(event) {
     $('#usd_amount').html(estimate);
   });
 };
+
+
+// Enum object for mapping bounty stages to the int returned by smart contract
+var bountyStageEnum = Object.freeze({'Draft': 0, 'Active': 1, 'Dead': 2});

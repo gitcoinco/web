@@ -174,15 +174,31 @@ window.onload = function() {
                     return;
                   }
 
-                  // If all tests pass, attempt tx
-                  bounty.fulfillBounty(
-                    bountyId,
-                    document.ipfsDataHash,
-                    {
-                      gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
-                    },
-                    web3Callback
-                  );
+                  bounty.getBounty.call(bountyId, (errStr, bountyParams) => {
+                    var curTime = Math.floor(Date.now() / 1000.0);
+                    var deadlineTime = bountyParams[1].toNumber();
+
+                    if (bountyParams[4] != bountyStageEnum['Active']) {
+                      errStr = 'The bounty for this Github URL is not active.';
+                    } else if (deadlineTime < curTime) {
+                      errStr = 'The bounty for this Github URL has expired.';
+                    }
+                    if (errStr) {
+                      _alert({ message: errStr });
+                      unloading_button($('.js-submit'));
+                      return;
+                    }
+
+                    // If all tests pass, attempt tx
+                    bounty.fulfillBounty(
+                      bountyId,
+                      document.ipfsDataHash,
+                      {
+                        gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
+                      },
+                      web3Callback
+                    );
+                  });
                 });
               });
             }

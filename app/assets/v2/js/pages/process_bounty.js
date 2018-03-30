@@ -166,7 +166,16 @@ window.onload = function() {
             }
           };
 
-          bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)}, final_callback);
+          // Retrieve parameters for bounty from blockchain
+          bounty.getBounty.call(bountyId, (errStr, bountyParams) => {
+            if (bountyParams[4] != bountyStageEnum['Active']) {
+              _alert({ message: 'The bounty for this Github URL is not active.' });
+              unloading_button($('.js-submit'));
+              return;
+            }
+
+            bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)}, final_callback);
+          });
         });
       };
       // Get bountyId from the database
