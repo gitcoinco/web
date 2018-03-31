@@ -58,8 +58,7 @@
       },
       function(result) {
         applyThreadsData(result.response, ideas);
-        callback();
-      });
+      }).always(callback);
   }
 
   function applyThreadsData(threads, ideas) {
