@@ -65,7 +65,7 @@
                 {% for tool in actor.tools %}
                   <div class="card {{tool.class}}" id="{{tool.name}}">
                     <div class="img">
-                      <img src="{{tool.img}}" {% if tool.stat_graph %} {% endif %} />
+                      <img src="{{tool.img_url}}" {% if tool.stat_graph %} data-hover="{% url "stat" "" %}{{tool.stat_graph}}" {% endif %} />
                     </div>
                     <div class="content">
                       <div class="title">{{tool.name}}</div>
@@ -75,7 +75,7 @@
                       </div>
                       {% if tool.link_copy %}
                           <div class="button_container">
-                            <a class="btn btn-xs btn-success pulseClick" role="button" href="{{tool.link}}">{{tool.link_copy}} ></a>
+                            <a class="btn btn-xs btn-success pulseClick" role="button" href="{{tool.link_url}}">{{tool.link_copy}} ></a>
                           </div>
                       {% endif %}
                       {% comment %}

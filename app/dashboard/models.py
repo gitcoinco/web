@@ -27,9 +27,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import JSONField
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -1154,3 +1156,39 @@ class CoinRedemptionRequest(SuperModel):
     txid = models.CharField(max_length=255, default='')
     txaddress = models.CharField(max_length=255)
     sent_on = models.DateTimeField(null=True)
+
+class Tool(SuperModel):
+    """Define the tool shcema."""
+
+    # TOOL_CATEGORIES = [
+    #     ('BASIC', 'Basic'),
+    #     ('ADVANCED', 'Advanced'),
+    #     ('COMMUNITY', 'Community'),
+    #     ('GITCOIN_BUILD', 'Tools to BUIDL Gitcoin'),
+    #     ('ALPHA', 'Tools in Alpha'),
+    #     ('COMING_SOON', 'Tools Coming Soon'),
+    #     ('COMING_SOON', 'Tools Coming Soon'),
+    #     ('FUN', 'Just for fun')
+    # ]
+    
+    name = models.CharField(max_length=255)
+    category = models.CharField(max_length=20)
+    img = models.CharField(max_length=255)
+    description = models.CharField(max_length=1000)
+    url_name = models.CharField(max_length=40)
+    link = models.CharField(max_length=255)
+    link_copy = models.CharField(max_length=255)
+    active = models.BooleanField(default=False)
+    new = models.BooleanField(default=False)
+    stat_graph = models.CharField(max_length=255)
+
+    @property
+    def img_url(self): 
+        return static(self.img)
+
+    @property
+    def link_url(self):
+        if self.url_name:
+            return reverse(self.url_name)
+        else:
+            return self.link
