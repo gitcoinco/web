@@ -50,7 +50,7 @@ urlpatterns = [
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cluodfront
 
     # grant views
-    path('grant/<int:grant_id>/', dashboard.views.grant_show, name='grant_show'),
+    path('grant/<int:grant_id>/', dashboard.views.grant_show, name='grant'),
     url(r'^grants/new?', dashboard.views.new_grant, name='new_grant'),
     url(r'^grants/explorer/?', dashboard.views.grants_explorer, name='grants_explorer'),
     url(r'^grants/?', dashboard.views.grants, name='grants'),

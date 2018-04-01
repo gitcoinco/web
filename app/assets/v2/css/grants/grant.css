@@ -1,0 +1,92 @@
+.bottom-buffer {
+  margin-bottom: 24px;
+}
+
+.grant {
+  border: 1px solid #D8D8D8;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-decoration: none;
+  padding: 24px;
+}
+
+.grant:hover {
+  text-decoration: none;
+  border: 1px solid #0D0764;
+}
+
+.grant__title {
+  color: #000000;
+  font-size: 16px;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+  padding: 0;
+}
+
+.grant__pitch {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 14px;
+}
+
+.grant__owner {
+  align-items: center;
+  display: flex;
+  margin-bottom: 15px;
+  margin-top: 22px;
+}
+
+.grant__owner-image {
+  height: 30px;
+  width: 30px;
+  margin-right: 7px;
+}
+
+.grant__owner-image img {
+  border-radius: 3px;
+  width: 100%;
+}
+
+.grant__owner-handle {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 14px;
+}
+
+.grant__owner-handle span {
+  color: #0D0764;
+  font-weight: bold;
+}
+
+.grant__footer {
+  margin-top: auto;
+}
+
+.grant__funding {
+  display: flex;
+  justify-content: space-between;
+}
+
+.grant__funding-number {
+  color: #0D0764;
+  font-weight: bold;
+}
+
+.grant__funding-label {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 14px;
+}
+
+.progress-bar {
+  background-color: #D8D8D8;
+  display: block;
+  height: 5px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.progress-bar .progress {
+  background-color: #0FCE7C;
+  height: 5px;
+  width: 50%;
+}

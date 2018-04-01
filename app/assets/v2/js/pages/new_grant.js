@@ -9,5 +9,7 @@ window.onload = function() {
         data[this.name] = this.value;
       });
     }
+
+    $(form).submit();
   });
 };
