@@ -432,6 +432,7 @@ def dashboard(request):
 
 def grant_show(request, grant_id):
     grant = Grant.objects.get(pk=grant_id)
+
     params = {
         'active': 'dashboard',
         'title': 'Grant Show',
@@ -442,6 +443,8 @@ def grant_show(request, grant_id):
 
 def new_grant(request):
     """Handle new grant."""
+    profile_id = request.session.get('profile_id')
+    profile = Profile.objects.get(pk=profile_id)
 
     if request.method == "POST":
         grant = Grant()
@@ -451,6 +454,7 @@ def new_grant(request):
         grant.description = request.POST.get('description')
         grant.reference_url = request.POST.get('reference_url');
         grant.goal_funding = request.POST.get('goal_funding')
+        grant.profile = profile
 
         grant.save()
     else:
