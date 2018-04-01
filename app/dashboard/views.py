@@ -38,7 +38,7 @@ from django.views.decorators.http import require_POST
 from app.utils import ellipses, sync_profile
 from dashboard.models import (
     Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip, Tool,
-    UserAction,
+    ToolVote, UserAction,
 )
 from dashboard.notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
@@ -821,6 +821,10 @@ def apitos(request):
 
 
 def toolbox(request):
+    access_token = request.GET.get('token')    
+    if access_token and is_github_token_valid(access_token):
+        helper_handle_access_token(request, access_token)
+
     basic_tools = Tool.objects.filter(category='BASIC')
     advanced_tools = Tool.objects.filter(category='ADVANCED')
     community_tools = Tool.objects.filter(category='COMMUNITY')
@@ -862,6 +866,11 @@ def toolbox(request):
     for key in range(0, len(actors)):
         actors[key]['slug'] = slugify(actors[key]['title'])
 
+    profile_id = request.session.get('profile_id')
+    ups = list(ToolVote.objects.filter(profile_id = profile_id, value = 1).values_list('tool', flat=True))
+    profile_up_votes_tool_ids = ','.join(str(x) for x in ups)
+    downs = list(ToolVote.objects.filter(profile_id = profile_id, value = -1).values_list('tool', flat=True))
+    profile_down_votes_tool_ids = ','.join(str(x) for x in downs)
     context = {
         "active": "tools",
         'title': _("Toolbox"),
@@ -870,9 +879,64 @@ def toolbox(request):
         "card_desc": _("Accelerate your dev workflow with Gitcoin\'s incentivization tools."),
         'actors': actors,
         'newsletter_headline': _("Don't Miss New Tools!")
+        'profile_up_votes_tool_ids': profile_up_votes_tool_ids,
+        'profile_down_votes_tool_ids': profile_down_votes_tool_ids
     }
     return TemplateResponse(request, 'toolbox.html', context)
 
+@csrf_exempt
+@require_POST
+def vote_tool_up(request, tool_id):
+
+    access_token = request.GET.get('token')    
+    if access_token and is_github_token_valid(access_token):
+        helper_handle_access_token(request, access_token)
+
+    tool = Tool.objects.get(pk=tool_id)    
+
+    profile_id = request.session.get('profile_id')
+    if not profile_id:
+        return JsonResponse(
+            {'error': 'You must be authenticated via github to use this feature!'},
+            status=401)
+
+    try:
+        ToolVote.objects.get(profile_id=profile_id, tool=tool)
+        return JsonResponse({
+            'error': 'You have already voted on this tool!',
+            'success': False},
+            status=401)
+    except ToolVote.DoesNotExist:
+        vote = ToolVote.objects.create(profile_id=profile_id, value=1)
+        tool.votes.add(vote)        
+    return JsonResponse({'success': True})   
+
+@csrf_exempt
+@require_POST
+def vote_tool_down(request, tool_id):
+
+    access_token = request.GET.get('token')    
+    if access_token and is_github_token_valid(access_token):
+        helper_handle_access_token(request, access_token)
+
+    tool = Tool.objects.get(pk=tool_id)    
+
+    profile_id = request.session.get('profile_id')
+    if not profile_id:
+        return JsonResponse(
+            {'error': 'You must be authenticated via github to use this feature!'},
+            status=401)
+
+    try:
+        ToolVote.objects.get(profile_id=profile_id, tool=tool)
+        return JsonResponse({
+            'error': 'You have already voted on this tool!',
+            'success': False},
+            status=401)
+    except ToolVote.DoesNotExist:
+        vote = ToolVote.objects.create(profile_id=profile_id, value=-1)
+        tool.votes.add(vote)        
+    return JsonResponse({'success': True})   
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)

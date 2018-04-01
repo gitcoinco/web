@@ -42,4 +42,36 @@ $(document).ready(function() {
       });
     }
   });
+
+  function voteCallback(toolId, direction) {
+    var scoreEl = $('#' + toolId + '_vote .score');
+    var upVoteButton = $('#' + toolId + '_vote .vote-up');
+    var downVoteButton = $('#' + toolId + '_vote .vote-down');
+
+    if (direction == 1)
+      upVoteButton.addClass('active');
+    if (direction == -1)
+      downVoteButton.addClass('active');
+    upVoteButton.attr('disabled', true);
+    downVoteButton.attr('disabled', true);
+    scoreEl.text(parseInt(scoreEl.text()) + direction);
+  }
+
+  $('.vote-up').click(function() {
+    var el = $(this);
+    var toolId = el.data('tool-id');
+
+    $.post('/actions/tool/' + toolId + '/voteUp', {}, function() {
+      voteCallback(toolId, 1);
+    });
+  });
+  $('.vote-down').click(function() {
+    var el = $(this);
+    var toolId = el.data('tool-id');
+
+    $.post('/actions/tool/' + toolId + '/voteDown', {}, function() {
+      voteCallback(toolId, -1);
+    });
+  });
+
 });

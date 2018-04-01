@@ -1159,17 +1159,6 @@ class CoinRedemptionRequest(SuperModel):
 
 class Tool(SuperModel):
     """Define the tool shcema."""
-
-    # TOOL_CATEGORIES = [
-    #     ('BASIC', 'Basic'),
-    #     ('ADVANCED', 'Advanced'),
-    #     ('COMMUNITY', 'Community'),
-    #     ('GITCOIN_BUILD', 'Tools to BUIDL Gitcoin'),
-    #     ('ALPHA', 'Tools in Alpha'),
-    #     ('COMING_SOON', 'Tools Coming Soon'),
-    #     ('COMING_SOON', 'Tools Coming Soon'),
-    #     ('FUN', 'Just for fun')
-    # ]
     
     name = models.CharField(max_length=255)
     category = models.CharField(max_length=20)
@@ -1181,6 +1170,7 @@ class Tool(SuperModel):
     active = models.BooleanField(default=False)
     new = models.BooleanField(default=False)
     stat_graph = models.CharField(max_length=255)
+    votes = models.ManyToManyField('dashboard.ToolVote', blank=True)    
 
     @property
     def img_url(self): 
@@ -1191,4 +1181,16 @@ class Tool(SuperModel):
         if self.url_name:
             return reverse(self.url_name)
         else:
-            return self.link
+            return self.link    
+
+    def vote_score(self):
+        score = 0
+        for vote in self.votes.all():
+            score += vote.value
+        return score                
+    
+class ToolVote(models.Model):
+    """Define the vote placed on a tool."""
+
+    profile = models.ForeignKey('dashboard.Profile', related_name='votes', on_delete=models.CASCADE)
+    value = models.IntegerField(default=0)
