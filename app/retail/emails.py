@@ -78,7 +78,7 @@ def render_bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
     previous_bounties_str = ", ".join([bounty.github_url for bounty in previous_bounties])
     if persona != 'submitter':
         accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
-        github_username = " @" + accepted_fulfillments.first().fulfiller_github_username if accepted_fulfillments.exists() else ""
+        github_username = " @" + accepted_fulfillments.first().fulfiller_github_username if accepted_fulfillments.exists() and accepted_fulfillments.first().fulfiller_github_username else ""
         txt = f"""
 hi{github_username},
 
