@@ -202,7 +202,7 @@ a.btn {
 }
 
 #right_actions .button--primary {
-  margin-right: 10px;
+  margin-right: 5px;
   position: relative;
   top: 1px;
 }
@@ -211,12 +211,24 @@ a.btn {
   border: 1px solid #979797;
   color: #0D0764;
   border-radius: 3px;
+  position: relative;
 }
 
+#btn-white img {
+  position: absolute;
+  width: 19px;
+  top: 7px;
+  right: 8px;
+}
+ 
 #btn-white .github-comment {
   border-left: 1px solid #979797;
   padding-left: 12px;
   margin-left: 5px;
+  z-index: 1;
+  color: #FFFFFF;
+  position: relative;
+  font-size: 10px;
 }
 
 .activity {
