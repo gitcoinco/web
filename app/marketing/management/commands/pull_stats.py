@@ -257,7 +257,7 @@ def bounties_by_status():
 
         Stat.objects.create(
             key='bounties_{}_total'.format(status),
-            val=eligible_bounties.count(),
+            val=numerator_bounties.count(),
             )
 
 
