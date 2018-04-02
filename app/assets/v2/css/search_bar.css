@@ -28,6 +28,7 @@
 }
 
 .search-area {
+  position: relative;
   margin-top: 15px;
 }
 
@@ -81,7 +82,28 @@
   font-size: 9px;
 }
 
-@media (max-width: 767.98px) {
+.ui-autocomplete {
+  height: 33.33%;
+  overflow-y: scroll;
+}
+
+.close-icon {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  width: 22px;
+  display: none;
+  cursor: pointer;
+}
+
+/* Remove IE default X */
+#keywords::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+@media (max-width: 768px) {
   .title-row {
     display: inline-block;
   }
@@ -96,7 +118,7 @@
 
   .search-area {
     margin-bottom: 10px;
-    margin-left: 0px;
+    margin-left: 0;
   }
 
   .search_bar #new_search {
@@ -110,7 +132,7 @@
   }
 
   .order_by .sort_option:last-child {
-    margin-right: 0px;
+    margin-right: 0;
   }
 
   .search_bar div {
