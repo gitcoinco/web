@@ -1,5 +1,5 @@
 body {
-  font-family: "Muli";
+  font-family: 'Muli';
   background-color: #FFF;
 }
 
@@ -8,7 +8,7 @@ body {
 }
 
 .explorer {
-  font-family: "Muli-SemiBold";
+  font-family: 'Muli-SemiBold';
   margin-top: 2em;
   color: #3E00FF;
 }
@@ -47,7 +47,7 @@ body {
   text-align: center;
   font-size: 16px;
   color: #7A7A7A;
-  font-family: "Muli-SemiBold";
+  font-family: 'Muli-SemiBold';
 }
 
 .box .empty p {
@@ -61,7 +61,7 @@ body {
 }
 
 .bounty-heading {
-  font-family: "Muli-SemiBold";
+  font-family: 'Muli-SemiBold';
   margin-bottom: 1em;
   margin-top: 2em;
   font-size: 18px;
@@ -98,7 +98,7 @@ body {
 .bounty-info div {
   display: inline;
   margin-right: 15px;
-  font-family: "Muli-Light";
+  font-family: 'Muli-Light';
 }
 
 .bounty-info-heading {
@@ -141,14 +141,14 @@ body {
   color: #6184AC;
 }
 
-#issue_keywords .keyword:first-child{
+#issue_keywords .keyword:first-child {
   margin-left: 0;
 }
 
 #started_owners_username,
 #fulfilled_owners_username,
 #submitted_owners_username {
-  padding-left:0;
+  padding-left: 0;
   margin: 10px;
   display: flex;
   justify-content: center;
@@ -160,7 +160,7 @@ body {
 #submitted_owners_username a,
 #started_owners_username svg,
 #fulfilled_owners_username svg,
-#submitted_owners_username svg  {
+#submitted_owners_username svg {
   margin-left: 5px;
   margin-right: 5px;
 }
@@ -175,7 +175,7 @@ body {
   color: #0D0764;
   margin-bottom: 5px;
   text-transform: capitalize;
-  font-family: "Muli-SemiBold";
+  font-family: 'Muli-SemiBold';
 }
 
 .contributor-box {
@@ -197,7 +197,7 @@ body {
   color: #333333;
   letter-spacing: 0;
   text-transform: capitalize;
-  font-family: "Muli-SemiBold";
+  font-family: 'Muli-SemiBold';
 }
 
 .contributor-box svg {
@@ -207,7 +207,7 @@ body {
   color: #333333;
 }
 
-a.btn{
+a.btn {
   border-radius: 0.2rem;
 }
 
@@ -215,7 +215,6 @@ a.btn{
 .activity-avatar {
   text-align: center;
 }
-
 
 #right_actions .button--primary {
   margin-right: 10px;
@@ -289,7 +288,7 @@ a.btn{
   margin-bottom: 2em;
 }
 
-#bounty_details #issue_description img{
+#bounty_details #issue_description img {
   max-width: 100%;
 }
 
@@ -310,35 +309,28 @@ a.btn{
 }
 
 @media (max-width: 767px) {
-
   .bounty-actions {
     display: block;
   }
-
   .bounty-actions .col-12 {
     text-align: center;
   }
-
   #bounty_details .tags {
     margin-top: 10px;
     float: none;
   }
-
   #bounty_details .row {
     margin: 0px;
     padding-left: 10px;
     padding-right: 10px;
   }
-
   .contributor-box,
   #bounty_details .row.activity {
     margin-bottom: 10px;
   }
-
   .contributor-box {
     border: 1px solid #DBDBDB;
   }
-
   .actions {
     margin-bottom: 20px;
   }

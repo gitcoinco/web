@@ -1,6 +1,6 @@
 #upper_left {
   min-height: 100px;
-  font-family: "Muli-SemiBold";
+  font-family: 'Muli-SemiBold';
   background-color: #26cd7f;
   color: #000000;
 }
@@ -15,8 +15,8 @@
 }
 
 #sidebar_head {
-    text-align: center;
-    line-height: 1.3em;
+  text-align: center;
+  line-height: 1.3em;
 }
 
 #sidebar_p {
@@ -48,6 +48,7 @@
 }
 
 /* Refactor needed  */
+
 #upper_left a {
   color: black;
   text-decoration: underline;

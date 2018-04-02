@@ -1,28 +1,28 @@
-#leaderboard .leaderboard_entry{
+#leaderboard .leaderboard_entry {
   padding: 10px 0px;
 }
 
-#leaderboard .leaderboard_entry img{
-   max-height: 100px;
-   border-radius: 50%;
+#leaderboard .leaderboard_entry img {
+  max-height: 100px;
+  border-radius: 50%;
 }
 
-#leaderboard .leaderboard_entry{
+#leaderboard .leaderboard_entry {
   color: black;
   text-decoration: none;
 }
 
-#leaderboard .leaderboard_entry a{
+#leaderboard .leaderboard_entry a {
   color: #8b8b8b;
 }
 
-#leaderboard .leaderboard_entry .item-amount{
-  font-size:1.5em;
+#leaderboard .leaderboard_entry .item-amount {
+  font-size: 1.5em;
   font-weight: bold;
   color: #86eec4;
 }
 
-#leaderboard .leaderboard_entry .item-position{
+#leaderboard .leaderboard_entry .item-position {
   color: #8b8b8b;
 }
 
@@ -30,11 +30,11 @@
   background-color: #f8f8f8;
 }
 
-#leaderboard .progress_container{
+#leaderboard .progress_container {
   padding-top: 2.5em;
 }
 
-#leaderboard #key{
+#leaderboard #key {
   right: 0px;
   display: block;
   position: absolute;
@@ -42,10 +42,11 @@
   margin-top: 5px;
 }
 
- #leaderboard .podium {
+#leaderboard .podium {
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
-  background: #f5136e; /* For browsers that do not support gradients */
+  background: #f5136e;
+  /* For browsers that do not support gradients */
   background: -webkit-gradient(linear, center top, center bottom, from(#f5136e), to(#0f023c));
   background: -webkit-linear-gradient(#f5136e, #0f023c);
   background: -moz-linear-gradient(#f5136e, #0f023c);
@@ -54,15 +55,14 @@
   background: linear-gradient(#f5136e, #0f023c);
 }
 
-
 #leaderboard .winner {
   position: relative;
   padding: 0px;
 }
 
 #leaderboard .winner-content {
-  top:40%;
-  left:0;
+  top: 40%;
+  left: 0;
   position: absolute;
 }
 
@@ -74,29 +74,29 @@
   background-size: contain;
 }
 
-#leaderboard .winner-content .winner-position-first  {
+#leaderboard .winner-content .winner-position-first {
   background-image: url('/static/v2/images/leaderboard-1.png');
 }
 
-#leaderboard .winner-content .winner-position-second  {
+#leaderboard .winner-content .winner-position-second {
   background-image: url('/static/v2/images/leaderboard-2.png');
 }
 
-#leaderboard .winner-content .winner-position-third  {
+#leaderboard .winner-content .winner-position-third {
   background-image: url('/static/v2/images/leaderboard-3.png');
 }
 
-#leaderboard .winner img{
+#leaderboard .winner img {
   opacity: 0.5;
   min-height: 23em;
 }
 
-#leaderboard .winner img:hover{
+#leaderboard .winner img:hover {
   opacity: 0.55;
 }
 
-#leaderboard .winner a{
-  color:white;
+#leaderboard .winner a {
+  color: white;
 }
 
 #leaderboard .clickable-row {
@@ -104,70 +104,58 @@
 }
 
 @media (max-width: 1300px) {
-  #leaderboard .winner img{
+  #leaderboard .winner img {
     min-height: 20em;
   }
 }
 
 @media (max-width: 1025px) {
-  #leaderboard .leaderboard_entry div{
+  #leaderboard .leaderboard_entry div {
     width: 30%;
   }
-
-  #leaderboard .leaderboard_entry div:nth-child(2){
+  #leaderboard .leaderboard_entry div:nth-child(2) {
     width: 30%;
   }
-
-  #leaderboard .leaderboard_entry div.progress{
+  #leaderboard .leaderboard_entry div.progress {
     width: 100%;
   }
-
-  #leaderboard .winner img{
+  #leaderboard .winner img {
     min-height: 18em;
   }
 }
 
 @media (max-width: 700px) {
-  #leaderboard .select{
+  #leaderboard .select {
     display: none;
   }
-
-  #leaderboard h3{
+  #leaderboard h3 {
     font-size: 1.3rem;
   }
-
-  #leaderboard .leaderboard_entry h4{
+  #leaderboard .leaderboard_entry h4 {
     font-size: 22px;
   }
-
-  #leaderboard .winner h2{
+  #leaderboard .winner h2 {
     font-size: 22px;
   }
-
-  #leaderboard .winner h5{
+  #leaderboard .winner h5 {
     font-size: 18px;
   }
-
   #leaderboard .winner-content {
-    top:20%;
+    top: 20%;
   }
-
   #leaderboard .winner img {
     min-height: 12em;
   }
-
   #leaderboard .col-6 {
     flex: 0 0 25%;
     max-width: 25%;
   }
-
   #leaderboard .col-2 {
     flex: 0 0 30%;
     max-width: 30%;
     overflow-x: hidden;
   }
-
-  #leaderboard .progress_container{
+  #leaderboard .progress_container {
     padding-top: 1.5em;
   }
 }
@@ -176,19 +164,15 @@
   #leaderboard .leaderboard_entry h4 {
     font-size: 18px;
   }
-
   #leaderboard .winner h2 {
     font-size: 18px;
   }
-
   #leaderboard .winner h5 {
     font-size: 16px;
   }
-
   #leaderboard .winner-content {
     top: 20%;
   }
-
   #leaderboard .winner img {
     min-height: 6em;
   }

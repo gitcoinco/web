@@ -29,7 +29,7 @@
   display: none;
 }
 
-a#submitFaucet.disabled{
+a#submitFaucet.disabled {
   background-color: grey;
 }
 
@@ -37,28 +37,22 @@ a#submitFaucet.disabled{
   .form-container {
     width: 90%;
   }
-
   .faucet-form-img {
     max-width: 150px;
     margin-bottom: 20px;
   }
-
   .faucet-form-submit {
     width: 100%;
   }
-
   .faucet-comment {
     height: 100px;
   }
-
   .faucet-input {
     border-radius: 0;
   }
-
   .hidden-mobile {
     display: none;
   }
-
   .hidden-desktop {
     display: block;
   }

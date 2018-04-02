@@ -6,36 +6,36 @@
 
 /* Basic */
 
-	body {
-		background-image: url("/static/yge/images/bg.jpg");
-		background-repeat: no-repeat;
-		background-size: cover;
-		background-position: bottom center;
-		background-attachment: fixed;
-	}
+body {
+  background-image: url('/static/yge/images/bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: bottom center;
+  background-attachment: fixed;
+}
 
-		body:after {
-			display: none;
-		}
+body:after {
+  display: none;
+}
 
 /* List */
 
-	ul.icons li a:before {
-		color: #c8cccf;
-	}
+ul.icons li a:before {
+  color: #c8cccf;
+}
 
-	ul.icons li a:hover:before {
-		color: #ff7496;
-	}
+ul.icons li a:hover:before {
+  color: #ff7496;
+}
 
 /* Wrapper */
 
-	#wrapper {
-		text-align: center;
-	}
+#wrapper {
+  text-align: center;
+}
 
 /* Main */
 
-	#main {
-		display: inline-block;
-	}
+#main {
+  display: inline-block;
+}

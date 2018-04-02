@@ -3,7 +3,7 @@
   display: none;
 }
 
-.body{
+.body {
   background-image: url('/static/v2/images/background.png');
   background-repeat: repeat;
 }
@@ -95,7 +95,7 @@
   fill: #5F5FB6;
 }
 
- .bounty__fiat-price .icon svg {
+.bounty__fiat-price .icon svg {
   fill: #15D17C;
 }
 
@@ -103,12 +103,16 @@
   text-align: center;
 }
 
-pre{
-    white-space: pre-wrap;       /* Since CSS 2.1 */
-    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;     
+pre {
+  white-space: pre-wrap;
+  /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap;
+  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;
+  /* Opera 4-6 */
+  white-space: -o-pre-wrap;
+  /* Opera 7 */
+  word-wrap: break-word;
 }
 
 @media (max-width: 992px) {
@@ -116,7 +120,6 @@ pre{
   .bounty__action {
     display: none !important;
   }
-
   .bounty-container .bounty__header {
     width: 100%;
   }

@@ -1,7 +1,8 @@
 .ios {
   background: #fefefe;
 }
-.ios .header{
+
+.ios .header {
   background: none;
 }
 
@@ -29,13 +30,15 @@
   font-family: Futura;
   font-size: 2em;
 }
+
 .ios-hero__container .header-line {
   letter-spacing: normal;
   line-height: normal;
-  font-size:3rem;
+  font-size: 3rem;
   font-style: normal;
   padding-top: 150px;
 }
+
 .ios-hero__container .header-line h3 {
   font-size: 1.75rem;
 }
@@ -68,23 +71,24 @@
 }
 
 .ios .video__wrapper {
-  display:table;
-  width:auto;
-  position:relative;
+  display: table;
+  width: auto;
+  position: relative;
   width: 100%;
 }
+
 .ios .video__wrapper .playpause {
-  background-image:url(/static/v2/images/ios/play.png);
-  background-repeat:no-repeat;
-  width:50%;
-  height:50%;
-  position:absolute;
-  left:0%;
-  right:0%;
-  top:0%;
-  bottom:0%;
-  margin:auto;
-  background-size:contain;
+  background-image: url(/static/v2/images/ios/play.png);
+  background-repeat: no-repeat;
+  width: 50%;
+  height: 50%;
+  position: absolute;
+  left: 0%;
+  right: 0%;
+  top: 0%;
+  bottom: 0%;
+  margin: auto;
+  background-size: contain;
   background-position: center;
 }
 
@@ -137,17 +141,14 @@
   .ios-hero__container .header-line {
     padding-top: 0;
   }
-
   .ios-hero__container {
     height: auto;
     min-height: min-content;
     margin-bottom: 50px;
   }
-
   .hidden-lg {
     display: none;
   }
-
   .visible-md-down {
     display: inline;
   }
@@ -158,14 +159,12 @@
     flex: 0 0 100%;
     max-width: 100%;
   }
-
   .card {
     width: 80%;
     margin: 1em 0 1em 0;
     padding: 2em;
     height: auto;
   }
-
   .card .content .description {
     font-size: 1.5rem;
   }
@@ -176,11 +175,9 @@
     text-align: center;
     margin: 15px 40% 0;
   }
-
   .hidden-lg {
     display: none;
   }
-
   .visible-md-down {
     display: inline;
   }

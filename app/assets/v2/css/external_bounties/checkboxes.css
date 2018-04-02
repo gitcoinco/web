@@ -33,27 +33,26 @@
 }
 
 .checkbox:after {
-    content: "";
-    position: absolute;
-    display: none;
+  content: '';
+  position: absolute;
+  display: none;
 }
 
 .checkbox_container input:checked ~ .checkbox:after {
-    display: block;
+  display: block;
 }
 
 .checkbox_container .checkbox:after {
-    left: 4px;
-    top: 0px;
-    width: 5px;
-    height: 11px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
+  left: 4px;
+  top: 0px;
+  width: 5px;
+  height: 11px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
-
 
 /* Below needs refactoring */
 

@@ -103,7 +103,7 @@
   background-image: url('/static/v2/images/arrow-down.png');
   background-size: contain;
   content: '';
-  display: block; 
+  display: block;
   height: 7px;
   width: 10px;
 }

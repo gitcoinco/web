@@ -9,21 +9,17 @@
     - Multiple shadows can be stacked
     - If you're animating multiple shadows, be sure to keep the same number of shadows so the animation is smooth. Otherwise, you'll get something choppy.
 */
+
 .fill:hover,
 .fill:focus {
   box-shadow: inset 0 0 0 2em var(--hover);
 }
 
+.pulseClick,
 .pulseButton:hover,
 .pulseButton:focus {
   -webkit-animation: pulse 1s;
-          animation: pulseButton 1s;
-  box-shadow: 0 0 0 2em rgba(255, 255, 255, 0);
-}
-
-.pulseClick,
-  -webkit-animation: pulse 1s;
-          animation: pulseButton 1s;
+  animation: pulseButton 1s;
   box-shadow: 0 0 0 2em rgba(255, 255, 255, 0);
 }
 
@@ -38,6 +34,7 @@
     box-shadow: 0 0 0 0 var(--hover);
   }
 }
+
 .close:hover,
 .close:focus {
   box-shadow: inset -3.5em 0 0 0 var(--hover), inset 3.5em 0 0 0 var(--hover);
@@ -47,7 +44,7 @@
 .raise:focus {
   box-shadow: 0 0.5em 0.5em -0.4em var(--hover);
   -webkit-transform: translateY(-0.25em);
-          transform: translateY(-0.25em);
+  transform: translateY(-0.25em);
 }
 
 .up:hover,
@@ -63,7 +60,9 @@
 .offset {
   box-shadow: 0.3em 0.3em 0 0 var(--color), inset 0.3em 0.3em 0 0 var(--color);
 }
-.offset:hover, .offset:focus {
+
+.offset:hover,
+.offset:focus {
   box-shadow: 0 0 0 0 var(--hover), inset 6em 3.5em 0 0 var(--hover);
 }
 
@@ -107,9 +106,10 @@ button {
   -webkit-transition: 0.25s;
   transition: 0.25s;
 }
-button:hover, button:focus {
+
+button:hover,
+button:focus {
   border-color: var(--hover);
   color: #fff;
   outline: none;
 }
-

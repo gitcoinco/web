@@ -9,6 +9,7 @@
   margin-top: 60px;
   margin-bottom: 40px;
 }
+
 .carousel .control:hover {
   border-radius: 100%;
   background-color: #15003e;
@@ -23,7 +24,7 @@
   color: #15003e;
   width: 40px;
   height: 40px;
-  cursor:pointer;
+  cursor: pointer;
   position: relative;
   top: 80px;
 }
@@ -116,7 +117,7 @@
 }
 
 .carousel .testimonial {
-  font-family: "futura-pt", Futura !important;
+  font-family: 'futura-pt', Futura !important;
   font-weight: bold;
   padding-right: 30px;
 }
@@ -133,7 +134,7 @@
   font-size: 7px;
 }
 
-.carousel .author a{
+.carousel .author a {
   cursor: pointer;
 }
 
@@ -171,40 +172,50 @@
 }
 
 @keyframes fadeIn {
-  0% { opacity: 0; display: none; }
-  100% { opacity: 1; display: inline; }
+  0% {
+    opacity: 0;
+    display: none;
+  }
+  100% {
+    opacity: 1;
+    display: inline;
+  }
 }
 
 @keyframes fadeOut {
-  0% { opacity: 1; display: inline; }
-  100% { opacity: 0; display: none; }
+  0% {
+    opacity: 1;
+    display: inline;
+  }
+  100% {
+    opacity: 0;
+    display: none;
+  }
 }
 
-.carousel .pilot_projects img{
-    max-height: 100px;
-    max-width: 100%;
+.carousel .pilot_projects img {
+  max-height: 100px;
+  max-width: 100%;
 }
 
 @media (max-width: 576px) {
-  .prev, .next {
+  .prev,
+  .next {
     visibility: hidden;
   }
-
   .carousel .flex-container {
     flex-direction: column;
   }
-
   .carousel .avatar {
     max-width: 30%;
     border-radius: 10px;
     margin-left: 35%;
   }
-
   .carousel .content {
     border-left: 0;
   }
-
-  .carousel .author, .carousel .content {
+  .carousel .author,
+  .carousel .content {
     text-align: center;
   }
 }
@@ -213,7 +224,6 @@
   .carousel .control {
     margin: 0 -20px;
   }
-
   .carousel .next .control svg {
     left: 2px;
   }

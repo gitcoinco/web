@@ -1,12 +1,12 @@
-
 .rain {
   background: white;
   height: 100px;
   position: absolute;
   width: 6px;
   transform: rotate(40deg);
-  border-radius: 5px; 
+  border-radius: 5px;
 }
+
 /*
 .rain.color:nth-of-type(3n+0) {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #0d0d6d 100%);
@@ -16,20 +16,24 @@
 }
 .rain.color:nth-of-type(3n+2) {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #4aeba8 100%);
-} 
+}
 .rain.grey {
   background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #f1e1e1 100%);
 }
 */
+
 .rain.color:nth-of-type(3n+0) {
   background: #0d0d6d;
 }
+
 .rain.color:nth-of-type(3n+1) {
   background: #f41f7a;
 }
+
 .rain.color:nth-of-type(3n+2) {
   background: #4aeba8
 }
+
 .rain.grey {
   background: #f1e1e1;
 }
@@ -56,6 +60,7 @@
     left: -11%;
   }
 }
+
 .rain:nth-of-type(2) {
   animation-name: rain-2;
   animation-delay: 1s;
@@ -78,6 +83,7 @@
     left: -28%;
   }
 }
+
 .rain:nth-of-type(3) {
   animation-name: rain-3;
   animation-delay: 17s;
@@ -100,6 +106,7 @@
     left: 31%;
   }
 }
+
 .rain:nth-of-type(4) {
   animation-name: rain-4;
   animation-delay: 9s;
@@ -122,6 +129,7 @@
     left: -14%;
   }
 }
+
 .rain:nth-of-type(5) {
   animation-name: rain-5;
   animation-delay: 2s;
@@ -144,6 +152,7 @@
     left: -1%;
   }
 }
+
 .rain:nth-of-type(6) {
   animation-name: rain-6;
   animation-delay: 4s;
@@ -166,6 +175,7 @@
     left: 26%;
   }
 }
+
 .rain:nth-of-type(7) {
   animation-name: rain-7;
   animation-delay: 7s;
@@ -188,6 +198,7 @@
     left: -11%;
   }
 }
+
 .rain:nth-of-type(8) {
   animation-name: rain-8;
   animation-delay: 4s;
@@ -210,6 +221,7 @@
     left: 57%;
   }
 }
+
 .rain:nth-of-type(9) {
   animation-name: rain-9;
   animation-delay: 4s;
@@ -232,6 +244,7 @@
     left: -35%;
   }
 }
+
 .rain:nth-of-type(10) {
   animation-name: rain-10;
   animation-delay: 9s;
@@ -254,6 +267,7 @@
     left: -16%;
   }
 }
+
 .rain:nth-of-type(11) {
   animation-name: rain-11;
   animation-delay: 11s;
@@ -276,6 +290,7 @@
     left: -32%;
   }
 }
+
 .rain:nth-of-type(12) {
   animation-name: rain-12;
   animation-delay: 6s;
@@ -298,6 +313,7 @@
     left: -28%;
   }
 }
+
 .rain:nth-of-type(13) {
   animation-name: rain-13;
   animation-delay: 8s;
@@ -320,6 +336,7 @@
     left: 0%;
   }
 }
+
 .rain:nth-of-type(14) {
   animation-name: rain-14;
   animation-delay: 17s;
@@ -342,6 +359,7 @@
     left: 60%;
   }
 }
+
 .rain:nth-of-type(15) {
   animation-name: rain-15;
   animation-delay: 8s;
@@ -364,6 +382,7 @@
     left: 29%;
   }
 }
+
 .rain:nth-of-type(16) {
   animation-name: rain-16;
   animation-delay: 6s;
@@ -386,6 +405,7 @@
     left: -3%;
   }
 }
+
 .rain:nth-of-type(17) {
   animation-name: rain-17;
   animation-delay: 15s;
@@ -408,6 +428,7 @@
     left: 32%;
   }
 }
+
 .rain:nth-of-type(18) {
   animation-name: rain-18;
   animation-delay: 12s;
@@ -430,6 +451,7 @@
     left: 2%;
   }
 }
+
 .rain:nth-of-type(19) {
   animation-name: rain-19;
   animation-delay: 9s;
@@ -452,6 +474,7 @@
     left: -7%;
   }
 }
+
 .rain:nth-of-type(20) {
   animation-name: rain-20;
   animation-delay: 2s;
@@ -474,6 +497,7 @@
     left: 46%;
   }
 }
+
 .rain:nth-of-type(21) {
   animation-name: rain-21;
   animation-delay: 2s;
@@ -496,6 +520,7 @@
     left: 57%;
   }
 }
+
 .rain:nth-of-type(22) {
   animation-name: rain-22;
   animation-delay: 18s;
@@ -518,6 +543,7 @@
     left: -29%;
   }
 }
+
 .rain:nth-of-type(23) {
   animation-name: rain-23;
   animation-delay: 7s;
@@ -540,6 +566,7 @@
     left: 48%;
   }
 }
+
 .rain:nth-of-type(24) {
   animation-name: rain-24;
   animation-delay: 6s;
@@ -562,6 +589,7 @@
     left: 54%;
   }
 }
+
 .rain:nth-of-type(25) {
   animation-name: rain-25;
   animation-delay: 7s;
@@ -584,6 +612,7 @@
     left: 40%;
   }
 }
+
 .rain:nth-of-type(26) {
   animation-name: rain-26;
   animation-delay: 11s;
@@ -606,6 +635,7 @@
     left: -12%;
   }
 }
+
 .rain:nth-of-type(27) {
   animation-name: rain-27;
   animation-delay: 9s;
@@ -628,6 +658,7 @@
     left: 59%;
   }
 }
+
 .rain:nth-of-type(28) {
   animation-name: rain-28;
   animation-delay: 3s;
@@ -650,6 +681,7 @@
     left: 8%;
   }
 }
+
 .rain:nth-of-type(29) {
   animation-name: rain-29;
   animation-delay: 8s;
@@ -672,6 +704,7 @@
     left: 1%;
   }
 }
+
 .rain:nth-of-type(30) {
   animation-name: rain-30;
   animation-delay: 7s;

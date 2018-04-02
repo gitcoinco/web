@@ -9,7 +9,7 @@
   margin-top: 10px;
   margin-bottom: 15px;
   text-transform: uppercase;
-  font-family: "Muli-SemiBold";
+  font-family: 'Muli-SemiBold';
 }
 
 .subheading svg {
@@ -20,11 +20,12 @@
   font-size: 14px;
 }
 
-.sidebar_search .options .option{
+.sidebar_search .options .option {
   margin-bottom: 2px;
 }
 
-.option label:before, .option label:after {
+.option label:before,
+.option label:after {
   width: 16px;
   height: 16px;
   top: 3px;
@@ -39,7 +40,8 @@
   background: #F2F6F9;
 }
 
-.sidebar_search label, .sidebar_search #clear {
+.sidebar_search label,
+.sidebar_search #clear {
   cursor: pointer;
 }
 

@@ -1,5 +1,5 @@
 @font-face {
-  font-family: "OpenSans";
+  font-family: 'OpenSans';
   src: url('/static/v2/fonts/OpenSans/Regular.ttf');
 }
 
@@ -19,12 +19,12 @@
 }
 
 .card {
-  box-shadow: 0 0px 2px rgba(0,0,0,0.12), 0 1px 1px rgba(0,0,0,0.24);
-  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+  box-shadow: 0 0px 2px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
+  transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
 }
 
 .card:hover {
-  box-shadow: 0 2px 4px rgba(0,0,0,0.25), 0 1px 1px rgba(0,0,0,0.22);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 1px rgba(0, 0, 0, 0.22);
 }
 
 .card .img {
@@ -45,7 +45,7 @@
 }
 
 .card .content .title {
-  font-family: "OpenSans";
+  font-family: 'OpenSans';
   margin-bottom: 10px;
 }
 
@@ -54,7 +54,7 @@
   height: 80px;
 }
 
-.card .content .description span a{
+.card .content .description span a {
   margin-top: 4px;
   display: block;
   text-decoration: none;
@@ -66,7 +66,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "OpenSans SemiBold";
+  font-family: 'OpenSans SemiBold';
 }
 
 .toggle input[type=checkbox] {
@@ -132,18 +132,19 @@
   .cards {
     justify-content: center;
   }
-
   .card {
     margin: 1em;
   }
 }
 
-#tools_hero img{
+#tools_hero img {
   max-width: 200px;
 }
-.button_container{
+
+.button_container {
   text-align: center;
 }
-.button_container a{
+
+.button_container a {
   font-size: 14px;
 }

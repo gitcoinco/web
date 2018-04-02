@@ -1,7 +1,7 @@
 .body {
   padding: 60px 100px !important;
   background-color: #fefefe !important;
-  font-family: "Muli";
+  font-family: 'Muli';
 }
 
 .description {
@@ -9,8 +9,9 @@
   font-size: 0.9em;
 }
 
-.title, .sub-title {
-  font-family: "Muli-SemiBold";
+.title,
+.sub-title {
+  font-family: 'Muli-SemiBold';
   text-transform: none;
   font-weight: bolder;
   letter-spacing: 0;
@@ -44,12 +45,12 @@
 
 #toc li,
 #toc a {
-  color:#B7B7B7;
+  color: #B7B7B7;
   font-size: 15px;
 }
 
 #toc a.active {
-  color:black;
+  color: black;
 }
 
 #toc ol {
@@ -69,21 +70,21 @@
 }
 
 @media (max-width: 1100px) {
-  #toc{
+  #toc {
     left: 10px;
   }
 }
 
 @media (max-width: 991px) {
-  #toc{
+  #toc {
     background-color: #FFFFFF;
     position: initial;
     border-top: 0px;
     border-left: 0px;
     padding: 10px 5px;
   }
-  #toc a.active{
-    color:#8e8e8e;
+  #toc a.active {
+    color: #8e8e8e;
   }
   .body {
     padding-left: 60px !important;
@@ -97,9 +98,11 @@
     padding-right: 30px !important;
   }
 }
-.card.new{
+
+.card.new {
   background-color: #f2f2f2;
 }
-.card.new a.btn{
+
+.card.new a.btn {
   display: none;
 }

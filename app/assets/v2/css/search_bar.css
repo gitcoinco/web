@@ -11,14 +11,17 @@
   bottom: 2px;
 }
 
-.save_search, .order_by {
+.save_search,
+.order_by {
   color: #000;
-  font-family: "Muli-SemiBold";
+  font-family: 'Muli-SemiBold';
   position: relative;
   bottom: 2px;
 }
 
-.search-area, .search_bar #new_search, .order_by {
+.search-area,
+.search_bar #new_search,
+.order_by {
   display: inline-block;
 }
 
@@ -81,42 +84,33 @@
 }
 
 @media (max-width: 768px) {
-
   .title-row {
     display: inline-block;
   }
-
   .title-row .bounty-info {
     margin-bottom: 10px;
   }
-
   .title-row .bounty-info #modifiers {
     padding-left: 20px;
   }
-
   .search-area {
     margin-bottom: 10px;
     margin-left: 0px;
   }
-
   .search_bar #new_search {
     margin-left: 0;
     margin-bottom: 10px;
   }
-
   .search_bar #new_search,
   .order_by {
     margin-top: 0;
   }
-
   .order_by .sort_option:last-child {
     margin-right: 0px;
   }
-
   .search_bar div {
     padding-right: 15px;
   }
-
   .filter-tags {
     display: none;
   }
