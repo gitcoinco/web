@@ -25,7 +25,6 @@ import time
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.templatetags.staticfiles import static
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -33,7 +32,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_POST
 
 from app.utils import ellipses, sync_profile
 from dashboard.models import (
@@ -45,7 +44,10 @@ from dashboard.notifications import (
 )
 from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
-from github.utils import get_auth_url, get_github_emails, get_github_primary_email, is_github_token_valid
+from github.utils import (
+    get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
+)
+from marketing.mails import bounty_uninterested
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -86,6 +88,15 @@ def record_user_action(profile_handle, event_name, instance):
         logging.error(f"error in record_action: {e} - {event_name} - {instance}")
 
 
+def helper_handle_access_token(request, access_token):
+    # https://gist.github.com/owocki/614a18fbfec7a5ed87c97d37de70b110
+    # interest API via token
+    github_user_data = get_github_user_data(access_token)
+    request.session['handle'] = github_user_data['login']
+    profile = Profile.objects.filter(handle__iexact=request.session['handle']).first()
+    request.session['profile_id'] = profile.pk
+
+
 @csrf_exempt
 @login_required
 @require_POST
@@ -101,6 +112,10 @@ def new_interest(request, bounty_id):
         dict: The success key with a boolean value and accompanying error.
 
     """
+    access_token = request.GET.get('token')
+    if access_token and is_github_token_valid(access_token):
+        helper_handle_access_token(request, access_token)
+
     profile_id = request.user.profile.pk
     if not profile_id:
         return JsonResponse(
@@ -164,7 +179,11 @@ def remove_interest(request, bounty_id):
         dict: The success key with a boolean value and accompanying error.
 
     """
-    profile_id = request.user.profile.pk
+    access_token = request.GET.get('token')
+    if access_token and is_github_token_valid(access_token):
+        helper_handle_access_token(request, access_token)
+
+    profile_id = request.session.get('profile_id', request.user.profile.pk)
     if not profile_id:
         return JsonResponse(
             {'error': 'You must be authenticated via github to use this feature!'},
@@ -202,55 +221,62 @@ def remove_interest(request, bounty_id):
     return JsonResponse({'success': True})
 
 
+@require_POST
 @csrf_exempt
-@require_GET
-def interested_profiles(request, bounty_id):
-    """Retrieve memberships who like a Status in a community.
+def uninterested(request, bounty_id, profile_id):
+    """Remove party from given bounty
 
     :request method: GET
 
     Args:
-        bounty_id (int): ID of the Bounty.
-
-    Parameters:
-        page (int): The page number.
-        limit (int): The number of interests per page.
+        bounty_id (int): ID of the Bounty
+        profile_id (int): ID of the interested profile
 
     Returns:
-        django.core.paginator.Paginator: Paged interest results.
-
+        dict: The success key with a boolean value and accompanying error.
     """
-    page = request.GET.get('page', 1)
-    limit = request.GET.get('limit', 10)
 
-    # Get all interests for the Bounty.
-    interests = Interest.objects \
-        .filter(bounty__id=bounty_id) \
-        .select_related('profile') \
-        .order_by('created')
+    session_profile_id = request.session.get('profile_id')
+    if not session_profile_id:
+        return JsonResponse(
+            {'error': 'You must be authenticated!'},
+            status=401)
 
-    paginator = Paginator(interests, limit)
     try:
-        interests = paginator.page(page)
-    except PageNotAnInteger:
-        interests = paginator.page(1)
-    except EmptyPage:
-        return JsonResponse([])
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
+                            status=401)
 
-    interests_data = []
-    for interest in interests:
-        interest_data = ProfileSerializer(interest.profile).data
-        interests_data.append(interest_data)
+    if not bounty.is_funder(request.session.get('handle').lower()):
+        return JsonResponse(
+            {'error': 'Only bounty funders are allowed to remove users!'},
+            status=401)
 
-    if request.is_ajax():
-        return JsonResponse(json.dumps(interests_data), safe=False)
+    try:
+        interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
+        bounty.interested.remove(interest)
+        maybe_market_to_slack(bounty, 'stop_work')
+        interest.delete()
+    except Interest.DoesNotExist:
+        return JsonResponse({
+            'errors': ['Party haven\'t expressed interest on this bounty.'],
+            'success': False},
+            status=401)
+    except Interest.MultipleObjectsReturned:
+        interest_ids = bounty.interested \
+            .filter(
+                profile_id=profile_id,
+                bounty=bounty
+            ).values_list('id', flat=True) \
+            .order_by('-created')
 
-    return JsonResponse({
-        'paginator': {
-            'num_pages': interests.paginator.num_pages,
-        },
-        'data': interests_data,
-    })
+        bounty.interested.remove(*interest_ids)
+        Interest.objects.filter(pk__in=list(interest_ids)).delete()
+
+    profile = Profile.objects.get(id=profile_id)
+    bounty_uninterested(profile.email, bounty, interest)
+    return JsonResponse({'success': True})
 
 
 @csrf_exempt
@@ -454,6 +480,7 @@ def fulfill_bounty(request):
 
     return TemplateResponse(request, 'fulfill_bounty.html', params)
 
+
 def increase_bounty(request):
     """Increase a bounty (funder)"""
     issue_url = request.GET.get('source')
@@ -497,7 +524,7 @@ def kill_bounty(request):
     return TemplateResponse(request, 'kill_bounty.html', params)
 
 
-def bounty_details(request, ghuser='', ghrepo='', ghissue=0, title_slug=''):
+def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
     """Display the bounty details.
 
     Args:
@@ -514,26 +541,14 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, title_slug=''):
     """
     is_user_authenticated = request.user.is_authenticated
     _access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
-
-    if title_slug and not ghuser and not ghissue and not ghrepo:
-        try:
-            title_slug = title_slug.split('-')
-            pk = title_slug[0]
-            bounty = Bounty.objects.get(pk=pk)
-            issue_url = bounty.github_url
-        except:
-            raise Http404
-
-    else:
-        issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
+    issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
 
     # try the /pulls url if it doesnt exist in /issues
     try:
         assert Bounty.objects.current().filter(github_url=issue_url).exists()
-    except:
+    except Exception:
         issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue if ghissue else request.GET.get('url')
         print(issue_url)
-        pass
 
     params = {
         'issueURL': issue_url,
@@ -735,7 +750,7 @@ def sync_web3(request):
                 max_tries_attempted = False
                 counter = 0
                 while not did_change and not max_tries_attempted:
-                    did_change, _, new_bounty = web3_process_bounty(bounty)
+                    did_change, _, _ = web3_process_bounty(bounty)
                     if not did_change:
                         print("RETRYING")
                         time.sleep(3)
@@ -744,8 +759,7 @@ def sync_web3(request):
                 result = {
                     'status': '200',
                     'msg': "success",
-                    'did_change': did_change,
-                    'bounty_url': new_bounty.url,
+                    'did_change': did_change
                 }
 
     return JsonResponse(result, status=result['status'])
@@ -818,7 +832,7 @@ def toolbox(request):
               'link_copy': 'Try It',
               "active": "false",
               'stat_graph': 'browser_ext_chrome',
-          },{
+          }, {
               "name": "gitcoinbot",
               "img": static("v2/images/helmet.png"),
               "description": '''Chat Interface available on Github''',

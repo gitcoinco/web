@@ -1,7 +1,7 @@
 .body {
   padding: 60px 100px !important;
   background-color: #fefefe !important;
-  font-family: "OpenSans";
+  font-family: "Muli";
 }
 
 .description {
@@ -10,7 +10,7 @@
 }
 
 .title, .sub-title {
-  font-family: "OpenSans Bold";
+  font-family: "Muli-SemiBold";
   text-transform: none;
   font-weight: bolder;
   letter-spacing: 0;
@@ -29,21 +29,26 @@
   margin-top: 40px;
 }
 
-#toc{
+#toc {
   position: fixed;
   top: 150px;
   left: 50px;
-  border-top: 1px black solid;
-  border-left: 2px black solid;
-  background-color: #F5F5F5;
-  padding: 10px 5px;
+  padding-right: 15px;
+  border-right: 2px #3E00FF solid;
 }
+
+#toc p {
+  margin-bottom: 1rem;
+  color: #666666;
+}
+
 #toc li,
-#toc a{
-  color:#8e8e8e;
+#toc a {
+  color:#B7B7B7;
+  font-size: 15px;
 }
-#toc a.active{
-  font-weight: 900;
+
+#toc a.active {
   color:black;
 }
 
@@ -59,7 +64,8 @@
 
 #toc li::before {
   content: counter(listNumbering);
-  font-size: 13px;
+  font-size: 15px;
+  margin-right: 4px;
 }
 
 @media (max-width: 1100px) {
