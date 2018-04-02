@@ -24,7 +24,6 @@ body {
   background-color: #ffce05;
   border-radius: 4px;
   text-transform: uppercase;
-  ;
   font-size: 14px;
   padding: 5px 7px;
   font-weight: 100;
@@ -42,12 +41,6 @@ body {
 #yge.send {
   overflow-y: hidden;
 }
-
-/*
-	Identity by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-*/
 
 /* Reset */
 

@@ -163,7 +163,7 @@ h4,
 }
 
 .header {
-  background-image: url(/static/v2/images/header-bg.png);
+  background-image: url('/static/v2/images/header-bg.png');
   background-color: #0d023b;
   background-size: cover;
   background-position: 0px 0px;
@@ -277,7 +277,7 @@ div.button-pink {
 
 .light-bg {
   background-color: rgba(239, 243, 238, 0.7);
-  background-image: url(/static/v2/images/light-bg.png);
+  background-image: url('/static/v2/images/light-bg.png');
   background-size: contain;
   background-size: contain;
   background-position: bottom;
@@ -285,7 +285,7 @@ div.button-pink {
 }
 
 .white-light-bg {
-  background-image: url(/static/v2/images/light-bg.png);
+  background-image: url('/static/v2/images/light-bg.png');
   background-size: contain;
   background-size: contain;
   background-position: bottom;
@@ -388,7 +388,7 @@ div.button-pink {
 .footer {
   overflow: hidden;
   height: 300px;
-  background-image: url(/static/v2/images/footer.jpg);
+  background-image: url('/static/v2/images/footer.jpg');
   background-color: #0d023b;
   background-size: contain;
   background-position: bottom;

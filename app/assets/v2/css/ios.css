@@ -78,7 +78,7 @@
 }
 
 .ios .video__wrapper .playpause {
-  background-image: url(/static/v2/images/ios/play.png);
+  background-image: url('/static/v2/images/ios/play.png');
   background-repeat: no-repeat;
   width: 50%;
   height: 50%;

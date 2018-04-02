@@ -1073,7 +1073,7 @@ input[type=text].loading {
 }
 
 .dashboard .w-75 .github-comment {
-  background: url(/static/v2/images/icon-msg-16.png) no-repeat left;
+  background: url('/static/v2/images/icon-msg-16.png') no-repeat left;
   padding-left: 18px;
   margin-right: 10px;
   display: inline-block;
