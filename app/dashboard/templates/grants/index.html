@@ -6,7 +6,7 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
   </head>
-  <body class="interior {{active}}">
+  <body class="interior {{active}} grant">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
@@ -17,27 +17,27 @@
         {% for grant in grants %}
           {% if forloop.counter0|divisibleby:3 %} <div class="row bottom-buffer"> {%  endif %}
             <div class="col-4">
-              <a class="grant" href="{% url 'grant' grant.id %}">
-                <h4 class="grant__title">{{ grant.title|truncatechars:60 }}</h4>
-                <p class="grant__pitch">{{ grant.pitch|truncatechars:135 }}</p>
-                <div class="grant__footer">
-                  <div class="grant__owner">
-                    <div class="grant__owner-image">
+              <a class="grant-item" href="{% url 'grant' grant.id %}">
+                <h4 class="grant-item__title">{{ grant.title|truncatechars:60 }}</h4>
+                <p class="grant-item__pitch">{{ grant.pitch|truncatechars:135 }}</p>
+                <div class="grant-item__footer">
+                  <div class="grant-item__owner">
+                    <div class="grant-item__owner-image">
                       <img src="{{grant.profile.local_avatar_url}}">
                     </div>
-                    <div class="grant__owner-handle">by <span>{{ grant.profile.handle }}</span></div>
+                    <div class="grant-item__owner-handle">by <span>{{ grant.profile.handle }}</span></div>
                   </div>
                   <div class="progress-bar">
                     <div class="progress" style="width: {{ grant.percentage_done }}%"></div>
                   </div>
-                  <div class="grant__funding">
-                    <div class="grant__funding-item">
-                      <div class="grant__funding-number">{{ grant.current_funding|floatformat:2|intcomma }} ETH</div>
-                      <div class="grant__funding-label">Current</div>
+                  <div class="grant-item__funding">
+                    <div class="grant-item__funding-item">
+                      <div class="grant-item__funding-number">{{ grant.current_funding|floatformat:2|intcomma }} ETH</div>
+                      <div class="grant-item__funding-label">Current</div>
                     </div>
-                    <div class="grant__funding-item">
-                      <div class="grant__funding-number">{{ grant.goal_funding|floatformat:2|intcomma }} ETH</div>
-                      <div class="grant__funding-label">Goal</div>
+                    <div class="grant-item__funding-item">
+                      <div class="grant-item__funding-number">{{ grant.goal_funding|floatformat:2|intcomma }} ETH</div>
+                      <div class="grant-item__funding-label">Goal</div>
                     </div>
                   </div>
                 </div>
