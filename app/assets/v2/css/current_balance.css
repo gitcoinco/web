@@ -1,6 +1,7 @@
 #upper_left {
   min-height: 100px;
-  font-family: 'Muli-SemiBold';
+  font-family: 'Muli', sans-serif;
+  font-weight: 600;
   background-color: #26cd7f;
   color: #000000;
 }

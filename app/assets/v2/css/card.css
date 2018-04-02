@@ -1,6 +1,7 @@
 @font-face {
   font-family: 'OpenSans';
   src: url('/static/v2/fonts/OpenSans/Regular.ttf');
+  font-weight: 400;
 }
 
 .cards {

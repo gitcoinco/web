@@ -1,77 +1,111 @@
+/* Futura */
 @font-face {
   font-family: 'futura-pt';
   src: url('/static/v2/fonts/futura/font4.ttf')/* TTF file for CSS3 browsers */
 }
 
+/* OpenSans Light */
 @font-face {
-  font-family: 'OpenSans Bold';
-  src: url('/static/v2/fonts/OpenSans/Bold.ttf');
+  font-family: 'OpenSans';
+  src: url('/static/v2/fonts/OpenSans/Light.ttf');
+  font-weight: 300;
 }
 
-@font-face {
-  font-family: 'OpenSans SemiBold';
-  src: url('/static/v2/fonts/OpenSans/SemiBold.ttf');
-}
-
+/* OpenSans Regular */
 @font-face {
   font-family: 'OpenSans';
   src: url('/static/v2/fonts/OpenSans/Regular.ttf');
+  font-weight: 400;
 }
 
+/* OpenSans Semibold */
 @font-face {
-  font-family: 'OpenSans Light';
-  src: url('/static/v2/fonts/OpenSans/Light.ttf');
+  font-family: 'OpenSans';
+  src: url('/static/v2/fonts/OpenSans/SemiBold.ttf');
+  font-weight: 600;
 }
 
+/* OpenSans Bold */
+@font-face {
+  font-family: 'OpenSans';
+  src: url('/static/v2/fonts/OpenSans/Bold.ttf');
+  font-weight: 700;
+}
+
+/* Muli Extra Light */
+/* @font-face {
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/ExtraLight.ttf');
+  font-weight: 200;
+} */
+
+/* Muli Extra Light Italic */
+/* @font-face {
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/ExtraLightItalic.ttf');
+  font-weight: 200;
+  font-style: italic
+} */
+
+/* Muli Light */
 @font-face {
   font-family: 'Muli';
-  src: url('/static/v2/fonts/Muli/Muli.ttf');
+  src: url('/static/v2/fonts/Muli/Light.ttf');
+  font-weight: 300;
 }
 
+/* Muli Light Italic */
+/* @font-face {
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/LightItalic.ttf');
+  font-weight: 300;
+  font-style: italic;
+} */
+
+/* Muli Regular */
 @font-face {
-  font-family: 'Muli-Bold';
-  src: url('/static/v2/fonts/Muli/Muli-Bold.ttf');
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/Regular.ttf');
+  font-weight: 400;
 }
 
+/* Muli Regular Italic */
+/* @font-face {
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/RegularItalic.ttf');
+  font-weight: 400;
+  font-style: italic;
+} */
+
+/* Muli SemiBold */
 @font-face {
-  font-family: 'Muli-ExtraLight';
-  src: url('/static/v2/fonts/Muli/Muli-ExtraLight.ttf');
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/SemiBold.ttf');
+  font-weight: 600;
 }
 
-@font-face {
-  font-family: 'Muli-SemiBold';
-  src: url('/static/v2/fonts/Muli/Muli-SemiBold.ttf');
-}
+/* Muli SemiBold Italic */
+/* @font-face {
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/SemiBoldItalic.ttf');
+  font-weight: 600;
+  font-style: italic;
+} */
 
-@font-face {
-  font-family: 'Muli-Light';
-  src: url('/static/v2/fonts/Muli/Muli-Light.ttf');
-}
+/* Muli Bold */
+/* @font-face {
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/Bold.ttf');
+  font-weight: 700;
+} */
 
-@font-face {
-  font-family: 'Muli-Italic';
-  src: url('/static/v2/fonts/Muli/Muli-Italic.ttf');
-}
-
-@font-face {
-  font-family: 'Muli-BoldItalic';
-  src: url('/static/v2/fonts/Muli/Muli-BoldItalic.ttf');
-}
-
-@font-face {
-  font-family: 'Muli-ExtraLightItalic';
-  src: url('/static/v2/fonts/Muli/Muli-ExtraLightItalic.ttf');
-}
-
-@font-face {
-  font-family: 'Muli-Semi-BoldItalic';
-  src: url('/static/v2/fonts/Muli/Muli-Semi-BoldItalic.ttf');
-}
-
-@font-face {
-  font-family: 'Muli-LightItalic';
-  src: url('/static/v2/fonts/Muli/Muli-LightItalic.ttf');
-}
+/* Muli Bold Italic */
+/* @font-face {
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/BoldItalic.ttf');
+  font-weight: 700;
+  font-style: italic;
+} */
 
 body {
   font-family: 'futura-pt', Futura;
@@ -455,7 +489,7 @@ div.button-pink {
 
 .dropdown-menu {
   background-color: #FAFAFA;
-  font-family: 'Muli';
+  font-family: 'Muli', sans-serif;
   border-radius: 0px;
   padding: 0;
   right: 0;

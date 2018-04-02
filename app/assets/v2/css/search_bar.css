@@ -14,7 +14,8 @@
 .save_search,
 .order_by {
   color: #000;
-  font-family: 'Muli-SemiBold';
+  font-family: 'Muli', sans-serif;
+  font-weight: 600;
   position: relative;
   bottom: 2px;
 }

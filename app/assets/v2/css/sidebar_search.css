@@ -9,7 +9,8 @@
   margin-top: 10px;
   margin-bottom: 15px;
   text-transform: uppercase;
-  font-family: 'Muli-SemiBold';
+  font-family: 'Muli', sans-serif;
+  font-weight: 600;
 }
 
 .subheading svg {

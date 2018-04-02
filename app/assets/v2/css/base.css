@@ -260,7 +260,7 @@ p a {
 }
 
 .iama {
-  font-family: 'Muli';
+  font-family: 'Muli', sans-serif;
   cursor: pointer;
   -moz-transition: background-color 0.2s ease-in-out;
   -webkit-transition: background-color 0.2s ease-in-out;
@@ -721,7 +721,7 @@ input[type=text].loading {
 }
 
 .transaction-status {
-  font-family: 'Muli';
+  font-family: 'Muli', sans-serif;
   display: block;
   position: relative;
   width: 80%;
@@ -1142,7 +1142,7 @@ input.is-invalid {
 }
 
 .tooltip-info {
-  font-family: 'Muli';
+  font-family: 'Muli', sans-serif;
   padding: 10px 20px;
   margin: 0;
   width: 25em;

@@ -1,12 +1,16 @@
 @charset "UTF-8";
+
+/* Futura */
 @font-face {
   font-family: 'futura-pt';
   src: url('/static/v2/fonts/futura/font4.ttf')/* TTF file for CSS3 browsers */
 }
 
+/* Muli Regular */
 @font-face {
   font-family: 'Muli';
-  src: url('/static/v2/fonts/Muli/Muli.ttf');
+  src: url('/static/v2/fonts/Muli/Regular.ttf');
+  font-weight: 400;
 }
 
 body {
