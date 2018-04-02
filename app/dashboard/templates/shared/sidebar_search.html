@@ -62,25 +62,35 @@
     </div>
 
     <div class="col">
-      <div class="col-12 subheading font-body accordion">MY PROJECTS</div>
-      <div class="col-12 options panel">
-        <div class="form__radio option">
-          <input name="bounty_filter" id="createdByMe" type="radio" value="createdByMe" val-ui='Created'/>
-          <label class="filter-label" for=createdByMe>Created By Me</label>
+      {% if github_handle %}
+        <div class="col-12 subheading font-body accordion">MY PROJECTS</div>
+        <div class="col-12 options panel">
+          <div class="form__radio option">
+            <input name="bounty_filter" id="createdByMe" type="radio" value="createdByMe" val-ui='Created'/>
+            <label class="filter-label" for=createdByMe>Created By Me</label>
+          </div>
+          <div class="form__radio option">
+            <input name="bounty_filter" id="startedByMe" type="radio" value="startedByMe" val-ui='Started'/>
+            <label class="filter-label" for=startedByMe>Started By Me</label>
+          </div>
+          <div class="form__radio option">
+            <input name="bounty_filter" id="FulfilledByMe" type="radio" value="fulfilledByMe" val-ui='Fulfilled'/>
+            <label class="filter-label" for=FulfilledByMe>Fulfilled By Me</label>
+          </div>
+          <div class="form__radio option">
+            <input name="bounty_filter" id="all_bounty" type="radio" value="any" checked/>
+            <label class="filter-label" for=all_bounty>All</label>
+          </div>
         </div>
-        <div class="form__radio option">
-          <input name="bounty_filter" id="startedByMe" type="radio" value="startedByMe" val-ui='Started'/>
-          <label class="filter-label" for=startedByMe>Started By Me</label>
+      {% else %}
+      <a href="{% url "github:github_auth" %}?redirect_uri={{ request.get_full_path }}"
+            onclick="dataLayer.push({'event': 'login'});">
+        <div class="col-12 subheading font-body">
+            MY PROJECTS
+            <i class="fab fa-github" style="float: right"></i>
         </div>
-        <div class="form__radio option">
-          <input name="bounty_filter" id="FulfilledByMe" type="radio" value="fulfilledByMe" val-ui='Fulfilled'/>
-          <label class="filter-label" for=FulfilledByMe>Fulfilled By Me</label>
-        </div>
-        <div class="form__radio option">
-          <input name="bounty_filter" id="all_bounty" type="radio" value="any" checked/>
-          <label class="filter-label" for=all_bounty>All</label>
-        </div>
-      </div>
+      </a>
+      {% endif %}
     </div>
 
     <div class="col">
