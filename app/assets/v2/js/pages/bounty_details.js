@@ -172,11 +172,11 @@ var callbacks = {
     expires_date = new Date(val);
     now = new Date(result['now']);
 
-    var percent = 100 * (
+    var expiringInPercentage = 100 * (
       (now.getTime() - new Date(result['web3_created']).getTime()) /
       (expires_date.getTime() - new Date(result['web3_created']).getTime()));
 
-    $('.progress').css('width', percent + '%');
+    $('.progress').css('width', expiringInPercentage + '%');
 
     var response = timeDifference(now, expires_date).split(' ');
 
