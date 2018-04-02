@@ -33,3 +33,7 @@
 .button--primary:active {
   background-color: #1B0050;
 }
+
+.button--full {
+  width: 100%;
+}

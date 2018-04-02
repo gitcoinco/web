@@ -1,8 +1,17 @@
+body.grant {
+  background-color: #ffffff;
+}
+
 .bottom-buffer {
   margin-bottom: 24px;
 }
 
-.grant {
+.top-buffer {
+  margin-top: 30px;
+}
+
+.grant-item {
+  background-color: #ffffff;
   border: 1px solid #D8D8D8;
   display: flex;
   flex-direction: column;
@@ -11,12 +20,12 @@
   padding: 24px;
 }
 
-.grant:hover {
+.grant-item:hover {
   text-decoration: none;
   border: 1px solid #0D0764;
 }
 
-.grant__title {
+.grant-item__title {
   color: #000000;
   font-size: 16px;
   letter-spacing: 0;
@@ -25,54 +34,54 @@
   padding: 0;
 }
 
-.grant__pitch {
+.grant-item__pitch {
   color: rgba(0, 0, 0, 0.54);
   font-size: 14px;
 }
 
-.grant__owner {
+.grant-item__owner {
   align-items: center;
   display: flex;
   margin-bottom: 15px;
-  margin-top: 22px;
+  margin-top: 10px;
 }
 
-.grant__owner-image {
-  height: 30px;
-  width: 30px;
+.grant-item__owner-image {
+  height: 35px;
+  width: 35px;
   margin-right: 7px;
 }
 
-.grant__owner-image img {
+.grant-item__owner-image img {
   border-radius: 3px;
   width: 100%;
 }
 
-.grant__owner-handle {
+.grant-item__owner-handle {
   color: rgba(0, 0, 0, 0.54);
   font-size: 14px;
 }
 
-.grant__owner-handle span {
+.grant-item__owner-handle span {
   color: #0D0764;
   font-weight: bold;
 }
 
-.grant__footer {
+.grant-item__footer {
   margin-top: auto;
 }
 
-.grant__funding {
+.grant-item__funding {
   display: flex;
   justify-content: space-between;
 }
 
-.grant__funding-number {
+.grant-item__funding-number {
   color: #0D0764;
   font-weight: bold;
 }
 
-.grant__funding-label {
+.grant-item__funding-label {
   color: rgba(0, 0, 0, 0.54);
   font-size: 14px;
 }
@@ -87,6 +96,135 @@
 
 .progress-bar .progress {
   background-color: #0FCE7C;
+  border-radius: 0;
   height: 5px;
   width: 50%;
+}
+
+.progress-bar.progress-bar--large {
+  height: 10px;
+  margin-bottom: 0;
+}
+
+.progress-bar.progress-bar--large .progress {
+  height: 10px;
+}
+
+/* Grant Show */
+
+.grant__header {
+  background-color: #F2F6F9;
+  padding-top: 46px;
+  padding-bottom: 46px;
+  position: relative;
+}
+
+.grant__header::before {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+.grant__image {
+  max-width: 100%;
+}
+
+.grant__reference {
+  align-items: center;
+  display: flex;
+  margin-top: 16px;
+}
+
+.grant__reference-url {
+  color: #000000;
+  font-size: 14px;
+}
+
+.grant__reference-icon {
+  display: flex;
+  margin-right: 12px;
+}
+
+.grant__image img {
+  width: 100%;
+}
+
+.grant__specs {
+  background-color: #ffffff;
+  border: 1px solid #0D0764;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 24px;
+}
+
+.grant__title {
+  font-size: 24px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.grant__pitch {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.grant__stakeholders {
+  margin-bottom: 20px;
+}
+
+.grant__stakeholders small {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.grant__stakeholders-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.grant__stakeholders-item {
+  margin-bottom: 6px;
+  margin-right: 6px;
+}
+
+.grant__footer {
+  margin-top: auto;
+}
+
+.grant__description {
+  font-size: 16px;
+  margin-bottom: 100px;
+}
+
+.grant__description-title {
+  letter-spacing: 0;
+  text-transform: none;
+  text-align: left;
+  padding: 0;
+}
+
+.current-funding-text {
+  align-items: baseline;
+  color: rgba(0, 0, 0, 0.54);
+  display: flex;
+  margin-bottom: 3px;
+}
+
+.current-funding-text span {
+  color: #0D0764;
+  font-size: 18px;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.progress-text {
+  color: rgba(0, 0, 0, 0.54);
+  margin-bottom: 22px;
+}
+
+.progress-text span {
+  color: rgba(0, 0, 0, 0.87);
 }
