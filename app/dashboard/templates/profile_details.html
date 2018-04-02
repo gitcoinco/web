@@ -21,7 +21,7 @@
                     <div id="hero" class="pt-4">
                         <img class="avatar" src="{{profile.local_avatar_url}}">
                         <h2 class="mt-3">
-                            {{profile.handle}}
+                           Profile: {{profile.handle}} <span id="alpha" class="small">Alpha</span>
                         </h2>
                         {% if profile.data.bio %}
                         <p>
@@ -29,15 +29,17 @@
                         </p>
                         {% endif %}
 
-                        <ul class='authors'>
-                            {% for author in profile.authors %}
-                                <li>
-                                    <a href="{% url "profile" %}{{author}}" title="{{author}}" target="_blank" rel="noopener noreferrer">
-                                    <img src="{% url "avatar" %}?repo=https://github.com/{{author}}">
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                        {% if profile.authors|length %}
+                            <ul class='authors'>
+                                Works with: {% for author in profile.authors %}
+                                    <li>
+                                        <a href="{% url "profile" %}{{author}}" title="{{author}}" target="_blank" rel="noopener noreferrer">
+                                        <img src="{% url "avatar" %}?repo=https://github.com/{{author}}">
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
 
                         <ul class='ctas'>
                             <li>

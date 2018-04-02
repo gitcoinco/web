@@ -85,7 +85,7 @@
 }
 
 .bounties-header__title--active::before {
-  border-color: transparent #f9006c transparent transparent;
+  border-color: transparent black transparent transparent;
   border-style: solid;
   border-width: 10px 10px 10px 0;
   content: '';
@@ -154,12 +154,12 @@
 }
 
 .bounties-header__title .title {
-  color: #f9006c;
+  color: black;
   cusor: pointer;
 }
 
 .bounties-header__title .title a {
-  color: #f9006c;
+  color: black;
   text-decoration: none;
 }
 

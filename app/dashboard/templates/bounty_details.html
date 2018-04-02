@@ -3,10 +3,10 @@
 <html lang="en">
 
   <head>
-    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}" />
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}" />
   </head>
 
   <body class="interior {{active}}">
@@ -89,7 +89,6 @@
             <div class="col-12 bounty-actions">
                 <div class="col-12 col-md-8">
                   <div id="right_actions"></div>
-                  <div id="github-link"></div>
                 </div>
                 <div class="col-12 col-md-4">
                   <div class="tags font-caption align-items-center">
@@ -98,7 +97,7 @@
                         <span id="value_in_token"></span>
                       </p>
                     </div>
-                    <div class="tag usd">
+                    <div id=value_in_usdt_wrapper class="tag usd">
                       <p>
                         <span id="value_in_usdt"></span>
                         <span>USD @ </span>
@@ -142,7 +141,7 @@
             <div class="col-12">
               <h5 class="bounty-heading">Funder</h5>
               <div class="row box">
-                <div class="col-12 col-md-1">
+                <div class="col-12 col-md-1 funder-avatar">
                   <div id="avatar_url"></div>
                 </div>
                 <div class="col-12 col-md-11">
@@ -169,10 +168,24 @@
 
     <script id="action" type="text/x-jsrender">
       [[if enabled]]
-        <span title='<div class="tooltip-info tooltip-sm">[[:title]]</div>'>
+        <span [[if id == 'submit']] id="[[:id]]" [[if !work_started]] class="none" [[/if]] [[/if]]
+          title='<div class="tooltip-info tooltip-sm">[[:title]]</div>'>
           [[if pending_acceptance]]
             <a class="button button--primary accept" role="button" href="[[:href]]" target="[[:target]]">
               <span class="font-caption">[[:text]] ( [[:pending_acceptance]] )</span>
+            </a>
+          [[else color == 'white']]
+            <a class="btn btn-small" id="btn-white" role="button" href="[[:href]]" target="[[:target]]">
+              [[if comments]]
+                <span class="font-caption">
+                  [[:text]]
+                  <span class="github-comment">
+                    [[:comments]]
+                  </span>
+                </span>
+              [[else]]
+                <span class="font-caption">[[:text]]</span>
+              [[/if]]
             </a>
           [[else]]
             <a class="button button--primary" role="button" href="[[:href]]" target="[[:target]]">
@@ -192,7 +205,7 @@
         </div>
         <div class="col-12 col-md-2">
           <div class="activity-name">
-            <a href="https://gitcoin.co/profile/'[[:name]]" target="_blank">
+            <a href="https://gitcoin.co/profile/[[:name]]" target="_blank">
               [[:name]]
             </a>
           </div>
@@ -219,10 +232,21 @@
               <span class="bounty-subheading">Submission Id :</span>
               <span class="bounty-text">[[:fulfillment_id]]</span>
             </div>
-            <div>
-              <span class="bounty-subheading">Created :</span>
-              <span class="bounty-text">[[:created_on]]</span>
+          </div>
+        [[else status == 'started']]
+          <div class="col-12 col-md-7 started-status-column">
+            <div class="activity-status">
+              [[:text]]
             </div>
+            [[if uninterest_possible]]
+              <div>
+                <span title="Remove this user's started work on the bounty">
+                  <a id="remove-[[:name]]" class="button button--primary" role="button" href="remove-handle">
+                    <span class="font-smaller-4">Stop work</span>
+                  </a>
+                </span>
+              </div>
+            [[/if]]
           </div>
         [[else]]
           <div class="col-12 col-md-7">

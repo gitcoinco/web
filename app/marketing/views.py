@@ -28,8 +28,10 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 
 from chartit import Chart, DataPool
-from dashboard.models import Profile
-from marketing.models import EmailEvent, EmailSubscriber, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat
+from dashboard.models import Profile, UserAction
+from marketing.models import (
+    EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
+)
 from marketing.utils import get_or_save_email_subscriber
 from retail.helpers import get_ip
 
@@ -165,7 +167,9 @@ def stats(request):
 
 
 def cohort_helper_users(start_time, end_time, data_source):
-    if data_source == 'slack-online':
+    if 'profile' in data_source:
+        users = Profile.objects.filter(created_on__gte=start_time, created_on__lt=end_time).exclude(github_access_token='').distinct()
+    elif data_source == 'slack-online':
         users = SlackUser.objects.filter(created_on__gte=start_time, created_on__lt=end_time).distinct()
     else:
         users = EmailSubscriber.objects.filter(created_on__gte=start_time, created_on__lt=end_time).distinct()
@@ -173,7 +177,26 @@ def cohort_helper_users(start_time, end_time, data_source):
 
 
 def cohort_helper_num(inner_start_time, inner_end_time, data_source, users):
-    if data_source == 'slack-online':
+    if 'profile' in data_source:
+        if data_source == 'profile-githubinteraction':
+            num = GithubEvent.objects.filter(
+                profile__in=users,
+                created_on__gte=inner_start_time,
+                created_on__lt=inner_end_time,
+                ).distinct('profile').count()
+        else:
+            event = 'start_work'
+            if data_source == 'profile-login':
+                event = 'Login'
+            if data_source == 'profile-new_bounty':
+                event = 'new_bounty'
+            num = UserAction.objects.filter(
+                profile__in=users,
+                created_on__gte=inner_start_time,
+                created_on__lt=inner_end_time,
+                action=event,
+                ).distinct('profile').count()
+    elif data_source == 'slack-online':
         num = SlackPresence.objects.filter(
             slackuser__in=users,
             created_on__gte=inner_start_time,
@@ -181,11 +204,7 @@ def cohort_helper_num(inner_start_time, inner_end_time, data_source, users):
             status='active',
             ).distinct('slackuser').count()
     else:
-        event = 'click'
-        if data_source == 'email-open':
-            event = 'open'
-        if data_source == 'email-delivered':
-            event = 'delivered'
+        event = data_source.split('-')[1]
         num = EmailEvent.objects.filter(
             email__in=users.values_list('email', flat=True),
             created_on__gte=inner_start_time,
@@ -208,7 +227,7 @@ def cohort_helper_timedelta(i, period_size):
 def cohort(request):
     cohorts = {}
 
-    data_source = request.GET.get('data_source', 'Slack')
+    data_source = request.GET.get('data_source', 'slack-online')
     num_periods = request.GET.get('num_periods', 10)
     period_size = request.GET.get('period_size', 'weeks')
     kwargs = {}
@@ -237,6 +256,7 @@ def cohort(request):
         }
 
     params = {
+        'title': "Cohort Analysis",
         'cohorts': cohorts,
         'title_rows': range(1, num_periods-1),
         'args': {
@@ -246,6 +266,133 @@ def cohort(request):
         }
     }
     return TemplateResponse(request, 'cohort.html', params)
+
+def funnel_helper_get_data(key, k, daily_source, weekly_source, start_date, end_date):
+    if key == 'sessions':
+        return sum(daily_source.filter(key='google_analytics_sessions_gitcoin', created_on__gte=start_date, created_on__lt=end_date).values_list('val', flat=True))
+    if key == 'email_subscribers':
+        return weekly_source.filter(key='email_subscriberse')[k].val - weekly_source.filter(key='email_subscriberse')[k+1].val
+    if key == 'bounties_alltime':
+        return weekly_source.filter(key='bounties')[k].val - weekly_source.filter(key='bounties')[k+1].val
+    if key == 'bounties_fulfilled':
+        return weekly_source.filter(key='bounties_fulfilled')[k].val - weekly_source.filter(key='bounties_fulfilled')[k+1].val
+    if key == 'email_processed':
+        return weekly_source.filter(key='email_processed')[k].val - weekly_source.filter(key='email_processed')[k+1].val
+    if key == 'slack_users':
+        return weekly_source.filter(key='slack_users')[k].val - weekly_source.filter(key='slack_users')[k+1].val
+    if key == 'email_open':
+        return weekly_source.filter(key='email_open')[k].val - weekly_source.filter(key='email_open')[k+1].val
+    if key == 'email_click':
+        return weekly_source.filter(key='email_click')[k].val - weekly_source.filter(key='email_click')[k+1].val
+    try:
+        return weekly_source.filter(key=key)[k].val - weekly_source.filter(key=key)[k+1].val
+    except:
+        return 0
+
+
+@staff_member_required
+def funnel(request):
+
+    weekly_source = Stat.objects.filter(created_on__hour=1, created_on__week_day=1).order_by('-created_on')
+    daily_source = Stat.objects.filter(created_on__hour=1).order_by('-created_on')
+    funnels = [
+            {
+                'title': 'web => bounties_posted => bounties_fulfilled',
+                'keys': [
+                    'sessions',
+                    'bounties_alltime',
+                    'bounties_fulfilled',
+                ],
+                'data': []
+            },
+            {
+                'title': 'web => bounties_posted => bounties_fulfilled (detail)',
+                'keys': [
+                    'sessions',
+                    'bounties_alltime',
+                    'bounties_started_total',
+                    'bounties_submitted_total',
+                    'bounties_done_total',
+                    'bounties_expired_total',
+                    'bounties_cancelled_total',
+                ],
+                'data': []
+            },
+            {
+                'title': 'web session => email_subscribers',
+                'keys': [
+                    'sessions',
+                    'email_subscribers',
+                ],
+                'data': []
+            },
+            {
+                'title': 'web session => slack',
+                'keys': [
+                    'sessions',
+                    'slack_users',
+                ],
+                'data': []
+            },
+            {
+                'title': 'web session => create dev grant',
+                'keys': [
+                    'sessions',
+                    'dev_grant',
+                ],
+                'data': []
+            },
+            {
+                'title': 'email funnel',
+                'keys': [
+                    'email_processed',
+                    'email_open',
+                    'email_click',
+                ],
+                'data': []
+            },
+    ]
+
+    for funnel in range(0, len(funnels)):
+        keys=funnels[funnel]['keys']
+        title=funnels[funnel]['title']
+        print(title)
+        for k in range(0, 10):
+            try:
+                stats = []
+                end_date = weekly_source.filter(key='email_subscriberse')[k].created_on
+                start_date = weekly_source.filter(key='email_subscriberse')[k+1].created_on
+
+                for key in keys:
+                    stats.append({
+                        'key': key,
+                        'val': funnel_helper_get_data(key, k, daily_source, weekly_source, start_date, end_date),
+                    })
+
+                for i in range(1, len(stats)):
+                    try:
+                        stats[i]['pct'] = round((stats[i]['val'])/stats[i-1]['val']*100, 1)
+                    except:
+                        stats[i]['pct'] = 0
+                for i in range(0, len(stats)):
+                    stats[i]['idx'] = i
+
+                funnels[funnel]['data'].append({
+                    'meta': {
+                        'start_date': start_date,
+                        'end_date': end_date,
+                    },
+                    'stats': stats,
+                    'idx': k,
+                })
+            except Exception as e:
+                print(key, k, e)
+
+    params = {
+        'title': "Funnel Analysis",
+        'funnels': funnels,
+    }
+    return TemplateResponse(request, 'funnel.html', params)
 
 
 def email_settings(request, key):

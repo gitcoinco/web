@@ -35,7 +35,7 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
         model = BountyFulfillment
         fields = ('fulfiller_address', 'fulfiller_email',
                   'fulfiller_github_username', 'fulfiller_name',
-                  'fulfillment_id', 'accepted', 'profile', 'created_on')
+                  'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on')
 
 
 class InterestSerializer(serializers.ModelSerializer):

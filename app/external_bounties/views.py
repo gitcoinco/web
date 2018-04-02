@@ -96,7 +96,7 @@ def external_bounties_index(request):
             "avatar": external_bounty_result.avatar,
             "title": external_bounty_result.title,
             "source": external_bounty_result.source_project,
-            "crypto_price": external_bounty_result.amount,
+            "crypto_price": round(external_bounty_result.amount, 2) if external_bounty_result.amount else None,
             "fiat_price": external_bounty_result.fiat_price,
             "crypto_label": external_bounty_result.amount_denomination,
             "tags": external_bounty_result.tags,
@@ -104,6 +104,7 @@ def external_bounties_index(request):
         }
         external_bounties_results.append(external_bounty)
     categories = list(set(tags))
+    categories = [ele.lower() for ele in categories if ele]
     categories.sort()
     params = {
         'active': 'offchain',
@@ -170,9 +171,9 @@ def external_bounties_show(request, issuenum, slug):
     external_bounty_result = bounty
     external_bounty['created_on'] = external_bounty_result.created_on
     external_bounty['title'] = external_bounty_result.title
-    external_bounty['crypto_price'] = external_bounty_result.amount
+    external_bounty['crypto_price'] = round(external_bounty_result.amount, 2) if external_bounty_result.amount else None
     external_bounty['crypto_label'] = external_bounty_result.amount_denomination
-    external_bounty['fiat_price'] = external_bounty_result.amount
+    external_bounty['fiat_price'] = round(external_bounty_result.amount, 2) if external_bounty_result.amount else None
     external_bounty['source'] = external_bounty_result.source_project
     external_bounty['content'] = strip_html(external_bounty_result.description)
     external_bounty['action_url'] = external_bounty_result.action_url

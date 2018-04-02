@@ -129,6 +129,9 @@ var callbacks = {
     var keywords = result.metadata.issueKeywords.split(',');
     var tags = [];
 
+    if (result.metadata.issueKeywords.length == 0)
+      return [ 'issue_keywords', null ];
+
     keywords.forEach(function(keyword) {
       tags.push('<a href="/explorer/?q=' + keyword.trim() + '"><div class="tag keyword">' + keyword + '</div></a>');
     });
@@ -147,7 +150,7 @@ var callbacks = {
     return [ 'Amount_usd', val ];
   },
   'token_value_in_usdt': function(key, val, result) {
-    if (val === null) {
+    if (val === null || typeof val == 'undefined') {
       $('#value_in_usdt_wrapper').addClass('hidden');
       return [ null, null ];
     }
@@ -177,13 +180,11 @@ var callbacks = {
     if (result.interested) {
       var interested = result.interested;
 
-      interested.forEach(function(_interested) {
-        started.push(
-          '<a href="https://gitcoin.co/profile/' +
-            _interested.profile.handle +
-            '" target="_blank">' +
-            _interested.profile.handle + '</a>'
-        );
+      interested.forEach(function(_interested, position) {
+        var name = (position == interested.length - 1) ?
+          _interested.profile.handle : _interested.profile.handle.concat(',');
+
+        started.push(profileHtml(_interested.profile.handle, name));
       });
       if (started.length == 0) {
         started.push('<i class="fas fa-minus"></i>');
@@ -197,13 +198,11 @@ var callbacks = {
     if (result.fulfillments) {
       var submitted = result.fulfillments;
 
-      submitted.forEach(function(_submitted) {
-        accepted.push(
-          '<a href="https://gitcoin.co/profile/' +
-            _submitted.fulfiller_github_username +
-            '" target="_blank">' +
-            _submitted.fulfiller_github_username + '</a>'
-        );
+      submitted.forEach(function(_submitted, position) {
+        var name = (position == submitted.length - 1) ?
+          _submitted.fulfiller_github_username : _submitted.fulfiller_github_username.concat(',');
+
+        accepted.push(profileHtml(_submitted.fulfiller_github_username, name));
       });
       if (accepted.length == 0) {
         accepted.push('<i class="fas fa-minus"></i>');
@@ -213,22 +212,24 @@ var callbacks = {
   },
   'fulfilled_owners_username': function(key, val, result) {
     var accepted = [];
+    var accepted_fufillments = [];
 
     if (result.fulfillments) {
       var fulfillments = result.fulfillments;
 
       fulfillments.forEach(function(fufillment) {
-        if (fufillment.accepted == true) {
-          accepted.push(
-            '<a href="https://gitcoin.co/profile/' +
-              fufillment.fulfiller_github_username +
-              '" target="_blank">' +
-              fufillment.fulfiller_github_username + '</a>'
-          );
-        }
+        if (fufillment.accepted == true)
+          accepted_fufillments.push(fufillment.fulfiller_github_username);
       });
-      if (accepted.length == 0) {
+      if (accepted_fufillments.length == 0) {
         accepted.push('<i class="fas fa-minus"></i>');
+      } else {
+        accepted_fufillments.forEach((github_username, position) => {
+          var name = (position == accepted_fufillments.length - 1) ?
+            github_username : github_username.concat(',');
+
+          accepted.push(profileHtml(github_username, name));
+        });
       }
     }
     return [ 'fulfilled_owners_username', accepted ];
@@ -260,6 +261,7 @@ var update_title = function() {
 var showWarningMessage = function(txid) {
 
   update_title();
+  $('.interior .body').addClass('loading');
 
   if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
     clearInterval(interval);
@@ -395,7 +397,6 @@ var build_detail_page = function(result) {
 };
 
 var do_actions = function(result) {
-
   // helper vars
   var is_legacy = result['web3_type'] == 'legacy_gitcoin';
   var is_date_expired = (new Date(result['now']) > new Date(result['expires_date']));
@@ -431,28 +432,6 @@ var do_actions = function(result) {
     // actions
     var actions = [];
 
-    if (show_github_link) {
-
-      var github_url = result['github_url'];
-
-      // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
-      github_url = github_url.replace('pipermerriam/web3.py', 'ethereum/web3.py');
-      github_url = github_url.replace('ethereum/browser-solidity', 'ethereum/remix-ide');
-      var github_tooltip = 'Github is where the issue scope lives.  Its also a great place to collaborate with, and get to know, other developers (and sometimes even the repo maintainer themselves!).';
-
-      if (result['github_comments']) {
-        $('#github-link').html(
-          ('<span title="').concat("<div class='tooltip-info tooltip-sm'>") + github_tooltip + '</div>"><a class="btn btn-small font-caption" role="button" target="_blank" id="github-btn" href="' +
-            github_url + ('">View On Github').concat('<span class="github-comment">') + result['github_comments'] + '</span></a></span>'
-        );
-      } else {
-        $('#github-link').html(
-          ('<span title="').concat("<div class='tooltip-info tooltip-sm'>") + github_tooltip + '</div>"><a class="btn btn-small font-caption" role="button" target="_blank" id="github-btn" href="' +
-            github_url + ('">View On Github').concat('</a></span>')
-        );
-      }
-    }
-
     if (show_start_stop_work) {
 
       // is enabled
@@ -462,7 +441,7 @@ var do_actions = function(result) {
         href: is_interested ? '/uninterested' : '/interested',
         text: is_interested ? 'Stop Work' : 'Start Work',
         parent: 'right_actions',
-        title: 'Start Work in an issue to let the issue funder know that youre starting work on this issue.'
+        title: is_interested ? 'Notify the funder that you will not be working on this project' : 'Notify the funder that you would like to take on this project'
       };
 
       actions.push(interest_entry);
@@ -477,20 +456,9 @@ var do_actions = function(result) {
         href: '/funding/fulfill?source=' + result['github_url'],
         text: 'Submit Work',
         parent: 'right_actions',
-        title: 'Use Submit Work when you FINISH work on a bounty. '
-      };
-
-      actions.push(_entry);
-    }
-
-    if (show_increase_bounty) {
-      var enabled = increase_bounty_enabled;
-      var _entry = {
-        enabled: enabled,
-        href: '/funding/increase?source=' + result['github_url'],
-        text: 'Add Contribution',
-        parent: 'right_actions',
-        title: 'Increase the funding of this bounty'
+        title: 'Submit work for the funder to review',
+        work_started: is_interested,
+        id: 'submit'
       };
 
       actions.push(_entry);
@@ -501,9 +469,9 @@ var do_actions = function(result) {
       var _entry = {
         enabled: enabled,
         href: '/funding/kill?source=' + result['github_url'],
-        text: 'Kill Bounty',
+        text: 'Cancel Bounty',
         parent: 'right_actions',
-        title: 'Use Kill Bounty if you want to CANCEL your bounty'
+        title: 'Cancel bounty and reclaim funds for this issue'
       };
 
       actions.push(_entry);
@@ -525,8 +493,42 @@ var do_actions = function(result) {
       actions.push(_entry);
     }
 
-    render_actions(actions);
+    if (show_increase_bounty) {
+      var enabled = increase_bounty_enabled;
+      var _entry = {
+        enabled: enabled,
+        href: '/funding/increase?source=' + result['github_url'],
+        text: 'Add Contribution',
+        parent: 'right_actions',
+        title: 'Increase the funding for this issue',
+        color: 'white'
+      };
 
+      actions.push(_entry);
+    }
+
+    if (show_github_link) {
+      var github_url = result['github_url'];
+      // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
+
+      github_url = github_url.replace('pipermerriam/web3.py', 'ethereum/web3.py');
+      github_url = github_url.replace('ethereum/browser-solidity', 'ethereum/remix-ide');
+      var github_tooltip = 'View issue details and comments on Github';
+
+      var _entry = {
+        enabled: true,
+        href: github_url,
+        text: 'View On Github',
+        parent: 'right_actions',
+        title: 'View issue details and comments on Github',
+        comments: result['github_comments'],
+        color: 'white'
+      };
+
+      actions.push(_entry);
+    }
+
+    render_actions(actions);
   });
 };
 
@@ -591,8 +593,7 @@ var render_activity = function(result) {
           email: fulfillment.fulfiller_email,
           fulfillment_id: fulfillment.fulfillment_id,
           text: 'Work Accepted',
-          created_on: fulfillment.created_on,
-          age: timeDifference(new Date(result['now']), new Date(fulfillment.created_on)),
+          age: timeDifference(new Date(result['now']), new Date(fulfillment.accepted_on)),
           status: 'accepted'
         });
       }
@@ -609,10 +610,13 @@ var render_activity = function(result) {
   if (result.interested) {
     result.interested.forEach(function(_interested) {
       activities.push({
+        profileId: _interested.profile.id,
         name: _interested.profile.handle,
         text: 'Work Started',
         created_on: _interested.created,
-        age: timeDifference(new Date(result['now']), new Date(_interested.created))
+        age: timeDifference(new Date(result['now']), new Date(_interested.created)),
+        status: 'started',
+        uninterest_possible: isBountyOwner(result)
       });
     });
   }
@@ -628,8 +632,17 @@ var render_activity = function(result) {
 
     html = template.render(activities);
   }
-
   $('#activities').html(html);
+
+  activities.filter(function(activity) {
+    return activity.uninterest_possible;
+  }).forEach(function(activity) {
+    $('#remove-' + activity.name).click(() => {
+      uninterested(result.pk, activity.profileId);
+      return false;
+    });
+  });
+
 };
 
 var main = function() {
