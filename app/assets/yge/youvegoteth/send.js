@@ -264,7 +264,7 @@ window.onload = function() {
             if (_gas > maxGas) {
               _gas = maxGas;
             }
-            var _gasLimit = _gas * 1.01;
+            var _gasLimit = parseInt(_gas * 1.01);
 
             token_contract(token).approve.sendTransaction(
               contract_address(),
@@ -299,7 +299,7 @@ window.onload = function() {
       if (_gas > recommendGas) {
         _gas = recommendGas;
       }
-      var _gasLimit = _gas * 1.01;
+      var _gasLimit = parseInt(_gas * 1.01);
 
       contract().newTransfer.sendTransaction(
         _disableDeveloperTip,
