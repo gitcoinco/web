@@ -866,7 +866,7 @@ def toolbox(request):
     for key in range(0, len(actors)):
         actors[key]['slug'] = slugify(actors[key]['title'])
 
-    profile_id = request.session.get('profile_id')
+    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     ups = list(ToolVote.objects.filter(profile_id = profile_id, value = 1).values_list('tool', flat=True))
     profile_up_votes_tool_ids = ','.join(str(x) for x in ups)
     downs = list(ToolVote.objects.filter(profile_id = profile_id, value = -1).values_list('tool', flat=True))
@@ -878,7 +878,7 @@ def toolbox(request):
         'avatar_url': static('v2/images/tools/api.jpg'),
         "card_desc": _("Accelerate your dev workflow with Gitcoin\'s incentivization tools."),
         'actors': actors,
-        'newsletter_headline': _("Don't Miss New Tools!")
+        'newsletter_headline': _("Don't Miss New Tools!"),
         'profile_up_votes_tool_ids': profile_up_votes_tool_ids,
         'profile_down_votes_tool_ids': profile_down_votes_tool_ids
     }
@@ -887,46 +887,54 @@ def toolbox(request):
 @csrf_exempt
 @require_POST
 def vote_tool_up(request, tool_id):
-    profile_id = request.session.get('profile_id')    
+    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     if not profile_id:
         return JsonResponse(
             {'error': 'You must be authenticated via github to use this feature!'},
             status=401)
 
-    tool = Tool.objects.get(pk=tool_id)        
-
+    tool = Tool.objects.get(pk=tool_id)
+    score_delta = 0
     try:
-        ToolVote.objects.get(profile_id=profile_id, tool=tool)
-        return JsonResponse({
-            'error': 'You have already voted on this tool!',
-            'success': False},
-            status=401)
+        vote = ToolVote.objects.get(profile_id=profile_id, tool=tool)
+        if vote.value == 1:
+            vote.delete()
+            score_delta = -1
+        if vote.value == -1:
+            vote.value = 1
+            vote.save()
+            score_delta = 2
     except ToolVote.DoesNotExist:
         vote = ToolVote.objects.create(profile_id=profile_id, value=1)
-        tool.votes.add(vote)        
-    return JsonResponse({'success': True})   
+        tool.votes.add(vote)
+        score_delta = 1
+    return JsonResponse({'success': True, 'score_delta': score_delta})
 
 @csrf_exempt
 @require_POST
 def vote_tool_down(request, tool_id):
-    profile_id = request.session.get('profile_id')    
+    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     if not profile_id:
         return JsonResponse(
             {'error': 'You must be authenticated via github to use this feature!'},
             status=401)
 
-    tool = Tool.objects.get(pk=tool_id)        
-
+    tool = Tool.objects.get(pk=tool_id)
+    score_delta = 0
     try:
-        ToolVote.objects.get(profile_id=profile_id, tool=tool)
-        return JsonResponse({
-            'error': 'You have already voted on this tool!',
-            'success': False},
-            status=401)
+        vote = ToolVote.objects.get(profile_id=profile_id, tool=tool)
+        if vote.value == -1:
+            vote.delete()
+            score_delta = 1
+        if vote.value == 1:
+            vote.value = -1
+            vote.save()
+            score_delta = -2
     except ToolVote.DoesNotExist:
         vote = ToolVote.objects.create(profile_id=profile_id, value=-1)
         tool.votes.add(vote)        
-    return JsonResponse({'success': True})   
+        score_delta = -1
+    return JsonResponse({'success': True, 'score_delta': score_delta })
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)

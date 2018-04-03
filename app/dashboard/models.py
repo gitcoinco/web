@@ -1188,6 +1188,15 @@ class Tool(SuperModel):
         for vote in self.votes.all():
             score += vote.value
         return score                
+
+    def i18n_name(self):
+        return _(self.name)
+
+    def i18n_description(self):
+        return _(self.description)
+
+    def i18n_link_copy(self):
+        return _(self.link_copy)
     
 class ToolVote(models.Model):
     """Define the vote placed on a tool."""
