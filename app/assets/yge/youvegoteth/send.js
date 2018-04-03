@@ -269,7 +269,7 @@ window.onload = function() {
             token_contract(token).approve.sendTransaction(
               contract_address(),
               approve_amount,
-              {from: fromAccount, gas: gas, gasLimit: gasLimit},
+              {from: fromAccount, gas: web3.toHex(gas), gasLimit: web3.toHex(gasLimit)},
               final_callback);
           });
         }
@@ -312,7 +312,7 @@ window.onload = function() {
           gas: web3.toHex(_gas),
           gasPrice: web3.toHex(defaultGasPrice),
           value: amountETHToSend,
-          gasLimit: _gasLimit},
+          gasLimit: web3.toHex(_gasLimit)},
         next_callback);
     };
 
