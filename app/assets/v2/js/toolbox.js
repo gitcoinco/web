@@ -57,13 +57,17 @@ $(document).ready(function() {
     scoreEl.text(parseInt(scoreEl.text()) + direction);
   }
 
+  function failVoteCallback(response) {
+    _alert({message: response.responseJSON.error}, 'error');
+  }
+
   $('.vote-up').click(function() {
     var el = $(this);
     var toolId = el.data('tool-id');
 
     $.post('/actions/tool/' + toolId + '/voteUp', {}, function() {
       voteCallback(toolId, 1);
-    });
+    }).fail(failVoteCallback);
   });
   $('.vote-down').click(function() {
     var el = $(this);
@@ -71,7 +75,7 @@ $(document).ready(function() {
 
     $.post('/actions/tool/' + toolId + '/voteDown', {}, function() {
       voteCallback(toolId, -1);
-    });
+    }).fail(failVoteCallback);
   });
 
 });

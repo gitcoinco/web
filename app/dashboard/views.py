@@ -887,18 +887,13 @@ def toolbox(request):
 @csrf_exempt
 @require_POST
 def vote_tool_up(request, tool_id):
-
-    access_token = request.GET.get('token')    
-    if access_token and is_github_token_valid(access_token):
-        helper_handle_access_token(request, access_token)
-
-    tool = Tool.objects.get(pk=tool_id)    
-
-    profile_id = request.session.get('profile_id')
+    profile_id = request.session.get('profile_id')    
     if not profile_id:
         return JsonResponse(
             {'error': 'You must be authenticated via github to use this feature!'},
             status=401)
+
+    tool = Tool.objects.get(pk=tool_id)        
 
     try:
         ToolVote.objects.get(profile_id=profile_id, tool=tool)
@@ -914,18 +909,13 @@ def vote_tool_up(request, tool_id):
 @csrf_exempt
 @require_POST
 def vote_tool_down(request, tool_id):
-
-    access_token = request.GET.get('token')    
-    if access_token and is_github_token_valid(access_token):
-        helper_handle_access_token(request, access_token)
-
-    tool = Tool.objects.get(pk=tool_id)    
-
-    profile_id = request.session.get('profile_id')
+    profile_id = request.session.get('profile_id')    
     if not profile_id:
         return JsonResponse(
             {'error': 'You must be authenticated via github to use this feature!'},
             status=401)
+
+    tool = Tool.objects.get(pk=tool_id)        
 
     try:
         ToolVote.objects.get(profile_id=profile_id, tool=tool)
