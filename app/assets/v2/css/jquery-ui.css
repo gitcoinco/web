@@ -2011,7 +2011,6 @@ a.ui-button:active,
   background: #aaaaaa;
   opacity: .3;
   filter: Alpha(Opacity=30);
-  /* support: IE8 */
   position: fixed;
   top: 0;
   left: 0;

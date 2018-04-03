@@ -454,17 +454,14 @@ div.button-pink {
 }
 
 *::-moz-placeholder {
-  /* FF 19+ */
   color: lightgray;
 }
 
 *:-moz-placeholder {
-  /* FF 4-18 */
   color: lightgray;
 }
 
 *:-ms-input-placeholder {
-  /* IE 10+ */
   color: lightgray;
 }
 

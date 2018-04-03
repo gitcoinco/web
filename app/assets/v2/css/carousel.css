@@ -176,6 +176,7 @@
     opacity: 0;
     display: none;
   }
+
   100% {
     opacity: 1;
     display: inline;
@@ -187,6 +188,7 @@
     opacity: 1;
     display: inline;
   }
+
   100% {
     opacity: 0;
     display: none;
@@ -203,17 +205,21 @@
   .next {
     visibility: hidden;
   }
+
   .carousel .flex-container {
     flex-direction: column;
   }
+
   .carousel .avatar {
     max-width: 30%;
     border-radius: 10px;
     margin-left: 35%;
   }
+
   .carousel .content {
     border-left: 0;
   }
+
   .carousel .author,
   .carousel .content {
     text-align: center;
@@ -224,6 +230,7 @@
   .carousel .control {
     margin: 0 -20px;
   }
+
   .carousel .next .control svg {
     left: 2px;
   }

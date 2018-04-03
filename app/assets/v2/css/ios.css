@@ -144,14 +144,17 @@
   .ios-hero__container .header-line {
     padding-top: 0;
   }
+
   .ios-hero__container {
     height: auto;
     min-height: min-content;
     margin-bottom: 50px;
   }
+
   .hidden-lg {
     display: none;
   }
+
   .visible-md-down {
     display: inline;
   }
@@ -162,12 +165,14 @@
     flex: 0 0 100%;
     max-width: 100%;
   }
+
   .card {
     width: 80%;
     margin: 1em 0 1em 0;
     padding: 2em;
     height: auto;
   }
+
   .card .content .description {
     font-size: 1.5rem;
   }
@@ -178,9 +183,11 @@
     text-align: center;
     margin: 15px 40% 0;
   }
+
   .hidden-lg {
     display: none;
   }
+
   .visible-md-down {
     display: inline;
   }

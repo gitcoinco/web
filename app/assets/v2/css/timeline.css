@@ -161,29 +161,36 @@
   .tline_module {
     padding-left: 30px !important;
   }
+
   ul.tline:before {
     left: 41px;
   }
+
   ul.tline > li > .tline_badge {
     left: 15px;
     margin-left: 0;
     top: 16px;
   }
+
   ul.tline > li > .tline_module {
     float: right;
   }
+
   ul.tline > li > .tline_module:before {
     left: -15px;
     right: auto;
   }
+
   ul.tline > li > .tline_module:after {
     left: -14px;
     right: auto;
   }
+
   .tline_module.contain1 {
     left: 0 !important;
     width: 87% !important;
   }
+
   .tline_module.mod2 {
     left: 0% !important;
     width: 86% !important;

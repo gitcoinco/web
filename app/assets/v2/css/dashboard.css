@@ -102,15 +102,18 @@ body {
   #filter {
     padding-left: 20px;
   }
+
   .bounty_row {
     padding-left: 1em;
     padding-right: 2em;
   }
+
   .bounty-info {
     top: 10px;
     font-size: 10px;
     text-align: left;
   }
+
   #stats {
     font-size: 10px;
   }

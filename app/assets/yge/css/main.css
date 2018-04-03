@@ -896,6 +896,7 @@ button:disabled,
     width: 100%;
     padding: 4em 2em 2.5em 2em;
   }
+
   #main .avatar:before {
     left: -2em;
     width: calc(100% + 4em);

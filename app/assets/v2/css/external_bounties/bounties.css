@@ -373,21 +373,26 @@ label {
   .bounty__price--desktop {
     display: none;
   }
+
   .bounty__title-wrapper,
   .bounties-header__search .search_area {
     width: 100%;
   }
+
   .bounty__info {
     padding: 0;
   }
+
   .bounties-header__search {
     flex-direction: column;
     justify-content: center;
   }
+
   .bounty__price {
     color: #fff;
     position: relative;
   }
+
   .bounty__price--mobile {
     display: block;
   }

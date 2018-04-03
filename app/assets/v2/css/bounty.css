@@ -315,25 +315,31 @@ a.btn {
   .bounty-actions {
     display: block;
   }
+
   .bounty-actions .col-12 {
     text-align: center;
   }
+
   #bounty_details .tags {
     margin-top: 10px;
     float: none;
   }
+
   #bounty_details .row {
     margin: 0px;
     padding-left: 10px;
     padding-right: 10px;
   }
+
   .contributor-box,
   #bounty_details .row.activity {
     margin-bottom: 10px;
   }
+
   .contributor-box {
     border: 1px solid #DBDBDB;
   }
+
   .actions {
     margin-bottom: 20px;
   }
