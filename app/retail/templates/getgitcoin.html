@@ -16,9 +16,9 @@
 
 {% endcomment %}
 {% load static %}
-<div id="get">
+<div id="get" class="white-light-bg" style="background-image: url('{% static "v2/images/light-bg.png" %}'); background-size: contain;">
     <div class="container-fluid text-center" style='min-height: 700px;'>
-        <h4 class="col mb-4">I Am A</h4>
+        <h4 class="col mb-2">I Am A:</h4>
         <div class="row">
             <div class="col d-flex pb-2 flex-column align-items-center font-weight-300 iama " style="">
                 <div class=" d-flex flex-column w-75 align-items-center">
@@ -28,7 +28,7 @@
                     <div class="mb-3 font-bigger-2">Open Source Developer</div>
                     <div class="font-smaller-2 mb-5">Want to earn some extra coin? 💰 Check out the Issue Explorer and see what funded issues match your skillset and interests today.</div>
                     <div>
-                        <a class="button" role="button" href="{% url "explorer" %}">See Issue Explorer 🎯</a>
+                        <a class="btn btn-outline-info pulseClick" role="button" href="{% url "explorer" %}">See Issue Explorer 🎯</a>
                     </div>
                     <div class="font-smaller-2 mb-5">
                         <br>
@@ -47,14 +47,14 @@
                     <div class="mb-3 font-bigger-2">Repository Maintainer</div>
                     <div class="font-smaller-2 mb-5">Let's push your repo forward. 🚀  Create a funded issue of your own and start working with people in the OSS community on issues _you_ care about.</div>
                     <div>
-                        <a class="button" role="button" href="{% url "new_funding" %}">+ Fund Issue 🔥</a>
+                        <a class="btn btn-outline-info pulseClick" role="button" href="{% url "new_funding" %}">+ Fund Issue 🔥</a>
                     </div>
                     <div>
                         <br>
                         - or -
                         <br>
                         <br>
-                        <a class="button" role="button" href="{% url "tip" %}">+ Tip ⚡️</a>
+                        <a class="btn btn-outline-info pulseClick" role="button" href="{% url "tip" %}">+ Tip ⚡️</a>
                     </div>
                     <div class="font-smaller-2 mb-5">
                         <br>
@@ -73,7 +73,7 @@
                     <div class="mb-3 font-bigger-2">Blockchain Evangelist</div>
                     <div class="font-smaller-2 mb-5">You can see that the future of software development involves aligned incentives, tools built by &amp; for developers, and decentralization is the way it's all goin' down. Let’s dive deeper!</div>
                     <div>
-                        <a class="button" role="button" href="{% url "whitepaper" %}">Read Whitepaper 📖</a>
+                        <a class="btn btn-outline-info pulseClick" role="button" href="{% url "whitepaper" %}">Read Whitepaper 📖</a>
                     </div>
                     <div class="font-smaller-2 mb-5">
                         <br>
