@@ -16,6 +16,13 @@
   margin-left: 5px;
 }
 
+.subheading .fa-github {
+  float: right;
+  margin-right: 5px;
+  margin-top: 4px;
+  font-size: 16px;
+}
+
 .sidebar_search .options {
   font-size: 14px;
 }
