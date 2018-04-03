@@ -3,7 +3,7 @@
   var pageSize = 2;
 
   $('document').ready(() => {
-    initialIdeasLoad();
+    initialIdeasLoad(sorting());
     $('#load_more').click(onLoadMoreClick);
     $('#add').click(onAddClick);
     $('#sort_ideas').change(onSortChange);
@@ -19,6 +19,10 @@
     window.location = 'new';
   }
 
+  function sorting() {
+    return $('#sort_ideas').val();
+  }
+
   function onIdeaClick(data) {
     var ideaId = $(data.currentTarget).data('ideaId');
 
@@ -26,11 +30,12 @@
   }
 
   function onSortChange(data) {
-    console.log('sort change');
+    initialIdeasLoad(sorting());
   }
 
-  function initialIdeasLoad(sort) {
-    fetchIdeas(1, pageSize, (result) => {
+  function initialIdeasLoad(sorting) {
+    pageIdx = 1;
+    fetchIdeas(pageIdx, pageSize, sorting, (result) => {
       var ideas = result.ideas;
       var html;
 
@@ -46,7 +51,7 @@
   }
 
   function loadMoreIdeas() {
-    fetchIdeas(++pageIdx, pageSize, (result) => {
+    fetchIdeas(++pageIdx, pageSize, sorting(), (result) => {
       var ideas = result.ideas;
 
       if (ideas.length > 0) {
@@ -57,8 +62,8 @@
     });
   }
 
-  function fetchIdeas(page, size, cb) {
-    $.get('fetch', { page, size }, (result) => {
+  function fetchIdeas(page, size, sorting, cb) {
+    $.get('fetch', { page, size, sorting }, (result) => {
       cb(result);
     });
   }

@@ -577,7 +577,8 @@ def idea_get(request, idea_id):
 def ideas_fetch(request):
     page = request.GET.get('page', 1)
     size = request.GET.get('size', 10)
-    ideas = Idea.objects.order_by('created_on')
+    sorting = request.GET.get('sorting', 'posts')
+    ideas = Idea.objects.order_by('-'+sorting)
 
     paginator = Paginator(ideas, size)
     try:
