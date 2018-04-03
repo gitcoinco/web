@@ -21,6 +21,8 @@ class Idea(SuperModel):
     builders_exists = models.BooleanField()
     designers_exists = models.BooleanField()
     customer_exists = models.BooleanField()
+    posts = models.IntegerField(default=0)
+    likes = models.IntegerField(default=0)
     
     def load_avatar_url(self):
         try:            
@@ -28,6 +30,10 @@ class Idea(SuperModel):
             self.avatar_url = response['avatar_url']
         except Exception as e:
             print(e)
+
+    @property
+    def thread_ident(self):
+        return 'idea-'+str(self.id)
 
 class IdeaSerializer(serializers.BaseSerializer):
     """Handle serializing the Idea object."""
@@ -39,7 +45,8 @@ class IdeaSerializer(serializers.BaseSerializer):
         fields = ('id', 'full_name', 'email', 'github_username', 'summary', 
         'more_info', 'looking_for_capital', 'looking_for_builders',
         'looking_for_designers', 'looking_for_customers', 'capital_exists',
-        'builders_exists', 'designers_exists', 'customer_exists', 'avatar_url')        
+        'builders_exists', 'designers_exists', 'customer_exists', 'avatar_url',
+        'posts', 'likes', 'thread_ident')
 
     def to_representation(self, instance):
         """Provide the serialized representation of the Idea.
@@ -66,5 +73,8 @@ class IdeaSerializer(serializers.BaseSerializer):
             'builders_exists': instance.builders_exists,
             'designers_exists': instance.designers_exists,
             'customer_exists': instance.customer_exists,
-            'avatar_url': instance.avatar_url
+            'avatar_url': instance.avatar_url,
+            'posts': instance.posts,
+            'likes': instance.likes,
+            'thread_ident': instance.thread_ident
         }

@@ -1,30 +1,20 @@
-(function(ideaShared, disqus_config) {
+(function() {
 
   $('document').ready(() => {
     $.get('get', (result) => {
       var idea = result.idea;
+      var forumName = result.forum_name;
 
-      ideaShared.prepareIdea(idea);
-      $.get('https://disqus.com/api/3.0/threads/details.json',
-        {
-          api_key: disqus_config.api_key,
-          forum: disqus_config.shortname,
-          'thread:ident': idea.threadIdent
-        },
-        function(result) {
-          ideaShared.applyThreadData(idea, result.response);
-        }).always(function() {
-        renderIdea(idea);
-      });
+      renderIdea(idea);
 
       window.disqus_config = function() {
         this.page.url = window.location.href;
-        this.page.identifier = idea.threadIdent;
+        this.page.identifier = idea.thread_ident;
       };
       // ajax request to load the disqus javascript
       $.ajax({
         type: 'GET',
-        url: 'http://' + disqus_config.shortname + '.disqus.com/embed.js',
+        url: 'http://' + forumName + '.disqus.com/embed.js',
         dataType: 'script',
         cache: true
       });
@@ -38,4 +28,4 @@
     $('#idea').html(html);
   }
 
-})(ideaShared, disqus_config);
+})();

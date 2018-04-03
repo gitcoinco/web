@@ -18,6 +18,7 @@
 '''
 import json
 
+from django.conf import settings
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -567,6 +568,7 @@ def idea_get(request, idea_id):
 
     return JsonResponse({
         'idea': IdeaSerializer(idea).data,
+        'forum_name': settings.DISQUS_FORUM_NAME,
         'success': True
     })
 

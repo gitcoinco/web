@@ -1,4 +1,4 @@
-(function(ideaShared, disqus_config) {
+(function() {
   var pageIdx = 1;
   var pageSize = 2;
 
@@ -34,40 +34,14 @@
       var ideas = result.ideas;
       var html;
 
-
-      ideas.forEach(ideaShared.prepareIdea);
-      fetchDisqusThreads(ideas, function() {
-        if (ideas.length > 0) {
-          html = getIdeasHtml(ideas);
-        } else {
-          html = 'No ideas';
-        }
-        $('#ideas').html(html);
-        toggleLoadMore(pageIdx, result.total_pages);
-        initIdeasOpenHandlers(ideas);
-      });
-    });
-  }
-
-  function fetchDisqusThreads(ideas, callback) {
-    $.get('https://disqus.com/api/3.0/forums/listThreads.json',
-      {
-        api_key: disqus_config.api_key,
-        forum: disqus_config.shortname,
-        'thread:ident': ideas.map((idea) => idea.threadIdent)
-      },
-      function(result) {
-        applyThreadsData(result.response, ideas);
-      }).always(callback);
-  }
-
-  function applyThreadsData(threads, ideas) {
-    ideas.forEach((idea) => {
-      var thread = threads.filter((thread) => thread.identifiers.indexOf('idea-' + idea.id) > -1)[0];
-
-      if (thread) {
-        ideaShared.applyThreadData(idea, thread);
+      if (ideas.length > 0) {
+        html = getIdeasHtml(ideas);
+      } else {
+        html = 'No ideas';
       }
+      $('#ideas').html(html);
+      toggleLoadMore(pageIdx, result.total_pages);
+      initIdeasOpenHandlers(ideas);
     });
   }
 
@@ -75,14 +49,11 @@
     fetchIdeas(++pageIdx, pageSize, (result) => {
       var ideas = result.ideas;
 
-      ideas.forEach(ideaShared.prepareIdea);
-      fetchDisqusThreads(ideas, function() {
-        if (ideas.length > 0) {
-          $('#ideas').append(getIdeasHtml(ideas));
-        }
-        toggleLoadMore(pageIdx, result.total_pages);
-        initIdeasOpenHandlers(ideas);
-      });
+      if (ideas.length > 0) {
+        $('#ideas').append(getIdeasHtml(ideas));
+      }
+      toggleLoadMore(pageIdx, result.total_pages);
+      initIdeasOpenHandlers(ideas);
     });
   }
 
@@ -109,4 +80,4 @@
     });
   }
 
-})(ideaShared, disqus_config);
+})();

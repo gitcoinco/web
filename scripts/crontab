@@ -44,4 +44,4 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 10 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash pull_stats  >> /var/log/gitcoin/pull_stats.log  2>&1
 10 3 * * * cd gitcoin/coin; bash scripts/run_management_command.bash pull_github  >> /var/log/gitcoin/pull_github.log  2>&1
 1 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash post_to_craigslist 1  >> /var/log/gitcoin/post_to_craigslist.log  2>&1
-
+*/10 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_ideas 1  >> /var/log/gitcoin/sync_ideas.log  2>&1
