@@ -1,109 +1,108 @@
 .body {
-  padding: 60px 100px !important;
-  background-color: #fefefe !important;
-  font-family: 'Muli', sans-serif;
+	padding: 60px 100px !important;
+	background-color: #fefefe !important;
+	font-family: 'Muli', sans-serif;
 }
 
 .description {
-  color: #8e8e8e;
-  font-size: 0.9em;
+	color: #8e8e8e;
+	font-size: 0.9em;
 }
 
 .title,
 .sub-title {
-  font-family: 'Muli', sans-serif;
-  font-weight: 600;
-  text-transform: none;
-  font-weight: bolder;
-  letter-spacing: 0;
+	font-family: 'Muli', sans-serif;
+	font-weight: 600;
+	text-transform: none;
+	letter-spacing: 0;
 }
 
 .toolbox {
-  border-bottom: 1px solid #eee;
+	border-bottom: 1px solid #eee;
 }
 
 .sub-title {
-  padding-top: 1em;
-  font-size: 1.4em;
+	padding-top: 1em;
+	font-size: 1.4em;
 }
 
 #Faucet img {
-  margin-top: 40px;
+	margin-top: 40px;
 }
 
 #toc {
-  position: fixed;
-  top: 150px;
-  left: 50px;
-  padding-right: 15px;
-  border-right: 2px #3E00FF solid;
+	position: fixed;
+	top: 150px;
+	left: 50px;
+	padding-right: 15px;
+	border-right: 2px #3E00FF solid;
 }
 
 #toc p {
-  margin-bottom: 1rem;
-  color: #666666;
+	margin-bottom: 1rem;
+	color: #666666;
 }
 
 #toc li,
 #toc a {
-  color: #B7B7B7;
-  font-size: 15px;
+	color: #B7B7B7;
+	font-size: 15px;
 }
 
 #toc a.active {
-  color: black;
+	color: black;
 }
 
 #toc ol {
-  list-style: none;
-  counter-reset: listNumbering;
-  padding-left: 10px;
+	list-style: none;
+	counter-reset: listNumbering;
+	padding-left: 10px;
 }
 
 #toc li {
-  counter-increment: listNumbering;
+	counter-increment: listNumbering;
 }
 
 #toc li::before {
-  content: counter(listNumbering);
-  font-size: 15px;
-  margin-right: 4px;
+	content: counter(listNumbering);
+	font-size: 15px;
+	margin-right: 4px;
 }
 
 @media (max-width: 1100px) {
-  #toc {
-    left: 10px;
-  }
+	#toc {
+		left: 10px;
+	}
 }
 
 @media (max-width: 991px) {
-  #toc {
-    background-color: #FFFFFF;
-    position: initial;
-    border-top: 0px;
-    border-left: 0px;
-    padding: 10px 5px;
-  }
-  #toc a.active {
-    color: #8e8e8e;
-  }
-  .body {
-    padding-left: 60px !important;
-    padding-right: 60px !important;
-  }
+	#toc {
+		background-color: #FFFFFF;
+		position: initial;
+		border-top: 0px;
+		border-left: 0px;
+		padding: 10px 5px;
+	}
+	#toc a.active {
+		color: #8e8e8e;
+	}
+	.body {
+		padding-left: 60px !important;
+		padding-right: 60px !important;
+	}
 }
 
 @media (max-width: 767px) {
-  .body {
-    padding-left: 30px !important;
-    padding-right: 30px !important;
-  }
+	.body {
+		padding-left: 30px !important;
+		padding-right: 30px !important;
+	}
 }
 
 .card.new {
-  background-color: #f2f2f2;
+	background-color: #f2f2f2;
 }
 
 .card.new a.btn {
-  display: none;
+	display: none;
 }
