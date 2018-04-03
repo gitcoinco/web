@@ -7,30 +7,30 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 /* List */
 
 ul.icons li a {
-	-ms-behavior: url('assets/js/PIE.htc');
+  -ms-behavior: url('assets/js/PIE.htc');
 }
 
 ul.icons li a:before {
-	text-align: center;
-	font-size: 26px;
+  text-align: center;
+  font-size: 26px;
 }
 
 /* Main */
 
 #main {
-	-ms-behavior: url('assets/js/PIE.htc');
+  -ms-behavior: url('assets/js/PIE.htc');
 }
 
 #main .avatar img {
-	-ms-behavior: url('assets/js/PIE.htc');
+  -ms-behavior: url('assets/js/PIE.htc');
 }
 
 /* Footer */
 
 #footer {
-	color: #fff;
+  color: #fff;
 }
 
 #footer .copyright li {
-	border-left: solid 1px #fff;
+  border-left: solid 1px #fff;
 }

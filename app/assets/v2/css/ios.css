@@ -1,185 +1,187 @@
 .ios {
-	background: #fefefe;
+  background: #fefefe;
 }
 
 .ios .header {
-	background: none;
+  background: none;
 }
 
 .ios-hero__container .nav-link--active,
 .ios-hero__container .nav-link:visited .nav-link--active {
-	background: #FFF;
-	border-radius: .5rem;
-	color: #8E2ABE !important;
+  background: #FFF;
+  border-radius: .5rem;
+  color: #8E2ABE !important;
 }
 
 /* stylelint-disable no-descending-specificity */
+
 .ios-hero__container .nav-link--active:hover {
-	color: #FFF !important;
+  color: #FFF !important;
 }
+
 /* stylelint-enable */
 
 .ios-hero__container {
-	background: -webkit-linear-gradient(138deg, #8E2ABE 0%, #37EA9C 100%);
-	background: -o-linear-gradient(138deg, #8E2ABE 0%, #37EA9C 100%);
-	background: linear-gradient(228deg, #8E2ABE 0%, #37EA9C 100%);
-	height: 750px;
-	min-height: 750px;
-	margin-bottom: 225px;
+  background: -webkit-linear-gradient(138deg, #8E2ABE 0%, #37EA9C 100%);
+  background: -o-linear-gradient(138deg, #8E2ABE 0%, #37EA9C 100%);
+  background: linear-gradient(228deg, #8E2ABE 0%, #37EA9C 100%);
+  height: 750px;
+  min-height: 750px;
+  margin-bottom: 225px;
 }
 
 .ios-hero__container .header-line p {
-	font-family: Futura, sans-serif;
-	font-size: 2em;
+  font-family: Futura, sans-serif;
+  font-size: 2em;
 }
 
 .ios-hero__container .header-line {
-	letter-spacing: normal;
-	line-height: normal;
-	font-size: 3rem;
-	font-style: normal;
-	padding-top: 150px;
+  letter-spacing: normal;
+  line-height: normal;
+  font-size: 3rem;
+  font-style: normal;
+  padding-top: 150px;
 }
 
 .ios-hero__container .header-line h3 {
-	font-size: 1.75rem;
+  font-size: 1.75rem;
 }
 
 .ios .btn-outline-info {
-	color: white;
-	background: -webkit-linear-gradient(138deg, #37EA9C 0%, #8E2ABE 100%);
-	background: -o-linear-gradient(138deg, #37EA9C 0%, #8E2ABE 100%);
-	background: linear-gradient(228deg, #37EA9C 0%, #8E2ABE 100%);
-	border: 3px solid;
-	border-radius: .5rem;
+  color: white;
+  background: -webkit-linear-gradient(138deg, #37EA9C 0%, #8E2ABE 100%);
+  background: -o-linear-gradient(138deg, #37EA9C 0%, #8E2ABE 100%);
+  background: linear-gradient(228deg, #37EA9C 0%, #8E2ABE 100%);
+  border: 3px solid;
+  border-radius: .5rem;
 }
 
 .ios .footer {
-	border-top: 1px solid #eff3ee;
-	background: #fff;
-	padding: 0 15px;
+  border-top: 1px solid #eff3ee;
+  background: #fff;
+  padding: 0 15px;
 }
 
 .ios .footer .nav-link {
-	color: black !important;
+  color: black !important;
 }
 
 .ios .footer img {
-	filter: none;
+  filter: none;
 }
 
 .ios .video {
-	width: 100%;
+  width: 100%;
 }
 
 .ios .video__wrapper {
-	display: table;
-	position: relative;
-	width: 100%;
+  display: table;
+  position: relative;
+  width: 100%;
 }
 
 .ios .video__wrapper .playpause {
-	background-image: url('/static/v2/images/ios/play.png');
-	background-repeat: no-repeat;
-	width: 50%;
-	height: 50%;
-	position: absolute;
-	left: 0%;
-	right: 0%;
-	top: 0%;
-	bottom: 0%;
-	margin: auto;
-	background-size: contain;
-	background-position: center;
+  background-image: url('/static/v2/images/ios/play.png');
+  background-repeat: no-repeat;
+  width: 50%;
+  height: 50%;
+  position: absolute;
+  left: 0%;
+  right: 0%;
+  top: 0%;
+  bottom: 0%;
+  margin: auto;
+  background-size: contain;
+  background-position: center;
 }
 
 .card .content .title {
-	font-size: 2rem;
-	letter-spacing: normal;
-	font-weight: bold;
+  font-size: 2rem;
+  letter-spacing: normal;
+  font-weight: bold;
 }
 
 .card .content .description {
-	color: #474747;
-	font-size: 1.2rem;
-	height: auto;
+  color: #474747;
+  font-size: 1.2rem;
+  height: auto;
 }
 
 .ios-emoji {
-	padding-top: 20px;
-	font-size: 4.5rem;
+  padding-top: 20px;
+  font-size: 4.5rem;
 }
 
 .ios .tag-line {
-	margin: 100px 0 50px 0;
+  margin: 100px 0 50px 0;
 }
 
 .ios .tag-line h3 {
-	font-size: 3rem;
-	letter-spacing: normal;
-	font-weight: bold;
+  font-size: 3rem;
+  letter-spacing: normal;
+  font-weight: bold;
 }
 
 .cards {
-	display: block;
+  display: block;
 }
 
 .card {
-	margin: 1em 0 1em 0;
+  margin: 1em 0 1em 0;
 }
 
 .line-break {
-	display: inline-block;
+  display: inline-block;
 }
 
 @media (min-width: 1026px) {
-	.ios .visible-md-down {
-		display: none;
-	}
+  .ios .visible-md-down {
+    display: none;
+  }
 }
 
 @media (max-width: 1025px) {
-	.ios-hero__container .header-line {
-		padding-top: 0;
-	}
-	.ios-hero__container {
-		height: auto;
-		min-height: min-content;
-		margin-bottom: 50px;
-	}
-	.hidden-lg {
-		display: none;
-	}
-	.visible-md-down {
-		display: inline;
-	}
+  .ios-hero__container .header-line {
+    padding-top: 0;
+  }
+  .ios-hero__container {
+    height: auto;
+    min-height: min-content;
+    margin-bottom: 50px;
+  }
+  .hidden-lg {
+    display: none;
+  }
+  .visible-md-down {
+    display: inline;
+  }
 }
 
 @media (max-width: 991px) {
-	.col-md-4 {
-		flex: 0 0 100%;
-		max-width: 100%;
-	}
-	.card {
-		width: 80%;
-		margin: 1em 0 1em 0;
-		padding: 2em;
-		height: auto;
-	}
-	.card .content .description {
-		font-size: 1.5rem;
-	}
+  .col-md-4 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  .card {
+    width: 80%;
+    margin: 1em 0 1em 0;
+    padding: 2em;
+    height: auto;
+  }
+  .card .content .description {
+    font-size: 1.5rem;
+  }
 }
 
 @media (max-width: 768px) {
-	.ios .btn-outline-info {
-		text-align: center;
-		margin: 15px 40% 0;
-	}
-	.hidden-lg {
-		display: none;
-	}
-	.visible-md-down {
-		display: inline;
-	}
+  .ios .btn-outline-info {
+    text-align: center;
+    margin: 15px 40% 0;
+  }
+  .hidden-lg {
+    display: none;
+  }
+  .visible-md-down {
+    display: inline;
+  }
 }

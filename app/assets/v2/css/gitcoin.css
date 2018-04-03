@@ -1,40 +1,40 @@
 /* Futura */
 
 @font-face {
-	font-family: 'futura-pt';
-	src: url('/static/v2/fonts/futura/font4.ttf')/* TTF file for CSS3 browsers */
+  font-family: 'futura-pt';
+  src: url('/static/v2/fonts/futura/font4.ttf')/* TTF file for CSS3 browsers */
 }
 
 /* OpenSans Light */
 
 @font-face {
-	font-family: 'OpenSans';
-	src: url('/static/v2/fonts/OpenSans/Light.ttf');
-	font-weight: 300;
+  font-family: 'OpenSans';
+  src: url('/static/v2/fonts/OpenSans/Light.ttf');
+  font-weight: 300;
 }
 
 /* OpenSans Regular */
 
 @font-face {
-	font-family: 'OpenSans';
-	src: url('/static/v2/fonts/OpenSans/Regular.ttf');
-	font-weight: 400;
+  font-family: 'OpenSans';
+  src: url('/static/v2/fonts/OpenSans/Regular.ttf');
+  font-weight: 400;
 }
 
 /* OpenSans Semibold */
 
 @font-face {
-	font-family: 'OpenSans';
-	src: url('/static/v2/fonts/OpenSans/SemiBold.ttf');
-	font-weight: 600;
+  font-family: 'OpenSans';
+  src: url('/static/v2/fonts/OpenSans/SemiBold.ttf');
+  font-weight: 600;
 }
 
 /* OpenSans Bold */
 
 @font-face {
-	font-family: 'OpenSans';
-	src: url('/static/v2/fonts/OpenSans/Bold.ttf');
-	font-weight: 700;
+  font-family: 'OpenSans';
+  src: url('/static/v2/fonts/OpenSans/Bold.ttf');
+  font-weight: 700;
 }
 
 /* Muli Extra Light */
@@ -57,9 +57,9 @@
 /* Muli Light */
 
 @font-face {
-	font-family: 'Muli';
-	src: url('/static/v2/fonts/Muli/Light.ttf');
-	font-weight: 300;
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/Light.ttf');
+  font-weight: 300;
 }
 
 /* Muli Light Italic */
@@ -74,9 +74,9 @@
 /* Muli Regular */
 
 @font-face {
-	font-family: 'Muli';
-	src: url('/static/v2/fonts/Muli/Regular.ttf');
-	font-weight: 400;
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/Regular.ttf');
+  font-weight: 400;
 }
 
 /* Muli Regular Italic */
@@ -91,9 +91,9 @@
 /* Muli SemiBold */
 
 @font-face {
-	font-family: 'Muli';
-	src: url('/static/v2/fonts/Muli/SemiBold.ttf');
-	font-weight: 600;
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/SemiBold.ttf');
+  font-weight: 600;
 }
 
 /* Muli SemiBold Italic */
@@ -123,9 +123,9 @@
 } */
 
 body {
-	font-family: 'futura-pt', Futura, sans-serif;
-	overflow-x: hidden;
-	width: 100%;
+  font-family: 'futura-pt', Futura, sans-serif;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 h1,
@@ -140,391 +140,390 @@ h6,
 .h4,
 .h5,
 .h6 {
-	letter-spacing: 0.15em;
-	text-transform: uppercase;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
 }
 
 h4,
 .h4 {
-	text-align: center;
-	padding-top: 40px;
+  text-align: center;
+  padding-top: 40px;
 }
 
 .no-gutter {
-	margin-right: 0;
-	margin-left: 0;
+  margin-right: 0;
+  margin-left: 0;
 }
 
 .no-gutter .col {
-	padding-right: 0;
-	padding-left: 0;
+  padding-right: 0;
+  padding-left: 0;
 }
 
 .no-gutter div[class*='col-'] {
-	padding-right: 0;
-	padding-left: 0;
+  padding-right: 0;
+  padding-left: 0;
 }
 
 .white {
-	color: #eff4ee !important;
+  color: #eff4ee !important;
 }
 
 .blue {
-	color: #3e24fb;
+  color: #3e24fb;
 }
 
 .gitcoin-gray {
-	color: lightgray !important;
+  color: lightgray !important;
 }
 
 .header {
-	background-image: url('/static/v2/images/header-bg.png');
-	background-color: #0d023b;
-	background-size: cover;
-	background-position: 0px 0px;
-	background-repeat: no-repeat;
+  background-image: url('/static/v2/images/header-bg.png');
+  background-color: #0d023b;
+  background-size: cover;
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
 }
 
 .nav-link {
-	color: #eff4ee !important;
-	text-transform: uppercase;
-	text-decoration: none;
-	padding-right: 1rem !important;
-	padding-left: 1rem !important;
-	font-size: 0.9rem !important;
+  color: #eff4ee !important;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding-right: 1rem !important;
+  padding-left: 1rem !important;
+  font-size: 0.9rem !important;
 }
 
 .font-title {
-	font-size: 20px;
+  font-size: 20px;
 }
 
 .font-subheader {
-	font-size: 16px;
+  font-size: 16px;
 }
 
 .font-body {
-	font-size: 14px;
+  font-size: 14px;
 }
 
 .font-caption {
-	font-size: 12px;
+  font-size: 12px;
 }
 
 .footer .nav-link {
-	font-size: 0.8rem !important;
+  font-size: 0.8rem !important;
 }
 
 .nav-link:visited {
-	color: #eff4ee;
+  color: #eff4ee;
 }
 
 .footer-link {
-	font-size: 0.9rem;
-	margin-top: 0.5rem;
-	cursor: pointer;
-	color: #eff4ee;
-	text-decoration: none;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  color: #eff4ee;
+  text-decoration: none;
 }
 
 .footer-link:visited {
-	color: #eff4ee;
+  color: #eff4ee;
 }
 
 .gc-letter-spacing {
-	letter-spacing: 0.15em;
+  letter-spacing: 0.15em;
 }
 
 div.button-pink {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	color: #f9006c;
-	font-size: 0.95rem;
-	font-weight: bold;
-	line-height: 42px;
-	text-transform: uppercase;
-	background: none;
-	width: 130px;
-	height: 39px;
-	border-radius: 19px;
-	border: 3px solid #f9006c;
-	letter-spacing: 0.1em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #f9006c;
+  font-size: 0.95rem;
+  font-weight: bold;
+  line-height: 42px;
+  text-transform: uppercase;
+  background: none;
+  width: 130px;
+  height: 39px;
+  border-radius: 19px;
+  border: 3px solid #f9006c;
+  letter-spacing: 0.1em;
 }
 
 .git-pill {
-	background-color: #0d023b;
-	border-radius: 1.2rem;
-	padding-left: 0.95rem;
-	padding-right: 0.95rem;
-	height: 2rem;
+  background-color: #0d023b;
+  border-radius: 1.2rem;
+  padding-left: 0.95rem;
+  padding-right: 0.95rem;
+  height: 2rem;
 }
 
 .git-pill span {
-	position: relative;
-	top: 2px;
-	left: 2px;
+  position: relative;
+  top: 2px;
+  left: 2px;
 }
 
 .header-line {
-	color: white;
-	font-family: Futura, sans-serif;
-	font-size: 3em;
-	font-weight: 500;
-	font-style: italic;
-	text-transform: uppercase;
-	letter-spacing: 0.1em;
+  color: white;
+  font-family: Futura, sans-serif;
+  font-size: 3em;
+  font-weight: 500;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 .subheader-line {
-	color: #70efbe;
-	font-family: Futura, sans-serif;
-	font-size: 2em;
-	font-weight: 500;
-	font-style: italic;
+  color: #70efbe;
+  font-family: Futura, sans-serif;
+  font-size: 2em;
+  font-weight: 500;
+  font-style: italic;
 }
 
 .font-weight-300 {
-	font-weight: 300;
+  font-weight: 300;
 }
 
 .light-bg {
-	background-color: rgba(239, 243, 238, 0.7);
-	background-image: url('/static/v2/images/light-bg.png');
-	background-size: contain;
-	background-position: bottom;
-	background-repeat: no-repeat;
+  background-color: rgba(239, 243, 238, 0.7);
+  background-image: url('/static/v2/images/light-bg.png');
+  background-size: contain;
+  background-position: bottom;
+  background-repeat: no-repeat;
 }
 
 .white-light-bg {
-	background-image: url('/static/v2/images/light-bg.png');
-	background-size: contain;
-	background-position: bottom;
-	background-repeat: no-repeat;
+  background-image: url('/static/v2/images/light-bg.png');
+  background-size: contain;
+  background-position: bottom;
+  background-repeat: no-repeat;
 }
 
 .font-bigger-1 {
-	font-size: 1.2rem;
+  font-size: 1.2rem;
 }
 
 .font-bigger-2 {
-	font-size: 1.5rem;
+  font-size: 1.5rem;
 }
 
 .font-bigger-3 {
-	font-size: 1.6rem;
-	line-height: 1.8rem;
+  font-size: 1.6rem;
+  line-height: 1.8rem;
 }
 
 .font-bigger-4 {
-	font-size: 1.7rem;
+  font-size: 1.7rem;
 }
 
 .font-smaller-1 {
-	font-size: 0.9rem;
+  font-size: 0.9rem;
 }
 
 .font-smaller-2 {
-	font-size: 0.8rem;
+  font-size: 0.8rem;
 }
 
 .font-smaller-3 {
-	font-size: 0.75rem;
+  font-size: 0.75rem;
 }
 
 .font-smaller-4 {
-	font-size: 0.7rem;
+  font-size: 0.7rem;
 }
 
 .font-smaller-5 {
-	font-size: 0.65rem;
+  font-size: 0.65rem;
 }
 
 .font-smaller-6 {
-	font-size: 0.6rem;
+  font-size: 0.6rem;
 }
 
 .font-smaller-7 {
-	font-size: 0.55rem;
+  font-size: 0.55rem;
 }
 
 .how-it-works-video {
-	width: 100%;
-	height: 600px;
+  width: 100%;
+  height: 600px;
 }
 
 .explain-img-wrapper {
-	height: 150px;
+  height: 150px;
 }
 
 .explain-img-wrapper img {
-	max-height: 150px;
+  max-height: 150px;
 }
 
 .mission-img-wrapper {
-	height: 250px;
+  height: 250px;
 }
 
 .mission-img-wrapper img {
-	max-height: 250px;
+  max-height: 250px;
 }
 
 .avatar-img-wrapper {
-	height: 200px;
+  height: 200px;
 }
 
 .avatar-img-wrapper img {
-	max-height: 200px;
+  max-height: 200px;
 }
 
 .dash-filter-header {
-	align-items: center;
-	display: flex;
-	font-size: 1.2rem;
-	letter-spacing: 0.1em;
-	margin-bottom: 1.2rem;
-	text-transform: uppercase
+  align-items: center;
+  display: flex;
+  font-size: 1.2rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 1.2rem;
+  text-transform: uppercase
 }
 
 .dash-filter-header img {
-	margin-left: .5rem;
+  margin-left: .5rem;
 }
 
 .dash-filter-label {
-	font-weight: 300;
-	font-size: 0.9rem;
-	letter-spacing: 0.1em;
+  font-weight: 300;
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
 }
 
 .footer {
-	overflow: hidden;
-	height: 300px;
-	background-image: url('/static/v2/images/footer.jpg');
-	background-color: #0d023b;
-	background-size: contain;
-	background-position: bottom;
-	background-repeat: no-repeat;
-	z-index: 5;
+  overflow: hidden;
+  height: 300px;
+  background-image: url('/static/v2/images/footer.jpg');
+  background-color: #0d023b;
+  background-size: contain;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  z-index: 5;
 }
 
 .lil-white-button {
-	height: 1rem;
-	width: 1rem;
-	cursor: pointer;
+  height: 1rem;
+  width: 1rem;
+  cursor: pointer;
 }
 
 .gc-border-black {
-	border: 1px solid black !important;
+  border: 1px solid black !important;
 }
 
 .gc-border-green {
-	border: 1px solid #37ea9c !important;
+  border: 1px solid #37ea9c !important;
 }
 
 .gc-selected {
-	border: 1px solid #4ef6ad !important;
+  border: 1px solid #4ef6ad !important;
 }
 
 .gc-round-text-input {
-	border-radius: 16px;
-	height: 32px;
-	border: 1px solid #eee;
-	outline: none;
-	padding-left: 10px;
-	font-weight: 300;
+  border-radius: 16px;
+  height: 32px;
+  border: 1px solid #eee;
+  outline: none;
+  padding-left: 10px;
+  font-weight: 300;
 }
 
 .gc-round-text-form {
-	border-radius: 16px;
-	height: 160px;
-	border: 1px solid #eee;
-	outline: none;
-	padding-left: 10px;
-	font-weight: 300;
+  border-radius: 16px;
+  height: 160px;
+  border: 1px solid #eee;
+  outline: none;
+  padding-left: 10px;
+  font-weight: 300;
 }
 
 .dash-link {
-	font-size: 0.7rem;
-	margin-top: 8px;
-	letter-spacing: 0.1em;
+  font-size: 0.7rem;
+  margin-top: 8px;
+  letter-spacing: 0.1em;
 }
 
 *::-webkit-input-placeholder {
-	color: lightgray;
+  color: lightgray;
 }
 
 *::-moz-placeholder {
-	/* FF 19+ */
-	color: lightgray;
+  /* FF 19+ */
+  color: lightgray;
 }
 
 *:-moz-placeholder {
-	/* FF 4-18 */
-	color: lightgray;
+  /* FF 4-18 */
+  color: lightgray;
 }
 
 *:-ms-input-placeholder {
-	/* IE 10+ */
-	color: lightgray;
+  /* IE 10+ */
+  color: lightgray;
 }
 
 .accordion {
-	cursor: pointer;
-	width: 100%;
-	outline: none;
-	transition: 0.4s;
+  cursor: pointer;
+  width: 100%;
+  outline: none;
+  transition: 0.4s;
 }
 
 .panel {
-	max-height: 0;
-	overflow: hidden;
-	transition: max-height 0.2s ease-out;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
 }
 
 .accordion:after {
-	display: none;
-	/* stylelint-disable-next-line */
-	font-family: 'Font Awesome 5 Solid';
-	content: '\f107';
+  display: none;
+  /* stylelint-disable-next-line */
+  font-family: 'Font Awesome 5 Solid';
+  content: '\f107';
 }
 
 .accordion svg {
-	font-size: 16px;
-	margin-right: 6px;
-	margin-top: 4px;
-	float: right;
+  font-size: 16px;
+  margin-right: 6px;
+  margin-top: 4px;
+  float: right;
 }
 
 .accordion.active:after {
-	content: '\f106';
+  content: '\f106';
 }
 
 .dropdown-menu {
-	background-color: #FAFAFA;
-	font-family: 'Muli', sans-serif;
-	border-radius: 0px;
-	padding: 0;
-	right: 0;
-	left: auto;
+  background-color: #FAFAFA;
+  font-family: 'Muli', sans-serif;
+  border-radius: 0px;
+  padding: 0;
+  right: 0;
+  left: auto;
 }
 
 .dropdown-menu .dropdown-divider {
-	margin: 0;
+  margin: 0;
 }
 
 .dropdown-menu .dropdown-item {
-	padding: 12px 25px;
+  padding: 12px 25px;
 }
 
-
 .dropdown-menu .dropdown-item:hover {
-	background-color: #0D0764;
-	color: #FFFFFF;
+  background-color: #0D0764;
+  color: #FFFFFF;
 }
 
 .dropdown-menu .dropdown-item svg {
-	text-align: center;
-	margin-left: 0px;
-	margin-right: 20px;
-	width: 15px;
+  text-align: center;
+  margin-left: 0px;
+  margin-right: 20px;
+  width: 15px;
 }
