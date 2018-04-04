@@ -9,6 +9,7 @@ this program. If not, see
 
 <head>
   {% include 'shared/head.html' %}
+  {% load i18n static %}
 </head>
 
 <body class="interior {{active}}">
@@ -22,30 +23,29 @@ this program. If not, see
       <div class="container-fluid no-gutter">
         <div class="row font-smaller-2" id="form_container">
           <div class="col d-flex align-items-center justify-content-center" id="primary_form">
-            <div class="d-flex justify-content-center flex-column mt-5 w-50" id="primary_subform">
+            <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
               <div class="w-100 title">
-                <p class="submit-title">Submit your project idea</p>
-                <p class="submit-text">We love ideas and hate using lorem ipsum text. Use the form below to submit your project idea and (hopefully)
-                  get some feedback!</p>
+                <p class="submit-title">{% trans "Submit your project idea" %}</p>
+                <p class="submit-text">{% trans "We love ideas and hate using lorem ipsum text. Use the form below to submit your project idea and (hopefully) get some feedback!" %}</p>
               </div>
               <form id="new_idea_form">
                 {% include 'shared/name.html' %}
                 <div class="d-flex justify-content-md-between flex-wrap flex-md-nowrap">
                     <div class="col-md-5 col-sm-12">                  
-                        <label class="form__label" for="email">Email address</label>
+                        <label class="form__label" for="email">{% trans "Email address" %}</label>
                         <input type=text id="email" name=email class="form__input" placeholder='you@somewhere' value="{{email}}" required>                  
                       </div>
                       <div class="col-md-5 col-sm-12">
-                        <label class="form__label" for="githubUsernam">Github Username</label>
+                        <label class="form__label" for="githubUsernam">{% trans "Github Username" %}</label>
                         {% if not github_handle %}
-                        <a href="{% url " github:github_auth " %}?redirect_uri={{ request.get_full_path }}">(Login)</a>
+                        <a href="{% url " github:github_auth " %}?redirect_uri={{ request.get_full_path }}">({% trans "Login" %})</a>
                         {% else %} {% endif %}
                         <input name="githubUsername" id="github_username" type=text class="form__input" placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}">
                       </div>
                 </div>
                 <div>
                   <div class="d-flex justify-content-between">
-                    <label for="summary" class="form__label">Summarize your idea</label>
+                    <label for="summary" class="form__label">{% trans "Summarize your idea" %}</label>
                     <div style="margin: 0.5rem" class="form__label">
                       <span id="summary_chars">0</span>/100
                     </div>
@@ -54,56 +54,56 @@ this program. If not, see
                 </div>
                 <div>
                   <div class="d-flex justify-content-between">
-                    <label class="form__label" for="more_info">Tell us more</label>
+                    <label class="form__label" for="more_info">{% trans "Tell us more" %}</label>
                     <div style="margin: 0.5rem" class="form__label">
                       <span id="more_info_chars" class="form__label">0</span>/500 </div>
                   </div>
                   <textarea class="form__input" id="more_info" name="more_info" rows="3" maxlength="500" required>{{more_info}}</textarea>
                 </div>
                 <div id="looking_for">
-                  <label class="form__label" for="looking_for">What are you looking for? (select all that apply)</label>
+                  <label class="form__label" for="looking_for">{% trans "What are you looking for? (select all that apply)" %}</label>
                   <div class="d-flex flex-wrap justify-content-md-between">
                     <div class="form-check form-check-inline">
                       <input type="checkbox" class="form-check-input" id="capital_looking">
-                      <label class="form-check-label" for="capital_looking">Capital</label>
+                      <label class="form-check-label" for="capital_looking">{% trans "Capital" %}</label>
                     </div>
                     <div class="form-check form-check-inline">
                       <input type="checkbox" class="form-check-input" id="builders_looking">
-                      <label class="form-check-label" for="builders_looking">Builders</label>
+                      <label class="form-check-label" for="builders_looking">{% trans "Builders" %}</label>
                     </div>
                     <div class="form-check form-check-inline">
                       <input type="checkbox" class="form-check-input" id="designers_looking">
-                      <label class="form-check-label" for="designers_looking">Designers</label>
+                      <label class="form-check-label" for="designers_looking">{% trans "Designers" %}</label>
                     </div>
                     <div class="form-check form-check-inline">
                       <input type="checkbox" class="form-check-input" id="customers_looking">
-                      <label class="form-check-label" for="customers_looking">Customers</label>
+                      <label class="form-check-label" for="customers_looking">{% trans "Customers" %}</label>
                     </div>
                   </div>
                 </div>
                 <div id="already_have">
-                  <label class="form__label">What do you have already? (select all that apply)</label>
+                  <label class="form__label">{% trans "What do you have already? (select all that apply)" %}</label>
                   <div class="d-flex flex-wrap justify-content-md-between">
                     <div class="form-check form-check-inline">
                       <input type="checkbox" class="form-check-input" id="capital_exists">
-                      <label class="form-check-label" for="capital_exists">Capital</label>
+                      <label class="form-check-label" for="capital_exists">{% trans "Capital" %}</label>
                     </div>
                     <div class="form-check form-check-inline">
                       <input type="checkbox" class="form-check-input" id="builders_exists">
-                      <label class="form-check-label" for="builders_exists">Builders</label>
+                      <label class="form-check-label" for="builders_exists">{% trans "Builders" %}</label>
                     </div>
                     <div class="form-check form-check-inline">
                       <input type="checkbox" class="form-check-input" id="designers_exists">
-                      <label class="form-check-label" for="designers_exists">Designers</label>
+                      <label class="form-check-label" for="designers_exists">{% trans "Designers" %}</label>
                     </div>
                     <div class="form-check form-check-inline">
                       <input type="checkbox" class="form-check-input" id="customers_exists">
-                      <label class="form-check-label" for="customers_exists">Customers</label>
+                      <label class="form-check-label" for="customers_exists">{% trans "Customers" %}</label>
                     </div>
                   </div>
                 </div>
                 <div class="form__footer form__footer--right">
-                  <button class="button button--primary center-button" type="submit" id="create_idea">Submit</button>
+                  <button class="button button--primary center-button" type="submit" id="create_idea">{% trans "Submit" %}</button>
                 </div>
               </form>
             </div>

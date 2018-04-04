@@ -9,6 +9,7 @@ this program. If not, see
 
 <head>
   {% include 'shared/head.html' %}
+  {% load i18n static %}
 </head>
 
 <body class="interior {{active}}">
@@ -23,12 +24,12 @@ this program. If not, see
         <div class="col pb-4">
           <div class="form-group d-flex justify-content-between">
             <div>
-              <label class="form__label" for="sort">Sort by:</label>
+              <label class="form__label" for="sort">{% trans "Sort by" %}:</label>
               <span class="form__select">
                 <select id="sort_ideas" name="sort">
-                  <option value="trending_score">Trending Ideas</option>
-                  <option value="-posts">Most Comments</option>
-                  <option value="-likes">Most Likes</option>
+                  <option value="trending_score">{% trans "Trending Ideas" %}</option>
+                  <option value="-posts">{% trans "Most Comments" %}</option>
+                  <option value="-likes">{% trans "Most Likes" %}</option>
                 </select>
                 <div class="form__select__icon hidden-border" style="border-style: hidden">
                   {% include 'svgs/arrow-down.svg' %}
@@ -36,7 +37,7 @@ this program. If not, see
               </span>
             </div>
             <div>
-              <span class="button button--primary" type="add" id="add">Add Idea</span>
+              <span class="button button--primary" type="add" id="add">{% trans "Add Idea" %}</span>
             </div>
           </div>
 
@@ -46,7 +47,7 @@ this program. If not, see
             </div>
           </div>
           <div class="form__footer form__footer--right">
-            <button class="button button--primary center-button invisible" type="load" id="load_more" data-list-size="{{ideas|length}}" style="background-color: #f9006c">Load More</button>
+            <button class="button button--primary center-button invisible" type="load" id="load_more" data-list-size="{{ideas|length}}" style="background-color: #f9006c">{% trans "Load More" %}</button>
           </div>
         </div>
       </div>
