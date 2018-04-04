@@ -456,7 +456,7 @@ var do_actions = function(result) {
         href: '/funding/fulfill?source=' + result['github_url'],
         text: gettext('Submit Work'),
         parent: 'right_actions',
-        title: gettext('Submit work for the funder to review')
+        title: gettext('Submit work for the funder to review'),
         work_started: is_interested,
         id: 'submit'
       };
