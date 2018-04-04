@@ -113,6 +113,7 @@ def issue_details(request):
 
     if api_response.status_code != 200:
         response['message'] = f'there was a problem reaching the github api, status code {api_response.status_code}'
+        response['github_resopnse'] = api_response.json()
         return JsonResponse(response)
 
     try:
