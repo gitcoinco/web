@@ -84,6 +84,17 @@ class Bounty(SuperModel):
         ('Months', 'Months'),
         ('Unknown', 'Unknown'),
     ]
+
+    STATUS_CHOICES = (
+        ('cancelled', 'cancelled'),
+        ('done', 'done'),
+        ('expired', 'expired'),
+        ('open', 'open'),
+        ('started', 'started'),
+        ('submitted', 'submitted'),
+        ('unknown', 'unknown'),
+    )
+
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
     web3_created = models.DateTimeField(db_index=True)
@@ -122,6 +133,7 @@ class Bounty(SuperModel):
     submissions_comment = models.IntegerField(null=True, blank=True)
     override_status = models.CharField(max_length=255, blank=True)
     last_comment_date = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=9, choices=STATUS_CHOICES, default='open', db_index=True)
     objects = BountyQuerySet.as_manager()
 
     class Meta:
@@ -278,7 +290,7 @@ class Bounty(SuperModel):
         return timezone.now()
 
     @property
-    def status(self):
+    def current_status(self):
         """Determine the status of the Bounty.
 
         Raises:
@@ -450,6 +462,12 @@ class Bounty(SuperModel):
         if save:
             self.save()
         return comments
+
+
+@receiver(pre_save, sender=Bounty, dispatch_uid="update_bounty_status")
+def update_bounty_status(sender, instance, **kwargs):
+    """Handle post-save signals from Bounties to update the Bounty status."""
+    instance.status = instance.current_status
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):
