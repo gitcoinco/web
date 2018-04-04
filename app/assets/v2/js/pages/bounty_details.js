@@ -84,7 +84,9 @@ var callbacks = {
     return [ 'amount', Math.round((parseInt(val) / Math.pow(10, document.decimals)) * 1000) / 1000 + ' ' + result['token_name'] ];
   },
   'avatar_url': function(key, val, result) {
-    return [ 'avatar', '<a href="/profile/' + result['org_name'] + '"><img class=avatar src="' + val + '"></a>' ];
+    var username = result['bounty_owner_github_username'] ? result['bounty_owner_github_username'] : 'Self';
+    return [ 'avatar', '<a href="/profile/' + result['bounty_owner_github_username'] +
+      '"><img class=avatar src="/funding/avatar?repo=https://github.com/' + username + '"></a>' ];
   },
   'status': function(key, val, result) {
     var ui_status = val;
