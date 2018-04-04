@@ -85,6 +85,7 @@ var callbacks = {
   },
   'avatar_url': function(key, val, result) {
     var username = result['bounty_owner_github_username'] ? result['bounty_owner_github_username'] : 'Self';
+
     return [ 'avatar', '<a href="/profile/' + result['bounty_owner_github_username'] +
       '"><img class=avatar src="/funding/avatar?repo=https://github.com/' + username + '"></a>' ];
   },
