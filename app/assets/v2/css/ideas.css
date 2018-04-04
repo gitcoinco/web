@@ -59,3 +59,15 @@
 	width: 2em;
 	border-radius: 50%;
 }
+
+.badge-container {
+	padding:0px 10px
+}
+
+.badge-container .badge-container-label {
+	line-height: 42px;
+}
+
+.avatar-label {
+	line-height: 42px;
+}

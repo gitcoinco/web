@@ -4,6 +4,8 @@ $('document').ready(() => {
   initCharCounter('#more_info', '#more_info_chars');
 
   $('#create_idea').click(() => {
+    if (!$('#new_idea_form').valid())
+      return false;
 
     var fullName = $('#full_name').val();
     var email = $('#email').val();
@@ -37,6 +39,13 @@ $('document').ready(() => {
       document.location.href = 'idea/' + result.ideaId + '/show';
     }, 'json');
   });
+
+  // prevent submission, keep form validation...
+  $('#new_idea_form').submit(function() {
+    console.log('submit');
+    return false;
+  });
+
 });
 
 function initCharCounter(inputId, counterElementId) {

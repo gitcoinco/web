@@ -28,22 +28,22 @@ this program. If not, see
                 <p class="submit-text">We love ideas and hate using lorem ipsum text. Use the form below to submit your project idea and (hopefully)
                   get some feedback!</p>
               </div>
-              <form>
+              <form id="new_idea_form">
                 {% include 'shared/name.html' %}
-                <div class="form__group" style="justify-content: space-between">
-                  <div class- "form__group-item">
-                    <label class="form__label" for="email">Email address</label>
-                    <input type=text id="email" name=email class="form__input" placeholder='you@somewhere' value="{{email}}" required>
-                  </div>
-                  <div class- "form__group-item">
-                    <label class="form__label" for="githubUsernam">Github Username</label>
-                    {% if not github_handle %}
-                    <a href="{% url " github:github_auth " %}?redirect_uri={{ request.get_full_path }}">(Login)</a>
-                    {% else %} {% endif %}
-                    <input name="githubUsername" id="github_username" type=text class="form__input" placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}">
-                  </div>
+                <div class="d-flex justify-content-md-between flex-wrap flex-md-nowrap">
+                    <div class="col-md-5 col-sm-12">                  
+                        <label class="form__label" for="email">Email address</label>
+                        <input type=text id="email" name=email class="form__input" placeholder='you@somewhere' value="{{email}}" required>                  
+                      </div>
+                      <div class="col-md-5 col-sm-12">
+                        <label class="form__label" for="githubUsernam">Github Username</label>
+                        {% if not github_handle %}
+                        <a href="{% url " github:github_auth " %}?redirect_uri={{ request.get_full_path }}">(Login)</a>
+                        {% else %} {% endif %}
+                        <input name="githubUsername" id="github_username" type=text class="form__input" placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}">
+                      </div>
                 </div>
-                <div class="form-group">
+                <div>
                   <div class="d-flex justify-content-between">
                     <label for="summary" class="form__label">Summarize your idea</label>
                     <div style="margin: 0.5rem" class="form__label">
@@ -52,7 +52,7 @@ this program. If not, see
                   </div>
                   <textarea class="form__input" id="summary" name="summary" rows="1" maxlength="100" required>{{summary}}</textarea>
                 </div>
-                <div class="form-group">
+                <div>
                   <div class="d-flex justify-content-between">
                     <label class="form__label" for="more_info">Tell us more</label>
                     <div style="margin: 0.5rem" class="form__label">
@@ -60,9 +60,9 @@ this program. If not, see
                   </div>
                   <textarea class="form__input" id="more_info" name="more_info" rows="3" maxlength="500" required>{{more_info}}</textarea>
                 </div>
-                <div id="looking_for" class="form-group">
+                <div id="looking_for">
                   <label class="form__label" for="looking_for">What are you looking for? (select all that apply)</label>
-                  <div class="d-flex justify-content-between">
+                  <div class="d-flex flex-wrap justify-content-md-between">
                     <div class="form-check form-check-inline">
                       <input type="checkbox" class="form-check-input" id="capital_looking">
                       <label class="form-check-label" for="capital_looking">Capital</label>
@@ -81,9 +81,9 @@ this program. If not, see
                     </div>
                   </div>
                 </div>
-                <div id="already_have" class="form-group">
+                <div id="already_have">
                   <label class="form__label">What do you have already? (select all that apply)</label>
-                  <div class="d-flex justify-content-between">
+                  <div class="d-flex flex-wrap justify-content-md-between">
                     <div class="form-check form-check-inline">
                       <input type="checkbox" class="form-check-input" id="capital_exists">
                       <label class="form-check-label" for="capital_exists">Capital</label>
@@ -103,7 +103,7 @@ this program. If not, see
                   </div>
                 </div>
                 <div class="form__footer form__footer--right">
-                  <button class="button button--primary center-button" type="button" id="create_idea">Submit</button>
+                  <button class="button button--primary center-button" type="submit" id="create_idea">Submit</button>
                 </div>
               </form>
             </div>
