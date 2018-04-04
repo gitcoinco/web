@@ -18,13 +18,13 @@ this program. If not, see
     {% include 'shared/nav.html' %}
     {% include 'shared/minihero.html' with h1='<span style="color: #f9006c">Project</span> Ideas' suppress_logo=1 %}
   </div>
-  <div class="row no-gutter">
+  <div class="row">
     <div class="col body">
-      <div class="container-fluid no-gutter">
+      <div class="container">
         <div class="row font-smaller-2" id="form_container">
-          <div class="col d-flex align-items-center justify-content-center" id="primary_form">
-            <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
-              <div class="w-100 title">
+          <div class="col d-flex align-items-center justify-content-center">
+            <div class="d-flex justify-content-center flex-column mt-5 no-gutter">
+              <div class="title">
                 <p class="submit-title">{% trans "Submit your project idea" %}</p>
                 <p class="submit-text">{% trans "We love ideas and hate using lorem ipsum text. Use the form below to submit your project idea and (hopefully) get some feedback!" %}</p>
               </div>
