@@ -345,10 +345,10 @@ COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')
 COLO_ACCOUNT_PRIVATE_KEY = env('COLO_ACCOUNT_PRIVATE_KEY', default='')
 
 # Silk Profiling and Performance Monitoring
-ENABLE_SILK = env.bool('ENABLE_SILK', default=DEBUG)
+ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
 if ENABLE_SILK:
     INSTALLED_APPS += ['silk']
-    MIDDLEWARE += ('silk.middleware.SilkyMiddleware', )
+    MIDDLEWARE.append('silk.middleware.SilkyMiddleware')
     SILKY_PYTHON_PROFILER = env.bool('SILKY_PYTHON_PROFILER', default=True)
     SILKY_PYTHON_PROFILER_BINARY = env.bool('SILKY_PYTHON_PROFILER_BINARY', default=False)
     SILKY_AUTHENTICATION = env.bool('SILKY_AUTHENTICATION', default=False)
