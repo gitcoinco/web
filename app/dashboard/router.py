@@ -163,7 +163,15 @@ class BountyViewSet(viewsets.ModelViewSet):
         if order_by:
             queryset = queryset.order_by(order_by)
 
-        return queryset.distinct()
+        queryset = queryset.distinct()
+
+        # offset / limit
+        limit = self.request.query_params.get('limit', 9999)
+        offset = self.request.query_params.get('offset', 0)
+        if limit:
+            queryset = queryset[int(offset):int(limit)]
+
+        return queryset
 
 
 # Routers provide an easy way of automatically determining the URL conf.
