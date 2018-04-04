@@ -35,6 +35,7 @@
       <a class="nav-link {% if active == 'about' %}selected{%endif%}" href="{% url "about" %}">{% trans "About" %}</a>
       <a class="nav-link{% if active == 'tools' %} selected{% endif %}" href="{% url "tools" %}">{% trans "Tools" %}</a>
       <a class="nav-link{% if active == 'dashboard' %} selected{% endif %}" href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
+      <a class="nav-link{% if active == 'ideas_list' %} selected{% endif %}" href="{% url "ideas_list" %}">{% trans "Ideas" %}</a>
       <a class="nav-link slack{% if active == 'slack' %} selected{% endif %}" href="{% url "slack" %}">
         <i class="fab fa-slack-hash" aria-hidden="true"></i>Slack({{num_slack}})
       </a>
