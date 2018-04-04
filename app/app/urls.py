@@ -197,8 +197,10 @@ urlpatterns = [
     path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
-
 ]
+
+if settings.ENABLE_SILK:
+    urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
 
 handler403 = 'retail.views.handler403'
 handler404 = 'retail.views.handler404'
