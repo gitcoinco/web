@@ -1,4 +1,4 @@
-{% load static %}
+{% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,13 +13,13 @@
         </div>
         <div class="row ml-5 hidden-lg">
             <div class="col-6 header-line">
-                One Swipe Away From Your Next Bounty.
+                {% trans "One Swipe Away From Your Next Bounty." %}
                 <div class="row no-gutter">
             <div class="col-2" style="background: #fff; height:7px; margin:30px 0;">
                 </div>
                 </div>
                 <h3>
-                    Browse funded work in open source software from anywhere, at anytime.
+                    {% trans "Browse funded work in open source software from anywhere, at anytime." %}
                 </h3>
                 <a href="{% url "itunes" %}">
                     <img class="iphone" src="{% static "v2/images/ios/appstore.png" %}"/>
@@ -32,12 +32,12 @@
         </div>
         <div class="row visible-md-down">
             <div class="col-12 header-line">
-                One Swipe Away From Your Next Bounty.
+                {% trans "One Swipe Away From Your Next Bounty." %}
                 <div class="row no-gutter">
                     <div class="col-2" style="background: #fff; height:7px; margin:30px 0;"></div>
                 </div>
                 <h3>
-                    Browse funded work in open source software from anywhere, at anytime.
+                    {% trans "Browse funded work in open source software from anywhere, at anytime." %}
                 </h3>
                 <a href="/itunes">
                     <img class="iphone" src="{% static "v2/images/ios/appstore.png" %}"/>
@@ -64,7 +64,7 @@
 
     <div class="row tag-line">
         <div class="col-12">
-            <h3 class="text-center">It's Easy As <span class="line-break">1-2-3 🎶</span></h3>
+            <h3 class="text-center">{% trans "It's Easy As" %} <span class="line-break">1-2-3 🎶</span></h3>
         </div>
     </div>
     <div class="row">
@@ -77,9 +77,9 @@
                               <div class="card">
                                 <div class="ios-emoji">👤</div>
                                 <div class="content">
-                                  <div class="title">1. Sync</div>
+                                  <div class="title">1. {% trans "Sync" %}</div>
                                   <div class="description">
-                                    Sync your github profile with the gitcoin app.
+                                    {% trans "Sync your github profile with the gitcoin app." %}
                                   </div>
                                 </div>
                               </div>
@@ -92,9 +92,9 @@
                               <div class="card">
                                 <div class="ios-emoji">👆</div>
                                 <div class="content">
-                                  <div class="title">2. Swipe</div>
+                                  <div class="title">2. {% trans "Swipe" %}</div>
                                   <div class="description">
-                                    Swipe through funded work in open source software.
+                                    {% trans "Swipe through funded work in open source software." %}
                                   </div>
                                 </div>
                               </div>
@@ -107,9 +107,9 @@
                               <div class="card">
                                 <div class="ios-emoji">🎉</div>
                                 <div class="content">
-                                  <div class="title">3. Match</div>
+                                  <div class="title">3. {% trans "Match" %}</div>
                                   <div class="description">
-                                    The app will intro (via e-mail) you to the repository owners with whom you've matched with
+                                    {% trans "The app will intro (via e-mail) you to the repository owners with whom you've matched with" %}
                                   </div>
                                 </div>
                               </div>
@@ -123,7 +123,7 @@
 
     <div class="row tag-line text-center">
         <div class="col-12">
-            <h3 class="text-center">Get it now.</h3>
+            <h3 class="text-center">{% trans "Get it now." %}</h3>
             <a href="{% url "itunes" %}" target="_blank">
                 <img src="{% static "v2/images/ios/appstore-gradient.png" %}" height="115" />
             </a>

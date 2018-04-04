@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -34,9 +34,8 @@
             <div class = "toolbox">
               <div class="row no-gutters">
                 <div class="col-md-5 col-12">
-                  <h2 class="title">Toolbox</h2>
-                  <p class="description">Make Gitcoin your own
-                    by enabling the tools that suit your needs.</p>
+                  <h2 class="title">{% trans "Toolbox" %}</h2>
+                  <p class="description">{% trans "Make Gitcoin your own by enabling the tools that suit your needs." %}</p>
                 </div>
                 <div id="tools_hero" class="col-2">
                     <img src="{% static "v2/images/tools/tools_noborder.jpg" %}">
@@ -45,7 +44,7 @@
             </div>
 
             <div id="toc">
-              <p>Table of Contents</p>
+              <p>{% trans "Table of Contents" %}</p>
                 <ol>
                     {% for actor in actors %}
                         <li>

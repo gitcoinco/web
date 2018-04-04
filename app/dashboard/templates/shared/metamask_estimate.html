@@ -15,33 +15,34 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
+{% load i18n %}
 
                             <div class="w-100 mt-2 p-2" id="metamask_context">
                                 {% if recommend_gas_price > 30 %}
-                                    <div class="warning mb-2">Warning: the ethereum network is quite congested at the moment. <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[Stats]</a></div>
+                                    <div class="warning mb-2">{% trans "Warning: the ethereum network is quite congested at the moment." %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "Stats" %}]</a></div>
                                 {% endif %}
-                                <label><img src="{% url "avatar" %}?repo=https://github.com/MetaMask&v=3" width="20px" height="20px">The following MetaMask settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD) <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[view graph]</a> :
+                                <label><img src="{% url "avatar" %}?repo=https://github.com/MetaMask&v=3" width="20px" height="20px">{% blocktrans %}The following MetaMask settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD){% endblocktrans %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "view graph" %}]</a> :
                                 </label>
                                 <br>
                                 <div class="metamask_recc">
-                                    <label class="form__label" for="gasLimit">Gas Limit (units)</label>
+                                    <label class="form__label" for="gasLimit">{% trans "Gas Limit (units)" %}</label>
                                     <input name='gasLimit' id='gasLimit' class="form__input" type="text" disabled="" value="Unknown" />
                                 </div>
                                 <div class="metamask_recc">
-                                    <label class="form__label" for="gasPrice">Gas Price (gwei)</label>
+                                    <label class="form__label" for="gasPrice">{% trans "Gas Price (gwei)" %}</label>
                                     <input max=100 min=0 name='gasPrice' id='gasPrice' class="form__input" type="number" value="{{recommend_gas_price | floatformat}}" step="0.5" />
                                 </div>
                                 <div>
-                                    <strong>Help:</strong>
+                                    <strong>{% trans "Help" %}:</strong>
                                     <ul>
                                         <li>
-                                            <a href="{% url 'web3' %}" target="_blank" rel="noopener noreferrer">Why do I need metamask / gas?</a>
+                                            <a href="{% url 'web3' %}" target="_blank" rel="noopener noreferrer">{% trans "Why do I need metamask / gas?" %}</a>
                                         </li>
                                         <li>
-                                            <a href="https://github.com/gitcoinco/gitcoinco/issues/12" target="_blank" rel="noopener noreferrer">What gas price should I use?</a>
+                                            <a href="https://github.com/gitcoinco/gitcoinco/issues/12" target="_blank" rel="noopener noreferrer">{% trans "What gas price should I use?" %}</a>
                                         </li>
                                         <li>
-                                            <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">What are current network condtions?</a>
+                                            <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">{% trans "What are current network condtions?" %}</a>
                                         </li>
                                     </ul>
                                 </div>

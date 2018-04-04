@@ -1,4 +1,4 @@
-{% load humanize %}
+{% load i18n humanize %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -64,7 +64,7 @@
 
             {% if items|length == 0 %}
               <div class="row mt-0 ml-0 pl-3">
-                None found.
+                {% trans "None found." %}
               </div>
             {% endif %}
 

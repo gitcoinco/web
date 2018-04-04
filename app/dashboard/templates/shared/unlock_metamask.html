@@ -15,20 +15,20 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
                     <div id="unlock_metamask_error" class="blocking_error" style="display: none; min-height: 500px;">
                         {% include 'shared/bounty_nav.html' with active_item=1 %}
                         <img src="{% static "v2/images/prime.png" %}">
                         <br>
-                        <h3>You're almost there!</h3>
+                        <h3>{% trans "You're almost there!" %}</h3>
                         <p>
-                            In order to continue, you'll need to unlock metamask.
+                            {% trans "In order to continue, you'll need to unlock metamask." %}
                         </p>
                         <p>
-                            Please unlock Metamask and refresh the page.
+                            {% trans "Please unlock Metamask and refresh the page." %}
                             <br>
-                            - or -
+                            - {% trans "or" %} -
                             <br>
-                            <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">Can't get web3 to work?  Get help here.</a>
+                            <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Can't get web3 to work?  Get help here." %}</a>
                         </p>
                     </div>

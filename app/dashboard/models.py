@@ -30,6 +30,8 @@ from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
@@ -99,12 +101,12 @@ class Bounty(SuperModel):
     bounty_owner_email = models.CharField(max_length=255, blank=True)
     bounty_owner_github_username = models.CharField(max_length=255, blank=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
-    is_open = models.BooleanField(help_text='Whether the bounty is still open for fulfillments.')
+    is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
     raw_data = JSONField()
     metadata = JSONField(default={})
     current_bounty = models.BooleanField(
-        default=False, help_text='Whether this bounty is the most current revision one or not')
+        default=False, help_text=_('Whether this bounty is the most current revision one or not'))
     _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     contract_address = models.CharField(max_length=50, default='')
     network = models.CharField(max_length=255, blank=True, db_index=True)
@@ -116,7 +118,7 @@ class Bounty(SuperModel):
     standard_bounties_id = models.IntegerField(default=0)
     num_fulfillments = models.IntegerField(default=0)
     balance = models.DecimalField(default=0, decimal_places=2, max_digits=50)
-    accepted = models.BooleanField(default=False, help_text='Whether the bounty has been done')
+    accepted = models.BooleanField(default=False, help_text=_('Whether the bounty has been done'))
     interested = models.ManyToManyField('dashboard.Interest', blank=True)
     interested_comment = models.IntegerField(null=True, blank=True)
     submissions_comment = models.IntegerField(null=True, blank=True)

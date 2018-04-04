@@ -98,7 +98,7 @@ window.onload = function() {
           var run_main = !error || ignore_error;
 
           if (error && !ignore_error) {
-            _alert({ message: 'Could not get bounty details.' });
+            _alert({ message: gettext('Could not get bounty details.') });
             unloading_button($('.js-submit'));
           }
           if (run_main) {
@@ -114,7 +114,7 @@ window.onload = function() {
                   });
 
                   dataLayer.push({ event: 'claimissue' });
-                  _alert({ message: 'Fulfillment submitted to web3.' }, 'info');
+                  _alert({ message: gettext('Fulfillment submitted to web3.') }, 'info');
                   setTimeout(function() {
                     mixpanel.track('Fulfill Bounty Success', {});
                     document.location.href = '/funding/details?url=' + issueURL;

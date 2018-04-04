@@ -234,7 +234,7 @@ $(document).ready(function() {
           _alert(
             {
               message:
-                'There was an error.  Please try again or contact support.'
+                gettext('There was an error.  Please try again or contact support.')
             },
             'error'
           );
@@ -260,7 +260,7 @@ $(document).ready(function() {
           });
           console.error(error);
           _alert({
-            message: 'There was an error.  Please try again or contact support.'
+            message: gettext('There was an error.  Please try again or contact support.')
           });
           unloading_button($('.js-submit'));
           return;

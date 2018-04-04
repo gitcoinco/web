@@ -15,16 +15,15 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
                     <div id="over_balance_error" class="blocking_error" style="display: none">
                         <img src="{% static "v2/images/prime.png" %}">
                         <br>
-                        <h3>You Appear to Have Ether!</h3>
+                        <h3>{% trans "You Appear to Have Ether!" %}</h3>
                         <p>
-                            Thank you for your interest in receiving a faucet distribution.
+                            {% trans "Thank you for your interest in receiving a faucet distribution." %}
                         </p>
                         <p>
-                            You have more ether currently in your wallet than the distribution would provide.
-                            Please use that ether to pay the transaction cost.
+                            {% trans "You have more ether currently in your wallet than the distribution would provide. Please use that ether to pay the transaction cost." %}
                         </p>
                     </div>
