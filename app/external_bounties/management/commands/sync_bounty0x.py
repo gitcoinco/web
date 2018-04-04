@@ -43,7 +43,6 @@ class Command(BaseCommand):
 
         response = requests.get(url, headers=headers)
         bounties = response.json()
-        print(len(bounties))
         for bounty in bounties:
             if False:
                 continue
