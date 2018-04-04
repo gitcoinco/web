@@ -125,10 +125,10 @@ def embed(request):
         # get issues
         length = request.GET.get('len', 10)
         super_bounties = Bounty.objects.current() \
-            .exclude_by_status(['open', 'started', 'submitted']) \
             .filter(
                 github_url__startswith=repo_url,
                 network='mainnet',
+                idx_status__in=['open', 'started', 'submitted']
             ).order_by('-_val_usd_db')
         bounties = super_bounties[:length]
 
