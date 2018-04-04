@@ -23,6 +23,7 @@ class Idea(SuperModel):
     customer_exists = models.BooleanField()
     posts = models.IntegerField(default=0)
     likes = models.IntegerField(default=0)
+    trending_score = models.IntegerField(default=101)
     
     def load_avatar_url(self):
         try:            
