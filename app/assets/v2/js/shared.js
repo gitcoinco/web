@@ -639,6 +639,31 @@ var trigger_form_hooks = function() {
   trigger_faucet_form_web3_hooks();
 };
 
+var web3NetworkIdToString = function(netId) {
+  var network = 'unknown';
+
+  switch (netId) {
+    case '1':
+      network = 'mainnet';
+      break;
+    case '2':
+      network = 'morden';
+      break;
+    case '3':
+      network = 'ropsten';
+      break;
+    case '4':
+      network = 'rinkeby';
+      break;
+    case '42':
+      network = 'kovan';
+      break;
+    default:
+      network = 'custom network';
+  }
+  return network;
+};
+
 // figure out what version of web3 this is, whether we're logged in, etc..
 var listen_for_web3_changes = function() {
 
@@ -666,27 +691,8 @@ var listen_for_web3_changes = function() {
         trigger_sidebar_web3_disabled();
       } else {
         // figure out which network we're on
-        var network = 'unknown';
+        var network = web3NetworkIdToString(netId);
 
-        switch (netId) {
-          case '1':
-            network = 'mainnet';
-            break;
-          case '2':
-            network = 'morden';
-            break;
-          case '3':
-            network = 'ropsten';
-            break;
-          case '4':
-            network = 'rinkeby';
-            break;
-          case '42':
-            network = 'kovan';
-            break;
-          default:
-            network = 'custom network';
-        }
         trigger_sidebar_web3(network);
         trigger_form_hooks();
       }
@@ -711,3 +717,7 @@ var setUsdAmount = function(event) {
     $('#usd_amount').html(estimate);
   });
 };
+
+
+// Enum object for mapping bounty stages to the int returned by smart contract
+var bountyStageEnum = Object.freeze({'Draft': 0, 'Active': 1, 'Dead': 2});
