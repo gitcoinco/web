@@ -265,9 +265,11 @@ var showWarningMessage = function(txid) {
 
   if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
     clearInterval(interval);
-    var link_url = etherscan_tx_url(txid);
+    setInterval(function(){
+      var link_url = etherscan_tx_url(txid);
 
-    $('#transaction_url').attr('href', link_url);
+      $('#transaction_url').attr('href', link_url);
+    }, 1000)
   }
 
   $('.left-rails').hide();
@@ -314,7 +316,7 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
 
             // clear local data
             localStorage[document.issueURL] = '';
-            document.location.href = document.location.href;
+            document.location.href = response.bounty_url;
           } else {
             console.log('error from sync/web', response);
             error(response);
@@ -544,7 +546,10 @@ var render_actions = function(actions) {
 
 var pull_bounty_from_api = function() {
   var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
-
+  if(document.issuePK){
+    var uri = '/actions/api/v0.1/bounties/?pk=' + document.issuePK;
+  }
+  
   $.get(uri, function(results) {
     results = sanitizeAPIResults(results);
     var nonefound = true;

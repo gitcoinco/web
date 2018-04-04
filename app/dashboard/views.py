@@ -523,11 +523,22 @@ def kill_bounty(request):
     return TemplateResponse(request, 'kill_bounty.html', params)
 
 
-def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
+def bounty_details(request, ghuser='', ghrepo='', ghissue=0, title_slug=''):
     """Display the bounty details."""
     _access_token = request.session.get('access_token')
     profile_id = request.session.get('profile_id')
-    issueURL = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
+    prefer_pk = None
+    if title_slug and not ghuser and not ghissue and not ghrepo:
+        try:
+            title_slug = title_slug.split('-')
+            prefer_pk = title_slug[0]
+            bounty = Bounty.objects.get(pk=prefer_pk)
+            issueURL = bounty.github_url
+        except:
+            raise Http404
+
+    else:
+        issueURL = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
 
     # try the /pulls url if it doesnt exist in /issues
     try:
@@ -552,6 +563,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
     if bounty_url:
         try:
             bounties = Bounty.objects.current().filter(github_url=bounty_url)
+            if prefer_pk:
+                bounties = bounties.filter(pk=prefer_pk)
             if bounties:
                 bounty = bounties.order_by('pk').first()
                 # Currently its not finding anyting in the database
@@ -713,7 +726,7 @@ def sync_web3(request):
                 max_tries_attempted = False
                 counter = 0
                 while not did_change and not max_tries_attempted:
-                    did_change, _, _ = web3_process_bounty(bounty)
+                    did_change, _, new_bounty = web3_process_bounty(bounty)
                     if not did_change:
                         print("RETRYING")
                         time.sleep(3)
@@ -722,7 +735,8 @@ def sync_web3(request):
                 result = {
                     'status': '200',
                     'msg': "success",
-                    'did_change': did_change
+                    'did_change': did_change,
+                    'bounty_url': new_bounty.url,
                 }
 
     return JsonResponse(result, status=result['status'])
