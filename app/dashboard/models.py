@@ -54,6 +54,10 @@ class BountyQuerySet(models.QuerySet):
         """Filter results down to current bounties only."""
         return self.filter(current_bounty=True)
 
+    def stats_eligible(self):
+        """Exclude results that we don't want to track in statistics."""
+        return self.exclude(status__in=['unknown', 'cancelled'])
+
 
 class Bounty(SuperModel):
     """Define the structure of a Bounty.
@@ -84,6 +88,17 @@ class Bounty(SuperModel):
         ('Months', 'Months'),
         ('Unknown', 'Unknown'),
     ]
+
+    STATUS_CHOICES = (
+        ('cancelled', 'cancelled'),
+        ('done', 'done'),
+        ('expired', 'expired'),
+        ('open', 'open'),
+        ('started', 'started'),
+        ('submitted', 'submitted'),
+        ('unknown', 'unknown'),
+    )
+
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
     web3_created = models.DateTimeField(db_index=True)
@@ -122,6 +137,7 @@ class Bounty(SuperModel):
     submissions_comment = models.IntegerField(null=True, blank=True)
     override_status = models.CharField(max_length=255, blank=True)
     last_comment_date = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=9, choices=STATUS_CHOICES, default='open', db_index=True)
     objects = BountyQuerySet.as_manager()
 
     class Meta:
@@ -278,7 +294,7 @@ class Bounty(SuperModel):
         return timezone.now()
 
     @property
-    def status(self):
+    def current_status(self):
         """Determine the status of the Bounty.
 
         Raises:
@@ -450,6 +466,12 @@ class Bounty(SuperModel):
         if save:
             self.save()
         return comments
+
+
+@receiver(pre_save, sender=Bounty, dispatch_uid="update_bounty_status")
+def update_bounty_status(sender, instance, **kwargs):
+    """Handle post-save signals from Bounties to update the Bounty status."""
+    instance.status = instance.current_status
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):
@@ -798,7 +820,7 @@ class Profile(SuperModel):
 
     @property
     def stats(self):
-        bounties = self.bounties
+        bounties = self.bounties.stats_eligible()
         loyalty_rate = 0
         total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_funder(self.handle)])
         total_fulfilled = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
