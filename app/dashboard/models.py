@@ -56,6 +56,17 @@ class BountyQuerySet(models.QuerySet):
         """Filter results down to current bounties only."""
         return self.filter(current_bounty=True)
 
+    def stats_eligible(self):
+        """Exclude results that we don't want to track in statistics."""
+        return self.exclude(idx_status__in=['unknown', 'cancelled'])
+
+    def exclude_by_status(self, excluded_statuses=None):
+        """Exclude results with a status matching the provided list."""
+        if excluded_statuses is None:
+            excluded_statuses = []
+
+        return self.exclude(idx_status__in=excluded_statuses)
+
 
 class Bounty(SuperModel):
     """Define the structure of a Bounty.
@@ -86,6 +97,17 @@ class Bounty(SuperModel):
         ('Months', 'Months'),
         ('Unknown', 'Unknown'),
     ]
+
+    STATUS_CHOICES = (
+        ('cancelled', 'cancelled'),
+        ('done', 'done'),
+        ('expired', 'expired'),
+        ('open', 'open'),
+        ('started', 'started'),
+        ('submitted', 'submitted'),
+        ('unknown', 'unknown'),
+    )
+
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
     web3_created = models.DateTimeField(db_index=True)
@@ -112,7 +134,7 @@ class Bounty(SuperModel):
     network = models.CharField(max_length=255, blank=True, db_index=True)
     idx_experience_level = models.IntegerField(default=0, db_index=True)
     idx_project_length = models.IntegerField(default=0, db_index=True)
-    idx_status = models.CharField(max_length=50, default='', db_index=True)
+    idx_status = models.CharField(max_length=9, choices=STATUS_CHOICES, default='open', db_index=True)
     avatar_url = models.CharField(max_length=255, default='')
     issue_description = models.TextField(default='', blank=True)
     standard_bounties_id = models.IntegerField(default=0)
@@ -800,7 +822,7 @@ class Profile(SuperModel):
 
     @property
     def stats(self):
-        bounties = self.bounties
+        bounties = self.bounties.stats_eligible()
         loyalty_rate = 0
         total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_funder(self.handle)])
         total_fulfilled = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
