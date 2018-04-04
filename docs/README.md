@@ -88,6 +88,10 @@ Technically, the system is architected:
 
 [For more information on running the app locally, please view the running locally README](RUNNING_LOCALLY.md)
 
+## Overriding Application Defaults
+
+[For more information on overriding the local dev environment configuration defaults, please view the environment variables documentation](ENVIRONMENT_VARIABLES.md)
+
 # Trying out Gitcoin
 
 ## Posting your first issue

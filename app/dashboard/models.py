@@ -200,10 +200,27 @@ class Bounty(SuperModel):
         return tag_re.sub('', self.issue_description).strip()
 
     @property
-    def org_name(self):
+    def github_issue_number(self):
         try:
-            _org_name = org_name(self.github_url)
-            return _org_name
+            return int(issue_number(self.github_url))
+        except Exception:
+            return None
+
+    @property
+    def org_name(self):
+        return self.github_org_name
+
+    @property
+    def github_org_name(self):
+        try:
+            return org_name(self.github_url)
+        except Exception:
+            return None
+
+    @property
+    def github_repo_name(self):
+        try:
+            return repo_name(self.github_url)
         except Exception:
             return None
 
@@ -237,7 +254,7 @@ class Bounty(SuperModel):
 
     def get_avatar_url(self):
         try:
-            response = get_user(self.org_name)
+            response = get_user(self.github_org_name)
             return response['avatar_url']
         except Exception as e:
             print(e)

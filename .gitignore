@@ -33,3 +33,5 @@ webpack-stats.json
 
 # .tfvars files
 *.tfvars
+
+*.prof

@@ -96,6 +96,15 @@ def helper_handle_access_token(request, access_token):
     request.session['profile_id'] = profile.pk
 
 
+def create_new_interest_helper(bounty, profile_id):
+    interest = Interest.objects.create(profile_id=profile_id)
+    bounty.interested.add(interest)
+    record_user_action(Profile.objects.get(pk=profile_id).handle, 'start_work', interest)
+    maybe_market_to_slack(bounty, 'start_work')
+    maybe_market_to_twitter(bounty, 'start_work')
+    return interest
+
+
 @require_POST
 @csrf_exempt
 def new_interest(request, bounty_id):
@@ -142,11 +151,7 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
     except Interest.DoesNotExist:
-        interest = Interest.objects.create(profile_id=profile_id)
-        bounty.interested.add(interest)
-        record_user_action(Profile.objects.get(pk=profile_id).handle, 'start_work', interest)
-        maybe_market_to_slack(bounty, 'start_work')
-        maybe_market_to_twitter(bounty, 'start_work')
+        interest = create_new_interest_helper(bounty, profile_id)
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \
@@ -938,7 +943,7 @@ def toolbox(request):
                   "name": "Firefox Browser Extension",
                   "img": static("v2/images/tools/comingsoon.png"),
                   "description": '''Firefox version of our browser extension''',
-                  "link": 'https://github.com/gitcoinco/chrome_ext/issues/1',
+                  "link": 'https://github.com/gitcoinco/browser-extension/issues/1',
                   'link_copy': 'Details',
                   "active": "false",
                   'stat_graph': 'na',  # TODO
