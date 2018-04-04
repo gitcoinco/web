@@ -21,7 +21,7 @@
     <meta charset="utf-8">
     <script>
       FontAwesomeConfig = { searchPseudoElements: true };
-    </script>      
+    </script>
     <script defer src="{% static "v2/js/fontawesome-all.min.js" %}"></script>
     <link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
@@ -44,15 +44,13 @@
     <link rel="stylesheet" href="{% static "v2/css/forms/label.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/forms/radio.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/external_bounties/checkboxes.css" %}" />
 
     {% if active == 'offchain' %}
         <!-- External Bounties -->
-        <link rel="stylesheet" href="{% static "v2/css/external_bounties/checkboxes.css" %}" />
         <link rel="stylesheet" href="{% static "v2/css/external_bounties/bounties.css" %}" />
-        <link rel="stylesheet" href="{% static "v2/css/external_bounties/bounty.css" %}" />
     {% endif %}
 
-    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}" />
     {% if request.path == '/ios' %}
     <link rel="stylesheet" href="{% static "v2/css/toolbox.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/card.css" %}">

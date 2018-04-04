@@ -35,7 +35,7 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
         model = BountyFulfillment
         fields = ('fulfiller_address', 'fulfiller_email',
                   'fulfiller_github_username', 'fulfiller_name',
-                  'fulfillment_id', 'accepted', 'profile', 'created_on')
+                  'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on')
 
 
 class InterestSerializer(serializers.ModelSerializer):
@@ -71,7 +71,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
                   'token_value_in_usdt', 'value_in_usdt', 'status', 'now',
                   'avatar_url', 'value_true', 'issue_description', 'network',
                   'org_name', 'pk', 'issue_description_text',
-                  'standard_bounties_id', 'web3_type', 'can_submit_after_expiration_date')
+                  'standard_bounties_id', 'web3_type', 'can_submit_after_expiration_date', 'github_issue_number', 'github_org_name', 'github_repo_name')
 
     def create(self, validated_data):
         """Handle creation of m2m relationships and other custom operations."""
@@ -163,7 +163,15 @@ class BountyViewSet(viewsets.ModelViewSet):
         if order_by:
             queryset = queryset.order_by(order_by)
 
-        return queryset.distinct()
+        queryset = queryset.distinct()
+
+        # offset / limit
+        limit = self.request.query_params.get('limit', 9999)
+        offset = self.request.query_params.get('offset', 0)
+        if limit:
+            queryset = queryset[int(offset):int(limit)]
+
+        return queryset
 
 
 # Routers provide an easy way of automatically determining the URL conf.

@@ -1,126 +1,352 @@
-#web3_created {
-  font-size: 12px;
+body {
+  font-family: 'Muli', sans-serif;
+  background-color: #FFF;
 }
 
-#bounty_details {
-  margin-top: 4em;
+.none {
+  display: none;
 }
 
-.bounty-heading {
-  font-family: "Futura";
-  font-size: 16px;
-  margin-top: 1.5em;
+.explorer {
+  font-family: 'Muli', sans-serif;
+  font-weight: 600;
+  margin-top: 2em;
+  color: #3E00FF;
 }
 
-.bounty_details #title,
-.bounty-subheading,
-.bounty-nav-link,
-.funding-amount,
-#status {
-  font-weight: bold;
-}
-
-.bounty-subheading, .bounty-text {
-  font-size: 15px;
-}
-
-.issue-nav-link,
-.funding-amount,
-#status {
-  text-transform: uppercase;
-}
-
-#status,
-.boldLabel,
-.funding-amount {
-  font-size: 12px;
-}
-
-.issue-nav-link {
+.explorer i {
+  position: relative;
   font-size: 10px;
-  color: #212529;
+  top: -1px;
 }
 
-.boldLabel {
+.bounty_details h4,
+.bounty_details h5 {
+  letter-spacing: 0;
   text-transform: capitalize;
 }
 
-.boldLabel svg {
+#title {
+  text-align: left;
+  padding-top: 2em;
+  padding-bottom: 15px;
+}
+
+#status {
+  color: #00A55E;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.box {
+  padding: 14px;
+  border: 1px solid #DBDBDB;
+  border-radius: 3px;
+  margin: 0;
+}
+
+.box .empty {
+  text-align: center;
+  font-size: 16px;
+  color: #7A7A7A;
+  font-family: 'Muli', sans-serif;
+  font-weight: 600;
+}
+
+.box .empty p {
+  margin: 1rem;
+}
+
+.contributor-box .fa-minus {
+  font-size: 14px;
+  margin: 0;
+  color: #7A7A7A;
+}
+
+.bounty-heading {
+  font-family: 'Muli', sans-serif;
+  font-weight: 600;
+  margin-bottom: 1em;
+  margin-top: 2em;
+  font-size: 18px;
+  color: #333333;
+}
+
+#description {
+  margin-bottom: 2em;
+}
+
+.tooltip-sm {
+  font-size: 13px;
+  padding: 10px;
+}
+
+.bounty-text {
+  font-size: 14px;
+  color: #3E00FF;
+}
+
+#issue_description {
+  color: #000000;
+}
+
+.bounty-subheading {
+  font-weight: lighter;
+  font-size: 14px;
+}
+
+.bounty-info div {
+  display: inline;
+  margin-right: 15px;
+  font-family: 'Muli', sans-serif;
+  font-weight: 300;
+}
+
+.bounty-info-heading {
+  color: #0D0764;
+}
+
+.bounty-info-text {
+  color: #717171;
+}
+
+#bounty_details .tags {
+  float: right;
+}
+
+#bounty_details .tag {
+  display: inline-block;
+}
+
+#bounty_details .tag p {
+  padding: 5px;
+}
+
+.bounty-actions {
+  margin-top: 2.5em;
+  display: inherit;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #D4D4D4;
+}
+
+.bounty-actions .tag.usd {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.tag.keyword {
+  min-width: 0;
+  font-size: 11px;
+  padding: 5px 10px;
+  background-color: #F2F6F9;
+  color: #6184AC;
+}
+
+.contributor-box {
+  border: 1px solid #DBDBDB;
+  border-right: none;
+}
+
+.contributor-box:last-child {
+  border-right: 1px solid #DBDBDB;
+}
+
+.contributors-info {
+  margin: 0;
+  text-align: center;
+}
+
+.contributor-box h6 {
+  font-size: 16px;
+  color: #333333;
+  letter-spacing: 0;
+  text-transform: capitalize;
+  font-family: 'Muli', sans-serif;
+  font-weight: 600;
+}
+
+.contributor-box svg {
+  font-size: 24px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  color: #333333;
+}
+
+#issue_keywords .keyword:first-child {
+  margin-left: 0;
+}
+
+#bounty_owner_name {
+  color: #0D0764;
+  margin-bottom: 5px;
+  text-transform: capitalize;
+  font-family: 'Muli', sans-serif;
+  font-weight: 600;
+}
+
+a.btn {
+  border-radius: 0.2rem;
+}
+
+.funder-avatar,
+.activity-avatar {
+  text-align: center;
+}
+
+.started-status-column .button--primary,
+#right_actions .button--primary,
+#btn-white {
+  padding: 6px 15px;
+  box-shadow: none;
+  font-size: 12px;
+}
+
+#right_actions .button--primary {
+  margin-right: 10px;
   position: relative;
   top: 1px;
-  margin-right: 4px;
 }
 
-.newsletter, .newsletter #newsletter-title {
-  font-family: "Futura" !important;
+#btn-white {
+  border: 1px solid #979797;
+  color: #0D0764;
+  border-radius: 3px;
 }
 
-#submitter_ul {
-  padding-left: 1em;
+#btn-white .github-comment {
+  border-left: 1px solid #979797;
+  padding-left: 12px;
+  margin-left: 5px;
 }
 
-.submitter_icon {
-  text-align: center;
-  margin-top: 20px;
+.activity {
+  margin-bottom: 10px;
 }
 
-.interested_icon {
-  text-align: center;
-}
-
-#interest_list .row {
-  margin: 20px 10px;
-}
-
-#submission_row {
-  margin: 20px 10px;
-  border-bottom: 2px solid #eee;
-}
-
-#submission_row:last-child {
-  border-bottom: none;
-}
-
-.interested a {
+.funder-avatar,
+.activity div {
   margin: auto;
-  font-family: "Futura" !important;
+}
+
+.fulfilled .activity-status {
+  margin-bottom: 10px;
+}
+
+.fulfilled .bounty-text,
+.activity-time {
+  color: #717171;
+}
+
+.activity .activity-status svg {
+  margin-left: 10px;
+  color: #0ECF7C;
+}
+
+.activity .bounty-subheading,
+.activity .bounty-text {
+  font-size: 12px;
+}
+
+.bounty_details .avatar {
+  max-width: 50px;
+  max-height: 50px;
+  margin: 0px auto;
+  border-radius: 50px;
+  margin-top: 0px;
+}
+
+.started-status-column div {
+  display: inline-block;
+  margin: 5px;
+}
+
+#bounty_details {
+  display: none;
+  margin-bottom: 2em;
+}
+
+#bounty_details #issue_description img {
+  max-width: 100%;
+}
+
+#bounty_details #issue_description h1,
+#bounty_details #issue_description h2,
+#bounty_details #issue_description h3,
+#bounty_details #issue_description h4,
+#bounty_details #issue_description h5,
+#bounty_details #issue_description h6 {
+  letter-spacing: 1px;
+  font-size: 16px;
+  margin-top: 15px;
+  text-transform: none;
+}
+
+#started_owners_username,
+#fulfilled_owners_username,
+#submitted_owners_username {
+  padding-left: 0;
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#started_owners_username a,
+#fulfilled_owners_username a,
+#submitted_owners_username a,
+#started_owners_username svg,
+#fulfilled_owners_username svg,
+#submitted_owners_username svg {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+#started_owners_username svg,
+#fulfilled_owners_username svg,
+#submitted_owners_username svg {
+  margin-top: 5px;
+}
+
+.uninterest-button {
+  margin: 5px;
 }
 
 @media (max-width: 767px) {
+  .bounty-actions {
+    display: block;
+  }
+
+  .bounty-actions .col-12 {
+    text-align: center;
+  }
+
+  #bounty_details .tags {
+    margin-top: 10px;
+    float: none;
+  }
+
+  #bounty_details .row {
+    margin: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .contributor-box,
+  #bounty_details .row.activity {
+    margin-bottom: 10px;
+  }
+
+  .contributor-box {
+    border: 1px solid #DBDBDB;
+  }
 
   .actions {
     margin-bottom: 20px;
   }
-
-  #submitter_ul {
-    padding-left: 0;
-  }
-
-  .submitter_icon, .interested_icon {
-    text-align: left;
-  }
-
-  .bounty_details #title {
-    font-size: 18px;
-  }
 }
 
-@media (max-width: 575px) {
-  .boldLabel svg {
-    top: 0px;
-  }
-
-  .newsletter {
-    margin-bottom: 2em;
-  }
-
-  .newsletter #newsletter-title {
-    font-size: 16px;
-  }
-}
-
-@media (min-width: 728px) and (max-width: 1199px) {
-  .right_details {
-    margin-left: 6%;
+@media (max-width: 991.98px) {
+  .explorer {
+    display: none;
   }
 }

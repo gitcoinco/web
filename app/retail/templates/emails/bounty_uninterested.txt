@@ -1,0 +1,16 @@
+{% load humanize %}
+Issue lost
+
+Hey there,
+
+We are sorry, but the funder has removed You from the issue.
+
+Funded Issue Details
+
+{% include 'emails/bounty.txt' with bounty=bounty %}
+
+You are receiving this email because your email address is on the notification list for this funded issue.
+
+
+Keep Pushing Open Source Forward,
+-- Gitcoin Core

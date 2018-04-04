@@ -55,6 +55,9 @@ urlpatterns = [
     url(r'^offchain/new/?', external_bounties.views.external_bounties_new, name="offchain_new"),
     url(r'^offchain/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='offchain'),
     url(r'^offchain/?', external_bounties.views.external_bounties_index, name="offchain_index"),
+    url(r'^universe/new/?', external_bounties.views.external_bounties_new, name="universe_new"),
+    url(r'^universe/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='universe'),
+    url(r'^universe/?', external_bounties.views.external_bounties_index, name="universe_index"),
 
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
@@ -72,6 +75,7 @@ urlpatterns = [
     url(r'^bounty/details/?', dashboard.views.bounty_details, name='bounty_details'),
     url(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
     url(r'^legacy/funding/details/?', dashboard.views.bounty_details, name='legacy_funding_details'),
+    url(r'^funding/increase/?', dashboard.views.increase_bounty, name='increase_bounty'),
     url(r'^funding/kill/?', dashboard.views.kill_bounty, name='kill_bounty'),
     url(r'^tip/receive/?', dashboard.views.receive_tip, name='receive_tip'),
     url(r'^tip/send/2/?', dashboard.views.send_tip_2, name='send_tip_2'),
@@ -173,6 +177,8 @@ urlpatterns = [
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
     url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),
     url(r'^_administration/stats$', marketing.views.stats, name='stats'),
+    url(r'^_administration/cohort$', marketing.views.cohort, name='cohort'),
+    url(r'^_administration/funnel$', marketing.views.funnel, name='funnel'),
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
@@ -182,7 +188,7 @@ urlpatterns = [
     # Interests
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
     path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
-    path('actions/bounty/<int:bounty_id>/interest/', dashboard.views.interested_profiles, name='interested-profiles'),
+    path('actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/', dashboard.views.uninterested, name='uninterested'),
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
 
@@ -191,8 +197,10 @@ urlpatterns = [
     path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
-
 ]
+
+if settings.ENABLE_SILK:
+    urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
 
 handler403 = 'retail.views.handler403'
 handler404 = 'retail.views.handler404'

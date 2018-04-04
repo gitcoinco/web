@@ -127,7 +127,7 @@ def embed(request):
         super_bounties = Bounty.objects.current().filter(
             github_url__startswith=repo_url,
             network='mainnet',
-            idx_status='open').order_by('-_val_usd_db')
+            idx_status__in=['open', 'started', 'submitted']).order_by('-_val_usd_db')
         bounties = super_bounties[:length]
 
         # config

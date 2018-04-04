@@ -338,8 +338,24 @@ SENDGRID_EVENT_HOOK_URL = env('SENDGRID_EVENT_HOOK_URL', default='sg_event_proce
 GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')
 
 # Web3
-WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://mainnet.infura.io')
+WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://rinkeby.infura.io')
 
 # COLO Coin
 COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')
 COLO_ACCOUNT_PRIVATE_KEY = env('COLO_ACCOUNT_PRIVATE_KEY', default='')
+
+# Silk Profiling and Performance Monitoring
+ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
+if ENABLE_SILK:
+    INSTALLED_APPS += ['silk']
+    MIDDLEWARE.append('silk.middleware.SilkyMiddleware')
+    SILKY_PYTHON_PROFILER = env.bool('SILKY_PYTHON_PROFILER', default=True)
+    SILKY_PYTHON_PROFILER_BINARY = env.bool('SILKY_PYTHON_PROFILER_BINARY', default=False)
+    SILKY_AUTHENTICATION = env.bool('SILKY_AUTHENTICATION', default=False)
+    SILKY_AUTHORISATION = env.bool('SILKY_AUTHORISATION', default=False)
+    SILKY_META = env.bool('SILKY_META', default=True)
+    SILKY_INTERCEPT_PERCENT = env.int('SILKY_INTERCEPT_PERCENT', default=50)
+    SILKY_MAX_RECORDED_REQUESTS = env.int('SILKY_MAX_RECORDED_REQUESTS', default=10000)
+    SILKY_DYNAMIC_PROFILING = env.dict('SILKY_DYNAMIC_PROFILING', default={})
+    SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int(
+        'SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)

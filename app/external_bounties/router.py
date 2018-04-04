@@ -48,4 +48,4 @@ class ExternalBountyViewSet(viewsets.ModelViewSet):
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
-router.register(r'offchain', ExternalBountyViewSet)
+router.register(r'universe', ExternalBountyViewSet)

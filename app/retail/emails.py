@@ -78,7 +78,7 @@ def render_bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
     previous_bounties_str = ", ".join([bounty.github_url for bounty in previous_bounties])
     if persona != 'submitter':
         accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
-        github_username = " @" + accepted_fulfillments.first().fulfiller_github_username if accepted_fulfillments.exists() else ""
+        github_username = " @" + accepted_fulfillments.first().fulfiller_github_username if accepted_fulfillments.exists() and accepted_fulfillments.first().fulfiller_github_username else ""
         txt = f"""
 hi{github_username},
 
@@ -93,6 +93,7 @@ in that spirit,  i have a few questions for you.
 > would you use gitcoin again?
 
 thanks again for being a member of the community.
+
 kevin
 
 """
@@ -115,6 +116,7 @@ in that spirit,  i have a few questions for you:
 > would you use gitcoin again?
 
 thanks for being a member of the community.
+
 kevin
 """
 
@@ -122,7 +124,7 @@ kevin
         'txt': txt,
     }
     response_html = premailer_transform(render_to_string("emails/txt.html", params))
-    response_txt = render_to_string("emails/txt.txt", params)
+    response_txt = txt
 
     return response_html, response_txt
 
@@ -213,6 +215,16 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
 
     return response_html, response_txt
 
+def render_bounty_unintersted(to_email, bounty, interest):
+    params = {
+        'bounty': bounty,
+        'interest': interest,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/bounty_uninterested.html", params))
+    response_txt = render_to_string("emails/bounty_uninterested.txt", params)
+
+    return response_html, response_txt
 
 def render_faucet_rejected(fr):
 
@@ -256,7 +268,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    subject = "Growing The Gitcoin Toolset"
+    subject = "Gitcoin Q1 Updates "
 
     intro = '''
 
@@ -264,63 +276,71 @@ def render_new_bounty_roundup(to_email):
     Hi there 👋
 </p>
 <p>
-    Want to work an issue, but don’t have any ETH to make an initial submission? Last week, <a href="https://gitcoin.co/faucet">the Gitcoin faucet</a> was launched! Send a request in to the faucet if you’re looking to make a claim, and we'll send back just enough ETH for you to make your first Ethereum transaction.  
+    This week, Gitcoin Core gave a <a href="https://medium.com/gitcoin/gitcoin-q1-2018-update-1edaf09da3a">Q1 update and a look ahead</a> to what’s up next in 2018. Here are some of the key results.
 </p>
-<p>
-    We're quite enamoured with helping developers envision the future of web3.  So we figured we’d share our web3 content pieces from last week again. Here’s the <a href="https://twitter.com/GetGitcoin/status/971816917618044928">two-minute video</a> on MetaMask and our <a href="https://media.consensys.net/a-warm-welcome-to-web3-89d49e61a7c5">web3 vision piece</a>. </p>
-<p>
-    What else is new?
     <ul>
         <li>
-            <a href="https://twitter.com/GetGitcoin/status/974291955860627457">I was on FLOSS Weekly</a> last week to discuss Gitcoin’s place in open source 
+$20K (42ETH) in funded issues has made its way through the platform in the first 6 months of launch, leading 14.5k lines of (good) code on Pilot Projects like MetaMask, Truffle, web3py, MyCryptoWallet and more :)          </li>
+        <li>
+We’ve reached over 4096 Gitcoiners on the Newsletter & over 2048 Gitcoiners on Slack & Twitter, respectively
         </li>
         <li>
-            This week, we launched a repo called <a href="https://github.com/gitcoinco/GIPs">GIPS -- Gitcoin Improvement Proposals</a>.  Got an idea for the future of Open Source Incentivization? Submit it as a GIP.
+Our <a href="https://github.com/gitcoinco/GIPs/blob/master/GIPS/gip-3.md">Q2 OKR’s are finalized</a>. We intend to scale our core product, <a href="http://gitcoin.co/explorer">the Issue Explorer</a>, and add more to the toolset useful to the mission to grow open source        </li>
+        </li>
+    </ul>
+<p>
+    What else is new?
+</p>
+    <ul>
+        <li>
+Want to be the first to know when new open issues are added? We launched <a href="https://twitter.com/gitcoinfeed">@gitcoinfeed on Twitter</a> which provides updates on all new activity on Gitcoin. 
         </li>
         <li>
-            SXSW was great fun! Vivek presented Gitcoin at the Ethereal Lounge to good reception. Next up: <a href="https://etherealsummit.com/">Ethereal NY</a> and <a href="http://boulderstartupweek.com/">Boulder Startup Week</a> in May. Until then, #buidl! 
+What open source projects do you want to see on Gitcoin? <a href="https://docs.google.com/forms/d/1AeiKhCO2TefXo8wAbFerjxe2Vgci3ueqzzUpa-PFPLo/edit">Let us know!</a> We’re offering a 15% finders fee if an intro you make leads to a funded issue!
         </li>
     </ul>
 </p>
 <p>
-    I hope to see you <a href="https://gitcoin.co/slack">on slack</a>, or on the community livestream TODAY at 3pm MST ! 🤖
+    I hope to see you <a href="https://gitcoin.co/slack">on slack</a>, or on the community livestream TODAY at 3pm MST ! We’ll have a demo from Nick Neuman on <a href="https://medium.com/@nickneuman/keysplit-private-key-security-for-cryptocurrency-owners-d1653ea9631d">KeySplit</a> as well as more conversations on <a href="http://www.weekinethereum.com/">Week In Ethereum News</a> and other nerdy stuff, as always 🤖
 </p>
 
 '''
     highlights = [
         {
-            'who': 'KennethAshley',
+            'who': 'zoek',
             'who_link': True,
-            'what': 'or getting the Gitcoin Faucet across the finish line. Appreciate you lowering the barriers to entry for others, Kenneth!',
-            'link': 'https://github.com/gitcoinco/web/pull/407',
-            'link_copy': 'See more here',
+            'what': 'Gave our good friend Gitcoin Bot a much needed tune up! Thank you for your efforts.',
+            'link': 'https://gitcoin.co/issue/gitcoinco/web/596',
+            'link_copy': 'See more',
         },
         {
-            'who': 'mapmeld',
+            'who': 'cassidypignatello',
             'who_link': True,
-            'what': 'Built internationalization into MetaMask',
-            'link': 'https://gitcoin.co/legacy/issue/MetaMask/metamask-extension/437',
-            'link_copy': 'View more here',
+            'what': 'Image compression work across the Gitcoin platform',
+            'link': 'https://gitcoin.co/issue/gitcoinco/web/608',
+            'link_copy': 'View more',
         },
         {
-            'who': 'Tammy, Brian, and Gillian ',
-            'who_link': False,
-            'what': 'built Bountyful, a chrome extension for Stack Overflow. They’ll be on the Weekly Livestream today to show it off! ',
+            'who': 'msuess',
+            'who_link': True,
+            'what': 'Implemented the contribute() method from StandardBounties, allowing Gitcoin funders to increase the funding amount for any bounty!',
+            'link': 'https://gitcoin.co/issue/gitcoinco/web/617',
+            'link_copy': 'See more',
         },
     ]
 
     bounties = [
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/TrustWallet/trust-wallet-ios/issues/483'),
-            'primer': 'Trust Wallet is on Gitcoin! Help them refactor and earn some ETH along the way :) ',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/TrustWallet/trust-wallet-ios/issues/493'),
+            'primer': 'Work with TrustWallet to improve their CoinTicker functionality (from CoinMarketCap)   ',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/gitcoinco/web/issues/623'),
-            'primer': 'Work with @mbeacom and I on refactoring the Gitcoin API',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/MarketProject/Dapp/issues/53'),
+            'primer': 'Create a guided deployment between Binance and MARKET Protocol ',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MetaMask/metamask-extension/issues/3249'),
-            'primer': 'Biggest open bounty, you ask? 1.1 ETH to work with the great developers at MetaMask on a customizable keyring format ',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/MetaMask/metamask-extension/issues/3249'),
+            'primer': '1.1 ETH bounty on a Customizable Keyring Format alongside the great developers at MetaMask ',
         },
     ]
 

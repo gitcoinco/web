@@ -3,7 +3,7 @@
   display: none;
 }
 
-.body{
+.body {
   background-image: url('/static/v2/images/background.png');
   background-repeat: repeat;
 }
@@ -28,7 +28,7 @@
 }
 
 .bounty-container .sub-title {
-  font-family: Futura;
+  font-family: Futura, sans-serif;
   text-transform: none;
   letter-spacing: 0;
   margin-bottom: 1rem;
@@ -36,6 +36,11 @@
 
 .bounty__header-wrapper {
   display: flex;
+}
+
+.bounty__action {
+  flex: 1 auto;
+  text-align: right;
 }
 
 .bounty-header .bounty__image,
@@ -48,11 +53,6 @@
   padding: 0 2rem;
 }
 
-.bounty__action {
-  flex: 1 auto;
-  text-align: right;
-}
-
 .bounty__content {
   align-items: center;
   background-color: #F8F8F8;
@@ -63,7 +63,7 @@
 
 .bounty__crypto-price,
 .bounty__fiat-price {
-  font-family: Futura;
+  font-family: Futura, sans-serif;
   text-transform: none;
   font-weight: bolder;
   letter-spacing: 0;
@@ -91,24 +91,24 @@
   transform: scale(1.5);
 }
 
-.bounty-container .bounty__crypto-price .icon svg {
-  fill: #5F5FB6;
+.bounty__fiat-price .icon svg {
+  fill: #15D17C;
 }
 
- .bounty__fiat-price .icon svg {
-  fill: #15D17C;
+.bounty-container .bounty__crypto-price .icon svg {
+  fill: #5F5FB6;
 }
 
 .bounty__footer {
   text-align: center;
 }
 
-pre{
-    white-space: pre-wrap;       /* Since CSS 2.1 */
-    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
-    word-wrap: break-word;     
+pre {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
 }
 
 @media (max-width: 992px) {

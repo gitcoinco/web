@@ -239,8 +239,8 @@ window.onload = function() {
           }).then(function(json) {
             var is_success = json['status'] == 'OK';
             var _class = is_success ? 'info' : 'error';
-
-            _alert(json['message'], _class);
+            
+            _alert(json, _class);
           });
 
           if ((i + 1) < numBatches) {
@@ -264,12 +264,12 @@ window.onload = function() {
             if (_gas > maxGas) {
               _gas = maxGas;
             }
-            var _gasLimit = _gas * 1.01;
+            var _gasLimit = parseInt(_gas * 1.01);
 
             token_contract(token).approve.sendTransaction(
               contract_address(),
               approve_amount,
-              {from: fromAccount, gas: gas, gasLimit: gasLimit},
+              {from: fromAccount, gas: web3.toHex(gas), gasLimit: web3.toHex(gasLimit)},
               final_callback);
           });
         }
@@ -299,7 +299,7 @@ window.onload = function() {
       if (_gas > recommendGas) {
         _gas = recommendGas;
       }
-      var _gasLimit = _gas * 1.01;
+      var _gasLimit = parseInt(_gas * 1.01);
 
       contract().newTransfer.sendTransaction(
         _disableDeveloperTip,
@@ -312,7 +312,7 @@ window.onload = function() {
           gas: web3.toHex(_gas),
           gasPrice: web3.toHex(defaultGasPrice),
           value: amountETHToSend,
-          gasLimit: _gasLimit},
+          gasLimit: web3.toHex(_gasLimit)},
         next_callback);
     };
 

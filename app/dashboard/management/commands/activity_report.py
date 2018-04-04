@@ -28,7 +28,7 @@ from django.core.management.base import BaseCommand
 
 import boto
 from boto.s3.key import Key
-from dashboard.models import Bounty, Tip
+from dashboard.models import Bounty, Profile, Tip
 from economy.utils import convert_amount
 from faucet.models import FaucetRequest
 from marketing.mails import send_mail
@@ -40,6 +40,14 @@ REPORT_URL_EXPIRATION_TIME = 60 * 60 * 24 * 30  # seconds
 GITHUB_REPO_PATTERN = re.compile('github.com/[\w-]+/([\w-]+)')
 
 imap = map
+
+
+def get_bio(handle):
+    try:
+        profile = Profile.objects.filter(handle=handle.replace('@','')).first()
+        return profile.data.get('location', 'unknown'), profile.data.get('bio', 'unknown')
+    except Exception as e:
+        return 'unknown', 'unknown'
 
 
 def valid_date(v):
@@ -75,6 +83,8 @@ class Command(BaseCommand):
             claimee_address = ''
             fulfiller_github_username = ''
 
+        location, bio = get_bio(fulfiller_github_username)
+
         return {
             'type': 'bounty',
             'created_on': bounty.web3_created,
@@ -90,9 +100,14 @@ class Command(BaseCommand):
             'fulfiller_github_username': fulfiller_github_username,
             'status': bounty.status,
             'comments': bounty.github_url,
+            'payee_bio': bio,
+            'payee_location': location,
         }
 
     def format_tip(self, tip):
+
+        location, bio = get_bio(tip.username)
+
         return {
             'type': 'tip',
             'created_on': tip.created_on,
@@ -108,9 +123,14 @@ class Command(BaseCommand):
             'fulfiller_github_username': tip.username,
             'status': tip.status,
             'comments': tip.github_url,
+            'payee_bio': bio,
+            'payee_location': location,
         }
 
     def format_faucet_distribution(self, fr):
+
+        location, bio = get_bio(fr.github_username)
+
         return {
             'type': 'faucet_distribution',
             'created_on': fr.created_on,
@@ -126,6 +146,8 @@ class Command(BaseCommand):
             'fulfiller_github_username': fr.github_username,
             'status': 'sent',
             'comments': f"faucet distribution {fr.pk}",
+            'payee_bio': bio,
+            'payee_location': location,
         }
 
     def upload_to_s3(self, filename, contents):
@@ -171,7 +193,7 @@ class Command(BaseCommand):
         csvwriter = csv.DictWriter(csvfile, fieldnames=[
             'type', 'created_on', 'last_activity', 'amount', 'denomination', 'amount_eth',
             'amount_usdt', 'from_address', 'claimee_address', 'repo', 'from_username',
-            'fulfiller_github_username', 'status', 'comments'])
+            'fulfiller_github_username', 'status', 'comments', 'payee_bio', 'payee_location'])
         csvwriter.writeheader()
 
         items = sorted(formatted_bounties + formatted_tips + formatted_frs, key=lambda x: x['created_on'])

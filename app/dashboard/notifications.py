@@ -63,11 +63,12 @@ def maybe_market_to_twitter(bounty, event_name):
         bool: Whether or not the twitter notification was sent successfully.
 
     """
-    if not settings.TWITTER_CONSUMER_KEY or (event_name not in ['new_bounty', 'remarket_bounty']) or (
-       bounty.get_natural_value() < 0.0001) or (bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+    if not settings.TWITTER_CONSUMER_KEY:
         return False
-    return False  # per 2018/01/22 convo with vivek / kevin, these tweets have low engagement
-    # we are going to test manually promoting these tweets for a week and come back to revisit this
+    if bounty.get_natural_value() < 0.0001:
+        return False
+    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        return False
 
     api = twitter.Api(
         consumer_key=settings.TWITTER_CONSUMER_KEY,
@@ -85,23 +86,58 @@ def maybe_market_to_twitter(bounty, event_name):
             "Gitcoin open task of the day is worth {} {} {} ⚡️ \n\n{}",
             "Task of the day 💰 {} {} {} ⚡️ \n\n{}",
         ]
-    if event_name == 'new_bounty':
+    elif event_name == 'new_bounty':
         tweet_txts = tweet_txts + [
             "Extra! Extra 🗞🗞 New Funded Issue, Read all about it 👇  {} {} {} \n\n{}",
             "Hot off the blockchain! 🔥🔥🔥 There's a new task worth {} {} {} \n\n{}",
             "💰 New Task Alert.. 💰 Earn {} {} {} for working on this 👇 \n\n{}",
         ]
+    elif event_name == 'increase_payout':
+        tweet_txts = [
+            'Increased Payout on {} {} {}\n{}'
+        ]
+    elif event_name == 'start_work':
+        tweet_txts = [
+            'Work started on {} {} {}\n{}'
+        ]
+    elif event_name == 'stop_work':
+        tweet_txts = [
+            'Work stopped on {} {} {}\n{}'
+        ]
+    elif event_name == 'work_done':
+        tweet_txts = [
+            'Work done on {} {} {}\n{}'
+        ]
+    elif event_name == 'work_submitted':
+        tweet_txts = [
+            'Work submitted on {} {} {}\n{}'
+        ]
+    elif event_name == 'killed_bounty':
+        tweet_txts = [
+            'Bounty killed on {} {} {}\n{}'
+        ]
 
     random.shuffle(tweet_txts)
     tweet_txt = tweet_txts[0]
 
-    shortener = Shortener('Tinyurl')
+    url = bounty.get_absolute_url()
+    is_short = False
+    for shortener in ['Tinyurl', 'Adfly', 'Isgd', 'QrCx']:
+        try:
+            if not is_short:
+                shortener = Shortener(shortener)
+                response = shortener.short(url)
+                if response != 'Error' and 'http' in response:
+                    url = response
+                is_short = True
+        except:
+            pass
 
     new_tweet = tweet_txt.format(
         round(bounty.get_natural_value(), 4),
         bounty.token_name,
-        f"({bounty.value_in_usdt} USD @ ${convert_token_to_usdt(bounty.token_name)}/{bounty.token_name})" if bounty.value_in_usdt else "",
-        shortener.short(bounty.get_absolute_url())
+        f"({bounty.value_in_usdt} USD @ ${round(convert_token_to_usdt(bounty.token_name),2)}/{bounty.token_name})" if bounty.value_in_usdt else "",
+        url
     )
     new_tweet = new_tweet + " " + github_org_to_twitter_tags(bounty.org_name)  # twitter tags
     if bounty.keywords:  # hashtags
@@ -234,6 +270,14 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     if event_name == 'new_bounty':
         msg = f"__This issue now has a funding of {natural_value} " \
               f"{bounty.token_name} {usdt_value} attached to it.__\n\n * If you would " \
+              f"like to work on this issue you can claim it [here]({absolute_url}).\n " \
+              "* If you've completed this issue and want to claim the bounty you can do so " \
+              f"[here]({absolute_url})\n * Questions? Get help on the " \
+              f"<a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${amount_open_work}" \
+              " more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+    if event_name == 'increased_bounty':
+        msg = f"__The funding of this issue was increased to {natural_value} " \
+              f"{bounty.token_name} {usdt_value}.__\n\n * If you would " \
               f"like to work on this issue you can claim it [here]({absolute_url}).\n " \
               "* If you've completed this issue and want to claim the bounty you can do so " \
               f"[here]({absolute_url})\n * Questions? Get help on the " \

@@ -47,7 +47,7 @@ services:
     command: "-a 1 --seed 2"
 
   node:
-    image: node:9-alpine
+    image: node:9.9-alpine
     working_dir: /node
     volumes:
       - .:/node

@@ -18,7 +18,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import decimal
 import logging
+from datetime import datetime
 from urllib.parse import urlsplit
 
 from django.conf import settings
@@ -29,6 +31,7 @@ from django.db.models.signals import m2m_changed, post_delete, post_save, pre_sa
 from django.dispatch import receiver
 from django.utils import timezone
 
+import pytz
 import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
@@ -87,9 +90,9 @@ class Bounty(SuperModel):
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
     token_address = models.CharField(max_length=50)
-    bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES)
-    project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS)
-    experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS)
+    bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES, blank=True)
+    project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True)
+    experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True)
     github_url = models.URLField(db_index=True)
     github_comments = models.IntegerField(default=0)
     bounty_owner_address = models.CharField(max_length=50)
@@ -118,7 +121,7 @@ class Bounty(SuperModel):
     interested_comment = models.IntegerField(null=True, blank=True)
     submissions_comment = models.IntegerField(null=True, blank=True)
     override_status = models.CharField(max_length=255, blank=True)
-
+    last_comment_date = models.DateTimeField(null=True, blank=True)
     objects = BountyQuerySet.as_manager()
 
     class Meta:
@@ -161,7 +164,7 @@ class Bounty(SuperModel):
         """
         try:
             _org_name = org_name(self.github_url)
-            _issue_num = issue_number(self.github_url)
+            _issue_num = int(issue_number(self.github_url))
             _repo_name = repo_name(self.github_url)
             return f"{'/' if preceding_slash else ''}issue/{_org_name}/{_repo_name}/{_issue_num}"
         except Exception:
@@ -197,10 +200,27 @@ class Bounty(SuperModel):
         return tag_re.sub('', self.issue_description).strip()
 
     @property
-    def org_name(self):
+    def github_issue_number(self):
         try:
-            _org_name = org_name(self.github_url)
-            return _org_name
+            return int(issue_number(self.github_url))
+        except Exception:
+            return None
+
+    @property
+    def org_name(self):
+        return self.github_org_name
+
+    @property
+    def github_org_name(self):
+        try:
+            return org_name(self.github_url)
+        except Exception:
+            return None
+
+    @property
+    def github_repo_name(self):
+        try:
+            return repo_name(self.github_url)
         except Exception:
             return None
 
@@ -234,7 +254,7 @@ class Bounty(SuperModel):
 
     def get_avatar_url(self):
         try:
-            response = get_user(self.org_name)
+            response = get_user(self.github_org_name)
             return response['avatar_url']
         except Exception as e:
             print(e)
@@ -324,7 +344,9 @@ class Bounty(SuperModel):
     def value_in_usdt(self):
         decimals = 10**18
         if self.token_name == 'USDT':
-            return self.value_in_token
+            return float(self.value_in_token)
+        if self.token_name == 'DAI':
+            return float(self.value_in_token / 10**18)
         try:
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except Exception:
@@ -420,6 +442,11 @@ class Bounty(SuperModel):
             if (isinstance(comment, dict) and comment.get('user', {}).get('login', '') not in settings.IGNORE_COMMENTS_FROM):
                 comment_count += 1
         self.github_comments = comment_count
+        if comment_count:
+            comment_times = [datetime.strptime(comment['created_at'], '%Y-%m-%dT%H:%M:%SZ') for comment in comments]
+            max_comment_time = max(comment_times)
+            max_comment_time = max_comment_time.replace(tzinfo=pytz.utc)
+            self.last_comment_date = max_comment_time
         if save:
             self.save()
         return comments
@@ -447,6 +474,7 @@ class BountyFulfillment(SuperModel):
     fulfiller_metadata = JSONField(default={}, blank=True)
     fulfillment_id = models.IntegerField(null=True, blank=True)
     accepted = models.BooleanField(default=False)
+    accepted_on = models.DateTimeField(null=True, blank=True)
 
     bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE)
     profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE, null=True)
@@ -554,7 +582,9 @@ class Tip(SuperModel):
     def value_in_usdt(self):
         decimals = 1
         if self.tokenName == 'USDT':
-            return self.amount
+            return float(self.amount)
+        if self.tokenName == 'DAI':
+            return float(self.amount / 10**18)
         try:
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except Exception:
@@ -880,6 +910,7 @@ class ProfileSerializer(serializers.BaseSerializer):
 
         """
         return {
+            'id': instance.id,
             'handle': instance.handle,
             'github_url': instance.github_url,
             'local_avatar_url': instance.local_avatar_url,

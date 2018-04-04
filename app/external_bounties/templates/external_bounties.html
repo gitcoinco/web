@@ -18,26 +18,33 @@
     <div class="row no-gutter">
       <div class="col body">
         <div class="container" id="bounties">
-          <header class="bounties-header">
+          <div style="margin-top: 40px;">
             <div class="bounties-header__title">
-              <h2 class="title">OffChain Bounties</h2>
+                <h2 class="title" style="margin: 0px auto;">Bounties Universe <span id="alpha">Alpha</span></h2>
             </div>
+          </div>
+          <header class="bounties-header">
             <div class="bounties-header__search">
               <div class="bounties-header__info">
                 <a href="{% url "externalbounty-list" %}">
                     [ View API ]
                 </a> |
-                Listing {{ bounties|length }} open offchain bounties across the interwebs
+                Listing {{ num_bounties | intcomma }} universal bounties.
               </div>
               <div class="search_area search_area--append">
-                <input class="gc-round-text-input gc-border-black w-100" type="text" placeholder="Search Bounties" />
+                <form id="search_form" method=GET>
+                    <input type="hidden" name="sort" value="{{sorted_by}}">
+                    <input type="hidden" name="direction" value="{{sort_direction}}">
+                    <input type="hidden" name="page" value="{{page}}">
+                    <input class="gc-round-text-input gc-border-black w-100" name="q" type="text" value="{%if q%}{{q}}{% endif %}" placeholder="Search Bounties" />
+                </form>
                 <span class="icon">{% include 'svgs/search.svg' %}</span>
                 <div id="sort_options">
                     Sort by 
-                        <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/offchain?sort=Created&direction=asc">Oldest</a> | 
-                        <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/offchain?sort=Created&direction=desc">Newest</a> | 
-                        <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/offchain?sort=Value&direction=desc">Highest Value</a> | 
-                        <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/offchain?sort=Value&direction=asc">Lowest Value</a> 
+                        <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/universe?sort=Created&direction=asc">Oldest</a> | 
+                        <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/universe?sort=Created&direction=desc">Newest</a> | 
+                        <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/universe?sort=Value&direction=desc">Highest Value</a> | 
+                        <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/universe?sort=Value&direction=asc">Lowest Value</a> 
                 </div>
               </div>
             </div>
@@ -48,7 +55,7 @@
               <div class="categories-list">
                 {% for category in categories %}
                   <div class="checkbox">
-                    <input class="checkbox-input" name="category" type="checkbox" id="{{category}}"/>
+                    <input class="checkbox-input" name="category" type="checkbox" id="{{category}}" {% if category == q %} checked="checked" {% endif %} />
                     <label class="checkbox-label" for="{{category}}">{{category}}</label>
                   </div>
                 {% endfor %}
@@ -56,7 +63,7 @@
             </aside>
             <main class="bounties-container">
                 <div style="float: right; padding-right: 10px; padding-top: 20px; margin-bottom: 20px;">
-                    <a class="button right btn-info" href="{% url "offchain_new" %}">Post New >> </a>
+                    <a class="button right btn-info" href="{% url "universe_new" %}">Post New >> </a>
                 </div>
                 <br style="clear:both;">
               {% for bounty in bounties %}
@@ -122,6 +129,25 @@
                   </div>
                 </a>
               {% endfor %}
+
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if bounties_paginator.has_previous %}
+                            <a href="?sort={{sorted_by}}&direction={{sort_direction}}&q={{q}}&page=1">&laquo; first</a>
+                            <a href="?sort={{sorted_by}}&direction={{sort_direction}}&q={{q}}&page={{ bounties.previous_page_number }}">previous</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Page {{ bounties_paginator.number }} of {{ bounties_paginator.paginator.num_pages }}.
+                        </span>
+
+                        {% if bounties_paginator.has_next %}
+                            <a href="?sort={{sorted_by}}&direction={{sort_direction}}&q={{q}}&page={{ bounties_paginator.next_page_number }}">next</a>
+                            <a href="?sort={{sorted_by}}&direction={{sort_direction}}&q={{q}}&page={{ bounties_paginator.paginator.num_pages }}">last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+
             </main>
           </div>
         </div>

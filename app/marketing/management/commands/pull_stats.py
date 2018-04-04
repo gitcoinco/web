@@ -15,6 +15,9 @@
     along with this program. If not,see <http://www.gnu.org/licenses/>.
 
 '''
+import logging
+import warnings
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -22,6 +25,9 @@ from django.utils import timezone
 from marketing.models import Stat
 from slackclient import SlackClient
 
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 def gitter():
     from gitterpy.client import GitterClient
@@ -123,8 +129,8 @@ def faucet():
 def user_actions():
     from dashboard.models import UserAction
 
-    for action_type in UserAction.ACTION_TYPES:
-        action_type = action_type[0]
+    action_types = UserAction.objects.distinct('action').values_list('action', flat=True)
+    for action_type in action_types:
 
         val = UserAction.objects.filter(
             action=action_type,
@@ -218,12 +224,13 @@ def twitter_followers():
         val=(user.followers_count),
         )
 
-    user = api.GetUser(screen_name='owocki')
+    for username in ['owocki', 'gitcoinfeed']:
+        user = api.GetUser(screen_name=username)
 
-    Stat.objects.create(
-        key='twitter_followers_owocki',
-        val=(user.followers_count),
-        )
+        Stat.objects.create(
+            key='twitter_followers_{}'.format(username),
+            val=(user.followers_count),
+            )
 
 
 def bounties():
@@ -235,9 +242,10 @@ def bounties():
         )
 
 
-def bounties_fulfilled_pct():
+def bounties_by_status():
     from dashboard.models import Bounty
-    for status in ['open', 'submitted', 'started', 'done', 'expired', 'cancelled']:
+    statuses = Bounty.objects.distinct('idx_status').values_list('idx_status', flat=True)
+    for status in statuses:
         eligible_bounties = Bounty.objects.filter(current_bounty=True, web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
         numerator_bounties = eligible_bounties.filter(idx_status=status)
         val = int(100 * (numerator_bounties.count()) / (eligible_bounties.count()))
@@ -245,6 +253,11 @@ def bounties_fulfilled_pct():
         Stat.objects.create(
             key='bounties_{}_pct'.format(status),
             val=val,
+            )
+
+        Stat.objects.create(
+            key='bounties_{}_total'.format(status),
+            val=numerator_bounties.count(),
             )
 
 
@@ -282,7 +295,7 @@ def avg_time_bounty_turnaround():
     from dashboard.models import Bounty
 
     for days in [7, 30, 90, 360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True, idx_status='submitted', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+        all_bounties = Bounty.objects.filter(current_bounty=True, idx_status='done', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
         if not all_bounties.count():
             continue
 
@@ -377,6 +390,19 @@ def whitepaper_access_request():
         )
 
 
+def email_events():
+    from marketing.models import EmailEvent
+
+    events = EmailEvent.objects.distinct('event').values_list('event',flat=True)
+    for event in events:
+        val = EmailEvent.objects.filter(event=event).count()
+        print(val)
+        Stat.objects.create(
+            key='email_{}'.format(event),
+            val=(val),
+            )
+
+
 class Command(BaseCommand):
 
     help = 'pulls all stats'
@@ -402,18 +428,19 @@ class Command(BaseCommand):
             tips_received,
             bounties_fulfilled,
             bounties_open,
-            bounties_fulfilled_pct,
+            bounties_by_status,
             subs_active,
             subs_newsletter,
             joe_dominance_index,
             avg_time_bounty_turnaround,
             user_actions,
             faucet,
+            email_events,
         ]
 
         for f in fs:
             try:
-                print(str(f.__name__))
+                print("*"+str(f.__name__)+"*")
                 f()
             except Exception as e:
                 print(e)

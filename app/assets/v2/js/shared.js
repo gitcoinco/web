@@ -187,6 +187,12 @@ var remove_interest = function(bounty_pk) {
 var mutate_interest = function(bounty_pk, direction) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
+  $('#submit').toggleClass('none');
+  if (direction === 'new')
+    _alert({message: "Thanks for letting us know that you're ready to start work."}, 'success');
+  else if (direction === 'remove')
+    _alert({message: "You've stopped working on this, thanks for letting us know."}, 'success');
+
   $.post(request_url, function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
@@ -199,39 +205,57 @@ var mutate_interest = function(bounty_pk, direction) {
   });
 };
 
+
+var uninterested = function(bounty_pk, profileId) {
+  var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + profileId + '/uninterested/';
+
+  $.post(request_url, function(result) {
+    result = sanitizeAPIResults(result);
+    if (result.success) {
+      _alert({message: 'Contributor removed from bounty.'}, 'success');
+      pull_interest_list(bounty_pk);
+      return true;
+    }
+    return false;
+  }).fail(function(result) {
+    _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
+  });
+};
+
+
 /** Pulls the list of interested profiles from the server. */
 var pull_interest_list = function(bounty_pk, callback) {
-  profiles = [];
   document.interested = false;
-  $.getJSON('/actions/bounty/' + bounty_pk + '/interest/', function(data) {
-    data = sanitizeAPIResults(JSON.parse(data));
-    $.each(data, function(index, value) {
-      var profile = {
-        local_avatar_url: value.local_avatar_url,
-        handle: value.handle,
-        url: value.url
-      };
-      // add to template
+  var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
+  var started = [];
 
-      profiles.push(profile);
-      // update document.interested
-      if (profile.handle == document.contxt.github_handle) {
-        document.interested = true;
-      }
+  $.get(uri, function(results) {
+    render_activity(results[0]);
+    if (results[0].interested) {
+      var interested = results[0].interested;
 
-    });
-    var tmpl = $.templates('#interested');
-    var html = tmpl.render(profiles);
-
-    if (profiles.length == 0) {
-      html = 'No one has started work on this issue yet.';
+      interested.forEach(function(_interested) {
+        started.push(
+          profileHtml(_interested.profile.handle)
+        );
+        if (_interested.profile.handle == document.contxt.github_handle) {
+          document.interested = true;
+        }
+      });
     }
-    $('#interest_list').html(html);
+    if (started.length == 0) {
+      started.push('<i class="fas fa-minus"></i>');
+    }
+    $('#started_owners_username').html(started);
     if (typeof callback != 'undefined') {
       callback(document.interested);
     }
   });
-  return profiles;
+};
+
+var profileHtml = function(handle, name) {
+  return '<span><a href="https://gitcoin.co/profile/' +
+    handle + '" target="_blank">' + (name ? name : handle) + '</span></a>';
 };
 
 // Update the list of bounty submitters.
@@ -510,6 +534,7 @@ var trigger_sidebar_web3 = function(network) {
   var sidebar_p = '<p>Connected to ' + network + '.</p>';
 
   if (is_supported_network) {
+    $('#upper_left').removeClass('disabled');
     $('#sidebar_head').html("<i class='fa fa-wifi'></i>");
     $('#sidebar_p').html('<p>Web3 enabled<p>' + sidebar_p);
   } else {
@@ -678,3 +703,11 @@ $(document).ready(function() {
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 300);
 });
+
+var setUsdAmount = function(event) {
+  var amount = $('input[name=amount]').val();
+  var denomination = $('#token option:selected').text();
+  var estimate = getUSDEstimate(amount, denomination, function(estimate) {
+    $('#usd_amount').html(estimate);
+  });
+};

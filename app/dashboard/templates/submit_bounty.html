@@ -29,6 +29,7 @@
     <div class="container-fluid header dash">
         {% include 'shared/nav.html' %}
     </div>
+
     <div class="row no-gutter">
         <div class="col-12 body">
             <div class="container-fluid no-gutter">
@@ -36,8 +37,8 @@
                     {% include 'shared/no_metamask_error.html' %}
                     {% include 'shared/zero_balance_error.html' %}
                     {% include 'shared/unlock_metamask.html' %}
-                    <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
-                        <div class="d-flex justify-content-center flex-column mt-5 w-50" id="primary_subform">
+                    <div id="primary_form">
+                        <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
                             <form id="submitBounty">
                                 {% include 'shared/bounty_nav.html' with active_item=1 %}
                                 <div class="w-100" style="text-align: center;">
@@ -53,7 +54,7 @@
                                     <label class="form__label" for="amount">Amount</label>
                                     <div class="form__flex-group">
                                         <div class="form__amount-wrapper">
-                                            <input name='amount' id='amount'  class="form__input" type="number" placeholder="Amount" value="{{amount}}" />
+                                            <input name='amount' id='amount'  class="form__input" type="number" placeholder="Amount" value="{{amount}}" step="0.001" min="0.000001" />
                                         </div>
                                         <div class="form__group-item">
                                             <div class="form__select2">
@@ -95,7 +96,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="w-100 mt-2 d-flex ">
+                                    <div class="w-100 mt-2 d-flex">
                                         <div class="w-50 mt-2 mr-3 d-flex flex-column">
                                             <label class="form__label">Issue Details</label>
                                         </div>

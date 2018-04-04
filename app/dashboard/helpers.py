@@ -261,12 +261,13 @@ def bounty_did_change(bounty_id, new_bounty_details):
     return did_change, old_bounties
 
 
-def handle_bounty_fulfillments(fulfillments, new_bounty):
+def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
     """Handle BountyFulfillment creation for new bounties.
 
     Args:
         fulfillments (dict): The fulfillments data dictionary.
         new_bounty (dashboard.models.Bounty): The new Bounty object.
+        old_bounty (dashboard.models.Bounty): The old Bounty object.
 
     Returns:
         QuerySet: The BountyFulfillments queryset.
@@ -274,6 +275,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty):
     """
     for fulfillment in fulfillments:
         kwargs = {}
+        accepted_on = None
         github_username = fulfillment.get('data', {}).get(
             'payload', {}).get('fulfiller', {}).get(
                 'githubUsername', '')
@@ -284,7 +286,18 @@ def handle_bounty_fulfillments(fulfillments, new_bounty):
                 pass
         if fulfillment.get('accepted'):
             kwargs['accepted'] = True
+            accepted_on = timezone.now()
         try:
+            created_on = timezone.now()
+            modified_on = timezone.now()
+            if old_bounty:
+                old_fulfillments = old_bounty.fulfillments.filter(fulfillment_id=fulfillment.get('id'))
+                if old_fulfillments.exists():
+                    old_fulfillment = old_fulfillments.first()
+                    created_on = old_fulfillment.created_on
+                    modified_on = old_fulfillment.modified_on
+                    if old_fulfillment.accepted:
+                        accepted_on = old_fulfillment.accepted_on
             new_bounty.fulfillments.create(
                 fulfiller_address=fulfillment.get(
                     'fulfiller',
@@ -296,6 +309,9 @@ def handle_bounty_fulfillments(fulfillments, new_bounty):
                     'payload', {}).get('fulfiller', {}).get('name', ''),
                 fulfiller_metadata=fulfillment,
                 fulfillment_id=fulfillment.get('id'),
+                created_on=created_on,
+                modified_on=modified_on,
+                accepted_on=accepted_on,
                 **kwargs)
         except Exception as e:
             logging.error(f'{e} during new fulfillment creation for {new_bounty}')
@@ -383,6 +399,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 # info to xfr over from latest_old_bounty
                 github_comments=latest_old_bounty.github_comments if latest_old_bounty else 0,
                 override_status=latest_old_bounty.override_status if latest_old_bounty else '',
+                last_comment_date=latest_old_bounty.last_comment_date if latest_old_bounty else None,
             )
             new_bounty.fetch_issue_item()
             if not new_bounty.avatar_url:
@@ -399,7 +416,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             new_bounty = None
 
         if fulfillments:
-            handle_bounty_fulfillments(fulfillments, new_bounty)
+            handle_bounty_fulfillments(fulfillments, new_bounty, latest_old_bounty)
             for inactive in Bounty.objects.filter(current_bounty=False, github_url=url).order_by('-created_on'):
                 BountyFulfillment.objects.filter(bounty_id=inactive.id).delete()
     return new_bounty
@@ -502,11 +519,15 @@ def process_bounty_changes(old_bounty, new_bounty):
         event_name = 'new_bounty'
     elif old_bounty.num_fulfillments < new_bounty.num_fulfillments:
         event_name = 'work_submitted'
+    elif old_bounty.value_in_token < new_bounty.value_in_token:
+        event_name = 'increase_payout'
     elif old_bounty.is_open and not new_bounty.is_open:
         if new_bounty.status == 'cancelled':
             event_name = 'killed_bounty'
         else:
             event_name = 'work_done'
+    elif old_bounty.value_in_token < new_bounty.value_in_token:
+        event_name = 'increased_bounty'
     else:
         event_name = 'unknown_event'
         logging.error(f'got an unknown event from bounty {old_bounty.pk} => {new_bounty.pk}: {json_diff}')

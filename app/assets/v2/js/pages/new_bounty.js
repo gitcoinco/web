@@ -1,13 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable nonblock-statement-body-position */
 load_tokens();
-var setUsdAmount = function(event) {
-  var amount = $('input[name=amount]').val();
-  var denomination = $('#token option:selected').text();
-  var estimate = getUSDEstimate(amount, denomination, function(estimate) {
-    $('#usd_amount').html(estimate);
-  });
-};
 
 // Wait until page is loaded, then run the function
 $(document).ready(function() {
@@ -109,7 +102,7 @@ $(document).ready(function() {
         issueTitle: data.title,
         issueDescription: data.description,
         issueKeywords: data.keywords,
-        githubUsername: data.githubUsernam,
+        githubUsername: data.githubUsername,
         notificationEmail: data.notificationEmail,
         fullName: data.fullName,
         experienceLevel: data.experienceLevel,
@@ -245,7 +238,7 @@ $(document).ready(function() {
             },
             'error'
           );
-          unloading_button($('#submitBounty'));
+          unloading_button($('.js-submit'));
           return;
         }
 
@@ -269,7 +262,7 @@ $(document).ready(function() {
           _alert({
             message: 'There was an error.  Please try again or contact support.'
           });
-          unloading_button($('#submitBounty'));
+          unloading_button($('.js-submit'));
           return;
         }
 
@@ -313,7 +306,7 @@ $(document).ready(function() {
 
         if (result != null) {
           _alert({ message: 'A bounty already exists for that Github Issue.' });
-          unloading_button($('#submitBounty'));
+          unloading_button($('.js-submit'));
           return;
         }
 

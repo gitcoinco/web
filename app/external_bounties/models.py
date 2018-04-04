@@ -37,7 +37,7 @@ class ExternalBounty(SuperModel):
     title = models.CharField(max_length=255)
     description = models.TextField(default='', blank=True, help_text="Plainext only please!")
     source_project = models.CharField(max_length=255, help_text="The upstream project being linked it..")
-    amount = models.IntegerField(default=1, null=True)
+    amount = models.FloatField(default=1, null=True)
     amount_denomination = models.CharField(max_length=255, blank=True, help_text="ex: ETH, LTC, BTC")
     created_on = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     last_sync_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -53,7 +53,7 @@ class ExternalBounty(SuperModel):
     @property
     def url(self):
         """Return the URL associated with the external bounty."""
-        return f'/offchain/{self.pk}/{slugify(self.title)}'
+        return f'/universe/{self.pk}/{slugify(self.title)}'
 
     @property
     def github_url(self):
