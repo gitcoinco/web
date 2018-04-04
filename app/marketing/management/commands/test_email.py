@@ -18,8 +18,8 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from dashboard.models import Bounty
-from marketing.mails import new_match
+from dashboard.models import Bounty, Interest
+from marketing.mails import bounty_uninterested, new_match
 
 
 class Command(BaseCommand):
@@ -28,6 +28,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         b = Bounty.objects.all().last()
+        i = Interest.objects.all().last()
         # new_bounty(b, [settings.CONTACT_EMAIL])
         new_match([settings.CONTACT_EMAIL, 'ksowocki@gmail.com'], b, 'owocki')
         # weekly_roundup([settings.CONTACT_EMAIL])
@@ -36,3 +37,4 @@ class Command(BaseCommand):
         # new_bounty_rejection(b, [settings.CONTACT_EMAIL])
         # new_bounty_acceptance(b, [settings.CONTACT_EMAIL])
         # bounty_expire_warning(b, [settings.CONTACT_EMAIL])
+        bounty_uninterested([settings.CONTACT_EMAIL, 'ksowocki@gmail.com'], b, i)

@@ -27,8 +27,9 @@ from marketing.utils import get_or_save_email_subscriber, should_suppress_notifi
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     render_bounty_expire_warning, render_bounty_feedback, render_bounty_startwork_expire_warning,
-    render_faucet_rejected, render_faucet_request, render_match_email, render_new_bounty, render_new_bounty_acceptance,
-    render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission, render_tip_email,
+    render_bounty_unintersted, render_faucet_rejected, render_faucet_request, render_match_email, render_new_bounty,
+    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
+    render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -90,7 +91,7 @@ def bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
     subject = bounty.github_url
     html, text = render_bounty_feedback(bounty, persona, previous_bounties)
     cc_emails = [from_email]
-    send_mail(from_email, to_email, subject, body, cc_emails=cc_emails)
+    send_mail(from_email, to_email, subject, text, cc_emails=cc_emails, from_name="Kevin Owocki (Gitcoin.co)")
 
 
 def tip_email(tip, to_emails, is_new):
@@ -278,6 +279,14 @@ def bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
     from_email = settings.CONTACT_EMAIL
     html, text = render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
     subject = gettext("We've removed you from the task: '{}' ? ").format(bounty.title_or_desc)
+
+    if not should_suppress_notification_email(to_email):
+        send_mail(from_email, to_email, subject, text, html)
+
+def bounty_uninterested(to_email, bounty, interest):
+    from_email = settings.CONTACT_EMAIL
+    html, text = render_bounty_unintersted(to_email, bounty, interest)
+    subject = "Funder has removed you from the task: '{}' ? ".format(bounty.title_or_desc)
 
     if not should_suppress_notification_email(to_email):
         send_mail(from_email, to_email, subject, text, html)

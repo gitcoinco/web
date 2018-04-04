@@ -44,7 +44,7 @@ class Command(BaseCommand):
             if accepted_fulfillments.exists():
                 accepted_fulfillment = accepted_fulfillments.first()
                 fulfiller_email = accepted_fulfillment.fulfiller_email
-                fulfillment_pks = BountyFulfillment.objects.filter(accepted=True, fulfiller_email=fulfiller_email).values__list('pk', flat=True)
+                fulfillment_pks = BountyFulfillment.objects.filter(accepted=True, fulfiller_email=fulfiller_email).values_list('pk', flat=True)
                 previous_bounties = Bounty.objects.filter(created_on__gt=start_time, idx_status__in=statues, fulfillments__pk__in=fulfillment_pks, current_bounty=True).exclude(pk=bounty.pk).distinct()
                 has_been_sent_before_to_persona = previous_bounties.count()
                 if not has_been_sent_before_to_persona:

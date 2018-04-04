@@ -61,27 +61,30 @@
       </div>
     </div>
 
-    <div class="col">
-      <div class="col-12 subheading font-body accordion">{% trans "MY PROJECTS" %}</div>
-      <div class="col-12 options panel">
-        <div class="form__radio option">
-          <input name="bounty_filter" id="createdByMe" type="radio" value="createdByMe" val-ui='Created'/>
-          <label class="filter-label" for=createdByMe>{% trans "Created By Me" %}</label>
-        </div>
-        <div class="form__radio option">
-          <input name="bounty_filter" id="startedByMe" type="radio" value="startedByMe" val-ui='Started'/>
-          <label class="filter-label" for=startedByMe>{% trans "Started By Me" %}</label>
-        </div>
-        <div class="form__radio option">
-          <input name="bounty_filter" id="FulfilledByMe" type="radio" value="fulfilledByMe" val-ui='Fulfilled'/>
-          <label class="filter-label" for=FulfilledByMe>{% trans "Fulfilled By Me" %}</label>
-        </div>
-        <div class="form__radio option">
-          <input name="bounty_filter" id="all_bounty" type="radio" value="any" checked/>
-          <label class="filter-label" for=all_bounty>{% trans "All" %}</label>
+
+    {% if github_handle %}
+      <div class="col">
+        <div class="col-12 subheading font-body accordion">{% trans "MY PROJECTS" %}</div>
+        <div class="col-12 options panel">
+          <div class="form__radio option">
+            <input name="bounty_filter" id="createdByMe" type="radio" value="createdByMe" val-ui='Created'/>
+            <label class="filter-label" for=createdByMe>{% trans "Created By Me" %}</label>
+          </div>
+          <div class="form__radio option">
+            <input name="bounty_filter" id="startedByMe" type="radio" value="startedByMe" val-ui='Started'/>
+            <label class="filter-label" for=startedByMe>{% trans "Started By Me" %}</label>
+          </div>
+          <div class="form__radio option">
+            <input name="bounty_filter" id="FulfilledByMe" type="radio" value="fulfilledByMe" val-ui='Fulfilled'/>
+            <label class="filter-label" for=FulfilledByMe>{% trans "Fulfilled By Me" %}</label>
+          </div>
+          <div class="form__radio option">
+            <input name="bounty_filter" id="all_bounty" type="radio" value="any" checked/>
+            <label class="filter-label" for=all_bounty>{% trans "All" %}</label>
+          </div>
         </div>
       </div>
-    </div>
+    {% endif %}
 
     <div class="col">
       <div class="col-12 subheading font-body accordion">{% trans "Experience Level" %}</div>

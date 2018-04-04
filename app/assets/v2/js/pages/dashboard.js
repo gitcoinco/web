@@ -352,7 +352,15 @@ var refreshBounties = function() {
       result['title'] = result['title'] ? result['title'] : result['github_url'];
       var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
 
-      result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ' + (is_expired ? ' Expired' : ('Expires in ' + timeLeft)));
+      result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
+
+      if (result['status'] === 'done')
+        result['p'] += 'Done';
+      else if (is_expired)
+        result['p'] += 'Expired';
+      else
+        result['p'] += ('Expires in ' + timeLeft);
+
       result['watch'] = 'Watch';
 
       // render the template
@@ -535,6 +543,4 @@ $(document).ready(function() {
     emailSubscribe();
     e.preventDefault();
   });
-
-
 });
