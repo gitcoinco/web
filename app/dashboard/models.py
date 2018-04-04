@@ -54,6 +54,10 @@ class BountyQuerySet(models.QuerySet):
         """Filter results down to current bounties only."""
         return self.filter(current_bounty=True)
 
+    def stats_eligible(self):
+        """Exclude results that we don't want to track in statistics."""
+        return self.exclude(status__in=['unknown', 'cancelled'])
+
 
 class Bounty(SuperModel):
     """Define the structure of a Bounty.
@@ -816,7 +820,7 @@ class Profile(SuperModel):
 
     @property
     def stats(self):
-        bounties = self.bounties
+        bounties = self.bounties.stats_eligible()
         loyalty_rate = 0
         total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_funder(self.handle)])
         total_fulfilled = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
