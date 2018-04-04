@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,12 +15,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %} 
+{% load i18n humanize %}
 
 <style>
 
 .bounty{
-    
+
 }
 .bounty tr{
     height: 40px;
@@ -29,7 +29,7 @@
 .bounty tr td.label{
     text-align: right;
     padding-right: 5px;
-    vertical-align: 
+    vertical-align:
 }
 .bounty tr td.label span{
     font-weight: bold;
@@ -40,8 +40,8 @@
 }
 </style>
 
-    
-    <table cellspacing="0" cellpadding="0" border="0" class='bounty'> 
+
+    <table cellspacing="0" cellpadding="0" border="0" class='bounty'>
         {% if primer %}
         <tr class="odd">
             <td width="460" colspan="2" style="text-align: center;">
@@ -59,7 +59,7 @@
         <tr class="odd">
             <td width="60" class="label">
                 <span>
-                    Title
+                    {% trans "Title" %}
                 </span>
             </td>
             <td width="400">
@@ -75,7 +75,7 @@
             <tr class="even">
                 <td width="60" class="label">
                     <span>
-                        Keywords
+                        {% trans "Keywords" %}
                     </span>
                 </td>
                 <td width="400">
@@ -101,7 +101,7 @@
         <tr class="even">
             <td width="60" class="label">
                 <span>
-                    Amount
+                    {% trans "Amount" %}
                 </span>
             </td>
             <td width="400">
@@ -117,7 +117,7 @@
             <tr class="odd">
                 <td width="60" class="label">
                     <span>
-                        Status
+                        {% trans "Status" %}
                     </span>
                 </td>
                 <td width="400">
@@ -125,7 +125,7 @@
                         {{bounty.status}}
 
                         {% if bounty.status == 'submitted' %}
-                            ({{bounty.status}} by 
+                            ({{bounty.status}} by
                             {% for fulfillment in bounty.fulfillments.all %}
                                 {% if fulfillment.fulfiller_github_username %}
                                     <a href="https://gitcoin.co/profile/{{fulfillment.fulfiller_github_username}}">{{fulfillment.fulfiller_github_username}}</a>
@@ -138,7 +138,7 @@
                             )
                         {% elif bounty.status == 'started' %}
                             {% if bounty.interested.all|length > 0 %}
-                                by 
+                                by
                             {% endif %}
                             {% for interested in bounty.interested.all %}
                             <a href="https://gitcoin.co/profile/{{interested.profile.handle}}"> {{interested}}</a>
@@ -153,7 +153,7 @@
             <tr class="even">
                 <td width="60" class="label">
                     <span>
-                        Expires
+                        {% trans "Expires" %}
                     </span>
                 </td>
                 <td width="400">
@@ -166,16 +166,16 @@
             <tr class="odd extra_high">
                 <td width="60" class="label">
                     <span>
-                        Specs
+                        {% trans "Specs" %}
                     </span>
                 </td>
                 <td width="400">
                     <span>
-                        Project Length: {% if bounty.project_length %}{{bounty.project_length}}{%else%}Not specified{%endif%}
+                        {% trans "Project Length:" %} {% if bounty.project_length %}{{bounty.project_length}}{%else%}{% trans "Not specified" %}{%endif%}
                         <br>
-                        Type: {% if bounty.bounty_type %}{{bounty.bounty_type}}{%else%}Not specified{%endif%}
+                        {% trans "Type:" %} {% if bounty.bounty_type %}{{bounty.bounty_type}}{%else%}{% trans "Not specified" %}{%endif%}
                         <br>
-                        Experience Level: {% if bounty.experience_level %}{{bounty.experience_level}}{%else%}Not specified{%endif%}
+                        {% trans "Experience Level:" %} {% if bounty.experience_level %}{{bounty.experience_level}}{%else%}{% trans "Not specified" %}{%endif%}
                         <br>
                     </span>
                 </td>
@@ -185,13 +185,12 @@
         <tr class="cta">
             <td width="60" class="label">
                 <span>
-                    
+
                 </span>
             </td>
             <td width="400">
-                <a class="button" href="{{bounty.absolute_url}}" style="float:right;">View on Gitcoin.co</a>
+                <a class="button" href="{{bounty.absolute_url}}" style="float:right;">{% trans "View on Gitcoin.co" %}</a>
             </td>
         </tr>
 
     </table>
-

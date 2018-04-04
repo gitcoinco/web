@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -15,10 +15,12 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
+{% load i18n %}
+
                             <div id=network_status class="w-100" style="text-align: center;">
                                 <div class="w-40">
-                                        Web3: <span>☑ - Enabled</span>
+                                        Web3: <span>☑ - {% trans "Enabled" %}</span>
                                         <br>
-                                        Eth: <span>☑ - Available</span>
+                                        Eth: <span>☑ - {% trans "Available" %}</span>
                                 </div>
                             </div>

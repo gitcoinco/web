@@ -1,4 +1,4 @@
-{% load static %}
+{% load i18n static %}
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -47,7 +47,7 @@
                                 <a href="/">&copy; Gitcoin.co</a>
                             </li>
                             <li>
-                                <a href="{% url "tip" %}">Send Tip</a>
+                                <a href="{% url "tip" %}">{% trans "Send Tip" %}</a>
                             </li>
 						</ul>
 					</footer>

@@ -15,23 +15,23 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
                     <div id="no_metamask_error" class="blocking_error" style="display: none; min-height: 500px;">
                         {% include 'shared/bounty_nav.html' with active_item=1 %}
                         <img src="{% static "v2/images/prime.png" %}">
                         <br>
-                        <h3>To continue, enable Web3.</h3>
+                        <h3>{% trans "To continue, enable Web3." %}</h3>
                         <p>
-                            Web3 is the same web you know and love, but with Ethereum-enabled functionality.
+                            {% trans "Web3 is the same web you know and love, but with Ethereum-enabled functionality." %}
                         </p>
                         <p>
-                            The fastest and easiest way to add Web3 to your browser is to install <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">Metamask</a>. To continue submitting a bounty, please install Metamask and return to this page.
+                            {% blocktrans %}The fastest and easiest way to add Web3 to your browser is to install <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">Metamask</a>. To continue submitting a bounty, please install Metamask and return to this page.{% endblocktrans %}
                         </p>
                         <p class="float-right">
-                            <a class="btn btn-sm btn-info mt-3 pulseClick" role="button" id="submit" href="https://metamask.io">Install MetaMask</a>
+                            <a class="btn btn-sm btn-info mt-3 pulseClick" role="button" id="submit" href="https://metamask.io">{% trans "Install MetaMask" %}</a>
                             <br>
-                            - or -
+                            - {% trans "or" %} -
                             <br>
-                            <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/gitcoinco/issues/4">Can't get web3 to work?  Get help here.</a>
+                            <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/gitcoinco/issues/4">{% trans "Can't get web3 to work?  Get help here." %}</a>
                         </p>
                     </div>

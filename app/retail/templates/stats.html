@@ -38,21 +38,21 @@
 }
 </style>
 
-<a class="" href="{{filter_params}}&filter=">All</a> |
-<a class="" href="{{filter_params}}&filter=Activity">Activity</a> |
-<a class="" href="{{filter_params}}&filter=Marketing">Marketing</a> |
-<a class="" href="{{filter_params}}&filter=KPI">KPI</a>
+<a class="" href="{{filter_params}}&filter=">{% trans "All" %}</a> |
+<a class="" href="{{filter_params}}&filter=Activity">{% trans "Activity" %}</a> |
+<a class="" href="{{filter_params}}&filter=Marketing">{% trans "Marketing" %}</a> |
+<a class="" href="{{filter_params}}&filter=KPI">{% trans "KPI" %}</a>
 
 <hr>
 
-<a class="" href="{{filter_params}}&rollup=hourly">Hourly</a> |
-<a class="" href="{{filter_params}}&rollup=daily">Daily</a> |
-<a class="" href="{{filter_params}}&rollup=weekly">Weekly</a>
+<a class="" href="{{filter_params}}&rollup=hourly">{% trans "Hourly" %}</a> |
+<a class="" href="{{filter_params}}&rollup=daily">{% trans "Daily" %}</a> |
+<a class="" href="{{filter_params}}&rollup=weekly">{% trans "Weekly" %}</a>
 
 <hr>
 
-<a class="" href="{{filter_params}}&format=charts">Charts</a> |
-<a class="" href="{{filter_params}}&format=table">Table</a>
+<a class="" href="{{filter_params}}&format=charts">{% trans "Charts" %}</a> |
+<a class="" href="{{filter_params}}&format=table">{% trans "Table" %}</a>
 
 <head>
     <!-- code to include the highcharts and jQuery libraries goes here -->
@@ -72,7 +72,7 @@
 
 {% if format == 'chart' %}
     {% for t in types %}
-        <div id='{{t}}' style="float:left; width: 33%;"> Chart will be rendered here </div>
+        <div id='{{t}}' style="float:left; width: 33%;"> {% trans "Chart will be rendered here" %} </div>
     {% endfor %}
 {% else %}
     {% for title, data in tables.items %}

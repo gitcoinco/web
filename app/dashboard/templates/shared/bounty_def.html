@@ -15,17 +15,16 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
                 <div class="bounty_def">
                     <div class="row mt-4  mb-4 align-items-center ml-4" >
                         <div class="col-1">
                             <img src="{% static "v2/images/icons/message_txt.png" %}" />
                         </div>
                         <div class="col-7">
-                            <h5>Be the first to know about new funded issues.</h5>
+                            <h5>{% trans "Be the first to know about new funded issues." %}</h5>
                             {% include 'shared/mailchimp.html' %}
 
                         </div>
                     </div>
                 </div>
-

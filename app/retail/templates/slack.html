@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
 
 {% block body %}
 
@@ -33,7 +33,7 @@
                 <div>
                     <div style="max-width: 500px; margin: 0px auto;">
                         <h4>
-                            <i class="fab fa-slack-hash" aria-hidden="true" style="position:relative; top: 2px; margin-right: 5px;"></i>Gitcoin Slack Community
+                            <i class="fab fa-slack-hash" aria-hidden="true" style="position:relative; top: 2px; margin-right: 5px;"></i>{% trans "Gitcoin Slack Community" %}
                         </h4>
                         <h4 class="font-smaller-1 pt-0">({{num_slack}} online)</h4>
                         {% if msg %}
@@ -48,16 +48,16 @@
                         {% endif %}
                         <form class="mt-5" id="whitepaper" method="POST">
                             <div class="form-group">
-                                <p>Meet software developers, futurists, and funders who are building web3.</p>
-                                <label class="form__label" for="email">Email address</label>
+                                <p>{% trans "Meet software developers, futurists, and funders who are building web3." %}</p>
+                                <label class="form__label" for="email">{% trans "Email address" %}</label>
                                 <input type="email" name="email" class="form__input" placeholder='you@somewhere' value="{% if email %}{{email}}{%endif%}" required>
-                                <small id="emailHelp" class="form__input-help">Gitcoin will never share your email with anyone else.</small>
+                                <small id="emailHelp" class="form__input-help">{% trans "Gitcoin will never share your email with anyone else." %}</small>
                             </div>
                             {% csrf_token %}
                             <input class='button button--primary joinslack mt-2' type='submit' name='submit' value="Sign Up">
                         </form>
                         <div class="text-center mt-5">
-                            <p>Already a member? <a href="https://gitcoincommunity.slack.com">Sign in here</a>.</p>
+                            <p>Already a member? <a href="https://gitcoincommunity.slack.com">{% trans "Sign in here" %}</a>.</p>
                         </div>
 
                         {% endblock %}

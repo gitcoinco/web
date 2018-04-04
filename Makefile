@@ -34,5 +34,11 @@ stylelint: ## Run stylelint against the project directory. Requires node, npm, a
 
 tests: pytest eslint stylelint ## Run the full test suite.
 
+migrate: ## Migrate the database schema with the latest unapplied migrations.
+	@docker-compose exec web python3 app/manage.py migrate
+
+migrations: ## Generate migration files for schema changes.
+	@docker-compose exec web python3 app/manage.py makemigrations
+
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
