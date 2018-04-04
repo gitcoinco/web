@@ -178,6 +178,7 @@ urlpatterns = [
     url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),
     url(r'^_administration/stats$', marketing.views.stats, name='stats'),
     url(r'^_administration/cohort$', marketing.views.cohort, name='cohort'),
+    url(r'^_administration/funnel$', marketing.views.funnel, name='funnel'),
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
@@ -196,8 +197,10 @@ urlpatterns = [
     path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
-
 ]
+
+if settings.ENABLE_SILK:
+    urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
 
 handler403 = 'retail.views.handler403'
 handler404 = 'retail.views.handler404'

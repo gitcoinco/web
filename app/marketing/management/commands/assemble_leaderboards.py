@@ -63,9 +63,11 @@ ranks = default_ranks()
 
 def add_element(key, username, amount):
     username = username.replace('@', '')
+    if not username or username == "None":
+        return
     if username not in ranks[key].keys():
         ranks[key][username] = 0
-    ranks[key][username] += float(amount)
+    ranks[key][username] += round(float(amount) ,2)
 
 
 def sum_bounties(b, usernames):

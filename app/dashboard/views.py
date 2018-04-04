@@ -20,10 +20,10 @@ from __future__ import print_function, unicode_literals
 
 import json
 import logging
+import time
 
 from django.conf import settings
 from django.contrib.staticfiles.templatetags.staticfiles import static
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -31,7 +31,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_POST
 
 from app.utils import ellipses, sync_profile
 from dashboard.models import (
@@ -96,6 +96,15 @@ def helper_handle_access_token(request, access_token):
     request.session['profile_id'] = profile.pk
 
 
+def create_new_interest_helper(bounty, profile_id):
+    interest = Interest.objects.create(profile_id=profile_id)
+    bounty.interested.add(interest)
+    record_user_action(Profile.objects.get(pk=profile_id).handle, 'start_work', interest)
+    maybe_market_to_slack(bounty, 'start_work')
+    maybe_market_to_twitter(bounty, 'start_work')
+    return interest
+
+
 @require_POST
 @csrf_exempt
 def new_interest(request, bounty_id):
@@ -142,11 +151,7 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
     except Interest.DoesNotExist:
-        interest = Interest.objects.create(profile_id=profile_id)
-        bounty.interested.add(interest)
-        record_user_action(Profile.objects.get(pk=profile_id).handle, 'start_work', interest)
-        maybe_market_to_slack(bounty, 'start_work')
-        maybe_market_to_twitter(bounty, 'start_work')
+        interest = create_new_interest_helper(bounty, profile_id)
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \
@@ -179,7 +184,6 @@ def remove_interest(request, bounty_id):
     access_token = request.GET.get('token')
     if access_token and is_github_token_valid(access_token):
         helper_handle_access_token(request, access_token)
-
 
     profile_id = request.session.get('profile_id')
     if not profile_id:
@@ -218,6 +222,7 @@ def remove_interest(request, bounty_id):
 
     return JsonResponse({'success': True})
 
+
 @require_POST
 @csrf_exempt
 def uninterested(request, bounty_id, profile_id):
@@ -244,7 +249,6 @@ def uninterested(request, bounty_id, profile_id):
     except Bounty.DoesNotExist:
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
-
 
     if not bounty.is_funder(request.session.get('handle').lower()):
         return JsonResponse(
@@ -275,6 +279,7 @@ def uninterested(request, bounty_id, profile_id):
     profile = Profile.objects.get(id=profile_id)
     bounty_uninterested(profile.email, bounty, interest)
     return JsonResponse({'success': True})
+
 
 @csrf_exempt
 @ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
@@ -474,6 +479,7 @@ def fulfill_bounty(request):
 
     return TemplateResponse(request, 'fulfill_bounty.html', params)
 
+
 def increase_bounty(request):
     """Increase a bounty (funder)"""
     issue_url = request.GET.get('source')
@@ -526,10 +532,9 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
     # try the /pulls url if it doesnt exist in /issues
     try:
         assert Bounty.objects.current().filter(github_url=issueURL).exists()
-    except:
+    except Exception:
         issueURL = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue if ghissue else request.GET.get('url')
         print(issueURL)
-        pass
 
     bounty_url = issueURL
     params = {
@@ -790,7 +795,7 @@ def toolbox(request):
               'link_copy': 'Try It',
               "active": "false",
               'stat_graph': 'browser_ext_chrome',
-          },{
+          }, {
               "name": "gitcoinbot",
               "img": static("v2/images/helmet.png"),
               "description": '''Chat Interface available on Github''',
@@ -938,7 +943,7 @@ def toolbox(request):
                   "name": "Firefox Browser Extension",
                   "img": static("v2/images/tools/comingsoon.png"),
                   "description": '''Firefox version of our browser extension''',
-                  "link": 'https://github.com/gitcoinco/chrome_ext/issues/1',
+                  "link": 'https://github.com/gitcoinco/browser-extension/issues/1',
                   'link_copy': 'Details',
                   "active": "false",
                   'stat_graph': 'na',  # TODO

@@ -18,6 +18,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import decimal
 import logging
 from datetime import datetime
 from urllib.parse import urlsplit
@@ -199,10 +200,27 @@ class Bounty(SuperModel):
         return tag_re.sub('', self.issue_description).strip()
 
     @property
-    def org_name(self):
+    def github_issue_number(self):
         try:
-            _org_name = org_name(self.github_url)
-            return _org_name
+            return int(issue_number(self.github_url))
+        except Exception:
+            return None
+
+    @property
+    def org_name(self):
+        return self.github_org_name
+
+    @property
+    def github_org_name(self):
+        try:
+            return org_name(self.github_url)
+        except Exception:
+            return None
+
+    @property
+    def github_repo_name(self):
+        try:
+            return repo_name(self.github_url)
         except Exception:
             return None
 
@@ -236,7 +254,7 @@ class Bounty(SuperModel):
 
     def get_avatar_url(self):
         try:
-            response = get_user(self.org_name)
+            response = get_user(self.github_org_name)
             return response['avatar_url']
         except Exception as e:
             print(e)
@@ -326,7 +344,9 @@ class Bounty(SuperModel):
     def value_in_usdt(self):
         decimals = 10**18
         if self.token_name == 'USDT':
-            return self.value_in_token
+            return float(self.value_in_token)
+        if self.token_name == 'DAI':
+            return float(self.value_in_token / 10**18)
         try:
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except Exception:
@@ -562,7 +582,9 @@ class Tip(SuperModel):
     def value_in_usdt(self):
         decimals = 1
         if self.tokenName == 'USDT':
-            return self.amount
+            return float(self.amount)
+        if self.tokenName == 'DAI':
+            return float(self.amount / 10**18)
         try:
             return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
         except Exception:

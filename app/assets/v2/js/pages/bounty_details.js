@@ -150,7 +150,7 @@ var callbacks = {
     return [ 'Amount_usd', val ];
   },
   'token_value_in_usdt': function(key, val, result) {
-    if (val === null) {
+    if (val === null || typeof val == 'undefined') {
       $('#value_in_usdt_wrapper').addClass('hidden');
       return [ null, null ];
     }
@@ -180,10 +180,11 @@ var callbacks = {
     if (result.interested) {
       var interested = result.interested;
 
-      interested.forEach(function(_interested) {
-        started.push(
-          profileHtml(_interested.profile.handle)
-        );
+      interested.forEach(function(_interested, position) {
+        var name = (position == interested.length - 1) ?
+          _interested.profile.handle : _interested.profile.handle.concat(',');
+
+        started.push(profileHtml(_interested.profile.handle, name));
       });
       if (started.length == 0) {
         started.push('<i class="fas fa-minus"></i>');
@@ -197,10 +198,11 @@ var callbacks = {
     if (result.fulfillments) {
       var submitted = result.fulfillments;
 
-      submitted.forEach(function(_submitted) {
-        accepted.push(
-          profileHtml(_submitted.fulfiller_github_username)
-        );
+      submitted.forEach(function(_submitted, position) {
+        var name = (position == submitted.length - 1) ?
+          _submitted.fulfiller_github_username : _submitted.fulfiller_github_username.concat(',');
+
+        accepted.push(profileHtml(_submitted.fulfiller_github_username, name));
       });
       if (accepted.length == 0) {
         accepted.push('<i class="fas fa-minus"></i>');
@@ -210,19 +212,24 @@ var callbacks = {
   },
   'fulfilled_owners_username': function(key, val, result) {
     var accepted = [];
+    var accepted_fufillments = [];
 
     if (result.fulfillments) {
       var fulfillments = result.fulfillments;
 
       fulfillments.forEach(function(fufillment) {
-        if (fufillment.accepted == true) {
-          accepted.push(
-            profileHtml(fufillment.fulfiller_github_username)
-          );
-        }
+        if (fufillment.accepted == true)
+          accepted_fufillments.push(fufillment.fulfiller_github_username);
       });
-      if (accepted.length == 0) {
+      if (accepted_fufillments.length == 0) {
         accepted.push('<i class="fas fa-minus"></i>');
+      } else {
+        accepted_fufillments.forEach((github_username, position) => {
+          var name = (position == accepted_fufillments.length - 1) ?
+            github_username : github_username.concat(',');
+
+          accepted.push(profileHtml(github_username, name));
+        });
       }
     }
     return [ 'fulfilled_owners_username', accepted ];
@@ -449,7 +456,9 @@ var do_actions = function(result) {
         href: '/funding/fulfill?source=' + result['github_url'],
         text: 'Submit Work',
         parent: 'right_actions',
-        title: 'Submit work for the funder to review'
+        title: 'Submit work for the funder to review',
+        work_started: is_interested,
+        id: 'submit'
       };
 
       actions.push(_entry);
