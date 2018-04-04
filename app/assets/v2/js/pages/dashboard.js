@@ -535,6 +535,4 @@ $(document).ready(function() {
     emailSubscribe();
     e.preventDefault();
   });
-
-
 });
