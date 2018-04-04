@@ -943,7 +943,7 @@ def toolbox(request):
                   "name": "Firefox Browser Extension",
                   "img": static("v2/images/tools/comingsoon.png"),
                   "description": '''Firefox version of our browser extension''',
-                  "link": 'https://github.com/gitcoinco/chrome_ext/issues/1',
+                  "link": 'https://github.com/gitcoinco/browser-extension/issues/1',
                   'link_copy': 'Details',
                   "active": "false",
                   'stat_graph': 'na',  # TODO
