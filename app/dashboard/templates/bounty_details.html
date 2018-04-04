@@ -3,10 +3,10 @@
 <html lang="en">
 
   <head>
-    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}" />
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}" />
   </head>
 
   <body class="interior {{active}}">
@@ -97,7 +97,7 @@
                         <span id="value_in_token"></span>
                       </p>
                     </div>
-                    <div class="tag usd">
+                    <div id=value_in_usdt_wrapper class="tag usd">
                       <p>
                         <span id="value_in_usdt"></span>
                         <span>USD @ </span>
@@ -168,7 +168,8 @@
 
     <script id="action" type="text/x-jsrender">
       [[if enabled]]
-        <span title='<div class="tooltip-info tooltip-sm">[[:title]]</div>'>
+        <span [[if id == 'submit']] id="[[:id]]" [[if !work_started]] class="none" [[/if]] [[/if]]
+          title='<div class="tooltip-info tooltip-sm">[[:title]]</div>'>
           [[if pending_acceptance]]
             <a class="button button--primary accept" role="button" href="[[:href]]" target="[[:target]]">
               <span class="font-caption">[[:text]] ( [[:pending_acceptance]] )</span>
@@ -231,6 +232,21 @@
               <span class="bounty-subheading">Submission Id :</span>
               <span class="bounty-text">[[:fulfillment_id]]</span>
             </div>
+          </div>
+        [[else status == 'started']]
+          <div class="col-12 col-md-7 started-status-column">
+            <div class="activity-status">
+              [[:text]]
+            </div>
+            [[if uninterest_possible]]
+              <div>
+                <span title="Remove this user's started work on the bounty">
+                  <a id="remove-[[:name]]" class="button button--primary" role="button" href="remove-handle">
+                    <span class="font-smaller-4">Stop work</span>
+                  </a>
+                </span>
+              </div>
+            [[/if]]
           </div>
         [[else]]
           <div class="col-12 col-md-7">

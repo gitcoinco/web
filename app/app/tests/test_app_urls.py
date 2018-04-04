@@ -157,3 +157,11 @@ class AppUrlsTestCase(TestCase):
         """Test the new url and check the resolution."""
         self.assertEqual(resolve('/new').view_name, 'new_funding_short')
         self.assertEqual(resolve('/new/').view_name, 'new_funding_short')
+
+    def test_uniterested_reverse(self):        
+        """Test the uninterested url and check the reverse"""
+        self.assertEqual(reverse('uninterested', args=[1,2]), '/actions/bounty/1/interest/2/uninterested/')
+
+    def test_uniterested_resolve(self):
+        """Test the uninterested url and check the resolution"""
+        self.assertEqual(resolve('/actions/bounty/1/interest/2/uninterested/').view_name, 'uninterested')        
