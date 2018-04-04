@@ -1,6 +1,7 @@
 #upper_left {
   min-height: 100px;
-  font-family: "Muli-SemiBold";
+  font-family: 'Muli', sans-serif;
+  font-weight: 600;
   background-color: #26cd7f;
   color: #000000;
 }
@@ -15,8 +16,8 @@
 }
 
 #sidebar_head {
-    text-align: center;
-    line-height: 1.3em;
+  text-align: center;
+  line-height: 1.3em;
 }
 
 #sidebar_p {
@@ -27,6 +28,18 @@
 
 #sidebar_p p {
   margin-bottom: 0;
+}
+
+#upper_left a {
+  color: black;
+  text-decoration: underline;
+}
+
+#upper_left img {
+  filter: invert(100%);
+  max-width: 40px;
+  max-height: 40px;
+  display: inline;
 }
 
 #upper_left.disabled {
@@ -45,17 +58,4 @@
 #upper_left.disabled #sidebar_head svg {
   color: #ff3232;
   background-color: white;
-}
-
-/* Refactor needed  */
-#upper_left a {
-  color: black;
-  text-decoration: underline;
-}
-
-#upper_left img {
-  filter: invert(100%);
-  max-width: 40px;
-  max-height: 40px;
-  display: inline;
 }
