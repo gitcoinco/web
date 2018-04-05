@@ -227,6 +227,7 @@ def remove_interest(request, bounty_id):
     return JsonResponse({'success': True})
 
 
+@login_required
 @require_POST
 @csrf_exempt
 def uninterested(request, bounty_id, profile_id):
@@ -241,20 +242,13 @@ def uninterested(request, bounty_id, profile_id):
     Returns:
         dict: The success key with a boolean value and accompanying error.
     """
-
-    session_profile_id = request.session.get('profile_id')
-    if not session_profile_id:
-        return JsonResponse(
-            {'error': 'You must be authenticated!'},
-            status=401)
-
     try:
         bounty = Bounty.objects.get(pk=bounty_id)
     except Bounty.DoesNotExist:
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
 
-    if not bounty.is_funder(request.session.get('handle').lower()):
+    if not bounty.is_funder(request.user.username.lower()):
         return JsonResponse(
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
