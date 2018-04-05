@@ -6,7 +6,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
-def clear_session_data():
+def clear_session_data(apps, schema_editor):
     """Clear all session data."""
     print('Clearing session data...')
     try:
