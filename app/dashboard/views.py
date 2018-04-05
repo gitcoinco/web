@@ -79,7 +79,8 @@ def record_user_action(profile_handle, event_name, instance):
     try:
         user_profile = Profile.objects.filter(handle__iexact=profile_handle).first()
         UserAction.objects.create(
-            profile=user_profile,
+            profile=user_profile if user_profile else None,
+            user=user_profile.user if user_profile and user_profile.user else None,
             action=event_name,
             metadata={
                 f'{instance_class}_pk': instance.pk,
