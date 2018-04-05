@@ -42,6 +42,7 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     get_or_save_email_subscriber(to_email, 'internal')
 
     # setup
+    subject = str(subject)
     sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
     from_email = Email(from_email, from_name)
     to_email = Email(to_email)

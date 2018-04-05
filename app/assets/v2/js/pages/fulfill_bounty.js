@@ -154,7 +154,7 @@ window.onload = function() {
                   bountyId,
                   document.ipfsDataHash,
                   {
-                    gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
+                    gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
                   },
                   web3Callback
                 );

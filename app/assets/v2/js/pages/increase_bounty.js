@@ -132,7 +132,7 @@ $(document).ready(function() {
         {
           from: account,
           value: ethAmount,
-          gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
+          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
         },
         web3Callback
       );
@@ -148,7 +148,7 @@ $(document).ready(function() {
         {
           from: account,
           value: 0,
-          gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
+          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
         },
         approveSuccessCallback
       );
