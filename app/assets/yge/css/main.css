@@ -948,3 +948,9 @@ p.alert_msg a {
   display: block;
   height: 300px;
 }
+
+span.emoji {
+  letter-spacing: 0;
+  width: 0.85em;
+  display: inline-block;
+}
