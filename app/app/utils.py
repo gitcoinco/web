@@ -3,6 +3,7 @@ import imaplib
 import logging
 import time
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.gis.geoip2 import GeoIP2
 from django.utils import timezone
@@ -12,6 +13,7 @@ import rollbar
 from dashboard.models import Profile
 from geoip2.errors import AddressNotFoundError
 from github.utils import _AUTH, HEADERS, get_user
+from ipware.ip import get_real_ip
 
 logger = logging.getLogger(__name__)
 
@@ -156,6 +158,15 @@ def itermerge(gen_a, gen_b, key):
             yield b
     except StopIteration:
         pass
+
+
+def handle_location_request(request):
+    """Handle determining location data from request IP."""
+    ip_address = '24.210.224.38' if settings.DEBUG else get_real_ip(request)
+    geolocation_data = {}
+    if ip_address:
+        geolocation_data = get_location_from_ip(ip_address)
+    return geolocation_data, ip_address
 
 
 def get_location_from_ip(ip_address):

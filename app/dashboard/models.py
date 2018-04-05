@@ -941,19 +941,29 @@ class Profile(SuperModel):
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
     """Handle actions to take on user login."""
+    from app.utils import handle_location_request
+    geolocation_data, ip_address = handle_location_request(request)
     UserAction.objects.create(
-        profile=user.profile,
+        profile=user.profile if user and user.profile else None,
+        user=user,
         action='Login',
-        metadata={})
+        metadata={},
+        ip_address=ip_address,
+        location_data=geolocation_data)
 
 
 @receiver(user_logged_out)
 def post_logout(sender, request, user, **kwargs):
     """Handle actions to take on user logout."""
+    from app.utils import handle_location_request
+    geolocation_data, ip_address = handle_location_request(request)
     UserAction.objects.create(
-        profile=user.profile,
+        profile=user.profile if user and user.profile else None,
+        user=user,
         action='Logout',
-        metadata={})
+        metadata={},
+        ip_address=ip_address,
+        location_data=geolocation_data)
 
 
 class ProfileSerializer(serializers.BaseSerializer):
@@ -1005,7 +1015,7 @@ class UserAction(SuperModel):
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
     user = models.ForeignKey(User, related_name='actions', on_delete=models.CASCADE, null=True)
-    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE)
+    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True)
     ip_address = models.GenericIPAddressField(null=True)
     location_data = JSONField(default={})
     metadata = JSONField(default={})
