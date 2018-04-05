@@ -938,17 +938,6 @@ class Profile(SuperModel):
         return access_token
 
 
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, created, **kwargs):
-    """Handle actions to take after User is saved."""
-    if created:
-        from app.utils import sync_profile
-        handle = instance.username.lstrip('@')
-        sync_profile(handle, instance)
-    elif instance and hasattr(instance, 'profile'):
-        instance.profile.save()
-
-
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
     """Handle actions to take on user login."""

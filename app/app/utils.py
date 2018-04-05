@@ -71,7 +71,8 @@ def sync_profile(handle, user=None):
 
     if user and isinstance(user, User):
         defaults['user'] = user
-        defaults['github_access_token'] = user.get_access_token()
+        defaults['github_access_token'] = user.social_auth.get(provider='github') \
+            .extra_data.get('access_token', '')
 
     # store the org info in postgres
     try:
