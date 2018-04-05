@@ -7,7 +7,7 @@ $(document).ready(function() {
     gasLimitEstimate = 207103;
   }
   // new fulfill funding page
-  if (document.location.href.indexOf('funding/new') != -1) {
+  if (document.location.href.indexOf('/new') != -1) {
     gasLimitEstimate = 318730;
   }
   // new fulfill funding page

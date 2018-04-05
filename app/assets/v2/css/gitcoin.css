@@ -1,94 +1,157 @@
-@font-face {
-    font-family: "futura-pt";
-    src: url("/static/v2/fonts/futura/font4.ttf") /* TTF file for CSS3 browsers */
-}
+/* Futura */
 
 @font-face {
-  font-family: "OpenSans Bold";
-  src: url('/static/v2/fonts/OpenSans/Bold.ttf');
+  font-family: 'futura-pt';
+  src: url('/static/v2/fonts/futura/font4.ttf')/* TTF file for CSS3 browsers */
 }
 
-@font-face {
-  font-family: "OpenSans SemiBold";
-  src: url('/static/v2/fonts/OpenSans/SemiBold.ttf');
-}
+/* OpenSans Light */
 
 @font-face {
-  font-family: "OpenSans";
-  src: url('/static/v2/fonts/OpenSans/Regular.ttf');
-}
-
-@font-face {
-  font-family: "OpenSans Light";
+  font-family: 'OpenSans';
   src: url('/static/v2/fonts/OpenSans/Light.ttf');
+  font-weight: 300;
 }
 
-@font-face {
-  font-family: "Muli";
-  src: url('/static/v2/fonts/Muli/Muli.ttf');
-}
+/* OpenSans Regular */
 
 @font-face {
-  font-family: "Muli-Bold";
-  src: url('/static/v2/fonts/Muli/Muli-Bold.ttf');
+  font-family: 'OpenSans';
+  src: url('/static/v2/fonts/OpenSans/Regular.ttf');
+  font-weight: 400;
 }
 
-@font-face {
-  font-family: "Muli-ExtraLight";
-  src: url('/static/v2/fonts/Muli/Muli-ExtraLight.ttf');
-}
+/* OpenSans Semibold */
 
 @font-face {
-  font-family: "Muli-SemiBold";
-  src: url('/static/v2/fonts/Muli/Muli-SemiBold.ttf');
+  font-family: 'OpenSans';
+  src: url('/static/v2/fonts/OpenSans/SemiBold.ttf');
+  font-weight: 600;
 }
 
-@font-face {
-  font-family: "Muli-Light";
-  src: url('/static/v2/fonts/Muli/Muli-Light.ttf');
-}
+/* OpenSans Bold */
 
 @font-face {
-  font-family: "Muli-Italic";
-  src: url('/static/v2/fonts/Muli/Muli-Italic.ttf');
+  font-family: 'OpenSans';
+  src: url('/static/v2/fonts/OpenSans/Bold.ttf');
+  font-weight: 700;
 }
 
-@font-face {
-  font-family: "Muli-BoldItalic";
-  src: url('/static/v2/fonts/Muli/Muli-BoldItalic.ttf');
-}
+/* Muli Extra Light */
+
+/* @font-face {
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/ExtraLight.ttf');
+  font-weight: 200;
+} */
+
+/* Muli Extra Light Italic */
+
+/* @font-face {
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/ExtraLightItalic.ttf');
+  font-weight: 200;
+  font-style: italic
+} */
+
+/* Muli Light */
 
 @font-face {
-  font-family: "Muli-ExtraLightItalic";
-  src: url('/static/v2/fonts/Muli/Muli-ExtraLightItalic.ttf');
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/Light.ttf');
+  font-weight: 300;
 }
 
-@font-face {
-  font-family: "Muli-Semi-BoldItalic";
-  src: url('/static/v2/fonts/Muli/Muli-Semi-BoldItalic.ttf');
-}
+/* Muli Light Italic */
+
+/* @font-face {
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/LightItalic.ttf');
+  font-weight: 300;
+  font-style: italic;
+} */
+
+/* Muli Regular */
 
 @font-face {
-  font-family: "Muli-LightItalic";
-  src: url('/static/v2/fonts/Muli/Muli-LightItalic.ttf');
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/Regular.ttf');
+  font-weight: 400;
 }
+
+/* Muli Regular Italic */
+
+/* @font-face {
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/RegularItalic.ttf');
+  font-weight: 400;
+  font-style: italic;
+} */
+
+/* Muli SemiBold */
+
+@font-face {
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/SemiBold.ttf');
+  font-weight: 600;
+}
+
+/* Muli SemiBold Italic */
+
+/* @font-face {
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/SemiBoldItalic.ttf');
+  font-weight: 600;
+  font-style: italic;
+} */
+
+/* Muli Bold */
+
+/* @font-face {
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/Bold.ttf');
+  font-weight: 700;
+} */
+
+/* Muli Bold Italic */
+
+/* @font-face {
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/BoldItalic.ttf');
+  font-weight: 700;
+  font-style: italic;
+} */
 
 body {
-  font-family: "futura-pt", Futura;
+  font-family: 'futura-pt', Futura, sans-serif;
   overflow-x: hidden;
   width: 100%;
 }
 
-
-h1, h2, h3, h4, h5, h6,
-.h1, .h2, .h3, .h4, .h5, .h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
   letter-spacing: 0.15em;
   text-transform: uppercase;
 }
 
-h4, .h4 {
+h4,
+.h4 {
   text-align: center;
   padding-top: 40px;
+}
+
+img {
+  max-width: 100%;
 }
 
 .no-gutter {
@@ -101,7 +164,7 @@ h4, .h4 {
   padding-left: 0;
 }
 
-.no-gutter div[class*="col-"] {
+.no-gutter div[class*='col-'] {
   padding-right: 0;
   padding-left: 0;
 }
@@ -119,7 +182,7 @@ h4, .h4 {
 }
 
 .header {
-  background-image: url(/static/v2/images/header-bg.png);
+  background-image: url('/static/v2/images/header-bg.png');
   background-color: #0d023b;
   background-size: cover;
   background-position: 0px 0px;
@@ -180,8 +243,6 @@ div.button-pink {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 18px;
-  line-height: 32px;
   color: #f9006c;
   font-size: 0.95rem;
   font-weight: bold;
@@ -211,7 +272,7 @@ div.button-pink {
 
 .header-line {
   color: white;
-  font-family: Futura;
+  font-family: Futura, sans-serif;
   font-size: 3em;
   font-weight: 500;
   font-style: italic;
@@ -221,7 +282,7 @@ div.button-pink {
 
 .subheader-line {
   color: #70efbe;
-  font-family: Futura;
+  font-family: Futura, sans-serif;
   font-size: 2em;
   font-weight: 500;
   font-style: italic;
@@ -233,16 +294,14 @@ div.button-pink {
 
 .light-bg {
   background-color: rgba(239, 243, 238, 0.7);
-  background-image: url(/static/v2/images/light-bg.png);
-  background-size: contain;
+  background-image: url('/static/v2/images/light-bg.png');
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
 }
 
 .white-light-bg {
-  background-image: url(/static/v2/images/light-bg.png);
-  background-size: contain;
+  background-image: url('/static/v2/images/light-bg.png');
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
@@ -255,6 +314,7 @@ div.button-pink {
 .font-bigger-2 {
   font-size: 1.5rem;
 }
+
 .font-bigger-3 {
   font-size: 1.6rem;
   line-height: 1.8rem;
@@ -306,11 +366,11 @@ div.button-pink {
 }
 
 .mission-img-wrapper {
-    height: 250px;
+  height: 250px;
 }
 
 .mission-img-wrapper img {
-    max-height: 250px;
+  max-height: 250px;
 }
 
 .avatar-img-wrapper {
@@ -343,7 +403,7 @@ div.button-pink {
 .footer {
   overflow: hidden;
   height: 300px;
-  background-image: url(/static/v2/images/footer.jpg);
+  background-image: url('/static/v2/images/footer.jpg');
   background-color: #0d023b;
   background-size: contain;
   background-position: bottom;
@@ -396,16 +456,16 @@ div.button-pink {
 *::-webkit-input-placeholder {
   color: lightgray;
 }
-*:-moz-placeholder {
-  /* FF 4-18 */
-  color: lightgray;
-}
+
 *::-moz-placeholder {
-  /* FF 19+ */
   color: lightgray;
 }
+
+*:-moz-placeholder {
+  color: lightgray;
+}
+
 *:-ms-input-placeholder {
-  /* IE 10+ */
   color: lightgray;
 }
 
@@ -424,7 +484,8 @@ div.button-pink {
 
 .accordion:after {
   display: none;
-  font-family: "Font Awesome 5 Solid";
+  /* stylelint-disable-next-line */
+  font-family: 'Font Awesome 5 Solid';
   content: '\f107';
 }
 
@@ -436,12 +497,12 @@ div.button-pink {
 }
 
 .accordion.active:after {
-  content: "\f106";
+  content: '\f106';
 }
 
 .dropdown-menu {
   background-color: #FAFAFA;
-  font-family: "Muli";
+  font-family: 'Muli', sans-serif;
   border-radius: 0px;
   padding: 0;
   right: 0;
@@ -452,13 +513,13 @@ div.button-pink {
   margin: 0;
 }
 
-.dropdown-menu  .dropdown-item:hover {
-  background-color: #0D0764;
-  color: #FFFFFF;
+.dropdown-menu .dropdown-item {
+  padding: 12px 25px;
 }
 
-.dropdown-menu .dropdown-item  {
-  padding: 12px 25px;
+.dropdown-menu .dropdown-item:hover {
+  background-color: #0D0764;
+  color: #FFFFFF;
 }
 
 .dropdown-menu .dropdown-item svg {

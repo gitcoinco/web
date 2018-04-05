@@ -16,7 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static humanize %}
+{% load i18n static humanize %}
 
 {% block content %}
 
@@ -60,7 +60,7 @@
 
 </style>
 
-<h1><img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"> The Gitcoin Weekly <img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"></h1>
+<h1><img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"> {% trans "The Gitcoin Weekly" %} <img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"></h1>
 
 <table>
     <tr>
@@ -82,8 +82,8 @@
 
 {% if highlights %}
 
-<h3>Last Week's Highlights</h3>
-<h5>Community Members growing open source🌳</h5>
+<h3>{% trans "Last Week's Highlights" %}</h3>
+<h5>{% trans "Community Members growing open source" %}🌳</h5>
 
     <table id="highlights">
         <tr >
@@ -109,8 +109,8 @@
 
 {% endif %}
 
-<h3>Open Funded Issues</h3>
-<h5>Grow Open Source ⚡️ Make Some ETH 💰</h5>
+<h3>{% trans "Open Funded Issues" %}</h3>
+<h5>{% trans "Grow Open Source ⚡️ Make Some ETH" %} 💰</h5>
 
 <br>
 
@@ -122,26 +122,26 @@
     <table>
         <tr >
             <td width="400">
-                <p style="text-align: center; margin-bottom: 0px;">Don't see anything that strikes your fancy above?</p>
-                <p style="text-align: center; margin-top: 0px;">There are more issues in the Gitcoin Issue Explorer:</p>
+                <p style="text-align: center; margin-bottom: 0px;">{% trans "Don't see anything that strikes your fancy above?" %}</p>
+                <p style="text-align: center; margin-top: 0px;">{% trans "There are more issues in the Gitcoin Issue Explorer:" %}</p>
             </td>
         </tr>
         <tr >
             <td width="180" style="text-align: center;">
-                <a style="margin: 0px auto;" class="button"  href="https://gitcoin.co/explorer" >View Issue Explorer</a>
+                <a style="margin: 0px auto;" class="button"  href="https://gitcoin.co/explorer" >{% trans "View Issue Explorer" %}</a>
             </td>
         </tr>
     </table>
     <hr>
 
 <p>
-    You are receiving this email because your email address is on the notification list. <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">Manage Email Settings</a>.
+    {% trans "You are receiving this email because your email address is on the notification list." %} <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">{% trans "Manage Email Settings" %}</a>.
 </p>
 
 <p>
-    Keep Growing Open Source,
+    {% trans "Keep Growing Open Source," %}
     <br>
-    -- Gitcoin Core
+    -- {% trans "Gitcoin Core" %}
 </p>
 
 

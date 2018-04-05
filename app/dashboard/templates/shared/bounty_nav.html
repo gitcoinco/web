@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -13,42 +13,41 @@
 
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 {% endcomment %}
-
+{% load i18n %}
 <div class="w-100" style="text-align: center;">
   <ol class="bounty_nav">
-    <li class="{% if active_item == 1 %}active{%endif%} submit" >
+    <li class="{% if active_item == 1 %}active{% endif %} submit" >
       1.
       {% if past_tense %}
-        Open
-      {%else%}
-        Create Work
-      {%endif%}
+        {% trans "Open" %}
+      {% else %}
+        {% trans "Create Work" %}
+      {% endif %}
     </li>
-    <li class="{% if active_item == 2 %}active{%endif%} fulfill">
+    <li class="{% if active_item == 2 %}active{% endif %} fulfill">
       2.
       {% if past_tense %}
-        Work Started
-      {%else%}
-        Start Work
-      {%endif%}
+        {% trans "Work Started" %}
+      {% else %}
+        {% trans "Start Work" %}
+      {% endif %}
     </li>
-    <li class="{% if active_item == 3 %}active{%endif%} fulfill">
+    <li class="{% if active_item == 3 %}active{% endif %} fulfill">
       3.
       {% if past_tense %}
-        Work Submitted
+        {% trans "Work Submitted" %}
       {%else%}
-        Submit Work
-      {%endif%}
+        {% trans "Submit Work" %}
+      {% endif %}
     </li>
-    <li class="{% if active_item == 4 %}active{%endif%} accept">
+    <li class="{% if active_item == 4 %}active{% endif %} accept">
       4.
       {% if past_tense %}
-        Work Done
-      {%else%}
-        Accept Work
-      {%endif%}
+        {% trans "Work Done" %}
+      {% else %}
+        {% trans "Accept Work" %}
+      {% endif %}
     </li>
   </ol>
 </div>

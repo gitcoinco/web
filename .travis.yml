@@ -16,6 +16,7 @@ install:
   - pip install -r requirements/test.txt
 script:
   - npm run eslint
+  - npm run stylelint
   - pytest -p no:ethereum
 after_success:
   - pip install codecov

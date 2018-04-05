@@ -16,7 +16,7 @@
     <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -40,12 +40,12 @@
 
             <div class="text">
                 <div class="font-bigger-4">
-                    GITCOIN IS A <span class="text-highlight-dark-blue">MISSION</span>
-                    AND <span class="text-highlight-dark-blue">VALUE-ORIENTED</span>
+                    {% blocktrans %}GITCOIN IS A <span class="text-highlight-dark-blue">MISSION</span>
+                    AND <span class="text-highlight-dark-blue">VALUE-ORIENTED</span>{% endblocktrans %}
                     <br />
-                    <span class="text-highlight-dark-blue">DISTRIBUTED MOVEMENT</span> AIMED TO <span class="text-highlight-dark-blue">DRIVE</span>
+                    {% blocktrans %}<span class="text-highlight-dark-blue">DISTRIBUTED MOVEMENT</span> AIMED TO <span class="text-highlight-dark-blue">DRIVE</span>{% endblocktrans %}
                     <br />
-                    <span class="text-highlight-dark-blue">CHANGE</span> AND <span class="text-highlight-pink">GROW OPEN SOURCE</span>
+                    {% blocktrans %}<span class="text-highlight-dark-blue">CHANGE</span> AND <span class="text-highlight-pink">GROW OPEN SOURCE</span>{% endblocktrans %}
                 </div>
             </div>
         </div>
@@ -57,7 +57,7 @@
     <div class="row">
         <div class="col pb-4">
             <h4 class="text-left text-uppercase">
-                <span class="text-highlight-green">We</span> Want
+                {% blocktrans %}<span class="text-highlight-green">We</span> Want{% endblocktrans %}
             </h4>
         </div>
     </div>
@@ -89,7 +89,7 @@
     <div class="row">
         <div class="col pb-4">
             <h4 class="text-left text-uppercase">
-                <span class="text-highlight-green">We</span> Value
+                {% blocktrans %}<span class="text-highlight-green">We</span> Value{% endblocktrans %}
             </h4>
         </div>
     </div>
@@ -147,7 +147,7 @@
     <div class="row">
         <div class="col pb-4">
             <h4 class="text-left text-uppercase">
-                <span class="text-highlight-green">We</span> Interact
+                {% blocktrans %}<span class="text-highlight-green">We</span> Interact{% endblocktrans %}
             </h4>
         </div>
     </div>
@@ -224,7 +224,7 @@
         <div class="col animated pulse fast">
             <a class="btn btn-lg btn-warning" role="button" target="_blank"
                href="https://medium.com/gitcoin/pushing-open-source-forward-for-the-web3-generation-26a5726902ea">
-                Read About Our Mission
+                {% trans "Read About Our Mission" %}
             </a>
         </div>
     </div>

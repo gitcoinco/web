@@ -1,20 +1,25 @@
 .ios {
   background: #fefefe;
 }
-.ios .header{
+
+.ios .header {
   background: none;
 }
 
-.ios-hero__container .nav-link:visited .nav-link--active,
-.ios-hero__container .nav-link--active {
+.ios-hero__container .nav-link--active,
+.ios-hero__container .nav-link:visited .nav-link--active {
   background: #FFF;
   border-radius: .5rem;
   color: #8E2ABE !important;
 }
 
+/* stylelint-disable no-descending-specificity */
+
 .ios-hero__container .nav-link--active:hover {
   color: #FFF !important;
 }
+
+/* stylelint-enable */
 
 .ios-hero__container {
   background: -webkit-linear-gradient(138deg, #8E2ABE 0%, #37EA9C 100%);
@@ -26,16 +31,18 @@
 }
 
 .ios-hero__container .header-line p {
-  font-family: Futura;
+  font-family: Futura, sans-serif;
   font-size: 2em;
 }
+
 .ios-hero__container .header-line {
   letter-spacing: normal;
   line-height: normal;
-  font-size:3rem;
+  font-size: 3rem;
   font-style: normal;
   padding-top: 150px;
 }
+
 .ios-hero__container .header-line h3 {
   font-size: 1.75rem;
 }
@@ -68,23 +75,23 @@
 }
 
 .ios .video__wrapper {
-  display:table;
-  width:auto;
-  position:relative;
+  display: table;
+  position: relative;
   width: 100%;
 }
+
 .ios .video__wrapper .playpause {
-  background-image:url(/static/v2/images/ios/play.png);
-  background-repeat:no-repeat;
-  width:50%;
-  height:50%;
-  position:absolute;
-  left:0%;
-  right:0%;
-  top:0%;
-  bottom:0%;
-  margin:auto;
-  background-size:contain;
+  background-image: url('/static/v2/images/ios/play.png');
+  background-repeat: no-repeat;
+  width: 50%;
+  height: 50%;
+  position: absolute;
+  left: 0%;
+  right: 0%;
+  top: 0%;
+  bottom: 0%;
+  margin: auto;
+  background-size: contain;
   background-position: center;
 }
 
