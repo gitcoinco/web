@@ -1,340 +1,321 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
-
-{% include 'shared/head.html' %}
-
-<body class="{{active}}">
+  {% include 'shared/head.html' %}
+  <body class="{{ active }}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header">
-        {% include 'shared/nav.html' %}
-        {% include 'shared/minihero.html' with h1='About' %}
-
+      {% include 'shared/nav.html' %}
+      {% include 'shared/minihero.html' with h1='About' %}
     </div>
-
     <div class="container-fluid white-light-bg" style="">
-        <div class="row pb-5 pt-5">
-            <div class="col pb-4">
-                <h4 >{% trans "The Problem" %}</h4>
-                <h6 style="text-align: center;" >{% trans "Incentive problems in Open Source Software." %}</h6>
-            </div>
+      <div class="row pb-5 pt-5">
+        <div class="col pb-4">
+          <h4 >{% trans "The Problem" %}</h4>
+          <h6 style="text-align: center;" >{% trans "Incentive problems in Open Source Software." %}</h6>
         </div>
-        <div class=" row ">
-            <div class="col pb-4">
-                <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
-                    <img class="animated fadeIn" src="{% static "v2/images/about/problem.png" %}" style="max-width: 100%;">
-                </div>
-            </div>
+      </div>
+      <div class=" row ">
+        <div class="col pb-4">
+          <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
+            <img class="animated fadeIn" src="{% static "v2/images/about/problem.png" %}" style="max-width: 100%;">
+          </div>
         </div>
+      </div>
     </div>
     <div class="container-fluid " style="background: white;">
-        <div class="row pb-5 pt-5">
-            <div class="col pb-4">
-                <h4 >{% trans "The Solution" %}</h4>
-                <h6 style="text-align: center;" >{% trans "A decentralized App for value creation &amp; value capture." %}</h6>
-            </div>
+      <div class="row pb-5 pt-5">
+        <div class="col pb-4">
+          <h4>{% trans "The Solution" %}</h4>
+          <h6 style="text-align: center;" >{% trans "A decentralized App for value creation &amp; value capture." %}</h6>
         </div>
-        <div class=" row ">
-            <div class="col pb-4">
-                <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
-                    <img class="animated fadeIn" src="{% static "v2/images/about/flywheel.png" %}" style="max-width: 100%;">
-                </div>
-            </div>
+      </div>
+      <div class=" row ">
+        <div class="col pb-4">
+          <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
+            <img class="animated fadeIn" src="{% static "v2/images/about/flywheel.png" %}" style="max-width: 100%;">
+          </div>
         </div>
+      </div>
     </div>
-
-
     <div class="container-fluid white-light-bg"  id="origin_story">
-        <div class="row">
-            <div class="col pb-4">
-                <h4>{% trans "The Origin Story" %} </h4>
-                <h6 style="text-align: center;" >{% trans "Who, what, when, where, and most importantly, why." %}</h6>
-            </div>
+      <div class="row">
+        <div class="col pb-4">
+          <h4>{% trans "The Origin Story" %} </h4>
+          <h6 style="text-align: center;" >{% trans "Who, what, when, where, and most importantly, why." %}</h6>
         </div>
-
-        <div class="row mt-3light-bg animatedParent">
-            <div class="col d-flex flex-column align-items-center justify-content-center animated fadeInLeftShort">
-                <img class="img-fluid" src="{% static "v2/images/why-different/boulder.png" %}" style="margin-top:50px;" />
-                <div class="font-weight-300 font-bigger-2">{% trans "Built with &lt;3 in Boulder Colorado USA" %}</div>
-                <p>
-                {% blocktrans %}<strong>Gitcoin</strong> was borne of the community in Boulder Colorado's thriving tech scene. One of the most amazing things about the Boulder community is the #givefirst mantra. The founding team has built their careers off of advice, mentorship, and relationships in the local tech community.{% endblocktrans %}
-                </p>
-            </div>
-            <div class="col d-flex flex-column align-items-center justify-content-center animated fadeInRightShort">
-                <img class="img-fluid" src="{% static "v2/images/about/grow_community.png" %}" />
-                <div class="font-weight-300 font-bigger-2">Goal: To grow the community</div>
-                <p>
-                {% blocktrans %}The founder of Gitcoin, <a href="http://linkedin.com/in/owocki/">Kevin Owocki</a> has experience as an organizer of <a href="http://boulderstartupweek.com">Boulder Startup Week</a>, <a href="http://igniteboulder.com">Ignite Boulder</a>, <a href="https://startupcto.io">StartupCTO.io</a>, <a href="https://www.meetup.com/Boulder-Blockchain/">Boulder Blockchain Meetup</a> and the open source projects <a href="https://github.com/owocki/pytrader">pytrader</a>, <a href="https://github.com/owocki/adblock-to-bitcoin">adblock-to-bitcoin</a>, <a href="https://github.com/youvegoteth/youvegoteth.github.io/">YouveGotETH</a>, & <a href="https://github.com/owocki/coloradocoin">ColoradoCoin</a>. The stronger the community is, the more successful open source projects are. The stronger open source projects are, the stronger the community is.{% endblocktrans %}
-                </p>
-            </div>
+      </div>
+      <div class="row mt-3light-bg animatedParent">
+        <div class="col d-flex flex-column align-items-center justify-content-center animated fadeInLeftShort">
+          <img class="img-fluid" src="{% static "v2/images/why-different/boulder.png" %}" style="margin-top:50px;" />
+          <div class="font-weight-300 font-bigger-2">{% trans "Built with &lt;3 in Boulder Colorado USA" %}</div>
+          <p>
+            {% blocktrans %}<strong>Gitcoin</strong> was borne of the community in Boulder Colorado's thriving tech scene. One of the most amazing things about the Boulder community is the #givefirst mantra. The founding team has built their careers off of advice, mentorship, and relationships in the local tech community.{% endblocktrans %}
+          </p>
         </div>
-
-        <div class="row mt-3light-bg animatedParent">
-            <div class="col d-flex flex-column align-items-center justify-content-center animated fadeInLeftShort">
-                <img class="img-fluid" src="{% static "v2/images/why-different/lock.png" %}" style="margin-top:100px;" />
-                <div class="font-weight-300 font-bigger-2">{% trans "Cryptocurrencies provide new, decentralized, opportunities" %}</div>
-                <p>
-                {% blocktrans %}<strong>Gitcoin</strong> is built upon the Ethereum network, and the solidity smart contract programming language. Ethereum provides opportunities to align incentives across actors in the ecosystem. By programming rights of stakeholders directly into smart contracts, actors are incentivized to provide value, and edge cases are handled _without_ having to involve legacy legal enforcement mechanisms.{% endblocktrans %}
-                </p>
-            </div>
-            <div class="col d-flex flex-column align-items-center justify-content-center animated fadeInRightShort">
-                <img class="img-fluid" src="{% static "v2/images/about/grow_open_source.png" %}" />
-                <div class="font-weight-300 font-bigger-2">{% trans "Goal: Grow Open Source" %}</div>
-                <p>
-                {% blocktrans %}<strong>Gitcoin</strong> is a project that combines the #givefirst mantra of the Boulder community with capitalistic incentives to write great software. By enabling <span>Repo Maintainers</span>, <span>developers</span>, and <span>financiers</span> to find one another, Gitcoin grows open source software.{% endblocktrans %}
-                </p>
-            </div>
+        <div class="col d-flex flex-column align-items-center justify-content-center animated fadeInRightShort">
+          <img class="img-fluid" src="{% static "v2/images/about/grow_community.png" %}" />
+          <div class="font-weight-300 font-bigger-2">Goal: To grow the community</div>
+          <p>
+          {% blocktrans %}The founder of Gitcoin, <a href="http://linkedin.com/in/owocki/">Kevin Owocki</a> has experience as an organizer of <a href="http://boulderstartupweek.com">Boulder Startup Week</a>, <a href="http://igniteboulder.com">Ignite Boulder</a>, <a href="https://startupcto.io">StartupCTO.io</a>, <a href="https://www.meetup.com/Boulder-Blockchain/">Boulder Blockchain Meetup</a> and the open source projects <a href="https://github.com/owocki/pytrader">pytrader</a>, <a href="https://github.com/owocki/adblock-to-bitcoin">adblock-to-bitcoin</a>, <a href="https://github.com/youvegoteth/youvegoteth.github.io/">YouveGotETH</a>, & <a href="https://github.com/owocki/coloradocoin">ColoradoCoin</a>. The stronger the community is, the more successful open source projects are. The stronger open source projects are, the stronger the community is.{% endblocktrans %}
+          </p>
         </div>
+      </div>
+      <div class="row mt-3light-bg animatedParent">
+        <div class="col d-flex flex-column align-items-center justify-content-center animated fadeInLeftShort">
+          <img class="img-fluid" src="{% static "v2/images/why-different/lock.png" %}" style="margin-top:100px;" />
+          <div class="font-weight-300 font-bigger-2">{% trans "Cryptocurrencies provide new, decentralized, opportunities" %}</div>
+          <p>
+            {% blocktrans %}<strong>Gitcoin</strong> is built upon the Ethereum network, and the solidity smart contract programming language. Ethereum provides opportunities to align incentives across actors in the ecosystem. By programming rights of stakeholders directly into smart contracts, actors are incentivized to provide value, and edge cases are handled _without_ having to involve legacy legal enforcement mechanisms.{% endblocktrans %}
+          </p>
+        </div>
+        <div class="col d-flex flex-column align-items-center justify-content-center animated fadeInRightShort">
+          <img class="img-fluid" src="{% static "v2/images/about/grow_open_source.png" %}" />
+          <div class="font-weight-300 font-bigger-2">{% trans "Goal: Grow Open Source" %}</div>
+          <p>
+            {% blocktrans %}<strong>Gitcoin</strong> is a project that combines the #givefirst mantra of the Boulder community with capitalistic incentives to write great software. By enabling <span>Repo Maintainers</span>, <span>developers</span>, and <span>financiers</span> to find one another, Gitcoin grows open source software.{% endblocktrans %}
+          </p>
+        </div>
+      </div>
     </div>
-
     <div class="container-fluid" id="team" style="background: white; position: relative; overflow: hidden;">
-        {% include 'shared/rain.html' with class="grey" %}
-        <div class="row">
-            <div class="col pb-4">
-                <h4  >{% trans "Team" %}</h4>
-                <h6 style="text-align: center;" >{% trans "Built By &amp; for Open Source Software Developers" %}</h6>
-            </div>
+      {% include 'shared/rain.html' with class="grey" %}
+      <div class="row">
+        <div class="col pb-4">
+          <h4>{% trans "Team" %}</h4>
+          <h6 style="text-align: center;" >{% trans "Built By &amp; for Open Source Software Developers" %}</h6>
         </div>
-        <div class=" row animatedParent">
-            <div class="col d-flex flex-column p-5 animated fadeInLeftShort ">
-                <div class="avatar-img-wrapper mb-3 pl-5 pr-5"  >
-                    <img class="img-fluid " src="{% static "v2/images/about/kevin.jpg" %}" style="float: right;" />
-                </div>
-                <div class="pl-5 pr-5" style="text-align: right;">
-                    <div class="font-bigger-1 font-weight-300 ">Kevin Owocki</div>
-                    <div>{% trans "Founder" %}</div>
-                    <p class="font-smaller-3 ">{% blocktrans %}<a href="http://linkedin.com/in/owocki/">Kevin Owocki</a> has a BS in Computer Science, 15 years experience in Open Source Software and Technology Startups. He is a volunteer in the Boulder Community for several community organizations, and an avid open source developer. His work has been featured in <a href="http://techcrunch.com/2011/02/10/group-dating-startup-ignighter-s-3-million/" >TechCrunch</a>, <a href="http://www.cnn.com/2011/BUSINESS/03/29/india.online.matchmaking/" >CNN</a>, <a href="http://www.inc.com/30under30/2011/profile-adam-sachs-kevin-owocki-and-dan-osit-founders-ignighter.html" >Inc Magazine</a>, <a href="http://www.nytimes.com/2011/02/20/business/20ignite.html?_r=4&amp;amp;pagewanted=1&amp;amp;ref=business"  >The New York Times</a>, <a href="http://boingboing.net/2011/09/24/tosamend-turn-all-online-i-agree-buttons-into-negotiations.html" >BoingBoing</a>, <a href="http://www.wired.com/2015/12/kevin-owocki-adblock-to-bitcoin/"  >WIRED</a>, <a href="https://www.forbes.com/sites/amycastor/2017/08/31/toothpick-takes-top-prize-in-silicon-beach-ethereum-hackathon/#6bf23b7452ad" >Forbes</a>, and <a href="http://www.techdigest.tv/2007/08/super_mario_get_1.html" >TechDigest</a>.{% endblocktrans %}
-                    </p>
-                </div>
-            </div>
-            <div class="col p-5 animated fadeInRightShort ">
-                <div class="row">
-                    <h4 class="pt-1">{% trans "Post Launch (2017+)" %}</h4>
-                </div>
-                <div class="row">
-                    <div class="advisor">
-                        <img src="{% static "v2/images/conensyslogo.png" %}" >
-                        <div class="mt-2 font-bigger-1 font-weight-300 ">Consensys</div>
-                        <div class="font-smaller-1 ">Venture Studio
-                        </div>
-                    </div>
-                    <div class="advisor">
-                        <img class="" src="{% static "v2/images/avatar.png" %}" />
-                        <div class="font-bigger-1 font-weight-300 ">{% trans "You?" %}</div>
-                        <div class="font-smaller-1 ">{% blocktrans %}Want to build the future of open source?  <a href="#jobs">We want to hear from you.</a>{% endblocktrans %}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <h4 class="">{% trans "Pre Launch (Summer 2017)" %}</h4>
-                </div>
-                <div class="row">
-                    <div class="advisor">
-                        <img class="" src="{% static "v2/images/about/afj.png" %}" />
-                        <div class="font-bigger-1 font-weight-300 ">AFJ</div>
-                        <div class="font-smaller-1 ">{% trans "Design Team" %}
-                        </div>
-                    </div>
-                    <div class="advisor">
-                        <img class="" src="{% static "v2/images/about/karot.png" %}" />
-                        <div class="font-bigger-1 font-weight-300 ">The Karot</div>
-                        <div class="font-smaller-1 ">{% trans "Video Team" %}
-                        </div>
-                    </div>
-                    <div class="advisor">
-                        <img class="" src="{% static "v2/images/about/prserve.jpg" %}" />
-                        <div class="font-bigger-1 font-weight-300 ">PRServe</div>
-                        <div class="font-smaller-1 ">{% trans "PR Team" %}
-                        </div>
-                    </div>
-                </div>
-            </div>
+      </div>
+      <div class=" row animatedParent">
+        <div class="col d-flex flex-column p-5 animated fadeInLeftShort ">
+          <div class="avatar-img-wrapper mb-3 pl-5 pr-5"  >
+            <img class="img-fluid " src="{% static "v2/images/about/kevin.jpg" %}" style="float: right;" />
+          </div>
+          <div class="pl-5 pr-5" style="text-align: right;">
+            <div class="font-bigger-1 font-weight-300 ">Kevin Owocki</div>
+            <div>{% trans "Founder" %}</div>
+            <p class="font-smaller-3 ">
+              {% blocktrans %}<a href="http://linkedin.com/in/owocki/">Kevin Owocki</a> has a BS in Computer Science, 15 years experience in Open Source Software and Technology Startups. He is a volunteer in the Boulder Community for several community organizations, and an avid open source developer. His work has been featured in <a href="http://techcrunch.com/2011/02/10/group-dating-startup-ignighter-s-3-million/" >TechCrunch</a>, <a href="http://www.cnn.com/2011/BUSINESS/03/29/india.online.matchmaking/" >CNN</a>, <a href="http://www.inc.com/30under30/2011/profile-adam-sachs-kevin-owocki-and-dan-osit-founders-ignighter.html" >Inc Magazine</a>, <a href="http://www.nytimes.com/2011/02/20/business/20ignite.html?_r=4&amp;amp;pagewanted=1&amp;amp;ref=business"  >The New York Times</a>, <a href="http://boingboing.net/2011/09/24/tosamend-turn-all-online-i-agree-buttons-into-negotiations.html" >BoingBoing</a>, <a href="http://www.wired.com/2015/12/kevin-owocki-adblock-to-bitcoin/"  >WIRED</a>, <a href="https://www.forbes.com/sites/amycastor/2017/08/31/toothpick-takes-top-prize-in-silicon-beach-ethereum-hackathon/#6bf23b7452ad" >Forbes</a>, and <a href="http://www.techdigest.tv/2007/08/super_mario_get_1.html" >TechDigest</a>.{% endblocktrans %}
+            </p>
+          </div>
         </div>
-        <div class="row" id="jobs">
-            <div class="col pb-4 " >
-                <hr>
-                <h4  >{% trans "Join Us" %}</h4>
-                <h6 style="text-align: center;" >{% trans "Want to Grow Open Source? We want to hear from you." %}</h6>
+        <div class="col p-5 animated fadeInRightShort ">
+          <div class="row">
+            <h4 class="pt-1">{% trans "Post Launch (2017+)" %}</h4>
+          </div>
+          <div class="row">
+            <div class="advisor">
+              <img src="{% static "v2/images/conensyslogo.png" %}" >
+              <div class="mt-2 font-bigger-1 font-weight-300 ">Consensys</div>
+              <div class="font-smaller-1 ">Venture Studio</div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col pb-4 text-center  align-items-center">
-                <p  class="font-bigger-1">
-                    <strong>{% trans "Open Gitcoin Roles" %}</strong>
-                </p>
-                <p>
-                    {% trans "Front End Developer" %} -- Gitcoin |
-                    <a href="https://consensys.net/open-positions/?gh_jid=924578">
-                        {% trans "Learn More" %}
-                    </a>
-                </p>
-                <p>
-                    {% trans "Business Development Lead" %} -- Gitcoin |
-                    <a href="https://consensys.net/open-positions/?gh_jid=1025695">
-                        {% trans "Learn More" %}
-                    </a>
-                </p>
-                <p  class="font-bigger-1">
-                    <strong>{% trans "Open Bounties.Network Roles" %}</strong>
-                </p>
-                <p >
-                    {% trans "Full Stack Developer" %} -- Bounties.Network |
-                    <a href="https://consensys.net/open-positions/?gh_jid=945240">
-                        {% trans "Learn More" %}
-                    </a>
-                </p>
-                <p>
-                    {% trans "Data Scientist" %} -- Bounties.Network |
-                    <a href="https://consensys.net/open-positions/?gh_jid=945245">
-                        {% trans "Learn More" %}
-                    </a>
-                </p>
-                <p>
-                    {% trans "Senior Product Designer" %} -- Bounties.Network |
-                    <a href="https://consensys.net/open-positions/?gh_jid=944914">
-                        {% trans "Learn More" %}
-                    </a>
-                </p>
-                <p  class="font-bigger-1">
-                    <strong>{% trans "Waitlisted Roles" %}</strong>
-                    <p style="max-width: 600px; margin: 0px auto;"><i>{% blocktrans %}(These roles were recently filled, but may open up again in a couple months. You're welcome to <a href="https://gitcoin.co/slack">join the community</a>, that's likely where we'll source them when they re-open.){% endblocktrans %}</i></p>
-                </p>
-                <p>
-                    {% trans "Developer" %}  -- Gitcoin |
-                    <a href="https://consensys.net/open-positions/?gh_jid=924571">
-                        {% trans "Learn More" %}
-                    </a>
-                </p>
-                <p>
-                    {% trans "Content and Marketing Manager" %} -- Gitcoin |
-                    <a href="https://consensys.net/open-positions/?gh_jid=932256">
-                        {% trans "Learn More" %}
-                    </a>
-                </p>
-                <p>
-                    {% trans "Community Manager" %} -- Gitcoin |
-                    <a href="https://consensys.net/open-positions/?gh_jid=923872">
-                        {% trans "Learn More" %}
-                    </a>
-                </p>
-                <p>
-                    {% trans "Customer Experience Manager" %} -- Gitcoin |
-                    <a href="https://consensys.net/open-positions/?gh_jid=924581">
-                        {% trans "Learn More" %}
-                    </a>
-                </p>
-                <p>
-                    {% trans "Senior Product Designer" %} -- Gitcoin |
-                    <a href="https://consensys.net/open-positions/?gh_jid=925903">
-                        {% trans "Learn More" %}
-                    </a>
-                </p>
+            <div class="advisor">
+              <img class="" src="{% static "v2/images/avatar.png" %}" />
+              <div class="font-bigger-1 font-weight-300 ">{% trans "You?" %}</div>
+              <div class="font-smaller-1 ">{% blocktrans %}Want to build the future of open source?  <a href="#jobs">We want to hear from you.</a>{% endblocktrans %}</div>
             </div>
+          </div>
+          <div class="row">
+            <h4 class="">{% trans "Pre Launch (Summer 2017)" %}</h4>
+          </div>
+          <div class="row">
+            <div class="advisor">
+              <img class="" src="{% static "v2/images/about/afj.png" %}" />
+              <div class="font-bigger-1 font-weight-300 ">AFJ</div>
+              <div class="font-smaller-1 ">{% trans "Design Team" %}
+              </div>
+            </div>
+            <div class="advisor">
+              <img class="" src="{% static "v2/images/about/karot.png" %}" />
+              <div class="font-bigger-1 font-weight-300 ">The Karot</div>
+              <div class="font-smaller-1 ">{% trans "Video Team" %}
+              </div>
+            </div>
+            <div class="advisor">
+              <img class="" src="{% static "v2/images/about/prserve.jpg" %}" />
+              <div class="font-bigger-1 font-weight-300 ">PRServe</div>
+              <div class="font-smaller-1 ">{% trans "PR Team" %}
+              </div>
+            </div>
+          </div>
         </div>
-
+      </div>
+      <div class="row" id="jobs">
+        <div class="col pb-4 " >
+          <hr>
+          <h4>{% trans "Join Us" %}</h4>
+          <h6 style="text-align: center;" >{% trans "Want to Grow Open Source? We want to hear from you." %}</h6>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col pb-4 text-center  align-items-center">
+          <p  class="font-bigger-1">
+            <strong>{% trans "Open Gitcoin Roles" %}</strong>
+          </p>
+          <p>
+            {% trans "Front End Developer" %} -- Gitcoin |
+            <a href="https://consensys.net/open-positions/?gh_jid=924578">
+              {% trans "Learn More" %}
+            </a>
+          </p>
+          <p>
+            {% trans "Business Development Lead" %} -- Gitcoin |
+            <a href="https://consensys.net/open-positions/?gh_jid=1025695">
+              {% trans "Learn More" %}
+            </a>
+          </p>
+          <p  class="font-bigger-1">
+            <strong>{% trans "Open Bounties.Network Roles" %}</strong>
+          </p>
+          <p >
+            {% trans "Full Stack Developer" %} -- Bounties.Network |
+            <a href="https://consensys.net/open-positions/?gh_jid=945240">
+              {% trans "Learn More" %}
+            </a>
+          </p>
+          <p>
+            {% trans "Data Scientist" %} -- Bounties.Network |
+            <a href="https://consensys.net/open-positions/?gh_jid=945245">
+              {% trans "Learn More" %}
+            </a>
+          </p>
+          <p>
+            {% trans "Senior Product Designer" %} -- Bounties.Network |
+            <a href="https://consensys.net/open-positions/?gh_jid=944914">
+              {% trans "Learn More" %}
+            </a>
+          </p>
+          <p  class="font-bigger-1">
+            <strong>{% trans "Waitlisted Roles" %}</strong>
+            <p style="max-width: 600px; margin: 0px auto;"><i>{% blocktrans %}(These roles were recently filled, but may open up again in a couple months. You're welcome to <a href="https://gitcoin.co/slack">join the community</a>, that's likely where we'll source them when they re-open.){% endblocktrans %}</i></p>
+          </p>
+          <p>
+            {% trans "Developer" %}  -- Gitcoin |
+            <a href="https://consensys.net/open-positions/?gh_jid=924571">
+              {% trans "Learn More" %}
+            </a>
+          </p>
+          <p>
+            {% trans "Content and Marketing Manager" %} -- Gitcoin |
+            <a href="https://consensys.net/open-positions/?gh_jid=932256">
+              {% trans "Learn More" %}
+            </a>
+          </p>
+          <p>
+            {% trans "Community Manager" %} -- Gitcoin |
+            <a href="https://consensys.net/open-positions/?gh_jid=923872">
+              {% trans "Learn More" %}
+            </a>
+          </p>
+          <p>
+            {% trans "Customer Experience Manager" %} -- Gitcoin |
+            <a href="https://consensys.net/open-positions/?gh_jid=924581">
+              {% trans "Learn More" %}
+            </a>
+          </p>
+          <p>
+            {% trans "Senior Product Designer" %} -- Gitcoin |
+            <a href="https://consensys.net/open-positions/?gh_jid=925903">
+              {% trans "Learn More" %}
+            </a>
+          </p>
+        </div>
+      </div>
     </div>
-
-<div id='note'>
+  <div id='note'>
     &nbsp;
-</div>
-
+  </div>
     <div class="container-fluid text-center white-light-bg" id="features">
-        <div class="row pb-1 pt-4">
-            <div class="col text-center">
-                <h4 class="">{% trans "Features of Gitcoin" %}</h4>
-            </div>
+      <div class="row pb-1 pt-4">
+        <div class="col text-center">
+          <h4 class="">{% trans "Features of Gitcoin" %}</h4>
         </div>
-        <div class="row pt-5 mb-3 animatedParent">
-            <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
-                <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-                    <img src="{% static "v2/images/getgitcoin/spaceship.png" %}" />
-                </div>
-                <div class="pl-5 pr-5 w-75">
-                    <div class="font-bigger-1">{% trans "Fund Issues" %}</div>
-                    <div class="font-smaller-3">{% trans "Fund a feature, bug, or security issue that you care about, &amp; get results." %}</div>
-                </div>
-            </div>
-            <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
-                <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-                    <img src="{% static "v2/images/getgitcoin/tip-dev.png" %}" />
-                </div>
-                <div class="pl-5 pr-5 w-75">
-                    <div class="font-bigger-1">{% trans "Tip Developers" %}</div>
-                    <div class="font-smaller-3">{% trans "Reward contributors who have added value to your repository with a tip." %}</div>
-                </div>
-            </div>
+      </div>
+      <div class="row pt-5 mb-3 animatedParent">
+        <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
+          <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
+            <img src="{% static "v2/images/getgitcoin/spaceship.png" %}" />
+          </div>
+          <div class="pl-5 pr-5 w-75">
+            <div class="font-bigger-1">{% trans "Fund Issues" %}</div>
+            <div class="font-smaller-3">{% trans "Fund a feature, bug, or security issue that you care about, &amp; get results." %}</div>
+          </div>
         </div>
-
-        <div class="row pt-5 mb-3 animatedParent">
-            <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
-                <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-                    <img src="{% static "v2/images/getgitcoin/find-work.png" %}" />
-                </div>
-                <div class="pl-5 pr-5 w-75">
-                    <div class="font-bigger-1">{% trans "Find Work" %}</div>
-                    <div class="font-smaller-3">{% trans "Find interesting projects to work on, interesting people to work with. Try projects before you fully commit to them. Add value wherever you go." %}</div>
-                </div>
-            </div>
-            <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
-                <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-                    <img src="{% static "v2/images/getgitcoin/github.png" %}" />
-                </div>
-                <div class="pl-5 pr-5 w-75">
-                    <div class="font-bigger-1">{% trans "All on Github.com" %}</div>
-                    <div class="font-smaller-3">{% trans "The best thing about Gitcoin is that it works where you do your work; on Github." %}</div>
-                </div>
-            </div>
+        <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
+          <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
+            <img src="{% static "v2/images/getgitcoin/tip-dev.png" %}" />
+          </div>
+          <div class="pl-5 pr-5 w-75">
+            <div class="font-bigger-1">{% trans "Tip Developers" %}</div>
+            <div class="font-smaller-3">{% trans "Reward contributors who have added value to your repository with a tip." %}</div>
+          </div>
         </div>
-        <div class="row mt-5 pb-3 animatedParent">
-            <div class="col animated pulse fast">
-                <a class="btn btn-lg btn-warning" role="button" href="{% url "get_gitcoin" %}">{% trans "Get Started" %}</a>
+      </div>
+      <div class="row pt-5 mb-3 animatedParent">
+          <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
+            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
+              <img src="{% static "v2/images/getgitcoin/find-work.png" %}" />
             </div>
+            <div class="pl-5 pr-5 w-75">
+              <div class="font-bigger-1">{% trans "Find Work" %}</div>
+              <div class="font-smaller-3">{% trans "Find interesting projects to work on, interesting people to work with. Try projects before you fully commit to them. Add value wherever you go." %}</div>
+            </div>
+          </div>
+          <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
+            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
+              <img src="{% static "v2/images/getgitcoin/github.png" %}" />
+            </div>
+            <div class="pl-5 pr-5 w-75">
+              <div class="font-bigger-1">{% trans "All on Github.com" %}</div>
+              <div class="font-smaller-3">{% trans "The best thing about Gitcoin is that it works where you do your work; on Github." %}</div>
+            </div>
+          </div>
+      </div>
+      <div class="row mt-5 pb-3 animatedParent">
+        <div class="col animated pulse fast">
+          <a class="btn btn-lg btn-warning" role="button" href="{% url "get_gitcoin" %}">{% trans "Get Started" %}</a>
         </div>
+      </div>
     </div>
-
-
-
     <div class="container-fluid text-center white-light-bg" id="gitcoin_buttons">
-        <div class="row">
-            <div class="col pb-4">
-                <h4 >{% trans "Mission-Driven" %}</h4>
-                <h6 style="text-align: center;" >{% trans "Everything we do is to support our mission to 'Grow Open Source'" %}  </h6>
-            </div>
+      <div class="row">
+        <div class="col pb-4">
+          <h4 >{% trans "Mission-Driven" %}</h4>
+          <h6 style="text-align: center;" >{% trans "Everything we do is to support our mission to 'Grow Open Source'" %}  </h6>
         </div>
-        <div class=" row animatedParent">
-            <div class="col d-flex flex-column p-5 animated fadeIn ">
-                <div class="pl-5 pr-5" style="text-align: center;">
-                    <img src="{% static "v2/images/mission/grow_hero.png" %}" />
-                </div>
-            </div>
+      </div>
+      <div class=" row animatedParent">
+        <div class="col d-flex flex-column p-5 animated fadeIn ">
+          <div class="pl-5 pr-5" style="text-align: center;">
+            <img src="{% static "v2/images/mission/grow_hero.png" %}" />
+          </div>
         </div>
-        <div class="row mt-5 pb-3 animatedParent">
-            <div class="col animated pulse fast">
-                <a class="btn btn-lg btn-warning" role="button" href="{% url "get_gitcoin" %}">{% trans "Get Started" %}</a>
-            </div>
+      </div>
+      <div class="row mt-5 pb-3 animatedParent">
+        <div class="col animated pulse fast">
+          <a class="btn btn-lg btn-warning" role="button" href="{% url "get_gitcoin" %}">{% trans "Get Started" %}</a>
         </div>
+      </div>
     </div>
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
-
-</body>
+  </body>
 </html>
