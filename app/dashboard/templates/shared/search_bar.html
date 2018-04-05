@@ -1,19 +1,18 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
 <link rel="stylesheet" href={% static "v2/css/search_bar.css" %}>
@@ -27,9 +26,9 @@
         <a class="button button--primary" role="button" id="new_search" href="#">{% trans "Search" %}</a>
       </div>
       <div class="col-10 col-md-5 col-lg-4 font-caption order_by">
-          <div class="heading">{% trans "SORT" %} </div>
-          <a class="sort_option selected" data-key='web3_created' data-direction="-">{% trans "Created" %}</a>
-          <a class="sort_option" data-key='_val_usd_db' data-direction="-">{% trans "Value" %}</a>
+        <div class="heading">{% trans "SORT" %} </div>
+        <a class="sort_option selected" data-key='web3_created' data-direction="-">{% trans "Created" %}</a>
+        <a class="sort_option" data-key='_val_usd_db' data-direction="-">{% trans "Value" %}</a>
       </div>
     </div>
     <div class="row">
