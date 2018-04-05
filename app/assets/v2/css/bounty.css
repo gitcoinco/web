@@ -20,26 +20,6 @@ body {
   top: -1px;
 }
 
-#timer {
-  display: inline-grid;
-}
-
-#timer div {
-  width: 12em;
-  margin-right: 0;
-  display: inline-block;
-}
-
-#timer .bounty-info-heading,
-#timer .bounty-info-text {
-  font-size: 12px;
-}
-
-#timer .bounty-info-text {
-  position: relative;
-  top: 2px;
-}
-
 #expires_date {
   float: right;
 }
@@ -162,6 +142,36 @@ body {
 
 .bounty-info-text {
   color: #717171;
+}
+
+.started-status-column div {
+  display: inline-block;
+  margin: 5px;
+}
+
+.funder-avatar,
+.activity div {
+  margin: auto;
+}
+
+#timer {
+  display: inline-grid;
+}
+
+#timer div {
+  width: 12em;
+  margin-right: 0;
+  display: inline-block;
+}
+
+#timer .bounty-info-heading,
+#timer .bounty-info-text {
+  font-size: 12px;
+}
+
+#timer .bounty-info-text {
+  position: relative;
+  top: 2px;
 }
 
 #bounty_details .tags {
@@ -290,11 +300,6 @@ a.btn {
   margin-bottom: 10px;
 }
 
-.funder-avatar,
-.activity div {
-  margin: auto;
-}
-
 .fulfilled .activity-status {
   margin-bottom: 10px;
 }
@@ -312,11 +317,6 @@ a.btn {
 .activity .bounty-subheading,
 .activity .bounty-text {
   font-size: 12px;
-}
-
-.started-status-column div {
-  display: inline-block;
-  margin: 5px;
 }
 
 #bounty_details {
