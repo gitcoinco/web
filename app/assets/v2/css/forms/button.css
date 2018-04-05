@@ -6,6 +6,7 @@
   cursor: pointer;
   font-size: 14px;
   font-family: 'Muli', sans-serif;
+  font-weight: 300;
   padding: 10px 20px;
   -webkit-appearance: none;
 }

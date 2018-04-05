@@ -726,103 +726,6 @@ dl dd {
   margin-left: 1.5em;
 }
 
-/* Button */
-
-input[type='submit'],
-input[type='reset'],
-input[type='button'],
-button,
-.button {
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  -ms-appearance: none;
-  appearance: none;
-  -moz-transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
-  -webkit-transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
-  -ms-transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
-  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
-  display: inline-block;
-  height: 2.75em;
-  line-height: 2.75em;
-  padding: 0 1.5em;
-  background-color: transparent;
-  border-radius: 4px;
-  border: solid 1px #c8cccf;
-  color: #414f57 !important;
-  cursor: pointer;
-  text-align: center;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-input[type='submit']:hover,
-input[type='reset']:hover,
-input[type='button']:hover,
-button:hover,
-.button:hover {
-  border-color: #ff7496;
-  color: #ff7496 !important;
-}
-
-input[type='submit'].icon,
-input[type='reset'].icon,
-input[type='button'].icon,
-button.icon,
-.button.icon {
-  padding-left: 1.35em;
-}
-
-input[type='submit'].icon:before,
-input[type='reset'].icon:before,
-input[type='button'].icon:before,
-button.icon:before,
-.button.icon:before {
-  margin-right: 0.5em;
-}
-
-input[type='submit'].fit,
-input[type='reset'].fit,
-input[type='button'].fit,
-button.fit,
-.button.fit {
-  display: block;
-  width: 100%;
-  margin: 0 0 0.75em 0;
-}
-
-input[type='submit'].small,
-input[type='reset'].small,
-input[type='button'].small,
-button.small,
-.button.small {
-  font-size: 0.8em;
-}
-
-input[type='submit'].big,
-input[type='reset'].big,
-input[type='button'].big,
-button.big,
-.button.big {
-  font-size: 1.35em;
-}
-
-input[type='submit'].disabled,
-input[type='submit']:disabled,
-input[type='reset'].disabled,
-input[type='reset']:disabled,
-input[type='button'].disabled,
-input[type='button']:disabled,
-button.disabled,
-button:disabled,
-.button.disabled,
-.button:disabled {
-  -moz-pointer-events: none;
-  -webkit-pointer-events: none;
-  -ms-pointer-events: none;
-  pointer-events: none;
-  opacity: 0.5;
-}
-
 .particles-js-canvas-el {
   z-index: 1;
   position: absolute;
@@ -992,11 +895,11 @@ body.is-ie #wrapper {
   height: 100%;
 }
 
-body #main a {
+body #main a:not(.button) {
   color: #fc7596;
 }
 
-body #main a:hover {
+body #main a:not(.button):hover {
   color: #ec5597;
 }
 
