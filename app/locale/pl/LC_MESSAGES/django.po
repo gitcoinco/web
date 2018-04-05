@@ -1,0 +1,4059 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-05 05:38-0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n"
+"%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n"
+"%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+#: dashboard/models.py:126
+msgid "Whether the bounty is still open for fulfillments."
+msgstr ""
+
+#: dashboard/models.py:131
+msgid "Whether this bounty is the most current revision one or not"
+msgstr ""
+
+#: dashboard/models.py:143
+msgid "Whether the bounty has been done"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:21
+msgid "Back to Issue Explorer"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:28
+msgid "Your transaction has been posted to web3"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:30
+msgid ""
+"Please wait a minute or two for web3 to sync\n"
+"            <a target=\"_blank\" href=\"javascript:void(0)\" id="
+"\"transaction_url\">this transaction</a>."
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:34
+msgid ""
+"This page will automatically refresh as soon as the blockchain is updated."
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:35
+msgid "You may close the browser tab."
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:45
+msgid "No funded issue found."
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:46
+#, python-format
+msgid "Check out the <a href=\"%(explorerurl)s\">Issue Explorer</a>"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:48
+msgid "Be the OSS Funding you wish to see in the world."
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:49
+#, python-format
+msgid ""
+" Looking to fund some work?  You can submit a new Funded Issue <a href="
+"\"%(new_fundingurl)s\">here</a>."
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:71
+msgid "Expires In"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:75
+msgid "Opened"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:79
+#: dashboard/templates/shared/sidebar_search.html:88
+#: dashboard/templates/submit_bounty.html:107
+msgid "Experience Level"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:83
+msgid "Issue Type"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:111
+#: external_bounties/templates/external_bounties_show.html:76
+msgid "Description"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:118
+msgid "Contributors"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:122
+#: dashboard/templates/shared/bounty_nav.html:31
+#: dashboard/templates/shared/sidebar_search.html:33
+#: dashboard/templates/shared/status_tooltip.html:30
+msgid "Work Started"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:127
+#: dashboard/templates/shared/bounty_nav.html:39
+#: dashboard/templates/shared/sidebar_search.html:38
+#: dashboard/templates/shared/status_tooltip.html:36
+msgid "Work Submitted"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:132
+msgid "Work Accepted"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:138
+msgid "All Activity"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:142
+#: dashboard/templates/bounty_details.html:150
+#: dashboard/templates/profile_details.html:167
+msgid "Funder"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:154
+#: dashboard/templates/bounty_details.html:226
+msgid "Email"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:158
+msgid "Gitcoin Profile"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:220
+#: faucet/templates/faucet_form.html:76
+msgid "ETH Address"
+msgstr ""
+
+#: dashboard/templates/bounty_details.html:232
+msgid "Submission Id"
+msgstr ""
+
+#: dashboard/templates/dashboard.html:58
+msgid "No results found."
+msgstr ""
+
+#: dashboard/templates/dashboard.html:59
+msgid "Please try another query"
+msgstr ""
+
+#: dashboard/templates/dashboard.html:60
+#: dashboard/templates/shared/no_metamask_error.html:32
+#: dashboard/templates/shared/unlock_metamask.html:29
+#: dashboard/templates/shared/zero_balance_error.html:35
+#: faucet/templates/shared/faucet_no_metamask_error.html:35
+#: faucet/templates/shared/faucet_unlock_metamask.html:32
+#: retail/templates/getgitcoin.html:35 retail/templates/getgitcoin.html:54
+#: retail/templates/getgitcoin.html:61 retail/templates/getgitcoin.html:80
+msgid "or"
+msgstr ""
+
+#: dashboard/templates/dashboard.html:62
+msgid ""
+"<a href=\"#\" class=\"save_search\">save search</a>\n"
+"                to be notified when results do appear."
+msgstr ""
+
+#: dashboard/templates/fulfill_bounty.html:41
+#: dashboard/templates/fulfill_bounty.html:61
+#: dashboard/templates/shared/bounty_nav.html:41 dashboard/views.py:472
+msgid "Submit Work"
+msgstr ""
+
+#: dashboard/templates/fulfill_bounty.html:47
+#: dashboard/templates/kill_bounty.html:47
+#: dashboard/templates/submit_bounty.html:50
+msgid "Issue URL"
+msgstr ""
+
+#: dashboard/templates/fulfill_bounty.html:56
+#: dashboard/templates/kill_bounty.html:53
+#: dashboard/templates/process_bounty.html:58
+#: dashboard/templates/submit_bounty.html:136
+#, python-format
+msgid ""
+"I have read, understand, and agree to, the <a href=\"%(termsurl)s\" target="
+"\"_blank\" rel=\"noopener noreferrer\">Terms of Service</a>:"
+msgstr ""
+
+#: dashboard/templates/fulfill_bounty.html:63
+#: dashboard/templates/submit_bounty.html:143
+msgid "Having trouble?  Click here."
+msgstr ""
+
+#: dashboard/templates/ios.html:31 dashboard/templates/ios.html:50
+msgid "One Swipe Away From Your Next Bounty."
+msgstr ""
+
+#: dashboard/templates/ios.html:37 dashboard/templates/ios.html:55
+msgid "Browse funded work in open source software from anywhere, at anytime."
+msgstr ""
+
+#: dashboard/templates/ios.html:76
+msgid "It's Easy As"
+msgstr ""
+
+#: dashboard/templates/ios.html:89
+msgid "Sync"
+msgstr ""
+
+#: dashboard/templates/ios.html:91
+msgid "Sync your github profile with the gitcoin app."
+msgstr ""
+
+#: dashboard/templates/ios.html:104
+msgid "Swipe"
+msgstr ""
+
+#: dashboard/templates/ios.html:106
+msgid "Swipe through funded work in open source software."
+msgstr ""
+
+#: dashboard/templates/ios.html:119
+msgid "Match"
+msgstr ""
+
+#: dashboard/templates/ios.html:121
+msgid ""
+"The app will intro (via e-mail) you to the repository owners with whom "
+"you've matched with"
+msgstr ""
+
+#: dashboard/templates/ios.html:134
+msgid "Get it now."
+msgstr ""
+
+#: dashboard/templates/kill_bounty.html:40
+msgid "Cancel Bounty and Reclaim Funds"
+msgstr ""
+
+#: dashboard/templates/kill_bounty.html:41
+msgid "(Issue Submitters only)"
+msgstr ""
+
+#: dashboard/templates/kill_bounty.html:58 dashboard/views.py:517
+msgid "Kill Bounty"
+msgstr ""
+
+#: dashboard/templates/process_bounty.html:42
+msgid "Accept Bounty Fulfillment"
+msgstr ""
+
+#: dashboard/templates/process_bounty.html:47
+msgid "Issue URL:"
+msgstr ""
+
+#: dashboard/templates/process_bounty.html:51
+msgid "Bounty Submission:"
+msgstr ""
+
+#: dashboard/templates/process_bounty.html:53
+msgid "Submission"
+msgstr ""
+
+#: dashboard/templates/process_bounty.html:63
+msgid "Accept"
+msgstr ""
+
+#: dashboard/templates/process_bounty.html:67
+msgid "Having trouble? Click here."
+msgstr ""
+
+#: dashboard/templates/profile_details.html:79
+#, python-format
+msgid "%(profile.handle)s has received these tips"
+msgstr ""
+
+#: dashboard/templates/profile_details.html:82
+msgid "No tips found"
+msgstr ""
+
+#: dashboard/templates/profile_details.html:89
+msgid "From"
+msgstr ""
+
+#: dashboard/templates/profile_details.html:92
+msgid "Related Issue"
+msgstr ""
+
+#: dashboard/templates/profile_details.html:95
+#: dashboard/templates/profile_details.html:156 dashboard/views.py:924
+#: dashboard/views.py:939 dashboard/views.py:957 dashboard/views.py:966
+#: dashboard/views.py:975 dashboard/views.py:984 dashboard/views.py:993
+#: dashboard/views.py:1002 dashboard/views.py:1018 dashboard/views.py:1027
+msgid "Details"
+msgstr ""
+
+#: dashboard/templates/profile_details.html:106
+msgid "Unknown"
+msgstr ""
+
+#: dashboard/templates/profile_details.html:140
+#, python-format
+msgid "%(profile.handle)s has Participated in these Funded Issues"
+msgstr ""
+
+#: dashboard/templates/profile_details.html:144
+msgid "No funded issues found"
+msgstr ""
+
+#: dashboard/templates/profile_details.html:150
+msgid "Relationship"
+msgstr ""
+
+#: dashboard/templates/profile_details.html:153
+#: retail/templates/emails/bounty.html:120
+msgid "Status"
+msgstr ""
+
+#: dashboard/templates/profile_details.html:165
+#: dashboard/templates/profile_details.html:171
+msgid "Worker"
+msgstr ""
+
+#: dashboard/templates/profile_details.html:169
+msgid "Repo Owner"
+msgstr ""
+
+#: dashboard/templates/profile_details.html:209
+#, python-format
+msgid "%(r.stargazers_count)s stars"
+msgstr ""
+
+#: dashboard/templates/profile_details.html:220
+msgid "No repos"
+msgstr ""
+
+#: dashboard/templates/shared/bounty_def.html:24 dashboard/views.py:461
+#: dashboard/views.py:550 dashboard/views.py:631
+#: retail/templates/index.html:158 retail/templates/save_search.html:29
+msgid "Be the first to know about new funded issues."
+msgstr ""
+
+#: dashboard/templates/shared/bounty_nav.html:23
+#: dashboard/templates/shared/sidebar_search.html:28
+#: dashboard/templates/shared/status_tooltip.html:24
+msgid "Open"
+msgstr ""
+
+#: dashboard/templates/shared/bounty_nav.html:25
+msgid "Create Work"
+msgstr ""
+
+#: dashboard/templates/shared/bounty_nav.html:33
+msgid "Start Work"
+msgstr ""
+
+#: dashboard/templates/shared/bounty_nav.html:47
+#: dashboard/templates/shared/sidebar_search.html:43
+#: dashboard/templates/shared/status_tooltip.html:42
+msgid "Work Done"
+msgstr ""
+
+#: dashboard/templates/shared/bounty_nav.html:49
+msgid "Accept Work"
+msgstr ""
+
+#: dashboard/templates/shared/github_username.html:19
+msgid "Github Username"
+msgstr ""
+
+#: dashboard/templates/shared/github_username.html:21
+#: dashboard/templates/shared/nav_auth.html:68
+#: faucet/templates/faucet_form.html:60
+msgid "Login"
+msgstr ""
+
+#: dashboard/templates/shared/metamask_estimate.html:20
+msgid "Warning: the ethereum network is quite congested at the moment."
+msgstr ""
+
+#: dashboard/templates/shared/metamask_estimate.html:20
+#: retail/templates/admin/index.html:74
+msgid "Stats"
+msgstr ""
+
+#: dashboard/templates/shared/metamask_estimate.html:22
+msgid ""
+"The following MetaMask settings should give a <span id=\"confTime\">5</span> "
+"min confirmation for <span id=\"ethAmount\">unknown</span> ETH (<span id="
+"\"usdAmount\">unknown</span> USD)"
+msgstr ""
+
+#: dashboard/templates/shared/metamask_estimate.html:22
+msgid "view graph"
+msgstr ""
+
+#: dashboard/templates/shared/metamask_estimate.html:26
+msgid "Gas Limit (units)"
+msgstr ""
+
+#: dashboard/templates/shared/metamask_estimate.html:30
+msgid "Gas Price (gwei)"
+msgstr ""
+
+#: dashboard/templates/shared/metamask_estimate.html:34
+#: retail/templates/shared/footer.html:30 retail/templates/shared/nav.html:42
+#: retail/views.py:374
+msgid "Help"
+msgstr "Pomoc"
+
+#: dashboard/templates/shared/metamask_estimate.html:37
+msgid "Why do I need metamask / gas?"
+msgstr ""
+
+#: dashboard/templates/shared/metamask_estimate.html:40
+msgid "What gas price should I use?"
+msgstr ""
+
+#: dashboard/templates/shared/metamask_estimate.html:43
+msgid "What are current network condtions?"
+msgstr ""
+
+#: dashboard/templates/shared/name.html:19
+msgid "Full Name"
+msgstr ""
+
+#: dashboard/templates/shared/nav_auth.html:28
+#: dashboard/templates/yge/base.html:57 dashboard/templates/yge/send1.html:37
+#: dashboard/views.py:68 dashboard/views.py:406
+msgid "Send Tip"
+msgstr ""
+
+#: dashboard/templates/shared/nav_auth.html:32
+#: dashboard/templates/submit_bounty.html:141
+#: retail/templates/getgitcoin.html:50
+msgid "Fund Issue"
+msgstr ""
+
+#: dashboard/templates/shared/nav_auth.html:37 retail/templates/about.html:292
+#: retail/templates/about.html:312 retail/templates/index.html:151
+#: retail/templates/index.html:310 retail/templates/shared/nav.html:46
+#: retail/views.py:383
+msgid "Get Started"
+msgstr ""
+
+#: dashboard/templates/shared/nav_auth.html:43
+msgid "View Profile"
+msgstr ""
+
+#: dashboard/templates/shared/nav_auth.html:47 marketing/views.py:461
+msgid "Email Settings"
+msgstr ""
+
+#: dashboard/templates/shared/nav_auth.html:54
+#, python-format
+msgid "Claim $%(tip.value_in_usdt)s Tip "
+msgstr ""
+
+#: dashboard/templates/shared/nav_auth.html:61
+msgid "Log Out"
+msgstr ""
+
+#: dashboard/templates/shared/network_status.html:20
+#: faucet/templates/shared/faucet_network_status.html:22
+msgid "Enabled"
+msgstr ""
+
+#: dashboard/templates/shared/network_status.html:22
+msgid "Available"
+msgstr ""
+
+#: dashboard/templates/shared/newsletter.html:28
+msgid "Join Our Newsletter !"
+msgstr ""
+
+#: dashboard/templates/shared/newsletter.html:31
+msgid "Emails once a week max, & we never sell your data"
+msgstr ""
+
+#: dashboard/templates/shared/no_metamask_error.html:22
+#: faucet/templates/shared/faucet_no_metamask_error.html:25
+msgid "To continue, enable Web3."
+msgstr ""
+
+#: dashboard/templates/shared/no_metamask_error.html:24
+#: faucet/templates/shared/faucet_no_metamask_error.html:27
+msgid ""
+"Web3 is the same web you know and love, but with Ethereum-enabled "
+"functionality."
+msgstr ""
+
+#: dashboard/templates/shared/no_metamask_error.html:27
+msgid ""
+"The fastest and easiest way to add Web3 to your browser is to install <a "
+"target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?"
+"utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>. To continue "
+"submitting a bounty, please install Metamask and return to this page."
+msgstr ""
+
+#: dashboard/templates/shared/no_metamask_error.html:30
+#: faucet/templates/shared/faucet_no_metamask_error.html:33
+msgid "Install MetaMask"
+msgstr ""
+
+#: dashboard/templates/shared/no_metamask_error.html:34
+#: dashboard/templates/shared/unlock_metamask.html:31
+#: dashboard/templates/shared/zero_balance_error.html:37
+#: faucet/templates/shared/faucet_no_metamask_error.html:37
+msgid "Can't get web3 to work?  Get help here."
+msgstr ""
+
+#: dashboard/templates/shared/notification_email.html:19
+msgid "Notification Email"
+msgstr ""
+
+#: dashboard/templates/shared/search_bar.html:26
+msgid "Search"
+msgstr ""
+
+#: dashboard/templates/shared/search_bar.html:29
+msgid "SORT"
+msgstr ""
+
+#: dashboard/templates/shared/search_bar.html:30 external_bounties/views.py:57
+msgid "Created"
+msgstr ""
+
+#: dashboard/templates/shared/search_bar.html:31 external_bounties/views.py:59
+msgid "Value"
+msgstr ""
+
+#: dashboard/templates/shared/search_bar.html:39
+#: retail/templates/save_search.html:41
+msgid "Save Search"
+msgstr ""
+
+#: dashboard/templates/shared/send_tip_nav.html:23
+msgid "Sent"
+msgstr ""
+
+#: dashboard/templates/shared/send_tip_nav.html:25
+#: dashboard/templates/yge/send2.html:103
+msgid "Send"
+msgstr ""
+
+#: dashboard/templates/shared/send_tip_nav.html:31
+msgid "Fulfilled"
+msgstr ""
+
+#: dashboard/templates/shared/send_tip_nav.html:33
+msgid "Fulfill"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_profile.html:21
+msgid "Edit Profile"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_profile.html:23
+msgid "Change Picture"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_profile.html:24
+msgid "Change Name"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_profile.html:25
+msgid "Change Expertise"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_profile.html:29
+msgid "Browse Other Users"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_profile.html:31
+msgid "By Location"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_profile.html:32
+msgid "By Language"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_profile.html:37
+msgid "CLEAR FIELDS"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:23
+msgid "PROJECT STATUS"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:48
+#: dashboard/templates/shared/status_tooltip.html:51
+msgid "Expired"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:53
+msgid "Cancelled"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:58
+#: dashboard/templates/shared/sidebar_search.html:115
+#: dashboard/templates/shared/sidebar_search.html:156
+#: dashboard/templates/shared/sidebar_search.html:190
+#: dashboard/templates/shared/sidebar_search.html:231
+msgid "Any"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:65
+msgid "MY PROJECTS"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:69
+msgid "Created By Me"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:73
+msgid "Started By Me"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:77
+msgid "Fulfilled By Me"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:81
+#: retail/templates/stats.html:31
+msgid "All"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:94
+#: dashboard/templates/submit_bounty.html:108
+msgid "Beginner"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:101
+#: dashboard/templates/submit_bounty.html:109
+msgid "Intermediate"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:108
+#: dashboard/templates/submit_bounty.html:110
+#: dashboard/templates/yge/send2.html:56 dashboard/views.py:788
+msgid "Advanced"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:122
+#: dashboard/templates/submit_bounty.html:115
+msgid "Project Length"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:128
+#: dashboard/templates/submit_bounty.html:116
+msgid "Hours"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:135
+#: dashboard/templates/submit_bounty.html:117
+msgid "Days"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:142
+#: dashboard/templates/submit_bounty.html:118
+msgid "Weeks"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:149
+#: dashboard/templates/submit_bounty.html:119
+msgid "Months"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:163
+msgid "Type"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:169
+#: dashboard/templates/submit_bounty.html:125
+msgid "Bug"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:176
+#: dashboard/templates/submit_bounty.html:126
+msgid "Feature"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:183
+#: dashboard/templates/submit_bounty.html:127
+msgid "Security"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:197
+msgid "Network"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:203
+msgid "Custom"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:210
+msgid "Ropsten"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:217
+msgid "Rinkeby"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:224
+msgid "Mainnet"
+msgstr ""
+
+#: dashboard/templates/shared/sidebar_search.html:238
+msgid "Reset"
+msgstr ""
+
+#: dashboard/templates/shared/status_tooltip.html:19
+msgid "Possible Status"
+msgstr ""
+
+#: dashboard/templates/shared/status_tooltip.html:24
+msgid "A funded bounty is available for anyone to work on."
+msgstr ""
+
+#: dashboard/templates/shared/status_tooltip.html:30
+msgid "Work has been started by at least one person."
+msgstr ""
+
+#: dashboard/templates/shared/status_tooltip.html:36
+msgid "Completed work has been submitted by for review."
+msgstr ""
+
+#: dashboard/templates/shared/status_tooltip.html:42
+msgid "The submitted project has been accepted and the funds have been paid."
+msgstr ""
+
+#: dashboard/templates/shared/status_tooltip.html:46
+msgid "Cancellation Status"
+msgstr ""
+
+#: dashboard/templates/shared/status_tooltip.html:51
+msgid "Work was not completed by the expiration date."
+msgstr ""
+
+#: dashboard/templates/shared/status_tooltip.html:57
+msgid "Canceled"
+msgstr ""
+
+#: dashboard/templates/shared/status_tooltip.html:57
+msgid "A funded bounty was  cancelled by the owner of the project"
+msgstr ""
+
+#: dashboard/templates/shared/unlock_metamask.html:22
+#: dashboard/templates/shared/zero_balance_error.html:22
+#: faucet/templates/shared/faucet_unlock_metamask.html:25
+msgid "You're almost there!"
+msgstr ""
+
+#: dashboard/templates/shared/unlock_metamask.html:24
+#: faucet/templates/shared/faucet_unlock_metamask.html:27
+msgid "In order to continue, you'll need to unlock metamask."
+msgstr ""
+
+#: dashboard/templates/shared/unlock_metamask.html:27
+#: faucet/templates/shared/faucet_unlock_metamask.html:30
+msgid "Please unlock Metamask and refresh the page."
+msgstr ""
+
+#: dashboard/templates/shared/zero_balance_error.html:24
+msgid "In order to continue, you'll need some Ether."
+msgstr ""
+
+#: dashboard/templates/shared/zero_balance_error.html:27
+msgid ""
+"'Ether' is a digital asset that can be used to pay for the computational "
+"resources needed to run an application or program. In this case, Gitcoin."
+msgstr ""
+
+#: dashboard/templates/shared/zero_balance_error.html:30
+msgid ""
+"The easiest way to get Ether is to purchase it via an exchange. To view a "
+"list of exchanges where you can purchase Ether, click below:"
+msgstr ""
+
+#: dashboard/templates/shared/zero_balance_error.html:33
+msgid "View Exchanges"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:45
+msgid "Fund an Issue"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:54
+#: retail/templates/emails/bounty.html:104
+msgid "Amount"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:72
+msgid "Issue Title"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:76
+msgid "Issue Description"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:80
+#: retail/templates/emails/bounty.html:78
+msgid "Keywords"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:84
+msgid "Expires in"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:87
+msgid "1 day"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:88
+msgid "3 days"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:89
+msgid "1 week"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:90
+msgid "2 weeks"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:91
+msgid "1 month"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:92
+msgid "3 months"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:93
+msgid "6 months"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:94
+msgid "1 year"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:95
+#: dashboard/templates/yge/send2.html:86
+msgid "Never"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:101 dashboard/views.py:543
+msgid "Issue Details"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:124
+msgid "Bounty Type"
+msgstr ""
+
+#: dashboard/templates/submit_bounty.html:128
+#: retail/templates/whitepaper_new.html:127
+msgid "Other"
+msgstr ""
+
+#: dashboard/templates/toolbox.html:37 dashboard/views.py:1054
+msgid "Toolbox"
+msgstr ""
+
+#: dashboard/templates/toolbox.html:38
+msgid "Make Gitcoin your own by enabling the tools that suit your needs."
+msgstr ""
+
+#: dashboard/templates/toolbox.html:47
+msgid "Table of Contents"
+msgstr "Zestawiene"
+
+#: dashboard/templates/yge/receive.html:46
+#: dashboard/templates/yge/redeem_coin.html:45
+msgid "Loading"
+msgstr ""
+
+#: dashboard/templates/yge/receive.html:48
+#: dashboard/templates/yge/redeem_coin.html:47
+msgid "waiting for web3..."
+msgstr ""
+
+#: dashboard/templates/yge/receive.html:51
+msgid "You've Got ETH!"
+msgstr ""
+
+#: dashboard/templates/yge/receive.html:52
+#: dashboard/templates/yge/redeem_coin.html:51
+msgid "To claim it, please install MetaMask and refresh the page."
+msgstr ""
+
+#: dashboard/templates/yge/receive.html:53
+#: dashboard/templates/yge/redeem_coin.html:52
+msgid "Install Metamask"
+msgstr ""
+
+#: dashboard/templates/yge/receive.html:56
+#: dashboard/templates/yge/redeem_coin.html:55
+msgid "What is Metamask?"
+msgstr ""
+
+#: dashboard/templates/yge/receive.html:60
+msgid "Receive Ethereum Now."
+msgstr ""
+
+#: dashboard/templates/yge/receive.html:68
+msgid "Forward it to a permanent address:"
+msgstr ""
+
+#: dashboard/templates/yge/receive.html:74
+#: dashboard/templates/yge/redeem_coin.html:67
+msgid "Claim"
+msgstr ""
+
+#: dashboard/templates/yge/receive.html:74 retail/templates/getgitcoin.html:57
+msgid "Tip"
+msgstr ""
+
+#: dashboard/templates/yge/receive.html:79
+#: dashboard/templates/yge/redeem_coin.html:72
+msgid "Congrats!"
+msgstr ""
+
+#: dashboard/templates/yge/receive.html:80
+msgid "You've received Ethereum via transaction <span id=\"trans_id\"></span>."
+msgstr ""
+
+#: dashboard/templates/yge/redeem_coin.html:50
+#: dashboard/templates/yge/redeem_coin.html:59
+msgid "You've got 1 COLO!"
+msgstr ""
+
+#: dashboard/templates/yge/redeem_coin.html:61
+msgid "Enter a forwarding address"
+msgstr ""
+
+#: dashboard/templates/yge/redeem_coin.html:73
+msgid "You've redeemed 1 COLO."
+msgstr ""
+
+#: dashboard/templates/yge/send1.html:38
+msgid "It's Fast.  It's Easy.  It's Free.️"
+msgstr ""
+
+#: dashboard/templates/yge/send1.html:39
+msgid "Supports any github username or email address"
+msgstr ""
+
+#: dashboard/templates/yge/send1.html:42
+msgid "receipient"
+msgstr ""
+
+#: dashboard/templates/yge/send1.html:43 dashboard/templates/yge/send1.html:44
+#: dashboard/templates/yge/send1.html:45 dashboard/templates/yge/send1.html:46
+msgid "receipients"
+msgstr ""
+
+#: dashboard/templates/yge/send1.html:49
+msgid "Send Ether"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:41
+msgid "Send Tip."
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:44
+msgid "Amount of"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:52
+msgid "To Github Username"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:60
+msgid "Related Github Issue URL"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:60 dashboard/templates/yge/send2.html:64
+#: dashboard/templates/yge/send2.html:68 dashboard/templates/yge/send2.html:72
+#: dashboard/templates/yge/send2.html:90 dashboard/templates/yge/send2.html:94
+msgid "optional"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:64
+msgid "To Email address"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:68
+msgid "From Name"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:72
+msgid "From Email"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:76
+#: retail/templates/emails/bounty.html:156
+msgid "Expires"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:78 marketing/mails.py:248
+msgid "day"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:79
+msgid "days"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:80
+msgid "week"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:81
+msgid "weeks"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:82
+msgid "month"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:83 dashboard/templates/yge/send2.html:84
+msgid "months"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:85
+msgid "year"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:90
+msgid "Private Comments"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:94
+msgid "Public Comments"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:101
+msgid ""
+"I understand &amp; agree to the <a href=\"https://gitcoin.co/terms\">terms "
+"of service</a>."
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:106
+msgid "Woo hoo!"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:107
+msgid ""
+"Your <span id=\"tokenName\">ETH</span> has been sent <a href=\"\" target="
+"\"_blank\" rel=\"noopener noreferrer\" id=\"trans_link\">to the blockchain</"
+"a>."
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:109
+msgid "The transaction is still pending."
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:109
+msgid "This page will auto-update when the transaction is confirmed"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:109
+msgid "but you can close the browser window if you want"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:114
+msgid "<span id=\"new_username\"></span> has been notified"
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:115
+msgid "with instructions about how to receive their tip."
+msgstr ""
+
+#: dashboard/templates/yge/send2.html:117
+msgid "Start Over"
+msgstr ""
+
+#: dashboard/views.py:130 dashboard/views.py:192
+msgid "You must be authenticated via github to use this feature!"
+msgstr ""
+
+#: dashboard/views.py:151 dashboard/views.py:165
+msgid "You have already expressed interest in this bounty!"
+msgstr ""
+
+#: dashboard/views.py:210
+msgid "You haven't expressed interest on this bounty."
+msgstr ""
+
+#: dashboard/views.py:291
+msgid "Tip has been received"
+msgstr ""
+
+#: dashboard/views.py:317
+msgid "Receive Tip"
+msgstr ""
+
+#: dashboard/views.py:346
+msgid "Notification has been sent"
+msgstr ""
+
+#: dashboard/views.py:399
+msgid ""
+"Uh oh! No email addresses for this user were found via Github API.  Youll "
+"have to let the tipee know manually about their tip."
+msgstr ""
+
+#: dashboard/views.py:421
+msgid "Process Issue"
+msgstr ""
+
+#: dashboard/views.py:434 dashboard/views.py:759
+#: retail/templates/shared/footer.html:26 retail/templates/shared/nav.html:38
+msgid "Issue Explorer"
+msgstr "Przeglądarka zgłoszeń"
+
+#: dashboard/views.py:455
+msgid "Create Funded Issue"
+msgstr ""
+
+#: dashboard/views.py:489
+msgid "Increase Bounty"
+msgstr ""
+
+#: dashboard/views.py:544
+msgid "Funded Issue Details | Gitcoin"
+msgstr ""
+
+#: dashboard/views.py:629
+msgid "Profile"
+msgstr ""
+
+#: dashboard/views.py:757 dashboard/views.py:1057
+msgid "Accelerate your dev workflow with Gitcoin's incentivization tools."
+msgstr ""
+
+#: dashboard/views.py:761
+msgid ""
+"A searchable index of all of the funded work available in\n"
+"                            the system."
+msgstr ""
+
+#: dashboard/views.py:764 dashboard/views.py:773 dashboard/views.py:782
+#: dashboard/views.py:796 dashboard/views.py:804 dashboard/views.py:819
+#: dashboard/views.py:829 dashboard/views.py:843 dashboard/views.py:853
+#: dashboard/views.py:879 dashboard/views.py:888 dashboard/views.py:897
+#: dashboard/views.py:906 dashboard/views.py:915 dashboard/views.py:1041
+msgid "Try It"
+msgstr ""
+
+#: dashboard/views.py:768
+msgid "Fund Work"
+msgstr ""
+
+#: dashboard/views.py:770
+msgid ""
+"Got work that needs doing?  Create an issue and offer a bounty to get folks\n"
+"                            working on it."
+msgstr ""
+
+#: dashboard/views.py:777
+msgid "Tips"
+msgstr ""
+
+#: dashboard/views.py:779
+msgid ""
+"Leave a tip to thank someone for\n"
+"                        helping out."
+msgstr ""
+
+#: dashboard/views.py:789
+msgid "Take your OSS game to the next level!"
+msgstr ""
+
+#: dashboard/views.py:791
+msgid "Chrome Browser Extension"
+msgstr ""
+
+#: dashboard/views.py:793
+msgid ""
+"Browse Gitcoin where you already work.\n"
+"                    On Github"
+msgstr ""
+
+#: dashboard/views.py:802
+msgid "Chat Interface available on Github"
+msgstr ""
+
+#: dashboard/views.py:810
+msgid "Community"
+msgstr ""
+
+#: dashboard/views.py:811
+msgid "Friendship, mentorship, and community are all part of the process."
+msgstr ""
+
+#: dashboard/views.py:814
+msgid "Slack Community"
+msgstr ""
+
+#: dashboard/views.py:816
+msgid ""
+"Questions / Discussion / Just say hi ? Swing by\n"
+"                                our slack channel."
+msgstr ""
+
+#: dashboard/views.py:824
+msgid "Gitter Community"
+msgstr ""
+
+#: dashboard/views.py:826
+msgid ""
+"The gitter channel is less active than slack, but\n"
+"                is still a good place to ask questions."
+msgstr ""
+
+#: dashboard/views.py:835
+msgid "Tools to BUIDL Gitcoin"
+msgstr ""
+
+#: dashboard/views.py:836
+msgid "Gitcoin is built using Gitcoin.  Purdy cool, huh? "
+msgstr ""
+
+#: dashboard/views.py:838
+msgid "Github Repos"
+msgstr ""
+
+#: dashboard/views.py:840
+msgid ""
+"All of our development is open source, and managed\n"
+"              via Github."
+msgstr ""
+
+#: dashboard/views.py:848
+msgid "API"
+msgstr ""
+
+#: dashboard/views.py:850
+msgid ""
+"Gitcoin provides a simple HTTPS API to access data\n"
+"                            without having to run your own Ethereum node."
+msgstr ""
+
+#: dashboard/views.py:859
+msgid "BUIDL your own"
+msgstr ""
+
+#: dashboard/views.py:861
+msgid ""
+"Dogfood.. Yum! Gitcoin is built using Gitcoin.\n"
+"                Got something you want to see in the world? Let the "
+"community know\n"
+"                <a href=\"/slack\">on slack</a>\n"
+"                or <a href=\"https://github.com/gitcoinco/gitcoinco/issues/"
+"new\">our github repos</a>\n"
+"                ."
+msgstr ""
+
+#: dashboard/views.py:871
+msgid "Tools in Alpha"
+msgstr ""
+
+#: dashboard/views.py:872
+msgid "These fresh new tools are looking for someone to test ride them!"
+msgstr ""
+
+#: dashboard/views.py:874
+msgid "Leaderboard"
+msgstr ""
+
+#: dashboard/views.py:876
+msgid ""
+"Check out who is topping the charts in\n"
+"                the Gitcoin community this month."
+msgstr ""
+
+#: dashboard/views.py:884
+msgid "Profiles"
+msgstr ""
+
+#: dashboard/views.py:886
+msgid ""
+"Browse the work that you've done, and how your OSS repuation is growing. "
+msgstr ""
+
+#: dashboard/views.py:893
+msgid "ETH Tx Time Predictor"
+msgstr ""
+
+#: dashboard/views.py:895
+msgid ""
+"Estimate Tradeoffs between Ethereum Network Tx Fees and Confirmation Times "
+msgstr ""
+
+#: dashboard/views.py:902
+msgid "Faucet"
+msgstr ""
+
+#: dashboard/views.py:904
+msgid "Get Mainnet ETH which can be used in Gitcoin or other dapps."
+msgstr ""
+
+#: dashboard/views.py:910
+msgid "Code Sponsor"
+msgstr ""
+
+#: dashboard/views.py:912
+msgid ""
+"CodeSponsor sustains open source\n"
+"                        by connecting sponsors with open source projects."
+msgstr ""
+
+#: dashboard/views.py:920 external_bounties/templates/external_bounties.html:23
+#: external_bounties/templates/external_bounties_show.html:30
+msgid "Bounties Universe"
+msgstr ""
+
+#: dashboard/views.py:922
+msgid "Bounties from around the internet"
+msgstr ""
+
+#: dashboard/views.py:930
+msgid "Tools Coming Soon"
+msgstr ""
+
+#: dashboard/views.py:931
+msgid ""
+"These tools will be ready soon.  They'll get here sooner if you help BUIDL "
+"them :)"
+msgstr ""
+
+#: dashboard/views.py:934
+msgid "iOS app"
+msgstr ""
+
+#: dashboard/views.py:936
+msgid ""
+"Gitcoin has an iOS app in alpha. Install it to\n"
+"                    browse funded work on-the-go."
+msgstr ""
+
+#: dashboard/views.py:944
+msgid "Firefox Browser Extension"
+msgstr ""
+
+#: dashboard/views.py:946
+msgid "Firefox version of our browser extension"
+msgstr ""
+
+#: dashboard/views.py:953
+msgid "Cold Outreach Email Generator"
+msgstr ""
+
+#: dashboard/views.py:955
+msgid "Disrupt recruiters with this recruitment tool"
+msgstr ""
+
+#: dashboard/views.py:962
+msgid "Mentorship Matcher"
+msgstr ""
+
+#: dashboard/views.py:964
+msgid "Matches Devs with Coaches"
+msgstr ""
+
+#: dashboard/views.py:971
+msgid "ETHAvatar"
+msgstr ""
+
+#: dashboard/views.py:973
+msgid "gravatar but for Ethereum addresses"
+msgstr ""
+
+#: dashboard/views.py:980
+msgid "Pitch Page"
+msgstr ""
+
+#: dashboard/views.py:982
+msgid "Matches Entrepeneurs to Coding Tasks"
+msgstr ""
+
+#: dashboard/views.py:989
+msgid "Job Board"
+msgstr ""
+
+#: dashboard/views.py:991
+msgid "What it sounds like!"
+msgstr ""
+
+#: dashboard/views.py:1000
+msgid "Make it easy for friends to find you on ENS"
+msgstr ""
+
+#: dashboard/views.py:1007
+msgid "Top Secret Project 001"
+msgstr ""
+
+#: dashboard/views.py:1009
+msgid "We can't talk about what it is yet :) "
+msgstr ""
+
+#: dashboard/views.py:1014
+msgid "Web3 Coding School"
+msgstr ""
+
+#: dashboard/views.py:1016
+msgid "Onboard developers from web2 to web3 with these coding challenges "
+msgstr ""
+
+#: dashboard/views.py:1023
+msgid "Cold Outreach"
+msgstr ""
+
+#: dashboard/views.py:1025
+msgid "Cold Outreach emails that don't stink "
+msgstr ""
+
+#: dashboard/views.py:1033
+msgid "Just for Fun"
+msgstr ""
+
+#: dashboard/views.py:1034
+msgid "Some tools that the community built *just because* they should exist."
+msgstr ""
+
+#: dashboard/views.py:1036
+msgid "Ethwallpaper"
+msgstr ""
+
+#: dashboard/views.py:1038
+msgid ""
+"Repository of\n"
+"                        Ethereum wallpapers."
+msgstr ""
+
+#: dashboard/views.py:1055
+msgid "Gitcoin Toolbox"
+msgstr ""
+
+#: dashboard/views.py:1059
+msgid "Don't Miss New Tools!"
+msgstr ""
+
+#: dashboard/views.py:1107
+msgid "Bad request"
+msgstr ""
+
+#: dashboard/views.py:1125
+msgid "Coin Redemption"
+msgstr ""
+
+#: dashboard/views.py:1126
+msgid "PENDING"
+msgstr ""
+
+#: dashboard/views.py:1133
+msgid "INITIAL"
+msgstr ""
+
+#: external_bounties/models.py:36
+msgid "Where to send interested parties"
+msgstr ""
+
+#: external_bounties/models.py:39
+msgid "Plainext only please!"
+msgstr ""
+
+#: external_bounties/models.py:40
+msgid "The upstream project being linked it.."
+msgstr ""
+
+#: external_bounties/models.py:45
+msgid "comma delimited"
+msgstr ""
+
+#: external_bounties/models.py:47
+msgid ""
+"string representation of the payout (only needed it amount/denomination "
+"cannot be filled out"
+msgstr ""
+
+#: external_bounties/templates/external_bounties.html:23
+#: external_bounties/templates/external_bounties_show.html:30
+#: faucet/templates/faucet_form.html:41 retail/templates/gas.html:65
+msgid "Alpha"
+msgstr ""
+
+#: external_bounties/templates/external_bounties.html:30
+msgid "View API"
+msgstr ""
+
+#: external_bounties/templates/external_bounties.html:43
+msgid "Sort by"
+msgstr ""
+
+#: external_bounties/templates/external_bounties.html:44
+msgid "Oldest"
+msgstr ""
+
+#: external_bounties/templates/external_bounties.html:45
+msgid "Newest"
+msgstr ""
+
+#: external_bounties/templates/external_bounties.html:46
+msgid "Highest Value"
+msgstr ""
+
+#: external_bounties/templates/external_bounties.html:47
+msgid "Lowest Value"
+msgstr ""
+
+#: external_bounties/templates/external_bounties.html:54
+msgid "Categories"
+msgstr ""
+
+#: external_bounties/templates/external_bounties.html:66
+msgid "Post New"
+msgstr ""
+
+#: external_bounties/templates/external_bounties.html:136
+msgid "first"
+msgstr ""
+
+#: external_bounties/templates/external_bounties.html:137
+msgid "previous"
+msgstr ""
+
+#: external_bounties/templates/external_bounties.html:141
+#, python-format
+msgid ""
+"Page %(bounties_paginator.number)s of "
+"%(bounties_paginator.paginator.num_pages)s."
+msgstr ""
+
+#: external_bounties/templates/external_bounties.html:145
+msgid "next"
+msgstr ""
+
+#: external_bounties/templates/external_bounties.html:146
+msgid "last"
+msgstr ""
+
+#: external_bounties/templates/external_bounties_new.html:28
+#: external_bounties/views.py:135
+msgid "New Universal Bounty"
+msgstr ""
+
+#: external_bounties/templates/external_bounties_new.html:42
+#: external_bounties/templates/external_bounties_show.html:81
+msgid "Go Back"
+msgstr ""
+
+#: external_bounties/templates/external_bounties_show.html:45
+msgid "created"
+msgstr ""
+
+#: external_bounties/templates/external_bounties_show.html:47
+msgid "source"
+msgstr ""
+
+#: external_bounties/templates/external_bounties_show.html:51
+msgid "View Bounty"
+msgstr ""
+
+#: external_bounties/templates/external_bounties_show.html:55
+msgid "Funding"
+msgstr ""
+
+#: external_bounties/views.py:112 external_bounties/views.py:186
+msgid "Bounty Universe Explorer"
+msgstr ""
+
+#: external_bounties/views.py:113
+msgid "Bounties for Software Work from across the internets."
+msgstr ""
+
+#: external_bounties/views.py:136
+msgid "Create a new Bounty for Software Work from across the internets."
+msgstr ""
+
+#: external_bounties/views.py:145
+msgid "An email has been sent to an administrator to approve your submission"
+msgstr ""
+
+#: faucet/templates/faucet_form.html:41
+msgid "Faucet Request"
+msgstr ""
+
+#: faucet/templates/faucet_form.html:55
+msgid "Please note, all input fields are required. Comment is optional."
+msgstr ""
+
+#: faucet/templates/faucet_form.html:58
+#: faucet/templates/process_faucet_request.html:35
+msgid "Github Profile"
+msgstr ""
+
+#: faucet/templates/faucet_form.html:67
+msgid "Email Address"
+msgstr ""
+
+#: faucet/templates/faucet_form.html:72
+msgid "Comment"
+msgstr ""
+
+#: faucet/templates/faucet_form.html:72
+msgid "char left"
+msgstr ""
+
+#: faucet/templates/faucet_form.html:80
+msgid "Proceed"
+msgstr ""
+
+#: faucet/templates/faucet_form.html:85
+msgid "Request Received"
+msgstr ""
+
+#: faucet/templates/faucet_form.html:88
+msgid ""
+"You request for a faucet distribution has been received. An administrator "
+"will review your request shortly and arrange a deposit if approved."
+msgstr ""
+
+#: faucet/templates/faucet_form.html:93
+msgid "There was an error"
+msgstr ""
+
+#: faucet/templates/faucet_form.html:96
+msgid "Something went wrong submitting your request"
+msgstr ""
+
+#: faucet/templates/process_faucet_request.html:33
+msgid "Process Faucet Request"
+msgstr ""
+
+#: faucet/templates/process_faucet_request.html:38
+#: retail/templates/email_settings.html:78
+#: retail/templates/whitepaper_new.html:133
+msgid "Comments"
+msgstr ""
+
+#: faucet/templates/process_faucet_request.html:40
+msgid "MetaMask Extension Not Detected"
+msgstr ""
+
+#: faucet/templates/process_faucet_request.html:41
+msgid "Please Unlock MetaMask To Continue"
+msgstr ""
+
+#: faucet/templates/process_faucet_request.html:42
+msgid "MetaMask Active Account Is Empty"
+msgstr ""
+
+#: faucet/templates/process_faucet_request.html:47
+msgid "Transaction Failed"
+msgstr ""
+
+#: faucet/templates/process_faucet_request.html:51
+#, python-format
+msgid ""
+"By funding this faucet request, you will transfer %(faucet_amount)s ETH to\n"
+"    %(obj.github_username)s with a wallet address of %(obj.address)s"
+msgstr ""
+
+#: faucet/templates/process_faucet_request.html:70
+msgid ""
+"Please tell us what you're planning on using these funds for in the comments "
+"section!  Thanks."
+msgstr ""
+
+#: faucet/templates/shared/faucet_network_status.html:24
+msgid "About Zero"
+msgstr ""
+
+#: faucet/templates/shared/faucet_no_metamask_error.html:21
+#: faucet/templates/shared/faucet_unlock_metamask.html:21
+msgid "Apply for a faucet distribution"
+msgstr ""
+
+#: faucet/templates/shared/faucet_no_metamask_error.html:30
+msgid ""
+"The fastest and easiest way to add Web3 to your browser is to install <a "
+"href=\"https://chrome.google.com/webstore/detail/metamask/"
+"nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en\" target=\"_blank\" rel=\"noopener "
+"noreferrer\"> Metamask</a>. To continue submitting a bounty, please install "
+"Metamask and return to this page."
+msgstr ""
+
+#: faucet/templates/shared/faucet_over_balance_error.html:22
+msgid "You Appear to Have Ether!"
+msgstr ""
+
+#: faucet/templates/shared/faucet_over_balance_error.html:24
+msgid "Thank you for your interest in receiving a faucet distribution."
+msgstr ""
+
+#: faucet/templates/shared/faucet_over_balance_error.html:27
+msgid ""
+"You have more ether currently in your wallet than the distribution would "
+"provide. Please use that ether to pay the transaction cost."
+msgstr ""
+
+#: faucet/templates/shared/faucet_unlock_metamask.html:34
+msgid "Can't get web3 to work? Get help here."
+msgstr ""
+
+#: faucet/views.py:42
+msgid "Gitcoin Faucet"
+msgstr ""
+
+#: faucet/views.py:43
+msgid ""
+"Request a distribution of ETH so you can use the Ethereum network and "
+"Gitcoin."
+msgstr ""
+
+#: faucet/views.py:78
+msgid "The submitted github profile shows a previous faucet distribution."
+msgstr ""
+
+#: faucet/views.py:82
+msgid "The submitted github profile shows a pending faucet distribution."
+msgstr ""
+
+#: faucet/views.py:86
+msgid "The submitted github profile could not be found on github."
+msgstr ""
+
+#: faucet/views.py:100
+msgid "Created."
+msgstr ""
+
+#: gitcoinbot/views.py:63
+msgid "Gitcoinbot Responded"
+msgstr ""
+
+#: marketing/mails.py:54
+msgid "[DEBUG] "
+msgstr ""
+
+#: marketing/mails.py:103
+msgid "⚡️ New Tip Worth {} {} {}"
+msgstr ""
+
+#: marketing/mails.py:105
+msgid "🕐 Tip Worth {} {} {} Expiring Soon"
+msgstr ""
+
+#: marketing/mails.py:117
+msgid "New Faucet Request"
+msgstr ""
+
+#: marketing/mails.py:118
+msgid "A new faucet request was completed. You may fund the request here :"
+msgstr ""
+
+#: marketing/mails.py:119 marketing/mails.py:128
+msgid "No Reply from Gitcoin.co"
+msgstr ""
+
+#: marketing/mails.py:126
+msgid "New External Bounty"
+msgstr ""
+
+#: marketing/mails.py:133 retail/templates/emails/faucet_request.html:24
+msgid "Faucet Request Processed"
+msgstr ""
+
+#: marketing/mails.py:142
+msgid "Faucet Request Rejected"
+msgstr ""
+
+#: marketing/mails.py:156
+msgid "⚡️ New Funded Issue Match worth"
+msgstr ""
+
+#: marketing/mails.py:186
+msgid "✉️ New Work Submission Inside for {} ✉️"
+msgstr ""
+
+#: marketing/mails.py:200
+msgid "😕 Work Submission Rejected for {} 😕"
+msgstr ""
+
+#: marketing/mails.py:220
+msgid "🌈 Funds Paid for {} 🌈"
+msgstr ""
+
+#: marketing/mails.py:232
+msgid "⚡️ {} Meet {}: {}! "
+msgstr ""
+
+#: marketing/mails.py:251
+msgid "hour"
+msgstr ""
+
+#: marketing/mails.py:254
+msgid "😕 Your Funded Issue ({}) Expires In {} {} ... 😕"
+msgstr ""
+
+#: marketing/mails.py:269
+msgid "Are you still working on '{}' ? "
+msgstr ""
+
+#: marketing/mails.py:281
+msgid "We've removed you from the task: '{}' ? "
+msgstr ""
+
+#: marketing/views.py:436
+msgid "Invalid Email"
+msgstr ""
+
+#: marketing/views.py:440
+msgid "Invalid Level"
+msgstr ""
+
+#: marketing/views.py:489
+msgid "Top Payers"
+msgstr ""
+
+#: marketing/views.py:490
+msgid "Top Earners"
+msgstr ""
+
+#: retail/templates/about.html:30
+msgid "The Problem"
+msgstr ""
+
+#: retail/templates/about.html:31
+msgid "Incentive problems in Open Source Software."
+msgstr ""
+
+#: retail/templates/about.html:45
+msgid "The Solution"
+msgstr ""
+
+#: retail/templates/about.html:46
+msgid "A decentralized App for value creation &amp; value capture."
+msgstr ""
+
+#: retail/templates/about.html:60
+msgid "The Origin Story"
+msgstr ""
+
+#: retail/templates/about.html:61
+msgid "Who, what, when, where, and most importantly, why."
+msgstr ""
+
+#: retail/templates/about.html:67
+msgid "Built with &lt;3 in Boulder Colorado USA"
+msgstr ""
+
+#: retail/templates/about.html:69
+msgid ""
+"<strong>Gitcoin</strong> was borne of the community in Boulder Colorado's "
+"thriving tech scene. One of the most amazing things about the Boulder "
+"community is the #givefirst mantra. The founding team has built their "
+"careers off of advice, mentorship, and relationships in the local tech "
+"community."
+msgstr ""
+
+#: retail/templates/about.html:76
+msgid ""
+"The founder of Gitcoin, <a href=\"http://linkedin.com/in/owocki/\">Kevin "
+"Owocki</a> has experience as an organizer of <a href=\"http://"
+"boulderstartupweek.com\">Boulder Startup Week</a>, <a href=\"http://"
+"igniteboulder.com\">Ignite Boulder</a>, <a href=\"https://startupcto.io"
+"\">StartupCTO.io</a>, <a href=\"https://www.meetup.com/Boulder-Blockchain/"
+"\">Boulder Blockchain Meetup</a> and the open source projects <a href="
+"\"https://github.com/owocki/pytrader\">pytrader</a>, <a href=\"https://"
+"github.com/owocki/adblock-to-bitcoin\">adblock-to-bitcoin</a>, <a href="
+"\"https://github.com/youvegoteth/youvegoteth.github.io/\">YouveGotETH</a>, & "
+"<a href=\"https://github.com/owocki/coloradocoin\">ColoradoCoin</a>. The "
+"stronger the community is, the more successful open source projects are. The "
+"stronger open source projects are, the stronger the community is."
+msgstr ""
+
+#: retail/templates/about.html:83
+msgid "Cryptocurrencies provide new, decentralized, opportunities"
+msgstr ""
+
+#: retail/templates/about.html:85
+msgid ""
+"<strong>Gitcoin</strong> is built upon the Ethereum network, and the "
+"solidity smart contract programming language. Ethereum provides "
+"opportunities to align incentives across actors in the ecosystem. By "
+"programming rights of stakeholders directly into smart contracts, actors are "
+"incentivized to provide value, and edge cases are handled _without_ having "
+"to involve legacy legal enforcement mechanisms."
+msgstr ""
+
+#: retail/templates/about.html:90
+msgid "Goal: Grow Open Source"
+msgstr ""
+
+#: retail/templates/about.html:92
+msgid ""
+"<strong>Gitcoin</strong> is a project that combines the #givefirst mantra of "
+"the Boulder community with capitalistic incentives to write great software. "
+"By enabling <span>Repo Maintainers</span>, <span>developers</span>, and "
+"<span>financiers</span> to find one another, Gitcoin grows open source "
+"software."
+msgstr ""
+
+#: retail/templates/about.html:101
+msgid "Team"
+msgstr ""
+
+#: retail/templates/about.html:102
+msgid "Built By &amp; for Open Source Software Developers"
+msgstr ""
+
+#: retail/templates/about.html:112
+msgid "Founder"
+msgstr ""
+
+#: retail/templates/about.html:114
+msgid ""
+"<a href=\"http://linkedin.com/in/owocki/\">Kevin Owocki</a> has a BS in "
+"Computer Science, 15 years experience in Open Source Software and Technology "
+"Startups. He is a volunteer in the Boulder Community for several community "
+"organizations, and an avid open source developer. His work has been featured "
+"in <a href=\"http://techcrunch.com/2011/02/10/group-dating-startup-ignighter-"
+"s-3-million/\" >TechCrunch</a>, <a href=\"http://www.cnn.com/2011/"
+"BUSINESS/03/29/india.online.matchmaking/\" >CNN</a>, <a href=\"http://www."
+"inc.com/30under30/2011/profile-adam-sachs-kevin-owocki-and-dan-osit-founders-"
+"ignighter.html\" >Inc Magazine</a>, <a href=\"http://www.nytimes."
+"com/2011/02/20/business/20ignite.html?_r=4&amp;amp;pagewanted=1&amp;amp;"
+"ref=business\"  >The New York Times</a>, <a href=\"http://boingboing."
+"net/2011/09/24/tosamend-turn-all-online-i-agree-buttons-into-negotiations."
+"html\" >BoingBoing</a>, <a href=\"http://www.wired.com/2015/12/kevin-owocki-"
+"adblock-to-bitcoin/\"  >WIRED</a>, <a href=\"https://www.forbes.com/sites/"
+"amycastor/2017/08/31/toothpick-takes-top-prize-in-silicon-beach-ethereum-"
+"hackathon/#6bf23b7452ad\" >Forbes</a>, and <a href=\"http://www.techdigest."
+"tv/2007/08/super_mario_get_1.html\" >TechDigest</a>."
+msgstr ""
+
+#: retail/templates/about.html:120
+msgid "Post Launch (2017+)"
+msgstr ""
+
+#: retail/templates/about.html:130
+msgid "You?"
+msgstr ""
+
+#: retail/templates/about.html:131
+msgid ""
+"Want to build the future of open source?  <a href=\"#jobs\">We want to hear "
+"from you.</a>"
+msgstr ""
+
+#: retail/templates/about.html:135
+msgid "Pre Launch (Summer 2017)"
+msgstr ""
+
+#: retail/templates/about.html:141
+msgid "Design Team"
+msgstr ""
+
+#: retail/templates/about.html:147
+msgid "Video Team"
+msgstr ""
+
+#: retail/templates/about.html:153
+msgid "PR Team"
+msgstr ""
+
+#: retail/templates/about.html:162
+msgid "Join Us"
+msgstr ""
+
+#: retail/templates/about.html:163
+msgid "Want to Grow Open Source? We want to hear from you."
+msgstr ""
+
+#: retail/templates/about.html:169
+msgid "Open Gitcoin Roles"
+msgstr ""
+
+#: retail/templates/about.html:172
+msgid "Front End Developer"
+msgstr ""
+
+#: retail/templates/about.html:174 retail/templates/about.html:180
+#: retail/templates/about.html:189 retail/templates/about.html:195
+#: retail/templates/about.html:201 retail/templates/about.html:211
+#: retail/templates/about.html:217 retail/templates/about.html:223
+#: retail/templates/about.html:229 retail/templates/about.html:235
+msgid "Learn More"
+msgstr ""
+
+#: retail/templates/about.html:178
+msgid "Business Development Lead"
+msgstr ""
+
+#: retail/templates/about.html:184
+msgid "Open Bounties.Network Roles"
+msgstr ""
+
+#: retail/templates/about.html:187
+msgid "Full Stack Developer"
+msgstr ""
+
+#: retail/templates/about.html:193
+msgid "Data Scientist"
+msgstr ""
+
+#: retail/templates/about.html:199 retail/templates/about.html:233
+msgid "Senior Product Designer"
+msgstr ""
+
+#: retail/templates/about.html:205
+msgid "Waitlisted Roles"
+msgstr ""
+
+#: retail/templates/about.html:206
+msgid ""
+"(These roles were recently filled, but may open up again in a couple months. "
+"You're welcome to <a href=\"https://gitcoin.co/slack\">join the community</"
+"a>, that's likely where we'll source them when they re-open.)"
+msgstr ""
+
+#: retail/templates/about.html:209
+msgid "Developer"
+msgstr ""
+
+#: retail/templates/about.html:215
+msgid "Content and Marketing Manager"
+msgstr ""
+
+#: retail/templates/about.html:221
+msgid "Community Manager"
+msgstr ""
+
+#: retail/templates/about.html:227
+msgid "Customer Experience Manager"
+msgstr ""
+
+#: retail/templates/about.html:247
+msgid "Features of Gitcoin"
+msgstr ""
+
+#: retail/templates/about.html:256
+msgid "Fund Issues"
+msgstr ""
+
+#: retail/templates/about.html:257
+msgid ""
+"Fund a feature, bug, or security issue that you care about, &amp; get "
+"results."
+msgstr ""
+
+#: retail/templates/about.html:265
+msgid "Tip Developers"
+msgstr ""
+
+#: retail/templates/about.html:266
+msgid "Reward contributors who have added value to your repository with a tip."
+msgstr ""
+
+#: retail/templates/about.html:276
+msgid "Find Work"
+msgstr ""
+
+#: retail/templates/about.html:277
+msgid ""
+"Find interesting projects to work on, interesting people to work with. Try "
+"projects before you fully commit to them. Add value wherever you go."
+msgstr ""
+
+#: retail/templates/about.html:285
+msgid "All on Github.com"
+msgstr ""
+
+#: retail/templates/about.html:286
+msgid ""
+"The best thing about Gitcoin is that it works where you do your work; on "
+"Github."
+msgstr ""
+
+#: retail/templates/about.html:299
+msgid "Mission-Driven"
+msgstr ""
+
+#: retail/templates/about.html:300
+msgid "Everything we do is to support our mission to 'Grow Open Source'"
+msgstr ""
+
+#: retail/templates/admin/index.html:38
+#, python-format
+msgid "Models in the %(name)s application"
+msgstr ""
+
+#: retail/templates/admin/index.html:49
+msgid "Add"
+msgstr ""
+
+#: retail/templates/admin/index.html:55
+msgid "Change"
+msgstr ""
+
+#: retail/templates/admin/index.html:65
+msgid "You don't have permission to edit anything."
+msgstr ""
+
+#: retail/templates/admin/index.html:84
+msgid "Administrative Tasks"
+msgstr ""
+
+#: retail/templates/admin/index.html:100
+msgid "Recent Actions"
+msgstr ""
+
+#: retail/templates/admin/index.html:101
+msgid "My Actions"
+msgstr ""
+
+#: retail/templates/admin/index.html:105
+msgid "None available"
+msgstr ""
+
+#: retail/templates/admin/index.html:119
+msgid "Unknown content"
+msgstr ""
+
+#: retail/templates/email_settings.html:33
+msgid "Manage Email Preferences"
+msgstr ""
+
+#: retail/templates/email_settings.html:43
+msgid "Basic Preferences"
+msgstr ""
+
+#: retail/templates/email_settings.html:44 retail/templates/slack.html:48
+#: retail/templates/whitepaper_accesscode.html:44
+#: retail/templates/whitepaper_new.html:114
+msgid "Email address"
+msgstr ""
+
+#: retail/templates/email_settings.html:46
+msgid "We will never share your email with anyone else"
+msgstr ""
+
+#: retail/templates/email_settings.html:49
+msgid "Send me"
+msgstr ""
+
+#: retail/templates/email_settings.html:52
+msgid "Regular: Weekly Roundups, Notifications, etc"
+msgstr ""
+
+#: retail/templates/email_settings.html:53
+msgid "Lite 1: Just Roundups"
+msgstr ""
+
+#: retail/templates/email_settings.html:54
+msgid "Lite 2: Just Notifications"
+msgstr ""
+
+#: retail/templates/email_settings.html:55
+msgid "Nothing: Don't Email"
+msgstr ""
+
+#: retail/templates/email_settings.html:61
+msgid "roundup emails once a week"
+msgstr ""
+
+#: retail/templates/email_settings.html:62
+msgid "notifications up to twice a day"
+msgstr ""
+
+#: retail/templates/email_settings.html:71
+msgid "Programming languages"
+msgstr ""
+
+#: retail/templates/email_settings.html:72
+msgid "(pull from github)"
+msgstr ""
+
+#: retail/templates/email_settings.html:74
+msgid "so we know what funded work to route your way"
+msgstr ""
+
+#: retail/templates/email_settings.html:77
+msgid "Feedback"
+msgstr ""
+
+#: retail/templates/email_settings.html:80
+msgid "How are we doing?  What do you think?"
+msgstr ""
+
+#: retail/templates/emails/bounty.html:62
+msgid "Title"
+msgstr ""
+
+#: retail/templates/emails/bounty.html:169
+msgid "Specs"
+msgstr ""
+
+#: retail/templates/emails/bounty.html:174
+msgid "Project Length:"
+msgstr ""
+
+#: retail/templates/emails/bounty.html:174
+#: retail/templates/emails/bounty.html:176
+#: retail/templates/emails/bounty.html:178
+msgid "Not specified"
+msgstr ""
+
+#: retail/templates/emails/bounty.html:176
+msgid "Type:"
+msgstr ""
+
+#: retail/templates/emails/bounty.html:178
+msgid "Experience Level:"
+msgstr ""
+
+#: retail/templates/emails/bounty.html:192
+msgid "View on Gitcoin.co"
+msgstr ""
+
+#: retail/templates/emails/bounty_roundup.html:63
+msgid "The Gitcoin Weekly"
+msgstr ""
+
+#: retail/templates/emails/bounty_roundup.html:85
+msgid "Last Week's Highlights"
+msgstr ""
+
+#: retail/templates/emails/bounty_roundup.html:86
+msgid "Community Members growing open source"
+msgstr ""
+
+#: retail/templates/emails/bounty_roundup.html:112
+msgid "Open Funded Issues"
+msgstr ""
+
+#: retail/templates/emails/bounty_roundup.html:113
+msgid "Grow Open Source ⚡️ Make Some ETH"
+msgstr ""
+
+#: retail/templates/emails/bounty_roundup.html:125
+msgid "Don't see anything that strikes your fancy above?"
+msgstr ""
+
+#: retail/templates/emails/bounty_roundup.html:126
+msgid "There are more issues in the Gitcoin Issue Explorer:"
+msgstr ""
+
+#: retail/templates/emails/bounty_roundup.html:131
+msgid "View Issue Explorer"
+msgstr ""
+
+#: retail/templates/emails/bounty_roundup.html:138
+msgid ""
+"You are receiving this email because your email address is on the "
+"notification list."
+msgstr ""
+
+#: retail/templates/emails/bounty_roundup.html:138
+#: retail/templates/emails/bounty_startwork_expire_warning.html:61
+#: retail/templates/emails/new_bounty.html:35
+#: retail/templates/emails/new_bounty_acceptance.html:35
+#: retail/templates/emails/new_bounty_expire_warning.html:73
+#: retail/templates/emails/new_bounty_rejection.html:35
+#: retail/templates/emails/new_work_submission.html:35
+#: retail/templates/emails/render_bounty_startwork_expired.html:64
+msgid "Manage Email Settings"
+msgstr ""
+
+#: retail/templates/emails/bounty_roundup.html:142
+msgid "Keep Growing Open Source,"
+msgstr ""
+
+#: retail/templates/emails/bounty_roundup.html:144
+#: retail/templates/emails/bounty_startwork_expire_warning.html:67
+#: retail/templates/emails/faucet_request.html:46
+#: retail/templates/emails/faucet_request_rejected.html:63
+#: retail/templates/emails/new_bounty.html:41
+#: retail/templates/emails/new_bounty_acceptance.html:41
+#: retail/templates/emails/new_bounty_expire_warning.html:79
+#: retail/templates/emails/new_bounty_rejection.html:41
+#: retail/templates/emails/new_match.html:76
+#: retail/templates/emails/new_tip.html:98
+#: retail/templates/emails/new_work_submission.html:41
+#: retail/templates/emails/render_bounty_startwork_expired.html:70
+msgid "Gitcoin Core"
+msgstr ""
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:32
+#: retail/templates/emails/render_bounty_startwork_expired.html:32
+#, python-format
+msgid ""
+"You <strong>started work upon</strong> a funded issue "
+"%(interest.created | naturaltime)s.  But we haven't heard from you on the "
+"github thread"
+msgstr ""
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:37
+msgid ""
+"Do you still want to work on this?  Please let us know so we can find "
+"someone else to work on it if not!"
+msgstr ""
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:42
+msgid "If so, please leave a comment on the github thread to check in."
+msgstr ""
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:44
+msgid "OR"
+msgstr ""
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:46
+#, python-format
+msgid ""
+"If not, click 'Stop Work' on the <a href=\"%(bounty.absolute_url)s\">issue "
+"detail page</a>."
+msgstr ""
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:50
+#: retail/templates/emails/new_bounty_expire_warning.html:51
+#: retail/templates/emails/render_bounty_startwork_expired.html:53
+msgid ""
+"If you have any questions, feel free to reach out <a href=\"https://gitcoin."
+"co/slack\">on slack</a>."
+msgstr ""
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:53
+#: retail/templates/emails/new_bounty_expire_warning.html:65
+#: retail/templates/emails/render_bounty_startwork_expired.html:56
+msgid "Funded Issue Details"
+msgstr ""
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:61
+#: retail/templates/emails/new_bounty_expire_warning.html:73
+#: retail/templates/emails/new_bounty_rejection.html:35
+#: retail/templates/emails/render_bounty_startwork_expired.html:64
+msgid ""
+"You are receiving this email because your email address is on the "
+"notification list for this funded issue."
+msgstr ""
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:65
+#: retail/templates/emails/faucet_request.html:44
+#: retail/templates/emails/faucet_request_rejected.html:61
+#: retail/templates/emails/new_bounty.html:39
+#: retail/templates/emails/new_bounty_acceptance.html:39
+#: retail/templates/emails/new_bounty_expire_warning.html:77
+#: retail/templates/emails/new_bounty_rejection.html:39
+#: retail/templates/emails/new_match.html:74
+#: retail/templates/emails/new_tip.html:96
+#: retail/templates/emails/new_work_submission.html:39
+#: retail/templates/emails/render_bounty_startwork_expired.html:68
+msgid "Keep Pushing Open Source Forward,"
+msgstr ""
+
+#: retail/templates/emails/faucet_request.html:29
+#: retail/templates/emails/faucet_request_rejected.html:29
+msgid "Hey"
+msgstr ""
+
+#: retail/templates/emails/faucet_request.html:34
+#, python-format
+msgid "Gitcoin has distributed your faucet request for %(amount)s ETH to"
+msgstr ""
+
+#: retail/templates/emails/faucet_request.html:39
+msgid ""
+"This should be enough gas to send your first Ethereum Transaction.  We hope "
+"you'll consider using it on Gitcoin!"
+msgstr ""
+
+#: retail/templates/emails/faucet_request_rejected.html:24
+msgid "Faucet Request Rejected ‼️"
+msgstr ""
+
+#: retail/templates/emails/faucet_request_rejected.html:34
+#, python-format
+msgid "Gitcoin *could not* approve your faucet request for %(amount)s ETH to"
+msgstr ""
+
+#: retail/templates/emails/faucet_request_rejected.html:41
+msgid "Here are somme comments from the administrator:"
+msgstr ""
+
+#: retail/templates/emails/faucet_request_rejected.html:53
+msgid "You are welcome to re-apply at"
+msgstr ""
+
+#: retail/templates/emails/new_bounty.html:23
+msgid "New Funded Issue Alert"
+msgstr ""
+
+#: retail/templates/emails/new_bounty.html:27
+msgid ""
+"We just matched you with a new funded issue submitted to the Gitcoin.co "
+"Issue Explorer:"
+msgstr ""
+
+#: retail/templates/emails/new_bounty.html:35
+msgid ""
+"You are receiving this email because your email preferences matched with "
+"this bounty's keywords:"
+msgstr ""
+
+#: retail/templates/emails/new_bounty_acceptance.html:23
+msgid "Funds Paid!"
+msgstr ""
+
+#: retail/templates/emails/new_bounty_acceptance.html:27
+msgid ""
+"Your claim has been accepted, and the fulfillment transaction is now on the "
+"Ethereum network!"
+msgstr ""
+
+#: retail/templates/emails/new_bounty_acceptance.html:35
+msgid ""
+"You are receiving this email because your email address is on the bounty "
+"notification list for this funded issue."
+msgstr ""
+
+#: retail/templates/emails/new_bounty_expire_warning.html:23
+msgid "Funded Issue Expiring ..."
+msgstr ""
+
+#: retail/templates/emails/new_bounty_expire_warning.html:28
+#, python-format
+msgid ""
+"Heads up! The funded issue that you posted (below) is expiring in %(num)s "
+"%(unit)s."
+msgstr ""
+
+#: retail/templates/emails/new_bounty_expire_warning.html:30
+#, python-format
+msgid ""
+"Heads up! The funded issue that you fulfilled (below) is expiring in %(num)s "
+"%(unit)s."
+msgstr ""
+
+#: retail/templates/emails/new_bounty_expire_warning.html:37
+msgid ""
+"There is a currently pending claim agains this funded issue. Please make "
+"sure you process them!"
+msgstr ""
+
+#: retail/templates/emails/new_bounty_expire_warning.html:42
+msgid ""
+"After the funded issue has expired, you can still submit and accept work.  "
+"There will just be a new option for the funder to \"Clawback\" the funds on "
+"the funded issue detail page."
+msgstr ""
+
+#: retail/templates/emails/new_bounty_expire_warning.html:45
+msgid "Look for this button"
+msgstr ""
+
+#: retail/templates/emails/new_bounty_expire_warning.html:55
+#, python-format
+msgid ""
+"Why don't you leave a comment <a href=\"%(bounty.github_url)s\">on github</"
+"a> and let the bounty owner know that you'd like to wrap this up soon? :)"
+msgstr ""
+
+#: retail/templates/emails/new_bounty_expire_warning.html:59
+msgid ""
+"If you have any problems, feel free to reach out <a href=\"https://gitcoin."
+"co/slack\">on slack</a>."
+msgstr ""
+
+#: retail/templates/emails/new_bounty_rejection.html:23
+msgid "Fulfillment Rejected"
+msgstr ""
+
+#: retail/templates/emails/new_bounty_rejection.html:27
+msgid ""
+"There is a new funded issue fulfillment *rejection*. Please refer to the "
+"rejection comments on the github pull request to learn why."
+msgstr ""
+
+#: retail/templates/emails/new_match.html:35
+msgid "New Match Alert"
+msgstr ""
+
+#: retail/templates/emails/new_match.html:38
+msgid "meet"
+msgstr ""
+
+#: retail/templates/emails/new_match.html:64
+#, python-format
+msgid ""
+"@%(github_username)s expressed interest in <a href=\"%(bounty.absolute_url)s"
+"\">%(bounty.title_or_desc)s</a>"
+msgstr ""
+
+#: retail/templates/emails/new_match.html:70
+msgid "You are both CCed on this email.  Feel free to reply all and say hey."
+msgstr ""
+
+#: retail/templates/emails/new_tip.html:37
+msgid "New Tip Alert"
+msgstr ""
+
+#: retail/templates/emails/new_tip.html:39
+msgid "Reminder: Tip Expires Soon"
+msgstr ""
+
+#: retail/templates/emails/new_tip.html:45
+#, python-format
+msgid ""
+"%(tip.from_name)s sent you a tip worth %(amount)s %(warning)s %(tokenName)s"
+msgstr ""
+
+#: retail/templates/emails/new_tip.html:47
+#, python-format
+msgid "Someone sent you a tip worth %(amount)s %(warning)s %(tokenName)s"
+msgstr ""
+
+#: retail/templates/emails/new_tip.html:54
+msgid "They had the following comments:"
+msgstr ""
+
+#: retail/templates/emails/new_tip.html:65
+msgid "They had the following private comments:"
+msgstr ""
+
+#: retail/templates/emails/new_tip.html:74
+msgid "They had the following public comments:"
+msgstr ""
+
+#: retail/templates/emails/new_tip.html:83
+#, python-format
+msgid ""
+"The tip expires on <strong>%(tip.expires_date)s, in just "
+"%(tip.expires_date | naturaltime)s</strong>."
+msgstr ""
+
+#: retail/templates/emails/new_tip.html:83
+#: retail/templates/emails/new_tip.html:87
+msgid ""
+"No pressure, but if you wanted to redeem your tip sooner rather than later "
+"that'd be 👌:"
+msgstr ""
+
+#: retail/templates/emails/new_tip.html:93
+msgid "Redeem Tip"
+msgstr ""
+
+#: retail/templates/emails/new_work_submission.html:23
+msgid "New Work Submission"
+msgstr ""
+
+#: retail/templates/emails/new_work_submission.html:27
+msgid ""
+"There is a new work *submission* against your funded issue. Please check it "
+"out, below"
+msgstr ""
+
+#: retail/templates/emails/new_work_submission.html:35
+msgid ""
+"You are receiving this email because your email address is on the "
+"notification list for this issue."
+msgstr ""
+
+#: retail/templates/emails/render_bounty_startwork_expired.html:23
+msgid "You've been removed from this task ..."
+msgstr ""
+
+#: retail/templates/emails/render_bounty_startwork_expired.html:27
+msgid "Hey there,"
+msgstr ""
+
+#: retail/templates/emails/render_bounty_startwork_expired.html:36
+msgid ""
+"Since we have a responsibility to the community to keep the list of claimees "
+"for this issue current, Gitcoin removed you from the task."
+msgstr ""
+
+#: retail/templates/emails/render_bounty_startwork_expired.html:40
+msgid ""
+"Do you still want to work on this?  No big deal!  We can help with that:"
+msgstr ""
+
+#: retail/templates/emails/render_bounty_startwork_expired.html:45
+msgid "Please leave a comment on the github thread to check in."
+msgstr ""
+
+#: retail/templates/emails/render_bounty_startwork_expired.html:47
+msgid "AND"
+msgstr ""
+
+#: retail/templates/emails/render_bounty_startwork_expired.html:49
+#, python-format
+msgid ""
+"Click 'Start Work' on the <a href=\"%(bounty.absolute_url)s\">issue detail "
+"page</a>."
+msgstr ""
+
+#: retail/templates/emails/template.html:213
+msgid "Terms &amp; Conditions"
+msgstr ""
+
+#: retail/templates/emails/template.html:216
+msgid "Unsubscribe"
+msgstr ""
+
+#: retail/templates/emails/template.html:219
+msgid "Contact"
+msgstr ""
+
+#: retail/templates/error.html:22
+#, python-format
+msgid "Error %(code)s."
+msgstr ""
+
+#: retail/templates/error.html:23
+msgid ""
+"_Even the bots_ aren't sure what happened, but we'll look into it. <a href="
+"\"mailto:founders@gitcoin.co\">Contact us</a> if you think this is something "
+"that shouldn't have happened."
+msgstr ""
+
+#: retail/templates/gas.html:65
+msgid "Predicted Confirmation Times vs Gas Usage"
+msgstr ""
+
+#: retail/templates/gas.html:161
+msgid "Useful Links"
+msgstr ""
+
+#: retail/templates/gas.html:162
+msgid ""
+"To see the data in chart format, check out <a href=\"https://ethgasstation."
+"info/predictionTable.php\" target=\"_blank\" rel=\"noopener noreferrer\">ETH "
+"Gas Station</a>"
+msgstr ""
+
+#: retail/templates/gas.html:165
+msgid ""
+"To see this information persisted in-browser check out <a href=https://"
+"chrome.google.com/webstore/detail/ethereum-gas-price-extens/"
+"innfmlnnhfcebjcnfopadflecemoddnp target=\"_blank\" rel=\"noopener noreferrer"
+"\">this chrome extension</a>"
+msgstr ""
+
+#: retail/templates/gas.html:167 retail/templates/help.html:101
+msgid "FAQ"
+msgstr ""
+
+#: retail/templates/gas.html:168
+msgid "Why do we need to pay gas?"
+msgstr ""
+
+#: retail/templates/gas.html:170
+msgid "What are the advantages of Ethereum-based applications??"
+msgstr ""
+
+#: retail/templates/gas.html:172
+msgid "I can't figure this out.  Help!"
+msgstr ""
+
+#: retail/templates/getgitcoin.html:21
+msgid "I Am A:"
+msgstr ""
+
+#: retail/templates/getgitcoin.html:28 retail/templates/whitepaper_new.html:122
+msgid "Open Source Developer"
+msgstr ""
+
+#: retail/templates/getgitcoin.html:29
+msgid ""
+"Want to earn some extra coin? 💰 Check out the Issue Explorer and see what "
+"funded issues match your skillset and interests today."
+msgstr ""
+
+#: retail/templates/getgitcoin.html:31
+msgid "See Issue Explorer"
+msgstr ""
+
+#: retail/templates/getgitcoin.html:38 retail/templates/help.html:45
+msgid "View Developer Guide"
+msgstr ""
+
+#: retail/templates/getgitcoin.html:47
+msgid "Repository Maintainer"
+msgstr ""
+
+#: retail/templates/getgitcoin.html:48
+msgid ""
+"Let's push your repo forward. 🚀  Create a funded issue of your own and start "
+"working with people in the OSS community on issues _you_ care about."
+msgstr ""
+
+#: retail/templates/getgitcoin.html:64 retail/templates/help.html:58
+msgid "View Repo Maintainer Guide"
+msgstr ""
+
+#: retail/templates/getgitcoin.html:73
+msgid "Blockchain Evangelist"
+msgstr ""
+
+#: retail/templates/getgitcoin.html:74
+msgid ""
+"You can see that the future of software development involves aligned "
+"incentives, tools built by &amp; for developers, and decentralization is the "
+"way it's all goin' down. Let’s dive deeper!"
+msgstr ""
+
+#: retail/templates/getgitcoin.html:76
+msgid "Read Whitepaper"
+msgstr ""
+
+#: retail/templates/getgitcoin.html:83
+msgid "Join Gitcoin Slack"
+msgstr ""
+
+#: retail/templates/getgitcoin.html:89
+msgid "Not sure?"
+msgstr ""
+
+#: retail/templates/getgitcoin.html:89
+msgid "View all Gitcoin tools"
+msgstr ""
+
+#: retail/templates/help.html:38
+msgid "Developer?"
+msgstr ""
+
+#: retail/templates/help.html:39
+msgid "Check out the Gitcoin Developer guide"
+msgstr ""
+
+#: retail/templates/help.html:51
+msgid "Repo Maintainer?"
+msgstr ""
+
+#: retail/templates/help.html:52
+msgid "Check out the Gitcoin Repo Maintainer guide"
+msgstr ""
+
+#: retail/templates/help.html:64
+msgid "Does it work?"
+msgstr ""
+
+#: retail/templates/help.html:65
+msgid "Check out the Gitcoin Case Study"
+msgstr ""
+
+#: retail/templates/help.html:71
+msgid "View Case Studies"
+msgstr ""
+
+#: retail/templates/help.html:81
+msgid "Feature Videos"
+msgstr ""
+
+#: retail/templates/help.html:84
+msgid "How it works"
+msgstr ""
+
+#: retail/templates/help.html:88
+msgid "Product Demo"
+msgstr ""
+
+#: retail/templates/help.html:92
+msgid "What is Web3 and how do we use it?"
+msgstr ""
+
+#: retail/templates/help.html:126
+msgid "Got another question?"
+msgstr ""
+
+#: retail/templates/help.html:131
+msgid "View Github Repo"
+msgstr ""
+
+#: retail/templates/help.html:132
+msgid "Ask on slack"
+msgstr ""
+
+#: retail/templates/help.html:133
+msgid "Contact Gitcoin Core"
+msgstr ""
+
+#: retail/templates/index.html:33
+msgid "What is Gitcoin?"
+msgstr ""
+
+#: retail/templates/index.html:44
+msgid "1. It's *not* a token."
+msgstr ""
+
+#: retail/templates/index.html:45
+msgid ""
+"There is *no* native token on the Gitcoin community.  We're focused on "
+"honing our product/market fit."
+msgstr ""
+
+#: retail/templates/index.html:49
+msgid "2. It's a community."
+msgstr ""
+
+#: retail/templates/index.html:50
+msgid ""
+"The Gitcoin toolset &amp; community allows you to (1) build skills (2) find "
+"(or give) economic opportunities and hopefully (3) make some lifelong "
+"friendships."
+msgstr ""
+
+#: retail/templates/index.html:54
+msgid "3. It's a mission."
+msgstr ""
+
+#: retail/templates/index.html:55
+msgid "Our mission is to \"Grow Open Source\"."
+msgstr ""
+
+#: retail/templates/index.html:55
+msgid "Read more"
+msgstr ""
+
+#: retail/templates/index.html:64
+msgid "But How Does it Work?"
+msgstr ""
+
+#: retail/templates/index.html:72
+msgid "1. Find Funded Github Issues."
+msgstr ""
+
+#: retail/templates/index.html:73
+#, python-format
+msgid ""
+"Whether it's Bugs, Features, or Security Issues, <a href=\"%(explorerurl)s"
+"\">Gitcoin's Issue Explorer</a> is the easiest way to find paid work in open "
+"source."
+msgstr ""
+
+#: retail/templates/index.html:77
+msgid "2. Claim an Issue."
+msgstr ""
+
+#: retail/templates/index.html:78
+msgid ""
+"Claim the issue on Gitcoin via the Funded Issue Detail Page (<a href="
+"\"https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/"
+"skunkworks/issues/14\">Example</a>)."
+msgstr ""
+
+#: retail/templates/index.html:82
+msgid "3. Build Something Great."
+msgstr ""
+
+#: retail/templates/index.html:83
+msgid "Coordinate with the Bounty Submitter on Github.  Build something great!"
+msgstr ""
+
+#: retail/templates/index.html:87
+msgid "4. Submit Your Work &amp; Get Paid."
+msgstr ""
+
+#: retail/templates/index.html:88
+msgid ""
+"Payments are Ethereum-based, &amp; released automatically after code is "
+"accepted by the bounty submitter."
+msgstr ""
+
+#: retail/templates/index.html:100
+msgid "What's the TLDR?"
+msgstr ""
+
+#: retail/templates/index.html:114
+msgid "Why use Gitcoin?"
+msgstr ""
+
+#: retail/templates/index.html:122
+msgid "Find New &amp; Interesting Work"
+msgstr ""
+
+#: retail/templates/index.html:123
+msgid ""
+"Work only on repositories that strike a chord with _you_. Gitcoin allows you "
+"to try before you go full time."
+msgstr ""
+
+#: retail/templates/index.html:129
+msgid "Deepen Relationships"
+msgstr ""
+
+#: retail/templates/index.html:130
+msgid "Gitcoin is a way to meet and connect with open source developers."
+msgstr ""
+
+#: retail/templates/index.html:138
+msgid "Learn New Skills"
+msgstr ""
+
+#: retail/templates/index.html:139
+msgid "Gitcoin is the easiest way to find paid work in open source."
+msgstr ""
+
+#: retail/templates/index.html:145
+msgid "Make Some Extra Cash"
+msgstr ""
+
+#: retail/templates/index.html:146
+msgid ""
+"You got into open source for the love of solving problems. Get paid for "
+"working on your passion."
+msgstr ""
+
+#: retail/templates/index.html:172
+msgid "Email Founders"
+msgstr ""
+
+#: retail/templates/index.html:178
+msgid "Project Roadmap"
+msgstr ""
+
+#: retail/templates/index.html:188
+msgid "2016-2017: Experimentation"
+msgstr ""
+
+#: retail/templates/index.html:189
+msgid ""
+"Founder Kevin Owocki experiments with Ethereum mining, building <a href="
+"\"https://github.com/owocki/\" target=\"_blank\" rel=\"noopener noreferrer"
+"\">a handful of Open Source projects in the space</a>, investing, and <a "
+"href=\"https://www.meetup.com/Boulder-Blockchain/\" target=\"_blank\" rel="
+"\"noopener noreferrer\">community organizing</a>."
+msgstr ""
+
+#: retail/templates/index.html:201
+msgid "Q2 2017: Ideation"
+msgstr ""
+
+#: retail/templates/index.html:202
+msgid ""
+"With the mentorship of Open Source Developers from the Boulder CO tech "
+"community, the idea of a decentralized network designed to <i>Grow Open "
+"Source</i> is conceived. What if recruitment for software projects could be "
+"completely decentralized and automated?  What if developers could try "
+"projects before they commit?  What if repo maintainers had a way to bring "
+"new developers onto their projects?"
+msgstr ""
+
+#: retail/templates/index.html:214
+msgid "Q3 2017: Build &amp; Design"
+msgstr ""
+
+#: retail/templates/index.html:215
+msgid ""
+"Customer Development commences. The founder codes. The design team designs. "
+"Animator animates."
+msgstr ""
+
+#: retail/templates/index.html:227
+msgid "Q4 2017: Launch"
+msgstr ""
+
+#: retail/templates/index.html:228
+msgid ""
+"The Issues Explorer goes live. The code behind the project is released open "
+"source. For the first time, coders can monetize their open-source work "
+"without a centralized middleman, and an incentive is provided to the open-"
+"source community to <i>Grow Open Source</i>, together."
+msgstr ""
+
+#: retail/templates/index.html:240
+msgid "Next: Gitcoin joins Consensys, launches Pilot Projects"
+msgstr ""
+
+#: retail/templates/index.html:245
+msgid ""
+"Funded issues for EtherDelta, Consensys Security, Truffle, Metamask, and "
+"web3py are live at"
+msgstr ""
+
+#: retail/templates/index.html:248
+msgid ""
+"With tens of thousands of dollars of Funded Issues processed through the "
+"system, Gitcoin becomes a place for OSS developers to get involved in the "
+"web3 ecosystem."
+msgstr ""
+
+#: retail/templates/index.html:251
+msgid "The system is dogfooded; Gitcoin is used to build Gitcoin."
+msgstr ""
+
+#: retail/templates/index.html:264
+msgid "After that: Growth"
+msgstr ""
+
+#: retail/templates/index.html:268
+#, python-format
+msgid ""
+"The community, both on <a href=\"%(slackurl)s\">the slack channel</a> and <a "
+"href=\"#mailchimp\">the community mailing list</a> continue to grow."
+msgstr ""
+
+#: retail/templates/index.html:269
+msgid ""
+"The market for software jobs is massive, and Open Source software creates "
+"billions of dollars in economic value per year."
+msgstr ""
+
+#: retail/templates/index.html:270
+msgid ""
+"What will the world look like if decentralized ledger technology begins to "
+"disrupt the existing value systems in software?"
+msgstr ""
+
+#: retail/templates/index.html:282
+msgid "Shipping New Tools Every Month"
+msgstr ""
+
+#: retail/templates/index.html:287
+msgid ""
+"Bounties are just the first tool we're launching.  We've got a bunch of new "
+"tools in the pipeline, including:"
+msgstr ""
+
+#: retail/templates/index.html:290
+msgid "Dev Grants"
+msgstr ""
+
+#: retail/templates/index.html:293
+msgid "Code Funding"
+msgstr ""
+
+#: retail/templates/index.html:296
+msgid "Mentorship Matching"
+msgstr ""
+
+#: retail/templates/index.html:300
+msgid "Want to learn about them?"
+msgstr ""
+
+#: retail/templates/index.html:300
+msgid "Click here"
+msgstr ""
+
+#: retail/templates/index.html:316 retail/templates/whitepaper_new.html:125
+msgid "Press"
+msgstr ""
+
+#: retail/templates/leaderboard.html:67
+msgid "None found."
+msgstr ""
+
+#: retail/templates/mission.html:43
+msgid ""
+"GITCOIN IS A <span class=\"text-highlight-dark-blue\">MISSION</span>\n"
+"                    AND <span class=\"text-highlight-dark-blue\">VALUE-"
+"ORIENTED</span>"
+msgstr ""
+
+#: retail/templates/mission.html:46
+msgid ""
+"<span class=\"text-highlight-dark-blue\">DISTRIBUTED MOVEMENT</span> AIMED "
+"TO <span class=\"text-highlight-dark-blue\">DRIVE</span>"
+msgstr ""
+
+#: retail/templates/mission.html:48
+msgid ""
+"<span class=\"text-highlight-dark-blue\">CHANGE</span> AND <span class="
+"\"text-highlight-pink\">GROW OPEN SOURCE</span>"
+msgstr ""
+
+#: retail/templates/mission.html:60
+msgid "<span class=\"text-highlight-green\">We</span> Want"
+msgstr ""
+
+#: retail/templates/mission.html:92
+msgid "<span class=\"text-highlight-green\">We</span> Value"
+msgstr ""
+
+#: retail/templates/mission.html:150
+msgid "<span class=\"text-highlight-green\">We</span> Interact"
+msgstr ""
+
+#: retail/templates/mission.html:227
+msgid "Read About Our Mission"
+msgstr ""
+
+#: retail/templates/process_accesscode_request.html:32
+msgid "Process"
+msgstr ""
+
+#: retail/templates/process_accesscode_request.html:37
+#, python-format
+msgid ""
+"> New Whitepaper Request:\n"
+"> %(obj)s\n"
+"\n"
+"Hey there,\n"
+"\n"
+"I'm glad to have you interested in the Gitcoin whitepaper. Where'd you hear "
+"about the project?\n"
+"\n"
+"Here's an access code for you: [code]\n"
+"You can redeeem it at https://gitcoin.co/whitepaper/accesscode\n"
+"\n"
+"I'd love to hear your feedback after you read it. You can email me back "
+"directly here or join the slack team at https://gitcoin.co/slack (I'm "
+"@owocki there).\n"
+"\n"
+"Best,\n"
+"\n"
+"Kevin from\n"
+"https://gitcoin.co\n"
+"\n"
+"https://www.linkedin.com/in/owocki/\n"
+"\n"
+"https://twitter.com/owocki/\n"
+msgstr ""
+
+#: retail/templates/save_search.html:26
+msgid "Unlock your potential in Open Source."
+msgstr ""
+
+#: retail/templates/save_search.html:32
+msgid "Emails no more than 2x / week."
+msgstr ""
+
+#: retail/templates/save_search.html:35
+msgid "Gitcoin Core will never sell your email address."
+msgstr ""
+
+#: retail/templates/shared/bottom_notification.html:20
+msgid ""
+"<strong>2018 March 22</strong> - <i>\"If all you have is a hammer, "
+"everything looks like a nail\" - Abraham Maslow</i>.  Have you seen our "
+"revamped <a style=\"margin-right: 5px;\" href=\"https://gitcoin.co/tools"
+"\">tools page</a>?"
+msgstr ""
+
+#: retail/templates/shared/footer.html:22 retail/templates/shared/nav.html:35
+msgid "Home"
+msgstr "Strona główna"
+
+#: retail/templates/shared/footer.html:23
+msgid "Mission"
+msgstr ""
+
+#: retail/templates/shared/footer.html:24 retail/templates/shared/nav.html:36
+msgid "About"
+msgstr "Opis"
+
+#: retail/templates/shared/footer.html:25
+msgid "Jobs"
+msgstr ""
+
+#: retail/templates/shared/footer.html:27 retail/templates/shared/nav.html:37
+msgid "Tools"
+msgstr "Narzędzia"
+
+#: retail/templates/shared/footer.html:28
+msgid "Terms"
+msgstr ""
+
+#: retail/templates/shared/footer.html:29
+msgid "Privacy"
+msgstr ""
+
+#: retail/templates/shared/head.html:59 retail/templates/shared/hero.html:22
+msgid "Grow Open Source"
+msgstr ""
+
+#: retail/templates/shared/hero.html:24
+msgid ""
+"Gitcoin is the easiest way to monetize or incentivize work in Open Source "
+"Software."
+msgstr ""
+
+#: retail/templates/shared/hero.html:36
+msgid "Join Our Slack"
+msgstr ""
+
+#: retail/templates/shared/hero.html:37
+msgid "Explore Gitcoin's Tools"
+msgstr ""
+
+#: retail/templates/shared/hero.html:40
+msgid "Join Mailing List"
+msgstr ""
+
+#: retail/templates/shared/mailchimp.html:5
+msgid "(Emails once a week max, &amp; we never sell your data.)"
+msgstr ""
+
+#: retail/templates/shared/mailchimp.html:10
+msgid "Submit"
+msgstr ""
+
+#: retail/templates/shared/testimonials.html:5
+msgid "Who's using Gitcoin?"
+msgstr ""
+
+#: retail/templates/shared/testimonials.html:12
+msgid "November 16 2017"
+msgstr ""
+
+#: retail/templates/shared/testimonials.html:12
+msgid ""
+"Gitcoin Announces Pilot Projects with EtherDelta, Consensys Dilligence, "
+"Truffle, Metamask, web3py"
+msgstr ""
+
+#: retail/templates/slack.html:32
+msgid "Gitcoin Slack Community"
+msgstr ""
+
+#: retail/templates/slack.html:47
+msgid "Meet software developers, futurists, and funders who are building web3."
+msgstr ""
+
+#: retail/templates/slack.html:50
+#: retail/templates/whitepaper_accesscode.html:46
+#: retail/templates/whitepaper_new.html:116
+msgid "Gitcoin will never share your email with anyone else."
+msgstr ""
+
+#: retail/templates/slack.html:56
+msgid "Sign in here"
+msgstr ""
+
+#: retail/templates/stats.html:32
+msgid "Activity"
+msgstr ""
+
+#: retail/templates/stats.html:33
+msgid "Marketing"
+msgstr ""
+
+#: retail/templates/stats.html:34
+msgid "KPI"
+msgstr ""
+
+#: retail/templates/stats.html:36
+msgid "Hourly"
+msgstr ""
+
+#: retail/templates/stats.html:37
+msgid "Daily"
+msgstr ""
+
+#: retail/templates/stats.html:38
+msgid "Weekly"
+msgstr ""
+
+#: retail/templates/stats.html:40
+msgid "Charts"
+msgstr ""
+
+#: retail/templates/stats.html:41
+msgid "Table"
+msgstr ""
+
+#: retail/templates/stats.html:57
+msgid "Chart will be rendered here"
+msgstr ""
+
+#: retail/templates/whitepaper_accesscode.html:33
+msgid "Got an access code?"
+msgstr ""
+
+#: retail/templates/whitepaper_accesscode.html:34
+msgid "Good for you."
+msgstr ""
+
+#: retail/templates/whitepaper_accesscode.html:36
+msgid "Please submit your info below for access to the draft whitepaper."
+msgstr ""
+
+#: retail/templates/whitepaper_accesscode.html:49
+msgid "Access Code"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:35
+msgid "Hey, you!"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:37
+msgid "Gitcoin is *not* a token."
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:40
+msgid "Gitcoin is a distributed group of individuals focused:"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:44
+#, python-format
+msgid ""
+"on being <i>relentlessly mission driven</i>. <a href=\"%(missionurl)s\"> "
+"(more on this here) </a>"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:47
+msgid ""
+"on working with the <i>best repos</i> in web3..  <a href=\"https://media."
+"consensys.net/gitcoin-joins-consensys-announces-pilot-projects-"
+"f5a0955de9d6\"> (more on this here) </a>"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:50
+#, python-format
+msgid ""
+"on building the <i>best tools</i> for them...  <a href=\"%(toolboxurl)s\"> "
+"(more on this here) </a>"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:53
+msgid ""
+"over a <i>long term</i> time horizon..  <a href=\"https://medium.com/gitcoin/"
+"blockchain-is-the-next-tcp-ip-6663b62b5654\"> (more on this here) </a>"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:56
+msgid ""
+"and doing <i>something historic</i> in the space.  <a href=\"https://medium."
+"com/gitcoin/playing-the-long-game-fbd78fb41de6\"> (more on this here) </a>"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:59
+msgid "Quite Frankly..."
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:61
+msgid ""
+"The project hasn't really had time to partipate in token related activities."
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:64
+msgid "In fact, we're quite fatigued by the pervasiveness of tokens."
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:67
+msgid ""
+"Its exhausting to have to pay attention to all of the rumours, the drama, "
+"the speculation."
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:70
+msgid ""
+"And there are *more worthwhile* uses of a completely-distributed trust-"
+"management supercomputer like the Ethereum blockchain."
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:73
+msgid ""
+"So we're choosing to ignore it all (for now) and focusing on building stuff."
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:75
+msgid "But that could change.."
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:77
+msgid ""
+"It is possible that one day there will be tokens or other digital assets "
+"associated with the project.  Possible, but no promises."
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:80
+msgid "Want to participate now?"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:81
+msgid "Some ways to get involved now:"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:84
+msgid "Join the slack"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:87
+msgid "Follow the twitter"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:90
+msgid "Build something cool"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:93
+msgid "Pitch a new idea"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:96
+msgid "Learn a new tool"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:99
+msgid "Still want whitepaper access?"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:101
+msgid ""
+"Please submit your info below to receive access to the whitepaper if/when "
+"its available."
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:101
+msgid "Already have an access code?"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:119
+msgid "Interested as a"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:123
+msgid "Open Source Repo Maintainer"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:124
+msgid "Token Purchaser"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:126
+msgid "Advisor"
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:130
+msgid "Feel free to select more than one."
+msgstr ""
+
+#: retail/templates/whitepaper_new.html:135
+msgid "Who are you?  What is your interest in the whitepaper?"
+msgstr ""
+
+#: retail/views.py:35
+msgid ""
+"Gitcoin is the catalyst open source development needs to move forward. The "
+"process is seamless and the results speak for themselves."
+msgstr ""
+
+#: retail/views.py:38
+msgid ""
+"We have been trying out the Gitcoin bounty program in the Web3.py project "
+"and are very pleased with the results so far.  We’ve closed out four "
+"bountied issues ranging from smaller cleanup tasks to full fledged feature "
+"development.  So far the platform looks promising as a valuable addition to "
+"our development process."
+msgstr ""
+
+#: retail/views.py:41
+msgid ""
+"Our first experiences with Gitcoin have been very positive.  It has helped "
+"MARKET to get new people involved quickly and in a cost effective manner.  "
+"Having fresh ideas and outside perspectives contribute to a new project is "
+"unbelievably valuable."
+msgstr ""
+
+#: retail/views.py:44
+msgid ""
+"It’s been a while since something has gotten me this riled up ! Love the "
+"concept and definitely sticking around to see this project through. Awesome "
+"community  + open source work + bounties"
+msgstr ""
+
+#: retail/views.py:47
+msgid ""
+"Now that the internet of value is starting to be a thing, Gitcoin is adding "
+"a new layer of incentives into open source development, helping both the "
+"projects, by powering up their capacity, and the developers, by paying for "
+"their work."
+msgstr ""
+
+#: retail/views.py:50
+msgid ""
+"Gitcoin helps us to finally close out the issues we’ve been meaning to get "
+"around to for too long."
+msgstr ""
+
+#: retail/views.py:53
+msgid ""
+"Gitcoin is precisely what I’ve been looking for! It gives every developer a "
+"vehicle to make extra money or move their open source project ahead."
+msgstr ""
+
+#: retail/views.py:56
+msgid ""
+"I feel it is so awesome to have the opportunity through Gitcoin to do what I "
+"love and get paid for it, and to have reasonable freedom about the way I "
+"work, that it already seems too good to be true. "
+msgstr ""
+
+#: retail/views.py:84
+msgid "Gitcoin is a mission-driven organization."
+msgstr ""
+
+#: retail/views.py:85
+msgid "Our mission is to grow open source."
+msgstr ""
+
+#: retail/views.py:95
+msgid ""
+"I am a developer, I want build more Open Source Software. Where can I start?"
+msgstr ""
+
+#: retail/views.py:96
+msgid ""
+"The <a href=https://gitcoin.co/explorer>Funded Issue Explorer</a> contains a "
+"handful of issues that are ready to be paid out as soon as they are turned "
+"around. Check out the developer guide at <a href=https://gitcoin.co/help/"
+"dev>https://gitcoin.co/help/dev</a>."
+msgstr ""
+
+#: retail/views.py:99
+msgid "I am a repo maintainer.  How do I get started?"
+msgstr ""
+
+#: retail/views.py:100
+msgid ""
+"The best way to get started is to post a funded issue on a task you need "
+"done.  Check out the repo maintainers guide at <a href=https://gitcoin.co/"
+"help/repo>https://gitcoin.co/help/repo</a>."
+msgstr ""
+
+#: retail/views.py:103
+msgid "What tokens does Gitcoin support?"
+msgstr ""
+
+#: retail/views.py:104
+msgid ""
+"Gitcoin supports Ether and all ERC20 tokens.  If the token you'd like to use "
+"is Ethereum based, then Gitcoin supports it."
+msgstr ""
+
+#: retail/views.py:107
+msgid "What kind of issues are fundable?"
+msgstr ""
+
+#: retail/views.py:108
+msgid ""
+"\n"
+"\n"
+"    <p class=\"c5\"><span class=\"c4 c0\">Gitcoin supports bug, feature, and "
+"security funded issues. &nbsp;Any issue that you need done is a good "
+"candidate for a funded issue, provided that:</span></p><ul class=\"c13 lst-"
+"kix_twl0y342ii52-0 start\"><li class=\"c5 c11\"><span class=\"c4 "
+"c0\">It&rsquo;s open today.</span></li><li class=\"c5 c11\"><span class=\"c4 "
+"c0\">The repo README clearly enumerates how a new developer should get set "
+"up to contribute.</span></li><li class=\"c5 c11\"><span class=\"c4 c0\">The "
+"task is well defined.</span></li><li class=\"c5 c11\"><span class=\"c4 "
+"c0\">The end-state of the task is well defined.</span></li><li class=\"c5 "
+"c11\"><span class=\"c4 c0\">The pricing of the task reflects (market rate * "
+"complexity) of the task.</span></li><li class=\"c5 c11\"><span class=\"c4 "
+"c0\">The issue is on the roadmap, but does not block other work.</span></"
+"li></ul><p class=\"c5 c6\"><span class=\"c4 c0\"></span></p><p class="
+"\"c5\"><span class=\"c4 c0\">To get started with funded issues today, it "
+"might be good to start small. &nbsp;Is there a small bug that needs fixed? "
+"&nbsp;An issue that&rsquo;s been open for a while that no one is tackling? "
+"&nbsp;An administrative task?</span></p>\n"
+"\n"
+"\n"
+"            "
+msgstr ""
+
+#: retail/views.py:116
+msgid "Whats the difference between tips & funded issues?"
+msgstr ""
+
+#: retail/views.py:117
+msgid ""
+"\n"
+"\n"
+"<p>\n"
+"<strong>A tip</strong> is a tool to send ether or any ethereum token to any "
+"github account.  The flow for tips looks like this:\n"
+"</p><p>\n"
+"> Send (party 1) => receive (party 2)\n"
+"</p><p>\n"
+"\n"
+"<strong>Funded Issues</strong> are a way to fund open source features, bugs, "
+"or security bounties.  The flow for funded issues looks like this:\n"
+"</p><p>\n"
+"\n"
+">  Fund Issue (party 1) => claim funds  (party 2) => accept (party 1)\n"
+"</p>\n"
+"\n"
+"\n"
+"            "
+msgstr ""
+
+#: retail/views.py:135
+msgid "What kind of contributors are successful on the Gitcoin network?"
+msgstr ""
+
+#: retail/views.py:136
+msgid ""
+"\n"
+"\n"
+"<p>\n"
+"If you have an issues board that needs triaged, read on..\n"
+"</p>\n"
+"<p>\n"
+"If you would like to recruit engineers to help work on your repo, read on..\n"
+"</p>\n"
+"<p>\n"
+"If you want to create value, and receive Ether tokens in return, read on..\n"
+"</p>\n"
+"<p>\n"
+"If you are looking for a quick win, an easy buck, or to promote something, "
+"please turn around.\n"
+"</p>\n"
+"\n"
+"<p>\n"
+"We value communication that is:\n"
+"</p>\n"
+"\n"
+"<ul>\n"
+"<li>\n"
+"    Collaborative\n"
+"</li>\n"
+"<li>\n"
+"    Intellectual & Intellectually Honest\n"
+"</li>\n"
+"<li>\n"
+"    Humble\n"
+"</li>\n"
+"<li>\n"
+"    Empathetic\n"
+"</li>\n"
+"<li>\n"
+"    Pragmatic\n"
+"</li>\n"
+"<li>\n"
+"    Stress reducing\n"
+"</li>\n"
+"</ul>\n"
+"\n"
+"<p>\n"
+"Here are some of our values\n"
+"</p>\n"
+"<ul>\n"
+"<li>\n"
+"    Show, don't tell\n"
+"</li>\n"
+"<li>\n"
+"    Give first\n"
+"</li>\n"
+"<li>\n"
+"     Be thoughtful & direct\n"
+"</li>\n"
+"<li>\n"
+"     Be credible\n"
+"</li>\n"
+"<li>\n"
+"     Challenge the status quo and be willing to be challenged\n"
+"</li>\n"
+"<li>\n"
+"     Create delightful experiences\n"
+"</li>\n"
+"</ul>\n"
+"\n"
+"\n"
+"            "
+msgstr ""
+
+#: retail/views.py:204
+msgid ""
+"I received a notification about tip / funded issue, but I can't process it.  "
+"Help!"
+msgstr ""
+
+#: retail/views.py:205
+msgid ""
+"We'd love to help!  Please email <a href='mailto:founders@gitcoin."
+"co'>founders@gitcoin.co</a> or join <a href=/slack>Gitcoin Community Slack</"
+"a>."
+msgstr ""
+
+#: retail/views.py:208
+msgid ""
+"Am I allowed to place bounties on projects I don't contribute to or own?"
+msgstr ""
+
+#: retail/views.py:209
+msgid ""
+"TLDR: Yes you are.  But as OSS devs ourselves, our experience has been that "
+"if you want to get the product you work on merged into the upstream, you "
+"will need to work with the contributors or owners of that repo.  If not, you "
+"can always fork a repo and run your own roadmap."
+msgstr ""
+
+#: retail/views.py:214
+msgid "Is Gitcoin open source?"
+msgstr ""
+
+#: retail/views.py:215
+msgid ""
+"Yes, all of Gitcoin's core software systems are open source and available at "
+"<a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  "
+"Please see the liscense.txt file in each repo for more details."
+msgstr ""
+
+#: retail/views.py:218
+msgid "Is a token distribution event planned for Gitcoin?"
+msgstr ""
+
+#: retail/views.py:219
+msgid ""
+"\n"
+"<p>Gitcoin Core is considering doing a token distribution event (TDI), but "
+"at the time is focused first and foremost on providing value in Open Source "
+"Software&nbsp;in a lean way.</p>\n"
+"<p>To find out more about a possible upcoming token distribution event,&nbsp;"
+"check out&nbsp;<a href=\"https://gitcoin.co/whitepaper\">https://gitcoin.co/"
+"whitepaper</a></p>\n"
+"<p>&nbsp;</p>            "
+msgstr ""
+
+#: retail/views.py:225
+msgid "What is the difference between Gitcoin and Gitcoin Core?"
+msgstr ""
+
+#: retail/views.py:226
+msgid ""
+"\n"
+"Gitcoin Core LLC is the legal entity that manages the software development "
+"of the Gitcoin Network (Gitcoin).\n"
+"\n"
+"The Gitcoin Network is a series of smart contracts that helps Grow Open "
+"Source, but enabling developers to easily post and manage funded "
+"issues.            "
+msgstr ""
+
+#: retail/views.py:232
+msgid "Who is the team at Gitcoin Core?"
+msgstr ""
+
+#: retail/views.py:233
+msgid ""
+"\n"
+"<p>The founder is <a href=\"https://linkedin.com/in/owocki\">Kevin Owocki</"
+"a>, a technologist from the Boulder Colorado tech scene. &nbsp; &nbsp;"
+"Kevin&nbsp;has a BS in Computer Science, 15 years experience in Open Source "
+"Software and Technology Startups. He is a volunteer in the Boulder Community "
+"for several community organizations, and an avid open source developer. His "
+"work has been featured in&nbsp;<a href=\"http://techcrunch.com/2011/02/10/"
+"group-dating-startup-ignighter-raises-3-million/\">TechCrunch</a>,&nbsp;<a "
+"href=\"http://www.cnn.com/2011/BUSINESS/03/29/india.online.matchmaking/"
+"\">CNN</a>,&nbsp;<a href=\"http://www.inc.com/30under30/2011/profile-adam-"
+"sachs-kevin-owocki-and-dan-osit-founders-ignighter.html\">Inc Magazine</a>,"
+"&nbsp;<a href=\"http://www.nytimes.com/2011/02/20/business/20ignite.html?"
+"_r=4&amp;amp;pagewanted=1&amp;amp;ref=business\">The New York Times</a>,"
+"&nbsp;<a href=\"http://boingboing.net/2011/09/24/tosamend-turn-all-online-i-"
+"agree-buttons-into-negotiations.html\">BoingBoing</a>,&nbsp;<a href=\"http://"
+"www.wired.com/2015/12/kevin-owocki-adblock-to-bitcoin/\">WIRED</a>,&nbsp;<a "
+"href=\"https://www.forbes.com/sites/amycastor/2017/08/31/toothpick-takes-top-"
+"prize-in-silicon-beach-ethereum-hackathon/#6bf23b7452ad\">Forbes</a>, "
+"and&nbsp;<a href=\"http://www.techdigest.tv/2007/08/super_mario_get_1.html"
+"\">TechDigest</a>.</p>\n"
+"<p><strong>Gitcoin</strong>&nbsp;was borne of the community in Boulder "
+"Colorado's thriving tech scene. One of the most amazing things about the "
+"Boulder community is the #givefirst mantra. The founding team has built "
+"their careers off of advice, mentorship, and relationships in the local tech "
+"community. &nbsp;</p>\n"
+"\n"
+"<p>We are hiring.  If you want to join the team, <a href=mailto:"
+"founders@gitcoin.co>email us</a>.\n"
+"\n"
+"            "
+msgstr ""
+
+#: retail/views.py:242
+msgid "What is the mission of Gitcoin Core?"
+msgstr ""
+
+#: retail/views.py:243
+msgid ""
+"\n"
+"The mission of Gitcoin is \"Grow Open Source\".\n"
+"\n"
+"            "
+msgstr ""
+
+#: retail/views.py:249
+msgid "How can I stay in touch with project updates?"
+msgstr ""
+
+#: retail/views.py:250
+msgid ""
+"\n"
+"The best way to stay in touch is to\n"
+"\n"
+"<ul>\n"
+"<li>\n"
+"    <a href=\"/#mailchimp\">Subscribe to the mailing list</a>\n"
+"</li>\n"
+"<li>\n"
+"    <a href=\"/twitter\">Follow the project on twitter</a>\n"
+"</li>\n"
+"<li>\n"
+"    <a href=\"/slack\">Join the slack channel</a>\n"
+"</li>\n"
+"\n"
+"</ul>\n"
+"\n"
+"            "
+msgstr ""
+
+#: retail/views.py:272
+msgid "What is the difference between Gitcoin and centralized hiring websites?"
+msgstr ""
+
+#: retail/views.py:273
+msgid ""
+"\n"
+"<p>There are many successful centralized hiring resources available on the "
+"web. &nbsp;Because these platforms were an&nbsp;efficient way to source, "
+"select, and manage a global workforce , millions of dollars was&nbsp;"
+"processed through these systems every day.</p>\n"
+"<p>Gitcoin takes the value that flows through these system, and makes it "
+"more efficient and fair. &nbsp;Gitcoin is a distributed network of smart "
+"contracts, based upon Ethereum, that aims to solve problems with centralized "
+"hiring resources, namely by</p>\n"
+"<ul>\n"
+"<li>being more open,</li>\n"
+"<li>being more fair,</li>\n"
+"<li>being more efficient,</li>\n"
+"<li>being easier to use.</li>\n"
+"<li>leveraging a global workforce,</li>\n"
+"<li>cutting out the middlemen,</li>\n"
+"</ul>\n"
+"<p>When Sir Tim Berners-Lee first invented the World Wide Web in the late "
+"1980s&nbsp;to make information sharing on the Internet easier, he did "
+"something very important. He specified an open protocol, the Hypertext "
+"Transfer Protocol or HTTP, that anyone could use to make information "
+"available and to access such information. &nbsp;</p>\n"
+"<p>Gitcoin is similarly built on an open protocol of smart contracts.</p>\n"
+"<p>By specifying a&nbsp;protocol, Tim Berners-Lee opened the way for anyone "
+"to build software, so-called web servers and browsers that would be "
+"compatible with this protocol. &nbsp; By specifying an open source protocol "
+"for Funding Issues and software development scoping &amp; payment, the "
+"Gitcoin Core team hopes to similarly inspire a generation of inventions in "
+"21st century software.</p>\n"
+"<p>\n"
+"To learn more about blockchain, please checkout <a href=\"{}\">this video "
+"about web3</a> or the <a href=\"https://github.com/gitcoinco/gitcoinco/"
+"issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\">Github Issues board</a>\n"
+"</p>\n"
+"            "
+msgstr ""
+
+#: retail/views.py:293
+msgid "Why do I need metamask?"
+msgstr ""
+
+#: retail/views.py:294
+msgid ""
+"\n"
+"<p>\n"
+"You need <a href=\"https://metamask.io/\">Metamask</a> in order to use "
+"Gitcoin.\n"
+"</p>\n"
+"<p>\n"
+"\n"
+"Metamask turns google chrome into a Web3 Browser.   Web3 is powerful because "
+"it lets websites retrieve data from the blockchain, and lets users securely "
+"manage identity.\n"
+"</p>\n"
+"<p>\n"
+"\n"
+"In contrast to web2 where third parties own your data, in web3 you own your "
+"data and you are always in control.  On web3, your data is secured on the "
+"blockchain, which means that no one can ever freeze your assets or censor "
+"you.\n"
+"</p>\n"
+"<p>\n"
+"\n"
+"Download Metamask <a href=\"https://metamask.io/\">here</a> today.\n"
+"</p>\n"
+"<p>\n"
+"To learn more about Metamask, please checkout <a href=\"{}\">this video "
+"about web3</a> or the <a href=\"https://github.com/gitcoinco/gitcoinco/"
+"issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\">Github Issues board</a>\n"
+"</p>\n"
+"\n"
+"           "
+msgstr ""
+
+#: retail/views.py:317
+msgid "Why do I need to pay gas?"
+msgstr ""
+
+#: retail/views.py:318
+msgid ""
+"\n"
+"<p>\n"
+"\"Gas\" is the name for a special unit used in Ethereum. It measures how "
+"much \"work\" an action or set of actions takes to perform (for example, "
+"storing data in a smart contract).\n"
+"</p>\n"
+"<p>\n"
+"The reason gas is important is that it helps to ensure an appropriate fee is "
+"being paid by transactions submitted to the network. By requiring that a "
+"transaction pay for each operation it performs (or causes a contract to "
+"perform), we ensure that network doesn't become bogged down with performing "
+"a lot of intensive work that isn't valuable to anyone.\n"
+"</p>\n"
+"<p>\n"
+"Gas fees are paid to the maintainers of the Ethereum network, in return for "
+"securing all of the Ether and Ethereum-based transactions in the world.  Gas "
+"fees are not paid to Gitcoin Core directly or indirectly.\n"
+"</p>\n"
+"<p>\n"
+"To learn more about gas, pleaes checkout the <a href=\"https://github.com/"
+"gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\">Github "
+"Issues board</a>\n"
+"</p>\n"
+"           "
+msgstr ""
+
+#: retail/views.py:334
+msgid "What are the advanages of Ethereum based applications?"
+msgstr ""
+
+#: retail/views.py:335
+msgid ""
+"\n"
+"Here are some of the advantages of Ethereum based applications:\n"
+"<ul>\n"
+"<li>\n"
+"    Lower (or no) fees\n"
+"</li>\n"
+"<li>\n"
+"    No middlemen\n"
+"</li>\n"
+"<li>\n"
+"    No third party owns or can sell your data\n"
+"</li>\n"
+"<li>\n"
+"    No international conversion fees\n"
+"</li>\n"
+"<li>\n"
+"    Get paid in protocol, utility, or application tokens; not just cash.\n"
+"</li>\n"
+"</ul>\n"
+"<p>\n"
+"To learn more about Ethereum based apps, please checkout <a href=\"{}\">this "
+"video about web3</a> or the <a href=\"https://github.com/gitcoinco/gitcoinco/"
+"issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\">Github Issues board</a>\n"
+"</p>\n"
+"\n"
+"\n"
+"           "
+msgstr ""
+
+#: retail/views.py:362
+msgid "I still dont get it.  Help!"
+msgstr ""
+
+#: retail/views.py:363
+msgid ""
+"\n"
+"We want to nerd out with you a little bit more.  <a href=\"/slack\">Join the "
+"Gitcoin Slack Community</a> and let's talk.\n"
+"\n"
+"\n"
+msgstr ""
+
+#: retail/views.py:466
+msgid ""
+"<h1>Coming soon!</h1> If youre seeing this page its because apple is "
+"reviewing the app... and release is imminent :)"
+msgstr ""
+
+#: retail/views.py:500
+msgid "You must provide an email address"
+msgstr ""
+
+#: retail/views.py:502
+msgid "Your invite has been sent."
+msgstr ""
+
+#: retail/views.py:510
+msgid "Unknown error"
+msgstr ""
+
+#: retail/views.py:513
+msgid "Invalid email"
+msgstr ""
+
+#: tdi/views.py:55 tdi/views.py:56 tdi/views.py:114 tdi/views.py:115
+msgid "Whitepaper"
+msgstr ""
+
+#: tdi/views.py:63 tdi/views.py:122
+msgid "You're ratelimited. Please contact founders@gitcoin.co"
+msgstr ""
+
+#: tdi/views.py:71
+msgid ""
+"\n"
+"Email: {} \n"
+"\n"
+"Role: {}\n"
+"\n"
+"Comments: {}\n"
+"\n"
+"IP: {}\n"
+"\n"
+"\n"
+"https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/\n"
+"\n"
+"    "
+msgstr ""
+
+#: tdi/views.py:80
+msgid "New Whitepaper Request"
+msgstr ""
+
+#: tdi/views.py:101 tdi/views.py:145
+msgid "Invalid Email. Please contact founders@gitcoin.co"
+msgstr ""
+
+#: tdi/views.py:105
+msgid ""
+"Your request has been sent.  <a href=/slack>Meantime, why don't you check "
+"out the slack channel?</a>"
+msgstr ""
+
+#: tdi/views.py:130
+msgid "Invalid Access Code. Please contact founders@gitcoin.co"
+msgstr ""
+
+#: tdi/views.py:135
+msgid ""
+"You have exceeded your maximum number of uses for this access code. Please "
+"contact founders@gitcoin.co"
+msgstr ""
+
+#: tdi/views.py:156
+msgid "New Whitepaper Generated"
+msgstr ""
+
+#: tdi/views.py:167
+msgid ""
+"Generated for access code {} by email {} at {} via ip: {}. https://gitcoin."
+"co/whitepaper"
+msgstr ""
+
+#: tdi/views.py:246
+msgid "Kevin from Gitcoin.co"
+msgstr ""
+
+#: tdi/views.py:247
+msgid "Invite sent"
+msgstr ""

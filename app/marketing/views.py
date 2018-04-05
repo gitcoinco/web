@@ -28,7 +28,8 @@ from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
-from django.utils import timezone
+from django.utils import timezone, translation
+from django.utils.translation import LANGUAGE_SESSION_KEY
 from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
@@ -577,8 +578,38 @@ def email_settings(request, key):
     email = ''
     level = ''
     msg = ''
+    if not key:
+        email = request.session.get('email', '')
+        if not email:
+            github_handle = request.session.get('handle', '')
+            if not github_handle:
+                raise Http404
+            profiles = Profile.objects.filter(handle__iexact=github_handle).exclude(email='')
+            if profiles.exists():
+                email = profiles.first()
+        es = EmailSubscriber.objects.filter(email__iexact=email)
+        if not es.exists():
+            raise Http404
+    else:
+        es = EmailSubscriber.objects.filter(priv=key)
+        if es.exists():
+            email = es.first().email
+            level = es.first().preferences.get('level', False)
+        else:
+            raise Http404
+    es = es.first()
+    profile_id = request.session.get('profile_id')
+    profile = Profile.objects.get(pk=profile_id)
+    if request.POST and request.POST.get('preferred_language', False):
+        preferred_language = request.POST.get('preferred_language')        
+        profile.pref_lang_code = preferred_language
+        profile.save()
+        request.session[LANGUAGE_SESSION_KEY] = preferred_language
+        translation.activate(preferred_language)
 
-    if request.POST and request.POST.get('submit'):
+    if request.POST and request.POST.get('submit')::
+        level = request.POST.get('level')
+        comments = request.POST.get('comments')[:255]
         email = request.POST.get('email')
         level = request.POST.get('level')
         validation_passed = True
@@ -612,6 +643,8 @@ def email_settings(request, key):
         'es': es,
         'msg': msg,
         'navs': settings_navs,
+        'available_languages': ['en', 'pl'],
+        'preferred_language': profile.pref_lang_code
     }
     return TemplateResponse(request, 'settings/email.html', context)
 

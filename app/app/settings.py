@@ -24,6 +24,8 @@ from django.http import Http404
 import rollbar
 
 import environ
+from django.utils.translation import gettext_lazy as _
+
 
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
 env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
@@ -169,6 +171,15 @@ USE_I18N = env.bool('USE_I18N', default=True)
 USE_L10N = env.bool('USE_L10N', default=True)
 USE_TZ = env.bool('USE_TZ', default=True)
 TIME_ZONE = env.str('TIME_ZONE', default='UTC')
+
+LOCALE_PATHS = (
+    'locale',
+)
+
+LANGUAGES = [    
+    ('en', _('English')),
+    ('pl', _('Polish')),
+]
 
 if not ENV in ['local', 'test']:
     LOGGING = {
@@ -405,3 +416,4 @@ if ENABLE_SILK:
         }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int(
         'SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
+        
