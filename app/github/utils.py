@@ -163,7 +163,7 @@ def get_auth_url(redirect_uri='/'):
         str: The Github authentication URL.
 
     """
-    github_callback = reverse('social:begin', args=('github'))
+    github_callback = reverse('social:begin', args=('github', ))
     redirect_params = {'next': BASE_URI + redirect_uri}
     redirect_uri = urlencode(redirect_params, quote_via=quote_plus)
 
