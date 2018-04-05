@@ -25,6 +25,7 @@ body {
   overflow-x: hidden;
   width: 100%;
   height: 100%;
+  color: #000000;
   background-color: #0d023b;
   background-image: url('/static/yge/images/overlay.png'), -moz-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url('/static/v2/images/header-bg.png');
   background-image: url('/static/yge/images/overlay.png'), -webkit-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url('/static/v2/images/header-bg.png');
@@ -260,7 +261,7 @@ body,
 input,
 select,
 textarea {
-  color: #414f57;
+  color: #000000;
   font-size: 18px;
   font-weight: 400;
   line-height: 2;
@@ -301,11 +302,6 @@ a:before {
   transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
-strong,
-b {
-  color: #313f47;
-}
-
 em,
 i {
   font-style: italic;
@@ -321,7 +317,6 @@ h3,
 h4,
 h5,
 h6 {
-  color: #313f47;
   line-height: 1.5;
   margin: 0 0 0.75em 0;
 }
@@ -506,7 +501,7 @@ input[type='radio'] {
 input[type='checkbox'] + label,
 input[type='radio'] + label {
   text-decoration: none;
-  color: #414f57;
+  color: #000000;
   cursor: pointer;
   display: inline-block;
   font-size: 1em;
