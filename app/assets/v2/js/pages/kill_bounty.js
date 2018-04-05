@@ -110,7 +110,7 @@ window.onload = function() {
 
           bounty.killBounty(
             bountyId,
-            { gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9) },
+            { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) },
             final_callback
           );
 
