@@ -32,6 +32,23 @@ body {
   padding-bottom: 15px;
 }
 
+#avatar_url {
+  padding-top: 3em;
+}
+
+.bounty_details .avatar {
+  width: 50px;
+  height: 50px;
+  margin: 0px auto;
+  border-radius: 50px;
+  margin-top: 0px;
+}
+
+#avatar_url .avatar {
+  width: 80px;
+  height: 80px;
+}
+
 #status {
   color: #00A55E;
   text-transform: uppercase;
@@ -112,6 +129,7 @@ body {
 
 #bounty_details .tags {
   float: right;
+  text-align: center;
 }
 
 #bounty_details .tag {
@@ -247,14 +265,6 @@ a.btn {
   font-size: 12px;
 }
 
-.bounty_details .avatar {
-  max-width: 50px;
-  max-height: 50px;
-  margin: 0px auto;
-  border-radius: 50px;
-  margin-top: 0px;
-}
-
 .started-status-column div {
   display: inline-block;
   margin: 5px;
@@ -312,6 +322,11 @@ a.btn {
 }
 
 @media (max-width: 767px) {
+
+  #title {
+    padding-top: 1em;
+  }
+
   .bounty-actions {
     display: block;
   }
