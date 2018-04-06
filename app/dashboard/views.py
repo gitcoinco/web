@@ -849,7 +849,7 @@ def toolbox(request):
             "img": static("v2/images/tools/api.jpg"),
             "description": _('''Gitcoin provides a simple HTTPS API to access data
                             without having to run your own Ethereum node.'''),
-            "link": "https://github.com/gitcoinco/web/blob/master/readme_api.md#https-api",
+            "link": "https://github.com/gitcoinco/web/blob/master/docs/API.md",
            'link_copy': _('Try It'),
             "active": "true",
             'stat_graph': 'github_forks_count',
