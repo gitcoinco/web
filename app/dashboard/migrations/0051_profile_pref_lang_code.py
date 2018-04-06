@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='profile',
             name='pref_lang_code',
-            field=models.CharField(default='en', max_length=10),
+            field=models.CharField(default='en', max_length=2),
             preserve_default=False,
         ),
     ]

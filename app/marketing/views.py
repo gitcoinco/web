@@ -20,6 +20,7 @@ from __future__ import unicode_literals
 
 import json
 
+from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
@@ -29,7 +30,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils import timezone, translation
-from django.utils.translation import LANGUAGE_SESSION_KEY
+from django.utils.translation import LANGUAGE_SESSION_KEY, check_for_language
 from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
@@ -600,12 +601,17 @@ def email_settings(request, key):
     es = es.first()
     profile_id = request.session.get('profile_id')
     profile = Profile.objects.get(pk=profile_id)
-    if request.POST and request.POST.get('preferred_language', False):
-        preferred_language = request.POST.get('preferred_language')        
-        profile.pref_lang_code = preferred_language
-        profile.save()
-        request.session[LANGUAGE_SESSION_KEY] = preferred_language
-        translation.activate(preferred_language)
+    preferred_language = request.POST.get('preferred_language')
+    validation_passed = True
+    if preferred_language:
+        if preferred_language not in [i[0] for i in settings.LANGUAGES]:
+            msg = _('Unknown language')
+            validation_passed = False
+        if validation_passed:
+            profile.pref_lang_code = preferred_language
+            profile.save()
+            request.session[LANGUAGE_SESSION_KEY] = preferred_language
+            translation.activate(preferred_language)
 
     if request.POST and request.POST.get('submit')::
         level = request.POST.get('level')
@@ -644,7 +650,8 @@ def email_settings(request, key):
         'msg': msg,
         'navs': settings_navs,
         'available_languages': ['en', 'pl'],
-        'preferred_language': profile.pref_lang_code
+        'preferred_language': profile.pref_lang_code,
+        'logged_in' : False if request.session.get('profile_id') is None else True
     }
     return TemplateResponse(request, 'settings/email.html', context)
 

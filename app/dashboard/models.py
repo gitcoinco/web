@@ -846,6 +846,7 @@ class Profile(SuperModel):
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     pref_lang_code = models.CharField(max_length=10)
+    pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES)
     suppress_leaderboard = models.BooleanField(
         default=False,
         help_text='If this option is chosen, we will remove your profile information from the leaderboard',
