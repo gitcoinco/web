@@ -40,5 +40,11 @@ migrate: ## Migrate the database schema with the latest unapplied migrations.
 migrations: ## Generate migration files for schema changes.
 	@docker-compose exec web python3 app/manage.py makemigrations
 
+compilemessages: ## Execute compilemessages for translations on the web container.
+	@docker-compose exec web python3 app/manage.py compilemessages
+
+makemessages: ## Execute makemessages for translations on the web container.
+	@docker-compose exec web python3 app/manage.py makemessages
+
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
