@@ -661,12 +661,13 @@ def profile(request, handle):
         handle (str): The profile handle.
 
     """
-    if not handle and request.user and request.user.is_authenticated and request.user.username:
+    if not handle and request.user and request.user.is_authenticated:
         handle = request.user.username
-    else:
+    elif not handle:
         handle = request.session.get('handle')
 
     if not handle:
+        print('IN THE NOT HANDLE')
         raise Http404
 
     params = {
