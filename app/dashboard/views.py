@@ -190,7 +190,10 @@ def remove_interest(request, bounty_id):
     if access_token and is_github_token_valid(access_token):
         helper_handle_access_token(request, access_token)
 
-    profile_id = request.session.get('profile_id', request.user.profile.pk)
+    profile_id = request.session.get(
+        'profile_id',
+        request.user.profile.pk if request.user and hasattr(request.user, 'profile') else ''
+    )
     if not profile_id:
         return JsonResponse(
             {'error': _('You must be authenticated via github to use this feature!')},
@@ -658,7 +661,10 @@ def profile(request, handle):
         handle (str): The profile handle.
 
     """
-    handle = handle or request.session.get('handle')
+    if not handle and request.user and request.user.is_authenticated and request.user.username:
+        handle = request.user.username
+    else:
+        handle = request.session.get('handle')
 
     if not handle:
         raise Http404
