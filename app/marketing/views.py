@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import json
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
 from django.db.models import Max
 from django.http import Http404
@@ -396,6 +397,7 @@ def funnel(request):
     return TemplateResponse(request, 'funnel.html', params)
 
 
+@login_required
 def email_settings(request, key):
     # handle 'noinput' case
     es = EmailSubscriber.objects.none()
@@ -403,9 +405,9 @@ def email_settings(request, key):
     level = ''
     msg = ''
     if not key:
-        email = request.session.get('email', '')
+        email = request.user.email
         if not email:
-            github_handle = request.session.get('handle', '')
+            github_handle = request.user.username
             profiles = Profile.objects.filter(handle__iexact=github_handle).exclude(email='')
             if profiles.exists():
                 email = profiles.first()
