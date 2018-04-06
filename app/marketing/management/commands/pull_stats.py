@@ -238,7 +238,7 @@ def bounties():
 
     Stat.objects.create(
         key='bounties',
-        val=(Bounty.objects.filter(current_bounty=True).count()),
+        val=(Bounty.objects.filter(current_bounty=True, network='mainnet').count()),
         )
 
 
@@ -246,7 +246,7 @@ def bounties_by_status():
     from dashboard.models import Bounty
     statuses = Bounty.objects.distinct('idx_status').values_list('idx_status', flat=True)
     for status in statuses:
-        eligible_bounties = Bounty.objects.filter(current_bounty=True, web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
+        eligible_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
         numerator_bounties = eligible_bounties.filter(idx_status=status)
         val = int(100 * (numerator_bounties.count()) / (eligible_bounties.count()))
 
@@ -271,7 +271,7 @@ def joe_dominance_index():
     joe_addresses = joe_addresses + ['0x58dC037f0A5c6C03D0f9477aea3198648CF0D263'.lower()]  # alisa
 
     for days in [7, 30, 90, 360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True, web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+        all_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
         joe_bounties = all_bounties.filter(bounty_owner_address__in=joe_addresses)
         if not all_bounties.count():
             continue
@@ -295,7 +295,7 @@ def avg_time_bounty_turnaround():
     from dashboard.models import Bounty
 
     for days in [7, 30, 90, 360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True, idx_status='done', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+        all_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', idx_status='done', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
         if not all_bounties.count():
             continue
 
@@ -314,7 +314,7 @@ def bounties_open():
 
     Stat.objects.create(
         key='bounties_open',
-        val=(Bounty.objects.filter(current_bounty=True, idx_status='open').count()),
+        val=(Bounty.objects.filter(current_bounty=True, network='mainnet', idx_status='open').count()),
         )
 
 
@@ -323,7 +323,7 @@ def bounties_fulfilled():
 
     Stat.objects.create(
         key='bounties_fulfilled',
-        val=(Bounty.objects.filter(current_bounty=True, idx_status='done').count()),
+        val=(Bounty.objects.filter(current_bounty=True, network='mainnet', idx_status='done').count()),
         )
 
 
