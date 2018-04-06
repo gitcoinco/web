@@ -2,7 +2,7 @@ FROM python:3.6-slim-jessie
 ENV PYTHONUNBUFFERED 1
 RUN mkdir /code && \
     apt-get update && \
-    apt-get install -y --no-install-recommends graphviz wget git dos2unix gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev && \
+    apt-get install -y --no-install-recommends gettext graphviz wget git dos2unix gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev && \
     pip3 install dumb-init && \
     rm -rf /var/lib/apt/lists/*
 
