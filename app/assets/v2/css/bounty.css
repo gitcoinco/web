@@ -20,6 +20,23 @@ body {
   top: -1px;
 }
 
+#expires_date {
+  float: right;
+}
+
+.progress-bar {
+  background-color: #D8D8D8;
+  display: block;
+  height: 2px;
+  overflow: hidden;
+}
+
+.progress-bar .progress {
+  background-color: #0FCE7C;
+  height: 2px;
+  width: 50%;
+}
+
 .bounty_details h4,
 .bounty_details h5 {
   letter-spacing: 0;
@@ -125,6 +142,36 @@ body {
 
 .bounty-info-text {
   color: #717171;
+}
+
+.started-status-column div {
+  display: inline-block;
+  margin: 5px;
+}
+
+.funder-avatar,
+.activity div {
+  margin: auto;
+}
+
+#timer {
+  display: inline-grid;
+}
+
+#timer div {
+  width: 12em;
+  margin-right: 0;
+  display: inline-block;
+}
+
+#timer .bounty-info-heading,
+#timer .bounty-info-text {
+  font-size: 12px;
+}
+
+#timer .bounty-info-text {
+  position: relative;
+  top: 2px;
 }
 
 #bounty_details .tags {
@@ -253,11 +300,6 @@ a.btn {
   margin-bottom: 10px;
 }
 
-.funder-avatar,
-.activity div {
-  margin: auto;
-}
-
 .fulfilled .activity-status {
   margin-bottom: 10px;
 }
@@ -275,11 +317,6 @@ a.btn {
 .activity .bounty-subheading,
 .activity .bounty-text {
   font-size: 12px;
-}
-
-.started-status-column div {
-  display: inline-block;
-  margin: 5px;
 }
 
 #bounty_details {
@@ -331,6 +368,17 @@ a.btn {
 
 .uninterest-button {
   margin: 5px;
+}
+
+@media (max-width: 575px) {
+
+  #timer {
+    margin-bottom: 10px;
+  }
+
+  .bounty-info div {
+    width: 100%;
+  }
 }
 
 @media (max-width: 767px) {
