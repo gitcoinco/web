@@ -24,6 +24,8 @@ from datetime import datetime
 from urllib.parse import urlsplit
 
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import JSONField
 from django.db import models
@@ -35,6 +37,7 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
+import rollbar
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import convert_amount, convert_token_to_usdt
@@ -679,6 +682,7 @@ def psave_interest(sender, instance, **kwargs):
 class Profile(SuperModel):
     """Define the structure of the user profile."""
 
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True)
     last_sync_date = models.DateTimeField(null=True)
@@ -912,6 +916,40 @@ class Profile(SuperModel):
     def get_absolute_url(self):
         return settings.BASE_URL + self.get_relative_url(preceding_slash=False)
 
+    def get_access_token(self, save=True):
+        """Get the Github access token from User.
+
+        Args:
+            save (bool): Whether or not to save the User access token to the profile.
+
+        Raises:
+            Exception: The exception is raised in the event of any error and returns an empty string.
+
+        Returns:
+            str: The Github access token.
+
+        """
+        try:
+            access_token = self.user.social_auth.filter(provider='github').latest('pk').access_token
+            if save:
+                self.github_access_token = access_token
+                self.save()
+        except Exception:
+            return ''
+        return access_token
+
+
+@receiver(user_logged_in)
+def post_login(sender, request, user, **kwargs):
+    """Handle actions to take on user login."""
+    UserAction.create_action(user, 'Login', request)
+
+
+@receiver(user_logged_out)
+def post_logout(sender, request, user, **kwargs):
+    """Handle actions to take on user logout."""
+    UserAction.create_action(user, 'Logout', request)
+
 
 class ProfileSerializer(serializers.BaseSerializer):
     """Handle serializing the Profile object."""
@@ -961,13 +999,61 @@ class UserAction(SuperModel):
         ('Logout', 'Logout'),
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
-    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='actions', on_delete=models.CASCADE, null=True)
+    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True)
     ip_address = models.GenericIPAddressField(null=True)
     location_data = JSONField(default={})
     metadata = JSONField(default={})
 
     def __str__(self):
         return f"{self.action} by {self.profile} at {self.created_on}"
+
+    def create_action(self, user, action_type, request=None, metadata=None):
+        """Create a UserAction for the specified action type.
+
+        Args:
+            user (User): The User object.
+            action_type (str): The type of action to record.
+            request (Request): The request object. Defaults to: None.
+            metadata (dict): Any accompanying metadata to be added.
+                Defaults to: {}.
+
+        Returns:
+            bool: Whether or not the UserAction was created successfully.
+
+        """
+        from app.utils import handle_location_request
+        if action_type not in dict(self.ACTION_TYPES).keys():
+            logger.info('UserAction.create_action received an invalid action_type')
+            return False
+
+        if metadata is None:
+            metadata = {}
+
+        kwargs = {
+            'metadata': {},
+            'action': action_type,
+            'user': user
+        }
+
+        if request:
+            geolocation_data, ip_address = handle_location_request(request)
+
+            if geolocation_data:
+                kwargs['location_data'] = geolocation_data
+            if ip_address:
+                kwargs['ip_address'] = ip_address
+
+        if user and hasattr(user, 'profile'):
+            kwargs['profile'] = user.profile if user and user.profile else None
+
+        try:
+            UserAction.objects.create(**kwargs)
+            return True
+        except Exception as e:
+            rollbar.report_message(
+                f'Failure in UserAction.create_action - ({e})', 'warning', extra_data=kwargs)
+            return False
 
 
 class CoinRedemption(SuperModel):
