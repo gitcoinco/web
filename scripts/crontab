@@ -19,13 +19,12 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 1 */2 * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_profiles  >> /var/log/gitcoin/sync_profiles.log  2>&1
 1 4 * * * cd gitcoin/coin; bash scripts/run_management_command.bash cleanup_db_space  >> /var/log/gitcoin/cleanup_db_space.log  2>&1
 1 5 * * * cd gitcoin/coin; bash scripts/sync_external_bounties.bash  >> /var/log/gitcoin/sync_external_bounties.log  2>&1
-1 6 * * * cd gitcoin/coin; bash scripts/run_management_command.bash clearsessions  >> /var/log/gitcoin/clearsessions.log  2>&1
 
 ## REPORTING
 1 1 1 * * cd gitcoin/coin; bash scripts/run_management_command.bash activity_report $(date --date='-1 month' +%Y/%m/%d) $(date +%Y/%m/%d)  >> /var/log/gitcoin/activity_report.log  2>&1
 
 
-## GITCOIN MARKETING
+## GITCOIN MARKETING 
 30 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_mail  >> /var/log/gitcoin/sync_mail.log  2>&1
 35 14 * * 1,6 cd gitcoin/coin; bash scripts/run_management_command.bash remarket_tweet  >> /var/log/gitcoin/remarket_tweet.log  2>&1
 35 11 * * 0,4 cd gitcoin/coin; bash scripts/run_management_command.bash remarket_tweet  >> /var/log/gitcoin/remarket_tweet.log  2>&1

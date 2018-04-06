@@ -24,8 +24,6 @@ from datetime import datetime
 from urllib.parse import urlsplit
 
 from django.conf import settings
-from django.contrib.auth.models import User
-from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import JSONField
 from django.db import models
@@ -681,7 +679,6 @@ def psave_interest(sender, instance, **kwargs):
 class Profile(SuperModel):
     """Define the structure of the user profile."""
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True)
     last_sync_date = models.DateTimeField(null=True)
@@ -915,56 +912,6 @@ class Profile(SuperModel):
     def get_absolute_url(self):
         return settings.BASE_URL + self.get_relative_url(preceding_slash=False)
 
-    def get_access_token(self, save=True):
-        """Get the Github access token from User.
-
-        Args:
-            save (bool): Whether or not to save the User access token to the profile.
-
-        Raises:
-            Exception: The exception is raised in the event of any error and returns an empty string.
-
-        Returns:
-            str: The Github access token.
-
-        """
-        try:
-            access_token = self.user.social_auth.filter(provider='github').latest('pk').access_token
-            if save:
-                self.github_access_token = access_token
-                self.save()
-        except Exception:
-            return ''
-        return access_token
-
-
-@receiver(user_logged_in)
-def post_login(sender, request, user, **kwargs):
-    """Handle actions to take on user login."""
-    from app.utils import handle_location_request
-    geolocation_data, ip_address = handle_location_request(request)
-    UserAction.objects.create(
-        profile=user.profile if user and user.profile else None,
-        user=user,
-        action='Login',
-        metadata={},
-        ip_address=ip_address,
-        location_data=geolocation_data)
-
-
-@receiver(user_logged_out)
-def post_logout(sender, request, user, **kwargs):
-    """Handle actions to take on user logout."""
-    from app.utils import handle_location_request
-    geolocation_data, ip_address = handle_location_request(request)
-    UserAction.objects.create(
-        profile=user.profile if user and user.profile else None,
-        user=user,
-        action='Logout',
-        metadata={},
-        ip_address=ip_address,
-        location_data=geolocation_data)
-
 
 class ProfileSerializer(serializers.BaseSerializer):
     """Handle serializing the Profile object."""
@@ -1014,8 +961,7 @@ class UserAction(SuperModel):
         ('Logout', 'Logout'),
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
-    user = models.ForeignKey(User, related_name='actions', on_delete=models.CASCADE, null=True)
-    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True)
+    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE)
     ip_address = models.GenericIPAddressField(null=True)
     location_data = JSONField(default={})
     metadata = JSONField(default={})

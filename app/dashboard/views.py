@@ -23,7 +23,6 @@ import logging
 import time
 
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
@@ -79,8 +78,7 @@ def record_user_action(profile_handle, event_name, instance):
     try:
         user_profile = Profile.objects.filter(handle__iexact=profile_handle).first()
         UserAction.objects.create(
-            profile=user_profile if user_profile else None,
-            user=user_profile.user if user_profile and user_profile.user else None,
+            profile=user_profile,
             action=event_name,
             metadata={
                 f'{instance_class}_pk': instance.pk,
@@ -108,9 +106,8 @@ def create_new_interest_helper(bounty, profile_id):
     return interest
 
 
-@csrf_exempt
-@login_required
 @require_POST
+@csrf_exempt
 def new_interest(request, bounty_id):
     """Claim Work for a Bounty.
 
@@ -127,7 +124,7 @@ def new_interest(request, bounty_id):
     if access_token and is_github_token_valid(access_token):
         helper_handle_access_token(request, access_token)
 
-    profile_id = request.user.profile.pk
+    profile_id = request.session.get('profile_id')
     if not profile_id:
         return JsonResponse(
             {'error': _('You must be authenticated via github to use this feature!')},
@@ -172,9 +169,8 @@ def new_interest(request, bounty_id):
     return JsonResponse({'success': True, 'profile': ProfileSerializer(interest.profile).data})
 
 
-@csrf_exempt
-@login_required
 @require_POST
+@csrf_exempt
 def remove_interest(request, bounty_id):
     """Unclaim work from the Bounty.
 
@@ -190,7 +186,7 @@ def remove_interest(request, bounty_id):
     if access_token and is_github_token_valid(access_token):
         helper_handle_access_token(request, access_token)
 
-    profile_id = request.session.get('profile_id', request.user.profile.pk)
+    profile_id = request.session.get('profile_id')
     if not profile_id:
         return JsonResponse(
             {'error': _('You must be authenticated via github to use this feature!')},
@@ -228,7 +224,6 @@ def remove_interest(request, bounty_id):
     return JsonResponse({'success': True})
 
 
-@login_required
 @require_POST
 @csrf_exempt
 def uninterested(request, bounty_id, profile_id):
@@ -243,13 +238,20 @@ def uninterested(request, bounty_id, profile_id):
     Returns:
         dict: The success key with a boolean value and accompanying error.
     """
+
+    session_profile_id = request.session.get('profile_id')
+    if not session_profile_id:
+        return JsonResponse(
+            {'error': 'You must be authenticated!'},
+            status=401)
+
     try:
         bounty = Bounty.objects.get(pk=bounty_id)
     except Bounty.DoesNotExist:
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
 
-    if not bounty.is_funder(request.user.username.lower()):
+    if not bounty.is_funder(request.session.get('handle').lower()):
         return JsonResponse(
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
@@ -332,10 +334,9 @@ def send_tip_2(request):
         TemplateResponse: Render the submission form.
 
     """
-    is_user_authenticated = request.user.is_authenticated
-    from_username = request.user.username if is_user_authenticated else ''
-    primary_from_email = request.user.email if is_user_authenticated else ''
-    access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
+    from_username = request.session.get('handle', '')
+    primary_from_email = request.session.get('email', '')
+    access_token = request.session.get('access_token')
     to_emails = []
 
     if request.body:
@@ -447,7 +448,6 @@ def gas(request):
 def new_bounty(request):
     """Create a new bounty."""
     issue_url = request.GET.get('source') or request.GET.get('url', '')
-    is_user_authenticated = request.user.is_authenticated
     params = {
         'issueURL': issue_url,
         'amount': request.GET.get('amount'),
@@ -456,8 +456,8 @@ def new_bounty(request):
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
-        'from_email': request.user.email if is_user_authenticated else '',
-        'from_handle': request.user.username if is_user_authenticated else '',
+        'from_email': request.session.get('email', ''),
+        'from_handle': request.session.get('handle', ''),
         'newsletter_headline': _('Be the first to know about new funded issues.')
     }
 
@@ -466,7 +466,6 @@ def new_bounty(request):
 
 def fulfill_bounty(request):
     """Fulfill a bounty."""
-    is_user_authenticated = request.user.is_authenticated
     params = {
         'issueURL': request.GET.get('source'),
         'githubUsername': request.GET.get('githubUsername'),
@@ -475,8 +474,8 @@ def fulfill_bounty(request):
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
-        'email': request.user.email if is_user_authenticated else '',
-        'handle': request.user.username if is_user_authenticated else '',
+        'handle': request.session.get('handle', ''),
+        'email': request.session.get('email', '')
     }
 
     return TemplateResponse(request, 'fulfill_bounty.html', params)
@@ -526,45 +525,34 @@ def kill_bounty(request):
 
 
 def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
-    """Display the bounty details.
-
-    Args:
-        ghuser (str): The Github user. Defaults to an empty string.
-        ghrepo (str): The Github repository. Defaults to an empty string.
-        ghissue (int): The Github issue number. Defaults to: 0.
-
-    Raises:
-        Exception: The exception is raised for any exceptions in the main query block.
-
-    Returns:
-        django.template.response.TemplateResponse: The Bounty details template response.
-
-    """
-    is_user_authenticated = request.user.is_authenticated
-    _access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
-    issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
+    """Display the bounty details."""
+    _access_token = request.session.get('access_token')
+    profile_id = request.session.get('profile_id')
+    issueURL = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
 
     # try the /pulls url if it doesnt exist in /issues
     try:
-        assert Bounty.objects.current().filter(github_url=issue_url).exists()
+        assert Bounty.objects.current().filter(github_url=issueURL).exists()
     except Exception:
-        issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue if ghissue else request.GET.get('url')
-        print(issue_url)
+        issueURL = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue if ghissue else request.GET.get('url')
+        print(issueURL)
 
+    bounty_url = issueURL
     params = {
-        'issueURL': issue_url,
+        'issueURL': issueURL,
         'title': _('Issue Details'),
         'card_title': _('Funded Issue Details | Gitcoin'),
         'avatar_url': static('v2/images/helmet.png'),
         'active': 'bounty_details',
         'is_github_token_valid': is_github_token_valid(_access_token),
         'github_auth_url': get_auth_url(request.path),
-        "newsletter_headline": _("Be the first to know about new funded issues."),
+        'profile_interested': False,
+        "newsletter_headline": _("Be the first to know about new funded issues.")
     }
 
-    if issue_url:
+    if bounty_url:
         try:
-            bounties = Bounty.objects.current().filter(github_url=issue_url)
+            bounties = Bounty.objects.current().filter(github_url=bounty_url)
             if bounties:
                 bounty = bounties.order_by('pk').first()
                 # Currently its not finding anyting in the database
@@ -576,6 +564,9 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
                 params['bounty_pk'] = bounty.pk
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.local_avatar_url
+                if profile_id:
+                    profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
+                    params['profile_interested'] = request.session.get('profile_id') in profile_ids
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
@@ -586,21 +577,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
 
 
 def profile_helper(handle):
-    """Define the profile helper.
-
-    Args:
-        handle (str): The profile handle.
-
-    Raises:
-        DoesNotExist: The exception is raised if a Profile isn't found matching the handle.
-            Remediation is attempted by syncing the profile data.
-        MultipleObjectsReturned: The exception is raised if multiple Profiles are found.
-            The latest Profile will be returned.
-
-    Returns:
-        dashboard.models.Profile: The Profile associated with the provided handle.
-
-    """
+    """Define the profile helper."""
     try:
         profile = Profile.objects.get(handle__iexact=handle)
     except Profile.DoesNotExist:
@@ -617,12 +594,7 @@ def profile_helper(handle):
 
 
 def profile_keywords_helper(handle):
-    """Define the profile keywords helper.
-
-    Args:
-        handle (str): The profile handle.
-
-    """
+    """Define the profile keywords helper."""
     profile = profile_helper(handle)
 
     keywords = []
@@ -636,12 +608,7 @@ def profile_keywords_helper(handle):
 
 
 def profile_keywords(request, handle):
-    """Display profile keywords.
-
-    Args:
-        handle (str): The profile handle.
-
-    """
+    """Display profile keywords."""
     keywords = profile_keywords_helper(handle)
 
     response = {
@@ -652,12 +619,7 @@ def profile_keywords(request, handle):
 
 
 def profile(request, handle):
-    """Display profile details.
-
-    Args:
-        handle (str): The profile handle.
-
-    """
+    """Display profile details."""
     handle = handle or request.session.get('handle')
 
     if not handle:

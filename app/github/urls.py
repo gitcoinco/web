@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Define authentication pipeline functions and logic.
+"""Handle github URLs.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -17,11 +17,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from app.utils import sync_profile
 
+from django.urls import path
 
-def save_profile(backend, user, response, *args, **kwargs):
-    """Associate a Profile with a User."""
-    if backend.name == 'github':
-        handle = user.username.lstrip('@')
-        sync_profile(handle, user)
+from .views import github_authentication, github_callback, github_logout
+
+app_name = 'github'
+urlpatterns = [
+    path('callback/', github_callback, name='github_callback'),
+    path('auth/', github_authentication, name='github_auth'),
+    path('logout/', github_logout, name='github_logout'),
+]
