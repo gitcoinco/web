@@ -356,6 +356,12 @@ var refreshBounties = function() {
 
       if (result['status'] === 'done')
         result['p'] += 'Done';
+      else if (result['status'] === 'started')
+        result['p'] += 'Started';
+      else if (result['status'] === 'submitted')
+        result['p'] += 'Submitted';
+      else if (result['status'] == 'cancelled')
+        result['p'] += 'Cancelled';
       else if (is_expired)
         result['p'] += 'Expired';
       else
