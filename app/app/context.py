@@ -45,7 +45,6 @@ def insert_settings(request):
         'name': request.user.get_full_name() if user_is_authenticated else False,
         'rollbar_client_token': settings.ROLLBAR_CLIENT_TOKEN,
         'env': settings.ENV,
-        'BASE_URL': settings.STANDARD_URL,
     }
     context['json_context'] = json.dumps(context)
 
