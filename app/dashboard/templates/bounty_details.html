@@ -168,7 +168,7 @@
 
     <script id="action" type="text/x-jsrender">
       [[if enabled]]
-        <span [[if id == 'submit']] id="[[:id]]" [[if !work_started]] class="none" [[/if]] [[/if]]
+        <span id="[[:id]]" [[if id == 'submit']] [[if !work_started]] class="none" [[/if]] [[/if]]
           title='<div class="tooltip-info tooltip-sm">[[:title]]</div>'>
           [[if pending_acceptance]]
             <a class="button button--primary accept" role="button" href="[[:href]]" target="[[:target]]">
@@ -179,6 +179,7 @@
               [[if comments]]
                 <span class="font-caption">
                   [[:text]]
+                  <img src={% static "v2/images/comment.svg" %}>
                   <span class="github-comment">
                     [[:comments]]
                   </span>
