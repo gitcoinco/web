@@ -163,14 +163,14 @@ def get_auth_url(redirect_uri='/'):
         str: The Github authentication URL.
 
     """
-    github_callback = reverse('social:begin', args=('github', ))
-    redirect_params = {'next': BASE_URI + redirect_uri}
+    github_callback = reverse('github:github_callback')
+    redirect_params = {'redirect_uri': BASE_URI + redirect_uri}
     redirect_uri = urlencode(redirect_params, quote_via=quote_plus)
 
     params = {
         'client_id': settings.GITHUB_CLIENT_ID,
         'scope': settings.GITHUB_SCOPE,
-        'next': f'{BASE_URI}{github_callback}?{redirect_uri}'
+        'redirect_uri': f'{BASE_URI}{github_callback}?{redirect_uri}'
     }
     auth_url = urlencode(params, quote_via=quote_plus)
 
