@@ -333,7 +333,7 @@ Want to be the first to know when new open issues are added? We launched <a href
         },
         {
             'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/MetaMask/metamask-extension/issues/3249'),
-            'primer': 'File parsing with Tim, a great dev and a common Gitcoin poster',
+            'primer': 'Metamask is looking to create visually customizable keyring format.. ',
         },
     ]
 
