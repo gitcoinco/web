@@ -60,28 +60,33 @@
 
         <div class="col-12" id="bounty_details">
           <div class="row font-body">
-            <div class="col-12">
-              <h4 id="title" class="font-title"></h4>
+            <div class="d-none d-lg-block col-lg-1">
+              <div id="avatar_url"></div>
             </div>
-            <div class="col-12">
-              <div id="status"></div>
-            </div>
-            <div class="col-12 bounty-info">
-              <div>
-                <span class="bounty-info-heading">{% trans "Expires In" %} </span>
-                <span class="bounty-info-text" id="expires_date"></span>
+            <div class="col-12 col-lg-11 pl-lg-4">
+              <div class="col-12">
+                <h4 id="title" class="font-title"></h4>
               </div>
-              <div>
-                <span class="bounty-info-heading">{% trans "Opened" %} </span>
-                <span class="bounty-info-text" id="web3_created"></span>
+              <div class="col-12">
+                <div id="status"></div>
               </div>
-              <div>
-                <span class="bounty-info-heading">{% trans "Experience Level" %} </span>
-                <span class="bounty-info-text" id="experience_level"></span>
-              </div>
-              <div>
-                <span class="bounty-info-heading">{% trans "Issue Type" %} </span>
-                <span class="bounty-info-text" id="bounty_type"></span>
+              <div class="col-12 bounty-info">
+                <div>
+                  <span class="bounty-info-heading">{% trans "Expires In" %} </span>
+                  <span class="bounty-info-text" id="expires_date"></span>
+                </div>
+                <div>
+                  <span class="bounty-info-heading">{% trans "Opened" %} </span>
+                  <span class="bounty-info-text" id="web3_created"></span>
+                </div>
+                <div>
+                  <span class="bounty-info-heading">{% trans "Experience Level" %} </span>
+                  <span class="bounty-info-text" id="experience_level"></span>
+                </div>
+                <div>
+                  <span class="bounty-info-heading">{% trans "Issue Type" %} </span>
+                  <span class="bounty-info-text" id="bounty_type"></span>
+                </div>
               </div>
             </div>
           </div>
@@ -142,7 +147,7 @@
               <h5 class="bounty-heading">{% trans "Funder" %}</h5>
               <div class="row box">
                 <div class="col-12 col-md-1 funder-avatar">
-                  <div id="avatar_url"></div>
+                  <div id="issuer_avatar_url"></div>
                 </div>
                 <div class="col-12 col-md-11">
                   <div id="bounty_owner_name" class="font-subheader"></div>
@@ -241,7 +246,7 @@
             </div>
             [[if uninterest_possible]]
               <div>
-                <span title="Remove this user's started work on the bounty">
+                <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
                   <a id="remove-[[:name]]" class="button button--primary" role="button" href="remove-handle">
                     <span class="font-smaller-4">Stop work</span>
                   </a>

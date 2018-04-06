@@ -48,6 +48,7 @@ var link_ize = function(key, val, result) {
 // rows in the 'about' page
 var rows = [
   'avatar_url',
+  'issuer_avatar_url',
   'title',
   'github_url',
   'value_in_token',
@@ -85,6 +86,12 @@ var callbacks = {
   },
   'avatar_url': function(key, val, result) {
     return [ 'avatar', '<a href="/profile/' + result['org_name'] + '"><img class=avatar src="' + val + '"></a>' ];
+  },
+  'issuer_avatar_url': function(key, val, result) {
+    var username = result['bounty_owner_github_username'] ? result['bounty_owner_github_username'] : 'Self';
+
+    return [ 'issuer_avatar_url', '<a href="/profile/' + result['bounty_owner_github_username'] +
+      '"><img class=avatar src="/funding/avatar?repo=https://github.com/' + username + '"></a>' ];
   },
   'status': function(key, val, result) {
     var ui_status = val;
