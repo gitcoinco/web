@@ -949,6 +949,7 @@ def post_login(sender, request, user, **kwargs):
 @receiver(user_logged_out)
 def post_logout(sender, request, user, **kwargs):
     """Handle actions to take on user logout."""
+    from dashboard.utils import create_user_action
     create_user_action(user, 'Logout', request)
 
 
