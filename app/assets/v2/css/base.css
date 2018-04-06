@@ -1537,11 +1537,6 @@ input.is-invalid {
 }
 
 @media (max-width: 350px) {
-  img#logo {
-    width: 150px;
-    height: 37px;
-  }
-
   .header .header-line {
     font-size: 1.5em;
   }
