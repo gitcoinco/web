@@ -56,14 +56,14 @@
         {% endfor %}
       {% endif %}
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="{% url "logout" %}?next={{ request.get_full_path }}">
+      <a class="dropdown-item" href="{% url "logout" %}?next={{ BASE_URL }}{{ request.get_full_path }}">
         <i class="fas fa-lock"></i>
         {% trans "Log Out" %}
       </a>
     </div>
   </div>
 {% else %}
-<a class="nav-link" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
+<a class="nav-link" href="{% url 'social:begin' 'github' %}?next={{ BASE_URL }}{{ request.get_full_path }}"
   onclick="dataLayer.push({'event': 'login'});">
   {% trans "Login" %}
 </a>
