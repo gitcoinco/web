@@ -121,7 +121,7 @@ make # make help
 1. Create a new OAuth app [here](https://github.com/settings/developers)
 2. Set it's homepage URL to: `http://localhost:8080`
 3. Set it's auth callback URL to: `http://localhost:8000/_github/callback`
-4. Place the following lines in your `app.env`:
+4. Place the following lines in your `app/.env`:
 
 ```
 GITHUB_CLIENT_ID=<COPY_FROM_GITHUB>
