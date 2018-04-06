@@ -1023,7 +1023,7 @@ class UserAction(SuperModel):
 
         """
         from app.utils import handle_location_request
-        if action_type not in dict(self.ACTION_TYPES).keys():
+        if action_type not in dict(UserAction.ACTION_TYPES).keys():
             logger.info('UserAction.create_action received an invalid action_type')
             return False
 
