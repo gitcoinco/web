@@ -236,13 +236,13 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool('SECURE_CONTENT_TYPE_NOSNIFF', default=Tr
 X_FRAME_OPTIONS = env('X_FRAME_OPTIONS', default='DENY')
 
 # Email Integrations
-CONTACT_EMAIL = env('CONTACT_EMAIL', default='TODO')
-BCC_EMAIL = env('BCC_EMAIL', default='TODO')
+CONTACT_EMAIL = env('CONTACT_EMAIL', default=None) # TODO
+BCC_EMAIL = env('BCC_EMAIL', default=None) # TODO
 PERSONAL_CONTACT_EMAIL = env('PERSONAL_CONTACT_EMAIL', default='you@foo.bar')
-SENDGRID_API_KEY = env('SENDGRID_API_KEY', default='TODO')  # Required to send email.
+SENDGRID_API_KEY = env('SENDGRID_API_KEY', default=None) # TODO - Required to send email.
 EMAIL_HOST = env('EMAIL_HOST', default='smtp.sendgrid.net')
-EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='TODO')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='TODO')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default=None) # TODO
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default=None) # TODO
 EMAIL_PORT = env.int('EMAIL_PORT', default=587)
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 SERVER_EMAIL = env('SERVER_EMAIL', default='server@TODO.co')
@@ -261,10 +261,10 @@ GITHUB_API_BASE_URL = env('GITHUB_API_BASE_URL', default='https://api.github.com
 GITHUB_AUTH_BASE_URL = env('GITHUB_AUTH_BASE_URL', default='https://github.com/login/oauth/authorize')
 GITHUB_TOKEN_URL = env('GITHUB_TOKEN_URL', default='https://github.com/login/oauth/access_token')
 GITHUB_SCOPE = env('GITHUB_SCOPE', default='read:user,user:email,read:org')
-GITHUB_CLIENT_ID = env('GITHUB_CLIENT_ID', default='TODO')
-GITHUB_CLIENT_SECRET = env('GITHUB_CLIENT_SECRET', default='TODO')
-GITHUB_API_USER = env('GITHUB_API_USER', default='TODO')
-GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='TODO')
+GITHUB_CLIENT_ID = env('GITHUB_CLIENT_ID', default=None) # TODO
+GITHUB_CLIENT_SECRET = env('GITHUB_CLIENT_SECRET', default=None) # TODO
+GITHUB_API_USER = env('GITHUB_API_USER', default=None) # TODO
+GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default=None) # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
 # Social Auth
@@ -308,15 +308,15 @@ if GITCOIN_BOT_CERT_PATH:
         SECRET_KEYSTRING = f.read()
 
 # Twitter Integration
-TWITTER_CONSUMER_KEY = env('TWITTER_CONSUMER_KEY', default='TODO')
-TWITTER_CONSUMER_SECRET = env('TWITTER_CONSUMER_SECRET', default='TODO')
-TWITTER_ACCESS_TOKEN = env('TWITTER_ACCESS_TOKEN', default='TODO')
-TWITTER_ACCESS_SECRET = env('TWITTER_ACCESS_SECRET', default='TODO')
-TWITTER_USERNAME = env('TWITTER_USERNAME', default='TODO')
+TWITTER_CONSUMER_KEY = env('TWITTER_CONSUMER_KEY', default=None) # TODO
+TWITTER_CONSUMER_SECRET = env('TWITTER_CONSUMER_SECRET', default=None) # TODO
+TWITTER_ACCESS_TOKEN = env('TWITTER_ACCESS_TOKEN', default=None) # TODO
+TWITTER_ACCESS_SECRET = env('TWITTER_ACCESS_SECRET', default=None) # TODO
+TWITTER_USERNAME = env('TWITTER_USERNAME', default=None) # TODO
 
 # Slack Integration
 # optional: only needed if you slack things
-SLACK_TOKEN = env('SLACK_TOKEN', default='TODO')
+SLACK_TOKEN = env('SLACK_TOKEN', default=None) # TODO
 
 # Reporting Integrations
 MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
@@ -364,8 +364,8 @@ IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
 # optional: only needed if you run the activity-report management command
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
-S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='TODO')
-S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='TODO')
+S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default=None) # TODO
+S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default=None) # TODO
 
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 
