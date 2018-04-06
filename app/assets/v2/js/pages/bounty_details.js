@@ -432,24 +432,7 @@ var do_actions = function(result) {
     // actions
     var actions = [];
 
-    if (show_start_stop_work) {
-
-      // is enabled
-      var enabled = start_stop_work_enabled;
-      var interest_entry = {
-        enabled: enabled,
-        href: is_interested ? '/uninterested' : '/interested',
-        text: is_interested ? gettext('Stop Work') : gettext('Start Work'),
-        parent: 'right_actions',
-        title: is_interested ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project')
-      };
-
-      actions.push(interest_entry);
-
-    }
-
     if (show_submit_work) {
-      // is enabled
       var enabled = submit_work_enabled;
       var _entry = {
         enabled: enabled,
@@ -462,6 +445,21 @@ var do_actions = function(result) {
       };
 
       actions.push(_entry);
+    }
+
+    if (show_start_stop_work) {
+      var enabled = start_stop_work_enabled;
+      var interest_entry = {
+        enabled: enabled,
+        href: is_interested ? '/uninterested' : '/interested',
+        text: is_interested ? gettext('Stop Work') : gettext('Start Work'),
+        parent: 'right_actions',
+        title: is_interested ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project'),
+        color: is_interested ? 'white' : '',
+        id: 'interest'
+      };
+
+      actions.push(interest_entry);
     }
 
     if (show_kill_bounty) {
