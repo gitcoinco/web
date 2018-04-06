@@ -187,7 +187,7 @@ var callbacks = {
       if (result['is_open']) {
         response = '<span title="This issue is past its expiration date, but it is still active.  Check with the submitter to see if they still want to see it fulfilled.">' + response.join(' ') + '</span>';
       } else {
-        response = 'Expired';
+        $('#timer').hide();
       }
     } else {
       response = response.join(' ');
