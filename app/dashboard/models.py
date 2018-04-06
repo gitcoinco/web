@@ -942,13 +942,14 @@ class Profile(SuperModel):
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
     """Handle actions to take on user login."""
-    UserAction.create_action(user, 'Login', request)
+    from dashboard.utils import create_user_action
+    create_user_action(user, 'Login', request)
 
 
 @receiver(user_logged_out)
 def post_logout(sender, request, user, **kwargs):
     """Handle actions to take on user logout."""
-    UserAction.create_action(user, 'Logout', request)
+    create_user_action(user, 'Logout', request)
 
 
 class ProfileSerializer(serializers.BaseSerializer):
@@ -1007,53 +1008,6 @@ class UserAction(SuperModel):
 
     def __str__(self):
         return f"{self.action} by {self.profile} at {self.created_on}"
-
-    def create_action(self, user, action_type, request=None, metadata=None):
-        """Create a UserAction for the specified action type.
-
-        Args:
-            user (User): The User object.
-            action_type (str): The type of action to record.
-            request (Request): The request object. Defaults to: None.
-            metadata (dict): Any accompanying metadata to be added.
-                Defaults to: {}.
-
-        Returns:
-            bool: Whether or not the UserAction was created successfully.
-
-        """
-        from app.utils import handle_location_request
-        if action_type not in dict(UserAction.ACTION_TYPES).keys():
-            logger.info('UserAction.create_action received an invalid action_type')
-            return False
-
-        if metadata is None:
-            metadata = {}
-
-        kwargs = {
-            'metadata': {},
-            'action': action_type,
-            'user': user
-        }
-
-        if request:
-            geolocation_data, ip_address = handle_location_request(request)
-
-            if geolocation_data:
-                kwargs['location_data'] = geolocation_data
-            if ip_address:
-                kwargs['ip_address'] = ip_address
-
-        if user and hasattr(user, 'profile'):
-            kwargs['profile'] = user.profile if user and user.profile else None
-
-        try:
-            UserAction.objects.create(**kwargs)
-            return True
-        except Exception as e:
-            rollbar.report_message(
-                f'Failure in UserAction.create_action - ({e})', 'warning', extra_data=kwargs)
-            return False
 
 
 class CoinRedemption(SuperModel):
