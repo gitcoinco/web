@@ -617,16 +617,12 @@ def social_contribution(request):
 
 def payout_bounty(request):
     """Payout the bounty.
-
     Args:
         pk (int): The primary key of the bounty to be accepted.
-
     Raises:
         Http404: The exception is raised if no associated Bounty is found.
-
     Returns:
         TemplateResponse: The accept bounty view.
-
     """
     bounty = handle_bounty_views(request)
 
@@ -638,7 +634,6 @@ def payout_bounty(request):
         title=_('Payout'),
     )
     return TemplateResponse(request, 'payout_bounty.html', params)
-
 
 def bulk_payout_bounty(request):
     """Payout the bounty.
@@ -1445,53 +1440,53 @@ def new_bounty(request):
     )
     return TemplateResponse(request, 'bounty/new.html', params)
 
-def grant_show(request, grant_id):
-    grant = Grant.objects.get(pk=grant_id)
-
-    params = {
-        'active': 'dashboard',
-        'title': 'Grant Show',
-        'grant': grant,
-        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
-    }
-    return TemplateResponse(request, 'grants/show.html', params)
-
-def new_grant(request):
-    """Handle new grant."""
-    profile_id = request.session.get('profile_id')
-    profile = Profile.objects.get(pk=profile_id)
-
-    if request.method == "POST":
-        grant = Grant()
-
-        grant.title = request.POST.get('title')
-        grant.pitch = request.POST.get('pitch')
-        grant.description = request.POST.get('description')
-        grant.reference_url = request.POST.get('reference_url');
-        grant.goal_funding = request.POST.get('goal_funding')
-        grant.profile = profile
-
-        grant.save()
-    else:
-        grant = {}
-
-    params = {
-        'active': 'dashboard',
-        'title': 'New Grant',
-        'grant': grant,
-        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
-    }
-
-    return TemplateResponse(request, 'grants/new.html', params)
-
-def grants_explorer(request):
-    """Handle grants explorer."""
-    grants = Grant.objects.all();
-
-    params = {
-        'active': 'dashboard',
-        'title': 'Grants Explorer',
-        'grants': grants,
-        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
-    }
-    return TemplateResponse(request, 'grants/index.html', params)
+# def grant_show(request, grant_id):
+#     grant = Grant.objects.get(pk=grant_id)
+#
+#     params = {
+#         'active': 'dashboard',
+#         'title': 'Grant Show',
+#         'grant': grant,
+#         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+#     }
+#     return TemplateResponse(request, 'grants/show.html', params)
+#
+# def new_grant(request):
+#     """Handle new grant."""
+#     profile_id = request.session.get('profile_id')
+#     profile = Profile.objects.get(pk=profile_id)
+#
+#     if request.method == "POST":
+#         grant = Grant()
+#
+#         grant.title = request.POST.get('title')
+#         grant.pitch = request.POST.get('pitch')
+#         grant.description = request.POST.get('description')
+#         grant.reference_url = request.POST.get('reference_url');
+#         grant.goal_funding = request.POST.get('goal_funding')
+#         grant.profile = profile
+#
+#         grant.save()
+#     else:
+#         grant = {}
+#
+#     params = {
+#         'active': 'dashboard',
+#         'title': 'New Grant',
+#         'grant': grant,
+#         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+#     }
+#
+#     return TemplateResponse(request, 'grants/new.html', params)
+#
+# def grants(request):
+#     """Handle grants explorer."""
+#     grants = Grant.objects.all()
+#
+#     params = {
+#         'active': 'dashboard',
+#         'title': 'Grants Explorer',
+#         'grants': grants,
+#         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+#     }
+#     return TemplateResponse(request, 'grants/index.html', params)
