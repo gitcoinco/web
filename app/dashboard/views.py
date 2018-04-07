@@ -469,7 +469,7 @@ def new_grant(request):
 
     return TemplateResponse(request, 'grants/new.html', params)
 
-def grants_explorer(request):
+def grants(request):
     """Handle grants explorer."""
     grants = Grant.objects.all();
 
@@ -480,15 +480,6 @@ def grants_explorer(request):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'grants/index.html', params)
-
-def grants(request):
-    """Handle grants."""
-    params = {
-        'active': 'dashboard',
-        'title': 'Grants Initiative',
-        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
-    }
-    return TemplateResponse(request, 'grants/initiative.html', params)
 
 def gas(request):
     context = {
