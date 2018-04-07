@@ -1,0 +1,175 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% load i18n static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href={% static "v2/css/onboard.css" %}>
+  </head>
+  <body>
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="row">
+      <div class="col-12 offset-md-3 col-md-6">
+        <form id="onboarding">
+          <div class="state">
+            <span class="step-state"></span>
+            <span class="step-state"></span>
+            <span class="step-state"></span>
+          </div>
+          <div id="step-1" class="step show block">
+            <h2>{% trans "Welcome to the Gitcoin family" %}</h2>
+            <div class="row">
+              <div class="col-12 col-md-6 left">
+                <h3>
+                  <span>{% trans "Solve real world problems" %}</span>
+                  <span>{% trans "in the blockchain / web3 ecosystem" %}</span>
+                </h3>
+                <div class="row icons">
+                  <div class="col-3">
+                    <i class="fas fa-wrench"></i>
+                    <p>{% trans "Build" %}</p>
+                  </div>
+                  <div class="col-3">
+                    <i class="fab fa-ethereum"></i>
+                    <p>{% trans "Get Paid" %}</p>
+                  </div>
+                  <div class="col-3">
+                    <i class="fab fa-connectdevelop"></i>
+                    <p>{% trans "Network" %}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-md-6 right">
+                {% if github_handle %}
+                  <div class="logged-in">
+                    <h3>
+                      <i class="far fa-check-circle"></i>
+                      {% trans "You've logged in!" %}
+                    </h3>
+                    <div class="font-caption row">
+                      <div class="col-12">
+                        <img class="github-avatar" src="{% url "avatar" %}?repo=https://github.com/{{ github_handle }}">
+                        <span>
+                          <p>{{ github_handle }}</p>
+                          <a href="{% url "logout" %}?next={{ request.get_full_path }}">
+                            {% trans "Logout" %}
+                          </a>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                {% else %}
+                  <div class="logged-out">
+                    <h3>{% trans "Let's get your account setup." %}</h3>
+                    <a class="button button--primary" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
+                      onclick="dataLayer.push({'event': 'login'});">
+                      <i class="fab fa-github"></i>
+                      <span>{% trans "Login with github" %}</span>
+                    </a>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div id="step-2" class="step">
+            <h2>{% trans "Metamask" %}</h2>
+            <div class="row">
+              <div class="col-12 col-md-6 left">
+                <div class="row font-caption">
+                  <iframe width="300" height="200"
+                    src="https://www.youtube.com/embed/6Gf_kRE4MJU?rel=0&amp;showinfo=0"
+                    frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                  <p>{% trans "MetaMask is a bridge that allows you to visit the distributed web of tomorrow in your browser today" %}</p>
+                </div>
+              </div>
+              <div class="col-12 col-md-6 right font-caption">
+                <p class="title font-body">
+                  {% trans "Setup up metamask to get paid for the kickass work you've done via gitcoin" %}
+                </p>
+                <div id="metamask">
+                  <a class="button button--primary" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
+                    <img src={% static "v2/images/metamask.svg" %}>
+                    <span>{% trans "Setup Metamask" %}</span>
+                  </a>
+                </div>
+                <div class="col-12">
+                  <p>{% trans "Getting Ether, Your Digital Currency" %}</p>
+                </div>
+                <div class="col-12">
+                  <p>{% trans "How to send ETH to Metamask" %}</p>
+                </div>
+                <div class="col-12">
+                  <p>{% trans "FAQ : MetaMask" %}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="step-3" class="step">
+            <h2>{% trans "What's your skill set ?" %}</h2>
+            <div class="row">
+              <div class="col-12 offset-md-2 col-md-8 font-body pl-0 pr-0">
+                <p class="font-caption label">{% trans "Suggested" %}</p>
+                <div id="suggested-tags"></div>
+              </div>
+              <div class="search col-12 offset-md-2 col-md-8 pl-0 pr-0">
+                <p class="font-caption label">{% trans "Search Skill" %}</p>
+                <div class="search-area col-12 pl-0 pr-0">
+                  <input class="focus-effect form__input form__input_lg" id="keywords" type="text" placeholder="{% trans 'List out : Skill 1, Skill 2 ...' %}" />
+                  <span class="focus-border">
+                    <i></i>
+                  </span>
+                </div>
+              </div>
+              <div class="col-12 offset-md-2 col-md-8 font-body pl-0 pr-0">
+                <p class="font-caption label" id="selected-skills">{% trans "Selected Skills" %}</p>
+                <div class="filter-tags"></div>
+              </div>
+              <div class="col-12 offset-md-4 col-md-4">
+                <div class="form__select2">
+                    <select class="w-100 js-select2" id="experienceLevel">
+                        <option value="">{% trans "Experience Level" %}</option>
+                        <option>{% trans "Beginner" %}</option>
+                        <option>{% trans "Intermediate" %}</option>
+                        <option>{% trans "Advanced" %}</option>
+                    </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="overflow:auto;">
+            <div style="float:right;margin-right:15px;">
+              <p id="prev-btn" onclick="changeStep(-1)">{% trans "Previous" %}</p>
+              <p id="next-btn" onclick="changeStep(1)">{% trans "Next" %}</p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/footer.html' %}
+  </body>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/pages/onboard.js" %}"></script>
+</html>
