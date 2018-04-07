@@ -333,9 +333,8 @@ A <a href="https://github.com/gitcoinco/web/blob/master/readme_widget.md">wild G
         'intro': intro,
         'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
         'bounties': bounties,
-        'override_back_color': '#15003e',
-        'invert_footer': True,
-        'hide_header': True,
+        'invert_footer': False,
+        'hide_header': False,
         'highlights': highlights,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
