@@ -191,9 +191,11 @@
               [[if comments]]
                 <span class="font-caption">
                   [[:text]]
-                  <img src={% static "v2/images/comment.svg" %}>
-                  <span class="github-comment">
-                    [[:comments]]
+                  <span class="comment">
+                    <img src={% static "v2/images/comment.svg" %}>
+                    <span class="github-comment">
+                      [[:comments]]
+                    </span>
                   </span>
                 </span>
               [[else]]
