@@ -21,72 +21,96 @@
 {% block content %}
 
 <style>
-a{
-    word-wrap: break-word;
-}
-h3{
-    line-height: 30px;
-}
-p, pre{
-    margin-top: 25px;
-    text-align: left;
-}
+    a.button{
+        color: #fff;
+        background-color: #15003e;
+        box-shadow: 0px 2px rgba(0, 0, 0, 0.5);
+        padding: 6px 20px;
+        font-size: 14px;
+        line-height: 1.5;
+        text-align: center;
+        text-decoration: none;
+    }
+
+    .tip-box {
+        margin-bottom: 2em;
+        border-style: solid;
+        border-width: 1px;
+        border-color: #e0e0e0;
+    }
+    .tip-contents {
+        text-align: left;
+    }
+    .tip {
+        display: flex;
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
 </style>
 
-{% if is_new %}
-<h1>⚡️ New Tip Alert ⚡️</h1>
-{% else %}
-<h1>🕑 Reminder: Tip Expires Soon 🕝</h1>
-{% endif %}
+<div>
+    {% if is_new %}
+    <h1>⚡️ New Tip Alert ⚡️</h1>
+    {% else %}
+    <h1>🕑 Reminder: Tip Expires Soon 🕝</h1>
+    {% endif %}
 
+    <h3>
+        {% if tip.from_name %}{{tip.from_name}}{% else %}Someone{% endif %} sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% if not is_new %} {{tip.created_on | naturaltime}}{%endif%}.
+    </h3>
+</div>
 
-<h3>
-    {% if tip.from_name %}{{tip.from_name}}{% else %}Someone{% endif %} sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% if not is_new %} {{tip.created_on | naturaltime}}{%endif%}.
-</h3>
-{% if tip.github_url %}
-    <p>
-    {% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{tip.github_url}}">{{tip.github_url}}</a>.
-        {% if comments %}
-            They had the following comments:
-        <pre>
-            {{comments}}
-        </pre>
-        {% endif %}
+<div class="centered-contents tip-box">
+    <div class="tip">
+        <div class="tip-contents">
+            {% if tip.github_url %}
+                <p>
+                {% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{tip.github_url}}">{{tip.github_url}}</a>.
+                    {% if comments %}
+                        They had the following comments:
+                    <pre>
+                        {{comments}}
+                    </pre>
+                    {% endif %}
 
-    </p>
-{% endif %}
+                </p>
+            {% endif %}
 
-{% if comments_priv %}
-    <p>
-    They had the following private comments:
-<pre>
-    {{comments_priv}}
-</pre>
-    </p>
-{% endif %}
+            {% if comments_priv %}
+                <p>
+                They had the following private comments:
+            <pre>
+                {{comments_priv}}
+            </pre>
+                </p>
+            {% endif %}
 
-{% if comments_public %}
-    <p>
-    They had the following public comments:
-<pre>
-    {{comments_public}}
-</pre>
-    </p>
-{% endif %}
+            {% if comments_public %}
+                <p>
+                They had the following public comments:
+            <pre>
+                {{comments_public}}
+            </pre>
+                </p>
+            {% endif %}
 
-{% if show_expires %}
-    <p>
-    The tip expires on <strong>{{tip.expires_date}}, in just {{tip.expires_date | naturaltime}}</strong>.  No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:
-    </p>
-{% else %}
-    <p>
-     No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:
-    </p>
-{% endif %}
+            {% if show_expires %}
+                <p>
+                The tip expires on <strong>{{tip.expires_date}}, in just {{tip.expires_date | naturaltime}}</strong>.  No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌
+                </p>
+            {% else %}
+                <p>
+                 No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌
+                </p>
+            {% endif %}
+        </div>
+    </div>
 
-<br>
-
-<a class="button" href="{{link}}" style="">Redeem Tip</a>
-
+    <div style="margin-bottom: 1.5em;">
+        <a class="button" href="{{link}}" style="">Redeem Tip</a>
+    </div>
+</div>
 
 {% endblock %}

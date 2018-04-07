@@ -82,7 +82,7 @@ def render_bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
         txt = f"""
 hi{github_username},
 
-thanks for turning around this bounty.  we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH. 
+thanks for turning around this bounty.  we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH.
 
 in that spirit,  i have a few questions for you.
 
@@ -104,7 +104,7 @@ hi{github_username},
 
 thanks for putting this bounty ({bounty.github_url}) on gitcoin.  i'm glad to see it was turned around.
 
-we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH. 
+we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH.
 
 in that spirit,  i have a few questions for you:
 
@@ -264,10 +264,10 @@ def render_new_bounty_roundup(to_email):
     Hi there 👋
 </p>
 <p>
-    Last week, we saw a bounty on MetaMask snowball into an epic -- all set to be built with Gitcoin bounties. <a href="https://medium.com/gitcoin/metamask-internationalizes-via-gitcoin-bf1390c0301c">Read more</a> on how MetaMask’s internationalization strategy started with a contribution from one Gitcoiner, @mapmeld. 
+    Last week, we saw a bounty on MetaMask snowball into an epic -- all set to be built with Gitcoin bounties. <a href="https://medium.com/gitcoin/metamask-internationalizes-via-gitcoin-bf1390c0301c">Read more</a> on how MetaMask’s internationalization strategy started with a contribution from one Gitcoiner, @mapmeld.
 </p>
 <p>
-    The <a href="http://gitcoin.co/faucet">Gitcoin Faucet</a> is live for those interested in a small ETH distribution to interact with Ethereum's mainnet for the first time. The first batch of distributions have been made! Want to use your distribution on Gitcoin?  The <a href="https://gitcoin.co/explorer">open issues page</a> is the best place to start. 
+    The <a href="http://gitcoin.co/faucet">Gitcoin Faucet</a> is live for those interested in a small ETH distribution to interact with Ethereum's mainnet for the first time. The first batch of distributions have been made! Want to use your distribution on Gitcoin?  The <a href="https://gitcoin.co/explorer">open issues page</a> is the best place to start.
 <p>
     What else is new?
     <ul>
@@ -281,7 +281,7 @@ Revamped <a href="https://gitcoin.co/tools">Tools Page</a> is Up! We just launch
 Looking for the next ETH Hackathon? Check out <a href="http://hackital.io/">Hackital</a>, in Washington DC on April 27- April 29th.
         </li>
         <li>
-A <a href="https://github.com/gitcoinco/web/blob/master/readme_widget.md">wild Gitcoin Widget</a> appears for your Github read-me! Looking to get more OSS contributors to your repo? This will quickly show any Gitcoin issues you have open. 
+A <a href="https://github.com/gitcoinco/web/blob/master/readme_widget.md">wild Gitcoin Widget</a> appears for your Github read-me! Looking to get more OSS contributors to your repo? This will quickly show any Gitcoin issues you have open.
         </li>
     </ul>
 </p>
