@@ -6,6 +6,10 @@ body.grant {
   margin-top: 30px;
 }
 
+.bottom-buffer {
+  margin-bottom: 30px;
+}
+
 .grant-item {
   background-color: #ffffff;
   border: 1px solid #D8D8D8;
