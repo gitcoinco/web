@@ -332,7 +332,7 @@ def tips():
 
     Stat.objects.create(
         key='tips',
-        val=(Tip.objects.count()),
+        val=(Tip.objects.filter(network='mainnet').count()),
         )
 
 
@@ -341,7 +341,7 @@ def tips_received():
 
     Stat.objects.create(
         key='tips_received',
-        val=(Tip.objects.exclude(receive_txid='').count()),
+        val=(Tip.objects.filter(network='mainnet').exclude(receive_txid='').count()),
         )
 
 
