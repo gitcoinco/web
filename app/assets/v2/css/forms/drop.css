@@ -1,7 +1,7 @@
 .form__drop {
   align-items: center;
   background-color: #F2F6F9;
-  border: 1px dashed #0D0764;
+  border: 1px dashed #9B9B9B;
   border-radius: 3px;
   cursor: pointer;
   display: flex;
@@ -9,6 +9,10 @@
   justify-content: center;
   padding: 24px;
   position: relative;
+}
+
+.form__drop.is-dragging {
+  border: 1px dashed #0D0764;
 }
 
 .form__drop:hover {

@@ -16,7 +16,7 @@
       <div class="container">
         {% for grant in grants %}
           {% if forloop.counter0|divisibleby:3 %} <div class="row"> {%  endif %}
-            <div class="col-sm-12 col-md-4 top-buffer">
+            <div class="col-sm-12 col-md-4 bottom-buffer">
               <a class="grant-item" href="{% url 'grant' grant.id %}">
                 <h4 class="grant-item__title">{{ grant.title|truncatechars:60 }}</h4>
                 <p class="grant-item__pitch">{{ grant.pitch|truncatechars:135 }}</p>
