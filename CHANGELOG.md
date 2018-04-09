@@ -4,17 +4,39 @@
 
 [Full Changelog](https://github.com/gitcoinco/web/compare/pre-django-auth-1...HEAD)
 
+**Fixed bugs:**
+
+- alpha tag confusion [\#792](https://github.com/gitcoinco/web/issues/792)
+- Bean/fix typos [\#829](https://github.com/gitcoinco/web/pull/829) ([StareIntoTheBeard](https://github.com/StareIntoTheBeard))
+
 **Closed issues:**
 
+- IndexError: list index out of range [\#835](https://github.com/gitcoinco/web/issues/835)
+- AssertionError: Cannot filter a query once a slice has been taken. [\#833](https://github.com/gitcoinco/web/issues/833)
+- 'done' bounties should not have the time left field visible [\#824](https://github.com/gitcoinco/web/issues/824)
+- comment needs left padding [\#823](https://github.com/gitcoinco/web/issues/823)
+- RelatedObjectDoesNotExist: User has no profile. [\#820](https://github.com/gitcoinco/web/issues/820)
+- AuthStateMissing: Session value state missing. [\#819](https://github.com/gitcoinco/web/issues/819)
 - Document and check all possible status values [\#816](https://github.com/gitcoinco/web/issues/816)
+- Logo width is incorrect [\#808](https://github.com/gitcoinco/web/issues/808)
+- BadFunctionCallOutput: Could not decode contract function call getBountyData return data b'' for output\_types \['string'\] [\#742](https://github.com/gitcoinco/web/issues/742)
+- BadFunctionCallOutput: Could not decode contract function call getBountyToken return data b'' for output\_types \['address'\] [\#727](https://github.com/gitcoinco/web/issues/727)
+- BadFunctionCallOutput: Could not decode contract function call getFulfillment return data b'' for output\_types \['bool', 'address', 'string'\] [\#726](https://github.com/gitcoinco/web/issues/726)
+- FieldError: Invalid order\_by arguments: \['-web3\_created/'\] [\#701](https://github.com/gitcoinco/web/issues/701)
+- Update Gitcoin Email Designs [\#563](https://github.com/gitcoinco/web/issues/563)
+- Issue Explorer Details Page V2 [\#419](https://github.com/gitcoinco/web/issues/419)
 
 **Merged pull requests:**
 
+- bounty: hide progress bar on work done status [\#828](https://github.com/gitcoinco/web/pull/828) ([thelostone-mc](https://github.com/thelostone-mc))
+- Fixes: https://github.com/gitcoinco/web/issues/792 [\#827](https://github.com/gitcoinco/web/pull/827) ([willsputra](https://github.com/willsputra))
 - docker / github login instructions [\#822](https://github.com/gitcoinco/web/pull/822) ([owocki](https://github.com/owocki))
 - todos should be falsy [\#821](https://github.com/gitcoinco/web/pull/821) ([owocki](https://github.com/owocki))
 - Django auth [\#818](https://github.com/gitcoinco/web/pull/818) ([mbeacom](https://github.com/mbeacom))
 - bug fix : bounty + landing + dashboard [\#807](https://github.com/gitcoinco/web/pull/807) ([thelostone-mc](https://github.com/thelostone-mc))
+- bounty: added progress bar [\#764](https://github.com/gitcoinco/web/pull/764) ([thelostone-mc](https://github.com/thelostone-mc))
 - bounty: mobile alignment fix [\#762](https://github.com/gitcoinco/web/pull/762) ([thelostone-mc](https://github.com/thelostone-mc))
+- Email design update  [\#746](https://github.com/gitcoinco/web/pull/746) ([jakerockland](https://github.com/jakerockland))
 
 ## [pre-django-auth-1](https://github.com/gitcoinco/web/tree/pre-django-auth-1) (2018-04-06)
 [Full Changelog](https://github.com/gitcoinco/web/compare/pre-django-auth...pre-django-auth-1)
@@ -82,7 +104,6 @@
 - issue funder should be able to stop work [\#666](https://github.com/gitcoinco/web/issues/666)
 - Investigate Image Compression Across Gitcoin for Performance Improvements  [\#608](https://github.com/gitcoinco/web/issues/608)
 - inline validations [\#554](https://github.com/gitcoinco/web/issues/554)
-- As an admin, I want to be able to queue background tasks to execute outside of the Django app [\#520](https://github.com/gitcoinco/web/issues/520)
 - Need to be able to stop work bounties as the funder [\#463](https://github.com/gitcoinco/web/issues/463)
 - standardbounties: automatically cross-process bounties posted to bounties.network to gitcoin [\#268](https://github.com/gitcoinco/web/issues/268)
 - Static handling and cache invalidation [\#262](https://github.com/gitcoinco/web/issues/262)
@@ -146,7 +167,6 @@
 - Longer titles are profile page overflow their bounds [\#501](https://github.com/gitcoinco/web/issues/501)
 - gitcoinbot did not comment on github when `work\_done` event fired  [\#495](https://github.com/gitcoinco/web/issues/495)
 - Issue explorer on mobile needs a quick cleanup [\#494](https://github.com/gitcoinco/web/issues/494)
-- BadFunctionCallOutput: Could not decode contract function call getFulfillment return data b'' for output\_types \['bool', 'address', 'string'\] [\#490](https://github.com/gitcoinco/web/issues/490)
 - Exception: attempting to create a new bounty when is\_greater\_than\_x\_days\_old = True [\#485](https://github.com/gitcoinco/web/issues/485)
 - People shouldn't be able to start work on more than 3 issues at a time [\#478](https://github.com/gitcoinco/web/issues/478)
 - JSONDecodeError: Expecting value: line 1 column 1 \(char 0\) [\#467](https://github.com/gitcoinco/web/issues/467)

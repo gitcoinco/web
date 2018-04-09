@@ -49,7 +49,7 @@ def render_tip_email(to_email, tip, is_new):
         'comments_priv': tip.comments_priv,
         'comments_public': tip.comments_public,
         'tip': tip,
-        'show_expires': tip.expires_date < (timezone.now() + timezone.timedelta(days=365)),
+        'show_expires': tip.expires_date < (timezone.now() + timezone.timedelta(days=365)) and tip.expires_date,
         'is_new': is_new,
         'warning': warning,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
@@ -82,7 +82,7 @@ def render_bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
         txt = f"""
 hi{github_username},
 
-thanks for turning around this bounty.  we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH. 
+thanks for turning around this bounty.  we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH.
 
 in that spirit,  i have a few questions for you.
 
@@ -105,7 +105,7 @@ hi{github_username},
 
 thanks for putting this bounty ({bounty.github_url}) on gitcoin.  i'm glad to see it was turned around.
 
-we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH. 
+we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH.
 
 in that spirit,  i have a few questions for you:
 
@@ -209,7 +209,7 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
         'interest': interest,
         'time_delta_days': time_delta_days,
     }
-
+    
     response_html = premailer_transform(render_to_string("emails/bounty_startwork_expire_warning.html", params))
     response_txt = render_to_string("emails/bounty_startwork_expire_warning.txt", params)
 
@@ -276,7 +276,7 @@ def render_new_bounty_roundup(to_email):
     Hi there 👋
 </p>
 <p>
-    This week I was on <a href="https://softwareengineeringdaily.com/2018/04/03/gitcoin-open-source-bounties-with-kevin-owocki/">Software Engineering Daily</a>! We talked through some cool things about Gitcoin, including aligning users and investors, the blockchain revolution large, and how Gitcoin focuses on making open source software sustainable for developers and repo maintainers. If you’re interested, give it a listen. 
+    This week I was on <a href="https://softwareengineeringdaily.com/2018/04/03/gitcoin-open-source-bounties-with-kevin-owocki/">Software Engineering Daily</a>! We talked through some cool things about Gitcoin, including aligning users and investors, the blockchain revolution large, and how Gitcoin focuses on making open source software sustainable for developers and repo maintainers. If you’re interested, give it a listen.
 </p>
 <p>
 We’ve started working towards our <a href="https://github.com/gitcoinco/GIPs/blob/570c2681cacdeaef7f4c73caad1c199b7aa27a9f/GIPS/gip-3.md">Q2 OKRs</a>. To note: if you’re an OSS Repo Maintainer in web3, <a href="https://docs.google.com/forms/d/1AeiKhCO2TefXo8wAbFerjxe2Vgci3ueqzzUpa-PFPLo/edit">we want to talk to you</a> about posting an initial bounty on your repo. Our goal is to have 15 repo’s with 3 or more issues completed through Gitcoin at the end of this quarter. Let us know!
@@ -286,10 +286,10 @@ We’ve started working towards our <a href="https://github.com/gitcoinco/GIPs/b
 </p>
     <ul>
         <li>
-Looking to hack… in South America? <a href="http://ethbuenosaires.com/">ETH Buenos Aires</a> is upcoming and is run by the wonderful team at ETHGlobal, who put on ETHDenver and ETHWaterloo prior. 
+Looking to hack… in South America? <a href="http://ethbuenosaires.com/">ETH Buenos Aires</a> is upcoming and is run by the wonderful team at ETHGlobal, who put on ETHDenver and ETHWaterloo prior.
         </li>
         <li>
-Want to be the first to know when new open issues are added? We launched <a href="https://twitter.com/gitcoinfeed">@gitcoinfeed on Twitter</a> which provides updates on all new activity on Gitcoin. 
+Want to be the first to know when new open issues are added? We launched <a href="https://twitter.com/gitcoinfeed">@gitcoinfeed on Twitter</a> which provides updates on all new activity on Gitcoin.
         </li>
     </ul>
 </p>
@@ -341,9 +341,8 @@ Want to be the first to know when new open issues are added? We launched <a href
         'intro': intro,
         'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
         'bounties': bounties,
-        'override_back_color': '#15003e',
-        'invert_footer': True,
-        'hide_header': True,
+        'invert_footer': False,
+        'hide_header': False,
         'highlights': highlights,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
@@ -470,7 +469,7 @@ def faucet(request):
 @staff_member_required
 def faucet_rejected(request):
     from faucet.models import FaucetRequest
-    fr = FaucetRequest.objects.last()
+    fr = FaucetRequest.objects.exclude(comment_admin='').last()
     response_html, txt = render_faucet_rejected(fr)
     return HttpResponse(response_html)
 
