@@ -880,7 +880,6 @@ input[type=text].loading {
 
 .profile_details #hero {
   width: 100%;
-  height: 370px;
   background: #0d053a;
   background: -webkit-radial-gradient(#3e265a 20%, #1e063a, #1e063a);
   background: -o-radial-gradient(#3e265a 20%, #1e063a, #1e063a);
