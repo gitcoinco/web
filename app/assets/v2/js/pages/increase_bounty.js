@@ -49,7 +49,7 @@ $(document).ready(function() {
 
     ;
     if (is_issueURL_invalid) {
-      _alert({ message: 'Please enter a valid github issue URL.' });
+      _alert({ message: gettext('Please enter a valid github issue URL.') });
       isError = true;
     }
     if (amount == '') {
@@ -85,7 +85,7 @@ $(document).ready(function() {
     function web3Callback(error, result) {
       if (error) {
         mixpanel.track('Increase Bounty Error (funder)', {step: 'post_bounty', error: error});
-        _alert({ message: 'There was an error.  Please try again or contact support.' });
+        _alert({ message: gettext('There was an error.  Please try again or contact support.') });
         unloading_button($('#submitBounty'));
         return;
       }
@@ -97,7 +97,7 @@ $(document).ready(function() {
       issuePackage['timestamp'] = timestamp();
       localStorage[issueURL] = JSON.stringify(issuePackage);
 
-      _alert({ message: 'Submission sent to web3.' }, 'info');
+      _alert({ message: gettext('Submission sent to web3.') }, 'info');
       setTimeout(function() {
         mixpanel.track('Submit New Bounty Success', {});
         document.location.href = '/funding/details/?url=' + issueURL;
@@ -112,10 +112,10 @@ $(document).ready(function() {
     var errormsg = undefined;
 
     if (bountyAmount == 0 || open == false) {
-      errormsg = 'No active funded issue found at this address. Are you sure this is an active funded issue?';
+      errormsg = gettext('No active funded issue found at this address. Are you sure this is an active funded issue?');
     }
     if (fromAddress != web3.eth.coinbase) {
-      errormsg = 'Only the address that submitted this funded issue may increase the payout.';
+      errormsg = gettext('Only the address that submitted this funded issue may increase the payout.');
     }
 
     if (errormsg) {
@@ -132,7 +132,7 @@ $(document).ready(function() {
         {
           from: account,
           value: ethAmount,
-          gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
+          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
         },
         web3Callback
       );
@@ -148,7 +148,7 @@ $(document).ready(function() {
         {
           from: account,
           value: 0,
-          gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
+          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
         },
         approveSuccessCallback
       );

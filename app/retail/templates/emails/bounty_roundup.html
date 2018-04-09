@@ -16,7 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static humanize %}
+{% load i18n static humanize %}
 
 {% block content %}
 
@@ -31,7 +31,7 @@
 
 <div class="roundup">
     <div>
-        <h1><img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"> The Gitcoin Weekly <img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"></h1>
+        <h1><img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"> {% trans "The Gitcoin Weekly" %} <img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"></h1>
     </div>
 
     <div style="text-align: left;">
@@ -52,8 +52,8 @@
 
     {% if highlights %}
 
-        <h3>Last Week's Highlights</h3>
-        <h5>Community Members growing open source🌳</h5>
+        <h3>{% trans "Last Week's Highlights" %}</h3>
+        <h5>{% trans "Community Members growing open source" %}🌳</h5>
 
         <div style="text-align: left;">
             {% for highlight in highlights %}
@@ -77,8 +77,8 @@
     {% endif %}
 
     <div>
-        <h3>Open Funded Issues</h3>
-        <h5>Grow Open Source ⚡️ Make Some ETH 💰</h5>
+        <h3>{% trans "Open Funded Issues" %}</h3>
+        <h5>{% trans "Grow Open Source ⚡️ Make Some ETH" %} 💰</h5>
     </div>
 
     {% for bounty in bounties %}
@@ -86,13 +86,17 @@
     {% endfor %}
 
     <div class="centered-contents">
-        <p>Don't see anything that strikes your fancy above?</p>
-        <p>There are more issues in the Gitcoin Issue Explorer:</p>
+        <p>{% trans "Don't see anything that strikes your fancy above?" %}</p>
+        <p>{% trans "There are more issues in the Gitcoin Issue Explorer:" %}</p>
 
         <div style="margin-bottom: 1.5em;">
-            <a class="button" href="https://gitcoin.co/explorer">View Issue Explorer</a>
+            <a class="button" href="https://gitcoin.co/explorer">{% trans "View Issue Explorer" %}</a>
         </div>
     </div>
 </div>
+
+<p>
+    {% trans "You are receiving this email because your email address is on the notification list." %} <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">{% trans "Manage Email Settings" %}</a>.
+</p>
 
 {% endblock %}

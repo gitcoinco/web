@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %}
+{% load i18n humanize %}
 
 <style>
     .bounty-box {
@@ -81,7 +81,7 @@
 
             {% if not small %}
                 <p>
-                    <b>Status:</b> {{bounty.status}}
+                    <b>{% trans "Status" %}:</b> {{bounty.status}}
                     {% if bounty.status == 'submitted' %}
                         ({{bounty.status}} by
                         {% for fulfillment in bounty.fulfillments.all %}
@@ -105,22 +105,22 @@
                 </p>
 
                 <p>
-                    <b>Expires:</b> {{bounty.expires_date | naturaltime}}
+                    <b>{% trans "Expires:" %}</b> {{bounty.expires_date | naturaltime}}
                 </p>
 
                 <p>
-                    <b>Specs:</b><br>
-                    Project Length: {% if bounty.project_length %}{{bounty.project_length}}{%else%}Not specified{%endif%}
+                    <b>{% trans "Specs:" %}</b><br>
+                    {% trans "Project Length" %}: {% if bounty.project_length %}{{bounty.project_length}}{%else%}Not specified{%endif%}
                     <br>
-                    Type: {% if bounty.bounty_type %}{{bounty.bounty_type}}{%else%}Not specified{%endif%}
+                    {% trans "Type:" %} {% if bounty.bounty_type %}{{bounty.bounty_type}}{%else%}Not specified{%endif%}
                     <br>
-                    Experience Level: {% if bounty.experience_level %}{{bounty.experience_level}}{%else%}Not specified{%endif%}
+                    {% trans "Experience Level:" %} {% if bounty.experience_level %}{{bounty.experience_level}}{%else%}Not specified{%endif%}
                 </p>
             {% endif %}
         </div>
     </div>
 
     <div style="margin-bottom: 1.5em;">
-        <a class="button" href="{{bounty.absolute_url}}">View on Gitcoin</a>
+        <a class="button" href="{{bounty.absolute_url}}">{% trans "View on Gitcoin.co" %}</a>
     </div>
 </div>

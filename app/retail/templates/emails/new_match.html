@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %}
+{% load i18n humanize %}
 
 {% block content %}
 
@@ -32,10 +32,10 @@ p, pre{
 }
 </style>
 
-<h1>⚡️ New Match Alert ⚡️</h1>
+<h1>⚡️ {% trans "New Match Alert" %} ⚡️</h1>
 
 <h3>
-    @{{github_username}}, meet {{bounty.org_name}}.  {{bounty.org_name}}, meet @{{github_username}}.
+    @{{github_username}},{% trans "meet" %} {{bounty.org_name}}.  {{bounty.org_name}}, {% trans "meet" %} @{{github_username}}.
 </h3>
 
 <table>
@@ -61,15 +61,13 @@ p, pre{
 </table>
 
 <p>
-    @{{github_username}} expressed interest in <a href="{{bounty.absolute_url}}">{{bounty.title_or_desc}}</a>
+    {% blocktrans %}@{{github_username}} expressed interest in <a href="{{bounty.absolute_url}}">{{bounty.title_or_desc}}</a>{% endblocktrans %}
 </p>
 <h4>Matched Issue</h4>
 {% include 'emails/bounty.html' with bounty=bounty %}
 
 <p>
-    You are both CCed on this email.  Feel free to reply all and say hey.
+    {% trans "You are both CCed on this email.  Feel free to reply all and say hey." %}
 </p>
-
-
 
 {% endblock %}

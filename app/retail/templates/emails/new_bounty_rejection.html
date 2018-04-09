@@ -16,20 +16,22 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %}
+{% load i18n humanize %}
 
 {% block content %}
 
-<h1>😕 Fulfillment Rejected 😕</h1>
-
+<h1>😕 {% trans "Fulfillment Rejected" %} 😕</h1>
 
 <p>
-There is a new funded issue fulfillment *rejection*. Please refer to the rejection comments on the github pull request to learn why.
+{% trans "There is a new funded issue fulfillment *rejection*. Please refer to the rejection comments on the github pull request to learn why." %}
 </p>
 
 <br>
 
 {% include 'emails/bounty.html' with bounty=bounty %}
 
+<p>
+{% trans "You are receiving this email because your email address is on the notification list for this funded issue." %}  <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">{% trans "Manage Email Settings" %}</a>.
+</p>
 
 {% endblock %}

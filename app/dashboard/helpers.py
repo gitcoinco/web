@@ -35,6 +35,7 @@ from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
 )
 from economy.utils import convert_amount
+from github.utils import _AUTH
 from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -106,13 +107,14 @@ def issue_details(request):
     gh_api = url.replace('github.com', 'api.github.com/repos')
 
     try:
-        api_response = requests.get(gh_api)
+        api_response = requests.get(gh_api, auth=_AUTH)
     except ValidationError:
         response['message'] = 'could not pull back remote response'
         return JsonResponse(response)
 
     if api_response.status_code != 200:
-        response['message'] = 'there was a problem reaching the github api'
+        response['message'] = f'there was a problem reaching the github api, status code {api_response.status_code}'
+        response['github_resopnse'] = api_response.json()
         return JsonResponse(response)
 
     try:
@@ -148,7 +150,7 @@ def issue_details(request):
         keywords.append(split_repo_url[-1])
         keywords.append(split_repo_url[-2])
 
-        html_response = requests.get(repo_url)
+        html_response = requests.get(repo_url, auth=_AUTH)
     except (AttributeError, ValidationError):
         response['message'] = 'could not pull back remote response'
         return JsonResponse(response)
@@ -275,6 +277,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
     """
     for fulfillment in fulfillments:
         kwargs = {}
+        accepted_on = None
         github_username = fulfillment.get('data', {}).get(
             'payload', {}).get('fulfiller', {}).get(
                 'githubUsername', '')
@@ -285,6 +288,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                 pass
         if fulfillment.get('accepted'):
             kwargs['accepted'] = True
+            accepted_on = timezone.now()
         try:
             created_on = timezone.now()
             modified_on = timezone.now()
@@ -294,6 +298,8 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                     old_fulfillment = old_fulfillments.first()
                     created_on = old_fulfillment.created_on
                     modified_on = old_fulfillment.modified_on
+                    if old_fulfillment.accepted:
+                        accepted_on = old_fulfillment.accepted_on
             new_bounty.fulfillments.create(
                 fulfiller_address=fulfillment.get(
                     'fulfiller',
@@ -307,6 +313,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                 fulfillment_id=fulfillment.get('id'),
                 created_on=created_on,
                 modified_on=modified_on,
+                accepted_on=accepted_on,
                 **kwargs)
         except Exception as e:
             logging.error(f'{e} during new fulfillment creation for {new_bounty}')

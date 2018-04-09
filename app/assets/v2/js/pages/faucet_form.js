@@ -28,7 +28,7 @@ $('document').ready(function() {
 
     if (!exp.test(this.value)) {
       $('#emailAddress').addClass('is-invalid');
-      $('#emailAddressHelpBlock').html('We could not validate that input as an email address').show();
+      $('#emailAddressHelpBlock').html(gettext('We could not validate that input as an email address')).show();
     }
   });
 
@@ -56,7 +56,7 @@ $('document').ready(function() {
        $('#emailAddress').is(['is-invalid']) ||
        $('#githubProfile').val() === '' ||
        $('#emailAddress').val() === '') {
-      _alert('Please make sure to fill out all fields.');
+      _alert(gettext('Please make sure to fill out all fields.'));
       $('#submitFaucet').removeClass('disabled');
       return;
     }
@@ -76,7 +76,7 @@ $('document').ready(function() {
       })
 
       .fail(function(response) {
-        var message = 'Got an unexpected error';
+        var message = gettext('Got an unexpected error');
 
         if (response && response.responseJSON && response.responseJSON.message) {
           message = response.responseJSON.message;

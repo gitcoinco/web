@@ -52,6 +52,14 @@ precommit hooks and `pre-commit install` from your `gitcoinco/web` root director
 
 In order to make use of the `pre-commit` hooks used for this repository, you should have a valid installation of `node`/`npm`, `isort` (`pip install isort`), and `eslint`.
 
+User facing copy / text should be run through [Django Translation Framework](https://docs.djangoproject.com/en/2.0/topics/i18n/translation/). For example, 
+
+1. HTML user-facing pieces of copy are in `{% blocktrans %}` or `{% trans %}` fields.
+2. javascript user-facing pieces of copy are in `ngettext ` fields.
+3. each of the `views.py` user-facing pieces of copy are in `gettext_lazy` fields
+4. each of the models `help_text`s are internationalized
+5. as are all the emails in `marketing/mails.py`
+
 ### Step 1: Fork
 
 Fork the project [on GitHub](https://github.com/gitcoinco/web) and clone your
@@ -85,7 +93,7 @@ To keep the style of the Javascript code consistent we have a basic linting conf
 
 ### Step 4: Commit
 
-1. Ensure your code changes adhere to our styling and linting standards: `npm run eslint:fix; isort -rc --atomic .`
+1. Ensure your code changes adhere to our styling and linting standards: `npm run eslint:fix; npm run stylelint:fix; isort -rc --atomic .`
 2. List all your changes as a list if needed else simply give a brief
   description on what the changes are.
 3. All lines at 100 columns.

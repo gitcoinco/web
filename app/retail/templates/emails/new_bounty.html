@@ -16,20 +16,23 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %}
+{% load i18n humanize %}
 
 {% block content %}
 
-<h1>🔥 New Funded Issue Alert 🔥</h1>
+<h1>🔥 {% trans "New Funded Issue Alert" %} 🔥</h1>
 
 
 <p>
-    We just matched you with a new funded issue submitted to the Gitcoin.co Issue Explorer:
+    {% trans "We just matched you with a new funded issue submitted to the Gitcoin.co Issue Explorer:" %}
 </p>
 
 <br>
 
 {% include 'emails/bounty.html' with bounty=bounty %}
 
+<p>
+    {% trans "You are receiving this email because your email preferences matched with this bounty's keywords:" %} {{bounty.keywords}}.  <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">{% trans "Manage Email Settings" %}</a>.
+</p>
 
 {% endblock %}

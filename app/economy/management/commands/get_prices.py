@@ -27,6 +27,20 @@ from economy.models import ConversionRate
 from websocket import create_connection
 
 
+def stablecoins():
+    for to_currency in ['DAI']:
+        from_amount = 1
+        to_amount = 1
+        from_currency = 'USDT'
+        ConversionRate.objects.create(
+            from_amount=from_amount,
+            to_amount=to_amount,
+            source='stablecoin',
+            from_currency=from_currency,
+            to_currency=to_currency)
+        print(f'stablecoin: {from_currency}=>{to_currency}:{to_amount}')
+
+
 def etherdelta():
     """Handle pulling market data from Etherdelta."""
     count = 0
@@ -111,6 +125,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Get the latest currency rates."""
+        stablecoins()
+
         try:
             print('ED')
             etherdelta()

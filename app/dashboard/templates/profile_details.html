@@ -1,4 +1,4 @@
-{% load email_obfuscator %}
+{% load i18n email_obfuscator %}
 {% load humanize %}
 {% load static %}
 <!DOCTYPE html>
@@ -21,7 +21,7 @@
                     <div id="hero" class="pt-4">
                         <img class="avatar" src="{{profile.local_avatar_url}}">
                         <h2 class="mt-3">
-                            {{profile.handle}}
+                           Profile: {{profile.handle}} <span id="alpha">Alpha</span>
                         </h2>
                         {% if profile.data.bio %}
                         <p>
@@ -29,15 +29,17 @@
                         </p>
                         {% endif %}
 
-                        <ul class='authors'>
-                            {% for author in profile.authors %}
-                                <li>
-                                    <a href="{% url "profile" %}{{author}}" title="{{author}}" target="_blank" rel="noopener noreferrer">
-                                    <img src="{% url "avatar" %}?repo=https://github.com/{{author}}">
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                        {% if profile.authors|length %}
+                            <ul class='authors'>
+                                Works with: {% for author in profile.authors %}
+                                    <li>
+                                        <a href="{% url "profile" %}{{author}}" title="{{author}}" target="_blank" rel="noopener noreferrer">
+                                        <img src="{% url "avatar" %}?repo=https://github.com/{{author}}">
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
 
                         <ul class='ctas'>
                             <li>
@@ -74,23 +76,23 @@
                         {% endif %}
                         <div style="width: 100%" class="pr-2">
                             <div>
-                                <h4>{{profile.handle}} has received these tips</h4>
+                                <h4>{% blocktrans %}{{profile.handle}} has received these tips{% endblocktrans %}</h4>
                                 {% if tips|length == 0 %}
                                     <li>
-                                        No tips found
+                                        {% trans "No tips found" %}
                                     </li>
                                 {% endif %}
                                 <ul class="tips">
                                     {% if bounties|length > 0 %}
                                             <li style="height:50px; font-weight: bold;">
                                                 <div class='from_username'>
-                                                    From
+                                                    {% trans "From" %}
                                                 </div>
                                                 <div class='url'>
-                                                    Related Issue
+                                                    {% trans "Related Issue" %}
                                                 </div>
                                                 <div class="details">
-                                                    Details
+                                                    {% trans "Details" %}
                                                 </div>
                                             </li>
                                     {% for tip in tips %}
@@ -101,7 +103,7 @@
                                                         {% if tip.from_username %}
                                                             {{tip.from_username}}
                                                         {% else %}
-                                                            Unknown
+                                                            {% trans "Unknown" %}
                                                         {% endif %}
                                                     </p>
                                                 </div>
@@ -135,23 +137,23 @@
                         </div>
                         <div style="width: 100%" class="pr-2">
                             <div>
-                            <h4>{{profile.handle}} has Participated in these Funded Issues</h4>
+                            <h4>{% blocktrans %}{{profile.handle}} has Participated in these Funded Issues{% endblocktrans %}</h4>
                                 <ul class="bounties">
                                     {% if bounties|length == 0 %}
                                         <li>
-                                            No funded issues found
+                                            {% trans "No funded issues found" %}
                                         </li>
                                     {% endif %}
                                     {% if bounties|length > 0 %}
                                             <li style="height:50px; font-weight: bold;">
                                                 <div class='relationship'>
-                                                    Relationship
+                                                    {% trans "Relationship" %}
                                                 </div>
                                                 <div class='status'>
-                                                    Status
+                                                    {% trans "Status" %}
                                                 </div>
                                                 <div class="details">
-                                                    Details
+                                                    {% trans "Details" %}
                                                 </div>
                                             </li>
                                         {% for b in bounties %}
@@ -160,13 +162,13 @@
                                                     <div class='relationship'>
                                                         <p>
                                                             {% if profile.handle == b.fulfiller_github_username %}
-                                                            Worker
+                                                            {% trans "Worker" %}
                                                             {% elif profile.handle == b.bounty_owner_github_username %}
-                                                            Funder
+                                                            {% trans "Funder" %}
                                                             {% elif profile.handle == b.org_name %}
-                                                            Repo Owner
+                                                            {% trans "Repo Owner" %}
                                                             {% else %}
-                                                            Worker
+                                                            {% trans "Worker" %}
                                                             {% endif %}
                                                         </p>
                                                     </div>
@@ -204,7 +206,7 @@
                                         <li>
                                             <div class="dot">&nbsp;</div>
                                             <a href="{% url "explorer" %}?q={{r.html_url}}">
-                                                <p class="meta mr-3">{{r.stargazers_count}} stars</p>
+                                                <p class="meta mr-3">{% blocktrans %}{{r.stargazers_count}} stars{% endblocktrans %}</p>
                                                 <h6>
                                                 {{r.full_name}}</h6>
                                                 {% if r.description %}
@@ -215,7 +217,7 @@
                                     {% endfor %}
                                     {% if profile.repos_data|length == 0 %}
                                         <li>
-                                            No repos
+                                            {% trans "No repos" %}
                                         </li>
                                     {% endif %}
                                 </ul>

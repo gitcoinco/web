@@ -16,55 +16,61 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %}
+{% load i18n humanize %}
 
 {% block content %}
 
-<h1>😕 Funded Issue Expiring ... 😕</h1>
+<h1>😕 {% trans "Funded Issue Expiring ..." %} 😕</h1>
 
 
 <p>
-    Heads up! The funded issue that you {% if is_owner %}posted{% else %}fulfilled{% endif %} (below) is expiring in {{num}} {{unit}}.
+    {% if is_owner %}
+        {% blocktrans %}Heads up! The funded issue that you posted (below) is expiring in {{num}} {{unit}}.{% endblocktrans %}
+    {% else %}
+        {% blocktrans %}Heads up! The funded issue that you fulfilled (below) is expiring in {{num}} {{unit}}.{% endblocktrans %}
+    {% endif %}
 
     <br>
     <br>
     {% if is_owner %}
     {% if bounty.status == 'submitted' %}
-        There is a currently pending claim agains this funded issue. Please make sure you process them!
+        {% trans "There is a currently pending claim agains this funded issue. Please make sure you process them!" %}
     {% endif %}
 
     <br>
     <br>
-    After the funded issue has expired, you can still submit and accept work.  There will just be a new option for the funder to "Clawback" the funds on the funded issue detail page.
+    {% blocktrans %}After the funded issue has expired, you can still submit and accept work.  There will just be a new option for the funder to "Clawback" the funds on the funded issue detail page.{% endblocktrans %}
     <br>
     <br>
-    <h5>Look for this button</h5>
+    <h5>{% trans "Look for this button" %}</h5>
     <br>
     <img src="{% static "v2/images/clawback.png" %}" / >
 
     <br>
     <br>
-    If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.
+    {% blocktrans %}If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.{% endblocktrans %}
 
     {% else %}
 
-        Why don't you leave a comment <a href="{{bounty.github_url}}">on github</a> and let the bounty owner know that you'd like to wrap this up soon? :)
+        {% blocktrans %}Why don't you leave a comment <a href="{{bounty.github_url}}">on github</a> and let the bounty owner know that you'd like to wrap this up soon? :){% endblocktrans %}
 
         <br>
         <br>
-        If you have any problems, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.
+        {% blocktrans %}If you have any problems, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.{% endblocktrans %}
 
 
     {% endif %}
 
     <br>
-    <h5>Funded Issue Details</h5>
+    <h5>{% trans "Funded Issue Details" %}</h5>
 </p>
 
 <br>
 
 {% include 'emails/bounty.html' with bounty=bounty %}
 
-
+<p>
+{% trans "You are receiving this email because your email address is on the notification list for this funded issue." %} <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">{% trans "Manage Email Settings" %}</a>.
+</p>
 
 {% endblock %}

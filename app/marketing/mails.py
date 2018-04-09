@@ -18,26 +18,31 @@
 
 from django.conf import settings
 from django.utils import timezone
+from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
 
 import sendgrid
 from economy.utils import convert_token_to_usdt
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
+from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     render_bounty_expire_warning, render_bounty_feedback, render_bounty_startwork_expire_warning,
-    render_faucet_rejected, render_faucet_request, render_match_email, render_new_bounty, render_new_bounty_acceptance,
-    render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission, render_tip_email,
+    render_bounty_unintersted, render_faucet_rejected, render_faucet_request, render_match_email, render_new_bounty,
+    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
+    render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
 
 def send_mail(from_email, _to_email, subject, body, html=False,
               from_name="Gitcoin.co", cc_emails=None):
-
+    """Send email via SendGrid."""
     # make sure this subscriber is saved
     to_email = _to_email
     get_or_save_email_subscriber(to_email, 'internal')
 
     # setup
+    subject = str(subject)
     sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
     from_email = Email(from_email, from_name)
     to_email = Email(to_email)
@@ -47,8 +52,9 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     content = Content(contenttype, html) if html else Content(contenttype, body)
     if settings.IS_DEBUG_ENV:
         to_email = Email(settings.CONTACT_EMAIL)  # just to be double secret sure of what were doing in dev
-        subject = "[DEBUG] " + subject
+        subject = _("[DEBUG] ") + subject
     mail = Mail(from_email, subject, to_email, content)
+    response = None
 
     # build personalization
     p = Personalization()
@@ -63,10 +69,16 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     mail.add_personalization(p)
 
     # debug logs
-    print("-- Sending Mail '{}' to {}".format(subject, _to_email))
+    print(f"-- Sending Mail '{subject}' to {_to_email}")
 
     # send mails
-    response = sg.client.mail.send.post(request_body=mail.get())
+    try:
+        response = sg.client.mail.send.post(request_body=mail.get())
+    except UnauthorizedError:
+        print(f'-- Sendgrid Mail failure - Unauthorized - Check sendgrid credentials')
+    except HTTPError as e:
+        print(f'-- Sendgrid Mail failure - {e}')
+
     return response
 
 
@@ -80,7 +92,7 @@ def bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
     subject = bounty.github_url
     html, text = render_bounty_feedback(bounty, persona, previous_bounties)
     cc_emails = [from_email]
-    send_mail(from_email, to_email, subject, body, cc_emails=cc_emails)
+    send_mail(from_email, to_email, subject, text, cc_emails=cc_emails, from_name="Kevin Owocki (Gitcoin.co)")
 
 
 def tip_email(tip, to_emails, is_new):
@@ -89,9 +101,9 @@ def tip_email(tip, to_emails, is_new):
         return
 
     warning = '' if tip.network == 'mainnet' else "({})".format(tip.network)
-    subject = "⚡️ New Tip Worth {} {} {}".format(round(tip.amount, round_decimals), warning, tip.tokenName)
+    subject = gettext("⚡️ New Tip Worth {} {} {}").format(round(tip.amount, round_decimals), warning, tip.tokenName)
     if not is_new:
-        subject = "🕐 Tip Worth {} {} {} Expiring Soon".format(round(tip.amount, round_decimals), warning, tip.tokenName)
+        subject = gettext("🕐 Tip Worth {} {} {} Expiring Soon").format(round(tip.amount, round_decimals), warning, tip.tokenName)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
@@ -103,23 +115,23 @@ def tip_email(tip, to_emails, is_new):
 def new_faucet_request(fr):
     to_email = settings.PERSONAL_CONTACT_EMAIL
     from_email = settings.SERVER_EMAIL
-    subject = "New Faucet Request"
-    body = f"A new faucet request was completed. You may fund the request here : https://gitcoin.co/_administration/process_faucet_request/{fr.pk}"
-    send_mail(from_email, to_email, subject, body, from_name="No Reply from Gitcoin.co")
+    subject = _("New Faucet Request")
+    body = _("A new faucet request was completed. You may fund the request here :") + f"https://gitcoin.co/_administration/process_faucet_request/{fr.pk}"
+    send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"))
 
 
 def new_external_bounty():
     """Send a new external bounty email notification."""
     to_email = settings.PERSONAL_CONTACT_EMAIL
     from_email = settings.SERVER_EMAIL
-    subject = "New External Bounty"
+    subject = _("New External Bounty")
     body = f"https://gitcoin.co/_administrationexternal_bounties/externalbounty"
-    send_mail(from_email, to_email, subject, body, from_name="No Reply from Gitcoin.co")
+    send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"))
 
 
 def processed_faucet_request(fr):
     from_email = settings.SERVER_EMAIL
-    subject = "Faucet Request Processed"
+    subject = _("Faucet Request Processed")
     html, text = render_faucet_request(fr)
     to_email = fr.email
 
@@ -128,7 +140,7 @@ def processed_faucet_request(fr):
 
 def reject_faucet_request(fr):
     from_email = settings.SERVER_EMAIL
-    subject = "Faucet Request Rejected"
+    subject = _("Faucet Request Rejected")
     html, text = render_faucet_rejected(fr)
     to_email = fr.email
 
@@ -142,7 +154,7 @@ def new_bounty(bounty, to_emails=None):
     if to_emails is None:
         to_emails = []
 
-    subject = f"⚡️ New Funded Issue Match worth {bounty.value_in_usdt} USD @ " \
+    subject = _("⚡️ New Funded Issue Match worth") + f" {bounty.value_in_usdt} USD @ " \
               f"${convert_token_to_usdt(bounty.token_name)}/{bounty.token_name} {bounty.keywords})"
 
     for to_email in to_emails:
@@ -172,7 +184,7 @@ def new_work_submission(bounty, to_emails=None):
     if to_emails is None:
         to_emails = []
 
-    subject = "✉️ New Work Submission Inside for {} ✉️".format(bounty.title_or_desc)
+    subject = gettext("✉️ New Work Submission Inside for {} ✉️").format(bounty.title_or_desc)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
@@ -186,7 +198,7 @@ def new_bounty_rejection(bounty, to_emails=None):
     if not bounty or not bounty.value_in_usdt:
         return
 
-    subject = "😕 Work Submission Rejected for {} 😕".format(bounty.title_or_desc)
+    subject = gettext("😕 Work Submission Rejected for {} 😕").format(bounty.title_or_desc)
 
     if to_emails is None:
         to_emails = []
@@ -206,7 +218,7 @@ def new_bounty_acceptance(bounty, to_emails=None):
     if to_emails is None:
         to_emails = []
 
-    subject = "🌈 Funds Paid for {} 🌈".format(bounty.title_or_desc)
+    subject = gettext("🌈 Funds Paid for {} 🌈").format(bounty.title_or_desc)
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
@@ -218,7 +230,7 @@ def new_bounty_acceptance(bounty, to_emails=None):
 
 def new_match(to_emails, bounty, github_username):
 
-    subject = "⚡️ {} Meet {}: {}! ".format(github_username.title(), bounty.org_name.title(), bounty.title)
+    subject = gettext("⚡️ {} Meet {}: {}! ").format(github_username.title(), bounty.org_name.title(), bounty.title)
 
     to_email = to_emails[0]
     from_email = settings.CONTACT_EMAIL
@@ -234,13 +246,13 @@ def bounty_expire_warning(bounty, to_emails=None):
         to_emails = []
 
     for to_email in to_emails:
-        unit = 'day'
+        unit = _('day')
         num = int(round((bounty.expires_date - timezone.now()).days, 0))
         if num == 0:
-            unit = 'hour'
+            unit = _('hour')
             num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
         unit = unit + ("s" if num != 1 else "")
-        subject = "😕 Your Funded Issue ({}) Expires In {} {} ... 😕".format(bounty.title_or_desc, num, unit)
+        subject = gettext("😕 Your Funded Issue ({}) Expires In {} {} ... 😕").format(bounty.title_or_desc, num, unit)
 
         from_email = settings.CONTACT_EMAIL
         html, text = render_bounty_expire_warning(to_email, bounty)
@@ -255,7 +267,7 @@ def bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
 
     from_email = settings.CONTACT_EMAIL
     html, text = render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
-    subject = "Are you still working on '{}' ? ".format(bounty.title_or_desc)
+    subject = gettext("Are you still working on '{}' ? ").format(bounty.title_or_desc)
 
     if not should_suppress_notification_email(to_email):
         send_mail(from_email, to_email, subject, text, html)
@@ -267,7 +279,15 @@ def bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
 
     from_email = settings.CONTACT_EMAIL
     html, text = render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
-    subject = "We've removed you from the task: '{}' ? ".format(bounty.title_or_desc)
+    subject = gettext("We've removed you from the task: '{}' ? ").format(bounty.title_or_desc)
+
+    if not should_suppress_notification_email(to_email):
+        send_mail(from_email, to_email, subject, text, html)
+
+def bounty_uninterested(to_email, bounty, interest):
+    from_email = settings.CONTACT_EMAIL
+    html, text = render_bounty_unintersted(to_email, bounty, interest)
+    subject = "Funder has removed you from the task: '{}' ? ".format(bounty.title_or_desc)
 
     if not should_suppress_notification_email(to_email):
         send_mail(from_email, to_email, subject, text, html)

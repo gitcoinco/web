@@ -16,7 +16,7 @@ window.onload = function() {
     var fulfillmentCallback = function(results, status) {
       if (status != 'success') {
         mixpanel.track('Process Bounty Error', {step: 'fulfillmentCallback', error: error});
-        _alert({ message: 'Could not get fulfillment details' }, 'warning');
+        _alert({ message: gettext('Could not get fulfillment details') }, 'warning');
         console.error(error);
         unloading_button($('.submitBounty'));
         return;
@@ -24,7 +24,7 @@ window.onload = function() {
       results = sanitizeAPIResults(results);
       result = results[0];
       if (result == null) {
-        _alert({ message: 'No bounty fulfillments found for this Github URL.' }, 'warning');
+        _alert({ message: gettext('No bounty fulfillments found for this Github URL.') }, 'warning');
         unloading_button($('.submitBounty'));
         return;
       }
@@ -78,11 +78,11 @@ window.onload = function() {
         localStorage['acceptTOS'] = true;
       }
       if (issueURL == '') {
-        _alert({ message: 'Please enter a issue URL.' }, 'warning');
+        _alert({ message: gettext('Please enter a issue URL.') }, 'warning');
         isError = true;
       }
       if (fulfillmentId == null) {
-        _alert({ message: 'Please enter a fulfillment Id.' }, 'warning');
+        _alert({ message: gettext('Please enter a fulfillment Id.') }, 'warning');
         isError = true;
       }
       if (isError) {
@@ -96,7 +96,7 @@ window.onload = function() {
       var apiCallback = function(results, status) {
         if (status != 'success') {
           mixpanel.track('Process Bounty Error', {step: 'apiCallback', error: error});
-          _alert({ message: 'Could not get bounty details' }, 'warning');
+          _alert({ message: gettext('Could not get bounty details') }, 'warning');
           console.error(error);
           unloading_button($('.submitBounty'));
           return;
@@ -104,7 +104,7 @@ window.onload = function() {
         results = sanitizeAPIResults(results);
         result = results[0];
         if (result == null) {
-          _alert({ message: 'No active bounty found for this Github URL.' }, 'info');
+          _alert({ message: gettext('No active bounty found for this Github URL.') }, 'info');
           unloading_button($('.submitBounty'));
           return;
         }
@@ -119,11 +119,11 @@ window.onload = function() {
         var errormsg = undefined;
 
         if (bountyAmount == 0 || open == false || initialized == false) {
-          errormsg = 'No active funding found at this address.  Are you sure this is an active funded issue?';
+          errormsg = gettext('No active funding found at this address.  Are you sure this is an active funded issue?');
         } else if (claimeeAddress == '0x0000000000000000000000000000000000000000') {
-          errormsg = 'No claimee found for this bounty.';
+          errormsg = gettext('No claimee found for this bounty.');
         } else if (fromAddress != web3.eth.coinbase) {
-          errormsg = 'You can only process a funded issue if you submitted it initially.';
+          errormsg = gettext('You can only process a funded issue if you submitted it initially.');
         }
 
         if (errormsg) {
@@ -142,7 +142,7 @@ window.onload = function() {
               'txid': result
             });
 
-            _alert({ message: 'Submitted transaction to web3.' }, 'info');
+            _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
             setTimeout(function() {
               mixpanel.track('Process Bounty Success', {});
               document.location.href = '/funding/details?url=' + issueURL;
@@ -152,7 +152,7 @@ window.onload = function() {
 
           if (error) {
             mixpanel.track('Process Bounty Error', {step: 'final_callback', error: error});
-            _alert({ message: 'There was an error' }, 'error');
+            _alert({ message: gettext('There was an error') }, 'error');
             console.error(error);
             unloading_button($('.submitBounty'));
           } else {
@@ -160,7 +160,7 @@ window.onload = function() {
           }
         };
 
-        bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)}, final_callback);
+        bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))}, final_callback);
 
       };
       // Get bountyId from the database

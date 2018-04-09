@@ -24,7 +24,7 @@ $ = makeAlias(document, 'getElementById');
 
 // Create Accounts Object
 waitforWeb3(function() {
-  if (Accounts) {
+  if (typeof Accounts != 'undefined') {
     // Set web3 provider
     var host = '';
 
@@ -47,7 +47,7 @@ waitforWeb3(function() {
 });
 
 
-if (Accounts) {
+if (typeof Accounts != 'undefined') {
   Accounts = new Accounts();
 
   // Extend the web3 object

@@ -16,20 +16,19 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %}
+{% load i18n humanize %}
 
 {% block content %}
 
-<h1>👇 New Work Submission 👇</h1>
+<h1>👇 {% trans "New Work Submission" %} 👇</h1>
 
 
 <p>
-    There is a new work *submission* against your funded issue. Please check it out, below
+    {% trans "There is a new work *submission* against your funded issue. Please check it out, below" %}
 </p>
 
 <br>
 
 {% include 'emails/bounty.html' with bounty=bounty %}
-
 
 {% endblock %}
