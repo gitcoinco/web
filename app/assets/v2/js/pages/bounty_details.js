@@ -189,6 +189,8 @@ var callbacks = {
       } else {
         $('#timer').hide();
       }
+    } else if (result['status'] === 'done') {
+      $('#timer').hide();
     } else {
       response = response.join(' ');
     }
