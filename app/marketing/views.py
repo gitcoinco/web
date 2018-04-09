@@ -26,6 +26,7 @@ from django.db.models import Max
 from django.http import Http404
 from django.template.response import TemplateResponse
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from chartit import Chart, DataPool
 from dashboard.models import Profile, UserAction
@@ -443,11 +444,11 @@ def email_settings(request, key):
         except Exception as e:
             print(e)
             validation_passed = False
-            msg = 'Invalid Email'
+            msg = _('Invalid Email')
 
         if level not in ['lite', 'lite1', 'regular', 'nothing']:
             validation_passed = False
-            msg = 'Invalid Level'
+            msg = _('Invalid Level')
         if validation_passed:
             key = get_or_save_email_subscriber(email, 'settings')
             es = EmailSubscriber.objects.get(priv=key)
@@ -471,7 +472,7 @@ def email_settings(request, key):
     context = {
         'nav': 'internal',
         'active': 'email_settings',
-        'title': 'Email Settings',
+        'title': _('Email Settings'),
         'es': es,
         'keywords': ",".join(es.keywords),
         'msg': msg,
@@ -501,8 +502,8 @@ def leaderboard(request, key=''):
         key = 'quarterly_earners'
 
     titles = {
-        'quarterly_payers': 'Top Payers',
-        'quarterly_earners': 'Top Earners',
+        'quarterly_payers': _('Top Payers'),
+        'quarterly_earners': _('Top Earners'),
         #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
         #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
         #        'monthly_fulfilled': 'Monthly Leaderboard',

@@ -14,12 +14,6 @@
   width: 100%;
 }
 
-.form__radio input:checked + label::after {
-  background-color: #0D0764;
-  border: 4px solid #fff;
-  transform: scale(0.7);
-}
-
 .form__radio label::before,
 .form__radio label::after {
   align-items: center;
@@ -40,4 +34,10 @@
 .form__radio label::before {
   background-color: #0D0764;
   border: 2px solid #0D0764;
+}
+
+.form__radio input:checked + label::after {
+  background-color: #0D0764;
+  border: 4px solid #fff;
+  transform: scale(0.7);
 }

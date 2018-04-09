@@ -8,9 +8,9 @@ var estimate = function(amount, conv_rate) {
     } else if (estimateAmount > 1000) {
       estimateAmount = Math.round(estimateAmount / 100) / 10 + 'k';
     }
-    return 'Approx: ' + estimateAmount + ' USD';
+    return gettext('Approx: ') + estimateAmount + ' USD';
   }
-  return 'Approx: Unknown amount';
+  return gettext('Approx: Unknown amount');
 };
 
 var getUSDEstimate = function(amount, denomination, callback) {
@@ -21,7 +21,7 @@ var getUSDEstimate = function(amount, denomination, callback) {
   try {
     amount = parseFloat(amount);
   } catch (e) {
-    return 'Incorrect amount';
+    return gettext('Incorrect amount');
   }
   if (document.conversion_rates && document.conversion_rates[denomination]) {
     conv_rate = document.conversion_rates[denomination];
@@ -40,6 +40,6 @@ var getUSDEstimate = function(amount, denomination, callback) {
     document.conversion_rates[denomination] = conv_rate;
     return callback(estimate(amount, conv_rate));
   }).fail(function() {
-    return callback(new Error('Approx: Unknown amount'));
+    return callback(new Error(gettext('Approx: Unknown amount')));
   });
 };

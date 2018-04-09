@@ -30,6 +30,8 @@ from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
@@ -53,6 +55,17 @@ class BountyQuerySet(models.QuerySet):
     def current(self):
         """Filter results down to current bounties only."""
         return self.filter(current_bounty=True)
+
+    def stats_eligible(self):
+        """Exclude results that we don't want to track in statistics."""
+        return self.exclude(idx_status__in=['unknown', 'cancelled'])
+
+    def exclude_by_status(self, excluded_statuses=None):
+        """Exclude results with a status matching the provided list."""
+        if excluded_statuses is None:
+            excluded_statuses = []
+
+        return self.exclude(idx_status__in=excluded_statuses)
 
 
 class Bounty(SuperModel):
@@ -84,6 +97,17 @@ class Bounty(SuperModel):
         ('Months', 'Months'),
         ('Unknown', 'Unknown'),
     ]
+
+    STATUS_CHOICES = (
+        ('cancelled', 'cancelled'),
+        ('done', 'done'),
+        ('expired', 'expired'),
+        ('open', 'open'),
+        ('started', 'started'),
+        ('submitted', 'submitted'),
+        ('unknown', 'unknown'),
+    )
+
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
     web3_created = models.DateTimeField(db_index=True)
@@ -99,24 +123,24 @@ class Bounty(SuperModel):
     bounty_owner_email = models.CharField(max_length=255, blank=True)
     bounty_owner_github_username = models.CharField(max_length=255, blank=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
-    is_open = models.BooleanField(help_text='Whether the bounty is still open for fulfillments.')
+    is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
     raw_data = JSONField()
     metadata = JSONField(default={})
     current_bounty = models.BooleanField(
-        default=False, help_text='Whether this bounty is the most current revision one or not')
+        default=False, help_text=_('Whether this bounty is the most current revision one or not'))
     _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     contract_address = models.CharField(max_length=50, default='')
     network = models.CharField(max_length=255, blank=True, db_index=True)
     idx_experience_level = models.IntegerField(default=0, db_index=True)
     idx_project_length = models.IntegerField(default=0, db_index=True)
-    idx_status = models.CharField(max_length=50, default='', db_index=True)
+    idx_status = models.CharField(max_length=9, choices=STATUS_CHOICES, default='open', db_index=True)
     avatar_url = models.CharField(max_length=255, default='')
     issue_description = models.TextField(default='', blank=True)
     standard_bounties_id = models.IntegerField(default=0)
     num_fulfillments = models.IntegerField(default=0)
     balance = models.DecimalField(default=0, decimal_places=2, max_digits=50)
-    accepted = models.BooleanField(default=False, help_text='Whether the bounty has been done')
+    accepted = models.BooleanField(default=False, help_text=_('Whether the bounty has been done'))
     interested = models.ManyToManyField('dashboard.Interest', blank=True)
     interested_comment = models.IntegerField(null=True, blank=True)
     submissions_comment = models.IntegerField(null=True, blank=True)
@@ -799,7 +823,7 @@ class Profile(SuperModel):
 
     @property
     def stats(self):
-        bounties = self.bounties
+        bounties = self.bounties.stats_eligible()
         loyalty_rate = 0
         total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_funder(self.handle)])
         total_fulfilled = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])

@@ -1,4 +1,4 @@
-{% load static %}
+{% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,21 +18,21 @@
       <div class="col-12 col-md-2 left-rails text-center" style="background: #F2F6F9;">
         {% include 'shared/current_balance.html' %}
         <div class="explorer font-body">
-          <a href="{% url 'explorer' %}"><i class="fa fa-chevron-left"></i> Back to Issue Explorer</a>
+          <a href="{% url 'explorer' %}"><i class="fa fa-chevron-left"></i> {% trans "Back to Issue Explorer" %}</a>
         </div>
       </div>
 
       <div class="col-12 offset-md-1 col-md-8 body">
         <div class="alert info transaction-status" style="display:none;">
           <div style='width:100%; font-size: 16px;'>
-            <strong style="font-size: 22px;">Your transaction has been posted to web3</strong>
+            <strong style="font-size: 22px;">{% trans "Your transaction has been posted to web3" %}</strong>
             <br>
-            Please wait a minute or two for web3 to sync
-            <a target="_blank" href="javascript:void(0)" id="transaction_url">this transaction</a>.
+            {% blocktrans %}Please wait a minute or two for web3 to sync
+            <a target="_blank" href="javascript:void(0)" id="transaction_url">this transaction</a>.{% endblocktrans %}
             <br>
             <br>
-            This page will automatically refresh as soon as the blockchain is updated.
-            (You may close the browser tab.)
+            {% trans "This page will automatically refresh as soon as the blockchain is updated." %}
+            ({% trans "You may close the browser tab." %})
           </div>
         </div>
 
@@ -42,11 +42,11 @@
 
         <div class="row nonefound" style="display:none;">
           <img src="{% static "v2/images/shrug_bot.png" %}">
-          <h3>No funded issue found.</h3>
-          <p>Check out the <a href="{% url 'explorer' %}">Issue Explorer</a></p>
+          <h3>{% trans "No funded issue found." %}</h3>
+          <p>{% url 'explorer' as explorerurl %}{% blocktrans %}Check out the <a href="{{ explorerurl }}">Issue Explorer</a>{% endblocktrans %}</p>
           <br>
-          <h6>Be the OSS Funding you wish to see in the world.</h6>
-          <p id='submitsolicitation'>Looking to fund some work?  You can submit a new Funded Issue <a href="{% url 'new_funding' %}">here</a>.</p>
+          <h6>{% trans "Be the OSS Funding you wish to see in the world." %}</h6>
+          <p id='submitsolicitation'>{% url 'new_funding' as new_fundingurl %}{% blocktrans %} Looking to fund some work?  You can submit a new Funded Issue <a href="{{ new_fundingurl }}">here</a>.{% endblocktrans %}</p>
         </div>
 
         <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none;">
@@ -60,28 +60,40 @@
 
         <div class="col-12" id="bounty_details">
           <div class="row font-body">
-            <div class="col-12">
-              <h4 id="title" class="font-title"></h4>
+            <div class="d-none d-lg-block col-lg-1">
+              <div id="avatar_url"></div>
             </div>
-            <div class="col-12">
-              <div id="status"></div>
-            </div>
-            <div class="col-12 bounty-info">
-              <div>
-                <span class="bounty-info-heading">Expires In </span>
-                <span class="bounty-info-text" id="expires_date"></span>
+            <div class="col-12 col-lg-11 pl-lg-4">
+              <div class="col-12">
+                <h4 id="title" class="font-title"></h4>
               </div>
-              <div>
-                <span class="bounty-info-heading">Opened </span>
-                <span class="bounty-info-text" id="web3_created"></span>
+              <div class="col-12">
+                <div id="status"></div>
               </div>
-              <div>
-                <span class="bounty-info-heading">Experience Level </span>
-                <span class="bounty-info-text" id="experience_level"></span>
-              </div>
-              <div>
-                <span class="bounty-info-heading">Issue Type </span>
-                <span class="bounty-info-text" id="bounty_type"></span>
+              <div class="col-12 bounty-info">
+                <div id="timer">
+                  <div>
+                    <span class="bounty-info-heading">{% trans "Time left" %} </span>
+                    <span class="bounty-info-text" id="expires_date"></span>
+                  </div>
+                  <div>
+                    <span class="progress-bar">
+                      <span class="progress"></span>
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <span class="bounty-info-heading">{% trans "Opened" %} </span>
+                  <span class="bounty-info-text" id="web3_created"></span>
+                </div>
+                <div>
+                  <span class="bounty-info-heading">{% trans "Experience Level" %} </span>
+                  <span class="bounty-info-text" id="experience_level"></span>
+                </div>
+                <div>
+                  <span class="bounty-info-heading">{% trans "Issue Type" %} </span>
+                  <span class="bounty-info-text" id="bounty_type"></span>
+                </div>
               </div>
             </div>
           </div>
@@ -108,54 +120,54 @@
                 </div>
             </div>
             <div class="col-12">
-              <h5 class="bounty-heading" id="description">Description</h5>
+              <h5 class="bounty-heading" id="description">{% trans "Description" %}</h5>
               <div class="bounty-text" id="issue_description"></div>
             </div>
             <div class="col-12">
               <div id="issue_keywords"></div>
             </div>
             <div class="col-12">
-              <h5 class="bounty-heading">Contributors</h5>
+              <h5 class="bounty-heading">{% trans "Contributors" %}</h5>
               <div class="row contributors-info">
                 <div class="col-12 col-md-4 contributor-box">
                   <i class="far fa-clock"></i>
-                  <h6>Work Started</h6>
+                  <h6>{% trans "Work Started" %}</h6>
                   <ul id="started_owners_username" class="font-body"></ul>
                 </div>
                 <div class="col-12 col-md-4 contributor-box">
                   <i class="fas fa-desktop"></i>
-                  <h6>Work Submitted</h6>
+                  <h6>{% trans "Work Submitted" %}</h6>
                   <ul id="submitted_owners_username" class="font-body"></ul>
                 </div>
                 <div class="col-12 col-md-4 contributor-box">
                   <i class="fab fa-ethereum"></i>
-                  <h6>Work Accepted</h6>
+                  <h6>{% trans "Work Accepted" %}</h6>
                   <ul id="fulfilled_owners_username" class="font-body"></ul>
                 </div>
               </div>
             </div>
             <div class="col-12">
-              <h5 class="bounty-heading">All Activity</h5>
+              <h5 class="bounty-heading">{% trans "All Activity" %}</h5>
               <div id="activities" class="font-body"></div>
             </div>
             <div class="col-12">
-              <h5 class="bounty-heading">Funder</h5>
+              <h5 class="bounty-heading">{% trans "Funder" %}</h5>
               <div class="row box">
                 <div class="col-12 col-md-1 funder-avatar">
-                  <div id="avatar_url"></div>
+                  <div id="issuer_avatar_url"></div>
                 </div>
                 <div class="col-12 col-md-11">
                   <div id="bounty_owner_name" class="font-subheader"></div>
                   <div>
-                    <span class="bounty-subheading">Funder :</span>
+                    <span class="bounty-subheading">{% trans "Funder" %} :</span>
                     <span class="bounty-text" id="bounty_owner_address"></span>
                   </div>
                   <div>
-                    <span class="bounty-subheading">Email :</span>
+                    <span class="bounty-subheading">{% trans "Email" %} :</span>
                     <span class="bounty-text" id="bounty_owner_email"></span>
                   </div>
                   <div>
-                    <span class="bounty-subheading">Gitcoin Profile :</span>
+                    <span class="bounty-subheading">{% trans "Gitcoin Profile" %} :</span>
                     <span class="bounty-text" id="bounty_owner_github_username"></span>
                   </div>
                 </div>
@@ -168,19 +180,22 @@
 
     <script id="action" type="text/x-jsrender">
       [[if enabled]]
-        <span [[if id == 'submit']] id="[[:id]]" [[if !work_started]] class="none" [[/if]] [[/if]]
+        <span id="[[:id]]" [[if id == 'submit']] [[if !work_started]] class="none" [[/if]] [[/if]]
           title='<div class="tooltip-info tooltip-sm">[[:title]]</div>'>
           [[if pending_acceptance]]
             <a class="button button--primary accept" role="button" href="[[:href]]" target="[[:target]]">
               <span class="font-caption">[[:text]] ( [[:pending_acceptance]] )</span>
             </a>
           [[else color == 'white']]
-            <a class="btn btn-small" id="btn-white" role="button" href="[[:href]]" target="[[:target]]">
+            <a class="btn btn-small" id="btn-white" role="button" target="_blank" href="[[:href]]" target="[[:target]]">
               [[if comments]]
                 <span class="font-caption">
                   [[:text]]
-                  <span class="github-comment">
-                    [[:comments]]
+                  <span class="comment">
+                    <img src={% static "v2/images/comment.svg" %}>
+                    <span class="github-comment">
+                      [[:comments]]
+                    </span>
                   </span>
                 </span>
               [[else]]
@@ -217,19 +232,19 @@
               <i class="far fa-check-circle"></i>
             </div>
             <div>
-              <span class="bounty-subheading">ETH Address :</span>
+              <span class="bounty-subheading">{% trans "ETH Address" %} :</span>
               <span class="bounty-text">
                 <a href="https://etherscan.io/address/[[:address]]">[[:address]]</a>
               </span>
             </div>
             <div>
-              <span class="bounty-subheading">Email :</span>
+              <span class="bounty-subheading">{% trans "Email" %} :</span>
               <span class="bounty-text">
                 <a href="mailto:[[:email]]">[[:email]]</a>
               </span>
             </div>
             <div>
-              <span class="bounty-subheading">Submission Id :</span>
+              <span class="bounty-subheading">{% trans "Submission Id" %} :</span>
               <span class="bounty-text">[[:fulfillment_id]]</span>
             </div>
           </div>
@@ -240,7 +255,7 @@
             </div>
             [[if uninterest_possible]]
               <div>
-                <span title="Remove this user's started work on the bounty">
+                <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
                   <a id="remove-[[:name]]" class="button button--primary" role="button" href="remove-handle">
                     <span class="font-smaller-4">Stop work</span>
                   </a>
