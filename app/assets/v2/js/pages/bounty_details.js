@@ -175,16 +175,17 @@ var callbacks = {
     var expiringInPercentage = 100 * (
       (now.getTime() - new Date(result['web3_created']).getTime()) /
       (expires_date.getTime() - new Date(result['web3_created']).getTime()));
+    if(expiringInPercentage>100){
+      expiringInPercentage = 100;
+    }
 
     $('.progress').css('width', expiringInPercentage + '%');
-
     var response = timeDifference(now, expires_date).split(' ');
 
-    response.shift();
-    
     if (expires_date < new Date()) {
       label = 'expired';
       if (result['is_open']) {
+        $('.timeleft').text('Expired');
         response = '<span title="This issue is past its expiration date, but it is still active.  Check with the submitter to see if they still want to see it fulfilled.">' + response.join(' ') + '</span>';
       } else {
         $('#timer').hide();
@@ -192,6 +193,7 @@ var callbacks = {
     } else if (result['status'] === 'done') {
       $('#timer').hide();
     } else {
+      response.shift();
       response = response.join(' ');
     }
     return [ label, response ];
