@@ -1,5 +1,5 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -13,252 +13,251 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
 <link rel="stylesheet" href={% static "v2/css/sidebar_search.css" %}>
 <div class="sidebar_search">
   <form>
     <div class="col">
       <div class="col-12 subheading font-body" title='{% include "shared/status_tooltip.html" %}'>
-        PROJECT STATUS <i class="fas fa-info-circle"></i>
+        {% trans "PROJECT STATUS" %} <i class="fas fa-info-circle"></i>
       </div>
       <div class="col-12 options">
         <div class="form__radio option">
           <input name="idx_status" id="status_open" type="radio" value="open" val-ui='Open' checked />
-          <label class="filter-label" for=status_open>1 Open</label>
+          <label class="filter-label" for=status_open>1 {% trans "Open" %}</label>
         </div>
 
         <div class="form__radio option">
           <input name="idx_status" id="status_started" type="radio" value="started" val-ui='Work Started' />
-          <label class="filter-label" for=status_started>2 Work Started</label>
+          <label class="filter-label" for=status_started>2 {% trans "Work Started" %}</label>
         </div>
 
         <div class="form__radio option">
           <input name="idx_status" id="status_submitted" type="radio" value="submitted" val-ui='Work Submitted' />
-          <label class="filter-label" for=status_submitted>3 Work Submitted</label>
+          <label class="filter-label" for=status_submitted>3 {% trans "Work Submitted" %}</label>
         </div>
 
         <div class="form__radio option">
           <input name="idx_status" id="status_done" type="radio" value="done" val-ui='Work Done' />
-          <label class="filter-label" for=status_done>4 Work Done</label>
+          <label class="filter-label" for=status_done>4 {% trans "Work Done" %}</label>
         </div>
 
         <div class="form__radio option">
           <input name="idx_status" id="status_expired" type="radio" value="expired" val-ui='Expired' />
-          <label class="filter-label" for=status_expired>5 Expired</label>
+          <label class="filter-label" for=status_expired>5 {% trans "Expired" %}</label>
         </div>
 
         <div class="form__radio option">
           <input name="idx_status" id="status_canceled" type="radio" value="cancelled" val-ui='Cancelled' />
-          <label class="filter-label" for=status_canceled>6 Cancelled</label>
+          <label class="filter-label" for=status_canceled>6 {% trans "Cancelled" %}</label>
         </div>
 
         <div class="form__radio option">
           <input name="idx_status" id="any_status" type="radio" value="any" />
-          <label class="filter-label" for=any_status>Any</label>
+          <label class="filter-label" for=any_status>{% trans "Any" %}</label>
         </div>
       </div>
     </div>
 
-    <div class="col">
-      <div class="col-12 subheading font-body accordion">MY PROJECTS</div>
-      <div class="col-12 options panel">
-        <div class="form__radio option">
-          <input name="bounty_filter" id="createdByMe" type="radio" value="createdByMe" val-ui='Created'/>
-          <label class="filter-label" for=createdByMe>Created By Me</label>
-        </div>
-        <div class="form__radio option">
-          <input name="bounty_filter" id="startedByMe" type="radio" value="startedByMe" val-ui='Started'/>
-          <label class="filter-label" for=startedByMe>Started By Me</label>
-        </div>
-        <div class="form__radio option">
-          <input name="bounty_filter" id="FulfilledByMe" type="radio" value="fulfilledByMe" val-ui='Fulfilled'/>
-          <label class="filter-label" for=FulfilledByMe>Fulfilled By Me</label>
-        </div>
-        <div class="form__radio option">
-          <input name="bounty_filter" id="all_bounty" type="radio" value="any" checked/>
-          <label class="filter-label" for=all_bounty>All</label>
+    {% if github_handle %}
+      <div class="col">
+        <div class="col-12 subheading font-body accordion">{% trans "MY PROJECTS" %}</div>
+        <div class="col-12 options panel">
+          <div class="form__radio option">
+            <input name="bounty_filter" id="createdByMe" type="radio" value="createdByMe" val-ui='Created'/>
+            <label class="filter-label" for=createdByMe>{% trans "Created By Me" %}</label>
+          </div>
+          <div class="form__radio option">
+            <input name="bounty_filter" id="startedByMe" type="radio" value="startedByMe" val-ui='Started'/>
+            <label class="filter-label" for=startedByMe>{% trans "Started By Me" %}</label>
+          </div>
+          <div class="form__radio option">
+            <input name="bounty_filter" id="FulfilledByMe" type="radio" value="fulfilledByMe" val-ui='Fulfilled'/>
+            <label class="filter-label" for=FulfilledByMe>{% trans "Fulfilled By Me" %}</label>
+          </div>
+          <div class="form__radio option">
+            <input name="bounty_filter" id="all_bounty" type="radio" value="any" checked/>
+            <label class="filter-label" for=all_bounty>{% trans "All" %}</label>
+          </div>
         </div>
       </div>
-    </div>
+    {% endif %}
 
     <div class="col">
-      <div class="col-12 subheading font-body accordion">Experience Level</div>
+      <div class="col-12 subheading font-body accordion">{% trans "Experience Level" %}</div>
       <div class="col-12 panel options">
         <div class="checkbox_container">
           <input name="experience_level" id="beginner" type="checkbox" value="beginner" val-ui='Beginner' />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=beginner>Beginner</label>
+            <label for=beginner>{% trans "Beginner" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
           <input name="experience_level" id="intermediate" type="checkbox" value="intermediate" val-ui='Intermediate' />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=intermediate>Intermediate</label>
+            <label for=intermediate>{% trans "Intermediate" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
           <input name="experience_level" id="advanced" type="checkbox" value="advanced" val-ui='Advanced' />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=advanced>Advanced</label>
+            <label for=advanced>{% trans "Advanced" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
           <input name="experience_level" id="any_xp" type="checkbox" value="any" checked />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=any_xp>Any</label>
+            <label for=any_xp>{% trans "Any" %}</label>
           </div>
         </div>
       </div>
     </div>
 
     <div class="col">
-      <div class="col-12 subheading font-body accordion">Project Length</div>
+      <div class="col-12 subheading font-body accordion">{% trans "Project Length" %}</div>
       <div class="col-12 options panel">
         <div class="checkbox_container">
           <input name="project_length" id="hours" type="checkbox" value="hours" val-ui='Hours-Long' />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=hours>Hours</label>
+            <label for=hours>{% trans "Hours" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
           <input name="project_length" id="days" type="checkbox" value="days" val-ui='Days-Long' />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=days>Days</label>
+            <label for=days>{% trans "Days" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
           <input name="project_length" id="weeks" type="checkbox"  value="weeks" val-ui='Weeks-Long' />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=weeks>Weeks</label>
+            <label for=weeks>{% trans "Weeks" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
           <input name="project_length" id="months" type="checkbox"  value="months" val-ui='Months-Long' />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=months>Months</label>
+            <label for=months>{% trans "Months" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
           <input name="project_length" id="any_length" type="checkbox" value="any" checked />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=any_length>Any</label>
+            <label for=any_length>{% trans "Any" %}</label>
           </div>
         </div>
       </div>
     </div>
 
     <div class="col">
-      <div class="col-12 subheading font-body accordion">Type</div>
+      <div class="col-12 subheading font-body accordion">{% trans "Type" %}</div>
       <div class="col-12 options panel">
         <div class="checkbox_container">
           <input name="bounty_type" id="bug" type="checkbox" value="bug" val-ui='Bug' />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=bug>Bug</label>
+            <label for=bug>{% trans "Bug" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
           <input name="bounty_type" id="feature" type="checkbox" value="feature" val-ui='Feature' />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=feature>Feature</label>
+            <label for=feature>{% trans "Feature" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
           <input name="bounty_type" id="security" type="checkbox" value="security" val-ui='Security' />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=security>Security</label>
+            <label for=security>{% trans "Security" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
           <input name="bounty_type" id="any_bt" type="checkbox" value="any" checked />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=any_bt>Any</label>
+            <label for=any_bt>{% trans "Any" %}</label>
           </div>
         </div>
       </div>
     </div>
 
     <div class="col">
-      <div class="col-12 subheading font-body accordion">Network</div>
+      <div class="col-12 subheading font-body accordion">{% trans "Network" %}</div>
       <div class="col-12 options panel">
         <div class="checkbox_container">
           <input name="network" id="local" type="checkbox" value="local" val-ui='Custom Network' />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=local>Custom</label>
+            <label for=local>{% trans "Custom" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
           <input name="network" id="ropsten" type="checkbox" value="ropsten" val-ui='Ropsten' />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=ropsten>Ropsten</label>
+            <label for=ropsten>{% trans "Ropsten" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
           <input name="network" id="rinkeby" type="checkbox" value="rinkeby" val-ui='Rinkeby' />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=rinkeby>Rinkeby</label>
+            <label for=rinkeby>{% trans "Rinkeby" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
           <input name="network" id="mainnet" type="checkbox" value="mainnet" val-ui='Mainnet' checked />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=mainnet>Mainnet</label>
+            <label for=mainnet>{% trans "Mainnet" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
           <input name="network" id="any_network" type="checkbox" value="any" />
           <span class="checkbox"></span>
           <div class="filter-label">
-            <label for=any_network>Any</label>
+            <label for=any_network>{% trans "Any" %}</label>
           </div>
         </div>
       </div>
     </div>
-
     {% if profile.data.site_admin is True %}
-        <div class="col">
-          <div class="col-12 subheading font-body accordion">LAST UPDATED</div>
-          <div class="col-12 options panel">
-            <div class="form__radio option">
-              <input name="last_updated" id="not_updated_3days" type="radio" value="3" val-ui='Not updated in more than 3 days'/>
-              <label class="filter-label wrap" for=not_updated_3days>More than 3 days ago</label>
-            </div>
-            <div class="form__radio option">
-              <input name="last_updated" id="not_updated_7days" type="radio" value="7" val-ui='Not updated in more than 7 days'/>
-              <label class="filter-label wrap" for=not_updated_7days>More than 7 days ago</label>
-            </div>
-            <div class="form__radio option">
-              <input name="last_updated" id="not_updated_14days" type="radio" value="14" val-ui='Not updated in more than 14 days'/>
-              <label class="filter-label wrap" for=not_updated_14days>More than 14 days ago</label>
-            </div>
-            <div class="form__radio option">
-              <input name="last_updated" id="all_updated" type="radio" value="any" checked/>
-              <label class="filter-label wrap" for=all_updated>All</label>
-            </div>
-          </div>
+    <div class="col">
+      <div class="col-12 subheading font-body accordion">LAST UPDATED</div>
+      <div class="col-12 options panel">
+        <div class="form__radio option">
+          <input name="last_updated" id="not_updated_3days" type="radio" value="3" val-ui='Not updated in more than 3 days'/>
+          <label class="filter-label wrap" for=not_updated_3days>More than 3 days ago</label>
         </div>
+        <div class="form__radio option">
+          <input name="last_updated" id="not_updated_7days" type="radio" value="7" val-ui='Not updated in more than 7 days'/>
+          <label class="filter-label wrap" for=not_updated_7days>More than 7 days ago</label>
+        </div>
+        <div class="form__radio option">
+          <input name="last_updated" id="not_updated_14days" type="radio" value="14" val-ui='Not updated in more than 14 days'/>
+          <label class="filter-label wrap" for=not_updated_14days>More than 14 days ago</label>
+        </div>
+        <div class="form__radio option">
+          <input name="last_updated" id="all_updated" type="radio" value="any" checked/>
+          <label class="filter-label wrap" for=all_updated>All</label>
+        </div>
+      </div>
+    </div>
     {% endif %}
-
   </form>
   <div class="align-self-end text-right font-body" id="clear">
-    <p>Reset</p>
+    <p>{% trans "Reset" %}</p>
   </div>
 </div>

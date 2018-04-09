@@ -46,7 +46,7 @@ Check out the [CHANGELOG](./CHANGELOG.md) for details about recent changes to th
 
 Also,
 
-* want to become a contributor ? Checkout our [guidelines](./docs/CONTRIBUTING.md).
+* want to become a contributor ? Checkout our [guidelines](./CONTRIBUTING.md).
 * [check out the gitcoinco organization-wide repo](https://github.com/gitcoinco/gitcoinco).
 * check out the open issues list, especially the [discussion](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion) label and [easy-pickings](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Aeasy-pickings).
 
@@ -87,6 +87,10 @@ Technically, the system is architected:
 ## Running Locally without Docker
 
 [For more information on running the app locally, please view the running locally README](RUNNING_LOCALLY.md)
+
+## Overriding Application Defaults
+
+[For more information on overriding the local dev environment configuration defaults, please view the environment variables documentation](ENVIRONMENT_VARIABLES.md)
 
 # Trying out Gitcoin
 

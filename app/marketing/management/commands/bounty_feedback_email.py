@@ -15,6 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -27,6 +28,9 @@ class Command(BaseCommand):
     help = 'sends feedback emails to bounties that were closed in last xx hours, but only if its the first time a bounty has been accepted by taht persona'
 
     def handle(self, *args, **options):
+        if settings.DEBUG:
+            print("not active in non prod environments")
+            return
         start_time = timezone.now() - timezone.timedelta(hours=48)
         end_time = timezone.now() - timezone.timedelta(hours=24)
         statues = ['done']
@@ -44,7 +48,7 @@ class Command(BaseCommand):
             if accepted_fulfillments.exists():
                 accepted_fulfillment = accepted_fulfillments.first()
                 fulfiller_email = accepted_fulfillment.fulfiller_email
-                fulfillment_pks = BountyFulfillment.objects.filter(accepted=True, fulfiller_email=fulfiller_email).values__list('pk', flat=True)
+                fulfillment_pks = BountyFulfillment.objects.filter(accepted=True, fulfiller_email=fulfiller_email).values_list('pk', flat=True)
                 previous_bounties = Bounty.objects.filter(created_on__gt=start_time, idx_status__in=statues, fulfillments__pk__in=fulfillment_pks, current_bounty=True).exclude(pk=bounty.pk).distinct()
                 has_been_sent_before_to_persona = previous_bounties.count()
                 if not has_been_sent_before_to_persona:

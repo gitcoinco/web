@@ -48,6 +48,7 @@ var link_ize = function(key, val, result) {
 // rows in the 'about' page
 var rows = [
   'avatar_url',
+  'issuer_avatar_url',
   'title',
   'github_url',
   'value_in_token',
@@ -72,11 +73,11 @@ var rows = [
   'fulfilled_owners_username'
 ];
 var heads = {
-  'avatar_url': 'Issue',
-  'value_in_token': 'Issue Funding Info',
-  'bounty_owner_address': 'Funder',
-  'fulfiller_address': 'Submitter',
-  'experience_level': 'Meta'
+  'avatar_url': gettext('Issue'),
+  'value_in_token': gettext('Issue Funding Info'),
+  'bounty_owner_address': gettext('Funder'),
+  'fulfiller_address': gettext('Submitter'),
+  'experience_level': gettext('Meta')
 };
 var callbacks = {
   'github_url': link_ize,
@@ -86,23 +87,29 @@ var callbacks = {
   'avatar_url': function(key, val, result) {
     return [ 'avatar', '<a href="/profile/' + result['org_name'] + '"><img class=avatar src="' + val + '"></a>' ];
   },
+  'issuer_avatar_url': function(key, val, result) {
+    var username = result['bounty_owner_github_username'] ? result['bounty_owner_github_username'] : 'Self';
+
+    return [ 'issuer_avatar_url', '<a href="/profile/' + result['bounty_owner_github_username'] +
+      '"><img class=avatar src="/funding/avatar?repo=https://github.com/' + username + '"></a>' ];
+  },
   'status': function(key, val, result) {
     var ui_status = val;
 
     if (ui_status == 'open') {
-      ui_status = '<span>OPEN ISSUE</span>';
+      ui_status = '<span>' + gettext('OPEN ISSUE') + '</span>';
     }
     if (ui_status == 'started') {
-      ui_status = '<span>work started</span>';
+      ui_status = '<span>' + gettext('work started') + '</span>';
     }
     if (ui_status == 'submitted') {
-      ui_status = '<span>work submitted</span>';
+      ui_status = '<span>' + gettext('work submitted') + '</span>';
     }
     if (ui_status == 'done') {
-      ui_status = '<span>done</span>';
+      ui_status = '<span>' + gettext('done') + '</span>';
     }
     if (ui_status == 'cancelled') {
-      ui_status = '<span style="color: #f9006c;">cancelled</span>';
+      ui_status = '<span style="color: #f9006c;">' + gettext('cancelled') + '</span>';
     }
     return [ 'status', ui_status ];
   },
@@ -150,7 +157,7 @@ var callbacks = {
     return [ 'Amount_usd', val ];
   },
   'token_value_in_usdt': function(key, val, result) {
-    if (val === null) {
+    if (val === null || typeof val == 'undefined') {
       $('#value_in_usdt_wrapper').addClass('hidden');
       return [ null, null ];
     }
@@ -164,13 +171,28 @@ var callbacks = {
 
     expires_date = new Date(val);
     now = new Date(result['now']);
-    var response = timeDifference(now, expires_date);
 
-    if (new Date(val) < new Date()) {
+    var expiringInPercentage = 100 * (
+      (now.getTime() - new Date(result['web3_created']).getTime()) /
+      (expires_date.getTime() - new Date(result['web3_created']).getTime()));
+
+    $('.progress').css('width', expiringInPercentage + '%');
+
+    var response = timeDifference(now, expires_date).split(' ');
+
+    response.shift();
+    
+    if (expires_date < new Date()) {
       label = 'expired';
       if (result['is_open']) {
-        response = "<span title='This issue is past its expiration date, but it is still active.  Check with the submitter to see if they still want to see it fulfilled.'>" + response + '</span>';
+        response = '<span title="This issue is past its expiration date, but it is still active.  Check with the submitter to see if they still want to see it fulfilled.">' + response.join(' ') + '</span>';
+      } else {
+        $('#timer').hide();
       }
+    } else if (result['status'] === 'done') {
+      $('#timer').hide();
+    } else {
+      response = response.join(' ');
     }
     return [ label, response ];
   },
@@ -367,7 +389,7 @@ var build_detail_page = function(result) {
   // title
   result['title'] = result['title'] ? result['title'] : result['github_url'];
   result['title'] = result['network'] != 'mainnet' ? '(' + result['network'] + ') ' + result['title'] : result['title'];
-  $('.title').html('Funded Issue Details: ' + result['title']);
+  $('.title').html(gettext('Funded Issue Details: ') + result['title']);
 
   // insert table onto page
   for (var j = 0; j < rows.length; j++) {
@@ -419,7 +441,7 @@ var do_actions = function(result) {
     var submit_work_enabled = !isBountyOwner(result);
     var start_stop_work_enabled = !isBountyOwner(result);
     var increase_bounty_enabled = isBountyOwner(result);
-    var show_accept_submission = isBountyOwner(result) && !is_status_expired;
+    var show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done && !is_status_expired;
 
     if (is_legacy) {
       show_start_stop_work = false;
@@ -432,34 +454,34 @@ var do_actions = function(result) {
     // actions
     var actions = [];
 
-    if (show_start_stop_work) {
-
-      // is enabled
-      var enabled = start_stop_work_enabled;
-      var interest_entry = {
-        enabled: enabled,
-        href: is_interested ? '/uninterested' : '/interested',
-        text: is_interested ? 'Stop Work' : 'Start Work',
-        parent: 'right_actions',
-        title: is_interested ? 'Notify the funder that you will not be working on this project' : 'Notify the funder that you would like to take on this project'
-      };
-
-      actions.push(interest_entry);
-
-    }
-
     if (show_submit_work) {
-      // is enabled
       var enabled = submit_work_enabled;
       var _entry = {
         enabled: enabled,
         href: '/funding/fulfill?source=' + result['github_url'],
-        text: 'Submit Work',
+        text: gettext('Submit Work'),
         parent: 'right_actions',
-        title: 'Submit work for the funder to review'
+        title: gettext('Submit work for the funder to review'),
+        work_started: is_interested,
+        id: 'submit'
       };
 
       actions.push(_entry);
+    }
+
+    if (show_start_stop_work) {
+      var enabled = start_stop_work_enabled;
+      var interest_entry = {
+        enabled: enabled,
+        href: is_interested ? '/uninterested' : '/interested',
+        text: is_interested ? gettext('Stop Work') : gettext('Start Work'),
+        parent: 'right_actions',
+        title: is_interested ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project'),
+        color: is_interested ? 'white' : '',
+        id: 'interest'
+      };
+
+      actions.push(interest_entry);
     }
 
     if (show_kill_bounty) {
@@ -467,9 +489,9 @@ var do_actions = function(result) {
       var _entry = {
         enabled: enabled,
         href: '/funding/kill?source=' + result['github_url'],
-        text: 'Cancel Bounty',
+        text: gettext('Cancel Bounty'),
         parent: 'right_actions',
-        title: 'Cancel bounty and reclaim funds for this issue'
+        title: gettext('Cancel bounty and reclaim funds for this issue')
       };
 
       actions.push(_entry);
@@ -482,8 +504,8 @@ var do_actions = function(result) {
       var _entry = {
         enabled: enabled,
         href: '/funding/process?source=' + result['github_url'],
-        text: 'Accept Submission',
-        title: 'This will payout the bounty to the submitter.',
+        text: gettext('Accept Submission'),
+        title: gettext('This will payout the bounty to the submitter.'),
         parent: 'right_actions',
         pending_acceptance: pending_acceptance
       };
@@ -496,9 +518,9 @@ var do_actions = function(result) {
       var _entry = {
         enabled: enabled,
         href: '/funding/increase?source=' + result['github_url'],
-        text: 'Add Contribution',
+        text: gettext('Add Contribution'),
         parent: 'right_actions',
-        title: 'Increase the funding for this issue',
+        title: gettext('Increase the funding for this issue'),
         color: 'white'
       };
 
@@ -511,14 +533,14 @@ var do_actions = function(result) {
 
       github_url = github_url.replace('pipermerriam/web3.py', 'ethereum/web3.py');
       github_url = github_url.replace('ethereum/browser-solidity', 'ethereum/remix-ide');
-      var github_tooltip = 'View issue details and comments on Github';
+      var github_tooltip = gettext('View issue details and comments on Github');
 
       var _entry = {
         enabled: true,
         href: github_url,
-        text: 'View On Github',
+        text: gettext('View On Github'),
         parent: 'right_actions',
-        title: 'View issue details and comments on Github',
+        title: gettext('View issue details and comments on Github'),
         comments: result['github_comments'],
         color: 'white'
       };
@@ -571,7 +593,7 @@ var pull_bounty_from_api = function() {
       $('.nonefound').css('display', 'block');
     }
   }).fail(function() {
-    _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
+    _alert({message: gettext('got an error. please try again, or contact support@gitcoin.co')}, 'error');
     $('#primary_view').css('display', 'none');
   }).always(function() {
     $('.loading').css('display', 'none');
@@ -590,14 +612,14 @@ var render_activity = function(result) {
           address: fulfillment.fulfiller_address,
           email: fulfillment.fulfiller_email,
           fulfillment_id: fulfillment.fulfillment_id,
-          text: 'Work Accepted',
+          text: gettext('Work Accepted'),
           age: timeDifference(new Date(result['now']), new Date(fulfillment.accepted_on)),
           status: 'accepted'
         });
       }
       activities.push({
         name: fulfillment.fulfiller_github_username,
-        text: 'Work Submitted',
+        text: gettext('Work Submitted'),
         created_on: fulfillment.created_on,
         age: timeDifference(new Date(result['now']), new Date(fulfillment.created_on)),
         status: 'submitted'
@@ -610,7 +632,7 @@ var render_activity = function(result) {
       activities.push({
         profileId: _interested.profile.id,
         name: _interested.profile.handle,
-        text: 'Work Started',
+        text: gettext('Work Started'),
         created_on: _interested.created,
         age: timeDifference(new Date(result['now']), new Date(_interested.created)),
         status: 'started',
@@ -623,7 +645,7 @@ var render_activity = function(result) {
     return a['created_on'] < b['created_on'] ? -1 : 1;
   }).reverse();
 
-  var html = '<div class="row box activity"><div class="col-12 empty"><p>There\'s no activity yet!</p></div></div>';
+  var html = '<div class="row box activity"><div class="col-12 empty"><p>' + gettext('There\'s no activity yet!') + '</p></div></div>';
 
   if (activities.length > 0) {
     var template = $.templates('#activity_template');

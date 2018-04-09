@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
 <!doctype html><html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="x-apple-disable-message-reformatting" />
@@ -210,18 +210,18 @@
                 <tr>
                     <td id="legal_contact" width="300" valign="middle">
                         <a href="https://gitcoin.co/terms">
-                            <span>Terms &amp; Conditions</span>
+                            <span>{% trans "Terms &amp; Conditions" %}</span>
                         </a> |
                         <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">
-                            <span>Unsubscribe</span>
+                            <span>{% trans "Unsubscribe" %}</span>
                         </a> |
                         <a href="mailto:support@gitcoin.co">
-                            <span>Contact</span>
+                            <span>{% trans "Contact" %}</span>
                         </a>
                     </td>
                     <td width="300" valign="middle" id="copyright">
                         <p>
-                            <span>&copy; 2017 Gitcoin Core, Inc.</span>
+                            <span>&copy; {% now "Y" %} Gitcoin Core, Inc.</span>
                         </p>
                     </td>
                 </tr>
@@ -269,5 +269,3 @@
 <!-- End of wrapper table -->
 </body>
 </html>
-
-

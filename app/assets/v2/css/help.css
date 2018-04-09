@@ -23,8 +23,17 @@ h3 {
   font-size: 1em;
 }
 
-#feature_videos .video {
-  text-align: center;
+.video-row {
+  display: flex;
+}
+
+.video-row .video {
+  flex-basis: 29%;
+  margin: 0 2%;
+}
+
+.video-row .video iframe {
+  max-width: 100%;
 }
 
 .answer {
@@ -50,26 +59,26 @@ h3 {
 @keyframes accordionIn {
   0% {
     opacity: 0;
-    transform:scale(0.9) rotateX(-60deg);
+    transform: scale(0.9) rotateX(-60deg);
     transform-origin: 50% 0;
   }
+
   100% {
-    opacity:1;
-    transform:scale(1);
+    opacity: 1;
+    transform: scale(1);
   }
 }
+
+@media (max-width: 1180px) {
+  .video-row {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
 
 @media (max-width: 991px) {
   .heading {
     margin-top: 1em;
-  }
-
-  #feature_videos .video {
-    margin-bottom: 2em;
-    width: 100%;
-  }
-
-  #feature_videos iframe {
-    width: 100%;
   }
 }

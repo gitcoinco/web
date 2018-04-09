@@ -16,3 +16,10 @@ repos:
     language: system
     entry: sh -c 'npm run eslint'
     files: .js$
+- repo: local
+  hooks:
+  - id: stylelint
+    name: stylelint
+    language: system
+    entry: sh -c 'npm run stylelint'
+    files: .css$

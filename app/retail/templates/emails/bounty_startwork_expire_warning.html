@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,41 +16,41 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %} 
+{% load i18n humanize %}
 
 {% block content %}
 
-<h1>🕐 Are you still working on this? ... 🕐</h1>
+<h1>🕐 {% trans "Are you still working on this? ... 🕐</h1>
 
 
 <p>
-    Hey there,
+    {% trans "Hey there,
 
     <br>
     <br>
 
-     You <strong>started work upon</strong> a funded issue {{interest.created | naturaltime}}.  But we haven't heard from you on the github thread{% if time_delta_days %} in {{time_delta_days}} days{%endif%}.
+     {% blocktrans %}You <strong>started work upon</strong> a funded issue {{interest.created | naturaltime}}.  But we haven't heard from you on the github thread{% endblocktrans %}{% if time_delta_days %} in {{time_delta_days}} days{%endif%}.
 
     <br>
     <br>
 
-    Do you still want to work on this?  Please let us know so we can find someone else to work on it if not!
-    
-    <br>
-    <br>
-
-    If so, please leave a comment on the github thread to check in.
-    <br>
-    -OR-
-    <br>
-    If not, click 'Stop Work' on the <a href="{{bounty.absolute_url}}">issue detail page</a>.
+    {% trans "Do you still want to work on this?  Please let us know so we can find someone else to work on it if not!" %}
 
     <br>
     <br>
-    If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.
+
+    {% trans "If so, please leave a comment on the github thread to check in." %}
+    <br>
+    -{% trans "OR" %}-
+    <br>
+    {% blocktrans %}If not, click 'Stop Work' on the <a href="{{bounty.absolute_url}}">issue detail page</a>.{% endblocktrans %}
 
     <br>
-    <h5>Funded Issue Details</h5>
+    <br>
+    {% blocktrans %}If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.{% endblocktrans %}
+
+    <br>
+    <h5>{% trans "Funded Issue Details" %}</h5>
 </p>
 
 <br>
@@ -58,13 +58,13 @@
 {% include 'emails/bounty.html' with bounty=bounty %}
 
 <p>
-You are receiving this email because your email address is on the notification list for this funded issue. <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">Manage Email Settings</a>.
+{% trans "You are receiving this email because your email address is on the notification list for this funded issue." %} <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">{% trans "Manage Email Settings" %}</a>.
 </p>
 
 <p>
-    Keep Pushing Open Source Forward,
+    {% trans "Keep Pushing Open Source Forward," %}
     <br>
-    -- Gitcoin Core
+    -- {% trans "Gitcoin Core" %}
 </p>
 
 
