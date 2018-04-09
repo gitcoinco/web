@@ -39,15 +39,21 @@
         display: flex;
         padding: 0.5em;
     }
+    .bounty-primer{
+        font-weight: bold;
+        border-bottom: 1px solid #e0e0e0;
+    }
 </style>
 
 <div class="centered-contents bounty-box">
-    <div class="bounty">
-        {% if primer %}
+    {% if primer %}
+        <div class="bounty-primer">
             <p>
             {{primer}}
             <p>
-        {% endif %}
+        </div>
+    {% endif %}
+    <div class="bounty">
 
         <div class="bounty-avatar">
             <img src="{{bounty.local_avatar_url}}">

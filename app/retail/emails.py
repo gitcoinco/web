@@ -49,7 +49,7 @@ def render_tip_email(to_email, tip, is_new):
         'comments_priv': tip.comments_priv,
         'comments_public': tip.comments_public,
         'tip': tip,
-        'show_expires': tip.expires_date < (timezone.now() + timezone.timedelta(days=365)),
+        'show_expires': tip.expires_date < (timezone.now() + timezone.timedelta(days=365)) and tip.expires_date,
         'is_new': is_new,
         'warning': warning,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
@@ -209,7 +209,7 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
         'interest': interest,
         'time_delta_days': time_delta_days,
     }
-
+    
     response_html = premailer_transform(render_to_string("emails/bounty_startwork_expire_warning.html", params))
     response_txt = render_to_string("emails/bounty_startwork_expire_warning.txt", params)
 
@@ -469,7 +469,7 @@ def faucet(request):
 @staff_member_required
 def faucet_rejected(request):
     from faucet.models import FaucetRequest
-    fr = FaucetRequest.objects.last()
+    fr = FaucetRequest.objects.exclude(comment_admin='').last()
     response_html, txt = render_faucet_rejected(fr)
     return HttpResponse(response_html)
 
