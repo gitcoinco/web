@@ -131,7 +131,7 @@ GITHUB_CLIENT_SECRET=<COPY_FROM_GITHUB>
 
 #### ipdb
 
-`Q: question: whast the best way to import ipdb; ipdb.set_trace()  a request via docker?`
+`Q: what's the best way to import ipdb; ipdb.set_trace() a HTTP request via docker?`
 
 You need to run the web container with tty enabled and inspect the interactive shell.
 
