@@ -406,6 +406,8 @@ def email_settings(request, key):
         email = request.session.get('email', '')
         if not email:
             github_handle = request.session.get('handle', '')
+            if not github_handle:
+                raise Http404
             profiles = Profile.objects.filter(handle__iexact=github_handle).exclude(email='')
             if profiles.exists():
                 email = profiles.first()
