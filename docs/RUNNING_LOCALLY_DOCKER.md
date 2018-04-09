@@ -129,3 +129,15 @@ GITHUB_CLIENT_SECRET=<COPY_FROM_GITHUB>
 ```
 5. Restart app via docker-compose.
 
+#### ipdb
+
+`Q: question: whast the best way to import ipdb; ipdb.set_trace()  a request via docker?`
+
+You need to run the web container with tty enabled and inspect the interactive shell.
+
+Most people just start the stack normally, but run web outside of the standard flow. For instance, you'd want to run your service containers via something like `docker-compose up -d` then `docker-compose stop web; docker-compose run --service-ports web`
+
+Details [here](https://github.com/docker/compose/issues/4677)
+
+
+
