@@ -91,7 +91,7 @@ def bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
 
     subject = bounty.github_url
     html, text = render_bounty_feedback(bounty, persona, previous_bounties)
-    cc_emails = [from_email]
+    cc_emails = [from_email, 'team@gitcoin.co']
     send_mail(from_email, to_email, subject, text, cc_emails=cc_emails, from_name="Kevin Owocki (Gitcoin.co)")
 
 
