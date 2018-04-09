@@ -395,6 +395,8 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         # If this isn't work_started/done, simply post the issue comment.
         else:
             post_issue_comment(username, repo, issue_num, msg)
+    except IndexError:
+        return False
     except Exception as e:
         extra_data = {'github_url': url, 'bounty_id': bounty.pk, 'event_name': event_name}
         rollbar.report_exc_info(sys.exc_info(), extra_data=extra_data)
