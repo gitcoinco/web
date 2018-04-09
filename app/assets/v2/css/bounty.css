@@ -36,6 +36,9 @@ body {
   height: 2px;
   width: 50%;
 }
+.progress-bar.expired .progress {
+  background-color: #f7981b;
+}
 
 .bounty_details h4,
 .bounty_details h5 {
