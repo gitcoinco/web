@@ -157,7 +157,7 @@ urlpatterns = [
     # faucet views
     url(r'^faucet/?', faucet.views.faucet, name='faucet'),
 
-    # admin views
+    # admin views 
     url(r'^_administration/?', admin.site.urls, name='admin'),
     url(r'^_administration/email/new_bounty$', retail.emails.new_bounty, name='admin_new_bounty'),
     url(r'^_administration/email/roundup$', retail.emails.roundup, name='roundup'),

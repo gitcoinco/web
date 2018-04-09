@@ -3,9 +3,3 @@
 There is a new Funded Issue submitted to the Gitcoin.co Issue Explorer:
 
 {% include 'emails/bounty.txt' with bounty=bounty %}
-
-You are receiving this email because your email address is on the notification list.
-
-
-Keep Pushing Open Source Forward,
--- Gitcoin Core
