@@ -438,8 +438,12 @@ def dashboard(request):
 
 
 def gas(request):
+    _cts = conf_time_spread()
+    recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
+    if recommended_gas_price < 2:
+        _cts = conf_time_spread(recommended_gas_price)
     context = {
-        'conf_time_spread': conf_time_spread(),
+        'conf_time_spread': _cts,
         'title': 'Live Gas Usage => Predicted Conf Times'
         }
     return TemplateResponse(request, 'gas.html', context)
