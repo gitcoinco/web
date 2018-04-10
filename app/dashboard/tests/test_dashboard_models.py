@@ -163,6 +163,44 @@ class DashboardModelsTest(TestCase):
         assert bounty.get_natural_value() == 0
 
     @staticmethod
+    def test_can_submit_legacy_bounty_after_expiration_date():
+        bounty = Bounty.objects.create(
+          title='ExpiredBounty',
+          web3_type='legacy_gitcoin',
+          idx_status=0,
+          is_open=False,
+          web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+          expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+          raw_data={}
+        )
+        assert bounty.is_legacy is True
+        assert bounty.can_submit_after_expiration_date is True
+
+    @staticmethod
+    def test_cannot_submit_standard_bounty_after_expiration_date():
+        bounty = Bounty.objects.create(
+          title='ExpiredBounty',
+          idx_status=0,
+          is_open=False,
+          web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+          expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+          raw_data={}
+        )
+        assert bounty.can_submit_after_expiration_date is False
+
+    @staticmethod
+    def test_can_submit_standard_bounty_after_expiration_date_if_deadline_extended():
+        bounty = Bounty.objects.create(
+          title='ExpiredBounty',
+          idx_status=0,
+          is_open=False,
+          web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+          expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+          raw_data={'contract_deadline': 1001, 'ipfs_deadline': 1000}
+        )
+        assert bounty.can_submit_after_expiration_date is True
+
+    @staticmethod
     def test_tip():
         """Test the dashboard Tip model."""
         tip = Tip(
