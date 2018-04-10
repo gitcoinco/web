@@ -201,6 +201,19 @@ class DashboardModelsTest(TestCase):
         assert bounty.can_submit_after_expiration_date is True
 
     @staticmethod
+    def test_title_or_desc():
+        bounty = Bounty.objects.create(
+          title='TitleTest',
+          idx_status=0,
+          is_open=False,
+          web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+          expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+          github_url='https://github.com/gitcoinco/web/issues/0xDEADBEEF',
+          raw_data={}
+        )
+        assert bounty.title_or_desc == "TitleTest"
+
+    @staticmethod
     def test_tip():
         """Test the dashboard Tip model."""
         tip = Tip(
