@@ -27,23 +27,34 @@ class TransactionException(Exception):
     pass
 
 
-def convert_amount(from_amount, from_currency, to_currency):
+def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
     """Convert the provided amount to another current.
 
     Args:
         from_amount (float): The amount to be converted.
         from_currency (str): The currency identifier to convert from.
         to_currency (str): The currency identifier to convert to.
+        timestamp (datetime): First available conversion rate after timestamp. Latest if None.
 
     Returns:
         float: The amount in to_currency.
 
     """
-    latest_conversion_rate = ConversionRate.objects.filter(
-        from_currency=from_currency,
-        to_currency=to_currency
+    conversion_rate = None
+
+    if timestamp:
+        conversion_rate = ConversionRate.objects.filter(
+            from_currency=from_currency,
+            to_currency=to_currency,
+            timestamp__gte=timestamp
+        ).order_by('-timestamp').last()
+    if not timestamp or not conversion_rate:  # fallback to latest if not found or timestamp not provided
+        conversion_rate = ConversionRate.objects.filter(
+            from_currency=from_currency,
+            to_currency=to_currency,
         ).order_by('-timestamp').first()
-    return (float(latest_conversion_rate.to_amount) / float(latest_conversion_rate.from_amount)) * float(from_amount)
+
+    return (float(conversion_rate.to_amount) / float(conversion_rate.from_amount)) * float(from_amount)
 
 
 def convert_token_to_usdt(from_token):
