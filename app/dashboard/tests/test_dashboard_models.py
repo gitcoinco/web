@@ -150,6 +150,19 @@ class DashboardModelsTest(TestCase):
         assert bounty.get_relative_url() == expected_url
 
     @staticmethod
+    def test_get_natural_value_if_bad_token_address_provided():
+        bounty = Bounty.objects.create(
+          title='BadTokenBounty',
+          idx_status=0,
+          is_open=False,
+          web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+          expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+          token_address='0xDEADDEADDEADDEAD',
+          raw_data={}
+        )
+        assert bounty.get_natural_value() == 0
+
+    @staticmethod
     def test_tip():
         """Test the dashboard Tip model."""
         tip = Tip(
