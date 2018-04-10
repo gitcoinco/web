@@ -148,13 +148,13 @@ def reject_faucet_request(fr):
 
 
 def new_bounty(bounty, to_emails=None):
-    if not bounty or not bounty.value_in_usdt:
+    if not bounty or not bounty.value_in_usdt_now:
         return
 
     if to_emails is None:
         to_emails = []
 
-    subject = _("⚡️ New Funded Issue Match worth") + f" {bounty.value_in_usdt} USD @ " \
+    subject = _("⚡️ New Funded Issue Match worth") + f" {bounty.value_in_usdt_now} USD @ " \
               f"${round(convert_token_to_usdt(bounty.token_name))}/{bounty.token_name} {bounty.keywords})"
 
     for to_email in to_emails:
@@ -178,7 +178,7 @@ def weekly_roundup(to_emails=None):
 
 
 def new_work_submission(bounty, to_emails=None):
-    if not bounty or not bounty.value_in_usdt:
+    if not bounty or not bounty.value_in_usdt_now:
         return
 
     if to_emails is None:
@@ -195,7 +195,7 @@ def new_work_submission(bounty, to_emails=None):
 
 
 def new_bounty_rejection(bounty, to_emails=None):
-    if not bounty or not bounty.value_in_usdt:
+    if not bounty or not bounty.value_in_usdt_now:
         return
 
     subject = gettext("😕 Work Submission Rejected for {} 😕").format(bounty.title_or_desc)
@@ -212,7 +212,7 @@ def new_bounty_rejection(bounty, to_emails=None):
 
 
 def new_bounty_acceptance(bounty, to_emails=None):
-    if not bounty or not bounty.value_in_usdt:
+    if not bounty or not bounty.value_in_usdt_now:
         return
 
     if to_emails is None:
@@ -239,7 +239,7 @@ def new_match(to_emails, bounty, github_username):
 
 
 def bounty_expire_warning(bounty, to_emails=None):
-    if not bounty or not bounty.value_in_usdt:
+    if not bounty or not bounty.value_in_usdt_now:
         return
 
     if to_emails is None:
@@ -262,7 +262,7 @@ def bounty_expire_warning(bounty, to_emails=None):
 
 
 def bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days):
-    if not bounty or not bounty.value_in_usdt:
+    if not bounty or not bounty.value_in_usdt_now:
         return
 
     from_email = settings.CONTACT_EMAIL
@@ -274,7 +274,7 @@ def bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
 
 
 def bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
-    if not bounty or not bounty.value_in_usdt:
+    if not bounty or not bounty.value_in_usdt_now:
         return
 
     from_email = settings.CONTACT_EMAIL

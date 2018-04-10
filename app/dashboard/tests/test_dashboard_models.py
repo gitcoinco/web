@@ -83,7 +83,7 @@ class DashboardModelsTest(TestCase):
         assert bounty.status == 'expired'
         assert bounty.value_true == 3e-18
         assert bounty.value_in_eth == 3
-        assert bounty.value_in_usdt == 0
+        assert bounty.value_in_usdt_now == 0
         assert 'ago 5 Feature Intermediate' in bounty.desc
         assert bounty.is_legacy is False
         assert bounty.get_github_api_url() == 'https://api.github.com/repos/gitcoinco/web/issues/11'
@@ -104,7 +104,7 @@ class DashboardModelsTest(TestCase):
         assert str(tip) == '(net) - PENDING 7 ETH to fred, created: today, expires: tomorrow'
         assert tip.get_natural_value() == 7e-18
         assert tip.value_in_eth == 7
-        assert tip.value_in_usdt == 14
+        assert tip.value_in_usdt_now == 14
         assert tip.status == 'PENDING'
 
     def test_interest(self):

@@ -365,7 +365,7 @@ class Bounty(SuperModel):
             return None
 
     @property
-    def value_in_usdt(self):
+    def value_in_usdt_now(self):
         decimals = 10**18
         if self.token_name == 'USDT':
             return float(self.value_in_token)
@@ -377,7 +377,7 @@ class Bounty(SuperModel):
             return None
 
     @property
-    def token_value_in_usdt(self):
+    def token_value_in_usdt_now(self):
         return round(convert_token_to_usdt(self.token_name), 2)
 
     @property
@@ -603,7 +603,7 @@ class Tip(SuperModel):
 
     # TODO: DRY
     @property
-    def value_in_usdt(self):
+    def value_in_usdt_now(self):
         decimals = 1
         if self.tokenName == 'USDT':
             return float(self.amount)
@@ -616,7 +616,7 @@ class Tip(SuperModel):
 
     # TODO: DRY
     @property
-    def token_value_in_usdt(self):
+    def token_value_in_usdt_now(self):
         return round(convert_token_to_usdt(self.token_name), 2)
 
     @property
@@ -651,7 +651,7 @@ def psave_bounty(sender, instance, **kwargs):
     }
 
     instance.idx_status = instance.status
-    instance._val_usd_db = instance.value_in_usdt if instance.value_in_usdt else 0
+    instance._val_usd_db = instance.value_in_usdt_now if instance.value_in_usdt_now else 0
     instance.idx_experience_level = idx_experience_level.get(instance.experience_level, 0)
     instance.idx_project_length = idx_project_length.get(instance.project_length, 0)
 
@@ -824,8 +824,8 @@ class Profile(SuperModel):
     def stats(self):
         bounties = self.bounties.stats_eligible()
         loyalty_rate = 0
-        total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_funder(self.handle)])
-        total_fulfilled = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
+        total_funded = sum([bounty.value_in_usdt_now if bounty.value_in_usdt_now else 0 for bounty in bounties if bounty.is_funder(self.handle)])
+        total_fulfilled = sum([bounty.value_in_usdt_now if bounty.value_in_usdt_now else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
         print(total_funded, total_fulfilled)
         role = 'newbie'
         if total_funded > total_fulfilled:

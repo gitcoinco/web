@@ -53,8 +53,8 @@ var rows = [
   'github_url',
   'value_in_token',
   'value_in_eth',
-  'value_in_usdt',
-  'token_value_in_usdt',
+  'value_in_usdt_now',
+  'token_value_in_usdt_now',
   'web3_created',
   'status',
   'bounty_owner_address',
@@ -150,15 +150,15 @@ var callbacks = {
     }
     return [ 'Amount (ETH)', Math.round((parseInt(val) / Math.pow(10, 18)) * 1000) / 1000 ];
   },
-  'value_in_usdt': function(key, val, result) {
+  'value_in_usdt_now': function(key, val, result) {
     if (val === null) {
       return [ null, null ];
     }
     return [ 'Amount_usd', val ];
   },
-  'token_value_in_usdt': function(key, val, result) {
+  'token_value_in_usdt_now': function(key, val, result) {
     if (val === null || typeof val == 'undefined') {
-      $('#value_in_usdt_wrapper').addClass('hidden');
+      $('#value_in_usdt_now_wrapper').addClass('hidden');
       return [ null, null ];
     }
     return [ 'Token_amount_usd', '$' + val + '/' + result['token_name'] ];

@@ -204,7 +204,7 @@ var process_stats = function(results) {
   for (var i = 0; i < results.length; i++) {
     var result = results[i];
 
-    worth_usdt += result['value_in_usdt'];
+    worth_usdt += result['value_in_usdt_now'];
     worth_eth += result['value_in_eth'];
     var token = result['token_name'];
 

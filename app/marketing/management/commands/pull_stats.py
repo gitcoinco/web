@@ -283,7 +283,7 @@ def joe_dominance_index():
             val=val,
             )
 
-        val = int(100 * sum([(b.value_in_usdt if b.value_in_usdt else 0) for b in joe_bounties]) / sum([(b.value_in_usdt if b.value_in_usdt else 0) for b in all_bounties]))
+        val = int(100 * sum([(b.value_in_usdt_now if b.value_in_usdt_now else 0) for b in joe_bounties]) / sum([(b.value_in_usdt_now if b.value_in_usdt_now else 0) for b in all_bounties]))
         Stat.objects.create(
             key='joe_dominance_index_{}_value'.format(days),
             val=val,
