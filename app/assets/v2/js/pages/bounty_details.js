@@ -175,7 +175,8 @@ var callbacks = {
     var expiringInPercentage = 100 * (
       (now.getTime() - new Date(result['web3_created']).getTime()) /
       (expires_date.getTime() - new Date(result['web3_created']).getTime()));
-    if(expiringInPercentage>100){
+
+    if (expiringInPercentage > 100) {
       expiringInPercentage = 100;
     }
 
