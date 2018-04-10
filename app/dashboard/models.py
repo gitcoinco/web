@@ -207,7 +207,20 @@ class Bounty(SuperModel):
 
     @property
     def can_submit_after_expiration_date(self):
-        return self.is_legacy or self.raw_data.get('payload', {}).get('expire_date', False)
+        if self.is_legacy:
+            return True # legacy bounties could submit after expirration date
+
+        # standardbounties
+        payload_expiration_date = self.raw_data.get('data', {}).get('payload', {}).get('expire_date', False)
+        if not payload_expiration_date:
+            return False # if theres no expiry date in the payload, then expiration date is not mocked, and one cannot submit after expiration date
+
+        contract_expiration_date = self.expires_date.timestamp()
+        delta_between_contract_and_payload_expiration_dates = abs(int(contract_expiration_date) - int(payload_expiration_date))
+        expected_delta_if_mocked = 25200
+        print(delta_between_contract_and_payload_expiration_dates)
+        return delta_between_contract_and_payload_expiration_dates > expected_delta_if_mocked
+
 
     @property
     def title_or_desc(self):
