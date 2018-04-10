@@ -93,6 +93,49 @@ class DashboardModelsTest(TestCase):
         assert bounty_fulfillment.bounty.title == 'foo'
 
     @staticmethod
+    def test_exclude_bounty_by_status():
+        Bounty.objects.create(
+          title='First',
+          idx_status=0,
+          is_open=False,
+          web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+          expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+          raw_data={}
+        )
+        Bounty.objects.create(
+          title='Second',
+          idx_status=1,
+          is_open=False,
+          web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+          expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+          raw_data={}
+        )
+        Bounty.objects.create(
+          title='Third',
+          idx_status=2,
+          is_open=False,
+          web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+          expires_date=datetime(2222, 11, 30, tzinfo=pytz.UTC),
+          raw_data={},
+        )
+        Bounty.objects.create(
+          title='Fourth',
+          idx_status=3,
+          is_open=True,
+          web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+          expires_date=datetime(2222, 11, 30, tzinfo=pytz.UTC),
+          raw_data={}
+        )
+        bounty_stats = Bounty.objects.exclude_by_status()
+        assert len(bounty_stats) == 4
+        bounty_stats = Bounty.objects.exclude_by_status(['open'])
+        assert len(bounty_stats) == 3
+        bounty_stats = Bounty.objects.exclude_by_status(['cancelled', 'done'])
+        assert len(bounty_stats) == 3
+        bounty_stats = Bounty.objects.exclude_by_status(['open', 'expired', 'cancelled'])
+        assert len(bounty_stats) == 0
+
+    @staticmethod
     def test_tip():
         """Test the dashboard Tip model."""
         tip = Tip(
