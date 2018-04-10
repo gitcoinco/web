@@ -73,8 +73,6 @@ DATABASES = {
 ```shell
 virtualenv gcoin
 source gcoin/bin/activate
-pip install -r requirements/base.txt
-pip install -r requirements/dev.txt
 pip install -r requirements/test.txt
 ./manage.py migrate
 ./manage.py createcachetable
