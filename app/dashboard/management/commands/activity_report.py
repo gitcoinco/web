@@ -92,7 +92,7 @@ class Command(BaseCommand):
             'amount': bounty.get_natural_value(),
             'denomination': bounty.token_name,
             'amount_eth': bounty.value_in_eth / 10**18 if bounty.value_in_eth else None,
-            'amount_usdt': bounty.value_in_usdt_now,
+            'amount_usdt': bounty.value_in_usdt,
             'from_address': bounty.bounty_owner_address,
             'claimee_address': claimee_address,
             'repo': self.extract_github_repo(bounty.github_url),
