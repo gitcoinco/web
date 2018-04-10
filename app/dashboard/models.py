@@ -377,6 +377,18 @@ class Bounty(SuperModel):
             return None
 
     @property
+    def value_in_usdt(self):
+        decimals = 10 ** 18
+        if self.token_name == 'USDT':
+            return float(self.value_in_token)
+        if self.token_name == 'DAI':
+            return float(self.value_in_token / 10 ** 18)
+        try:
+            return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT', self.web3_created)) / decimals, 2)
+        except Exception:
+            return None
+
+    @property
     def token_value_in_usdt_now(self):
         return round(convert_token_to_usdt(self.token_name), 2)
 
