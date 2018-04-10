@@ -136,6 +136,20 @@ class DashboardModelsTest(TestCase):
         assert len(bounty_stats) == 0
 
     @staticmethod
+    def test_relative_bounty_url_with_malformed_issue_number():
+        bounty = Bounty.objects.create(
+          title='First',
+          idx_status=0,
+          is_open=False,
+          web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+          expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+          github_url='https://github.com/gitcoinco/web/issues/0xDEADBEEF',
+          raw_data={}
+        )
+        expected_url = '/funding/details?url=https://github.com/gitcoinco/web/issues/0xDEADBEEF'
+        assert bounty.get_relative_url() == expected_url
+
+    @staticmethod
     def test_tip():
         """Test the dashboard Tip model."""
         tip = Tip(
