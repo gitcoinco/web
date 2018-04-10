@@ -23,10 +23,11 @@ from web3.main import Web3
 from web3.providers.rpc import HTTPProvider
 
 
-class DashboardUtilsTestCase(TestCase):
+class DashboardUtilsTest(TestCase):
     """Define tests for dashboard utils."""
 
-    def test_get_web3(self):
+    @staticmethod
+    def test_get_web3():
         """Test the dashboard utility get_web3."""
         networks = ['mainnet', 'rinkeby', 'ropsten']
         for network in networks:
