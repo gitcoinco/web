@@ -30,7 +30,7 @@ def save(request):
         message = 'Bad Request'
 
     if body.get('bounty_id', False):
-        access_token = body.get('token')
+        access_token = body.get('token') if body.get('token') else request.GET.get('token')
         github_username = body.get('github_username')
         try:
             github_user_data = get_github_user_data(access_token)
