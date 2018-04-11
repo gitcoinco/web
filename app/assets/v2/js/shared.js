@@ -731,11 +731,12 @@ var setUsdAmount = function(event) {
 var bountyStageEnum = Object.freeze({'Draft': 0, 'Active': 1, 'Dead': 2});
 
 
-// (Async) Return whether the browser is currently using the specified network (string)
-var browserNetworkIs = function(networkStr) {
-  return web3.version.getNetwork((error, netId) => {
+// (Async) Pass whether the browser is currently using the specified network (string)
+// to the given callback function
+var browserNetworkIs = function(networkStr, callbackFn) {
+  web3.version.getNetwork((error, netId) => {
     var browserNetwork = web3NetworkIdToString(netId);
 
-    return browserNetwork != networkStr;
+    callbackFn(browserNetwork != networkStr);
   });
 };

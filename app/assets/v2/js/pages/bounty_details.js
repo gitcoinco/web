@@ -480,15 +480,9 @@ var do_actions = function(result) {
         href: is_interested ? '/uninterested' : '/interested',
         text: is_interested ? gettext('Stop Work') : gettext('Start Work'),
         parent: 'right_actions',
-<<<<<<< HEAD
         title: is_interested ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project'),
         color: is_interested ? 'white' : '',
         id: 'interest'
-=======
-        title: 'Submit work for the funder to review',
-        work_started: is_interested,
-        id: 'submit'
->>>>>>> fork/bounds-checking
       };
 
       actions.push(interest_entry);
