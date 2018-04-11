@@ -52,7 +52,8 @@ class TestExpiration(TestCase):
             raw_data={},
             idx_status='submitted',
             bounty_owner_email='john@bar.com',
-            current_bounty=True
+            current_bounty=True,
+            network='mainnet'
         )
         fulfiller_profile = Profile.objects.create(
             data={},
@@ -93,7 +94,8 @@ class TestExpiration(TestCase):
             experience_level='Intermediate',
             raw_data={},
             idx_status='submitted',
-            current_bounty=True
+            current_bounty=True,
+            network='mainnet'
         )
         BountyFulfillment.objects.create(
             fulfiller_address='0x0000000000000000000000000000000000000000',
