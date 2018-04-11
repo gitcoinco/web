@@ -39,6 +39,7 @@ django-environ==0.4.4
 ipfsapi
 eth-utils==1.0.0b2
 jsondiff==1.1.1
+social-auth-app-django==2.1.0
 django-ipware==2.0.1
 geoip2==2.7.0
 django-silk==2.0.0
