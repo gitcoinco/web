@@ -22,6 +22,7 @@ import json
 from django.core.management.base import BaseCommand
 
 import ccxt
+import cryptocompare as cc
 from dashboard.models import Bounty
 from economy.models import ConversionRate
 from websocket import create_connection
@@ -120,6 +121,38 @@ def polo():
             b.save()
 
 
+def cryptocompare():
+    """Handle pulling market data from CryptoCompare.
+       Updates ConversionRates only if data not available."""
+
+    to_currency = 'USDT'
+    for b in Bounty.objects.all():
+        print('CryptoCompare {}'.format(b.pk))
+
+        conversion_rate = ConversionRate.objects.filter(
+          from_currency=b.token_name,
+          to_currency=to_currency,
+          timestamp=b.web3_created
+        )
+
+        if len(conversion_rate) == 0:  # historical ConversionRate for the given bounty does not exist yet
+            try:
+                price = cc.get_historical_price(b.token_name, to_currency, b.web3_created)
+
+                to_amount = price[b.token_name][to_currency]
+                ConversionRate.objects.create(
+                  from_amount=1,
+                  to_amount=to_amount,
+                  source='cryptocompare',
+                  from_currency=b.token_name,
+                  to_currency=to_currency,
+                  timestamp=b.web3_created,
+                )
+                print('Cryptocompare: {}=>{}:{}'.format(b.token_name, to_currency, to_amount))
+            except Exception as e:
+                print(e)
+
+
 class Command(BaseCommand):
     """Define the management command to update currency conversion rates."""
 
@@ -132,6 +165,12 @@ class Command(BaseCommand):
         try:
             print('ED')
             etherdelta()
+        except Exception as e:
+            print(e)
+
+        try:
+            print('cryptocompare')
+            cryptocompare()
         except Exception as e:
             print(e)
 

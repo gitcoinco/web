@@ -1,5 +1,6 @@
 bs4
 ccxt
+cryptocompare
 cryptography==2.1.4
 django==2.0.3
 django-bootstrap3==8.2.3
