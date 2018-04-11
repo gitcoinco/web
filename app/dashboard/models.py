@@ -616,31 +616,31 @@ class Tip(SuperModel):
     @property
     def value_in_usdt_now(self):
         decimals = 10**18
-        if self.token_name == 'USDT':
+        if self.tokenName == 'USDT':
             return float(self.value_in_token)
-        if self.token_name == 'DAI':
+        if self.tokenName == 'DAI':
             return float(self.value_in_token / 10**18)
         try:
-            return round(float(convert_amount(self.value_in_eth, self.token_name, 'USDT')) / decimals, 2)
+            return round(float(convert_amount(self.value_in_eth, self.tokenName, 'USDT')) / decimals, 2)
         except ConversationRateNotFoundException:
             return None
 
     @property
     def value_in_usdt(self):
         decimals = 10 ** 18
-        if self.token_name == 'USDT':
+        if self.tokenName == 'USDT':
             return float(self.value_in_token)
-        if self.token_name == 'DAI':
+        if self.tokenName == 'DAI':
             return float(self.value_in_token / 10 ** 18)
         try:
-            return round(float(convert_amount(self.value_in_eth, self.token_name, 'USDT', self.received_on)) / decimals, 2)
+            return round(float(convert_amount(self.value_in_eth, self.tokenName, 'USDT', self.received_on)) / decimals, 2)
         except ConversationRateNotFoundException:
             return None
 
     # TODO: DRY
     @property
     def token_value_in_usdt_now(self):
-        return round(convert_token_to_usdt(self.token_name), 2)
+        return round(convert_token_to_usdt(self.tokenName), 2)
 
     @property
     def status(self):
