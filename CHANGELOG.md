@@ -2,21 +2,121 @@
 
 ## [HEAD](https://github.com/gitcoinco/web/tree/HEAD)
 
-[Full Changelog](https://github.com/gitcoinco/web/compare/pre_web3_awareness_reafctor...HEAD)
+[Full Changelog](https://github.com/gitcoinco/web/compare/pre-django-auth-1...HEAD)
+
+**Fixed bugs:**
+
+- alpha tag confusion [\#792](https://github.com/gitcoinco/web/issues/792)
+- Bean/fix typos [\#829](https://github.com/gitcoinco/web/pull/829) ([StareIntoTheBeard](https://github.com/StareIntoTheBeard))
+
+**Closed issues:**
+
+- IndexError: list index out of range [\#835](https://github.com/gitcoinco/web/issues/835)
+- AssertionError: Cannot filter a query once a slice has been taken. [\#833](https://github.com/gitcoinco/web/issues/833)
+- 'done' bounties should not have the time left field visible [\#824](https://github.com/gitcoinco/web/issues/824)
+- comment needs left padding [\#823](https://github.com/gitcoinco/web/issues/823)
+- RelatedObjectDoesNotExist: User has no profile. [\#820](https://github.com/gitcoinco/web/issues/820)
+- AuthStateMissing: Session value state missing. [\#819](https://github.com/gitcoinco/web/issues/819)
+- Document and check all possible status values [\#816](https://github.com/gitcoinco/web/issues/816)
+- Logo width is incorrect [\#808](https://github.com/gitcoinco/web/issues/808)
+- BadFunctionCallOutput: Could not decode contract function call getBountyData return data b'' for output\_types \['string'\] [\#742](https://github.com/gitcoinco/web/issues/742)
+- BadFunctionCallOutput: Could not decode contract function call getBountyToken return data b'' for output\_types \['address'\] [\#727](https://github.com/gitcoinco/web/issues/727)
+- BadFunctionCallOutput: Could not decode contract function call getFulfillment return data b'' for output\_types \['bool', 'address', 'string'\] [\#726](https://github.com/gitcoinco/web/issues/726)
+- FieldError: Invalid order\_by arguments: \['-web3\_created/'\] [\#701](https://github.com/gitcoinco/web/issues/701)
+- Update Gitcoin Email Designs [\#563](https://github.com/gitcoinco/web/issues/563)
+- Issue Explorer Details Page V2 [\#419](https://github.com/gitcoinco/web/issues/419)
+
+**Merged pull requests:**
+
+- bounty: hide progress bar on work done status [\#828](https://github.com/gitcoinco/web/pull/828) ([thelostone-mc](https://github.com/thelostone-mc))
+- Fixes: https://github.com/gitcoinco/web/issues/792 [\#827](https://github.com/gitcoinco/web/pull/827) ([willsputra](https://github.com/willsputra))
+- docker / github login instructions [\#822](https://github.com/gitcoinco/web/pull/822) ([owocki](https://github.com/owocki))
+- todos should be falsy [\#821](https://github.com/gitcoinco/web/pull/821) ([owocki](https://github.com/owocki))
+- Django auth [\#818](https://github.com/gitcoinco/web/pull/818) ([mbeacom](https://github.com/mbeacom))
+- bug fix : bounty + landing + dashboard [\#807](https://github.com/gitcoinco/web/pull/807) ([thelostone-mc](https://github.com/thelostone-mc))
+- bounty: added progress bar [\#764](https://github.com/gitcoinco/web/pull/764) ([thelostone-mc](https://github.com/thelostone-mc))
+- bounty: mobile alignment fix [\#762](https://github.com/gitcoinco/web/pull/762) ([thelostone-mc](https://github.com/thelostone-mc))
+- Email design update  [\#746](https://github.com/gitcoinco/web/pull/746) ([jakerockland](https://github.com/jakerockland))
+
+## [pre-django-auth-1](https://github.com/gitcoinco/web/tree/pre-django-auth-1) (2018-04-06)
+[Full Changelog](https://github.com/gitcoinco/web/compare/pre-django-auth...pre-django-auth-1)
 
 **Implemented enhancements:**
 
-- As an admin, I want to be able to queue background tasks to execute outside of the Django app [\#520](https://github.com/gitcoinco/web/issues/520)
+- Profile should make use of the django user framework [\#312](https://github.com/gitcoinco/web/issues/312)
+
+**Closed issues:**
+
+- See what my last actions were when I logged in \(as bounty funder\). [\#423](https://github.com/gitcoinco/web/issues/423)
+
+**Merged pull requests:**
+
+- bounty: fixed avatar url + tooltip style [\#784](https://github.com/gitcoinco/web/pull/784) ([thelostone-mc](https://github.com/thelostone-mc))
+- bounty : minor changes [\#768](https://github.com/gitcoinco/web/pull/768) ([thelostone-mc](https://github.com/thelostone-mc))
+- Add django auth framework [\#574](https://github.com/gitcoinco/web/pull/574) ([mbeacom](https://github.com/mbeacom))
+
+## [pre-django-auth](https://github.com/gitcoinco/web/tree/pre-django-auth) (2018-04-06)
+[Full Changelog](https://github.com/gitcoinco/web/compare/20180404-template-1...pre-django-auth)
+
+**Fixed bugs:**
+
+- the big 'profile might need a redesign or some bugfixes' thread. [\#580](https://github.com/gitcoinco/web/issues/580)
+
+**Closed issues:**
+
+- "ReferenceError: Accounts is not defined" Error printed to console when sending a tip [\#806](https://github.com/gitcoinco/web/issues/806)
+- As a user, I would like to view profile bounties, repos, etc in a paginated fashion [\#550](https://github.com/gitcoinco/web/issues/550)
+- An easy way to read the list of funded issues on my profile page [\#424](https://github.com/gitcoinco/web/issues/424)
+
+## [20180404-template-1](https://github.com/gitcoinco/web/tree/20180404-template-1) (2018-04-05)
+[Full Changelog](https://github.com/gitcoinco/web/compare/20180404-template-0...20180404-template-1)
+
+## [20180404-template-0](https://github.com/gitcoinco/web/tree/20180404-template-0) (2018-04-05)
+[Full Changelog](https://github.com/gitcoinco/web/compare/20180404-base-template...20180404-template-0)
+
+## [20180404-base-template](https://github.com/gitcoinco/web/tree/20180404-base-template) (2018-04-04)
+[Full Changelog](https://github.com/gitcoinco/web/compare/pre-728...20180404-base-template)
+
+**Closed issues:**
+
+- Groundwork for Internationalization \(Translation of App to Other Languages\) [\#642](https://github.com/gitcoinco/web/issues/642)
+
+**Merged pull requests:**
+
+- stylelint:fix info in CONTRIBUTING.md [\#803](https://github.com/gitcoinco/web/pull/803) ([kziemianek](https://github.com/kziemianek))
+- Limit Profile stat results to valid bounties [\#791](https://github.com/gitcoinco/web/pull/791) ([mbeacom](https://github.com/mbeacom))
+- Fixes: https://github.com/gitcoinco/web/issues/642 [\#728](https://github.com/gitcoinco/web/pull/728) ([bakaoh](https://github.com/bakaoh))
+
+## [pre-728](https://github.com/gitcoinco/web/tree/pre-728) (2018-04-04)
+[Full Changelog](https://github.com/gitcoinco/web/compare/pre-684-responsive-cleanup...pre-728)
+
+**Closed issues:**
+
+- Responsive Design Issues On The Gitcoin Website [\#684](https://github.com/gitcoinco/web/issues/684)
+
+## [pre-684-responsive-cleanup](https://github.com/gitcoinco/web/tree/pre-684-responsive-cleanup) (2018-04-04)
+[Full Changelog](https://github.com/gitcoinco/web/compare/pre_web3_awareness_reafctor...pre-684-responsive-cleanup)
+
+**Implemented enhancements:**
+
+- 'my projects' tab should be greyed out if user is not logged in [\#769](https://github.com/gitcoinco/web/issues/769)
+- Issue Explorer Detail [\#737](https://github.com/gitcoinco/web/issues/737)
+- issue funder should be able to stop work [\#666](https://github.com/gitcoinco/web/issues/666)
+- Investigate Image Compression Across Gitcoin for Performance Improvements  [\#608](https://github.com/gitcoinco/web/issues/608)
+- inline validations [\#554](https://github.com/gitcoinco/web/issues/554)
 - Need to be able to stop work bounties as the funder [\#463](https://github.com/gitcoinco/web/issues/463)
 - standardbounties: automatically cross-process bounties posted to bounties.network to gitcoin [\#268](https://github.com/gitcoinco/web/issues/268)
 - Static handling and cache invalidation [\#262](https://github.com/gitcoinco/web/issues/262)
 - css: rebirth of the bounty [\#691](https://github.com/gitcoinco/web/pull/691) ([thelostone-mc](https://github.com/thelostone-mc))
+- fixing some width, flex, and spacing issues as discovered in issue \#684 [\#688](https://github.com/gitcoinco/web/pull/688) ([joshmobley](https://github.com/joshmobley))
 - changed all target=new to target=\_blank with rel=noopener [\#677](https://github.com/gitcoinco/web/pull/677) ([michelgotta](https://github.com/michelgotta))
 - revamped tool page [\#672](https://github.com/gitcoinco/web/pull/672) ([owocki](https://github.com/owocki))
 - Inline validations [\#571](https://github.com/gitcoinco/web/pull/571) ([KennethAshley](https://github.com/KennethAshley))
 
 **Fixed bugs:**
 
+- Getting an Error When Trying to Tip User [\#776](https://github.com/gitcoinco/web/issues/776)
+- Issue Explorer Check-box Undone [\#744](https://github.com/gitcoinco/web/issues/744)
 - after sending tip, blue alert that should have had a success message in it said 'undefined' [\#687](https://github.com/gitcoinco/web/issues/687)
 - refresh\_bounties empty URL bug [\#686](https://github.com/gitcoinco/web/issues/686)
 - TypeError: Object of type 'BountyFulfillment' is not JSON serializable [\#678](https://github.com/gitcoinco/web/issues/678)
@@ -25,12 +125,31 @@
 - standard bounties: multiple bounties per issue URL [\#251](https://github.com/gitcoinco/web/issues/251)
 - standardbounties: if you try to fulfill a bounty that doesnt exist it spins forever [\#250](https://github.com/gitcoinco/web/issues/250)
 - bug: need auto refresh on gitcoin submission pending page [\#179](https://github.com/gitcoinco/web/issues/179)
+- explorer: added missing css stylesheet [\#747](https://github.com/gitcoinco/web/pull/747) ([thelostone-mc](https://github.com/thelostone-mc))
+- html: removed extra css link from header.html [\#739](https://github.com/gitcoinco/web/pull/739) ([thelostone-mc](https://github.com/thelostone-mc))
 
 **Closed issues:**
 
+- test 123 [\#788](https://github.com/gitcoinco/web/issues/788)
+- Really thin kill bounty screen [\#786](https://github.com/gitcoinco/web/issues/786)
+- messed up CSS on https://gitcoin.co/funding/process [\#780](https://github.com/gitcoinco/web/issues/780)
+- avatar\_url is wrong [\#779](https://github.com/gitcoinco/web/issues/779)
+- Hardcoded year in emails copyright section. [\#765](https://github.com/gitcoinco/web/issues/765)
+- Contributing Link in README.md doesn't work [\#755](https://github.com/gitcoinco/web/issues/755)
+- Ratelimited [\#754](https://github.com/gitcoinco/web/issues/754)
+- test 123 [\#752](https://github.com/gitcoinco/web/issues/752)
+- NameError: name 'time' is not defined [\#751](https://github.com/gitcoinco/web/issues/751)
+- NameError: name 'time' is not defined [\#750](https://github.com/gitcoinco/web/issues/750)
+- test 123 [\#734](https://github.com/gitcoinco/web/issues/734)
+- test 123 [\#722](https://github.com/gitcoinco/web/issues/722)
 - test 123 [\#720](https://github.com/gitcoinco/web/issues/720)
+- reverse bounties [\#719](https://github.com/gitcoinco/web/issues/719)
+- 'accepted' time is wrong on bounty [\#714](https://github.com/gitcoinco/web/issues/714)
+- Using docker to setup and got "localhost refused to connect" error, and ReadMe file is outdated [\#713](https://github.com/gitcoinco/web/issues/713)
 - /explorer on mobile needs some alignment fixes [\#705](https://github.com/gitcoinco/web/issues/705)
 - bounty explorer can be slow  [\#689](https://github.com/gitcoinco/web/issues/689)
+- as a user, i want to ahve an 'in alpha' badge on alpha tools, so i can know which tools aren't yet GA [\#685](https://github.com/gitcoinco/web/issues/685)
+- gitcoin.co/new issue page not responsive [\#679](https://github.com/gitcoinco/web/issues/679)
 - Scope of task [\#670](https://github.com/gitcoinco/web/issues/670)
 - test 123 [\#654](https://github.com/gitcoinco/web/issues/654)
 - Emails with \[DEBUG\] header in prod [\#650](https://github.com/gitcoinco/web/issues/650)
@@ -48,13 +167,13 @@
 - Longer titles are profile page overflow their bounds [\#501](https://github.com/gitcoinco/web/issues/501)
 - gitcoinbot did not comment on github when `work\_done` event fired  [\#495](https://github.com/gitcoinco/web/issues/495)
 - Issue explorer on mobile needs a quick cleanup [\#494](https://github.com/gitcoinco/web/issues/494)
-- BadFunctionCallOutput: Could not decode contract function call getFulfillment return data b'' for output\_types \['bool', 'address', 'string'\] [\#490](https://github.com/gitcoinco/web/issues/490)
 - Exception: attempting to create a new bounty when is\_greater\_than\_x\_days\_old = True [\#485](https://github.com/gitcoinco/web/issues/485)
 - People shouldn't be able to start work on more than 3 issues at a time [\#478](https://github.com/gitcoinco/web/issues/478)
 - JSONDecodeError: Expecting value: line 1 column 1 \(char 0\) [\#467](https://github.com/gitcoinco/web/issues/467)
 - BACKEND -- Gitcoin External Bounties tool [\#447](https://github.com/gitcoinco/web/issues/447)
 - Clear Connection Between Notification and Error States [\#432](https://github.com/gitcoinco/web/issues/432)
 - Consistent display of ETH and USD across app [\#421](https://github.com/gitcoinco/web/issues/421)
+- To see only open issues [\#420](https://github.com/gitcoinco/web/issues/420)
 - Consistent button styles across the app [\#416](https://github.com/gitcoinco/web/issues/416)
 - Consistent H1 treatment [\#414](https://github.com/gitcoinco/web/issues/414)
 - Clear and concise tooltips [\#410](https://github.com/gitcoinco/web/issues/410)
@@ -110,14 +229,34 @@
 - Detect profile from Metamask/Github [\#214](https://github.com/gitcoinco/web/issues/214)
 - funded issue links are long and clunky [\#201](https://github.com/gitcoinco/web/issues/201)
 - Environment variable based settings [\#144](https://github.com/gitcoinco/web/issues/144)
+- saving search UI is broken on iphone 7 [\#8](https://github.com/gitcoinco/web/issues/8)
 
 **Merged pull requests:**
 
+- explorer: updated label for issues with status done [\#785](https://github.com/gitcoinco/web/pull/785) ([thelostone-mc](https://github.com/thelostone-mc))
+- bounty: process + kill bounty width fix [\#782](https://github.com/gitcoinco/web/pull/782) ([thelostone-mc](https://github.com/thelostone-mc))
+- CSS clean up 🎉 [\#775](https://github.com/gitcoinco/web/pull/775) ([sethmcleod](https://github.com/sethmcleod))
+- disable my projects filters if user not logged in [\#771](https://github.com/gitcoinco/web/pull/771) ([kziemianek](https://github.com/kziemianek))
+- current year in copyright email section [\#766](https://github.com/gitcoinco/web/pull/766) ([kziemianek](https://github.com/kziemianek))
+- Alpha Tag [\#758](https://github.com/gitcoinco/web/pull/758) ([willsputra](https://github.com/willsputra))
+- bounty: css letter spacing fix for h1..h6 [\#757](https://github.com/gitcoinco/web/pull/757) ([thelostone-mc](https://github.com/thelostone-mc))
+- Fixed Contributing Link in README.md [\#756](https://github.com/gitcoinco/web/pull/756) ([Sabihashaik](https://github.com/Sabihashaik))
+- bounty: css fix for wonky contributor info [\#741](https://github.com/gitcoinco/web/pull/741) ([thelostone-mc](https://github.com/thelostone-mc))
+- html: reordered css links [\#740](https://github.com/gitcoinco/web/pull/740) ([thelostone-mc](https://github.com/thelostone-mc))
+- bounty: display submit only on starting work [\#738](https://github.com/gitcoinco/web/pull/738) ([thelostone-mc](https://github.com/thelostone-mc))
+- \#679 - new issue responsive updates [\#735](https://github.com/gitcoinco/web/pull/735) ([joshmobley](https://github.com/joshmobley))
+- fixed broken save search UI & missing save search text on mobile [\#731](https://github.com/gitcoinco/web/pull/731) ([willsputra](https://github.com/willsputra))
+- accepted\_on date in fulfillment model [\#729](https://github.com/gitcoinco/web/pull/729) ([owocki](https://github.com/owocki))
+- Optimize images in assets [\#724](https://github.com/gitcoinco/web/pull/724) ([mbeacom](https://github.com/mbeacom))
+- handle multiple bounties per github url [\#723](https://github.com/gitcoinco/web/pull/723) ([owocki](https://github.com/owocki))
 - Add image compression [\#712](https://github.com/gitcoinco/web/pull/712) ([cassidypignatello](https://github.com/cassidypignatello))
+- bounty: review feedback added [\#711](https://github.com/gitcoinco/web/pull/711) ([thelostone-mc](https://github.com/thelostone-mc))
 - workaround for web3 sync issues [\#709](https://github.com/gitcoinco/web/pull/709) ([owocki](https://github.com/owocki))
 - twitter.com/gitcoinfeed [\#708](https://github.com/gitcoinco/web/pull/708) ([owocki](https://github.com/owocki))
 - css: fixed explorer overflow on mobile [\#707](https://github.com/gitcoinco/web/pull/707) ([thelostone-mc](https://github.com/thelostone-mc))
 - Fixes: https://github.com/gitcoinco/web/issues/687 [\#699](https://github.com/gitcoinco/web/pull/699) ([kziemianek](https://github.com/kziemianek))
+- css: sidebar fixup [\#697](https://github.com/gitcoinco/web/pull/697) ([thelostone-mc](https://github.com/thelostone-mc))
+- Issue funder can remove users from issue [\#675](https://github.com/gitcoinco/web/pull/675) ([kziemianek](https://github.com/kziemianek))
 - Offchain Bounties [\#673](https://github.com/gitcoinco/web/pull/673) ([owocki](https://github.com/owocki))
 - doc: corrected setup path [\#667](https://github.com/gitcoinco/web/pull/667) ([thelostone-mc](https://github.com/thelostone-mc))
 - Records UserAction events for Tip, Start/Stop Work, and Bounty related things [\#664](https://github.com/gitcoinco/web/pull/664) ([owocki](https://github.com/owocki))

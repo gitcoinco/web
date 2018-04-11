@@ -58,6 +58,7 @@ services:
     depends_on:
       - db
     stdin_open: true
+    tty: true
 
   celery_worker:
     image: 'web'

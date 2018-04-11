@@ -34,3 +34,5 @@ webpack-stats.json
 *.tfvars
 *.pid
 celerybeat-schedule
+
+*.prof

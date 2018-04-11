@@ -3,7 +3,7 @@ ENV PYTHONUNBUFFERED 1
 ENV C_FORCE_ROOT true
 RUN mkdir /code && \
     apt-get update && \
-    apt-get install -y --no-install-recommends wget git dos2unix gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev && \
+    apt-get install -y --no-install-recommends gettext graphviz libgraphviz-dev wget git dos2unix gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev && \
     pip3 install dumb-init && \
     rm -rf /var/lib/apt/lists/*
 
@@ -28,11 +28,9 @@ RUN mkdir -p /usr/share/GeoIP/ && \
 WORKDIR /code
 COPY requirements/ /code/
 RUN pip install -r test.txt
-
 ADD . /code/
 
-RUN pip install -r dev.txt && \
-    dos2unix /code/bin/docker-command.bash && \
+RUN dos2unix /code/bin/docker-command.bash && \
     dos2unix /code/bin/celery/worker.bash && \
     apt-get purge -y --auto-remove dos2unix wget gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev
 

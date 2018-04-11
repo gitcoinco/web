@@ -133,7 +133,7 @@ def get_bounty(bounty_enum, network):
     standard_bounties = getBountyContract(network)
 
     try:
-        issuer, deadline, fulfillmentAmount, paysTokens, bountyStage, balance = standard_bounties.functions.getBounty(bounty_enum).call()
+        issuer, contract_deadline, fulfillmentAmount, paysTokens, bountyStage, balance = standard_bounties.functions.getBounty(bounty_enum).call()
     except BadFunctionCallOutput:
         raise BountyNotFoundException
 
@@ -170,15 +170,18 @@ def get_bounty(bounty_enum, network):
         raise IPFSCantConnectException("Failed to connect to IPFS")
 
     # https://github.com/Bounties-Network/StandardBounties/issues/25
-    override_deadline = bounty_data.get('payload', {}).get('expire_date', False)
-    if override_deadline:
-        deadline = override_deadline
+    ipfs_deadline = bounty_data.get('payload', {}).get('expire_date', False)
+    deadline = contract_deadline
+    if ipfs_deadline:
+        deadline = ipfs_deadline
 
     # assemble the data
     bounty = {
         'id': bounty_enum,
         'issuer': issuer,
         'deadline': deadline,
+        'contract_deadline': contract_deadline,
+        'ipfs_deadline': ipfs_deadline,
         'fulfillmentAmount': fulfillmentAmount,
         'paysTokens': paysTokens,
         'bountyStage': bountyStage,

@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "eslint": "./node_modules/eslint/bin/eslint.js --quiet --config .eslintrc ./app/assets/v2/js/*.js ./app/assets/v2/js/**/*.js ./app/assets/legacy/v2/js/*.js ./app/assets/legacy/v2/js/**/*.js ./app/assets/yge/*.js ./app/assets/yge/youvegoteth/*.js",
     "eslint:fix": "./node_modules/eslint/bin/eslint.js --quiet --fix --config .eslintrc ./app/assets/v2/js/*.js ./app/assets/v2/js/**/*.js ./app/assets/legacy/v2/js/*.js ./app/assets/legacy/v2/js/**/*.js ./app/assets/yge/*.js ./app/assets/yge/youvegoteth/*.js",
-    "stylelint": "stylelint ./app/assets/**/**/*.*css",
+    "stylelint": "stylelint ./app/assets/**/**/*.css",
+    "stylelint:fix": "stylelint --fix ./app/assets/**/**/*.css",
     "build": "webpack --config webpack.config.js --progress --colors"
   },
   "repository": {

@@ -15,6 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -27,6 +28,9 @@ class Command(BaseCommand):
     help = 'sends feedback emails to bounties that were closed in last xx hours, but only if its the first time a bounty has been accepted by taht persona'
 
     def handle(self, *args, **options):
+        if settings.DEBUG:
+            print("not active in non prod environments")
+            return
         start_time = timezone.now() - timezone.timedelta(hours=48)
         end_time = timezone.now() - timezone.timedelta(hours=24)
         statues = ['done']

@@ -1,5 +1,5 @@
 body {
-  font-family: "Muli";
+  font-family: 'Muli', sans-serif;
   background-color: #FFF;
 }
 
@@ -8,7 +8,8 @@ body {
 }
 
 .explorer {
-  font-family: "Muli-SemiBold";
+  font-family: 'Muli', sans-serif;
+  font-weight: 600;
   margin-top: 2em;
   color: #3E00FF;
 }
@@ -17,6 +18,26 @@ body {
   position: relative;
   font-size: 10px;
   top: -1px;
+}
+
+#expires_date {
+  float: right;
+}
+
+.progress-bar {
+  background-color: #D8D8D8;
+  display: block;
+  height: 2px;
+  overflow: hidden;
+}
+
+.progress-bar .progress {
+  background-color: #0FCE7C;
+  height: 2px;
+  width: 50%;
+}
+.progress-bar.expired .progress {
+  background-color: #f7981b;
 }
 
 .bounty_details h4,
@@ -31,7 +52,25 @@ body {
   padding-bottom: 15px;
 }
 
+#avatar_url {
+  padding-top: 3em;
+}
+
+.bounty_details .avatar {
+  width: 50px;
+  height: 50px;
+  margin: 0px auto;
+  border-radius: 50px;
+  margin-top: 0px;
+}
+
+#avatar_url .avatar {
+  width: 80px;
+  height: 80px;
+}
+
 #status {
+  color: #00A55E;
   text-transform: uppercase;
   margin-bottom: 5px;
 }
@@ -47,7 +86,8 @@ body {
   text-align: center;
   font-size: 16px;
   color: #7A7A7A;
-  font-family: "Muli-SemiBold";
+  font-family: 'Muli', sans-serif;
+  font-weight: 600;
 }
 
 .box .empty p {
@@ -61,7 +101,8 @@ body {
 }
 
 .bounty-heading {
-  font-family: "Muli-SemiBold";
+  font-family: 'Muli', sans-serif;
+  font-weight: 600;
   margin-bottom: 1em;
   margin-top: 2em;
   font-size: 18px;
@@ -91,14 +132,11 @@ body {
   font-size: 14px;
 }
 
-#status {
-  color: #00A55E;
-}
-
 .bounty-info div {
   display: inline;
   margin-right: 15px;
-  font-family: "Muli-Light";
+  font-family: 'Muli', sans-serif;
+  font-weight: 300;
 }
 
 .bounty-info-heading {
@@ -109,8 +147,39 @@ body {
   color: #717171;
 }
 
+.started-status-column div {
+  display: inline-block;
+  margin: 5px;
+}
+
+.funder-avatar,
+.activity div {
+  margin: auto;
+}
+
+#timer {
+  display: inline-grid;
+}
+
+#timer div {
+  width: 12em;
+  margin-right: 0;
+  display: inline-block;
+}
+
+#timer .bounty-info-heading,
+#timer .bounty-info-text {
+  font-size: 12px;
+}
+
+#timer .bounty-info-text {
+  position: relative;
+  top: 2px;
+}
+
 #bounty_details .tags {
   float: right;
+  text-align: center;
 }
 
 #bounty_details .tag {
@@ -141,43 +210,6 @@ body {
   color: #6184AC;
 }
 
-#issue_keywords .keyword:first-child{
-  margin-left: 0;
-}
-
-#started_owners_username,
-#fulfilled_owners_username,
-#submitted_owners_username {
-  padding-left:0;
-  margin: 10px;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-#started_owners_username a,
-#fulfilled_owners_username a,
-#submitted_owners_username a,
-#started_owners_username svg,
-#fulfilled_owners_username svg,
-#submitted_owners_username svg  {
-  margin-left: 5px;
-  margin-right: 5px;
-}
-
-#started_owners_username svg,
-#fulfilled_owners_username svg,
-#submitted_owners_username svg {
-  margin-top: 5px;
-}
-
-#bounty_owner_name {
-  color: #0D0764;
-  margin-bottom: 5px;
-  text-transform: capitalize;
-  font-family: "Muli-SemiBold";
-}
-
 .contributor-box {
   border: 1px solid #DBDBDB;
   border-right: none;
@@ -197,7 +229,8 @@ body {
   color: #333333;
   letter-spacing: 0;
   text-transform: capitalize;
-  font-family: "Muli-SemiBold";
+  font-family: 'Muli', sans-serif;
+  font-weight: 600;
 }
 
 .contributor-box svg {
@@ -207,7 +240,19 @@ body {
   color: #333333;
 }
 
-a.btn{
+#issue_keywords .keyword:first-child {
+  margin-left: 0;
+}
+
+#bounty_owner_name {
+  color: #0D0764;
+  margin-bottom: 5px;
+  text-transform: capitalize;
+  font-family: 'Muli', sans-serif;
+  font-weight: 600;
+}
+
+a.btn {
   border-radius: 0.2rem;
 }
 
@@ -216,40 +261,53 @@ a.btn{
   text-align: center;
 }
 
-
-#right_actions .button--primary {
-  margin-right: 10px;
-  position: relative;
-  top: 1px;
-}
-
-#right_actions .button--primary,
 .started-status-column .button--primary,
+#right_actions .button--primary,
 #btn-white {
   padding: 6px 15px;
   box-shadow: none;
   font-size: 12px;
 }
 
+#right_actions .button--primary {
+  margin-right: 5px;
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
 #btn-white {
   border: 1px solid #979797;
   color: #0D0764;
   border-radius: 3px;
+  position: relative;
+}
+
+#btn-white img {
+  position: absolute;
+  width: 20px;
+  top: 5px;
+  right: 8px;
+}
+ 
+.comment {
+  border-left: 1px solid #979797;
+  padding-right: 20px;
+  margin-left: 5px;
 }
 
 #btn-white .github-comment {
-  border-left: 1px solid #979797;
-  padding-left: 12px;
-  margin-left: 5px;
+  color: #FFFFFF;
+  position: absolute;
+  font-size: 10px;
+  text-align: center;
+  width: 20px;
+  right: 8px;
 }
 
 .activity {
   margin-bottom: 10px;
-}
-
-.funder-avatar,
-.activity div {
-  margin: auto;
 }
 
 .fulfilled .activity-status {
@@ -271,25 +329,12 @@ a.btn{
   font-size: 12px;
 }
 
-.bounty_details .avatar {
-  max-width: 50px;
-  max-height: 50px;
-  margin: 0px auto;
-  border-radius: 50px;
-  margin-top: 0px;
-}
-
-.started-status-column div {
-  display: inline-block;
-  margin: 5px;
-}
-
 #bounty_details {
   display: none;
   margin-bottom: 2em;
 }
 
-#bounty_details #issue_description img{
+#bounty_details #issue_description img {
   max-width: 100%;
 }
 
@@ -299,16 +344,58 @@ a.btn{
 #bounty_details #issue_description h4,
 #bounty_details #issue_description h5,
 #bounty_details #issue_description h6 {
+  letter-spacing: 1px;
   font-size: 16px;
   margin-top: 15px;
   text-transform: none;
+}
+
+#started_owners_username,
+#fulfilled_owners_username,
+#submitted_owners_username {
+  padding-left: 0;
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#started_owners_username a,
+#fulfilled_owners_username a,
+#submitted_owners_username a,
+#started_owners_username svg,
+#fulfilled_owners_username svg,
+#submitted_owners_username svg {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+#started_owners_username svg,
+#fulfilled_owners_username svg,
+#submitted_owners_username svg {
+  margin-top: 5px;
 }
 
 .uninterest-button {
   margin: 5px;
 }
 
+@media (max-width: 575px) {
+
+  #timer {
+    margin-bottom: 10px;
+  }
+
+  .bounty-info div {
+    width: 100%;
+  }
+}
+
 @media (max-width: 767px) {
+
+  #title {
+    padding-top: 1em;
+  }
 
   .bounty-actions {
     display: block;

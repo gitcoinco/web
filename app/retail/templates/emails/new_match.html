@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %} 
+{% load i18n humanize %}
 
 {% block content %}
 
@@ -30,35 +30,38 @@ p, pre{
     margin-top: 25px;
     text-align: left;
 }
+.match div{
+    display: inline-block;;
+    vertical-align: middle;;
+}
 </style>
 
-<h1>⚡️ New Match Alert ⚡️</h1>
+<h1>⚡️ {% trans "New Match Alert" %} ⚡️</h1>
 
 <h3>
-    @{{github_username}}, meet {{bounty.org_name}}.  {{bounty.org_name}}, meet @{{github_username}}.
+    @{{github_username}},{% trans "meet" %} {{bounty.org_name}}.  {{bounty.org_name}}, {% trans "meet" %} @{{github_username}}.
 </h3>
 
-<table>
-    <tr>
-        <td width="140" style="text-align: center;"> 
-            <a href="https://github.com/{{github_username}}"><img src="https://gitcoin.co/funding/avatar?repo=https://github.com/{{github_username}}" width="100" height="100" /></a>
-            <br>
-            <a href="https://github.com/{{github_username}}">
-                @{{github_username}}
-            </a>
-        </td>
-        <td>   
-            &lt;&gt;
-        </td>
-        <td width="140" style="text-align: center;">   
-            <a href="https://github.com/{{bounty.org_name}}"><img src="{{bounty.local_avatar_url}}" width="100" height="100"></a>
-            <br>
-            <a href="https://github.com/{{bounty.org_name}}">  
-                {{bounty.org_name}}
-            </a>
-        </td>
-    </tr>
-</table>
+<div class="match">
+    <div>
+        <a href="https://github.com/{{github_username}}"><img src="https://gitcoin.co/funding/avatar?repo=https://github.com/{{github_username}}" width="100" height="100" /></a>
+        <br>
+        <a href="https://github.com/{{github_username}}">
+            @{{github_username}}
+        </a>
+    </div>
+    <div>
+        &lt;&gt;
+    </div>
+    <div>
+        <a href="https://github.com/{{bounty.org_name}}"><img src="{{bounty.local_avatar_url}}" width="100" height="100"></a>
+        <br>
+        <a href="https://github.com/{{bounty.org_name}}">
+            {{bounty.org_name}}
+        </a>
+    </div>
+</div>
+
 
 <p>
     @{{github_username}} expressed interest in <a href="{{bounty.absolute_url}}">{{bounty.title_or_desc}}</a>
@@ -67,15 +70,7 @@ p, pre{
 {% include 'emails/bounty.html' with bounty=bounty %}
 
 <p>
-    You are both CCed on this email.  Feel free to reply all and say hey. 
+    {% trans "You are both CCed on this email.  Feel free to reply all and say hey." %}
 </p>
-
-<p>
-    Keep Pushing Open Source Forward,
-    <br>
-    -- Gitcoin Core
-</p>
-
-
 
 {% endblock %}
