@@ -721,3 +721,13 @@ var setUsdAmount = function(event) {
 
 // Enum object for mapping bounty stages to the int returned by smart contract
 var bountyStageEnum = Object.freeze({'Draft': 0, 'Active': 1, 'Dead': 2});
+
+
+// (Async) Return whether the browser is currently using the specified network (string)
+var browserNetworkIs = function(networkStr) {
+  return web3.version.getNetwork((error, netId) => {
+    var browserNetwork = web3NetworkIdToString(netId);
+
+    return browserNetwork != networkStr;
+  });
+};
