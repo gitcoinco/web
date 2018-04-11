@@ -148,19 +148,22 @@ def reject_faucet_request(fr):
     send_mail(from_email, to_email, subject, text, html)
 
 
-def new_bounty(bounty, to_emails=None):
-    if not bounty or not bounty.value_in_usdt:
+def new_bounty(bounties, to_emails=None):
+    if not bounties:
         return
-
+    max_bounties = 10
+    if len(bounties) > max_bounties:
+        bounties = bounties[0:max_bounties]
     if to_emails is None:
         to_emails = []
-
-    subject = _("⚡️ New Funded Issue Match worth") + f" {bounty.value_in_usdt} USD @ " \
-              f"${round(convert_token_to_usdt(bounty.token_name))}/{bounty.token_name} {bounty.keywords})"
+    plural = "s" if len(bounties) != 1 else ""
+    worth = round(sum([bounty.value_in_usdt for bounty in bounties if bounty.value_in_usdt]), 2)
+    worth = f" worth ${worth}" if worth else ""
+    subject = _(f"⚡️  {len(bounties)} Funded Issue{plural}{worth} matching your profile")
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
-        html, text = render_new_bounty(to_email, bounty)
+        html, text = render_new_bounty(to_email, bounties)
 
         if not should_suppress_notification_email(to_email):
             send_mail(from_email, to_email, subject, text, html)
