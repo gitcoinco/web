@@ -847,8 +847,8 @@ class Profile(SuperModel):
     def stats(self):
         bounties = self.bounties.stats_eligible()
         loyalty_rate = 0
-        total_funded = sum([bounty.value_in_usdt_now if bounty.value_in_usdt_now else 0 for bounty in bounties if bounty.is_funder(self.handle)])
-        total_fulfilled = sum([bounty.value_in_usdt_now if bounty.value_in_usdt_now else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
+        total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_funder(self.handle)])
+        total_fulfilled = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
         print(total_funded, total_fulfilled)
         role = 'newbie'
         if total_funded > total_fulfilled:
