@@ -403,6 +403,20 @@ class Bounty(SuperModel):
             return None
 
     @property
+    def token_value_in_usdt_then(self):
+        try:
+            return round(convert_token_to_usdt(self.token_name, self.created_on), 2)
+        except ConversionRateNotFoundError:
+            return None
+
+    @property
+    def token_value_in_usdt(self):
+        if self.status in ['open', 'started', 'submitted']:
+            return self.token_value_in_usdt_now
+        else:
+            return self.token_value_in_usdt_then
+
+    @property
     def desc(self):
         return "{} {} {} {}".format(naturaltime(self.web3_created), self.idx_project_length, self.bounty_type,
                                     self.experience_level)
@@ -637,6 +651,10 @@ class Tip(SuperModel):
 
     @property
     def value_in_usdt(self):
+        return self.value_in_usdt_then
+
+    @property
+    def value_in_usdt_then(self):
         decimals = 1
         if self.tokenName == 'USDT':
             return float(self.amount)
@@ -647,10 +665,19 @@ class Tip(SuperModel):
         except ConversionRateNotFoundError:
             return None
 
-    # TODO: DRY
     @property
     def token_value_in_usdt_now(self):
-        return round(convert_token_to_usdt(self.tokenName), 2)
+        try:
+            return round(convert_token_to_usdt(self.tokenName), 2)
+        except ConversionRateNotFoundError:
+            return None
+
+    @property
+    def token_value_in_usdt_now(self):
+        try:
+            return round(convert_token_to_usdt(self.tokenName, self.created_on), 2)
+        except ConversionRateNotFoundError:
+            return None
 
     @property
     def status(self):
