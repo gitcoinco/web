@@ -115,7 +115,7 @@ class Command(BaseCommand):
             'amount': tip.get_natural_value() * 10**18,
             'denomination': tip.tokenName,
             'amount_eth': tip.value_in_eth,
-            'amount_usdt': tip.value_in_usdt_now,
+            'amount_usdt': tip.value_in_usdt,
             'from_address': tip.from_address,
             'claimee_address': tip.receive_address,
             'repo': self.extract_github_repo(tip.github_url) if tip.github_url else '',
