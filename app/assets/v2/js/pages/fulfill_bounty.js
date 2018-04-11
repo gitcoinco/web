@@ -200,15 +200,15 @@ window.onload = function() {
                     }
 
                     // If all tests pass, attempt tx
-                bounty.fulfillBounty(
-                  bountyId,
-                  document.ipfsDataHash,
-                  {
-                    gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-                  },
-                  web3Callback
-                );
-              });
+                    bounty.fulfillBounty(
+                      bountyId,
+                      document.ipfsDataHash,
+                      {
+                        gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+                      },
+                      web3Callback
+                    );
+                  });
                 });
               });
             }

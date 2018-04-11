@@ -17,7 +17,7 @@ window.onload = function() {
     var fulfillmentCallback = function(results, status) {
       if (status != 'success') {
         mixpanel.track('Process Bounty Error', {step: 'fulfillmentCallback', error: error});
-        _alert({ message: gettext('Could not get fulfillment details') }, 'warning');
+        _alert({ message: 'Could not get fulfillment details' }, 'warning');
         console.error(error);
         unloading_button($('.submitBounty'));
         return;
@@ -25,7 +25,7 @@ window.onload = function() {
       results = sanitizeAPIResults(results);
       result = results[0];
       if (result == null) {
-        _alert({ message: gettext('No bounty fulfillments found for this Github URL.') }, 'warning');
+        _alert({ message: 'No bounty fulfillments found for this Github URL.' }, 'warning');
         unloading_button($('.submitBounty'));
         return;
       }
@@ -89,11 +89,11 @@ window.onload = function() {
         localStorage['acceptTOS'] = true;
       }
       if (issueURL == '') {
-        _alert({ message: gettext('Please enter a issue URL.') }, 'warning');
+        _alert({ message: 'Please enter a issue URL.' }, 'warning');
         isError = true;
       }
       if (fulfillmentId == null) {
-        _alert({ message: gettext('Please enter a fulfillment Id.') }, 'warning');
+        _alert({ message: 'Please enter a fulfillment Id.' }, 'warning');
         isError = true;
       }
       if (isError) {
@@ -105,74 +105,89 @@ window.onload = function() {
       loading_button($(this));
 
       var apiCallback = function(results, status) {
-        if (status != 'success') {
-          mixpanel.track('Process Bounty Error', {step: 'apiCallback', error: error});
-          _alert({ message: gettext('Could not get bounty details') }, 'warning');
-          console.error(error);
-          unloading_button($('.submitBounty'));
-          return;
-        }
-        results = sanitizeAPIResults(results);
-        result = results[0];
-        if (result == null) {
-          _alert({ message: gettext('No active bounty found for this Github URL on ' + document.web3network + '.') }, 'info');
-          unloading_button($('.submitBounty'));
-          return;
-        }
+        web3.version.getNetwork((error, netId) => {
+          var browserNetwork = web3NetworkIdToString(netId);
 
-        var bountyAmount = parseInt(result['value_in_token'], 10);
-        var fromAddress = result['bounty_owner_address'];
-        var claimeeAddress = result['fulfiller_address'];
-        var open = result['is_open'];
-        var initialized = true;
-        var bountyId = result['standard_bounties_id'];
-
-        var errormsg = undefined;
-
-        if (bountyAmount == 0 || open == false || initialized == false) {
-          errormsg = gettext('No active funding found at this address.  Are you sure this is an active funded issue?');
-        } else if (claimeeAddress == '0x0000000000000000000000000000000000000000') {
-          errormsg = gettext('No claimee found for this bounty.');
-        } else if (fromAddress != web3.eth.coinbase) {
-          errormsg = gettext('You can only process a funded issue if you submitted it initially.');
-        }
-
-        if (errormsg) {
-          _alert({ message: errormsg }, 'error');
-          unloading_button($('.submitBounty'));
-          return;
-        }
-
-        var final_callback = function(error, result) {
-          var next = function() {
-            // setup inter page state
-            localStorage[issueURL] = JSON.stringify({
-              'timestamp': timestamp(),
-              'dataHash': null,
-              'issuer': account,
-              'txid': result
-            });
-
-            _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
-            setTimeout(function() {
-              mixpanel.track('Process Bounty Success', {});
-              document.location.href = '/funding/details?url=' + issueURL;
-            }, 1000);
-
-          };
-
-          if (error) {
-            mixpanel.track('Process Bounty Error', {step: 'final_callback', error: error});
-            _alert({ message: gettext('There was an error') }, 'error');
+          if (status != 'success') {
+            mixpanel.track('Process Bounty Error', {step: 'apiCallback', error: error});
+            _alert({ message: 'Could not get bounty details' }, 'warning');
             console.error(error);
             unloading_button($('.submitBounty'));
-          } else {
-            next();
+            return;
           }
-        };
+          results = sanitizeAPIResults(results);
+          result = results[0];
+          if (result == null) {
+            _alert({ message: 'No active bounty found for this Github URL.' }, 'info');
+            unloading_button($('.submitBounty'));
+            return;
+          }
 
-        bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))}, final_callback);
+          var bountyAmount = parseInt(result['value_in_token'], 10);
+          var fromAddress = result['bounty_owner_address'];
+          var claimeeAddress = result['fulfiller_address'];
+          var open = result['is_open'];
+          var initialized = true;
+          var bountyId = result['standard_bounties_id'];
+          var bountyNetwork = result['network'];
 
+          var errormsg = undefined;
+
+          if (bountyAmount == 0 || open == false || initialized == false) {
+            errormsg = 'No active funding found at this address.  Are you sure this is an active funded issue?';
+          } else if (claimeeAddress == '0x0000000000000000000000000000000000000000') {
+            errormsg = 'No claimee found for this bounty.';
+          } else if (fromAddress != web3.eth.coinbase) {
+            errormsg = 'You can only process a funded issue if you submitted it initially.';
+          } else if (bountyNetwork != browserNetwork) {
+            errormsg = 'The browser must be connected to same Ethereum network that the bounty was deployed to.';
+          }
+
+          if (errormsg) {
+            _alert({ message: errormsg }, 'error');
+            unloading_button($('.submitBounty'));
+            return;
+          }
+
+          var final_callback = function(error, result) {
+            var next = function() {
+              // setup inter page state
+              localStorage[issueURL] = JSON.stringify({
+                'timestamp': timestamp(),
+                'dataHash': null,
+                'issuer': account,
+                'txid': result
+              });
+
+              _alert({ message: 'Submitted transaction to web3.' }, 'info');
+              setTimeout(function() {
+                mixpanel.track('Process Bounty Success', {});
+                document.location.href = '/funding/details?url=' + issueURL;
+              }, 1000);
+
+            };
+
+            if (error) {
+              mixpanel.track('Process Bounty Error', {step: 'final_callback', error: error});
+              _alert({ message: 'There was an error' }, 'error');
+              console.error(error);
+              unloading_button($('.submitBounty'));
+            } else {
+              next();
+            }
+          };
+
+          // Retrieve parameters for bounty from blockchain
+          bounty.getBounty.call(bountyId, (errStr, bountyParams) => {
+            if (bountyParams[4] != bountyStageEnum['Active']) {
+              _alert({ message: 'The bounty for this Github URL is not active.' });
+              unloading_button($('.js-submit'));
+              return;
+            }
+
+            bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))}, final_callback);
+          });
+        });
       };
       // Get bountyId from the database
 
