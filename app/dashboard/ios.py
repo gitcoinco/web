@@ -37,7 +37,7 @@ def save(request):
             github_user_data = get_github_user_data(access_token)
         except:
             github_user_data = {}
-        access_token_invalid = not access_token or not is_github_token_valid(access_token) or github_user_data.get('login') != github_username
+        access_token_invalid = not access_token or github_user_data.get('login') != github_username
         if access_token_invalid:
             status = 405
             message = f'Not authorized or invalid github token for github user {github_username}'
