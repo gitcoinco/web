@@ -674,7 +674,8 @@ def psave_bounty(sender, instance, **kwargs):
     }
 
     instance.idx_status = instance.status
-    instance._val_usd_db = instance.value_in_usdt_now if instance.value_in_usdt_now else 0
+    instance._val_usd_db = instance.value_in_usdt if instance.value_in_usdt else 0
+    instance._val_usd_db_now = instance.value_in_usdt_now if instance.value_in_usdt_now else 0
     instance.idx_experience_level = idx_experience_level.get(instance.experience_level, 0)
     instance.idx_project_length = idx_project_length.get(instance.project_length, 0)
 

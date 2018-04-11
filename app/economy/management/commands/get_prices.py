@@ -110,11 +110,13 @@ def polo():
     for b in Bounty.objects.all():
         print('refreshed {}'.format(b.pk))
         try:
-            b._val_usd_db = b.value_in_usdt_now
+            b._val_usd_db = b.value_in_usdt
+            b._val_usd_db_now = b.value_in_usdt_now
             b.save()
         except Exception as e:
             print(e)
             b._val_usd_db = 0
+            b._val_usd_db_now = 0
             b.save()
 
 
