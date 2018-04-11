@@ -38,6 +38,9 @@ def send_mail(from_email, _to_email, subject, body, html=False,
               from_name="Gitcoin.co", cc_emails=None):
     """Send email via SendGrid."""
     # make sure this subscriber is saved
+    if not settings.SENDGRID_API_KEY:
+        print('No SendGrid API Key set. Not attempting to send email.')
+        return
     to_email = _to_email
     get_or_save_email_subscriber(to_email, 'internal')
 
