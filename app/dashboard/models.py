@@ -107,6 +107,8 @@ class Bounty(SuperModel):
         ('submitted', 'submitted'),
         ('unknown', 'unknown'),
     )
+    OPEN_STATUSES = ['open', 'started', 'submitted']
+    CLOSED_STATUSES = ['expired', 'unknown', 'cancelled', 'done']
 
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
@@ -378,7 +380,7 @@ class Bounty(SuperModel):
 
     @property
     def value_in_usdt(self):
-        if self.status in ['open', 'started', 'submitted']:
+        if self.status in self.OPEN_STATUSES:
             return self.token_value_in_usdt_now
         else:
             return self.value_in_usdt_then
@@ -411,10 +413,17 @@ class Bounty(SuperModel):
 
     @property
     def token_value_in_usdt(self):
-        if self.status in ['open', 'started', 'submitted']:
+        if self.status in self.OPEN_STATUSES:
             return self.token_value_in_usdt_now
         else:
             return self.token_value_in_usdt_then
+
+    @property
+    def token_value_time_peg(self):
+        if self.status in self.OPEN_STATUSES:
+            return timezone.now()
+        else:
+            return self.created_on
 
     @property
     def desc(self):
