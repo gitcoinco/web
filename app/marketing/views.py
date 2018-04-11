@@ -30,7 +30,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils import timezone, translation
-from django.utils.translation import LANGUAGE_SESSION_KEY, check_for_language
+from django.utils.translation import LANGUAGE_SESSION_KEY
 from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
@@ -579,45 +579,14 @@ def email_settings(request, key):
     email = ''
     level = ''
     msg = ''
-    if not key:
-        email = request.session.get('email', '')
-        if not email:
-            github_handle = request.session.get('handle', '')
-            if not github_handle:
-                raise Http404
-            profiles = Profile.objects.filter(handle__iexact=github_handle).exclude(email='')
-            if profiles.exists():
-                email = profiles.first()
-        es = EmailSubscriber.objects.filter(email__iexact=email)
-        if not es.exists():
-            raise Http404
-    else:
-        es = EmailSubscriber.objects.filter(priv=key)
-        if es.exists():
-            email = es.first().email
-            level = es.first().preferences.get('level', False)
-        else:
-            raise Http404
-    es = es.first()
-    profile_id = request.session.get('profile_id')
-    profile = Profile.objects.get(pk=profile_id)
-    preferred_language = request.POST.get('preferred_language')
-    validation_passed = True
-    if preferred_language:
-        if preferred_language not in [i[0] for i in settings.LANGUAGES]:
-            msg = _('Unknown language')
-            validation_passed = False
-        if validation_passed:
-            profile.pref_lang_code = preferred_language
-            profile.save()
-            request.session[LANGUAGE_SESSION_KEY] = preferred_language
-            translation.activate(preferred_language)
-
-    if request.POST and request.POST.get('submit')::
-        level = request.POST.get('level')
-        comments = request.POST.get('comments')[:255]
+    pref_lang = 'en'
+    if request.POST and request.POST.get('submit'):
         email = request.POST.get('email')
         level = request.POST.get('level')
+        profile = Profile.objects.get(pk=request.user.profile.id)
+        if profile:
+            pref_lang = profile.get_profile_preferred_language()
+        preferred_language = request.POST.get('preferred_language')
         validation_passed = True
         try:
             validate_email(email)
@@ -625,11 +594,18 @@ def email_settings(request, key):
             print(e)
             validation_passed = False
             msg = _('Invalid Email')
-
+        if preferred_language:
+            if preferred_language not in [i[0] for i in settings.LANGUAGES]:
+                msg = _('Unknown language')
+                validation_passed = False
         if level not in ['lite', 'lite1', 'regular', 'nothing']:
             validation_passed = False
             msg = _('Invalid Level')
         if validation_passed:
+            profile.pref_lang_code = preferred_language
+            profile.save()
+            request.session[LANGUAGE_SESSION_KEY] = preferred_language
+            translation.activate(preferred_language)
             key = get_or_save_email_subscriber(email, 'settings')
             es.preferences['level'] = level
             es.email = email
@@ -649,9 +625,7 @@ def email_settings(request, key):
         'es': es,
         'msg': msg,
         'navs': settings_navs,
-        'available_languages': ['en', 'pl'],
-        'preferred_language': profile.pref_lang_code,
-        'logged_in' : False if request.session.get('profile_id') is None else True
+        'preferred_language': pref_lang
     }
     return TemplateResponse(request, 'settings/email.html', context)
 

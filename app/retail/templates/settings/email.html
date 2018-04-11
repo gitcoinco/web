@@ -28,17 +28,18 @@
       <div class="form-group">
         <label class="form__label" for="level">{% trans "Preferred language" %}</label>
         <div class="form__select">
-            <select id="preferred_language" name="preferred_language" required>
-                {% get_language_info_list for available_languages as langs %}
-                {% for lang in langs %} 
-                    <option value="{{lang.code}}" {% if preferred_language == lang.code%}selected{%endif%}>{{lang.name}} </option> 
-                {% endfor %}                                     
-            </select>
-            <div class="form__select__icon">
-                {% include 'svgs/arrow-down.svg' %}
-            </div>
-        </div>                            
-    </div>
+          <select id="preferred_language" name="preferred_language" required>
+            {% get_available_languages as LANGUAGES %}
+            {% get_language_info_list for LANGUAGES as langs %}
+            {% for lang in langs %}
+              <option value="{{lang.code}}" {% if preferred_language == lang.code%}selected{%endif%}>{{lang.name}} </option>
+            {% endfor %}
+          </select>
+          <div class="form__select__icon">
+            {% include 'svgs/arrow-down.svg' %}
+          </div>
+        </div>
+      </div>
       {% csrf_token %}
       <input class='button button--primary' type='submit' name='submit' value="Go">
     </form>

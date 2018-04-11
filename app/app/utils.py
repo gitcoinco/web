@@ -9,6 +9,7 @@ from django.contrib.gis.geoip2 import GeoIP2
 from django.db.models import Lookup
 from django.db.models.fields import Field
 from django.utils import timezone
+from django.utils.translation import LANGUAGE_SESSION_KEY
 
 import requests
 import rollbar
@@ -69,6 +70,11 @@ def add_contributors(repo_data):
     # no need for retry
     repo_data['contributors'] = response_data
     return repo_data
+
+
+def setup_lang(handle, request):
+    profile = Profile.objects.get(handle=handle)
+    request.session[LANGUAGE_SESSION_KEY] = profile.get_profile_preferred_language()
 
 
 def sync_profile(handle, user=None):

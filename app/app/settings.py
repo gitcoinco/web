@@ -176,9 +176,8 @@ LOCALE_PATHS = (
     'locale',
 )
 
-LANGUAGES = [    
-    ('en', _('English')),
-    ('pl', _('Polish')),
+LANGUAGES = [
+    ('en', _('English'))
 ]
 
 if not ENV in ['local', 'test']:
@@ -416,4 +415,3 @@ if ENABLE_SILK:
         }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int(
         'SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
-        
