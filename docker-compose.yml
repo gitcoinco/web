@@ -39,6 +39,22 @@ services:
     depends_on:
       - db
     stdin_open: true
+  shell:
+    restart: unless-stopped
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/code/app
+    env_file:
+      - app/app/local.env
+    build: .
+    volumes:
+      - .:/code
+    ports:
+      - "7999:7999"
+    depends_on:
+      - db
+    stdin_open: true
 
   testrpc:
     image: trufflesuite/ganache-cli
