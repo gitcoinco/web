@@ -54,12 +54,23 @@ window.onload = function() {
             return;
           }
 
+          web3.version.getNetwork((error, netId) => {
           var bountyAmount = parseInt(result['value_in_token'], 10);
           var fromAddress = result['bounty_owner_address'];
           var claimeeAddress = result['fulfiller_address'];
           var open = result['is_open'];
           var initialized = true;
           var bountyId = result['standard_bounties_id'];
+            var bountyNetwork = result['network'];
+
+            // Determine if browser and bounty networks match
+            var browserNetwork = web3NetworkIdToString(netId);
+
+            if (browserNetwork != bountyNetwork) {
+              _alert({ message: 'The browser must be connected to same Ethereum network that the bounty was deployed to.' });
+              unloading_button($('.js-submit'));
+              return;
+            }
 
           var errormsg = undefined;
 
@@ -113,7 +124,7 @@ window.onload = function() {
             { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) },
             final_callback
           );
-
+          });
         };
         // Get bountyId from the database
         var uri = '/api/v0.1/bounties/?github_url=' + issueURL;

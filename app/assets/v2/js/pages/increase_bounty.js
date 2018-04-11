@@ -105,6 +105,26 @@ $(document).ready(function() {
     }
 
     var bountyAmount = parseInt($('input[name=valueInToken]').val(), 10);
+
+    // Use DB to determine which networks each bounty is on.
+    var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
+
+    $.get(uri, function(results, status) {
+      results = sanitizeAPIResults(results);
+      result = results[0];
+      if (result == null) {
+        _alert({
+          message: 'No active bounty found for this Github URL.'
+        });
+        unloading_button($('.js-submit'));
+        return;
+      }
+
+      var bountyNetwork = result['network'];
+
+      // Determine if browser and bounty networks match
+      web3.version.getNetwork((error, netId) => {
+        var browserNetwork = web3NetworkIdToString(netId);
     var ethAmount = isETH ? amount : 0;
     var bountyId = $('input[name=standardBountiesId]').val();
     var fromAddress = $('input[name=bountyOwnerAddress]').val();
@@ -117,6 +137,9 @@ $(document).ready(function() {
     if (fromAddress != web3.eth.coinbase) {
       errormsg = gettext('Only the address that submitted this funded issue may increase the payout.');
     }
+        if (browserNetwork != bountyNetwork) {
+          errormsg = 'The browser must be connected to same Ethereum network that the bounty was deployed to.';
+        }
 
     if (errormsg) {
       _alert({ message: errormsg });
@@ -153,5 +176,7 @@ $(document).ready(function() {
         approveSuccessCallback
       );
     }
+  });
+});
   });
 });
