@@ -23,7 +23,7 @@ from django.core.management.base import BaseCommand
 
 import ccxt
 import cryptocompare as cc
-from dashboard.models import Bounty
+from dashboard.models import Bounty, Tip
 from economy.models import ConversionRate
 from websocket import create_connection
 
@@ -108,6 +108,8 @@ def polo():
         except Exception as e:
             print(e)
 
+
+def refresh_bounties():
     for b in Bounty.objects.all():
         print('refreshed {}'.format(b.pk))
         try:
@@ -121,36 +123,44 @@ def polo():
             b.save()
 
 
+def refresh_conv_rate(when, token_name):
+
+    to_currency = 'USDT'
+    conversion_rate = ConversionRate.objects.filter(
+      from_currency=token_name,
+      to_currency=to_currency,
+      timestamp=when
+    )
+
+    if len(conversion_rate) == 0:  # historical ConversionRate for the given bounty does not exist yet
+        try:
+            price = cc.get_historical_price(token_name, to_currency, when)
+
+            to_amount = price[token_name][to_currency]
+            ConversionRate.objects.create(
+              from_amount=1,
+              to_amount=to_amount,
+              source='cryptocompare',
+              from_currency=token_name,
+              to_currency=to_currency,
+              timestamp=when,
+            )
+            print('Cryptocompare: {}=>{}:{}'.format(token_name, to_currency, to_amount))
+        except Exception as e:
+            print(e)
+
+
 def cryptocompare():
     """Handle pulling market data from CryptoCompare.
        Updates ConversionRates only if data not available."""
 
-    to_currency = 'USDT'
-    for b in Bounty.objects.all():
-        print('CryptoCompare {}'.format(b.pk))
+    for b in Bounty.objects.filter(current_bounty=True):
+        print('CryptoCompare Bounty {}'.format(b.pk))
+        refresh_conv_rate(b.created_on, b.token_name)
 
-        conversion_rate = ConversionRate.objects.filter(
-          from_currency=b.token_name,
-          to_currency=to_currency,
-          timestamp=b.web3_created
-        )
-
-        if len(conversion_rate) == 0:  # historical ConversionRate for the given bounty does not exist yet
-            try:
-                price = cc.get_historical_price(b.token_name, to_currency, b.web3_created)
-
-                to_amount = price[b.token_name][to_currency]
-                ConversionRate.objects.create(
-                  from_amount=1,
-                  to_amount=to_amount,
-                  source='cryptocompare',
-                  from_currency=b.token_name,
-                  to_currency=to_currency,
-                  timestamp=b.web3_created,
-                )
-                print('Cryptocompare: {}=>{}:{}'.format(b.token_name, to_currency, to_amount))
-            except Exception as e:
-                print(e)
+    for tip in Tip.objects.all():
+        print('CryptoCompare Tip {}'.format(tip.pk))
+        refresh_conv_rate(tip.created_on, tip.tokenName)
 
 
 class Command(BaseCommand):
@@ -177,5 +187,11 @@ class Command(BaseCommand):
         try:
             print('polo')
             polo()
+        except Exception as e:
+            print(e)
+
+        try:
+            print('refresh')
+            refresh_bounties()
         except Exception as e:
             print(e)
