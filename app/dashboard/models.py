@@ -372,7 +372,7 @@ class Bounty(SuperModel):
         if self.token_name == 'DAI':
             return float(self.value_in_token / 10**18)
         try:
-            return round(float(convert_amount(self.value_in_eth, self.token_name, 'USDT')) / decimals, 2)
+            return round(float(convert_amount(self.value_in_token, self.token_name, 'USDT')) / decimals, 2)
         except ConversationRateNotFoundException:
             return None
 
@@ -384,7 +384,7 @@ class Bounty(SuperModel):
         if self.token_name == 'DAI':
             return float(self.value_in_token / 10 ** 18)
         try:
-            return round(float(convert_amount(self.value_in_eth, self.token_name, 'USDT', self.web3_created)) / decimals, 2)
+            return round(float(convert_amount(self.value_in_token, self.token_name, 'USDT', self.web3_created)) / decimals, 2)
         except ConversationRateNotFoundException:
             return None
 
@@ -615,25 +615,25 @@ class Tip(SuperModel):
 
     @property
     def value_in_usdt_now(self):
-        decimals = 10**18
+        decimals = 1
         if self.tokenName == 'USDT':
-            return float(self.value_in_token)
+            return float(self.amount)
         if self.tokenName == 'DAI':
-            return float(self.value_in_token / 10**18)
+            return float(self.amount / 10**18)
         try:
-            return round(float(convert_amount(self.value_in_eth, self.tokenName, 'USDT')) / decimals, 2)
+            return round(float(convert_amount(self.amount, self.tokenName, 'USDT')) / decimals, 2)
         except ConversationRateNotFoundException:
             return None
 
     @property
     def value_in_usdt(self):
-        decimals = 10 ** 18
+        decimals = 1
         if self.tokenName == 'USDT':
-            return float(self.value_in_token)
+            return float(self.amount)
         if self.tokenName == 'DAI':
-            return float(self.value_in_token / 10 ** 18)
+            return float(self.amount / 10 ** 18)
         try:
-            return round(float(convert_amount(self.value_in_eth, self.tokenName, 'USDT', self.received_on)) / decimals, 2)
+            return round(float(convert_amount(self.amount, self.tokenName, 'USDT', self.received_on)) / decimals, 2)
         except ConversationRateNotFoundException:
             return None
 
