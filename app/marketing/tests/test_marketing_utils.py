@@ -77,12 +77,6 @@ class MarketingEmailUtilsTest(TestCase):
         es = get_or_save_email_subscriber('emailSubscriber1@gitcoin.co', 'mysource')
         assert es.priv == 'priv1'
 
-        EmailSubscriber.objects.create(
-            email='emailSubscriber1@gitcoin.co',
-            source='secondsource',
-            priv='priv2'
-        )
-
         es2 = get_or_save_email_subscriber('emailSubscriber1@gitcoin.co', 'secondsource')
 
         assert es2.priv == 'priv1'
