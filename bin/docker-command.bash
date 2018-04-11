@@ -12,14 +12,8 @@ if [ ! -z "${INSTALL_REQS}" ]; then
 fi
 
 # Provision the Django test environment.
-CONTAINER_NAME=$(cat /proc/self/cgroup | grep -o  -e "docker-.*.scope" | head -n 1 | sed "s/docker-\(.*\).scope/\\1/")
-if [ "$CONTAINER_NAME" == "shell" ]; then
-    python manage.py shell
-else
-    python manage.py createcachetable
-    python manage.py collectstatic --noinput -i other &
-    python manage.py migrate
-    python manage.py get_prices
-    python manage.py runserver 0.0.0.0:8000
-fi
-
+python manage.py createcachetable
+python manage.py collectstatic --noinput -i other &
+python manage.py migrate
+python manage.py get_prices
+python manage.py runserver 0.0.0.0:8000

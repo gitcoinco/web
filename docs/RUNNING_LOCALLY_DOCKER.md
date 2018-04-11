@@ -139,22 +139,5 @@ Most people just start the stack normally, but run web outside of the standard f
 
 Details [here](https://github.com/docker/compose/issues/4677)
 
-#### bash shell
-
-`Q: How can I get a bash shell?`
-
-```
-docker-compose exec shell /bin/bash
-```
-
-
-#### bash shell
-
-`Q: How can I get a django management shell?`
-
-```
-docker-compose exec shell python3 app/manage.py shell
-```
-
 
 
