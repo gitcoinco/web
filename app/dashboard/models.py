@@ -378,6 +378,13 @@ class Bounty(SuperModel):
 
     @property
     def value_in_usdt(self):
+        if self.status in ['open', 'started', 'submitted']:
+            return self.token_value_in_usdt_now
+        else:
+            return self.value_in_usdt_then
+
+    @property
+    def value_in_usdt_then(self):
         decimals = 10 ** 18
         if self.token_name == 'USDT':
             return float(self.value_in_token)
@@ -390,7 +397,10 @@ class Bounty(SuperModel):
 
     @property
     def token_value_in_usdt_now(self):
-        return round(convert_token_to_usdt(self.token_name), 2)
+        try:
+            return round(convert_token_to_usdt(self.token_name), 2)
+        except ConversionRateNotFoundError:
+            return None
 
     @property
     def desc(self):
