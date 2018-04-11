@@ -31,11 +31,10 @@ class Command(BaseCommand):
     help = 'sends new_bounty _emails'
 
     def handle(self, *args, **options):
-        #if settings.DEBUG:
-        #    print("not active in non prod environments")
-        #    return
+        if settings.DEBUG:
+            print("not active in non prod environments")
+            return
         hours_back = 24
-        hours_back = 240
         eses = EmailSubscriber.objects.filter(active=True)
         print("got {} emails".format(eses.count()))
         for es in eses:
@@ -54,7 +53,7 @@ class Command(BaseCommand):
                         ):
                             bounties_pks.append(bounty.pk)
                 bounties = Bounty.objects.filter(pk__in=bounties_pks)
-                print("{}/{}: got {} bounties".format(to_email, keywords, bounties.count()))
+                #print("{}/{}: got {} bounties".format(to_email, keywords, bounties.count()))
                 if bounties.count():
                     print(f"sent to {to_email}")
                     new_bounty(bounties, [to_email])
