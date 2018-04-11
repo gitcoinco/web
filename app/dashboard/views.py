@@ -23,6 +23,7 @@ import logging
 import time
 
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
@@ -72,18 +73,27 @@ def send_tip(request):
     return TemplateResponse(request, 'yge/send1.html', params)
 
 
-def record_user_action(profile_handle, event_name, instance):
+def record_user_action(user, event_name, instance):
     instance_class = instance.__class__.__name__.lower()
+    kwargs = {
+        'action': event_name,
+        'metadata': {f'{instance_class}_pk': instance.pk},
+    }
+
+    if isinstance(user, User):
+        kwargs['user'] = user
+    elif isinstance(user, str):
+        try:
+            user = User.objects.get(username=user)
+            kwargs['user'] = user
+        except User.DoesNotExist:
+            return
+
+    if hasattr(user, 'profile'):
+        kwargs['profile'] = user.profile
 
     try:
-        user_profile = Profile.objects.filter(handle__iexact=profile_handle).first()
-        UserAction.objects.create(
-            profile=user_profile if user_profile else None,
-            user=user_profile.user if user_profile and user_profile.user else None,
-            action=event_name,
-            metadata={
-                f'{instance_class}_pk': instance.pk,
-            })
+        UserAction.objects.create(**kwargs)
     except Exception as e:
         # TODO: sync_profile?
         logging.error(f"error in record_action: {e} - {event_name} - {instance}")
@@ -98,10 +108,11 @@ def helper_handle_access_token(request, access_token):
     request.session['profile_id'] = profile.pk
 
 
-def create_new_interest_helper(bounty, profile_id):
+def create_new_interest_helper(bounty, user):
+    profile_id = user.profile.pk
     interest = Interest.objects.create(profile_id=profile_id)
     bounty.interested.add(interest)
-    record_user_action(Profile.objects.get(pk=profile_id).handle, 'start_work', interest)
+    record_user_action(user, 'start_work', interest)
     maybe_market_to_slack(bounty, 'start_work')
     maybe_market_to_twitter(bounty, 'start_work')
     return interest
@@ -160,7 +171,7 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
     except Interest.DoesNotExist:
-        interest = create_new_interest_helper(bounty, profile_id)
+        interest = create_new_interest_helper(bounty, request.user)
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \
@@ -208,7 +219,7 @@ def remove_interest(request, bounty_id):
 
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
-        record_user_action(Profile.objects.get(pk=profile_id).handle, 'stop_work', interest)
+        record_user_action(request.user, 'stop_work', interest)
         bounty.interested.remove(interest)
         interest.delete()
         maybe_market_to_slack(bounty, 'stop_work')
