@@ -3,6 +3,10 @@
 
 .PHONY: help
 
+PROJECT_DIR := $(subst -,, $(shell pwd | xargs basename))
+CONTAINER_NAME := $(addsuffix _web_1, $(PROJECT_DIR))
+WEB_CONTAINER_ID := $(shell docker inspect --format="{{.Id}}" $(CONTAINER_NAME))
+
 compress-images: ## Compress and optimize images throughout the repository. Requires optipng, svgo, and jpeg-recompress.
 	@./scripts/compress_images.bash
 
@@ -45,6 +49,13 @@ compilemessages: ## Execute compilemessages for translations on the web containe
 
 makemessages: ## Execute makemessages for translations on the web container.
 	@docker-compose exec web python3 app/manage.py makemessages
+
+get_ipdb_shell: ## Drop into the active Django shell for inspection via ipdb.
+	@echo "Attaching to container: ($(CONTAINER_NAME)) - ($(WEB_CONTAINER_ID))"
+	@docker attach $(WEB_CONTAINER_ID)
+
+get_django_shell: ## Open a standard Django shell.
+	@docker-compose exec web python3 app/manage.py shell
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
