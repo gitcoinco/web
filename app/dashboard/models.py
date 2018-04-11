@@ -37,7 +37,7 @@ import pytz
 import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
-from economy.utils import ConversationRateNotFoundException, convert_amount, convert_token_to_usdt
+from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from github.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, issue_number, org_name, repo_name,
 )
@@ -373,7 +373,7 @@ class Bounty(SuperModel):
             return float(self.value_in_token / 10**18)
         try:
             return round(float(convert_amount(self.value_in_token, self.token_name, 'USDT')) / decimals, 2)
-        except ConversationRateNotFoundException:
+        except ConversionRateNotFoundError:
             return None
 
     @property
@@ -385,7 +385,7 @@ class Bounty(SuperModel):
             return float(self.value_in_token / 10 ** 18)
         try:
             return round(float(convert_amount(self.value_in_token, self.token_name, 'USDT', self.web3_created)) / decimals, 2)
-        except ConversationRateNotFoundException:
+        except ConversionRateNotFoundError:
             return None
 
     @property
@@ -622,7 +622,7 @@ class Tip(SuperModel):
             return float(self.amount / 10**18)
         try:
             return round(float(convert_amount(self.amount, self.tokenName, 'USDT')) / decimals, 2)
-        except ConversationRateNotFoundException:
+        except ConversionRateNotFoundError:
             return None
 
     @property
@@ -634,7 +634,7 @@ class Tip(SuperModel):
             return float(self.amount / 10 ** 18)
         try:
             return round(float(convert_amount(self.amount, self.tokenName, 'USDT', self.received_on)) / decimals, 2)
-        except ConversationRateNotFoundException:
+        except ConversionRateNotFoundError:
             return None
 
     # TODO: DRY

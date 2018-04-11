@@ -27,7 +27,7 @@ class TransactionException(Exception):
     pass
 
 
-class ConversationRateNotFoundException(Exception):
+class ConversionRateNotFoundError(Exception):
     """Thrown if ConversionRate not found."""
 
     pass
@@ -59,7 +59,7 @@ def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
         ).order_by('-timestamp').first()
 
     if not conversion_rate:
-        raise ConversationRateNotFoundException(f"ConversionRate {from_currency}/{to_currency} @ {timestamp} not found")
+        raise ConversionRateNotFoundError(f"ConversionRate {from_currency}/{to_currency} @ {timestamp} not found")
 
     return (float(conversion_rate.to_amount) / float(conversion_rate.from_amount)) * float(from_amount)
 
