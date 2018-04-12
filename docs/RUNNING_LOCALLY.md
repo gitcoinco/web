@@ -3,7 +3,7 @@
 *Note: This setup method is not recommended. To ensure a consistent environment, please check out the [Docker Setup Guide](RUNNING_LOCALLY_DOCKER.md).
 
 ```shell
-brew install libmaxminddb automake pkg-config libtool libffi gmp python
+brew install libmaxminddb automake pkg-config libtool libffi gmp python openssl
 git clone https://github.com/gitcoinco/web.git
 cd web/app
 cp app/local.env app/.env
