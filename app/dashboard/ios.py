@@ -83,8 +83,11 @@ def save(request):
                 )
 
                 try:
-                    user = User.objects.get(username=github_username)
-                    create_new_interest_helper(bounty, user)
+                    profiles = Profile.objects.filter(handle=githubusername)
+                    profile = profiles.first() if profiles.exists() else None
+                    interest = Interest.objects.create(profile_id=profile.pk)
+                    bounty.interested.add(interest)
+                    # TODO -- user create_new_interest_helper
                 except Exception as e:
                     print('could not get profile {}'.format(e))
                     logging.exception(e)
