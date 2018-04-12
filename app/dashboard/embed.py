@@ -203,9 +203,9 @@ def embed(request):
 
             draw.multiline_text(align="left", xy=(x + 100 - bounty_value_size[0]/2, y + 67), text=f"{round(bounty.value_true, 2)} {bounty.token_name}", fill=(44, 35, 169), font=p)
 
-            bounty_value_size = tmp.textsize(f"{round(bounty.value_in_usdt, 2)} USD", p)
+            bounty_value_size = tmp.textsize(f"{round(bounty.value_in_usdt_now, 2)} USD", p)
 
-            draw.multiline_text(align="left", xy=(x + 310 - bounty_value_size[0]/2, y + 67), text=f"{round(bounty.value_in_usdt, 2)} USD", fill=(45, 168, 116), font=p)
+            draw.multiline_text(align="left", xy=(x + 310 - bounty_value_size[0]/2, y + 67), text=f"{round(bounty.value_in_usdt_now, 2)} USD", fill=(45, 168, 116), font=p)
 
 
         # blank slate

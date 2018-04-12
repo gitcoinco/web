@@ -40,7 +40,7 @@ import requests
 import rollbar
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
-from economy.utils import convert_amount, convert_token_to_usdt
+from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from github.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, issue_number, org_name, repo_name,
 )
@@ -381,20 +381,42 @@ class Bounty(SuperModel):
             return None
 
     @property
-    def value_in_usdt(self):
+    def value_in_usdt_now(self):
         decimals = 10**18
         if self.token_name == 'USDT':
             return float(self.value_in_token)
         if self.token_name == 'DAI':
             return float(self.value_in_token / 10**18)
         try:
-            return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
-        except Exception:
+            return round(float(convert_amount(self.value_in_token, self.token_name, 'USDT')) / decimals, 2)
+        except ConversionRateNotFoundError:
             return None
 
     @property
-    def token_value_in_usdt(self):
-        return round(convert_token_to_usdt(self.token_name), 2)
+    def value_in_usdt(self):
+        if self.status in ['open', 'started', 'submitted']:
+            return self.token_value_in_usdt_now
+        else:
+            return self.value_in_usdt_then
+
+    @property
+    def value_in_usdt_then(self):
+        decimals = 10 ** 18
+        if self.token_name == 'USDT':
+            return float(self.value_in_token)
+        if self.token_name == 'DAI':
+            return float(self.value_in_token / 10 ** 18)
+        try:
+            return round(float(convert_amount(self.value_in_token, self.token_name, 'USDT', self.created_on)) / decimals, 2)
+        except ConversionRateNotFoundError:
+            return None
+
+    @property
+    def token_value_in_usdt_now(self):
+        try:
+            return round(convert_token_to_usdt(self.token_name), 2)
+        except ConversionRateNotFoundError:
+            return None
 
     @property
     def desc(self):
@@ -617,23 +639,34 @@ class Tip(SuperModel):
         except Exception:
             return None
 
-    # TODO: DRY
     @property
-    def value_in_usdt(self):
+    def value_in_usdt_now(self):
         decimals = 1
         if self.tokenName == 'USDT':
             return float(self.amount)
         if self.tokenName == 'DAI':
             return float(self.amount / 10**18)
         try:
-            return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
-        except Exception:
+            return round(float(convert_amount(self.amount, self.tokenName, 'USDT')) / decimals, 2)
+        except ConversionRateNotFoundError:
+            return None
+
+    @property
+    def value_in_usdt(self):
+        decimals = 1
+        if self.tokenName == 'USDT':
+            return float(self.amount)
+        if self.tokenName == 'DAI':
+            return float(self.amount / 10 ** 18)
+        try:
+            return round(float(convert_amount(self.amount, self.tokenName, 'USDT', self.created_on)) / decimals, 2)
+        except ConversionRateNotFoundError:
             return None
 
     # TODO: DRY
     @property
-    def token_value_in_usdt(self):
-        return round(convert_token_to_usdt(self.token_name), 2)
+    def token_value_in_usdt_now(self):
+        return round(convert_token_to_usdt(self.tokenName), 2)
 
     @property
     def status(self):
@@ -668,6 +701,7 @@ def psave_bounty(sender, instance, **kwargs):
 
     instance.idx_status = instance.status
     instance._val_usd_db = instance.value_in_usdt if instance.value_in_usdt else 0
+    instance._val_usd_db_now = instance.value_in_usdt_now if instance.value_in_usdt_now else 0
     instance.idx_experience_level = idx_experience_level.get(instance.experience_level, 0)
     instance.idx_project_length = idx_project_length.get(instance.project_length, 0)
 
