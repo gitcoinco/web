@@ -246,6 +246,21 @@ class DashboardModelsTest(TestCase):
         assert not bounty.github_org_name
 
     @staticmethod
+    def test_github_repo_name():
+        bounty = Bounty.objects.create(
+          title='TitleTest',
+          idx_status=0,
+          is_open=False,
+          web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+          expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+          github_url='https://github.com/gitcoinco/web/issues/12345678',
+          raw_data={}
+        )
+        assert bounty.github_repo_name == "web"
+        bounty.github_url = None
+        assert not bounty.github_repo_name
+
+    @staticmethod
     def test_tip():
         """Test the dashboard Tip model."""
         tip = Tip(
