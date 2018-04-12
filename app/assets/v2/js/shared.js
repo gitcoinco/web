@@ -659,7 +659,7 @@ var listen_for_web3_changes = function() {
   if (typeof web3 == 'undefined') {
     trigger_sidebar_web3_disabled();
     trigger_form_hooks();
-  } else if (!web3.eth.coinbase) {
+  } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined') {
     trigger_sidebar_web3_locked();
     trigger_form_hooks();
   } else {
