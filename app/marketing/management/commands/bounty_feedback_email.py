@@ -31,6 +31,8 @@ class Command(BaseCommand):
         if settings.DEBUG:
             print("not active in non prod environments")
             return
+        return 
+        # hmm a bunch of auto feedback emails just went out http://bits.owocki.com/1J3V2t0B2s3D/Screen%20Shot%202018-04-12%20at%2010.35.39%20AM.png
         start_time = timezone.now() - timezone.timedelta(hours=48)
         end_time = timezone.now() - timezone.timedelta(hours=24)
         statues = ['done']
