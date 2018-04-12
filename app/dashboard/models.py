@@ -423,7 +423,7 @@ class Bounty(SuperModel):
     @property
     def token_value_in_usdt_then(self):
         try:
-            return round(convert_token_to_usdt(self.token_name, self.web3_created_on), 2)
+            return round(convert_token_to_usdt(self.token_name, self.web3_created), 2)
         except ConversionRateNotFoundError:
             return None
 

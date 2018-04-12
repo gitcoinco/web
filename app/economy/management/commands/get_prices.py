@@ -156,7 +156,7 @@ def cryptocompare():
 
     for b in Bounty.objects.filter(current_bounty=True):
         print('CryptoCompare Bounty {}'.format(b.pk))
-        refresh_conv_rate(b.web3_created_on, b.token_name)
+        refresh_conv_rate(b.web3_created, b.token_name)
 
     for tip in Tip.objects.all():
         print('CryptoCompare Tip {}'.format(tip.pk))
