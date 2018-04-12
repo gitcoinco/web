@@ -64,7 +64,7 @@ def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
     return (float(conversion_rate.to_amount) / float(conversion_rate.from_amount)) * float(from_amount)
 
 
-def convert_token_to_usdt(from_token):
+def convert_token_to_usdt(from_token, timestamp=None):
     """Convert the token to USDT.
 
     Args:
@@ -74,7 +74,7 @@ def convert_token_to_usdt(from_token):
         float: The current rate of the provided token to USDT.
 
     """
-    return convert_amount(1, from_token, "USDT")
+    return convert_amount(1, from_token, "USDT", timestamp)
 
 
 def etherscan_link(txid):

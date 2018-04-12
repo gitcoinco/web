@@ -110,6 +110,8 @@ class Bounty(SuperModel):
         ('submitted', 'submitted'),
         ('unknown', 'unknown'),
     )
+    OPEN_STATUSES = ['open', 'started', 'submitted']
+    CLOSED_STATUSES = ['expired', 'unknown', 'cancelled', 'done']
 
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
@@ -394,7 +396,7 @@ class Bounty(SuperModel):
 
     @property
     def value_in_usdt(self):
-        if self.status in ['open', 'started', 'submitted']:
+        if self.status in self.OPEN_STATUSES:
             return self.token_value_in_usdt_now
         else:
             return self.value_in_usdt_then
@@ -417,6 +419,27 @@ class Bounty(SuperModel):
             return round(convert_token_to_usdt(self.token_name), 2)
         except ConversionRateNotFoundError:
             return None
+
+    @property
+    def token_value_in_usdt_then(self):
+        try:
+            return round(convert_token_to_usdt(self.token_name, self.created_on), 2)
+        except ConversionRateNotFoundError:
+            return None
+
+    @property
+    def token_value_in_usdt(self):
+        if self.status in self.OPEN_STATUSES:
+            return self.token_value_in_usdt_now
+        else:
+            return self.token_value_in_usdt_then
+
+    @property
+    def token_value_time_peg(self):
+        if self.status in self.OPEN_STATUSES:
+            return timezone.now()
+        else:
+            return self.created_on
 
     @property
     def desc(self):
@@ -653,6 +676,10 @@ class Tip(SuperModel):
 
     @property
     def value_in_usdt(self):
+        return self.value_in_usdt_then
+
+    @property
+    def value_in_usdt_then(self):
         decimals = 1
         if self.tokenName == 'USDT':
             return float(self.amount)
@@ -663,10 +690,19 @@ class Tip(SuperModel):
         except ConversionRateNotFoundError:
             return None
 
-    # TODO: DRY
     @property
     def token_value_in_usdt_now(self):
-        return round(convert_token_to_usdt(self.tokenName), 2)
+        try:
+            return round(convert_token_to_usdt(self.tokenName), 2)
+        except ConversionRateNotFoundError:
+            return None
+
+    @property
+    def token_value_in_usdt_now(self):
+        try:
+            return round(convert_token_to_usdt(self.tokenName, self.created_on), 2)
+        except ConversionRateNotFoundError:
+            return None
 
     @property
     def status(self):

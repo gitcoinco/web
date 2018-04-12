@@ -310,7 +310,7 @@ function getParam(parameterName) {
   return result;
 }
 
-function timeDifference(current, previous, remaining) {
+function timeDifference(current, previous, remaining, now_threshold_seconds) {
 
   if (current < previous) {
     return 'in ' + timeDifference(previous, current).replace(' ago', '');
@@ -326,6 +326,10 @@ function timeDifference(current, previous, remaining) {
 
   var amt;
   var unit;
+
+  if(now_threshold_seconds && (now_threshold_seconds*1000) > Math.abs(elapsed)){
+    return 'now';
+  }
 
   if (elapsed < msPerMinute) {
     amt = Math.round(elapsed / 1000);
