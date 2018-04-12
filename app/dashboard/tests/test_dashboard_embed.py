@@ -80,3 +80,23 @@ class DashboardEmbedTest(TestCase):
 
     def test_embed(self):
         assert embed(self.factory.get('/explorer')).status_code == 200
+        Bounty.objects.create(
+          title='foo',
+          value_in_token=3,
+          token_name='ETH',
+          web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+          github_url='https://github.com/gitcoinco/web/issues/11',
+          token_address='0x0',
+          issue_description='hello world',
+          bounty_owner_github_username='flintstone',
+          is_open=True,
+          accepted=False,
+          network='mainnet',
+          expires_date=datetime(2222, 11, 30, tzinfo=pytz.UTC),
+          idx_project_length=5,
+          project_length='Months',
+          bounty_type='Feature',
+          experience_level='Intermediate',
+          raw_data={},
+        )
+        assert embed(self.factory.get('https://github.com/gitcoinco/web/issues/11?repo=https://github.com/gitcoinco/web')).status_code == 200
