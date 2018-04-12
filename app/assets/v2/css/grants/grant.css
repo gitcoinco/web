@@ -228,3 +228,30 @@ body.grant {
 .progress-text span {
   color: rgba(0, 0, 0, 0.87);
 }
+
+/* Grants hero */
+.grants-container {
+  margin-top: -100px;
+  margin-bottom: 100px;
+}
+
+.grants-hero {
+  background-image: url('/static/v2/images/light-bg.png');
+  background-color: #F2F6F9;
+  height: 400px;
+  padding: 46px 0;
+}
+
+.grants-hero__text {
+  margin: 0 auto;
+}
+
+.grants-hero__title {
+  font-style: italic;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.grants-hero__copy {
+  margin-bottom: 40px;
+}
