@@ -62,7 +62,10 @@ def save_faucet(request):
     github_profile = request.POST.get('githubProfile')
     email_address = request.POST.get('emailAddress')
     eth_address = request.POST.get('ethAddress')
-    profile_handle = request.session.get('handle', '')
+    profile_handle = request.session.get('handle')
+
+    if request.user and request.user.is_authenticated and request.user.username:
+        profile_handle = request.user.username
 
     try:
         validate_slug(github_profile)

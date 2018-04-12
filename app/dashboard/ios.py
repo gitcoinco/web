@@ -1,12 +1,13 @@
 import json
 import logging
 
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.models import Bounty, Profile
+from dashboard.models import Bounty
 from dashboard.views import create_new_interest_helper
 from github.utils import get_github_user_data, is_github_token_valid
 from marketing.mails import new_match
@@ -36,7 +37,7 @@ def save(request):
             github_user_data = get_github_user_data(access_token)
         except:
             github_user_data = {}
-        access_token_invalid = not access_token or not is_github_token_valid(access_token) or github_user_data.get('login') != github_username
+        access_token_invalid = not access_token or github_user_data.get('login') != github_username
         if access_token_invalid:
             status = 405
             message = f'Not authorized or invalid github token for github user {github_username}'
@@ -82,8 +83,8 @@ def save(request):
                 )
 
                 try:
-                    profile = Profile.objects.get(handle=github_username)
-                    create_new_interest_helper(bounty, profile.pk)
+                    user = User.objects.get(username=github_username)
+                    create_new_interest_helper(bounty, user)
                 except Exception as e:
                     print('could not get profile {}'.format(e))
                     logging.exception(e)

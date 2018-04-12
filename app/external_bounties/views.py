@@ -139,7 +139,12 @@ def external_bounties_new(request):
 
     if request.POST:
         new_eb = ExternalBountyForm(request.POST)
-        new_eb.github_handle = request.session.get('handle')
+        username = request.session.get('handle')
+
+        if request.user and request.user.is_authenticated and request.user.username:
+            username = request.user.username
+
+        new_eb.github_handle = username
         new_eb.save()
         new_external_bounty()
         params['msg'] = _("An email has been sent to an administrator to approve your submission")

@@ -24,8 +24,9 @@ from django.conf import settings
 
 import ipfsapi
 import requests
+import rollbar
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import Bounty
+from dashboard.models import Bounty, UserAction
 from eth_utils import to_checksum_address
 from hexbytes import HexBytes
 from ipfsapi.exceptions import CommunicationError
@@ -47,6 +48,55 @@ class IPFSCantConnectException(Exception):
 
 class NoBountiesException(Exception):
     pass
+
+
+def create_user_action(user, action_type, request=None, metadata=None):
+    """Create a UserAction for the specified action type.
+
+    Args:
+        user (User): The User object.
+        action_type (str): The type of action to record.
+        request (Request): The request object. Defaults to: None.
+        metadata (dict): Any accompanying metadata to be added.
+            Defaults to: {}.
+
+    Returns:
+        bool: Whether or not the UserAction was created successfully.
+
+    """
+    from app.utils import handle_location_request
+    if action_type not in dict(UserAction.ACTION_TYPES).keys():
+        print('UserAction.create_action received an invalid action_type')
+        return False
+
+    if metadata is None:
+        metadata = {}
+
+    kwargs = {
+        'metadata': {},
+        'action': action_type,
+        'user': user
+    }
+
+    if request:
+        geolocation_data, ip_address = handle_location_request(request)
+
+        if geolocation_data:
+            kwargs['location_data'] = geolocation_data
+        if ip_address:
+            kwargs['ip_address'] = ip_address
+
+    if user and hasattr(user, 'profile'):
+        kwargs['profile'] = user.profile if user and user.profile else None
+
+    try:
+        UserAction.objects.create(**kwargs)
+        return True
+    except Exception as e:
+        print(f'Failure in UserAction.create_action - ({e})')
+        rollbar.report_message(
+            f'Failure in UserAction.create_action - ({e})', 'warning', extra_data=kwargs)
+        return False
 
 
 def get_ipfs(host=settings.IPFS_HOST, port=settings.IPFS_API_PORT):

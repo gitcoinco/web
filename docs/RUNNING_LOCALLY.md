@@ -3,7 +3,7 @@
 *Note: This setup method is not recommended. To ensure a consistent environment, please check out the [Docker Setup Guide](RUNNING_LOCALLY_DOCKER.md).
 
 ```shell
-brew install libmaxminddb
+brew install libmaxminddb automake pkg-config libtool libffi gmp python
 git clone https://github.com/gitcoinco/web.git
 cd web/app
 cp app/local.env app/.env
@@ -53,19 +53,10 @@ Exit Postgres session
 \q
 ```
 
-Update local_settings.py with the connection details.
+Update .env with the connection details.
 
-```python
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'gitcoin',
-        'USER': 'gitcoin_user',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': 5432,
-    }
-}
+```shell
+DATABASE_URL=psql://gitcoin_user:password@localhost:5432/postgres
 ```
 
 ## Startup server
