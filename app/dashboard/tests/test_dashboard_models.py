@@ -212,6 +212,8 @@ class DashboardModelsTest(TestCase):
           raw_data={}
         )
         assert bounty.title_or_desc == "TitleTest"
+        bounty.title = None
+        assert bounty.title_or_desc == "https://github.com/gitcoinco/web/issues/0xDEADBEEF"
 
     @staticmethod
     def test_tip():
