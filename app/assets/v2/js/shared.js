@@ -313,7 +313,8 @@ function getParam(parameterName) {
 function timeDifference(current, previous, remaining, now_threshold_seconds) {
 
   var elapsed = current - previous;
-  if(now_threshold_seconds && (now_threshold_seconds*1000) > Math.abs(elapsed)){
+
+  if (now_threshold_seconds && (now_threshold_seconds * 1000) > Math.abs(elapsed)) {
     return 'now';
   }
 
