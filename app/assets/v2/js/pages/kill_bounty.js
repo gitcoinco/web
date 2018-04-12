@@ -54,76 +54,73 @@ window.onload = function() {
             return;
           }
 
-          web3.version.getNetwork((error, netId) => {
           var bountyAmount = parseInt(result['value_in_token'], 10);
           var fromAddress = result['bounty_owner_address'];
           var claimeeAddress = result['fulfiller_address'];
           var open = result['is_open'];
           var initialized = true;
           var bountyId = result['standard_bounties_id'];
-            var bountyNetwork = result['network'];
+          var bountyNetwork = result['network'];
 
-            // Determine if browser and bounty networks match
-            var browserNetwork = web3NetworkIdToString(netId);
+          // Determine if browser and bounty networks match
+          browserNetworkIs(bountyNetwork, function(matchingNetworks) {
+            var errormsg = undefined;
 
-            if (browserNetwork != bountyNetwork) {
-              _alert({ message: 'The browser must be connected to same Ethereum network that the bounty was deployed to.' });
+            if (!matchingNetworks) {
+              errormsg =
+                gettext('Expected browser to be connected to the Ethereum network' +
+                  ' that the bounty was deployed to, ie. \'' + bountyNetwork + '\'.');
+            }
+            if (bountyAmount == 0 || open == false || initialized == false) {
+              errormsg =
+                gettext('No active funded issue found at this address.  Are you sure this is an active funded issue?');
+            }
+            if (fromAddress != web3.eth.coinbase) {
+              errormsg =
+                gettext('Only the address that submitted this funded issue may kill the bounty.');
+            }
+
+            if (errormsg) {
+              _alert({ message: errormsg });
               unloading_button($('.js-submit'));
               return;
             }
 
-          var errormsg = undefined;
+            var final_callback = function(error, result) {
+              var next = function() {
+                // setup inter page state
+                localStorage[issueURL] = JSON.stringify({
+                  timestamp: timestamp(),
+                  dataHash: null,
+                  issuer: account,
+                  txid: result
+                });
 
-          if (bountyAmount == 0 || open == false || initialized == false) {
-            errormsg =
-                gettext('No active funded issue found at this address.  Are you sure this is an active funded issue?');
-          }
-          if (fromAddress != web3.eth.coinbase) {
-            errormsg =
-                gettext('Only the address that submitted this funded issue may kill the bounty.');
-          }
+                _alert({ message: gettext('Kill bounty submitted to web3.') }, 'info');
+                setTimeout(function() {
+                  mixpanel.track('Kill Bounty Success', {});
+                  document.location.href = '/funding/details?url=' + issueURL;
+                }, 1000);
+              };
 
-          if (errormsg) {
-            _alert({ message: errormsg });
-            unloading_button($('.js-submit'));
-            return;
-          }
-
-          var final_callback = function(error, result) {
-            var next = function() {
-              // setup inter page state
-              localStorage[issueURL] = JSON.stringify({
-                timestamp: timestamp(),
-                dataHash: null,
-                issuer: account,
-                txid: result
-              });
-
-              _alert({ message: gettext('Kill bounty submitted to web3.') }, 'info');
-              setTimeout(function() {
-                mixpanel.track('Kill Bounty Success', {});
-                document.location.href = '/funding/details?url=' + issueURL;
-              }, 1000);
+              if (error) {
+                mixpanel.track('Kill Bounty Error', {
+                  step: 'final_callback',
+                  error: error
+                });
+                console.error('err', error);
+                _alert({ message: gettext('There was an error') });
+                unloading_button($('.js-submit'));
+              } else {
+                next();
+              }
             };
 
-            if (error) {
-              mixpanel.track('Kill Bounty Error', {
-                step: 'final_callback',
-                error: error
-              });
-              console.error('err', error);
-              _alert({ message: gettext('There was an error') });
-              unloading_button($('.js-submit'));
-            } else {
-              next();
-            }
-          };
-
-          bounty.killBounty(
-            bountyId,
-            { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) },
-            final_callback
-          );
+            bounty.killBounty(
+              bountyId,
+              { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) },
+              final_callback
+            );
           });
         };
         // Get bountyId from the database

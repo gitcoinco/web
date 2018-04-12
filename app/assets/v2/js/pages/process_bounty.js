@@ -94,31 +94,30 @@ window.onload = function() {
       loading_button($(this));
 
       var apiCallback = function(results, status) {
-        web3.version.getNetwork((error, netId) => {
-          var browserNetwork = web3NetworkIdToString(netId);
+        if (status != 'success') {
+          mixpanel.track('Process Bounty Error', {step: 'apiCallback', error: error});
+          _alert({ message: 'Could not get bounty details' }, 'warning');
+          console.error(error);
+          unloading_button($('.submitBounty'));
+          return;
+        }
+        results = sanitizeAPIResults(results);
+        result = results[0];
+        if (result == null) {
+          _alert({ message: 'No active bounty found for this Github URL.' }, 'info');
+          unloading_button($('.submitBounty'));
+          return;
+        }
 
-          if (status != 'success') {
-            mixpanel.track('Process Bounty Error', {step: 'apiCallback', error: error});
-            _alert({ message: 'Could not get bounty details' }, 'warning');
-            console.error(error);
-            unloading_button($('.submitBounty'));
-            return;
-          }
-          results = sanitizeAPIResults(results);
-          result = results[0];
-          if (result == null) {
-            _alert({ message: 'No active bounty found for this Github URL.' }, 'info');
-            unloading_button($('.submitBounty'));
-            return;
-          }
+        var bountyNetwork = result['network'];
 
+        browserNetworkIs(bountyNetwork, function(matchingNetworks) {
           var bountyAmount = parseInt(result['value_in_token'], 10);
           var fromAddress = result['bounty_owner_address'];
           var claimeeAddress = result['fulfiller_address'];
           var open = result['is_open'];
           var initialized = true;
           var bountyId = result['standard_bounties_id'];
-          var bountyNetwork = result['network'];
 
           var errormsg = undefined;
 
@@ -128,8 +127,9 @@ window.onload = function() {
             errormsg = 'No claimee found for this bounty.';
           } else if (fromAddress != web3.eth.coinbase) {
             errormsg = 'You can only process a funded issue if you submitted it initially.';
-          } else if (bountyNetwork != browserNetwork) {
-            errormsg = 'The browser must be connected to same Ethereum network that the bounty was deployed to.';
+          } else if (!matchingNetworks) {
+            errormsg = 'Expected browser to be connected to the Ethereum network' +
+            ' that the bounty was deployed to, ie. \'' + bountyNetwork + '\'.';
           }
 
           if (errormsg) {
