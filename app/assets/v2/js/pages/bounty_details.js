@@ -71,7 +71,8 @@ var rows = [
   'issue_keywords',
   'started_owners_username',
   'submitted_owners_username',
-  'fulfilled_owners_username'
+  'fulfilled_owners_username',
+  'fulfillment_accepted_on'
 ];
 var heads = {
   'avatar_url': gettext('Issue'),
@@ -156,13 +157,23 @@ var callbacks = {
       return [ null, null ];
     }
     return [ 'Amount_usd', val ];
-  },  
+  },
+  'fulfillment_accepted_on': function(key, val, result) {
+    if (val === null || typeof val == 'undefined') {
+      $('#fulfillment_accepted_on_wrapper').addClass('hidden');
+      return [ null, null ];
+    }
+    var timePeg = timeDifference(new Date(), new Date(val), false, 60 * 60);
+
+    return [ 'fulfillment_accepted_on', timePeg ];
+  },
   'token_value_time_peg': function(key, val, result) {
     if (val === null || typeof val == 'undefined') {
       $('#token_value_time_peg_wrapper').addClass('hidden');
       return [ null, null ];
     }
     var timePeg = timeDifference(new Date(), new Date(val), false, 60 * 60);
+
     return [ 'token_value_time_peg', timePeg ];
   },
   'token_value_in_usdt': function(key, val, result) {

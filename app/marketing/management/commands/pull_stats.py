@@ -299,12 +299,27 @@ def avg_time_bounty_turnaround():
         if not all_bounties.count():
             continue
 
-        turnaround_times = [b.turnaround_time for b in all_bounties]
-
+        turnaround_times = [b.turnaround_time_submitted for b in all_bounties if b.turnaround_time_submitted]
         val = int(statistics.median(turnaround_times) / 60 / 60)  # seconds to hours
 
         Stat.objects.create(
-            key='turnaround_time_hours_{}_days_back'.format(days),
+            key='turnaround_time__submitted_hours_{}_days_back'.format(days),
+            val=val,
+            )
+
+        turnaround_times = [b.turnaround_time_accepted for b in all_bounties if b.turnaround_time_accepted]
+        val = int(statistics.median(turnaround_times) / 60 / 60)  # seconds to hours
+
+        Stat.objects.create(
+            key='turnaround_time__accepted_hours_{}_days_back'.format(days),
+            val=val,
+            )
+
+        turnaround_times = [b.turnaround_time_started for b in all_bounties if b.turnaround_time_started]
+        val = int(statistics.median(turnaround_times) / 60 / 60)  # seconds to hours
+
+        Stat.objects.create(
+            key='turnaround_time__started_hours_{}_days_back'.format(days),
             val=val,
             )
 

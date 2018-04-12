@@ -74,7 +74,8 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'org_name', 'pk', 'issue_description_text',
             'standard_bounties_id', 'web3_type', 'can_submit_after_expiration_date',
             'github_issue_number', 'github_org_name', 'github_repo_name',
-            'idx_status', 'token_value_time_peg',
+            'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on', 'fulfillment_submitted_on',
+            'fulfillment_started_on', 'canceled_on',
         )
 
     def create(self, validated_data):
