@@ -17,13 +17,15 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import os
+import shutil
 from datetime import datetime
 from decimal import Decimal
 
 from django.test.client import RequestFactory
 
 import pytz
-from dashboard.embed import embed, stat, summarize_bounties, wrap_text
+from dashboard.embed import avatar, embed, stat, summarize_bounties, wrap_text
 from dashboard.models import Bounty
 from test_plus.test import TestCase
 
@@ -100,3 +102,11 @@ class DashboardEmbedTest(TestCase):
           raw_data={},
         )
         assert embed(self.factory.get('https://github.com/gitcoinco/web/issues/11?repo=https://github.com/gitcoinco/web')).status_code == 200
+
+    def test_avatar(self):
+        try:
+            os.makedirs('assets/other/avatars/')
+        except FileExistsError:
+            pass
+        assert avatar(self.factory.get('https://github.com/gitcoinco/web/issues/11?repo=https://github.com/gitcoinco/web')).status_code == 200
+        shutil.rmtree('assets/other/avatars/')
