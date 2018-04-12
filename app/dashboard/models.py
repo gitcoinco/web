@@ -439,7 +439,7 @@ class Bounty(SuperModel):
         if self.status in self.OPEN_STATUSES:
             return timezone.now()
         else:
-            return self.created_on
+            return self.web3_created
 
     @property
     def desc(self):
