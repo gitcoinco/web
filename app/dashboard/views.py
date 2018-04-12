@@ -471,7 +471,7 @@ def new_grant(request):
 
 def grants(request):
     """Handle grants explorer."""
-    grants = Grant.objects.all();
+    grants = Grant.objects.all()
 
     params = {
         'active': 'dashboard',

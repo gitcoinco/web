@@ -51,8 +51,8 @@ urlpatterns = [
 
     # grant views
     path('grant/<int:grant_id>/', dashboard.views.grant_show, name='grant'),
-    url(r'^grants/new?', dashboard.views.new_grant, name='new_grant'),
-    url(r'^grants/?', dashboard.views.grants, name='grants'),
+    re_path(r'^grants/new/?', dashboard.views.new_grant, name='new_grant'),
+    re_path(r'^grants/?', dashboard.views.grants, name='grants'),
 
     # dashboard views
 
