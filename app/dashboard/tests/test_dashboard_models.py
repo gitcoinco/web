@@ -216,6 +216,21 @@ class DashboardModelsTest(TestCase):
         assert bounty.title_or_desc == "https://github.com/gitcoinco/web/issues/0xDEADBEEF"
 
     @staticmethod
+    def test_github_issue_number():
+        bounty = Bounty.objects.create(
+          title='TitleTest',
+          idx_status=0,
+          is_open=False,
+          web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+          expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+          github_url='https://github.com/gitcoinco/web/issues/12345678',
+          raw_data={}
+        )
+        assert bounty.github_issue_number == 12345678
+        bounty.github_url = 'https://github.com/gitcoinco/web/issues/THIS_SHALL_RETURN_NONE'
+        assert not bounty.github_issue_number
+
+    @staticmethod
     def test_tip():
         """Test the dashboard Tip model."""
         tip = Tip(
