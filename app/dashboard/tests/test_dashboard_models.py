@@ -261,6 +261,40 @@ class DashboardModelsTest(TestCase):
         assert not bounty.github_repo_name
 
     @staticmethod
+    def test_bounty_status():
+        bounty = Bounty.objects.create(
+          title='TitleTest',
+          idx_status=0,
+          is_open=True,
+          web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+          expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+          github_url='https://github.com/gitcoinco/web/issues/12345678',
+          raw_data={}
+        )
+        assert bounty.status == "open"
+        bounty.web3_type = "legacy_gitcoin"
+        assert bounty.is_legacy
+        bounty.pk = 12345
+        assert bounty.status == "open"
+        bounty.web3_type = None
+        bounty.is_open = False
+        bounty.accepted = True
+        assert bounty.status == "expired"
+        bounty.expires_date = datetime(2222, 11, 11, tzinfo=pytz.UTC)
+        assert bounty.status == "done"
+        bounty.accepted = False
+        assert bounty.status == "cancelled"
+        bounty.is_open = True
+        bounty.num_fulfillments = 1
+        assert bounty.status == "submitted"
+        bounty.is_open = False
+        bounty.num_fulfillments = 0
+        bounty.expires_date = None
+        assert bounty.status == "unknown"
+        bounty.override_status = "overridden"
+        assert bounty.status == "overridden"
+
+    @staticmethod
     def test_tip():
         """Test the dashboard Tip model."""
         tip = Tip(
