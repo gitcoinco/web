@@ -312,6 +312,11 @@ function getParam(parameterName) {
 
 function timeDifference(current, previous, remaining, now_threshold_seconds) {
 
+  var elapsed = current - previous;
+  if(now_threshold_seconds && (now_threshold_seconds*1000) > Math.abs(elapsed)){
+    return 'now';
+  }
+
   if (current < previous) {
     return 'in ' + timeDifference(previous, current).replace(' ago', '');
   }
@@ -322,14 +327,8 @@ function timeDifference(current, previous, remaining, now_threshold_seconds) {
   var msPerMonth = msPerDay * 30;
   var msPerYear = msPerDay * 365;
 
-  var elapsed = current - previous;
-
   var amt;
   var unit;
-
-  if(now_threshold_seconds && (now_threshold_seconds*1000) > Math.abs(elapsed)){
-    return 'now';
-  }
 
   if (elapsed < msPerMinute) {
     amt = Math.round(elapsed / 1000);

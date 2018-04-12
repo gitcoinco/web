@@ -162,7 +162,7 @@ var callbacks = {
       $('#token_value_time_peg_wrapper').addClass('hidden');
       return [ null, null ];
     }
-    var timePeg = timeDifference(new Date(), new Date(val), false, 60);
+    var timePeg = timeDifference(new Date(), new Date(val), false, 60 * 60);
     return [ 'token_value_time_peg', timePeg ];
   },
   'token_value_in_usdt': function(key, val, result) {

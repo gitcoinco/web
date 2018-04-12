@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #apt-get update
-#apt-get install postgresql-client
+#apt-get install postgresql-client -y
 
 BFILE=$1
 echo "DROP SCHEMA public CASCADE;
