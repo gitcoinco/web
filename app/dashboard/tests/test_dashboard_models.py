@@ -99,6 +99,7 @@ class DashboardModelsTest(TestCase):
             username='fred',
             network='net',
             expires_date=date.today() + timedelta(days=1),
+            created_on=date.today(),
             tokenAddress='0x0000000000000000000000000000000000000000',
         )
         assert str(tip) == '(net) - PENDING 7 ETH to fred, created: today, expires: tomorrow'
