@@ -756,6 +756,6 @@ var browserNetworkIs = function(networkStr, callbackFn) {
   web3.version.getNetwork((error, netId) => {
     var browserNetwork = web3NetworkIdToString(netId);
 
-    callbackFn(browserNetwork != networkStr);
+    callbackFn(browserNetwork == networkStr);
   });
 };

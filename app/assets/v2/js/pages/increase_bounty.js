@@ -132,60 +132,60 @@ $(document).ready(function() {
       var bountyNetwork = result['network'];
 
       // Determine if browser and bounty networks match
-      web3.version.getNetwork((error, netId) => {
-        var browserNetwork = web3NetworkIdToString(netId);
-    var ethAmount = isETH ? amount : 0;
-    var bountyId = $('input[name=standardBountiesId]').val();
-    var fromAddress = $('input[name=bountyOwnerAddress]').val();
+      browserNetworkIs(bountyNetwork, function(matchingNetworks) {
+        var ethAmount = isETH ? amount : 0;
+        var bountyId = $('input[name=standardBountiesId]').val();
+        var fromAddress = $('input[name=bountyOwnerAddress]').val();
 
-    var errormsg = undefined;
+        var errormsg = undefined;
 
-    if (bountyAmount == 0 || open == false) {
-      errormsg = gettext('No active funded issue found at this address on ' + document.web3network + '. Are you sure this is an active funded issue?');
-    }
-    if (fromAddress != web3.eth.coinbase) {
-      errormsg = gettext('Only the address that submitted this funded issue may increase the payout.');
-    }
-        if (browserNetwork != bountyNetwork) {
-          errormsg = 'The browser must be connected to same Ethereum network that the bounty was deployed to.';
+        if (bountyAmount == 0 || open == false) {
+          errormsg = gettext('No active funded issue found at this address. Are you sure this is an active funded issue?');
+        }
+        if (fromAddress != web3.eth.coinbase) {
+          errormsg = gettext('Only the address that submitted this funded issue may increase the payout.');
+        }
+        if (!matchingNetworks) {
+          errormsg = 'Expected browser to be connected to the Ethereum network' +
+            ' that the bounty was deployed to, ie. \'' + bountyNetwork + '\'.';
         }
 
-    if (errormsg) {
-      _alert({ message: errormsg });
-      unloading_button($('#submitBounty'));
-      return;
-    }
+        if (errormsg) {
+          _alert({ message: errormsg });
+          unloading_button($('#submitBounty'));
+          return;
+        }
 
-    function approveSuccessCallback() {
-      bounty.increasePayout(
-        bountyId,
-        bountyAmount + amount,
-        amount,
-        {
-          from: account,
-          value: ethAmount,
-          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-        },
-        web3Callback
-      );
-    }
+        function approveSuccessCallback() {
+          bounty.increasePayout(
+            bountyId,
+            bountyAmount + amount,
+            amount,
+            {
+              from: account,
+              value: ethAmount,
+              gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            },
+            web3Callback
+          );
+        }
 
-    if (isETH) {
-      // no approvals needed for ETH
-      approveSuccessCallback();
-    } else {
-      token_contract.approve(
-        bounty_address(),
-        amount,
-        {
-          from: account,
-          value: 0,
-          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-        },
-        approveSuccessCallback
-      );
-    }
-  });
-});
+        if (isETH) {
+          // no approvals needed for ETH
+          approveSuccessCallback();
+        } else {
+          token_contract.approve(
+            bounty_address(),
+            amount,
+            {
+              from: account,
+              value: 0,
+              gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            },
+            approveSuccessCallback
+          );
+        }
+      });
+    });
   });
 });

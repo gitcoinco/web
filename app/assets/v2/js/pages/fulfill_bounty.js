@@ -172,14 +172,10 @@ window.onload = function() {
                   return;
                 }
 
-                // Determine if browser and bounty networks match
-                var browserNetwork = 'unknown';
-
-                web3.version.getNetwork((error, netId) => {
-                  browserNetwork = web3NetworkIdToString(netId);
-
-                  if (browserNetwork != bountyNetwork) {
-                    _alert({ message: 'The browser must be connected to same Ethereum network that the bounty was deployed to.' });
+                browserNetworkIs(bountyNetwork, function(matchingNetworks) {
+                  if (!matchingNetworks) {
+                    _alert({ message: 'Expected browser to be connected to the Ethereum network' +
+                      ' that the bounty was deployed to, ie. \'' + bountyNetwork + '\'.' });
                     unloading_button($('.js-submit'));
                     return;
                   }
