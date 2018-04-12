@@ -409,7 +409,7 @@ class Bounty(SuperModel):
         if self.token_name == 'DAI':
             return float(self.value_in_token / 10 ** 18)
         try:
-            return round(float(convert_amount(self.value_in_token, self.token_name, 'USDT', self.created_on)) / decimals, 2)
+            return round(float(convert_amount(self.value_in_token, self.token_name, 'USDT', self.web3_created)) / decimals, 2)
         except ConversionRateNotFoundError:
             return None
 
