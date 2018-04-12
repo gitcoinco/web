@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from datetime import datetime
 
 from dashboard.models import Bounty
-from dashboard.notifications import amount_usdt_open_work, build_github_notification
+from dashboard.notifications import amount_usdt_open_work, build_github_notification, maybe_post_on_craigslist
 from pytz import UTC
 from test_plus.test import TestCase
 
@@ -76,6 +76,11 @@ class DashboardNotificationsTest(TestCase):
         assert self.usdt_value in message
         assert f'[here]({self.absolute_url})' in message
         assert f'${self.amount_open_work}' in message
+
+    def test_maybe_post_on_craigslist(self):
+        message = maybe_post_on_craigslist(self.bounty)
+        # returns on 'returning at 2nd return'
+        assert not message
 
     def tearDown(self):
         """Perform cleanup for the testcase."""
