@@ -39,8 +39,8 @@ jobs:
       env:
         - PYTHONPATH="${TRAVIS_BUILD_DIR}/app/"
     # Deploy to Docker Hub and initiate a rolling update for web.
-    - stage: deploy
-      if: (branch = master OR type = pull_request)
+    - stage: deploy-stage
+      if: branch = master AND NOT type = pull_request
       script:
         # Authenticate with Docker Hub.
         - docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
@@ -51,8 +51,16 @@ jobs:
         - docker push gitcoin/web:${TRAVIS_BUILD_NUMBER}
         - docker tag gitcoin/web:${TRAVIS_BUILD_NUMBER} gitcoin/web:latest
         - docker push gitcoin/web:latest
-        # If this is a PR build, tag with the PR number.
-        - "$TRAVIS_PULL_REQUEST" = "false" && exit 0 || echo "Deploying PR tag..."
+    - stage: deploy-pr
+      if: type = pull_request
+      script:
+        # Authenticate with Docker Hub.
+        - docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+        # Pull Docker images.
+        - docker pull python:3.6-slim-jessie
+        # Build, tag, and publish the new gitcoin/web image.
+        - docker build -t gitcoin/web:${TRAVIS_BUILD_NUMBER} .
+        - docker push gitcoin/web:${TRAVIS_BUILD_NUMBER}
         - docker tag gitcoin/web:${TRAVIS_BUILD_NUMBER} gitcoin/web:${TRAVIS_PULL_REQUEST}
         - docker push gitcoin/web:${TRAVIS_PULL_REQUEST}
     - stage: deploy-prod
