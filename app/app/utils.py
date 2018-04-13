@@ -57,6 +57,7 @@ def add_contributors(repo_data):
 
 def sync_profile(handle, user=None):
     data = get_user(handle)
+    email = ''
     is_error = 'name' not in data.keys()
     if is_error:
         print("- error main")
@@ -77,6 +78,8 @@ def sync_profile(handle, user=None):
         defaults['user'] = user
         try:
             defaults['github_access_token'] = user.social_auth.filter(provider='github').latest('pk').access_token
+            if user and user.email:
+                defaults['email'] = user.email
         except UserSocialAuth.DoesNotExist:
             pass
 
@@ -88,8 +91,13 @@ def sync_profile(handle, user=None):
         logger.error(e)
         return None
 
-    if user.email and profile:
-        get_or_save_email_subscriber(user.email, 'sync_profile', profile=profile)
+    if user and user.email:
+        email = user.email
+    elif profile and profile.email:
+        email = profile.email
+
+    if email and profile:
+        get_or_save_email_subscriber(email, 'sync_profile', profile=profile)
 
     return profile
 

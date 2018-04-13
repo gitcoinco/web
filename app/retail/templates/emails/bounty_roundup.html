@@ -93,6 +93,35 @@
             <a class="button" href="https://gitcoin.co/explorer">{% trans "View Issue Explorer" %}</a>
         </div>
     </div>
+
+    <hr>
+    <div>
+        <h3>{% trans "Bounties from around the ecosystem" %}</h3>
+        <h5>{% trans "From other great projects in OSS" %} 💰</h5>
+    </div>
+    <ul>
+        {% for bounty in ecosystem_bounties %}
+            <li style="list-style:none;">
+                <img src="{{bounty.avatar}}" width=20px height="20px">
+                <a href="{{bounty.url}}">
+                    {{bounty.title}}
+                </a>
+                | Tagged: <i>{{bounty.tags |slice:":3" | join:", "}}</i>
+
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="centered-contents">
+        <p>{% trans "There's much much more on the Gitcoin Universal Bounties Explorer:" %}</p>
+
+        <div style="margin-bottom: 1.5em;">
+            <a class="button" href="https://gitcoin.co/explorer">{% trans "View Bounties Universe" %}</a>
+        </div>
+    </div>
+
+
+    <hr>
+
 </div>
 
 <p>

@@ -62,7 +62,7 @@ def save_faucet(request):
     github_profile = request.POST.get('githubProfile')
     email_address = request.POST.get('emailAddress')
     eth_address = request.POST.get('ethAddress')
-    profile_handle = request.session.get('handle')
+    profile_handle = request.user.profile.handle if request.user.is_authenticated and request.user.profile and hasattr(request.user, 'profile') else ''
 
     if request.user and request.user.is_authenticated and request.user.username:
         profile_handle = request.user.username
@@ -88,7 +88,6 @@ def save_faucet(request):
         return JsonResponse({
             'message': _('The submitted github profile could not be found on github.')
         }, status=400)
-
     fr = FaucetRequest.objects.create(
         fulfilled=False,
         github_username=github_profile,

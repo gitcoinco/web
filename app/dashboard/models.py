@@ -40,7 +40,7 @@ import requests
 import rollbar
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
-from economy.utils import convert_amount, convert_token_to_usdt
+from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from github.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, issue_number, org_name, repo_name,
 )
@@ -110,6 +110,8 @@ class Bounty(SuperModel):
         ('submitted', 'submitted'),
         ('unknown', 'unknown'),
     )
+    OPEN_STATUSES = ['open', 'started', 'submitted']
+    CLOSED_STATUSES = ['expired', 'unknown', 'cancelled', 'done']
 
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
@@ -150,6 +152,10 @@ class Bounty(SuperModel):
     override_status = models.CharField(max_length=255, blank=True)
     last_comment_date = models.DateTimeField(null=True, blank=True)
     objects = BountyQuerySet.as_manager()
+    fulfillment_accepted_on = models.DateTimeField(null=True, blank=True)
+    fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
+    fulfillment_started_on = models.DateTimeField(null=True, blank=True)
+    canceled_on = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         """Define metadata associated with Bounty."""
@@ -381,20 +387,63 @@ class Bounty(SuperModel):
             return None
 
     @property
-    def value_in_usdt(self):
+    def value_in_usdt_now(self):
         decimals = 10**18
         if self.token_name == 'USDT':
             return float(self.value_in_token)
         if self.token_name == 'DAI':
             return float(self.value_in_token / 10**18)
         try:
-            return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
-        except Exception:
+            return round(float(convert_amount(self.value_in_token, self.token_name, 'USDT')) / decimals, 2)
+        except ConversionRateNotFoundError:
+            return None
+
+    @property
+    def value_in_usdt(self):
+        if self.status in self.OPEN_STATUSES:
+            return self.value_in_usdt_now
+        else:
+            return self.value_in_usdt_then
+
+    @property
+    def value_in_usdt_then(self):
+        decimals = 10 ** 18
+        if self.token_name == 'USDT':
+            return float(self.value_in_token)
+        if self.token_name == 'DAI':
+            return float(self.value_in_token / 10 ** 18)
+        try:
+            return round(float(convert_amount(self.value_in_token, self.token_name, 'USDT', self.web3_created)) / decimals, 2)
+        except ConversionRateNotFoundError:
+            return None
+
+    @property
+    def token_value_in_usdt_now(self):
+        try:
+            return round(convert_token_to_usdt(self.token_name), 2)
+        except ConversionRateNotFoundError:
+            return None
+
+    @property
+    def token_value_in_usdt_then(self):
+        try:
+            return round(convert_token_to_usdt(self.token_name, self.web3_created), 2)
+        except ConversionRateNotFoundError:
             return None
 
     @property
     def token_value_in_usdt(self):
-        return round(convert_token_to_usdt(self.token_name), 2)
+        if self.status in self.OPEN_STATUSES:
+            return self.token_value_in_usdt_now
+        else:
+            return self.token_value_in_usdt_then
+
+    @property
+    def token_value_time_peg(self):
+        if self.status in self.OPEN_STATUSES:
+            return timezone.now()
+        else:
+            return self.web3_created
 
     @property
     def desc(self):
@@ -402,8 +451,46 @@ class Bounty(SuperModel):
                                     self.experience_level)
 
     @property
-    def turnaround_time(self):
-        return (self.created_on - self.web3_created).total_seconds()
+    def turnaround_time_accepted(self):
+        try:
+            return (self._fulfillment_accepted_on - self.web3_created).total_seconds()
+        except Exception:
+            return None
+
+    @property
+    def turnaround_time_started(self):
+        try:
+            return (self._fulfillment_started_on - self.web3_created).total_seconds()
+        except Exception:
+            return None
+
+    @property
+    def turnaround_time_submitted(self):
+        try:
+            return (self._fulfillment_submitted_on - self.web3_created).total_seconds()
+        except Exception:
+            return None
+
+    @property
+    def _fulfillment_accepted_on(self):
+        try:
+            return self.fulfillments.filter(accepted=True).first().accepted_on
+        except Exception:
+            return None
+
+    @property
+    def _fulfillment_submitted_on(self):
+        try:
+            return self.fulfillments.first().created_on
+        except Exception:
+            return None
+
+    @property
+    def _fulfillment_started_on(self):
+        try:
+            return self.interested.first().created
+        except Exception:
+            return None
 
     @property
     def is_legacy(self):
@@ -617,23 +704,47 @@ class Tip(SuperModel):
         except Exception:
             return None
 
-    # TODO: DRY
     @property
-    def value_in_usdt(self):
+    def value_in_usdt_now(self):
         decimals = 1
         if self.tokenName == 'USDT':
             return float(self.amount)
         if self.tokenName == 'DAI':
             return float(self.amount / 10**18)
         try:
-            return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
-        except Exception:
+            return round(float(convert_amount(self.amount, self.tokenName, 'USDT')) / decimals, 2)
+        except ConversionRateNotFoundError:
             return None
 
-    # TODO: DRY
     @property
-    def token_value_in_usdt(self):
-        return round(convert_token_to_usdt(self.token_name), 2)
+    def value_in_usdt(self):
+        return self.value_in_usdt_then
+
+    @property
+    def value_in_usdt_then(self):
+        decimals = 1
+        if self.tokenName == 'USDT':
+            return float(self.amount)
+        if self.tokenName == 'DAI':
+            return float(self.amount / 10 ** 18)
+        try:
+            return round(float(convert_amount(self.amount, self.tokenName, 'USDT', self.created_on)) / decimals, 2)
+        except ConversionRateNotFoundError:
+            return None
+
+    @property
+    def token_value_in_usdt_now(self):
+        try:
+            return round(convert_token_to_usdt(self.tokenName), 2)
+        except ConversionRateNotFoundError:
+            return None
+
+    @property
+    def token_value_in_usdt_now(self):
+        try:
+            return round(convert_token_to_usdt(self.tokenName, self.created_on), 2)
+        except ConversionRateNotFoundError:
+            return None
 
     @property
     def status(self):
@@ -667,7 +778,11 @@ def psave_bounty(sender, instance, **kwargs):
     }
 
     instance.idx_status = instance.status
+    instance.fulfillment_accepted_on = instance._fulfillment_accepted_on
+    instance.fulfillment_submitted_on = instance._fulfillment_submitted_on
+    instance.fulfillment_started_on = instance._fulfillment_started_on
     instance._val_usd_db = instance.value_in_usdt if instance.value_in_usdt else 0
+    instance._val_usd_db_now = instance.value_in_usdt_now if instance.value_in_usdt_now else 0
     instance.idx_experience_level = idx_experience_level.get(instance.experience_level, 0)
     instance.idx_project_length = idx_project_length.get(instance.project_length, 0)
 
@@ -701,6 +816,7 @@ class Profile(SuperModel):
     last_sync_date = models.DateTimeField(null=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
+    suppress_leaderboard = models.BooleanField(default=False, help_text='If this option is chosen, we will remove your profile information from the leaderboard')
 
     _sample_data = '''
         {

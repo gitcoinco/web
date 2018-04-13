@@ -42,6 +42,8 @@
     .bounty-primer{
         font-weight: bold;
         border-bottom: 1px solid #e0e0e0;
+        background-color: #f5f5f5;
+        padding-top: 5px;
     }
 </style>
 
@@ -61,7 +63,7 @@
 
         <div class="bounty-contents">
             {% if bounty.title %}
-                <p>
+                <p class="bounty_title">
                     <b>{{bounty.org_name}}</b>: {{bounty.title}}
                 </p>
             {% endif %}
@@ -80,8 +82,8 @@
 
             <p>
                 <b>Amount:</b> {{bounty.value_true}} {{bounty.token_name}}
-                {% if bounty.value_in_usdt %}
-                    (about {{bounty.value_in_usdt}} USD @ ${{bounty.token_value_in_usdt}}/{{bounty.token_name}})
+                {% if bounty.value_in_usdt_now %}
+                    (about {{bounty.value_in_usdt_now}} USD @ ${{bounty.token_value_in_usdt_now}}/{{bounty.token_name}})
                 {% endif %}
             </p>
 

@@ -1,15 +1,13 @@
 import json
 import logging
 
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.models import Bounty
-from dashboard.views import create_new_interest_helper
-from github.utils import get_github_user_data, is_github_token_valid
+from dashboard.models import Bounty, Interest, Profile
+from github.utils import get_github_user_data
 from marketing.mails import new_match
 from marketing.models import Match
 from ratelimit.decorators import ratelimit
@@ -20,7 +18,6 @@ logging.basicConfig(level=logging.DEBUG)
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
 @csrf_exempt
 def save(request):
-
     status = 422
     message = 'Please use a POST'
     body = {}
@@ -35,7 +32,7 @@ def save(request):
         github_username = body.get('github_username')
         try:
             github_user_data = get_github_user_data(access_token)
-        except:
+        except Exception:
             github_user_data = {}
         access_token_invalid = not access_token or github_user_data.get('login') != github_username
         if access_token_invalid:
@@ -71,7 +68,7 @@ def save(request):
             # handle validation failures
             if validation_failed:
                 status = 422
-                message = 'Validation failed: {}'.format(validation_failed)
+                message = f'Validation failed: {validation_failed}'
             else:
                 bounty = Bounty.objects.get(pk=bounty_id)
                 # save obj
@@ -83,10 +80,14 @@ def save(request):
                 )
 
                 try:
-                    user = User.objects.get(username=github_username)
-                    create_new_interest_helper(bounty, user)
+                    if direction == '+':
+                        profiles = Profile.objects.filter(handle=github_username)
+                        profile = profiles.first() if profiles.exists() else None
+                        interest = Interest.objects.create(profile_id=profile.pk)
+                        bounty.interested.add(interest)
+                        # TODO -- user create_new_interest_helper
                 except Exception as e:
-                    print('could not get profile {}'.format(e))
+                    print(f'could not get profile {e}')
                     logging.exception(e)
 
                 # send match email
