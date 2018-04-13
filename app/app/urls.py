@@ -180,9 +180,10 @@ urlpatterns = [
     # settings
     url(r'^email/settings/(.*)', marketing.views.email_settings, name='email_settings'),
     url(r'^settings/email/(.*)', marketing.views.email_settings, name='settings_email'),
-    url(r'^settings/privacy/', marketing.views.privacy_settings, name='privacy_settings'),
-    url(r'^settings/matching/', marketing.views.matching_settings, name='matching_settings'),
-    url(r'^settings/feedback/', marketing.views.feedback_settings, name='feedback_settings'),
+    url(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),
+    url(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
+    url(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
+    url(r'^settings/(.*)?', marketing.views.email_settings, name='feedback_settings'),
 
     # marketing views
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
