@@ -19,6 +19,8 @@ GITHUB_CLIENT_SECRET=xxx
 GITHUB_APP_NAME=MyGitcoinApp
 ```
 
+Restart your `web` container to apply the changes via:  `docker-compose restart web`
+
 ## Setup Github User Integration (Recommended)
 
 Navigate to: [Github - New Token](https://github.com/settings/tokens/new)
