@@ -1,25 +1,72 @@
 sudo: false
 language: python
+
 python:
-  - "3.6"
+  - 3.6
+
 node_js:
   - "8"
-env:
-  - PYTHONPATH="$TRAVIS_BUILD_DIR/app/"
+
+os:
+  - linux
+
+services:
+  - docker
+
 cache:
   directories:
     - $HOME/.cache/pip
     - node_modules
-install:
-  - npm install
-  - cp app/app/travis.env app/app/.env
-  - pip install -r requirements/test.txt
-script:
-  - npm run eslint
-  - npm run stylelint
-  - pytest -p no:ethereum
-after_success:
+
+after_install:
+  # Publish CodeCov coverage results.
   - pip install codecov
   - codecov
+
+jobs:
+  include:
+    # Lint and test the repository.
+    - stage: lint-test
+      script:
+        # Setup Env.
+        - cp app/app/travis.env app/app/.env
+        # Install Node and Python dependencies.
+        - npm install
+        - pip install -r requirements/test.txt
+        - npm run eslint
+        - npm run stylelint
+        - pytest -p no:ethereum
+      env:
+        - PYTHONPATH="${TRAVIS_BUILD_DIR}/app/"
+    # Deploy to Docker Hub and initiate a rolling update for web.
+    - stage: deploy
+      if: (branch = master OR type = pull_request)
+      script:
+        # Authenticate with Docker Hub.
+        - docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+        # Pull Docker images.
+        - docker pull python:3.6-slim-jessie
+        # Build, tag, and publish the new gitcoin/web image.
+        - docker build -t gitcoin/web:${TRAVIS_BUILD_NUMBER} .
+        - docker push gitcoin/web:${TRAVIS_BUILD_NUMBER}
+        - docker tag gitcoin/web:${TRAVIS_BUILD_NUMBER} gitcoin/web:latest
+        - docker push gitcoin/web:latest
+        # If this is a PR build, tag with the PR number.
+        - "$TRAVIS_PULL_REQUEST" = "false" && exit 0 || echo "Deploying PR tag..."
+        - docker tag gitcoin/web:${TRAVIS_BUILD_NUMBER} gitcoin/web:${TRAVIS_PULL_REQUEST}
+        - docker push gitcoin/web:${TRAVIS_PULL_REQUEST}
+    - stage: deploy-prod
+      if: branch = stable
+      script:
+        # Authenticate with Docker Hub.
+        - docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+        # Pull Docker images.
+        - docker pull python:3.6-slim-jessie
+        # Build, tag, and publish the new gitcoin/web image.
+        - docker build -t gitcoin/web:${TRAVIS_BUILD_NUMBER} .
+        - docker push gitcoin/web:${TRAVIS_BUILD_NUMBER}
+        - docker tag gitcoin/web:${TRAVIS_BUILD_NUMBER} gitcoin/web:stable
+        - docker push gitcoin/web:stable
+
 addons:
   postgresql: "9.6"
