@@ -57,5 +57,16 @@ get_ipdb_shell: ## Drop into the active Django shell for inspection via ipdb.
 get_django_shell: ## Open a standard Django shell.
 	@docker-compose exec web python3 app/manage.py shell
 
+build: ## Build the web docker image. Ex: make build
+	@docker build -t gitcoin/web:latest --build-arg VERSION=$(git log --pretty=format:'%h' -n 1) --build-arg VCS_REF=$(git rev-parse HEAD) --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") .
+
+push: ## Push the web docker image to Docker Hub. Ex: make push
+	@docker tag gitcoin/web:latest gitcoin/web:$(git log --pretty=format:'%h' -n 1)
+	@docker push gitcoin/web:$(git log --pretty=format:'%h' -n 1)
+
+pull: ## Pull the web docker image from Docker Hub. Ex: make pull
+	@docker pull gitcoin/web:$(git log --pretty=format:'%h' -n 1)
+	@docker pull gitcoin/web:latest
+
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

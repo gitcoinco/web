@@ -36,3 +36,16 @@ RUN dos2unix /code/bin/docker-command.bash && \
 
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["bash", "/code/bin/docker-command.bash"]
+
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION="NA"
+LABEL org.label-schema.build-date=$BUILD_DATE \
+    org.label-schema.name="Gitcoin Web" \
+    org.label-schema.description="Grow Open Source" \
+    org.label-schema.url="https://gitcoin.co" \
+    org.label-schema.vcs-ref=$VCS_REF \
+    org.label-schema.vcs-url="https://github.com/gitcoinco/web/" \
+    org.label-schema.vendor="Gitcoin" \
+    org.label-schema.version=$VERSION \
+    org.label-schema.schema-version="1.0"

@@ -37,4 +37,4 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        sync_profile_data(options['force_refresh'])
+        sync_profile_data(options['force_refresh']).run()
