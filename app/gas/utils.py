@@ -34,11 +34,12 @@ def eth_usd_conv_rate():
     return convert_amount(from_amount, from_currency, to_currency)
 
 
-def conf_time_spread():
+def conf_time_spread(max_gas_price=9999):
     try:
         minutes = 31
         gp = GasProfile.objects.filter(
             created_on__gt=(timezone.now()-timezone.timedelta(minutes=minutes)),
+            gas_price__lte=max_gas_price,
             ).order_by('gas_price').values_list('gas_price', 'mean_time_to_confirm_minutes')
         return json.dumps(list(gp), cls=DjangoJSONEncoder)
     except Exception:

@@ -129,3 +129,20 @@ GITHUB_CLIENT_SECRET=<COPY_FROM_GITHUB>
 ```
 5. Restart app via docker-compose.
 
+#### ipdb
+
+`Q: what's the best way to import ipdb; ipdb.set_trace() a HTTP request via docker?`
+
+Add `import ipdb;ipdb.set_trace()` to the method you want to inspect, you then run: `make get_ipdb_shell` to drop into the active shell for inspection.
+
+#### Access Django Shell
+
+`Q: How can I access the Django shell, similar to: python manage.py shell ?`
+
+Simply run: `make get_django_shell` or `docker-compose exec web python app/manage.py shell`
+
+#### Access BASH
+
+`Q: I want to inspect or manipulate the container via bash.  How can I access the root shell of the container?`
+
+Run: `docker-compose exec web bash`

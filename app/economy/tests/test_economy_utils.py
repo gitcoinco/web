@@ -17,6 +17,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+from datetime import datetime
+
 from django.test.client import RequestFactory
 
 from economy.models import ConversionRate
@@ -30,6 +32,14 @@ class EconomyUtilsTest(TestCase):
     def setUp(self):
         """Perform setup for the testcase."""
         self.factory = RequestFactory()
+        ConversionRate.objects.create(
+            from_amount=1,
+            to_amount=5,
+            source='etherdelta',
+            from_currency='ETH',
+            to_currency='USDT',
+            timestamp=datetime(2018, 1, 1)  # Arbitrary timestamp in the past
+        )
         ConversionRate.objects.create(
             from_amount=1,
             to_amount=2,
@@ -49,6 +59,11 @@ class EconomyUtilsTest(TestCase):
         """Test the economy util convert_amount method."""
         result = convert_amount(2, 'ETH', 'USDT')
         assert round(result, 1) == 6
+
+    def test_convert_amount_time_travel(self):
+        """Test the economy util convert_amount method for historic ConversionRates."""
+        result = convert_amount(2, 'ETH', 'USDT', datetime(2018, 1, 1))
+        assert round(result, 1) == 10
 
     def test_etherscan_link(self):
         """Test the economy util etherscan_link method."""

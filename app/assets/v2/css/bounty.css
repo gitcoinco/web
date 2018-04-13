@@ -36,6 +36,9 @@ body {
   height: 2px;
   width: 50%;
 }
+.progress-bar.expired .progress {
+  background-color: #f7981b;
+}
 
 .bounty_details h4,
 .bounty_details h5 {
@@ -270,6 +273,8 @@ a.btn {
   margin-right: 5px;
   position: relative;
   top: 1px;
+  display: inline-block;
+  margin-bottom: 10px;
 }
 
 #btn-white {
@@ -422,13 +427,6 @@ a.btn {
 
   .actions {
     margin-bottom: 20px;
-  }
-}
-
-@media (max-width: 767.98px) {
-  #right_actions .button--primary {
-    display: inline-block;
-    margin-bottom: 10px;
   }
 }
 

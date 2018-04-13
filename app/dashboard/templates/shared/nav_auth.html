@@ -15,11 +15,11 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-{% if github_handle %}
+{% if user.is_authenticated %}
   <div class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      {{ github_handle }}
+      {{ user }}
     </a>
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
       {% if source == 'authed' %}
@@ -42,7 +42,7 @@
         <i class="fas fa-user"></i>
         {% trans "View Profile" %}
       </a>
-      <a class="dropdown-item" href="{% url "email_settings" "" %}">
+      <a class="dropdown-item" href="{% url "email_settings" email_key %}">
         <i class="far fa-envelope"></i>
         {% trans "Manage Settings" %}
       </a>
@@ -51,22 +51,22 @@
         {% for tip in unclaimed_tips %}
           <a class="dropdown-item" href="{{ tip.url }}">
             <i class="fas fa-dollar-sign"></i>
-            {% blocktrans %}Claim ${{ tip.value_in_usdt }} Tip {% endblocktrans %}
+            {% blocktrans %}Claim ${{ tip.value_in_usdt_now }} Tip {% endblocktrans %}
           </a>
         {% endfor %}
       {% endif %}
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="{% url "github:github_logout" %}?redirect_uri={{ request.get_full_path }}">
+      <a class="dropdown-item" href="{% url "logout" %}?next={{ request.get_full_path }}">
         <i class="fas fa-lock"></i>
         {% trans "Log Out" %}
       </a>
     </div>
   </div>
 {% else %}
-<a class="nav-link" href="{% url "github:github_auth" %}?redirect_uri={{ request.get_full_path }}"
+<a class="nav-link" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
   onclick="dataLayer.push({'event': 'login'});">
   {% trans "Login" %}
 </a>
 {% endif %}
 <img class="nav_avatar" width=50 height=50
-    src="{% url "avatar" %}?repo=https://github.com/{% if github_handle %}{{ github_handle }}{% else %}Self{% endif %}">
+  src="{% url "avatar" %}?repo=https://github.com/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}">

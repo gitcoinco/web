@@ -38,10 +38,14 @@ def send_mail(from_email, _to_email, subject, body, html=False,
               from_name="Gitcoin.co", cc_emails=None):
     """Send email via SendGrid."""
     # make sure this subscriber is saved
+    if not settings.SENDGRID_API_KEY:
+        print('No SendGrid API Key set. Not attempting to send email.')
+        return
     to_email = _to_email
     get_or_save_email_subscriber(to_email, 'internal')
 
     # setup
+    from_name = str(from_name)
     subject = str(subject)
     sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
     from_email = Email(from_email, from_name)
@@ -91,7 +95,7 @@ def bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
 
     subject = bounty.github_url
     html, text = render_bounty_feedback(bounty, persona, previous_bounties)
-    cc_emails = [from_email]
+    cc_emails = [from_email, 'team@gitcoin.co']
     send_mail(from_email, to_email, subject, text, cc_emails=cc_emails, from_name="Kevin Owocki (Gitcoin.co)")
 
 
@@ -156,14 +160,14 @@ def reject_faucet_request(fr):
 
 
 def new_bounty(bounty, to_emails=None):
-    if not bounty or not bounty.value_in_usdt:
+    if not bounty or not bounty.value_in_usdt_now:
         return
 
     if to_emails is None:
         to_emails = []
 
-    subject = _("⚡️ New Funded Issue Match worth") + f" {bounty.value_in_usdt} USD @ " \
-              f"${convert_token_to_usdt(bounty.token_name)}/{bounty.token_name} {bounty.keywords})"
+    subject = _("⚡️ New Funded Issue Match worth") + f" {bounty.value_in_usdt_now} USD @ " \
+              f"${round(convert_token_to_usdt(bounty.token_name))}/{bounty.token_name} {bounty.keywords})"
 
     for to_email in to_emails:
         from_email = settings.CONTACT_EMAIL
@@ -186,7 +190,7 @@ def weekly_roundup(to_emails=None):
 
 
 def new_work_submission(bounty, to_emails=None):
-    if not bounty or not bounty.value_in_usdt:
+    if not bounty or not bounty.value_in_usdt_now:
         return
 
     if to_emails is None:
@@ -203,7 +207,7 @@ def new_work_submission(bounty, to_emails=None):
 
 
 def new_bounty_rejection(bounty, to_emails=None):
-    if not bounty or not bounty.value_in_usdt:
+    if not bounty or not bounty.value_in_usdt_now:
         return
 
     subject = gettext("😕 Work Submission Rejected for {} 😕").format(bounty.title_or_desc)
@@ -220,7 +224,7 @@ def new_bounty_rejection(bounty, to_emails=None):
 
 
 def new_bounty_acceptance(bounty, to_emails=None):
-    if not bounty or not bounty.value_in_usdt:
+    if not bounty or not bounty.value_in_usdt_now:
         return
 
     if to_emails is None:
@@ -247,7 +251,7 @@ def new_match(to_emails, bounty, github_username):
 
 
 def bounty_expire_warning(bounty, to_emails=None):
-    if not bounty or not bounty.value_in_usdt:
+    if not bounty or not bounty.value_in_usdt_now:
         return
 
     if to_emails is None:
@@ -270,7 +274,7 @@ def bounty_expire_warning(bounty, to_emails=None):
 
 
 def bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days):
-    if not bounty or not bounty.value_in_usdt:
+    if not bounty or not bounty.value_in_usdt_now:
         return
 
     from_email = settings.CONTACT_EMAIL
@@ -282,7 +286,7 @@ def bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
 
 
 def bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
-    if not bounty or not bounty.value_in_usdt:
+    if not bounty or not bounty.value_in_usdt_now:
         return
 
     from_email = settings.CONTACT_EMAIL

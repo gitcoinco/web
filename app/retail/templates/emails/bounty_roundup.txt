@@ -1,6 +1,6 @@
 ⚡️ Funded Issues this week ⚡
 
-{{intro_txt}}~Owocki 
+{{intro_txt}}~Owocki
 
 {% if highlights %}Last Week's Highlights
 {% for highlight in highlights %}* {{highlight.who}} - {{highlight.what}}{% if highlight.link %} {{highlight.link}}{% endif %}
@@ -10,7 +10,3 @@ Hot off the press, new Open Source Work is available in the Issue Explorer:
 {% include 'emails/bounty.txt' with bounty=bounty.obj small=1 %}
 {% endfor %}
 
-You are receiving this email because your email address is on the notification list.
-
-Keep Pushing Open Source Forward,
--- Gitcoin Core

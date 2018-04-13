@@ -15,6 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -28,7 +29,9 @@ class Command(BaseCommand):
     help = 'pulls mailchimp emails'
 
     def handle(self, *args, **options):
-
+        if settings.DEBUG:
+            print("not in prod; exiting!")
+            return
         for sub in Subscription.objects.all():
             url = "https://gitcoin.co/" + sub.raw_data
             bounties_pks = [b['pk'] for b in requests.get(url).json()]

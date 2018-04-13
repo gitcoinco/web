@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import json
 
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
 from django.db.models import Max
 from django.http import Http404
@@ -404,6 +405,7 @@ def email_settings(request, key):
     is_logged_in = bool(github_handle)
     profiles = Profile.objects.filter(handle__iexact=github_handle).exclude(email='')
     profile = None if not profiles.exists() else profiles.first()
+    suppress_leaderboard = profile.suppress_leaderboard if profile else False
 
     # handle 'noinput' case
     suppress_leaderboard = False
@@ -412,26 +414,32 @@ def email_settings(request, key):
     level = ''
     msg = ''
     if not key:
-        email = request.session.get('email', '')
+        email = request.user.email if request.user.is_authenticated else None
         if not email:
-            if profile:
-                email = profile.email
-        es = EmailSubscriber.objects.filter(email__iexact=email)
-        if not es.exists():
+            github_handle = request.user.username if request.user.is_authenticated else None
+            if not github_handle:
+                raise Http404
+        if hasattr(request.user, 'profile'):
+            if request.user.profile.email_subscriptions.exists():
+                es = request.user.profile.email_subscriptions.first()
+            if not es or es and not es.priv:
+                es = get_or_save_email_subscriber(
+                    request.user.email, 'settings', profile=request.user.profile)
+
+        if not es:
             raise Http404
     else:
-        es = EmailSubscriber.objects.filter(priv=key)
-        if es.exists():
-            email = es.first().email
-            level = es.first().preferences.get('level', False)
-        else:
+        try:
+            es = EmailSubscriber.objects.get(priv=key)
+            email = es.email
+            level = es.preferences.get('level', False)
+        except EmailSubscriber.DoesNotExist:
             raise Http404
-    suppress_leaderboard = profile.suppress_leaderboard if profile else False
-    es = es.first()
-    if request.POST.get('email', False):
-        level = request.POST.get('level')
-        comments = request.POST.get('comments')[:255]
+
+    if request.POST and request.POST.get('email'):
         email = request.POST.get('email')
+        level = request.POST.get('level')
+        comments = request.POST.get('comments', '')[:255]
         github = request.POST.get('github')
         keywords = request.POST.get('keywords').split(',')
         validation_passed = True

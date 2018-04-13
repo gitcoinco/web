@@ -281,7 +281,7 @@ $(document).ready(function() {
         var _paysTokens = !isETH;
         var bountyIndex = bounty.issueAndActivateBounty(
           account, // _issuer
-          expire_date, // _deadline
+          mock_expire_date, // _deadline
           result, // _data (ipfs hash)
           amount, // _fulfillmentAmount
           0x0, // _arbiter
