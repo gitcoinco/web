@@ -62,11 +62,11 @@
       </a>
     </div>
   </div>
-{% else %}
-<a class="nav-link" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
-  onclick="dataLayer.push({'event': 'login'});">
-  {% trans "Login" %}
-</a>
-{% endif %}
 <img class="nav_avatar" width=50 height=50
   src="{% url "avatar" %}?repo=https://github.com/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}">
+{% else %}
+<a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
+  onclick="dataLayer.push({'event': 'login'});">
+  <img src="{% static "v2/images/social/github.png" %} ">{% trans "Login" %}
+</a>
+{% endif %}
