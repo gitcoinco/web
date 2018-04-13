@@ -454,42 +454,42 @@ class Bounty(SuperModel):
     def turnaround_time_accepted(self):
         try:
             return (self._fulfillment_accepted_on - self.web3_created).total_seconds()
-        except:
+        except Exception:
             return None
 
     @property
     def turnaround_time_started(self):
         try:
             return (self._fulfillment_started_on - self.web3_created).total_seconds()
-        except:
+        except Exception:
             return None
 
     @property
     def turnaround_time_submitted(self):
         try:
             return (self._fulfillment_submitted_on - self.web3_created).total_seconds()
-        except:
+        except Exception:
             return None
 
     @property
     def _fulfillment_accepted_on(self):
         try:
             return self.fulfillments.filter(accepted=True).first().accepted_on
-        except Exception as e:
+        except Exception:
             return None
 
     @property
     def _fulfillment_submitted_on(self):
         try:
             return self.fulfillments.first().created_on
-        except:
+        except Exception:
             return None
 
     @property
     def _fulfillment_started_on(self):
         try:
             return self.interested.first().created
-        except:
+        except Exception:
             return None
 
     @property
