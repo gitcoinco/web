@@ -41,16 +41,30 @@ def should_suppress_notification_email(email):
     return False
 
 
-def get_or_save_email_subscriber(email, source, send_slack_invite=True):
-    queryset = EmailSubscriber.objects.filter(email__iexact=email)
-    if not queryset.exists():
-        es = EmailSubscriber.objects.create(
-            email=email,
-            source=source,
-            )
+def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=None):
+    defaults = {'source': source, 'email': email}
+
+    if profile:
+        defaults['profile'] = profile
+
+    try:
+        es, created = EmailSubscriber.objects.update_or_create(email__iexact=email, defaults=defaults)
+        print("EmailSubscriber:", es, "- created" if created else "- updated")
+    except EmailSubscriber.MultipleObjectsReturned:
+        email_subscriber_ids = EmailSubscriber.objects.filter(email__iexact=email) \
+            .values_list('id', flat=True) \
+            .order_by('-created_on')[1:]
+        EmailSubscriber.objects.filter(pk__in=list(email_subscriber_ids)).delete()
+        es = EmailSubscriber.objects.get(email__iexact=email)
+        created = False
+    except Exception as e:
+        print(f'Failed to update or create email subscriber: ({email}) - {e}')
+        return ''
+
+    if created or not es.priv:
         es.set_priv()
         es.save()
         if send_slack_invite:
             invite_to_slack(email)
-        return es.priv
-    return queryset.first().priv
+
+    return es

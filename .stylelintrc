@@ -9,14 +9,21 @@
         ]
       }
     ],
-    "indentation": "tab",
+    "indentation": 2,
     "number-leading-zero": null,
+    "selector-combinator-space-after": "always",
+    "selector-combinator-space-before": "always",
     "unit-whitelist": [
       "px",
       "em",
       "rem",
       "s",
-      "%"
+      "%",
+      "deg",
+      "vw",
+      "vh",
+      "pt",
+      "vmin"
     ]
   }
 }

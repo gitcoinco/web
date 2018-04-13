@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
 {% load is_in_list %}
 <nav class="navbar navbar-expand-md navbar-dark">
   <a class="navbar-brand pt-0 pb-0" href="/">
@@ -32,20 +32,16 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <nav class="navbar-nav ml-auto mr-3">
-      <a class="nav-link {% if active == 'home' %}selected{%endif%}" href="/">Home</a>
-      <a class="nav-link {% if active == 'about' %}selected{%endif%}" href="{% url "about" %}">About</a>
-      <a class="nav-link{% if active == 'tools' %} selected{% endif %}" href="{% url "tools" %}">Tools</a>
-      <a class="nav-link{% if active == 'dashboard' %} selected{% endif %}" href="{% url "explorer" %}">Issue Explorer</a>
+      <a class="nav-link {% if active == 'home' %}selected{%endif%}" href="/">{% trans "Home" %}</a>
+      <a class="nav-link {% if active == 'about' %}selected{%endif%}" href="{% url "about" %}">{% trans "About" %}</a>
+      <a class="nav-link{% if active == 'tools' %} selected{% endif %}" href="{% url "tools" %}">{% trans "Tools" %}</a>
+      <a class="nav-link{% if active == 'dashboard' %} selected{% endif %}" href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
       <a class="nav-link slack{% if active == 'slack' %} selected{% endif %}" href="{% url "slack" %}">
         <i class="fab fa-slack-hash" aria-hidden="true"></i>Slack({{num_slack}})
       </a>
-      <a class="nav-link{% if active == 'help' %} selected{% endif %}" href="{% url "help" %}">Help</a>
+      <a class="nav-link{% if active == 'help' %} selected{% endif %}" href="{% url "help" %}">{% trans "Help" %}</a>
     </nav>
     <img class="mr-5" src="{% static "v2/images/spaceship.png" %}" width="52" height="45" />
-    {% if active|is_in_list:'about,slack,home,help,mission' %}
-      <a class="btn btn-outline-info pl-4 pr-4 pulseClick" role="button" href="{% url 'get_gitcoin' %}">Get Started ⚡️</a>
-    {% else %}
       {% include 'shared/nav_auth.html' with source='authed' %}
-    {% endif %}
   </div>
 </nav>

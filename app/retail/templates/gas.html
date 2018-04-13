@@ -1,5 +1,5 @@
 {% extends 'yge/base.html' %}
-{% load static %}
+{% load i18n static %}
 {% block 'scripts' %}
 <script src="{% static "yge/ethereumjs/ethereumjs-accounts.js" %}"></script>
 <script src="{% static "yge/ethereumjs/web3.js" %}"></script>
@@ -62,7 +62,7 @@ div.tooltip {
         </a>
     </span>
 </header>
-<h1> Live Predicted Confirmation Times vs Gas Usage </h1>
+<h1> {% trans "Predicted Confirmation Times vs Gas Usage" %} <span id="alpha">{% trans "Alpha" %}</span> </h1>
 
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
@@ -158,22 +158,20 @@ svg.append("text")
 
 
 </script>
-<h2>Useful Links</h2>
-To see the data in chart format, check out <a href="https://ethgasstation.info/predictionTable.php" target="_blank" rel="noopener noreferrer">ETH Gas Station</a>
+<h2>{% trans "Useful Links" %}</h2>
+{% blocktrans %}To see the data in chart format, check out <a href="https://ethgasstation.info/predictionTable.php" target="_blank" rel="noopener noreferrer">ETH Gas Station</a>{% endblocktrans %}
 
 <br>
-To see this information persisted in-browser check out <a href=https://chrome.google.com/webstore/detail/ethereum-gas-price-extens/innfmlnnhfcebjcnfopadflecemoddnp target="_blank" rel="noopener noreferrer">this chrome extension</a>
+{% blocktrans %}To see this information persisted in-browser check out <a href=https://chrome.google.com/webstore/detail/ethereum-gas-price-extens/innfmlnnhfcebjcnfopadflecemoddnp target="_blank" rel="noopener noreferrer">this chrome extension</a>{% endblocktrans %}
 
-<h2>FAQ</h2>
-<a href="https://github.com/gitcoinco/gitcoinco/issues/5" target="_blank" rel="noopener noreferrer">Why do we need to pay gas?</a>
+<h2>{% trans "FAQ" %}</h2>
+<a href="https://github.com/gitcoinco/gitcoinco/issues/5" target="_blank" rel="noopener noreferrer">{% trans "Why do we need to pay gas?" %}</a>
 <br>
-<a href="https://github.com/gitcoinco/gitcoinco/issues/14" target="_blank" rel="noopener noreferrer">What are the advantages of Ethereum-based applications??</a>
+<a href="https://github.com/gitcoinco/gitcoinco/issues/14" target="_blank" rel="noopener noreferrer">{% trans "What are the advantages of Ethereum-based applications??" %}</a>
 <br>
-<a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">I can't figure this out.  Help!</a>
+<a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "I can't figure this out.  Help!" %}</a>
 
 </section>
 
 
 {% endblock %}
-
-

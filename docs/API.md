@@ -35,11 +35,15 @@ The bounties endpoint provides a listing of bounties and their current status. T
 | `project_length`   | `string`           | Relative length of project Ex: `Hours`, `Days`, `Weeks`, `Months` |
 | `experience_level` | `string`           | Recommended experience level                                      |
 | `github_url`       | `string`           | URL on GitHub where you can find the bounty description           |
+| `github_org_name`       | `string`           | github org name         |
+| `github_repo_name`       | `string`           | github repo name           |
+| `github_issue_number`       | `string`           | github issue number           |
 | `current_bounty`   | `boolean`          | Whether this bounty is the most current revision one or not       |
 | `expires_date`     | `date_time`        | Date before which the bounty must be compelted                    |
 | `raw_data`         | `array`            | Raw contract data, see the example below for more information     |
 | `value_in_eth`     | `integer`          | Value of the bounty in Ethereum                                   |
-| `value_in_usdt`    | `float`            | Approximation of current value in USD                             |
+| `value_in_usdt`    | `float`            | Approximation of value in USD at bounty web3_created timestamp    |
+| `value_in_usdt_now`| `float`            | Approximation of current value in USD                             |
 | `now`              | `date_time`        | Current date_time on the server                                   |
 
 **Current Status**
@@ -127,7 +131,7 @@ By passing an `order_by` parameter you can order the data by the provided key. E
     },
     "current_bounty": true,
     "value_in_eth": 1.0e+18,
-    "value_in_usdt": 280.65,
+    "value_in_usdt_now": 280.65,
     "status": "expired",
     "now": "2017-09-24T18:59:53.964344Z"
   },

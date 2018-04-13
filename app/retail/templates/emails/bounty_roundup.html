@@ -16,134 +16,87 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static humanize %}
+{% load i18n static humanize %}
 
 {% block content %}
 
 <style>
-    body  p,
-    body  li,
-    body  span,
-    body  a{
-      font-family: "Arial";
+    .roundup {
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        padding-left: 2em;
+        padding-right: 2em;
     }
-    body #welcome p,
-    body #welcome a,
-    body #welcome li{
-      font-weight: 300;
-      color: black;
-      font-size: 14px;
-      letter-spacing: 0.1em;
-      line-height: 18px;
-    }
-    body li {
-        font-weight: normal;;
-        font-size: normal;;
-        margin-bottom: 5px;
-    }
-    #highlights {
-
-    }
-    #highlights li {
-        list-style: none;
-    }
-    #highlights img {
-        border-radius: 15px;
-        display: inline;;
-        margin-bottom: -5px;
-    }
-    #highlights tr td a,
-    #highlights tr td {
-        font-size: 14px;
-        line-height: 18px;
-    }
-
 </style>
 
-<h1><img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"> The Gitcoin Weekly <img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"></h1>
+<div class="roundup">
+    <div>
+        <h1><img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"> {% trans "The Gitcoin Weekly" %} <img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"></h1>
+    </div>
 
-<table>
-    <tr>
-        <td id="welcome" colspan=6 valign="top" style='padding: 5px 10px 0px;'>
+    <div style="text-align: left;">
+        {{ intro | safe }}
 
-            {{ intro | safe}}
-
-            <a href="https://twitter.com/owocki" style="float:right; padding-left: 10px;">
-                <img src="{% static "v2/images/avatar.png" %}" width="77" height="137">
+        <div style="text-align: center;">
+            <a href="https://twitter.com/owocki">
+                <img style="max-height: 170px; " src="{% static "v2/images/avatar.png" %}">
             </a>
+
             <p>
-                👋
-                <br>
                 <a href="https://twitter.com/owocki">@owocki</a>
             </p>
-        </td>
-    </tr>
-</table>
+        </div>
 
-{% if highlights %}
+        <hr>
+    </div>
 
-<h3>Last Week's Highlights</h3>
-<h5>Community Members growing open source🌳</h5>
+    {% if highlights %}
 
-    <table id="highlights">
-        <tr >
-            <td style='padding: 5px 10px 0px; text-align: left; width: 540px;'>
-                {% for highlight in highlights %}
-                    <li>
-                        {% if highlight.who_link %}
-                            <img src="https://gitcoin.co/funding/avatar?repo=https://github.com/{{highlight.who}}" width=30px height=30px>
-                            <a href="https://gitcoin.co/profile/{{highlight.who}}">{{highlight.who}}</a>
-                        {% else %}
-                            * <strong>{{highlight.who}}</strong>
-                        {% endif %}
-                         - {{highlight.what}}
-                        {% if highlight.link %}
-                            <a href="{{highlight.link}}">{{highlight.link_copy}}</a>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </td>
-        </tr>
-    </table>
-    <hr>
+        <h3>{% trans "Last Week's Highlights" %}</h3>
+        <h5>{% trans "Community Members growing open source" %}🌳</h5>
 
-{% endif %}
+        <div style="text-align: left;">
+            {% for highlight in highlights %}
+                <li>
+                    {% if highlight.who_link %}
+                        <img src="https://gitcoin.co/funding/avatar?repo=https://github.com/{{highlight.who}}" width=30px height=30px>
+                        <a href="https://gitcoin.co/profile/{{highlight.who}}">{{highlight.who}}</a>
+                    {% else %}
+                        * <strong>{{highlight.who}}</strong>
+                    {% endif %}
+                     - {{highlight.what}}
+                    {% if highlight.link %}
+                        <a href="{{highlight.link}}">{{highlight.link_copy}}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </div>
 
-<h3>Open Funded Issues</h3>
-<h5>Grow Open Source ⚡️ Make Some ETH 💰</h5>
+        <hr>
 
-<br>
+    {% endif %}
 
-{% for bounty in bounties %}
-    {% include 'emails/bounty.html' with bounty=bounty.obj small=1 primer=bounty.primer %}
-    <hr>
-{% endfor %}
+    <div>
+        <h3>{% trans "Open Funded Issues" %}</h3>
+        <h5>{% trans "Grow Open Source ⚡️ Make Some ETH" %} 💰</h5>
+    </div>
 
-    <table>
-        <tr >
-            <td width="400">
-                <p style="text-align: center; margin-bottom: 0px;">Don't see anything that strikes your fancy above?</p>
-                <p style="text-align: center; margin-top: 0px;">There are more issues in the Gitcoin Issue Explorer:</p>
-            </td>
-        </tr>
-        <tr >
-            <td width="180" style="text-align: center;">
-                <a style="margin: 0px auto;" class="button"  href="https://gitcoin.co/explorer" >View Issue Explorer</a>
-            </td>
-        </tr>
-    </table>
-    <hr>
+    {% for bounty in bounties %}
+        {% include 'emails/bounty.html' with bounty=bounty.obj small=1 primer=bounty.primer %}
+    {% endfor %}
+
+    <div class="centered-contents">
+        <p>{% trans "Don't see anything that strikes your fancy above?" %}</p>
+        <p>{% trans "There are more issues in the Gitcoin Issue Explorer:" %}</p>
+
+        <div style="margin-bottom: 1.5em;">
+            <a class="button" href="https://gitcoin.co/explorer">{% trans "View Issue Explorer" %}</a>
+        </div>
+    </div>
+</div>
 
 <p>
-    You are receiving this email because your email address is on the notification list. <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">Manage Email Settings</a>.
+    {% trans "You are receiving this email because your email address is on the notification list." %} <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">{% trans "Manage Email Settings" %}</a>.
 </p>
-
-<p>
-    Keep Growing Open Source,
-    <br>
-    -- Gitcoin Core
-</p>
-
-
 
 {% endblock %}

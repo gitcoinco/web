@@ -62,9 +62,11 @@ ranks = default_ranks()
 
 def add_element(key, username, amount):
     username = username.replace('@', '')
+    if not username or username == "None":
+        return
     if username not in ranks[key].keys():
         ranks[key][username] = 0
-    ranks[key][username] += float(amount)
+    ranks[key][username] += round(float(amount) ,2)
 
 
 def sum_bounties(b, usernames):
@@ -111,7 +113,7 @@ def sum_bounties(b, usernames):
 
 
 def sum_tips(t, usernames):
-    val_usd = t.value_in_usdt
+    val_usd = t.value_in_usdt_now
     for username in usernames:
         add_element('all_fulfilled', username, val_usd)
         add_element('all_earners', username, val_usd)
@@ -159,7 +161,7 @@ class Command(BaseCommand):
         tips = Tip.objects.all()
 
         for t in tips:
-            if not t.value_in_usdt:
+            if not t.value_in_usdt_now:
                 continue
             usernames = []
             if t.username:

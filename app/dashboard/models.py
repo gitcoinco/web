@@ -18,23 +18,29 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import decimal
 import logging
 from datetime import datetime
 from urllib.parse import urlsplit
 
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
+import rollbar
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
-from economy.utils import convert_amount, convert_token_to_usdt
+from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from github.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, issue_number, org_name, repo_name,
 )
@@ -52,6 +58,17 @@ class BountyQuerySet(models.QuerySet):
     def current(self):
         """Filter results down to current bounties only."""
         return self.filter(current_bounty=True)
+
+    def stats_eligible(self):
+        """Exclude results that we don't want to track in statistics."""
+        return self.exclude(idx_status__in=['unknown', 'cancelled'])
+
+    def exclude_by_status(self, excluded_statuses=None):
+        """Exclude results with a status matching the provided list."""
+        if excluded_statuses is None:
+            excluded_statuses = []
+
+        return self.exclude(idx_status__in=excluded_statuses)
 
 
 class Bounty(SuperModel):
@@ -83,45 +100,62 @@ class Bounty(SuperModel):
         ('Months', 'Months'),
         ('Unknown', 'Unknown'),
     ]
+
+    STATUS_CHOICES = (
+        ('cancelled', 'cancelled'),
+        ('done', 'done'),
+        ('expired', 'expired'),
+        ('open', 'open'),
+        ('started', 'started'),
+        ('submitted', 'submitted'),
+        ('unknown', 'unknown'),
+    )
+    OPEN_STATUSES = ['open', 'started', 'submitted']
+    CLOSED_STATUSES = ['expired', 'unknown', 'cancelled', 'done']
+
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
     web3_created = models.DateTimeField(db_index=True)
     value_in_token = models.DecimalField(default=1, decimal_places=2, max_digits=50)
     token_name = models.CharField(max_length=50)
     token_address = models.CharField(max_length=50)
-    bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES)
-    project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS)
-    experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS)
+    bounty_type = models.CharField(max_length=50, choices=BOUNTY_TYPES, blank=True)
+    project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True)
+    experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True)
     github_url = models.URLField(db_index=True)
     github_comments = models.IntegerField(default=0)
     bounty_owner_address = models.CharField(max_length=50)
     bounty_owner_email = models.CharField(max_length=255, blank=True)
     bounty_owner_github_username = models.CharField(max_length=255, blank=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
-    is_open = models.BooleanField(help_text='Whether the bounty is still open for fulfillments.')
+    is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
     raw_data = JSONField()
     metadata = JSONField(default={})
     current_bounty = models.BooleanField(
-        default=False, help_text='Whether this bounty is the most current revision one or not')
+        default=False, help_text=_('Whether this bounty is the most current revision one or not'))
     _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     contract_address = models.CharField(max_length=50, default='')
     network = models.CharField(max_length=255, blank=True, db_index=True)
     idx_experience_level = models.IntegerField(default=0, db_index=True)
     idx_project_length = models.IntegerField(default=0, db_index=True)
-    idx_status = models.CharField(max_length=50, default='', db_index=True)
+    idx_status = models.CharField(max_length=9, choices=STATUS_CHOICES, default='open', db_index=True)
     avatar_url = models.CharField(max_length=255, default='')
     issue_description = models.TextField(default='', blank=True)
     standard_bounties_id = models.IntegerField(default=0)
     num_fulfillments = models.IntegerField(default=0)
     balance = models.DecimalField(default=0, decimal_places=2, max_digits=50)
-    accepted = models.BooleanField(default=False, help_text='Whether the bounty has been done')
+    accepted = models.BooleanField(default=False, help_text=_('Whether the bounty has been done'))
     interested = models.ManyToManyField('dashboard.Interest', blank=True)
     interested_comment = models.IntegerField(null=True, blank=True)
     submissions_comment = models.IntegerField(null=True, blank=True)
     override_status = models.CharField(max_length=255, blank=True)
-    last_comment_date = models.DateTimeField(null=True)
+    last_comment_date = models.DateTimeField(null=True, blank=True)
     objects = BountyQuerySet.as_manager()
+    fulfillment_accepted_on = models.DateTimeField(null=True, blank=True)
+    fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
+    fulfillment_started_on = models.DateTimeField(null=True, blank=True)
+    canceled_on = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         """Define metadata associated with Bounty."""
@@ -182,7 +216,20 @@ class Bounty(SuperModel):
 
     @property
     def can_submit_after_expiration_date(self):
-        return self.is_legacy or self.raw_data.get('payload', {}).get('expire_date', False)
+        if self.is_legacy:
+            # legacy bounties could submit after expirration date
+            return True
+
+        # standardbounties
+        contract_deadline = self.raw_data.get('contract_deadline', False)
+        ipfs_deadline = self.raw_data.get('ipfs_deadline', False)
+        if not ipfs_deadline:
+            # if theres no expiry date in the payload, then expiration date is not mocked, and one cannot submit after expiration date
+            return False
+
+        # if contract_deadline > ipfs_deadline, then by definition, can be submitted after expiry date
+        return contract_deadline > ipfs_deadline
+
 
     @property
     def title_or_desc(self):
@@ -199,10 +246,27 @@ class Bounty(SuperModel):
         return tag_re.sub('', self.issue_description).strip()
 
     @property
-    def org_name(self):
+    def github_issue_number(self):
         try:
-            _org_name = org_name(self.github_url)
-            return _org_name
+            return int(issue_number(self.github_url))
+        except Exception:
+            return None
+
+    @property
+    def org_name(self):
+        return self.github_org_name
+
+    @property
+    def github_org_name(self):
+        try:
+            return org_name(self.github_url)
+        except Exception:
+            return None
+
+    @property
+    def github_repo_name(self):
+        try:
+            return repo_name(self.github_url)
         except Exception:
             return None
 
@@ -236,7 +300,7 @@ class Bounty(SuperModel):
 
     def get_avatar_url(self):
         try:
-            response = get_user(self.org_name)
+            response = get_user(self.github_org_name)
             return response['avatar_url']
         except Exception as e:
             print(e)
@@ -323,18 +387,63 @@ class Bounty(SuperModel):
             return None
 
     @property
-    def value_in_usdt(self):
+    def value_in_usdt_now(self):
         decimals = 10**18
         if self.token_name == 'USDT':
-            return self.value_in_token
+            return float(self.value_in_token)
+        if self.token_name == 'DAI':
+            return float(self.value_in_token / 10**18)
         try:
-            return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
-        except Exception:
+            return round(float(convert_amount(self.value_in_token, self.token_name, 'USDT')) / decimals, 2)
+        except ConversionRateNotFoundError:
+            return None
+
+    @property
+    def value_in_usdt(self):
+        if self.status in self.OPEN_STATUSES:
+            return self.value_in_usdt_now
+        else:
+            return self.value_in_usdt_then
+
+    @property
+    def value_in_usdt_then(self):
+        decimals = 10 ** 18
+        if self.token_name == 'USDT':
+            return float(self.value_in_token)
+        if self.token_name == 'DAI':
+            return float(self.value_in_token / 10 ** 18)
+        try:
+            return round(float(convert_amount(self.value_in_token, self.token_name, 'USDT', self.web3_created)) / decimals, 2)
+        except ConversionRateNotFoundError:
+            return None
+
+    @property
+    def token_value_in_usdt_now(self):
+        try:
+            return round(convert_token_to_usdt(self.token_name), 2)
+        except ConversionRateNotFoundError:
+            return None
+
+    @property
+    def token_value_in_usdt_then(self):
+        try:
+            return round(convert_token_to_usdt(self.token_name, self.web3_created), 2)
+        except ConversionRateNotFoundError:
             return None
 
     @property
     def token_value_in_usdt(self):
-        return round(convert_token_to_usdt(self.token_name), 2)
+        if self.status in self.OPEN_STATUSES:
+            return self.token_value_in_usdt_now
+        else:
+            return self.token_value_in_usdt_then
+
+    @property
+    def token_value_time_peg(self):
+        if self.status in self.OPEN_STATUSES:
+            return timezone.now()
+        else:
+            return self.web3_created
 
     @property
     def desc(self):
@@ -342,8 +451,46 @@ class Bounty(SuperModel):
                                     self.experience_level)
 
     @property
-    def turnaround_time(self):
-        return (self.created_on - self.web3_created).total_seconds()
+    def turnaround_time_accepted(self):
+        try:
+            return (self._fulfillment_accepted_on - self.web3_created).total_seconds()
+        except Exception:
+            return None
+
+    @property
+    def turnaround_time_started(self):
+        try:
+            return (self._fulfillment_started_on - self.web3_created).total_seconds()
+        except Exception:
+            return None
+
+    @property
+    def turnaround_time_submitted(self):
+        try:
+            return (self._fulfillment_submitted_on - self.web3_created).total_seconds()
+        except Exception:
+            return None
+
+    @property
+    def _fulfillment_accepted_on(self):
+        try:
+            return self.fulfillments.filter(accepted=True).first().accepted_on
+        except Exception:
+            return None
+
+    @property
+    def _fulfillment_submitted_on(self):
+        try:
+            return self.fulfillments.first().created_on
+        except Exception:
+            return None
+
+    @property
+    def _fulfillment_started_on(self):
+        try:
+            return self.interested.first().created
+        except Exception:
+            return None
 
     @property
     def is_legacy(self):
@@ -454,6 +601,7 @@ class BountyFulfillment(SuperModel):
     fulfiller_metadata = JSONField(default={}, blank=True)
     fulfillment_id = models.IntegerField(null=True, blank=True)
     accepted = models.BooleanField(default=False)
+    accepted_on = models.DateTimeField(null=True, blank=True)
 
     bounty = models.ForeignKey(Bounty, related_name='fulfillments', on_delete=models.CASCADE)
     profile = models.ForeignKey('dashboard.Profile', related_name='fulfilled', on_delete=models.CASCADE, null=True)
@@ -556,21 +704,47 @@ class Tip(SuperModel):
         except Exception:
             return None
 
-    # TODO: DRY
     @property
-    def value_in_usdt(self):
+    def value_in_usdt_now(self):
         decimals = 1
         if self.tokenName == 'USDT':
-            return self.amount
+            return float(self.amount)
+        if self.tokenName == 'DAI':
+            return float(self.amount / 10**18)
         try:
-            return round(float(convert_amount(self.value_in_eth, 'ETH', 'USDT')) / decimals, 2)
-        except Exception:
+            return round(float(convert_amount(self.amount, self.tokenName, 'USDT')) / decimals, 2)
+        except ConversionRateNotFoundError:
             return None
 
-    # TODO: DRY
     @property
-    def token_value_in_usdt(self):
-        return round(convert_token_to_usdt(self.token_name), 2)
+    def value_in_usdt(self):
+        return self.value_in_usdt_then
+
+    @property
+    def value_in_usdt_then(self):
+        decimals = 1
+        if self.tokenName == 'USDT':
+            return float(self.amount)
+        if self.tokenName == 'DAI':
+            return float(self.amount / 10 ** 18)
+        try:
+            return round(float(convert_amount(self.amount, self.tokenName, 'USDT', self.created_on)) / decimals, 2)
+        except ConversionRateNotFoundError:
+            return None
+
+    @property
+    def token_value_in_usdt_now(self):
+        try:
+            return round(convert_token_to_usdt(self.tokenName), 2)
+        except ConversionRateNotFoundError:
+            return None
+
+    @property
+    def token_value_in_usdt_now(self):
+        try:
+            return round(convert_token_to_usdt(self.tokenName, self.created_on), 2)
+        except ConversionRateNotFoundError:
+            return None
 
     @property
     def status(self):
@@ -604,7 +778,11 @@ def psave_bounty(sender, instance, **kwargs):
     }
 
     instance.idx_status = instance.status
+    instance.fulfillment_accepted_on = instance._fulfillment_accepted_on
+    instance.fulfillment_submitted_on = instance._fulfillment_submitted_on
+    instance.fulfillment_started_on = instance._fulfillment_started_on
     instance._val_usd_db = instance.value_in_usdt if instance.value_in_usdt else 0
+    instance._val_usd_db_now = instance.value_in_usdt_now if instance.value_in_usdt_now else 0
     instance.idx_experience_level = idx_experience_level.get(instance.experience_level, 0)
     instance.idx_project_length = idx_project_length.get(instance.project_length, 0)
 
@@ -632,6 +810,7 @@ def psave_interest(sender, instance, **kwargs):
 class Profile(SuperModel):
     """Define the structure of the user profile."""
 
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True)
     last_sync_date = models.DateTimeField(null=True)
@@ -775,7 +954,7 @@ class Profile(SuperModel):
 
     @property
     def stats(self):
-        bounties = self.bounties
+        bounties = self.bounties.stats_eligible()
         loyalty_rate = 0
         total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_funder(self.handle)])
         total_fulfilled = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
@@ -865,6 +1044,42 @@ class Profile(SuperModel):
     def get_absolute_url(self):
         return settings.BASE_URL + self.get_relative_url(preceding_slash=False)
 
+    def get_access_token(self, save=True):
+        """Get the Github access token from User.
+
+        Args:
+            save (bool): Whether or not to save the User access token to the profile.
+
+        Raises:
+            Exception: The exception is raised in the event of any error and returns an empty string.
+
+        Returns:
+            str: The Github access token.
+
+        """
+        try:
+            access_token = self.user.social_auth.filter(provider='github').latest('pk').access_token
+            if save:
+                self.github_access_token = access_token
+                self.save()
+        except Exception:
+            return ''
+        return access_token
+
+
+@receiver(user_logged_in)
+def post_login(sender, request, user, **kwargs):
+    """Handle actions to take on user login."""
+    from dashboard.utils import create_user_action
+    create_user_action(user, 'Login', request)
+
+
+@receiver(user_logged_out)
+def post_logout(sender, request, user, **kwargs):
+    """Handle actions to take on user logout."""
+    from dashboard.utils import create_user_action
+    create_user_action(user, 'Logout', request)
+
 
 class ProfileSerializer(serializers.BaseSerializer):
     """Handle serializing the Profile object."""
@@ -887,6 +1102,7 @@ class ProfileSerializer(serializers.BaseSerializer):
 
         """
         return {
+            'id': instance.id,
             'handle': instance.handle,
             'github_url': instance.github_url,
             'local_avatar_url': instance.local_avatar_url,
@@ -913,7 +1129,8 @@ class UserAction(SuperModel):
         ('Logout', 'Logout'),
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
-    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='actions', on_delete=models.CASCADE, null=True)
+    profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True)
     ip_address = models.GenericIPAddressField(null=True)
     location_data = JSONField(default={})
     metadata = JSONField(default={})

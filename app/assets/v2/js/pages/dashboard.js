@@ -228,15 +228,15 @@ var process_stats = function(results) {
 
   switch (num) {
     case 0:
-      $('#matches').html('No Results');
+      $('#matches').html(gettext('No Results'));
       $('#funding-info').html('');
       break;
     case 1:
-      $('#matches').html(num + ' Matching Result');
+      $('#matches').html(num + gettext(' Matching Result'));
       $('#funding-info').html("<span id='modifiers'>Funded Issue</span><span id='stats' class='font-body'>(" + stats + ')</span>');
       break;
     default:
-      $('#matches').html(num + ' Matching Results');
+      $('#matches').html(num + gettext(' Matching Results'));
       $('#funding-info').html("<span id='modifiers'>Funded Issues</span><span id='stats' class='font-body'>(" + stats + ')</span>');
   }
 };
@@ -290,7 +290,7 @@ $('body').bind('touchmove', trigger_scroll);
 var refreshBounties = function() {
   // manage state
   var keywords = $('#keywords').val();
-  var title = 'Issue Explorer | Gitcoin';
+  var title = gettext('Issue Explorer | Gitcoin');
 
   if (keywords) {
     title = keywords + ' | ' + title;
@@ -352,7 +352,35 @@ var refreshBounties = function() {
       result['title'] = result['title'] ? result['title'] : result['github_url'];
       var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
 
-      result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ' + (is_expired ? ' Expired' : ('Expires in ' + timeLeft)));
+      result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
+
+      if (result['status'] === 'done')
+        result['p'] += 'Done';
+      if (result['fulfillment_accepted_on']) {
+        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
+      } else if (result['status'] === 'started') {
+        result['p'] += 'Started';
+        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
+      } else if (result['status'] === 'submitted') {
+        result['p'] += 'Submitted';
+        if (result['fulfillment_submitted_on']) {
+          result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
+        }
+      } else if (result['status'] == 'cancelled') {
+        result['p'] += 'Cancelled';
+        if (result['canceled_on']) {
+          result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
+        }
+      } else if (is_expired) {
+        var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
+
+        result['p'] += ('Expired ' + time_ago + ' ago');
+      } else {
+        var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
+
+        result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
+      }
+
       result['watch'] = 'Watch';
 
       // render the template
@@ -505,7 +533,7 @@ $(document).ready(function() {
     var is_validated = validateEmail(email);
 
     if (!is_validated) {
-      _alert({ message: 'Please enter a valid email address.' }, 'warning');
+      _alert({ message: gettext('Please enter a valid email address.') }, 'warning');
     } else {
       var url = '/sync/search_save';
 
@@ -516,7 +544,7 @@ $(document).ready(function() {
         var status = response['status'];
 
         if (status == 200) {
-          _alert({message: "You're in! Keep an eye on your inbox for the next funding listing."}, 'success');
+          _alert({message: gettext("You're in! Keep an eye on your inbox for the next funding listing.")}, 'success');
           $.modal.close();
         } else {
           _alert({message: response['msg']}, 'error');
@@ -535,6 +563,4 @@ $(document).ready(function() {
     emailSubscribe();
     e.preventDefault();
   });
-
-
 });

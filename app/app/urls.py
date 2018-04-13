@@ -18,8 +18,10 @@
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
+from django.views.i18n import JavaScriptCatalog
 
 import credits.views
 import dashboard.embed
@@ -41,6 +43,9 @@ from external_bounties.router import router as ebrouter
 from .sitemaps import sitemaps
 
 urlpatterns = [
+
+    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
@@ -75,6 +80,7 @@ urlpatterns = [
     url(r'^bounty/details/?', dashboard.views.bounty_details, name='bounty_details'),
     url(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
     url(r'^legacy/funding/details/?', dashboard.views.bounty_details, name='legacy_funding_details'),
+    url(r'^funding/increase/?', dashboard.views.increase_bounty, name='increase_bounty'),
     url(r'^funding/kill/?', dashboard.views.kill_bounty, name='kill_bounty'),
     url(r'^tip/receive/?', dashboard.views.receive_tip, name='receive_tip'),
     url(r'^tip/send/2/?', dashboard.views.send_tip_2, name='send_tip_2'),
@@ -90,7 +96,6 @@ urlpatterns = [
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
     url(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     url(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
-    url(r'^stats/(.*)/?', dashboard.embed.stat, name='stat'),
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
     url(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
@@ -176,26 +181,29 @@ urlpatterns = [
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
     url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),
     url(r'^_administration/stats$', marketing.views.stats, name='stats'),
+    url(r'^_administration/cohort$', marketing.views.cohort, name='cohort'),
+    url(r'^_administration/funnel$', marketing.views.funnel, name='funnel'),
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-
-    # Github Integration
-    path('_github/', include('github.urls', namespace='github')),
     # Interests
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
     path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
-    path('actions/bounty/<int:bounty_id>/interest/', dashboard.views.interested_profiles, name='interested-profiles'),
+    path('actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/', dashboard.views.uninterested, name='uninterested'),
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
-
+    re_path(r'^logout/$', auth_views.logout, name='logout'),
+    re_path(r'^gh-login/$', dashboard.views.gh_login, name='gh_login'),
+    path('', include('social_django.urls', namespace='social')),
     # webhook routes
     # sendgrid webhook processing
     path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
-
 ]
+
+if settings.ENABLE_SILK:
+    urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
 
 handler403 = 'retail.views.handler403'
 handler404 = 'retail.views.handler404'

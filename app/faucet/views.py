@@ -27,6 +27,7 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import escape, strip_tags
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
 from faucet.models import FaucetRequest
@@ -38,8 +39,8 @@ def faucet(request):
     faucet_amount = getattr(settings, "FAUCET_AMOUNT", .003)
     params = {
         'title': 'Faucet',
-        'card_title': 'Gitcoin Faucet',
-        'card_desc': 'Request a distribution of ETH so you can use the Ethereum network and Gitcoin.',
+        'card_title': _('Gitcoin Faucet'),
+        'card_desc': _('Request a distribution of ETH so you can use the Ethereum network and Gitcoin.'),
         'faucet_amount': faucet_amount
     }
 
@@ -61,7 +62,10 @@ def save_faucet(request):
     github_profile = request.POST.get('githubProfile')
     email_address = request.POST.get('emailAddress')
     eth_address = request.POST.get('ethAddress')
-    profile_handle = request.session.get('handle', '')
+    profile_handle = request.user.profile.handle if request.user.is_authenticated and request.user.profile and hasattr(request.user, 'profile') else ''
+
+    if request.user and request.user.is_authenticated and request.user.username:
+        profile_handle = request.user.username
 
     try:
         validate_slug(github_profile)
@@ -74,17 +78,16 @@ def save_faucet(request):
     checkeduser = check_github(github_profile)
     if FaucetRequest.objects.filter(fulfilled=True, github_username=github_profile):
         return JsonResponse({
-            'message': 'The submitted github profile shows a previous faucet distribution.'
+            'message': _('The submitted github profile shows a previous faucet distribution.')
         }, status=403)
     elif FaucetRequest.objects.filter(github_username=github_profile, rejected=False):
         return JsonResponse({
-            'message': 'The submitted github profile shows a pending faucet distribution.'
+            'message': _('The submitted github profile shows a pending faucet distribution.')
         }, status=403)
     elif not checkeduser:
         return JsonResponse({
-            'message': 'The submitted github profile could not be found on github.'
+            'message': _('The submitted github profile could not be found on github.')
         }, status=400)
-
     fr = FaucetRequest.objects.create(
         fulfilled=False,
         github_username=github_profile,
@@ -96,7 +99,7 @@ def save_faucet(request):
     )
     new_faucet_request(fr)
 
-    return JsonResponse({'message': 'Created.'}, status=201)
+    return JsonResponse({'message': _('Created.')}, status=201)
 
 
 @staff_member_required

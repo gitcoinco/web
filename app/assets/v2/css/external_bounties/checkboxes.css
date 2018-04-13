@@ -1,12 +1,24 @@
 /* Using checkbox
-  <div class="checkbox_container">
-    <input name="network" id="foobar" type="checkbox" />
-    <span class="checkbox"></span>
-    <div class="filter-label">
-      <label for=foobar>gitcoin</label>
-    </div>
-  </div>
+	<div class="checkbox_container">
+		<input name="network" id="foobar" type="checkbox" />
+		<span class="checkbox"></span>
+		<div class="filter-label">
+			<label for=foobar>gitcoin</label>
+		</div>
+	</div>
 */
+
+.checkbox_container .checkbox:after {
+  left: 4px;
+  top: 0px;
+  width: 5px;
+  height: 11px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
 
 .checkbox_container input {
   position: absolute;
@@ -28,48 +40,21 @@
   border-radius: 2px;
 }
 
+.checkbox::after {
+  content: '';
+  position: absolute;
+  display: none;
+}
+
 .checkbox_container input:checked ~ .checkbox {
   background-color: black;
 }
 
-.checkbox:after {
-    content: "";
-    position: absolute;
-    display: none;
-}
-
 .checkbox_container input:checked ~ .checkbox:after {
-    display: block;
+  display: block;
 }
-
-.checkbox_container .checkbox:after {
-    left: 4px;
-    top: 0px;
-    width: 5px;
-    height: 11px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-}
-
 
 /* Below needs refactoring */
-
-.checkbox {
-  display: flex;
-}
-
-.checkbox .checkbox-input {
-  position: absolute;
-  opacity: 0;
-}
-
-.checkbox .checkbox-input:checked + .checkbox-label::before {
-  background-color: #26cd7f;
-  border: 3px solid #36E69B;
-}
 
 .checkbox .checkbox-label {
   align-items: center;
@@ -89,4 +74,14 @@
   transition: all 0.04s linear;
   vertical-align: text-top;
   width: 18px;
+}
+
+.checkbox .checkbox-input {
+  position: absolute;
+  opacity: 0;
+}
+
+.checkbox .checkbox-input:checked + .checkbox-label::before {
+  background-color: #26cd7f;
+  border: 3px solid #36E69B;
 }

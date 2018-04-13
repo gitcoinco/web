@@ -1,9 +1,10 @@
-{% load humanize %}
+{% load i18n humanize %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
   <head>
+    <link rel="stylesheet" href="{% static "v2/css/external_bounties/bounty.css" %}" />
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     {% if no_index %}
@@ -26,7 +27,7 @@
           <header class="bounties-header">
             <div class="bounties-header__title bounties-header__title--active">
               <h2 class="title">
-                <a href="{% url "universe_index" %}">Bounties Universe</a>
+                <a href="{% url "universe_index" %}">{% trans "Bounties Universe" %}<span id="alpha">{% trans "Alpha" %}</span></a>
               </h2>
             </div>
           </header>
@@ -41,17 +42,17 @@
                     <div class="bounty__header">
                       <h3 class="bounty__title">{{ bounty.title }}</h3>
 
-                      <div class="bounty__source">created: {{ bounty.created_on | naturaltime}}</div>
+                      <div class="bounty__source">{% trans "created" %}: {{ bounty.created_on | naturaltime}}</div>
                       {% if bounty.source %}
-                        <div class="bounty__source">source: {{ bounty.source }}</div>
+                        <div class="bounty__source">{% trans "source" %}: {{ bounty.source }}</div>
                       {% endif %}
                     </div>
                     <div class="bounty__action">
-                      <a href="{{bounty.action_url}}" class="btn btn-success">View Bounty</a>
+                      <a href="{{bounty.action_url}}" class="btn btn-success">{% trans "View Bounty" %}</a>
                     </div>
                   </div>
                   {% if bounty.crypto_price or bounty.fiat_price %}
-                      <h6 class="sub-title">Funding:</h6>
+                      <h6 class="sub-title">{% trans "Funding" %}:</h6>
                       <div class="bounty__content">
                         <span class="bounty__crypto-price">
                           {% if bounty.crypto_label == 'ETH' %}
@@ -72,12 +73,12 @@
                       </div>
                   {% endif %}
                   {% if bounty.content %}
-                      <h6 class="sub-title">Description:</h6>
+                      <h6 class="sub-title">{% trans "Description" %}:</h6>
                       <div class="bounty__content">
                       <pre>{{ bounty.content }}</pre>
                       </div>
                       <div class="bounty__footer">
-                        <a class="link-red" href="{% url "offchain_index" %}">Go Back</a>
+                        <a class="link-red" href="{% url "offchain_index" %}">{% trans "Go Back" %}</a>
                       </div>
                   {% endif %}
                 </div>
