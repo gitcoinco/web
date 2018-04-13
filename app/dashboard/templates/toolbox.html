@@ -65,7 +65,7 @@
                 {% for tool in actor.tools %}
                   <div class="card {{tool.class}}" id="{{tool.name}}">
                     <div class="img">
-                      <img src="{{tool.img}}" {% if tool.stat_graph %} data-hover="{% url "stat" "" %}{{tool.stat_graph}}" {% endif %} />
+                      <img src="{{tool.img}}" {% if tool.stat_graph %} {% endif %} />
                     </div>
                     <div class="content">
                       <div class="title">{{tool.name}}</div>

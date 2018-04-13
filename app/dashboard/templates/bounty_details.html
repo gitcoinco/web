@@ -86,6 +86,10 @@
                   <span class="bounty-info-heading">{% trans "Opened" %} </span>
                   <span class="bounty-info-text" id="web3_created"></span>
                 </div>
+                <div id="fulfillment_accepted_on_wrapper">
+                  <span class="bounty-info-heading">{% trans "Accepted" %} </span>
+                  <span class="bounty-info-text" id="fulfillment_accepted_on"></span>
+                </div>
                 <div>
                   <span class="bounty-info-heading">{% trans "Experience Level" %} </span>
                   <span class="bounty-info-text" id="experience_level"></span>
@@ -99,10 +103,10 @@
           </div>
           <div class="row">
             <div class="col-12 bounty-actions">
-                <div class="col-12 col-md-8">
+                <div class="col-12 col-md-7">
                   <div id="right_actions"></div>
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-5">
                   <div class="tags font-caption align-items-center">
                     <div class="tag token">
                       <p>
@@ -114,6 +118,9 @@
                         <span id="value_in_usdt"></span>
                         <span>USD @ </span>
                         <span id="token_value_in_usdt"></span>
+                        <span id="token_value_time_peg_wrapper">
+                            as of<span id="token_value_time_peg"></span>
+                        </span>
                       </p>
                     </div>
                   </div>

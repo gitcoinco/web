@@ -3,6 +3,8 @@ import imaplib
 import logging
 import time
 
+from django.conf import settings
+from django.contrib.auth.models import User
 from django.contrib.gis.geoip2 import GeoIP2
 from django.utils import timezone
 
@@ -11,6 +13,9 @@ import rollbar
 from dashboard.models import Profile
 from geoip2.errors import AddressNotFoundError
 from github.utils import _AUTH, HEADERS, get_user
+from ipware.ip import get_real_ip
+from marketing.utils import get_or_save_email_subscriber
+from social_django.models import UserSocialAuth
 
 logger = logging.getLogger(__name__)
 
@@ -50,8 +55,9 @@ def add_contributors(repo_data):
     return repo_data
 
 
-def sync_profile(handle):
+def sync_profile(handle, user=None):
     data = get_user(handle)
+    email = ''
     is_error = 'name' not in data.keys()
     if is_error:
         print("- error main")
@@ -62,19 +68,37 @@ def sync_profile(handle):
     repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
     repos_data = [add_contributors(repo_data) for repo_data in repos_data]
 
+    defaults = {
+        'last_sync_date': timezone.now(),
+        'data': data,
+        'repos_data': repos_data,
+    }
+
+    if user and isinstance(user, User):
+        defaults['user'] = user
+        try:
+            defaults['github_access_token'] = user.social_auth.filter(provider='github').latest('pk').access_token
+            if user and user.email:
+                defaults['email'] = user.email
+        except UserSocialAuth.DoesNotExist:
+            pass
+
     # store the org info in postgres
     try:
-        profile, created = Profile.objects.update_or_create(
-            handle=handle,
-            defaults={
-                'last_sync_date': timezone.now(),
-                'data': data,
-                'repos_data': repos_data,
-            })
+        profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
         print("Profile:", profile, "- created" if created else "- updated")
     except Exception as e:
         logger.error(e)
         return None
+
+    if user and user.email:
+        email = user.email
+    elif profile and profile.email:
+        email = profile.email
+
+    if email and profile:
+        get_or_save_email_subscriber(email, 'sync_profile', profile=profile)
+
     return profile
 
 
@@ -151,6 +175,15 @@ def itermerge(gen_a, gen_b, key):
             yield b
     except StopIteration:
         pass
+
+
+def handle_location_request(request):
+    """Handle determining location data from request IP."""
+    ip_address = '24.210.224.38' if settings.DEBUG else get_real_ip(request)
+    geolocation_data = {}
+    if ip_address:
+        geolocation_data = get_location_from_ip(ip_address)
+    return geolocation_data, ip_address
 
 
 def get_location_from_ip(ip_address):

@@ -18,6 +18,7 @@
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
 from django.views.i18n import JavaScriptCatalog
@@ -95,7 +96,6 @@ urlpatterns = [
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
     url(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     url(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
-    url(r'^stats/(.*)/?', dashboard.embed.stat, name='stat'),
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
     url(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
@@ -157,7 +157,7 @@ urlpatterns = [
     # faucet views
     url(r'^faucet/?', faucet.views.faucet, name='faucet'),
 
-    # admin views 
+    # admin views
     url(r'^_administration/?', admin.site.urls, name='admin'),
     url(r'^_administration/email/new_bounty$', retail.emails.new_bounty, name='admin_new_bounty'),
     url(r'^_administration/email/roundup$', retail.emails.roundup, name='roundup'),
@@ -176,8 +176,15 @@ urlpatterns = [
     url(r'^_administration/process_accesscode_request/(.*)$', tdi.views.process_accesscode_request, name='process_accesscode_request'),
     url(r'^_administration/process_faucet_request/(.*)$', faucet.views.process_faucet_request, name='process_faucet_request'),
 
-    # marketing views
+    # settings
     url(r'^email/settings/(.*)', marketing.views.email_settings, name='email_settings'),
+    url(r'^settings/email/(.*)', marketing.views.email_settings, name='settings_email'),
+    url(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),
+    url(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
+    url(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
+    url(r'^settings/(.*)?', marketing.views.email_settings, name='feedback_settings'),
+
+    # marketing views
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
     url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),
     url(r'^_administration/stats$', marketing.views.stats, name='stats'),
@@ -186,16 +193,15 @@ urlpatterns = [
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-
-    # Github Integration
-    path('_github/', include('github.urls', namespace='github')),
     # Interests
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
     path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
     path('actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/', dashboard.views.uninterested, name='uninterested'),
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
-
+    re_path(r'^logout/$', auth_views.logout, name='logout'),
+    re_path(r'^gh-login/$', dashboard.views.gh_login, name='gh_login'),
+    path('', include('social_django.urls', namespace='social')),
     # webhook routes
     # sendgrid webhook processing
     path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),

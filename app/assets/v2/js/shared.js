@@ -310,7 +310,13 @@ function getParam(parameterName) {
   return result;
 }
 
-function timeDifference(current, previous, remaining) {
+function timeDifference(current, previous, remaining, now_threshold_seconds) {
+
+  var elapsed = current - previous;
+
+  if (now_threshold_seconds && (now_threshold_seconds * 1000) > Math.abs(elapsed)) {
+    return 'now';
+  }
 
   if (current < previous) {
     return 'in ' + timeDifference(previous, current).replace(' ago', '');
@@ -321,8 +327,6 @@ function timeDifference(current, previous, remaining) {
   var msPerDay = msPerHour * 24;
   var msPerMonth = msPerDay * 30;
   var msPerYear = msPerDay * 365;
-
-  var elapsed = current - previous;
 
   var amt;
   var unit;
@@ -659,7 +663,7 @@ var listen_for_web3_changes = function() {
   if (typeof web3 == 'undefined') {
     trigger_sidebar_web3_disabled();
     trigger_form_hooks();
-  } else if (!web3.eth.coinbase) {
+  } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
     trigger_sidebar_web3_locked();
     trigger_form_hooks();
   } else {

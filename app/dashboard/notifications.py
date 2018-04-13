@@ -136,7 +136,7 @@ def maybe_market_to_twitter(bounty, event_name):
     new_tweet = tweet_txt.format(
         round(bounty.get_natural_value(), 4),
         bounty.token_name,
-        f"({bounty.value_in_usdt} USD @ ${round(convert_token_to_usdt(bounty.token_name),2)}/{bounty.token_name})" if bounty.value_in_usdt else "",
+        f"({bounty.value_in_usdt_now} USD @ ${round(convert_token_to_usdt(bounty.token_name),2)}/{bounty.token_name})" if bounty.value_in_usdt_now else "",
         url
     )
     new_tweet = new_tweet + " " + github_org_to_twitter_tags(bounty.org_name)  # twitter tags
@@ -176,7 +176,7 @@ def maybe_market_to_slack(bounty, event_name):
     usdt_details = ""
     try:
         conv_details = f"@ (${round(convert_token_to_usdt(bounty.token_name),2)}/{bounty.token_name})"
-        usdt_details = f"({bounty.value_in_usdt} USD {conv_details} "
+        usdt_details = f"({bounty.value_in_usdt_now} USD {conv_details} "
     except:
         pass #no USD conversion rate
     title = bounty.title if bounty.title else bounty.github_url
@@ -256,7 +256,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     msg = ''
     usdt_value = ""
     try:
-        usdt_value = f"({round(bounty.value_in_usdt, 2)} USD @ ${round(convert_token_to_usdt(bounty.token_name), 2)}/{bounty.token_name})" if bounty.value_in_usdt else ""
+        usdt_value = f"({round(bounty.value_in_usdt_now, 2)} USD @ ${round(convert_token_to_usdt(bounty.token_name), 2)}/{bounty.token_name})" if bounty.value_in_usdt_now else ""
     except:
         pass # no USD conv rate available
     natural_value = round(bounty.get_natural_value(), 4)
@@ -414,7 +414,7 @@ def amount_usdt_open_work():
     """
     from dashboard.models import Bounty
     bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
-    return round(sum([b.value_in_usdt for b in bounties if b.value_in_usdt]), 2)
+    return round(sum([b.value_in_usdt_now for b in bounties if b.value_in_usdt_now]), 2)
 
 def maybe_market_tip_to_github(tip):
     """Post a Github comment for the specified Tip.
@@ -437,7 +437,7 @@ def maybe_market_tip_to_github(tip):
     _comments = "\n\nThe sender had the following public comments: \n> " \
                 f"{tip.comments_public}" if tip.comments_public else ""
     try:
-        value_in_usd = f"({tip.value_in_usdt} USD @ ${round(convert_token_to_usdt(tip.tokenName), 2)}/{tip.tokenName})" if tip.value_in_usdt else ""
+        value_in_usd = f"({tip.value_in_usdt_now} USD @ ${round(convert_token_to_usdt(tip.tokenName), 2)}/{tip.tokenName})" if tip.value_in_usdt_now else ""
     except Exception:
         pass  # no USD conv rate
     msg = f"⚡️ A tip worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has been " \
