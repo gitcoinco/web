@@ -24,7 +24,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
 from django.db.models import Max
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -33,7 +33,7 @@ from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
 from chartit import Chart, DataPool
-from dashboard.models import Profile, UserAction
+from dashboard.models import Profile, UserAction, Bounty
 from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
@@ -229,6 +229,126 @@ def cohort_helper_timedelta(i, period_size):
         return {period_size: i}
 
 
+def data_viz_helper_get_data_responses(request, _type):
+    data_dict = {}
+    network = 'mainnet'
+    for bounty in Bounty.objects.filter(network=network, web3_type='bounties_network', current_bounty=True):
+
+        if _type == 'status_progression':
+            max_size = 12
+            value = 1
+            if not value:
+                continue;
+            response = []
+            prev_bounties = Bounty.objects.filter(standard_bounties_id=bounty.standard_bounties_id, network=network).exclude(pk=bounty.pk).order_by('created_on')
+            if prev_bounties.exists() and prev_bounties.first().status == 'started':
+                response.append('open') #mock for status changes not mutating status
+            last_bounty_status = None
+            for ibounty in prev_bounties:
+                if last_bounty_status != ibounty.status:
+                    response.append(ibounty.status)
+                last_bounty_status = ibounty.status
+            if bounty.status != last_bounty_status:
+                response.append(bounty.status)
+            response = response[0:max_size]
+            while len(response) < max_size:
+                response.append('_')
+
+        if _type == 'repos':
+            value = bounty.value_in_usdt_then
+
+            response = [
+                bounty.org_name.replace('-',''),
+                bounty.github_repo_name.replace('-',''),
+                str(bounty.github_issue_number),
+            ]
+
+        if _type == 'fulfillers':
+            response = []
+            if bounty.status == 'done':
+                for fulfillment in bounty.fulfillments.filter(accepted=1):
+                    value = bounty.value_in_usdt_then
+
+                    response = [
+                        fulfillment.fulfiller_github_username.replace('-','')
+                    ]
+
+        if _type == 'funders':
+            value = bounty.value_in_usdt_then
+            response = []
+            if bounty.bounty_owner_github_username and value:
+                response = [
+                    bounty.bounty_owner_github_username.replace('-','')
+                ]
+
+        if response:
+            response = "-".join(response)
+            if response in data_dict.keys():
+                data_dict[response] += value
+            else:
+                data_dict[response] = value
+
+    return data_dict
+
+
+@staff_member_required
+def viz(request, _type):
+    _type_options = [
+        'status_progression',
+        'repos',
+        'fulfillers',
+        'funders',
+        ]
+    if _type not in _type_options:
+        _type = _type_options[0]
+
+    if _type == 'status_progression':
+        title = "Status Progression Viz"
+        comment = 'of statuses begin with this sequence of status'
+        categories = list(Bounty.objects.distinct('idx_status').values_list('idx_status', flat=True)) + ['_']
+    if _type == 'repos':
+        title = "Github Structure of All Bounties"
+        comment = 'of bounties value with this github structure'
+        categories = [bounty.org_name.replace('-','') for bounty in Bounty.objects.filter(network='mainnet')]
+        categories += [bounty.github_repo_name.replace('-','') for bounty in Bounty.objects.filter(network='mainnet')]
+        categories += [str(bounty.github_issue_number) for bounty in Bounty.objects.filter(network='mainnet')]
+    if _type == 'fulfillers':
+        title = "Fulfillers"
+        comment = 'of bounties value with this fulfiller'
+        categories = []
+        for bounty in Bounty.objects.filter(network='mainnet'):
+            for fulfiller in bounty.fulfillments.all():
+                categories.append(fulfiller.fulfiller_github_username.replace('-',''))
+    if _type == 'funders':
+        title = "Funders"
+        comment = 'of bounties value with this funder'
+        categories = []
+        for bounty in Bounty.objects.filter(network='mainnet'):
+            categories.append(bounty.bounty_owner_github_username.replace('-',''))
+
+
+    if request.GET.get('data'):
+        data_dict = data_viz_helper_get_data_responses(request, _type)
+
+        rows = []
+        for key, value in data_dict.items():
+            row = ",".join([key, str(value)])
+            rows.append(row)
+
+        output = "\n".join(rows)
+        return HttpResponse(output);
+
+
+    params = {
+        'title': title,
+        'comment': comment,
+        'viz_type': _type,
+        'type_options': _type_options,
+        'categories': json.dumps(list(categories)),
+    }
+    return TemplateResponse(request, 'viz.html', params)
+
+
 @staff_member_required
 def cohort(request):
     cohorts = {}
@@ -362,7 +482,6 @@ def funnel(request):
     for funnel in range(0, len(funnels)):
         keys=funnels[funnel]['keys']
         title=funnels[funnel]['title']
-        print(title)
         for k in range(0, 10):
             try:
                 stats = []
