@@ -138,11 +138,14 @@ def new_interest(request, bounty_id):
         dict: The success key with a boolean value and accompanying error.
 
     """
+    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
     access_token = request.GET.get('token')
     if access_token:
         helper_handle_access_token(request, access_token)
-
-    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+        github_user_data = get_github_user_data(access_token)
+        profile = Profile.objects.filter(handle=github_user_data['login']).first()
+        profile_id = profile.pk
 
     if not profile_id:
         return JsonResponse(
@@ -201,11 +204,15 @@ def remove_interest(request, bounty_id):
         dict: The success key with a boolean value and accompanying error.
 
     """
+    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
     access_token = request.GET.get('token')
     if access_token:
         helper_handle_access_token(request, access_token)
+        github_user_data = get_github_user_data(access_token)
+        profile = Profile.objects.filter(handle=github_user_data['login']).first()
+        profile_id = profile.pk
 
-    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     if not profile_id:
         return JsonResponse(
             {'error': _('You must be authenticated via github to use this feature!')},
