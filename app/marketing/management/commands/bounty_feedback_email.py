@@ -28,9 +28,9 @@ class Command(BaseCommand):
     help = 'sends feedback emails to bounties that were closed in last xx hours, but only if its the first time a bounty has been accepted by taht persona'
 
     def handle(self, *args, **options):
-        #if settings.DEBUG:
-        #    print("not active in non prod environments")
-        #    return
+        if settings.DEBUG:
+            print("not active in non prod environments")
+            return
 
         start_time = timezone.now() - timezone.timedelta(hours=36)
         end_time = timezone.now() - timezone.timedelta(hours=12)
