@@ -17,7 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from dashboard.utils import get_web3
+from dashboard.utils import get_bounty, get_web3, getBountyContract
 from test_plus.test import TestCase
 from web3.main import Web3
 from web3.providers.rpc import HTTPProvider
@@ -36,3 +36,11 @@ class DashboardUtilsTest(TestCase):
             assert len(web3_provider.providers) == 1
             assert isinstance(web3_provider.providers[0], HTTPProvider)
             assert web3_provider.providers[0].endpoint_uri == f'https://{network}.infura.io'
+
+    @staticmethod
+    def test_get_bounty_contract():
+        assert getBountyContract('mainnet').address == "0x2af47a65da8CD66729b4209C22017d6A5C2d2400"
+
+    @staticmethod
+    def test_get_bounty():
+        assert get_bounty(100, 'mainnet')['contract_deadline'] == 1522802516
