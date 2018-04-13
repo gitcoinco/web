@@ -129,9 +129,9 @@ kevin
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounty):
+def render_new_bounty(to_email, bounties):
     params = {
-        'bounty': bounty,
+        'bounties': bounties,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -404,7 +404,7 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.last())
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3])
     return HttpResponse(response_html)
 
 
