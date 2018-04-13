@@ -18,11 +18,6 @@ cache:
     - $HOME/.cache/pip
     - node_modules
 
-after_install:
-  # Publish CodeCov coverage results.
-  - pip install codecov
-  - codecov
-
 jobs:
   include:
     # Lint and test the repository.
@@ -30,12 +25,15 @@ jobs:
       script:
         # Setup Env.
         - cp app/app/travis.env app/app/.env
+        - pip install codecov
         # Install Node and Python dependencies.
         - npm install
         - pip install -r requirements/test.txt
         - npm run eslint
         - npm run stylelint
         - pytest -p no:ethereum
+        # Publish CodeCov coverage results.
+        - codecov
       env:
         - PYTHONPATH="${TRAVIS_BUILD_DIR}/app/"
     # Deploy to Docker Hub and initiate a rolling update for web.
