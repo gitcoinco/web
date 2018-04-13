@@ -37,7 +37,7 @@ class FaucetRequestAdmin(admin.ModelAdmin):
     ordering = ['-created_on']
     list_display = [
         'created_on', 'fulfilled', 'rejected', 'link', 'github_username',
-        'input_github_username', 'address', 'email', 'comment'
+        'profile', 'address', 'email', 'comment'
     ]
 
     def link(self, instance):

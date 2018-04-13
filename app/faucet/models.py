@@ -48,7 +48,6 @@ class FaucetRequest(SuperModel):
     fulfilled = models.BooleanField(default=False)
     rejected = models.BooleanField(default=False)
     github_username = models.CharField(max_length=255, db_index=True)
-    input_github_username = models.CharField(max_length=255, blank=True)
     github_meta = JSONField()
     address = models.CharField(max_length=50)
     email = models.CharField(max_length=255)
@@ -56,6 +55,12 @@ class FaucetRequest(SuperModel):
     comment_admin = models.TextField(max_length=500, blank=True)
     fulfill_date = models.DateTimeField(null=True, blank=True)
     amount = models.FloatField(default=settings.FAUCET_AMOUNT)
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='faucet_requests',
+    )
 
     objects = FaucetRequestManager()
 

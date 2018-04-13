@@ -59,28 +59,30 @@ def check_github(profile):
 
 @csrf_exempt
 def save_faucet(request):
-    github_profile = request.POST.get('githubProfile')
     email_address = request.POST.get('emailAddress')
     eth_address = request.POST.get('ethAddress')
-    profile_handle = request.user.profile.handle if request.user.is_authenticated and request.user.profile and hasattr(request.user, 'profile') else ''
+    is_authenticated = request.user.is_authenticated
+    profile = request.user.profile if is_authenticated and hasattr(request.user, 'profile') else None
 
-    if request.user and request.user.is_authenticated and request.user.username:
-        profile_handle = request.user.username
+    if not profile:
+        return JsonResponse({
+            'message': _('You must be authenticated via github to use this feature!')
+        }, status=401)
 
     try:
-        validate_slug(github_profile)
+        validate_slug(request.user.username)
         validate_email(email_address)
         validate_slug(eth_address)
     except Exception as e:
         return JsonResponse({'message': str(e)}, status=400)
 
     comment = escape(strip_tags(request.POST.get('comment')))
-    checkeduser = check_github(github_profile)
-    if FaucetRequest.objects.filter(fulfilled=True, github_username=github_profile):
+    checkeduser = check_github(request.user.username)
+    if profile.faucet_requests.filter(fulfilled=True):
         return JsonResponse({
             'message': _('The submitted github profile shows a previous faucet distribution.')
         }, status=403)
-    elif FaucetRequest.objects.filter(github_username=github_profile, rejected=False):
+    elif profile.faucet_requests.filter(rejected=False):
         return JsonResponse({
             'message': _('The submitted github profile shows a pending faucet distribution.')
         }, status=403)
@@ -90,12 +92,12 @@ def save_faucet(request):
         }, status=400)
     fr = FaucetRequest.objects.create(
         fulfilled=False,
-        github_username=github_profile,
-        input_github_username=profile_handle,
+        github_username=request.user.username,
         github_meta=checkeduser,
         address=eth_address,
         email=email_address,
         comment=comment,
+        profile=profile,
     )
     new_faucet_request(fr)
 
