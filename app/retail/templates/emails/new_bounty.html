@@ -20,16 +20,13 @@
 
 {% block content %}
 
-<h1>🔥 {% trans "New Funded Issue Alert" %} 🔥</h1>
+<h1>{{bounties | length}} {% trans "New Funded Issue" %}{% if bounties|length != 1 %}s{%endif%}</h1>
 
 
-<p>
-    {% trans "We just matched you with a new funded issue submitted to the Gitcoin.co Issue Explorer:" %}
-</p>
-
-<br>
-
-{% include 'emails/bounty.html' with bounty=bounty %}
+{% for bounty in bounties %}
+    <br>
+    {% include 'emails/bounty.html' with bounty=bounty %}
+{% endfor %}
 
 <p>
     {% trans "You are receiving this email because your email preferences matched with this bounty's keywords:" %} {{bounty.keywords}}.  <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">{% trans "Manage Email Settings" %}</a>.

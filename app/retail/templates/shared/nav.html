@@ -42,10 +42,6 @@
       <a class="nav-link{% if active == 'help' %} selected{% endif %}" href="{% url "help" %}">{% trans "Help" %}</a>
     </nav>
     <img class="mr-5" src="{% static "v2/images/spaceship.png" %}" width="52" height="45" />
-    {% if active|is_in_list:'about,slack,home,help,mission' %}
-      <a class="btn btn-outline-info pl-4 pr-4 pulseClick" role="button" href="{% url 'get_gitcoin' %}">{% trans "Get Started" %} ⚡️</a>
-    {% else %}
       {% include 'shared/nav_auth.html' with source='authed' %}
-    {% endif %}
   </div>
 </nav>

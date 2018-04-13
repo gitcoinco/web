@@ -472,23 +472,8 @@ def maybe_market_to_email(b, event_name):
         return False
 
     if event_name == 'new_bounty' and not settings.DEBUG:
-        try:
-            # this doesnt scale because there are typically like 600 matches.. need to move to a background job
-            return
-            keywords = b.keywords.split(',')
-            for keyword in keywords:
-                to_emails = to_emails + list(EmailSubscriber.objects.filter(
-                    keywords__contains=[keyword.strip()]).values_list('email', flat=True))
-
-            should_send_email = b.web3_created > (timezone.now() - timezone.timedelta(hours=15))
-            # only send if the bounty is reasonbly new
-
-            if should_send_email:
-                for to_email in set(to_emails):
-                    new_bounty(b, [to_email])
-        except Exception as e:
-            logging.exception(e)
-            print(e)
+        # handled in 'new_bounties_email'
+        return
     elif event_name == 'work_submitted':
         try:
             to_emails = [b.bounty_owner_email]

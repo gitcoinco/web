@@ -412,6 +412,15 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             if latest_old_bounty:
                 for interest in latest_old_bounty.interested.all():
                     new_bounty.interested.add(interest)
+
+            # set cancel date of this bounty
+            canceled_on = latest_old_bounty.canceled_on if latest_old_bounty.canceled_on else None
+            if not canceled_on and new_bounty.status == 'cancelled':
+                canceled_on = timezone.now()
+            if canceled_on:
+                new_bounty.canceled_on = canceled_on
+                new_bounty.save()
+
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
             logging.error(f'{e} encountered during new bounty creation for: {url}')

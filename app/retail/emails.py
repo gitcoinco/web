@@ -129,9 +129,9 @@ kevin
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounty):
+def render_new_bounty(to_email, bounties):
     params = {
-        'bounty': bounty,
+        'bounties': bounties,
         'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
@@ -268,7 +268,8 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    subject = "Gitcoin on SE Engineering Daily!  "
+    from external_bounties.models import ExternalBounty
+    subject = "Post A Bounty in 90 Seconds"
 
     intro = '''
 
@@ -276,17 +277,14 @@ def render_new_bounty_roundup(to_email):
     Hi there 👋
 </p>
 <p>
-    This week I was on <a href="https://softwareengineeringdaily.com/2018/04/03/gitcoin-open-source-bounties-with-kevin-owocki/">Software Engineering Daily</a>! We talked through some cool things about Gitcoin, including aligning users and investors, the blockchain revolution large, and how Gitcoin focuses on making open source software sustainable for developers and repo maintainers. If you’re interested, give it a listen.
-</p>
-<p>
-We’ve started working towards our <a href="https://github.com/gitcoinco/GIPs/blob/570c2681cacdeaef7f4c73caad1c199b7aa27a9f/GIPS/gip-3.md">Q2 OKRs</a>. To note: if you’re an OSS Repo Maintainer in web3, <a href="https://docs.google.com/forms/d/1AeiKhCO2TefXo8wAbFerjxe2Vgci3ueqzzUpa-PFPLo/edit">we want to talk to you</a> about posting an initial bounty on your repo. Our goal is to have 15 repo’s with 3 or more issues completed through Gitcoin at the end of this quarter. Let us know!
+    <a href="https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75">Here’s how to post a bounty in 90 seconds</a>! In less than two minutes, you’ll be well on your way to bringing contributors to your repositories. We plan to continue this tutorial series with more on best practices for using Gitcoin to grow your open source repo.   
 </p>
 <p>
     What else is new?
 </p>
     <ul>
         <li>
-Looking to hack… in South America? <a href="http://ethbuenosaires.com/">ETH Buenos Aires</a> is upcoming and is run by the wonderful team at ETHGlobal, who put on ETHDenver and ETHWaterloo prior.
+This week we’ll have the Aragon project, MARKET Protocol, and Wyvern Protocol on the livestream (in a few hours; at 3pm MST / 5pm EST). <a href="https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ">Add it to your Google Calendar here.</a>
         </li>
         <li>
 Want to be the first to know when new open issues are added? We launched <a href="https://twitter.com/gitcoinfeed">@gitcoinfeed on Twitter</a> which provides updates on all new activity on Gitcoin.
@@ -294,53 +292,63 @@ Want to be the first to know when new open issues are added? We launched <a href
     </ul>
 </p>
 <p>
-    I hope to see you <a href="https://gitcoin.co/slack">on slack</a>, or on the <a href="https://t.co/Uu6NqCycaR">community livestream</a> TODAY at 3pm MST ! We’ll have demo’s from the MakerDAO team regarding their DAI stable coin and <a href="https://cellarius.network/">Cellarius</a> regarding their cyberpunk universe, as well as more conversations on <a href="http://www.weekinethereum.com/">Week In Ethereum News</a> and other nerdy stuff, as always 🤖
+I hope to see you on <a href="https://gitcoin.co/slack">Slack</a> or on <a href="https://github.com/gitcoinco/web">Github</a>. If you’re interested in growing open source and have some extra time, come by. We’re working to make Gitcoin the best place on the internet to do so. 
 </p>
 
 '''
     highlights = [
         {
-            'who': 'bakaoh',
+            'who': 'cryptomental',
             'who_link': True,
-            'what': 'Helped Kames with Webpack server warnings before',
-            'link': 'https://gitcoin.co/issue/KamesCG/hackathon/1',
+            'what': 'Helping Gitcoin to de-couple the floating ETH/USD exchange rate from when the bounty was posted',
+            'link': 'https://gitcoin.co/issue/gitcoinco/web/693',
             'link_copy': 'See more',
         },
         {
-            'who': 'jeffscottward',
+            'who': 'eemp',
             'who_link': True,
-            'what': 'Completed our first bounty denominated in DAI on the MetaMask repo!',
-            'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/3621',
+            'what': 'Worked with @TimVanMourik on some file parsing work for his open source repo, GiraffeTools',
+            'link': 'https://github.com/TimVanMourik/GiraffeTools/issues/4',
             'link_copy': 'View more',
         },
         {
-            'who': 'voith',
+            'who': 'bakaoh',
             'who_link': True,
-            'what': 'Created a Websocket Provider for web3py of the Ethereum Foundation',
-            'link': 'https://gitcoin.co/issue/ethereum/web3.py/566',
+            'what': 'Back at it again! Created a new deployer for MARKET Protocol using the Binance API.',
+            'link': 'https://gitcoin.co/issue/MARKETProtocol/Dapp/85',
             'link_copy': 'See more',
+        },
+        {
+            'who': 'jakerockland',
+            'who_link': True,
+            'what': 'Coded up the new email designs on Gitcoin (including the one you\'re looking at now!)',
+            'link': 'https://github.com/gitcoinco/web/pull/746',
+            'link_copy': 'View more',
         },
     ]
 
     bounties = [
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/gitcoinco/web/issues/794'),
-            'primer': 'Gitcoin is working on coding up a drip e-mail campaign on web3, open source, and blockchain. Can you help?',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/gitcoinco/web/issues/865'),
+            'primer': 'We’re working on a new project called ETH Avatar! Appreciate anyone interested in contributing. ',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/MyCryptoHQ/MyCrypto/issues/382'),
-            'primer': 'MyCryptoWallet is looking to create a new library / reusable module soon!',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/TimVanMourik/GiraffeTools/issues/7'),
+            'primer': 'Work with @TimVanMourik on the foundation for a Github OAuth Integration. ',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/MetaMask/metamask-extension/issues/3249'),
-            'primer': 'Metamask is looking to create visually customizable keyring format.. ',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/gitcoinco/web/issues/796'),
+            'primer': 'We’re working on making Gitcoin more trustworthy. If you have ideas on best practices, we could use the help. ',
         },
     ]
+
+    ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
 
     params = {
         'intro': intro,
         'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
         'bounties': bounties,
+        'ecosystem_bounties': ecosystem_bounties,
         'invert_footer': False,
         'hide_header': False,
         'highlights': highlights,
@@ -404,7 +412,7 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.last())
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3])
     return HttpResponse(response_html)
 
 

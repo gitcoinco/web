@@ -152,6 +152,10 @@ class Bounty(SuperModel):
     override_status = models.CharField(max_length=255, blank=True)
     last_comment_date = models.DateTimeField(null=True, blank=True)
     objects = BountyQuerySet.as_manager()
+    fulfillment_accepted_on = models.DateTimeField(null=True, blank=True)
+    fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
+    fulfillment_started_on = models.DateTimeField(null=True, blank=True)
+    canceled_on = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         """Define metadata associated with Bounty."""
@@ -447,8 +451,46 @@ class Bounty(SuperModel):
                                     self.experience_level)
 
     @property
-    def turnaround_time(self):
-        return (self.created_on - self.web3_created).total_seconds()
+    def turnaround_time_accepted(self):
+        try:
+            return (self._fulfillment_accepted_on - self.web3_created).total_seconds()
+        except Exception:
+            return None
+
+    @property
+    def turnaround_time_started(self):
+        try:
+            return (self._fulfillment_started_on - self.web3_created).total_seconds()
+        except Exception:
+            return None
+
+    @property
+    def turnaround_time_submitted(self):
+        try:
+            return (self._fulfillment_submitted_on - self.web3_created).total_seconds()
+        except Exception:
+            return None
+
+    @property
+    def _fulfillment_accepted_on(self):
+        try:
+            return self.fulfillments.filter(accepted=True).first().accepted_on
+        except Exception:
+            return None
+
+    @property
+    def _fulfillment_submitted_on(self):
+        try:
+            return self.fulfillments.first().created_on
+        except Exception:
+            return None
+
+    @property
+    def _fulfillment_started_on(self):
+        try:
+            return self.interested.first().created
+        except Exception:
+            return None
 
     @property
     def is_legacy(self):
@@ -736,6 +778,9 @@ def psave_bounty(sender, instance, **kwargs):
     }
 
     instance.idx_status = instance.status
+    instance.fulfillment_accepted_on = instance._fulfillment_accepted_on
+    instance.fulfillment_submitted_on = instance._fulfillment_submitted_on
+    instance.fulfillment_started_on = instance._fulfillment_started_on
     instance._val_usd_db = instance.value_in_usdt if instance.value_in_usdt else 0
     instance._val_usd_db_now = instance.value_in_usdt_now if instance.value_in_usdt_now else 0
     instance.idx_experience_level = idx_experience_level.get(instance.experience_level, 0)
@@ -771,6 +816,7 @@ class Profile(SuperModel):
     last_sync_date = models.DateTimeField(null=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
+    suppress_leaderboard = models.BooleanField(default=False, help_text='If this option is chosen, we will remove your profile information from the leaderboard')
 
     _sample_data = '''
         {
