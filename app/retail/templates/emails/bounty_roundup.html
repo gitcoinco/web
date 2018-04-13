@@ -27,6 +27,12 @@
         padding-left: 2em;
         padding-right: 2em;
     }
+    .intro, .intro li{
+        line-height: 16px;
+    }
+    .intro li{
+        margin-bottom: 5px;
+    }
 </style>
 
 <div class="roundup">
@@ -34,10 +40,10 @@
         <h1><img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"> {% trans "The Gitcoin Weekly" %} <img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"></h1>
     </div>
 
-    <div style="text-align: left;">
+    <div style="text-align: left;" class='intro'>
         {{ intro | safe }}
 
-        <div style="text-align: center;">
+        <div style="text-align: center; ">
             <a href="https://twitter.com/owocki">
                 <img style="max-height: 170px; " src="{% static "v2/images/avatar.png" %}">
             </a>
@@ -57,7 +63,7 @@
 
         <div style="text-align: left;">
             {% for highlight in highlights %}
-                <li>
+                <li style="list-style:none; margin-bottom: 5px;">
                     {% if highlight.who_link %}
                         <img src="https://gitcoin.co/funding/avatar?repo=https://github.com/{{highlight.who}}" width=30px height=30px>
                         <a href="https://gitcoin.co/profile/{{highlight.who}}">{{highlight.who}}</a>
@@ -71,6 +77,8 @@
                 </li>
             {% endfor %}
         </div>
+        <br>
+        <br>
 
         <hr>
 
@@ -101,7 +109,7 @@
     </div>
     <ul>
         {% for bounty in ecosystem_bounties %}
-            <li style="list-style:none;">
+                <li style="list-style:none; margin-bottom: 5px;">
                 <img src="{{bounty.avatar}}" width=20px height="20px">
                 <a href="{{bounty.url}}">
                     {{bounty.title}}
@@ -112,7 +120,7 @@
         {% endfor %}
     </ul>
     <div class="centered-contents">
-        <p>{% trans "There's much much more on the Gitcoin Universal Bounties Explorer:" %}</p>
+        <p style="margin-top: 20px;">{% trans "There's much much more on the Gitcoin Universal Bounties Explorer:" %}</p>
 
         <div style="margin-bottom: 1.5em;">
             <a class="button" href="https://gitcoin.co/explorer">{% trans "View Bounties Universe" %}</a>

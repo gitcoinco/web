@@ -82,7 +82,7 @@ class ExternalBounty(SuperModel):
             ]
             i = self.pk % len(icons)
             icon = icons[i]
-            return f'/static/v2/images/icons/{icon}'
+            return f'{settings.BASE_URL}static/v2/images/icons/{icon}'
 
     @property
     def fiat_price(self):
