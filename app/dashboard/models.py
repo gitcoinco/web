@@ -401,7 +401,7 @@ class Bounty(SuperModel):
     @property
     def value_in_usdt(self):
         if self.status in self.OPEN_STATUSES:
-            return self.token_value_in_usdt_now
+            return self.value_in_usdt_now
         else:
             return self.value_in_usdt_then
 

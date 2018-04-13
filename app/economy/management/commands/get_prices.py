@@ -104,62 +104,63 @@ def polo():
                 source='poloniex',
                 from_currency=from_currency,
                 to_currency=to_currency)
-            print('Poloniex: {}=>{}:{}'.format(from_currency, to_currency, to_amount))
+            print(f'Poloniex: {from_currency}=>{to_currency}:{to_amount}')
         except Exception as e:
             print(e)
 
 
 def refresh_bounties():
-    for b in Bounty.objects.all():
-        print('refreshed {}'.format(b.pk))
+    for bounty in Bounty.objects.all():
+        print(f'refreshed {bounty.pk}')
         try:
-            b._val_usd_db = b.value_in_usdt
-            b._val_usd_db_now = b.value_in_usdt_now
-            b.save()
+            bounty._val_usd_db = bounty.value_in_usdt
+            bounty._val_usd_db_now = bounty.value_in_usdt_now
+            bounty.save()
         except Exception as e:
             print(e)
-            b._val_usd_db = 0
-            b._val_usd_db_now = 0
-            b.save()
+            bounty._val_usd_db = 0
+            bounty._val_usd_db_now = 0
+            bounty.save()
 
 
 def refresh_conv_rate(when, token_name):
-
     to_currency = 'USDT'
     conversion_rate = ConversionRate.objects.filter(
-      from_currency=token_name,
-      to_currency=to_currency,
-      timestamp=when
+        from_currency=token_name,
+        to_currency=to_currency,
+        timestamp=when
     )
 
-    if len(conversion_rate) == 0:  # historical ConversionRate for the given bounty does not exist yet
+    if not conversion_rate:  # historical ConversionRate for the given bounty does not exist yet
         try:
             price = cc.get_historical_price(token_name, to_currency, when)
 
             to_amount = price[token_name][to_currency]
             ConversionRate.objects.create(
-              from_amount=1,
-              to_amount=to_amount,
-              source='cryptocompare',
-              from_currency=token_name,
-              to_currency=to_currency,
-              timestamp=when,
+                from_amount=1,
+                to_amount=to_amount,
+                source='cryptocompare',
+                from_currency=token_name,
+                to_currency=to_currency,
+                timestamp=when,
             )
-            print('Cryptocompare: {}=>{}:{}'.format(token_name, to_currency, to_amount))
+            print(f'Cryptocompare: {token_name}=>{to_currency}:{to_amount}')
         except Exception as e:
             print(e)
 
 
 def cryptocompare():
     """Handle pulling market data from CryptoCompare.
-       Updates ConversionRates only if data not available."""
 
-    for b in Bounty.objects.filter(current_bounty=True):
-        print('CryptoCompare Bounty {}'.format(b.pk))
-        refresh_conv_rate(b.web3_created, b.token_name)
+    Updates ConversionRates only if data not available.
+
+    """
+    for bounty in Bounty.objects.filter(current_bounty=True):
+        print(f'CryptoCompare Bounty {bounty.pk}')
+        refresh_conv_rate(bounty.web3_created, bounty.token_name)
 
     for tip in Tip.objects.all():
-        print('CryptoCompare Tip {}'.format(tip.pk))
+        print(f'CryptoCompare Tip {tip.pk}')
         refresh_conv_rate(tip.created_on, tip.tokenName)
 
 
