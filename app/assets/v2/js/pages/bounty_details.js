@@ -120,10 +120,10 @@ var callbacks = {
     val = val.replace(/script/ig, 'scr_i_pt');
     var ui_body = val;
 
-    if(ui_body.length > 300){
-      ui_body = ui_body.substring(0,400) + "... <BR><BR><BR>";
-      ui_body = ui_body + "<a class='button button--primary' href='"+result['github_url']+"'><span class='font-caption'>View issue on github</span></a>";
-      ui_body = ui_body + "<br><br>";
+    if (ui_body.length > 300) {
+      ui_body = ui_body.substring(0, 400) + '... <BR><BR><BR>';
+      ui_body = ui_body + "<a class='button button--primary' href='" + result['github_url'] + "'><span class='font-caption'>View issue on github</span></a>";
+      ui_body = ui_body + '<br><br>';
     }
 
     ui_body = converter.makeHtml(ui_body);
