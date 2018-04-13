@@ -7,7 +7,7 @@ from django.core.validators import validate_email
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.models import Bounty
+from dashboard.models import Bounty, Interest, Profile
 from dashboard.views import create_new_interest_helper
 from github.utils import get_github_user_data, is_github_token_valid
 from marketing.mails import new_match
@@ -83,7 +83,7 @@ def save(request):
                 )
 
                 try:
-                    profiles = Profile.objects.filter(handle=githubusername)
+                    profiles = Profile.objects.filter(handle=github_username)
                     profile = profiles.first() if profiles.exists() else None
                     interest = Interest.objects.create(profile_id=profile.pk)
                     bounty.interested.add(interest)
