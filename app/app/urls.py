@@ -96,7 +96,6 @@ urlpatterns = [
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
     url(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     url(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
-    url(r'^stats/(.*)/?', dashboard.embed.stat, name='stat'),
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
     url(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
