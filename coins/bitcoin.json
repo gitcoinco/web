@@ -1,0 +1,12 @@
+{
+  "symbol": "BTC",
+  "overview": "A Peer-to-Peer Electronic Cash System",
+  "website": "https://bitcoin.org/",
+  "whitepapaer": "https://bitcoin.org/bitcoin.pdf",
+  "state": "FLOAT",
+  "published_on": "2018-01-01",
+  "initial_price": "2000:1 ETH",
+  "links": {
+    "blog": "https://bitcoin.org/en/blog"
+  }
+}
