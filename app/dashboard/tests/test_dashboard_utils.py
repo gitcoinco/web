@@ -17,7 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from dashboard.utils import get_bounty, get_web3, getBountyContract
+from dashboard.utils import get_bounty, get_bounty_id_from_db, get_bounty_id_from_web3, get_web3, getBountyContract
 from test_plus.test import TestCase
 from web3.main import Web3
 from web3.providers.rpc import HTTPProvider
@@ -44,3 +44,14 @@ class DashboardUtilsTest(TestCase):
     @staticmethod
     def test_get_bounty():
         assert get_bounty(100, 'mainnet')['contract_deadline'] == 1522802516
+
+    @staticmethod
+    def test_get_bounty_id_from_db():
+        """ There should be no bounty with this id in the db"""
+        assert not get_bounty_id_from_db('https://github.com/gitcoinco/web/issues/607', 'mainnet')
+
+    @staticmethod
+    def test_get_bounty_id_from_web3():
+        # find bounty 249
+        assert get_bounty_id_from_web3('https://github.com/raiden-network/raiden/issues/1195', 'mainnet', 246) == 249
+        assert not get_bounty_id_from_web3('https://github.com/gitcoinco/web/issues/607', 'mainnet', 10000000)
