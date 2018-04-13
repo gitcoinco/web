@@ -139,7 +139,7 @@ def new_interest(request, bounty_id):
 
     """
     access_token = request.GET.get('token')
-    if access_token and is_github_token_valid(access_token):
+    if access_token:
         helper_handle_access_token(request, access_token)
 
     profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
@@ -202,7 +202,7 @@ def remove_interest(request, bounty_id):
 
     """
     access_token = request.GET.get('token')
-    if access_token and is_github_token_valid(access_token):
+    if access_token:
         helper_handle_access_token(request, access_token)
 
     profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
