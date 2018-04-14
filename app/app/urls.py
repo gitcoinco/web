@@ -28,6 +28,8 @@ import dashboard.embed
 import dashboard.helpers
 import dashboard.ios
 import dashboard.views
+import dataviz.d3_views
+import dataviz.views
 import external_bounties.views
 import faucet.views
 import gitcoinbot.views
@@ -37,8 +39,6 @@ import marketing.webhookviews
 import retail.emails
 import retail.views
 import tdi.views
-import dataviz.views
-import dataviz.d3_views
 from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
 

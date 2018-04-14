@@ -19,8 +19,9 @@
 from __future__ import unicode_literals
 
 import json
-import random
 import math
+import random
+
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
@@ -34,15 +35,13 @@ from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
 from chartit import Chart, DataPool
-from dashboard.models import Bounty, Profile, UserAction, Tip
+from dashboard.models import Bounty, Profile, Tip, UserAction
 from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
 from marketing.utils import get_or_save_email_subscriber
 from retail.helpers import get_ip
-
-
 
 
 def settings_helper_get_auth(request, key=None):
