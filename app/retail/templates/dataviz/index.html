@@ -32,24 +32,21 @@
 {% endblock %}
 
 {% block content %}
-  
-  <ul>
-    <li>
-        <a href='sunburst'>Sunburst</a>
-    </li>
-    <li>
-        <a href='circles'>Circles</a>
-    </li>
-    <li>
-        <a href='graph'>Graph</a>
-    </li>
-    <li>
-        <a href='spiral'>Spiral</a>
-    </li>
-    <li>
-        <a href='spiral'>Heatmap</a>
-    </li>
-  </ul>
-
-
+<ul>
+  <li>
+    <a href='{% url 'viz_sunburst' %}'>Sunburst</a>
+  </li>
+  <li>
+    <a href='{% url 'viz_circles' %}'>Circles</a>
+  </li>
+  <li>
+    <a href='{% url 'viz_graph' %}'>Graph</a>
+  </li>
+  <li>
+    <a href='{% url 'viz_spiral' %}'>Spiral</a>
+  </li>
+  <li>
+    <a href='{% url 'viz_heatmap' %}'>Heatmap</a>
+  </li>
+</ul>
 {% endblock %}
