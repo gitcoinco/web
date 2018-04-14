@@ -71,6 +71,13 @@ class Stat(SuperModel):
         except:
             return 0
 
+    @property
+    def val_since_hour(self):
+        try:
+            return self.val - Stat.objects.filter(key=self.key, created_on__lt=self.created_on).order_by('-created_on').first().val
+        except:
+            return 0
+
 
 class LeaderboardRank(SuperModel):
 
