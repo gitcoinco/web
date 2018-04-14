@@ -293,6 +293,21 @@ def data_viz_helper_get_data_responses(request, _type):
 
 
 @staff_member_required
+def viz_spiral(request, key='email_open'):
+    stats = Stat.objects.filter(created_on__hour=1)
+    type_options = stats.distinct('key').values_list('key', flat=True)
+    stats = stats.filter(key=key).order_by('created_on')
+    params = {
+        'stats': stats,
+        'key': key,
+        'page_route': 'spiral',
+        'type_options': type_options,
+        'viz_type': key,
+    }
+    return TemplateResponse(request, 'dataviz/spiral.html', params)
+
+
+@staff_member_required
 def viz_index(request):
     params = {}
     return TemplateResponse(request, 'dataviz/index.html', params)
@@ -434,17 +449,20 @@ def viz_graph(request):
         }
 
         # gather info
+        types = {}
         names = {}
         values = {}
         edges = []
         for bounty in Bounty.objects.filter(network='mainnet', current_bounty=True):
             if bounty.value_in_usdt_then:
                 weight = bounty.value_in_usdt_then
-                source = bounty.bounty_owner_github_username.lower()
+                source = bounty.org_name
                 if source:
-                    names[source] = None
                     for fulfillment in bounty.fulfillments.filter(accepted=1):
                         target = fulfillment.fulfiller_github_username.lower()
+                        types[source] = 'source'
+                        types[target] = 'target'
+                        names[source] = None
                         names[target] = None
                         edges.append((source, target, weight))
 
@@ -459,7 +477,7 @@ def viz_graph(request):
         for name in set(names.keys()):
             names[name] = len(output['nodes'])
             value = int(math.sqrt(math.sqrt(values.get(name, 1))))
-            output['nodes'].append({"name": name, 'value': value})
+            output['nodes'].append({"name": name, 'value': value, 'type': types[name]})
         for edge in edges:
             source, target, weight = edge
             weight = math.sqrt(weight)

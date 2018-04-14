@@ -194,6 +194,7 @@ urlpatterns = [
     url(r'^_administration/viz/sunburst/(.*)?$', marketing.views.viz_sunburst, name='sunburst_viz'),
     url(r'^_administration/viz/circles/(.*)?$', marketing.views.viz_circles, name='viz_circles'),
     url(r'^_administration/viz/graph/?$', marketing.views.viz_graph, name='viz_graph'),
+    url(r'^_administration/viz/spiral/(.*)?$', marketing.views.viz_spiral, name='viz_spiral'),
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),

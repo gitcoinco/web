@@ -61,8 +61,8 @@
 
 <script>
 
-var width = 960,
-    height = 500
+var width = $(window).width(),
+    height = $(window).height()
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
@@ -94,7 +94,8 @@ d3.json(url, function(json) {
       .call(force.drag);
 
   node.append("circle")
-      .attr("r", function(d) { return d.value * 3; });
+      .attr("r", function(d) { return d.value * 3; })
+      .style("fill", function (d) { return d.type =='source' ? '#1f77b4' : '#000000'; });
 
   node.append("text")
       .attr("dx", 12)
