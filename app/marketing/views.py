@@ -38,6 +38,7 @@ from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
+import math
 from marketing.utils import get_or_save_email_subscriber
 from retail.helpers import get_ip
 
@@ -418,6 +419,64 @@ def viz_sunburst(request, _type, template='sunburst'):
         'categories': json.dumps(list(categories)),
     }
     return TemplateResponse(request, f'dataviz/{template}.html', params)
+
+
+@staff_member_required
+def viz_graph(request):
+    title = 'Graph of Gitcoin Network'
+    if request.GET.get('data'):
+        # setup response
+        output = {
+          "nodes": [
+            ],
+          "links": [
+            ]
+        }
+
+        # gather info
+        names = {}
+        values = {}
+        edges = []
+        for bounty in Bounty.objects.filter(network='mainnet', current_bounty=True):
+            if bounty.value_in_usdt_then:
+                weight = bounty.value_in_usdt_then
+                source = bounty.bounty_owner_github_username.lower()
+                if source:
+                    names[source] = None
+                    for fulfillment in bounty.fulfillments.filter(accepted=1):
+                        target = fulfillment.fulfiller_github_username.lower()
+                        names[target] = None
+                        edges.append((source, target, weight))
+
+                        value = values.get(source, 0)
+                        value += weight
+                        values[source] = value
+                        value = values.get(target, 0)
+                        value += weight
+                        values[target] = value
+
+        # build output
+        for name in set(names.keys()):
+            names[name] = len(output['nodes'])
+            value = int(math.sqrt(math.sqrt(values.get(name, 1))))
+            output['nodes'].append({"name": name, 'value': value})
+        for edge in edges:
+            source, target, weight = edge
+            weight = math.sqrt(weight)
+            source = names[source]
+            target = names[target]
+            output['links'].append({
+                'source': source,
+                'target': target,
+                'weight': weight,
+                })
+
+        return JsonResponse(output);
+
+    params = {
+        'title': title,
+    }
+    return TemplateResponse(request, f'dataviz/graph.html', params)
 
 
 @staff_member_required
