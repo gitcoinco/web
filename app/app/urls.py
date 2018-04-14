@@ -37,6 +37,8 @@ import marketing.webhookviews
 import retail.emails
 import retail.views
 import tdi.views
+import dataviz.views
+import dataviz.d3_views
 from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
 
@@ -187,15 +189,17 @@ urlpatterns = [
     # marketing views
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
     url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),
-    url(r'^_administration/stats$', marketing.views.stats, name='stats'),
-    url(r'^_administration/cohort$', marketing.views.cohort, name='cohort'),
-    url(r'^_administration/funnel$', marketing.views.funnel, name='funnel'),
-    re_path(r'^_administration/viz/?$', marketing.views.viz_index, name='viz_index'),
-    re_path(r'^_administration/viz/sunburst/(.*)?$', marketing.views.viz_sunburst, name='sunburst_viz'),
-    re_path(r'^_administration/viz/circles/(.*)?$', marketing.views.viz_circles, name='viz_circles'),
-    re_path(r'^_administration/viz/graph/(.*)?$', marketing.views.viz_graph, name='viz_graph'),
-    re_path(r'^_administration/viz/spiral/(.*)?$', marketing.views.viz_spiral, name='viz_spiral'),
-    re_path(r'^_administration/viz/heatmap/(.*)?$', marketing.views.viz_heatmap, name='viz_heatmap'),
+
+    # dataviz views
+    re_path(r'^_administration/stats/$', dataviz.views.stats, name='stats'),
+    re_path(r'^_administration/cohort/$', dataviz.views.cohort, name='cohort'),
+    re_path(r'^_administration/funnel/$', dataviz.views.funnel, name='funnel'),
+    re_path(r'^_administration/viz/?$', dataviz.d3_views.viz_index, name='viz_index'),
+    re_path(r'^_administration/viz/sunburst/(.*)?$', dataviz.d3_views.viz_sunburst, name='viz_sunburst'),
+    re_path(r'^_administration/viz/circles/(.*)?$', dataviz.d3_views.viz_circles, name='viz_circles'),
+    re_path(r'^_administration/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
+    re_path(r'^_administration/viz/spiral/(.*)?$', dataviz.d3_views.viz_spiral, name='viz_spiral'),
+    re_path(r'^_administration/viz/heatmap/(.*)?$', dataviz.d3_views.viz_heatmap, name='viz_heatmap'),
 
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),

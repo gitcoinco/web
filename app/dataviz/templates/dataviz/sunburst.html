@@ -28,7 +28,7 @@
 
 {% block breadcrumbs %}{% endblock %}
 
-{% block title %}Stats | Gitcoin
+{% block title %}Sunburst | Gitcoin
 {% endblock %}
 
 {% block content %}
@@ -38,11 +38,12 @@
     <script src="{% static "v2/js/jquery.js" %}"></script>
     <link rel="stylesheet" type="text/css"
       href="https://fonts.googleapis.com/css?family=Open+Sans:400,600">
-    <link rel="stylesheet" type="text/css" href="/static/v2/js/stats/sequences.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/v2/js/dataviz/sequences.css"/>
   </head>
 
 
 <body>
+    <a href="..">&lt; back</a>
     {% include "dataviz/shared/nav.html" %}
     <div id="main">
       <div id="sequence"></div>
@@ -81,9 +82,9 @@
     }
 
     function randomHex(){
-        var divisor = 2;
+        var divisor = 1;
         var top = 256/divisor;
-        var offset = 256/3/2;
+        var offset = 0;
         var start = parseInt(offset + Math.floor(random()*(top)))
         var middle = parseInt(offset + Math.floor(random()*(top)))
         var end = parseInt(offset + Math.floor(random()*(top)))
@@ -98,7 +99,7 @@
     }
 </script>
 
-<script type="text/javascript" src="/static/v2/js/stats/sequences.js"></script>
+<script type="text/javascript" src="/static/v2/js/dataviz/sequences.js"></script>
 <script type="text/javascript">
   // Hack to make this example display correctly in an iframe on bl.ocks.org
   d3.select(self.frameElement).style("height", "700px");

@@ -28,7 +28,7 @@
 
 {% block breadcrumbs %}{% endblock %}
 
-{% block title %}Stats | Gitcoin
+{% block title %}Heatmap | Gitcoin
 {% endblock %}
 
 {% block content %}
@@ -86,9 +86,10 @@
     <meta charset="utf-8"/>
     <script type="text/javascript" src="//d3js.org/d3.v3.js"></script>
     <script src="{% static "v2/js/jquery.js" %}"></script>
-    <link rel="stylesheet" href="/static/v2/js/stats/heatmap.css"/>
+    <link rel="stylesheet" href="/static/v2/js/dataviz/heatmap.css"/>
   </head>
   <body>
+    <a href="..">&lt; back</a>
     {% include "dataviz/shared/nav.html" %}
     <div class="days-hours-heatmap">
       <!-- calibration and render type controller -->
@@ -116,7 +117,7 @@
       <svg role="heatmap" class="heatmap"></svg>
     </div>
     
-    <script type="text/javascript" src="/static/v2/js/stats/heatmap.js"></script>
+    <script type="text/javascript" src="/static/v2/js/dataviz/heatmap.js"></script>
   </body>
 </html>
 
