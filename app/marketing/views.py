@@ -24,7 +24,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
 from django.db.models import Max
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -33,7 +33,7 @@ from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
 from chartit import Chart, DataPool
-from dashboard.models import Profile, UserAction, Bounty
+from dashboard.models import Bounty, Profile, UserAction
 from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
@@ -292,7 +292,63 @@ def data_viz_helper_get_data_responses(request, _type):
 
 
 @staff_member_required
-def viz(request, _type):
+def viz_index(request):
+    params = {}
+    return TemplateResponse(request, 'dataviz/index.html', params)
+
+
+@staff_member_required
+def viz_circles(request, _type):
+    return viz_sunburst(request, _type, 'circles')
+
+
+def data_viz_helper_merge_json_trees(output):
+    new_output = {
+        'name': output['name'],
+    }
+    if not output.get('children'):
+        new_output['size'] = output['size']
+        return new_output
+
+    # merge in names that are equal
+    new_output['children'] = []
+    processed_names = {}
+    length = len(output['children'])
+    for i in range(0, length):
+        this_child = output['children'][i]
+        name = this_child['name']
+        if name in processed_names.keys():
+            target_idx = processed_names[name]
+            print(target_idx)
+            for this_childs_child in this_child['children']:
+                new_output['children'][target_idx]['children'].append(this_childs_child)
+        else:
+            processed_names[name] = len(new_output['children'])
+            new_output['children'].append(this_child)
+
+    # merge further down the line
+    length = len(new_output['children'])
+    for i in range(0, length):
+        new_output['children'][i] = data_viz_helper_merge_json_trees(new_output['children'][i])
+
+    return new_output
+
+def data_viz_helper_get_json_output(key, value, depth=0):
+    key = key.replace('_', '')
+    keys = key.split('-')
+    result = {}
+    result['name'] = keys[0]
+    if len(keys) > 1:
+        result['children'] = [
+            data_viz_helper_get_json_output("-".join(keys[1:]), value, depth + 1)
+        ]
+    else:
+        result['size'] = int(value)
+    return result
+
+
+@staff_member_required
+def viz_sunburst(request, _type, template='sunburst'):
     _type_options = [
         'status_progression',
         'repos',
@@ -330,23 +386,38 @@ def viz(request, _type):
     if request.GET.get('data'):
         data_dict = data_viz_helper_get_data_responses(request, _type)
 
-        rows = []
-        for key, value in data_dict.items():
-            row = ",".join([key, str(value)])
-            rows.append(row)
+        _format = request.GET.get('format', 'csv')
+        if _format == 'csv':
+            rows = []
+            for key, value in data_dict.items():
+                row = ",".join([key, str(value)])
+                rows.append(row)
 
-        output = "\n".join(rows)
-        return HttpResponse(output);
+            output = "\n".join(rows)
+            return HttpResponse(output);
+
+        if _format == 'json':
+            output = {
+                'name': 'data',
+                'children': [
+                ]
+            }
+            for key, val in data_dict.items():
+                if val:
+                    output['children'].append(data_viz_helper_get_json_output(key, val))
+            output = data_viz_helper_merge_json_trees(output)
+            return JsonResponse(output);
 
 
     params = {
         'title': title,
         'comment': comment,
         'viz_type': _type,
+        'page_route': template,
         'type_options': _type_options,
         'categories': json.dumps(list(categories)),
     }
-    return TemplateResponse(request, 'viz.html', params)
+    return TemplateResponse(request, f'dataviz/{template}.html', params)
 
 
 @staff_member_required
@@ -392,6 +463,7 @@ def cohort(request):
         }
     }
     return TemplateResponse(request, 'cohort.html', params)
+
 
 def funnel_helper_get_data(key, k, daily_source, weekly_source, start_date, end_date):
     if key == 'sessions':

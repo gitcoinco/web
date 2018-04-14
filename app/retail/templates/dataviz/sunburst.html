@@ -43,11 +43,7 @@
 
 
 <body>
-    <select id="type">
-        {% for t in type_options %}
-            <option {% if t == viz_type %}selected{% endif %} >{{t}}</option>
-        {% endfor %}
-    </select>
+    {% include "dataviz/shared/nav.html" %}
     <div id="main">
       <div id="sequence"></div>
       <div id="chart">
@@ -63,13 +59,6 @@
     </div>
 </body>
 <script>
-    $(document).ready(function(){
-        $("#type").change(function(){
-            var _t = $(this).val();
-            document.location.href = '/_administration/viz/'+_t;
-        });
-    });
-
     var m_w = 123456789;
     var m_z = 987654321;
     var mask = 0xffffffff;
