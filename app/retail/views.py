@@ -69,7 +69,30 @@ def robotstxt(request):
 
 
 def about(request):
+    team_members_left = [
+        (static("v2/images/team/kevin-owocki.png"), "Kevin Owocki", "All teh things", "owocki", "The Community", "Avocado Toast"),
+        (static("v2/images/team/alisa-march.jpg"), "Alisa March", "User Experience Design", "PixelantDesign", "Tips", "Apple Cider Doughnuts"),
+        (static("v2/images/team/justin-bean.jpg"), "Justin Bean", "Engineering", "StareIntoTheBeard", "Issue Explorer", "Sushi"),
+    ]
+    team_members_right = [
+        (static("v2/images/team/mark-beacom.jpg"), "Mark Beacom", "All teh things", "mbeacom", "Start/Stop Work", "Dolsot Bibimbap"),
+        (static("v2/images/team/eric-berry.jpg"), "Eric Berry", "OSS Funding", "coderberry", "Chrome/Firefox Extension", "Pastel de nata"),
+
+        (static("v2/images/team/vivek-singh.jpg"), "Vivek Singh", "Community Buidl-er", "vs77bb", "Gitcoin Requests", "Tangerine Gelato"),
+    ]
+    community_members_left = [
+        (static("v2/images/team/devin-smith.jpg"), "Devin Smith","arzynik"),
+        (static("v2/images/team/nick-doiron.jpg"), "Nick Doiron","mapmeld"),
+    ]
+    community_members_right = [
+        (static("v2/images/team/aditya-anand.jpg"), "Aditya Anand M C","thelostone-mc"),
+        (static("v2/images/team/eswara-sai.jpg"), "Eswara Sai","eswarasai"),
+    ]
     context = {
+        'team_members_left': team_members_left,
+        'team_members_right': team_members_right,
+        'community_members_left': community_members_left,
+        'community_members_right': community_members_right,
         'active': 'about',
         'title': 'About',
     }
