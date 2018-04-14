@@ -19,7 +19,7 @@
 from __future__ import unicode_literals
 
 import json
-
+import random
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
@@ -33,7 +33,7 @@ from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
 from chartit import Chart, DataPool
-from dashboard.models import Bounty, Profile, UserAction
+from dashboard.models import Bounty, Profile, UserAction, Tip
 from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
@@ -466,7 +466,11 @@ def viz_sunburst(request, _type, template='sunburst'):
 
 
 @staff_member_required
-def viz_graph(request):
+def viz_graph(request, _type):
+    _type_options = ['fulfillments_accepted_only', 'all', 'fulfillments', 'what_future_could_look_like']
+    if _type not in _type_options:
+        _type = _type_options[0]
+
     title = 'Graph of Gitcoin Network'
     if request.GET.get('data'):
         # setup response
@@ -481,6 +485,7 @@ def viz_graph(request):
         types = {}
         names = {}
         values = {}
+        avatars = {}
         edges = []
         for bounty in Bounty.objects.filter(network='mainnet', current_bounty=True):
             if bounty.value_in_usdt_then:
@@ -488,31 +493,62 @@ def viz_graph(request):
                 source = bounty.org_name
                 if source:
                     for fulfillment in bounty.fulfillments.all():
-                        target = fulfillment.fulfiller_github_username.lower()
+                        if _type != 'fulfillments_accepted_only' or fulfillment.accepted:
+                            target = fulfillment.fulfiller_github_username.lower()
+                            types[source] = 'source'
+                            types[target] = 'target_accepted' if fulfillment.accepted else 'target'
+                            names[source] = None
+                            names[target] = None
+                            edges.append((source, target, weight))
+
+                            value = values.get(source, 0)
+                            value += weight
+                            values[source] = value
+                            value = values.get(target, 0)
+                            value += weight
+                            values[target] = value
+
+        for tip in Tip.objects.filter(network='mainnet'):
+            weight = bounty.value_in_usdt
+            if weight:
+                source = tip.username.lower()
+                target = tip.from_username.lower()
+                if source and target:
+                    if source not in names.keys():
                         types[source] = 'source'
-                        types[target] = 'target_accepted' if fulfillment.accepted else 'target'
                         names[source] = None
+                    if source not in types.keys():
+                        types[target] = 'target'
                         names[target] = None
-                        edges.append((source, target, weight))
+                    edges.append((source, target, weight))
 
-                        value = values.get(source, 0)
-                        value += weight
-                        values[source] = value
-                        value = values.get(target, 0)
-                        value += weight
-                        values[target] = value
 
-        for profile in Profile.objects.exclude(github_access_token='').all():
-            node = profile.handle.lower()
-            if node not in names.keys():
-                names[node] = None
-                types[node] = 'independent'
+        if _type in ['what_future_could_look_like', 'all']:
+            last_node = None
+            nodes = Profile.objects.exclude(github_access_token='').all()
+            for profile in nodes:
+                node = profile.handle.lower()
+                if node not in names.keys():
+                    names[node] = None
+                    types[node] = 'independent'
+                if last_node and _type == 'what_future_could_look_like': # and random.randint(0, 2) == 0:
+                        weight = random.randint(1, 10)
+                        #edges.append((node, last_node, weight))
+                        #edges.append((nodes.order_by('?').first().handle.lower(), node, weight))
+                        edges.append((nodes.order_by('?').first().handle.lower(), node, weight))
+                last_node = node
+
+
+        for key, val in values.items():
+            if val > 40:
+                github_url = f"https://github.com/{key}"
+                avatars[key] = f'https://gitcoin.co/funding/avatar?repo={github_url}&v=3'
 
         # build output
         for name in set(names.keys()):
             names[name] = len(output['nodes'])
             value = int(math.sqrt(math.sqrt(values.get(name, 1))))
-            output['nodes'].append({"name": name, 'value': value, 'type': types.get(name)})
+            output['nodes'].append({"name": name, 'value': value, 'type': types.get(name), 'avatar': avatars.get(name)})
         for edge in edges:
             source, target, weight = edge
             weight = math.sqrt(weight)
@@ -528,6 +564,9 @@ def viz_graph(request):
 
     params = {
         'title': title,
+        'viz_type': _type,
+        'type_options': _type_options,
+        'page_route': 'graph',
     }
     return TemplateResponse(request, f'dataviz/graph.html', params)
 
