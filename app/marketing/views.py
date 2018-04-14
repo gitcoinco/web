@@ -487,10 +487,10 @@ def viz_graph(request):
                 weight = bounty.value_in_usdt_then
                 source = bounty.org_name
                 if source:
-                    for fulfillment in bounty.fulfillments.filter(accepted=1):
+                    for fulfillment in bounty.fulfillments.all():
                         target = fulfillment.fulfiller_github_username.lower()
                         types[source] = 'source'
-                        types[target] = 'target'
+                        types[target] = 'target_accepted' if fulfillment.accepted else 'target'
                         names[source] = None
                         names[target] = None
                         edges.append((source, target, weight))
@@ -502,11 +502,17 @@ def viz_graph(request):
                         value += weight
                         values[target] = value
 
+        for profile in Profile.objects.exclude(github_access_token='').all():
+            node = profile.handle.lower()
+            if node not in names.keys():
+                names[node] = None
+                types[node] = 'independent'
+
         # build output
         for name in set(names.keys()):
             names[name] = len(output['nodes'])
             value = int(math.sqrt(math.sqrt(values.get(name, 1))))
-            output['nodes'].append({"name": name, 'value': value, 'type': types[name]})
+            output['nodes'].append({"name": name, 'value': value, 'type': types.get(name)})
         for edge in edges:
             source, target, weight = edge
             weight = math.sqrt(weight)
