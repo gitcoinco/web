@@ -28,7 +28,7 @@
 
 {% block breadcrumbs %}{% endblock %}
 
-{% block title %}Stats | Gitcoin
+{% block title %}Graph Visualizer | Gitcoin
 {% endblock %}
 
 {% block content %}
@@ -61,6 +61,8 @@
 <a href="..">&lt; back</a>
 {% include "dataviz/shared/nav.html" %}
 
+<p>{{comments}}
+</p>
 <script>
 
 var width = $(window).width(),

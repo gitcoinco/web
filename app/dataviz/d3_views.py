@@ -20,6 +20,7 @@ from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
+from .models import DataPayload
 from marketing.utils import get_or_save_email_subscriber
 from retail.helpers import get_ip
 
@@ -354,11 +355,22 @@ def viz_graph(request, _type):
         TemplateResponse: If data param not provided, return the populated data visualization template.
 
     """
+    page_route = 'graph'
     _type_options = ['fulfillments_accepted_only', 'all', 'fulfillments', 'what_future_could_look_like']
+    _type_options = _type_options + list(DataPayload.objects.filter(key=page_route).values_list('report', flat=True))
+    _type_options.sort()
+    datapayloads = DataPayload.objects.filter(key=page_route, report=_type)
+    comments = '' if not datapayloads.exists() else datapayloads.first().comments
+
     if _type not in _type_options:
         _type = _type_options[0]
-    title = 'Graph of Gitcoin Network'
+    title = 'Graph : Visualizer - {}'.format(_type)
     if request.GET.get('data'):
+
+        if datapayloads.exists():
+            output = datapayloads.first().payload
+            return JsonResponse(output)
+
         # setup response
         output = {
             "nodes": [],
@@ -448,8 +460,9 @@ def viz_graph(request, _type):
 
     params = {
         'title': title,
+        'comments': comments,
         'viz_type': _type,
         'type_options': _type_options,
-        'page_route': 'graph',
+        'page_route': page_route,
     }
     return TemplateResponse(request, f'dataviz/graph.html', params)
