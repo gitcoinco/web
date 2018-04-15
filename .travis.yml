@@ -41,7 +41,7 @@ jobs:
       if: branch = master AND NOT type = pull_request
       script:
         # Authenticate with Docker Hub.
-        - docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+        - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
         # Pull Docker images.
         - docker pull python:3.6-slim-jessie
         # Build, tag, and publish the new gitcoin/web image.
@@ -53,7 +53,7 @@ jobs:
       if: type = pull_request
       script:
         # Authenticate with Docker Hub.
-        - docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+        - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
         # Pull Docker images.
         - docker pull python:3.6-slim-jessie
         # Build, tag, and publish the new gitcoin/web image.
@@ -65,7 +65,7 @@ jobs:
       if: branch = stable
       script:
         # Authenticate with Docker Hub.
-        - docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+        - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
         # Pull Docker images.
         - docker pull python:3.6-slim-jessie
         # Build, tag, and publish the new gitcoin/web image.
