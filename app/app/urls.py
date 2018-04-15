@@ -39,6 +39,7 @@ import marketing.webhookviews
 import retail.emails
 import retail.views
 import tdi.views
+import ethos.views
 from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
 
@@ -115,7 +116,10 @@ urlpatterns = [
     path('actions/tool/<int:tool_id>/voteDown', dashboard.views.vote_tool_down, name='vote_tool_down'),
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
     url(r'^gas/?', dashboard.views.gas, name='gas'),
+
+    # redeem coin
     url(r'^coin/redeem/(.*)/?', dashboard.views.redeem_coin, name='redeem'),
+    url(r'^ethos/(.*)/?', ethos.views.redeem_coin, name='redeem_coin'),
 
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
