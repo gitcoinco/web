@@ -29,10 +29,10 @@ span {
   border-radius: 2px;
 }
 
-.nav-link.login img {
-  width: 35px;
-  height: 35px;
-  filter: invert(100%);
+.nav-link.login svg {
+  font-size: 1.5em;
+  position: relative;
+  top: 3px;
   margin-right: 10px;
 }
 
