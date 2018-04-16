@@ -230,7 +230,7 @@ def maybe_market_tip_to_slack(tip, event_name):
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
-        channel = 'bounties'
+        channel = 'notif-gitcoin'
         sc.api_call("chat.postMessage", channel=channel, text=msg)
     except Exception as e:
         print(e)
@@ -414,6 +414,7 @@ def amount_usdt_open_work():
     from dashboard.models import Bounty
     bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
     return round(sum([b.value_in_usdt_now for b in bounties if b.value_in_usdt_now]), 2)
+
 
 def maybe_market_tip_to_github(tip):
     """Post a Github comment for the specified Tip.
@@ -612,3 +613,57 @@ def maybe_post_on_craigslist(bounty):
                     # in case of invalid links
                     return False
     return False
+
+
+def maybe_notify_bounty_user_removed_to_slack(bounty, username):
+    if not settings.SLACK_TOKEN or bounty.get_natural_value() < 0.0001 or (
+       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+        return False
+
+    msg = f"@{username} has been removed from {bounty.github_url} due to inactivity on the github thread."
+
+    try:
+        sc = SlackClient(settings.SLACK_TOKEN)
+        channel = 'notif-gitcoin'
+        sc.api_call("chat.postMessage", channel=channel, text=msg)
+    except Exception as e:
+        print(e)
+        return False
+    return True
+
+
+def maybe_notify_user_removed_github(bounty, username, last_heard_from_user_days=None):
+    if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
+       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+        return False
+
+    msg = f"@{username} has been removed from this issue due to inactivity ({last_heard_from_user_days} days) on the github thread.  @{username} if you believe this was done in error, please <a href={bounty.url}>go to the bounty</a> and click 'start work' again."
+
+    post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
+
+
+def maybe_warn_user_removed_github(bounty, username):
+    if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
+       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+        return False
+
+    msg = f"@{username} are you still working on this issue?"
+
+    post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
+
+
+def maybe_notify_bounty_user_warned_removed_to_slack(bounty, username, last_heard_from_user_days=None):
+    if not settings.SLACK_TOKEN or bounty.get_natural_value() < 0.0001 or (
+       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+        return False
+
+    msg = f"@{username} has warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
+
+    try:
+        sc = SlackClient(settings.SLACK_TOKEN)
+        channel = 'notif-gitcoin'
+        sc.api_call("chat.postMessage", channel=channel, text=msg)
+    except Exception as e:
+        print(e)
+        return False
+    return True
