@@ -27,6 +27,7 @@ from django.utils import timezone
 from dashboard.models import Bounty, Interest
 from github.utils import get_interested_actions
 from marketing.mails import bounty_startwork_expire_warning, bounty_startwork_expired
+from dashboard.notifications import maybe_notify_user_removed_github, maybe_warn_user_removed_github
 
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -97,11 +98,17 @@ class Command(BaseCommand):
 
                         if should_delete_interest:
                             print(f'executing should_delete_interest for {interest.profile} / {bounty.github_url} ')
+                            # commenting on the GH issue
+                            maybe_notify_user_removed_github(bounty, interest.profile.handle)
+                            # send email
                             bounty_startwork_expired(interest.profile.email, bounty, interest, last_heard_from_user_days)
                             interest.delete()
 
                         elif should_warn_user:
                             print(f'executing should_warn_user for {interest.profile} / {bounty.github_url} ')
+                            # commenting on the GH issue
+                            maybe_warn_user_removed_github(bounty, interest.profile.handle)
+                            # send email
                             bounty_startwork_expire_warning(interest.profile.email, bounty, interest, last_heard_from_user_days)
 
                     except Exception as e:

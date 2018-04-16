@@ -416,6 +416,7 @@ def amount_usdt_open_work():
     bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
     return round(sum([b.value_in_usdt_now for b in bounties if b.value_in_usdt_now]), 2)
 
+
 def maybe_market_tip_to_github(tip):
     """Post a Github comment for the specified Tip.
 
@@ -613,3 +614,24 @@ def maybe_post_on_craigslist(bounty):
                     # in case of invalid links
                     return False
     return False
+
+
+def maybe_notify_user_removed_github(bounty, username):
+    if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
+       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+        return False
+
+    msg = f"@{username} has been removed from this issue due to inactivity on the github thread.  @{username} if you believe this was done in error, please <a href={bounty.url}>go to the bounty</a> and click 'start work' again."
+
+    post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
+
+
+def maybe_warn_user_removed_github(bounty, username):
+    if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
+       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+        return False
+
+    msg = f"@{username} are you still working on this issue?"
+
+    post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
+
