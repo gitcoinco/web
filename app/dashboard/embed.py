@@ -8,6 +8,8 @@ from github.utils import get_user, org_name
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from ratelimit.decorators import ratelimit
 
+avatar_base = 'assets/other/avatars/'
+
 
 def wrap_text(text, w=30):
     new_text = ""
@@ -200,64 +202,102 @@ def embed(request):
         return err_response
 
 
-def avatar(request):
+def get_avatar(_org_name):
+    avatar = None
+    filename = "{}.png".format(_org_name)
+    filepath = avatar_base + filename
+    if _org_name == 'gitcoinco':
+        filepath = avatar_base + '../../v2/images/helmet.png'
+    try:
+        avatar = Image.open(filepath, 'r').convert("RGBA")
+    except IOError:
+        remote_user = get_user(_org_name)
+        if not remote_user.get('avatar_url', False):
+            return JsonResponse({'msg': 'invalid user'}, status=422)
+        remote_avatar_url = remote_user['avatar_url']
+
+        r = requests.get(remote_avatar_url, stream=True)
+        chunk_size = 20000
+        with open(filepath, 'wb') as fd:
+            for chunk in r.iter_content(chunk_size):
+                fd.write(chunk)
+        avatar = Image.open(filepath, 'r').convert("RGBA")
+
+        # make transparent
+        datas = avatar.getdata()
+
+        new_data = []
+        for item in datas:
+            if item[0] == 255 and item[1] == 255 and item[2] == 255:
+                new_data.append((255, 255, 255, 0))
+            else:
+                new_data.append(item)
+
+        avatar.putdata(new_data)
+        avatar.save(filepath, "PNG")
+    return filepath
+
+
+def add_gitcoin_logo_blend(avatar, icon_size):
+
+    # setup
+    sub_avatar_size = 50
+    sub_avatar_offset = (165, 165)
+
+    # get image for sub avatar
+    gitcoin_filepath = get_avatar('gitcoinco')
+    gitcoin_avatar = Image.open(gitcoin_filepath, 'r').convert("RGBA")
+    gitcoin_avatar = ImageOps.fit(gitcoin_avatar, (sub_avatar_size, sub_avatar_size), Image.ANTIALIAS)
+
+    # build new avatar
+    img2 = Image.new("RGBA", icon_size)
+    img2.paste(gitcoin_avatar, sub_avatar_offset)
+
+    # blend these two images together
+    img = Image.new("RGBA", avatar.size, (255, 255, 255))
+    img = Image.alpha_composite(img, avatar)
+    img = Image.alpha_composite(img, img2)
+
+    return img
+
+
+def avatar(request, _org_name=None, add_gitcoincologo=None):
+    # config
+    icon_size = (215, 215)
+    print(_org_name, add_gitcoincologo)
     # default response
     could_not_find = Image.new('RGBA', (1, 1), (0, 0, 0, 0))
     err_response = HttpResponse(content_type="image/jpeg")
-    could_not_find.save(err_response, "JPEG")
+    could_not_find.save(err_response, "PNG")
 
     # params
     repo_url = request.GET.get('repo', False)
-    if not repo_url or 'github.com' not in repo_url:
+    if not _org_name and (not repo_url or 'github.com' not in repo_url):
         return err_response
 
     try:
         # get avatar of repo
-        _org_name = org_name(repo_url)
+        if not _org_name:
+            _org_name = org_name(repo_url)
 
-        avatar = None
-        filename = "{}.png".format(_org_name)
-        filepath = 'assets/other/avatars/' + filename
-        try:
-            avatar = Image.open(filepath, 'r').convert("RGBA")
-        except IOError:
-            remote_user = get_user(_org_name)
-            if not remote_user.get('avatar_url', False):
-                return JsonResponse({'msg': 'invalid user'}, status=422)
-            remote_avatar_url = remote_user['avatar_url']
+        filepath = get_avatar(_org_name)
 
-            r = requests.get(remote_avatar_url, stream=True)
-            chunk_size = 20000
-            with open(filepath, 'wb') as fd:
-                for chunk in r.iter_content(chunk_size):
-                    fd.write(chunk)
-            avatar = Image.open(filepath, 'r').convert("RGBA")
+        # new image
+        img = Image.new("RGBA", icon_size, (255, 255, 255))
 
-            # make transparent
-            datas = avatar.getdata()
-
-            new_data = []
-            for item in datas:
-                if item[0] == 255 and item[1] == 255 and item[2] == 255:
-                    new_data.append((255, 255, 255, 0))
-                else:
-                    new_data.append(item)
-
-            avatar.putdata(new_data)
-            avatar.save(filepath, "PNG")
-
-        width, height = (215, 215)
-        img = Image.new("RGBA", (width, height), (255, 255, 255))
-
-        # config
-        icon_size = (215, 215)
         # execute
+        avatar = Image.open(filepath, 'r').convert("RGBA")
         avatar = ImageOps.fit(avatar, icon_size, Image.ANTIALIAS)
         offset = 0, 0
         img.paste(avatar, offset, avatar)
 
-        response = HttpResponse(content_type="image/jpeg")
-        img.save(response, "JPEG")
+        # add gitcoinco logo?
+        add_gitcoincologo = add_gitcoincologo and _org_name != 'gitcoinco'
+        if add_gitcoincologo:
+            img = add_gitcoin_logo_blend(avatar, icon_size)
+
+        response = HttpResponse(content_type="image/png")
+        img.save(response, "PNG")
         return response
     except IOError as e:
         print(e)

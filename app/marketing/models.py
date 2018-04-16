@@ -80,8 +80,8 @@ class LeaderboardRank(SuperModel):
         return f"https://github.com/{self.github_username}"
 
     @property
-    def local_avatar_url(self):
-        return f"/funding/avatar?repo={self.github_url}&v=3"
+    def avatar_url(self):
+        return f"/static/avatar/{github_username}"
 
 
 class Match(SuperModel):

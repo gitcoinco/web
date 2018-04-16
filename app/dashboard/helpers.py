@@ -406,9 +406,6 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 last_comment_date=latest_old_bounty.last_comment_date if latest_old_bounty else None,
             )
             new_bounty.fetch_issue_item()
-            if not new_bounty.avatar_url:
-                new_bounty.avatar_url = new_bounty.get_avatar_url()
-                new_bounty.save()
 
             # Pull the interested parties off the last old_bounty
             if latest_old_bounty:
