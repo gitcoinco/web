@@ -630,7 +630,8 @@ var render_activity = function(result) {
 
   if (result.fulfillments) {
     result.fulfillments.forEach(function(fulfillment) {
-      var link = fulfillment['fulfiller_github_url'] ? " <a target=new href='"+fulfillment['fulfiller_github_url']+"'>[View Work]</a>" : "";
+      var link = fulfillment['fulfiller_github_url'] ? " <a target=new href='" + fulfillment['fulfiller_github_url'] + "'>[View Work]</a>" : '';
+
       if (fulfillment.accepted == true) {
         activities.push({
           name: fulfillment.fulfiller_github_username,
