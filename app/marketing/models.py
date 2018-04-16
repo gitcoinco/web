@@ -81,7 +81,7 @@ class LeaderboardRank(SuperModel):
 
     @property
     def avatar_url(self):
-        return f"/static/avatar/{github_username}"
+        return f"/static/avatar/{self.github_username}"
 
 
 class Match(SuperModel):
