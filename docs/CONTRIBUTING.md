@@ -148,6 +148,8 @@ git rebase upstream/master
 
 ### Contributing Static Assets
 
+Note: Please remember to optimize/compress your image assets via: `make compress-images` (Requires: jpeq-recompress, optipng, and svgo in `PATH`)
+
 Q: `I need to add static assets...  Where to I put them?`
 
 All assets that will be used as static resources must be placed into their appropriate place in the `app/assets` directory.
