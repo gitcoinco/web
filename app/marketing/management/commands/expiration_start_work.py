@@ -16,6 +16,8 @@
 
 '''
 
+import logging
+import warnings
 from datetime import datetime
 
 from django.conf import settings
@@ -25,6 +27,10 @@ from django.utils import timezone
 from dashboard.models import Bounty, Interest
 from github.utils import get_interested_actions
 from marketing.mails import bounty_startwork_expire_warning, bounty_startwork_expired
+
+warnings.filterwarnings("ignore", category=DeprecationWarning) 
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
 class Command(BaseCommand):
@@ -56,7 +62,8 @@ class Command(BaseCommand):
                     idx_status__in=['open', 'started']
                     )
                 for bounty in bounties:
-                    print(f"{interest} is interested in {bounty}")
+                    print("===========================================")
+                    print(f"{interest} is interested in {bounty.pk} / {bounty.github_url}")
                     try:
                         actions = get_interested_actions(
                             bounty.github_url, interest.profile.handle, interest.profile.email)
@@ -67,9 +74,10 @@ class Command(BaseCommand):
                         if not actions:
                             should_warn_user = True
                             should_delete_interest = False
+                            print(" - no actions")
                         else:
                             # example format: 2018-01-26T17:56:31Z'
-                            action_times = [datetime.strptime(action['created_at'], '%Y-%m-%dT%H:%M:%SZ') for action in actions]
+                            action_times = [datetime.strptime(action['created_at'], '%Y-%m-%dT%H:%M:%SZ') for action in actions if action.get('created_at')]
                             last_action_by_user = max(action_times)
 
                             # if user hasn't commented since they expressed interest, handled this condition
