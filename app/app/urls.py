@@ -176,8 +176,15 @@ urlpatterns = [
     url(r'^_administration/process_accesscode_request/(.*)$', tdi.views.process_accesscode_request, name='process_accesscode_request'),
     url(r'^_administration/process_faucet_request/(.*)$', faucet.views.process_faucet_request, name='process_faucet_request'),
 
-    # marketing views
+    # settings
     url(r'^email/settings/(.*)', marketing.views.email_settings, name='email_settings'),
+    url(r'^settings/email/(.*)', marketing.views.email_settings, name='settings_email'),
+    url(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),
+    url(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
+    url(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
+    url(r'^settings/(.*)?', marketing.views.email_settings, name='feedback_settings'),
+
+    # marketing views
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
     url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),
     url(r'^_administration/stats$', marketing.views.stats, name='stats'),

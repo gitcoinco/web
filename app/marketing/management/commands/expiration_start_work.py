@@ -52,7 +52,9 @@ class Command(BaseCommand):
                 bounties = Bounty.objects.filter(
                     interested=interest,
                     current_bounty=True,
-                    idx_status__in=['open', 'started'])
+                    network='mainnet',
+                    idx_status__in=['open', 'started']
+                    )
                 for bounty in bounties:
                     print(f"{interest} is interested in {bounty}")
                     try:

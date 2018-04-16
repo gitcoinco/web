@@ -171,6 +171,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Get the latest currency rates."""
+        return
         stablecoins()
 
         try:
