@@ -50,7 +50,7 @@ class Command(BaseCommand):
             ).all()
             print('day {} got {} interests'.format(day, interests.count()))
             for interest in interests:
-                for bounty in Bounty.objects.filter(interested=interest, current_bounty=True, idx_status__in=['open', 'started']):
+                for bounty in Bounty.objects.filter(interested=interest, network='mainnet', current_bounty=True, idx_status__in=['open', 'started']):
                     print("{} is interested in {}".format(interest, bounty))
                     try:
                         owner = org_name(bounty.github_url)
