@@ -740,7 +740,7 @@ class Tip(SuperModel):
             return None
 
     @property
-    def token_value_in_usdt_now(self):
+    def token_value_in_usdt_then(self):
         try:
             return round(convert_token_to_usdt(self.tokenName, self.created_on), 2)
         except ConversionRateNotFoundError:
