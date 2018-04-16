@@ -130,7 +130,7 @@ def maybe_market_to_twitter(bounty, event_name):
                 if response != 'Error' and 'http' in response:
                     url = response
                 is_short = True
-        except:
+        except Exception:
             pass
 
     new_tweet = tweet_txt.format(
