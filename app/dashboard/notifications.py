@@ -616,17 +616,38 @@ def maybe_post_on_craigslist(bounty):
     return False
 
 
-def maybe_notify_user_removed_github(bounty, username):
+def maybe_notify_bounty_user_removed_to_slack(bounty, username, last_heard_from_user_days=None):
+
+    if not settings.SLACK_TOKEN:
+        return False
+    if bounty.get_natural_value() < 0.0001:
+        return False
+    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        return False
+
+    msg = f"@{username} has been removed from {bounty.github_url} due to inactivity on the github thread."
+
+    try:
+        sc = SlackClient(settings.SLACK_TOKEN)
+        channel = 'bounties'
+        sc.api_call("chat.postMessage", channel=channel, text=msg)
+    except Exception as e:
+        print(e)
+        return False
+    return True
+
+
+def maybe_notify_user_removed_github(bounty, username, last_heard_from_user_days=None):
     if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
 
-    msg = f"@{username} has been removed from this issue due to inactivity on the github thread.  @{username} if you believe this was done in error, please <a href={bounty.url}>go to the bounty</a> and click 'start work' again."
+    msg = f"@{username} has been removed from this issue due to inactivity ({last_heard_from_user_days} days) on the github thread.  @{username} if you believe this was done in error, please <a href={bounty.url}>go to the bounty</a> and click 'start work' again."
 
     post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
 
 
-def maybe_warn_user_removed_github(bounty, username):
+def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days=None):
     if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
@@ -634,3 +655,24 @@ def maybe_warn_user_removed_github(bounty, username):
     msg = f"@{username} are you still working on this issue?"
 
     post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
+
+
+def maybe_notify_bounty_user_warned_removed_to_slack(bounty, username, last_heard_from_user_days=None):
+
+    if not settings.SLACK_TOKEN:
+        return False
+    if bounty.get_natural_value() < 0.0001:
+        return False
+    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        return False
+
+    msg = f"@{username} has warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
+
+    try:
+        sc = SlackClient(settings.SLACK_TOKEN)
+        channel = 'bounties'
+        sc.api_call("chat.postMessage", channel=channel, text=msg)
+    except Exception as e:
+        print(e)
+        return False
+    return True
