@@ -64,6 +64,32 @@ span {
   border-radius: 4px !important;
 }
 
+#tutorials li{
+  list-style: none;
+}
+
+.tutorial_item{
+  background-color: #fff;
+}
+
+.tutorial_parent{
+  background-color: #fff;
+  border-bottom: 1px solid #000;
+}
+
+.tutorial_parent:nth-child(even){
+  background-color: #fafafa;
+}
+
+.tutorial_item img{
+  max-width: 300px;
+}
+
+.tutorial_item a{
+  font-size: 28px;
+  color: #000;
+}
+
 .faq_item {
   margin: 0px auto;
 }
