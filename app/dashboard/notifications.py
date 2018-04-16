@@ -24,7 +24,6 @@ import sys
 from urllib.parse import urlparse as parse
 
 from django.conf import settings
-from django.utils import timezone
 
 import rollbar
 import twitter
@@ -177,8 +176,8 @@ def maybe_market_to_slack(bounty, event_name):
     try:
         conv_details = f"@ (${round(convert_token_to_usdt(bounty.token_name),2)}/{bounty.token_name})"
         usdt_details = f"({bounty.value_in_usdt_now} USD {conv_details} "
-    except:
-        pass #no USD conversion rate
+    except Exception:
+        pass  # no USD conversion rate
     title = bounty.title if bounty.title else bounty.github_url
     msg = f"{event_name.replace('bounty', 'funded_issue')} worth {round(bounty.get_natural_value(), 4)} {bounty.token_name} " \
           f"{usdt_details}" \
@@ -257,8 +256,8 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     usdt_value = ""
     try:
         usdt_value = f"({round(bounty.value_in_usdt_now, 2)} USD @ ${round(convert_token_to_usdt(bounty.token_name), 2)}/{bounty.token_name})" if bounty.value_in_usdt_now else ""
-    except:
-        pass # no USD conv rate available
+    except Exception:
+        pass  # no USD conversion rate available
     natural_value = round(bounty.get_natural_value(), 4)
     absolute_url = bounty.get_absolute_url()
     amount_open_work = amount_usdt_open_work()
@@ -465,7 +464,7 @@ def maybe_market_tip_to_github(tip):
 
 
 def maybe_market_to_email(b, event_name):
-    from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance, new_bounty
+    from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance
     from marketing.models import EmailSubscriber
     to_emails = []
     if b.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
