@@ -634,4 +634,3 @@ def maybe_warn_user_removed_github(bounty, username):
     msg = f"@{username} are you still working on this issue?"
 
     post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
-

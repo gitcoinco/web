@@ -25,9 +25,9 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import Bounty, Interest
+from dashboard.notifications import maybe_notify_user_removed_github, maybe_warn_user_removed_github
 from github.utils import get_interested_actions
 from marketing.mails import bounty_startwork_expire_warning, bounty_startwork_expired
-from dashboard.notifications import maybe_notify_user_removed_github, maybe_warn_user_removed_github
 
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 logging.getLogger("requests").setLevel(logging.WARNING)
