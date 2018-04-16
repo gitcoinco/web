@@ -231,7 +231,7 @@ def maybe_market_tip_to_slack(tip, event_name):
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
-        channel = 'bounties'
+        channel = 'notif-gitcoin'
         sc.api_call("chat.postMessage", channel=channel, text=msg)
     except Exception as e:
         print(e)
@@ -629,7 +629,7 @@ def maybe_notify_bounty_user_removed_to_slack(bounty, username, last_heard_from_
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
-        channel = 'bounties'
+        channel = 'notif-gitcoin'
         sc.api_call("chat.postMessage", channel=channel, text=msg)
     except Exception as e:
         print(e)
@@ -670,7 +670,7 @@ def maybe_notify_bounty_user_warned_removed_to_slack(bounty, username, last_hear
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
-        channel = 'bounties'
+        channel = 'notif-gitcoin'
         sc.api_call("chat.postMessage", channel=channel, text=msg)
     except Exception as e:
         print(e)
