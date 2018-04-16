@@ -67,22 +67,27 @@ span {
 #tutorials li{
   list-style: none;
 }
+
 .tutorial_item{
-  background-color: white;
+  background-color: #fff;
 }
+
 .tutorial_parent{
-  background-color: white;
-  border-bottom: 1px solid black;
+  background-color: #fff;
+  border-bottom: 1px solid #000;
 }
+
 .tutorial_parent:nth-child(even){
   background-color: #fafafa;
 }
+
 .tutorial_item img{
   max-width: 300px;
 }
+
 .tutorial_item a{
   font-size: 28px;
-  color: black;
+  color: #000;
 }
 
 .faq_item {
