@@ -40,7 +40,7 @@ class TestExpirationTip(TestCase):
             username='john',
             network='net',
             expires_date=timezone.now() + timedelta(days=1, hours=1),
-            tokenAddress='0x0000000000000000000000000000000000000000'
+            tokenAddress='0x0000000000000000000000000000000000000000',
             network='mainnet',
         )
         Command().handle()

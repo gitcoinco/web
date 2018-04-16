@@ -369,7 +369,7 @@ def get_interested_actions(github_url, username, email=''):
         all_actions = all_actions + actions
         page += 1
     actions_by_interested_party = []
-    
+
     for action in all_actions:
         gh_user = None
         gh_email = None
@@ -383,9 +383,17 @@ def get_interested_actions(github_url, username, email=''):
             pr_num = action.get('source', {}).get('issue', {}).get('number', '')
             pr_repo_owner, pr_repo = action.get('source', {}).get('issue', {}) \
                 .get('repository', {}).get('full_name', '/').split('/')
-            pr_actions = get_issue_timeline_events(pr_repo_owner, pr_repo, pr_num)
 
-            for pr_action in pr_actions:
+            should_continue_loop = True
+            all_pr_actions = []
+            page = 1
+            while should_continue_loop:
+                pr_actions = get_issue_timeline_events(pr_repo_owner, pr_repo, pr_num, page)
+                should_continue_loop = len(pr_actions) == 100
+                all_pr_actions = all_pr_actions + pr_actions
+                page += 1
+
+            for pr_action in all_pr_actions:
                 if 'actor' in pr_action:
                     gh_user = pr_action['actor']['login']
                     if gh_user == username and pr_action['event'] in activity_event_types:
