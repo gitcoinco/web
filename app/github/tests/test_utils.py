@@ -248,6 +248,7 @@ class GithubUtilitiesTest(TestCase):
             'sort': 'created',
             'direction': 'desc',
             'per_page': 100,
+            'page': 1
         }
         params = urlencode(params, quote_via=quote_plus)
         owner = 'gitcoinco'
