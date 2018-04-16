@@ -227,7 +227,9 @@ span {
 .bg-darkBlue a {
   color: #eee;
 }
-
+#feature_videos .video {
+  text-align: center;
+}
 #feature_videos h6 {
   padding-top: 10px;
 }
