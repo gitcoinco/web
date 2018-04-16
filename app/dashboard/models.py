@@ -876,6 +876,26 @@ class Profile(SuperModel):
                f"funded issue{plural} on Gitcoin"
 
     @property
+    def is_moderator(self):
+        """Determine whether or not the user is a moderator.
+
+        Returns:
+            bool: Whether or not the user is a moderator.
+
+        """
+        return self.user.groups.filter(name='Moderators').exists() if self.user else False
+
+    @property
+    def is_staff(self):
+        """Determine whether or not the user is a staff member.
+
+        Returns:
+            bool: Whether or not the user is a member of the staff.
+
+        """
+        return self.user.is_staff if self.user else False
+
+    @property
     def stats(self):
         bounties = self.bounties.stats_eligible()
         loyalty_rate = 0
