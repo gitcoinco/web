@@ -369,10 +369,24 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
      ],
     }
 
+    tutorials = [
+    {
+        'img': '/static/v2/images/help/firehose.jpg',
+        'url': 'https://medium.com/gitcoin/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster-dcd39650fc5',
+        'title': _('Leverage Gitcoin’s Firehose of Talent to Do More Faster'),
+    },
+    {
+        'img': '/static/v2/images/help/tools.png',
+        'url': 'https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75',
+        'title': _('Post a Bounty in 90 Seconds'),
+    },
+    ]
+
     context = {
         'active': 'help',
         'title': _('Help'),
         'faq': faq,
+        'tutorials': tutorials,
     }
     return TemplateResponse(request, 'help.html', context)
 
