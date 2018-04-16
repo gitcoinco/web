@@ -38,7 +38,6 @@ class TestExpirationTip(TestCase):
             tokenName='USDT',
             amount=7,
             username='john',
-            network='net',
             expires_date=timezone.now() + timedelta(days=1, hours=1),
             tokenAddress='0x0000000000000000000000000000000000000000',
             network='mainnet',
