@@ -99,6 +99,7 @@ class TestExpiraionStartWork(TestCase):
             bounty_type='Feature',
             experience_level='Intermediate',
             raw_data={},
+            network='mainnet',
             idx_status='open',
             bounty_owner_email='john@bar.com',
             current_bounty=True
@@ -147,7 +148,8 @@ class TestExpiraionStartWork(TestCase):
             raw_data={},
             idx_status='open',
             bounty_owner_email='john@bar.com',
-            current_bounty=True
+            current_bounty=True,
+            network='mainnet',
         )
 
         bounty.interested.add(interest)
