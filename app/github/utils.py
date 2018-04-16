@@ -324,7 +324,7 @@ def get_issues(owner, repo):
     return response.json()
 
 
-def get_issue_timeline_events(owner, repo, issue):
+def get_issue_timeline_events(owner, repo, issue, page=1):
     """Get the timeline events for a given issue.
     PLEASE NOTE CURRENT LIMITATION OF 100 EVENTS.
     PLEASE NOTE GITHUB API FOR THIS IS SUBJECT TO CHANGE.
@@ -341,7 +341,8 @@ def get_issue_timeline_events(owner, repo, issue):
     params = {
         'sort': 'created',
         'direction': 'desc',
-        'per_page': 100,  # TODO traverse/concat pages: https://developer.github.com/v3/guides/traversing-with-pagination/
+        'per_page': 100,
+        'page': page,
     }
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/timeline'
     # Set special header to access timeline preview api
@@ -359,10 +360,17 @@ def get_interested_actions(github_url, username, email=''):
     owner = org_name(github_url)
     repo = repo_name(github_url)
     issue_num = issue_number(github_url)
-    actions = get_issue_timeline_events(owner, repo, issue_num)
+    should_continue_loop = True
+    all_actions = []
+    page = 1
+    while should_continue_loop:
+        actions = get_issue_timeline_events(owner, repo, issue_num, page)
+        should_continue_loop = len(actions) == 100
+        all_actions = all_actions + actions
+        page += 1
     actions_by_interested_party = []
-
-    for action in actions:
+    
+    for action in all_actions:
         gh_user = None
         gh_email = None
         # GitHub might populate actor OR user OR neither for some events
