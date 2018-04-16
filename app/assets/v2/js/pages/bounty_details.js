@@ -630,20 +630,21 @@ var render_activity = function(result) {
 
   if (result.fulfillments) {
     result.fulfillments.forEach(function(fulfillment) {
+      var link = fulfillment['fulfiller_github_url'] ? " <a target=new href='"+fulfillment['fulfiller_github_url']+"'>[View Work]</a>" : "";
       if (fulfillment.accepted == true) {
         activities.push({
           name: fulfillment.fulfiller_github_username,
           address: fulfillment.fulfiller_address,
           email: fulfillment.fulfiller_email,
           fulfillment_id: fulfillment.fulfillment_id,
-          text: gettext('Work Accepted'),
+          text: gettext('Work Accepted') + link,
           age: timeDifference(new Date(result['now']), new Date(fulfillment.accepted_on)),
           status: 'accepted'
         });
       }
       activities.push({
         name: fulfillment.fulfiller_github_username,
-        text: gettext('Work Submitted'),
+        text: gettext('Work Submitted') + link,
         created_on: fulfillment.created_on,
         age: timeDifference(new Date(result['now']), new Date(fulfillment.created_on)),
         status: 'submitted'
