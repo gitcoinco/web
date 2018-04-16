@@ -11,7 +11,7 @@
     </div>
     <div>
         <br>
-        Only 1 request is allowed per week, please try again after <u>{{ try_after|naturaltime }}</u>.
+        Only 1 request is allowed every {{ limit_reset_days }} days, please try again after <u>{{ try_after|naturaltime }}</u>.
 
     </div>
 {% endblock %}

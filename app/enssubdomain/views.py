@@ -28,6 +28,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.views import w3
 from ens import ENS
+from eth_account.messages import defunct_hash_message
 from web3 import HTTPProvider, Web3
 
 from .models import ENSSubdomainRegistration
@@ -38,16 +39,15 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 @csrf_exempt
 def ens_subdomain(request):
     """Register ENS Subdomain."""
-    github_handle = request.session.get('handle', None)
+    github_handle = request.user.username.lower()
     if request.method == "POST":
         signedMsg = request.POST.get('signedMsg', '')
         signer = request.POST.get('singer', '').lower()
-        if signedMsg and signer:
-            recovered_signer = w3.eth.account.recoverMessage(text="Github Username : {}".format(github_handle),
-                                                             signature=signedMsg).lower()
+        if signedMsg and signer and github_handle:
+            message_hash = defunct_hash_message(text="Github Username : {}".format(github_handle))
+            recovered_signer = w3.eth.account.recoverHash(message_hash, signature=signedMsg).lower()
             if recovered_signer == signer:
-                txn_hash = '0xbc7e56b035978e4b7ca6dc6cffc205370683c8a91833dc85b89c60d12f877b1d'
-                # txn_hash = ns.setup_address("{}.{}".format(github_handle, settings.ENS_TLD), recovered_signer)
+                txn_hash = ns.setup_owner("{}.{}".format(github_handle, settings.ENS_TLD), signer)
                 ENSSubdomainRegistration.objects.create(github_handle=github_handle,
                                                         subdomain_wallet_address=signer, txn_hash=txn_hash,
                                                         pending=True).save()
@@ -57,7 +57,7 @@ def ens_subdomain(request):
                 return JsonResponse({'success': 'false', 'msg': 'Sign Mismatch Error'})
     try:
         last_request = ENSSubdomainRegistration.objects.filter(github_handle=github_handle).latest('created_on')
-        request_reset_time = timezone.now() - datetime.timedelta(days=7)
+        request_reset_time = timezone.now() - datetime.timedelta(days=settings.ENS_LIMIT_RESET_DAYS)
         if last_request.pending:
             txn_receipt = w3.eth.getTransactionReceipt(last_request.txn_hash)
             if txn_receipt:
@@ -85,7 +85,8 @@ def ens_subdomain(request):
                 'title': 'ENS Subdomain',
                 'owner': last_request.subdomain_wallet_address,
                 'github_handle': github_handle,
-                'try_after' : last_request.created_on + datetime.timedelta(days=7)
+                'limit_reset_days': settings.ENS_LIMIT_RESET_DAYS,
+                'try_after': last_request.created_on + datetime.timedelta(days=settings.ENS_LIMIT_RESET_DAYS)
             }
             return TemplateResponse(request, 'ens/ens_rate_limit.html', params)
     except ENSSubdomainRegistration.DoesNotExist:

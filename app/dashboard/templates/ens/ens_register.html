@@ -4,15 +4,14 @@
 <script src = "{% static 'ens/register.js' %}"></script>
 
 {% endblock %}
-
 {% block 'body_block' %}
-    {% if github_handle == None %}
-        <a href="{% url "github:github_auth" %}?redirect_uri={{ request.get_full_path }}" class="button">Login using Github to continue</a>
+    {% if not user.is_authenticated %}
+        <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" class="button">Login to Github to continue</a>
     {% else %}
         <h1>Register your ENS subdomain</h1>
         <div>
             <br>
-            <h2><label id="githubHandle">{{ github_handle }}</label><label>.gitcoin.eth</label></h2>
+            <h2><label id="githubHandle">{{ user.username }}</label><label>.gitcoin.eth</label></h2>
         </div>
         <div>
             <br>

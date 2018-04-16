@@ -245,6 +245,11 @@ EMAIL_PORT = env.int('EMAIL_PORT', default=587)
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 SERVER_EMAIL = env('SERVER_EMAIL', default='server@TODO.co')
 
+# ENS Subdomain 
+ENS_TLD = 'gitcoin.eth'
+ENS_LIMIT_RESET_DAYS = 0
+ENS_OWNER_ACCOUNT = '0x00000' 
+
 # IMAP Settings
 IMAP_EMAIL = env('IMAP_EMAIL', default='<email>')
 IMAP_PASSWORD = env('IMAP_PASSWORD', default='<password>')

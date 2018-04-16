@@ -967,10 +967,11 @@ def toolbox(request):
             "active": "true",
             'stat_graph': 'gas_page',
             }, {
-            "name": "ENS Subdomain Registrar",
-            "img": "/static/v2/images/ens.png",
-            "description": '''Register ENS Subdomain''',
-            "link": "ens/register",
+            "name": _("ENS Subdomain Registrar"),
+            "img": static("v2/images/ens.png"),
+            "description": _('''Register ENS Subdomain'''),
+            "link": "ens",
+            'link_copy': _('Try It'),
             "active": "true",
             'stat_graph': 'ens_subdomain_count',
             }, {
