@@ -144,5 +144,19 @@ git fetch upstream
 git rebase upstream/master
 ```
 
+## FAQ
+
+### Contributing Static Assets
+
+Q: `I need to add static assets...  Where to I put them?`
+
+All assets that will be used as static resources must be placed into their appropriate place in the `app/assets` directory.
+
+Q: `I've added the new assets to the appropriate directory, but can't seem to use them. How do I make Django recognize my newly added assets?`
+
+Run: `make collect-static` if using Docker or `cd app; python3 manage.py collectstatic -i other` for virtualenv/local setup.
+
+Additionally, you can check out the [Django Managing Static Files Documentation](https://docs.djangoproject.com/en/2.0/howto/static-files/)
+
 <img src='https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png'/>
 Welcome to the gitcoin community. Lets Grow Open Source Software.
