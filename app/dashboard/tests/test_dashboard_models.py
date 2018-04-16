@@ -19,10 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from datetime import date, datetime, timedelta
 
-from django.test import TestCase
-
 from dashboard.models import Bounty, BountyFulfillment, Interest, Profile, Tip
 from economy.models import ConversionRate
+from test_plus.test import TestCase
 
 
 class DashboardModelsTest(TestCase):
@@ -84,7 +83,7 @@ class DashboardModelsTest(TestCase):
         assert bounty.status == 'expired'
         assert bounty.value_true == 3e-18
         assert bounty.value_in_eth == 3
-        assert bounty.value_in_usdt == 0
+        assert bounty.value_in_usdt_now == 0
         assert 'ago 5 Feature Intermediate' in bounty.desc
         assert bounty.is_legacy is False
         assert bounty.get_github_api_url() == 'https://api.github.com/repos/gitcoinco/web/issues/11'
@@ -100,6 +99,7 @@ class DashboardModelsTest(TestCase):
             username='fred',
             network='net',
             expires_date=date.today() + timedelta(days=1),
+            created_on=date.today(),
             tokenAddress='0x0000000000000000000000000000000000000000',
         )
         assert str(tip) == '(net) - PENDING 7 ETH to fred, created: today, expires: tomorrow'

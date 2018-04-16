@@ -17,10 +17,9 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from django.test import TestCase
-
 from marketing.models import EmailSubscriber, Stat
 from marketing.utils import get_or_save_email_subscriber, get_stat, should_suppress_notification_email
+from test_plus.test import TestCase
 
 
 class MarketingStatUtilsTest(TestCase):
@@ -75,15 +74,12 @@ class MarketingEmailUtilsTest(TestCase):
 
     def test_get_of_get_or_save_email_subscriber(self):
         """Test the marketing util get_or_save_email_subscriber method."""
-        assert get_or_save_email_subscriber('emailSubscriber1@gitcoin.co', 'mysource') == 'priv1'
+        es = get_or_save_email_subscriber('emailSubscriber1@gitcoin.co', 'mysource')
+        assert es.priv == 'priv1'
 
-        EmailSubscriber.objects.create(
-            email='emailSubscriber1@gitcoin.co',
-            source='secondsource',
-            priv='priv2'
-        )
+        es2 = get_or_save_email_subscriber('emailSubscriber1@gitcoin.co', 'secondsource')
 
-        assert get_or_save_email_subscriber('emailSubscriber1@gitcoin.co', 'secondsource') == 'priv1'
+        assert es2.priv == 'priv1'
 
     def test_save_get_or_save_email_subscriber_get(self):
         """Test the marketing util get_or_save_email_subscriber method."""

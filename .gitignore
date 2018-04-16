@@ -4,6 +4,7 @@ static/*
 sftp-config.json
 app/app/local_settings.py
 app/static/*
+app/external_bounties/management/commands/
 app/mydatabase
 app/marketing/quotify/output/*
 app/output/*.pdf
@@ -32,3 +33,5 @@ webpack-stats.json
 
 # .tfvars files
 *.tfvars
+
+*.prof

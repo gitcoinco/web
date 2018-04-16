@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -35,27 +35,29 @@
             {% include 'shared/zero_balance_error.html' %}
             {% include 'shared/unlock_metamask.html' %}
             <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
-              <div class="d-flex justify-content-center flex-column mt-5 w-50" id="primary_subform">
+              <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
                 <div class="w-100" style="text-align: center;">
-                  <h3>Cancel Bounty and Reclaim Funds</h3>
-                  <h5>(Issue Submitters only)</h5>
+                  <h3>{% trans "Cancel Bounty and Reclaim Funds" %}</h3>
+                  <h5>{% trans "(Issue Submitters only)" %}</h5>
                   <img src="{% static "v2/images/prime.png" %}">
                 </div>
                 {% include 'shared/network_status.html' %}
-                <div class="w-100">
-                  <label class="form__label" for="issueURL">Issue URL</label>
-                  <input name='issueURL' id="issueURL" class="form__input" type="text" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
-                </div>
-                <div class="w-100 mt-2 terms_container">
-                  <div class="form__checkbox">
-                    <input name='terms' id='terms' type="checkbox" value=1 />
-                    <label class="form__label" for="terms">I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>:</label>
+                <form id="submitBounty">
+                  <div class="w-100">
+                    <label class="form__label" for="issueURL">{% trans "Issue URL" %}</label>
+                    <input name='issueURL' id="issueURL" class="form__input" type="url" required placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
                   </div>
-                </div>
-                {% include 'shared/metamask_estimate.html' %}
-                <div class="form__footer form__footer--right">
-                    <button class="button button--primary" id="submitBounty" href="#">Kill Bounty</a>
-                </div>
+                  <div class="w-100 mt-2 terms_container">
+                    <div class="form__checkbox">
+                      <input name='terms' id='terms' type="checkbox" value=1 />
+                      <label required class="form__label" for="terms">{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>:{% endblocktrans %}</label>
+                    </div>
+                  </div>
+                  {% include 'shared/wallet_estimate.html' %}
+                  <div class="form__footer form__footer--right">
+                      <button class="button button--primary js-submit">{% trans "Cancel Bounty" %}</button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>

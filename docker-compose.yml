@@ -39,6 +39,7 @@ services:
     depends_on:
       - db
     stdin_open: true
+    tty: true
 
   testrpc:
     image: trufflesuite/ganache-cli
@@ -47,7 +48,7 @@ services:
     command: "-a 1 --seed 2"
 
   node:
-    image: node:9-alpine
+    image: node:9.9-alpine
     working_dir: /node
     volumes:
       - .:/node

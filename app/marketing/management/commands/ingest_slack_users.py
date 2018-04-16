@@ -18,19 +18,8 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from marketing.models import EmailSubscriber
+from marketing.utils import get_or_save_email_subscriber
 from slackclient import SlackClient
-
-
-def process_email(email):
-    queryset = EmailSubscriber.objects.filter(email__iexact=email)
-    if not queryset.exists():
-        print(email)
-        source = 'slack_ingester'
-        EmailSubscriber.objects.create(
-            email=email,
-            source=source,
-        )
 
 
 class Command(BaseCommand):
@@ -44,7 +33,7 @@ class Command(BaseCommand):
         for member in ul['members']:
             try:
                 email = member['profile']['email']
-                process_email(email)
+                get_or_save_email_subscriber(email, 'slack_ingester')
             except Exception:
                 pass
 
@@ -59,4 +48,4 @@ class Command(BaseCommand):
         with open(filename, 'r') as f:
             members = json.load(f)
             for member in members:
-                process_email(member['email'])
+                get_or_save_email_subscriber(email, 'slack_ingester')

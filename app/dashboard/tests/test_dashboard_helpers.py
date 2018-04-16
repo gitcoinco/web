@@ -19,12 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 
-from django.test import TestCase
 from django.test.client import RequestFactory
 
 import requests_mock
 from dashboard.helpers import amount, issue_details, normalize_url
 from economy.models import ConversionRate
+from test_plus.test import TestCase
 
 
 class DashboardHelpersTest(TestCase):

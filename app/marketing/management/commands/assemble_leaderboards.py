@@ -19,7 +19,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Bounty, Tip
+from dashboard.models import Bounty, Profile, Tip
 from marketing.models import LeaderboardRank
 
 IGNORE_PAYERS = []
@@ -32,6 +32,7 @@ weekly_cutoff = timezone.now() - timezone.timedelta(days=days_back)
 monthly_cutoff = timezone.now() - timezone.timedelta(days=30)
 quarterly_cutoff = timezone.now() - timezone.timedelta(days=90)
 yearly_cutoff = timezone.now() - timezone.timedelta(days=365)
+
 
 def default_ranks():
     return {
@@ -62,9 +63,11 @@ ranks = default_ranks()
 
 def add_element(key, username, amount):
     username = username.replace('@', '')
+    if not username or username == "None":
+        return
     if username not in ranks[key].keys():
         ranks[key][username] = 0
-    ranks[key][username] += float(amount)
+    ranks[key][username] += round(float(amount) ,2)
 
 
 def sum_bounties(b, usernames):
@@ -111,7 +114,7 @@ def sum_bounties(b, usernames):
 
 
 def sum_tips(t, usernames):
-    val_usd = t.value_in_usdt
+    val_usd = t.value_in_usdt_now
     for username in usernames:
         add_element('all_fulfilled', username, val_usd)
         add_element('all_earners', username, val_usd)
@@ -133,6 +136,16 @@ def sum_tips(t, usernames):
             add_element('yearly_earners', username, val_usd)
 
 
+def should_suppress_leaderboard(handle):
+    if not handle:
+        return True
+    profiles = Profile.objects.filter(handle__iexact=handle)
+    if profiles.exists():
+        profile = profiles.first()
+        return profile.suppress_leaderboard
+    return False
+
+
 class Command(BaseCommand):
 
     help = 'creates leaderboard objects'
@@ -147,10 +160,10 @@ class Command(BaseCommand):
                 continue
 
             usernames = []
-            if b.bounty_owner_github_username:
+            if not should_suppress_leaderboard(b.bounty_owner_github_username):
                 usernames.append(b.bounty_owner_github_username)
             for fulfiller in b.fulfillments.all():
-                if fulfiller.fulfiller_github_username:
+                if not should_suppress_leaderboard(fulfiller.fulfiller_github_username):
                     usernames.append(fulfiller.fulfiller_github_username)
 
             sum_bounties(b, usernames)
@@ -159,10 +172,10 @@ class Command(BaseCommand):
         tips = Tip.objects.all()
 
         for t in tips:
-            if not t.value_in_usdt:
+            if not t.value_in_usdt_now:
                 continue
             usernames = []
-            if t.username:
+            if not should_suppress_leaderboard(t.username):
                 usernames.append(t.username)
 
             sum_tips(t, usernames)

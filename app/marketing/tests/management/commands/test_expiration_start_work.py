@@ -20,33 +20,36 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from datetime import datetime, timedelta
 from unittest.mock import patch
 
-from django.test import TestCase
 from django.utils import timezone
 
 from dashboard.models import Bounty, Interest, Profile
 from marketing.management.commands.expiration_start_work import Command
+from test_plus.test import TestCase
 
-comments_expired = [
+actions_expired = [
     {
         'user': {
             'login': 'fred'
         },
-        'created_at': (timezone.now() - timedelta(days=10)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        'created_at': (timezone.now() - timedelta(days=10)).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'event': 'commented',
     },
     {
         'user': {
             'login': 'paul'
         },
-        'created_at': (timezone.now() - timedelta(days=10)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        'created_at': (timezone.now() - timedelta(days=10)).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'event': 'commented',
     }
 ]
 
-comments_warning = [
+actions_warning = [
     {
         'user': {
             'login': 'fred'
         },
-        'created_at': (timezone.now() - timedelta(days=5)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        'created_at': (timezone.now() - timedelta(days=5)).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'event': 'commented',
     }
 ]
 
@@ -63,7 +66,7 @@ class TestExpiraionStartWork(TestCase):
         assert mock_bounty_startwork_expired.call_count == 0
         assert mock_bounty_startwork_expire_warning.call_count == 0
 
-    @patch('marketing.management.commands.expiration_start_work.get_issue_comments', return_value=comments_expired)
+    @patch('marketing.management.commands.expiration_start_work.get_interested_actions', return_value=actions_expired)
     @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expire_warning')
     @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expired')
     def test_handle_expired(self, mock_bounty_startwork_expired, mock_bounty_startwork_expire_warning, *args):
@@ -96,6 +99,7 @@ class TestExpiraionStartWork(TestCase):
             bounty_type='Feature',
             experience_level='Intermediate',
             raw_data={},
+            network='mainnet',
             idx_status='open',
             bounty_owner_email='john@bar.com',
             current_bounty=True
@@ -109,7 +113,7 @@ class TestExpiraionStartWork(TestCase):
         assert mock_bounty_startwork_expire_warning.call_count == 0
         assert mock_bounty_startwork_expired.call_count == 1
 
-    @patch('marketing.management.commands.expiration_start_work.get_issue_comments', return_value=comments_warning)
+    @patch('marketing.management.commands.expiration_start_work.get_interested_actions', return_value=actions_warning)
     @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expire_warning')
     @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expired')
     def test_handle_expire_warning(self, mock_bounty_startwork_expired, mock_bounty_startwork_expire_warning, *args):
@@ -144,7 +148,8 @@ class TestExpiraionStartWork(TestCase):
             raw_data={},
             idx_status='open',
             bounty_owner_email='john@bar.com',
-            current_bounty=True
+            current_bounty=True,
+            network='mainnet',
         )
 
         bounty.interested.add(interest)

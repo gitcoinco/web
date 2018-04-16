@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -34,17 +34,27 @@
             <div class = "toolbox">
               <div class="row no-gutters">
                 <div class="col-md-5 col-12">
-                  <h2 class="title">Toolbox</h2>
-                  <p class="description">Make Gitcoin your own
-                    by enabling the tools that suit your needs.</p>
+                  <h2 class="title">{% trans "Toolbox" %}</h2>
+                  <p class="description">{% trans "Make Gitcoin your own by enabling the tools that suit your needs." %}</p>
                 </div>
                 <div id="tools_hero" class="col-2">
                     <img src="{% static "v2/images/tools/tools_noborder.jpg" %}">
                 </div>
               </div>
             </div>
+
+            <div id="toc">
+              <p>{% trans "Table of Contents" %}</p>
+                <ol>
+                    {% for actor in actors %}
+                        <li>
+                          <a href="#{{actor.slug}}">{{actor.title}}</a>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </div>
             {% for actor in actors %}
-              <h3 class="sub-title">{{actor.title}}</h3>
+              <h3 id="{{actor.slug}}" class="sub-title">{{actor.title}}</h3>
               <div class="row no-gutters">
                 <div class="col-md-5 col-12">
                   <p class="description">{{actor.description}}</p>
@@ -53,9 +63,9 @@
 
               <div class="cards">
                 {% for tool in actor.tools %}
-                  <div class="card {{tool.class}}">
+                  <div class="card {{tool.class}}" id="{{tool.name}}">
                     <div class="img">
-                      <img src="{{tool.img}}" {% if tool.stat_graph %} data-hover="{% url "stat" "" %}{{tool.stat_graph}}" {% endif %} />
+                      <img src="{{tool.img}}" {% if tool.stat_graph %} {% endif %} />
                     </div>
                     <div class="content">
                       <div class="title">{{tool.name}}</div>
@@ -63,9 +73,11 @@
                         {{tool.description | safe}}
 
                       </div>
-                      <div class="button_container">
-                        <a class="btn btn-xs btn-success pulseClick" role="button" href="{{tool.link}}">Try it ></a>
-                      </div>
+                      {% if tool.link_copy %}
+                          <div class="button_container">
+                            <a class="btn btn-xs btn-success pulseClick" role="button" href="{{tool.link}}">{{tool.link_copy}} ></a>
+                          </div>
+                      {% endif %}
                       {% comment %}
                       <div class="toggle">
                         {% if tool.active == "true" %}

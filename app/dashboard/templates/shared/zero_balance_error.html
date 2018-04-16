@@ -1,40 +1,39 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static %}
-                    <div id="zero_balance_error" class="blocking_error" style="display: none">
-                        {% include 'shared/bounty_nav.html' with active_item=1 %}
-                        <img src="{% static "v2/images/prime.png" %}">
-                        <br>
-                        <h3>You're almost there!</h3>
-                        <p>
-                            In order to continue, you'll need some Ether.
-                        </p>
-                        <p>
-                            'Ether' is a digital asset that can be used to pay for the computational resources needed to run an application or program. In this case, Gitcoin.
-                        </p>
-                        <p>
-                            The easiest way to get Ether is to purchase it via an exchange. To view a list of exchanges where you can purchase Ether, click below:
-                        </p>
-                        <p class="float-right">
-                            <a class="btn btn-sm btn-info mt-3 pulseClick" role="button" id="submit" href="https://coinmarketcap.com/currencies/ethereum/#markets" target=new>View Exchanges</a>
-                            <br>
-                            - or -
-                            <br>
-                            <a target=new href="https://github.com/gitcoinco/gitcoinco/issues/4">Can't get web3 to work?  Get help here.</a>
-                        </p>
-                    </div>
+{% load i18n static %}
+<div id="zero_balance_error" class="blocking_error" style="display: none; min-height: 500px;">
+  {% include 'shared/bounty_nav.html' with active_item=1 %}
+  <img src="{% static "v2/images/prime.png" %}">
+  <br>
+  <h3>{% trans "You're almost there!" %}</h3>
+  <p>
+    {% trans "In order to continue, you'll need some Ether." %}
+  </p>
+  <p>
+    {% trans "'Ether' is a digital asset that can be used to pay for the computational resources needed to run an application or program. In this case, Gitcoin." %}
+  </p>
+  <p>
+    {% trans "The easiest way to get Ether is to purchase it via an exchange. To view a list of exchanges where you can purchase Ether, click below:" %}
+  </p>
+  <p class="float-right">
+    <a class="btn btn-sm btn-info mt-3 pulseClick" role="button" id="submit" href="https://coinmarketcap.com/currencies/ethereum/#markets" target="_blank" rel="noopener noreferrer">{% trans "View Exchanges" %}</a>
+    <br>
+    - {% trans "or" %} -
+    <br>
+    <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Can't get web3 to work?  Get help here." %}</a>
+  </p>
+</div>

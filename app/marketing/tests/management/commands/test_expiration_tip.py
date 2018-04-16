@@ -20,11 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from datetime import timedelta
 from unittest.mock import patch
 
-from django.test import TestCase
 from django.utils import timezone
 
 from dashboard.models import Tip
 from marketing.management.commands.expiration_tip import Command
+from test_plus.test import TestCase
 
 
 class TestExpirationTip(TestCase):
@@ -38,9 +38,9 @@ class TestExpirationTip(TestCase):
             tokenName='USDT',
             amount=7,
             username='john',
-            network='net',
             expires_date=timezone.now() + timedelta(days=1, hours=1),
-            tokenAddress='0x0000000000000000000000000000000000000000'
+            tokenAddress='0x0000000000000000000000000000000000000000',
+            network='mainnet',
         )
         Command().handle()
 

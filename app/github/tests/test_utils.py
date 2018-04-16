@@ -21,18 +21,17 @@ from datetime import timedelta
 from urllib.parse import quote_plus, urlencode
 
 from django.conf import settings
-from django.test import TestCase
 from django.test.utils import override_settings
-from django.urls import reverse
 from django.utils import timezone
 
 import responses
 from github.utils import (
     BASE_URI, HEADERS, JSON_HEADER, TOKEN_URL, build_auth_dict, delete_issue_comment, get_auth_url, get_github_emails,
-    get_github_primary_email, get_github_user_data, get_github_user_token, get_issue_comments, get_user,
-    is_github_token_valid, org_name, patch_issue_comment, post_issue_comment, post_issue_comment_reaction, repo_url,
-    reset_token, revoke_token, search,
+    get_github_primary_email, get_github_user_data, get_github_user_token, get_issue_comments,
+    get_issue_timeline_events, get_user, is_github_token_valid, org_name, patch_issue_comment, post_issue_comment,
+    post_issue_comment_reaction, repo_url, reset_token, revoke_token, search,
 )
+from test_plus.test import TestCase
 
 
 @override_settings(BASE_URL='http://localhost:8000')
@@ -58,21 +57,6 @@ class GithubUtilitiesTest(TestCase):
             'client_secret': settings.GITHUB_CLIENT_SECRET,
             'oauth_token': self.user_oauth_token
         }
-
-    def test_get_auth_url(self):
-        """Test the github utility get_auth_url method."""
-        redirect = '/funding/new'
-        github_callback = reverse('github:github_callback')
-        redirect_params = {'redirect_uri': BASE_URI + redirect}
-        redirect_uri = urlencode(redirect_params, quote_via=quote_plus)
-        params = {
-            'client_id': settings.GITHUB_CLIENT_ID,
-            'scope': settings.GITHUB_SCOPE,
-            'redirect_uri': f'{BASE_URI}{github_callback}?{redirect_uri}'
-        }
-        auth_url = urlencode(params, quote_via=quote_plus)
-
-        assert get_auth_url(redirect) == f'{settings.GITHUB_AUTH_BASE_URL}?{auth_url}'
 
     def test_repo_url(self):
         """Test the github utility repo_url method."""
@@ -227,6 +211,7 @@ class GithubUtilitiesTest(TestCase):
         params = {
             'sort': 'created',
             'direction': 'desc',
+            'per_page': 100,
         }
         params = urlencode(params, quote_via=quote_plus)
         owner = 'gitcoinco'
@@ -243,6 +228,7 @@ class GithubUtilitiesTest(TestCase):
         params = {
             'sort': 'created',
             'direction': 'desc',
+            'per_page': 100,
         }
         params = urlencode(params, quote_via=quote_plus)
         owner = 'gitcoinco'
@@ -252,6 +238,26 @@ class GithubUtilitiesTest(TestCase):
         url = url + '?' + params
         responses.add(responses.GET, url, headers=HEADERS, json={}, status=200)
         get_issue_comments(owner, repo, issue)
+
+        assert responses.calls[0].request.url == url
+
+    @responses.activate
+    def test_get_issue_timeline_events(self):
+        """Test the github utility get_issue_timeline_events method."""
+        params = {
+            'sort': 'created',
+            'direction': 'desc',
+            'per_page': 100,
+            'page': 1
+        }
+        params = urlencode(params, quote_via=quote_plus)
+        owner = 'gitcoinco'
+        repo = 'web'
+        issue = 1
+        url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/timeline'
+        url = url + '?' + params
+        responses.add(responses.GET, url, headers=HEADERS, json={}, status=200)
+        get_issue_timeline_events(owner, repo, issue)
 
         assert responses.calls[0].request.url == url
 

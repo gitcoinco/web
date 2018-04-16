@@ -165,7 +165,7 @@ var tokens = function(network_id) {
       {'addr': '0xaf4dce16da2877f8c9e00544c93b62ac40631f16', 'name': 'MTH', 'decimals': 5},
       {'addr': '0x9214ec02cb71cba0ada6896b8da260736a67ab10', 'name': 'REAL', 'decimals': 18},
       {'addr': '0xe5a7c12972f3bbfe70ed29521c8949b8af6a0970', 'name': 'BLX', 'decimals': 18},
-      {'addr': '0x5cf4e9dfd975c52aa523fb5945a12235624923dc', 'name': 'MPRM', 'decimals': 0 },
+      {'addr': '0x5cf4e9dfd975c52aa523fb5945a12235624923dc', 'name': 'MPRM', 'decimals': 0},
       {'addr': '0xb581e3a7db80fbaa821ab39342e9cbfd2ce33c23', 'name': 'ARCD', 'decimals': 18},
       {'addr': '0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6', 'name': 'RDN', 'decimals': 18},
       {'addr': '0x056017c55aE7AE32d12AeF7C679dF83A85ca75Ff', 'name': 'WYV', 'decimals': 18},

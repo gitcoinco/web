@@ -1,7 +1,22 @@
 {% extends 'yge/base.html' %}
-{% load static %}
-{% block 'scripts' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
 
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+{% block 'scripts' %}
 <script src="{% static "v2/js/amounts.js" %}"></script>
 <script src="{% static "yge/youvegoteth/index.js" %}"></script>
 <script src="{% static "yge/youvegoteth/pre.js" %}"></script>
@@ -11,104 +26,95 @@
 <script src="{% static "yge/youvegoteth/web3alert.js" %}"></script>
 <script src="{% static "yge/lightwallet.min.js" %}"></script>
 <script src="{% static "yge/qrcode.min.js" %}"></script>
-
-
 {% endblock %}
-
 <!-- Main -->
 {% block 'main' %}
 <section id="main">
-    <header>
-        <span class="avatar">
-            <a href="{% url "tip" %}">
-                <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" />
-            </a>
-        </span>
-    </header>
-
-    <div id="send_eth">
-    <h1>Send Tip.</h1>
-        <div>
-            <br>
-            Amount of
-            <select id="token" style="width:100px; margin-bottom: 10px; display: inline;" >
-                <option value="0x0">ETH</option>
-            </select>
-            <input name="amount" type="text" placeholder="1.1" id="amount" value="" style="width: 170px; display: inline;">
-        </div>
-        <div id="usd_amount"> &nbsp;</div>
-        <div>
-            To Github Username:
-            <input type="text" placeholder="@username" id="username" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
-        </div>
-        <div id="advanced_toggle">
-            <a onClick="advancedToggle()" >Advanced >></a>
-        </div>
-        <div id='advanced' style="display:none;">
-            <div>
-                Related Github Issue URL (optional):
-                <input type="text" placeholder="https://github.com/user/repo/pull/n" id="issueURL" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
-            </div>
-            <div>
-                To Email address (optional):
-                <input type="text" placeholder="foo@bar.it" id="email" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
-            </div>
-            <div>
-                From Name (optional):
-                <input type="text" placeholder="Bobby Tables" id="fromName" value="{% if from_handle %}{{ from_handle }}{% endif %}" style="width: 400px; margin-left: auto; margin-right: auto;">
-            </div>
-            <div>
-                From Email (optional):
-                <input type="text" placeholder="you@domain.co" id="fromEmail" value="{% if from_email %}{{ from_email }}{% endif %}" style="width: 400px; margin-left: auto; margin-right: auto;">
-            </div>
-            <div>
-                Expires:
-                <select id="expires" style="width:400px; margin: 0px auto;" >
-                    <option value="86400">1 day</option>
-                    <option value="259200">3 days</option>
-                    <option value="604800" selected="selected">1 week</option>
-                    <option value="1209600">2 weeks</option>
-                    <option value="2592000">1 month</option>
-                    <option value="7776000">3 months</option>
-                    <option value="15552000">6 months</option>
-                    <option value="31536000" selected="">1 year</option>
-                    <option value="9999999999">Never</option>
-                </select>
-            </div>
-            <div>
-                Private Comments (optional):
-                <textarea id="comments_priv" style="width:400px; margin: 0px auto;" ></textarea>
-            </div>
-            <div>
-                Public Comments (optional):
-                <textarea id="comments_public" style="width:400px; margin: 0px auto;" ></textarea>
-            </div>
-        </div>
-        <div>
-            <br>
-            <input type="checkbox" id="tos" value="1" >
-            <label for="tos">I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.</label>
-
-        </div>
-
-      <a href="#" id="send" class="button">Send ⚡️</a>
-
+  <header>
+    <span class="avatar">
+      <a href="{% url "tip" %}">
+        <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" />
+      </a>
+    </span>
+  </header>
+  <div id="send_eth">
+    <h1>{% trans "Send Tip." %}</h1>
+    <div>
+      <br>
+      {% trans "Amount of" %}
+      <select id="token" style="width:100px; margin-bottom: 10px; display: inline;" >
+        <option value="0x0">ETH</option>
+      </select>
+      <input name="amount" type="text" placeholder="1.1" id="amount" value="" style="width: 170px; display: inline;">
     </div>
-
-    <div id="send_eth_done" style="display:none;">
-        <h1>Woo hoo!</h1>
-        <h2>Your <span id="tokenName">ETH</span> has been sent <a id="trans_link" href="" target=new>to the blockchain</a>.</h2>
-        <p id="loading_trans">
-            <a id="trans_link2" href="" target=new>The transaction is still pending.</a><br>This page will auto-update when the transaction is confirmed <br>(but you can close the browser window if you want).
-            <br>
-            <img src="{% static "yge/images/loading_v2.gif" %}" style="max-width: 70px; max-height: 70px;">
-        </p>
-        <hr>
-        <h1><span id=new_username></span> has been notified</h1>
-        <h3>with instructions about how to receive their tip.</h1>
-        <br>
-        <a id="" class="button" href="{% url "send_tip" %}">⬅ Start Over</a>
+    <div id="usd_amount"> &nbsp;</div>
+    <div>
+      {% trans "To Github Username" %}:
+      <input type="text" placeholder="@username" id="username" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
     </div>
-
+    <div id="advanced_toggle">
+      <a onClick="advancedToggle()" >{% trans "Advanced" %} >></a>
+    </div>
+    <div id='advanced' style="display:none;">
+      <div>
+        {% trans "Related Github Issue URL" %} ({% trans "optional" %}):
+        <input type="text" placeholder="https://github.com/user/repo/pull/n" id="issueURL" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
+      </div>
+      <div>
+        {% trans "To Email address" %} ({% trans "optional" %}):
+        <input type="text" placeholder="foo@bar.it" id="email" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
+      </div>
+      <div>
+        {% trans "From Name" %} ({% trans "optional" %}):
+        <input type="text" placeholder="Bobby Tables" id="fromName" value="{% if from_handle %}{{ from_handle }}{% endif %}" style="width: 400px; margin-left: auto; margin-right: auto;">
+      </div>
+      <div>
+        {% trans "From Email" %} ({% trans "optional" %}):
+        <input type="text" placeholder="you@domain.co" id="fromEmail" value="{% if from_email %}{{ from_email }}{% endif %}" style="width: 400px; margin-left: auto; margin-right: auto;">
+      </div>
+      <div>
+        {% trans "Expires" %}:
+        <select id="expires" style="width:400px; margin: 0px auto;" >
+          <option value="86400">1 {% trans "day" %}</option>
+          <option value="259200">3 {% trans "days" %}</option>
+          <option value="604800" selected="selected">1 {% trans "week" %}</option>
+          <option value="1209600">2 {% trans "weeks" %}</option>
+          <option value="2592000">1 {% trans "month" %}</option>
+          <option value="7776000">3 {% trans "months" %}</option>
+          <option value="15552000">6 {% trans "months" %}</option>
+          <option value="31536000" selected="">1 {% trans "year" %}</option>
+          <option value="9999999999">{% trans "Never" %}</option>
+        </select>
+      </div>
+      <div>
+        {% trans "Private Comments" %} ({% trans "optional" %}):
+        <textarea id="comments_priv" style="width:400px; margin: 0px auto;" ></textarea>
+      </div>
+      <div>
+        {% trans "Public Comments" %} ({% trans "optional" %}):
+        <textarea id="comments_public" style="width:400px; margin: 0px auto;" ></textarea>
+      </div>
+    </div>
+    <div>
+      <br>
+      <input type="checkbox" id="tos" value="1" >
+      <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
+    </div>
+    <a href="#" id="send" class="button">{% trans "Send" %} ⚡️</a>
+  </div>
+  <div id="send_eth_done" style="display:none;">
+    <h1>{% trans "Woo hoo!" %}</h1>
+    <h2>{% blocktrans %}Your <span id="tokenName">ETH</span> has been sent <a href="" target="_blank" rel="noopener noreferrer" id="trans_link">to the blockchain</a>.{% endblocktrans %}</h2>
+    <p id="loading_trans">
+      <a href="" target="_blank" rel="noopener noreferrer" id="trans_link2" >{% trans "The transaction is still pending." %}</a><br>{% trans "This page will auto-update when the transaction is confirmed" %} <br>({% trans "but you can close the browser window if you want" %}).
+      <br>
+      <img src="{% static "yge/images/loading_v2.gif" %}" style="max-width: 70px; max-height: 70px;">
+    </p>
+    <hr>
+    <h1>{% blocktrans %}<span id="new_username"></span> has been notified{% endblocktrans %}</h1>
+    <h3>{% trans "with instructions about how to receive their tip." %}</h1>
+    <br>
+    <a id="" class="button" href="{% url "send_tip" %}">⬅ {% trans "Start Over" %}</a>
+  </div>
 </section>
 {% endblock %}

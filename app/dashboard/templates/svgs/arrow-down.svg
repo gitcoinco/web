@@ -1,16 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="10px" height="7px" viewBox="0 0 10 7" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
-    <title>Shape Copy 15</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Gitcoin-Design-Stickersheet" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="components" transform="translate(-4707.000000, -1946.000000)" fill="#0D0764">
-            <g id="text-fields" transform="translate(2258.000000, 176.000000)">
-                <g id="text-fields-labeled-light" transform="translate(0.000000, 1482.000000)">
-                    <polygon id="Shape-Copy-15" points="2457.83333 288 2454 291.833333 2450.16667 288 2449 289.166667 2454 294.166667 2459 289.166667"></polygon>
-                </g>
-            </g>
-        </g>
-    </g>
-</svg>
+<svg width="10" height="7" xmlns="http://www.w3.org/2000/svg"><path d="M8.833 0L5 3.833 1.167 0 0 1.167l5 5 5-5z" fill="#0D0764" fill-rule="evenodd"/></svg>

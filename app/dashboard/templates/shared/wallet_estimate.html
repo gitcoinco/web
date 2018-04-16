@@ -1,0 +1,54 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div class="w-100 mt-2 p-2" id="metamask_context">
+  {% if recommend_gas_price > 30 %}
+    <div class="warning mb-2">{% trans "Warning: the ethereum network is quite congested at the moment." %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "Stats" %}]</a></div>
+  {% endif %}
+  <label id="metamask_label" style="display:none"><img src="{% url "avatar" %}?repo=https://github.com/MetaMask&v=3" width="20px" height="20px">{% blocktrans %}The following MetaMask settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD){% endblocktrans %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "view graph" %}]</a> :
+  </label>
+  <label id="trust_label" style="display:none"><img src="{% url "avatar" %}?repo=https://github.com/TrustWallet&v=3" width="20px" height="20px">{% blocktrans %}The following Trust settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD){% endblocktrans %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "view graph" %}]</a> :
+  </label>
+  <br>
+  <div class="metamask_recc">
+    <label class="form__label" for="gasLimit">{% trans "Gas Limit (units)" %}</label>
+    <input name='gasLimit' id='gasLimit' class="form__input" type="text" disabled="" value="Unknown" />
+  </div>
+  <div class="metamask_recc">
+    <label class="form__label" for="gasPrice">{% trans "Gas Price (gwei)" %}</label>
+    <input max=100 min=0 name='gasPrice' id='gasPrice' class="form__input" type="number" value="{{recommend_gas_price | floatformat}}" step="0.5" />
+  </div>
+  <div>
+    <strong>{% trans "Help" %}:</strong>
+    <ul>
+      <li>
+        <a href="{% url 'web3' %}" target="_blank" rel="noopener noreferrer">{% trans "Why do I need metamask / gas?" %}</a>
+      </li>
+      <li>
+        <a href="https://github.com/gitcoinco/gitcoinco/issues/12" target="_blank" rel="noopener noreferrer">{% trans "What gas price should I use?" %}</a>
+      </li>
+      <li>
+        <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">{% trans "What are current network condtions?" %}</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<script>
+  document.eth_usd_conv_rate = {{ eth_usd_conv_rate }};
+  document.conf_time_spread = {{ conf_time_spread | safe }};
+</script>
+<script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>

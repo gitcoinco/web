@@ -10,6 +10,26 @@ try {
   localStorage = {};
 }
 
+function debounce(func, wait, immediate) {
+  var timeout;
+
+  return function() {
+    var context = this;
+    var args = arguments;
+    var later = function() {
+      timeout = null;
+      if (!immediate)
+        func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow)
+      func.apply(context, args);
+  };
+}
+
 // sets search information default
 var save_sidebar_latest = function() {
 
@@ -93,7 +113,7 @@ var getFilters = function() {
     $.each($('input[name=' + key + ']:checked'), function() {
       if ($(this).attr('val-ui'))
         _filters.push('<a class=filter-tag>' + $(this).attr('val-ui') +
-                  '<i class="fa fa-times" onclick="removeFilter(\'' + key + '\', \'' + $(this).attr('value') + '\')"></i></a>');
+                  '<i class="fas fa-times" onclick="removeFilter(\'' + key + '\', \'' + $(this).attr('value') + '\')"></i></a>');
     });
   }
   $('.filter-tags').html(_filters);
@@ -208,23 +228,69 @@ var process_stats = function(results) {
 
   switch (num) {
     case 0:
-      $('#matches').html('No Results');
+      $('#matches').html(gettext('No Results'));
       $('#funding-info').html('');
       break;
     case 1:
-      $('#matches').html(num + ' Matching Result');
+      $('#matches').html(num + gettext(' Matching Result'));
       $('#funding-info').html("<span id='modifiers'>Funded Issue</span><span id='stats' class='font-body'>(" + stats + ')</span>');
       break;
     default:
-      $('#matches').html(num + ' Matching Results');
+      $('#matches').html(num + gettext(' Matching Results'));
       $('#funding-info').html("<span id='modifiers'>Funded Issues</span><span id='stats' class='font-body'>(" + stats + ')</span>');
   }
 };
 
+var paint_bounties_in_viewport = function(start, max) {
+  document.is_painting_now = true;
+  var num_bounties = document.bounties_html.length;
+
+  for (var i = start; i < num_bounties && i < max; i++) {
+    var html = document.bounties_html[i];
+
+    document.last_bounty_rendered = i;
+    $('#bounties').append(html);
+  }
+
+  $('div.bounty_row.result').each(function() {
+    var href = $(this).attr('href');
+
+    if (typeof $(this).changeElementType !== 'undefined') {
+      $(this).changeElementType('a'); // hack so that users can right click on the element
+    }
+
+    $(this).attr('href', href);
+  });
+  document.is_painting_now = false;
+};
+
+var trigger_scroll = debounce(function() {
+  if (typeof document.bounties_html == 'undefined' || document.bounties_html.length == 0) {
+    return;
+  }
+  var scrollPos = $(document).scrollTop();
+  var last_active_bounty = $('.bounty_row.result:last-child');
+
+  if (last_active_bounty.length == 0) {
+    return;
+  }
+  var window_height = $(window).height();
+  var have_painted_all_bounties = document.bounties_html.length <= document.last_bounty_rendered;
+  var buffer = 500;
+  var does_need_to_paint_more = !document.is_painting_now && !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
+
+  if (does_need_to_paint_more) {
+    paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + 6);
+  }
+}, 200);
+
+$(window).scroll(trigger_scroll);
+$('body').bind('touchmove', trigger_scroll);
+
 var refreshBounties = function() {
   // manage state
   var keywords = $('#keywords').val();
-  var title = 'Issue Explorer | Gitcoin';
+  var title = gettext('Issue Explorer | Gitcoin');
 
   if (keywords) {
     title = keywords + ' | ' + title;
@@ -258,7 +324,9 @@ var refreshBounties = function() {
     if (results.length === 0) {
       $('.nonefound').css('display', 'block');
     }
-
+    document.is_painting_now = false;
+    document.last_bounty_rendered = 0;
+    document.bounties_html = [];
     for (var i = 0; i < results.length; i++) {
       // setup
       var result = results[i];
@@ -284,29 +352,48 @@ var refreshBounties = function() {
       result['title'] = result['title'] ? result['title'] : result['github_url'];
       var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
 
-      result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ' + (is_expired ? ' Expired' : ('Expires in ' + timeLeft)));
+      result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
+
+      if (result['status'] === 'done')
+        result['p'] += 'Done';
+      if (result['fulfillment_accepted_on']) {
+        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
+      } else if (result['status'] === 'started') {
+        result['p'] += 'Started';
+        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
+      } else if (result['status'] === 'submitted') {
+        result['p'] += 'Submitted';
+        if (result['fulfillment_submitted_on']) {
+          result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
+        }
+      } else if (result['status'] == 'cancelled') {
+        result['p'] += 'Cancelled';
+        if (result['canceled_on']) {
+          result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
+        }
+      } else if (is_expired) {
+        var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
+
+        result['p'] += ('Expired ' + time_ago + ' ago');
+      } else {
+        var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
+
+        result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
+      }
+
       result['watch'] = 'Watch';
 
       // render the template
       var tmpl = $.templates('#result');
       var html = tmpl.render(result);
 
-      $('#bounties').append(html);
+      document.bounties_html[i] = html;
     }
-
-    $('.bounty_row.result').each(function() {
-      var href = $(this).attr('href');
-
-      if (typeof $(this).changeElementType !== 'undefined') {
-        $(this).changeElementType('a'); // hack so that users can right click on the element
-      }
-
-      $(this).attr('href', href);
-    });
+    paint_bounties_in_viewport(0, 10);
 
     process_stats(results);
   }).fail(function() {
-    _alert({ message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
+    _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
   }).always(function() {
     $('.loading').css('display', 'none');
   });
@@ -446,7 +533,7 @@ $(document).ready(function() {
     var is_validated = validateEmail(email);
 
     if (!is_validated) {
-      _alert({ message: 'Please enter a valid email address.' }, 'warning');
+      _alert({ message: gettext('Please enter a valid email address.') }, 'warning');
     } else {
       var url = '/sync/search_save';
 
@@ -457,10 +544,10 @@ $(document).ready(function() {
         var status = response['status'];
 
         if (status == 200) {
-          _alert({ message: "You're in! Keep an eye on your inbox for the next funding listing."}, 'success');
+          _alert({message: gettext("You're in! Keep an eye on your inbox for the next funding listing.")}, 'success');
           $.modal.close();
         } else {
-          _alert({ message: response['msg']}, 'error');
+          _alert({message: response['msg']}, 'error');
         }
       });
     }
@@ -476,6 +563,4 @@ $(document).ready(function() {
     emailSubscribe();
     e.preventDefault();
   });
-
-
 });

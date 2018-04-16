@@ -187,6 +187,20 @@ var remove_interest = function(bounty_pk) {
 var mutate_interest = function(bounty_pk, direction) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
+  $('#submit').toggleClass('none');
+  $('#interest a').toggleClass('btn')
+    .toggleClass('btn-small')
+    .toggleClass('button')
+    .toggleClass('button--primary');
+
+  if (direction === 'new') {
+    _alert({message: "Thanks for letting us know that you're ready to start work."}, 'success');
+    $('#interest a').attr('id', 'btn-white');
+  } else if (direction === 'remove') {
+    _alert({message: "You've stopped working on this, thanks for letting us know."}, 'success');
+    $('#interest a').attr('id', '');
+  }
+
   $.post(request_url, function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
@@ -199,39 +213,57 @@ var mutate_interest = function(bounty_pk, direction) {
   });
 };
 
+
+var uninterested = function(bounty_pk, profileId) {
+  var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + profileId + '/uninterested/';
+
+  $.post(request_url, function(result) {
+    result = sanitizeAPIResults(result);
+    if (result.success) {
+      _alert({message: 'Contributor removed from bounty.'}, 'success');
+      pull_interest_list(bounty_pk);
+      return true;
+    }
+    return false;
+  }).fail(function(result) {
+    _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
+  });
+};
+
+
 /** Pulls the list of interested profiles from the server. */
 var pull_interest_list = function(bounty_pk, callback) {
-  profiles = [];
   document.interested = false;
-  $.getJSON('/actions/bounty/' + bounty_pk + '/interest/', function(data) {
-    data = sanitizeAPIResults(JSON.parse(data));
-    $.each(data, function(index, value) {
-      var profile = {
-        local_avatar_url: value.local_avatar_url,
-        handle: value.handle,
-        url: value.url
-      };
-      // add to template
+  var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
+  var started = [];
 
-      profiles.push(profile);
-      // update document.interested
-      if (profile.handle == document.contxt.github_handle) {
-        document.interested = true;
-      }
+  $.get(uri, function(results) {
+    render_activity(results[0]);
+    if (results[0].interested) {
+      var interested = results[0].interested;
 
-    });
-    var tmpl = $.templates('#interested');
-    var html = tmpl.render(profiles);
-
-    if (profiles.length == 0) {
-      html = 'No one has started work on this issue yet.';
+      interested.forEach(function(_interested) {
+        started.push(
+          profileHtml(_interested.profile.handle)
+        );
+        if (_interested.profile.handle == document.contxt.github_handle) {
+          document.interested = true;
+        }
+      });
     }
-    $('#interest_list').html(html);
+    if (started.length == 0) {
+      started.push('<i class="fas fa-minus"></i>');
+    }
+    $('#started_owners_username').html(started);
     if (typeof callback != 'undefined') {
       callback(document.interested);
     }
   });
-  return profiles;
+};
+
+var profileHtml = function(handle, name) {
+  return '<span><a href="https://gitcoin.co/profile/' +
+    handle + '" target="_blank">' + (name ? name : handle) + '</span></a>';
 };
 
 // Update the list of bounty submitters.
@@ -278,7 +310,13 @@ function getParam(parameterName) {
   return result;
 }
 
-function timeDifference(current, previous, remaining) {
+function timeDifference(current, previous, remaining, now_threshold_seconds) {
+
+  var elapsed = current - previous;
+
+  if (now_threshold_seconds && (now_threshold_seconds * 1000) > Math.abs(elapsed)) {
+    return 'now';
+  }
 
   if (current < previous) {
     return 'in ' + timeDifference(previous, current).replace(' ago', '');
@@ -289,8 +327,6 @@ function timeDifference(current, previous, remaining) {
   var msPerDay = msPerHour * 24;
   var msPerMonth = msPerDay * 30;
   var msPerYear = msPerDay * 365;
-
-  var elapsed = current - previous;
 
   var amt;
   var unit;
@@ -468,14 +504,14 @@ var randomElement = function(array) {
 
 var trigger_sidebar_web3_disabled = function() {
   $('#upper_left').addClass('disabled');
-  $('#sidebar_head').html("<i class='fa fa-question'></i>");
-  $('#sidebar_p').html("<p>Web3 disabled</p><p>Please install <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a> <br> <a target=new href='/web3'>What is Metamask and why do I need it?</a>.</p>");
+  $('#sidebar_head').html('<i class="fa fa-question"></i>');
+  $('#sidebar_p').html('<p>Web3 disabled</p><p>Please install <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a> <br> <a href="/web3" target="_blank" rel="noopener noreferrer">What is Metamask and why do I need it?</a>.</p>');
 };
 
 var trigger_sidebar_web3_locked = function() {
   $('#upper_left').addClass('disabled');
-  $('#sidebar_head').html("<i class='fa fa-lock'></i>");
-  $('#sidebar_p').html('<p>Web3 locked</p><p>Please unlock <a target="_blank" rel="noopener noreferrer" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">Metamask</a>.<p>');
+  $('#sidebar_head').html('<i class="fa fa-lock"></i>');
+  $('#sidebar_p').html('<p>Web3 locked</p><p>Please unlock <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>.<p>');
 };
 
 var mixpanel_track_once = function(event, params) {
@@ -510,6 +546,7 @@ var trigger_sidebar_web3 = function(network) {
   var sidebar_p = '<p>Connected to ' + network + '.</p>';
 
   if (is_supported_network) {
+    $('#upper_left').removeClass('disabled');
     $('#sidebar_head').html("<i class='fa fa-wifi'></i>");
     $('#sidebar_p').html('<p>Web3 enabled<p>' + sidebar_p);
   } else {
@@ -626,7 +663,7 @@ var listen_for_web3_changes = function() {
   if (typeof web3 == 'undefined') {
     trigger_sidebar_web3_disabled();
     trigger_form_hooks();
-  } else if (!web3.eth.coinbase) {
+  } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
     trigger_sidebar_web3_locked();
     trigger_form_hooks();
   } else {
@@ -679,3 +716,10 @@ window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 300);
 });
 
+var setUsdAmount = function(event) {
+  var amount = $('input[name=amount]').val();
+  var denomination = $('#token option:selected').text();
+  var estimate = getUSDEstimate(amount, denomination, function(estimate) {
+    $('#usd_amount').html(estimate);
+  });
+};
