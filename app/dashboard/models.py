@@ -18,7 +18,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import decimal
 import logging
 from datetime import datetime
 from urllib.parse import urlsplit
@@ -32,12 +31,10 @@ from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
-from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
-import rollbar
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -217,7 +214,7 @@ class Bounty(SuperModel):
     @property
     def can_submit_after_expiration_date(self):
         if self.is_legacy:
-            # legacy bounties could submit after expirration date
+            # legacy bounties could submit after expiration date
             return True
 
         # standardbounties
@@ -229,7 +226,6 @@ class Bounty(SuperModel):
 
         # if contract_deadline > ipfs_deadline, then by definition, can be submitted after expiry date
         return contract_deadline > ipfs_deadline
-
 
     @property
     def title_or_desc(self):
@@ -402,8 +398,7 @@ class Bounty(SuperModel):
     def value_in_usdt(self):
         if self.status in self.OPEN_STATUSES:
             return self.value_in_usdt_now
-        else:
-            return self.value_in_usdt_then
+        return self.value_in_usdt_then
 
     @property
     def value_in_usdt_then(self):
@@ -435,20 +430,17 @@ class Bounty(SuperModel):
     def token_value_in_usdt(self):
         if self.status in self.OPEN_STATUSES:
             return self.token_value_in_usdt_now
-        else:
-            return self.token_value_in_usdt_then
+        return self.token_value_in_usdt_then
 
     @property
     def token_value_time_peg(self):
         if self.status in self.OPEN_STATUSES:
             return timezone.now()
-        else:
-            return self.web3_created
+        return self.web3_created
 
     @property
     def desc(self):
-        return "{} {} {} {}".format(naturaltime(self.web3_created), self.idx_project_length, self.bounty_type,
-                                    self.experience_level)
+        return f"{naturaltime(self.web3_created)} {self.idx_project_length} {self.bounty_type} {self.experience_level}"
 
     @property
     def turnaround_time_accepted(self):
@@ -652,7 +644,7 @@ class Subscription(SuperModel):
     ip = models.CharField(max_length=50)
 
     def __str__(self):
-        return "{} {}".format(self.email, (self.created_on))
+        return f"{self.email} {self.created_on}"
 
 
 class Tip(SuperModel):
@@ -816,84 +808,13 @@ class Profile(SuperModel):
     last_sync_date = models.DateTimeField(null=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
-    suppress_leaderboard = models.BooleanField(default=False, help_text='If this option is chosen, we will remove your profile information from the leaderboard')
-
-    _sample_data = '''
-        {
-          "public_repos": 9,
-          "site_admin": false,
-          "updated_at": "2017-10-09T22:55:57Z",
-          "gravatar_id": "",
-          "hireable": null,
-          "id": 30044474,
-          "followers_url": "https:\/\/api.github.com\/users\/gitcoinco\/followers",
-          "following_url": "https:\/\/api.github.com\/users\/gitcoinco\/following{\/other_user}",
-          "blog": "https:\/\/gitcoin.co",
-          "followers": 0,
-          "location": "Boulder, CO",
-          "type": "Organization",
-          "email": "founders@gitcoin.co",
-          "bio": "Grow Open Source",
-          "gists_url": "https:\/\/api.github.com\/users\/gitcoinco\/gists{\/gist_id}",
-          "company": null,
-          "events_url": "https:\/\/api.github.com\/users\/gitcoinco\/events{\/privacy}",
-          "html_url": "https:\/\/github.com\/gitcoinco",
-          "subscriptions_url": "https:\/\/api.github.com\/users\/gitcoinco\/subscriptions",
-          "received_events_url": "https:\/\/api.github.com\/users\/gitcoinco\/received_events",
-          "starred_url": "https:\/\/api.github.com\/users\/gitcoinco\/starred{\/owner}{\/repo}",
-          "public_gists": 0,
-          "name": "Gitcoin Core",
-          "organizations_url": "https:\/\/api.github.com\/users\/gitcoinco\/orgs",
-          "url": "https:\/\/api.github.com\/users\/gitcoinco",
-          "created_at": "2017-07-10T10:50:51Z",
-          "avatar_url": "https:\/\/avatars1.githubusercontent.com\/u\/30044474?v=4",
-          "repos_url": "https:\/\/api.github.com\/users\/gitcoinco\/repos",
-          "following": 0,
-          "login": "gitcoinco"
-        }
-    '''
+    suppress_leaderboard = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, we will remove your profile information from the leaderboard',
+    )
+    # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
+    # Sample repos_data: https://gist.github.com/mbeacom/c9e4fda491987cb9728ee65b114d42c7
     repos_data = JSONField(default={})
-
-    _sample_data = '''
-    [
-      {
-        "issues_url": "https:\/\/api.github.com\/repos\/gitcoinco\/chrome_ext\/issues{\/number}",
-        "deployments_url": "https:\/\/api.github.com\/repos\/gitcoinco\/chrome_ext\/deployments",
-        "has_wiki": true,
-        "forks_url": "https:\/\/api.github.com\/repos\/gitcoinco\/chrome_ext\/forks",
-        "mirror_url": null,
-        "issue_events_url": "https:\/\/api.github.com\/repos\/gitcoinco\/chrome_ext\/issues\/events{\/number}",
-        "stargazers_count": 1,
-        "subscription_url": "https:\/\/api.github.com\/repos\/gitcoinco\/chrome_ext\/subscription",
-        "merges_url": "https:\/\/api.github.com\/repos\/gitcoinco\/chrome_ext\/merges",
-        "has_pages": false,
-        "updated_at": "2017-09-25T11:39:03Z",
-        "private": false,
-        "pulls_url": "https:\/\/api.github.com\/repos\/gitcoinco\/chrome_ext\/pulls{\/number}",
-        "issue_comment_url": "https:\/\/api.github.com\/repos\/gitcoinco\/chrome_ext\/issues\/comments{\/number}",
-        "full_name": "gitcoinco\/chrome_ext",
-        "owner": {
-          "following_url": "https:\/\/api.github.com\/users\/gitcoinco\/following{\/other_user}",
-          "events_url": "https:\/\/api.github.com\/users\/gitcoinco\/events{\/privacy}",
-          "organizations_url": "https:\/\/api.github.com\/users\/gitcoinco\/orgs",
-          "url": "https:\/\/api.github.com\/users\/gitcoinco",
-          "gists_url": "https:\/\/api.github.com\/users\/gitcoinco\/gists{\/gist_id}",
-          "html_url": "https:\/\/github.com\/gitcoinco",
-          "subscriptions_url": "https:\/\/api.github.com\/users\/gitcoinco\/subscriptions",
-          "avatar_url": "https:\/\/avatars1.githubusercontent.com\/u\/30044474?v=4",
-          "repos_url": "https:\/\/api.github.com\/users\/gitcoinco\/repos",
-          "received_events_url": "https:\/\/api.github.com\/users\/gitcoinco\/received_events",
-          "gravatar_id": "",
-          "starred_url": "https:\/\/api.github.com\/users\/gitcoinco\/starred{\/owner}{\/repo}",
-          "site_admin": false,
-          "login": "gitcoinco",
-          "type": "Organization",
-          "id": 30044474,
-          "followers_url": "https:\/\/api.github.com\/users\/gitcoinco\/followers"
-        },
-        ...
-    ]
-    '''
 
     @property
     def is_org(self):
@@ -951,7 +872,8 @@ class Profile(SuperModel):
         role = stats[0][0]
         total_funded_participated = stats[1][0]
         plural = 's' if total_funded_participated != 1 else ''
-        return "@{} is a {} who has participated in {} funded issue{} on Gitcoin".format(self.handle, role, total_funded_participated, plural)
+        return f"@{self.handle} is a {role} who has participated in {total_funded_participated} " \
+               f"funded issue{plural} on Gitcoin"
 
     @property
     def stats(self):
@@ -976,8 +898,8 @@ class Profile(SuperModel):
             success_rate = 'N/A'
             loyalty_rate = 'N/A'
         else:
-            success_rate = "{}%".format(success_rate)
-            loyalty_rate = "{}x".format(loyalty_rate)
+            success_rate = f"{success_rate}%"
+            loyalty_rate = f"{loyalty_rate}x"
         if role == 'newbie':
             return [
                 (role, 'Status'),
@@ -1002,7 +924,7 @@ class Profile(SuperModel):
 
     @property
     def github_url(self):
-        return "https://github.com/{}".format(self.handle)
+        return f"https://github.com/{self.handle}"
 
     @property
     def local_avatar_url(self):

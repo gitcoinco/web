@@ -685,31 +685,26 @@ def profile(request, handle):
         handle (str): The profile handle.
 
     """
-    if not handle and request.user and request.user.is_authenticated:
-        handle = request.user.username
-    elif not handle:
-        handle = request.session.get('handle')
-
-    if not handle:
-        print('IN THE NOT HANDLE')
+    if not handle and not request.user.is_authenticated:
         raise Http404
+    elif not handle:
+        handle = request.user.username
+        profile = request.user.profile
+    else:
+        profile = profile_helper(handle)
 
     params = {
-        'title': _('Profile'),
+        'title': f"@{handle}",
         'active': 'profile_details',
         'newsletter_headline': _('Be the first to know about new funded issues.'),
+        'card_title': f'@{handle} | Gitcoin',
+        'card_desc': profile.desc,
+        'avatar_url': profile.local_avatar_url,
+        'profile': profile,
+        'stats': profile.stats,
+        'bounties': profile.bounties,
+        'tips': Tip.objects.filter(username=handle, network='mainnet'),
     }
-
-    profile = profile_helper(handle)
-    params['card_title'] = f"@{handle} | Gitcoin"
-    params['card_desc'] = profile.desc
-    params['title'] = f"@{handle}"
-    params['avatar_url'] = profile.local_avatar_url
-    params['profile'] = profile
-    params['stats'] = profile.stats
-    params['bounties'] = profile.bounties
-    params['tips'] = Tip.objects.filter(username=handle, network='mainnet')
-
     return TemplateResponse(request, 'profile_details.html', params)
 
 
