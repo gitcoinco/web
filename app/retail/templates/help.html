@@ -103,14 +103,14 @@
         </div>
         <div class="row mt-2 mb-2 pb-3 tutorial_item">
             <div class="col col-12 text-left">
-                  <ul>
+                <ul>
                     {% for item in tutorials %}
-                      <li class='tutorial_parent pb-4 pt-4'>
-                          <img src={{item.img}}/>
-                          <a href="{{item.url}}">{{item.title}}</a>
-                      </li>
+                    <li class='tutorial_parent pb-4 pt-4'>
+                        <img src="{{item.img}}" />
+                        <a href="{{item.url}}">{{item.title}}</a>
+                    </li>
                     {% endfor %}
-                  </ul>
+                </ul>
             </div>
         </div>
     </div>
