@@ -47,7 +47,7 @@ class Command(BaseCommand):
             return
 
         num_days_back_to_warn = 3
-        num_days_back_to_delete_interest = 7
+        num_days_back_to_delete_interest = 10
 
         days = [i * 3 for i in range(1, 15)]
         if settings.DEBUG:
