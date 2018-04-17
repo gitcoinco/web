@@ -101,12 +101,16 @@ class DashboardEmbedTest(TestCase):
           experience_level='Intermediate',
           raw_data={},
         )
-        assert embed(self.factory.get('https://github.com/gitcoinco/web/issues/11?repo=https://github.com/gitcoinco/web')).status_code in [200, 422]
+        assert embed(self.factory.get(
+          'https://github.com/gitcoinco/web/issues/11?repo=https://github.com/gitcoinco/web'
+        )).status_code in [200, 422]
 
     def test_avatar(self):
         try:
             os.makedirs('assets/other/avatars/')
         except FileExistsError:
             pass
-        assert avatar(self.factory.get('https://github.com/gitcoinco/web/issues/11?repo=https://github.com/gitcoinco/web')).status_code in [200, 422]
+        assert avatar(self.factory.get(
+          'https://github.com/gitcoinco/web/issues/11?repo=https://github.com/gitcoinco/web'
+        )).status_code in [200, 422]
         shutil.rmtree('assets/other/avatars/')
