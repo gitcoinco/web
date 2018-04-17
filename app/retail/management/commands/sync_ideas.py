@@ -26,12 +26,14 @@ class Command(BaseCommand):
                         idea_id = thread.get('identifiers')[0].split('-')[1]
                         print(thread)
                         if(apply_trending_score):
-                            Idea.objects.filter(id=idea_id).update(trending_score = trending_score)
+                            Idea.objects.filter(id=idea_id).update(trending_score=trending_score)
                         else:
-                            Idea.objects.filter(id=idea_id).update(posts = thread.get("posts"), likes = thread.get("likes"))
+                            Idea.objects.filter(id=idea_id).update(posts=thread.get("posts"),
+                                                                   likes=thread.get("likes"))
+
     @staticmethod
     def query_threads(url, payload):
-        return requests.get(url, params = payload)
+        return requests.get(url, params=payload)
 
     @staticmethod
     def has_next(response):
@@ -44,7 +46,7 @@ class Command(BaseCommand):
         return response.json().get('response')
 
     def handle(self, *args, **options):
-        #config
+
         public_key = settings.DISQUS_PUBLIC_KEY
         forum = settings.DISQUS_FORUM_NAME
         limit = 100
@@ -56,8 +58,10 @@ class Command(BaseCommand):
         Command.process_threads(threads, False)
         while True:
             if not has_next:
-                break            
-            payload = {'api_key': public_key, 'cursor': r.json().get('cursor').get('next'), 'forum': forum, 'limit': limit}
+                break
+            payload = {'api_key': public_key,
+                       'cursor': r.json().get('cursor').get('next'),
+                       'forum': forum, 'limit': limit}
             r = Command.query_threads('https://disqus.com/api/3.0/forums/listThreads.json', payload)
             threads = Command.get_threads(r)
             Command.process_threads(threads, False)

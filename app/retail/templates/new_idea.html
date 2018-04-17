@@ -35,13 +35,10 @@
                 <div class="d-flex justify-content-md-between flex-wrap flex-md-nowrap">
                     <div class="col-md-5 col-sm-12">                  
                         <label class="form__label" for="email">{% trans "Email address" %}</label>
-                        <input type=text id="email" name=email class="form__input" placeholder='you@somewhere' value="{{email}}" required>                  
+                        <input type=text id="email" name=email class="form__input" placeholder='you@somewhere' value="{% if email %}{{email}}{% else %}{% endif %}" required>                  
                       </div>
                       <div class="col-md-5 col-sm-12">
                         <label class="form__label" for="githubUsernam">{% trans "Github Username" %}</label>
-                        {% if not github_handle %}
-                          <a href="{% url "github:github_auth" %}?redirect_uri={{ request.get_full_path }}">({% trans "Login" %})</a>
-                        {% endif %}
                         <input name="githubUsername" id="github_username" type=text class="form__input" placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}">
                       </div>
                 </div>

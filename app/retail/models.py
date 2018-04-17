@@ -1,7 +1,7 @@
+from django.conf import settings
 from django.db import models
 
 from economy.models import SuperModel
-from github.utils import get_user
 from rest_framework import serializers
 
 
@@ -11,7 +11,7 @@ class Idea(SuperModel):
     full_name = models.CharField(max_length=255)
     email = models.EmailField(max_length=255)
     github_username = models.CharField(max_length=255)
-    avatar_url = models.CharField(max_length=255)
+    profile = models.ForeignKey('dashboard.Profile', related_name='ideas', on_delete=models.SET_NULL, null=True)
     summary = models.CharField(max_length=100)
     more_info = models.CharField(max_length=500)
     looking_for_capital = models.BooleanField()
@@ -25,17 +25,18 @@ class Idea(SuperModel):
     posts = models.IntegerField(default=0)
     likes = models.IntegerField(default=0)
     trending_score = models.IntegerField(default=101)
-    
-    def load_avatar_url(self):
-        try:            
-            response = get_user(self.github_username)
-            self.avatar_url = response['avatar_url']
-        except Exception as e:
-            print(e)
+
+    @property
+    def local_avatar_url(self):
+        if self.profile:
+            self.profile.local_avatar_url
+        else:
+            f"{settings.BASE_URL}funding/avatar?repo=https://github.com/self&v=3"
 
     @property
     def thread_ident(self):
         return f'idea-{self.id}'
+
 
 class IdeaSerializer(serializers.BaseSerializer):
     """Handle serializing the Idea object."""
@@ -44,11 +45,11 @@ class IdeaSerializer(serializers.BaseSerializer):
         """Define the idea serializer metadata."""
 
         model = Idea
-        fields = ('id', 'full_name', 'email', 'github_username', 'summary', 
-        'more_info', 'looking_for_capital', 'looking_for_builders',
-        'looking_for_designers', 'looking_for_customers', 'capital_exists',
-        'builders_exists', 'designers_exists', 'customer_exists', 'avatar_url',
-        'posts', 'likes', 'thread_ident')
+        fields = ('id', 'full_name', 'email', 'github_username', 'summary',
+                  'more_info', 'looking_for_capital', 'looking_for_builders'
+                  'looking_for_designers', 'looking_for_customers', 'capital_exists',
+                  'builders_exists', 'designers_exists', 'customer_exists', 'avatar_url',
+                  'posts', 'likes', 'thread_ident')
 
     def to_representation(self, instance):
         """Provide the serialized representation of the Idea.
@@ -75,7 +76,7 @@ class IdeaSerializer(serializers.BaseSerializer):
             'builders_exists': instance.builders_exists,
             'designers_exists': instance.designers_exists,
             'customer_exists': instance.customer_exists,
-            'avatar_url': instance.avatar_url,
+            'avatar_url': instance.local_avatar_url,
             'posts': instance.posts,
             'likes': instance.likes,
             'thread_ident': instance.thread_ident

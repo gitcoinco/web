@@ -32,7 +32,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-
+from dashboard.models import Profile
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from retail.models import Idea, IdeaSerializer
@@ -546,27 +546,28 @@ def browser_extension_firefox(request):
     return redirect('https://addons.mozilla.org/en-US/firefox/addon/gitcoin/')
 
 
-def idea_show(request, idea_id):        
+def idea_show(request, idea_id):
     return TemplateResponse(request, 'idea.html', {})
 
 
 @csrf_exempt
-def new_idea(request):    
+def new_idea(request):
     return TemplateResponse(request, 'new_idea.html', {})
 
 
 @require_POST
 @csrf_exempt
-def create_idea(request):        
+def create_idea(request):
     idea = Idea(**json.loads(request.body))
-    idea.load_avatar_url()
-    idea.save(force_insert=True)    
-    return JsonResponse({'success': True, 'ideaId': idea.id}) 
+    if request.user.is_authenticated:
+        idea.profile = Profile.objects.get(pk=request.user.profile.id)
+    idea.save(force_insert=True)
+    return JsonResponse({'success': True, 'ideaId': idea.id})
 
 
 @require_GET
 @csrf_exempt
-def idea_get(request, idea_id):  
+def idea_get(request, idea_id):
     idea = Idea.objects.get(pk=idea_id)
 
     return JsonResponse({
@@ -592,22 +593,21 @@ def ideas_fetch(request):
     except EmptyPage:
         return JsonResponse([])
 
-
     ideas_data = []
     for idea in ideas:
         idea_data = IdeaSerializer(idea).data
-        ideas_data.append(idea_data);    
+        ideas_data.append(idea_data)
 
-    return JsonResponse( {
+    return JsonResponse({
         'total_pages': ideas.paginator.num_pages,
         'ideas': ideas_data,
         'success': True
-     })    
+     })
 
 
 def ideas_list(request):
 
-    return TemplateResponse(request, 'ideas_list.html', {'active' : 'ideas_list'})
+    return TemplateResponse(request, 'ideas_list.html', {'active': 'ideas_list'})
 
 
 def itunes(request):
