@@ -224,7 +224,12 @@ def viz_steamgraph(request, key='open'):
 
 
 @staff_member_required
-def viz_heatmap(request, key='email_open'):
+def viz_calendar(request, key='email_open', template='calendar'):
+    return viz_heatmap(request, key, template)
+
+
+@staff_member_required
+def viz_heatmap(request, key='email_open', template='heatmap'):
     """Render a heatmap graph visualization.
 
     Args:
@@ -238,31 +243,52 @@ def viz_heatmap(request, key='email_open'):
     time_now = timezone.now()
     stats = Stat.objects.filter(
         created_on__lt=time_now,
-        created_on__gt=(time_now - timezone.timedelta(weeks=2))
     )
+    if template == 'calendar':
+        stats = stats.filter(created_on__hour=1)
+    else:
+        stats = stats.filter(created_on__gt=(time_now - timezone.timedelta(weeks=2)))
+
     type_options = stats.distinct('key').values_list('key', flat=True)
     stats = stats.filter(key=key).order_by('-created_on')
 
     if request.GET.get('data'):
-        _max = max([stat.val_since_hour for stat in stats])
-        output = {
-            # {"timestamp": "2014-10-16T22:00:00", "value": {"PM2.5": 61.92}}
-            "data": [{
-                'timestamp': stat.created_on.strftime("%Y-%m-%dT%H:00:00"),
-                'value': stat.val_since_hour * 800.0 / _max,
-            } for stat in stats]
-        }
-        # Example output: https://gist.github.com/mbeacom/44f0114666d69bb5bf2756216c43b64d
-        return JsonResponse(output)
+        if request.GET.get('format') == 'json':
+            _max = max([stat.val_since_hour for stat in stats])
+            output = {
+                # {"timestamp": "2014-10-16T22:00:00", "value": {"PM2.5": 61.92}}
+                "data": [{
+                    'timestamp': stat.created_on.strftime("%Y-%m-%dT%H:00:00"),
+                    'value': stat.val_since_hour * 800.0 / _max,
+                } for stat in stats]
+            }
+            # Example output: https://gist.github.com/mbeacom/44f0114666d69bb5bf2756216c43b64d
+            return JsonResponse(output)
+        else:
+            #csv
+            rows = [
+                ['Date', 'Value']
+            ]
+            _max = max([stat.val_since_yesterday for stat in stats])
+            for stat in stats:
+                date = stat.created_on.strftime("%Y-%m-%d")
+                value = str(stat.val_since_yesterday / _max)
+                rows.append([date, value])
+            output_rows = []
+            for row in rows:
+                row = ",".join(row)
+                output_rows.append(row)
 
+            output = "\n".join(output_rows)
+            return HttpResponse(output)            
     params = {
         'stats': stats,
         'key': key,
-        'page_route': 'heatmap',
+        'page_route': template,
         'type_options': type_options,
         'viz_type': key,
     }
-    return TemplateResponse(request, 'dataviz/heatmap.html', params)
+    return TemplateResponse(request, f'dataviz/{template}.html', params)
 
 
 @staff_member_required

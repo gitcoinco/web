@@ -66,11 +66,16 @@
     <img src="{% static "v2/images/dataviz/sankey.png" %}">
     <a href='{% url 'viz_sankey' %}'>Sankey</a>
   </li>
+  <li>
+    <img src="{% static "v2/images/dataviz/calendar.png" %}">
+    <a href='{% url 'viz_calendar' %}'>Calendar</a>
+  </li>
 </ul>
 
 <style>
 #dataviz img {
     max-width: 100px;
+    margin-bottom: -50px;
 }
 #dataviz a {
     font-size: 28px;
@@ -78,8 +83,9 @@
 }
 #dataviz li {
     list-style: none;
-    border-bottom: 1px solid #bbb;
-    padding: 15px;
+    display: inline-block;
+    width: 300px;
+    height: 100px;
 }
 </style>
 {% endblock %}
