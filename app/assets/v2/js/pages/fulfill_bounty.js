@@ -41,7 +41,7 @@ window.onload = function() {
         var githubUsername = data.githubUsername;
         var issueURL = data.issueURL;
         var notificationEmail = data.notificationEmail;
-        var fullName = data.fullName;
+        var githubPRLink = data.githubPRLink;
 
         localStorage['githubUsername'] = githubUsername;
 
@@ -69,7 +69,7 @@ window.onload = function() {
             sourceFileHash: '',
             sourceDirectoryHash: '',
             fulfiller: {
-              name: fullName,
+              githubPRLink: githubPRLink,
               email: notificationEmail,
               githubUsername: githubUsername,
               address: account

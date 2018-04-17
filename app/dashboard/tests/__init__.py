@@ -5,5 +5,5 @@ from .test_dashboard_utils import DashboardUtilsTest
 from .test_notifications import DashboardNotificationsTest
 
 
-__all__ = ['DashboardHelpersTest', 'DashboardModelsTest',
+__all__ = ['DashboardEmbedTest', 'DashboardHelpersTest', 'DashboardModelsTest',
            'DashboardUtilsTest', 'DashboardNotificationsTest']

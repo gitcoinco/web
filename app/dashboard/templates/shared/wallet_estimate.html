@@ -14,12 +14,14 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n %}
+{% load i18n static %}
 <div class="w-100 mt-2 p-2" id="metamask_context">
   {% if recommend_gas_price > 30 %}
     <div class="warning mb-2">{% trans "Warning: the ethereum network is quite congested at the moment." %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "Stats" %}]</a></div>
   {% endif %}
-  <label><img src="{% url "avatar" %}?repo=https://github.com/MetaMask&v=3" width="20px" height="20px">{% blocktrans %}The following MetaMask settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD){% endblocktrans %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "view graph" %}]</a> :
+  <label id="metamask_label" style="display:none"><img src="{% url "avatar" %}?repo=https://github.com/MetaMask&v=3" width="20px" height="20px">{% blocktrans %}The following MetaMask settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD){% endblocktrans %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "view graph" %}]</a> :
+  </label>
+  <label id="trust_label" style="display:none"><img src="{% url "avatar" %}?repo=https://github.com/TrustWallet&v=3" width="20px" height="20px">{% blocktrans %}The following Trust settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD){% endblocktrans %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "view graph" %}]</a> :
   </label>
   <br>
   <div class="metamask_recc">
@@ -49,3 +51,4 @@
   document.eth_usd_conv_rate = {{ eth_usd_conv_rate }};
   document.conf_time_spread = {{ conf_time_spread | safe }};
 </script>
+<script src="{% static "v2/js/pages/wallet_estimate.js" %}"></script>

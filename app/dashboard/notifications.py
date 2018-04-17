@@ -24,7 +24,6 @@ import sys
 from urllib.parse import urlparse as parse
 
 from django.conf import settings
-from django.utils import timezone
 
 import rollbar
 import twitter
@@ -130,7 +129,7 @@ def maybe_market_to_twitter(bounty, event_name):
                 if response != 'Error' and 'http' in response:
                     url = response
                 is_short = True
-        except:
+        except Exception:
             pass
 
     new_tweet = tweet_txt.format(
@@ -177,8 +176,8 @@ def maybe_market_to_slack(bounty, event_name):
     try:
         conv_details = f"@ (${round(convert_token_to_usdt(bounty.token_name),2)}/{bounty.token_name})"
         usdt_details = f"({bounty.value_in_usdt_now} USD {conv_details} "
-    except:
-        pass #no USD conversion rate
+    except Exception:
+        pass  # no USD conversion rate
     title = bounty.title if bounty.title else bounty.github_url
     msg = f"{event_name.replace('bounty', 'funded_issue')} worth {round(bounty.get_natural_value(), 4)} {bounty.token_name} " \
           f"{usdt_details}" \
@@ -231,7 +230,7 @@ def maybe_market_tip_to_slack(tip, event_name):
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
-        channel = 'bounties'
+        channel = 'notif-gitcoin'
         sc.api_call("chat.postMessage", channel=channel, text=msg)
     except Exception as e:
         print(e)
@@ -257,8 +256,8 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     usdt_value = ""
     try:
         usdt_value = f"({round(bounty.value_in_usdt_now, 2)} USD @ ${round(convert_token_to_usdt(bounty.token_name), 2)}/{bounty.token_name})" if bounty.value_in_usdt_now else ""
-    except:
-        pass # no USD conv rate available
+    except Exception:
+        pass  # no USD conversion rate available
     natural_value = round(bounty.get_natural_value(), 4)
     absolute_url = bounty.get_absolute_url()
     amount_open_work = amount_usdt_open_work()
@@ -416,6 +415,7 @@ def amount_usdt_open_work():
     bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
     return round(sum([b.value_in_usdt_now for b in bounties if b.value_in_usdt_now]), 2)
 
+
 def maybe_market_tip_to_github(tip):
     """Post a Github comment for the specified Tip.
 
@@ -465,30 +465,15 @@ def maybe_market_tip_to_github(tip):
 
 
 def maybe_market_to_email(b, event_name):
-    from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance, new_bounty
+    from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance
     from marketing.models import EmailSubscriber
     to_emails = []
     if b.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
 
     if event_name == 'new_bounty' and not settings.DEBUG:
-        try:
-            # this doesnt scale because there are typically like 600 matches.. need to move to a background job
-            return
-            keywords = b.keywords.split(',')
-            for keyword in keywords:
-                to_emails = to_emails + list(EmailSubscriber.objects.filter(
-                    keywords__contains=[keyword.strip()]).values_list('email', flat=True))
-
-            should_send_email = b.web3_created > (timezone.now() - timezone.timedelta(hours=15))
-            # only send if the bounty is reasonbly new
-
-            if should_send_email:
-                for to_email in set(to_emails):
-                    new_bounty(b, [to_email])
-        except Exception as e:
-            logging.exception(e)
-            print(e)
+        # handled in 'new_bounties_email'
+        return
     elif event_name == 'work_submitted':
         try:
             to_emails = [b.bounty_owner_email]
@@ -628,3 +613,57 @@ def maybe_post_on_craigslist(bounty):
                     # in case of invalid links
                     return False
     return False
+
+
+def maybe_notify_bounty_user_removed_to_slack(bounty, username):
+    if not settings.SLACK_TOKEN or bounty.get_natural_value() < 0.0001 or (
+       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+        return False
+
+    msg = f"@{username} has been removed from {bounty.github_url} due to inactivity on the github thread."
+
+    try:
+        sc = SlackClient(settings.SLACK_TOKEN)
+        channel = 'notif-gitcoin'
+        sc.api_call("chat.postMessage", channel=channel, text=msg)
+    except Exception as e:
+        print(e)
+        return False
+    return True
+
+
+def maybe_notify_user_removed_github(bounty, username, last_heard_from_user_days=None):
+    if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
+       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+        return False
+
+    msg = f"@{username} has been removed from this issue due to inactivity ({last_heard_from_user_days} days) on the github thread.  @{username} if you believe this was done in error, please <a href={bounty.url}>go to the bounty</a> and click 'start work' again."
+
+    post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
+
+
+def maybe_warn_user_removed_github(bounty, username):
+    if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
+       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+        return False
+
+    msg = f"@{username} are you still working on this issue?"
+
+    post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
+
+
+def maybe_notify_bounty_user_warned_removed_to_slack(bounty, username, last_heard_from_user_days=None):
+    if not settings.SLACK_TOKEN or bounty.get_natural_value() < 0.0001 or (
+       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+        return False
+
+    msg = f"@{username} has warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
+
+    try:
+        sc = SlackClient(settings.SLACK_TOKEN)
+        channel = 'notif-gitcoin'
+        sc.api_call("chat.postMessage", channel=channel, text=msg)
+    except Exception as e:
+        print(e)
+        return False
+    return True

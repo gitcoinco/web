@@ -1,0 +1,99 @@
+{% extends 'settings/settings.html' %}
+{% load i18n static %}
+
+{% block settings_content %}
+    <form id="settings" method="POST">
+      <div class="form-group">
+        <h5>{% trans "Matching Preferences" %}</h5>
+        <label class="form__label" for="github">{% trans "Github username" %}</label>
+        <input type="text" name="github" class="form__input" disabled placeholder='@username' value="{{ user.username }}">
+      </div>
+      <div class="form-group">
+        <label class="form__label" for="keywords">{% trans "Programming languages" %}</label>
+        <a href="#" id="pull_gh">{% trans "(pull from github)" %}</a>
+        <input type="text" name="keywords" class="form__input" placeholder='comma, seperated, list'  value="{{ keywords }}">
+        <small id="kwHelp" class="form__input-help">{% trans "so we know what funded work to route your way" %}</small>
+      </div>
+      {% csrf_token %}
+      <input class='button button--primary' type='submit' name='submit' value="Go">
+    </form>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.keywords = {{autocomplete_keywords | safe}};
+$(document).ready(function() {
+  $("#whitepaper").validate();
+
+  // TODO: DRY
+  function split( val ) {
+    return val.split( /,\s*/ );
+  }
+  function extractLast( term ) {
+    return split( term ).pop();
+  }
+  $("input[name=keywords]")
+  // don't navigate away from the field on tab when selecting an item
+  .on( "keydown", function( event ) {
+    if ( event.keyCode === $.ui.keyCode.TAB && $( this ).autocomplete( "instance" ).menu.active ) {
+      event.preventDefault();
+    }
+  })
+  .autocomplete({
+    minLength: 0,
+    source: function( request, response ) {
+      // delegate back to autocomplete, but extract the last term
+      response( $.ui.autocomplete.filter(
+        document.keywords, extractLast( request.term ) ) );
+    },
+    focus: function() {
+      // prevent value inserted on focus
+      return false;
+    },
+    select: function( event, ui ) {
+      var terms = split( this.value );
+      // remove the current input
+      terms.pop();
+      // add the selected item
+      terms.push( ui.item.value );
+      // add placeholder to get the comma-and-space at the end
+      terms.push( "" );
+      this.value = terms.join( ", " );
+      return false;
+    }
+  });
+
+  var keywordprefill = function(){
+    var github = $("input[name=github]").val();
+    setTimeout(function(){
+      //only execute remote request if value stays same for 500 mins
+      if($("input[name=github]").val() == github){
+        var url = '/api/v0.1/profile/'+$("input[name=github]").val()+'/keywords';
+        document.is_request_locked = true;
+        $.get(url, function(response){
+          $("input[name=keywords]").val(response.keywords.join(','))
+        }).done(function(){
+        }).fail(function(){
+          //alert('something went wrong');
+        });
+      }
+    }, 500);
+  };
+  var flash_pull_gh = function(){
+    var github = $("input[name=github]").val();
+    if(github.length>2){
+      if($("input[name=keywords]").val() == ''){
+        keywordprefill();
+      }
+    } else {
+  }};
+  flash_pull_gh();
+  $("input[name=github]").keyup(flash_pull_gh);
+  $('#pull_gh').click(function(e){
+      e.preventDefault();
+      keywordprefill();
+  });
+});
+</script>
+{% endblock %}

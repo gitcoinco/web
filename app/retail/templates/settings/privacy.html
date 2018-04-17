@@ -1,0 +1,23 @@
+{% extends 'settings/settings.html' %}
+{% load i18n static %}
+
+{% block settings_content %}
+    <form id="whitepaper" method="POST">
+      <div class="form-group">
+        <h5>{% trans "Privacy Preferences" %}</h5>
+          <input type="checkbox" name="suppress_leaderboard" id=suppress_leaderboard value="1" {% if suppress_leaderboard %} checked="checked" {%endif%} {% if not is_logged_in %} disabled {%endif%} >
+          <label class="form__label" for="suppress_leaderboard">{% trans "Hide my profile from the leaderboard" %}</label>
+          <br>
+          <small id="suppress_leaderboard_help" class="form__input-help">If this option is chosen, we will remove your profile information from the leaderboard</small>
+      </div>
+      {% csrf_token %}
+      <input class='button button--primary' type='submit' name='submit' value="Go">
+    </form>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+</script>
+{% endblock %}
