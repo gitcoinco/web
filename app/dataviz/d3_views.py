@@ -441,7 +441,12 @@ def viz_sunburst(request, visual_type, template='sunburst'):
 
 
 @staff_member_required
-def viz_graph(request, _type):
+def viz_sankey(request, _type, template='square_graph'):
+    return viz_graph(request, _type, template)
+
+
+@staff_member_required
+def viz_graph(request, _type, template='graph'):
     """Render a graph visualization of the Gitcoin Network.
 
     TODO:
@@ -453,8 +458,11 @@ def viz_graph(request, _type):
 
     """
     page_route = 'graph'
-    _type_options = ['fulfillments_accepted_only', 'all', 'fulfillments', 'what_future_could_look_like']
-    _type_options = _type_options + list(DataPayload.objects.filter(key=page_route).values_list('report', flat=True))
+    if template == 'square_graph':
+        _type_options = ['fulfillments_accepted_only'] #for performance reasons, since this graph can't handle too many nodes
+    else:
+        _type_options = ['fulfillments_accepted_only', 'all', 'fulfillments', 'what_future_could_look_like']
+        _type_options = _type_options + list(DataPayload.objects.filter(key=page_route).values_list('report', flat=True))
     _type_options.sort()
     datapayloads = DataPayload.objects.filter(key=page_route, report=_type)
     comments = '' if not datapayloads.exists() else datapayloads.first().comments
@@ -550,6 +558,7 @@ def viz_graph(request, _type):
             output['links'].append({
                 'source': source,
                 'target': target,
+                'value': value,
                 'weight': weight,
             })
 
@@ -562,4 +571,4 @@ def viz_graph(request, _type):
         'type_options': _type_options,
         'page_route': page_route,
     }
-    return TemplateResponse(request, f'dataviz/graph.html', params)
+    return TemplateResponse(request, f'dataviz/{template}.html', params)
