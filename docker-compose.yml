@@ -88,7 +88,6 @@ services:
     depends_on:
       - celery_worker
     command: ["/code/bin/celery/worker.bash"]
-    restart: unless-stopped
 
   celery_flower:
     image: web
