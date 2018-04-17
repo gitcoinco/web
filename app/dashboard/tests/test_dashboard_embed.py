@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Handle dashboard utility related tests.
+"""Handle dashboard embed related tests.
 
 Copyright (C) 2018 Gitcoin Core
 
