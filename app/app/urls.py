@@ -94,13 +94,16 @@ urlpatterns = [
     url(r'^legal/cookie/?', dashboard.views.cookie, name='cookie'),
     url(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
-    url(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
-    url(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
     url(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
     url(r'^gas/?', dashboard.views.gas, name='gas'),
     url(r'^coin/redeem/(.*)/?', dashboard.views.redeem_coin, name='redeem'),
+
+    # images
+    re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
+    re_path(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
+    re_path(r'^static/avatar/(.*)/(.*)?', dashboard.embed.avatar, name='org_avatar'),
 
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),

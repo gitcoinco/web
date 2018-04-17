@@ -81,7 +81,6 @@ class DashboardModelsTest(TestCase):
         assert bounty.is_hunter('flintstone') is False
         assert bounty.is_funder('fred') is False
         assert bounty.is_funder('flintstone') is True
-        assert bounty.get_avatar_url
         assert bounty.status == 'expired'
         assert bounty.value_true == 3e-18
         assert bounty.value_in_eth == 3
