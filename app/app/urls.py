@@ -196,6 +196,7 @@ urlpatterns = [
     re_path(r'^_administration/funnel/$', dataviz.views.funnel, name='funnel'),
     re_path(r'^_administration/viz/?$', dataviz.d3_views.viz_index, name='viz_index'),
     re_path(r'^_administration/viz/sunburst/(.*)?$', dataviz.d3_views.viz_sunburst, name='viz_sunburst'),
+    re_path(r'^_administration/viz/chord/(.*)?$', dataviz.d3_views.viz_chord, name='viz_chord'),
     re_path(r'^_administration/viz/circles/(.*)?$', dataviz.d3_views.viz_circles, name='viz_circles'),
     re_path(r'^_administration/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
     re_path(r'^_administration/viz/spiral/(.*)?$', dataviz.d3_views.viz_spiral, name='viz_spiral'),
