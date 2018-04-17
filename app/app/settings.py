@@ -392,6 +392,16 @@ if ENABLE_SILK:
     SILKY_META = env.bool('SILKY_META', default=True)
     SILKY_INTERCEPT_PERCENT = env.int('SILKY_INTERCEPT_PERCENT', default=50)
     SILKY_MAX_RECORDED_REQUESTS = env.int('SILKY_MAX_RECORDED_REQUESTS', default=10000)
-    SILKY_DYNAMIC_PROFILING = env.dict('SILKY_DYNAMIC_PROFILING', default={})
+    SILKY_DYNAMIC_PROFILING = env.list('SILKY_DYNAMIC_PROFILING', default=[])
+    if ENV == 'stage':
+        SILKY_DYNAMIC_PROFILING += [{
+            'module': 'dashboard.views',
+            'function': 'profile',
+            'name': 'Profile View',
+        }, {
+            'module': 'retail.views',
+            'function': 'index',
+            'name': 'Index View',
+        }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int(
         'SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)

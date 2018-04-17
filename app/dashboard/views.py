@@ -687,7 +687,7 @@ def profile(request, handle):
 
     """
     if not handle and not request.user.is_authenticated:
-        raise Http404
+        return redirect('index')
     elif not handle:
         handle = request.user.username
         profile = request.user.profile

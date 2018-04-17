@@ -7,6 +7,9 @@ PROJECT_DIR := $(subst -,, $(shell pwd | xargs basename))
 CONTAINER_NAME := $(addsuffix _web_1, $(PROJECT_DIR))
 WEB_CONTAINER_ID := $(shell docker inspect --format="{{.Id}}" $(CONTAINER_NAME))
 
+collect-static: ## Collect newly added static resources from the assets directory.
+	@docker-compose exec web python3 app/manage.py collectstatic -i other
+
 compress-images: ## Compress and optimize images throughout the repository. Requires optipng, svgo, and jpeg-recompress.
 	@./scripts/compress_images.bash
 
