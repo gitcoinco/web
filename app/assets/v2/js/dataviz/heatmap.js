@@ -57,7 +57,7 @@
       var day = valueObj['day'] = monthDayFormat(valueObj['date']);
 
       var dayData = dailyValueExtent[day] = (dailyValueExtent[day] || [ 1000, -1 ]);
-      var pmValue = valueObj['value']['PM2.5'];
+      var pmValue = valueObj['value'];
 
       console.log(day, pmValue);
 
@@ -105,11 +105,11 @@
       .attr('fill', '#ffffff');
 
     rect.filter(function(d) {
-      return d.value['PM2.5'] > 0;
+      return d.value > 0;
     })
       .append('title')
       .text(function(d) {
-        return monthDayFormat(d.date) + ' ' + d.value['PM2.5'];
+        return monthDayFormat(d.date) + ' ' + d.value;
       });
 
     renderColor();
@@ -139,7 +139,7 @@
 
     rect
       .filter(function(d) {
-        return (d.value['PM2.5'] >= 0);
+        return (d.value >= 0);
       })
       .transition()
       .delay(function(d) {
@@ -152,7 +152,7 @@
           .range([ 0, 1, 2, 3, 4, 5 ])
           .domain((renderByCount ? [ 0, 500 ] : dailyValueExtent[d.day]));
 
-        return d3.interpolate(a, colorCalibration[colorIndex(d.value['PM2.5'])]);
+        return d3.interpolate(a, colorCalibration[colorIndex(d.value)]);
       });
   }
 

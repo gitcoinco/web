@@ -249,7 +249,7 @@ def viz_heatmap(request, key='email_open'):
             # {"timestamp": "2014-10-16T22:00:00", "value": {"PM2.5": 61.92}}
             "data": [{
                 'timestamp': stat.created_on.strftime("%Y-%m-%dT%H:00:00"),
-                'value': {"PM2.5": stat.val_since_hour * 800.0 / _max},
+                'value': stat.val_since_hour * 800.0 / _max,
             } for stat in stats]
         }
         # Example output: https://gist.github.com/mbeacom/44f0114666d69bb5bf2756216c43b64d
