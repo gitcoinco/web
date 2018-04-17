@@ -1,5 +1,5 @@
 #!/usr/local/bin/dumb-init /bin/bash
-# shellcheck disable=SC1008
+# shellcheck shell=bash disable=SC1008
 
 set -o errexit
 set -o pipefail
