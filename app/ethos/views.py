@@ -37,4 +37,4 @@ def redeem_coin(request, shortcode):
         'title': _('EthOS Coin'),
         'coin_status': _('PENDING')
     }
-    return TemplateResponse(request, 'yge/redeem_coin.html', params)
+    return TemplateResponse(request, 'redeem_ethos.html', params)
