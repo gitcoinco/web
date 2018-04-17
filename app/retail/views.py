@@ -27,7 +27,7 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
-
+from marketing.models import LeaderboardRank
 
 def index(request):
     slides = [
@@ -75,19 +75,27 @@ def about(request):
         (static("v2/images/team/justin-bean.jpg"), "Justin Bean", "Engineering", "StareIntoTheBeard", "Issue Explorer", "Sushi"),
     ]
     team_members_right = [
-        (static("v2/images/team/mark-beacom.jpg"), "Mark Beacom", "All teh things", "mbeacom", "Start/Stop Work", "Dolsot Bibimbap"),
+        (static("v2/images/team/mark-beacom.jpg"), "Mark Beacom", "Full Stack Engineer", "mbeacom", "Start/Stop Work", "Dolsot Bibimbap"),
         (static("v2/images/team/eric-berry.jpg"), "Eric Berry", "OSS Funding", "coderberry", "Chrome/Firefox Extension", "Pastel de nata"),
 
         (static("v2/images/team/vivek-singh.jpg"), "Vivek Singh", "Community Buidl-er", "vs77bb", "Gitcoin Requests", "Tangerine Gelato"),
     ]
+
     community_members_left = [
-        (static("v2/images/team/devin-smith.jpg"), "Devin Smith","arzynik"),
-        (static("v2/images/team/nick-doiron.jpg"), "Nick Doiron","mapmeld"),
     ]
     community_members_right = [
-        (static("v2/images/team/aditya-anand.jpg"), "Aditya Anand M C","thelostone-mc"),
-        (static("v2/images/team/eswara-sai.jpg"), "Eswara Sai","eswarasai"),
     ]
+
+    i = 0
+    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').order_by('-amount')[0:15]
+    for lr in leadeboardranks:
+        i += 1
+        package = (lr.local_avatar_url, lr.github_username, lr.github_username)
+        if i % 2 == 0:
+            community_members_left.append(package)
+        else:
+            community_members_right.append(package)
+
     context = {
         'team_members_left': team_members_left,
         'team_members_right': team_members_right,
