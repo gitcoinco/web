@@ -20,9 +20,10 @@ from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
-from .models import DataPayload
 from marketing.utils import get_or_save_email_subscriber
 from retail.helpers import get_ip
+
+from .models import DataPayload
 
 
 def data_viz_helper_get_data_responses(request, visual_type):

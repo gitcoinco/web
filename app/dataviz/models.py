@@ -1,9 +1,9 @@
+from django.contrib.postgres.fields import JSONField
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
 from economy.models import SuperModel
-from django.contrib.postgres.fields import JSONField
-from django.utils.translation import gettext_lazy as _
 
 
 class DataPayload(SuperModel):
