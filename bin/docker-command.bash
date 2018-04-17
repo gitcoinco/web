@@ -8,7 +8,7 @@ fi
 
 # Enable Python dependency installation on container start/restart.
 if [ ! -z "${INSTALL_REQS}" ]; then
-    pip3 install -r requirements/dev.txt
+    pip3 install -r requirements/test.txt
 fi
 
 # Provision the Django test environment.

@@ -1,0 +1,17 @@
+---
+linters:
+  flake8:
+    python: 3
+    max-line-length: 120
+    max-complexity: 15
+  eslint:
+    config: './.eslintrc'
+  shellcheck:
+    shell: bash
+  yamllint:
+files:
+  ignore:
+    - 'bower_components/*'
+    - 'node_modules/*'
+fixers:
+  enable: false

@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
+    'social_django',
     'django.contrib.humanize',
     'django.contrib.sitemaps',
     'django.contrib.sites',
@@ -94,10 +95,15 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ratelimit.middleware.RatelimitMiddleware',
-    'github.middleware.GithubAuthMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.github.GithubOAuth2',  # for Github authentication
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 TEMPLATES = [
     {
@@ -111,6 +117,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'app.context.insert_settings',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -255,6 +263,35 @@ GITHUB_CLIENT_SECRET = env('GITHUB_CLIENT_SECRET', default='') # TODO
 GITHUB_API_USER = env('GITHUB_API_USER', default='') # TODO
 GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='') # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
+
+# Social Auth
+LOGIN_URL = 'gh_login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'explorer'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'explorer'
+SOCIAL_AUTH_GITHUB_KEY = GITHUB_CLIENT_ID
+SOCIAL_AUTH_GITHUB_SECRET = GITHUB_CLIENT_SECRET
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'last_name', 'email']
+SOCIAL_AUTH_GITHUB_SCOPE = [
+    'read:public_repo',
+    'read:org',
+    'read:user',
+    'user:email',
+]
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'app.pipeline.save_profile',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
 
 # Gitter
 GITTER_TOKEN = env('GITTER_TOKEN', default=False)

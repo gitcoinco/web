@@ -42,6 +42,7 @@ JSON_HEADER = {
     'User-Agent': settings.GITHUB_APP_NAME,
     'Origin': settings.BASE_URL
 }
+TIMELINE_HEADERS = {'Accept': 'application/vnd.github.mockingbird-preview'}
 TOKEN_URL = '{api_url}/applications/{client_id}/tokens/{oauth_token}'
 
 
@@ -163,14 +164,14 @@ def get_auth_url(redirect_uri='/'):
         str: The Github authentication URL.
 
     """
-    github_callback = reverse('github:github_callback')
-    redirect_params = {'redirect_uri': BASE_URI + redirect_uri}
+    github_callback = reverse('social:begin', args=('github', ))
+    redirect_params = {'next': BASE_URI + redirect_uri}
     redirect_uri = urlencode(redirect_params, quote_via=quote_plus)
 
     params = {
         'client_id': settings.GITHUB_CLIENT_ID,
         'scope': settings.GITHUB_SCOPE,
-        'redirect_uri': f'{BASE_URI}{github_callback}?{redirect_uri}'
+        'next': f'{BASE_URI}{github_callback}?{redirect_uri}'
     }
     auth_url = urlencode(params, quote_via=quote_plus)
 
@@ -280,10 +281,21 @@ def search(query):
 
 
 def get_issue_comments(owner, repo, issue=None, comment_id=None):
-    """Get the comments from issues on a respository."""
+    """Get the comments from issues on a respository.
+    PLEASE NOTE CURRENT LIMITATION OF 100 COMMENTS.
+
+    Args:
+        owner (str): Owner of the repo
+        repo (str): Name of the repo
+        issue (int): Issue number (optional)
+
+    Returns:
+        requests.Response: The GitHub comments response.
+    """
     params = {
         'sort': 'created',
         'direction': 'desc',
+        'per_page': 100,  # TODO traverse/concat pages: https://developer.github.com/v3/guides/traversing-with-pagination/
     }
     if issue:
         if comment_id:
@@ -310,6 +322,90 @@ def get_issues(owner, repo):
     response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
 
     return response.json()
+
+
+def get_issue_timeline_events(owner, repo, issue, page=1):
+    """Get the timeline events for a given issue.
+    PLEASE NOTE CURRENT LIMITATION OF 100 EVENTS.
+    PLEASE NOTE GITHUB API FOR THIS IS SUBJECT TO CHANGE.
+    (See https://developer.github.com/changes/2016-05-23-timeline-preview-api/ for more info.)
+
+    Args:
+        owner (str): Owner of the repo
+        repo (str): Name of the repo
+        issue (int): Issue number
+
+    Returns:
+        requests.Response: The GitHub timeline response.
+    """
+    params = {
+        'sort': 'created',
+        'direction': 'desc',
+        'per_page': 100,
+        'page': page,
+    }
+    url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/timeline'
+    # Set special header to access timeline preview api
+    response = requests.get(url, auth=_AUTH, headers=TIMELINE_HEADERS, params=params)
+
+    return response.json()
+
+
+def get_interested_actions(github_url, username, email=''):
+    activity_event_types = [
+        'commented', 'cross-referenced', 'merged', 'referenced',
+        'review_requested',
+    ]
+
+    owner = org_name(github_url)
+    repo = repo_name(github_url)
+    issue_num = issue_number(github_url)
+    should_continue_loop = True
+    all_actions = []
+    page = 1
+    while should_continue_loop:
+        actions = get_issue_timeline_events(owner, repo, issue_num, page)
+        should_continue_loop = len(actions) == 100
+        all_actions = all_actions + actions
+        page += 1
+    actions_by_interested_party = []
+
+    for action in all_actions:
+        gh_user = None
+        gh_email = None
+        # GitHub might populate actor OR user OR neither for some events
+        if 'actor' in action:
+            gh_user = action['actor']['login']
+        elif 'user' in action:
+            gh_user = action['user']['login']
+
+        if action['event'] == 'cross-referenced':
+            pr_num = action.get('source', {}).get('issue', {}).get('number', '')
+            pr_repo_owner, pr_repo = action.get('source', {}).get('issue', {}) \
+                .get('repository', {}).get('full_name', '/').split('/')
+
+            should_continue_loop = True
+            all_pr_actions = []
+            page = 1
+            while should_continue_loop:
+                pr_actions = get_issue_timeline_events(pr_repo_owner, pr_repo, pr_num, page)
+                should_continue_loop = len(pr_actions) == 100
+                all_pr_actions = all_pr_actions + pr_actions
+                page += 1
+
+            for pr_action in all_pr_actions:
+                if 'actor' in pr_action:
+                    gh_user = pr_action['actor']['login']
+                    if gh_user == username and pr_action['event'] in activity_event_types:
+                        actions_by_interested_party.append(pr_action)
+                elif 'committer' in pr_action:
+                    gh_email = pr_action['committer']['email']
+                    if gh_email and gh_email == email:
+                        actions_by_interested_party.append(pr_action)
+
+        if gh_user and gh_user == username and action['event'] in activity_event_types:
+            actions_by_interested_party.append(action)
+    return actions_by_interested_party
 
 
 def get_user(user, sub_path=''):
