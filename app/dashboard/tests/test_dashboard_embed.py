@@ -25,7 +25,7 @@ from decimal import Decimal
 from django.test.client import RequestFactory
 
 import pytz
-from dashboard.embed import avatar, embed, stat, summarize_bounties, wrap_text
+from dashboard.embed import avatar, embed, summarize_bounties, wrap_text
 from dashboard.models import Bounty
 from test_plus.test import TestCase
 
@@ -76,9 +76,6 @@ class DashboardEmbedTest(TestCase):
         )
         val_usdt = sum(Bounty.objects.filter().values_list('_val_usd_db', flat=True))
         assert val_usdt == Decimal("6.00")
-
-    def test_stat(self):
-        self.assertRaises(ValueError, stat, self.factory.get('/explorer'), key="ip")
 
     def test_embed(self):
         assert embed(self.factory.get('/explorer')).status_code == 200
