@@ -38,12 +38,12 @@
         </a>
       {% endif %}
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="{% url "profile" %}{{ github_handle }}">
+      <a class="dropdown-item" href="{% url "profile" %}">
         <i class="fas fa-user"></i>
         {% trans "View Profile" %}
       </a>
       <a class="dropdown-item" href="{% url "email_settings" email_key %}">
-        <i class="far fa-envelope"></i>
+        <i class="fas fa-cog"></i>
         {% trans "Manage Settings" %}
       </a>
       {% if unclaimed_tips %}
@@ -54,6 +54,13 @@
             {% blocktrans %}Claim ${{ tip.value_in_usdt_now }} Tip {% endblocktrans %}
           </a>
         {% endfor %}
+      {% endif %}
+      {% if user.is_staff %}
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="{% url "admin:index" %}">
+        <i class="fas fa-user-secret"></i>
+        {% trans "Administration" %}
+      </a>
       {% endif %}
       <div class="dropdown-divider"></div>
       <a class="dropdown-item" href="{% url "logout" %}?next={{ request.get_full_path }}">
