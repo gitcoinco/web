@@ -33,21 +33,41 @@
 
 {% block content %}
 <a href="..">&lt; back</a>
-<ul>
+<ul id="dataviz">
   <li>
+    <img src="{% static "v2/images/dataviz/sunburst.png" %}">
     <a href='{% url 'viz_sunburst' %}'>Sunburst</a>
   </li>
   <li>
+    <img src="{% static "v2/images/dataviz/circles.png" %}">
     <a href='{% url 'viz_circles' %}'>Circles</a>
   </li>
   <li>
+    <img src="{% static "v2/images/dataviz/graph.png" %}">
     <a href='{% url 'viz_graph' %}'>Graph</a>
   </li>
   <li>
+    <img src="{% static "v2/images/dataviz/spiral.png" %}">
     <a href='{% url 'viz_spiral' %}'>Spiral</a>
   </li>
   <li>
+    <img src="{% static "v2/images/dataviz/heatmap.png" %}">
     <a href='{% url 'viz_heatmap' %}'>Heatmap</a>
   </li>
 </ul>
+
+<style>
+#dataviz img {
+    max-width: 100px;
+}
+#dataviz a {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+#dataviz li {
+    list-style: none;
+    border-bottom: 1px solid #bbb;
+    padding: 15px;
+}
+</style>
 {% endblock %}
