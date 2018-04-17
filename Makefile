@@ -7,6 +7,9 @@ PROJECT_DIR := $(subst -,, $(shell pwd | xargs basename))
 CONTAINER_NAME := $(addsuffix _web_1, $(PROJECT_DIR))
 WEB_CONTAINER_ID := $(shell docker inspect --format="{{.Id}}" $(CONTAINER_NAME))
 
+collect-static: ## Collect newly added static resources from the assets directory.
+	@docker-compose exec web python3 app/manage.py collectstatic -i other
+
 compress-images: ## Compress and optimize images throughout the repository. Requires optipng, svgo, and jpeg-recompress.
 	@./scripts/compress_images.bash
 
@@ -32,6 +35,9 @@ logs: ## Print and actively tail the docker compose logs.
 
 pytest: ## Run pytest (Backend)
 	@docker-compose exec web pytest -p no:ethereum
+
+pytest-pdb: ## Run pytest with pdb support (Backend)
+	@docker-compose exec web pytest -p no:ethereum --pdb --pdbcls=IPython.terminal.debugger:Pdb
 
 stylelint: ## Run stylelint against the project directory. Requires node, npm, and project dependencies.
 	@npm run stylelint

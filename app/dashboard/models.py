@@ -592,6 +592,7 @@ class BountyFulfillment(SuperModel):
     fulfiller_name = models.CharField(max_length=255, blank=True)
     fulfiller_metadata = JSONField(default={}, blank=True)
     fulfillment_id = models.IntegerField(null=True, blank=True)
+    fulfiller_github_url = models.CharField(max_length=255, blank=True, null=True)
     accepted = models.BooleanField(default=False)
     accepted_on = models.DateTimeField(null=True, blank=True)
 
@@ -874,6 +875,26 @@ class Profile(SuperModel):
         plural = 's' if total_funded_participated != 1 else ''
         return f"@{self.handle} is a {role} who has participated in {total_funded_participated} " \
                f"funded issue{plural} on Gitcoin"
+
+    @property
+    def is_moderator(self):
+        """Determine whether or not the user is a moderator.
+
+        Returns:
+            bool: Whether or not the user is a moderator.
+
+        """
+        return self.user.groups.filter(name='Moderators').exists() if self.user else False
+
+    @property
+    def is_staff(self):
+        """Determine whether or not the user is a staff member.
+
+        Returns:
+            bool: Whether or not the user is a member of the staff.
+
+        """
+        return self.user.is_staff if self.user else False
 
     @property
     def stats(self):
