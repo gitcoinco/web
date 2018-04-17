@@ -80,27 +80,18 @@ def about(request):
 
         (static("v2/images/team/vivek-singh.jpg"), "Vivek Singh", "Community Buidl-er", "vs77bb", "Gitcoin Requests", "Tangerine Gelato"),
     ]
-
-    community_members_left = [
+    exclude_community = ['kziemiane', 'owocki', 'mbeacom']
+    community_members = [
     ]
-    community_members_right = [
-    ]
-
-    i = 0
-    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').order_by('-amount')[0:15]
+    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount')[0: 15]
     for lr in leadeboardranks:
-        i += 1
         package = (lr.local_avatar_url, lr.github_username, lr.github_username)
-        if i % 2 == 0:
-            community_members_left.append(package)
-        else:
-            community_members_right.append(package)
+        community_members.append(package)
 
     context = {
         'team_members_left': team_members_left,
         'team_members_right': team_members_right,
-        'community_members_left': community_members_left,
-        'community_members_right': community_members_right,
+        'community_members': community_members,
         'active': 'about',
         'title': 'About',
     }

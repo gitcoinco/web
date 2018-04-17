@@ -154,26 +154,14 @@
       </div>
       <div class="row animatedParent">
         <div class="col pb-4 flex-column text-center animated fadeInLeftShort">
-          {% for avatar, name, handle in community_members_left %}
-          <div class="teamProfileLeft">
-            <img class="teamProfileAvatar img-fluid" src="{{avatar}}">
+          {% for avatar, name, handle in community_members %}
+          <div class="communityProfile mr-1 ml-1">
+            <img class="communityProfileAvatar img-fluid" src="{{avatar}}">
             <p>
               <span class="font-bigger-1 font-weight-300"><strong>{{name}}</strong></span>
             </p>
-            <a href="https://gitcoin.co/profile/{{handle}}"><img class="teamProfileSocialImg" src="{% static "v2/images/social/gitcoin.png" %}"></a>
-            <a href="https://github.com/{{handle}}"><img class="teamProfileSocialImg" src="{% static "v2/images/social/github.png" %}"></a>
-          </div>
-          {% endfor %}
-        </div>
-        <div class="col pb-4 animated text-center fadeInRightShort">
-          {% for avatar, name, handle in community_members_right %}
-          <div class="teamProfileRight">
-            <img class="teamProfileAvatar img-fluid" src="{{avatar}}">
-            <p>
-              <span class="font-bigger-1 font-weight-300"><strong>{{name}}</strong></span>
-            </p>
-            <a href="https://gitcoin.co/profile/{{handle}}"><img class="teamProfileSocialImg" src="{% static "v2/images/social/gitcoin.png" %}"></a>
-            <a href="https://github.com/{{handle}}"><img class="teamProfileSocialImg" src="{% static "v2/images/social/github.png" %}"></a>
+            <a href="https://gitcoin.co/profile/{{handle}}"><img class="communityProfileAvatarSocialImg" src="{% static "v2/images/social/gitcoin.png" %}"></a>
+            <a href="https://github.com/{{handle}}"><img class="communityProfileAvatarSocialImg" src="{% static "v2/images/social/github.png" %}"></a>
           </div>
           {% endfor %}
         </div>
