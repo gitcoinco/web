@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from datetime import date, datetime, timedelta
 
+import pytz
 from dashboard.models import Bounty, BountyFulfillment, Interest, Profile, Tip
 from economy.models import ConversionRate
 from test_plus.test import TestCase
@@ -37,7 +38,8 @@ class DashboardModelsTest(TestCase):
             to_currency='USDT',
         )
 
-    def test_bounty(self):
+    @staticmethod
+    def test_bounty():
         """Test the dashboard Bounty model."""
         fulfiller_profile = Profile.objects.create(
             data={},
@@ -48,14 +50,14 @@ class DashboardModelsTest(TestCase):
             title='foo',
             value_in_token=3,
             token_name='ETH',
-            web3_created=datetime(2008, 10, 31),
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
             github_url='https://github.com/gitcoinco/web/issues/11',
             token_address='0x0',
             issue_description='hello world',
             bounty_owner_github_username='flintstone',
             is_open=False,
             accepted=True,
-            expires_date=datetime(2008, 11, 30),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
             idx_project_length=5,
             project_length='Months',
             bounty_type='Feature',
@@ -70,7 +72,7 @@ class DashboardModelsTest(TestCase):
             bounty=bounty,
             profile=fulfiller_profile,
         )
-        assert str(bounty) == 'foo 3 ETH 2008-10-31 00:00:00'
+        assert str(bounty) == 'foo 3 ETH 2008-10-31 00:00:00+00:00'
         assert bounty.url == '/issue/gitcoinco/web/11'
         assert bounty.title_or_desc == 'foo'
         assert bounty.issue_description_text == 'hello world'
@@ -90,7 +92,8 @@ class DashboardModelsTest(TestCase):
         assert bounty_fulfillment.profile.handle == 'fred'
         assert bounty_fulfillment.bounty.title == 'foo'
 
-    def test_tip(self):
+    @staticmethod
+    def test_tip():
         """Test the dashboard Tip model."""
         tip = Tip(
             emails=['foo@bar.com'],
@@ -108,7 +111,8 @@ class DashboardModelsTest(TestCase):
         assert tip.value_in_usdt == 14
         assert tip.status == 'PENDING'
 
-    def test_interest(self):
+    @staticmethod
+    def test_interest():
         """Test the dashboard Interest model."""
         profile = Profile(
             handle='foo',
@@ -118,12 +122,13 @@ class DashboardModelsTest(TestCase):
         )
         assert str(interest) == 'foo'
 
-    def test_profile(self):
+    @staticmethod
+    def test_profile():
         """Test the dashboard Profile model."""
         bounty = Bounty.objects.create(
             github_url='https://github.com/gitcoinco/web',
-            web3_created=date.today(),
-            expires_date=date.today() + timedelta(days=1),
+            web3_created=datetime.now(tz=pytz.UTC),
+            expires_date=datetime.now(tz=pytz.UTC) + timedelta(days=1),
             is_open=True,
             raw_data={},
             current_bounty=True,
@@ -132,7 +137,7 @@ class DashboardModelsTest(TestCase):
         tip = Tip.objects.create(
             emails=['foo@bar.com'],
             github_url='https://github.com/gitcoinco/web',
-            expires_date=date.today() + timedelta(days=1),
+            expires_date=datetime.now(tz=pytz.UTC) + timedelta(days=1),
         )
         profile = Profile(
             handle='gitcoinco',
