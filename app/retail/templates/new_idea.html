@@ -1,10 +1,12 @@
-{% comment %} Copyright (C) 2017 Gitcoin Core This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
-General Public License for more details. You should have received a copy of the GNU Affero General Public License along with
-this program. If not, see
-<http://www.gnu.org/licenses/>. {% endcomment %} {% load static %}
+{% comment %} 
+  Copyright (C) 2017 Gitcoin Core This program is free software: you can redistribute it and/or modify it under
+  the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero
+  General Public License for more details. You should have received a copy of the GNU Affero General Public License along with
+  this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static %}
 <html lang="en">
 
 <head>
@@ -38,8 +40,8 @@ this program. If not, see
                       <div class="col-md-5 col-sm-12">
                         <label class="form__label" for="githubUsernam">{% trans "Github Username" %}</label>
                         {% if not github_handle %}
-                        <a href="{% url " github:github_auth " %}?redirect_uri={{ request.get_full_path }}">({% trans "Login" %})</a>
-                        {% else %} {% endif %}
+                          <a href="{% url "github:github_auth" %}?redirect_uri={{ request.get_full_path }}">({% trans "Login" %})</a>
+                        {% endif %}
                         <input name="githubUsername" id="github_username" type=text class="form__input" placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}">
                       </div>
                 </div>
@@ -112,8 +114,11 @@ this program. If not, see
       </div>
     </div>
   </div>
-  {% include 'shared/bottom_notification.html' %} {% include 'shared/analytics.html' %} {% include 'shared/footer_scripts.html'%}
-  {% include 'shared/rollbar.html' %} {% include 'shared/footer.html' %}  
+  {% include 'shared/bottom_notification.html' %}
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html'%}
+  {% include 'shared/rollbar.html' %}
+  {% include 'shared/footer.html' %}  
   <script src="{% static "v2/js/pages/new_idea.js" %}"></script>
 </body>
 

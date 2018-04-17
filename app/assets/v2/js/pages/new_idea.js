@@ -42,7 +42,6 @@ $('document').ready(() => {
 
   // prevent submission, keep form validation...
   $('#new_idea_form').submit(function() {
-    console.log('submit');
     return false;
   });
 

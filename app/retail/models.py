@@ -7,6 +7,7 @@ from rest_framework import serializers
 
 class Idea(SuperModel):
     """Define the structure of idea"""
+
     full_name = models.CharField(max_length=255)
     email = models.EmailField(max_length=255)
     github_username = models.CharField(max_length=255)
@@ -34,7 +35,7 @@ class Idea(SuperModel):
 
     @property
     def thread_ident(self):
-        return 'idea-'+str(self.id)
+        return f'idea-{self.id}'
 
 class IdeaSerializer(serializers.BaseSerializer):
     """Handle serializing the Idea object."""

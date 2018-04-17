@@ -545,12 +545,15 @@ def browser_extension_chrome(request):
 def browser_extension_firefox(request):
     return redirect('https://addons.mozilla.org/en-US/firefox/addon/gitcoin/')
 
+
 def idea_show(request, idea_id):        
     return TemplateResponse(request, 'idea.html', {})
+
 
 @csrf_exempt
 def new_idea(request):    
     return TemplateResponse(request, 'new_idea.html', {})
+
 
 @require_POST
 @csrf_exempt
@@ -559,6 +562,7 @@ def create_idea(request):
     idea.load_avatar_url()
     idea.save(force_insert=True)    
     return JsonResponse({'success': True, 'ideaId': idea.id}) 
+
 
 @require_GET
 @csrf_exempt
@@ -570,6 +574,7 @@ def idea_get(request, idea_id):
         'forum_name': settings.DISQUS_FORUM_NAME,
         'success': True
     })
+
 
 @require_GET
 @csrf_exempt
@@ -598,6 +603,7 @@ def ideas_fetch(request):
         'ideas': ideas_data,
         'success': True
      })    
+
 
 def ideas_list(request):
 

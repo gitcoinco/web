@@ -8,10 +8,10 @@ from retail.models import Idea
 
 logging.basicConfig(level=logging.DEBUG)
 
-logger = logging.getLogger(__name__)
-
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
+
+
 class Command(BaseCommand):
 
     help = 'syncs ideas with disqus'
