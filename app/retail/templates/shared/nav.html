@@ -41,7 +41,7 @@
       </a>
       <a class="nav-link{% if active == 'help' %} selected{% endif %}" href="{% url "help" %}">{% trans "Help" %}</a>
     </nav>
-    <img class="mr-5" src="{% static "v2/images/spaceship.png" %}" width="52" height="45" />
+    <img class="d-none d-md-block" src="{% static "v2/images/spaceship.png" %}" width="52" height="45" />
       {% include 'shared/nav_auth.html' with source='authed' %}
   </div>
 </nav>
