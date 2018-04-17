@@ -61,10 +61,14 @@ button {
   right: 50px;
   top: 10px;
 }
+svg{
+    padding: 30px;
+}
 
 </style>
 <body>
-<h1>Bounties by repo volume that was open at this time</h1>
+<h1>Bounties by repo volume that were in status at this time</h1>
+{% include "dataviz/shared/nav.html" %}
 <script src="//d3js.org/d3.v2.js"></script>
 <script src="{% static "v2/js/jquery.js" %}"></script>
 <a href="..">&lt; back</a>
@@ -155,8 +159,10 @@ var svg = d3.select(".chart").append("svg")
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 var graph = d3.csv(csvpath, function(data) {
+  if(!data.length){
+    alert('no data found');
+  }
   data.forEach(function(d) {
     d.date = format.parse(d.date);
     d.value = +d.value;
