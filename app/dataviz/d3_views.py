@@ -171,6 +171,186 @@ def viz_chord(request, key='bounties_paid'):
 
 
 @staff_member_required
+def viz_steamgraph(request, key='bounties_paid'):
+    """Render a chord graph visualization.
+
+    Args:
+        key (str): The key type to visualize.
+
+    Returns:
+        TemplateResponse: The populated chord data visualization template.
+
+    """
+    type_options = ['bounties_paid']
+
+    if request.GET.get('data'):
+        output="""key,value,date
+AR,0.1,01/08/13
+AR,0.15,01/09/13
+AR,0.35,01/10/13
+AR,0.38,01/11/13
+AR,0.22,01/12/13
+AR,0.16,01/13/13
+AR,0.07,01/14/13
+AR,0.02,01/15/13
+AR,0.17,01/16/13
+AR,0.33,01/17/13
+AR,0.4,01/18/13
+AR,0.32,01/19/13
+AR,0.26,01/20/13
+AR,0.35,01/21/13
+AR,0.4,01/22/13
+AR,0.32,01/23/13
+AR,0.26,01/24/13
+AR,0.22,01/25/13
+AR,0.16,01/26/13
+AR,0.22,01/27/13
+AR,0.1,01/28/13
+DJ,0.35,01/08/13
+DJ,0.36,01/09/13
+DJ,0.37,01/10/13
+DJ,0.22,01/11/13
+DJ,0.24,01/12/13
+DJ,0.26,01/13/13
+DJ,0.34,01/14/13
+DJ,0.21,01/15/13
+DJ,0.18,01/16/13
+DJ,0.45,01/17/13
+DJ,0.32,01/18/13
+DJ,0.35,01/19/13
+DJ,0.3,01/20/13
+DJ,0.28,01/21/13
+DJ,0.27,01/22/13
+DJ,0.26,01/23/13
+DJ,0.15,01/24/13
+DJ,0.3,01/25/13
+DJ,0.35,01/26/13
+DJ,0.42,01/27/13
+DJ,0.42,01/28/13
+MS,0.21,01/08/13
+MS,0.25,01/09/13
+MS,0.27,01/10/13
+MS,0.23,01/11/13
+MS,0.24,01/12/13
+MS,0.21,01/13/13
+MS,0.35,01/14/13
+MS,0.39,01/15/13
+MS,0.4,01/16/13
+MS,0.36,01/17/13
+MS,0.33,01/18/13
+MS,0.43,01/19/13
+MS,0.4,01/20/13
+MS,0.34,01/21/13
+MS,0.28,01/22/13
+MS,0.26,01/23/13
+MS,0.37,01/24/13
+MS,0.41,01/25/13
+MS,0.46,01/26/13
+MS,0.47,01/27/13
+MS,0.41,01/28/13
+RC,0.1,01/08/13
+RC,0.15,01/09/13
+RC,0.35,01/10/13
+RC,0.38,01/11/13
+RC,0.22,01/12/13
+RC,0.16,01/13/13
+RC,0.07,01/14/13
+RC,0.02,01/15/13
+RC,0.17,01/16/13
+RC,0.33,01/17/13
+RC,0.4,01/18/13
+RC,0.32,01/19/13
+RC,0.26,01/20/13
+RC,0.35,01/21/13
+RC,0.4,01/22/13
+RC,0.32,01/23/13
+RC,0.26,01/24/13
+RC,0.22,01/25/13
+RC,0.16,01/26/13
+RC,0.22,01/27/13
+RC,0.1,01/28/13
+CG,0.1,01/08/13
+CG,0.15,01/09/13
+CG,0.35,01/10/13
+CG,0.38,01/11/13
+CG,0.22,01/12/13
+CG,0.16,01/13/13
+CG,0.07,01/14/13
+CG,0.02,01/15/13
+CG,0.17,01/16/13
+CG,0.33,01/17/13
+CG,0.4,01/18/13
+CG,0.32,01/19/13
+CG,0.26,01/20/13
+CG,0.35,01/21/13
+CG,0.4,01/22/13
+CG,0.32,01/23/13
+CG,0.26,01/24/13
+CG,0.22,01/25/13
+CG,0.16,01/26/13
+CG,0.22,01/27/13
+CG,0.1,01/28/13
+RI,0.1,01/08/13
+RI,0.15,01/09/13
+RI,0.35,01/10/13
+RI,0.38,01/11/13
+RI,0.22,01/12/13
+RI,0.16,01/13/13
+RI,0.07,01/14/13
+RI,0.02,01/15/13
+RI,0.17,01/16/13
+RI,0.33,01/17/13
+RI,0.4,01/18/13
+RI,0.32,01/19/13
+RI,0.26,01/20/13
+RI,0.35,01/21/13
+RI,0.4,01/22/13
+RI,0.32,01/23/13
+RI,0.26,01/24/13
+RI,0.22,01/25/13
+RI,0.16,01/26/13
+RI,0.22,01/27/13
+RI,0.1,01/28/13"""
+
+
+        rows = [
+            ['key', 'value', 'date']
+        ]
+        network = 'mainnet'
+        bounties = Bounty.objects.filter(network=network, web3_type='bounties_network', idx_status='open')
+        org_names = set([bounty.org_name for bounty in bounties])
+        start_date = bounties.order_by('web3_created').first().web3_created
+        start_date = timezone.now() - timezone.timedelta(days=30)
+        end_date = timezone.now()
+        current_date = start_date
+        while current_date < end_date:
+            next_date = current_date + timezone.timedelta(days=1)
+            for org_name in org_names:
+                _bounties = bounties.filter(github_url__contains=org_name)
+                weight = round(sum(bounty.value_in_usdt_then for bounty in _bounties if bounty.value_in_usdt_then and bounty.was_active_at(current_date)), 2)
+                output_date = current_date.strftime(('%m/%d/%y'))
+                rows.append([org_name, str(weight), output_date])
+            current_date = next_date
+
+
+        output_rows = []
+        for row in rows:
+            row = ",".join(row)
+            output_rows.append(row)
+
+        output = "\n".join(output_rows)
+        return HttpResponse(output)
+
+    params = {
+        'key': key,
+        'page_route': 'spiral',
+        'type_options': type_options,
+        'viz_type': key,
+    }
+    return TemplateResponse(request, 'dataviz/steamgraph.html', params)
+
+
+@staff_member_required
 def viz_heatmap(request, key='email_open'):
     """Render a heatmap graph visualization.
 
