@@ -26,8 +26,9 @@ from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
-from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from marketing.models import LeaderboardRank
+from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+
 
 def index(request):
     slides = [
