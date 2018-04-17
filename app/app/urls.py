@@ -101,9 +101,9 @@ urlpatterns = [
     url(r'^coin/redeem/(.*)/?', dashboard.views.redeem_coin, name='redeem'),
 
     # images
-    url(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
-    url(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
-    url(r'^static/avatar/(.*)/(.*)?', dashboard.embed.avatar, name='avatar'),
+    re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
+    re_path(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
+    re_path(r'^static/avatar/(.*)/(.*)?', dashboard.embed.avatar, name='org_avatar'),
 
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
