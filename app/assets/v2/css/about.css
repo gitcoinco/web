@@ -1,0 +1,66 @@
+div.teamProfileLeft,
+div.communityProfile {
+  background-color: #eff4ee;
+  padding: 1em;
+  margin-bottom: 2em;
+  box-shadow: 0px 2px 5px 0px #808080;
+}
+
+div.teamProfileRight {
+  background-color: #eff4ee;
+  padding: 1em;
+  margin-bottom: 2em;
+  box-shadow: 0px 2px 5px 0px #808080;
+}
+
+@media screen and (min-width: 48em) {
+  div.teamProfileLeft {
+    margin-left: 40%;
+  }
+
+  div.teamProfileRight {
+    margin-right: 40%;
+  }
+}
+
+img.teamProfileAvatar,
+img.communityProfileAvatar {
+  margin: 0.5em;
+  max-height: 200px;
+  border-radius: 50%;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #ffffff;
+}
+
+img.teamProfileSocialImg,
+img.communityProfileAvatarSocialImg {
+  max-height: 30px;
+  margin: 0px 2px 10px 2px;
+}
+
+img.teamProfileSocialImg:hover,
+img.communityProfileAvatarSocialImg {
+  opacity: 0.75;
+}
+
+div.communityProfile {
+  width: 10%; 
+  display: inline-block;
+  background-color: #eee;
+}
+@media screen and (max-width: 1100px) {
+  div.communityProfile {
+    width: 20%
+  }
+  @media screen and (max-width: 700px) {
+    div.communityProfile {
+      width: 20%
+    }
+    @media screen and (max-width: 500px) {
+      div.communityProfile {
+        width: 31%
+      }
+
+
+    }}}

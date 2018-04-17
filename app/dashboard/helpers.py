@@ -311,6 +311,8 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                     'payload', {}).get('fulfiller', {}).get('name', ''),
                 fulfiller_metadata=fulfillment,
                 fulfillment_id=fulfillment.get('id'),
+                fulfiller_github_url=fulfillment.get('data', {}).get(
+                    'payload', {}).get('fulfiller', {}).get('githubPRLink', ''),
                 created_on=created_on,
                 modified_on=modified_on,
                 accepted_on=accepted_on,
