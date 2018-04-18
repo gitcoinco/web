@@ -130,9 +130,11 @@ kevin
 
 
 def render_new_bounty(to_email, bounties):
+    sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
         'bounties': bounties,
-        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'subscriber': sub,
+        'keywords': ",".join(sub.keywords), 
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
