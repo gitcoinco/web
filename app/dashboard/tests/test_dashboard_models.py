@@ -94,8 +94,6 @@ class DashboardModelsTest(TestCase):
     @staticmethod
     def test_bounty_expired():
         """Test the status and details of an expired bounty."""
-        fulfiller_profile = Profile.objects.create(
-            data={}, handle='fred', email='fred@localhost')
         bounty = Bounty.objects.create(
             title='foo',
             value_in_token=3,
