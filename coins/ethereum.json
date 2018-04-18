@@ -2,10 +2,10 @@
   "symbol": "ETH",
   "overview": "A Peer-to-Peer Electronic Cash System",
   "website": "https://www.ethereum.org",
-  "whitepapaer": "https://github.com/ethereum/wiki/wiki/White-Paper",
+  "whitepaper": "https://github.com/ethereum/wiki/wiki/White-Paper",
   "state": "FLOAT",
   "published_on": "2018-01-01",
-  "initial_price": "2000:1 ETH",
+  "initial_price": "1 BTC = 1000 ETH",
   "links": {
     "github": "https://github.com/ethereum"
   }

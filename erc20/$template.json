@@ -4,7 +4,7 @@
   "overview": "Token Description",
   "email": "Email",
   "website": "https://your-awesome-project.com/",
-  "whitepapaer": "https://your-awesome-project.com/file.pdf",
+  "whitepaper": "https://your-awesome-project.com/file.pdf",
   "state": "LOCKED",
   "published_on": "2018-01-01",
   "initial_price": "2000:1 ETH",
