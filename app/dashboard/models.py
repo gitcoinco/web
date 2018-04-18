@@ -137,7 +137,6 @@ class Bounty(SuperModel):
     idx_experience_level = models.IntegerField(default=0, db_index=True)
     idx_project_length = models.IntegerField(default=0, db_index=True)
     idx_status = models.CharField(max_length=9, choices=STATUS_CHOICES, default='open', db_index=True)
-    avatar_url = models.CharField(max_length=255, default='')
     issue_description = models.TextField(default='', blank=True)
     standard_bounties_id = models.IntegerField(default=0)
     num_fulfillments = models.IntegerField(default=0)
