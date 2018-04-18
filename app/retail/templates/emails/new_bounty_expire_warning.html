@@ -70,7 +70,7 @@
 {% include 'emails/bounty.html' with bounty=bounty %}
 
 <p>
-{% trans "You are receiving this email because your email address is on the notification list for this funded issue." %} <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">{% trans "Manage Email Settings" %}</a>.
+{% trans "You are receiving this email because your email address is on the notification list for this funded issue." %} <a href="https://gitcoin.co/settings/email/{{subscriber.priv}}">{% trans "Manage Email Settings" %}</a>.
 </p>
 
 {% endblock %}

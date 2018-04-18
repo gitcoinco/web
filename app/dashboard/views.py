@@ -603,7 +603,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
 
                 params['bounty_pk'] = bounty.pk
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
-                params['avatar_url'] = bounty.local_avatar_url
+                params['avatar_url'] = bounty.get_avatar_url(True)
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
@@ -700,7 +700,7 @@ def profile(request, handle):
         'newsletter_headline': _('Be the first to know about new funded issues.'),
         'card_title': f'@{handle} | Gitcoin',
         'card_desc': profile.desc,
-        'avatar_url': profile.local_avatar_url,
+        'avatar_url': profile.avatar_url_with_gitcoin_logo,
         'profile': profile,
         'stats': profile.stats,
         'bounties': profile.bounties,
