@@ -86,7 +86,7 @@ def about(request):
     ]
     leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount')[0: 15]
     for lr in leadeboardranks:
-        package = (lr.local_avatar_url, lr.github_username, lr.github_username)
+        package = (lr.avatar_url, lr.github_username, lr.github_username)
         community_members.append(package)
 
     context = {
