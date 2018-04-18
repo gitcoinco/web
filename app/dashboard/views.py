@@ -296,10 +296,10 @@ def uninterested(request, bounty_id, profile_id):
         bounty.interested.remove(*interest_ids)
         Interest.objects.filter(pk__in=list(interest_ids)).delete()
 
-    try:
-        profile = Profile.objects.get(id=profile_id)
+    profile = Profile.objects.get(id=profile_id)
+    if hasattr(profile, 'user') and profile.user.email:
         bounty_uninterested(profile.user.email, bounty, interest)
-    except:
+    else:
         print("no email sent -- user was not found")
     return JsonResponse({'success': True})
 
