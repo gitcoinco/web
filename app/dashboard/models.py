@@ -331,7 +331,7 @@ class Bounty(SuperModel):
     def past_hard_expiration_date(self):
         """Return true IFF issue is past smart contract expiration date
         and therefore cannot ever be claimed again"""
-        return self.past_expiration_date and self.can_submit_after_expiration_date
+        return self.past_expiration_date and not self.can_submit_after_expiration_date
 
 
 
