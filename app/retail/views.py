@@ -71,12 +71,52 @@ def robotstxt(request):
 
 def about(request):
     core_team = [
-        (static("v2/images/team/kevin-owocki.png"), "Kevin Owocki", "All the things", "owocki", "The Community", "Avocado Toast"),
-        (static("v2/images/team/alisa-march.jpg"), "Alisa March", "User Experience Design", "PixelantDesign", "Tips", "Apple Cider Doughnuts"),
-        (static("v2/images/team/justin-bean.jpg"), "Justin Bean", "Engineering", "StareIntoTheBeard", "Issue Explorer", "Sushi"),
-        (static("v2/images/team/mark-beacom.jpg"), "Mark Beacom", "Engineering", "mbeacom", "Start/Stop Work", "Dolsot Bibimbap"),
-        (static("v2/images/team/eric-berry.jpg"), "Eric Berry", "OSS Funding", "coderberry", "Chrome/Firefox Extension", "Pastel de nata"),
-        (static("v2/images/team/vivek-singh.jpg"), "Vivek Singh", "Community Buidl-er", "vs77bb", "Gitcoin Requests", "Tangerine Gelato"),
+        (
+            static("v2/images/team/kevin-owocki.png"),
+            "Kevin Owocki",
+            "All the things",
+            "owocki",
+            "The Community",
+            "Avocado Toast"
+        ),
+        (
+            static("v2/images/team/alisa-march.jpg"),
+            "Alisa March", "User Experience Design",
+            "PixelantDesign",
+            "Tips",
+            "Apple Cider Doughnuts"
+        ),
+        (
+            static("v2/images/team/justin-bean.jpg"),
+            "Justin Bean", "Engineering",
+            "StareIntoTheBeard",
+            "Issue Explorer",
+            "Sushi"
+        ),
+        (
+            static("v2/images/team/mark-beacom.jpg"),
+            "Mark Beacom",
+            "Engineering",
+            "mbeacom",
+            "Start/Stop Work",
+            "Dolsot Bibimbap"
+        ),
+        (
+            static("v2/images/team/eric-berry.jpg"),
+            "Eric Berry",
+            "OSS Funding",
+            "coderberry",
+            "Chrome/Firefox Extension",
+            "Pastel de nata"
+        ),
+        (
+            static("v2/images/team/vivek-singh.jpg"),
+            "Vivek Singh",
+            "Community Buidl-er",
+            "vs77bb",
+            "Gitcoin Requests",
+            "Tangerine Gelato"
+        ),
     ]
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
     community_members = [
