@@ -76,6 +76,7 @@ def about(request):
             "Kevin Owocki",
             "All the things",
             "owocki",
+            "owocki",
             "The Community",
             "Avocado Toast"
         ),
@@ -83,6 +84,7 @@ def about(request):
             static("v2/images/team/alisa-march.jpg"),
             "Alisa March", "User Experience Design",
             "PixelantDesign",
+            "pixelant",
             "Tips",
             "Apple Cider Doughnuts"
         ),
@@ -90,6 +92,7 @@ def about(request):
             static("v2/images/team/justin-bean.jpg"),
             "Justin Bean", "Engineering",
             "StareIntoTheBeard",
+            "justinbean",
             "Issue Explorer",
             "Sushi"
         ),
@@ -97,6 +100,7 @@ def about(request):
             static("v2/images/team/mark-beacom.jpg"),
             "Mark Beacom",
             "Engineering",
+            "mbeacom",
             "mbeacom",
             "Start/Stop Work",
             "Dolsot Bibimbap"
@@ -106,6 +110,7 @@ def about(request):
             "Eric Berry",
             "OSS Funding",
             "coderberry",
+            "ericberry",
             "Chrome/Firefox Extension",
             "Pastel de nata"
         ),
@@ -114,6 +119,7 @@ def about(request):
             "Vivek Singh",
             "Community Buidl-er",
             "vs77bb",
+            "vivek-singh-b5a4b675",
             "Gitcoin Requests",
             "Tangerine Gelato"
         ),

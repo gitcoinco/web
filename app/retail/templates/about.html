@@ -107,7 +107,7 @@
       </div>
       <div class="row">
         <div class="col-12 offset-lg-2 col-lg-8 row">
-          {% for avatar, name, role, handle, feature, food in core_team %}
+          {% for avatar, name, role, handle, linkedin, feature, food in core_team %}
             <div class="col-12 col-md-6 col-lg-4">
               <div class="card">
                 <img class="avatar" src="{{avatar}}">
@@ -122,7 +122,7 @@
                   <span class="desc">{{food}}</span>
                 </p>
                 <div class="social-links">
-                  <a href="https://github.com/{{handle}}"><i class="fab fa-linkedin"></i></a>
+                  <a href="https://www.linkedin.com/in/{{linkedin}}"><i class="fab fa-linkedin"></i></a>
                   <a href="https://gitcoin.co/profile/{{handle}}"><div class="gitcoin-svg"></div></a>
                   <a href="https://github.com/{{handle}}"><i class="fab fa-github"></i></a>
                 </div>
