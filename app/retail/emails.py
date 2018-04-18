@@ -86,7 +86,7 @@ thanks for turning around this bounty.  we're hyperfocused on making gitcoin a g
 
 in that spirit,  i have a few questions for you.
 
-> what would you say your blended hourly rate was for this bounty? {bounty.github_url}
+> what would you say your average hourly rate was for this bounty? {bounty.github_url}
 
 > what was the best thing about working on the platform?  what was the worst?
 
