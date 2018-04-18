@@ -1,30 +1,31 @@
-import json
-import math
-import random
+# -*- coding: utf-8 -*-
+"""Define data visualization related administration views.
 
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
-from django.core.validators import validate_email
-from django.db.models import Max
-from django.http import Http404, HttpResponse, JsonResponse
-from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
-from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 
-from app.utils import sync_profile
 from chartit import Chart, DataPool
-from dashboard.models import Bounty, Profile, Tip, UserAction
-from marketing.mails import new_feedback
-from marketing.models import (
-    EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
-)
-from marketing.utils import get_or_save_email_subscriber
-from retail.helpers import get_ip
+from dashboard.models import Profile, UserAction
+from marketing.models import EmailEvent, EmailSubscriber, GithubEvent, SlackPresence, SlackUser, Stat
 
 
-# Create your views here.
 def filter_types(types, _filters):
     return_me = []
     for t in types:
@@ -44,7 +45,7 @@ def stats(request):
     _filter = request.GET.get('filter')
     rollup = request.GET.get('rollup')
     _format = request.GET.get('format', 'chart')
-    
+
     # types
     types = list(Stat.objects.distinct('key').values_list('key', flat=True))
     types.sort()
@@ -91,10 +92,9 @@ def stats(request):
         'tables': {},
     }
 
-    for t in types:
-
+    for stat_type in types:
         # get data
-        source = Stat.objects.filter(key=t)
+        source = Stat.objects.filter(key=stat_type)
         if rollup == 'daily':
             source = source.filter(created_on__hour=1)
             source = source.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=30)))
@@ -106,7 +106,7 @@ def stats(request):
 
         if source.count():
             # tables
-            params['tables'][t] = source
+            params['tables'][stat_type] = source
 
             # charts
             # compute avg
@@ -139,7 +139,7 @@ def stats(request):
                 }],
                 chart_options={
                     'title': {
-                        'text': f'{t} trend ({avg} avg)'
+                        'text': f'{stat_type} trend ({avg} avg)'
                     },
                     'xAxis': {
                         'title': {
@@ -220,7 +220,6 @@ def cohort(request):
     data_source = request.GET.get('data_source', 'slack-online')
     num_periods = request.GET.get('num_periods', 10)
     period_size = request.GET.get('period_size', 'weeks')
-    kwargs = {}
 
     for i in range(1, num_periods):
         start_time = timezone.now() - timezone.timedelta(**cohort_helper_timedelta(i, period_size))
@@ -277,7 +276,7 @@ def funnel_helper_get_data(key, k, daily_source, weekly_source, start_date, end_
         return weekly_source.filter(key='email_click')[k].val - weekly_source.filter(key='email_click')[k+1].val
     try:
         return weekly_source.filter(key=key)[k].val - weekly_source.filter(key=key)[k+1].val
-    except:
+    except Exception:
         return 0
 
 
@@ -345,8 +344,8 @@ def funnel(request):
     ]
 
     for funnel in range(0, len(funnels)):
-        keys=funnels[funnel]['keys']
-        title=funnels[funnel]['title']
+        keys = funnels[funnel]['keys']
+        title = funnels[funnel]['title']
         for k in range(0, 10):
             try:
                 stats = []
@@ -362,7 +361,7 @@ def funnel(request):
                 for i in range(1, len(stats)):
                     try:
                         stats[i]['pct'] = round((stats[i]['val'])/stats[i-1]['val']*100, 1)
-                    except:
+                    except Exception:
                         stats[i]['pct'] = 0
                 for i in range(0, len(stats)):
                     stats[i]['idx'] = i
@@ -383,6 +382,7 @@ def funnel(request):
         'funnels': funnels,
     }
     return TemplateResponse(request, 'funnel.html', params)
+
 
 settings_navs = [
     {
