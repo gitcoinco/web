@@ -70,15 +70,12 @@ def robotstxt(request):
 
 
 def about(request):
-    team_members_left = [
-        (static("v2/images/team/kevin-owocki.png"), "Kevin Owocki", "All teh things", "owocki", "The Community", "Avocado Toast"),
+    core_team = [
+        (static("v2/images/team/kevin-owocki.png"), "Kevin Owocki", "All the things", "owocki", "The Community", "Avocado Toast"),
         (static("v2/images/team/alisa-march.jpg"), "Alisa March", "User Experience Design", "PixelantDesign", "Tips", "Apple Cider Doughnuts"),
         (static("v2/images/team/justin-bean.jpg"), "Justin Bean", "Engineering", "StareIntoTheBeard", "Issue Explorer", "Sushi"),
-    ]
-    team_members_right = [
         (static("v2/images/team/mark-beacom.jpg"), "Mark Beacom", "Engineering", "mbeacom", "Start/Stop Work", "Dolsot Bibimbap"),
         (static("v2/images/team/eric-berry.jpg"), "Eric Berry", "OSS Funding", "coderberry", "Chrome/Firefox Extension", "Pastel de nata"),
-
         (static("v2/images/team/vivek-singh.jpg"), "Vivek Singh", "Community Buidl-er", "vs77bb", "Gitcoin Requests", "Tangerine Gelato"),
     ]
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
@@ -90,8 +87,7 @@ def about(request):
         community_members.append(package)
 
     context = {
-        'team_members_left': team_members_left,
-        'team_members_right': team_members_right,
+        'core_team': core_team,
         'community_members': community_members,
         'active': 'about',
         'title': 'About',

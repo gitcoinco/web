@@ -1,3 +1,89 @@
+#team {
+  background-color: #FFFFFF;
+}
+
+#team .row {
+  margin: auto;
+}
+
+#team h4 {
+  letter-spacing: 0;
+}
+
+#team .caption {
+  font-weight: bold;
+}
+
+#team p {
+  text-align: center;
+  font-family: "Muli", sans-serif;
+}
+
+#team .card  {
+  box-shadow: 0px 3px 15px rgba(0,0,0,0.2);
+  border-radius: 0;
+  background:#FFFFFF;
+  padding: 1.5rem 1.5rem 0;
+  margin: auto;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  width: 14em;
+  text-align: center;
+}
+
+#team .role,
+#team .card .title {
+  color: #999;
+}
+
+#team .card .desc {
+  font-weight: bolder;
+}
+
+#team .avatar {
+  border: 0.1rem solid #1AB56D;
+  width: 77px;
+  height: 77px;
+  border-radius: 50%;
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+#team .name {
+  color: #1AB56D;
+  margin-bottom: 5px;
+}
+
+#team .social-links {
+  margin-bottom: 10px;
+}
+
+#team .social-links a svg {
+  font-size: 1.25em;
+  transition: all 0.3s;
+  color: black;
+}
+
+#team .social-links a {
+  display: inline-block;
+}
+
+.gitcoin-svg {
+  background-size: cover !important;
+  background-image: url("/static/v2/images/ios/gitcoin.svg");
+  width: 2em;
+  height: 2em;
+  position: relative;
+  top: 4px;
+}
+
+#team .social-links a:hover svg {
+  color: #1AB56D;
+  transform: scale(1.5) rotate(360deg);
+}
+
+/* TODO: Clean up CSS*/
+
 div.teamProfileLeft,
 div.communityProfile {
   background-color: #eff4ee;

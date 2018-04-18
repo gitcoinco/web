@@ -97,51 +97,37 @@
         </div>
       </div>
     </div>
-    <div class="container-fluid" id="team" style="background: white; position: relative; overflow: hidden;">
+    <div id="team" class="container-fluid">
       {% include 'shared/rain.html' with class="grey" %}
       <div class="row">
-        <div class="col pb-4">
-          <h4>{% trans "Team" %}</h4>
-          <h6 style="text-align: center;" >{% trans "Built By &amp; For Open Source Software Developers" %}</h6>
+        <div class="col-12 mb-4">
+          <h4 class="font-heading">{% trans "Team" %}</h4>
+          <p class="font-subheader caption">{% trans "Built By &amp; For Open Source Software Developers" %}</p>
         </div>
       </div>
-      <div class="row animatedParent">
-        <div class="col pb-4 flex-column text-center animated fadeInLeftShort">
-          {% for avatar, name, role, handle, feature, food in team_members_left %}
-          <div class="teamProfileLeft">
-            <img class="teamProfileAvatar img-fluid" src="{{avatar}}">
-            <p>
-              <span class="font-bigger-1 font-weight-300"><strong>{{name}}</strong></span>
-              <br>
-              <span class="font-smaller-1"><em>{{role}}</em></span>
-            </p>
-            <a href="https://gitcoin.co/profile/{{handle}}"><img class="teamProfileSocialImg" src="{% static "v2/images/social/gitcoin.png" %}"></a>
-            <a href="https://github.com/{{handle}}"><img class="teamProfileSocialImg" src="{% static "v2/images/social/github.png" %}"></a>
-            <p>
-              <strong>Favorite Gitcoin Feature:</strong> {{feature}}
-              <br>
-              <strong>Favorite Food:</strong> {{food}}
-            </p>
-          </div>
-          {% endfor %}
-        </div>
-        <div class="col pb-4 animated text-center fadeInRightShort">
-          {% for avatar, name, role, handle, feature, food in team_members_right %}
-          <div class="teamProfileRight">
-            <img class="teamProfileAvatar img-fluid" src="{{avatar}}">
-            <p>
-              <span class="font-bigger-1 font-weight-300"><strong>{{name}}</strong></span>
-              <br>
-              <span class="font-smaller-1"><em>{{role}}</em></span>
-            </p>
-            <a href="https://gitcoin.co/profile/{{handle}}"><img class="teamProfileSocialImg" src="{% static "v2/images/social/gitcoin.png" %}"></a>
-            <a href="https://github.com/{{handle}}"><img class="teamProfileSocialImg" src="{% static "v2/images/social/github.png" %}"></a>
-            <p>
-              <strong>Favorite Gitcoin Feature:</strong> {{feature}}
-              <br>
-              <strong>Favorite Food:</strong> {{food}}
-            </p>
-          </div>
+      <div class="row">
+        <div class="col-12 offset-lg-2 col-lg-8 row">
+          {% for avatar, name, role, handle, feature, food in core_team %}
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="card">
+                <img class="avatar" src="{{avatar}}">
+                <p class="name">{{name}}</p>
+                <p class="role font-caption">{{role}}</p>
+                <p class="font-caption">
+                  <span class="title">Favorite Gitcoin Feature</span></br>
+                  <span class="desc">{{feature}}</span>
+                </p>
+                <p class="font-caption">
+                  <span class="title">Favorite Food</span></br>
+                  <span class="desc">{{food}}</span>
+                </p>
+                <div class="social-links">
+                  <a href="https://github.com/{{handle}}"><i class="fab fa-linkedin"></i></a>
+                  <a href="https://gitcoin.co/profile/{{handle}}"><div class="gitcoin-svg"></div></a>
+                  <a href="https://github.com/{{handle}}"><i class="fab fa-github"></i></a>
+                </div>
+              </div>
+            </div>
           {% endfor %}
         </div>
       </div>
@@ -166,68 +152,69 @@
           {% endfor %}
         </div>
       </div>
-      <div class="row" id="jobs">
-        <div class="col pb-4 " >
-          <hr>
-          <h4>{% trans "Join Us" %}</h4>
-          <h6 style="text-align: center;" >{% trans "Want to Grow Open Source? We want to hear from you." %}</h6>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col pb-4 text-center  align-items-center">
-          <p  class="font-bigger-1">
-            <strong>{% trans "Open Gitcoin Roles" %}</strong>
-          </p>
-          <p>
-            {% trans "Front End Developer" %} -- Gitcoin |
-            <a href="https://consensys.net/open-positions/?gh_jid=924578">
-              {% trans "Learn More" %}
-            </a>
-          </p>
-          <p>
-            {% trans "Technical Business Development Lead" %} -- Gitcoin |
-            <a href="https://consensys.net/open-positions/?gh_jid=1025695">
-              {% trans "Learn More" %}
-            </a>
-          </p>
-          <p>
-            {% trans "Entrepreneur In Residence" %} -- Gitcoin |
-            <a href="https://new.consensys.net/careers/?gh_jid=1086781">
-              {% trans "Learn More" %}
-            </a>
-          </p>
-
-          <p  class="font-bigger-1">
-            <strong>{% trans "Open Bounties.Network Roles" %}</strong>
-          </p>
-          <p>
-            {% trans "Data Scientist" %} -- Bounties.Network |
-            <a href="https://consensys.net/open-positions/?gh_jid=945245">
-              {% trans "Learn More" %}
-            </a>
-          </p>
-          <p  class="font-bigger-1">
-            <strong>{% trans "Waitlisted Roles" %}</strong>
-            <p style="max-width: 600px; margin: 0px auto;"><i>{% blocktrans %}(These roles were recently filled, but may open up again in a couple months. You're welcome to <a href="https://gitcoin.co/slack">join the community</a>, that's likely where we'll source them when they re-open.){% endblocktrans %}</i></p>
-          </p>
-          <p>
-            {% trans "Developer" %}  -- Gitcoin 
-          </p>
-          <p>
-            {% trans "Content and Marketing Manager" %} -- Gitcoin 
-          </p>
-          <p>
-            {% trans "Community Manager" %} -- Gitcoin 
-          </p>
-          <p>
-            {% trans "Customer Experience Manager" %} -- Gitcoin 
-          </p>
-          <p>
-            {% trans "Senior Product Designer" %} -- Gitcoin 
-          </p>
-        </div>
+    </div>
+    <div class="row" id="jobs">
+      <div class="col pb-4 " >
+        <hr>
+        <h4>{% trans "Join Us" %}</h4>
+        <h6 style="text-align: center;" >{% trans "Want to Grow Open Source? We want to hear from you." %}</h6>
       </div>
     </div>
+    <div class="row">
+      <div class="col pb-4 text-center  align-items-center">
+        <p  class="font-bigger-1">
+          <strong>{% trans "Open Gitcoin Roles" %}</strong>
+        </p>
+        <p>
+          {% trans "Front End Developer" %} -- Gitcoin |
+          <a href="https://consensys.net/open-positions/?gh_jid=924578">
+            {% trans "Learn More" %}
+          </a>
+        </p>
+        <p>
+          {% trans "Technical Business Development Lead" %} -- Gitcoin |
+          <a href="https://consensys.net/open-positions/?gh_jid=1025695">
+            {% trans "Learn More" %}
+          </a>
+        </p>
+        <p>
+          {% trans "Entrepreneur In Residence" %} -- Gitcoin |
+          <a href="https://new.consensys.net/careers/?gh_jid=1086781">
+            {% trans "Learn More" %}
+          </a>
+        </p>
+
+        <p  class="font-bigger-1">
+          <strong>{% trans "Open Bounties.Network Roles" %}</strong>
+        </p>
+        <p>
+          {% trans "Data Scientist" %} -- Bounties.Network |
+          <a href="https://consensys.net/open-positions/?gh_jid=945245">
+            {% trans "Learn More" %}
+          </a>
+        </p>
+        <p  class="font-bigger-1">
+          <strong>{% trans "Waitlisted Roles" %}</strong>
+          <p style="max-width: 600px; margin: 0px auto;"><i>{% blocktrans %}(These roles were recently filled, but may open up again in a couple months. You're welcome to <a href="https://gitcoin.co/slack">join the community</a>, that's likely where we'll source them when they re-open.){% endblocktrans %}</i></p>
+        </p>
+        <p>
+          {% trans "Developer" %}  -- Gitcoin
+        </p>
+        <p>
+          {% trans "Content and Marketing Manager" %} -- Gitcoin
+        </p>
+        <p>
+          {% trans "Community Manager" %} -- Gitcoin
+        </p>
+        <p>
+          {% trans "Customer Experience Manager" %} -- Gitcoin
+        </p>
+        <p>
+          {% trans "Senior Product Designer" %} -- Gitcoin
+        </p>
+      </div>
+    </div>
+  </div>
   <div id='note'>
     &nbsp;
   </div>
