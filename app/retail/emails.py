@@ -52,7 +52,7 @@ def render_tip_email(to_email, tip, is_new):
         'show_expires': tip.expires_date < (timezone.now() + timezone.timedelta(days=365)) and tip.expires_date,
         'is_new': is_new,
         'warning': warning,
-        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'is_sender': to_email not in tip.emails,
         'is_receiver': to_email in tip.emails,
     }
@@ -86,7 +86,7 @@ thanks for turning around this bounty.  we're hyperfocused on making gitcoin a g
 
 in that spirit,  i have a few questions for you.
 
-> what would you say your blended hourly rate was for this bounty? {bounty.github_url}
+> what would you say your average hourly rate was for this bounty? {bounty.github_url}
 
 > what was the best thing about working on the platform?  what was the worst?
 
@@ -130,9 +130,11 @@ kevin
 
 
 def render_new_bounty(to_email, bounties):
+    sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
         'bounties': bounties,
-        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
+        'subscriber': sub,
+        'keywords': ",".join(sub.keywords), 
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
@@ -144,7 +146,7 @@ def render_new_bounty(to_email, bounties):
 def render_new_work_submission(to_email, bounty):
     params = {
         'bounty': bounty,
-        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_work_submission.html", params))
@@ -156,7 +158,7 @@ def render_new_work_submission(to_email, bounty):
 def render_new_bounty_acceptance(to_email, bounty):
     params = {
         'bounty': bounty,
-        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty_acceptance.html", params))
@@ -168,7 +170,7 @@ def render_new_bounty_acceptance(to_email, bounty):
 def render_new_bounty_rejection(to_email, bounty):
     params = {
         'bounty': bounty,
-        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty_rejection.html", params))
@@ -192,9 +194,9 @@ def render_bounty_expire_warning(to_email, bounty):
         'bounty': bounty,
         'num': num,
         'unit': unit,
-        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
         'is_claimee': (to_email.lower() in fulfiller_emails),
         'is_owner': bounty.bounty_owner_email.lower() == to_email.lower(),
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty_expire_warning.html", params))
@@ -208,6 +210,7 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
         'bounty': bounty,
         'interest': interest,
         'time_delta_days': time_delta_days,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
     
     response_html = premailer_transform(render_to_string("emails/bounty_startwork_expire_warning.html", params))
@@ -219,6 +222,7 @@ def render_bounty_unintersted(to_email, bounty, interest):
     params = {
         'bounty': bounty,
         'interest': interest,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_uninterested.html", params))
@@ -231,6 +235,7 @@ def render_faucet_rejected(fr):
     params = {
         'fr': fr,
         'amount': settings.FAUCET_AMOUNT,
+        'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/faucet_request_rejected.html", params))
@@ -244,6 +249,7 @@ def render_faucet_request(fr):
     params = {
         'fr': fr,
         'amount': settings.FAUCET_AMOUNT,
+        'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/faucet_request.html", params))
@@ -257,6 +263,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
         'bounty': bounty,
         'interest': interest,
         'time_delta_days': time_delta_days,
+        'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/render_bounty_startwork_expired.html", params))
@@ -352,7 +359,7 @@ I hope to see you on <a href="https://gitcoin.co/slack">Slack</a> or on <a href=
         'invert_footer': False,
         'hide_header': False,
         'highlights': highlights,
-        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))

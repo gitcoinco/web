@@ -81,8 +81,7 @@ class DashboardModelsTest(TestCase):
         assert bounty.is_hunter('flintstone') is False
         assert bounty.is_funder('fred') is False
         assert bounty.is_funder('flintstone') is True
-        assert bounty.get_avatar_url
-        assert bounty.status == 'expired'
+        assert bounty.status == 'done'
         assert bounty.value_true == 3e-18
         assert bounty.value_in_eth == 3
         assert bounty.value_in_usdt_now == 0
@@ -308,6 +307,29 @@ class DashboardModelsTest(TestCase):
         assert bounty.github_repo_name == "web"
         bounty.github_url = None
         assert not bounty.github_repo_name
+
+    @staticmethod
+    def test_bounty_expired():
+        """Test the status and details of an expired bounty."""
+        bounty = Bounty.objects.create(
+            title='foo',
+            value_in_token=3,
+            token_name='ETH',
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12',
+            token_address='0x0',
+            issue_description='hello world',
+            bounty_owner_github_username='flintstone',
+            is_open=False,
+            accepted=False,
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            idx_project_length=5,
+            project_length='Months',
+            bounty_type='Feature',
+            experience_level='Intermediate',
+            raw_data={},
+        )
+        assert bounty.status == 'expired'
 
     @staticmethod
     def test_tip():

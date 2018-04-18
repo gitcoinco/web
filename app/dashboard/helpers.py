@@ -406,9 +406,6 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 last_comment_date=latest_old_bounty.last_comment_date if latest_old_bounty else None,
             )
             new_bounty.fetch_issue_item()
-            if not new_bounty.avatar_url:
-                new_bounty.avatar_url = new_bounty.get_avatar_url()
-                new_bounty.save()
 
             # Pull the interested parties off the last old_bounty
             if latest_old_bounty:
@@ -416,7 +413,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     new_bounty.interested.add(interest)
 
             # set cancel date of this bounty
-            canceled_on = latest_old_bounty.canceled_on if latest_old_bounty.canceled_on else None
+            canceled_on = latest_old_bounty.canceled_on if latest_old_bounty and latest_old_bounty.canceled_on else None
             if not canceled_on and new_bounty.status == 'cancelled':
                 canceled_on = timezone.now()
             if canceled_on:

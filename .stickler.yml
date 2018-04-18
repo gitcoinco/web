@@ -8,6 +8,7 @@ linters:
     config: './.eslintrc'
   shellcheck:
     shell: bash
+    exclude: 'SC1008'
   yamllint:
 files:
   ignore:
