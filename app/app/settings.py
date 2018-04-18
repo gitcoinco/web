@@ -245,10 +245,12 @@ EMAIL_PORT = env.int('EMAIL_PORT', default=587)
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 SERVER_EMAIL = env('SERVER_EMAIL', default='server@TODO.co')
 
-# ENS Subdomain 
-ENS_TLD = 'gitcoin.eth'
-ENS_LIMIT_RESET_DAYS = 0
-ENS_OWNER_ACCOUNT = '0x00000' 
+# ENS Subdomain Settings
+# The value of ENS_LIMIT_RESET_DAYS should be higher since only one transaction is allowed per user. 
+# The only reason for a user to make more than one request is when he looses access to the wallet.
+ENS_TLD = env('ENS_TLD', default='gitcoin.eth')
+ENS_LIMIT_RESET_DAYS = env.int('ENS_LIMIT_RESET_DAYS', default=30) 
+ENS_OWNER_ACCOUNT = env('ENS_OWNER_ACCOUNT', default='0x00000')
 
 # IMAP Settings
 IMAP_EMAIL = env('IMAP_EMAIL', default='<email>')

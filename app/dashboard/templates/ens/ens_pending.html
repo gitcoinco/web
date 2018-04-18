@@ -1,25 +1,23 @@
 {% extends 'ens/ens.html' %}
 {% load static %}
 {% block 'ens_script' %}
-
-<script src="{% static 'ens/pending.js' %}"></script>
-
+  <script src="{% static 'ens/pending.js' %}"></script>
 {% endblock %}
 
 {% block 'body_block' %}
-    <h1>Manage your ENS subdomain</h1>
-    <div>
-        <br>
-        <h2><label id="githubHandle">{{ github_handle }}</label><label>.gitcoin.eth</label></h2>
-        <h2><label>Pending Txn: <a href="https://etherscan.io/tx/{{ txn_hash }}" id="txn_hash" value="{{ txn_hash }}">{{ txn_hash_partial }}</a></label></h2>
-        <h2><label>Owner: <a href="https://etherscan.io/address/{{ owner }}">{{ owner }}</a></label></h2>
-    </div>
-    <div style="display:block;">
-        <img src="{% static "yge/images/loading_v2.gif" %}" style="max-width: 70px; max-height: 70px;">
-        <p>
-            The transaction is still pending.<br>This page will auto-update when the transaction is confirmed <br>(but you can close the browser window if you want).
-            <br>
-        </p>
-        <hr>
-    </div>
+  <h1>Manage your ENS subdomain</h1>
+  <div>
+    <br>
+    <h2><label id="githubHandle">{{ github_handle }}</label><label>.gitcoin.eth</label></h2>
+    <h2><label>Pending Txn: <a href="https://etherscan.io/tx/{{ txn_hash }}" id="txn_hash" value="{{ txn_hash }}">{{ txn_hash_partial }}</a></label></h2>
+    <h2><label>Owner: <a href="https://etherscan.io/address/{{ owner }}">{{ owner }}</a></label></h2>
+  </div>
+  <div style="display:block;">
+    <img src="{% static "yge/images/loading_v2.gif" %}" style="max-width: 70px; max-height: 70px;">
+    <p>
+      The transaction is still pending.<br>This page will auto-update when the transaction is confirmed <br>(but you can close the browser window if you want).
+      <br>
+    </p>
+    <hr>
+  </div>
 {% endblock %}

@@ -56,12 +56,11 @@ var callFunctionWhenTransactionMined = function(txHash, f) {
     } else {
       setTimeout(function() {
         callFunctionWhenTransactionMined(txHash, f);
-      }, 1000);
+      }, 10000);
     }
   });
 };
 
 callFunctionWhenTransactionMined($("#txn_hash").attr('value'), function() {
-  console.log('here');
   location.reload(1);
 });

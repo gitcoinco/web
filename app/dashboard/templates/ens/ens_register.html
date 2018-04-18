@@ -1,23 +1,23 @@
 {% extends 'ens/ens.html' %}
 {% load static %}
 {% block 'ens_script' %}
-<script src = "{% static 'ens/register.js' %}"></script>
-
+  <script src = "{% static 'ens/register.js' %}"></script>
 {% endblock %}
+
 {% block 'body_block' %}
-    {% if not user.is_authenticated %}
-        <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" class="button">Login to Github to continue</a>
-    {% else %}
-        <h1>Register your ENS subdomain</h1>
-        <div>
-            <br>
-            <h2><label id="githubHandle">{{ user.username }}</label><label>.gitcoin.eth</label></h2>
-        </div>
-        <div>
-            <br>
-            <input type="checkbox" id="tos" value="1" >
-            <label for="tos">I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.</label>
-        </div>
-        <a href="#" id="register" class="button">Register ⚡️</a>
-    {% endif %}
+  {% if not user.is_authenticated %}
+    <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" class="button">Login to Github to continue</a>
+  {% else %}
+    <h1>Register your ENS subdomain</h1>
+    <div>
+      <br>
+      <h2><label id="githubHandle">{{ user.username }}</label><label>.gitcoin.eth</label></h2>
+    </div>
+    <div>
+      <br>
+      <input type="checkbox" id="tos" value="1" >
+      <label for="tos">I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.</label>
+    </div>
+    <a href="#" id="register" class="button">Register ⚡️</a>
+  {% endif %}
 {% endblock %}

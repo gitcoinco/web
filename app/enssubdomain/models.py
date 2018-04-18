@@ -15,7 +15,7 @@ def get_time():
 
 
 class ENSSubdomainRegistration(SuperModel):
-    # Defines the schema for storing ENS sub-domain registration
+    """Define the schema for storing ENS sub-domain registration info"""
 
     github_handle = models.CharField(max_length=255, blank=False, db_index=True)
     subdomain_wallet_address = models.CharField(max_length=50)

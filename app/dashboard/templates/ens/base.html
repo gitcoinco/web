@@ -1,62 +1,51 @@
 {% load static %}
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<title>{{title}} | Gitcoin</title>
-		<meta charset="utf-8" />
+  <head>
+    <title>ENS Subdomains | Gitcoin</title>
+    <meta charset="utf-8" />
     <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <meta name="theme-color" content="#ffffff">
-		<!--[if lte IE 8]><script src="{% static "yge/js/html5shiv.js" %}"></script><![endif]-->
-		<link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
-		<link rel="stylesheet" href="{% static "yge/css/main.css" %}" />
+    <!--[if lte IE 8]><script src="{% static "yge/js/html5shiv.js" %}"></script><![endif]-->
+    <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
+    <link rel="stylesheet" href="{% static "yge/css/main.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/rain.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
     <script src="{% static "v2/js/jquery.js" %}"></script>
     <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
-		<!--[if lte IE 9]><link rel="stylesheet" href="{% static "yge/css/ie9.css" %}" /><![endif]-->
-		<!--[if lte IE 8]><link rel="stylesheet" href="{% static "yge/css/ie8.css" %}" /><![endif]-->
-		<noscript><link rel="stylesheet" href="{% static "yge/css/noscript.css" %}" /></noscript>
-
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static "v2/images/favicon.ico/apple-touch-icon.png" %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static "v2/images/favicon.ico/favicon-32x32.png" %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static "v2/images/favicon.ico/favicon-16x16.png" %}">
-    <link rel="manifest" href="{% static "v2/images/favicon.ico/manifest.json" %}">
-	</head>
-	<body class="{{class}}">
-
-        {% block 'world' %}
-        {% endblock %}
-        {% include 'shared/rain.html' with class="color" %}
-        {% include 'shared/rain.html' with class="color" %}
-		<!-- Wrapper -->
-			<div id="wrapper">
-
-				<!-- Main -->
-					{% block 'main' %}
-
-          {% endblock %}
-
-				<!-- Footer -->
-					<footer id="footer">
-						<ul class="copyright">
-								<li>
-										<a href="/">&copy; Gitcoin.co</a>
-								</li>
-								<li>
-										Developed by: <a href="https://github.com/scottydelta/">Scottydetla</a>
-								</li>
-								<li>
-										<a href="https://docs.ens.domains/en/latest/">ENS Docs</a>
-								</li>
-						</ul>
-					</footer>
-
-			</div>
-
-		<!-- Scripts -->
-      {% block 'scripts' %}{% endblock %}
-      <script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
-			<!--[if lte IE 8]><script src="{% static "yge/js/respond.min.js" %}"></script><![endif]-->
-
-	</body>
+    <!--[if lte IE 9]><link rel="stylesheet" href="{% static "yge/css/ie9.css" %}" /><![endif]-->
+    <!--[if lte IE 8]><link rel="stylesheet" href="{% static "yge/css/ie8.css" %}" /><![endif]-->
+    <noscript><link rel="stylesheet" href="{% static "yge/css/noscript.css" %}" /></noscript>
+    {% include 'shared/favicon.html' %}
+  </head>
+  <body class="{{class}}">
+    {% block 'world' %}
+    {% endblock %}
+    {% include 'shared/rain.html' with class="color" %}
+    {% include 'shared/rain.html' with class="color" %}
+    <!-- Wrapper -->
+    <div id="wrapper">
+      <!-- Main -->
+      {% block 'main' %}
+      {% endblock %}
+      <!-- Footer -->
+      <footer id="footer">
+        <ul class="copyright">
+          <li>
+            <a href="/">&copy; Gitcoin.co</a>
+          </li>
+          <li>
+            Developed by: <a href="https://github.com/scottydelta/">Scottydetla</a>
+          </li>
+          <li>
+            <a href="https://docs.ens.domains/en/latest/">ENS Docs</a>
+          </li>
+        </ul>
+      </footer>
+    </div>
+    <!-- Scripts -->
+    {% block 'scripts' %}
+    {% endblock %}
+    <script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
+  </body>
 </html>

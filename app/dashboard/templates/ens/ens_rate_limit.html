@@ -3,15 +3,14 @@
 {% load static %}
 
 {% block 'body_block' %}
-    <h1>Manage your ENS subdomain</h1>
-    <div>
-        <br>
-        <h2><label id="githubHandle">{{ github_handle }}</label><label>.gitcoin.eth</label></h2>
-        <h2><label>Owner: {{ owner }}</label></h2>
-    </div>
-    <div>
-        <br>
-        Only 1 request is allowed every {{ limit_reset_days }} days, please try again after <u>{{ try_after|naturaltime }}</u>.
-
-    </div>
+  <h1>Manage your ENS subdomain</h1>
+  <div>
+    <br>
+    <h2><label id="githubHandle">{{ github_handle }}</label><label>.gitcoin.eth</label></h2>
+    <h2><label>Owner: {{ owner }}</label></h2>
+  </div>
+  <div>
+    <br>
+    Only 1 request is allowed every {{ limit_reset_days }} days, please try again after <u>{{ try_after|naturaltime }}</u>.
+  </div>
 {% endblock %}
