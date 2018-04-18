@@ -17,3 +17,12 @@ class DataPayload(SuperModel):
     def __str__(self):
         """Return the string representation of an ExternalBounty."""
         return f'{self.key} {self.report} - {self.comments}'
+
+    def get_payload_with_mutations(self):
+        payload = self.payload
+        if self.key == 'graph':
+            if self.report == 'corporate america':
+                for x in range(1, len(self.payload['nodes'])):
+                    payload['links'].append({"source": 0, "target": x, "weight": 10})
+
+        return payload

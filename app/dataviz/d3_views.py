@@ -472,6 +472,14 @@ def viz_sankey(request, _type, template='square_graph'):
     return viz_graph(request, _type, template)
 
 
+def helper_hide_pii(username):
+    if not username:
+        return None
+    new_username = str(username)[0:3] + "*******"
+    print(username, new_username)
+    return new_username
+
+
 @staff_member_required
 def viz_graph(request, _type, template='graph'):
     """Render a graph visualization of the Gitcoin Network.
@@ -484,6 +492,7 @@ def viz_graph(request, _type, template='graph'):
         TemplateResponse: If data param not provided, return the populated data visualization template.
 
     """
+    hide_pii = True
     page_route = 'graph'
     if template == 'square_graph':
         _type_options = ['fulfillments_accepted_only'] #for performance reasons, since this graph can't handle too many nodes
@@ -500,7 +509,7 @@ def viz_graph(request, _type, template='graph'):
     if request.GET.get('data'):
 
         if datapayloads.exists():
-            output = datapayloads.first().payload
+            output = datapayloads.first().get_payload_with_mutations()
             return JsonResponse(output)
 
         # setup response
@@ -523,6 +532,8 @@ def viz_graph(request, _type, template='graph'):
                     for fulfillment in bounty.fulfillments.all():
                         if _type != 'fulfillments_accepted_only' or fulfillment.accepted:
                             target = fulfillment.fulfiller_github_username.lower()
+                            if hide_pii:
+                                target = helper_hide_pii(target)
                             types[source] = 'source'
                             types[target] = 'target_accepted' if fulfillment.accepted else 'target'
                             names[source] = None
@@ -540,7 +551,11 @@ def viz_graph(request, _type, template='graph'):
             weight = bounty.value_in_usdt
             if weight:
                 source = tip.username.lower()
+                if hide_pii:
+                    source = helper_hide_pii(source)
                 target = tip.from_username.lower()
+                if hide_pii:
+                    target = helper_hide_pii(target)
                 if source and target:
                     if source not in names.keys():
                         types[source] = 'source'
@@ -556,6 +571,8 @@ def viz_graph(request, _type, template='graph'):
             nodes = Profile.objects.exclude(github_access_token='').all()
             for profile in nodes:
                 node = profile.handle.lower()
+                if hide_pii:
+                    node = helper_hide_pii(node)
                 if node not in names.keys():
                     names[node] = None
                     types[node] = 'independent'
@@ -563,7 +580,10 @@ def viz_graph(request, _type, template='graph'):
                         weight = random.randint(1, 10)
                         #edges.append((node, last_node, weight))
                         #edges.append((nodes.order_by('?').first().handle.lower(), node, weight))
-                        edges.append((nodes.order_by('?').first().handle.lower(), node, weight))
+                        target = nodes.order_by('?').first().handle.lower()
+                        if hide_pii:
+                            target = helper_hide_pii(target)
+                        edges.append((target, node, weight))
                 last_node = node
 
 
@@ -580,14 +600,15 @@ def viz_graph(request, _type, template='graph'):
         for edge in edges:
             source, target, weight = edge
             weight = math.sqrt(weight)
-            source = names[source]
-            target = names[target]
-            output['links'].append({
-                'source': source,
-                'target': target,
-                'value': value,
-                'weight': weight,
-            })
+            if names.get(source) and names.get(target):
+                source = names[source]
+                target = names[target]
+                output['links'].append({
+                    'source': source,
+                    'target': target,
+                    'value': value,
+                    'weight': weight,
+                })
 
         return JsonResponse(output)
 
