@@ -86,7 +86,7 @@ thanks for turning around this bounty.  we're hyperfocused on making gitcoin a g
 
 in that spirit,  i have a few questions for you.
 
-> what would you say your blended hourly rate was for this bounty? {bounty.github_url}
+> what would you say your average hourly rate was for this bounty? {bounty.github_url}
 
 > what was the best thing about working on the platform?  what was the worst?
 
@@ -130,9 +130,11 @@ kevin
 
 
 def render_new_bounty(to_email, bounties):
+    sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
         'bounties': bounties,
-        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'subscriber': sub,
+        'keywords': ",".join(sub.keywords), 
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))

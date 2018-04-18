@@ -76,7 +76,7 @@ def about(request):
         (static("v2/images/team/justin-bean.jpg"), "Justin Bean", "Engineering", "StareIntoTheBeard", "Issue Explorer", "Sushi"),
     ]
     team_members_right = [
-        (static("v2/images/team/mark-beacom.jpg"), "Mark Beacom", "Full Stack Engineer", "mbeacom", "Start/Stop Work", "Dolsot Bibimbap"),
+        (static("v2/images/team/mark-beacom.jpg"), "Mark Beacom", "Engineering", "mbeacom", "Start/Stop Work", "Dolsot Bibimbap"),
         (static("v2/images/team/eric-berry.jpg"), "Eric Berry", "OSS Funding", "coderberry", "Chrome/Firefox Extension", "Pastel de nata"),
 
         (static("v2/images/team/vivek-singh.jpg"), "Vivek Singh", "Community Buidl-er", "vs77bb", "Gitcoin Requests", "Tangerine Gelato"),
@@ -86,7 +86,7 @@ def about(request):
     ]
     leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount')[0: 15]
     for lr in leadeboardranks:
-        package = (lr.local_avatar_url, lr.github_username, lr.github_username)
+        package = (lr.avatar_url, lr.github_username, lr.github_username)
         community_members.append(package)
 
     context = {
