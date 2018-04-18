@@ -25,10 +25,14 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import Bounty, Interest
+from dashboard.notifications import (
+    maybe_notify_bounty_user_removed_to_slack, maybe_notify_bounty_user_warned_removed_to_slack,
+    maybe_notify_user_removed_github, maybe_warn_user_removed_github,
+)
 from github.utils import get_interested_actions
 from marketing.mails import bounty_startwork_expire_warning, bounty_startwork_expired
 
-warnings.filterwarnings("ignore", category=DeprecationWarning) 
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
@@ -43,7 +47,7 @@ class Command(BaseCommand):
             return
 
         num_days_back_to_warn = 3
-        num_days_back_to_delete_interest = 7
+        num_days_back_to_delete_interest = 10
 
         days = [i * 3 for i in range(1, 15)]
         if settings.DEBUG:
@@ -97,11 +101,21 @@ class Command(BaseCommand):
 
                         if should_delete_interest:
                             print(f'executing should_delete_interest for {interest.profile} / {bounty.github_url} ')
+                            # commenting on the GH issue
+                            maybe_notify_user_removed_github(bounty, interest.profile.handle, last_heard_from_user_days)
+                            # commenting in slack
+                            maybe_notify_bounty_user_removed_to_slack(bounty, interest.profile.handle)
+                            # send email
                             bounty_startwork_expired(interest.profile.email, bounty, interest, last_heard_from_user_days)
                             interest.delete()
 
                         elif should_warn_user:
                             print(f'executing should_warn_user for {interest.profile} / {bounty.github_url} ')
+                            # commenting on the GH issue
+                            maybe_warn_user_removed_github(bounty, interest.profile.handle)
+                            # commenting in slack
+                            maybe_notify_bounty_user_warned_removed_to_slack(bounty, interest.profile.handle, last_heard_from_user_days)
+                            # send email
                             bounty_startwork_expire_warning(interest.profile.email, bounty, interest, last_heard_from_user_days)
 
                     except Exception as e:

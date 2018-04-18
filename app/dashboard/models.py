@@ -137,7 +137,6 @@ class Bounty(SuperModel):
     idx_experience_level = models.IntegerField(default=0, db_index=True)
     idx_project_length = models.IntegerField(default=0, db_index=True)
     idx_status = models.CharField(max_length=9, choices=STATUS_CHOICES, default='open', db_index=True)
-    avatar_url = models.CharField(max_length=255, default='')
     issue_description = models.TextField(default='', blank=True)
     standard_bounties_id = models.IntegerField(default=0)
     num_fulfillments = models.IntegerField(default=0)
@@ -294,18 +293,22 @@ class Bounty(SuperModel):
     def absolute_url(self):
         return self.get_absolute_url()
 
-    def get_avatar_url(self):
-        try:
-            response = get_user(self.github_org_name)
-            return response['avatar_url']
-        except Exception as e:
-            print(e)
-            return 'https://avatars0.githubusercontent.com/u/31359507?v=4'
+    @property
+    def avatar_url(self):
+        return self.get_avatar_url(False)
 
     @property
-    def local_avatar_url(self):
+    def avatar_url_w_gitcoin_logo(self):
+        return self.get_avatar_url(True)
+
+    def get_avatar_url(self, gitcoin_logo_flag=False):
         """Return the local avatar URL."""
-        return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
+        org_name = self.github_org_name
+        gitcoin_logo_flag = "/1" if gitcoin_logo_flag else ""
+        if org_name:
+            return f"{settings.BASE_URL}static/avatar/{org_name}{gitcoin_logo_flag}"
+        else:
+            return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
 
     @property
     def keywords(self):
@@ -318,6 +321,17 @@ class Bounty(SuperModel):
     def now(self):
         """Return the time now in the current timezone."""
         return timezone.now()
+
+    @property
+    def past_expiration_date(self):
+        """Return true IFF issue is past expiration date"""
+        return timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None)
+
+    @property
+    def past_hard_expiration_date(self):
+        """Return true IFF issue is past smart contract expiration date
+        and therefore cannot ever be claimed again"""
+        return self.past_expiration_date and not self.can_submit_after_expiration_date
 
     @property
     def status(self):
@@ -354,10 +368,10 @@ class Bounty(SuperModel):
         else:
             try:
                 if not self.is_open:
-                    if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.num_fulfillments == 0:
-                        return 'expired'
                     if self.accepted:
                         return 'done'
+                    if self.past_hard_expiration_date:
+                        return 'expired'
                     # If its not expired or done, it must be cancelled.
                     return 'cancelled'
                 if self.num_fulfillments == 0:
@@ -592,6 +606,7 @@ class BountyFulfillment(SuperModel):
     fulfiller_name = models.CharField(max_length=255, blank=True)
     fulfiller_metadata = JSONField(default={}, blank=True)
     fulfillment_id = models.IntegerField(null=True, blank=True)
+    fulfiller_github_url = models.CharField(max_length=255, blank=True, null=True)
     accepted = models.BooleanField(default=False)
     accepted_on = models.DateTimeField(null=True, blank=True)
 
@@ -876,6 +891,26 @@ class Profile(SuperModel):
                f"funded issue{plural} on Gitcoin"
 
     @property
+    def is_moderator(self):
+        """Determine whether or not the user is a moderator.
+
+        Returns:
+            bool: Whether or not the user is a moderator.
+
+        """
+        return self.user.groups.filter(name='Moderators').exists() if self.user else False
+
+    @property
+    def is_staff(self):
+        """Determine whether or not the user is a staff member.
+
+        Returns:
+            bool: Whether or not the user is a member of the staff.
+
+        """
+        return self.user.is_staff if self.user else False
+
+    @property
     def stats(self):
         bounties = self.bounties.stats_eligible()
         loyalty_rate = 0
@@ -927,8 +962,12 @@ class Profile(SuperModel):
         return f"https://github.com/{self.handle}"
 
     @property
-    def local_avatar_url(self):
-        return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
+    def avatar_url(self):
+        return f"{settings.BASE_URL}static/avatar/{self.handle}"
+
+    @property
+    def avatar_url_with_gitcoin_logo(self):
+        return f"{self.avatar_url}/1"
 
     @property
     def absolute_url(self):
@@ -1028,7 +1067,7 @@ class ProfileSerializer(serializers.BaseSerializer):
             'id': instance.id,
             'handle': instance.handle,
             'github_url': instance.github_url,
-            'local_avatar_url': instance.local_avatar_url,
+            'avatar_url': instance.avatar_url,
             'url': instance.get_relative_url()
         }
 

@@ -95,6 +95,27 @@
         </div>
     </div>
 
+    <div id=tutorials class="container-fluid text-center white-light-bg">
+        <div class="row mt-5">
+            <div class="col">
+                <h3>{% trans "Tutorials" %}</h3>
+            </div>
+        </div>
+        <div class="row mt-2 mb-2 pb-3 tutorial_item">
+            <div class="col col-12 text-left">
+                <ul>
+                    {% for item in tutorials %}
+                    <li class='tutorial_parent pb-4 pt-4'>
+                        <img src="{{item.img}}" />
+                        <a href="{{item.url}}">{{item.title}}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
     <div id=faq class="container-fluid text-center white-light-bg" id="faq">
         <div class="row mt-5">
             <div class="col">

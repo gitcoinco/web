@@ -19,7 +19,7 @@
             <div class="row mt-0 mb-2 pt-1 podium">
               {% for podium_item in podium_items %}
                 <div class="col-4 winner">
-                  <img class="img-fluid"  src="{{podium_item.local_avatar_url}}" >
+                  <img class="img-fluid"  src="{{podium_item.avatar_url}}" >
                   <div class="container winner-content">
                     <div class="row align-items-center">
                       {% if forloop.counter == 1 %}
@@ -74,7 +74,7 @@
                   <tr class='clickable-row d-flex  align-items-stretch ' data-href="{% url "profile" %}{{item.github_username}}">
                     <td class="col-1 d-flex align-items-center item-position">#{{forloop.counter}}</td>
                     <td class="col-1 d-flex align-items-center" >
-                      <img class="img-fluid"  src="{{item.local_avatar_url}}">
+                      <img class="img-fluid"  src="{{item.avatar_url}}">
                     </td>
                     <td class="col-2 d-flex align-items-center">
                       <a href="{% url "profile" %}{{item.github_username}}" target="_blank" >

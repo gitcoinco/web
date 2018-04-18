@@ -18,6 +18,9 @@
 <!DOCTYPE html>
 <html lang="en">
   {% include 'shared/head.html' %}
+  <head>
+    <link rel="stylesheet" href="{% static "v2/css/about.css" %}"
+  </head>
   <body class="{{ active }}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header">
@@ -99,61 +102,68 @@
       <div class="row">
         <div class="col pb-4">
           <h4>{% trans "Team" %}</h4>
-          <h6 style="text-align: center;" >{% trans "Built By &amp; for Open Source Software Developers" %}</h6>
+          <h6 style="text-align: center;" >{% trans "Built By &amp; For Open Source Software Developers" %}</h6>
         </div>
       </div>
-      <div class=" row animatedParent">
-        <div class="col d-flex flex-column p-5 animated fadeInLeftShort ">
-          <div class="avatar-img-wrapper mb-3 pl-5 pr-5"  >
-            <img class="img-fluid " src="{% static "v2/images/about/kevin.jpg" %}" style="float: right;" />
-          </div>
-          <div class="pl-5 pr-5" style="text-align: right;">
-            <div class="font-bigger-1 font-weight-300 ">Kevin Owocki</div>
-            <div>{% trans "Founder" %}</div>
-            <p class="font-smaller-3 ">
-              {% blocktrans %}<a href="http://linkedin.com/in/owocki/">Kevin Owocki</a> has a BS in Computer Science, 15 years experience in Open Source Software and Technology Startups. He is a volunteer in the Boulder Community for several community organizations, and an avid open source developer. His work has been featured in <a href="http://techcrunch.com/2011/02/10/group-dating-startup-ignighter-s-3-million/" >TechCrunch</a>, <a href="http://www.cnn.com/2011/BUSINESS/03/29/india.online.matchmaking/" >CNN</a>, <a href="http://www.inc.com/30under30/2011/profile-adam-sachs-kevin-owocki-and-dan-osit-founders-ignighter.html" >Inc Magazine</a>, <a href="http://www.nytimes.com/2011/02/20/business/20ignite.html?_r=4&amp;amp;pagewanted=1&amp;amp;ref=business"  >The New York Times</a>, <a href="http://boingboing.net/2011/09/24/tosamend-turn-all-online-i-agree-buttons-into-negotiations.html" >BoingBoing</a>, <a href="http://www.wired.com/2015/12/kevin-owocki-adblock-to-bitcoin/"  >WIRED</a>, <a href="https://www.forbes.com/sites/amycastor/2017/08/31/toothpick-takes-top-prize-in-silicon-beach-ethereum-hackathon/#6bf23b7452ad" >Forbes</a>, and <a href="http://www.techdigest.tv/2007/08/super_mario_get_1.html" >TechDigest</a>.{% endblocktrans %}
+      <div class="row animatedParent">
+        <div class="col pb-4 flex-column text-center animated fadeInLeftShort">
+          {% for avatar, name, role, handle, feature, food in team_members_left %}
+          <div class="teamProfileLeft">
+            <img class="teamProfileAvatar img-fluid" src="{{avatar}}">
+            <p>
+              <span class="font-bigger-1 font-weight-300"><strong>{{name}}</strong></span>
+              <br>
+              <span class="font-smaller-1"><em>{{role}}</em></span>
+            </p>
+            <a href="https://gitcoin.co/profile/{{handle}}"><img class="teamProfileSocialImg" src="{% static "v2/images/social/gitcoin.png" %}"></a>
+            <a href="https://github.com/{{handle}}"><img class="teamProfileSocialImg" src="{% static "v2/images/social/github.png" %}"></a>
+            <p>
+              <strong>Favorite Gitcoin Feature:</strong> {{feature}}
+              <br>
+              <strong>Favorite Food:</strong> {{food}}
             </p>
           </div>
+          {% endfor %}
         </div>
-        <div class="col p-5 animated fadeInRightShort ">
-          <div class="row">
-            <h4 class="pt-1">{% trans "Post Launch (2017+)" %}</h4>
+        <div class="col pb-4 animated text-center fadeInRightShort">
+          {% for avatar, name, role, handle, feature, food in team_members_right %}
+          <div class="teamProfileRight">
+            <img class="teamProfileAvatar img-fluid" src="{{avatar}}">
+            <p>
+              <span class="font-bigger-1 font-weight-300"><strong>{{name}}</strong></span>
+              <br>
+              <span class="font-smaller-1"><em>{{role}}</em></span>
+            </p>
+            <a href="https://gitcoin.co/profile/{{handle}}"><img class="teamProfileSocialImg" src="{% static "v2/images/social/gitcoin.png" %}"></a>
+            <a href="https://github.com/{{handle}}"><img class="teamProfileSocialImg" src="{% static "v2/images/social/github.png" %}"></a>
+            <p>
+              <strong>Favorite Gitcoin Feature:</strong> {{feature}}
+              <br>
+              <strong>Favorite Food:</strong> {{food}}
+            </p>
           </div>
-          <div class="row">
-            <div class="advisor">
-              <img src="{% static "v2/images/conensyslogo.png" %}" >
-              <div class="mt-2 font-bigger-1 font-weight-300 ">Consensys</div>
-              <div class="font-smaller-1 ">Venture Studio</div>
-            </div>
-            <div class="advisor">
-              <img class="" src="{% static "v2/images/avatar.png" %}" />
-              <div class="font-bigger-1 font-weight-300 ">{% trans "You?" %}</div>
-              <div class="font-smaller-1 ">{% blocktrans %}Want to build the future of open source?  <a href="#jobs">We want to hear from you.</a>{% endblocktrans %}</div>
-            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col pb-4">
+          <hr>
+          <h4>{% trans "Community" %}</h4>
+          <h6 style="text-align: center;" >{% trans "Gitcoin's Top Community Members" %}</h6>
+        </div>
+      </div>
+      <div class="row animatedParent">
+        <div class="col pb-4 flex-column text-center animated fadeInLeftShort">
+          {% for avatar, name, handle in community_members %}
+          <div class="communityProfile mr-1 ml-1">
+            <img class="communityProfileAvatar img-fluid" src="{{avatar}}">
+            <p>
+              <span class="font-bigger-1 font-weight-300"><strong>{{name}}</strong></span>
+            </p>
+            <a href="https://gitcoin.co/profile/{{handle}}"><img class="communityProfileAvatarSocialImg" src="{% static "v2/images/social/gitcoin.png" %}"></a>
+            <a href="https://github.com/{{handle}}"><img class="communityProfileAvatarSocialImg" src="{% static "v2/images/social/github.png" %}"></a>
           </div>
-          <div class="row">
-            <h4 class="">{% trans "Pre Launch (Summer 2017)" %}</h4>
-          </div>
-          <div class="row">
-            <div class="advisor">
-              <img class="" src="{% static "v2/images/about/afj.png" %}" />
-              <div class="font-bigger-1 font-weight-300 ">AFJ</div>
-              <div class="font-smaller-1 ">{% trans "Design Team" %}
-              </div>
-            </div>
-            <div class="advisor">
-              <img class="" src="{% static "v2/images/about/karot.png" %}" />
-              <div class="font-bigger-1 font-weight-300 ">The Karot</div>
-              <div class="font-smaller-1 ">{% trans "Video Team" %}
-              </div>
-            </div>
-            <div class="advisor">
-              <img class="" src="{% static "v2/images/about/prserve.jpg" %}" />
-              <div class="font-bigger-1 font-weight-300 ">PRServe</div>
-              <div class="font-smaller-1 ">{% trans "PR Team" %}
-              </div>
-            </div>
-          </div>
+          {% endfor %}
         </div>
       </div>
       <div class="row" id="jobs">
@@ -175,29 +185,24 @@
             </a>
           </p>
           <p>
-            {% trans "Business Development Lead" %} -- Gitcoin |
+            {% trans "Technical Business Development Lead" %} -- Gitcoin |
             <a href="https://consensys.net/open-positions/?gh_jid=1025695">
               {% trans "Learn More" %}
             </a>
           </p>
-          <p  class="font-bigger-1">
-            <strong>{% trans "Open Bounties.Network Roles" %}</strong>
-          </p>
-          <p >
-            {% trans "Full Stack Developer" %} -- Bounties.Network |
-            <a href="https://consensys.net/open-positions/?gh_jid=945240">
+          <p>
+            {% trans "Entrepreneur In Residence" %} -- Gitcoin |
+            <a href="https://new.consensys.net/careers/?gh_jid=1086781">
               {% trans "Learn More" %}
             </a>
+          </p>
+
+          <p  class="font-bigger-1">
+            <strong>{% trans "Open Bounties.Network Roles" %}</strong>
           </p>
           <p>
             {% trans "Data Scientist" %} -- Bounties.Network |
             <a href="https://consensys.net/open-positions/?gh_jid=945245">
-              {% trans "Learn More" %}
-            </a>
-          </p>
-          <p>
-            {% trans "Senior Product Designer" %} -- Bounties.Network |
-            <a href="https://consensys.net/open-positions/?gh_jid=944914">
               {% trans "Learn More" %}
             </a>
           </p>
@@ -206,34 +211,19 @@
             <p style="max-width: 600px; margin: 0px auto;"><i>{% blocktrans %}(These roles were recently filled, but may open up again in a couple months. You're welcome to <a href="https://gitcoin.co/slack">join the community</a>, that's likely where we'll source them when they re-open.){% endblocktrans %}</i></p>
           </p>
           <p>
-            {% trans "Developer" %}  -- Gitcoin |
-            <a href="https://consensys.net/open-positions/?gh_jid=924571">
-              {% trans "Learn More" %}
-            </a>
+            {% trans "Developer" %}  -- Gitcoin 
           </p>
           <p>
-            {% trans "Content and Marketing Manager" %} -- Gitcoin |
-            <a href="https://consensys.net/open-positions/?gh_jid=932256">
-              {% trans "Learn More" %}
-            </a>
+            {% trans "Content and Marketing Manager" %} -- Gitcoin 
           </p>
           <p>
-            {% trans "Community Manager" %} -- Gitcoin |
-            <a href="https://consensys.net/open-positions/?gh_jid=923872">
-              {% trans "Learn More" %}
-            </a>
+            {% trans "Community Manager" %} -- Gitcoin 
           </p>
           <p>
-            {% trans "Customer Experience Manager" %} -- Gitcoin |
-            <a href="https://consensys.net/open-positions/?gh_jid=924581">
-              {% trans "Learn More" %}
-            </a>
+            {% trans "Customer Experience Manager" %} -- Gitcoin 
           </p>
           <p>
-            {% trans "Senior Product Designer" %} -- Gitcoin |
-            <a href="https://consensys.net/open-positions/?gh_jid=925903">
-              {% trans "Learn More" %}
-            </a>
+            {% trans "Senior Product Designer" %} -- Gitcoin 
           </p>
         </div>
       </div>

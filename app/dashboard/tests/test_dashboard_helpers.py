@@ -52,11 +52,18 @@ class DashboardHelpersTest(TestCase):
         sample_url = 'https://github.com/gitcoinco/web/issues/353'
         params = {'url': sample_url}
         with requests_mock.Mocker() as m:
-            m.get('https://api.github.com/repos/gitcoinco/web/issues/353', text='{ "title":"Increase Code Coverage by 4%", "body": "This bounty will be paid out to anyone who meaningfully increases the code coverage of the repository by 4%."}')
-            m.get('https://github.com/gitcoinco/web', text='<span class="lang">hello</span><span class="lang">world</span>')
+            m.get('https://api.github.com/repos/gitcoinco/web/issues/353',
+                  text='{ "title": "Increase Code Coverage by 4%",'
+                       '"body" : "This bounty will be paid out to anyone '
+                                 'who meaningfully increases the code coverage '
+                                 'of the repository by 4%."}')
+            m.get('https://github.com/gitcoinco/web',
+                  text='<span class="lang">hello</span><span class="lang">world</span>')
             request = self.factory.get('/sync/get_issue_details', params)
             response = json.loads(issue_details(request).content)
-            assert response['description'] == "This bounty will be paid out to anyone who meaningfully increases the code coverage of the repository by 4%."
+            assert response['description'] == "This bounty will be paid out to anyone who " \
+                                              "meaningfully increases the code coverage of " \
+                                              "the repository by 4%."
             assert response['keywords'] == ["web", "gitcoinco", "hello", "world"]
             assert response['title'] == "Increase Code Coverage by 4%"
 
