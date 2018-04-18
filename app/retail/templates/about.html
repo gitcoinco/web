@@ -97,7 +97,7 @@
         </div>
       </div>
     </div>
-    <div id="team" class="container-fluid">
+    <div id="team" class="container-fluid section">
       {% include 'shared/rain.html' with class="grey" %}
       <div class="row">
         <div class="col-12 mb-4">
@@ -133,7 +133,6 @@
       </div>
       <div class="row">
         <div class="col pb-4">
-          <hr>
           <h4>{% trans "Community" %}</h4>
           <h6 style="text-align: center;" >{% trans "Gitcoin's Top Community Members" %}</h6>
         </div>
@@ -154,64 +153,41 @@
       </div>
     </div>
     <div class="row" id="jobs">
-      <div class="col pb-4 " >
-        <hr>
-        <h4>{% trans "Join Us" %}</h4>
-        <h6 style="text-align: center;" >{% trans "Want to Grow Open Source? We want to hear from you." %}</h6>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col pb-4 text-center  align-items-center">
-        <p  class="font-bigger-1">
-          <strong>{% trans "Open Gitcoin Roles" %}</strong>
-        </p>
-        <p>
-          {% trans "Front End Developer" %} -- Gitcoin |
-          <a href="https://consensys.net/open-positions/?gh_jid=924578">
-            {% trans "Learn More" %}
-          </a>
-        </p>
-        <p>
-          {% trans "Technical Business Development Lead" %} -- Gitcoin |
-          <a href="https://consensys.net/open-positions/?gh_jid=1025695">
-            {% trans "Learn More" %}
-          </a>
-        </p>
-        <p>
-          {% trans "Entrepreneur In Residence" %} -- Gitcoin |
-          <a href="https://new.consensys.net/careers/?gh_jid=1086781">
-            {% trans "Learn More" %}
-          </a>
-        </p>
-
-        <p  class="font-bigger-1">
-          <strong>{% trans "Open Bounties.Network Roles" %}</strong>
-        </p>
-        <p>
-          {% trans "Data Scientist" %} -- Bounties.Network |
-          <a href="https://consensys.net/open-positions/?gh_jid=945245">
-            {% trans "Learn More" %}
-          </a>
-        </p>
-        <p  class="font-bigger-1">
-          <strong>{% trans "Waitlisted Roles" %}</strong>
-          <p style="max-width: 600px; margin: 0px auto;"><i>{% blocktrans %}(These roles were recently filled, but may open up again in a couple months. You're welcome to <a href="https://gitcoin.co/slack">join the community</a>, that's likely where we'll source them when they re-open.){% endblocktrans %}</i></p>
-        </p>
-        <p>
-          {% trans "Developer" %}  -- Gitcoin
-        </p>
-        <p>
-          {% trans "Content and Marketing Manager" %} -- Gitcoin
-        </p>
-        <p>
-          {% trans "Community Manager" %} -- Gitcoin
-        </p>
-        <p>
-          {% trans "Customer Experience Manager" %} -- Gitcoin
-        </p>
-        <p>
-          {% trans "Senior Product Designer" %} -- Gitcoin
-        </p>
+      <div class="col-12 row section font-body">
+        <div class="col-12">
+          <h4 class="font-heading">{% trans "Join Us" %}</h4>
+          <p class="font-subheader caption" >{% trans "Want to Grow Open Source? We want to hear from you." %}</p>
+        </div>
+        <div class="col-12 col-md-6 left">
+          <p class="font-heading">{% trans "Open Gitcoin Roles" %}</p>
+          <p>
+            {% trans "Front End Developer" %}
+            <a  class="title font-caption" href="https://consensys.net/open-positions/?gh_jid=924578">
+              {% trans "Learn More" %}
+            </a>
+          </p>
+          <p>
+            {% trans "Technical Business Development Lead" %}
+            <a  class="title font-caption" href="https://consensys.net/open-positions/?gh_jid=1025695">
+              {% trans "Learn More" %}
+            </a>
+          </p>
+          <p>
+            {% trans "Entrepreneur In Residence" %}
+            <a class="title font-caption" href="https://new.consensys.net/careers/?gh_jid=1086781">
+              {% trans "Learn More" %}
+            </a>
+          </p>
+        </div>
+        <div class="col-12 col-md-6 right">
+          <p class="font-heading">{% trans "Open Bounties.Network Roles" %}</p>
+          <p>
+            {% trans "Data Scientist" %}
+            <a class="title font-caption" href="https://consensys.net/open-positions/?gh_jid=945245">
+              {% trans "Learn More" %}
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   </div>

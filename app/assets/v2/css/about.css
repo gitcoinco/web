@@ -1,4 +1,10 @@
-#team {
+.section {
+  border-top: 1px solid #EAEAEA;
+  margin: auto;
+}
+
+#team,
+#jobs {
   background-color: #FFFFFF;
 }
 
@@ -6,15 +12,16 @@
   margin: auto;
 }
 
-#team h4 {
+h4 {
   letter-spacing: 0;
 }
 
-#team .caption {
+.caption {
   font-weight: bold;
 }
 
-#team p {
+#team p,
+#jobs p {
   text-align: center;
   font-family: "Muli", sans-serif;
 }
@@ -32,6 +39,7 @@
 }
 
 #team .role,
+#jobs .title,
 #team .card .title {
   color: #999;
 }
@@ -80,6 +88,48 @@
 #team .social-links a:hover svg {
   color: #1AB56D;
   transform: scale(1.5) rotate(360deg);
+}
+
+#jobs {
+  padding-bottom: 2em;
+}
+
+#jobs .caption {
+  margin-bottom: 2em;
+}
+
+#jobs .right p {
+  text-align: left;
+}
+
+#jobs .left p {
+  text-align: right;
+}
+
+#jobs .title.font-caption {
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+#jobs .title:hover {
+  color: #1AB56D;
+}
+
+#jobs .right .font-heading,
+#jobs .left .font-heading {
+  font-weight: bold;
+}
+
+@media (max-width: 767.98px) {
+  #jobs .left p,
+  #jobs .right p {
+    text-align: center;
+  }
+
+  #jobs .left {
+    margin-bottom: 2em;
+  }
 }
 
 /* TODO: Clean up CSS*/
