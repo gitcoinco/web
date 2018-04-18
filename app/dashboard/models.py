@@ -333,8 +333,6 @@ class Bounty(SuperModel):
         and therefore cannot ever be claimed again"""
         return self.past_expiration_date and not self.can_submit_after_expiration_date
 
-
-
     @property
     def status(self):
         """Determine the status of the Bounty.
