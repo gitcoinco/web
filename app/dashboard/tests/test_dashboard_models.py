@@ -277,8 +277,10 @@ class DashboardModelsTest(TestCase):
         assert bounty.status == "open"
         bounty.web3_type = None
         bounty.is_open = False
-        bounty.accepted = True
+        bounty.accepted = False
         assert bounty.status == "expired"
+        bounty.accepted = True
+        assert bounty.status == "done"
         bounty.expires_date = datetime(2222, 11, 11, tzinfo=pytz.UTC)
         assert bounty.status == "done"
         bounty.accepted = False
