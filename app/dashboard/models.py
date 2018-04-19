@@ -815,7 +815,12 @@ def psave_interest(sender, instance, **kwargs):
 
 
 class Profile(SuperModel):
-    """Define the structure of the user profile."""
+    """Define the structure of the user profile.
+
+    TODO:
+        * Remove all duplicate identity related information already stored on User.
+
+    """
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     data = JSONField()
@@ -972,6 +977,16 @@ class Profile(SuperModel):
     @property
     def absolute_url(self):
         return self.get_absolute_url()
+
+    @property
+    def username(self):
+        handle = ''
+        if hasattr(self, 'user') and self.user.username:
+            handle = self.user.username
+        # TODO: (mbeacom) Remove this check once we get rid of all the lingering identity shenanigans.
+        elif self.handle:
+            handle = self.handle
+        return handle
 
     def is_github_token_valid(self):
         """Check whether or not a Github OAuth token is valid.

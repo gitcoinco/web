@@ -356,3 +356,6 @@ def avatar(request, _org_name=None, add_gitcoincologo=None):
     except IOError as e:
         print(e)
         return err_response
+    except AttributeError as e:
+        print(e)
+        return err_response
