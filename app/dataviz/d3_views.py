@@ -15,7 +15,7 @@ from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
 from chartit import Chart, DataPool
-from dashboard.models import Bounty, Profile, Tip, UserAction
+from dashboard.models import Bounty, Profile, Tip, UserAction, BountyFulfillment
 from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
@@ -619,3 +619,61 @@ def viz_graph(request, _type, template='graph'):
         'page_route': page_route,
     }
     return TemplateResponse(request, f'dataviz/{template}.html', params)
+
+
+def viz_draggable(request, key='email_open'):
+    """Render a draggable graph visualization.
+
+    Args:
+        key (str): The key type to visualize.
+
+    Returns:
+        TemplateResponse: The populated draggable data visualization template.
+
+    """
+    stats = []
+    type_options = []
+    bfs = BountyFulfillment.objects.filter(accepted=True)
+    limit = 50
+    usernames = list(bfs.exclude(fulfiller_github_username='').distinct('fulfiller_github_username').values_list('fulfiller_github_username', flat=True))[0:limit]
+    if request.GET.get('data'):
+        output = []
+        for username in usernames:
+            these_bounties = bfs.filter(fulfiller_github_username=username)
+            start_date = timezone.now() - timezone.timedelta(days=180)
+            income = []
+            lifeExpectancy = []
+            population = []
+            val_usdt = 0
+            for i in range(1, 180):
+                current_date = start_date + timezone.timedelta(days=i)
+                prev_date = start_date + timezone.timedelta(days=(i-1))
+                these_bounties_before_date = these_bounties.filter(created_on__lt=current_date)
+                these_bounties_in_range = these_bounties.filter(created_on__lt=current_date, created_on__gt=prev_date)
+                val_usdt += sum(bf.bounty.value_in_usdt for bf in these_bounties_in_range if bf.bounty.value_in_usdt)
+                num_bounties = these_bounties_before_date.distinct('bounty').count()
+                income.append([i, val_usdt]) # x axis
+                lifeExpectancy.append([i, num_bounties]) #y axis
+                population.append([i, 10000000 * num_bounties]) # size
+                print(username, i, num_bounties, val_usdt)
+            output.append({
+                'name': username,
+                'region': username,
+                'income': income,
+                'population': population,
+                'lifeExpectancy': lifeExpectancy,
+                })
+
+        return JsonResponse(output, safe=False)
+
+    params = {
+        'stats': stats,
+        'key': key,
+        'usernames': json.dumps(usernames),
+        'page_route': 'draggable',
+        'type_options': type_options,
+        'viz_type': key,
+    }
+    return TemplateResponse(request, 'dataviz/draggable.html', params)
+
+
