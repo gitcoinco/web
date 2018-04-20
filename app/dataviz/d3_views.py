@@ -95,10 +95,11 @@ def data_viz_helper_get_data_responses(request, visual_type):
 
         if response:
             response = '-'.join(response)
-            if response in data_dict.keys():
-                data_dict[response] += value
-            else:
-                data_dict[response] = value
+            if value:
+                if response in data_dict.keys():
+                    data_dict[response] += value
+                else:
+                    data_dict[response] = value
 
     return data_dict
 
@@ -200,10 +201,11 @@ def viz_steamgraph(request, key='open'):
         while current_date < end_date:
             next_date = current_date + timezone.timedelta(days=1)
             for org_name in org_names:
-                _bounties = bounties.filter(github_url__contains=org_name)
-                weight = round(sum(bounty.value_in_usdt_then for bounty in _bounties if bounty.value_in_usdt_then and bounty.was_active_at(current_date)), 2)
-                output_date = current_date.strftime(('%m/%d/%y'))
-                rows.append([org_name, str(weight), output_date])
+                if org_name:
+                    _bounties = bounties.filter(github_url__contains=org_name)
+                    weight = round(sum(bounty.value_in_usdt_then for bounty in _bounties if bounty.value_in_usdt_then and bounty.was_active_at(current_date)), 2)
+                    output_date = current_date.strftime(('%m/%d/%y'))
+                    rows.append([org_name, str(weight), output_date])
             current_date = next_date
 
 
@@ -414,8 +416,8 @@ def viz_sunburst(request, visual_type, template='sunburst'):
     elif visual_type == 'repos':
         title = "Github Structure of All Bounties"
         comment = 'of bounties value with this github structure'
-        categories = [bounty.org_name.replace('-', '') for bounty in Bounty.objects.filter(network='mainnet')]
-        categories += [bounty.github_repo_name.replace('-', '') for bounty in Bounty.objects.filter(network='mainnet')]
+        categories = [bounty.org_name.replace('-', '') for bounty in Bounty.objects.filter(network='mainnet') if bounty.org_name]
+        categories += [bounty.github_repo_name.replace('-', '') for bounty in Bounty.objects.filter(network='mainnet') if bounty.github_repo_name]
         categories += [str(bounty.github_issue_number) for bounty in Bounty.objects.filter(network='mainnet')]
     elif visual_type == 'fulfillers':
         title = "Fulfillers"
