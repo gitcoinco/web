@@ -171,17 +171,9 @@ def maybe_market_to_slack(bounty, event_name):
     if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
 
-    conv_details = ""
-    usdt_details = ""
-    try:
-        conv_details = f"@ (${round(convert_token_to_usdt(bounty.token_name),2)}/{bounty.token_name})"
-        usdt_details = f"({bounty.value_in_usdt_now} USD {conv_details} "
-    except Exception:
-        pass  # no USD conversion rate
-    title = bounty.title if bounty.title else bounty.github_url
-    msg = f"{event_name.replace('bounty', 'funded_issue')} worth {round(bounty.get_natural_value(), 4)} {bounty.token_name} " \
-          f"{usdt_details}" \
-          f"{bounty.token_name}: {title} \n\n{bounty.get_absolute_url()}"
+    msg = build_message_for_slack(bounty, event_name)
+    if not msg:
+        return False
 
     try:
         channel = 'notif-gitcoin'
@@ -192,6 +184,71 @@ def maybe_market_to_slack(bounty, event_name):
         return False
     return True
 
+
+def build_message_for_slack(bounty, event_name):
+    """Build message to be posted to slack.
+    Args:
+        bounty (dashboard.models.Bounty): The Bounty to be marketed.
+        event_name (str): The name of the event.
+
+    Returns:
+        str: Message to post to slack.
+    """
+    conv_details = ""
+    usdt_details = ""
+    try:
+        conv_details = f"@ (${round(convert_token_to_usdt(bounty.token_name),2)}/{bounty.token_name})"
+        usdt_details = f"({bounty.value_in_usdt_now} USD {conv_details} "
+    except Exception:
+        pass  # no USD conversion rate
+
+    title = bounty.title if bounty.title else bounty.github_url
+    msg = f"{event_name.replace('bounty', 'funded_issue')} worth {round(bounty.get_natural_value(), 4)} {bounty.token_name} " \
+          f"{usdt_details}" \
+          f"{bounty.token_name}: {title} \n\n{bounty.get_absolute_url()}"
+    return msg
+
+
+def maybe_market_to_user_slack(bounty, event_name):
+    """Send a Slack message to the user's slack channel for the specified Bounty.
+
+    Args:
+        bounty (dashboard.models.Bounty): The Bounty to be marketed.
+        event_name (str): The name of the event.
+
+    Returns:
+        bool: Whether or not the Slack notification was sent successfully.
+
+    """
+    from dashboard.models import Profile
+    if bounty.get_natural_value() < 0.0001:
+        return False
+    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        return False
+
+    msg = build_message_for_slack(bounty, event_name)
+    if not msg:
+        return False
+
+    url = bounty.github_url
+    uri = parse(url).path
+    uri_array = uri.split('/')
+    sent = False
+    try:
+        repo = uri_array[1] + '/' + uri_array[2]
+        subscribers = Profile.objects.filter(slack_repos__contains=[repo])
+        subscribers = subscribers & Profile.objects.exclude(slack_token='', slack_channel='')
+        for subscriber in subscribers:
+            try:
+                sc = SlackClient(subscriber.slack_token)
+                sc.api_call("chat.postMessage", channel=subscriber.slack_channel, text=msg)
+                sent = True
+            except Exception as e:
+                print(e)
+    except Exception as e:
+        print(e)
+
+    return sent
 
 def maybe_market_tip_to_email(tip, emails):
     """Send an email for the specified Tip.
