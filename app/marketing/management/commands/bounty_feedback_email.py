@@ -35,9 +35,21 @@ class Command(BaseCommand):
         start_time = timezone.now() - timezone.timedelta(hours=36)
         end_time = timezone.now() - timezone.timedelta(hours=12)
         statues = ['done', 'cancelled']
-        bounties_fulfilled_last_timeperiod = Bounty.objects.filter(fulfillment_accepted_on__gt=start_time, fulfillment_accepted_on__lt=end_time, idx_status__in=statues)
-        print(bounties_fulfilled_last_timeperiod.count())
-        for bounty in bounties_fulfilled_last_timeperiod:
+        bounties_fulfilled_last_timeperiod = Bounty.objects.filter(
+            current_bounty=True,
+            fulfillment_accepted_on__gt=start_time,
+            fulfillment_accepted_on__lt=end_time,
+            idx_status='done'
+            )
+        bounties_cancelled_last_timeperiod = Bounty.objects.filter(
+            current_bounty=True,
+            canceled_on__gt=start_time,
+            canceled_on__lt=end_time,
+            idx_status='cancelled'
+            )
+        bounties_to_process = bounties_fulfilled_last_timeperiod + bounties_cancelled_last_timeperiod
+        print(bounties_to_process.count())
+        for bounty in bounties_to_process:
 
             # identity
             submitter_email = bounty.bounty_owner_email
@@ -45,7 +57,7 @@ class Command(BaseCommand):
 
             # send email to the fulfiller
             accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
-            if accepted_fulfillments.exists():
+            if accepted_fulfillments.exists() and bounty.status == 'done':
                 accepted_fulfillment = accepted_fulfillments.first()
                 fulfiller_email = accepted_fulfillment.fulfiller_email
                 is_submitter_and_funder_same_person = (fulfiller_email == submitter_email)
