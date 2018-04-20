@@ -34,7 +34,7 @@ class Command(BaseCommand):
 
         start_time = timezone.now() - timezone.timedelta(hours=36)
         end_time = timezone.now() - timezone.timedelta(hours=12)
-        statues = ['done']
+        statues = ['done', 'cancelled']
         bounties_fulfilled_last_timeperiod = Bounty.objects.filter(fulfillment_accepted_on__gt=start_time, fulfillment_accepted_on__lt=end_time, idx_status__in=statues)
         print(bounties_fulfilled_last_timeperiod.count())
         for bounty in bounties_fulfilled_last_timeperiod:
@@ -43,7 +43,7 @@ class Command(BaseCommand):
             submitter_email = bounty.bounty_owner_email
             is_submitter_and_funder_same_person = False
 
-            # send email to the funder
+            # send email to the fulfiller
             accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
             if accepted_fulfillments.exists():
                 accepted_fulfillment = accepted_fulfillments.first()
@@ -53,10 +53,10 @@ class Command(BaseCommand):
                 previous_bounties = Bounty.objects.filter(web3_created__lt=bounty.web3_created, idx_status__in=statues, fulfillments__pk__in=fulfillment_pks, current_bounty=True).exclude(pk=bounty.pk).distinct()
                 has_been_sent_before_to_persona = previous_bounties.count()
                 if not has_been_sent_before_to_persona and not is_submitter_and_funder_same_person:
-                    bounty_feedback(bounty, 'funder', previous_bounties)
+                    bounty_feedback(bounty, 'fulfiller', previous_bounties)
 
-            # send email to the submitter
+            # send email to the funder
             previous_bounties = Bounty.objects.filter(idx_status__in=statues, bounty_owner_email=submitter_email, current_bounty=True).exclude(pk=bounty.pk).distinct()
             has_been_sent_before_to_persona = previous_bounties.count()
             if not has_been_sent_before_to_persona and not is_submitter_and_funder_same_person:
-                bounty_feedback(bounty, 'submitter', previous_bounties)
+                bounty_feedback(bounty, 'funder', previous_bounties)

@@ -86,12 +86,14 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     return response
 
 
-def bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
+def bounty_feedback(bounty, persona='fulfiller', previous_bounties=[]):
     from_email = settings.PERSONAL_CONTACT_EMAIL
-    to_email = bounty.bounty_owner_email
-    if persona != 'submitter':
+    to_email = None
+    if persona == 'fulfiller':
         accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
         to_email = accepted_fulfillments.first().fulfiller_email if accepted_fulfillments.exists() else ""
+    elif persona == 'funder':
+        to_email = bounty.bounty_owner_email
 
     subject = bounty.github_url
     html, text = render_bounty_feedback(bounty, persona, previous_bounties)
