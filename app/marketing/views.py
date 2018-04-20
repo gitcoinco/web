@@ -417,6 +417,10 @@ settings_navs = [
         'body': 'Feedback',
         'href': '/settings/feedback',
     },
+    {
+        'body': 'Slack',
+        'href': '/settings/slack',
+    },
 ]
 
 
@@ -613,6 +617,44 @@ def email_settings(request, key):
         'navs': settings_navs,
     }
     return TemplateResponse(request, 'settings/email.html', context)
+
+
+def slack_settings(request):
+
+    # setup
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+    if not es:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    msg = ''
+
+    if request.POST and request.POST.get('submit'):
+        token = request.POST.get('token', '')
+        repos = request.POST.get('repos').split(',')
+        channel = request.POST.get('channel', '')
+        es.slack_token = token
+        es.repos = repos
+        es.slack_channel = channel
+        ip = get_ip(request)
+        if not es.metadata.get('ip', False):
+            es.metadata['ip'] = [ip]
+        else:
+            es.metadata['ip'].append(ip)
+        es.save()
+        msg = "Updated your preferences.  "
+
+    context = {
+        'repos': ",".join(es.repos),
+        'is_logged_in': is_logged_in,
+        'nav': 'internal',
+        'active': '/settings/slack',
+        'title': _('Slack Settings'),
+        'navs': settings_navs,
+        'es': es,
+        'msg': msg,
+    }
+    return TemplateResponse(request, 'settings/slack.html', context)
 
 
 def _leaderboard(request):

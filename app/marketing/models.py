@@ -37,6 +37,9 @@ class EmailSubscriber(SuperModel):
     priv = models.CharField(max_length=30, default='')
     github = models.CharField(max_length=255, default='')
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=[])
+    repos = ArrayField(models.CharField(max_length=200), blank=True, default=[])
+    slack_token = models.CharField(max_length=255, default='')
+    slack_channel = models.CharField(max_length=255, default='')
     profile = models.ForeignKey(
         'dashboard.Profile',
         on_delete=models.CASCADE,
