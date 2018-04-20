@@ -20,7 +20,9 @@ span {
 .nav_avatar {
   cursor: pointer;
 }
-
+.dropdown-menu{
+  z-index: 9999999999;
+}
 .navbar {
   font-family: 'futura-pt', Futura, sans-serif;
 }
