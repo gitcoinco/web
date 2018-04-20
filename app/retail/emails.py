@@ -276,76 +276,75 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Post A Bounty in 90 Seconds"
+    subject = "Send A Firehose Of Talent To Your Repo"
 
     intro = '''
 
 <p>
-    Hi there 👋
+    Hi there
 </p>
 <p>
-    <a href="https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75">Here’s how to post a bounty in 90 seconds</a>! In less than two minutes, you’ll be well on your way to bringing contributors to your repositories. We plan to continue this tutorial series with more on best practices for using Gitcoin to grow your open source repo.   
+<a href="https://medium.com/gitcoin/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster-dcd39650fc5">Here’s how to leverage a firehose of developer talent to do more, faster</a>. Gitcoin Core is 4 team members, yet we’ve seen contributions from well over 30 developers using Gitcoin. We’d like to see you do the same! We plan to continue this series with more on best practices for using Gitcoin to grow your open source repo.   
 </p>
-<p>
-    What else is new?
-</p>
+<h3>What else is new?</h3>
     <ul>
         <li>
-This week we’ll have the Aragon project, MARKET Protocol, and Wyvern Protocol on the livestream (in a few hours; at 3pm MST / 5pm EST). <a href="https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ">Add it to your Google Calendar here.</a>
+MARKET Protocol hired Eswara, a great developer and person, after working with him on Gitcoin. <a href="https://medium.com/gitcoin/gitcoin-testimonials-market-protocol-722dbb263d19">Read more about the story here</a>.
         </li>
         <li>
-Want to be the first to know when new open issues are added? We launched <a href="https://twitter.com/gitcoinfeed">@gitcoinfeed on Twitter</a> which provides updates on all new activity on Gitcoin.
+Want to be the first to know when new open issues are added? <a href="http://twitter.com/gitcoinfeed">@gitcoinfeed</a> on Twitter which provides updates on all new activity on Gitcoin. 
+        </li>
+        <li>
+Today we’ll have uPort and Kauri on the livestream at 5PM ET. <a href="https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ">Add it to your Google Calendar</a> and come hang out!
         </li>
     </ul>
 </p>
 <p>
-I hope to see you on <a href="https://gitcoin.co/slack">Slack</a> or on <a href="https://github.com/gitcoinco/web">Github</a>. If you’re interested in growing open source and have some extra time, come by. We’re working to make Gitcoin the best place on the internet to do so. 
+I hope to see you on <a href="https://gitcoin.co/slack">Slack</a> or on <a href="https://github.com/gitcoinco/web">Github</a>. If you’re interested in growing open source and have some extra time, come by. We’re working to make Gitcoin is the best place on the internet to do so. 
+
 </p>
 
 '''
     highlights = [
         {
+            'who': 'agni21',
+            'who_link': True,
+            'what': 'Github OAuth Integration complete, one week after posting! Great work.',
+            'link': 'https://gitcoin.co/issue/TimVanMourik/GiraffeTools/7',
+            'link_copy': 'See more',
+        },
+        {
+            'who': 'lucaguglielmi',
+            'who_link': True,
+            'what': 'Some cool stuff coming together with ETHAvatar. Fantastic contribution',
+            'link': 'https://gitcoin.co/issue/gitcoinco/skunkworks/63',
+            'link_copy': 'View more',
+        },
+        {
             'who': 'cryptomental',
             'who_link': True,
-            'what': 'Helping Gitcoin to de-couple the floating ETH/USD exchange rate from when the bounty was posted',
-            'link': 'https://gitcoin.co/issue/gitcoinco/web/693',
+            'what': 'Helped MARKET Protocol with a funky MetaMask error. Nice!',
+            'link': 'https://gitcoin.co/issue/MARKETProtocol/dApp/111',
             'link_copy': 'See more',
-        },
-        {
-            'who': 'eemp',
-            'who_link': True,
-            'what': 'Worked with @TimVanMourik on some file parsing work for his open source repo, GiraffeTools',
-            'link': 'https://github.com/TimVanMourik/GiraffeTools/issues/4',
-            'link_copy': 'View more',
-        },
-        {
-            'who': 'bakaoh',
-            'who_link': True,
-            'what': 'Back at it again! Created a new deployer for MARKET Protocol using the Binance API.',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/Dapp/85',
-            'link_copy': 'See more',
-        },
-        {
-            'who': 'jakerockland',
-            'who_link': True,
-            'what': 'Coded up the new email designs on Gitcoin (including the one you\'re looking at now!)',
-            'link': 'https://github.com/gitcoinco/web/pull/746',
-            'link_copy': 'View more',
         },
     ]
 
     bounties = [
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/gitcoinco/web/issues/865'),
-            'primer': 'We’re working on a new project called ETH Avatar! Appreciate anyone interested in contributing. ',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/buidlbox/issues/2'),
+            'primer': 'uPort has released a series of bounties on their Buidl Box repo! Check them out here. ',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/TimVanMourik/GiraffeTools/issues/7'),
-            'primer': 'Work with @TimVanMourik on the foundation for a Github OAuth Integration. ',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/buidlbox/issues/5'),
+            'primer': '',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/gitcoinco/web/issues/796'),
-            'primer': 'We’re working on making Gitcoin more trustworthy. If you have ideas on best practices, we could use the help. ',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/buidlbox/issues/3'),
+            'primer': '',
+        },
+        {
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/uport-verify'),
+            'primer': '',
         },
     ]
 
