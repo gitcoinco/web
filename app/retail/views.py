@@ -557,6 +557,10 @@ def reddit(request):
     return redirect('https://www.reddit.com/r/gitcoincommunity/')
 
 
+def livestream(request):
+    return redirect('https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ')
+
+
 def twitter(request):
     return redirect('http://twitter.com/getgitcoin')
 
