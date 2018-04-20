@@ -46,4 +46,6 @@ geoip2==2.7.0
 django-silk==2.0.0
 django-extensions==2.0.6
 ipdb==0.11
-
+django-storages==1.6.6
+boto3==1.7.4
+collectfast==0.6.2
