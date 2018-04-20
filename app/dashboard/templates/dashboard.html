@@ -32,22 +32,40 @@
       {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-      <div class="col-12 col-lg-3 col-xl-2" id="sidebar_container" style="background: #F2F6F9;">
+      <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
         {% include 'shared/current_balance.html' %}
         {% include 'shared/sidebar_search.html' %}
       </div>
 
       <div class="col-12 col-lg-9 col-xl-10 body">
         <div class="container-fluid" id="bounties">
-          {% include 'shared/search_bar.html' %}
-          <div class="row mt-2 mb-2">
-            <div class="col-12 offset-md-1 col-md-10 title-row">
-              <div class="col-12 col-sm-7 col-md-5">
-                <span id="filter" class="font-title"></span>
-                <span id="matches" class="font-subheading"></span>
+          <div id="dashboard-title" class="hidden">
+            {% include 'shared/search_bar.html' %}
+            <div class="row mt-2 mb-2">
+              <div class="col-12 offset-md-1 col-md-10 title-row">
+                <div class="col-12 col-sm-7 col-md-5">
+                  <span id="filter" class="font-title"></span>
+                  <span id="matches" class="font-subheading"></span>
+                </div>
+                <div class="col-sm-5 col-md-7 bounty-info" id="funding-info">
+                </div>
               </div>
-              <div class="col-sm-5 col-md-7 bounty-info" id="funding-info">
-              </div>
+            </div>
+          </div>
+          <div id="onboard-dashboard" class="row hidden font-body">
+            <div class="col-12 offset-md-1 col-md-9">
+              <h2 class="font-title">Welcome to Gitcoin!</h2>
+              <h3 class="font-subheader">We've found bounties that match your interest and experience</h3>
+              <p>How it works</p>
+              <ul>
+                <li>Get Started with your first bounty ! Select on issue and click start work</li>
+                <li>Ready for review ? Click submit work</li>
+                <li>Not able to deliver the work on time ? Click stop work</li>
+              </ul>
+              <p>Need more help ? Checkout the starting guide</p>
+              <a id="onboard-alert" class="button button--primary" role="button" href="" target="">
+                <span class="font-caption">GOT IT !</span>
+              </a>
             </div>
           </div>
           <div class="row loading justify-content-center align-items-center loading_img">

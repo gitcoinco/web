@@ -1,3 +1,5 @@
+var onboard = {};
+
 var current = 0;
 var words = [];
 
@@ -54,42 +56,25 @@ function highlightStep(currentStep) {
 
 showTab(current);
 
-if (typeof web3 == 'undefined') {
-  $('.step #metamask span').text('Install Metamask');
-} else if (!web3.eth.coinbase) {
-  $('.step #metamask span').text('Unlock Metamask');
-} else {
-  // TODO: Refresh on update
-  $('.step #metamask').css('margin-top', '2em');
-  $('.step #metamask').css('margin-bottom', '1em');
-  $('.step #metamask').html('<div class="unlocked"><img src="/static/v2/images/metamask.svg" %}><span>Unlocked</span></div>');
-}
-
-var watch_web3_status = function() {
-
-  if (!document.listen_for_web3_iterations) {
-    document.listen_for_web3_iterations = 1;
-  } else {
-    document.listen_for_web3_iterations += 1;
-  }
-
+onboard.watchMetamask = function() {
   if (typeof web3 == 'undefined') {
     $('.step #metamask span').text('Install Metamask');
   } else if (!web3.eth.coinbase) {
     $('.step #metamask span').text('Unlock Metamask');
   } else {
-    web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-      if (typeof result != 'undefined') {
-        document.balance = result.toNumber();
-      }
-    });
-
-    web3.version.getNetwork((error, netId) => {
-      if (error)
-        $('.step #metamask span').text('Install Metamask');
-    });
+    $('.step #metamask').css('margin-top', '2em');
+    $('.step #metamask').css('margin-bottom', '1em');
+    $('.step #metamask').html('<div class="unlocked"><img src="/static/v2/images/metamask.svg" %}><span>Unlocked</span></div>');
   }
 };
+
+onboard.watchMetamask();
+onboard.metaMaskWarningRecurr = function() {
+  onboard.watchMetamask();
+  setTimeout(onboard.metaMaskWarningRecurr, 5000);
+};
+
+setTimeout(onboard.metaMaskWarningRecurr, 6000);
 
 var keywords = [ 'css', 'solidity', 'python', 'javascript', 'ruby', 'django', 'java', 'elixir' ];
 var suggested_tags = [];
@@ -155,10 +140,11 @@ var removeFilter = function(value) {
 };
 
 var redirectURL = function() {
-  var level = $('#experienceLevel').find(':selected').text();
-  var url = '/explorer?q=' + words.join(',') + '&experience_level=' + level;
-  // TODO : Figure out how to set experience filter post re-direction to explorer
+  var level = $('#experienceLevel').find(':selected').val();
 
-  localStorage['experience_level'] = level;
+  if (level != '')
+    localStorage['experience_level'] = level.toLowerCase();
+  var url = '/explorer?q=' + words.join(',');
+
   document.location.href = url;
 };

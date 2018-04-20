@@ -471,6 +471,53 @@ var getNextDayOfWeek = function(date, dayOfWeek) {
   return resultDate;
 };
 
+function getURLParams(k) {
+  var p = {};
+
+  location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(s, k, v) {
+    p[k] = v;
+  });
+  return k ? p[k] : p;
+}
+
+var resetFilters = function() {
+  for (var i = 0; i < sidebar_keys.length; i++) {
+    var key = sidebar_keys[i];
+    var tag = ($('input[name=' + key + '][value]'));
+
+    for (var j = 0; j < tag.length; j++) {
+      if (tag[j].value == 'any')
+        $('input[name=' + key + '][value=any]').prop('checked', true);
+      else
+        $('input[name=' + key + '][value=' + tag[j].value + ']').prop('checked', false);
+    }
+  }
+};
+
+(function() {
+  // if (document.referrer != 'http://0.0.0.0:8000/onboard') {
+  if (document.referrer.endsWith('/onboard')) {
+    $('#sidebar_container').addClass('invisible');
+    $('#dashboard-title').addClass('hidden');
+    $('#onboard-dashboard').removeClass('hidden');
+    resetFilters();
+    $('input[name=idx_status][value=open]').prop('checked', true);
+    $('.search-area input[type=text]').text(getURLParams('q'));
+    document.referrer = '';
+
+    $('#onboard-alert').click(function(e) {
+      $('#onboard-dashboard').addClass('hidden');
+      $('#sidebar_container').removeClass('invisible');
+      $('#dashboard-title').removeClass('hidden');
+      e.preventDefault();
+    });
+  } else {
+    $('#onboard-dashboard').addClass('hidden');
+    $('#sidebar_container').removeClass('invisible');
+    $('#dashboard-title').removeClass('hidden');
+  }
+})();
+
 $(document).ready(function() {
 
   // Sort select menu
