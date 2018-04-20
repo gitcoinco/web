@@ -128,7 +128,7 @@
         {% for bounty in ecosystem_bounties %}
                 <li style="list-style:none; margin-bottom: 5px;">
                 <img src="{{bounty.avatar}}" width=20px height="20px">
-                <a href="{{bounty.url}}">
+                <a href="https://gitcoin.co/{{bounty.url}}">
                     {{bounty.title}}
                 </a>
                 | Tagged: <i>{{bounty.tags |slice:":3" | join:", "}}</i>
