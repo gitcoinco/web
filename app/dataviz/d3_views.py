@@ -476,7 +476,6 @@ def helper_hide_pii(username):
     if not username:
         return None
     new_username = str(username)[0:3] + "*******"
-    print(username, new_username)
     return new_username
 
 
