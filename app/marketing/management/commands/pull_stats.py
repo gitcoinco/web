@@ -29,6 +29,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
+
 def gitter():
     from gitterpy.client import GitterClient
 
@@ -158,6 +159,45 @@ def github_stars():
         key='github_stargazers_count',
         val=stargazers_count,
         )
+
+
+def github_issues():
+    from django.utils import timezone
+    from datetime import datetime
+    from marketing.models import Stat
+    from github.utils import get_issues, get_user
+    import pytz
+
+    repos = [
+    ]
+
+    for org in ['bitcoin', 'gitcoinco', 'ethereum']:
+        for repo in get_user(org, '/repos'):
+            repos.append((org, repo['name']))
+
+    for org, repo in repos:
+        issues = []
+        cont = True
+        page = 1
+        while cont:
+            new_issues = get_issues(org, repo, page, 'all')
+            issues = issues + new_issues
+            page += 1
+            cont = len(new_issues)
+
+        val = len(issues)
+        key = f"github_issues_{org}_{repo}"
+        try:
+            Stat.objects.create(
+                created_on=timezone.now(),
+                key=key,
+                val=(val),
+                )
+        except:
+            pass
+        if not val:
+            break
+        print(key, val)
 
 
 def chrome_ext_users():
@@ -430,6 +470,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         fs = [
+            github_issues,
             gitter,
             medium_subscribers,
             google_analytics,
