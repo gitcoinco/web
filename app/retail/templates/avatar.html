@@ -26,7 +26,7 @@
         margin: 0 auto;
       }
       #avatar-builder-header {
-        margin-bottom: 50px;
+        margin-bottom: 20px;
       }
       #avatar-builder {
         display: flex;
@@ -84,22 +84,33 @@
       }
       .avatar-options-list {
         height: min-content;
-        max-height: 250px;
+        max-height: 255px;
         overflow: scroll;
       }
       .avatar-option {
         width: 80px;
         height: 80px;
         background-color: #D8E7FF;
-        margin: 0 0 10px 10px;
+        margin: 0 0 5px 5px;
       }
       #avatar-builder__actions {
         text-align: right;
         margin-top: 30px;
       }
-      @media (min-width: 800px) {
+      @media (min-width: 845px) {
         body {
           padding: 85px;
+        }
+        #avatar-area {
+          flex-wrap: nowrap !important;
+        }
+        #section-title {
+          text-align: left;
+        }
+      }
+      @media (min-width: 500px) {
+        #avatar-builder-header {
+          margin-bottom: 50px;
         }
         #avatar-builder {
           flex-wrap: nowrap !important;
@@ -107,14 +118,6 @@
         #avatar-builder__sections {
           display: block;
           flex-basis: 170px;
-        }
-      }
-      @media (min-width: 600px) {
-        #avatar-area {
-          flex-wrap: nowrap !important;
-        }
-        #section-title {
-          text-align: left;
         }
       }
     </style>
@@ -150,7 +153,9 @@
         </h3>
         <div id="avatar-area" class="d-flex flex-wrap mb-2 justify-content-center">
           <div id="avatar-preview" class="mb-3"></div>
-          <div class="avatar-options-list d-flex flex-wrap justify-content-center">
+          <div class="avatar-options-list d-flex flex-wrap">
+            <div class="avatar-option"></div>
+            <div class="avatar-option"></div>
             <div class="avatar-option"></div>
             <div class="avatar-option"></div>
             <div class="avatar-option"></div>
@@ -160,11 +165,11 @@
             <div class="avatar-option"></div>
           </div>
         </div>
-        <div id="bg-picker">
+        <!-- <div id="bg-picker">
           {% for c in bgcolors %}
             <button class="bg-picker__option pa-0" style="background-color: {{ c }}" />
           {% endfor %}
-        </div>
+        </div> -->
       </div>
     </div>
     <div id="avatar-builder__actions">
