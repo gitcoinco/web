@@ -637,6 +637,7 @@ def web3(request):
 def avatar(request):
     context = {
         'defaultTone': 'AE7242',
+        'defaultHairColor': '000000',
         'layers': (
           'HatLong',
           'HairLong',
@@ -655,20 +656,23 @@ def avatar(request):
           'Glasses'
         ),
         'sections': [
-            { 'name': 'Face', 'title': 'Pick face shape', 'zindex': 6,
+            { 'name': 'Face', 'title': 'Pick face shape',
               'options': ("0", "1", "2", "3", "4") },
             { 'name': 'Skin Tone', 'title': 'Pick skin tone',
               'options': ('F8D5C2', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '3F2918')
             },
-            { 'name': 'Eyes', 'title': 'Pick eyes shape', 'zindex': 14,
+            { 'name': 'Eyes', 'title': 'Pick eyes shape',
               'options': ("0", "1", "2", "3", "4") },
-            { 'name': 'Nose', 'title': 'Pick nose shape', 'zindex': 13,
+            { 'name': 'Nose', 'title': 'Pick nose shape',
               'options': ("0", "1", "2", "3", "4") },
-            { 'name': 'Mouth', 'title': 'Pick mouth shape', 'zindex': 12,
+            { 'name': 'Mouth', 'title': 'Pick mouth shape',
               'options': ("0", "1", "2", "3", "4") },
-            { 'name': 'Ears', 'title': 'Pick ears shape', 'zindex': 5,
+            { 'name': 'Ears', 'title': 'Pick ears shape',
               'options': ("0", "1", "2", "3") },
-            { 'name': 'Hair', 'title': 'Pick a hairstyle' },
+            { 'name': 'Hair Style', 'title': 'Pick a hairstyle',
+              'options': ("0", "1", "2", "3", "4") },
+            { 'name': 'Hair Color', 'title': 'Pick a hair color',
+              'options': ('000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E') },
             { 'name': 'Facial Hair', 'title': 'Pick a facial hair style' },
             { 'name': 'Clothing', 'title': 'Pick your clothing' },
             { 'name': 'Accessories', 'title': 'Pick up to 3 accessories' },

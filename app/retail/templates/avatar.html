@@ -168,6 +168,8 @@
                 style="z-index: {{ forloop.counter }}"
                 {% if l == 'Face' or l == 'Ears' %}
                   class="tone-dependent preview-section empty"
+                {% elif l == 'HairShort' %}
+                  class="hair-color-dependent preview-section empty"
                 {% else %}
                   class="preview-section empty"
                 {% endif %}
@@ -185,7 +187,11 @@
                     {% with basePath|add:o|add:"/"|add:defaultTone|add:".svg" as path %}
                       <img class="tone-dependent" src="{% static path %}" />
                     {% endwith %}
-                  {% elif id == "Background" or id == "SkinTone" %}
+                  {% elif id == "HairStyle" %}
+                    {% with basePath|add:o|add:"/"|add:defaultHairColor|add:".svg" as path %}
+                      <img class="hair-color-dependent" src="{% static path %}" />
+                    {% endwith %}
+                  {% elif id == 'Background' or id == 'SkinTone' or id == 'HairColor' %}
                     <div class="color-option" style="background-color: #{{ o }}" ></div>
                   {% else %}
                     {% with basePath|add:o|add:".svg" as path %}
@@ -210,7 +216,8 @@
     <script>
       var openSection;
       var options = {
-        SkinTone: '{{ defaultTone }}'
+        SkinTone: '{{ defaultTone }}',
+        HairColor: '{{ defaultHairColor }}'
       }
       function changeSection(section) {
         openSection = openSection || section;
@@ -221,6 +228,18 @@
         });
 
         openSection = section;
+      }
+
+      function changeColor(className, color) {
+        $(className).each(function(idx, elem) {
+          if (elem.classList.contains('empty')) {
+            return;
+          }
+          var pathSegments = elem.src.split('/');
+          var filename = pathSegments.pop();
+          pathSegments.push(color+'.svg');
+          elem.src = pathSegments.join('/');
+        });
       }
 
       function setOption(option, value, target) {
@@ -236,16 +255,16 @@
               attr('src', $(target).children()[0].src).
               removeClass('empty');
             break;
+          case 'HairStyle':
+            $('#preview-HairShort').
+              attr('src', $(target).children()[0].src).
+              removeClass('empty');
+            break;
+          case 'HairColor':
+            changeColor('.hair-color-dependent', value)
+            break;
           case 'SkinTone':
-            $('.tone-dependent').each(function(idx, elem) {
-              if (elem.classList.contains('empty')) {
-                return;
-              }
-              var pathSegments = elem.src.split('/');
-              var filename = pathSegments.pop();
-              pathSegments.push(value+'.svg');
-              elem.src = pathSegments.join('/');
-            });
+            changeColor('.tone-dependent', value)
             break;
           case 'Background':
             $('#avatar-preview').css('background-color', '#'+value);
