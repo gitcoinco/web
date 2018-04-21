@@ -182,15 +182,21 @@
           {% with "v2/images/avatar/"|add:id|add:"/" as basePath %}
             <div id="options-{{ id }}" class="options-section d-flex flex-wrap">
               {% for o in s.options %}
-                <button onclick="setOption('{{ id }}', '{{ o }}', this)" class="avatar-option">
+                <button onclick="setOption('{{ id }}', {{ o }}, this)" class="avatar-option">
                   {% if id == "Face" or id == "Ears" %}
                     {% with basePath|add:o|add:"/"|add:defaultTone|add:".svg" as path %}
                       <img class="tone-dependent" src="{% static path %}" />
                     {% endwith %}
                   {% elif id == "HairStyle" %}
-                    {% with basePath|add:o|add:"/"|add:defaultHairColor|add:".svg" as path %}
-                      <img class="hair-color-dependent" src="{% static path %}" />
-                    {% endwith %}
+                    {% for part in o %}
+                        {% with basePath|add:part|add:"/"|add:defaultHairColor|add:".svg" as path %}
+                          <img class="hair-color-dependent"
+                            {% if part != 'None' %}
+                              src="{% static path %}"
+                            {% endif %}
+                          />
+                        {% endwith %}
+                    {% endfor %}
                   {% elif id == 'Background' or id == 'SkinTone' or id == 'HairColor' %}
                     <div class="color-option" style="background-color: #{{ o }}" ></div>
                   {% else %}
@@ -241,6 +247,15 @@
           elem.src = pathSegments.join('/');
         });
       }
+      function changeImage(option, path) {
+        const elem = $('#preview-'+option);
+        console.log(elem, path)
+        if (path) {
+          elem.attr('src', path).removeClass('empty');
+        } else {
+          elem.addClass('empty');
+        }
+      }
 
       function setOption(option, value, target) {
         $('#nav-'+option).addClass('complete');
@@ -251,14 +266,11 @@
           case 'Nose':
           case 'Ears':
           case 'Mouth':
-            $('#preview-'+option).
-              attr('src', $(target).children()[0].src).
-              removeClass('empty');
+            changeImage(option, $(target).children()[0].src)
             break;
           case 'HairStyle':
-            $('#preview-HairShort').
-              attr('src', $(target).children()[0].src).
-              removeClass('empty');
+            changeImage('HairShort', $(target).children()[1].src)
+            changeImage('HairLong', $(target).children()[0].src)
             break;
           case 'HairColor':
             changeColor('.hair-color-dependent', value)
