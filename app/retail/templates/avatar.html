@@ -164,8 +164,8 @@
                     {% with basePath|add:o|add:"/"|add:defaultTone|add:".svg" as path %}
                       <img class="tone-dependent" src="{% static path %}" />
                     {% endwith %}
-                  {% elif id == "SkinTone" or id == "Background" %}
-                    <div class="color-option" style="background-color: {{ o }}" ></div>
+                  {% elif id == "Background" or id == "SkinTone" %}
+                    <div class="color-option" style="background-color: #{{ o }}" ></div>
                   {% else %}
                     {% with basePath|add:o|add:".svg" as path %}
                       <img src="{% static path %}" />

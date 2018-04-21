@@ -636,12 +636,13 @@ def web3(request):
 
 def avatar(request):
     context = {
-        'defaultTone': "2",
+        'defaultTone': '3',
         'sections': [
             { 'name': 'Face', 'title': 'Pick face shape',
               'options': ("0", "1", "2", "3", "4") },
             { 'name': 'Skin Tone', 'title': 'Pick skin tone',
-              'options': ("0", "1", "2", "3", "4", "5", "6", "7")},
+              'options': ('F8D5C2', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '3F2918')
+            },
             { 'name': 'Eyes', 'title': 'Pick eyes shape',
               'options': ("0", "1", "2", "3", "4") },
             { 'name': 'Nose', 'title': 'Pick nose shape',
@@ -656,9 +657,9 @@ def avatar(request):
             { 'name': 'Accessories', 'title': 'Pick your accessories' },
             { 'name': 'Background', 'title': 'Pick a background color',
               'options': (
-                '#25E899', '#9AB730', '#00A55E', '#3FCDFF',
-                '#3E00FF', '#8E2ABE', '#D0021B', '#F9006C',
-                '#FFCE08', '#F8E71C', '#15003E', '#FFFFFF'
+                '25E899', '9AB730', '00A55E', '3FCDFF',
+                '3E00FF', '8E2ABE', 'D0021B', 'F9006C',
+                'FFCE08', 'F8E71C', '15003E', 'FFFFFF'
               )
             }
         ]
