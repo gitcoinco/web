@@ -73,15 +73,6 @@
         background-color: #D8D8D8;
         flex-shrink: 0;
       }
-      #options-Background {
-        line-height: 1;
-      }
-      .options-Background__option {
-        width: 51px;
-        height: 28px;
-        border: 1px solid #C4C4C4;
-        cursor: pointer;
-      }
       .options-section {
         height: min-content;
         max-height: 255px;
@@ -96,6 +87,16 @@
         height: 80px;
         background-color: #D8E7FF;
         margin: 0 0 5px 5px;
+        cursor: pointer;
+        padding: 0;
+      }
+      .avatar-option img {
+        max-width: 100%;
+        max-height: 100%;
+      }
+      .color-option {
+        width: 100%;
+        height: 100%;
       }
       #avatar-builder__actions {
         text-align: right;
@@ -107,6 +108,7 @@
         }
         #avatar-area {
           flex-wrap: nowrap !important;
+          justify-content: flex-start !important;
         }
         #section-title {
           text-align: left;
@@ -130,6 +132,7 @@
     <header id="avatar-builder-header">
       <h1 id="title">{% trans "Build Your Gitcoin Avatar" %}</h1>
     </header>
+
     <div id="avatar-builder">
       <ul id="avatar-builder__sections">
         {% for s in sections %}
@@ -138,6 +141,7 @@
         </a>
         {% endfor %}
       </ul>
+
       <div id="avatar-builder__editor">
         <h3 id="section-title">
           {% for s in sections %}
@@ -146,27 +150,37 @@
             </span>
           {% endfor %}
         </h3>
+
         <div id="avatar-area" class="d-flex flex-wrap mb-2 justify-content-center">
           <div id="avatar-preview" class="mb-3"></div>
-          <div id="options-Face" class="options-section d-flex flex-wrap">
-            <div class="avatar-option"></div>
-            <div class="avatar-option"></div>
-            <div class="avatar-option"></div>
-            <div class="avatar-option"></div>
-            <div class="avatar-option"></div>
-            <div class="avatar-option"></div>
-            <div class="avatar-option"></div>
-            <div class="avatar-option"></div>
-            <div class="avatar-option"></div>
-          </div>
-        </div>
-        <div id="options-Background" class="options-section">
-          {% for c in bgcolors %}
-            <button class="options-Background__option pa-0" style="background-color: {{ c }}" />
+
+          {% for s in sections %}
+          {% with s.name|cut:" " as id %}
+          {% with "v2/images/avatar/"|add:id|add:"/" as basePath %}
+            <div id="options-{{ id }}" class="options-section d-flex flex-wrap">
+              {% for o in s.options %}
+                <button onclick="setOption('{{ id }}', {{ o }})" class="avatar-option">
+                  {% if id == "Face" or id == "Ears" %}
+                    {% with basePath|add:o|add:"/"|add:defaultTone|add:".svg" as path %}
+                      <img class="tone-dependent" src="{% static path %}" />
+                    {% endwith %}
+                  {% elif id == "SkinTone" or id == "Background" %}
+                    <div class="color-option" style="background-color: {{ o }}" ></div>
+                  {% else %}
+                    {% with basePath|add:o|add:".svg" as path %}
+                      <img src="{% static path %}" />
+                    {% endwith %}
+                  {% endif %}
+                </button>
+              {% endfor %}
+            </div>
+          {% endwith %}
+          {% endwith %}
           {% endfor %}
         </div>
       </div>
     </div>
+
     <div id="avatar-builder__actions">
       <a href="#" class="">{% trans "Do This Later" %}</a>
       <a href="#">{% trans "Save Avatar" %}</a>
@@ -174,6 +188,9 @@
     <script src="{% static "v2/js/jquery.js" %}"></script>
     <script>
       var openSection;
+      var options = {
+        skinTone: {{ defaultTone }}
+      }
       function changeSection(section) {
         openSection = openSection || section;
 
@@ -183,6 +200,15 @@
         });
 
         openSection = section;
+      }
+
+      function setOption(option, value) {
+        console.log(option, value)
+        switch (option) {
+          case 'Face':
+            options.face = value;
+            break;
+        }
       }
 
       changeSection('Face');

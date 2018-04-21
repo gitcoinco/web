@@ -636,21 +636,31 @@ def web3(request):
 
 def avatar(request):
     context = {
-        'bgcolors': [
-            '#25E899', '#9AB730', '#00A55E', '#3FCDFF',
-            '#3E00FF', '#8E2ABE', '#D0021B', '#F9006C',
-            '#FFCE08', '#F8E71C', '#15003E', '#FFFFFF'
-        ],
+        'defaultTone': "2",
         'sections': [
-          { 'name': 'Face', 'title': 'Pick a face shape' },
-          { 'name': 'Eyes', 'title': 'Pick eyes shape' },
-          { 'name': 'Mouth', 'title': 'Pick mouth shape' },
-          { 'name': 'Ears', 'title': 'Pick ears shape' },
-          { 'name': 'Hair', 'title': 'Pick a hairstyle' },
-          { 'name': 'Facial Hair', 'title': 'Pick a facial hair style' },
-          { 'name': 'Clothing', 'title': 'Pick your clothing' },
-          { 'name': 'Accessories', 'title': 'Pick your accessories' },
-          { 'name': 'Background', 'title': 'Pick a background color' }
+            { 'name': 'Face', 'title': 'Pick face shape',
+              'options': ("0", "1", "2", "3", "4") },
+            { 'name': 'Skin Tone', 'title': 'Pick skin tone',
+              'options': ("0", "1", "2", "3", "4", "5", "6", "7")},
+            { 'name': 'Eyes', 'title': 'Pick eyes shape',
+              'options': ("0", "1", "2", "3", "4") },
+            { 'name': 'Nose', 'title': 'Pick nose shape',
+              'options': ("0", "1", "2", "3", "4") },
+            { 'name': 'Mouth', 'title': 'Pick mouth shape',
+              'options': ("0", "1", "2", "3", "4") },
+            { 'name': 'Ears', 'title': 'Pick ears shape',
+              'options': ("0", "1", "2", "3") },
+            { 'name': 'Hair', 'title': 'Pick a hairstyle' },
+            { 'name': 'Facial Hair', 'title': 'Pick a facial hair style' },
+            { 'name': 'Clothing', 'title': 'Pick your clothing' },
+            { 'name': 'Accessories', 'title': 'Pick your accessories' },
+            { 'name': 'Background', 'title': 'Pick a background color',
+              'options': (
+                '#25E899', '#9AB730', '#00A55E', '#3FCDFF',
+                '#3E00FF', '#8E2ABE', '#D0021B', '#F9006C',
+                '#FFCE08', '#F8E71C', '#15003E', '#FFFFFF'
+              )
+            }
         ]
     }
     return TemplateResponse(request, 'avatar.html', context)
