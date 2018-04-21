@@ -162,16 +162,16 @@
         <div id="avatar-area" class="d-flex flex-wrap mb-2 justify-content-center">
 
           <div id="avatar-preview" class="mb-3">
-            {% for s in sections %}
-            {% with s.name|cut:" " as id %}
-              <img id="preview-{{ id }}" src="" alt="{{ s.name }} Preview"
-                {% if id == 'Face' or id == 'Ears' %}
+            {% for l in layers %}
+              <img id="preview-{{ l }}"
+                src="" alt="{{ l }} Preview"
+                style="z-index: {{ forloop.counter }}"
+                {% if l == 'Face' or l == 'Ears' %}
                   class="tone-dependent preview-section empty"
                 {% else %}
                   class="preview-section empty"
                 {% endif %}
               />
-            {% endwith %}
             {% endfor %}
           </div>
 
