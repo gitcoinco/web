@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="899px" height="1415px" viewBox="0 0 899 1415" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>plaid-AE7242</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="plaid-AE7242" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="3F2918" transform="translate(-28.000000, 861.000000)">
+            <g id="Group">
+                <g>
+                    <path d="M901.2,447.4 L901.2,447 C901.2,373.8 857.5,307.6 790.2,278.8 L673.6,229 C612,202.6 545.7,189.1 478.6,189.1 C411.6,189.1 345.3,202.7 283.6,229 L167,278.8 C99.7,307.6 56,373.8 56,447 L56,552.6 L901.2,552.6 L901.2,447.4 Z" id="Shape" fill="#CCCCCC"></path>
+                    <g fill="#FFFFFF" opacity="0.5">
+                        <g transform="translate(56.000000, 518.000000)" id="Rectangle-path">
+                            <rect x="0" y="0.7" width="845.2" height="34"></rect>
+                        </g>
+                        <g transform="translate(56.000000, 406.000000)" id="Rectangle-path">
+                            <rect x="0" y="0.2" width="845.2" height="34"></rect>
+                        </g>
+                        <g transform="translate(56.000000, 293.000000)" id="Shape">
+                            <polygon points="0 0.7 388.1 0.7 422.3 33.2 454.6 0.7 845.2 0.7 845.2 34.6 0 34.6"></polygon>
+                        </g>
+                        <g transform="translate(349.000000, 0.000000)" id="Rectangle-path">
+                            <g>
+                                <rect x="0.1" y="0.6" width="34" height="845.2"></rect>
+                            </g>
+                            <g transform="translate(112.000000, 315.000000)">
+                                <rect x="0.6" y="0.1" width="34" height="530.7"></rect>
+                            </g>
+                            <g transform="translate(225.000000, 0.000000)">
+                                <rect x="0.1" y="0.6" width="34" height="845.2"></rect>
+                            </g>
+                        </g>
+                        <g transform="translate(696.000000, 0.000000)" id="Rectangle-path">
+                            <g>
+                                <rect x="0" y="0.6" width="34" height="845.2"></rect>
+                            </g>
+                            <g transform="translate(112.000000, 0.000000)">
+                                <rect x="0.5" y="0.6" width="34" height="845.2"></rect>
+                            </g>
+                            <g transform="translate(225.000000, 0.000000)">
+                                <rect x="0" y="0.6" width="34" height="845.2"></rect>
+                            </g>
+                        </g>
+                        <g id="Rectangle-path">
+                            <g>
+                                <rect x="0.2" y="0.6" width="34" height="845.2"></rect>
+                            </g>
+                            <g transform="translate(112.000000, 0.000000)">
+                                <rect x="0.7" y="0.6" width="34" height="845.2"></rect>
+                            </g>
+                            <g transform="translate(225.000000, 0.000000)">
+                                <rect x="0.2" y="0.6" width="34" height="845.2"></rect>
+                            </g>
+                        </g>
+                    </g>
+                    <path d="M478.6,216 C510.1,216 541.8,219.2 572.7,225.5 C603.6,231.8 634,241.3 663,253.7 L779.6,303.6 C837.1,328.2 874.2,384.5 874.2,447 L874.2,447.4 L874.2,525.6 L83,525.6 L83,447 C83,384.5 120.1,328.2 177.6,303.6 L294.2,253.7 C323.2,241.3 353.6,231.8 384.5,225.5 C415.4,219.2 447.1,216 478.6,216 Z M478.6,189 C411.6,189 345.3,202.6 283.6,228.9 L167,278.8 C99.7,307.6 56,373.8 56,447 L56,552.6 L901.2,552.6 L901.2,447.4 L901.2,447 C901.2,373.8 857.5,307.6 790.2,278.8 L673.6,229 C611.9,202.6 545.6,189 478.6,189 Z" id="Shape" fill="#333333" fill-rule="nonzero"></path>
+                    <path d="M478.6,314.1 L478.6,552.7" id="Shape" stroke="#333333" stroke-width="16.5605"></path>
+                    <path d="M237.1,391.1 L228.2,533.5" id="Shape" stroke="#333333" stroke-width="12.5228" stroke-linecap="round"></path>
+                    <path d="M720.1,391.1 L725.5,533.5" id="Shape" stroke="#333333" stroke-width="12.5228" stroke-linecap="round"></path>
+                    <g transform="translate(544.000000, 426.000000)" id="Shape">
+                        <path d="M13.1,105 C8.9,96.4 6.7,86.9 6.7,77.3 L6.7,6.8 L133.6,6.8 L133.6,77.3 C133.6,86.9 131.4,96.4 127.2,105 L13.1,105 Z" fill="#CCCCCC"></path>
+                        <path d="M127.4,13.1 L127.4,77.3 C127.4,84.7 126,92 123.2,98.8 L17.2,98.8 C14.5,92 13,84.7 13,77.3 L13,13.1 L127.4,13.1 Z M139.9,0.5 L0.5,0.5 L0.5,77.3 C0.5,89.6 3.7,101.2 9.3,111.3 L131.1,111.3 C136.7,101.2 139.9,89.7 139.9,77.3 L139.9,0.5 Z" fill="#333333" fill-rule="nonzero"></path>
+                    </g>
+                </g>
+                <g transform="translate(377.000000, 68.000000)" fill-rule="nonzero" id="Shape">
+                    <path d="M101.4,242.2 C98.6,242.2 95.8,241.9 93,241.4 L15,137.3 L51.6,14.5 L152.6,14.8 L188.4,137.3 L110.5,241.3 C107.4,241.9 104.4,242.2 101.4,242.2 Z" fill="#AE7242"></path>
+                    <path d="M61.6,27.9 L142.4,28.1 L173.5,134.5 L103,228.6 C102.5,228.6 101.9,228.6 101.4,228.6 C101.1,228.6 100.7,228.6 100.4,228.6 L29.9,134.5 L61.6,27.9 Z M41.5,0.9 L0.1,139.9 L85,253.3 C90.3,254.9 95.8,255.7 101.3,255.7 C107,255.7 112.7,254.8 118.2,253.1 L118.4,253 L203.2,139.8 L162.7,1.1 L41.5,0.9 Z" fill="#333333"></path>
+                </g>
+                <g transform="translate(347.000000, 187.000000)" id="Shape">
+                    <polygon fill="#FFFFFF" points="51.3 17 109 105.3 18.3 105.4"></polygon>
+                    <path d="M54.3,44.5 L85.9,92.9 L36.2,92.9 L54.3,44.5 Z M50.3,0.1 C47,0.1 43.7,1.8 42.5,5 L0.3,118 L132.1,117.9 L57.5,3.7 C55.9,1.2 53.1,0.1 50.3,0.1 Z" fill="#333333" fill-rule="nonzero"></path>
+                </g>
+                <g transform="translate(478.000000, 187.000000)" id="Shape">
+                    <polygon fill="#FFFFFF" points="23.4 105.3 80.3 17.2 114.3 105.3"></polygon>
+                    <path d="M77.5,44.7 L96,92.8 L46.4,92.8 L77.5,44.7 Z M81.2,0.1 C78.4,0.1 75.7,1.3 74.1,3.7 L0.3,117.8 L132.6,117.9 L89,4.9 C87.8,1.7 84.5,0.1 81.2,0.1 Z" fill="#333333" fill-rule="nonzero"></path>
+                </g>
+            </g>
+            <path d="M574.2,433.4 L574.2,378.1" id="Shape" stroke="#333333" stroke-width="12.5228"></path>
+            <path d="M608.4,433.4 L608.4,387.7" id="Shape" stroke="#333333" stroke-width="12.5228"></path>
+        </g>
+    </g>
+</svg>

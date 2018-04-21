@@ -96,8 +96,8 @@
         position: relative;
       }
       .avatar-option img, #avatar-preview img {
-        max-width: 100%;
-        max-height: 100%;
+        width: 100%;
+        height: 100%;
         position: absolute;
         top: 0;
         left: 0;
@@ -185,13 +185,13 @@
                 <button onclick="setOption('{{ id }}', '{{ o|addslashes }}', this)" class="avatar-option">
 
                   {% if id == "Face" or id == "Ears" or id == "Clothing" %}
-                    {% with basePath|add:o|add:"/"|add:defaultTone|add:".svg" as path %}
+                    {% with basePath|add:o|add:"-"|add:defaultTone|add:".svg" as path %}
                       <img class="tone-dependent" src="{% static path %}" />
                     {% endwith %}
 
                   {% elif id == "HairStyle" %}
                     {% for part in o %}
-                    {% with basePath|add:part|add:"/"|add:defaultHairColor|add:".svg" as path %}
+                    {% with basePath|add:part|add:"-"|add:defaultHairColor|add:".svg" as path %}
                       <img
                         {% if part != 'None' %}
                           class="hair-color-dependent"
@@ -258,7 +258,8 @@
           }
           var pathSegments = elem.src.split('/');
           var filename = pathSegments.pop();
-          pathSegments.push(color+'.svg');
+          var baseOption = filename.split('-').slice(0, -1).join('-');
+          pathSegments.push(baseOption+'-'+color+'.svg');
           elem.src = pathSegments.join('/');
         });
       }
