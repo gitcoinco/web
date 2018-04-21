@@ -275,7 +275,7 @@ def viz_heatmap(request, key='email_open', template='heatmap'):
             _max = max([stat.val_since_yesterday for stat in stats])
             for stat in stats:
                 date = stat.created_on.strftime("%Y-%m-%d")
-                value = str(stat.val_since_yesterday / _max)
+                value = str(stat.val_since_yesterday / _max) if _max else str(0)
                 rows.append([date, value])
             output_rows = []
             for row in rows:
