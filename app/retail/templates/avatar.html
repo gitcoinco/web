@@ -1,0 +1,92 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'shared/head.html' %}
+  <head>
+    <style>
+      body {
+        padding: 85px;
+      }
+      #avatar-builder-header {
+        margin-bottom: 50px;
+      }
+      #avatar-builder {
+        display: flex;
+        flex-flow: row wrap;
+      }
+      #avatar-builder__sections {
+        list-style-type: square;
+        list-style-position: inside;
+        width: 170px;
+        padding-left: 0;
+      }
+      #avatar-builder__sections li {
+        /* border: 1px solid black; */
+        padding: 5px;
+      }
+      #avatar-builder__sections li.complete {
+        list-style-image: url('{% static "v2/images/check.svg" %}');
+        fill: green;
+      }
+      #avatar-preview {
+        width: 250px;
+        height: 250px;
+        background-color: #D8D8D8;
+      }
+      .avatar-option {
+        width: 80px;
+        height: 80px;
+        background-color: #D8E7FF;
+      }
+      #avatar-builder__actions {
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <header id="avatar-builder-header">
+      <h1 id="title">{% trans "Build Your Gitcoin Avatar" %}</h1>
+    </header>
+    <div id="avatar-builder">
+      <ul id="avatar-builder__sections">
+        <a href="#"><li>{% trans "Face" %}</li></a>
+        <a href="#"><li class="complete">{% trans "Eyes" %}</li></a>
+        <li>{% trans "Nose" %}</li>
+        <li>{% trans "Mouth" %}</li>
+        <li>{% trans "Ears" %}</li>
+        <li>{% trans "Hair" %}</li>
+        <li>{% trans "Facial Hair" %}</li>
+        <li>{% trans "Clothing" %}</li>
+        <li>{% trans "Accessories" %}</li>
+        <li>{% trans "Background" %}</li>
+      </ul>
+      <div id="avatar-builder__editor">
+        <h2>{% trans "Pick a face shape" %}</h2>
+        <div id="avatar-preview"></div>
+        <div id="avatar-options-list">
+          <div class="avatar-option"></div>
+        </div>
+      </div>
+    </div>
+    <div id="avatar-builder__actions">
+      <a href="#" class="">{% trans "Do This Later" %}</a>
+      <a href="#">{% trans "Save Avatar" %}</a>
+    </div>
+  </body>
+</html>
