@@ -46,6 +46,7 @@ class Command(BaseCommand):
             print('not running start work expiration because DEBUG is on')
             return
 
+        #todo: DRY with dashboard/notifications.py
         num_days_back_to_warn = 3
         num_days_back_to_delete_interest = 10
 
@@ -78,6 +79,7 @@ class Command(BaseCommand):
                         if not actions:
                             should_warn_user = True
                             should_delete_interest = False
+                            last_heard_from_user_days = (datetime.now() - interest.created.replace(tzinfo=None)).days
                             print(" - no actions")
                         else:
                             # example format: 2018-01-26T17:56:31Z'
@@ -102,7 +104,7 @@ class Command(BaseCommand):
                         if should_delete_interest:
                             print(f'executing should_delete_interest for {interest.profile} / {bounty.github_url} ')
                             # commenting on the GH issue
-                            maybe_notify_user_removed_github(bounty, interest.profile.handle, last_heard_from_user_days)
+                            maybe_notify_user_removed_github(bounty, interest.profile.handle, last_heard_from_user_days, last_heard_from_user_days)
                             # commenting in slack
                             maybe_notify_bounty_user_removed_to_slack(bounty, interest.profile.handle)
                             # send email
@@ -112,7 +114,7 @@ class Command(BaseCommand):
                         elif should_warn_user:
                             print(f'executing should_warn_user for {interest.profile} / {bounty.github_url} ')
                             # commenting on the GH issue
-                            maybe_warn_user_removed_github(bounty, interest.profile.handle)
+                            maybe_warn_user_removed_github(bounty, interest.profile.handle, last_heard_from_user_days)
                             # commenting in slack
                             maybe_notify_bounty_user_warned_removed_to_slack(bounty, interest.profile.handle, last_heard_from_user_days)
                             # send email

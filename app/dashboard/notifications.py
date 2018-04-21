@@ -632,22 +632,37 @@ def maybe_notify_bounty_user_removed_to_slack(bounty, username):
     return True
 
 
+#todo: DRY with expiration_start_work
+num_days_back_to_warn = 3
+num_days_back_to_delete_interest = 10
+
+
 def maybe_notify_user_removed_github(bounty, username, last_heard_from_user_days=None):
     if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
 
-    msg = f"@{username} has been removed from this issue due to inactivity ({last_heard_from_user_days} days) on the github thread.  @{username} if you believe this was done in error, please <a href={bounty.url}>go to the bounty</a> and click 'start work' again."
+    msg = f"""@{username} has been removed from this issue due to inactivity ({last_heard_from_user_days} days) on the github thread.  @{username} if you believe this was done in error, please <a href={bounty.url}>go to the bounty</a> and click 'start work' again.
+* [x] warning 1 ({num_days_back_to_warn} days)
+* [x] warning 2 ({num_days_back_to_warn * 2} days)
+* [x] auto removal ({num_days_back_to_delete_interest} days)
+"""
 
     post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
 
 
-def maybe_warn_user_removed_github(bounty, username):
+def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days):
     if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
 
-    msg = f"@{username} are you still working on this issue?"
+    first_warning = 'x'
+    second_warning = 'x' if last_heard_from_user_days > num_days_back_to_warn else ''
+    msg = f"""@{username} are you still working on this issue?
+* [{first_warning}] warning 1 ({num_days_back_to_warn} days)
+* [{second_warning}] warning 2 ({num_days_back_to_warn * 2} days)
+* [x] auto removal ({num_days_back_to_delete_interest} days)
+"""
 
     post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
 
