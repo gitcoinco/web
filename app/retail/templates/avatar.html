@@ -74,7 +74,7 @@
         flex-shrink: 0;
         position: relative;
       }
-      .preview-section.empty {
+      .empty {
         display: none;
       }
       .options-section {
@@ -168,7 +168,7 @@
                 style="z-index: {{ forloop.counter }}"
                 {% if l == 'Face' or l == 'Ears' %}
                   class="tone-dependent preview-section empty"
-                {% elif l == 'HairShort' %}
+                {% elif l == 'HairShort' or l == 'HairLong' %}
                   class="hair-color-dependent preview-section empty"
                 {% else %}
                   class="preview-section empty"
@@ -182,23 +182,30 @@
           {% with "v2/images/avatar/"|add:id|add:"/" as basePath %}
             <div id="options-{{ id }}" class="options-section d-flex flex-wrap">
               {% for o in s.options %}
-                <button onclick="setOption('{{ id }}', {{ o }}, this)" class="avatar-option">
+                <button onclick="setOption('{{ id }}', '{{ o|addslashes }}', this)" class="avatar-option">
+
                   {% if id == "Face" or id == "Ears" %}
                     {% with basePath|add:o|add:"/"|add:defaultTone|add:".svg" as path %}
                       <img class="tone-dependent" src="{% static path %}" />
                     {% endwith %}
+
                   {% elif id == "HairStyle" %}
                     {% for part in o %}
                         {% with basePath|add:part|add:"/"|add:defaultHairColor|add:".svg" as path %}
-                          <img class="hair-color-dependent"
+                          <img
                             {% if part != 'None' %}
+                              class="hair-color-dependent"
                               src="{% static path %}"
+                            {% else %}
+                              class="hair-color-dependent empty"
                             {% endif %}
                           />
                         {% endwith %}
                     {% endfor %}
+
                   {% elif id == 'Background' or id == 'SkinTone' or id == 'HairColor' %}
                     <div class="color-option" style="background-color: #{{ o }}" ></div>
+
                   {% else %}
                     {% with basePath|add:o|add:".svg" as path %}
                       <img src="{% static path %}" />
@@ -249,7 +256,6 @@
       }
       function changeImage(option, path) {
         const elem = $('#preview-'+option);
-        console.log(elem, path)
         if (path) {
           elem.attr('src', path).removeClass('empty');
         } else {
@@ -259,7 +265,6 @@
 
       function setOption(option, value, target) {
         $('#nav-'+option).addClass('complete');
-        options[option] = value;
         switch (option) {
           case 'Face':
           case 'Eyes':
@@ -267,19 +272,24 @@
           case 'Ears':
           case 'Mouth':
             changeImage(option, $(target).children()[0].src)
+            options[option] = value;
             break;
           case 'HairStyle':
             changeImage('HairShort', $(target).children()[1].src)
             changeImage('HairLong', $(target).children()[0].src)
+            options[option] = value.slice(1, value.length - 2).split(', ');
             break;
           case 'HairColor':
             changeColor('.hair-color-dependent', value)
+            options[option] = value;
             break;
           case 'SkinTone':
             changeColor('.tone-dependent', value)
+            options[option] = value;
             break;
           case 'Background':
             $('#avatar-preview').css('background-color', '#'+value);
+            options[option] = value;
             break;
         }
       }
