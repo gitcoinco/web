@@ -166,7 +166,7 @@
               <img id="preview-{{ l }}"
                 src="" alt="{{ l }} Preview"
                 style="z-index: {{ forloop.counter }}"
-                {% if l == 'Face' or l == 'Ears' %}
+                {% if l == 'Face' or l == 'Ears' or l == 'Clothing' %}
                   class="tone-dependent preview-section empty"
                 {% elif l == 'HairShort' or l == 'HairLong' %}
                   class="hair-color-dependent preview-section empty"
@@ -184,7 +184,7 @@
               {% for o in s.options %}
                 <button onclick="setOption('{{ id }}', '{{ o|addslashes }}', this)" class="avatar-option">
 
-                  {% if id == "Face" or id == "Ears" %}
+                  {% if id == "Face" or id == "Ears" or id == "Clothing" %}
                     {% with basePath|add:o|add:"/"|add:defaultTone|add:".svg" as path %}
                       <img class="tone-dependent" src="{% static path %}" />
                     {% endwith %}
@@ -271,6 +271,7 @@
           case 'Nose':
           case 'Ears':
           case 'Mouth':
+          case 'Clothing':
             changeImage(option, $(target).children()[0].src)
             options[option] = value;
             break;

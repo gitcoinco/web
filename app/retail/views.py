@@ -642,7 +642,7 @@ def avatar(request):
           'HatLong',
           'HairLong',
           'EarringBack',
-          'Torso',
+          'Clothing',
           'Ears',
           'Face',
           'HairShort',
@@ -685,7 +685,8 @@ def avatar(request):
             { 'name': 'Hair Color', 'title': 'Pick a hair color',
               'options': ('000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E') },
             { 'name': 'Facial Hair', 'title': 'Pick a facial hair style' },
-            { 'name': 'Clothing', 'title': 'Pick your clothing' },
+            { 'name': 'Clothing', 'title': 'Pick your clothing',
+              'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt')},
             { 'name': 'Accessories', 'title': 'Pick up to 3 accessories' },
             { 'name': 'Background', 'title': 'Pick a background color',
               'options': (
