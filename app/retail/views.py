@@ -635,4 +635,11 @@ def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
 
 def avatar(request):
-    return TemplateResponse(request, 'avatar.html')
+    context = {
+        'bgcolors': [
+            '#25E899', '#9AB730', '#00A55E', '#3FCDFF',
+            '#3E00FF', '#8E2ABE', '#D0021B', '#F9006C',
+            '#FFCE08', '#F8E71C', '#15003E', '#FFFFFF'
+        ]
+    }
+    return TemplateResponse(request, 'avatar.html', context)

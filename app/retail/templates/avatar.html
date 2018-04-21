@@ -21,7 +21,9 @@
   <head>
     <style>
       body {
-        padding: 85px;
+        padding: 35px;
+        max-width: 1000px;
+        margin: 0 auto;
       }
       #avatar-builder-header {
         margin-bottom: 50px;
@@ -33,29 +35,87 @@
       #avatar-builder__sections {
         list-style-type: square;
         list-style-position: inside;
-        width: 170px;
         padding-left: 0;
+        flex-shrink: 0;
+        display: flex;
+        flex-wrap: wrap;
+        flex-basis: 100%;
+        justify-content: center;
       }
       #avatar-builder__sections li {
-        /* border: 1px solid black; */
+        width: 130px;
         padding: 5px;
+        color: #15003E;
+        text-decoration: none;
       }
       #avatar-builder__sections li.complete {
-        list-style-image: url('{% static "v2/images/check.svg" %}');
-        fill: green;
+        list-style-image: url('{% static "v2/images/check-dark.svg" %}');
+      }
+      #avatar-builder__sections li.open {
+        text-decoration: underline;
+      }
+      #avatar-builder__editor {
+        flex-grow: 0;
+      }
+      #section-title {
+        flex-basis: 100%;
+        text-align: center;
+      }
+      .section-title__content {
+        display: none;
+      }
+      .section-title__content.open {
+        display: unset;
       }
       #avatar-preview {
         width: 250px;
         height: 250px;
         background-color: #D8D8D8;
+        flex-shrink: 0;
+      }
+      #bg-picker {
+        line-height: 1;
+      }
+      .bg-picker__option {
+        width: 51px;
+        height: 28px;
+        border: 1px solid #C4C4C4;
+        cursor: pointer;
+      }
+      .avatar-options-list {
+        height: min-content;
+        max-height: 250px;
+        overflow: scroll;
       }
       .avatar-option {
         width: 80px;
         height: 80px;
         background-color: #D8E7FF;
+        margin: 0 0 10px 10px;
       }
       #avatar-builder__actions {
         text-align: right;
+        margin-top: 30px;
+      }
+      @media (min-width: 800px) {
+        body {
+          padding: 85px;
+        }
+        #avatar-builder {
+          flex-wrap: nowrap !important;
+        }
+        #avatar-builder__sections {
+          display: block;
+          flex-basis: 170px;
+        }
+      }
+      @media (min-width: 600px) {
+        #avatar-area {
+          flex-wrap: nowrap !important;
+        }
+        #section-title {
+          text-align: left;
+        }
       }
     </style>
   </head>
@@ -65,7 +125,7 @@
     </header>
     <div id="avatar-builder">
       <ul id="avatar-builder__sections">
-        <a href="#"><li>{% trans "Face" %}</li></a>
+        <a href="#"><li class="open">{% trans "Face" %}</li></a>
         <a href="#"><li class="complete">{% trans "Eyes" %}</li></a>
         <li>{% trans "Nose" %}</li>
         <li>{% trans "Mouth" %}</li>
@@ -77,10 +137,33 @@
         <li>{% trans "Background" %}</li>
       </ul>
       <div id="avatar-builder__editor">
-        <h2>{% trans "Pick a face shape" %}</h2>
-        <div id="avatar-preview"></div>
-        <div id="avatar-options-list">
-          <div class="avatar-option"></div>
+        <h3 id="section-title">
+          <span class="section-title__content open" id="title-face">{% trans "Pick face shape" %}</span>
+          <span class="section-title__content" id="title-eyes">{% trans "Pick eyes shape" %}</span>
+          <span class="section-title__content" id="title-nose">{% trans "Pick nose shape" %}</span>
+          <span class="section-title__content" id="title-mouth">{% trans "Pick mouth shape" %}</span>
+          <span class="section-title__content" id="title-ears">{% trans "Pick ears shape" %}</span>
+          <span class="section-title__content" id="title-hair">{% trans "Pick a hairstyle" %}</span>
+          <span class="section-title__content" id="title-facialhair">{% trans "Pick a facial hair style" %}</span>
+          <span class="section-title__content" id="title-clothing">{% trans "Pick your clothing" %}</span>
+          <span class="section-title__content" id="title-accessories">{% trans "Pick your accessories" %}</span>
+        </h3>
+        <div id="avatar-area" class="d-flex flex-wrap mb-2 justify-content-center">
+          <div id="avatar-preview" class="mb-3"></div>
+          <div class="avatar-options-list d-flex flex-wrap justify-content-center">
+            <div class="avatar-option"></div>
+            <div class="avatar-option"></div>
+            <div class="avatar-option"></div>
+            <div class="avatar-option"></div>
+            <div class="avatar-option"></div>
+            <div class="avatar-option"></div>
+            <div class="avatar-option"></div>
+          </div>
+        </div>
+        <div id="bg-picker">
+          {% for c in bgcolors %}
+            <button class="bg-picker__option pa-0" style="background-color: {{ c }}" />
+          {% endfor %}
         </div>
       </div>
     </div>
