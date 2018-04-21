@@ -73,19 +73,23 @@
         background-color: #D8D8D8;
         flex-shrink: 0;
       }
-      #bg-picker {
+      #options-Background {
         line-height: 1;
       }
-      .bg-picker__option {
+      .options-Background__option {
         width: 51px;
         height: 28px;
         border: 1px solid #C4C4C4;
         cursor: pointer;
       }
-      .avatar-options-list {
+      .options-section {
         height: min-content;
         max-height: 255px;
         overflow: scroll;
+        display: none !important;
+      }
+      .options-section.open {
+        display: flex !important;
       }
       .avatar-option {
         width: 80px;
@@ -128,32 +132,23 @@
     </header>
     <div id="avatar-builder">
       <ul id="avatar-builder__sections">
-        <a href="#"><li class="open">{% trans "Face" %}</li></a>
-        <a href="#"><li class="complete">{% trans "Eyes" %}</li></a>
-        <li>{% trans "Nose" %}</li>
-        <li>{% trans "Mouth" %}</li>
-        <li>{% trans "Ears" %}</li>
-        <li>{% trans "Hair" %}</li>
-        <li>{% trans "Facial Hair" %}</li>
-        <li>{% trans "Clothing" %}</li>
-        <li>{% trans "Accessories" %}</li>
-        <li>{% trans "Background" %}</li>
+        {% for s in sections %}
+        <a href="#" onclick="changeSection('{{ s.name|cut:" " }}')">
+          <li id="nav-{{ s.name|cut:" " }}">{% trans s.name %}</li>
+        </a>
+        {% endfor %}
       </ul>
       <div id="avatar-builder__editor">
         <h3 id="section-title">
-          <span class="section-title__content open" id="title-face">{% trans "Pick face shape" %}</span>
-          <span class="section-title__content" id="title-eyes">{% trans "Pick eyes shape" %}</span>
-          <span class="section-title__content" id="title-nose">{% trans "Pick nose shape" %}</span>
-          <span class="section-title__content" id="title-mouth">{% trans "Pick mouth shape" %}</span>
-          <span class="section-title__content" id="title-ears">{% trans "Pick ears shape" %}</span>
-          <span class="section-title__content" id="title-hair">{% trans "Pick a hairstyle" %}</span>
-          <span class="section-title__content" id="title-facialhair">{% trans "Pick a facial hair style" %}</span>
-          <span class="section-title__content" id="title-clothing">{% trans "Pick your clothing" %}</span>
-          <span class="section-title__content" id="title-accessories">{% trans "Pick your accessories" %}</span>
+          {% for s in sections %}
+            <span class="section-title__content" id="title-{{ s.name|cut:" " }}">
+              {% trans s.title %}
+            </span>
+          {% endfor %}
         </h3>
         <div id="avatar-area" class="d-flex flex-wrap mb-2 justify-content-center">
           <div id="avatar-preview" class="mb-3"></div>
-          <div class="avatar-options-list d-flex flex-wrap">
+          <div id="options-Face" class="options-section d-flex flex-wrap">
             <div class="avatar-option"></div>
             <div class="avatar-option"></div>
             <div class="avatar-option"></div>
@@ -165,16 +160,32 @@
             <div class="avatar-option"></div>
           </div>
         </div>
-        <!-- <div id="bg-picker">
+        <div id="options-Background" class="options-section">
           {% for c in bgcolors %}
-            <button class="bg-picker__option pa-0" style="background-color: {{ c }}" />
+            <button class="options-Background__option pa-0" style="background-color: {{ c }}" />
           {% endfor %}
-        </div> -->
+        </div>
       </div>
     </div>
     <div id="avatar-builder__actions">
       <a href="#" class="">{% trans "Do This Later" %}</a>
       <a href="#">{% trans "Save Avatar" %}</a>
     </div>
+    <script src="{% static "v2/js/jquery.js" %}"></script>
+    <script>
+      var openSection;
+      function changeSection(section) {
+        openSection = openSection || section;
+
+        ['#title-', '#nav-', '#options-'].forEach(function(prefix) {
+          $(prefix+openSection).removeClass('open');
+          $(prefix+section).addClass('open');
+        });
+
+        openSection = section;
+      }
+
+      changeSection('Face');
+    </script>
   </body>
 </html>

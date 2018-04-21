@@ -640,6 +640,17 @@ def avatar(request):
             '#25E899', '#9AB730', '#00A55E', '#3FCDFF',
             '#3E00FF', '#8E2ABE', '#D0021B', '#F9006C',
             '#FFCE08', '#F8E71C', '#15003E', '#FFFFFF'
+        ],
+        'sections': [
+          { 'name': 'Face', 'title': 'Pick a face shape' },
+          { 'name': 'Eyes', 'title': 'Pick eyes shape' },
+          { 'name': 'Mouth', 'title': 'Pick mouth shape' },
+          { 'name': 'Ears', 'title': 'Pick ears shape' },
+          { 'name': 'Hair', 'title': 'Pick a hairstyle' },
+          { 'name': 'Facial Hair', 'title': 'Pick a facial hair style' },
+          { 'name': 'Clothing', 'title': 'Pick your clothing' },
+          { 'name': 'Accessories', 'title': 'Pick your accessories' },
+          { 'name': 'Background', 'title': 'Pick a background color' }
         ]
     }
     return TemplateResponse(request, 'avatar.html', context)
