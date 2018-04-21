@@ -636,7 +636,7 @@ def web3(request):
 
 def avatar(request):
     context = {
-        'defaultTone': '3',
+        'defaultTone': 'AE7242',
         'sections': [
             { 'name': 'Face', 'title': 'Pick face shape',
               'options': ("0", "1", "2", "3", "4") },
