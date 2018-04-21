@@ -639,21 +639,9 @@ def avatar(request):
         'defaultTone': 'AE7242',
         'defaultHairColor': '000000',
         'layers': (
-          'HatLong',
-          'HairLong',
-          'EarringBack',
-          'Clothing',
-          'Ears',
-          'Face',
-          'HairShort',
-          'HatShort',
-          'Earring',
-          'Beard',
-          'Mustache',
-          'Mouth',
-          'Nose',
-          'Eyes',
-          'Glasses'
+            'HatLong', 'HairLong', 'EarringBack', 'Clothing',
+            'Ears', 'Face', 'HairShort', 'HatShort', 'Earring', 'Beard',
+            'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses'
         ),
         'sections': [
             { 'name': 'Face', 'title': 'Pick face shape',
@@ -687,7 +675,25 @@ def avatar(request):
             { 'name': 'Facial Hair', 'title': 'Pick a facial hair style' },
             { 'name': 'Clothing', 'title': 'Pick your clothing',
               'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt')},
-            { 'name': 'Accessories', 'title': 'Pick up to 3 accessories' },
+            { 'name': 'Accessories', 'title': 'Pick up to 3 accessories',
+              'options': (
+                ["Glasses-0"],
+                ["Glasses-1"],
+                ["Glasses-2"],
+                ["Glasses-3"],
+                ["Glasses-4"],
+                ["HatShort-backwardscap"],
+                ["HatShort-ballcap"],
+                ["HatShort-headphones"],
+                ["HatShort-shortbeanie"],
+                ["HatShort-tallbeanie"],
+                ["Earring-0"],
+                ["Earring-1"],
+                ["EarringBack-2", "Earring-2"],
+                ["Earring-3"],
+                ["Earring-4"]
+              )
+            },
             { 'name': 'Background', 'title': 'Pick a background color',
               'options': (
                 '25E899', '9AB730', '00A55E', '3FCDFF',

@@ -191,16 +191,23 @@
 
                   {% elif id == "HairStyle" %}
                     {% for part in o %}
-                        {% with basePath|add:part|add:"/"|add:defaultHairColor|add:".svg" as path %}
-                          <img
-                            {% if part != 'None' %}
-                              class="hair-color-dependent"
-                              src="{% static path %}"
-                            {% else %}
-                              class="hair-color-dependent empty"
-                            {% endif %}
-                          />
-                        {% endwith %}
+                    {% with basePath|add:part|add:"/"|add:defaultHairColor|add:".svg" as path %}
+                      <img
+                        {% if part != 'None' %}
+                          class="hair-color-dependent"
+                          src="{% static path %}"
+                        {% else %}
+                          class="hair-color-dependent empty"
+                        {% endif %}
+                      />
+                    {% endwith %}
+                    {% endfor %}
+
+                  {% elif id == "Accessories" %}
+                    {% for part in o %}
+                    {% with basePath|add:part|add:".svg" as path %}
+                      <img src="{% static path %}" />
+                    {% endwith %}
                     {% endfor %}
 
                   {% elif id == 'Background' or id == 'SkinTone' or id == 'HairColor' %}
@@ -230,7 +237,8 @@
       var openSection;
       var options = {
         SkinTone: '{{ defaultTone }}',
-        HairColor: '{{ defaultHairColor }}'
+        HairColor: '{{ defaultHairColor }}',
+        Accessories: new Set()
       }
       function changeSection(section) {
         openSection = openSection || section;
@@ -274,6 +282,18 @@
           case 'Clothing':
             changeImage(option, $(target).children()[0].src)
             options[option] = value;
+            break;
+          case 'Accessories':
+            // TODO: this doesn't clear earringback when only front is used
+            var valueArray = JSON.parse(value.replace(/'/g, '"'));
+            for (var idx in valueArray) {
+              var category = valueArray[idx].split('-')[0];
+              // console.log(category);
+              changeImage(category, $(target).children()[idx].src);
+            }
+            if (options.Accessories.size < 3) {
+              // options.Accessories.add(value);
+            }
             break;
           case 'HairStyle':
             changeImage('HairShort', $(target).children()[1].src)
