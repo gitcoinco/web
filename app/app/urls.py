@@ -186,6 +186,7 @@ urlpatterns = [
     url(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),
     url(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
     url(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
+    url(r'^settings/slack/?', marketing.views.slack_settings, name='slack_settings'),
     url(r'^settings/(.*)?', marketing.views.email_settings, name='feedback_settings'),
 
     # marketing views

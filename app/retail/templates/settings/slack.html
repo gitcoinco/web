@@ -1,0 +1,23 @@
+{% extends 'settings/settings.html' %}
+{% load i18n static %}
+
+{% block settings_content %}
+    <form id="settings" method="POST">
+      <div class="form-group">
+        <h5>{% trans "Slack Integration" %}</h5>
+        <label class="form__label" for="token">{% trans "Slack API token" %}</label>
+        <input type="text" name="token" class="form__input" placeholder='API token' value="{{ es.slack_token }}">
+      </div>
+      <div class="form-group">
+        <label class="form__label" for="repos">{% trans "Github repos to monitor" %}</label>
+        <input type="text" name="repos" class="form__input" placeholder='comma, separated, list'  value="{{ repos }}">
+      </div>
+      <div class="form-group">
+        <label class="form__label" for="channel">{% trans "Slack channel to post to" %}</label>
+        <input type="text" name="channel" class="form__input" value="{{ es.slack_channel }}">
+      </div>
+      {% csrf_token %}
+      <input class='button button--primary' type='submit' name='submit' value="Go">
+    </form>
+  </div>
+{% endblock %}

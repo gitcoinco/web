@@ -41,7 +41,7 @@ from dashboard.models import (
 )
 from dashboard.notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
-    maybe_market_to_twitter,
+    maybe_market_to_twitter, maybe_market_to_user_slack,
 )
 from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
@@ -114,6 +114,7 @@ def create_new_interest_helper(bounty, user):
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
     maybe_market_to_slack(bounty, 'start_work')
+    maybe_market_to_user_slack(bounty, 'start_work')
     maybe_market_to_twitter(bounty, 'start_work')
     return interest
 
@@ -230,6 +231,7 @@ def remove_interest(request, bounty_id):
         bounty.interested.remove(interest)
         interest.delete()
         maybe_market_to_slack(bounty, 'stop_work')
+        maybe_market_to_user_slack(bounty, 'stop_work')
         maybe_market_to_twitter(bounty, 'stop_work')
     except Interest.DoesNotExist:
         return JsonResponse({
@@ -279,6 +281,7 @@ def uninterested(request, bounty_id, profile_id):
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         bounty.interested.remove(interest)
         maybe_market_to_slack(bounty, 'stop_work')
+        maybe_market_to_user_slack(bounty, 'stop_work')
         interest.delete()
     except Interest.DoesNotExist:
         return JsonResponse({
