@@ -29,7 +29,9 @@
 {% endfor %}
 
 <p>
-    {% trans "You are receiving this email because your email preferences matched with this bounty's keywords:" %} {{bounty.keywords}}.  <a href="https://gitcoin.co/settings/email/{{subscriber.priv}}">{% trans "Manage Email Settings" %}</a>.
+    {% if keywords %}
+    {% trans "You are receiving this email because your email preferences matched with these keywords:" %} {{keywords}}.  <a href="https://gitcoin.co/settings/email/{{subscriber.priv}}">{% trans "Manage Email Settings" %}</a>.
+    {% endif %}
 </p>
 
 {% endblock %}

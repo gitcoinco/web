@@ -413,7 +413,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     new_bounty.interested.add(interest)
 
             # set cancel date of this bounty
-            canceled_on = latest_old_bounty.canceled_on if latest_old_bounty.canceled_on else None
+            canceled_on = latest_old_bounty.canceled_on if latest_old_bounty and latest_old_bounty.canceled_on else None
             if not canceled_on and new_bounty.status == 'cancelled':
                 canceled_on = timezone.now()
             if canceled_on:

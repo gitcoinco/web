@@ -70,28 +70,70 @@ def robotstxt(request):
 
 
 def about(request):
-    team_members_left = [
-        (static("v2/images/team/kevin-owocki.png"), "Kevin Owocki", "All teh things", "owocki", "The Community", "Avocado Toast"),
-        (static("v2/images/team/alisa-march.jpg"), "Alisa March", "User Experience Design", "PixelantDesign", "Tips", "Apple Cider Doughnuts"),
-        (static("v2/images/team/justin-bean.jpg"), "Justin Bean", "Engineering", "StareIntoTheBeard", "Issue Explorer", "Sushi"),
-    ]
-    team_members_right = [
-        (static("v2/images/team/mark-beacom.jpg"), "Mark Beacom", "Full Stack Engineer", "mbeacom", "Start/Stop Work", "Dolsot Bibimbap"),
-        (static("v2/images/team/eric-berry.jpg"), "Eric Berry", "OSS Funding", "coderberry", "Chrome/Firefox Extension", "Pastel de nata"),
-
-        (static("v2/images/team/vivek-singh.jpg"), "Vivek Singh", "Community Buidl-er", "vs77bb", "Gitcoin Requests", "Tangerine Gelato"),
+    core_team = [
+        (
+            static("v2/images/team/kevin-owocki.png"),
+            "Kevin Owocki",
+            "All the things",
+            "owocki",
+            "owocki",
+            "The Community",
+            "Avocado Toast"
+        ),
+        (
+            static("v2/images/team/alisa-march.jpg"),
+            "Alisa March", "User Experience Design",
+            "PixelantDesign",
+            "pixelant",
+            "Tips",
+            "Apple Cider Doughnuts"
+        ),
+        (
+            static("v2/images/team/justin-bean.jpg"),
+            "Justin Bean", "Engineering",
+            "StareIntoTheBeard",
+            "justinbean",
+            "Issue Explorer",
+            "Sushi"
+        ),
+        (
+            static("v2/images/team/mark-beacom.jpg"),
+            "Mark Beacom",
+            "Engineering",
+            "mbeacom",
+            "mbeacom",
+            "Start/Stop Work",
+            "Dolsot Bibimbap"
+        ),
+        (
+            static("v2/images/team/eric-berry.jpg"),
+            "Eric Berry",
+            "OSS Funding",
+            "coderberry",
+            "ericberry",
+            "Chrome/Firefox Extension",
+            "Pastel de nata"
+        ),
+        (
+            static("v2/images/team/vivek-singh.jpg"),
+            "Vivek Singh",
+            "Community Buidl-er",
+            "vs77bb",
+            "vivek-singh-b5a4b675",
+            "Gitcoin Requests",
+            "Tangerine Gelato"
+        ),
     ]
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
     community_members = [
     ]
     leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount')[0: 15]
     for lr in leadeboardranks:
-        package = (lr.local_avatar_url, lr.github_username, lr.github_username)
+        package = (lr.avatar_url, lr.github_username, lr.github_username)
         community_members.append(package)
 
     context = {
-        'team_members_left': team_members_left,
-        'team_members_right': team_members_right,
+        'core_team': core_team,
         'community_members': community_members,
         'active': 'about',
         'title': 'About',
@@ -555,6 +597,10 @@ def btctalk(request):
 
 def reddit(request):
     return redirect('https://www.reddit.com/r/gitcoincommunity/')
+
+
+def livestream(request):
+    return redirect('https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ')
 
 
 def twitter(request):

@@ -212,7 +212,7 @@ var callbacks = {
       } else {
         $('#timer').hide();
       }
-    } else if (result['status'] === 'done') {
+    } else if (result['status'] === 'done' || result['status'] === 'cancelled') {
       $('#timer').hide();
     } else {
       response.shift();

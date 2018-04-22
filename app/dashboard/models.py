@@ -137,7 +137,6 @@ class Bounty(SuperModel):
     idx_experience_level = models.IntegerField(default=0, db_index=True)
     idx_project_length = models.IntegerField(default=0, db_index=True)
     idx_status = models.CharField(max_length=9, choices=STATUS_CHOICES, default='open', db_index=True)
-    avatar_url = models.CharField(max_length=255, default='')
     issue_description = models.TextField(default='', blank=True)
     standard_bounties_id = models.IntegerField(default=0)
     num_fulfillments = models.IntegerField(default=0)
@@ -324,6 +323,17 @@ class Bounty(SuperModel):
         return timezone.now()
 
     @property
+    def past_expiration_date(self):
+        """Return true IFF issue is past expiration date"""
+        return timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None)
+
+    @property
+    def past_hard_expiration_date(self):
+        """Return true IFF issue is past smart contract expiration date
+        and therefore cannot ever be claimed again"""
+        return self.past_expiration_date and not self.can_submit_after_expiration_date
+
+    @property
     def status(self):
         """Determine the status of the Bounty.
 
@@ -358,10 +368,10 @@ class Bounty(SuperModel):
         else:
             try:
                 if not self.is_open:
-                    if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.num_fulfillments == 0:
-                        return 'expired'
                     if self.accepted:
                         return 'done'
+                    if self.past_hard_expiration_date:
+                        return 'expired'
                     # If its not expired or done, it must be cancelled.
                     return 'cancelled'
                 if self.num_fulfillments == 0:
@@ -805,7 +815,12 @@ def psave_interest(sender, instance, **kwargs):
 
 
 class Profile(SuperModel):
-    """Define the structure of the user profile."""
+    """Define the structure of the user profile.
+
+    TODO:
+        * Remove all duplicate identity related information already stored on User.
+
+    """
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     data = JSONField()
@@ -962,6 +977,16 @@ class Profile(SuperModel):
     @property
     def absolute_url(self):
         return self.get_absolute_url()
+
+    @property
+    def username(self):
+        handle = ''
+        if hasattr(self, 'user') and self.user.username:
+            handle = self.user.username
+        # TODO: (mbeacom) Remove this check once we get rid of all the lingering identity shenanigans.
+        elif self.handle:
+            handle = self.handle
+        return handle
 
     def is_github_token_valid(self):
         """Check whether or not a Github OAuth token is valid.
