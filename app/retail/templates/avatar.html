@@ -168,7 +168,7 @@
                 style="z-index: {{ forloop.counter }}"
                 {% if l == 'Face' or l == 'Ears' or l == 'Clothing' %}
                   class="tone-dependent preview-section empty"
-                {% elif l == 'HairShort' or l == 'HairLong' %}
+                {% elif l == 'HairShort' or l == 'HairLong' or l == 'Mustache' or l == 'Beard' %}
                   class="hair-color-dependent preview-section empty"
                 {% else %}
                   class="preview-section empty"
@@ -202,6 +202,11 @@
                       />
                     {% endwith %}
                     {% endfor %}
+
+                  {% elif id == "FacialHair" %}
+                    {% with basePath|add:o|add:"-"|add:defaultHairColor|add:".svg" as path %}
+                      <img class="hair-color-dependent" src="{% static path %}" />
+                    {% endwith %}
 
                   {% elif id == "Accessories" %}
                     {% for part in o %}
@@ -300,6 +305,10 @@
             changeImage('HairShort', $(target).children()[1].src)
             changeImage('HairLong', $(target).children()[0].src)
             options[option] = value.slice(1, value.length - 2).split(', ');
+            break;
+          case 'FacialHair':
+            const layer = value.split('-')[0];
+            changeImage(layer, $(target).children()[0].src);
             break;
           case 'HairColor':
             changeColor('.hair-color-dependent', value)
