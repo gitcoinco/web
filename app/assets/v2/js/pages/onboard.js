@@ -7,7 +7,7 @@ $('.js-select2').each(function() {
   $(this).select2();
 });
 
-var showTab = function(num) {
+onboard.showTab = function(num) {
   $($('.step')[num]).addClass('block').outerWidth();
   $($('.step')[num]).addClass('show');
 
@@ -26,24 +26,10 @@ var showTab = function(num) {
     $('#next-btn').html('Next');
     $('#next-btn').attr('onclick', 'changeStep(1)');
   }
-  highlightStep(num);
+  onboard.highlightStep(num);
 };
 
-var changeStep = function(n) {
-  if (current == 0 && n == -1)
-    return;
-
-  var steps = $('.step');
-
-  $(steps[current]).removeClass('show');
-  $(steps[current]).removeClass('block');
-
-  current += n;
-  showTab(current);
-};
-
-
-function highlightStep(currentStep) {
+onboard.highlightStep = function(currentStep) {
   var steps = $('.step-state');
 
   for (i = 0; i < steps.length; i++) {
@@ -52,9 +38,7 @@ function highlightStep(currentStep) {
     $(steps[i]).removeClass('active');
   }
   $(steps[currentStep]).addClass('active');
-}
-
-showTab(current);
+};
 
 onboard.watchMetamask = function() {
   if (typeof web3 == 'undefined') {
@@ -68,43 +52,7 @@ onboard.watchMetamask = function() {
   }
 };
 
-onboard.watchMetamask();
-onboard.metaMaskWarningRecurr = function() {
-  onboard.watchMetamask();
-  setTimeout(onboard.metaMaskWarningRecurr, 5000);
-};
-
-setTimeout(onboard.metaMaskWarningRecurr, 6000);
-
-var keywords = [ 'css', 'solidity', 'python', 'javascript', 'ruby', 'django', 'java', 'elixir' ];
-var suggested_tags = [];
-
-keywords.forEach(function(keyword) {
-  suggested_tags.push(
-    `<label class="suggested-tag">
-        <input name="tech-stack" type="checkbox"
-          value="` + keyword + `">
-        <span class="text">
-          <i class="fas fa-plus"></i>` + keyword + `
-        </span>
-      </label>`
-  );
-});
-
-$('#step-3 #suggested-tags').html(suggested_tags);
-
-$('.suggested-tag input[type=checkbox]').change(function(e) {
-  getFilters();
-});
-
-$('.search-area input[type=text]').keypress(function(e) {
-  if (e.which == 13) {
-    getFilters();
-    e.preventDefault();
-  }
-});
-
-var getFilters = function() {
+onboard.getFilters = function() {
   var _filters = [];
   var _words = [];
   var search_keywords = $('#keywords').val();
@@ -134,9 +82,60 @@ var getFilters = function() {
   words = [...new Set(_words)];
 };
 
+var changeStep = function(n) {
+  if (current == 0 && n == -1)
+    return;
+
+  var steps = $('.step');
+
+  $(steps[current]).removeClass('show');
+  $(steps[current]).removeClass('block');
+
+  current += n;
+  onboard.showTab(current);
+};
+
+onboard.showTab(current);
+
+onboard.watchMetamask();
+onboard.metaMaskWarningRecurr = function() {
+  onboard.watchMetamask();
+  setTimeout(onboard.metaMaskWarningRecurr, 5000);
+};
+
+setTimeout(onboard.metaMaskWarningRecurr, 6000);
+
+var keywords = [ 'css', 'solidity', 'python', 'javascript', 'ruby', 'django', 'java', 'elixir' ];
+var suggested_tags = [];
+
+keywords.forEach(function(keyword) {
+  suggested_tags.push(
+    `<label class="suggested-tag">
+        <input name="tech-stack" type="checkbox"
+          value="` + keyword + `">
+        <span class="text">
+          <i class="fas fa-plus"></i>` + keyword + `
+        </span>
+      </label>`
+  );
+});
+
+$('#step-3 #suggested-tags').html(suggested_tags);
+
+$('.suggested-tag input[type=checkbox]').change(function(e) {
+  onboard.getFilters();
+});
+
+$('.search-area input[type=text]').keypress(function(e) {
+  if (e.which == 13) {
+    onboard.getFilters();
+    e.preventDefault();
+  }
+});
+
 var removeFilter = function(value) {
   $('input[name=tech-stack][value=' + value + ']').prop('checked', false);
-  getFilters();
+  onboard.getFilters();
 };
 
 var redirectURL = function() {
