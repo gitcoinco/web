@@ -1,11 +1,11 @@
 {% extends 'ens/ens.html' %}
-{% load static %}
+{% load i18n static %}
 {% block 'ens_script' %}
   <script src="{% static 'ens/register.js' %}"></script>
 {% endblock %}
 
 {% block 'body_block' %}
-  <h1>Manage your ENS subdomain</h1>
+  <h1>{% trans "Manage your ENS subdomain" %}</h1>
   <div>
     <br>
     <h2><label id="githubHandle">{{ github_handle }}</label><label>.gitcoin.eth</label></h2>
@@ -14,7 +14,7 @@
   <div>
     <br>
     <input type="checkbox" id="tos" value="1" >
-    <label for="tos">I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.</label>
+    {% blocktrans %}<label for="tos">I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.</label>{% endblocktrans %}
   </div>
   <a href="#" id="register" class="button">Update ⚡️</a>
 {% endblock %}

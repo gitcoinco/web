@@ -26,6 +26,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+from dashboard.models import Profile
 from dashboard.views import w3
 from ens import ENS
 from eth_account.messages import defunct_hash_message
@@ -49,8 +50,10 @@ def ens_subdomain(request):
             message_hash = defunct_hash_message(text=f'Github Username : {github_handle}')
             recovered_signer = w3.eth.account.recoverHash(message_hash, signature=signedMsg).lower()
             if recovered_signer == signer:
-                txn_hash = ns.setup_owner(f'{github_handle}.{settings.ENS_TLD}', signer)
-                ENSSubdomainRegistration.objects.create(github_handle=github_handle,
+                txn_hash = '0x6477f3640d9d910c589937b25d5892f525cfde2dd634d9490abc7542c946e8e3'
+                # txn_hash = ns.setup_owner(f'{github_handle}.{settings.ENS_TLD}', signer)
+                profile = Profile.objects.filter(handle=github_handle).first()
+                ENSSubdomainRegistration.objects.create(profile=profile,
                                                         subdomain_wallet_address=signer,
                                                         txn_hash=txn_hash,
                                                         pending=True)
@@ -59,7 +62,8 @@ def ens_subdomain(request):
             else:
                 return JsonResponse({'success': _('false'), 'msg': _('Sign Mismatch Error')})
     try:
-        last_request = ENSSubdomainRegistration.objects.filter(github_handle=github_handle).latest('created_on')
+        profile = Profile.objects.filter(handle=github_handle).first()
+        last_request = ENSSubdomainRegistration.objects.filter(profile=profile).latest('created_on')
         request_reset_time = timezone.now() - datetime.timedelta(days=settings.ENS_LIMIT_RESET_DAYS)
         if last_request.pending:
             txn_receipt = w3.eth.getTransactionReceipt(last_request.txn_hash)

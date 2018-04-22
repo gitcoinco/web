@@ -964,7 +964,7 @@ def toolbox(request):
             }, {
             "name": _("ENS Subdomain Registrar"),
             "img": static("v2/images/ens.png"),
-            "description": _('''Register ENS Subdomain'''),
+            "description": _("Register ENS Subdomain"),
             "link": "ens",
             'link_copy': _('Try It'),
             "active": "true",
