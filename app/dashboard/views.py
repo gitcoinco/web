@@ -453,7 +453,6 @@ def process_bounty(request):
 
 def dashboard(request):
     """Handle displaying the dashboard."""
-
     handle = request.session.get('handle')
 
     params = {
