@@ -220,13 +220,13 @@ STATIC_ROOT = root('static')
 if not DEBUG:
     DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.storage.SilentFileStorage')
     STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.storage.SilentFileStorage')
-    STATIC_HOST = BASE_URL
-    STATIC_URL = env('STATIC_URL', default='/static/')
-    MEDIA_URL = env('MEDIA_URL', default='/assets/')
-else:
     STATIC_HOST = env('STATIC_HOST', default='https://static.gitcoin.co/')
     STATIC_URL = STATIC_HOST + env('STATIC_URL', default='static/')
     MEDIA_URL = env('MEDIA_URL', default='https://cdnx.gitcoin.co/assets/')
+else:
+    STATIC_HOST = BASE_URL
+    STATIC_URL = env('STATIC_URL', default='/static/')
+    MEDIA_URL = env('MEDIA_URL', default='/assets/')
 
 MEDIA_ROOT = root('media')
 COMPRESS_ROOT = STATIC_ROOT
