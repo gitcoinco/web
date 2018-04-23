@@ -864,17 +864,15 @@ def toolbox(request):
     for key in range(0, len(actors)):
         actors[key]['slug'] = slugify(actors[key]['title'])
 
+    profile_up_votes_tool_ids = ''
+    profile_down_votes_tool_ids = ''
     profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
     if profile_id:
         ups = list(request.user.profile.votes.filter(value=1).values_list('tool', flat=True))
-        # ups = list(ToolVote.objects.filter(profile_id=profile_id, value=1).values_list('tool', flat=True))
         profile_up_votes_tool_ids = ','.join(str(x) for x in ups)
-        # downs = list(ToolVote.objects.filter(profile_id=profile_id, value=-1).values_list('tool', flat=True))
         downs = list(request.user.profile.votes.filter(value=-1).values_list('tool', flat=True))
         profile_down_votes_tool_ids = ','.join(str(x) for x in downs)
-    else:
-        profile_up_votes_tool_ids = ''
-        profile_down_votes_tool_ids = ''
 
     context = {
         "active": "tools",
