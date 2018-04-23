@@ -83,7 +83,10 @@ h4 {
 #team .social-links a {
   display: inline-block;
 }
-
+.grow_hero img{
+  width: 100%;
+  max-width: 400px;
+}
 .gitcoin-svg {
   background-size: cover !important;
   background-image: url("/static/v2/images/ios/gitcoin.svg");
