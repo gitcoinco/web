@@ -28,7 +28,7 @@ class Command(BaseCommand):
                     pass
             print(that_time, bounties.count(), value, hours)
             if value and hours:
-                val = round(value/hours, 2)
+                val = round(float(value)/float(hours), 2)
                 try:
                     key = 'bounties_hourly_rate_inusd_last_24_hours'
                     Stat.objects.create(
