@@ -208,7 +208,7 @@ class Bounty(SuperModel):
 
     @property
     def url(self):
-        return self.get_relative_url()
+        return self.get_absolute_url()
 
     @property
     def can_submit_after_expiration_date(self):
