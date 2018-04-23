@@ -606,7 +606,6 @@ def ideas_fetch(request):
 
 
 def ideas_list(request):
-
     return TemplateResponse(request, 'ideas_list.html', {'active': 'ideas_list'})
 
 
