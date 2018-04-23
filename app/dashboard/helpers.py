@@ -302,7 +302,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                         accepted_on = old_fulfillment.accepted_on
             hours_worked = fulfillment.get('data', {}).get(
                     'payload', {}).get('fulfiller', {}).get('hoursWorked', None)
-            if not hours_worked:
+            if not hours_worked or not hours_worked.isdigit():
                 hours_worked = None
             new_bounty.fulfillments.create(
                 fulfiller_address=fulfillment.get(
