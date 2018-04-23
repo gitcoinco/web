@@ -51,7 +51,9 @@ window.onload = function() {
     var issueURL = $('input[name=issueURL]').val();
     var uri = '/api/v0.1/bounties/?github_url=' + issueURL + "&network=" + document.web3network;
 
-    $.get(uri, fulfillmentCallback);
+    waitforWeb3(function(){
+      $.get(uri, fulfillmentCallback);
+    });
 
     $('#goBack').click(function(e) {
       var url = window.location.href;
