@@ -20,13 +20,22 @@ span {
 .nav_avatar {
   cursor: pointer;
 }
-
+.dropdown-menu{
+  z-index: 9999999999;
+}
 .navbar {
   font-family: 'futura-pt', Futura, sans-serif;
 }
 
 .navbar-nav .nav-link {
   border-radius: 2px;
+}
+
+.nav-link.login svg {
+  font-size: 1.5em;
+  position: relative;
+  top: 3px;
+  margin-right: 10px;
 }
 
 .navbar-nav .nav-link:hover {
@@ -55,6 +64,32 @@ span {
 .modal {
   z-index: 9;
   border-radius: 4px !important;
+}
+
+#tutorials li{
+  list-style: none;
+}
+
+.tutorial_item{
+  background-color: #fff;
+}
+
+.tutorial_parent{
+  background-color: #fff;
+  border-bottom: 1px solid #000;
+}
+
+.tutorial_parent:nth-child(even){
+  background-color: #fafafa;
+}
+
+.tutorial_item img{
+  max-width: 300px;
+}
+
+.tutorial_item a{
+  font-size: 28px;
+  color: #000;
 }
 
 .faq_item {
@@ -220,7 +255,9 @@ span {
 .bg-darkBlue a {
   color: #eee;
 }
-
+#feature_videos .video {
+  text-align: center;
+}
 #feature_videos h6 {
   padding-top: 10px;
 }
@@ -929,39 +966,34 @@ input[type=text].loading {
   color: #919191;
 }
 
-.profile_details .tips li:first-child:hover,
-.profile_details .bounties li:first-child:hover {
+.profile_details .tips li:first-child:hover {
   cursor: none;
   background-color: white;
 }
 
-.profile_details .tips li,
-.profile_details .bounties li {
+.profile_details .tips li {
   list-style: none;
   padding-top: 10px;
   height: 80px;
 }
 
 .profile_details .tips li:hover,
-.profile_details .bounties li:hover {
+.bounty-row:hover, .tip-row:hover {
   background-color: #fafafa;
   cursor: pointer;
 }
 
-.profile_details .tips li a,
-.profile_details .bounties li a {
+.profile_details .tips li a {
   color: black;
 }
 
 .profile_details .tips li a.btn,
-.profile_details .bounties li a.btn {
-  color: white;
+.bounty-value, .tip-value {
+  color: white!important;
 }
 
 .profile_details .tips li div.url,
-.profile_details .tips li div.from_username,
-.profile_details .bounties li div.status,
-.profile_details .bounties li div.relationship {
+.profile_details .tips li div.from_username {
   height: 80px;
   width: 100px;
   display: inline-block;
@@ -974,37 +1006,19 @@ input[type=text].loading {
   width: 600px;
 }
 
-.profile_details .tips li div.details,
-.profile_details .bounties li div.details {
+.profile_details .tips li div.details {
   height: 80px;
   width: 500px;
   display: inline-block;
   vertical-align: top;
 }
 
-.profile_details .bounties li div.details h6 {
-  display: inline-block;
-  word-wrap: break-word;
-  max-width: 440px;
-}
-
-.profile_details .tips li div.details {
-  width: 200px;
-}
-
 .profile_details .tips li div.details p,
-.profile_details .bounties li div.details p {
+.bounty-desc {
   color: #919191;
 }
 
-.profile_details .tips li .amount,
-.profile_details .bounties li .amount {
-  height: 80px;
-  width: 200px;
-  display: inline-block;
-  vertical-align: middle;
-  text-align: center;
-}
+.profile_details .tips li .amount
 
 .profile_details h6 {
   font-weight: bold;
@@ -1168,8 +1182,7 @@ input.is-invalid {
 }
 
 @media (max-width: 1350px) {
-  .profile_details .tips li div.details,
-  .profile_details .bounties li div.details {
+  .profile_details .tips li div.details {
     width: 300px;
   }
 
@@ -1180,8 +1193,7 @@ input.is-invalid {
 }
 
 @media (max-width: 1250px) {
-  .profile_details .tips li div.details,
-  .profile_details .bounties li div.details {
+  .profile_details .tips li div.details {
     width: 400px;
   }
 }
@@ -1202,26 +1214,18 @@ input.is-invalid {
   }
 
   .profile_details .tips li div.details,
-  .profile_details .tips li .url,
-  .profile_details .bounties li div.relationship,
-  .profile_details .bounties li div.status,
-  .profile_details .bounties li .amount {
+  .profile_details .tips li .url {
     display: none;
   }
 
   .profile_details .tips li div.details,
-  .profile_details .repos li,
-  .profile_details .bounties li div.details {
+  .profile_details .repos li {
     padding-left: 0px;
     width: 100%;
   }
 
   .profile_details .repos li p.meta {
     display: none;
-  }
-
-  .interior .col-7 {
-    margin-left: 5%;
   }
 
   .whatisit iframe,

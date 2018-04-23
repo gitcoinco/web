@@ -29,6 +29,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
+
 def gitter():
     from gitterpy.client import GitterClient
 
@@ -160,6 +161,45 @@ def github_stars():
         )
 
 
+def github_issues():
+    from django.utils import timezone
+    from datetime import datetime
+    from marketing.models import Stat
+    from github.utils import get_issues, get_user
+    import pytz
+
+    repos = [
+    ]
+
+    for org in ['bitcoin', 'gitcoinco', 'ethereum']:
+        for repo in get_user(org, '/repos'):
+            repos.append((org, repo['name']))
+
+    for org, repo in repos:
+        issues = []
+        cont = True
+        page = 1
+        while cont:
+            new_issues = get_issues(org, repo, page, 'all')
+            issues = issues + new_issues
+            page += 1
+            cont = len(new_issues)
+
+        val = len(issues)
+        key = f"github_issues_{org}_{repo}"
+        try:
+            Stat.objects.create(
+                created_on=timezone.now(),
+                key=key,
+                val=(val),
+                )
+        except:
+            pass
+        if not val:
+            break
+        print(key, val)
+
+
 def chrome_ext_users():
     import requests
     from bs4 import BeautifulSoup
@@ -283,7 +323,7 @@ def joe_dominance_index():
             val=val,
             )
 
-        val = int(100 * sum([(b.value_in_usdt if b.value_in_usdt else 0) for b in joe_bounties]) / sum([(b.value_in_usdt if b.value_in_usdt else 0) for b in all_bounties]))
+        val = int(100 * sum([(b.value_in_usdt_now if b.value_in_usdt_now else 0) for b in joe_bounties]) / sum([(b.value_in_usdt_now if b.value_in_usdt_now else 0) for b in all_bounties]))
         Stat.objects.create(
             key='joe_dominance_index_{}_value'.format(days),
             val=val,
@@ -295,18 +335,38 @@ def avg_time_bounty_turnaround():
     from dashboard.models import Bounty
 
     for days in [7, 30, 90, 360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', idx_status='done', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+        all_bounties = Bounty.objects.filter(
+            current_bounty=True,
+            network='mainnet',
+            idx_status='done',
+            web3_created__gt=(timezone.now() - timezone.timedelta(days=days))
+        )
         if not all_bounties.count():
             continue
 
-        turnaround_times = [b.turnaround_time for b in all_bounties]
-
+        turnaround_times = [b.turnaround_time_submitted for b in all_bounties if b.turnaround_time_submitted]
         val = int(statistics.median(turnaround_times) / 60 / 60)  # seconds to hours
 
         Stat.objects.create(
-            key='turnaround_time_hours_{}_days_back'.format(days),
+            key=f'turnaround_time__submitted_hours_{days}_days_back',
             val=val,
-            )
+        )
+
+        turnaround_times = [b.turnaround_time_accepted for b in all_bounties if b.turnaround_time_accepted]
+        val = int(statistics.median(turnaround_times) / 60 / 60)  # seconds to hours
+
+        Stat.objects.create(
+            key=f'turnaround_time__accepted_hours_{days}_days_back',
+            val=val,
+        )
+
+        turnaround_times = [b.turnaround_time_started for b in all_bounties if b.turnaround_time_started]
+        val = int(statistics.median(turnaround_times) / 60 / 60)  # seconds to hours
+
+        Stat.objects.create(
+            key=f'turnaround_time__started_hours_{days}_days_back',
+            val=val,
+        )
 
 
 def bounties_open():
@@ -410,6 +470,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         fs = [
+            github_issues,
             gitter,
             medium_subscribers,
             google_analytics,

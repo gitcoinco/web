@@ -55,6 +55,7 @@ var rows = [
   'value_in_eth',
   'value_in_usdt',
   'token_value_in_usdt',
+  'token_value_time_peg',
   'web3_created',
   'status',
   'bounty_owner_address',
@@ -70,7 +71,8 @@ var rows = [
   'issue_keywords',
   'started_owners_username',
   'submitted_owners_username',
-  'fulfilled_owners_username'
+  'fulfilled_owners_username',
+  'fulfillment_accepted_on'
 ];
 var heads = {
   'avatar_url': gettext('Issue'),
@@ -156,6 +158,24 @@ var callbacks = {
     }
     return [ 'Amount_usd', val ];
   },
+  'fulfillment_accepted_on': function(key, val, result) {
+    if (val === null || typeof val == 'undefined') {
+      $('#fulfillment_accepted_on_wrapper').addClass('hidden');
+      return [ null, null ];
+    }
+    var timePeg = timeDifference(new Date(), new Date(val), false, 60 * 60);
+
+    return [ 'fulfillment_accepted_on', timePeg ];
+  },
+  'token_value_time_peg': function(key, val, result) {
+    if (val === null || typeof val == 'undefined') {
+      $('#token_value_time_peg_wrapper').addClass('hidden');
+      return [ null, null ];
+    }
+    var timePeg = timeDifference(new Date(), new Date(val), false, 60 * 60);
+
+    return [ 'token_value_time_peg', timePeg ];
+  },
   'token_value_in_usdt': function(key, val, result) {
     if (val === null || typeof val == 'undefined') {
       $('#value_in_usdt_wrapper').addClass('hidden');
@@ -176,22 +196,26 @@ var callbacks = {
       (now.getTime() - new Date(result['web3_created']).getTime()) /
       (expires_date.getTime() - new Date(result['web3_created']).getTime()));
 
-    $('.progress').css('width', expiringInPercentage + '%');
+    if (expiringInPercentage > 100) {
+      expiringInPercentage = 100;
+    }
 
+    $('.progress').css('width', expiringInPercentage + '%');
     var response = timeDifference(now, expires_date).split(' ');
 
-    response.shift();
-    
     if (expires_date < new Date()) {
       label = 'expired';
       if (result['is_open']) {
+        $('.timeleft').text('Expired');
+        $('.progress-bar').addClass('expired');
         response = '<span title="This issue is past its expiration date, but it is still active.  Check with the submitter to see if they still want to see it fulfilled.">' + response.join(' ') + '</span>';
       } else {
         $('#timer').hide();
       }
-    } else if (result['status'] === 'done') {
+    } else if (result['status'] === 'done' || result['status'] === 'cancelled') {
       $('#timer').hide();
     } else {
+      response.shift();
       response = response.join(' ');
     }
     return [ label, response ];
@@ -606,20 +630,22 @@ var render_activity = function(result) {
 
   if (result.fulfillments) {
     result.fulfillments.forEach(function(fulfillment) {
+      var link = fulfillment['fulfiller_github_url'] ? " <a target=new href='" + fulfillment['fulfiller_github_url'] + "'>[View Work]</a>" : '';
+
       if (fulfillment.accepted == true) {
         activities.push({
           name: fulfillment.fulfiller_github_username,
           address: fulfillment.fulfiller_address,
           email: fulfillment.fulfiller_email,
           fulfillment_id: fulfillment.fulfillment_id,
-          text: gettext('Work Accepted'),
+          text: gettext('Work Accepted') + link,
           age: timeDifference(new Date(result['now']), new Date(fulfillment.accepted_on)),
           status: 'accepted'
         });
       }
       activities.push({
         name: fulfillment.fulfiller_github_username,
-        text: gettext('Work Submitted'),
+        text: gettext('Work Submitted') + link,
         created_on: fulfillment.created_on,
         age: timeDifference(new Date(result['now']), new Date(fulfillment.created_on)),
         status: 'submitted'

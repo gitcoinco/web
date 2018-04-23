@@ -356,16 +356,30 @@ var refreshBounties = function() {
 
       if (result['status'] === 'done')
         result['p'] += 'Done';
-      else if (result['status'] === 'started')
+      if (result['fulfillment_accepted_on']) {
+        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
+      } else if (result['status'] === 'started') {
         result['p'] += 'Started';
-      else if (result['status'] === 'submitted')
+        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
+      } else if (result['status'] === 'submitted') {
         result['p'] += 'Submitted';
-      else if (result['status'] == 'cancelled')
+        if (result['fulfillment_submitted_on']) {
+          result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
+        }
+      } else if (result['status'] == 'cancelled') {
         result['p'] += 'Cancelled';
-      else if (is_expired)
-        result['p'] += 'Expired';
-      else
-        result['p'] += ('Expires in ' + timeLeft);
+        if (result['canceled_on']) {
+          result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
+        }
+      } else if (is_expired) {
+        var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
+
+        result['p'] += ('Expired ' + time_ago + ' ago');
+      } else {
+        var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
+
+        result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
+      }
 
       result['watch'] = 'Watch';
 

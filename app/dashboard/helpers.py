@@ -311,6 +311,8 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                     'payload', {}).get('fulfiller', {}).get('name', ''),
                 fulfiller_metadata=fulfillment,
                 fulfillment_id=fulfillment.get('id'),
+                fulfiller_github_url=fulfillment.get('data', {}).get(
+                    'payload', {}).get('fulfiller', {}).get('githubPRLink', ''),
                 created_on=created_on,
                 modified_on=modified_on,
                 accepted_on=accepted_on,
@@ -404,14 +406,20 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 last_comment_date=latest_old_bounty.last_comment_date if latest_old_bounty else None,
             )
             new_bounty.fetch_issue_item()
-            if not new_bounty.avatar_url:
-                new_bounty.avatar_url = new_bounty.get_avatar_url()
-                new_bounty.save()
 
             # Pull the interested parties off the last old_bounty
             if latest_old_bounty:
                 for interest in latest_old_bounty.interested.all():
                     new_bounty.interested.add(interest)
+
+            # set cancel date of this bounty
+            canceled_on = latest_old_bounty.canceled_on if latest_old_bounty and latest_old_bounty.canceled_on else None
+            if not canceled_on and new_bounty.status == 'cancelled':
+                canceled_on = timezone.now()
+            if canceled_on:
+                new_bounty.canceled_on = canceled_on
+                new_bounty.save()
+
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
             logging.error(f'{e} encountered during new bounty creation for: {url}')
@@ -524,7 +532,7 @@ def process_bounty_changes(old_bounty, new_bounty):
     elif old_bounty.value_in_token < new_bounty.value_in_token:
         event_name = 'increase_payout'
     elif old_bounty.is_open and not new_bounty.is_open:
-        if new_bounty.status == 'cancelled':
+        if new_bounty.status in ['cancelled', 'expired']:
             event_name = 'killed_bounty'
         else:
             event_name = 'work_done'

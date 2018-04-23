@@ -38,7 +38,7 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
         model = BountyFulfillment
         fields = ('fulfiller_address', 'fulfiller_email',
                   'fulfiller_github_username', 'fulfiller_name',
-                  'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on')
+                  'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on', 'fulfiller_github_url')
 
 
 class InterestSerializer(serializers.ModelSerializer):
@@ -72,12 +72,13 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'bounty_owner_email', 'bounty_owner_github_username',
             'fulfillments', 'interested', 'is_open', 'expires_date', 'raw_data',
             'metadata', 'current_bounty', 'value_in_eth',
-            'token_value_in_usdt', 'value_in_usdt', 'status', 'now',
+            'token_value_in_usdt', 'value_in_usdt_now', 'value_in_usdt', 'status', 'now',
             'avatar_url', 'value_true', 'issue_description', 'network',
             'org_name', 'pk', 'issue_description_text',
             'standard_bounties_id', 'web3_type', 'can_submit_after_expiration_date',
             'github_issue_number', 'github_org_name', 'github_repo_name',
-            'idx_status', 'last_comment_date',
+            'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on', 'fulfillment_submitted_on',
+            'fulfillment_started_on', 'canceled_on', 'last_comment_date',
         )
 
     def create(self, validated_data):

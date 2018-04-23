@@ -20,16 +20,16 @@
 
 {% block content %}
 
-<h1>🕐 {% trans "Are you still working on this? ... 🕐</h1>
+<h1>🕐 {% trans "Are you still working on this?" %}" ... 🕐</h1>
 
 
 <p>
-    {% trans "Hey there,
+    {% trans "Hey there, " %}
 
     <br>
     <br>
 
-     {% blocktrans %}You <strong>started work upon</strong> a funded issue {{interest.created | naturaltime}}.  But we haven't heard from you on the github thread{% endblocktrans %}{% if time_delta_days %} in {{time_delta_days}} days{%endif%}.
+     You <strong>started work upon</strong> a funded issue {{interest.created | naturaltime}}.  But we haven't heard from you on the github thread{% if time_delta_days %} in {{time_delta_days}} days{%endif%}.
 
     <br>
     <br>
@@ -58,15 +58,7 @@
 {% include 'emails/bounty.html' with bounty=bounty %}
 
 <p>
-{% trans "You are receiving this email because your email address is on the notification list for this funded issue." %} <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">{% trans "Manage Email Settings" %}</a>.
+{% trans "You are receiving this email because your email address is on the notification list for this funded issue." %} <a href="https://gitcoin.co/settings/email/{{subscriber.priv}}">{% trans "Manage Email Settings" %}</a>.
 </p>
-
-<p>
-    {% trans "Keep Pushing Open Source Forward," %}
-    <br>
-    -- {% trans "Gitcoin Core" %}
-</p>
-
-
 
 {% endblock %}

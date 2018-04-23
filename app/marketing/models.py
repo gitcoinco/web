@@ -37,6 +37,11 @@ class EmailSubscriber(SuperModel):
     priv = models.CharField(max_length=30, default='')
     github = models.CharField(max_length=255, default='')
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=[])
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        on_delete=models.CASCADE,
+        related_name='email_subscriptions',
+        null=True)
 
     def __str__(self):
         return self.email
@@ -75,8 +80,8 @@ class LeaderboardRank(SuperModel):
         return f"https://github.com/{self.github_username}"
 
     @property
-    def local_avatar_url(self):
-        return f"/funding/avatar?repo={self.github_url}&v=3"
+    def avatar_url(self):
+        return f"/static/avatar/{self.github_username}"
 
 
 class Match(SuperModel):

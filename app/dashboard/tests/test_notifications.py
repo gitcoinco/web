@@ -25,7 +25,7 @@ from pytz import UTC
 from test_plus.test import TestCase
 
 
-class DashboardNotificationsTestCase(TestCase):
+class DashboardNotificationsTest(TestCase):
     """Define tests for dashboard notifications."""
 
     def setUp(self):

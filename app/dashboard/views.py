@@ -23,6 +23,7 @@ import logging
 import time
 
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
@@ -36,7 +37,8 @@ from django.views.decorators.http import require_POST
 
 from app.utils import ellipses, sync_profile
 from dashboard.models import (
-    Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip, UserAction,
+    Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip, Tool,
+    ToolVote, UserAction,
 )
 from dashboard.notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
@@ -72,17 +74,27 @@ def send_tip(request):
     return TemplateResponse(request, 'yge/send1.html', params)
 
 
-def record_user_action(profile_handle, event_name, instance):
+def record_user_action(user, event_name, instance):
     instance_class = instance.__class__.__name__.lower()
+    kwargs = {
+        'action': event_name,
+        'metadata': {f'{instance_class}_pk': instance.pk},
+    }
+
+    if isinstance(user, User):
+        kwargs['user'] = user
+    elif isinstance(user, str):
+        try:
+            user = User.objects.get(username=user)
+            kwargs['user'] = user
+        except User.DoesNotExist:
+            return
+
+    if hasattr(user, 'profile'):
+        kwargs['profile'] = user.profile
 
     try:
-        user_profile = Profile.objects.filter(handle__iexact=profile_handle).first()
-        UserAction.objects.create(
-            profile=user_profile,
-            action=event_name,
-            metadata={
-                f'{instance_class}_pk': instance.pk,
-            })
+        UserAction.objects.create(**kwargs)
     except Exception as e:
         # TODO: sync_profile?
         logging.error(f"error in record_action: {e} - {event_name} - {instance}")
@@ -97,17 +109,24 @@ def helper_handle_access_token(request, access_token):
     request.session['profile_id'] = profile.pk
 
 
-def create_new_interest_helper(bounty, profile_id):
+def create_new_interest_helper(bounty, user):
+    profile_id = user.profile.pk
     interest = Interest.objects.create(profile_id=profile_id)
     bounty.interested.add(interest)
-    record_user_action(Profile.objects.get(pk=profile_id).handle, 'start_work', interest)
+    record_user_action(user, 'start_work', interest)
     maybe_market_to_slack(bounty, 'start_work')
     maybe_market_to_twitter(bounty, 'start_work')
     return interest
 
 
-@require_POST
 @csrf_exempt
+def gh_login(request):
+    """Attempt to redirect the user to Github for authentication."""
+    return redirect('social:begin', backend='github')
+
+
+@csrf_exempt
+@require_POST
 def new_interest(request, bounty_id):
     """Claim Work for a Bounty.
 
@@ -120,11 +139,15 @@ def new_interest(request, bounty_id):
         dict: The success key with a boolean value and accompanying error.
 
     """
-    access_token = request.GET.get('token')
-    if access_token and is_github_token_valid(access_token):
-        helper_handle_access_token(request, access_token)
+    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
-    profile_id = request.session.get('profile_id')
+    access_token = request.GET.get('token')
+    if access_token:
+        helper_handle_access_token(request, access_token)
+        github_user_data = get_github_user_data(access_token)
+        profile = Profile.objects.filter(handle=github_user_data['login']).first()
+        profile_id = profile.pk
+
     if not profile_id:
         return JsonResponse(
             {'error': _('You must be authenticated via github to use this feature!')},
@@ -152,7 +175,7 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
     except Interest.DoesNotExist:
-        interest = create_new_interest_helper(bounty, profile_id)
+        interest = create_new_interest_helper(bounty, request.user)
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \
@@ -169,8 +192,8 @@ def new_interest(request, bounty_id):
     return JsonResponse({'success': True, 'profile': ProfileSerializer(interest.profile).data})
 
 
-@require_POST
 @csrf_exempt
+@require_POST
 def remove_interest(request, bounty_id):
     """Unclaim work from the Bounty.
 
@@ -182,11 +205,15 @@ def remove_interest(request, bounty_id):
         dict: The success key with a boolean value and accompanying error.
 
     """
-    access_token = request.GET.get('token')
-    if access_token and is_github_token_valid(access_token):
-        helper_handle_access_token(request, access_token)
+    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
 
-    profile_id = request.session.get('profile_id')
+    access_token = request.GET.get('token')
+    if access_token:
+        helper_handle_access_token(request, access_token)
+        github_user_data = get_github_user_data(access_token)
+        profile = Profile.objects.filter(handle=github_user_data['login']).first()
+        profile_id = profile.pk
+
     if not profile_id:
         return JsonResponse(
             {'error': _('You must be authenticated via github to use this feature!')},
@@ -200,7 +227,7 @@ def remove_interest(request, bounty_id):
 
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
-        record_user_action(Profile.objects.get(pk=profile_id).handle, 'stop_work', interest)
+        record_user_action(request.user, 'stop_work', interest)
         bounty.interested.remove(interest)
         interest.delete()
         maybe_market_to_slack(bounty, 'stop_work')
@@ -238,20 +265,13 @@ def uninterested(request, bounty_id, profile_id):
     Returns:
         dict: The success key with a boolean value and accompanying error.
     """
-
-    session_profile_id = request.session.get('profile_id')
-    if not session_profile_id:
-        return JsonResponse(
-            {'error': 'You must be authenticated!'},
-            status=401)
-
     try:
         bounty = Bounty.objects.get(pk=bounty_id)
     except Bounty.DoesNotExist:
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
 
-    if not bounty.is_funder(request.session.get('handle').lower()):
+    if not bounty.is_funder(request.user.username.lower()):
         return JsonResponse(
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
@@ -278,7 +298,10 @@ def uninterested(request, bounty_id, profile_id):
         Interest.objects.filter(pk__in=list(interest_ids)).delete()
 
     profile = Profile.objects.get(id=profile_id)
-    bounty_uninterested(profile.email, bounty, interest)
+    if hasattr(profile, 'user') and profile.user.email:
+        bounty_uninterested(profile.user.email, bounty, interest)
+    else:
+        print("no email sent -- user was not found")
     return JsonResponse({'success': True})
 
 
@@ -334,9 +357,10 @@ def send_tip_2(request):
         TemplateResponse: Render the submission form.
 
     """
-    from_username = request.session.get('handle', '')
-    primary_from_email = request.session.get('email', '')
-    access_token = request.session.get('access_token')
+    is_user_authenticated = request.user.is_authenticated
+    from_username = request.user.username if is_user_authenticated else ''
+    primary_from_email = request.user.email if is_user_authenticated else ''
+    access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
     to_emails = []
 
     if request.body:
@@ -442,8 +466,12 @@ def dashboard(request):
 
 
 def gas(request):
+    _cts = conf_time_spread()
+    recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
+    if recommended_gas_price < 2:
+        _cts = conf_time_spread(recommended_gas_price)
     context = {
-        'conf_time_spread': conf_time_spread(),
+        'conf_time_spread': _cts,
         'title': 'Live Gas Usage => Predicted Conf Times'
         }
     return TemplateResponse(request, 'gas.html', context)
@@ -452,6 +480,7 @@ def gas(request):
 def new_bounty(request):
     """Create a new bounty."""
     issue_url = request.GET.get('source') or request.GET.get('url', '')
+    is_user_authenticated = request.user.is_authenticated
     params = {
         'issueURL': issue_url,
         'amount': request.GET.get('amount'),
@@ -460,8 +489,8 @@ def new_bounty(request):
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
-        'from_email': request.session.get('email', ''),
-        'from_handle': request.session.get('handle', ''),
+        'from_email': request.user.email if is_user_authenticated else '',
+        'from_handle': request.user.username if is_user_authenticated else '',
         'newsletter_headline': _('Be the first to know about new funded issues.')
     }
 
@@ -470,6 +499,7 @@ def new_bounty(request):
 
 def fulfill_bounty(request):
     """Fulfill a bounty."""
+    is_user_authenticated = request.user.is_authenticated
     params = {
         'issueURL': request.GET.get('source'),
         'githubUsername': request.GET.get('githubUsername'),
@@ -478,8 +508,8 @@ def fulfill_bounty(request):
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
-        'handle': request.session.get('handle', ''),
-        'email': request.session.get('email', '')
+        'email': request.user.email if is_user_authenticated else '',
+        'handle': request.user.username if is_user_authenticated else '',
     }
 
     return TemplateResponse(request, 'fulfill_bounty.html', params)
@@ -529,34 +559,48 @@ def kill_bounty(request):
 
 
 def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
-    """Display the bounty details."""
-    _access_token = request.session.get('access_token')
-    profile_id = request.session.get('profile_id')
-    issueURL = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
+    """Display the bounty details.
+
+    Args:
+        ghuser (str): The Github user. Defaults to an empty string.
+        ghrepo (str): The Github repository. Defaults to an empty string.
+        ghissue (int): The Github issue number. Defaults to: 0.
+
+    Raises:
+        Exception: The exception is raised for any exceptions in the main query block.
+
+    Returns:
+        django.template.response.TemplateResponse: The Bounty details template response.
+
+    """
+    is_user_authenticated = request.user.is_authenticated
+    if is_user_authenticated and hasattr(request.user, 'profile'):
+        _access_token = request.user.profile.get_access_token()
+    else:
+        _access_token = request.session.get('access_token')
+    issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
 
     # try the /pulls url if it doesnt exist in /issues
     try:
-        assert Bounty.objects.current().filter(github_url=issueURL).exists()
+        assert Bounty.objects.current().filter(github_url=issue_url).exists()
     except Exception:
-        issueURL = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue if ghissue else request.GET.get('url')
-        print(issueURL)
+        issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue if ghissue else request.GET.get('url')
+        print(issue_url)
 
-    bounty_url = issueURL
     params = {
-        'issueURL': issueURL,
+        'issueURL': issue_url,
         'title': _('Issue Details'),
         'card_title': _('Funded Issue Details | Gitcoin'),
         'avatar_url': static('v2/images/helmet.png'),
         'active': 'bounty_details',
         'is_github_token_valid': is_github_token_valid(_access_token),
         'github_auth_url': get_auth_url(request.path),
-        'profile_interested': False,
-        "newsletter_headline": _("Be the first to know about new funded issues.")
+        "newsletter_headline": _("Be the first to know about new funded issues."),
     }
 
-    if bounty_url:
+    if issue_url:
         try:
-            bounties = Bounty.objects.current().filter(github_url=bounty_url)
+            bounties = Bounty.objects.current().filter(github_url=issue_url)
             if bounties:
                 bounty = bounties.order_by('pk').first()
                 # Currently its not finding anyting in the database
@@ -567,10 +611,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
 
                 params['bounty_pk'] = bounty.pk
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
-                params['avatar_url'] = bounty.local_avatar_url
-                if profile_id:
-                    profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
-                    params['profile_interested'] = request.session.get('profile_id') in profile_ids
+                params['avatar_url'] = bounty.get_avatar_url(True)
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
@@ -581,7 +622,21 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
 
 
 def profile_helper(handle):
-    """Define the profile helper."""
+    """Define the profile helper.
+
+    Args:
+        handle (str): The profile handle.
+
+    Raises:
+        DoesNotExist: The exception is raised if a Profile isn't found matching the handle.
+            Remediation is attempted by syncing the profile data.
+        MultipleObjectsReturned: The exception is raised if multiple Profiles are found.
+            The latest Profile will be returned.
+
+    Returns:
+        dashboard.models.Profile: The Profile associated with the provided handle.
+
+    """
     try:
         profile = Profile.objects.get(handle__iexact=handle)
     except Profile.DoesNotExist:
@@ -598,7 +653,12 @@ def profile_helper(handle):
 
 
 def profile_keywords_helper(handle):
-    """Define the profile keywords helper."""
+    """Define the profile keywords helper.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
     profile = profile_helper(handle)
 
     keywords = []
@@ -612,7 +672,12 @@ def profile_keywords_helper(handle):
 
 
 def profile_keywords(request, handle):
-    """Display profile keywords."""
+    """Display profile keywords.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
     keywords = profile_keywords_helper(handle)
 
     response = {
@@ -623,28 +688,32 @@ def profile_keywords(request, handle):
 
 
 def profile(request, handle):
-    """Display profile details."""
-    handle = handle or request.session.get('handle')
+    """Display profile details.
 
-    if not handle:
-        raise Http404
+    Args:
+        handle (str): The profile handle.
+
+    """
+    if not handle and not request.user.is_authenticated:
+        return redirect('index')
+    elif not handle:
+        handle = request.user.username
+        profile = request.user.profile
+    else:
+        profile = profile_helper(handle)
 
     params = {
-        'title': _('Profile'),
+        'title': f"@{handle}",
         'active': 'profile_details',
         'newsletter_headline': _('Be the first to know about new funded issues.'),
+        'card_title': f'@{handle} | Gitcoin',
+        'card_desc': profile.desc,
+        'avatar_url': profile.avatar_url_with_gitcoin_logo,
+        'profile': profile,
+        'stats': profile.stats,
+        'bounties': profile.bounties,
+        'tips': Tip.objects.filter(username=handle, network='mainnet'),
     }
-
-    profile = profile_helper(handle)
-    params['card_title'] = f"@{handle} | Gitcoin"
-    params['card_desc'] = profile.desc
-    params['title'] = f"@{handle}"
-    params['avatar_url'] = profile.local_avatar_url
-    params['profile'] = profile
-    params['stats'] = profile.stats
-    params['bounties'] = profile.bounties
-    params['tips'] = Tip.objects.filter(username=handle, network='mainnet')
-
     return TemplateResponse(request, 'profile_details.html', params)
 
 
@@ -756,303 +825,56 @@ def apitos(request):
 
 
 def toolbox(request):
+    access_token = request.GET.get('token')    
+    if access_token and is_github_token_valid(access_token):
+        helper_handle_access_token(request, access_token)
+
+    basic_tools = Tool.objects.filter(category='BASIC')
+    advanced_tools = Tool.objects.filter(category='ADVANCED')
+    community_tools = Tool.objects.filter(category='COMMUNITY')
+    to_build_toos = Tool.objects.filter(category='TOOLS_TO_BUILD')
+    alpha_tools = Tool.objects.filter(category='ALPHA')
+    coming_soon_tools = Tool.objects.filter(category='COMING_SOON')
+    for_fun_tools = Tool.objects.filter(category='FOR_FUN')
     actors = [{
-        "title": "Basics",
+        "title": _("Basics"),
         "description": _("Accelerate your dev workflow with Gitcoin\'s incentivization tools."),
-        "tools": [{
-            "name": _("Issue Explorer"),
-            "img": static("v2/images/why-different/code_great.png"),
-            "description": _('''A searchable index of all of the funded work available in
-                            the system.'''),
-            "link": reverse("explorer"),
-             'link_copy': _('Try It'),
-            "active": "true",
-            'stat_graph': 'bounties_fulfilled',
-        }, {
-             "name": _("Fund Work"),
-             "img": static("v2/images/tldr/bounties.jpg"),
-             "description": _('''Got work that needs doing?  Create an issue and offer a bounty to get folks
-                            working on it.'''),
-             "link": reverse("new_funding"),
-             'link_copy': _('Try It'),
-             "active": "false",
-             'stat_graph': 'bounties_fulfilled',
-        }, {
-             "name": _("Tips"),
-             "img": static("v2/images/tldr/tips.jpg"),
-             "description": _('''Leave a tip to thank someone for
-                        helping out.'''),
-             "link": reverse("tip"),
-             'link_copy': _('Try It'),
-             "active": "false",
-             'stat_graph': 'tips',
-        }
-        ]
+        "tools": basic_tools
       }, {
           "title": _("Advanced"),
           "description": _("Take your OSS game to the next level!"),
-          "tools": [{
-              "name": _("Chrome Browser Extension"),
-              "img": static("v2/images/tools/browser_extension.png"),
-              "description": _('''Browse Gitcoin where you already work.
-                    On Github'''),
-              "link": reverse("browser_extension"),
-              'link_copy': _('Try It'),
-              "active": "false",
-              'stat_graph': 'browser_ext_chrome',
-          }, {
-              "name": "gitcoinbot",
-              "img": static("v2/images/helmet.png"),
-              "description": _('''Chat Interface available on Github'''),
-              "link": 'https://github.com/gitcoinco/web/tree/master/app/gitcoinbot',
-              'link_copy': _('Try It'),
-              "active": "false",
-              'stat_graph': 'bot',
-          },
-          ]
+          "tools": advanced_tools
       }, {
           "title": _("Community"),
           "description": _("Friendship, mentorship, and community are all part of the process."),
-          "tools": [
-          {
-              "name": _("Slack Community"),
-              "img": static("v2/images/social/slack2.png"),
-              "description": _('''Questions / Discussion / Just say hi ? Swing by
-                                our slack channel.'''),
-              "link": reverse("slack"),
-              'link_copy': _('Try It'),
-              "active": "false",
-              'stat_graph': 'slack_users',
-         },
-          {
-              "name": _("Gitter Community"),
-              "img": static("v2/images/social/gitter.png"),
-              "description": _('''The gitter channel is less active than slack, but
-                is still a good place to ask questions.'''),
-              "link": reverse("gitter"),
-              'link_copy': _('Try It'),
-              "active": "false",
-              'stat_graph': 'gitter_users',
-        },
-          ]
+          "tools": community_tools
        }, {
           "title": _("Tools to BUIDL Gitcoin"),
           "description": _("Gitcoin is built using Gitcoin.  Purdy cool, huh? "),
-          "tools": [{
-              "name": _("Github Repos"),
-              "img": static("v2/images/social/github.png"),
-              "description": _('''All of our development is open source, and managed
-              via Github.'''),
-              "link": reverse("github"),
-             'link_copy': _('Try It'),
-              "active": "false",
-              'stat_graph': 'github_stargazers_count',
-          },
-           {
-            "name": _("API"),
-            "img": static("v2/images/tools/api.jpg"),
-            "description": _('''Gitcoin provides a simple HTTPS API to access data
-                            without having to run your own Ethereum node.'''),
-            "link": "https://github.com/gitcoinco/web/blob/master/docs/API.md",
-           'link_copy': _('Try It'),
-            "active": "true",
-            'stat_graph': 'github_forks_count',
-            },
-          {
-              "class": 'new',
-              "name": _("BUIDL your own"),
-              "img": static("v2/images/dogfood.jpg"),
-              "description": _('''Dogfood.. Yum! Gitcoin is built using Gitcoin.
-                Got something you want to see in the world? Let the community know
-                <a href="/slack">on slack</a>
-                or <a href="https://github.com/gitcoinco/gitcoinco/issues/new">our github repos</a>
-                .'''),
-              "link": "",
-              "active": "false",
-          }
-          ]
+          "tools": to_build_toos
        }, {
           "title": _("Tools in Alpha"),
           "description": _("These fresh new tools are looking for someone to test ride them!"),
-          "tools": [{
-              "name": _("Leaderboard"),
-              "img": static("v2/images/tools/leaderboard.png"),
-              "description": _('''Check out who is topping the charts in
-                the Gitcoin community this month.'''),
-              "link": reverse("_leaderboard"),
-              'link_copy': _('Try It'),
-              "active": "false",
-              'stat_graph': 'bounties_fulfilled',
-          },
-           {
-            "name": _("Profiles"),
-            "img": static("v2/images/tools/profiles.png"),
-            "description": _('''Browse the work that you\'ve done, and how your OSS repuation is growing. '''),
-            "link": reverse("profile"),
-            'link_copy': _('Try It'),
-            "active": "true",
-            'stat_graph': 'profiles_ingested',
-            },
-           {
-            "name": _("ETH Tx Time Predictor"),
-            "img": static("v2/images/tradeoffs.png"),
-            "description": _('''Estimate Tradeoffs between Ethereum Network Tx Fees and Confirmation Times '''),
-            "link": reverse("gas"),
-            'link_copy': _('Try It'),
-            "active": "true",
-            'stat_graph': 'gas_page',
-            },
-           {
-            "name": _("Faucet"),
-            "img": static("v2/images/gas.svg"),
-            "description": _('''Get Mainnet ETH which can be used in Gitcoin or other dapps.'''),
-            "link": reverse("faucet"),
-            'link_copy': _('Try It'),
-            "active": "true",
-            'stat_graph': 'faucet_page',
-            }, {
-             "name": _("Code Sponsor"),
-             "img": static("v2/images/codesponsor.jpg"),
-             "description": _('''CodeSponsor sustains open source
-                        by connecting sponsors with open source projects.'''),
-             "link": "https://codesponsor.io",
-             'link_copy': _('Try It'),
-             "active": "false",
-             'stat_graph': 'codesponsor',
-            },
-            {
-              "name": _("Bounties Universe"),
-              "img": static("v2/images/why-different/projects.jpg"),
-              "description": _('''Bounties from around the internet'''),
-              "link": reverse("universe_index"),
-              'link_copy': _('Details'),
-              "active": "false",
-              'stat_graph': 'na',  # TODO
-            },
-          ]
+          "tools": alpha_tools
        }, {
            "title": _("Tools Coming Soon"),
            "description": _("These tools will be ready soon.  They'll get here sooner if you help BUIDL them :)"),
-           "tools": [
-              {
-                  "name": _("iOS app"),
-                  "img": static("v2/images/tools/iOS.png"),
-                  "description": _('''Gitcoin has an iOS app in alpha. Install it to
-                    browse funded work on-the-go.'''),
-                  "link": reverse("ios"),
-                  'link_copy': _('Details'),
-                  "active": "false",
-                  'stat_graph': 'ios_app_users',  # TODO
-            },
-            {
-                  "name": _("Firefox Browser Extension"),
-                  "img": static("v2/images/tools/comingsoon.png"),
-                  "description": _('''Firefox version of our browser extension'''),
-                  "link": 'https://github.com/gitcoinco/browser-extension/issues/1',
-                  'link_copy': 'Details',
-                  "active": "false",
-                  'stat_graph': 'na',  # TODO
-            },
-              {
-                  "name": _("Cold Outreach Email Generator"),
-                  "img": static("v2/images/tools/comingsoon.png"),
-                  "description": _('''Disrupt recruiters with this recruitment tool'''),
-                  "link": 'https://github.com/gitcoinco/skunkworks/issues/20',
-                  'link_copy': _('Details'),
-                  "active": "false",
-                  'stat_graph': 'na',  # TODO
-            },
-              {
-                  "name": _("Mentorship Matcher"),
-                  "img": static("v2/images/tools/comingsoon.png"),
-                  "description": _('''Matches Devs with Coaches'''),
-                  "link": 'https://github.com/gitcoinco/web/issues/565',
-                  'link_copy': _('Details'),
-                  "active": "false",
-                  'stat_graph': 'na',  # TODO
-            },
-              {
-                  "name": _("ETHAvatar"),
-                  "img": static("v2/images/tools/comingsoon.png"),
-                  "description": _('''gravatar but for Ethereum addresses'''),
-                  "link": 'https://github.com/gitcoinco/skunkworks/issues/63',
-                  'link_copy': _('Details'),
-                  "active": "false",
-                  'stat_graph': 'na',  # TODO
-            },
-              {
-                  "name": _("Pitch Page"),
-                  "img": static("v2/images/tools/comingsoon.png"),
-                  "description": _('''Matches Entrepeneurs to Coding Tasks'''),
-                  "link": 'https://github.com/gitcoinco/web/issues/506',
-                  'link_copy': _('Details'),
-                  "active": "false",
-                  'stat_graph': 'na',  # TODO
-            },
-              {
-                  "name": _("Job Board"),
-                  "img": static("v2/images/tools/comingsoon.png"),
-                  "description": _('''What it sounds like!'''),
-                  "link": 'https://github.com/gitcoinco/web/issues/540',
-                  'link_copy': _('Details'),
-                  "active": "false",
-                  'stat_graph': 'na',  # TODO
-            },
-              {
-                  "name": "<handle>.gitcoin.eth subdomains",
-                  "img": static("v2/images/tools/comingsoon.png"),
-                  "description": _('''Make it easy for friends to find you on ENS'''),
-                  "link": 'https://github.com/gitcoinco/web/issues/450',
-                  'link_copy': _('Details'),
-                  "active": "false",
-                  'stat_graph': 'na',  # TODO
-            },
-              {
-                  "name": _("Top Secret Project 001"),
-                  "img": static("v2/images/tools/comingsoon.png"),
-                  "description": _('''We can\'t talk about what it is yet :) '''),
-                  "active": "false",
-                  'stat_graph': 'na',  # TODO
-            },
-              {
-                  "name": _("Web3 Coding School"),
-                  "img": static("v2/images/tools/comingsoon.png"),
-                  "description": _('''Onboard developers from web2 to web3 with these coding challenges '''),
-                  "link": 'https://github.com/gitcoinco/web/issues/631',
-                  'link_copy': _('Details'),
-                  "active": "false",
-                  'stat_graph': 'na',  # TODO
-            },
-              {
-                  "name": _("Cold Outreach"),
-                  "img": static("v2/images/tools/comingsoon.png"),
-                  "description": _('''Cold Outreach emails that don't stink '''),
-                  "link": 'https://github.com/gitcoinco/coldoutreach',
-                  'link_copy': _('Details'),
-                  "active": "false",
-                  'stat_graph': 'na',  # TODO
-            },
-           ],
+           "tools": coming_soon_tools
        }, {
            "title": _("Just for Fun"),
            "description": _("Some tools that the community built *just because* they should exist."),
-           "tools": [{
-               "name": _("Ethwallpaper"),
-               "img": static("v2/images/tools/ethwallpaper.png"),
-               "description": _('''Repository of
-                        Ethereum wallpapers.'''),
-               "link": "https://ethwallpaper.co",
-               'link_copy': _('Try It'),
-               "active": "false",
-               'stat_graph': 'google_analytics_sessions_ethwallpaper',
-           }],
-        }
-        ]
+           "tools": for_fun_tools
+        }]
 
     # setup slug
     for key in range(0, len(actors)):
         actors[key]['slug'] = slugify(actors[key]['title'])
 
+    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    ups = list(ToolVote.objects.filter(profile_id = profile_id, value = 1).values_list('tool', flat=True))
+    profile_up_votes_tool_ids = ','.join(str(x) for x in ups)
+    downs = list(ToolVote.objects.filter(profile_id = profile_id, value = -1).values_list('tool', flat=True))
+    profile_down_votes_tool_ids = ','.join(str(x) for x in downs)
     context = {
         "active": "tools",
         'title': _("Toolbox"),
@@ -1060,10 +882,63 @@ def toolbox(request):
         'avatar_url': static('v2/images/tools/api.jpg'),
         "card_desc": _("Accelerate your dev workflow with Gitcoin\'s incentivization tools."),
         'actors': actors,
-        'newsletter_headline': _("Don't Miss New Tools!")
+        'newsletter_headline': _("Don't Miss New Tools!"),
+        'profile_up_votes_tool_ids': profile_up_votes_tool_ids,
+        'profile_down_votes_tool_ids': profile_down_votes_tool_ids
     }
     return TemplateResponse(request, 'toolbox.html', context)
 
+@csrf_exempt
+@require_POST
+def vote_tool_up(request, tool_id):
+    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    if not profile_id:
+        return JsonResponse(
+            {'error': 'You must be authenticated via github to use this feature!'},
+            status=401)
+
+    tool = Tool.objects.get(pk=tool_id)
+    score_delta = 0
+    try:
+        vote = ToolVote.objects.get(profile_id=profile_id, tool=tool)
+        if vote.value == 1:
+            vote.delete()
+            score_delta = -1
+        if vote.value == -1:
+            vote.value = 1
+            vote.save()
+            score_delta = 2
+    except ToolVote.DoesNotExist:
+        vote = ToolVote.objects.create(profile_id=profile_id, value=1)
+        tool.votes.add(vote)
+        score_delta = 1
+    return JsonResponse({'success': True, 'score_delta': score_delta})
+
+@csrf_exempt
+@require_POST
+def vote_tool_down(request, tool_id):
+    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    if not profile_id:
+        return JsonResponse(
+            {'error': 'You must be authenticated via github to use this feature!'},
+            status=401)
+
+    tool = Tool.objects.get(pk=tool_id)
+    score_delta = 0
+    try:
+        vote = ToolVote.objects.get(profile_id=profile_id, tool=tool)
+        if vote.value == -1:
+            vote.delete()
+            score_delta = 1
+        if vote.value == 1:
+            vote.value = -1
+            vote.save()
+            score_delta = -2
+    except ToolVote.DoesNotExist:
+        vote = ToolVote.objects.create(profile_id=profile_id, value=-1)
+        tool.votes.add(vote)        
+        score_delta = -1
+    return JsonResponse({'success': True, 'score_delta': score_delta })
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
