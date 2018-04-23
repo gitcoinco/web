@@ -405,20 +405,16 @@ def get_settings_navs():
     return [{
         'body': 'Email',
         'href': reverse('settings_email', args=('', ))
-    },
-    {
+    }, {
         'body': 'Privacy',
         'href': reverse('privacy_settings'),
-    },
-    {
+    }, {
         'body': 'Matching',
         'href': reverse('matching_settings'),
-    },
-    {
+    }, {
         'body': 'Feedback',
         'href': reverse('feedback_settings'),
-    },
-    {
+    }, {
         'body': 'Slack',
         'href': reverse('slack_settings'),
     }]
