@@ -14,6 +14,7 @@
 
 h4 {
   letter-spacing: 0;
+  text-transform: capitalize;
 }
 
 .caption {
@@ -21,9 +22,16 @@ h4 {
 }
 
 #team p,
-#jobs p {
+#jobs p,
+#origin_story p {
   text-align: center;
   font-family: "Muli", sans-serif;
+}
+
+#origin_story img {
+  max-height: 200px;
+  max-width: 300px;
+  margin: auto;
 }
 
 #team .card  {
@@ -90,7 +98,8 @@ h4 {
   transform: scale(1.5) rotate(360deg);
 }
 
-#jobs {
+#jobs,
+#origin_story {
   padding-bottom: 2em;
 }
 
