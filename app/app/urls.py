@@ -139,6 +139,7 @@ urlpatterns = [
     url(r'^schwag/?', retail.views.schwag, name='schwag'),
     url(r'^btctalk/?', retail.views.btctalk, name='btctalk'),
     url(r'^reddit/?', retail.views.reddit, name='reddit'),
+    url(r'^livestream/?', retail.views.livestream, name='livestream'),
     url(r'^feedback/?', retail.views.feedback, name='feedback'),
     url(r'^twitter/?', retail.views.twitter, name='twitter'),
     url(r'^gitter/?', retail.views.gitter, name='gitter'),
