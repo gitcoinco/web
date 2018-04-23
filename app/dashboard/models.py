@@ -501,6 +501,14 @@ class Bounty(SuperModel):
             return None
 
     @property
+    def hourly_rate(self):
+        try:
+            hours_worked = self.fulfillments.filter(accepted=True).first().fulfiller_hours_worked
+            return self.value_in_usdt / hours_worked
+        except Exception:
+            return None
+
+    @property
     def is_legacy(self):
         """Determine if the Bounty is legacy based on sunset date.
 

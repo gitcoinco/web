@@ -282,6 +282,34 @@ def bounties():
         )
 
 
+def bounties_hourly_rate():
+    from dashboard.models import Bounty, BountyFulfillment
+    that_time = timezone.now()
+    bounties = Bounty.objects.filter(
+        fulfillment_accepted_on__gt=(that_time - timezone.timedelta(hours=24)),
+        fulfillment_accepted_on__lt=that_time)
+    hours = 0
+    value = 0
+    for bounty in bounties:
+        try:
+            hours += bounty.fulfillments.filter(accepted=True).first().fulfiller_hours_worked
+            value += bounty.value_in_usdt
+        except:
+            pass
+    print(that_time, bounties.count(), value, hours)
+    if value and hours:
+        val = round(value/hours, 2)
+        try:
+            key = 'bounties_hourly_rate_inusd_last_24_hours'
+            Stat.objects.create(
+                created_on=that_time,
+                key=key,
+                val=(val),
+                )
+        except:
+            pass
+
+
 def bounties_by_status():
     from dashboard.models import Bounty
     statuses = Bounty.objects.distinct('idx_status').values_list('idx_status', flat=True)
@@ -497,6 +525,7 @@ class Command(BaseCommand):
             user_actions,
             faucet,
             email_events,
+            bounties_hourly_rate,
         ]
 
         for f in fs:
