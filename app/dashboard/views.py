@@ -580,7 +580,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
     return TemplateResponse(request, 'bounty_details.html', params)
 
 
-def elper(handle):
+def profile_helper(handle):
     """Define the profile helper."""
     try:
         profile = Profile.objects.get(handle__iexact=handle)
