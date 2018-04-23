@@ -1198,6 +1198,10 @@ class Tool(SuperModel):
     def i18n_link_copy(self):
         return _(self.link_copy)
     
+    def __str__(self):
+        return self.name
+
+
 class ToolVote(models.Model):
     """Define the vote placed on a tool."""
 
