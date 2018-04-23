@@ -49,9 +49,9 @@ window.onload = function() {
     };
 
     var issueURL = $('input[name=issueURL]').val();
-    var uri = '/api/v0.1/bounties/?github_url=' + issueURL + "&network=" + document.web3network;
 
     waitforWeb3(function(){
+      var uri = '/api/v0.1/bounties/?github_url=' + issueURL + "&network=" + document.web3network;
       $.get(uri, fulfillmentCallback);
     });
 
@@ -166,9 +166,11 @@ window.onload = function() {
 
       };
       // Get bountyId from the database
-      var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
 
-      $.get(uri, apiCallback);
+      waitforWeb3(function(){
+        var uri = '/api/v0.1/bounties/?github_url=' + issueURL + "&network=" + document.web3network;
+        $.get(uri, apiCallback);
+      });
       e.preventDefault();
     });
   }, 100);
