@@ -186,6 +186,14 @@ def maybe_market_to_slack(bounty, event_name):
 
 
 def build_message_for_slack(bounty, event_name):
+    """Build message to be posted to slack.
+    Args:
+        bounty (dashboard.models.Bounty): The Bounty to be marketed.
+        event_name (str): The name of the event.
+
+    Returns:
+        str: Message to post to slack.
+    """
     conv_details = ""
     usdt_details = ""
     try:
@@ -193,9 +201,6 @@ def build_message_for_slack(bounty, event_name):
         usdt_details = f"({bounty.value_in_usdt_now} USD {conv_details} "
     except Exception:
         pass  # no USD conversion rate
-    except Exception as e:
-        print(e)
-        return False
 
     title = bounty.title if bounty.title else bounty.github_url
     msg = f"{event_name.replace('bounty', 'funded_issue')} worth {round(bounty.get_natural_value(), 4)} {bounty.token_name} " \
@@ -215,7 +220,7 @@ def maybe_market_to_user_slack(bounty, event_name):
         bool: Whether or not the Slack notification was sent successfully.
 
     """
-    from marketing.models import EmailSubscriber
+    from dashboard.models import Profile
     if bounty.get_natural_value() < 0.0001:
         return False
     if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
@@ -232,8 +237,8 @@ def maybe_market_to_user_slack(bounty, event_name):
     try:
         username = uri_array[1]
         repo = uri_array[2]
-        subscribers = EmailSubscriber.objects.filter(profile__handle=username, repos__contains=[repo])
-        subscribers = subscribers & EmailSubscriber.objects.exclude(slack_token='', slack_channel='')
+        subscribers = Profile.objects.filter(handle=username, repos__contains=[repo])
+        subscribers = subscribers & Profile.objects.exclude(slack_token='', slack_channel='')
         for subscriber in subscribers:
             try:
                 sc = SlackClient(subscriber.slack_token)
@@ -241,11 +246,8 @@ def maybe_market_to_user_slack(bounty, event_name):
                 sent = True
             except Exception as e:
                 print(e)
-    except IndexError:
-        return False
     except Exception as e:
         print(e)
-        return False
 
     return sent
 
