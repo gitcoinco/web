@@ -609,6 +609,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
 
                 params['bounty_pk'] = bounty.pk
                 params['network'] = bounty.network
+                params['stdbounties_id'] = bounty.standard_bounties_id
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
         except Bounty.DoesNotExist:
