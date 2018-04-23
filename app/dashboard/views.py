@@ -599,6 +599,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
             bounties = Bounty.objects.current().filter(github_url=issue_url)
             if bounties:
                 bounty = bounties.order_by('pk').first()
+                if bounties.count() > 1 and bounties.filter(network='mainnet').count() > 1:
+                    bounty = bounties.filter(network='mainnet').order_by('pk').first()
                 # Currently its not finding anyting in the database
                 if bounty.title and bounty.org_name:
                     params['card_title'] = f'{bounty.title} | {bounty.org_name} Funded Issue Detail | Gitcoin'
@@ -606,6 +608,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
                     params['card_desc'] = ellipses(bounty.issue_description_text, 255)
 
                 params['bounty_pk'] = bounty.pk
+                params['network'] = bounty.network
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
         except Bounty.DoesNotExist:
