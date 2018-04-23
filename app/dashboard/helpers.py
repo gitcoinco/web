@@ -313,6 +313,8 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                 fulfillment_id=fulfillment.get('id'),
                 fulfiller_github_url=fulfillment.get('data', {}).get(
                     'payload', {}).get('fulfiller', {}).get('githubPRLink', ''),
+                fulfiller_hours_worked=fulfillment.get('data', {}).get(
+                    'payload', {}).get('fulfiller', {}).get('hoursWorked', None),
                 created_on=created_on,
                 modified_on=modified_on,
                 accepted_on=accepted_on,

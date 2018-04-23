@@ -42,6 +42,7 @@ window.onload = function() {
         var issueURL = data.issueURL;
         var notificationEmail = data.notificationEmail;
         var githubPRLink = data.githubPRLink;
+        var hoursWorked = data.hoursWorked;
 
         localStorage['githubUsername'] = githubUsername;
 
@@ -70,6 +71,7 @@ window.onload = function() {
             sourceDirectoryHash: '',
             fulfiller: {
               githubPRLink: githubPRLink,
+              hoursWorked: hoursWorked,
               email: notificationEmail,
               githubUsername: githubUsername,
               address: account
