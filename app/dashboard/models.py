@@ -1186,7 +1186,7 @@ class Tool(SuperModel):
         (CAT_BUILD, 'tools to build'),
         (CAT_COMING_SOON, 'coming soon'),
         (CAT_COMMUNITY, 'community'),
-        (CAT_FOR_FUN, 'for fun'),
+        (CAT_FOR_FUN, 'just for fun'),
     )
 
     name = models.CharField(max_length=255)

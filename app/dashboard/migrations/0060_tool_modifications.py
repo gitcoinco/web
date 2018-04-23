@@ -24,14 +24,14 @@ def update_eth_wallpaper(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0057_auto_20180419_0910'),
+        ('dashboard', '0059_auto_20180423_1818'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='tool',
             name='category',
-            field=models.CharField(choices=[('AD', 'ADVANCED'), ('AL', 'ALPHA'), ('BA', 'BASIC'), ('BU', 'TOOLS_TO_BUILD'), ('CS', 'COMING_SOON'), ('CO', 'COMMUNITY'), ('FF', 'FOR_FUN')], max_length=20),
+            field=models.CharField(choices=[('AD', 'advanced'), ('AL', 'alpha'), ('BA', 'basic'), ('BU', 'tools to build'), ('CS', 'coming soon'), ('CO', 'community'), ('FF', 'just for fun')], max_length=20),
         ),
         migrations.AlterField(
             model_name='tool',
@@ -53,16 +53,11 @@ class Migration(migrations.Migration):
             name='link_copy',
             field=models.CharField(blank=True, max_length=255),
         ),
-        migrations.AlterField(
-            model_name='tool',
-            name='url_name',
-            field=models.CharField(blank=True, max_length=40),
-        ),
         migrations.RunPython(migrate_tool_categories),
         migrations.RunPython(update_eth_wallpaper),
         migrations.AlterField(
             model_name='tool',
             name='category',
-            field=models.CharField(choices=[('AD', 'ADVANCED'), ('AL', 'ALPHA'), ('BA', 'BASIC'), ('BU', 'TOOLS_TO_BUILD'), ('CS', 'COMING_SOON'), ('CO', 'COMMUNITY'), ('FF', 'FOR_FUN')], max_length=2),
+            field=models.CharField(choices=[('AD', 'advanced'), ('AL', 'alpha'), ('BA', 'basic'), ('BU', 'tools to build'), ('CS', 'coming soon'), ('CO', 'community'), ('FF', 'just for fun')], max_length=2),
         ),
     ]
