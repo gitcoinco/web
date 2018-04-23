@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from datetime import date, datetime, timedelta
 
 import pytz
-from dashboard.models import Bounty, BountyFulfillment, Interest, Profile, Tip
+from dashboard.models import Bounty, BountyFulfillment, Interest, Profile, Tip, Tool, ToolVote
 from economy.models import ConversionRate
 from test_plus.test import TestCase
 
@@ -180,3 +180,17 @@ class DashboardModelsTest(TestCase):
         ]
         assert profile.github_url == 'https://github.com/gitcoinco'
         assert profile.get_relative_url() == '/profile/gitcoinco'
+
+    def test_tool(self):
+        """Test the dashboard Tool model."""
+        tool = Tool.objects.create(name="Issue Explorer", category="BASIC", img="v2/images/why-different/code_great.png", description='''A searchable index of all of the funded work available in
+            the system.''', link="http://gitcoin.co/explorer", link_copy="Try It", active = True, stat_graph = "bounties_fulfilled")
+        profile = Profile.objects.create(
+            handle='gitcoinco',
+            data={'type': 'Organization'},
+            repos_data=[{'contributors': [{'contributions': 50, 'login': 'foo'}]}],
+        )            
+        vote = ToolVote.objects.create(profile_id=profile.id, value=1)    
+        tool.votes.add(vote)
+        assert tool.vote_score() == 1
+        assert tool.link_url == 'http://gitcoin.co/explorer'
