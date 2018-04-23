@@ -1181,10 +1181,25 @@ class Tool(SuperModel):
         if self.url_name:
             return reverse(self.url_name)
         else:
-            return self.link    
+            return self.link
+
+    def starting_score(self):
+        if self.category in ['BASIC']:
+            return 10
+        if self.category in ['ADVANCED']:
+            return 5
+        if self.category in ['TOOLS_TO_BUILD', 'COMMUNITY']:
+            return 3
+        if self.category in ['ALPHA']:
+            return 2
+        if self.category in ['COMING_SOON']:
+            return 1
+        if self.category in ['FOR_FUN']:
+            return 1
+        return 0
 
     def vote_score(self):
-        score = 0
+        score = self.starting_score()
         for vote in self.votes.all():
             score += vote.value
         return score                
