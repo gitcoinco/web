@@ -833,31 +833,31 @@ def toolbox(request):
     actors = [{
         "title": _("Basics"),
         "description": _("Accelerate your dev workflow with Gitcoin\'s incentivization tools."),
-        "tools": tools.exclude(category__ne=Tool.CAT_BASIC)
+        "tools": tools.filter(category=Tool.CAT_BASIC)
     }, {
         "title": _("Advanced"),
         "description": _("Take your OSS game to the next level!"),
-        "tools": tools.exclude(category__ne=Tool.CAT_ADVANCED)
+        "tools": tools.filter(category=Tool.CAT_ADVANCED)
     }, {
         "title": _("Community"),
         "description": _("Friendship, mentorship, and community are all part of the process."),
-        "tools": tools.exclude(category__ne=Tool.CAT_COMMUNITY)
+        "tools": tools.filter(category=Tool.CAT_COMMUNITY)
     }, {
         "title": _("Tools to BUIDL Gitcoin"),
         "description": _("Gitcoin is built using Gitcoin.  Purdy cool, huh? "),
-        "tools": tools.exclude(category__ne=Tool.CAT_BUILD)
+        "tools": tools.filter(category=Tool.CAT_BUILD)
     }, {
         "title": _("Tools in Alpha"),
         "description": _("These fresh new tools are looking for someone to test ride them!"),
-        "tools": tools.exclude(category__ne=Tool.CAT_ALPHA)
+        "tools": tools.filter(category=Tool.CAT_ALPHA)
     }, {
         "title": _("Tools Coming Soon"),
         "description": _("These tools will be ready soon.  They'll get here sooner if you help BUIDL them :)"),
-        "tools": tools.exclude(category__ne=Tool.CAT_COMING_SOON)
+        "tools": tools.filter(category=Tool.CAT_COMING_SOON)
     }, {
         "title": _("Just for Fun"),
         "description": _("Some tools that the community built *just because* they should exist."),
-        "tools": tools.exclude(category__ne=Tool.CAT_FOR_FUN)
+        "tools": tools.filter(category=Tool.CAT_FOR_FUN)
     }]
 
     # setup slug
