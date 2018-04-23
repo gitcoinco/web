@@ -351,15 +351,15 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     elif event_name == 'work_submitted':
         sub_msg = ""
         if bounty.fulfillments.count():
-            sub_msg = f"\n\n{bounty_owner} Here is a list of submitted work so far:\n"
-            for bf in bounty.fulfillments:
+            sub_msg = f"\n\n{bounty_owner if bounty_owner else 'If you are the bounty funder,'} please take a look at the submitted work:\n"
+            for bf in bounty.fulfillments.all():
                 username = "@"+bf.fulfiller_github_username if bf.fulfiller_github_username else bf.fulfiller_address
                 link_to_work = f"[PR]({bf.fulfiller_github_url})" if bf.fulfiller_github_url else "(Link Not Provided)"
                 sub_msg += f"* {link_to_work} by {username}\n" 
 
         msg = f"{status_header}__Work for {natural_value} {bounty.token_name} {usdt_value} has been submitted by__: \n 1. " \
               f"{profiles} {sub_msg} \n\n * Learn more [on the Gitcoin Issue Details page]({absolute_url})\n * " \
-              "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * " \
+              " * Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n" \
               f"${amount_open_work} more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
     elif event_name == 'work_done':
         try:
