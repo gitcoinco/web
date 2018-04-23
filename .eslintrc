@@ -9,8 +9,8 @@
   },
   "extends": "eslint:recommended",
   "globals": {
-    "jQuery",
-    "$"
+    "jQuery": true,
+    "$": true
   },
   "plugins": [
     "html"
@@ -18,9 +18,11 @@
   "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "module",
+    "ecmaVersion": 6,
     "ecmaFeatures": {
       "modules": true,
-      "arrowFunctions": true
+      "arrowFunctions": true,
+      "jsx": true
     }
   },
   "rules": {

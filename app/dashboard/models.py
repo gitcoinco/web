@@ -78,6 +78,9 @@ class Bounty(SuperModel):
         BOUNTY_TYPES (list of tuples): The valid bounty types.
         EXPERIENCE_LEVELS (list of tuples): The valid experience levels.
         PROJECT_LENGTHS (list of tuples): The possible project lengths.
+        STATUS_CHOICES (list of tuples): The valid status stages.
+        OPEN_STATUSES (list of str): The list of status types considered open.
+        CLOSED_STATUSES (list of str): The list of status types considered closed.
 
     """
 
@@ -150,11 +153,13 @@ class Bounty(SuperModel):
     submissions_comment = models.IntegerField(null=True, blank=True)
     override_status = models.CharField(max_length=255, blank=True)
     last_comment_date = models.DateTimeField(null=True, blank=True)
-    objects = BountyQuerySet.as_manager()
     fulfillment_accepted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
+
+    # Bounty QuerySet Manager
+    objects = BountyQuerySet.as_manager()
 
     class Meta:
         """Define metadata associated with Bounty."""
