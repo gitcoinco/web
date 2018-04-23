@@ -53,18 +53,6 @@ from .signals import m2m_changed_interested
 logger = logging.getLogger(__name__)
 
 
-class Organization(SuperModel):
-    """Define the structure of an Organization."""
-
-    avatar = models.ImageField(storage=asset_storage, upload_to=get_avatar_path)
-    members = models.ManyToManyField('dashboard.Profile', related_name='organizations')
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        """Return the string representation of an Organization."""
-        return self.name
-
-
 class BountyQuerySet(models.QuerySet):
     """Handle the manager queryset for Bounties."""
 

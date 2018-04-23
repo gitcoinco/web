@@ -68,7 +68,9 @@ INSTALLED_APPS = [
     'app',
     'retail',
     'rest_framework',
-    'bootstrap3',
+    'bootstrap4',
+    'crispy_forms',
+    'account',
     'marketing',
     'economy',
     'dashboard',
@@ -207,18 +209,26 @@ if not ENV in ['local', 'test']:
 else:
     LOGGING = {}
 
+CRISPY_TEMPLATE_PACK = env('CRISPY_TEMPLATE_PACK', default='bootstrap4')
 GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.storage.SilentFileStorage')
-STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.storage.SilentFileStorage')
 STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/', ))
 STATIC_ROOT = root('static')
 
-STATIC_HOST = env('STATIC_HOST', default='https://static.gitcoin.co/')
-STATIC_URL = STATIC_HOST + env('STATIC_URL', default='/static/')
-MEDIA_URL = env('MEDIA_URL', default='https://cdnx.gitcoin.co/assets/')
+if not DEBUG:
+    DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.storage.SilentFileStorage')
+    STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.storage.SilentFileStorage')
+    STATIC_HOST = BASE_URL
+    STATIC_URL = env('STATIC_URL', default='/static/')
+    MEDIA_URL = env('MEDIA_URL', default='/assets/')
+else:
+    STATIC_HOST = env('STATIC_HOST', default='https://static.gitcoin.co/')
+    STATIC_URL = STATIC_HOST + env('STATIC_URL', default='static/')
+    MEDIA_URL = env('MEDIA_URL', default='https://cdnx.gitcoin.co/assets/')
+
+MEDIA_ROOT = root('media')
 COMPRESS_ROOT = STATIC_ROOT
 COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
 
