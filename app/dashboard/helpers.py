@@ -300,6 +300,10 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                     modified_on = old_fulfillment.modified_on
                     if old_fulfillment.accepted:
                         accepted_on = old_fulfillment.accepted_on
+            hours_worked = fulfillment.get('data', {}).get(
+                    'payload', {}).get('fulfiller', {}).get('hoursWorked', None)
+            if not hours_worked:
+                hours_worked = None
             new_bounty.fulfillments.create(
                 fulfiller_address=fulfillment.get(
                     'fulfiller',
@@ -313,8 +317,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                 fulfillment_id=fulfillment.get('id'),
                 fulfiller_github_url=fulfillment.get('data', {}).get(
                     'payload', {}).get('fulfiller', {}).get('githubPRLink', ''),
-                fulfiller_hours_worked=fulfillment.get('data', {}).get(
-                    'payload', {}).get('fulfiller', {}).get('hoursWorked', None),
+                fulfiller_hours_worked=hours_worked,
                 created_on=created_on,
                 modified_on=modified_on,
                 accepted_on=accepted_on,
