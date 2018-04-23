@@ -32,6 +32,7 @@ from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.urls import reverse
+from django.urls.exceptions import NoReverseMatch
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -1166,44 +1167,71 @@ class CoinRedemptionRequest(SuperModel):
     txaddress = models.CharField(max_length=255)
     sent_on = models.DateTimeField(null=True)
 
+
 class Tool(SuperModel):
-    """Define the tool shcema."""
-    
+    """Define the Tool schema."""
+
+    CAT_ADVANCED = 'AD'
+    CAT_ALPHA = 'AL'
+    CAT_BASIC = 'BA'
+    CAT_BUILD = 'BU'
+    CAT_COMING_SOON = 'CS'
+    CAT_COMMUNITY = 'CO'
+    CAT_FOR_FUN = 'FF'
+
+    TOOL_CATEGORIES = (
+        (CAT_ADVANCED, 'advanced'),
+        (CAT_ALPHA, 'alpha'),
+        (CAT_BASIC, 'basic'),
+        (CAT_BUILD, 'tools to build'),
+        (CAT_COMING_SOON, 'coming soon'),
+        (CAT_COMMUNITY, 'community'),
+        (CAT_FOR_FUN, 'just for fun'),
+    )
+
     name = models.CharField(max_length=255)
-    category = models.CharField(max_length=20)
-    img = models.CharField(max_length=255)
-    description = models.CharField(max_length=1000)
+    category = models.CharField(max_length=2, choices=TOOL_CATEGORIES)
+    img = models.CharField(max_length=255, blank=True)
+    description = models.TextField(blank=True)
     url_name = models.CharField(max_length=40, blank=True)
-    link = models.CharField(max_length=255)
-    link_copy = models.CharField(max_length=255)
+    link = models.CharField(max_length=255, blank=True)
+    link_copy = models.CharField(max_length=255, blank=True)
     active = models.BooleanField(default=False)
     new = models.BooleanField(default=False)
     stat_graph = models.CharField(max_length=255)
-    votes = models.ManyToManyField('dashboard.ToolVote', blank=True)    
+    votes = models.ManyToManyField('dashboard.ToolVote', blank=True)
+
+    def __str__(self):
+        return self.name
 
     @property
-    def img_url(self): 
+    def img_url(self):
         return static(self.img)
 
     @property
     def link_url(self):
-        if self.url_name:
-            return reverse(self.url_name)
-        else:
+        if self.link and not self.url_name:
             return self.link
 
+        try:
+            return reverse(self.url_name)
+        except NoReverseMatch:
+            pass
+
+        return reverse('tools')
+
     def starting_score(self):
-        if self.category in ['BASIC']:
+        if self.category == self.CAT_BASIC:
             return 10
-        if self.category in ['ADVANCED']:
+        elif self.category == self.CAT_ADVANCED:
             return 5
-        if self.category in ['TOOLS_TO_BUILD', 'COMMUNITY']:
+        elif self.category in [self.CAT_BUILD, self.CAT_COMMUNITY]:
             return 3
-        if self.category in ['ALPHA']:
+        elif self.category == self.CAT_ALPHA:
             return 2
-        if self.category in ['COMING_SOON']:
+        elif self.category == self.CAT_COMING_SOON:
             return 1
-        if self.category in ['FOR_FUN']:
+        elif self.category == self.CAT_FOR_FUN:
             return 1
         return 0
 
@@ -1211,7 +1239,7 @@ class Tool(SuperModel):
         score = self.starting_score()
         for vote in self.votes.all():
             score += vote.value
-        return score                
+        return score
 
     def i18n_name(self):
         return _(self.name)
@@ -1221,9 +1249,6 @@ class Tool(SuperModel):
 
     def i18n_link_copy(self):
         return _(self.link_copy)
-    
-    def __str__(self):
-        return self.name
 
 
 class ToolVote(models.Model):
