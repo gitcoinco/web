@@ -15,23 +15,19 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
 <!doctype html><html>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting" />
 
 <style>
-    * { -webkit-padding-start: 0;   }
-    p{
-        text-align:justify;
-    }
     @font-face {
-        font-family: "futura-pt";
-        src: url("{% static "v2/fonts/futura/font4.ttf" %}") /* TTF file for CSS3 browsers */
+        font-family: 'Muli', sans-serif;
+        src: url("{% static "v2/fonts/Muli/Muli.ttf" %}") /* TTF file for CSS3 browsers */
     }
     body {
-      font-family: "futura-pt", Futura !important;
-      Margin: 0px;
+      font-family: 'Muli', sans-serif !important;
+      margin: 0px;
       padding: 0px;
     }
 
@@ -42,232 +38,164 @@
       font-weight: lighter;
       line-height: 1.2em;
     }
-    h3{
+    h3 {
         line-height: 30px;
     }
-    h1{
+    h1 {
       font-size: 1.8rem;
     }
-    h2{
+    h2 {
       font-size: 1.6rem;
     }
-    h3{
+    h3 {
       font-size: 1.3rem;
     }
-    h4{
+    h4 {
       font-size: 1.1rem;
     }
-
     h4, .h4 {
       text-align: center;
       padding-top: 40px;
     }
 
-    #container_table{
+    body {
         {% if override_back_color %}
             background-color: {{override_back_color}};
         {% else %}
-            background-color: #eff4ee;
+            background-color: #f2f6f9;
         {% endif %}
-        Margin:0;
-        padding:0;
-        line-height: 100% ;
-        width:100%;
-    }
-
-    #container_table .body{
-        padding-top: 10px;
-        padding-bottom: 50px;
-    }
-    #container_table .body.hide_header{
-        padding-top: 50px;
-    }
-
-    #container_table .body table{
-        border: 5px white solid;
-        background-color: white;
-    }
-
-    #container_table .body  #email_header{
-        {% if override_back_color %}
-            background-color: {{override_back_color}};
-        {% else %}
-            background-color: #eff4ee;
-        {% endif %}
-        border: 0px;
-        padding-bottom: 20px;
-    }
-
-
-    .primary_content{
-        padding-top: 20px;
-    }
-
-    #footer{
-        height: 60px;
-    }
-
-    #footer #copyright{
-        text-align: right;
-    }
-
-    #footer #copyright p{
-        color: black;
-        Margin-right: 25px;
-        text-align: right;
-    }
-
-    #footer #legal_contact {
-        text-align: left;
-        padding-left: 5px;
-    }
-
-    #footer #legal_contact p{
-        color: black;
-        Margin-left: 30px;
-    }
-
-    #social img{
-        {% if invert_footer %}
-        filter: invert(100%);
-        {% endif %}
-    }
-
-    #logo{
-        text-align: center;
-    }
-    #social {
-        height: 100px;
-        Margin-top: 10px;
-        Margin-bottom: 50px;
-    }
-    #social td {
-
-    }
-    tr.even{
-        background-color: #eee
-    }
-    tr.odd{
-        background-color: white;
-    }
-    a{
-        color: #15003e;
-    }
-    p, a, span{
-        font-size: 12px;
-        letter-spacing: 0.1em;
-        font-weight: lighter;
-        max-width: 550px;
-        line-height: 18px;
     }
 
     a.button{
         color: #fff;
-        background-color: #0d023b;
-        border-color: #0d023b;
-        padding: 3px 10px;
+        background-color: #15003e;
+        box-shadow: 0px 2px rgba(0, 0, 0, 0.5);
+        padding: 6px 20px;
         font-size: 14px;
         line-height: 1.5;
-        border-radius: 1.5rem;
-        font-weight: 100;
         text-align: center;
         text-decoration: none;
     }
 
-    @media only screen and (max-device-width: 480px) {
-    }
-    @media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+    #logo {
+        vertical-align: middle;
+        display: inline-block;
+        max-height: 120px;
+        max-width: 100%;
     }
 
+    #grow-oss {
+        display: inline-block;
+        max-width: 100%;
+    }
 
+    #header {
+        height: 200px;
+    }
+    #header, #footer {
+        color: white;
+        background-color: #15003e;
+        align-content: center;
+        text-align: center;
+        padding: 2em;
+    }
+
+    #copyright, #legal-contact {
+        padding-top: 0.5em;
+    }
+
+    @media screen and (min-width: 35.5em) {
+        .social-img {
+            max-height: 50px;
+            max-width: 50px;
+        }
+    }
+    @media screen and (max-width: 35.5em) {
+        .social-img {
+            max-height: 45px;
+            max-width: 45px;
+        }
+    }
+
+    a {
+        color: #70b2ff;
+        text-decoration: none;
+    }
+    p, a, span, ul, ol, li{
+        font-size: 14px;
+        letter-spacing: 0.1em;
+        line-height: 18px;
+    }
+
+    .centered-contents {
+        text-align: center;
+    }
+
+    .primary-content {
+        padding: 2em;
+        background-color: white;
+    }
+    @media screen and (min-width: 35.5em) {
+        .primary-content {
+            margin-left: 20%;
+            margin-right: 20%;
+        }
+    }
+    @media screen and (min-width: 48em) {
+        .primary-content {
+            margin-left: 10%;
+            margin-right: 10%;
+        }
+    }
+    @media screen and (max-width: 48em) {
+        .primary-content {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
 </style>
 
 <body>
-<table cellspacing="0" cellpadding="0" border="0" id="container_table">
-    <tr>
-        <td valign="top" class="body {% if  hide_header %} hide_header {%endif%}">
-            {% if not hide_header %}
-            <table cellpadding="0" cellspacing="0" border="0" align="center" id="email_header">
-                <tr>
-                    <td width="600" valign="middle" id="logo">
-                        <a href="https://gitcoin.co">
-                            <img src="{% static "v2/images/logo_black_med.png" %}" width=414 height=142 alt="Gitcoin" title="Gitcoin">
-                        </a>
-                    </td>
-                </tr>
-            </table>
-            {% endif %}
-            <table cellpadding="0" cellspacing="0" border="0" align="center" id="wrapper">
-                <tr>
-                    <td width="600" valign="top" align="center" class="primary_content">
+    {% if not hide_header %}
+    <div id="header">
+        <a href="https://gitcoin.co">
+            <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin Logo" title="Gitcoin Logo">
+        </a>
+    </div>
+    {% endif %}
 
-                    {% block content %}
-                    {% endblock %}
-                    </td>
-                </tr>
-            </table>
-            <table cellpadding="0" cellspacing="0" border="0" align="center" id="footer" style="">
-                <tr>
-                    <td id="legal_contact" width="300" valign="middle">
-                        <a href="https://gitcoin.co/terms">
-                            <span>Terms &amp; Conditions</span>
-                        </a> |
-                        <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">
-                            <span>Unsubscribe</span>
-                        </a> |
-                        <a href="mailto:support@gitcoin.co">
-                            <span>Contact</span>
-                        </a>
-                    </td>
-                    <td width="300" valign="middle" id="copyright">
-                        <p>
-                            <span>&copy; {% now "Y" %} Gitcoin Core, Inc.</span>
-                        </p>
-                    </td>
-                </tr>
-            </table>
+    <div class="primary-content centered-contents">
+        {% block content %}
+        {% endblock %}
+        <img id="grow-oss" src="{% static "v2/images/grow_open_source_new.png" %}" alt="Gitcoin Open Source" title="Grow Open Source Image">
+    </div>
 
-        </td>
-    </tr>
-    <tr id="social">
-        <td>
-            <table cellspacing="0" cellpadding="0" border="0" align="center">
-                <td align="center" width="45" valign="top" class="mainContent">
-                    <a href="https://www.medium.com/gitcoin">
-                        <img height="30" width="30" src="{% static "v2/images/social/medium.png" %}">
-                    </a>
-                </td>
-                <td align="center" width="45" valign="top" class="mainContent">
-                    <a href="https://www.facebook.com/GetGitcoin">
-                        <img height="30" width="30" src="{% static "v2/images/social/facebook.png" %}">
-                    </a>
-                </td>
-                <td align="center" width="45" valign="top" class="mainContent">
-                    <a href="https://www.twitter.com/GetGitcoin">
-                        <img height="30" width="30" src="{% static "v2/images/social/twitter.png" %}">
-                    </a>
-                </td>
-                <td align="center" width="45" valign="top" class="mainContent">
-                    <a href="https://reddit.com/r/gitcoincommunity">
-                        <img height="30" width="30" src="{% static "v2/images/social/reddit-light.png" %}">
-                    </a>
-                </td>
-                <td align="center" width="45" valign="top" class="mainContent">
-                    <a href="https://gitcoin.co/slack">
-                        <img height="30" width="30" src="{% static "v2/images/social/slack.png" %}">
-                    </a>
-                </td>
-                <td align="center" width="45" valign="top" class="mainContent">
-                    <a href="https://gitcoin.co/">
-                        <img height="30" width="30" src="{% static "v2/images/social/web.png" %}">
-                    </a>
-                </td>
-            </table>
-        </td>
-    </tr>
-</table>
-<!-- End of wrapper table -->
+    <div id="footer" class="centered-contents">
+        <div>
+            <a href="https://www.twitter.com/GetGitcoin"><img class="social-img" src="{% static "v2/images/social/twitter_new.png" %}"></a>
+
+            <a href="https://www.medium.com/gitcoin"><img class="social-img" src="{% static "v2/images/social/medium_new.png" %}"></a>
+
+            <a href="https://www.facebook.com/GetGitcoin"><img class="social-img" src="{% static "v2/images/social/facebook_new.png" %}"></a>
+
+            <a href="https://reddit.com/r/gitcoincommunity"><img class="social-img" src="{% static "v2/images/social/reddit_new.png" %}"></a>
+
+            <a href="https://gitcoin.co/slack"><img class="social-img" src="{% static "v2/images/social/slack_new.png" %}"></a>
+        </div>
+        <div>
+            <div id="copyright">
+                <p>
+                    <span>&copy; {% now "Y" %} Gitcoin Core, Inc. {% trans "All rights reserved." %}</span>
+                </p>
+            </div>
+            <div id="legal-contact">
+                <p>
+                    {% trans "Want to change how you receive these emails?" %}
+                    <br>
+                    {% trans "You can update your" %} <a href="https://gitcoin.co/settings/email/{{subscriber.priv}}">{% trans "preferences" %}</a> {% trans "or" %} <a href="https://gitcoin.co/settings/email/{{subscriber.priv}}">{% trans "unsubscribe" %}</a> {% trans "from this list." %}
+                </p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
-
-

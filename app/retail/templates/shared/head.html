@@ -1,67 +1,63 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static %}
-    {% include 'shared/tag_manager_1.html' %}
+{% load i18n static %}
+{% include 'shared/tag_manager_1.html' %}
+<meta charset="utf-8">
+<script>
+  FontAwesomeConfig = { searchPseudoElements: true };
+</script>
+<script defer src="{% static "v2/js/fontawesome-all.min.js" %}"></script>
+<link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/animate.min.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/rain.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/buttons.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/timeline.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/carousel.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/faucet.css" %}" />
 
-    <meta charset="utf-8">
-    <script>
-      FontAwesomeConfig = { searchPseudoElements: true };
-    </script>
-    <script defer src="{% static "v2/js/fontawesome-all.min.js" %}"></script>
-    <link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/jquery.modal.min.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/animate.min.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/rain.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/buttons.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/timeline.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/carousel.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/faucet.css" %}" />
+<!-- Forms -->
+<link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/checkbox.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/form.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/input.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/label.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/radio.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/external_bounties/checkboxes.css" %}" />
 
-    <!-- Forms -->
-    <link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/forms/checkbox.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/forms/drop.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/forms/form.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/forms/input.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/forms/label.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/forms/radio.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/external_bounties/checkboxes.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/grants/grant.css" %}" />
 
-    <link rel="stylesheet" href="{% static "v2/css/grants/grant.css" %}" />
+{% if active == 'offchain' %}
+<!-- External Bounties -->
+<link rel="stylesheet" href="{% static "v2/css/external_bounties/bounties.css" %}" />
+{% endif %}
 
-    {% if active == 'offchain' %}
-        <!-- External Bounties -->
-        <link rel="stylesheet" href="{% static "v2/css/external_bounties/bounties.css" %}" />
-    {% endif %}
+{% if request.path == '/ios' %}
+<!-- iOS -->
+<link rel="stylesheet" href="{% static "v2/css/toolbox.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/card.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/ios.css" %}" />
+{% endif %}
 
-    {% if request.path == '/ios' %}
-    <link rel="stylesheet" href="{% static "v2/css/toolbox.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/card.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/ios.css" %}" />
-    {% endif %}
-
-    <title>{% if title %}{{title}}{% else %}Grow Open Source{% endif %} | Gitcoin</title>
-
-    {% include 'shared/favicon.html' %}
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>{% if title %}{{title}}{% else %}{% trans "Grow Open Source" %}{% endif %} | Gitcoin</title>
+{% include 'shared/favicon.html' %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />

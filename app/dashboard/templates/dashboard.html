@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,12 +32,12 @@
       {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-      <div class="col-12 col-lg-2" id="sidebar_container" style="background: #F2F6F9;">
+      <div class="col-12 col-lg-3 col-xl-2" id="sidebar_container" style="background: #F2F6F9;">
         {% include 'shared/current_balance.html' %}
         {% include 'shared/sidebar_search.html' %}
       </div>
 
-      <div class="col-12 col-lg-10 body">
+      <div class="col-12 col-lg-9 col-xl-10 body">
         <div class="container-fluid" id="bounties">
           {% include 'shared/search_bar.html' %}
           <div class="row mt-2 mb-2">
@@ -55,12 +55,12 @@
           </div>
           <div class="row nonefound" style="display:none;">
               <img src="{% static "v2/images/shrug_bot.png" %}">
-              <h3>No results found.</h3>
-              <p>Please try another query</p>
-              <p>- or -</p>
+              <h3>{% trans "No results found." %}</h3>
+              <p>{% trans "Please try another query" %}</p>
+              <p>- {% trans "or" %} -</p>
               <p>
-                <a href="#" class="save_search">save search</a>
-                to be notified when results do appear.
+                {% blocktrans %}<a href="#" class="save_search">save search</a>
+                to be notified when results do appear.{% endblocktrans %}
               </p>
           </div>
         </div>
@@ -119,7 +119,6 @@
       </div>
     </script>
 
-    {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}

@@ -24,7 +24,7 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Interest, Profile,
-    Subscription, Tip, UserAction,
+    Subscription, Tip, Tool, UserAction,
 )
 
 
@@ -90,3 +90,4 @@ admin.site.register(BountySyncRequest, GeneralAdmin)
 admin.site.register(Tip, TipAdmin)
 admin.site.register(CoinRedemption, GeneralAdmin)
 admin.site.register(CoinRedemptionRequest, GeneralAdmin)
+admin.site.register(Tool, GeneralAdmin)

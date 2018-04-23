@@ -57,12 +57,12 @@
 }
 
 @media (max-width: 540px) {
-    .form__group {
-        flex-direction: column;
-    }
-
-    .form__group-item {
-        margin-bottom: 1em;
-        width: 100%;
-    }
+  .form__group {
+    flex-direction: column;
+  }
+  
+  .form__group-item {
+    margin-bottom: 1em;
+    width: 100%;
+  }
 }

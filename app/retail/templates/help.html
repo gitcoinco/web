@@ -15,7 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,40 +35,40 @@
         <div class=" row ">
             <div class="col pb-4">
                 <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
-                    <h4 class="heading">Developer?</h4>
-                    <h6 class="sub-heading">Check out the Gitcoin Developer guide</h6>
+                    <h4 class="heading">{% trans "Developer?" %}</h4>
+                    <h6 class="sub-heading">{% trans "Check out the Gitcoin Developer guide" %}</h6>
                     <a href="{% url "help_dev" %}" target="_blank" rel="noopener noreferrer">
                         <img class="animated fadeIn" src="{% static "v2/images/guide_dev.png" %}" style="max-width: 60%;  border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
                     </a>
                     <div class="col animated pulse fast">
                         <br>
-                        <a class="btn btn-lg btn-warning  mb-4" role="button" target="_blank" rel="noopener noreferrer" href="{% url "help_dev" %}">View Developer Guide</a>
+                        <a class="btn btn-lg btn-warning  mb-4" role="button" target="_blank" rel="noopener noreferrer" href="{% url "help_dev" %}">{% trans "View Developer Guide" %}</a>
                     </div>
                 </div>
             </div>
             <div class="col pb-4">
                 <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
-                    <h4 class="heading">Repo Maintainer?</h4>
-                    <h6 class="sub-heading">Check out the Gitcoin Repo Maintainer guide</h6>
+                    <h4 class="heading">{% trans "Repo Maintainer?" %}</h4>
+                    <h6 class="sub-heading">{% trans "Check out the Gitcoin Repo Maintainer guide" %}</h6>
                     <a href="{% url "help_repo" %}" target="_blank" rel="noopener noreferrer">
                         <img class="animated fadeIn" src="{% static "v2/images/guide_repo.png" %}" style="max-width: 60%; border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
                     </a>
                     <div class="col animated pulse fast">
                         <br>
-                        <a class="btn btn-lg btn-warning mb-4" role="button" href="{% url "help_repo" %}" target="_blank" rel="noopener noreferrer">View Repo Maintainer Guide</a>
+                        <a class="btn btn-lg btn-warning mb-4" role="button" href="{% url "help_repo" %}" target="_blank" rel="noopener noreferrer">{% trans "View Repo Maintainer Guide" %}</a>
                     </div>
                 </div>
             </div>
             <div class="col pb-4">
                 <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
-                    <h4 class="heading">Does it work?</h4>
-                    <h6 class="sub-heading">Check out the Gitcoin Case Study</h6>
+                    <h4 class="heading">{% trans "Does it work?" %}</h4>
+                    <h6 class="sub-heading">{% trans "Check out the Gitcoin Case Study" %}</h6>
                     <a href="{% url "casestudies" %}" target="_blank" rel="noopener noreferrer">
                         <img class="animated fadeIn" src="{% static "v2/images/gudie_casestudy.png" %}" style="max-width: 60%;  border-top: 2px solid black; border-left: 2px solid black; border-right: 1px solid dashed;">
                     </a>
                     <div class="col animated pulse fast">
                         <br>
-                        <a class="btn btn-lg btn-warning mb-4" role="button" href="{% url "casestudies" %}" target="_blank" rel="noopener noreferrer">View Case Studies</a>
+                        <a class="btn btn-lg btn-warning mb-4" role="button" href="{% url "casestudies" %}" target="_blank" rel="noopener noreferrer">{% trans "View Case Studies" %}</a>
                     </div>
                 </div>
             </div>
@@ -76,38 +76,50 @@
     </div>
 
 
-    <div class="container-fluid white-light-bg" id="feature_videos">
-        <div class="row">
-            <div class="col">
-                <h4 class="heading">Feature Videos</h4>
+
+    <div id="feature_videos">
+        <h4 class="heading">{% trans "Featured Videos" %}</h4>
+        <div class="animatedParent video-row">
+            <div class="video animated fadeInLeftShort">
+                <h6 class="sub-heading">{% trans "How it works" %}</h6>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/Y-gkxBG84TI" frameborder="0" allowfullscreen></iframe>
             </div>
-        </div>
-        <div class="row mt-3light-bg animatedParent">
-            <div class="col-4 align-items-center justify-content-center animated fadeInLeftShort">
-                <div class="video">
-                  <h6 class="sub-heading">How it works</h6>
-                  <iframe width="560" height="315" src="https://www.youtube.com/embed/Y-gkxBG84TI" frameborder="0" allowfullscreen></iframe>
-                </div>
+            <div class="video animated fadeInLeftShort">
+                <h6 class="sub-heading">{% trans "Product Demo: Post a Bounty" %}</h6>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/m1X0bDpVcf4" frameborder="0" allowfullscreen></iframe>
             </div>
-            <div class="col-4 align-items-center justify-content-center animated fadeInLeftShort">
-                <div class="video">
-                  <h6 class="sub-heading">Product Demo</h6>
-                  <iframe width="560" height="315" src="https://www.youtube.com/embed/7UE_ysCC4js" frameborder="0" allowfullscreen></iframe>
-                </div>
-            </div>
-            <div class="col-4 align-items-center justify-content-center animated fadeInLeftShort">
-                <div class="video">
-                  <h6 class="sub-heading">What is Web3 and how do we use it?</h6>
-                  <iframe width="560" height="315" src="https://www.youtube.com/embed/cZZMDOrIo2k" frameborder="0" allowfullscreen></iframe>
-                </div>
+            <div class="video animated fadeInLeftShort">
+                <h6 class="sub-heading">{% trans "What is Web3 and how do we use it?" %}</h6>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/cZZMDOrIo2k" frameborder="0" allowfullscreen></iframe>
             </div>
         </div>
     </div>
 
+    <div id=tutorials class="container-fluid text-center white-light-bg">
+        <div class="row mt-5">
+            <div class="col">
+                <h3>{% trans "Tutorials" %}</h3>
+            </div>
+        </div>
+        <div class="row mt-2 mb-2 pb-3 tutorial_item">
+            <div class="col col-12 text-left">
+                <ul>
+                    {% for item in tutorials %}
+                    <li class='tutorial_parent pb-4 pt-4'>
+                        <img src="{{item.img}}" />
+                        <a href="{{item.url}}">{{item.title}}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
     <div id=faq class="container-fluid text-center white-light-bg" id="faq">
         <div class="row mt-5">
             <div class="col">
-                <h3>FAQ</h3>
+                <h3>{% trans "FAQ" %}</h3>
             </div>
         </div>
         <div class="row mt-2 mb-2 pb-3 faq_item">
@@ -132,14 +144,14 @@
     <div class="container-fluid text-center" id="gitcoin_buttons" style="background-color: white;">
         <div class="row mb-4">
             <div class="col-12">
-                <h4 class="heading">Got another question?</h4>
+                <h4 class="heading">{% trans "Got another question?" %}</h4>
             </div>
         </div>
         <div class="row mt-2 mb-2 pb-3 animatedParent">
             <div class="col animated pulse fast">
-                <a class="btn btn-lg btn-warning " role="button" href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">View Github Repo</a>
-                <a class="btn btn-lg btn-warning " role="button" href="{% url "slack" %}"> <i class="fab fa-slack-hash" style="margin-right: 5px; position: relative; top: 2px;" aria-hidden="true"></i>Ask on slack</a>
-                <a class="btn btn-lg btn-warning " role="button" href="mailto:founders@gitcoin.co">Contact Gitcoin Core</a>
+                <a class="btn btn-lg btn-warning " role="button" href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">{% trans "View Github Repo" %}</a>
+                <a class="btn btn-lg btn-warning " role="button" href="{% url "slack" %}"> <i class="fab fa-slack-hash" style="margin-right: 5px; position: relative; top: 2px;" aria-hidden="true"></i>{% trans "Ask on slack" %}</a>
+                <a class="btn btn-lg btn-warning " role="button" href="mailto:founders@gitcoin.co">{% trans "Contact Gitcoin Core" %}</a>
             </div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-{% load humanize %}
+{% load i18n humanize %}
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -19,7 +19,7 @@
             <div class="row mt-0 mb-2 pt-1 podium">
               {% for podium_item in podium_items %}
                 <div class="col-4 winner">
-                  <img class="img-fluid"  src="{{podium_item.local_avatar_url}}" >
+                  <img class="img-fluid"  src="{{podium_item.avatar_url}}" >
                   <div class="container winner-content">
                     <div class="row align-items-center">
                       {% if forloop.counter == 1 %}
@@ -47,7 +47,7 @@
             </div>
             <div class="row mt-0 ml-1 pt-1 pl-1" style="height: 4em; padding: 0.5em;">
               <div class="col-10" style="padding-top: 0.5em;">
-                <h3>{{title}} <span id="alpha" class="small">Alpha</span></h3>
+                <h3>{{title}} <span id="alpha">Alpha</span></h3>
               </div>
               <div class="col-2 select">
                 <div class="form-group">
@@ -64,7 +64,7 @@
 
             {% if items|length == 0 %}
               <div class="row mt-0 ml-0 pl-3">
-                None found.
+                {% trans "None found." %}
               </div>
             {% endif %}
 
@@ -74,7 +74,7 @@
                   <tr class='clickable-row d-flex  align-items-stretch ' data-href="{% url "profile" %}{{item.github_username}}">
                     <td class="col-1 d-flex align-items-center item-position">#{{forloop.counter}}</td>
                     <td class="col-1 d-flex align-items-center" >
-                      <img class="img-fluid"  src="{{item.local_avatar_url}}">
+                      <img class="img-fluid"  src="{{item.avatar_url}}">
                     </td>
                     <td class="col-2 d-flex align-items-center">
                       <a href="{% url "profile" %}{{item.github_username}}" target="_blank" >

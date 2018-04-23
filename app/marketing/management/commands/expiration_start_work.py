@@ -16,6 +16,8 @@
 
 '''
 
+import logging
+import warnings
 from datetime import datetime
 
 from django.conf import settings
@@ -23,8 +25,16 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import Bounty, Interest
-from github.utils import get_issue_comments, issue_number, org_name, repo_name
+from dashboard.notifications import (
+    maybe_notify_bounty_user_removed_to_slack, maybe_notify_bounty_user_warned_removed_to_slack,
+    maybe_notify_user_removed_github, maybe_warn_user_removed_github,
+)
+from github.utils import get_interested_actions
 from marketing.mails import bounty_startwork_expire_warning, bounty_startwork_expired
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
 class Command(BaseCommand):
@@ -32,13 +42,12 @@ class Command(BaseCommand):
     help = 'lets a user know that they expressed interest in an issue and kicks them to do something about it'
 
     def handle(self, *args, **options):
-
         if settings.DEBUG:
-            print('not running bc DEBUG is on')
+            print('not running start work expiration because DEBUG is on')
             return
 
         num_days_back_to_warn = 3
-        num_days_back_to_delete_interest = 7
+        num_days_back_to_delete_interest = 10
 
         days = [i * 3 for i in range(1, 15)]
         if settings.DEBUG:
@@ -47,37 +56,42 @@ class Command(BaseCommand):
             interests = Interest.objects.filter(
                 created__gte=(timezone.now() - timezone.timedelta(days=(day+1))),
                 created__lt=(timezone.now() - timezone.timedelta(days=day)),
-            ).all()
-            print('day {} got {} interests'.format(day, interests.count()))
+            )
+            print(f'day {day} got {interests.count()} interests')
             for interest in interests:
-                for bounty in Bounty.objects.filter(interested=interest, current_bounty=True, idx_status__in=['open', 'started']):
-                    print("{} is interested in {}".format(interest, bounty))
+                bounties = Bounty.objects.filter(
+                    interested=interest,
+                    current_bounty=True,
+                    network='mainnet',
+                    idx_status__in=['open', 'started']
+                    )
+                for bounty in bounties:
+                    print("===========================================")
+                    print(f"{interest} is interested in {bounty.pk} / {bounty.github_url}")
                     try:
-                        owner = org_name(bounty.github_url)
-                        repo = repo_name(bounty.github_url)
-                        issue_num = issue_number(bounty.github_url)
-                        comments = get_issue_comments(owner, repo, issue_num)
-                        comments_by_interested_party = [comment for comment in comments if comment['user']['login'] == interest.profile.handle]
+                        actions = get_interested_actions(
+                            bounty.github_url, interest.profile.handle, interest.profile.email)
                         should_warn_user = False
                         should_delete_interest = False
                         last_heard_from_user_days = None
 
-                        if len(comments_by_interested_party) == 0:
+                        if not actions:
                             should_warn_user = True
                             should_delete_interest = False
+                            print(" - no actions")
                         else:
                             # example format: 2018-01-26T17:56:31Z'
-                            comment_times = [datetime.strptime(comment['created_at'], '%Y-%m-%dT%H:%M:%SZ') for comment in comments_by_interested_party]
-                            last_comment_by_user = max(comment_times)
+                            action_times = [datetime.strptime(action['created_at'], '%Y-%m-%dT%H:%M:%SZ') for action in actions if action.get('created_at')]
+                            last_action_by_user = max(action_times)
 
                             # if user hasn't commented since they expressed interest, handled this condition
                             # per https://github.com/gitcoinco/web/issues/462#issuecomment-368384384
-                            if last_comment_by_user < interest.created.replace(tzinfo=None):
-                                last_comment_by_user = interest.created.replace(tzinfo=None)
+                            if last_action_by_user < interest.created.replace(tzinfo=None):
+                                last_action_by_user = interest.created.replace(tzinfo=None)
 
                             # some small calcs
-                            delta_now_vs_last_comment = datetime.now() - last_comment_by_user
-                            last_heard_from_user_days = delta_now_vs_last_comment.days
+                            delta_now_vs_last_action = datetime.now() - last_action_by_user
+                            last_heard_from_user_days = delta_now_vs_last_action.days
 
                             # decide action params
                             should_warn_user = last_heard_from_user_days >= num_days_back_to_warn
@@ -86,13 +100,23 @@ class Command(BaseCommand):
                             print(f"- its been {last_heard_from_user_days} days since we heard from the user")
 
                         if should_delete_interest:
-                            print('executing should_delete_interest for {}'.format(interest.pk))
+                            print(f'executing should_delete_interest for {interest.profile} / {bounty.github_url} ')
+                            # commenting on the GH issue
+                            maybe_notify_user_removed_github(bounty, interest.profile.handle, last_heard_from_user_days)
+                            # commenting in slack
+                            maybe_notify_bounty_user_removed_to_slack(bounty, interest.profile.handle)
+                            # send email
                             bounty_startwork_expired(interest.profile.email, bounty, interest, last_heard_from_user_days)
                             interest.delete()
 
                         elif should_warn_user:
-                            print('executing should_warn_user for {}'.format(interest.pk))
+                            print(f'executing should_warn_user for {interest.profile} / {bounty.github_url} ')
+                            # commenting on the GH issue
+                            maybe_warn_user_removed_github(bounty, interest.profile.handle)
+                            # commenting in slack
+                            maybe_notify_bounty_user_warned_removed_to_slack(bounty, interest.profile.handle, last_heard_from_user_days)
+                            # send email
                             bounty_startwork_expire_warning(interest.profile.email, bounty, interest, last_heard_from_user_days)
 
                     except Exception as e:
-                        print(e)
+                        print(f'Exception in expiration_start_work.handle(): {e}')

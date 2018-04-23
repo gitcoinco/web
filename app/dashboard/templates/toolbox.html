@@ -15,7 +15,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
+{% load i18n static %}
+{% load is_in_list %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -34,9 +35,8 @@
             <div class = "toolbox">
               <div class="row no-gutters">
                 <div class="col-md-5 col-12">
-                  <h2 class="title">Toolbox</h2>
-                  <p class="description">Make Gitcoin your own
-                    by enabling the tools that suit your needs.</p>
+                  <h2 class="title">{% trans "Toolbox" %}</h2>
+                  <p class="description">{% trans "Make Gitcoin your own by enabling the tools that suit your needs." %}</p>
                 </div>
                 <div id="tools_hero" class="col-2">
                     <img src="{% static "v2/images/tools/tools_noborder.jpg" %}">
@@ -45,7 +45,7 @@
             </div>
 
             <div id="toc">
-              <p>Table of Contents</p>
+              <p>{% trans "Table of Contents" %}</p>
                 <ol>
                     {% for actor in actors %}
                         <li>
@@ -64,19 +64,24 @@
 
               <div class="cards">
                 {% for tool in actor.tools %}
-                  <div class="card {{tool.class}}" id="{{tool.name}}">
+                  <div class="card {{tool.class}}" id="{{tool.i18n_name}}">
                     <div class="img">
-                      <img src="{{tool.img}}" {% if tool.stat_graph %} data-hover="{% url "stat" "" %}{{tool.stat_graph}}" {% endif %} />
+                      <img src="{{tool.img_url}}" {% if tool.stat_graph %} {% endif %} />
+                    </div>
+                    <div id="{{tool.id}}_vote" class="votes d-flex justify-content-between">
+                      <button class="vote-up col-sm {% if tool.id|is_in_list:profile_up_votes_tool_ids %} active {% endif %}" data-tool-id="{{tool.id}}"><i class="fas fa-thumbs-up"></i></button>
+                      <span class="score col-sm text-center">{{tool.vote_score}}</span>                      
+                      <button class="vote-down col-sm {% if tool.id|is_in_list:profile_down_votes_tool_ids %} active {% endif %}" data-tool-id="{{tool.id}}"><i class="fas fa-thumbs-down"></i></button>
                     </div>
                     <div class="content">
                       <div class="title">{{tool.name}}</div>
                       <div class="description">
-                        {{tool.description | safe}}
+                        {{tool.i18n_description | safe}}
 
                       </div>
                       {% if tool.link_copy %}
                           <div class="button_container">
-                            <a class="btn btn-xs btn-success pulseClick" role="button" href="{{tool.link}}">{{tool.link_copy}} ></a>
+                            <a class="btn btn-xs btn-success pulseClick" role="button" href="{{tool.link_url}}">{{tool.i18n_link_copy}} ></a>
                           </div>
                       {% endif %}
                       {% comment %}

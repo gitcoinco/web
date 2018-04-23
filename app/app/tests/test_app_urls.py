@@ -30,30 +30,6 @@ class AppUrlsTestCase(TestCase):
     def setUp(self):
         self.user = self.make_user()
 
-    def test_github_callback_reverse(self):
-        """Test the github callback url and check the reverse."""
-        self.assertEqual(reverse('github:github_callback'), '/_github/callback/')
-
-    def test_github_callback_resolve(self):
-        """Test the github callback url and check the resolution."""
-        self.assertEqual(resolve('/_github/callback/').view_name, 'github:github_callback')
-
-    def test_github_logout_reverse(self):
-        """Test the github logout url and check the reverse."""
-        self.assertEqual(reverse('github:github_logout'), '/_github/logout/')
-
-    def test_github_logout_resolve(self):
-        """Test the github logout url and check the resolution."""
-        self.assertEqual(resolve('/_github/logout/').view_name, 'github:github_logout')
-
-    def test_github_auth_reverse(self):
-        """Test the github auth url and check the reverse."""
-        self.assertEqual(reverse('github:github_auth'), '/_github/auth/')
-
-    def test_github_auth_resolve(self):
-        """Test the github auth url and check the resolution."""
-        self.assertEqual(resolve('/_github/auth/').view_name, 'github:github_auth')
-
     def test_robotstxt_reverse(self):
         """Test the robotstxt url and check the reverse."""
         self.assertEqual(reverse('robotstxt'), '/robots.txt')
@@ -158,10 +134,26 @@ class AppUrlsTestCase(TestCase):
         self.assertEqual(resolve('/new').view_name, 'new_funding_short')
         self.assertEqual(resolve('/new/').view_name, 'new_funding_short')
 
-    def test_uniterested_reverse(self):        
+    def test_uniterested_reverse(self):
         """Test the uninterested url and check the reverse"""
-        self.assertEqual(reverse('uninterested', args=[1,2]), '/actions/bounty/1/interest/2/uninterested/')
+        self.assertEqual(reverse('uninterested', args=[1, 2]), '/actions/bounty/1/interest/2/uninterested/')
 
     def test_uniterested_resolve(self):
         """Test the uninterested url and check the resolution"""
         self.assertEqual(resolve('/actions/bounty/1/interest/2/uninterested/').view_name, 'uninterested')        
+
+    def test_vote_up_reverse(self):        
+        """Test the vote up url and check the reverse"""
+        self.assertEqual(reverse('vote_tool_up', args=[1]), '/actions/tool/1/voteUp')
+
+    def test_vote_up_resolve(self):
+        """Test the vote up url and check the resolution"""
+        self.assertEqual(resolve('/actions/tool/1/voteUp').view_name, 'vote_tool_up')        
+
+    def test_vote_down_reverse(self):        
+        """Test the vote down url and check the reverse"""
+        self.assertEqual(reverse('vote_tool_down', args=[1]), '/actions/tool/1/voteDown')
+
+    def test_vote_down_resolve(self):
+        """Test the vote down url and check the resolution"""
+        self.assertEqual(resolve('/actions/tool/1/voteDown').view_name, 'vote_tool_down')                

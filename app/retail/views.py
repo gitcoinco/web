@@ -23,35 +23,38 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
+from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
 
+from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
 
 def index(request):
     slides = [
         ("Zack Coburn, EtherDelta", static("v2/images/testimonials/zack.jpg"),
-         "Gitcoin is the catalyst open source development needs to move forward. The process is seamless and the results speak for themselves.",
+         _("Gitcoin is the catalyst open source development needs to move forward. The process is seamless and the results speak for themselves."),
          'https://github.com/zackcoburn'),
         ("Piper Merriam, web3py", static("v2/images/testimonials/piper.jpg"),
-         "We have been trying out the Gitcoin bounty program in the Web3.py project and are very pleased with the results so far.  We’ve closed out four bountied issues ranging from smaller cleanup tasks to full fledged feature development.  So far the platform looks promising as a valuable addition to our development process.",
+         _("We have been trying out the Gitcoin bounty program in the Web3.py project and are very pleased with the results so far.  We’ve closed out four bountied issues ranging from smaller cleanup tasks to full fledged feature development.  So far the platform looks promising as a valuable addition to our development process."),
          'https://github.com/pipermerriam'),
         ("Phil Elsasser, Market", static("v2/images/testimonials/phil.jpg"),
-         "Our first experiences with Gitcoin have been very positive.  It has helped MARKET to get new people involved quickly and in a cost effective manner.  Having fresh ideas and outside perspectives contribute to a new project is unbelievably valuable.",
+         _("Our first experiences with Gitcoin have been very positive.  It has helped MARKET to get new people involved quickly and in a cost effective manner.  Having fresh ideas and outside perspectives contribute to a new project is unbelievably valuable."),
          'http://www.marketprotocol.io/'),
         ("Aditya Anand", static("v2/images/testimonials/aditya.jpg"),
-         "It’s been a while since something has gotten me this riled up ! Love the concept and definitely sticking around to see this project through. Awesome community  + open source work + bounties",
+         _("It’s been a while since something has gotten me this riled up ! Love the concept and definitely sticking around to see this project through. Awesome community  + open source work + bounties"),
          "https://github.com/thelostone-mc"),
         ("Daniel Merrill", static("v2/images/testimonials/daniel.jpg"),
-         "Now that the internet of value is starting to be a thing, Gitcoin is adding a new layer of incentives into open source development, helping both the projects, by powering up their capacity, and the developers, by paying for their work.",
+         _("Now that the internet of value is starting to be a thing, Gitcoin is adding a new layer of incentives into open source development, helping both the projects, by powering up their capacity, and the developers, by paying for their work."),
          "https://github.com/dmerrill6"),
         ("Maurelian", static("v2/images/testimonials/maurelian.jpg"),
-         "Gitcoin helps us to finally close out the issues we’ve been meaning to get around to for too long.",
+         _("Gitcoin helps us to finally close out the issues we’ve been meaning to get around to for too long."),
          "https://github.com/maurelian"),
         ("Mark Beacom", static("v2/images/testimonials/mark.jpg"),
-         "Gitcoin is precisely what I’ve been looking for! It gives every developer a vehicle to make extra money or move their open source project ahead.",
+         _("Gitcoin is precisely what I’ve been looking for! It gives every developer a vehicle to make extra money or move their open source project ahead."),
          "https://github.com/mbeacom"),
         ("Isaac Serafino", static("v2/images/testimonials/isaac.jpg"),
-         "I feel it is so awesome to have the opportunity through Gitcoin to do what I love and get paid for it, and to have reasonable freedom about the way I work, that it already seems too good to be true. ",
+         _("I feel it is so awesome to have the opportunity through Gitcoin to do what I love and get paid for it, and to have reasonable freedom about the way I work, that it already seems too good to be true. "),
          "https://github.com/isaacserafino"),
     ]
     context = {
@@ -67,7 +70,71 @@ def robotstxt(request):
 
 
 def about(request):
+    core_team = [
+        (
+            static("v2/images/team/kevin-owocki.png"),
+            "Kevin Owocki",
+            "All the things",
+            "owocki",
+            "owocki",
+            "The Community",
+            "Avocado Toast"
+        ),
+        (
+            static("v2/images/team/alisa-march.jpg"),
+            "Alisa March", "User Experience Design",
+            "PixelantDesign",
+            "pixelant",
+            "Tips",
+            "Apple Cider Doughnuts"
+        ),
+        (
+            static("v2/images/team/justin-bean.jpg"),
+            "Justin Bean", "Engineering",
+            "StareIntoTheBeard",
+            "justinbean",
+            "Issue Explorer",
+            "Sushi"
+        ),
+        (
+            static("v2/images/team/mark-beacom.jpg"),
+            "Mark Beacom",
+            "Engineering",
+            "mbeacom",
+            "mbeacom",
+            "Start/Stop Work",
+            "Dolsot Bibimbap"
+        ),
+        (
+            static("v2/images/team/eric-berry.jpg"),
+            "Eric Berry",
+            "OSS Funding",
+            "coderberry",
+            "ericberry",
+            "Chrome/Firefox Extension",
+            "Pastel de nata"
+        ),
+        (
+            static("v2/images/team/vivek-singh.jpg"),
+            "Vivek Singh",
+            "Community Buidl-er",
+            "vs77bb",
+            "vivek-singh-b5a4b675",
+            "Gitcoin Requests",
+            "Tangerine Gelato"
+        ),
+    ]
+    exclude_community = ['kziemiane', 'owocki', 'mbeacom']
+    community_members = [
+    ]
+    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount')[0: 15]
+    for lr in leadeboardranks:
+        package = (lr.avatar_url, lr.github_username, lr.github_username)
+        community_members.append(package)
+
     context = {
+        'core_team': core_team,
+        'community_members': community_members,
         'active': 'about',
         'title': 'About',
     }
@@ -79,8 +146,8 @@ def mission(request):
     context = {
         'active': 'mission',
         'title': 'Mission',
-        'card_title': 'Gitcoin is a mission-driven organization.',
-        'card_desc': 'Our mission is to grow open source.',
+        'card_title': _('Gitcoin is a mission-driven organization.'),
+        'card_desc': _('Our mission is to grow open source.'),
         'avatar_url': static('v2/images/grow_open_source.png'),
     }
     return TemplateResponse(request, 'mission.html', context)
@@ -90,29 +157,29 @@ def help(request):
     faq = {
         'Product': [
         {
-            'q': 'I am a developer, I want build more Open Source Software. Where can I start?',
-            'a': "The <a href=https://gitcoin.co/explorer>Funded Issue Explorer</a> contains a handful of issues that are ready to be paid out as soon as they are turned around. Check out the developer guide at <a href=https://gitcoin.co/help/dev>https://gitcoin.co/help/dev</a>."
+            'q': _('I am a developer, I want build more Open Source Software. Where can I start?'),
+            'a': _("The <a href=https://gitcoin.co/explorer>Funded Issue Explorer</a> contains a handful of issues that are ready to be paid out as soon as they are turned around. Check out the developer guide at <a href=https://gitcoin.co/help/dev>https://gitcoin.co/help/dev</a>.")
         },
         {
-            'q': 'I am a repo maintainer.  How do I get started?',
-            'a': "The best way to get started is to post a funded issue on a task you need done.  Check out the repo maintainers guide at <a href=https://gitcoin.co/help/repo>https://gitcoin.co/help/repo</a>."
+            'q': _('I am a repo maintainer.  How do I get started?'),
+            'a': _("The best way to get started is to post a funded issue on a task you need done.  Check out the repo maintainers guide at <a href=https://gitcoin.co/help/repo>https://gitcoin.co/help/repo</a>.")
         },
         {
-            'q': 'What tokens does Gitcoin support?',
-            'a': "Gitcoin supports Ether and all ERC20 tokens.  If the token you'd like to use is Ethereum based, then Gitcoin supports it."
+            'q': _('What tokens does Gitcoin support?'),
+            'a': _("Gitcoin supports Ether and all ERC20 tokens.  If the token you'd like to use is Ethereum based, then Gitcoin supports it.")
         },
         {
-            'q': 'What kind of issues are fundable?',
-            'a': """
+            'q': _('What kind of issues are fundable?'),
+            'a': _("""
 
     <p class="c5"><span class="c4 c0">Gitcoin supports bug, feature, and security funded issues. &nbsp;Any issue that you need done is a good candidate for a funded issue, provided that:</span></p><ul class="c13 lst-kix_twl0y342ii52-0 start"><li class="c5 c11"><span class="c4 c0">It&rsquo;s open today.</span></li><li class="c5 c11"><span class="c4 c0">The repo README clearly enumerates how a new developer should get set up to contribute.</span></li><li class="c5 c11"><span class="c4 c0">The task is well defined.</span></li><li class="c5 c11"><span class="c4 c0">The end-state of the task is well defined.</span></li><li class="c5 c11"><span class="c4 c0">The pricing of the task reflects (market rate * complexity) of the task.</span></li><li class="c5 c11"><span class="c4 c0">The issue is on the roadmap, but does not block other work.</span></li></ul><p class="c5 c6"><span class="c4 c0"></span></p><p class="c5"><span class="c4 c0">To get started with funded issues today, it might be good to start small. &nbsp;Is there a small bug that needs fixed? &nbsp;An issue that&rsquo;s been open for a while that no one is tackling? &nbsp;An administrative task?</span></p>
 
 
-            """
+            """)
         },
         {
-            'q': 'Whats the difference between tips & funded issues?',
-            'a': """
+            'q': _('Whats the difference between tips & funded issues?'),
+            'a': _("""
 
 <p>
 <strong>A tip</strong> is a tool to send ether or any ethereum token to any github account.  The flow for tips looks like this:
@@ -127,11 +194,11 @@ def help(request):
 </p>
 
 
-            """
+            """)
         },
         {
-            'q': 'What kind of contributors are successful on the Gitcoin network?',
-            'a': """
+            'q': _('What kind of contributors are successful on the Gitcoin network?'),
+            'a': _("""
 
 <p>
 If you have an issues board that needs triaged, read on..
@@ -196,56 +263,56 @@ Here are some of our values
 </ul>
 
 
-            """
+            """)
         },
         {
-            'q': 'I received a notification about tip / funded issue, but I can\'t process it.  Help!',
-            'a': "We'd love to help!  Please email <a href='mailto:founders@gitcoin.co'>founders@gitcoin.co</a> or join <a href=/slack>Gitcoin Community Slack</a>."
+            'q': _('I received a notification about tip / funded issue, but I can\'t process it.  Help!'),
+            'a': _("We'd love to help!  Please email <a href='mailto:founders@gitcoin.co'>founders@gitcoin.co</a> or join <a href=/slack>Gitcoin Community Slack</a>.")
         },
         {
-            'q': 'Am I allowed to place bounties on projects I don\'t contribute to or own?',
-            'a': "TLDR: Yes you are.  But as OSS devs ourselves, our experience has been that if you want to get the product you work on merged into the upstream, you will need to work with the contributors or owners of that repo.  If not, you can always fork a repo and run your own roadmap."
+            'q': _('Am I allowed to place bounties on projects I don\'t contribute to or own?'),
+            'a': _("TLDR: Yes you are.  But as OSS devs ourselves, our experience has been that if you want to get the product you work on merged into the upstream, you will need to work with the contributors or owners of that repo.  If not, you can always fork a repo and run your own roadmap.")
         },
         ],
      'General': [
         {
-            'q': 'Is Gitcoin open source?',
-            'a': "Yes, all of Gitcoin's core software systems are open source and available at <a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  Please see the liscense.txt file in each repo for more details."
+            'q': _('Is Gitcoin open source?'),
+            'a': _("Yes, all of Gitcoin's core software systems are open source and available at <a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  Please see the liscense.txt file in each repo for more details.")
         },
         {
-            'q': 'Is a token distribution event planned for Gitcoin?',
-            'a': """
+            'q': _('Is a token distribution event planned for Gitcoin?'),
+            'a': _("""
 <p>Gitcoin Core is considering doing a token distribution event (TDI), but at the time is focused first and foremost on providing value in Open Source Software&nbsp;in a lean way.</p>
 <p>To find out more about a possible upcoming token distribution event,&nbsp;check out&nbsp;<a href="https://gitcoin.co/whitepaper">https://gitcoin.co/whitepaper</a></p>
-<p>&nbsp;</p>            """
+<p>&nbsp;</p>            """)
         },
         {
-            'q': 'What is the difference between Gitcoin and Gitcoin Core?',
-            'a': """
+            'q': _('What is the difference between Gitcoin and Gitcoin Core?'),
+            'a': _("""
 Gitcoin Core LLC is the legal entity that manages the software development of the Gitcoin Network (Gitcoin).
 
-The Gitcoin Network is a series of smart contracts that helps Grow Open Source, but enabling developers to easily post and manage funded issues.            """
+The Gitcoin Network is a series of smart contracts that helps Grow Open Source, but enabling developers to easily post and manage funded issues.            """)
         },
         {
-            'q': 'Who is the team at Gitcoin Core?',
-            'a': """
+            'q': _('Who is the team at Gitcoin Core?'),
+            'a': _("""
 <p>The founder is <a href="https://linkedin.com/in/owocki">Kevin Owocki</a>, a technologist from the Boulder Colorado tech scene. &nbsp; &nbsp;Kevin&nbsp;has a BS in Computer Science, 15 years experience in Open Source Software and Technology Startups. He is a volunteer in the Boulder Community for several community organizations, and an avid open source developer. His work has been featured in&nbsp;<a href="http://techcrunch.com/2011/02/10/group-dating-startup-ignighter-raises-3-million/">TechCrunch</a>,&nbsp;<a href="http://www.cnn.com/2011/BUSINESS/03/29/india.online.matchmaking/">CNN</a>,&nbsp;<a href="http://www.inc.com/30under30/2011/profile-adam-sachs-kevin-owocki-and-dan-osit-founders-ignighter.html">Inc Magazine</a>,&nbsp;<a href="http://www.nytimes.com/2011/02/20/business/20ignite.html?_r=4&amp;amp;pagewanted=1&amp;amp;ref=business">The New York Times</a>,&nbsp;<a href="http://boingboing.net/2011/09/24/tosamend-turn-all-online-i-agree-buttons-into-negotiations.html">BoingBoing</a>,&nbsp;<a href="http://www.wired.com/2015/12/kevin-owocki-adblock-to-bitcoin/">WIRED</a>,&nbsp;<a href="https://www.forbes.com/sites/amycastor/2017/08/31/toothpick-takes-top-prize-in-silicon-beach-ethereum-hackathon/#6bf23b7452ad">Forbes</a>, and&nbsp;<a href="http://www.techdigest.tv/2007/08/super_mario_get_1.html">TechDigest</a>.</p>
 <p><strong>Gitcoin</strong>&nbsp;was borne of the community in Boulder Colorado's thriving tech scene. One of the most amazing things about the Boulder community is the #givefirst mantra. The founding team has built their careers off of advice, mentorship, and relationships in the local tech community. &nbsp;</p>
 
 <p>We are hiring.  If you want to join the team, <a href=mailto:founders@gitcoin.co>email us</a>.
 
-            """
+            """)
         },
         {
-            'q': 'What is the mission of Gitcoin Core?',
-            'a': """
+            'q': _('What is the mission of Gitcoin Core?'),
+            'a': _("""
 The mission of Gitcoin is "Grow Open Source".
 
-            """
+            """)
         },
         {
-            'q': 'How can I stay in touch with project updates?',
-            'a': """
+            'q': _('How can I stay in touch with project updates?'),
+            'a': _("""
 The best way to stay in touch is to
 
 <ul>
@@ -261,14 +328,14 @@ The best way to stay in touch is to
 
 </ul>
 
-            """
+            """)
         },
      ],
      'Web3': [
         {
             'category': "Web3",
-            'q': 'What is the difference between Gitcoin and centralized hiring websites?',
-            'a': """
+            'q': _('What is the difference between Gitcoin and centralized hiring websites?'),
+            'a': gettext("""
 <p>There are many successful centralized hiring resources available on the web. &nbsp;Because these platforms were an&nbsp;efficient way to source, select, and manage a global workforce , millions of dollars was&nbsp;processed through these systems every day.</p>
 <p>Gitcoin takes the value that flows through these system, and makes it more efficient and fair. &nbsp;Gitcoin is a distributed network of smart contracts, based upon Ethereum, that aims to solve problems with centralized hiring resources, namely by</p>
 <ul>
@@ -285,11 +352,11 @@ The best way to stay in touch is to
 <p>
 To learn more about blockchain, please checkout <a href="{}">this video about web3</a> or the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
 </p>
-            """.format(reverse('web3'))
+            """).format(reverse('web3'))
         },
         {
-            'q': 'Why do I need metamask?',
-            'a': """
+            'q': _('Why do I need metamask?'),
+            'a': gettext("""
 <p>
 You need <a href="https://metamask.io/">Metamask</a> in order to use Gitcoin.
 </p>
@@ -309,11 +376,11 @@ Download Metamask <a href="https://metamask.io/">here</a> today.
 To learn more about Metamask, please checkout <a href="{}">this video about web3</a> or the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
 </p>
 
-           """.format(reverse('web3'))
+           """).format(reverse('web3'))
         },
         {
-            'q': 'Why do I need to pay gas?',
-            'a': """
+            'q': _('Why do I need to pay gas?'),
+            'a': _("""
 <p>
 "Gas" is the name for a special unit used in Ethereum. It measures how much "work" an action or set of actions takes to perform (for example, storing data in a smart contract).
 </p>
@@ -326,11 +393,11 @@ Gas fees are paid to the maintainers of the Ethereum network, in return for secu
 <p>
 To learn more about gas, pleaes checkout the <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Github Issues board</a>
 </p>
-           """
+           """)
         },
         {
-            'q': 'What are the advanages of Ethereum based applications?',
-            'a': """
+            'q': _('What are the advanages of Ethereum based applications?'),
+            'a': gettext("""
 Here are some of the advantages of Ethereum based applications:
 <ul>
 <li>
@@ -354,23 +421,34 @@ To learn more about Ethereum based apps, please checkout <a href="{}">this video
 </p>
 
 
-           """.format(reverse('web3'))
+           """).format(reverse('web3'))
         },
         {
-            'q': 'I still dont get it.  Help!',
-            'a': """
+            'q': _('I still dont get it.  Help!'),
+            'a': _("""
 We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitcoin Slack Community</a> and let's talk.
 
 
-"""
+""")
         },
      ],
     }
 
+    tutorials = [{
+        'img': static('v2/images/help/firehose.jpg'),
+        'url': 'https://medium.com/gitcoin/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster-dcd39650fc5',
+        'title': _('Leverage Gitcoin’s Firehose of Talent to Do More Faster'),
+    }, {
+        'img': static('v2/images/help/tools.png'),
+        'url': 'https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75',
+        'title': _('Post a Bounty in 90 Seconds'),
+    }]
+
     context = {
         'active': 'help',
-        'title': 'Help',
+        'title': _('Help'),
         'faq': faq,
+        'tutorials': tutorials,
     }
     return TemplateResponse(request, 'help.html', context)
 
@@ -378,7 +456,7 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
 def get_gitcoin(request):
     context = {
         'active': 'get',
-        'title': 'Get Started',
+        'title': _('Get Started'),
     }
     return TemplateResponse(request, 'getgitcoin.html', context)
 
@@ -461,7 +539,7 @@ def browser_extension_firefox(request):
 
 
 def itunes(request):
-    return HttpResponse('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)')
+    return HttpResponse(_('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)'))
     return redirect('https://itunes.apple.com/us/app/gitcoin/idXXXXXXXXX')
 
 
@@ -495,9 +573,9 @@ def slack(request):
 
     if request.POST:
         email = request.POST.get('email')
-        context['msg'] = 'You must provide an email address'
+        context['msg'] = _('You must provide an email address')
         if email:
-            context['msg'] = 'Your invite has been sent.'
+            context['msg'] = _('Your invite has been sent.')
             context['success'] = True
             try:
                 validate_email(email)
@@ -505,10 +583,10 @@ def slack(request):
                 response = invite_to_slack(email)
 
                 if not response.get('ok'):
-                    context['msg'] = response.get('error', 'Unknown error')
+                    context['msg'] = response.get('error', _('Unknown error'))
                 context['success'] = False
             except ValidationError:
-                context['msg'] = 'Invalid email'
+                context['msg'] = _('Invalid email')
 
     return TemplateResponse(request, 'slack.html', context)
 
@@ -519,6 +597,10 @@ def btctalk(request):
 
 def reddit(request):
     return redirect('https://www.reddit.com/r/gitcoincommunity/')
+
+
+def livestream(request):
+    return redirect('https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ')
 
 
 def twitter(request):

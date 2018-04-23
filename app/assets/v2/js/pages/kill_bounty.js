@@ -39,7 +39,7 @@ window.onload = function() {
               step: 'apiCallback',
               error: error
             });
-            _alert({ message: 'Could not get bounty details' });
+            _alert({ message: gettext('Could not get bounty details') });
             console.error(error);
             unloading_button($('.submitBounty'));
             return;
@@ -48,7 +48,7 @@ window.onload = function() {
           result = results[0];
           if (result == null) {
             _alert({
-              message: 'No active bounty found for this Github URL.'
+              message: gettext('No active bounty found for this Github URL.')
             });
             unloading_button($('.js-submit'));
             return;
@@ -65,11 +65,11 @@ window.onload = function() {
 
           if (bountyAmount == 0 || open == false || initialized == false) {
             errormsg =
-                'No active funded issue found at this address.  Are you sure this is an active funded issue?';
+                gettext('No active funded issue found at this address.  Are you sure this is an active funded issue?');
           }
           if (fromAddress != web3.eth.coinbase) {
             errormsg =
-                'Only the address that submitted this funded issue may kill the bounty.';
+                gettext('Only the address that submitted this funded issue may kill the bounty.');
           }
 
           if (errormsg) {
@@ -88,7 +88,7 @@ window.onload = function() {
                 txid: result
               });
 
-              _alert({ message: 'Kill bounty submitted to web3.' }, 'info');
+              _alert({ message: gettext('Kill bounty submitted to web3.') }, 'info');
               setTimeout(function() {
                 mixpanel.track('Kill Bounty Success', {});
                 document.location.href = '/funding/details?url=' + issueURL;
@@ -101,7 +101,7 @@ window.onload = function() {
                 error: error
               });
               console.error('err', error);
-              _alert({ message: 'There was an error' });
+              _alert({ message: gettext('There was an error') });
               unloading_button($('.js-submit'));
             } else {
               next();
@@ -110,10 +110,10 @@ window.onload = function() {
 
           bounty.killBounty(
             bountyId,
-            { gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9) },
+            { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) },
             final_callback
           );
-          
+
         };
         // Get bountyId from the database
         var uri = '/api/v0.1/bounties/?github_url=' + issueURL;

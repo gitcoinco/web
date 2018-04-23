@@ -19,6 +19,7 @@ valued.
   * [Step 5: Rebase](#step-5-rebase)
 
 ## Code of Conduct
+
 Contributions to Gitcoin are governed by the [Contributor Covenant version 1.4](https://www.contributor-covenant.org/version/1/4/code-of-conduct.html).
 All contributors and participants agree to abide by its terms. To report
 violations, shoot out an email to founders@gitcoin.co
@@ -32,16 +33,19 @@ Contributors can disagree with one another so long as they are done in good
 faith and everyone is working towards a common goal.
 
 ## Issues
+
 Issues in `gitcoin/web` are the primary means by which bug reports and
 general discussions are made. A contributor is allowed to create an issue,
 discuss and provide a fix if needed.
 
 ## Discussions And General Help
+
 As Gitcoin is still at its early stages, drop by
 [gitcoin.co/slack](gitcoin.co/slack) and say hi to know what's next / to get
 your answers cleared up.
 
 ## Pull Requests
+
 Pull Requests are the way in which concrete changes are made to the code and
 documentation.
 
@@ -50,12 +54,12 @@ documentation.
 You must install [pre-commit](https://pre-commit.com/#install) in order to enable our
 precommit hooks and `pre-commit install` from your `gitcoinco/web` root directory.
 
-In order to make use of the `pre-commit` hooks used for this repository, you should have a valid installation of `node`/`npm`, `isort` (`pip install isort`), and `eslint`.
+In order to make use of the `pre-commit` hooks used for this repository, you should have a valid installation of `node`/`npm`, `isort` (`pip install isort`), `stylelint` (`npm install -g stylelint`), and `eslint` (`npm install -g eslint`).
 
-User facing copy / text should be run through [Django Translation Framework](https://docs.djangoproject.com/en/2.0/topics/i18n/translation/). For example, 
+User facing copy / text should be run through [Django Translation Framework](https://docs.djangoproject.com/en/2.0/topics/i18n/translation/). For example,
 
 1. HTML user-facing pieces of copy are in `{% blocktrans %}` or `{% trans %}` fields.
-2. javascript user-facing pieces of copy are in `ngettext ` fields.
+2. javascript user-facing pieces of copy are in `ngettext` fields.
 3. each of the `views.py` user-facing pieces of copy are in `gettext_lazy` fields
 4. each of the models `help_text`s are internationalized
 5. as are all the emails in `marketing/mails.py`
@@ -65,11 +69,11 @@ User facing copy / text should be run through [Django Translation Framework](htt
 Fork the project [on GitHub](https://github.com/gitcoinco/web) and clone your
 fork locally.
 
-```text
-$ git clone git@github.com:username/web.git
-$ cd web
-$ git remote add upstream https://github.com/gitcoinco/web.git
-$ git fetch upstream
+```shell
+git clone git@github.com:username/web.git
+cd web
+git remote add upstream https://github.com/gitcoinco/web.git
+git fetch upstream
 ```
 
 ### Step 2: Branch
@@ -78,53 +82,52 @@ It's always better to create local branches to work on a specific issue. Makes
 life easier for you if you are the kind who enjoys multiple things parallely.
 These should also be created directly off of the `master` branch.
 
-```text
-$ git checkout -b my-branch -t upstream/master
+```shell
+git checkout -b my-branch -t upstream/master
 ```
 
 ### Step 3: Code
 
 To keep the style of the Javascript code consistent we have a basic linting configured. To check your contributed code for errors run `npm run eslint`. To make life easy use the automatic fixing by running `npm run eslint:fix` before your commit.
-- Use the preconfigured eslint for Javascript
-- Avoid trailing whitespace & un-necessary white lines
-- Indentation is as follows
-  - 1 tab = 2 spaces for `.html` and `.js` files
-  - 1 tab = 4 spaces for everything else
+
+* Use the pre-configured eslint for Javascript
+* Avoid trailing whitespace & un-necessary white lines
+* Indentation is as follows
+  * 1 tab = 2 spaces for `.html` and `.js` files
+  * 1 tab = 4 spaces for everything else
 
 ### Step 4: Commit
 
-1. Ensure your code changes adhere to our styling and linting standards: `npm run eslint:fix; isort -rc --atomic .`
+1. Ensure your code changes adhere to our styling and linting standards: `npm run eslint:fix; npm run stylelint:fix; isort -rc --atomic .`
 2. List all your changes as a list if needed else simply give a brief
   description on what the changes are.
 3. All lines at 100 columns.
 4. If your PR fixed an issue, Use the `Fixes:` prefix and the full issue URL.
   For other references use `Refs:`.
 
-   _Examples:_
-   - `Fixes: https://github.com/gitcoinco/web/issues/87`
-   - `Refs: https://github.com/gitcoinco/web/issues/91`
+    _Examples:_
+    * `Fixes: https://github.com/gitcoinco/web/issues/87`
+    * `Refs: https://github.com/gitcoinco/web/issues/91`
 
 5. _Sample commit A_
-   ```txt
-   if you can write down the changes explaining it in a paragraph which each
-   line wrapped within 100 lines.
+    ```txt
+    if you can write down the changes explaining it in a paragraph which each
+    line wrapped within 100 lines.
 
-   Fixes: https://github.com/gitcoinco/web/issues/87
-   Refs: https://github.com/gitcoinco/web/issues/91
-   ```
+    Fixes: https://github.com/gitcoinco/web/issues/87
+    Refs: https://github.com/gitcoinco/web/issues/91
+    ```
 
-   _Sample commit B_
-   ```txt
-   - list out your changes as points if there are many changes
-   - if needed you can also send it across as
-   - all wrapped within 100 lines
+    _Sample commit B_
+    ```txt
+    - list out your changes as points if there are many changes
+    - if needed you can also send it across as
+    - all wrapped within 100 lines
 
-   Fixes: https://github.com/gitcoinco/web/issues/87
-   Refs: https://github.com/gitcoinco/web/issues/91
-   ```
-6. [Squashing](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History) and
-   [Merging](https://git-scm.com/docs/git-merge) your commits to make our
-   history neater is always welcomed.
+    Fixes: https://github.com/gitcoinco/web/issues/87
+    Refs: https://github.com/gitcoinco/web/issues/91
+    ```
+6. [Squashing](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History) and [Merging](https://git-scm.com/docs/git-merge) your commits to make our history neater is always welcomed, but squashing can be handled during the merge process.
 
 ### Step 5: Rebase
 
@@ -136,10 +139,26 @@ As a best practice, once you have committed your changes, it is a good idea
 to use `git rebase` (not `git merge`) to ensure your changes are placed at the
 top. Plus merge conflicts can be resolved
 
-```text
-$ git fetch upstream
-$ git rebase upstream/master
+```shell
+git fetch upstream
+git rebase upstream/master
 ```
+
+## FAQ
+
+### Contributing Static Assets
+
+Note: Please remember to optimize/compress your image assets via: `make compress-images` (Requires: jpeq-recompress, optipng, and svgo in `PATH`)
+
+Q: `I need to add static assets...  Where to I put them?`
+
+All assets that will be used as static resources must be placed into their appropriate place in the `app/assets` directory.
+
+Q: `I've added the new assets to the appropriate directory, but can't seem to use them. How do I make Django recognize my newly added assets?`
+
+Run: `make collect-static` if using Docker or `cd app; python3 manage.py collectstatic -i other` for virtualenv/local setup.
+
+Additionally, you can check out the [Django Managing Static Files Documentation](https://docs.djangoproject.com/en/2.0/howto/static-files/)
 
 <img src='https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png'/>
 Welcome to the gitcoin community. Lets Grow Open Source Software.

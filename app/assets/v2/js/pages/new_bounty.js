@@ -234,7 +234,7 @@ $(document).ready(function() {
           _alert(
             {
               message:
-                'There was an error.  Please try again or contact support.'
+                gettext('There was an error.  Please try again or contact support.')
             },
             'error'
           );
@@ -260,7 +260,7 @@ $(document).ready(function() {
           });
           console.error(error);
           _alert({
-            message: 'There was an error.  Please try again or contact support.'
+            message: gettext('There was an error.  Please try again or contact support.')
           });
           unloading_button($('.js-submit'));
           return;
@@ -281,7 +281,7 @@ $(document).ready(function() {
         var _paysTokens = !isETH;
         var bountyIndex = bounty.issueAndActivateBounty(
           account, // _issuer
-          expire_date, // _deadline
+          mock_expire_date, // _deadline
           result, // _data (ipfs hash)
           amount, // _fulfillmentAmount
           0x0, // _arbiter
@@ -292,7 +292,7 @@ $(document).ready(function() {
             // {from: x, to: y}
             from: account,
             value: eth_amount,
-            gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
+            gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
           },
           web3Callback // callback for web3
         );
@@ -326,7 +326,7 @@ $(document).ready(function() {
             {
               from: account,
               value: 0,
-              gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
+              gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
             },
             approve_success_callback
           );

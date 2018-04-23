@@ -23,6 +23,7 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
+from django.utils.translation import gettext_lazy as _
 
 from economy.models import SuperModel
 from economy.utils import convert_amount
@@ -32,18 +33,18 @@ from github.utils import org_name, repo_name
 class ExternalBounty(SuperModel):
     """Define the structure of an ExternalBounty."""
 
-    action_url = models.URLField(db_index=True, help_text="Where to send interested parties")
+    action_url = models.URLField(db_index=True, help_text=_("Where to send interested parties"))
     active = models.BooleanField(default=False)
     title = models.CharField(max_length=255)
-    description = models.TextField(default='', blank=True, help_text="Plainext only please!")
-    source_project = models.CharField(max_length=255, help_text="The upstream project being linked it..")
+    description = models.TextField(default='', blank=True, help_text=_("Plainext only please!"))
+    source_project = models.CharField(max_length=255, help_text=_("The upstream project being linked it.."))
     amount = models.FloatField(default=1, null=True)
     amount_denomination = models.CharField(max_length=255, blank=True, help_text="ex: ETH, LTC, BTC")
     created_on = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     last_sync_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    tags = ArrayField(models.CharField(max_length=200), blank=True, default=[], help_text="comma delimited")
+    tags = ArrayField(models.CharField(max_length=200), blank=True, default=[], help_text=_("comma delimited"))
     github_handle = models.CharField(max_length=255, blank=True)
-    payout_str = models.CharField(max_length=255, blank=True, default='', help_text="string representation of the payout (only needed it amount/denomination cannot be filled out")
+    payout_str = models.CharField(max_length=255, blank=True, default='', help_text=_("string representation of the payout (only needed it amount/denomination cannot be filled out"))
     idx_fiat_price = models.DecimalField(default=0, decimal_places=4, max_digits=50)
 
     def __str__(self):
@@ -81,7 +82,7 @@ class ExternalBounty(SuperModel):
             ]
             i = self.pk % len(icons)
             icon = icons[i]
-            return f'/static/v2/images/icons/{icon}'
+            return f'{settings.BASE_URL}static/v2/images/icons/{icon}'
 
     @property
     def fiat_price(self):

@@ -22,6 +22,7 @@ from html.parser import HTMLParser
 from django.core.paginator import Paginator
 from django.http import Http404
 from django.template.response import TemplateResponse
+from django.utils.translation import gettext_lazy as _
 
 from app.utils import ellipses
 from external_bounties.forms import ExternalBountyForm
@@ -53,9 +54,9 @@ def sort_index(request, bounties):
     direction = "" if request.GET.get('direction') == 'asc' else '-'
     column = 'created_on'
     sort = request.GET.get('sort')
-    if sort == 'Created':
+    if sort == _('Created'):
         column = 'created_on'
-    if sort == 'Value':
+    if sort == _('Value'):
         column = 'idx_fiat_price'
 
     bounties = bounties.order_by(f"{direction}{column}")
@@ -78,9 +79,9 @@ def external_bounties_index(request):
         search_query = None
     if search_query:
         master_bounties = bounties
-        bounties = master_bounties.filter(title__contains=search_query) 
-        bounties = bounties | master_bounties.filter(description__contains=search_query) 
-        bounties = bounties | master_bounties.filter(source_project__contains=search_query) 
+        bounties = master_bounties.filter(title__contains=search_query)
+        bounties = bounties | master_bounties.filter(description__contains=search_query)
+        bounties = bounties | master_bounties.filter(source_project__contains=search_query)
         bounties = bounties | master_bounties.filter(tags__overlap=[search_query])
         bounties = bounties.distinct()
     bounties, sorted_by, sort_direction = sort_index(request, bounties)
@@ -108,8 +109,8 @@ def external_bounties_index(request):
     categories.sort()
     params = {
         'active': 'offchain',
-        'title': 'Bounty Universe Explorer',
-        'card_desc': 'Bounties for Software Work from across the internets.',
+        'title': _('Bounty Universe Explorer'),
+        'card_desc': _('Bounties for Software Work from across the internets.'),
         'bounties': external_bounties_results,
         'categories': categories,
         'sort_direction': sort_direction,
@@ -131,17 +132,22 @@ def external_bounties_new(request):
     """
     params = {
         'active': 'offchain',
-        'title': 'New Universal Bounty',
-        'card_desc': 'Create a new Bounty for Software Work from across the internets.',
+        'title': _('New Universal Bounty'),
+        'card_desc': _('Create a new Bounty for Software Work from across the internets.'),
         'formset': ExternalBountyForm,
     }
 
     if request.POST:
         new_eb = ExternalBountyForm(request.POST)
-        new_eb.github_handle = request.session.get('handle')
+        username = request.session.get('handle')
+
+        if request.user and request.user.is_authenticated and request.user.username:
+            username = request.user.username
+
+        new_eb.github_handle = username
         new_eb.save()
         new_external_bounty()
-        params['msg'] = "An email has been sent to an administrator to approve your submission"
+        params['msg'] = _("An email has been sent to an administrator to approve your submission")
 
     return TemplateResponse(request, 'external_bounties_new.html', params)
 
@@ -182,7 +188,7 @@ def external_bounties_show(request, issuenum, slug):
 
     params = {
         'active': 'offchain',
-        'title': 'Bounty Universe Explorer',
+        'title': _('Bounty Universe Explorer'),
         'card_desc': ellipses(external_bounty['content'], 300),
         "bounty": external_bounty,
     }

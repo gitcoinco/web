@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,84 +16,94 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %} 
+{% load i18n humanize %}
 
 {% block content %}
 
 <style>
-a{
-    word-wrap: break-word;
-}
-h3{
-    line-height: 30px;
-}
-p, pre{
-    margin-top: 25px;
-    text-align: left;
-}
+    .tip-box {
+        margin-bottom: 2em;
+        border-style: solid;
+        border-width: 1px;
+        border-color: #e0e0e0;
+    }
+    .tip-contents {
+        text-align: left;
+    }
+    .tip {
+        display: flex;
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
 </style>
 
-{% if is_new %}
-<h1>⚡️ New Tip Alert ⚡️</h1>
-{% else %}
-<h1>🕑 Reminder: Tip Expires Soon 🕝</h1>
-{% endif %}
+<div>
+    {% if is_new %}
+    <h1>⚡️ {% trans "New Tip Alert" %} ⚡️</h1>
+    {% else %}
+    <h1>🕑 {% trans "Reminder: Tip Expires Soon" %} 🕝</h1>
+    {% endif %}
 
+    <h3>
+        {% if tip.from_name %}
+            {% blocktrans %}{{tip.from_name}} sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% endblocktrans %}
+        {% else %}
+            {% blocktrans %}Someone sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% endblocktrans %}
+        {% endif %}{% if not is_new %} {{tip.created_on | naturaltime}}{%endif%}.
+    </h3>
+</div>
 
-<h3>
-    {% if tip.from_name %}{{tip.from_name}}{% else %}Someone{% endif %} sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% if not is_new %} {{tip.created_on | naturaltime}}{%endif%}.
-</h3>
-{% if tip.github_url %}
-    <p>
-    {% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{tip.github_url}}">{{tip.github_url}}</a>.
-        {% if comments %}
-            They had the following comments: 
-        <pre>
-            {{comments}}
-        </pre>
-        {% endif %}
+<div class="centered-contents tip-box">
+    <div class="tip">
+        <div class="tip-contents">
+            {% if tip.github_url %}
+                <p>
+                {% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{tip.github_url}}">{{tip.github_url}}</a>.
+                    {% if comments %}
+                        {% trans "They had the following comments:" %}
+                    <pre>
+                        {{comments}}
+                    </pre>
+                    {% endif %}
 
-    </p>
-{% endif %}
+                </p>
+            {% endif %}
 
-{% if comments_priv %}
-    <p>
-    They had the following private comments: 
-<pre>
-    {{comments_priv}}
-</pre>
-    </p>
-{% endif %}
+            {% if comments_priv %}
+                <p>
+                {% trans "They had the following private comments:" %}
+            <pre>
+                {{comments_priv}}
+            </pre>
+                </p>
+            {% endif %}
 
-{% if comments_public %}
-    <p>
-    They had the following public comments: 
-<pre>
-    {{comments_public}}
-</pre>
-    </p>
-{% endif %}
+            {% if comments_public %}
+                <p>
+                {% trans "They had the following public comments:" %}
+            <pre>
+                {{comments_public}}
+            </pre>
+                </p>
+            {% endif %}
 
-{% if show_expires %}
-    <p>
-    The tip expires on <strong>{{tip.expires_date}}, in just {{tip.expires_date | naturaltime}}</strong>.  No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:
-    </p>
-{% else %}
-    <p>
-     No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:
-    </p>
-{% endif %}
+            {% if show_expires %}
+                <p>
+                {% trans "The tip expires on" %} <strong>{{tip.expires_date}}, {% trans "in just" %} {{tip.expires_date | naturaltime}}</strong>.{% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:" %}
+                </p>
+            {% else %}
+                <p>
+                 {% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌" %}
+                </p>
+            {% endif %}
+        </div>
+    </div>
 
-<br>
-
-<a class="button" href="{{link}}" style="">Redeem Tip</a>
-
-<p>
-    Keep Pushing Open Source Forward,
-    <br>
-    -- Gitcoin Core
-</p>
-
-
+    <div style="margin-bottom: 1.5em;">
+        <a class="button" href="{{link}}">{% trans "Redeem Tip" %}</a>
+    </div>
+</div>
 
 {% endblock %}

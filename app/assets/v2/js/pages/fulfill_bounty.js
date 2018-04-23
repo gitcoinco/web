@@ -41,7 +41,7 @@ window.onload = function() {
         var githubUsername = data.githubUsername;
         var issueURL = data.issueURL;
         var notificationEmail = data.notificationEmail;
-        var fullName = data.fullName;
+        var githubPRLink = data.githubPRLink;
 
         localStorage['githubUsername'] = githubUsername;
 
@@ -69,7 +69,7 @@ window.onload = function() {
             sourceFileHash: '',
             sourceDirectoryHash: '',
             fulfiller: {
-              name: fullName,
+              githubPRLink: githubPRLink,
               email: notificationEmail,
               githubUsername: githubUsername,
               address: account
@@ -98,7 +98,7 @@ window.onload = function() {
           var run_main = !error || ignore_error;
 
           if (error && !ignore_error) {
-            _alert({ message: 'Could not get bounty details.' });
+            _alert({ message: gettext('Could not get bounty details.') });
             unloading_button($('.js-submit'));
           }
           if (run_main) {
@@ -114,7 +114,7 @@ window.onload = function() {
                   });
 
                   dataLayer.push({ event: 'claimissue' });
-                  _alert({ message: 'Fulfillment submitted to web3.' }, 'info');
+                  _alert({ message: gettext('Fulfillment submitted to web3.') }, 'info');
                   setTimeout(function() {
                     mixpanel.track('Fulfill Bounty Success', {});
                     document.location.href = '/funding/details?url=' + issueURL;
@@ -154,7 +154,7 @@ window.onload = function() {
                   bountyId,
                   document.ipfsDataHash,
                   {
-                    gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
+                    gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
                   },
                   web3Callback
                 );

@@ -21,6 +21,7 @@ import json
 
 from django.conf import settings
 from django.http import HttpResponse
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
@@ -59,4 +60,4 @@ def payload(request):
         sender = request_json.get('sender', {}).get('login', '')
         # issueURL = request_json['comment']['url']
         determine_response(owner, repo, comment_id, comment_text, issue_id, installation_id, sender)
-    return HttpResponse('Gitcoinbot Responded')
+    return HttpResponse(_('Gitcoinbot Responded'))
