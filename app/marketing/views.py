@@ -96,6 +96,7 @@ def stats(request):
             'tips',
             'twitter',
             'user_action_Login',
+            'bounties_hourly_rate_inusd_last_24_hours',
         ]
         types = filter_types(types, _filters)
 

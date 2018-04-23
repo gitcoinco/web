@@ -57,42 +57,42 @@
         </div>
       </div>
     </div>
-    <div class="container-fluid white-light-bg"  id="origin_story">
+    <div class="container-fluid white-light-bg font-body"  id="origin_story">
       <div class="row">
         <div class="col pb-4">
           <h4>{% trans "The Origin Story" %} </h4>
-          <h6 style="text-align: center;" >{% trans "Who, what, when, where, and most importantly, why." %}</h6>
+          <p class="font-subheader caption">{% trans "Who, what, when, where, and most importantly, why." %}</p>
         </div>
       </div>
-      <div class="row mt-3light-bg animatedParent">
-        <div class="col d-flex flex-column align-items-center justify-content-center animated fadeInLeftShort">
+      <div class="row col-12 offset-lg-1 col-lg-10 animatedParent">
+        <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
           <img class="img-fluid" src="{% static "v2/images/why-different/boulder.png" %}" style="margin-top:50px;" />
-          <div class="font-weight-300 font-bigger-2">{% trans "Built with &lt;3 in Boulder Colorado USA" %}</div>
+          <h4 class="caption font-title">{% trans "Built with &lt;3 in Boulder Colorado USA" %}</h4>
           <p>
             {% blocktrans %}<strong>Gitcoin</strong> was borne of the community in Boulder Colorado's thriving tech scene. One of the most amazing things about the Boulder community is the #givefirst mantra. The founding team has built their careers off of advice, mentorship, and relationships in the local tech community.{% endblocktrans %}
           </p>
         </div>
-        <div class="col d-flex flex-column align-items-center justify-content-center animated fadeInRightShort">
-          <img class="img-fluid" src="{% static "v2/images/about/grow_community.png" %}" />
-          <div class="font-weight-300 font-bigger-2">Goal: To grow the community</div>
+        <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
+          <img class="img-fluid" src="{% static "v2/images/about/grow_open_source.png" %}" />
+          <h4 class="caption font-title">{% trans "Goal: Grow Open Source" %}</h4>
           <p>
-          {% blocktrans %}The founder of Gitcoin, <a href="http://linkedin.com/in/owocki/">Kevin Owocki</a> has experience as an organizer of <a href="http://boulderstartupweek.com">Boulder Startup Week</a>, <a href="http://igniteboulder.com">Ignite Boulder</a>, <a href="https://startupcto.io">StartupCTO.io</a>, <a href="https://www.meetup.com/Boulder-Blockchain/">Boulder Blockchain Meetup</a> and the open source projects <a href="https://github.com/owocki/pytrader">pytrader</a>, <a href="https://github.com/owocki/adblock-to-bitcoin">adblock-to-bitcoin</a>, <a href="https://github.com/youvegoteth/youvegoteth.github.io/">YouveGotETH</a>, & <a href="https://github.com/owocki/coloradocoin">ColoradoCoin</a>. The stronger the community is, the more successful open source projects are. The stronger open source projects are, the stronger the community is.{% endblocktrans %}
+            {% blocktrans %}<strong>Gitcoin</strong> is a project that combines the #givefirst mantra of the Boulder community with capitalistic incentives to write great software. By enabling <span>Repo Maintainers</span>, <span>developers</span>, and <span>financiers</span> to find one another, Gitcoin grows open source software.{% endblocktrans %}
           </p>
         </div>
       </div>
-      <div class="row mt-3light-bg animatedParent">
-        <div class="col d-flex flex-column align-items-center justify-content-center animated fadeInLeftShort">
+      <div class="row col-12 offset-lg-1 col-lg-10 animatedParent">
+        <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
           <img class="img-fluid" src="{% static "v2/images/why-different/lock.png" %}" style="margin-top:100px;" />
-          <div class="font-weight-300 font-bigger-2">{% trans "Cryptocurrencies provide new, decentralized, opportunities" %}</div>
+          <h4 class="caption font-title">{% trans "Cryptocurrencies provide new, decentralized, opportunities" %}</h4>
           <p>
             {% blocktrans %}<strong>Gitcoin</strong> is built upon the Ethereum network, and the solidity smart contract programming language. Ethereum provides opportunities to align incentives across actors in the ecosystem. By programming rights of stakeholders directly into smart contracts, actors are incentivized to provide value, and edge cases are handled _without_ having to involve legacy legal enforcement mechanisms.{% endblocktrans %}
           </p>
         </div>
-        <div class="col d-flex flex-column align-items-center justify-content-center animated fadeInRightShort">
-          <img class="img-fluid" src="{% static "v2/images/about/grow_open_source.png" %}" />
-          <div class="font-weight-300 font-bigger-2">{% trans "Goal: Grow Open Source" %}</div>
+        <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
+          <img class="img-fluid" src="{% static "v2/images/about/grow_community.png" %}" />
+          <h4 class="caption font-title">Goal: To grow the community</h4>
           <p>
-            {% blocktrans %}<strong>Gitcoin</strong> is a project that combines the #givefirst mantra of the Boulder community with capitalistic incentives to write great software. By enabling <span>Repo Maintainers</span>, <span>developers</span>, and <span>financiers</span> to find one another, Gitcoin grows open source software.{% endblocktrans %}
+          {% blocktrans %}The founder of Gitcoin, <a href="http://linkedin.com/in/owocki/">Kevin Owocki</a> has experience as an organizer of <a href="http://boulderstartupweek.com">Boulder Startup Week</a>, <a href="http://igniteboulder.com">Ignite Boulder</a>, <a href="https://startupcto.io">StartupCTO.io</a>, <a href="https://www.meetup.com/Boulder-Blockchain/">Boulder Blockchain Meetup</a> and the open source projects <a href="https://github.com/owocki/pytrader">pytrader</a>, <a href="https://github.com/owocki/adblock-to-bitcoin">adblock-to-bitcoin</a>, <a href="https://github.com/youvegoteth/youvegoteth.github.io/">YouveGotETH</a>, & <a href="https://github.com/owocki/coloradocoin">ColoradoCoin</a>. The stronger the community is, the more successful open source projects are. The stronger open source projects are, the stronger the community is.{% endblocktrans %}
           </p>
         </div>
       </div>
@@ -253,7 +253,7 @@
           <h6 style="text-align: center;" >{% trans "Everything we do is to support our mission to 'Grow Open Source'" %}  </h6>
         </div>
       </div>
-      <div class=" row animatedParent">
+      <div class=" row animatedParent grow_hero">
         <div class="col d-flex flex-column p-5 animated fadeIn ">
           <div class="pl-5 pr-5" style="text-align: center;">
             <img src="{% static "v2/images/mission/grow_hero.png" %}" />

@@ -27,9 +27,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import JSONField
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
+from django.urls import reverse
+from django.urls.exceptions import NoReverseMatch
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -195,7 +198,7 @@ class Bounty(SuperModel):
             _org_name = org_name(self.github_url)
             _issue_num = int(issue_number(self.github_url))
             _repo_name = repo_name(self.github_url)
-            return f"{'/' if preceding_slash else ''}issue/{_org_name}/{_repo_name}/{_issue_num}"
+            return f"{'/' if preceding_slash else ''}issue/{_org_name}/{_repo_name}/{_issue_num}/{self.standard_bounties_id}"
         except Exception:
             return f"{'/' if preceding_slash else ''}funding/details?url={self.github_url}"
 
@@ -208,7 +211,7 @@ class Bounty(SuperModel):
 
     @property
     def url(self):
-        return self.get_relative_url()
+        return self.get_absolute_url()
 
     @property
     def can_submit_after_expiration_date(self):
@@ -499,6 +502,14 @@ class Bounty(SuperModel):
             return None
 
     @property
+    def hourly_rate(self):
+        try:
+            hours_worked = self.fulfillments.filter(accepted=True).first().fulfiller_hours_worked
+            return self.value_in_usdt / hours_worked
+        except Exception:
+            return None
+
+    @property
     def is_legacy(self):
         """Determine if the Bounty is legacy based on sunset date.
 
@@ -606,6 +617,7 @@ class BountyFulfillment(SuperModel):
     fulfiller_name = models.CharField(max_length=255, blank=True)
     fulfiller_metadata = JSONField(default={}, blank=True)
     fulfillment_id = models.IntegerField(null=True, blank=True)
+    fulfiller_hours_worked = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=50)
     fulfiller_github_url = models.CharField(max_length=255, blank=True, null=True)
     accepted = models.BooleanField(default=False)
     accepted_on = models.DateTimeField(null=True, blank=True)
@@ -1154,3 +1166,93 @@ class CoinRedemptionRequest(SuperModel):
     txid = models.CharField(max_length=255, default='')
     txaddress = models.CharField(max_length=255)
     sent_on = models.DateTimeField(null=True)
+
+
+class Tool(SuperModel):
+    """Define the Tool schema."""
+
+    CAT_ADVANCED = 'AD'
+    CAT_ALPHA = 'AL'
+    CAT_BASIC = 'BA'
+    CAT_BUILD = 'BU'
+    CAT_COMING_SOON = 'CS'
+    CAT_COMMUNITY = 'CO'
+    CAT_FOR_FUN = 'FF'
+
+    TOOL_CATEGORIES = (
+        (CAT_ADVANCED, 'advanced'),
+        (CAT_ALPHA, 'alpha'),
+        (CAT_BASIC, 'basic'),
+        (CAT_BUILD, 'tools to build'),
+        (CAT_COMING_SOON, 'coming soon'),
+        (CAT_COMMUNITY, 'community'),
+        (CAT_FOR_FUN, 'just for fun'),
+    )
+
+    name = models.CharField(max_length=255)
+    category = models.CharField(max_length=2, choices=TOOL_CATEGORIES)
+    img = models.CharField(max_length=255, blank=True)
+    description = models.TextField(blank=True)
+    url_name = models.CharField(max_length=40, blank=True)
+    link = models.CharField(max_length=255, blank=True)
+    link_copy = models.CharField(max_length=255, blank=True)
+    active = models.BooleanField(default=False)
+    new = models.BooleanField(default=False)
+    stat_graph = models.CharField(max_length=255)
+    votes = models.ManyToManyField('dashboard.ToolVote', blank=True)
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def img_url(self):
+        return static(self.img)
+
+    @property
+    def link_url(self):
+        if self.link and not self.url_name:
+            return self.link
+
+        try:
+            return reverse(self.url_name)
+        except NoReverseMatch:
+            pass
+
+        return reverse('tools')
+
+    def starting_score(self):
+        if self.category == self.CAT_BASIC:
+            return 10
+        elif self.category == self.CAT_ADVANCED:
+            return 5
+        elif self.category in [self.CAT_BUILD, self.CAT_COMMUNITY]:
+            return 3
+        elif self.category == self.CAT_ALPHA:
+            return 2
+        elif self.category == self.CAT_COMING_SOON:
+            return 1
+        elif self.category == self.CAT_FOR_FUN:
+            return 1
+        return 0
+
+    def vote_score(self):
+        score = self.starting_score()
+        for vote in self.votes.all():
+            score += vote.value
+        return score
+
+    def i18n_name(self):
+        return _(self.name)
+
+    def i18n_description(self):
+        return _(self.description)
+
+    def i18n_link_copy(self):
+        return _(self.link_copy)
+
+
+class ToolVote(models.Model):
+    """Define the vote placed on a tool."""
+
+    profile = models.ForeignKey('dashboard.Profile', related_name='votes', on_delete=models.CASCADE)
+    value = models.IntegerField(default=0)
