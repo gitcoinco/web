@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'bootstrap3',
     'marketing',
+    'mentor',
     'economy',
     'dashboard',
     'enssubdomain',

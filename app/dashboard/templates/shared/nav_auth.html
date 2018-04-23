@@ -43,6 +43,10 @@
         <i class="fas fa-user"></i>
         {% trans "View Profile" %}
       </a>
+      <a class="dropdown-item" href="{% url "mentor" %}">
+          <i class="fas fa-user"></i>
+          {% trans "View Mentor Profile" %}
+        </a>
       <a class="dropdown-item" href="{% url "email_settings" email_key %}">
         <i class="fas fa-cog"></i>
         {% trans "Manage Settings" %}

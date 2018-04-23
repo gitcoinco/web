@@ -1,0 +1,118 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<html land="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+  </head>
+  <body class="interior">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="row no-gutter body">
+      <div class="container" style="padding-top:20px">
+        <div class="row">
+          <div class="col-8">
+            <div class="row no-gutter">
+              <h3>Join the mentoring community</h3>
+              <p>
+                Whether you want to learn or teach, this is place to be.
+                Tell us a little about yourself and what you're hoping to get out of being
+                part of the community.
+              </p>
+            </div>
+            <form method="POST">
+              <div class="form-group">
+                <label class="form__label" for="name">Name</label>
+                <input type="text" class="form__input" id="name" name="name" placeholder="John Smith" value="{{mentor.profile.name}}" disabled/>
+              </div>
+              <div class="form-group">
+                <label class="form__label" for="email">Email</label>
+                <input type="email" class="form__input" id="email" name="email" placeholder="example@mail.com" value="{{mentor.profile.email}}" disabled>
+              </div>
+              <div class="form-group">
+                <label class="form__label" for="org">Organization</label>
+                <input type="text" class="form__input" id="org" name="org" value="{{mentor.org}}">
+              </div>
+              <div class="form-group">
+                <label class="form__label" for="experience">Years of Programming Experience</label>
+                <div class="form__select">
+                  <select id="experience" name="experience">
+                    {% for range in time_range_choices %}
+                    <option value="{{range.0}}"
+                      {% if range.0 == mentor.experience %}selected="selected"{% endif %}>
+                        {{range.1}}
+                      </option>
+                     {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form__label" for="about">About You</label>
+                <textarea class="form__input" id="about" rows="3" name="about">{{mentor.about}}</textarea>
+              </div>
+              <div class="form-group">
+                <label class="form__label" for="skills_needed">What would you like to learn?</label>
+                <small class="form__input-help">(Separate skills with a comma.)</small>
+                <textarea class="form__input" id="skills_needed" rows="3" name="skills_needed" required>{{mentor.skills_needed|join:","}}</textarea>
+              </div>
+              <div class="form-group">
+                <label class="form__label" for="skills_offered">What would you like to teach?</label>
+                <small class="form__input-help">(Separate skills with a comma.)</small>
+                <textarea class="form__input" id="skills_offered" rows="3" name="skills_offered" required>{{mentor.skills_offered|join:","}}</textarea>
+              </div>
+              <div class="form-group">
+                <label class="form__label" for="commitment">How many hours a week can you commit to mentoring?</label>
+                <div class="form__select">
+                  <select id="commitment" name="commitment">
+                      {% for range in time_range_choices %}
+                      <option value="{{range.0}}"
+                        {% if range.0 == mentor.commitment_per_week %}selected="selected"{% endif %}>
+                          {{range.1}}
+                        </option>
+                       {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" id="avail_now" name="avail_now" checked="{{mentor.available}}">
+                <label class="form__label" class="form__label" for="avail_now">Are you available to mentor now?</label>
+              </div>
+              <div>
+                {% csrf_token %}
+                <input class='button button--primary float-right' type='submit' name='submit' value="Submit">
+              </div>
+            </form>
+          </div>
+          <div class="col-4" style="padding-top:300px">
+            <img id='side_img' src="{% static "v2/images/regulus.png" %}" style="max-width:300px;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' %}
+  {% include 'shared/rollbar.html' %}
+  {% include 'shared/footer.html' %}
+
+  <script src="{% static "v2/js/shared.js" %}"></script>
+</html>

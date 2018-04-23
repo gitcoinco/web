@@ -26,7 +26,7 @@
       <div class="col-2 col-md-1">
         <a class="button button--primary" role="button" id="new_search" href="#">{% trans "Search" %}</a>
       </div>
-      <div class="col-10 col-md-5 col-lg-4 font-caption order_by">
+      <div id="search_sort" class="col-10 col-md-5 col-lg-4 font-caption order_by">
         <div class="heading">{% trans "SORT" %} </div>
         <select name="sort_option" id="sort_option">
           <option value="-web3_created">{% trans "Created: Recent" %}</option>
@@ -40,7 +40,7 @@
       <div class="col-12 col-md-6">
         <div class="filter-tags"></div> <!-- Populate the filters -->
       </div>
-      <div class="col-12 col-md-2">
+      <div id="save_search" class="col-12 col-md-2">
         <a class="save_search font-caption" href="/save_search">{% trans "Save Search" %}</a>
       </div>
     </div>

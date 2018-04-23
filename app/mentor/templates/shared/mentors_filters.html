@@ -1,0 +1,50 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<link rel="stylesheet" href={% static "v2/css/sidebar_search.css" %}>
+<div class="sidebar_search">
+  <form>
+    <div class="col">
+      <div class="col-12 subheading font-body">
+        {% trans "Organization" %}
+      </div>
+      <div id="mentors_organization_filters" class="col-12 options"></div>
+    </div>
+    <div class="col">
+      <div class="col-12 subheading font-body">
+        {% trans "Experience (Years)" %}
+      </div>
+      <div id="mentors_experience_filters" class="col-12 options"></div>
+    </div>
+		<div class="col">
+      <div class="col-12 subheading font-body">
+        {% trans "Skills Offered" %}
+      </div>
+      <div id="mentors_skills_filters" class="col-12 options"></div>
+    </div>
+  </form>
+</div>
+
+<script id="mentor_checkbox_filter" type="text/x-jsrender">
+  <div class="checkbox_container">
+    <input name="idx_status" id="[[:id]]" type="checkbox" value="[[:value]]"/>
+    <span class="checkbox"></span>
+    <div class="filter-label">
+      <label class="filter-label" for="[[:id]]">[[:value]]</label>
+    </div>
+	</div>
+</script>

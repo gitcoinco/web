@@ -1066,6 +1066,10 @@ class Profile(SuperModel):
             return False
 
     @property
+    def name(self):
+        return self.data['name']
+
+    @property
     def bounties(self):
         fulfilled_bounty_ids = self.fulfilled.all().values_list('bounty_id')
         bounties = Bounty.objects.filter(github_url__istartswith=self.github_url, current_bounty=True)
