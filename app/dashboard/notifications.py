@@ -244,7 +244,7 @@ def get_status_header(bounty):
     if status == 'unknown':
         return ""
     elif status == 'cancelled':
-        statuses.append('**Cannelled**')
+        statuses.append('**Cancelled**')
     elif status == 'expired':
         statuses.append('**Expired**')
     else:
@@ -312,7 +312,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     if event_name == 'new_bounty':
         msg = f"{status_header}__This issue now has a funding of {natural_value} " \
               f"{bounty.token_name} {usdt_value} attached to it.__\n\n * If you would " \
-              f"like to work on this issue you can 'start work' [here]({absolute_url}).\n " \
+              f"like to work on this issue you can 'start work' [on the Gitcoin Issue Details page]({absolute_url}).\n " \
               "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or the " \
               f"<a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${amount_open_work}" \
               " more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
