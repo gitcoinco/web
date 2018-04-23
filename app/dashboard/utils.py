@@ -22,6 +22,9 @@ import json
 import subprocess
 import time
 
+from django.db.models import Lookup
+from django.db.models.fields import Field
+
 import ipfsapi
 import requests
 import rollbar
@@ -48,6 +51,20 @@ class IPFSCantConnectException(Exception):
 
 class NoBountiesException(Exception):
     pass
+
+
+@Field.register_lookup
+class NotEqual(Lookup):
+    """Allow lookup and exclusion using not equal."""
+
+    lookup_name = 'ne'
+
+    def as_sql(self, compiler, connection):
+        """Handle as SQL method for not equal lookup."""
+        lhs, lhs_params = self.process_lhs(compiler, connection)
+        rhs, rhs_params = self.process_rhs(compiler, connection)
+        params = lhs_params + rhs_params
+        return f'%s <> %s' % (lhs, rhs), params
 
 
 def create_user_action(user, action_type, request=None, metadata=None):
