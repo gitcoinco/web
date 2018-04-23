@@ -504,7 +504,7 @@ class Bounty(SuperModel):
     def hourly_rate(self):
         try:
             hours_worked = self.fulfillments.filter(accepted=True).first().fulfiller_hours_worked
-            return self.value_in_usdt / hours_worked
+            return float(self.value_in_usdt) / float(hours_worked)
         except Exception:
             return None
 

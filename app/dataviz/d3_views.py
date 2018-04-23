@@ -679,3 +679,51 @@ def viz_draggable(request, key='email_open'):
     return TemplateResponse(request, 'dataviz/draggable.html', params)
 
 
+def viz_scatterplot(request, key='hourly_rate'):
+    """Render a scatterplot visualization.
+
+    Args:
+        key (str): The key type to visualize.
+
+    Returns:
+        TemplateResponse: The populated scatterplot data visualization template.
+
+    """
+    stats = []
+    type_options = ['hourly_rate']
+    if request.GET.get('data'):
+        from dashboard.models import Bounty, BountyFulfillment
+        rows = [
+            ['hourlyRate', 'daysBack', 'username', 'weight']
+        ]
+        for bf in BountyFulfillment.objects.filter(accepted=True).exclude(fulfiller_hours_worked=None):
+            print(bf.pk, bf.created_on)
+            try:
+                weight = math.log(bf.bounty.value_in_usdt, 10) / 4
+                row = [
+                    str(bf.bounty.hourly_rate),
+                    str((timezone.now() - bf.accepted_on).days),
+                    bf.fulfiller_github_username,
+                    str(weight),
+                ]
+                rows.append(row)
+            except:
+                pass
+
+        output_rows = []
+        for row in rows:
+            output_rows.append(",".join(row))
+
+        output = "\n".join(output_rows)
+        return HttpResponse(output)
+
+    params = {
+        'stats': stats,
+        'key': key,
+        'page_route': 'scatterplot',
+        'type_options': type_options,
+        'viz_type': key,
+    }
+    return TemplateResponse(request, 'dataviz/scatterplot.html', params)
+
+
