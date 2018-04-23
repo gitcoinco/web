@@ -27,9 +27,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -208,7 +210,7 @@ class Bounty(SuperModel):
 
     @property
     def url(self):
-        return self.get_relative_url()
+        return self.get_absolute_url()
 
     @property
     def can_submit_after_expiration_date(self):
@@ -1157,3 +1159,50 @@ class CoinRedemptionRequest(SuperModel):
     txid = models.CharField(max_length=255, default='')
     txaddress = models.CharField(max_length=255)
     sent_on = models.DateTimeField(null=True)
+
+class Tool(SuperModel):
+    """Define the tool shcema."""
+    
+    name = models.CharField(max_length=255)
+    category = models.CharField(max_length=20)
+    img = models.CharField(max_length=255)
+    description = models.CharField(max_length=1000)
+    url_name = models.CharField(max_length=40)
+    link = models.CharField(max_length=255)
+    link_copy = models.CharField(max_length=255)
+    active = models.BooleanField(default=False)
+    new = models.BooleanField(default=False)
+    stat_graph = models.CharField(max_length=255)
+    votes = models.ManyToManyField('dashboard.ToolVote', blank=True)    
+
+    @property
+    def img_url(self): 
+        return static(self.img)
+
+    @property
+    def link_url(self):
+        if self.url_name:
+            return reverse(self.url_name)
+        else:
+            return self.link    
+
+    def vote_score(self):
+        score = 0
+        for vote in self.votes.all():
+            score += vote.value
+        return score                
+
+    def i18n_name(self):
+        return _(self.name)
+
+    def i18n_description(self):
+        return _(self.description)
+
+    def i18n_link_copy(self):
+        return _(self.link_copy)
+    
+class ToolVote(models.Model):
+    """Define the vote placed on a tool."""
+
+    profile = models.ForeignKey('dashboard.Profile', related_name='votes', on_delete=models.CASCADE)
+    value = models.IntegerField(default=0)
