@@ -116,7 +116,7 @@ window.onload = function() {
 
         };
         // Get bountyId from the database
-        var uri = '/api/v0.1/bounties/?github_url=' + issueURL + "&network=" + document.web3network;
+        var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + document.web3network;
 
         $.get(uri, apiCallback);
       }

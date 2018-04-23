@@ -15,9 +15,9 @@
   "plugins": [
     "html"
   ],
+  "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "module",
-    "babel-eslint",
     "ecmaFeatures": {
       "modules": true,
       "arrowFunctions": true
