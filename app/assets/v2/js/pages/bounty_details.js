@@ -212,7 +212,7 @@ var callbacks = {
       } else {
         $('#timer').hide();
       }
-    } else if (result['status'] === 'done') {
+    } else if (result['status'] === 'done' || result['status'] === 'cancelled') {
       $('#timer').hide();
     } else {
       response.shift();
@@ -589,6 +589,9 @@ var render_actions = function(actions) {
 var pull_bounty_from_api = function() {
   var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
 
+  if (typeof document.issueNetwork != 'undefined') {
+    uri = uri + '&network=' + document.issueNetwork;
+  }
   $.get(uri, function(results) {
     results = sanitizeAPIResults(results);
     var nonefound = true;

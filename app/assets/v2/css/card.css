@@ -72,11 +72,14 @@
   top: 4px;
 }
 
-.button_container {
+.button_container{
   text-align: center;
+  position: absolute;
+  bottom: 0px;
+  left: 25%;
 }
 
-.button_container a {
+.button_container a{
   font-size: 14px;
 }
 
@@ -116,6 +119,8 @@
 
 .card .content {
   margin: 15px 20px;
+  height: 140px;
+  position: relative;
 }
 
 .card .content .title {
@@ -125,7 +130,6 @@
 
 .card .content .description {
   font-size: 0.73em;
-  height: 80px;
 }
 
 .card .content .description span a {

@@ -173,7 +173,7 @@ LANGUAGE_CODE = env('LANGUAGE_CODE', default='en-us')
 USE_I18N = env.bool('USE_I18N', default=True)
 USE_L10N = env.bool('USE_L10N', default=True)
 USE_TZ = env.bool('USE_TZ', default=True)
-TIME_ZONE = env.str('TIME_ZONE', default='MST')
+TIME_ZONE = env.str('TIME_ZONE', default='UTC')
 
 if not ENV in ['local', 'test']:
     LOGGING = {
@@ -397,6 +397,16 @@ if ENABLE_SILK:
     SILKY_META = env.bool('SILKY_META', default=True)
     SILKY_INTERCEPT_PERCENT = env.int('SILKY_INTERCEPT_PERCENT', default=50)
     SILKY_MAX_RECORDED_REQUESTS = env.int('SILKY_MAX_RECORDED_REQUESTS', default=10000)
-    SILKY_DYNAMIC_PROFILING = env.dict('SILKY_DYNAMIC_PROFILING', default={})
+    SILKY_DYNAMIC_PROFILING = env.list('SILKY_DYNAMIC_PROFILING', default=[])
+    if ENV == 'stage':
+        SILKY_DYNAMIC_PROFILING += [{
+            'module': 'dashboard.views',
+            'function': 'profile',
+            'name': 'Profile View',
+        }, {
+            'module': 'retail.views',
+            'function': 'index',
+            'name': 'Index View',
+        }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int(
         'SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)

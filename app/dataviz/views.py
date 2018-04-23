@@ -26,6 +26,7 @@ from dashboard.models import Profile, UserAction
 from marketing.models import EmailEvent, EmailSubscriber, GithubEvent, SlackPresence, SlackUser, Stat
 
 
+
 def filter_types(types, _filters):
     return_me = []
     for t in types:
@@ -57,7 +58,7 @@ def stats(request):
             'bount'
         ]
         types = filter_types(types, _filters)
-    elif _filter == 'Marketing':
+    if _filter == 'Marketing':
         _filters = [
             'slack',
             'email',
@@ -65,7 +66,7 @@ def stats(request):
             'twitter'
         ]
         types = filter_types(types, _filters)
-    elif _filter == 'KPI':
+    if _filter == 'KPI':
         _filters = [
             'browser_ext_chrome',
             'medium_subscribers',
@@ -80,6 +81,7 @@ def stats(request):
             'tips',
             'twitter',
             'user_action_Login',
+            'bounties_hourly_rate_inusd_last_24_hours',
         ]
         types = filter_types(types, _filters)
 
@@ -92,9 +94,10 @@ def stats(request):
         'tables': {},
     }
 
-    for stat_type in types:
+    for t in types:
+
         # get data
-        source = Stat.objects.filter(key=stat_type)
+        source = Stat.objects.filter(key=t)
         if rollup == 'daily':
             source = source.filter(created_on__hour=1)
             source = source.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=30)))
@@ -106,7 +109,7 @@ def stats(request):
 
         if source.count():
             # tables
-            params['tables'][stat_type] = source
+            params['tables'][t] = source
 
             # charts
             # compute avg
@@ -139,7 +142,7 @@ def stats(request):
                 }],
                 chart_options={
                     'title': {
-                        'text': f'{stat_type} trend ({avg} avg)'
+                        'text': f'{t} trend ({avg} avg)'
                     },
                     'xAxis': {
                         'title': {
@@ -212,7 +215,6 @@ def cohort_helper_timedelta(i, period_size):
         return {period_size: i}
 
 
-
 @staff_member_required
 def cohort(request):
     cohorts = {}
@@ -220,6 +222,7 @@ def cohort(request):
     data_source = request.GET.get('data_source', 'slack-online')
     num_periods = request.GET.get('num_periods', 10)
     period_size = request.GET.get('period_size', 'weeks')
+    kwargs = {}
 
     for i in range(1, num_periods):
         start_time = timezone.now() - timezone.timedelta(**cohort_helper_timedelta(i, period_size))
@@ -256,7 +259,6 @@ def cohort(request):
     }
     return TemplateResponse(request, 'cohort.html', params)
 
-
 def funnel_helper_get_data(key, k, daily_source, weekly_source, start_date, end_date):
     if key == 'sessions':
         return sum(daily_source.filter(key='google_analytics_sessions_gitcoin', created_on__gte=start_date, created_on__lt=end_date).values_list('val', flat=True))
@@ -276,7 +278,7 @@ def funnel_helper_get_data(key, k, daily_source, weekly_source, start_date, end_
         return weekly_source.filter(key='email_click')[k].val - weekly_source.filter(key='email_click')[k+1].val
     try:
         return weekly_source.filter(key=key)[k].val - weekly_source.filter(key=key)[k+1].val
-    except Exception:
+    except:
         return 0
 
 
@@ -344,8 +346,9 @@ def funnel(request):
     ]
 
     for funnel in range(0, len(funnels)):
-        keys = funnels[funnel]['keys']
-        title = funnels[funnel]['title']
+        keys=funnels[funnel]['keys']
+        title=funnels[funnel]['title']
+        print(title)
         for k in range(0, 10):
             try:
                 stats = []
@@ -361,7 +364,7 @@ def funnel(request):
                 for i in range(1, len(stats)):
                     try:
                         stats[i]['pct'] = round((stats[i]['val'])/stats[i-1]['val']*100, 1)
-                    except Exception:
+                    except:
                         stats[i]['pct'] = 0
                 for i in range(0, len(stats)):
                     stats[i]['idx'] = i
@@ -384,21 +387,3 @@ def funnel(request):
     return TemplateResponse(request, 'funnel.html', params)
 
 
-settings_navs = [
-    {
-        'body': 'Email',
-        'href': '/settings/email',
-    },
-    {
-        'body': 'Privacy',
-        'href': '/settings/privacy',
-    },
-    {
-        'body': 'Matching',
-        'href': '/settings/matching',
-    },
-    {
-        'body': 'Feedback',
-        'href': '/settings/feedback',
-    },
-]

@@ -310,12 +310,14 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None):
     return response.json()
 
 
-def get_issues(owner, repo):
+def get_issues(owner, repo, page=1, state='open'):
     """Get the open issues on a respository."""
     params = {
-        'state': 'open',
+        'state': state,
         'sort': 'created',
         'direction': 'desc',
+        'page': page,
+        'per_page': 100, 
     }
     url = f'https://api.github.com/repos/{owner}/{repo}/issues'
 

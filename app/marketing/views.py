@@ -43,6 +43,25 @@ from marketing.models import (
 from marketing.utils import get_or_save_email_subscriber
 from retail.helpers import get_ip
 
+settings_navs = [
+    {
+        'body': 'Email',
+        'href': '/settings/email',
+    },
+    {
+        'body': 'Privacy',
+        'href': '/settings/privacy',
+    },
+    {
+        'body': 'Matching',
+        'href': '/settings/matching',
+    },
+    {
+        'body': 'Feedback',
+        'href': '/settings/feedback',
+    },
+]
+
 
 def settings_helper_get_auth(request, key=None):
 

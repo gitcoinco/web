@@ -8,6 +8,8 @@ from github.utils import get_user, org_name
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from ratelimit.decorators import ratelimit
 
+AVATAR_BASE = 'assets/other/avatars/'
+
 
 def wrap_text(text, w=30):
     new_text = ""
@@ -31,8 +33,52 @@ def summarize_bounties(bounties):
     currency_to_value = {bounty.token_name: 0.00 for bounty in bounties}
     for bounty in bounties:
         currency_to_value[bounty.token_name] += bounty.value_true
-    other_values = ", ".join(["{} {}".format(round(value, 2), token_name) for token_name, value in currency_to_value.items()])
-    return True, "Total: {} issue{}, {} USD, {}".format(bounties.count(), 's' if bounties.count() != 1 else "", val_usdt, other_values)
+    other_values = ", ".join([
+        f"{round(value, 2)} {token_name}"
+        for token_name, value in currency_to_value.items()
+    ])
+    is_plural = 's' if bounties.count() > 1 else ''
+    return True, f"Total: {bounties.count()} issue{is_plural}, {val_usdt} USD, {other_values}"
+
+
+@ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
+def stat(request, key):
+
+    from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+    from matplotlib.figure import Figure
+    from matplotlib.dates import DateFormatter
+    from marketing.models import Stat
+    from django.utils import timezone
+    limit = 10
+    weekly_stats = Stat.objects.filter(key=key).order_by('created_on')
+    weekly_stats = weekly_stats.filter(created_on__hour=1, created_on__week_day=1).filter(created_on__gt=(timezone.now() - timezone.timedelta(weeks=7)))  # weekly stats only
+
+    daily_stats = Stat.objects.filter(key=key).filter(created_on__gt=(timezone.now() - timezone.timedelta(days=7))).order_by('created_on')
+    daily_stats = daily_stats.filter(created_on__hour=1)  # daily stats only
+
+    stats = weekly_stats if weekly_stats.count() < limit else daily_stats
+
+    fig = Figure(figsize=(1.6, 1.5), dpi=80, facecolor='w', edgecolor='k')
+    ax = fig.add_subplot(111)
+    x = []
+    y = []
+    for stat in stats:
+        x.append(stat.created_on)
+        y.append(stat.val)
+    x = x[-1 * limit:]
+    y = y[-1 * limit:]
+    ax.plot_date(x, y, '-')
+    ax.set_axis_off()
+    ax.xaxis.set_major_formatter(DateFormatter('%Y-%m-%d'))
+    if stats.count() > 1:
+        ax.set_title("Usage over time", y=0.9)
+    else:
+        ax.set_title("(Not enough data)", y=0.3)
+    fig.autofmt_xdate()
+    canvas = FigureCanvas(fig)
+    response = HttpResponse(content_type='image/png')
+    canvas.print_png(response)
+    return response
 
 
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
@@ -52,7 +98,7 @@ def embed(request):
         _org_name = org_name(repo_url)
 
         avatar = None
-        filename = "{}.png".format(_org_name)
+        filename = f"{_org_name}.png"
         filepath = 'assets/other/avatars/' + filename
         try:
             avatar = Image.open(filepath, 'r').convert("RGBA")
@@ -111,7 +157,6 @@ def embed(request):
         # background
         background_image = 'assets/v2/images/embed-widget/background.png'
         back = Image.open(background_image, 'r').convert("RGBA")
-        img_w, img_h = back.size
         offset = 0, 0
         img.paste(back, offset)
 
@@ -124,9 +169,21 @@ def embed(request):
         img_org_name = ImageDraw.Draw(img)
         img_org_name_size = img_org_name.textsize(_org_name, h1)
 
-        img_org_name.multiline_text(align="left", xy=(287 - img_org_name_size[0]/2, 360), text=_org_name, fill=black, font=h1)
+        img_org_name.multiline_text(
+            align="left",
+            xy=(287 - img_org_name_size[0] / 2, 360),
+            text=_org_name,
+            fill=black,
+            font=h1,
+        )
 
-        draw.multiline_text(align="left", xy=(110, 410), text="supports funded issues", fill=black, font=h1)
+        draw.multiline_text(
+            align="left",
+            xy=(110, 410),
+            text="supports funded issues",
+            fill=black,
+            font=h1,
+        )
 
         # put bounty list in there
         i = 0
@@ -149,7 +206,13 @@ def embed(request):
                 unit = 'hour'
                 num = int(round((bounty.expires_date - timezone.now()).seconds / 3600 / 24, 0))
             unit = unit + ("s" if num != 1 else "")
-            draw.multiline_text(align="left", xy=(x, y-40), text=f"Expires in {num} {unit}:", fill=gray, font=p)
+            draw.multiline_text(
+                align="left",
+                xy=(x, y - 40),
+                text=f"Expires in {num} {unit}:",
+                fill=gray,
+                font=p,
+            )
 
             bounty_eth_background = Image.new("RGBA", (200, 56), (231, 240, 250))
             bounty_usd_background = Image.new("RGBA", (200, 56), (214, 251, 235))
@@ -161,28 +224,62 @@ def embed(request):
 
             bounty_value_size = tmp.textsize(f"{round(bounty.value_true, 2)} {bounty.token_name}", p)
 
-            draw.multiline_text(align="left", xy=(x + 100 - bounty_value_size[0]/2, y + 67), text=f"{round(bounty.value_true, 2)} {bounty.token_name}", fill=(44, 35, 169), font=p)
+            draw.multiline_text(
+                align="left",
+                xy=(x + 100 - bounty_value_size[0]/2, y + 67),
+                text=f"{round(bounty.value_true, 2)} {bounty.token_name}",
+                fill=(44, 35, 169),
+                font=p,
+            )
 
             bounty_value_size = tmp.textsize(f"{round(bounty.value_in_usdt_now, 2)} USD", p)
 
-            draw.multiline_text(align="left", xy=(x + 310 - bounty_value_size[0]/2, y + 67), text=f"{round(bounty.value_in_usdt_now, 2)} USD", fill=(45, 168, 116), font=p)
-
+            draw.multiline_text(
+                align="left",
+                xy=(x + 310 - bounty_value_size[0]/2, y + 67),
+                text=f"{round(bounty.value_in_usdt_now, 2)} USD",
+                fill=(45, 168, 116),
+                font=p,
+            )
 
         # blank slate
         if bounties.count() == 0:
-            draw.multiline_text(align="left", xy=(760, 320), text="No active issues. Post a funded issue at: https://gitcoin.co", fill=gray, font=h1)
+            draw.multiline_text(
+                align="left",
+                xy=(760, 320),
+                text="No active issues. Post a funded issue at: https://gitcoin.co",
+                fill=gray,
+                font=h1,
+            )
 
         if bounties.count() != 0:
             text = 'Browse issues at: https://gitcoin.co/explorer'
-            draw.multiline_text(align="left", xy=(64, height - 70), text=text, fill=gray, font=p)
+            draw.multiline_text(
+                align="left",
+                xy=(64, height - 70),
+                text=text,
+                fill=gray,
+                font=p,
+            )
 
-            draw.multiline_text(align="left", xy=(624, 120), text="Recently funded issues:", fill=(62, 36, 251), font=p)
+            draw.multiline_text(
+                align="left",
+                xy=(624, 120),
+                text="Recently funded issues:",
+                fill=(62, 36, 251),
+                font=p,
+            )
 
-            show_value, value = summarize_bounties(super_bounties)
-
+            _, value = summarize_bounties(super_bounties)
             value_size = tmp.textsize(value, p)
 
-            draw.multiline_text(align="left", xy=(1725 - value_size[0], 120), text=value, fill=gray, font=p)
+            draw.multiline_text(
+                align="left",
+                xy=(1725 - value_size[0], 120),
+                text=value,
+                fill=gray,
+                font=p,
+            )
 
             line_table_header = Image.new("RGBA", (1100, 6), (62, 36, 251))
 
@@ -200,65 +297,105 @@ def embed(request):
         return err_response
 
 
-def avatar(request):
+def get_avatar(_org_name):
+    avatar = None
+    filename = f"{_org_name}.png"
+    filepath = AVATAR_BASE + filename
+    if _org_name == 'gitcoinco':
+        filepath = AVATAR_BASE + '../../v2/images/helmet.png'
+    try:
+        avatar = Image.open(filepath, 'r').convert("RGBA")
+    except IOError:
+        remote_user = get_user(_org_name)
+        if not remote_user.get('avatar_url', False):
+            return JsonResponse({'msg': 'invalid user'}, status=422)
+        remote_avatar_url = remote_user['avatar_url']
+
+        r = requests.get(remote_avatar_url, stream=True)
+        chunk_size = 20000
+        with open(filepath, 'wb') as fd:
+            for chunk in r.iter_content(chunk_size):
+                fd.write(chunk)
+        avatar = Image.open(filepath, 'r').convert("RGBA")
+
+        # make transparent
+        datas = avatar.getdata()
+
+        new_data = []
+        for item in datas:
+            if item[0] == 255 and item[1] == 255 and item[2] == 255:
+                new_data.append((255, 255, 255, 0))
+            else:
+                new_data.append(item)
+
+        avatar.putdata(new_data)
+        avatar.save(filepath, "PNG")
+    return filepath
+
+
+def add_gitcoin_logo_blend(avatar, icon_size):
+    # setup
+    sub_avatar_size = 50
+    sub_avatar_offset = (165, 165)
+
+    # get image for sub avatar
+    gitcoin_filepath = get_avatar('gitcoinco')
+    gitcoin_avatar = Image.open(gitcoin_filepath, 'r').convert("RGBA")
+    gitcoin_avatar = ImageOps.fit(gitcoin_avatar, (sub_avatar_size, sub_avatar_size), Image.ANTIALIAS)
+
+    # build new avatar
+    img2 = Image.new("RGBA", icon_size)
+    img2.paste(gitcoin_avatar, sub_avatar_offset)
+
+    # blend these two images together
+    img = Image.new("RGBA", avatar.size, (255, 255, 255))
+    img = Image.alpha_composite(img, avatar)
+    img = Image.alpha_composite(img, img2)
+
+    return img
+
+
+def avatar(request, _org_name=None, add_gitcoincologo=None):
+    # config
+    icon_size = (215, 215)
+    print(_org_name, add_gitcoincologo)
     # default response
     could_not_find = Image.new('RGBA', (1, 1), (0, 0, 0, 0))
     err_response = HttpResponse(content_type="image/jpeg")
-    could_not_find.save(err_response, "JPEG")
+    could_not_find.save(err_response, "PNG")
 
     # params
     repo_url = request.GET.get('repo', False)
-    if not repo_url or 'github.com' not in repo_url:
+    if not _org_name and (not repo_url or 'github.com' not in repo_url):
         return err_response
 
     try:
         # get avatar of repo
-        _org_name = org_name(repo_url)
+        if not _org_name:
+            _org_name = org_name(repo_url)
 
-        avatar = None
-        filename = "{}.png".format(_org_name)
-        filepath = 'assets/other/avatars/' + filename
-        try:
-            avatar = Image.open(filepath, 'r').convert("RGBA")
-        except IOError:
-            remote_user = get_user(_org_name)
-            if not remote_user.get('avatar_url', False):
-                return JsonResponse({'msg': 'invalid user'}, status=422)
-            remote_avatar_url = remote_user['avatar_url']
+        filepath = get_avatar(_org_name)
 
-            r = requests.get(remote_avatar_url, stream=True)
-            chunk_size = 20000
-            with open(filepath, 'wb') as fd:
-                for chunk in r.iter_content(chunk_size):
-                    fd.write(chunk)
-            avatar = Image.open(filepath, 'r').convert("RGBA")
+        # new image
+        img = Image.new("RGBA", icon_size, (255, 255, 255))
 
-            # make transparent
-            datas = avatar.getdata()
-
-            new_data = []
-            for item in datas:
-                if item[0] == 255 and item[1] == 255 and item[2] == 255:
-                    new_data.append((255, 255, 255, 0))
-                else:
-                    new_data.append(item)
-
-            avatar.putdata(new_data)
-            avatar.save(filepath, "PNG")
-
-        width, height = (215, 215)
-        img = Image.new("RGBA", (width, height), (255, 255, 255))
-
-        # config
-        icon_size = (215, 215)
         # execute
+        avatar = Image.open(filepath, 'r').convert("RGBA")
         avatar = ImageOps.fit(avatar, icon_size, Image.ANTIALIAS)
         offset = 0, 0
         img.paste(avatar, offset, avatar)
 
-        response = HttpResponse(content_type="image/jpeg")
-        img.save(response, "JPEG")
+        # add gitcoinco logo?
+        add_gitcoincologo = add_gitcoincologo and _org_name != 'gitcoinco'
+        if add_gitcoincologo:
+            img = add_gitcoin_logo_blend(avatar, icon_size)
+
+        response = HttpResponse(content_type="image/png")
+        img.save(response, "PNG")
         return response
     except IOError as e:
+        print(e)
+        return err_response
+    except AttributeError as e:
         print(e)
         return err_response

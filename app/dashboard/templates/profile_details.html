@@ -18,9 +18,12 @@
       <div class="col body">
         <div class="container-fluid">
           <div id="hero" class="pt-4">
-            <img class="avatar" src="{{profile.local_avatar_url}}">
+            <img class="avatar" src="{{profile.avatar_url}}">
             <h2 class="mt-3">
-                Profile<span id="alpha">Alpha</span><br> {{profile.handle}}
+                <span>Profile</span>
+                <span id="alpha">Alpha</span>
+                <br>
+                <span style="font-size: 24px;">{{profile.handle}}</span>
             </h2>
             {% if profile.data.bio %}
               <p>
@@ -165,7 +168,7 @@
                             {{b.status}}
                           </div>
                           <div class="col-10 col-sm-8 col-md-4">
-                            <img style="max-width: 30px;" src="{{b.local_avatar_url}}">
+                            <img style="max-width: 30px;" src="{{b.avatar_url}}">
                             <h6>
                               {{b.title_or_desc | truncatechars:50}}
                             </h6>

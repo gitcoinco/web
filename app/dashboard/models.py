@@ -27,9 +27,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import JSONField
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -208,7 +210,7 @@ class Bounty(SuperModel):
 
     @property
     def url(self):
-        return self.get_relative_url()
+        return self.get_absolute_url()
 
     @property
     def can_submit_after_expiration_date(self):
@@ -293,18 +295,22 @@ class Bounty(SuperModel):
     def absolute_url(self):
         return self.get_absolute_url()
 
-    def get_avatar_url(self):
-        try:
-            response = get_user(self.github_org_name)
-            return response['avatar_url']
-        except Exception as e:
-            print(e)
-            return 'https://avatars0.githubusercontent.com/u/31359507?v=4'
+    @property
+    def avatar_url(self):
+        return self.get_avatar_url(False)
 
     @property
-    def local_avatar_url(self):
+    def avatar_url_w_gitcoin_logo(self):
+        return self.get_avatar_url(True)
+
+    def get_avatar_url(self, gitcoin_logo_flag=False):
         """Return the local avatar URL."""
-        return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
+        org_name = self.github_org_name
+        gitcoin_logo_flag = "/1" if gitcoin_logo_flag else ""
+        if org_name:
+            return f"{settings.BASE_URL}static/avatar/{org_name}{gitcoin_logo_flag}"
+        else:
+            return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
 
     @property
     def keywords(self):
@@ -317,6 +323,17 @@ class Bounty(SuperModel):
     def now(self):
         """Return the time now in the current timezone."""
         return timezone.now()
+
+    @property
+    def past_expiration_date(self):
+        """Return true IFF issue is past expiration date"""
+        return timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None)
+
+    @property
+    def past_hard_expiration_date(self):
+        """Return true IFF issue is past smart contract expiration date
+        and therefore cannot ever be claimed again"""
+        return self.past_expiration_date and not self.can_submit_after_expiration_date
 
     @property
     def status(self):
@@ -353,10 +370,10 @@ class Bounty(SuperModel):
         else:
             try:
                 if not self.is_open:
-                    if timezone.localtime().replace(tzinfo=None) > self.expires_date.replace(tzinfo=None) and self.num_fulfillments == 0:
-                        return 'expired'
                     if self.accepted:
                         return 'done'
+                    if self.past_hard_expiration_date:
+                        return 'expired'
                     # If its not expired or done, it must be cancelled.
                     return 'cancelled'
                 if self.num_fulfillments == 0:
@@ -480,6 +497,14 @@ class Bounty(SuperModel):
     def _fulfillment_started_on(self):
         try:
             return self.interested.first().created
+        except Exception:
+            return None
+
+    @property
+    def hourly_rate(self):
+        try:
+            hours_worked = self.fulfillments.filter(accepted=True).first().fulfiller_hours_worked
+            return self.value_in_usdt / hours_worked
         except Exception:
             return None
 
@@ -621,6 +646,7 @@ class BountyFulfillment(SuperModel):
     fulfiller_name = models.CharField(max_length=255, blank=True)
     fulfiller_metadata = JSONField(default={}, blank=True)
     fulfillment_id = models.IntegerField(null=True, blank=True)
+    fulfiller_hours_worked = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=50)
     fulfiller_github_url = models.CharField(max_length=255, blank=True, null=True)
     accepted = models.BooleanField(default=False)
     accepted_on = models.DateTimeField(null=True, blank=True)
@@ -830,7 +856,12 @@ def psave_interest(sender, instance, **kwargs):
 
 
 class Profile(SuperModel):
-    """Define the structure of the user profile."""
+    """Define the structure of the user profile.
+
+    TODO:
+        * Remove all duplicate identity related information already stored on User.
+
+    """
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     data = JSONField()
@@ -977,12 +1008,26 @@ class Profile(SuperModel):
         return f"https://github.com/{self.handle}"
 
     @property
-    def local_avatar_url(self):
-        return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
+    def avatar_url(self):
+        return f"{settings.BASE_URL}static/avatar/{self.handle}"
+
+    @property
+    def avatar_url_with_gitcoin_logo(self):
+        return f"{self.avatar_url}/1"
 
     @property
     def absolute_url(self):
         return self.get_absolute_url()
+
+    @property
+    def username(self):
+        handle = ''
+        if hasattr(self, 'user') and self.user.username:
+            handle = self.user.username
+        # TODO: (mbeacom) Remove this check once we get rid of all the lingering identity shenanigans.
+        elif self.handle:
+            handle = self.handle
+        return handle
 
     def is_github_token_valid(self):
         """Check whether or not a Github OAuth token is valid.
@@ -1078,7 +1123,7 @@ class ProfileSerializer(serializers.BaseSerializer):
             'id': instance.id,
             'handle': instance.handle,
             'github_url': instance.github_url,
-            'local_avatar_url': instance.local_avatar_url,
+            'avatar_url': instance.avatar_url,
             'url': instance.get_relative_url()
         }
 
@@ -1150,3 +1195,69 @@ class CoinRedemptionRequest(SuperModel):
     txid = models.CharField(max_length=255, default='')
     txaddress = models.CharField(max_length=255)
     sent_on = models.DateTimeField(null=True)
+
+class Tool(SuperModel):
+    """Define the tool shcema."""
+    
+    name = models.CharField(max_length=255)
+    category = models.CharField(max_length=20)
+    img = models.CharField(max_length=255)
+    description = models.CharField(max_length=1000)
+    url_name = models.CharField(max_length=40, blank=True)
+    link = models.CharField(max_length=255)
+    link_copy = models.CharField(max_length=255)
+    active = models.BooleanField(default=False)
+    new = models.BooleanField(default=False)
+    stat_graph = models.CharField(max_length=255)
+    votes = models.ManyToManyField('dashboard.ToolVote', blank=True)    
+
+    @property
+    def img_url(self): 
+        return static(self.img)
+
+    @property
+    def link_url(self):
+        if self.url_name:
+            return reverse(self.url_name)
+        else:
+            return self.link
+
+    def starting_score(self):
+        if self.category in ['BASIC']:
+            return 10
+        if self.category in ['ADVANCED']:
+            return 5
+        if self.category in ['TOOLS_TO_BUILD', 'COMMUNITY']:
+            return 3
+        if self.category in ['ALPHA']:
+            return 2
+        if self.category in ['COMING_SOON']:
+            return 1
+        if self.category in ['FOR_FUN']:
+            return 1
+        return 0
+
+    def vote_score(self):
+        score = self.starting_score()
+        for vote in self.votes.all():
+            score += vote.value
+        return score                
+
+    def i18n_name(self):
+        return _(self.name)
+
+    def i18n_description(self):
+        return _(self.description)
+
+    def i18n_link_copy(self):
+        return _(self.link_copy)
+    
+    def __str__(self):
+        return self.name
+
+
+class ToolVote(models.Model):
+    """Define the vote placed on a tool."""
+
+    profile = models.ForeignKey('dashboard.Profile', related_name='votes', on_delete=models.CASCADE)
+    value = models.IntegerField(default=0)
