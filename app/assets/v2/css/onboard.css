@@ -336,6 +336,14 @@ h3 span:last-child {
   border-radius: 15px;
 }
 
+.footer .row {
+  display: none;
+}
+
+#navbarSupportedContent .navbar-nav {
+  visibility: hidden;
+}
+
 @keyframes turn {
   0% { transform: rotate(0deg); }
   50% { transform: rotate(-50deg); }

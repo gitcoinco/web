@@ -17,13 +17,13 @@ onboard.showTab = function(num) {
     $('#prev-btn').show();
 
   if (num == ($('.step').length) - 1) {
-    $('#next-btn').html('Finish');
+    $('#next-btn').html(gettext('Finish'));
     $('#next-btn').attr('onclick', 'redirectURL()');
   } else if (num > ($('.step').length) - 1) {
     $('#next-btn').hide();
     $('#next-btn').attr('onclick', 'changeStep(1))');
   } else {
-    $('#next-btn').html('Next');
+    $('#next-btn').html(gettext('Next'));
     $('#next-btn').attr('onclick', 'changeStep(1)');
   }
   onboard.highlightStep(num);
@@ -42,13 +42,23 @@ onboard.highlightStep = function(currentStep) {
 
 onboard.watchMetamask = function() {
   if (typeof web3 == 'undefined') {
-    $('.step #metamask span').text('Install Metamask');
+    $('.step #metamask').html(`
+      <a class="button button--primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
+        <img src="/static/v2/images/metamask.svg" %}>
+        <span>` + gettext('Install Metamask') + `</span>
+      </a>`
+    );
   } else if (!web3.eth.coinbase) {
-    $('.step #metamask span').text('Unlock Metamask');
+    $('.step #metamask').html(`
+      <a class="button button--primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
+        <img src="/static/v2/images/metamask.svg" %}>
+        <span>` + gettext('Unlock Metamask') + `</span>
+      </a>`
+    );
   } else {
     $('.step #metamask').css('margin-top', '2em');
     $('.step #metamask').css('margin-bottom', '1em');
-    $('.step #metamask').html('<div class="unlocked"><img src="/static/v2/images/metamask.svg" %}><span>Unlocked</span></div>');
+    $('.step #metamask').html('<div class="unlocked"><img src="/static/v2/images/metamask.svg" %}><span>' + gettext('Unlocked') + '</span></div>');
   }
 };
 
@@ -98,12 +108,7 @@ var changeStep = function(n) {
 onboard.showTab(current);
 
 onboard.watchMetamask();
-onboard.metaMaskWarningRecurr = function() {
-  onboard.watchMetamask();
-  setTimeout(onboard.metaMaskWarningRecurr, 5000);
-};
-
-setTimeout(onboard.metaMaskWarningRecurr, 6000);
+setInterval(onboard.watchMetamask, 5000);
 
 var keywords = [ 'css', 'solidity', 'python', 'javascript', 'ruby', 'django', 'java', 'elixir' ];
 var suggested_tags = [];

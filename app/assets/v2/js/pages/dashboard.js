@@ -495,7 +495,6 @@ var resetFilters = function() {
 };
 
 (function() {
-  // if (document.referrer != 'http://0.0.0.0:8000/onboard') {
   if (document.referrer.endsWith('/onboard')) {
     $('#sidebar_container').addClass('invisible');
     $('#dashboard-title').addClass('hidden');
