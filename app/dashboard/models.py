@@ -1164,7 +1164,7 @@ class Tool(SuperModel):
     category = models.CharField(max_length=20)
     img = models.CharField(max_length=255)
     description = models.CharField(max_length=1000)
-    url_name = models.CharField(max_length=40)
+    url_name = models.CharField(max_length=40, blank=True)
     link = models.CharField(max_length=255)
     link_copy = models.CharField(max_length=255)
     active = models.BooleanField(default=False)
