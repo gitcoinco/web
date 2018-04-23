@@ -20,16 +20,17 @@ class Command(BaseCommand):
     def process_threads(threads, apply_trending_score):
         trending_score = 0
         for thread in threads:
-                trending_score += 1
-                if thread.get('identifiers'):
-                    if len(thread.get('identifiers')[0].split('-')) == 2:
-                        idea_id = thread.get('identifiers')[0].split('-')[1]
-                        print(thread)
-                        if(apply_trending_score):
-                            Idea.objects.filter(id=idea_id).update(trending_score=trending_score)
-                        else:
-                            Idea.objects.filter(id=idea_id).update(posts=thread.get("posts"),
-                                                                   likes=thread.get("likes"))
+            trending_score += 1
+            if thread.get('identifiers'):
+                if len(thread.get('identifiers')[0].split('-')) == 2:
+                    idea_id = thread.get('identifiers')[0].split('-')[1]
+                    print(thread)
+                    if apply_trending_score:
+                        kwargs = {'trending_score': trending_score}
+                    else:
+                        kwargs = {'posts': thread.get('posts', 0), 'likes': thread.get('likes', 0)}
+
+                    Idea.objects.filter(id=idea_id).update(**kwargs)
 
     @staticmethod
     def query_threads(url, payload):
@@ -37,16 +38,14 @@ class Command(BaseCommand):
 
     @staticmethod
     def has_next(response):
-        if response.json().get('cursor'):
-            return response.json().get('cursor').get('hasNext')
-        return False
+        cursor = response.json().get('cursor', {})
+        return cursor.get('hasNext', False)
 
     @staticmethod
     def get_threads(response):
         return response.json().get('response')
 
     def handle(self, *args, **options):
-
         public_key = settings.DISQUS_PUBLIC_KEY
         forum = settings.DISQUS_FORUM_NAME
         limit = 100
