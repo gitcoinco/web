@@ -125,7 +125,6 @@ urlpatterns = [
     url(r'^help/pilot?', retail.views.help_pilot, name='help_pilot'),
     url(r'^help/?', retail.views.help, name='help'),
     path('ideas/new', retail.views.new_idea, name='new_idea'),
-    path('ideas/create', retail.views.create_idea, name='create_idea'),
     path('ideas/fetch', retail.views.ideas_fetch, name='ideas_fetch'),
     path('ideas/list', retail.views.ideas_list, name='ideas_list'),
     path('ideas/idea/<int:idea_id>/show', retail.views.idea_show, name='idea_show'),

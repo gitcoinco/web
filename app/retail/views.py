@@ -16,23 +16,21 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-import json
 
 from django.conf import settings
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.validators import validate_email
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET
 
-from dashboard.models import Profile
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from retail.models import Idea, IdeaSerializer
@@ -550,19 +548,28 @@ def idea_show(request, idea_id):
     return TemplateResponse(request, 'idea.html', {})
 
 
-@csrf_exempt
 def new_idea(request):
+    if request.POST:
+        email = request.POST.get('email')
+        github_username = request.POST.get('github_username')
+        summary = request.POST.get('summary')
+        more_info = request.POST.get('more_info')
+        looking_for_capital = bool(request.POST.get('looking_for_capital'))
+        looking_for_builders = bool(request.POST.get('looking_for_builders'))
+        looking_for_designers = bool(request.POST.get('looking_for_designers'))
+        looking_for_customers = bool(request.POST.get('looking_for_customers'))
+        capital_exists = bool(request.POST.get('capital_exists'))
+        builders_exists = bool(request.POST.get('builders_exists'))
+        designers_exists = bool(request.POST.get('designers_exists'))
+        customer_exists = bool(request.POST.get('customer_exists'))
+        idea = Idea(email=email, github_username=github_username, summary=summary, more_info=more_info,
+                    looking_for_capital=looking_for_capital, looking_for_builders=looking_for_builders,
+                    looking_for_designers=looking_for_designers, looking_for_customers=looking_for_customers,
+                    capital_exists=capital_exists, builders_exists=builders_exists,
+                    designers_exists=designers_exists, customer_exists=customer_exists, profile=request.user.profile)
+        idea.save(force_insert=True)
+        return HttpResponseRedirect(f"idea/{idea.id}/show")
     return TemplateResponse(request, 'new_idea.html', {})
-
-
-@require_POST
-@csrf_exempt
-def create_idea(request):
-    idea = Idea(**json.loads(request.body))
-    if request.user.is_authenticated:
-        idea.profile = Profile.objects.get(pk=request.user.profile.id)
-    idea.save(force_insert=True)
-    return JsonResponse({'success': True, 'ideaId': idea.id})
 
 
 @require_GET

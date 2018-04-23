@@ -1,4 +1,3 @@
-{% load i18n static %}
 <script id="idea_template" type="text/x-jsrender">
   <div id="idea_[[:id]]" data-idea-id="[[:id]]" class="idea">
     <div class="d-flex justify-content-between pb-3">
@@ -19,36 +18,35 @@
       <div class="avatar-label">
         <img src='[[:avatar_url]]' class='user-avatar'> {% trans "Submitted by" %} <strong>[[:full_name]]</strong>
       </div>
-          
       <div class="d-flex justify-content-between">
         <div class="badge-container">
           <span class="badge-container-label"><strong>{% trans "Has" %}:</strong></span>
-          [[if capital_exists]]            
+          [[if capital_exists]]
             <span class="badge badge-success m-1">{% trans "Capital" %}</span>
-          [[/if]] 
-          [[if builders_exists]]                        
-            <span class="badge badge-success m-1">{% trans "Builders" %}</span>            
-          [[/if]] 
-          [[if designers_exists]]            
-            <span class="badge badge-success m-1">{% trans "Designers" %}</span>            
-          [[/if]] 
-          [[if customer_exists]]
-            <span class="badge badge-success m-1">{% trans "Customer" %}</span>            
           [[/if]]
-        </div>   
+          [[if builders_exists]]
+            <span class="badge badge-success m-1">{% trans "Builders" %}</span>
+          [[/if]]
+          [[if designers_exists]]
+            <span class="badge badge-success m-1">{% trans "Designers" %}</span>
+          [[/if]]
+          [[if customer_exists]]
+            <span class="badge badge-success m-1">{% trans "Customer" %}</span>
+          [[/if]]
+        </div>
         <div class="badge-container">
           <span class="badge-container-label"><strong>{% trans "Needs" %}:</strong></span>
           [[if looking_for_capital]]
             <span class="badge badge-warning m-1">{% trans "Capital" %}</span>
-          [[/if]] 
+          [[/if]]
           [[if looking_for_builders]]
-            <span class="badge badge-warning m-1">{% trans "Builders" %}</span>            
+            <span class="badge badge-warning m-1">{% trans "Builders" %}</span>
           [[/if]]
           [[if looking_for_designers]]
-            <span class="badge badge-warning m-1">{% trans "Designers" %}</span>            
+            <span class="badge badge-warning m-1">{% trans "Designers" %}</span>
           [[/if]]
           [[if looking_for_customers]]
-            <span class="badge badge-warning m-1">{% trans "Customers" %}</span>            
+            <span class="badge badge-warning m-1">{% trans "Customers" %}</span>
           [[/if]]
         </div>
       </div>

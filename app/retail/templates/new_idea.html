@@ -6,7 +6,6 @@
   General Public License for more details. You should have received a copy of the GNU Affero General Public License along with
   this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static %}
 <html lang="en">
 
 <head>
@@ -30,17 +29,17 @@
                 <p class="submit-title">{% trans "Submit your project idea" %}</p>
                 <p class="submit-text">{% trans "We love ideas and hate using lorem ipsum text. Use the form below to submit your project idea and (hopefully) get some feedback!" %}</p>
               </div>
-              <form id="new_idea_form">
+              <form id="new_idea_form" method="POST">
                 {% include 'shared/name.html' %}
                 <div class="d-flex justify-content-md-between flex-wrap flex-md-nowrap">
-                    <div class="col-md-5 col-sm-12">                  
-                        <label class="form__label" for="email">{% trans "Email address" %}</label>
-                        <input type=text id="email" name=email class="form__input" placeholder='you@somewhere' value="{% if email %}{{email}}{% else %}{% endif %}" required>                  
-                      </div>
-                      <div class="col-md-5 col-sm-12">
-                        <label class="form__label" for="githubUsernam">{% trans "Github Username" %}</label>
-                        <input name="githubUsername" id="github_username" type=text class="form__input" placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}">
-                      </div>
+                  <div class="col-md-5 col-sm-12">                  
+                    <label class="form__label" for="email">{% trans "Email address" %}</label>
+                    <input type=text id="email" name=email class="form__input" placeholder='you@somewhere' value="{% if email %}{{email}}{% else %}{% endif %}" required>                  
+                  </div>
+                  <div class="col-md-5 col-sm-12">
+                    <label class="form__label" for="githubUsernam">{% trans "Github Username" %}</label>
+                    <input name="github_username" id="github_username" type=text class="form__input" placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}">
+                  </div>
                 </div>
                 <div>
                   <div class="d-flex justify-content-between">
@@ -63,19 +62,19 @@
                   <label class="form__label" for="looking_for">{% trans "What are you looking for? (select all that apply)" %}</label>
                   <div class="d-flex flex-wrap justify-content-md-between">
                     <div class="form-check form-check-inline">
-                      <input type="checkbox" class="form-check-input" id="capital_looking">
+                      <input type="checkbox" class="form-check-input" id="capital_looking" name="looking_for_capital">
                       <label class="form-check-label" for="capital_looking">{% trans "Capital" %}</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input type="checkbox" class="form-check-input" id="builders_looking">
+                      <input type="checkbox" class="form-check-input" id="builders_looking" name="looking_for_builders">
                       <label class="form-check-label" for="builders_looking">{% trans "Builders" %}</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input type="checkbox" class="form-check-input" id="designers_looking">
+                      <input type="checkbox" class="form-check-input" id="designers_looking" name="looking_for_designers">
                       <label class="form-check-label" for="designers_looking">{% trans "Designers" %}</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input type="checkbox" class="form-check-input" id="customers_looking">
+                      <input type="checkbox" class="form-check-input" id="customers_looking" name="looking_for_customers">
                       <label class="form-check-label" for="customers_looking">{% trans "Customers" %}</label>
                     </div>
                   </div>
@@ -84,24 +83,25 @@
                   <label class="form__label">{% trans "What do you have already? (select all that apply)" %}</label>
                   <div class="d-flex flex-wrap justify-content-md-between">
                     <div class="form-check form-check-inline">
-                      <input type="checkbox" class="form-check-input" id="capital_exists">
+                      <input type="checkbox" class="form-check-input" id="capital_exists" name="capital_exists">
                       <label class="form-check-label" for="capital_exists">{% trans "Capital" %}</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input type="checkbox" class="form-check-input" id="builders_exists">
+                      <input type="checkbox" class="form-check-input" id="builders_exists" name="builders_exists">
                       <label class="form-check-label" for="builders_exists">{% trans "Builders" %}</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input type="checkbox" class="form-check-input" id="designers_exists">
+                      <input type="checkbox" class="form-check-input" id="designers_exists" name="designers_exists">
                       <label class="form-check-label" for="designers_exists">{% trans "Designers" %}</label>
                     </div>
                     <div class="form-check form-check-inline">
-                      <input type="checkbox" class="form-check-input" id="customers_exists">
+                      <input type="checkbox" class="form-check-input" id="customers_exists" name="customer_exists">
                       <label class="form-check-label" for="customers_exists">{% trans "Customers" %}</label>
                     </div>
                   </div>
                 </div>
                 <div class="form__footer form__footer--right">
+                  {% csrf_token %}
                   <button class="button button--primary center-button" type="submit" id="create_idea">{% trans "Submit" %}</button>
                 </div>
               </form>
