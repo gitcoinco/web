@@ -824,56 +824,56 @@ def apitos(request):
 
 
 def toolbox(request):
-    access_token = request.GET.get('token')    
+    access_token = request.GET.get('token')
     if access_token and is_github_token_valid(access_token):
         helper_handle_access_token(request, access_token)
 
-    basic_tools = Tool.objects.filter(category='BASIC')
-    advanced_tools = Tool.objects.filter(category='ADVANCED')
-    community_tools = Tool.objects.filter(category='COMMUNITY')
-    to_build_toos = Tool.objects.filter(category='TOOLS_TO_BUILD')
-    alpha_tools = Tool.objects.filter(category='ALPHA')
-    coming_soon_tools = Tool.objects.filter(category='COMING_SOON')
-    for_fun_tools = Tool.objects.filter(category='FOR_FUN')
+    tools = Tool.objects.prefetch_related('votes').all()
+
     actors = [{
         "title": _("Basics"),
         "description": _("Accelerate your dev workflow with Gitcoin\'s incentivization tools."),
-        "tools": basic_tools
-      }, {
-          "title": _("Advanced"),
-          "description": _("Take your OSS game to the next level!"),
-          "tools": advanced_tools
-      }, {
-          "title": _("Community"),
-          "description": _("Friendship, mentorship, and community are all part of the process."),
-          "tools": community_tools
-       }, {
-          "title": _("Tools to BUIDL Gitcoin"),
-          "description": _("Gitcoin is built using Gitcoin.  Purdy cool, huh? "),
-          "tools": to_build_toos
-       }, {
-          "title": _("Tools in Alpha"),
-          "description": _("These fresh new tools are looking for someone to test ride them!"),
-          "tools": alpha_tools
-       }, {
-           "title": _("Tools Coming Soon"),
-           "description": _("These tools will be ready soon.  They'll get here sooner if you help BUIDL them :)"),
-           "tools": coming_soon_tools
-       }, {
-           "title": _("Just for Fun"),
-           "description": _("Some tools that the community built *just because* they should exist."),
-           "tools": for_fun_tools
-        }]
+        "tools": tools.filter(category=Tool.CAT_BASIC)
+    }, {
+        "title": _("Advanced"),
+        "description": _("Take your OSS game to the next level!"),
+        "tools": tools.filter(category=Tool.CAT_ADVANCED)
+    }, {
+        "title": _("Community"),
+        "description": _("Friendship, mentorship, and community are all part of the process."),
+        "tools": tools.filter(category=Tool.CAT_COMMUNITY)
+    }, {
+        "title": _("Tools to BUIDL Gitcoin"),
+        "description": _("Gitcoin is built using Gitcoin.  Purdy cool, huh? "),
+        "tools": tools.filter(category=Tool.CAT_BUILD)
+    }, {
+        "title": _("Tools in Alpha"),
+        "description": _("These fresh new tools are looking for someone to test ride them!"),
+        "tools": tools.filter(category=Tool.CAT_ALPHA)
+    }, {
+        "title": _("Tools Coming Soon"),
+        "description": _("These tools will be ready soon.  They'll get here sooner if you help BUIDL them :)"),
+        "tools": tools.filter(category=Tool.CAT_COMING_SOON)
+    }, {
+        "title": _("Just for Fun"),
+        "description": _("Some tools that the community built *just because* they should exist."),
+        "tools": tools.filter(category=Tool.CAT_FOR_FUN)
+    }]
 
     # setup slug
     for key in range(0, len(actors)):
         actors[key]['slug'] = slugify(actors[key]['title'])
 
+    profile_up_votes_tool_ids = ''
+    profile_down_votes_tool_ids = ''
     profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
-    ups = list(ToolVote.objects.filter(profile_id = profile_id, value = 1).values_list('tool', flat=True))
-    profile_up_votes_tool_ids = ','.join(str(x) for x in ups)
-    downs = list(ToolVote.objects.filter(profile_id = profile_id, value = -1).values_list('tool', flat=True))
-    profile_down_votes_tool_ids = ','.join(str(x) for x in downs)
+
+    if profile_id:
+        ups = list(request.user.profile.votes.filter(value=1).values_list('tool', flat=True))
+        profile_up_votes_tool_ids = ','.join(str(x) for x in ups)
+        downs = list(request.user.profile.votes.filter(value=-1).values_list('tool', flat=True))
+        profile_down_votes_tool_ids = ','.join(str(x) for x in downs)
+
     context = {
         "active": "tools",
         'title': _("Toolbox"),
@@ -886,6 +886,7 @@ def toolbox(request):
         'profile_down_votes_tool_ids': profile_down_votes_tool_ids
     }
     return TemplateResponse(request, 'toolbox.html', context)
+
 
 @csrf_exempt
 @require_POST
@@ -913,6 +914,7 @@ def vote_tool_up(request, tool_id):
         score_delta = 1
     return JsonResponse({'success': True, 'score_delta': score_delta})
 
+
 @csrf_exempt
 @require_POST
 def vote_tool_down(request, tool_id):
@@ -935,9 +937,10 @@ def vote_tool_down(request, tool_id):
             score_delta = -2
     except ToolVote.DoesNotExist:
         vote = ToolVote.objects.create(profile_id=profile_id, value=-1)
-        tool.votes.add(vote)        
+        tool.votes.add(vote)
         score_delta = -1
-    return JsonResponse({'success': True, 'score_delta': score_delta })
+    return JsonResponse({'success': True, 'score_delta': score_delta})
+
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
