@@ -1012,7 +1012,6 @@ class Profile(SuperModel):
     def has_repo(self, full_name):
         """Check if user has access to repo.
 
-
             Args:
                 full_name (str): Repository name, like gitcoin/web.
 
