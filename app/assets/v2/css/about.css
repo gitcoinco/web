@@ -27,6 +27,10 @@ h4 {
   text-align: center;
   font-family: "Muli", sans-serif;
 }
+.grow_hero img{
+  width: 100%;
+  max-width: 400px;
+}
 
 #origin_story img {
   max-height: 200px;
@@ -83,7 +87,6 @@ h4 {
 #team .social-links a {
   display: inline-block;
 }
-
 .gitcoin-svg {
   background-size: cover !important;
   background-image: url("/static/v2/images/ios/gitcoin.svg");

@@ -589,6 +589,12 @@ var render_actions = function(actions) {
 var pull_bounty_from_api = function() {
   var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
 
+  if (typeof document.issueNetwork != 'undefined') {
+    uri = uri + '&network=' + document.issueNetwork;
+  }
+  if (typeof document.issue_stdbounties_id != 'undefined') {
+    uri = uri + '&standard_bounties_id=' + document.issue_stdbounties_id;
+  }
   $.get(uri, function(results) {
     results = sanitizeAPIResults(results);
     var nonefound = true;

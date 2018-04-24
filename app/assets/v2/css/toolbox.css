@@ -119,4 +119,11 @@
 
 .votes button {
   border: none;
+  cursor: pointer;
+}
+.votes button:hover {
+  color: #aaa;
+}
+.votes button.active:hover {
+  color: white;
 }

@@ -1,13 +1,13 @@
-const path = require( 'path' );
-const webpack = require( 'webpack' );
-const BundleTracker = require( 'webpack-bundle-tracker' );
-const styleLintPlugin = require( 'stylelint-webpack-plugin' );
+const path = require('path');
+const webpack = require('webpack');
+const BundleTracker = require('webpack-bundle-tracker');
+const styleLintPlugin = require('stylelint-webpack-plugin');
 
 
 module.exports = {
   devtool: 'inline-source-map',
   output: {
-    path: path.resolve( __dirname, 'app/static/bundles' ),
+    path: path.resolve(__dirname, 'app/static/bundles'),
     filename: '[name]-[hash].js',
 
     // Tell django to use this URL to load packages and not use STATIC_URL + bundle_name
@@ -24,7 +24,7 @@ module.exports = {
           failOnError: true,
           outputReport: {
             filePath: 'checkstyle.xml',
-            formatter: require( 'eslint-friendly-formatter' )
+            formatter: require('eslint-friendly-formatter')
           }
         }
       }]
@@ -57,14 +57,14 @@ module.exports = {
   ],
   resolve: {
     alias: {
-      modulesDirectories: path.resolve( __dirname, 'node_modules' )
+      modulesDirectories: path.resolve(__dirname, 'node_modules')
     },
     extensions: ['.js']
   }
 };
 
 
-if ( process.env.NODE_ENV === 'production' ) {
+if (process.env.NODE_ENV === 'production') {
   module.exports.plugins = [
     new webpack.DefinePlugin({
       'process.env': {
@@ -77,7 +77,7 @@ if ( process.env.NODE_ENV === 'production' ) {
       }
     }),
     new webpack.optimize.OccurenceOrderPlugin()
-  ]
+  ];
 } else {
-  module.exports.devtool = '#source-map'
+  module.exports.devtool = '#source-map';
 }
