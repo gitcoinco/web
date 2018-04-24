@@ -26,7 +26,6 @@ from dashboard.models import Profile, UserAction
 from marketing.models import EmailEvent, EmailSubscriber, GithubEvent, SlackPresence, SlackUser, Stat
 
 
-
 def filter_types(types, _filters):
     return_me = []
     for t in types:
