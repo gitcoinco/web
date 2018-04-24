@@ -4,13 +4,61 @@
 
 [Full Changelog](https://github.com/gitcoinco/web/compare/20180416...HEAD)
 
+**Fixed bugs:**
+
+- BE tests currently failing [\#953](https://github.com/gitcoinco/web/issues/953)
+- \[BUG\] The User Menu is Covered on TX Confirmation Screen [\#924](https://github.com/gitcoinco/web/issues/924)
+- Gitcoinbot did not comment when bounty was posted [\#915](https://github.com/gitcoinco/web/issues/915)
+- expiration tests fix [\#913](https://github.com/gitcoinco/web/pull/913) ([kziemianek](https://github.com/kziemianek))
+
 **Closed issues:**
 
+- AttributeError: 'NoneType' object has no attribute 'email' [\#954](https://github.com/gitcoinco/web/issues/954)
+- test 123 [\#949](https://github.com/gitcoinco/web/issues/949)
+- Issue explorer don't show issue in case gas price has been changed [\#945](https://github.com/gitcoinco/web/issues/945)
+- ConnectionError: HTTPSConnectionPool\(host='ipfs.infura.io', port=5001\): Max retries exceeded with url: /api/v0/cat/QmXxkBASF92QvFFwChwZAECSRsjoMstMHJ2A9bwXuchXbA \(Caused by NewConnectionError\('\<urllib3.connection.VerifiedHTTPSConnection object at 0x7f6791 [\#932](https://github.com/gitcoinco/web/issues/932)
+- Test is a test issue [\#929](https://github.com/gitcoinco/web/issues/929)
+- As a user, I would should be informed when I no longer need to keep tip confirmation window open [\#928](https://github.com/gitcoinco/web/issues/928)
+- AttributeError: 'JsonResponse' object has no attribute 'read' [\#921](https://github.com/gitcoinco/web/issues/921)
+- AttributeError: 'LeaderboardRank' object has no attribute 'local\_avatar\_url' [\#914](https://github.com/gitcoinco/web/issues/914)
+- Design Funder Landing Page [\#908](https://github.com/gitcoinco/web/issues/908)
+- Test title [\#907](https://github.com/gitcoinco/web/issues/907)
+- 404 after logout at profile page [\#905](https://github.com/gitcoinco/web/issues/905)
+- Navbar responsive issue [\#903](https://github.com/gitcoinco/web/issues/903)
 - as a submitter, i want to link my github PR when i submit work, so i can show off what i did [\#893](https://github.com/gitcoinco/web/issues/893)
+- design - as a user, i want a quarterly 'my stats' email, so i can see my activity on the platform [\#892](https://github.com/gitcoinco/web/issues/892)
+- timezone issues with opened date [\#876](https://github.com/gitcoinco/web/issues/876)
+- BadFunctionCallOutput: Could not decode contract function call getBountyData return data b'' for output\_types \['string'\] [\#742](https://github.com/gitcoinco/web/issues/742)
+- BadFunctionCallOutput: Could not decode contract function call getFulfillment return data b'' for output\_types \['bool', 'address', 'string'\] [\#726](https://github.com/gitcoinco/web/issues/726)
+- coding -  /mentors page [\#725](https://github.com/gitcoinco/web/issues/725)
+- FieldError: Invalid order\_by arguments: \['-web3\_created/'\] [\#701](https://github.com/gitcoinco/web/issues/701)
+- refactor bounty.value\_in\_usdt into two functions [\#693](https://github.com/gitcoinco/web/issues/693)
+- \(DESIGN\) As a user, I want a Blockchain Job Board so I can find professional work in the space [\#540](https://github.com/gitcoinco/web/issues/540)
+- Display Tips on Leaderboard [\#522](https://github.com/gitcoinco/web/issues/522)
+- Http404 [\#481](https://github.com/gitcoinco/web/issues/481)
+- new\_bounty marketing emails need to be moved to a background job [\#477](https://github.com/gitcoinco/web/issues/477)
+- As a core team member, i want to Track deploys & releases for faster debugging [\#405](https://github.com/gitcoinco/web/issues/405)
+- \(unknown\): Uncaught this network is not supported in bounty\_address\(\) for gitcoin [\#362](https://github.com/gitcoinco/web/issues/362)
+- As a team member, I'd like to be on the /about page, so I can show off that I'm part of the team. [\#222](https://github.com/gitcoinco/web/issues/222)
 
 **Merged pull requests:**
 
+- Adds bounty flow doc to readme [\#956](https://github.com/gitcoinco/web/pull/956) ([owocki](https://github.com/owocki))
+- Tool modifications [\#944](https://github.com/gitcoinco/web/pull/944) ([mbeacom](https://github.com/mbeacom))
+- track hours worked on fulfillment [\#942](https://github.com/gitcoinco/web/pull/942) ([owocki](https://github.com/owocki))
+- about: Fix Origin Story [\#933](https://github.com/gitcoinco/web/pull/933) ([thelostone-mc](https://github.com/thelostone-mc))
+- more feedback emails [\#930](https://github.com/gitcoinco/web/pull/930) ([owocki](https://github.com/owocki))
+- bounty: hide timeline on cancelled bounties [\#922](https://github.com/gitcoinco/web/pull/922) ([thelostone-mc](https://github.com/thelostone-mc))
+- fixes https://github.com/gitcoinco/web/issues/876 [\#919](https://github.com/gitcoinco/web/pull/919) ([owocki](https://github.com/owocki))
+- make expiration status less inclusive [\#918](https://github.com/gitcoinco/web/pull/918) ([owocki](https://github.com/owocki))
+- about: core team design revamp [\#916](https://github.com/gitcoinco/web/pull/916) ([thelostone-mc](https://github.com/thelostone-mc))
+- navbar responsive issues [\#904](https://github.com/gitcoinco/web/pull/904) ([kziemianek](https://github.com/kziemianek))
+- avatar cleanup - and adds the ability to blend in the gitcoin logo to an avatar [\#902](https://github.com/gitcoinco/web/pull/902) ([owocki](https://github.com/owocki))
 - ability to add a pr link to work submission [\#900](https://github.com/gitcoinco/web/pull/900) ([owocki](https://github.com/owocki))
+- nav + explorer fixes [\#890](https://github.com/gitcoinco/web/pull/890) ([thelostone-mc](https://github.com/thelostone-mc))
+- Added team bios and community member links to /about page [\#887](https://github.com/gitcoinco/web/pull/887) ([jakerockland](https://github.com/jakerockland))
+- dashboard: Tests cleanup. [\#857](https://github.com/gitcoinco/web/pull/857) ([cryptomental](https://github.com/cryptomental))
+- Tool voting [\#763](https://github.com/gitcoinco/web/pull/763) ([kziemianek](https://github.com/kziemianek))
 
 ## [20180416](https://github.com/gitcoinco/web/tree/20180416) (2018-04-16)
 [Full Changelog](https://github.com/gitcoinco/web/compare/20180415master...20180416)
@@ -70,7 +118,6 @@
 **Closed issues:**
 
 - AttributeError: 'NoneType' object has no attribute 'email' [\#872](https://github.com/gitcoinco/web/issues/872)
-- AuthStateMissing: Session value state missing. [\#869](https://github.com/gitcoinco/web/issues/869)
 - This is a test bounty for demo purposes [\#868](https://github.com/gitcoinco/web/issues/868)
 - As a user, I only want to receive 1 match email per day, so I dont unsubscribe [\#454](https://github.com/gitcoinco/web/issues/454)
 
@@ -109,9 +156,6 @@
 - Document and check all possible status values [\#816](https://github.com/gitcoinco/web/issues/816)
 - Logo width is incorrect [\#808](https://github.com/gitcoinco/web/issues/808)
 - Performance Updates [\#777](https://github.com/gitcoinco/web/issues/777)
-- BadFunctionCallOutput: Could not decode contract function call getBountyToken return data b'' for output\_types \['address'\] [\#727](https://github.com/gitcoinco/web/issues/727)
-- BadFunctionCallOutput: Could not decode contract function call getFulfillment return data b'' for output\_types \['bool', 'address', 'string'\] [\#726](https://github.com/gitcoinco/web/issues/726)
-- FieldError: Invalid order\_by arguments: \['-web3\_created/'\] [\#701](https://github.com/gitcoinco/web/issues/701)
 - design - /mentors page [\#565](https://github.com/gitcoinco/web/issues/565)
 - Update Gitcoin Email Designs [\#563](https://github.com/gitcoinco/web/issues/563)
 - Code - /pitch pages [\#506](https://github.com/gitcoinco/web/issues/506)
