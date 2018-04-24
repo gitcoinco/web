@@ -123,6 +123,13 @@ Have an ERC20 compatible token that you'ud like to add support for?  Great!
 
 [Here is an example of how to do it](https://github.com/gitcoinco/web/pull/155)
 
+## High Level flow of a Bounty
+
+This is the high level flow of a bounty on Gitcoin:
+
+<img src='bounty_flow.png'>
+
+
 # Legal
 
 '''
