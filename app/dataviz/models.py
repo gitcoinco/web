@@ -11,7 +11,7 @@ class DataPayload(SuperModel):
 
     key = models.CharField(db_index=True, max_length=255, help_text=_("key for this data report"))
     report = models.CharField(max_length=255, blank=True, help_text=_("The report associated with this project"))
-    payload = JSONField(default=False, blank=True)
+    payload = JSONField(default={}, blank=True)
     comments = models.TextField(blank=True)
 
     def __str__(self):
