@@ -27,8 +27,12 @@
     </style>
   </head>
   <body>
-    <header id="avatar-builder-header">
-      <h1 id="title">{% trans "Build Your Gitcoin Avatar" %}</h1>
+    <header
+      id="avatar-builder-header"
+      class="d-flex flex-wrap justify-content-between align-items-end"
+    >
+      <h2 id="title" class="my-0 mr-3">{% trans "Build Your Gitcoin Avatar" %}</h2>
+      <span class="d-none text-muted">{% trans "Your Avatar is Complete!" %}</span>
     </header>
 
     <div id="avatar-builder">
@@ -50,22 +54,7 @@
         </h3>
 
         <div id="avatar-area" class="d-flex flex-wrap mb-2 justify-content-center">
-
-          <div id="avatar-preview" class="mb-3">
-            {% for l in layers %}
-              <img id="preview-{{ l }}"
-                src="" alt="{{ l }} Preview"
-                style="z-index: {{ forloop.counter }}"
-                {% if l == 'Face' or l == 'Ears' or l == 'Clothing' %}
-                  class="tone-dependent preview-section empty"
-                {% elif l == 'HairShort' or l == 'HairLong' or l == 'Mustache' or l == 'Beard' %}
-                  class="hair-color-dependent preview-section empty"
-                {% else %}
-                  class="preview-section empty"
-                {% endif %}
-              />
-            {% endfor %}
-          </div>
+          <div id="avatar-preview" class="mb-3"></div>
 
           {% for s in sections %}
           {% with s.name|cut:" " as id %}
@@ -87,7 +76,7 @@
                           class="hair-color-dependent"
                           src="{% static path %}"
                         {% else %}
-                          class="hair-color-dependent empty"
+                          class="hair-color-dependent d-none"
                         {% endif %}
                       />
                     {% endwith %}

@@ -638,11 +638,6 @@ def avatar(request):
     context = {
         'defaultTone': 'AE7242',
         'defaultHairColor': '000000',
-        'layers': (
-            'HatLong', 'HairLong', 'EarringBack', 'Clothing',
-            'Ears', 'Face', 'HairShort', 'HatShort', 'Earring', 'Beard',
-            'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses'
-        ),
         'sections': [
             { 'name': 'Face', 'title': 'Pick face shape',
               'options': ('0', '1', '2', '3', '4') },
@@ -679,7 +674,7 @@ def avatar(request):
               ) },
             { 'name': 'Clothing', 'title': 'Pick your clothing',
               'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt')},
-            { 'name': 'Accessories', 'title': 'Pick up to 3 accessories',
+            { 'name': 'Accessories', 'title': 'Pick your accessories',
               'options': (
                 ["Glasses-0"],
                 ["Glasses-1"],

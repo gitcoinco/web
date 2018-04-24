@@ -6,6 +6,7 @@ body {
 #avatar-builder-header {
   margin-bottom: 20px;
 }
+
 #avatar-builder {
   display: flex;
   flex-flow: row wrap;
@@ -48,9 +49,6 @@ body {
   background-color: #D8D8D8;
   flex-shrink: 0;
   position: relative;
-}
-.empty {
-  display: none;
 }
 .options-section {
   height: min-content;
