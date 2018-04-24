@@ -19,7 +19,7 @@
   </div>
   <div class="form-group">
     <label class="form__label" for="channel">{% trans "Slack channel to post to" %}</label>
-    <input type="text" name="channel" class="form__input" value="{{ profile.slack_channel }}">
+    <input type="text" name="channel" class="form__input" placeholder='#notif-gitcoin' value="{{ profile.slack_channel }}">
   </div>
   {% csrf_token %}
   <input class='button button--primary' type='submit' name='submit' value="{% trans "Go" %}">
