@@ -22,7 +22,7 @@
     <input type="text" name="channel" class="form__input" value="{{ profile.slack_channel }}">
   </div>
   {% csrf_token %}
-  <input class='button button--primary' type='submit' name='submit' value="Go">
+  <input class='button button--primary' type='submit' name='submit' value="{% trans "Go" %}">
 </form>
 </div>
 {% endblock %}
