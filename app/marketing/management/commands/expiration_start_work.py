@@ -47,7 +47,7 @@ class Command(BaseCommand):
             print('not running start work expiration because DEBUG is on')
             return
 
-        #todo: DRY with dashboard/notifications.py
+        # TODO: DRY with dashboard/notifications.py
         num_days_back_to_warn = 3
         num_days_back_to_delete_interest = 10
 
