@@ -187,12 +187,14 @@ def maybe_market_to_slack(bounty, event_name):
 
 def build_message_for_slack(bounty, event_name):
     """Build message to be posted to slack.
+
     Args:
         bounty (dashboard.models.Bounty): The Bounty to be marketed.
         event_name (str): The name of the event.
 
     Returns:
         str: Message to post to slack.
+
     """
     conv_details = ""
     usdt_details = ""
