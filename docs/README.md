@@ -127,7 +127,7 @@ Have an ERC20 compatible token that you'ud like to add support for?  Great!
 
 This is the high level flow of a bounty on Gitcoin:
 
-<img src='docs/bounty_flow.png'>
+<img src='bounty_flow.png'>
 
 
 # Legal
