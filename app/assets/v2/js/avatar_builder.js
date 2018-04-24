@@ -4,6 +4,7 @@ const layers = [
   'Ears', 'Face', 'HairShort', 'HatShort', 'Earring', 'Beard',
   'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses'
 ];
+const requiredLayers = [ 'Clothing', 'Ears', 'Face', 'Mouth', 'Nose', 'Eyes' ];
 const options = {};
 
 layers.forEach(name => {
@@ -60,6 +61,12 @@ function changeImage(option, path) {
     $('#avatar-preview').append(newEl);
   }
   options[option] = path;
+  const complete = requiredLayers.
+    reduce((complete, name) => !!options[name] && complete, true);
+
+  if (complete) {
+    $('#complete-notification').removeClass('d-none');
+  }
 }
 
 function setOption(option, value, target) {

@@ -52,7 +52,6 @@ body {
 }
 .options-section {
   height: min-content;
-  max-height: 255px;
   overflow: scroll;
   display: none !important;
 }
@@ -93,6 +92,9 @@ body {
   }
   #section-title {
     text-align: left;
+  }
+  .options-section {
+    max-height: 255px;
   }
 }
 @media (min-width: 500px) {
