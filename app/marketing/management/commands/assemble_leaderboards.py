@@ -58,6 +58,7 @@ def default_ranks():
         'all_earners': {},
     }
 
+
 ranks = default_ranks()
 
 
@@ -67,7 +68,7 @@ def add_element(key, username, amount):
         return
     if username not in ranks[key].keys():
         ranks[key][username] = 0
-    ranks[key][username] += round(float(amount) ,2)
+    ranks[key][username] += round(float(amount), 2)
 
 
 def sum_bounties(b, usernames):

@@ -225,8 +225,8 @@ class Bounty(SuperModel):
             return True
 
         # standardbounties
-        contract_deadline = self.raw_data.get('contract_deadline', False)
-        ipfs_deadline = self.raw_data.get('ipfs_deadline', False)
+        contract_deadline = self.raw_data.get('contract_deadline')
+        ipfs_deadline = self.raw_data.get('ipfs_deadline')
         if not ipfs_deadline:
             # if theres no expiry date in the payload, then expiration date is not mocked, and one cannot submit after expiration date
             return False
@@ -378,7 +378,7 @@ class Bounty(SuperModel):
                 if not self.is_open:
                     if self.accepted:
                         return 'done'
-                    if self.past_hard_expiration_date:
+                    elif self.past_hard_expiration_date:
                         return 'expired'
                     # If its not expired or done, it must be cancelled.
                     return 'cancelled'
