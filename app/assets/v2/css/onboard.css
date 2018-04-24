@@ -5,12 +5,12 @@ body {
 
 h2, h3 {
   letter-spacing: 0;
-  text-transform: capitalize;
 }
 
 h2 {
   font-size: 18px;
   margin-bottom: 2em;
+  text-transform: capitalize;
 }
 
 h3 {
@@ -18,23 +18,16 @@ h3 {
   margin-bottom: 2em;
   font-weight: 500;
   margin-top: 10px;
-}
-
-h3 span {
-  display: block;
-}
-
-h3 span:last-child {
-  margin-top: 10px;
+  line-height: 1.5em;
+  text-align: left;
+  text-transform: none;
 }
 
 #onboarding {
   text-align:center;
-  margin-top: 3em;
-  margin-bottom: 3em;
-  padding: 30px 10px 40px;
+  margin-top: 1em;
+  padding: 30px 10px 0;
   border-radius: 2px;
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14),0 3px 1px -2px rgba(0,0,0,0.12),0 1px 5px 0 rgba(0,0,0,0.2);
 }
 
 .show {
@@ -52,29 +45,15 @@ h3 span:last-child {
   display: none;
 }
 
-.step .left {
-  border-right: 2px solid #EAEAEA;
-}
-
 .step iframe,
-.step .left p,
 .step .icons div {
   margin: auto;
-}
-
-.step .right p {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-#step-2 .right .title {
-  margin-top: 0px;
 }
 
 .form__select2,
 .select2-results,
 .select2-search,
-.step .left .icons p,
+.step .icons p,
 .suggested-tag .text,
 .step .filter-tag,
 .step a span,
@@ -84,25 +63,21 @@ h3 span:last-child {
   font-size: 12px;
 }
 
-.step .right .logged-in p {
-  margin-bottom: 2px;
+#onboarding .controls {
+  float: right;
+  margin-right: 15px;
+  overflow: auto;
 }
 
-#step-2 .left p {
-  padding-left: 10px;
-  padding-right: 10px;
+.step svg {
+  font-size: 1.8em;
 }
 
 .step a svg {
   font-size: 16px;
 }
 
-.step .left svg {
-  font-size: 1.8em;
-  margin-bottom: 15px;
-}
-
-.step .right .button {
+.step .button {
   padding-left: 25px;
   padding-right: 25px;
 }
@@ -113,46 +88,61 @@ h3 span:last-child {
   border-left: 1px solid #FFF; 
 }
 
-.step .right .logged-in span {
-  font-weight: bolder;
-  display: inline-block;
-  margin-left: 10px;
-  position: relative;
-  top: 10px;
+.step .logged-in p {
+  margin-bottom: 2px;
 }
 
-.step .right .logged-in a {
+.step .logged-in h3 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.step .logged-in svg {
+  font-size: 1.2em
+}
+
+.step .logged-in a {
   display: block;
 }
 
-.step .right .logged-out h3 {
-  margin-top: 20px;
-  margin-bottom: 3em;
+#onboarding .controls p {
+  border: 1px solid #D6D6D6;
+  padding: 3px 16px;
 }
 
-.step .right #metamask {
-  margin-top: 3em;
-  margin-bottom: 2em;
+#next-btn,
+#prev-btn {
+  display: inline-block;
+  margin: 5px;
+  text-transform: capitalize;
+  border-radius: 3px;
+  cursor: pointer;
 }
 
-.step .right #metamask img {
+.step #metamask {
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+.step #metamask .locked {
+  margin-top: 1.8em;
+}
+
+.step #metamask img {
   width: 24px;
   position: relative;
   top: -1px;
   right: 2px;
 }
 
-.step .right #metamask .unlocked img{
-  width: 5em;
+.step #metamask .unlocked img {
+  width: 3.2em;
   margin-right: 10px;
 }
 
-.step .right #metamask .unlocked span{
+.step #metamask .unlocked span {
+  font-size: 14px;
   font-weight: bolder;
-}
-
-.step iframe {
-  margin-bottom: 10px;
 }
 
 .step-state {
@@ -175,15 +165,6 @@ h3 span:last-child {
   background-color: #1AB56D;
 }
 
-#next-btn,
-#prev-btn {
-  display: inline;
-  margin: 5px;
-  text-transform: uppercase;
-  font-weight: 600;
-  cursor: pointer;
-}
-
 .github-avatar {
   border-radius: 50%;
   width: 50px;
@@ -194,15 +175,15 @@ h3 span:last-child {
   color: #1AB56D;
 }
 
-.step .left .fa-wrench {
+#onboarding .fa-wrench {
   animation: turn 1s;
 }
 
-.step .left .fa-ethereum {
+#onboarding .fa-ethereum {
   animation: wiggle 1s;
 }
 
-.step .left .fa-connectdevelop {
+#onboarding .fa-connectdevelop {
   animation: rotate 1s;
 }
 
@@ -241,14 +222,10 @@ h3 span:last-child {
   margin: 5px;
 }
 
-.suggested-tag .text svg {
-  font-size: 9px;
-  margin-right: 8px;
-}
-
+.suggested-tag .text svg,
 .step .filter-tag svg {
   font-size: 9px;
-  margin-left: 8px;
+  margin-right: 8px;
 }
 
 .step .label {
@@ -262,8 +239,21 @@ h3 span:last-child {
   margin-bottom: 15px;
 }
 
+.search-area {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 #selected-skills {
   display: none;
+}
+
+.select2 {
+  height: 37px !important;
+}
+
+.experienceLabel {
+  margin-top: 8px;
 }
 
 :focus{
@@ -327,21 +317,24 @@ h3 span:last-child {
 .step .filter-tags {
   color: white;
   margin-bottom: 15px;
+  text-align: left;
 }
 
 .step .filter-tag {
   display: inline-block;
   background-color: #1AB56D;
   margin: 5px;
-  border-radius: 15px;
+  border-radius: 3px;
 }
 
-.footer .row {
-  display: none;
-}
-
-#navbarSupportedContent .navbar-nav {
+#navbarSupportedContent {
   visibility: hidden;
+}
+
+.completed {
+  background-color: #0D0764;
+  color: #FFFFFF;
+  border-color: #0D0764;
 }
 
 @keyframes turn {
@@ -361,4 +354,28 @@ h3 span:last-child {
 @keyframes rotate {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 767.98px) {
+  iframe {
+    max-width: 100%;
+  }
+
+  #onboarding {
+    margin-top: 0;
+  }
+
+  #onboarding .controls {
+    float: none;
+    margin-right: 0;
+  }
+
+  h3 {
+    text-align: center;
+  }
+
+  #step-3 div.pl-0 {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
 }

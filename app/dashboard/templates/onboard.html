@@ -29,21 +29,24 @@
       {% include 'shared/nav.html' %}
     </div>
     <div class="row">
-      <div class="col-12 offset-md-3 col-md-6">
+      <div class="col-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
         <form id="onboarding">
           <div class="state">
             <span class="step-state"></span>
             <span class="step-state"></span>
             <span class="step-state"></span>
           </div>
-          <div id="step-1" class="step show block">
-            <h2>{% trans "Welcome to the Gitcoin family" %}</h2>
+          <div id="step-1" link="github" class="step">
+            <h2>{% trans "Get started with Gitcoin!" %}</h2>
             <div class="row">
-              <div class="col-12 col-md-6 left">
-                <h3>
-                  <span>{% trans "Solve real world problems" %}</span>
-                  <span>{% trans "in the blockchain / web3 ecosystem" %}</span>
-                </h3>
+              <div class="col-12 col-md-8 offset-md-2">
+                {% blocktrans %}
+                  <h3>Use gitcoin to find paid work real world problems
+                     in the blockchain / web3 ecosystem.<br>Receive payment in Ether,
+                     a leading cryptocurrency</h3>
+                  <h3>Meet new people. Learn New Skills. Contribute to
+                     the open source community</h3>
+                {% endblocktrans %}
                 <div class="row icons">
                   <div class="col-3">
                     <i class="fas fa-wrench"></i>
@@ -58,82 +61,85 @@
                     <p>{% trans "Network" %}</p>
                   </div>
                 </div>
-              </div>
-              <div class="col-12 col-md-6 right">
-                {% if github_handle %}
-                  <div class="logged-in">
-                    <h3>
-                      <i class="far fa-check-circle"></i>
-                      {% trans "You've logged in!" %}
-                    </h3>
-                    <div class="font-caption row">
-                      <div class="col-12">
-                        <img class="github-avatar" src="{% url "avatar" %}?repo=https://github.com/{{ github_handle }}">
-                        <span>
-                          <p>{{ github_handle }}</p>
-                          <a href="{% url "logout" %}?next={{ request.get_full_path }}">
-                            {% trans "Logout" %}
-                          </a>
-                        </span>
+                <div class="col-12 mt-4">
+                  {% if github_handle %}
+                    <div class="logged-in">
+                      <h3>
+                        <i class="far fa-check-circle"></i>
+                        {% trans "You've logged in!" %}
+                      </h3>
+                      <div class="font-caption row">
+                        <div class="col-12">
+                          <img class="github-avatar" src="{% url "avatar" %}?repo=https://github.com/{{ github_handle }}">
+                          <span>
+                            <p>{{ github_handle }}</p>
+                            <a href="{% url "logout" %}?next={{ request.get_full_path }}">
+                              {% trans "Logout" %}
+                            </a>
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                {% else %}
-                  <div class="logged-out">
-                    <h3>{% trans "Let's get your account setup." %}</h3>
-                    <a class="button button--primary" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
-                      onclick="dataLayer.push({'event': 'login'});">
-                      <i class="fab fa-github"></i>
-                      <span>{% trans "Login with github" %}</span>
-                    </a>
-                  </div>
-                {% endif %}
+                  {% else %}
+                    <div class="logged-out">
+                      <a class="button button--primary" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
+                        onclick="dataLayer.push({'event': 'login'});">
+                        <i class="fab fa-github"></i>
+                        <span>{% trans "Login with github" %}</span>
+                      </a>
+                    </div>
+                  {% endif %}
+                </div>
               </div>
             </div>
           </div>
-          <div id="step-2" class="step">
+          <div id="step-2" link="metamask" class="step">
             <h2>{% trans "Metamask" %}</h2>
             <div class="row">
-              <div class="col-12 col-md-6 left">
-                <div class="row font-caption">
-                  <iframe width="300" height="200"
+              <div class="col-12 col-md-8 offset-md-2">
+                {% blocktrans %}
+                  <h3>Install MetaMask - your secure, encrypted digital wallet
+                    <br><br>
+                    You will set up Metamask to take on a project or get paid for the work you've completed on gitcoin
+                  </h3>
+                {% endblocktrans %}
+                <div class="col-12">
+                  <iframe width="400" height="200"
                     src="https://www.youtube.com/embed/6Gf_kRE4MJU?rel=0&amp;showinfo=0"
                     frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                  <p>{% trans "MetaMask is a bridge that allows you to visit the distributed web of tomorrow in your browser today" %}</p>
-                </div>
-              </div>
-              <div class="col-12 col-md-6 right font-caption">
-                <p class="title font-body">
-                  {% trans "Setup up metamask to get paid for the kickass work you've done via gitcoin" %}
-                </p>
-                <div id="metamask">
-                  <a class="button button--primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
-                    <img src={% static "v2/images/metamask.svg" %}>
-                    <span>{% trans "Setup Metamask" %}</span>
-                  </a>
                 </div>
                 <div class="col-12">
+                  <div id="metamask">
+                    <div class="locked">
+                      <a class="button button--primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
+                        <img src={% static "v2/images/metamask.svg" %}>
+                        <span>{% trans "Setup Metamask" %}</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 font-caption mt-2">
                   <p>{% trans "Getting Ether, Your Digital Currency" %}</p>
                 </div>
-                <div class="col-12">
+                <div class="col-12 font-caption">
                   <p>{% trans "How to send ETH to Metamask" %}</p>
                 </div>
-                <div class="col-12">
-                  <p>{% trans "FAQ : MetaMask" %}</p>
+                <div class="col-12 font-caption">
+                  <p class="mb-0">{% trans "FAQ : MetaMask" %}</p>
                 </div>
               </div>
             </div>
           </div>
-          <div id="step-3" class="step">
-            <h2>{% trans "What's your skill set ?" %}</h2>
+          <div id="step-3" link="skills" class="step">
+            <h2>{% trans "What's your skill set?" %}</h2>
             <div class="row">
               <div class="col-12 offset-md-2 col-md-8 font-body pl-0 pr-0">
                 <p class="font-caption label">{% trans "Suggested" %}</p>
                 <div id="suggested-tags"></div>
               </div>
               <div class="search col-12 offset-md-2 col-md-8 pl-0 pr-0">
-                <p class="font-caption label">{% trans "Search Skill" %}</p>
-                <div class="search-area col-12 pl-0 pr-0">
+                <p class="font-caption label">{% trans "Add Skill" %}</p>
+                <div class="search-area col-12">
                   <input class="focus-effect form__input form__input_lg" id="keywords" type="text" placeholder="{% trans 'List out : Skill 1, Skill 2 ...' %}" />
                   <span class="focus-border">
                     <i></i>
@@ -141,26 +147,34 @@
                 </div>
               </div>
               <div class="col-12 offset-md-2 col-md-8 font-body pl-0 pr-0">
-                <p class="font-caption label" id="selected-skills">{% trans "Selected Skills" %}</p>
                 <div class="filter-tags"></div>
               </div>
-              <div class="col-12 offset-md-4 col-md-4">
-                <div class="form__select2">
+              <div class="col-12 offset-md-2 col-md-8 row pl-0 pr-0">
+                <div class="col-12 col-md-4 col-lg-3 pl-0 pr-0">
+                  <p class="font-caption label experienceLabel">{% trans "Experience Level" %}</p>
+                </div>
+                <div class="form__select2 col-12 col-md-8 col-lg-9 pl-0 pr-0">
                     <select class="w-100 js-select2" id="experienceLevel">
-                        <option value="">{% trans "Experience Level" %}</option>
-                        <option>{% trans "Beginner" %}</option>
-                        <option>{% trans "Intermediate" %}</option>
-                        <option>{% trans "Advanced" %}</option>
+                        <option value="">{% trans "Any" %}</option>
+                        <option value="beginner">{% trans "Beginner ( < 4 years Experience )" %}</option>
+                        <option value="intermediate">{% trans "Intermediate ( 4 - 5 years Experience )" %}</option>
+                        <option value="advanced">{% trans "Advanced ( > 5 years Experience )" %}</option>
                     </select>
                 </div>
               </div>
             </div>
           </div>
-          <div style="overflow:auto;">
-            <div style="float:right;margin-right:15px;">
-              <p id="prev-btn" onclick="changeStep(-1)">{% trans "Previous" %}</p>
-              <p id="next-btn" onclick="changeStep(1)">{% trans "Next" %}</p>
+          <div id="step-4" link="avatar" class="step">
+            <h2>{% trans "Build your avatar" %}</h2>
+            <div class="row">
+              <div class="col-12">
+                <img style="width:45em;max-width:100%;" src="https://i.imgur.com/UMRUvGe.png">
+              </div>
             </div>
+          </div>
+          <div class="controls">
+            <p id="prev-btn" class= ""onclick="changeStep(-1)">{% trans "Previous" %}</p>
+            <p id="next-btn" onclick="changeStep(1)">{% trans "Next" %}</p>
           </div>
         </form>
       </div>
@@ -168,7 +182,6 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
-    {% include 'shared/footer.html' %}
   </body>
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/pages/onboard.js" %}"></script>

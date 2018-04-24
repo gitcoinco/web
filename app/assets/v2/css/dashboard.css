@@ -128,6 +128,12 @@ body {
 }
 
 @media (max-width: 768px) {
+
+  #onboard-dashboard .col-12 {
+    padding-left: 3em;
+    padding-right: 3em;
+  }
+
   #filter {
     padding-left: 20px;
   }

@@ -328,6 +328,13 @@ var paint_bounties_in_viewport = function(start, max) {
     $(this).attr('href', href);
   });
   document.is_painting_now = false;
+
+  if (document.referrer.search('/onboard')) {
+    $('.bounty_row').each(function(index) {
+      if (index > 2)
+        $(this).addClass('hidden');
+    });
+  }
 };
 
 var trigger_scroll = debounce(function() {
@@ -495,7 +502,7 @@ var resetFilters = function() {
 };
 
 (function() {
-  if (document.referrer.endsWith('/onboard')) {
+  if (document.referrer.search('/onboard')) {
     $('#sidebar_container').addClass('invisible');
     $('#dashboard-title').addClass('hidden');
     $('#onboard-dashboard').removeClass('hidden');
@@ -505,6 +512,9 @@ var resetFilters = function() {
     document.referrer = '';
 
     $('#onboard-alert').click(function(e) {
+      $('.bounty_row').each(function(index) {
+        $(this).removeClass('hidden');
+      });
       $('#onboard-dashboard').addClass('hidden');
       $('#sidebar_container').removeClass('invisible');
       $('#dashboard-title').removeClass('hidden');
