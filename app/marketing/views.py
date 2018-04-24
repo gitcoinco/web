@@ -650,8 +650,8 @@ def slack_settings(request):
         repos = request.POST.get('repos').split(',')
         channel = request.POST.get('channel', '')
         no_access = [repo_name for repo_name in repos if repo_name != '' and not profile.has_repo(repo_name)]
-        if len(no_access):
-            msg = _('You don\'t have access to {}').format(no_access)
+        if no_access:
+            msg = _(f'You don\'t have access to {no_access}')
         else:
             profile.slack_token = token
             profile.slack_repos = repos
