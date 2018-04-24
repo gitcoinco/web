@@ -249,10 +249,7 @@ def get_status_header(bounty):
         statuses.append('**Expired**')
     else:
         if status == 'open':
-            statuses = ['**Open**']
-            statuses.append('Started')
-            statuses.append('Submitted')
-            statuses.append('Done')
+            statuses = ['**Open**', 'Started', 'Submitted', 'Done']
         elif status == 'started':
             statuses.append('**Started**')
             statuses.append('Submitted')
@@ -275,7 +272,7 @@ def get_status_header(bounty):
     for x in range(0, len(statuses)):
         status_bar += f"{x+1}. {statuses[x]} "
 
-    return f"""Issue Status: {status_bar}\n\n<hr>\n\n"""
+    return f"Issue Status: {status_bar}\n\n<hr>\n\n"
 
 
 def build_github_notification(bounty, event_name, profile_pairs=None):
@@ -355,7 +352,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             for bf in bounty.fulfillments.all():
                 username = "@"+bf.fulfiller_github_username if bf.fulfiller_github_username else bf.fulfiller_address
                 link_to_work = f"[PR]({bf.fulfiller_github_url})" if bf.fulfiller_github_url else "(Link Not Provided)"
-                sub_msg += f"* {link_to_work} by {username}\n" 
+                sub_msg += f"* {link_to_work} by {username}\n"
 
         msg = f"{status_header}__Work for {natural_value} {bounty.token_name} {usdt_value} has been submitted by__: \n 1. " \
               f"{profiles} {sub_msg} \n\n * Learn more [on the Gitcoin Issue Details page]({absolute_url})\n * " \
