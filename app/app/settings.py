@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django.contrib.sitemaps',
     'django.contrib.sites',
+    'autotranslate',
     'app',
     'retail',
     'rest_framework',
@@ -177,7 +178,8 @@ LOCALE_PATHS = (
 )
 
 LANGUAGES = [
-    ('en', _('English'))
+    ('en', _('English')),
+    ('de', _('German')),
 ]
 
 if not ENV in ['local', 'test']:

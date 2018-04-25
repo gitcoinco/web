@@ -6,10 +6,10 @@
 
   <head>
     {% include 'shared/head.html' %}
-    {% include 'shared/cards_pic.html' %}    
+    {% include 'shared/cards_pic.html' %}
   </head>
 
-  <body class="interior {{active}}">
+  <body class="interior {{ active }}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
@@ -18,25 +18,25 @@
       <div class="col body">
         <div class="container-fluid">
           <div id="hero" class="pt-4">
-            <img class="avatar" src="{{profile.avatar_url}}">
+            <img class="avatar" src="{{ profile.avatar_url }}">
             <h2 class="mt-3">
                 <span>Profile</span>
                 <span id="alpha">Alpha</span>
                 <br>
-                <span style="font-size: 24px;">{{profile.handle}}</span>
+                <span style="font-size: 24px;">{{ profile.handle }}</span>
             </h2>
             {% if profile.data.bio %}
               <p>
-                {{profile.data.bio}}
+                {{ profile.data.bio }}
               </p>
-            {% endif %} 
+            {% endif %}
             {% if profile.authors|length %}
               <ul class='authors'>
-                Works with: 
+                Works with:
                 {% for author in profile.authors %}
                   <li>
-                    <a href="{% url "profile" %}{{author}}" title="{{author}}" target="_blank" rel="noopener noreferrer">
-                      <img src="{% url "avatar" %}?repo=https://github.com/{{author}}">
+                    <a href="{% url "profile" %}{{ author }}" title="{ {author }}" target="_blank" rel="noopener noreferrer">
+                      <img src="{% url "avatar" %}?repo=https://github.com/{{ author }}">
                     </a>
                   </li>
                 {% endfor %}
@@ -44,19 +44,19 @@
             {% endif %}
             <ul class='ctas'>
               <li>
-                <a href="{{profile.data.blog}}">
+                <a href="{{ profile.data.blog }}">
                   <img src="{% static "v2/images/social/web.png" %}" alt="Medium">
                 </a>
               </li>
               {% if profile.data.email %}
                 <li>
-                  <a href="mailto:{{profile.data.email | obfuscate}}">
+                  <a href="mailto:{{ profile.data.email | obfuscate }}">
                     <img src="{% static "v2/images/social/mail.png" %}" alt="Medium">
                   </a>
                 </li>
               {% endif %}
               </li>
-                <a href="{{profile.data.html_url}}?tab=repositories">
+                <a href="{{ profile.data.html_url }}?tab=repositories">
                   <img src="{% static "v2/images/social/github.png" %}" alt="Medium">
                 </a>
               </li>
@@ -70,9 +70,9 @@
                 <ul id="stats">
                   {% for stat in stats %}
                   <li>
-                    {{stat.0}}
+                    {{ stat.0 }}
                     <span>
-                      {{stat.1}}
+                      {{ stat.1 }}
                     </span>
                   </li>
                   {% endfor %}
@@ -80,11 +80,11 @@
               {% endif %}
               <div>
                 <div>
-                  <h4>{% blocktrans %}{{profile.handle}} has received these tips{% endblocktrans %}</h4>
+                  <h4>{{ profile.handle }} {% blocktrans %}has received these tips{% endblocktrans %}</h4>
                   <div class="text-center">
-                    {% if tips|length == 0 %} 
+                    {% if tips|length == 0 %}
                       {% trans "No tips found" %}
-                    {% endif %} 
+                    {% endif %}
                     {% if tips|length > 0 %}
                       <div class="row">
                         <div class="col-3">
@@ -98,44 +98,44 @@
                         </div>
                       </div>
                       {% for tip in tips %}
-                        <div class="row tip-row" data-ref-url="{{tip.github_url}}">
+                        <div class="row tip-row" data-ref-url="{{ tip.github_url }}">
                           <div class="col-3">
-                          {% if tip.from_username %} 
-                            {{tip.from_username}} 
-                          {% else %} 
-                            {% trans "Unknown" %} 
+                          {% if tip.from_username %}
+                            {{tip.from_username}}
+                          {% else %}
+                            {% trans "Unknown" %}
                           {% endif %}
                           </div>
                           <div class="col-3">
                             {% if tip.github_url %}
-                              <a href="{{tip.github_url}}">{{tip.github_url}}</a>
-                            {% else %} 
-                              Unknown 
+                              <a href="{{ tip.github_url }}">{{ tip.github_url }}</a>
+                            {% else %}
+                              Unknown
                             {% endif %}
                           </div>
                           <div class="col-6">
                             <a class="btn btn-sm btn-darkBlue font-smaller-2 tip-value">
-                              {{tip.amount}} {{tip.tokenName}}, {{tip.value_in_usdt_now}} USD
+                              {{ tip.amount }} {{ tip.tokenName }}, {{ tip.value_in_usdt_now }} USD
                             </a>
                             <div>
-                              {% if tip.comments_public %} 
-                                Comments: {{tip.comments_public}} 
+                              {% if tip.comments_public %}
+                                Comments: {{ tip.comments_public }}
                               {% endif %}
                             </div>
                           </div>
                         </div>
-                      {% endfor %} 
+                      {% endfor %}
                     {% endif %}
                   </div>
                 </div>
               </div>
               <div>
                 <div>
-                  <h4>{% blocktrans %}{{profile.handle}} has Participated in these Funded Issues{% endblocktrans%}</h4>
+                  <h4>{{ profile.handle }} {% blocktrans %}has Participated in these Funded Issues{% endblocktrans %}</h4>
                   <div class="bounties text-center">
-                    {% if bounties|length == 0 %} 
-                      {% trans "No funded issues found" %} 
-                    {% endif %} 
+                    {% if bounties|length == 0 %}
+                      {% trans "No funded issues found" %}
+                    {% endif %}
                     {% if bounties|length > 0 %}
                       <div class="row">
                         <div class="col-2 d-none d-sm-block">
@@ -154,35 +154,35 @@
                       {% for b in bounties %}
                         <div class="row bounty-row" data-ref-url="{{b.url}}">
                           <div class="col-2 d-none d-sm-block">
-                            {% if profile.handle == b.fulfiller_github_username %} 
-                              {% trans "Worker" %} 
+                            {% if profile.handle == b.fulfiller_github_username %}
+                              {% trans "Worker" %}
                             {% elif profile.handle == b.bounty_owner_github_username%}
-                              {% trans "Funder" %} 
-                            {% elif profile.handle == b.org_name %} 
-                              {% trans "Repo Owner" %} 
+                              {% trans "Funder" %}
+                            {% elif profile.handle == b.org_name %}
+                              {% trans "Repo Owner" %}
                             {% else %}
-                              {% trans "Worker" %} 
+                              {% trans "Worker" %}
                             {% endif %}
                           </div>
                           <div class="col-2">
-                            {{b.status}}
+                            {{ b.status }}
                           </div>
                           <div class="col-10 col-sm-8 col-md-4">
-                            <img style="max-width: 30px;" src="{{b.avatar_url}}">
+                            <img style="max-width: 30px;" src="{{ b.avatar_url }}">
                             <h6>
-                              {{b.title_or_desc | truncatechars:50}}
+                              {{ b.title_or_desc | truncatechars:50 }}
                             </h6>
                             <p class="bounty-desc">
-                              {{b.desc}}
+                              {{ b.desc }}
                             </p>
                           </div>
                           <div class="col-4 col-md-4  d-none d-md-block bounty-value">
                             <a class="btn btn-sm btn-darkBlue font-smaller-2">
-                              {{b.value_true}} {{b.token_name}}, {{b.value_in_usdt_now}} USD
+                              {{ b.value_true }} {{ b.token_name }}, {{ b.value_in_usdt_now }} USD
                             </a>
                           </div>
                         </div>
-                      {% endfor %} 
+                      {% endfor %}
                     {% endif %}
                   </div>
                 </div>
@@ -192,17 +192,17 @@
                     {% for r in profile.repos_data %}
                       <li>
                         <div class="dot">&nbsp;</div>
-                        <a href="{% url "explorer" %}?q={{r.html_url}}">
-                          <p class="meta mr-3">{% blocktrans %}{{r.stargazers_count}} stars{% endblocktrans %}</p>
+                        <a href="{% url "explorer" %}?q={{ r.html_url }}">
+                          <p class="meta mr-3">{% blocktrans %}{{ r.stargazers_count }} stars{% endblocktrans %}</p>
                           <h6>
-                            {{r.full_name}}
+                            {{ r.full_name }}
                           </h6>
                           {% if r.description %}
-                            <p class="mb-1">{{r.description}}</p>
+                            <p class="mb-1">{{ r.description }}</p>
                           {% endif %}
                         </a>
                       </li>
-                    {% endfor %} 
+                    {% endfor %}
                     {% if profile.repos_data|length == 0 %}
                       <li>
                         {% trans "No repos" %}
@@ -218,10 +218,10 @@
       </div>
     </div>
 
-    {% include 'shared/bottom_notification.html' %} 
-    {% include 'shared/analytics.html' %} 
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html'%}
-    {% include 'shared/rollbar.html' %} 
+    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
 
   </body>

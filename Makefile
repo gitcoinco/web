@@ -7,6 +7,18 @@ PROJECT_DIR := $(subst -,, $(shell pwd | xargs basename))
 CONTAINER_NAME := $(addsuffix _web_1, $(PROJECT_DIR))
 WEB_CONTAINER_ID := $(shell docker inspect --format="{{.Id}}" $(CONTAINER_NAME))
 
+autotranslate: ## Automatically translate all untranslated entries for all LOCALES in settings.py.
+	@echo "Starting makemessages..."
+	@docker-compose exec web python3 app/manage.py makemessages -a -d django -i node_modules -i static -i ipfs
+	@echo "Starting JS makemessages..."
+	@docker-compose exec web python3 app/manage.py makemessages -a -d djangojs -i node_modules -i static -i assets/v2/js/ipfs-api.js
+	@echo "Starting autotranslation of messages..."
+	@docker-compose exec web python3 app/manage.py translate_messages -u
+	# TODO: Add check for messed up python var strings.
+	@echo "Starting compilemessages..."
+	@docker-compose exec web python3 app/manage.py compilemessages -f
+	@echo "Translation Completed!"
+
 collect-static: ## Collect newly added static resources from the assets directory.
 	@docker-compose exec web python3 app/manage.py collectstatic -i other
 
