@@ -168,6 +168,7 @@ window.onload = function() {
 
       };
       // Get bountyId from the database
+
       waitforWeb3(function() {
         var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
