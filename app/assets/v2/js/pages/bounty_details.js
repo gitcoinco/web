@@ -63,6 +63,7 @@ var rows = [
   'issue_description',
   'bounty_owner_github_username',
   'fulfillments',
+  'network',
   'experience_level',
   'project_length',
   'bounty_type',
@@ -166,6 +167,15 @@ var callbacks = {
     var timePeg = timeDifference(new Date(), new Date(val), false, 60 * 60);
 
     return [ 'fulfillment_accepted_on', timePeg ];
+  },
+  'network': function(key, val, result) {
+    if (val == 'mainnet') {
+      $('#network').addClass('hidden');
+      return [ null, null ];
+    }
+    var warning = 'WARNING: this is a ' + val + ' network bounty, and is NOT real money.  To see mainnet bounties, go to <a href="/explorer">the bounty explorer</a> and search for mainnet bounties.  ';
+
+    return [ 'network', warning ];
   },
   'token_value_time_peg': function(key, val, result) {
     if (val === null || typeof val == 'undefined') {
@@ -412,7 +422,6 @@ var build_detail_page = function(result) {
 
   // title
   result['title'] = result['title'] ? result['title'] : result['github_url'];
-  result['title'] = result['network'] != 'mainnet' ? '(' + result['network'] + ') ' + result['title'] : result['title'];
   $('.title').html(gettext('Funded Issue Details: ') + result['title']);
 
   // insert table onto page
