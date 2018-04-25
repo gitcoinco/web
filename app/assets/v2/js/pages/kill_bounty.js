@@ -16,9 +16,9 @@ window.onload = function() {
 
     $('#submitBounty').validate({
       submitHandler: function(form) {
-        try{
+        try {
           bounty_address();
-        }catch(exception){
+        } catch (exception) {
           _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
           return;
         }

@@ -64,9 +64,9 @@ window.onload = function() {
     });
 
     $('#acceptBounty').click(function(e) {
-      try{
+      try {
         bounty_address();
-      }catch(exception){
+      } catch (exception) {
         _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
         return;
       }
