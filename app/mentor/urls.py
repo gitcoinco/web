@@ -4,7 +4,6 @@ from . import views
 
 urlpatterns = [
     path('', views.mentors, name='mentor_list'),
-    path('fetch', views.mentors_fetch, name='mentors_fetch'),
-    path('profile', views.mentor, name='mentor'),
-    path('<int:mentor_id>/profile', views.show_mentor, name='mentor_details')
+    path('fetch', views.MentorsList.as_view(), name='mentor_list'),
+    path('<int:pk>', views.MentorDetail.as_view(), name='mentor_details')
 ]

@@ -1,13 +1,29 @@
-from django.contrib.postgres.fields import ArrayField
-from django.db import models
-from django.utils.translation import gettext_lazy as _
-
-from economy.models import SuperModel
+from dashboard.models import Profile
 from rest_framework import serializers
+from rest_framework.fields import CharField
 
 
-class Mentor(SuperModel):
+class StringArrayField(CharField):
+    """
+    String representation of an array field.
+    """
+    def to_representation(self, obj):
+        return ",".join(obj)
 
+    def to_internal_value(self, data):
+        return data.split(",")
+
+
+class MentorSerializer(serializers.ModelSerializer):
+    """Handle serializing the Mentor object."""
+
+    class Meta:
+        """Define the mentor serializer metadata."""
+
+        model = Profile
+        fields = ('id', 'name', 'email', 'org', 'about', 'experience',
+                  'skills_offered', 'skills_needed', 'commitment_per_week', 'available')
+    # TODO: take directly from model
     TIME_RANGE = [
         ('1_5', '1 - 5'),
         ('5_10', '5 - 10'),
@@ -16,34 +32,37 @@ class Mentor(SuperModel):
         ('20_', '20+'),
     ]
 
-    profile = models.ForeignKey('dashboard.Profile', related_name='mentor', on_delete=models.CASCADE)
-    org = models.CharField(max_length=255)
-    about = models.TextField(blank=True)
-    experience = models.CharField(max_length=5, choices=TIME_RANGE, blank=True)
-    skills_offered = ArrayField(models.CharField(max_length=255), blank=True, default=[],
-                                help_text=_("comma delimited"))
-    skills_needed = ArrayField(models.CharField(max_length=255), blank=True, default=[], help_text=_("comma delimited"))
-    available = models.BooleanField(default=False)
-    commitment_per_week = models.CharField(max_length=5, choices=TIME_RANGE, blank=True)
+    email = serializers.CharField(
+        style={'template': 'email-input.html'}
+    )
 
+    org = serializers.CharField(
+        style={'template': 'text-input.html'}
+    )
 
-class MentorSerializer(serializers.BaseSerializer):
-    """Handle serializing the Mentor object."""
+    about = serializers.CharField(
+        style={'template': 'text-area-input.html'},
+    )
 
-    class Meta:
-        """Define the mentor serializer metadata."""
+    experience = serializers.ChoiceField(
+        style={'template': 'select-input.html'},
+        choices=TIME_RANGE
+    )
 
-        model = Mentor
-        field = ('id', 'name', 'email', 'org', 'about', 'experience',
-                 'skills_offered', 'skills_needed', 'available', 'commitment_per_week')
+    skills_offered = StringArrayField(
+        style={'template': 'text-area-input.html'},
+    )
 
-    def to_representation(self, instance):
-        """Provide the serialized representation of Mentor"""
+    skills_needed = StringArrayField(
+        style={'template': 'text-area-input.html'},
+    )
 
-        return {
-            'id': instance.id,
-            'name': instance.profile.name,
-            'email': instance.profile.email,
-            'org': instance.org,
-            'skills_offered': instance.skills_offered
-        }
+    commitment_per_week = serializers.ChoiceField(
+        style={'template': 'select-input.html'},
+        choices=TIME_RANGE
+    )
+
+    available = serializers.BooleanField(
+        style={'template': 'checkbox-input.html'},
+        label="Are you available to mentor now?"
+    )

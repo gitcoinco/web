@@ -7,35 +7,6 @@ var mentors = (function() {
     $('#save_search, #search_sort').hide();
     var chekcbox_filter_tmpl = $.templates('#mentor_checkbox_filter');
 
-    var organization_filters = [
-      {
-        id: 'gitcoin_filter',
-        value: 'Gitcoin'
-      },
-      {
-        id: 'diligence_filter',
-        value: 'Diligence'
-      },
-      {
-        id: 'ultradark_filter',
-        value: 'UltraDark'
-      },
-      {
-        id: 'truffle_filter',
-        value: 'Truffle'
-      },
-      {
-        id: 'digital_lizard_printing_filter',
-        value: 'Digital Lizard Printing'
-      }
-    ];
-
-    organization_filters.forEach((filter) => {
-      var html = chekcbox_filter_tmpl.render(filter);
-
-      $('#mentors_organization_filters').append(html);
-    });
-
     var experience_filters = [
       {
         id: '1_5',
@@ -65,44 +36,51 @@ var mentors = (function() {
       $('#mentors_experience_filters').append(html);
     });
 
-    var skills_filters = [
-      {
-        id: 'python',
-        value: 'Python'
-      },
-      {
-        id: 'haskell',
-        value: 'Haskell'
-      },
-      {
-        id: 'solidity',
-        value: 'Solidity'
-      },
-      {
-        id: 'docker',
-        value: 'Docker'
-      },
-      {
-        id: 'machine_learning',
-        value: 'Machine Learning'
-      }
-    ];
+    function debounce(func, wait, immediate) {
+      var timeout;
 
-    skills_filters.forEach((filter) => {
-      var html = chekcbox_filter_tmpl.render(filter);
+      return function() {
+        var context = this;
+        var args = arguments;
+        var later = function() {
+          timeout = null;
+          if (!immediate)
+            func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
 
-      $('#mentors_skills_filters').append(html);
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow)
+          func.apply(context, args);
+      };
+    }
+
+    $('#keywords').keyup(debounce(function() {
+      $('#mentor_search_results').html('');
+      fetchMentors(1, 10);
+    }, 500));
+
+    $('#load_more').click(function() {
+      fetchMentors(++pageIdx, pageSize);
+    });
+    console.log($('.mentor_checkbox_filter'));
+    $('.mentor_checkbox_filter').change(function() {
+      $('#mentor_search_results').html('');
+      fetchMentors(1, 10);
     });
   };
 
   fetchMentors(1, pageSize);
 
-  $('#load_more').click(function() {
-    fetchMentors(++pageIdx, pageSize);
-  });
-
   function fetchMentors(page, size) {
-    $.get('fetch', { page, size }, (result) => {
+    var term = $('#keywords').val();
+
+    var exp = $('.mentor_checkbox_filter:checked').map(function() {
+      return this.id;
+    }).get().join(',');
+
+    $.get('fetch', { page, size, term, exp }, (result) => {
       var mentor_tmpl = $.templates('#mentor');
 
       result.mentors.forEach((mentor) => {
@@ -110,7 +88,7 @@ var mentors = (function() {
 
         $('#mentor_search_results').append(html);
         $('#open_mentor_' + mentor.id).click(function() {
-          window.location = '' + mentor.id + '/profile';
+          window.location = '' + mentor.id;
         });
       });
       if (result.total_pages > pageIdx) {

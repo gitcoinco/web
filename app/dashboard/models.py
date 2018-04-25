@@ -1032,6 +1032,14 @@ class Profile(SuperModel):
 
     """
 
+    TIME_RANGE = [
+        ('1_5', '1 - 5'),
+        ('5_10', '5 - 10'),
+        ('10_15', '10 - 15'),
+        ('15_20', '15 - 20'),
+        ('20_', '20+'),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True)
@@ -1055,6 +1063,14 @@ class Profile(SuperModel):
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
     )
     form_submission_records = JSONField(default=[], blank=True)
+    org = models.CharField(max_length=255, null=True)
+    about = models.TextField(null=True)
+    experience = models.CharField(max_length=5, choices=TIME_RANGE, null=True)
+    skills_offered = ArrayField(models.CharField(max_length=255), null=True, default=[],
+                                help_text=_("comma delimited"))
+    skills_needed = ArrayField(models.CharField(max_length=255), null=True, default=[], help_text=_("comma delimited"))
+    available = models.BooleanField(default=False)
+    commitment_per_week = models.CharField(max_length=5, choices=TIME_RANGE, null=True)
     # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
     max_num_issues_start_work = models.IntegerField(default=3)
 

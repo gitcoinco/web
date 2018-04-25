@@ -126,6 +126,7 @@ TEMPLATES = [
             'retail/templates/',
             'external_bounties/templates/',
             'dataviz/templates',
+            'mentor/templates/'
         ],
         'APP_DIRS': True,
         'OPTIONS': {

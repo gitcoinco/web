@@ -15,6 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
+{% load rest_framework %}
 <html land="en">
   <head>
     {% include 'shared/head.html' %}
@@ -39,63 +40,8 @@
                 part of the community.
               </p>
             </div>
-            <form method="POST">
-              <div class="form-group">
-                <label class="form__label" for="name">Name</label>
-                <input type="text" class="form__input" id="name" name="name" placeholder="John Smith" value="{{mentor.profile.name}}" disabled/>
-              </div>
-              <div class="form-group">
-                <label class="form__label" for="email">Email</label>
-                <input type="email" class="form__input" id="email" name="email" placeholder="example@mail.com" value="{{mentor.profile.email}}" disabled>
-              </div>
-              <div class="form-group">
-                <label class="form__label" for="org">Organization</label>
-                <input type="text" class="form__input" id="org" name="org" value="{{mentor.org}}">
-              </div>
-              <div class="form-group">
-                <label class="form__label" for="experience">Years of Programming Experience</label>
-                <div class="form__select">
-                  <select id="experience" name="experience">
-                    {% for range in time_range_choices %}
-                    <option value="{{range.0}}"
-                      {% if range.0 == mentor.experience %}selected="selected"{% endif %}>
-                        {{range.1}}
-                      </option>
-                     {% endfor %}
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="form__label" for="about">About You</label>
-                <textarea class="form__input" id="about" rows="3" name="about">{{mentor.about}}</textarea>
-              </div>
-              <div class="form-group">
-                <label class="form__label" for="skills_needed">What would you like to learn?</label>
-                <small class="form__input-help">(Separate skills with a comma.)</small>
-                <textarea class="form__input" id="skills_needed" rows="3" name="skills_needed" required>{{mentor.skills_needed|join:","}}</textarea>
-              </div>
-              <div class="form-group">
-                <label class="form__label" for="skills_offered">What would you like to teach?</label>
-                <small class="form__input-help">(Separate skills with a comma.)</small>
-                <textarea class="form__input" id="skills_offered" rows="3" name="skills_offered" required>{{mentor.skills_offered|join:","}}</textarea>
-              </div>
-              <div class="form-group">
-                <label class="form__label" for="commitment">How many hours a week can you commit to mentoring?</label>
-                <div class="form__select">
-                  <select id="commitment" name="commitment">
-                      {% for range in time_range_choices %}
-                      <option value="{{range.0}}"
-                        {% if range.0 == mentor.commitment_per_week %}selected="selected"{% endif %}>
-                          {{range.1}}
-                        </option>
-                       {% endfor %}
-                  </select>
-                </div>
-              </div>
-              <div class="form-check">
-                <input type="checkbox" id="avail_now" name="avail_now" checked="{{mentor.available}}">
-                <label class="form__label" class="form__label" for="avail_now">Are you available to mentor now?</label>
-              </div>
+            <form method="POST" action="{% url "mentor_details" pk=request.user.profile.id%}">
+              {% render_form serializer %}
               <div>
                 {% csrf_token %}
                 <input class='button button--primary float-right' type='submit' name='submit' value="Submit">
