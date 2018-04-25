@@ -73,6 +73,13 @@ $(document).ready(function() {
 
   $('#submitBounty').validate({
     submitHandler: function(form) {
+      try{
+        bounty_address();
+      }catch(exception){
+        _alert('You are on an unsupported network.  Please change your network to a supported network.');
+        return;
+      }
+      
       var data = {};
       var disabled = $(form)
         .find(':input:disabled')

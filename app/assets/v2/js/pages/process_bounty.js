@@ -64,6 +64,13 @@ window.onload = function() {
     });
 
     $('#acceptBounty').click(function(e) {
+      try{
+        bounty_address();
+      }catch(exception){
+        _alert('You are on an unsupported network.  Please change your network to a supported network.');
+        return;
+      }
+
       mixpanel.track('Process Bounty Clicked', {});
       e.preventDefault();
       var whatAction = $(this).html().trim();
