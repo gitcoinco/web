@@ -390,9 +390,12 @@ def bounty_uninterested(to_email, bounty, interest):
 
 def setup_lang(to_email):
     try:
-        from dashboard.models import Profile
-        profile = Profile.objects.filter(email=to_email).first()
-        preferred_language = profile.get_profile_preferred_language()
+        from django.contrib.auth.models import User
+        user = User.objects.select_related('profile').filter(email=to_email).first()
+        if user and hasattr(user, 'profile'):
+            preferred_language = user.profile.get_profile_preferred_language()
+        else:
+            preferred_language = settings.LANGUAGE_CODE
         translation.activate(preferred_language)
-    except Profile.DoesNotExist:
+    except User.DoesNotExist:
         print("Could not determine recipient preferred email, using default.")
