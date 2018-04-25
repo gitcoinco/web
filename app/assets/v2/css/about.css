@@ -14,6 +14,7 @@
 
 h4 {
   letter-spacing: 0;
+  text-transform: capitalize;
 }
 
 .caption {
@@ -21,9 +22,20 @@ h4 {
 }
 
 #team p,
-#jobs p {
+#jobs p,
+#origin_story p {
   text-align: center;
   font-family: "Muli", sans-serif;
+}
+.grow_hero img{
+  width: 100%;
+  max-width: 400px;
+}
+
+#origin_story img {
+  max-height: 200px;
+  max-width: 300px;
+  margin: auto;
 }
 
 #team .card  {
@@ -75,7 +87,6 @@ h4 {
 #team .social-links a {
   display: inline-block;
 }
-
 .gitcoin-svg {
   background-size: cover !important;
   background-image: url("/static/v2/images/ios/gitcoin.svg");
@@ -90,7 +101,8 @@ h4 {
   transform: scale(1.5) rotate(360deg);
 }
 
-#jobs {
+#jobs,
+#origin_story {
   padding-bottom: 2em;
 }
 

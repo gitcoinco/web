@@ -112,7 +112,7 @@ $(document).ready(function() {
     var errormsg = undefined;
 
     if (bountyAmount == 0 || open == false) {
-      errormsg = gettext('No active funded issue found at this address. Are you sure this is an active funded issue?');
+      errormsg = gettext('No active funded issue found at this address on ' + document.web3network + '. Are you sure this is an active funded issue?');
     }
     if (fromAddress != web3.eth.coinbase) {
       errormsg = gettext('Only the address that submitted this funded issue may increase the payout.');

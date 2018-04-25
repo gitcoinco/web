@@ -76,7 +76,7 @@ def render_match_email(bounty, github_username):
 
 def render_bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
     previous_bounties_str = ", ".join([bounty.github_url for bounty in previous_bounties])
-    if persona != 'submitter':
+    if persona == 'fulfiller':
         accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
         github_username = " @" + accepted_fulfillments.first().fulfiller_github_username if accepted_fulfillments.exists() and accepted_fulfillments.first().fulfiller_github_username else ""
         txt = f"""
@@ -97,9 +97,10 @@ thanks again for being a member of the community.
 kevin
 
 """
-    else:
+    elif persona == 'funder':
         github_username = " @" + bounty.bounty_owner_github_username if bounty.bounty_owner_github_username else ""
-        txt = f"""
+        if bounty.status == 'done':
+            txt = f"""
 
 hi{github_username},
 
@@ -119,6 +120,29 @@ thanks for being a member of the community.
 
 kevin
 """
+        elif bounty.status == 'cancelled':
+            txt = f"""
+hi{github_username},
+
+we saw that you cancelled this bounty.
+
+i was sorry to see that the bounty did not get done.
+
+i have a few questions for you.
+
+> why did you decide to cancel the bounty?
+
+> would you use gitcoin again?
+
+thanks again for being a member of the community.
+
+kevin
+
+"""
+        else:
+            raise Exception('unknown bounty status')
+    else:
+        raise Exception('unknown persona')
 
     params = {
         'txt': txt,
@@ -134,7 +158,7 @@ def render_new_bounty(to_email, bounties):
     params = {
         'bounties': bounties,
         'subscriber': sub,
-        'keywords': ",".join(sub.keywords), 
+        'keywords': ",".join(sub.keywords),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
@@ -284,7 +308,7 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-<a href="https://medium.com/gitcoin/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster-dcd39650fc5">Here’s how to leverage a firehose of developer talent to do more, faster</a>. Gitcoin Core is 4 team members, yet we’ve seen contributions from well over 30 developers using Gitcoin. We’d like to see you do the same! We plan to continue this series with more on best practices for using Gitcoin to grow your open source repo.   
+<a href="https://medium.com/gitcoin/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster-dcd39650fc5">Here’s how to leverage a firehose of developer talent to do more, faster</a>. Gitcoin Core is 4 team members, yet we’ve seen contributions from well over 30 developers using Gitcoin. We’d like to see you do the same! We plan to continue this series with more on best practices for using Gitcoin to grow your open source repo.
 </p>
 <h3>What else is new?</h3>
     <ul>
@@ -292,7 +316,7 @@ def render_new_bounty_roundup(to_email):
 MARKET Protocol hired Eswara, a great developer and person, after working with him on Gitcoin. <a href="https://medium.com/gitcoin/gitcoin-testimonials-market-protocol-722dbb263d19">Read more about the story here</a>.
         </li>
         <li>
-Want to be the first to know when new open issues are added? <a href="http://twitter.com/gitcoinfeed">@gitcoinfeed</a> on Twitter which provides updates on all new activity on Gitcoin. 
+Want to be the first to know when new open issues are added? <a href="http://twitter.com/gitcoinfeed">@gitcoinfeed</a> on Twitter which provides updates on all new activity on Gitcoin.
         </li>
         <li>
 Today we’ll have uPort and Kauri on the livestream at 5PM ET. <a href="https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ">Add it to your Google Calendar</a> and come hang out!
@@ -300,7 +324,7 @@ Today we’ll have uPort and Kauri on the livestream at 5PM ET. <a href="https:/
     </ul>
 </p>
 <p>
-I hope to see you on <a href="https://gitcoin.co/slack">Slack</a> or on <a href="https://github.com/gitcoinco/web">Github</a>. If you’re interested in growing open source and have some extra time, come by. We’re working to make Gitcoin is the best place on the internet to do so. 
+I hope to see you on <a href="https://gitcoin.co/slack">Slack</a> or on <a href="https://github.com/gitcoinco/web">Github</a>. If you’re interested in growing open source and have some extra time, come by. We’re working to make Gitcoin is the best place on the internet to do so.
 
 </p>
 

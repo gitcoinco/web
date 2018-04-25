@@ -24,8 +24,13 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Interest, Profile,
-    Subscription, Tip, UserAction,
+    Subscription, Tip, Tool, UserAction,
 )
+
+
+class BountyFulfillmentAdmin(admin.ModelAdmin):
+    raw_id_fields = ['bounty', 'profile']
+    ordering = ['-id']
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -49,6 +54,7 @@ class TipAdmin(admin.ModelAdmin):
 
 # Register your models here.
 class BountyAdmin(admin.ModelAdmin):
+    raw_id_fields = ['interested']
     ordering = ['-id']
 
     search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
@@ -85,8 +91,9 @@ admin.site.register(UserAction, GeneralAdmin)
 admin.site.register(Interest, GeneralAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Bounty, BountyAdmin)
-admin.site.register(BountyFulfillment, GeneralAdmin)
+admin.site.register(BountyFulfillment, BountyFulfillmentAdmin)
 admin.site.register(BountySyncRequest, GeneralAdmin)
 admin.site.register(Tip, TipAdmin)
 admin.site.register(CoinRedemption, GeneralAdmin)
 admin.site.register(CoinRedemptionRequest, GeneralAdmin)
+admin.site.register(Tool, GeneralAdmin)
