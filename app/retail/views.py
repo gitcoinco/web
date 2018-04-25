@@ -638,12 +638,10 @@ def avatar(request):
     context = {
         'defaultTone': 'AE7242',
         'defaultHairColor': '000000',
+        'defaultBgColor': '15003E',
         'sections': [
             { 'name': 'Face', 'title': 'Pick face shape',
               'options': ('0', '1', '2', '3', '4') },
-            { 'name': 'Skin Tone', 'title': 'Pick skin tone',
-              'options': ('F8D5C2', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '3F2918')
-            },
             { 'name': 'Eyes', 'title': 'Pick eyes shape',
               'options': ('0', '1', '2', '3', '4') },
             { 'name': 'Nose', 'title': 'Pick nose shape',
@@ -665,8 +663,6 @@ def avatar(request):
                 ["8-back", "8-front"]
               )
             },
-            { 'name': 'Hair Color', 'title': 'Pick a hair color',
-              'options': ('000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF') },
             { 'name': 'Facial Hair', 'title': 'Pick a facial hair style',
               'options': (
                 'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3',
@@ -693,13 +689,6 @@ def avatar(request):
                 ["Earring-4"]
               )
             },
-            { 'name': 'Background', 'title': 'Pick a background color',
-              'options': (
-                '25E899', '9AB730', '00A55E', '3FCDFF',
-                '3E00FF', '8E2ABE', 'D0021B', 'F9006C',
-                'FFCE08', 'F8E71C', '15003E', 'FFFFFF'
-              )
-            }
         ]
     }
     return TemplateResponse(request, 'avatar.html', context)

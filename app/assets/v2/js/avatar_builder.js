@@ -6,10 +6,40 @@ const layers = [
 ];
 const requiredLayers = [ 'Clothing', 'Ears', 'Face', 'Mouth', 'Nose', 'Eyes' ];
 const options = {};
+const colorOptions = {
+  SkinTone: [ 'F8D5C2', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '3F2918' ],
+  HairColor: [ '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF' ],
+  Background: [
+    '25E899', '9AB730', '00A55E', '3FCDFF',
+    '3E00FF', '8E2ABE', 'D0021B', 'F9006C',
+    'FFCE08', 'F8E71C', '15003E', 'FFFFFF'
+  ]
+};
 
 layers.forEach(name => {
   options[name] = null;
 });
+
+function changeColorPicker(section) {
+  let colorPallete;
+  const colorPicker = $('#color-picker').empty();
+
+  if ([ 'Face', 'Eyes', 'Nose', 'Mouth', 'Ears' ].indexOf(section) >= 0) {
+    colorPallete = 'SkinTone';
+  } else if ([ 'HairStyle', 'FacialHair' ].indexOf(section) >= 0) {
+    colorPallete = 'HairColor';
+  } else if (section === 'Background') {
+    colorPallete = 'Background';
+  } else {
+    return;
+  }
+
+  colorOptions[colorPallete].forEach(c => {
+    colorPicker.append($(`<button class="options-Background__option pa-0"
+    style="background-color: #${c}" onclick="setOption('${colorPallete}', '${c}')" />
+    `));
+  });
+}
 
 function changeSection(section) {
   openSection = openSection || section;
@@ -20,6 +50,7 @@ function changeSection(section) {
   });
 
   openSection = section;
+  changeColorPicker(section);
 }
 
 function changeColor(className, color) {
@@ -41,11 +72,13 @@ function changeImage(option, path) {
     const elem = $('#preview-' + option);
 
     if (path) {
-      elem.attr('src', path).removeClass('d-none');
+      elem.attr('src', path);
+      options[option] = path;
     } else {
-      elem.addClass('d-none');
+      elem.remove();
+      options[option] = null;
     }
-  } else { // option was previously blank
+  } else if (path) { // option was previously blank
     const newEl = $.parseHTML(`<img id="preview-${option}"
     src="${path}"
     alt="${option} Preview"
@@ -59,8 +92,8 @@ function changeImage(option, path) {
 }" />`);
 
     $('#avatar-preview').append(newEl);
+    options[option] = path;
   }
-  options[option] = path;
   const complete = requiredLayers.
     reduce((complete, name) => !!options[name] && complete, true);
 
@@ -70,6 +103,7 @@ function changeImage(option, path) {
 }
 
 function setOption(option, value, target) {
+  console.log(target);
   $('#nav-' + option).addClass('complete');
   switch (option) {
     case 'Face':

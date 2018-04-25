@@ -82,6 +82,15 @@ body {
   text-align: right;
   margin-top: 30px;
 }
+#options-Background {
+  line-height: 1;
+}
+.options-Background__option {
+  width: 51px;
+  height: 28px;
+  border: 1px solid #C4C4C4;
+  cursor: pointer;
+}
 @media (min-width: 845px) {
   body {
     padding: 85px;
