@@ -845,6 +845,7 @@ class Profile(SuperModel):
     last_sync_date = models.DateTimeField(null=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
+    pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES)
     suppress_leaderboard = models.BooleanField(
         default=False,
         help_text='If this option is chosen, we will remove your profile information from the leaderboard',
@@ -1060,13 +1061,14 @@ class Profile(SuperModel):
             return ''
         return access_token
 
+    def get_profile_preferred_language(self):
+        return settings.LANGUAGE_CODE if self.pref_lang_code is None else self.pref_lang_code
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
     """Handle actions to take on user login."""
     from dashboard.utils import create_user_action
     create_user_action(user, 'Login', request)
-
 
 @receiver(user_logged_out)
 def post_logout(sender, request, user, **kwargs):
