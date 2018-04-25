@@ -609,12 +609,10 @@ class Bounty(SuperModel):
 
         """
         return {
-            'fulfill': f"/funding/fulfill?source={self.github_url}",
-            'increase': f"/funding/increase?source={self.github_url}",
-            'process': f"/funding/process?source={self.github_url}",
-            'cancel': f"/funding/kill?source={self.github_url}",
-            'start_work': f"/interested",
-            'stop_work': f"/uninterested",
+            'fulfill': f"/issue/fulfill/{self.pk}",
+            'increase': f"/issue/increase/{self.pk}",
+            'accept': f"/issue/accept/{self.pk}",
+            'cancel': f"/issue/cancel/{self.pk}",
         }
 
 

@@ -506,7 +506,7 @@ var do_actions = function(result) {
       var enabled = start_stop_work_enabled;
       var interest_entry = {
         enabled: enabled,
-        href: is_interested ? result['action_urls']['stop_work'] : result['action_urls']['start_work'],
+        href: is_interested ? '/uninterested' : '/interested',
         text: is_interested ? gettext('Stop Work') : gettext('Start Work'),
         parent: 'right_actions',
         title: is_interested ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project'),
@@ -521,7 +521,7 @@ var do_actions = function(result) {
       var enabled = kill_bounty_enabled;
       var _entry = {
         enabled: enabled,
-        href: result['action_urls']['kill'],
+        href: result['action_urls']['cancel'],
         text: gettext('Cancel Bounty'),
         parent: 'right_actions',
         title: gettext('Cancel bounty and reclaim funds for this issue')
@@ -536,7 +536,7 @@ var do_actions = function(result) {
       var enabled = show_accept_submission;
       var _entry = {
         enabled: enabled,
-        href: result['action_urls']['process'],
+        href: result['action_urls']['accept'],
         text: gettext('Accept Submission'),
         title: gettext('This will payout the bounty to the submitter.'),
         parent: 'right_actions',

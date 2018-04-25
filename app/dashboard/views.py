@@ -436,21 +436,6 @@ def send_tip_2(request):
     return TemplateResponse(request, 'yge/send2.html', params)
 
 
-def process_bounty(request):
-    """Process the bounty."""
-    params = {
-        'issueURL': request.GET.get('source'),
-        'fulfillment_id': request.GET.get('id'),
-        'fulfiller_address': request.GET.get('address'),
-        'title': _('Process Issue'),
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-    }
-
-    return TemplateResponse(request, 'process_bounty.html', params)
-
-
 def dashboard(request):
     """Handle displaying the dashboard."""
     params = {
@@ -478,7 +463,7 @@ def new_bounty(request):
     issue_url = request.GET.get('source') or request.GET.get('url', '')
     is_user_authenticated = request.user.is_authenticated
     params = {
-        'issueURL': issue_url,
+        'issueURL': request.GET.get('source'),
         'amount': request.GET.get('amount'),
         'active': 'submit_bounty',
         'title': _('Create Funded Issue'),
@@ -493,11 +478,39 @@ def new_bounty(request):
     return TemplateResponse(request, 'submit_bounty.html', params)
 
 
-def fulfill_bounty(request):
+
+def accept_bounty(request, pk):
+    """Process the bounty."""
+
+    try:
+        bounty = Bounty.objects.get(pk=pk)
+    except:
+        raise Http404
+
+    params = {
+        'bounty': bounty,
+        'fulfillment_id': request.GET.get('id'),
+        'fulfiller_address': request.GET.get('address'),
+        'title': _('Process Issue'),
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+    }
+
+    return TemplateResponse(request, 'process_bounty.html', params)
+
+
+def fulfill_bounty(request, pk):
     """Fulfill a bounty."""
+
+    try:
+        bounty = Bounty.objects.get(pk=pk)
+    except:
+        raise Http404
+
     is_user_authenticated = request.user.is_authenticated
     params = {
-        'issueURL': request.GET.get('source'),
+        'bounty': bounty,
         'githubUsername': request.GET.get('githubUsername'),
         'title': _('Submit Work'),
         'active': 'fulfill_bounty',
@@ -511,11 +524,16 @@ def fulfill_bounty(request):
     return TemplateResponse(request, 'fulfill_bounty.html', params)
 
 
-def increase_bounty(request):
+def increase_bounty(request, pk):
     """Increase a bounty (funder)"""
-    issue_url = request.GET.get('source')
+
+    try:
+        bounty = Bounty.objects.get(pk=pk)
+    except:
+        raise Http404
+
     params = {
-        'issue_url': issue_url,
+        'bounty': bounty,
         'title': _('Increase Bounty'),
         'active': 'increase_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
@@ -523,27 +541,19 @@ def increase_bounty(request):
         'conf_time_spread': conf_time_spread(),
     }
 
-    try:
-        bounties = Bounty.objects.current().filter(github_url=issue_url)
-        if bounties:
-            bounty = bounties.order_by('pk').first()
-            params['standard_bounties_id'] = bounty.standard_bounties_id
-            params['bounty_owner_address'] = bounty.bounty_owner_address
-            params['value_in_token'] = bounty.value_in_token
-            params['token_address'] = bounty.token_address
-    except Bounty.DoesNotExist:
-        pass
-    except Exception as e:
-        print(e)
-        logging.error(e)
-
     return TemplateResponse(request, 'increase_bounty.html', params)
 
 
-def kill_bounty(request):
+def cancel_bounty(request, pk):
     """Kill an expired bounty."""
+
+    try:
+        bounty = Bounty.objects.get(pk=pk)
+    except:
+        raise Http404
+
     params = {
-        'issueURL': request.GET.get('source'),
+        'bounty': bounty,
         'title': _('Kill Bounty'),
         'active': 'kill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),

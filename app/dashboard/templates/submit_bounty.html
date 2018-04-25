@@ -48,7 +48,7 @@
                                 {% include 'shared/network_status.html' %}
                                 <div class="w-100">
                                     <label class="form__label" for=issueURL>{% trans "Issue URL" %}</label>
-                                    <input required name='issueURL' id="issueURL" class="w-100 form__input" type="url" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
+                                    <input required name='issueURL' id="issueURL" class="w-100 form__input" type="url" placeholder="https://github.com/user/repo/pull/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
                                 </div>
                                 <div class="w-100 mt-2">
                                     <label class="form__label" for="amount">{% trans "Amount" %}</label>
@@ -136,6 +136,7 @@
                                         <label class="form__label" for=terms>{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>:{% endblocktrans %}</label>
                                     </div>
                                 </div>
+                                {% include 'shared/bounty_actions_hidden_vars.html' %}
                                 {% include 'shared/wallet_estimate.html' %}
                                 <div class="form__footer form__footer--right">
                                     <button class="button button--primary js-submit" type="submit">{% trans "Fund Issue" %}</button>

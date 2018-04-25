@@ -2,6 +2,7 @@
 window.onload = function() {
   // a little time for web3 injection
   setTimeout(function() {
+    waitforWeb3(actions_page_warn_if_not_on_same_network);
     var account = web3.eth.accounts[0];
 
     if (
@@ -116,7 +117,7 @@ window.onload = function() {
 
         };
         // Get bountyId from the database
-        var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + document.web3network;
+        var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
         $.get(uri, apiCallback);
       }

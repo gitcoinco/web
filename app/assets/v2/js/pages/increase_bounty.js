@@ -2,6 +2,8 @@ load_tokens();
 
 // Wait until page is loaded, then run the function
 $(document).ready(function() {
+  waitforWeb3(actions_page_warn_if_not_on_same_network);
+  
   $('input[name=amount]').keyup(setUsdAmount);
   $('input[name=amount]').blur(setUsdAmount);
   $('select[name=deonomination]').change(setUsdAmount);
