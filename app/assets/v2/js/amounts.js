@@ -14,6 +14,9 @@ var estimate = function(amount, conv_rate) {
 };
 
 var get_rates_estimate = function(usd_amount) {
+  if(!usd_amount){
+    return "";
+  }
   var rates_addon = [];
   var rates = [ 40, 80, 120 ];
 

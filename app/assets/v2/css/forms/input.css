@@ -62,15 +62,9 @@
   font-size: 12px;
   font-family: 'Muli', sans-serif;
 }
-
 .form__input-help--dynamic {
-  position: absolute;
-  bottom: -20px;
-  left: 0;
-}
-
-.form__input-help--dynamic#usd_amount {
-  bottom: -40px;
+  margin-top: 5px;
+  display: block;
 }
 .amount_container{
   height: 100px;
