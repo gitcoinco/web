@@ -251,14 +251,11 @@ def get_status_header(bounty):
         if status == 'open':
             statuses = ['**Open**', 'Started', 'Submitted', 'Done']
         elif status == 'started':
-            statuses.append('**Started**')
-            statuses.append('Submitted')
-            statuses.append('Done')
+            statuses += ['**Started**', 'Submitted', 'Done']
         else:
             statuses.append('Started')
             if status == 'submitted':
-                statuses.append('**Submitted**')
-                statuses.append('Done')
+                statuses += ['**Submitted**', 'Done']
             else:
                 statuses.append('Submitted')
                 if status == 'done':
@@ -269,8 +266,8 @@ def get_status_header(bounty):
     
     #1. Open | **2. Started** | 3. Submitted | 4. Done
     status_bar = ""
-    for x in range(0, len(statuses)):
-        status_bar += f"{x+1}. {statuses[x]} "
+    for x, status in enumerate(statuses):
+        status_bar += f"{x+1}. {status} "
 
     return f"Issue Status: {status_bar}\n\n<hr>\n\n"
 
