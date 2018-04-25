@@ -370,7 +370,11 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
 
             // clear local data
             localStorage[document.issueURL] = '';
-            document.location.href = document.location.href;
+            if (response['url']) {
+              document.location.href = response['url'];
+            } else {
+              document.location.href = document.location.href;
+            }
           } else {
             console.log('error from sync/web', response);
             error(response);

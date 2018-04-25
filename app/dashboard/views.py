@@ -798,17 +798,21 @@ def sync_web3(request):
                 did_change = False
                 max_tries_attempted = False
                 counter = 0
+                url = None
                 while not did_change and not max_tries_attempted:
-                    did_change, _, _ = web3_process_bounty(bounty)
+                    did_change, _, new_bounty = web3_process_bounty(bounty)
                     if not did_change:
                         print("RETRYING")
                         time.sleep(3)
                         counter += 1
                         max_tries_attempted = counter > 3
+                    if new_bounty:
+                        url = new_bounty.url
                 result = {
                     'status': '200',
                     'msg': "success",
-                    'did_change': did_change
+                    'did_change': did_change,
+                    'url': url,
                 }
 
     return JsonResponse(result, status=result['status'])
