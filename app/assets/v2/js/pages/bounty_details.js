@@ -491,7 +491,7 @@ var do_actions = function(result) {
       var enabled = submit_work_enabled;
       var _entry = {
         enabled: enabled,
-        href: '/funding/fulfill?source=' + result['github_url'],
+        href: result['action_urls']['fulfill'],
         text: gettext('Submit Work'),
         parent: 'right_actions',
         title: gettext('Submit work for the funder to review'),
@@ -506,7 +506,7 @@ var do_actions = function(result) {
       var enabled = start_stop_work_enabled;
       var interest_entry = {
         enabled: enabled,
-        href: is_interested ? '/uninterested' : '/interested',
+        href: is_interested ? result['action_urls']['stop_work'] : result['action_urls']['start_work'],
         text: is_interested ? gettext('Stop Work') : gettext('Start Work'),
         parent: 'right_actions',
         title: is_interested ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project'),
@@ -521,7 +521,7 @@ var do_actions = function(result) {
       var enabled = kill_bounty_enabled;
       var _entry = {
         enabled: enabled,
-        href: '/funding/kill?source=' + result['github_url'],
+        href: result['action_urls']['kill'],
         text: gettext('Cancel Bounty'),
         parent: 'right_actions',
         title: gettext('Cancel bounty and reclaim funds for this issue')
@@ -536,7 +536,7 @@ var do_actions = function(result) {
       var enabled = show_accept_submission;
       var _entry = {
         enabled: enabled,
-        href: '/funding/process?source=' + result['github_url'],
+        href: result['action_urls']['process'],
         text: gettext('Accept Submission'),
         title: gettext('This will payout the bounty to the submitter.'),
         parent: 'right_actions',
@@ -550,7 +550,7 @@ var do_actions = function(result) {
       var enabled = increase_bounty_enabled;
       var _entry = {
         enabled: enabled,
-        href: '/funding/increase?source=' + result['github_url'],
+        href: result['action_urls']['increase'],
         text: gettext('Add Contribution'),
         parent: 'right_actions',
         title: gettext('Increase the funding for this issue'),

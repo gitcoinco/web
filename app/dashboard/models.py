@@ -600,6 +600,23 @@ class Bounty(SuperModel):
             self.save()
         return comments
 
+    @property
+    def action_urls(self):
+        """
+
+        Returns:
+            dict - a dictionary of action URLS for this bounty
+
+        """
+        return {
+            'fulfill': f"/funding/fulfill?source={self.github_url}",
+            'increase': f"/funding/increase?source={self.github_url}",
+            'process': f"/funding/process?source={self.github_url}",
+            'cancel': f"/funding/kill?source={self.github_url}",
+            'start_work': f"/interested",
+            'stop_work': f"/uninterested",
+        }
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
