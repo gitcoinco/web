@@ -37,16 +37,16 @@
           <div style="padding:0px 15px">
             {% include 'shared/search_bar.html' %}
           </div>
-          <div class="row">
+          <div>
             <div class="col-12 offset-md-1 col-md-10 title-row">
               <span id="filter" class="font-title">Mentors</span>
             </div>
-            <div class="col-12 offset-md-1 col-md-10 ">
+            <div class="col-12 offset-md-1 col-md-10 table-responsive">
               <table class="table">
                 <thead>
                   <tr>
                     <th scope="col">Name</th>
-                    <th scope="col">Email</th>
+                    <th scope="col" class="d-none d-md-block">Email</th>
                     <th scope="col">Org</th>
                     <th scope="col">Skills Offerred</th>
                     <th scope="col"></th>
@@ -70,7 +70,7 @@
   <script id="mentor" type="text/x-jsrender">
     <tr scope="row">
       <td>[[:name]]</td>
-      <td>[[:email]]</td>
+      <td class="d-none d-md-block">[[:email]]</td>
       <td>[[:org]]</td>
       <td>[[for skills_offered]] <span class="badge badge-primary">[[:#data]]</span>
         [[/for]]</td>
