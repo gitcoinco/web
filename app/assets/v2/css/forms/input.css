@@ -68,3 +68,10 @@
   bottom: -20px;
   left: 0;
 }
+
+.form__input-help--dynamic#usd_amount {
+  bottom: -40px;
+}
+.amount_container{
+  height: 100px;
+}
