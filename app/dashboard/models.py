@@ -1062,7 +1062,7 @@ class Profile(SuperModel):
         return access_token
 
     def get_profile_preferred_language(self):
-        return settings.LANGUAGE_CODE if self.pref_lang_code is None else self.pref_lang_code
+        return settings.LANGUAGE_CODE if not self.pref_lang_code else self.pref_lang_code
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
@@ -1268,7 +1268,7 @@ class ToolVote(models.Model):
     value = models.IntegerField(default=0)
 
     @property
-    def tool(self): 
+    def tool(self):
         try:
             return Tool.objects.filter(votes__in=[self.pk]).first()
         except:

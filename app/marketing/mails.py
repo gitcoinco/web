@@ -389,13 +389,22 @@ def bounty_uninterested(to_email, bounty, interest):
 
 
 def setup_lang(to_email):
+    """Activate the User's language preferences based on their email address.
+
+    Args:
+        to_email (str): The email address to lookup language preferences for.
+
+    """
+    from django.contrib.auth.models import User
+    user = None
+
     try:
-        from django.contrib.auth.models import User
+        user = User.objects.select_related('profile').get(email=to_email)
+    except User.MultipleObjectsReturned:
         user = User.objects.select_related('profile').filter(email=to_email).first()
-        if user and hasattr(user, 'profile'):
-            preferred_language = user.profile.get_profile_preferred_language()
-        else:
-            preferred_language = settings.LANGUAGE_CODE
-        translation.activate(preferred_language)
     except User.DoesNotExist:
         print("Could not determine recipient preferred email, using default.")
+
+    if user and hasattr(user, 'profile'):
+        preferred_language = user.profile.get_profile_preferred_language()
+        translation.activate(preferred_language)
