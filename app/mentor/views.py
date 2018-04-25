@@ -46,7 +46,7 @@ def mentor(request):
         mentor.save(force_insert=True)
         return redirect_to_mentor(mentor.id)
     else:
-        mentor = Mentor.objects.filter(profile=profile).first()
+        mentor = Mentor(profile = profile)
     context = {'mentor': mentor, 'time_range_choices': Mentor.TIME_RANGE}
     return TemplateResponse(request, 'mentor.html', context)
 
@@ -75,8 +75,6 @@ def redirect_to_mentor(mentor_id):
 
 def mentor_from_request(request):
     profile = request.user.profile if request.user.is_authenticated else False
-    name = request.POST.get('name')
-    email = request.POST.get('email')
     org = request.POST.get('org')
     experience = request.POST.get('experience')
     about = request.POST.get('about')
@@ -84,6 +82,6 @@ def mentor_from_request(request):
     skills_needed = request.POST.get('skills_needed').split(',')
     commitment = request.POST.get('commitment')
     avail_now = bool(request.POST.get('avail_now'))
-    return Mentor(profile_id=profile.pk, name=name, email=email, org=org, about=about,
+    return Mentor(profile_id=profile.pk, org=org, about=about,
                   experience=experience, skills_needed=skills_needed, skills_offered=skills_offered,
                   available=avail_now, commitment_per_week=commitment)
