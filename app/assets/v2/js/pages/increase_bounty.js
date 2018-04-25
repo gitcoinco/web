@@ -22,7 +22,7 @@ $(document).ready(function() {
       try{
         bounty_address();
       }catch(exception){
-        _alert('You are on an unsupported network.  Please change your network to a supported network.');
+        _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
         return;
       }
 
