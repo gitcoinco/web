@@ -682,7 +682,9 @@ def maybe_notify_user_removed_github(bounty, username, last_heard_from_user_days
     if not last_heard_from_user_days:
         last_heard_from_user_days = num_days_back_to_delete_interest
 
-    msg = f"""@{username} has been removed from this issue due to inactivity ({last_heard_from_user_days} days) on the github thread.  @{username} if you believe this was done in error, please <a href={bounty.url}>go to the bounty</a> and click 'start work' again.
+    status_header = get_status_header(bounty)
+
+    msg = f"""{status_header}@{username} has been removed from this issue due to inactivity ({last_heard_from_user_days} days) on the github thread.  @{username} if you believe this was done in error, please <a href={bounty.url}>go to the bounty</a> and click 'start work' again.
 * [x] warning 1 ({num_days_back_to_warn} days)
 * [x] warning 2 ({num_days_back_to_warn * 2} days)
 * [x] auto removal ({num_days_back_to_delete_interest} days)
