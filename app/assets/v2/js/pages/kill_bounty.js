@@ -48,7 +48,7 @@ window.onload = function() {
           result = results[0];
           if (result == null) {
             _alert({
-              message: gettext('No active bounty found for this Github URL.')
+              message: gettext('No active bounty found for this Github URL on ' + document.web3network + '.')
             });
             unloading_button($('.js-submit'));
             return;
@@ -116,7 +116,7 @@ window.onload = function() {
 
         };
         // Get bountyId from the database
-        var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
+        var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + document.web3network;
 
         $.get(uri, apiCallback);
       }

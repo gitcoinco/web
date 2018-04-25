@@ -21,6 +21,7 @@ import socket
 from datetime import timedelta
 
 from django.http import Http404
+from django.utils.translation import gettext_lazy as _
 
 import environ
 import rollbar
@@ -170,6 +171,14 @@ USE_I18N = env.bool('USE_I18N', default=True)
 USE_L10N = env.bool('USE_L10N', default=True)
 USE_TZ = env.bool('USE_TZ', default=True)
 TIME_ZONE = env.str('TIME_ZONE', default='UTC')
+
+LOCALE_PATHS = (
+    'locale',
+)
+
+LANGUAGES = [
+    ('en', _('English'))
+]
 
 if ENV not in ['local', 'test']:
     LOGGING = {
@@ -368,7 +377,7 @@ S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='') # TODO
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 
 # Faucet App config
-FAUCET_AMOUNT = env.float('FAUCET_AMOUNT', default=.0005)
+FAUCET_AMOUNT = env.float('FAUCET_AMOUNT', default=.0001)
 
 SENDGRID_EVENT_HOOK_URL = env('SENDGRID_EVENT_HOOK_URL', default='sg_event_process')
 GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')

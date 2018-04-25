@@ -108,3 +108,22 @@
 .card.new a.btn {
   display: none;
 }
+
+.votes .vote-up.active {
+  background-color: #26cd7f;
+}
+
+.votes .vote-down.active {
+  background-color: #f6136e;
+}
+
+.votes button {
+  border: none;
+  cursor: pointer;
+}
+.votes button:hover {
+  color: #aaa;
+}
+.votes button.active:hover {
+  color: white;
+}
