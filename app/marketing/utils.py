@@ -34,10 +34,18 @@ def invite_to_slack(email):
     return response
 
 
-def should_suppress_notification_email(email):
+def should_suppress_notification_email(email, _type='transactional'):
     queryset = EmailSubscriber.objects.filter(email__iexact=email)
     if queryset.exists():
-        return queryset.first().preferences.get('level', '') in ['nothing', 'lite1']
+        level = queryset.first().preferences.get('level', '')
+        if _type in ['urgent', 'admin']:
+            return False # these email types are always sent
+        if level == 'nothing':
+            return True
+        if level == 'lite1' and _type == 'transactional':
+            return True
+        if level == 'lite' and _type == 'roundup':
+            return True
     return False
 
 
