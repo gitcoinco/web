@@ -1241,7 +1241,7 @@ class Tool(SuperModel):
         score = self.starting_score()
         for vote in self.votes.all():
             score += vote.value
-        return score                
+        return score
 
     def i18n_name(self):
         return _(self.name)
@@ -1251,7 +1251,7 @@ class Tool(SuperModel):
 
     def i18n_link_copy(self):
         return _(self.link_copy)
-    
+
     def __str__(self):
         return self.name
 
@@ -1261,3 +1261,15 @@ class ToolVote(models.Model):
 
     profile = models.ForeignKey('dashboard.Profile', related_name='votes', on_delete=models.CASCADE)
     value = models.IntegerField(default=0)
+
+    @property
+    def tool(self): 
+        try:
+            return Tool.objects.filter(votes__in=[self.pk]).first()
+        except:
+            return None
+
+    def __str__(self):
+        return f"{self.profile} | {self.value} | {self.tool}"
+
+
