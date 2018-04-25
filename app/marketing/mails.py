@@ -135,8 +135,8 @@ def new_faucet_request(fr):
     try:
         setup_lang(to_email)
         subject = _("New Faucet Request")
-        body = _("A new faucet request was completed. You may fund the request here :")
-        + f"https://gitcoin.co/_administration/process_faucet_request/{fr.pk}"
+        body_str = _("A new faucet request was completed. You may fund the request here")
+        body = f"{body_str}: https://gitcoin.co/_administration/process_faucet_request/{fr.pk}"
         send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"))
     finally:
         translation.activate(cur_language)
