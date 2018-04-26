@@ -478,7 +478,6 @@ def new_bounty(request):
     return TemplateResponse(request, 'submit_bounty.html', params)
 
 
-
 def accept_bounty(request, pk):
     """Process the bounty.
 
