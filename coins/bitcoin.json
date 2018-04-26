@@ -4,8 +4,7 @@
   "website": "https://bitcoin.org/",
   "whitepaper": "https://bitcoin.org/bitcoin.pdf",
   "state": "FLOAT",
-  "published_on": "2018-01-01",
-  "initial_price": "",
+  "published_on": "2009-01-03",
   "links": {
     "blog": "https://bitcoin.org/en/blog"
   }

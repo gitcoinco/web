@@ -9,6 +9,7 @@
   "links": {
     "github": "https://github.com/ethereum",
     "twitter": "https://twitter.com/ethereum",
-    "facebook": "https://www.facebook.com/ethereumproject"
+    "facebook": "https://www.facebook.com/ethereumproject",
+    "blog": "https://blog.ethereum.org/"
   }
 }
