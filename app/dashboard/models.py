@@ -602,10 +602,10 @@ class Bounty(SuperModel):
 
     @property
     def action_urls(self):
-        """
+        """Provide URLs for bounty related actions.
 
         Returns:
-            dict - a dictionary of action URLS for this bounty
+            dict: A dictionary of action URLS for this bounty.
 
         """
         return {
