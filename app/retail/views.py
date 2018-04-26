@@ -634,23 +634,24 @@ def youtube(request):
 def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
 
+
 def avatar(request):
     context = {
         'defaultTone': 'AE7242',
         'defaultHairColor': '000000',
         'defaultBgColor': '15003E',
         'sections': [
-            { 'name': 'Face', 'title': 'Pick face shape',
-              'options': ('0', '1', '2', '3', '4') },
-            { 'name': 'Eyes', 'title': 'Pick eyes shape',
-              'options': ('0', '1', '2', '3', '4') },
-            { 'name': 'Nose', 'title': 'Pick nose shape',
-              'options': ('0', '1', '2', '3', '4') },
-            { 'name': 'Mouth', 'title': 'Pick mouth shape',
-              'options': ('0', '1', '2', '3', '4') },
-            { 'name': 'Ears', 'title': 'Pick ears shape',
-              'options': ('0', '1', '2', '3') },
-            { 'name': 'Hair Style', 'title': 'Pick a hairstyle',
+            {'name': 'Face', 'title': 'Pick face shape',
+              'options': ('0', '1', '2', '3', '4')},
+            {'name': 'Eyes', 'title': 'Pick eyes shape',
+              'options': ('0', '1', '2', '3', '4')},
+            {'name': 'Nose', 'title': 'Pick nose shape',
+              'options': ('0', '1', '2', '3', '4')},
+            {'name': 'Mouth', 'title': 'Pick mouth shape',
+              'options': ('0', '1', '2', '3', '4')},
+            {'name': 'Ears', 'title': 'Pick ears shape',
+              'options': ('0', '1', '2', '3')},
+            {'name': 'Hair Style', 'title': 'Pick a hairstyle',
               'options': (
                 ["None", "0"],
                 ["None", "1"],
@@ -663,14 +664,14 @@ def avatar(request):
                 ["8-back", "8-front"]
               )
             },
-            { 'name': 'Facial Hair', 'title': 'Pick a facial hair style',
+            {'name': 'Facial Hair', 'title': 'Pick a facial hair style',
               'options': (
                 'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3',
                 'Beard-0', 'Beard-1', 'Beard-2', 'Beard-3'
-              ) },
-            { 'name': 'Clothing', 'title': 'Pick your clothing',
+              )},
+            {'name': 'Clothing', 'title': 'Pick your clothing',
               'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt')},
-            { 'name': 'Accessories', 'title': 'Pick your accessories',
+            {'name': 'Accessories', 'title': 'Pick your accessories',
               'options': (
                 ["Glasses-0"],
                 ["Glasses-1"],
@@ -688,7 +689,7 @@ def avatar(request):
                 ["Earring-3"],
                 ["Earring-4"]
               )
-            },
+            }
         ]
     }
     return TemplateResponse(request, 'avatar.html', context)
