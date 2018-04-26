@@ -149,6 +149,10 @@ git rebase upstream/master
 ### Contributing Static Assets
 
 Note: Please remember to optimize/compress your image assets via: `make compress-images` (Requires: jpeq-recompress, optipng, and svgo in `PATH`)
+You can install the necessary binaries via:
+
+- `npm install -g jpeg-recompress-bin pngquant-bin svgo`
+- `brew install optipng`
 
 Q: `I need to add static assets...  Where to I put them?`
 
