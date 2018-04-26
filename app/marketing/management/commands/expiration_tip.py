@@ -33,6 +33,7 @@ class Command(BaseCommand):
                 expires_date__lt=(timezone.now() + timezone.timedelta(days=(day+1))),
                 expires_date__gte=(timezone.now() + timezone.timedelta(days=day)),
                 receive_txid='',
+                network='mainnet',
             ).all()
             print('day {} got {} tips'.format(day, tips.count()))
             for t in tips:

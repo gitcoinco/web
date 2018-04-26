@@ -49,9 +49,12 @@ window.onload = function() {
     };
 
     var issueURL = $('input[name=issueURL]').val();
-    var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
 
-    $.get(uri, fulfillmentCallback);
+    waitforWeb3(function() {
+      var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + document.web3network;
+
+      $.get(uri, fulfillmentCallback);
+    });
 
     $('#goBack').click(function(e) {
       var url = window.location.href;
@@ -104,7 +107,7 @@ window.onload = function() {
         results = sanitizeAPIResults(results);
         result = results[0];
         if (result == null) {
-          _alert({ message: gettext('No active bounty found for this Github URL.') }, 'info');
+          _alert({ message: gettext('No active bounty found for this Github URL on ' + document.web3network + '.') }, 'info');
           unloading_button($('.submitBounty'));
           return;
         }
@@ -164,9 +167,12 @@ window.onload = function() {
 
       };
       // Get bountyId from the database
-      var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
 
-      $.get(uri, apiCallback);
+      waitforWeb3(function() {
+        var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + document.web3network;
+
+        $.get(uri, apiCallback);
+      });
       e.preventDefault();
     });
   }, 100);

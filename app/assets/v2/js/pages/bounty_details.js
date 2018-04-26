@@ -63,6 +63,7 @@ var rows = [
   'issue_description',
   'bounty_owner_github_username',
   'fulfillments',
+  'network',
   'experience_level',
   'project_length',
   'bounty_type',
@@ -167,6 +168,15 @@ var callbacks = {
 
     return [ 'fulfillment_accepted_on', timePeg ];
   },
+  'network': function(key, val, result) {
+    if (val == 'mainnet') {
+      $('#network').addClass('hidden');
+      return [ null, null ];
+    }
+    var warning = 'WARNING: this is a ' + val + ' network bounty, and is NOT real money.  To see mainnet bounties, go to <a href="/explorer">the bounty explorer</a> and search for mainnet bounties.  ';
+
+    return [ 'network', warning ];
+  },
   'token_value_time_peg': function(key, val, result) {
     if (val === null || typeof val == 'undefined') {
       $('#token_value_time_peg_wrapper').addClass('hidden');
@@ -212,7 +222,7 @@ var callbacks = {
       } else {
         $('#timer').hide();
       }
-    } else if (result['status'] === 'done') {
+    } else if (result['status'] === 'done' || result['status'] === 'cancelled') {
       $('#timer').hide();
     } else {
       response.shift();
@@ -412,7 +422,6 @@ var build_detail_page = function(result) {
 
   // title
   result['title'] = result['title'] ? result['title'] : result['github_url'];
-  result['title'] = result['network'] != 'mainnet' ? '(' + result['network'] + ') ' + result['title'] : result['title'];
   $('.title').html(gettext('Funded Issue Details: ') + result['title']);
 
   // insert table onto page
@@ -589,6 +598,12 @@ var render_actions = function(actions) {
 var pull_bounty_from_api = function() {
   var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
 
+  if (typeof document.issueNetwork != 'undefined') {
+    uri = uri + '&network=' + document.issueNetwork;
+  }
+  if (typeof document.issue_stdbounties_id != 'undefined') {
+    uri = uri + '&standard_bounties_id=' + document.issue_stdbounties_id;
+  }
   $.get(uri, function(results) {
     results = sanitizeAPIResults(results);
     var nonefound = true;
@@ -630,20 +645,22 @@ var render_activity = function(result) {
 
   if (result.fulfillments) {
     result.fulfillments.forEach(function(fulfillment) {
+      var link = fulfillment['fulfiller_github_url'] ? " <a target=new href='" + fulfillment['fulfiller_github_url'] + "'>[View Work]</a>" : '';
+
       if (fulfillment.accepted == true) {
         activities.push({
           name: fulfillment.fulfiller_github_username,
           address: fulfillment.fulfiller_address,
           email: fulfillment.fulfiller_email,
           fulfillment_id: fulfillment.fulfillment_id,
-          text: gettext('Work Accepted'),
+          text: gettext('Work Accepted') + link,
           age: timeDifference(new Date(result['now']), new Date(fulfillment.accepted_on)),
           status: 'accepted'
         });
       }
       activities.push({
         name: fulfillment.fulfiller_github_username,
-        text: gettext('Work Submitted'),
+        text: gettext('Work Submitted') + link,
         created_on: fulfillment.created_on,
         age: timeDifference(new Date(result['now']), new Date(fulfillment.created_on)),
         status: 'submitted'

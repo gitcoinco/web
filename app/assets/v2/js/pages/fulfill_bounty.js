@@ -41,7 +41,8 @@ window.onload = function() {
         var githubUsername = data.githubUsername;
         var issueURL = data.issueURL;
         var notificationEmail = data.notificationEmail;
-        var fullName = data.fullName;
+        var githubPRLink = data.githubPRLink;
+        var hoursWorked = data.hoursWorked;
 
         localStorage['githubUsername'] = githubUsername;
 
@@ -69,7 +70,8 @@ window.onload = function() {
             sourceFileHash: '',
             sourceDirectoryHash: '',
             fulfiller: {
-              name: fullName,
+              githubPRLink: githubPRLink,
+              hoursWorked: hoursWorked,
               email: notificationEmail,
               githubUsername: githubUsername,
               address: account
@@ -135,7 +137,7 @@ window.onload = function() {
               };
 
               // Get bountyId from the database
-              var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
+              var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + document.web3network;
 
               $.get(uri, function(results, status) {
                 results = sanitizeAPIResults(results);

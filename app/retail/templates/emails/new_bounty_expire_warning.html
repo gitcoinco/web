@@ -39,7 +39,7 @@
 
     <br>
     <br>
-    {% blocktrans %}After the funded issue has expired, you can still submit and accept work.  There will just be a new option for the funder to "Clawback" the funds on the funded issue detail page.{% endblocktrans %}
+    {% blocktrans %}After the funded issue has expired, you can still submit and accept work.  You may also 'Cancel' the bounty and get the funds back.{% endblocktrans %}
     <br>
     <br>
     <h5>{% trans "Look for this button" %}</h5>
@@ -70,7 +70,7 @@
 {% include 'emails/bounty.html' with bounty=bounty %}
 
 <p>
-{% trans "You are receiving this email because your email address is on the notification list for this funded issue." %} <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">{% trans "Manage Email Settings" %}</a>.
+{% trans "You are receiving this email because your email address is on the notification list for this funded issue." %} <a href="https://gitcoin.co/settings/email/{{subscriber.priv}}">{% trans "Manage Email Settings" %}</a>.
 </p>
 
 {% endblock %}

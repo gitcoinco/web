@@ -74,7 +74,4 @@ class Command(BaseCommand):
                     bounty.fetch_issue_comments()
                     print('1/ refreshed', bounty.pk)
 
-            if not bounty.avatar_url:
-                bounty.avatar_url = bounty.get_avatar_url()
-                print('2/ refreshed', bounty.pk)
             bounty.save()

@@ -50,6 +50,7 @@ class Command(BaseCommand):
                         web3_created__gt=(timezone.now() - timezone.timedelta(hours=hours_back)),
                         current_bounty=True,
                         metadata__icontains=keyword,
+                        idx_status__in=['open', 'started'],
                         ):
                             bounties_pks.append(bounty.pk)
                 bounties = Bounty.objects.filter(pk__in=bounties_pks)

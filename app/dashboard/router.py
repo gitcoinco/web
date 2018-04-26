@@ -35,7 +35,7 @@ class BountyFulfillmentSerializer(serializers.ModelSerializer):
         model = BountyFulfillment
         fields = ('fulfiller_address', 'fulfiller_email',
                   'fulfiller_github_username', 'fulfiller_name',
-                  'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on')
+                  'fulfillment_id', 'accepted', 'profile', 'created_on', 'accepted_on', 'fulfiller_github_url')
 
 
 class InterestSerializer(serializers.ModelSerializer):
@@ -118,7 +118,7 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         # filtering
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address',
-                    'idx_status', 'network', 'bounty_owner_github_username']:
+                    'idx_status', 'network', 'bounty_owner_github_username', 'standard_bounties_id']:
             if key in param_keys:
                 # special hack just for looking up bounties posted by a certain person
                 request_key = key if key != 'bounty_owner_address' else 'coinbase'
