@@ -525,7 +525,18 @@ def fulfill_bounty(request, pk):
 
 
 def increase_bounty(request, pk):
-    """Increase a bounty (funder)"""
+    """Increase a bounty as the funder.
+    
+    Args:
+        pk (int): The primary key of the bounty to be increased.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The increase bounty view.
+    
+    """
 
     try:
         bounty = Bounty.objects.get(pk=pk)
