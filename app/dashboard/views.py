@@ -554,7 +554,7 @@ def increase_bounty(request, pk):
 
     Returns:
         TemplateResponse: The increase bounty view.
-    
+
     """
     try:
         bounty = Bounty.objects.get(pk=pk)
