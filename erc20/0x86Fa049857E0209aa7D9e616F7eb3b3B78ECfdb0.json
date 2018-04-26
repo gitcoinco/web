@@ -1,14 +1,18 @@
 {
   "symbol": "EOS",
   "address": "0x86Fa049857E0209aa7D9e616F7eb3b3B78ECfdb0",
-  "overview": "Words in english",
-  "email": "eos@block.one",
+  "overview": "The most powerful infrastructure for decentralized applications",
+  "email": "support@block.one",
   "website": "https://eos.io/",
   "whitepaper": "https://github.com/EOSIO/Documentation/blob/master/TechnicalWhitePaper.md",
+  "state": "FLOAT",
+  "published_on": "2017-06-26",
+  "initial_price": "1 ETH = 306.79 EOS",
   "links": {
-    "twitter": "https://github.com/EOSIO/Documentation/blob/master/TechnicalWhitePaper.md",
+    "twitter": "https://twitter.com/eos_io",
     "telegram": "https://t.me/joinchat/AAAAAEQbOeucnaMWN0A9dQ",
     "github": "https://github.com/eosio",
-    "facebook": "https://www.facebook.com/eosblockchain"
+    "facebook": "https://www.facebook.com/eosblockchain",
+    "blog": "https://medium.com/eosio"
   }
 }
