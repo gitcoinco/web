@@ -1,17 +1,4 @@
 {
   "symbol": "CPU",
-  "address": "0x25fe9c458Eb3f74C2c6B5398cF1aE0d302c84768",
-  "overview": "",
-  "email": "",
-  "website": "",
-  "whitepaper": "",
-  "state": "",
-  "published_on": "",
-  "initial_price": "",
-  "links": {
-    "blog": "",
-    "twitter": "",
-    "telegram": "",
-    "reddit": ""
-  }
+  "address": "0x25fe9c458Eb3f74C2c6B5398cF1aE0d302c84768"
 }

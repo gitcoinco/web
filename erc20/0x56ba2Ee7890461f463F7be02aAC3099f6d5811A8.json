@@ -1,17 +1,4 @@
 {
   "symbol": "CAT",
-  "address": "0x56ba2Ee7890461f463F7be02aAC3099f6d5811A8",
-  "overview": "",
-  "email": "",
-  "website": "",
-  "whitepaper": "",
-  "state": "",
-  "published_on": "",
-  "initial_price": "",
-  "links": {
-    "blog": "",
-    "twitter": "",
-    "telegram": "",
-    "reddit": ""
-  }
+  "address": "0x56ba2Ee7890461f463F7be02aAC3099f6d5811A8"
 }

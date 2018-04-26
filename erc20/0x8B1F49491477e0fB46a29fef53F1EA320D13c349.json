@@ -1,17 +1,4 @@
 {
   "symbol": "AMM",
-  "address": "0x8B1F49491477e0fB46a29fef53F1EA320D13c349",
-  "overview": "",
-  "email": "",
-  "website": "",
-  "whitepaper": "",
-  "state": "",
-  "published_on": "",
-  "initial_price": "",
-  "links": {
-    "blog": "",
-    "twitter": "",
-    "telegram": "",
-    "reddit": ""
-  }
+  "address": "0x8B1F49491477e0fB46a29fef53F1EA320D13c349"
 }

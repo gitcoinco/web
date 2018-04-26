@@ -1,17 +1,4 @@
 {
-  "symbol": null,
-  "address": "0xdfBd6A960a55bCfCf59d5925351E05a51498BCeF",
-  "overview": "",
-  "email": "",
-  "website": "",
-  "whitepaper": "",
-  "state": "",
-  "published_on": "",
-  "initial_price": "",
-  "links": {
-    "blog": "",
-    "twitter": "",
-    "telegram": "",
-    "reddit": ""
-  }
+  "symbol": "ROCK",
+  "address": "0xdfBd6A960a55bCfCf59d5925351E05a51498BCeF"
 }

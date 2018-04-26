@@ -1,17 +1,4 @@
 {
-  "symbol": null,
-  "address": "0x6aEDbF8dFF31437220dF351950Ba2a3362168d1b",
-  "overview": "",
-  "email": "",
-  "website": "",
-  "whitepaper": "",
-  "state": "",
-  "published_on": "",
-  "initial_price": "",
-  "links": {
-    "blog": "",
-    "twitter": "",
-    "telegram": "",
-    "reddit": ""
-  }
+  "symbol": "DGS",
+  "address": "0x6aEDbF8dFF31437220dF351950Ba2a3362168d1b"
 }
