@@ -703,7 +703,7 @@ def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days):
     msg = f"""@{username} are you still working on this issue?
 * [{first_warning}] warning 1 ({num_days_back_to_warn} days)
 * [{second_warning}] warning 2 ({num_days_back_to_warn * 2} days)
-* [x] auto removal ({num_days_back_to_delete_interest} days)
+* [ ] auto removal ({num_days_back_to_delete_interest} days)
 """
 
     post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
