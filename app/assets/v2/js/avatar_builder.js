@@ -8,7 +8,10 @@ const requiredLayers = [ 'Clothing', 'Ears', 'Face', 'Mouth', 'Nose', 'Eyes' ];
 const options = {};
 const colorOptions = {
   SkinTone: [ 'F8D5C2', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '3F2918' ],
-  HairColor: [ '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF' ],
+  HairColor: [
+    '000000', '4E3521', '8C3B28', 'B28E28', 'F4EA6E', 'F0E6FF',
+    '4D22D2', '8E2ABE', '3596EC', '0ECF7C'
+  ],
   Background: [
     '25E899', '9AB730', '00A55E', '3FCDFF',
     '3E00FF', '8E2ABE', 'D0021B', 'F9006C',
