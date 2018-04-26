@@ -54,6 +54,7 @@ body {
   height: min-content;
   overflow: scroll;
   display: none !important;
+  justify-content: center;
 }
 .options-section.open {
   display: flex !important;
@@ -82,7 +83,8 @@ body {
   text-align: right;
   margin-top: 30px;
 }
-#options-Background {
+#color-picker {
+  text-align: center;
   line-height: 1;
 }
 .options-Background__option {
@@ -90,21 +92,6 @@ body {
   height: 28px;
   border: 1px solid #C4C4C4;
   cursor: pointer;
-}
-@media (min-width: 845px) {
-  body {
-    padding: 85px;
-  }
-  #avatar-area {
-    flex-wrap: nowrap !important;
-    justify-content: flex-start !important;
-  }
-  #section-title {
-    text-align: left;
-  }
-  .options-section {
-    max-height: 255px;
-  }
 }
 
 .button {
@@ -128,15 +115,36 @@ body {
 #save-button[disabled]:hover {
   text-decoration: none;
 }
+
 @media (min-width: 500px) {
-  #avatar-builder-header {
-    margin-bottom: 50px;
-  }
   #avatar-builder {
     flex-wrap: nowrap !important;
   }
   #avatar-builder__sections {
     display: block;
     flex-basis: 170px;
+  }
+}
+
+@media (min-width: 845px) {
+  body {
+    padding: 85px;
+  }
+  #avatar-builder-header {
+    margin-bottom: 50px;
+  }
+  #avatar-area {
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+  }
+  #section-title {
+    text-align: left;
+  }
+  .options-section {
+    max-height: 255px;
+    justify-content: flex-start;
+  }
+  #color-picker {
+    text-align: left;
   }
 }

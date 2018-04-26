@@ -40,7 +40,7 @@
     <div id="avatar-builder">
       <ul id="avatar-builder__sections">
         {% for s in sections %}
-        <a href="#" onclick="changeSection('{{ s.name|cut:" " }}')">
+        <a href="#section-title" onclick="changeSection('{{ s.name|cut:" " }}')">
           <li id="nav-{{ s.name|cut:" " }}">{% trans s.name %}</li>
         </a>
         {% endfor %}
@@ -55,7 +55,7 @@
           {% endfor %}
         </h3>
 
-        <div id="avatar-area" class="d-flex flex-wrap mb-2 justify-content-center">
+        <div id="avatar-area" class="d-flex flex-wrap justify-content-center">
           <div id="avatar-preview" class="mb-3"></div>
 
           {% for s in sections %}
