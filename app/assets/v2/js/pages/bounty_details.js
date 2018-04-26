@@ -158,6 +158,7 @@ var callbacks = {
       return [ null, null ];
     }
     var rates_estimate = get_rates_estimate(val);
+
     $('#value_in_usdt_wrapper').attr('title', rates_estimate);
 
     return [ 'Amount_usd', val ];
