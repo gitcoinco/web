@@ -4,13 +4,13 @@
 
 These widgets will help you advertise your support for Gitcoin bounties.
 
-# Dynamic Widget
+## Dynamic Widget
 
-## Example
+### Example
 
 Step 1: Include the JavaScript SDK on your page once, ideally right after the opening body tag.
 
-```
+```html
 <div id="gc-root"></div>
 <script>(function(d, s, id) {
   var js, gjs = d.getElementsByTagName(s)[0];
@@ -23,7 +23,7 @@ Step 1: Include the JavaScript SDK on your page once, ideally right after the op
 
 Step 2: Place this code wherever you want the plugin to appear on your page.
 
-```
+```html
 <div class="gitcoin-widget"
   data-limit="2"
   data-order-by="-expires_date"
@@ -32,7 +32,7 @@ Step 2: Place this code wherever you want the plugin to appear on your page.
 ></div>
 ```
 
-## Autoloading
+### Autoloading
 
 Importing the SDK into your application will attempt to autoload the widget by searching for '.gitcoin-widget' selectors
 
@@ -44,7 +44,7 @@ or
 require('gitcoin-js-sdk');
 ```
 
-## Programmatically
+### Programmatically
 
 You can also use the Widget programmatically.
 
@@ -68,20 +68,21 @@ new Widget({
 });
 ```
 
-# Static Widget
+## Static Widget
 
-## Example
+### Example
 
+```html
 <a href="https://gitcoin.co/explorer?q=gitcoinco">
     <img src="https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco/web">
 </a>
+```
 
-## Results
+### Results
 
 Repos that have this widget can expect to see 35% more interest in their repo's bounties
 
-## Code
-
+### Code
 
 Place the following code into your repo readme:
 ```
@@ -94,13 +95,13 @@ Make sure to replace the `YOUR_ORG_NAME` and `YOUR_REPO_NAME` text with your org
 
 Example:
 
-```
+```html
 <a href="https://gitcoin.co/explorer?q=gitcoinco">
     <img src="https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco/web">
 </a>
 ```
 
-## More Examples
+### More Examples
 
 <a href="https://gitcoin.co/explorer?q=metamask">
     <img src="https://gitcoin.co/funding/embed?repo=https://github.com/MetaMask/metamask-extension/issues/2350">
