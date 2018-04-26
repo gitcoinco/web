@@ -47,6 +47,7 @@ $(document).ready(function() {
   $('input[name=amount]').blur(setUsdAmount);
   $('select[name=deonomination]').change(setUsdAmount);
   $('input[name=issueURL]').blur(retrieveIssueDetails);
+  setTimeout(setUsdAmount, 1000);
 
   if ($('input[name=issueURL]').val() != '') {
     retrieveIssueDetails();
@@ -73,6 +74,13 @@ $(document).ready(function() {
 
   $('#submitBounty').validate({
     submitHandler: function(form) {
+      try {
+        bounty_address();
+      } catch (exception) {
+        _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+        return;
+      }
+      
       var data = {};
       var disabled = $(form)
         .find(':input:disabled')

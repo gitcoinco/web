@@ -263,7 +263,7 @@ def get_status_header(bounty):
                 else:
                     statuses.append('**Done**')
 
-    
+
     #1. Open | **2. Started** | 3. Submitted | 4. Done
     status_bar = ""
     for x, status in enumerate(statuses):
@@ -699,7 +699,7 @@ def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days):
         return False
 
     first_warning = 'x'
-    second_warning = 'x' if last_heard_from_user_days > num_days_back_to_warn else ''
+    second_warning = 'x' if last_heard_from_user_days > num_days_back_to_warn else ' '
     msg = f"""@{username} are you still working on this issue?
 * [{first_warning}] warning 1 ({num_days_back_to_warn} days)
 * [{second_warning}] warning 2 ({num_days_back_to_warn * 2} days)
