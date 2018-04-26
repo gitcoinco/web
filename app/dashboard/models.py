@@ -600,6 +600,21 @@ class Bounty(SuperModel):
             self.save()
         return comments
 
+    @property
+    def action_urls(self):
+        """Provide URLs for bounty related actions.
+
+        Returns:
+            dict: A dictionary of action URLS for this bounty.
+
+        """
+        return {
+            'fulfill': f"/issue/fulfill/{self.pk}",
+            'increase': f"/issue/increase/{self.pk}",
+            'accept': f"/issue/accept/{self.pk}",
+            'cancel': f"/issue/cancel/{self.pk}",
+        }
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
