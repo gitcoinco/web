@@ -18,7 +18,7 @@ const colorOptions = {
     'FFCE08', 'F8E71C', '15003E', 'FFFFFF'
   ],
   ClothingColor: [
-    'CCCCCC', '684A23', 'FFCC3B', '4242F4'
+    'CCCCCC', '684A23', 'FFCC3B', '4242F4', '43B9F9'
   ]
 };
 const sectionPalettes = {
