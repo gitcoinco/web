@@ -93,6 +93,9 @@ body {
   border: 1px solid #C4C4C4;
   cursor: pointer;
 }
+.options-Background__option.selected {
+  border: 3px solid #150069;
+}
 
 .button {
   border: 1px solid #150069;

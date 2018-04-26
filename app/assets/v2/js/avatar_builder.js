@@ -1,4 +1,3 @@
-const defaultBackground = 'FFFFFF';
 let openSection;
 const layers = [
   'HatLong', 'HairLong', 'EarringBack', 'Clothing',
@@ -6,9 +5,6 @@ const layers = [
   'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses'
 ];
 const requiredLayers = [ 'Clothing', 'Ears', 'Head', 'Mouth', 'Nose', 'Eyes' ];
-const options = {
-  Background: defaultBackground
-};
 const colorOptions = {
   SkinTone: [ 'F8D5C2', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '3F2918' ],
   HairColor: [
@@ -41,7 +37,9 @@ function changeColorPicker(section) {
 
   if (palette) {
     colorOptions[palette].forEach(c => {
-      colorPicker.append($(`<button class="options-Background__option pa-0"
+      colorPicker.append($(`<button
+      id="picker-${c}"
+      class="options-Background__option p-0 ${(options[palette] === c) ? 'selected' : ''}"
       style="background-color: #${c}" onclick="changeColor('${palette}', '${c}')" />
       `));
     });
@@ -61,6 +59,10 @@ function changeSection(section) {
 }
 
 function changeColor(palette, color) {
+  $(`#picker-${options[palette]}`).removeClass('selected');
+  options[palette] = color;
+  $(`#picker-${options[palette]}`).addClass('selected');
+
   $(`.${palette}-dependent`).each(function(idx, elem) {
     const pathSegments = elem.src.split('/');
     const filename = pathSegments.pop();
@@ -156,4 +158,3 @@ function setOption(option, value, target) {
 }
 
 changeSection('Head');
-setOption('Background', defaultBackground);

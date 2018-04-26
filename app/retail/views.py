@@ -637,9 +637,10 @@ def web3(request):
 
 def avatar(request):
     context = {
-        'defaultTone': 'AE7242',
+        'defaultSkinTone': 'AE7242',
         'defaultHairColor': '000000',
         'defaultClothingColor': 'CCCCCC',
+        'defaultBackground': 'FFFFFF',
         'sections': [
             {'name': 'Head', 'title': 'Pick head shape',
               'options': ('0', '1', '2', '3', '4')},
