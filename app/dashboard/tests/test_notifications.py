@@ -59,7 +59,7 @@ class DashboardNotificationsTest(TestCase):
         message = build_github_notification(self.bounty, 'new_bounty')
         assert f'__This issue now has a funding of {self.natural_value} {self.bounty.token_name}' in message
         assert self.usdt_value in message
-        assert f'[here]({self.absolute_url})' in message
+        assert f'This issue now has a funding of' in message
         assert f'${self.amount_open_work}' in message
 
     def test_build_github_notification_killed_bounty(self):
@@ -74,7 +74,7 @@ class DashboardNotificationsTest(TestCase):
         message = build_github_notification(self.bounty, 'increased_bounty')
         assert f'__The funding of this issue was increased to {self.natural_value} {self.bounty.token_name}' in message
         assert self.usdt_value in message
-        assert f'This issue now has a funding of' in message
+        assert f'The funding of this issue was increased' in message
         assert f'${self.amount_open_work}' in message
 
     def tearDown(self):
