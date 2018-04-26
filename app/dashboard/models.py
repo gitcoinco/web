@@ -1062,7 +1062,7 @@ class Profile(SuperModel):
         return access_token
 
     def get_profile_preferred_language(self):
-        return settings.LANGUAGE_CODE if self.pref_lang_code is None else self.pref_lang_code
+        return settings.LANGUAGE_CODE if not self.pref_lang_code else self.pref_lang_code
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
@@ -1257,9 +1257,22 @@ class Tool(SuperModel):
     def i18n_link_copy(self):
         return _(self.link_copy)
 
+    def __str__(self):
+        return self.name
+
 
 class ToolVote(models.Model):
     """Define the vote placed on a tool."""
 
     profile = models.ForeignKey('dashboard.Profile', related_name='votes', on_delete=models.CASCADE)
     value = models.IntegerField(default=0)
+
+    @property
+    def tool(self):
+        try:
+            return Tool.objects.filter(votes__in=[self.pk]).first()
+        except:
+            return None
+
+    def __str__(self):
+        return f"{self.profile} | {self.value} | {self.tool}"
