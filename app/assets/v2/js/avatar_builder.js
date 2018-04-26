@@ -26,7 +26,8 @@ const colorOptions = {
 };
 const sectionPalettes = {
   Head: 'SkinTone', Eyes: 'SkinTone', Ears: 'SkinTone', Nose: 'SkinTone', Mouth: 'SkinTone',
-  HairStyle: 'HairColor', HairShort: 'HairColor', HairLong: 'HairColor', FacialHair: 'HairColor',
+  HairStyle: 'HairColor', HairShort: 'HairColor', HairLong: 'HairColor',
+  FacialHair: 'HairColor', Beard: 'HairColor', Mustache: 'HairColor',
   Clothing: 'ClothingColor'
 };
 
