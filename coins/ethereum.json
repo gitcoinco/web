@@ -1,5 +1,6 @@
 {
   "symbol": "ETH",
+  "address": "ethereum",
   "overview": "The crypto-fuel for the Ethereum network",
   "website": "https://www.ethereum.org",
   "whitepaper": "https://github.com/ethereum/wiki/wiki/White-Paper",

@@ -1,5 +1,6 @@
 {
   "symbol": "BTC",
+  "address": "bitcoin",
   "overview": "A Peer-to-Peer Electronic Cash System",
   "website": "https://bitcoin.org/",
   "whitepaper": "https://bitcoin.org/bitcoin.pdf",
