@@ -21,6 +21,13 @@ $(document).ready(function() {
 
   // submit bounty button click
   $('#submitBounty').click(function(e) {
+    try {
+      bounty_address();
+    } catch (exception) {
+      _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+      return;
+    }
+
     mixpanel.track('Increase Bounty Clicked (funder)', {});
 
     // setup
