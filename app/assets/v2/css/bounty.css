@@ -190,6 +190,19 @@ body {
   padding: 5px;
 }
 
+#network {
+  background-color: #fbe0d6;
+  color: #fb9470;
+  padding: 5px 10px;
+  border-radius: 2px;
+  margin-bottom: 5px;
+  display: block;
+}
+#network a{
+  color: #fb9470;
+  font-weight: bold;
+}
+
 .bounty-actions {
   margin-top: 2.5em;
   display: inherit;
