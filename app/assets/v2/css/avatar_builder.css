@@ -106,6 +106,28 @@ body {
     max-height: 255px;
   }
 }
+
+.button {
+  border: 1px solid #150069;
+  color: #150069;
+}
+.button:hover {
+  text-decoration: underline;
+  color: #150069;
+}
+#save-button {
+  background-color: #150069;
+  color: white;
+}
+#save-button[disabled] {
+  color: #CCC;
+  border-color: #CCC;
+  cursor: default;
+  background-color: inherit;
+}
+#save-button[disabled]:hover {
+  text-decoration: none;
+}
 @media (min-width: 500px) {
   #avatar-builder-header {
     margin-bottom: 50px;

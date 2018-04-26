@@ -56,9 +56,7 @@
         </h3>
 
         <div id="avatar-area" class="d-flex flex-wrap mb-2 justify-content-center">
-          <div id="avatar-preview" class="mb-3"
-            style="background-color: #{{ defaultBgColor }}"
-          ></div>
+          <div id="avatar-preview" class="mb-3"></div>
 
           {% for s in sections %}
           {% with s.name|cut:" " as id %}
@@ -121,8 +119,8 @@
     </div>
 
     <div id="avatar-builder__actions">
-      <a href="#">{% trans "Do This Later" %}</a>
-      <a href="#">{% trans "Save Avatar" %}</a>
+      <a href="#" class="button">{% trans "Do This Later" %}</a>
+      <button disabled id="save-button" class="button">{% trans "Save Avatar" %}</button>
     </div>
     <script src="{% static "v2/js/jquery.js" %}" defer></script>
     <script src="{% static "v2/js/avatar_builder.js" %}" defer></script>

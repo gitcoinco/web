@@ -640,7 +640,6 @@ def avatar(request):
         'defaultTone': 'AE7242',
         'defaultHairColor': '000000',
         'defaultClothingColor': 'CCCCCC',
-        'defaultBgColor': '15003E',
         'sections': [
             {'name': 'Head', 'title': 'Pick head shape',
               'options': ('0', '1', '2', '3', '4')},
@@ -689,6 +688,13 @@ def avatar(request):
                 ["EarringBack-2", "Earring-2"],
                 ["Earring-3"],
                 ["Earring-4"]
+              )
+            },
+            {'name': 'Background', 'title': 'Pick a background color',
+              'options': (
+                '25E899', '9AB730', '00A55E', '3FCDFF',
+                '3E00FF', '8E2ABE', 'D0021B', 'F9006C',
+                'FFCE08', 'F8E71C', '15003E', 'FFFFFF'
               )
             }
         ]

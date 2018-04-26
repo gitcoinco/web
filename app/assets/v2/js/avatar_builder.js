@@ -1,3 +1,4 @@
+const defaultBackground = 'FFFFFF';
 let openSection;
 const layers = [
   'HatLong', 'HairLong', 'EarringBack', 'Clothing',
@@ -5,7 +6,9 @@ const layers = [
   'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses'
 ];
 const requiredLayers = [ 'Clothing', 'Ears', 'Head', 'Mouth', 'Nose', 'Eyes' ];
-const options = {};
+const options = {
+  Background: defaultBackground
+};
 const colorOptions = {
   SkinTone: [ 'F8D5C2', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '3F2918' ],
   HairColor: [
@@ -58,9 +61,6 @@ function changeSection(section) {
 
 function changeColor(palette, color) {
   $(`.${palette}-dependent`).each(function(idx, elem) {
-    if (elem.classList.contains('d-none')) {
-      return;
-    }
     const pathSegments = elem.src.split('/');
     const filename = pathSegments.pop();
     const baseOption = filename.split('-').slice(0, -1).join('-');
@@ -87,18 +87,13 @@ function changeImage(option, path) {
     alt="${option} Preview"
     style="z-index: ${layers.indexOf(option)}"
     class="preview-section ${
-  (sectionPalettes.hasOwnProperty(option)) ?
+  (sectionPalettes.hasOwnProperty(option) &&
+    [ 'Eyes', 'Mouth', 'Nose' ].indexOf(option) < 0) ?
     `${sectionPalettes[option]}-dependent` : ''
 }" />`);
 
     $('#avatar-preview').append(newEl);
     options[option] = path;
-  }
-  const complete = requiredLayers.
-    reduce((complete, name) => !!options[name] && complete, true);
-
-  if (complete) {
-    $('#complete-notification').removeClass('d-none');
   }
 }
 
@@ -149,6 +144,15 @@ function setOption(option, value, target) {
       options['Background'] = value;
       break;
   }
+  // Check for completion
+  const complete = requiredLayers.
+    reduce((complete, name) => !!options[name] && complete, true);
+
+  if (complete) {
+    $('#complete-notification').removeClass('d-none');
+    $('#save-button').removeAttr('disabled');
+  }
 }
 
 changeSection('Head');
+setOption('Background', defaultBackground);
