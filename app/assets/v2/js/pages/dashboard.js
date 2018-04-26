@@ -1,6 +1,6 @@
 /* eslint-disable no-loop-func */
 // helper functions
-var sidebar_keys = [ 'experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'network', 'idx_status' ];
+var sidebar_keys = [ 'experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'network', 'last_updated', 'idx_status' ];
 
 var localStorage;
 

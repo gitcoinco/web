@@ -453,10 +453,13 @@ def process_bounty(request):
 
 def dashboard(request):
     """Handle displaying the dashboard."""
+    handle = request.session.get('handle')
+
     params = {
         'active': 'dashboard',
         'title': _('Issue Explorer'),
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+        'profile': Profile.objects.filter(handle=handle).first()
     }
     return TemplateResponse(request, 'dashboard.html', params)
 

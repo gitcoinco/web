@@ -233,6 +233,29 @@
         </div>
       </div>
     </div>
+    {% if profile.data.site_admin is True %}
+    <div class="col">
+      <div class="col-12 subheading font-body accordion">LAST UPDATED</div>
+      <div class="col-12 options panel">
+        <div class="form__radio option">
+          <input name="last_updated" id="not_updated_3days" type="radio" value="3" val-ui='Not updated in more than 3 days'/>
+          <label class="filter-label wrap" for=not_updated_3days>More than 3 days ago</label>
+        </div>
+        <div class="form__radio option">
+          <input name="last_updated" id="not_updated_7days" type="radio" value="7" val-ui='Not updated in more than 7 days'/>
+          <label class="filter-label wrap" for=not_updated_7days>More than 7 days ago</label>
+        </div>
+        <div class="form__radio option">
+          <input name="last_updated" id="not_updated_14days" type="radio" value="14" val-ui='Not updated in more than 14 days'/>
+          <label class="filter-label wrap" for=not_updated_14days>More than 14 days ago</label>
+        </div>
+        <div class="form__radio option">
+          <input name="last_updated" id="all_updated" type="radio" value="any" checked/>
+          <label class="filter-label wrap" for=all_updated>All</label>
+        </div>
+      </div>
+    </div>
+    {% endif %}
   </form>
   <div class="align-self-end text-right font-body" id="clear">
     <p>{% trans "Reset" %}</p>

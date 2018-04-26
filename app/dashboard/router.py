@@ -18,7 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-from datetime import datetime
+
+from datetime import datetime, timedelta
+
+from django.utils import timezone
 
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
@@ -75,7 +78,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'standard_bounties_id', 'web3_type', 'can_submit_after_expiration_date',
             'github_issue_number', 'github_org_name', 'github_repo_name',
             'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on', 'fulfillment_submitted_on',
-            'fulfillment_started_on', 'canceled_on',
+            'fulfillment_started_on', 'canceled_on', 'last_comment_date',
         )
 
     def create(self, validated_data):
@@ -162,6 +165,12 @@ class BountyViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 interested__profile__handle__iexact=self.request.query_params.get('interested_github_username')
             )
+
+        # Retrieve all bounties that haven't been commented on in the last x days. Get x from the last_updated parameter.
+        if 'last_updated' in param_keys:
+            updated_days = self.request.query_params.get('last_updated')
+            if updated_days is not None and updated_days.isnumeric():
+                queryset = queryset.filter(last_comment_date__lt=timezone.now() - timedelta(days=int(updated_days)))
 
         # order
         order_by = self.request.query_params.get('order_by')
