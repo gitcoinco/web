@@ -21,7 +21,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from datetime import datetime
 
 import django_filters.rest_framework
-from rest_framework import routers, serializers, viewsets
+from rest_framework import pagination, response, routers, serializers, viewsets
+from rest_framework.response import Response
 
 from .models import Bounty, BountyFulfillment, Interest, ProfileSerializer
 
@@ -94,7 +95,13 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             BountyFulfillment.objects.update(bounty=bounty, **fulfillment_data)
         return bounty
 
-
+class BountyPagination(pagination.LimitOffsetPagination):
+    default_limit = 100
+    max_limit = 100
+    template = None
+    def get_paginated_response(self, data):
+        return Response(data)
+        
 class BountyViewSet(viewsets.ModelViewSet):
     """Handle the Bounty view behavior."""
 
@@ -102,6 +109,7 @@ class BountyViewSet(viewsets.ModelViewSet):
         'fulfillments', 'interested', 'interested__profile') \
         .all().order_by('-web3_created')
     serializer_class = BountySerializer
+    pagination_class= BountyPagination
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
     def get_queryset(self):

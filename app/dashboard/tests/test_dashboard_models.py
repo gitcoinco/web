@@ -39,6 +39,42 @@ class DashboardModelsTest(TestCase):
             from_currency='ETH',
             to_currency='USDT',
         )
+    @staticmethod
+    def test_bounty():
+        
+        """Test the dashboard Bounty model."""
+        fulfiller_profile = Profile.objects.create(
+            data={},
+            handle='fred',
+            email='fred@localhost'
+        )
+        bounty = Bounty.objects.create(
+            title='foo',
+            value_in_token=3,
+            token_name='ETH',
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/11',
+            token_address='0x0',
+            issue_description='hello world',
+            bounty_owner_github_username='flintstone',
+            is_open=False,
+            accepted=True,
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            idx_project_length=5,
+            project_length='Months',
+            bounty_type='Feature',
+            experience_level='Intermediate',
+            raw_data={},
+        )
+        bounty_fulfillment = BountyFulfillment.objects.create(
+            fulfiller_address='0x0000000000000000000000000000000000000000',
+            fulfiller_email='',
+            fulfiller_github_username='fred',
+            fulfiller_name='Fred',
+            bounty=bounty,
+            profile=fulfiller_profile,
+        )
+
 
     @staticmethod
     def test_bounty():
