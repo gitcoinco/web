@@ -587,7 +587,6 @@ def cancel_bounty(request, pk):
         TemplateResponse: The cancel bounty view.
 
     """
-
     try:
         bounty = Bounty.objects.get(pk=pk)
     except:
