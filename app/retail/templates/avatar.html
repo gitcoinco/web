@@ -120,7 +120,10 @@
 
     <div id="avatar-builder__actions">
       <a href="#" class="button">{% trans "Do This Later" %}</a>
-      <button disabled id="save-button" class="button">{% trans "Save Avatar" %}</button>
+      <button disabled
+        id="save-button" class="button"
+        onclick="console.log(options)"
+      >{% trans "Save Avatar" %}</button>
     </div>
     <script src="{% static "v2/js/jquery.js" %}" defer></script>
     <script src="{% static "v2/js/avatar_builder.js" %}" defer></script>
