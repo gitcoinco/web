@@ -67,28 +67,31 @@
               {% for o in s.options %}
                 <button onclick="setOption('{{ id }}', '{{ o|addslashes }}', this)" class="avatar-option">
 
-                  {% if id == "Face" or id == "Ears" or id == "Clothing" %}
+                  {% if id == "Head" or id == "Ears" %}
                     {% with basePath|add:o|add:"-"|add:defaultTone|add:".svg" as path %}
-                      <img class="tone-dependent" src="{% static path %}" />
+                      <img class="SkinTone-dependent" src="{% static path %}" />
+                    {% endwith %}
+
+                  {% elif id == "Clothing" %}
+                    {% with basePath|add:o|add:"-"|add:defaultClothingColor|add:".svg" as path %}
+                      <img class="ClothingColor-dependent" src="{% static path %}" />
                     {% endwith %}
 
                   {% elif id == "HairStyle" %}
                     {% for part in o %}
                     {% with basePath|add:part|add:"-"|add:defaultHairColor|add:".svg" as path %}
-                      <img
-                        {% if part != 'None' %}
-                          class="hair-color-dependent"
-                          src="{% static path %}"
-                        {% else %}
-                          class="hair-color-dependent d-none"
-                        {% endif %}
-                      />
+                      {% if part != 'None' %}
+                        <img
+                            class="{{ forloop.counter0 }} HairColor-dependent"
+                            src="{% static path %}"
+                        />
+                      {% endif %}
                     {% endwith %}
                     {% endfor %}
 
                   {% elif id == "FacialHair" %}
                     {% with basePath|add:o|add:"-"|add:defaultHairColor|add:".svg" as path %}
-                      <img class="hair-color-dependent" src="{% static path %}" />
+                      <img class="HairColor-dependent" src="{% static path %}" />
                     {% endwith %}
 
                   {% elif id == "Accessories" %}

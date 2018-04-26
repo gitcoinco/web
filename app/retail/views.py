@@ -639,9 +639,10 @@ def avatar(request):
     context = {
         'defaultTone': 'AE7242',
         'defaultHairColor': '000000',
+        'defaultClothingColor': 'CCCCCC',
         'defaultBgColor': '15003E',
         'sections': [
-            {'name': 'Face', 'title': 'Pick face shape',
+            {'name': 'Head', 'title': 'Pick head shape',
               'options': ('0', '1', '2', '3', '4')},
             {'name': 'Eyes', 'title': 'Pick eyes shape',
               'options': ('0', '1', '2', '3', '4')},
@@ -651,6 +652,8 @@ def avatar(request):
               'options': ('0', '1', '2', '3', '4')},
             {'name': 'Ears', 'title': 'Pick ears shape',
               'options': ('0', '1', '2', '3')},
+            {'name': 'Clothing', 'title': 'Pick your clothing',
+              'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt')},
             {'name': 'Hair Style', 'title': 'Pick a hairstyle',
               'options': (
                 ["None", "0"],
@@ -669,8 +672,6 @@ def avatar(request):
                 'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3',
                 'Beard-0', 'Beard-1', 'Beard-2', 'Beard-3'
               )},
-            {'name': 'Clothing', 'title': 'Pick your clothing',
-              'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt')},
             {'name': 'Accessories', 'title': 'Pick your accessories',
               'options': (
                 ["Glasses-0"],

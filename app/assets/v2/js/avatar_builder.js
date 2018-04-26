@@ -1,10 +1,10 @@
 let openSection;
 const layers = [
   'HatLong', 'HairLong', 'EarringBack', 'Clothing',
-  'Ears', 'Face', 'HairShort', 'HatShort', 'Earring', 'Beard',
+  'Ears', 'Head', 'HairShort', 'HatShort', 'Earring', 'Beard',
   'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses'
 ];
-const requiredLayers = [ 'Clothing', 'Ears', 'Face', 'Mouth', 'Nose', 'Eyes' ];
+const requiredLayers = [ 'Clothing', 'Ears', 'Head', 'Mouth', 'Nose', 'Eyes' ];
 const options = {};
 const colorOptions = {
   SkinTone: [ 'F8D5C2', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '3F2918' ],
@@ -16,7 +16,15 @@ const colorOptions = {
     '25E899', '9AB730', '00A55E', '3FCDFF',
     '3E00FF', '8E2ABE', 'D0021B', 'F9006C',
     'FFCE08', 'F8E71C', '15003E', 'FFFFFF'
+  ],
+  ClothingColor: [
+    'CCCCCC', '684A23', 'FFCC3B'
   ]
+};
+const sectionPalettes = {
+  Head: 'SkinTone', Eyes: 'SkinTone', Ears: 'SkinTone', Nose: 'SkinTone', Mouth: 'SkinTone',
+  HairStyle: 'HairColor', HairShort: 'HairColor', HairLong: 'HairColor', FacialHair: 'HairColor',
+  Clothing: 'ClothingColor'
 };
 
 layers.forEach(name => {
@@ -24,24 +32,16 @@ layers.forEach(name => {
 });
 
 function changeColorPicker(section) {
-  let colorPallete;
+  const palette = sectionPalettes[section];
   const colorPicker = $('#color-picker').empty();
 
-  if ([ 'Face', 'Eyes', 'Nose', 'Mouth', 'Ears' ].indexOf(section) >= 0) {
-    colorPallete = 'SkinTone';
-  } else if ([ 'HairStyle', 'FacialHair' ].indexOf(section) >= 0) {
-    colorPallete = 'HairColor';
-  } else if (section === 'Background') {
-    colorPallete = 'Background';
-  } else {
-    return;
+  if (palette) {
+    colorOptions[palette].forEach(c => {
+      colorPicker.append($(`<button class="options-Background__option pa-0"
+      style="background-color: #${c}" onclick="changeColor('${palette}', '${c}')" />
+      `));
+    });
   }
-
-  colorOptions[colorPallete].forEach(c => {
-    colorPicker.append($(`<button class="options-Background__option pa-0"
-    style="background-color: #${c}" onclick="setOption('${colorPallete}', '${c}')" />
-    `));
-  });
 }
 
 function changeSection(section) {
@@ -56,8 +56,8 @@ function changeSection(section) {
   changeColorPicker(section);
 }
 
-function changeColor(className, color) {
-  $(className).each(function(idx, elem) {
+function changeColor(palette, color) {
+  $(`.${palette}-dependent`).each(function(idx, elem) {
     if (elem.classList.contains('d-none')) {
       return;
     }
@@ -87,11 +87,8 @@ function changeImage(option, path) {
     alt="${option} Preview"
     style="z-index: ${layers.indexOf(option)}"
     class="preview-section ${
-  ([ 'Face', 'Ears', 'Clothing' ].indexOf(option) >= 0) ?
-    'tone-dependent' : ''
-}${
-  ([ 'HairShort', 'HairLong', 'Mustache', 'Beard' ].indexOf(option) >= 0) ?
-    'hair-color-dependent' : ''
+  (sectionPalettes.hasOwnProperty(option)) ?
+    `${sectionPalettes[option]}-dependent` : ''
 }" />`);
 
     $('#avatar-preview').append(newEl);
@@ -106,10 +103,9 @@ function changeImage(option, path) {
 }
 
 function setOption(option, value, target) {
-  console.log(target);
   $('#nav-' + option).addClass('complete');
   switch (option) {
-    case 'Face':
+    case 'Head':
     case 'Eyes':
     case 'Nose':
     case 'Ears':
@@ -128,19 +124,25 @@ function setOption(option, value, target) {
       });
       break;
     case 'HairStyle':
-      changeImage('HairShort', $(target).children()[1].src);
-      changeImage('HairLong', $(target).children()[0].src);
+      [ 'HairLong', 'HairShort' ].forEach((layer, idx) => {
+        let found = false;
+
+        $(target).children().each((elemIdx, elem) => {
+          if (idx === parseInt(elem.classList[0])) {
+            changeImage(layer, elem.src);
+            found = true;
+          }
+        });
+
+        if (!found) {
+          changeImage(layer);
+        }
+      });
       break;
     case 'FacialHair':
       var layer = value.split('-')[0];
 
       changeImage(layer, $(target).children()[0].src);
-      break;
-    case 'HairColor':
-      changeColor('.hair-color-dependent', value);
-      break;
-    case 'SkinTone':
-      changeColor('.tone-dependent', value);
       break;
     case 'Background':
       $('#avatar-preview').css('background-color', '#' + value);
@@ -149,4 +151,4 @@ function setOption(option, value, target) {
   }
 }
 
-changeSection('Face');
+changeSection('Head');

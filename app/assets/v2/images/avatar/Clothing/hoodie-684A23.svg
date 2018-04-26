@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="899px" height="1415px" viewBox="0 0 899 1415" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>hoodie-684A23</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="hoodie-684A23" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="3F2918" transform="translate(27.000000, 970.000000)">
+            <g id="Group">
+                <g id="Shape">
+                    <g>
+                        <path d="M845.2,340.4 L845.2,340 C845.2,266.8 801.5,200.6 734.2,171.8 L617.6,122 C556,95.6 489.7,82.1 422.6,82.1 C355.6,82.1 289.3,95.7 227.6,122 L111,171.8 C43.7,200.6 0,266.8 0,340 L0,445.6 L845.2,445.6 L845.2,340.4 Z" fill="#684A23"></path>
+                        <path d="M181.1,284.1 L172.2,426.5" stroke="#333333" stroke-width="12.5228" stroke-linecap="round"></path>
+                        <path d="M664.1,284.1 L669.5,426.5" stroke="#333333" stroke-width="12.5228" stroke-linecap="round"></path>
+                        <polygon fill="#FFFFFF" points="521.3 100.9 318.1 100.9 287.9 441.3 551.5 441.3"></polygon>
+                        <path d="M422.6,109 C454.1,109 485.8,112.2 516.7,118.5 C547.6,124.8 578,134.3 607,146.7 L723.6,196.6 C781.1,221.2 818.2,277.5 818.2,340 L818.2,340.4 L818.2,418.6 L27,418.6 L27,340 C27,277.5 64.1,221.2 121.6,196.6 L238.2,146.7 C267.2,134.3 297.6,124.8 328.5,118.5 C359.4,112.2 391.1,109 422.6,109 Z M422.6,82 C355.6,82 289.3,95.6 227.6,121.9 L111,171.8 C43.7,200.6 0,266.8 0,340 L0,445.6 L845.2,445.6 L845.2,340.4 L845.2,340 C845.2,266.8 801.5,200.6 734.2,171.8 L617.6,122 C555.9,95.6 489.6,82 422.6,82 Z" fill="#333333" fill-rule="nonzero"></path>
+                        <path d="M600.8,46.9 C567.1,22.2 511.2,0.7 419,0.7 C324.7,0.7 269.8,23.3 237.9,48.6 C206.2,73.8 198.8,118.7 219.5,153.5 C229.6,170.4 238.2,190.4 236,207.2 L308.7,207.2 L318.1,101 L521.2,101 L530.6,207.2 L604.5,207.2 C604.5,207.2 609,177.3 623.7,150.4 C643.1,115 633.3,70.6 600.8,46.9 Z" fill="#684A23" fill-rule="nonzero"></path>
+                        <path d="M604.6,207.1 C604.6,207.1 608.8,178.7 622.7,152.3 C642.5,114.7 631.9,68.2 596.9,44.1 C562.8,20.6 507.8,0.6 419,0.6 C328.6,0.6 274.4,21.3 242,45.4 C207.9,70.7 198.7,117.8 220.2,154.4 C230,171 238.3,190.6 236,207" stroke="#333333" stroke-width="27.0002"></path>
+                    </g>
+                    <path d="M323.9,113.7 L287.9,438.7" stroke="#333333" stroke-width="12.5228" stroke-linecap="round"></path>
+                    <path d="M515.4,113.7 L551.5,438.7" stroke="#333333" stroke-width="12.5228" stroke-linecap="round"></path>
+                </g>
+                <path d="M517.1,113.7 C517.1,114.8 517.2,133.3 517.2,134.4 C517.2,188.1 473.6,231.7 419.8,231.7 C366,231.7 322.4,188.1 322.4,134.4 L322.4,113.7" id="Shape" stroke="#333333" stroke-width="10.8181" opacity="0.15"></path>
+                <path d="M569.4,207.1 C569.4,207.1 584.7,266 584.7,289.1" id="Shape" stroke="#333333" stroke-width="12.5228" stroke-linecap="round"></path>
+                <path d="M287.9,196.6 C287.9,196.6 252.1,280 250.2,352.5" id="Shape" stroke="#333333" stroke-width="12.5228" stroke-linecap="round"></path>
+                <circle id="Oval" fill="#333333" fill-rule="nonzero" cx="250.2" cy="352.5" r="14.4"></circle>
+                <circle id="Oval" fill="#333333" fill-rule="nonzero" cx="584.7" cy="289.1" r="14.4"></circle>
+            </g>
+        </g>
+    </g>
+</svg>
