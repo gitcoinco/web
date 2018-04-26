@@ -50,7 +50,7 @@
                                     <label class="form__label" for=issueURL>{% trans "Issue URL" %}</label>
                                     <input required name='issueURL' id="issueURL" class="w-100 form__input" type="url" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
                                 </div>
-                                <div class="w-100 mt-2">
+                                <div class="w-100 mt-2 amount_container">
                                     <label class="form__label" for="amount">{% trans "Amount" %}</label>
                                     <div class="form__flex-group">
                                         <div class="form__amount-wrapper">
@@ -60,9 +60,9 @@
                                             <div class="form__select2">
                                                 <select name='deonomination' id='token'></select>
                                             </div>
-                                            <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
                                         </div>
                                     </div>
+                                    <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
                                 </div>
                                 {% include 'shared/github_username.html' %}
                                 {% include 'shared/notification_email.html' %}

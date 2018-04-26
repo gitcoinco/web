@@ -47,6 +47,7 @@ $(document).ready(function() {
   $('input[name=amount]').blur(setUsdAmount);
   $('select[name=deonomination]').change(setUsdAmount);
   $('input[name=issueURL]').blur(retrieveIssueDetails);
+  setTimeout(setUsdAmount, 1000);
 
   if ($('input[name=issueURL]').val() != '') {
     retrieveIssueDetails();
