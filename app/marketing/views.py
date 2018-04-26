@@ -649,21 +649,17 @@ def slack_settings(request):
         token = request.POST.get('token', '')
         repos = request.POST.get('repos').split(',')
         channel = request.POST.get('channel', '')
-        no_access = [repo_name for repo_name in repos if repo_name != '' and not profile.has_repo(repo_name)]
-        if no_access:
-            msg = _(f'You don\'t have access to {no_access}')
+        profile.slack_token = token
+        profile.slack_repos = repos
+        profile.slack_channel = channel
+        ip = get_ip(request)
+        if not es.metadata.get('ip', False):
+            es.metadata['ip'] = [ip]
         else:
-            profile.slack_token = token
-            profile.slack_repos = repos
-            profile.slack_channel = channel
-            ip = get_ip(request)
-            if not es.metadata.get('ip', False):
-                es.metadata['ip'] = [ip]
-            else:
-                es.metadata['ip'].append(ip)
-            es.save()
-            profile.save()
-            msg = _('Updated your preferences.')
+            es.metadata['ip'].append(ip)
+        es.save()
+        profile.save()
+        msg = _('Updated your preferences.')
 
     context = {
         'repos': ",".join(profile.slack_repos),
