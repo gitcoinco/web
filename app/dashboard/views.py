@@ -478,13 +478,22 @@ def new_bounty(request):
     return TemplateResponse(request, 'submit_bounty.html', params)
 
 
-
 def accept_bounty(request, pk):
-    """Process the bounty."""
+    """Process the bounty.
 
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
     try:
         bounty = Bounty.objects.get(pk=pk)
-    except:
+    except Bounty.DoesNotExist:
         raise Http404
 
     params = {
@@ -501,11 +510,21 @@ def accept_bounty(request, pk):
 
 
 def fulfill_bounty(request, pk):
-    """Fulfill a bounty."""
+    """Fulfill a bounty.
 
+    Args:
+        pk (int): The primary key of the bounty to be fulfilled.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The fulfill bounty view.
+
+    """
     try:
         bounty = Bounty.objects.get(pk=pk)
-    except:
+    except Bounty.DoesNotExist:
         raise Http404
 
     is_user_authenticated = request.user.is_authenticated
@@ -525,11 +544,21 @@ def fulfill_bounty(request, pk):
 
 
 def increase_bounty(request, pk):
-    """Increase a bounty (funder)"""
+    """Increase a bounty as the funder.
 
+    Args:
+        pk (int): The primary key of the bounty to be increased.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The increase bounty view.
+
+    """
     try:
         bounty = Bounty.objects.get(pk=pk)
-    except:
+    except Bounty.DoesNotExist:
         raise Http404
 
     params = {
@@ -545,11 +574,21 @@ def increase_bounty(request, pk):
 
 
 def cancel_bounty(request, pk):
-    """Kill an expired bounty."""
+    """Kill an expired bounty.
 
+    Args:
+        pk (int): The primary key of the bounty to be cancelled.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The cancel bounty view.
+
+    """
     try:
         bounty = Bounty.objects.get(pk=pk)
-    except:
+    except Bounty.DoesNotExist:
         raise Http404
 
     params = {
