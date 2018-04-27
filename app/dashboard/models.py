@@ -26,8 +26,8 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
-from django.contrib.postgres.fields import JSONField
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
@@ -861,6 +861,9 @@ class Profile(SuperModel):
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES)
+    slack_repos = ArrayField(models.CharField(max_length=200), blank=True, default=[])
+    slack_token = models.CharField(max_length=255, default='')
+    slack_channel = models.CharField(max_length=255, default='')
     suppress_leaderboard = models.BooleanField(
         default=False,
         help_text='If this option is chosen, we will remove your profile information from the leaderboard',
@@ -1020,6 +1023,22 @@ class Profile(SuperModel):
         elif self.handle:
             handle = self.handle
         return handle
+
+    def has_repo(self, full_name):
+        """Check if user has access to repo.
+
+        Args:
+            full_name (str): Repository name, like gitcoin/web.
+
+        Returns:
+            bool: Whether or not user has access to repository.
+
+        """
+        for repo in self.repos_data:
+            if repo['full_name'] == full_name:
+                return True
+        return False
+
 
     def is_github_token_valid(self):
         """Check whether or not a Github OAuth token is valid.

@@ -201,7 +201,8 @@ urlpatterns = [
     re_path(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),
     re_path(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
     re_path(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
-    re_path(r'^settings/(.*)?', marketing.views.email_settings, name='feedback_settings'),
+    re_path(r'^settings/slack/?', marketing.views.slack_settings, name='slack_settings'),
+    re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
 
     # marketing views
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
