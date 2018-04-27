@@ -24,6 +24,17 @@
       #avatar-builder__sections li.complete {
         list-style-image: url('{% static "v2/images/check-dark.svg" %}');
       }
+      .avatar-option.selected::after {
+        content: url('{% static "v2/images/check.svg" %}');
+        position: absolute;
+        bottom: -8px;
+        right: -8px;
+        color: white;
+        background-color: #150069;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+      }
     </style>
   </head>
   <body>
