@@ -98,10 +98,9 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
 class BountyPagination(pagination.LimitOffsetPagination):
     default_limit = 100
     max_limit = 100
-    template = None
     def get_paginated_response(self, data):
         return Response(data)
-        
+
 class BountyViewSet(viewsets.ModelViewSet):
     """Handle the Bounty view behavior."""
 
@@ -109,7 +108,7 @@ class BountyViewSet(viewsets.ModelViewSet):
         'fulfillments', 'interested', 'interested__profile') \
         .all().order_by('-web3_created')
     serializer_class = BountySerializer
-    pagination_class= BountyPagination
+    pagination_class = BountyPagination
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
     def get_queryset(self):
@@ -179,10 +178,10 @@ class BountyViewSet(viewsets.ModelViewSet):
         queryset = queryset.distinct()
 
         # offset / limit
-        limit = self.request.query_params.get('limit', None)
-        offset = self.request.query_params.get('offset', 0)
-        if limit:
-            queryset = queryset[int(offset):int(limit)]
+    #    limit = min(100,int(self.request.query_params.get('limit', 100)))
+    #    offset = self.request.query_params.get('offset', 0)
+    #    if limit:
+    #    queryset = queryset[int(offset):2]
 
         return queryset
 
