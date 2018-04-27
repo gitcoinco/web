@@ -326,6 +326,7 @@ var refreshBounties = function(append) {
 
   // order
   if (append && finishedAppending) {
+    $('.loading').css('display', 'none');
     return;
   }
   $.get(uri, function(results) {
