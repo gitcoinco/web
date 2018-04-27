@@ -198,6 +198,8 @@ def new_interest(request, bounty_id):
 def remove_interest(request, bounty_id):
     """Unclaim work from the Bounty.
 
+    Can only be called by someone who has started work
+
     :request method: POST
 
     post_id (int): ID of the Bounty.
@@ -257,6 +259,8 @@ def remove_interest(request, bounty_id):
 @csrf_exempt
 def uninterested(request, bounty_id, profile_id):
     """Remove party from given bounty
+
+    Can only be called by the bounty funder
 
     :request method: GET
 
