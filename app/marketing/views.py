@@ -407,7 +407,7 @@ def funnel(request):
 def get_settings_navs():
     return [{
         'body': 'Email',
-        'href': reverse('settings_email', args=('', ))
+        'href': reverse('email_settings', args=('', ))
     }, {
         'body': 'Privacy',
         'href': reverse('privacy_settings'),
