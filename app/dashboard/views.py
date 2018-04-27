@@ -496,7 +496,7 @@ def accept_bounty(request, pk):
     """
     try:
         bounty = Bounty.objects.get(pk=pk)
-    except Bounty.DoesNotExist:
+    except (Bounty.DoesNotExist, ValueError):
         raise Http404
     except ValueError:
         raise Http404
@@ -529,7 +529,7 @@ def fulfill_bounty(request, pk):
     """
     try:
         bounty = Bounty.objects.get(pk=pk)
-    except Bounty.DoesNotExist:
+    except (Bounty.DoesNotExist, ValueError):
         raise Http404
     except ValueError:
         raise Http404
@@ -565,7 +565,7 @@ def increase_bounty(request, pk):
     """
     try:
         bounty = Bounty.objects.get(pk=pk)
-    except Bounty.DoesNotExist:
+    except (Bounty.DoesNotExist, ValueError):
         raise Http404
     except ValueError:
         raise Http404
