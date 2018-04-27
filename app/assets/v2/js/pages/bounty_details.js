@@ -370,7 +370,11 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
 
             // clear local data
             localStorage[document.issueURL] = '';
-            document.location.href = document.location.href;
+            if (response['url']) {
+              document.location.href = response['url'];
+            } else {
+              document.location.href = document.location.href;
+            }
           } else {
             console.log('error from sync/web', response);
             error(response);
@@ -491,7 +495,7 @@ var do_actions = function(result) {
       var enabled = submit_work_enabled;
       var _entry = {
         enabled: enabled,
-        href: '/funding/fulfill?source=' + result['github_url'],
+        href: result['action_urls']['fulfill'],
         text: gettext('Submit Work'),
         parent: 'right_actions',
         title: gettext('Submit work for the funder to review'),
@@ -521,7 +525,7 @@ var do_actions = function(result) {
       var enabled = kill_bounty_enabled;
       var _entry = {
         enabled: enabled,
-        href: '/funding/kill?source=' + result['github_url'],
+        href: result['action_urls']['cancel'],
         text: gettext('Cancel Bounty'),
         parent: 'right_actions',
         title: gettext('Cancel bounty and reclaim funds for this issue')
@@ -536,7 +540,7 @@ var do_actions = function(result) {
       var enabled = show_accept_submission;
       var _entry = {
         enabled: enabled,
-        href: '/funding/process?source=' + result['github_url'],
+        href: result['action_urls']['accept'],
         text: gettext('Accept Submission'),
         title: gettext('This will payout the bounty to the submitter.'),
         parent: 'right_actions',
@@ -550,7 +554,7 @@ var do_actions = function(result) {
       var enabled = increase_bounty_enabled;
       var _entry = {
         enabled: enabled,
-        href: '/funding/increase?source=' + result['github_url'],
+        href: result['action_urls']['increase'],
         text: gettext('Add Contribution'),
         parent: 'right_actions',
         title: gettext('Increase the funding for this issue'),

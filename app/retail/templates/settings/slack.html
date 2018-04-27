@@ -1,0 +1,28 @@
+{% extends 'settings/settings.html' %}
+{% load i18n static %}
+{% block settings_content %}
+<form id="settings" method="POST">
+  <div class="form-group">
+    <h5>{% trans "Slack Integration" %}</h5>
+    <p>
+      {% blocktrans %} Gitcoin can post updates of bounties statuses of your repositories to your team's slack.
+      To do this create bot
+      <a href="https://my.slack.com/apps/A0F7YS25R-bots">here</a>
+      and provide slack API token in the field below. {% endblocktrans %}
+    </p>
+    <label class="form__label" for="token">{% trans "Slack API token" %}</label>
+    <input type="text" name="token" class="form__input" placeholder='API token' value="{{ profile.slack_token }}">
+  </div>
+  <div class="form-group">
+    <label class="form__label" for="repos">{% trans "Github repos to monitor (use full name, like 'gitcoin/web')" %}</label>
+    <input type="text" name="repos" class="form__input" placeholder='comma, separated, list (gitcoin/web)' value="{{ repos }}">
+  </div>
+  <div class="form-group">
+    <label class="form__label" for="channel">{% trans "Slack channel to post to" %}</label>
+    <input type="text" name="channel" class="form__input" placeholder='#notif-gitcoin' value="{{ profile.slack_channel }}">
+  </div>
+  {% csrf_token %}
+  <input class='button button--primary' type='submit' name='submit' value="{% trans "Go" %}">
+</form>
+</div>
+{% endblock %}

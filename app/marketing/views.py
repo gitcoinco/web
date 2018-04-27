@@ -403,24 +403,24 @@ def funnel(request):
     }
     return TemplateResponse(request, 'funnel.html', params)
 
-settings_navs = [
-    {
+
+def get_settings_navs():
+    return [{
         'body': 'Email',
-        'href': '/settings/email',
-    },
-    {
+        'href': reverse('email_settings', args=('', ))
+    }, {
         'body': 'Privacy',
-        'href': '/settings/privacy',
-    },
-    {
+        'href': reverse('privacy_settings'),
+    }, {
         'body': 'Matching',
-        'href': '/settings/matching',
-    },
-    {
+        'href': reverse('matching_settings'),
+    }, {
         'body': 'Feedback',
-        'href': '/settings/feedback',
-    },
-]
+        'href': reverse('feedback_settings'),
+    }, {
+        'body': 'Slack',
+        'href': reverse('slack_settings'),
+    }]
 
 
 def settings_helper_get_auth(request, key=None):
@@ -489,7 +489,7 @@ def privacy_settings(request):
         'nav': 'internal',
         'active': '/settings/privacy',
         'title': _('Privacy Settings'),
-        'navs': settings_navs,
+        'navs': get_settings_navs(),
         'is_logged_in': is_logged_in,
         'msg': msg,
     }
@@ -517,7 +517,7 @@ def matching_settings(request):
         else:
             es.metadata['ip'].append(ip)
         es.save()
-        msg = "Updated your preferences.  "
+        msg = _('Updated your preferences.')
 
     context = {
         'keywords': ",".join(es.keywords),
@@ -527,7 +527,7 @@ def matching_settings(request):
         'nav': 'internal',
         'active': '/settings/matching',
         'title': _('Matching Settings'),
-        'navs': settings_navs,
+        'navs': get_settings_navs(),
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/matching.html', context)
@@ -554,13 +554,13 @@ def feedback_settings(request):
         else:
             es.metadata['ip'].append(ip)
         es.save()
-        msg = "We've received your feedback. "
+        msg = _('We\'ve received your feedback.')
 
     context = {
         'nav': 'internal',
         'active': '/settings/feedback',
         'title': _('Feedback'),
-        'navs': settings_navs,
+        'navs': get_settings_navs(),
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/feedback.html', context)
@@ -617,17 +617,62 @@ def email_settings(request, key):
             else:
                 es.metadata['ip'].append(ip)
             es.save()
-            msg = "Updated your preferences.  "
+            msg = _('Updated your preferences.')
     context = {
         'nav': 'internal',
         'active': '/settings/email',
         'title': _('Email Settings'),
         'es': es,
         'msg': msg,
-        'navs': settings_navs,
+        'navs': get_settings_navs(),
         'preferred_language': pref_lang
     }
     return TemplateResponse(request, 'settings/email.html', context)
+
+
+def slack_settings(request):
+    """Displays and saves user's slack settings.
+
+    Returns:
+        TemplateResponse: The user's slack settings template response.
+
+    """
+    # setup
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+    if not es:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    msg = ''
+
+    if request.POST and request.POST.get('submit'):
+        token = request.POST.get('token', '')
+        repos = request.POST.get('repos').split(',')
+        channel = request.POST.get('channel', '')
+        profile.slack_token = token
+        profile.slack_repos = repos
+        profile.slack_channel = channel
+        ip = get_ip(request)
+        if not es.metadata.get('ip', False):
+            es.metadata['ip'] = [ip]
+        else:
+            es.metadata['ip'].append(ip)
+        es.save()
+        profile.save()
+        msg = _('Updated your preferences.')
+
+    context = {
+        'repos': ",".join(profile.slack_repos),
+        'is_logged_in': is_logged_in,
+        'nav': 'internal',
+        'active': '/settings/slack',
+        'title': _('Slack Settings'),
+        'navs': get_settings_navs(),
+        'es': es,
+        'profile': profile,
+        'msg': msg,
+    }
+    return TemplateResponse(request, 'settings/slack.html', context)
 
 
 def _leaderboard(request):
