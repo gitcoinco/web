@@ -101,7 +101,10 @@ function changeImage(option, path) {
 }
 
 function setOption(option, value, target) {
+  const section = $(`#options-${option}`);
+
   $('#nav-' + option).addClass('complete');
+
   switch (option) {
     case 'Head':
     case 'Eyes':
@@ -109,6 +112,7 @@ function setOption(option, value, target) {
     case 'Ears':
     case 'Mouth':
     case 'Clothing':
+      $('.selected', section).removeClass('selected');
       changeImage(option, $(target).children()[0].src);
       break;
     case 'Accessories':
@@ -122,6 +126,7 @@ function setOption(option, value, target) {
       });
       break;
     case 'HairStyle':
+      $('.selected', section).removeClass('selected');
       [ 'HairLong', 'HairShort' ].forEach((layer, idx) => {
         let found = false;
 
@@ -140,13 +145,16 @@ function setOption(option, value, target) {
     case 'FacialHair':
       var layer = value.split('-')[0];
 
+      $('.selected', section).removeClass('selected');
       changeImage(layer, $(target).children()[0].src);
       break;
     case 'Background':
       $('#avatar-preview').css('background-color', '#' + value);
       options['Background'] = value;
+      $('.selected', section).removeClass('selected');
       break;
   }
+  $(target).addClass('selected');
   // Check for completion
   const complete = requiredLayers.
     reduce((complete, name) => !!options[name] && complete, true);

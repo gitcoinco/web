@@ -65,7 +65,9 @@
           {% with "v2/images/avatar/"|add:id|add:"/" as basePath %}
             <div id="options-{{ id }}" class="options-section d-flex flex-wrap">
               {% for o in s.options %}
-                <button onclick="setOption('{{ id }}', '{{ o|addslashes }}', this)" class="avatar-option">
+                <button class="avatar-option" id="avatar-option-{{ id }}-{{ o }}"
+                  onclick="setOption('{{ id }}', '{{ o|addslashes }}', this)"
+                >
 
                   {% if id == "Head" or id == "Ears" %}
                     {% with basePath|add:o|add:"-"|add:defaultSkinTone|add:".svg" as path %}
