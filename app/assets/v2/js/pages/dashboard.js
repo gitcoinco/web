@@ -351,8 +351,17 @@ var refreshBounties = function(append) {
   // analytics
   var params = { uri: uri };
 
+<<<<<<< HEAD
   if (!append) {
     mixpanel.track('Refresh Bounties', params);
+=======
+  mixpanel.track('Refresh Bounties', params);
+
+  // order
+  if (append && finishedAppending) {
+    $('.loading').css('display', 'none');
+    return;
+>>>>>>> put loading bar at end
   }
   // order
   $('.loading').css('display', 'block');
