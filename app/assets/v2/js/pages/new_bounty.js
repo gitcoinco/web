@@ -300,7 +300,9 @@ $(document).ready(function() {
             // {from: x, to: y}
             from: account,
             value: eth_amount,
-            gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+            gas: web3.toHex(318730),
+            gasLimit: web3.toHex(318730),
           },
           web3Callback // callback for web3
         );
@@ -325,7 +327,7 @@ $(document).ready(function() {
             gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
           },
           function(error, result) {
-            if(error){
+            if (error) {
               console.error(error);
               _alert(
                 {
@@ -339,6 +341,7 @@ $(document).ready(function() {
             }
             var txid = result;
             var link_url = etherscan_tx_url(txid);
+
             _alert({ message: 'Token approval transaction (1 of 2) has been sent to web3.  <a target=new href="' + link_url + '">Once that tx is confirmed</a>, you will be prompted to confirm submission of this bounty (tx 2 of 2)' }, 'info');
             callFunctionWhenTransactionMined(txid, function() {
               _alert({ message: 'Tx 1 of 2 confirmed.  Please confirm the second transaction.' }, 'success');
