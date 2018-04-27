@@ -4,7 +4,7 @@ const layers = [
   'Ears', 'Head', 'HairShort', 'HatShort', 'Earring', 'Beard',
   'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses'
 ];
-const requiredLayers = [ 'Clothing', 'Ears', 'Head', 'Mouth', 'Nose', 'Eyes' ];
+const requiredLayers = [ 'Clothing', 'Ears', 'Head', 'Mouth', 'Nose', 'Eyes', 'Background' ];
 const colorOptions = {
   SkinTone: [ 'F8D5C2', 'D8BF82', 'D2946B', 'AE7242', '88563B', '715031', '593D26', '3F2918' ],
   HairColor: [
@@ -102,9 +102,16 @@ function changeImage(option, path) {
 
 function setOption(option, value, target) {
   const section = $(`#options-${option}`);
+  let deselectingFlag = true;
 
   $('#nav-' + option).addClass('complete');
-  if (option !== 'Accessories') {
+  // Removing an optional layer
+  if (target.classList.contains('selected') && requiredLayers.indexOf(option) < 0) {
+    $(target).removeClass('selected');
+    deselectingFlag = null;
+  }
+  // Clear selected class for categories that allow only one option
+  if (option !== 'Accessories' && option !== 'FacialHair') {
     $('.selected', section).removeClass('selected');
   }
 
@@ -115,7 +122,7 @@ function setOption(option, value, target) {
     case 'Ears':
     case 'Mouth':
     case 'Clothing':
-      changeImage(option, $(target).children()[0].src);
+      changeImage(option, deselectingFlag && $(target).children()[0].src);
       break;
     case 'Accessories':
       // TODO: this doesn't clear earringback when only front is used
@@ -125,7 +132,7 @@ function setOption(option, value, target) {
         const category = value.split('-')[0];
 
         $(`button[id*="${category}"]`, section).removeClass('selected');
-        changeImage(category, $(target).children()[idx].src);
+        changeImage(category, deselectingFlag && $(target).children()[idx].src);
       });
       break;
     case 'HairStyle':
@@ -134,7 +141,7 @@ function setOption(option, value, target) {
 
         $(target).children().each((elemIdx, elem) => {
           if (idx === parseInt(elem.classList[0])) {
-            changeImage(layer, elem.src);
+            changeImage(layer, deselectingFlag && elem.src);
             found = true;
           }
         });
@@ -147,14 +154,20 @@ function setOption(option, value, target) {
     case 'FacialHair':
       var layer = value.split('-')[0];
 
-      changeImage(layer, $(target).children()[0].src);
+      $(`button[id*="${layer}"]`, section).removeClass('selected');
+      changeImage(layer, deselectingFlag && $(target).children()[0].src);
       break;
     case 'Background':
       $('#avatar-preview').css('background-color', '#' + value);
       options['Background'] = value;
       break;
   }
-  $(target).addClass('selected');
+
+  // If target is newly selected, mark it
+  if (deselectingFlag) {
+    $(target).addClass('selected');
+  }
+
   // Check for completion
   const complete = requiredLayers.
     reduce((complete, name) => !!options[name] && complete, true);
