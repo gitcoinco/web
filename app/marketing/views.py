@@ -406,37 +406,8 @@ def leaderboard(request, key=''):
 
 
 @staff_member_required
-def day_1_email_campaign(request):
-    response_html, _, _ = render_nth_day_email_campaign(1, "staff member")
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def day_2_email_campaign(request):
-    response_html, _, _ = render_nth_day_email_campaign(2, "staff member")
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def day_3_email_campaign(request):
-    response_html, _, _ = render_nth_day_email_campaign(3, "staff member")
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def day_4_email_campaign(request):
-    response_html, _, _ = render_nth_day_email_campaign(4, "staff member")
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def day_5_email_campaign(request):
-    response_html, _, _ = render_nth_day_email_campaign(5, "staff member")
-    return HttpResponse(response_html)
-
-
-@staff_member_required
-def day_6_email_campaign(request):
-
-    response_html, _, _ = render_nth_day_email_campaign(6, "staff member")
+def day_email_campaign(request, day):
+    if day not in list(range(1, 7)):
+        raise Http404
+    response_html, _, _ = render_nth_day_email_campaign(day, "staff member")
     return HttpResponse(response_html)

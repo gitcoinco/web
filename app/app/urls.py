@@ -202,12 +202,7 @@ urlpatterns = [
     url(r'^_administration/email/start_work_expire_warning$', retail.emails.start_work_expire_warning, name='start_work_expire_warning'),
     url(r'^_administration/email/start_work_expired$', retail.emails.start_work_expired, name='start_work_expired'),
     url(r'^_administration/email/new_tip/resend$', retail.emails.resend_new_tip, name='resend_new_tip'),
-    url(r'^_administration/email/day_1_email_campaign$', marketing.views.day_1_email_campaign, name='day_1_email_campaign'),
-    url(r'^_administration/email/day_2_email_campaign$', marketing.views.day_2_email_campaign, name='day_2_email_campaign'),
-    url(r'^_administration/email/day_3_email_campaign$', marketing.views.day_3_email_campaign, name='day_3_email_campaign'),
-    url(r'^_administration/email/day_4_email_campaign$', marketing.views.day_4_email_campaign, name='day_4_email_campaign'),
-    url(r'^_administration/email/day_5_email_campaign$', marketing.views.day_5_email_campaign, name='day_5_email_campaign'),
-    url(r'^_administration/email/day_6_email_campaign$', marketing.views.day_6_email_campaign, name='day_6_email_campaign'),
+    path('_administration/email/day_email_campaign/<int:day>', marketing.views.day_email_campaign, name='day_email_campaign'),
     url(r'^_administration/process_accesscode_request/(.*)$', tdi.views.process_accesscode_request, name='process_accesscode_request'),
     url(r'^_administration/process_faucet_request/(.*)$', faucet.views.process_faucet_request, name='process_faucet_request'),
 
