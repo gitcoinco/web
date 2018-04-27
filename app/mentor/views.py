@@ -9,6 +9,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from .models import MentorSerializer
 
 
@@ -43,6 +44,7 @@ class MentorDetail(APIView):
 
     def get(self, request, pk):
         profile = get_object_or_404(Profile, pk=pk)
+        print(profile)
         serializer = MentorSerializer(profile)
         return Response({'serializer': serializer, 'mentor': profile})
 

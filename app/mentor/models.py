@@ -8,10 +8,10 @@ class StringArrayField(CharField):
     String representation of an array field.
     """
     def to_representation(self, obj):
-        return ",".join(obj)
+        return ", ".join(obj)
 
     def to_internal_value(self, data):
-        return data.split(",")
+        return [x.strip() for x in data.split(',')]
 
 
 class MentorSerializer(serializers.ModelSerializer):

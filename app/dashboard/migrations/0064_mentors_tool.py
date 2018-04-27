@@ -5,12 +5,12 @@ from django.db import migrations
 def update(apps, schema_editor):
     Tool = apps.get_model('dashboard', 'Tool')
 
-    Tool.objects.filter(name='Mentorship Matcher').update(category='AL', link=None, url_name="mentor_list", link_copy="Try It" )
+    Tool.objects.filter(name='Mentorship Matcher').update(category='AL', link='', url_name="mentor_list", link_copy="Try It" )
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0061_profile_pref_lang_code'),
+        ('dashboard', '0063_auto_20180426_2122'),
     ]
 
     operations = [
