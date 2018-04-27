@@ -159,7 +159,7 @@ var callbacks = {
     }
     var rates_estimate = get_rates_estimate(val);
 
-    $('#value_in_usdt_wrapper').attr('title', rates_estimate);
+    $('#value_in_usdt_wrapper').attr('title', '<div class="tooltip-info tooltip-sm">' + rates_estimate + '</div>');
 
     return [ 'Amount_usd', val ];
   },
