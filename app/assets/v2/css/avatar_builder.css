@@ -75,6 +75,38 @@ body {
   top: 0;
   left: 0;
 }
+.avatar-option::after {
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+  color: white;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 25px;
+}
+.avatar-option:hover {
+  border: 2px solid #00BB61;
+}
+.avatar-option:hover::before {
+  position: absolute;
+  content: '';
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #00BB61;
+  opacity: .2;
+  z-index: 10;
+}
+.avatar-option:hover::after {
+  content: '+';
+  background-color: #00BB61;
+}
+.avatar-option.selected:hover::before {
+  display: none;
+}
 .color-option {
   width: 100%;
   height: 100%;
