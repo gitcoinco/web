@@ -15,11 +15,14 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.conf import settings
-from django.core.management.base import BaseCommand
-from slackclient import SlackClient
 import os
 import time
+
+from django.conf import settings
+from django.core.management.base import BaseCommand
+
+from slackclient import SlackClient
+
 
 MESSAGE="""
 Welcome to Gitcoin! :gitcoin:
