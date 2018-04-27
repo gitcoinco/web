@@ -3,6 +3,9 @@
 var sidebar_keys = [ 'experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'network', 'idx_status' ];
 
 var localStorage;
+var limit = 20;
+var offset = 0;
+var finishedAppending = false;
 
 document.limit = 20;
 document.draw_distance = 5;
@@ -439,9 +442,7 @@ var refreshBounties = function(append) {
     } else {
       paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + 6);
     }
-
     process_stats(results);
-
   }).fail(function() {
     _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
   }).always(function() {
