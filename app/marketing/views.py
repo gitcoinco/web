@@ -424,7 +424,6 @@ def get_settings_navs():
 
 
 def settings_helper_get_auth(request, key=None):
-
     # setup
     github_handle = request.user.username if request.user.is_authenticated else False
     is_logged_in = bool(request.user.is_authenticated)
@@ -445,7 +444,6 @@ def settings_helper_get_auth(request, key=None):
         try:
             es = EmailSubscriber.objects.get(priv=key)
             email = es.email
-            level = es.preferences.get('level', False)
         except EmailSubscriber.DoesNotExist:
             pass
 
@@ -469,7 +467,6 @@ def settings_helper_get_auth(request, key=None):
 
 
 def privacy_settings(request):
-
     # setup
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
     suppress_leaderboard = profile.suppress_leaderboard if profile else False
@@ -497,7 +494,6 @@ def privacy_settings(request):
 
 
 def matching_settings(request):
-
     # setup
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
     if not es:
@@ -534,7 +530,6 @@ def matching_settings(request):
 
 
 def feedback_settings(request):
-
     # setup
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
     if not es:
@@ -567,15 +562,24 @@ def feedback_settings(request):
 
 
 def email_settings(request, key):
+    """Display email settings.
 
-    # setup
+    Args:
+        key (str): The private key to lookup email subscriber data.
+
+    TODO:
+        * Remove all ES.priv_key lookups and use request.user only.
+        * Remove settings_helper_get_auth usage.
+
+    Returns:
+        TemplateResponse: The email settings view populated with ES data.
+
+    """
     profile, es, user, is_logged_in = settings_helper_get_auth(request, key)
-    if not es:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
-        return login_redirect
+    if not request.user.is_authenticated or (request.user.is_authenticated and not hasattr(request.user, 'profile')):
+        return redirect('/login/github?next=' + request.get_full_path())
 
     # handle 'noinput' case
-    suppress_leaderboard = False
     email = ''
     level = ''
     msg = ''
@@ -583,7 +587,6 @@ def email_settings(request, key):
     if request.POST and request.POST.get('submit'):
         email = request.POST.get('email')
         level = request.POST.get('level')
-        profile = Profile.objects.get(pk=request.user.profile.id)
         if profile:
             pref_lang = profile.get_profile_preferred_language()
         preferred_language = request.POST.get('preferred_language')
@@ -601,7 +604,7 @@ def email_settings(request, key):
         if level not in ['lite', 'lite1', 'regular', 'nothing']:
             validation_passed = False
             msg = _('Invalid Level')
-        if validation_passed:
+        if validation_passed and profile and es:
             profile.pref_lang_code = preferred_language
             profile.save()
             request.session[LANGUAGE_SESSION_KEY] = preferred_language
