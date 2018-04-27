@@ -641,6 +641,7 @@ def avatar(request):
         'defaultHairColor': '000000',
         'defaultClothingColor': 'CCCCCC',
         'defaultBackground': 'FFFFFF',
+        'optionalSections': [ 'HairStyle', 'FacialHair', 'Accessories' ],
         'sections': [
             {'name': 'Head', 'title': 'Pick head shape',
               'options': ('0', '1', '2', '3', '4')},

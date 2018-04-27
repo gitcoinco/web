@@ -68,7 +68,11 @@
           {% for s in sections %}
           {% with s.name|cut:" " as id %}
           {% with "v2/images/avatar/"|add:id|add:"/" as basePath %}
-            <div id="options-{{ id }}" class="options-section d-flex flex-wrap">
+            <div id="options-{{ id }}" class="options-section d-flex flex-wrap
+              {% if id in optionalSections %}
+                optional
+              {% endif %}
+            ">
               {% for o in s.options %}
                 <button class="avatar-option" id="avatar-option-{{ id }}-{{ o }}"
                   onclick="setOption('{{ id }}', '{{ o|addslashes }}', this)"

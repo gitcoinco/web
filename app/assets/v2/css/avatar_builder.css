@@ -103,9 +103,21 @@ body {
 .avatar-option:hover::after {
   content: '+';
   background-color: #00BB61;
+  z-index: 11;
 }
 .avatar-option.selected:hover::before {
   display: none;
+}
+.optional .avatar-option.selected:hover {
+  border-color: #FFA400 !important;
+}
+.optional .avatar-option.selected:hover::before {
+  display: unset;
+  background-color: #FFA400;
+}
+.optional .avatar-option.selected:hover::after {
+  background-color: #FFA400;
+  content: '—';
 }
 .color-option {
   width: 100%;
