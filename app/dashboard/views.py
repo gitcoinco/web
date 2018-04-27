@@ -496,7 +496,7 @@ def accept_bounty(request, pk):
     """
     try:
         bounty = Bounty.objects.get(pk=pk)
-    except Bounty.DoesNotExist:
+    except (Bounty.DoesNotExist, ValueError):
         raise Http404
 
     params = {
@@ -527,7 +527,7 @@ def fulfill_bounty(request, pk):
     """
     try:
         bounty = Bounty.objects.get(pk=pk)
-    except Bounty.DoesNotExist:
+    except (Bounty.DoesNotExist, ValueError):
         raise Http404
 
     is_user_authenticated = request.user.is_authenticated
@@ -561,7 +561,7 @@ def increase_bounty(request, pk):
     """
     try:
         bounty = Bounty.objects.get(pk=pk)
-    except Bounty.DoesNotExist:
+    except (Bounty.DoesNotExist, ValueError):
         raise Http404
 
     params = {
