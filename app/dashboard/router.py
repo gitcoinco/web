@@ -97,10 +97,12 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
 
 class BountyPagination(pagination.LimitOffsetPagination):
     """Custom Pagination for Bounties"""
-    
+
     default_limit = 100
     max_limit = 100
+
     def get_paginated_response(self, data):
+        """Custom wrapper for respone."""
         return Response(data)
 
 class BountyViewSet(viewsets.ModelViewSet):
