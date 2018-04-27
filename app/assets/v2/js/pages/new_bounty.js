@@ -302,7 +302,7 @@ $(document).ready(function() {
             value: eth_amount,
             gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
             gas: web3.toHex(318730),
-            gasLimit: web3.toHex(318730),
+            gasLimit: web3.toHex(318730)
           },
           web3Callback // callback for web3
         );
