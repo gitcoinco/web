@@ -28,7 +28,7 @@ from django.conf import settings
 import rollbar
 import twitter
 from economy.utils import convert_token_to_usdt
-from github.utils import delete_issue_comment, patch_issue_comment, post_issue_comment
+from github.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
 from marketing.mails import tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
 from pyshorteners import Shortener
@@ -233,11 +233,9 @@ def maybe_market_to_user_slack(bounty, event_name):
         return False
 
     url = bounty.github_url
-    uri = parse(url).path
-    uri_array = uri.split('/')
     sent = False
     try:
-        repo = uri_array[1] + '/' + uri_array[2]
+        repo = org_name(url) + '/' + repo_name(url)
         subscribers = Profile.objects.filter(slack_repos__contains=[repo])
         subscribers = subscribers & Profile.objects.exclude(slack_token='', slack_channel='')
         for subscriber in subscribers:

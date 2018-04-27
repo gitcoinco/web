@@ -650,7 +650,8 @@ def slack_settings(request):
         repos = request.POST.get('repos').split(',')
         channel = request.POST.get('channel', '')
         profile.slack_token = token
-        profile.slack_repos = repos
+        profile.slack_repos = [repo.strip() for repo in repos]
+        print(profile.slack_repos)
         profile.slack_channel = channel
         ip = get_ip(request)
         if not es.metadata.get('ip', False):

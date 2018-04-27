@@ -14,8 +14,8 @@
     <input type="text" name="token" class="form__input" placeholder='API token' value="{{ profile.slack_token }}">
   </div>
   <div class="form-group">
-    <label class="form__label" for="repos">{% trans "Github repos to monitor (use full name, like 'gitcoin/web')" %}</label>
-    <input type="text" name="repos" class="form__input" placeholder='comma, separated, list (gitcoin/web)' value="{{ repos }}">
+    <label class="form__label" for="repos">{% trans "Github repos to monitor (use full name, like 'gitcoinco/web' for <a href=https://github.com/gitcoinco/web>this repo</a>)" %}</label>
+    <input type="text" name="repos" class="form__input" placeholder='comma, separated, list (gitcoinco/web)' value="{{ repos }}">
   </div>
   <div class="form-group">
     <label class="form__label" for="channel">{% trans "Slack channel to post to" %}</label>
