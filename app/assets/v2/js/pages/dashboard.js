@@ -3,6 +3,9 @@
 var sidebar_keys = [ 'experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'network', 'idx_status' ];
 
 var localStorage;
+var limit = 20;
+var offset = 0;
+var finishedAppending = false;
 
 try {
   localStorage = window.localStorage;
@@ -125,7 +128,7 @@ var removeFilter = function(key, value) {
 };
 
 var get_search_URI = function() {
-  var uri = '/api/v0.1/bounties/?';
+  var uri = '/api/v0.1/bounties/?limit=' + limit + '&offset=' + offset;
   var keywords = $('#keywords').val();
 
   if (keywords) {
@@ -280,14 +283,16 @@ var trigger_scroll = debounce(function() {
   var does_need_to_paint_more = !document.is_painting_now && !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
 
   if (does_need_to_paint_more) {
-    paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + 6);
+    console.log('HELLO');
+    offset += 10;
+    refreshBounties(true);
   }
 }, 200);
 
 $(window).scroll(trigger_scroll);
 $('body').bind('touchmove', trigger_scroll);
 
-var refreshBounties = function() {
+var refreshBounties = function(append) {
   // manage state
   var keywords = $('#keywords').val();
   var title = gettext('Issue Explorer | Gitcoin');
@@ -304,10 +309,12 @@ var refreshBounties = function() {
   set_filter_header();
   disableAny();
   getFilters();
+  if (!append) {
+    $('.nonefound').css('display', 'none');
+    $('.loading').css('display', 'block');
+    $('.bounty_row').remove();
+  }
 
-  $('.nonefound').css('display', 'none');
-  $('.loading').css('display', 'block');
-  $('.bounty_row').remove();
 
   // filter
   var uri = get_search_URI();
@@ -318,15 +325,26 @@ var refreshBounties = function() {
   mixpanel.track('Refresh Bounties', params);
 
   // order
+  if (append && finishedAppending) {
+    return;
+  }
   $.get(uri, function(results) {
     results = sanitizeAPIResults(results);
 
     if (results.length === 0) {
-      $('.nonefound').css('display', 'block');
+      if (!append) {
+        $('.nonefound').css('display', 'block');
+      } else {
+        finishedAppending = true;
+      }
     }
     document.is_painting_now = false;
-    document.last_bounty_rendered = 0;
-    document.bounties_html = [];
+
+    if (!append) {
+      document.last_bounty_rendered = 0;
+      document.bounties_html = [];
+      offset = 0;
+    }
     for (var i = 0; i < results.length; i++) {
       // setup
       var result = results[i];
@@ -387,11 +405,16 @@ var refreshBounties = function() {
       var tmpl = $.templates('#result');
       var html = tmpl.render(result);
 
-      document.bounties_html[i] = html;
+      document.bounties_html[i + offset] = html;
     }
-    paint_bounties_in_viewport(0, 10);
-
+    if (!append) {
+      paint_bounties_in_viewport(0, 10);
+    } else {
+      paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + 6);
+    }
     process_stats(results);
+    if (finish)
+      finish();
   }).fail(function() {
     _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
   }).always(function() {
