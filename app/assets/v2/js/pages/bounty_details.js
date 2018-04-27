@@ -157,6 +157,10 @@ var callbacks = {
     if (val === null) {
       return [ null, null ];
     }
+    var rates_estimate = get_rates_estimate(val);
+
+    $('#value_in_usdt_wrapper').attr('title', '<div class="tooltip-info tooltip-sm">' + rates_estimate + '</div>');
+
     return [ 'Amount_usd', val ];
   },
   'fulfillment_accepted_on': function(key, val, result) {
