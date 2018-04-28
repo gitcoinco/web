@@ -76,20 +76,5 @@
       <br>
     </div>
   </div>
-  <div id="send_eth_done" style="display:none;">
-    <h1>{% trans "Congrats!" %}</h1>
-    <p>{% trans "You've redeemed EthOS." %}<br /><span id="colo_txid"></span>.</p>
-  </div>
-  {% if coin_status %}
-    <script type="text/javascript">
-      var coin_status = '{{ coin_status }}';
-    </script>
-  {% endif %}
-  {% if colo_txid %}
-    <script type="text/javascript">
-      var colo_txid = '{{ colo_txid }}';
-      document.suppressweb3alert = true;
-    </script>
-  {% endif %}
 </section>
 {% endblock %}
