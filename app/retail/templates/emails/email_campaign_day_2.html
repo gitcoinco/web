@@ -16,7 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n humanize %}
+{% load i18n humanize static %}
 
 {% block content %}
 
@@ -62,9 +62,10 @@
             {% trans "Respond on the Github thread with your intended approach for the bounty" %}
         </li>
       </ul>
+      <img src='{% static "v2/images/email/start-work.gif" %}'
+
     </p>
 
-    GIF
 
     <h2>Make A Submission</h2>
     <p>
@@ -92,9 +93,9 @@
           Click on ‘Submit Work' use your gas to make a submission!
       </li>
     </ul>
+    <img src='{% static "v2/images/email/submit-work.gif" %}'
     </p>
 
-    GIF
 
     <p>
     {% blocktrans %}
