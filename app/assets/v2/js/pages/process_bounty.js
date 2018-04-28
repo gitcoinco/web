@@ -2,6 +2,7 @@
 window.onload = function() {
   // a little time for web3 injection
   setTimeout(function() {
+    waitforWeb3(actions_page_warn_if_not_on_same_network);
     var account = web3.eth.accounts[0];
 
     if (getParam('source')) {
@@ -49,9 +50,12 @@ window.onload = function() {
     };
 
     var issueURL = $('input[name=issueURL]').val();
-    var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
 
-    $.get(uri, fulfillmentCallback);
+    waitforWeb3(function() {
+      var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + document.web3network;
+
+      $.get(uri, fulfillmentCallback);
+    });
 
     $('#goBack').click(function(e) {
       var url = window.location.href;
@@ -61,6 +65,13 @@ window.onload = function() {
     });
 
     $('#acceptBounty').click(function(e) {
+      try {
+        bounty_address();
+      } catch (exception) {
+        _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+        return;
+      }
+
       mixpanel.track('Process Bounty Clicked', {});
       e.preventDefault();
       var whatAction = $(this).html().trim();
@@ -72,7 +83,7 @@ window.onload = function() {
       var isError = false;
 
       if ($('#terms:checked').length == 0) {
-        _alert({ message: 'Please accept the terms of service.' }, 'warning');
+        _alert({ message: gettext('Please accept the terms of service.') }, 'warning');
         isError = true;
       } else {
         localStorage['acceptTOS'] = true;
@@ -122,14 +133,14 @@ window.onload = function() {
           var errormsg = undefined;
 
           if (bountyAmount == 0 || open == false || initialized == false) {
-            errormsg = 'No active funding found at this address.  Are you sure this is an active funded issue?';
+            errormsg = gettext('No active funding found at this address.  Are you sure this is an active funded issue?');
           } else if (claimeeAddress == '0x0000000000000000000000000000000000000000') {
-            errormsg = 'No claimee found for this bounty.';
+            errormsg = gettext('No claimee found for this bounty.');
           } else if (fromAddress != web3.eth.coinbase) {
-            errormsg = 'You can only process a funded issue if you submitted it initially.';
+            errormsg = gettext('You can only process a funded issue if you submitted it initially.');
           } else if (!matchingNetworks) {
-            errormsg = 'Expected browser to be connected to the Ethereum network' +
-            ' that the bounty was deployed to, ie. \'' + bountyNetwork + '\'.';
+            errormsg = gettext('Expected browser to be connected to the Ethereum network' +
+            ' that the bounty was deployed to, ie. \'' + bountyNetwork + '\'.');
           }
 
           if (errormsg) {
@@ -148,7 +159,11 @@ window.onload = function() {
                 'txid': result
               });
 
+<<<<<<< HEAD
               _alert({ message: 'Submitted transaction to web3.' }, 'info');
+=======
+              _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
+>>>>>>> my-temporary-work
               setTimeout(function() {
                 mixpanel.track('Process Bounty Success', {});
                 document.location.href = '/funding/details?url=' + issueURL;
@@ -158,7 +173,11 @@ window.onload = function() {
 
             if (error) {
               mixpanel.track('Process Bounty Error', {step: 'final_callback', error: error});
+<<<<<<< HEAD
               _alert({ message: 'There was an error' }, 'error');
+=======
+              _alert({ message: gettext('There was an error') }, 'error');
+>>>>>>> my-temporary-work
               console.error(error);
               unloading_button($('.submitBounty'));
             } else {
@@ -169,7 +188,11 @@ window.onload = function() {
           // Retrieve parameters for bounty from blockchain
           bounty.getBounty.call(bountyId, (errStr, bountyParams) => {
             if (bountyParams[4] != bountyStageEnum['Active']) {
+<<<<<<< HEAD
               _alert({ message: 'The bounty for this Github URL is not active.' });
+=======
+              _alert({ message: gettext('The bounty for this Github URL is not active.') });
+>>>>>>> my-temporary-work
               unloading_button($('.js-submit'));
               return;
             }
@@ -179,9 +202,12 @@ window.onload = function() {
         });
       };
       // Get bountyId from the database
-      var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
 
-      $.get(uri, apiCallback);
+      waitforWeb3(function() {
+        var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
+
+        $.get(uri, apiCallback);
+      });
       e.preventDefault();
     });
   }, 100);

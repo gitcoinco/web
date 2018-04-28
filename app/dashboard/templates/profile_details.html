@@ -18,9 +18,12 @@
       <div class="col body">
         <div class="container-fluid">
           <div id="hero" class="pt-4">
-            <img class="avatar" src="{{profile.local_avatar_url}}">
+            <img class="avatar" src="{{profile.avatar_url}}">
             <h2 class="mt-3">
-                Profile<span id="alpha">Alpha</span><br> {{profile.handle}}
+                <span>Profile</span>
+                <span id="alpha">Alpha</span>
+                <br>
+                <span style="font-size: 24px;">{{profile.handle}}</span>
             </h2>
             {% if profile.data.bio %}
               <p>
@@ -112,7 +115,7 @@
                           </div>
                           <div class="col-6">
                             <a class="btn btn-sm btn-darkBlue font-smaller-2 tip-value">
-                              {{tip.amount}} {{tip.tokenName}}, {{tip.value_in_usdt}} USD
+                              {{tip.amount}} {{tip.tokenName}}, {{tip.value_in_usdt_now}} USD
                             </a>
                             <div>
                               {% if tip.comments_public %} 
@@ -165,7 +168,7 @@
                             {{b.status}}
                           </div>
                           <div class="col-10 col-sm-8 col-md-4">
-                            <img style="max-width: 30px;" src="{{b.local_avatar_url}}">
+                            <img style="max-width: 30px;" src="{{b.avatar_url}}">
                             <h6>
                               {{b.title_or_desc | truncatechars:50}}
                             </h6>
@@ -175,7 +178,7 @@
                           </div>
                           <div class="col-4 col-md-4  d-none d-md-block bounty-value">
                             <a class="btn btn-sm btn-darkBlue font-smaller-2">
-                              {{b.value_true}} {{b.token_name}}, {{b.value_in_usdt}} USD
+                              {{b.value_true}} {{b.token_name}}, {{b.value_in_usdt_now}} USD
                             </a>
                           </div>
                         </div>

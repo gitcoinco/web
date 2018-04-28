@@ -20,13 +20,22 @@ span {
 .nav_avatar {
   cursor: pointer;
 }
-
+.dropdown-menu{
+  z-index: 9999999999;
+}
 .navbar {
   font-family: 'futura-pt', Futura, sans-serif;
 }
 
 .navbar-nav .nav-link {
   border-radius: 2px;
+}
+
+.nav-link.login svg {
+  font-size: 1.5em;
+  position: relative;
+  top: 3px;
+  margin-right: 10px;
 }
 
 .navbar-nav .nav-link:hover {
@@ -55,6 +64,32 @@ span {
 .modal {
   z-index: 9;
   border-radius: 4px !important;
+}
+
+#tutorials li{
+  list-style: none;
+}
+
+.tutorial_item{
+  background-color: #fff;
+}
+
+.tutorial_parent{
+  background-color: #fff;
+  border-bottom: 1px solid #000;
+}
+
+.tutorial_parent:nth-child(even){
+  background-color: #fafafa;
+}
+
+.tutorial_item img{
+  max-width: 300px;
+}
+
+.tutorial_item a{
+  font-size: 28px;
+  color: #000;
 }
 
 .faq_item {
@@ -220,14 +255,11 @@ span {
 .bg-darkBlue a {
   color: #eee;
 }
-
+#feature_videos .video {
+  text-align: center;
+}
 #feature_videos h6 {
   padding-top: 10px;
-}
-
-#origin_story img {
-  max-height: 200px;
-  max-width: 300px;
 }
 
 #origin_story .row .col p {

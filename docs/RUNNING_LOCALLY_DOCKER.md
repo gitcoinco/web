@@ -118,26 +118,22 @@ make # make help
 
 `Q: How can I enable the Github Login functionality on my local docker instance?`
 
-1. Create a new OAuth app [here](https://github.com/settings/developers)
-2. Set it's homepage URL to: `http://localhost:8000`
-3. Set it's auth callback URL to: `http://localhost:8000/_github/callback`
-4. Place the following lines in your `app/.env`:
-
-```
-GITHUB_CLIENT_ID=<COPY_FROM_GITHUB>
-GITHUB_CLIENT_SECRET=<COPY_FROM_GITHUB>
-```
-5. Restart app via docker-compose.
+If you plan on using the Github integration, please read the [third party integration guide](THIRD_PARTY_SETUP.md).
 
 #### ipdb
 
 `Q: what's the best way to import ipdb; ipdb.set_trace() a HTTP request via docker?`
 
-You need to run the web container with tty enabled and inspect the interactive shell.
+Add `import ipdb;ipdb.set_trace()` to the method you want to inspect, you then run: `make get_ipdb_shell` to drop into the active shell for inspection.
 
-Most people just start the stack normally, but run web outside of the standard flow. For instance, you'd want to run your service containers via something like `docker-compose up -d` then `docker-compose stop web; docker-compose run --service-ports web`
+#### Access Django Shell
 
-Details [here](https://github.com/docker/compose/issues/4677)
+`Q: How can I access the Django shell, similar to: python manage.py shell ?`
 
+Simply run: `make get_django_shell` or `docker-compose exec web python app/manage.py shell`
 
+#### Access BASH
 
+`Q: I want to inspect or manipulate the container via bash.  How can I access the root shell of the container?`
+
+Run: `docker-compose exec web bash`

@@ -2,6 +2,8 @@ load_tokens();
 
 // Wait until page is loaded, then run the function
 $(document).ready(function() {
+  waitforWeb3(actions_page_warn_if_not_on_same_network);
+  
   $('input[name=amount]').keyup(setUsdAmount);
   $('input[name=amount]').blur(setUsdAmount);
   $('select[name=deonomination]').change(setUsdAmount);
@@ -19,6 +21,13 @@ $(document).ready(function() {
 
   // submit bounty button click
   $('#submitBounty').click(function(e) {
+    try {
+      bounty_address();
+    } catch (exception) {
+      _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+      return;
+    }
+
     mixpanel.track('Increase Bounty Clicked (funder)', {});
 
     // setup
@@ -114,7 +123,7 @@ $(document).ready(function() {
       result = results[0];
       if (result == null) {
         _alert({
-          message: 'No active bounty found for this Github URL.'
+          message: gettext('No active bounty found for this Github URL.')
         });
         unloading_button($('.js-submit'));
         return;
@@ -137,8 +146,8 @@ $(document).ready(function() {
           errormsg = gettext('Only the address that submitted this funded issue may increase the payout.');
         }
         if (!matchingNetworks) {
-          errormsg = 'Expected browser to be connected to the Ethereum network' +
-            ' that the bounty was deployed to, ie. \'' + bountyNetwork + '\'.';
+          errormsg = gettext('Expected browser to be connected to the Ethereum network' +
+            ' that the bounty was deployed to, ie. \'' + bountyNetwork + '\'.');
         }
 
         if (errormsg) {

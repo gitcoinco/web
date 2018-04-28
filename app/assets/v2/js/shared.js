@@ -310,7 +310,13 @@ function getParam(parameterName) {
   return result;
 }
 
-function timeDifference(current, previous, remaining) {
+function timeDifference(current, previous, remaining, now_threshold_seconds) {
+
+  var elapsed = current - previous;
+
+  if (now_threshold_seconds && (now_threshold_seconds * 1000) > Math.abs(elapsed)) {
+    return 'now';
+  }
 
   if (current < previous) {
     return 'in ' + timeDifference(previous, current).replace(' ago', '');
@@ -321,8 +327,6 @@ function timeDifference(current, previous, remaining) {
   var msPerDay = msPerHour * 24;
   var msPerMonth = msPerDay * 30;
   var msPerYear = msPerDay * 365;
-
-  var elapsed = current - previous;
 
   var amt;
   var unit;
@@ -684,7 +688,7 @@ var listen_for_web3_changes = function() {
   if (typeof web3 == 'undefined') {
     trigger_sidebar_web3_disabled();
     trigger_form_hooks();
-  } else if (!web3.eth.coinbase) {
+  } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
     trigger_sidebar_web3_locked();
     trigger_form_hooks();
   } else {
@@ -705,6 +709,21 @@ var listen_for_web3_changes = function() {
         trigger_form_hooks();
       }
     });
+  }
+};
+
+var actions_page_warn_if_not_on_same_network = function() {
+  var user_network = document.web3network;
+
+  if (typeof user_network == 'undefined') {
+    user_network = 'no network';
+  }
+  var bounty_network = $('input[name=network]').val();
+
+  if (bounty_network != user_network) {
+    var msg = 'Warning: You are on ' + user_network + ' and this bounty is on the ' + bounty_network + ' network.  Please change your network to the ' + bounty_network + ' network.';
+
+    _alert({message: gettext(msg)}, 'error');
   }
 };
 

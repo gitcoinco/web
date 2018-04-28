@@ -65,5 +65,8 @@ if [ $ISFRONTENDPUSH ]; then
 fi
 
 # ping google
-cd ~/gitcoin/coin; bash scripts/run_management_command.bash ping_google
+cd ~/gitcoin/coin || echo "Cannot find coin directory!"
+bash scripts/run_management_command.bash ping_google
 
+# Handle rollbar deployment
+bash scripts/rollbar.bash
