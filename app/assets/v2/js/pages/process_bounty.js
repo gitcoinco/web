@@ -17,7 +17,7 @@ window.onload = function() {
     var fulfillmentCallback = function(results, status) {
       if (status != 'success') {
         mixpanel.track('Process Bounty Error', {step: 'fulfillmentCallback', error: error});
-        _alert({ message: 'Could not get fulfillment details' }, 'warning');
+        _alert({ message: gettext('Could not get fulfillment details') }, 'warning');
         console.error(error);
         unloading_button($('.submitBounty'));
         return;
@@ -25,7 +25,7 @@ window.onload = function() {
       results = sanitizeAPIResults(results);
       result = results[0];
       if (result == null) {
-        _alert({ message: 'No bounty fulfillments found for this Github URL.' }, 'warning');
+        _alert({ message: gettext('No bounty fulfillments found for this Github URL.') }, 'warning');
         unloading_button($('.submitBounty'));
         return;
       }
@@ -89,11 +89,11 @@ window.onload = function() {
         localStorage['acceptTOS'] = true;
       }
       if (issueURL == '') {
-        _alert({ message: 'Please enter a issue URL.' }, 'warning');
+        _alert({ message: gettext('Please enter a issue URL.') }, 'warning');
         isError = true;
       }
       if (fulfillmentId == null) {
-        _alert({ message: 'Please enter a fulfillment Id.' }, 'warning');
+        _alert({ message: gettext('Please enter a fulfillment Id.') }, 'warning');
         isError = true;
       }
       if (isError) {
@@ -107,7 +107,7 @@ window.onload = function() {
       var apiCallback = function(results, status) {
         if (status != 'success') {
           mixpanel.track('Process Bounty Error', {step: 'apiCallback', error: error});
-          _alert({ message: 'Could not get bounty details' }, 'warning');
+          _alert({ message: gettext('Could not get bounty details') }, 'warning');
           console.error(error);
           unloading_button($('.submitBounty'));
           return;
@@ -115,7 +115,7 @@ window.onload = function() {
         results = sanitizeAPIResults(results);
         result = results[0];
         if (result == null) {
-          _alert({ message: 'No active bounty found for this Github URL.' }, 'info');
+          _alert({ message: gettext('No active bounty found for this Github URL.') }, 'info');
           unloading_button($('.submitBounty'));
           return;
         }
@@ -159,11 +159,7 @@ window.onload = function() {
                 'txid': result
               });
 
-<<<<<<< HEAD
-              _alert({ message: 'Submitted transaction to web3.' }, 'info');
-=======
               _alert({ message: gettext('Submitted transaction to web3.') }, 'info');
->>>>>>> my-temporary-work
               setTimeout(function() {
                 mixpanel.track('Process Bounty Success', {});
                 document.location.href = '/funding/details?url=' + issueURL;
@@ -173,11 +169,7 @@ window.onload = function() {
 
             if (error) {
               mixpanel.track('Process Bounty Error', {step: 'final_callback', error: error});
-<<<<<<< HEAD
-              _alert({ message: 'There was an error' }, 'error');
-=======
               _alert({ message: gettext('There was an error') }, 'error');
->>>>>>> my-temporary-work
               console.error(error);
               unloading_button($('.submitBounty'));
             } else {
@@ -188,11 +180,7 @@ window.onload = function() {
           // Retrieve parameters for bounty from blockchain
           bounty.getBounty.call(bountyId, (errStr, bountyParams) => {
             if (bountyParams[4] != bountyStageEnum['Active']) {
-<<<<<<< HEAD
-              _alert({ message: 'The bounty for this Github URL is not active.' });
-=======
               _alert({ message: gettext('The bounty for this Github URL is not active.') });
->>>>>>> my-temporary-work
               unloading_button($('.js-submit'));
               return;
             }
