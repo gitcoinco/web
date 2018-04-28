@@ -30,6 +30,7 @@ import dashboard.ios
 import dashboard.views
 import dataviz.d3_views
 import dataviz.views
+import ethos.views
 import external_bounties.views
 import faucet.views
 import gitcoinbot.views
@@ -39,7 +40,6 @@ import marketing.webhookviews
 import retail.emails
 import retail.views
 import tdi.views
-import ethos.views
 from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
 
@@ -119,6 +119,8 @@ urlpatterns = [
 
     # redeem coin
     url(r'^coin/redeem/(.*)/?', dashboard.views.redeem_coin, name='redeem'),
+
+    # EthOS
     url(r'^ethos/(.*)/?', ethos.views.redeem_coin, name='redeem_coin'),
 
     # images

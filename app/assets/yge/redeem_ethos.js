@@ -1,15 +1,8 @@
 /* eslint-disable no-console */
 window.onload = function() {
-
   setTimeout(function() {
     $('loading').style.display = 'none';
-
-    if (coin_status === 'INITIAL') {
-      $('send_eth').style.display = 'block';
-    } else if (coin_status === 'PENDING') {
-      $('send_eth_done').style.display = 'block';
-      $('colo_txid').innerHTML = '<a href="https://' + etherscanDomain() + '/tx/' + colo_txid + '" target="_blank" rel="noopener noreferrer">See your transaction on the blockchain here</a>';
-    }
+    $('send_eth').style.display = 'block';
   }, 500);
 };
 
@@ -17,13 +10,19 @@ function redeemCoin() {
   mixpanel.track('Redeem Coin Click', {});
   metaMaskWarning();
 
-  var forwarding_address = $('forwarding_address').value.trim();
-  var twitter_usernanme = $('#twitter_username').value;
+  var forwarding_address = $('forwarding_address').value;
+  var twitter_username = $('twitter_username').value;
 
   // Check for valid address
   isValidForwardingAddress = forwarding_address.indexOf('0x') != -1;
   if (!forwarding_address || !isValidForwardingAddress) {
     _alert({message: gettext('Not a valid forwarding address')}, 'error');
+    return;
+  }
+
+  // Check for twitter username
+  if (!twitter_username) {
+    _alert({message: gettext('Please enter your Twitter username')}, 'error');
     return;
   }
 
@@ -34,7 +33,8 @@ function redeemCoin() {
   fetch(window.location.href, {
     method: 'POST',
     body: JSON.stringify({
-      address: forwarding_address
+      address: forwarding_address.trim(),
+      username: twitter_username.trim()
     })
   })
     .then(
@@ -52,6 +52,13 @@ function redeemCoin() {
             }
 
             $('send_eth').innerHTML = sendEthInnerHTML;
+
+            // Prefill the input fields as the form is attached dynamically to the DOM
+            setTimeout(function() {
+              document.getElementById('send_eth').querySelector('#forwarding_address').value = forwarding_address;
+              document.getElementById('send_eth').querySelector('#twitter_username').value = twitter_username;
+            }, 100);
+
             mixpanel.track('Redeem EthOS Coin Error', {
               error: data.message
             });

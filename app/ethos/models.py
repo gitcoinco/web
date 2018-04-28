@@ -17,8 +17,9 @@
 '''
 
 from django.db import models
+
 from economy.models import SuperModel
-from django.utils.text import slugify
+
 
 class ShortCode(SuperModel):
     """Define the shortcode schema"""
@@ -27,7 +28,7 @@ class ShortCode(SuperModel):
         """Define metadata associated with ShortCode."""
 
         verbose_name_plural = 'ShortCodes'
-    
+
     num_scans = models.PositiveSmallIntegerField(default=0)
     shortcode = models.CharField(max_length=255, default='')
 
@@ -39,7 +40,10 @@ class Hop(SuperModel):
 
         verbose_name_plural = 'Hops'
 
+    ip = models.GenericIPAddressField(protocol='IPv4')
     twitter_username = models.CharField(max_length=255)
-    twitter_profile = models.URLField()
+    twitter_profile_pic = models.URLField()
+    txid = models.CharField(max_length=255, default='')
     web3_address = models.CharField(max_length=255)
     previous_hop = models.ForeignKey("self", on_delete=models.SET_NULL, blank=True, null=True)
+    shortcode = models.ForeignKey(ShortCode, related_name='actions', on_delete=models.CASCADE, null=True)
