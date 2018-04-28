@@ -123,7 +123,7 @@ $(document).ready(function() {
       result = results[0];
       if (result == null) {
         _alert({
-          message: 'No active bounty found for this Github URL.'
+          message: gettext('No active bounty found for this Github URL.')
         });
         unloading_button($('.js-submit'));
         return;
@@ -146,8 +146,8 @@ $(document).ready(function() {
           errormsg = gettext('Only the address that submitted this funded issue may increase the payout.');
         }
         if (!matchingNetworks) {
-          errormsg = 'Expected browser to be connected to the Ethereum network' +
-            ' that the bounty was deployed to, ie. \'' + bountyNetwork + '\'.';
+          errormsg = gettext('Expected browser to be connected to the Ethereum network' +
+            ' that the bounty was deployed to, ie. \'' + bountyNetwork + '\'.');
         }
 
         if (errormsg) {

@@ -152,7 +152,7 @@ window.onload = function() {
                 result = results[0];
                 if (result == null) {
                   _alert({
-                    message: 'No active bounty found for this Github URL.'
+                    message: gettext('No active bounty found for this Github URL.')
                   });
                   unloading_button($('.js-submit'));
                   return;
@@ -167,15 +167,15 @@ window.onload = function() {
                 var fromAddress = result['bounty_owner_address'];
 
                 if (fromAddress == account) {
-                  _alert({ message: 'The address that funded an issue cannot fulfill it.' });
+                  _alert({ message: gettext('The address that funded an issue cannot fulfill it.') }, 'error');
                   unloading_button($('.js-submit'));
                   return;
                 }
 
                 browserNetworkIs(bountyNetwork, function(matchingNetworks) {
                   if (!matchingNetworks) {
-                    _alert({ message: 'Expected browser to be connected to the Ethereum network' +
-                      ' that the bounty was deployed to, ie. \'' + bountyNetwork + '\'.' });
+                    _alert({ message: gettext('Expected browser to be connected to the Ethereum network' +
+                      ' that the bounty was deployed to, ie. \'' + bountyNetwork + '\'.') }, 'error');
                     unloading_button($('.js-submit'));
                     return;
                   }

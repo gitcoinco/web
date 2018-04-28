@@ -89,7 +89,7 @@ window.onload = function() {
             }
 
             if (errormsg) {
-              _alert({ message: errormsg });
+              _alert({ message: errormsg }, 'error');
               unloading_button($('.js-submit'));
               return;
             }
@@ -116,8 +116,8 @@ window.onload = function() {
                   step: 'final_callback',
                   error: error
                 });
-                console.error('err', error);
-                _alert({ message: gettext('There was an error') });
+                console.error(error);
+                _alert({ message: gettext('There was an error') }, 'error');
                 unloading_button($('.js-submit'));
               } else {
                 next();
