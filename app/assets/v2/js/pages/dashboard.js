@@ -3,9 +3,11 @@
 var sidebar_keys = [ 'experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'network', 'idx_status' ];
 
 var localStorage;
-var limit = 20;
+var limit = 10;
 var offset = 0;
 var finishedAppending = false;
+var isLoadingContent = false;
+var loadedFirstTime = false;
 
 document.limit = 20;
 document.draw_distance = 5;
@@ -313,6 +315,10 @@ $(window).scroll(trigger_scroll_for_refresh_api);
 $('body').bind('touchmove', trigger_scroll_for_refresh_api);
 
 var refreshBounties = function(append) {
+  if (isLoadingContent) {
+    return;
+  }
+  isLoadingContent = true;
   // manage state
   if (append && document.finished_appending) {
     return;
@@ -351,17 +357,8 @@ var refreshBounties = function(append) {
   // analytics
   var params = { uri: uri };
 
-<<<<<<< HEAD
   if (!append) {
     mixpanel.track('Refresh Bounties', params);
-=======
-  mixpanel.track('Refresh Bounties', params);
-
-  // order
-  if (append && finishedAppending) {
-    $('.loading').css('display', 'none');
-    return;
->>>>>>> put loading bar at end
   }
   // order
   $('.loading').css('display', 'block');
@@ -369,6 +366,15 @@ var refreshBounties = function(append) {
     results = sanitizeAPIResults(results);
 
     if (results.length < document.limit) {
+=======
+
+  if (!finishedAppending)
+    $('.loading').css('display', 'block');
+  $.get(uri, function(results) {
+    results = sanitizeAPIResults(results);
+
+    if (results.length < limit) {
+>>>>>>> dejank,apitests
       if (!append) {
         $('.nonefound').css('display', 'block');
       } else {
@@ -449,8 +455,10 @@ var refreshBounties = function(append) {
     if (!append) {
       paint_bounties_in_viewport(0, 10);
     } else {
-      paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + 6);
+      paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + limit);
     }
+    isLoadingContent = false;
+    loadedFirstTime = true;
     process_stats(results);
   }).fail(function() {
     _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
