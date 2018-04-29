@@ -181,15 +181,7 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         queryset = queryset.distinct()
 
-<<<<<<< HEAD
-=======
-        # offset / limit
-    #    limit = min(100,int(self.request.query_params.get('limit', 100)))
-    #    offset = self.request.query_params.get('offset', 0)
-    #    if limit:
-    #    queryset = queryset[int(offset):2]
 
->>>>>>> remove custom limit and offset code from api. Append new data to view
         return queryset
 
 
