@@ -181,7 +181,6 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         queryset = queryset.distinct()
 
-
         return queryset
 
 

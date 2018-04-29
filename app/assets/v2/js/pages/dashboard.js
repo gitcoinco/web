@@ -9,10 +9,6 @@ dashboard.limit = 20;
 dashboard.draw_distance = 5;
 dashboard.bounty_offset = 0;
 dashboard.finished_appending = false;
-<<<<<<< HEAD
-=======
-
->>>>>>> rebase, change from document
 try {
   localStorage = window.localStorage;
 } catch (e) {
@@ -344,12 +340,7 @@ var refreshBounties = function(append) {
       $('.nonefound').css('display', 'none');
       $('.bounty_row').remove();
     }
-<<<<<<< HEAD
   } // filter
-=======
-  }
-  // filter
->>>>>>> dont debounce api calls
   var uri = get_search_URI();
 
   // analytics
