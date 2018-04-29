@@ -156,7 +156,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend', ),
     'DEFAULT_THROTTLE_CLASSES': ('rest_framework.throttling.AnonRateThrottle', ),
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '10000/day',
+        'anon': '1000/day',
     },
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
@@ -378,7 +378,7 @@ S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='') # TODO
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 
 # Faucet App config
-FAUCET_AMOUNT = env.float('FAUCET_AMOUNT', default=.00025)
+FAUCET_AMOUNT = env.float('FAUCET_AMOUNT', default=.0001)
 
 SENDGRID_EVENT_HOOK_URL = env('SENDGRID_EVENT_HOOK_URL', default='sg_event_process')
 GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')
