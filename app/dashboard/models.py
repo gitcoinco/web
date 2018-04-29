@@ -19,7 +19,7 @@
 from __future__ import unicode_literals
 
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib.parse import urlsplit
 
 from django.conf import settings
@@ -69,6 +69,13 @@ class BountyQuerySet(models.QuerySet):
             excluded_statuses = []
 
         return self.exclude(idx_status__in=excluded_statuses)
+
+    def filter_by_status(self, filtered_status=None):
+        """Filter results with a status matching the provided list."""
+        if filtered_status is None:
+            filtered_status = []
+
+        return self.filter(idx_status__in=filtered_status)
 
 
 class Bounty(SuperModel):
@@ -955,8 +962,14 @@ class Profile(SuperModel):
     def stats(self):
         bounties = self.bounties.stats_eligible()
         loyalty_rate = 0
-        total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_funder(self.handle)])
-        total_fulfilled = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
+        total_funded = sum([
+            bounty.value_in_usdt if bounty.value_in_usdt else 0
+            for bounty in bounties if bounty.is_funder(self.handle)
+        ])
+        total_fulfilled = sum([
+            bounty.value_in_usdt if bounty.value_in_usdt else 0
+            for bounty in bounties if bounty.is_hunter(self.handle)
+        ])
         print(total_funded, total_fulfilled)
         role = 'newbie'
         if total_funded > total_fulfilled:
@@ -997,6 +1010,48 @@ class Profile(SuperModel):
             (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
             (success_rate, 'Success Rate'),
         ]
+
+    @property
+    def get_quarterly_stats(self):
+        user_active_in_last_quarter = False
+        last_quarter = datetime.now() - timedelta(days=90)
+        bounties = self.bounties.filter(modified_on__gte=last_quarter)
+        loyalty_rate = 0
+        fulfilled_bounties = [
+            bounty for bounty in bounties if bounty.is_hunter(self.handle) and bounty.status == 'done'
+        ]
+        fulfilled_bounties_count = len(fulfilled_bounties)
+        total_earned_eth = sum([
+            bounty.value_in_eth if bounty.value_in_eth else 0
+            for bounty in fulfilled_bounties
+        ])
+        total_earned_usd = sum([
+            bounty.value_in_usdt if bounty.value_in_usdt else 0
+            for bounty in fulfilled_bounties
+        ])
+
+        num_completed_bounties = bounties.filter(idx_status__in=['submitted', 'done']).count()
+        total_bounties = bounties.count()
+        completetion_percent = int(
+            round(num_completed_bounties * 1.0 / total_bounties, 2) * 100
+        ) if total_bounties != 0 else '0'
+
+        avg_eth_earned_per_bounty = total_earned_eth / fulfilled_bounties_count
+        avg_usd_earned_per_bounty = total_earned_usd / fulfilled_bounties_count
+
+        if num_completed_bounties or fulfilled_bounties_count:
+            user_active_in_last_quarter = True
+
+        return {
+            'user_total_earned_eth': total_earned_eth,
+            'user_total_earned_usd': total_earned_usd,
+            'user_fulfilled_bounties_count': fulfilled_bounties_count,
+            'user_avg_eth_earned_per_bounty': avg_eth_earned_per_bounty,
+            'user_avg_usd_earned_per_bounty': avg_usd_earned_per_bounty,
+            'user_num_completed_bounties': num_completed_bounties,
+            'user_bounty_completion_percentage': completetion_percent,
+            'user_active_in_last_quarter': user_active_in_last_quarter
+        }
 
     @property
     def github_url(self):

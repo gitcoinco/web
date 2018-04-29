@@ -39,7 +39,7 @@ def should_suppress_notification_email(email, _type='transactional'):
     if queryset.exists():
         level = queryset.first().preferences.get('level', '')
         if _type in ['urgent', 'admin']:
-            return False # these email types are always sent
+            return False  # these email types are always sent
         if level == 'nothing':
             return True
         if level == 'lite1' and _type == 'transactional':

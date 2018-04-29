@@ -29,7 +29,7 @@ from retail.emails import (
     render_bounty_expire_warning, render_bounty_feedback, render_bounty_startwork_expire_warning,
     render_bounty_unintersted, render_faucet_rejected, render_faucet_request, render_match_email, render_new_bounty,
     render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
-    render_tip_email,
+    render_quarterly_stats, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -323,6 +323,29 @@ def new_match(to_emails, bounty, github_username):
         translation.activate(cur_language)
 
 
+def quarterly_stats(to_emails=None, platform_wide_stats=None):
+    # if not platform_wide_stats:
+    #     return
+
+    if to_emails is None:
+        to_emails = []
+
+    for to_email in to_emails:
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            subject = "Quarterly Stats at Gitcoin!"
+            html, text = render_quarterly_stats(to_email, platform_wide_stats)
+            print("-----" * 100)
+            print(html)
+            print("-----" * 100)
+            from_email = settings.PERSONAL_CONTACT_EMAIL
+
+            if not should_suppress_notification_email(to_email, 'roundup'):
+                send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
+        finally:
+            translation.activate(cur_language)
+
 
 def bounty_expire_warning(bounty, to_emails=None):
     if not bounty or not bounty.value_in_usdt_now:
@@ -367,6 +390,7 @@ def bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
     finally:
         translation.activate(cur_language)
 
+
 def bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
     if not bounty or not bounty.value_in_usdt_now:
         return
@@ -381,6 +405,7 @@ def bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
             send_mail(from_email, to_email, subject, text, html)
     finally:
         translation.activate(cur_language)
+
 
 def bounty_uninterested(to_email, bounty, interest):
     from_email = settings.CONTACT_EMAIL

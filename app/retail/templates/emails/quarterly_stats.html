@@ -1,0 +1,72 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+
+{% block content %}
+
+    <h1>GITCOIN QUARTERLY</h1>
+
+    {% if user_active_in_last_quarter %}
+        <h2>You've Been BUILDing</h2>
+        <h3>An overview of your stats from the last 3 months.</h3>
+        <p>
+            You earned {{user_total_earned_eth}} ETH ({{user_total_earned_usd}} USD) from {{user_fulfilled_bounties_count}} completed bounties, for an average of {{user_avg_eth_earned_per_bounty}} ETH ({{ user_avg_usd_earned_per_bounty}} USD) per bounty!
+        </p>
+        <p>
+            You completed {{user_bounty_completion_percentage}}% of the {{user_num_completed_bounties}} bounties that you started - thanks for showing such diligence.
+        </p>
+        <p>
+            {% comment %}
+            TODO: Find where we can fetch the below info from.
+            {% endcomment %}
+            You've boosted your skills in 4 different languages: HTML, CSS, Python, and JavaScript!
+        </p>
+    {% endif %}
+
+    <h2>Platform-wide Stats</h2>
+    <h3>Activity happening across the Gitcoin network</h3>
+    <p>
+        Over the past 3 months, {{bounties_completion_percent}}% of the {{total_funded_bounties}} funded bounties on the Gitcoin network were completed.
+    </p>
+    <p>
+        A total of {{num_completed_bounties}} bounties were funded an average of ${{avg_fund_per_bounty}} per bounty, for a total of ${{completed_bounties_fund}} USD.
+    </p>
+    <p>
+        The top 5 hunters in this quarter were
+        {% for hunter in hunters %}
+            {% if forloop.counter == no_of_hunters %}
+              &amp;
+            {% elif forloop.first %}
+            {% else %}
+              ,
+            {% endif %}
+            <a href="https://github.com/{{hunter}}">{{hunter}}</a>
+        {% endfor %}
+    </p>
+    <p>
+        {% comment %}
+        TODO: Find where we can fetch the below info from.
+        {% endcomment %}
+        A total of value of $132,810 USD was transacted on the Gitcoin network-812 ETH, 20,000 DAI, and 12,400 WYV.
+    </p>
+    <p>
+        The largest bounty of the quarter was funded by @<a href="https://github.com/{{largest_bounty.bounty_owner_github_username}}">{{largest_bounty.bounty_owner_github_username}}</a> for ${{largest_bounty.value_in_usdt}} for <a href="{{largest_bounty.get_absolute_url}}">{{largest_bounty.title}}</a>.
+    </p>
+
+{% endblock %}
