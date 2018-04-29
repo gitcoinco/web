@@ -9,6 +9,10 @@ dashboard.limit = 20;
 dashboard.draw_distance = 5;
 dashboard.bounty_offset = 0;
 dashboard.finished_appending = false;
+<<<<<<< HEAD
+=======
+
+>>>>>>> rebase, change from document
 try {
   localStorage = window.localStorage;
 } catch (e) {
