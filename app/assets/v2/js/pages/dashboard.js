@@ -7,8 +7,6 @@ var limit = 20;
 var drawdistance = 5;
 var offset = 0;
 var finishedAppending = false;
-var isLoadingContent = false;
-var loadedFirstTime = false;
 
 try {
   localStorage = window.localStorage;
@@ -289,34 +287,25 @@ var trigger_scroll = debounce(function() {
   var preload = !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + 1500 + window_height));
 
   if (preload && !finishedAppending) {
-    offset += limit;
     refreshBounties(true);
-
   }
 
   if (does_need_to_paint_more) {
-
     paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + drawdistance + 1);
   }
 }, 200);
-
-$(window).scroll(function() {
-  if ($(window).scrollTop() == $(document).height() - $(window).height()) {
-
-  //  refreshBounties(true);
-  }
-});
 
 $(window).scroll(trigger_scroll);
 $('body').bind('touchmove', trigger_scroll);
 
 var refreshBounties = function(append) {
-
-
   // manage state
   if (append && finishedAppending) {
     return;
   }
+
+  if (append)
+    offset += limit;
 
   var keywords = $('#keywords').val();
   var title = gettext('Issue Explorer | Gitcoin');
@@ -337,7 +326,6 @@ var refreshBounties = function(append) {
     $('.nonefound').css('display', 'none');
     $('.bounty_row').remove();
   }
-
 
   // filter
   var uri = get_search_URI();
@@ -435,8 +423,6 @@ var refreshBounties = function(append) {
     if (!append) {
       paint_bounties_in_viewport(0, 10);
     }
-    isLoadingContent = false;
-    loadedFirstTime = true;
     process_stats(results);
 
   }).fail(function() {
