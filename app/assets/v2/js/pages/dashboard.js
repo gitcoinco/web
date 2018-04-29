@@ -3,11 +3,12 @@
 var sidebar_keys = [ 'experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'network', 'idx_status' ];
 
 var localStorage;
+var dashboard = {};
 
-document.limit = 20;
-document.draw_distance = 5;
-document.bounty_offset = 0;
-document.finished_appending = false;
+dashboard.limit = 20;
+dashboard.draw_distance = 5;
+dashboard.bounty_offset = 0;
+dashboard.finished_appending = false;
 
 try {
   localStorage = window.localStorage;
@@ -130,7 +131,7 @@ var removeFilter = function(key, value) {
 };
 
 var get_search_URI = function() {
-  var uri = '/api/v0.1/bounties/?limit=' + document.limit + '&offset=' + document.bounty_offset;
+  var uri = '/api/v0.1/bounties/?limit=' + dashboard.limit + '&offset=' + dashboard.bounty_offset;
   var keywords = $('#keywords').val();
 
   if (keywords) {
@@ -247,13 +248,13 @@ var process_stats = function(results) {
 };
 
 var paint_bounties_in_viewport = function(start, max) {
-  document.is_painting_now = true;
-  var num_bounties = document.bounties_html.length;
+  dashboard.is_painting_now = true;
+  var num_bounties = dashboard.bounties_html.length;
 
   for (var i = start; i < num_bounties && i < max; i++) {
-    var html = document.bounties_html[i];
+    var html = dashboard.bounties_html[i];
 
-    document.last_bounty_rendered = i;
+    dashboard.last_bounty_rendered = i;
     $('#bounties').append(html);
   }
 
@@ -266,11 +267,11 @@ var paint_bounties_in_viewport = function(start, max) {
 
     $(this).attr('href', href);
   });
-  document.is_painting_now = false;
+  dashboard.is_painting_now = false;
 };
 
 var near_bottom = function(callback, buffer) {
-  if (typeof document.bounties_html == 'undefined' || document.bounties_html.length == 0) {
+  if (typeof dashboard.bounties_html == 'undefined' || dashboard.bounties_html.length == 0) {
     return;
   }
   var scrollPos = $(document).scrollTop();
@@ -280,8 +281,8 @@ var near_bottom = function(callback, buffer) {
     return;
   }
   var window_height = $(window).height();
-  var have_painted_all_bounties = document.bounties_html.length <= document.last_bounty_rendered;
-  var does_need_to_paint_more = !document.is_painting_now && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
+  var have_painted_all_bounties = dashboard.bounties_html.length <= dashboard.last_bounty_rendered;
+  var does_need_to_paint_more = !dashboard.is_painting_now && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
 
   var preload = ((last_active_bounty.offset().top) < (scrollPos + buffer + 1500 + window_height));
 
@@ -293,7 +294,7 @@ var near_bottom = function(callback, buffer) {
 
 var trigger_scroll_for_redraw = debounce(function() {
   near_bottom(function() {
-    paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + document.draw_distance + 1);
+    paint_bounties_in_viewport(dashboard.last_bounty_rendered + 1, dashboard.last_bounty_rendered + dashboard.draw_distance + 1);
   }, 500);
 }, 200);
 
@@ -311,15 +312,15 @@ $('body').bind('touchmove', trigger_scroll_for_refresh_api);
 
 var refreshBounties = function(append) {
   // manage state
-  if (append && document.finished_appending) {
+  if (append && dashboard.finished_appending) {
     return;
   }
-  if (document.is_loading) {
+  if (dashboard.is_loading) {
     return;
   }
-  document.is_loading = true;
+  dashboard.is_loading = true;
   if (append)
-    document.bounty_offset += document.limit;
+    dashboard.bounty_offset += dashboard.limit;
 
   if (!append) {
     var keywords = $('#keywords').val();
@@ -356,20 +357,20 @@ var refreshBounties = function(append) {
   $.get(uri, function(results) {
     results = sanitizeAPIResults(results);
 
-    if (results.length < document.limit) {
+    if (results.length < dashboard.limit) {
       if (!append) {
         $('.nonefound').css('display', 'block');
       } else {
-        document.finished_appending = true;
+        dashboard.finished_appending = true;
       }
     }
 
-    document.is_painting_now = false;
+    dashboard.is_painting_now = false;
 
     if (!append) {
-      document.last_bounty_rendered = 0;
-      document.bounties_html = [];
-      document.bounty_offset = 0;
+      dashboard.last_bounty_rendered = 0;
+      dashboard.bounties_html = [];
+      dashboard.bounty_offset = 0;
     }
     for (var i = 0; i < results.length; i++) {
       // setup
@@ -431,13 +432,13 @@ var refreshBounties = function(append) {
       var tmpl = $.templates('#result');
       var html = tmpl.render(result);
 
-      document.bounties_html[i + document.bounty_offset] = html;
+      dashboard.bounties_html[i + dashboard.bounty_offset] = html;
     }
 
     if (!append) {
       paint_bounties_in_viewport(0, 10);
     } else {
-      paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + 6);
+      paint_bounties_in_viewport(dashboard.last_bounty_rendered + 1, dashboard.last_bounty_rendered + 6);
     }
 
     process_stats(results);
@@ -445,7 +446,7 @@ var refreshBounties = function(append) {
   }).fail(function() {
     _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
   }).always(function() {
-    document.is_loading = false;
+    dashboard.is_loading = false;
     $('.loading').css('display', 'none');
   });
 };
@@ -484,7 +485,7 @@ $(document).ready(function() {
       source: function(request, response) {
         // delegate back to autocomplete, but extract the last term
         response($.ui.autocomplete.filter(
-          document.keywords, extractLast(request.term)));
+          dashboard.keywords, extractLast(request.term)));
       },
       focus: function() {
         // prevent value inserted on focus
