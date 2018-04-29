@@ -270,20 +270,16 @@ var paint_bounties_in_viewport = function(start, max) {
 };
 
 var near_bottom = function(callback, buffer) {
-  if (typeof dashboard.bounties_html == 'undefined' || dashboard.bounties_html.length == 0) {
-    return;
-  }
+
   var scrollPos = $(document).scrollTop();
   var last_active_bounty = $('.bounty_row.result:last-child');
-
-  if (last_active_bounty.length == 0) {
-    return;
-  }
   var window_height = $(window).height();
   var have_painted_all_bounties = dashboard.bounties_html.length <= dashboard.last_bounty_rendered;
   var does_need_to_paint_more = !dashboard.is_painting_now && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
 
-  var preload = ((last_active_bounty.offset().top) < (scrollPos + buffer + 1500 + window_height));
+  if (typeof dashboard.bounties_html == 'undefined' || dashboard.bounties_html.length == 0 || last_active_bounty.length == 0) {
+    return;
+  }
 
   if (does_need_to_paint_more) {
     callback();
@@ -308,14 +304,68 @@ $('body').bind('touchmove', trigger_scroll_for_redraw);
 
 $(window).scroll(trigger_scroll_for_refresh_api);
 $('body').bind('touchmove', trigger_scroll_for_refresh_api);
+var bountyToHTMLrow = function(result) {
+  var related_token_details = tokenAddressToDetails(result['token_address']);
+  var decimals = 18;
+
+  if (related_token_details && related_token_details.decimals) {
+    decimals = related_token_details.decimals;
+  }
+
+  var divisor = Math.pow(10, decimals);
+
+  result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
+  var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
+
+  // setup args to go into template
+  if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
+    result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
+  } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
+    result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
+  }
+  result.action = result['url'];
+  result['title'] = result['title'] ? result['title'] : result['github_url'];
+  var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
+
+  result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
+
+  if (result['status'] === 'done')
+    result['p'] += 'Done';
+  if (result['fulfillment_accepted_on']) {
+    result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
+  } else if (result['status'] === 'started') {
+    result['p'] += 'Started';
+    result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
+  } else if (result['status'] === 'submitted') {
+    result['p'] += 'Submitted';
+    if (result['fulfillment_submitted_on']) {
+      result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
+    }
+  } else if (result['status'] == 'cancelled') {
+    result['p'] += 'Cancelled';
+    if (result['canceled_on']) {
+      result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
+    }
+  } else if (is_expired) {
+    var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
+
+    result['p'] += ('Expired ' + time_ago + ' ago');
+  } else {
+    var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
+
+    result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
+  }
+
+  result['watch'] = 'Watch';
+  return result;
+
+};
 var refreshBounties = function(append) {
   // manage state
-  if (append && dashboard.finished_appending) {
+  if (append && dashboard.finished_appending || dashboard.is_loading) {
     return;
   }
-  if (dashboard.is_loading) {
-    return;
-  }
+  
   dashboard.is_loading = true;
   if (append)
     dashboard.bounty_offset += dashboard.limit;
@@ -371,59 +421,8 @@ var refreshBounties = function(append) {
     }
     for (var i = 0; i < results.length; i++) {
       // setup
-      var result = results[i];
-      var related_token_details = tokenAddressToDetails(result['token_address']);
-      var decimals = 18;
+      var result = bountyToHTMLrow(results[i]);
 
-      if (related_token_details && related_token_details.decimals) {
-        decimals = related_token_details.decimals;
-      }
-
-      var divisor = Math.pow(10, decimals);
-
-      result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
-      var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
-
-      // setup args to go into template
-      if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
-        result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
-      } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
-        result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
-      }
-      result.action = result['url'];
-      result['title'] = result['title'] ? result['title'] : result['github_url'];
-      var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
-
-      result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
-
-      if (result['status'] === 'done')
-        result['p'] += 'Done';
-      if (result['fulfillment_accepted_on']) {
-        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
-      } else if (result['status'] === 'started') {
-        result['p'] += 'Started';
-        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
-      } else if (result['status'] === 'submitted') {
-        result['p'] += 'Submitted';
-        if (result['fulfillment_submitted_on']) {
-          result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
-        }
-      } else if (result['status'] == 'cancelled') {
-        result['p'] += 'Cancelled';
-        if (result['canceled_on']) {
-          result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
-        }
-      } else if (is_expired) {
-        var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
-
-        result['p'] += ('Expired ' + time_ago + ' ago');
-      } else {
-        var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
-
-        result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
-      }
-
-      result['watch'] = 'Watch';
 
       // render the template
       var tmpl = $.templates('#result');
