@@ -355,7 +355,6 @@ var refreshBounties = function(append) {
       }
     }
 
-
     document.is_painting_now = false;
 
     if (!append) {
