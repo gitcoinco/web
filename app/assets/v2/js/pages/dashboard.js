@@ -9,7 +9,6 @@ dashboard.limit = 20;
 dashboard.draw_distance = 5;
 dashboard.bounty_offset = 0;
 dashboard.finished_appending = false;
-
 try {
   localStorage = window.localStorage;
 } catch (e) {
@@ -309,7 +308,6 @@ $('body').bind('touchmove', trigger_scroll_for_redraw);
 
 $(window).scroll(trigger_scroll_for_refresh_api);
 $('body').bind('touchmove', trigger_scroll_for_refresh_api);
-
 var refreshBounties = function(append) {
   // manage state
   if (append && dashboard.finished_appending) {
@@ -342,8 +340,7 @@ var refreshBounties = function(append) {
       $('.nonefound').css('display', 'none');
       $('.bounty_row').remove();
     }
-  }
-  // filter
+  } // filter
   var uri = get_search_URI();
 
   // analytics
@@ -440,7 +437,6 @@ var refreshBounties = function(append) {
     } else {
       paint_bounties_in_viewport(dashboard.last_bounty_rendered + 1, dashboard.last_bounty_rendered + 6);
     }
-
     process_stats(results);
 
   }).fail(function() {
