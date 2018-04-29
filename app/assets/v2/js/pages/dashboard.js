@@ -340,7 +340,12 @@ var refreshBounties = function(append) {
       $('.nonefound').css('display', 'none');
       $('.bounty_row').remove();
     }
+<<<<<<< HEAD
   } // filter
+=======
+  }
+  // filter
+>>>>>>> dont debounce api calls
   var uri = get_search_URI();
 
   // analytics
@@ -437,6 +442,7 @@ var refreshBounties = function(append) {
     } else {
       paint_bounties_in_viewport(dashboard.last_bounty_rendered + 1, dashboard.last_bounty_rendered + 6);
     }
+
     process_stats(results);
 
   }).fail(function() {
