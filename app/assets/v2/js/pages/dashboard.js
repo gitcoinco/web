@@ -3,10 +3,11 @@
 var sidebar_keys = [ 'experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'network', 'idx_status' ];
 
 var localStorage;
-var limit = 20;
-var drawdistance = 5;
-var offset = 0;
-var finishedAppending = false;
+
+document.limit = 20;
+document.draw_distance = 5;
+document.bounty_offset = 0;
+document.finished_appending = false;
 
 try {
   localStorage = window.localStorage;
@@ -129,7 +130,7 @@ var removeFilter = function(key, value) {
 };
 
 var get_search_URI = function() {
-  var uri = '/api/v0.1/bounties/?limit=' + limit + '&offset=' + offset;
+  var uri = '/api/v0.1/bounties/?limit=' + document.limit + '&offset=' + document.bounty_offset;
   var keywords = $('#keywords').val();
 
   if (keywords) {
@@ -268,8 +269,7 @@ var paint_bounties_in_viewport = function(start, max) {
   document.is_painting_now = false;
 };
 
-
-var trigger_scroll = debounce(function() {
+var near_bottom = function(callback, buffer) {
   if (typeof document.bounties_html == 'undefined' || document.bounties_html.length == 0) {
     return;
   }
@@ -281,71 +281,86 @@ var trigger_scroll = debounce(function() {
   }
   var window_height = $(window).height();
   var have_painted_all_bounties = document.bounties_html.length <= document.last_bounty_rendered;
-  var buffer = 500;
-  var does_need_to_paint_more = !document.is_painting_now && !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
+  var does_need_to_paint_more = !document.is_painting_now && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
 
-  var preload = !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + 1500 + window_height));
-
-  if (preload && !finishedAppending) {
-    refreshBounties(true);
-  }
+  var preload = ((last_active_bounty.offset().top) < (scrollPos + buffer + 1500 + window_height));
 
   if (does_need_to_paint_more) {
-    paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + drawdistance + 1);
+    callback();
   }
+};
+
+
+var trigger_scroll_for_redraw = debounce(function() {
+  near_bottom(function() {
+    paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + document.draw_distance + 1);
+  }, 500);
 }, 200);
 
-$(window).scroll(trigger_scroll);
-$('body').bind('touchmove', trigger_scroll);
+var trigger_scroll_for_refresh_api = function() {
+  near_bottom(function() {
+    refreshBounties(true);
+  }, 1500);
+};
+
+$(window).scroll(trigger_scroll_for_redraw);
+$('body').bind('touchmove', trigger_scroll_for_redraw);
+
+$(window).scroll(trigger_scroll_for_refresh_api);
+$('body').bind('touchmove', trigger_scroll_for_refresh_api);
 
 var refreshBounties = function(append) {
   // manage state
-  if (append && finishedAppending) {
+  if (append && document.finished_appending) {
     return;
   }
-
+  if (document.is_loading) {
+    return;
+  }
+  document.is_loading = true;
   if (append)
-    offset += limit;
+    document.bounty_offset += document.limit;
 
-  var keywords = $('#keywords').val();
-  var title = gettext('Issue Explorer | Gitcoin');
-
-  if (keywords) {
-    title = keywords + ' | ' + title;
-  }
-
-  var currentState = history.state;
-
-  window.history.replaceState(currentState, title, '/explorer?q=' + keywords);
-
-  save_sidebar_latest();
-  set_filter_header();
-  disableAny();
-  getFilters();
   if (!append) {
-    $('.nonefound').css('display', 'none');
-    $('.bounty_row').remove();
-  }
+    var keywords = $('#keywords').val();
+    var title = gettext('Issue Explorer | Gitcoin');
 
+    if (keywords) {
+      title = keywords + ' | ' + title;
+    }
+
+    var currentState = history.state;
+
+    window.history.replaceState(currentState, title, '/explorer?q=' + keywords);
+
+    save_sidebar_latest();
+    set_filter_header();
+    disableAny();
+    getFilters();
+    if (!append) {
+      $('.nonefound').css('display', 'none');
+      $('.bounty_row').remove();
+    }
+  }
   // filter
   var uri = get_search_URI();
 
   // analytics
   var params = { uri: uri };
 
-  mixpanel.track('Refresh Bounties', params);
-
+  if (!append) {
+    mixpanel.track('Refresh Bounties', params);
+  }
   // order
-
   $('.loading').css('display', 'block');
   $.get(uri, function(results) {
     results = sanitizeAPIResults(results);
 
-    if (results.length < limit) {
+    if (results.length < document.limit) {
       if (!append) {
         $('.nonefound').css('display', 'block');
       } else {
-        finishedAppending = true;
+        document.finished_appending = true;
       }
     }
 
@@ -354,7 +369,7 @@ var refreshBounties = function(append) {
     if (!append) {
       document.last_bounty_rendered = 0;
       document.bounties_html = [];
-      offset = 0;
+      document.bounty_offset = 0;
     }
     for (var i = 0; i < results.length; i++) {
       // setup
@@ -416,18 +431,21 @@ var refreshBounties = function(append) {
       var tmpl = $.templates('#result');
       var html = tmpl.render(result);
 
-      document.bounties_html[i + offset] = html;
+      document.bounties_html[i + document.bounty_offset] = html;
     }
-    if (finishedAppending)
-      return;
+
     if (!append) {
       paint_bounties_in_viewport(0, 10);
+    } else {
+      paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + 6);
     }
+
     process_stats(results);
 
   }).fail(function() {
     _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
   }).always(function() {
+    document.is_loading = false;
     $('.loading').css('display', 'none');
   });
 };
