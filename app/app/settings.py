@@ -1,21 +1,16 @@
 # -*- coding: utf-8 -*-
 """Define the Gitcoin project settings.
-
 Copyright (C) 2018 Gitcoin Core
-
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published
 by the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
-
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Affero General Public License for more details.
-
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 """
 import socket
 
@@ -378,7 +373,7 @@ S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='') # TODO
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 
 # Faucet App config
-FAUCET_AMOUNT = env.float('FAUCET_AMOUNT', default=.0001)
+FAUCET_AMOUNT = env.float('FAUCET_AMOUNT', default=.00025)
 
 SENDGRID_EVENT_HOOK_URL = env('SENDGRID_EVENT_HOOK_URL', default='sg_event_process')
 GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')
