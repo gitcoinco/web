@@ -3,9 +3,11 @@
 var sidebar_keys = [ 'experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'network', 'idx_status' ];
 
 var localStorage;
-var limit = 20;
+var limit = 10;
 var offset = 0;
 var finishedAppending = false;
+var isLoadingContent = false;
+var loadedFirstTime = false;
 
 try {
   localStorage = window.localStorage;
@@ -231,15 +233,15 @@ var process_stats = function(results) {
 
   switch (num) {
     case 0:
-      $('#matches').html(gettext('No Results'));
+      // $('#matches').html(gettext('No Results'));
       $('#funding-info').html('');
       break;
     case 1:
-      $('#matches').html(num + gettext(' Matching Result'));
+      // $('#matches').html(num + gettext(' Matching Result'));
       $('#funding-info').html("<span id='modifiers'>Funded Issue</span><span id='stats' class='font-body'>(" + stats + ')</span>');
       break;
     default:
-      $('#matches').html(num + gettext(' Matching Results'));
+      // $('#matches').html(num + gettext(' Matching Results'));
       $('#funding-info').html("<span id='modifiers'>Funded Issues</span><span id='stats' class='font-body'>(" + stats + ')</span>');
   }
 };
@@ -267,6 +269,7 @@ var paint_bounties_in_viewport = function(start, max) {
   document.is_painting_now = false;
 };
 
+
 var trigger_scroll = debounce(function() {
   if (typeof document.bounties_html == 'undefined' || document.bounties_html.length == 0) {
     return;
@@ -282,18 +285,32 @@ var trigger_scroll = debounce(function() {
   var buffer = 500;
   var does_need_to_paint_more = !document.is_painting_now && !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
 
-  if (does_need_to_paint_more) {
-    console.log('HELLO');
+  if (does_need_to_paint_more && !finishedAppending) {
     offset += 10;
     refreshBounties(true);
   }
 }, 200);
 
+$(window).scroll(function() {
+  if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+
+  //  refreshBounties(true);
+  }
+});
+
 $(window).scroll(trigger_scroll);
 $('body').bind('touchmove', trigger_scroll);
 
 var refreshBounties = function(append) {
+  if (isLoadingContent) {
+    return;
+  }
+  isLoadingContent = true;
   // manage state
+  if (append && finishedAppending) {
+    return;
+  }
+
   var keywords = $('#keywords').val();
   var title = gettext('Issue Explorer | Gitcoin');
 
@@ -311,7 +328,6 @@ var refreshBounties = function(append) {
   getFilters();
   if (!append) {
     $('.nonefound').css('display', 'none');
-    $('.loading').css('display', 'block');
     $('.bounty_row').remove();
   }
 
@@ -325,20 +341,21 @@ var refreshBounties = function(append) {
   mixpanel.track('Refresh Bounties', params);
 
   // order
-  if (append && finishedAppending) {
-    $('.loading').css('display', 'none');
-    return;
-  }
+
+  if (!finishedAppending)
+    $('.loading').css('display', 'block');
   $.get(uri, function(results) {
     results = sanitizeAPIResults(results);
 
-    if (results.length === 0) {
+    if (results.length < limit) {
       if (!append) {
         $('.nonefound').css('display', 'block');
       } else {
         finishedAppending = true;
       }
     }
+
+
     document.is_painting_now = false;
 
     if (!append) {
@@ -408,14 +425,17 @@ var refreshBounties = function(append) {
 
       document.bounties_html[i + offset] = html;
     }
+    if (finishedAppending)
+      return;
     if (!append) {
       paint_bounties_in_viewport(0, 10);
     } else {
-      paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + 6);
+      paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + limit);
     }
+    isLoadingContent = false;
+    loadedFirstTime = true;
     process_stats(results);
-    if (finish)
-      finish();
+
   }).fail(function() {
     _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
   }).always(function() {
