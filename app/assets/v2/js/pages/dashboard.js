@@ -3,7 +3,8 @@
 var sidebar_keys = [ 'experience_level', 'project_length', 'bounty_type', 'bounty_filter', 'network', 'idx_status' ];
 
 var localStorage;
-var limit = 10;
+var limit = 20;
+var drawdistance = 5;
 var offset = 0;
 var finishedAppending = false;
 var isLoadingContent = false;
@@ -278,16 +279,24 @@ var trigger_scroll = debounce(function() {
   var last_active_bounty = $('.bounty_row.result:last-child');
 
   if (last_active_bounty.length == 0) {
-    return;
+  //  return;
   }
   var window_height = $(window).height();
   var have_painted_all_bounties = document.bounties_html.length <= document.last_bounty_rendered;
   var buffer = 500;
   var does_need_to_paint_more = !document.is_painting_now && !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
 
-  if (does_need_to_paint_more && !finishedAppending) {
-    offset += 10;
+  var preload = !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + 1500 + window_height));
+
+  if (preload && !finishedAppending) {
+    offset += limit;
     refreshBounties(true);
+
+  }
+
+  if (does_need_to_paint_more) {
+
+    paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + drawdistance + 1);
   }
 }, 200);
 
@@ -302,10 +311,8 @@ $(window).scroll(trigger_scroll);
 $('body').bind('touchmove', trigger_scroll);
 
 var refreshBounties = function(append) {
-  if (isLoadingContent) {
-    return;
-  }
-  isLoadingContent = true;
+
+
   // manage state
   if (append && finishedAppending) {
     return;
@@ -342,8 +349,7 @@ var refreshBounties = function(append) {
 
   // order
 
-  if (!finishedAppending)
-    $('.loading').css('display', 'block');
+  $('.loading').css('display', 'block');
   $.get(uri, function(results) {
     results = sanitizeAPIResults(results);
 
@@ -429,7 +435,7 @@ var refreshBounties = function(append) {
     if (!append) {
       paint_bounties_in_viewport(0, 10);
     } else {
-      paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + limit);
+
     }
     isLoadingContent = false;
     loadedFirstTime = true;
