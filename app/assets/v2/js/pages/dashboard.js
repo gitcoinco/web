@@ -10,6 +10,11 @@ dashboard.draw_distance = 5;
 dashboard.bounty_offset = 0;
 dashboard.finished_appending = false;
 
+document.limit = 20;
+document.draw_distance = 5;
+document.bounty_offset = 0;
+document.finished_appending = false;
+
 try {
   localStorage = window.localStorage;
 } catch (e) {
