@@ -279,7 +279,7 @@ var trigger_scroll = debounce(function() {
   var last_active_bounty = $('.bounty_row.result:last-child');
 
   if (last_active_bounty.length == 0) {
-  //  return;
+    return;
   }
   var window_height = $(window).height();
   var have_painted_all_bounties = document.bounties_html.length <= document.last_bounty_rendered;
@@ -434,8 +434,6 @@ var refreshBounties = function(append) {
       return;
     if (!append) {
       paint_bounties_in_viewport(0, 10);
-    } else {
-
     }
     isLoadingContent = false;
     loadedFirstTime = true;
