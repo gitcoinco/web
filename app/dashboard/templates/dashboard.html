@@ -50,9 +50,7 @@
               </div>
             </div>
           </div>
-          <div class="row loading justify-content-center align-items-center loading_img">
-            <img src="{% static "v2/images/loading_v2.gif" %}">
-          </div>
+
           <div class="row nonefound" style="display:none;">
               <img src="{% static "v2/images/shrug_bot.png" %}">
               <h3>{% trans "No results found." %}</h3>
@@ -63,6 +61,9 @@
                 to be notified when results do appear.{% endblocktrans %}
               </p>
           </div>
+        </div>
+        <div class="row loading justify-content-center align-items-center loading_img">
+          <img src="{% static "v2/images/loading_v2.gif" %}">
         </div>
       </div>
     </div>
@@ -127,7 +128,6 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
-
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/pages/dashboard.js" %}"></script>
     <script src="{% static "v2/js/shared.js" %}"></script>
