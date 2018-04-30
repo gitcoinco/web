@@ -287,6 +287,10 @@ p a {
   display: none !important;
 }
 
+.modal-close {
+  float:right;
+}
+
 .iama {
   background: #0d023b;
   color: white;
