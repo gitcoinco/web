@@ -30,9 +30,9 @@ Welcome to Gitcoin! :gitcoin:
 Gitcoin's mission is to *Grow Open Source*.
 
 A few quick facts:
+- We are mission driven.  Check out our mission: https://gitcoin.co/mission
 - We aren't an ICO.  There is no Gitcoin token.
 - We are a community of blockchain developers.
-- We are mission driven.  Check out our mission: https://gitcoin.co/mission
 
 Here's how to get started in the community
 - Say hey :wave: in #community-intros
@@ -44,6 +44,8 @@ Here's how to get started with bounties:
 - Check out the open bounties at https://gitcoin.co/explorer
 - Post a bounty of your own at https://gitcoin.co/new
 - Send a tip to any github username at https://gitcoin.co/tip
+
+We have more details in our onboarding guide at http://gitcoin.co/onboard
 
 If you have any feedback for the team, or just want to say hi, this is them:
 - @owocki, @vivek, @Pixelant, @mbeacom, @coderberry, @justin-bean
