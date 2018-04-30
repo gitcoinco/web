@@ -1047,7 +1047,7 @@ class Profile(SuperModel):
     @property
     def username(self):
         handle = ''
-        if hasattr(self, 'user') and self.user.username:
+        if getattr(self, 'user', None) and self.user.username:
             handle = self.user.username
         # TODO: (mbeacom) Remove this check once we get rid of all the lingering identity shenanigans.
         elif self.handle:
