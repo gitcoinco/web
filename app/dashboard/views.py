@@ -715,6 +715,16 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     return TemplateResponse(request, 'bounty_details.html', params)
 
 
+def quickstart(request):
+    """Display quickstart guide.
+
+    """
+    # if not request.user.is_authenticated:
+    #     return redirect('index')
+
+    return TemplateResponse(request, 'quickstart.html', {})
+
+
 def profile_helper(handle):
     """Define the profile helper.
 

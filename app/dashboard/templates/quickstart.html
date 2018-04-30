@@ -1,0 +1,147 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/quickstart.css" %}>
+  </head>
+  <body class="interior {{active}} quickstart">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="container-fluid content mt-3">
+      <div class="row pb-1">
+        <div class="col text-center">
+          <h4 class="title">{% trans "Quickstart Guide" %}</h4>
+        </div>
+      </div>
+      <div class="row col-12 offset-lg-1 col-lg-10">
+        <div class="dont-show">
+          <input type="checkbox"/>
+          <span>Don't show again</span>
+        </div>
+      </div>
+      <div class="row col-12 offset-lg-1 col-lg-10 mt-2 steps-container">
+        <div class="col-md-3 col-sm-12 text-center p-2 image-container">
+          <img src={% static "v2/images/quickstart-box.svg" %}>
+        </div>
+        <div class="col-md-6 col-sm-12 p-5 steps-list">
+          <ol>
+            <li>1) <a href="">Create a Github Issue</a>, you'll need the issue URL</li>
+            <li>2) Select the type of issue to fund</li>
+            <li>3) Complete the form and press "Fund Issue"</li>
+            <li>4) Confirm the transaction in metamask</li>
+          </ol>
+          <p>
+            Once confirmed on blockchain, your bounty is posted to Gitcoin!
+            Wait for developers across the world to discover your bounty and
+            start working on your issue.
+          </p>
+          <div class="d-flex pt-5 action-footer">
+            <div class="video-link">
+              <a href="">Watch 90 second video</a>
+            </div>
+            <button class="btn btn-primary">Ok, I'm ready</button>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-12 p-5 tips-list">
+          <h5 class="title">Tips & Tricks</h5>
+          <ul>
+            <li>Know what you're looking for.</li>
+            <li>Set clear acceptance criteria.</li>
+            <li>Set a reasonable timeframe.</li>
+            <li>Pick a fair price.</li>
+            <li>Documentation is Key.</li>
+            <li>Leave Room for Error.</li>
+          </ul>
+          <p>Have fun! Meet new people!</p>
+          <a href="">More Funding Tips</a>
+        </div>
+      </div>
+      <div class="row col-12 offset-lg-1 col-lg-10 pt-2 pb-5 issuetypes-container text-center">
+        <h4 class="subheading">Other Repo Maintainers are funding these types of issues</h4>
+        <div class="col-md-3 mt-5 flex-column d-flex px-5">
+          <img src={% static "v2/images/quickstart-icons/newproduct-icon.svg" %}/>
+          <h5>NEW PRODUCT OR FEATURE</h5>
+          <p>Build new product ideas or new features</p>
+        </div>
+        <div class="col-md-3 mt-5 flex-column d-flex px-5">
+          <img src={% static "v2/images/quickstart-icons/feature-icon.svg" %}/>
+          <h5>FEATURE IMPROVEMENT</h5>
+          <p>Iterate on the next set of features</p>
+        </div>
+        <div class="col-md-3 mt-5 flex-column d-flex px-5">
+          <img src={% static "v2/images/quickstart-icons/bug-icon.svg" %}/>
+          <h5>BUG FIX</h5>
+          <p>Find and fix bugs in your product</p>
+        </div>
+        <div class="col-md-3 mt-5 flex-column d-flex px-5">
+          <img src={% static "v2/images/quickstart-icons/review-icon.svg" %}/>
+          <h5>CODE REVIEW</h5>
+          <p>Get help reviewing code</p>
+        </div>
+        <div class="col-md-3 mt-5 flex-column d-flex px-5">
+          <img src={% static "v2/images/quickstart-icons/upgrade-icon.svg" %}/>
+          <h5>TECH UPGRADE</h5>
+          <p>Frameworks, migrations, batches</p>
+        </div>
+        <div class="col-md-3 mt-5 flex-column d-flex px-5">
+          <img src={% static "v2/images/quickstart-icons/documentation-icon.svg" %}/>
+          <h5>DOCUMENTATION</h5>
+          <p>Product documentation, set up instructions</p>
+        </div>
+        <div class="col-md-3 mt-5 flex-column d-flex px-5">
+          <img src={% static "v2/images/quickstart-icons/design-icon.svg" %}/>
+          <h5>DESIGN</h5>
+          <p>Architecture, flows, wireframes, designs</p>
+        </div>
+        <div class="col-md-3 mt-5 flex-column d-flex px-5">
+          <img src={% static "v2/images/quickstart-icons/other-icon.svg" %}/>
+          <h5>OTHER</h5>
+          <p>Ideas, discussions, contests, consulting</p>
+        </div>
+        <div class="col-lg-10 col-md-12 offset-lg-1 notsuggested-container">
+          <h4 class="subheading">In our experience, the following are not good candidates for bounties:</h4>
+          <ol class="text-left">
+            <li>
+              <img src={% static "v2/images/quickstart-icons/list-icon.svg" %}/>
+              <span>Core Architecture</span>
+            </li>
+            <li>
+              <img src={% static "v2/images/quickstart-icons/list-icon.svg" %}/>
+              <span>Anything that requires a high degree of situational awareness
+              of the product/mark fit (unless there is well documented material)</span>
+            </li>
+            <li>
+              <img src={% static "v2/images/quickstart-icons/list-icon.svg" %}/>
+              <span>Anything that requires privleged access (like SSH access, 
+              prod private API key)</span>
+            </li>
+          </ol>
+          <span>If you're unsure, please reachout to a Gitcoin Core Team member</span>
+        </div>
+      </div>
+    </div>
+  </body>
