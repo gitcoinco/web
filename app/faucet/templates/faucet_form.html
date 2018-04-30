@@ -35,9 +35,13 @@
             <div id="faucet_form">
               <div class="faucet-form" id="primary_form">
                 <h3>{% trans "Faucet Request" %} <span id="alpha">{% trans "Alpha" %}</span></h3>
-                <p class="hidden-mobile">{% trans "Pursuant to making ethereum and Gitcoin broadly accessible to everyone
-                Gitcoin may provide a minimal faucet distribution of ether so you may easily
-                claim issues and gain more ether." %}</p>
+                <p class="hidden-mobile">
+                  {% blocktrans %}
+                  Pursuant to making Ethereum and Gitcoin broadly accessible to everyone Gitcoin
+                  may provide a minimal faucet distribution of ether so you may easily
+                  claim issues and gain more ether.
+                  {% endblocktrans %}
+                </p>
                 <div class="faucet-form-img">
                   <div class="faucet-form-svg">
                     {% include 'svgs/gas.svg' %}
