@@ -8,8 +8,6 @@ Start Work
 Click ‘Start Work’ to kick off a message to the repo-maintainer that you’re interested in the issue
 Respond on the Github thread with your intended approach for the bounty
 
-[GIF of Start Work]
-
 Make A Submission
 
   Download MetaMask (http://metamask.io/)
@@ -21,8 +19,6 @@ Make A Submission
     If you need a small amount of ETH to make a claim, request some using the Gitcoin Faucet (http://gitcoin.co/faucet)!
 
   Click on ‘Submit Work’ use your gas to make a submission!
-
-[GIF of Submit Work]
 
 From here, you should be off to the races! The repo maintainer will review your PR and pay out accordingly.
 Feel free to poke your head in if you have any issues.
