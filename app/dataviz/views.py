@@ -384,5 +384,3 @@ def funnel(request):
         'funnels': funnels,
     }
     return TemplateResponse(request, 'funnel.html', params)
-
-

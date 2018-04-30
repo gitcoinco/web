@@ -15,7 +15,7 @@ from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
 from chartit import Chart, DataPool
-from dashboard.models import Bounty, Profile, Tip, UserAction, BountyFulfillment
+from dashboard.models import Bounty, BountyFulfillment, Profile, Tip, UserAction
 from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
@@ -725,5 +725,3 @@ def viz_scatterplot(request, key='hourly_rate'):
         'viz_type': key,
     }
     return TemplateResponse(request, 'dataviz/scatterplot.html', params)
-
-

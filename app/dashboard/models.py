@@ -1338,4 +1338,3 @@ class ToolVote(models.Model):
 
     def __str__(self):
         return f"{self.profile} | {self.value} | {self.tool}"
-
