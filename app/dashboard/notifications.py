@@ -448,9 +448,9 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         bool: Whether or not the Github comment was posted successfully.
 
     """
-    #if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
-    #   bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
-    #    return False
+    if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
+       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+        return False
 
     # Define posting specific variables.
     comment_id = None
