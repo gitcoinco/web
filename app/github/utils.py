@@ -326,7 +326,7 @@ def get_issues(owner, repo, page=1, state='open'):
     return response.json()
 
 
-def get_issue_timeline_events(owner, repo, issue, page=1):
+def get_issue_timeline_events(owner, repo, issue, url=None):
     """Get the timeline events for a given issue.
     PLEASE NOTE CURRENT LIMITATION OF 100 EVENTS.
     PLEASE NOTE GITHUB API FOR THIS IS SUBJECT TO CHANGE.
@@ -343,14 +343,16 @@ def get_issue_timeline_events(owner, repo, issue, page=1):
     params = {
         'sort': 'created',
         'direction': 'desc',
-        'per_page': 100,
-        'page': page,
+        'per_page': 100
     }
-    url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/timeline'
+    if not url:
+        url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/timeline'
+        params['page'] = 1
     # Set special header to access timeline preview api
     response = requests.get(url, auth=_AUTH, headers=TIMELINE_HEADERS, params=params)
 
-    return response.json()
+    next_links = response.links.get('next', None)
+    return response.json(), next_links
 
 
 def get_interested_actions(github_url, username, email=''):
@@ -362,14 +364,14 @@ def get_interested_actions(github_url, username, email=''):
     owner = org_name(github_url)
     repo = repo_name(github_url)
     issue_num = issue_number(github_url)
-    should_continue_loop = True
     all_actions = []
     page = 1
-    while should_continue_loop:
-        actions = get_issue_timeline_events(owner, repo, issue_num, page)
-        should_continue_loop = len(actions) == 100
+    actions, next_url = get_issue_timeline_events(owner, repo, issue_num, url=None)
+    while next_url:
+        url = next_url['url']
+        actions, next_url = get_issue_timeline_events(owner, repo, issue_num, url)
         all_actions = all_actions + actions
-        page += 1
+
     actions_by_interested_party = []
 
     for action in all_actions:
