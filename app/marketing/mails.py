@@ -324,8 +324,8 @@ def new_match(to_emails, bounty, github_username):
 
 
 def quarterly_stats(to_emails=None, platform_wide_stats=None):
-    # if not platform_wide_stats:
-    #     return
+    if not platform_wide_stats:
+        return
 
     if to_emails is None:
         to_emails = []
@@ -341,7 +341,7 @@ def quarterly_stats(to_emails=None, platform_wide_stats=None):
             print("-----" * 100)
             from_email = settings.PERSONAL_CONTACT_EMAIL
 
-            if not should_suppress_notification_email(to_email, 'roundup'):
+            if not should_suppress_notification_email(to_email, 'transactional'):
                 send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
         finally:
             translation.activate(cur_language)
