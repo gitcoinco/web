@@ -269,10 +269,11 @@ var process_stats = function(results) {
 
     var this_worth_usdt = Number.parseFloat(result['value_in_usdt']);
     var this_worth_eth = Number.parseFloat(result['value_in_eth']);
-    if(this_worth_usdt){
+
+    if (this_worth_usdt) {
       worth_usdt += this_worth_usdt;
     }
-    if(this_worth_eth){
+    if (this_worth_eth) {
       worth_eth += this_worth_eth;
     }
     var token = result['token_name'];
