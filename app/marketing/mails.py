@@ -425,6 +425,9 @@ def nth_day_email_campaign(nth, subscriber):
     if subscriber.profile and subscriber.profile.user and subscriber.profile.user.first_name:
         firstname = subscriber.profile.user.first_name
 
+    if should_suppress_notification_email(subscriber.email, 'roundup'):
+        return False
+
     cur_language = translation.get_language()
     try:
         setup_lang(subscriber.email)
