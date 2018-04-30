@@ -92,7 +92,7 @@ def save_faucet(request):
     return JsonResponse({'message': _('Created.')}, status=201)
 
 
-@require_GET
+@require_POST
 @staff_member_required
 def process_faucet_request(request, pk):
     faucet_request = FaucetRequest.objects.get(pk=pk)
