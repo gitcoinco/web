@@ -16,8 +16,9 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.conf import settings
 from datetime import datetime, timedelta
+
+from django.conf import settings
 
 from marketing.models import EmailSubscriber, Stat
 from slackclient import SlackClient
