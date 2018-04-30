@@ -36,9 +36,31 @@ class FaucetRequestAdmin(admin.ModelAdmin):
 
     ordering = ['-created_on']
     list_display = [
-        'created_on', 'fulfilled', 'rejected', 'link', 'github_username',
-        'input_github_username', 'address', 'email', 'comment'
+        'created_on', 'fulfilled', 'rejected', 'link', 'get_profile_username',
+        'get_profile_email', 'email', 'address', 'comment',
     ]
+
+    def get_queryset(self, request):
+        """Override the get_queryset method to include FK lookups."""
+        return super(FaucetRequestAdmin, self).get_queryset(request).select_related('profile')
+
+    def get_profile_email(self, obj):
+        """Get the profile email address."""
+        return obj.profile.email
+
+    get_profile_email.admin_order_field = 'email'
+    get_profile_email.short_description = 'Profile Email'
+
+    def get_profile_username(self, obj):
+        """Get the profile username."""
+        if hasattr(obj, 'profile') and obj.profile.username:
+            return mark_safe(f'<a href=/_administration/dashboard/profile/{obj.profile.pk}/change/>{obj.profile.username}</a>')
+        elif obj.github_username:
+            return obj.github_username
+        return 'N/A'
+
+    get_profile_username.admin_order_field = 'username'
+    get_profile_username.short_description = 'Profile Username'
 
     def link(self, instance):
         """Handle faucet request specific links.
