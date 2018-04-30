@@ -20,15 +20,20 @@
   <div class="offset-1 col-10">
     <div class="row">
       <div class="search-area col-12 col-md-6 col-lg-7">
-        <input class="form__input form__input_lg" id="keywords" type="text" placeholder="keyword1, keyword2, keyword3" />
+        <input class="form__input form__input_lg" id="keywords" type="text" />
+        <img class="close-icon" src="{% static "v2/images/close-grey.png" %}" alt="X" />
       </div>
       <div class="col-2 col-md-1">
         <a class="button button--primary" role="button" id="new_search" href="#">{% trans "Search" %}</a>
       </div>
       <div class="col-10 col-md-5 col-lg-4 font-caption order_by">
         <div class="heading">{% trans "SORT" %} </div>
-        <a class="sort_option selected" data-key='web3_created' data-direction="-">{% trans "Created" %}</a>
-        <a class="sort_option" data-key='_val_usd_db' data-direction="-">{% trans "Value" %}</a>
+        <select name="sort_option" id="sort_option">
+          <option value="-web3_created">{% trans "Created: Recent" %}</option>
+          <option value="web3_created">{% trans "Created: Oldest" %}</option>
+          <option value="-_val_usd_db">{% trans "Value: Highest" %}</option>
+          <option value="_val_usd_db">{% trans "Value: Lowest" %}</option>
+        </select>
       </div>
     </div>
     <div class="row">
