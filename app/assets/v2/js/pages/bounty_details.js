@@ -136,11 +136,11 @@ var callbacks = {
     return [ 'bounty_owner_name', result.metadata.fullName ];
   },
   'issue_keywords': function(key, val, result) {
+    if (!result.metadata.issueKeywords || result.metadata.issueKeywords.length == 0)
+      return [ 'issue_keywords', null ];
+
     var keywords = result.metadata.issueKeywords.split(',');
     var tags = [];
-
-    if (result.metadata.issueKeywords.length == 0)
-      return [ 'issue_keywords', null ];
 
     keywords.forEach(function(keyword) {
       tags.push('<a href="/explorer/?q=' + keyword.trim() + '"><div class="tag keyword">' + keyword + '</div></a>');
