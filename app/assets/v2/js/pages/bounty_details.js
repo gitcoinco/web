@@ -405,16 +405,43 @@ var attach_work_actions = function() {
   $('body').delegate('a[href="/interested"], a[href="/uninterested"]', 'click', function(e) {
     e.preventDefault();
     if ($(this).attr('href') == '/interested') {
-      $(this).attr('href', '/uninterested');
-      $(this).find('span').text('Stop Work');
-      add_interest(document.result['pk']);
-    } else {
+      show_interest_modal.call(this);
+    } else if (confirm(gettext('Are you sure you want to remove your interest?'))) {
       $(this).attr('href', '/interested');
       $(this).find('span').text('Start Work');
       remove_interest(document.result['pk']);
     }
+
   });
 };
+
+var show_interest_modal = function() {
+  var self = this;
+
+  setTimeout(function() {
+    $.get('/interest/modal', function(newHTML) {
+      var modal = $(newHTML).appendTo('body').modal({
+        modalClass: 'modal add-interest-modal'
+      });
+
+      modal.on('submit', function(event) {
+        event.preventDefault();
+
+        var has_question = event.target[0].value;
+        var issue_message = event.target[2].value;
+
+        $(self).attr('href', '/uninterested');
+        $(self).find('span').text(gettext('Stop Work'));
+        add_interest(document.result['pk'], {
+          has_question,
+          issue_message
+        });
+        $.modal.close();
+      });
+    });
+  });
+};
+
 
 var build_detail_page = function(result) {
 

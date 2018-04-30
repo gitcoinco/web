@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     'credits',
     'gitcoinbot',
     'external_bounties',
+    'dataviz',
 ]
 
 MIDDLEWARE = [
@@ -110,7 +111,11 @@ AUTHENTICATION_BACKENDS = (
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['retail/templates/', 'external_bounties/templates/'],
+        'DIRS': [
+            'retail/templates/',
+            'external_bounties/templates/',
+            'dataviz/templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -325,6 +330,7 @@ TWITTER_USERNAME = env('TWITTER_USERNAME', default='') # TODO
 # Slack Integration
 # optional: only needed if you slack things
 SLACK_TOKEN = env('SLACK_TOKEN', default='') # TODO
+SLACK_WELCOMEBOT_TOKEN = env('SLACK_WELCOMEBOT_TOKEN', default='') # TODO
 
 # Reporting Integrations
 MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')

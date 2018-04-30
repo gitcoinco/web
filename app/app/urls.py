@@ -28,6 +28,8 @@ import dashboard.embed
 import dashboard.helpers
 import dashboard.ios
 import dashboard.views
+import dataviz.d3_views
+import dataviz.views
 import external_bounties.views
 import faucet.views
 import gitcoinbot.views
@@ -207,12 +209,32 @@ urlpatterns = [
     # marketing views
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
     url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),
-    url(r'^_administration/stats$', marketing.views.stats, name='stats'),
-    url(r'^_administration/cohort$', marketing.views.cohort, name='cohort'),
-    url(r'^_administration/funnel$', marketing.views.funnel, name='funnel'),
+
+    # dataviz views
+    re_path(r'^_administration/stats/$', dataviz.views.stats, name='stats'),
+    re_path(r'^_administration/cohort/$', dataviz.views.cohort, name='cohort'),
+    re_path(r'^_administration/funnel/$', dataviz.views.funnel, name='funnel'),
+    re_path(r'^_administration/viz/?$', dataviz.d3_views.viz_index, name='viz_index'),
+    re_path(r'^_administration/viz/sunburst/(.*)?$', dataviz.d3_views.viz_sunburst, name='viz_sunburst'),
+    re_path(r'^_administration/viz/chord/(.*)?$', dataviz.d3_views.viz_chord, name='viz_chord'),
+    re_path(r'^_administration/viz/steamgraph/(.*)?$', dataviz.d3_views.viz_steamgraph, name='viz_steamgraph'),
+    re_path(r'^_administration/viz/circles/(.*)?$', dataviz.d3_views.viz_circles, name='viz_circles'),
+    re_path(r'^_administration/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
+    re_path(r'^_administration/viz/sankey/(.*)?$', dataviz.d3_views.viz_sankey, name='viz_sankey'),
+    re_path(r'^_administration/viz/spiral/(.*)?$', dataviz.d3_views.viz_spiral, name='viz_spiral'),
+    re_path(r'^_administration/viz/heatmap/(.*)?$', dataviz.d3_views.viz_heatmap, name='viz_heatmap'),
+    re_path(r'^_administration/viz/calendar/(.*)?$', dataviz.d3_views.viz_calendar, name='viz_calendar'),
+    re_path(r'^_administration/viz/draggable/(.*)?$', dataviz.d3_views.viz_draggable, name='viz_draggable'),
+    re_path(r'^_administration/viz/scatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot, name='viz_scatterplot'),
+
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    # Interests
+    path('interest/modal', dashboard.views.get_interest_modal, name='get_interest_modal'),
+    path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
+    path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
+    path('actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/', dashboard.views.uninterested, name='uninterested'),
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
     re_path(r'^logout/$', auth_views.logout, name='logout'),
