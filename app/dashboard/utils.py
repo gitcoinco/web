@@ -358,13 +358,19 @@ def build_profile_pairs(bounty):
     return profile_handles
 
 
-def num_to_ith(num):
-    """1 becomes 1st, 2 becomes 2nd, etc."""
-    value = str(num).rjust(10, "0")
-    before_last_digit = value[-2]
-    last_digit = value[-1]
-    if len(value) > 1 and before_last_digit == '1': return str(num) +'th'
-    if last_digit == '1': return str(num) + 'st'
-    if last_digit == '2': return str(num) + 'nd'
-    if last_digit == '3': return str(num) + 'rd'
-    return str(num) + 'th'
+def get_ordinal_repr(num):
+    """Handle cardinal to ordinal representation of numeric values.
+
+    Args:
+        num (int): The integer to be converted from cardinal to ordinal numerals.
+
+    Returns:
+        str: The ordinal representation of the provided integer.
+
+    """
+    ordinal_suffixes = {1: 'st', 2: 'nd', 3: 'rd'}
+    if 10 <= num % 100 <= 20:
+        suffix = 'th'
+    else:
+        suffix = ordinal_suffixes.get(num % 10, 'th')
+    return f'{num}{suffix}'
