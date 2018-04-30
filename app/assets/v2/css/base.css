@@ -899,6 +899,130 @@ input[type=text].loading {
   padding-bottom: 4em;
 }
 
+/* Profile details */
+
+.profile-header {
+
+}
+
+.profile-header > .container {
+  padding-top: 50px;
+  color: #fff;
+}
+
+.profile-header__avatar {
+  float: left;
+  width: 108px;
+  height: 108px;
+  border: 2px solid #fff;
+  border-radius: 110px;
+}
+
+.profile-header__handle {
+  padding-top: 28px;
+  display: inline-block;
+  font-size: 24px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.profile-header__handle small {
+  text-transform: none;
+}
+
+.profile-header__bio {
+  clear: both;
+}
+
+.profile-header__links {
+  margin: 0;
+  padding: 0;
+}
+
+.profile-header__links li {
+  float: left;
+  margin-left: 2em;
+  list-style-type: none;
+}
+
+.profile-header__links li:first-child {
+  margin-left: 0;
+}
+
+.profile-header__links a {
+  color: #fff;
+}
+
+
+.profile-header__links img {
+  width: 30px;
+  height: 30px;
+  margin-right: 0.5em;
+  filter: invert(100%);
+}
+
+.profile-header__stats {
+
+}
+
+.profile-header__stats {
+  background-color: transparent;
+}
+
+.profile-header__stats .card-header {
+  padding: 0 12px;
+  color: #0D0764;
+  text-transform: uppercase;
+  font-size: 24px;
+  border-radius: 0;
+}
+
+.profile-header__stats .card-body {
+  padding: 12px;
+  font-size: 20px;
+}
+
+.profile-header__stats ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-header__stats li {
+  margin: 4px 0 0;
+}
+
+.profile-header__stats li:first-child {
+  margin-top: 0;
+}
+
+.profile-header__stats--contributor {
+  border: 4px solid #25E899;
+}
+
+.profile-header__stats--contributor .card-header {
+  background-color: #25E899;
+}
+
+.profile-header__stats--contributor .highlight {
+  color: #25E899;
+}
+
+.profile-header__stats--funder {
+  border: 4px solid #FFCE08;
+}
+
+.profile-header__stats--funder .card-header {
+  background-color: #FFCE08;
+}
+
+.profile-header__stats--funder .highlight {
+  color: #FFCE08;
+}
+
+/* END Profile details */
+
+/*
 .profile_details .dot {
   border-radius: 6px;
   width: 12px;
@@ -1083,6 +1207,7 @@ input[type=text].loading {
 .profile_details li:nth-child(2n+0) .dot {
   background: #919191;
 }
+*/
 
 #pull_gh {
   font-size: 12px
