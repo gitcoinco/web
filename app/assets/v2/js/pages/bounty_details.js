@@ -157,6 +157,10 @@ var callbacks = {
     if (val === null) {
       return [ null, null ];
     }
+    var rates_estimate = get_rates_estimate(val);
+
+    $('#value_in_usdt_wrapper').attr('title', '<div class="tooltip-info tooltip-sm">' + rates_estimate + '</div>');
+
     return [ 'Amount_usd', val ];
   },
   'fulfillment_accepted_on': function(key, val, result) {
@@ -370,7 +374,11 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
 
             // clear local data
             localStorage[document.issueURL] = '';
-            document.location.href = document.location.href;
+            if (response['url']) {
+              document.location.href = response['url'];
+            } else {
+              document.location.href = document.location.href;
+            }
           } else {
             console.log('error from sync/web', response);
             error(response);
@@ -397,16 +405,55 @@ var attach_work_actions = function() {
   $('body').delegate('a[href="/interested"], a[href="/uninterested"]', 'click', function(e) {
     e.preventDefault();
     if ($(this).attr('href') == '/interested') {
-      $(this).attr('href', '/uninterested');
-      $(this).find('span').text('Stop Work');
-      add_interest(document.result['pk']);
-    } else {
+      show_interest_modal.call(this);
+    } else if (confirm(gettext('Are you sure you want to remove your interest?'))) {
       $(this).attr('href', '/interested');
       $(this).find('span').text('Start Work');
       remove_interest(document.result['pk']);
     }
+
   });
 };
+
+var show_interest_modal = function() {
+  var self = this;
+
+  setTimeout(function() {
+    $.get('/interest/modal', function(newHTML) {
+      var modal = $(newHTML).appendTo('body').modal({
+        modalClass: 'modal add-interest-modal'
+      });
+
+      modal.on('submit', function(event) {
+        event.preventDefault();
+
+        var has_question = event.target[0].value;
+        var issue_message = event.target[2].value;
+
+        var agree_precedence = event.target[3].checked;
+        var agree_not_to_abandon = event.target[4].checked;
+
+        if (!agree_precedence) {
+          alert('You must agree to the precedence clause.');
+          return false;
+        }
+        if (!agree_not_to_abandon) {
+          alert('You must agree not to keep the fulfiller updated on your progress.');
+          return false;
+        }
+
+        $(self).attr('href', '/uninterested');
+        $(self).find('span').text(gettext('Stop Work'));
+        add_interest(document.result['pk'], {
+          has_question,
+          issue_message
+        });
+        $.modal.close();
+      });
+    });
+  });
+};
+
 
 var build_detail_page = function(result) {
 
@@ -491,7 +538,7 @@ var do_actions = function(result) {
       var enabled = submit_work_enabled;
       var _entry = {
         enabled: enabled,
-        href: '/funding/fulfill?source=' + result['github_url'],
+        href: result['action_urls']['fulfill'],
         text: gettext('Submit Work'),
         parent: 'right_actions',
         title: gettext('Submit work for the funder to review'),
@@ -521,7 +568,7 @@ var do_actions = function(result) {
       var enabled = kill_bounty_enabled;
       var _entry = {
         enabled: enabled,
-        href: '/funding/kill?source=' + result['github_url'],
+        href: result['action_urls']['cancel'],
         text: gettext('Cancel Bounty'),
         parent: 'right_actions',
         title: gettext('Cancel bounty and reclaim funds for this issue')
@@ -536,7 +583,7 @@ var do_actions = function(result) {
       var enabled = show_accept_submission;
       var _entry = {
         enabled: enabled,
-        href: '/funding/process?source=' + result['github_url'],
+        href: result['action_urls']['accept'],
         text: gettext('Accept Submission'),
         title: gettext('This will payout the bounty to the submitter.'),
         parent: 'right_actions',
@@ -550,7 +597,7 @@ var do_actions = function(result) {
       var enabled = increase_bounty_enabled;
       var _entry = {
         enabled: enabled,
-        href: '/funding/increase?source=' + result['github_url'],
+        href: result['action_urls']['increase'],
         text: gettext('Add Contribution'),
         parent: 'right_actions',
         title: gettext('Increase the funding for this issue'),

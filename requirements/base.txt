@@ -44,8 +44,8 @@ celery[redis]==4.1.0
 django-celery-beat==1.1.1
 https://github.com/mher/flower/zipball/master#egg=flower
 social-auth-app-django==2.1.0
-django-ipware==2.0.1
-geoip2==2.7.0
+django-ipware==2.0.2
+geoip2==2.8.0
 django-silk==2.0.0
 django-extensions==2.0.6
 ipdb==0.11

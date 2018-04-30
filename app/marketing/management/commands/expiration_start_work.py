@@ -52,6 +52,7 @@ class Command(BaseCommand):
         num_days_back_to_delete_interest = 10
 
         days = [i * 3 for i in range(1, 15)]
+        days.reverse()
         if settings.DEBUG:
             days = range(1, 1000)
         for day in days:
@@ -107,7 +108,7 @@ class Command(BaseCommand):
                             interest.delete()
 
                             # commenting on the GH issue
-                            maybe_notify_user_removed_github(bounty, interest.profile.handle, last_heard_from_user_days, last_heard_from_user_days)
+                            maybe_notify_user_removed_github(bounty, interest.profile.handle, last_heard_from_user_days)
                             # commenting in slack
                             maybe_notify_bounty_user_removed_to_slack(bounty, interest.profile.handle)
                             # send email

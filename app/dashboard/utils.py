@@ -353,3 +353,21 @@ def build_profile_pairs(bounty):
             addr = f"https://etherscan.io/address/{fulfillment.fulfiller_address}"
             profile_handles.append((fulfillment.fulfiller_address, addr))
     return profile_handles
+
+
+def get_ordinal_repr(num):
+    """Handle cardinal to ordinal representation of numeric values.
+
+    Args:
+        num (int): The integer to be converted from cardinal to ordinal numerals.
+
+    Returns:
+        str: The ordinal representation of the provided integer.
+
+    """
+    ordinal_suffixes = {1: 'st', 2: 'nd', 3: 'rd'}
+    if 10 <= num % 100 <= 20:
+        suffix = 'th'
+    else:
+        suffix = ordinal_suffixes.get(num % 10, 'th')
+    return f'{num}{suffix}'

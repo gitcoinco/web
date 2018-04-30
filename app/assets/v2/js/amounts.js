@@ -13,6 +13,25 @@ var estimate = function(amount, conv_rate) {
   return gettext('Approx: Unknown amount');
 };
 
+var get_rates_estimate = function(usd_amount) {
+  if (!usd_amount) {
+    return '';
+  }
+  var rates_addon = [];
+  var rates = [ 40, 80, 120 ];
+
+  for (var i = 0; i < rates.length; i++) {
+    var rate = rates[i];
+    var hours = usd_amount / rate;
+    var round_decimals = hours < 1 ? 2 : 1;
+
+    hours = Math.round(hours, round_decimals);
+    rates_addon.push('' + hours + ' hrs at $' + rate + '/hr');
+  }
+  rates_addon = rates_addon.join(', ');
+  return rates_addon;
+};
+
 var getUSDEstimate = function(amount, denomination, callback) {
   var conv_rate;
   var eth_usd;
@@ -25,7 +44,12 @@ var getUSDEstimate = function(amount, denomination, callback) {
   }
   if (document.conversion_rates && document.conversion_rates[denomination]) {
     conv_rate = document.conversion_rates[denomination];
-    return callback(estimate(amount, conv_rate));
+    var usd_estimate = estimate(amount, conv_rate);
+
+    rate_estimate = get_rates_estimate(amount * conv_rate);
+    var return_text = usd_estimate + '<br>' + rate_estimate;
+
+    return callback(return_text);
   }
   var request_url = '/sync/get_amount?amount=' + amount + '&denomination=' + denomination;
 
@@ -38,7 +62,12 @@ var getUSDEstimate = function(amount, denomination, callback) {
       document.conversion_rates = {};
     }
     document.conversion_rates[denomination] = conv_rate;
-    return callback(estimate(amount, conv_rate));
+    var usd_estimate = estimate(amount, conv_rate);
+
+    rate_estimate = get_rates_estimate(amount * conv_rate);
+    var return_text = usd_estimate + '<br>' + rate_estimate;
+
+    return callback(return_text);
   }).fail(function() {
     return callback(new Error(gettext('Approx: Unknown amount')));
   });

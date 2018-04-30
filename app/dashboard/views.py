@@ -28,7 +28,6 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -42,7 +41,7 @@ from dashboard.models import (
 )
 from dashboard.notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
-    maybe_market_to_twitter,
+    maybe_market_to_twitter, maybe_market_to_user_slack,
 )
 from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
@@ -109,12 +108,13 @@ def helper_handle_access_token(request, access_token):
     request.session['profile_id'] = profile.pk
 
 
-def create_new_interest_helper(bounty, user):
+def create_new_interest_helper(bounty, user, has_question, issue_message):
     profile_id = user.profile.pk
-    interest = Interest.objects.create(profile_id=profile_id)
+    interest = Interest.objects.create(profile_id=profile_id, has_question=has_question, issue_message=issue_message)
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
     maybe_market_to_slack(bounty, 'start_work')
+    maybe_market_to_user_slack(bounty, 'start_work')
     maybe_market_to_twitter(bounty, 'start_work')
     return interest
 
@@ -125,6 +125,15 @@ def gh_login(request):
     return redirect('social:begin', backend='github')
 
 
+def get_interest_modal(request):
+    context = {
+        'active': 'get_interest_modal',
+        'title': _('Add Interest'),
+    }
+    return TemplateResponse(request, 'addinterest.html', context)
+
+
+@require_POST
 @csrf_exempt
 @require_POST
 def new_interest(request, bounty_id):
@@ -133,7 +142,7 @@ def new_interest(request, bounty_id):
     :request method: POST
 
     Args:
-        post_id (int): ID of the Bounty.
+        bounty_id (int): ID of the Bounty.
 
     Returns:
         dict: The success key with a boolean value and accompanying error.
@@ -175,7 +184,10 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
     except Interest.DoesNotExist:
-        interest = create_new_interest_helper(bounty, request.user)
+        has_question = request.POST.get("has_question") == 'true'
+        issue_message = request.POST.get("issue_message")
+        interest = create_new_interest_helper(bounty, request.user, has_question, issue_message)
+
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \
@@ -196,6 +208,8 @@ def new_interest(request, bounty_id):
 @require_POST
 def remove_interest(request, bounty_id):
     """Unclaim work from the Bounty.
+
+    Can only be called by someone who has started work
 
     :request method: POST
 
@@ -231,6 +245,7 @@ def remove_interest(request, bounty_id):
         bounty.interested.remove(interest)
         interest.delete()
         maybe_market_to_slack(bounty, 'stop_work')
+        maybe_market_to_user_slack(bounty, 'stop_work')
         maybe_market_to_twitter(bounty, 'stop_work')
     except Interest.DoesNotExist:
         return JsonResponse({
@@ -256,6 +271,8 @@ def remove_interest(request, bounty_id):
 def uninterested(request, bounty_id, profile_id):
     """Remove party from given bounty
 
+    Can only be called by the bounty funder
+
     :request method: GET
 
     Args:
@@ -280,6 +297,7 @@ def uninterested(request, bounty_id, profile_id):
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         bounty.interested.remove(interest)
         maybe_market_to_slack(bounty, 'stop_work')
+        maybe_market_to_user_slack(bounty, 'stop_work')
         interest.delete()
     except Interest.DoesNotExist:
         return JsonResponse({
@@ -436,21 +454,6 @@ def send_tip_2(request):
     return TemplateResponse(request, 'yge/send2.html', params)
 
 
-def process_bounty(request):
-    """Process the bounty."""
-    params = {
-        'issueURL': request.GET.get('source'),
-        'fulfillment_id': request.GET.get('id'),
-        'fulfiller_address': request.GET.get('address'),
-        'title': _('Process Issue'),
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-    }
-
-    return TemplateResponse(request, 'process_bounty.html', params)
-
-
 def dashboard(request):
     """Handle displaying the dashboard."""
     params = {
@@ -478,7 +481,7 @@ def new_bounty(request):
     issue_url = request.GET.get('source') or request.GET.get('url', '')
     is_user_authenticated = request.user.is_authenticated
     params = {
-        'issueURL': issue_url,
+        'issueURL': request.GET.get('source'),
         'amount': request.GET.get('amount'),
         'active': 'submit_bounty',
         'title': _('Create Funded Issue'),
@@ -493,11 +496,62 @@ def new_bounty(request):
     return TemplateResponse(request, 'submit_bounty.html', params)
 
 
-def fulfill_bounty(request):
-    """Fulfill a bounty."""
+def accept_bounty(request, pk):
+    """Process the bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
+    try:
+        bounty = Bounty.objects.get(pk=pk)
+    except (Bounty.DoesNotExist, ValueError):
+        raise Http404
+    except ValueError:
+        raise Http404
+
+    params = {
+        'bounty': bounty,
+        'fulfillment_id': request.GET.get('id'),
+        'fulfiller_address': request.GET.get('address'),
+        'title': _('Process Issue'),
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+    }
+
+    return TemplateResponse(request, 'process_bounty.html', params)
+
+
+def fulfill_bounty(request, pk):
+    """Fulfill a bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be fulfilled.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The fulfill bounty view.
+
+    """
+    try:
+        bounty = Bounty.objects.get(pk=pk)
+    except (Bounty.DoesNotExist, ValueError):
+        raise Http404
+    except ValueError:
+        raise Http404
+
     is_user_authenticated = request.user.is_authenticated
     params = {
-        'issueURL': request.GET.get('source'),
+        'bounty': bounty,
         'githubUsername': request.GET.get('githubUsername'),
         'title': _('Submit Work'),
         'active': 'fulfill_bounty',
@@ -511,11 +565,28 @@ def fulfill_bounty(request):
     return TemplateResponse(request, 'fulfill_bounty.html', params)
 
 
-def increase_bounty(request):
-    """Increase a bounty (funder)"""
-    issue_url = request.GET.get('source')
+def increase_bounty(request, pk):
+    """Increase a bounty as the funder.
+
+    Args:
+        pk (int): The primary key of the bounty to be increased.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The increase bounty view.
+
+    """
+    try:
+        bounty = Bounty.objects.get(pk=pk)
+    except (Bounty.DoesNotExist, ValueError):
+        raise Http404
+    except ValueError:
+        raise Http404
+
     params = {
-        'issue_url': issue_url,
+        'bounty': bounty,
         'title': _('Increase Bounty'),
         'active': 'increase_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
@@ -523,27 +594,31 @@ def increase_bounty(request):
         'conf_time_spread': conf_time_spread(),
     }
 
-    try:
-        bounties = Bounty.objects.current().filter(github_url=issue_url)
-        if bounties:
-            bounty = bounties.order_by('pk').first()
-            params['standard_bounties_id'] = bounty.standard_bounties_id
-            params['bounty_owner_address'] = bounty.bounty_owner_address
-            params['value_in_token'] = bounty.value_in_token
-            params['token_address'] = bounty.token_address
-    except Bounty.DoesNotExist:
-        pass
-    except Exception as e:
-        print(e)
-        logging.error(e)
-
     return TemplateResponse(request, 'increase_bounty.html', params)
 
 
-def kill_bounty(request):
-    """Kill an expired bounty."""
+def cancel_bounty(request, pk):
+    """Kill an expired bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be cancelled.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The cancel bounty view.
+
+    """
+    try:
+        bounty = Bounty.objects.get(pk=pk)
+    except Bounty.DoesNotExist:
+        raise Http404
+    except ValueError:
+        raise Http404
+
     params = {
-        'issueURL': request.GET.get('source'),
+        'bounty': bounty,
         'title': _('Kill Bounty'),
         'active': 'kill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
@@ -788,17 +863,21 @@ def sync_web3(request):
                 did_change = False
                 max_tries_attempted = False
                 counter = 0
+                url = None
                 while not did_change and not max_tries_attempted:
-                    did_change, _, _ = web3_process_bounty(bounty)
+                    did_change, _, new_bounty = web3_process_bounty(bounty)
                     if not did_change:
                         print("RETRYING")
                         time.sleep(3)
                         counter += 1
                         max_tries_attempted = counter > 3
+                    if new_bounty:
+                        url = new_bounty.url
                 result = {
                     'status': '200',
                     'msg': "success",
-                    'did_change': did_change
+                    'did_change': did_change,
+                    'url': url,
                 }
 
     return JsonResponse(result, status=result['status'])

@@ -26,7 +26,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
@@ -510,7 +510,7 @@ class Bounty(SuperModel):
     def hourly_rate(self):
         try:
             hours_worked = self.fulfillments.filter(accepted=True).first().fulfiller_hours_worked
-            return self.value_in_usdt / hours_worked
+            return float(self.value_in_usdt) / float(hours_worked)
         except Exception:
             return None
 
@@ -599,6 +599,49 @@ class Bounty(SuperModel):
         if save:
             self.save()
         return comments
+
+    @property
+    def next_bounty(self):
+        if self.current_bounty:
+            return None
+        try:
+            return Bounty.objects.filter(standard_bounties_id=self.standard_bounties_id, created_on__gt=self.created_on).order_by('created_on').first()
+        except:
+            return None
+
+    @property
+    def prev_bounty(self):
+        try:
+            return Bounty.objects.filter(standard_bounties_id=self.standard_bounties_id, created_on__lt=self.created_on).order_by('-created_on').first()
+        except:
+            return None
+
+    # returns true if this bounty was active at _time
+    def was_active_at(self, _time):
+        if _time < self.web3_created:
+            return False
+        if _time < self.created_on:
+            return False
+        next_bounty = self.next_bounty
+        if next_bounty is None:
+            return True
+        if next_bounty.created_on > _time:
+            return True
+        return False
+
+    def action_urls(self):
+        """Provide URLs for bounty related actions.
+
+        Returns:
+            dict: A dictionary of action URLS for this bounty.
+
+        """
+        return {
+            'fulfill': f"/issue/fulfill/{self.pk}",
+            'increase': f"/issue/increase/{self.pk}",
+            'accept': f"/issue/accept/{self.pk}",
+            'cancel': f"/issue/cancel/{self.pk}",
+        }
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):
@@ -816,6 +859,8 @@ class Interest(models.Model):
 
     profile = models.ForeignKey('dashboard.Profile', related_name='interested', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    has_question = models.BooleanField(default=False)
+    issue_message = models.TextField(default='', blank=True)
 
     def __str__(self):
         """Define the string representation of an interested profile."""
@@ -846,6 +891,9 @@ class Profile(SuperModel):
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES)
+    slack_repos = ArrayField(models.CharField(max_length=200), blank=True, default=[])
+    slack_token = models.CharField(max_length=255, default='')
+    slack_channel = models.CharField(max_length=255, default='')
     suppress_leaderboard = models.BooleanField(
         default=False,
         help_text='If this option is chosen, we will remove your profile information from the leaderboard',
@@ -1005,6 +1053,22 @@ class Profile(SuperModel):
         elif self.handle:
             handle = self.handle
         return handle
+
+    def has_repo(self, full_name):
+        """Check if user has access to repo.
+
+        Args:
+            full_name (str): Repository name, like gitcoin/web.
+
+        Returns:
+            bool: Whether or not user has access to repository.
+
+        """
+        for repo in self.repos_data:
+            if repo['full_name'] == full_name:
+                return True
+        return False
+
 
     def is_github_token_valid(self):
         """Check whether or not a Github OAuth token is valid.

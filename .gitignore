@@ -36,3 +36,5 @@ webpack-stats.json
 celerybeat-schedule
 
 *.prof
+
+.pytest_cache/
