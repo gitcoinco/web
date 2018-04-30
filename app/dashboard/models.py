@@ -855,8 +855,8 @@ def psave_bounty(sender, instance, **kwargs):
     instance.fulfillment_accepted_on = instance.get_fulfillment_accepted_on
     instance.fulfillment_submitted_on = instance.get_fulfillment_submitted_on
     instance.fulfillment_started_on = instance.get_fulfillment_started_on
-    instance._val_usd_db = instance.value_in_usdt if instance.value_in_usdt else 0
-    instance._val_usd_db_now = instance.value_in_usdt_now if instance.value_in_usdt_now else 0
+    instance._val_usd_db = instance.get_value_in_usdt if instance.get_value_in_usdt else 0
+    instance._val_usd_db_now = instance.get_value_in_usdt_now if instance.get_value_in_usdt_now else 0
     instance.idx_experience_level = idx_experience_level.get(instance.experience_level, 0)
     instance.idx_project_length = idx_project_length.get(instance.project_length, 0)
     instance.token_value_time_peg = instance.get_token_value_time_peg
