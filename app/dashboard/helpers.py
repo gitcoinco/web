@@ -33,6 +33,7 @@ from bs4 import BeautifulSoup
 from dashboard.models import Bounty, BountyFulfillment, BountySyncRequest, UserAction
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
+    maybe_market_to_user_slack,
 )
 from economy.utils import convert_amount
 from github.utils import _AUTH
@@ -61,6 +62,8 @@ def amount(request):
     try:
         amount = request.GET.get('amount')
         denomination = request.GET.get('denomination', 'ETH')
+        if denomination == 'DAI':
+            denomination = 'USDT'
         if denomination == 'ETH':
             amount_in_eth = float(amount)
         else:
@@ -561,6 +564,7 @@ def process_bounty_changes(old_bounty, new_bounty):
         print("============ posting ==============")
         did_post_to_twitter = maybe_market_to_twitter(new_bounty, event_name)
         did_post_to_slack = maybe_market_to_slack(new_bounty, event_name)
+        did_post_to_user_slack = maybe_market_to_user_slack(new_bounty, event_name)
         did_post_to_github = maybe_market_to_github(new_bounty, event_name, profile_pairs)
         did_post_to_email = maybe_market_to_email(new_bounty, event_name)
         print("============ done posting ==============")
@@ -571,6 +575,7 @@ def process_bounty_changes(old_bounty, new_bounty):
             'did_post_to_email': did_post_to_email,
             'did_post_to_github': did_post_to_github,
             'did_post_to_slack': did_post_to_slack,
+            'did_post_to_user_slack': did_post_to_user_slack,
             'did_post_to_twitter': did_post_to_twitter,
         }
 

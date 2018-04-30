@@ -72,9 +72,28 @@ def add_contributors(repo_data):
     return repo_data
 
 
-def setup_lang(handle, request):
-    profile = Profile.objects.get(handle=handle)
-    request.session[LANGUAGE_SESSION_KEY] = profile.get_profile_preferred_language()
+def setup_lang(request, user):
+    """Handle setting the user's language preferences and store in the session.
+
+    Args:
+        request (Request): The Django request object.
+        user (User): The Django user object.
+
+    Raises:
+        DoesNotExist: The exception is raised if no profile is found for the specified handle.
+
+    """
+    profile = None
+    if user.is_authenticated and hasattr(user, 'profile'):
+        profile = user.profile
+    else:
+        try:
+            profile = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
+            pass
+    if profile:
+        request.session[LANGUAGE_SESSION_KEY] = profile.get_profile_preferred_language()
+        request.session.modified = True
 
 
 def sync_profile(handle, user=None):

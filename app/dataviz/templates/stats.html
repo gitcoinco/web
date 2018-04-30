@@ -20,9 +20,11 @@
 {% block coltype %}colMS{% endblock %}
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
 {% block breadcrumbs %}{% endblock %}
-{% block title %}Stats | Gitcoin
+{% block title %}KPI Dashboard | Gitcoin
 {% endblock %}
 {% block content %}
+<a href="..">&lt; back</a>
+<br>
 <style>
 .dashboard #content{
     width: 100%;
@@ -50,7 +52,7 @@
     {{ chart_list|load_charts:chart_list_str }}
   {% endif %}
 </head>
-<h1>Stats</h1>
+<h1>KPI Dashboard</h1>
 <body>
 {% if format == 'chart' %}
   {% for t in types %}
