@@ -28,7 +28,6 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -109,9 +108,9 @@ def helper_handle_access_token(request, access_token):
     request.session['profile_id'] = profile.pk
 
 
-def create_new_interest_helper(bounty, user):
+def create_new_interest_helper(bounty, user, has_question, issue_message):
     profile_id = user.profile.pk
-    interest = Interest.objects.create(profile_id=profile_id)
+    interest = Interest.objects.create(profile_id=profile_id, has_question=has_question, issue_message=issue_message)
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
     maybe_market_to_slack(bounty, 'start_work')
@@ -126,6 +125,15 @@ def gh_login(request):
     return redirect('social:begin', backend='github')
 
 
+def get_interest_modal(request):
+    context = {
+        'active': 'get_interest_modal',
+        'title': _('Add Interest'),
+    }
+    return TemplateResponse(request, 'addinterest.html', context)
+
+
+@require_POST
 @csrf_exempt
 @require_POST
 def new_interest(request, bounty_id):
@@ -134,7 +142,7 @@ def new_interest(request, bounty_id):
     :request method: POST
 
     Args:
-        post_id (int): ID of the Bounty.
+        bounty_id (int): ID of the Bounty.
 
     Returns:
         dict: The success key with a boolean value and accompanying error.
@@ -176,7 +184,10 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
     except Interest.DoesNotExist:
-        interest = create_new_interest_helper(bounty, request.user)
+        has_question = request.POST.get("has_question") == 'true'
+        issue_message = request.POST.get("issue_message")
+        interest = create_new_interest_helper(bounty, request.user, has_question, issue_message)
+
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \

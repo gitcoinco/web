@@ -1,0 +1,53 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div id="add_interest" class="white-light-bg">
+  <div class="container-fluid">
+    <div class="row closebtn">
+      <a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">
+        <span aria-hidden="true">&times;</span>
+      </a>
+    </div>
+    <div class="text-center interest-modal-title">
+      <h5 class="col mt-2 mb-2">{% trans "Great to see that you're interested in this project!" %}</h5>
+    </div>
+    <div class="row">
+      <form class="add-interest-modal__form">
+        <label class="add-interest-modal__form--item">{% trans "Do you have any questions about this ticket?" %}</label>
+        <div class="add-interest-options options">
+          <div class="form__radio option">
+            <input type="radio" id="interest-question-true" name="interest-question" value="true" checked="checked" />
+            <label for="interest-question-true">{% trans "Yes" %}</label>
+          </div>
+          <div class="form__radio option" style="margin-left: 1.0em">
+            <input type="radio" id="interest-question-false" name="interest-question" value="false" />
+            <label for="interest-question-false">{% trans "No" %}</label>
+          </div>
+        </div>
+        <div class="add-interest-modal__form--item">
+          <div>
+            <label for="issue-message">
+              {% trans "Anything the project owner should know?" %}
+            </label>
+            <textarea id="issue-message" class="add-interest-modal__form--textarea form__input"></textarea>
+          </div>
+        </div>
+        <button class="add-interest-modal__form--submit row btn btn-sm btn-darkBlue btn-interested float-right" type="submit">{% trans "Submit" %}</button>
+      </form>
+    </div>
+  </div>
+</div>
