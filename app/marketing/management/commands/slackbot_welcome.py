@@ -63,6 +63,7 @@ class Command(BaseCommand):
         sc = SlackClient(settings.SLACK_WELCOMEBOT_TOKEN)
         if sc.rtm_connect():
             while True:
+                time.sleep(1)
                 new_evts = sc.rtm_read()
                 for evt in new_evts:
                     if "type" in evt:
