@@ -1,0 +1,14 @@
+{
+    "welcomebot": {
+        "app_function": "app.app",
+        "aws_region": "us-west-2",
+        "profile_name": "default",
+        "project_name": "welcombot",
+        "runtime": "python3.6",
+        "s3_bucket": "",
+        "domain": "",
+        "slim_handler": true,
+        "certificate_arn": "",
+        "cloudwatch_log_level": "ERROR"
+    }
+}
