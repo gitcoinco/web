@@ -356,3 +356,15 @@ def build_profile_pairs(bounty):
             addr = f"https://etherscan.io/address/{fulfillment.fulfiller_address}"
             profile_handles.append((fulfillment.fulfiller_address, addr))
     return profile_handles
+
+
+def num_to_ith(num):
+    """1 becomes 1st, 2 becomes 2nd, etc."""
+    value = str(num).rjust(10, "0")
+    before_last_digit = value[-2]
+    last_digit = value[-1]
+    if len(value) > 1 and before_last_digit == '1': return str(num) +'th'
+    if last_digit == '1': return str(num) + 'st'
+    if last_digit == '2': return str(num) + 'nd'
+    if last_digit == '3': return str(num) + 'rd'
+    return str(num) + 'th'

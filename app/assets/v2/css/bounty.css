@@ -482,11 +482,21 @@ a.btn {
   flex-direction: row;
   justify-content: flex-start;
 }
+.add-interest-modal__form .checkbox_container input {
+  opacity: 100;
+  width: 20px;
+  position: initial;
+}
 
 .add-interest-options > .option {
   width: auto !important;
 }
 
-.btn-interested {
+.btn-interested, .btn-interested:hover {
   border-radius:0.2em;
+  color: black;
+  border: black 1px solid;
+}
+.btn-interested:hover {
+  background-color: #eee;
 }

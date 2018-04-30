@@ -35,3 +35,5 @@ webpack-stats.json
 *.tfvars
 
 *.prof
+
+.pytest_cache/

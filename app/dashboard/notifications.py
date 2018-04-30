@@ -360,7 +360,12 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
 
 
     if profile_pairs:
-        profiles = "\n 1. ".join("[@%s](%s)" % profile for profile in profile_pairs)
+        from dashboard.utils import num_to_ith #hack for circular import issue
+        for i, profile in enumerate(profile_pairs):
+            show_dibs = event_name == 'work_started' and len(profile_pairs) > 1
+            dibs = f" ({num_to_ith(i+1)} precedence)" if show_dibs else ""
+            profiles = profiles + f"\n 1. [@{profile[0]}]({profile[1]}) {dibs}"
+        profiles += "\n\n"
     if event_name == 'new_bounty':
         msg = f"{status_header}__This issue now has a funding of {natural_value} " \
               f"{bounty.token_name} {usdt_value} attached to it.__\n\n * If you would " \
@@ -443,9 +448,9 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         bool: Whether or not the Github comment was posted successfully.
 
     """
-    if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
-       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
-        return False
+    #if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
+    #   bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+    #    return False
 
     # Define posting specific variables.
     comment_id = None
