@@ -21,7 +21,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.validators import validate_email, validate_slug
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -95,7 +95,10 @@ def save_faucet(request):
 @require_POST
 @staff_member_required
 def process_faucet_request(request, pk):
-    faucet_request = FaucetRequest.objects.get(pk=pk)
+    try:
+        faucet_request = FaucetRequest.objects.get(pk=pk)
+    except FaucetRequest.DoesNotExist:
+        raise Http404
 
     faucet_amount = settings.FAUCET_AMOUNT
 
@@ -107,23 +110,22 @@ def process_faucet_request(request, pk):
         messages.info(request, 'already rejected')
         return redirect(reverse('admin:index'))
 
-    if request.POST.get('reject_comments', False):
-        faucet_request.comment_admin = request.POST.get('reject_comments', False)
+    reject_comments = request.POST.get('reject_comments')
+    if reject_comments:
+        faucet_request.comment_admin = reject_comments
         faucet_request.rejected = True
         faucet_request.save()
         reject_faucet_request(faucet_request)
         messages.success(request, 'rejected')
-
         return redirect(reverse('admin:index'))
 
-    if request.POST.get('destinationAccount', False):
+    if request.POST.get('destinationAccount'):
         faucet_request.fulfilled = True
         faucet_request.fulfill_date = timezone.now()
-        faucet_request.amount = settings.FAUCET_AMOUNT
+        faucet_request.amount = faucet_amount
         faucet_request.save()
         processed_faucet_request(faucet_request)
         messages.success(request, 'sent')
-
         return redirect(reverse('admin:index'))
 
     faucet_amount = settings.FAUCET_AMOUNT
