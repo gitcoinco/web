@@ -5517,7 +5517,7 @@ d3 = function() {
   }
   function d3_svg_lineCardinalClosed(points, tension) {
     return points.length < 3 ? d3_svg_lineLinear(points) : points[0] + d3_svg_lineHermite((points.push(points[0]),
-      points), d3_svg_lineCardinalTangents([points[points.length - 2]].concat(points, [points[1]]), tension));
+    points), d3_svg_lineCardinalTangents([points[points.length - 2]].concat(points, [points[1]]), tension));
   }
   function d3_svg_lineCardinal(points, tension) {
     return points.length < 3 ? d3_svg_lineLinear(points) : points[0] + d3_svg_lineHermite(points, d3_svg_lineCardinalTangents(points, tension));
@@ -5767,7 +5767,7 @@ d3 = function() {
       if (fx === d3_svg_lineX && y === d3_svg_lineY)
         vertices = data; else
         for (i = 0,
-          vertices = []; i < n; ++i) {
+        vertices = []; i < n; ++i) {
           vertices.push([ +fx.call(this, d = data[i], i), +fy.call(this, d, i) ]);
         }
       for (i = 1; i < n; ++i) {
@@ -6004,7 +6004,7 @@ d3 = function() {
       if (fx === d3_svg_lineX && fy === d3_svg_lineY)
         points = data; else
         for (points = new Array(n),
-          i = 0; i < n; ++i) {
+        i = 0; i < n; ++i) {
           points[i] = [ +fx.call(this, d = data[i], i), +fy.call(this, d, i) ];
         }
       d3_geom_voronoiTessellate(points, function(e) {
@@ -6142,7 +6142,7 @@ d3 = function() {
       if (fx === d3_svg_lineX && fy === d3_svg_lineY)
         points = data; else
         for (points = new Array(n),
-          i = 0; i < n; ++i) {
+        i = 0; i < n; ++i) {
           points[i] = [ +fx.call(this, d = data[i], i), +fy.call(this, d, i) ];
         }
       d3_geom_voronoiTessellate(points, function(e) {
@@ -8922,7 +8922,7 @@ d3 = function() {
       var type;
 
       pad = (padding = x) == null ? d3_layout_treemapPadNull : (type = typeof x) === 'function' ? padFunction : type === 'number' ? (x = [ x, x, x, x ],
-        padConstant) : padConstant;
+      padConstant) : padConstant;
       return treemap;
     };
     treemap.round = function(x) {
@@ -9253,7 +9253,7 @@ d3 = function() {
         format = d3.format(format);
       var k = Math.max(.1, n / scale.ticks().length),
           f = positive ? (e = 1e-12, Math.ceil) : (e = -1e-12,
-            Math.floor),
+          Math.floor),
           e;
 
       return function(d) {
@@ -9601,7 +9601,7 @@ d3 = function() {
           a0 = startAngle.apply(this, arguments) + d3_svg_arcOffset,
           a1 = endAngle.apply(this, arguments) + d3_svg_arcOffset,
           da = (a1 < a0 && (da = a0,
-            a0 = a1, a1 = da), a1 - a0),
+          a0 = a1, a1 = da), a1 - a0),
           df = da < π ? '0' : '1',
           c0 = Math.cos(a0),
           s0 = Math.sin(a0),
@@ -10388,7 +10388,7 @@ d3 = function() {
         var range = d3_scaleRange(scale1),
             path = g.selectAll('.domain').data([0]),
             pathUpdate = (path.enter().append('path').attr('class', 'domain'),
-              d3.transition(path));
+            d3.transition(path));
 
         tickEnter.append('line');
         tickEnter.append('text');
@@ -11150,7 +11150,7 @@ d3 = function() {
       if ('p' in d)
         d.H = d.H % 12 + d.p * 12;
       var localZ = d.Z != null && d3_date !== d3_date_utc,
-          date = new (localZ ? d3_date_utc : d3_date)();
+          date = new(localZ ? d3_date_utc : d3_date)();
 
       if ('j' in d)
         date.setFullYear(d.y, 0, d.j); else if ('w' in d && ('W' in d || 'U' in d)) {
@@ -11380,7 +11380,7 @@ d3 = function() {
   }
   function d3_time_parseZone(date, string, i) {
     return (/^[+-]\d{4}$/).test(string = string.substring(i, i + 5)) ? (date.Z = +string,
-      i + 5) : -1;
+    i + 5) : -1;
   }
   function d3_time_expandYear(d) {
     return d + (d > 68 ? 1900 : 2e3);

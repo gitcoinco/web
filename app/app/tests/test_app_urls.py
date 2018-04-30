@@ -74,7 +74,7 @@ class AppUrlsTestCase(TestCase):
 
     def test_stats_reverse(self):
         """Test the stats url and check the reverse."""
-        self.assertEqual(reverse('stats'), '/_administration/stats')
+        self.assertEqual(reverse('stats'), '/_administration/stats/')
 
     def test_stats_resolve(self):
         """Test the stats url and check the resolution."""
