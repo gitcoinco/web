@@ -23,6 +23,6 @@ Make A Submission
 From here, you should be off to the races! The repo maintainer will review your PR and pay out accordingly.
 Feel free to poke your head in if you have any issues.
 
-CTA: Check out the Issue Explorer (https://gitcoin.co/explorer?q=) if you haven’t already! If you don’t find good fits,
+Check out the Issue Explorer (https://gitcoin.co/explorer?q=) if you haven’t already! If you don’t find good fits,
 let us know an open source project (https://docs.google.com/forms/d/1AeiKhCO2TefXo8wAbFerjxe2Vgci3ueqzzUpa-PFPLo/edit) that you’d like to see using Gitcoin.
 No promises, but we might have something up our sleeve.

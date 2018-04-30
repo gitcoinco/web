@@ -20,5 +20,5 @@ Learning to Dev in Ethereum
 
 To see our favorite resources on blockchain development, click here (https://github.com/gitcoinco/gitcoinco/issues/38).
 
-CTA: Join the Slack (http://gitcoin.co/slack) and ask any Solidity questions you might have at #focus-dev-general.
+Join the Slack (http://gitcoin.co/slack) and ask any Solidity questions you might have at #focus-dev-general.
 If you want to get your hands dirty contributing, the Issue Explorer (http://gitcoin.co/explorer) might have the right project for you!

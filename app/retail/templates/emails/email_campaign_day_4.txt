@@ -15,7 +15,7 @@ Developer flow
 Funding
 A community
 
-CTA: Do you know an OSS project that might want to try bounties?
+Do you know an OSS project that might want to try bounties?
 Let us know by filling out this form (https://docs.google.com/forms/d/1AeiKhCO2TefXo8wAbFerjxe2Vgci3ueqzzUpa-PFPLo/edit).
 If the project funds a bounty, we’ll send you a 15% finders fee.
 
