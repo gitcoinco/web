@@ -157,6 +157,13 @@ class Bounty(SuperModel):
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
+    
+    token_value_time_peg = models.DateTimeField(blank=True, null=True)
+    token_value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
+    value_in_usdt_now = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
+    value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
+    value_in_eth = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
+    value_true = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
@@ -392,11 +399,11 @@ class Bounty(SuperModel):
                 return 'unknown'
 
     @property
-    def value_true(self):
+    def _value_true(self):
         return self.get_natural_value()
 
     @property
-    def value_in_eth(self):
+    def _value_in_eth(self):
         if self.token_name == 'ETH':
             return self.value_in_token
         try:
@@ -405,7 +412,7 @@ class Bounty(SuperModel):
             return None
 
     @property
-    def value_in_usdt_now(self):
+    def _value_in_usdt_now(self):
         decimals = 10**18
         if self.token_name == 'USDT':
             return float(self.value_in_token)
@@ -417,7 +424,7 @@ class Bounty(SuperModel):
             return None
 
     @property
-    def value_in_usdt(self):
+    def _value_in_usdt(self):
         if self.status in self.OPEN_STATUSES:
             return self.value_in_usdt_now
         return self.value_in_usdt_then
@@ -449,13 +456,13 @@ class Bounty(SuperModel):
             return None
 
     @property
-    def token_value_in_usdt(self):
+    def _token_value_in_usdt(self):
         if self.status in self.OPEN_STATUSES:
             return self.token_value_in_usdt_now
         return self.token_value_in_usdt_then
 
     @property
-    def token_value_time_peg(self):
+    def _token_value_time_peg(self):
         if self.status in self.OPEN_STATUSES:
             return timezone.now()
         return self.web3_created
@@ -852,6 +859,12 @@ def psave_bounty(sender, instance, **kwargs):
     instance._val_usd_db_now = instance.value_in_usdt_now if instance.value_in_usdt_now else 0
     instance.idx_experience_level = idx_experience_level.get(instance.experience_level, 0)
     instance.idx_project_length = idx_project_length.get(instance.project_length, 0)
+    instance.token_value_time_peg = instance._token_value_time_peg
+    instance.token_value_in_usdt = instance._token_value_in_usdt
+    instance.value_in_usdt_now = instance._value_in_usdt_now
+    instance.value_in_usdt = instance._value_in_usdt
+    instance.value_in_eth = instance._value_in_eth
+    instance.value_true = instance._value_true
 
 
 class Interest(models.Model):
