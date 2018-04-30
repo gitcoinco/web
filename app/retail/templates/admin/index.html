@@ -71,15 +71,18 @@
 
 <div id="content-related">
     <div class="module" id="-some-custom-links">
-        <h2>{% trans 'Stats' %}</h2>
+        <h2>{% trans 'Analytics' %}</h2>
         <ul>
-            <a href="{% url 'stats' %}">Stats</a>
+            <a href="{% url 'stats' %}">KPI Dashboard</a>
         </ul>
         <ul>
             <a href="{% url 'cohort' %}">Cohort Analysis</a>
         </ul>
         <ul>
             <a href="{% url 'funnel' %}">Funnel Analysis</a>
+        </ul>
+        <ul>
+            <a href="{% url 'viz_index' %}">Analytics Playground</a>
         </ul>
         <h2>{% trans 'Administrative Tasks' %}</h2>
 
