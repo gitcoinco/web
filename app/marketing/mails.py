@@ -429,7 +429,7 @@ def nth_day_email_campaign(nth, subscriber):
     try:
         setup_lang(subscriber.email)
         from_email = settings.CONTACT_EMAIL
-        html, text, subject = render_nth_day_email_campaign(nth, firstname)
+        html, text, subject = render_nth_day_email_campaign(subscriber.email, nth, firstname)
         send_mail(from_email, subscriber.email, subject, text, html)
     finally:
         translation.activate(cur_language)

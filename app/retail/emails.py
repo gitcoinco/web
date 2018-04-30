@@ -297,7 +297,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
     return response_html, response_txt
 
 
-def render_nth_day_email_campaign(nth, firstname):
+def render_nth_day_email_campaign(to_email, nth, firstname):
     subject_map = {
         1: "Day 1: Growing Open Source",
         2: "Day 2: Using Gitcoin's Issue Explorer",
@@ -310,7 +310,8 @@ def render_nth_day_email_campaign(nth, firstname):
     subject = subject_map[nth]
 
     params = {
-        'firstname': firstname
+        'firstname': firstname,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
     response_html = premailer_transform(render_to_string("emails/email_campaign_day_{}.html".format(nth), params))
     response_txt = render_to_string("emails/email_campaign_day_{}.txt".format(nth), params)

@@ -409,5 +409,5 @@ def leaderboard(request, key=''):
 def day_email_campaign(request, day):
     if day not in list(range(1, 7)):
         raise Http404
-    response_html, _, _ = render_nth_day_email_campaign(day, "staff member")
+    response_html, _, _ = render_nth_day_email_campaign('foo@bar.com', day, "staff member")
     return HttpResponse(response_html)
