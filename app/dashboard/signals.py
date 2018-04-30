@@ -30,7 +30,7 @@ def m2m_changed_interested(sender, instance, action, reverse, model, **kwargs):
 
     for profile in instance.interested.select_related('profile').all().order_by('pk'):
         profile_handles.append((profile.profile.handle, profile.profile.absolute_url))
-        
+
     if action in ['post_add', 'post_remove']:
         maybe_market_to_github(instance, 'work_started',
                                profile_pairs=profile_handles)
