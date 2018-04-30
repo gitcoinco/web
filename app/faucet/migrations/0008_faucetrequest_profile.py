@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('dashboard', '0051_auto_20180405_0806'),
-        ('faucet', '0006_faucetrequest_input_github_username'),
+        ('faucet', '0007_auto_20180427_1346'),
     ]
 
     operations = [

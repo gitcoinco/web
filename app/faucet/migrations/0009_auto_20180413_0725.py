@@ -29,7 +29,7 @@ def migrate_fulfillments(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('faucet', '0007_faucetrequest_profile'),
+        ('faucet', '0008_faucetrequest_profile'),
     ]
 
     operations = [
