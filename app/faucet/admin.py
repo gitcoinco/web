@@ -53,7 +53,11 @@ class FaucetRequestAdmin(admin.ModelAdmin):
 
     def get_profile_username(self, obj):
         """Get the profile username."""
-        return obj.profile.username
+        if hasattr(obj, 'profile') and obj.profile.username:
+            return mark_safe(f"<a href=/_administration/dashboard/profile/{obj.pk}/change/>{obj.profile.username}</a>")
+        elif obj.github_username:
+            return obj.github_username
+        return 'N/A'
 
     get_profile_username.admin_order_field = 'username'
     get_profile_username.short_description = 'Profile Username'
