@@ -187,6 +187,7 @@ urlpatterns = [
     url(r'^_administration/email/faucet$', retail.emails.faucet, name='email_faucet'),
     url(r'^_administration/email/new_tip$', retail.emails.new_tip, name='new_tip'),
     url(r'^_administration/email/new_match$', retail.emails.new_match, name='new_match'),
+    url(r'^_administration/email/quarterly_roundup$', retail.emails.quarterly_roundup, name='quarterly_roundup'),
     url(r'^_administration/email/new_work_submission$', retail.emails.new_work_submission, name='new_work_submission'),
     url(r'^_administration/email/new_bounty_rejection$', retail.emails.new_bounty_rejection, name='new_bounty_rejection'),
     url(r'^_administration/email/new_bounty_acceptance$', retail.emails.new_bounty_acceptance, name='new_bounty_acceptance'),

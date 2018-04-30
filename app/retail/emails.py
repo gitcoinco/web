@@ -526,3 +526,11 @@ def faucet_rejected(request):
 def roundup(request):
     response_html, _, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
     return HttpResponse(response_html)
+
+
+@staff_member_required
+def quarterly_roundup(request):
+    from marketing.utils import get_platform_wide_stats
+    platform_wide_stats = get_platform_wide_stats()
+    response_html, _ = render_quarterly_stats(settings.CONTACT_EMAIL, platform_wide_stats)
+    return HttpResponse(response_html)
