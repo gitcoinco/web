@@ -153,7 +153,8 @@ def viz_chord(request, key='bounties_paid'):
                     length = (fulfillment.created_on - bounty.web3_created).seconds
                     target = fulfillment.fulfiller_github_username.lower()
                     source = bounty.bounty_owner_github_username.lower()
-                    rows.append((source, target, str(weight), str(length)))
+                    if source and target:
+                        rows.append((helper_hide_pii(source), helper_hide_pii(target), str(weight), str(length)))
 
         output_rows = []
         for row in rows:
