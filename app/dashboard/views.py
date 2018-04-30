@@ -454,6 +454,15 @@ def send_tip_2(request):
     return TemplateResponse(request, 'yge/send2.html', params)
 
 
+def onboard(request):
+    """FTUX flow"""
+    params = {
+        'title': _('Onboarding Flow')
+    }
+
+    return TemplateResponse(request, 'onboard.html', params)
+
+
 def dashboard(request):
     """Handle displaying the dashboard."""
     params = {
