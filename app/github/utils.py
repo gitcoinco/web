@@ -317,7 +317,7 @@ def get_issues(owner, repo, page=1, state='open'):
         'sort': 'created',
         'direction': 'desc',
         'page': page,
-        'per_page': 100, 
+        'per_page': 100,
     }
     url = f'https://api.github.com/repos/{owner}/{repo}/issues'
 

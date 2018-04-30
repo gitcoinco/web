@@ -15,7 +15,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
         return [
             'dashboard',
             'new_funding',
-            'fulfill_funding',
+            'fulfill_bounty',
             'process_funding',
             'funding_details',
             'tip',

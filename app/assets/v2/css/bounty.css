@@ -303,7 +303,7 @@ a.btn {
   top: 5px;
   right: 8px;
 }
- 
+
 .comment {
   border-left: 1px solid #979797;
   padding-right: 20px;
@@ -447,4 +447,56 @@ a.btn {
   .explorer {
     display: none;
   }
+}
+
+
+.interest-modal-title {
+  display: inline-block;
+  width: 100%;
+}
+
+.add-interest-modal {
+  height:auto;
+  width:100%;
+}
+
+.add-interest-modal__form {
+  padding:1em;
+  width:100%;
+}
+
+.add-interest-modal__form--item {
+  padding-top:1em;
+}
+
+.add-interest-modal__form--submit {
+  margin-top:1em;
+}
+
+.add-interest-modal__form--textarea {
+  height:8em;
+}
+
+.add-interest-options {
+  display:flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+.add-interest-modal__form .checkbox_container input {
+  opacity: 100;
+  width: 20px;
+  position: initial;
+}
+
+.add-interest-options > .option {
+  width: auto !important;
+}
+
+.btn-interested, .btn-interested:hover {
+  border-radius:0.2em;
+  color: black;
+  border: black 1px solid;
+}
+.btn-interested:hover {
+  background-color: #eee;
 }

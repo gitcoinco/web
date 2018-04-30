@@ -50,11 +50,11 @@ class AppUrlsTestCase(TestCase):
     def test_email_settings_reverse(self):
         """Test the email_settings url and check the reverse."""
         priv_key = token_hex(16)[:29]
-        self.assertEqual(reverse('email_settings', args=(priv_key, )), f'/email/settings/{priv_key}')
+        self.assertEqual(reverse('email_settings', args=(priv_key, )), f'/settings/email/{priv_key}')
 
     def test_email_settings_resolve(self):
         """Test the email_settings url and check the resolution."""
-        self.assertEqual(resolve('/email/settings/').view_name, 'email_settings')
+        self.assertEqual(resolve('/settings/email/').view_name, 'email_settings')
 
     def test_leaderboard_reverse(self):
         """Test the leaderboard url and check the reverse."""
@@ -74,11 +74,11 @@ class AppUrlsTestCase(TestCase):
 
     def test_stats_reverse(self):
         """Test the stats url and check the reverse."""
-        self.assertEqual(reverse('stats'), '/_administration/stats')
+        self.assertEqual(reverse('stats'), '/_administration/stats/')
 
     def test_stats_resolve(self):
         """Test the stats url and check the resolution."""
-        self.assertEqual(resolve('/_administration/stats').view_name, 'stats')
+        self.assertEqual(resolve('/_administration/stats/').view_name, 'stats')
 
     def test_faucet_reverse(self):
         """Test the faucet url and check the reverse."""

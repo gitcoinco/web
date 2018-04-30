@@ -26,4 +26,4 @@ def save_profile(backend, user, response, request, *args, **kwargs):
     if backend.name == 'github':
         handle = user.username
         sync_profile(handle, user)
-        setup_lang(handle, request)
+        setup_lang(request, user)
