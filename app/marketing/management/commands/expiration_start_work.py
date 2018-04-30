@@ -24,6 +24,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+import pytz
 from dashboard.models import Bounty, Interest
 from dashboard.notifications import (
     maybe_notify_bounty_user_removed_to_slack, maybe_notify_bounty_user_warned_removed_to_slack,
@@ -46,10 +47,12 @@ class Command(BaseCommand):
             print('not running start work expiration because DEBUG is on')
             return
 
+        # TODO: DRY with dashboard/notifications.py
         num_days_back_to_warn = 3
         num_days_back_to_delete_interest = 10
 
         days = [i * 3 for i in range(1, 15)]
+        days.reverse()
         if settings.DEBUG:
             days = range(1, 1000)
         for day in days:
@@ -78,19 +81,20 @@ class Command(BaseCommand):
                         if not actions:
                             should_warn_user = True
                             should_delete_interest = False
+                            last_heard_from_user_days = (timezone.now() - interest.created).days
                             print(" - no actions")
                         else:
                             # example format: 2018-01-26T17:56:31Z'
                             action_times = [datetime.strptime(action['created_at'], '%Y-%m-%dT%H:%M:%SZ') for action in actions if action.get('created_at')]
-                            last_action_by_user = max(action_times)
+                            last_action_by_user = max(action_times).replace(tzinfo=pytz.UTC)
 
                             # if user hasn't commented since they expressed interest, handled this condition
                             # per https://github.com/gitcoinco/web/issues/462#issuecomment-368384384
-                            if last_action_by_user < interest.created.replace(tzinfo=None):
-                                last_action_by_user = interest.created.replace(tzinfo=None)
+                            if last_action_by_user.replace() < interest.created:
+                                last_action_by_user = interest.created
 
                             # some small calcs
-                            delta_now_vs_last_action = datetime.now() - last_action_by_user
+                            delta_now_vs_last_action = timezone.now() - last_action_by_user
                             last_heard_from_user_days = delta_now_vs_last_action.days
 
                             # decide action params
@@ -101,18 +105,19 @@ class Command(BaseCommand):
 
                         if should_delete_interest:
                             print(f'executing should_delete_interest for {interest.profile} / {bounty.github_url} ')
+                            interest.delete()
+
                             # commenting on the GH issue
                             maybe_notify_user_removed_github(bounty, interest.profile.handle, last_heard_from_user_days)
                             # commenting in slack
                             maybe_notify_bounty_user_removed_to_slack(bounty, interest.profile.handle)
                             # send email
                             bounty_startwork_expired(interest.profile.email, bounty, interest, last_heard_from_user_days)
-                            interest.delete()
 
                         elif should_warn_user:
                             print(f'executing should_warn_user for {interest.profile} / {bounty.github_url} ')
                             # commenting on the GH issue
-                            maybe_warn_user_removed_github(bounty, interest.profile.handle)
+                            maybe_warn_user_removed_github(bounty, interest.profile.handle, last_heard_from_user_days)
                             # commenting in slack
                             maybe_notify_bounty_user_warned_removed_to_slack(bounty, interest.profile.handle, last_heard_from_user_days)
                             # send email
