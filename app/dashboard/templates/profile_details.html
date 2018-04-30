@@ -56,9 +56,9 @@
               </div>
               <div class="card-body">
                 <ul>
-                  <li><span class="highlight">10</span> bounties completed</li>
-                  <li><span class="highlight">1.2</span> ETH collected</li>
-                  <li><span class="highlight">#1</span> contributor</li>
+                  <li><span class="highlight">###</span> bounties completed</li>
+                  <li><span class="highlight">###</span> ETH collected</li>
+                  <li><span class="highlight">###</span> contributor</li>
                 </ul>
               </div>
             </div>
@@ -70,9 +70,9 @@
               </div>
               <div class="card-body">
                 <ul>
-                  <li><span class="highlight">2</span> bounties funded</li>
-                  <li><span class="highlight">0.2</span> ETH funded</li>
-                  <li><span class="highlight">#2</span> funder</li>
+                  <li><span class="highlight">###</span> bounties funded</li>
+                  <li><span class="highlight">###</span> ETH funded</li>
+                  <li><span class="highlight">###</span> funder</li>
                 </ul>
               </div>
             </div>
@@ -81,6 +81,11 @@
       </div>
     </div>
 
+    <div class="container">
+      <div class="profile-bouties"></div>
+    </div>
+
+    {% include 'shared/result.html' %}
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
@@ -93,12 +98,22 @@
   <!-- jQuery -->
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/pages/profile_details.js" %}"></script>
   <script src="{% static "v2/js/shared.js" %}"></script>
 
-  <script>
-    $('.tip-row, .bounty-row').click(function () {
-      window.location = $(this).data('ref-url')
-    })
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $.get('/api/v0.1/bounties/?bounty_owner_github_username={{profile.handle}}&status=open', function(results) {
+        results = sanitizeAPIResults(results);
+        var tmpl = $.templates('#result');
+        var html;
+
+        for (var i = 0; i < results.length; i++) {
+          html = tmpl.render(results[i]);
+          $('.profile-bouties').append(html);
+        }
+      });
+    });
   </script>
 
 </html>
