@@ -79,6 +79,7 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     profile = Profile.objects.get(email=to_email)
     quarterly_stats = profile.get_quarterly_stats
     params = {**quarterly_stats, **platform_wide_stats}
+    params['subscriber']= get_or_save_email_subscriber(to_email, 'internal'),
     print(params)
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
     response_txt = render_to_string("emails/quarterly_stats.txt", params)
