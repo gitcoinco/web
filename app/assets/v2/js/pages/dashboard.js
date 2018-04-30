@@ -267,15 +267,21 @@ var process_stats = function(results) {
   for (var i = 0; i < results.length; i++) {
     var result = results[i];
 
-    worth_usdt += result['value_in_usdt'];
-    worth_eth += result['value_in_eth'];
+    var this_worth_usdt = Number.parseFloat(result['value_in_usdt']);
+    var this_worth_eth = Number.parseFloat(result['value_in_eth']);
+    if(this_worth_usdt){
+      worth_usdt += this_worth_usdt;
+    }
+    if(this_worth_eth){
+      worth_eth += this_worth_eth;
+    }
     var token = result['token_name'];
 
     if (token !== 'ETH') {
       if (!currencies_to_value[token]) {
         currencies_to_value[token] = 0;
       }
-      currencies_to_value[token] += result['value_true'];
+      currencies_to_value[token] += Number.parseFloat(result['value_true']);
     }
   }
 
