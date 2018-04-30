@@ -24,6 +24,8 @@ from django.http import Http404
 import rollbar
 
 import environ
+from django.utils.translation import gettext_lazy as _
+
 
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
 env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
@@ -175,6 +177,14 @@ USE_L10N = env.bool('USE_L10N', default=True)
 USE_TZ = env.bool('USE_TZ', default=True)
 TIME_ZONE = env.str('TIME_ZONE', default='UTC')
 
+LOCALE_PATHS = (
+    'locale',
+)
+
+LANGUAGES = [
+    ('en', _('English'))
+]
+
 if not ENV in ['local', 'test']:
     LOGGING = {
         'version': 1,
@@ -320,6 +330,7 @@ TWITTER_USERNAME = env('TWITTER_USERNAME', default='') # TODO
 # Slack Integration
 # optional: only needed if you slack things
 SLACK_TOKEN = env('SLACK_TOKEN', default='') # TODO
+SLACK_WELCOMEBOT_TOKEN = env('SLACK_WELCOMEBOT_TOKEN', default='') # TODO
 
 # Reporting Integrations
 MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
@@ -373,7 +384,7 @@ S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='') # TODO
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 
 # Faucet App config
-FAUCET_AMOUNT = env.float('FAUCET_AMOUNT', default=.0005)
+FAUCET_AMOUNT = env.float('FAUCET_AMOUNT', default=.00025)
 
 SENDGRID_EVENT_HOOK_URL = env('SENDGRID_EVENT_HOOK_URL', default='sg_event_process')
 GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')

@@ -82,9 +82,6 @@
         <div class="col-12 col-md-8 d-flex flex-column">
           <div class="bounty-detail">
             <div class="title font-subheader">
-              [[if network != 'mainnet']]
-                [[[:network]]]
-              [[/if]]
               [[:title]]
             </div>
             <div class="bounty-summary col-12">
@@ -101,6 +98,13 @@
           </div>
         </div>
         <div class="col-12 col-md-2 tags font-caption align-items-center">
+          [[if network != 'mainnet']]
+          <div class="tag network_warning">
+            <p>
+              <span>[[:network]]</span>
+            </p>
+          </div>
+          [[/if]]
           <div class="tag token">
             <p>
               [[:rounded_amount]]

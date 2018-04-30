@@ -17,11 +17,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from app.utils import sync_profile
+from app.utils import setup_lang, sync_profile
 
 
-def save_profile(backend, user, response, *args, **kwargs):
+def save_profile(backend, user, response, request, *args, **kwargs):
+
     """Associate a Profile with a User."""
     if backend.name == 'github':
         handle = user.username
         sync_profile(handle, user)
+        setup_lang(request, user)

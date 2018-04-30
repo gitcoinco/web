@@ -22,6 +22,7 @@ import json
 import math
 import random
 
+from django.conf import settings
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
@@ -30,7 +31,8 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
-from django.utils import timezone
+from django.utils import timezone, translation
+from django.utils.translation import LANGUAGE_SESSION_KEY
 from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
@@ -43,28 +45,27 @@ from marketing.models import (
 from marketing.utils import get_or_save_email_subscriber
 from retail.helpers import get_ip
 
-settings_navs = [
-    {
+
+def get_settings_navs():
+    return [{
         'body': 'Email',
-        'href': '/settings/email',
-    },
-    {
+        'href': reverse('email_settings', args=('', ))
+    }, {
         'body': 'Privacy',
-        'href': '/settings/privacy',
-    },
-    {
+        'href': reverse('privacy_settings'),
+    }, {
         'body': 'Matching',
-        'href': '/settings/matching',
-    },
-    {
+        'href': reverse('matching_settings'),
+    }, {
         'body': 'Feedback',
-        'href': '/settings/feedback',
-    },
-]
+        'href': reverse('feedback_settings'),
+    }, {
+        'body': 'Slack',
+        'href': reverse('slack_settings'),
+    }]
 
 
 def settings_helper_get_auth(request, key=None):
-
     # setup
     github_handle = request.user.username if request.user.is_authenticated else False
     is_logged_in = bool(request.user.is_authenticated)
@@ -85,7 +86,6 @@ def settings_helper_get_auth(request, key=None):
         try:
             es = EmailSubscriber.objects.get(priv=key)
             email = es.email
-            level = es.preferences.get('level', False)
         except EmailSubscriber.DoesNotExist:
             pass
 
@@ -109,7 +109,6 @@ def settings_helper_get_auth(request, key=None):
 
 
 def privacy_settings(request):
-
     # setup
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
     suppress_leaderboard = profile.suppress_leaderboard if profile else False
@@ -129,7 +128,7 @@ def privacy_settings(request):
         'nav': 'internal',
         'active': '/settings/privacy',
         'title': _('Privacy Settings'),
-        'navs': settings_navs,
+        'navs': get_settings_navs(),
         'is_logged_in': is_logged_in,
         'msg': msg,
     }
@@ -137,7 +136,6 @@ def privacy_settings(request):
 
 
 def matching_settings(request):
-
     # setup
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
     if not es:
@@ -157,7 +155,7 @@ def matching_settings(request):
         else:
             es.metadata['ip'].append(ip)
         es.save()
-        msg = "Updated your preferences.  "
+        msg = _('Updated your preferences.')
 
     context = {
         'keywords': ",".join(es.keywords),
@@ -167,14 +165,13 @@ def matching_settings(request):
         'nav': 'internal',
         'active': '/settings/matching',
         'title': _('Matching Settings'),
-        'navs': settings_navs,
+        'navs': get_settings_navs(),
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/matching.html', context)
 
 
 def feedback_settings(request):
-
     # setup
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
     if not es:
@@ -194,35 +191,47 @@ def feedback_settings(request):
         else:
             es.metadata['ip'].append(ip)
         es.save()
-        msg = "We've received your feedback. "
+        msg = _('We\'ve received your feedback.')
 
     context = {
         'nav': 'internal',
         'active': '/settings/feedback',
         'title': _('Feedback'),
-        'navs': settings_navs,
+        'navs': get_settings_navs(),
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/feedback.html', context)
 
 
 def email_settings(request, key):
+    """Display email settings.
 
-    # setup
+    Args:
+        key (str): The private key to lookup email subscriber data.
+
+    TODO:
+        * Remove all ES.priv_key lookups and use request.user only.
+        * Remove settings_helper_get_auth usage.
+
+    Returns:
+        TemplateResponse: The email settings view populated with ES data.
+
+    """
     profile, es, user, is_logged_in = settings_helper_get_auth(request, key)
-    if not es:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
-        return login_redirect
+    if not request.user.is_authenticated or (request.user.is_authenticated and not hasattr(request.user, 'profile')):
+        return redirect('/login/github?next=' + request.get_full_path())
 
     # handle 'noinput' case
-    suppress_leaderboard = False
     email = ''
     level = ''
     msg = ''
-
+    pref_lang = 'en'
     if request.POST and request.POST.get('submit'):
         email = request.POST.get('email')
         level = request.POST.get('level')
+        if profile:
+            pref_lang = profile.get_profile_preferred_language()
+        preferred_language = request.POST.get('preferred_language')
         validation_passed = True
         try:
             validate_email(email)
@@ -230,11 +239,18 @@ def email_settings(request, key):
             print(e)
             validation_passed = False
             msg = _('Invalid Email')
-
+        if preferred_language:
+            if preferred_language not in [i[0] for i in settings.LANGUAGES]:
+                msg = _('Unknown language')
+                validation_passed = False
         if level not in ['lite', 'lite1', 'regular', 'nothing']:
             validation_passed = False
             msg = _('Invalid Level')
-        if validation_passed:
+        if validation_passed and profile and es:
+            profile.pref_lang_code = preferred_language
+            profile.save()
+            request.session[LANGUAGE_SESSION_KEY] = preferred_language
+            translation.activate(preferred_language)
             key = get_or_save_email_subscriber(email, 'settings')
             es.preferences['level'] = level
             es.email = email
@@ -246,16 +262,63 @@ def email_settings(request, key):
             else:
                 es.metadata['ip'].append(ip)
             es.save()
-            msg = "Updated your preferences.  "
+            msg = _('Updated your preferences.')
     context = {
         'nav': 'internal',
         'active': '/settings/email',
         'title': _('Email Settings'),
         'es': es,
         'msg': msg,
-        'navs': settings_navs,
+        'navs': get_settings_navs(),
+        'preferred_language': pref_lang
     }
     return TemplateResponse(request, 'settings/email.html', context)
+
+
+def slack_settings(request):
+    """Displays and saves user's slack settings.
+
+    Returns:
+        TemplateResponse: The user's slack settings template response.
+
+    """
+    # setup
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+    if not es:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    msg = ''
+
+    if request.POST and request.POST.get('submit'):
+        token = request.POST.get('token', '')
+        repos = request.POST.get('repos').split(',')
+        channel = request.POST.get('channel', '')
+        profile.slack_token = token
+        profile.slack_repos = [repo.strip() for repo in repos]
+        print(profile.slack_repos)
+        profile.slack_channel = channel
+        ip = get_ip(request)
+        if not es.metadata.get('ip', False):
+            es.metadata['ip'] = [ip]
+        else:
+            es.metadata['ip'].append(ip)
+        es.save()
+        profile.save()
+        msg = _('Updated your preferences.')
+
+    context = {
+        'repos': ",".join(profile.slack_repos),
+        'is_logged_in': is_logged_in,
+        'nav': 'internal',
+        'active': '/settings/slack',
+        'title': _('Slack Settings'),
+        'navs': get_settings_navs(),
+        'es': es,
+        'profile': profile,
+        'msg': msg,
+    }
+    return TemplateResponse(request, 'settings/slack.html', context)
 
 
 def _leaderboard(request):

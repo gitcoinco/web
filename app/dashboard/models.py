@@ -26,12 +26,13 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.urls import reverse
+from django.urls.exceptions import NoReverseMatch
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -77,6 +78,9 @@ class Bounty(SuperModel):
         BOUNTY_TYPES (list of tuples): The valid bounty types.
         EXPERIENCE_LEVELS (list of tuples): The valid experience levels.
         PROJECT_LENGTHS (list of tuples): The possible project lengths.
+        STATUS_CHOICES (list of tuples): The valid status stages.
+        OPEN_STATUSES (list of str): The list of status types considered open.
+        CLOSED_STATUSES (list of str): The list of status types considered closed.
 
     """
 
@@ -149,11 +153,13 @@ class Bounty(SuperModel):
     submissions_comment = models.IntegerField(null=True, blank=True)
     override_status = models.CharField(max_length=255, blank=True)
     last_comment_date = models.DateTimeField(null=True, blank=True)
-    objects = BountyQuerySet.as_manager()
     fulfillment_accepted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
+
+    # Bounty QuerySet Manager
+    objects = BountyQuerySet.as_manager()
 
     class Meta:
         """Define metadata associated with Bounty."""
@@ -197,7 +203,7 @@ class Bounty(SuperModel):
             _org_name = org_name(self.github_url)
             _issue_num = int(issue_number(self.github_url))
             _repo_name = repo_name(self.github_url)
-            return f"{'/' if preceding_slash else ''}issue/{_org_name}/{_repo_name}/{_issue_num}"
+            return f"{'/' if preceding_slash else ''}issue/{_org_name}/{_repo_name}/{_issue_num}/{self.standard_bounties_id}"
         except Exception:
             return f"{'/' if preceding_slash else ''}funding/details?url={self.github_url}"
 
@@ -219,8 +225,8 @@ class Bounty(SuperModel):
             return True
 
         # standardbounties
-        contract_deadline = self.raw_data.get('contract_deadline', False)
-        ipfs_deadline = self.raw_data.get('ipfs_deadline', False)
+        contract_deadline = self.raw_data.get('contract_deadline')
+        ipfs_deadline = self.raw_data.get('ipfs_deadline')
         if not ipfs_deadline:
             # if theres no expiry date in the payload, then expiration date is not mocked, and one cannot submit after expiration date
             return False
@@ -372,7 +378,7 @@ class Bounty(SuperModel):
                 if not self.is_open:
                     if self.accepted:
                         return 'done'
-                    if self.past_hard_expiration_date:
+                    elif self.past_hard_expiration_date:
                         return 'expired'
                     # If its not expired or done, it must be cancelled.
                     return 'cancelled'
@@ -623,6 +629,19 @@ class Bounty(SuperModel):
             return True
         return False
 
+    def action_urls(self):
+        """Provide URLs for bounty related actions.
+
+        Returns:
+            dict: A dictionary of action URLS for this bounty.
+
+        """
+        return {
+            'fulfill': f"/issue/fulfill/{self.pk}",
+            'increase': f"/issue/increase/{self.pk}",
+            'accept': f"/issue/accept/{self.pk}",
+            'cancel': f"/issue/cancel/{self.pk}",
+        }
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):
@@ -869,6 +888,10 @@ class Profile(SuperModel):
     last_sync_date = models.DateTimeField(null=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
+    pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES)
+    slack_repos = ArrayField(models.CharField(max_length=200), blank=True, default=[])
+    slack_token = models.CharField(max_length=255, default='')
+    slack_channel = models.CharField(max_length=255, default='')
     suppress_leaderboard = models.BooleanField(
         default=False,
         help_text='If this option is chosen, we will remove your profile information from the leaderboard',
@@ -1029,6 +1052,22 @@ class Profile(SuperModel):
             handle = self.handle
         return handle
 
+    def has_repo(self, full_name):
+        """Check if user has access to repo.
+
+        Args:
+            full_name (str): Repository name, like gitcoin/web.
+
+        Returns:
+            bool: Whether or not user has access to repository.
+
+        """
+        for repo in self.repos_data:
+            if repo['full_name'] == full_name:
+                return True
+        return False
+
+
     def is_github_token_valid(self):
         """Check whether or not a Github OAuth token is valid.
 
@@ -1084,13 +1123,14 @@ class Profile(SuperModel):
             return ''
         return access_token
 
+    def get_profile_preferred_language(self):
+        return settings.LANGUAGE_CODE if not self.pref_lang_code else self.pref_lang_code
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
     """Handle actions to take on user login."""
     from dashboard.utils import create_user_action
     create_user_action(user, 'Login', request)
-
 
 @receiver(user_logged_out)
 def post_logout(sender, request, user, **kwargs):
@@ -1196,44 +1236,71 @@ class CoinRedemptionRequest(SuperModel):
     txaddress = models.CharField(max_length=255)
     sent_on = models.DateTimeField(null=True)
 
+
 class Tool(SuperModel):
-    """Define the tool shcema."""
-    
+    """Define the Tool schema."""
+
+    CAT_ADVANCED = 'AD'
+    CAT_ALPHA = 'AL'
+    CAT_BASIC = 'BA'
+    CAT_BUILD = 'BU'
+    CAT_COMING_SOON = 'CS'
+    CAT_COMMUNITY = 'CO'
+    CAT_FOR_FUN = 'FF'
+
+    TOOL_CATEGORIES = (
+        (CAT_ADVANCED, 'advanced'),
+        (CAT_ALPHA, 'alpha'),
+        (CAT_BASIC, 'basic'),
+        (CAT_BUILD, 'tools to build'),
+        (CAT_COMING_SOON, 'coming soon'),
+        (CAT_COMMUNITY, 'community'),
+        (CAT_FOR_FUN, 'just for fun'),
+    )
+
     name = models.CharField(max_length=255)
-    category = models.CharField(max_length=20)
-    img = models.CharField(max_length=255)
-    description = models.CharField(max_length=1000)
+    category = models.CharField(max_length=2, choices=TOOL_CATEGORIES)
+    img = models.CharField(max_length=255, blank=True)
+    description = models.TextField(blank=True)
     url_name = models.CharField(max_length=40, blank=True)
-    link = models.CharField(max_length=255)
-    link_copy = models.CharField(max_length=255)
+    link = models.CharField(max_length=255, blank=True)
+    link_copy = models.CharField(max_length=255, blank=True)
     active = models.BooleanField(default=False)
     new = models.BooleanField(default=False)
     stat_graph = models.CharField(max_length=255)
-    votes = models.ManyToManyField('dashboard.ToolVote', blank=True)    
+    votes = models.ManyToManyField('dashboard.ToolVote', blank=True)
+
+    def __str__(self):
+        return self.name
 
     @property
-    def img_url(self): 
+    def img_url(self):
         return static(self.img)
 
     @property
     def link_url(self):
-        if self.url_name:
-            return reverse(self.url_name)
-        else:
+        if self.link and not self.url_name:
             return self.link
 
+        try:
+            return reverse(self.url_name)
+        except NoReverseMatch:
+            pass
+
+        return reverse('tools')
+
     def starting_score(self):
-        if self.category in ['BASIC']:
+        if self.category == self.CAT_BASIC:
             return 10
-        if self.category in ['ADVANCED']:
+        elif self.category == self.CAT_ADVANCED:
             return 5
-        if self.category in ['TOOLS_TO_BUILD', 'COMMUNITY']:
+        elif self.category in [self.CAT_BUILD, self.CAT_COMMUNITY]:
             return 3
-        if self.category in ['ALPHA']:
+        elif self.category == self.CAT_ALPHA:
             return 2
-        if self.category in ['COMING_SOON']:
+        elif self.category == self.CAT_COMING_SOON:
             return 1
-        if self.category in ['FOR_FUN']:
+        elif self.category == self.CAT_FOR_FUN:
             return 1
         return 0
 
@@ -1263,7 +1330,7 @@ class ToolVote(models.Model):
     value = models.IntegerField(default=0)
 
     @property
-    def tool(self): 
+    def tool(self):
         try:
             return Tool.objects.filter(votes__in=[self.pk]).first()
         except:
@@ -1271,5 +1338,4 @@ class ToolVote(models.Model):
 
     def __str__(self):
         return f"{self.profile} | {self.value} | {self.tool}"
-
 

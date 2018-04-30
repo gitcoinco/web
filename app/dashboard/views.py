@@ -42,7 +42,7 @@ from dashboard.models import (
 )
 from dashboard.notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
-    maybe_market_to_twitter,
+    maybe_market_to_twitter, maybe_market_to_user_slack,
 )
 from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
@@ -115,6 +115,7 @@ def create_new_interest_helper(bounty, user):
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
     maybe_market_to_slack(bounty, 'start_work')
+    maybe_market_to_user_slack(bounty, 'start_work')
     maybe_market_to_twitter(bounty, 'start_work')
     return interest
 
@@ -197,6 +198,8 @@ def new_interest(request, bounty_id):
 def remove_interest(request, bounty_id):
     """Unclaim work from the Bounty.
 
+    Can only be called by someone who has started work
+
     :request method: POST
 
     post_id (int): ID of the Bounty.
@@ -231,6 +234,7 @@ def remove_interest(request, bounty_id):
         bounty.interested.remove(interest)
         interest.delete()
         maybe_market_to_slack(bounty, 'stop_work')
+        maybe_market_to_user_slack(bounty, 'stop_work')
         maybe_market_to_twitter(bounty, 'stop_work')
     except Interest.DoesNotExist:
         return JsonResponse({
@@ -256,6 +260,8 @@ def remove_interest(request, bounty_id):
 def uninterested(request, bounty_id, profile_id):
     """Remove party from given bounty
 
+    Can only be called by the bounty funder
+
     :request method: GET
 
     Args:
@@ -280,6 +286,7 @@ def uninterested(request, bounty_id, profile_id):
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         bounty.interested.remove(interest)
         maybe_market_to_slack(bounty, 'stop_work')
+        maybe_market_to_user_slack(bounty, 'stop_work')
         interest.delete()
     except Interest.DoesNotExist:
         return JsonResponse({
@@ -298,7 +305,7 @@ def uninterested(request, bounty_id, profile_id):
         Interest.objects.filter(pk__in=list(interest_ids)).delete()
 
     profile = Profile.objects.get(id=profile_id)
-    if hasattr(profile, 'user') and profile.user.email:
+    if profile.user and profile.user.email:
         bounty_uninterested(profile.user.email, bounty, interest)
     else:
         print("no email sent -- user was not found")
@@ -436,21 +443,6 @@ def send_tip_2(request):
     return TemplateResponse(request, 'yge/send2.html', params)
 
 
-def process_bounty(request):
-    """Process the bounty."""
-    params = {
-        'issueURL': request.GET.get('source'),
-        'fulfillment_id': request.GET.get('id'),
-        'fulfiller_address': request.GET.get('address'),
-        'title': _('Process Issue'),
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-    }
-
-    return TemplateResponse(request, 'process_bounty.html', params)
-
-
 def dashboard(request):
     """Handle displaying the dashboard."""
     params = {
@@ -478,7 +470,7 @@ def new_bounty(request):
     issue_url = request.GET.get('source') or request.GET.get('url', '')
     is_user_authenticated = request.user.is_authenticated
     params = {
-        'issueURL': issue_url,
+        'issueURL': request.GET.get('source'),
         'amount': request.GET.get('amount'),
         'active': 'submit_bounty',
         'title': _('Create Funded Issue'),
@@ -493,11 +485,62 @@ def new_bounty(request):
     return TemplateResponse(request, 'submit_bounty.html', params)
 
 
-def fulfill_bounty(request):
-    """Fulfill a bounty."""
+def accept_bounty(request, pk):
+    """Process the bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
+    try:
+        bounty = Bounty.objects.get(pk=pk)
+    except (Bounty.DoesNotExist, ValueError):
+        raise Http404
+    except ValueError:
+        raise Http404
+
+    params = {
+        'bounty': bounty,
+        'fulfillment_id': request.GET.get('id'),
+        'fulfiller_address': request.GET.get('address'),
+        'title': _('Process Issue'),
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+    }
+
+    return TemplateResponse(request, 'process_bounty.html', params)
+
+
+def fulfill_bounty(request, pk):
+    """Fulfill a bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be fulfilled.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The fulfill bounty view.
+
+    """
+    try:
+        bounty = Bounty.objects.get(pk=pk)
+    except (Bounty.DoesNotExist, ValueError):
+        raise Http404
+    except ValueError:
+        raise Http404
+
     is_user_authenticated = request.user.is_authenticated
     params = {
-        'issueURL': request.GET.get('source'),
+        'bounty': bounty,
         'githubUsername': request.GET.get('githubUsername'),
         'title': _('Submit Work'),
         'active': 'fulfill_bounty',
@@ -511,11 +554,28 @@ def fulfill_bounty(request):
     return TemplateResponse(request, 'fulfill_bounty.html', params)
 
 
-def increase_bounty(request):
-    """Increase a bounty (funder)"""
-    issue_url = request.GET.get('source')
+def increase_bounty(request, pk):
+    """Increase a bounty as the funder.
+
+    Args:
+        pk (int): The primary key of the bounty to be increased.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The increase bounty view.
+
+    """
+    try:
+        bounty = Bounty.objects.get(pk=pk)
+    except (Bounty.DoesNotExist, ValueError):
+        raise Http404
+    except ValueError:
+        raise Http404
+
     params = {
-        'issue_url': issue_url,
+        'bounty': bounty,
         'title': _('Increase Bounty'),
         'active': 'increase_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
@@ -523,27 +583,31 @@ def increase_bounty(request):
         'conf_time_spread': conf_time_spread(),
     }
 
-    try:
-        bounties = Bounty.objects.current().filter(github_url=issue_url)
-        if bounties:
-            bounty = bounties.order_by('pk').first()
-            params['standard_bounties_id'] = bounty.standard_bounties_id
-            params['bounty_owner_address'] = bounty.bounty_owner_address
-            params['value_in_token'] = bounty.value_in_token
-            params['token_address'] = bounty.token_address
-    except Bounty.DoesNotExist:
-        pass
-    except Exception as e:
-        print(e)
-        logging.error(e)
-
     return TemplateResponse(request, 'increase_bounty.html', params)
 
 
-def kill_bounty(request):
-    """Kill an expired bounty."""
+def cancel_bounty(request, pk):
+    """Kill an expired bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be cancelled.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The cancel bounty view.
+
+    """
+    try:
+        bounty = Bounty.objects.get(pk=pk)
+    except Bounty.DoesNotExist:
+        raise Http404
+    except ValueError:
+        raise Http404
+
     params = {
-        'issueURL': request.GET.get('source'),
+        'bounty': bounty,
         'title': _('Kill Bounty'),
         'active': 'kill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
@@ -554,7 +618,7 @@ def kill_bounty(request):
     return TemplateResponse(request, 'kill_bounty.html', params)
 
 
-def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
+def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):
     """Display the bounty details.
 
     Args:
@@ -597,10 +661,12 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
     if issue_url:
         try:
             bounties = Bounty.objects.current().filter(github_url=issue_url)
+            if stdbounties_id:
+                bounties.filter(standard_bounties_id=stdbounties_id)
             if bounties:
-                bounty = bounties.order_by('pk').first()
+                bounty = bounties.order_by('-pk').first()
                 if bounties.count() > 1 and bounties.filter(network='mainnet').count() > 1:
-                    bounty = bounties.filter(network='mainnet').order_by('pk').first()
+                    bounty = bounties.filter(network='mainnet').order_by('-pk').first()
                 # Currently its not finding anyting in the database
                 if bounty.title and bounty.org_name:
                     params['card_title'] = f'{bounty.title} | {bounty.org_name} Funded Issue Detail | Gitcoin'
@@ -609,6 +675,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
 
                 params['bounty_pk'] = bounty.pk
                 params['network'] = bounty.network
+                params['stdbounties_id'] = bounty.standard_bounties_id
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
         except Bounty.DoesNotExist:
@@ -785,17 +852,21 @@ def sync_web3(request):
                 did_change = False
                 max_tries_attempted = False
                 counter = 0
+                url = None
                 while not did_change and not max_tries_attempted:
-                    did_change, _, _ = web3_process_bounty(bounty)
+                    did_change, _, new_bounty = web3_process_bounty(bounty)
                     if not did_change:
                         print("RETRYING")
                         time.sleep(3)
                         counter += 1
                         max_tries_attempted = counter > 3
+                    if new_bounty:
+                        url = new_bounty.url
                 result = {
                     'status': '200',
                     'msg': "success",
-                    'did_change': did_change
+                    'did_change': did_change,
+                    'url': url,
                 }
 
     return JsonResponse(result, status=result['status'])
@@ -824,56 +895,56 @@ def apitos(request):
 
 
 def toolbox(request):
-    access_token = request.GET.get('token')    
+    access_token = request.GET.get('token')
     if access_token and is_github_token_valid(access_token):
         helper_handle_access_token(request, access_token)
 
-    basic_tools = Tool.objects.filter(category='BASIC')
-    advanced_tools = Tool.objects.filter(category='ADVANCED')
-    community_tools = Tool.objects.filter(category='COMMUNITY')
-    to_build_toos = Tool.objects.filter(category='TOOLS_TO_BUILD')
-    alpha_tools = Tool.objects.filter(category='ALPHA')
-    coming_soon_tools = Tool.objects.filter(category='COMING_SOON')
-    for_fun_tools = Tool.objects.filter(category='FOR_FUN')
+    tools = Tool.objects.prefetch_related('votes').all()
+
     actors = [{
         "title": _("Basics"),
         "description": _("Accelerate your dev workflow with Gitcoin\'s incentivization tools."),
-        "tools": basic_tools
-      }, {
-          "title": _("Advanced"),
-          "description": _("Take your OSS game to the next level!"),
-          "tools": advanced_tools
-      }, {
-          "title": _("Community"),
-          "description": _("Friendship, mentorship, and community are all part of the process."),
-          "tools": community_tools
-       }, {
-          "title": _("Tools to BUIDL Gitcoin"),
-          "description": _("Gitcoin is built using Gitcoin.  Purdy cool, huh? "),
-          "tools": to_build_toos
-       }, {
-          "title": _("Tools in Alpha"),
-          "description": _("These fresh new tools are looking for someone to test ride them!"),
-          "tools": alpha_tools
-       }, {
-           "title": _("Tools Coming Soon"),
-           "description": _("These tools will be ready soon.  They'll get here sooner if you help BUIDL them :)"),
-           "tools": coming_soon_tools
-       }, {
-           "title": _("Just for Fun"),
-           "description": _("Some tools that the community built *just because* they should exist."),
-           "tools": for_fun_tools
-        }]
+        "tools": tools.filter(category=Tool.CAT_BASIC)
+    }, {
+        "title": _("Advanced"),
+        "description": _("Take your OSS game to the next level!"),
+        "tools": tools.filter(category=Tool.CAT_ADVANCED)
+    }, {
+        "title": _("Community"),
+        "description": _("Friendship, mentorship, and community are all part of the process."),
+        "tools": tools.filter(category=Tool.CAT_COMMUNITY)
+    }, {
+        "title": _("Tools to BUIDL Gitcoin"),
+        "description": _("Gitcoin is built using Gitcoin.  Purdy cool, huh? "),
+        "tools": tools.filter(category=Tool.CAT_BUILD)
+    }, {
+        "title": _("Tools in Alpha"),
+        "description": _("These fresh new tools are looking for someone to test ride them!"),
+        "tools": tools.filter(category=Tool.CAT_ALPHA)
+    }, {
+        "title": _("Tools Coming Soon"),
+        "description": _("These tools will be ready soon.  They'll get here sooner if you help BUIDL them :)"),
+        "tools": tools.filter(category=Tool.CAT_COMING_SOON)
+    }, {
+        "title": _("Just for Fun"),
+        "description": _("Some tools that the community built *just because* they should exist."),
+        "tools": tools.filter(category=Tool.CAT_FOR_FUN)
+    }]
 
     # setup slug
     for key in range(0, len(actors)):
         actors[key]['slug'] = slugify(actors[key]['title'])
 
+    profile_up_votes_tool_ids = ''
+    profile_down_votes_tool_ids = ''
     profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
-    ups = list(ToolVote.objects.filter(profile_id = profile_id, value = 1).values_list('tool', flat=True))
-    profile_up_votes_tool_ids = ','.join(str(x) for x in ups)
-    downs = list(ToolVote.objects.filter(profile_id = profile_id, value = -1).values_list('tool', flat=True))
-    profile_down_votes_tool_ids = ','.join(str(x) for x in downs)
+
+    if profile_id:
+        ups = list(request.user.profile.votes.filter(value=1).values_list('tool', flat=True))
+        profile_up_votes_tool_ids = ','.join(str(x) for x in ups)
+        downs = list(request.user.profile.votes.filter(value=-1).values_list('tool', flat=True))
+        profile_down_votes_tool_ids = ','.join(str(x) for x in downs)
+
     context = {
         "active": "tools",
         'title': _("Toolbox"),
@@ -886,6 +957,7 @@ def toolbox(request):
         'profile_down_votes_tool_ids': profile_down_votes_tool_ids
     }
     return TemplateResponse(request, 'toolbox.html', context)
+
 
 @csrf_exempt
 @require_POST
@@ -913,6 +985,7 @@ def vote_tool_up(request, tool_id):
         score_delta = 1
     return JsonResponse({'success': True, 'score_delta': score_delta})
 
+
 @csrf_exempt
 @require_POST
 def vote_tool_down(request, tool_id):
@@ -935,9 +1008,10 @@ def vote_tool_down(request, tool_id):
             score_delta = -2
     except ToolVote.DoesNotExist:
         vote = ToolVote.objects.create(profile_id=profile_id, value=-1)
-        tool.votes.add(vote)        
+        tool.votes.add(vote)
         score_delta = -1
-    return JsonResponse({'success': True, 'score_delta': score_delta })
+    return JsonResponse({'success': True, 'score_delta': score_delta})
+
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)

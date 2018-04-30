@@ -68,27 +68,37 @@ urlpatterns = [
 
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
+
+    # action URLs
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
+    re_path(r'^issue/fulfill/(?P<pk>.*)?', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
+    re_path(r'^issue/accept/(?P<pk>.*)?', dashboard.views.accept_bounty, name='process_funding'),
+    re_path(r'^issue/increase/(?P<pk>.*)?', dashboard.views.increase_bounty, name='increase_bounty'),
+    re_path(r'^issue/cancel/(?P<pk>.*)?', dashboard.views.cancel_bounty, name='kill_bounty'),
 
-    url(r'^bounty/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
-    url(r'^funding/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_funding'),
-    url(r'^bounty/process/?', dashboard.views.process_bounty, name='process_bounty'),
-    url(r'^funding/process/?', dashboard.views.process_bounty, name='process_funding'),
+    # Interests
+    path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
+    path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
+    path('actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/', dashboard.views.uninterested, name='uninterested'),
+
+    # View Bounty
     url(r'^bounty/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='bounty_details_new'),
     url(r'^funding/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='funding_details_new'),
+    url(r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)/(?P<stdbounties_id>.*)', dashboard.views.bounty_details, name='issue_details_new3'),
     url(r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='issue_details_new2'),
     url(r'^bounty/details/?', dashboard.views.bounty_details, name='bounty_details'),
     url(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
-    url(r'^legacy/funding/details/?', dashboard.views.bounty_details, name='legacy_funding_details'),
-    url(r'^funding/increase/?', dashboard.views.increase_bounty, name='increase_bounty'),
-    url(r'^funding/kill/?', dashboard.views.kill_bounty, name='kill_bounty'),
+
+    # Tips
     url(r'^tip/receive/?', dashboard.views.receive_tip, name='receive_tip'),
     url(r'^tip/send/2/?', dashboard.views.send_tip_2, name='send_tip_2'),
     url(r'^tip/send/?', dashboard.views.send_tip, name='send_tip'),
     url(r'^send/?', dashboard.views.send_tip, name='tip'),
     url(r'^tip/?', dashboard.views.send_tip, name='tip'),
+
+    # Legal
     url(r'^legal/?', dashboard.views.terms, name='legal'),
     url(r'^terms/?', dashboard.views.terms, name='_terms'),
     url(r'^legal/terms/?', dashboard.views.terms, name='terms'),
@@ -96,6 +106,8 @@ urlpatterns = [
     url(r'^legal/cookie/?', dashboard.views.cookie, name='cookie'),
     url(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
+
+    # Alpha functionality
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
     url(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
     path('actions/tool/<int:tool_id>/voteUp', dashboard.views.vote_tool_up, name='vote_tool_up'),
@@ -114,6 +126,7 @@ urlpatterns = [
     url(r'^sync/get_amount?', dashboard.helpers.amount, name='helpers_amount'),
     url(r'^sync/get_issue_details?', dashboard.helpers.issue_details, name='helpers_issue_details'),
     url(r'^sync/search_save?', dashboard.views.save_search, name='save_search'),
+
     # brochureware views
     url(r'^about/?', retail.views.about, name='about'),
     url(r'^mission/?', retail.views.mission, name='mission'),
@@ -129,6 +142,7 @@ urlpatterns = [
     url(r'^extension/chrome?', retail.views.browser_extension_chrome, name='browser_extension_chrome'),
     url(r'^extension/firefox?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
+
     # basic redirect retail views
     url(r'^press/?', retail.views.presskit, name='press'),
     url(r'^presskit/?', retail.views.presskit, name='presskit'),
@@ -185,12 +199,12 @@ urlpatterns = [
     url(r'^_administration/process_faucet_request/(.*)$', faucet.views.process_faucet_request, name='process_faucet_request'),
 
     # settings
-    url(r'^email/settings/(.*)', marketing.views.email_settings, name='email_settings'),
-    url(r'^settings/email/(.*)', marketing.views.email_settings, name='settings_email'),
-    url(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),
-    url(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
-    url(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
-    url(r'^settings/(.*)?', marketing.views.email_settings, name='feedback_settings'),
+    re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
+    re_path(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),
+    re_path(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
+    re_path(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
+    re_path(r'^settings/slack/?', marketing.views.slack_settings, name='slack_settings'),
+    re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
 
     # marketing views
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
@@ -216,10 +230,6 @@ urlpatterns = [
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-    # Interests
-    path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
-    path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
-    path('actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/', dashboard.views.uninterested, name='uninterested'),
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
     re_path(r'^logout/$', auth_views.logout, name='logout'),

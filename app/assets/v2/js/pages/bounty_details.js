@@ -63,6 +63,7 @@ var rows = [
   'issue_description',
   'bounty_owner_github_username',
   'fulfillments',
+  'network',
   'experience_level',
   'project_length',
   'bounty_type',
@@ -156,6 +157,10 @@ var callbacks = {
     if (val === null) {
       return [ null, null ];
     }
+    var rates_estimate = get_rates_estimate(val);
+
+    $('#value_in_usdt_wrapper').attr('title', '<div class="tooltip-info tooltip-sm">' + rates_estimate + '</div>');
+
     return [ 'Amount_usd', val ];
   },
   'fulfillment_accepted_on': function(key, val, result) {
@@ -166,6 +171,15 @@ var callbacks = {
     var timePeg = timeDifference(new Date(), new Date(val), false, 60 * 60);
 
     return [ 'fulfillment_accepted_on', timePeg ];
+  },
+  'network': function(key, val, result) {
+    if (val == 'mainnet') {
+      $('#network').addClass('hidden');
+      return [ null, null ];
+    }
+    var warning = 'WARNING: this is a ' + val + ' network bounty, and is NOT real money.  To see mainnet bounties, go to <a href="/explorer">the bounty explorer</a> and search for mainnet bounties.  ';
+
+    return [ 'network', warning ];
   },
   'token_value_time_peg': function(key, val, result) {
     if (val === null || typeof val == 'undefined') {
@@ -360,7 +374,11 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
 
             // clear local data
             localStorage[document.issueURL] = '';
-            document.location.href = document.location.href;
+            if (response['url']) {
+              document.location.href = response['url'];
+            } else {
+              document.location.href = document.location.href;
+            }
           } else {
             console.log('error from sync/web', response);
             error(response);
@@ -412,7 +430,6 @@ var build_detail_page = function(result) {
 
   // title
   result['title'] = result['title'] ? result['title'] : result['github_url'];
-  result['title'] = result['network'] != 'mainnet' ? '(' + result['network'] + ') ' + result['title'] : result['title'];
   $('.title').html(gettext('Funded Issue Details: ') + result['title']);
 
   // insert table onto page
@@ -482,7 +499,7 @@ var do_actions = function(result) {
       var enabled = submit_work_enabled;
       var _entry = {
         enabled: enabled,
-        href: '/funding/fulfill?source=' + result['github_url'],
+        href: result['action_urls']['fulfill'],
         text: gettext('Submit Work'),
         parent: 'right_actions',
         title: gettext('Submit work for the funder to review'),
@@ -512,7 +529,7 @@ var do_actions = function(result) {
       var enabled = kill_bounty_enabled;
       var _entry = {
         enabled: enabled,
-        href: '/funding/kill?source=' + result['github_url'],
+        href: result['action_urls']['cancel'],
         text: gettext('Cancel Bounty'),
         parent: 'right_actions',
         title: gettext('Cancel bounty and reclaim funds for this issue')
@@ -527,7 +544,7 @@ var do_actions = function(result) {
       var enabled = show_accept_submission;
       var _entry = {
         enabled: enabled,
-        href: '/funding/process?source=' + result['github_url'],
+        href: result['action_urls']['accept'],
         text: gettext('Accept Submission'),
         title: gettext('This will payout the bounty to the submitter.'),
         parent: 'right_actions',
@@ -541,7 +558,7 @@ var do_actions = function(result) {
       var enabled = increase_bounty_enabled;
       var _entry = {
         enabled: enabled,
-        href: '/funding/increase?source=' + result['github_url'],
+        href: result['action_urls']['increase'],
         text: gettext('Add Contribution'),
         parent: 'right_actions',
         title: gettext('Increase the funding for this issue'),
@@ -591,6 +608,9 @@ var pull_bounty_from_api = function() {
 
   if (typeof document.issueNetwork != 'undefined') {
     uri = uri + '&network=' + document.issueNetwork;
+  }
+  if (typeof document.issue_stdbounties_id != 'undefined') {
+    uri = uri + '&standard_bounties_id=' + document.issue_stdbounties_id;
   }
   $.get(uri, function(results) {
     results = sanitizeAPIResults(results);
