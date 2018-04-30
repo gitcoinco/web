@@ -17,5 +17,5 @@
 {% load i18n %}
 <div class="w-100 mt-2">
   <label class="form__label" for="githubPRLink">{% trans "Github PR Link" %}</label>
-  <input name='githubPRLink' id='githubPRLink' class="form__input" type="text" placeholder="https://github.com/... (optional)" value="{% if github_handle %}https://github.com/{{ github_handle }}/{% else %}{% endif %}" />
+  <input name='githubPRLink' id='githubPRLink' class="form__input" type="text" placeholder="https://github.com/{{ github_handle }}/REPO/pull/NUM (optional)" value="" />
 </div>

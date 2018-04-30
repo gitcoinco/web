@@ -24,6 +24,7 @@ import sys
 from urllib.parse import urlparse as parse
 
 from django.conf import settings
+from django.contrib.humanize.templatetags.humanize import naturaltime
 
 import rollbar
 import twitter
@@ -342,7 +343,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
         bool: Whether or not the Github comment was posted successfully.
 
     """
-    from dashboard.models import BountyFulfillment
+    from dashboard.models import BountyFulfillment, Interest
     msg = ''
     usdt_value = ""
     try:
@@ -357,9 +358,13 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     bounty_owner = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
     status_header = get_status_header(bounty)
 
-
     if profile_pairs:
-        profiles = "\n 1. ".join("[@%s](%s)" % profile for profile in profile_pairs)
+        from dashboard.utils import get_ordinal_repr  # hack for circular import issue
+        for i, profile in enumerate(profile_pairs):
+            show_dibs = event_name == 'work_started' and len(profile_pairs) > 1
+            dibs = f" ({get_ordinal_repr(i+1)} precedence)" if show_dibs else ""
+            profiles = profiles + f"\n 1. [@{profile[0]}]({profile[1]}) {dibs}"
+        profiles += "\n\n"
     if event_name == 'new_bounty':
         msg = f"{status_header}__This issue now has a funding of {natural_value} " \
               f"{bounty.token_name} {usdt_value} attached to it.__\n\n * If you would " \
@@ -388,17 +393,20 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
               "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * " \
               f"${amount_open_work} more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
     elif event_name == 'work_started':
-        sub_msg = ""
-        if len(profile_pairs) > 1:
-            sub_msg = "\n\n __Please work together__ and coordinate delivery of the issue scope. "
-        sub_msg += " \n\n On the " \
-                  f"above list? Please leave a comment to let the funder {bounty_owner_parenthesis} know your  " \
-                  "plan. If you don't leave a comment, the funder may expire your submission at their discretion."
-
-        msg = f"{status_header}__Work has been started on the {natural_value} {bounty.token_name} {usdt_value} funding " \
-              f"by__: \n 1. {profiles} {sub_msg} \n\n * Learn more [on the Gitcoin Issue Details page]({absolute_url})\n " \
-              "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * " \
-              f"${amount_open_work} more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
+        from_now = naturaltime(bounty.expires_date)
+        msg = f"{status_header}__Work has been started__.\n{profiles} has committed to working on this project to be " \
+              f"completed {from_now}.\n\n"
+        bounty_owner_clear = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
+        try:
+            if profile_pairs:
+                for profile in profile_pairs:
+                    interests = Interest.objects.filter(profile__handle=profile[0], bounty=bounty)
+                    for interest in interests:
+                        if interest.issue_message.strip():
+                            msg += f"\n__Please answer following questions/comments__ {bounty_owner_clear}:\n\n" + \
+                                  interest.issue_message
+        except Exception as e:
+            print(e)
     elif event_name == 'work_submitted':
         sub_msg = ""
         if bounty.fulfillments.count():
