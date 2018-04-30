@@ -41,11 +41,11 @@ Here's how to get started in the community
 We believe that a great way to build new skills is to learn by doing, and Gitcoin's core product (Bounties) supports that.
 
 Here's how to get started with bounties:
-- Check out the open bounties at https://gitcoin.co/explorer
-- Post a bounty of your own at https://gitcoin.co/new
-- Send a tip to any github username at https://gitcoin.co/tip
+- Developer? Check out the open bounties at https://gitcoin.co/explorer
+- Repo Owner? Accellerate your dev progress by posting a bounty of your own at https://gitcoin.co/new
+- Send a tip to any github username with https://gitcoin.co/tip
 
-We have more details in our onboarding guide at http://gitcoin.co/onboard
+We have more details in our onboarding guide at https://gitcoin.co/onboard . We also have a FAQ and tutorials available at https://gitcoin.co/help
 
 If you have any feedback for the team, or just want to say hi, this is them:
 - @owocki, @vivek, @Pixelant, @mbeacom, @coderberry, @justin-bean
