@@ -358,9 +358,13 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     bounty_owner = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
     status_header = get_status_header(bounty)
 
-
     if profile_pairs:
-        profiles = "\n 1. ".join("[@%s](%s)" % profile for profile in profile_pairs)
+        from dashboard.utils import get_ordinal_repr  # hack for circular import issue
+        for i, profile in enumerate(profile_pairs):
+            show_dibs = event_name == 'work_started' and len(profile_pairs) > 1
+            dibs = f" ({get_ordinal_repr(i+1)} precedence)" if show_dibs else ""
+            profiles = profiles + f"\n 1. [@{profile[0]}]({profile[1]}) {dibs}"
+        profiles += "\n\n"
     if event_name == 'new_bounty':
         msg = f"{status_header}__This issue now has a funding of {natural_value} " \
               f"{bounty.token_name} {usdt_value} attached to it.__\n\n * If you would " \

@@ -46,6 +46,22 @@
             <textarea id="issue-message" class="add-interest-modal__form--textarea form__input"></textarea>
           </div>
         </div>
+        <div class="add-interest-modal__form--item">
+          <div class=checkbox_container>
+            <input type="checkbox" id="checkbox2" class="add-interest-modal__form form__input" value="1">
+            <label for="checkbox2">
+              {% trans "I understand that if anyone has started work on this ticket before me, they may have precedence." %}
+            </label>
+          </div>
+        </div>
+        <div class="add-interest-modal__form--item">
+          <div class=checkbox_container>
+            <input type="checkbox" id="checkbox1" class="add-interest-modal__form form__input" value="1">
+            <label for="checkbox1">
+              {% trans "I agree to keep the funder informed of my progress every few days." %}
+            </label>
+          </div>
+        </div>
         <button class="add-interest-modal__form--submit row btn btn-sm btn-darkBlue btn-interested float-right" type="submit">{% trans "Submit" %}</button>
       </form>
     </div>
