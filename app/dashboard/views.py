@@ -882,7 +882,7 @@ def sync_web3(request):
                 counter = 0
                 url = None
                 while not did_change and not max_tries_attempted:
-                    did_change, _, new_bounty = web3_process_bounty(bounty)
+                    did_change, _, new_bounty = web3_process_bounty(bounty, True)
                     if not did_change:
                         print("RETRYING")
                         time.sleep(3)
