@@ -153,9 +153,9 @@ d3.json(url, function(json) {
 });
 
 var load_data = function(){
+    d3.json(url, function(json) {
     var comp_value = $('#myRange').val();
     $('h2').html(new Date(comp_value * 1000).toISOString().slice(0,10));
-    d3.json(url, function(json) {
 
       for(var i in json.links){
         var link = json.links[i];
