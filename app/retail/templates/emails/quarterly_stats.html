@@ -183,7 +183,9 @@
     </div>
     <div class="centered-contents stat-box">
         <div class="stat-img">
-
+            {% for hunter in hunters %}
+            <img style="border-radius: 50%; width: 40%;" src="https://gitcoin.co/static/avatar/{{hunter}}" />
+            {% endfor %}
         </div>
         <div class="stat-contents">
             <p>The top {{hunters|length}} hunters in this quarter were
@@ -209,6 +211,7 @@
     </div>
     <div class="centered-contents stat-box">
         <div class="stat-img">
+            <img style="width: 100%; border-radius: 50%;" src="https://gitcoin.co/static/avatar/{{largest_bounty.bounty_owner_github_username}}" />
         </div>
         <div class="stat-contents">
             <p>
