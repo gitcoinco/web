@@ -751,7 +751,7 @@ def maybe_notify_user_removed_github(bounty, username, last_heard_from_user_days
 
     msg = f"""{status_header}@{username} has been removed for inactivity and [the issue]({bounty.url}) has been returned to an ‘Open’ Status. Let us know if you believe this has been done in error!
 
-* [x] warning 1 ({num_days_back_to_warn} days)
+* [x] warning ({num_days_back_to_warn} days)
 * [x] auto removal ({num_days_back_to_delete_interest} days)
 """
 
@@ -763,10 +763,8 @@ def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days):
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
 
-    first_warning = 'x'
-    second_warning = 'x' if last_heard_from_user_days > num_days_back_to_warn else ' '
     msg = f"""@{username} Hello from Gitcoin Core - are you still working on this issue? Please submit a WIP PR or comment back within the next 3 days or you will be removed from this ticket and it will be returned to an ‘Open’ status. Please let us know if you have questions!
-* [{first_warning}] warning 1 ({num_days_back_to_warn} days)
+* [x] warning ({num_days_back_to_warn} days)
 * [ ] auto removal ({num_days_back_to_delete_interest} days)
 """
 
