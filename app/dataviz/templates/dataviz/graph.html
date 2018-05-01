@@ -71,7 +71,7 @@ rect {
 <p>{{comments}}
 </p>
 
-<input style="width: 100%;" type="range" min="1519862400" max="1525147689" value="1519862400" class="slider" id="myRange">
+<input style="width: 100%;" type="range" min="1519862400" max="{{max_time}}" value="1519862400" class="slider" id="myRange">
 <input type="button" value="Auto mode" onclick="grow_over_time()">
 
 <div style="text-align: center; width: 100%;">
@@ -104,7 +104,7 @@ var grow_over_time = function(){
         $('#myRange').val(new_val);
         console.log(new_val);
         load_data();
-    }, 4000)    
+    }, 2000)    
 }
 
 

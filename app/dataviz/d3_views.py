@@ -1,6 +1,7 @@
 import json
 import math
 import random
+import time
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
@@ -624,6 +625,7 @@ def viz_graph(request, _type, template='graph'):
         'viz_type': _type,
         'type_options': _type_options,
         'page_route': page_route,
+        'max_time': int(time.time()),
     }
     return TemplateResponse(request, f'dataviz/{template}.html', params)
 
