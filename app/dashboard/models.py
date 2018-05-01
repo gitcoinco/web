@@ -944,6 +944,13 @@ class Profile(SuperModel):
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
 
+    def has_abandoned_work(self):
+        user_actions = UserAction.objects.filter(
+            profile=self,
+            action='bounty_abandonment_final',
+            )
+        return user_actions.exists()
+
     @property
     def authors(self):
         auto_include_contributors_with_count_gt = 40

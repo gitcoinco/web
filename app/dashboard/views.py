@@ -134,7 +134,6 @@ def get_interest_modal(request):
     return TemplateResponse(request, 'addinterest.html', context)
 
 
-@require_POST
 @csrf_exempt
 @require_POST
 def new_interest(request, bounty_id):
@@ -155,8 +154,11 @@ def new_interest(request, bounty_id):
     if access_token:
         helper_handle_access_token(request, access_token)
         github_user_data = get_github_user_data(access_token)
-        profile = Profile.objects.filter(handle=github_user_data['login']).first()
+        profile = Profile.objects.prefetch_related('bounty_set') \
+            .filter(handle=github_user_data['login']).first()
         profile_id = profile.pk
+    else:
+        profile = request.user.profile if profile_id else None
 
     if not profile_id:
         return JsonResponse(
@@ -174,7 +176,13 @@ def new_interest(request, bounty_id):
     is_working_on_too_much_stuff = num_active >= num_issues
     if is_working_on_too_much_stuff:
         return JsonResponse({
-            'error': f'You may only work on max of {num_issues} issues at once.',
+            'error': _(f'You may only work on max of {num_issues} issues at once.'),
+            'success': False},
+            status=401)
+
+    if profile.has_abandoned_work():
+        return JsonResponse({
+            'error': _('Due to a prior abandoned bounty, you are unable to start work at this time. Please contact support.'),
             'success': False},
             status=401)
 
