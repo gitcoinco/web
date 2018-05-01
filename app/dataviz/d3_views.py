@@ -572,7 +572,7 @@ def viz_graph(request, _type, template='graph'):
 
         if _type in ['what_future_could_look_like', 'all']:
             last_node = None
-            created = 99999999999
+            created = 1525147679
             nodes = Profile.objects.exclude(github_access_token='').all()
             for profile in nodes:
                 node = profile.handle.lower()
