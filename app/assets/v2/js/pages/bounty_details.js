@@ -724,7 +724,7 @@ var render_activity = function(result) {
         created_on: _interested.created,
         age: timeDifference(new Date(result['now']), new Date(_interested.created)),
         status: 'started',
-        uninterest_possible: isBountyOwner(result)
+        uninterest_possible: isBountyOwner(result) || document.isStaff
       });
     });
   }
