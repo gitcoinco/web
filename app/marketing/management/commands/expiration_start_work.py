@@ -25,7 +25,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 import pytz
-from dashboard.models import Bounty, Interest
+from dashboard.models import Bounty, Interest, UserAction
 from dashboard.notifications import (
     maybe_notify_bounty_user_removed_to_slack, maybe_notify_bounty_user_warned_removed_to_slack,
     maybe_notify_user_removed_github, maybe_warn_user_removed_github,
