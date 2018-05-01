@@ -178,7 +178,7 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
 
-    if profile.has_abandoned_work:
+    if profile.has_abandoned_work():
         return JsonResponse({
             'error': f'Due to a prior abandoned bounty, you are unable to start work at this time.  Please contact support..',
             'success': False},
