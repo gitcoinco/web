@@ -90,7 +90,7 @@ def get_platform_wide_stats(since_last_n_days=90):
     last_n_days = datetime.now() - timedelta(days=since_last_n_days)
     bounties = Bounty.objects.stats_eligible().filter(created_on__gte=last_n_days)
     total_bounties = bounties.count()
-    completed_bounties = bounties.filter(idx_status__in=['completed'])
+    completed_bounties = bounties.filter(idx_status__in=['done'])
     num_completed_bounties = completed_bounties.count()
     bounties_completion_percent = (num_completed_bounties / total_bounties) * 100
 
@@ -103,13 +103,15 @@ def get_platform_wide_stats(since_last_n_days=90):
     else:
         avg_fund_per_bounty = 0
 
+    avg_fund_per_bounty = float('%.2f' % avg_fund_per_bounty)
+    completed_bounties_fund = float('%.2f' % completed_bounties_fund)
+
     largest_bounty = Bounty.objects.filter(created_on__gte=last_n_days).order_by('-value_in_token').first()
 
     bounty_fulfillments = BountyFulfillment.objects.filter(
         accepted_on__gte=last_n_days).order_by('-bounty__value_in_token')[:5]
-    profiles = bounty_fulfillments.values_list('profile')
-    hunters = Profile.objects.filter(id__in=profiles)
-    hunters = [h.handle for h in hunters]
+    profiles = bounty_fulfillments.values_list('fulfiller_github_username')
+    hunters = [username[0] for username in profiles]
 
     # Overall transactions across the network are hard-coded for now
     total_transaction_in_usd = "132,810"
