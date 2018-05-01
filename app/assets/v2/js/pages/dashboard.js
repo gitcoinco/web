@@ -336,7 +336,7 @@ var paint_bounties_in_viewport = function(start, max) {
   });
   document.is_painting_now = false;
 
-  if (document.referrer.search('/onboard')) {
+  if (document.referrer.search('/onboard') != -1) {
     $('.bounty_row').each(function(index) {
       if (index > 2)
         $(this).addClass('hidden');
@@ -509,7 +509,7 @@ var resetFilters = function() {
 };
 
 (function() {
-  if (document.referrer.search('/onboard')) {
+  if (document.referrer.search('/onboard') != -1) {
     $('#sidebar_container').addClass('invisible');
     $('#dashboard-title').addClass('hidden');
     $('#onboard-dashboard').removeClass('hidden');
