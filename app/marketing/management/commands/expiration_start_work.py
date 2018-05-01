@@ -67,7 +67,7 @@ class Command(BaseCommand):
         if settings.DEBUG:
             days = range(1, 1000)
         for day in days:
-            interests = Interest.objects.filter(
+            interests = Interest.objects.select_related('profile').filter(
                 created__gte=(timezone.now() - timezone.timedelta(days=(day+1))),
                 created__lt=(timezone.now() - timezone.timedelta(days=day)),
             )
