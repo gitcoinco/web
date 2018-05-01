@@ -19,12 +19,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import os
 
-from flask import Flask
+from flask import Flask, abort, jsonify, redirect, request
 from slackclient import SlackClient
 from slackeventsapi import SlackEventAdapter
 
 SLACK_VERIFICATION_TOKEN = os.environ.get('SLACK_VERIFICATION_TOKEN', '')
 SLACK_WELCOMEBOT_TOKEN = os.environ.get('SLACK_WELCOMEBOT_TOKEN', '')
+SLACK_TEAM_ID = os.environ.get('SLACK_TEAM_ID', '')
+INDEX_REDIRECT_URL = os.environ.get('INDEX_REDIRECT_URL', 'https://gitcoin.co/slack')
+
 app = Flask(__name__)
 
 
@@ -48,7 +51,7 @@ We believe that a great way to build new skills is to learn by doing, and Gitcoi
 
 Here's how to get started with bounties:
 - Developer? Check out the open bounties at https://gitcoin.co/explorer
-- Repo Owner? Accellerate your dev progress by posting a bounty of your own at https://gitcoin.co/new
+- Repo Owner? Accelerate your dev progress by posting a bounty of your own at https://gitcoin.co/new
 - Send a tip to any github username with https://gitcoin.co/tip
 
 We have more details in our onboarding guide at https://gitcoin.co/onboard . We also have a FAQ and tutorials available at https://gitcoin.co/help
@@ -65,10 +68,27 @@ Welcome_bot (and the Gitcoin Team)
 MESSAGE = get_default_message()
 
 
+def is_request_valid(request, team_id=''):
+    token_valid = request.form['token'] == SLACK_VERIFICATION_TOKEN
+    team_id_valid = True
+
+    if team_id:
+        team_id_valid = request.form['team_id'] == team_id
+
+    return token_valid and team_id_valid
+
+
 @app.route('/')
 def index():
     """Handle the index route."""
-    return ""
+    redirect(INDEX_REDIRECT_URL, code=302)
+
+
+@app.route('/welcomebot', methods=['POST'])
+def welcomebot():
+    if not is_request_valid(request):
+        abort(400)
+    return jsonify(response_type='ephemeral', text=MESSAGE)
 
 
 slack_events_adapter = SlackEventAdapter(
