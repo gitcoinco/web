@@ -81,7 +81,7 @@ def is_request_valid(request, team_id=''):
 @app.route('/')
 def index():
     """Handle the index route."""
-    redirect(INDEX_REDIRECT_URL, code=302)
+    return redirect(INDEX_REDIRECT_URL, code=302)
 
 
 @app.route('/welcomebot', methods=['POST'])
