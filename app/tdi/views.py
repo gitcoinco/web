@@ -28,10 +28,11 @@ from django.core.validators import validate_email
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.utils import translation
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
-from marketing.mails import send_mail
+from marketing.mails import send_mail, setup_lang
 from marketing.utils import invite_to_slack
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from ratelimit.decorators import ratelimit
@@ -241,10 +242,15 @@ def process_accesscode_request(request, pk):
 
         from_email = settings.PERSONAL_CONTACT_EMAIL
         to_email = obj.email
-        subject = request.POST.get('subject')
-        body = request.POST.get('body').replace('[code]', invitecode)
-        send_mail(from_email, to_email, subject, body, from_name=_("Kevin from Gitcoin.co"))
-        messages.success(request, _('Invite sent'))
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            subject = request.POST.get('subject')
+            body = request.POST.get('body').replace('[code]', invitecode)
+            send_mail(from_email, to_email, subject, body, from_name=_("Kevin from Gitcoin.co"))
+            messages.success(request, _('Invite sent'))
+        finally:
+            translation.activate(cur_language)
 
         return redirect('/_administration/tdi/whitepaperaccessrequest/?processed=False')
 

@@ -24,7 +24,7 @@
       </div>
       <div class="col-12 options">
         <div class="form__radio option">
-          <input name="idx_status" id="status_open" type="radio" value="open" val-ui='Open' checked />
+          <input name="idx_status" id="status_open" type="radio" value="open" val-ui='Open' />
           <label class="filter-label" for=status_open>1 {% trans "Open" %}</label>
         </div>
 
@@ -54,7 +54,7 @@
         </div>
 
         <div class="form__radio option">
-          <input name="idx_status" id="any_status" type="radio" value="any" />
+          <input name="idx_status" id="any_status" type="radio" value="any" checked />
           <label class="filter-label" for=any_status>{% trans "Any" %}</label>
         </div>
       </div>
@@ -116,6 +116,11 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="col">
+      <div class="col-12 subheading font-body accordion">{% trans "Tech Stack" %}</div>
+      <div class="col-12 panel options" id="tech-stack-options"></div>
     </div>
 
     <div class="col">

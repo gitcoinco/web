@@ -1,128 +1,123 @@
 {% comment %}
-    Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
-</head>
-
-<body class="interior {{ active }}">
+  </head>
+  <body class="interior {{ active }}">
     <div class="container-fluid header dash">
-        {% include 'shared/nav.html' %}
+      {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-
-        <div class="col body">
-            <div class="container-fluid no-gutter">
-                <div class="form-container" id="form_container">
-                    {% include 'shared/faucet_no_metamask_error.html' %}
-                    {% include 'shared/faucet_over_balance_error.html' %}
-                    {% include 'shared/faucet_unlock_metamask.html' %}
-                    <div id="faucet_form">
-                        <div class="faucet-form" id="primary_form">
-                            <h3>{% trans "Faucet Request" %} <span id="alpha">{% trans "Alpha" %}</span></h3>
-                            <p class="hidden-mobile">{% trans "Pursuant to making ethereum and Gitcoin broadly accessible to everyone
-                            Gitcoin may provide a minimal faucet distribution of ether so you may easily
-                            claim issues and gain more ether." %}</p>
-                            <div class="faucet-form-img">
-                                <div class="faucet-form-svg">
-                                    {% include 'svgs/gas.svg' %}
-                                </div>
-                            </div>
-                            <div class="hidden-mobile">
-                                {% include 'shared/faucet_network_status.html' %}
-                            </div>
-                            <input type="hidden" id="currentFaucet" name="currentFaucet" value="{{ faucet_amount }}">
-                            <p class="hidden-mobile">
-                                {% trans "Please note, all input fields are required. Comment is optional." %}
-                            </p>
-                            <div class="faucet-input-group">
-                                <label for="githubProfile" class="form__label float-left">{% trans "Github Profile" %}
-                                    {% if user.is_authenticated %}
-                                    (<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>):
-                                    {% endif %}
-                                </label>
-                                <input name='githubProfile' id="githubProfile" class="form__input" type="text" placeholder="@you" value="{% if github_handle %}{{ github_handle }}{% endif %}" disabled=disabled />
-                                <span id="githubProfileHelpBlock" class="help-block" style="display:hidden;color:red;"> </span>
-                            </div>
-                            <div class="faucet-input-group">
-                                <label for="emailAddress" class="form__label float-left" >{% trans "Email Address" %}:</label>
-                                <input name='emailAddress' id="emailAddress" class="form__input" type="text" placeholder="What is your email address?" value="{% if email %}{{ email }}{% endif %}" />
-                                <span id="emailAddressHelpBlock" class="help-block" style="display:hidden;color:red;"></span>
-                            </div>
-                            <div class="faucet-input-group">
-                                <label for="comment" class="form__label float-left"> {% trans "Comment" %} (<span id="charcount">500</span> {% trans "char left" %}):</label>
-                                <textarea id="comment" class="form__input" rows="4" cols="50" placeholder="Why do you need ETH?"></textarea>
-                            </div>
-                            <div class="faucet-input-group">
-                                <label for="ethAddress" class="form__label float-left">{% trans "ETH Address" %}:</label>
-                                <input placeholder="0x0" disabled id="ethAddress" class="form__input" type="text" value="{% if ethAddress %}{{ ethAddress }}{% endif %}" />
-                            </div>
-                            <div class="form__footer">
-                                <a class="button button--primary" role="button" id="submitFaucet" href="#">{% trans "Proceed" %}</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="success_container" class="faucet_response">
-                        <h3>{% trans "Request Received" %}</h3>
-                        {% include 'svgs/success.svg' %}
-                        <div class="fail_header"></div>
-                        <div class="fail_message">{% trans "You request for a faucet distribution has been received. An administrator will review your request shortly and arrange a deposit if approved." %}
-                        </div>
-                    </div>
-                    <div id="fail_container" class="faucet_response">
-                        <div class="frheader" style="color:red;">
-                            {% trans "There was an error" %}:
-                        </div>
-                        <div style="font-size: 18px">
-                            {% trans "Something went wrong submitting your request" %}:
-                        </div>
-                        <div class="frmessage" id="fail_message" style="font-size: 16px"></div>
-                    </div>
+      <div class="col body">
+        <div class="container-fluid no-gutter">
+          <div class="form-container" id="form_container">
+            {% include 'shared/faucet_no_metamask_error.html' %}
+            {% include 'shared/faucet_over_balance_error.html' %}
+            {% include 'shared/faucet_unlock_metamask.html' %}
+            <div id="faucet_form">
+              <div class="faucet-form" id="primary_form">
+                <h3>{% trans "Faucet Request" %} <span id="alpha">{% trans "Alpha" %}</span></h3>
+                <p class="hidden-mobile">
+                  {% blocktrans %}
+                  Pursuant to making Ethereum and Gitcoin broadly accessible to everyone Gitcoin
+                  may provide a minimal faucet distribution of ether so you may easily
+                  claim issues and gain more ether.
+                  {% endblocktrans %}
+                </p>
+                <div class="faucet-form-img">
+                  <div class="faucet-form-svg">
+                    {% include 'svgs/gas.svg' %}
+                  </div>
                 </div>
-                <div class="col-12 offset-md-1 col-md-10">
-                    {% include 'shared/newsletter.html' %}
+                <div class="hidden-mobile">
+                  {% include 'shared/faucet_network_status.html' %}
                 </div>
+                <input type="hidden" id="currentFaucet" name="currentFaucet" value="{{ faucet_amount }}">
+                <p class="hidden-mobile">
+                  {% trans "Please note, all input fields are required. Comment is optional." %}
+                </p>
+                <div class="faucet-input-group">
+                  <label for="githubProfile" class="form__label float-left">{% trans "Github Profile" %}
+                    {% if not user.is_authenticated %}
+                    (<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>):
+                    {% endif %}
+                  </label>
+                  <input name='githubProfile' id="githubProfile" class="form__input" type="text" placeholder="@you" value="{% if github_handle %}{{ github_handle }}{% endif %}" disabled=disabled />
+                  <span id="githubProfileHelpBlock" class="help-block" style="display:hidden;color:red;"> </span>
+                </div>
+                <div class="faucet-input-group">
+                  <label for="emailAddress" class="form__label float-left" >{% trans "Email Address" %}:</label>
+                  <input name='emailAddress' id="emailAddress" class="form__input" type="text" placeholder="What is your email address?" value="{% if email %}{{ email }}{% endif %}" />
+                  <span id="emailAddressHelpBlock" class="help-block" style="display:hidden;color:red;"></span>
+                </div>
+                <div class="faucet-input-group">
+                  <label for="comment" class="form__label float-left"> {% trans "Comment" %} (<span id="charcount">500</span> {% trans "char left" %}):</label>
+                  <textarea id="comment" class="form__input" rows="4" cols="50" placeholder="Why do you need ETH?"></textarea>
+                </div>
+                <div class="faucet-input-group">
+                  <label for="ethAddress" class="form__label float-left">{% trans "ETH Address" %}:</label>
+                  <input placeholder="0x0" disabled id="ethAddress" class="form__input" type="text" value="{% if ethAddress %}{{ ethAddress }}{% endif %}" />
+                </div>
+                <div class="form__footer">
+                  <a class="button button--primary" role="button" id="submitFaucet" href="#">{% trans "Proceed" %}</a>
+                </div>
+              </div>
             </div>
+            <div id="success_container" class="faucet_response">
+              <h3>{% trans "Request Received" %}</h3>
+              {% include 'svgs/success.svg' %}
+              <div class="fail_header"></div>
+              <div class="fail_message">{% trans "Your request for a faucet distribution has been received. An administrator will review your request shortly (up to 24 hours on weekdays, on next business day if on weekends / holidays) and arrange a deposit if approved." %}
+              </div>
+            </div>
+            <div id="fail_container" class="faucet_response">
+              <div class="frheader" style="color:red;">
+                {% trans "There was an error" %}:
+              </div>
+              <div style="font-size: 18px">
+                {% trans "Something went wrong submitting your request" %}:
+              </div>
+              <div class="frmessage" id="fail_message" style="font-size: 16px"></div>
+            </div>
+          </div>
+          <div class="col-12 offset-md-1 col-md-10">
+            {% include 'shared/newsletter.html' %}
+          </div>
         </div>
+      </div>
     </div>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/ga.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
 
-{% csrf_token %}
-<script type="text/javascript">
-// using jQuery
-var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
-</script>
-
-</body>
-
-
-<!-- jQuery -->
-<script src="{% static "v2/js/amounts.js" %}"></script>
-<script src="{% static "v2/js/abi.js" %}"></script>
-<script src="{% static "v2/js/tokens.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
-<script src="{% static "v2/js/pages/faucet_form.js" %}"></script>
-
+  {% csrf_token %}
+  <script type="text/javascript">
+  // using jQuery
+  var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+  </script>
+  </body>
+  <script src="{% static "v2/js/amounts.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/pages/faucet_form.js" %}"></script>
 </html>
