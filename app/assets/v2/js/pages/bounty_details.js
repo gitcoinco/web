@@ -136,11 +136,11 @@ var callbacks = {
     return [ 'bounty_owner_name', result.metadata.fullName ];
   },
   'issue_keywords': function(key, val, result) {
+    if (!result.metadata.issueKeywords || result.metadata.issueKeywords.length == 0)
+      return [ 'issue_keywords', null ];
+
     var keywords = result.metadata.issueKeywords.split(',');
     var tags = [];
-
-    if (result.metadata.issueKeywords.length == 0)
-      return [ 'issue_keywords', null ];
 
     keywords.forEach(function(keyword) {
       tags.push('<a href="/explorer/?q=' + keyword.trim() + '"><div class="tag keyword">' + keyword + '</div></a>');
@@ -429,6 +429,18 @@ var show_interest_modal = function() {
 
         var has_question = event.target[0].value;
         var issue_message = event.target[2].value;
+
+        var agree_precedence = event.target[3].checked;
+        var agree_not_to_abandon = event.target[4].checked;
+
+        if (!agree_precedence) {
+          alert('You must agree to the precedence clause.');
+          return false;
+        }
+        if (!agree_not_to_abandon) {
+          alert('You must agree not to keep the fulfiller updated on your progress.');
+          return false;
+        }
 
         $(self).attr('href', '/uninterested');
         $(self).find('span').text(gettext('Stop Work'));

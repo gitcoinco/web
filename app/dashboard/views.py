@@ -23,6 +23,7 @@ import logging
 import time
 
 from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import Http404, JsonResponse
@@ -452,6 +453,13 @@ def send_tip_2(request):
     }
 
     return TemplateResponse(request, 'yge/send2.html', params)
+
+
+@staff_member_required
+def onboard(request):
+    """Handle displaying the first time user experience flow."""
+    params = {'title': _('Onboarding Flow')}
+    return TemplateResponse(request, 'onboard.html', params)
 
 
 def dashboard(request):

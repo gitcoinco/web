@@ -153,7 +153,8 @@ def viz_chord(request, key='bounties_paid'):
                     length = (fulfillment.created_on - bounty.web3_created).seconds
                     target = fulfillment.fulfiller_github_username.lower()
                     source = bounty.bounty_owner_github_username.lower()
-                    rows.append((source, target, str(weight), str(length)))
+                    if source and target:
+                        rows.append((helper_hide_pii(source), helper_hide_pii(target), str(weight), str(length)))
 
         output_rows = []
         for row in rows:
@@ -703,10 +704,11 @@ def viz_scatterplot(request, key='hourly_rate'):
                 row = [
                     str(bf.bounty.hourly_rate),
                     str((timezone.now() - bf.accepted_on).days),
-                    bf.fulfiller_github_username,
+                    bf.bounty.org_name,
                     str(weight),
                 ]
-                rows.append(row)
+                if bf.bounty.hourly_rate:
+                    rows.append(row)
             except:
                 pass
 
