@@ -1068,6 +1068,7 @@ class Profile(SuperModel):
             bounty.value_in_eth if bounty.value_in_eth else 0
             for bounty in fulfilled_bounties
         ])
+        total_earned_eth /= 10**18
         total_earned_usd = sum([
             bounty.value_in_usdt if bounty.value_in_usdt else 0
             for bounty in fulfilled_bounties
