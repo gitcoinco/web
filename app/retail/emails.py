@@ -79,6 +79,7 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     profile = Profile.objects.get(email=to_email)
     quarterly_stats = profile.get_quarterly_stats
     params = {**quarterly_stats, **platform_wide_stats}
+    params['subscriber']= get_or_save_email_subscriber(to_email, 'internal'),
     print(params)
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
     response_txt = render_to_string("emails/quarterly_stats.txt", params)
@@ -525,4 +526,12 @@ def faucet_rejected(request):
 @staff_member_required
 def roundup(request):
     response_html, _, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def quarterly_roundup(request):
+    from marketing.utils import get_platform_wide_stats
+    platform_wide_stats = get_platform_wide_stats()
+    response_html, _ = render_quarterly_stats(settings.CONTACT_EMAIL, platform_wide_stats)
     return HttpResponse(response_html)
