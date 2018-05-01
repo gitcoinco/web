@@ -704,10 +704,11 @@ def viz_scatterplot(request, key='hourly_rate'):
                 row = [
                     str(bf.bounty.hourly_rate),
                     str((timezone.now() - bf.accepted_on).days),
-                    bf.fulfiller_github_username,
+                    bf.bounty.org_name,
                     str(weight),
                 ]
-                rows.append(row)
+                if bf.bounty.hourly_rate:
+                    rows.append(row)
             except:
                 pass
 
