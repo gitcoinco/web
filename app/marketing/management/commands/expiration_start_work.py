@@ -38,6 +38,17 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
+def record_user_action(interest, event_name, last_heard_from_user_days):
+    UserAction.objects.create(
+        profile=interest.profile,
+        action=event_name,
+        metadata={
+            'bounties': list(interest.bounty_set.values_list('pk', flat=True)),
+            'interest_pk': interest.pk,
+            'last_heard_from_user_days': last_heard_from_user_days,
+        })
+
+
 class Command(BaseCommand):
 
     help = 'lets a user know that they expressed interest in an issue and kicks them to do something about it'
@@ -105,6 +116,9 @@ class Command(BaseCommand):
 
                         if should_delete_interest:
                             print(f'executing should_delete_interest for {interest.profile} / {bounty.github_url} ')
+
+                            record_user_action(interest, 'bounty_abandonment_final', last_heard_from_user_days)
+
                             interest.delete()
 
                             # commenting on the GH issue
@@ -115,6 +129,9 @@ class Command(BaseCommand):
                             bounty_startwork_expired(interest.profile.email, bounty, interest, last_heard_from_user_days)
 
                         elif should_warn_user:
+
+                            record_user_action(interest, 'bounty_abandonment_warning', last_heard_from_user_days)
+
                             print(f'executing should_warn_user for {interest.profile} / {bounty.github_url} ')
                             # commenting on the GH issue
                             maybe_warn_user_removed_github(bounty, interest.profile.handle, last_heard_from_user_days)
