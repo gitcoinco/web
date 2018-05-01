@@ -1019,6 +1019,16 @@ input[type=text].loading {
 .profile-header__stats--funder .highlight {
   color: #FFCE08;
 }
+
+.profile-bounties {
+
+}
+
+.profile-bounties .avatar {
+  max-width: 50px;
+  max-height: 50px;
+}
+
 /* END Profile details */
 
 #pull_gh {
