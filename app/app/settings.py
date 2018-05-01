@@ -24,6 +24,8 @@ from django.http import Http404
 import rollbar
 
 import environ
+from django.utils.translation import gettext_lazy as _
+
 
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
 env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
@@ -60,6 +62,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
+    'social_django',
     'django.contrib.humanize',
     'django.contrib.sitemaps',
     'django.contrib.sites',
@@ -81,6 +84,7 @@ INSTALLED_APPS = [
     'credits',
     'gitcoinbot',
     'external_bounties',
+    'dataviz',
 ]
 
 MIDDLEWARE = [
@@ -94,15 +98,24 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ratelimit.middleware.RatelimitMiddleware',
-    'github.middleware.GithubAuthMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.github.GithubOAuth2',  # for Github authentication
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['retail/templates/', 'external_bounties/templates/'],
+        'DIRS': [
+            'retail/templates/',
+            'external_bounties/templates/',
+            'dataviz/templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -111,6 +124,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'app.context.insert_settings',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -160,7 +175,15 @@ LANGUAGE_CODE = env('LANGUAGE_CODE', default='en-us')
 USE_I18N = env.bool('USE_I18N', default=True)
 USE_L10N = env.bool('USE_L10N', default=True)
 USE_TZ = env.bool('USE_TZ', default=True)
-TIME_ZONE = env.str('TIME_ZONE', default='MST')
+TIME_ZONE = env.str('TIME_ZONE', default='UTC')
+
+LOCALE_PATHS = (
+    'locale',
+)
+
+LANGUAGES = [
+    ('en', _('English'))
+]
 
 if not ENV in ['local', 'test']:
     LOGGING = {
@@ -226,13 +249,12 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool('SECURE_CONTENT_TYPE_NOSNIFF', default=Tr
 X_FRAME_OPTIONS = env('X_FRAME_OPTIONS', default='DENY')
 
 # Email Integrations
-CONTACT_EMAIL = env('CONTACT_EMAIL', default='TODO')
-BCC_EMAIL = env('BCC_EMAIL', default='TODO')
+CONTACT_EMAIL = env('CONTACT_EMAIL', default='') # TODO
 PERSONAL_CONTACT_EMAIL = env('PERSONAL_CONTACT_EMAIL', default='you@foo.bar')
-SENDGRID_API_KEY = env('SENDGRID_API_KEY', default='TODO')  # Required to send email.
+SENDGRID_API_KEY = env('SENDGRID_API_KEY', default='') # TODO - Required to send email.
 EMAIL_HOST = env('EMAIL_HOST', default='smtp.sendgrid.net')
-EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='TODO')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='TODO')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='') # TODO
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='') # TODO
 EMAIL_PORT = env.int('EMAIL_PORT', default=587)
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 SERVER_EMAIL = env('SERVER_EMAIL', default='server@TODO.co')
@@ -251,11 +273,40 @@ GITHUB_API_BASE_URL = env('GITHUB_API_BASE_URL', default='https://api.github.com
 GITHUB_AUTH_BASE_URL = env('GITHUB_AUTH_BASE_URL', default='https://github.com/login/oauth/authorize')
 GITHUB_TOKEN_URL = env('GITHUB_TOKEN_URL', default='https://github.com/login/oauth/access_token')
 GITHUB_SCOPE = env('GITHUB_SCOPE', default='read:user,user:email,read:org')
-GITHUB_CLIENT_ID = env('GITHUB_CLIENT_ID', default='TODO')
-GITHUB_CLIENT_SECRET = env('GITHUB_CLIENT_SECRET', default='TODO')
-GITHUB_API_USER = env('GITHUB_API_USER', default='TODO')
-GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='TODO')
+GITHUB_CLIENT_ID = env('GITHUB_CLIENT_ID', default='') # TODO
+GITHUB_CLIENT_SECRET = env('GITHUB_CLIENT_SECRET', default='') # TODO
+GITHUB_API_USER = env('GITHUB_API_USER', default='') # TODO
+GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='') # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
+
+# Social Auth
+LOGIN_URL = 'gh_login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'explorer'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'explorer'
+SOCIAL_AUTH_GITHUB_KEY = GITHUB_CLIENT_ID
+SOCIAL_AUTH_GITHUB_SECRET = GITHUB_CLIENT_SECRET
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'last_name', 'email']
+SOCIAL_AUTH_GITHUB_SCOPE = [
+    'read:public_repo',
+    'read:org',
+    'read:user',
+    'user:email',
+]
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'app.pipeline.save_profile',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
 
 # Gitter
 GITTER_TOKEN = env('GITTER_TOKEN', default=False)
@@ -270,15 +321,16 @@ if GITCOIN_BOT_CERT_PATH:
         SECRET_KEYSTRING = f.read()
 
 # Twitter Integration
-TWITTER_CONSUMER_KEY = env('TWITTER_CONSUMER_KEY', default='TODO')
-TWITTER_CONSUMER_SECRET = env('TWITTER_CONSUMER_SECRET', default='TODO')
-TWITTER_ACCESS_TOKEN = env('TWITTER_ACCESS_TOKEN', default='TODO')
-TWITTER_ACCESS_SECRET = env('TWITTER_ACCESS_SECRET', default='TODO')
-TWITTER_USERNAME = env('TWITTER_USERNAME', default='TODO')
+TWITTER_CONSUMER_KEY = env('TWITTER_CONSUMER_KEY', default='') # TODO
+TWITTER_CONSUMER_SECRET = env('TWITTER_CONSUMER_SECRET', default='') # TODO
+TWITTER_ACCESS_TOKEN = env('TWITTER_ACCESS_TOKEN', default='') # TODO
+TWITTER_ACCESS_SECRET = env('TWITTER_ACCESS_SECRET', default='') # TODO
+TWITTER_USERNAME = env('TWITTER_USERNAME', default='') # TODO
 
 # Slack Integration
 # optional: only needed if you slack things
-SLACK_TOKEN = env('SLACK_TOKEN', default='TODO')
+SLACK_TOKEN = env('SLACK_TOKEN', default='') # TODO
+SLACK_WELCOMEBOT_TOKEN = env('SLACK_WELCOMEBOT_TOKEN', default='') # TODO
 
 # Reporting Integrations
 MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
@@ -326,13 +378,13 @@ IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
 # optional: only needed if you run the activity-report management command
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
-S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='TODO')
-S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='TODO')
+S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='') # TODO
+S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='') # TODO
 
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 
 # Faucet App config
-FAUCET_AMOUNT = env.float('FAUCET_AMOUNT', default=.0005)
+FAUCET_AMOUNT = env.float('FAUCET_AMOUNT', default=.00025)
 
 SENDGRID_EVENT_HOOK_URL = env('SENDGRID_EVENT_HOOK_URL', default='sg_event_process')
 GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')
@@ -356,6 +408,16 @@ if ENABLE_SILK:
     SILKY_META = env.bool('SILKY_META', default=True)
     SILKY_INTERCEPT_PERCENT = env.int('SILKY_INTERCEPT_PERCENT', default=50)
     SILKY_MAX_RECORDED_REQUESTS = env.int('SILKY_MAX_RECORDED_REQUESTS', default=10000)
-    SILKY_DYNAMIC_PROFILING = env.dict('SILKY_DYNAMIC_PROFILING', default={})
+    SILKY_DYNAMIC_PROFILING = env.list('SILKY_DYNAMIC_PROFILING', default=[])
+    if ENV == 'stage':
+        SILKY_DYNAMIC_PROFILING += [{
+            'module': 'dashboard.views',
+            'function': 'profile',
+            'name': 'Profile View',
+        }, {
+            'module': 'retail.views',
+            'function': 'index',
+            'name': 'Index View',
+        }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int(
         'SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)

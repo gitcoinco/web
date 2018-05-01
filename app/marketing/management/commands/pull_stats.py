@@ -29,6 +29,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
+
 def gitter():
     from gitterpy.client import GitterClient
 
@@ -160,6 +161,45 @@ def github_stars():
         )
 
 
+def github_issues():
+    from django.utils import timezone
+    from datetime import datetime
+    from marketing.models import Stat
+    from github.utils import get_issues, get_user
+    import pytz
+
+    repos = [
+    ]
+
+    for org in ['bitcoin', 'gitcoinco', 'ethereum']:
+        for repo in get_user(org, '/repos'):
+            repos.append((org, repo['name']))
+
+    for org, repo in repos:
+        issues = []
+        cont = True
+        page = 1
+        while cont:
+            new_issues = get_issues(org, repo, page, 'all')
+            issues = issues + new_issues
+            page += 1
+            cont = len(new_issues)
+
+        val = len(issues)
+        key = f"github_issues_{org}_{repo}"
+        try:
+            Stat.objects.create(
+                created_on=timezone.now(),
+                key=key,
+                val=(val),
+                )
+        except:
+            pass
+        if not val:
+            break
+        print(key, val)
+
+
 def chrome_ext_users():
     import requests
     from bs4 import BeautifulSoup
@@ -238,15 +278,43 @@ def bounties():
 
     Stat.objects.create(
         key='bounties',
-        val=(Bounty.objects.filter(current_bounty=True).count()),
+        val=(Bounty.objects.filter(current_bounty=True, network='mainnet').count()),
         )
+
+
+def bounties_hourly_rate():
+    from dashboard.models import Bounty, BountyFulfillment
+    that_time = timezone.now()
+    bounties = Bounty.objects.filter(
+        fulfillment_accepted_on__gt=(that_time - timezone.timedelta(hours=24)),
+        fulfillment_accepted_on__lt=that_time)
+    hours = 0
+    value = 0
+    for bounty in bounties:
+        try:
+            hours += bounty.fulfillments.filter(accepted=True).first().fulfiller_hours_worked
+            value += bounty.value_in_usdt
+        except:
+            pass
+    print(that_time, bounties.count(), value, hours)
+    if value and hours:
+        val = round(float(value)/float(hours), 2)
+        try:
+            key = 'bounties_hourly_rate_inusd_last_24_hours'
+            Stat.objects.create(
+                created_on=that_time,
+                key=key,
+                val=(val),
+                )
+        except:
+            pass
 
 
 def bounties_by_status():
     from dashboard.models import Bounty
     statuses = Bounty.objects.distinct('idx_status').values_list('idx_status', flat=True)
     for status in statuses:
-        eligible_bounties = Bounty.objects.filter(current_bounty=True, web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
+        eligible_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
         numerator_bounties = eligible_bounties.filter(idx_status=status)
         val = int(100 * (numerator_bounties.count()) / (eligible_bounties.count()))
 
@@ -271,7 +339,7 @@ def joe_dominance_index():
     joe_addresses = joe_addresses + ['0x58dC037f0A5c6C03D0f9477aea3198648CF0D263'.lower()]  # alisa
 
     for days in [7, 30, 90, 360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True, web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+        all_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
         joe_bounties = all_bounties.filter(bounty_owner_address__in=joe_addresses)
         if not all_bounties.count():
             continue
@@ -283,7 +351,7 @@ def joe_dominance_index():
             val=val,
             )
 
-        val = int(100 * sum([(b.value_in_usdt if b.value_in_usdt else 0) for b in joe_bounties]) / sum([(b.value_in_usdt if b.value_in_usdt else 0) for b in all_bounties]))
+        val = int(100 * sum([(b.value_in_usdt_now if b.value_in_usdt_now else 0) for b in joe_bounties]) / sum([(b.value_in_usdt_now if b.value_in_usdt_now else 0) for b in all_bounties]))
         Stat.objects.create(
             key='joe_dominance_index_{}_value'.format(days),
             val=val,
@@ -295,18 +363,38 @@ def avg_time_bounty_turnaround():
     from dashboard.models import Bounty
 
     for days in [7, 30, 90, 360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True, idx_status='done', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+        all_bounties = Bounty.objects.filter(
+            current_bounty=True,
+            network='mainnet',
+            idx_status='done',
+            web3_created__gt=(timezone.now() - timezone.timedelta(days=days))
+        )
         if not all_bounties.count():
             continue
 
-        turnaround_times = [b.turnaround_time for b in all_bounties]
-
+        turnaround_times = [b.turnaround_time_submitted for b in all_bounties if b.turnaround_time_submitted]
         val = int(statistics.median(turnaround_times) / 60 / 60)  # seconds to hours
 
         Stat.objects.create(
-            key='turnaround_time_hours_{}_days_back'.format(days),
+            key=f'turnaround_time__submitted_hours_{days}_days_back',
             val=val,
-            )
+        )
+
+        turnaround_times = [b.turnaround_time_accepted for b in all_bounties if b.turnaround_time_accepted]
+        val = int(statistics.median(turnaround_times) / 60 / 60)  # seconds to hours
+
+        Stat.objects.create(
+            key=f'turnaround_time__accepted_hours_{days}_days_back',
+            val=val,
+        )
+
+        turnaround_times = [b.turnaround_time_started for b in all_bounties if b.turnaround_time_started]
+        val = int(statistics.median(turnaround_times) / 60 / 60)  # seconds to hours
+
+        Stat.objects.create(
+            key=f'turnaround_time__started_hours_{days}_days_back',
+            val=val,
+        )
 
 
 def bounties_open():
@@ -314,7 +402,7 @@ def bounties_open():
 
     Stat.objects.create(
         key='bounties_open',
-        val=(Bounty.objects.filter(current_bounty=True, idx_status='open').count()),
+        val=(Bounty.objects.filter(current_bounty=True, network='mainnet', idx_status='open').count()),
         )
 
 
@@ -323,7 +411,7 @@ def bounties_fulfilled():
 
     Stat.objects.create(
         key='bounties_fulfilled',
-        val=(Bounty.objects.filter(current_bounty=True, idx_status='done').count()),
+        val=(Bounty.objects.filter(current_bounty=True, network='mainnet', idx_status='done').count()),
         )
 
 
@@ -332,7 +420,7 @@ def tips():
 
     Stat.objects.create(
         key='tips',
-        val=(Tip.objects.count()),
+        val=(Tip.objects.filter(network='mainnet').count()),
         )
 
 
@@ -341,7 +429,7 @@ def tips_received():
 
     Stat.objects.create(
         key='tips_received',
-        val=(Tip.objects.exclude(receive_txid='').count()),
+        val=(Tip.objects.filter(network='mainnet').exclude(receive_txid='').count()),
         )
 
 
@@ -410,6 +498,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         fs = [
+            github_issues,
             gitter,
             medium_subscribers,
             google_analytics,
@@ -436,6 +525,7 @@ class Command(BaseCommand):
             user_actions,
             faucet,
             email_events,
+            bounties_hourly_rate,
         ]
 
         for f in fs:

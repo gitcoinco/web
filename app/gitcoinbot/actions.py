@@ -258,4 +258,4 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id, install_
             post_gitcoin_app_comment(owner, repo, issue_id, text_response, install_id)
         else:
             post_issue_comment_reaction(owner, repo, comment_id, 'confused')
-            post_gitcoin_app_comment(owner, repo, issue_id, confused_text(), install_id)
+            #post_gitcoin_app_comment(owner, repo, issue_id, confused_text(), install_id)

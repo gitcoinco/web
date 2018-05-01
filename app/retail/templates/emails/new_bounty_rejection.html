@@ -22,7 +22,6 @@
 
 <h1>😕 {% trans "Fulfillment Rejected" %} 😕</h1>
 
-
 <p>
 {% trans "There is a new funded issue fulfillment *rejection*. Please refer to the rejection comments on the github pull request to learn why." %}
 </p>
@@ -32,15 +31,7 @@
 {% include 'emails/bounty.html' with bounty=bounty %}
 
 <p>
-{% trans "You are receiving this email because your email address is on the notification list for this funded issue." %}  <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">{% trans "Manage Email Settings" %}</a>.
+{% trans "You are receiving this email because your email address is on the notification list for this funded issue." %}  <a href="https://gitcoin.co/settings/email/{{subscriber.priv}}">{% trans "Manage Email Settings" %}</a>.
 </p>
-
-<p>
-    {% trans "Keep Pushing Open Source Forward," %}
-    <br>
-    -- {% trans "Gitcoin Core" %}
-</p>
-
-
 
 {% endblock %}

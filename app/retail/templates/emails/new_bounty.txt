@@ -1,11 +1,6 @@
-🔥 New Bounty Alert 🔥
+{{bounties | length}} New Funded Issue{% if bounties|length != 1 %}s{%endif%}
 
-There is a new Funded Issue submitted to the Gitcoin.co Issue Explorer:
-
+{% for bounty in bounties %}
 {% include 'emails/bounty.txt' with bounty=bounty %}
 
-You are receiving this email because your email address is on the notification list.
-
-
-Keep Pushing Open Source Forward,
--- Gitcoin Core
+{% endfor %}

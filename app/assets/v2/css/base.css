@@ -20,13 +20,22 @@ span {
 .nav_avatar {
   cursor: pointer;
 }
-
+.dropdown-menu{
+  z-index: 9999999999;
+}
 .navbar {
   font-family: 'futura-pt', Futura, sans-serif;
 }
 
 .navbar-nav .nav-link {
   border-radius: 2px;
+}
+
+.nav-link.login svg {
+  font-size: 1.5em;
+  position: relative;
+  top: 3px;
+  margin-right: 10px;
 }
 
 .navbar-nav .nav-link:hover {
@@ -57,8 +66,34 @@ span {
   border-radius: 4px !important;
 }
 
+#tutorials li{
+  list-style: none;
+}
+
+.tutorial_item{
+  background-color: #fff;
+}
+
+.tutorial_parent{
+  background-color: #fff;
+  border-bottom: 1px solid #000;
+}
+
+.tutorial_parent:nth-child(even){
+  background-color: #fafafa;
+}
+
+.tutorial_item img{
+  max-width: 300px;
+}
+
+.tutorial_item a{
+  font-size: 28px;
+  color: #000;
+}
+
 .faq_item {
-  margin: 0px auto;
+  margin: 0 auto;
 }
 
 .faq_item h5 {
@@ -74,12 +109,12 @@ span {
   display: block;
   flex: none;
   max-width: none;
-  margin-left: 0px;
+  margin-left: 0;
 }
 
 .interior .container-fluid {
-  padding-left: 0px;
-  padding-right: 0px;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .with-grey-background .body {
@@ -176,7 +211,7 @@ span {
 .howworks_container {
   background-color: white;
   padding-bottom: 40px;
-  margin-top: 0px !important;
+  margin-top: 0 !important;
 }
 
 .whatisit,
@@ -220,14 +255,11 @@ span {
 .bg-darkBlue a {
   color: #eee;
 }
-
+#feature_videos .video {
+  text-align: center;
+}
 #feature_videos h6 {
   padding-top: 10px;
-}
-
-#origin_story img {
-  max-height: 200px;
-  max-width: 300px;
 }
 
 #origin_story .row .col p {
@@ -253,6 +285,10 @@ p a {
 
 .modal a.close-modal {
   display: none !important;
+}
+
+.modal-close {
+  float:right;
 }
 
 .iama {
@@ -880,7 +916,6 @@ input[type=text].loading {
 
 .profile_details #hero {
   width: 100%;
-  height: 370px;
   background: #0d053a;
   background: -webkit-radial-gradient(#3e265a 20%, #1e063a, #1e063a);
   background: -o-radial-gradient(#3e265a 20%, #1e063a, #1e063a);
@@ -930,39 +965,34 @@ input[type=text].loading {
   color: #919191;
 }
 
-.profile_details .tips li:first-child:hover,
-.profile_details .bounties li:first-child:hover {
+.profile_details .tips li:first-child:hover {
   cursor: none;
   background-color: white;
 }
 
-.profile_details .tips li,
-.profile_details .bounties li {
+.profile_details .tips li {
   list-style: none;
   padding-top: 10px;
   height: 80px;
 }
 
 .profile_details .tips li:hover,
-.profile_details .bounties li:hover {
+.bounty-row:hover, .tip-row:hover {
   background-color: #fafafa;
   cursor: pointer;
 }
 
-.profile_details .tips li a,
-.profile_details .bounties li a {
+.profile_details .tips li a {
   color: black;
 }
 
 .profile_details .tips li a.btn,
-.profile_details .bounties li a.btn {
-  color: white;
+.bounty-value, .tip-value {
+  color: white!important;
 }
 
 .profile_details .tips li div.url,
-.profile_details .tips li div.from_username,
-.profile_details .bounties li div.status,
-.profile_details .bounties li div.relationship {
+.profile_details .tips li div.from_username {
   height: 80px;
   width: 100px;
   display: inline-block;
@@ -975,37 +1005,19 @@ input[type=text].loading {
   width: 600px;
 }
 
-.profile_details .tips li div.details,
-.profile_details .bounties li div.details {
+.profile_details .tips li div.details {
   height: 80px;
   width: 500px;
   display: inline-block;
   vertical-align: top;
 }
 
-.profile_details .bounties li div.details h6 {
-  display: inline-block;
-  word-wrap: break-word;
-  max-width: 440px;
-}
-
-.profile_details .tips li div.details {
-  width: 200px;
-}
-
 .profile_details .tips li div.details p,
-.profile_details .bounties li div.details p {
+.bounty-desc {
   color: #919191;
 }
 
-.profile_details .tips li .amount,
-.profile_details .bounties li .amount {
-  height: 80px;
-  width: 200px;
-  display: inline-block;
-  vertical-align: middle;
-  text-align: center;
-}
+.profile_details .tips li .amount
 
 .profile_details h6 {
   font-weight: bold;
@@ -1090,8 +1102,8 @@ input[type=text].loading {
 }
 
 #interest_list {
-  margin-left: 0px;
-  padding-left: 0px;
+  margin-left: 0;
+  padding-left: 0;
 }
 
 #interest_list li {
@@ -1138,7 +1150,7 @@ input.is-invalid {
 }
 
 .tooltip-info .col-11 {
-  padding-left: 0px;
+  padding-left: 0;
 }
 
 
@@ -1168,9 +1180,53 @@ input.is-invalid {
   margin: 2px;
 }
 
+/* Dropdown styles */
+
+.ui-selectmenu-button.ui-button {
+  background: #FFF;
+  border-color: #0D0764;
+  line-height: 16px;
+  padding: .4em .75em;
+}
+
+.ui-selectmenu-icon.ui-icon {
+  background: url('/static/v2/images/caret-down.png') !important;
+  background-repeat: no-repeat;
+  background-position: 0 !important;
+  background-size: 10px 6px !important;
+  margin-top: 5px !important;
+  height: 6px;
+  width: 10px;
+}
+
+.ui-widget.ui-widget-content {
+  border: none !important;
+  border-radius: 2px;
+  background: #FAFAFA !important;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.12);
+}
+
+.ui-menu-item-wrapper {
+  font-size: 12px;
+  padding: .4em .75em !important;
+}
+
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-button.ui-state-active:hover {
+  border: 1px solid #0D0764 !important;
+  background: #0D0764 !important;
+}
+
+
+.ui-button:hover,
+.ui-button:focus {
+  border: 1px solid #0D0764 !important;
+  background: #FAFAFA !important;
+}
+
 @media (max-width: 1350px) {
-  .profile_details .tips li div.details,
-  .profile_details .bounties li div.details {
+  .profile_details .tips li div.details {
     width: 300px;
   }
 
@@ -1181,8 +1237,7 @@ input.is-invalid {
 }
 
 @media (max-width: 1250px) {
-  .profile_details .tips li div.details,
-  .profile_details .bounties li div.details {
+  .profile_details .tips li div.details {
     width: 400px;
   }
 }
@@ -1203,26 +1258,18 @@ input.is-invalid {
   }
 
   .profile_details .tips li div.details,
-  .profile_details .tips li .url,
-  .profile_details .bounties li div.relationship,
-  .profile_details .bounties li div.status,
-  .profile_details .bounties li .amount {
+  .profile_details .tips li .url {
     display: none;
   }
 
   .profile_details .tips li div.details,
-  .profile_details .repos li,
-  .profile_details .bounties li div.details {
-    padding-left: 0px;
+  .profile_details .repos li {
+    padding-left: 0;
     width: 100%;
   }
 
   .profile_details .repos li p.meta {
     display: none;
-  }
-
-  .interior .col-7 {
-    margin-left: 5%;
   }
 
   .whatisit iframe,
@@ -1246,7 +1293,7 @@ input.is-invalid {
     max-width: 90%;
     padding-left: 10px;
     padding-right: 10px;
-    margin: 0px auto;
+    margin: 0 auto;
   }
 
   .bounty_def .col-7 {
@@ -1368,7 +1415,7 @@ input.is-invalid {
   }
 
   .bounty_def .mt-4 {
-    margin-top: 0px !important;
+    margin-top: 0 !important;
   }
 
   .search_bar .sort_row {
@@ -1432,7 +1479,7 @@ input.is-invalid {
   }
 
   .header .row.ml-5 {
-    margin-left: 0em !important;
+    margin-left: 0 !important;
   }
 
   .header .header-line {
@@ -1460,10 +1507,10 @@ input.is-invalid {
   #mailchimp,
   .why_gitcoin,
   .why_gitcoin .row {
-    margin-left: 0px;
-    margin-right: 0px;
-    padding-left: 0px;
-    padding-right: 0px;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   #features .row,
@@ -1493,7 +1540,7 @@ input.is-invalid {
   .row.howworks iframe {
     width: 280px;
     height: 170px;
-    margin: 0px auto;
+    margin: 0 auto;
   }
 
   #get .row {
@@ -1537,11 +1584,6 @@ input.is-invalid {
 }
 
 @media (max-width: 350px) {
-  img#logo {
-    width: 150px;
-    height: 37px;
-  }
-
   .header .header-line {
     font-size: 1.5em;
   }
@@ -1556,9 +1598,6 @@ input.is-invalid {
 }
 
 @media (max-width: 576px) {
-  #sidebar_container {
-    display: none;
-  }
 
   .profile_details #stats {
     padding-right: 10px;
@@ -1592,5 +1631,11 @@ input.is-invalid {
 
   .bounty_nav li {
     display: block;
+  }
+}
+
+@media (max-width: 991.98px) {
+  #sidebar_container {
+    display: none;
   }
 }

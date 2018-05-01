@@ -20,6 +20,26 @@ body {
   top: -1px;
 }
 
+#expires_date {
+  float: right;
+}
+
+.progress-bar {
+  background-color: #D8D8D8;
+  display: block;
+  height: 2px;
+  overflow: hidden;
+}
+
+.progress-bar .progress {
+  background-color: #0FCE7C;
+  height: 2px;
+  width: 50%;
+}
+.progress-bar.expired .progress {
+  background-color: #f7981b;
+}
+
 .bounty_details h4,
 .bounty_details h5 {
   letter-spacing: 0;
@@ -30,6 +50,23 @@ body {
   text-align: left;
   padding-top: 2em;
   padding-bottom: 15px;
+}
+
+#avatar_url {
+  padding-top: 3em;
+}
+
+.bounty_details .avatar {
+  width: 50px;
+  height: 50px;
+  margin: 0px auto;
+  border-radius: 50px;
+  margin-top: 0px;
+}
+
+#avatar_url .avatar {
+  width: 80px;
+  height: 80px;
 }
 
 #status {
@@ -110,8 +147,39 @@ body {
   color: #717171;
 }
 
+.started-status-column div {
+  display: inline-block;
+  margin: 5px;
+}
+
+.funder-avatar,
+.activity div {
+  margin: auto;
+}
+
+#timer {
+  display: inline-grid;
+}
+
+#timer div {
+  width: 12em;
+  margin-right: 0;
+  display: inline-block;
+}
+
+#timer .bounty-info-heading,
+#timer .bounty-info-text {
+  font-size: 12px;
+}
+
+#timer .bounty-info-text {
+  position: relative;
+  top: 2px;
+}
+
 #bounty_details .tags {
   float: right;
+  text-align: center;
 }
 
 #bounty_details .tag {
@@ -120,6 +188,19 @@ body {
 
 #bounty_details .tag p {
   padding: 5px;
+}
+
+#network {
+  background-color: #fbe0d6;
+  color: #fb9470;
+  padding: 5px 10px;
+  border-radius: 2px;
+  margin-bottom: 5px;
+  display: block;
+}
+#network a{
+  color: #fb9470;
+  font-weight: bold;
 }
 
 .bounty-actions {
@@ -202,30 +283,44 @@ a.btn {
 }
 
 #right_actions .button--primary {
-  margin-right: 10px;
+  margin-right: 5px;
   position: relative;
   top: 1px;
+  display: inline-block;
+  margin-bottom: 10px;
 }
 
 #btn-white {
   border: 1px solid #979797;
   color: #0D0764;
   border-radius: 3px;
+  position: relative;
+}
+
+#btn-white img {
+  position: absolute;
+  width: 20px;
+  top: 5px;
+  right: 8px;
+}
+
+.comment {
+  border-left: 1px solid #979797;
+  padding-right: 20px;
+  margin-left: 5px;
 }
 
 #btn-white .github-comment {
-  border-left: 1px solid #979797;
-  padding-left: 12px;
-  margin-left: 5px;
+  color: #FFFFFF;
+  position: absolute;
+  font-size: 10px;
+  text-align: center;
+  width: 20px;
+  right: 8px;
 }
 
 .activity {
   margin-bottom: 10px;
-}
-
-.funder-avatar,
-.activity div {
-  margin: auto;
 }
 
 .fulfilled .activity-status {
@@ -245,19 +340,6 @@ a.btn {
 .activity .bounty-subheading,
 .activity .bounty-text {
   font-size: 12px;
-}
-
-.bounty_details .avatar {
-  max-width: 50px;
-  max-height: 50px;
-  margin: 0px auto;
-  border-radius: 50px;
-  margin-top: 0px;
-}
-
-.started-status-column div {
-  display: inline-block;
-  margin: 5px;
 }
 
 #bounty_details {
@@ -311,7 +393,23 @@ a.btn {
   margin: 5px;
 }
 
+@media (max-width: 575px) {
+
+  #timer {
+    margin-bottom: 10px;
+  }
+
+  .bounty-info div {
+    width: 100%;
+  }
+}
+
 @media (max-width: 767px) {
+
+  #title {
+    padding-top: 1em;
+  }
+
   .bounty-actions {
     display: block;
   }
@@ -349,4 +447,56 @@ a.btn {
   .explorer {
     display: none;
   }
+}
+
+
+.interest-modal-title {
+  display: inline-block;
+  width: 100%;
+}
+
+.add-interest-modal {
+  height:auto;
+  width:100%;
+}
+
+.add-interest-modal__form {
+  padding:1em;
+  width:100%;
+}
+
+.add-interest-modal__form--item {
+  padding-top:1em;
+}
+
+.add-interest-modal__form--submit {
+  margin-top:1em;
+}
+
+.add-interest-modal__form--textarea {
+  height:8em;
+}
+
+.add-interest-options {
+  display:flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+.add-interest-modal__form .checkbox_container input {
+  opacity: 100;
+  width: 20px;
+  position: initial;
+}
+
+.add-interest-options > .option {
+  width: auto !important;
+}
+
+.btn-interested, .btn-interested:hover {
+  border-radius:0.2em;
+  color: black;
+  border: black 1px solid;
+}
+.btn-interested:hover {
+  background-color: #eee;
 }

@@ -33,6 +33,7 @@ from bs4 import BeautifulSoup
 from dashboard.models import Bounty, BountyFulfillment, BountySyncRequest, UserAction
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
+    maybe_market_to_user_slack,
 )
 from economy.utils import convert_amount
 from github.utils import _AUTH
@@ -61,6 +62,8 @@ def amount(request):
     try:
         amount = request.GET.get('amount')
         denomination = request.GET.get('denomination', 'ETH')
+        if denomination == 'DAI':
+            denomination = 'USDT'
         if denomination == 'ETH':
             amount_in_eth = float(amount)
         else:
@@ -300,6 +303,10 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                     modified_on = old_fulfillment.modified_on
                     if old_fulfillment.accepted:
                         accepted_on = old_fulfillment.accepted_on
+            hours_worked = fulfillment.get('data', {}).get(
+                    'payload', {}).get('fulfiller', {}).get('hoursWorked', None)
+            if not hours_worked or not hours_worked.isdigit():
+                hours_worked = None
             new_bounty.fulfillments.create(
                 fulfiller_address=fulfillment.get(
                     'fulfiller',
@@ -311,6 +318,9 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                     'payload', {}).get('fulfiller', {}).get('name', ''),
                 fulfiller_metadata=fulfillment,
                 fulfillment_id=fulfillment.get('id'),
+                fulfiller_github_url=fulfillment.get('data', {}).get(
+                    'payload', {}).get('fulfiller', {}).get('githubPRLink', ''),
+                fulfiller_hours_worked=hours_worked,
                 created_on=created_on,
                 modified_on=modified_on,
                 accepted_on=accepted_on,
@@ -404,14 +414,20 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 last_comment_date=latest_old_bounty.last_comment_date if latest_old_bounty else None,
             )
             new_bounty.fetch_issue_item()
-            if not new_bounty.avatar_url:
-                new_bounty.avatar_url = new_bounty.get_avatar_url()
-                new_bounty.save()
 
             # Pull the interested parties off the last old_bounty
             if latest_old_bounty:
                 for interest in latest_old_bounty.interested.all():
                     new_bounty.interested.add(interest)
+
+            # set cancel date of this bounty
+            canceled_on = latest_old_bounty.canceled_on if latest_old_bounty and latest_old_bounty.canceled_on else None
+            if not canceled_on and new_bounty.status == 'cancelled':
+                canceled_on = timezone.now()
+            if canceled_on:
+                new_bounty.canceled_on = canceled_on
+                new_bounty.save()
+
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
             logging.error(f'{e} encountered during new bounty creation for: {url}')
@@ -524,7 +540,7 @@ def process_bounty_changes(old_bounty, new_bounty):
     elif old_bounty.value_in_token < new_bounty.value_in_token:
         event_name = 'increase_payout'
     elif old_bounty.is_open and not new_bounty.is_open:
-        if new_bounty.status == 'cancelled':
+        if new_bounty.status in ['cancelled', 'expired']:
             event_name = 'killed_bounty'
         else:
             event_name = 'work_done'
@@ -548,6 +564,7 @@ def process_bounty_changes(old_bounty, new_bounty):
         print("============ posting ==============")
         did_post_to_twitter = maybe_market_to_twitter(new_bounty, event_name)
         did_post_to_slack = maybe_market_to_slack(new_bounty, event_name)
+        did_post_to_user_slack = maybe_market_to_user_slack(new_bounty, event_name)
         did_post_to_github = maybe_market_to_github(new_bounty, event_name, profile_pairs)
         did_post_to_email = maybe_market_to_email(new_bounty, event_name)
         print("============ done posting ==============")
@@ -558,6 +575,7 @@ def process_bounty_changes(old_bounty, new_bounty):
             'did_post_to_email': did_post_to_email,
             'did_post_to_github': did_post_to_github,
             'did_post_to_slack': did_post_to_slack,
+            'did_post_to_user_slack': did_post_to_user_slack,
             'did_post_to_twitter': did_post_to_twitter,
         }
 
