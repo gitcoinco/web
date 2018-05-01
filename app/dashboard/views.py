@@ -289,7 +289,7 @@ def uninterested(request, bounty_id, profile_id):
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
 
-    if not bounty.is_funder(request.user.username.lower()):
+    if not bounty.is_funder(request.user.username.lower()) and not request.user.is_staff:
         return JsonResponse(
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
@@ -675,6 +675,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         'is_github_token_valid': is_github_token_valid(_access_token),
         'github_auth_url': get_auth_url(request.path),
         "newsletter_headline": _("Be the first to know about new funded issues."),
+        'is_staff': request.user.is_staff,
     }
 
     if issue_url:
