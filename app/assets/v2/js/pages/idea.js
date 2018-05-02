@@ -14,7 +14,7 @@
       // ajax request to load the disqus javascript
       $.ajax({
         type: 'GET',
-        url: 'http://' + forumName + '.disqus.com/embed.js',
+        url: 'https://' + forumName + '.disqus.com/embed.js',
         dataType: 'script',
         cache: true
       });
