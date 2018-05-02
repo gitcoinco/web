@@ -554,6 +554,9 @@ def idea_show(request, idea_id):
 
 def new_idea(request):
     if request.POST:
+        full_name = request.POST.get("full_name")
+        print('full_name')
+        print(full_name)
         email = request.POST.get('email')
         github_username = request.POST.get('github_username')
         summary = request.POST.get('summary')
@@ -566,7 +569,7 @@ def new_idea(request):
         builders_exists = bool(request.POST.get('builders_exists'))
         designers_exists = bool(request.POST.get('designers_exists'))
         customer_exists = bool(request.POST.get('customer_exists'))
-        idea = Idea(email=email, github_username=github_username, summary=summary, more_info=more_info,
+        idea = Idea(full_name=full_name, email=email, github_username=github_username, summary=summary, more_info=more_info,
                     looking_for_capital=looking_for_capital, looking_for_builders=looking_for_builders,
                     looking_for_designers=looking_for_designers, looking_for_customers=looking_for_customers,
                     capital_exists=capital_exists, builders_exists=builders_exists,
