@@ -1,4 +1,4 @@
-{% comment %} 
+{% comment %}
   Copyright (C) 2017 Gitcoin Core This program is free software: you can redistribute it and/or modify it under
   the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the
   License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT
@@ -32,12 +32,12 @@
               <form id="new_idea_form" method="POST">
                 {% include 'shared/name.html' %}
                 <div class="d-flex justify-content-md-between flex-wrap flex-md-nowrap">
-                  <div class="col-md-5 col-sm-12">                  
+                  <div class="col-md-5 col-sm-12">
                     <label class="form__label" for="email">{% trans "Email address" %}</label>
-                    <input type=text id="email" name=email class="form__input" placeholder='you@somewhere' value="{% if email %}{{email}}{% else %}{% endif %}" required>                  
+                    <input type=text id="email" name=email class="form__input" placeholder='you@somewhere' value="{% if email %}{{email}}{% else %}{% endif %}" required>
                   </div>
                   <div class="col-md-5 col-sm-12">
-                    <label class="form__label" for="githubUsernam">{% trans "Github Username" %}</label>
+                    <label class="form__label" for="githubUsernam">{% trans "Github Login" %}</label>
                     <input name="github_username" id="github_username" type=text class="form__input" placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}">
                   </div>
                 </div>
@@ -115,7 +115,7 @@
   {% include 'shared/analytics.html' %}
   {% include 'shared/footer_scripts.html'%}
   {% include 'shared/rollbar.html' %}
-  {% include 'shared/footer.html' %}  
+  {% include 'shared/footer.html' %}
   <script src="{% static "v2/js/pages/new_idea.js" %}"></script>
 </body>
 
