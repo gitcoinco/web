@@ -16,7 +16,7 @@ Step 1: Include the JavaScript SDK on your page once, ideally right after the op
   var js, gjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;
   js = d.createElement(s); js.id = id;
-  js.src = "https://gitcoin.co/sdk.js";
+  js.src = "https://unpkg.com/gitcoin-sdk";
   gjs.parentNode.insertBefore(js, gjs);
 }(document, 'script', 'gitcoin-jssdk'));</script>
 ```
@@ -37,11 +37,11 @@ Step 2: Place this code wherever you want the plugin to appear on your page.
 Importing the SDK into your application will attempt to autoload the widget by searching for '.gitcoin-widget' selectors
 
 ```javascript
-import 'gitcoin-js-sdk';
+import 'gitcoin-sdk';
 ```
 or
 ```javascript
-require('gitcoin-js-sdk');
+require('gitcoin-sdk');
 ```
 
 ### Programmatically
@@ -49,11 +49,11 @@ require('gitcoin-js-sdk');
 You can also use the Widget programmatically.
 
 ```javascript
-import { Widget } from 'gitcoin-js-sdk';
+import { Widget } from 'gitcoin-sdk';
 ```
 or
 ```javascript
-const { Widget } = require('gitcoin-js-sdk');
+const { Widget } = require('gitcoin-sdk');
 ```
 
 Widget can be instantiated by passing a selector option, or an element reference.
