@@ -44,8 +44,7 @@ from dashboard.notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
     maybe_market_to_twitter, maybe_market_to_user_slack,
 )
-from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, web3_process_bounty
-from dashboard.utils import record_user_action_on_interest
+from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, record_user_action_on_interest, web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,

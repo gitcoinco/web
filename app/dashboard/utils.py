@@ -386,4 +386,3 @@ def record_user_action_on_interest(interest, event_name, last_heard_from_user_da
             'interest_pk': interest.pk,
             'last_heard_from_user_days': last_heard_from_user_days,
         })
-
