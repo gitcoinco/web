@@ -635,7 +635,7 @@ def cancel_bounty(request, pk):
 
     params = {
         'bounty': bounty,
-        'title': _('Kill Bounty'),
+        'title': _('Cancel Bounty'),
         'active': 'kill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
