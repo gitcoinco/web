@@ -29,7 +29,7 @@ class Idea(SuperModel):
     @property
     def local_avatar_url(self):
         if self.profile:
-            return self.profile.local_avatar_url
+            return self.profile.avatar_url
         else:
             return f"{settings.BASE_URL}funding/avatar?repo=https://github.com/self&v=3"
 
