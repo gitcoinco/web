@@ -18,6 +18,10 @@ body {
   border-style: none;
 }
 
+.idea {
+  margin: 1em 0em;
+}
+
 #ideas .idea {
   padding: 1em 1.5em;
   margin-bottom: 1.5em;
@@ -31,10 +35,6 @@ body {
   -o-transition: border-color 0.25s;
   transition: border-color 0.25s;
   cursor: pointer
-}
-
-.idea {
-  margin: 1em 0em;
 }
 
 #ideas .idea:hover {
