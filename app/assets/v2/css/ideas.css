@@ -33,6 +33,10 @@ body {
   cursor: pointer
 }
 
+.idea {
+  margin: 1em 0em;
+}
+
 #ideas .idea:hover {
   border-color: #3e24fb;
 }
