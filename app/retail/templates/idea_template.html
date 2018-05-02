@@ -34,6 +34,9 @@
           [[if customer_exists]]
             <span class="badge badge-success m-1">{% trans "Customer" %}</span>
           [[/if]]
+          [[if !capital_exists && !builders_exists && !designers_exists && !customer_exists]]
+            <span>-</span>
+          [[/if]]
         </div>
         <div class="badge-container">
           <span class="badge-container-label"><strong>{% trans "Needs" %}:</strong></span>
@@ -48,6 +51,9 @@
           [[/if]]
           [[if looking_for_customers]]
             <span class="badge badge-warning m-1">{% trans "Customers" %}</span>
+          [[/if]]
+          [[if !looking_for_capital && !looking_for_builders && !looking_for_designers && !looking_for_customers]]
+            <span>-</span>
           [[/if]]
         </div>
       </div>
