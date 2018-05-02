@@ -22,6 +22,17 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href={% static "v2/css/onboard.css" %}>
+    <link rel="stylesheet" href="{% static "v2/css/avatar_builder.css" %}" />
+    <style>
+      #avatar-builder__sections li.complete {
+        list-style-image: url('{% static "v2/images/check-dark.svg" %}');
+      }
+      .avatar-option.selected::after {
+        content: url('{% static "v2/images/check.svg" %}');
+        background-color: #150069;
+        line-height: 20px;
+      }
+    </style>
   </head>
   <body>
     {% include 'shared/tag_manager_2.html' %}
@@ -168,7 +179,7 @@
             <h2>{% trans "Build your avatar" %}</h2>
             <div class="row">
               <div class="col-12">
-                <img style="width:45em;max-width:100%;" src="https://i.imgur.com/UMRUvGe.png">
+                {% include "avatar.html" %}
               </div>
             </div>
           </div>

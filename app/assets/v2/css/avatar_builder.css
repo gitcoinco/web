@@ -1,17 +1,9 @@
-body {
-  padding: 35px;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-#avatar-builder-header {
-  margin-bottom: 20px;
-}
-
 #avatar-builder {
   display: flex;
   flex-flow: row wrap;
 }
 #avatar-builder__sections {
+  text-align: left;
   list-style-type: square;
   list-style-position: inside;
   padding-left: 0;
@@ -175,12 +167,6 @@ button.avatar-option {
 }
 
 @media (min-width: 845px) {
-  body {
-    padding: 85px;
-  }
-  #avatar-builder-header {
-    margin-bottom: 50px;
-  }
   #avatar-area {
     flex-wrap: nowrap !important;
     justify-content: flex-start !important;
