@@ -38,7 +38,7 @@ function changeColorPicker(section) {
   if (palette) {
     colorOptions[palette].forEach(c => {
       colorPicker.append($(`<button
-      id="picker-${c}"
+      id="picker-${c}" type="button"
       class="options-Background__option p-0 ${(options[palette] === c) ? 'selected' : ''}"
       style="background-color: #${c}" onclick="changeColor('${palette}', '${c}')" />
       `));
