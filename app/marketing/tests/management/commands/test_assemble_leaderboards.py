@@ -23,6 +23,7 @@ from dashboard.models import Bounty, BountyFulfillment, Profile, Tip
 from marketing.management.commands import assemble_leaderboards
 from marketing.management.commands.assemble_leaderboards import Command, default_ranks, sum_bounties, sum_tips
 from marketing.models import LeaderboardRank
+from pytz import UTC
 from test_plus.test import TestCase
 
 
@@ -50,14 +51,34 @@ class TestAssembleLeaderboards(TestCase):
             title='foo',
             value_in_token=3,
             token_name='USDT',
-            web3_created=datetime(2008, 10, 31),
+            web3_created=datetime(2008, 10, 31, tzinfo=UTC),
             github_url='https://github.com/gitcoinco/web',
             token_address='0x0',
             issue_description='hello world',
             bounty_owner_github_username='flintstone',
             is_open=False,
-            accepted=True,
-            expires_date=datetime(2008, 11, 30),
+            accepted=False,
+            expires_date=datetime(2008, 11, 30, tzinfo=UTC),
+            idx_project_length=5,
+            project_length='Months',
+            bounty_type='Feature',
+            experience_level='Intermediate',
+            raw_data={},
+            idx_status='submitted',
+            current_bounty=True
+        )
+        bounty = Bounty.objects.create(
+            title='foo',
+            value_in_token=3,
+            token_name='USDT',
+            web3_created=datetime(2008, 10, 31, tzinfo=UTC),
+            github_url='https://github.com/gitcoinco/web',
+            token_address='0x0',
+            issue_description='hello world',
+            bounty_owner_github_username='flintstone',
+            is_open=False,
+            accepted=False,
+            expires_date=datetime(2008, 11, 30, tzinfo=UTC),
             idx_project_length=5,
             project_length='Months',
             bounty_type='Feature',
@@ -80,49 +101,42 @@ class TestAssembleLeaderboards(TestCase):
 
     def test_sum_tips(self):
         """Test sum tips of assemble leaderboards."""
-        sum_tips(self.tip, ['john'])
-        print(assemble_leaderboards.ranks)
-        assert assemble_leaderboards.ranks['all_fulfilled']['john'] == 7
-        assert assemble_leaderboards.ranks['all_earners']['john'] == 7
+        total = 7
+        user = 'johnny'
+        rank_types = [
+            'all_fulfilled', 'all_earners', 'weekly_fulfilled',
+            'weekly_earners', 'weekly_all', 'monthly_fulfilled',
+            'monthly_earners', 'monthly_all', 'yearly_fulfilled',
+            'yearly_earners', 'yearly_all',
+        ]
 
-        assert assemble_leaderboards.ranks['weekly_fulfilled']['john'] == 7
-        assert assemble_leaderboards.ranks['weekly_earners']['john'] == 7
-        assert assemble_leaderboards.ranks['weekly_all']['john'] == 7
-
-        assert assemble_leaderboards.ranks['monthly_fulfilled']['john'] == 7
-        assert assemble_leaderboards.ranks['monthly_earners']['john'] == 7
-        assert assemble_leaderboards.ranks['monthly_all']['john'] == 7
-
-        assert assemble_leaderboards.ranks['yearly_fulfilled']['john'] == 7
-        assert assemble_leaderboards.ranks['yearly_earners']['john'] == 7
-        assert assemble_leaderboards.ranks['yearly_all']['john'] == 7
+        sum_tips(self.tip, [user])
+        for rank_type in rank_types:
+            assert assemble_leaderboards.ranks[rank_type][user] == total
 
     def test_sum_bounties(self):
         """Test sum tips of bounties leaderboards."""
-        sum_bounties(self.bounty, ['fred'])
+        user = 'freddy'
+        total = 3
 
+        sum_bounties(self.bounty, [user])
         print(assemble_leaderboards.ranks)
 
-        assert assemble_leaderboards.ranks['all_all']['fred'] == 3
-        assert assemble_leaderboards.ranks['weekly_all']['fred'] == 3
-        assert assemble_leaderboards.ranks['monthly_all']['fred'] == 3
-        assert assemble_leaderboards.ranks['yearly_all']['fred'] == 3
+        rank_types_user = ['all_all', 'weekly_all', 'monthly_all', 'yearly_all']
+        for rank_type in rank_types_user:
+            assert assemble_leaderboards.ranks[rank_type][user] == total
 
-        assert not dict(assemble_leaderboards.ranks['weekly_fulfilled'])
-        assert not dict(assemble_leaderboards.ranks['weekly_payers'])
-        assert not dict(assemble_leaderboards.ranks['weekly_earners'])
-        assert not dict(assemble_leaderboards.ranks['monthly_fulfilled'])
-        assert not dict(assemble_leaderboards.ranks['monthly_payers'])
-        assert not dict(assemble_leaderboards.ranks['monthly_earners'])
-        assert not dict(assemble_leaderboards.ranks['yearly_fulfilled'])
-        assert not dict(assemble_leaderboards.ranks['yearly_payers'])
-        assert not dict(assemble_leaderboards.ranks['yearly_earners'])
-        assert not dict(assemble_leaderboards.ranks['all_fulfilled'])
-        assert not dict(assemble_leaderboards.ranks['all_payers'])
-        assert not dict(assemble_leaderboards.ranks['all_earners'])
+        rank_types = [
+            'weekly_fulfilled', 'weekly_payers', 'weekly_earners',
+            'monthly_fulfilled', 'monthly_payers', 'monthly_earners',
+            'yearly_fulfilled', 'yearly_payers', 'yearly_earners',
+            'all_fulfilled', 'all_payers', 'all_earners',
+        ]
+        for rank_type in rank_types:
+            assert not dict(assemble_leaderboards.ranks[rank_type])
 
     def test_handle_command(self):
         """Test command assemble leaderboards."""
         Command().handle()
 
-        assert LeaderboardRank.objects.filter().count() == 8
+        assert LeaderboardRank.objects.all().count() == 8

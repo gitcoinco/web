@@ -2,6 +2,7 @@
 window.onload = function() {
   // a little time for web3 injection
   setTimeout(function() {
+    waitforWeb3(actions_page_warn_if_not_on_same_network);
     var account = web3.eth.accounts[0];
 
     if (
@@ -16,6 +17,13 @@ window.onload = function() {
 
     $('#submitBounty').validate({
       submitHandler: function(form) {
+        try {
+          bounty_address();
+        } catch (exception) {
+          _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+          return;
+        }
+
         var data = {};
         var disabled = $(form)
           .find(':input:disabled')
@@ -48,7 +56,7 @@ window.onload = function() {
           result = results[0];
           if (result == null) {
             _alert({
-              message: gettext('No active bounty found for this Github URL.')
+              message: gettext('No active bounty found for this Github URL on ' + document.web3network + '.')
             });
             unloading_button($('.js-submit'));
             return;
@@ -116,7 +124,7 @@ window.onload = function() {
 
         };
         // Get bountyId from the database
-        var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
+        var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
         $.get(uri, apiCallback);
       }
