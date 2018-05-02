@@ -1,5 +1,10 @@
+
+body {
+  font-family: "Muli", sans-serif;
+}
+
 .title {
-  text-align: center; 
+  text-align: center;
   font-family: 'Muli', sans-serif;
 }
 
@@ -8,28 +13,28 @@
 }
 
 .submit-text {
-  font-size: 1rem; 
-  max-width: 525px; 
+  font-size: 1rem;
+  max-width: 525px;
   margin: 0px auto
 }
 
 .center-button {
-  margin: 0 auto; 
+  margin: 0 auto;
   display: block
 }
 
 #sort_ideas {
-  margin-left: 1em; 
-  width: 160px; 
+  margin-left: 1em;
+  width: 160px;
   border-style: none;
 }
 
 #ideas .idea {
-  padding: 1em 1.5em; 
-  margin-bottom: 1.5em; 
-  border-style: solid; 
-  border-width: 1px; 
-  border-color: rgb(204, 204, 204); 
+  padding: 1em 1.5em;
+  margin-bottom: 1.5em;
+  border-style: solid;
+  border-width: 1px;
+  border-color: rgb(204, 204, 204);
   border-radius: 5px;
   -webkit-transition: border-color 0.25s;
   -moz-transition: border-color 0.25s;
@@ -44,8 +49,8 @@
 }
 
 .idea-title {
-  font-family: 'Muli', sans-serif; 
-  font-size: 1.15em; 
+  font-family: 'Muli', sans-serif;
+  font-size: 1.15em;
   display: inline
 }
 
