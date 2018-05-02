@@ -23,6 +23,7 @@ import logging
 import time
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.templatetags.staticfiles import static
@@ -706,6 +707,20 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['stdbounties_id'] = bounty.standard_bounties_id
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
+
+
+                snooze_days = int(request.GET.get('snooze'))
+                if snooze_days:
+                    is_funder = bounty.is_funder(request.user.username.lower())
+                    is_staff = request.user.is_staff
+                    if is_funder or is_staff:
+                        bounty.snooze_warnings_for_days = snooze_days
+                        bounty.save()
+                        messages.success(request, f'Warning messages have been snoozed for {snooze_days} days')
+                    else:
+                        messages.warning(request, 'Only the funder of this bounty may snooze warnings.')
+
+
         except Bounty.DoesNotExist:
             pass
         except Exception as e:

@@ -739,6 +739,15 @@ num_days_back_to_warn = 3
 num_days_back_to_delete_interest = 6
 
 
+def append_snooze_copy(bounty):
+    snooze = []
+    for day in [1, 3, 5, 10, 100]:
+        plural = "s" if day != 1 else ""
+        snooze.append(f"[{day} day{plural}]({bounty.snooze_url(day)})")
+    snooze = " | ".join(snooze)
+    return "\nFunders only: Snooze warnings for " + snooze
+
+
 def maybe_notify_user_removed_github(bounty, username, last_heard_from_user_days=None):
     if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
@@ -754,6 +763,7 @@ def maybe_notify_user_removed_github(bounty, username, last_heard_from_user_days
 * [x] warning ({num_days_back_to_warn} days)
 * [x] auto removal ({num_days_back_to_delete_interest} days)
 """
+    msg += append_snooze_copy(bounty)
 
     post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
 
@@ -767,6 +777,7 @@ def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days):
 * [x] warning ({num_days_back_to_warn} days)
 * [ ] auto removal ({num_days_back_to_delete_interest} days)
 """
+    msg += append_snooze_copy(bounty)
 
     post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
 

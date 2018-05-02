@@ -157,7 +157,7 @@ class Bounty(SuperModel):
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
-    
+    snooze_warnings_for_days = models.IntegerField(default=0)
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
     token_value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_in_usdt_now = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
@@ -224,6 +224,9 @@ class Bounty(SuperModel):
     @property
     def url(self):
         return self.get_absolute_url()
+
+    def snooze_url(self, num_days):
+        return self.get_absolute_url() + f'?snooze={num_days}'
 
     @property
     def can_submit_after_expiration_date(self):
