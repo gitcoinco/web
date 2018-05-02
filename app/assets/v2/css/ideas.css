@@ -5,17 +5,6 @@ body {
 
 .title {
   text-align: center;
-  font-family: 'Muli', sans-serif;
-}
-
-.submit-title {
-  font-size: 1.75rem
-}
-
-.submit-text {
-  font-size: 1rem;
-  max-width: 525px;
-  margin: 0px auto
 }
 
 .center-button {
@@ -49,8 +38,6 @@ body {
 }
 
 .idea-title {
-  font-family: 'Muli', sans-serif;
-  font-size: 1.15em;
   display: inline
 }
 
