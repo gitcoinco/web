@@ -209,7 +209,7 @@ def new_bounty(bounties, to_emails=None):
     plural = "s" if len(bounties) != 1 else ""
     worth = round(sum([bounty.value_in_usdt for bounty in bounties if bounty.value_in_usdt]), 2)
     worth = f" worth ${worth}" if worth else ""
-    subject = _(f"⚡️  {len(bounties)} New Funded Issue{plural}{worth} matching your profile")
+    subject = _(f"⚡️  {len(bounties)} New Open Funded Issue{plural}{worth} matching your profile")
 
     for to_email in to_emails:
         cur_language = translation.get_language()
