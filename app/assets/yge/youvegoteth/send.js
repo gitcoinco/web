@@ -35,7 +35,7 @@ var updateEstimate = function(e) {
 
   getUSDEstimate(amount, denomination, function(usdAmount) {
     if (usdAmount) {
-      jQuery('#usd_amount').text(usdAmount);
+      jQuery('#usd_amount').html(usdAmount);
     } else {
       jQuery('#usd_amount').html('</br>');
     }

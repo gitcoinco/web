@@ -126,9 +126,9 @@ hi{github_username},
 
 we saw that you cancelled this bounty.
 
-i was sorry to see that the bounty did not get done.  
+i was sorry to see that the bounty did not get done.
 
-i have a few questions for you.  
+i have a few questions for you.
 
 > why did you decide to cancel the bounty?
 
@@ -138,7 +138,7 @@ thanks again for being a member of the community.
 
 kevin
 
-"""            
+"""
         else:
             raise Exception('unknown bounty status')
     else:
@@ -158,7 +158,7 @@ def render_new_bounty(to_email, bounties):
     params = {
         'bounties': bounties,
         'subscriber': sub,
-        'keywords': ",".join(sub.keywords), 
+        'keywords': ",".join(sub.keywords),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
@@ -236,7 +236,7 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
         'time_delta_days': time_delta_days,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
-    
+
     response_html = premailer_transform(render_to_string("emails/bounty_startwork_expire_warning.html", params))
     response_txt = render_to_string("emails/bounty_startwork_expire_warning.txt", params)
 
@@ -300,7 +300,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Send A Firehose Of Talent To Your Repo"
+    subject = "$10,000 of Dai-based Gitcoin Bounties! "
 
     intro = '''
 
@@ -308,67 +308,63 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-<a href="https://medium.com/gitcoin/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster-dcd39650fc5">Here’s how to leverage a firehose of developer talent to do more, faster</a>. Gitcoin Core is 4 team members, yet we’ve seen contributions from well over 30 developers using Gitcoin. We’d like to see you do the same! We plan to continue this series with more on best practices for using Gitcoin to grow your open source repo.   
+We announced <a href="https://medium.com/gitcoin/grow-open-source-gitcoin-makerdao-4f9df702afea">a partnership with MakerDAO this week</a> to provide $10,000 worth of bounties, denominated in Dai! We will start by allocation ~$2,000 to Ethereum Foundation repo’s. From here, we are open to suggestions on open source projects which may be interested in support through bounties. Please let us know <a href="https://gitcoin.co/slack">on Slack</a> or on <a href="https://twitter.com/MakerDAO/status/989641464001904641">Twitter</a>.
 </p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-MARKET Protocol hired Eswara, a great developer and person, after working with him on Gitcoin. <a href="https://medium.com/gitcoin/gitcoin-testimonials-market-protocol-722dbb263d19">Read more about the story here</a>.
+Have you used <a href="https://medium.com/gitcoin/tutorial-send-a-tip-to-any-github-user-in-60-seconds-2eb20a648bc8">Gitcoin Tips</a> before? Tips are a great way to show appreciation for contributions while growing an open source community - in 60 seconds or less! 
         </li>
         <li>
-Want to be the first to know when new open issues are added? <a href="http://twitter.com/gitcoinfeed">@gitcoinfeed</a> on Twitter which provides updates on all new activity on Gitcoin. 
-        </li>
-        <li>
-Today we’ll have uPort and Kauri on the livestream at 5PM ET. <a href="https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ">Add it to your Google Calendar</a> and come hang out!
+Want to be the first to know when new open issues are added? <a href="http://twitter.com/gitcoinfeed">@gitcoinfeed</a> on Twitter which provides updates on all new activity on Gitcoin.
         </li>
     </ul>
 </p>
 <p>
-I hope to see you on <a href="https://gitcoin.co/slack">Slack</a> or on <a href="https://github.com/gitcoinco/web">Github</a>. If you’re interested in growing open source and have some extra time, come by. We’re working to make Gitcoin is the best place on the internet to do so. 
+On today’s <a href="http://gitcoin.co/livestream">Gitcoin Livestream</a>, we’re excited to host 1)  <a href="https://publisher.adchain.com/">AdChain</a>, a live TCR-based project, 2) <a href="https://www.uport.me/">uPort</a>, who will tell the group about their Gitcoin Bounty program, and 3) <a href="http://airswap.io/">Airswap</a>, who launched their decentralized exchange to mainnet today . <a href="https://gitcoin.co/livestream">Add it to your Google Calendar</a> and come hang out! 
+</p>
+<p>
+I hope to see you on <a href="https://gitcoin.co/slack">Slack</a> or on <a href="https://github.com/gitcoinco/web">Github</a>. If you’re interested in growing open source and have some extra time, come by. We’re working to make Gitcoin is the best place on the internet to do so.
 
 </p>
 
 '''
     highlights = [
         {
-            'who': 'agni21',
+            'who': 'justpixel',
             'who_link': True,
-            'what': 'Github OAuth Integration complete, one week after posting! Great work.',
-            'link': 'https://gitcoin.co/issue/TimVanMourik/GiraffeTools/7',
+            'what': 'Worked with Bounties Network to draw up a new ‘Getting Started’ page.',
+            'link': 'https://gitcoin.co/issue/Bounties-Network/bounties.network/2/309',
             'link_copy': 'See more',
         },
         {
-            'who': 'lucaguglielmi',
+            'who': 'agni21',
             'who_link': True,
-            'what': 'Some cool stuff coming together with ETHAvatar. Fantastic contribution',
-            'link': 'https://gitcoin.co/issue/gitcoinco/skunkworks/63',
+            'what': 'Helped Tim van Mourik out on the Giraffe Tools repo.',
+            'link': 'https://gitcoin.co/issue/TimVanMourik/GiraffeTools/16/262',
             'link_copy': 'View more',
         },
         {
-            'who': 'cryptomental',
+            'who': 'netrunnerX',
             'who_link': True,
-            'what': 'Helped MARKET Protocol with a funky MetaMask error. Nice!',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/dApp/111',
+            'what': 'Made his first submission on Ethereum’s Solidity repo!',
+            'link': 'https://gitcoin.co/issue/ethereum/solidity/3750/216',
             'link_copy': 'See more',
         },
     ]
 
     bounties = [
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/buidlbox/issues/2'),
-            'primer': 'uPort has released a series of bounties on their Buidl Box repo! Check them out here. ',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/PolymathNetwork/polymath-core/issues/87'),
+            'primer': 'Polymath released a Bug Bounty which pays up to 10ETH for critical issues. ',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/buidlbox/issues/5'),
-            'primer': '',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/gitcoinco/web/issues/865'),
+            'primer': 'ETHAvatar is a project aiming at improving blockchain UX holistically. Interested in building out the web app?',
         },
         {
             'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/buidlbox/issues/3'),
-            'primer': '',
-        },
-        {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/uport-verify'),
-            'primer': '',
+            'primer': 'uPort is searching for ideas for applications which can be built on top of their platform! ',
         },
     ]
 
@@ -500,7 +496,7 @@ def start_work_expire_warning(request):
 def faucet(request):
     from faucet.models import FaucetRequest
     fr = FaucetRequest.objects.last()
-    response_html, txt = render_faucet_request(fr)
+    response_html, _ = render_faucet_request(fr)
     return HttpResponse(response_html)
 
 
@@ -508,7 +504,7 @@ def faucet(request):
 def faucet_rejected(request):
     from faucet.models import FaucetRequest
     fr = FaucetRequest.objects.exclude(comment_admin='').last()
-    response_html, txt = render_faucet_rejected(fr)
+    response_html, _ = render_faucet_rejected(fr)
     return HttpResponse(response_html)
 
 

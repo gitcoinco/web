@@ -1,0 +1,4 @@
+zappa
+flask
+slackeventsapi
+slackclient

@@ -9,6 +9,7 @@ from django.contrib.gis.geoip2 import GeoIP2
 from django.db.models import Lookup
 from django.db.models.fields import Field
 from django.utils import timezone
+from django.utils.translation import LANGUAGE_SESSION_KEY
 
 import requests
 import rollbar
@@ -69,6 +70,30 @@ def add_contributors(repo_data):
     # no need for retry
     repo_data['contributors'] = response_data
     return repo_data
+
+
+def setup_lang(request, user):
+    """Handle setting the user's language preferences and store in the session.
+
+    Args:
+        request (Request): The Django request object.
+        user (User): The Django user object.
+
+    Raises:
+        DoesNotExist: The exception is raised if no profile is found for the specified handle.
+
+    """
+    profile = None
+    if user.is_authenticated and hasattr(user, 'profile'):
+        profile = user.profile
+    else:
+        try:
+            profile = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
+            pass
+    if profile:
+        request.session[LANGUAGE_SESSION_KEY] = profile.get_profile_preferred_language()
+        request.session.modified = True
 
 
 def sync_profile(handle, user=None):
