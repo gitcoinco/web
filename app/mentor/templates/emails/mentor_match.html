@@ -1,0 +1,83 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+
+{% block content %}
+
+<style>
+
+  .mentor-name {
+    font-size:24;
+    color: #3e24fb;
+  }
+
+  .mentor-mail {
+    font-size:18;
+    color: #3e24fb;
+  }
+
+  .avatar {
+    padding:10px
+  }
+
+  .match {
+    padding:10px;
+  }
+
+  .match-skills {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .match-skill {
+    width:50%;
+  }
+
+  @media only screen and (min-width: 600px) {
+    .match-skills {
+        width: 500px
+    }
+}
+</style>
+
+
+<h1>{% trans "You've got a match!" %}</h1>
+  {% for match in matched_mentors %}
+    <div class="match">
+      <div class="text-center">
+        <img src='{{match.avatar_url}}' class='avatar'>
+        <div class="mentor-name">{{match.name}}</div>
+      </div>
+      <div class="text-center">
+        <h3>You matched on these skills:</h3>
+        <div style="display:flex;justify-content:center">
+            <div class="match-skills">
+                {% for skill in  match.skills_offered %}
+                  <div class="match-skill">{{skill}}</div>
+                {% endfor %}
+              </div>
+        </div>
+      </div>
+      <div class="text-center">
+        <h3>Get in contact at:</h3>
+        <div><a class="mentor-mail" href="mailto:{{match.email}}">{{match.email}}</a></div>
+      </div>
+    </div>
+  {% endfor %}
+{% endblock %}

@@ -1,3 +1,5 @@
+from django.utils.translation import gettext_lazy as _
+
 from dashboard.models import Profile
 from rest_framework import serializers
 from rest_framework.fields import CharField
@@ -33,36 +35,43 @@ class MentorSerializer(serializers.ModelSerializer):
     ]
 
     email = serializers.CharField(
-        style={'template': 'email-input.html'}
+        style={'template': 'email-input.html'},
+        label=_("Email")
     )
 
     org = serializers.CharField(
-        style={'template': 'text-input.html'}
+        style={'template': 'text-input.html'},
+        label=_("Org")
     )
 
     about = serializers.CharField(
         style={'template': 'text-area-input.html'},
+        label=_("About")
     )
 
     experience = serializers.ChoiceField(
         style={'template': 'select-input.html'},
-        choices=TIME_RANGE
+        choices=TIME_RANGE,
+        label=_("Experience")
     )
 
     skills_offered = StringArrayField(
         style={'template': 'text-area-input.html'},
+        label=_("Skills offered")
     )
 
     skills_needed = StringArrayField(
         style={'template': 'text-area-input.html'},
+        label=_("Skills needed")
     )
 
     commitment_per_week = serializers.ChoiceField(
         style={'template': 'select-input.html'},
-        choices=TIME_RANGE
+        choices=TIME_RANGE,
+        label=_("Commitment per week")
     )
 
     available = serializers.BooleanField(
         style={'template': 'checkbox-input.html'},
-        label="Are you available to mentor now?"
+        label=_("Are you available to mentor now?")
     )

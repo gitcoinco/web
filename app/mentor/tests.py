@@ -1,9 +1,13 @@
+from unittest.mock import patch
+
 from django.urls import resolve, reverse
 
 from dashboard.models import Profile
 from rest_framework.test import APIRequestFactory
 from test_plus.test import TestCase
 
+from .commands.mentors_match import Command
+from .mails import mentors_match
 from .models import MentorSerializer, StringArrayField
 from .views import MentorDetail, MentorsList
 
@@ -144,3 +148,32 @@ class UrlsTest(TestCase):
 
     def test_mentor_details_resolve(self):
         self.assertEqual(resolve('/mentor/1').view_name, 'mentor_details')
+
+
+class MailsTest(TestCase):
+
+
+    @staticmethod
+    def test_mentors_match():
+        profile = Profile.objects.create(email="test@test.com", org="Gitcoin", about="Gitting coins..",
+                               experience="15_20", skills_offered=["Python", "Django"],
+                               skills_needed=["Solidity", "Ethereum"], available=True,
+                               commitment_per_week="5_10", data={})
+        mentors_match([profile], "test@gitcoin.co")
+
+
+class MentorsMatchCommandTest(TestCase):
+
+    @patch('mentor.commands.mentors_match.mentors_match')
+    def test_handle(self, mock_func):
+        print(mock_func)
+        profile = Profile.objects.create(email="test1@test.com", org="Gitcoin", about="Gitting coins..",
+                               experience="15_20", skills_offered=["Python", "Django"],
+                               skills_needed=["Solidity", "Ethereum"], available=True,
+                               commitment_per_week="5_10", data={})
+        match = Profile.objects.create(email="test2@test.com", org="Gitcoin", about="Gitting coins..",
+                               experience="15_20", skills_offered=["Solidity", "Django"],
+                               skills_needed=["Solidity", "Ethereum"], available=True,
+                               commitment_per_week="5_10", data={})
+        Command().handle()
+        mock_func.assert_called_once_with([match], "test1@test.com")

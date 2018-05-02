@@ -33,11 +33,11 @@
         <div class="row">
           <div class="col-xs-12 col-md-8">
             <div class="row no-gutter">
-              <h3>Join the mentoring community</h3>
+              <h3>{% trans "Join the mentoring community" %}</h3>
               <p>
-                Whether you want to learn or teach, this is place to be.
+                {% blocktrans %} Whether you want to learn or teach, this is place to be.
                 Tell us a little about yourself and what you're hoping to get out of being
-                part of the community.
+                part of the community. {% endblocktrans %}
               </p>
             </div>
             <form method="POST" action="{% url "mentor_details" pk=request.user.profile.id%}">

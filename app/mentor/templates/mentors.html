@@ -39,16 +39,16 @@
           </div>
           <div>
             <div class="col-12 offset-md-1 col-md-10 title-row">
-              <span id="filter" class="font-title">Mentors</span>
+              <span id="filter" class="font-title">{% trans "Mentors" %}</span>
             </div>
             <div class="col-12 offset-md-1 col-md-10 table-responsive">
               <table class="table">
                 <thead>
                   <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col" class="d-none d-md-block">Email</th>
-                    <th scope="col">Org</th>
-                    <th scope="col">Skills Offerred</th>
+                    <th scope="col">{% trans "Name" %}</th>
+                    <th scope="col" class="d-none d-md-block">{% trans "Email" %}</th>
+                    <th scope="col">{% trans "Org" %}</th>
+                    <th scope="col">{% trans "Skills Offerred" %}</th>
                     <th scope="col"></th>
                   </tr>
                   </thead>
@@ -74,7 +74,7 @@
       <td>[[:org]]</td>
       <td>[[for skills_offered]] <span class="badge badge-primary">[[:#data]]</span>
         [[/for]]</td>
-      <td><a id="open_mentor_[[:id]]" >view</a></td>
+      <td><a id="open_mentor_[[:id]]" >{% trans "view" %}</a></td>
     </tr>
   </script>
   <script src="{% static "v2/js/pages/mentors.js" %}"></script>
