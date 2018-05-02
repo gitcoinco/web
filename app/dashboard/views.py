@@ -45,6 +45,7 @@ from dashboard.notifications import (
     maybe_market_to_twitter, maybe_market_to_user_slack,
 )
 from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, web3_process_bounty
+from dashboard.utils import record_user_action_on_interest
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
@@ -297,7 +298,9 @@ def uninterested(request, bounty_id, profile_id):
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
 
-    if not bounty.is_funder(request.user.username.lower()) and not request.user.is_staff:
+    is_funder = bounty.is_funder(request.user.username.lower())
+    is_staff = request.user.is_staff
+    if not is_funder and not is_staff:
         return JsonResponse(
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
@@ -307,6 +310,8 @@ def uninterested(request, bounty_id, profile_id):
         bounty.interested.remove(interest)
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
+        event_name = "bounty_removed_by_staff" if is_staff else "bounty_removed_by_funder"
+        record_user_action_on_interest(interest, event_name, None)
         interest.delete()
     except Interest.DoesNotExist:
         return JsonResponse({

@@ -944,7 +944,7 @@ class Profile(SuperModel):
     def has_abandoned_work(self):
         user_actions = UserAction.objects.filter(
             profile=self,
-            action='bounty_abandonment_final',
+            action='bounty_removed_by_staff',
             )
         return user_actions.exists()
 
