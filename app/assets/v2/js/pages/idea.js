@@ -1,7 +1,7 @@
 (function() {
 
   $('document').ready(() => {
-    $.get('get', (result) => {
+    $.get(window.location.href + '/get', (result) => {
       var idea = result.idea;
       var forumName = result.forum_name;
 

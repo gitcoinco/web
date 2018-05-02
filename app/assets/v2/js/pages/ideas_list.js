@@ -26,7 +26,7 @@
   function onIdeaClick(data) {
     var ideaId = $(data.currentTarget).data('ideaId');
 
-    window.location = 'idea/' + ideaId + '/show';
+    window.location = 'idea/' + ideaId;
   }
 
   function onSortChange(data) {
