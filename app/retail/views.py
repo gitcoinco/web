@@ -576,7 +576,7 @@ def new_idea(request):
                     capital_exists=capital_exists, builders_exists=builders_exists,
                     designers_exists=designers_exists, customer_exists=customer_exists, profile=profile)
         idea.save(force_insert=True)
-        return HttpResponseRedirect(f"idea/{idea.id}/show")
+        return HttpResponseRedirect(f"idea/{idea.id}")
     return TemplateResponse(request, 'new_idea.html', {})
 
 
