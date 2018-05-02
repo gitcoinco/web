@@ -199,6 +199,7 @@ body {
   margin-bottom: 5px;
   display: block;
 }
+
 #network a{
   color: #fb9470;
   font-weight: bold;
@@ -398,6 +399,11 @@ a.btn {
   margin: 5px;
 }
 
+.stop-work {
+  float: right;
+  margin-right: 10px;
+}
+
 @media (max-width: 575px) {
 
   #timer {
@@ -464,8 +470,8 @@ a.btn {
 }
 
 #add_interest form {
-  padding:1em;
-  width:100%;
+  padding: 1em;
+  width: 100%;
 }
 
 #issue-message {
@@ -473,7 +479,7 @@ a.btn {
 }
 
 .add-interest-options {
-  display:flex;
+  display: flex;
   flex-direction: row;
   justify-content: flex-start;
 }
