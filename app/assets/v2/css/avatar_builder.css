@@ -59,7 +59,8 @@ body {
 .options-section.open {
   display: flex !important;
 }
-.avatar-option {
+button.avatar-option {
+  border: none;
   width: 80px;
   height: 80px;
   background-color: #D8E7FF;
@@ -188,6 +189,7 @@ body {
     text-align: left;
   }
   .options-section {
+    overflow: auto;
     max-height: 255px;
     justify-content: flex-start;
   }
