@@ -2,7 +2,7 @@
 <script id="idea_template" type="text/x-jsrender">
   <div id="idea_[[:id]]" data-idea-id="[[:id]]" class="idea">
     <div class="d-flex justify-content-between pb-3">
-      <div class="idea-title">[[:summary]]</div>
+      <div class="idea-title">[[>summary]]</div>
       <div class="d-inline-flex">
         <div class="text-center p-1">
           <div class="align-middle"><i class="far fa-comment"></i></div>
@@ -14,10 +14,10 @@
         </div>
       </div>
     </div>
-    <p>More info: [[:more_info]]</p>
+    <p>More info: [[>more_info]]</p>
     <div class="d-flex justify-content-between">
       <div class="avatar-label">
-        <img src='[[:avatar_url]]' class='user-avatar'> {% trans "Submitted by" %} <strong>[[:full_name]]</strong>
+        <img src='[[:avatar_url]]' class='user-avatar'> {% trans "Submitted by" %} <strong>[[>full_name]]</strong>
       </div>
       <div class="d-flex justify-content-between">
         <div class="badge-container">
