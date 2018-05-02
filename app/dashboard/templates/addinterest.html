@@ -16,18 +16,18 @@
 {% endcomment %}
 {% load i18n static %}
 <div id="add_interest" class="white-light-bg">
-  <div class="container-fluid">
-    <div class="row closebtn">
+  <div class="row">
+    <div class="col-12 closebtn">
       <a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">
         <span aria-hidden="true">&times;</span>
       </a>
     </div>
-    <div class="text-center interest-modal-title">
-      <h5 class="col mt-2 mb-2">{% trans "Great to see that you're interested in this project!" %}</h5>
+    <div class="col-12">
+      <h5 class="text-center font-title">{% trans "Great to see that you're interested in this project!" %}</h5>
     </div>
-    <div class="row">
-      <form class="add-interest-modal__form">
-        <label class="add-interest-modal__form--item">{% trans "Do you have any questions about this ticket?" %}</label>
+    <div class="col-12">
+      <form class="font-body">
+        <label class="mt-2">{% trans "Do you have any questions about this ticket?" %}</label>
         <div class="add-interest-options options">
           <div class="form__radio option">
             <input type="radio" id="interest-question-true" name="interest-question" value="true" checked="checked" />
@@ -38,31 +38,35 @@
             <label for="interest-question-false">{% trans "No" %}</label>
           </div>
         </div>
-        <div class="add-interest-modal__form--item">
-          <div>
-            <label for="issue-message">
-              {% trans "Anything the project owner should know?" %}
-            </label>
-            <textarea id="issue-message" class="add-interest-modal__form--textarea form__input"></textarea>
-          </div>
+        <div>
+          <label for="issue-message">
+            {% trans "Anything the project owner should know?" %}
+          </label>
+          <textarea id="issue-message" class="form__input"></textarea>
         </div>
-        <div class="add-interest-modal__form--item">
+        <div>
           <div class=checkbox_container>
-            <input type="checkbox" id="checkbox2" class="add-interest-modal__form form__input" value="1">
-            <label for="checkbox2">
-              {% trans "I understand that if anyone has started work on this ticket before me, they may have precedence." %}
-            </label>
+            <input type="checkbox" id="checkbox2" class="form__input" value="1">
+            <span class="checkbox"></span>
+            <div class="filter-label">
+              <label for="checkbox2">
+                {% trans "I understand that if anyone has started work on this ticket before me, they may have precedence." %}
+              </label>
+            </div>
           </div>
         </div>
-        <div class="add-interest-modal__form--item">
+        <div>
           <div class=checkbox_container>
-            <input type="checkbox" id="checkbox1" class="add-interest-modal__form form__input" value="1">
-            <label for="checkbox1">
-              {% trans "I agree to keep the funder informed of my progress every few days." %}
-            </label>
+            <input type="checkbox" id="checkbox1" class="form__input" value="1">
+            <span class="checkbox"></span>
+            <div class="filter-label">
+              <label for="checkbox1">
+                {% trans "I agree to keep the funder informed of my progress every few days." %}
+              </label>
+            </div>
           </div>
         </div>
-        <button class="add-interest-modal__form--submit row btn btn-sm btn-darkBlue btn-interested float-right" type="submit">{% trans "Submit" %}</button>
+        <button class="row btn btn-sm btn-white btn-interested" type="submit">{% trans "Submit" %}</button>
       </form>
     </div>
   </div>
