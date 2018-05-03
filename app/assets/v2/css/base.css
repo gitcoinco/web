@@ -1598,9 +1598,6 @@ input.is-invalid {
 }
 
 @media (max-width: 576px) {
-  #sidebar_container {
-    display: none;
-  }
 
   .profile_details #stats {
     padding-right: 10px;
@@ -1634,5 +1631,11 @@ input.is-invalid {
 
   .bounty_nav li {
     display: block;
+  }
+}
+
+@media (max-width: 991.98px) {
+  #sidebar_container {
+    display: none;
   }
 }

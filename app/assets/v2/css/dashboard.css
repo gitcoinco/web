@@ -1,5 +1,34 @@
 body {
   font-family: 'Muli', sans-serif;
+  background: #FFFFFF;
+}
+
+.invisible {
+  background: #FFFFFF !important;
+  visibility: hidden;
+}
+
+#onboard-dashboard {
+  background: #E8FFF2;
+  padding-top: 2em;
+  padding-bottom: 1em;
+  margin-bottom: 2em;
+}
+
+#onboard-dashboard h2, {
+  font-weight: bolder;
+}
+
+#onboard-dashboard h2,
+#onboard-dashboard h3 {
+  text-transform: capitalize;
+  letter-spacing: 0;
+}
+
+#onboard-dashboard a {
+  float: right;
+  padding-left: 25px;
+  padding-right: 25px;
 }
 
 .title-row {
@@ -99,6 +128,12 @@ body {
 }
 
 @media (max-width: 768px) {
+
+  #onboard-dashboard .col-12 {
+    padding-left: 3em;
+    padding-right: 3em;
+  }
+
   #filter {
     padding-left: 20px;
   }
