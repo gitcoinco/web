@@ -1025,6 +1025,14 @@ input[type=text].loading {
 
 }
 
+.profile-bounties--loading {
+  background-image: url('/static/v2/images/loading_v2.gif');
+  background-repeat: no-repeat;
+  background-position: 0 -15px;
+  background-size: 64px;
+  height: 48px;
+}
+
 .profile-bounties .avatar {
   max-width: 50px;
   max-height: 50px;
