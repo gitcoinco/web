@@ -32,4 +32,4 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
     echo "Provisioning completed!"
 fi
 
-python manage.py "$WEB_WORKER" "$WEB_INTERFACE":"$WEB_PORT" --extra-file /code/app/app/.env
+python manage.py "$WEB_WORKER" "$WEB_INTERFACE":"$WEB_PORT" --extra-file /code/app/app/.env --nopin
