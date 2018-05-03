@@ -1030,6 +1030,16 @@ input[type=text].loading {
   max-height: 50px;
 }
 
+.profile-bounties .bounty_row {
+  padding: 0;
+  border-bottom: 1px solid #D3D3D3;
+}
+
+.profile-bounties .bounty-summary {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 /* END Profile details */
 
 #pull_gh {
