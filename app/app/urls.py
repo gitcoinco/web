@@ -128,6 +128,7 @@ urlpatterns = [
     url(r'^sync/get_amount?', dashboard.helpers.amount, name='helpers_amount'),
     url(r'^sync/get_issue_details?', dashboard.helpers.issue_details, name='helpers_issue_details'),
     url(r'^sync/search_save?', dashboard.views.save_search, name='save_search'),
+    url(r'^sync/get_quickstart_video?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
 
     # brochureware views
     url(r'^about/?', retail.views.about, name='about'),

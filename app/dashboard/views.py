@@ -846,6 +846,18 @@ def save_search(request):
     return TemplateResponse(request, 'save_search.html', context)
 
 
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def get_quickstart_video(request):
+    """Show quickstart video."""
+
+    context = {
+        'active': 'video',
+        'title': 'Quickstart Video',
+    }
+    return TemplateResponse(request, 'quickstart_video.html', context)
+
+
 @require_POST
 @csrf_exempt
 @ratelimit(key='ip', rate='5/s', method=ratelimit.UNSAFE, block=True)

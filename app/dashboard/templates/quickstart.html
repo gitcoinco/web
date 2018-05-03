@@ -39,7 +39,7 @@
       </div>
       <div class="row col-12 offset-lg-1 col-lg-10">
         <div class="dont-show">
-          <input type="checkbox"/>
+          <input type="checkbox" id="dontshow" name="dontshow"/>
           <span>Don't show again</span>
         </div>
       </div>
@@ -61,7 +61,7 @@
           </p>
           <div class="d-flex pt-5 action-footer">
             <div class="video-link">
-              <a href="">Watch 90 second video</a>
+              <a href="#" class="show_video">Watch 90 second video</a>
             </div>
             <button class="btn btn-primary">Ok, I'm ready</button>
           </div>
@@ -77,7 +77,7 @@
             <li>Leave Room for Error.</li>
           </ul>
           <p>Have fun! Meet new people!</p>
-          <a href="">More Funding Tips</a>
+          <a href="https://docs.google.com/document/d/1_U9IdDN8FIRMGAdLWCMl2BnqCTAv558QvyJiSWQfkbs/edit?usp=sharing" target="_blank" rel="noopener noreferrer">More Funding Tips</a>
         </div>
       </div>
       <div class="row col-12 offset-lg-1 col-lg-10 pt-2 pb-5 issuetypes-container text-center">
@@ -123,7 +123,7 @@
           <p>Ideas, discussions, contests, consulting</p>
         </div>
         <div class="col-lg-10 col-md-12 offset-lg-1 notsuggested-container">
-          <h4 class="subheading">In our experience, the following are not good candidates for bounties:</h4>
+          <h4 class="subheading">In our experience, the following are <span class="orange-text">not</span> good candidates for bounties:</h4>
           <ol class="text-left">
             <li>
               <img src={% static "v2/images/quickstart-icons/list-icon.svg" %}/>
@@ -144,4 +144,18 @@
         </div>
       </div>
     </div>
+
+    
+
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/footer.html' %}
+
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/pages/quickstart.js" %}"></script>
+    <script src="{% static "v2/js/shared.js" %}"></script>
+    <script>
+        document.keywords = {{keywords | safe}};
+    </script>
   </body>
