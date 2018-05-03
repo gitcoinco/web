@@ -278,8 +278,7 @@ a.btn {
 
 .started-status-column .button--primary,
 #right_actions .button--primary,
-#btn-white,
-.btn-white {
+#btn-white {
   padding: 6px 15px;
   box-shadow: none;
   font-size: 12px;
@@ -293,9 +292,7 @@ a.btn {
   margin-bottom: 10px;
 }
 
-#btn-white,
-.btn-white,
-.btn-white:hover {
+#btn-white {
   background-color: #FFFFFF;
   border: 1px solid #979797;
   color: #0D0764;
@@ -486,7 +483,7 @@ a.btn {
 
 #add_interest form .filter-label {
   display: inline;
-  margin-left: 10px;
+  margin-left: 0.625rem;
 }
 
 .add-interest-options > .option {
@@ -495,4 +492,10 @@ a.btn {
 
 .btn-interested {
   float: right;
+  padding: 0.375rem 0.9375rem;
+  font-size: 12px;
+}
+
+.close:hover, .close:focus {
+  box-shadow: none;
 }
