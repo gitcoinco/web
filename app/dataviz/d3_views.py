@@ -1,6 +1,7 @@
 import json
 import math
 import random
+import time
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
@@ -153,7 +154,8 @@ def viz_chord(request, key='bounties_paid'):
                     length = (fulfillment.created_on - bounty.web3_created).seconds
                     target = fulfillment.fulfiller_github_username.lower()
                     source = bounty.bounty_owner_github_username.lower()
-                    rows.append((source, target, str(weight), str(length)))
+                    if source and target:
+                        rows.append((helper_hide_pii(source), helper_hide_pii(target), str(weight), str(length)))
 
         output_rows = []
         for row in rows:
@@ -531,6 +533,7 @@ def viz_graph(request, _type, template='graph'):
                 source = bounty.org_name
                 if source:
                     for fulfillment in bounty.fulfillments.all():
+                        created = fulfillment.created_on.strftime("%s")
                         if _type != 'fulfillments_accepted_only' or fulfillment.accepted:
                             target = fulfillment.fulfiller_github_username.lower()
                             if hide_pii:
@@ -539,7 +542,7 @@ def viz_graph(request, _type, template='graph'):
                             types[target] = 'target_accepted' if fulfillment.accepted else 'target'
                             names[source] = None
                             names[target] = None
-                            edges.append((source, target, weight))
+                            edges.append((source, target, weight, created))
 
                             value = values.get(source, 0)
                             value += weight
@@ -549,7 +552,8 @@ def viz_graph(request, _type, template='graph'):
                             values[target] = value
 
         for tip in Tip.objects.filter(network='mainnet'):
-            weight = bounty.value_in_usdt
+            weight = tip.value_in_usdt
+            created = tip.created_on.strftime("%s")
             if weight:
                 source = tip.username.lower()
                 if hide_pii:
@@ -564,11 +568,12 @@ def viz_graph(request, _type, template='graph'):
                     if source not in types.keys():
                         types[target] = 'target'
                         names[target] = None
-                    edges.append((source, target, weight))
+                    edges.append((source, target, weight, created))
 
 
         if _type in ['what_future_could_look_like', 'all']:
             last_node = None
+            created = 1525147679
             nodes = Profile.objects.exclude(github_access_token='').all()
             for profile in nodes:
                 node = profile.handle.lower()
@@ -584,7 +589,7 @@ def viz_graph(request, _type, template='graph'):
                         target = nodes.order_by('?').first().handle.lower()
                         if hide_pii:
                             target = helper_hide_pii(target)
-                        edges.append((target, node, weight))
+                        edges.append((target, node, weight, created))
                 last_node = node
 
 
@@ -599,7 +604,7 @@ def viz_graph(request, _type, template='graph'):
             value = int(math.sqrt(math.sqrt(values.get(name, 1))))
             output['nodes'].append({"name": name, 'value': value, 'type': types.get(name), 'avatar': avatars.get(name)})
         for edge in edges:
-            source, target, weight = edge
+            source, target, weight, created = edge
             weight = math.sqrt(weight)
             if names.get(source) and names.get(target):
                 source = names[source]
@@ -609,6 +614,7 @@ def viz_graph(request, _type, template='graph'):
                     'target': target,
                     'value': value,
                     'weight': weight,
+                    'created': created,
                 })
 
         return JsonResponse(output)
@@ -619,6 +625,7 @@ def viz_graph(request, _type, template='graph'):
         'viz_type': _type,
         'type_options': _type_options,
         'page_route': page_route,
+        'max_time': int(time.time()),
     }
     return TemplateResponse(request, f'dataviz/{template}.html', params)
 
@@ -703,10 +710,11 @@ def viz_scatterplot(request, key='hourly_rate'):
                 row = [
                     str(bf.bounty.hourly_rate),
                     str((timezone.now() - bf.accepted_on).days),
-                    bf.fulfiller_github_username,
+                    bf.bounty.org_name,
                     str(weight),
                 ]
-                rows.append(row)
+                if bf.bounty.hourly_rate:
+                    rows.append(row)
             except:
                 pass
 

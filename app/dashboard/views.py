@@ -23,6 +23,7 @@ import logging
 import time
 
 from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import Http404, JsonResponse
@@ -133,7 +134,6 @@ def get_interest_modal(request):
     return TemplateResponse(request, 'addinterest.html', context)
 
 
-@require_POST
 @csrf_exempt
 @require_POST
 def new_interest(request, bounty_id):
@@ -154,8 +154,11 @@ def new_interest(request, bounty_id):
     if access_token:
         helper_handle_access_token(request, access_token)
         github_user_data = get_github_user_data(access_token)
-        profile = Profile.objects.filter(handle=github_user_data['login']).first()
+        profile = Profile.objects.prefetch_related('bounty_set') \
+            .filter(handle=github_user_data['login']).first()
         profile_id = profile.pk
+    else:
+        profile = request.user.profile if profile_id else None
 
     if not profile_id:
         return JsonResponse(
@@ -173,7 +176,13 @@ def new_interest(request, bounty_id):
     is_working_on_too_much_stuff = num_active >= num_issues
     if is_working_on_too_much_stuff:
         return JsonResponse({
-            'error': f'You may only work on max of {num_issues} issues at once.',
+            'error': _(f'You may only work on max of {num_issues} issues at once.'),
+            'success': False},
+            status=401)
+
+    if profile.has_abandoned_work():
+        return JsonResponse({
+            'error': _('Due to a prior abandoned bounty, you are unable to start work at this time. Please contact support.'),
             'success': False},
             status=401)
 
@@ -288,7 +297,7 @@ def uninterested(request, bounty_id, profile_id):
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
 
-    if not bounty.is_funder(request.user.username.lower()):
+    if not bounty.is_funder(request.user.username.lower()) and not request.user.is_staff:
         return JsonResponse(
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
@@ -452,6 +461,13 @@ def send_tip_2(request):
     }
 
     return TemplateResponse(request, 'yge/send2.html', params)
+
+
+@staff_member_required
+def onboard(request):
+    """Handle displaying the first time user experience flow."""
+    params = {'title': _('Onboarding Flow')}
+    return TemplateResponse(request, 'onboard.html', params)
 
 
 def dashboard(request):
@@ -619,7 +635,7 @@ def cancel_bounty(request, pk):
 
     params = {
         'bounty': bounty,
-        'title': _('Kill Bounty'),
+        'title': _('Cancel Bounty'),
         'active': 'kill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
@@ -667,6 +683,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         'is_github_token_valid': is_github_token_valid(_access_token),
         'github_auth_url': get_auth_url(request.path),
         "newsletter_headline": _("Be the first to know about new funded issues."),
+        'is_staff': request.user.is_staff,
     }
 
     if issue_url:

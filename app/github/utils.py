@@ -64,6 +64,25 @@ def build_auth_dict(oauth_token):
     }
 
 
+def check_github(profile):
+    """Check whether or not the provided username is present in the payload as active user.
+
+    Args:
+        profile (str): The profile username to be validated.
+
+    Returns:
+        dict: A dictionary containing status and user data.
+
+    """
+    user = search_github(profile + ' in:login type:user')
+    response = {'status': 200, 'user': False}
+    user_items = user.get('items', [])
+
+    if user_items and user_items[0].get('login', '').lower() == profile.lower():
+        response['user'] = user_items[0]
+    return response
+
+
 def search_github(q):
 
     params = (
