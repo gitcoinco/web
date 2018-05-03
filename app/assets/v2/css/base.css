@@ -20,9 +20,11 @@ span {
 .nav_avatar {
   cursor: pointer;
 }
+
 .dropdown-menu{
   z-index: 9999999999;
 }
+
 .navbar {
   font-family: 'futura-pt', Futura, sans-serif;
 }
@@ -546,8 +548,34 @@ input[type=text].loading {
   padding: 0 2em;
 }
 
+.submit_bounty .select2-search,
+.fulfill_bounty .select2-search,
+.submit_bounty .select2-results__option,
+.fulfill_bounty .select2-results__option {
+  font-size: 14px;
+  font-family: "Muli", sans-serif;
+}
+
+.submit_bounty .select2-results__option,
+.fulfill_bounty .select2-results__option {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 #primary_form img {
   max-width: 100px;
+}
+
+#primary_form .github-username {
+  margin-top: 14px !important;
+}
+
+#primary_form small {
+  display: inline;
+}
+
+#primary_form #amount {
+  height: 37px;
 }
 
 .bounty_nav {
@@ -1217,7 +1245,6 @@ input.is-invalid {
   border: 1px solid #0D0764 !important;
   background: #0D0764 !important;
 }
-
 
 .ui-button:hover,
 .ui-button:focus {
