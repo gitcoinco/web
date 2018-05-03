@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n %}
-<div class="w-100 mt-2">
+<div class="w-100 mt-2 github-username">
   <label class="form__label" for="githubUsername">{% trans "Github Username" %}</label>
   {% if not user.is_authenticated %}
     <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">({% trans "Login" %})</a>
