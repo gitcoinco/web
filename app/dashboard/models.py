@@ -164,7 +164,7 @@ class Bounty(SuperModel):
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
-    
+
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
     token_value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_in_usdt_now = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
@@ -1092,6 +1092,8 @@ class Profile(SuperModel):
 
         if num_completed_bounties or fulfilled_bounties_count:
             user_active_in_last_quarter = True
+
+        completetion_percent = float('%.2f' % completetion_percent)
 
         return {
             'user_total_earned_eth': total_earned_eth,

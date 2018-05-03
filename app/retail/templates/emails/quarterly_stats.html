@@ -63,14 +63,13 @@
     border-style: solid;
     border-width: 1px;
     border-color: #e0e0e0;
+    padding: 1em;
   }
 
   .stat-img {
     text-align: center;
-    margin: 1em;
     border-width: 1px;
     border-radius: 50%;
-    height: 100px;
     width: 15%;
   }
 
@@ -92,6 +91,7 @@
 
   .stat-contents > p {
     color: #0D0764;
+    padding: 1em;
   }
 
   .bounty-img {
@@ -136,6 +136,22 @@
     margin-bottom: 5em;
     margin-top: 3em;
   }
+
+  .percent-content {
+    display: flex;
+    justify-content: center;
+  }
+
+  .button-action > .button {
+    padding: 1.3em;
+  }
+
+  .full-bordered-circle {
+    border-radius: 100%;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #eeeeee;
+  }
 </style>
 <div class="stat-container">
     <h1>GITCOIN QUARTERLY</h1>
@@ -152,7 +168,7 @@
             </div>
         </div>
         <div class="centered-contents stat-box">
-            <div class="stat-img">
+            <div class="stat-img full-bordered-circle percent-content">
                 <p class="content">{{user_bounty_completion_percentage}} %</p>
             </div>
             <div class="stat-contents">
@@ -160,7 +176,8 @@
             </div>
         </div>
         <div class="centered-contents stat-box">
-            <div class="stat-img">
+            <div class="stat-img full-bordered-circle">
+                <i class="fas fa-seedling"></i>
             </div>
             <div class="stat-contents">
                 {% comment %}
@@ -181,7 +198,7 @@
     <h2>Platform-wide Stats</h2>
     <h4>Activity happening across the Gitcoin network</h4>
     <div class="centered-contents stat-box">
-        <div class="stat-img">
+        <div class="stat-img full-bordered-circle percent-content">
             <p class="content">{{bounties_completion_percent}} %</p>
         </div>
         <div class="stat-contents">
@@ -189,7 +206,7 @@
         </div>
     </div>
     <div class="centered-contents stat-box">
-        <div class="">
+        <div class="stat-img">
             <p class="content bounty-img">{{num_completed_bounties}} bounties</p>
             <p class="content bounty-fund-img">{{completed_bounties_fund}} USD</p>
         </div>

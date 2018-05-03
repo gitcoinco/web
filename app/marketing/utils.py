@@ -105,6 +105,7 @@ def get_platform_wide_stats(since_last_n_days=90):
 
     avg_fund_per_bounty = float('%.2f' % avg_fund_per_bounty)
     completed_bounties_fund = float('%.2f' % completed_bounties_fund)
+    bounties_completion_percent = float('%.2f' % bounties_completion_percent)
 
     largest_bounty = Bounty.objects.filter(created_on__gte=last_n_days).order_by('-value_in_token').first()
 
