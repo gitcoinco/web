@@ -28,7 +28,7 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
     python manage.py collectstatic --noinput -i other &
     python manage.py migrate
     python manage.py get_prices
-    echo "date -Iseconds" >> /provisioned
+    date >> /provisioned
     echo "Provisioning completed!"
 fi
 
