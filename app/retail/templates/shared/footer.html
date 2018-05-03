@@ -28,6 +28,22 @@
                 <a class="nav-link" href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms" %}</a>
                 <a class="nav-link" href="{% url "privacy" %}" target="_blank" rel="noopener noreferrer">{% trans "Privacy" %}</a>
                 <a class="nav-link" href="{% url "help" %}">{% trans "Help" %}</a>
+                <div class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Contracts
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">                                        
+                    <a class="dropdown-item" href="https://etherscan.io/address/0x2af47a65da8cd66729b4209c22017d6a5c2d2400">
+                      <i class="fas fa-file-code"></i>
+                      {% trans "StandardBounties" %}
+                    </a>
+                    <a class="dropdown-item" href="https://etherscan.io/address/0x6cdccb2b249298419ab3dea261a92fbacf2223ab">
+                      <i class="fas fa-file-code"></i>
+                      {% trans "BountyEscrow" %}
+                    </a>
+                  </div>
+                </div> 
             </div>
         </div>
         <div class="row" style="margin-top: 5px; ">
