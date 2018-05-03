@@ -1,7 +1,7 @@
+from dashboard.models import Bounty, Interest, Profile
+
 github_url = 'https://github.com/ethgasstation/ethgasstation-api/issues/1'
 username = 'eswarasai'
-
-from dashboard.models import Bounty, Interest, Profile
 
 bounty = Bounty.objects.get(current_bounty=True, github_url=github_url)
 profile = Profile.objects.filter(handle=username).first()
