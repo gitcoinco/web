@@ -386,6 +386,7 @@ def get_interested_actions(github_url, username, email=''):
     all_actions = []
     page = 1
     actions, next_url = get_issue_timeline_events(owner, repo, issue_num, url=None)
+    all_actions.extend(actions)
     while next_url:
         url = next_url['url']
         actions, next_url = get_issue_timeline_events(owner, repo, issue_num, url)
@@ -409,12 +410,12 @@ def get_interested_actions(github_url, username, email=''):
 
             should_continue_loop = True
             all_pr_actions = []
-            page = 1
-            while should_continue_loop:
-                pr_actions = get_issue_timeline_events(pr_repo_owner, pr_repo, pr_num, page)
-                should_continue_loop = len(pr_actions) == 100
+            pr_actions, next_url = get_issue_timeline_events(pr_repo_owner, pr_repo, pr_num, url=None)
+            all_pr_actions = all_pr_actions + pr_actions
+            while next_url:
+                url = next_url['url']
+                pr_actions, next_url = get_issue_timeline_events(pr_repo_owner, pr_repo, pr_num, url)
                 all_pr_actions = all_pr_actions + pr_actions
-                page += 1
 
             for pr_action in all_pr_actions:
                 if 'actor' in pr_action:
