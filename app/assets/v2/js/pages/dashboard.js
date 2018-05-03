@@ -119,9 +119,11 @@ var set_filter_header = function() {
 };
 
 var toggleAny = function(event) {
-  if (!event) return;
+  if (!event)
+    return;
   var key = event.target.name;
   var anyOption = $('input[name=' + key + '][value=any]');
+
   // Selects option 'any' when no filter is applied
   if ($('input[name=' + key + ']:checked').length === 0) {
     anyOption.prop('checked', true);
