@@ -118,28 +118,21 @@ var set_filter_header = function() {
   $('#filter').html(filter_status);
 };
 
-// TODO: Refactor function :
-// Deselect option 'any' when another filter is selected
-// Selects option 'any' when no filter is applied
-// TODO : Disable other filters when 'any' is selected
-var disableAny = function() {
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
-    var tag = ($('input[name=' + key + '][value]'));
-
-    tag.map(function(index, input) {
-      if ($(input).prop('checked')) {
-        if (input.value === 'any') {
-          $('input[name=' + key + '][value=any]').prop('checked', true);
-        } else {
-          $('input[name=' + key + '][value=any]').prop('checked', false);
-        }
-      }
-    });
-
-    if ($('input[name=' + key + ']:checked').length === 0) {
-      $('input[name=' + key + '][value=any]').prop('checked', true);
-    }
+var toggleAny = function(event) {
+  if (!event) return;
+  var key = event.target.name;
+  var anyOption = $('input[name=' + key + '][value=any]');
+  // Selects option 'any' when no filter is applied
+  if ($('input[name=' + key + ']:checked').length === 0) {
+    anyOption.prop('checked', true);
+    return;
+  }
+  if (event.target.value === 'any') {
+    // Deselect other filters when 'any' is selected
+    $('input[name=' + key + '][value!=any]').prop('checked', false);
+  } else {
+    // Deselect option 'any' when another filter is selected
+    anyOption.prop('checked', false);
   }
 };
 
@@ -368,10 +361,10 @@ var trigger_scroll = debounce(function() {
 $(window).scroll(trigger_scroll);
 $('body').bind('touchmove', trigger_scroll);
 
-var refreshBounties = function() {
+var refreshBounties = function(event) {
   save_sidebar_latest();
   set_filter_header();
-  disableAny();
+  toggleAny(event);
   getFilters();
 
   $('.nonefound').css('display', 'none');
@@ -679,7 +672,7 @@ $(document).ready(function() {
 
   // sidebar filters
   $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
-    refreshBounties();
+    refreshBounties(e);
     e.preventDefault();
   });
 
