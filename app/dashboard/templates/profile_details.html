@@ -17,7 +17,7 @@
       {% include 'shared/nav.html' %}
       <div class="container">
         <div class="row">
-          <div class="col-6">
+          <div class="col-12 col-lg-6">
             <div class="clearfix">
               <img class="profile-header__avatar mr-4" src="{{profile.avatar_url}}">
               <span class="profile-header__handle">
@@ -51,8 +51,8 @@
               </li>
             </ul>
           </div>
-          <div class="col-3">
-            <div class="profile-header__stats profile-header__stats--contributor card">
+          <div class="col-12 col-lg-3">
+            <div class="profile-header__stats profile-header__stats--contributor card mb-4">
               <div class="card-header">
                 Contributor
               </div>
@@ -65,8 +65,8 @@
               </div>
             </div>
           </div>
-          <div class="col-3">
-            <div class="profile-header__stats profile-header__stats--funder card">
+          <div class="col-12 col-lg-3">
+            <div class="profile-header__stats profile-header__stats--funder card mb-4">
               <div class="card-header">
                 Funder
               </div>
@@ -149,14 +149,8 @@
           result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
           var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
 
-          // setup args to go into template
-          if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
-            result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
-          } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
-            result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
-          }
 
-          result.action = result['url'];
+          result['action'] = result['url'];
           result['title'] = result['title'] ? result['title'] : result['github_url'];
 
           var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
@@ -190,11 +184,21 @@
             result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
           }
 
-          result['watch'] = 'Watch';
 
           html = tmpl.render(result);
           $('.profile-bounties--in-progress').append(html);
         }
+
+
+        $('div.bounty_row.result').each(function() {
+          var href = $(this).attr('href');
+
+          if (typeof $(this).changeElementType !== 'undefined') {
+            $(this).changeElementType('a'); // hack so that users can right click on the element
+          }
+
+          $(this).attr('href', href);
+        });
       });
     });
   </script>
