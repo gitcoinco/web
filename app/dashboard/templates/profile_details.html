@@ -72,7 +72,7 @@
               </div>
               <div class="card-body">
                 <ul>
-                  <li><span class="highlight">###</span> bounties funded</li>
+                  <li><span class="highlight">{{stats.1.0}}</span> bounties funded</li>
                   <li><span class="highlight">###</span> ETH funded</li>
                   <li><span class="highlight">###</span> funder</li>
                 </ul>
@@ -87,8 +87,7 @@
         <div class="col py-4">Bounties in progress</div>
       </div>
       <div class="row">
-        <div class="container profile-bounties profile-bounties--in-progress">
-
+        <div class="container profile-bounties profile-bounties--in-progress profile-bounties--loading">
         </div>
       </div>
 
@@ -96,7 +95,7 @@
         <div class="col py-4">Bounties funded</div>
       </div>
       <div class="row">
-        <div class="container profile-bounties profile-bounties--funded">
+        <div class="container profile-bounties profile-bounties--funded profile-bounties--loading">
 
         </div>
       </div>
@@ -105,7 +104,7 @@
         <div class="col py-4">Bounties completed</div>
       </div>
       <div class="row">
-        <div class="container profile-bounties profile-bounties--completed">
+        <div class="container profile-bounties profile-bounties--completed profile-bounties--loading">
 
         </div>
       </div>
@@ -128,13 +127,15 @@
   <script src="{% static "v2/js/shared.js" %}"></script>
 
   <script type="text/javascript">
-    $(document).ready(function() {
-      $.get('/api/v0.1/bounties/?bounty_owner_github_username={{profile.handle}}', function(results) {
-        results = sanitizeAPIResults(results);
-        var tmpl = $.templates('#result');
-        var html;
+    function renderBountyRowsFromResults(results) {
+      var html = '';
+      var tmpl = $.templates('#result');
 
-        for (var i = 0; i < results.length; i++) {
+      if (results.length == 0) {
+        return '<p class="text-muted"><small>No results…</small></p>';
+      }
+
+      for (var i = 0; i < results.length; i++) {
           // setup
           var result = results[i];
           var related_token_details = tokenAddressToDetails(result['token_address']);
@@ -184,11 +185,35 @@
             result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
           }
 
-
-          html = tmpl.render(result);
-          $('.profile-bounties--in-progress').append(html);
+          html += tmpl.render(result);
         }
 
+        return html;
+    }
+
+    $(document).ready(function() {
+      $.get('/api/v0.1/bounties/?bounty_owner_github_username={{profile.handle}}', function(results) {
+
+        var html = renderBountyRowsFromResults(sanitizeAPIResults(results));
+        $('.profile-bounties--funded').append(html);
+        $('.profile-bounties--funded').removeClass('profile-bounties--loading');
+
+        $('div.bounty_row.result').each(function() {
+          var href = $(this).attr('href');
+
+          if (typeof $(this).changeElementType !== 'undefined') {
+            $(this).changeElementType('a'); // hack so that users can right click on the element
+          }
+
+          $(this).attr('href', href);
+        });
+      });
+
+      $.get('/api/v0.1/bounties/?fulfiller_github_username={{profile.handle}}', function(results) {
+
+        var html = renderBountyRowsFromResults(sanitizeAPIResults(results));
+        $('.profile-bounties--completed').append(html);
+        $('.profile-bounties--completed').removeClass('profile-bounties--loading');
 
         $('div.bounty_row.result').each(function() {
           var href = $(this).attr('href');
