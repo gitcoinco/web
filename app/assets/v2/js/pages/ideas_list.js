@@ -7,6 +7,9 @@
     $('#load_more').click(onLoadMoreClick);
     $('#add').click(onAddClick);
     $('#sort_ideas').change(onSortChange);
+    $('#sort_ideas').select2({
+      minimumResultsForSearch: Infinity
+    });
   });
 
   function onLoadMoreClick() {
