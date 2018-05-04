@@ -2,17 +2,63 @@
 
 ## [HEAD](https://github.com/gitcoinco/web/tree/HEAD)
 
-[Full Changelog](https://github.com/gitcoinco/web/compare/20180416...HEAD)
+[Full Changelog](https://github.com/gitcoinco/web/compare/pre-pr884...HEAD)
+
+**Implemented enhancements:**
+
+- Gitcoin Bot Enhancements [\#1040](https://github.com/gitcoinco/web/issues/1040)
+- fixes https://github.com/gitcoinco/web/issues/1040 [\#1043](https://github.com/gitcoinco/web/pull/1043) ([owocki](https://github.com/owocki))
+- drastically improve api read performance [\#1026](https://github.com/gitcoinco/web/pull/1026) ([owocki](https://github.com/owocki))
+- bounty: unify modal designs [\#809](https://github.com/gitcoinco/web/pull/809) ([sethmcleod](https://github.com/sethmcleod))
 
 **Fixed bugs:**
 
+- Gitcoinbot work submitted message has weird formatting [\#1063](https://github.com/gitcoinco/web/issues/1063)
+
+**Closed issues:**
+
+- JSONDecodeError: Expecting value: line 1 column 1 \(char 0\) [\#1057](https://github.com/gitcoinco/web/issues/1057)
+- Misalignment with arrows on new page [\#1056](https://github.com/gitcoinco/web/issues/1056)
+- Cannot read property 'split' of undefined [\#1025](https://github.com/gitcoinco/web/issues/1025)
+- Explorer multiselect "Any" option doesn't behave as expected [\#1011](https://github.com/gitcoinco/web/issues/1011)
+- Unify Modal Designs [\#430](https://github.com/gitcoinco/web/issues/430)
+
+**Merged pull requests:**
+
+- fix toggle any filter [\#1065](https://github.com/gitcoinco/web/pull/1065) ([joshmorel](https://github.com/joshmorel))
+- css: funding / killing form update  [\#1061](https://github.com/gitcoinco/web/pull/1061) ([thelostone-mc](https://github.com/thelostone-mc))
+- gives staff the ability to remove users from a bounty [\#1042](https://github.com/gitcoinco/web/pull/1042) ([owocki](https://github.com/owocki))
+- logs abandoned work and prevents users from starting new work bc of it [\#1039](https://github.com/gitcoinco/web/pull/1039) ([owocki](https://github.com/owocki))
+- staggers cron start times [\#1034](https://github.com/gitcoinco/web/pull/1034) ([owocki](https://github.com/owocki))
+- Slack Welcomebot on AWS Lambda [\#1017](https://github.com/gitcoinco/web/pull/1017) ([mbeacom](https://github.com/mbeacom))
+- sets default search project status to 'any' [\#936](https://github.com/gitcoinco/web/pull/936) ([owocki](https://github.com/owocki))
+- ftux: birth [\#889](https://github.com/gitcoinco/web/pull/889) ([thelostone-mc](https://github.com/thelostone-mc))
+- WIP: Update FaucetRequest with FK to Profile [\#884](https://github.com/gitcoinco/web/pull/884) ([mbeacom](https://github.com/mbeacom))
+
+## [pre-pr884](https://github.com/gitcoinco/web/tree/pre-pr884) (2018-04-30)
+[Full Changelog](https://github.com/gitcoinco/web/compare/20180416...pre-pr884)
+
+**Fixed bugs:**
+
+- Faucet translation isn't rendering properly [\#1032](https://github.com/gitcoinco/web/issues/1032)
+- NoReverseMatch: Reverse for 'viz\_index' not found. 'viz\_index' is not a valid view function or pattern name. [\#1022](https://github.com/gitcoinco/web/issues/1022)
+- Gitcoin bot 2nd attempt doesn't render properly [\#991](https://github.com/gitcoinco/web/issues/991)
 - BE tests currently failing [\#953](https://github.com/gitcoinco/web/issues/953)
 - \[BUG\] The User Menu is Covered on TX Confirmation Screen [\#924](https://github.com/gitcoinco/web/issues/924)
 - Gitcoinbot did not comment when bounty was posted [\#915](https://github.com/gitcoinco/web/issues/915)
+- No unsupported network alert on bounty funding [\#773](https://github.com/gitcoinco/web/issues/773)
+- Modify setup\_lang to use User [\#980](https://github.com/gitcoinco/web/pull/980) ([mbeacom](https://github.com/mbeacom))
 - expiration tests fix [\#913](https://github.com/gitcoinco/web/pull/913) ([kziemianek](https://github.com/kziemianek))
 
 **Closed issues:**
 
+- DoesNotExist: Profile matching query does not exist. [\#1008](https://github.com/gitcoinco/web/issues/1008)
+- AttributeError: 'AnonymousUser' object has no attribute 'profile' [\#1005](https://github.com/gitcoinco/web/issues/1005)
+- testaroooooooo 123 [\#996](https://github.com/gitcoinco/web/issues/996)
+- Updating user notification preferences fails and returns \(403\) CSRF verification failed [\#988](https://github.com/gitcoinco/web/issues/988)
+- Resolve pytest / travis failures [\#987](https://github.com/gitcoinco/web/issues/987)
+- error when submitting faucet request [\#979](https://github.com/gitcoinco/web/issues/979)
+- TypeError: bad operand type for unary +: 'str' [\#976](https://github.com/gitcoinco/web/issues/976)
 - AttributeError: 'NoneType' object has no attribute 'email' [\#954](https://github.com/gitcoinco/web/issues/954)
 - test 123 [\#949](https://github.com/gitcoinco/web/issues/949)
 - Issue explorer don't show issue in case gas price has been changed [\#945](https://github.com/gitcoinco/web/issues/945)
@@ -27,26 +73,52 @@
 - Navbar responsive issue [\#903](https://github.com/gitcoinco/web/issues/903)
 - as a submitter, i want to link my github PR when i submit work, so i can show off what i did [\#893](https://github.com/gitcoinco/web/issues/893)
 - design - as a user, i want a quarterly 'my stats' email, so i can see my activity on the platform [\#892](https://github.com/gitcoinco/web/issues/892)
+- `make fix` stylelint error [\#877](https://github.com/gitcoinco/web/issues/877)
 - timezone issues with opened date [\#876](https://github.com/gitcoinco/web/issues/876)
+- as a repo owner, i want to be able to approve people who've started work, so i can filter those who i want to work with [\#812](https://github.com/gitcoinco/web/issues/812)
+- design - gitcoin.co/activity [\#804](https://github.com/gitcoinco/web/issues/804)
+- Allow the user to set different language for the Gitcoin app [\#802](https://github.com/gitcoinco/web/issues/802)
 - BadFunctionCallOutput: Could not decode contract function call getBountyData return data b'' for output\_types \['string'\] [\#742](https://github.com/gitcoinco/web/issues/742)
+- BadFunctionCallOutput: Could not decode contract function call getBountyToken return data b'' for output\_types \['address'\] [\#727](https://github.com/gitcoinco/web/issues/727)
 - BadFunctionCallOutput: Could not decode contract function call getFulfillment return data b'' for output\_types \['bool', 'address', 'string'\] [\#726](https://github.com/gitcoinco/web/issues/726)
 - coding -  /mentors page [\#725](https://github.com/gitcoinco/web/issues/725)
+- as a user, i want upvotes / downvotes on tool page, so i can cast my vote on gitcoin's tool direction [\#706](https://github.com/gitcoinco/web/issues/706)
 - FieldError: Invalid order\_by arguments: \['-web3\_created/'\] [\#701](https://github.com/gitcoinco/web/issues/701)
+- Gitcoin should monitoring issue pull request as well [\#696](https://github.com/gitcoinco/web/issues/696)
 - refactor bounty.value\_in\_usdt into two functions [\#693](https://github.com/gitcoinco/web/issues/693)
+- Notify Gitcoin/Funder that Developer is Starting Work [\#683](https://github.com/gitcoinco/web/issues/683)
 - \(DESIGN\) As a user, I want a Blockchain Job Board so I can find professional work in the space [\#540](https://github.com/gitcoinco/web/issues/540)
+- Handle multiple bounties per github issue URL [\#533](https://github.com/gitcoinco/web/issues/533)
+- Fund an Issue Suggestion/FTUX [\#529](https://github.com/gitcoinco/web/issues/529)
 - Display Tips on Leaderboard [\#522](https://github.com/gitcoinco/web/issues/522)
+- How to Get Started \(Repo Maintainer\) [\#517](https://github.com/gitcoinco/web/issues/517)
 - Http404 [\#481](https://github.com/gitcoinco/web/issues/481)
 - new\_bounty marketing emails need to be moved to a background job [\#477](https://github.com/gitcoinco/web/issues/477)
+- Clean Up Bounty Creation Flow [\#429](https://github.com/gitcoinco/web/issues/429)
+- Functioning Search Field [\#412](https://github.com/gitcoinco/web/issues/412)
 - As a core team member, i want to Track deploys & releases for faster debugging [\#405](https://github.com/gitcoinco/web/issues/405)
 - \(unknown\): Uncaught this network is not supported in bounty\_address\(\) for gitcoin [\#362](https://github.com/gitcoinco/web/issues/362)
+- Add slack bot integration [\#259](https://github.com/gitcoinco/web/issues/259)
 - As a team member, I'd like to be on the /about page, so I can show off that I'm part of the team. [\#222](https://github.com/gitcoinco/web/issues/222)
 
 **Merged pull requests:**
 
+- fixes for https://gitcoincommunity.slack.com/archives/C8E45J5D0/p1525097521000711 [\#1024](https://github.com/gitcoinco/web/pull/1024) ([owocki](https://github.com/owocki))
+- slack welcome messages [\#1012](https://github.com/gitcoinco/web/pull/1012) ([owocki](https://github.com/owocki))
+- hotfix: wait for approval to issue bounty [\#1006](https://github.com/gitcoinco/web/pull/1006) ([owocki](https://github.com/owocki))
+- adds rates estimate on bounty details page [\#998](https://github.com/gitcoinco/web/pull/998) ([owocki](https://github.com/owocki))
+- Action URLS Cleanup \(and other goodies\) [\#983](https://github.com/gitcoinco/web/pull/983) ([owocki](https://github.com/owocki))
+- Notify Gitcoin/Funder that Developer is Starting Work [\#981](https://github.com/gitcoinco/web/pull/981) ([darkdarkdragon](https://github.com/darkdarkdragon))
+- unsupported network warnings when trying to do an aciton on a network we dont support [\#978](https://github.com/gitcoinco/web/pull/978) ([owocki](https://github.com/owocki))
+- warnings when youre looking at a non mainnet bounty [\#977](https://github.com/gitcoinco/web/pull/977) ([owocki](https://github.com/owocki))
+- pricing brackets [\#972](https://github.com/gitcoinco/web/pull/972) ([owocki](https://github.com/owocki))
 - Adds bounty flow doc to readme [\#956](https://github.com/gitcoinco/web/pull/956) ([owocki](https://github.com/owocki))
+- Add slack bot integration  [\#955](https://github.com/gitcoinco/web/pull/955) ([darkdarkdragon](https://github.com/darkdarkdragon))
+- smarter github notifications [\#948](https://github.com/gitcoinco/web/pull/948) ([owocki](https://github.com/owocki))
 - Tool modifications [\#944](https://github.com/gitcoinco/web/pull/944) ([mbeacom](https://github.com/mbeacom))
 - track hours worked on fulfillment [\#942](https://github.com/gitcoinco/web/pull/942) ([owocki](https://github.com/owocki))
 - about: Fix Origin Story [\#933](https://github.com/gitcoinco/web/pull/933) ([thelostone-mc](https://github.com/thelostone-mc))
+- verboseness of gitcoinbot reminders [\#931](https://github.com/gitcoinco/web/pull/931) ([owocki](https://github.com/owocki))
 - more feedback emails [\#930](https://github.com/gitcoinco/web/pull/930) ([owocki](https://github.com/owocki))
 - bounty: hide timeline on cancelled bounties [\#922](https://github.com/gitcoinco/web/pull/922) ([thelostone-mc](https://github.com/thelostone-mc))
 - fixes https://github.com/gitcoinco/web/issues/876 [\#919](https://github.com/gitcoinco/web/pull/919) ([owocki](https://github.com/owocki))
@@ -56,8 +128,12 @@
 - avatar cleanup - and adds the ability to blend in the gitcoin logo to an avatar [\#902](https://github.com/gitcoinco/web/pull/902) ([owocki](https://github.com/owocki))
 - ability to add a pr link to work submission [\#900](https://github.com/gitcoinco/web/pull/900) ([owocki](https://github.com/owocki))
 - nav + explorer fixes [\#890](https://github.com/gitcoinco/web/pull/890) ([thelostone-mc](https://github.com/thelostone-mc))
+- Upgrade deb image to Stretch [\#888](https://github.com/gitcoinco/web/pull/888) ([mbeacom](https://github.com/mbeacom))
 - Added team bios and community member links to /about page [\#887](https://github.com/gitcoinco/web/pull/887) ([jakerockland](https://github.com/jakerockland))
+- WIP - d3 data viz experiments [\#886](https://github.com/gitcoinco/web/pull/886) ([owocki](https://github.com/owocki))
 - dashboard: Tests cleanup. [\#857](https://github.com/gitcoinco/web/pull/857) ([cryptomental](https://github.com/cryptomental))
+- preferred language [\#810](https://github.com/gitcoinco/web/pull/810) ([kziemianek](https://github.com/kziemianek))
+- Initial commit for Search functionality [\#790](https://github.com/gitcoinco/web/pull/790) ([eswarasai](https://github.com/eswarasai))
 - Tool voting [\#763](https://github.com/gitcoinco/web/pull/763) ([kziemianek](https://github.com/kziemianek))
 
 ## [20180416](https://github.com/gitcoinco/web/tree/20180416) (2018-04-16)
