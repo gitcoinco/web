@@ -2,6 +2,20 @@
 /* eslint-disable nonblock-statement-body-position */
 load_tokens();
 
+/* Check if quickstart page is to be shown */
+var localStorage;
+var quickstartURL = document.location.origin + '/bounty/quickstart';
+
+try {
+  localStorage = window.localStorage;
+} catch (e) {
+  localStorage = {};
+}
+
+if (localStorage['quickstart_dontshow'] !== 'true' && document.referrer !== quickstartURL) {
+  window.location = quickstartURL;
+}
+
 // Wait until page is loaded, then run the function
 $(document).ready(function() {
   // Load sidebar radio buttons from localStorage

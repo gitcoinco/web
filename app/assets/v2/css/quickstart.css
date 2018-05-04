@@ -74,7 +74,7 @@ body.quickstart {
   width: 30%;
 }
 
-.action-footer button {
+.action-footer .btn {
   border-radius: 2px;
   background-color: #0c0763;
   border-color: #0c0763;
