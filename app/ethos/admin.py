@@ -2,10 +2,11 @@ from django.contrib import admin
 
 from ethos.models import Hop
 
-# Register your models here.
 
-class GeneralAdmin(admin.ModelAdmin):
+class HopAdmin(admin.ModelAdmin):
+    """Define the Hop administration layout."""
+
     ordering = ['-id']
 
 
-admin.site.register(Hop, GeneralAdmin)
+admin.site.register(Hop, HopAdmin)
