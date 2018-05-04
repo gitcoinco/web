@@ -12,7 +12,11 @@ linters:
   yamllint:
 files:
   ignore:
+    - '.git'
+    - '.github'
+    - 'docs'
     - 'node_modules/*'
-    - '*/migrations/*.py'
+    - 'requirements'
+    - '**/migrations/*.py'
 fixers:
   enable: false
