@@ -70,7 +70,6 @@ var save_sidebar_latest = function() {
 
 // saves search information default
 var set_sidebar_defaults = function() {
-
   // Special handling to support adding keywords from url query param
   var q = getParam('q');
   var keywords;
@@ -135,6 +134,32 @@ var toggleAny = function(event) {
   } else {
     // Deselect option 'any' when another filter is selected
     anyOption.prop('checked', false);
+  }
+};
+
+var addTechStackKeywordFilters = function(value) {
+  var isTechStack = false;
+
+  technologies.forEach(function(v, k) {
+    if (v.toLowerCase() === value) {
+      isTechStack = true;
+
+      $('.filter-tags').append('<a class="filter-tag tech_stack"><span>' + value + '</span>' +
+        '<i class="fa fa-times" onclick="removeFilter(\'tech_stack\', \'' + value + '\')"></i></a>');
+
+      $('input[name="tech_stack"][value=' + value + ']').prop('checked', true);
+    }
+  });
+
+  if (!isTechStack) {
+    if (localStorage['keywords']) {
+      localStorage['keywords'] += ',' + value;
+    } else {
+      localStorage['keywords'] += value;
+    }
+
+    $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
+      '<i class="fa fa-times" onclick="removeFilter(\'keywords\', \'' + value + '\')"></i></a>');
   }
 };
 
@@ -364,6 +389,17 @@ $(window).scroll(trigger_scroll);
 $('body').bind('touchmove', trigger_scroll);
 
 var refreshBounties = function(event) {
+
+  // Allow search for freeform text
+  var searchInput = $('#keywords')[0];
+
+  if (searchInput.value.length > 0) {
+    addTechStackKeywordFilters(searchInput.value.trim());
+    searchInput.value = '';
+    searchInput.blur();
+    $('.close-icon').hide();
+  }
+
   save_sidebar_latest();
   set_filter_header();
   toggleAny(event);
@@ -592,7 +628,6 @@ $(document).ready(function() {
       },
       select: function(event, ui) {
         var terms = split(this.value);
-        var isTechStack = false;
 
         $('.close-icon').hide();
 
@@ -605,30 +640,9 @@ $(document).ready(function() {
         // add placeholder to get the comma-and-space at the end
         terms.push('');
 
-        // this.value = terms.join(', ');
         this.value = '';
 
-        technologies.forEach(function(v, k) {
-          if (v.toLowerCase() === ui.item.value) {
-            isTechStack = true;
-
-            $('.filter-tags').append('<a class="filter-tag tech_stack"><span>' + ui.item.value + '</span>' +
-              '<i class="fa fa-times" onclick="removeFilter(\'tech_stack\', \'' + ui.item.value + '\')"></i></a>');
-
-            $('input[name="tech_stack"][value=' + ui.item.value + ']').prop('checked', true);
-          }
-        });
-
-        if (!isTechStack) {
-          if (localStorage['keywords']) {
-            localStorage['keywords'] += ',' + ui.item.value;
-          } else {
-            localStorage['keywords'] += ui.item.value;
-          }
-
-          $('.filter-tags').append('<a class="filter-tag keywords"><span>' + ui.item.value + '</span>' +
-            '<i class="fa fa-times" onclick="removeFilter(\'keywords\', \'' + ui.item.value + '\')"></i></a>');
-        }
+        addTechStackKeywordFilters(ui.item.value);
 
         return false;
       }
