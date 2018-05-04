@@ -2,8 +2,11 @@
   display: flex;
 }
 
+.form__group-item {
+  height: 37px;
+}
+
 .form__amount-wrapper {
-  width: 20%;
   margin-right: 1rem;
 }
 
