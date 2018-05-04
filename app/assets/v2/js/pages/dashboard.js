@@ -118,28 +118,23 @@ var set_filter_header = function() {
   $('#filter').html(filter_status);
 };
 
-// TODO: Refactor function :
-// Deselect option 'any' when another filter is selected
-// Selects option 'any' when no filter is applied
-// TODO : Disable other filters when 'any' is selected
-var disableAny = function() {
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
-    var tag = ($('input[name=' + key + '][value]'));
+var toggleAny = function(event) {
+  if (!event)
+    return;
+  var key = event.target.name;
+  var anyOption = $('input[name=' + key + '][value=any]');
 
-    tag.map(function(index, input) {
-      if ($(input).prop('checked')) {
-        if (input.value === 'any') {
-          $('input[name=' + key + '][value=any]').prop('checked', true);
-        } else {
-          $('input[name=' + key + '][value=any]').prop('checked', false);
-        }
-      }
-    });
-
-    if ($('input[name=' + key + ']:checked').length === 0) {
-      $('input[name=' + key + '][value=any]').prop('checked', true);
-    }
+  // Selects option 'any' when no filter is applied
+  if ($('input[name=' + key + ']:checked').length === 0) {
+    anyOption.prop('checked', true);
+    return;
+  }
+  if (event.target.value === 'any') {
+    // Deselect other filters when 'any' is selected
+    $('input[name=' + key + '][value!=any]').prop('checked', false);
+  } else {
+    // Deselect option 'any' when another filter is selected
+    anyOption.prop('checked', false);
   }
 };
 
@@ -267,15 +262,22 @@ var process_stats = function(results) {
   for (var i = 0; i < results.length; i++) {
     var result = results[i];
 
-    worth_usdt += result['value_in_usdt'];
-    worth_eth += result['value_in_eth'];
+    var this_worth_usdt = Number.parseFloat(result['value_in_usdt']);
+    var this_worth_eth = Number.parseFloat(result['value_in_eth']);
+
+    if (this_worth_usdt) {
+      worth_usdt += this_worth_usdt;
+    }
+    if (this_worth_eth) {
+      worth_eth += this_worth_eth;
+    }
     var token = result['token_name'];
 
     if (token !== 'ETH') {
       if (!currencies_to_value[token]) {
         currencies_to_value[token] = 0;
       }
-      currencies_to_value[token] += result['value_true'];
+      currencies_to_value[token] += Number.parseFloat(result['value_true']);
     }
   }
 
@@ -328,6 +330,13 @@ var paint_bounties_in_viewport = function(start, max) {
     $(this).attr('href', href);
   });
   document.is_painting_now = false;
+
+  if (document.referrer.search('/onboard') != -1) {
+    $('.bounty_row').each(function(index) {
+      if (index > 2)
+        $(this).addClass('hidden');
+    });
+  }
 };
 
 var trigger_scroll = debounce(function() {
@@ -354,10 +363,10 @@ var trigger_scroll = debounce(function() {
 $(window).scroll(trigger_scroll);
 $('body').bind('touchmove', trigger_scroll);
 
-var refreshBounties = function() {
+var refreshBounties = function(event) {
   save_sidebar_latest();
   set_filter_header();
-  disableAny();
+  toggleAny(event);
   getFilters();
 
   $('.nonefound').css('display', 'none');
@@ -470,6 +479,55 @@ var getNextDayOfWeek = function(date, dayOfWeek) {
   resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay() - 1) % 7 + 1);
   return resultDate;
 };
+
+function getURLParams(k) {
+  var p = {};
+
+  location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(s, k, v) {
+    p[k] = v;
+  });
+  return k ? p[k] : p;
+}
+
+var resetFilters = function() {
+  for (var i = 0; i < sidebar_keys.length; i++) {
+    var key = sidebar_keys[i];
+    var tag = ($('input[name=' + key + '][value]'));
+
+    for (var j = 0; j < tag.length; j++) {
+      if (tag[j].value == 'any')
+        $('input[name=' + key + '][value=any]').prop('checked', true);
+      else
+        $('input[name=' + key + '][value=' + tag[j].value + ']').prop('checked', false);
+    }
+  }
+};
+
+(function() {
+  if (document.referrer.search('/onboard') != -1) {
+    $('#sidebar_container').addClass('invisible');
+    $('#dashboard-title').addClass('hidden');
+    $('#onboard-dashboard').removeClass('hidden');
+    resetFilters();
+    $('input[name=idx_status][value=open]').prop('checked', true);
+    $('.search-area input[type=text]').text(getURLParams('q'));
+    document.referrer = '';
+
+    $('#onboard-alert').click(function(e) {
+      $('.bounty_row').each(function(index) {
+        $(this).removeClass('hidden');
+      });
+      $('#onboard-dashboard').addClass('hidden');
+      $('#sidebar_container').removeClass('invisible');
+      $('#dashboard-title').removeClass('hidden');
+      e.preventDefault();
+    });
+  } else {
+    $('#onboard-dashboard').addClass('hidden');
+    $('#sidebar_container').removeClass('invisible');
+    $('#dashboard-title').removeClass('hidden');
+  }
+})();
 
 $(document).ready(function() {
 
@@ -616,7 +674,7 @@ $(document).ready(function() {
 
   // sidebar filters
   $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
-    refreshBounties();
+    refreshBounties(e);
     e.preventDefault();
   });
 

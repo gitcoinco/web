@@ -32,7 +32,7 @@ def summarize_bounties(bounties):
 
     currency_to_value = {bounty.token_name: 0.00 for bounty in bounties}
     for bounty in bounties:
-        currency_to_value[bounty.token_name] += bounty.value_true
+        currency_to_value[bounty.token_name] += float(bounty.value_true)
     other_values = ", ".join([
         f"{round(value, 2)} {token_name}"
         for token_name, value in currency_to_value.items()

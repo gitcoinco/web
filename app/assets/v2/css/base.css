@@ -20,9 +20,11 @@ span {
 .nav_avatar {
   cursor: pointer;
 }
+
 .dropdown-menu{
   z-index: 9999999999;
 }
+
 .navbar {
   font-family: 'futura-pt', Futura, sans-serif;
 }
@@ -543,11 +545,37 @@ input[type=text].loading {
 #primary_form {
   max-width: 500px;
   margin: 0 auto;
-  padding: 0 4em;
+  padding: 0 2em;
+}
+
+.submit_bounty .select2-search,
+.fulfill_bounty .select2-search,
+.submit_bounty .select2-results__option,
+.fulfill_bounty .select2-results__option {
+  font-size: 0.875rem;
+  font-family: "Muli", sans-serif;
+}
+
+.submit_bounty .select2-results__option,
+.fulfill_bounty .select2-results__option {
+  padding-left: 0.625rem;
+  padding-right: 0.625rem;
 }
 
 #primary_form img {
   max-width: 100px;
+}
+
+#primary_form .github-username {
+  margin-top: 14px !important;
+}
+
+#primary_form small {
+  display: inline;
+}
+
+#primary_form #amount {
+  height: 37px;
 }
 
 .bounty_nav {
@@ -1218,7 +1246,6 @@ input.is-invalid {
   background: #0D0764 !important;
 }
 
-
 .ui-button:hover,
 .ui-button:focus {
   border: 1px solid #0D0764 !important;
@@ -1598,9 +1625,6 @@ input.is-invalid {
 }
 
 @media (max-width: 576px) {
-  #sidebar_container {
-    display: none;
-  }
 
   .profile_details #stats {
     padding-right: 10px;
@@ -1634,5 +1658,11 @@ input.is-invalid {
 
   .bounty_nav li {
     display: block;
+  }
+}
+
+@media (max-width: 991.98px) {
+  #sidebar_container {
+    display: none;
   }
 }

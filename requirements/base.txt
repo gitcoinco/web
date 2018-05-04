@@ -2,7 +2,7 @@ bs4
 ccxt
 cryptocompare==0.6
 cryptography==2.1.4
-django==2.0.4
+django==2.0.5
 django-bootstrap3==8.2.3
 django-filter
 django-ratelimit

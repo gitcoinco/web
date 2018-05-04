@@ -52,6 +52,7 @@ CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
 ENABLE_NOTIFICATIONS_ON_NETWORK = env(
     'ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
 
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -65,6 +66,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django.contrib.sitemaps',
     'django.contrib.sites',
+    'django_extensions',
     'app',
     'retail',
     'rest_framework',

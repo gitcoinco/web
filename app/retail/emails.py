@@ -153,9 +153,10 @@ kevin
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties):
+def render_new_bounty(to_email, bounties, old_bounties):
     sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
+        'old_bounties': old_bounties,
         'bounties': bounties,
         'subscriber': sub,
         'keywords': ",".join(sub.keywords),
@@ -438,7 +439,9 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3])
+    bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
+    old_bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties)
     return HttpResponse(response_html)
 
 
@@ -496,7 +499,7 @@ def start_work_expire_warning(request):
 def faucet(request):
     from faucet.models import FaucetRequest
     fr = FaucetRequest.objects.last()
-    response_html, txt = render_faucet_request(fr)
+    response_html, _ = render_faucet_request(fr)
     return HttpResponse(response_html)
 
 
@@ -504,7 +507,7 @@ def faucet(request):
 def faucet_rejected(request):
     from faucet.models import FaucetRequest
     fr = FaucetRequest.objects.exclude(comment_admin='').last()
-    response_html, txt = render_faucet_rejected(fr)
+    response_html, _ = render_faucet_rejected(fr)
     return HttpResponse(response_html)
 
 

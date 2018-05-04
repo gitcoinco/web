@@ -12,7 +12,7 @@ linters:
   yamllint:
 files:
   ignore:
-    - 'bower_components/*'
     - 'node_modules/*'
+    - '*/migrations/*.py'
 fixers:
   enable: false

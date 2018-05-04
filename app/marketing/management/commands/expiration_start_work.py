@@ -25,7 +25,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 import pytz
-from dashboard.models import Bounty, Interest
+from dashboard.models import Bounty, Interest, UserAction
 from dashboard.notifications import (
     maybe_notify_bounty_user_removed_to_slack, maybe_notify_bounty_user_warned_removed_to_slack,
     maybe_notify_user_removed_github, maybe_warn_user_removed_github,
@@ -36,6 +36,17 @@ from marketing.mails import bounty_startwork_expire_warning, bounty_startwork_ex
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
+
+
+def record_user_action(interest, event_name, last_heard_from_user_days):
+    UserAction.objects.create(
+        profile=interest.profile,
+        action=event_name,
+        metadata={
+            'bounties': list(interest.bounty_set.values_list('pk', flat=True)),
+            'interest_pk': interest.pk,
+            'last_heard_from_user_days': last_heard_from_user_days,
+        })
 
 
 class Command(BaseCommand):
@@ -49,14 +60,14 @@ class Command(BaseCommand):
 
         # TODO: DRY with dashboard/notifications.py
         num_days_back_to_warn = 3
-        num_days_back_to_delete_interest = 10
+        num_days_back_to_delete_interest = 6
 
         days = [i * 3 for i in range(1, 15)]
         days.reverse()
         if settings.DEBUG:
             days = range(1, 1000)
         for day in days:
-            interests = Interest.objects.filter(
+            interests = Interest.objects.select_related('profile').filter(
                 created__gte=(timezone.now() - timezone.timedelta(days=(day+1))),
                 created__lt=(timezone.now() - timezone.timedelta(days=day)),
             )
@@ -105,6 +116,9 @@ class Command(BaseCommand):
 
                         if should_delete_interest:
                             print(f'executing should_delete_interest for {interest.profile} / {bounty.github_url} ')
+
+                            record_user_action(interest, 'bounty_abandonment_final', last_heard_from_user_days)
+
                             interest.delete()
 
                             # commenting on the GH issue
@@ -115,6 +129,9 @@ class Command(BaseCommand):
                             bounty_startwork_expired(interest.profile.email, bounty, interest, last_heard_from_user_days)
 
                         elif should_warn_user:
+
+                            record_user_action(interest, 'bounty_abandonment_warning', last_heard_from_user_days)
+
                             print(f'executing should_warn_user for {interest.profile} / {bounty.github_url} ')
                             # commenting on the GH issue
                             maybe_warn_user_removed_github(bounty, interest.profile.handle, last_heard_from_user_days)
