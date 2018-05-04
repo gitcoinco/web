@@ -22,7 +22,7 @@ from economy.models import SuperModel
 
 
 class ShortCode(SuperModel):
-    """Define the shortcode schema"""
+    """Define the shortcode schema."""
 
     class Meta:
         """Define metadata associated with ShortCode."""
@@ -32,8 +32,9 @@ class ShortCode(SuperModel):
     num_scans = models.PositiveSmallIntegerField(default=0)
     shortcode = models.CharField(max_length=255, default='')
 
+
 class Hop(SuperModel):
-    """Define the hop schema"""
+    """Define the hop schema."""
 
     class Meta:
         """Define metadata associated with Hop."""
