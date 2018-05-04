@@ -457,6 +457,12 @@ a.btn {
   }
 }
 
+@media (min-width: 768px) {
+  .activity-time {
+    margin-left: 10px;
+  }
+}
+
 #add_interest form > div {
   margin-top: 10px;
 }
