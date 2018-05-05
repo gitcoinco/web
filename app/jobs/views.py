@@ -8,5 +8,5 @@ from jobs.models import Jobs
 
 def list_jobs(request):
     context = {'jobs': Jobs.objects.all()}
-    
+
     return TemplateResponse(request, 'jobs/list.html', context=context)

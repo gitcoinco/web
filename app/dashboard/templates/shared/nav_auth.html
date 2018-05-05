@@ -1,73 +1,79 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static %}
-{% if github_handle %}
+{% load i18n static %}
+{% if user.is_authenticated %}
   <div class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      {{github_handle}}
+      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      {{ user }}
     </a>
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
       {% if source == 'authed' %}
         <a class="dropdown-item" href="{% url "tip" %}">
-          <i class="fa fa-paper-plane-o"></i>
-          Send Tip
+          <i class="far fa-paper-plane"></i>
+          {% trans "Send Tip" %}
         </a>
         <a class="dropdown-item" href="{% url "new_funding" %}">
-          <i class="fa fa-credit-card"></i>
-          Fund Issue
+          <i class="fas fa-credit-card"></i>
+          {% trans "Fund Issue" %}
         </a>
       {% else %}
         <a class="dropdown-item" href="{% url "get_gitcoin" %}">
-          <i class="fa fa-bolt"></i>
-          Get Started
+          <i class="fas fa-bolt"></i>
+          {% trans "Get Started" %}
         </a>
       {% endif %}
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="{% url "profile" %}{{github_handle}}">
-        <i class="fa fa-user"></i>
-        View Profile
+      <a class="dropdown-item" href="{% url "profile" %}">
+        <i class="fas fa-user"></i>
+        {% trans "View Profile" %}
       </a>
-      <a class="dropdown-item" href="{% url "email_settings" "" %}">
-        <i class="fa fa-envelope-o"></i>
-        Email Settings
+      <a class="dropdown-item" href="{% url "email_settings" email_key %}">
+        <i class="fas fa-cog"></i>
+        {% trans "Manage Settings" %}
       </a>
       {% if unclaimed_tips %}
         <div class="dropdown-divider"></div>
         {% for tip in unclaimed_tips %}
-          <a class="dropdown-item" href="{{tip.url}}">
-            <i class="fa fa-usd"></i>
-            Claim ${{tip.value_in_usdt}} Tip
+          <a class="dropdown-item" href="{{ tip.url }}">
+            <i class="fas fa-dollar-sign"></i>
+            {% blocktrans %}Claim ${{ tip.value_in_usdt_now }} Tip {% endblocktrans %}
           </a>
         {% endfor %}
       {% endif %}
+      {% if user.is_staff %}
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="{% url "github:github_logout" %}?redirect_uri={{ request.get_full_path }}">
-        <i class="fa fa-lock"></i>
-        Log Out
+      <a class="dropdown-item" href="{% url "admin:index" %}">
+        <i class="fas fa-user-secret"></i>
+        {% trans "Administration" %}
+      </a>
+      {% endif %}
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="{% url "logout" %}?next={{ request.get_full_path }}">
+        <i class="fas fa-lock"></i>
+        {% trans "Log Out" %}
       </a>
     </div>
   </div>
+<img class="nav_avatar" width=50 height=50
+  src="{% url "avatar" %}?repo=https://github.com/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}">
 {% else %}
-<a class="nav-link" href="{% url "github:github_auth" %}?redirect_uri={{ request.get_full_path }}"
-    onclick="dataLayer.push({'event': 'login'});">
-    Login
+<a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
+  onclick="dataLayer.push({'event': 'login'});">
+  <i class="fab fa-github"></i>{% trans "Login" %}
 </a>
 {% endif %}
-<img class="nav_avatar" width=50 height=50
-    src="{% url "avatar" %}?repo=https://github.com/{% if github_handle %}{{github_handle}}{%else%}Self{%endif%}">

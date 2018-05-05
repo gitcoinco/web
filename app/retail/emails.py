@@ -49,10 +49,10 @@ def render_tip_email(to_email, tip, is_new):
         'comments_priv': tip.comments_priv,
         'comments_public': tip.comments_public,
         'tip': tip,
-        'show_expires': tip.expires_date < (timezone.now() + timezone.timedelta(days=365)),
+        'show_expires': tip.expires_date < (timezone.now() + timezone.timedelta(days=365)) and tip.expires_date,
         'is_new': is_new,
         'warning': warning,
-        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'is_sender': to_email not in tip.emails,
         'is_receiver': to_email in tip.emails,
     }
@@ -76,35 +76,37 @@ def render_match_email(bounty, github_username):
 
 def render_bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
     previous_bounties_str = ", ".join([bounty.github_url for bounty in previous_bounties])
-    if persona != 'submitter':
+    if persona == 'fulfiller':
         accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
-        github_username = " @" + accepted_fulfillments.first().fulfiller_github_username if accepted_fulfillments.exists() else ""
+        github_username = " @" + accepted_fulfillments.first().fulfiller_github_username if accepted_fulfillments.exists() and accepted_fulfillments.first().fulfiller_github_username else ""
         txt = f"""
 hi{github_username},
 
-thanks for turning around this bounty.  we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH. 
+thanks for turning around this bounty.  we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH.
 
 in that spirit,  i have a few questions for you.
 
-> what would you say your blended hourly rate was for this bounty? {bounty.github_url}
+> what would you say your average hourly rate was for this bounty? {bounty.github_url}
 
 > what was the best thing about working on the platform?  what was the worst?
 
 > would you use gitcoin again?
 
 thanks again for being a member of the community.
+
 kevin
 
 """
-    else:
+    elif persona == 'funder':
         github_username = " @" + bounty.bounty_owner_github_username if bounty.bounty_owner_github_username else ""
-        txt = f"""
+        if bounty.status == 'done':
+            txt = f"""
 
 hi{github_username},
 
 thanks for putting this bounty ({bounty.github_url}) on gitcoin.  i'm glad to see it was turned around.
 
-we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH. 
+we're hyperfocused on making gitcoin a great place for blockchain developers to hang out, learn new skills, and make a little extra ETH.
 
 in that spirit,  i have a few questions for you:
 
@@ -115,22 +117,49 @@ in that spirit,  i have a few questions for you:
 > would you use gitcoin again?
 
 thanks for being a member of the community.
+
 kevin
 """
+        elif bounty.status == 'cancelled':
+            txt = f"""
+hi{github_username},
+
+we saw that you cancelled this bounty.
+
+i was sorry to see that the bounty did not get done.
+
+i have a few questions for you.
+
+> why did you decide to cancel the bounty?
+
+> would you use gitcoin again?
+
+thanks again for being a member of the community.
+
+kevin
+
+"""
+        else:
+            raise Exception('unknown bounty status')
+    else:
+        raise Exception('unknown persona')
 
     params = {
         'txt': txt,
     }
     response_html = premailer_transform(render_to_string("emails/txt.html", params))
-    response_txt = render_to_string("emails/txt.txt", params)
+    response_txt = txt
 
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounty):
+def render_new_bounty(to_email, bounties, old_bounties):
+    sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
-        'bounty': bounty,
-        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
+        'old_bounties': old_bounties,
+        'bounties': bounties,
+        'subscriber': sub,
+        'keywords': ",".join(sub.keywords),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
@@ -142,7 +171,7 @@ def render_new_bounty(to_email, bounty):
 def render_new_work_submission(to_email, bounty):
     params = {
         'bounty': bounty,
-        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_work_submission.html", params))
@@ -154,7 +183,7 @@ def render_new_work_submission(to_email, bounty):
 def render_new_bounty_acceptance(to_email, bounty):
     params = {
         'bounty': bounty,
-        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty_acceptance.html", params))
@@ -166,7 +195,7 @@ def render_new_bounty_acceptance(to_email, bounty):
 def render_new_bounty_rejection(to_email, bounty):
     params = {
         'bounty': bounty,
-        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty_rejection.html", params))
@@ -190,9 +219,9 @@ def render_bounty_expire_warning(to_email, bounty):
         'bounty': bounty,
         'num': num,
         'unit': unit,
-        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
         'is_claimee': (to_email.lower() in fulfiller_emails),
         'is_owner': bounty.bounty_owner_email.lower() == to_email.lower(),
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty_expire_warning.html", params))
@@ -206,6 +235,7 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
         'bounty': bounty,
         'interest': interest,
         'time_delta_days': time_delta_days,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_startwork_expire_warning.html", params))
@@ -213,12 +243,24 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
 
     return response_html, response_txt
 
+def render_bounty_unintersted(to_email, bounty, interest):
+    params = {
+        'bounty': bounty,
+        'interest': interest,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/bounty_uninterested.html", params))
+    response_txt = render_to_string("emails/bounty_uninterested.txt", params)
+
+    return response_html, response_txt
 
 def render_faucet_rejected(fr):
 
     params = {
         'fr': fr,
         'amount': settings.FAUCET_AMOUNT,
+        'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/faucet_request_rejected.html", params))
@@ -232,6 +274,7 @@ def render_faucet_request(fr):
     params = {
         'fr': fr,
         'amount': settings.FAUCET_AMOUNT,
+        'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/faucet_request.html", params))
@@ -245,6 +288,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
         'bounty': bounty,
         'interest': interest,
         'time_delta_days': time_delta_days,
+        'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/render_bounty_startwork_expired.html", params))
@@ -256,83 +300,87 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
-    subject = "Growing The Gitcoin Toolset"
+    from external_bounties.models import ExternalBounty
+    subject = "Open Source Money, Open Source Jobs "
 
     intro = '''
 
 <p>
-    Hi there 👋
+    Hi there
 </p>
 <p>
-    Want to work an issue, but don’t have any ETH to make an initial submission? Last week, <a href="https://gitcoin.co/faucet">the Gitcoin faucet</a> was launched! Send a request in to the faucet if you’re looking to make a claim, and we'll send back just enough ETH for you to make your first Ethereum transaction.  
+This week, we published <a href="https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748">our vision piece on how open source money will create more open source jobs</a>. We’re excited to explain our vision for the future including concepts like many-to-many jobs, flash organizations, and more. <a href="https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748">We hope you’ll give it a read</a>. 
+
+<span style="width: 100%; text-align:center; display: block">
+<a href="https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748">
+<img style="max-width:300px; margin: 0px auto;" src="https://cdn-images-1.medium.com/max/1440/1*VrNw3FMQk3cS6nQ9wI2fBw.gif">
+</a>
+<br>
+<span style="margin: 0px auto; font-size: 10px;">A many-to-many mesh network of jobs</span>
+</span>
 </p>
-<p>
-    We're quite enamoured with helping developers envision the future of web3.  So we figured we’d share our web3 content pieces from last week again. Here’s the <a href="https://twitter.com/GetGitcoin/status/971816917618044928">two-minute video</a> on MetaMask and our <a href="https://media.consensys.net/a-warm-welcome-to-web3-89d49e61a7c5">web3 vision piece</a>. </p>
-<p>
-    What else is new?
+<h3>What else is new?</h3>
     <ul>
         <li>
-            <a href="https://twitter.com/GetGitcoin/status/974291955860627457">I was on FLOSS Weekly</a> last week to discuss Gitcoin’s place in open source 
+<a href="https://blog.ethereum.org/2018/05/02/announcing-may-2018-cohort-ef-grants/">We received a $25K grant from the Ethereum Foundation</a>! We’re grateful for the opportunity to partner with the foundation and increase the pace of bounties as a result of the grant. 
         </li>
         <li>
-            This week, we launched a repo called <a href="https://github.com/gitcoinco/GIPs">GIPS -- Gitcoin Improvement Proposals</a>.  Got an idea for the future of Open Source Incentivization? Submit it as a GIP.
+        Did you know that you can integrate Gitcoin into your slack channel for instant notifications about updates to your bounties? <a href="https://gitcoin.co/settings/slack">Set it up here</a> 
         </li>
         <li>
-            SXSW was great fun! Vivek presented Gitcoin at the Ethereal Lounge to good reception. Next up: <a href="https://etherealsummit.com/">Ethereal NY</a> and <a href="http://boulderstartupweek.com/">Boulder Startup Week</a> in May. Until then, #buidl! 
+<strong> Calling all project managers! </strong>  Are you interested in paid work in the intersection blockchain and open source?  Send us your resume at <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a> or just respond to this email.
+
         </li>
     </ul>
 </p>
 <p>
-    I hope to see you <a href="https://gitcoin.co/slack">on slack</a>, or on the community livestream TODAY at 3pm MST ! 🤖
+No livestream this week!  We're busy meeting Ethereum community members and learning about the future of Ethereum scalability at <a href="https://edcon.io">Edcon</a>, but will be back as regularly scheduled next week. Happy coding! 
+</p>
+<p>
+I hope to see you on <a href="https://gitcoin.co/slack">Slack</a> or on <a href="https://github.com/gitcoinco/web">Github</a>. If you’re interested in growing open source and have some extra time, come by. 
+
 </p>
 
 '''
     highlights = [
         {
-            'who': 'KennethAshley',
+            'who': 'mikestonecodes',
             'who_link': True,
-            'what': 'or getting the Gitcoin Faucet across the finish line. Appreciate you lowering the barriers to entry for others, Kenneth!',
-            'link': 'https://github.com/gitcoinco/web/pull/407',
-            'link_copy': 'See more here',
+            'what': 'Added pagination to the Gitcoin Explorer',
+            'link': 'https://github.com/gitcoinco/web/pull/993',
+            'link_copy': 'See more',
         },
         {
-            'who': 'mapmeld',
+            'who': 'eswarasai',
             'who_link': True,
-            'what': 'Built internationalization into MetaMask',
-            'link': 'https://gitcoin.co/legacy/issue/MetaMask/metamask-extension/437',
-            'link_copy': 'View more here',
-        },
-        {
-            'who': 'Tammy, Brian, and Gillian ',
-            'who_link': False,
-            'what': 'built Bountyful, a chrome extension for Stack Overflow. They’ll be on the Weekly Livestream today to show it off! ',
+            'what': 'BUIDLing a solidcoin experiment for Ethereal.',
+            'link': 'https://github.com/gitcoinco/web/pull/1060',
+            'link_copy': 'View more',
         },
     ]
 
     bounties = [
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/TrustWallet/trust-wallet-ios/issues/483'),
-            'primer': 'Trust Wallet is on Gitcoin! Help them refactor and earn some ETH along the way :) ',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/TrustWallet/trust-wallet-ios/issues/488'),
+            'primer': 'Opportunity to contribute to TRUST Wallet -- One of the best mobile wallets in the space! ',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/gitcoinco/web/issues/623'),
-            'primer': 'Work with @mbeacom and I on refactoring the Gitcoin API',
-        },
-        {
-            'obj': Bounty.objects.get(current_bounty=True, github_url='https://github.com/MetaMask/metamask-extension/issues/3249'),
-            'primer': 'Biggest open bounty, you ask? 1.1 ETH to work with the great developers at MetaMask on a customizable keyring format ',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/gitcoinco/web/issues/640'),
+            'primer': 'Some wordpress work for the Gitcoin community team.  Good first issue to start on!',
         },
     ]
+
+    ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
 
     params = {
         'intro': intro,
         'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
         'bounties': bounties,
-        'override_back_color': '#15003e',
-        'invert_footer': True,
-        'hide_header': True,
+        'ecosystem_bounties': ecosystem_bounties,
+        'invert_footer': False,
+        'hide_header': False,
         'highlights': highlights,
-        'subscriber_id': get_or_save_email_subscriber(to_email, 'internal'),
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
@@ -392,7 +440,9 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.last())
+    bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
+    old_bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties)
     return HttpResponse(response_html)
 
 
@@ -450,15 +500,15 @@ def start_work_expire_warning(request):
 def faucet(request):
     from faucet.models import FaucetRequest
     fr = FaucetRequest.objects.last()
-    response_html, txt = render_faucet_request(fr)
+    response_html, _ = render_faucet_request(fr)
     return HttpResponse(response_html)
 
 
 @staff_member_required
 def faucet_rejected(request):
     from faucet.models import FaucetRequest
-    fr = FaucetRequest.objects.last()
-    response_html, txt = render_faucet_rejected(fr)
+    fr = FaucetRequest.objects.exclude(comment_admin='').last()
+    response_html, _ = render_faucet_rejected(fr)
     return HttpResponse(response_html)
 
 

@@ -25,7 +25,7 @@ from pytz import UTC
 from test_plus.test import TestCase
 
 
-class DashboardNotificationsTestCase(TestCase):
+class DashboardNotificationsTest(TestCase):
     """Define tests for dashboard notifications."""
 
     def setUp(self):
@@ -57,16 +57,24 @@ class DashboardNotificationsTestCase(TestCase):
     def test_build_github_notification_new_bounty(self):
         """Test the dashboard helper build_github_notification method with new_bounty."""
         message = build_github_notification(self.bounty, 'new_bounty')
-        assert message.startswith(f'__This issue now has a funding of {self.natural_value} {self.bounty.token_name}')
+        assert f'__This issue now has a funding of {self.natural_value} {self.bounty.token_name}' in message
         assert self.usdt_value in message
-        assert f'[here]({self.absolute_url})' in message
+        assert f'This issue now has a funding of' in message
         assert f'${self.amount_open_work}' in message
 
     def test_build_github_notification_killed_bounty(self):
         """Test the dashboard helper build_github_notification method with killed_bounty."""
         message = build_github_notification(self.bounty, 'killed_bounty')
-        assert message.startswith(f"__The funding of {self.natural_value} {self.bounty.token_name} {self.usdt_value}")
+        assert f"__The funding of {self.natural_value} {self.bounty.token_name} {self.usdt_value}" in message
         assert 'Questions?' in message
+        assert f'${self.amount_open_work}' in message
+
+    def test_build_github_notification_increased_bounty(self):
+        """Test the dashboard helper build_github_notification method with new_bounty."""
+        message = build_github_notification(self.bounty, 'increased_bounty')
+        assert f'__The funding of this issue was increased to {self.natural_value} {self.bounty.token_name}' in message
+        assert self.usdt_value in message
+        assert f'The funding of this issue was increased' in message
         assert f'${self.amount_open_work}' in message
 
     def tearDown(self):

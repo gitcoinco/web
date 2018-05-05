@@ -1,24 +1,66 @@
 sudo: false
 language: python
+
 python:
-  - "3.6"
+  - 3.6
+
 node_js:
-  - "8"
-env:
-  - PYTHONPATH="$TRAVIS_BUILD_DIR/app/"
+  - "9"
+
+os:
+  - linux
+
+services:
+  - docker
+
 cache:
   directories:
     - $HOME/.cache/pip
     - node_modules
-install:
-  - npm install
-  - cp app/app/travis.env app/app/.env
-  - pip install -r requirements/test.txt
-script:
-  - npm run eslint
-  - pytest -p no:ethereum
-after_success:
-  - pip install codecov
-  - codecov
+
+jobs:
+  include:
+    # Lint and test the repository.
+    - stage: lint-test
+      script:
+        # Setup Env.
+        - cp app/app/travis.env app/app/.env
+        - pip install codecov
+        # Install Node and Python dependencies.
+        - npm install
+        - pip install -r requirements/test.txt
+        - npm run eslint
+        - npm run stylelint
+        - pytest -p no:ethereum
+        # Publish CodeCov coverage results.
+        - codecov
+      env:
+        - PYTHONPATH="${TRAVIS_BUILD_DIR}/app/"
+    # Deploy to Docker Hub and initiate a rolling update for web.
+    - stage: deploy-stage
+      if: branch = master AND NOT type = pull_request
+      script:
+        # Authenticate with Docker Hub.
+        - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+        # Pull Docker images.
+        - docker pull python:3.6-slim-jessie
+        # Build, tag, and publish the new gitcoin/web image.
+        - docker build -t gitcoin/web:${TRAVIS_BUILD_NUMBER} .
+        - docker push gitcoin/web:${TRAVIS_BUILD_NUMBER}
+        - docker tag gitcoin/web:${TRAVIS_BUILD_NUMBER} gitcoin/web:latest
+        - docker push gitcoin/web:latest
+    - stage: deploy-prod
+      if: branch = stable
+      script:
+        # Authenticate with Docker Hub.
+        - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+        # Pull Docker images.
+        - docker pull python:3.6-slim-jessie
+        # Build, tag, and publish the new gitcoin/web image.
+        - docker build -t gitcoin/web:${TRAVIS_BUILD_NUMBER} .
+        - docker push gitcoin/web:${TRAVIS_BUILD_NUMBER}
+        - docker tag gitcoin/web:${TRAVIS_BUILD_NUMBER} gitcoin/web:stable
+        - docker push gitcoin/web:stable
+
 addons:
   postgresql: "9.6"

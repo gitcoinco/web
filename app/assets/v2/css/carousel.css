@@ -9,11 +9,6 @@
   margin-top: 60px;
   margin-bottom: 40px;
 }
-.carousel .control:hover {
-  border-radius: 100%;
-  background-color: #15003e;
-  color: #ffce08;
-}
 
 .carousel .control {
   border-radius: 100%;
@@ -23,9 +18,15 @@
   color: #15003e;
   width: 40px;
   height: 40px;
-  cursor:pointer;
+  cursor: pointer;
   position: relative;
   top: 80px;
+}
+
+.carousel .control:hover {
+  border-radius: 100%;
+  background-color: #15003e;
+  color: #ffce08;
 }
 
 .carousel .flex-container {
@@ -40,17 +41,9 @@
   float: left;
 }
 
-.carousel .control i {
+.carousel .control svg {
   position: relative;
   top: 2px;
-}
-
-.carousel .prev .control i {
-  right: 1px;
-}
-
-.carousel .next .control i {
-  left: 1px;
 }
 
 .carousel .avatar {
@@ -58,7 +51,7 @@
   margin-left: 70px;
 }
 
-.carousel .avatar i {
+.carousel .avatar svg {
   color: #36e69a;
 }
 
@@ -116,7 +109,7 @@
 }
 
 .carousel .testimonial {
-  font-family: "futura-pt", Futura !important;
+  font-family: 'futura-pt', Futura, sans-serif !important;
   font-weight: bold;
   padding-right: 30px;
 }
@@ -129,12 +122,20 @@
   opacity: 0.5;
 }
 
-.carousel .author i {
+.carousel .author svg {
   font-size: 7px;
 }
 
-.carousel .author a{
+.carousel .author a {
   cursor: pointer;
+}
+
+.carousel .prev .control svg {
+  right: 1px;
+}
+
+.carousel .next .control svg {
+  left: 1px;
 }
 
 .carousel .content {
@@ -171,22 +172,37 @@
 }
 
 @keyframes fadeIn {
-  0% { opacity: 0; display: none; }
-  100% { opacity: 1; display: inline; }
+  0% {
+    opacity: 0;
+    display: none;
+  }
+
+  100% {
+    opacity: 1;
+    display: inline;
+  }
 }
 
 @keyframes fadeOut {
-  0% { opacity: 1; display: inline; }
-  100% { opacity: 0; display: none; }
+  0% {
+    opacity: 1;
+    display: inline;
+  }
+
+  100% {
+    opacity: 0;
+    display: none;
+  }
 }
 
-.carousel .pilot_projects img{
-    max-height: 100px;
-    max-width: 100%;
+.carousel .pilot_projects img {
+  max-height: 100px;
+  max-width: 100%;
 }
 
 @media (max-width: 576px) {
-  .prev, .next {
+  .prev,
+  .next {
     visibility: hidden;
   }
 
@@ -204,7 +220,8 @@
     border-left: 0;
   }
 
-  .carousel .author, .carousel .content {
+  .carousel .author,
+  .carousel .content {
     text-align: center;
   }
 }
@@ -214,7 +231,7 @@
     margin: 0 -20px;
   }
 
-  .carousel .next .control i {
+  .carousel .next .control svg {
     left: 2px;
   }
 }

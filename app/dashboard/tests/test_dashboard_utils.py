@@ -17,16 +17,17 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from dashboard.utils import get_web3
+from dashboard.utils import get_ordinal_repr, get_web3
 from test_plus.test import TestCase
 from web3.main import Web3
 from web3.providers.rpc import HTTPProvider
 
 
-class DashboardUtilsTestCase(TestCase):
+class DashboardUtilsTest(TestCase):
     """Define tests for dashboard utils."""
 
-    def test_get_web3(self):
+    @staticmethod
+    def test_get_web3():
         """Test the dashboard utility get_web3."""
         networks = ['mainnet', 'rinkeby', 'ropsten']
         for network in networks:
@@ -35,3 +36,17 @@ class DashboardUtilsTestCase(TestCase):
             assert len(web3_provider.providers) == 1
             assert isinstance(web3_provider.providers[0], HTTPProvider)
             assert web3_provider.providers[0].endpoint_uri == f'https://{network}.infura.io'
+
+    @staticmethod
+    def test_get_ordinal_repr():
+        """Test the dashboard utility get_ordinal_repr."""
+        assert get_ordinal_repr(1) == '1st'
+        assert get_ordinal_repr(2) == '2nd'
+        assert get_ordinal_repr(3) == '3rd'
+        assert get_ordinal_repr(4) == '4th'
+        assert get_ordinal_repr(10) == '10th'
+        assert get_ordinal_repr(11) == '11th'
+        assert get_ordinal_repr(21) == '21st'
+        assert get_ordinal_repr(22) == '22nd'
+        assert get_ordinal_repr(23) == '23rd'
+        assert get_ordinal_repr(24) == '24th'

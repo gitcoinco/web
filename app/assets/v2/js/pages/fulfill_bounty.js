@@ -2,6 +2,7 @@
 window.onload = function() {
   // a little time for web3 injection
   setTimeout(function() {
+    waitforWeb3(actions_page_warn_if_not_on_same_network);
     var account = web3.eth.accounts[0];
 
     if (typeof localStorage['githubUsername'] != 'undefined') {
@@ -24,6 +25,13 @@ window.onload = function() {
 
     $('#submitBounty').validate({
       submitHandler: function(form) {
+        try {
+          bounty_address();
+        } catch (exception) {
+          _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+          return;
+        }
+
         var data = {};
         var disabled = $(form)
           .find(':input:disabled')
@@ -41,7 +49,8 @@ window.onload = function() {
         var githubUsername = data.githubUsername;
         var issueURL = data.issueURL;
         var notificationEmail = data.notificationEmail;
-        var fullName = data.fullName;
+        var githubPRLink = data.githubPRLink;
+        var hoursWorked = data.hoursWorked;
 
         localStorage['githubUsername'] = githubUsername;
 
@@ -69,7 +78,8 @@ window.onload = function() {
             sourceFileHash: '',
             sourceDirectoryHash: '',
             fulfiller: {
-              name: fullName,
+              githubPRLink: githubPRLink,
+              hoursWorked: hoursWorked,
               email: notificationEmail,
               githubUsername: githubUsername,
               address: account
@@ -98,8 +108,8 @@ window.onload = function() {
           var run_main = !error || ignore_error;
 
           if (error && !ignore_error) {
-            _alert({ message: 'Could not get bounty details.' });
-            unloading_button($('#submitBounty'));
+            _alert({ message: gettext('Could not get bounty details.') });
+            unloading_button($('.js-submit'));
           }
           if (run_main) {
             if (!ignore_error) {
@@ -114,7 +124,7 @@ window.onload = function() {
                   });
 
                   dataLayer.push({ event: 'claimissue' });
-                  _alert({ message: 'Fulfillment submitted to web3.' }, 'info');
+                  _alert({ message: gettext('Fulfillment submitted to web3.') }, 'info');
                   setTimeout(function() {
                     mixpanel.track('Fulfill Bounty Success', {});
                     document.location.href = '/funding/details?url=' + issueURL;
@@ -128,14 +138,14 @@ window.onload = function() {
                   });
                   console.error('err', error);
                   _alert({ message: 'There was an error' });
-                  unloading_button($('#submitBounty'));
+                  unloading_button($('.js-submit'));
                 } else {
                   next();
                 }
               };
 
               // Get bountyId from the database
-              var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
+              var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
               $.get(uri, function(results, status) {
                 results = sanitizeAPIResults(results);
@@ -144,7 +154,7 @@ window.onload = function() {
                   _alert({
                     message: 'No active bounty found for this Github URL.'
                   });
-                  unloading_button($('#submitBounty'));
+                  unloading_button($('.js-submit'));
                   return;
                 }
 
@@ -154,7 +164,7 @@ window.onload = function() {
                   bountyId,
                   document.ipfsDataHash,
                   {
-                    gasPrice: web3.toHex($('#gasPrice').val()) * Math.pow(10, 9)
+                    gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
                   },
                   web3Callback
                 );

@@ -20,28 +20,36 @@ from __future__ import print_function, unicode_literals
 
 import json
 import logging
+import time
 
 from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.models import User
 from django.contrib.staticfiles.templatetags.staticfiles import static
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.urls import reverse
 from django.utils import timezone
+from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_POST
 
 from app.utils import ellipses, sync_profile
 from dashboard.models import (
-    Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip, UserAction,
+    Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip, Tool,
+    ToolVote, UserAction,
 )
 from dashboard.notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
+    maybe_market_to_twitter, maybe_market_to_user_slack,
 )
 from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
-from github.utils import get_auth_url, get_github_emails, get_github_primary_email, is_github_token_valid
+from github.utils import (
+    get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
+)
+from marketing.mails import bounty_uninterested
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -59,46 +67,102 @@ def send_tip(request):
     """Handle the first stage of sending a tip."""
     params = {
         'issueURL': request.GET.get('source'),
-        'title': 'Send Tip',
+        'title': _('Send Tip'),
         'class': 'send',
     }
 
     return TemplateResponse(request, 'yge/send1.html', params)
 
 
-def record_user_action(profile_handle, event_name, instance):
+def record_user_action(user, event_name, instance):
     instance_class = instance.__class__.__name__.lower()
+    kwargs = {
+        'action': event_name,
+        'metadata': {f'{instance_class}_pk': instance.pk},
+    }
+
+    if isinstance(user, User):
+        kwargs['user'] = user
+    elif isinstance(user, str):
+        try:
+            user = User.objects.get(username=user)
+            kwargs['user'] = user
+        except User.DoesNotExist:
+            return
+
+    if hasattr(user, 'profile'):
+        kwargs['profile'] = user.profile
 
     try:
-        user_profile = Profile.objects.filter(handle__iexact=profile_handle).first()
-        UserAction.objects.create(
-            profile=user_profile,
-            action=event_name,
-            metadata={
-                f'{instance_class}_pk': instance.pk,
-            })
+        UserAction.objects.create(**kwargs)
     except Exception as e:
         # TODO: sync_profile?
         logging.error(f"error in record_action: {e} - {event_name} - {instance}")
 
-@require_POST
+
+def helper_handle_access_token(request, access_token):
+    # https://gist.github.com/owocki/614a18fbfec7a5ed87c97d37de70b110
+    # interest API via token
+    github_user_data = get_github_user_data(access_token)
+    request.session['handle'] = github_user_data['login']
+    profile = Profile.objects.filter(handle__iexact=request.session['handle']).first()
+    request.session['profile_id'] = profile.pk
+
+
+def create_new_interest_helper(bounty, user, has_question, issue_message):
+    profile_id = user.profile.pk
+    interest = Interest.objects.create(profile_id=profile_id, has_question=has_question, issue_message=issue_message)
+    bounty.interested.add(interest)
+    record_user_action(user, 'start_work', interest)
+    maybe_market_to_slack(bounty, 'start_work')
+    maybe_market_to_user_slack(bounty, 'start_work')
+    maybe_market_to_twitter(bounty, 'start_work')
+    return interest
+
+
 @csrf_exempt
+def gh_login(request):
+    """Attempt to redirect the user to Github for authentication."""
+    return redirect('social:begin', backend='github')
+
+
+def get_interest_modal(request):
+    context = {
+        'active': 'get_interest_modal',
+        'title': _('Add Interest'),
+    }
+    return TemplateResponse(request, 'addinterest.html', context)
+
+
+@csrf_exempt
+@require_POST
 def new_interest(request, bounty_id):
     """Claim Work for a Bounty.
 
     :request method: POST
 
     Args:
-        post_id (int): ID of the Bounty.
+        bounty_id (int): ID of the Bounty.
 
     Returns:
         dict: The success key with a boolean value and accompanying error.
 
     """
-    profile_id = request.session.get('profile_id')
+    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
+    access_token = request.GET.get('token')
+    if access_token:
+        helper_handle_access_token(request, access_token)
+        github_user_data = get_github_user_data(access_token)
+        profile = Profile.objects.prefetch_related('bounty_set') \
+            .filter(handle=github_user_data['login']).first()
+        profile_id = profile.pk
+    else:
+        profile = request.user.profile if profile_id else None
+
     if not profile_id:
         return JsonResponse(
-            {'error': 'You must be authenticated via github to use this feature!'},
+            {'error': _('You must be authenticated via github to use this feature!')},
             status=401)
 
     try:
@@ -112,21 +176,27 @@ def new_interest(request, bounty_id):
     is_working_on_too_much_stuff = num_active >= num_issues
     if is_working_on_too_much_stuff:
         return JsonResponse({
-            'error': f'You may only work on max of {num_issues} issues at once.',
+            'error': _(f'You may only work on max of {num_issues} issues at once.'),
+            'success': False},
+            status=401)
+
+    if profile.has_abandoned_work():
+        return JsonResponse({
+            'error': _('Due to a prior abandoned bounty, you are unable to start work at this time. Please contact support.'),
             'success': False},
             status=401)
 
     try:
         Interest.objects.get(profile_id=profile_id, bounty=bounty)
         return JsonResponse({
-            'error': 'You have already expressed interest in this bounty!',
+            'error': _('You have already expressed interest in this bounty!'),
             'success': False},
             status=401)
     except Interest.DoesNotExist:
-        interest = Interest.objects.create(profile_id=profile_id)
-        bounty.interested.add(interest)
-        record_user_action(Profile.objects.get(pk=profile_id).handle, 'start_work', interest)
-        maybe_market_to_slack(bounty, 'start_work')
+        has_question = request.POST.get("has_question") == 'true'
+        issue_message = request.POST.get("issue_message")
+        interest = create_new_interest_helper(bounty, request.user, has_question, issue_message)
+
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \
@@ -136,17 +206,19 @@ def new_interest(request, bounty_id):
         Interest.objects.filter(pk__in=list(bounty_ids)).delete()
 
         return JsonResponse({
-            'error': 'You have already expressed interest in this bounty!',
+            'error': _('You have already expressed interest in this bounty!'),
             'success': False},
             status=401)
 
     return JsonResponse({'success': True, 'profile': ProfileSerializer(interest.profile).data})
 
 
-@require_POST
 @csrf_exempt
+@require_POST
 def remove_interest(request, bounty_id):
     """Unclaim work from the Bounty.
+
+    Can only be called by someone who has started work
 
     :request method: POST
 
@@ -156,10 +228,18 @@ def remove_interest(request, bounty_id):
         dict: The success key with a boolean value and accompanying error.
 
     """
-    profile_id = request.session.get('profile_id')
+    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
+    access_token = request.GET.get('token')
+    if access_token:
+        helper_handle_access_token(request, access_token)
+        github_user_data = get_github_user_data(access_token)
+        profile = Profile.objects.filter(handle=github_user_data['login']).first()
+        profile_id = profile.pk
+
     if not profile_id:
         return JsonResponse(
-            {'error': 'You must be authenticated via github to use this feature!'},
+            {'error': _('You must be authenticated via github to use this feature!')},
             status=401)
 
     try:
@@ -170,13 +250,15 @@ def remove_interest(request, bounty_id):
 
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
-        record_user_action(Profile.objects.get(pk=profile_id).handle, 'stop_work', interest)
+        record_user_action(request.user, 'stop_work', interest)
         bounty.interested.remove(interest)
-        maybe_market_to_slack(bounty, 'stop_work')
         interest.delete()
+        maybe_market_to_slack(bounty, 'stop_work')
+        maybe_market_to_user_slack(bounty, 'stop_work')
+        maybe_market_to_twitter(bounty, 'stop_work')
     except Interest.DoesNotExist:
         return JsonResponse({
-            'errors': ['You haven\'t expressed interest on this bounty.'],
+            'errors': [_('You haven\'t expressed interest on this bounty.')],
             'success': False},
             status=401)
     except Interest.MultipleObjectsReturned:
@@ -193,62 +275,61 @@ def remove_interest(request, bounty_id):
     return JsonResponse({'success': True})
 
 
+@require_POST
 @csrf_exempt
-@require_GET
-def interested_profiles(request, bounty_id):
-    """Retrieve memberships who like a Status in a community.
+def uninterested(request, bounty_id, profile_id):
+    """Remove party from given bounty
+
+    Can only be called by the bounty funder
 
     :request method: GET
 
     Args:
-        bounty_id (int): ID of the Bounty.
-
-    Parameters:
-        page (int): The page number.
-        limit (int): The number of interests per page.
+        bounty_id (int): ID of the Bounty
+        profile_id (int): ID of the interested profile
 
     Returns:
-        django.core.paginator.Paginator: Paged interest results.
-
+        dict: The success key with a boolean value and accompanying error.
     """
-    page = request.GET.get('page', 1)
-    limit = request.GET.get('limit', 10)
-    current_profile = request.session.get('profile_id')
-    profile_interested = False
-
-    # Get all interests for the Bounty.
-    interests = Interest.objects \
-        .filter(bounty__id=bounty_id) \
-        .select_related('profile') \
-        .order_by('created')
-
-    # Check whether or not the current profile has already expressed interest.
-    if current_profile and interests.filter(profile__pk=current_profile).exists():
-        profile_interested = True
-
-    paginator = Paginator(interests, limit)
     try:
-        interests = paginator.page(page)
-    except PageNotAnInteger:
-        interests = paginator.page(1)
-    except EmptyPage:
-        return JsonResponse([])
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
+                            status=401)
 
-    interests_data = []
-    for interest in interests:
-        interest_data = ProfileSerializer(interest.profile).data
-        interests_data.append(interest_data)
+    if not bounty.is_funder(request.user.username.lower()) and not request.user.is_staff:
+        return JsonResponse(
+            {'error': 'Only bounty funders are allowed to remove users!'},
+            status=401)
 
-    if request.is_ajax():
-        return JsonResponse(json.dumps(interests_data), safe=False)
+    try:
+        interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
+        bounty.interested.remove(interest)
+        maybe_market_to_slack(bounty, 'stop_work')
+        maybe_market_to_user_slack(bounty, 'stop_work')
+        interest.delete()
+    except Interest.DoesNotExist:
+        return JsonResponse({
+            'errors': ['Party haven\'t expressed interest on this bounty.'],
+            'success': False},
+            status=401)
+    except Interest.MultipleObjectsReturned:
+        interest_ids = bounty.interested \
+            .filter(
+                profile_id=profile_id,
+                bounty=bounty
+            ).values_list('id', flat=True) \
+            .order_by('-created')
 
-    return JsonResponse({
-        'paginator': {
-            'num_pages': interests.paginator.num_pages,
-        },
-        'data': interests_data,
-        'profile_interested': profile_interested
-    })
+        bounty.interested.remove(*interest_ids)
+        Interest.objects.filter(pk__in=list(interest_ids)).delete()
+
+    profile = Profile.objects.get(id=profile_id)
+    if profile.user and profile.user.email:
+        bounty_uninterested(profile.user.email, bounty, interest)
+    else:
+        print("no email sent -- user was not found")
+    return JsonResponse({'success': True})
 
 
 @csrf_exempt
@@ -257,7 +338,7 @@ def receive_tip(request):
     """Receive a tip."""
     if request.body:
         status = 'OK'
-        message = 'Tip has been received'
+        message = _('Tip has been received')
         params = json.loads(request.body)
 
         # db mutations
@@ -283,8 +364,8 @@ def receive_tip(request):
     params = {
         'issueURL': request.GET.get('source'),
         'class': 'receive',
-        'title': 'Receive Tip',
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'title': _('Receive Tip'),
+        'recommend_gas_price': round(recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target), 1),
     }
 
     return TemplateResponse(request, 'yge/receive.html', params)
@@ -303,16 +384,17 @@ def send_tip_2(request):
         TemplateResponse: Render the submission form.
 
     """
-    from_username = request.session.get('handle', '')
-    primary_from_email = request.session.get('email', '')
-    access_token = request.session.get('access_token')
+    is_user_authenticated = request.user.is_authenticated
+    from_username = request.user.username if is_user_authenticated else ''
+    primary_from_email = request.user.email if is_user_authenticated else ''
+    access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
     to_emails = []
 
     if request.body:
         # http response
         response = {
             'status': 'OK',
-            'message': 'Notification has been sent',
+            'message': _('Notification has been sent'),
         }
         params = json.loads(request.body)
 
@@ -365,14 +447,14 @@ def send_tip_2(request):
         record_user_action(tip.username, 'send_tip', tip)
         if not to_emails:
             response['status'] = 'error'
-            response['message'] = 'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.'
+            response['message'] = _('Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.')
 
         return JsonResponse(response)
 
     params = {
         'issueURL': request.GET.get('source'),
         'class': 'send2',
-        'title': 'Send Tip',
+        'title': _('Send Tip'),
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'from_email': primary_from_email,
         'from_handle': from_username,
@@ -381,92 +463,30 @@ def send_tip_2(request):
     return TemplateResponse(request, 'yge/send2.html', params)
 
 
-def process_bounty(request):
-    """Process the bounty."""
-    params = {
-        'issueURL': request.GET.get('source'),
-        'fulfillment_id': request.GET.get('id'),
-        'fulfiller_address': request.GET.get('address'),
-        'title': 'Process Issue',
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-    }
-
-    return TemplateResponse(request, 'process_bounty.html', params)
+@staff_member_required
+def onboard(request):
+    """Handle displaying the first time user experience flow."""
+    params = {'title': _('Onboarding Flow')}
+    return TemplateResponse(request, 'onboard.html', params)
 
 
 def dashboard(request):
     """Handle displaying the dashboard."""
     params = {
         'active': 'dashboard',
-        'title': 'Issue Explorer',
+        'title': _('Issue Explorer'),
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'dashboard.html', params)
 
 
-def external_bounties(request):
-    """Handle Dummy External Bounties index page."""
-
-    bounties = [
-        {
-            "title": "Add Web3 1.0 Support",
-            "source": "www.google.com",
-            "crypto_price": 0.3,
-            "fiat_price": 337.88,
-            "crypto_label": "ETH",
-            "tags": ["javascript", "python", "eth"],
-        },
-        {
-            "title": "Simulate proposal execution and display execution results",
-            "source": "gitcoin.com",
-            "crypto_price": 1,
-            "fiat_price": 23.23,
-            "crypto_label": "BTC",
-            "tags": ["ruby", "js", "btc"]
-        },
-        {
-            "title": "Build out Market contract explorer",
-            "crypto_price": 22,
-            "fiat_price": 203.23,
-            "crypto_label": "LTC",
-            "tags": ["ruby on rails", "ios", "mobile", "design"]
-        },
-    ]
-
-    categories = ["Blockchain", "Web Development", "Design", "Browser Extension", "Beginner"]
-
-    params = {
-        'active': 'dashboard',
-        'title': 'Issue Explorer',
-        'bounties': bounties,
-        'categories': categories
-    }
-    return TemplateResponse(request, 'external_bounties.html', params)
-
-
-def external_bounties_show(request):
-    """Handle Dummy External Bounties show page."""
-    bounty = {
-        "title": "Simulate proposal execution and display execution results",
-        "crypto_price": 0.5,
-        "crypto_label": "ETH",
-        "fiat_price": 339.34,
-        "source": "gitcoin.co",
-        "content": "Lorem"
-    }
-    params = {
-        'active': 'dashboard',
-        'title': 'Issue Explorer',
-        "bounty": bounty,
-    }
-    return TemplateResponse(request, 'external_bounties_show.html', params)
-
-
 def gas(request):
+    _cts = conf_time_spread()
+    recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
+    if recommended_gas_price < 2:
+        _cts = conf_time_spread(recommended_gas_price)
     context = {
-        'conf_time_spread': conf_time_spread(),
+        'conf_time_spread': _cts,
         'title': 'Live Gas Usage => Predicted Conf Times'
         }
     return TemplateResponse(request, 'gas.html', context)
@@ -475,44 +495,147 @@ def gas(request):
 def new_bounty(request):
     """Create a new bounty."""
     issue_url = request.GET.get('source') or request.GET.get('url', '')
+    is_user_authenticated = request.user.is_authenticated
     params = {
-        'issueURL': issue_url,
+        'issueURL': request.GET.get('source'),
         'amount': request.GET.get('amount'),
         'active': 'submit_bounty',
-        'title': 'Create Funded Issue',
+        'title': _('Create Funded Issue'),
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
-        'from_email': request.session.get('email', ''),
-        'from_handle': request.session.get('handle', ''),
-        'newsletter_headline': 'Be the first to know about new funded issues.'
+        'from_email': request.user.email if is_user_authenticated else '',
+        'from_handle': request.user.username if is_user_authenticated else '',
+        'newsletter_headline': _('Be the first to know about new funded issues.')
     }
 
     return TemplateResponse(request, 'submit_bounty.html', params)
 
 
-def fulfill_bounty(request):
-    """Fulfill a bounty."""
+def accept_bounty(request, pk):
+    """Process the bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
+    try:
+        bounty = Bounty.objects.get(pk=pk)
+    except (Bounty.DoesNotExist, ValueError):
+        raise Http404
+    except ValueError:
+        raise Http404
+
     params = {
-        'issueURL': request.GET.get('source'),
+        'bounty': bounty,
+        'fulfillment_id': request.GET.get('id'),
+        'fulfiller_address': request.GET.get('address'),
+        'title': _('Process Issue'),
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+    }
+
+    return TemplateResponse(request, 'process_bounty.html', params)
+
+
+def fulfill_bounty(request, pk):
+    """Fulfill a bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be fulfilled.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The fulfill bounty view.
+
+    """
+    try:
+        bounty = Bounty.objects.get(pk=pk)
+    except (Bounty.DoesNotExist, ValueError):
+        raise Http404
+    except ValueError:
+        raise Http404
+
+    is_user_authenticated = request.user.is_authenticated
+    params = {
+        'bounty': bounty,
         'githubUsername': request.GET.get('githubUsername'),
-        'title': 'Submit Work',
+        'title': _('Submit Work'),
         'active': 'fulfill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
-        'handle': request.session.get('handle', ''),
-        'email': request.session.get('email', '')
+        'email': request.user.email if is_user_authenticated else '',
+        'handle': request.user.username if is_user_authenticated else '',
     }
 
     return TemplateResponse(request, 'fulfill_bounty.html', params)
 
 
-def kill_bounty(request):
-    """Kill an expired bounty."""
+def increase_bounty(request, pk):
+    """Increase a bounty as the funder.
+
+    Args:
+        pk (int): The primary key of the bounty to be increased.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The increase bounty view.
+
+    """
+    try:
+        bounty = Bounty.objects.get(pk=pk)
+    except (Bounty.DoesNotExist, ValueError):
+        raise Http404
+    except ValueError:
+        raise Http404
+
     params = {
-        'issueURL': request.GET.get('source'),
-        'title': 'Kill Bounty',
+        'bounty': bounty,
+        'title': _('Increase Bounty'),
+        'active': 'increase_bounty',
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+    }
+
+    return TemplateResponse(request, 'increase_bounty.html', params)
+
+
+def cancel_bounty(request, pk):
+    """Kill an expired bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be cancelled.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The cancel bounty view.
+
+    """
+    try:
+        bounty = Bounty.objects.get(pk=pk)
+    except Bounty.DoesNotExist:
+        raise Http404
+    except ValueError:
+        raise Http404
+
+    params = {
+        'bounty': bounty,
+        'title': _('Cancel Bounty'),
         'active': 'kill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
@@ -522,38 +645,56 @@ def kill_bounty(request):
     return TemplateResponse(request, 'kill_bounty.html', params)
 
 
-def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
-    """Display the bounty details."""
-    _access_token = request.session.get('access_token')
-    profile_id = request.session.get('profile_id')
-    issueURL = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
+def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):
+    """Display the bounty details.
+
+    Args:
+        ghuser (str): The Github user. Defaults to an empty string.
+        ghrepo (str): The Github repository. Defaults to an empty string.
+        ghissue (int): The Github issue number. Defaults to: 0.
+
+    Raises:
+        Exception: The exception is raised for any exceptions in the main query block.
+
+    Returns:
+        django.template.response.TemplateResponse: The Bounty details template response.
+
+    """
+    is_user_authenticated = request.user.is_authenticated
+    if is_user_authenticated and hasattr(request.user, 'profile'):
+        _access_token = request.user.profile.get_access_token()
+    else:
+        _access_token = request.session.get('access_token')
+    issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
 
     # try the /pulls url if it doesnt exist in /issues
     try:
-        assert Bounty.objects.current().filter(github_url=issueURL).exists()
-    except:
-        issueURL = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue if ghissue else request.GET.get('url')
-        print(issueURL)
-        pass
+        assert Bounty.objects.current().filter(github_url=issue_url).exists()
+    except Exception:
+        issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue if ghissue else request.GET.get('url')
+        print(issue_url)
 
-    bounty_url = issueURL
     params = {
-        'issueURL': issueURL,
-        'title': 'Issue Details',
-        'card_title': 'Funded Issue Details | Gitcoin',
+        'issueURL': issue_url,
+        'title': _('Issue Details'),
+        'card_title': _('Funded Issue Details | Gitcoin'),
         'avatar_url': static('v2/images/helmet.png'),
         'active': 'bounty_details',
         'is_github_token_valid': is_github_token_valid(_access_token),
         'github_auth_url': get_auth_url(request.path),
-        'profile_interested': False,
-        "newsletter_headline": "Be the first to know about new funded issues."
+        "newsletter_headline": _("Be the first to know about new funded issues."),
+        'is_staff': request.user.is_staff,
     }
 
-    if bounty_url:
+    if issue_url:
         try:
-            bounties = Bounty.objects.current().filter(github_url=bounty_url)
+            bounties = Bounty.objects.current().filter(github_url=issue_url)
+            if stdbounties_id:
+                bounties.filter(standard_bounties_id=stdbounties_id)
             if bounties:
-                bounty = bounties.order_by('pk').first()
+                bounty = bounties.order_by('-pk').first()
+                if bounties.count() > 1 and bounties.filter(network='mainnet').count() > 1:
+                    bounty = bounties.filter(network='mainnet').order_by('-pk').first()
                 # Currently its not finding anyting in the database
                 if bounty.title and bounty.org_name:
                     params['card_title'] = f'{bounty.title} | {bounty.org_name} Funded Issue Detail | Gitcoin'
@@ -561,11 +702,10 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
                     params['card_desc'] = ellipses(bounty.issue_description_text, 255)
 
                 params['bounty_pk'] = bounty.pk
+                params['network'] = bounty.network
+                params['stdbounties_id'] = bounty.standard_bounties_id
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
-                params['avatar_url'] = bounty.local_avatar_url
-                if profile_id:
-                    profile_ids = list(params['interested_profiles'].values_list('profile_id', flat=True))
-                    params['profile_interested'] = request.session.get('profile_id') in profile_ids
+                params['avatar_url'] = bounty.get_avatar_url(True)
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
@@ -576,7 +716,21 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0):
 
 
 def profile_helper(handle):
-    """Define the profile helper."""
+    """Define the profile helper.
+
+    Args:
+        handle (str): The profile handle.
+
+    Raises:
+        DoesNotExist: The exception is raised if a Profile isn't found matching the handle.
+            Remediation is attempted by syncing the profile data.
+        MultipleObjectsReturned: The exception is raised if multiple Profiles are found.
+            The latest Profile will be returned.
+
+    Returns:
+        dashboard.models.Profile: The Profile associated with the provided handle.
+
+    """
     try:
         profile = Profile.objects.get(handle__iexact=handle)
     except Profile.DoesNotExist:
@@ -593,7 +747,12 @@ def profile_helper(handle):
 
 
 def profile_keywords_helper(handle):
-    """Define the profile keywords helper."""
+    """Define the profile keywords helper.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
     profile = profile_helper(handle)
 
     keywords = []
@@ -607,7 +766,12 @@ def profile_keywords_helper(handle):
 
 
 def profile_keywords(request, handle):
-    """Display profile keywords."""
+    """Display profile keywords.
+
+    Args:
+        handle (str): The profile handle.
+
+    """
     keywords = profile_keywords_helper(handle)
 
     response = {
@@ -618,28 +782,32 @@ def profile_keywords(request, handle):
 
 
 def profile(request, handle):
-    """Display profile details."""
-    handle = handle or request.session.get('handle')
+    """Display profile details.
 
-    if not handle:
-        raise Http404
+    Args:
+        handle (str): The profile handle.
+
+    """
+    if not handle and not request.user.is_authenticated:
+        return redirect('index')
+    elif not handle:
+        handle = request.user.username
+        profile = request.user.profile
+    else:
+        profile = profile_helper(handle)
 
     params = {
-        'title': 'Profile',
+        'title': f"@{handle}",
         'active': 'profile_details',
-        'newsletter_headline': 'Be the first to know about new funded issues.',
+        'newsletter_headline': _('Be the first to know about new funded issues.'),
+        'card_title': f'@{handle} | Gitcoin',
+        'card_desc': profile.desc,
+        'avatar_url': profile.avatar_url_with_gitcoin_logo,
+        'profile': profile,
+        'stats': profile.stats,
+        'bounties': profile.bounties,
+        'tips': Tip.objects.filter(username=handle, network='mainnet'),
     }
-
-    profile = profile_helper(handle)
-    params['card_title'] = f"@{handle} | Gitcoin"
-    params['card_desc'] = profile.desc
-    params['title'] = f"@{handle}"
-    params['avatar_url'] = profile.local_avatar_url
-    params['profile'] = profile
-    params['stats'] = profile.stats
-    params['bounties'] = profile.bounties
-    params['tips'] = Tip.objects.filter(username=handle)
-
     return TemplateResponse(request, 'profile_details.html', params)
 
 
@@ -709,11 +877,24 @@ def sync_web3(request):
                 print('* getting bounty')
                 bounty = get_bounty(bounty_id, network)
                 print('* processing bounty')
-                did_change, _, _ = web3_process_bounty(bounty)
+                did_change = False
+                max_tries_attempted = False
+                counter = 0
+                url = None
+                while not did_change and not max_tries_attempted:
+                    did_change, _, new_bounty = web3_process_bounty(bounty)
+                    if not did_change:
+                        print("RETRYING")
+                        time.sleep(3)
+                        counter += 1
+                        max_tries_attempted = counter > 3
+                    if new_bounty:
+                        url = new_bounty.url
                 result = {
                     'status': '200',
                     'msg': "success",
-                    'did_change': did_change
+                    'did_change': did_change,
+                    'url': url,
                 }
 
     return JsonResponse(result, status=result['status'])
@@ -742,185 +923,122 @@ def apitos(request):
 
 
 def toolbox(request):
+    access_token = request.GET.get('token')
+    if access_token and is_github_token_valid(access_token):
+        helper_handle_access_token(request, access_token)
+
+    tools = Tool.objects.prefetch_related('votes').all()
+
     actors = [{
-        "title": "The Basics",
-        "description": "Accelerate your dev workflow with Gitcoin\'s incentivization tools.",
-        "tools": [{
-            "name": "Issue Explorer",
-            "img": static("v2/images/why-different/code_great.png"),
-            "description": '''A searchable index of all of the funded work available in
-                            the system.''',
-            "link": reverse("explorer"),
-            "active": "true",
-            'stat_graph': 'bounties_fulfilled',
-        }, {
-             "name": "Fund Work",
-             "img": static("v2/images/tldr/bounties.jpg"),
-             "description": '''Got work that needs doing?  Create an issue and offer a bounty to get folks
-                            working on it.''',
-             "link": reverse("new_funding"),
-             "active": "false",
-             'stat_graph': 'bounties_fulfilled',
-        }, {
-             "name": "Tips",
-             "img": static("v2/images/tldr/tips.jpg"),
-             "description": '''Leave a tip to thank someone for
-                        helping out.''',
-             "link": reverse("tip"),
-             "active": "false",
-             'stat_graph': 'tips',
-        }, {
-             "name": "Code Sponsor",
-             "img": static("v2/images/codesponsor.jpg"),
-             "description": '''CodeSponsor sustains open source
-                        by connecting sponsors with open source projects.''',
-             "link": "https://codesponsor.io",
-             "active": "false",
-             'stat_graph': 'codesponsor',
-        }
-        ]
-      }, {
-          "title": "The Powertools",
-          "description": "Take your OSS game to the next level!",
-          "tools": [{
-              "name": "Browser Extension",
-              "img": static("v2/images/tools/browser_extension.png"),
-              "description": '''Browse Gitcoin where you already work.
-                    On Github''',
-              "link": reverse("browser_extension"),
-              "active": "false",
-              'stat_graph': 'browser_ext_chrome',
-          },
-          {
-              "name": "iOS app",
-              "img": static("v2/images/tools/iOS.png"),
-              "description": '''Gitcoin has an iOS app in alpha. Install it to
-                browse funded work on-the-go.''',
-              "link": reverse("ios"),
-              "active": "false",
-              'stat_graph': 'ios_app_users',  # TODO
-        }
-          ]
-      }, {
-          "title": "Community Tools",
-          "description": "Friendship, mentorship, and community are all part of the process.",
-          "tools": [
-          {
-              "name": "Slack Community",
-              "img": static("v2/images/tldr/community.jpg"),
-              "description": '''Questions / Discussion / Just say hi ? Swing by
-                                our slack channel.''',
-              "link": reverse("slack"),
-              "active": "false",
-              'stat_graph': 'slack_users',
-         },
-          {
-              "name": "Gitter Community",
-              "img": static("v2/images/tools/community2.png"),
-              "description": '''The gitter channel is less active than slack, but
-                is still a good place to ask questions.''',
-              "link": reverse("gitter"),
-              "active": "false",
-              'stat_graph': 'gitter_users',
-        },
-          {
-              "name": "Refer a Friend",
-              "img": static("v2/images/freedom.jpg"),
-              "description": '''Got a colleague who wants to level up their career?
-              Refer them to Gitcoin, and we\'ll happily give you a bonus for their
-              first bounty. ''',
-              "link": reverse("refer"),
-              "active": "false",
-              'stat_graph': 'email_subscriberse',
-        },
-          ]
-       }, {
-          "title": "Tools in Beta",
-          "description": "These fresh new tools are looking someone to test ride them!",
-          "tools": [{
-              "name": "Leaderboard",
-              "img": static("v2/images/tools/leaderboard.png"),
-              "description": '''Check out who is topping the charts in
-                the Gitcoin community this month.''',
-              "link": reverse("_leaderboard"),
-              "active": "false",
-              'stat_graph': 'bounties_fulfilled',
-          },
-           {
-            "name": "Profiles",
-            "img": static("v2/images/tools/profiles.png"),
-            "description": '''Browse the work that you\'ve done, and how your OSS repuation is growing. ''',
-            "link": reverse("profile"),
-            "active": "true",
-            'stat_graph': 'profiles_ingested',
-            },
-           {
-            "name": "ETH Tx Time Predictor",
-            "img": static("v2/images/tradeoffs.png"),
-            "description": '''Estimate Tradeoffs between Ethereum Network Tx Fees and Confirmation Times ''',
-            "link": reverse("gas"),
-            "active": "true",
-            'stat_graph': 'gas_page',
-            },
-          ]
-       }, {
-          "title": "Tools for Building Gitcoin",
-          "description": "Gitcoin is built using Gitcoin.  Purdy cool, huh? ",
-          "tools": [{
-              "name": "Github Repos",
-              "img": static("v2/images/tools/science.png"),
-              "description": '''All of our development is open source, and managed
-              via Github.''',
-              "link": reverse("github"),
-              "active": "false",
-              'stat_graph': 'github_stargazers_count',
-          },
-           {
-            "name": "API",
-            "img": static("v2/images/tools/api.jpg"),
-            "description": '''Gitcoin provides a simple HTTPS API to access data
-                            without having to run your own Ethereum node.''',
-            "link": "https://github.com/gitcoinco/web/blob/master/readme_api.md#https-api",
-            "active": "true",
-            'stat_graph': 'github_forks_count',
-            },
-          {
-              "class": 'new',
-              "name": "Build your own",
-              "img": static("v2/images/dogfood.jpg"),
-              "description": '''Dogfood.. Yum! Gitcoin is built using Gitcoin.
-                Got something you want to see in the world? Let the community know
-                <a href="/slack">on slack</a>
-                or <a href="https://github.com/gitcoinco/gitcoinco/issues/new">our github repos</a>
-                .''',
-              "link": "",
-              "active": "false",
-          }
-          ]
-       }, {
-           "title": "Just for Fun",
-           "description": "Some tools that the community built *just because* they should exist.",
-           "tools": [{
-               "name": "Ethwallpaper",
-               "img": static("v2/images/tools/ethwallpaper.png"),
-               "description": '''Repository of
-                        Ethereum wallpapers.''',
-               "link": "https://ethwallpaper.co",
-               "active": "false",
-               'stat_graph': 'google_analytics_sessions_ethwallpaper',
-           }]
-        }]
+        "title": _("Basics"),
+        "description": _("Accelerate your dev workflow with Gitcoin\'s incentivization tools."),
+        "tools": tools.filter(category=Tool.CAT_BASIC)
+    }, {
+        "title": _("Advanced"),
+        "description": _("Take your OSS game to the next level!"),
+        "tools": tools.filter(category=Tool.CAT_ADVANCED)
+    }, {
+        "title": _("Community"),
+        "description": _("Friendship, mentorship, and community are all part of the process."),
+        "tools": tools.filter(category=Tool.CAT_COMMUNITY)
+    }, {
+        "title": _("Tools to BUIDL Gitcoin"),
+        "description": _("Gitcoin is built using Gitcoin.  Purdy cool, huh? "),
+        "tools": tools.filter(category=Tool.CAT_BUILD)
+    }, {
+        "title": _("Tools in Alpha"),
+        "description": _("These fresh new tools are looking for someone to test ride them!"),
+        "tools": tools.filter(category=Tool.CAT_ALPHA)
+    }, {
+        "title": _("Tools Coming Soon"),
+        "description": _("These tools will be ready soon.  They'll get here sooner if you help BUIDL them :)"),
+        "tools": tools.filter(category=Tool.CAT_COMING_SOON)
+    }, {
+        "title": _("Just for Fun"),
+        "description": _("Some tools that the community built *just because* they should exist."),
+        "tools": tools.filter(category=Tool.CAT_FOR_FUN)
+    }]
+
+    # setup slug
+    for key in range(0, len(actors)):
+        actors[key]['slug'] = slugify(actors[key]['title'])
+
+    profile_up_votes_tool_ids = ''
+    profile_down_votes_tool_ids = ''
+    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+
+    if profile_id:
+        ups = list(request.user.profile.votes.filter(value=1).values_list('tool', flat=True))
+        profile_up_votes_tool_ids = ','.join(str(x) for x in ups)
+        downs = list(request.user.profile.votes.filter(value=-1).values_list('tool', flat=True))
+        profile_down_votes_tool_ids = ','.join(str(x) for x in downs)
 
     context = {
         "active": "tools",
-        'title': "Toolbox",
-        'card_title': "Gitcoin Toolbox",
+        'title': _("Toolbox"),
+        'card_title': _("Gitcoin Toolbox"),
         'avatar_url': static('v2/images/tools/api.jpg'),
-        "card_desc": "Accelerate your dev workflow with Gitcoin\'s incentivization tools.",
+        "card_desc": _("Accelerate your dev workflow with Gitcoin\'s incentivization tools."),
         'actors': actors,
-        'newsletter_headline': "Don't Miss New Tools!"
+        'newsletter_headline': _("Don't Miss New Tools!"),
+        'profile_up_votes_tool_ids': profile_up_votes_tool_ids,
+        'profile_down_votes_tool_ids': profile_down_votes_tool_ids
     }
     return TemplateResponse(request, 'toolbox.html', context)
+
+
+@csrf_exempt
+@require_POST
+def vote_tool_up(request, tool_id):
+    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    if not profile_id:
+        return JsonResponse(
+            {'error': 'You must be authenticated via github to use this feature!'},
+            status=401)
+
+    tool = Tool.objects.get(pk=tool_id)
+    score_delta = 0
+    try:
+        vote = ToolVote.objects.get(profile_id=profile_id, tool=tool)
+        if vote.value == 1:
+            vote.delete()
+            score_delta = -1
+        if vote.value == -1:
+            vote.value = 1
+            vote.save()
+            score_delta = 2
+    except ToolVote.DoesNotExist:
+        vote = ToolVote.objects.create(profile_id=profile_id, value=1)
+        tool.votes.add(vote)
+        score_delta = 1
+    return JsonResponse({'success': True, 'score_delta': score_delta})
+
+
+@csrf_exempt
+@require_POST
+def vote_tool_down(request, tool_id):
+    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    if not profile_id:
+        return JsonResponse(
+            {'error': 'You must be authenticated via github to use this feature!'},
+            status=401)
+
+    tool = Tool.objects.get(pk=tool_id)
+    score_delta = 0
+    try:
+        vote = ToolVote.objects.get(profile_id=profile_id, tool=tool)
+        if vote.value == -1:
+            vote.delete()
+            score_delta = 1
+        if vote.value == 1:
+            vote.value = -1
+            vote.save()
+            score_delta = -2
+    except ToolVote.DoesNotExist:
+        vote = ToolVote.objects.create(profile_id=profile_id, value=-1)
+        tool.votes.add(vote)
+        score_delta = -1
+    return JsonResponse({'success': True, 'score_delta': score_delta})
 
 
 @csrf_exempt
@@ -966,7 +1084,7 @@ def redeem_coin(request, shortcode):
                 message = transaction_id
         except CoinRedemption.DoesNotExist:
             status = 'error'
-            message = 'Bad request'
+            message = _('Bad request')
         except Exception as e:
             status = 'error'
             message = str(e)
@@ -984,15 +1102,15 @@ def redeem_coin(request, shortcode):
 
         params = {
             'class': 'redeem',
-            'title': 'Coin Redemption',
-            'coin_status': 'PENDING'
+            'title': _('Coin Redemption'),
+            'coin_status': _('PENDING')
         }
 
         try:
             coin_redeem_request = CoinRedemptionRequest.objects.get(coin_redemption=coin)
             params['colo_txid'] = coin_redeem_request.txid
         except CoinRedemptionRequest.DoesNotExist:
-            params['coin_status'] = 'INITIAL'
+            params['coin_status'] = _('INITIAL')
 
         return TemplateResponse(request, 'yge/redeem_coin.html', params)
     except CoinRedemption.DoesNotExist:

@@ -28,8 +28,11 @@ from django.core.validators import validate_email
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.utils import translation
+from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
 
-from marketing.mails import send_mail
+from marketing.mails import send_mail, setup_lang
 from marketing.utils import invite_to_slack
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from ratelimit.decorators import ratelimit
@@ -50,15 +53,15 @@ def whitepaper_new(request, ratelimited=False):
 
     context = {
         'active': 'whitepaper',
-        'title': 'Whitepaper',
-        'minihero': 'Whitepaper',
+        'title': _('Whitepaper'),
+        'minihero': _('Whitepaper'),
         'suppress_logo': True,
     }
     if not request.POST.get('submit', False):
         return TemplateResponse(request, 'whitepaper_new.html', context)
 
     if ratelimited:
-        context['msg'] = "You're ratelimited. Please contact founders@gitcoin.co"
+        context['msg'] = _("You're ratelimited. Please contact founders@gitcoin.co")
         return TemplateResponse(request, 'whitepaper_accesscode.html', context)
 
     context['role'] = request.POST.getlist('role')
@@ -66,7 +69,7 @@ def whitepaper_new(request, ratelimited=False):
     context['comments'] = request.POST.get('comments')
     context['success'] = True
     ip = get_ip(request)
-    body = """
+    body = gettext("""
 Email: {} \n
 Role: {}\n
 Comments: {}\n
@@ -74,8 +77,8 @@ IP: {}\n
 
 https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/
 
-    """.format(context['email'], context['role'], context['comments'], ip)
-    send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, "New Whitepaper Request", str(body))
+    """).format(context['email'], context['role'], context['comments'], ip)
+    send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, _("New Whitepaper Request"), str(body))
 
     WhitepaperAccessRequest.objects.create(
         email=context['email'],
@@ -96,11 +99,11 @@ https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/
         valid_email = False
 
     if not request.POST.get('email', False) or not valid_email:
-        context['msg'] = "Invalid Email. Please contact founders@gitcoin.co"
+        context['msg'] = _("Invalid Email. Please contact founders@gitcoin.co")
         context['success'] = False
         return TemplateResponse(request, 'whitepaper_new.html', context)
 
-    context['msg'] = "Your request has been sent.  <a href=/slack>Meantime, why don't you check out the slack channel?</a>"
+    context['msg'] = _("Your request has been sent.  <a href=/slack>Meantime, why don't you check out the slack channel?</a>")
     return TemplateResponse(request, 'whitepaper_new.html', context)
 
 
@@ -109,15 +112,15 @@ def whitepaper_access(request, ratelimited=False):
 
     context = {
         'active': 'whitepaper',
-        'title': 'Whitepaper',
-        'minihero': 'Whitepaper',
+        'title': _('Whitepaper'),
+        'minihero': _('Whitepaper'),
         'suppress_logo': True,
         }
     if not request.POST.get('submit', False):
         return TemplateResponse(request, 'whitepaper_accesscode.html', context)
 
     if ratelimited:
-        context['msg'] = "You're ratelimited. Please contact founders@gitcoin.co"
+        context['msg'] = _("You're ratelimited. Please contact founders@gitcoin.co")
         return TemplateResponse(request, 'whitepaper_accesscode.html', context)
 
     context['accesskey'] = request.POST.get('accesskey')
@@ -125,12 +128,12 @@ def whitepaper_access(request, ratelimited=False):
     access_codes = AccessCodes.objects.filter(invitecode=request.POST.get('accesskey'))
     valid_access_code = access_codes.exists()
     if not valid_access_code:
-        context['msg'] = "Invalid Access Code. Please contact founders@gitcoin.co"
+        context['msg'] = _("Invalid Access Code. Please contact founders@gitcoin.co")
         return TemplateResponse(request, 'whitepaper_accesscode.html', context)
 
     ac = access_codes.first()
     if ac.uses >= ac.maxuses:
-        context['msg'] = "You have exceeded your maximum number of uses for this access code. Please contact founders@gitcoin.co"
+        context['msg'] = _("You have exceeded your maximum number of uses for this access code. Please contact founders@gitcoin.co")
         return TemplateResponse(request, 'whitepaper_accesscode.html', context)
 
     valid_email = True
@@ -140,7 +143,7 @@ def whitepaper_access(request, ratelimited=False):
         valid_email = False
 
     if not request.POST.get('email', False) or not valid_email:
-        context['msg'] = "Invalid Email. Please contact founders@gitcoin.co"
+        context['msg'] = _("Invalid Email. Please contact founders@gitcoin.co")
         return TemplateResponse(request, 'whitepaper_accesscode.html', context)
 
     ip = get_ip(request)
@@ -151,7 +154,7 @@ def whitepaper_access(request, ratelimited=False):
         ip=ip,
     )
 
-    send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, "New Whitepaper Generated", str(wa))
+    send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, _("New Whitepaper Generated"), str(wa))
 
     # bottom watermark
     packet1 = BytesIO()
@@ -162,7 +165,7 @@ def whitepaper_access(request, ratelimited=False):
     can.setFontSize(8)
     lim = 30
     email__etc = wa.email if len(wa.email) < lim else wa.email[0:lim] + "..."
-    msg = "Generated for access code {} by email {} at {} via ip: {}. https://gitcoin.co/whitepaper".format(wa.invitecode, email__etc, wa.created_on.strftime("%Y-%m-%d %H:%M"), wa.ip)
+    msg = gettext("Generated for access code {} by email {} at {} via ip: {}. https://gitcoin.co/whitepaper").format(wa.invitecode, email__etc, wa.created_on.strftime("%Y-%m-%d %H:%M"), wa.ip)
     charlength = 3.5
     width = len(msg) * charlength
     left = (600 - width)/2
@@ -239,10 +242,15 @@ def process_accesscode_request(request, pk):
 
         from_email = settings.PERSONAL_CONTACT_EMAIL
         to_email = obj.email
-        subject = request.POST.get('subject')
-        body = request.POST.get('body').replace('[code]', invitecode)
-        send_mail(from_email, to_email, subject, body, from_name="Kevin from Gitcoin.co")
-        messages.success(request, 'Invite sent')
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            subject = request.POST.get('subject')
+            body = request.POST.get('body').replace('[code]', invitecode)
+            send_mail(from_email, to_email, subject, body, from_name=_("Kevin from Gitcoin.co"))
+            messages.success(request, _('Invite sent'))
+        finally:
+            translation.activate(cur_language)
 
         return redirect('/_administration/tdi/whitepaperaccessrequest/?processed=False')
 

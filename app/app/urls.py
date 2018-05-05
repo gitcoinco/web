@@ -18,14 +18,19 @@
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
+from django.views.i18n import JavaScriptCatalog
 
 import credits.views
 import dashboard.embed
 import dashboard.helpers
 import dashboard.ios
 import dashboard.views
+import dataviz.d3_views
+import dataviz.views
+import external_bounties.views
 import faucet.views
 import gitcoinbot.views
 import linkshortener.views
@@ -34,46 +39,67 @@ import marketing.webhookviews
 import retail.emails
 import retail.views
 import tdi.views
-from dashboard.router import router
+from dashboard.router import router as dbrouter
+from external_bounties.router import router as ebrouter
 
 from .sitemaps import sitemaps
 
 urlpatterns = [
+
+    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
-    url(r'^api/v0.1/', include(router.urls)),
-    url(r'^actions/api/v0.1/', include(router.urls)),  # same as active, but not cached in cluodfront
+    url(r'^api/v0.1/', include(dbrouter.urls)),
+    url(r'^api/v0.1/', include(ebrouter.urls)),
+    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cluodfront
 
     # dashboard views
 
-    # Dummy External Bounties index
-    # url(r'^external_bounties/?', dashboard.views.external_bounties, name='external_bounties'),
-    # url(r'^external_bounty/?', dashboard.views.external_bounties_show, name="external_bounties_show"),
+    # Dummy offchain index
+    url(r'^offchain/new/?', external_bounties.views.external_bounties_new, name="offchain_new"),
+    url(r'^offchain/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='offchain'),
+    url(r'^offchain/?', external_bounties.views.external_bounties_index, name="offchain_index"),
+    url(r'^universe/new/?', external_bounties.views.external_bounties_new, name="universe_new"),
+    url(r'^universe/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='universe'),
+    url(r'^universe/?', external_bounties.views.external_bounties_index, name="universe_index"),
 
+    re_path(r'^onboard/?', dashboard.views.onboard, name='onboard'),
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
+
+    # action URLs
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
+    re_path(r'^issue/fulfill/(?P<pk>.*)?', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
+    re_path(r'^issue/accept/(?P<pk>.*)?', dashboard.views.accept_bounty, name='process_funding'),
+    re_path(r'^issue/increase/(?P<pk>.*)?', dashboard.views.increase_bounty, name='increase_bounty'),
+    re_path(r'^issue/cancel/(?P<pk>.*)?', dashboard.views.cancel_bounty, name='kill_bounty'),
 
-    url(r'^bounty/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
-    url(r'^funding/fulfill/?', dashboard.views.fulfill_bounty, name='fulfill_funding'),
-    url(r'^bounty/process/?', dashboard.views.process_bounty, name='process_bounty'),
-    url(r'^funding/process/?', dashboard.views.process_bounty, name='process_funding'),
+    # Interests
+    path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
+    path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
+    path('actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/', dashboard.views.uninterested, name='uninterested'),
+
+    # View Bounty
     url(r'^bounty/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='bounty_details_new'),
     url(r'^funding/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='funding_details_new'),
+    url(r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)/(?P<stdbounties_id>.*)', dashboard.views.bounty_details, name='issue_details_new3'),
     url(r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='issue_details_new2'),
     url(r'^bounty/details/?', dashboard.views.bounty_details, name='bounty_details'),
     url(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
-    url(r'^legacy/funding/details/?', dashboard.views.bounty_details, name='legacy_funding_details'),
-    url(r'^funding/kill/?', dashboard.views.kill_bounty, name='kill_bounty'),
+
+    # Tips
     url(r'^tip/receive/?', dashboard.views.receive_tip, name='receive_tip'),
     url(r'^tip/send/2/?', dashboard.views.send_tip_2, name='send_tip_2'),
     url(r'^tip/send/?', dashboard.views.send_tip, name='send_tip'),
     url(r'^send/?', dashboard.views.send_tip, name='tip'),
     url(r'^tip/?', dashboard.views.send_tip, name='tip'),
+
+    # Legal
     url(r'^legal/?', dashboard.views.terms, name='legal'),
     url(r'^terms/?', dashboard.views.terms, name='_terms'),
     url(r'^legal/terms/?', dashboard.views.terms, name='terms'),
@@ -81,20 +107,27 @@ urlpatterns = [
     url(r'^legal/cookie/?', dashboard.views.cookie, name='cookie'),
     url(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
-    url(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
-    url(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
-    url(r'^stats/(.*)/?', dashboard.embed.stat, name='stat'),
+
+    # Alpha functionality
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
     url(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),
+    path('actions/tool/<int:tool_id>/voteUp', dashboard.views.vote_tool_up, name='vote_tool_up'),
+    path('actions/tool/<int:tool_id>/voteDown', dashboard.views.vote_tool_down, name='vote_tool_down'),
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
     url(r'^gas/?', dashboard.views.gas, name='gas'),
     url(r'^coin/redeem/(.*)/?', dashboard.views.redeem_coin, name='redeem'),
+
+    # images
+    re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
+    re_path(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
+    re_path(r'^static/avatar/(.*)/(.*)?', dashboard.embed.avatar, name='org_avatar'),
 
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
     url(r'^sync/get_amount?', dashboard.helpers.amount, name='helpers_amount'),
     url(r'^sync/get_issue_details?', dashboard.helpers.issue_details, name='helpers_issue_details'),
     url(r'^sync/search_save?', dashboard.views.save_search, name='save_search'),
+
     # brochureware views
     url(r'^about/?', retail.views.about, name='about'),
     url(r'^mission/?', retail.views.mission, name='mission'),
@@ -106,10 +139,11 @@ urlpatterns = [
     url(r'^help/portal?', retail.views.portal, name='portal'),
     url(r'^help/pilot?', retail.views.help_pilot, name='help_pilot'),
     url(r'^help/?', retail.views.help, name='help'),
-    url(r'^onboard/?', retail.views.onboard, name='onboard'),
+    url(r'^docs/onboard/?', retail.views.onboard, name='onboard_doc'),
     url(r'^extension/chrome?', retail.views.browser_extension_chrome, name='browser_extension_chrome'),
     url(r'^extension/firefox?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
+
     # basic redirect retail views
     url(r'^press/?', retail.views.presskit, name='press'),
     url(r'^presskit/?', retail.views.presskit, name='presskit'),
@@ -124,6 +158,7 @@ urlpatterns = [
     url(r'^schwag/?', retail.views.schwag, name='schwag'),
     url(r'^btctalk/?', retail.views.btctalk, name='btctalk'),
     url(r'^reddit/?', retail.views.reddit, name='reddit'),
+    url(r'^livestream/?', retail.views.livestream, name='livestream'),
     url(r'^feedback/?', retail.views.feedback, name='feedback'),
     url(r'^twitter/?', retail.views.twitter, name='twitter'),
     url(r'^gitter/?', retail.views.gitter, name='gitter'),
@@ -164,35 +199,61 @@ urlpatterns = [
     url(r'^_administration/process_accesscode_request/(.*)$', tdi.views.process_accesscode_request, name='process_accesscode_request'),
     url(r'^_administration/process_faucet_request/(.*)$', faucet.views.process_faucet_request, name='process_faucet_request'),
 
+    # settings
+    re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
+    re_path(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),
+    re_path(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
+    re_path(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
+    re_path(r'^settings/slack/?', marketing.views.slack_settings, name='slack_settings'),
+    re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
+
     # marketing views
-    url(r'^email/settings/(.*)', marketing.views.email_settings, name='email_settings'),
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
     url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),
-    url(r'^_administration/stats$', marketing.views.stats, name='stats'),
+
+    # dataviz views
+    re_path(r'^_administration/stats/$', dataviz.views.stats, name='stats'),
+    re_path(r'^_administration/cohort/$', dataviz.views.cohort, name='cohort'),
+    re_path(r'^_administration/funnel/$', dataviz.views.funnel, name='funnel'),
+    re_path(r'^_administration/viz/?$', dataviz.d3_views.viz_index, name='viz_index'),
+    re_path(r'^_administration/viz/sunburst/(.*)?$', dataviz.d3_views.viz_sunburst, name='viz_sunburst'),
+    re_path(r'^_administration/viz/chord/(.*)?$', dataviz.d3_views.viz_chord, name='viz_chord'),
+    re_path(r'^_administration/viz/steamgraph/(.*)?$', dataviz.d3_views.viz_steamgraph, name='viz_steamgraph'),
+    re_path(r'^_administration/viz/circles/(.*)?$', dataviz.d3_views.viz_circles, name='viz_circles'),
+    re_path(r'^_administration/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
+    re_path(r'^_administration/viz/sankey/(.*)?$', dataviz.d3_views.viz_sankey, name='viz_sankey'),
+    re_path(r'^_administration/viz/spiral/(.*)?$', dataviz.d3_views.viz_spiral, name='viz_spiral'),
+    re_path(r'^_administration/viz/heatmap/(.*)?$', dataviz.d3_views.viz_heatmap, name='viz_heatmap'),
+    re_path(r'^_administration/viz/calendar/(.*)?$', dataviz.d3_views.viz_calendar, name='viz_calendar'),
+    re_path(r'^_administration/viz/draggable/(.*)?$', dataviz.d3_views.viz_draggable, name='viz_draggable'),
+    re_path(r'^_administration/viz/scatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot, name='viz_scatterplot'),
+
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-
-    # Github Integration
-    path('_github/', include('github.urls', namespace='github')),
 
     # Jobs dashboard
     path(r'jobs/', include('jobs.urls', namespace='jobs'), name='jobs'),
 
     # Interests
+    path('interest/modal', dashboard.views.get_interest_modal, name='get_interest_modal'),
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
     path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
-    path('actions/bounty/<int:bounty_id>/interest/', dashboard.views.interested_profiles, name='interested-profiles'),
+    path('actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/', dashboard.views.uninterested, name='uninterested'),
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
-
+    re_path(r'^logout/$', auth_views.logout, name='logout'),
+    re_path(r'^gh-login/$', dashboard.views.gh_login, name='gh_login'),
+    path('', include('social_django.urls', namespace='social')),
     # webhook routes
     # sendgrid webhook processing
     path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
-
 ]
+
+if settings.ENABLE_SILK:
+    urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
 
 handler403 = 'retail.views.handler403'
 handler404 = 'retail.views.handler404'

@@ -1,6 +1,6 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,31 +16,33 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load humanize %} 
+{% load i18n humanize %}
 
 {% block content %}
 
-<h1>🔥 New Funded Issue Alert 🔥</h1>
+<h1>{{bounties | length}} {% trans "New Funded Issue" %}{% if bounties|length != 1 %}s{%endif%}</h1>
+<h3>Matching your profile</h3>
 
-
-<p>
-    We just matched you with a new funded issue submitted to the Gitcoin.co Issue Explorer:
-</p>
-
-<br>
-
-{% include 'emails/bounty.html' with bounty=bounty %}
-
-<p>
-    You are receiving this email because your email preferences matched with this bounty's keywords: {{bounty.keywords}}.  <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">Manage Email Settings</a>.
-</p>
-
-<p>
-    Keep Pushing Open Source Forward,
+{% for bounty in bounties %}
     <br>
-    -- Gitcoin Core
+    {% include 'emails/bounty.html' with bounty=bounty %}
+{% endfor %}
+
+{% if old_bounties %}
+
+<h1>{{old_bounties | length}} {% trans "Other Open Funded Issue" %}{% if old_bounties|length != 1 %}s{%endif%}</h1>
+<h3>Matching your profile</h3>
+    {% for bounty in old_bounties %}
+        <br>
+        {% include 'emails/bounty.html' with bounty=bounty %}
+    {% endfor %}
+
+{% endif %}
+
+<p>
+    {% if keywords %}
+    {% trans "You are receiving this email because your email preferences matched with these keywords:" %} {{keywords}}.  <a href="https://gitcoin.co/settings/email/{{subscriber.priv}}">{% trans "Manage Email Settings" %}</a>.
+    {% endif %}
 </p>
-
-
 
 {% endblock %}

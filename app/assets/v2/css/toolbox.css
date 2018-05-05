@@ -1,7 +1,7 @@
 .body {
   padding: 60px 100px !important;
   background-color: #fefefe !important;
-  font-family: "OpenSans";
+  font-family: 'Muli', sans-serif;
 }
 
 .description {
@@ -9,10 +9,11 @@
   font-size: 0.9em;
 }
 
-.title, .sub-title {
-  font-family: "OpenSans Bold";
+.title,
+.sub-title {
+  font-family: 'Muli', sans-serif;
+  font-weight: 600;
   text-transform: none;
-  font-weight: bolder;
   letter-spacing: 0;
 }
 
@@ -25,7 +26,68 @@
   font-size: 1.4em;
 }
 
+#Faucet img {
+  margin-top: 40px;
+}
+
+#toc {
+  position: fixed;
+  top: 150px;
+  left: 50px;
+  padding-right: 15px;
+  border-right: 2px #3E00FF solid;
+}
+
+#toc p {
+  margin-bottom: 1rem;
+  color: #666666;
+}
+
+#toc li,
+#toc a {
+  color: #B7B7B7;
+  font-size: 15px;
+}
+
+#toc a.active {
+  color: black;
+}
+
+#toc ol {
+  list-style: none;
+  counter-reset: listNumbering;
+  padding-left: 10px;
+}
+
+#toc li {
+  counter-increment: listNumbering;
+}
+
+#toc li::before {
+  content: counter(listNumbering);
+  font-size: 15px;
+  margin-right: 4px;
+}
+
+@media (max-width: 1100px) {
+  #toc {
+    left: 10px;
+  }
+}
+
 @media (max-width: 991px) {
+  #toc {
+    background-color: #FFFFFF;
+    position: initial;
+    border-top: 0px;
+    border-left: 0px;
+    padding: 10px 5px;
+  }
+
+  #toc a.active {
+    color: #8e8e8e;
+  }
+
   .body {
     padding-left: 60px !important;
     padding-right: 60px !important;
@@ -38,9 +100,30 @@
     padding-right: 30px !important;
   }
 }
-.card.new{
+
+.card.new {
   background-color: #f2f2f2;
 }
-.card.new a.btn{
+
+.card.new a.btn {
   display: none;
+}
+
+.votes .vote-up.active {
+  background-color: #26cd7f;
+}
+
+.votes .vote-down.active {
+  background-color: #f6136e;
+}
+
+.votes button {
+  border: none;
+  cursor: pointer;
+}
+.votes button:hover {
+  color: #aaa;
+}
+.votes button.active:hover {
+  color: white;
 }

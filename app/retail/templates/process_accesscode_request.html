@@ -1,6 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -28,25 +28,25 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block content %}
-    
-<h1>Process {{obj}}</h1>
+
+<h1>{% trans "Process" %} {{obj}}</h1>
 <form method=POST>
     {% csrf_token %}
 <input type="text" name="subject" value="RE: Gitcoin Whitepaper Request for {{obj.email}}" style="width: 500px;">
 <textarea name="body" style="width: 500px; height: 300px;">
-> New Whitepaper Request:
+{% blocktrans %}> New Whitepaper Request:
 > {{obj}}
 
 Hey there,
 
 I'm glad to have you interested in the Gitcoin whitepaper. Where'd you hear about the project?
 
-Here's an access code for you: [code] 
+Here's an access code for you: [code]
 You can redeeem it at https://gitcoin.co/whitepaper/accesscode
 
 I'd love to hear your feedback after you read it. You can email me back directly here or join the slack team at https://gitcoin.co/slack (I'm @owocki there).
 
-Best, 
+Best,
 
 Kevin from
 https://gitcoin.co
@@ -54,6 +54,7 @@ https://gitcoin.co
 https://www.linkedin.com/in/owocki/
 
 https://twitter.com/owocki/
+{% endblocktrans %}
 
 </textarea>
 <br>

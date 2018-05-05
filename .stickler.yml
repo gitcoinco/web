@@ -1,0 +1,22 @@
+---
+linters:
+  flake8:
+    python: 3
+    max-line-length: 120
+    max-complexity: 15
+  eslint:
+    config: './.eslintrc'
+  shellcheck:
+    shell: bash
+    exclude: 'SC1008'
+  yamllint:
+files:
+  ignore:
+    - '.git'
+    - '.github'
+    - 'docs'
+    - 'node_modules/*'
+    - 'requirements'
+    - '**/migrations/*.py'
+fixers:
+  enable: false
