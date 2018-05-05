@@ -175,6 +175,10 @@ urlpatterns = [
 
     # Github Integration
     path('_github/', include('github.urls', namespace='github')),
+
+    # Jobs dashboard
+    path(r'jobs/', include('jobs.urls', namespace='jobs'), name='jobs'),
+
     # Interests
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
     path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
