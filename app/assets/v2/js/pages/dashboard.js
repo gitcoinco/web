@@ -237,7 +237,7 @@ var get_search_URI = function() {
         }
 
         if (_value !== 'any')
-          uri += '&' + _key + '=' + _value;
+          uri += _key + '=' + _value + '&';
       });
 
       // TODO: Check if value myself is needed for coinbase
@@ -257,8 +257,11 @@ var get_search_URI = function() {
   }
 
   if (localStorage['keywords']) {
-    localStorage['keywords'].split(',').forEach(function(v, k) {
-      keywords += v + ', ';
+    localStorage['keywords'].split(',').forEach(function(v, pos, arr) {
+      keywords += v;
+      if (arr.length < pos + 1) {
+        keywords += ',';
+      }
     });
   }
 
