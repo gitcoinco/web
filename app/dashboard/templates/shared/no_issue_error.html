@@ -1,5 +1,5 @@
 {% comment %}
-  Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2017 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
@@ -13,25 +13,20 @@
 
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 {% endcomment %}
-{% load i18n static %}
-<div id="unlock_metamask_error" class="submit-notification metamask-error container-fluid" style="display: none;">
+{% load static %}
+<div id="no_issue_error" class="submit-notification metamask-error container-fluid">
   <div class="row align-items-center px-4 pt-2 text-center text-lg-left">
     <div class="col-lg-10 col-sm-12">
-      <h3>{% trans "You're almost there!" %}</h3>
+      <h3>Get Started Funding You First Issue</h3>
       <p>
-        {% trans "In order to continue, you'll need to unlock metamask." %}
-      </p>
-      <p>
-        {% trans "Please unlock Metamask and refresh the page." %}
-        <br>
-        - {% trans "or" %} -
-        <br>
-        <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Can't get web3 to work?  Get help here." %}</a>
+          Before you begin, create an issue on Github so that we can reference the details of the issue.
+          <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/gitcoinco/issues/4">Can't get web3 to work?  Get help here.</a>
       </p>
     </div>
     <div class="col-lg-2 col-sm-12">
-      <img src="{% static "v2/images/metamask.svg" %}">
+      <img src="{% static "v2/images/Lightbulb.svg" %}">
     </div>
   </div>
 </div>
