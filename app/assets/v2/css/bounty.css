@@ -302,9 +302,9 @@ a.btn {
 
 #btn-white img {
   position: absolute;
-  width: 20px;
-  top: 5px;
-  right: 8px;
+  width: 1.313rem;
+  top: 0.4375rem;
+  right: 0.4375rem;
 }
 
 .comment {
@@ -316,10 +316,11 @@ a.btn {
 #btn-white .github-comment {
   color: #FFFFFF;
   position: absolute;
-  font-size: 10px;
+  font-size: 0.625rem;
   text-align: center;
-  width: 20px;
-  right: 8px;
+  width: 1.25rem;
+  top: 0.4375rem;
+  right: 0.5rem;
 }
 
 .activity {
