@@ -32,7 +32,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils import timezone, translation
-from django.utils.translation import LANGUAGE_SESSION_KEY
+from django.utils.translation import LANGUAGE_SESSION_KEY, gettext
 from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
@@ -44,6 +44,7 @@ from marketing.models import (
 )
 from marketing.utils import get_or_save_email_subscriber
 from retail.helpers import get_ip
+from slackclient import SlackClient
 
 
 def get_settings_navs():
@@ -289,8 +290,29 @@ def slack_settings(request):
         return login_redirect
 
     msg = ''
+    need_save = False
 
-    if request.POST and request.POST.get('submit'):
+    if request.POST and request.POST.get('test'):
+        token = request.POST.get('token', '')
+        channel = request.POST.get('channel', '')
+        test_msg = gettext('Slack integration is working fine.')
+        try:
+            sc = SlackClient(token)
+            result = sc.api_call("chat.postMessage", channel=channel, text=test_msg)
+            if result.get('error') == 'invalid_auth':
+                msg = _('Invalid slack token.')
+            elif result.get('error') == 'channel_not_found':
+                msg = _('Slack channel not found.')
+            elif 'error' in result:
+                msg = result['error']
+            elif result.get('ok'):
+                msg = _('You should have received notification in slack.')
+                need_save = True
+        except Exception as e:
+            print(e)
+            msg = _('Unknown error occured.')
+
+    if request.POST and request.POST.get('submit') or need_save:
         token = request.POST.get('token', '')
         repos = request.POST.get('repos').split(',')
         channel = request.POST.get('channel', '')
@@ -305,7 +327,8 @@ def slack_settings(request):
             es.metadata['ip'].append(ip)
         es.save()
         profile.save()
-        msg = _('Updated your preferences.')
+        if not msg:
+            msg = _('Updated your preferences.')
 
     context = {
         'repos': ",".join(profile.slack_repos),
