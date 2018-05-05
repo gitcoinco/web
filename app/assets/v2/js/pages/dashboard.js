@@ -54,11 +54,11 @@ var save_sidebar_latest = function() {
     var key = sidebar_keys[i];
 
     if (key !== 'tech_stack') {
-      localStorage[key] = $('input[name=' + key + ']:checked').val();
+      localStorage[key] = $('input[name="' + key + '"]:checked').val();
     } else {
       localStorage[key] = '';
 
-      $('input[name=' + key + ']:checked').each(function() {
+      $('input[name="' + key + '"]:checked').each(function() {
         localStorage[key] += $(this).val() + ',';
       });
 
@@ -100,10 +100,10 @@ var set_sidebar_defaults = function() {
 
     if (localStorage[key]) {
       if (key !== 'tech_stack') {
-        $('input[name=' + key + '][value=' + localStorage[key] + ']').prop('checked', true);
+        $('input[name="' + key + '"][value="' + localStorage[key] + '"]').prop('checked', true);
       } else {
         localStorage[key].split(',').forEach(function(v, k) {
-          $('input[name=' + key + '][value=' + v + ']').prop('checked', true);
+          $('input[name="' + key + '"][value="' + v + '"]').prop('checked', true);
         });
       }
     }
@@ -121,16 +121,16 @@ var toggleAny = function(event) {
   if (!event)
     return;
   var key = event.target.name;
-  var anyOption = $('input[name=' + key + '][value=any]');
+  var anyOption = $('input[name="' + key + '"][value=any]');
 
   // Selects option 'any' when no filter is applied
-  if ($('input[name=' + key + ']:checked').length === 0) {
+  if ($('input[name="' + key + '"]:checked').length === 0) {
     anyOption.prop('checked', true);
     return;
   }
   if (event.target.value === 'any') {
     // Deselect other filters when 'any' is selected
-    $('input[name=' + key + '][value!=any]').prop('checked', false);
+    $('input[name="' + key + '"][value!=any]').prop('checked', false);
   } else {
     // Deselect option 'any' when another filter is selected
     anyOption.prop('checked', false);
@@ -169,7 +169,7 @@ var getFilters = function() {
   for (var i = 0; i < sidebar_keys.length; i++) {
     var key = sidebar_keys[i];
 
-    $.each($('input[name=' + key + ']:checked'), function() {
+    $.each($('input[name="' + key + '"]:checked'), function() {
       if ($(this).attr('val-ui')) {
         _filters.push('<a class="filter-tag ' + key + '"><span>' + $(this).attr('val-ui') + '</span>' +
           '<i class="fa fa-times" onclick="removeFilter(\'' + key + '\', \'' + $(this).attr('value') + '\')"></i></a>');
@@ -189,7 +189,7 @@ var getFilters = function() {
 
 var removeFilter = function(key, value) {
   if (key !== 'keywords') {
-    $('input[name=' + key + '][value=' + value + ']').prop('checked', false);
+    $('input[name="' + key + '"][value="' + value + '"]').prop('checked', false);
   } else {
     localStorage['keywords'] = localStorage['keywords'].replace(value, '').replace(',,', ',');
 
@@ -208,7 +208,7 @@ var get_search_URI = function() {
     var key = sidebar_keys[i];
     var filters = [];
 
-    $.each ($('input[name=' + key + ']:checked'), function() {
+    $.each ($('input[name="' + key + '"]:checked'), function() {
       if (key === 'tech_stack' && $(this).val()) {
         keywords += $(this).val() + ', ';
       } else if ($(this).val()) {
@@ -528,13 +528,13 @@ function getURLParams(k) {
 var resetFilters = function() {
   for (var i = 0; i < sidebar_keys.length; i++) {
     var key = sidebar_keys[i];
-    var tag = ($('input[name=' + key + '][value]'));
+    var tag = ($('input[name="' + key + '"][value]'));
 
     for (var j = 0; j < tag.length; j++) {
       if (tag[j].value == 'any')
-        $('input[name=' + key + '][value=any]').prop('checked', true);
+        $('input[name="' + key + '"][value="any"]').prop('checked', true);
       else
-        $('input[name=' + key + '][value=' + tag[j].value + ']').prop('checked', false);
+        $('input[name="' + key + '"][value="' + tag[j].value + '"]').prop('checked', false);
     }
   }
 };
@@ -654,13 +654,13 @@ $(document).ready(function() {
 
     for (var i = 0; i < sidebar_keys.length; i++) {
       var key = sidebar_keys[i];
-      var tag = ($('input[name=' + key + '][value]'));
+      var tag = ($('input[name="' + key + '"][value]'));
 
       for (var j = 0; j < tag.length; j++) {
         if (tag[j].value === 'any')
-          $('input[name=' + key + '][value=any]').prop('checked', true);
+          $('input[name="' + key + '"][value=any]').prop('checked', true);
         else
-          $('input[name=' + key + '][value=' + tag[j].value + ']').prop('checked', false);
+          $('input[name="' + key + '"][value="' + tag[j].value + '"]').prop('checked', false);
       }
     }
 
