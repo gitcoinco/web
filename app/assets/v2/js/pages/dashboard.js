@@ -210,7 +210,7 @@ var get_search_URI = function() {
 
     $.each ($('input[name=' + key + ']:checked'), function() {
       if (key === 'tech_stack' && $(this).val()) {
-        keywords += $(this).val() + ', ';
+        keywords += $(this).val() + ',';
       } else if ($(this).val()) {
         filters.push($(this).val());
       }
@@ -236,7 +236,7 @@ var get_search_URI = function() {
         }
 
         if (_value !== 'any')
-          uri += '&' + _key + '=' + _value;
+          uri += _key + '=' + _value + '&';
       });
 
       // TODO: Check if value myself is needed for coinbase
@@ -249,13 +249,16 @@ var get_search_URI = function() {
     if (val !== 'any' &&
         key !== 'bounty_filter' &&
         key !== 'bounty_owner_address') {
-      uri += '&' + key + '=' + val;
+      uri += key + '=' + val + '&';
     }
   }
 
   if (localStorage['keywords']) {
-    localStorage['keywords'].split(',').forEach(function(v, k) {
-      keywords += v + ', ';
+    localStorage['keywords'].split(',').forEach(function(v, pos, arr) {
+      keywords += v;
+      if (arr.length < pos + 1) {
+        keywords += ',';
+      }
     });
   }
 
