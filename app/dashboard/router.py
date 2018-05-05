@@ -20,9 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from datetime import datetime
 
-import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
 
+from .filters import BountyFilter
 from .models import Bounty, BountyFulfillment, Interest, ProfileSerializer
 
 
@@ -100,84 +100,17 @@ class BountyViewSet(viewsets.ModelViewSet):
 
     queryset = Bounty.objects.prefetch_related(
         'fulfillments', 'interested', 'interested__profile') \
-        .all().order_by('-web3_created')
+        .all()
     serializer_class = BountySerializer
-    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
-
+    filter_class = BountyFilter
+    ordering_fields = ('web3_created', '_val_usd_db',)
+    ordering: '-web3_created'
+    search_fields = ('title', 'issue_description')
     def get_queryset(self):
-        """Get the queryset for Bounty.
-
-        Returns:
-            QuerySet: The Bounty queryset.
-
-        """
         queryset = Bounty.objects.prefetch_related(
             'fulfillments', 'interested', 'interested__profile') \
-            .current().order_by('-web3_created')
-        param_keys = self.request.query_params.keys()
-
-        # filtering
-        for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address',
-                    'idx_status', 'network', 'bounty_owner_github_username', 'standard_bounties_id']:
-            if key in param_keys:
-                # special hack just for looking up bounties posted by a certain person
-                request_key = key if key != 'bounty_owner_address' else 'coinbase'
-                val = self.request.query_params.get(request_key, '')
-
-                vals = val.strip().split(',')
-                _queryset = queryset.none()
-                for val in vals:
-                    if val.strip():
-                        args = {}
-                        args['{}__icontains'.format(key)] = val.strip()
-                        _queryset = _queryset | queryset.filter(**args)
-                queryset = _queryset
-
-        # filter by PK
-        if 'pk__gt' in param_keys:
-            queryset = queryset.filter(pk__gt=self.request.query_params.get('pk__gt'))
-
-        # filter by who is interested
-        if 'started' in param_keys:
-            queryset = queryset.filter(interested__profile__handle__in=[self.request.query_params.get('started')])
-
-        # filter by is open or not
-        if 'is_open' in param_keys:
-            queryset = queryset.filter(is_open=self.request.query_params.get('is_open') == 'True')
-            queryset = queryset.filter(expires_date__gt=datetime.now())
-
-        # filter by urls
-        if 'github_url' in param_keys:
-            urls = self.request.query_params.get('github_url').split(',')
-            queryset = queryset.filter(github_url__in=urls)
-
-        # Retrieve all fullfilled bounties by fulfiller_username
-        if 'fulfiller_github_username' in param_keys:
-            queryset = queryset.filter(
-                fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfiller_github_username')
-            )
-
-        # Retrieve all interested bounties by profile handle
-        if 'interested_github_username' in param_keys:
-            queryset = queryset.filter(
-                interested__profile__handle__iexact=self.request.query_params.get('interested_github_username')
-            )
-
-        # order
-        order_by = self.request.query_params.get('order_by')
-        if order_by:
-            queryset = queryset.order_by(order_by)
-
-        queryset = queryset.distinct()
-
-        # offset / limit
-        limit = self.request.query_params.get('limit', None)
-        offset = self.request.query_params.get('offset', 0)
-        if limit:
-            queryset = queryset[int(offset):int(limit)]
-
+            .current()
         return queryset
-
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
