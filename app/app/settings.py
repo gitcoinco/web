@@ -85,7 +85,7 @@ INSTALLED_APPS = [
     'linkshortener',
     'credits',
     'gitcoinbot',
-    'jobs'
+    'jobs',
     'external_bounties',
     'dataviz',
 ]
