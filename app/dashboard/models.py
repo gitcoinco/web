@@ -889,6 +889,26 @@ def psave_interest(sender, instance, **kwargs):
         bounty.save()
 
 
+class Avatar(models.Model):
+    """Stores the options necessary to render a Gitcoin avatar"""
+
+    head = models.URLField()
+    hat_long = models.URLField()
+    hat_short = models.URLField()
+    hair_long = models.URLField()
+    hair_short = models.URLField()
+    earring = models.URLField()
+    earring_back = models.URLField()
+    clothing = models.URLField()
+    ears = models.URLField()
+    beard = models.URLField()
+    mustache = models.URLField()
+    mouth = models.URLField()
+    nose = models.URLField()
+    eyes = models.URLField()
+    glasses = models.URLField()
+    background = models.CharField(max_length=6)
+
 class Profile(SuperModel):
     """Define the structure of the user profile.
 
@@ -900,6 +920,7 @@ class Profile(SuperModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True)
+    avatar = models.OneToOneField(Avatar, models.SET_NULL, null=True)
     last_sync_date = models.DateTimeField(null=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
