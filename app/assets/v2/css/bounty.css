@@ -398,7 +398,6 @@ a.btn {
 
 .stop-work {
   float: right;
-  margin-right: 10px;
 }
 
 @media (max-width: 575px) {
@@ -459,7 +458,7 @@ a.btn {
 
 @media (min-width: 768px) {
   .activity-time {
-    margin-left: 10px;
+    margin-left: 0.625rem;
   }
 }
 
