@@ -2,7 +2,7 @@ from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 
 import requests
-from dashboard.models import Bounty
+from dashboard.models import Bounty, Profile
 from economy.utils import convert_token_to_usdt
 from github.utils import get_user, org_name
 from PIL import Image, ImageDraw, ImageFont, ImageOps
@@ -399,3 +399,7 @@ def avatar(request, _org_name=None, add_gitcoincologo=None):
     except AttributeError as e:
         print(e)
         return err_response
+
+def set_avatar(request, user='smona'):
+    print(user)
+    return HttpResponse('hello there! %s' % (user))
