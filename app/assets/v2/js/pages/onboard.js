@@ -66,7 +66,7 @@ onboard.watchMetamask = function() {
   }
 };
 
-onboard.getFilters = function() {
+onboard.getFilters = function(savedKeywords) {
   $('.suggested-tag input[type=checkbox]:checked + span svg').attr('data-icon', 'check');
   $('.suggested-tag input[type=checkbox]:not(:checked) + span svg').attr('data-icon', 'plus');
 
@@ -78,6 +78,22 @@ onboard.getFilters = function() {
     search_keywords.split(',').forEach(function(word) {
       _words.push(word);
       _filters.push('<a class=filter-tag><i class="fas fa-check"></i>' + word + '</a>');
+    });
+  }
+
+  if(savedKeywords) {
+    $.each(savedKeywords, function(k, value) {
+      if (keywords.includes(value.toLowerCase())) {
+        $('input[type=checkbox][name=tech-stack][value="' + value.toLowerCase() + '"]').prop('checked', true);
+      } else {
+        if($("#keywords").val() != '') {
+          $("#keywords").val($("#keywords").val() + ',');
+        }
+
+        $("#keywords").val($("#keywords").val() + value.toLowerCase());
+        _words.push(value.toLowerCase());
+        _filters.push('<a class=filter-tag><i class="fas fa-check"></i>' + value.toLowerCase() + '</a>');
+      }
     });
   }
 
@@ -94,6 +110,19 @@ onboard.getFilters = function() {
 
   $('.filter-tags').html(_filters);
   words = [...new Set(_words)];
+  // TODO: Save Preferences
+  // var settings = {
+  //   "url": "/settings/matching",
+  //   "method": "POST",
+  //   "data": {
+  //     "keywords": "JavaScript%2CCoffeeScript%2CCSS%2CDart%2CPython%2CC%2B%2B%2CHTML",
+  //     "submit": "Go"
+  //   }
+  // }
+
+  // $.ajax(settings).done(function (response) {
+  //   console.log(response);
+  // });
 };
 
 var changeStep = function(n) {
@@ -136,6 +165,14 @@ keywords.forEach(function(keyword) {
 });
 
 $('#step-3 #suggested-tags').html(suggested_tags);
+
+if ($('.navbar #navbarDropdown').html()) {
+  var url = '/api/v0.1/profile/' + $('.navbar #navbarDropdown').html().trim() + '/keywords';
+
+  $.get(url, function(response) {
+    onboard.getFilters(response.keywords);
+  });
+}
 
 $('.suggested-tag input[type=checkbox]').change(function(e) {
   onboard.getFilters();
