@@ -14,3 +14,7 @@ def list_jobs(request):
 
 def new_job(request):
     return TemplateResponse(request, 'jobs/submit_job.html', context={})
+
+
+def detail_job(request, job):
+    return TemplateResponse(request, 'jobs/job_detail.html', context={})
