@@ -10,3 +10,7 @@ def list_jobs(request):
     context = {'jobs': Jobs.objects.all()}
 
     return TemplateResponse(request, 'jobs/list.html', context=context)
+
+
+def new_job(request):
+    return TemplateResponse(request, 'jobs/submit_job.html', context={})
