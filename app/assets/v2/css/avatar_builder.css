@@ -22,6 +22,9 @@
 #avatar-builder__sections li.open {
   text-decoration: underline;
 }
+#avatar-builder__sections li.complete {
+  list-style-image: url('/static/v2/images/check-dark.svg');
+}
 #avatar-builder__editor {
   flex-grow: 0;
 }
@@ -100,6 +103,11 @@ button.avatar-option {
 }
 .avatar-option.selected:hover::before {
   display: none;
+}
+.avatar-option.selected::after {
+  content: url('/static/v2/images/check.svg');
+  background-color: #150069;
+  line-height: 20px;
 }
 .optional .avatar-option.selected:hover {
   border-color: #FFA400 !important;
