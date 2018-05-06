@@ -1,13 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="899px" height="1415px" viewBox="0 0 899 1415" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
-    <title>Mustache-2-8C3B28</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Mustache-2-8C3B28" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="avatar-mustache3-tone1" transform="translate(147.000000, 540.000000)">
-            <path d="M388.9,235.2 L324.5,212.9 C319.3,211.1 313.5,214.1 308.4,220.7 C305.2,224.9 300.2,224.9 297,220.7 C291.9,214 286.1,211.1 280.9,212.9 L216.5,235.2 C176.4,249.1 143.5,293.7 123.4,361.6 L297.8,301.2 C299.7,300.6 301.3,299.3 302.8,297.7 C304.3,299.3 305.9,300.5 307.8,301.2 L482,361.6 C461.9,293.8 429,249.1 388.9,235.2 Z" id="Shape" stroke="#333333" stroke-width="14.716" fill="#8C3B28" fill-rule="nonzero"></path>
-            <rect id="Rectangle-path" x="0.7" y="0.5" width="603.7" height="241.5"></rect>
-        </g>
-    </g>
-</svg>
+<svg width="899" height="1415" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path d="M535.9 775.2l-64.4-22.3c-5.2-1.8-11 1.2-16.1 7.8-3.2 4.2-8.2 4.2-11.4 0-5.1-6.7-10.9-9.6-16.1-7.8l-64.4 22.3c-40.1 13.9-73 58.5-93.1 126.4l174.4-60.4c1.9-.6 3.5-1.9 5-3.5 1.5 1.6 3.1 2.8 5 3.5L629 901.6c-20.1-67.8-53-112.5-93.1-126.4z" stroke="#333" stroke-width="14.716" fill="#8C3B28" fill-rule="nonzero"/><path d="M147.7 540.5h603.7V782H147.7z"/></g></svg>
