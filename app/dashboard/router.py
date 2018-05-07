@@ -76,6 +76,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'github_issue_number', 'github_org_name', 'github_repo_name',
             'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on', 'fulfillment_submitted_on',
             'fulfillment_started_on', 'canceled_on', 'action_urls',
+            'work_scheme', 'application_scheme',
         )
 
     def create(self, validated_data):
@@ -118,7 +119,8 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         # filtering
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address',
-                    'idx_status', 'network', 'bounty_owner_github_username', 'standard_bounties_id']:
+                    'idx_status', 'network', 'bounty_owner_github_username', 'standard_bounties_id',
+                    'application_scheme', 'work_scheme' ]:
             if key in param_keys:
                 # special hack just for looking up bounties posted by a certain person
                 request_key = key if key != 'bounty_owner_address' else 'coinbase'

@@ -130,6 +130,25 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="w-100 mt-2">
+                                    <label class="form__label" for="application_scheme">{% trans "Application Scheme" %}</label>
+                                    <div class="form__select2">
+                                        <select class="w-100 js-select2" name="application_scheme">
+                                            <option value="permissionless">{% trans "Permissionless - Anyone can start work." %}</option>
+                                            <option value="approval">{% trans "Approval Required - I will approve bounty hunters." %}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="w-100 mt-2">
+                                    <label class="form__label" for="work_scheme">{% trans "Work Scheme" %}</label>
+                                    <div class="form__select2">
+                                        <select class="w-100 js-select2" name="work_scheme">
+                                            <option value="traditional">{% trans "Traditional -- 1 worker at a time, 1 is paid out" %}</option>
+                                            <option value="contest">{% trans "Contest -- many workers at a time, 1 is paid out" %}</option>
+                                            <option value="cooperative">{% trans "Cooperative -- many workers at a time, many are paid out" %}</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="w-100 mt-2 terms_container">
                                     <div class="form__checkbox">
                                         <input name='terms' id='terms' type="checkbox" value=1 required />

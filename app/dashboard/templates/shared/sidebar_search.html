@@ -119,6 +119,69 @@
     </div>
 
     <div class="col">
+      <div class="col-12 subheading font-body accordion" >{% trans "Application Scheme" %}</div>
+      <div class="col-12 panel options">
+        <i title='{% include "shared/app_scheme_tooltip.html" %}' class="fas fa-info-circle"></i><span title='{% include "shared/app_scheme_tooltip.html" %}'> - What is this?</span> <br>
+        <div class="checkbox_container">
+          <input name="application_scheme" id="permissionless" type="checkbox" value="permissionless" val-ui='Permissionless' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=permissionless>{% trans "Permissionless" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container">
+          <input name="application_scheme" id="approval" type="checkbox" value="approval" val-ui='Approval Required' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=approval>{% trans "Approval Required" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container">
+          <input name="application_scheme" id="any_app_scheme" type="checkbox" value="any" checked />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=any_app_scheme>{% trans "Any" %}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-12 subheading font-body accordion">{% trans "Work Scheme" %}</div>
+      <div class="col-12 panel options">
+        <i title='{% include "shared/work_scheme_tooltip.html" %}' class="fas fa-info-circle"></i><span title='{% include "shared/work_scheme_tooltip.html" %}'> - What is this?</span> <br>
+        <div class="checkbox_container">
+          <input name="work_scheme" id="traditional" type="checkbox" value="traditional" val-ui='Traditional' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=traditional>{% trans "Traditional" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container">
+          <input name="work_scheme" id="contest" type="checkbox" value="contest" val-ui='Contest' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=contest>{% trans "Contest" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container">
+          <input name="work_scheme" id="cooperative" type="checkbox" value="cooperative" val-ui='Cooperative' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=cooperative>{% trans "Cooperative" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container">
+          <input name="work_scheme" id="any_work_scheme" type="checkbox" value="any" checked />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=any_work_scheme>{% trans "Any" %}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
       <div class="col-12 subheading font-body accordion">{% trans "Tech Stack" %}</div>
       <div class="col-12 panel options" id="tech-stack-options"></div>
     </div>

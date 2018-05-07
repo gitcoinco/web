@@ -84,6 +84,15 @@ class Bounty(SuperModel):
 
     """
 
+    APPLICATION_SCHEMES = [
+        ('permissionless', 'permissionless'),
+        ('approval', 'approval'),
+    ]
+    WORK_SCHEMES = [
+        ('traditional', 'traditional'),
+        ('contest', 'contest'),
+        ('cooperative', 'cooperative'),
+    ]
     BOUNTY_TYPES = [
         ('Bug', 'Bug'),
         ('Security', 'Security'),
@@ -157,6 +166,8 @@ class Bounty(SuperModel):
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
+    work_scheme = models.CharField(max_length=50, choices=WORK_SCHEMES, default='traditional')
+    application_scheme = models.CharField(max_length=50, choices=APPLICATION_SCHEMES, default='permissionless')
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
     token_value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)

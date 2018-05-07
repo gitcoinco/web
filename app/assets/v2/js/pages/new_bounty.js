@@ -137,6 +137,10 @@ $(document).ready(function() {
             githubUsername: metadata.githubUsername,
             address: '' // Fill this in later
           },
+          schemes: {
+            work_scheme: data.work_scheme,
+            application_scheme: data.application_scheme,
+          },
           funders: [],
           categories: metadata.issueKeywords.split(','),
           created: (new Date().getTime() / 1000) | 0,

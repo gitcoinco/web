@@ -401,6 +401,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 accepted=accepted,
                 interested_comment=interested_comment_id,
                 submissions_comment=submissions_comment_id,
+                work_scheme=bounty_payload.get('schemes', {}).get('work_scheme', 'traditional'),
+                application_scheme=bounty_payload.get('schemes', {}).get('application_scheme', 'permissionless'),
                 # These fields are after initial bounty creation, in bounty_details.js
                 expires_date=timezone.make_aware(
                     timezone.datetime.fromtimestamp(bounty_details.get('deadline')),
