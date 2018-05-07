@@ -344,7 +344,7 @@ def quarterly_stats(to_emails=None, platform_wide_stats=None):
             print("-----" * 100)
             from_email = settings.PERSONAL_CONTACT_EMAIL
 
-            if not should_suppress_notification_email(to_email, 'transactional'):
+            if not should_suppress_notification_email(to_email, 'roundup'):
                 send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
         finally:
             translation.activate(cur_language)

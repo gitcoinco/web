@@ -1094,6 +1094,7 @@ class Profile(SuperModel):
             user_active_in_last_quarter = True
 
         completetion_percent = float('%.2f' % completetion_percent)
+        avg_eth_earned_per_bounty = float('%.2f' % avg_eth_earned_per_bounty)
 
         return {
             'user_total_earned_eth': total_earned_eth,
