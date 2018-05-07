@@ -486,6 +486,19 @@ def process_bounty_details(bounty_details):
 
 
 def record_user_action(event_name, old_bounty, new_bounty):
+    """Records a user action 
+
+    Args:
+        event_name (string): the event
+        old_bounty (Bounty): the old_bounty
+        new_bounty (Bounty): the new_bounty
+
+    Raises:
+        None
+
+    Returns:
+        None
+    """
     user_profile = None
     fulfillment = None
     try:
