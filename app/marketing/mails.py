@@ -337,7 +337,7 @@ def quarterly_stats(to_emails=None, platform_wide_stats=None):
             quarter = int(timezone.now().month / 3) + 1
             year = timezone.now().year
             date = f"Q{quarter} {year}"
-            subject = "Your Quarterly Gitcoin Stats ({date}})"
+            subject = f"Your Quarterly Gitcoin Stats ({date})"
             html, text = render_quarterly_stats(to_email, platform_wide_stats)
             print("-----" * 100)
             print(html)

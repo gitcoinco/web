@@ -1070,7 +1070,6 @@ class Profile(SuperModel):
         user_active_in_last_quarter = False
         last_quarter = datetime.now() - timedelta(days=90)
         bounties = self.bounties.filter(modified_on__gte=last_quarter)
-        loyalty_rate = 0
         fulfilled_bounties = [
             bounty for bounty in bounties if bounty.is_hunter(self.handle) and bounty.status == 'done'
         ]

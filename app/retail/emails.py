@@ -337,10 +337,15 @@ This week, we published <a href="https://medium.com/gitcoin/open-source-money-wi
 <h3>What else is new?</h3>
     <ul>
         <li>
-<a href="https://blog.ethereum.org/2018/05/02/announcing-may-2018-cohort-ef-grants/">We received a $25K grant from the Ethereum Foundation</a>! We’re grateful for the opportunity to partner with the foundation and increase the pace of bounties as a result of the grant.
+            <a href="https://blog.ethereum.org/2018/05/02/announcing-may-2018-cohort-ef-grants/">
+              We received a $25K grant from the Ethereum Foundation
+            </a>! We’re grateful for the opportunity to partner with the foundation and
+                  increase the pace of bounties as a result of the grant.
         </li>
         <li>
-        Did you know that you can integrate Gitcoin into your slack channel for instant notifications about updates to your bounties? <a href="https://gitcoin.co/settings/slack">Set it up here</a>
+            Did you know that you can integrate Gitcoin into your slack channel for
+            instant notifications about updates to your bounties?
+            <a href="https://gitcoin.co/settings/slack">Set it up here</a>
         </li>
         <li>
 <strong> Calling all project managers! </strong>  Are you interested in paid work in the intersection blockchain and open source?  Send us your resume at <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a> or just respond to this email.
