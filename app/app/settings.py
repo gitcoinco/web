@@ -369,7 +369,7 @@ if ROLLBAR_SERVER_TOKEN:
         'root': BASE_DIR,
         'patch_debugview': False,  # Disable debug view patching.
         'branch': 'master',
-        'exception_level_filters': [(Http404, 'info')]
+        'exception_level_filters': [(Http404, 'ignored')]
     }
     MIDDLEWARE.append('rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
     rollbar.init(**ROLLBAR)
