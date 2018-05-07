@@ -94,7 +94,7 @@ def save(request):
                 if direction == '+':
                     to_emails = [email_address, bounty.bounty_owner_email]
                     # KO 2018/05/07 -- do not send match emails for ios
-                    #  since intros happen on the github thread.
+                    # since intros happen on the github thread.
                     # new_match(to_emails, bounty, github_username)
 
                 # response
