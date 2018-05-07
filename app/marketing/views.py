@@ -121,11 +121,11 @@ def privacy_settings(request):
     if request.POST and request.POST.get('submit'):
         if profile:
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
-            suppress_leaderboard = profile.suppress_leaderboard
+            profile.hide_profile = bool(request.POST.get('hide_profile', False))
             profile.save()
 
     context = {
-        'suppress_leaderboard': suppress_leaderboard,
+        'profile': profile,
         'nav': 'internal',
         'active': '/settings/privacy',
         'title': _('Privacy Settings'),
