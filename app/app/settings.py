@@ -369,7 +369,14 @@ if ROLLBAR_SERVER_TOKEN:
         'root': BASE_DIR,
         'patch_debugview': False,  # Disable debug view patching.
         'branch': 'master',
-        'exception_level_filters': [(Http404, 'ignored')]
+        'exception_level_filters': [(Http404, 'ignored')],
+        'scrub_fields': [
+            'pw', 'passwd', 'password', 'secret', 'confirm_password', 'confirmPassword',
+            'password_confirmation', 'passwordConfirmation', 'access_token', 'accessToken',
+            'auth', 'authentication', 'github_access_token', 'github_client_secret',
+            'secret_key', 'twitter_access_token', 'twitter_access_secret', 'twitter_consumer_secret',
+            'mixpanel_token', 'slack_verification_token', 'redirect_state', 'slack_token', 'priv_key',
+        ],
     }
     MIDDLEWARE.append('rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
     rollbar.init(**ROLLBAR)
