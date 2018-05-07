@@ -457,7 +457,6 @@ var refreshBounties = function(event) {
       result.action = result['url'];
       result['title'] = result['title'] ? result['title'] : result['github_url'];
 
-      var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
 
       result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
 
@@ -485,7 +484,11 @@ var refreshBounties = function(event) {
       } else {
         var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
 
-        result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
+        var timeLeft = timeDifference(new Date(), new Date(result['expires_date']));
+        var expiredExpires = new Date() < new Date(result['expires_date']) ? 'Expires' : 'Expired';
+        var softOrNot = result['can_submit_after_expiration_date'] ? 'Soft ' : '';
+
+        result['p'] += ('Opened ' + opened_when + ' ago, ' + softOrNot + expiredExpires + ' ' + timeLeft);
       }
 
       result['watch'] = 'Watch';
