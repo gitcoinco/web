@@ -137,6 +137,17 @@ def privacy_settings(request):
 
 
 def matching_settings(request):
+    """Handle viewing and updating EmailSubscriber matching settings.
+
+    TODO:
+        * Migrate this to a form and handle validation.
+        * Migrate Keyword to taggit.
+        * Maybe migrate keyword information to Profile instead of using ES?
+
+    Returns:
+        TemplateResponse: The populated matching template.
+
+    """
     # setup
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
     if not es:
@@ -148,8 +159,10 @@ def matching_settings(request):
     if request.POST and request.POST.get('submit'):
         github = request.POST.get('github', '')
         keywords = request.POST.get('keywords').split(',')
-        es.github = github
-        es.keywords = keywords
+        if github:
+            es.github = github
+        if keywords:
+            es.keywords = keywords
         ip = get_ip(request)
         if not es.metadata.get('ip', False):
             es.metadata['ip'] = [ip]
