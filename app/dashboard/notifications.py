@@ -776,7 +776,7 @@ def maybe_notify_bounty_user_warned_removed_to_slack(bounty, username, last_hear
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
 
-    msg = f"@{username} has warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
+    msg = f"@{username} has been warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
