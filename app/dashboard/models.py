@@ -912,7 +912,7 @@ class Profile(SuperModel):
         help_text='If this option is chosen, we will remove your profile information from the leaderboard',
     )
     hide_profile = models.BooleanField(
-        default=False,
+        default=True,
         help_text='If this option is chosen, we will remove your profile information all_together',
     )
     # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
