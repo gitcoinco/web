@@ -87,6 +87,7 @@ INSTALLED_APPS = [
     'gitcoinbot',
     'external_bounties',
     'dataviz',
+    'jobs',
 ]
 
 MIDDLEWARE = [

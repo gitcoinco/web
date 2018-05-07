@@ -39,8 +39,10 @@ import marketing.webhookviews
 import retail.emails
 import retail.views
 import tdi.views
+import jobs.views
 from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
+from jobs.routers import router as job_router
 
 from .sitemaps import sitemaps
 
@@ -54,6 +56,7 @@ urlpatterns = [
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(ebrouter.urls)),
+    url(r'^api/v0.1/', include(job_router.urls)),
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cluodfront
 
     # dashboard views
@@ -246,6 +249,11 @@ urlpatterns = [
     path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
+
+
+    # Job urls goes below
+    path('jobs', jobs.views.list_jobs, name='jobs'),
+    path('jobs/<int:pk>/', jobs.views.job_detail, name='jobs'),
 ]
 
 if settings.ENABLE_SILK:

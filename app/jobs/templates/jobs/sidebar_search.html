@@ -1,0 +1,87 @@
+{% comment %}
+    Copyright (C) 2018 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<link rel="stylesheet" href={% static "v2/css/sidebar_search.css" %}>
+<div class="sidebar_search">
+  <form>
+    <div class="col">
+      <div class="col-12 subheading font-body">
+        {% trans "DATE POSTED" %} <i class="fas fa-info-circle"></i>
+      </div>
+      <div class="col-12 options">
+        <div class="form__radio option">
+          <input name="idx_status" id="status_open" type="radio" value="open" val-ui='Open' checked />
+          <label class="filter-label" for=status_open>{% trans "24 hours" %}</label>
+        </div>
+
+        <div class="form__radio option">
+          <input name="idx_status" id="status_started" type="radio" value="started" val-ui='Work Started' />
+          <label class="filter-label" for=status_started>{% trans "3 days" %}</label>
+        </div>
+
+        <div class="form__radio option">
+          <input name="idx_status" id="status_submitted" type="radio" value="submitted" val-ui='Work Submitted' />
+          <label class="filter-label" for=status_submitted>{% trans "7 days" %}</label>
+        </div>
+
+        <div class="form__radio option">
+          <input name="idx_status" id="status_done" type="radio" value="done" val-ui='Work Done' />
+          <label class="filter-label" for=status_done>{% trans "30 days" %}</label>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="col-12 subheading font-body accordion">{% trans "Employment Type" %}</div>
+      <div class="col-12 panel options">
+        <div class="checkbox_container">
+          <input name="experience_level" id="beginner" type="checkbox" value="beginner" val-ui='Beginner' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=beginner>{% trans "Full Time" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container">
+          <input name="experience_level" id="intermediate" type="checkbox" value="intermediate" val-ui='Intermediate' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=intermediate>{% trans "Part Time" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container">
+          <input name="experience_level" id="advanced" type="checkbox" value="advanced" val-ui='Advanced' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=advanced>{% trans "Contractor" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container">
+          <input name="experience_level" id="any_xp" type="checkbox" value="any" checked />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=any_xp>{% trans "Intern" %}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </form>
+  <div class="align-self-end text-right font-body" id="clear">
+    <p>{% trans "Reset" %}</p>
+  </div>
+</div>
