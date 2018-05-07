@@ -8,7 +8,7 @@ def forwards_func(apps, schema_editor):
     profiles = Profile.objects.filter(github_access_token='').all()
     print(f"got {profiles.count()} profiles")
     for profile in profiles:
-        if not profile.user:
+        if not getattr(profile, 'user', None):
             profile.hide_profile = True
             profile.save()
 
