@@ -313,7 +313,7 @@ def slack_settings(request):
         if test and token and channel:
             response = validate_slack_integration(token, channel)
 
-        if submit or (response and response['success']):
+        if submit or (response and response.get('success')):
             profile.update_slack_integration(token, channel, repos)
             if not response.get('output'):
                 response['output'] = _('Updated your preferences.')
