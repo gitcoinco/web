@@ -80,12 +80,9 @@
               {% endif %}
               <div>
                 <div>
-                  <h4>{% blocktrans %}{{profile.handle}} has received these tips{% endblocktrans %}</h4>
-                  <div class="text-center">
-                    {% if tips|length == 0 %} 
-                      {% trans "No tips found" %}
-                    {% endif %} 
-                    {% if tips|length > 0 %}
+                  {% if tips|length > 0 %}
+                    <h4>{% blocktrans %}{{profile.handle}} has received these tips{% endblocktrans %}</h4>
+                    <div class="text-center">
                       <div class="row">
                         <div class="col-3">
                           {% trans "From" %}
@@ -124,9 +121,9 @@
                             </div>
                           </div>
                         </div>
-                      {% endfor %} 
-                    {% endif %}
-                  </div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
                 </div>
               </div>
               <div>
