@@ -28,17 +28,17 @@ from economy.models import SuperModel
 
 class Alumni(SuperModel):
 
-    username = models.CharField(max_length=255, db_index=True)
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        on_delete=models.CASCADE,
+        related_name='alumni',
+        null=True)
     organization = models.CharField(max_length=255, db_index=True, blank=True)
-    comments = models.TextField(max_length=5000)
+    comments = models.TextField(max_length=5000, blank=True)
     public = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.username} - {self.organization} - {self.comments}"
-
-    @property
-    def avatar_url(self):
-        return f"/static/avatar/{self.username}"
+        return f"{self.profile} - {self.organization} - {self.comments}"
 
 
 class EmailSubscriber(SuperModel):

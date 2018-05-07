@@ -4,6 +4,7 @@ from django.db import migrations
 
 
 def insert_alumni(apps, schema_editor):
+    Profile = apps.get_model('dashboard', 'Profile')
     Alumni = apps.get_model('marketing', 'Alumni')
     elements = [
         ('PixelantDesign', 'gitcoinco'),
@@ -20,10 +21,14 @@ def insert_alumni(apps, schema_editor):
     ]
     for ele in elements:
         Alumni.objects.create(
-            username=ele[0],
+            profile=Profile.objects.get(handle__iexact=ele[0]),
             organization=ele[1],
             comments='Auto generated alumni by marketing.migraitons.0023',
             )
+
+
+def reverse_function(apps, schema_editor):
+    pass
 
 
 class Migration(migrations.Migration):
@@ -33,5 +38,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(insert_alumni),
+        migrations.RunPython(insert_alumni, reverse_function),
     ]
