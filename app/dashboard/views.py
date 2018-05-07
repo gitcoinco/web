@@ -635,7 +635,7 @@ def cancel_bounty(request, pk):
 
     params = {
         'bounty': bounty,
-        'title': _('Kill Bounty'),
+        'title': _('Cancel Bounty'),
         'active': 'kill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
@@ -715,6 +715,10 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     return TemplateResponse(request, 'bounty_details.html', params)
 
 
+class ProfileHiddenException(Exception):
+    pass
+
+
 def profile_helper(handle):
     """Define the profile helper.
 
@@ -743,6 +747,10 @@ def profile_helper(handle):
         # TODO: Should we handle merging or removing duplicate profiles?
         profile = Profile.objects.filter(handle__iexact=handle).latest('id')
         logging.error(e)
+    
+    if profile.hide_profile:
+        raise ProfileHiddenException
+
     return profile
 
 
@@ -788,13 +796,16 @@ def profile(request, handle):
         handle (str): The profile handle.
 
     """
-    if not handle and not request.user.is_authenticated:
-        return redirect('index')
-    elif not handle:
-        handle = request.user.username
-        profile = request.user.profile
-    else:
-        profile = profile_helper(handle)
+    try:
+        if not handle and not request.user.is_authenticated:
+            return redirect('index')
+        elif not handle:
+            handle = request.user.username
+            profile = request.user.profile
+        else:
+            profile = profile_helper(handle)
+    except ProfileHiddenException:
+        raise Http404
 
     params = {
         'title': f"@{handle}",

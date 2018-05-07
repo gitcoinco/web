@@ -251,6 +251,7 @@ def maybe_market_to_user_slack(bounty, event_name):
 
     return sent
 
+
 def maybe_market_tip_to_email(tip, emails):
     """Send an email for the specified Tip.
 
@@ -321,8 +322,7 @@ def get_status_header(bounty):
                 else:
                     statuses.append('**Done**')
 
-
-    #1. Open | **2. Started** | 3. Submitted | 4. Done
+    # 1. Open | **2. Started** | 3. Submitted | 4. Done
     status_bar = ""
     for x, status in enumerate(statuses):
         status_bar += f"{x+1}. {status} "
@@ -354,16 +354,15 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     absolute_url = bounty.get_absolute_url()
     amount_open_work = "{:,}".format(amount_usdt_open_work())
     profiles = ""
-    bounty_owner_parenthesis = f"(@{bounty.bounty_owner_github_username})" if bounty.bounty_owner_github_username else ""
     bounty_owner = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
     status_header = get_status_header(bounty)
 
     if profile_pairs:
         from dashboard.utils import get_ordinal_repr  # hack for circular import issue
-        for i, profile in enumerate(profile_pairs):
+        for i, profile in enumerate(profile_pairs, start=1):
             show_dibs = event_name == 'work_started' and len(profile_pairs) > 1
-            dibs = f" ({get_ordinal_repr(i+1)} precedence)" if show_dibs else ""
-            profiles = profiles + f"\n 1. [@{profile[0]}]({profile[1]}) {dibs}"
+            dibs = f" ({get_ordinal_repr(i)} precedence)" if show_dibs else ""
+            profiles = profiles + f"\n {i}. [@{profile[0]}]({profile[1]}) {dibs}"
         profiles += "\n\n"
     if event_name == 'new_bounty':
         msg = f"{status_header}__This issue now has a funding of {natural_value} " \
@@ -404,22 +403,24 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
                     for interest in interests:
                         if interest.issue_message.strip():
                             msg += f"\n__Please answer following questions/comments__ {bounty_owner_clear}:\n\n" + \
-                                  interest.issue_message
+                                    interest.issue_message
         except Exception as e:
             print(e)
     elif event_name == 'work_submitted':
         sub_msg = ""
-        if bounty.fulfillments.count():
-            sub_msg = f"\n\n{bounty_owner if bounty_owner else 'If you are the bounty funder,'} please take a look at the submitted work:\n"
+        if bounty.fulfillments.exists():
+            sub_msg = f"\n\n{bounty_owner if bounty_owner else 'If you are the bounty funder,'} " \
+                       "please take a look at the submitted work:\n"
             for bf in bounty.fulfillments.all():
                 username = "@"+bf.fulfiller_github_username if bf.fulfiller_github_username else bf.fulfiller_address
                 link_to_work = f"[PR]({bf.fulfiller_github_url})" if bf.fulfiller_github_url else "(Link Not Provided)"
                 sub_msg += f"* {link_to_work} by {username}\n"
 
-        msg = f"{status_header}__Work for {natural_value} {bounty.token_name} {usdt_value} has been submitted by__: \n 1. " \
-              f"{profiles} {sub_msg} \n\n * Learn more [on the Gitcoin Issue Details page]({absolute_url})\n * " \
-              " * Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n" \
-              f"${amount_open_work} more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
+        msg = f"{status_header}__Work for {natural_value} {bounty.token_name} {usdt_value} has been submitted by__:\n" \
+              f"{profiles}{sub_msg}\n<hr>\n\n* Learn more [on the Gitcoin Issue Details page]({absolute_url})\n" \
+              "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or the " \
+              f"<a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n${amount_open_work} more funded " \
+              "OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
     elif event_name == 'work_done':
         try:
             accepted_fulfillment = bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
@@ -568,7 +569,6 @@ def maybe_market_tip_to_github(tip):
 
 def maybe_market_to_email(b, event_name):
     from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance
-    from marketing.models import EmailSubscriber
     to_emails = []
     if b.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
@@ -584,8 +584,8 @@ def maybe_market_to_email(b, event_name):
             logging.exception(e)
             print(e)
     elif event_name == 'work_done':
-        accepted_fulfillment = b.fulfillments.filter(accepted=True).latest('modified_on')
         try:
+            accepted_fulfillment = b.fulfillments.filter(accepted=True).latest('modified_on')
             to_emails = [b.bounty_owner_email, accepted_fulfillment.fulfiller_email]
             new_bounty_acceptance(b, to_emails)
         except Exception as e:
@@ -734,7 +734,7 @@ def maybe_notify_bounty_user_removed_to_slack(bounty, username):
     return True
 
 
-#todo: DRY with expiration_start_work
+# TODO: DRY with expiration_start_work
 num_days_back_to_warn = 3
 num_days_back_to_delete_interest = 6
 
@@ -776,7 +776,7 @@ def maybe_notify_bounty_user_warned_removed_to_slack(bounty, username, last_hear
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
 
-    msg = f"@{username} has warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
+    msg = f"@{username} has been warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)

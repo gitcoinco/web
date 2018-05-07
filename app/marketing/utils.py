@@ -17,11 +17,17 @@
 
 '''
 from datetime import datetime, timedelta
+import logging
 
 from django.conf import settings
+from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
 
 from marketing.models import EmailSubscriber, Stat
 from slackclient import SlackClient
+from slackclient.exceptions import SlackClientError
+
+logger = logging.getLogger(__name__)
 
 
 def get_stat(key):
@@ -34,6 +40,64 @@ def invite_to_slack(email):
     sc = SlackClient(settings.SLACK_TOKEN)
     response = sc.api_call('users.admin.invite', email=email)
     return response
+
+
+def validate_slack_integration(token, channel, message=None, icon_url=''):
+    """Validate the Slack token and channel combination by posting a message.
+
+    Args:
+        token (str): The Slack API token.
+        channel (str): The Slack channel to send the message.
+        message (str): The Slack message to be sent.
+            Defaults to: The Gitcoin Slack integration is working fine.
+        icon_url (str): The URL to the avatar to be used.
+            Defaults to: the gitcoin helmet.
+
+    Attributes:
+        result (dict): The result dictionary defining success status and error message.
+        error_messages (dict): The dictionary mapping of expected error result types.
+        message (str): The response message to display to the user.
+        sc (SlackClient): The slack client object.
+        response (dict): The Slack response payload.
+        error (str): The error code
+
+    Raises:
+        SlackClientError: The exception is raised for any Slack-specific error.
+
+    Returns:
+        str: The response message.
+
+    """
+    result = {'success': False, 'output': ''}
+    error_messages = {
+        'invalid_auth': _('Invalid Slack token.'),
+        'channel_not_found': _('Slack channel not found.'),
+    }
+
+    if message is None:
+        message = gettext('The Gitcoin Slack integration is working fine.')
+
+    if not icon_url:
+        icon_url = 'https://gitcoin.co/static/v2/images/helmet.png'
+
+    try:
+        sc = SlackClient(token)
+        response = sc.api_call(
+            'chat.postMessage',
+            channel=channel,
+            text=message,
+            icon_url=icon_url)
+        error = response.get('error', '')
+
+        if error:
+            result['output'] = error_messages.get(error, error.replace('_', ' ').title())
+        elif 'ok' in response:
+            result['output'] = _('The test message was sent to Slack.')
+            result['success'] = True
+    except SlackClientError as e:
+        logger.error(e)
+        result['output'] = _('An error has occurred.')
+    return result
 
 
 def should_suppress_notification_email(email, _type='transactional'):
