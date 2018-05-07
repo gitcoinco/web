@@ -96,13 +96,12 @@ var set_sidebar_defaults = function() {
     var key = sidebar_keys[i];
 
     if (localStorage[key]) {
-      if (key !== 'tech_stack') {
-        $('input[name="' + key + '"][value="' + localStorage[key] + '"]').prop('checked', true);
-      } else {
-        localStorage[key].split(',').forEach(function(v, k) {
-          $('input[name="' + key + '"][value="' + v + '"]').prop('checked', true);
-        });
-      }
+      localStorage[key].split(',').forEach(function(v, k) {
+        $('input[name="' + key + '"][value="' + v + '"]').prop('checked', true);
+      });
+
+      if ($('input[name="' + key + '"][value!=any]:checked').length > 0)
+        $('input[name="' + key + '"][value=any]').prop('checked', false);
     }
   }
 };
@@ -598,13 +597,15 @@ $(document).ready(function() {
   }
 
   technologies.forEach(function(v, k) {
-    $('#tech-stack-options').append('<div class="checkbox_container">\n' +
-      '<input name="tech_stack" id="' + v.toLowerCase() + '" type="checkbox" value="' + v.toLowerCase() + '" val-ui="' + v + '"/>' +
-      '<span class="checkbox"></span>' +
-      '<div class="filter-label">' +
-      '<label for="' + v.toLowerCase() + '">' + v + '</label>' +
-      '</div>' +
-      '</div>');
+    $('#tech-stack-options').append(
+      '<div class="checkbox_container">' +
+        '<input name="tech_stack" id="' + v.toLowerCase() + '" type="checkbox" value="' + v.toLowerCase() + '" val-ui="' + v + '"/>' +
+        '<span class="checkbox"></span>' +
+        '<div class="filter-label">' +
+          '<label for="' + v.toLowerCase() + '">' + v + '</label>' +
+        '</div>' +
+      '</div>'
+    );
   });
 
   // Handle search input clear
@@ -664,19 +665,7 @@ $(document).ready(function() {
   // sidebar clear
   $('.dashboard #clear').click(function(e) {
     e.preventDefault();
-
-    for (var i = 0; i < sidebar_keys.length; i++) {
-      var key = sidebar_keys[i];
-      var tag = ($('input[name="' + key + '"][value]'));
-
-      for (var j = 0; j < tag.length; j++) {
-        if (tag[j].value === 'any')
-          $('input[name="' + key + '"][value=any]').prop('checked', true);
-        else
-          $('input[name="' + key + '"][value="' + tag[j].value + '"]').prop('checked', false);
-      }
-    }
-
+    resetFilters();
     refreshBounties();
   });
 
