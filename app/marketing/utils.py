@@ -16,8 +16,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from datetime import datetime, timedelta
 import logging
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.utils.translation import gettext
