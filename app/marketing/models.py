@@ -26,6 +26,21 @@ from django.db import models
 from economy.models import SuperModel
 
 
+class Alumni(SuperModel):
+
+    username = models.CharField(max_length=255, db_index=True)
+    organization = models.CharField(max_length=255, db_index=True, blank=True)
+    comments = models.TextField(max_length=5000)
+    public = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.username} - {self.organization} - {self.comments}"
+
+    @property
+    def avatar_url(self):
+        return f"/static/avatar/{self.username}"
+
+
 class EmailSubscriber(SuperModel):
 
     email = models.EmailField(max_length=255)

@@ -22,8 +22,8 @@ from django.contrib import admin
 
 # Register your models here.
 from .models import (
-    EmailEvent, EmailSubscriber, GithubEvent, GithubOrgToTwitterHandleMapping, LeaderboardRank, Match, SlackPresence,
-    SlackUser, Stat,
+    Alumni, EmailEvent, EmailSubscriber, GithubEvent, GithubOrgToTwitterHandleMapping, LeaderboardRank, Match,
+    SlackPresence, SlackUser, Stat,
 )
 
 
@@ -53,6 +53,7 @@ class SlackUserAdmin(admin.ModelAdmin):
             return 'Unknown'
 
 
+admin.site.register(Alumni, GeneralAdmin)
 admin.site.register(GithubEvent, GeneralAdmin)
 admin.site.register(Match, GeneralAdmin)
 admin.site.register(Stat, GeneralAdmin)

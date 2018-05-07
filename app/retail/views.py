@@ -26,7 +26,7 @@ from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
-from marketing.models import LeaderboardRank
+from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
 
@@ -132,9 +132,16 @@ def about(request):
         package = (lr.avatar_url, lr.github_username, lr.github_username)
         community_members.append(package)
 
+    alumnis = [
+    ]
+    for alumni in Alumni.objects.filter(public=True).exclude(organization='gitcoinco'):
+        package = (alumni.avatar_url, alumni.username, alumni.username)
+        alumnis.append(package)
+
     context = {
         'core_team': core_team,
         'community_members': community_members,
+        'alumni': alumnis,
         'active': 'about',
         'title': 'About',
     }
