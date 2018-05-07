@@ -38,11 +38,12 @@ from django.utils.translation import gettext_lazy as _
 from app.utils import sync_profile
 from chartit import Chart, DataPool
 from dashboard.models import Bounty, Profile, Tip, UserAction
+from dashboard.utils import create_user_action
 from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
-from marketing.utils import get_or_save_email_subscriber
+from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
 from retail.helpers import get_ip
 
 
@@ -282,33 +283,32 @@ def slack_settings(request):
         TemplateResponse: The user's slack settings template response.
 
     """
-    # setup
+    response = {'output': ''}
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
-    if not es:
+
+    if not user or not is_logged_in:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
 
-    msg = ''
-
-    if request.POST and request.POST.get('submit'):
+    if request.POST:
+        test = request.POST.get('test')
+        submit = request.POST.get('submit')
         token = request.POST.get('token', '')
-        repos = request.POST.get('repos').split(',')
+        repos = request.POST.get('repos', '')
         channel = request.POST.get('channel', '')
-        profile.slack_token = token
-        profile.slack_repos = [repo.strip() for repo in repos]
-        print(profile.slack_repos)
-        profile.slack_channel = channel
-        ip = get_ip(request)
-        if not es.metadata.get('ip', False):
-            es.metadata['ip'] = [ip]
-        else:
-            es.metadata['ip'].append(ip)
-        es.save()
-        profile.save()
-        msg = _('Updated your preferences.')
+
+        if test and token and channel:
+            response = validate_slack_integration(token, channel)
+
+        if submit or (response and response['success']):
+            profile.update_slack_integration(token, channel, repos)
+            if not response.get('output'):
+                response['output'] = _('Updated your preferences.')
+            ua_type = 'added_slack_integration' if token and channel and repos else 'removed_slack_integration'
+            create_user_action(user, ua_type, request, {'channel': channel, 'repos': repos})
 
     context = {
-        'repos': ",".join(profile.slack_repos),
+        'repos': profile.get_slack_repos(join=True),
         'is_logged_in': is_logged_in,
         'nav': 'internal',
         'active': '/settings/slack',
@@ -316,7 +316,7 @@ def slack_settings(request):
         'navs': get_settings_navs(),
         'es': es,
         'profile': profile,
-        'msg': msg,
+        'msg': response['output'],
     }
     return TemplateResponse(request, 'settings/slack.html', context)
 

@@ -54,11 +54,11 @@ var save_sidebar_latest = function() {
     var key = sidebar_keys[i];
 
     if (key !== 'tech_stack') {
-      localStorage[key] = $('input[name=' + key + ']:checked').val();
+      localStorage[key] = $('input[name="' + key + '"]:checked').val();
     } else {
       localStorage[key] = '';
 
-      $('input[name=' + key + ']:checked').each(function() {
+      $('input[name="' + key + '"]:checked').each(function() {
         localStorage[key] += $(this).val() + ',';
       });
 
@@ -70,7 +70,6 @@ var save_sidebar_latest = function() {
 
 // saves search information default
 var set_sidebar_defaults = function() {
-
   // Special handling to support adding keywords from url query param
   var q = getParam('q');
   var keywords;
@@ -101,10 +100,10 @@ var set_sidebar_defaults = function() {
 
     if (localStorage[key]) {
       if (key !== 'tech_stack') {
-        $('input[name=' + key + '][value=' + localStorage[key] + ']').prop('checked', true);
+        $('input[name="' + key + '"][value="' + localStorage[key] + '"]').prop('checked', true);
       } else {
         localStorage[key].split(',').forEach(function(v, k) {
-          $('input[name=' + key + '][value=' + v + ']').prop('checked', true);
+          $('input[name="' + key + '"][value="' + v + '"]').prop('checked', true);
         });
       }
     }
@@ -122,19 +121,45 @@ var toggleAny = function(event) {
   if (!event)
     return;
   var key = event.target.name;
-  var anyOption = $('input[name=' + key + '][value=any]');
+  var anyOption = $('input[name="' + key + '"][value=any]');
 
   // Selects option 'any' when no filter is applied
-  if ($('input[name=' + key + ']:checked').length === 0) {
+  if ($('input[name="' + key + '"]:checked').length === 0) {
     anyOption.prop('checked', true);
     return;
   }
   if (event.target.value === 'any') {
     // Deselect other filters when 'any' is selected
-    $('input[name=' + key + '][value!=any]').prop('checked', false);
+    $('input[name="' + key + '"][value!=any]').prop('checked', false);
   } else {
     // Deselect option 'any' when another filter is selected
     anyOption.prop('checked', false);
+  }
+};
+
+var addTechStackKeywordFilters = function(value) {
+  var isTechStack = false;
+
+  technologies.forEach(function(v, k) {
+    if (v.toLowerCase() === value) {
+      isTechStack = true;
+
+      $('.filter-tags').append('<a class="filter-tag tech_stack"><span>' + value + '</span>' +
+        '<i class="fa fa-times" onclick="removeFilter(\'tech_stack\', \'' + value + '\')"></i></a>');
+
+      $('input[name="tech_stack"][value=' + value + ']').prop('checked', true);
+    }
+  });
+
+  if (!isTechStack) {
+    if (localStorage['keywords']) {
+      localStorage['keywords'] += ',' + value;
+    } else {
+      localStorage['keywords'] += value;
+    }
+
+    $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
+      '<i class="fa fa-times" onclick="removeFilter(\'keywords\', \'' + value + '\')"></i></a>');
   }
 };
 
@@ -144,7 +169,7 @@ var getFilters = function() {
   for (var i = 0; i < sidebar_keys.length; i++) {
     var key = sidebar_keys[i];
 
-    $.each($('input[name=' + key + ']:checked'), function() {
+    $.each($('input[name="' + key + '"]:checked'), function() {
       if ($(this).attr('val-ui')) {
         _filters.push('<a class="filter-tag ' + key + '"><span>' + $(this).attr('val-ui') + '</span>' +
           '<i class="fa fa-times" onclick="removeFilter(\'' + key + '\', \'' + $(this).attr('value') + '\')"></i></a>');
@@ -164,7 +189,7 @@ var getFilters = function() {
 
 var removeFilter = function(key, value) {
   if (key !== 'keywords') {
-    $('input[name=' + key + '][value=' + value + ']').prop('checked', false);
+    $('input[name="' + key + '"][value="' + value + '"]').prop('checked', false);
   } else {
     localStorage['keywords'] = localStorage['keywords'].replace(value, '').replace(',,', ',');
 
@@ -183,9 +208,9 @@ var get_search_URI = function() {
     var key = sidebar_keys[i];
     var filters = [];
 
-    $.each ($('input[name=' + key + ']:checked'), function() {
+    $.each ($('input[name="' + key + '"]:checked'), function() {
       if (key === 'tech_stack' && $(this).val()) {
-        keywords += $(this).val() + ', ';
+        keywords += $(this).val() + ',';
       } else if ($(this).val()) {
         filters.push($(this).val());
       }
@@ -211,7 +236,7 @@ var get_search_URI = function() {
         }
 
         if (_value !== 'any')
-          uri += '&' + _key + '=' + _value;
+          uri += _key + '=' + _value + '&';
       });
 
       // TODO: Check if value myself is needed for coinbase
@@ -224,13 +249,16 @@ var get_search_URI = function() {
     if (val !== 'any' &&
         key !== 'bounty_filter' &&
         key !== 'bounty_owner_address') {
-      uri += '&' + key + '=' + val;
+      uri += key + '=' + val + '&';
     }
   }
 
   if (localStorage['keywords']) {
-    localStorage['keywords'].split(',').forEach(function(v, k) {
-      keywords += v + ', ';
+    localStorage['keywords'].split(',').forEach(function(v, pos, arr) {
+      keywords += v;
+      if (arr.length < pos + 1) {
+        keywords += ',';
+      }
     });
   }
 
@@ -364,6 +392,17 @@ $(window).scroll(trigger_scroll);
 $('body').bind('touchmove', trigger_scroll);
 
 var refreshBounties = function(event) {
+
+  // Allow search for freeform text
+  var searchInput = $('#keywords')[0];
+
+  if (searchInput.value.length > 0) {
+    addTechStackKeywordFilters(searchInput.value.trim());
+    searchInput.value = '';
+    searchInput.blur();
+    $('.close-icon').hide();
+  }
+
   save_sidebar_latest();
   set_filter_header();
   toggleAny(event);
@@ -492,13 +531,13 @@ function getURLParams(k) {
 var resetFilters = function() {
   for (var i = 0; i < sidebar_keys.length; i++) {
     var key = sidebar_keys[i];
-    var tag = ($('input[name=' + key + '][value]'));
+    var tag = ($('input[name="' + key + '"][value]'));
 
     for (var j = 0; j < tag.length; j++) {
       if (tag[j].value == 'any')
-        $('input[name=' + key + '][value=any]').prop('checked', true);
+        $('input[name="' + key + '"][value="any"]').prop('checked', true);
       else
-        $('input[name=' + key + '][value=' + tag[j].value + ']').prop('checked', false);
+        $('input[name="' + key + '"][value="' + tag[j].value + '"]').prop('checked', false);
     }
   }
 };
@@ -592,7 +631,6 @@ $(document).ready(function() {
       },
       select: function(event, ui) {
         var terms = split(this.value);
-        var isTechStack = false;
 
         $('.close-icon').hide();
 
@@ -605,30 +643,9 @@ $(document).ready(function() {
         // add placeholder to get the comma-and-space at the end
         terms.push('');
 
-        // this.value = terms.join(', ');
         this.value = '';
 
-        technologies.forEach(function(v, k) {
-          if (v.toLowerCase() === ui.item.value) {
-            isTechStack = true;
-
-            $('.filter-tags').append('<a class="filter-tag tech_stack"><span>' + ui.item.value + '</span>' +
-              '<i class="fa fa-times" onclick="removeFilter(\'tech_stack\', \'' + ui.item.value + '\')"></i></a>');
-
-            $('input[name="tech_stack"][value=' + ui.item.value + ']').prop('checked', true);
-          }
-        });
-
-        if (!isTechStack) {
-          if (localStorage['keywords']) {
-            localStorage['keywords'] += ',' + ui.item.value;
-          } else {
-            localStorage['keywords'] += ui.item.value;
-          }
-
-          $('.filter-tags').append('<a class="filter-tag keywords"><span>' + ui.item.value + '</span>' +
-            '<i class="fa fa-times" onclick="removeFilter(\'keywords\', \'' + ui.item.value + '\')"></i></a>');
-        }
+        addTechStackKeywordFilters(ui.item.value);
 
         return false;
       }
@@ -640,13 +657,13 @@ $(document).ready(function() {
 
     for (var i = 0; i < sidebar_keys.length; i++) {
       var key = sidebar_keys[i];
-      var tag = ($('input[name=' + key + '][value]'));
+      var tag = ($('input[name="' + key + '"][value]'));
 
       for (var j = 0; j < tag.length; j++) {
         if (tag[j].value === 'any')
-          $('input[name=' + key + '][value=any]').prop('checked', true);
+          $('input[name="' + key + '"][value=any]').prop('checked', true);
         else
-          $('input[name=' + key + '][value=' + tag[j].value + ']').prop('checked', false);
+          $('input[name="' + key + '"][value="' + tag[j].value + '"]').prop('checked', false);
       }
     }
 
