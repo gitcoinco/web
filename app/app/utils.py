@@ -96,7 +96,7 @@ def setup_lang(request, user):
         request.session.modified = True
 
 
-def sync_profile(handle, user=None):
+def sync_profile(handle, user=None, hide_profile=True):
     data = get_user(handle)
     email = ''
     is_error = 'name' not in data.keys()
@@ -113,6 +113,7 @@ def sync_profile(handle, user=None):
         'last_sync_date': timezone.now(),
         'data': data,
         'repos_data': repos_data,
+        'hide_profile': hide_profile,
     }
 
     if user and isinstance(user, User):
