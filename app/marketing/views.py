@@ -121,11 +121,11 @@ def privacy_settings(request):
     if request.POST and request.POST.get('submit'):
         if profile:
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
-            suppress_leaderboard = profile.suppress_leaderboard
+            profile.hide_profile = bool(request.POST.get('hide_profile', False))
             profile.save()
 
     context = {
-        'suppress_leaderboard': suppress_leaderboard,
+        'profile': profile,
         'nav': 'internal',
         'active': '/settings/privacy',
         'title': _('Privacy Settings'),
@@ -137,6 +137,17 @@ def privacy_settings(request):
 
 
 def matching_settings(request):
+    """Handle viewing and updating EmailSubscriber matching settings.
+
+    TODO:
+        * Migrate this to a form and handle validation.
+        * Migrate Keyword to taggit.
+        * Maybe migrate keyword information to Profile instead of using ES?
+
+    Returns:
+        TemplateResponse: The populated matching template.
+
+    """
     # setup
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
     if not es:
@@ -148,8 +159,10 @@ def matching_settings(request):
     if request.POST and request.POST.get('submit'):
         github = request.POST.get('github', '')
         keywords = request.POST.get('keywords').split(',')
-        es.github = github
-        es.keywords = keywords
+        if github:
+            es.github = github
+        if keywords:
+            es.keywords = keywords
         ip = get_ip(request)
         if not es.metadata.get('ip', False):
             es.metadata['ip'] = [ip]
@@ -300,7 +313,7 @@ def slack_settings(request):
         if test and token and channel:
             response = validate_slack_integration(token, channel)
 
-        if submit or (response and response['success']):
+        if submit or (response and response.get('success')):
             profile.update_slack_integration(token, channel, repos)
             if not response.get('output'):
                 response['output'] = _('Updated your preferences.')

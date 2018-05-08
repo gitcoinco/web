@@ -717,12 +717,12 @@ def maybe_post_on_craigslist(bounty):
     return False
 
 
-def maybe_notify_bounty_user_removed_to_slack(bounty, username):
+def maybe_notify_bounty_user_escalated_to_slack(bounty, username, last_heard_from_user_days):
     if not settings.SLACK_TOKEN or bounty.get_natural_value() < 0.0001 or (
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
 
-    msg = f"@{username} has been removed from {bounty.github_url} due to inactivity on the github thread."
+    msg = f"@vivek, {bounty.github_url} is being escalated to you, due to inactivity for {last_heard_from_user_days} days from @{username} on the github thread."
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
@@ -739,7 +739,7 @@ num_days_back_to_warn = 3
 num_days_back_to_delete_interest = 6
 
 
-def maybe_notify_user_removed_github(bounty, username, last_heard_from_user_days=None):
+def maybe_notify_user_escalated_github(bounty, username, last_heard_from_user_days=None):
     if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
@@ -749,10 +749,10 @@ def maybe_notify_user_removed_github(bounty, username, last_heard_from_user_days
 
     status_header = get_status_header(bounty)
 
-    msg = f"""{status_header}@{username} has been removed for inactivity and [the issue]({bounty.url}) has been returned to an ‘Open’ Status. Let us know if you believe this has been done in error!
+    msg = f"""{status_header}@{username} due to inactivity, we have escalated [this issue]({bounty.url}) to Gitcoin's moderation team. Let us know if you believe this has been done in error!
 
 * [x] warning ({num_days_back_to_warn} days)
-* [x] auto removal ({num_days_back_to_delete_interest} days)
+* [x] escalation to mods ({num_days_back_to_delete_interest} days)
 """
 
     post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
@@ -765,7 +765,7 @@ def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days):
 
     msg = f"""@{username} Hello from Gitcoin Core - are you still working on this issue? Please submit a WIP PR or comment back within the next 3 days or you will be removed from this ticket and it will be returned to an ‘Open’ status. Please let us know if you have questions!
 * [x] warning ({num_days_back_to_warn} days)
-* [ ] auto removal ({num_days_back_to_delete_interest} days)
+* [ ] escalation to mods ({num_days_back_to_delete_interest} days)
 """
 
     post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
@@ -776,7 +776,7 @@ def maybe_notify_bounty_user_warned_removed_to_slack(bounty, username, last_hear
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
 
-    msg = f"@{username} has warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
+    msg = f"@{username} has been warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)

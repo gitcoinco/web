@@ -1,5 +1,5 @@
 body.quickstart {
-	background: #f6f6f6;
+  background: #f6f6f6;
 }
 
 .quickstart .title {
@@ -8,11 +8,11 @@ body.quickstart {
 }
 
 .quickstart .container-fluid.content {
-	margin-bottom: 13rem;
+  margin-bottom: 13rem;
 }
 
 .quickstart h4.title {
-	font-size: 2.75rem;
+  font-size: 2.75rem;
 }
 
 .quickstart .dont-show {
@@ -39,11 +39,11 @@ body.quickstart {
 
 
 .steps-container {
-	background-color: #fff;
+  background-color: #fff;
 }
 
 .steps-container .image-container {
-	margin-top: 10rem;
+  margin-top: 10rem;
 }
 
 .steps-container a {
@@ -51,7 +51,7 @@ body.quickstart {
 }
 
 .steps-list {
-	padding-left: 1.5rem !important;
+  padding-left: 1.5rem !important;
 }
 
 .steps-list p {
@@ -117,9 +117,9 @@ body.quickstart {
 }
 
 .notsuggested-container ol li {
-	list-style: none;
-	display: flex;
-	padding: 1rem 0;
+  list-style: none;
+  display: flex;
+  padding: 1rem 0;
 }
 
 .notsuggested-container ol li span {

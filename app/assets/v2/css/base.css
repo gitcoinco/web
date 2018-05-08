@@ -1239,7 +1239,7 @@ input.is-invalid {
 
 .submit-notification {
   color: #fff;
-  font-family: "Muli";
+  font-family: 'Muli', sans-serif;
   font-size: 10px !important;
   min-height: 100px;
 }

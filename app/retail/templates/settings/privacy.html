@@ -5,10 +5,14 @@
     <form id="whitepaper" method="POST">
       <div class="form-group">
         <h5>{% trans "Privacy Preferences" %}</h5>
-          <input type="checkbox" name="suppress_leaderboard" id=suppress_leaderboard value="1" {% if suppress_leaderboard %} checked="checked" {%endif%} {% if not is_logged_in %} disabled {%endif%} >
+          <input type="checkbox" name="suppress_leaderboard" id=suppress_leaderboard value="1" {% if profile.suppress_leaderboard %} checked="checked" {%endif%} {% if not is_logged_in %} disabled {%endif%} >
           <label class="form__label" for="suppress_leaderboard">{% trans "Hide my profile from the leaderboard" %}</label>
           <br>
           <small id="suppress_leaderboard_help" class="form__input-help">If this option is chosen, we will remove your profile information from the leaderboard</small>
+          <input type="checkbox" name="hide_profile" id=hide_profile value="1" {% if profile.hide_profile %} checked="checked" {%endif%} {% if not is_logged_in %} disabled {%endif%} >
+          <label class="form__label" for="hide_profile">{% trans "Hide my profile altogether" %}</label>
+          <br>
+          <small id="hide_profile_help" class="form__input-help">If this option is chosen, we will remove your profile altogether</small>
       </div>
       {% csrf_token %}
       <input class='button button--primary' type='submit' name='submit' value="Go">
