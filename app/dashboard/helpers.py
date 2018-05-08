@@ -28,7 +28,6 @@ from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.utils import timezone
 
-from dashboard.tokens import addr_to_token
 import requests
 from bs4 import BeautifulSoup
 from dashboard.models import Bounty, BountyFulfillment, BountySyncRequest, UserAction
@@ -36,6 +35,7 @@ from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
     maybe_market_to_user_slack,
 )
+from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
 from github.utils import _AUTH
 from jsondiff import diff
