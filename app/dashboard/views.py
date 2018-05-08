@@ -127,9 +127,12 @@ def gh_login(request):
 
 
 def get_interest_modal(request):
+
     context = {
         'active': 'get_interest_modal',
         'title': _('Add Interest'),
+        'user_logged_in': request.user.is_authenticated,
+        'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
     }
     return TemplateResponse(request, 'addinterest.html', context)
 

@@ -421,7 +421,7 @@ var show_interest_modal = function() {
   var self = this;
 
   setTimeout(function() {
-    $.get('/interest/modal', function(newHTML) {
+    $.get('/interest/modal?redirect=' + window.location.pathname, function(newHTML) {
       var modal = $(newHTML).appendTo('body').modal({
         modalClass: 'modal add-interest-modal'
       });
