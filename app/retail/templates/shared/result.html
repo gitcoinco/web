@@ -1,7 +1,7 @@
 {% load static %}
 <!-- JSRender stuff -->
 <script id="result" type="text/x-jsrender">
-  <div class="row result bounty_row [[:network]]" href="[[:action]]">
+  <div class="row result bounty_row [[if hidden]]bounty_row--hidden[[/if]] [[:network]]" href="[[:action]]">
       [[if avatar_url]]
         <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
           <img src='[[:avatar_url]]' class='avatar'>
