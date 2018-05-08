@@ -58,6 +58,8 @@ var rows = [
   'token_value_time_peg',
   'web3_created',
   'status',
+  'work_scheme',
+  'application_scheme',
   'bounty_owner_address',
   'bounty_owner_email',
   'issue_description',
@@ -133,7 +135,13 @@ var callbacks = {
   'bounty_type': unknown_if_empty,
   'bounty_owner_github_username': gitcoin_ize,
   'bounty_owner_name': function(key, val, result) {
-    return [ 'bounty_owner_name', result.metadata.fullName ];
+    return [ 'bounty_owner_name', ucwords(result.metadata.fullName) ];
+  },
+  'application_scheme': function(key, val, result) {
+    return [ 'application_scheme', ucwords(result.application_scheme) ];
+  },
+  'work_scheme': function(key, val, result) {
+    return [ 'work_scheme', result.work_scheme ];
   },
   'issue_keywords': function(key, val, result) {
     if (!result.metadata.issueKeywords || result.metadata.issueKeywords.length == 0)
