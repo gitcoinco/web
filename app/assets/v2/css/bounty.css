@@ -352,6 +352,7 @@ a.btn {
 }
 
 #bounty_details #issue_description img {
+  max-height: 50rem;
   max-width: 100%;
 }
 
