@@ -745,7 +745,7 @@ def append_snooze_copy(bounty):
         plural = "s" if day != 1 else ""
         snooze.append(f"[{day} day{plural}]({bounty.snooze_url(day)})")
     snooze = " | ".join(snooze)
-    return "\nFunders only: Snooze warnings for " + snooze
+    return f"\nFunders only: Snooze warnings for {snooze}"
 
 
 def maybe_notify_user_removed_github(bounty, username, last_heard_from_user_days=None):
@@ -762,8 +762,8 @@ def maybe_notify_user_removed_github(bounty, username, last_heard_from_user_days
 
 * [x] warning ({num_days_back_to_warn} days)
 * [x] auto removal ({num_days_back_to_delete_interest} days)
-"""
-    msg += append_snooze_copy(bounty)
+{append_snooze_copy(bounty)}"""
+    
 
     post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
 
@@ -776,8 +776,7 @@ def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days):
     msg = f"""@{username} Hello from Gitcoin Core - are you still working on this issue? Please submit a WIP PR or comment back within the next 3 days or you will be removed from this ticket and it will be returned to an ‘Open’ status. Please let us know if you have questions!
 * [x] warning ({num_days_back_to_warn} days)
 * [ ] auto removal ({num_days_back_to_delete_interest} days)
-"""
-    msg += append_snooze_copy(bounty)
+{append_snooze_copy(bounty)}"""
 
     post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
 

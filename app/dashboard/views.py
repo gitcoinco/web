@@ -709,16 +709,16 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['avatar_url'] = bounty.get_avatar_url(True)
 
 
-                snooze_days = int(request.GET.get('snooze'))
+                snooze_days = int(request.GET.get('snooze', 0))
                 if snooze_days:
                     is_funder = bounty.is_funder(request.user.username.lower())
                     is_staff = request.user.is_staff
                     if is_funder or is_staff:
                         bounty.snooze_warnings_for_days = snooze_days
                         bounty.save()
-                        messages.success(request, f'Warning messages have been snoozed for {snooze_days} days')
+                        messages.success(request, _(f'Warning messages have been snoozed for {snooze_days} days'))
                     else:
-                        messages.warning(request, 'Only the funder of this bounty may snooze warnings.')
+                        messages.warning(request, _('Only the funder of this bounty may snooze warnings.'))
 
 
         except Bounty.DoesNotExist:

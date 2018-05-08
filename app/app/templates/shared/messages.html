@@ -15,9 +15,9 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 <script>
-    {% for message in messages %}
-        setTimeout(function(){
-            _alert({message: gettext('{{ message }}')}, '{{ message.tags }}');
-        }, 1000);
-    {% endfor %}
+  {% for message in messages %}
+    setTimeout(function(){
+      _alert({message: gettext('{{ message }}')}, '{{ message.tags }}');
+    }, 1000);
+  {% endfor %}
 </script>

@@ -226,7 +226,7 @@ class Bounty(SuperModel):
         return self.get_absolute_url()
 
     def snooze_url(self, num_days):
-        return self.get_absolute_url() + f'?snooze={num_days}'
+        return f'{self.get_absolute_url()}?snooze={num_days}'
 
     @property
     def can_submit_after_expiration_date(self):
