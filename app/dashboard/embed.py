@@ -425,10 +425,7 @@ def avatar(request, _org_name=None, add_gitcoincologo=None):
         response = HttpResponse(content_type="image/png")
         img.save(response, "PNG")
         return response
-    except IOError as e:
-        print(e)
-        return err_response
-    except AttributeError as e:
+    except (AttributeError, IOError, SyntaxError) as e:
         print(e)
         return err_response
 

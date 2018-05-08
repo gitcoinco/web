@@ -157,7 +157,7 @@ class Bounty(SuperModel):
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
-    
+
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
     token_value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_in_usdt_now = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
@@ -917,7 +917,7 @@ class Profile(SuperModel):
 
     """
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True)
     avatar = models.OneToOneField(Avatar, models.SET_NULL, null=True)
@@ -926,11 +926,15 @@ class Profile(SuperModel):
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES)
     slack_repos = ArrayField(models.CharField(max_length=200), blank=True, default=[])
-    slack_token = models.CharField(max_length=255, default='')
-    slack_channel = models.CharField(max_length=255, default='')
+    slack_token = models.CharField(max_length=255, default='', blank=True)
+    slack_channel = models.CharField(max_length=255, default='', blank=True)
     suppress_leaderboard = models.BooleanField(
         default=False,
         help_text='If this option is chosen, we will remove your profile information from the leaderboard',
+    )
+    hide_profile = models.BooleanField(
+        default=True,
+        help_text='If this option is chosen, we will remove your profile information all_together',
     )
     # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
     # Sample repos_data: https://gist.github.com/mbeacom/c9e4fda491987cb9728ee65b114d42c7
@@ -958,10 +962,10 @@ class Profile(SuperModel):
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
 
-    def has_abandoned_work(self):
+    def has_been_removed_by_staff(self):
         user_actions = UserAction.objects.filter(
             profile=self,
-            action='bounty_abandonment_final',
+            action='bounty_removed_by_staff',
             )
         return user_actions.exists()
 
@@ -1169,6 +1173,39 @@ class Profile(SuperModel):
     def get_profile_preferred_language(self):
         return settings.LANGUAGE_CODE if not self.pref_lang_code else self.pref_lang_code
 
+    def get_slack_repos(self, join=False):
+        """Get the profile's slack tracked repositories.
+
+        Args:
+            join (bool): Whether or not to return a joined string representation.
+                Defaults to: False.
+
+        Returns:
+            list of str: If joined is False, a list of slack repositories.
+            str: If joined is True, a combined string of slack repositories.
+
+        """
+        if join:
+            repos = ','.join(self.slack_repos)
+            return repos
+        return self.slack_repos
+
+    def update_slack_integration(self, token, channel, repos):
+        """Update the profile's slack integration settings.
+
+        Args:
+            token (str): The profile's slack token.
+            channel (str): The profile's slack channel.
+            repos (list of str): The profile's github repositories to track.
+
+        """
+        repos = repos.split()
+        self.slack_token = token
+        self.slack_repos = [repo.strip() for repo in repos]
+        self.slack_channel = channel
+        self.save()
+
+
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
     """Handle actions to take on user login."""
@@ -1228,6 +1265,8 @@ class UserAction(SuperModel):
     ACTION_TYPES = [
         ('Login', 'Login'),
         ('Logout', 'Logout'),
+        ('added_slack_integration', 'Added Slack Integration'),
+        ('removed_slack_integration', 'Removed Slack Integration'),
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
     user = models.ForeignKey(User, related_name='actions', on_delete=models.CASCADE, null=True)

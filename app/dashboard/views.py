@@ -44,7 +44,7 @@ from dashboard.notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
     maybe_market_to_twitter, maybe_market_to_user_slack,
 )
-from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, web3_process_bounty
+from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, record_user_action_on_interest, web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
@@ -180,9 +180,9 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
 
-    if profile.has_abandoned_work():
+    if profile.has_been_removed_by_staff():
         return JsonResponse({
-            'error': _('Due to a prior abandoned bounty, you are unable to start work at this time. Please contact support.'),
+            'error': _('Because a staff member has had to remove you from a bounty in the past, you are unable to start more work at this time. Please contact support.'),
             'success': False},
             status=401)
 
@@ -297,7 +297,9 @@ def uninterested(request, bounty_id, profile_id):
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
 
-    if not bounty.is_funder(request.user.username.lower()) and not request.user.is_staff:
+    is_funder = bounty.is_funder(request.user.username.lower())
+    is_staff = request.user.is_staff
+    if not is_funder and not is_staff:
         return JsonResponse(
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
@@ -307,6 +309,8 @@ def uninterested(request, bounty_id, profile_id):
         bounty.interested.remove(interest)
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
+        event_name = "bounty_removed_by_staff" if is_staff else "bounty_removed_by_funder"
+        record_user_action_on_interest(interest, event_name, None)
         interest.delete()
     except Interest.DoesNotExist:
         return JsonResponse({
@@ -780,6 +784,10 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     return TemplateResponse(request, 'bounty_details.html', params)
 
 
+class ProfileHiddenException(Exception):
+    pass
+
+
 def profile_helper(handle):
     """Define the profile helper.
 
@@ -808,6 +816,10 @@ def profile_helper(handle):
         # TODO: Should we handle merging or removing duplicate profiles?
         profile = Profile.objects.filter(handle__iexact=handle).latest('id')
         logging.error(e)
+    
+    if profile.hide_profile:
+        raise ProfileHiddenException
+
     return profile
 
 
@@ -853,13 +865,16 @@ def profile(request, handle):
         handle (str): The profile handle.
 
     """
-    if not handle and not request.user.is_authenticated:
-        return redirect('index')
-    elif not handle:
-        handle = request.user.username
-        profile = request.user.profile
-    else:
-        profile = profile_helper(handle)
+    try:
+        if not handle and not request.user.is_authenticated:
+            return redirect('index')
+        elif not handle:
+            handle = request.user.username
+            profile = request.user.profile
+        else:
+            profile = profile_helper(handle)
+    except ProfileHiddenException:
+        raise Http404
 
     params = {
         'title': f"@{handle}",

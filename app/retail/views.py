@@ -543,8 +543,7 @@ def browser_extension_firefox(request):
 
 
 def itunes(request):
-    return HttpResponse(_('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)'))
-    return redirect('https://itunes.apple.com/us/app/gitcoin/idXXXXXXXXX')
+    return redirect('https://itunes.apple.com/us/app/gitcoin/id1319426014')
 
 
 def ios(request):
