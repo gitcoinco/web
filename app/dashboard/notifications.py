@@ -774,13 +774,8 @@ def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days):
 
     msg = f"""@{username} Hello from Gitcoin Core - are you still working on this issue? Please submit a WIP PR or comment back within the next 3 days or you will be removed from this ticket and it will be returned to an ‘Open’ status. Please let us know if you have questions!
 * [x] warning ({num_days_back_to_warn} days)
-<<<<<<< HEAD
-* [ ] auto removal ({num_days_back_to_delete_interest} days)
-{append_snooze_copy(bounty)}"""
-=======
 * [ ] escalation to mods ({num_days_back_to_delete_interest} days)
-"""
->>>>>>> master
+{append_snooze_copy(bounty)}"""
 
     post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
 
