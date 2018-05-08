@@ -1,7 +1,7 @@
 let openSection;
 const layers = [
   'HatLong', 'HairLong', 'EarringBack', 'Clothing',
-  'Ears', 'Head', 'HairShort', 'HatShort', 'Earring', 'Beard',
+  'Ears', 'Head', 'HairShort', 'Earring', 'Beard', 'HatShort',
   'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses'
 ];
 const requiredLayers = [ 'Clothing', 'Ears', 'Head', 'Mouth', 'Nose', 'Eyes', 'Background' ];
@@ -183,6 +183,13 @@ function setOption(option, value, target) {
     $('#complete-notification').removeClass('d-none');
     $('#save-button').removeAttr('disabled');
   }
+}
+
+function saveAvatar() {
+  fetch('/set_avatar', {
+    method: 'POST',
+    body: JSON.stringify(options)
+  });
 }
 
 changeSection('Head');

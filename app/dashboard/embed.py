@@ -430,6 +430,6 @@ def avatar(request, _org_name=None, add_gitcoincologo=None):
         print(e)
         return err_response
 
-def set_avatar(request, user='smona'):
-    print(user)
+def set_avatar(request):
+    print(request, request.user)
     return HttpResponse('hello there! %s' % (user))
