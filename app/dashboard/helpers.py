@@ -373,7 +373,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         if not token_name:
             token = addr_to_token(token_address)
             if token:
-                token_name = token['addr']
+                token_name = token['name']
 
         for old_bounty in old_bounties:
             if old_bounty.current_bounty:
