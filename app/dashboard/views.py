@@ -170,6 +170,13 @@ def new_interest(request, bounty_id):
     except Bounty.DoesNotExist:
         raise Http404
 
+    is_too_many_already_started = bounty.work_scheme == 'traditional' and bounty.interested.count() > 0
+    if is_too_many_already_started:
+        return JsonResponse({
+            'error': _(f'There is already someone working on this bounty.'),
+            'success': False},
+            status=401)
+
     num_issues = 3
     active_bounties = Bounty.objects.current().filter(idx_status__in=['open', 'started'])
     num_active = Interest.objects.filter(profile_id=profile_id, bounty__in=active_bounties).count()

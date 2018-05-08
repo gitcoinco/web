@@ -139,7 +139,7 @@ $(document).ready(function() {
           },
           schemes: {
             work_scheme: data.work_scheme,
-            application_scheme: data.application_scheme,
+            application_scheme: data.application_scheme
           },
           funders: [],
           categories: metadata.issueKeywords.split(','),

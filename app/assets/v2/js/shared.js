@@ -95,10 +95,10 @@ var sanitizeAPIResults = function(results) {
   return results;
 };
 
-function ucwords (str) {
-    return (str + '').replace(/^([a-z])|\s+([a-z])/g, function ($1) {
-        return $1.toUpperCase();
-    });
+function ucwords(str) {
+  return (str + '').replace(/^([a-z])|\s+([a-z])/g, function($1) {
+    return $1.toUpperCase();
+  });
 }
 
 var sanitize = function(str) {

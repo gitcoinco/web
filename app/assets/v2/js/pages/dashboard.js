@@ -17,7 +17,7 @@ var sidebar_keys = [
   'idx_status',
   'tech_stack',
   'work_scheme',
-  'application_scheme',
+  'application_scheme'
 ];
 
 var localStorage;
@@ -455,6 +455,7 @@ var refreshBounties = function(event) {
       result['title'] = result['title'] ? result['title'] : result['github_url'];
 
       var work_scheme = ucwords(result['work_scheme']) + ' &bull; ';
+
       result['p'] = work_scheme + ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
 
       if (result['status'] === 'done')

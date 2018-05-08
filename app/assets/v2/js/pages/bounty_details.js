@@ -514,7 +514,8 @@ var do_actions = function(result) {
   pull_interest_list(result['pk'], function(is_interested) {
 
     // which actions should we show?
-    var show_start_stop_work = is_still_on_happy_path;
+    var should_block_from_starting_work = !is_interested && result['work_scheme'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted')
+    var show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work;
     var show_github_link = result['github_url'].substring(0, 4) == 'http';
     var show_submit_work = true;
     var show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
