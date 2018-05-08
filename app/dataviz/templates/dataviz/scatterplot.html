@@ -108,11 +108,28 @@ d3.csv(url, function(error, data) {
     stats[key].push(d.hourlyRate);
   });
 
+    function sortByKey(array, key) {
+        return array.sort(function(a, b) {
+            var x = a[key]; var y = b[key];
+            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+        });
+    }
+
+
+  _stats = []
   for (var key in stats) {
     stat = stats[key];
     var med = Math.round(median(stat));
     var stdDev = Math.round(standardDeviation(stat));
-    var html = "<tr><td>"+key+"</td><td>"+stat.length+"</td><td>"+med+"</td><td>"+stdDev+"</td></tr>";
+    _stats.push([key, stat.length, med, stdDev])
+  };
+
+  _stats = sortByKey(_stats, 2);
+  _stats.reverse()
+
+  for (var key in _stats) {
+    stat = _stats[key];
+    var html = "<tr><td>"+stat[0]+"</td><td>"+stat[1]+"</td><td>"+stat[2]+"</td><td>"+stat[3]+"</td></tr>";
     $("#tableview").append(html);
   };
 
