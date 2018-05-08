@@ -188,6 +188,6 @@ tokens = [
 
 def addr_to_token(addr):
     for token in tokens:
-        if(token['addr'] == addr):
+        if(token['addr'].lower() == addr.lower()):
             return token
     return False
