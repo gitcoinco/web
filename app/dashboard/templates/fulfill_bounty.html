@@ -21,6 +21,7 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}" />
   </head>
   <body class="interior {{active}}">
     {% include 'shared/tag_manager_2.html' %}
@@ -55,6 +56,10 @@
                       <div class="form__checkbox">
                           <input name='terms' required id='terms' type="checkbox" value=1 />
                           <label class="form__label" for="terms">{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>:{% endblocktrans %}</label>
+                      </div>
+                      <div class="form__checkbox">
+                          <input name='publicinfo' id='publicinfo' type="checkbox" value=1 required />
+                          <label class="form__label" for=publicinfo>{% blocktrans %}I understand that blockchains are public, and this info will be public{% endblocktrans %}</label>
                       </div>
                   </div>
                   {% include 'shared/bounty_actions_hidden_vars.html' %}
