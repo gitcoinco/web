@@ -64,36 +64,41 @@ function changeColor(palette, color) {
   $(`#picker-${options[palette]}`).addClass('selected');
 
   $(`.${palette}-dependent`).each(function(idx, elem) {
-    const pathSegments = elem.src.split('/');
+    const background = $(elem).css('background-image');
+    const url = background.split('"')[1];
+    const pathSegments = url.split('/');
     const filename = pathSegments.pop();
     const baseOption = filename.split('-').slice(0, -1).join('-');
 
     pathSegments.push(baseOption + '-' + color + '.svg');
-    elem.src = pathSegments.join('/');
+    $(elem).css('background-image', `url(${pathSegments.join('/')})`);
   });
 }
 
 function changeImage(option, path) {
+  console.log(option, path);
   if (options[option] !== null) { // option was previously selected
     const elem = $('#preview-' + option);
 
     if (path) {
-      elem.attr('src', path);
+      path = path.split('"')[1];
+      console.log(elem);
+      elem.css('background-image', `url(${path})`);
       options[option] = path;
     } else {
       elem.remove();
       options[option] = null;
     }
   } else if (path) { // option was previously blank
-    const newEl = $.parseHTML(`<img id="preview-${option}"
-    src="${path}"
+    path = path.split('"')[1];
+    const newEl = $.parseHTML(`<div id="preview-${option}"
     alt="${option} Preview"
-    style="z-index: ${layers.indexOf(option)}"
+    style="z-index: ${layers.indexOf(option)}; background-image: url(${path})"
     class="preview-section ${
   (sectionPalettes.hasOwnProperty(option) &&
     [ 'Eyes', 'Mouth', 'Nose' ].indexOf(option) < 0) ?
     `${sectionPalettes[option]}-dependent` : ''
-}" />`);
+}" ></div>`);
 
     $('#avatar-preview').append(newEl);
     options[option] = path;
@@ -122,7 +127,7 @@ function setOption(option, value, target) {
     case 'Ears':
     case 'Mouth':
     case 'Clothing':
-      changeImage(option, deselectingFlag && $(target).children()[0].src);
+      changeImage(option, deselectingFlag && $(target).children().css('background-image'));
       break;
     case 'Accessories':
       // TODO: this doesn't clear earringback when only front is used
@@ -130,9 +135,10 @@ function setOption(option, value, target) {
 
       valueArray.forEach((value, idx) => {
         const category = value.split('-')[0];
+        const optionDiv = $(target).children()[idx];
 
         $(`button[id*="${category}"]`, section).removeClass('selected');
-        changeImage(category, deselectingFlag && $(target).children()[idx].src);
+        changeImage(category, deselectingFlag && $(optionDiv).css('background-image'));
       });
       break;
     case 'HairStyle':
@@ -141,7 +147,7 @@ function setOption(option, value, target) {
 
         $(target).children().each((elemIdx, elem) => {
           if (idx === parseInt(elem.classList[0])) {
-            changeImage(layer, deselectingFlag && elem.src);
+            changeImage(layer, deselectingFlag && $(elem).css('background-image'));
             found = true;
           }
         });
@@ -153,9 +159,10 @@ function setOption(option, value, target) {
       break;
     case 'FacialHair':
       var layer = value.split('-')[0];
+      var optionDiv = $(target).children()[0];
 
       $(`button[id*="${layer}"]`, section).removeClass('selected');
-      changeImage(layer, deselectingFlag && $(target).children()[0].src);
+      changeImage(layer, deselectingFlag && $(optionDiv).css('background-image'));
       break;
     case 'Background':
       $('#avatar-preview').css('background-color', '#' + value);

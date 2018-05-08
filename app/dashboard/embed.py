@@ -1,3 +1,5 @@
+import os
+
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 
@@ -7,9 +9,8 @@ from economy.utils import convert_token_to_usdt
 from github.utils import get_user, org_name
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from ratelimit.decorators import ratelimit
+from svgutils.compose import SVG, Figure, Line
 from svgutils.transform import fromstring
-from svgutils.compose import Figure, SVG, Line
-import os
 
 AVATAR_BASE = 'assets/other/avatars/'
 

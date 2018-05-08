@@ -1,21 +1,21 @@
 {% comment %}
   Copyright (C) 2018 Gitcoin Core
- 
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published
   by the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
- 
+
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU Affero General Public License for more details.
- 
+
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
- 
+
 <div id="avatar-builder">
   <!-- Navigation Links -->
   <ul id="avatar-builder__sections">
@@ -25,7 +25,7 @@
     </a>
     {% endfor %}
   </ul>
- 
+
   <!-- Main editor area -->
   <div id="avatar-builder__editor">
     <h3 id="section-title">
@@ -35,13 +35,13 @@
         </span>
       {% endfor %}
     </h3>
- 
+
     <!-- Avatar preview -->
     <div id="avatar-area" class="d-flex flex-wrap justify-content-center">
       <div id="avatar-preview" class="mb-3"
         style="background-color: #{{ defaultBackground }}"
       ></div>
- 
+
       <!-- Options area for each section (hidden by default) -->
       {% for s in sections %}
       {% with s.name|cut:" " as id %}
@@ -55,47 +55,47 @@
             <button type="button" class="avatar-option" id="avatar-option-{{ id }}-{{ o }}"
               onclick="setOption('{{ id }}', '{{ o|addslashes }}', this)"
             >
- 
+
               {% if id == "Head" or id == "Ears" %}
                 {% with basePath|add:o|add:"-"|add:defaultSkinTone|add:".svg" as path %}
-                  <img class="SkinTone-dependent" src="{% static path %}" />
+                  <div class="SkinTone-dependent" style="background-image: url(/static/{{ path }});"></div>
                 {% endwith %}
- 
+
               {% elif id == "Clothing" %}
                 {% with basePath|add:o|add:"-"|add:defaultClothingColor|add:".svg" as path %}
-                  <img class="ClothingColor-dependent" src="{% static path %}" />
+                  <div class="ClothingColor-dependent" style="background-image: url(/static/{{ path }});"></div>
                 {% endwith %}
- 
+
               {% elif id == "HairStyle" %}
                 {% for part in o %}
                 {% with basePath|add:part|add:"-"|add:defaultHairColor|add:".svg" as path %}
                   {% if part != 'None' %}
-                    <img
+                    <div
                         class="{{ forloop.counter0 }} HairColor-dependent"
-                        src="{% static path %}"
-                    />
+                        style="background-image: url(/static/{{ path }});"
+                    ></div>
                   {% endif %}
                 {% endwith %}
                 {% endfor %}
- 
+
               {% elif id == "FacialHair" %}
                 {% with basePath|add:o|add:"-"|add:defaultHairColor|add:".svg" as path %}
-                  <img class="HairColor-dependent" src="{% static path %}" />
+                  <div class="HairColor-dependent" style="background-image: url(/static/{{ path }});"></div>
                 {% endwith %}
- 
+
               {% elif id == "Accessories" %}
                 {% for part in o %}
                 {% with basePath|add:part|add:".svg" as path %}
-                  <img src="{% static path %}" />
+                  <div style="background-image: url(/static/{{ path }});"></div>
                 {% endwith %}
                 {% endfor %}
- 
+
               {% elif id == 'Background' or id == 'SkinTone' or id == 'HairColor' %}
                 <div class="color-option" style="background-color: #{{ o }}" ></div>
- 
+
               {% else %}
                 {% with basePath|add:o|add:".svg" as path %}
-                  <img src="{% static path %}" />
+                  <div style="background-image: url(/static/{{ path }});" ></div>
                 {% endwith %}
               {% endif %}
             </button>
@@ -108,7 +108,7 @@
     <div id="color-picker"></div>
   </div>
 </div>
- 
+
 <!-- Button Row -->
 <div id="avatar-builder__actions">
   <span id="complete-notification" class="mr-3 d-none text-muted">
@@ -116,6 +116,7 @@
   </span>
   <a href="#" class="button">{% trans "Do This Later" %}</a>
   <button disabled
+    type="button"
     id="save-button" class="button"
     onclick="console.log(options)"
   >{% trans "Save Avatar" %}</button>
