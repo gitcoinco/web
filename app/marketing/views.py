@@ -91,7 +91,7 @@ def settings_helper_get_auth(request, key=None):
             pass
 
     # lazily create profile if needed
-    profiles = Profile.objects.filter(handle__iexact=github_handle).exclude(email='') if github_handle else Profile.objects.none()
+    profiles = Profile.objects.filter(handle__iexact=github_handle).exclude(email='').prefetch_related('alumni') if github_handle else Profile.objects.none()
     profile = None if not profiles.exists() else profiles.first()
     if not profile and github_handle:
         profile = sync_profile(github_handle, user=request.user)
