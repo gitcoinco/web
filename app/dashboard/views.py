@@ -813,6 +813,12 @@ def profile(request, handle):
         'stats': profile.stats,
         'bounties': profile.bounties,
         'tips': Tip.objects.filter(username=handle, network='mainnet'),
+        # TODO: Fill following with real data
+        'count_bounties_completed': 666,
+        'sum_eth_collected': 24.5,
+        'scoreboard_position_contributor': 1,
+        'sum_eth_funded': 32.2,
+        'scoreboard_position_funder': 1,
     }
     return TemplateResponse(request, 'profile_details.html', params)
 
