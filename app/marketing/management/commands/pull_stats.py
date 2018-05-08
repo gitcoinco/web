@@ -478,6 +478,23 @@ def whitepaper_access_request():
         )
 
 
+def get_skills_keyword_counts():
+    from marketing.models import EmailSubscriber
+    keywords = {}
+    for es in EmailSubscriber.objects.all():
+        for keyword in es.keywords:
+            keyword = keyword.strip().lower().replace(" ", "_")
+            if keyword not in keywords.keys():
+                keywords[keyword] = 0
+            keywords[keyword] += 1
+    for keyword, val in keywords.items():
+        print(keyword, val)
+        Stat.objects.create(
+            key=f"subscribers_with_skill_{keyword}",
+            val=(val),
+            )
+
+
 def email_events():
     from marketing.models import EmailEvent
 
@@ -498,6 +515,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         fs = [
+            get_skills_keyword_counts,
             github_issues,
             gitter,
             medium_subscribers,

@@ -25,6 +25,7 @@ body {
   overflow-x: hidden;
   width: 100%;
   height: 100%;
+  color: #000000;
   background-color: #0d023b;
   background-image: url('/static/yge/images/overlay.png'), -moz-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url('/static/v2/images/header-bg.png');
   background-image: url('/static/yge/images/overlay.png'), -webkit-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url('/static/v2/images/header-bg.png');
@@ -260,7 +261,7 @@ body,
 input,
 select,
 textarea {
-  color: #414f57;
+  color: #000000;
   font-size: 18px;
   font-weight: 400;
   line-height: 2;
@@ -301,11 +302,6 @@ a:before {
   transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
-strong,
-b {
-  color: #313f47;
-}
-
 em,
 i {
   font-style: italic;
@@ -321,7 +317,6 @@ h3,
 h4,
 h5,
 h6 {
-  color: #313f47;
   line-height: 1.5;
   margin: 0 0 0.75em 0;
 }
@@ -338,7 +333,7 @@ h6 a {
 
 h1 {
   font-weight: 300;
-  font-size: 1.85em;
+  font-size: 1.65em;
   letter-spacing: 0.2em;
   margin: 0 0 0.525em 0;
 }
@@ -506,7 +501,7 @@ input[type='radio'] {
 input[type='checkbox'] + label,
 input[type='radio'] + label {
   text-decoration: none;
-  color: #414f57;
+  color: #000000;
   cursor: pointer;
   display: inline-block;
   font-size: 1em;
@@ -726,103 +721,6 @@ dl dd {
   margin-left: 1.5em;
 }
 
-/* Button */
-
-input[type='submit'],
-input[type='reset'],
-input[type='button'],
-button,
-.button {
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  -ms-appearance: none;
-  appearance: none;
-  -moz-transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
-  -webkit-transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
-  -ms-transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
-  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
-  display: inline-block;
-  height: 2.75em;
-  line-height: 2.75em;
-  padding: 0 1.5em;
-  background-color: transparent;
-  border-radius: 4px;
-  border: solid 1px #c8cccf;
-  color: #414f57 !important;
-  cursor: pointer;
-  text-align: center;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-input[type='submit']:hover,
-input[type='reset']:hover,
-input[type='button']:hover,
-button:hover,
-.button:hover {
-  border-color: #ff7496;
-  color: #ff7496 !important;
-}
-
-input[type='submit'].icon,
-input[type='reset'].icon,
-input[type='button'].icon,
-button.icon,
-.button.icon {
-  padding-left: 1.35em;
-}
-
-input[type='submit'].icon:before,
-input[type='reset'].icon:before,
-input[type='button'].icon:before,
-button.icon:before,
-.button.icon:before {
-  margin-right: 0.5em;
-}
-
-input[type='submit'].fit,
-input[type='reset'].fit,
-input[type='button'].fit,
-button.fit,
-.button.fit {
-  display: block;
-  width: 100%;
-  margin: 0 0 0.75em 0;
-}
-
-input[type='submit'].small,
-input[type='reset'].small,
-input[type='button'].small,
-button.small,
-.button.small {
-  font-size: 0.8em;
-}
-
-input[type='submit'].big,
-input[type='reset'].big,
-input[type='button'].big,
-button.big,
-.button.big {
-  font-size: 1.35em;
-}
-
-input[type='submit'].disabled,
-input[type='submit']:disabled,
-input[type='reset'].disabled,
-input[type='reset']:disabled,
-input[type='button'].disabled,
-input[type='button']:disabled,
-button.disabled,
-button:disabled,
-.button.disabled,
-.button:disabled {
-  -moz-pointer-events: none;
-  -webkit-pointer-events: none;
-  -ms-pointer-events: none;
-  pointer-events: none;
-  opacity: 0.5;
-}
-
 .particles-js-canvas-el {
   z-index: 1;
   position: absolute;
@@ -992,11 +890,11 @@ body.is-ie #wrapper {
   height: 100%;
 }
 
-body #main a {
+body #main a:not(.button) {
   color: #fc7596;
 }
 
-body #main a:hover {
+body #main a:not(.button):hover {
   color: #ec5597;
 }
 
@@ -1044,4 +942,10 @@ p.alert_msg a {
   margin: 0px auto;
   display: block;
   height: 300px;
+}
+
+span.emoji {
+  letter-spacing: 0;
+  width: 0.85em;
+  display: inline-block;
 }

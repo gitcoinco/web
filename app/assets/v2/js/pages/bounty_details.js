@@ -220,7 +220,9 @@ var callbacks = {
     if (expires_date < new Date()) {
       label = 'expired';
       if (result['is_open']) {
-        $('.timeleft').text('Expired');
+        var soft = result['can_submit_after_expiration_date'] ? 'Soft ' : '';
+
+        $('.timeleft').text(soft + 'Expired');
         $('.progress-bar').addClass('expired');
         response = '<span title="This issue is past its expiration date, but it is still active.  Check with the submitter to see if they still want to see it fulfilled.">' + response.join(' ') + '</span>';
       } else {

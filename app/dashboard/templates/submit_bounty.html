@@ -53,10 +53,10 @@
                                 <div class="w-100 mt-2 amount_container">
                                     <label class="form__label" for="amount">{% trans "Amount" %}</label>
                                     <div class="form__flex-group">
-                                        <div class="form__amount-wrapper">
-                                            <input name='amount' id='amount'  class="form__input" type="number" placeholder="Amount" value="{{amount}}" step="0.001" min="0.001" />
+                                        <div class="col-6 form__amount-wrapper">
+                                            <input name='amount' id='amount'  class="form__input" type="number" value="{{amount|default:'0.001'}}" step="0.001" min="0.001" />
                                         </div>
-                                        <div class="form__group-item">
+                                        <div class="col-6 form__group-item">
                                             <div class="form__select2">
                                                 <select name='deonomination' id='token'></select>
                                             </div>
