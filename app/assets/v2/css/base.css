@@ -1040,12 +1040,26 @@ input[type=text].loading {
 
 .profile-bounties .bounty_row {
   padding: 0;
-  border-bottom: 1px solid #D3D3D3;
+  border-top: 1px solid #D3D3D3;
+}
+
+.profile-bounties .bounty_row:first-child {
+  border-top: none;
+}
+
+.profile-bounties .bounty_row--hidden {
+  display: none;
 }
 
 .profile-bounties .bounty-summary {
   padding-left: 0;
   padding-right: 0;
+}
+
+.profile-bounties .profile-bounties__btn-show-all {
+  border-color: #D3D3D3;
+  font-size: 14px;
+  font-weight: 300;
 }
 
 /* END Profile details */
