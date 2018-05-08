@@ -324,8 +324,8 @@ def new_match(to_emails, bounty, github_username):
 
 
 def quarterly_stats(to_emails=None, platform_wide_stats=None):
-    # if not platform_wide_stats:
-    #     return
+    if not platform_wide_stats:
+        return
 
     if to_emails is None:
         to_emails = []
@@ -334,7 +334,10 @@ def quarterly_stats(to_emails=None, platform_wide_stats=None):
         cur_language = translation.get_language()
         try:
             setup_lang(to_email)
-            subject = "Quarterly Stats at Gitcoin!"
+            quarter = int(timezone.now().month / 3) + 1
+            year = timezone.now().year
+            date = f"Q{quarter} {year}"
+            subject = f"Your Quarterly Gitcoin Stats ({date})"
             html, text = render_quarterly_stats(to_email, platform_wide_stats)
             print("-----" * 100)
             print(html)

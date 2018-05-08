@@ -20,53 +20,244 @@
 
 {% block content %}
 
+<style>
+  h1, h2, h3, h4 {
+    text-transform: none;
+    color: #0D0764;
+  }
+
+  h2 {
+    margin-top: 3em;
+  }
+
+  h4 {
+    color: #9B9B9B;
+  }
+
+  hr {
+    color: #E0E0E0;
+  }
+
+  .primary-content {
+    margin-left: 20%;
+    margin-right: 20%;
+    padding: 5em;
+  }
+
+  .social-img {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .total-transaction {
+    background-color: #D6FBEB;
+    color: #00A55E;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .stat-box {
+    display: flex;
+    margin-bottom: 2em;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #e0e0e0;
+    padding: 1em;
+  }
+
+  .stat-img {
+    text-align: center;
+    border-width: 1px;
+    border-radius: 50%;
+    width: 15%;
+  }
+
+  .stat-img > .content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-contents {
+    color: #0D0764;
+    text-align: left;
+    width: 85%;
+    height: 100px;
+    align-items: center;
+    display: flex;
+    justify-content: left;
+  }
+
+  .stat-contents > p {
+    color: #0D0764;
+    padding: 1em;
+  }
+
+  .bounty-img {
+    border-radius: 50%;
+    background-color: #DBD0FF;
+    color: #3E00FF;
+    float: left;
+    width: 5em;
+    height: 5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .bounty-fund-img {
+    border-radius: 50%;
+    background-color: #D6FBEB;
+    color: #00A55E;
+    float: right;
+    width: 5em;
+    height: 5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -3em;
+    margin-left: -1.3em;
+
+  }
+
+  .stat {
+    display: flex;
+    padding: 0.5em;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #grow-oss {
+    margin-top: 5em;
+  }
+
+  .button-action {
+    margin-bottom: 5em;
+    margin-top: 3em;
+  }
+
+  .percent-content {
+    display: flex;
+    justify-content: center;
+  }
+
+  .button-action > .button {
+    padding: 1.3em;
+  }
+
+  .full-bordered-circle {
+    border-radius: 100%;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #eeeeee;
+  }
+</style>
+<div class="stat-container">
     <h1>GITCOIN QUARTERLY</h1>
 
     {% if user_active_in_last_quarter %}
         <h2>You've Been BUILDing</h2>
-        <h3>An overview of your stats from the last 3 months.</h3>
-        <p>
-            You earned {{user_total_earned_eth}} ETH ({{user_total_earned_usd}} USD) from {{user_fulfilled_bounties_count}} completed bounties, for an average of {{user_avg_eth_earned_per_bounty}} ETH ({{ user_avg_usd_earned_per_bounty}} USD) per bounty!
-        </p>
-        <p>
-            You completed {{user_bounty_completion_percentage}}% of the {{user_num_completed_bounties}} bounties that you started - thanks for showing such diligence.
-        </p>
-        <p>
-            {% comment %}
-            TODO: Find where we can fetch the below info from.
-            {% endcomment %}
-            You've boosted your skills in 4 different languages: HTML, CSS, Python, and JavaScript!
-        </p>
+        <h4>An overview of your stats from the last 3 months.</h4>
+        <div class="centered-contents stat-box">
+            <div class="stat-img total-transaction">
+                <p class="content">{{user_total_earned_usd}} USD</p>
+            </div>
+            <div class="stat-contents">
+                <p>You earned {{user_total_earned_eth}} ETH ({{user_total_earned_usd}} USD) from {{user_fulfilled_bounties_count}} completed bounties, for an average of {{user_avg_eth_earned_per_bounty}} ETH ({{ user_avg_usd_earned_per_bounty}} USD) per bounty!</p>
+            </div>
+        </div>
+        <div class="centered-contents stat-box">
+            <div class="stat-img full-bordered-circle percent-content">
+                <p class="content">{{user_bounty_completion_percentage}} %</p>
+            </div>
+            <div class="stat-contents">
+                <p>You completed {{user_bounty_completion_percentage}}% of the {{user_num_completed_bounties}} bounties that you started - thanks for showing such diligence.</p>
+            </div>
+        </div>
+        <div class="centered-contents stat-box">
+            <div class="stat-img full-bordered-circle">
+                <i class="fas fa-seedling"></i>
+            </div>
+            <div class="stat-contents">
+                {% comment %}
+                TODO: Find where we can fetch the below info from.
+                {% endcomment %}
+                <p>You've boosted your skills in 4 different languages: HTML, CSS, Python, and JavaScript!</p>
+            </div>
+        </div>
+
+        <div class="button-action">
+            {# TODO: Add link to the button #}
+            <a class="button" href="">{% trans "Share my stats" %}</a>
+        </div>
     {% endif %}
 
-    <h2>Platform-wide Stats</h2>
-    <h3>Activity happening across the Gitcoin network</h3>
-    <p>
-        Over the past 3 months, {{bounties_completion_percent}}% of the {{total_funded_bounties}} funded bounties on the Gitcoin network were completed.
-    </p>
-    <p>
-        A total of {{num_completed_bounties}} bounties were funded an average of ${{avg_fund_per_bounty}} per bounty, for a total of ${{completed_bounties_fund}} USD.
-    </p>
-    <p>
-        The top 5 hunters in this quarter were
-        {% for hunter in hunters %}
-            {% if forloop.counter == no_of_hunters %}
-              &amp;
-            {% elif forloop.first %}
-            {% else %}
-              ,
-            {% endif %}
-            <a href="https://github.com/{{hunter}}">{{hunter}}</a>
-        {% endfor %}
-    </p>
-    <p>
-        {% comment %}
-        TODO: Find where we can fetch the below info from.
-        {% endcomment %}
-        A total of value of $132,810 USD was transacted on the Gitcoin network-812 ETH, 20,000 DAI, and 12,400 WYV.
-    </p>
-    <p>
-        The largest bounty of the quarter was funded by @<a href="https://github.com/{{largest_bounty.bounty_owner_github_username}}">{{largest_bounty.bounty_owner_github_username}}</a> for ${{largest_bounty.value_in_usdt}} for <a href="{{largest_bounty.get_absolute_url}}">{{largest_bounty.title}}</a>.
-    </p>
+    <hr>
 
+    <h2>Platform-wide Stats</h2>
+    <h4>Activity happening across the Gitcoin network</h4>
+    <div class="centered-contents stat-box">
+        <div class="stat-img full-bordered-circle percent-content">
+            <p class="content">{{bounties_completion_percent}} %</p>
+        </div>
+        <div class="stat-contents">
+            <p>Over the past 3 months, {{bounties_completion_percent}}% of the {{total_funded_bounties}} funded bounties on the Gitcoin network were completed.</p>
+        </div>
+    </div>
+    <div class="centered-contents stat-box">
+        <div class="stat-img">
+            <p class="content bounty-img">{{num_completed_bounties}} bounties</p>
+            <p class="content bounty-fund-img">{{completed_bounties_fund}} USD</p>
+        </div>
+        <div class="stat-contents">
+            <p>A total of {{num_completed_bounties}} bounties were funded an average of ${{avg_fund_per_bounty}} per bounty, for a total of ${{completed_bounties_fund}} USD.</p>
+        </div>
+    </div>
+    <div class="centered-contents stat-box">
+        <div class="stat-img">
+            {% for hunter in hunters %}
+            <img style="border-radius: 50%; width: 35%;" src="https://gitcoin.co/static/avatar/{{hunter}}" />
+            {% endfor %}
+        </div>
+        <div class="stat-contents">
+            <p>The top {{hunters|length}} hunters in this quarter were
+            {% for hunter in hunters %}
+                {% if forloop.counter == no_of_hunters %}
+                    &amp;
+                {% elif forloop.first %}
+                {% else %},{% endif %}
+                <a href="https://github.com/{{hunter}}">@{{hunter}}</a>
+            {% endfor %}</p>
+        </div>
+    </div>
+    <div class="centered-contents stat-box">
+        <div class="stat-img total-transaction">
+            <p class="content">{{total_transaction_in_usd}} USD</p>
+        </div>
+        <div class="stat-contents">
+            {% comment %}
+            TODO: These are currently hard-coded in variables.
+            {% endcomment %}
+            <p>A total of value of ${{total_transaction_in_usd}} USD was transacted on the Gitcoin network - {{total_transaction_in_eth}} ETH, {{total_transaction_in_dai}} DAI, and {{total_transaction_in_wyv}} WYV.</p>
+        </div>
+    </div>
+    <div class="centered-contents stat-box">
+        <div class="stat-img">
+            <img style="width: 100%; border-radius: 50%;" src="https://gitcoin.co/static/avatar/{{largest_bounty.bounty_owner_github_username}}" />
+        </div>
+        <div class="stat-contents">
+            <p>
+                The largest bounty of the quarter was funded by
+                @<a href="https://github.com/{{largest_bounty.bounty_owner_github_username}}">{{largest_bounty.bounty_owner_github_username}}</a>
+                for ${{largest_bounty.value_in_usdt}} for
+                <a href="{{largest_bounty.get_absolute_url}}">{{largest_bounty.title}}</a>.
+            </p>
+        </div>
+    </div>
+    <div class="button-action">
+        <a class="button" href="https://gitcoin.co/explorer">{% trans "Explore New Bounties" %}</a>
+    </div>
+    <hr>
+</div>
 {% endblock %}

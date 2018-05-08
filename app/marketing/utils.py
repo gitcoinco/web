@@ -17,6 +17,7 @@
 
 '''
 import logging
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.utils.translation import gettext
@@ -141,3 +142,59 @@ def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=
             invite_to_slack(email)
 
     return es
+
+
+def get_platform_wide_stats(since_last_n_days=90):
+    """
+    get platform wide stats for quarterly stats email
+    """
+    # Import here to avoid circular import within utils
+    from dashboard.models import Bounty, BountyFulfillment
+
+    last_n_days = datetime.now() - timedelta(days=since_last_n_days)
+    bounties = Bounty.objects.stats_eligible().filter(created_on__gte=last_n_days)
+    total_bounties = bounties.count()
+    completed_bounties = bounties.filter(idx_status__in=['done'])
+    num_completed_bounties = completed_bounties.count()
+    bounties_completion_percent = (num_completed_bounties / total_bounties) * 100
+
+    completed_bounties_fund = sum([
+        bounty.value_in_usdt if bounty.value_in_usdt else 0
+        for bounty in completed_bounties
+    ])
+    if num_completed_bounties:
+        avg_fund_per_bounty = completed_bounties_fund / num_completed_bounties
+    else:
+        avg_fund_per_bounty = 0
+
+    avg_fund_per_bounty = float('%.2f' % avg_fund_per_bounty)
+    completed_bounties_fund = float('%.2f' % completed_bounties_fund)
+    bounties_completion_percent = float('%.2f' % bounties_completion_percent)
+
+    largest_bounty = Bounty.objects.filter(created_on__gte=last_n_days).order_by('-value_in_token').first()
+
+    bounty_fulfillments = BountyFulfillment.objects.filter(
+        accepted_on__gte=last_n_days).order_by('-bounty__value_in_token')[:5]
+    profiles = bounty_fulfillments.values_list('fulfiller_github_username')
+    hunters = [username[0] for username in profiles]
+
+    # Overall transactions across the network are hard-coded for now
+    total_transaction_in_usd = "132,810"
+    total_transaction_in_dai = "20,000"
+    total_transaction_in_eth = "812"
+    total_transaction_in_wyv = "12,400"
+
+    return {
+        'total_funded_bounties': total_bounties,
+        'bounties_completion_percent': bounties_completion_percent,
+        'no_of_hunters': len(hunters),
+        'num_completed_bounties': num_completed_bounties,
+        'completed_bounties_fund': completed_bounties_fund,
+        'avg_fund_per_bounty': avg_fund_per_bounty,
+        'hunters': hunters,
+        'largest_bounty': largest_bounty,
+        "total_transaction_in_usd": total_transaction_in_usd,
+        "total_transaction_in_dai": total_transaction_in_dai,
+        "total_transaction_in_eth": total_transaction_in_eth,
+        "total_transaction_in_wyv": total_transaction_in_wyv
+    }

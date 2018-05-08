@@ -79,6 +79,7 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     profile = Profile.objects.get(email=to_email)
     quarterly_stats = profile.get_quarterly_stats
     params = {**quarterly_stats, **platform_wide_stats}
+    params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),
     print(params)
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
     response_txt = render_to_string("emails/quarterly_stats.txt", params)
@@ -323,7 +324,7 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-This week, we published <a href="https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748">our vision piece on how open source money will create more open source jobs</a>. We’re excited to explain our vision for the future including concepts like many-to-many jobs, flash organizations, and more. <a href="https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748">We hope you’ll give it a read</a>. 
+This week, we published <a href="https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748">our vision piece on how open source money will create more open source jobs</a>. We’re excited to explain our vision for the future including concepts like many-to-many jobs, flash organizations, and more. <a href="https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748">We hope you’ll give it a read</a>.
 
 <span style="width: 100%; text-align:center; display: block">
 <a href="https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748">
@@ -339,7 +340,9 @@ This week, we published <a href="https://medium.com/gitcoin/open-source-money-wi
 <a href="https://blog.ethereum.org/2018/05/02/announcing-may-2018-cohort-ef-grants/">We received a $25K grant from the Ethereum Foundation</a>! We’re grateful for the opportunity to partner with the foundation and increase the pace of bounties as a result of the grant. 
         </li>
         <li>
-        Did you know that you can integrate Gitcoin into your slack channel for instant notifications about updates to your bounties? <a href="https://gitcoin.co/settings/slack">Set it up here</a> 
+            Did you know that you can integrate Gitcoin into your slack channel for
+            instant notifications about updates to your bounties?
+            <a href="https://gitcoin.co/settings/slack">Set it up here</a>
         </li>
         <li>
 <strong> Calling all project managers! </strong>  Are you interested in paid work in the intersection blockchain and open source?  Send us your resume at <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a> or just respond to this email.
@@ -351,7 +354,7 @@ This week, we published <a href="https://medium.com/gitcoin/open-source-money-wi
 No livestream this week!  We're busy meeting Ethereum community members and learning about the future of Ethereum scalability at <a href="https://edcon.io">Edcon</a>, but will be back as regularly scheduled next week. Happy coding! 
 </p>
 <p>
-I hope to see you on <a href="https://gitcoin.co/slack">Slack</a> or on <a href="https://github.com/gitcoinco/web">Github</a>. If you’re interested in growing open source and have some extra time, come by. 
+I hope to see you on <a href="https://gitcoin.co/slack">Slack</a> or on <a href="https://github.com/gitcoinco/web">Github</a>. If you’re interested in growing open source and have some extra time, come by.
 
 </p>
 
@@ -529,4 +532,12 @@ def faucet_rejected(request):
 @staff_member_required
 def roundup(request):
     response_html, _, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def quarterly_roundup(request):
+    from marketing.utils import get_platform_wide_stats
+    platform_wide_stats = get_platform_wide_stats()
+    response_html, _ = render_quarterly_stats(settings.CONTACT_EMAIL, platform_wide_stats)
     return HttpResponse(response_html)

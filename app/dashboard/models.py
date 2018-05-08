@@ -61,7 +61,7 @@ class BountyQuerySet(models.QuerySet):
 
     def stats_eligible(self):
         """Exclude results that we don't want to track in statistics."""
-        return self.exclude(idx_status__in=['unknown', 'cancelled'])
+        return self.exclude(current_bounty=True, idx_status__in=['unknown', 'cancelled'])
 
     def exclude_by_status(self, excluded_statuses=None):
         """Exclude results with a status matching the provided list."""
@@ -1070,7 +1070,6 @@ class Profile(SuperModel):
         user_active_in_last_quarter = False
         last_quarter = datetime.now() - timedelta(days=90)
         bounties = self.bounties.filter(modified_on__gte=last_quarter)
-        loyalty_rate = 0
         fulfilled_bounties = [
             bounty for bounty in bounties if bounty.is_hunter(self.handle) and bounty.status == 'done'
         ]
@@ -1079,6 +1078,7 @@ class Profile(SuperModel):
             bounty.value_in_eth if bounty.value_in_eth else 0
             for bounty in fulfilled_bounties
         ])
+        total_earned_eth /= 10**18
         total_earned_usd = sum([
             bounty.value_in_usdt if bounty.value_in_usdt else 0
             for bounty in fulfilled_bounties
@@ -1095,6 +1095,9 @@ class Profile(SuperModel):
 
         if num_completed_bounties or fulfilled_bounties_count:
             user_active_in_last_quarter = True
+
+        completetion_percent = float('%.2f' % completetion_percent)
+        avg_eth_earned_per_bounty = float('%.2f' % avg_eth_earned_per_bounty)
 
         return {
             'user_total_earned_eth': total_earned_eth,
