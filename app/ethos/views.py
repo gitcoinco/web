@@ -18,10 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
+import base64
 import json
+import urllib
 
 from django.conf import settings
-from django.http import Http404, JsonResponse
+from django.core.files.base import ContentFile
+from django.http import Http404, HttpResponse, JsonResponse
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -36,11 +39,61 @@ from web3 import HTTPProvider, Web3
 
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
+abi = json.loads(
+    '[{"constant":true,"inputs":[],"name":"mintingFinished","outputs":[{"name":"","type":"bool"}],'
+    '"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],'
+    '"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view",'
+    '"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},'
+    '{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],'
+    '"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],'
+    '"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,'
+    '"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from",'
+    '"type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],'
+    '"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,'
+    '"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals",'
+    '"outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},'
+    '{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],'
+    '"name":"mint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable",'
+    '"type":"function"},{"constant":true,"inputs":[],"name":"version","outputs":[{"name":"",'
+    '"type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,'
+    '"inputs":[{"name":"_spender","type":"address"},{"name":"_subtractedValue","type":"uint256"}],'
+    '"name":"decreaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,'
+    '"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner",'
+    '"type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],'
+    '"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],'
+    '"name":"finishMinting","outputs":[{"name":"","type":"bool"}],"payable":false,'
+    '"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner",'
+    '"outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view",'
+    '"type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"",'
+    '"type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,'
+    '"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer",'
+    '"outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable",'
+    '"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},'
+    '{"name":"_addedValue","type":"uint256"}],"name":"increaseApproval","outputs":[{"name":"",'
+    '"type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,'
+    '"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],'
+    '"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,'
+    '"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"newOwner",'
+    '"type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,'
+    '"stateMutability":"nonpayable","type":"function"},{"payable":false,"stateMutability":"nonpayable",'
+    '"type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"to","type":"address"},'
+    '{"indexed":false,"name":"amount","type":"uint256"}],"name":"Mint","type":"event"},'
+    '{"anonymous":false,"inputs":[],"name":"MintFinished","type":"event"},{"anonymous":false,'
+    '"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,'
+    '"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},'
+    '{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,'
+    '"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],'
+    '"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from",'
+    '"type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value",'
+    '"type":"uint256"}],"name":"Transfer","type":"event"}]')
+
+# Instantiate EthOS contract
+contract = w3.eth.contract(Web3.toChecksumAddress(settings.ETHOS_CONTRACT_ADDRESS), abi=abi)
+
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def redeem_coin(request, shortcode):
-    print(shortcode)
 
     if request.body:
         status = 'OK'
@@ -79,57 +132,6 @@ def redeem_coin(request, shortcode):
 
             address = Web3.toChecksumAddress(address)
 
-            abi = json.loads(
-                '[{"constant":true,"inputs":[],"name":"mintingFinished","outputs":[{"name":"","type":"bool"}],'
-                '"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],'
-                '"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view",'
-                '"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},'
-                '{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],'
-                '"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],'
-                '"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,'
-                '"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from",'
-                '"type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],'
-                '"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,'
-                '"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals",'
-                '"outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},'
-                '{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],'
-                '"name":"mint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable",'
-                '"type":"function"},{"constant":true,"inputs":[],"name":"version","outputs":[{"name":"",'
-                '"type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,'
-                '"inputs":[{"name":"_spender","type":"address"},{"name":"_subtractedValue","type":"uint256"}],'
-                '"name":"decreaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,'
-                '"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner",'
-                '"type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],'
-                '"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],'
-                '"name":"finishMinting","outputs":[{"name":"","type":"bool"}],"payable":false,'
-                '"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner",'
-                '"outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view",'
-                '"type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"",'
-                '"type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,'
-                '"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer",'
-                '"outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable",'
-                '"type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},'
-                '{"name":"_addedValue","type":"uint256"}],"name":"increaseApproval","outputs":[{"name":"",'
-                '"type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,'
-                '"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],'
-                '"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,'
-                '"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"newOwner",'
-                '"type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,'
-                '"stateMutability":"nonpayable","type":"function"},{"payable":false,"stateMutability":"nonpayable",'
-                '"type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"to","type":"address"},'
-                '{"indexed":false,"name":"amount","type":"uint256"}],"name":"Mint","type":"event"},'
-                '{"anonymous":false,"inputs":[],"name":"MintFinished","type":"event"},{"anonymous":false,'
-                '"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,'
-                '"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},'
-                '{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,'
-                '"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],'
-                '"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from",'
-                '"type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value",'
-                '"type":"uint256"}],"name":"Transfer","type":"event"}]')
-
-            # Instantiate EthOS contract
-            contract = w3.eth.contract(Web3.toChecksumAddress(settings.ETHOS_CONTRACT_ADDRESS), abi=abi)
-
             tx = contract.functions.transfer(address, n * 10**18).buildTransaction({
                 'nonce': w3.eth.getTransactionCount(settings.ETHOS_ACCOUNT_ADDRESS),
                 'gas': 100000,
@@ -155,19 +157,53 @@ def redeem_coin(request, shortcode):
 
             # TODO: Send `this coin has been shared <num_scans> times. The top coin has been shared <num_scans> times`
 
-            tweet_to_twitter()
+            nodes = []
+            edges = []
+
+            # construct json for the graph viz
+            for h in Hop.objects.all():
+                node = {
+                    'name': h.twitter_username,
+                    'img': '/ethos/proxy/?image=' + h.twitter_profile_pic
+                }
+
+                try:
+                    target = nodes.index(node)
+                except ValueError:
+                    nodes.append(node)
+                    target = len(nodes) - 1
+
+                # Add edge
+                if h.previous_hop:
+                    node_prev = nodes.index({
+                        'name': h.previous_hop.twitter_username,
+                        'img': '/ethos/proxy/?image=' + h.previous_hop.twitter_profile_pic
+                    })
+                    edges.append({'source': node_prev, 'target': target, 'distance': 200})
+                # TODO: Update distance based on the time spent between the hop
+
         except ShortCode.DoesNotExist:
             status = 'error'
             message = _('Bad request')
+        except ValueError as e:
+            if 'replacement transaction underpriced' in str(e):
+                # TODO: Handle replacement tx
+                print('replacement transaction underpriced')
+
+            status = 'error'
+            message = _('Error while creating transaction. Please try again')
         except Exception as e:
             status = 'error'
             message = str(e)
 
-        # http response
+        # API Response
         response = {
             'status': status,
             'message': message,
         }
+
+        if status == 'OK':
+            response['dataset'] = {'nodes': nodes, 'edges': edges}
 
         return JsonResponse(response)
 
@@ -184,32 +220,43 @@ def redeem_coin(request, shortcode):
         raise Http404
 
 
-def tweet_to_twitter():
-    """Tweet the EthOS redemption.
+@csrf_exempt
+def tweet_to_twitter(request):
 
-    Args:
+    if request.body:
+        status = 'OK'
 
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
 
-    Returns:
-        bool: Whether or not the twitter notification was sent successfully.
+        media = body['media']
+        username = body['username']
 
-    """
-    twitter_api = get_twitter_api()
+        twitter_api = get_twitter_api()
 
-    if not twitter_api:
-        return False
+        if not twitter_api:
+            status = 'error'
+        else:
+            try:
+                data = ContentFile(base64.b64decode(media), name='graph.png')
+                data.mode = 'rb'
+                tweet_txt = f'Redeemed EthOS Coin successfully by @{username}: \n\n #EthOS'
+                twitter_api.PostUpdate(tweet_txt, media=data)
+            except twitter.error.TwitterError:
+                status = 'error'
 
-    tweet_txt = "Redeemed EthOS Coin successfully: \n\n #EthOS"
+        # http response
+        response = {
+            'status': status
+        }
 
-    try:
-        twitter_api.PostUpdate(tweet_txt)
-    except twitter.error.TwitterError:
-        return False
-
-    return True
+        return JsonResponse(response)
+    else:
+        raise Http404
 
 
 def get_twitter_api():
+
     if not settings.ETHOS_TWITTER_CONSUMER_KEY:
         return False
 
@@ -224,3 +271,12 @@ def get_twitter_api():
         return False
 
     return twitter_api
+
+
+def proxy(request):
+
+    image = urllib.parse.unquote(request.GET.get('image'))
+    req = urllib.request.Request(image)
+    resp = urllib.request.urlopen(req)
+
+    return HttpResponse(resp.read())

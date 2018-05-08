@@ -27,6 +27,9 @@
 <script src="{% static "yge/redeem_ethos.js" %}"></script>
 <script src="{% static "yge/youvegoteth/confetti.js" %}"></script>
 <script src="{% static "yge/youvegoteth/web3alert.js" %}"></script>
+<script src="{% static "v2/js/canvas-to-blob.min.js" %}"></script>
+<script src="{% static "v2/js/saveSvgAsPng.min.js" %}"></script>
+<script src="https://d3js.org/d3.v3.min.js"></script>
 {% endblock %}
 <!-- Main -->
 {% block 'world' %}
@@ -76,5 +79,6 @@
       <br>
     </div>
   </div>
+  <div id="graph" style="display: none;"></div>
 </section>
 {% endblock %}

@@ -121,7 +121,7 @@ urlpatterns = [
     url(r'^coin/redeem/(.*)/?', dashboard.views.redeem_coin, name='redeem'),
 
     # EthOS
-    url(r'^ethos/(.*)/?', ethos.views.redeem_coin, name='redeem_coin'),
+    path('ethos/', include('ethos.urls', namespace='ethos')),
 
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
