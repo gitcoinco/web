@@ -723,7 +723,7 @@ class ProfileHiddenException(Exception):
     pass
 
 
-def profile_helper(handle):
+def profile_helper(handle, suppress_profile_hidden_exception=False):
     """Define the profile helper.
 
     Args:
@@ -752,7 +752,7 @@ def profile_helper(handle):
         profile = Profile.objects.filter(handle__iexact=handle).latest('id')
         logging.error(e)
     
-    if profile.hide_profile:
+    if profile.hide_profile and not suppress_profile_hidden_exception:
         raise ProfileHiddenException
 
     return profile
@@ -765,7 +765,7 @@ def profile_keywords_helper(handle):
         handle (str): The profile handle.
 
     """
-    profile = profile_helper(handle)
+    profile = profile_helper(handle, True)
 
     keywords = []
     for repo in profile.repos_data:
