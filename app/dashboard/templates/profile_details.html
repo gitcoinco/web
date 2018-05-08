@@ -48,7 +48,7 @@
                   <img src="{% static "v2/images/social/web.png" %}" alt="Medium">
                 </a>
               </li>
-              {% if profile.data.email %}
+              {% if profile.data.email and user.is_authenticated %}
                 <li>
                   <a href="mailto:{{profile.data.email | obfuscate}}">
                     <img src="{% static "v2/images/social/mail.png" %}" alt="Medium">

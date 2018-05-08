@@ -262,7 +262,7 @@
               [[:text]]
             </div>
             [[if uninterest_possible]]
-              <div>
+              <div class="stop-work">
                 <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
                   <a id="remove-[[:name]]" class="button button--primary" role="button" href="remove-handle">
                     <span class="font-smaller-4">Stop work</span>
@@ -295,6 +295,7 @@
     document.issueURL = '{{issueURL}}';
     document.issueNetwork = '{{network}}';
     document.issue_stdbounties_id = '{{stdbounties_id}}';
+    document.isStaff = '{{is_staff}}';
   </script>
 
   <!-- jQuery -->

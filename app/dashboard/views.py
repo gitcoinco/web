@@ -23,12 +23,12 @@ import logging
 import time
 
 from django.conf import settings
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -109,9 +109,9 @@ def helper_handle_access_token(request, access_token):
     request.session['profile_id'] = profile.pk
 
 
-def create_new_interest_helper(bounty, user):
+def create_new_interest_helper(bounty, user, has_question, issue_message):
     profile_id = user.profile.pk
-    interest = Interest.objects.create(profile_id=profile_id)
+    interest = Interest.objects.create(profile_id=profile_id, has_question=has_question, issue_message=issue_message)
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
     maybe_market_to_slack(bounty, 'start_work')
@@ -126,6 +126,14 @@ def gh_login(request):
     return redirect('social:begin', backend='github')
 
 
+def get_interest_modal(request):
+    context = {
+        'active': 'get_interest_modal',
+        'title': _('Add Interest'),
+    }
+    return TemplateResponse(request, 'addinterest.html', context)
+
+
 @csrf_exempt
 @require_POST
 def new_interest(request, bounty_id):
@@ -134,7 +142,7 @@ def new_interest(request, bounty_id):
     :request method: POST
 
     Args:
-        post_id (int): ID of the Bounty.
+        bounty_id (int): ID of the Bounty.
 
     Returns:
         dict: The success key with a boolean value and accompanying error.
@@ -146,8 +154,11 @@ def new_interest(request, bounty_id):
     if access_token:
         helper_handle_access_token(request, access_token)
         github_user_data = get_github_user_data(access_token)
-        profile = Profile.objects.filter(handle=github_user_data['login']).first()
+        profile = Profile.objects.prefetch_related('bounty_set') \
+            .filter(handle=github_user_data['login']).first()
         profile_id = profile.pk
+    else:
+        profile = request.user.profile if profile_id else None
 
     if not profile_id:
         return JsonResponse(
@@ -165,7 +176,13 @@ def new_interest(request, bounty_id):
     is_working_on_too_much_stuff = num_active >= num_issues
     if is_working_on_too_much_stuff:
         return JsonResponse({
-            'error': f'You may only work on max of {num_issues} issues at once.',
+            'error': _(f'You may only work on max of {num_issues} issues at once.'),
+            'success': False},
+            status=401)
+
+    if profile.has_abandoned_work():
+        return JsonResponse({
+            'error': _('Due to a prior abandoned bounty, you are unable to start work at this time. Please contact support.'),
             'success': False},
             status=401)
 
@@ -176,7 +193,10 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
     except Interest.DoesNotExist:
-        interest = create_new_interest_helper(bounty, request.user)
+        has_question = request.POST.get("has_question") == 'true'
+        issue_message = request.POST.get("issue_message")
+        interest = create_new_interest_helper(bounty, request.user, has_question, issue_message)
+
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
             .filter(profile_id=profile_id) \
@@ -277,7 +297,7 @@ def uninterested(request, bounty_id, profile_id):
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
 
-    if not bounty.is_funder(request.user.username.lower()):
+    if not bounty.is_funder(request.user.username.lower()) and not request.user.is_staff:
         return JsonResponse(
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
@@ -441,6 +461,13 @@ def send_tip_2(request):
     }
 
     return TemplateResponse(request, 'yge/send2.html', params)
+
+
+@staff_member_required
+def onboard(request):
+    """Handle displaying the first time user experience flow."""
+    params = {'title': _('Onboarding Flow')}
+    return TemplateResponse(request, 'onboard.html', params)
 
 
 def dashboard(request):
@@ -608,7 +635,7 @@ def cancel_bounty(request, pk):
 
     params = {
         'bounty': bounty,
-        'title': _('Kill Bounty'),
+        'title': _('Cancel Bounty'),
         'active': 'kill_bounty',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
@@ -656,6 +683,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         'is_github_token_valid': is_github_token_valid(_access_token),
         'github_auth_url': get_auth_url(request.path),
         "newsletter_headline": _("Be the first to know about new funded issues."),
+        'is_staff': request.user.is_staff,
     }
 
     if issue_url:
@@ -687,6 +715,10 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     return TemplateResponse(request, 'bounty_details.html', params)
 
 
+class ProfileHiddenException(Exception):
+    pass
+
+
 def profile_helper(handle):
     """Define the profile helper.
 
@@ -715,6 +747,10 @@ def profile_helper(handle):
         # TODO: Should we handle merging or removing duplicate profiles?
         profile = Profile.objects.filter(handle__iexact=handle).latest('id')
         logging.error(e)
+    
+    if profile.hide_profile:
+        raise ProfileHiddenException
+
     return profile
 
 
@@ -760,13 +796,16 @@ def profile(request, handle):
         handle (str): The profile handle.
 
     """
-    if not handle and not request.user.is_authenticated:
-        return redirect('index')
-    elif not handle:
-        handle = request.user.username
-        profile = request.user.profile
-    else:
-        profile = profile_helper(handle)
+    try:
+        if not handle and not request.user.is_authenticated:
+            return redirect('index')
+        elif not handle:
+            handle = request.user.username
+            profile = request.user.profile
+        else:
+            profile = profile_helper(handle)
+    except ProfileHiddenException:
+        raise Http404
 
     params = {
         'title': f"@{handle}",

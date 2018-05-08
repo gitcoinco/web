@@ -36,6 +36,7 @@ body {
   height: 2px;
   width: 50%;
 }
+
 .progress-bar.expired .progress {
   background-color: #f7981b;
 }
@@ -198,6 +199,7 @@ body {
   margin-bottom: 5px;
   display: block;
 }
+
 #network a{
   color: #fb9470;
   font-weight: bold;
@@ -291,6 +293,7 @@ a.btn {
 }
 
 #btn-white {
+  background-color: #FFFFFF;
   border: 1px solid #979797;
   color: #0D0764;
   border-radius: 3px;
@@ -299,11 +302,11 @@ a.btn {
 
 #btn-white img {
   position: absolute;
-  width: 20px;
-  top: 5px;
-  right: 8px;
+  width: 1.313rem;
+  top: 0.4375rem;
+  right: 0.4375rem;
 }
- 
+
 .comment {
   border-left: 1px solid #979797;
   padding-right: 20px;
@@ -313,10 +316,11 @@ a.btn {
 #btn-white .github-comment {
   color: #FFFFFF;
   position: absolute;
-  font-size: 10px;
+  font-size: 0.625rem;
   text-align: center;
-  width: 20px;
-  right: 8px;
+  width: 1.25rem;
+  top: 0.4375rem;
+  right: 0.5rem;
 }
 
 .activity {
@@ -393,6 +397,10 @@ a.btn {
   margin: 5px;
 }
 
+.stop-work {
+  float: right;
+}
+
 @media (max-width: 575px) {
 
   #timer {
@@ -447,4 +455,53 @@ a.btn {
   .explorer {
     display: none;
   }
+}
+
+@media (min-width: 768px) {
+  .activity-time {
+    margin-left: 0.625rem;
+  }
+}
+
+#add_interest form > div {
+  margin-top: 10px;
+}
+
+.add-interest-modal {
+  height: auto;
+  width: 100%;
+}
+
+#add_interest form {
+  padding: 1em;
+  width: 100%;
+}
+
+#issue-message {
+  min-height: 6em;
+}
+
+.add-interest-options {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+#add_interest form .filter-label {
+  display: inline;
+  margin-left: 0.625rem;
+}
+
+.add-interest-options > .option {
+  width: auto;
+}
+
+.btn-interested {
+  float: right;
+  padding: 0.375rem 0.9375rem;
+  font-size: 12px;
+}
+
+.close:hover, .close:focus {
+  box-shadow: none;
 }

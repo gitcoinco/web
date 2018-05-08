@@ -53,6 +53,7 @@ CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
 ENABLE_NOTIFICATIONS_ON_NETWORK = env(
     'ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
 
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -66,6 +67,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django.contrib.sitemaps',
     'django.contrib.sites',
+    'django_extensions',
     'app',
     'retail',
     'rest_framework',
@@ -84,6 +86,7 @@ INSTALLED_APPS = [
     'credits',
     'gitcoinbot',
     'external_bounties',
+    'dataviz',
 ]
 
 MIDDLEWARE = [
@@ -110,7 +113,11 @@ AUTHENTICATION_BACKENDS = (
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['retail/templates/', 'external_bounties/templates/'],
+        'DIRS': [
+            'retail/templates/',
+            'external_bounties/templates/',
+            'dataviz/templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -325,6 +332,7 @@ TWITTER_USERNAME = env('TWITTER_USERNAME', default='') # TODO
 # Slack Integration
 # optional: only needed if you slack things
 SLACK_TOKEN = env('SLACK_TOKEN', default='') # TODO
+SLACK_WELCOMEBOT_TOKEN = env('SLACK_WELCOMEBOT_TOKEN', default='') # TODO
 
 # Reporting Integrations
 MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
@@ -361,7 +369,14 @@ if ROLLBAR_SERVER_TOKEN:
         'root': BASE_DIR,
         'patch_debugview': False,  # Disable debug view patching.
         'branch': 'master',
-        'exception_level_filters': [(Http404, 'info')]
+        'exception_level_filters': [(Http404, 'ignored')],
+        'scrub_fields': [
+            'pw', 'passwd', 'password', 'secret', 'confirm_password', 'confirmPassword',
+            'password_confirmation', 'passwordConfirmation', 'access_token', 'accessToken',
+            'auth', 'authentication', 'github_access_token', 'github_client_secret',
+            'secret_key', 'twitter_access_token', 'twitter_access_secret', 'twitter_consumer_secret',
+            'mixpanel_token', 'slack_verification_token', 'redirect_state', 'slack_token', 'priv_key',
+        ],
     }
     MIDDLEWARE.append('rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
     rollbar.init(**ROLLBAR)

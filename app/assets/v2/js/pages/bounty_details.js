@@ -136,11 +136,11 @@ var callbacks = {
     return [ 'bounty_owner_name', result.metadata.fullName ];
   },
   'issue_keywords': function(key, val, result) {
+    if (!result.metadata.issueKeywords || result.metadata.issueKeywords.length == 0)
+      return [ 'issue_keywords', null ];
+
     var keywords = result.metadata.issueKeywords.split(',');
     var tags = [];
-
-    if (result.metadata.issueKeywords.length == 0)
-      return [ 'issue_keywords', null ];
 
     keywords.forEach(function(keyword) {
       tags.push('<a href="/explorer/?q=' + keyword.trim() + '"><div class="tag keyword">' + keyword + '</div></a>');
@@ -220,7 +220,9 @@ var callbacks = {
     if (expires_date < new Date()) {
       label = 'expired';
       if (result['is_open']) {
-        $('.timeleft').text('Expired');
+        var soft = result['can_submit_after_expiration_date'] ? 'Soft ' : '';
+
+        $('.timeleft').text(soft + 'Expired');
         $('.progress-bar').addClass('expired');
         response = '<span title="This issue is past its expiration date, but it is still active.  Check with the submitter to see if they still want to see it fulfilled.">' + response.join(' ') + '</span>';
       } else {
@@ -405,16 +407,55 @@ var attach_work_actions = function() {
   $('body').delegate('a[href="/interested"], a[href="/uninterested"]', 'click', function(e) {
     e.preventDefault();
     if ($(this).attr('href') == '/interested') {
-      $(this).attr('href', '/uninterested');
-      $(this).find('span').text('Stop Work');
-      add_interest(document.result['pk']);
-    } else {
+      show_interest_modal.call(this);
+    } else if (confirm(gettext('Are you sure you want to remove your interest?'))) {
       $(this).attr('href', '/interested');
       $(this).find('span').text('Start Work');
       remove_interest(document.result['pk']);
     }
+
   });
 };
+
+var show_interest_modal = function() {
+  var self = this;
+
+  setTimeout(function() {
+    $.get('/interest/modal', function(newHTML) {
+      var modal = $(newHTML).appendTo('body').modal({
+        modalClass: 'modal add-interest-modal'
+      });
+
+      modal.on('submit', function(event) {
+        event.preventDefault();
+
+        var has_question = event.target[0].value;
+        var issue_message = event.target[2].value;
+
+        var agree_precedence = event.target[3].checked;
+        var agree_not_to_abandon = event.target[4].checked;
+
+        if (!agree_precedence) {
+          alert('You must agree to the precedence clause.');
+          return false;
+        }
+        if (!agree_not_to_abandon) {
+          alert('You must agree not to keep the fulfiller updated on your progress.');
+          return false;
+        }
+
+        $(self).attr('href', '/uninterested');
+        $(self).find('span').text(gettext('Stop Work'));
+        add_interest(document.result['pk'], {
+          has_question,
+          issue_message
+        });
+        $.modal.close();
+      });
+    });
+  });
+};
+
 
 var build_detail_page = function(result) {
 
@@ -685,7 +726,7 @@ var render_activity = function(result) {
         created_on: _interested.created,
         age: timeDifference(new Date(result['now']), new Date(_interested.created)),
         status: 'started',
-        uninterest_possible: isBountyOwner(result)
+        uninterest_possible: isBountyOwner(result) || document.isStaff
       });
     });
   }

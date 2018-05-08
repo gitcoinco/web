@@ -198,7 +198,7 @@ def reject_faucet_request(fr):
         translation.activate(cur_language)
 
 
-def new_bounty(bounties, to_emails=None):
+def new_bounty_daily(bounties, old_bounties, to_emails=None):
     if not bounties:
         return
     max_bounties = 10
@@ -209,14 +209,14 @@ def new_bounty(bounties, to_emails=None):
     plural = "s" if len(bounties) != 1 else ""
     worth = round(sum([bounty.value_in_usdt for bounty in bounties if bounty.value_in_usdt]), 2)
     worth = f" worth ${worth}" if worth else ""
-    subject = _(f"⚡️  {len(bounties)} New Funded Issue{plural}{worth} matching your profile")
+    subject = _(f"⚡️  {len(bounties)} New Open Funded Issue{plural}{worth} matching your profile")
 
     for to_email in to_emails:
         cur_language = translation.get_language()
         try:
             setup_lang(to_email)
             from_email = settings.CONTACT_EMAIL
-            html, text = render_new_bounty(to_email, bounties)
+            html, text = render_new_bounty(to_email, bounties, old_bounties)
 
             if not should_suppress_notification_email(to_email, 'transactional'):
                 send_mail(from_email, to_email, subject, text, html)

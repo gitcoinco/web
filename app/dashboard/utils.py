@@ -17,8 +17,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-
 import json
+import logging
 import subprocess
 import time
 
@@ -32,6 +32,8 @@ from hexbytes import HexBytes
 from ipfsapi.exceptions import CommunicationError
 from web3 import HTTPProvider, Web3
 from web3.exceptions import BadFunctionCallOutput
+
+logger = logging.getLogger(__name__)
 
 
 class BountyNotFoundException(Exception):
@@ -73,7 +75,7 @@ def create_user_action(user, action_type, request=None, metadata=None):
         metadata = {}
 
     kwargs = {
-        'metadata': {},
+        'metadata': metadata,
         'action': action_type,
         'user': user
     }
@@ -93,9 +95,9 @@ def create_user_action(user, action_type, request=None, metadata=None):
         UserAction.objects.create(**kwargs)
         return True
     except Exception as e:
-        print(f'Failure in UserAction.create_action - ({e})')
+        logger.error(f'Failure in UserAction.create_action - ({e})')
         rollbar.report_message(
-            f'Failure in UserAction.create_action - ({e})', 'warning', extra_data=kwargs)
+            f'Failure in UserAction.create_action - ({e})', 'error', extra_data=kwargs)
         return False
 
 
@@ -356,3 +358,21 @@ def build_profile_pairs(bounty):
             addr = f"https://etherscan.io/address/{fulfillment.fulfiller_address}"
             profile_handles.append((fulfillment.fulfiller_address, addr))
     return profile_handles
+
+
+def get_ordinal_repr(num):
+    """Handle cardinal to ordinal representation of numeric values.
+
+    Args:
+        num (int): The integer to be converted from cardinal to ordinal numerals.
+
+    Returns:
+        str: The ordinal representation of the provided integer.
+
+    """
+    ordinal_suffixes = {1: 'st', 2: 'nd', 3: 'rd'}
+    if 10 <= num % 100 <= 20:
+        suffix = 'th'
+    else:
+        suffix = ordinal_suffixes.get(num % 10, 'th')
+    return f'{num}{suffix}'

@@ -21,7 +21,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.validators import validate_email, validate_slug
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -29,82 +29,75 @@ from django.utils import timezone
 from django.utils.html import escape, strip_tags
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from faucet.models import FaucetRequest
-from github.utils import search_github
 from marketing.mails import new_faucet_request, processed_faucet_request, reject_faucet_request
 
 
+@require_GET
 def faucet(request):
-    faucet_amount = getattr(settings, "FAUCET_AMOUNT", .003)
     params = {
         'title': 'Faucet',
         'card_title': _('Gitcoin Faucet'),
         'card_desc': _('Request a distribution of ETH so you can use the Ethereum network and Gitcoin.'),
-        'faucet_amount': faucet_amount
+        'faucet_amount': settings.FAUCET_AMOUNT
     }
 
     return TemplateResponse(request, 'faucet_form.html', params)
 
 
-def check_github(profile):
-    user = search_github(profile + ' in:login type:user')
-    response = {'status': 200, 'user': False}
-    user_items = user.get('items', [])
-
-    if user_items and user_items[0].get('login', '').lower() == profile.lower():
-        response['user'] = user_items[0]
-    return response
-
-
 @csrf_exempt
+@require_POST
 def save_faucet(request):
-    github_profile = request.POST.get('githubProfile')
+    """Handle saving faucet requests."""
     email_address = request.POST.get('emailAddress')
     eth_address = request.POST.get('ethAddress')
-    profile_handle = request.user.profile.handle if request.user.is_authenticated and request.user.profile and hasattr(request.user, 'profile') else ''
+    is_authenticated = request.user.is_authenticated
+    profile = request.user.profile if is_authenticated and hasattr(request.user, 'profile') else None
 
-    if request.user and request.user.is_authenticated and request.user.username:
-        profile_handle = request.user.username
+    if not profile:
+        return JsonResponse({
+            'message': _('You must be authenticated via github to use this feature!')
+        }, status=401)
 
     try:
-        validate_slug(github_profile)
-        validate_email(email_address)
         validate_slug(eth_address)
+        if email_address:
+            validate_email(email_address)
     except Exception as e:
         return JsonResponse({'message': str(e)}, status=400)
 
-    comment = escape(strip_tags(request.POST.get('comment')))
-    checkeduser = check_github(github_profile)
-    if FaucetRequest.objects.filter(fulfilled=True, github_username=github_profile):
+    comment = escape(strip_tags(request.POST.get('comment', '')))
+    if profile.faucet_requests.filter(fulfilled=True):
         return JsonResponse({
             'message': _('The submitted github profile shows a previous faucet distribution.')
         }, status=403)
-    elif FaucetRequest.objects.filter(github_username=github_profile, rejected=False):
+    elif profile.faucet_requests.filter(rejected=False):
         return JsonResponse({
             'message': _('The submitted github profile shows a pending faucet distribution.')
         }, status=403)
-    elif not checkeduser:
-        return JsonResponse({
-            'message': _('The submitted github profile could not be found on github.')
-        }, status=400)
     fr = FaucetRequest.objects.create(
         fulfilled=False,
-        github_username=github_profile,
-        input_github_username=profile_handle,
-        github_meta=checkeduser,
+        github_username=request.user.username,
+        github_meta={},
         address=eth_address,
-        email=email_address,
+        email=email_address if email_address else request.user.email,
         comment=comment,
+        profile=profile,
     )
     new_faucet_request(fr)
 
     return JsonResponse({'message': _('Created.')}, status=201)
 
 
+@require_http_methods(['GET', 'POST'])
 @staff_member_required
 def process_faucet_request(request, pk):
-    faucet_request = FaucetRequest.objects.get(pk=pk)
+    try:
+        faucet_request = FaucetRequest.objects.get(pk=pk)
+    except FaucetRequest.DoesNotExist:
+        raise Http404
 
     faucet_amount = settings.FAUCET_AMOUNT
 
@@ -116,23 +109,22 @@ def process_faucet_request(request, pk):
         messages.info(request, 'already rejected')
         return redirect(reverse('admin:index'))
 
-    if request.POST.get('reject_comments', False):
-        faucet_request.comment_admin = request.POST.get('reject_comments', False)
+    reject_comments = request.POST.get('reject_comments')
+    if reject_comments:
+        faucet_request.comment_admin = reject_comments
         faucet_request.rejected = True
         faucet_request.save()
         reject_faucet_request(faucet_request)
         messages.success(request, 'rejected')
-
         return redirect(reverse('admin:index'))
 
-    if request.POST.get('destinationAccount', False):
+    if request.POST.get('destinationAccount'):
         faucet_request.fulfilled = True
         faucet_request.fulfill_date = timezone.now()
-        faucet_request.amount = settings.FAUCET_AMOUNT
+        faucet_request.amount = faucet_amount
         faucet_request.save()
         processed_faucet_request(faucet_request)
         messages.success(request, 'sent')
-
         return redirect(reverse('admin:index'))
 
     faucet_amount = settings.FAUCET_AMOUNT
