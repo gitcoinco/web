@@ -872,7 +872,6 @@ class Interest(models.Model):
 
     profile = models.ForeignKey('dashboard.Profile', related_name='interested', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    has_question = models.BooleanField(default=False)
     issue_message = models.TextField(default='', blank=True)
 
     def __str__(self):
