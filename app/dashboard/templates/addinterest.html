@@ -67,8 +67,8 @@
           <div class="login__text">
             {% trans "Please login with Github to get started." %}
           </div>
-          <a class="button button--primary" href={{login_link}} onclick="dataLayer.push({'event': 'login'});">
-            Login
+          <a class="button button--primary login__button" href={{login_link}} onclick="dataLayer.push({'event': 'login'});">
+            <i class="fab fa-github"></i> <span>{% trans "Login With Github" %}</span>
           </a>
         </div>
       </div>
