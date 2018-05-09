@@ -17,6 +17,7 @@ valued.
   * [Step 3: Code](#step-3-code)
   * [Step 4: Commit](#step-4-commit)
   * [Step 5: Rebase](#step-5-rebase)
+  * [Step 6: PRs](#step-6-PRs)
 
 ## Code of Conduct
 
@@ -96,6 +97,7 @@ To keep the style of the Javascript code consistent we have a basic linting conf
   * 1 tab = 2 spaces for `.html` and `.js` files
   * 1 tab = 4 spaces for everything else
 * Use `rem` for CSS when applicable
+* Add relevant unit tests for all new Python logic and update existing tests to accommodate new logic.
 
 ### Step 4: Commit
 
