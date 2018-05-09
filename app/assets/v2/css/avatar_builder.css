@@ -14,7 +14,7 @@
   justify-content: center;
 }
 #avatar-builder__sections li {
-  width: 130px;
+  width: 10rem;
   padding: 5px;
   color: #15003E;
   text-decoration: none;
@@ -95,8 +95,8 @@ button.avatar-option {
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  font-size: 20px;
-  line-height: 25px;
+  font-size: 1.2rem;
+  line-height: 1.2rem;
 }
 .avatar-option:hover {
   border: 2px solid #00BB61;
@@ -123,7 +123,6 @@ button.avatar-option {
 .avatar-option.selected::after {
   content: url('/static/v2/images/check.svg');
   background-color: #150069;
-  line-height: 20px;
 }
 .optional .avatar-option.selected:hover {
   border-color: #FFA400 !important;
@@ -134,7 +133,7 @@ button.avatar-option {
 }
 .optional .avatar-option.selected:hover::after {
   background-color: #FFA400;
-  content: '—';
+  content: '-';
 }
 .color-option {
   width: 100%;
@@ -142,7 +141,7 @@ button.avatar-option {
 }
 #avatar-builder__actions {
   text-align: right;
-  margin-top: 30px;
+  margin-top: 2rem;
 }
 #color-picker {
   text-align: center;
