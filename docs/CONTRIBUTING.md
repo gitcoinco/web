@@ -17,7 +17,7 @@ valued.
   * [Step 3: Code](#step-3-code)
   * [Step 4: Commit](#step-4-commit)
   * [Step 5: Rebase](#step-5-rebase)
-  * [Step 6: PRs](#step-6-PRs)
+  * [Step 6: PRs](#step-6-prs)
 
 ## Code of Conduct
 
