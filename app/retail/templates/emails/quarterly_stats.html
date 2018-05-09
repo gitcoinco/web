@@ -83,7 +83,7 @@
     color: #0D0764;
     text-align: left;
     width: 85%;
-    height: 100px;
+    /*height: 100px;*/
     align-items: center;
     display: flex;
     justify-content: left;
@@ -152,6 +152,47 @@
     border-width: 5px;
     border-color: #eeeeee;
   }
+
+  .user-skill-1 {
+    background-color: rgba(255, 206, 8, .20);
+    color: rgba(255, 206, 8, 1);
+  }
+
+  .user-skill-2 {
+    background-color: rgba(249, 0, 198, .20);
+    color: rgba(249, 0, 198, 1);
+  }
+
+  .user-skill-3 {
+    background-color: rgba(142, 42, 90, .20);
+    color: rgba(142, 42, 90, 1);
+  }
+
+  .user-skill-4 {
+    background-color: rgba(62, 0, 255, .20);
+    color: rgba(62, 0, 255, 1);
+  }
+
+  .user-skill-lang {
+    margin: 0.2em;
+    border-radius: 0.2em;
+    padding: 0.2em;
+  }
+
+  @media screen and (max-width: 600px) {
+    .primary-content {
+      margin-left: 10%;
+      margin-right: 10%;
+      padding: 0.3em;
+    }
+
+    .stat-box {
+      padding: 0 !important;
+    }
+    .stat-contents {
+      width: 100% !important;
+    }
+  }
 </style>
 <div class="stat-container">
     <h1>GITCOIN QUARTERLY</h1>
@@ -176,14 +217,23 @@
             </div>
         </div>
         <div class="centered-contents stat-box">
-            <div class="stat-img full-bordered-circle">
-                <i class="fas fa-seedling"></i>
+            <div class="stat-img">
+                  {% for language in user_languages %}
+                    <div class="user-skill-lang user-skill-{{forloop.counter}}">
+                      {{language}}
+                    </div>
+                  {% endfor %}
             </div>
             <div class="stat-contents">
-                {% comment %}
-                TODO: Find where we can fetch the below info from.
-                {% endcomment %}
-                <p>You've boosted your skills in 4 different languages: HTML, CSS, Python, and JavaScript!</p>
+                <p>You've boosted your skills in 4 different languages:
+                  {% for language in user_languages %}
+                      {% if forloop.counter == user_no_of_languages %}
+                          and
+                      {% elif forloop.first %}
+                      {% else %},{% endif %}
+                      {{language}}
+                  {% endfor %}!
+                </p>
             </div>
         </div>
 

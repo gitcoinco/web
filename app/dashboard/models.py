@@ -1096,8 +1096,15 @@ class Profile(SuperModel):
         if num_completed_bounties or fulfilled_bounties_count:
             user_active_in_last_quarter = True
 
+        # Round to 2 places of decimals to be diplayed in templates
         completetion_percent = float('%.2f' % completetion_percent)
         avg_eth_earned_per_bounty = float('%.2f' % avg_eth_earned_per_bounty)
+        total_earned_eth = float('%.2f' % total_earned_eth)
+        total_earned_usd = float('%.2f' % total_earned_usd)
+
+        # TODO: fill these in on the backend
+        user_languages = ['HTML', 'CSS', 'Python', 'JavaScript']
+        user_no_of_languages = len(user_languages)
 
         return {
             'user_total_earned_eth': total_earned_eth,
@@ -1107,7 +1114,9 @@ class Profile(SuperModel):
             'user_avg_usd_earned_per_bounty': avg_usd_earned_per_bounty,
             'user_num_completed_bounties': num_completed_bounties,
             'user_bounty_completion_percentage': completetion_percent,
-            'user_active_in_last_quarter': user_active_in_last_quarter
+            'user_active_in_last_quarter': user_active_in_last_quarter,
+            'user_no_of_languages': user_no_of_languages,
+            'user_languages': user_languages
         }
 
     @property
