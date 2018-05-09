@@ -76,24 +76,20 @@ function changeColor(palette, color) {
 }
 
 function changeImage(option, path) {
-  console.log(option, path);
   if (options[option] !== null) { // option was previously selected
     const elem = $('#preview-' + option);
 
     if (path) {
-      path = path.split('"')[1];
-      console.log(elem);
-      elem.css('background-image', `url(${path})`);
+      elem.css('background-image', `url(/static/${path})`);
       options[option] = path;
     } else {
       elem.remove();
       options[option] = null;
     }
   } else if (path) { // option was previously blank
-    path = path.split('"')[1];
     const newEl = $.parseHTML(`<div id="preview-${option}"
     alt="${option} Preview"
-    style="z-index: ${layers.indexOf(option)}; background-image: url(${path})"
+    style="z-index: ${layers.indexOf(option)}; background-image: url(/static/${path})"
     class="preview-section ${
   (sectionPalettes.hasOwnProperty(option) &&
     [ 'Eyes', 'Mouth', 'Nose' ].indexOf(option) < 0) ?
@@ -127,7 +123,7 @@ function setOption(option, value, target) {
     case 'Ears':
     case 'Mouth':
     case 'Clothing':
-      changeImage(option, deselectingFlag && $(target).children().css('background-image'));
+      changeImage(option, deselectingFlag && $(target).children().data('path'));
       break;
     case 'Accessories':
       // TODO: this doesn't clear earringback when only front is used
@@ -138,7 +134,7 @@ function setOption(option, value, target) {
         const optionDiv = $(target).children()[idx];
 
         $(`button[id*="${category}"]`, section).removeClass('selected');
-        changeImage(category, deselectingFlag && $(optionDiv).css('background-image'));
+        changeImage(category, deselectingFlag && $(optionDiv).data('path'));
       });
       break;
     case 'HairStyle':
@@ -147,7 +143,7 @@ function setOption(option, value, target) {
 
         $(target).children().each((elemIdx, elem) => {
           if (idx === parseInt(elem.classList[0])) {
-            changeImage(layer, deselectingFlag && $(elem).css('background-image'));
+            changeImage(layer, deselectingFlag && $(elem).data('path'));
             found = true;
           }
         });
@@ -162,7 +158,7 @@ function setOption(option, value, target) {
       var optionDiv = $(target).children()[0];
 
       $(`button[id*="${layer}"]`, section).removeClass('selected');
-      changeImage(layer, deselectingFlag && $(optionDiv).css('background-image'));
+      changeImage(layer, deselectingFlag && $(optionDiv).data('path'));
       break;
     case 'Background':
       $('#avatar-preview').css('background-color', '#' + value);

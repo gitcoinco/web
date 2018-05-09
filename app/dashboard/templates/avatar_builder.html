@@ -58,12 +58,20 @@
 
               {% if id == "Head" or id == "Ears" %}
                 {% with basePath|add:o|add:"-"|add:defaultSkinTone|add:".svg" as path %}
-                  <div class="SkinTone-dependent" style="background-image: url(/static/{{ path }});"></div>
+                  <div
+                    class="SkinTone-dependent"
+                    style="background-image: url(/static/{{ path }});"
+                    data-path="{{ path }}"
+                  ></div>
                 {% endwith %}
 
               {% elif id == "Clothing" %}
                 {% with basePath|add:o|add:"-"|add:defaultClothingColor|add:".svg" as path %}
-                  <div class="ClothingColor-dependent" style="background-image: url(/static/{{ path }});"></div>
+                  <div
+                    class="ClothingColor-dependent"
+                    style="background-image: url(/static/{{ path }});"
+                    data-path="{{ path }}"
+                  ></div>
                 {% endwith %}
 
               {% elif id == "HairStyle" %}
@@ -73,6 +81,7 @@
                     <div
                         class="{{ forloop.counter0 }} HairColor-dependent"
                         style="background-image: url(/static/{{ path }});"
+                        data-path="{{ path }}"
                     ></div>
                   {% endif %}
                 {% endwith %}
@@ -80,22 +89,36 @@
 
               {% elif id == "FacialHair" %}
                 {% with basePath|add:o|add:"-"|add:defaultHairColor|add:".svg" as path %}
-                  <div class="HairColor-dependent" style="background-image: url(/static/{{ path }});"></div>
+                  <div
+                    class="HairColor-dependent"
+                    style="background-image: url(/static/{{ path }});"
+                    data-path="{{ path }}"
+                  ></div>
                 {% endwith %}
 
               {% elif id == "Accessories" %}
                 {% for part in o %}
                 {% with basePath|add:part|add:".svg" as path %}
-                  <div style="background-image: url(/static/{{ path }});"></div>
+                  <div
+                    style="background-image: url(/static/{{ path }});"
+                    data-path="{{ path }}"
+                  ></div>
                 {% endwith %}
                 {% endfor %}
 
               {% elif id == 'Background' or id == 'SkinTone' or id == 'HairColor' %}
-                <div class="color-option" style="background-color: #{{ o }}" ></div>
+                <div
+                  class="color-option"
+                  style="background-color: #{{ o }}"
+                  data-path="{{ path }}"
+                ></div>
 
               {% else %}
                 {% with basePath|add:o|add:".svg" as path %}
-                  <div style="background-image: url(/static/{{ path }});" ></div>
+                  <div
+                    style="background-image: url(/static/{{ path }});"
+                    data-path="{{ path }}"
+                  ></div>
                 {% endwith %}
               {% endif %}
             </button>
