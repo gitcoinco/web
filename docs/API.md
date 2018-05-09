@@ -38,9 +38,9 @@ The bounties endpoint provides a listing of bounties and their current status. T
 | `github_org_name`       | `string`           | github org name         |
 | `github_repo_name`       | `string`           | github repo name           |
 | `github_issue_number`       | `string`           | github issue number           |
+| `keywords`       | `string`           | comma delimited list of keywords           |
 | `current_bounty`   | `boolean`          | Whether this bounty is the most current revision one or not       |
 | `expires_date`     | `date_time`        | Date before which the bounty must be compelted                    |
-| `raw_data`         | `array`            | Raw contract data, see the example below for more information     |
 | `value_in_eth`     | `integer`          | Value of the bounty in Ethereum                                   |
 | `value_in_usdt`    | `float`            | Approximation of value in USD at bounty web3_created timestamp    |
 | `value_in_usdt_now`| `float`            | Approximation of current value in USD                             |
@@ -71,7 +71,7 @@ The bounties endpoint provides a listing of bounties and their current status. T
 
 **Filters**
 
-You can filter the data returned from the API buy providing these keys as URL parameters `raw_data`, `experience_level`, `project_length`, `bounty_type`, `bounty_owner_address`, `is_open`, and `github_url`. `github_url` can take a comma-seperated list of GitHub urls
+You can filter the data returned from the API buy providing these keys as URL parameters `experience_level`, `project_length`, `bounty_type`, `bounty_owner_address`, `is_open`, and `github_url`. `github_url` can take a comma-seperated list of GitHub urls
 
 **Order By**
 
@@ -104,29 +104,6 @@ By passing an `order_by` parameter you can order the data by the provided key. E
     "fulfiller_github_username": null,
     "is_open": true,
     "expires_date": "2017-09-23T01:42:04Z",
-    "raw_data": [
-      1.0e+18,
-      "0x0000000000000000000000000000000000000000",
-      "0xd3d280c2866eaa795fc72bd850c48e7cce166e23",
-      "0x0000000000000000000000000000000000000000",
-      true,
-      true,
-      "https:\/\/github.com\/owocki\/pytrader\/pull\/83232",
-      1506044524,
-      "{\"issueTitle\":\"Update local_settings.py.example\",\"issueKeywords\":\"pytrader, owocki, Python, HTML, Shell\",\"tokenName\":\"ETH\",\"githubUsername\":\"owocki\",\"notificationEmail\":\"ksowocki@gmail.com\",\"experienceLevel\":\"\",\"projectLength\":\"\",\"bountyType\":\"\"}",
-      1506130924,
-      ""
-    ],
-    "metadata": {
-      "githubUsername": "owocki",
-      "experienceLevel": "",
-      "projectLength": "",
-      "tokenName": "ETH",
-      "issueTitle": "Update local_settings.py.example",
-      "bountyType": "",
-      "issueKeywords": "pytrader, owocki, Python, HTML, Shell",
-      "notificationEmail": "ksowocki@gmail.com"
-    },
     "fulfiller_metadata": {
 
     },

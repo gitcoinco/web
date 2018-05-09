@@ -133,13 +133,13 @@ var callbacks = {
   'bounty_type': unknown_if_empty,
   'bounty_owner_github_username': gitcoin_ize,
   'bounty_owner_name': function(key, val, result) {
-    return [ 'bounty_owner_name', result.metadata.fullName ];
+    return [ 'bounty_owner_name', result.bounty_owner_name ];
   },
   'issue_keywords': function(key, val, result) {
-    if (!result.metadata.issueKeywords || result.metadata.issueKeywords.length == 0)
+    if (!result.keywords || result.keywords.length == 0)
       return [ 'issue_keywords', null ];
 
-    var keywords = result.metadata.issueKeywords.split(',');
+    var keywords = result.keywords.split(',');
     var tags = [];
 
     keywords.forEach(function(keyword) {
