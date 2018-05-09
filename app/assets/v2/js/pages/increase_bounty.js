@@ -46,7 +46,7 @@ $(document).ready(function() {
     var isError = false;
 
     if ($('#terms:checked').length == 0) {
-      _alert({ message: 'Please accept the terms of service.' });
+      _alert({ message: gettext('Please accept the terms of service.') });
       isError = true;
     } else {
       localStorage['acceptTOS'] = true;
@@ -62,7 +62,7 @@ $(document).ready(function() {
       isError = true;
     }
     if (amount == '') {
-      _alert({ message: 'Please enter an amount.' });
+      _alert({ message: gettext('Please enter an amount.') });
       isError = true;
     }
     if (isError) {
