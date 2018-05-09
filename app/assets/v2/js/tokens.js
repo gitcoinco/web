@@ -8,7 +8,7 @@ var tokens = function(network_id) {
       {'addr': '0xe635c6d338dcd31c979b88000ff97c1fa3f0472c', 'name': 'GIT', 'decimals': 18},
       {'addr': '0x2941deaad71adb02b944bd38ebce2f1f4c9a62dc', 'name': 'COLO', 'decimals': 18},
       // from https://github.com/etherdelta/etherdelta.github.io/blob/master/config/main.json
-      {'addr': '0x0000000000000000000000000000000000000000', 'name': 'ETH', 'decimals': 18},
+      {'addr': '0x0000000000000000000000000000000000000000', 'name': 'ETH', 'decimals': 18, 'priority': 999},
       {'addr': '0xd8912c10681d8b21fd3742244f44658dba12264e', 'name': 'PLU', 'decimals': 18},
       {'addr': '0xaf30d2a7e90d7dc361c8c4585e9bb7d2f6f15bc7', 'name': '1ST', 'decimals': 18},
       {'addr': '0x936f78b9852d12f5cb93177c1f84fb8513d06263', 'name': 'GNTW', 'decimals': 18},
@@ -168,32 +168,39 @@ var tokens = function(network_id) {
       {'addr': '0xb581e3a7db80fbaa821ab39342e9cbfd2ce33c23', 'name': 'ARCD', 'decimals': 18},
       {'addr': '0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6', 'name': 'RDN', 'decimals': 18},
       {'addr': '0x056017c55aE7AE32d12AeF7C679dF83A85ca75Ff', 'name': 'WYV', 'decimals': 18},
-      {'addr': '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', 'name': 'DAI', 'decimals': 18}
+      {'addr': '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', 'name': 'DAI', 'decimals': 18, 'priority': 100}
     ];
   } else if (network_id == 'ropsten') { // ropsten
     _tokens = [
-      { 'addr': '0x0000000000000000000000000000000000000000', 'name': 'ETH', 'decimals': 18 },
+      { 'addr': '0x0000000000000000000000000000000000000000', 'name': 'ETH', 'decimals': 18, 'priority': 999 },
       { 'addr': '0x2941deaad71adb02b944bd38ebce2f1f4c9a62dc', 'name': 'COLO', 'decimals': 18 },
       { 'addr': '0xeccb46ebe07c5a2b249586796f921ddfe0d46271', 'name': 'FOO', 'decimals': 18 }
     ];
   } else if (network_id == 'rinkeby') { // ropsten
     _tokens = [
-      { 'addr': '0x0000000000000000000000000000000000000000', 'name': 'ETH', 'decimals': 18 },
+      { 'addr': '0x0000000000000000000000000000000000000000', 'name': 'ETH', 'decimals': 18, 'priority': 999 },
       { 'addr': '0x2941deaad71adb02b944bd38ebce2f1f4c9a62dc', 'name': 'COLO', 'decimals': 18 },
       { 'addr': '0x408c49a91e46311ddc35737f8c1aaea6191f36e0', 'name': 'FOO', 'decimals': 18 }
     ];
   } else if (network_id == 'custom network') { // testrpc
     _tokens = [
-      { 'addr': '0x0000000000000000000000000000000000000000', 'name': 'ETH', 'decimals': 18 },
+      { 'addr': '0x0000000000000000000000000000000000000000', 'name': 'ETH', 'decimals': 18, 'priority': 999 },
       { 'addr': '0x7dd4bfd96981573ce7dbcde779adcdf2d3039332', 'name': 'GIT', 'decimals': 18 }
     ];
   } else {
     _tokens = [
-      { 'addr': '0x0000000000000000000000000000000000000000', 'name': 'ETH', 'decimals': 18 }
+      { 'addr': '0x0000000000000000000000000000000000000000', 'name': 'ETH', 'decimals': 18, 'priority': 999 }
     ];
   }
 
   _tokens.sort(function(a, b) {
+    if (a.priority && b.priority) {
+      return b.priority - a.priority;
+    } else if (!a.priority && b.priority) {
+      return 1;
+    } else if (a.priority && !b.priority) {
+      return -1;
+    }
     if (a.name[0] < b.name[0]) {
       return -1;
     }
