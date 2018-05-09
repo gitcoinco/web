@@ -65,6 +65,16 @@ def stats(request):
             'twitter'
         ]
         types = filter_types(types, _filters)
+    if _filter == 'user_skills':
+        _filters = [
+            'subscribers_with_skill_',
+        ]
+        types = filter_types(types, _filters)
+    if _filter == 'bounty_skills':
+        _filters = [
+            'bounties_with_skill_',
+        ]
+        types = filter_types(types, _filters)
     if _filter == 'KPI':
         _filters = [
             'browser_ext_chrome',

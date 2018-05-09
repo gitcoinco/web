@@ -429,25 +429,27 @@ var show_interest_modal = function() {
       modal.on('submit', function(event) {
         event.preventDefault();
 
-        var has_question = event.target[0].value;
-        var issue_message = event.target[2].value;
+        var issue_message = event.target[0].value;
+        var agree_precedence = event.target[1].checked;
+        var agree_not_to_abandon = event.target[2].checked;
 
-        var agree_precedence = event.target[3].checked;
-        var agree_not_to_abandon = event.target[4].checked;
+        if (!issue_message) {
+          _alert({message: gettext('Please provide an action plan for this ticket.')}, 'error');
+          return false;
+        }
 
         if (!agree_precedence) {
-          alert('You must agree to the precedence clause.');
+          _alert({message: gettext('You must agree to the precedence clause.')}, 'error');
           return false;
         }
         if (!agree_not_to_abandon) {
-          alert('You must agree not to keep the fulfiller updated on your progress.');
+          _alert({message: gettext('You must agree to keep the fulfiller updated on your progress.')}, 'error');
           return false;
         }
 
         $(self).attr('href', '/uninterested');
         $(self).find('span').text(gettext('Stop Work'));
         add_interest(document.result['pk'], {
-          has_question,
           issue_message
         });
         $.modal.close();
