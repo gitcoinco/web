@@ -30,7 +30,6 @@ import dashboard.ios
 import dashboard.views
 import dataviz.d3_views
 import dataviz.views
-import ethos.views
 import external_bounties.views
 import faucet.views
 import gitcoinbot.views

@@ -76,7 +76,7 @@ function redeemCoin() {
       function(response) {
         response.json().then(function(data) {
           if (data.status === 'OK') {
-            generateGraph(data.dataset, twitter_username, data.message);
+            generateGraph(data.dataset, twitter_username, data.message, data.num_scans, data.num_scans_top);
           } else {
             if (data.message.indexOf('Address has an invalid EIP checksum') !== -1) {
               _alert({message: 'Please enter a valid checksum address.'}, 'warning');
@@ -104,9 +104,9 @@ function redeemCoin() {
     });
 }
 
-var generateGraph = function(dataset, username, txid) {
-  var w = 600;
-  var h = 400;
+var generateGraph = function(dataset, username, txid, num_scans, num_scans_top) {
+  var w = 800;
+  var h = 600;
 
   var force = d3.layout.force()
     .nodes(dataset.nodes)
@@ -232,8 +232,16 @@ var generateGraph = function(dataset, username, txid) {
               mixpanel.track('Redeem EthOS Coin Success', {});
               startConfetti();
 
-              // TODO: Display the stats page after posting the tweet
-              $('send_eth').innerHTML = '<h1>Success 🚀!</h1> <a href="https://' + etherscanDomain() + '/tx/' + txid + '" target="_blank" rel="noopener noreferrer">See your transaction on the blockchain here</a>.<br><br><span id="mighttake">It might take a few minutes to sync, depending upon: <br> - network congestion<br> - network fees that sender allocated to transaction<br></span><br><a href="/" class="button">⬅ Check out Gitcoin.co</a>';
+              $('send_eth').innerHTML = '<h1>Got Ethos?</h1>' +
+                '<h3>Prove it -- Give this coin to someone *whom you don\'t know*.</h3>' +
+                '<h4>The faster you perform this task, the more Ethos you will receive.</h4>' +
+                '<p>This coin has been shared ' + num_scans + ' times. ' +
+                'The top coin has been shared ' + num_scans_top + ' times.</p>' +
+                '<a href="https://' + etherscanDomain() + '/tx/' + txid + '" target="_blank" rel="noopener noreferrer">' +
+                'See your transaction on the blockchain here</a>.<br><br>' +
+                '<span id="mighttake">It might take a few minutes to sync, depending upon: <br> - network congestion' +
+                '<br> - network fees that sender allocated to transaction<br></span><br>' +
+                '<a href="/" class="button">⬅ Check out Gitcoin.co</a>';
             });
           }
         )

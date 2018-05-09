@@ -155,7 +155,8 @@ def redeem_coin(request, shortcode):
             ethos.num_scans += 1
             ethos.save()
 
-            # TODO: Send `this coin has been shared <num_scans> times. The top coin has been shared <num_scans> times`
+            num_scans = ethos.num_scans
+            num_scans_top = ShortCode.objects.order_by('-num_scans').first().num_scans
 
             nodes = []
             edges = []
@@ -179,8 +180,14 @@ def redeem_coin(request, shortcode):
                         'name': h.previous_hop.twitter_username,
                         'img': '/ethos/proxy/?image=' + h.previous_hop.twitter_profile_pic
                     })
-                    edges.append({'source': node_prev, 'target': target, 'distance': 200})
-                # TODO: Update distance based on the time spent between the hop
+
+                    time_lapsed = round((h.created_on - h.previous_hop.created_on).total_seconds()/60)
+                    if 0 < time_lapsed < 30:
+                        distance = time_lapsed * 10
+                    else:
+                        distance = 300
+
+                    edges.append({'source': node_prev, 'target': target, 'distance': distance})
 
         except ShortCode.DoesNotExist:
             status = 'error'
@@ -204,6 +211,8 @@ def redeem_coin(request, shortcode):
 
         if status == 'OK':
             response['dataset'] = {'nodes': nodes, 'edges': edges}
+            response['num_scans'] = num_scans
+            response['num_scans_top'] = num_scans_top
 
         return JsonResponse(response)
 
@@ -240,7 +249,7 @@ def tweet_to_twitter(request):
             try:
                 data = ContentFile(base64.b64decode(media), name='graph.png')
                 data.mode = 'rb'
-                tweet_txt = f'Redeemed EthOS Coin successfully by @{username}: \n\n #EthOS'
+                tweet_txt = f'Ethos has been earned by @{username} at #ethereal'
                 twitter_api.PostUpdate(tweet_txt, media=data)
             except twitter.error.TwitterError:
                 status = 'error'
