@@ -1,12 +1,13 @@
 from django.contrib import admin
 
-from ethos.models import Hop
+from ethos.models import Hop, ShortCode
 
 
-class HopAdmin(admin.ModelAdmin):
-    """Define the Hop administration layout."""
+class GeneralAdmin(admin.ModelAdmin):
+    """Define the GeneralAdmin administration layout."""
 
     ordering = ['-id']
 
 
-admin.site.register(Hop, HopAdmin)
+admin.site.register(Hop, GeneralAdmin)
+admin.site.register(ShortCode, GeneralAdmin)

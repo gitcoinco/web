@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import base64
 import json
+import math
 import urllib
 
 from django.conf import settings
@@ -175,12 +176,16 @@ def redeem_coin(request, shortcode):
 
                 # Add edge
                 if h.previous_hop:
-                    node_prev = nodes.index({
-                        'name': h.previous_hop.twitter_username,
-                        'img': '/ethos/proxy/?image=' + h.previous_hop.twitter_profile_pic
-                    })
-                    edges.append({'source': node_prev, 'target': target, 'distance': 200})
-                # TODO: Update distance based on the time spent between the hop
+                    try:
+                        node_prev = nodes.index({
+                            'name': h.previous_hop.twitter_username,
+                            'img': '/ethos/proxy/?image=' + h.previous_hop.twitter_profile_pic
+                        })
+                        distance = 200
+                        distance = int(math.sqrt(h.previous_hop.created_on - h.created_on).total_seconds/10)
+                        edges.append({'source': node_prev, 'target': target, 'distance': distance})
+                    except:
+                        pass
 
         except ShortCode.DoesNotExist:
             status = 'error'
@@ -189,7 +194,8 @@ def redeem_coin(request, shortcode):
             if 'replacement transaction underpriced' in str(e):
                 # TODO: Handle replacement tx
                 print('replacement transaction underpriced')
-
+            else:
+                raise e
             status = 'error'
             message = _('Error while creating transaction. Please try again')
         except Exception as e:
@@ -240,7 +246,7 @@ def tweet_to_twitter(request):
             try:
                 data = ContentFile(base64.b64decode(media), name='graph.png')
                 data.mode = 'rb'
-                tweet_txt = f'Redeemed EthOS Coin successfully by @{username}: \n\n #EthOS'
+                tweet_txt = f'@{username} has earned some #EthOS \n\n'
                 twitter_api.PostUpdate(tweet_txt, media=data)
             except twitter.error.TwitterError:
                 status = 'error'
