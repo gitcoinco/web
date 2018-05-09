@@ -184,6 +184,10 @@
     {% include 'shared/rollbar.html' %}
     {% include 'shared/messages.html' %}
   </body>
+  {% csrf_token %}
+  <script type="text/javascript">
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+  </script>
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/pages/onboard.js" %}"></script>
 </html>

@@ -81,16 +81,16 @@ onboard.getFilters = function(savedKeywords) {
     });
   }
 
-  if(savedKeywords) {
+  if (savedKeywords) {
     $.each(savedKeywords, function(k, value) {
       if (keywords.includes(value.toLowerCase())) {
         $('input[type=checkbox][name=tech-stack][value="' + value.toLowerCase() + '"]').prop('checked', true);
       } else {
-        if($("#keywords").val() != '') {
-          $("#keywords").val($("#keywords").val() + ',');
+        if ($('#keywords').val() != '') {
+          $('#keywords').val($('#keywords').val() + ',');
         }
 
-        $("#keywords").val($("#keywords").val() + value.toLowerCase());
+        $('#keywords').val($('#keywords').val() + value.toLowerCase());
         _words.push(value.toLowerCase());
         _filters.push('<a class=filter-tag><i class="fas fa-check"></i>' + value.toLowerCase() + '</a>');
       }
@@ -111,18 +111,22 @@ onboard.getFilters = function(savedKeywords) {
   $('.filter-tags').html(_filters);
   words = [...new Set(_words)];
   // TODO: Save Preferences
-  // var settings = {
-  //   "url": "/settings/matching",
-  //   "method": "POST",
-  //   "data": {
-  //     "keywords": "JavaScript%2CCoffeeScript%2CCSS%2CDart%2CPython%2CC%2B%2B%2CHTML",
-  //     "submit": "Go"
-  //   }
-  // }
+  var settings = {
+    url: '/settings/matching',
+    method: 'POST',
+    headers: {'X-CSRFToken': csrftoken},
+    data: JSON.stringify({
+      'keywords': 'JavaScript,CCoffeeScript,CSS,HTML',
+      'submit': 'Go',
+      'github': 'thelostone-mc'
+    })
+  };
 
-  // $.ajax(settings).done(function (response) {
-  //   console.log(response);
-  // });
+  $.ajax(settings).done(function(response) {
+    console.log('DONE');
+  }).fail(function(error) {
+    console.log('ERROR', error);
+  });
 };
 
 var changeStep = function(n) {
