@@ -748,7 +748,7 @@ def append_snooze_copy(bounty):
     return f"\nFunders only: Snooze warnings for {snooze}"
 
 
-def maybe_notify_user_removed_github(bounty, username, last_heard_from_user_days=None):
+def maybe_notify_user_escalated_github(bounty, username, last_heard_from_user_days=None):
     if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
