@@ -740,6 +740,15 @@ num_days_back_to_delete_interest = 6
 
 
 def append_snooze_copy(bounty):
+    """Build the snooze copy for the associated Bounty.
+
+    Args:
+        bounty (dashboard.Bounty): The Bounty to create snooze copy for.
+
+    Returns:
+        str: The snooze copy for the provided bounty.
+
+    """
     snooze = []
     for day in [1, 3, 5, 10, 100]:
         plural = "s" if day != 1 else ""

@@ -227,6 +227,15 @@ class Bounty(SuperModel):
         return self.get_absolute_url()
 
     def snooze_url(self, num_days):
+        """Get the bounty snooze URL.
+
+        Args:
+            num_days (int): The number of days to snooze the Bounty.
+
+        Returns:
+            str: The snooze URL based on the provided number of days.
+
+        """
         return f'{self.get_absolute_url()}?snooze={num_days}'
 
     @property
