@@ -109,9 +109,9 @@ def helper_handle_access_token(request, access_token):
     request.session['profile_id'] = profile.pk
 
 
-def create_new_interest_helper(bounty, user, has_question, issue_message):
+def create_new_interest_helper(bounty, user, issue_message):
     profile_id = user.profile.pk
-    interest = Interest.objects.create(profile_id=profile_id, has_question=has_question, issue_message=issue_message)
+    interest = Interest.objects.create(profile_id=profile_id, issue_message=issue_message)
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
     maybe_market_to_slack(bounty, 'start_work')
@@ -193,9 +193,8 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
     except Interest.DoesNotExist:
-        has_question = request.POST.get("has_question") == 'true'
         issue_message = request.POST.get("issue_message")
-        interest = create_new_interest_helper(bounty, request.user, has_question, issue_message)
+        interest = create_new_interest_helper(bounty, request.user, issue_message)
 
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \

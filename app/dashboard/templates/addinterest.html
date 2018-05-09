@@ -27,20 +27,10 @@
     </div>
     <div class="col-12">
       <form class="font-body">
-        <label class="mt-2">{% trans "Do you have any questions about this ticket?" %}</label>
-        <div class="add-interest-options options">
-          <div class="form__radio option">
-            <input type="radio" id="interest-question-true" name="interest-question" value="true" checked="checked" />
-            <label for="interest-question-true">{% trans "Yes" %}</label>
-          </div>
-          <div class="form__radio option" style="margin-left: 1.0em">
-            <input type="radio" id="interest-question-false" name="interest-question" value="false" />
-            <label for="interest-question-false">{% trans "No" %}</label>
-          </div>
-        </div>
         <div>
           <label for="issue-message">
-            {% trans "Anything the project owner should know?" %}
+            <span>{% trans "Please provide an action plan and any initial questions you have for this ticket." %}</span><br>
+            <span>{% trans "This will be reflected in a comment on the Github issue." %}</span>
           </label>
           <textarea id="issue-message" class="form__input"></textarea>
         </div>
