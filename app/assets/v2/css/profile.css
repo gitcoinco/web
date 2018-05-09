@@ -1,0 +1,150 @@
+/* Profile details */
+
+.profile-header > .container {
+  padding-top: 50px;
+  color: #fff;
+}
+
+.profile-header__avatar {
+  float: left;
+  width: 108px;
+  height: 108px;
+  border: 2px solid #fff;
+  border-radius: 110px;
+}
+
+.profile-header__handle {
+  padding-top: 28px;
+  display: inline-block;
+  font-size: 24px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.profile-header__handle small {
+  text-transform: none;
+}
+
+.profile-header__bio {
+  clear: both;
+}
+
+.profile-header__links {
+  margin: 0;
+  padding: 0;
+}
+
+.profile-header__links li {
+  float: left;
+  margin-left: 2em;
+  list-style-type: none;
+}
+
+.profile-header__links li:first-child {
+  margin-left: 0;
+}
+
+.profile-header__links a {
+  color: #fff;
+}
+
+.profile-header__links img {
+  width: 30px;
+  height: 30px;
+  margin-right: 0.5em;
+  filter: invert(100%);
+}
+
+.profile-header__stats {
+  background-color: transparent;
+}
+
+.profile-header__stats .card-header {
+  padding: 0 12px;
+  color: #0D0764;
+  text-transform: uppercase;
+  font-size: 24px;
+  border-radius: 0;
+}
+
+.profile-header__stats .card-body {
+  padding: 12px;
+  font-size: 20px;
+}
+
+.profile-header__stats ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-header__stats li {
+  margin: 4px 0 0;
+}
+
+.profile-header__stats li:first-child {
+  margin-top: 0;
+}
+
+.profile-header__stats--contributor {
+  border: 4px solid #25E899;
+}
+
+.profile-header__stats--contributor .card-header {
+  background-color: #25E899;
+}
+
+.profile-header__stats--contributor .highlight {
+  color: #25E899;
+}
+
+.profile-header__stats--funder {
+  border: 4px solid #FFCE08;
+}
+
+.profile-header__stats--funder .card-header {
+  background-color: #FFCE08;
+}
+
+.profile-header__stats--funder .highlight {
+  color: #FFCE08;
+}
+
+.profile-bounties--loading {
+  background-image: url('/static/v2/images/loading_v2.gif');
+  background-repeat: no-repeat;
+  background-position: 0 -15px;
+  background-size: 64px;
+  height: 48px;
+}
+
+.profile-bounties .avatar {
+  max-width: 50px;
+  max-height: 50px;
+}
+
+.profile-bounties .bounty_row {
+  padding: 0;
+  border-top: 1px solid #D3D3D3;
+}
+
+.profile-bounties .bounty_row:first-child {
+  border-top: none;
+}
+
+.profile-bounties .bounty_row--hidden {
+  display: none;
+}
+
+.profile-bounties .bounty-summary {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.profile-bounties .profile-bounties__btn-show-all {
+  border-color: #D3D3D3;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+/* END Profile details */
