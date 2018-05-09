@@ -420,6 +420,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 github_comments=latest_old_bounty.github_comments if latest_old_bounty else 0,
                 override_status=latest_old_bounty.override_status if latest_old_bounty else '',
                 last_comment_date=latest_old_bounty.last_comment_date if latest_old_bounty else None,
+                snooze_warnings_for_days=latest_old_bounty.snooze_warnings_for_days if latest_old_bounty else 0,
             )
             new_bounty.fetch_issue_item()
 
