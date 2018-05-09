@@ -67,7 +67,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
     def override_bounty_owner_name(self, obj):
         can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_name_publicly', 1)))
         default = "(hidden name)"
-        return obj.bounty_owner_email if can_make_visible_via_api else default
+        return obj.bounty_owner_name if can_make_visible_via_api else default
 
     class Meta:
         """Define the bounty serializer metadata."""
