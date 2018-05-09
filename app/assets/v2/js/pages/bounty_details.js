@@ -439,11 +439,11 @@ var show_interest_modal = function() {
         }
 
         if (!agree_precedence) {
-          _alert({message: gettext('You must agree to the precedence clause.')}, 'error');
+          _alert({ message: 'You must agree to the precedence clause.' }, 'error');
           return false;
         }
         if (!agree_not_to_abandon) {
-          _alert({message: gettext('You must agree to keep the fulfiller updated on your progress.')}, 'error');
+          _alert({ message: 'You must agree to keep the funder updated on your progress.' }, 'error');
           return false;
         }
 
