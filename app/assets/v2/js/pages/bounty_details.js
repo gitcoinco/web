@@ -436,11 +436,11 @@ var show_interest_modal = function() {
         var agree_not_to_abandon = event.target[4].checked;
 
         if (!agree_precedence) {
-          alert('You must agree to the precedence clause.');
+          _alert({ message: 'You must agree to the precedence clause.' }, 'error');
           return false;
         }
         if (!agree_not_to_abandon) {
-          alert('You must agree not to keep the fulfiller updated on your progress.');
+          _alert({ message: 'You must agree to keep the funder updated on your progress.' }, 'error');
           return false;
         }
 
