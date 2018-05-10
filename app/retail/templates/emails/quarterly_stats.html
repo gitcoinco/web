@@ -16,11 +16,9 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n humanize %}
-
+{% load i18n humanize static %}
 {% block content %}
-
-<style>
+<style type="text/css">
   h1, h2, h3, h4 {
     text-transform: none;
     color: #0D0764;
@@ -36,12 +34,6 @@
 
   hr {
     color: #E0E0E0;
-  }
-
-  .primary-content {
-    margin-left: 20%;
-    margin-right: 20%;
-    padding: 5em;
   }
 
   .social-img {
@@ -70,7 +62,7 @@
     text-align: center;
     border-width: 1px;
     border-radius: 50%;
-    width: 15%;
+    width: 7em;
   }
 
   .stat-img > .content {
@@ -82,8 +74,6 @@
   .stat-contents {
     color: #0D0764;
     text-align: left;
-    width: 85%;
-    /*height: 100px;*/
     align-items: center;
     display: flex;
     justify-content: left;
@@ -140,6 +130,7 @@
   .percent-content {
     display: flex;
     justify-content: center;
+    color: #3E00FF;
   }
 
   .button-action > .button {
@@ -150,7 +141,7 @@
     border-radius: 100%;
     border-style: solid;
     border-width: 5px;
-    border-color: #eeeeee;
+    border-color: #3E00FF;
   }
 
   .user-skill-1 {
@@ -179,44 +170,54 @@
     padding: 0.2em;
   }
 
-  @media screen and (max-width: 600px) {
-    .primary-content {
-      margin-left: 10%;
-      margin-right: 10%;
-      padding: 0.3em;
+  #stat-container {
+    margin-left: 20%;
+    margin-right: 20%;
+    padding: 5em;
+  }
+
+  .bounty-completion-circle {
+    color: #F9006C;
+    border-color: #F9006C;
+  }
+
+  @media (max-width: 600px) {
+    #stat-container {
+      margin-left: 0px !important;
+      margin-right: 0px !important;
+      padding: 0px !important;
     }
 
     .stat-box {
-      padding: 0 !important;
-    }
-    .stat-contents {
-      width: 100% !important;
+      display: flex;
+      justify-content: center;
+      text-align: center;
     }
   }
 </style>
-<div class="stat-container">
+<div id="stat-container">
     <h1>GITCOIN QUARTERLY</h1>
 
     {% if user_active_in_last_quarter %}
         <h2>You've Been BUILDing</h2>
         <h4>An overview of your stats from the last 3 months.</h4>
-        <div class="centered-contents stat-box">
-            <div class="stat-img total-transaction">
+        <div class="centered-contents stat-box row">
+            <div class="stat-img total-transaction col-sm-12">
                 <p class="content">{{user_total_earned_usd}} USD</p>
             </div>
-            <div class="stat-contents">
+            <div class="stat-contents col-sm-12">
                 <p>You earned {{user_total_earned_eth}} ETH ({{user_total_earned_usd}} USD) from {{user_fulfilled_bounties_count}} completed bounties, for an average of {{user_avg_eth_earned_per_bounty}} ETH ({{ user_avg_usd_earned_per_bounty}} USD) per bounty!</p>
             </div>
         </div>
-        <div class="centered-contents stat-box">
-            <div class="stat-img full-bordered-circle percent-content">
+        <div class="centered-contents stat-box row">
+            <div class="stat-img full-bordered-circle percent-content col-sm-12">
                 <p class="content">{{user_bounty_completion_percentage}} %</p>
             </div>
-            <div class="stat-contents">
+            <div class="stat-contents col-sm-12">
                 <p>You completed {{user_bounty_completion_percentage}}% of the {{user_num_completed_bounties}} bounties that you started - thanks for showing such diligence.</p>
             </div>
         </div>
-        <div class="centered-contents stat-box">
+        <div class="centered-contents stat-box row">
             <div class="stat-img">
                   {% for language in user_languages %}
                     <div class="user-skill-lang user-skill-{{forloop.counter}}">
@@ -238,8 +239,7 @@
         </div>
 
         <div class="button-action">
-            {# TODO: Add link to the button #}
-            <a class="button" href="">{% trans "Share my stats" %}</a>
+            <a class="button" href="https://gitcoin.co/explorer">{% trans "Share my stats" %}</a>
         </div>
     {% endif %}
 
@@ -248,7 +248,7 @@
     <h2>Platform-wide Stats</h2>
     <h4>Activity happening across the Gitcoin network</h4>
     <div class="centered-contents stat-box">
-        <div class="stat-img full-bordered-circle percent-content">
+        <div class="stat-img full-bordered-circle percent-content bounty-completion-circle">
             <p class="content">{{bounties_completion_percent}} %</p>
         </div>
         <div class="stat-contents">
