@@ -116,7 +116,7 @@
                 </div>
                 <h4>{% trans "Creator Details" %}</h4>
                 {% include 'shared/github_username.html' %}
-                {% include 'shared/notification_email.html' %}
+                {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
                 {% include 'shared/name.html' %}
                 <div id="advanced_container"></div>
                 <div class="terms_container">
@@ -125,6 +125,13 @@
                      <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
                        <a href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms of Service" %}</a>:
                     </label>
+                  </div>
+                </div>
+                <div class="w-100 mt-2 terms_container">
+                  <div class="form__checkbox">
+                    <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
+                    <label class="form__label" for=blockchain_tos>{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain. No one, including
+                      Gitcoin Core, will be able to take my funds or change this information:{% endblocktrans %}</label>
                   </div>
                 </div>
                 <h4>Gas Settings</h4>
@@ -151,6 +158,7 @@
   {% include 'shared/footer_scripts.html' %}
   {% include 'shared/rollbar.html' %}
   {% include 'shared/footer.html' %}
+  {% include 'shared/messages.html' %}
 </body>
 
 <!-- jQuery -->

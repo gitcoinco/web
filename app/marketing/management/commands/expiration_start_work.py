@@ -97,7 +97,8 @@ class Command(BaseCommand):
                                 last_action_by_user = interest.created
 
                             # some small calcs
-                            delta_now_vs_last_action = timezone.now() - last_action_by_user
+                            snooze_time = timezone.timedelta(days=bounty.snooze_warnings_for_days)
+                            delta_now_vs_last_action = timezone.now() + snooze_time - last_action_by_user
                             last_heard_from_user_days = delta_now_vs_last_action.days
 
                             # decide action params

@@ -133,6 +133,11 @@ $(document).ready(function() {
         tokenName
       };
 
+      var privacy_preferences = {
+        show_email_publicly: data.show_email_publicly,
+        show_name_publicly: data.show_name_publicly
+      };
+
       var expire_date =
         parseInt(expirationTimeDelta) + ((new Date().getTime() / 1000) | 0);
       var mock_expire_date = 9999999999; // 11/20/2286, https://github.com/Bounties-Network/StandardBounties/issues/25
@@ -151,6 +156,7 @@ $(document).ready(function() {
             githubUsername: metadata.githubUsername,
             address: '' // Fill this in later
           },
+          privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
           created: (new Date().getTime() / 1000) | 0,
@@ -185,6 +191,7 @@ $(document).ready(function() {
       localStorage['experienceLevel'] = $('select[name=experienceLevel]').val();
       localStorage['projectLength'] = $('select[name=projectLength]').val();
       localStorage['bountyType'] = $('select[name=bountyType]').val();
+      localStorage['accept_blockchain_tos'] = true;
       localStorage.removeItem('bountyId');
 
       // setup web3
