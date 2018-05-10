@@ -12,7 +12,11 @@ linters:
   yamllint:
 files:
   ignore:
-    - 'bower_components/*'
+    - '.git'
+    - '.github'
+    - 'docs'
     - 'node_modules/*'
+    - 'requirements'
+    - '**/migrations/*.py'
 fixers:
   enable: false

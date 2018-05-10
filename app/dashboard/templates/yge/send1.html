@@ -34,7 +34,7 @@
         <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" />
       </a>
     </span>
-		<h1>{% trans "Send Tip" %} ⚡</h1>
+		<h1>{% trans "Send Tip" %} <span class="emoji">⚡</span></h1>
 		<h3>{% trans "It's Fast.  It's Easy.  It's Free.️" %}</h3>
     <p>({% trans "Supports any github username or email address" %})</p>
     <br>
@@ -46,6 +46,6 @@
         <option value="50">50 {% trans "receipients" %}</option>
       </select>
 	</header>
-  <a href="#" id="neweth" class="button">{% trans "Send Ether" %} 💰</a>
+  <a href="#" id="neweth" class="button button--primary">{% trans "Send Ether" %} <span class="emoji">💰</span></a>
 </section>
 {% endblock %}

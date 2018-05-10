@@ -153,9 +153,10 @@ kevin
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties):
+def render_new_bounty(to_email, bounties, old_bounties):
     sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
+        'old_bounties': old_bounties,
         'bounties': bounties,
         'subscriber': sub,
         'keywords': ",".join(sub.keywords),
@@ -300,7 +301,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "$10,000 of Dai-based Gitcoin Bounties! "
+    subject = "Hiring is Broken | Web3 Hiring Can Fix That! "
 
     intro = '''
 
@@ -308,62 +309,66 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-We announced <a href="https://medium.com/gitcoin/grow-open-source-gitcoin-makerdao-4f9df702afea">a partnership with MakerDAO this week</a> to provide $10,000 worth of bounties, denominated in Dai! We will start by allocation ~$2,000 to Ethereum Foundation repo’s. From here, we are open to suggestions on open source projects which may be interested in support through bounties. Please let us know <a href="https://gitcoin.co/slack">on Slack</a> or on <a href="https://twitter.com/MakerDAO/status/989641464001904641">Twitter</a>.
+Hiring software developers is broken.  If you've been in software development for long, you'll be familiar with linkedin recruiter spam, with irrelevant whiteboard interviews, and sometimes if you get the job, it doesnt even match what you were told you'd be doing!  With Gitcoin, we believe the process is an order of magnitude better. <a href="https://medium.com/gitcoin/hiring-with-gitcoin-d58679de37ac">Read here</a> to learn more about how teams have scaled from bounties to full-time hires, and how you can do the same.  
+</p>
+<p>
+I’ll be at <a href="https://etherealsummit.com/">Ethereal Summit in NY</a> on Friday for the kick-off of Blockchain Week. Come say hello if you’re around - Gitcoin will be doing a demo at the event.
 </p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-Have you used <a href="https://medium.com/gitcoin/tutorial-send-a-tip-to-any-github-user-in-60-seconds-2eb20a648bc8">Gitcoin Tips</a> before? Tips are a great way to show appreciation for contributions while growing an open source community - in 60 seconds or less! 
+Last week, <a href="https://blog.ethereum.org/2018/05/02/announcing-may-2018-cohort-ef-grants/">we received a $25K grant from the Ethereum Foundation</a>, amongst $2.84 million in grants funded. Expect more detail on how we will use this funding to grow open source, soon. 
         </li>
         <li>
-Want to be the first to know when new open issues are added? <a href="http://twitter.com/gitcoinfeed">@gitcoinfeed</a> on Twitter which provides updates on all new activity on Gitcoin.
+ConsenSys Academy’s 2018 Developer Program is here. <a href="https://consensys.net/academy/developer/">Click here for a cool option to get into blockchain development</a>! 
+        </li>
+        <li>
+<strong> Calling all project managers! </strong>  Are you interested in paid work in the intersection blockchain and open source?  Send us your resume at <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a> or just respond to this email.
+
         </li>
     </ul>
 </p>
 <p>
-On today’s <a href="http://gitcoin.co/livestream">Gitcoin Livestream</a>, we’re excited to host 1)  <a href="https://publisher.adchain.com/">AdChain</a>, a live TCR-based project, 2) <a href="https://www.uport.me/">uPort</a>, who will tell the group about their Gitcoin Bounty program, and 3) <a href="http://airswap.io/">Airswap</a>, who launched their decentralized exchange to mainnet today . <a href="https://gitcoin.co/livestream">Add it to your Google Calendar</a> and come hang out! 
-</p>
-<p>
-I hope to see you on <a href="https://gitcoin.co/slack">Slack</a> or on <a href="https://github.com/gitcoinco/web">Github</a>. If you’re interested in growing open source and have some extra time, come by. We’re working to make Gitcoin is the best place on the internet to do so.
+<a href="http://gitcoin.co/livestream">The Gitcoin Livestream</a> is back as regularly scheduled this Friday at 5PM ET. Martin Köppelmann of Gnosis and Circles will be joining us alongside other guests.   Hope you’ll join us chillin' and shillin' at Ethereal and also on the Gitcoin Livestream! 
 
 </p>
 
 '''
     highlights = [
         {
-            'who': 'justpixel',
+            'who': 'thelostone-mc',
             'who_link': True,
-            'what': 'Worked with Bounties Network to draw up a new ‘Getting Started’ page.',
-            'link': 'https://gitcoin.co/issue/Bounties-Network/bounties.network/2/309',
+            'what': 'Helped build a new onboarding flow for future Gitcoiner’s',
+            'link': 'https://gitcoin.co/issue/gitcoinco/web/441/210',
             'link_copy': 'See more',
         },
         {
-            'who': 'agni21',
+            'who': 'danieljoonlee',
             'who_link': True,
-            'what': 'Helped Tim van Mourik out on the Giraffe Tools repo.',
-            'link': 'https://gitcoin.co/issue/TimVanMourik/GiraffeTools/16/262',
+            'what': 'Made updates on Ethereum’s Solidity repo.',
+            'link': 'https://gitcoin.co/issue/ethereum/solidity/3965/316',
             'link_copy': 'View more',
         },
         {
-            'who': 'netrunnerX',
+            'who': 'iamonuwa',
             'who_link': True,
-            'what': 'Made his first submission on Ethereum’s Solidity repo!',
-            'link': 'https://gitcoin.co/issue/ethereum/solidity/3750/216',
-            'link_copy': 'See more',
+            'what': 'Worked with Tim van Mourik to bring Webpack 4 to Giraffe Tools! ',
+            'link': 'https://gitcoin.co/issue/TimVanMourik/GiraffeTools/19/297',
+            'link_copy': 'View more',
         },
     ]
 
     bounties = [
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/PolymathNetwork/polymath-core/issues/87'),
-            'primer': 'Polymath released a Bug Bounty which pays up to 10ETH for critical issues. ',
-        },
-        {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/gitcoinco/web/issues/865'),
-            'primer': 'ETHAvatar is a project aiming at improving blockchain UX holistically. Interested in building out the web app?',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/ethereum/casper/issues/66'),
+            'primer': 'Casper FFG is a priority of the Ethereum Ecosystem! Help contribute directly to development here.',
         },
         {
             'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/buidlbox/issues/3'),
+            'primer': 'Wyvern is looking to build out a web design for their smart contract marketplace. ',
+        },
+        {
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/ProjectWyvern/frontends/issues/1'),
             'primer': 'uPort is searching for ideas for applications which can be built on top of their platform! ',
         },
     ]
@@ -438,7 +443,9 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3])
+    bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
+    old_bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties)
     return HttpResponse(response_html)
 
 

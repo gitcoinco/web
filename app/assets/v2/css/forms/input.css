@@ -24,15 +24,15 @@
   color: #D50000;
   background-image: url('/static/v2/images/close-red.png');
   background-repeat: no-repeat;
-  background-size: auto 21px;
-  background-position: top 5px right 7px;
+  background-size: auto 1.313rem;
+  background-position: top 0.4375rem right 1.25rem;
 }
 
 .form__input.valid {
   background-image: url('/static/v2/images/success.png');
   background-repeat: no-repeat;
-  background-size: auto 21px;
-  background-position: top 5px right 7px;
+  background-size: auto 1.313rem;
+  background-position: top 0.4375rem right 1.25rem;
 }
 
 .form__input::-webkit-input-placeholder {
