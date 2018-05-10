@@ -421,7 +421,7 @@ var show_interest_modal = function() {
   var self = this;
 
   setTimeout(function() {
-    $.get('/interest/modal', function(newHTML) {
+    $.get('/interest/modal?redirect=' + window.location.pathname, function(newHTML) {
       var modal = $(newHTML).appendTo('body').modal({
         modalClass: 'modal add-interest-modal'
       });
@@ -443,7 +443,7 @@ var show_interest_modal = function() {
           return false;
         }
         if (!agree_not_to_abandon) {
-          _alert({message: gettext('You must agree to keep the fulfiller updated on your progress.')}, 'error');
+          _alert({message: gettext('You must agree to keep the funder updated on your progress.')}, 'error');
           return false;
         }
 
