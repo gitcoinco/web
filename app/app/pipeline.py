@@ -25,5 +25,5 @@ def save_profile(backend, user, response, request, *args, **kwargs):
     """Associate a Profile with a User."""
     if backend.name == 'github':
         handle = user.username
-        sync_profile(handle, user)
+        sync_profile(handle, user, hide_profile=False)
         setup_lang(request, user)

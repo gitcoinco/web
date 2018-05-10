@@ -10,4 +10,4 @@ for current_bounty in current_bounties:
             print(f"deleting {interested} from {current_bounty.github_url}")
         else:
             already_exists.append(str(interested))
-    #print(current_bounty.interested.all())
+    # print(current_bounty.interested.all())
