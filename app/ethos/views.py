@@ -23,12 +23,16 @@ import json
 
 from django.conf import settings
 from django.core.files.base import ContentFile
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+import matplotlib
+import networkx as nx
+import numpy as np
+import pandas as pd
 import twitter
 from ethos.models import Hop, ShortCode, TwitterProfile
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -37,6 +41,10 @@ from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
 from .exceptions import DuplicateTransactionException
+
+matplotlib.use('Agg')
+
+
 
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
@@ -93,6 +101,106 @@ try:
     contract = w3.eth.contract(Web3.toChecksumAddress(settings.ETHOS_CONTRACT_ADDRESS), abi=abi)
 except Exception:
     contract = None
+
+
+def render_graph(request):
+    matplotlib.use('Agg')
+    import matplotlib.image as mpimg
+    import matplotlib.pyplot as plt
+    nodes_labels = {}
+    nodes_images = {}
+
+    # Maybe a pandas dataframe from the values_list of our QS would work better?
+    # df = pd.DataFrame(hops.values_list('previous_hop', 'twitter_profile'))
+
+    hops = Hop.objects.select_related('previous_hop', 'previous_hop__twitter_profile', 'twitter_profile').all()
+    graph = nx.DiGraph()
+    hops_list = list(hops.values_list('id', flat=True))
+    for i, hop in enumerate(hops):
+        profile_image = mpimg.imread(hop.twitter_profile.profile_picture.file)
+        twitter_username = hop.twitter_profile.username
+        nodes_labels[i] = twitter_username
+        nodes_images[i] = profile_image
+        graph.add_node(i, image=profile_image, label=twitter_username)
+        print('\nNODES AFTER GRAPH ADD NODE: ', graph.nodes(data=True), '\n\n')
+        graph.node[i]['image'] = profile_image
+        graph.node[i]['label'] = twitter_username
+        print('\nNODES AFTER GRAPH MANUAL NODE: ', graph.nodes(data=True), '\n\n')
+        if i != 0:
+            if hop and hop.previous_hop:
+                time_lapsed = round((hop.created_on - hop.previous_hop.created_on).total_seconds()/60)
+                if 0 < time_lapsed < 30:
+                    distance = time_lapsed * 10
+                else:
+                    distance = 300
+                previous_hop = hops_list.index(hop.previous_hop.id)
+                graph.add_edge(previous_hop, i, color='gray', edge_color='gray', arrowstyle='->', arrowsize=10, length=distance)
+
+    M = graph.number_of_edges()
+    pos = nx.layout.shell_layout(graph)
+    print('POS: ', pos)
+    fig = plt.figure(figsize=(10, 10))
+    print('FIG: ', fig)
+    ax = plt.subplot(111)
+    print('AX: ', ax)
+    ax.set_aspect('equal')
+    print('AX: ', ax)
+    ax.xaxis.set_visible(False)
+    ax.yaxis.set_visible(False)
+    nx.draw_networkx_edges(graph, pos, ax=ax)
+    nx.draw_networkx_labels(graph, pos=pos, labels=nodes_labels)
+
+    trans = ax.transData.transform
+    trans2 = fig.transFigure.inverted().transform
+    avatar_image_size = 0.04  # this is the image size
+    p2 = avatar_image_size / 2.0
+    for n in graph:
+        # Plop images on top of nodes.
+        xx, yy = trans(pos[n])  # Grab the figure coordinates.
+        xa, ya = trans2((xx, yy))  # Grab the axes coordinates.
+        a = plt.axes([xa-p2, ya-p2, avatar_image_size, avatar_image_size])
+        a.set_aspect('equal')
+        a.imshow(graph.node[n]['image'])
+        a.axis('off')
+    nx.draw(graph)
+    print('GRAPH: ', graph)
+    plt.savefig('graph_test.png', format='PNG')
+    with open('graph_test.png', "rb") as f:
+        return HttpResponse(f.read(), content_type="image/png")
+
+
+def graphzz(request):
+    # Just a random graph with below data as an example.
+    import matplotlib.pyplot as plt
+    nodes = [0, 1, 2, 3]
+
+    edges_dicts = [
+        {'length': 200},
+        {'length': 50},
+        {'length': 100},
+    ]
+    edges = [
+        (0, 1),
+        (1, 2),
+        (2, 3),
+    ]
+    G = nx.DiGraph()
+    # G.add_nodes_from(nodes)
+    for node in nodes:
+        G.add_node(node, label='derp')
+    for i, edge in enumerate(edges):
+        G.add_edge(edge[0], edge[1], length=edges_dicts[i])
+    # G.add_edges_from(edges)
+    M = G.number_of_edges()
+    pos = nx.layout.spectral_layout(G)
+    nx.draw_networkx_labels(G, pos=pos, labels={0: 'derp', 1: 'dingo', 2: 'flash', 3: 'derpy'})
+
+    nodes = nx.draw_networkx_nodes(G, pos, node_size=25, node_color='green', with_labels=True)
+    edges = nx.draw_networkx_edges(G, pos, node_size=25, arrowstyle='->',
+                                   arrowsize=10, edge_color='gray', width=2, with_labels=True)
+    plt.savefig('test.png', format='png')
+    with open('test.png', "rb") as f:
+        return HttpResponse(f.read(), content_type="image/png")
 
 
 @csrf_exempt
@@ -236,6 +344,8 @@ def redeem_coin(request, shortcode):
         if status == 'OK':
             response['dataset'] = {'nodes': nodes, 'edges': edges}
 
+        print('EDGES: ', edges)
+        print('NODES: ', nodes)
         return JsonResponse(response)
 
     try:
