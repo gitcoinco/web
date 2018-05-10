@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
+    'storages',
     'social_django',
     'django.contrib.humanize',
     'django.contrib.sitemaps',
@@ -87,6 +88,7 @@ INSTALLED_APPS = [
     'gitcoinbot',
     'external_bounties',
     'dataviz',
+    'ethos',
 ]
 
 MIDDLEWARE = [
@@ -225,6 +227,8 @@ else:
     LOGGING = {}
 
 GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -387,6 +391,17 @@ IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
 # optional: only needed if you run the activity-report management command
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
+
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
+AWS_S3_OBJECT_PARAMETERS = env.dict('AWS_S3_OBJECT_PARAMETERS', default={'CacheControl': 'max-age=86400'})
+S3_USE_SIGV4 = env.bool('S3_USE_SIGV4', default=True)
+AWS_IS_GZIPPED = env.bool('AWS_IS_GZIPPED', default=True)
+AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='us-west-2')
+AWS_S3_SIGNATURE_VERSION = env('AWS_S3_SIGNATURE_VERSION', default='s3v4')
+AWS_QUERYSTRING_AUTH = env.bool('AWS_QUERYSTRING_AUTH', default=False)
+AWS_S3_FILE_OVERWRITE = env.bool('AWS_S3_FILE_OVERWRITE', default=True)
+# AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN', default='assets.gitcoin.co')
+
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='') # TODO
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='') # TODO
 
@@ -402,8 +417,18 @@ GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')
 WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://rinkeby.infura.io')
 
 # COLO Coin
-COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')
-COLO_ACCOUNT_PRIVATE_KEY = env('COLO_ACCOUNT_PRIVATE_KEY', default='')
+COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')  # TODO
+COLO_ACCOUNT_PRIVATE_KEY = env('COLO_ACCOUNT_PRIVATE_KEY', default='')  # TODO
+
+# EthOS
+ETHOS_CONTRACT_ADDRESS = env('ETHOS_CONTRACT_ADDRESS', default='')  # TODO
+ETHOS_ACCOUNT_ADDRESS = env('ETHOS_ACCOUNT_ADDRESS', default='')  # TODO
+ETHOS_ACCOUNT_PRIVATE_KEY = env('ETHOS_ACCOUNT_PRIVATE_KEY', default='')  # TODO
+
+ETHOS_TWITTER_CONSUMER_KEY = env('ETHOS_TWITTER_CONSUMER_KEY', default='')  # TODO
+ETHOS_TWITTER_CONSUMER_SECRET = env('ETHOS_TWITTER_CONSUMER_SECRET', default='')  # TODO
+ETHOS_TWITTER_ACCESS_TOKEN = env('ETHOS_TWITTER_ACCESS_TOKEN', default='')  # TODO
+ETHOS_TWITTER_ACCESS_SECRET = env('ETHOS_TWITTER_ACCESS_SECRET', default='')  # TODO
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
