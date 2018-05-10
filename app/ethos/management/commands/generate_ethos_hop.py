@@ -22,7 +22,7 @@ from random import randint
 
 from django.core.management.base import BaseCommand
 
-from ethos.models import Hop, ShortCode
+from ethos.models import Hop, ShortCode, TwitterProfile
 
 twitter_usernames = [
     'eswara_sai',
@@ -137,7 +137,7 @@ twitter_usernames = [
     'kelvin60429',
     'GetGitcoin',
     'owocki']
-# create more with 
+# create more with
 # followers = api.GetFollowers(count=200)
 # [follower.screen_name for follower in followers]
 
@@ -152,11 +152,14 @@ class Command(BaseCommand):
         for i in range(0, options['count']):
             shortcode_index = randint(1, ShortCode.objects.count())
             shortcode = ShortCode.objects.get(pk=shortcode_index)
-            #username = twitter_usernames[randint(0, len(twitter_usernames))]
-            N = 10
-            username = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(N))
-            print(username)
-            profile_pic = f'https://twitter.com/EthOSEthereal/profile_image?size=original'
+            twitter_profile, _ = TwitterProfile.objects.get_or_create(
+                username=twitter_usernames[randint(0, len(twitter_usernames))]
+            )
+            # username = twitter_usernames[randint(0, len(twitter_usernames))]
+            # N = 10
+            # username = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(N))
+            print(twitter_profile.username)
+            # profile_pic = f'https://twitter.com/EthOSEthereal/profile_image?size=original'
 
             if i % 10 != 0:
                 previous_hop = Hop.objects.latest('pk')
@@ -164,11 +167,10 @@ class Command(BaseCommand):
                 previous_hop = None
 
             Hop.objects.create(
-                twitter_username=username,
-                twitter_profile_pic=profile_pic,
+                twitter_profile=twitter_profile,
                 shortcode=shortcode,
                 previous_hop=previous_hop,
                 ip='127.0.0.1'
             )
 
-            print(f'Hop by {username} for {shortcode.shortcode}')
+            print(f'Hop by {twitter_profile.username} for {shortcode.shortcode}')

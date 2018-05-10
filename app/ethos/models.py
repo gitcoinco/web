@@ -87,7 +87,6 @@ class Hop(SuperModel):
 class TwitterProfile(SuperModel):
     """Define the Twitter Profile."""
 
-    profile = models.ForeignKey('dashboard.Profile', blank=True, null=True, on_delete=models.SET_NULL)
     profile_picture = models.ImageField(
         upload_to='ethos/twitter_profiles/',
         blank=True,
