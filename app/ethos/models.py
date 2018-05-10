@@ -54,6 +54,15 @@ class ShortCode(SuperModel):
         self.get_latest_chart_gif()
         super().save(*args, **kwargs)
 
+    def increment(self):
+        """returns the x, y increment for this shortcode"""
+        import math
+        num_shortcodes = ShortCode.objects.count()
+        this_position = ShortCode.objects.filter(pk__lt=self.pk).count()
+        increment = math.radians((this_position / num_shortcodes) * 360)
+        increment = [math.sin(increment), math.cos(increment)]
+        return increment
+
 
 class Hop(SuperModel):
     """Define the EthOS Hop schema."""
@@ -75,13 +84,14 @@ class Hop(SuperModel):
     gif = models.FileField(null=True, upload_to='ethos/shortcodes/gifs/')
     png = models.ImageField(null=True, upload_to='ethos/hops/pngs/')
 
-    def get_current_hop_chart_png():
-        """Generate the current Hop state as a PNG."""
-        pass
+    def increment(self):
+        """returns the x, y increment for this hop"""
+        increment = self.shortcode.increment()
+        return  [increment[0] * self.hop_number(), increment[1] * self.hop_number()]
 
-    def get_current_hop_chart_gif():
-        """Generate the current Hop state as a GIF."""
-        pass
+    def hop_number(self):
+        """gets hop number."""
+        return Hop.objects.filter(shortcode=self.shortcode, pk__lt=self.pk).count() + 1
 
     def __str__(self):
         """str of this object"""

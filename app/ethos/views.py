@@ -28,6 +28,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 import matplotlib
 import networkx as nx
@@ -103,77 +104,71 @@ except Exception:
     contract = None
 
 
+#img config
+white = (255, 255, 255, 0)
+black = (0, 0, 0, 0)
+grey = (122, 122, 122, 0)
+size = (1000, 1000)
+center = (int(size[0]/2), int(size[1]/2))
+
+
+def add_edge(img, loc):
+    draw = ImageDraw.Draw(img) 
+    draw.line(loc, fill=grey, width=3)
+    return img
+
+
+def add_node_helper(img, name, loc):
+    x, y = loc
+    size = 30
+    font = ImageFont.truetype('assets/v2/fonts/futura/FuturaStd-Medium.otf', 12, encoding="unic")
+    draw = ImageDraw.Draw(img)
+    x0 = x - int((size/2))
+    x1 = x + int((size/2))
+    y0 = y - int((size/2))
+    y1 = y + int((size/2))
+    loc = [x0, y0, x1, y1]
+    draw.ellipse(loc, fill='blue', outline='black')
+    d = ImageDraw.Draw(img)
+    d.text((x, y), name, font=font, fill=black)
+    return img
+
+def draw_hop(img, hop, draw):
+    increment = hop.increment()
+    edge_size = 100 #TODO -- make this based upon edge time distance
+
+    coordinate_x = center[0] + (increment[0] * edge_size)
+    coordinate_y = center[0] + (increment[1] * edge_size)
+    node_loc = [coordinate_x, coordinate_y]
+    print(f"adding node {hop.pk}/{increment} at {node_loc}")
+    if draw == "node":
+        img = add_node_helper(img, hop.twitter_profile.username, node_loc)
+    
+    prev_coordinate_x = center[0] + ((increment[0] - 1) * edge_size)
+    prev_coordinate_y = center[0] + ((increment[1] - 1) * edge_size)
+    prev_node_loc = [prev_coordinate_x, prev_coordinate_y]
+    edge_loc = (coordinate_x, coordinate_y, center[0], center[0])
+    if draw == "edge":
+        img = add_edge(img, edge_loc)
+
+    return img
+
 def render_graph(request):
-    matplotlib.use('Agg')
-    import matplotlib.image as mpimg
-    import matplotlib.pyplot as plt
-    nodes_labels = {}
-    nodes_images = {}
+    img = Image.new("RGBA", size, color=white)
 
-    # Maybe a pandas dataframe from the values_list of our QS would work better?
-    # df = pd.DataFrame(hops.values_list('previous_hop', 'twitter_profile'))
+    for hop in Hop.objects.all():
+        img = draw_hop(img, hop, 'edge')
 
-    hops = Hop.objects.select_related('previous_hop', 'previous_hop__twitter_profile', 'twitter_profile').all()
-    graph = nx.star_graph(hops.count())
-    hops_list = list(hops.values_list('id', flat=True))
-    for i, hop in enumerate(hops):
-        try:
-            profile_image = mpimg.imread(hop.twitter_profile.profile_picture.file)
-            twitter_username = hop.twitter_profile.username
-            nodes_labels[i] = twitter_username
-            nodes_images[i] = profile_image
-            graph.add_node(i, image=profile_image, label=twitter_username)
-            print('\nNODES AFTER GRAPH ADD NODE: ', graph.nodes(data=True), '\n\n')
-            graph.node[i]['image'] = profile_image
-            graph.node[i]['label'] = twitter_username
-            print('\nNODES AFTER GRAPH MANUAL NODE: ', graph.nodes(data=True), '\n\n')
-            if i != 0:
-                if hop and hop.previous_hop:
-                    time_lapsed = round((hop.created_on - hop.previous_hop.created_on).total_seconds()/60)
-                    if 0 < time_lapsed < 30:
-                        distance = time_lapsed * 10
-                    else:
-                        distance = 300
-                    distance = 5
-                    previous_hop = hops_list.index(hop.previous_hop.id)
-                    graph.add_edge(previous_hop, i, color='gray', edge_color='gray', arrowstyle='->', arrowsize=10, length=distance)
-        except:
-            pass
+    for hop in Hop.objects.all():
+        img = draw_hop(img, hop, 'node')
 
-    M = graph.number_of_edges()
-    pos = nx.spring_layout(graph)
-    print('POS: ', pos)
-    fig = plt.figure(figsize=(10, 10))
-    print('FIG: ', fig)
-    ax = plt.subplot(111)
-    print('AX: ', ax)
-    ax.set_aspect('equal')
-    print('AX: ', ax)
-    ax.xaxis.set_visible(False)
-    ax.yaxis.set_visible(False)
-    nx.draw_networkx_edges(graph, pos, ax=ax)
-    nx.draw_networkx_labels(graph, pos=pos, labels=nodes_labels)
+    #genesis
+    img = add_node_helper(img, "Genesis", center)
 
-    trans = ax.transData.transform
-    trans2 = fig.transFigure.inverted().transform
-    avatar_image_size = 0.04  # this is the image size
-    p2 = avatar_image_size / 2.0
-    for n in graph:
-        # Plop images on top of nodes.
-        xx, yy = trans(pos[n])  # Grab the figure coordinates.
-        xa, ya = trans2((xx, yy))  # Grab the axes coordinates.
-        a = plt.axes([xa-p2, ya-p2, avatar_image_size, avatar_image_size])
-        a.set_aspect('equal')
-        try:
-            a.imshow(graph.node[n]['image'])
-        except:
-            pass
-        a.axis('off')
-    nx.draw(graph)
-    print('GRAPH: ', graph)
-    plt.savefig('graph_test.png', format='PNG')
-    with open('graph_test.png', "rb") as f:
-        return HttpResponse(f.read(), content_type="image/png")
+    # Return image with right content-type
+    response = HttpResponse(content_type="image/jpeg")
+    img.save(response, "JPEG")
+    return response
 
 
 def graphzz(request):
