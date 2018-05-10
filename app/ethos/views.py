@@ -114,30 +114,34 @@ def render_graph(request):
     # df = pd.DataFrame(hops.values_list('previous_hop', 'twitter_profile'))
 
     hops = Hop.objects.select_related('previous_hop', 'previous_hop__twitter_profile', 'twitter_profile').all()
-    graph = nx.DiGraph()
+    graph = nx.star_graph(hops.count())
     hops_list = list(hops.values_list('id', flat=True))
     for i, hop in enumerate(hops):
-        profile_image = mpimg.imread(hop.twitter_profile.profile_picture.file)
-        twitter_username = hop.twitter_profile.username
-        nodes_labels[i] = twitter_username
-        nodes_images[i] = profile_image
-        graph.add_node(i, image=profile_image, label=twitter_username)
-        print('\nNODES AFTER GRAPH ADD NODE: ', graph.nodes(data=True), '\n\n')
-        graph.node[i]['image'] = profile_image
-        graph.node[i]['label'] = twitter_username
-        print('\nNODES AFTER GRAPH MANUAL NODE: ', graph.nodes(data=True), '\n\n')
-        if i != 0:
-            if hop and hop.previous_hop:
-                time_lapsed = round((hop.created_on - hop.previous_hop.created_on).total_seconds()/60)
-                if 0 < time_lapsed < 30:
-                    distance = time_lapsed * 10
-                else:
-                    distance = 300
-                previous_hop = hops_list.index(hop.previous_hop.id)
-                graph.add_edge(previous_hop, i, color='gray', edge_color='gray', arrowstyle='->', arrowsize=10, length=distance)
+        try:
+            profile_image = mpimg.imread(hop.twitter_profile.profile_picture.file)
+            twitter_username = hop.twitter_profile.username
+            nodes_labels[i] = twitter_username
+            nodes_images[i] = profile_image
+            graph.add_node(i, image=profile_image, label=twitter_username)
+            print('\nNODES AFTER GRAPH ADD NODE: ', graph.nodes(data=True), '\n\n')
+            graph.node[i]['image'] = profile_image
+            graph.node[i]['label'] = twitter_username
+            print('\nNODES AFTER GRAPH MANUAL NODE: ', graph.nodes(data=True), '\n\n')
+            if i != 0:
+                if hop and hop.previous_hop:
+                    time_lapsed = round((hop.created_on - hop.previous_hop.created_on).total_seconds()/60)
+                    if 0 < time_lapsed < 30:
+                        distance = time_lapsed * 10
+                    else:
+                        distance = 300
+                    distance = 5
+                    previous_hop = hops_list.index(hop.previous_hop.id)
+                    graph.add_edge(previous_hop, i, color='gray', edge_color='gray', arrowstyle='->', arrowsize=10, length=distance)
+        except:
+            pass
 
     M = graph.number_of_edges()
-    pos = nx.layout.shell_layout(graph)
+    pos = nx.spring_layout(graph)
     print('POS: ', pos)
     fig = plt.figure(figsize=(10, 10))
     print('FIG: ', fig)
@@ -160,7 +164,10 @@ def render_graph(request):
         xa, ya = trans2((xx, yy))  # Grab the axes coordinates.
         a = plt.axes([xa-p2, ya-p2, avatar_image_size, avatar_image_size])
         a.set_aspect('equal')
-        a.imshow(graph.node[n]['image'])
+        try:
+            a.imshow(graph.node[n]['image'])
+        except:
+            pass
         a.axis('off')
     nx.draw(graph)
     print('GRAPH: ', graph)

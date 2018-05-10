@@ -18,7 +18,12 @@
 
 import random
 import string
+import warnings
+import logging
 from random import randint
+warnings.filterwarnings("ignore", category=DeprecationWarning) 
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 from django.core.management.base import BaseCommand
 
@@ -161,9 +166,9 @@ class Command(BaseCommand):
             print(twitter_profile.username)
             # profile_pic = f'https://twitter.com/EthOSEthereal/profile_image?size=original'
 
-            if i % 10 != 0:
-                previous_hop = Hop.objects.latest('pk')
-            else:
+            try:
+                previous_hop = Hop.objects.filter(shortcode=shortcode).latest('pk')
+            except:
                 previous_hop = None
 
             Hop.objects.create(

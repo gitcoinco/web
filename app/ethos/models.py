@@ -83,6 +83,10 @@ class Hop(SuperModel):
         """Generate the current Hop state as a GIF."""
         pass
 
+    def __str__(self):
+        """str of this object"""
+        return f"{self.pk} / {self.previous_hop}"
+
 
 class TwitterProfile(SuperModel):
     """Define the Twitter Profile."""
