@@ -21,6 +21,7 @@
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
     <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/mentor.css" %}>
   </head>
   <body class="interior">
     {% include 'shared/tag_manager_2.html' %}
@@ -46,7 +47,7 @@
                 <thead>
                   <tr>
                     <th scope="col">{% trans "Name" %}</th>
-                    <th scope="col" class="d-none d-md-block">{% trans "Email" %}</th>
+                    <th scope="col"><span class="d-none d-md-block">{% trans "Email" %}</span></th>
                     <th scope="col">{% trans "Org" %}</th>
                     <th scope="col">{% trans "Skills Offerred" %}</th>
                     <th scope="col"></th>
@@ -70,11 +71,13 @@
   <script id="mentor" type="text/x-jsrender">
     <tr scope="row">
       <td>[[:name]]</td>
-      <td class="d-none d-md-block">[[:email]]</td>
+      <td><span class="d-none d-md-block">[[:email]]</span></td>
       <td>[[:org]]</td>
-      <td>[[for skills_offered]] <span class="badge badge-primary">[[:#data]]</span>
+      <td>
+        [[for skills_offered_list]]
+          <span class="badge badge-primary">[[:#data]]</span>
         [[/for]]</td>
-      <td><a id="open_mentor_[[:id]]" >{% trans "view" %}</a></td>
+      <td><a id="open_mentor_[[:id]]"><span class="blue mentor-link">{% trans "view" %}</span></a></td>
     </tr>
   </script>
   <script src="{% static "v2/js/pages/mentors.js" %}"></script>

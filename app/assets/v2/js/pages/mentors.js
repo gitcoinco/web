@@ -61,7 +61,7 @@ var mentors = (function() {
       fetchMentors(1, 10);
     }, 500));
 
-    $('#load_more').click(function() {
+    $('#load_more').on('click', function() {
       fetchMentors(++pageIdx, pageSize);
     });
     console.log($('.mentor_checkbox_filter'));

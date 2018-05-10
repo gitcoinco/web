@@ -1,4 +1,4 @@
-<div class="form-check">
-  <input type="checkbox" checked="{{field.value}}">
-  <label class="form__label" class="form__label">{{field.label}}</label>
+<div class="form-check" style="padding-left:0px">
+  <input type="checkbox" {% if field.value %} checked {% endif %} name="{{field.name}}" id="{{field.name}}">
+  <label class="form__label" class="form__label" for="{{field.name}}">{{field.label}}</label>
 </div>

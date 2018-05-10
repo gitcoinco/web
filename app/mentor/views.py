@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 
 from dashboard.models import Profile
+from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import AllowAny
 from rest_framework.renderers import TemplateHTMLRenderer
@@ -11,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import MentorSerializer
+from .permissions import IsProfileOwner
 
 
 class MentorsList(APIView):
@@ -22,10 +24,10 @@ class MentorsList(APIView):
         size = request.GET.get('size', 10)
         term = request.GET.get('term', None)
         exp = request.GET.get('exp', None)
-        skills_filter = Q(skills_offered__overlap=term.split()) if term else ~Q(pk=None)
+        skills_filter = Q(skills_offered__name__in=term.split()) if term else ~Q(pk=None)
         org_filter = Q(org__in=term.split()) if term else ~Q(pk=None)
         exp_filter = Q(experience__in=exp.split(',')) if exp else ~Q(pk=None)
-        mentors = Profile.objects.filter(Q(available=True), exp_filter, skills_filter | org_filter).order_by('id')
+        mentors = Profile.objects.filter(Q(available=True), exp_filter, skills_filter | org_filter).order_by('id').distinct()
         paginator = Paginator(mentors, size)
         mentors = paginator.page(page)
         serializer = MentorSerializer(mentors, many=True)
@@ -37,14 +39,13 @@ class MentorsList(APIView):
 
 class MentorDetail(APIView):
     authentication_classes = (SessionAuthentication,)
-    permission_classes = (AllowAny,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsProfileOwner,)
 
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'mentor.html'
 
     def get(self, request, pk):
         profile = get_object_or_404(Profile, pk=pk)
-        print(profile)
         serializer = MentorSerializer(profile)
         return Response({'serializer': serializer, 'mentor': profile})
 
@@ -59,8 +60,3 @@ class MentorDetail(APIView):
 
 def mentors(request):
     return TemplateResponse(request, 'mentors.html')
-
-
-def handle_not_logged(request):
-    # TODO: handle not logged
-    return redirect(f'/login/github?next={request.get_full_path()}')

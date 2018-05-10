@@ -40,7 +40,16 @@
     padding:10px;
   }
 
+  .match:not(:first-child) {
+    border-top:1px solid;
+  }
+
   .match-skills {
+    display:flex;
+    justify-content:center
+  }
+
+  .match-skills > div {
     display: flex;
     flex-wrap: wrap;
   }
@@ -49,35 +58,44 @@
     width:50%;
   }
 
+  #match_list {
+    margin-bottom:25px;
+  }
+
+  h4 {
+    padding-top: 15px;
+  }
+
   @media only screen and (min-width: 600px) {
-    .match-skills {
+    .match-skills > div {
         width: 500px
     }
 }
 </style>
 
-
-<h1>{% trans "You've got a match!" %}</h1>
+<h2>{% trans "You've got a match!" %}</h2>
+<div id="match_list">
   {% for match in matched_mentors %}
     <div class="match">
       <div class="text-center">
         <img src='{{match.avatar_url}}' class='avatar'>
-        <div class="mentor-name">{{match.name}}</div>
+        <div class="mentor-name">{{match.0.name}}</div>
       </div>
       <div class="text-center">
-        <h3>You matched on these skills:</h3>
-        <div style="display:flex;justify-content:center">
-            <div class="match-skills">
-                {% for skill in  match.skills_offered %}
-                  <div class="match-skill">{{skill}}</div>
-                {% endfor %}
-              </div>
+        <h4>You matched on these skills:</h4>
+        <div class="match-skills">
+          <div>
+            {% for skill in match.1 %}
+              <div class="match-skill">{{skill}}</div>
+            {% endfor %}
+          </div>
         </div>
       </div>
       <div class="text-center">
-        <h3>Get in contact at:</h3>
-        <div><a class="mentor-mail" href="mailto:{{match.email}}">{{match.email}}</a></div>
+        <h4>Get in contact at:</h4>
+        <div><a class="mentor-mail" href="mailto:{{match.0.email}}">{{match.0.email}}</a></div>
       </div>
     </div>
   {% endfor %}
+</div>
 {% endblock %}

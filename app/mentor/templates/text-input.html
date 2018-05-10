@@ -1,4 +1,5 @@
 <div class="form-group">
   <label class="form__label" for="name">{{field.label}}</label>
-  <input type="text" class="form__input" name="{{field.name}}" value="{{field.value}}"/>
+  <input type="text" class="form__input" name="{{field.name}}" value="{{field.value}}" {% if field.required %} required {% endif %}
+   {% if field.max_length %} maxlength="{{field.max_length}}" {% endif %}/>
 </div>
