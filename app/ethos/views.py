@@ -20,23 +20,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import base64
 import json
-import math
-import urllib
 
 from django.conf import settings
 from django.core.files.base import ContentFile
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import Http404, JsonResponse
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
 import twitter
-from ethos.models import Hop, ShortCode
+from ethos.models import Hop, ShortCode, TwitterProfile
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
+
+from .exceptions import DuplicateTransactionException
 
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
@@ -89,13 +89,25 @@ abi = json.loads(
     '"type":"uint256"}],"name":"Transfer","type":"event"}]')
 
 # Instantiate EthOS contract
-contract = w3.eth.contract(Web3.toChecksumAddress(settings.ETHOS_CONTRACT_ADDRESS), abi=abi)
+try:
+    contract = w3.eth.contract(Web3.toChecksumAddress(settings.ETHOS_CONTRACT_ADDRESS), abi=abi)
+except Exception:
+    contract = None
 
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def redeem_coin(request, shortcode):
+    """Redeem an EthOS coin.
 
+    Args:
+        shortcode (str): The EthOS unique shortcode.
+
+    Returns:
+        JsonResponse: The redemption status in JSON format, if request.body is present.
+        TemplateResponse: The templated response, if no request.body is present.
+
+    """
     if request.body:
         status = 'OK'
 
@@ -103,27 +115,29 @@ def redeem_coin(request, shortcode):
         body = json.loads(body_unicode)
 
         try:
-            address = body['address']
-            username = body['username']
+            address = body.get('address')
+            username = body.get('username')
 
-            profile_pic = f'https://twitter.com/{username}/profile_image?size=original'
+            if not username or not address:
+                raise Http404
 
+            twitter_profile, __ = TwitterProfile.objects.prefetch_related('hops').get_or_create(username=username)
             ethos = ShortCode.objects.get(shortcode=shortcode)
-
-            user_hop = Hop.objects.filter(
-                shortcode=ethos,
-                twitter_username=username,
-                web3_address=address).order_by('-id').first()
+            user_hop = Hop.objects.select_related('twitter_profile') \
+                .filter(
+                    shortcode=ethos,
+                    twitter_profile=twitter_profile,
+                    web3_address=address,
+                ).order_by('-id').first()
 
             # Restrict same user from redeeming the same coin within 30 minutes
             if user_hop and (timezone.now() - user_hop.created_on).total_seconds() < 1800:
-                raise Exception(_('Duplicate transaction detected'))
+                raise DuplicateTransactionException(_('Duplicate transaction detected'))
 
             # Number of EthOS tokens = 30 - number of minutes lapsed between the hop. Minimum = 5
             n = 30
 
-            previous_hop = Hop.objects.filter(shortcode=ethos).order_by('-id').first()
-
+            previous_hop = Hop.objects.select_related('shortcode').filter(shortcode=ethos).order_by('-id').first()
             if previous_hop:
                 time_lapsed = round((timezone.now() - previous_hop.created_on).total_seconds()/60)
                 n = 5
@@ -148,8 +162,7 @@ def redeem_coin(request, shortcode):
                 created_on=timezone.now(),
                 txid=message,
                 web3_address=address,
-                twitter_username=username,
-                twitter_profile_pic=profile_pic,
+                twitter_profile=twitter_profile,
                 previous_hop=previous_hop
             )
 
@@ -162,10 +175,10 @@ def redeem_coin(request, shortcode):
             edges = []
 
             # construct json for the graph viz
-            for h in Hop.objects.all():
+            for h in Hop.objects.select_related('previous_hop', 'previous_hop__twitter_profile').all():
                 node = {
-                    'name': h.twitter_username,
-                    'img': '/ethos/proxy/?image=' + h.twitter_profile_pic
+                    'name': h.twitter_profile.username,
+                    'img': h.twitter_profile.profile_picture.url
                 }
 
                 try:
@@ -176,16 +189,28 @@ def redeem_coin(request, shortcode):
 
                 # Add edge
                 if h.previous_hop:
-                    try:
-                        node_prev = nodes.index({
-                            'name': h.previous_hop.twitter_username,
-                            'img': '/ethos/proxy/?image=' + h.previous_hop.twitter_profile_pic
-                        })
-                        distance = 200
-                        distance = int(math.sqrt(h.previous_hop.created_on - h.created_on).total_seconds/10)
-                        edges.append({'source': node_prev, 'target': target, 'distance': distance})
-                    except:
-                        pass
+                    # try:
+                    #     node_prev = nodes.index({
+                    #         'name': h.previous_hop.twitter_username,
+                    #         'img': '/ethos/proxy/?image=' + h.previous_hop.twitter_profile_pic
+                    #     })
+                    #     distance = 200
+                    #     distance = int(math.sqrt(h.previous_hop.created_on - h.created_on).total_seconds/10)
+                    #     edges.append({'source': node_prev, 'target': target, 'distance': distance})
+                    # except:
+                    #     pass
+                    node_prev = nodes.index({
+                        'name': h.previous_hop.twitter_profile.username,
+                        'img': h.previous_hop.twitter_profile.profile_picture.url
+                    })
+
+                    time_lapsed = round((h.created_on - h.previous_hop.created_on).total_seconds()/60)
+                    if 0 < time_lapsed < 30:
+                        distance = time_lapsed * 10
+                    else:
+                        distance = 300
+
+                    edges.append({'source': node_prev, 'target': target, 'distance': distance})
 
         except ShortCode.DoesNotExist:
             status = 'error'
@@ -215,15 +240,15 @@ def redeem_coin(request, shortcode):
 
     try:
         ShortCode.objects.get(shortcode=shortcode)
-
-        params = {
-            'class': 'redeem',
-            'title': _('EthOS Coin'),
-        }
-
-        return TemplateResponse(request, 'redeem_ethos.html', params)
     except ShortCode.DoesNotExist:
         raise Http404
+
+    params = {
+        'class': 'redeem',
+        'title': _('EthOS Coin'),
+    }
+
+    return TemplateResponse(request, 'redeem_ethos.html', params)
 
 
 @csrf_exempt
@@ -277,12 +302,3 @@ def get_twitter_api():
         return False
 
     return twitter_api
-
-
-def proxy(request):
-
-    image = urllib.parse.unquote(request.GET.get('image'))
-    req = urllib.request.Request(image)
-    resp = urllib.request.urlopen(req)
-
-    return HttpResponse(resp.read())

@@ -47,3 +47,10 @@ django-silk==2.0.0
 django-extensions==2.0.6
 ipdb==0.11
 inotify==0.2.9
+pandas
+networkx
+matplotlib
+imageio
+numpy
+boto3
+django-storages

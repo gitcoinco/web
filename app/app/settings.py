@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
+    'storages',
     'social_django',
     'django.contrib.humanize',
     'django.contrib.sitemaps',
@@ -227,6 +228,8 @@ else:
 
 GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
@@ -388,6 +391,17 @@ IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
 # optional: only needed if you run the activity-report management command
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
+
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
+AWS_S3_OBJECT_PARAMETERS = env.dict('AWS_S3_OBJECT_PARAMETERS', default={'CacheControl': 'max-age=86400'})
+S3_USE_SIGV4 = env.bool('S3_USE_SIGV4', default=True)
+AWS_IS_GZIPPED = env.bool('AWS_IS_GZIPPED', default=True)
+AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='us-west-2')
+AWS_S3_SIGNATURE_VERSION = env('AWS_S3_SIGNATURE_VERSION', default='s3v4')
+AWS_QUERYSTRING_AUTH = env.bool('AWS_QUERYSTRING_AUTH', default=False)
+AWS_S3_FILE_OVERWRITE = env.bool('AWS_S3_FILE_OVERWRITE', default=True)
+# AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN', default='assets.gitcoin.co')
+
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='') # TODO
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='') # TODO
 
