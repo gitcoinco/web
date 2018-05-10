@@ -28,6 +28,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 import twitter
 from ethos.models import Hop, ShortCode, TwitterProfile
@@ -95,6 +96,35 @@ except Exception:
     contract = None
 
 
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def image_gen(request):
+    for h in Hop.objects.select_related('previous_hop', 'previous_hop__twitter_profile').all():
+        pass
+    import sys
+
+    import matplotlib.pyplot as plt
+    from networkx import nx
+
+    n = 10  # 10 nodes
+    m = 20  # 20 edges
+
+    G = nx.gnm_random_graph(n, m)
+
+    # some properties
+    print("node degree clustering")
+    for v in nx.nodes(G):
+        print('%s %d %f' % (v, nx.degree(G, v), nx.clustering(G, v)))
+
+    # print the adjacency list to terminal
+    try:
+        nx.write_adjlist(G, sys.stdout)
+    except TypeError:  # Python 3.x
+        nx.write_adjlist(G, sys.stdout.buffer)
+
+    nx.draw(G)
+    plt.show()
+
+
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def redeem_coin(request, shortcode):
@@ -154,63 +184,24 @@ def redeem_coin(request, shortcode):
             })
 
             signed = w3.eth.account.signTransaction(tx, settings.ETHOS_ACCOUNT_PRIVATE_KEY)
-            message = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+            do_tx = False
+            if do_tx:
+                message = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
 
-            Hop.objects.create(
-                shortcode=ethos,
-                ip=get_ip(request),
-                created_on=timezone.now(),
-                txid=message,
-                web3_address=address,
-                twitter_profile=twitter_profile,
-                previous_hop=previous_hop
-            )
+                Hop.objects.create(
+                    shortcode=ethos,
+                    ip=get_ip(request),
+                    created_on=timezone.now(),
+                    txid=message,
+                    web3_address=address,
+                    twitter_profile=twitter_profile,
+                    previous_hop=previous_hop
+                )
+            else:
+                message = 'done'
 
             ethos.num_scans += 1
             ethos.save()
-
-            # TODO: Send `this coin has been shared <num_scans> times. The top coin has been shared <num_scans> times`
-
-            nodes = []
-            edges = []
-
-            # construct json for the graph viz
-            for h in Hop.objects.select_related('previous_hop', 'previous_hop__twitter_profile').all():
-                node = {
-                    'name': h.twitter_profile.username,
-                    'img': h.twitter_profile.profile_picture.url
-                }
-
-                try:
-                    target = nodes.index(node)
-                except ValueError:
-                    nodes.append(node)
-                    target = len(nodes) - 1
-
-                # Add edge
-                if h.previous_hop:
-                    # try:
-                    #     node_prev = nodes.index({
-                    #         'name': h.previous_hop.twitter_username,
-                    #         'img': '/ethos/proxy/?image=' + h.previous_hop.twitter_profile_pic
-                    #     })
-                    #     distance = 200
-                    #     distance = int(math.sqrt(h.previous_hop.created_on - h.created_on).total_seconds/10)
-                    #     edges.append({'source': node_prev, 'target': target, 'distance': distance})
-                    # except:
-                    #     pass
-                    node_prev = nodes.index({
-                        'name': h.previous_hop.twitter_profile.username,
-                        'img': h.previous_hop.twitter_profile.profile_picture.url
-                    })
-
-                    time_lapsed = round((h.created_on - h.previous_hop.created_on).total_seconds()/60)
-                    if 0 < time_lapsed < 30:
-                        distance = time_lapsed * 10
-                    else:
-                        distance = 300
-
-                    edges.append({'source': node_prev, 'target': target, 'distance': distance})
 
         except ShortCode.DoesNotExist:
             status = 'error'
@@ -234,7 +225,7 @@ def redeem_coin(request, shortcode):
         }
 
         if status == 'OK':
-            response['dataset'] = {'nodes': nodes, 'edges': edges}
+            response['dataset'] = {'nodes': [], 'edges': []}
 
         return JsonResponse(response)
 

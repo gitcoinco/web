@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from ethos.models import Hop, ShortCode
+from ethos.models import Hop, ShortCode, TwitterProfile
 
 
 class GeneralAdmin(admin.ModelAdmin):
@@ -9,5 +9,6 @@ class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
+admin.site.register(TwitterProfile, GeneralAdmin)
 admin.site.register(Hop, GeneralAdmin)
 admin.site.register(ShortCode, GeneralAdmin)
