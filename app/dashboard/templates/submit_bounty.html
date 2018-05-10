@@ -47,7 +47,7 @@
         <div id="form_container">
           <div class="row d-flex justify-content-center my-5">
             <div class="col-lg-5 col-sm-12">
-              <form id="primary_form">
+              <form id="primary_form" class="submit_bounty_form">
                 <h1>{% trans "Fund an Issue" %}</h1>
                 <label class="form__label" for=issueURL>{% trans "Issue URL" %}</label>
                 <input name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />

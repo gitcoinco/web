@@ -533,6 +533,10 @@ input[type=text].loading {
   padding: 0 2em;
 }
 
+#primary_form.submit_bounty_form {
+  max-width: none;
+}
+
 .submit_bounty .select2-search,
 .fulfill_bounty .select2-search,
 .submit_bounty .select2-results__option,
