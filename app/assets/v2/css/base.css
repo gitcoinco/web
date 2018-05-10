@@ -795,7 +795,7 @@ input[type=text].loading {
 
 .quote_author {
   color: #70EFBE;
-  margin-top: 20px;
+  margin: 1rem auto;
   font-style: italic;
   font-weight: 700;
   font-size: 22px;
