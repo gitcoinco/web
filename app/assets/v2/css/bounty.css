@@ -487,6 +487,26 @@ a.btn {
   justify-content: flex-start;
 }
 
+#add_interest .login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem auto;
+}
+
+#add_interest .login__text {
+  margin-bottom: 1rem;
+}
+
+#add_interest .login__button .fa-github {
+  margin-right: 0.4rem;
+}
+
+#add_interest .login__button span {
+  padding-left: 0.5rem;
+  border-left: 1px solid #fff;
+}
+
 #add_interest form .filter-label {
   display: inline;
   margin-left: 0.625rem;

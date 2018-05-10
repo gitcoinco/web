@@ -111,7 +111,7 @@ class TestExpiraionStartWork(TestCase):
         Command().handle()
 
         assert mock_bounty_startwork_expire_warning.call_count == 0
-        assert mock_bounty_startwork_expired.call_count == 1
+        assert mock_bounty_startwork_expired.call_count == 0
 
     @patch('marketing.management.commands.expiration_start_work.get_interested_actions', return_value=actions_warning)
     @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expire_warning')

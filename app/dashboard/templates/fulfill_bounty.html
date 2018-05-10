@@ -57,6 +57,12 @@
                           <label class="form__label" for="terms">{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>:{% endblocktrans %}</label>
                       </div>
                   </div>
+                  <div class="w-100 mt-2 terms_container">
+                    <div class="form__checkbox">
+                      <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
+                      <label class="form__label" for=blockchain_tos>{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain.  No one, including Gitcoin Core, will be able to take my funds or change this information:{% endblocktrans %}</label>
+                    </div>
+                  </div>
                   {% include 'shared/bounty_actions_hidden_vars.html' %}
                   {% include 'shared/wallet_estimate.html' %}
                   <div class="form__footer form__footer--right">
@@ -76,6 +82,7 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
   </body>
 
   <!-- jQuery -->

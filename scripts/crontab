@@ -16,7 +16,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 45 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash refresh_bounties  >> /var/log/gitcoin/refresh_bounties.log  2>&1
 30 */5 * * * cd gitcoin/coin; bash scripts/run_management_command.bash refresh_bounties --remote  >> /var/log/gitcoin/refresh_bounties_remote.log  2>&1
 */30 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_gas_prices  >> /var/log/gitcoin/sync_gas_prices.log  2>&1
-15 */2 * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_profiles  >> /var/log/gitcoin/sync_profiles.log  2>&1
+15 */6 * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_profiles  >> /var/log/gitcoin/sync_profiles.log  2>&1
 15 4 * * * cd gitcoin/coin; bash scripts/run_management_command.bash cleanup_db_space  >> /var/log/gitcoin/cleanup_db_space.log  2>&1
 15 5 * * * cd gitcoin/coin; bash scripts/sync_external_bounties.bash  >> /var/log/gitcoin/sync_external_bounties.log  2>&1
 15 6 * * * cd gitcoin/coin; bash scripts/run_management_command.bash clearsessions  >> /var/log/gitcoin/clearsessions.log  2>&1
@@ -32,7 +32,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 45 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration  >> /var/log/gitcoin/expiration_bounty.log  2>&1
 15 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration_start_work  >> /var/log/gitcoin/expiration_start_work.log  2>&1
 15 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash sync_keywords  >> /var/log/gitcoin/sync_keywords.log  2>&1
-40 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_slack  >> /var/log/gitcoin/sync_slack.log  2>&1
+40 */3 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_slack  >> /var/log/gitcoin/sync_slack.log  2>&1
 30 1 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_github  >> /var/log/gitcoin/sync_github.log  2>&1
 */15 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash get_notifications  >> /var/log/gitcoin/get_notifications.log  2>&1
 15 10 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash bounty_feedback_email  >> /var/log/gitcoin/bounty_feedback_email.log  2>&1

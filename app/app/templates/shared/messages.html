@@ -14,9 +14,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n %}
-<div class="w-100 mt-2">
-  <label class="form__label" for="fullName">{% trans "Full Name" %}</label>
-  <input name='fullName' id='fullName' class="w-100 form__input" type="text" placeholder="John Smith (optional)" value="{% if name %}{{ name }}{% endif %}" />
-  {% include "shared/show_information_publicly.html" with id="show_name_publicly" %}
-</div>
+<script>
+  {% for message in messages %}
+    setTimeout(function(){
+      _alert({message: gettext('{{ message }}')}, '{{ message.tags }}');
+    }, 1000);
+  {% endfor %}
+</script>
