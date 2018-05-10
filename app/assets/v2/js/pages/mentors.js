@@ -64,7 +64,6 @@ var mentors = (function() {
     $('#load_more').on('click', function() {
       fetchMentors(++pageIdx, pageSize);
     });
-    console.log($('.mentor_checkbox_filter'));
     $('.mentor_checkbox_filter').change(function() {
       $('#mentor_search_results').html('');
       fetchMentors(1, 10);

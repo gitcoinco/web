@@ -1,6 +1,6 @@
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 
 from dashboard.models import Profile
@@ -27,7 +27,8 @@ class MentorsList(APIView):
         skills_filter = Q(skills_offered__name__in=term.split()) if term else ~Q(pk=None)
         org_filter = Q(org__in=term.split()) if term else ~Q(pk=None)
         exp_filter = Q(experience__in=exp.split(',')) if exp else ~Q(pk=None)
-        mentors = Profile.objects.filter(Q(available=True), exp_filter, skills_filter | org_filter).order_by('id').distinct()
+        mentors = Profile.objects.filter(Q(available=True), exp_filter,
+                                         skills_filter | org_filter).order_by('id').distinct()
         paginator = Paginator(mentors, size)
         mentors = paginator.page(page)
         serializer = MentorSerializer(mentors, many=True)

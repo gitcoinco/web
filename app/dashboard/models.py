@@ -49,7 +49,7 @@ from github.utils import (
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from taggit.managers import TaggableManager
-from taggit.models import GenericTaggedItemBase, Tag, TagBase
+from taggit.models import GenericTaggedItemBase, TagBase
 from web3 import Web3
 
 from .signals import m2m_changed_interested
@@ -1027,13 +1027,15 @@ def psave_interest(sender, instance, **kwargs):
 
 
 class SkillTag (TagBase):
-  pass
+    pass
+
 
 class SkillNeeded (GenericTaggedItemBase):
-  tag = models.ForeignKey(SkillTag, on_delete=models.CASCADE, related_name='%(class)s_needed')
+    tag = models.ForeignKey(SkillTag, on_delete=models.CASCADE, related_name='%(class)s_needed')
+
 
 class SkillOffered (GenericTaggedItemBase):
-  tag = models.ForeignKey(SkillTag, on_delete=models.CASCADE, related_name='%(class)s_offered')
+    tag = models.ForeignKey(SkillTag, on_delete=models.CASCADE, related_name='%(class)s_offered')
 
 
 class Profile(SuperModel):
@@ -1078,13 +1080,12 @@ class Profile(SuperModel):
         org = models.CharField(max_length=255, blank=True)
     about = models.TextField(blank=True)
     experience = models.CharField(max_length=5, choices=TIME_RANGE, blank=True)
-    skills_offered = ArrayField(models.CharField(max_length=255), null=True, default=[],
-                                help_text=_("comma delimited"))
-    skills_needed = ArrayField(models.CharField(max_length=255), null=True, default=[], help_text=_("comma delimited"))
     available = models.BooleanField(default=False)
     commitment_per_week = models.CharField(max_length=5, choices=TIME_RANGE, blank=True)
-    skills_offered = TaggableManager(verbose_name='Skills offered',  through=SkillOffered, blank=True, related_name="skills_offered")
-    skills_needed = TaggableManager(verbose_name='Skills needed',  through=SkillNeeded, blank=True, related_name="skills_needed")
+    skills_offered = TaggableManager(verbose_name='Skills offered',
+                                     through=SkillOffered, blank=True, related_name="skills_offered")
+    skills_needed = TaggableManager(verbose_name='Skills needed',
+                                    through=SkillNeeded, blank=True, related_name="skills_needed")
     # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
     max_num_issues_start_work = models.IntegerField(default=3)
 

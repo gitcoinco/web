@@ -2,7 +2,7 @@ from django.utils.translation import gettext_lazy as _
 
 from dashboard.models import Profile
 from rest_framework import serializers
-from rest_framework.fields import CharField, ListField
+from rest_framework.fields import ListField
 
 
 class TagSerializerField(ListField):
@@ -86,7 +86,6 @@ class MentorSerializer(serializers.ModelSerializer):
         instance.available = validated_data.pop("available")
         instance.save()
         return instance
-
 
     def get_skills_offered_list(self, obj):
         return obj.skills_offered.values_list('name', flat=True)

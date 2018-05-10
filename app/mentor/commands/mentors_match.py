@@ -12,6 +12,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         profiles = Profile.objects.all()
         for profile in profiles:
-            matched_profiles = Profile.objects.filter(~Q(pk=profile.pk), skills_offered__id__in=profile.skills_needed.all())
+            matched_profiles = Profile.objects.filter(~Q(pk=profile.pk),
+                                                      skills_offered__id__in=profile.skills_needed.all())
             if matched_profiles:
                 mentors_match(list(matched_profiles.all().distinct()), profile)
