@@ -180,18 +180,19 @@ def redeem_coin(request, shortcode):
                 signed = w3.eth.account.signTransaction(tx, settings.ETHOS_ACCOUNT_PRIVATE_KEY)
                 message = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
 
-                hop = Hop(
-                    shortcode=ethos,
-                    ip=get_ip(request),
-                    created_on=timezone.now(),
-                    twitter_profile=twitter_profile,
-                    txid=message if message else '',
-                    web3_address=address if address else '',
-                )
-                if previous_hop:
-                    hop.previous_hop = previous_hop
-
-                hop.save()
+            hop = Hop(
+                shortcode=ethos,
+                ip=get_ip(request),
+                created_on=timezone.now(),
+                twitter_profile=twitter_profile,
+            )
+            if message and message.startswith('0x'):
+                hop.txid = message
+            if address and address.startswith('0x'):
+                hop.web3_address = address
+            if previous_hop:
+                hop.previous_hop = previous_hop
+            hop.save()
 
             ethos.num_scans += 1
             ethos.save()
@@ -209,7 +210,6 @@ def redeem_coin(request, shortcode):
                 try:
                     tweet_id_str = tweet_message(twitter_api, tweet)
                 except twitter.error.TwitterError as e:
-                    print(f'ERROR: {e}')
                     status = 'error'
                     message = _('Error while tweeting to Twitter. Please try again')
 
