@@ -205,10 +205,11 @@ def redeem_coin(request, shortcode):
                 status = 'error'
                 message = _('Error while fetching Twitter account. Please try again')
             else:
-                tweet = get_ethos_tweet(twitter_profile, message)
+                tweet = get_ethos_tweet(twitter_profile.username, message)
                 try:
-                    tweet_id_str = tweet_message(tweet)
-                except twitter.error.TwitterError:
+                    tweet_id_str = tweet_message(twitter_api, tweet)
+                except twitter.error.TwitterError as e:
+                    print(f'ERROR: {e}')
                     status = 'error'
                     message = _('Error while tweeting to Twitter. Please try again')
 

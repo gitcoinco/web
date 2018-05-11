@@ -24,6 +24,7 @@ from django.core.files.base import ContentFile
 
 import requests
 import twitter
+from app.utils import get_short_url
 from PIL import Image, ImageDraw, ImageOps
 
 
@@ -50,7 +51,9 @@ def get_ethos_tweet(username, message=None):
     tweet = f'@{username} has earned some #EthOS\n\n'
 
     if message:
-        tweet = f'{tweet}https://etherscan.io/tx/{message}'
+        url = f'https://etherscan.io/tx/{message}'
+        response = get_short_url(url)
+        tweet = f'{tweet}{response}'
 
     return tweet
 
