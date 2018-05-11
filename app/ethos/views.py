@@ -17,11 +17,9 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import base64
 import json
 
 from django.conf import settings
-from django.core.files.base import ContentFile
 from django.http import Http404, HttpResponse, JsonResponse
 from django.template.response import TemplateResponse
 from django.utils import timezone
@@ -137,7 +135,7 @@ def redeem_coin(request, shortcode):
 
         try:
             address = body.get('address')
-            username = body.get('username')
+            username = body.get('username', '').lstrip('@')
 
             if not username or not address:
                 raise Http404
@@ -200,7 +198,7 @@ def redeem_coin(request, shortcode):
                 message = _('Error while fetching Twitter account. Please try again')
             else:
                 try:
-                    tweet_txt = f'@{username} has earned some #EthOS \n\n' \
+                    tweet_txt = f'@{twitter_profile.username} has earned some #EthOS \n\n' \
                                 f'https://etherscan.io/tx/{message}'
                     tweet_id_str = twitter_api.PostUpdate(tweet_txt, media="https://gitcoin.co/ethos/graph.gif").id_str
                 except twitter.error.TwitterError:
