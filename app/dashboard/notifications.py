@@ -402,8 +402,9 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
                     interests = Interest.objects.filter(profile__handle=profile[0], bounty=bounty)
                     for interest in interests:
                         if interest.issue_message.strip():
-                            msg += f"\n__Please answer following questions/comments__ {bounty_owner_clear}:\n\n" + \
-                                    interest.issue_message
+                            msg += f"\n{bounty_owner_clear}, __please see the below comments on the approach / " \
+                                    f"questions from__ [@{profile[0]}]({profile[1]}) ,__the bounty hunter__" \
+                                    f".\n\n {interest.issue_message}"
         except Exception as e:
             print(e)
     elif event_name == 'work_submitted':
