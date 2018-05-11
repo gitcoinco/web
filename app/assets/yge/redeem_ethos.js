@@ -233,7 +233,7 @@ var generateGraph = function(dataset, username, txid) {
               startConfetti();
 
               // TODO: Display the stats page after posting the tweet
-              $('send_eth').innerHTML = '<h1>Success 🚀!</h1> <a href="https://' + etherscanDomain() + '/tx/' + txid + '" target="_blank" rel="noopener noreferrer">See your transaction on the blockchain here</a>.<br><br><span id="mighttake">It might take a few minutes to sync, depending upon: <br> - network congestion<br> - network fees that sender allocated to transaction<br></span><br><a href="/" class="button">⬅ Check out Gitcoin.co</a>';
+              $('send_eth').innerHTML = '<h1>Success 🚀!</h1> <a href="https://' + etherscanDomain() + '/tx/' + txid + '" target="_blank" rel="noopener noreferrer">See your transaction on the blockchain here</a>.<br><br><span id="mighttake">It might take a few minutes to sync, depending upon: <br> - network congestion<br> - network fees that sender allocated to transaction<br></span><br><a href="/" class="button" style="background-color: #15003e;">⬅ Check out Gitcoin.co</a>';
             });
           }
         )

@@ -145,19 +145,34 @@ class Hop(SuperModel):
         d.text((x, y), name, font=font, fill=self.black)
         return img
 
-    def draw_hop(self, img, edge_size=100):
-        increment = self.increment()
-        # TODO -- make this based upon edge time distance
+    def edge_size(self):
+        hn = self.hop_number()
+        if hn == 1:
+            return 100
+        return 100 + (self.hop_number() * 3)
+
+        edge_size = 0
         previous_hop = getattr(self, 'previous_hop', None)
         if previous_hop:
-            time_lapsed = round((self.created_on - previous_hop.created_on).total_seconds()/60)
-            if 0 < time_lapsed < 30:
-                edge_size = time_lapsed * 10
-            edge_size = math.sqrt(edge_size)
-            if 0 < edge_size < 30:
-                edge_size = 30
-            if edge_size > 70:
-                edge_size = 70
+            edge_size += previous_hop.edge_size()
+
+        time_lapsed = round((self.created_on - previous_hop.created_on).total_seconds()/60) if previous_hop else 100
+        this_edge_size = 0 
+        if 0 < time_lapsed < 30:
+            this_edge_size = time_lapsed * 10
+        if 0 < this_edge_size < 30:
+            this_edge_size = 30
+        if this_edge_size > 100:
+            this_edge_size = 100
+
+        edge_size += this_edge_size
+        return edge_size
+
+
+    def draw_hop(self, img):
+        increment = self.increment()
+        # TODO -- make this based upon edge time distance
+        edge_size = self.edge_size()
 
         coordinate_x = self.center[0] + (increment[0] * edge_size)
         coordinate_y = self.center[0] + (increment[1] * edge_size)
