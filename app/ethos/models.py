@@ -31,8 +31,6 @@ from easy_thumbnails.fields import ThumbnailerImageField
 from economy.models import SuperModel
 from PIL import Image, ImageDraw, ImageFont
 
-from .utils import get_image_file
-
 
 class ShortCode(SuperModel):
     """Define the EthOS Shortcode schema."""
@@ -92,7 +90,7 @@ class Hop(SuperModel):
     font = 'assets/v2/fonts/futura/FuturaStd-Medium.otf'
 
     # Model variables
-    ip = models.GenericIPAddressField(protocol='IPv4', blank=True)
+    ip = models.GenericIPAddressField(protocol='IPv4', blank=True, null=True)
     twitter_profile = models.ForeignKey(
         'ethos.TwitterProfile', on_delete=models.SET_NULL, null=True, related_name='hops')
     txid = models.CharField(max_length=255, default='', blank=True)
