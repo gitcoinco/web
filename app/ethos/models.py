@@ -31,8 +31,6 @@ from easy_thumbnails.fields import ThumbnailerImageField
 from economy.models import SuperModel
 from PIL import Image, ImageDraw, ImageFont
 
-from .utils import get_image_file
-
 
 class ShortCode(SuperModel):
     """Define the EthOS Shortcode schema."""
@@ -92,11 +90,11 @@ class Hop(SuperModel):
     font = 'assets/v2/fonts/futura/FuturaStd-Medium.otf'
 
     # Model variables
-    ip = models.GenericIPAddressField(protocol='IPv4')
+    ip = models.GenericIPAddressField(protocol='IPv4', blank=True, null=True)
     twitter_profile = models.ForeignKey(
         'ethos.TwitterProfile', on_delete=models.SET_NULL, null=True, related_name='hops')
-    txid = models.CharField(max_length=255, default='')
-    web3_address = models.CharField(max_length=255)
+    txid = models.CharField(max_length=255, default='', blank=True)
+    web3_address = models.CharField(max_length=255, blank=True)
     previous_hop = models.ForeignKey("self", on_delete=models.SET_NULL, blank=True, null=True)
     shortcode = models.ForeignKey(ShortCode, related_name='hops', on_delete=models.CASCADE, null=True)
     gif = models.FileField(null=True, upload_to='ethos/shortcodes/gifs/')
@@ -157,7 +155,7 @@ class Hop(SuperModel):
             edge_size += previous_hop.edge_size()
 
         time_lapsed = round((self.created_on - previous_hop.created_on).total_seconds()/60) if previous_hop else 100
-        this_edge_size = 0 
+        this_edge_size = 0
         if 0 < time_lapsed < 30:
             this_edge_size = time_lapsed * 10
         if 0 < this_edge_size < 30:
@@ -207,7 +205,7 @@ class Hop(SuperModel):
         elif not latest and self and self.id:
             hops = Hop.objects.filter(id__lte=self.id)
         else:
-            hops = Hop.objects.all() 
+            hops = Hop.objects.all()
 
         for hop in hops:
             img = hop.draw_hop(img)

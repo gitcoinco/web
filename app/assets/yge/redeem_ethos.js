@@ -20,7 +20,7 @@ function redeemCoin() {
 
   // Check for valid address
   isValidForwardingAddress = forwarding_address.indexOf('0x') != -1;
-  if (!forwarding_address || !isValidForwardingAddress) {
+  if (forwarding_address && !isValidForwardingAddress) {
     _alert({message: gettext('Not a valid forwarding address')}, 'error');
     return;
   }
@@ -40,7 +40,7 @@ function redeemCoin() {
   fetch(window.location.href, {
     method: 'POST',
     body: JSON.stringify({
-      address: forwarding_address.trim(),
+      address: forwarding_address ? forwarding_address.trim() : '',
       username: twitter_username
     })
   })

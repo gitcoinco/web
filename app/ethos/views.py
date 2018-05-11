@@ -34,6 +34,7 @@ from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
 from .exceptions import DuplicateTransactionException
+from .utils import get_ethos_tweet, get_twitter_api, tweet_message
 
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
@@ -127,6 +128,8 @@ def redeem_coin(request, shortcode):
         TemplateResponse: The templated response, if no request.body is present.
 
     """
+    message = None
+
     if request.body:
         status = 'OK'
 
@@ -137,53 +140,58 @@ def redeem_coin(request, shortcode):
             address = body.get('address')
             username = body.get('username', '').lstrip('@')
 
-            if not username or not address:
+            if not username:
                 raise Http404
 
             twitter_profile, __ = TwitterProfile.objects.prefetch_related('hops').get_or_create(username=username)
             ethos = ShortCode.objects.get(shortcode=shortcode)
-            user_hop = Hop.objects.select_related('twitter_profile') \
-                .filter(
+
+            if address:
+                address = Web3.toChecksumAddress(address)
+
+                user_hop = Hop.objects.select_related('twitter_profile') \
+                    .filter(
                     shortcode=ethos,
                     twitter_profile=twitter_profile,
                     web3_address=address,
                 ).order_by('-id').first()
 
-            # Restrict same user from redeeming the same coin within 30 minutes
-            if user_hop and (timezone.now() - user_hop.created_on).total_seconds() < 1800:
-                raise DuplicateTransactionException(_('Duplicate transaction detected'))
+                # Restrict same user from redeeming the same coin within 30 minutes
+                if user_hop and (timezone.now() - user_hop.created_on).total_seconds() < 1800:
+                    raise DuplicateTransactionException(_('Duplicate transaction detected'))
 
-            # Number of EthOS tokens = 30 - number of minutes lapsed between the hop. Minimum = 5
-            n = 30
+                # Number of EthOS tokens = 30 - number of minutes lapsed between the hop. Minimum = 5
+                n = 30
 
-            previous_hop = Hop.objects.select_related('shortcode').filter(shortcode=ethos).order_by('-id').first()
-            if previous_hop:
-                time_lapsed = round((timezone.now() - previous_hop.created_on).total_seconds()/60)
-                n = 5
+                previous_hop = Hop.objects.select_related('shortcode').filter(shortcode=ethos).order_by('-id').first()
+                if previous_hop:
+                    time_lapsed = round((timezone.now() - previous_hop.created_on).total_seconds()/60)
+                    n = 5
 
-                if time_lapsed < 25:
-                    n = 30 - time_lapsed
+                    if time_lapsed < 25:
+                        n = 30 - time_lapsed
 
-            address = Web3.toChecksumAddress(address)
+                tx = contract.functions.transfer(address, n * 10**18).buildTransaction({
+                    'nonce': w3.eth.getTransactionCount(settings.ETHOS_ACCOUNT_ADDRESS),
+                    'gas': 100000,
+                    'gasPrice': recommend_min_gas_price_to_confirm_in_time(1) * 10**9
+                })
 
-            tx = contract.functions.transfer(address, n * 10**18).buildTransaction({
-                'nonce': w3.eth.getTransactionCount(settings.ETHOS_ACCOUNT_ADDRESS),
-                'gas': 100000,
-                'gasPrice': recommend_min_gas_price_to_confirm_in_time(1) * 10**9
-            })
+                signed = w3.eth.account.signTransaction(tx, settings.ETHOS_ACCOUNT_PRIVATE_KEY)
+                message = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
 
-            signed = w3.eth.account.signTransaction(tx, settings.ETHOS_ACCOUNT_PRIVATE_KEY)
-            message = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+                hop = Hop(
+                    shortcode=ethos,
+                    ip=get_ip(request),
+                    created_on=timezone.now(),
+                    twitter_profile=twitter_profile,
+                    txid=message if message else '',
+                    web3_address=address if address else '',
+                )
+                if previous_hop:
+                    hop.previous_hop = previous_hop
 
-            Hop.objects.create(
-                shortcode=ethos,
-                ip=get_ip(request),
-                created_on=timezone.now(),
-                txid=message,
-                web3_address=address,
-                twitter_profile=twitter_profile,
-                previous_hop=previous_hop
-            )
+                hop.save()
 
             ethos.num_scans += 1
             ethos.save()
@@ -197,11 +205,11 @@ def redeem_coin(request, shortcode):
                 status = 'error'
                 message = _('Error while fetching Twitter account. Please try again')
             else:
+                tweet = get_ethos_tweet(twitter_profile.username, message)
                 try:
-                    tweet_txt = f'@{twitter_profile.username} has earned some #EthOS \n\n' \
-                                f'https://etherscan.io/tx/{message}'
-                    tweet_id_str = twitter_api.PostUpdate(tweet_txt, media="https://gitcoin.co/ethos/graph.gif").id_str
-                except twitter.error.TwitterError:
+                    tweet_id_str = tweet_message(twitter_api, tweet)
+                except twitter.error.TwitterError as e:
+                    print(f'ERROR: {e}')
                     status = 'error'
                     message = _('Error while tweeting to Twitter. Please try again')
 
@@ -241,24 +249,7 @@ def redeem_coin(request, shortcode):
     params = {
         'class': 'redeem',
         'title': _('EthOS Coin'),
+        'hide_send_tip': True
     }
 
     return TemplateResponse(request, 'redeem_ethos.html', params)
-
-
-def get_twitter_api():
-
-    if not settings.ETHOS_TWITTER_CONSUMER_KEY:
-        return False
-
-    try:
-        twitter_api = twitter.Api(
-            consumer_key=settings.ETHOS_TWITTER_CONSUMER_KEY,
-            consumer_secret=settings.ETHOS_TWITTER_CONSUMER_SECRET,
-            access_token_key=settings.ETHOS_TWITTER_ACCESS_TOKEN,
-            access_token_secret=settings.ETHOS_TWITTER_ACCESS_SECRET,
-        )
-    except twitter.error.TwitterError:
-        return False
-
-    return twitter_api
