@@ -58,7 +58,7 @@ def get_ethos_tweet(username, message=None):
     return tweet
 
 
-def tweet_message(twitter_api, tweet, media='https://gitcoin.co/ethos/graph.gif'):
+def tweet_message(twitter_api, tweet, media='https://gitcoin.co/ethos/graph.gif?key=latest'):
     """Tweet the provided message."""
     tweet_id_str = twitter_api.PostUpdate(tweet, media=media).id_str
     return tweet_id_str
