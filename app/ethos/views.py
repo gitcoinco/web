@@ -96,13 +96,23 @@ except Exception:
 
 def render_graph(request):
     try:
-        img = Hop.objects.latest('id').build_graph()
+        for hop in Hop.objects.all():
+            img = hop.build_graph(latest=False)
     except Hop.DoesNotExist:
         raise Http404
 
+    movie = '_movie.gif'
+    import imageio
+    images = []
+    filenames = [f"{hop.pk}.gif" for hop in Hop.objects.all()]
+    for filename in filenames:
+        images.append(imageio.imread(filename))
+    imageio.mimsave(movie, images)
+
     # Return image with right content-type
     response = HttpResponse(content_type="image/jpeg")
-    img.save(response, "JPEG")
+    with open(movie, "rb") as f:
+        return HttpResponse(f.read(), content_type="image/jpeg")
     return response
 
 
@@ -270,9 +280,6 @@ def tweet_to_twitter(request):
     if request.body:
         status = 'OK'
 
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-
         media = body['media']
         username = body['username']
 
@@ -282,7 +289,8 @@ def tweet_to_twitter(request):
             status = 'error'
         else:
             try:
-                data = ContentFile(base64.b64decode(media), name='graph.png')
+                file = open('_movie.gif', 'rb')
+                data = file.read()
                 data.mode = 'rb'
                 tweet_txt = f'@{username} has earned some #EthOS \n\n'
                 twitter_api.PostUpdate(tweet_txt, media=data)

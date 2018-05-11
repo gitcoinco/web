@@ -24,6 +24,7 @@ from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.files.temp import NamedTemporaryFile
 from django.db import models
+import os.path
 
 import requests
 from easy_thumbnails.fields import ThumbnailerImageField
@@ -152,6 +153,11 @@ class Hop(SuperModel):
             time_lapsed = round((self.created_on - previous_hop.created_on).total_seconds()/60)
             if 0 < time_lapsed < 30:
                 edge_size = time_lapsed * 10
+            edge_size = math.sqrt(edge_size)
+            if 0 < edge_size < 30:
+                edge_size = 30
+            if edge_size > 70:
+                edge_size = 70
 
         coordinate_x = self.center[0] + (increment[0] * edge_size)
         coordinate_y = self.center[0] + (increment[1] * edge_size)
@@ -171,6 +177,11 @@ class Hop(SuperModel):
     def build_graph(self, save=True, root_node='Genesis', size=None,
                     background_color=None, latest=True):
         """Build the Hop graph."""
+
+        file_system_cache_file = f"{self.pk}.gif"
+        if os.path.isfile(file_system_cache_file):
+            return Image.open(file_system_cache_file)
+
         size = size or self.size
         background_color = background_color or self.white
 
@@ -191,6 +202,9 @@ class Hop(SuperModel):
         if not latest:
             # TODO: Save graph if not latest, so we can hop through each graph for gif building?
             pass
+
+        img.save(file_system_cache_file)
+
         return img
 
     def build_gif(self):
