@@ -162,7 +162,15 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend', ),
+    'DEFAULT_FILTER_BACKENDS': (
+      'django_filters.rest_framework.DjangoFilterBackend',
+      'rest_framework.filters.OrderingFilter',
+      'rest_framework.filters.SearchFilter',
+    ),
+    'ORDERING_PARAM': 'order_by',
+    # 'SEARCH_PARAM': 'search',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': None,
     'DEFAULT_THROTTLE_CLASSES': ('rest_framework.throttling.AnonRateThrottle', ),
     'DEFAULT_THROTTLE_RATES': {
         'anon': '1000/day',

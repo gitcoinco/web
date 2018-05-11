@@ -205,7 +205,11 @@ var get_search_URI = function() {
 
     $.each ($('input[name="' + key + '"]:checked'), function() {
       if (key === 'tech_stack' && $(this).val()) {
-        keywords += $(this).val() + ',';
+        if (keywords.length) {
+          keywords += ',' + $(this).val();
+        } else {
+          keywords += $(this).val();
+        }
       } else if ($(this).val()) {
         filters.push($(this).val());
       }
@@ -244,7 +248,10 @@ var get_search_URI = function() {
     if (val !== 'any' &&
         key !== 'bounty_filter' &&
         key !== 'bounty_owner_address') {
-      uri += key + '=' + val + '&';
+      // uri += key + '=' + val + '&';
+      val.split(',').forEach(v => {
+        uri += '&' + key + '=' + v;
+      });
     }
   }
 
