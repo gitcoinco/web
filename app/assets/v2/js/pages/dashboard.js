@@ -49,6 +49,7 @@ function debounce(func, wait, immediate) {
 // sets search information default
 var save_sidebar_latest = function() {
   localStorage['order_by'] = $('#sort_option').val();
+  localStorage['search'] = $('#keywords').val();
 
   for (var i = 0; i < sidebar_keys.length; i++) {
     var key = sidebar_keys[i];
@@ -205,7 +206,11 @@ var get_search_URI = function() {
 
     $.each ($('input[name="' + key + '"]:checked'), function() {
       if (key === 'tech_stack' && $(this).val()) {
-        keywords += $(this).val() + ',';
+        if (keywords.length) {
+          keywords += (', ' + $(this).val());
+        } else {
+          keywords += $(this).val();
+        }
       } else if ($(this).val()) {
         filters.push($(this).val());
       }
@@ -244,7 +249,9 @@ var get_search_URI = function() {
     if (val !== 'any' &&
         key !== 'bounty_filter' &&
         key !== 'bounty_owner_address') {
-      uri += key + '=' + val + '&';
+      val.split(',').forEach(v => {
+        uri += '&' + key + '=' + v;
+      });
     }
   }
 
@@ -255,6 +262,10 @@ var get_search_URI = function() {
         keywords += ',';
       }
     });
+  }
+
+  if (localStorage['search']) {
+    uri += '&search=' + localStorage['search'];
   }
 
   if (keywords) {
