@@ -145,7 +145,8 @@ def redeem_coin(request, shortcode):
 
             twitter_profile, __ = TwitterProfile.objects.prefetch_related('hops').get_or_create(username=username)
             ethos = ShortCode.objects.get(shortcode=shortcode)
-
+            previous_hop = None 
+            
             if address:
                 address = Web3.toChecksumAddress(address)
 
