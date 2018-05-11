@@ -16,7 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-
+import math
 from io import BytesIO
 
 from django.core.files.base import ContentFile
@@ -40,6 +40,10 @@ class ShortCode(SuperModel):
     gif = models.FileField(null=True, upload_to='ethos/shortcodes/gifs/')
     png = models.ImageField(null=True, upload_to='ethos/shortcodes/pngs/')
 
+    def __str__(self):
+        """Define the string representation of a short code."""
+        return f'ShortCode: {self.shortcode} - Scanned: ({self.num_scans})'
+
     def get_latest_chart_png(self):
         """Get the latest chart for the Shortcode in PNG format."""
         pass
@@ -56,7 +60,6 @@ class ShortCode(SuperModel):
 
     def increment(self):
         """returns the x, y increment for this shortcode"""
-        import math
         num_shortcodes = ShortCode.objects.count()
         this_position = ShortCode.objects.filter(pk__lt=self.pk).count()
         increment = math.radians((this_position / num_shortcodes) * 360)
@@ -73,8 +76,6 @@ class Hop(SuperModel):
         verbose_name_plural = 'Hops'
 
     ip = models.GenericIPAddressField(protocol='IPv4')
-    twitter_username = models.CharField(max_length=255)
-    twitter_profile_pic = models.URLField()
     twitter_profile = models.ForeignKey(
         'ethos.TwitterProfile', on_delete=models.SET_NULL, null=True, related_name='hops')
     txid = models.CharField(max_length=255, default='')
@@ -84,18 +85,18 @@ class Hop(SuperModel):
     gif = models.FileField(null=True, upload_to='ethos/shortcodes/gifs/')
     png = models.ImageField(null=True, upload_to='ethos/hops/pngs/')
 
+    def __str__(self):
+        """Define the string representation of a hop."""
+        return f"{self.pk} / {self.previous_hop}"
+
     def increment(self):
-        """returns the x, y increment for this hop"""
+        """Return the X, Y increment for this hop."""
         increment = self.shortcode.increment()
-        return  [increment[0] * self.hop_number(), increment[1] * self.hop_number()]
+        return [increment[0] * self.hop_number(), increment[1] * self.hop_number()]
 
     def hop_number(self):
-        """gets hop number."""
+        """Get the hop number."""
         return Hop.objects.filter(shortcode=self.shortcode, pk__lt=self.pk).count() + 1
-
-    def __str__(self):
-        """str of this object"""
-        return f"{self.pk} / {self.previous_hop}"
 
 
 class TwitterProfile(SuperModel):
@@ -112,6 +113,10 @@ class TwitterProfile(SuperModel):
         """Define the metadata associated with TwitterProfile."""
 
         verbose_name_plural = 'Twitter Profiles'
+
+    def __str__(self):
+        """Define the string representation of a twitter profile."""
+        return f"{self.pk} / {self.previous_hop}"
 
     def get_picture(self, override=False):
         """Get the Twitter user's profile picture.

@@ -28,7 +28,6 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
-from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 import matplotlib
 import networkx as nx
@@ -37,6 +36,7 @@ import pandas as pd
 import twitter
 from ethos.models import Hop, ShortCode, TwitterProfile
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
@@ -113,7 +113,7 @@ center = (int(size[0]/2), int(size[1]/2))
 
 
 def add_edge(img, loc):
-    draw = ImageDraw.Draw(img) 
+    draw = ImageDraw.Draw(img)
     draw.line(loc, fill=grey, width=3)
     return img
 
@@ -143,7 +143,7 @@ def draw_hop(img, hop, draw):
     print(f"adding node {hop.pk}/{increment} at {node_loc}")
     if draw == "node":
         img = add_node_helper(img, hop.twitter_profile.username, node_loc)
-    
+
     prev_coordinate_x = center[0] + ((increment[0] - 1) * edge_size)
     prev_coordinate_y = center[0] + ((increment[1] - 1) * edge_size)
     prev_node_loc = [prev_coordinate_x, prev_coordinate_y]
@@ -301,8 +301,8 @@ def redeem_coin(request, shortcode):
                 if h.previous_hop:
                     # try:
                     #     node_prev = nodes.index({
-                    #         'name': h.previous_hop.twitter_username,
-                    #         'img': '/ethos/proxy/?image=' + h.previous_hop.twitter_profile_pic
+                    #         'name': h.previous_hop.twitter_profile.username,
+                    #         'img': h.previous_hop.twitter_profile.profile_picture.url
                     #     })
                     #     distance = 200
                     #     distance = int(math.sqrt(h.previous_hop.created_on - h.created_on).total_seconds/10)

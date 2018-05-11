@@ -1,33 +1,35 @@
-'''
-    Copyright (C) 2017 Gitcoin Core
+"""Define the management command to generate EthOS hops.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import random
-import string
-import warnings
+"""
+
 import logging
+import warnings
 from random import randint
-warnings.filterwarnings("ignore", category=DeprecationWarning) 
-logging.getLogger("requests").setLevel(logging.WARNING)
-logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 from django.core.management.base import BaseCommand
 
 from ethos.models import Hop, ShortCode, TwitterProfile
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+
+
 
 twitter_usernames = [
     'eswara_sai',
@@ -148,12 +150,16 @@ twitter_usernames = [
 
 
 class Command(BaseCommand):
+    """Define the management command to generate EthOS Hops."""
+
     help = 'generates some ethos hops'
 
     def add_arguments(self, parser):
+        """Define the arguments for the command."""
         parser.add_argument('count', type=int)
 
     def handle(self, *args, **options):
+        """Define the command handling to generate hops."""
         for i in range(0, options['count']):
             shortcode_index = randint(1, ShortCode.objects.count())
             shortcode = ShortCode.objects.get(pk=shortcode_index)
@@ -168,7 +174,7 @@ class Command(BaseCommand):
 
             try:
                 previous_hop = Hop.objects.filter(shortcode=shortcode).latest('pk')
-            except:
+            except Exception:
                 previous_hop = None
 
             Hop.objects.create(
