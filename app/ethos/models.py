@@ -178,7 +178,7 @@ class Hop(SuperModel):
                     background_color=None, latest=True):
         """Build the Hop graph."""
 
-        file_system_cache_file = f"{self.pk}.gif"
+        file_system_cache_file = f"assets/tmp/{self.pk}.gif"
         if os.path.isfile(file_system_cache_file):
             return Image.open(file_system_cache_file)
 
@@ -192,7 +192,7 @@ class Hop(SuperModel):
         elif not latest and self and self.id:
             hops = Hop.objects.filter(id__lte=self.id)
         else:
-            hops = Hop.objects.all()
+            hops = Hop.objects.all() 
 
         for hop in hops:
             img = hop.draw_hop(img)
@@ -216,7 +216,7 @@ class Hop(SuperModel):
                 image = imageio.imread(filename)
                 writer.append_data(image)
         img_temp.flush()
-        self.gif.save(f'{self.id}.gif', File(img_temp), save=True)
+        self.gif.save(f'assets/tmp/_{self.id}.gif', File(img_temp), save=True)
 
 
 class TwitterProfile(SuperModel):
