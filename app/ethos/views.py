@@ -34,6 +34,7 @@ from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
 from .exceptions import DuplicateTransactionException
+from .utils import get_ethos_tweet, get_twitter_api, tweet_message
 
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
@@ -127,6 +128,8 @@ def redeem_coin(request, shortcode):
         TemplateResponse: The templated response, if no request.body is present.
 
     """
+    message = None
+
     if request.body:
         status = 'OK'
 
@@ -177,17 +180,14 @@ def redeem_coin(request, shortcode):
                 signed = w3.eth.account.signTransaction(tx, settings.ETHOS_ACCOUNT_PRIVATE_KEY)
                 message = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
 
-            hop = Hop.objects.create(
-                shortcode=ethos,
-                ip=get_ip(request),
-                created_on=timezone.now(),
-                twitter_profile=twitter_profile,
-            )
-
-            if address and message:
-                hop.txid = message
-                hop.web3_address = address
-
+                hop = Hop(
+                    shortcode=ethos,
+                    ip=get_ip(request),
+                    created_on=timezone.now(),
+                    twitter_profile=twitter_profile,
+                    txid=message if message else '',
+                    web3_address=address if address else '',
+                )
                 if previous_hop:
                     hop.previous_hop = previous_hop
 
@@ -205,12 +205,9 @@ def redeem_coin(request, shortcode):
                 status = 'error'
                 message = _('Error while fetching Twitter account. Please try again')
             else:
+                tweet = get_ethos_tweet(twitter_profile, message)
                 try:
-                    tweet_txt = f'@{twitter_profile.username} has earned some #EthOS \n\n'
-
-                    if message:
-                        tweet_txt += f'https://etherscan.io/tx/{message}'
-                    tweet_id_str = twitter_api.PostUpdate(tweet_txt, media="https://gitcoin.co/ethos/graph.gif").id_str
+                    tweet_id_str = tweet_message(tweet)
                 except twitter.error.TwitterError:
                     status = 'error'
                     message = _('Error while tweeting to Twitter. Please try again')
@@ -255,21 +252,3 @@ def redeem_coin(request, shortcode):
     }
 
     return TemplateResponse(request, 'redeem_ethos.html', params)
-
-
-def get_twitter_api():
-
-    if not settings.ETHOS_TWITTER_CONSUMER_KEY:
-        return False
-
-    try:
-        twitter_api = twitter.Api(
-            consumer_key=settings.ETHOS_TWITTER_CONSUMER_KEY,
-            consumer_secret=settings.ETHOS_TWITTER_CONSUMER_SECRET,
-            access_token_key=settings.ETHOS_TWITTER_ACCESS_TOKEN,
-            access_token_secret=settings.ETHOS_TWITTER_ACCESS_SECRET,
-        )
-    except twitter.error.TwitterError:
-        return False
-
-    return twitter_api

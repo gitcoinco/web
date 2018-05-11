@@ -19,19 +19,55 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from io import BytesIO
 
+from django.conf import settings
 from django.core.files.base import ContentFile
 
 import requests
+import twitter
 from PIL import Image, ImageDraw, ImageOps
+
+
+def get_twitter_api():
+    """Get the Twitter API client session."""
+    if not settings.ETHOS_TWITTER_CONSUMER_KEY:
+        return False
+
+    try:
+        twitter_api = twitter.Api(
+            consumer_key=settings.ETHOS_TWITTER_CONSUMER_KEY,
+            consumer_secret=settings.ETHOS_TWITTER_CONSUMER_SECRET,
+            access_token_key=settings.ETHOS_TWITTER_ACCESS_TOKEN,
+            access_token_secret=settings.ETHOS_TWITTER_ACCESS_SECRET,
+        )
+    except twitter.error.TwitterError:
+        return False
+
+    return twitter_api
+
+
+def get_ethos_tweet(username, message=None):
+    """Get the EthOS tweet message."""
+    tweet = f'@{username} has earned some #EthOS\n\n'
+
+    if message:
+        tweet = f'{tweet}https://etherscan.io/tx/{message}'
+
+    return tweet
+
+
+def tweet_message(twitter_api, tweet, media='https://gitcoin.co/ethos/graph.gif'):
+    """Tweet the provided message."""
+    tweet_id_str = twitter_api.PostUpdate(tweet, media=media).id_str
+    return tweet_id_str
 
 
 def get_image_file(image=None, image_url='', output_filename=''):
     """Get the Twitter user's profile picture.
 
-        Args:
-            overrider (bool): Whether or not to override the existing picture.
+    Args:
+        overrider (bool): Whether or not to override the existing picture.
 
-        """
+    """
     if not image or image_url:
         content_file = None
         try:
