@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Define the management command to generate EthOS hops.
 
 Copyright (C) 2018 Gitcoin Core
@@ -28,7 +29,6 @@ from ethos.models import Hop, ShortCode, TwitterProfile
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
-
 
 
 twitter_usernames = [

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Define the EthOS application configuration.
+"""Define the EthOS thumbnail processors.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -17,11 +17,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from django.apps import AppConfig
 
 
-class EthosConfig(AppConfig):
-    """Define the EthOS application configuration."""
-
-    name = 'ethos'
-    verbose_name = 'EthOS'
+def circular_processor(image, circle=False, **kwargs):
+    """Force the image to a circle."""
+    from .utils import get_circular_image
+    if circle:
+        image = get_circular_image(image)
+    return image

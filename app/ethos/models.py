@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Define the EthOS models.
 
 Copyright (C) 2018 Gitcoin Core
@@ -19,12 +20,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import math
 from io import BytesIO
 
+from django.core.files import File
 from django.core.files.base import ContentFile
+from django.core.files.temp import NamedTemporaryFile
 from django.db import models
 
 import requests
+from easy_thumbnails.fields import ThumbnailerImageField
 from economy.models import SuperModel
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
+
+from .utils import get_image_file
 
 
 class ShortCode(SuperModel):
@@ -33,7 +39,7 @@ class ShortCode(SuperModel):
     class Meta:
         """Define metadata associated with ShortCode."""
 
-        verbose_name_plural = 'ShortCodes'
+        verbose_name_plural = 'Short Codes'
 
     num_scans = models.PositiveSmallIntegerField(default=0)
     shortcode = models.CharField(max_length=255, default='')
@@ -75,6 +81,16 @@ class Hop(SuperModel):
 
         verbose_name_plural = 'Hops'
 
+    # Local variables
+    # Hop Graph Presets
+    white = (255, 255, 255, 0)
+    black = (0, 0, 0, 0)
+    grey = (122, 122, 122, 0)
+    size = (1000, 1000)
+    center = (int(size[0]/2), int(size[1]/2))
+    font = 'assets/v2/fonts/futura/FuturaStd-Medium.otf'
+
+    # Model variables
     ip = models.GenericIPAddressField(protocol='IPv4')
     twitter_profile = models.ForeignKey(
         'ethos.TwitterProfile', on_delete=models.SET_NULL, null=True, related_name='hops')
@@ -83,7 +99,7 @@ class Hop(SuperModel):
     previous_hop = models.ForeignKey("self", on_delete=models.SET_NULL, blank=True, null=True)
     shortcode = models.ForeignKey(ShortCode, related_name='hops', on_delete=models.CASCADE, null=True)
     gif = models.FileField(null=True, upload_to='ethos/shortcodes/gifs/')
-    png = models.ImageField(null=True, upload_to='ethos/hops/pngs/')
+    jpeg = models.ImageField(null=True, upload_to='ethos/hops/jpegs/')
 
     def __str__(self):
         """Define the string representation of a hop."""
@@ -98,15 +114,104 @@ class Hop(SuperModel):
         """Get the hop number."""
         return Hop.objects.filter(shortcode=self.shortcode, pk__lt=self.pk).count() + 1
 
+    def add_edge(self, img, loc, width=3):
+        draw = ImageDraw.Draw(img)
+        draw.line(loc, fill=self.grey, width=width)
+        return img
+
+    def add_node_helper(self, img, name, loc, node_image=None, size=30, font='',
+                        font_size=12):
+        font = font or self.font
+        x, y = loc
+        font = ImageFont.truetype(font, font_size, encoding="unic")
+        draw = ImageDraw.Draw(img)
+        x0 = x - int((size/2))
+        x1 = x + int((size/2))
+        y0 = y - int((size/2))
+        y1 = y + int((size/2))
+        loc = [x0, y0, x1, y1]
+
+        if not node_image:
+            draw.ellipse(loc, fill='blue', outline='black')
+        else:
+            # TODO: Debug why the circular image stored on node_image
+            # renders as a square on this graph.
+            pil_image_obj = Image.open(node_image).copy()
+            img_x, img_y = pil_image_obj.size
+            img.paste(pil_image_obj, box=(round(x), round(y)))
+
+        d = ImageDraw.Draw(img)
+        d.text((x, y), name, font=font, fill=self.black)
+        return img
+
+    def draw_hop(self, img, edge_size=100):
+        increment = self.increment()
+        # TODO -- make this based upon edge time distance
+        previous_hop = getattr(self, 'previous_hop', None)
+        if previous_hop:
+            time_lapsed = round((self.created_on - previous_hop.created_on).total_seconds()/60)
+            if 0 < time_lapsed < 30:
+                edge_size = time_lapsed * 10
+
+        coordinate_x = self.center[0] + (increment[0] * edge_size)
+        coordinate_y = self.center[0] + (increment[1] * edge_size)
+        node_loc = [coordinate_x, coordinate_y]
+        print(f"adding node {self.pk}/{increment} at {node_loc}")
+        node_image = self.twitter_profile.get_node_image().file
+        img = self.add_node_helper(img, self.twitter_profile.username, node_loc, node_image=node_image)
+
+        # prev_coordinate_x = center[0] + ((increment[0] - 1) * edge_size)
+        # prev_coordinate_y = center[0] + ((increment[1] - 1) * edge_size)
+        # prev_node_loc = [prev_coordinate_x, prev_coordinate_y]
+        edge_loc = (coordinate_x, coordinate_y, self.center[0], self.center[0])
+        img = self.add_edge(img, edge_loc)
+
+        return img
+
+    def build_graph(self, save=True, root_node='Genesis', size=None,
+                    background_color=None, latest=True):
+        """Build the Hop graph."""
+        size = size or self.size
+        background_color = background_color or self.color
+
+        img = Image.new("RGBA", self.size, color=self.white)
+
+        if not latest and self and self.id:
+            hops = Hop.objects.filter(id__lte=self.id)
+        else:
+            hops = Hop.objects.all()
+
+        for hop in hops:
+            img = hop.draw_hop(img)
+
+        # genesis
+        img = self.add_node_helper(img, root_node, self.center)
+        self.jpeg = get_image_file(img)
+        self.save()
+        return img
+
+    def build_gif(self):
+        import imageio
+        img_temp = NamedTemporaryFile(delete=True)
+        with imageio.get_writer(img_temp.name, mode='I') as writer:
+            filenames = [jpeg_file.file for jpeg_file in Hop.objects.filter(id__lte=self.id)]
+            for filename in filenames:
+                image = imageio.imread(filename)
+                writer.append_data(image)
+        img_temp.flush()
+        self.gif.save(f'{self.id}.gif', File(img_temp), save=True)
+
 
 class TwitterProfile(SuperModel):
     """Define the Twitter Profile."""
 
-    profile_picture = models.ImageField(
+    profile_picture = ThumbnailerImageField(
         upload_to='ethos/twitter_profiles/',
         blank=True,
         null=True,
         max_length=255)
+    node_image = models.ImageField(
+        upload_to='ethos/node_images/', blank=True, null=True, max_length=255)
     username = models.CharField(max_length=255)
 
     class Meta:
@@ -116,7 +221,22 @@ class TwitterProfile(SuperModel):
 
     def __str__(self):
         """Define the string representation of a twitter profile."""
-        return f"{self.pk} / {self.previous_hop}"
+        return f"Username: {self.username} - PK: ({self.pk})"
+
+    def get_node_image(self, override=False):
+        # TODO: DRY this.
+        if not self.node_image or override:
+            if self.profile_picture:
+                image_response = requests.get(self.profile_picture['graph_node_circular'].url)
+                img = Image.open(BytesIO(image_response.content))
+                tmpfile_io = BytesIO()
+                img.save(tmpfile_io, format=img.format)
+                node_image = ContentFile(tmpfile_io.getvalue())
+                node_image.name = f'{self.username}.jpg'
+                self.node_image = node_image
+                self.save()
+                return self.node_image
+        return None
 
     def get_picture(self, override=False):
         """Get the Twitter user's profile picture.

@@ -17,7 +17,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-
 import base64
 import json
 
@@ -29,23 +28,14 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-import matplotlib
-import networkx as nx
-import numpy as np
-import pandas as pd
 import twitter
 from ethos.models import Hop, ShortCode, TwitterProfile
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from PIL import Image, ImageDraw, ImageFont, ImageOps
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
 from .exceptions import DuplicateTransactionException
-
-matplotlib.use('Agg')
-
-
 
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
@@ -104,105 +94,16 @@ except Exception:
     contract = None
 
 
-#img config
-white = (255, 255, 255, 0)
-black = (0, 0, 0, 0)
-grey = (122, 122, 122, 0)
-size = (1000, 1000)
-center = (int(size[0]/2), int(size[1]/2))
-
-
-def add_edge(img, loc):
-    draw = ImageDraw.Draw(img)
-    draw.line(loc, fill=grey, width=3)
-    return img
-
-
-def add_node_helper(img, name, loc):
-    x, y = loc
-    size = 30
-    font = ImageFont.truetype('assets/v2/fonts/futura/FuturaStd-Medium.otf', 12, encoding="unic")
-    draw = ImageDraw.Draw(img)
-    x0 = x - int((size/2))
-    x1 = x + int((size/2))
-    y0 = y - int((size/2))
-    y1 = y + int((size/2))
-    loc = [x0, y0, x1, y1]
-    draw.ellipse(loc, fill='blue', outline='black')
-    d = ImageDraw.Draw(img)
-    d.text((x, y), name, font=font, fill=black)
-    return img
-
-def draw_hop(img, hop, draw):
-    increment = hop.increment()
-    edge_size = 100 #TODO -- make this based upon edge time distance
-
-    coordinate_x = center[0] + (increment[0] * edge_size)
-    coordinate_y = center[0] + (increment[1] * edge_size)
-    node_loc = [coordinate_x, coordinate_y]
-    print(f"adding node {hop.pk}/{increment} at {node_loc}")
-    if draw == "node":
-        img = add_node_helper(img, hop.twitter_profile.username, node_loc)
-
-    prev_coordinate_x = center[0] + ((increment[0] - 1) * edge_size)
-    prev_coordinate_y = center[0] + ((increment[1] - 1) * edge_size)
-    prev_node_loc = [prev_coordinate_x, prev_coordinate_y]
-    edge_loc = (coordinate_x, coordinate_y, center[0], center[0])
-    if draw == "edge":
-        img = add_edge(img, edge_loc)
-
-    return img
-
 def render_graph(request):
-    img = Image.new("RGBA", size, color=white)
-
-    for hop in Hop.objects.all():
-        img = draw_hop(img, hop, 'edge')
-
-    for hop in Hop.objects.all():
-        img = draw_hop(img, hop, 'node')
-
-    #genesis
-    img = add_node_helper(img, "Genesis", center)
+    try:
+        img = Hop.objects.latest('id').build_graph()
+    except Hop.DoesNotExist:
+        raise Http404
 
     # Return image with right content-type
     response = HttpResponse(content_type="image/jpeg")
     img.save(response, "JPEG")
     return response
-
-
-def graphzz(request):
-    # Just a random graph with below data as an example.
-    import matplotlib.pyplot as plt
-    nodes = [0, 1, 2, 3]
-
-    edges_dicts = [
-        {'length': 200},
-        {'length': 50},
-        {'length': 100},
-    ]
-    edges = [
-        (0, 1),
-        (1, 2),
-        (2, 3),
-    ]
-    G = nx.DiGraph()
-    # G.add_nodes_from(nodes)
-    for node in nodes:
-        G.add_node(node, label='derp')
-    for i, edge in enumerate(edges):
-        G.add_edge(edge[0], edge[1], length=edges_dicts[i])
-    # G.add_edges_from(edges)
-    M = G.number_of_edges()
-    pos = nx.layout.spectral_layout(G)
-    nx.draw_networkx_labels(G, pos=pos, labels={0: 'derp', 1: 'dingo', 2: 'flash', 3: 'derpy'})
-
-    nodes = nx.draw_networkx_nodes(G, pos, node_size=25, node_color='green', with_labels=True)
-    edges = nx.draw_networkx_edges(G, pos, node_size=25, arrowstyle='->',
-                                   arrowsize=10, edge_color='gray', width=2, with_labels=True)
-    plt.savefig('test.png', format='png')
-    with open('test.png', "rb") as f:
-        return HttpResponse(f.read(), content_type="image/png")
 
 
 @csrf_exempt

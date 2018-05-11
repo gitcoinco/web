@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Define the management command to generate EthOS Shortcodes.
 
 Copyright (C) 2018 Gitcoin Core

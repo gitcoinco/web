@@ -1,78 +1,74 @@
-import copy
-import itertools
+# -*- coding: utf-8 -*-
+"""Define the EthOS utilities.
+
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 from io import BytesIO
 
-from django.core.files.images import ImageFile
+from django.core.files.base import ContentFile
 
-import matplotlib
-import matplotlib.image as mpimg
-import matplotlib.pyplot as plt
-import networkx as nx
-import pandas as pd
 import requests
-
-from .models import Hop, ShortCode
-
-
-def save_graph(graph, format='png'):
-    figure = BytesIO()
-    plt.savefig(figure, format=format)
-    return
+from PIL import Image, ImageDraw, ImageOps
 
 
-def get_ebunchs():
-    nodes = []
-    edges = []
+def get_image_file(image=None, image_url='', override=False, output_filename=''):
+    """Get the Twitter user's profile picture.
 
-    # construct json for the graph viz
-    hops = Hop.objects.select_related(
-        'twitter_profile',
-        'previous_hop',
-        'previous_hop__twitter_profile',
-    ).all()
-    for hop in hops:
-        node = {
-            'label': hop.twitter_profile.username,
-            'image': hop.twitter_profile.profile_picture.file,
-            'color': 'green',
-        }
+        Args:
+            overrider (bool): Whether or not to override the existing picture.
 
+        """
+    if not image or override:
+        content_file = None
         try:
-            target = nodes.index(node)
-        except ValueError:
-            nodes.append(node)
-            target = len(nodes) - 1
-
-        # Add edge
-        if hop.previous_hop:
-            try:
-                node_prev = nodes.index({
-                    'label': hop.previous_hop.twitter_profile.username,
-                    'image': hop.previous_hop.twitter_profile.profile_picture.url,
-                    'color': 'green',
-                })
-                time_lapsed = round((hop.created_on - hop.previous_hop.created_on).total_seconds()/60)
-                if 0 < time_lapsed < 30:
-                    distance = time_lapsed * 10
-                else:
-                    distance = 300
-
-                edges.append((node_prev, target, {'color': 'gray', 'length': distance}))
-            except Exception:
-                pass
-                # edges.append({'source': node_prev, 'target': target, 'distance': distance})
-
-    G = nx.DiGraph()
-    G.add_edges_from(edges)
-    G.add_nodes_from(nodes)
-    plt.savefig('TESTING.png', format='png')
+            if image_url:
+                image = requests.get(image_url).content
+            img = Image.open(BytesIO(image))
+            tmpfile_io = BytesIO()
+            img.save(tmpfile_io, format=img.format)
+            content_file = ContentFile(tmpfile_io.getvalue())
+            content_file.name = output_filename
+        except Exception:
+            pass
+    return content_file
 
 
-def get_hop_graph(hops_edges, hops_nodes):
-    g = nx.Graph()
-    g.add_edges_from(hops_nodes)
-    g.add_nodes_from(hops_nodes)
-    plt.figure(figsize=(8, 6))
-    nx.draw(g, edge_color='gray', node_size=10, node_color='black')
-    plt.title('EthOS Coin Hops', size=15)
-    plt.savefig('derp.png')
+def get_circular_image(image):
+    bigsize = (image.size[0] * 3, image.size[1] * 3)
+    mask = Image.new('L', bigsize, 0)
+    draw = ImageDraw.Draw(mask)
+    draw.ellipse((0, 0) + bigsize, fill=255)
+    mask = mask.resize(image.size, Image.ANTIALIAS)
+    image = ImageOps.fit(image, mask.size, centering=(0.5, 0.5))
+    image.putalpha(mask)
+    return image
+
+
+def resize_image(image, width, height):
+    image_width, image_height = image.size
+
+    if width is None and height is not None:
+        image_width = (image_width * height) / image_height
+        image_height = height
+    elif width is not None and height is None:
+        image_height = (image_height * width) / image_width
+        image_width = width
+    elif width is not None and height is not None:
+        image_width = width
+        image_height = width
+
+    return image.resize((int(image_width), int(image_height)), Image.ANTIALIAS)

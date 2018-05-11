@@ -20,12 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import socket
 
 from django.http import Http404
-
-import rollbar
-
-import environ
 from django.utils.translation import gettext_lazy as _
 
+import environ
+import rollbar
+from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
 
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
 env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
@@ -69,6 +68,7 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'django_extensions',
+    'easy_thumbnails',
     'app',
     'retail',
     'rest_framework',
@@ -229,6 +229,7 @@ else:
 GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -238,6 +239,23 @@ STATIC_ROOT = root('static')
 
 STATIC_HOST = env('STATIC_HOST', default='')
 STATIC_URL = STATIC_HOST + env('STATIC_URL', default='/static/')
+
+THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + (
+    'ethos.thumbnail_processors.circular_processor', )
+
+THUMBNAIL_ALIASES = {
+    '': {
+        'graph_node': {
+            'size': (30, 30),
+            'crop': True
+        },
+        'graph_node_circular': {
+            'size': (30, 30),
+            'crop': True,
+            'circle': True
+        }
+    }
+}
 
 CACHES = {'default': env.cache()}
 
