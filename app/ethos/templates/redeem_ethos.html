@@ -27,9 +27,6 @@
 <script src="{% static "yge/redeem_ethos.js" %}"></script>
 <script src="{% static "yge/youvegoteth/confetti.js" %}"></script>
 <script src="{% static "yge/youvegoteth/web3alert.js" %}"></script>
-<script src="{% static "v2/js/canvas-to-blob.min.js" %}"></script>
-<script src="{% static "v2/js/saveSvgAsPng.min.js" %}"></script>
-<script src="https://d3js.org/d3.v3.min.js"></script>
 {% endblock %}
 <!-- Main -->
 {% block 'world' %}
@@ -61,7 +58,7 @@
   <div id="send_eth" style="display:none;">
     <h1 id="oneh1">{% trans "You've received an Ethos!" %}</h1>
     <h2>{%trans "Ethos is an emergent experiment that's moving through the community at Ethereal." %}</h2>
-    <img src="/ethos/graph.gif" style="max-width: 300px;"> 
+    <img src="/ethos/graph.gif" style="max-width: 300px;">
     <h2>{%trans "Enter your name to claim your Ethos." %}</h2>
     <div>
       {% trans "Twitter username" %}
