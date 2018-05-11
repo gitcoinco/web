@@ -35,6 +35,7 @@ from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
     maybe_market_to_user_slack,
 )
+from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
 from github.utils import _AUTH
 from jsondiff import diff
@@ -367,6 +368,13 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
     with transaction.atomic():
         old_bounties = old_bounties.distinct().order_by('created_on')
         latest_old_bounty = None
+        token_address = bounty_payload.get('tokenAddress', '0x0000000000000000000000000000000000000000')
+        token_name = bounty_payload.get('tokenName', '')
+        if not token_name:
+            token = addr_to_token(token_address)
+            if token:
+                token_name = token['name']
+
         for old_bounty in old_bounties:
             if old_bounty.current_bounty:
                 submissions_comment_id = old_bounty.submissions_comment
@@ -382,8 +390,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     timezone.datetime.fromtimestamp(bounty_payload.get('created')),
                     timezone=UTC),
                 value_in_token=bounty_details.get('fulfillmentAmount'),
-                token_name=bounty_payload.get('tokenName', ''),
-                token_address=bounty_payload.get('tokenAddress', '0x0000000000000000000000000000000000000000'),
+                token_name=token_name,
+                token_address=token_address,
                 bounty_type=metadata.get('bountyType', ''),
                 project_length=metadata.get('projectLength', ''),
                 experience_level=metadata.get('experienceLevel', ''),
@@ -401,6 +409,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 accepted=accepted,
                 interested_comment=interested_comment_id,
                 submissions_comment=submissions_comment_id,
+                privacy_preferences=bounty_payload.get('privacy_preferences', {}),
                 # These fields are after initial bounty creation, in bounty_details.js
                 expires_date=timezone.make_aware(
                     timezone.datetime.fromtimestamp(bounty_details.get('deadline')),
@@ -412,6 +421,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 github_comments=latest_old_bounty.github_comments if latest_old_bounty else 0,
                 override_status=latest_old_bounty.override_status if latest_old_bounty else '',
                 last_comment_date=latest_old_bounty.last_comment_date if latest_old_bounty else None,
+                snooze_warnings_for_days=latest_old_bounty.snooze_warnings_for_days if latest_old_bounty else 0,
             )
             new_bounty.fetch_issue_item()
 
@@ -486,6 +496,19 @@ def process_bounty_details(bounty_details):
 
 
 def record_user_action(event_name, old_bounty, new_bounty):
+    """Records a user action 
+
+    Args:
+        event_name (string): the event
+        old_bounty (Bounty): the old_bounty
+        new_bounty (Bounty): the new_bounty
+
+    Raises:
+        None
+
+    Returns:
+        None
+    """
     user_profile = None
     fulfillment = None
     try:
