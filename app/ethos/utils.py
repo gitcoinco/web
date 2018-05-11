@@ -25,14 +25,14 @@ import requests
 from PIL import Image, ImageDraw, ImageOps
 
 
-def get_image_file(image=None, image_url='', override=False, output_filename=''):
+def get_image_file(image=None, image_url='', output_filename=''):
     """Get the Twitter user's profile picture.
 
         Args:
             overrider (bool): Whether or not to override the existing picture.
 
         """
-    if not image or override:
+    if not image or image_url:
         content_file = None
         try:
             if image_url:

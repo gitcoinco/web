@@ -172,11 +172,13 @@ class Hop(SuperModel):
                     background_color=None, latest=True):
         """Build the Hop graph."""
         size = size or self.size
-        background_color = background_color or self.color
+        background_color = background_color or self.white
 
-        img = Image.new("RGBA", self.size, color=self.white)
+        img = Image.new("RGBA", self.size, color=background_color)
 
-        if not latest and self and self.id:
+        if not latest and self.id and getattr(self, 'jpeg'):
+            return Image.open(self.jpeg.file)
+        elif not latest and self and self.id:
             hops = Hop.objects.filter(id__lte=self.id)
         else:
             hops = Hop.objects.all()
@@ -186,8 +188,9 @@ class Hop(SuperModel):
 
         # genesis
         img = self.add_node_helper(img, root_node, self.center)
-        self.jpeg = get_image_file(img)
-        self.save()
+        if not latest:
+            # TODO: Save graph if not latest, so we can hop through each graph for gif building?
+            pass
         return img
 
     def build_gif(self):
@@ -235,8 +238,7 @@ class TwitterProfile(SuperModel):
                 node_image.name = f'{self.username}.jpg'
                 self.node_image = node_image
                 self.save()
-                return self.node_image
-        return None
+        return self.node_image
 
     def get_picture(self, override=False):
         """Get the Twitter user's profile picture.

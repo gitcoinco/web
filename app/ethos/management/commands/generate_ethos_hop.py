@@ -183,5 +183,7 @@ class Command(BaseCommand):
                 previous_hop=previous_hop,
                 ip='127.0.0.1'
             )
+            # TODO: Build the graph for each hop.
+            # hop.build_graph(latest=False)
 
             print(f'Hop by {twitter_profile.username} for {shortcode.shortcode}')
