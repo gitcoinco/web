@@ -168,6 +168,7 @@ class Hop(SuperModel):
 
 
     def draw_hop(self, img):
+        node_image = None
         increment = self.increment()
         # TODO -- make this based upon edge time distance
         edge_size = self.edge_size()
@@ -176,7 +177,10 @@ class Hop(SuperModel):
         coordinate_y = self.center[0] + (increment[1] * edge_size)
         node_loc = [coordinate_x, coordinate_y]
         print(f"adding node {self.pk}/{increment} at {node_loc}")
-        node_image = self.twitter_profile.get_node_image().file
+        node_image_file = self.twitter_profile.get_node_image()
+        if node_image_file and getattr(node_image_file, 'file'):
+            node_image = node_image_file.file
+
         img = self.add_node_helper(img, self.twitter_profile.username, node_loc, node_image=node_image)
 
         # prev_coordinate_x = center[0] + ((increment[0] - 1) * edge_size)
