@@ -101,7 +101,7 @@ def render_graph(request):
         if key == 'latest':
             hops = Hop.objects.all().order_by('-pk')[:1]
     print(f"got {hops.count()} hops")
-    
+
     try:
         for hop in hops:
             img = hop.build_graph(latest=False)
@@ -220,7 +220,7 @@ def redeem_coin(request, shortcode):
                     tweet_id_str = tweet_message(twitter_api, tweet)
                 except twitter.error.TwitterError as e:
                     status = 'error'
-                    message = _('Error while tweeting to Twitter. Please try again')
+                    message = _(f'Error while tweeting to Twitter. {e}')
 
         except ShortCode.DoesNotExist:
             status = 'error'

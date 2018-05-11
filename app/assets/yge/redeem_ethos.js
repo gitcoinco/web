@@ -2,7 +2,6 @@
 window.onload = function() {
   waitforWeb3(function() {
     $('forwarding_address').value = web3.eth.accounts[0];
-    $('forwarding_address').disabled = true;
   });
 
   setTimeout(function() {
