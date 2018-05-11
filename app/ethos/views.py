@@ -190,48 +190,22 @@ def redeem_coin(request, shortcode):
             ethos.num_scans += 1
             ethos.save()
 
-            # TODO: Send `this coin has been shared <num_scans> times. The top coin has been shared <num_scans> times`
+            num_scans = ethos.num_scans
+            num_scans_top = ShortCode.objects.order_by('-num_scans').first().num_scans
 
-            nodes = []
-            edges = []
+            twitter_api = get_twitter_api()
 
-            # construct json for the graph viz
-            for h in Hop.objects.select_related('previous_hop', 'previous_hop__twitter_profile').all():
-                node = {
-                    'name': h.twitter_profile.username,
-                    'img': h.twitter_profile.profile_picture.url
-                }
-
+            if not twitter_api:
+                status = 'error'
+                message = _('Error while fetching Twitter account. Please try again')
+            else:
                 try:
-                    target = nodes.index(node)
-                except ValueError:
-                    nodes.append(node)
-                    target = len(nodes) - 1
-
-                # Add edge
-                if h.previous_hop:
-                    # try:
-                    #     node_prev = nodes.index({
-                    #         'name': h.previous_hop.twitter_profile.username,
-                    #         'img': h.previous_hop.twitter_profile.profile_picture.url
-                    #     })
-                    #     distance = 200
-                    #     distance = int(math.sqrt(h.previous_hop.created_on - h.created_on).total_seconds/10)
-                    #     edges.append({'source': node_prev, 'target': target, 'distance': distance})
-                    # except:
-                    #     pass
-                    node_prev = nodes.index({
-                        'name': h.previous_hop.twitter_profile.username,
-                        'img': h.previous_hop.twitter_profile.profile_picture.url
-                    })
-
-                    time_lapsed = round((h.created_on - h.previous_hop.created_on).total_seconds()/60)
-                    if 0 < time_lapsed < 30:
-                        distance = time_lapsed * 10
-                    else:
-                        distance = 300
-
-                    edges.append({'source': node_prev, 'target': target, 'distance': distance})
+                    tweet_txt = f'@{username} has earned some #EthOS \n\n' \
+                                f'https://etherscan.io/tx/{message}'
+                    tweet_id_str = twitter_api.PostUpdate(tweet_txt, media="https://gitcoin.co/ethos/graph.gif").id_str
+                except twitter.error.TwitterError:
+                    status = 'error'
+                    message = _('Error while tweeting to Twitter. Please try again')
 
         except ShortCode.DoesNotExist:
             status = 'error'
@@ -255,10 +229,10 @@ def redeem_coin(request, shortcode):
         }
 
         if status == 'OK':
-            response['dataset'] = {'nodes': nodes, 'edges': edges}
+            response['num_scans'] = num_scans
+            response['num_scans_top'] = num_scans_top
+            response['tweet_url'] = f'https://twitter.com/EthOSEthereal/status/{tweet_id_str}'
 
-        print('EDGES: ', edges)
-        print('NODES: ', nodes)
         return JsonResponse(response)
 
     try:
@@ -272,37 +246,6 @@ def redeem_coin(request, shortcode):
     }
 
     return TemplateResponse(request, 'redeem_ethos.html', params)
-
-
-@csrf_exempt
-def tweet_to_twitter(request):
-
-    if request.body:
-        status = 'OK'
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-
-        username = body['username']
-
-        twitter_api = get_twitter_api()
-
-        if not twitter_api:
-            status = 'error'
-        else:
-            try:
-                tweet_txt = f'@{username} has earned some #EthOS \n\n'
-                twitter_api.PostUpdate(tweet_txt, media="https://gitcoin.co/ethos/graph.gif")
-            except twitter.error.TwitterError:
-                status = 'error'
-
-        # http response
-        response = {
-            'status': status
-        }
-
-        return JsonResponse(response)
-    else:
-        raise Http404
 
 
 def get_twitter_api():
