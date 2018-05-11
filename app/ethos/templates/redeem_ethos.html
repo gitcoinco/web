@@ -27,6 +27,12 @@
 <script src="{% static "yge/redeem_ethos.js" %}"></script>
 <script src="{% static "yge/youvegoteth/confetti.js" %}"></script>
 <script src="{% static "yge/youvegoteth/web3alert.js" %}"></script>
+<<<<<<< HEAD
+=======
+<script src="{% static "v2/js/canvas-to-blob.min.js" %}"></script>
+<script src="{% static "v2/js/saveSvgAsPng.min.js" %}"></script>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+>>>>>>> ab5329c26a38142c1316157200507bcae37c5336
 {% endblock %}
 <!-- Main -->
 {% block 'world' %}
@@ -56,8 +62,15 @@
     <iframe width="100%" src="https://www.youtube.com/embed/6Gf_kRE4MJU" frameborder="0" allowfullscreen></iframe>
   </div>
   <div id="send_eth" style="display:none;">
+<<<<<<< HEAD
     <h1 id="oneh1">{% trans "You've received an ethos!" %}</h1>
     <h2>{%trans "Enter your name to continue." %}</h2>
+=======
+    <h1 id="oneh1">{% trans "You've received an Ethos!" %}</h1>
+    <h2>{%trans "Ethos is an emergent experiment that's moving through the community at Ethereal." %}</h2>
+    <img src="/ethos/graph.gif" style="max-width: 300px;"> 
+    <h2>{%trans "Enter your name to claim your Ethos." %}</h2>
+>>>>>>> ab5329c26a38142c1316157200507bcae37c5336
     <div>
       {% trans "Twitter username" %}
       <br>
@@ -72,9 +85,17 @@
     <!-- End -->
     <div>
       <br>
+<<<<<<< HEAD
       <a href="javascript:void(0)" id="redeem" class="button" onclick="redeemCoin()">{% trans "Claim" %} 🙌</a>
       <br>
     </div>
   </div>
+=======
+      <a href="javascript:void(0)" id="redeem" style="background-color: #15003e;" class="button" onclick="redeemCoin()">{% trans "Claim" %} 🙌</a>
+      <br>
+    </div>
+  </div>
+  <div id="graph" style="display: none;"></div>
+>>>>>>> ab5329c26a38142c1316157200507bcae37c5336
 </section>
 {% endblock %}

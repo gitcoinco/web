@@ -1,7 +1,5 @@
-<<<<<<< HEAD
-=======
 # -*- coding: utf-8 -*-
-"""Define the EthOS application configuration.
+"""Define the EthOS URLs.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -19,16 +17,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
->>>>>>> ab5329c26a38142c1316157200507bcae37c5336
-from django.apps import AppConfig
+from django.urls import re_path
 
+from . import views
 
-class EthosConfig(AppConfig):
-<<<<<<< HEAD
-    name = 'ethos'
-=======
-    """Define the EthOS application configuration."""
-
-    name = 'ethos'
-    verbose_name = 'EthOS'
->>>>>>> ab5329c26a38142c1316157200507bcae37c5336
+app_name = 'ethos'
+urlpatterns = [
+    re_path(r'^tweet/?', views.tweet_to_twitter, name='tweet_to_twitter'),
+    re_path(r'^graph.gif/?', views.render_graph, name='render_graph'),
+    re_path(r'^(.*)/?', views.redeem_coin, name='redeem_coin'),
+]

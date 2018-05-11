@@ -1,4 +1,4 @@
-from django_filters import BaseInFilter, BooleanFilter, CharFilter, Filter, FilterSet, MultipleChoiceFilter, UUIDFilter
+from django_filters import BaseInFilter, CharFilter, Filter, FilterSet, MultipleChoiceFilter, UUIDFilter
 
 from .models import Bounty
 

@@ -26,6 +26,7 @@
       <h5 class="text-center font-title">{% trans "Great to see that you're interested in this project!" %}</h5>
     </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <div class="col-12">
       <form class="font-body">
         <div>
@@ -87,6 +88,41 @@
               </div>
             </div>
           </div>
+=======
+    {% if user_logged_in %}
+      <div class="col-12">
+        <form class="font-body">
+          <div>
+            <label for="issue-message">
+              <span>{% trans "Please provide an action plan and any initial questions you have for this ticket." %}</span>
+              <br>
+              <span>{% trans "This will be reflected in a comment on the Github issue." %}</span>
+            </label>
+            <textarea id="issue-message" class="form__input"></textarea>
+          </div>
+          <div>
+            <div class=checkbox_container>
+              <input type="checkbox" id="checkbox2" class="form__input" value="1">
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for="checkbox2">
+                  {% trans "I understand that if anyone has started work on this ticket before me, they may have precedence." %}
+                </label>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class=checkbox_container>
+              <input type="checkbox" id="checkbox1" class="form__input" value="1">
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for="checkbox1">
+                  {% trans "I agree to keep the funder informed of my progress every few days." %}
+                </label>
+              </div>
+            </div>
+          </div>
+>>>>>>> ab5329c26a38142c1316157200507bcae37c5336
           <button class="row button button--primary btn-interested" type="submit">{% trans "Submit" %}</button>
         </form>
       </div>

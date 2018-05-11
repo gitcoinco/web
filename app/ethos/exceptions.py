@@ -1,7 +1,5 @@
-<<<<<<< HEAD
-=======
 # -*- coding: utf-8 -*-
-"""Define the EthOS application configuration.
+"""Define the EthOS exceptions.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -19,16 +17,9 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
->>>>>>> ab5329c26a38142c1316157200507bcae37c5336
-from django.apps import AppConfig
 
 
-class EthosConfig(AppConfig):
-<<<<<<< HEAD
-    name = 'ethos'
-=======
-    """Define the EthOS application configuration."""
+class DuplicateTransactionException(Exception):
+    """Define exception handling when encountering duplicate transactions."""
 
-    name = 'ethos'
-    verbose_name = 'EthOS'
->>>>>>> ab5329c26a38142c1316157200507bcae37c5336
+    pass

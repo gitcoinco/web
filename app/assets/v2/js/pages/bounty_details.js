@@ -439,11 +439,19 @@ var show_interest_modal = function() {
         }
 
         if (!agree_precedence) {
+<<<<<<< HEAD
           _alert({ message: 'You must agree to the precedence clause.' }, 'error');
           return false;
         }
         if (!agree_not_to_abandon) {
           _alert({ message: 'You must agree to keep the funder updated on your progress.' }, 'error');
+=======
+          _alert({message: gettext('You must agree to the precedence clause.')}, 'error');
+          return false;
+        }
+        if (!agree_not_to_abandon) {
+          _alert({message: gettext('You must agree to keep the funder updated on your progress.')}, 'error');
+>>>>>>> ab5329c26a38142c1316157200507bcae37c5336
           return false;
         }
 
