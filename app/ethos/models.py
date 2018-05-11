@@ -18,13 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import math
+import os.path
 from io import BytesIO
 
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.files.temp import NamedTemporaryFile
 from django.db import models
-import os.path
 
 import requests
 from easy_thumbnails.fields import ThumbnailerImageField

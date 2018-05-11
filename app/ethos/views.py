@@ -101,10 +101,10 @@ def render_graph(request):
     except Hop.DoesNotExist:
         raise Http404
 
-    movie = '_movie.gif'
+    movie = 'assets/tmp/_movie.gif'
     import imageio
     images = []
-    filenames = [f"{hop.pk}.gif" for hop in Hop.objects.all()]
+    filenames = [f"assets/tmp/{hop.pk}.gif" for hop in Hop.objects.all()]
     for filename in filenames:
         images.append(imageio.imread(filename))
     imageio.mimsave(movie, images)
@@ -279,8 +279,9 @@ def tweet_to_twitter(request):
 
     if request.body:
         status = 'OK'
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
 
-        media = body['media']
         username = body['username']
 
         twitter_api = get_twitter_api()
@@ -289,11 +290,8 @@ def tweet_to_twitter(request):
             status = 'error'
         else:
             try:
-                file = open('_movie.gif', 'rb')
-                data = file.read()
-                data.mode = 'rb'
                 tweet_txt = f'@{username} has earned some #EthOS \n\n'
-                twitter_api.PostUpdate(tweet_txt, media=data)
+                twitter_api.PostUpdate(tweet_txt, media="https://gitcoin.co/ethos/graph.gif")
             except twitter.error.TwitterError:
                 status = 'error'
 
