@@ -94,8 +94,16 @@ except Exception:
 
 
 def render_graph(request):
+
+    hops = Hop.objects.all()
+    key = request.GET.get('key', False)
+    if key:
+        if key == 'latest':
+            hops = Hop.objects.all().order_by('-pk')[:1]
+    print(f"got {hops.count()} hops")
+    
     try:
-        for hop in Hop.objects.all():
+        for hop in hops:
             img = hop.build_graph(latest=False)
     except Hop.DoesNotExist:
         raise Http404
@@ -103,7 +111,7 @@ def render_graph(request):
     movie = 'assets/tmp/_movie.gif'
     import imageio
     images = []
-    filenames = [f"assets/tmp/{hop.pk}.gif" for hop in Hop.objects.all()]
+    filenames = [f"assets/tmp/{hop.pk}.gif" for hop in hops]
     for filename in filenames:
         images.append(imageio.imread(filename))
     imageio.mimsave(movie, images)
@@ -146,7 +154,7 @@ def redeem_coin(request, shortcode):
             twitter_profile, __ = TwitterProfile.objects.prefetch_related('hops').get_or_create(username=username)
             ethos = ShortCode.objects.get(shortcode=shortcode)
             previous_hop = None 
-            
+
             if address:
                 address = Web3.toChecksumAddress(address)
 
