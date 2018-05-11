@@ -54,9 +54,11 @@
           <li>
             <a href="/">&copy; Gitcoin.co</a>
           </li>
+          {% if not hide_send_tip %}
           <li>
             <a href="{% url "tip" %}">{% trans "Send Tip" %}</a>
           </li>
+          {% endif %}
         </ul>
       </footer>
     </div>
