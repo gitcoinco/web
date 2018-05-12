@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.core.management.base import BaseCommand
 
 from ethos.models import Hop, ShortCode, TwitterProfile
+from ethos.utils import get_twitter_api
 
 
 class Command(BaseCommand):
@@ -38,9 +39,9 @@ class Command(BaseCommand):
         hop_users = [hop.twitter_profile.username for hop in hops if hop.next_hop()]
         hop_users = set(hop_users)
         for hop_user in hop_users:
-            tweet = f"@{hop_user} happy #ethereal day 2: We're doubling the Ethos ERC20 bonus to players today.  \n\nRemember to give your Ethos solid coin to someone great today!\n\n(this is a one time reminder)"
-            print(tweet)
+            tweet = f"@{hop_user} happy #ethereal day 2 -- Give your Ethos solid coin to someone great today (2x 'day 2' bonus today only)!\n\n(1 time reminder)"
+            print(len(tweet))
             if options['live']:
                 twitter_api = get_twitter_api()
-                twitter_api.PostUpdate(tweet)
+                twitter_api.PostUpdate(tweet, media='https://cdn-images-1.medium.com/max/1440/1*gAG6JvDK-Al_c1xEn1VHpA.jpeg')
             print(hop_user)
