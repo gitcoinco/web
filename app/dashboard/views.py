@@ -818,7 +818,10 @@ def profile(request, handle):
         'sum_eth_collected': 24.5,
         'scoreboard_position_contributor': 1,
         'sum_eth_funded': 32.2,
-        'scoreboard_position_funder': 1,
+        'scoreboard_position_funder': 4,
+
+        'activities': [{'title': 'March 2018', 'completed': [profile.bounties[0], profile.bounties[1]], 'submitted': [profile.bounties[0]], 'started': []} , {'title': 'February 2018', 'completed': [], 'submitted': [], 'started': [profile.bounties[0], profile.bounties[1]]}]
+
     }
 
     return TemplateResponse(request, 'profile_details.html', params)
