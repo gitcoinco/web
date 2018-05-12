@@ -18,11 +18,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
+import time
+
 from django.core.management.base import BaseCommand
 
 from ethos.models import Hop, ShortCode, TwitterProfile
 from ethos.utils import get_twitter_api
-import time
+
+already_sent = ['132','Munair','134','kauri_io','138','Jbschweitzer','139','Kavitagupta19','133','matrick','135','heyomarks','135','Consensys','134','craastad','132','owocki','140','ferrarijetpack','138','Somemikesena','135','leahfeuer','137','saintkamini','134','simondlr','138','elise_ransom','132','namdar','131','Gnsps','132']
 
 
 class Command(BaseCommand):
@@ -40,8 +43,9 @@ class Command(BaseCommand):
         hop_users = [hop.twitter_profile.username for hop in hops if not hop.next_hop()]
         hop_users = set(hop_users)
         for hop_user in hop_users:
+            if hop_user in already_sent:
+                continue
             tweet = f"@{hop_user} happy #ethereal day 2 -- Give your Ethos solid coin to someone great today (2x 'day 2' bonus today only)!\n\n(1 time reminder)"
-            print(len(tweet))
             if options['live']:
                 twitter_api = get_twitter_api()
                 twitter_api.PostUpdate(tweet, media='https://cdn-images-1.medium.com/max/1440/1*gAG6JvDK-Al_c1xEn1VHpA.jpeg')
