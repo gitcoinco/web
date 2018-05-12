@@ -1,22 +1,22 @@
 /* Profile details */
 
 .profile-header > .container {
-  padding-top: 50px;
+  padding-top: 3.5rem;
   color: #fff;
 }
 
 .profile-header__avatar {
   float: left;
-  width: 108px;
-  height: 108px;
-  border: 2px solid #fff;
-  border-radius: 110px;
+  width: 6.75rem;
+  height: 6.75rem;
+  border: 0.1rem solid #fff;
+  border-radius: 6.875rem;
 }
 
 .profile-header__handle {
-  padding-top: 28px;
+  padding-top: 1.5rem;
   display: inline-block;
-  font-size: 24px;
+  font-size: 1.5rem;
   text-transform: uppercase;
   line-height: 1;
 }
@@ -49,8 +49,8 @@
 }
 
 .profile-header__links img {
-  width: 30px;
-  height: 30px;
+  width: 1.5rem;
+  height: 1.5rem;
   margin-right: 0.5em;
   filter: invert(100%);
 }
@@ -60,16 +60,16 @@
 }
 
 .profile-header__stats .card-header {
-  padding: 0 12px;
+  padding: 0 0.7rem;
   color: #0D0764;
   text-transform: uppercase;
-  font-size: 24px;
+  font-size: 1.4rem;
   border-radius: 0;
 }
 
 .profile-header__stats .card-body {
-  padding: 12px;
-  font-size: 20px;
+  padding: 0.7rem;
+  font-size: 1.2rem;
 }
 
 .profile-header__stats ul {
@@ -79,7 +79,7 @@
 }
 
 .profile-header__stats li {
-  margin: 4px 0 0;
+  margin: 0.15rem 0 0;
 }
 
 .profile-header__stats li:first-child {
@@ -87,7 +87,7 @@
 }
 
 .profile-header__stats--contributor {
-  border: 4px solid #25E899;
+  border: 0.2rem solid #25E899;
 }
 
 .profile-header__stats--contributor .card-header {
@@ -99,7 +99,7 @@
 }
 
 .profile-header__stats--funder {
-  border: 4px solid #FFCE08;
+  border: 0.2rem solid #FFCE08;
 }
 
 .profile-header__stats--funder .card-header {
@@ -113,19 +113,19 @@
 .profile-bounties--loading {
   background-image: url('/static/v2/images/loading_v2.gif');
   background-repeat: no-repeat;
-  background-position: 0 -15px;
-  background-size: 64px;
-  height: 48px;
+  background-position: 0 -1rem;
+  background-size: 4rem;
+  height: 3rem;
 }
 
 .profile-bounties .avatar {
-  max-width: 50px;
-  max-height: 50px;
+  max-width: 3.125rem;
+  max-height: 3.125rem;
 }
 
 .profile-bounties .bounty_row {
   padding: 0;
-  border-top: 1px solid #D3D3D3;
+  border-top: 0.0625rem solid #D3D3D3;
 }
 
 .profile-bounties .bounty_row:first-child {
@@ -143,7 +143,7 @@
 
 .profile-bounties .profile-bounties__btn-show-all {
   border-color: #D3D3D3;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 300;
 }
 
