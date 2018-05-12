@@ -151,6 +151,14 @@
   border: 0.0625rem solid #D3D3D3;
 }
 
+.profile-bounties__activities-group .bounty_row {
+  border: none;
+}
+
+.profile-bounties__group-title--completed img {
+
+}
+
 .profile-bounties__group-title {
   color: #0D0764;
   font-size: 1rem;
