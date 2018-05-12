@@ -100,7 +100,9 @@ def render_graph(request):
     if key:
         if key == 'latest':
             hops = Hop.objects.all().order_by('-pk')[:1]
-    print(f"got {hops.count()} hops")
+        if key == 'optimize':
+            hops = list(Hop.objects.all().order_by('pk'))[-10:]
+    print(f"got {len(hops)} hops")
 
     try:
         for hop in hops:

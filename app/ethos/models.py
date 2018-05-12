@@ -109,6 +109,13 @@ class Hop(SuperModel):
         increment = self.shortcode.increment()
         return [increment[0] * self.hop_number(), increment[1] * self.hop_number()]
 
+    def next_hop(self):
+        """Return the next hop"""
+        try:
+            return Hop.objects.get(previous_hop=self)
+        except:
+            return None
+
     def hop_number(self):
         """Get the hop number."""
         return Hop.objects.filter(shortcode=self.shortcode, pk__lt=self.pk).count() + 1
