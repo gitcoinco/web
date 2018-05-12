@@ -36,7 +36,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """Define the command handling to generate hops."""
         hops = Hop.objects.all()
-        hop_users = [hop.twitter_profile.username for hop in hops if hop.next_hop()]
+        hop_users = [hop.twitter_profile.username for hop in hops if not hop.next_hop()]
         hop_users = set(hop_users)
         for hop_user in hop_users:
             tweet = f"@{hop_user} happy #ethereal day 2 -- Give your Ethos solid coin to someone great today (2x 'day 2' bonus today only)!\n\n(1 time reminder)"
