@@ -22,6 +22,7 @@ from django.core.management.base import BaseCommand
 
 from ethos.models import Hop, ShortCode, TwitterProfile
 from ethos.utils import get_twitter_api
+import time
 
 
 class Command(BaseCommand):
@@ -44,4 +45,5 @@ class Command(BaseCommand):
             if options['live']:
                 twitter_api = get_twitter_api()
                 twitter_api.PostUpdate(tweet, media='https://cdn-images-1.medium.com/max/1440/1*gAG6JvDK-Al_c1xEn1VHpA.jpeg')
+                time.sleep(10)
             print(hop_user)
