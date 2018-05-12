@@ -96,11 +96,13 @@
                   <div class="container">
                     <div class="row profile-bounties__activities-group mb-3 p-2">
                       <div class="col-12">
-                        <div class="profile-bounties__group-title">Completed {{group.completed|length}} {% if group.completed|length > 1 %}Bounties{% else %}Bounty{% endif %}</div>
+                        <div class="profile-bounties__group-title profile-bounties__group-title--completed">Completed {{group.completed|length}} {% if group.completed|length > 1 %}Bounties{% else %}Bounty{% endif %} <img src="/static/v2/images/check-green.svg"></div>
 
                         {% for bounty in group.completed %}
                           <div class="row result bounty_row {{bounty.network}}" {% if bounty.github_url %}href="{{bounty.github_url}}"{% endif %}>
-
+                            <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
+                              <img class="avatar" src="/funding/avatar?repo=https://github.com/{{bounty.bounty_owner_github_username}}"/>
+                            </div>
                             <div class="col-12 col-md-8 d-flex flex-column">
                               <div class="bounty-detail">
                                 <div class="title font-subheader">
@@ -109,7 +111,7 @@
 
                                 <div class="bounty-summary col-12">
                                   <div class="info font-caption">
-                                    subline
+                                    {{bounty.experience_level}}
                                   </div>
                                 </div>
                               </div>
@@ -124,8 +126,8 @@
                               {% endif %}
                               <div class="tag token">
                                 <p>
-
-                                  <span>{{bounty.tokenName}}</span>
+                                  {{ bounty.value_true }}
+                                  <span>{{bounty.token_name}}</span>
                                 </p>
                               </div>
                               {% if bounty.value_in_usdt_now %}
@@ -140,7 +142,6 @@
                           </div>
                         {% endfor %}
                       </div>
-
                     </div>
                   </div>
                 {% endif %}
@@ -152,7 +153,47 @@
                         <div class="profile-bounties__group-title">Submitted {{group.submitted|length}} {% if group.submitted|length > 1 %}Bounties{% else %}Bounty{% endif %}</div>
 
                         {% for bounty in group.submitted %}
-                          {{bounty}}
+                          <div class="row result bounty_row {{bounty.network}}" {% if bounty.github_url %}href="{{bounty.github_url}}"{% endif %}>
+                            <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
+                              <img class="avatar" src="/funding/avatar?repo=https://github.com/{{bounty.bounty_owner_github_username}}"/>
+                            </div>
+                            <div class="col-12 col-md-8 d-flex flex-column">
+                              <div class="bounty-detail">
+                                <div class="title font-subheader">
+                                  {{bounty.title}}
+                                </div>
+
+                                <div class="bounty-summary col-12">
+                                  <div class="info font-caption">
+                                    {{bounty.experience_level}}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-12 col-md-2 tags font-caption align-items-center">
+                              {% if bounty.network != 'mainnet' %}
+                              <div class="tag network_warning">
+                                <p>
+                                  <span>{{bounty.network}}</span>
+                                </p>
+                              </div>
+                              {% endif %}
+                              <div class="tag token">
+                                <p>
+                                  {{ bounty.value_true }}
+                                  <span>{{bounty.token_name}}</span>
+                                </p>
+                              </div>
+                              {% if bounty.value_in_usdt_now %}
+                                <div class="tag usd">
+                                  <p>
+                                    {{bounty.value_in_usdt_now}}
+                                    <span>USD</span>
+                                  </p>
+                                </div>
+                              {% endif %}
+                            </div>
+                          </div>
                         {% endfor %}
                       </div>
                     </div>
@@ -166,7 +207,47 @@
                         <div class="profile-bounties__group-title">Started {{group.started|length}} {% if group.started|length > 1 %}Bounties{% else %}Bounty{% endif %}</div>
 
                         {% for bounty in group.started %}
-                          {{bounty}}
+                          <div class="row result bounty_row {{bounty.network}}" {% if bounty.github_url %}href="{{bounty.github_url}}"{% endif %}>
+                            <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
+                              <img class="avatar" src="/funding/avatar?repo=https://github.com/{{bounty.bounty_owner_github_username}}"/>
+                            </div>
+                            <div class="col-12 col-md-8 d-flex flex-column">
+                              <div class="bounty-detail">
+                                <div class="title font-subheader">
+                                  {{bounty.title}}
+                                </div>
+
+                                <div class="bounty-summary col-12">
+                                  <div class="info font-caption">
+                                    {{bounty.experience_level}}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-12 col-md-2 tags font-caption align-items-center">
+                              {% if bounty.network != 'mainnet' %}
+                              <div class="tag network_warning">
+                                <p>
+                                  <span>{{bounty.network}}</span>
+                                </p>
+                              </div>
+                              {% endif %}
+                              <div class="tag token">
+                                <p>
+                                  {{ bounty.value_true }}
+                                  <span>{{bounty.token_name}}</span>
+                                </p>
+                              </div>
+                              {% if bounty.value_in_usdt_now %}
+                                <div class="tag usd">
+                                  <p>
+                                    {{bounty.value_in_usdt_now}}
+                                    <span>USD</span>
+                                  </p>
+                                </div>
+                              {% endif %}
+                            </div>
+                          </div>
                         {% endfor %}
                       </div>
                     </div>
