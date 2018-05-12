@@ -402,7 +402,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
                     interests = Interest.objects.filter(profile__handle=profile[0], bounty=bounty)
                     for interest in interests:
                         if interest.issue_message.strip():
-                            msg += f"\n__Please answer following questions/comments__ {bounty_owner_clear}:\n\n" + \
+                            msg += f"\n__Action plan provided by @{bounty.bounty_owner_github_username}:__\n\n" + \
                                     interest.issue_message
         except Exception as e:
             print(e)
