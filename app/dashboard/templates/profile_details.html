@@ -81,6 +81,103 @@
       </div>
     </div>
     <div class="container">
+      <div class="row">
+        <div class="col py-4">Bounties in progress</div>
+      </div>
+      <div class="row">
+        <div class="container profile-bounties profile-bounties--in-progress profile-bounties--loading">
+          <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">Show all</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col py-4">Bounties funded</div>
+      </div>
+      <div class="row">
+        <div class="container profile-bounties profile-bounties--funded profile-bounties--loading">
+          <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">Show all</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col py-4">Bounties completed</div>
+      </div>
+      <div class="row">
+        <div class="container profile-bounties profile-bounties--completed profile-bounties--loading">
+          <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">Show all</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col py-4">Tips Recieved</div>
+      </div>
+      <div class="row">
+        <div class="container profile-bounties profile-bounties--tips pb-4">
+          {% if tips|length == 0 %}
+            {% trans "No tips found…" %}
+          {% endif %}
+          {% if tips|length > 0 %}
+            {% for tip in tips %}
+              <div class="row result bounty_row {% if forloop.counter > 5 %}bounty_row--hidden{% endif %} {{tip.network}}" {% if tip.github_url %}href="{{tip.github_url}}"{% endif %}>
+                  {% if tip.from_username %}
+                    <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
+                      <img src="{% url "avatar" %}?repo=https://github.com/{{tip.from_username}}" class="avatar">
+                    </div>
+                  {% else %}
+                    <div class="avatar-container col-1 justify-content-center">
+                        <div class="experience">&nbsp;</div>
+                    </div>
+                  {% endif %}
+                <div class="col-12 col-md-8 d-flex flex-column">
+                  <div class="bounty-detail">
+                    {% if tip.comments_public %}
+                      <div class="title font-subheader">
+                        Comments: {{tip.comments_public}}
+                      </div>
+                    {% endif %}
+                    <div class="bounty-summary col-12">
+                      <div class="info font-caption">
+                        from
+                        {% if tip.from_username %}
+                          {{tip.from_username}}
+                        {% else %}
+                          {% trans "anonymous user" %}
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-2 tags font-caption align-items-center">
+                  {% if tip.network != 'mainnet' %}
+                  <div class="tag network_warning">
+                    <p>
+                      <span>{{tip.network}}</span>
+                    </p>
+                  </div>
+                  {% endif %}
+                  <div class="tag token">
+                    <p>
+                      {{tip.amount}}
+                      <span>{{tip.tokenName}}</span>
+                    </p>
+                  </div>
+                  {% if tip.value_in_usdt_now %}
+                    <div class="tag usd">
+                      <p>
+                        {{tip.value_in_usdt_now}}
+                        <span>USD</span>
+                      </p>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">Show all</button>
+        </div>
+      </div>
+
       {% if activities %}
         <div class="row">
           <div class="col py-4">Latest Activities</div>
@@ -257,106 +354,7 @@
             {% endfor %}
           </div>
         </div>
-
-
       {% endif %}
-
-      <div class="row">
-        <div class="col py-4">Bounties in progress</div>
-      </div>
-      <div class="row">
-        <div class="container profile-bounties profile-bounties--in-progress profile-bounties--loading">
-          <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">Show all</button>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col py-4">Bounties funded</div>
-      </div>
-      <div class="row">
-        <div class="container profile-bounties profile-bounties--funded profile-bounties--loading">
-          <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">Show all</button>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col py-4">Bounties completed</div>
-      </div>
-      <div class="row">
-        <div class="container profile-bounties profile-bounties--completed profile-bounties--loading">
-          <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">Show all</button>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col py-4">Tips Recieved</div>
-      </div>
-      <div class="row">
-        <div class="container profile-bounties profile-bounties--tips pb-4">
-          {% if tips|length == 0 %}
-            {% trans "No tips found…" %}
-          {% endif %}
-          {% if tips|length > 0 %}
-            {% for tip in tips %}
-              <div class="row result bounty_row {% if forloop.counter > 5 %}bounty_row--hidden{% endif %} {{tip.network}}" {% if tip.github_url %}href="{{tip.github_url}}"{% endif %}>
-                  {% if tip.from_username %}
-                    <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
-                      <img src="{% url "avatar" %}?repo=https://github.com/{{tip.from_username}}" class="avatar">
-                    </div>
-                  {% else %}
-                    <div class="avatar-container col-1 justify-content-center">
-                        <div class="experience">&nbsp;</div>
-                    </div>
-                  {% endif %}
-                <div class="col-12 col-md-8 d-flex flex-column">
-                  <div class="bounty-detail">
-                    {% if tip.comments_public %}
-                      <div class="title font-subheader">
-                        Comments: {{tip.comments_public}}
-                      </div>
-                    {% endif %}
-                    <div class="bounty-summary col-12">
-                      <div class="info font-caption">
-                        from
-                        {% if tip.from_username %}
-                          {{tip.from_username}}
-                        {% else %}
-                          {% trans "anonymous user" %}
-                        {% endif %}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12 col-md-2 tags font-caption align-items-center">
-                  {% if tip.network != 'mainnet' %}
-                  <div class="tag network_warning">
-                    <p>
-                      <span>{{tip.network}}</span>
-                    </p>
-                  </div>
-                  {% endif %}
-                  <div class="tag token">
-                    <p>
-                      {{tip.amount}}
-                      <span>{{tip.tokenName}}</span>
-                    </p>
-                  </div>
-                  {% if tip.value_in_usdt_now %}
-                    <div class="tag usd">
-                      <p>
-                        {{tip.value_in_usdt_now}}
-                        <span>USD</span>
-                      </p>
-                    </div>
-                  {% endif %}
-                </div>
-              </div>
-            {% endfor %}
-          {% endif %}
-
-          <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">Show all</button>
-        </div>
-      </div>
     </div>
 
     {% include 'shared/result.html' %}
