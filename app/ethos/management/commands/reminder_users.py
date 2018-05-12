@@ -44,6 +44,6 @@ class Command(BaseCommand):
             print(len(tweet))
             if options['live']:
                 twitter_api = get_twitter_api()
-                twitter_api.PostUpdate(tweet, media='https://cdn-images-1.medium.com/max/1440/1*gAG6JvDK-Al_c1xEn1VHpA.jpeg')
+                twitter_api.PostUpdate(tweet, media='https://gitcoin.co/ethos/graph.gif?key=optimize')
                 time.sleep(10)
             print(hop_user)
