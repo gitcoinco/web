@@ -820,6 +820,7 @@ def profile(request, handle):
         'sum_eth_funded': 32.2,
         'scoreboard_position_funder': 1,
     }
+
     return TemplateResponse(request, 'profile_details.html', params)
 
 

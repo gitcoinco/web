@@ -3,7 +3,6 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
@@ -11,7 +10,6 @@
     <link rel="stylesheet" href={% static "v2/css/profile.css" %}>
     <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
   </head>
-
   <body class="interior {{active}}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header profile-header dash">
@@ -31,7 +29,6 @@
                 {{profile.data.bio}}
               </div>
             {% endif %}
-
             <ul class="profile-header__links clearfix my-4">
               <li>
                 <a href="{{profile.data.blog}}">
@@ -110,6 +107,76 @@
           <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">Show all</button>
         </div>
       </div>
+
+      <div class="row">
+        <div class="col py-4">Tips Recieved</div>
+      </div>
+      <div class="row">
+        <div class="container profile-bounties profile-bounties--tips pb-4">
+          {% if tips|length == 0 %}
+            {% trans "No tips found…" %}
+          {% endif %}
+          {% if tips|length > 0 %}
+            {% for tip in tips %}
+              <div class="row result bounty_row {% if forloop.counter > 5 %}bounty_row--hidden{% endif %} {{tip.network}}" {% if tip.github_url %}href="{{tip.github_url}}"{% endif %}>
+                  {% if tip.from_username %}
+                    <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
+                      <img src="{% url "avatar" %}?repo=https://github.com/{{tip.from_username}}" class="avatar">
+                    </div>
+                  {% else %}
+                    <div class="avatar-container col-1 justify-content-center">
+                        <div class="experience">&nbsp;</div>
+                    </div>
+                  {% endif %}
+                <div class="col-12 col-md-8 d-flex flex-column">
+                  <div class="bounty-detail">
+                    {% if tip.comments_public %}
+                      <div class="title font-subheader">
+                        Comments: {{tip.comments_public}}
+                      </div>
+                    {% endif %}
+                    <div class="bounty-summary col-12">
+                      <div class="info font-caption">
+                        from
+                        {% if tip.from_username %}
+                          {{tip.from_username}}
+                        {% else %}
+                          {% trans "anonymous user" %}
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-2 tags font-caption align-items-center">
+                  {% if tip.network != 'mainnet' %}
+                  <div class="tag network_warning">
+                    <p>
+                      <span>{{tip.network}}</span>
+                    </p>
+                  </div>
+                  {% endif %}
+                  <div class="tag token">
+                    <p>
+                      {{tip.amount}}
+                      <span>{{tip.tokenName}}</span>
+                    </p>
+                  </div>
+                  {% if tip.value_in_usdt_now %}
+                    <div class="tag usd">
+                      <p>
+                        {{tip.value_in_usdt_now}}
+                        <span>USD</span>
+                      </p>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">Show all</button>
+        </div>
+      </div>
     </div>
 
     {% include 'shared/result.html' %}
@@ -121,119 +188,128 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
 
-  </body>
-  <!-- jQuery -->
-  <script src="{% static "v2/js/abi.js" %}"></script>
-  <script src="{% static "v2/js/tokens.js" %}"></script>
-  <script src="{% static "v2/js/pages/profile_details.js" %}"></script>
-  <script src="{% static "v2/js/shared.js" %}"></script>
+    <!-- jQuery -->
+    <script src="{% static "v2/js/abi.js" %}"></script>
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/pages/profile_details.js" %}"></script>
+    <script src="{% static "v2/js/shared.js" %}"></script>
 
-  <script type="text/javascript">
-    function renderBountyRowsFromResults(results) {
-      var html = '';
-      var tmpl = $.templates('#result');
+    <script type="text/javascript">
+      function renderBountyRowsFromResults(results) {
+        var html = '';
+        var tmpl = $.templates('#result');
 
-      if (results.length == 0) {
-        return '<p class="text-muted"><small>No results…</small></p>';
-      }
-
-      // Reused code from explorer/dashboard. Should be moved to some shared js.
-      for (var i = 0; i < results.length; i++) {
-          // setup
-          var result = results[i];
-          var related_token_details = tokenAddressToDetails(result['token_address']);
-          var decimals = 18;
-
-          if (related_token_details && related_token_details.decimals) {
-            decimals = related_token_details.decimals;
-          }
-
-          var divisor = Math.pow(10, decimals);
-
-          result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
-          var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
-
-          result['action'] = result['url'];
-          result['title'] = result['title'] ? result['title'] : result['github_url'];
-
-          var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
-
-          result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
-
-          if (result['status'] === 'done')
-            result['p'] += 'Done';
-          if (result['fulfillment_accepted_on']) {
-            result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
-          } else if (result['status'] === 'started') {
-            result['p'] += 'Started';
-            result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
-          } else if (result['status'] === 'submitted') {
-            result['p'] += 'Submitted';
-            if (result['fulfillment_submitted_on']) {
-              result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
-            }
-          } else if (result['status'] == 'cancelled') {
-            result['p'] += 'Cancelled';
-            if (result['canceled_on']) {
-              result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
-            }
-          } else if (is_expired) {
-            var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
-
-            result['p'] += ('Expired ' + time_ago + ' ago');
-          } else {
-            var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
-
-            result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
-          }
-
-          result['hidden'] = (i > 4) ? true : false;
-
-          html += tmpl.render(result);
-        }
-
-        return html;
-    }
-
-    function fetchBountiesAndAddToList(params, target) {
-      $.get('/api/v0.1/bounties/?' + params, function(results) {
-        results = sanitizeAPIResults(results);
-
-        var html = renderBountyRowsFromResults(results);
-        $(target).prepend(html);
-        $(target).removeClass('profile-bounties--loading');
-
-        if (results.length > 5) {
-          var $button = $(target + ' .profile-bounties__btn-show-all');
-          $button.removeClass('hidden');
-          $button.on('click', function(event) {
-            $(this).remove();
-            $(target + ' .bounty_row').removeClass('bounty_row--hidden');
-          });
+        if (results.length == 0) {
+          return '<p class="text-muted"><small>No results…</small></p>';
         }
 
         // Reused code from explorer/dashboard. Should be moved to some shared js.
-        $('div.bounty_row.result').each(function() {
-          var href = $(this).attr('href');
+        for (var i = 0; i < results.length; i++) {
+            // setup
+            var result = results[i];
+            var related_token_details = tokenAddressToDetails(result['token_address']);
+            var decimals = 18;
 
-          if (typeof $(this).changeElementType !== 'undefined') {
-            $(this).changeElementType('a'); // hack so that users can right click on the element
+            if (related_token_details && related_token_details.decimals) {
+              decimals = related_token_details.decimals;
+            }
+
+            var divisor = Math.pow(10, decimals);
+
+            result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
+            var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
+
+            result['action'] = result['url'];
+            result['title'] = result['title'] ? result['title'] : result['github_url'];
+
+            var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
+
+            result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
+
+            if (result['status'] === 'done')
+              result['p'] += 'Done';
+            if (result['fulfillment_accepted_on']) {
+              result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
+            } else if (result['status'] === 'started') {
+              result['p'] += 'Started';
+              result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
+            } else if (result['status'] === 'submitted') {
+              result['p'] += 'Submitted';
+              if (result['fulfillment_submitted_on']) {
+                result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
+              }
+            } else if (result['status'] == 'cancelled') {
+              result['p'] += 'Cancelled';
+              if (result['canceled_on']) {
+                result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
+              }
+            } else if (is_expired) {
+              var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
+
+              result['p'] += ('Expired ' + time_ago + ' ago');
+            } else {
+              var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
+
+              result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
+            }
+
+            result['hidden'] = (i > 4) ? true : false;
+
+            html += tmpl.render(result);
           }
 
-          $(this).attr('href', href);
+          return html;
+      }
+
+      function fetchBountiesAndAddToList(params, target) {
+        $.get('/api/v0.1/bounties/?' + params, function(results) {
+          results = sanitizeAPIResults(results);
+
+          var html = renderBountyRowsFromResults(results);
+          $(target).prepend(html);
+          $(target).removeClass('profile-bounties--loading');
+
+          if (results.length > 5) {
+            var $button = $(target + ' .profile-bounties__btn-show-all');
+            $button.removeClass('hidden');
+            $button.on('click', function(event) {
+              $(this).remove();
+              $(target + ' .bounty_row').removeClass('bounty_row--hidden');
+            });
+          }
+
+          // Reused code from explorer/dashboard. Should be moved to some shared js.
+          $('div.bounty_row.result').each(function() {
+            var href = $(this).attr('href');
+
+            if (typeof $(this).changeElementType !== 'undefined') {
+              $(this).changeElementType('a'); // hack so that users can right click on the element
+            }
+
+            $(this).attr('href', href);
+          });
         });
+      }
+
+      $(document).ready(function() {
+        if ($('.profile-bounties--tips .bounty_row--hidden').length > 0) {
+          var $button = $('.profile-bounties--tips .profile-bounties__btn-show-all');
+          $button.removeClass('hidden');
+          $button.on('click', function(event) {
+            $(this).remove();
+            $('.profile-bounties--tips .bounty_row').removeClass('bounty_row--hidden');
+          });
+        }
+
+        // TODO: Fix API call for bounties "in progress"
+        fetchBountiesAndAddToList('bounty_owner_github_username={{profile.handle}}&is_open=true', '.profile-bounties--in-progress');
+
+        // Fetch bounties user is owner
+        fetchBountiesAndAddToList('bounty_owner_github_username={{profile.handle}}', '.profile-bounties--funded');
+
+        // Fetch bounties user is fulfiller
+        fetchBountiesAndAddToList('fulfiller_github_username={{profile.handle}}', '.profile-bounties--completed');
       });
-    }
-
-    $(document).ready(function() {
-      // TODO: Fix API call for bounties "in progress"
-      fetchBountiesAndAddToList('bounty_owner_github_username={{profile.handle}}&is_open=true', '.profile-bounties--in-progress');
-
-      // Fetch bounties user is owner
-      fetchBountiesAndAddToList('bounty_owner_github_username={{profile.handle}}', '.profile-bounties--funded');
-
-      // Fetch bounties user is fulfiller
-      fetchBountiesAndAddToList('fulfiller_github_username={{profile.handle}}', '.profile-bounties--completed');
-    });
-  </script>
+    </script>
+  </body>
 </html>
