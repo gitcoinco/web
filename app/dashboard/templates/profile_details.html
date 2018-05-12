@@ -81,6 +81,105 @@
       </div>
     </div>
     <div class="container">
+      {% if activities %}
+        <div class="row">
+          <div class="col py-4">Latest Activities</div>
+        </div>
+        <div class="row">
+          <div class="container profile-bounties profile-bounties--activities">
+            {% for group in activities %}
+              <div class="row">
+                <div class="col-12">
+                  <p><small>{{group.title}}</small></p>
+                </div>
+                {% if group.completed %}
+                  <div class="container">
+                    <div class="row profile-bounties__activities-group mb-3 p-2">
+                      <div class="col-12">
+                        <div class="profile-bounties__group-title">Completed {{group.completed|length}} {% if group.completed|length > 1 %}Bounties{% else %}Bounty{% endif %}</div>
+
+                        {% for bounty in group.completed %}
+                          <div class="row result bounty_row {{bounty.network}}" {% if bounty.github_url %}href="{{bounty.github_url}}"{% endif %}>
+
+                            <div class="col-12 col-md-8 d-flex flex-column">
+                              <div class="bounty-detail">
+                                <div class="title font-subheader">
+                                  {{bounty.title}}
+                                </div>
+
+                                <div class="bounty-summary col-12">
+                                  <div class="info font-caption">
+                                    subline
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-12 col-md-2 tags font-caption align-items-center">
+                              {% if bounty.network != 'mainnet' %}
+                              <div class="tag network_warning">
+                                <p>
+                                  <span>{{bounty.network}}</span>
+                                </p>
+                              </div>
+                              {% endif %}
+                              <div class="tag token">
+                                <p>
+
+                                  <span>{{bounty.tokenName}}</span>
+                                </p>
+                              </div>
+                              {% if bounty.value_in_usdt_now %}
+                                <div class="tag usd">
+                                  <p>
+                                    {{bounty.value_in_usdt_now}}
+                                    <span>USD</span>
+                                  </p>
+                                </div>
+                              {% endif %}
+                            </div>
+                          </div>
+                        {% endfor %}
+                      </div>
+
+                    </div>
+                  </div>
+                {% endif %}
+
+                {% if group.submitted %}
+                  <div class="container">
+                    <div class="row profile-bounties__activities-group mb-3 p-2">
+                      <div class="col-12">
+                        <div class="profile-bounties__group-title">Submitted {{group.submitted|length}} {% if group.submitted|length > 1 %}Bounties{% else %}Bounty{% endif %}</div>
+
+                        {% for bounty in group.submitted %}
+                          {{bounty}}
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+
+                {% if group.started %}
+                  <div class="container">
+                    <div class="row profile-bounties__activities-group mb-3 p-2">
+                      <div class="col-12">
+                        <div class="profile-bounties__group-title">Started {{group.started|length}} {% if group.started|length > 1 %}Bounties{% else %}Bounty{% endif %}</div>
+
+                        {% for bounty in group.started %}
+                          {{bounty}}
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+
+      {% endif %}
+
       <div class="row">
         <div class="col py-4">Bounties in progress</div>
       </div>
