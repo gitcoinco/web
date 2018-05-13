@@ -3,153 +3,108 @@ body {
   background: #FFFFFF;
 }
 
-.invisible {
-  background: #FFFFFF !important;
-  visibility: hidden;
+h3, h4 {
+  text-transform: none;
 }
 
-#onboard-dashboard {
-  background: #E8FFF2;
-  padding-top: 2em;
-  padding-bottom: 1em;
-  margin-bottom: 2em;
+h4 {
+  text-align: left;
 }
 
-#onboard-dashboard h2, {
-  font-weight: bolder;
+.job-header {
+  padding-bottom: 6em;
 }
 
-#onboard-dashboard h2,
-#onboard-dashboard h3 {
-  text-transform: capitalize;
-  letter-spacing: 0;
-}
-
-#onboard-dashboard a {
-  float: right;
-  padding-left: 25px;
-  padding-right: 25px;
-}
-
-.title-row {
-  display: flex;
-  margin-top: 2em;
-  padding-bottom: 5px;
-  border-bottom: 2px solid #3E24FB;
-}
-
-#filter {
-  color: #3e24fb;
-}
-
-.bounty-info {
-  top: 4px;
-  text-align: right;
-}
-
-#stats {
-  padding-left: 5px;
-  font-family: 'Muli', sans-serif;
-  font-weight: 300;
-  color: #7A7A7A;
-}
-
-#matches {
-  font-family: 'Muli', sans-serif;
-  font-weight: 300;
-  padding-left: 10px;
-}
-
-.title {
-  text-transform: capitalize;
-}
-
-.bounty_row {
-  color: #000000;
-  text-decoration: none;
-  padding: 10px 20px 10px 4em;
-}
-
-.bounty_row .avatar-container {
-  text-align: right;
-}
-
-.bounty_row img {
-  margin-top: 6px;
-  margin-right: 20px;
-}
-
-.bounty_row .title {
-  margin-bottom: 2px;
-}
-
-.bounty_row:hover {
-  color: #000000;
-  text-decoration: none;
-  background-color: #F9F9F9;
-}
-
-.bounty-detail {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-.bounty-summary {
-  display: inline-flex;
-}
-
-.bounty-summary img {
-  position: absolute;
-  width: 20px;
-  margin: 0;
-  top: 2px;
-}
-
-.bounty-summary .col-xs-1 {
-  margin-right: 2em;
-}
-
-.bounty-summary .github-comment {
-  position: absolute;
+#job-board-title {
+  text-transform: uppercase;
+  color: #00A55E;
   text-align: center;
-  color: white;
-  width: 20px;
-  top: 0px;
+  font-size: 3em;
 }
 
-.bounty-detail .info {
-  font-family: 'Muli', sans-serif;
-  font-weight: 300;
-  color: #666666;
+.company-name, #exp-lang, #job-post-duration {
+  color: #717171;
+}
+
+#job-details {
+  padding-top: 3em;
+}
+
+.job-type {
+  color: #00A55E;
+  text-transform: uppercase;
+  flex-grow: 1;
+}
+
+.job-location {
+  flex-grow: 1;
+}
+
+.flex-grow-8 {
+  flex-grow: 8;
+}
+
+.job-type-loc {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 1em 0 1em 0;
+}
+
+.job-company-exp {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 1em 0 1em 0;
+}
+
+.job-posted {
+  flex-grow: 8;
+}
+
+.job-experience {
+  flex-grow: 1;
+}
+
+.job-company {
+  flex-grow: 1;
+}
+
+.job-tags {
+  margin: 1em 0 1em 0;
 }
 
 .tags {
   display: flex;
 }
 
-@media (max-width: 768px) {
+.box {
+    padding: 14px;
+    border: 1px solid #DBDBDB;
+    border-radius: 3px;
+    margin: 0;
+}
 
-  #onboard-dashboard .col-12 {
-    padding-left: 3em;
-    padding-right: 3em;
-  }
+.btn-white {
+    border: 1px solid #979797;
+    color: #0D0764;
+    border-radius: 3px;
+    position: relative;
+}
 
-  #filter {
-    padding-left: 20px;
-  }
+.job-apply-btn {
+  background-color: #0D0764;
+  color: #FFFFFF;
+}
 
-  .bounty_row {
-    padding-left: 1em;
-    padding-right: 2em;
-  }
+.github-profile-btn {
+  color: #0D0764;
+}
 
-  .bounty-info {
-    top: 10px;
-    font-size: 10px;
-    text-align: left;
-  }
-
-  #stats {
-    font-size: 10px;
-  }
+.tag.keyword {
+    min-width: 0;
+    font-size: 11px;
+    padding: 5px 10px;
+    background-color: #F2F6F9;
+    color: #6184AC;
 }

@@ -5,7 +5,7 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/jobs.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}" />
   </head>
 
@@ -23,22 +23,6 @@
       </div>
 
       <div class="col-12 offset-md-1 col-md-8 body">
-        <div class="alert info transaction-status" style="display:none;">
-          <div style='width:100%; font-size: 16px;'>
-            <strong style="font-size: 22px;">{% trans "Your transaction has been posted to web3" %}</strong>
-            <br>
-            {% blocktrans %}Please wait a minute or two for web3 to sync
-            <a target="_blank" href="javascript:void(0)" id="transaction_url">this transaction</a>.{% endblocktrans %}
-            <br>
-            <br>
-            {% trans "This page will automatically refresh as soon as the blockchain is updated." %}
-            ({% trans "You may close the browser tab." %})
-          </div>
-        </div>
-
-        <div class="row loading justify-content-center align-items-center loading_img">
-          <img src="{% static "v2/images/loading_v2.gif" %}">
-        </div>
 
         <div class="row nonefound" style="display:none;">
           <img src="{% static "v2/images/shrug_bot.png" %}">
@@ -58,231 +42,83 @@
           </div>
         </div>
 
-        <div class="col-12" id="bounty_details">
-          <div class="row font-body">
-            <div class="d-none d-lg-block col-lg-1">
-              <div id="avatar_url"></div>
-            </div>
-            <div class="col-12 col-lg-11 pl-lg-4">
-              <div class="col-12">
-                <h4 id="title" class="font-title"></h4>
-                <span id="network"></span>
-              </div>
-              <div class="col-12">
-                <div id="status"></div>
-              </div>
-              <div class="col-12 bounty-info">
-                <div id="timer">
-                  <div>
-                    <span class="bounty-info-heading timeleft">{% trans "Time left" %} </span>
-                    <span class="bounty-info-text" id="expires_date"></span>
-                  </div>
-                  <div>
-                    <span class="progress-bar">
-                      <span class="progress"></span>
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <span class="bounty-info-heading">{% trans "Opened" %} </span>
-                  <span class="bounty-info-text" id="web3_created"></span>
-                </div>
-                <div id="fulfillment_accepted_on_wrapper">
-                  <span class="bounty-info-heading">{% trans "Accepted" %} </span>
-                  <span class="bounty-info-text" id="fulfillment_accepted_on"></span>
-                </div>
-                <div>
-                  <span class="bounty-info-heading">{% trans "Experience Level" %} </span>
-                  <span class="bounty-info-text" id="experience_level"></span>
-                </div>
-                <div>
-                  <span class="bounty-info-heading">{% trans "Issue Type" %} </span>
-                  <span class="bounty-info-text" id="bounty_type"></span>
-                </div>
-              </div>
-            </div>
+        <div class="col-12" id="job-details">
+          <h3 class="job-title">Blockchain/Smart Contract Engineer</h3>
+          <div class="job-type-loc">
+            <div class="job-type">FULL-TIME</div>
+            <div class="job-location">Singapore</div>
+            <div class="flex-grow-8"></div>
           </div>
-          <div class="row">
-            <div class="col-12 bounty-actions">
-                <div class="col-12 col-md-7">
-                  <div id="right_actions"></div>
-                </div>
-                <div class="col-12 col-md-5">
-                  <div class="tags font-caption align-items-center">
-                    <div class="tag token">
-                      <p>
-                        <span id="value_in_token"></span>
-                      </p>
-                    </div>
-                    <div id=value_in_usdt_wrapper title="" class="tag usd">
-                      <p>
-                        <span id="value_in_usdt"></span>
-                        <span>USD @ </span>
-                        <span id="token_value_in_usdt"></span>
-                        <span id="token_value_time_peg_wrapper">
-                            as of<span id="token_value_time_peg"></span>
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-            </div>
-            <div class="col-12">
-              <h5 class="bounty-heading" id="description">{% trans "Description" %}</h5>
-              <div class="bounty-text" id="issue_description"></div>
-            </div>
-            <div class="col-12">
-              <div id="issue_keywords"></div>
-            </div>
-            <div class="col-12">
-              <h5 class="bounty-heading">{% trans "Contributors" %}</h5>
-              <div class="row contributors-info">
-                <div class="col-12 col-md-4 contributor-box">
-                  <i class="far fa-clock"></i>
-                  <h6>{% trans "Work Started" %}</h6>
-                  <ul id="started_owners_username" class="font-body"></ul>
-                </div>
-                <div class="col-12 col-md-4 contributor-box">
-                  <i class="fas fa-desktop"></i>
-                  <h6>{% trans "Work Submitted" %}</h6>
-                  <ul id="submitted_owners_username" class="font-body"></ul>
-                </div>
-                <div class="col-12 col-md-4 contributor-box">
-                  <i class="fab fa-ethereum"></i>
-                  <h6>{% trans "Work Accepted" %}</h6>
-                  <ul id="fulfilled_owners_username" class="font-body"></ul>
-                </div>
+          <div class="job-company-exp">
+            <div class="job-company">Company: <span class="company-name">Truffle</span></div>
+            <div class="job-experience">Experience: <span id="exp-lang">Java</span></div>
+            <div class="job-posted">Posted: <span id="job-post-duration">2 days ago</span></div>
+          </div>
+          <a class="btn job-apply-btn btn-white" target="_blank" href="">
+            <span class="font-caption">Apply on Company Site</span>
+          </a>
+          <a class="btn github-profile-btn btn-white" target="_blank" href="">
+            <span class="font-caption">Github Profile</span>
+          </a>
+          <h4>Description</h4>
+          <div class="job-description">
+            We're looking for an experienced blockchain engineer to lead the development efforts of our Solidity smart contracts.
+
+            Our mission is to allow buyers and sellers to meet and transact in a completely distributed way (from car, housing, bike, and other rentals to task-based services like freelance engineering, design, marketing and more).
+
+            Role
+
+            You will work closely with our founders (both developers) and other early engineers to architect and build out the Origin platform.
+
+            You will develop the smart contracts for integral parts of our distributed platform including:
+
+            User and listing registries
+            Handling calendaring, booking rules, identity verification and other features of the Origin platform.
+            Implementing our token economic models
+            As one of our first dedicated Solidity engineers, you will be integral in setting both company and engineering culture and processes.
+
+            Unlike many other projects, we are looking to build large-scale, impactful infrastructure on top of the Ethereum blockchain (vs. just token sale contracts). Your work will be integral in changing the way that buyers and sellers interact on the blockchain.
+
+            Requirements
+
+            2+ years in software engineering
+            Deep understanding and experience with writing Ethereum smart contracts
+            We have a strong preference for candidates who have contributed to open-source projects in the past
+            Bonus points if have demonstrated open-source leadership and led a major open-source project yourself
+            How to apply
+
+            Please include the following in your resume and cover letter:
+            Links to online profiles you use (GitHub, Twitter, etc)
+            A description of your work history
+            Any publicly viewable code that you have written and published to the blockchain
+            Why you are excited about Origin
+            We strongly encourage applicants to read our product brief and whitepaper and to engage with us around specific technical challenges.
+          </div>
+          <div class="job-tags tags">
+            <div class="job-tag tag keyword">python</div>
+            <div class="job-tag tag keyword">django</div>
+            <div class="job-tag tag keyword">javascript</div>
+            <div class="job-tag tag keyword">css</div>
+          </div>
+          <div class="col-12">
+            <div class="row box">
+              <div class="col-lg-12 col-md-12 col-md-1 funder-avatar">
+                <div id="issuer_avatar_url"></div>
               </div>
-            </div>
-            <div class="col-12">
-              <h5 class="bounty-heading">{% trans "All Activity" %}</h5>
-              <div id="activities" class="font-body"></div>
-            </div>
-            <div class="col-12">
-              <h5 class="bounty-heading">{% trans "Funder" %}</h5>
-              <div class="row box">
-                <div class="col-12 col-md-1 funder-avatar">
-                  <div id="issuer_avatar_url"></div>
-                </div>
-                <div class="col-12 col-md-11">
-                  <div id="bounty_owner_name" class="font-subheader"></div>
-                  <div>
-                    <span class="bounty-subheading">{% trans "Funder" %} :</span>
-                    <span class="bounty-text" id="bounty_owner_address"></span>
-                  </div>
-                  <div>
-                    <span class="bounty-subheading">{% trans "Email" %} :</span>
-                    <span class="bounty-text" id="bounty_owner_email"></span>
-                  </div>
-                  <div>
-                    <span class="bounty-subheading">{% trans "Gitcoin Profile" %} :</span>
-                    <span class="bounty-text" id="bounty_owner_github_username"></span>
-                  </div>
-                </div>
+              <div class="col-lg-12 col-md-12 col-md-1 funder-avatar">
+                <span class="company-name">Truffle</span>
+              </div>
+              <div class="col-lg-12 col-md-12 col-md-1">
+                <div id="job-mail">Email <span id="job-poster-mail"></span></div>
+              </div>
+              <div class="col-lg-12 col-md-12">
+                <div id="job-profile">Gitcoin Profile <span id="job-poster-profile"></span></div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-
-    <script id="action" type="text/x-jsrender">
-      [[if enabled]]
-        <span id="[[:id]]" [[if id == 'submit']] [[if !work_started]] class="none" [[/if]] [[/if]]
-          title='<div class="tooltip-info tooltip-sm">[[:title]]</div>'>
-          [[if pending_acceptance]]
-            <a class="button button--primary accept" role="button" href="[[:href]]" target="[[:target]]">
-              <span class="font-caption">[[:text]] ( [[:pending_acceptance]] )</span>
-            </a>
-          [[else color == 'white']]
-            <a class="btn btn-small" id="btn-white" role="button" target="_blank" href="[[:href]]" target="[[:target]]">
-              [[if comments]]
-                <span class="font-caption">
-                  [[:text]]
-                  <span class="comment">
-                    <img src={% static "v2/images/comment.svg" %}>
-                    <span class="github-comment">
-                      [[:comments]]
-                    </span>
-                  </span>
-                </span>
-              [[else]]
-                <span class="font-caption">[[:text]]</span>
-              [[/if]]
-            </a>
-          [[else]]
-            <a class="button button--primary" role="button" href="[[:href]]" target="[[:target]]">
-              <span class="font-caption">[[:text]]</span>
-            </a>
-          [[/if]]
-        </span>
-      [[/if]]
-    </script>
-
-    <script id="activity_template" type="text/x-jsrender">
-      <div class="row box activity">
-        <div class="col-12 col-md-1">
-          <div class="activity-avatar">
-            <img class="avatar" src="/funding/avatar?repo=https://github.com/[[:name]]"/>
-          </div>
-        </div>
-        <div class="col-12 col-md-2">
-          <div class="activity-name">
-            <a href="https://gitcoin.co/profile/[[:name]]" target="_blank">
-              [[:name]]
-            </a>
-          </div>
-        </div>
-        [[if status == 'accepted']]
-          <div class="col-12 col-md-7 fulfilled">
-            <div class="activity-status">
-              [[:text]]
-              <i class="far fa-check-circle"></i>
-            </div>
-            <div>
-              <span class="bounty-subheading">{% trans "ETH Address" %} :</span>
-              <span class="bounty-text">
-                <a href="https://etherscan.io/address/[[:address]]">[[:address]]</a>
-              </span>
-            </div>
-            <div>
-              <span class="bounty-subheading">{% trans "Email" %} :</span>
-              <span class="bounty-text">
-                <a href="mailto:[[:email]]">[[:email]]</a>
-              </span>
-            </div>
-            <div>
-              <span class="bounty-subheading">{% trans "Submission Id" %} :</span>
-              <span class="bounty-text">[[:fulfillment_id]]</span>
-            </div>
-          </div>
-        [[else status == 'started']]
-          <div class="col-12 col-md-7 started-status-column">
-            <div class="activity-status">
-              [[:text]]
-            </div>
-            [[if uninterest_possible]]
-              <div>
-                <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
-                  <a id="remove-[[:name]]" class="button button--primary" role="button" href="remove-handle">
-                    <span class="font-smaller-4">Stop work</span>
-                  </a>
-                </span>
-              </div>
-            [[/if]]
-          </div>
-        [[else]]
-          <div class="col-12 col-md-7">
-            <div class="activity-status">
-              [[:text]]
-            </div>
-          </div>
-        [[/if]]
-        <div class="col-12 col-md-2">
-          <div class="activity-time">[[:age]]</div>
-        </div>
-      </div>
-    </script>
 
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
@@ -303,7 +139,7 @@
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/amounts.js" %}"></script>
-  <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
+  <script src="{% static "v2/js/pages/jobs.js" %}"></script>
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
