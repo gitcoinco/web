@@ -22,6 +22,7 @@ import json
 import logging
 import time
 
+from datetime import datetime
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -191,7 +192,7 @@ def new_interest(request, bounty_id):
             status=401)
 
     try:
-        Interest.objects.get(profile_id=profile_id, bounty=bounty)
+        Interest.objects.get(profile_id=profile_id, bounty=bounty, leaved__isnull=True)
         return JsonResponse({
             'error': _('You have already expressed interest in this bounty!'),
             'success': False},
@@ -201,12 +202,11 @@ def new_interest(request, bounty_id):
         interest = create_new_interest_helper(bounty, request.user, issue_message)
 
     except Interest.MultipleObjectsReturned:
-        bounty_ids = bounty.interested \
-            .filter(profile_id=profile_id) \
-            .values_list('id', flat=True) \
-            .order_by('-created')[1:]
+        _interests = Interest.objects.filter(profile_id=profile_id, bounty=bounty, leaved__isnull=True)
 
-        Interest.objects.filter(pk__in=list(bounty_ids)).delete()
+        for interested in _interests:
+          interested.leaved = datetime.utcnow()
+          interested.save()
 
         return JsonResponse({
             'error': _('You have already expressed interest in this bounty!'),
@@ -252,10 +252,12 @@ def remove_interest(request, bounty_id):
                             status=401)
 
     try:
-        interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
+        interest = Interest.objects.get(profile_id=profile_id, bounty=bounty, leaved__isnull=True)
         record_user_action(request.user, 'stop_work', interest)
         bounty.interested.remove(interest)
-        interest.delete()
+        interest.leaved = datetime.utcnow()
+        interest.save()
+
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
         maybe_market_to_twitter(bounty, 'stop_work')
@@ -265,15 +267,11 @@ def remove_interest(request, bounty_id):
             'success': False},
             status=401)
     except Interest.MultipleObjectsReturned:
-        interest_ids = bounty.interested \
-            .filter(
-                profile_id=profile_id,
-                bounty=bounty
-            ).values_list('id', flat=True) \
-            .order_by('-created')
+        _interest = Interest.objects.filter(profile_id=profile_id, bounty=bounty, leaved__isnull=True)
 
-        bounty.interested.remove(*interest_ids)
-        Interest.objects.filter(pk__in=list(interest_ids)).delete()
+        for interested in _interest:
+          interested.leaved = datetime.utcnow()
+          interested.save()
 
     return JsonResponse({'success': True})
 
@@ -308,28 +306,24 @@ def uninterested(request, bounty_id, profile_id):
             status=401)
 
     try:
-        interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
-        bounty.interested.remove(interest)
+        interest = Interest.objects.get(profile_id=profile_id, bounty=bounty, leaved__isnull=True)
+        interest.leaved = datetime.utcnow()
+        interest.save()
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
         event_name = "bounty_removed_by_staff" if is_staff else "bounty_removed_by_funder"
         record_user_action_on_interest(interest, event_name, None)
-        interest.delete()
     except Interest.DoesNotExist:
         return JsonResponse({
             'errors': ['Party haven\'t expressed interest on this bounty.'],
             'success': False},
             status=401)
     except Interest.MultipleObjectsReturned:
-        interest_ids = bounty.interested \
-            .filter(
-                profile_id=profile_id,
-                bounty=bounty
-            ).values_list('id', flat=True) \
-            .order_by('-created')
+        _interest = Interest.objects.filter(profile_id=profile_id, bounty=bounty, leaved__isnull=True)
 
-        bounty.interested.remove(*interest_ids)
-        Interest.objects.filter(pk__in=list(interest_ids)).delete()
+        for interested in _interest:
+          interested.leaved = datetime.utcnow()
+          interested.save()
 
     profile = Profile.objects.get(id=profile_id)
     if profile.user and profile.user.email:
