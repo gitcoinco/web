@@ -135,7 +135,7 @@ def about(request):
     alumnis = [
     ]
     for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco'):
-        package = (alumni.profile.avatar_url, alumni.profile.username, alumni.profile.username)
+        package = (alumni.profile.avatar_url, alumni.profile.username, alumni.profile.username, alumni.organization)
         alumnis.append(package)
 
     context = {
