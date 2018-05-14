@@ -12,13 +12,13 @@
     <h1>{% trans "Register your ENS subdomain" %}</h1>
     <div>
       <br>
-      <h2><label id="githubHandle">{{ user.username }}</label><label>.gitcoin.eth</label></h2>
+      <h2><label id="githubHandle">{{ user.username }}</label><label>{% trans ".gitcoin.eth" %}</label></h2>
     </div>
     <div>
       <br>
       <input type="checkbox" id="tos" value="1" >
       {% blocktrans %}<label for="tos">I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.</label>{% endblocktrans %}
     </div>
-    <a href="#" id="register" class="button">Register ⚡️</a>
+    <a href="#" id="register" class="button">{% trans "Register" %} ⚡️</a>
   {% endif %}
 {% endblock %}

@@ -42,6 +42,7 @@ h3 {
 
 .question {
   font-size: 18px;
+  cursor: pointer;
 }
 
 .question:hover {

@@ -80,11 +80,13 @@ Technically, the system is architected:
 
 [For more information on the HTTPS API, please view the api README](API.md)
 
-## Running Locally with Docker (Recommended)
+## Running locally
+
+### With Docker (Recommended)
 
 [For more information on running the app locally, please view the running locally README](RUNNING_LOCALLY_DOCKER.md)
 
-## Running Locally without Docker
+### Without Docker
 
 [For more information on running the app locally, please view the running locally README](RUNNING_LOCALLY.md)
 
