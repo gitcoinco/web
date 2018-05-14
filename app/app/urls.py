@@ -34,13 +34,13 @@ import ethos.views
 import external_bounties.views
 import faucet.views
 import gitcoinbot.views
+import jobs.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
 import retail.emails
 import retail.views
 import tdi.views
-import jobs.views
 from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
 from jobs.routers import router as job_router

@@ -79,17 +79,17 @@ h4 {
 }
 
 .box {
-    padding: 14px;
-    border: 1px solid #DBDBDB;
-    border-radius: 3px;
-    margin: 0;
+  padding: 14px;
+  border: 1px solid #DBDBDB;
+  border-radius: 3px;
+  margin: 0;
 }
 
 .btn-white {
-    border: 1px solid #979797;
-    color: #0D0764;
-    border-radius: 3px;
-    position: relative;
+  border: 1px solid #979797;
+  color: #0D0764;
+  border-radius: 3px;
+  position: relative;
 }
 
 .job-apply-btn {
@@ -102,9 +102,9 @@ h4 {
 }
 
 .tag.keyword {
-    min-width: 0;
-    font-size: 11px;
-    padding: 5px 10px;
-    background-color: #F2F6F9;
-    color: #6184AC;
+  min-width: 0;
+  font-size: 11px;
+  padding: 5px 10px;
+  background-color: #F2F6F9;
+  color: #6184AC;
 }

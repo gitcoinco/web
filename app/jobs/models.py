@@ -1,9 +1,9 @@
 from datetime import timedelta
 
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 
