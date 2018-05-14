@@ -41,4 +41,4 @@ class ENSSubdomainRegistration(SuperModel):
     pending = models.BooleanField()
 
     def __str__(self):
-        return self.github_handle
+        return self.profile.handle
