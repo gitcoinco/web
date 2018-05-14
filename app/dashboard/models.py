@@ -931,6 +931,7 @@ class Profile(SuperModel):
     # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
     # Sample repos_data: https://gist.github.com/mbeacom/c9e4fda491987cb9728ee65b114d42c7
     repos_data = JSONField(default={})
+    max_num_issues_start_work = models.IntegerField(default=3)
 
     @property
     def is_org(self):
