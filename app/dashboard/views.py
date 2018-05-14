@@ -830,7 +830,7 @@ def profile(request, handle):
                 'title': 'April 2018',
                 'completed': [],
                 'submitted': [],
-                'started': [profile.bounties[0], profile.bounties[1]]
+                'started': [profile.bounties[2], profile.bounties[0]]
             }
         ]
     }
