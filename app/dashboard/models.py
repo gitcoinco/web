@@ -1101,10 +1101,14 @@ class Profile(SuperModel):
         total_bounties = bounties.count()
         completetion_percent = int(
             round(num_completed_bounties * 1.0 / total_bounties, 2) * 100
-        ) if total_bounties != 0 else '0'
+        ) if total_bounties != 0 else 0
 
-        avg_eth_earned_per_bounty = total_earned_eth / fulfilled_bounties_count
-        avg_usd_earned_per_bounty = total_earned_usd / fulfilled_bounties_count
+        avg_eth_earned_per_bounty = 0
+        avg_usd_earned_per_bounty = 0
+
+        if fulfilled_bounties_count:
+            avg_eth_earned_per_bounty = total_earned_eth / fulfilled_bounties_count
+            avg_usd_earned_per_bounty = total_earned_usd / fulfilled_bounties_count
 
         if num_completed_bounties or fulfilled_bounties_count:
             user_active_in_last_quarter = True
