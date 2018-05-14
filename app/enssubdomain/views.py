@@ -42,7 +42,7 @@ w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 @login_required
 def ens_subdomain(request):
     """Register ENS Subdomain."""
-    github_handle = request.user.profile.handle if request.user.is_authenticated and hasattr(request.user, 'profile') else None    
+    github_handle = request.user.profile.handle if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     if request.method == "POST" and github_handle:
         signedMsg = request.POST.get('signedMsg', '')
         signer = request.POST.get('signer', '').lower()
