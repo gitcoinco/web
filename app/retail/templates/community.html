@@ -1,22 +1,21 @@
 {% load i18n static %}
-
-      <div class="row">
-        <div class="col pb-4">
-          <h4>{% trans h1 %}</h4>
-          <h6 style="text-align: center;" >{% trans h2 %}</h6>
-        </div>
-      </div>
-      <div class="row animatedParent">
-        <div class="col pb-4 flex-column text-center animated fadeInLeftShort">
-          {% for avatar, name, handle in community_members %}
-          <div class="communityProfile mr-1 ml-1">
-            <img class="communityProfileAvatar img-fluid" src="{{avatar}}">
-            <p>
-              <span class="font-bigger-1 font-weight-300"><strong>{{name}}</strong></span>
-            </p>
-            <a href="https://gitcoin.co/profile/{{handle}}"><img class="communityProfileAvatarSocialImg" src="{% static "v2/images/social/gitcoin.png" %}"></a>
-            <a href="https://github.com/{{handle}}"><img class="communityProfileAvatarSocialImg" src="{% static "v2/images/social/github.png" %}"></a>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
+<div class="row">
+  <div class="col pb-4">
+    <h4>{% trans h1 %}</h4>
+    <h6 style="text-align: center;" >{% trans h2 %}</h6>
+  </div>
+</div>
+<div class="row animatedParent">
+  <div class="col pb-4 flex-column text-center animated fadeInLeftShort">
+    {% for avatar, name, handle in community_members %}
+    <div class="communityProfile mr-1 ml-1">
+      <img class="communityProfileAvatar img-fluid" src="{{ avatar }}">
+      <p>
+        <span class="font-bigger-1 font-weight-300"><strong>{{ name }}</strong></span>
+      </p>
+      <a href="{% url "profile" handle %}"><img class="communityProfileAvatarSocialImg" src="{% static "v2/images/social/gitcoin.png" %}"></a>
+      <a href="https://github.com/{{ handle }}"><img class="communityProfileAvatarSocialImg" src="{% static "v2/images/social/github.png" %}"></a>
+    </div>
+    {% endfor %}
+  </div>
+</div>
