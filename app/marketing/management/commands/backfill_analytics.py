@@ -1,8 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Bounty, BountyFulfillment
-from github.utils import get_issues, get_user
+from dashboard.models import Bounty
 from marketing.models import Stat
 
 

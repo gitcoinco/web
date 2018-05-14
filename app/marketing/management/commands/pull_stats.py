@@ -162,14 +162,8 @@ def github_stars():
 
 
 def github_issues():
-    from django.utils import timezone
-    from datetime import datetime
-    from marketing.models import Stat
     from github.utils import get_issues, get_user
-    import pytz
-
-    repos = [
-    ]
+    repos = []
 
     for org in ['bitcoin', 'gitcoinco', 'ethereum']:
         for repo in get_user(org, '/repos'):
@@ -283,7 +277,7 @@ def bounties():
 
 
 def bounties_hourly_rate():
-    from dashboard.models import Bounty, BountyFulfillment
+    from dashboard.models import Bounty
     that_time = timezone.now()
     bounties = Bounty.objects.filter(
         fulfillment_accepted_on__gt=(that_time - timezone.timedelta(hours=24)),

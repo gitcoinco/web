@@ -220,8 +220,7 @@ def cohort_helper_timedelta(i, period_size):
         return {'weeks': 4*i}
     elif period_size == 'quarters':
         return {'weeks': 4*3*i}
-    else:
-        return {period_size: i}
+    return {period_size: i}
 
 
 @staff_member_required

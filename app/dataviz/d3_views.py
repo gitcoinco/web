@@ -1,28 +1,34 @@
+# -*- coding: utf-8 -*-
+"""Define data visualization related D3 views.
+
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 import json
 import math
 import random
 import time
 
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
-from django.core.validators import validate_email
-from django.db.models import Max
-from django.http import Http404, HttpResponse, JsonResponse
-from django.shortcuts import redirect, render
+from django.http import HttpResponse, JsonResponse
 from django.template.response import TemplateResponse
-from django.urls import reverse
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 
-from app.utils import sync_profile
-from chartit import Chart, DataPool
-from dashboard.models import Bounty, BountyFulfillment, Profile, Tip, UserAction
-from marketing.mails import new_feedback
-from marketing.models import (
-    EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
-)
-from marketing.utils import get_or_save_email_subscriber
-from retail.helpers import get_ip
+from dashboard.models import Bounty, BountyFulfillment, Profile, Tip
+from marketing.models import Stat
 
 from .models import DataPayload
 
@@ -257,8 +263,8 @@ def viz_heatmap(request, key='email_open', template='heatmap'):
     type_options = stats.distinct('key').values_list('key', flat=True)
     stats = stats.filter(key=key).order_by('-created_on')
 
-    if request.GET.get('data'):
-        if request.GET.get('format') == 'json':
+    if request.GET and request.GET.get('data'):
+        if request.GET.get('format', '') == 'json':
             _max = max([stat.val_since_hour for stat in stats])
             output = {
                 # {"timestamp": "2014-10-16T22:00:00", "value": {"PM2.5": 61.92}}
@@ -269,23 +275,22 @@ def viz_heatmap(request, key='email_open', template='heatmap'):
             }
             # Example output: https://gist.github.com/mbeacom/44f0114666d69bb5bf2756216c43b64d
             return JsonResponse(output)
-        else:
-            #csv
-            rows = [
-                ['Date', 'Value']
-            ]
-            _max = max([stat.val_since_yesterday for stat in stats])
-            for stat in stats:
-                date = stat.created_on.strftime("%Y-%m-%d")
-                value = str(stat.val_since_yesterday / _max) if _max else str(0)
-                rows.append([date, value])
-            output_rows = []
-            for row in rows:
-                row = ",".join(row)
-                output_rows.append(row)
+        #csv
+        rows = [
+            ['Date', 'Value']
+        ]
+        _max = max([stat.val_since_yesterday for stat in stats])
+        for stat in stats:
+            date = stat.created_on.strftime("%Y-%m-%d")
+            value = str(stat.val_since_yesterday / _max) if _max else str(0)
+            rows.append([date, value])
+        output_rows = []
+        for row in rows:
+            row = ",".join(row)
+            output_rows.append(row)
 
-            output = "\n".join(output_rows)
-            return HttpResponse(output)
+        output = "\n".join(output_rows)
+        return HttpResponse(output)
     params = {
         'stats': stats,
         'key': key,
@@ -582,14 +587,14 @@ def viz_graph(request, _type, template='graph'):
                 if node not in names.keys():
                     names[node] = None
                     types[node] = 'independent'
-                if last_node and _type == 'what_future_could_look_like': # and random.randint(0, 2) == 0:
-                        weight = random.randint(1, 10)
-                        #edges.append((node, last_node, weight))
-                        #edges.append((nodes.order_by('?').first().handle.lower(), node, weight))
-                        target = nodes.order_by('?').first().handle.lower()
-                        if hide_pii:
-                            target = helper_hide_pii(target)
-                        edges.append((target, node, weight, created))
+                if last_node and _type == 'what_future_could_look_like':  # and random.randint(0, 2) == 0:
+                    weight = random.randint(1, 10)
+                    # edges.append((node, last_node, weight))
+                    # edges.append((nodes.order_by('?').first().handle.lower(), node, weight))
+                    target = nodes.order_by('?').first().handle.lower()
+                    if hide_pii:
+                        target = helper_hide_pii(target)
+                    edges.append((target, node, weight, created))
                 last_node = node
 
 
@@ -699,7 +704,6 @@ def viz_scatterplot(request, key='hourly_rate'):
     stats = []
     type_options = ['hourly_rate']
     if request.GET.get('data'):
-        from dashboard.models import Bounty, BountyFulfillment
         rows = [
             ['hourlyRate', 'daysBack', 'username', 'weight']
         ]
