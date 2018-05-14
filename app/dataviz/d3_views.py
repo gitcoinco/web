@@ -285,7 +285,7 @@ def viz_heatmap(request, key='email_open', template='heatmap'):
                 output_rows.append(row)
 
             output = "\n".join(output_rows)
-            return HttpResponse(output)            
+            return HttpResponse(output)
     params = {
         'stats': stats,
         'key': key,
@@ -715,7 +715,7 @@ def viz_scatterplot(request, key='hourly_rate'):
                 ]
                 if bf.bounty.hourly_rate:
                     rows.append(row)
-            except:
+            except Exception:
                 pass
 
         output_rows = []

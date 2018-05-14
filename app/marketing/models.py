@@ -83,14 +83,14 @@ class Stat(SuperModel):
     def val_since_yesterday(self):
         try:
             return self.val - Stat.objects.filter(key=self.key, created_on__lt=self.created_on, created_on__hour=self.created_on.hour).order_by('-created_on').first().val
-        except:
+        except Exception:
             return 0
 
     @property
     def val_since_hour(self):
         try:
             return self.val - Stat.objects.filter(key=self.key, created_on__lt=self.created_on).order_by('-created_on').first().val
-        except:
+        except Exception:
             return 0
 
 

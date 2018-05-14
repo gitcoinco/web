@@ -287,7 +287,7 @@ def funnel_helper_get_data(key, k, daily_source, weekly_source, start_date, end_
         return weekly_source.filter(key='email_click')[k].val - weekly_source.filter(key='email_click')[k+1].val
     try:
         return weekly_source.filter(key=key)[k].val - weekly_source.filter(key=key)[k+1].val
-    except:
+    except Exception:
         return 0
 
 
@@ -373,7 +373,7 @@ def funnel(request):
                 for i in range(1, len(stats)):
                     try:
                         stats[i]['pct'] = round((stats[i]['val'])/stats[i-1]['val']*100, 1)
-                    except:
+                    except Exception:
                         stats[i]['pct'] = 0
                 for i in range(0, len(stats)):
                     stats[i]['idx'] = i

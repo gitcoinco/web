@@ -193,7 +193,7 @@ def github_issues():
                 key=key,
                 val=(val),
                 )
-        except:
+        except Exception:
             pass
         if not val:
             break
@@ -294,7 +294,7 @@ def bounties_hourly_rate():
         try:
             hours += bounty.fulfillments.filter(accepted=True).first().fulfiller_hours_worked
             value += bounty.value_in_usdt
-        except:
+        except Exception:
             pass
     print(that_time, bounties.count(), value, hours)
     if value and hours:
@@ -306,7 +306,7 @@ def bounties_hourly_rate():
                 key=key,
                 val=(val),
                 )
-        except:
+        except Exception:
             pass
 
 

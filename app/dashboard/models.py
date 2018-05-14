@@ -627,14 +627,14 @@ class Bounty(SuperModel):
             return None
         try:
             return Bounty.objects.filter(standard_bounties_id=self.standard_bounties_id, created_on__gt=self.created_on).order_by('created_on').first()
-        except:
+        except Exception:
             return None
 
     @property
     def prev_bounty(self):
         try:
             return Bounty.objects.filter(standard_bounties_id=self.standard_bounties_id, created_on__lt=self.created_on).order_by('-created_on').first()
-        except:
+        except Exception:
             return None
 
     # returns true if this bounty was active at _time
@@ -1408,7 +1408,7 @@ class ToolVote(models.Model):
     def tool(self):
         try:
             return Tool.objects.filter(votes__in=[self.pk]).first()
-        except:
+        except Exception:
             return None
 
     def __str__(self):
