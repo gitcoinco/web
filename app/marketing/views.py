@@ -91,7 +91,9 @@ def settings_helper_get_auth(request, key=None):
             pass
 
     # lazily create profile if needed
-    profiles = Profile.objects.filter(handle__iexact=github_handle).exclude(email='') if github_handle else Profile.objects.none()
+    profiles = Profile.objects.none()
+    if github_handle:
+        profiles = Profile.objects.prefetch_related('alumni').filter(handle__iexact=github_handle).exclude(email='')
     profile = None if not profiles.exists() else profiles.first()
     if not profile and github_handle:
         profile = sync_profile(github_handle, user=request.user)
@@ -122,6 +124,11 @@ def privacy_settings(request):
         if profile:
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
             profile.hide_profile = bool(request.POST.get('hide_profile', False))
+            if profile.alumni:
+                alumni = profile.alumni.first()
+                alumni.public = bool(not request.POST.get('hide_alumni', False))
+                alumni.save()
+
             profile.save()
 
     context = {
