@@ -194,21 +194,16 @@ var tokens = function(network_id) {
     ];
   }
 
+  _priorityTokens = _tokens.filter(token => token.priority > 0).sort((a, b) => b.priority - a.priority);
+  
   _tokens.sort(function(a, b) {
-    if (a.priority && b.priority) {
-      return b.priority - a.priority;
-    } else if (!a.priority && b.priority) {
-      return 1;
-    } else if (a.priority && !b.priority) {
-      return -1;
-    }
     if (a.name[0] < b.name[0]) {
       return -1;
     }
     return 1;
   });
 
-  return _tokens;
+  return _priorityTokens.concat(_tokens);
 };
 
 var tokenAddressToDetails = function(addr) {
