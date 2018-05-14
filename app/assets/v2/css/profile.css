@@ -1,4 +1,3 @@
-/* stylelint-disable no-descending-specificity */
 /* Profile details */
 
 .profile-header > .container {
@@ -37,12 +36,8 @@
 
 .profile-header__links li {
   float: left;
-  margin-left: 2em;
+  margin-right: 2em;
   list-style-type: none;
-}
-
-.profile-header__links li:first-child {
-  margin-left: 0;
 }
 
 .profile-header__links a {
@@ -129,10 +124,6 @@
   border-top: 0.0625rem solid #D3D3D3;
 }
 
-.profile-bounties .bounty_row:first-child {
-  border-top: none;
-}
-
 .profile-bounties .bounty_row--hidden {
   display: none;
 }
@@ -152,15 +143,16 @@
   border: 0.0625rem solid #D3D3D3;
 }
 
-.profile-bounties__activities-group .bounty_row {
-  border: none;
-}
-
 .profile-bounties__group-title {
   color: #0D0764;
   font-size: 1rem;
   padding: 0.5rem 0 0.75rem;
   border-bottom: 0.0625rem solid #D3D3D3;
 }
+
+.profile_details .bounty_row:first-child {
+  border-top: none;
+}
+
 
 /* END Profile details */
