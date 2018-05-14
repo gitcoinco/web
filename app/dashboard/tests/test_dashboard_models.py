@@ -203,3 +203,26 @@ class DashboardModelsTest(TestCase):
         tool.votes.add(vote)
         assert tool.vote_score() == 11
         assert tool.link_url == 'http://gitcoin.co/explorer'
+
+    @staticmethod
+    def test_bounty_snooze_url():
+        """Test the dashboard Bounty model snooze_url method."""
+        bounty = Bounty(
+            title='foo',
+            value_in_token=3,
+            token_name='ETH',
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12',
+            token_address='0x0',
+            issue_description='hello world',
+            bounty_owner_github_username='flintstone',
+            is_open=False,
+            accepted=False,
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            idx_project_length=5,
+            project_length='Months',
+            bounty_type='Feature',
+            experience_level='Intermediate',
+            raw_data={},
+        )
+        assert bounty.snooze_url(1) == f'{bounty.get_absolute_url()}?snooze=1'

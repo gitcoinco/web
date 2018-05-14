@@ -38,11 +38,12 @@ from django.utils.translation import gettext_lazy as _
 from app.utils import sync_profile
 from chartit import Chart, DataPool
 from dashboard.models import Bounty, Profile, Tip, UserAction
+from dashboard.utils import create_user_action
 from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
-from marketing.utils import get_or_save_email_subscriber
+from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
 from retail.helpers import get_ip
 
 
@@ -90,7 +91,9 @@ def settings_helper_get_auth(request, key=None):
             pass
 
     # lazily create profile if needed
-    profiles = Profile.objects.filter(handle__iexact=github_handle).exclude(email='') if github_handle else Profile.objects.none()
+    profiles = Profile.objects.none()
+    if github_handle:
+        profiles = Profile.objects.prefetch_related('alumni').filter(handle__iexact=github_handle).exclude(email='')
     profile = None if not profiles.exists() else profiles.first()
     if not profile and github_handle:
         profile = sync_profile(github_handle, user=request.user)
@@ -120,11 +123,16 @@ def privacy_settings(request):
     if request.POST and request.POST.get('submit'):
         if profile:
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
-            suppress_leaderboard = profile.suppress_leaderboard
+            profile.hide_profile = bool(request.POST.get('hide_profile', False))
+            if profile.alumni:
+                alumni = profile.alumni.first()
+                alumni.public = bool(not request.POST.get('hide_alumni', False))
+                alumni.save()
+
             profile.save()
 
     context = {
-        'suppress_leaderboard': suppress_leaderboard,
+        'profile': profile,
         'nav': 'internal',
         'active': '/settings/privacy',
         'title': _('Privacy Settings'),
@@ -136,6 +144,17 @@ def privacy_settings(request):
 
 
 def matching_settings(request):
+    """Handle viewing and updating EmailSubscriber matching settings.
+
+    TODO:
+        * Migrate this to a form and handle validation.
+        * Migrate Keyword to taggit.
+        * Maybe migrate keyword information to Profile instead of using ES?
+
+    Returns:
+        TemplateResponse: The populated matching template.
+
+    """
     # setup
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
     if not es:
@@ -147,8 +166,10 @@ def matching_settings(request):
     if request.POST and request.POST.get('submit'):
         github = request.POST.get('github', '')
         keywords = request.POST.get('keywords').split(',')
-        es.github = github
-        es.keywords = keywords
+        if github:
+            es.github = github
+        if keywords:
+            es.keywords = keywords
         ip = get_ip(request)
         if not es.metadata.get('ip', False):
             es.metadata['ip'] = [ip]
@@ -282,33 +303,32 @@ def slack_settings(request):
         TemplateResponse: The user's slack settings template response.
 
     """
-    # setup
+    response = {'output': ''}
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
-    if not es:
+
+    if not user or not is_logged_in:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
 
-    msg = ''
-
-    if request.POST and request.POST.get('submit'):
+    if request.POST:
+        test = request.POST.get('test')
+        submit = request.POST.get('submit')
         token = request.POST.get('token', '')
-        repos = request.POST.get('repos').split(',')
+        repos = request.POST.get('repos', '')
         channel = request.POST.get('channel', '')
-        profile.slack_token = token
-        profile.slack_repos = [repo.strip() for repo in repos]
-        print(profile.slack_repos)
-        profile.slack_channel = channel
-        ip = get_ip(request)
-        if not es.metadata.get('ip', False):
-            es.metadata['ip'] = [ip]
-        else:
-            es.metadata['ip'].append(ip)
-        es.save()
-        profile.save()
-        msg = _('Updated your preferences.')
+
+        if test and token and channel:
+            response = validate_slack_integration(token, channel)
+
+        if submit or (response and response.get('success')):
+            profile.update_slack_integration(token, channel, repos)
+            if not response.get('output'):
+                response['output'] = _('Updated your preferences.')
+            ua_type = 'added_slack_integration' if token and channel and repos else 'removed_slack_integration'
+            create_user_action(user, ua_type, request, {'channel': channel, 'repos': repos})
 
     context = {
-        'repos': ",".join(profile.slack_repos),
+        'repos': profile.get_slack_repos(join=True),
         'is_logged_in': is_logged_in,
         'nav': 'internal',
         'active': '/settings/slack',
@@ -316,7 +336,7 @@ def slack_settings(request):
         'navs': get_settings_navs(),
         'es': es,
         'profile': profile,
-        'msg': msg,
+        'msg': response['output'],
     }
     return TemplateResponse(request, 'settings/slack.html', context)
 

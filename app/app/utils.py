@@ -18,6 +18,7 @@ from geoip2.errors import AddressNotFoundError
 from github.utils import _AUTH, HEADERS, get_user
 from ipware.ip import get_real_ip
 from marketing.utils import get_or_save_email_subscriber
+from pyshorteners import Shortener
 from social_django.models import UserSocialAuth
 
 logger = logging.getLogger(__name__)
@@ -35,6 +36,21 @@ class NotEqual(Lookup):
         rhs, rhs_params = self.process_rhs(compiler, connection)
         params = lhs_params + rhs_params
         return f'%s <> %s' % (lhs, rhs), params
+
+
+def get_short_url(url):
+    is_short = False
+    for shortener in ['Tinyurl', 'Adfly', 'Isgd', 'QrCx']:
+        try:
+            if not is_short:
+                shortener = Shortener(shortener)
+                response = shortener.short(url)
+                if response != 'Error' and 'http' in response:
+                    url = response
+                is_short = True
+        except Exception:
+            pass
+    return url
 
 
 def ellipses(data, _len=75):
@@ -96,7 +112,7 @@ def setup_lang(request, user):
         request.session.modified = True
 
 
-def sync_profile(handle, user=None):
+def sync_profile(handle, user=None, hide_profile=True):
     data = get_user(handle)
     email = ''
     is_error = 'name' not in data.keys()
@@ -113,6 +129,7 @@ def sync_profile(handle, user=None):
         'last_sync_date': timezone.now(),
         'data': data,
         'repos_data': repos_data,
+        'hide_profile': hide_profile,
     }
 
     if user and isinstance(user, User):

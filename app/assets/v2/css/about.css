@@ -50,6 +50,7 @@ h4 {
   text-align: center;
 }
 
+#team .organization,
 #team .role,
 #jobs .title,
 #team .card .title {
@@ -193,7 +194,7 @@ img.communityProfileAvatarSocialImg {
 }
 
 div.communityProfile {
-  width: 10%; 
+  width: 10%;
   display: inline-block;
   background-color: #eee;
 }

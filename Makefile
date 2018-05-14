@@ -30,6 +30,9 @@ fix: fix-eslint fix-stylelint fix-isort ## Attempt to run all fixes against the 
 fresh: ## Completely destroy all compose assets and start compose with a fresh build.
 	@docker-compose down -v; docker-compose up -d --build;
 
+load_initial_data: ## Load initial development fixtures.
+	@docker-compose exec web python3 app/manage.py loaddata initial
+
 logs: ## Print and actively tail the docker compose logs.
 	@docker-compose logs -f
 

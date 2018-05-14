@@ -23,6 +23,7 @@ import logging
 import time
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.templatetags.staticfiles import static
@@ -44,7 +45,7 @@ from dashboard.notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
     maybe_market_to_twitter, maybe_market_to_user_slack,
 )
-from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, web3_process_bounty
+from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, record_user_action_on_interest, web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
@@ -109,9 +110,9 @@ def helper_handle_access_token(request, access_token):
     request.session['profile_id'] = profile.pk
 
 
-def create_new_interest_helper(bounty, user, has_question, issue_message):
+def create_new_interest_helper(bounty, user, issue_message):
     profile_id = user.profile.pk
-    interest = Interest.objects.create(profile_id=profile_id, has_question=has_question, issue_message=issue_message)
+    interest = Interest.objects.create(profile_id=profile_id, issue_message=issue_message)
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
     maybe_market_to_slack(bounty, 'start_work')
@@ -127,9 +128,12 @@ def gh_login(request):
 
 
 def get_interest_modal(request):
+
     context = {
         'active': 'get_interest_modal',
         'title': _('Add Interest'),
+        'user_logged_in': request.user.is_authenticated,
+        'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
     }
     return TemplateResponse(request, 'addinterest.html', context)
 
@@ -170,7 +174,7 @@ def new_interest(request, bounty_id):
     except Bounty.DoesNotExist:
         raise Http404
 
-    num_issues = 3
+    num_issues = profile.max_num_issues_start_work
     active_bounties = Bounty.objects.current().filter(idx_status__in=['open', 'started'])
     num_active = Interest.objects.filter(profile_id=profile_id, bounty__in=active_bounties).count()
     is_working_on_too_much_stuff = num_active >= num_issues
@@ -180,9 +184,9 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
 
-    if profile.has_abandoned_work():
+    if profile.has_been_removed_by_staff():
         return JsonResponse({
-            'error': _('Due to a prior abandoned bounty, you are unable to start work at this time. Please contact support.'),
+            'error': _('Because a staff member has had to remove you from a bounty in the past, you are unable to start more work at this time. Please contact support.'),
             'success': False},
             status=401)
 
@@ -193,9 +197,8 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
     except Interest.DoesNotExist:
-        has_question = request.POST.get("has_question") == 'true'
         issue_message = request.POST.get("issue_message")
-        interest = create_new_interest_helper(bounty, request.user, has_question, issue_message)
+        interest = create_new_interest_helper(bounty, request.user, issue_message)
 
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
@@ -297,7 +300,9 @@ def uninterested(request, bounty_id, profile_id):
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
 
-    if not bounty.is_funder(request.user.username.lower()) and not request.user.is_staff:
+    is_funder = bounty.is_funder(request.user.username.lower())
+    is_staff = request.user.is_staff
+    if not is_funder and not is_staff:
         return JsonResponse(
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
@@ -307,6 +312,8 @@ def uninterested(request, bounty_id, profile_id):
         bounty.interested.remove(interest)
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
+        event_name = "bounty_removed_by_staff" if is_staff else "bounty_removed_by_funder"
+        record_user_action_on_interest(interest, event_name, None)
         interest.delete()
     except Interest.DoesNotExist:
         return JsonResponse({
@@ -706,6 +713,18 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['stdbounties_id'] = bounty.standard_bounties_id
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
+
+                snooze_days = int(request.GET.get('snooze', 0))
+                if snooze_days:
+                    is_funder = bounty.is_funder(request.user.username.lower())
+                    is_staff = request.user.is_staff
+                    if is_funder or is_staff:
+                        bounty.snooze_warnings_for_days = snooze_days
+                        bounty.save()
+                        messages.success(request, _(f'Warning messages have been snoozed for {snooze_days} days'))
+                    else:
+                        messages.warning(request, _('Only the funder of this bounty may snooze warnings.'))
+
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
@@ -715,7 +734,11 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     return TemplateResponse(request, 'bounty_details.html', params)
 
 
-def profile_helper(handle):
+class ProfileHiddenException(Exception):
+    pass
+
+
+def profile_helper(handle, suppress_profile_hidden_exception=False):
     """Define the profile helper.
 
     Args:
@@ -743,6 +766,10 @@ def profile_helper(handle):
         # TODO: Should we handle merging or removing duplicate profiles?
         profile = Profile.objects.filter(handle__iexact=handle).latest('id')
         logging.error(e)
+
+    if profile.hide_profile and not suppress_profile_hidden_exception:
+        raise ProfileHiddenException
+
     return profile
 
 
@@ -753,7 +780,7 @@ def profile_keywords_helper(handle):
         handle (str): The profile handle.
 
     """
-    profile = profile_helper(handle)
+    profile = profile_helper(handle, True)
 
     keywords = []
     for repo in profile.repos_data:
@@ -788,13 +815,16 @@ def profile(request, handle):
         handle (str): The profile handle.
 
     """
-    if not handle and not request.user.is_authenticated:
-        return redirect('index')
-    elif not handle:
-        handle = request.user.username
-        profile = request.user.profile
-    else:
-        profile = profile_helper(handle)
+    try:
+        if not handle and not request.user.is_authenticated:
+            return redirect('index')
+        elif not handle:
+            handle = request.user.username
+            profile = request.user.profile
+        else:
+            profile = profile_helper(handle)
+    except ProfileHiddenException:
+        raise Http404
 
     params = {
         'title': f"@{handle}",

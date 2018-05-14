@@ -26,7 +26,7 @@ from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
-from marketing.models import LeaderboardRank
+from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
 
@@ -129,12 +129,19 @@ def about(request):
     ]
     leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount')[0: 15]
     for lr in leadeboardranks:
-        package = (lr.avatar_url, lr.github_username, lr.github_username)
+        package = (lr.avatar_url, lr.github_username, lr.github_username, '')
         community_members.append(package)
+
+    alumnis = [
+    ]
+    for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco'):
+        package = (alumni.profile.avatar_url, alumni.profile.username, alumni.profile.username, alumni.organization)
+        alumnis.append(package)
 
     context = {
         'core_team': core_team,
         'community_members': community_members,
+        'alumni': alumnis,
         'active': 'about',
         'title': 'About',
     }
@@ -543,8 +550,7 @@ def browser_extension_firefox(request):
 
 
 def itunes(request):
-    return HttpResponse(_('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)'))
-    return redirect('https://itunes.apple.com/us/app/gitcoin/idXXXXXXXXX')
+    return redirect('https://itunes.apple.com/us/app/gitcoin/id1319426014')
 
 
 def ios(request):

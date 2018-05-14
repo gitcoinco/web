@@ -1,0 +1,24 @@
+{% load i18n static %}
+<div class="row">
+  <div class="col pb-4">
+    <h4>{% trans h1 %}</h4>
+    <h6 style="text-align: center;">{% trans h2 %}</h6>
+  </div>
+</div>
+<div class="row animatedParent">
+  <div class="col-12 offset-lg-2 col-lg-8 row">
+    {% for avatar, name, handle, org in community_members %}
+    <div class="col-12 col-md-6 col-lg-4">
+      <div class="card">
+        <img class="avatar" src="{{ avatar }}">
+        <p class="name">{{ name }}</p>
+        <p class="organization font-caption">{{ org }}</p>
+        <div class="social-links">
+          <a href="{% url "profile" handle %}"><div class="gitcoin-svg"></div></a>
+          <a href="https://github.com/{{ handle }}"><i class="fab fa-github"></i></a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
