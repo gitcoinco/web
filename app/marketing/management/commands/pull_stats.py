@@ -478,6 +478,40 @@ def whitepaper_access_request():
         )
 
 
+def get_skills_keyword_counts():
+    from marketing.models import EmailSubscriber
+    keywords = {}
+    for es in EmailSubscriber.objects.all():
+        for keyword in es.keywords:
+            keyword = keyword.strip().lower().replace(" ", "_")
+            if keyword not in keywords.keys():
+                keywords[keyword] = 0
+            keywords[keyword] += 1
+    for keyword, val in keywords.items():
+        print(keyword, val)
+        Stat.objects.create(
+            key=f"subscribers_with_skill_{keyword}",
+            val=(val),
+            )
+
+
+def get_bounty_keyword_counts():
+    from dashboard.models import Bounty
+    keywords = {}
+    for bounty in Bounty.objects.filter(current_bounty=True).all():
+        for keyword in str(bounty.keywords).split(","):
+            keyword = keyword.strip().lower().replace(" ", "_")
+            if keyword not in keywords.keys():
+                keywords[keyword] = 0
+            keywords[keyword] += 1
+    for keyword, val in keywords.items():
+        print(keyword, val)
+        Stat.objects.create(
+            key=f"bounties_with_skill_{keyword}",
+            val=(val),
+            )
+
+
 def email_events():
     from marketing.models import EmailEvent
 
@@ -498,6 +532,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         fs = [
+            get_bounty_keyword_counts,
+            get_skills_keyword_counts,
             github_issues,
             gitter,
             medium_subscribers,

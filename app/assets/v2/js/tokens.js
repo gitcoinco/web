@@ -168,7 +168,8 @@ var tokens = function(network_id) {
       {'addr': '0xb581e3a7db80fbaa821ab39342e9cbfd2ce33c23', 'name': 'ARCD', 'decimals': 18},
       {'addr': '0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6', 'name': 'RDN', 'decimals': 18},
       {'addr': '0x056017c55aE7AE32d12AeF7C679dF83A85ca75Ff', 'name': 'WYV', 'decimals': 18},
-      {'addr': '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', 'name': 'DAI', 'decimals': 18}
+      {'addr': '0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359', 'name': 'DAI', 'decimals': 18},
+      {'addr': '0xfa6f7881E52fDF912c4a285D78a3141B089cE859', 'name': 'AVO', 'decimals': 18}
     ];
   } else if (network_id == 'ropsten') { // ropsten
     _tokens = [
@@ -262,6 +263,9 @@ var load_tokens = function() {
       }
       if (typeof localStorage['acceptTOS'] != 'undefined' && localStorage['acceptTOS']) {
         $('input[name=terms]').attr('checked', 'checked');
+      }
+      if (typeof localStorage['accept_blockchain_tos'] != 'undefined' && localStorage['acceptblockchainterms']) {
+        $('input[name=blockchain_tos]').attr('checked', 'checked');
       }
     });
   });
