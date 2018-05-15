@@ -20,7 +20,7 @@
               <small id="hide_profile_help" class="form__input-help">{% trans "If this option is chosen, we will remove your profile altogether" %}</small>
           </div>
 
-          {% if profile.alumni %}
+          {% if profile.alumni.exists %}
               <div>
                   <input type="checkbox" name="hide_alumni" id=hide_alumni value="1" {% if not profile.alumni.first.public %} checked="checked" {%endif%} {% if not is_logged_in %} disabled {%endif%} >
                   <label class="form__label" for="hide_alumni">{% trans "Hide that I'm a Gitcoin alumni" %}</label>
