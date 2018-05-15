@@ -10,7 +10,7 @@ def update(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0072_bounty_privacy_preferences'),
+        ('dashboard', '0073_profile_max_num_issues_start_work'),
     ]
 
     operations = [
