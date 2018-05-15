@@ -143,7 +143,10 @@ def should_suppress_leaderboard(handle):
     profiles = Profile.objects.filter(handle__iexact=handle)
     if profiles.exists():
         profile = profiles.first()
-        return profile.suppress_leaderboard
+        if profile.suppress_leaderboard:
+            return True
+        if profile.hide_profile:
+            return True
     return False
 
 

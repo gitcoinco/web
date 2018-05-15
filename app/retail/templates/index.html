@@ -408,6 +408,36 @@
               </a>
             </div>
           </div>
+          <div class="col d-flex flex-column align-items-center">
+            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
+              <a href="https://www.youtube.com/watch?v=xvu1mUdYcuw" target="_blank" rel="noopener noreferrer">
+                <img src="{% static "v2/images/press/devhour.jpg" %}">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" id="ios">
+        <div class="col-12 pb-4 text-center">
+          <h4>{% trans "iOS App Now Available" %}</h4>
+        </div>
+        <div class="col-12 row">
+          <div class="col-12 offset-md-2 col-md-3 right">
+            <div class="explain-img-wrapper">
+              <a href="{% url "ios" %}">
+                <img src="{% static "v2/images/ios/iphone_crop.png" %}" >
+              </a>
+            </div>
+          </div>
+          <div class="col-12 col-md-5 left">
+            <div class="font-body">
+              <h5 class="font-subheader">{% trans "Browse funded work in open source software from anywhere, at anytime." %}</h5>
+              <p>Be the first to grab the best funded OSS work out there, on the go.</p>
+              <a class="btn btn-lg btn-warning" role="button" href="{% url "ios" %}">
+                {% trans "Get The App" %}
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>

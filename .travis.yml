@@ -49,18 +49,6 @@ jobs:
         - docker push gitcoin/web:${TRAVIS_BUILD_NUMBER}
         - docker tag gitcoin/web:${TRAVIS_BUILD_NUMBER} gitcoin/web:latest
         - docker push gitcoin/web:latest
-    - stage: deploy-pr
-      if: type = pull_request
-      script:
-        # Authenticate with Docker Hub.
-        - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
-        # Pull Docker images.
-        - docker pull python:3.6-slim-jessie
-        # Build, tag, and publish the new gitcoin/web image.
-        - docker build -t gitcoin/web:${TRAVIS_BUILD_NUMBER} .
-        - docker push gitcoin/web:${TRAVIS_BUILD_NUMBER}
-        - docker tag gitcoin/web:${TRAVIS_BUILD_NUMBER} gitcoin/web:${TRAVIS_PULL_REQUEST}
-        - docker push gitcoin/web:${TRAVIS_PULL_REQUEST}
     - stage: deploy-prod
       if: branch = stable
       script:

@@ -47,6 +47,7 @@ $(document).ready(function() {
   $('input[name=amount]').blur(setUsdAmount);
   $('select[name=deonomination]').change(setUsdAmount);
   $('input[name=issueURL]').blur(retrieveIssueDetails);
+  setTimeout(setUsdAmount, 1000);
 
   if ($('input[name=issueURL]').val() != '') {
     retrieveIssueDetails();
@@ -73,6 +74,13 @@ $(document).ready(function() {
 
   $('#submitBounty').validate({
     submitHandler: function(form) {
+      try {
+        bounty_address();
+      } catch (exception) {
+        _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+        return;
+      }
+      
       var data = {};
       var disabled = $(form)
         .find(':input:disabled')
@@ -111,6 +119,11 @@ $(document).ready(function() {
         tokenName
       };
 
+      var privacy_preferences = {
+        show_email_publicly: data.show_email_publicly,
+        show_name_publicly: data.show_name_publicly
+      };
+
       var expire_date =
         parseInt(expirationTimeDelta) + ((new Date().getTime() / 1000) | 0);
       var mock_expire_date = 9999999999; // 11/20/2286, https://github.com/Bounties-Network/StandardBounties/issues/25
@@ -129,6 +142,7 @@ $(document).ready(function() {
             githubUsername: metadata.githubUsername,
             address: '' // Fill this in later
           },
+          privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
           created: (new Date().getTime() / 1000) | 0,
@@ -163,6 +177,7 @@ $(document).ready(function() {
       localStorage['experienceLevel'] = $('select[name=experienceLevel]').val();
       localStorage['projectLength'] = $('select[name=projectLength]').val();
       localStorage['bountyType'] = $('select[name=bountyType]').val();
+      localStorage['accept_blockchain_tos'] = true;
       localStorage.removeItem('bountyId');
 
       // setup web3
@@ -292,46 +307,56 @@ $(document).ready(function() {
             // {from: x, to: y}
             from: account,
             value: eth_amount,
-            gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+            gas: web3.toHex(318730),
+            gasLimit: web3.toHex(318730)
           },
           web3Callback // callback for web3
         );
       }
-      // Check if the bounty already exists
-      var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
 
-      $.get(uri, function(results, status) {
-        results = sanitizeAPIResults(results);
-        var result = results[0];
+      var approve_success_callback = function(callback) {
+        // Add data to IPFS and kick off all the callbacks.
+        ipfsBounty.payload.issuer.address = account;
+        ipfs.addJson(ipfsBounty, newIpfsCallback);
+      };
 
-        if (result != null) {
-          _alert({ message: 'A bounty already exists for that Github Issue.' });
-          unloading_button($('.js-submit'));
-          return;
-        }
+      if (isETH) {
+        // no approvals needed for ETH
+        approve_success_callback();
+      } else {
+        token_contract.approve(
+          bounty_address(),
+          amount,
+          {
+            from: account,
+            value: 0,
+            gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+          },
+          function(error, result) {
+            if (error) {
+              console.error(error);
+              _alert(
+                {
+                  message:
+                    gettext('There was an error.  Please try again or contact support.')
+                },
+                'error'
+              );
+              unloading_button($('.js-submit'));
+              return;
+            }
+            var txid = result;
+            var link_url = etherscan_tx_url(txid);
 
-        var approve_success_callback = function(callback) {
-          // Add data to IPFS and kick off all the callbacks.
-          ipfsBounty.payload.issuer.address = account;
-          ipfs.addJson(ipfsBounty, newIpfsCallback);
-        };
-
-        if (isETH) {
-          // no approvals needed for ETH
-          approve_success_callback();
-        } else {
-          token_contract.approve(
-            bounty_address(),
-            amount,
-            {
-              from: account,
-              value: 0,
-              gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-            },
-            approve_success_callback
-          );
-        }
-      });
+            _alert({ message: 'Token approval transaction (1 of 2) has been sent to web3.  <a target=new href="' + link_url + '">Once that tx is confirmed</a>, you will be prompted to confirm submission of this bounty (tx 2 of 2)' }, 'info');
+            callFunctionWhenTransactionMined(txid, function() {
+              _alert({ message: 'Tx 1 of 2 confirmed.  Please confirm the second transaction.' }, 'success');
+              approve_success_callback();
+            });
+          }
+        );
+      }
     }
   });
 });

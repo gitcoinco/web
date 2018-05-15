@@ -118,7 +118,7 @@
                   <div class="content">
                     <div class="title">3. {% trans "Match" %}</div>
                     <div class="description">
-                      {% trans "The app will intro (via e-mail) you to the repository owners with whom you've matched with" %}
+                      {% trans "The app will intro you (via github comments) to the repository owners with whom you've matched with" %}
                     </div>
                   </div>
                 </div>
@@ -141,6 +141,7 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
   </body>
   <!-- jQuery -->
   <script src="{% static "v2/js/abi.js" %}"></script>

@@ -45,7 +45,7 @@
                 {% include 'shared/network_status.html' %}
                 <div class="w-100">
                   <label for=issueURL>{% trans "Issue URL:" %}</label>
-                  <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
+                  <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/pull/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
                 </div>
                 <div class="w-100 mt-2">
                   <label for=bountyFulfillment>{% trans "Bounty Submission:" %}</label>
@@ -57,6 +57,7 @@
                   <input name='terms' id='terms' type="checkbox" value=1 />
                   <label for=terms>{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>:{% endblocktrans %}</label>
                 </div>
+                {% include 'shared/bounty_actions_hidden_vars.html' %}
                 {% include 'shared/wallet_estimate.html' %}
                   <div class="w-100 mt-2">
                     <a id="acceptBounty" class="btn btn-sm btn-info mt-3 mb-2 pulseClick submitBounty" name="submit" style="width: 100%; text-transform: uppercase; color: white;">
@@ -77,6 +78,7 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
   </body>
 
   <!-- jQuery -->

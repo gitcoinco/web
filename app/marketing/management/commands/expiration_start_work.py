@@ -25,11 +25,12 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 import pytz
-from dashboard.models import Bounty, Interest
+from dashboard.models import Bounty, Interest, UserAction
 from dashboard.notifications import (
-    maybe_notify_bounty_user_removed_to_slack, maybe_notify_bounty_user_warned_removed_to_slack,
-    maybe_notify_user_removed_github, maybe_warn_user_removed_github,
+    maybe_notify_bounty_user_escalated_to_slack, maybe_notify_bounty_user_warned_removed_to_slack,
+    maybe_notify_user_escalated_github, maybe_warn_user_removed_github,
 )
+from dashboard.utils import record_user_action_on_interest
 from github.utils import get_interested_actions
 from marketing.mails import bounty_startwork_expire_warning, bounty_startwork_expired
 
@@ -49,13 +50,15 @@ class Command(BaseCommand):
 
         # TODO: DRY with dashboard/notifications.py
         num_days_back_to_warn = 3
-        num_days_back_to_delete_interest = 10
+        num_days_back_to_delete_interest = 6
+        num_days_back_to_ignore_bc_mods_got_it = 9
 
         days = [i * 3 for i in range(1, 15)]
+        days.reverse()
         if settings.DEBUG:
             days = range(1, 1000)
         for day in days:
-            interests = Interest.objects.filter(
+            interests = Interest.objects.select_related('profile').filter(
                 created__gte=(timezone.now() - timezone.timedelta(days=(day+1))),
                 created__lt=(timezone.now() - timezone.timedelta(days=day)),
             )
@@ -75,6 +78,7 @@ class Command(BaseCommand):
                             bounty.github_url, interest.profile.handle, interest.profile.email)
                         should_warn_user = False
                         should_delete_interest = False
+                        should_ignore = False
                         last_heard_from_user_days = None
 
                         if not actions:
@@ -93,32 +97,45 @@ class Command(BaseCommand):
                                 last_action_by_user = interest.created
 
                             # some small calcs
-                            delta_now_vs_last_action = timezone.now() - last_action_by_user
+                            snooze_time = timezone.timedelta(days=bounty.snooze_warnings_for_days)
+                            delta_now_vs_last_action = timezone.now() + snooze_time - last_action_by_user
                             last_heard_from_user_days = delta_now_vs_last_action.days
 
                             # decide action params
                             should_warn_user = last_heard_from_user_days >= num_days_back_to_warn
                             should_delete_interest = last_heard_from_user_days >= num_days_back_to_delete_interest
+                            should_ignore = last_heard_from_user_days >= num_days_back_to_ignore_bc_mods_got_it
 
                             print(f"- its been {last_heard_from_user_days} days since we heard from the user")
+                        if should_ignore:
+                            print(f'executing should_ignore for {interest.profile} / {bounty.github_url} ')
 
-                        if should_delete_interest:
+                        elif should_delete_interest:
                             print(f'executing should_delete_interest for {interest.profile} / {bounty.github_url} ')
-                            interest.delete()
+
+                            record_user_action_on_interest(interest, 'bounty_abandonment_escalation_to_mods', last_heard_from_user_days)
 
                             # commenting on the GH issue
-                            maybe_notify_user_removed_github(bounty, interest.profile.handle, last_heard_from_user_days, last_heard_from_user_days)
+                            maybe_notify_user_escalated_github(bounty, interest.profile.handle, last_heard_from_user_days)
+                            
                             # commenting in slack
-                            maybe_notify_bounty_user_removed_to_slack(bounty, interest.profile.handle)
+                            maybe_notify_bounty_user_escalated_to_slack(bounty, interest.profile.handle, last_heard_from_user_days)
+                            
                             # send email
                             bounty_startwork_expired(interest.profile.email, bounty, interest, last_heard_from_user_days)
 
                         elif should_warn_user:
+
+                            record_user_action_on_interest(interest, 'bounty_abandonment_warning', last_heard_from_user_days)
+
                             print(f'executing should_warn_user for {interest.profile} / {bounty.github_url} ')
+                            
                             # commenting on the GH issue
                             maybe_warn_user_removed_github(bounty, interest.profile.handle, last_heard_from_user_days)
+                            
                             # commenting in slack
                             maybe_notify_bounty_user_warned_removed_to_slack(bounty, interest.profile.handle, last_heard_from_user_days)
+                            
                             # send email
                             bounty_startwork_expire_warning(interest.profile.email, bounty, interest, last_heard_from_user_days)
 

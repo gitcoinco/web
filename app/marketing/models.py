@@ -26,6 +26,21 @@ from django.db import models
 from economy.models import SuperModel
 
 
+class Alumni(SuperModel):
+
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        on_delete=models.CASCADE,
+        related_name='alumni',
+        null=True)
+    organization = models.CharField(max_length=255, db_index=True, blank=True)
+    comments = models.TextField(max_length=5000, blank=True)
+    public = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.profile} - {self.organization} - {self.comments}"
+
+
 class EmailSubscriber(SuperModel):
 
     email = models.EmailField(max_length=255)
@@ -63,6 +78,20 @@ class Stat(SuperModel):
 
     def __str__(self):
         return f"{self.key}: {self.val}"
+
+    @property
+    def val_since_yesterday(self):
+        try:
+            return self.val - Stat.objects.filter(key=self.key, created_on__lt=self.created_on, created_on__hour=self.created_on.hour).order_by('-created_on').first().val
+        except Exception:
+            return 0
+
+    @property
+    def val_since_hour(self):
+        try:
+            return self.val - Stat.objects.filter(key=self.key, created_on__lt=self.created_on).order_by('-created_on').first().val
+        except Exception:
+            return 0
 
 
 class LeaderboardRank(SuperModel):
