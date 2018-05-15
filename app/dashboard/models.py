@@ -165,7 +165,7 @@ class Bounty(SuperModel):
     value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_in_eth = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_true = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
-    privacy_preferences = JSONField(default={})
+    privacy_preferences = JSONField(default={},blank=True)
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
