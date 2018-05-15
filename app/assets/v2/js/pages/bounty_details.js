@@ -683,7 +683,7 @@ var pull_bounty_from_api = function() {
       $('.nonefound').css('display', 'block');
     }
   }).fail(function() {
-    _alert({message: gettext('got an error. please try again, or contact support@gitcoin.co')}, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
     $('#primary_view').css('display', 'none');
   }).always(function() {
     $('.loading').css('display', 'none');

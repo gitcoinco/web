@@ -38,7 +38,7 @@ window.onload = function() {
               console.error('tip_inactive', result);
               var error = 'This tip is no longer active  Please contact the sender or reach out for help on the Gitcoin slack.';
 
-              _alert({message: error}, 'error');
+              _alert({ message: gettext(error) }, 'error');
               mixpanel.track('Tip Receive Error', {step: 'transferdetails2', error: error});
               return;
             }
@@ -97,16 +97,16 @@ window.onload = function() {
     var forwarding_address = $('forwarding_address').value.trim();
 
     if (!forwarding_address || forwarding_address == '0x0') {
-      _alert({message: 'Not a valid forwarding address.'}, 'warning');
+      _alert({ message: gettext('Not a valid forwarding address.') }, 'warning');
       return;
     }
 
     if (!_idx || _idx == '0x0') {
-      _alert({message: 'Invalid Link.  Please check your link and try again'}, 'warning');
+      _alert({ message: gettext('Invalid Link.  Please check your link and try again') }, 'warning');
       return;
     }
     if (!private_key) {
-      _alert({message: 'Invalid Link.  Please check your link and try again'}, 'warning');
+      _alert({ message: gettext('Invalid Link.  Please check your link and try again') }, 'warning');
       return;
     }
     $('send_eth').innerHTML = "<img src='/static/yge/images/loading_v2.gif' style='max-width: 70px; max-height: 70px;'><br><h4>Submitting to the blockchain..</h4>";
@@ -115,7 +115,7 @@ window.onload = function() {
     var callback = function(error, result) {
       if (error) {
         console.log(error);
-        _alert({message: 'got an error :('}, 'error');
+        _alert({ message: gettext('got an error :(') }, 'error');
         mixpanel.track('Tip Receive Error', {step: 'callback', error: error});
         unloading_button(jQuery('#receive'));
       } else {
@@ -150,7 +150,7 @@ window.onload = function() {
         var balance = result.toNumber();
 
         if (balance == 0) {
-          _alert({message: 'You must wait until the senders transaction confirms.'}, 'warning');
+          _alert({ message: gettext('You must wait until the senders transaction confirms.') }, 'warning');
           return;
         }
 
