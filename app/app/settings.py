@@ -188,7 +188,13 @@ LOCALE_PATHS = (
 
 LANGUAGES = [
     ('en', _('English')),
+    ('es', _('Spanish')),
     ('de', _('German')),
+    ('hi', _('Hindi')),
+    ('it', _('Italian')),
+    ('ko', _('Korean')),
+    ('po', _('Polish')),
+    ('zh', _('Chinese')),
 ]
 
 if not ENV in ['local', 'test']:

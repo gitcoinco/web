@@ -16,198 +16,188 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: assets/v2/js/amounts.js:11
 msgid "Approx: "
-msgstr "Ca."
+msgstr "约："
 
 #: assets/v2/js/amounts.js:13 assets/v2/js/amounts.js:72
 msgid "Approx: Unknown amount"
-msgstr "Ungefähr: Unbekannte Menge"
+msgstr "约：未知数量"
 
 #: assets/v2/js/amounts.js:43
 msgid "Incorrect amount"
-msgstr "Falscher Betrag"
+msgstr "数量不正确"
 
 #: assets/v2/js/pages/bounty_details.js:79
 msgid "Issue"
-msgstr "Problem"
+msgstr "问题"
 
 #: assets/v2/js/pages/bounty_details.js:80
 msgid "Issue Funding Info"
-msgstr "Ausgaben-Info ausgeben"
+msgstr "发行资金信息"
 
 #: assets/v2/js/pages/bounty_details.js:81
 msgid "Funder"
-msgstr "Geldgeber"
+msgstr "出资者"
 
 #: assets/v2/js/pages/bounty_details.js:82
 msgid "Submitter"
-msgstr "Übermittler"
+msgstr "提交"
 
 #: assets/v2/js/pages/bounty_details.js:83
 msgid "Meta"
-msgstr "Meta"
+msgstr "元"
 
 #: assets/v2/js/pages/bounty_details.js:103
 msgid "OPEN ISSUE"
-msgstr "OFFENES THEMA"
+msgstr "开放问题"
 
 #: assets/v2/js/pages/bounty_details.js:106
 msgid "work started"
-msgstr "die Arbeit begann"
+msgstr "工作开始了"
 
 #: assets/v2/js/pages/bounty_details.js:109
 msgid "work submitted"
-msgstr "Arbeit eingereicht"
+msgstr "已提交工作"
 
 #: assets/v2/js/pages/bounty_details.js:112
 msgid "done"
-msgstr "erledigt"
+msgstr "DONE"
 
 #: assets/v2/js/pages/bounty_details.js:115
 msgid "cancelled"
-msgstr "abgebrochen"
+msgstr "取消"
 
 #: assets/v2/js/pages/bounty_details.js:411
 msgid "Are you sure you want to remove your interest?"
-msgstr "Sind Sie sicher, dass Sie Ihr Interesse löschen möchten?"
+msgstr "你确定要删除你的兴趣吗？"
 
 #: assets/v2/js/pages/bounty_details.js:437
 msgid "Please provide an action plan for this ticket."
-msgstr "Bitte geben Sie einen Aktionsplan für dieses Ticket an."
+msgstr "请提供此门票的行动计划。"
 
 #: assets/v2/js/pages/bounty_details.js:442
 msgid "You must agree to the precedence clause."
-msgstr "Sie müssen der Vorrangklausel zustimmen."
+msgstr "您必须同意优先条款。"
 
 #: assets/v2/js/pages/bounty_details.js:446
 msgid "You must agree to keep the funder updated on your progress."
-msgstr "Sie müssen zustimmen, den Geldgeber auf dem Laufenden zu halten."
+msgstr "您必须同意让出资者更新您的进度。"
 
 #: assets/v2/js/pages/bounty_details.js:451
 #: assets/v2/js/pages/bounty_details.js:561
 msgid "Stop Work"
-msgstr "Hör auf zu arbeiten"
+msgstr "停止工作"
 
 #: assets/v2/js/pages/bounty_details.js:476
 msgid "Funded Issue Details: "
-msgstr "Fundierte Issue Details:"
+msgstr "资助的问题详情："
 
 #: assets/v2/js/pages/bounty_details.js:546
 msgid "Submit Work"
-msgstr "Arbeit einreichen"
+msgstr "提交工作"
 
 #: assets/v2/js/pages/bounty_details.js:548
 msgid "Submit work for the funder to review"
-msgstr "Reichen Sie Arbeit ein, damit der Geldgeber sie überprüfen kann"
+msgstr "提交工作供资助者审查"
 
 #: assets/v2/js/pages/bounty_details.js:561
 msgid "Start Work"
-msgstr "Fang an zu arbeiten"
+msgstr "开始工作"
 
 #: assets/v2/js/pages/bounty_details.js:563
 msgid "Notify the funder that you will not be working on this project"
-msgstr ""
-"Benachrichtigen Sie den Geldgeber, dass Sie nicht an diesem Projekt arbeiten"
-" werden"
+msgstr "通知资助者你不会在这个项目上工作"
 
 #: assets/v2/js/pages/bounty_details.js:563
 msgid "Notify the funder that you would like to take on this project"
-msgstr ""
-"Benachrichtigen Sie den Geldgeber, dass Sie an diesem Projekt teilnehmen "
-"möchten"
+msgstr "通知你想要参与这个项目的资助者"
 
 #: assets/v2/js/pages/bounty_details.js:576
 msgid "Cancel Bounty"
-msgstr "Kopfgeld stornieren"
+msgstr "取消赏金"
 
 #: assets/v2/js/pages/bounty_details.js:578
 msgid "Cancel bounty and reclaim funds for this issue"
-msgstr ""
-"Stornieren Sie das Kopfgeld und fordern Sie Gelder für dieses Problem zurück"
+msgstr "取消赏金并为此问题回收资金"
 
 #: assets/v2/js/pages/bounty_details.js:591
 msgid "Accept Submission"
-msgstr "Akzeptieren Sie die Einreichung"
+msgstr "接受提交"
 
 #: assets/v2/js/pages/bounty_details.js:592
 msgid "This will payout the bounty to the submitter."
-msgstr "Dies wird das Kopfgeld an den Übergeber auszahlen."
+msgstr "这将支付提交者的赏金。"
 
 #: assets/v2/js/pages/bounty_details.js:605
 msgid "Add Contribution"
-msgstr "Beitrag hinzufügen"
+msgstr "添加贡献"
 
 #: assets/v2/js/pages/bounty_details.js:607
 msgid "Increase the funding for this issue"
-msgstr "Erhöhen Sie die Finanzierung für dieses Problem"
+msgstr "增加这个问题的资金"
 
 #: assets/v2/js/pages/bounty_details.js:620
 #: assets/v2/js/pages/bounty_details.js:627
 msgid "View issue details and comments on Github"
-msgstr "Sehen Sie sich die Problemdetails und Kommentare zu Github an"
+msgstr "在Github上查看问题的详细信息和评论"
 
 #: assets/v2/js/pages/bounty_details.js:625
 msgid "View On Github"
-msgstr "Auf Github ansehen"
+msgstr "在Github上查看"
 
 #: assets/v2/js/pages/bounty_details.js:686
 msgid "got an error. please try again, or contact support@gitcoin.co"
-msgstr ""
-"habe einen Fehler bekommen. Bitte versuchen Sie es erneut oder wenden Sie "
-"sich an support@gitcoin.co"
+msgstr "出错了。请重试，或联系support@gitcoin.co"
 
 #: assets/v2/js/pages/bounty_details.js:707
 msgid "Work Accepted"
-msgstr "Arbeit akzeptiert"
+msgstr "接受工作"
 
 #: assets/v2/js/pages/bounty_details.js:714
 msgid "Work Submitted"
-msgstr "Arbeit eingereicht"
+msgstr "作品已提交"
 
 #: assets/v2/js/pages/bounty_details.js:727
 msgid "Work Started"
-msgstr "Arbeit begonnen"
+msgstr "开始工作"
 
 #: assets/v2/js/pages/bounty_details.js:740
 msgid "There's no activity yet!"
-msgstr "Es gibt noch keine Aktivitäten!"
+msgstr "还没有活动！"
 
 #: assets/v2/js/pages/dashboard.js:322
 msgid "No Results"
-msgstr "Keine Ergebnisse"
+msgstr "没有结果"
 
 #: assets/v2/js/pages/dashboard.js:326
 msgid " Matching Result"
-msgstr "Übereinstimmendes Ergebnis"
+msgstr "匹配结果"
 
 #: assets/v2/js/pages/dashboard.js:330
 msgid " Matching Results"
-msgstr "Passende Ergebnisse"
+msgstr "匹配结果"
 
 #: assets/v2/js/pages/dashboard.js:707
 msgid "Please enter a valid email address."
-msgstr "Bitte geben Sie eine gültige E-Mail-Adresse ein."
+msgstr "请输入有效的电子邮件地址。"
 
 #: assets/v2/js/pages/dashboard.js:718
 msgid "You're in! Keep an eye on your inbox for the next funding listing."
-msgstr ""
-"Du bist in! Behalten Sie Ihren Posteingang für die nächste "
-"Finanzierungsliste im Auge."
+msgstr "你在！留意下一个资金列表的收件箱。"
 
 #: assets/v2/js/pages/faucet_form.js:31
 msgid "We could not validate that input as an email address"
-msgstr "Wir konnten diese Eingabe nicht als E-Mail-Adresse validieren"
+msgstr "我们无法将该输入验证为电子邮件地址"
 
 #: assets/v2/js/pages/faucet_form.js:59
 msgid "Please make sure to fill out all fields."
-msgstr "Bitte füllen Sie alle Felder aus."
+msgstr "请确保填写所有字段。"
 
 #: assets/v2/js/pages/faucet_form.js:79
 msgid "Got an unexpected error"
-msgstr "Ich habe einen unerwarteten Fehler erhalten"
+msgstr "有一个意外的错误"
 
 #: assets/v2/js/pages/fulfill_bounty.js:31
 #: assets/v2/js/pages/increase_bounty.js:27
@@ -216,131 +206,117 @@ msgstr "Ich habe einen unerwarteten Fehler erhalten"
 msgid ""
 "You are on an unsupported network.  Please change your network to a "
 "supported network."
-msgstr ""
-"Sie befinden sich in einem nicht unterstützten Netzwerk. Bitte ändern Sie "
-"Ihr Netzwerk in ein unterstütztes Netzwerk."
+msgstr "您位于不受支持的网络上。请将您的网络更改为支持的网络。"
 
 #: assets/v2/js/pages/fulfill_bounty.js:111
 msgid "Could not get bounty details."
-msgstr "Konnte keine Kopfgelddetails erhalten."
+msgstr "无法获得赏金细节。"
 
 #: assets/v2/js/pages/fulfill_bounty.js:127
 msgid "Fulfillment submitted to web3."
-msgstr "Fulfillment an web3 übermittelt."
+msgstr "履行提交给web3。"
 
 #: assets/v2/js/pages/increase_bounty.js:61
 msgid "Please enter a valid github issue URL."
-msgstr "Bitte geben Sie eine gültige github-Ausgabe-URL ein."
+msgstr "请输入有效的github问题URL。"
 
 #: assets/v2/js/pages/increase_bounty.js:97
 #: assets/v2/js/pages/new_bounty.js:252 assets/v2/js/pages/new_bounty.js:278
 #: assets/v2/js/pages/new_bounty.js:342
 msgid "There was an error.  Please try again or contact support."
-msgstr ""
-"Es gab einen Fehler. Bitte versuchen Sie es erneut oder wenden Sie sich an "
-"den Support."
+msgstr "有一个错误。请重试或联系支持。"
 
 #: assets/v2/js/pages/increase_bounty.js:109
 msgid "Submission sent to web3."
-msgstr "Einreichung an web3 gesendet."
+msgstr "提交给web3。"
 
 #: assets/v2/js/pages/increase_bounty.js:124
 msgid "No active funded issue found at this address on "
-msgstr "Kein aktiv finanziertes Problem gefunden unter dieser Adresse auf"
+msgstr "没有在这个地址找到有效的资金问题"
 
 #: assets/v2/js/pages/increase_bounty.js:127
 msgid ""
 "Only the address that submitted this funded issue may increase the payout."
-msgstr ""
-"Nur die Adresse, die dieses finanzierte Problem eingereicht hat, kann die "
-"Auszahlung erhöhen."
+msgstr "只有提交此资助问题的地址可能会增加支出。"
 
 #: assets/v2/js/pages/kill_bounty.js:50
 #: assets/v2/js/pages/process_bounty.js:110
 msgid "Could not get bounty details"
-msgstr "Konnte keine Kopfgelddetails erhalten"
+msgstr "无法获得赏金细节"
 
 #: assets/v2/js/pages/kill_bounty.js:59
 #: assets/v2/js/pages/process_bounty.js:118
 msgid "No active bounty found for this Github URL on "
-msgstr "Kein aktives Bounty für diese Github-URL gefunden"
+msgstr "在此Github网址上找不到有效的赏金"
 
 #: assets/v2/js/pages/kill_bounty.js:76
 msgid ""
 "No active funded issue found at this address.  Are you sure this is an "
 "active funded issue?"
-msgstr ""
-"Unter dieser Adresse wurde kein aktiv finanziertes Problem gefunden. Sind "
-"Sie sicher, dass dies ein aktiv finanziertes Thema ist?"
+msgstr "在此地址找不到有效的资金问题。你确定这是一个积极的资助问题吗？"
 
 #: assets/v2/js/pages/kill_bounty.js:80
 msgid "Only the address that submitted this funded issue may kill the bounty."
-msgstr ""
-"Nur die Adresse, die dieses finanzierte Problem eingereicht hat, kann das "
-"Kopfgeld töten."
+msgstr "只有提交此资助问题的地址才能杀死赏金。"
 
 #: assets/v2/js/pages/kill_bounty.js:99
 msgid "Kill bounty submitted to web3."
-msgstr "Töte Kopfgeld, das an web3 gesendet wurde."
+msgstr "杀死赏金提交给web3。"
 
 #: assets/v2/js/pages/kill_bounty.js:112
 #: assets/v2/js/pages/process_bounty.js:166
 msgid "There was an error"
-msgstr "Es gab einen Fehler"
+msgstr "有一个错误"
 
 #: assets/v2/js/pages/onboard.js:21
 msgid "Done"
-msgstr "Erledigt"
+msgstr "完成"
 
 #: assets/v2/js/pages/onboard.js:28
 msgid "Next"
-msgstr "Nächster"
+msgstr "下一个"
 
 #: assets/v2/js/pages/onboard.js:51
 msgid "Install Metamask"
-msgstr "Installieren Sie Metamask"
+msgstr "安装Metamask"
 
 #: assets/v2/js/pages/onboard.js:60
 msgid "Unlock Metamask"
-msgstr "Schalte Metamask frei"
+msgstr "解锁Metamask"
 
 #: assets/v2/js/pages/process_bounty.js:20
 msgid "Could not get fulfillment details"
-msgstr "Ausführungsdetails konnten nicht abgerufen werden"
+msgstr "无法获得履行细节"
 
 #: assets/v2/js/pages/process_bounty.js:28
 msgid "No bounty fulfillments found for this Github URL."
-msgstr "Keine Bounty-Erfüllungen für diese Github-URL gefunden."
+msgstr "没有为此Github网址找到赏金实现。"
 
 #: assets/v2/js/pages/process_bounty.js:92
 msgid "Please enter a issue URL."
-msgstr "Bitte geben Sie eine Ausgabe-URL ein."
+msgstr "请输入问题网址。"
 
 #: assets/v2/js/pages/process_bounty.js:96
 msgid "Please enter a fulfillment Id."
-msgstr "Bitte geben Sie eine Erfüllungs-ID ein."
+msgstr "请输入履行ID。"
 
 #: assets/v2/js/pages/process_bounty.js:133
 msgid ""
 "No active funding found at this address.  Are you sure this is an active "
 "funded issue?"
-msgstr ""
-"Unter dieser Adresse wurde keine aktive Finanzierung gefunden. Sind Sie "
-"sicher, dass dies ein aktiv finanziertes Thema ist?"
+msgstr "在此地址找不到有效的资金。你确定这是一个积极的资助问题吗？"
 
 #: assets/v2/js/pages/process_bounty.js:135
 msgid "No claimee found for this bounty."
-msgstr "Kein claimee fand für dieses Kopfgeld."
+msgstr "没有找到这种赏金的claimee。"
 
 #: assets/v2/js/pages/process_bounty.js:137
 msgid "You can only process a funded issue if you submitted it initially."
-msgstr ""
-"Sie können ein finanziertes Problem nur verarbeiten, wenn Sie es "
-"ursprünglich eingereicht haben."
+msgstr "如果您最初提交资金，则只能处理资金问题。"
 
 #: assets/v2/js/pages/process_bounty.js:156
 msgid "Submitted transaction to web3."
-msgstr "Eingereichte Transaktion an web3."
+msgstr "将交易提交给web3。"
 
 #: assets/v2/js/waiting_room_entertainment.js:4
 msgid ""
@@ -348,11 +324,7 @@ msgid ""
 " a number of software ecosystems. It has become an alternative to commercial"
 " software in various areas and is already included in many commercial "
 "software products."
-msgstr ""
-"Open-Source-Software ist zu einem relevanten Teil der Softwareindustrie und "
-"einer Reihe von Software-Ökosystemen geworden. Es ist eine Alternative zu "
-"kommerzieller Software in verschiedenen Bereichen geworden und ist bereits "
-"in vielen kommerziellen Softwareprodukten enthalten."
+msgstr "开源软件已成为软件行业和许多软件生态系统的相关部分。它已成为商业软件在各个领域的替代品，并已包含在许多商业软件产品中。"
 
 #: assets/v2/js/waiting_room_entertainment.js:5
 msgid ""
@@ -360,11 +332,7 @@ msgid ""
 "existing software to create their software products. Therefore, it can be a "
 "catalyst for new software developments and the creation of new software "
 "companies."
-msgstr ""
-"OSS kann die Entwicklung neuer Software unterstützen, da Unternehmen "
-"bestehende Software zur Erstellung ihrer Softwareprodukte verwenden können. "
-"Daher kann es ein Katalysator für neue Softwareentwicklungen und die "
-"Schaffung neuer Softwareunternehmen sein."
+msgstr "OSS可以支持新软件的开发，因为公司可以使用现有软件来创建他们的软件产品。因此，它可能成为新软件开发和创建新软件公司的催化剂。"
 
 #: assets/v2/js/waiting_room_entertainment.js:6
 msgid ""
@@ -373,11 +341,7 @@ msgid ""
 "replaces the standard middleware platform provided by a third party. It "
 "limits costs and, more importantly, dependency to some extent."
 msgstr ""
-"OSS kann ... als ein wichtiger Faktor bei der Wertschöpfung anderer Software"
-" angesehen werden, auch wenn es schwer zu quantifizieren ist. Heute ersetzt "
-"OSS häufig die Standard-Middleware-Plattform, die von einer dritten Partei "
-"bereitgestellt wird. Es begrenzt die Kosten und vor allem die Abhängigkeit "
-"in gewissem Maße."
+"OSS可以被认为是其他软件价值创造的重要因素，即使难以量化。如今，OSS经常替代第三方提供的标准中间件平台。它在一定程度上限制了成本，更重要的是依赖。"
 
 #: assets/v2/js/waiting_room_entertainment.js:7
 msgid ""
@@ -387,32 +351,21 @@ msgid ""
 "can foster the development of new software products as well as the creation "
 "of new software vendors."
 msgstr ""
-"Softwareanbieter, die neue Produkte entwickeln, können Kosten sparen, wenn "
-"sie vorhandene Open-Source-Softwarekomponenten wiederverwenden, anstatt "
-"Software selbst zu entwickeln oder Softwarekomponenten zu kaufen. "
-"Infolgedessen kann Open-Source-Software die Entwicklung neuer "
-"Softwareprodukte sowie die Schaffung neuer Softwareanbieter fördern."
+"构建新产品的软件供应商如果重复使用现有的开源软件组件，而不是自行开发软件或购买软件组件，则可以节省成本。因此，开源软件可以促进新软件产品的开发以及创建新的软件供应商。"
 
 #: assets/v2/js/waiting_room_entertainment.js:8
 msgid ""
 "OSS allows companies to incorporate IT in their value chain in an easy way. "
 "Instead of buying commercial software that may involve the risk of a vendor "
 "lock-in, they just have to share value with the OSS community."
-msgstr ""
-"OSS ermöglicht Unternehmen die einfache Integration von IT in ihre "
-"Wertschöpfungskette. Anstatt kommerzielle Software zu kaufen, die das Risiko"
-" einer Verkäuferbindung mit sich bringen kann, müssen sie nur den Wert mit "
-"der OSS-Community teilen."
+msgstr "OSS允许公司以简单的方式将IT融入价值链。与其购买可能涉及供应商锁定风险的商业软件，他们只需与OSS社区分享价值。"
 
 #: assets/v2/js/waiting_room_entertainment.js:9
 msgid ""
 "The basic principle of open source software development is that a community "
 "of software experts contributes time and effort for coding, reviewing and "
 "testing to publicly available source code."
-msgstr ""
-"Das Grundprinzip der Open-Source-Softwareentwicklung ist, dass eine "
-"Gemeinschaft von Softwareexperten Zeit und Aufwand für die Codierung, "
-"Überprüfung und Prüfung von öffentlich verfügbarem Quellcode einbringt."
+msgstr "开源软件开发的基本原则是，一个软件专家社区贡献时间和精力来编写，审查和测试公开可用的源代码。"
 
 #: assets/v2/js/waiting_room_entertainment.js:10
 msgid ""
@@ -420,11 +373,7 @@ msgid ""
 " participants will have the upper hand. OSS can create standards that are "
 "very important for the development of emerging technologies and that help "
 "lower the total cost of ownership."
-msgstr ""
-"Open Source kann ... ein wichtiger Erfolgsfaktor für Co-Innovation sein, da "
-"keiner der Teilnehmer die Oberhand behält. OSS kann Standards erstellen, die"
-" für die Entwicklung aufkommender Technologien sehr wichtig sind und dazu "
-"beitragen, die Gesamtbetriebskosten zu senken."
+msgstr "开源可以成为共同创新的关键成功因素，因为没有一个参与者会占上风。 OSS可以创建对新兴技术发展非常重要的标准，并有助于降低总体拥有成本。"
 
 #: assets/v2/js/waiting_room_entertainment.js:11
 msgid ""
@@ -434,11 +383,7 @@ msgid ""
 "modules: rather than developing from scratch, existing software must become "
 "more easily retrievable, interoperable and usable."
 msgstr ""
-"Zukünftige Software muss leicht aus Komponenten und frei verfügbarer "
-"Software entwickelt werden und ihre Wartung muss von einer breiten Community"
-" unterstützt werden. Dies beinhaltet die Wiederverwendung und "
-"Weiterentwicklung bestehender Software und Module: Statt neu zu entwickeln, "
-"muss vorhandene Software leichter abrufbar, interoperabel und nutzbar sein."
+"未来的软件必须易于从组件和免费软件开发，其维护必须得到广泛社区的支持。这包括现有软件和模块的重用和演变：不是从头开始，现有软件必须变得更容易检索，互用和可用。"
 
 #: assets/v2/js/waiting_room_entertainment.js:12
 msgid ""
@@ -447,10 +392,8 @@ msgid ""
 "develop software in a collaborative way. Many enabling technologies for SMAC"
 " have strong OSS roots."
 msgstr ""
-"OSS ist auch ein starker Befürworter von Standards und Interoperabilität. "
-"Diese Offenheit verringert das Risiko einer Verkäuferbindung. OSS basiert "
-"auf Communities, die gemeinsam Software entwickeln. Viele Basistechnologien "
-"für SMAC haben starke OSS-Wurzeln."
+"OSS也是标准和互操作性的坚定推动者。这种开放性降低了供应商锁定的风险。 OSS基于以协作方式开发软件的社区。 "
+"SMAC的许多支持技术具有强大的OSS根源。"
 
 #: assets/v2/js/waiting_room_entertainment.js:13
 msgid ""
@@ -460,23 +403,14 @@ msgid ""
 "or professional editions that are based on the open source software. "
 "Examples are the providers of the Linux distributions RedHat and Suse."
 msgstr ""
-"Einige kommerzielle Anbieter bieten Open-Source-Software an, um eine große "
-"Benutzergemeinschaft zu schaffen. Sie generieren Einnahmen aus Abonnements "
-"für Support und Updates und / oder Professional Services sowie aus dem "
-"Verkauf von Erweiterungen oder professionellen Editionen, die auf der Open-"
-"Source-Software basieren. Beispiele sind die Anbieter der Linux-"
-"Distributionen RedHat und Suse."
+"一些商业供应商提供开源软件以创建大型用户社区。他们通过订阅支持和更新和/或专业服务以及销售基于开源软件的扩展或专业版本来创收。例子是Linux发行版RedHat和Suse的提供者。"
 
 #: assets/v2/js/waiting_room_entertainment.js:14
 msgid ""
 "Major commercial software vendors such as IBM and HP have made open source "
 "technology a part of their business by integrating it into their own "
 "products and by providing professional services for open source software."
-msgstr ""
-"Große kommerzielle Softwareanbieter wie IBM und HP haben die Open-Source-"
-"Technologie zu einem Teil ihres Geschäfts gemacht, indem sie es in ihre "
-"eigenen Produkte integriert und professionelle Dienstleistungen für Open-"
-"Source-Software bereitgestellt haben."
+msgstr "IBM和惠普等主要商业软件厂商已经将开源技术作为其业务的一部分，将其集成到自己的产品中，并为开源软件提供专业服务。"
 
 #: assets/v2/js/waiting_room_entertainment.js:15
 msgid ""
@@ -487,12 +421,7 @@ msgid ""
 "hand, open source software that is free of charge can be an alternative to "
 "commercial application software."
 msgstr ""
-"Viele Geschäftsanwendungen enthalten bereits Open-Source-Software und dies "
-"wird zunehmen. Einige Anbieter können einen Teil ihrer Produkte an eine "
-"Open-Source-Stiftung spenden, um eine größere Nutzergemeinschaft zu "
-"schaffen, die möglicherweise Käufer von kommerziellen Add-Ons oder Diensten "
-"wird. Auf der anderen Seite kann Open-Source-Software, die kostenlos ist, "
-"eine Alternative zu kommerzieller Anwendungssoftware sein."
+"许多商业应用程序已经包含开源软件，而且这种情况正在增加。一些供应商可能会将其部分产品捐赠给开源基金会，以创建更大的用户社区，从而有可能成为商业附加组件或服务的买家。另一方面，免费的开源软件可以替代商业应用软件。"
 
 #: assets/v2/js/waiting_room_entertainment.js:16
 msgid ""
@@ -503,22 +432,15 @@ msgid ""
 "benefits of open source are reduced project failure and lower cost of code "
 "maintenance."
 msgstr ""
-"Laut Carlo Daffara, Forscher auf dem Gebiet der IT-Ökonomie, der zu mehreren"
-" Forschungsprojekten der Europäischen Kommission mit Open Source beigetragen"
-" hat, spart die europäische Wirtschaft jährlich rund 114 Milliarden Euro "
-"durch den Einsatz von Open-Source-Softwarelösungen. Zu den weiteren "
-"Vorteilen von Open Source gehören neben direkten Kosteneinsparungen auch "
-"weniger Projektfehler und geringere Kosten für die Codewartung."
+"据IT经济学领域的研究人员Carlo "
+"Daffara表示，欧洲经济委员会的一些研究项目涉及开源，欧洲经济通过使用开源软件解决方案每年可节省约114亿欧元。除了直接节省成本之外，开源软件的其他优势还可以减少项目失败并降低代码维护成本。"
 
 #: assets/v2/js/waiting_room_entertainment.js:17
 msgid ""
 "Quoting several sources, [Carlo Daffara, researcher in IT economics] "
 "estimates that about 35 per cent of the software  used in the past five "
 "years was directly or indirectly derived from open source."
-msgstr ""
-"Nach verschiedenen Quellen [Carlo Daffara, Forscher in IT-Ökonomie] schätzt "
-"man, dass etwa 35 Prozent der Software, die in den letzten fünf Jahren "
-"genutzt wurde, direkt oder indirekt aus Open Source stammt."
+msgstr "引用数个资料来源，[IT经济学研究员Carlo Daffara]估计，过去五年中使用的软件中约有35％直接或间接源自开源。"
 
 #: assets/v2/js/waiting_room_entertainment.js:18
 msgid ""
@@ -526,11 +448,7 @@ msgid ""
 "manufacturer will hardly outsource the in-house software development for its"
 " autonomous driving technology, as this is highly confidential and highly "
 "relevant for its competitiveness."
-msgstr ""
-"Unternehmen lagern weniger wichtige Aktivitäten aus. Beispielsweise wird ein"
-" Automobilhersteller die hausinterne Softwareentwicklung für seine autonome "
-"Fahrtechnologie kaum auslagern, da diese streng vertraulich und für ihre "
-"Wettbewerbsfähigkeit sehr relevant ist."
+msgstr "公司外包不太重要的活动。例如，汽车制造商几乎不会将自主驾驶技术的内部软件开发外包出去，因为这是高度机密的，并且与其竞争力高度相关。"
 
 #: assets/v2/js/waiting_room_entertainment.js:19
 msgid ""
@@ -538,21 +456,14 @@ msgid ""
 "and more companies take advantage of this. ... Two areas of potential "
 "outsourcing in the area of in-house software development are testing and "
 "maintenance."
-msgstr ""
-"Outsourcing kann eine Alternative zur hausinternen Softwareentwicklung sein "
-"und immer mehr Unternehmen nutzen dies. ... Zwei Bereiche des potenziellen "
-"Outsourcing im Bereich der hausinternen Softwareentwicklung sind Test und "
-"Wartung."
+msgstr "外包可以替代内部软件开发，越来越多的公司利用这一点。 ......内部软件开发领域的两个潜在外包领域是测试和维护。"
 
 #: assets/v2/js/waiting_room_entertainment.js:20
 msgid ""
 "As demand for individual software development increases, companies evaluate "
 "ways to outsource such activities due to internal skill shortages and cost "
 "considerations."
-msgstr ""
-"Da die Nachfrage nach individueller Softwareentwicklung steigt, prüfen "
-"Unternehmen Möglichkeiten, solche Aktivitäten aufgrund interner "
-"Fachkräftemangel und Kostenüberlegungen auszulagern."
+msgstr "随着个人软件开发需求的增加，由于内部技术短缺和成本考虑，公司会评估外包此类活动的方式。"
 
 #: assets/v2/js/waiting_room_entertainment.js:22
 msgid ""
@@ -561,10 +472,7 @@ msgid ""
 " and deliver elements of response as to whether the time for a new "
 "entrepreneurial age has come."
 msgstr ""
-"Victor Hugo hat einmal bemerkt: \"Du kannst einer Invasionsarmee "
-"widerstehen; Sie können einer Idee nicht widerstehen, deren Zeit gekommen "
-"ist. Das Drucker Forum wird die Frage stellen und Elemente der Antwort "
-"liefern, ob die Zeit für ein neues unternehmerisches Zeitalter gekommen ist."
+"维克多雨果曾经说过：&#39;你可以抵抗入侵的军队;你无法抗拒时间到来的想法。“德鲁克论坛将回答这个问题，并提供回应的内容，以确定新创业年龄的时间是否已经到来。"
 
 #: assets/v2/js/waiting_room_entertainment.js:23
 msgid ""
@@ -574,11 +482,7 @@ msgid ""
 "creation and sharing and by enabling new forms of continuous learning, all "
 "on a global canvas."
 msgstr ""
-"Die Digitaltechnologie hat eine beschleunigende Rolle in diesem Wandel [zu "
-"einer unternehmerischen Gesellschaft] gespielt, indem sie Eintrittsbarrieren"
-" in vielen Branchen dramatisch gesenkt und neue Werkzeuge für die Verwaltung"
-" von Wissenserzeugung und -austausch sowie für neue Formen des "
-"kontinuierlichen Lernens auf globaler Ebene bereitgestellt hat ."
+"数字技术在向[企业家社会]转型过程中发挥了越来越重要的作用，大幅度降低了许多行业的进入门槛，并提供了管理知识创造和分享的新工具，并通过实现新形式的持续学习，所有这些都在全球范围内进行。"
 
 #: assets/v2/js/waiting_room_entertainment.js:24
 msgid ""
@@ -588,12 +492,7 @@ msgid ""
 "that was once regarded as peripheral, perhaps even a bit suspect, has become"
 " cool, celebrated by politicians and embraced by the new generations."
 msgstr ""
-"Während der Weg zu einer unternehmerischen Gesellschaft keineswegs eine "
-"geradlinige Entwicklung zu einem klar definierten Ziel ist, haben breite "
-"kulturelle Veränderungen den Unternehmergeist in den Mainstream gebracht. "
-"Eine Aktivität, die einst als peripher, vielleicht sogar als etwas "
-"verdächtig galt, ist cool geworden, von Politikern gefeiert und von den "
-"neuen Generationen umarmt."
+"尽管走向创业型社会的途径决不是直接进入明确定位的目的地，但广泛的文化变革已将创业主义带入了主流。曾经被视为外围的活动，也许甚至有点可疑，已经变得很酷，被政界人士庆祝并被新一代所拥抱。"
 
 #: assets/v2/js/waiting_room_entertainment.js:25
 msgid ""
@@ -601,21 +500,13 @@ msgid ""
 "transformation of the economic fabric of our society, as we see in the rapid"
 " proliferation of free agents in the form of contractors, freelancers and "
 "self-employed workers on on-demand platforms, for example."
-msgstr ""
-"Das Entstehen einer unternehmerischen Kultur bringt eine breitere "
-"Transformation des wirtschaftlichen Gefüges unserer Gesellschaft mit sich, "
-"wie wir an der raschen Verbreitung freier Agenten in Form von "
-"Auftragnehmern, Freiberuflern und selbständigen Erwerbstätigen auf "
-"Abrufplattformen, z Beispiel."
+msgstr "[T]企业家文化的出现意味着我们社会的经济结构将发生更广泛的转变，正如我们看到，自由职业者和自雇职业者在按需平台上的自由人员迅速扩散，例。"
 
 #: assets/v2/js/waiting_room_entertainment.js:26
 msgid ""
 "[I]n a world of rapid change frequent job and career moves, switches between"
 " employed and independent roles become the rule rather than the exception."
-msgstr ""
-"[I] In einer Welt des schnellen Wandels werden häufige Job- und "
-"Karriereschritte, Wechsel zwischen angestellten und unabhängigen Rollen, "
-"eher zur Regel als zur Ausnahme."
+msgstr "[我]在快速变化的世界中，频繁的工作和职业移动，在就业和独立角色之间转换成为规则而不是例外。"
 
 #: assets/v2/js/waiting_room_entertainment.js:27
 msgid ""
@@ -623,21 +514,12 @@ msgid ""
 "innovative potential of workers points in the same direction [as that of the"
 " entrepreneurial society] i.e. a new mindset of ownership, responsibility "
 "and autonomy."
-msgstr ""
-"In großen Organisationen weist ein erneuter Fokus auf die Freistellung des "
-"kreativen und innovativen Potenzials von Arbeitnehmern in die gleiche "
-"Richtung [wie die der unternehmerischen Gesellschaft] hin, d. H. Eine neue "
-"Denkweise von Eigenverantwortung, Verantwortung und Autonomie."
+msgstr "在大型组织中，重新关注释放工人的创造性和创新潜力，指向了与企业家社会相同的方向，即拥有所有权，责任和自主权的新思维。"
 
 #: assets/yge/redeem_ethos.js:23
-#, fuzzy
-#| msgid "Please enter a valid email address."
 msgid "Not a valid forwarding address"
-msgstr "Keine gültige Weiterleitungsadresse"
+msgstr "不是有效的转发地址"
 
 #: assets/yge/redeem_ethos.js:29
 msgid "Please enter your Twitter username"
-msgstr "Bitte geben Sie Ihren Twitter Benutzernamen ein"
-
-#~ msgid "Issue Explorer | Gitcoin"
-#~ msgstr "Problem Explorer | Gitcoin"
+msgstr "请输入你的Twitter用户名"

@@ -16,274 +16,251 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: app/settings.py:190
 msgid "English"
-msgstr "Englisch"
+msgstr "英语"
 
 #: app/settings.py:191
 msgid "Spanish"
-msgstr "Spanisch"
+msgstr "西班牙语"
 
 #: app/settings.py:192
 msgid "German"
-msgstr "Deutsche"
+msgstr "德语"
 
 #: app/settings.py:193
 msgid "Hindi"
-msgstr "Hindi"
+msgstr "印地语"
 
 #: app/settings.py:194
 msgid "Italian"
-msgstr "Italienisch"
+msgstr "意大利"
 
 #: app/settings.py:195
 msgid "Korean"
-msgstr "Koreanisch"
+msgstr "朝鲜的"
 
 #: app/settings.py:196
-#, fuzzy
-#| msgid "English"
 msgid "Polish"
-msgstr "Polieren"
+msgstr "抛光"
 
 #: app/settings.py:197
 msgid "Chinese"
-msgstr "Chinesisch"
+msgstr "中文"
 
 #: dashboard/models.py:134
 msgid "Whether the bounty is still open for fulfillments."
-msgstr "Ob das Kopfgeld noch offen ist für Erfüllungen."
+msgstr "赏金是否仍然可以兑现。"
 
 #: dashboard/models.py:139
 msgid "Whether this bounty is the most current revision one or not"
-msgstr "Ob dieses Kopfgeld die aktuellste Revision ist oder nicht"
+msgstr "这个奖金是否是最新的修订版本"
 
 #: dashboard/models.py:150
 msgid "Whether the bounty has been done"
-msgstr "Ob das Kopfgeld gemacht wurde"
+msgstr "赏金是否已经完成"
 
 #: dashboard/templates/addinterest.html:26
-#, fuzzy
-#| msgid "Who are you?  What is your interest in the whitepaper?"
 msgid "Great to see that you're interested in this project!"
-msgstr "Schön zu sehen, dass Sie an diesem Projekt interessiert sind!"
+msgstr "很高兴看到你对这个项目感兴趣！"
 
 #: dashboard/templates/addinterest.html:33
 msgid ""
 "Please provide an action plan and any initial questions you have for this "
 "ticket."
-msgstr ""
-"Bitte geben Sie einen Aktionsplan und alle anfänglichen Fragen zu diesem "
-"Ticket an."
+msgstr "请提供一份行动计划和您对此票的任何最初问题。"
 
 #: dashboard/templates/addinterest.html:35
 msgid "This will be reflected in a comment on the Github issue."
-msgstr "Dies wird sich in einem Kommentar zur Github-Frage widerspiegeln."
+msgstr "这将反映在对Github问题的评论中。"
 
 #: dashboard/templates/addinterest.html:45
 msgid ""
 "I understand that if anyone has started work on this ticket before me, they "
 "may have precedence."
-msgstr ""
-"Ich verstehe, dass wenn jemand mit diesem Ticket vor mir begonnen hat, es "
-"Vorrang hat."
+msgstr "我明白，如果任何人在我面前开始在这张票上工作，他们可能有优先权。"
 
 #: dashboard/templates/addinterest.html:56
 msgid "I agree to keep the funder informed of my progress every few days."
-msgstr ""
-"Ich bin damit einverstanden, den Geldgeber alle paar Tage über meine "
-"Fortschritte auf dem Laufenden zu halten."
+msgstr "我同意每隔几天向供资者通知我的进展情况。"
 
 #: dashboard/templates/addinterest.html:61
 #: retail/templates/shared/mailchimp.html:10
 msgid "Submit"
-msgstr "einreichen"
+msgstr "提交"
 
 #: dashboard/templates/addinterest.html:68
 msgid "Please login with Github to get started."
-msgstr "Bitte logge dich mit Github ein, um loszulegen."
+msgstr "请使用Github登录以开始使用。"
 
 #: dashboard/templates/addinterest.html:71
 msgid "Login With Github"
-msgstr "Mit Github einloggen"
+msgstr "用Github登录"
 
 #: dashboard/templates/bounty_details.html:21
 msgid "Back to Issue Explorer"
-msgstr "Zurück zum Themen-Explorer"
+msgstr "返回问题浏览器"
 
 #: dashboard/templates/bounty_details.html:28
 msgid "Your transaction has been posted to web3"
-msgstr "Ihre Transaktion wurde in web3 veröffentlicht"
+msgstr "您的交易已发布到web3"
 
 #: dashboard/templates/bounty_details.html:30
 msgid ""
 "Please wait a minute or two for web3 to sync\n"
 "            <a target=\"_blank\" href=\"javascript:void(0)\" id=\"transaction_url\">this transaction</a>."
 msgstr ""
-"Bitte warten Sie ein bis zwei Minuten, bis Web3 synchronisiert ist\n"
-"            <a target=\"_blank\" href=\"javascript:void(0)\" id=\"transaction_url\"> diese Transaktion </a>."
+"请等待一两分钟让web3同步\n"
+"            <a target=\"_blank\" href=\"javascript:void(0)\" id=\"transaction_url\">此次交易</a>。"
 
 #: dashboard/templates/bounty_details.html:34
 msgid ""
 "This page will automatically refresh as soon as the blockchain is updated."
-msgstr ""
-"Diese Seite wird automatisch aktualisiert, sobald die Blockchain "
-"aktualisiert wird."
+msgstr "区块链更新后，该页面将自动刷新。"
 
 #: dashboard/templates/bounty_details.html:35
 msgid "You may close the browser tab."
-msgstr "Sie können die Browser-Registerkarte schließen."
+msgstr "您可以关闭浏览器选项卡。"
 
 #: dashboard/templates/bounty_details.html:45
 msgid "No funded issue found."
-msgstr "Kein finanziertes Problem gefunden."
+msgstr "没有找到资金问题。"
 
 #: dashboard/templates/bounty_details.html:46
 #, python-format
 msgid "Check out the <a href=\"%(explorerurl)s\">Issue Explorer</a>"
-msgstr "Überprüfen Sie den <a href=\"%(explorerurl)s\"> Problem-Explorer </a>"
+msgstr "查看<a href=\"%(explorerurl)s\">问题资源管理器</a>"
 
 #: dashboard/templates/bounty_details.html:48
 msgid "Be the OSS Funding you wish to see in the world."
-msgstr "Seien Sie die OSS-Finanzierung, die Sie in der Welt sehen möchten."
+msgstr "成为您希望在世界上看到的OSS资金。"
 
 #: dashboard/templates/bounty_details.html:49
 #, python-format
 msgid ""
 " Looking to fund some work?  You can submit a new Funded Issue <a "
 "href=\"%(new_fundingurl)s\">here</a>."
-msgstr ""
-"Möchten Sie etwas Arbeit finanzieren? Sie können hier ein neues finanziertes"
-" Problem <a href=\"%(new_fundingurl)s\"> einreichen </a>."
+msgstr "想资助一些工作？您可以在<a href=\"%(new_fundingurl)s\">此处</a>提交新的资助问题。"
 
 #: dashboard/templates/bounty_details.html:77
 msgid "Time left"
-msgstr "Übrige Zeit"
+msgstr "剩下的时间"
 
 #: dashboard/templates/bounty_details.html:87
 msgid "Opened"
-msgstr "Geöffnet"
+msgstr "开业"
 
 #: dashboard/templates/bounty_details.html:91
 msgid "Accepted"
-msgstr "Akzeptiert"
+msgstr "公认"
 
 #: dashboard/templates/bounty_details.html:95
 #: dashboard/templates/onboard.html:154
 #: dashboard/templates/shared/sidebar_search.html:88
 #: dashboard/templates/submit_bounty.html:107
 msgid "Experience Level"
-msgstr "Erfahrungsstufe"
+msgstr "经验水平"
 
 #: dashboard/templates/bounty_details.html:99
 msgid "Issue Type"
-msgstr "Fehlertyp"
+msgstr "发行类型"
 
 #: dashboard/templates/bounty_details.html:131
 #: external_bounties/templates/external_bounties_show.html:76
 msgid "Description"
-msgstr "Beschreibung"
+msgstr "描述"
 
 #: dashboard/templates/bounty_details.html:138
 msgid "Contributors"
-msgstr "Mitwirkende"
+msgstr "贡献者"
 
 #: dashboard/templates/bounty_details.html:142
 #: dashboard/templates/shared/bounty_nav.html:31
 #: dashboard/templates/shared/sidebar_search.html:33
 #: dashboard/templates/shared/status_tooltip.html:30
 msgid "Work Started"
-msgstr "Arbeit begonnen"
+msgstr "开始工作"
 
 #: dashboard/templates/bounty_details.html:147
 #: dashboard/templates/shared/bounty_nav.html:39
 #: dashboard/templates/shared/sidebar_search.html:38
 #: dashboard/templates/shared/status_tooltip.html:36
 msgid "Work Submitted"
-msgstr "Arbeit eingereicht"
+msgstr "作品已提交"
 
 #: dashboard/templates/bounty_details.html:152
 msgid "Work Accepted"
-msgstr "Arbeit akzeptiert"
+msgstr "接受工作"
 
 #: dashboard/templates/bounty_details.html:158
 msgid "All Activity"
-msgstr "Alle Aktivitäten"
+msgstr "所有活动"
 
 #: dashboard/templates/bounty_details.html:162
 #: dashboard/templates/bounty_details.html:170
 #: dashboard/templates/profile_details.html:160
 msgid "Funder"
-msgstr "Geldgeber"
+msgstr "出资者"
 
 #: dashboard/templates/bounty_details.html:174
 #: dashboard/templates/bounty_details.html:249
 msgid "Email"
-msgstr "Email"
+msgstr "电子邮件"
 
 #: dashboard/templates/bounty_details.html:178
 msgid "Gitcoin Profile"
-msgstr "Gitcoin Profil"
+msgstr "Gitcoin Profile"
 
 #: dashboard/templates/bounty_details.html:243
 #: faucet/templates/faucet_form.html:76
 msgid "ETH Address"
-msgstr "ETH-Adresse"
+msgstr "ETH地址"
 
 #: dashboard/templates/bounty_details.html:255
 msgid "Submission Id"
-msgstr "Übermittlungs-ID"
+msgstr "提交ID"
 
 #: dashboard/templates/dashboard.html:36
-#, fuzzy
-#| msgid "Features of Gitcoin"
 msgid "Welcome to Gitcoin!"
-msgstr "Willkommen in Gitcoin!"
+msgstr "欢迎来到Gitcoin！"
 
 #: dashboard/templates/dashboard.html:37
 msgid "We've found bounties that match your interest and experience"
-msgstr ""
-"Wir haben Bounties gefunden, die zu deinem Interesse und deiner Erfahrung "
-"passen"
+msgstr "我们已经找到符合您的兴趣和经验的赏金"
 
 #: dashboard/templates/dashboard.html:38 retail/templates/help.html:84
 msgid "How it works"
-msgstr "Wie es funktioniert"
+msgstr "怎么运行的"
 
 #: dashboard/templates/dashboard.html:40
 msgid ""
 "Get Started with your first bounty ! Select on issue and click start work"
-msgstr ""
-"Beginne mit deinem ersten Kopfgeld! Wählen Sie das Problem aus und klicken "
-"Sie auf Start"
+msgstr "开始您的第一个赏金！选择问题并点击开始工作"
 
 #: dashboard/templates/dashboard.html:41
 msgid "Ready for review ? Click submit work"
-msgstr "Bereit zur Überprüfung? Klicken Sie auf Arbeit senden"
+msgstr "准备好审查？点击提交工作"
 
 #: dashboard/templates/dashboard.html:42
 msgid "Not able to deliver the work on time ? Click stop work"
-msgstr ""
-"Nicht in der Lage, die Arbeit pünktlich zu liefern? Klicken Sie auf Arbeit "
-"beenden"
+msgstr "无法按时交付工作？点击停止工作"
 
 #: dashboard/templates/dashboard.html:44
 msgid "Need more help ? Checkout the starting guide"
-msgstr "Benötigen Sie weitere Hilfe ? Überprüfen Sie den Start Guide"
+msgstr "需要更多帮助？检查出发指南"
 
 #: dashboard/templates/dashboard.html:46
 msgid "GOT IT !"
-msgstr "ICH HABS !"
+msgstr "得到它了 ！"
 
 #: dashboard/templates/dashboard.html:76
 msgid "No results found."
-msgstr "Keine Ergebnisse gefunden."
+msgstr "未找到结果。"
 
 #: dashboard/templates/dashboard.html:77
 msgid "Please try another query"
-msgstr "Bitte versuchen Sie eine andere Abfrage"
+msgstr "请尝试另一个查询"
 
 #: dashboard/templates/dashboard.html:78
 #: dashboard/templates/shared/no_metamask_error.html:32
@@ -295,27 +272,27 @@ msgstr "Bitte versuchen Sie eine andere Abfrage"
 #: retail/templates/getgitcoin.html:35 retail/templates/getgitcoin.html:54
 #: retail/templates/getgitcoin.html:61 retail/templates/getgitcoin.html:80
 msgid "or"
-msgstr "oder"
+msgstr "要么"
 
 #: dashboard/templates/dashboard.html:80
 msgid ""
 "<a href=\"#\" class=\"save_search\">save search</a>\n"
 "                to be notified when results do appear."
 msgstr ""
-"<a href=\"#\" class=\"save_search\"> Suche speichern </a>\n"
-"                benachrichtigt werden, wenn die Ergebnisse angezeigt werden."
+"<a href=\"#\" class=\"save_search\">保存搜索</a>\n"
+"                在结果确实出现时通知他们。"
 
 #: dashboard/templates/fulfill_bounty.html:41
 #: dashboard/templates/fulfill_bounty.html:69
 #: dashboard/templates/shared/bounty_nav.html:41 dashboard/views.py:579
 msgid "Submit Work"
-msgstr "Arbeit einreichen"
+msgstr "提交工作"
 
 #: dashboard/templates/fulfill_bounty.html:47
 #: dashboard/templates/kill_bounty.html:47
 #: dashboard/templates/submit_bounty.html:50
 msgid "Issue URL"
-msgstr "URL eingeben"
+msgstr "问题网址"
 
 #: dashboard/templates/fulfill_bounty.html:57
 #: dashboard/templates/kill_bounty.html:53
@@ -326,9 +303,8 @@ msgid ""
 "I have read, understand, and agree to, the <a href=\"%(termsurl)s\" "
 "target=\"_blank\" rel=\"noopener noreferrer\">Terms of Service</a>:"
 msgstr ""
-"Ich habe die <a href=\"%(termsurl)s\" target=\"_blank\" rel=\"noopener "
-"noreferrer\"> Nutzungsbedingungen </a> gelesen, verstanden und stimme ihnen "
-"zu:"
+"我已阅读，理解并同意<a href=\"%(termsurl)s\" target=\"_blank\" rel=\"noopener "
+"noreferrer\">服务条款</a>："
 
 #: dashboard/templates/fulfill_bounty.html:63
 #: dashboard/templates/submit_bounty.html:142
@@ -336,82 +312,71 @@ msgid ""
 "I understand that this information is being submitted to a public, "
 "immutable, blockchain.  No one, including Gitcoin Core, will be able to take"
 " my funds or change this information:"
-msgstr ""
-"Ich verstehe, dass diese Informationen einer öffentlichen, unveränderlichen "
-"Blockchain übermittelt werden. Niemand, einschließlich Gitcoin Core, wird in"
-" der Lage sein, mein Geld zu nehmen oder diese Informationen zu ändern:"
+msgstr "我知道这些信息正在提交给一个公共的，不可改变的区块链。包括Gitcoin Core在内的任何人都无法获得我的资金或更改此信息："
 
 #: dashboard/templates/fulfill_bounty.html:71
 #: dashboard/templates/submit_bounty.html:150
 msgid "Having trouble?  Click here."
-msgstr "Probleme haben? Klick hier."
+msgstr "遇到麻烦？点击这里。"
 
 #: dashboard/templates/ios.html:31 dashboard/templates/ios.html:50
 msgid "One Swipe Away From Your Next Bounty."
-msgstr "Wischen Sie von Ihrem nächsten Kopfgeld weg."
+msgstr "从您的下一个赏金中扫一扫。"
 
 #: dashboard/templates/ios.html:37 dashboard/templates/ios.html:55
 #: retail/templates/index.html:434
 msgid "Browse funded work in open source software from anywhere, at anytime."
-msgstr ""
-"Durchsuchen Sie geförderte Arbeiten in Open-Source-Software von überall und "
-"jederzeit."
+msgstr "随时随地浏览开源软件中的资助工作。"
 
 #: dashboard/templates/ios.html:76
 msgid "It's Easy As"
-msgstr "Es ist einfach wie"
+msgstr "这很容易"
 
 #: dashboard/templates/ios.html:89
 msgid "Sync"
-msgstr "Synchronisieren"
+msgstr "同步"
 
 #: dashboard/templates/ios.html:91
 msgid "Sync your github profile with the gitcoin app."
-msgstr "Synchronisieren Sie Ihr GitHub-Profil mit der Gitcoin-App."
+msgstr "将您的github配置文件与gitcoin应用程序同步。"
 
 #: dashboard/templates/ios.html:104
 msgid "Swipe"
-msgstr "Wischen"
+msgstr "刷卡"
 
 #: dashboard/templates/ios.html:106
 msgid "Swipe through funded work in open source software."
-msgstr "Swipe durch geförderte Arbeit in Open-Source-Software."
+msgstr "通过开源软件中的资助工作。"
 
 #: dashboard/templates/ios.html:119
 msgid "Match"
-msgstr "Spiel"
+msgstr "比赛"
 
 #: dashboard/templates/ios.html:121
-#, fuzzy
-#| msgid ""
-#| "The app will intro (via e-mail) you to the repository owners with whom "
-#| "you've matched with"
 msgid ""
 "The app will intro you (via github comments) to the repository owners with "
 "whom you've matched with"
-msgstr ""
-"Die App wird Sie (über Github-Kommentare) zu den Repository-Besitzern "
-"hinzufügen, mit denen Sie abgestimmt haben"
+msgstr "该应用程序会将您（通过github评论）介绍给您与之匹配的存储库所有者"
 
 #: dashboard/templates/ios.html:134
 msgid "Get it now."
-msgstr "Hol es dir jetzt."
+msgstr "现在得到它。"
 
 #: dashboard/templates/kill_bounty.html:40
 msgid "Cancel Bounty and Reclaim Funds"
-msgstr "Kopfgeld zurücknehmen und Gelder zurückfordern"
+msgstr "取消赏金和回收资金"
 
 #: dashboard/templates/kill_bounty.html:41
 msgid "(Issue Submitters only)"
-msgstr "(Nur Problemeinreicher)"
+msgstr "（仅限发布提交者）"
 
 #: dashboard/templates/kill_bounty.html:59 dashboard/views.py:645
 msgid "Cancel Bounty"
-msgstr "Kopfgeld stornieren"
+msgstr "取消赏金"
 
 #: dashboard/templates/onboard.html:40
 msgid "Get started with Gitcoin!"
-msgstr "Beginne mit Gitcoin!"
+msgstr "开始使用Gitcoin！"
 
 #: dashboard/templates/onboard.html:43
 msgid ""
@@ -424,44 +389,38 @@ msgid ""
 "                "
 msgstr ""
 "\n"
-"<h3> Verwenden Sie gitcoin, um bezahlte Arbeitsprobleme zu finden\n"
-"                     im Blockchain / Web3-Ökosystem. <br> Erhalten Sie Zahlung in Ether,\n"
-"                     eine führende Kryptowährung </ h3>\n"
-"                  <h3> Triff neue Leute. Neue Fähigkeiten erlernen. Beitragen zu\n"
-"                     die Open-Source-Community </ h3>"
+"<h3>使用gitcoin找到有偿工作现实世界的问题\n"
+"                     在区块链/ web3生态系统中。<br>在Ether中接收付款，\n"
+"                     一个领先的加密货币</ h3>\n"
+"                  <h3>认识新朋友。学习新技能。有助于\n"
+"                     开源社区</ h3>"
 
 #: dashboard/templates/onboard.html:53
 msgid "Build"
-msgstr "Bauen"
+msgstr "建立"
 
 #: dashboard/templates/onboard.html:57
-#, fuzzy
-#| msgid "Get Started"
 msgid "Get Paid"
-msgstr "Bezahlt werden"
+msgstr "得到报酬"
 
 #: dashboard/templates/onboard.html:61
 #: dashboard/templates/shared/sidebar_search.html:202
 msgid "Network"
-msgstr "Netzwerk"
+msgstr "网络"
 
 #: dashboard/templates/onboard.html:69
-#, fuzzy
-#| msgid "You've Got ETH!"
 msgid "You've logged in!"
-msgstr "Du hast dich eingeloggt!"
+msgstr "您已登录！"
 
 #: dashboard/templates/onboard.html:77
 msgid "Logout"
-msgstr "Ausloggen"
+msgstr "登出"
 
 #: dashboard/templates/onboard.html:88
 msgid "Login with github"
-msgstr "Einloggen mit GitHub"
+msgstr "用github登录"
 
 #: dashboard/templates/onboard.html:97
-#, fuzzy
-#| msgid "Install Metamask"
 msgid "Metamask"
 msgstr "Metamask"
 
@@ -475,46 +434,42 @@ msgid ""
 "                "
 msgstr ""
 "\n"
-"<h3> Installieren Sie MetaMask - Ihre sichere, verschlüsselte digitale Brieftasche\n"
-"                    <br> <br>\n"
-"                    Sie werden Metamask einrichten, um ein Projekt zu übernehmen oder für die Arbeit bezahlt zu werden, die Sie bei gitcoin abgeschlossen haben\n"
-"                  </ h3>"
+"<h3>安装MetaMask  - 您的安全加密数字钱包\n"
+"                    搜索结果\n"
+"                    您将设置Metamask来完成一个项目，或者从您在gitcoin上完成的工作中获得报酬\n"
+"                  </ H3>"
 
 #: dashboard/templates/onboard.html:116
-#, fuzzy
-#| msgid "Install Metamask"
 msgid "Setup Metamask"
-msgstr "Setup Metamask"
+msgstr "安装Metamask"
 
 #: dashboard/templates/onboard.html:122
 msgid "Getting Ether, Your Digital Currency"
-msgstr "Ether, deine digitale Währung"
+msgstr "获取以太网，您的数字货币"
 
 #: dashboard/templates/onboard.html:125
 msgid "How to send ETH to Metamask"
-msgstr "Wie versende ich die ETH zu Metamask?"
+msgstr "如何发送ETH到Metamask"
 
 #: dashboard/templates/onboard.html:128
-#, fuzzy
-#| msgid "Install MetaMask"
 msgid "FAQ : MetaMask"
-msgstr "FAQ: MetaMask"
+msgstr "常见问题：MetaMask"
 
 #: dashboard/templates/onboard.html:134
 msgid "What's your skill set?"
-msgstr "Was sind deine Fähigkeiten?"
+msgstr "你的技能是什么？"
 
 #: dashboard/templates/onboard.html:137
 msgid "Suggested"
-msgstr "Empfohlen"
+msgstr "建议"
 
 #: dashboard/templates/onboard.html:141
 msgid "Add Skill"
-msgstr "Fertigkeit hinzufügen"
+msgstr "添加技能"
 
 #: dashboard/templates/onboard.html:143
 msgid "List out : Skill 1, Skill 2 ..."
-msgstr "Auflisten: Skill 1, Skill 2 ..."
+msgstr "列出：技能1，技能2 ..."
 
 #: dashboard/templates/onboard.html:158
 #: dashboard/templates/shared/sidebar_search.html:58
@@ -523,246 +478,240 @@ msgstr "Auflisten: Skill 1, Skill 2 ..."
 #: dashboard/templates/shared/sidebar_search.html:195
 #: dashboard/templates/shared/sidebar_search.html:236
 msgid "Any"
-msgstr "Irgendein"
+msgstr "任何"
 
 #: dashboard/templates/onboard.html:159
 msgid "Beginner ( < 4 years Experience )"
-msgstr "Anfänger (<4 Jahre Erfahrung)"
+msgstr "初学者（<4年经验）"
 
 #: dashboard/templates/onboard.html:160
 msgid "Intermediate ( 4 - 5 years Experience )"
-msgstr "Mittelstufe (4 - 5 Jahre Erfahrung)"
+msgstr "中级（4  -  5年经验）"
 
 #: dashboard/templates/onboard.html:161
 msgid "Advanced ( > 5 years Experience )"
-msgstr "Fortgeschrittene (> 5 Jahre Erfahrung)"
+msgstr "高级（> 5年经验）"
 
 #: dashboard/templates/onboard.html:168
 msgid "Build your avatar"
-msgstr "Baue deinen Avatar"
+msgstr "建立你的头像"
 
 #: dashboard/templates/onboard.html:176
-#, fuzzy
-#| msgid "previous"
 msgid "Previous"
-msgstr "Bisherige"
+msgstr "以前"
 
 #: dashboard/templates/onboard.html:177
 msgid "Next"
-msgstr "Nächster"
+msgstr "下一个"
 
 #: dashboard/templates/process_bounty.html:42
 msgid "Accept Bounty Fulfillment"
-msgstr "Kopfgeld erfüllen"
+msgstr "接受赏金兑现"
 
 #: dashboard/templates/process_bounty.html:47
 msgid "Issue URL:"
-msgstr "URL des Problems:"
+msgstr "问题网址："
 
 #: dashboard/templates/process_bounty.html:51
 msgid "Bounty Submission:"
-msgstr "Prämieneinreichung:"
+msgstr "赏金提交："
 
 #: dashboard/templates/process_bounty.html:53
 msgid "Submission"
-msgstr "Einreichung"
+msgstr "服从"
 
 #: dashboard/templates/process_bounty.html:64
 msgid "Accept"
-msgstr "Akzeptieren"
+msgstr "接受"
 
 #: dashboard/templates/process_bounty.html:68
 msgid "Having trouble? Click here."
-msgstr "Probleme haben? Klick hier."
+msgstr "遇到麻烦？点击这里。"
 
 #: dashboard/templates/profile_details.html:83
 msgid "has received these tips"
-msgstr "hat diese Tipps erhalten"
+msgstr "已收到这些提示"
 
 #: dashboard/templates/profile_details.html:86
 msgid "No tips found"
-msgstr "Keine Tipps gefunden"
+msgstr "找不到提示"
 
 #: dashboard/templates/profile_details.html:91
 msgid "From"
-msgstr "Von"
+msgstr "从"
 
 #: dashboard/templates/profile_details.html:94
 msgid "Related Issue"
-msgstr "Verwandte Ausgabe"
+msgstr "相关问题"
 
 #: dashboard/templates/profile_details.html:97
 #: dashboard/templates/profile_details.html:148
 msgid "Details"
-msgstr "Einzelheiten"
+msgstr "细节"
 
 #: dashboard/templates/profile_details.html:106
 msgid "Unknown"
-msgstr "unbekannte"
+msgstr "未知"
 
 #: dashboard/templates/profile_details.html:134
 msgid "has Participated in these Funded Issues"
-msgstr "hat an diesen finanzierten Ausgaben teilgenommen"
+msgstr "参与了这些资助问题"
 
 #: dashboard/templates/profile_details.html:137
 msgid "No funded issues found"
-msgstr "Keine finanzierten Probleme gefunden"
+msgstr "没有找到资金问题"
 
 #: dashboard/templates/profile_details.html:142
 msgid "Relationship"
-msgstr "Beziehung"
+msgstr "关系"
 
 #: dashboard/templates/profile_details.html:145
 #: retail/templates/emails/bounty.html:92
 msgid "Status"
-msgstr "Status"
+msgstr "状态"
 
 #: dashboard/templates/profile_details.html:151
 #: dashboard/templates/submit_bounty.html:54
 msgid "Amount"
-msgstr "Menge"
+msgstr "量"
 
 #: dashboard/templates/profile_details.html:158
 #: dashboard/templates/profile_details.html:164
 msgid "Worker"
-msgstr "Arbeitnehmer"
+msgstr "工人"
 
 #: dashboard/templates/profile_details.html:162
 msgid "Repo Owner"
-msgstr "Repo-Besitzer"
+msgstr "回购所有者"
 
 #: dashboard/templates/profile_details.html:196
 #, python-format
 msgid "%(r.stargazers_count)s stars"
-msgstr "%(r.stargazers_count)s Sterne"
+msgstr "％r.stargazers_count)s 的明星"
 
 #: dashboard/templates/profile_details.html:208
 msgid "No repos"
-msgstr "Keine Repos"
+msgstr "没有回购"
 
 #: dashboard/templates/shared/bounty_def.html:24 dashboard/views.py:516
 #: dashboard/views.py:692 dashboard/views.py:832
 #: retail/templates/index.html:158 retail/templates/save_search.html:29
 msgid "Be the first to know about new funded issues."
-msgstr "Seien Sie der Erste, der über neue finanzierte Themen informiert."
+msgstr "成为第一个了解新资助问题的人。"
 
 #: dashboard/templates/shared/bounty_nav.html:23
 #: dashboard/templates/shared/sidebar_search.html:28
 #: dashboard/templates/shared/status_tooltip.html:24
 msgid "Open"
-msgstr "Öffnen"
+msgstr "打开"
 
 #: dashboard/templates/shared/bounty_nav.html:25
 msgid "Create Work"
-msgstr "Schaffen Sie Arbeit"
+msgstr "创建工作"
 
 #: dashboard/templates/shared/bounty_nav.html:33
 msgid "Start Work"
-msgstr "Fang an zu arbeiten"
+msgstr "开始工作"
 
 #: dashboard/templates/shared/bounty_nav.html:47
 #: dashboard/templates/shared/sidebar_search.html:43
 #: dashboard/templates/shared/status_tooltip.html:42
 msgid "Work Done"
-msgstr "Arbeit erledigt"
+msgstr "完工"
 
 #: dashboard/templates/shared/bounty_nav.html:49
 msgid "Accept Work"
-msgstr "Arbeit annehmen"
+msgstr "接受工作"
 
 #: dashboard/templates/shared/github_link.html:19
 msgid "Github PR Link"
-msgstr "Github PR Verbindung"
+msgstr "Github PR链接"
 
 #: dashboard/templates/shared/github_username.html:19
 msgid "Github Username"
-msgstr "Github Benutzername"
+msgstr "Github用户名"
 
 #: dashboard/templates/shared/github_username.html:21
 #: dashboard/templates/shared/nav_auth.html:77
 #: faucet/templates/faucet_form.html:60
 msgid "Login"
-msgstr "Anmeldung"
+msgstr "登录"
 
 #: dashboard/templates/shared/hours_worked.html:19
 msgid "Hours Worked"
-msgstr "Arbeitsstunden"
+msgstr "工作时间"
 
 #: dashboard/templates/shared/name.html:19
 msgid "Full Name"
-msgstr "Vollständiger Name"
+msgstr "全名"
 
 #: dashboard/templates/shared/nav_auth.html:28
 #: dashboard/templates/yge/base.html:59 dashboard/templates/yge/send1.html:37
 #: dashboard/views.py:71 dashboard/views.py:464
 msgid "Send Tip"
-msgstr "Senden Sie einen Tipp"
+msgstr "发送提示"
 
 #: dashboard/templates/shared/nav_auth.html:32
 #: dashboard/templates/submit_bounty.html:148
 #: retail/templates/getgitcoin.html:50
 msgid "Fund Issue"
-msgstr "Fondsproblem"
+msgstr "基金发行"
 
 #: dashboard/templates/shared/nav_auth.html:37 retail/templates/about.html:227
 #: retail/templates/about.html:247 retail/templates/index.html:151
 #: retail/templates/index.html:310 retail/views.py:479
 msgid "Get Started"
-msgstr "Loslegen"
+msgstr "开始使用"
 
 #: dashboard/templates/shared/nav_auth.html:43
 msgid "View Profile"
-msgstr "Profil anzeigen"
+msgstr "查看资料"
 
 #: dashboard/templates/shared/nav_auth.html:47
 msgid "Manage Settings"
-msgstr "Einstellungen verwalten"
+msgstr "管理设置"
 
 #: dashboard/templates/shared/nav_auth.html:54
-#, fuzzy, python-format
-#| msgid "Claim $%(tip.value_in_usdt_now)s Tip "
+#, python-format
 msgid "Claim $%(tip.value_in_usdt_now)s Tip "
-msgstr "Claim $%(tip.value_in_usdt_now)s Tipp"
+msgstr "声明 $%(tip.value_in_usdt_now)s 的提示"
 
 #: dashboard/templates/shared/nav_auth.html:62
 msgid "Administration"
-msgstr "Verwaltung"
+msgstr "行政"
 
 #: dashboard/templates/shared/nav_auth.html:68
 msgid "Log Out"
-msgstr "Ausloggen"
+msgstr "登出"
 
 #: dashboard/templates/shared/network_status.html:20
 #: faucet/templates/shared/faucet_network_status.html:22
 msgid "Enabled"
-msgstr "aktiviert"
+msgstr "启用"
 
 #: dashboard/templates/shared/network_status.html:22
 msgid "Available"
-msgstr "Verfügbar"
+msgstr "可得到"
 
 #: dashboard/templates/shared/newsletter.html:28
 msgid "Join Our Newsletter !"
-msgstr "Abonnieren Sie unseren Newsletter !"
+msgstr "加入我们的通讯！"
 
 #: dashboard/templates/shared/newsletter.html:31
 msgid "Emails once a week max, & we never sell your data"
-msgstr ""
-"E-Mails maximal einmal pro Woche, und wir verkaufen Ihre Daten niemals"
+msgstr "最多一周发送一次电子邮件，我们绝不会出售您的数据"
 
 #: dashboard/templates/shared/no_metamask_error.html:22
 #: faucet/templates/shared/faucet_no_metamask_error.html:25
 msgid "To continue, enable Web3."
-msgstr "Aktivieren Sie Web3, um fortzufahren."
+msgstr "要继续，请启用Web3。"
 
 #: dashboard/templates/shared/no_metamask_error.html:24
 #: faucet/templates/shared/faucet_no_metamask_error.html:27
 msgid ""
 "Web3 is the same web you know and love, but with Ethereum-enabled "
 "functionality."
-msgstr ""
-"Web3 ist das gleiche Web, das Sie kennen und lieben, aber mit Ethereum-"
-"fähiger Funktionalität."
+msgstr "Web3是您熟悉和喜爱的网络，但支持以太坊功能。"
 
 #: dashboard/templates/shared/no_metamask_error.html:27
 msgid ""
@@ -772,221 +721,214 @@ msgid ""
 " To continue submitting a bounty, please install Metamask and return to this"
 " page."
 msgstr ""
-"Der schnellste und einfachste Weg, Web3 zu Ihrem Browser hinzuzufügen, ist "
-"die Installation von <a target=\"_blank\" rel=\"noopener noreferrer\" "
+"将Web3添加到浏览器的最快速和最简单的方法是安装<a target=\"_blank\" rel=\"noopener noreferrer\" "
 "href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\"> "
-"Metamask < / a>. Um weiterhin ein Bounty zu senden, installieren Sie bitte "
-"Metamask und kehren Sie zu dieser Seite zurück."
+"Metamask < / A>。要继续提交赏金，请安装Metamask并返回此页面。"
 
 #: dashboard/templates/shared/no_metamask_error.html:30
 #: faucet/templates/shared/faucet_no_metamask_error.html:33
 msgid "Install MetaMask"
-msgstr "Installieren Sie MetaMask"
+msgstr "安装MetaMask"
 
 #: dashboard/templates/shared/no_metamask_error.html:34
 #: dashboard/templates/shared/unlock_metamask.html:31
 #: dashboard/templates/shared/zero_balance_error.html:37
 #: faucet/templates/shared/faucet_no_metamask_error.html:37
 msgid "Can't get web3 to work?  Get help here."
-msgstr "Kann web3 nicht zur Arbeit kommen? Holen Sie sich Hilfe hier."
+msgstr "无法让web3工作？在这里获得帮助。"
 
 #: dashboard/templates/shared/notification_email.html:19
 msgid "Notification Email"
-msgstr "Benachrichtigungsemail"
+msgstr "通知电子邮件"
 
 #: dashboard/templates/shared/search_bar.html:27
 msgid "Search"
-msgstr "Suche"
+msgstr "搜索"
 
 #: dashboard/templates/shared/search_bar.html:30
 msgid "SORT"
-msgstr "SORTIEREN"
+msgstr "分类"
 
 #: dashboard/templates/shared/search_bar.html:32
-#, fuzzy
-#| msgid "Created By Me"
 msgid "Created: Recent"
-msgstr "Erstellt: Zuletzt"
+msgstr "创建时间：最近"
 
 #: dashboard/templates/shared/search_bar.html:33
-#, fuzzy
-#| msgid "Created By Me"
 msgid "Created: Oldest"
-msgstr "Erstellt: Ältester"
+msgstr "创建：最旧"
 
 #: dashboard/templates/shared/search_bar.html:34
 msgid "Value: Highest"
-msgstr "Wert: Höchster"
+msgstr "价值：最高"
 
 #: dashboard/templates/shared/search_bar.html:35
 msgid "Value: Lowest"
-msgstr "Wert: Niedrigster"
+msgstr "值：最低"
 
 #: dashboard/templates/shared/search_bar.html:44
 #: retail/templates/save_search.html:41
 msgid "Save Search"
-msgstr "Sichere Suche"
+msgstr "保存搜索"
 
 #: dashboard/templates/shared/send_tip_nav.html:23
 msgid "Sent"
-msgstr "Geschickt"
+msgstr "发送"
 
 #: dashboard/templates/shared/send_tip_nav.html:25
 #: dashboard/templates/yge/send2.html:103
 msgid "Send"
-msgstr "Senden"
+msgstr "发送"
 
 #: dashboard/templates/shared/send_tip_nav.html:31
 msgid "Fulfilled"
-msgstr "Erfüllt"
+msgstr "达到"
 
 #: dashboard/templates/shared/send_tip_nav.html:33
 msgid "Fulfill"
-msgstr "Erfüllen"
+msgstr "履行"
 
 #: dashboard/templates/shared/show_information_publicly.html:19
 msgid "It's okay to show this information publicly on Gitcoin"
-msgstr ""
-"Es ist in Ordnung, diese Informationen öffentlich auf Gitcoin zu zeigen"
+msgstr "在Gitcoin上公开显示这些信息是可以的"
 
 #: dashboard/templates/shared/sidebar_profile.html:21
 msgid "Edit Profile"
-msgstr "Profil bearbeiten"
+msgstr "编辑个人资料"
 
 #: dashboard/templates/shared/sidebar_profile.html:23
 msgid "Change Picture"
-msgstr "Bild ändern"
+msgstr "更换图片"
 
 #: dashboard/templates/shared/sidebar_profile.html:24
 msgid "Change Name"
-msgstr "Namen ändern"
+msgstr "更换名字"
 
 #: dashboard/templates/shared/sidebar_profile.html:25
 msgid "Change Expertise"
-msgstr "Kompetenz ändern"
+msgstr "改变专业知识"
 
 #: dashboard/templates/shared/sidebar_profile.html:29
 msgid "Browse Other Users"
-msgstr "Durchsuchen Sie andere Benutzer"
+msgstr "浏览其他用户"
 
 #: dashboard/templates/shared/sidebar_profile.html:31
 msgid "By Location"
-msgstr "Nach Ort"
+msgstr "按位置"
 
 #: dashboard/templates/shared/sidebar_profile.html:32
 msgid "By Language"
-msgstr "Nach Sprache"
+msgstr "按语言"
 
 #: dashboard/templates/shared/sidebar_profile.html:37
 msgid "CLEAR FIELDS"
-msgstr "KLARE FELDER"
+msgstr "清楚的领域"
 
 #: dashboard/templates/shared/sidebar_search.html:23
 msgid "PROJECT STATUS"
-msgstr "PROJEKT-STATUS"
+msgstr "项目状态"
 
 #: dashboard/templates/shared/sidebar_search.html:48
 #: dashboard/templates/shared/status_tooltip.html:51
 msgid "Expired"
-msgstr "Abgelaufen"
+msgstr "过期"
 
 #: dashboard/templates/shared/sidebar_search.html:53
 msgid "Cancelled"
-msgstr "Abgebrochen"
+msgstr "取消"
 
 #: dashboard/templates/shared/sidebar_search.html:65
 msgid "MY PROJECTS"
-msgstr "MEINE PROJEKTE"
+msgstr "我的项目"
 
 #: dashboard/templates/shared/sidebar_search.html:69
 msgid "Created By Me"
-msgstr "Von mir erstellt"
+msgstr "由我创建"
 
 #: dashboard/templates/shared/sidebar_search.html:73
 msgid "Started By Me"
-msgstr "Begonnen von mir"
+msgstr "由我启动"
 
 #: dashboard/templates/shared/sidebar_search.html:77
 msgid "Fulfilled By Me"
-msgstr "Erfüllt von mir"
+msgstr "由我实现"
 
 #: dashboard/templates/shared/sidebar_search.html:81
 #: dataviz/templates/stats.html:33
 msgid "All"
-msgstr "Alle"
+msgstr "所有"
 
 #: dashboard/templates/shared/sidebar_search.html:94
 #: dashboard/templates/submit_bounty.html:108
 msgid "Beginner"
-msgstr "Anfänger"
+msgstr "初学者"
 
 #: dashboard/templates/shared/sidebar_search.html:101
 #: dashboard/templates/submit_bounty.html:109
 msgid "Intermediate"
-msgstr "Mittlere"
+msgstr "中间"
 
 #: dashboard/templates/shared/sidebar_search.html:108
 #: dashboard/templates/submit_bounty.html:110
 #: dashboard/templates/yge/send2.html:56 dashboard/views.py:967
 msgid "Advanced"
-msgstr "Fortgeschritten"
+msgstr "高级"
 
 #: dashboard/templates/shared/sidebar_search.html:122
 msgid "Tech Stack"
-msgstr "Tech Stapel"
+msgstr "Tech Stack"
 
 #: dashboard/templates/shared/sidebar_search.html:127
 #: dashboard/templates/submit_bounty.html:115
 #: retail/templates/emails/bounty.html:121
 msgid "Project Length"
-msgstr "Projektlänge"
+msgstr "项目长度"
 
 #: dashboard/templates/shared/sidebar_search.html:133
 #: dashboard/templates/submit_bounty.html:116
 msgid "Hours"
-msgstr "Std"
+msgstr "小时"
 
 #: dashboard/templates/shared/sidebar_search.html:140
 #: dashboard/templates/submit_bounty.html:117
 msgid "Days"
-msgstr "Tage"
+msgstr "天"
 
 #: dashboard/templates/shared/sidebar_search.html:147
 #: dashboard/templates/submit_bounty.html:118
 msgid "Weeks"
-msgstr "Wochen"
+msgstr "周"
 
 #: dashboard/templates/shared/sidebar_search.html:154
 #: dashboard/templates/submit_bounty.html:119
 msgid "Months"
-msgstr "Monate"
+msgstr "月"
 
 #: dashboard/templates/shared/sidebar_search.html:168
 msgid "Type"
-msgstr "Art"
+msgstr "类型"
 
 #: dashboard/templates/shared/sidebar_search.html:174
 #: dashboard/templates/submit_bounty.html:125
 msgid "Bug"
-msgstr "Fehler"
+msgstr "窃听器"
 
 #: dashboard/templates/shared/sidebar_search.html:181
 #: dashboard/templates/submit_bounty.html:126
 msgid "Feature"
-msgstr "Feature"
+msgstr "特征"
 
 #: dashboard/templates/shared/sidebar_search.html:188
 #: dashboard/templates/submit_bounty.html:127
 msgid "Security"
-msgstr "Sicherheit"
+msgstr "安全"
 
 #: dashboard/templates/shared/sidebar_search.html:208
 msgid "Custom"
-msgstr "Brauch"
+msgstr "习惯"
 
 #: dashboard/templates/shared/sidebar_search.html:215
 msgid "Ropsten"
-msgstr "Ropsten"
+msgstr "设有通往Ropsten"
 
 #: dashboard/templates/shared/sidebar_search.html:222
 msgid "Rinkeby"
@@ -998,70 +940,67 @@ msgstr "Mainnet"
 
 #: dashboard/templates/shared/sidebar_search.html:243
 msgid "Reset"
-msgstr "Zurücksetzen"
+msgstr "重启"
 
 #: dashboard/templates/shared/status_tooltip.html:19
 msgid "Possible Status"
-msgstr "Möglicher Status"
+msgstr "可能的状态"
 
 #: dashboard/templates/shared/status_tooltip.html:24
 msgid "A funded bounty is available for anyone to work on."
-msgstr ""
-"Ein finanziertes Kopfgeld steht jedem zur Verfügung, an dem man arbeiten "
-"kann."
+msgstr "资助的奖金可供任何人使用。"
 
 #: dashboard/templates/shared/status_tooltip.html:30
 msgid "Work has been started by at least one person."
-msgstr "Die Arbeit wurde von mindestens einer Person begonnen."
+msgstr "至少有一个人开始工作。"
 
 #: dashboard/templates/shared/status_tooltip.html:36
 msgid "Completed work has been submitted by for review."
-msgstr "Abgeschlossene Arbeiten wurden zur Überprüfung eingereicht."
+msgstr "已完成的工作已提交审查。"
 
 #: dashboard/templates/shared/status_tooltip.html:42
 msgid "The submitted project has been accepted and the funds have been paid."
-msgstr ""
-"Das eingereichte Projekt wurde angenommen und die Mittel wurden bezahlt."
+msgstr "提交的项目已被接受并且资金已经支付。"
 
 #: dashboard/templates/shared/status_tooltip.html:46
 msgid "Cancellation Status"
-msgstr "Stornierungsstatus"
+msgstr "取消状态"
 
 #: dashboard/templates/shared/status_tooltip.html:51
 msgid "Work was not completed by the expiration date."
-msgstr "Die Arbeit wurde nicht bis zum Ablaufdatum abgeschlossen."
+msgstr "工作没有在截止日期前完成。"
 
 #: dashboard/templates/shared/status_tooltip.html:57
 msgid "Canceled"
-msgstr "Abgebrochen"
+msgstr "取消"
 
 #: dashboard/templates/shared/status_tooltip.html:57
 msgid "A funded bounty was  cancelled by the owner of the project"
-msgstr "Ein finanziertes Kopfgeld wurde vom Eigentümer des Projekts abgesagt"
+msgstr "该项目的业主取消了资助的赏金"
 
 #: dashboard/templates/shared/unlock_metamask.html:22
 #: dashboard/templates/shared/zero_balance_error.html:22
 #: faucet/templates/shared/faucet_unlock_metamask.html:25
 msgid "You're almost there!"
-msgstr "Du bist fast da!"
+msgstr "你快到了！"
 
 #: dashboard/templates/shared/unlock_metamask.html:24
 #: faucet/templates/shared/faucet_unlock_metamask.html:27
 msgid "In order to continue, you'll need to unlock metamask."
-msgstr "Um fortzufahren, musst du die Metamask freischalten."
+msgstr "为了继续，你需要解锁metamask。"
 
 #: dashboard/templates/shared/unlock_metamask.html:27
 #: faucet/templates/shared/faucet_unlock_metamask.html:30
 msgid "Please unlock Metamask and refresh the page."
-msgstr "Bitte entsperre Metamask und aktualisiere die Seite."
+msgstr "请解锁Metamask并刷新页面。"
 
 #: dashboard/templates/shared/wallet_estimate.html:20
 msgid "Warning: the ethereum network is quite congested at the moment."
-msgstr "Achtung: Das Ethereum-Netzwerk ist momentan ziemlich überlastet."
+msgstr "警告：以太坊网络目前相当拥挤。"
 
 #: dashboard/templates/shared/wallet_estimate.html:20
 msgid "Stats"
-msgstr "Statistiken"
+msgstr "统计"
 
 #: dashboard/templates/shared/wallet_estimate.html:22
 msgid ""
@@ -1069,14 +1008,13 @@ msgid ""
 " min confirmation for <span id=\"ethAmount\">unknown</span> ETH (<span "
 "id=\"usdAmount\">unknown</span> USD)"
 msgstr ""
-"Die folgenden MetaMask-Einstellungen sollten eine <span id = \"confTime\"> 5"
-" </ span> min-Bestätigung für <span id = \"ethAmount\"> unbekannt </ span> "
-"ETH (<span id = \"usdAmount\"> unbekannt </ span > USD)"
+"以下MetaMask设置应为<span id =“ethAmount”>未知</ span> ETH（<span id "
+"=“usdAmount”>未知</ span>）提供<span id =“confTime”> 5 </ span> >美元）"
 
 #: dashboard/templates/shared/wallet_estimate.html:22
 #: dashboard/templates/shared/wallet_estimate.html:24
 msgid "view graph"
-msgstr "Diagramm anzeigen"
+msgstr "查看图"
 
 #: dashboard/templates/shared/wallet_estimate.html:24
 msgid ""
@@ -1084,326 +1022,312 @@ msgid ""
 "min confirmation for <span id=\"ethAmount\">unknown</span> ETH (<span "
 "id=\"usdAmount\">unknown</span> USD)"
 msgstr ""
-"Die folgenden Trust-Einstellungen sollten eine <span id = \"confTime\"> 5 </"
-" span> min Bestätigung für <span id = \"ethAmount\"> unbekannt </ span> ETH "
-"(<span id = \"usdAmount\"> unknown </ span > USD)"
+"以下信任设置应为<span id =“ethAmount”>未知</ span> ETH（<span id =“usdAmount”>未知</ "
+"span>）提供<span id =“confTime”> 5 </ span> >美元）"
 
 #: dashboard/templates/shared/wallet_estimate.html:28
 msgid "Gas Limit (units)"
-msgstr "Gaslimit (Einheiten)"
+msgstr "燃气限制（单位）"
 
 #: dashboard/templates/shared/wallet_estimate.html:32
 msgid "Gas Price (gwei)"
-msgstr "Gaspreis (gwei)"
+msgstr "天然气价格（gwei）"
 
 #: dashboard/templates/shared/wallet_estimate.html:36
 #: retail/templates/shared/footer.html:30 retail/templates/shared/nav.html:41
 #: retail/views.py:469
 msgid "Help"
-msgstr "Hilfe"
+msgstr "帮帮我"
 
 #: dashboard/templates/shared/wallet_estimate.html:39
 msgid "Why do I need metamask / gas?"
-msgstr "Warum brauche ich Metamask / Gas?"
+msgstr "为什么我需要metamask / gas？"
 
 #: dashboard/templates/shared/wallet_estimate.html:42
 msgid "What gas price should I use?"
-msgstr "Welchen Gaspreis sollte ich verwenden?"
+msgstr "我应该使用什么气体价格？"
 
 #: dashboard/templates/shared/wallet_estimate.html:45
 msgid "What are current network condtions?"
-msgstr "Was sind aktuelle Netzwerkbedingungen?"
+msgstr "目前的网络条件是什么？"
 
 #: dashboard/templates/shared/zero_balance_error.html:24
 msgid "In order to continue, you'll need some Ether."
-msgstr "Um fortzufahren, brauchst du etwas Ether."
+msgstr "为了继续，你需要一些以太。"
 
 #: dashboard/templates/shared/zero_balance_error.html:27
 msgid ""
 "'Ether' is a digital asset that can be used to pay for the computational "
 "resources needed to run an application or program. In this case, Gitcoin."
-msgstr ""
-"\"Ether\" ist ein digitales Asset, mit dem Rechenressourcen bezahlt werden "
-"können, die zum Ausführen einer Anwendung oder eines Programms benötigt "
-"werden. In diesem Fall, Gitcoin."
+msgstr "'以太'是一种数字资产，可用于支付运行应用程序或程序所需的计算资源。在这种情况下，Gitcoin。"
 
 #: dashboard/templates/shared/zero_balance_error.html:30
 msgid "The easiest way to get Ether is to request it via the Gitcoin Faucet:"
-msgstr ""
-"Der einfachste Weg, Ether zu bekommen, ist es, es über den Gitcoin-Hahn "
-"anzufordern:"
+msgstr "获得Ether的最简单方法是通过Gitcoin水龙头申请："
 
 #: dashboard/templates/shared/zero_balance_error.html:33
 msgid "View Faucet"
-msgstr "Wasserhahn anzeigen"
+msgstr "查看水龙头"
 
 #: dashboard/templates/submit_bounty.html:45
 msgid "Fund an Issue"
-msgstr "Fund ein Problem"
+msgstr "资助一个问题"
 
 #: dashboard/templates/submit_bounty.html:72
 msgid "Issue Title"
-msgstr "Titel ausgeben"
+msgstr "问题标题"
 
 #: dashboard/templates/submit_bounty.html:76
 msgid "Issue Description"
-msgstr "Fehlerbeschreibung"
+msgstr "问题描述"
 
 #: dashboard/templates/submit_bounty.html:80
 msgid "Keywords"
-msgstr "Schlüsselwörter"
+msgstr "关键词"
 
 #: dashboard/templates/submit_bounty.html:84
 msgid "Expires in"
-msgstr "Läuft ab in"
+msgstr "过期日期在"
 
 #: dashboard/templates/submit_bounty.html:87
 msgid "1 day"
-msgstr "1 Tag"
+msgstr "1天"
 
 #: dashboard/templates/submit_bounty.html:88
 msgid "3 days"
-msgstr "3 Tage"
+msgstr "3天"
 
 #: dashboard/templates/submit_bounty.html:89
 msgid "1 week"
-msgstr "1 Woche"
+msgstr "1周"
 
 #: dashboard/templates/submit_bounty.html:90
 msgid "2 weeks"
-msgstr "2 Wochen"
+msgstr "2周"
 
 #: dashboard/templates/submit_bounty.html:91
 msgid "1 month"
-msgstr "1 Monat"
+msgstr "1个月"
 
 #: dashboard/templates/submit_bounty.html:92
 msgid "3 months"
-msgstr "3 Monate"
+msgstr "3个月"
 
 #: dashboard/templates/submit_bounty.html:93
 msgid "6 months"
-msgstr "6 Monate"
+msgstr "6个月"
 
 #: dashboard/templates/submit_bounty.html:94
 msgid "1 year"
-msgstr "1 Jahr"
+msgstr "1年"
 
 #: dashboard/templates/submit_bounty.html:95
 #: dashboard/templates/yge/send2.html:86
 msgid "Never"
-msgstr "noch nie"
+msgstr "决不"
 
 #: dashboard/templates/submit_bounty.html:101 dashboard/views.py:686
 msgid "Issue Details"
-msgstr "Details zum Problem"
+msgstr "问题详情"
 
 #: dashboard/templates/submit_bounty.html:124
 msgid "Bounty Type"
-msgstr "Kopfgeldart"
+msgstr "赏金类型"
 
 #: dashboard/templates/submit_bounty.html:128
 #: retail/templates/whitepaper_new.html:127
 msgid "Other"
-msgstr "Andere"
+msgstr "其他"
 
 #: dashboard/templates/toolbox.html:37 dashboard/views.py:1008
 msgid "Toolbox"
-msgstr "Werkzeugkasten"
+msgstr "工具箱"
 
 #: dashboard/templates/toolbox.html:38
 msgid "Make Gitcoin your own by enabling the tools that suit your needs."
-msgstr ""
-"Machen Sie sich das Gitcoin zu Eigen, indem Sie die Tools aktivieren, die "
-"Ihren Anforderungen entsprechen."
+msgstr "通过启用适合您需求的工具来让Gitcoin成为您自己的工具。"
 
 #: dashboard/templates/toolbox.html:47
 msgid "Table of Contents"
-msgstr "Inhaltsverzeichnis"
+msgstr "目录"
 
 #: dashboard/templates/yge/receive.html:46
 #: dashboard/templates/yge/redeem_coin.html:45
 #: ethos/templates/redeem_ethos.html:45
 msgid "Loading"
-msgstr "Wird geladen"
+msgstr "载入中"
 
 #: dashboard/templates/yge/receive.html:48
 #: dashboard/templates/yge/redeem_coin.html:47
 #: ethos/templates/redeem_ethos.html:47
 msgid "waiting for web3..."
-msgstr "Warten auf Web3 ..."
+msgstr "等待web3 ..."
 
 #: dashboard/templates/yge/receive.html:51
 msgid "You've Got ETH!"
-msgstr "Du hast ETH!"
+msgstr "你有ETH！"
 
 #: dashboard/templates/yge/receive.html:52
 #: dashboard/templates/yge/redeem_coin.html:51
 #: ethos/templates/redeem_ethos.html:51
 msgid "To claim it, please install MetaMask and refresh the page."
-msgstr ""
-"Um es zu beanspruchen, installieren Sie bitte MetaMask und aktualisieren Sie"
-" die Seite."
+msgstr "要声明它，请安装MetaMask并刷新页面。"
 
 #: dashboard/templates/yge/receive.html:53
 #: dashboard/templates/yge/redeem_coin.html:52
 #: ethos/templates/redeem_ethos.html:52
 msgid "Install Metamask"
-msgstr "Installieren Sie Metamask"
+msgstr "安装Metamask"
 
 #: dashboard/templates/yge/receive.html:56
 #: dashboard/templates/yge/redeem_coin.html:55
 #: ethos/templates/redeem_ethos.html:55
 msgid "What is Metamask?"
-msgstr "Was ist Metamask?"
+msgstr "什么是Metamask？"
 
 #: dashboard/templates/yge/receive.html:60
 msgid "Receive Ethereum Now."
-msgstr "Empfange jetzt Astraleum."
+msgstr "立即收到以太坊。"
 
 #: dashboard/templates/yge/receive.html:68
 msgid "Forward it to a permanent address:"
-msgstr "Weiterleiten an eine feste Adresse:"
+msgstr "将其转发到永久地址："
 
 #: dashboard/templates/yge/receive.html:74
 #: dashboard/templates/yge/redeem_coin.html:67
 msgid "Claim"
-msgstr "Anspruch"
+msgstr "要求"
 
 #: dashboard/templates/yge/receive.html:74 retail/templates/getgitcoin.html:57
 msgid "Tip"
-msgstr "Spitze"
+msgstr "小费"
 
 #: dashboard/templates/yge/receive.html:79
 #: dashboard/templates/yge/redeem_coin.html:72
 msgid "Congrats!"
-msgstr "Glückwunsch!"
+msgstr "恭喜！"
 
 #: dashboard/templates/yge/receive.html:80
 msgid "You've received Ethereum via transaction <span id=\"trans_id\"></span>."
-msgstr ""
-"Sie haben Ethereum über die Transaktion <span id = \"trans_id\"> </ span> "
-"erhalten."
+msgstr "您已通过交易<span id =“trans_id”> </ span>收到以太坊。"
 
 #: dashboard/templates/yge/redeem_coin.html:50
 #: dashboard/templates/yge/redeem_coin.html:59
 msgid "You've got 1 COLO!"
-msgstr "Du hast 1 COLO!"
+msgstr "你有1个COLO！"
 
 #: dashboard/templates/yge/redeem_coin.html:61
 msgid "Enter a forwarding address"
-msgstr "Geben Sie eine Weiterleitungsadresse ein"
+msgstr "输入转发地址"
 
 #: dashboard/templates/yge/redeem_coin.html:73
 msgid "You've redeemed 1 COLO."
-msgstr "Sie haben 1 COLO eingelöst."
+msgstr "你已经兑换了1支COLO。"
 
 #: dashboard/templates/yge/send1.html:38
 msgid "It's Fast.  It's Easy.  It's Free.️"
-msgstr "Es ist schnell. Es ist einfach. Es ist kostenlos"
+msgstr "它很快。这很容易。这是免费的"
 
 #: dashboard/templates/yge/send1.html:39
 msgid "Supports any github username or email address"
-msgstr "Unterstützt jeden github Benutzernamen oder E-Mail Adresse"
+msgstr "支持任何github用户名或电子邮件地址"
 
 #: dashboard/templates/yge/send1.html:42
 msgid "receipient"
-msgstr "Empfänger"
+msgstr "RECEIPIENT"
 
 #: dashboard/templates/yge/send1.html:43 dashboard/templates/yge/send1.html:44
 #: dashboard/templates/yge/send1.html:45 dashboard/templates/yge/send1.html:46
 msgid "receipients"
-msgstr "Empfänger"
+msgstr "receipients"
 
 #: dashboard/templates/yge/send1.html:49
 msgid "Send Ether"
-msgstr "Sende Ether"
+msgstr "发送Ether"
 
 #: dashboard/templates/yge/send2.html:41
 msgid "Send Tip."
-msgstr "Senden Sie einen Tipp."
+msgstr "发送提示。"
 
 #: dashboard/templates/yge/send2.html:44
 msgid "Amount of"
-msgstr "Menge von"
+msgstr "金额"
 
 #: dashboard/templates/yge/send2.html:52
 msgid "To Github Username"
-msgstr "Zum Github-Benutzernamen"
+msgstr "以Github用户名"
 
 #: dashboard/templates/yge/send2.html:60
 msgid "Related Github Issue URL"
-msgstr "Verwandte Github-Problem-URL"
+msgstr "相关的Github问题URL"
 
 #: dashboard/templates/yge/send2.html:60 dashboard/templates/yge/send2.html:64
 #: dashboard/templates/yge/send2.html:68 dashboard/templates/yge/send2.html:72
 #: dashboard/templates/yge/send2.html:90 dashboard/templates/yge/send2.html:94
 msgid "optional"
-msgstr "wahlweise"
+msgstr "可选的"
 
 #: dashboard/templates/yge/send2.html:64
 msgid "To Email address"
-msgstr "Zur E-Mail-Adresse"
+msgstr "到电子邮件地址"
 
 #: dashboard/templates/yge/send2.html:68
 msgid "From Name"
-msgstr "Von Namen"
+msgstr "来自名字"
 
 #: dashboard/templates/yge/send2.html:72
 msgid "From Email"
-msgstr "Aus der Email"
+msgstr "从电子邮件"
 
 #: dashboard/templates/yge/send2.html:76
 msgid "Expires"
-msgstr "Läuft ab"
+msgstr "过期"
 
 #: dashboard/templates/yge/send2.html:78 marketing/mails.py:338
 msgid "day"
-msgstr "Tag"
+msgstr "天"
 
 #: dashboard/templates/yge/send2.html:79
 msgid "days"
-msgstr "Tage"
+msgstr "天"
 
 #: dashboard/templates/yge/send2.html:80
 msgid "week"
-msgstr "Woche"
+msgstr "周"
 
 #: dashboard/templates/yge/send2.html:81
 msgid "weeks"
-msgstr "Wochen"
+msgstr "周"
 
 #: dashboard/templates/yge/send2.html:82
 msgid "month"
-msgstr "Monat"
+msgstr "月"
 
 #: dashboard/templates/yge/send2.html:83 dashboard/templates/yge/send2.html:84
 msgid "months"
-msgstr "Monate"
+msgstr "个月"
 
 #: dashboard/templates/yge/send2.html:85
 msgid "year"
-msgstr "Jahr"
+msgstr "年"
 
 #: dashboard/templates/yge/send2.html:90
 msgid "Private Comments"
-msgstr "Private Kommentare"
+msgstr "私人评论"
 
 #: dashboard/templates/yge/send2.html:94
 msgid "Public Comments"
-msgstr "Öffentliche Kommentare"
+msgstr "公众意见"
 
 #: dashboard/templates/yge/send2.html:101
 msgid ""
 "I understand &amp; agree to the <a href=\"https://gitcoin.co/terms\">terms "
 "of service</a>."
-msgstr ""
-"Ich verstehe & amp; stimme den <a href=\"https://gitcoin.co/terms\"> "
-"Nutzungsbedingungen zu </a>."
+msgstr "我明白＆amp;同意<a href=\"https://gitcoin.co/terms\">服务条款</a>。"
 
 #: dashboard/templates/yge/send2.html:106
 msgid "Woo hoo!"
-msgstr "Woo hoo!"
+msgstr "呜呼！"
 
 #: dashboard/templates/yge/send2.html:107
 msgid ""
@@ -1411,223 +1335,205 @@ msgid ""
 "target=\"_blank\" rel=\"noopener noreferrer\" id=\"trans_link\">to the "
 "blockchain</a>."
 msgstr ""
-"Ihr <span id = \"tokenName\"> ETH </ span> wurde <a href=\"\" "
-"target=\"_blank\" rel=\"noopener noreferrer\" id=\"trans_link\"> an die "
-"Blockchain </a> gesendet."
+"您的<span id =“tokenName”> ETH </ span>已发送<a href=\"\" target=\"_blank\" "
+"rel=\"noopener noreferrer\" id=\"trans_link\">至区块链</a>。"
 
 #: dashboard/templates/yge/send2.html:109
 msgid "The transaction is still pending."
-msgstr "Die Transaktion steht noch aus."
+msgstr "交易仍在等待中。"
 
 #: dashboard/templates/yge/send2.html:109
 msgid "This page will auto-update when the transaction is confirmed"
-msgstr ""
-"Diese Seite wird automatisch aktualisiert, wenn die Transaktion bestätigt "
-"wird"
+msgstr "交易确认后，此页面将自动更新"
 
 #: dashboard/templates/yge/send2.html:109
 msgid "but you can close the browser window if you want"
-msgstr "aber Sie können das Browserfenster schließen, wenn Sie möchten"
+msgstr "但如果需要，您可以关闭浏览器窗口"
 
 #: dashboard/templates/yge/send2.html:114
 msgid "<span id=\"new_username\"></span> has been notified"
-msgstr "<span id = \"neuer_Nutzername\"> </ span> wurde benachrichtigt"
+msgstr "<span id =“new_username”> </ span>已被通知"
 
 #: dashboard/templates/yge/send2.html:115
 msgid "with instructions about how to receive their tip."
-msgstr "mit Anweisungen darüber, wie Sie ihren Trinkgeld erhalten."
+msgstr "并提供有关如何获得小费的说明。"
 
 #: dashboard/templates/yge/send2.html:117
 msgid "Start Over"
-msgstr "Von vorn anfangen"
+msgstr "重来"
 
 #: dashboard/views.py:134
 msgid "Add Interest"
-msgstr "Zinsen hinzufügen"
+msgstr "添加兴趣"
 
 #: dashboard/views.py:169 dashboard/views.py:245 faucet/views.py:61
 msgid "You must be authenticated via github to use this feature!"
-msgstr ""
-"Sie müssen über Github authentifiziert sein, um diese Funktion nutzen zu "
-"können!"
+msgstr "您必须通过github进行身份验证才能使用此功能！"
 
 #: dashboard/views.py:183
 #, python-brace-format
 msgid "You may only work on max of {num_issues} issues at once."
-msgstr ""
-"Sie können nur mit maximal {num_issues} Problemen gleichzeitig arbeiten."
+msgstr "您只能一次处理最多{num_issues}个问题。"
 
 #: dashboard/views.py:189
 msgid ""
 "Because a staff member has had to remove you from a bounty in the past, you "
 "are unable to start more work at this time. Please contact support."
-msgstr ""
-"Da ein Mitarbeiter Sie in der Vergangenheit von einem Bounty entfernen "
-"musste, können Sie zu diesem Zeitpunkt nicht mehr arbeiten. Bitte "
-"kontaktieren Sie den Support."
+msgstr "由于工作人员过去不得不将您从赏金中除名，此时您无法开始更多工作。请联系支持。"
 
 #: dashboard/views.py:196 dashboard/views.py:212
 msgid "You have already expressed interest in this bounty!"
-msgstr "Sie haben bereits Interesse an dieser Prämie gezeigt!"
+msgstr "你已经表达了对这个赏金的兴趣！"
 
 #: dashboard/views.py:264
 msgid "You haven't expressed interest on this bounty."
-msgstr "Sie haben Interesse an dieser Prämie nicht ausgedrückt."
+msgstr "你没有表达过对这个赏金的兴趣。"
 
 #: dashboard/views.py:348
 msgid "Tip has been received"
-msgstr "Tipp wurde erhalten"
+msgstr "提示已收到"
 
 #: dashboard/views.py:374
 msgid "Receive Tip"
-msgstr "Trinkgeld erhalten"
+msgstr "接收提示"
 
 #: dashboard/views.py:404
 msgid "Notification has been sent"
-msgstr "Benachrichtigung wurde gesendet"
+msgstr "通知已发送"
 
 #: dashboard/views.py:457
 msgid ""
 "Uh oh! No email addresses for this user were found via Github API.  Youll "
 "have to let the tipee know manually about their tip."
-msgstr ""
-"Oh oh! Über die Github API wurden keine E-Mail-Adressen für diesen Benutzer "
-"gefunden. Sie müssen den Tipee manuell über ihren Tipp wissen lassen."
+msgstr "呃哦！没有通过Github API找到该用户的电子邮件地址。你必须让Tipee手动了解他们的提示。"
 
 #: dashboard/views.py:476
 msgid "Onboarding Flow"
-msgstr "Onboarding-Fluss"
+msgstr "入职流程"
 
 #: dashboard/views.py:484 retail/templates/shared/footer.html:26
 #: retail/templates/shared/nav.html:37
 msgid "Issue Explorer"
-msgstr "Problem-Explorer"
+msgstr "问题浏览器"
 
 #: dashboard/views.py:510
 msgid "Create Funded Issue"
-msgstr "Erstellen Sie ein finanziertes Problem"
+msgstr "创建资助问题"
 
 #: dashboard/views.py:546
 msgid "Process Issue"
-msgstr "Prozessproblem"
+msgstr "流程问题"
 
 #: dashboard/views.py:613
 msgid "Increase Bounty"
-msgstr "Bounty erhöhen"
+msgstr "增加赏金"
 
 #: dashboard/views.py:687
 msgid "Funded Issue Details | Gitcoin"
-msgstr "Funded Details zum Thema | Gitcoin"
+msgstr "资金问题详情| Gitcoin"
 
 #: dashboard/views.py:724
 #, python-brace-format
 msgid "Warning messages have been snoozed for {snooze_days} days"
-msgstr "Warnmeldungen wurden für {snooze_days} Tage verschoben"
+msgstr "警告讯息已延期{snooze_days}天"
 
 #: dashboard/views.py:726
 msgid "Only the funder of this bounty may snooze warnings."
-msgstr "Nur der Geldgeber dieser Prämie darf Warnungen unterdrücken."
+msgstr "只有这个赏金的资助者可能会打瞌睡警告。"
 
 #: dashboard/views.py:963
 msgid "Basics"
-msgstr "Grundlagen"
+msgstr "基本"
 
 #: dashboard/views.py:964 dashboard/views.py:1011
 msgid "Accelerate your dev workflow with Gitcoin's incentivization tools."
-msgstr ""
-"Beschleunigen Sie Ihren Entwicklungsprozess mit Gitcoins "
-"Incentivierungswerkzeugen."
+msgstr "使用Gitcoin的激励工具加速您的开发工作流程。"
 
 #: dashboard/views.py:968
 msgid "Take your OSS game to the next level!"
-msgstr "Bringen Sie Ihr OSS-Spiel auf die nächste Stufe!"
+msgstr "把你的OSS游戏提升到一个新的水平！"
 
 #: dashboard/views.py:971
 msgid "Community"
-msgstr "Gemeinschaft"
+msgstr "社区"
 
 #: dashboard/views.py:972
 msgid "Friendship, mentorship, and community are all part of the process."
-msgstr ""
-"Freundschaft, Mentorschaft und Gemeinschaft sind Teil dieses Prozesses."
+msgstr "友谊，指导和社区都是这个过程的一部分。"
 
 #: dashboard/views.py:975
 msgid "Tools to BUIDL Gitcoin"
-msgstr "Werkzeuge zu BUIDL Gitcoin"
+msgstr "BUIDL Gitcoin的工具"
 
 #: dashboard/views.py:976
 msgid "Gitcoin is built using Gitcoin.  Purdy cool, huh? "
-msgstr "Gitcoin wird mit Gitcoin gebaut. Purdy cool, nicht wahr?"
+msgstr "Gitcoin使用Gitcoin构建。 Purdy很酷，是吧？"
 
 #: dashboard/views.py:979
 msgid "Tools in Alpha"
-msgstr "Werkzeuge in Alpha"
+msgstr "Alpha中的工具"
 
 #: dashboard/views.py:980
 msgid "These fresh new tools are looking for someone to test ride them!"
-msgstr "Diese neuen, neuen Tools suchen jemanden, der sie testen kann!"
+msgstr "这些新的新工具正在寻找人来测试他们！"
 
 #: dashboard/views.py:983
 msgid "Tools Coming Soon"
-msgstr "Werkzeuge, die bald kommen"
+msgstr "工具即将推出"
 
 #: dashboard/views.py:984
 msgid ""
 "These tools will be ready soon.  They'll get here sooner if you help BUIDL "
 "them :)"
-msgstr ""
-"Diese Werkzeuge werden bald fertig sein. Sie werden früher hier ankommen, "
-"wenn Sie BUIDL ihnen helfen :)"
+msgstr "这些工具即将准备就绪。如果你帮助BUIDL他们会更快到达这里:)"
 
 #: dashboard/views.py:987
 msgid "Just for Fun"
-msgstr "Nur zum Spaß"
+msgstr "只是为了好玩"
 
 #: dashboard/views.py:988
 msgid "Some tools that the community built *just because* they should exist."
-msgstr ""
-"Einige Tools, die die Community gebaut hat, nur weil * sie existieren "
-"sollten."
+msgstr "一些社区建立的工具*仅仅是因为它们应该存在。"
 
 #: dashboard/views.py:1009
 msgid "Gitcoin Toolbox"
-msgstr "Gitcoin-Toolbox"
+msgstr "Gitcoin工具箱"
 
 #: dashboard/views.py:1013
 msgid "Don't Miss New Tools!"
-msgstr "Verpasse keine neuen Werkzeuge!"
+msgstr "不要错过新工具！"
 
 #: dashboard/views.py:1117 ethos/views.py:229
 msgid "Bad request"
-msgstr "Ungültige Anforderung"
+msgstr "错误的请求"
 
 #: dashboard/views.py:1135
 msgid "Coin Redemption"
-msgstr "Einlösung von Münzen"
+msgstr "硬币赎回"
 
 #: dashboard/views.py:1136
 msgid "PENDING"
-msgstr "STEHT AUS"
+msgstr "PENDING"
 
 #: dashboard/views.py:1143
 msgid "INITIAL"
-msgstr "INITIALE"
+msgstr "初始"
 
 #: dataviz/models.py:30
 msgid "key for this data report"
-msgstr "Schlüssel für diesen Datenbericht"
+msgstr "这个数据报告的关键"
 
 #: dataviz/models.py:31
 msgid "The report associated with this project"
-msgstr "Der mit diesem Projekt verknüpfte Bericht"
+msgstr "与此项目相关的报告"
 
 #: dataviz/templates/stats.html:34
 msgid "Activity"
-msgstr "Aktivität"
+msgstr "活动"
 
 #: dataviz/templates/stats.html:35
 msgid "Marketing"
-msgstr "Marketing"
+msgstr "营销"
 
 #: dataviz/templates/stats.html:36
 msgid "KPI"
@@ -1643,213 +1549,207 @@ msgstr "user_skills"
 
 #: dataviz/templates/stats.html:40
 msgid "Hourly"
-msgstr "Stündlich"
+msgstr "每小时"
 
 #: dataviz/templates/stats.html:41
 msgid "Daily"
-msgstr "Täglich"
+msgstr "日常"
 
 #: dataviz/templates/stats.html:42
 msgid "Weekly"
-msgstr "Wöchentlich"
+msgstr "每周"
 
 #: dataviz/templates/stats.html:44
 msgid "Charts"
-msgstr "Diagramme"
+msgstr "图表"
 
 #: dataviz/templates/stats.html:45
 msgid "Table"
-msgstr "Tabelle"
+msgstr "表"
 
 #: dataviz/templates/stats.html:61
 msgid "Chart will be rendered here"
-msgstr "Diagramm wird hier gerendert"
+msgstr "图表将在这里呈现"
 
 #: ethos/templates/redeem_ethos.html:50
-#, fuzzy
-#| msgid "You've redeemed 1 COLO."
 msgid "You've received an EthOS"
-msgstr "Sie haben ein EthOS erhalten"
+msgstr "你已经收到了EthOS"
 
 #: ethos/templates/redeem_ethos.html:59
-#, fuzzy
-#| msgid "You've Got ETH!"
 msgid "You've got Ethos!"
-msgstr "Du hast Ethos!"
+msgstr "你有Ethos！"
 
 #: ethos/templates/redeem_ethos.html:60
 msgid "Here's how to play:"
-msgstr "So spielt man:"
+msgstr "以下是如何玩："
 
 #: ethos/templates/redeem_ethos.html:67
 msgid "This experiment is over!"
-msgstr "Dieses Experiment ist vorbei!"
+msgstr "这个实验结束了！"
 
 #: ethos/views.py:172
 msgid "Duplicate transaction detected"
-msgstr "Doppelte Transaktion erkannt"
+msgstr "检测到重复的事务"
 
 #: ethos/views.py:218
 msgid "Error while fetching Twitter account. Please try again"
-msgstr "Fehler beim Abrufen des Twitter-Kontos. Bitte versuche es erneut"
+msgstr "提取Twitter帐户时出错。请再试一次"
 
 #: ethos/views.py:225
 #, python-brace-format
 msgid "Error while tweeting to Twitter. {e}"
-msgstr "Fehler beim Twittern auf Twitter. {e}"
+msgstr "发微博时发生错误。 {E}"
 
 #: ethos/views.py:237
 msgid "Error while creating transaction. Please try again"
-msgstr "Fehler beim Erstellen der Transaktion. Bitte versuche es erneut"
+msgstr "创建交易时出错。请再试一次"
 
 #: ethos/views.py:262
 msgid "EthOS Coin"
-msgstr "EthOS-Münze"
+msgstr "EthOS硬币"
 
 #: external_bounties/models.py:36
 msgid "Where to send interested parties"
-msgstr "Wohin schicken Sie Interessenten?"
+msgstr "在哪里发送感兴趣的各方"
 
 #: external_bounties/models.py:39
 msgid "Plainext only please!"
-msgstr "Bitte nur Plainext!"
+msgstr "只有Plainext请！"
 
 #: external_bounties/models.py:40
 msgid "The upstream project being linked it.."
-msgstr "Das vorgelagerte Projekt wird verlinkt .."
+msgstr "上游项目被链接.."
 
 #: external_bounties/models.py:45
 msgid "comma delimited"
-msgstr "Komma abgegrenzt"
+msgstr "逗号分隔"
 
 #: external_bounties/models.py:47
 msgid ""
 "string representation of the payout (only needed it amount/denomination "
 "cannot be filled out"
-msgstr ""
-"String-Darstellung der Auszahlung (nur benötigt Betrag / Nennwert kann nicht"
-" ausgefüllt werden"
+msgstr "支付的字符串表示（只需要它的金额/面额不能填写"
 
 #: external_bounties/templates/external_bounties.html:23
 #: external_bounties/templates/external_bounties_show.html:30
 msgid "Bounties Universe"
-msgstr "Kopfgeld-Universum"
+msgstr "赏金宇宙"
 
 #: external_bounties/templates/external_bounties.html:23
 #: external_bounties/templates/external_bounties_show.html:30
 #: faucet/templates/faucet_form.html:37 retail/templates/gas.html:65
 msgid "Alpha"
-msgstr "Alpha"
+msgstr "Α"
 
 #: external_bounties/templates/external_bounties.html:30
 msgid "View API"
-msgstr "API anzeigen"
+msgstr "查看API"
 
 #: external_bounties/templates/external_bounties.html:43
 msgid "Sort by"
-msgstr "Sortiere nach"
+msgstr "排序方式"
 
 #: external_bounties/templates/external_bounties.html:44
 msgid "Oldest"
-msgstr "Älteste"
+msgstr "最老的"
 
 #: external_bounties/templates/external_bounties.html:45
 msgid "Newest"
-msgstr "Neueste"
+msgstr "最新"
 
 #: external_bounties/templates/external_bounties.html:46
 msgid "Highest Value"
-msgstr "Höchster Wert"
+msgstr "最高价值"
 
 #: external_bounties/templates/external_bounties.html:47
 msgid "Lowest Value"
-msgstr "Niedrigster Wert"
+msgstr "最低价值"
 
 #: external_bounties/templates/external_bounties.html:54
 msgid "Categories"
-msgstr "Kategorien"
+msgstr "分类"
 
 #: external_bounties/templates/external_bounties.html:66
 msgid "Post New"
-msgstr "Neue Nachricht verfassen"
+msgstr "发布新功能"
 
 #: external_bounties/templates/external_bounties.html:136
 msgid "first"
-msgstr "zuerst"
+msgstr "第一"
 
 #: external_bounties/templates/external_bounties.html:137
 msgid "previous"
-msgstr "Bisherige"
+msgstr "以前"
 
 #: external_bounties/templates/external_bounties.html:141
 #, python-format
 msgid ""
-"Page %(bounties_paginator.number)s of %(bounties_paginator.paginator.num_pages)s."
-msgstr "Seite %(bounties_paginator.number)s von %(bounties_paginator.paginator.num_pages)s."
+"Page %(bounties_paginator.number)s of "
+"%(bounties_paginator.paginator.num_pages)s."
+msgstr ""
+"％（bounties_paginator.paginator.num_pages）s的页％（bounties_paginator.number）s。"
 
 #: external_bounties/templates/external_bounties.html:145
 msgid "next"
-msgstr "Nächster"
+msgstr "下一个"
 
 #: external_bounties/templates/external_bounties.html:146
 msgid "last"
-msgstr "letzte"
+msgstr "持续"
 
 #: external_bounties/templates/external_bounties_new.html:28
 #: external_bounties/views.py:135
 msgid "New Universal Bounty"
-msgstr "Neue Universale Prämie"
+msgstr "新的通用赏金"
 
 #: external_bounties/templates/external_bounties_new.html:42
 #: external_bounties/templates/external_bounties_show.html:81
 msgid "Go Back"
-msgstr "Geh zurück"
+msgstr "回去"
 
 #: external_bounties/templates/external_bounties_show.html:45
 msgid "created"
-msgstr "erstellt"
+msgstr "创建"
 
 #: external_bounties/templates/external_bounties_show.html:47
 msgid "source"
-msgstr "Quelle"
+msgstr "资源"
 
 #: external_bounties/templates/external_bounties_show.html:51
 msgid "View Bounty"
-msgstr "Bounty anzeigen"
+msgstr "查看赏金"
 
 #: external_bounties/templates/external_bounties_show.html:55
 msgid "Funding"
-msgstr "Finanzierung"
+msgstr "资金"
 
 #: external_bounties/views.py:57
 msgid "Created"
-msgstr "Erstellt"
+msgstr "创建"
 
 #: external_bounties/views.py:59
 msgid "Value"
-msgstr "Wert"
+msgstr "值"
 
 #: external_bounties/views.py:112 external_bounties/views.py:191
 msgid "Bounty Universe Explorer"
-msgstr "Kopfgeld-Universum-Explorer"
+msgstr "赏金宇宙探险家"
 
 #: external_bounties/views.py:113
 msgid "Bounties for Software Work from across the internets."
-msgstr "Prämien für Software Arbeiten aus dem gesamten Internet."
+msgstr "来自互联网上的软件工作的赏金。"
 
 #: external_bounties/views.py:136
 msgid "Create a new Bounty for Software Work from across the internets."
-msgstr "Erstellen Sie eine neue Bounty für Software-Arbeit über das Internet."
+msgstr "从互联网上为软件工作创造新的赏金。"
 
 #: external_bounties/views.py:150
 msgid "An email has been sent to an administrator to approve your submission"
-msgstr ""
-"Eine E-Mail wurde an einen Administrator gesendet, um Ihre Einreichung zu "
-"bestätigen"
+msgstr "电子邮件已发送给管理员以批准您的提交"
 
 #: faucet/templates/faucet_form.html:37
 msgid "Faucet Request"
-msgstr "Wasserhahn Anfrage"
+msgstr "水龙头请求"
 
 #: faucet/templates/faucet_form.html:39
 msgid ""
@@ -1860,111 +1760,103 @@ msgid ""
 "                  "
 msgstr ""
 "\n"
-"Ethereum und Gitcoin für Gitcoin zugänglich machen\n"
-"                  kann eine minimale Wasserhahn Verteilung von Ether bieten, so können Sie leicht\n"
-"                  Ansprüche geltend machen und mehr Äther gewinnen."
+"遵循让Ethereum和Gitcoin广泛适用于所有人的Gitcoin\n"
+"                  可能会提供一个最小的乙醚水龙头分布，所以你可以很容易地\n"
+"                  索赔问题并获得更多的以太。"
 
 #: faucet/templates/faucet_form.html:55
 msgid "Please note, all input fields are required. Comment is optional."
-msgstr ""
-"Bitte beachten Sie, dass alle Eingabefelder erforderlich sind. Kommentar ist"
-" optional."
+msgstr "请注意，所有输入字段都是必需的。评论是可选的。"
 
 #: faucet/templates/faucet_form.html:58
 #: faucet/templates/process_faucet_request.html:35
 msgid "Github Profile"
-msgstr "Github-Profil"
+msgstr "Github简介"
 
 #: faucet/templates/faucet_form.html:67
 msgid "Email Address"
-msgstr "E-Mail-Addresse"
+msgstr "电子邮件地址"
 
 #: faucet/templates/faucet_form.html:72
 msgid "Comment"
-msgstr "Kommentar"
+msgstr "评论"
 
 #: faucet/templates/faucet_form.html:72
 msgid "char left"
-msgstr "Char links"
+msgstr "char留下"
 
 #: faucet/templates/faucet_form.html:80
 msgid "Proceed"
-msgstr "Vorgehen"
+msgstr "继续"
 
 #: faucet/templates/faucet_form.html:85
 msgid "Request Received"
-msgstr "Anfrage erhalten"
+msgstr "已收到请求"
 
 #: faucet/templates/faucet_form.html:88
-#, fuzzy
-#| msgid ""
-#| "You request for a faucet distribution has been received. An administrator "
-#| "will review your request shortly and arrange a deposit if approved."
 msgid ""
 "Your request for a faucet distribution has been received. An administrator "
 "will review your request shortly (up to 24 hours on weekdays, on next "
 "business day if on weekends / holidays) and arrange a deposit if approved."
-msgstr ""
-"Ihre Anfrage für eine Wasserhahn Verteilung wurde erhalten. Ein "
-"Administrator überprüft Ihre Anfrage in Kürze (bis zu 24 Stunden an "
-"Wochentagen, am nächsten Werktag, wenn an Wochenenden / Feiertagen) und "
-"arrangiert eine Anzahlung, sofern genehmigt."
+msgstr "您的水龙头分销请求已收到。管理员很快会审核您的请求（平日至24小时，如果周末/假日在下一个工作日），并在批准后安排存款。"
 
 #: faucet/templates/faucet_form.html:93
 msgid "There was an error"
-msgstr "Es gab einen Fehler"
+msgstr "有一个错误"
 
 #: faucet/templates/faucet_form.html:96
 msgid "Something went wrong submitting your request"
-msgstr "Bei der Übermittlung Ihrer Anfrage ist ein Fehler aufgetreten"
+msgstr "提交您的请求出错了"
 
 #: faucet/templates/process_faucet_request.html:33
 msgid "Process Faucet Request"
-msgstr "Prozesshahn Anfrage"
+msgstr "过程水龙头请求"
 
 #: faucet/templates/process_faucet_request.html:38
 #: retail/templates/settings/feedback.html:8
 #: retail/templates/whitepaper_new.html:133
 msgid "Comments"
-msgstr "Bemerkungen"
+msgstr "注释"
 
 #: faucet/templates/process_faucet_request.html:40
 msgid "MetaMask Extension Not Detected"
-msgstr "MetaMask-Erweiterung nicht erkannt"
+msgstr "未检测到MetaMask扩展"
 
 #: faucet/templates/process_faucet_request.html:41
 msgid "Please Unlock MetaMask To Continue"
-msgstr "Bitte entsperren Sie MetaMask, um fortzufahren"
+msgstr "请解锁MetaMask以继续"
 
 #: faucet/templates/process_faucet_request.html:42
 msgid "MetaMask Active Account Is Empty"
-msgstr "Aktives MetaMask-Konto ist leer"
+msgstr "MetaMask活动账户为空"
 
 #: faucet/templates/process_faucet_request.html:47
 msgid "Transaction Failed"
-msgstr "Transaktion fehlgeschlagen"
+msgstr "交易失败"
 
 #: faucet/templates/process_faucet_request.html:51
 #, python-format
-msgid "By funding this faucet request, you will transfer %(faucet_amount)s ETH to\n    %(obj.github_username)s with a wallet address of %(obj.address)s"
-msgstr "Mit der Finanzierung dieser Wasserhahn-Anfrage überweisen Sie %(faucet_amount)s ETH an\n    %(obj.github_username)s mit einer Wallet-Adresse von %(obj.address)s"
+msgid ""
+"By funding this faucet request, you will transfer %(faucet_amount)s ETH to\n"
+"    %(obj.github_username)s with a wallet address of %(obj.address)s"
+msgstr ""
+"通过资助这个水龙头请求，你将把 %(faucet_amount)s ETH转移到\n"
+"    钱包地址为％（obj.address）的％（obj.github_username）s"
 
 #: faucet/templates/process_faucet_request.html:70
 msgid ""
 "Please tell us what you're planning on using these funds for in the comments"
 " section!  Thanks."
-msgstr ""
-"Bitte teilen Sie uns im Kommentarbereich mit, was Sie für die Verwendung "
-"dieser Mittel planen! Vielen Dank."
+msgstr "请告诉我们您在评论部分使用这些资金的计划！谢谢。"
 
 #: faucet/templates/shared/faucet_network_status.html:24
 msgid "About Zero"
-msgstr "Über Null"
+msgstr "关于零"
 
 #: faucet/templates/shared/faucet_no_metamask_error.html:21
 #: faucet/templates/shared/faucet_unlock_metamask.html:21
 msgid "Apply for a faucet distribution"
-msgstr "Bewerben Sie sich für eine Wasserhahn Verteilung"
+msgstr "申请水龙头分销"
 
 #: faucet/templates/shared/faucet_no_metamask_error.html:30
 msgid ""
@@ -1973,246 +1865,224 @@ msgid ""
 " target=\"_blank\" rel=\"noopener noreferrer\"> Metamask</a>. To continue "
 "submitting a bounty, please install Metamask and return to this page."
 msgstr ""
-"Der schnellste und einfachste Weg, Web3 zu Ihrem Browser hinzuzufügen, ist "
-"die Installation von <a href = "
-"\"https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=de\""
-" target = \"_ blank\" rel = \"noopener noreferrer \"> Metamask </a>. Um "
-"weiterhin ein Bounty zu senden, installieren Sie bitte Metamask und kehren "
-"Sie zu dieser Seite zurück."
+"将Web3添加到浏览器的最快速和最简单的方法是安装<a href "
+"=“https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en”target"
+" =“_ blank”rel =“noopener noreferrer“> Metamask "
+"</a>。要继续提交赏金，请安装Metamask并返回此页面。"
 
 #: faucet/templates/shared/faucet_over_balance_error.html:22
 msgid "You Appear to Have Ether!"
-msgstr "Du scheinst Ether zu haben!"
+msgstr "你似乎有以太！"
 
 #: faucet/templates/shared/faucet_over_balance_error.html:24
 msgid "Thank you for your interest in receiving a faucet distribution."
-msgstr "Vielen Dank für Ihr Interesse an einer Wasserhahnverteilung."
+msgstr "感谢您对获得水龙头分销的兴趣。"
 
 #: faucet/templates/shared/faucet_over_balance_error.html:27
 msgid ""
 "You have more ether currently in your wallet than the distribution would "
 "provide. Please use that ether to pay the transaction cost."
-msgstr ""
-"Sie haben derzeit mehr Ether in Ihrer Brieftasche, als die Distribution "
-"bereitstellen würde. Bitte benutzen Sie diesen Äther, um die "
-"Transaktionskosten zu bezahlen."
+msgstr "你的钱包中有更多的乙醚比发行版提供的更多。请使用该乙方支付交易成本。"
 
 #: faucet/templates/shared/faucet_unlock_metamask.html:34
 msgid "Can't get web3 to work? Get help here."
-msgstr "Kann web3 nicht zur Arbeit kommen? Holen Sie sich Hilfe hier."
+msgstr "无法让web3工作？在这里获得帮助。"
 
 #: faucet/views.py:42
 msgid "Gitcoin Faucet"
-msgstr "Gitcoin Wasserhahn"
+msgstr "Gitcoin水龙头"
 
 #: faucet/views.py:43
 msgid ""
 "Request a distribution of ETH so you can use the Ethereum network and "
 "Gitcoin."
-msgstr ""
-"Fordern Sie eine Verteilung der ETH an, damit Sie das Ethereum-Netzwerk und "
-"Gitcoin nutzen können."
+msgstr "请求分配ETH，以便您可以使用Ethereum网络和Gitcoin。"
 
 #: faucet/views.py:74
 msgid "The submitted github profile shows a previous faucet distribution."
-msgstr ""
-"Das eingereichte GitHub-Profil zeigt eine vorherige Wasserhahnverteilung."
+msgstr "提交的github配置文件显示了之前的龙头分配。"
 
 #: faucet/views.py:78
 msgid "The submitted github profile shows a pending faucet distribution."
-msgstr "Das eingereichte GitHub-Profil zeigt eine ausstehende Hahnverteilung."
+msgstr "提交的github配置文件显示一个待处理的龙头分配。"
 
 #: faucet/views.py:91
 msgid "Created."
-msgstr "Erstellt."
+msgstr "创建。"
 
 #: gitcoinbot/views.py:63
 msgid "Gitcoinbot Responded"
-msgstr "Gitcoinbot antwortete"
+msgstr "Gitcoinbot回应"
 
 #: marketing/mails.py:59
 msgid "[DEBUG] "
-msgstr "[DEBUGGEN]"
+msgstr "[DEBUG]"
 
 #: marketing/mails.py:116
 msgid "⚡️ New Tip Worth {} {} {}"
-msgstr "⚡️ Neuer Tipp wert {} {} {}"
+msgstr "⚡️新提示值得{} {} {}"
 
 #: marketing/mails.py:118
 msgid "🕐 Tip Worth {} {} {} Expiring Soon"
-msgstr "🕐 Trinkgeld wert {} {} {} Abgelaufen in Kürze"
+msgstr "🕐提示值{} {} {}即将过期"
 
 #: marketing/mails.py:139
 msgid "New Faucet Request"
-msgstr "Neue Wasserhahn Anfrage"
+msgstr "新的水龙头请求"
 
 #: marketing/mails.py:140
-#, fuzzy
-#| msgid ""
-#| "A new faucet request was completed. You may fund the request here :"
 msgid "A new faucet request was completed. You may fund the request here"
-msgstr ""
-"Eine neue Armaturenanforderung wurde abgeschlossen. Sie können die Anfrage "
-"hier finanzieren"
+msgstr "一项新的水龙头申请已经完成。您可以在此申请资金"
 
 #: marketing/mails.py:143 marketing/mails.py:167
 msgid "No Reply from Gitcoin.co"
-msgstr "Keine Antwort von Gitcoin.co"
+msgstr "没有Gitcoin.co的回复"
 
 #: marketing/mails.py:164
 msgid "New External Bounty"
-msgstr "Neue externe Belohnung"
+msgstr "新的外部赏金"
 
 #: marketing/mails.py:174 retail/templates/emails/faucet_request.html:24
 msgid "Faucet Request Processed"
-msgstr "Wasserhahn Anfrage verarbeitet"
+msgstr "处理的龙头请求"
 
 #: marketing/mails.py:189
 msgid "Faucet Request Rejected"
-msgstr "Wasserhahn Anfrage abgelehnt"
+msgstr "水龙头请求被拒绝"
 
 #: marketing/mails.py:212
-#, fuzzy
-#| msgid ""
-#| "⚡️  {len(bounties)} New Funded Issue{plural}{worth} matching your profile"
 msgid ""
 "⚡️  {len(bounties)} New Open Funded Issue{plural}{worth} matching your "
 "profile"
-msgstr ""
-"Len {len (bounties)} Neues offen finanziertes Problem {plural} {lohnend} "
-"passend zu deinem Profil"
+msgstr "⚡️{len（bounties）}新的开放式资助问题{复数} {值得}与您的个人资料相匹配"
 
 #: marketing/mails.py:251
 msgid "✉️ New Work Submission Inside for {} ✉️"
-msgstr "✉️ Neue Work Submission Inside für {} ✉️"
+msgstr "✉️{}✉️内部新作品提交"
 
 #: marketing/mails.py:270
 msgid "😕 Work Submission Rejected for {} 😕"
-msgstr "😕 Work Submission abgelehnt für {} 😕"
+msgstr "😕针对{} Re的工作提交被拒绝"
 
 #: marketing/mails.py:295
 msgid "🌈 Funds Paid for {} 🌈"
-msgstr "🌈 Für {} Pa bezahlte Guthaben"
+msgstr "🌈为{} Pa支付的资金"
 
 #: marketing/mails.py:312
 msgid "⚡️ {} Meet {}: {}! "
-msgstr "⚡️ {} Treffen Sie {}: {}!"
+msgstr "⚡️{}见面{}：{}！"
 
 #: marketing/mails.py:341
 msgid "hour"
-msgstr "Stunde"
+msgstr "小时"
 
 #: marketing/mails.py:344
 msgid "😕 Your Funded Issue ({}) Expires In {} {} ... 😕"
-msgstr "😕 Ihr finanziertes Problem ({}) läuft in {} {} ... 😕 ab"
+msgstr "😕您的资助问题（{}）在{} {} ... Exp中过期"
 
 #: marketing/mails.py:363
 msgid "Are you still working on '{}' ? "
-msgstr "Arbeitest du noch an \"{}\"?"
+msgstr "你还在做'{}'吗？"
 
 #: marketing/mails.py:378
 msgid "We've removed you from the task: '{}' ? "
-msgstr "Wir haben dich von der Aufgabe entfernt: '{}'?"
+msgstr "我们已将您从任务中移除：“{}”？"
 
 #: marketing/utils.py:72
 msgid "Invalid Slack token."
-msgstr "Ungültiges Slack-Token"
+msgstr "无效的Slack令牌。"
 
 #: marketing/utils.py:73
 msgid "Slack channel not found."
-msgstr "Slack-Kanal nicht gefunden."
+msgstr "找不到松弛通道。"
 
 #: marketing/utils.py:77
 msgid "The Gitcoin Slack integration is working fine."
-msgstr "Die Gitcoin Slack Integration funktioniert gut."
+msgstr "Gitcoin Slack集成工作正常。"
 
 #: marketing/utils.py:94
 msgid "The test message was sent to Slack."
-msgstr "Die Testnachricht wurde an Slack gesendet."
+msgstr "测试消息被发送到Slack。"
 
 #: marketing/utils.py:98
 msgid "An error has occurred."
-msgstr "Ein Fehler ist aufgetreten."
+msgstr "发生了错误。"
 
 #: marketing/views.py:138
 msgid "Privacy Settings"
-msgstr "Datenschutzeinstellungen"
+msgstr "隐私设置"
 
 #: marketing/views.py:179 marketing/views.py:286 marketing/views.py:326
-#, fuzzy
-#| msgid "preferences"
 msgid "Updated your preferences."
-msgstr "Ihre Einstellungen wurden aktualisiert."
+msgstr "更新了您的偏好。"
 
 #: marketing/views.py:188
 msgid "Matching Settings"
-msgstr "Passende Einstellungen"
+msgstr "匹配设置"
 
 #: marketing/views.py:215
 msgid "We've received your feedback."
-msgstr "Wir haben Ihr Feedback erhalten."
+msgstr "我们已收到您的反馈。"
 
 #: marketing/views.py:220 retail/templates/settings/feedback.html:7
 msgid "Feedback"
-msgstr "Feedback"
+msgstr "反馈"
 
 #: marketing/views.py:262
 msgid "Invalid Email"
-msgstr "Ungültige E-Mail"
+msgstr "不合规电邮"
 
 #: marketing/views.py:265
 msgid "Unknown language"
-msgstr "Unbekannte Sprache"
+msgstr "未知的语言"
 
 #: marketing/views.py:269
 msgid "Invalid Level"
-msgstr "Ungültige Stufe"
+msgstr "无效的级别"
 
 #: marketing/views.py:290
 msgid "Email Settings"
-msgstr "Email Einstellungen"
+msgstr "邮件设置"
 
 #: marketing/views.py:335
-#, fuzzy
-#| msgid "Privacy Settings"
 msgid "Slack Settings"
-msgstr "Schlafeinstellungen"
+msgstr "松弛设置"
 
 #: marketing/views.py:362
 msgid "Top Payers"
-msgstr "Top-Zahler"
+msgstr "热门支付者"
 
 #: marketing/views.py:363
 msgid "Top Earners"
-msgstr "Top-Verdiener"
+msgstr "最受欢迎的人"
 
 #: retail/templates/about.html:33
 msgid "The Problem"
-msgstr "Das Problem"
+msgstr "问题"
 
 #: retail/templates/about.html:34
 msgid "Incentive problems in Open Source Software."
-msgstr "Anreizprobleme in Open-Source-Software."
+msgstr "开源软件中的激励问题。"
 
 #: retail/templates/about.html:48
 msgid "The Solution"
-msgstr "Die Lösung"
+msgstr "解决方案"
 
 #: retail/templates/about.html:49
 msgid "A decentralized App for value creation &amp; value capture."
-msgstr "Eine dezentrale App zur Wertschöpfung & amp; Wert erfassen."
+msgstr "一个分散的应用程序的价值创造＆amp;价值捕获。"
 
 #: retail/templates/about.html:63
 msgid "The Origin Story"
-msgstr "Die ursprüngliche Geschichte"
+msgstr "起源的故事"
 
 #: retail/templates/about.html:64
 msgid "Who, what, when, where, and most importantly, why."
-msgstr "Wer, was, wann, wo und vor allem warum."
+msgstr "谁，什么，何时何地最重要的是为什么。"
 
 #: retail/templates/about.html:70
 msgid "Built with &lt;3 in Boulder Colorado USA"
-msgstr "Gebaut mit & lt; 3 in Boulder Colorado USA"
+msgstr "用美国科罗拉多州博尔德市<3建造"
 
 #: retail/templates/about.html:72
 msgid ""
@@ -2222,15 +2092,12 @@ msgid ""
 "careers off of advice, mentorship, and relationships in the local tech "
 "community."
 msgstr ""
-"<strong> Gitcoin </ strong> wurde von der Community in Boulder Colorados "
-"florierender Tech-Szene getragen. Eines der erstaunlichsten Dinge an der "
-"Boulder Community ist das #givefirst Mantra. Das Gründungsteam hat seine "
-"Karriere von Beratung, Mentoring und Beziehungen in der lokalen Tech-"
-"Community aufgebaut."
+"<strong> Gitcoin </ strong>出现在博尔德科罗拉多州蓬勃发展的科技领域。 "
+"#givefirst咒语是博尔德社区最令人惊叹的事情之一。创始团队的职业生涯建立在当地技术社区的建议，指导和关系之上。"
 
 #: retail/templates/about.html:77
 msgid "Goal: Grow Open Source"
-msgstr "Ziel: Open Source wachsen"
+msgstr "目标：拓展开放源代码"
 
 #: retail/templates/about.html:79
 msgid ""
@@ -2240,15 +2107,13 @@ msgid ""
 "<span>financiers</span> to find one another, Gitcoin grows open source "
 "software."
 msgstr ""
-"<strong> Gitcoin </ strong> ist ein Projekt, das das #givefirst Mantra der "
-"Boulder-Community mit kapitalistischen Anreizen zum Schreiben großer "
-"Software kombiniert. Durch Aktivieren von <span> Repo Maintainern </ span>, "
-"<span> Entwicklern </ span> und <span> financiers </ span> finden Gitcoin "
-"Open Source-Software."
+"<strong> Gitcoin </ "
+"strong>是一个项目，它将博尔德社区的#givefirst口头禅与资本主义激励相结合，编写出色的软件。通过使<span>回购维护人</ "
+"span>，<span>开发人员</ span>和<span>金融机构</ span>能够找到彼此，Gitcoin开发了开源软件。"
 
 #: retail/templates/about.html:86
 msgid "Cryptocurrencies provide new, decentralized, opportunities"
-msgstr "Kryptowährungen bieten neue, dezentralisierte Möglichkeiten"
+msgstr "加密货币提供新的，分散的机会"
 
 #: retail/templates/about.html:88
 msgid ""
@@ -2259,12 +2124,8 @@ msgid ""
 " incentivized to provide value, and edge cases are handled _without_ having "
 "to involve legacy legal enforcement mechanisms."
 msgstr ""
-"<strong> Gitcoin </ strong> basiert auf dem Ethereum-Netzwerk und der "
-"Programmiersprache solidity smart contract. Ethereum bietet die Möglichkeit,"
-" Anreize für alle Akteure im Ökosystem auszurichten. Durch die direkte "
-"Programmierung der Rechte der Interessengruppen in Smart-Contracts erhalten "
-"die Akteure Anreize zur Wertschöpfung, und Edge-Fälle werden behandelt, ohne"
-" dass Legal-Enforcement-Mechanismen einbezogen werden müssen."
+"<strong> Gitcoin </ "
+"strong>建立在以太坊网络和坚实的智能合约编程语言之上。以太坊为整个生态系统的参与者提供了调整动力的机会。通过将利益相关者的权利直接编入智能合同中，行为人被激励提供价值，边缘案例被处理，而不必涉及传统的法律强制机制。"
 
 #: retail/templates/about.html:95
 msgid ""
@@ -2283,245 +2144,232 @@ msgid ""
 "stronger the community is, the more successful open source projects are. The"
 " stronger open source projects are, the stronger the community is."
 msgstr ""
-"Der Gründer von Gitcoin, Kevin Owocki, hat Erfahrung als Organisator von <a "
-"href=\"http://boulderstartupweek.com\"> Boulder-Startup-Woche </a>, <a "
-"href=\"http://igniteboulder.com\"> Ignite Boulder </a>, <a "
-"href=\"https://startupcto.io\"> StartupCTO.io </a> , <a "
+"Gitcoin的创始人，<a href=\"http://linkedin.com/in/owocki/\"> Kevin Owocki "
+"</a>拥有作为<a href=\"http://boulderstartupweek.com\">组织者的经验巨石起步周</a>，<a "
+"href=\"http://igniteboulder.com\">点燃巨石</a>，<a "
+"href=\"https://startupcto.io\"> StartupCTO.io </a> ，<a "
 "href=\"https://www.meetup.com/Boulder-Blockchain/\"> Boulder Blockchain "
-"Meetup </a> und die Open-Source-Projekte <a href = "
-"\"https://github.com/owocki/pytrader \"> pytrader </a>, <a "
-"href=\"https://github.com/owocki/adblock-to-bitcoin\"> adblock-zu-bitcoin "
-"</a>, <a href =\" https: // github .com / youvegetheth / youvegeth.github.io"
-" / \"> YouveGotETH </a> und <a "
-"href=\"https://github.com/owocki/coloradocoin\"> ColoradoCoin </a>. Je "
-"stärker die Community ist, desto erfolgreicher sind Open-Source-Projekte. Je"
-" stärker Open-Source-Projekte sind, desto stärker ist die Community."
+"Meetup </a>和开源项目<a href =“https://github.com/owocki/pytrader “> pytrader "
+"</a>，<a href=\"https://github.com/owocki/adblock-to-bitcoin\"> adblock-to-"
+"bitcoin </a>，<a href =”https：// github .com / youvegoteth / "
+"youvegoteth.github.io /“> YouveGotETH </a>，＆<a "
+"href=\"https://github.com/owocki/coloradocoin\"> ColoradoCoin "
+"</a>。社区越强大，开源项目越成功。开源项目越强大，社区就越强大。"
 
 #: retail/templates/about.html:104
 msgid "Team"
-msgstr "Mannschaft"
+msgstr "球队"
 
 #: retail/templates/about.html:105
 msgid "Built By &amp; For Open Source Software Developers"
-msgstr "Gebaut von & amp; Für Open-Source-Softwareentwickler"
+msgstr "由＆amp;对于开源软件开发人员"
 
 #: retail/templates/about.html:140
 msgid "Join Us"
-msgstr "Begleiten Sie uns"
+msgstr "加入我们"
 
 #: retail/templates/about.html:141
 msgid "Want to Grow Open Source? We want to hear from you."
-msgstr "Willst du Open Source wachsen? Wir wollen von dir hören."
+msgstr "想要扩大开放源码？我们希望听到您的意见。"
 
 #: retail/templates/about.html:144
 msgid "Open Gitcoin Roles"
-msgstr "Öffnen Sie Gitcoin Rollen"
+msgstr "打开Gitcoin角色"
 
 #: retail/templates/about.html:146
 msgid "Front End Developer"
-msgstr "Entwickler für Benutzeroberflächen"
+msgstr "前端开发人员"
 
 #: retail/templates/about.html:148 retail/templates/about.html:154
 #: retail/templates/about.html:169
 msgid "Learn More"
-msgstr "Erfahren Sie mehr"
+msgstr "学到更多"
 
 #: retail/templates/about.html:152
 msgid "Technical Business Development Lead"
-msgstr "Technischer Leiter der Geschäftsentwicklung"
+msgstr "技术业务发展主管"
 
 #: retail/templates/about.html:158
 msgid "Technical Project Manager"
-msgstr "Technischer Projektmanager"
+msgstr "技术项目经理"
 
 #: retail/templates/about.html:160
 msgid "Contact us"
-msgstr "Kontaktiere uns"
+msgstr "联系我们"
 
 #: retail/templates/about.html:165
 msgid "Open Bounties.Network Roles"
-msgstr "Open Bounties.Netzwerkrollen"
+msgstr "打开赏金。网络角色"
 
 #: retail/templates/about.html:167
 msgid "Data Scientist"
-msgstr "Datenwissenschaftler"
+msgstr "数据科学家"
 
 #: retail/templates/about.html:182
 msgid "Features of Gitcoin"
-msgstr "Eigenschaften von Gitcoin"
+msgstr "Gitcoin的特点"
 
 #: retail/templates/about.html:191
 msgid "Fund Issues"
-msgstr "Fondsprobleme"
+msgstr "基金问题"
 
 #: retail/templates/about.html:192
 msgid ""
 "Fund a feature, bug, or security issue that you care about, &amp; get "
 "results."
-msgstr ""
-"Ein Feature, einen Fehler oder ein Sicherheitsproblem, das Ihnen wichtig "
-"ist, & & amp; Ergebnisse bekommen."
+msgstr "资助您关心的功能，错误或安全问题，＆amp;得到结果。"
 
 #: retail/templates/about.html:200
 msgid "Tip Developers"
-msgstr "Tipp Entwickler"
+msgstr "提示开发人员"
 
 #: retail/templates/about.html:201
 msgid ""
 "Reward contributors who have added value to your repository with a tip."
-msgstr ""
-"Belohnen Sie Mitwirkende, die mit einem Tipp zu Ihrem Repository beigetragen"
-" haben."
+msgstr "奖励贡献者，他们通过提示为您的存储库增加了价值。"
 
 #: retail/templates/about.html:211
 msgid "Find Work"
-msgstr "Arbeit suchen"
+msgstr "找工作"
 
 #: retail/templates/about.html:212
 msgid ""
 "Find interesting projects to work on, interesting people to work with. Try "
 "projects before you fully commit to them. Add value wherever you go."
-msgstr ""
-"Finde interessante Projekte, an denen du arbeiten kannst, interessante "
-"Leute, mit denen du arbeiten kannst. Probieren Sie Projekte aus, bevor Sie "
-"sie vollständig übernehmen. Fügen Sie überall einen Wert hinzu."
+msgstr "找到有趣的项目来工作，与有趣的人一起工作。在完全向他们承诺之前尝试项目。随时随地增值。"
 
 #: retail/templates/about.html:220
 msgid "All on Github.com"
-msgstr "Alles auf Github.com"
+msgstr "所有在Github.com上"
 
 #: retail/templates/about.html:221
 msgid ""
 "The best thing about Gitcoin is that it works where you do your work; on "
 "Github."
-msgstr ""
-"Das Beste an Gitcoin ist, dass es dort funktioniert, wo Sie arbeiten; auf "
-"Github."
+msgstr "关于Gitcoin的最好的事情是，它在你工作的地方工作;在Github上。"
 
 #: retail/templates/about.html:234
 msgid "Mission-Driven"
-msgstr "Missionsgesteuert"
+msgstr "任务驱动"
 
 #: retail/templates/about.html:235
 msgid "Everything we do is to support our mission to 'Grow Open Source'"
-msgstr "Alles, was wir tun, ist unsere Mission \"Open Source\" zu unterstützen"
+msgstr "我们所做的一切都是为了支持我们的'成长开源'"
 
 #: retail/templates/admin/index.html:38
 #, python-format
 msgid "Models in the %(name)s application"
-msgstr "Modelle in der Anwendung %(name)s "
+msgstr " %(name)s 应用程序中的模型"
 
 #: retail/templates/admin/index.html:49
 msgid "Add"
-msgstr "Hinzufügen"
+msgstr "加"
 
 #: retail/templates/admin/index.html:55
 msgid "Change"
-msgstr "Veränderung"
+msgstr "更改"
 
 #: retail/templates/admin/index.html:65
 msgid "You don't have permission to edit anything."
-msgstr "Sie sind nicht berechtigt, etwas zu bearbeiten."
+msgstr "您无权编辑任何内容。"
 
 #: retail/templates/admin/index.html:74
 msgid "Analytics"
-msgstr "Analysen"
+msgstr "Analytics（分析）"
 
 #: retail/templates/admin/index.html:87
 msgid "Administrative Tasks"
-msgstr "Verwaltungsaufgaben"
+msgstr "行政任务"
 
 #: retail/templates/admin/index.html:103
 msgid "Recent Actions"
-msgstr "Letzte Aktionen"
+msgstr "最近的行动"
 
 #: retail/templates/admin/index.html:104
 msgid "My Actions"
-msgstr "Meine Handlungen"
+msgstr "我的行动"
 
 #: retail/templates/admin/index.html:108
 msgid "None available"
-msgstr "Keine verfügbar"
+msgstr "没有可用的"
 
 #: retail/templates/admin/index.html:122
 msgid "Unknown content"
-msgstr "Unbekannter Inhalt"
+msgstr "未知内容"
 
 #: retail/templates/emails/bounty.html:116
 msgid "Expires:"
-msgstr "Läuft ab:"
+msgstr "过期："
 
 #: retail/templates/emails/bounty.html:120
 msgid "Specs:"
-msgstr "Spezifikationen:"
+msgstr "眼镜："
 
 #: retail/templates/emails/bounty.html:123
 msgid "Type:"
-msgstr "Art:"
+msgstr "类型："
 
 #: retail/templates/emails/bounty.html:125
 msgid "Experience Level:"
-msgstr "Erfahrungsstufe:"
+msgstr "经验水平："
 
 #: retail/templates/emails/bounty.html:132
 msgid "View on Gitcoin.co"
-msgstr "Blick auf Gitcoin.co"
+msgstr "在Gitcoin.co上查看"
 
 #: retail/templates/emails/bounty_roundup.html:57
 msgid "The Gitcoin Weekly"
-msgstr "Das Gitcoin wöchentlich"
+msgstr "Gitcoin周刊"
 
 #: retail/templates/emails/bounty_roundup.html:78
 msgid "Last Week's Highlights"
-msgstr "Höhepunkte der letzten Woche"
+msgstr "上周的亮点"
 
 #: retail/templates/emails/bounty_roundup.html:79
 msgid "Community Members growing open source"
-msgstr "Community-Mitglieder werden Open-Source-Mitglieder"
+msgstr "社区成员越来越开源"
 
 #: retail/templates/emails/bounty_roundup.html:105
 msgid "Open Funded Issues"
-msgstr "Offengelegte Probleme"
+msgstr "开放资助问题"
 
 #: retail/templates/emails/bounty_roundup.html:106
 msgid "Grow Open Source &amp; Make Some ETH"
-msgstr "Wachsen Open Source & amp; Machen Sie etwas ETH"
+msgstr "成长开源＆amp;做一些ETH"
 
 #: retail/templates/emails/bounty_roundup.html:114
 msgid "Don't see anything that strikes your fancy above?"
-msgstr "Siehst du nichts, was dir oben gefällt?"
+msgstr "没有看到任何令你惊叹的东西？"
 
 #: retail/templates/emails/bounty_roundup.html:115
 msgid "There are more issues in the Gitcoin Issue Explorer:"
-msgstr "Es gibt weitere Probleme im Gitcoin Issue Explorer:"
+msgstr "Gitcoin Issue Explorer中存在更多问题："
 
 #: retail/templates/emails/bounty_roundup.html:118
 msgid "View Issue Explorer"
-msgstr "Zeigen Sie den Problem-Explorer an"
+msgstr "查看问题浏览器"
 
 #: retail/templates/emails/bounty_roundup.html:124
 msgid "Bounties from around the ecosystem"
-msgstr "Kopfgelder aus dem gesamten Ökosystem"
+msgstr "生态系统周围的赏金"
 
 #: retail/templates/emails/bounty_roundup.html:125
 msgid "From other great projects in OSS"
-msgstr "Von anderen großartigen Projekten in OSS"
+msgstr "来自OSS的其他伟大项目"
 
 #: retail/templates/emails/bounty_roundup.html:140
 msgid "There's much much more on the Gitcoin Universal Bounties Explorer:"
-msgstr "Es gibt viel mehr auf dem Gitcoin Universal Bounties Explorer:"
+msgstr "Gitcoin Universal Bounties Explorer上还有更多内容："
 
 #: retail/templates/emails/bounty_roundup.html:143
 msgid "View Bounties Universe"
-msgstr "Bounty-Universum anzeigen"
+msgstr "查看赏金宇宙"
 
 #: retail/templates/emails/bounty_roundup.html:153
 msgid ""
 "You are receiving this email because your email address is on the "
 "notification list."
-msgstr ""
-"Sie erhalten diese E-Mail, weil sich Ihre E-Mail-Adresse in der "
-"Benachrichtigungsliste befindet."
+msgstr "您收到此电子邮件是因为您的电子邮件地址位于通知列表中。"
 
 #: retail/templates/emails/bounty_roundup.html:153
 #: retail/templates/emails/bounty_startwork_expire_warning.html:61
@@ -2530,49 +2378,50 @@ msgstr ""
 #: retail/templates/emails/new_bounty_expire_warning.html:73
 #: retail/templates/emails/new_bounty_rejection.html:34
 msgid "Manage Email Settings"
-msgstr "E-Mail-Einstellungen verwalten"
+msgstr "管理邮件设置"
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:23
 msgid "Are you still working on this?"
-msgstr "Arbeitest du noch daran?"
+msgstr "你还在做这个吗？"
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:27
 msgid "Hey there, "
-msgstr "Sie da,"
+msgstr "嘿，"
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:37
 msgid ""
 "Do you still want to work on this?  Please let us know so we can find "
 "someone else to work on it if not!"
-msgstr ""
-"Möchtest du immer noch daran arbeiten? Bitte lass es uns wissen, damit wir "
-"jemanden finden können, der daran arbeitet, wenn nicht!"
+msgstr "你还想继续努力吗？请让我们知道，所以我们可以找到其他人来工作，如果不是的话！"
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:42
 msgid "If so, please leave a comment on the github thread to check in."
-msgstr ""
-"Wenn ja, hinterlasse einen Kommentar zum github-Thread, um einzuchecken."
+msgstr "如果是这样，请在github线程上留言以检查。"
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:44
 msgid "OR"
-msgstr "ODER"
+msgstr "要么"
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:46
 #, python-format
-msgid "If not, click 'Stop Work' on the <a href=\"%(bounty.absolute_url)s\">issue detail page</a>."
-msgstr "Falls nicht, klicken Sie auf der <a href=\"%(bounty.absolute_url)s\"> Seite mit den Problemdetails </a> auf \"Stop Work\"."
+msgid ""
+"If not, click 'Stop Work' on the <a href=\"%(bounty.absolute_url)s\">issue "
+"detail page</a>."
+msgstr "如果没有，请点击<a href=\"%(bounty.absolute_url)s\">问题详情页面</a>上的“停止工作”。"
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:50
 #: retail/templates/emails/new_bounty_expire_warning.html:51
 #: retail/templates/emails/render_bounty_startwork_expired.html:53
-msgid "If you have any questions, feel free to reach out <a href=\"https://gitcoin.co/slack\">on slack</a>."
-msgstr "Wenn Sie irgendwelche Fragen haben, zögern Sie nicht <a href=\"https://gitcoin.co/slack\"> auf Flaute </a>."
+msgid ""
+"If you have any questions, feel free to reach out <a "
+"href=\"https://gitcoin.co/slack\">on slack</a>."
+msgstr "如果您有任何问题，请随时联络<a href=\"https://gitcoin.co/slack\">。"
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:53
 #: retail/templates/emails/new_bounty_expire_warning.html:65
 #: retail/templates/emails/render_bounty_startwork_expired.html:56
 msgid "Funded Issue Details"
-msgstr "Fundierte Details zum Thema"
+msgstr "资助问题详情"
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:61
 #: retail/templates/emails/new_bounty_expire_warning.html:73
@@ -2580,126 +2429,104 @@ msgstr "Fundierte Details zum Thema"
 msgid ""
 "You are receiving this email because your email address is on the "
 "notification list for this funded issue."
-msgstr ""
-"Sie erhalten diese E-Mail, weil sich Ihre E-Mail-Adresse in der "
-"Benachrichtigungsliste für dieses Problem befindet."
+msgstr "您收到此电子邮件是因为您的电子邮件地址位于此资助问题的通知列表中。"
 
 #: retail/templates/emails/faucet_request.html:29
 #: retail/templates/emails/faucet_request_rejected.html:29
 msgid "Hey"
-msgstr "Hallo"
+msgstr "嘿"
 
 #: retail/templates/emails/faucet_request.html:34
 #, python-format
 msgid "Gitcoin has distributed your faucet request for %(amount)s ETH to"
-msgstr "Gitcoin hat Ihre Armaturenanfrage für %(amount)s ETH an Sie verteilt"
+msgstr "Gitcoin已将 %(amount)s ETH的水龙头请求分发给"
 
 #: retail/templates/emails/faucet_request.html:39
 msgid ""
 "This should be enough gas to send your first Ethereum Transaction.  We hope "
 "you'll consider using it on Gitcoin!"
-msgstr ""
-"Dies sollte genug Gas sein, um deine erste Ethereum-Transaktion zu senden. "
-"Wir hoffen, dass Sie es auf Gitcoin verwenden werden!"
+msgstr "这应该是足够的天然气发送您的第一个以太坊交易。我们希望你会考虑在Gitcoin上使用它！"
 
 #: retail/templates/emails/faucet_request_rejected.html:24
 msgid "Faucet Request Rejected ‼️"
-msgstr "Wasserhahn Anfrage abgelehnt! ️"
+msgstr "龙头申请被拒绝！️"
 
 #: retail/templates/emails/faucet_request_rejected.html:34
 #, python-format
 msgid "Gitcoin *could not* approve your faucet request for %(amount)s ETH to"
-msgstr ""
-"Gitcoin * konnte Ihre Armaturenanfrage für %(amount)s ETH nicht genehmigen"
+msgstr "Gitcoin *无法*批准您的水龙头对 %(amount)s ETH的要求"
 
 #: retail/templates/emails/faucet_request_rejected.html:41
 msgid "Here are somme comments from the administrator:"
-msgstr "Hier sind einige Kommentare vom Administrator:"
+msgstr "这里是来自管理员的somme评论："
 
 #: retail/templates/emails/faucet_request_rejected.html:53
 msgid "You are welcome to re-apply at"
-msgstr "Sie können sich gerne erneut bei uns bewerben"
+msgstr "欢迎您重新申请"
 
 #: retail/templates/emails/new_bounty.html:23
 msgid "New Funded Issue"
-msgstr "Neu finanzierte Ausgabe"
+msgstr "新资助问题"
 
 #: retail/templates/emails/new_bounty.html:33
-#, fuzzy
-#| msgid "Open Funded Issues"
 msgid "Other Open Funded Issue"
-msgstr "Andere Open Funded-Ausgabe"
+msgstr "其他未决资助问题"
 
 #: retail/templates/emails/new_bounty.html:44
 msgid ""
 "You are receiving this email because your email preferences matched with "
 "these keywords:"
-msgstr ""
-"Sie erhalten diese E-Mail, weil Ihre E-Mail-Einstellungen diesen Keywords "
-"entsprechen:"
+msgstr "您收到此电子邮件是因为您的电子邮件偏好设置与以下关键字匹"
 
 #: retail/templates/emails/new_bounty_acceptance.html:23
 msgid "Funds Paid!"
-msgstr "Gelder bezahlt!"
+msgstr "资金已付！"
 
 #: retail/templates/emails/new_bounty_acceptance.html:27
 msgid ""
 "Your claim has been accepted, and the fulfillment transaction is now on the "
 "Ethereum network!"
-msgstr ""
-"Ihr Antrag wurde angenommen und die Fulfillment-Transaktion ist jetzt im "
-"Ethereum-Netzwerk!"
+msgstr "您的索赔已被接受，履行交易现在在以太坊网络上！"
 
 #: retail/templates/emails/new_bounty_acceptance.html:35
 msgid ""
 "You are receiving this email because your email address is on the bounty "
 "notification list for this funded issue."
-msgstr ""
-"Sie erhalten diese E-Mail, weil sich Ihre E-Mail-Adresse in der Bounty-"
-"Benachrichtigungsliste für dieses finanzierte Problem befindet."
+msgstr "您收到此电子邮件是因为您的电子邮件地址位于此资助问题的赏金通知列表中。"
 
 #: retail/templates/emails/new_bounty_expire_warning.html:23
 msgid "Funded Issue Expiring ..."
-msgstr "Funded Issue läuft ab ..."
+msgstr "资助的问题到期..."
 
 #: retail/templates/emails/new_bounty_expire_warning.html:28
 #, python-format
 msgid ""
 "Heads up! The funded issue that you posted (below) is expiring in %(num)s "
 "%(unit)s."
-msgstr ""
-"Kopf hoch! Das von Ihnen gepostete Problem (unten) läuft in %(num)s "
-"%(unit)sab."
+msgstr "抬头！您发布的资金问题（下文）将在 %(num)s %(unit)s中过期。"
 
 #: retail/templates/emails/new_bounty_expire_warning.html:30
 #, python-format
 msgid ""
 "Heads up! The funded issue that you fulfilled (below) is expiring in %(num)s"
 " %(unit)s."
-msgstr ""
-"Kopf hoch! Das finanzierte Problem, das Sie (unten) erfüllt haben, läuft in "
-"%(num)s %(unit)sab."
+msgstr "抬头！您完成的资助问题（如下）将在 %(num)s %(unit)s过期。"
 
 #: retail/templates/emails/new_bounty_expire_warning.html:37
 msgid ""
 "There is a currently pending claim agains this funded issue. Please make "
 "sure you process them!"
-msgstr ""
-"Gegen diese finanzierte Ausgabe gibt es einen derzeit anhängigen Anspruch. "
-"Bitte stellen Sie sicher, dass Sie sie verarbeiten!"
+msgstr "目前有待解决的索赔再次出现这个资金问题。请确保你处理它们！"
 
 #: retail/templates/emails/new_bounty_expire_warning.html:42
 msgid ""
 "After the funded issue has expired, you can still submit and accept work.  "
 "You may also 'Cancel' the bounty and get the funds back."
-msgstr ""
-"Nachdem das finanzierte Problem abgelaufen ist, können Sie noch arbeiten und"
-" annehmen. Sie können das Kopfgeld auch 'annullieren' und das Kapital "
-"zurückbekommen."
+msgstr "资金问题到期后，您仍然可以提交并接受工作。你也可以'取消'赏金并获得资金。"
 
 #: retail/templates/emails/new_bounty_expire_warning.html:45
 msgid "Look for this button"
-msgstr "Suchen Sie nach dieser Schaltfläche"
+msgstr "寻找这个按钮"
 
 #: retail/templates/emails/new_bounty_expire_warning.html:55
 #, python-format
@@ -2707,197 +2534,180 @@ msgid ""
 "Why don't you leave a comment <a href=\"%(bounty.github_url)s\">on "
 "github</a> and let the bounty owner know that you'd like to wrap this up "
 "soon? :)"
-msgstr ""
-"Warum hinterlässt du keinen Kommentar <a href=\"%(bounty.github_url)s\"> auf"
-" github </a> und lässt den Kopfgeldbesitzer wissen, dass du das bald "
-"einpacken möchtest? :)"
+msgstr "你为什么不在github上留言<a href=\"%(bounty.github_url)s\">并让赏金主人知道你很快就要把它包装起来？ :)"
 
 #: retail/templates/emails/new_bounty_expire_warning.html:59
 msgid ""
 "If you have any problems, feel free to reach out <a "
 "href=\"https://gitcoin.co/slack\">on slack</a>."
-msgstr ""
-"Wenn Sie irgendwelche Probleme haben, zögern Sie nicht <a "
-"href=\"https://gitcoin.co/slack\"> auf Flaute </a>."
+msgstr "如果您有任何问题，请随时联络<a href=\"https://gitcoin.co/slack\">。"
 
 #: retail/templates/emails/new_bounty_rejection.html:23
 msgid "Fulfillment Rejected"
-msgstr "Erfüllung abgelehnt"
+msgstr "履行被拒绝"
 
 #: retail/templates/emails/new_bounty_rejection.html:26
 msgid ""
 "There is a new funded issue fulfillment *rejection*. Please refer to the "
 "rejection comments on the github pull request to learn why."
-msgstr ""
-"Es gibt eine neue fundierte Problemerfüllung * Ablehnung *. Bitte beachten "
-"Sie die Ablehnungshinweise zur github Pull-Anfrage, um zu erfahren, warum."
+msgstr "有一个新的资金问题履行*拒绝*。请参阅github pull请求上的拒绝评论来了解为什么。"
 
 #: retail/templates/emails/new_match.html:39
 msgid "New Match Alert"
-msgstr "Neue Übereinstimmungswarnung"
+msgstr "新的匹配警报"
 
 #: retail/templates/emails/new_match.html:42
 msgid "meet"
-msgstr "Treffen"
+msgstr "遇到"
 
 #: retail/templates/emails/new_match.html:73
 msgid "You are both CCed on this email.  Feel free to reply all and say hey."
-msgstr ""
-"Sie sind beide mit dieser E-Mail verbunden. Fühlen Sie sich frei, alle zu "
-"antworten und sagen Sie hey."
+msgstr "您在这封电子邮件上都被抄送。随意回复所有，然后说嘿。"
 
 #: retail/templates/emails/new_tip.html:44
 msgid "New Tip Alert"
-msgstr "Neue Tippwarnung"
+msgstr "新提示警报"
 
 #: retail/templates/emails/new_tip.html:46
 msgid "Reminder: Tip Expires Soon"
-msgstr "Erinnerung: Tipp läuft bald ab"
+msgstr "提醒：提示即将过期"
 
 #: retail/templates/emails/new_tip.html:51
 #, python-format
-msgid "%(tip.from_name)s sent you a tip worth %(amount)s %(warning)s %(tokenName)s"
-msgstr "%(tip.from_name)s hat Ihnen einen Tipp im Wert von %(amount)s %(warning)s %(tokenName)s geschickt"
+msgid ""
+"%(tip.from_name)s sent you a tip worth %(amount)s %(warning)s %(tokenName)s"
+msgstr "％（tip.from_name）向您发送了一条值得 %(amount)s %(warning)s %(tokenName)s的提示"
 
 #: retail/templates/emails/new_tip.html:53
 #, python-format
 msgid "Someone sent you a tip worth %(amount)s %(warning)s %(tokenName)s"
-msgstr "Jemand hat dir einen Tipp geschickt im Wert von %(amount)s %(warning)s %(tokenName)s"
+msgstr "有人向您发送了一条值得 %(amount)s %(warning)s %(tokenName)s的提示"
 
 #: retail/templates/emails/new_tip.html:65
 msgid "They had the following comments:"
-msgstr "Sie hatten die folgenden Kommentare:"
+msgstr "他们有以下评论："
 
 #: retail/templates/emails/new_tip.html:76
 msgid "They had the following private comments:"
-msgstr "Sie hatten folgende private Kommentare:"
+msgstr "他们有以下私人评论："
 
 #: retail/templates/emails/new_tip.html:85
 msgid "They had the following public comments:"
-msgstr "Sie hatten die folgenden öffentlichen Kommentare:"
+msgstr "他们有以下公众意见："
 
 #: retail/templates/emails/new_tip.html:94
 msgid "The tip expires on"
-msgstr "Der Tipp läuft ab am"
+msgstr "提示将过期"
 
 #: retail/templates/emails/new_tip.html:94
 msgid "in just"
-msgstr "in nur"
+msgstr "在短短"
 
 #: retail/templates/emails/new_tip.html:94
 msgid ""
 "No pressure, but if you wanted to redeem your tip sooner rather than later "
 "that'd be 👌:"
-msgstr ""
-"Kein Druck, aber wenn du deinen Tipp eher früher als später einlösen "
-"wolltest, wäre das 👌:"
+msgstr "没有压力，但如果你想早日兑换你的小费，而不是以后会是👌："
 
 #: retail/templates/emails/new_tip.html:98
 msgid ""
 "No pressure, but if you wanted to redeem your tip sooner rather than later "
 "that'd be 👌"
-msgstr ""
-"Kein Druck, aber wenn du deinen Trinkgeld eher früher als später einlösen "
-"wolltest, wäre das 👌"
+msgstr "没有压力，但如果你想早日兑换你的小费，而不是以后那会是👌"
 
 #: retail/templates/emails/new_tip.html:105
 msgid "Redeem Tip"
-msgstr "Tipp einlösen"
+msgstr "兑换提示"
 
 #: retail/templates/emails/new_work_submission.html:23
 msgid "New Work Submission"
-msgstr "Neue Arbeitsaufgabe"
+msgstr "新工作提交"
 
 #: retail/templates/emails/new_work_submission.html:27
 msgid ""
 "There is a new work *submission* against your funded issue. Please check it "
 "out, below"
-msgstr ""
-"Es gibt eine neue Arbeit * Einreichung * gegen Ihr finanziertes Problem. "
-"Bitte schau es dir unten an"
+msgstr "对于您的资金问题，有新的工作*提交*。请在下面查看"
 
 #: retail/templates/emails/render_bounty_startwork_expired.html:23
 msgid "You've been removed from this task ..."
-msgstr "Du wurdest von dieser Aufgabe entfernt ..."
+msgstr "您已从此任务中移除..."
 
 #: retail/templates/emails/render_bounty_startwork_expired.html:27
 msgid "Hey there,"
-msgstr "Sie da,"
+msgstr "嘿，"
 
 #: retail/templates/emails/render_bounty_startwork_expired.html:36
 msgid ""
 "Since we have a responsibility to the community to keep the list of claimees"
 " for this issue current, Gitcoin removed you from the task."
-msgstr ""
-"Da wir eine Verantwortung für die Community haben, die Liste der claimees "
-"für dieses Problem aktuell zu halten, hat Gitcoin Sie von der Aufgabe "
-"entfernt."
+msgstr "由于我们有责任让社区保持当前这个问题的参与者列表，所以Gitcoin已将您从任务中移除。"
 
 #: retail/templates/emails/render_bounty_startwork_expired.html:40
 msgid ""
 "Do you still want to work on this?  No big deal!  We can help with that:"
-msgstr ""
-"Möchtest du immer noch daran arbeiten? Keine große Sache! Wir können damit "
-"helfen:"
+msgstr "你还想继续努力吗？没什么大不了！我们可以提供帮助："
 
 #: retail/templates/emails/render_bounty_startwork_expired.html:45
 msgid "Please leave a comment on the github thread to check in."
-msgstr ""
-"Bitte hinterlassen Sie einen Kommentar zum github thread zum Einchecken."
+msgstr "请在github线程上留言以检查。"
 
 #: retail/templates/emails/render_bounty_startwork_expired.html:47
 msgid "AND"
-msgstr "UND"
+msgstr "和"
 
 #: retail/templates/emails/render_bounty_startwork_expired.html:49
 #, python-format
 msgid ""
 "Click 'Start Work' on the <a href=\"%(bounty.absolute_url)s\">issue detail "
 "page</a>."
-msgstr ""
-"Klicken Sie auf der <a href=\"%(bounty.absolute_url)s\"> Seite mit den "
-"Problemdetails </a> auf \"Start Work\"."
+msgstr "点击<a href=\"%(bounty.absolute_url)s\">问题详情页面</a>上的“开始工作”。"
 
 #: retail/templates/emails/template.html:188
 msgid "All rights reserved."
-msgstr "Alle Rechte vorbehalten."
+msgstr "版权所有。"
 
 #: retail/templates/emails/template.html:193
 msgid "Want to change how you receive these emails?"
-msgstr "Möchten Sie ändern, wie Sie diese E-Mails erhalten?"
+msgstr "想改变您收到这些电子邮件的方式吗？"
 
 #: retail/templates/emails/template.html:195
 msgid "You can update your"
-msgstr "Sie können Ihre aktualisieren"
+msgstr "你可以更新你的"
 
 #: retail/templates/emails/template.html:195
 msgid "preferences"
-msgstr "Präferenzen"
+msgstr "优先"
 
 #: retail/templates/emails/template.html:195
 msgid "unsubscribe"
-msgstr "Abmelden"
+msgstr "退订"
 
 #: retail/templates/emails/template.html:195
 msgid "from this list."
-msgstr "aus dieser Liste."
+msgstr "从这个列表中。"
 
 #: retail/templates/error.html:22
 #, python-format
 msgid "Error %(code)s."
-msgstr "Fehlercode__."
+msgstr "错误代码__。"
 
 #: retail/templates/error.html:23
-msgid "_Even the bots_ aren't sure what happened, but we'll look into it. <a href=\"mailto:founders@gitcoin.co\">Contact us</a> if you think this is something that shouldn't have happened."
-msgstr "Selbst die Bots sind sich nicht sicher, was passiert ist, aber wir werden uns darum kümmern. <a href=\"mailto:founders@gitcoin.co\"> Kontaktieren Sie uns </a>, wenn Sie der Meinung sind, dass dies etwas nicht sein sollte."
+msgid ""
+"_Even the bots_ aren't sure what happened, but we'll look into it. <a "
+"href=\"mailto:founders@gitcoin.co\">Contact us</a> if you think this is "
+"something that shouldn't have happened."
+msgstr ""
+"_即使机器人不确定发生了什么，但我们会研究它。如果您认为这不应该发生，请<a "
+"href=\"mailto:founders@gitcoin.co\">与我们联系</a>。"
 
 #: retail/templates/gas.html:65
 msgid "Predicted Confirmation Times vs Gas Usage"
-msgstr "Vorhergesagte Bestätigungszeiten gegen Gasverbrauch"
+msgstr "预测确认时间与气体用量"
 
 #: retail/templates/gas.html:161
 msgid "Useful Links"
-msgstr "Nützliche Links"
+msgstr "有用的链接"
 
 #: retail/templates/gas.html:162
 msgid ""
@@ -2905,9 +2715,8 @@ msgid ""
 "href=\"https://ethgasstation.info/predictionTable.php\" target=\"_blank\" "
 "rel=\"noopener noreferrer\">ETH Gas Station</a>"
 msgstr ""
-"Um die Daten im Diagrammformat anzuzeigen, besuchen Sie <a "
-"href=\"https://ethgasstation.info/predictionTable.php\" target=\"_blank\" "
-"rel=\"noopener noreferrer\"> ETH-Tankstelle </a>"
+"要以图表格式查看数据，请查看<a href=\"https://ethgasstation.info/predictionTable.php\" "
+"target=\"_blank\" rel=\"noopener noreferrer\"> ETH加油站</a>"
 
 #: retail/templates/gas.html:165
 msgid ""
@@ -2916,209 +2725,194 @@ msgid ""
 "extens/innfmlnnhfcebjcnfopadflecemoddnp target=\"_blank\" rel=\"noopener "
 "noreferrer\">this chrome extension</a>"
 msgstr ""
-"Um zu sehen, dass diese Informationen im Browser gespeichert bleiben, <a "
-"href=https://chrome.google.com/webstore/detail/ethereum-gas-price-"
-"extens/innfmlnnhfcebjcnfopadflecemoddnp target=\"_blank\" rel=\"noopener "
-"noreferrer\"> dies Chrome Erweiterung </a>"
+"要在浏览器中查看此信息，请查看<a href=https://chrome.google.com/webstore/detail/ethereum-"
+"gas-price-extens/innfmlnnhfcebjcnfopadflecemoddnp target=\"_blank\" "
+"rel=\"noopener noreferrer\">此Chrome扩展</a>"
 
 #: retail/templates/gas.html:167 retail/templates/help.html:122
 msgid "FAQ"
-msgstr "FAQ"
+msgstr "常问问题"
 
 #: retail/templates/gas.html:168
 msgid "Why do we need to pay gas?"
-msgstr "Warum müssen wir Gas bezahlen?"
+msgstr "为什么我们需要支付燃气？"
 
 #: retail/templates/gas.html:170
 msgid "What are the advantages of Ethereum-based applications??"
-msgstr "Was sind die Vorteile von Ethereum-basierten Anwendungen?"
+msgstr "基于以太坊的应用有哪些优势？"
 
 #: retail/templates/gas.html:172
 msgid "I can't figure this out.  Help!"
-msgstr "Ich kann das nicht herausfinden. Hilfe!"
+msgstr "我无法弄清楚这一点。帮帮我！"
 
 #: retail/templates/getgitcoin.html:21
 msgid "I Am A:"
-msgstr "Ich bin ein:"
+msgstr "我是一个："
 
 #: retail/templates/getgitcoin.html:28
 #: retail/templates/whitepaper_new.html:122
 msgid "Open Source Developer"
-msgstr "Open-Source-Entwickler"
+msgstr "开源开发者"
 
 #: retail/templates/getgitcoin.html:29
 msgid ""
 "Want to earn some extra coin? 💰 Check out the Issue Explorer and see what "
 "funded issues match your skillset and interests today."
-msgstr ""
-"Willst du ein paar extra Münzen verdienen? 💰 Sieh dir den Issue Explorer an "
-"und sieh dir an, welche fundierten Ausgaben heute deinen Fähigkeiten und "
-"Interessen entsprechen."
+msgstr "想赚取一些额外的硬币？ 💰查看问题资源管理器，查看哪些资金问题符合您的技能和兴趣。"
 
 #: retail/templates/getgitcoin.html:31
 msgid "See Issue Explorer"
-msgstr "Siehe Problem-Explorer"
+msgstr "见问题资源管理器"
 
 #: retail/templates/getgitcoin.html:38 retail/templates/help.html:45
 msgid "View Developer Guide"
-msgstr "Entwicklerhandbuch anzeigen"
+msgstr "查看开发者指南"
 
 #: retail/templates/getgitcoin.html:47
 msgid "Repository Maintainer"
-msgstr "Repository Maintainer"
+msgstr "版本库维护者"
 
 #: retail/templates/getgitcoin.html:48
 msgid ""
 "Let's push your repo forward. 🚀  Create a funded issue of your own and start"
 " working with people in the OSS community on issues _you_ care about."
-msgstr ""
-"Lass uns dein Repo weiterleiten. 🚀 Erstellen Sie eine eigene finanzierte "
-"Ausgabe und beginnen Sie mit Menschen in der OSS-Community bei Fragen zu "
-"arbeiten, die Sie interessieren."
+msgstr "让我们推动您的回购。 🚀创建您自己的资金问题，并开始与OSS社区的人员就您关心的问题展开合作。"
 
 #: retail/templates/getgitcoin.html:64 retail/templates/help.html:58
 msgid "View Repo Maintainer Guide"
-msgstr "Betrachte den Repo-Betreuer-Leitfaden"
+msgstr "查看回购维护人指南"
 
 #: retail/templates/getgitcoin.html:73
 msgid "Blockchain Evangelist"
-msgstr "Blockchain Evangelist"
+msgstr "区块链传播者"
 
 #: retail/templates/getgitcoin.html:74
 msgid ""
 "You can see that the future of software development involves aligned "
 "incentives, tools built by &amp; for developers, and decentralization is the"
 " way it's all goin' down. Let’s dive deeper!"
-msgstr ""
-"Sie sehen, dass die Zukunft der Softwareentwicklung ausgerichtete Anreize, "
-"von & amp; für Entwickler und Dezentralisierung ist die Art und Weise, wie "
-"alles abläuft. Lass uns tiefer tauchen!"
+msgstr "您可以看到软件开发的未来涉及到一致的激励措施，由＆amp;对于开发人员来说，分散化就是它的一切。让我们更深入地探索！"
 
 #: retail/templates/getgitcoin.html:76
 msgid "Read Whitepaper"
-msgstr "Lesen Sie Whitepaper"
+msgstr "阅读白皮书"
 
 #: retail/templates/getgitcoin.html:83
 msgid "Join Gitcoin Slack"
-msgstr "Tritt Gitcoin Slack bei"
+msgstr "加入Gitcoin Slack"
 
 #: retail/templates/getgitcoin.html:89
 msgid "Not sure?"
-msgstr "Nicht sicher?"
+msgstr "不确定？"
 
 #: retail/templates/getgitcoin.html:89
 msgid "View all Gitcoin tools"
-msgstr "Alle Gitcoin-Werkzeuge anzeigen"
+msgstr "查看所有的Gitcoin工具"
 
 #: retail/templates/help.html:38
 msgid "Developer?"
-msgstr "Entwickler?"
+msgstr "开发者？"
 
 #: retail/templates/help.html:39
 msgid "Check out the Gitcoin Developer guide"
-msgstr "Schauen Sie sich den Gitcoin Developer Guide an"
+msgstr "查看Gitcoin开发者指南"
 
 #: retail/templates/help.html:51
 msgid "Repo Maintainer?"
-msgstr "Repo-Betreuer?"
+msgstr "回购维护者？"
 
 #: retail/templates/help.html:52
 msgid "Check out the Gitcoin Repo Maintainer guide"
-msgstr "Schauen Sie sich den Gitcoin Repo Maintainer Guide an"
+msgstr "查看Gitcoin Repo维护者指南"
 
 #: retail/templates/help.html:64
 msgid "Does it work?"
-msgstr "Funktioniert es?"
+msgstr "它工作吗？"
 
 #: retail/templates/help.html:65
 msgid "Check out the Gitcoin Case Study"
-msgstr "Schauen Sie sich die Gitcoin-Fallstudie an"
+msgstr "查看“Gitcoin案例研究”"
 
 #: retail/templates/help.html:71
 msgid "View Case Studies"
-msgstr "Fallstudien anzeigen"
+msgstr "查看案例研究"
 
 #: retail/templates/help.html:81
 msgid "Featured Videos"
-msgstr "Empfohlene Videos"
+msgstr "精选视频"
 
 #: retail/templates/help.html:88
 msgid "Product Demo: Post a Bounty"
-msgstr "Produktdemo: Poste ein Kopfgeld"
+msgstr "产品演示：发布赏金"
 
 #: retail/templates/help.html:92
 msgid "What is Web3 and how do we use it?"
-msgstr "Was ist Web3 und wie benutzen wir es?"
+msgstr "什么是Web3，我们如何使用它？"
 
 #: retail/templates/help.html:101
 msgid "Tutorials"
-msgstr "Anleitungen"
+msgstr "教程"
 
 #: retail/templates/help.html:147
 msgid "Got another question?"
-msgstr "Hast du noch eine Frage?"
+msgstr "有另一个问题？"
 
 #: retail/templates/help.html:152
 msgid "View Github Repo"
-msgstr "Sehen Sie sich Github Repo an"
+msgstr "查看Github Repo"
 
 #: retail/templates/help.html:153
 msgid "Ask on slack"
-msgstr "Fragen Sie nach Durchhang"
+msgstr "闲问"
 
 #: retail/templates/help.html:154
 msgid "Contact Gitcoin Core"
-msgstr "Kontakt Gitcoin Kern"
+msgstr "联系Gitcoin核心"
 
 #: retail/templates/index.html:33
 msgid "What is Gitcoin?"
-msgstr "Was ist Gitcoin?"
+msgstr "什么是Gitcoin？"
 
 #: retail/templates/index.html:44
 msgid "1. It's *not* a token."
-msgstr "1. Es ist * kein * Token."
+msgstr "它不是一个令牌。"
 
 #: retail/templates/index.html:45
 msgid ""
 "There is *no* native token on the Gitcoin community.  We're focused on "
 "honing our product/market fit."
-msgstr ""
-"Es gibt * kein * natives Token in der Gitcoin-Community. Wir konzentrieren "
-"uns darauf, unsere Produkt- / Markt-Passform zu verbessern."
+msgstr "Gitcoin社区有* no *本地令牌。我们专注于珩磨我们的产品/市场。"
 
 #: retail/templates/index.html:49
 msgid "2. It's a community."
-msgstr "2. Es ist eine Gemeinschaft."
+msgstr "2.这是一个社区。"
 
 #: retail/templates/index.html:50
 msgid ""
 "The Gitcoin toolset &amp; community allows you to (1) build skills (2) find "
 "(or give) economic opportunities and hopefully (3) make some lifelong "
 "friendships."
-msgstr ""
-"Das Gitcoin Toolset & amp; Community ermöglicht es Ihnen, (1) Fähigkeiten zu"
-" entwickeln (2) wirtschaftliche Möglichkeiten zu finden (oder zu geben) und "
-"hoffentlich (3) lebenslange Freundschaften zu schließen."
+msgstr "Gitcoin工具集＆amp;社区允许你（1）建立技能（2）发现（或提供）经济机会，并希望（3）建立终身友谊。"
 
 #: retail/templates/index.html:54
 msgid "3. It's a mission."
-msgstr "3. Es ist eine Mission."
+msgstr "这是一项使命。"
 
 #: retail/templates/index.html:55
 msgid "Our mission is to \"Grow Open Source\"."
-msgstr "Unsere Mission ist es, \"Open Source\" zu wachsen."
+msgstr "我们的使命是“成长开源”。"
 
 #: retail/templates/index.html:55
 msgid "Read more"
-msgstr "Weiterlesen"
+msgstr "阅读更多"
 
 #: retail/templates/index.html:64
 msgid "But How Does it Work?"
-msgstr "Aber wie funktioniert es?"
+msgstr "但它是如何工作的？"
 
 #: retail/templates/index.html:72
 msgid "1. Find Funded Github Issues."
-msgstr "1. Finden Sie fundierte Github-Probleme."
+msgstr "1.找到资助的Github问题。"
 
 #: retail/templates/index.html:73
 #, python-format
@@ -3127,109 +2921,96 @@ msgid ""
 "href=\"%(explorerurl)s\">Gitcoin's Issue Explorer</a> is the easiest way to "
 "find paid work in open source."
 msgstr ""
-"Ob Fehler, Features oder Sicherheitslücken, <a href=\"%(explorerurl)s\"> "
-"Gitcoins Issue Explorer </a> ist der einfachste Weg, um bezahlte Arbeit in "
-"Open Source zu finden."
+"无论是缺陷，功能还是安全问题，<a href=\"%(explorerurl)s\"> "
+"Gitcoin的问题浏览器</a>是在开源中查找付费工作的最简单方法。"
 
 #: retail/templates/index.html:77
 msgid "2. Claim an Issue."
-msgstr "2. Beanspruchen Sie ein Problem."
+msgstr "2.索赔一个问题。"
 
 #: retail/templates/index.html:78
 msgid ""
 "Claim the issue on Gitcoin via the Funded Issue Detail Page (<a "
 "href=\"https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/skunkworks/issues/14\">Example</a>)."
 msgstr ""
-"Behaupten Sie das Problem auf Gitcoin über die Detailseite für finanzierte "
-"Ausgaben (<a "
-"href=\"https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/skunkworks/issues/14\">"
-" Beispiel < / a>)."
+"通过资金问题详细信息页面在Gitcoin上提出问题（<a "
+"href=\"https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/skunkworks/issues/14\">示例<"
+" / A>）。"
 
 #: retail/templates/index.html:82
 msgid "3. Build Something Great."
-msgstr "3. Baue etwas Großartiges."
+msgstr "3.建立一些伟大的。"
 
 #: retail/templates/index.html:83
 msgid ""
 "Coordinate with the Bounty Submitter on Github.  Build something great!"
-msgstr ""
-"Koordinieren Sie sich mit dem Bounty Submitter auf Github. Baue etwas "
-"Großartiges!"
+msgstr "与Github上的赏金提交者协调。建立一些伟大的！"
 
 #: retail/templates/index.html:87
 msgid "4. Submit Your Work &amp; Get Paid."
-msgstr "4. Senden Sie Ihre Arbeit & amp; Bezahlt werden."
+msgstr "4.提交你的作品＆amp;得到报酬。"
 
 #: retail/templates/index.html:88
 msgid ""
 "Payments are Ethereum-based, &amp; released automatically after code is "
 "accepted by the bounty submitter."
-msgstr ""
-"Zahlungen sind Ethereum-basierte, & amp; wird automatisch freigegeben, "
-"nachdem der Code vom Übergeber akzeptiert wurde."
+msgstr "付款是以太坊为基础的，＆amp;代码被赏金提交者接受后自动发布。"
 
 #: retail/templates/index.html:100
 msgid "What's the TLDR?"
-msgstr "Was ist der TLDR?"
+msgstr "什么是TLDR？"
 
 #: retail/templates/index.html:114
 msgid "Why use Gitcoin?"
-msgstr "Warum Gitcoin benutzen?"
+msgstr "为什么要使用Gitcoin？"
 
 #: retail/templates/index.html:122
 msgid "Find New &amp; Interesting Work"
-msgstr "Finden Sie neue & amp; Interessante Arbeit"
+msgstr "查找新＆amp;有趣的工作"
 
 #: retail/templates/index.html:123
 msgid ""
 "Work only on repositories that strike a chord with _you_. Gitcoin allows you"
 " to try before you go full time."
-msgstr ""
-"Arbeiten Sie nur an Repositories, die mit _you_ einen Akkord erreichen. "
-"Gitcoin erlaubt es Ihnen, es zu versuchen, bevor Sie ganztags gehen."
+msgstr "只适用于与_you_一致的储存库。 Gitcoin允许您在全职工作之前尝试。"
 
 #: retail/templates/index.html:129
 msgid "Deepen Relationships"
-msgstr "Beziehungen vertiefen"
+msgstr "加深关系"
 
 #: retail/templates/index.html:130
 msgid "Gitcoin is a way to meet and connect with open source developers."
-msgstr ""
-"Gitcoin ist eine Möglichkeit, sich mit Open-Source-Entwicklern zu treffen "
-"und zu verbinden."
+msgstr "Gitcoin是一种与开源开发者见面和联系的方式。"
 
 #: retail/templates/index.html:138
 msgid "Learn New Skills"
-msgstr "Neue Fähigkeiten erlernen"
+msgstr "学习新技能"
 
 #: retail/templates/index.html:139
 msgid "Gitcoin is the easiest way to find paid work in open source."
-msgstr ""
-"Gitcoin ist der einfachste Weg, in Open Source bezahlte Arbeit zu finden."
+msgstr "Gitcoin是以开源方式查找付费作品的最简单方式。"
 
 #: retail/templates/index.html:145
 msgid "Make Some Extra Cash"
-msgstr "Machen Sie etwas zusätzliches Geld"
+msgstr "赚取一些额外的现金"
 
 #: retail/templates/index.html:146
 msgid ""
 "You got into open source for the love of solving problems. Get paid for "
 "working on your passion."
-msgstr ""
-"Du bist aus Liebe zur Problemlösung in Open Source gekommen. Du wirst dafür "
-"bezahlt, dass du an deiner Leidenschaft arbeitest."
+msgstr "你为解决问题的热爱而进入开源社区。为了激发你的激情而获得报酬。"
 
 #: retail/templates/index.html:172
 msgid "Email Founders"
-msgstr "E-Mail-Gründer"
+msgstr "电子邮件创始人"
 
 #: retail/templates/index.html:178
 msgid "Project Roadmap"
-msgstr "Projekt-Roadmap"
+msgstr "项目路线图"
 
 #: retail/templates/index.html:188
 msgid "2016-2017: Experimentation"
-msgstr "2016-2017: Experimentieren"
+msgstr "2016-2017：实验"
 
 #: retail/templates/index.html:189
 msgid ""
@@ -3239,15 +3020,14 @@ msgid ""
 "and <a href=\"https://www.meetup.com/Boulder-Blockchain/\" target=\"_blank\""
 " rel=\"noopener noreferrer\">community organizing</a>."
 msgstr ""
-"Gründer Kevin Owocki experimentiert mit Ethereum Mining und baut <a "
+"Kevin Owocki创始人Kevin Etockum在Ethereum采矿方面进行了实验，在该领域建立了<a "
 "href=\"https://github.com/owocki/\" target=\"_blank\" rel=\"noopener "
-"noreferrer\"> eine Handvoll Open-Source-Projekte im Space </a> auf , "
-"Investieren und <a href=\"https://www.meetup.com/Boulder-Blockchain/\" "
-"target=\"_blank\" rel=\"noopener noreferrer\"> Community-Organisation </a>."
+"noreferrer\">少数开源项目</a> ，投资和<a href=\"https://www.meetup.com/Boulder-"
+"Blockchain/\" target=\"_blank\" rel=\"noopener noreferrer\">社区组织</a>。"
 
 #: retail/templates/index.html:201
 msgid "Q2 2017: Ideation"
-msgstr "Q2 2017: Ideenfindung"
+msgstr "2017年第2季度：构想"
 
 #: retail/templates/index.html:202
 msgid ""
@@ -3258,29 +3038,22 @@ msgid ""
 "projects before they commit?  What if repo maintainers had a way to bring "
 "new developers onto their projects?"
 msgstr ""
-"Mit der Mentorschaft von Open Source Entwicklern der Boulder CO-Tech-"
-"Community wird die Idee eines dezentralen Netzwerks konzipiert, das auf <i> "
-"Grow Open Source </ i> ausgelegt ist. Was wäre, wenn die Rekrutierung für "
-"Softwareprojekte vollständig dezentralisiert und automatisiert werden "
-"könnte? Was wäre, wenn Entwickler Projekte ausprobieren könnten, bevor sie "
-"sich verpflichten? Was wäre, wenn Repo-Betreuer neue Entwickler in ihre "
-"Projekte einbinden könnten?"
+"在Boulder "
+"CO技术社区的开源开发人员的指导下，构想了一个旨在开发开源的分散式网络的想法。如果软件项目的招聘可以完全分散和自动化，那该怎么办？如果开发者在他们提交之前可以尝试项目会怎样如果回购维护者有办法将新开发人员带到他们的项目中呢？"
 
 #: retail/templates/index.html:214
 msgid "Q3 2017: Build &amp; Design"
-msgstr "Q3 2017: Build & amp; Design"
+msgstr "2017年第3季度：构建＆amp;设计"
 
 #: retail/templates/index.html:215
 msgid ""
 "Customer Development commences. The founder codes. The design team designs. "
 "Animator animates."
-msgstr ""
-"Die Kundenentwicklung beginnt. Die Gründercodes. Das Designteam entwirft. "
-"Animator animiert."
+msgstr "客户开发开始。创始人代码。设计团队设计。动画师动画。"
 
 #: retail/templates/index.html:227
 msgid "Q4 2017: Launch"
-msgstr "Q4 2017: Einführung"
+msgstr "2017年第四季度：启动"
 
 #: retail/templates/index.html:228
 msgid ""
@@ -3289,42 +3062,33 @@ msgid ""
 "without a centralized middleman, and an incentive is provided to the open-"
 "source community to <i>Grow Open Source</i>, together."
 msgstr ""
-"Der Issues Explorer wird live geschaltet. Der Code hinter dem Projekt ist "
-"Open Source. Zum ersten Mal können Programmierer ihre Open-Source-Arbeit "
-"ohne einen zentralen Zwischenhändler monetarisieren, und der Open-Source-"
-"Community wird ein Anreiz geboten, <i> gemeinsam Open Source </ i> zu "
-"entwickeln."
+"问题资源管理器开始运行。该项目背后的代码是公开源代码发布的。编码人员第一次可以在没有集中的中间人的情况下通过开源工作获利，并且一起向开源社区提供开发源开源</"
+" i>的激励。"
 
 #: retail/templates/index.html:240
 msgid "Next: Gitcoin joins Consensys, launches Pilot Projects"
-msgstr "Weiter: Gitcoin tritt Consensys bei, startet Pilotprojekte"
+msgstr "下一篇：Gitcoin加入Consensys，推出试点项目"
 
 #: retail/templates/index.html:245
 msgid ""
 "Funded issues for EtherDelta, Consensys Security, Truffle, Metamask, and "
 "web3py are live at"
-msgstr ""
-"Geförderte Ausgaben für EtherDelta, Consensys Sicherheit, Trüffel, Metamask "
-"und web3py sind live bei"
+msgstr "EtherDelta，Consensys Security，Truffle，Metamask和web3py资助的问题现场直播"
 
 #: retail/templates/index.html:248
 msgid ""
 "With tens of thousands of dollars of Funded Issues processed through the "
 "system, Gitcoin becomes a place for OSS developers to get involved in the "
 "web3 ecosystem."
-msgstr ""
-"Mit Zehntausenden von Dollar an durch das System verarbeiteten "
-"Geldemissionen wird Gitcoin zu einem Ort, an dem sich OSS-Entwickler am "
-"Web3-Ökosystem beteiligen können."
+msgstr "通过该系统处理了数万美元的资金问题，Gitcoin成为OSS开发人员参与Web3生态系统的场所。"
 
 #: retail/templates/index.html:251
 msgid "The system is dogfooded; Gitcoin is used to build Gitcoin."
-msgstr ""
-"Das System ist überflutet; Gitcoin wird verwendet, um Gitcoin zu bauen."
+msgstr "该系统是dogfooded; Gitcoin用于构建Gitcoin。"
 
 #: retail/templates/index.html:264
 msgid "After that: Growth"
-msgstr "Danach: Wachstum"
+msgstr "之后：成长"
 
 #: retail/templates/index.html:268
 #, python-format
@@ -3332,119 +3096,110 @@ msgid ""
 "The community, both on <a href=\"%(slackurl)s\">the slack channel</a> and <a"
 " href=\"#mailchimp\">the community mailing list</a> continue to grow."
 msgstr ""
-"Die Community sowohl auf <a href=\"%(slackurl)s\"> dem Slack Channel </a> "
-"als auch <a href=\"#mailchimp\"> der Community-Mailingliste </a> wächst "
-"weiter."
+"社区，无论是在<a href=\"%(slackurl)s\">闲暇频道</a>和<a "
+"href=\"#mailchimp\">社区邮件列表</a>上都在持续增长。"
 
 #: retail/templates/index.html:269
 msgid ""
 "The market for software jobs is massive, and Open Source software creates "
 "billions of dollars in economic value per year."
-msgstr ""
-"Der Markt für Software-Jobs ist massiv, und Open-Source-Software schafft "
-"Milliarden von Dollar an wirtschaftlichem Wert pro Jahr."
+msgstr "软件工作市场规模巨大，开源软件每年创造数十亿美元的经济价值。"
 
 #: retail/templates/index.html:270
 msgid ""
 "What will the world look like if decentralized ledger technology begins to "
 "disrupt the existing value systems in software?"
-msgstr ""
-"Wie wird die Welt aussehen, wenn die dezentrale Ledger-Technologie beginnt, "
-"die bestehenden Wertesysteme in Software zu stören?"
+msgstr "如果分散式账本技术开始破坏软件中现有的价值体系，世界会是什么样子？"
 
 #: retail/templates/index.html:282
 msgid "Shipping New Tools Every Month"
-msgstr "Versand jeden Monat neue Werkzeuge"
+msgstr "每月运送新工具"
 
 #: retail/templates/index.html:287
 msgid ""
 "Bounties are just the first tool we're launching.  We've got a bunch of new "
 "tools in the pipeline, including:"
-msgstr ""
-"Kopfgelder sind nur das erste Werkzeug, das wir starten. Wir haben eine "
-"Reihe neuer Tools in der Pipeline, darunter:"
+msgstr "赏金只是我们启动的第一个工具。我们正在准备一系列新工具，其中包括："
 
 #: retail/templates/index.html:290
 msgid "Dev Grants"
-msgstr "Dev Grants"
+msgstr "开发资助"
 
 #: retail/templates/index.html:293
 msgid "Code Funding"
-msgstr "Code-Finanzierung"
+msgstr "代码资助"
 
 #: retail/templates/index.html:296
 msgid "Mentorship Matching"
-msgstr "Mentoring Matching"
+msgstr "导师匹配"
 
 #: retail/templates/index.html:300
 msgid "Want to learn about them?"
-msgstr "Willst du etwas über sie erfahren?"
+msgstr "想了解它们吗？"
 
 #: retail/templates/index.html:300
 msgid "Click here"
-msgstr "Klick hier"
+msgstr "点击这里"
 
 #: retail/templates/index.html:316 retail/templates/whitepaper_new.html:125
 msgid "Press"
-msgstr "Drücken Sie"
+msgstr "按"
 
 #: retail/templates/index.html:422
-#, fuzzy
-#| msgid "None available"
 msgid "iOS App Now Available"
-msgstr "iOS App jetzt verfügbar"
+msgstr "iOS应用现在可用"
 
 #: retail/templates/index.html:437
 msgid "Get The App"
-msgstr "Hol dir die App"
+msgstr "下载这个软件"
 
 #: retail/templates/leaderboard.html:67
 msgid "None found."
-msgstr "Keine gefunden."
+msgstr "没有找到。"
 
 #: retail/templates/mission.html:43
 msgid ""
 "GITCOIN IS A <span class=\"text-highlight-dark-blue\">MISSION</span>\n"
 "                    AND <span class=\"text-highlight-dark-blue\">VALUE-ORIENTED</span>"
 msgstr ""
-"GITCOIN ist ein <span class = \"text-highlight-dark-blue\"> MISSION </ span>\n"
-"                    UND <span class = \"text-highlight-dunkelblau\"> WERTORIENTIERT </ span>"
+"GITCOIN是<span class =“text-highlight-dark-blue”>使命</ span>\n"
+"                    AND <span class =“text-highlight-dark-blue”> VALUE-ORIENTED </ span>"
 
 #: retail/templates/mission.html:46
 msgid ""
 "<span class=\"text-highlight-dark-blue\">DISTRIBUTED MOVEMENT</span> AIMED "
 "TO <span class=\"text-highlight-dark-blue\">DRIVE</span>"
 msgstr ""
-"<span class = \"text-highlight-dark-blue\"> VERTEILTE BEWEGUNG </ span> ZIEL"
-" AUF <span class = \"text-highlight-dark-blue\"> DRIVE </ span>"
+"<span class =“text-highlight-dark-blue”>分布式移动</ span>瞄准<span class =“text-"
+"highlight-dark-blue”> DRIVE </ span>"
 
 #: retail/templates/mission.html:48
 msgid ""
 "<span class=\"text-highlight-dark-blue\">CHANGE</span> AND <span "
 "class=\"text-highlight-pink\">GROW OPEN SOURCE</span>"
 msgstr ""
-"<span class = \"text-highlight-dark-blue\"> ÄNDERN </ span> UND <span class "
-"= \"text-highlight-pink\"> GROW ÖFFNEN QUELLE </ span>"
+"<span class =“text-highlight-dark-blue”>更改</ span>和<span class =“text-"
+"highlight-pink”>成长开源</ span>"
 
 #: retail/templates/mission.html:60
 msgid "<span class=\"text-highlight-green\">We</span> Want"
-msgstr "<span class = \"text-highlight-green\"> Wir </ span> Wollen"
+msgstr "<span class =“text-highlight-green”>我们</ span>要"
 
 #: retail/templates/mission.html:92
 msgid "<span class=\"text-highlight-green\">We</span> Value"
-msgstr "<span class = \"text-highlight-green\"> Wir </ span> Wert"
+msgstr "<span class =“text-highlight-green”>我们</ span>值"
 
 #: retail/templates/mission.html:150
 msgid "<span class=\"text-highlight-green\">We</span> Interact"
-msgstr "<span class = \"text-highlight-green\"> Wir </ span> Interagieren"
+msgstr "<span class =“text-highlight-green”>我们</ span>互动"
 
 #: retail/templates/mission.html:227
 msgid "Read About Our Mission"
-msgstr "Lesen Sie über unsere Mission"
+msgstr "阅读关于我们的使命"
 
 #: retail/templates/process_accesscode_request.html:32
 msgid "Process"
-msgstr "Verarbeiten"
+msgstr "处理"
 
 #: retail/templates/process_accesscode_request.html:37
 #, python-format
@@ -3470,21 +3225,21 @@ msgid ""
 "\n"
 "https://twitter.com/owocki/\n"
 msgstr ""
-"> Neue Whitepaper-Anfrage:\n"
+">新白皮书要求：\n"
 "> %(obj)s\n"
 "\n"
-"Sie da,\n"
+"嘿，\n"
 "\n"
-"Ich freue mich, dass Sie sich für das Whitepaper von Gitcoin interessieren. Woher hast du von dem Projekt gehört?\n"
+"我很高兴有你对Gitcoin白皮书感兴趣。你从哪里听说过这个项目？\n"
 "\n"
-"Hier ist ein Zugangscode für Sie: [code]\n"
-"Sie können es unter https://gitcoin.co/whitepaper/accesscode einlösen\n"
+"以下是您的访问代码：[code]\n"
+"您可以通过https://gitcoin.co/whitepaper/accesscode进行兑换\n"
 "\n"
-"Ich würde gerne dein Feedback hören, nachdem du es gelesen hast. Sie können mich direkt hier zurückschicken oder dem slack Team bei https://gitcoin.co/slack beitreten (ich bin @owocki dort).\n"
+"阅读完后，我很乐意听到您的反馈。你可以直接在这里给我发电子邮件，或者通过https://gitcoin.co/slack（我在@owocki那里）加入这个懒散的团队。\n"
 "\n"
-"Beste,\n"
+"最好，\n"
 "\n"
-"Kevin aus\n"
+"凯文从\n"
 "https://gitcoin.co\n"
 "\n"
 "https://www.linkedin.com/in/owocki/\n"
@@ -3493,129 +3248,121 @@ msgstr ""
 
 #: retail/templates/save_search.html:26
 msgid "Unlock your potential in Open Source."
-msgstr "Schalte dein Potenzial in Open Source frei."
+msgstr "在开放源码中解锁您的潜力。"
 
 #: retail/templates/save_search.html:32
 msgid "Emails no more than 2x / week."
-msgstr "E-Mails nicht mehr als 2x / Woche."
+msgstr "电子邮件不超过每周2次。"
 
 #: retail/templates/save_search.html:35
 msgid "Gitcoin Core will never sell your email address."
-msgstr "Gitcoin Core wird niemals Ihre E-Mail-Adresse verkaufen."
+msgstr "Gitcoin Core永远不会出售您的电子邮件地址。"
 
 #: retail/templates/settings/email.html:7
 msgid "Basic Preferences"
-msgstr "Grundlegende Einstellungen"
+msgstr "基本首选项"
 
 #: retail/templates/settings/email.html:8 retail/templates/slack.html:48
 #: retail/templates/whitepaper_accesscode.html:44
 #: retail/templates/whitepaper_new.html:114
 msgid "Email address"
-msgstr "E-Mail-Addresse"
+msgstr "电子邮件地址"
 
 #: retail/templates/settings/email.html:10
 msgid "We will never share your email with anyone else"
-msgstr "Wir werden Ihre E-Mails niemals mit anderen teilen"
+msgstr "我们绝不会与其他人分享您的电子邮件"
 
 #: retail/templates/settings/email.html:13
 msgid "Send me"
-msgstr "Schick mir"
+msgstr "发给我"
 
 #: retail/templates/settings/email.html:16
 msgid "Regular: Weekly Roundups, Notifications, etc"
-msgstr "Regulär: Wöchentliche Zusammenfassungen, Benachrichtigungen usw"
+msgstr "定期：每周综述，通知等"
 
 #: retail/templates/settings/email.html:17
 msgid "Lite 1: Just Roundups"
-msgstr "Lite 1: Nur Roundups"
+msgstr "精简版1：简单综述"
 
 #: retail/templates/settings/email.html:18
 msgid "Lite 2: Just Notifications"
-msgstr "Lite 2: Nur Benachrichtigungen"
+msgstr "精简版2：只​​是通知"
 
 #: retail/templates/settings/email.html:19
 msgid "Nothing: Don't Email"
-msgstr "Nichts: E-Mail nicht"
+msgstr "没有：不要电子邮件"
 
 #: retail/templates/settings/email.html:25
 msgid "roundup emails once a week"
-msgstr "E-Mails einmal wöchentlich versenden"
+msgstr "每周收集一次电子邮件"
 
 #: retail/templates/settings/email.html:26
 msgid "notifications up to twice a day"
-msgstr "Benachrichtigungen bis zu zweimal am Tag"
+msgstr "通知最多每天两次"
 
 #: retail/templates/settings/email.html:29
 msgid "Preferred language"
-msgstr "Bevorzugte Sprache"
+msgstr "首选语言"
 
 #: retail/templates/settings/feedback.html:10
 msgid "How are we doing?  What do you think?"
-msgstr "Wie machen wir uns? Was denken Sie?"
+msgstr "我们怎么样？你怎么看？"
 
 #: retail/templates/settings/matching.html:7
 msgid "Matching Preferences"
-msgstr "Passende Einstellungen"
+msgstr "匹配首选项"
 
 #: retail/templates/settings/matching.html:8
 msgid "Github username"
-msgstr "Github Benutzername"
+msgstr "Github用户名"
 
 #: retail/templates/settings/matching.html:12
 msgid "Programming languages"
-msgstr "Programmiersprachen"
+msgstr "编程语言"
 
 #: retail/templates/settings/matching.html:13
 msgid "(pull from github)"
-msgstr "(zieh von github)"
+msgstr "（从github拉）"
 
 #: retail/templates/settings/matching.html:15
 msgid "so we know what funded work to route your way"
-msgstr "Wir wissen also, welche Art von finanzierter Arbeit dir den Weg weist"
+msgstr "所以我们知道什么资助的工作路线"
 
 #: retail/templates/settings/privacy.html:7
 msgid "Privacy Preferences"
-msgstr "Datenschutzeinstellungen"
+msgstr "隐私首选项"
 
 #: retail/templates/settings/privacy.html:11
 msgid "Hide my profile from the leaderboard"
-msgstr "Verstecke mein Profil von der Bestenliste"
+msgstr "从排行榜隐藏我的个人资料"
 
 #: retail/templates/settings/privacy.html:13
 msgid ""
 "If this option is chosen, we will remove your profile information from the "
 "leaderboard"
-msgstr ""
-"Wenn diese Option ausgewählt ist, werden Ihre Profilinformationen aus der "
-"Bestenliste entfernt"
+msgstr "如果选择此选项，我们将从排行榜中删除您的个人资料信息"
 
 #: retail/templates/settings/privacy.html:18
-#, fuzzy
-#| msgid "Hide my profile from the leaderboard"
 msgid "Hide my profile altogether"
-msgstr "Verstecken Sie mein Profil insgesamt"
+msgstr "完全隐藏我的个人资料"
 
 #: retail/templates/settings/privacy.html:20
 msgid "If this option is chosen, we will remove your profile altogether"
-msgstr ""
-"Wenn diese Option ausgewählt ist, werden wir Ihr Profil vollständig "
-"entfernen"
+msgstr "如果选择此选项，我们将完全删除您的个人资料"
 
 #: retail/templates/settings/privacy.html:26
 msgid "Hide that I'm a Gitcoin alumni"
-msgstr "Verstecke das ich ein Gitcoin Alumni bin"
+msgstr "隐藏我是Gitcoin的校友"
 
 #: retail/templates/settings/privacy.html:28
 msgid ""
 "If this option is chosen, we not show that you are a Gitcoin alumni on your "
 "profile or about page."
-msgstr ""
-"Wenn diese Option ausgewählt ist, zeigen wir nicht, dass Sie ein Gitcoin-"
-"Alumni in Ihrem Profil oder auf Ihrer Seite sind."
+msgstr "如果选择此选项，我们不会表明您是您的个人资料或关于页面的Gitcoin校友。"
 
 #: retail/templates/settings/slack.html:6
 msgid "Slack Integration"
-msgstr "Schlaf Integration"
+msgstr "冗余集成"
 
 #: retail/templates/settings/slack.html:8
 msgid ""
@@ -3624,175 +3371,160 @@ msgid ""
 "      <a href=\"https://my.slack.com/apps/A0F7YS25R-bots\">here</a>\n"
 "      and provide slack API token in the field below. "
 msgstr ""
-"Gitcoin kann Aktualisierungen der Bounties-Status Ihrer Repositorys in die freie Phase Ihres Teams posten.\n"
-"      Um dies zu tun, erstellen Sie einen Bot\n"
-"      <a href=\"https://my.slack.com/apps/A0F7YS25R-bots\"> hier </a>\n"
-"      und ein Slack-API-Token im unteren Feld bereitstellen."
+"Gitcoin可以将您的存储库的赏金状态更新发布到您的团队的闲置状态。\n"
+"      要做到这一点创建机器人\n"
+"      <a href=\"https://my.slack.com/apps/A0F7YS25R-bots\">此处</a>\n"
+"      并在下面的字段中提供松散的API令牌。"
 
 #: retail/templates/settings/slack.html:13
 msgid "Slack API token"
-msgstr "Slack API-Token"
+msgstr "Slack API令牌"
 
 #: retail/templates/settings/slack.html:17
 msgid ""
 "Github repos to monitor (use full name, like 'gitcoinco/web' for <a "
 "href=https://github.com/gitcoinco/web>this repo</a>)"
 msgstr ""
-"Github Repos zu überwachen (verwenden Sie den vollständigen Namen, wie "
-"'gitcoinco / web' für <a href=https://github.com/gitcoinco/web> dieses Repo "
-"</a>)"
+"Github回购监测（使用全名，例如<a "
+"href=https://github.com/gitcoinco/web>此回购</a>的'gitcoinco / web'）"
 
 #: retail/templates/settings/slack.html:21
 msgid "Slack channel to post to"
-msgstr "Slack-Kanal zum Posten an"
+msgstr "Slack频道发布到"
 
 #: retail/templates/settings/slack.html:25
 msgid "Go"
-msgstr "Gehen"
+msgstr "走"
 
 #: retail/templates/settings/slack.html:26
 msgid "Test"
-msgstr "Prüfung"
+msgstr "测试"
 
 #: retail/templates/shared/bottom_notification.html:20
-#, fuzzy
-#| msgid ""
-#| "Browse funded work in open source software from anywhere, at anytime."
 msgid "Browse funded work in OSS on the go.  Check out the "
-msgstr "Durchsuchen Sie geförderte Arbeiten in OSS unterwegs. Besuche die"
+msgstr "在旅途中浏览OSS中的资助工作。看看"
 
 #: retail/templates/shared/footer.html:22
 msgid "Home"
-msgstr "Zuhause"
+msgstr "家"
 
 #: retail/templates/shared/footer.html:23
 msgid "Mission"
-msgstr "Mission"
+msgstr "任务"
 
 #: retail/templates/shared/footer.html:24 retail/templates/shared/nav.html:35
 msgid "About"
-msgstr "Über"
+msgstr "关于"
 
 #: retail/templates/shared/footer.html:25
 msgid "Jobs"
-msgstr "Arbeitsplätze"
+msgstr "工作"
 
 #: retail/templates/shared/footer.html:27 retail/templates/shared/nav.html:36
 msgid "Tools"
-msgstr "Werkzeuge"
+msgstr "工具"
 
 #: retail/templates/shared/footer.html:28
 msgid "Terms"
-msgstr "Begriffe"
+msgstr "条款"
 
 #: retail/templates/shared/footer.html:29
 msgid "Privacy"
-msgstr "Privatsphäre"
+msgstr "隐私"
 
 #: retail/templates/shared/head.html:59 retail/templates/shared/hero.html:22
 msgid "Grow Open Source"
-msgstr "Wachsen Sie Open Source"
+msgstr "增加开放源代码"
 
 #: retail/templates/shared/hero.html:24
 msgid ""
 "Gitcoin is the easiest way to monetize or incentivize work in Open Source "
 "Software."
-msgstr ""
-"Gitcoin ist der einfachste Weg, mit Open-Source-Software Geld zu verdienen "
-"oder Anreize zu schaffen."
+msgstr "Gitcoin是通过开源软件获利或激励工作的最简单方式。"
 
 #: retail/templates/shared/hero.html:36
 msgid "Join Our Slack"
-msgstr "Tritt unserer Slack bei"
+msgstr "加入我们的懒散"
 
 #: retail/templates/shared/hero.html:37
 msgid "Explore Gitcoin's Tools"
-msgstr "Erkunde Gitcoins Werkzeuge"
+msgstr "探索Gitcoin的工具"
 
 #: retail/templates/shared/hero.html:40
 msgid "Join Mailing List"
-msgstr "Mailingliste beitreten"
+msgstr "加入邮件列表"
 
 #: retail/templates/shared/mailchimp.html:5
 msgid "(Emails once a week max, &amp; we never sell your data.)"
-msgstr ""
-"(E-Mails maximal einmal pro Woche, und wir verkaufen Ihre Daten niemals.)"
+msgstr "（每周最多发送一次电子邮件，我们绝不会出售您的数据。）"
 
 #: retail/templates/shared/testimonials.html:5
 msgid "Who's using Gitcoin?"
-msgstr "Wer benutzt Gitcoin?"
+msgstr "谁在使用Gitcoin？"
 
 #: retail/templates/shared/testimonials.html:12
 msgid "November 16 2017"
-msgstr "16. November 2017"
+msgstr "2017年11月16日"
 
 #: retail/templates/shared/testimonials.html:12
 msgid ""
 "Gitcoin Announces Pilot Projects with EtherDelta, Consensys Dilligence, "
 "Truffle, Metamask, web3py"
-msgstr ""
-"Gitcoin kündigt Pilotprojekte mit EtherDelta, Consensys Dilligence, Trüffel,"
-" Metamask, web3py an"
+msgstr "Gitcoin宣布EtherDelta，Consensys Dilligence，Truffle，Metamask，web3py等试点项目"
 
 #: retail/templates/slack.html:32
 msgid "Gitcoin Slack Community"
-msgstr "Gitcoin Slack Community"
+msgstr "Gitcoin Slack社区"
 
 #: retail/templates/slack.html:47
 msgid ""
 "Meet software developers, futurists, and funders who are building web3."
-msgstr ""
-"Treffen Sie Softwareentwickler, Futuristen und Geldgeber, die Web3 "
-"erstellen."
+msgstr "遇见正在构建web3的软件开发人员，未来主义者和资助者。"
 
 #: retail/templates/slack.html:50
 #: retail/templates/whitepaper_accesscode.html:46
 #: retail/templates/whitepaper_new.html:116
 msgid "Gitcoin will never share your email with anyone else."
-msgstr "Gitcoin wird Ihre E-Mails niemals mit anderen teilen."
+msgstr "Gitcoin永远不会与其他人分享您的电子邮件。"
 
 #: retail/templates/slack.html:56
 msgid "Sign in here"
-msgstr "Hier anmelden"
+msgstr "在这里登录"
 
 #: retail/templates/whitepaper_accesscode.html:33
 msgid "Got an access code?"
-msgstr "Haben Sie einen Zugangscode?"
+msgstr "有一个访问代码？"
 
 #: retail/templates/whitepaper_accesscode.html:34
 msgid "Good for you."
-msgstr "Schön für dich."
+msgstr "对你有好处。"
 
 #: retail/templates/whitepaper_accesscode.html:36
 msgid "Please submit your info below for access to the draft whitepaper."
-msgstr ""
-"Bitte senden Sie Ihre Informationen unten für den Zugang zum Entwurf "
-"Whitepaper."
+msgstr "请在下面提交您的信息以查看白皮书草稿。"
 
 #: retail/templates/whitepaper_accesscode.html:49
 msgid "Access Code"
-msgstr "Zugangscode"
+msgstr "访问代码"
 
 #: retail/templates/whitepaper_new.html:35
 msgid "Hey, you!"
-msgstr "Hallo du!"
+msgstr "嘿，你！"
 
 #: retail/templates/whitepaper_new.html:37
 msgid "Gitcoin is *not* a token."
-msgstr "Gitcoin ist * kein * Token."
+msgstr "Gitcoin不*代表令牌。"
 
 #: retail/templates/whitepaper_new.html:40
 msgid "Gitcoin is a distributed group of individuals focused:"
-msgstr "Gitcoin ist eine verteilte Gruppe von Individuen mit Fokus:"
+msgstr "Gitcoin是一个以个人为中心的分布式团队："
 
 #: retail/templates/whitepaper_new.html:44
 #, python-format
 msgid ""
 "on being <i>relentlessly mission driven</i>. <a href=\"%(missionurl)s\"> "
 "(more on this here) </a>"
-msgstr ""
-"darauf, unermüdlich missionsgesteuert zu sein </ i>. <a "
-"href=\"%(missionurl)s\"> (mehr dazu hier) </a>"
+msgstr "在无情的使命驱动下</ i>。 <a href=\"%(missionurl)s\">（更多在这里）</a>"
 
 #: retail/templates/whitepaper_new.html:47
 msgid ""
@@ -3800,18 +3532,15 @@ msgid ""
 "href=\"https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-"
 "projects-f5a0955de9d6\"> (more on this here) </a>"
 msgstr ""
-"über die Arbeit mit den <i> besten Repos </ i> in web3 .. <a "
-"href=\"https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-"
-"projects-f5a0955de9d6\"> (mehr zu das hier) </a>"
+"在web3中使用<i>最佳回购</ i>。<a href=\"https://media.consensys.net/gitcoin-joins-"
+"consensys-announces-pilot-projects-f5a0955de9d6\">（更多关于这里）</a>"
 
 #: retail/templates/whitepaper_new.html:50
 #, python-format
 msgid ""
 "on building the <i>best tools</i> for them...  <a href=\"%(toolboxurl)s\"> "
 "(more on this here) </a>"
-msgstr ""
-"für den Bau der <i> besten Werkzeuge </ i> für sie ... <a "
-"href=\"%(toolboxurl)s\"> (mehr dazu hier) </a>"
+msgstr "为他们建立<i>最佳工具</ i> ... <a href=\"%(toolboxurl)s\">（更多关于此处）</a>"
 
 #: retail/templates/whitepaper_new.html:53
 msgid ""
@@ -3819,9 +3548,8 @@ msgid ""
 "href=\"https://medium.com/gitcoin/blockchain-is-the-next-tcp-"
 "ip-6663b62b5654\"> (more on this here) </a>"
 msgstr ""
-"über einen <i> langfristigen </ i> Zeithorizont .. <a "
-"href=\"https://medium.com/gitcoin/blockchain-is-the-next-tcp-"
-"ip-6663b62b5654\"> (mehr dazu hier ) </a>"
+"在长期</ i>时间范围内。<a href=\"https://medium.com/gitcoin/blockchain-is-the-next-"
+"tcp-ip-6663b62b5654\">（更多关于此处）</a>"
 
 #: retail/templates/whitepaper_new.html:56
 msgid ""
@@ -3829,135 +3557,120 @@ msgid ""
 "href=\"https://medium.com/gitcoin/playing-the-long-game-fbd78fb41de6\"> "
 "(more on this here) </a>"
 msgstr ""
-"und <i> etwas Historisches </ i> im Raum zu tun. <a "
-"href=\"https://medium.com/gitcoin/playing-the-long-game-fbd78fb41de6\"> "
-"(mehr dazu hier) </a>"
+"并在这个空间里做一些历史性的事情。 <a href=\"https://medium.com/gitcoin/playing-the-long-"
+"game-fbd78fb41de6\">（更多内容请参阅此处</a>）"
 
 #: retail/templates/whitepaper_new.html:59
 msgid "Quite Frankly..."
-msgstr "Ehrlich gesagt..."
+msgstr "很坦率地说..."
 
 #: retail/templates/whitepaper_new.html:61
 msgid ""
 "The project hasn't really had time to partipate in token related activities."
-msgstr ""
-"Das Projekt hatte nicht wirklich Zeit, an Token-Aktivitäten teilzunehmen."
+msgstr "该项目还没有真正有时间参与令牌相关的活动。"
 
 #: retail/templates/whitepaper_new.html:64
 msgid "In fact, we're quite fatigued by the pervasiveness of tokens."
-msgstr ""
-"In der Tat sind wir ziemlich erschöpft von der Verbreitung von Tokens."
+msgstr "事实上，我们对令牌的普遍存在感到相当疲惫。"
 
 #: retail/templates/whitepaper_new.html:67
 msgid ""
 "Its exhausting to have to pay attention to all of the rumours, the drama, "
 "the speculation."
-msgstr ""
-"Es ist anstrengend, auf all die Gerüchte, das Drama, die Spekulation zu "
-"achten."
+msgstr "其精疲力尽必须注意所有的传言，戏剧，炒作。"
 
 #: retail/templates/whitepaper_new.html:70
 msgid ""
 "And there are *more worthwhile* uses of a completely-distributed trust-"
 "management supercomputer like the Ethereum blockchain."
-msgstr ""
-"Und es gibt * nützlichere * Anwendungen eines vollständig verteilten Trust-"
-"Management-Supercomputers wie der Ethereum-Blockchain."
+msgstr "而且更值得使用像以太坊区块链这样的完全分布式信任管理超级计算机。"
 
 #: retail/templates/whitepaper_new.html:73
 msgid ""
 "So we're choosing to ignore it all (for now) and focusing on building stuff."
-msgstr ""
-"Also entscheiden wir uns, alles zu ignorieren (vorerst) und uns darauf zu "
-"konzentrieren, Dinge zu bauen."
+msgstr "所以我们选择忽略这一切（现在）并专注于构建东西。"
 
 #: retail/templates/whitepaper_new.html:75
 msgid "But that could change.."
-msgstr "Aber das könnte sich ändern .."
+msgstr "但是这可能会改变.."
 
 #: retail/templates/whitepaper_new.html:77
 msgid ""
 "It is possible that one day there will be tokens or other digital assets "
 "associated with the project.  Possible, but no promises."
-msgstr ""
-"Es ist möglich, dass eines Tages Tokens oder andere digitale Assets mit dem "
-"Projekt verknüpft werden. Möglich, aber keine Versprechungen."
+msgstr "有可能有一天会有与项目相关的代币或其他数字资产。可能的，但没有承诺。"
 
 #: retail/templates/whitepaper_new.html:80
 msgid "Want to participate now?"
-msgstr "Willst du jetzt teilnehmen?"
+msgstr "现在想参加吗？"
 
 #: retail/templates/whitepaper_new.html:81
 msgid "Some ways to get involved now:"
-msgstr "Einige Möglichkeiten, jetzt mitzumachen:"
+msgstr "现在介入一些方法："
 
 #: retail/templates/whitepaper_new.html:84
 msgid "Join the slack"
-msgstr "Mach mit beim Durchhängen"
+msgstr "加入松懈"
 
 #: retail/templates/whitepaper_new.html:87
 msgid "Follow the twitter"
-msgstr "Folge dem Twitter"
+msgstr "按照Twitter"
 
 #: retail/templates/whitepaper_new.html:90
 msgid "Build something cool"
-msgstr "Baue etwas Cooles"
+msgstr "建立一些很酷的"
 
 #: retail/templates/whitepaper_new.html:93
 msgid "Pitch a new idea"
-msgstr "Stellen Sie eine neue Idee auf"
+msgstr "提出一个新想法"
 
 #: retail/templates/whitepaper_new.html:96
 msgid "Learn a new tool"
-msgstr "Erlernen Sie ein neues Werkzeug"
+msgstr "学习一个新工具"
 
 #: retail/templates/whitepaper_new.html:99
 msgid "Still want whitepaper access?"
-msgstr "Möchten Sie weiterhin Zugriff auf Whitepaper?"
+msgstr "仍然想要白皮书访问？"
 
 #: retail/templates/whitepaper_new.html:101
 msgid ""
 "Please submit your info below to receive access to the whitepaper if/when "
 "its available."
-msgstr ""
-"Bitte senden Sie Ihre Informationen unten, um Zugriff auf das Whitepaper zu "
-"erhalten, wenn es verfügbar ist."
+msgstr "如果/可用，请提交您的信息以获取白皮书的访问权限。"
 
 #: retail/templates/whitepaper_new.html:101
 msgid "Already have an access code?"
-msgstr "Hast du schon einen Zugangscode?"
+msgstr "已经有一个访问代码？"
 
 #: retail/templates/whitepaper_new.html:119
 msgid "Interested as a"
-msgstr "Interessiert als"
+msgstr "有兴趣作为一个"
 
 #: retail/templates/whitepaper_new.html:123
 msgid "Open Source Repo Maintainer"
-msgstr "Open Source Repo Maintainer"
+msgstr "开源的回收维护者"
 
 #: retail/templates/whitepaper_new.html:124
 msgid "Token Purchaser"
-msgstr "Token Käufer"
+msgstr "令牌购买者"
 
 #: retail/templates/whitepaper_new.html:126
 msgid "Advisor"
-msgstr "Berater"
+msgstr "顾问"
 
 #: retail/templates/whitepaper_new.html:130
 msgid "Feel free to select more than one."
-msgstr "Fühlen Sie sich frei, mehrere auszuwählen."
+msgstr "随意选择多个。"
 
 #: retail/templates/whitepaper_new.html:135
 msgid "Who are you?  What is your interest in the whitepaper?"
-msgstr "Wer bist du? Was interessiert Sie am Whitepaper?"
+msgstr "你是谁？您对白皮书有什么兴趣？"
 
 #: retail/views.py:36
 msgid ""
 "Gitcoin is the catalyst open source development needs to move forward. The "
 "process is seamless and the results speak for themselves."
-msgstr ""
-"Gitcoin ist der Katalysator Open-Source-Entwicklung braucht, um "
-"voranzukommen. Der Prozess ist nahtlos und die Ergebnisse sprechen für sich."
+msgstr "Gitcoin是催化剂开源发展需要向前发展的催化剂。这个过程是无缝的，结果可以说明一切。"
 
 #: retail/views.py:39
 msgid ""
@@ -3967,12 +3680,7 @@ msgid ""
 "development.  So far the platform looks promising as a valuable addition to "
 "our development process."
 msgstr ""
-"Wir haben das Gitcoin-Bounty-Programm im Web3.py-Projekt getestet und sind "
-"sehr zufrieden mit den bisherigen Ergebnissen. Wir haben vier Probleme aus "
-"dem Weg geräumt, die von kleineren Säuberungsaufgaben bis hin zur "
-"vollständigen Entwicklung von Features reichen. Bis jetzt sieht die "
-"Plattform vielversprechend als eine wertvolle Ergänzung unseres "
-"Entwicklungsprozesses aus."
+"我们一直在尝试Web3.py项目中的Gitcoin赏金计划，并对目前的结果非常满意。我们已经关闭了四个有关问题，从较小的清理任务到全面的功能开发。到目前为止，该平台看起来很有希望，作为我们开发过程的一个宝贵补充。"
 
 #: retail/views.py:42
 msgid ""
@@ -3981,20 +3689,14 @@ msgid ""
 "Having fresh ideas and outside perspectives contribute to a new project is "
 "unbelievably valuable."
 msgstr ""
-"Unsere ersten Erfahrungen mit Gitcoin waren sehr positiv. Es hat dem MARKET "
-"geholfen, neue Leute schnell und kosteneffektiv einzubinden. Neue Ideen und "
-"Außenperspektiven zu einem neuen Projekt beizutragen, ist unglaublich "
-"wertvoll."
+"我们第一次使用Gitcoin的经历非常积极。它帮助市场快速并以经济有效的方式让新人参与其中。有新的想法和外部观点有助于一个新的项目是令人难以置信的宝贵。"
 
 #: retail/views.py:45
 msgid ""
 "It’s been a while since something has gotten me this riled up ! Love the "
 "concept and definitely sticking around to see this project through. Awesome "
 "community  + open source work + bounties"
-msgstr ""
-"Es ist schon eine Weile her, seit etwas mich so verärgert hat! Ich liebe das"
-" Konzept und bleibe definitiv dabei, dieses Projekt zu sehen. Tolle "
-"Community + Open Source-Arbeit + Bounties"
+msgstr "已经有一段时间了，因为有些东西让我兴奋起来！爱这个概念，并坚持不懈地看到这个项目。真棒社区+开源工作+赏金"
 
 #: retail/views.py:48
 msgid ""
@@ -4003,27 +3705,19 @@ msgid ""
 "projects, by powering up their capacity, and the developers, by paying for "
 "their work."
 msgstr ""
-"Jetzt, wo das Internet des Werts beginnt, eine Sache zu sein, fügt Gitcoin "
-"eine neue Schicht von Anreizen in die Open Source-Entwicklung ein und hilft "
-"sowohl den Projekten, indem sie ihre Kapazität antreibt, als auch den "
-"Entwicklern, indem sie für ihre Arbeit bezahlen."
+"既然价值互联网已经开始成为事物，Gitcoin正在为开源开发添加一个新层次的激励机制，通过支付他们的工作来帮助这两个项目，通过提升他们的容量和开发人员来帮助他们。"
 
 #: retail/views.py:51
 msgid ""
 "Gitcoin helps us to finally close out the issues we’ve been meaning to get "
 "around to for too long."
-msgstr ""
-"Gitcoin hilft uns, endlich die Probleme zu lösen, zu denen wir uns zu lange "
-"hingezogen gefühlt haben."
+msgstr "Gitcoin帮助我们终于解决了我们一直想要解决的问题太久。"
 
 #: retail/views.py:54
 msgid ""
 "Gitcoin is precisely what I’ve been looking for! It gives every developer a "
 "vehicle to make extra money or move their open source project ahead."
-msgstr ""
-"Gitcoin ist genau das, was ich gesucht habe! Es gibt jedem Entwickler ein "
-"Vehikel, um zusätzliches Geld zu verdienen oder sein Open-Source-Projekt "
-"voranzutreiben."
+msgstr "Gitcoin正是我一直在寻找的！它为每个开发人员提供了额外的资金或提前开源项目的工具。"
 
 #: retail/views.py:57
 msgid ""
@@ -4031,25 +3725,20 @@ msgid ""
 " love and get paid for it, and to have reasonable freedom about the way I "
 "work, that it already seems too good to be true. "
 msgstr ""
-"Ich finde es ist so toll, durch Gitcoin die Möglichkeit zu haben, das zu "
-"tun, was ich liebe und dafür bezahlt zu werden, und angemessene Freiheit in "
-"der Art zu haben, wie ich arbeite, dass es schon zu gut ist, um wahr zu "
-"sein."
+"我觉得有机会通过Gitcoin做我喜欢的事情并为此付出代价，并且对我工作的方式有合理的自由感，真是太棒了，以至于它已经看起来太好了，无法成为现实。"
 
 #: retail/views.py:165
 msgid "Gitcoin is a mission-driven organization."
-msgstr "Gitcoin ist eine missionsgesteuerte Organisation."
+msgstr "Gitcoin是一个任务驱动的组织。"
 
 #: retail/views.py:166
 msgid "Our mission is to grow open source."
-msgstr "Unsere Mission ist Open Source zu wachsen."
+msgstr "我们的使命是发展开源。"
 
 #: retail/views.py:176
 msgid ""
 "I am a developer, I want build more Open Source Software. Where can I start?"
-msgstr ""
-"Ich bin ein Entwickler, ich möchte mehr Open Source Software erstellen. Wo "
-"kann ich anfangen?"
+msgstr "我是一名开发人员，我想构建更多开源软件。我可以从哪里开始？"
 
 #: retail/views.py:177
 msgid ""
@@ -4058,14 +3747,12 @@ msgid ""
 "around. Check out the developer guide at <a "
 "href=https://gitcoin.co/help/dev>https://gitcoin.co/help/dev</a>."
 msgstr ""
-"Der <a href=https://gitcoin.co/explorer> Funded Issue Explorer </a> enthält "
-"eine Handvoll Probleme, die zur Auszahlung bereitstehen, sobald sie gewendet"
-" werden. Lesen Sie den Entwicklerleitfaden unter <a "
-"href=https://gitcoin.co/help/dev> https://gitcoin.co/help/dev </a>."
+"<a href=https://gitcoin.co/explorer>资助问题资源管理器</a>包含一些问题，只要他们转身就可以立即付款。查看<a "
+"href=https://gitcoin.co/help/dev> https://gitcoin.co/help/dev </a>上的开发者指南。"
 
 #: retail/views.py:180
 msgid "I am a repo maintainer.  How do I get started?"
-msgstr "Ich bin ein Repo-Betreuer. Wie fange ich an?"
+msgstr "我是回购维护者。我如何开始？"
 
 #: retail/views.py:181
 msgid ""
@@ -4073,25 +3760,22 @@ msgid ""
 "done.  Check out the repo maintainers guide at <a "
 "href=https://gitcoin.co/help/repo>https://gitcoin.co/help/repo</a>."
 msgstr ""
-"Der beste Weg, um loszulegen, ist ein finanziertes Problem zu einer Aufgabe,"
-" die Sie tun müssen, zu buchen. Schau dir den Repo-Betreuer Guide an unter "
-"<a href=https://gitcoin.co/help/repo> https://gitcoin.co/help/repo </a>."
+"开始的最好方法是在您需要完成的任务上发布资金问题。查看<a href=https://gitcoin.co/help/repo> "
+"https://gitcoin.co/help/repo </a>上的回购维护者指南。"
 
 #: retail/views.py:184
 msgid "What tokens does Gitcoin support?"
-msgstr "Welche Tokens unterstützt Gitcoin?"
+msgstr "Gitcoin支持什么标记？"
 
 #: retail/views.py:185
 msgid ""
 "Gitcoin supports Ether and all ERC20 tokens.  If the token you'd like to use"
 " is Ethereum based, then Gitcoin supports it."
-msgstr ""
-"Gitcoin unterstützt Ether und alle ERC20-Token. Wenn das Token, das Sie "
-"verwenden möchten, Ethereum basiert, unterstützt Gitcoin es."
+msgstr "Gitcoin支持以太网和所有ERC20令牌。如果您想使用的令牌是基于以太坊的，那么Gitcoin支持它。"
 
 #: retail/views.py:188
 msgid "What kind of issues are fundable?"
-msgstr "Welche Art von Emissionen sind finanzierbar?"
+msgstr "什么样的问题是可资助的？"
 
 #: retail/views.py:189
 msgid ""
@@ -4103,11 +3787,11 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"<p class = \"c5\"> <span class = \"c4 c0\"> Gitcoin unterstützt Bugs, Features und Sicherheitsprobleme. & nbsp; Jedes Problem, das Sie lösen müssen, ist ein guter Kandidat für ein fundiertes Problem, vorausgesetzt: </ span> </ p> <ul class = \"c13 lst-kix_twl0y342ii52-0 start\"> <li class = \"c5 c11\" > <span class = \"c4 c0\"> Heute geöffnet. </ span> </ li> <li class = \"c5 c11\"> <span class = \"c4 c0\"> Die repo README zählt eindeutig auf, wie neu Der Entwickler sollte eingerichtet werden, um einen Beitrag zu leisten. </ span> </ li> <li class = \"c5 c11\"> <span class = \"c4 c0\"> Die Aufgabe ist gut definiert. </ span> </ li> <li class = \"c5 c11\"> <span class = \"c4 c0\"> Der Endzustand der Aufgabe ist gut definiert. </ span> </ li> <li class = \"c5 c11\"> <span class = \"c4 c0 \"> Die Preisfindung der Aufgabe spiegelt (Marktzins * Komplexität) der Aufgabe wider. </ span> </ li> <li class =\" c5 c11 \"> <span class =\" c4 c0 \"> Das Problem ist auf der Roadmap, aber blockiert keine anderen Arbeiten. </ span> </ li> </ ul> <p class = \"c5 c6\"> <span class = \"c4 c0\"> </ span> </ p> <p klasse = \"c5\"> <span class = \"c4 c0\"> Um heute mit finanzierten Themen zu beginnen, könnte es gut sein, klein anzufangen. & nbsp; Gibt es einen kleinen Fehler, der behoben werden muss? & nbsp; Ein Problem, das eine Weile offen war, dass niemand anpackt? & nbsp; Eine administrative Aufgabe? </ span> </ p>"
+"<p class =“c5”> <span class =“c4 c0”> Gitcoin支持错误，功能和安全性问题。 ＆nbsp;如果您需要完成的任何问题都是资助问题的良好选择，前提是：</ span> </ p> <ul class =“c13 lst-kix_twl0y342ii52-0 start”> <li class =“c5 c11” > <span class =“c4 c0”>它今天开放。</ li> <li> </ li> <li>清楚地列举了新的</ span> </ li> </ li> <span class =“c4 c0”>该任务已定义好。</ li> class =“c5 c11”> <span class =“c4 c0”>任务的结束状态已定义良好。</ span> </ li> <li class =“c5 c11”> <span class =“c4任务的定价反映了任务的（市场率*复杂度）。</ li> </ li> <li class =“c5 c11”> <span class =“c4 c0”>问题出在路线图，但不会阻止其他工作。</ span> </ li> </ ul> <p class =“c5 c6”> <span class =“c4 c0”> </ span> </ p> <p class =“c5”> <span class =“c4 c0”>要从今天开始接受资助问题，从小开始可能会很好。 ＆nbsp;是否有需要修复的小错误？ ＆nbsp;一段时间以来一直没有人开始解决的问题？ ＆nbsp;管理任务？</ span> </ p>"
 
 #: retail/views.py:197
 msgid "Whats the difference between tips & funded issues?"
-msgstr "Was ist der Unterschied zwischen Tipps & finanzierten Ausgaben?"
+msgstr "提示和资金问题有什么区别？"
 
 #: retail/views.py:198
 msgid ""
@@ -4129,21 +3813,21 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"<p>\n"
-"<strong> Ein Tipp </ strong> ist ein Tool, um Ether oder ein beliebiges Ethereum-Token an einen beliebigen GitHub-Account zu senden. Der Fluss für Tipps sieht so aus:\n"
+"<P>\n"
+"<strong>提示</ strong>是一种将以太或任何以太坊代币发送给任何github账户的工具。提示流程如下所示：\n"
 "</ p> <p>\n"
-"> Senden (Teilnehmer 1) => Empfangen (Teilnehmer 2)\n"
-"</ p> <p>\n"
-"\n"
-"Mit <strong> Funded Issues </ strong> können Open-Source-Funktionen, Bugs oder Sicherheits-Bounties finanziert werden. Der Fluss für finanzierte Ausgaben sieht folgendermaßen aus:\n"
+">发送（派对1）=>接收（派对2）\n"
 "</ p> <p>\n"
 "\n"
-"> Fondsausgabe (Partei 1) => Anspruchskasse (Partei 2) => Akzeptieren (Partei 1)\n"
+"资助问题</ strong>是资助开源功能，错误或安全奖励的一种方式。资金问题的流程如下所示：\n"
+"</ p> <p>\n"
+"\n"
+">基金发行（第一方）=>理赔基金（第二方）=>接受（第一方）\n"
 "</ p>"
 
 #: retail/views.py:216
 msgid "What kind of contributors are successful on the Gitcoin network?"
-msgstr "Welche Art von Mitwirkenden sind im Gitcoin-Netzwerk erfolgreich?"
+msgstr "什么样的贡献者在Gitcoin网络上取得成功？"
 
 #: retail/views.py:217
 msgid ""
@@ -4215,75 +3899,73 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"<p>\n"
-"Wenn Sie ein Problem-Board haben, das geprüft werden muss, lesen Sie weiter.\n"
+"<P>\n"
+"如果您有需要分类的问题板，请继续阅读..\n"
 "</ p>\n"
-"<p>\n"
-"Wenn Sie Ingenieure für die Arbeit an Ihrem Repo rekrutieren möchten, lesen Sie weiter.\n"
+"<P>\n"
+"如果你想招聘工程师来帮助你的回购工作，请继续阅读..\n"
 "</ p>\n"
-"<p>\n"
-"Wenn Sie Wert schaffen und Ether-Token im Gegenzug erhalten möchten, lesen Sie weiter.\n"
+"<P>\n"
+"如果你想创造价值，并接受以太币令牌，请阅读..\n"
 "</ p>\n"
-"<p>\n"
-"Wenn Sie auf der Suche nach einem schnellen Gewinn, einem einfachen Bock oder etwas Werbung sind, drehen Sie sich bitte um.\n"
-"</ p>\n"
-"\n"
-"<p>\n"
-"Wir schätzen Kommunikation, die ist:\n"
+"<P>\n"
+"如果你正在寻找一个快速胜利，一个简单的降压，或推广的东西，请转过身。\n"
 "</ p>\n"
 "\n"
-"<ul>\n"
-"<li>\n"
-"    Kollaborativ\n"
-"</ li>\n"
-"<li>\n"
-"    Intellektuell und intellektuell ehrlich\n"
-"</ li>\n"
-"<li>\n"
-"    Demütigen\n"
-"</ li>\n"
-"<li>\n"
-"    Einfühlsam\n"
-"</ li>\n"
-"<li>\n"
-"    Pragmatisch\n"
-"</ li>\n"
-"<li>\n"
-"    Stress reduzierend\n"
-"</ li>\n"
-"</ ul>\n"
-"\n"
-"<p>\n"
-"Hier sind einige unserer Werte\n"
+"<P>\n"
+"我们重视的沟通是：\n"
 "</ p>\n"
-"<ul>\n"
-"<li>\n"
-"    Zeigen Sie, erzählen Sie nicht\n"
-"</ li>\n"
-"<li>\n"
-"    Gib zuerst\n"
-"</ li>\n"
-"<li>\n"
-"     Sei nachdenklich und direkt\n"
-"</ li>\n"
-"<li>\n"
-"     Sei glaubwürdig\n"
-"</ li>\n"
-"<li>\n"
-"     Fordere den Status quo heraus und sei bereit, herausgefordert zu werden\n"
-"</ li>\n"
-"<li>\n"
-"     Erstellen Sie herrliche Erlebnisse\n"
-"</ li>\n"
-"</ ul>"
+"\n"
+"<UL>\n"
+"<LI>\n"
+"    共同\n"
+"</ LI>\n"
+"<LI>\n"
+"    智力和智力诚实\n"
+"</ LI>\n"
+"<LI>\n"
+"    谦卑\n"
+"</ LI>\n"
+"<LI>\n"
+"    感情移入的\n"
+"</ LI>\n"
+"<LI>\n"
+"    务实\n"
+"</ LI>\n"
+"<LI>\n"
+"    减轻压力\n"
+"</ LI>\n"
+"</ UL>\n"
+"\n"
+"<P>\n"
+"以下是我们的一些价值\n"
+"</ p>\n"
+"<UL>\n"
+"<LI>\n"
+"    显示，不要告诉\n"
+"</ LI>\n"
+"<LI>\n"
+"    先给\n"
+"</ LI>\n"
+"<LI>\n"
+"     体贴和直接\n"
+"</ LI>\n"
+"<LI>\n"
+"     要可信\n"
+"</ LI>\n"
+"<LI>\n"
+"     挑战现状并愿意受到挑战\n"
+"</ LI>\n"
+"<LI>\n"
+"     创造令人愉快的体验\n"
+"</ LI>\n"
+"</ UL>"
 
 #: retail/views.py:285
 msgid ""
 "I received a notification about tip / funded issue, but I can't process it."
 "  Help!"
-msgstr ""
-"Ich habe eine Benachrichtigung über ein Trinkgeld erhalten, aber ich kann es"
-" nicht verarbeiten. Hilfe!"
+msgstr "我收到了关于提示/资金问题的通知，但我无法处理。帮帮我！"
 
 #: retail/views.py:286
 msgid ""
@@ -4291,16 +3973,13 @@ msgid ""
 "href='mailto:founders@gitcoin.co'>founders@gitcoin.co</a> or join <a "
 "href=/slack>Gitcoin Community Slack</a>."
 msgstr ""
-"Wir würden gerne helfen! Bitte mailen Sie <a "
-"href='mailto:founders@gitcoin.co'> Gründer@gitcoin.co </a> oder treten Sie "
-"<a href=/slack> Gitcoin Community Slack </a> bei."
+"我们很乐意提供帮助！请发送电子邮件至<a href='mailto:founders@gitcoin.co'> founders@gitcoin.co "
+"</a>或加入<a href=/slack> Gitcoin Community Slack </a>。"
 
 #: retail/views.py:289
 msgid ""
 "Am I allowed to place bounties on projects I don't contribute to or own?"
-msgstr ""
-"Darf ich Prämien an Projekten platzieren, die ich nicht beisteuere oder an "
-"denen ich nicht beteiligt bin?"
+msgstr "我是否允许将奖励放在我不捐赠或拥有的项目上？"
 
 #: retail/views.py:290
 msgid ""
@@ -4309,17 +3988,11 @@ msgid ""
 "will need to work with the contributors or owners of that repo.  If not, you"
 " can always fork a repo and run your own roadmap."
 msgstr ""
-"TLDR: Ja, das bist du. Da OSS jedoch selbst entwickelt, haben wir die "
-"Erfahrung gemacht, dass Sie, wenn Sie das Produkt, an dem Sie arbeiten, in "
-"den Upstream integrieren möchten, mit den Kontributoren oder Eigentümern "
-"dieses Repos arbeiten müssen. Ist dies nicht der Fall, können Sie immer ein "
-"Repo forkieren und Ihre eigene Roadmap erstellen."
+"TLDR：是的。但是，正如OSS自己开发的，我们的经验是，如果你想让你的产品合并到上游，你需要与该回购商的贡献者或所有者合作。如果没有，你总是可以分叉回购并运行你自己的路线图。"
 
 #: retail/views.py:293
 msgid "I started work on a bounty but someone else has too.  Who gets it?"
-msgstr ""
-"Ich begann mit der Arbeit an einem Kopfgeld, aber jemand anderes hat es auch"
-" getan. Wer bekommt es?"
+msgstr "我开始了一项赏金的工作，但其他人也有。谁得到它？"
 
 #: retail/views.py:294
 msgid ""
@@ -4329,16 +4002,11 @@ msgid ""
 " agreement is uanble to be made, then the first person to start work will "
 "have first shot at the bounty."
 msgstr ""
-"In der Regel neigen wir dazu, die Person, die mit der Arbeit begonnen hat, "
-"als vorrangig zu behandeln. Die beteiligten Parteien sind alle willkommen, "
-"zusammenzuarbeiten, um die Prämie zu teilen oder zu einer anderen "
-"Vereinbarung zu kommen, aber wenn eine Vereinbarung getroffen werden kann, "
-"dann wird die erste Person, die die Arbeit beginnt, zuerst auf die Prämie "
-"geschossen haben."
+"作为一般规则，我们倾向于首先将“开始工作”的人视为优先于该问题。欢迎有关各方共同努力，分享赏金或达成其他协议，但如果能够达成协议，那么第一个开始工作的人首先会得到赏金。"
 
 #: retail/views.py:299
 msgid "Is Gitcoin open source?"
-msgstr "Ist Gitcoin Open Source?"
+msgstr "Gitcoin是开源的吗？"
 
 #: retail/views.py:300
 msgid ""
@@ -4346,14 +4014,12 @@ msgid ""
 " <a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  "
 "Please see the liscense.txt file in each repo for more details."
 msgstr ""
-"Ja, alle Kernsoftwaresysteme von Gitcoin sind Open Source und verfügbar "
-"unter <a href=https://github.com/gitcoinco/> https://github.com/gitcoinco/ "
-"</a>. Weitere Informationen finden Sie in der Datei liscense.txt in jedem "
-"Repo."
+"是的，所有的Gitcoin的核心软件系统都是开源的，可以在<a href=https://github.com/gitcoinco/> "
+"https://github.com/gitcoinco/ </a>上找到。请参阅每个回购中的liscense.txt文件以获取更多详细信息。"
 
 #: retail/views.py:303
 msgid "Is a token distribution event planned for Gitcoin?"
-msgstr "Ist ein Token-Verteilungsereignis für Gitcoin geplant?"
+msgstr "计划为Gitcoin制定令牌分发事件吗？"
 
 #: retail/views.py:304
 msgid ""
@@ -4363,13 +4029,13 @@ msgid ""
 "<p>&nbsp;</p>            "
 msgstr ""
 "\n"
-"<p> Gitcoin Core erwägt, ein Token-Distribution-Event (TDI) zu machen, konzentriert sich aber zu diesem Zeitpunkt vor allem darauf, in Open-Source-Software auf schlanke Art und Weise Wert zu schaffen. </ p>\n"
-"<p> Um mehr über ein mögliches Token-Verteilungsereignis zu erfahren, sehen Sie sich <a href=\"https://gitcoin.co/whitepaper\"> https://gitcoin.co/whitepaper </a> <an / p>\n"
-"<p> & nbsp; </ p>"
+"Gitcoin Core正在考虑做一个令牌分发事件（TDI），但当时首要的重点是以精益方式在开源软件中提供价值。</ p>\n"
+"<p>要详细了解即将到来的令牌分发事件，请查看<a href=\"https://gitcoin.co/whitepaper\"> https://gitcoin.co/whitepaper </a> < / p>\n"
+"<P>＆NBSP; </ P>"
 
 #: retail/views.py:310
 msgid "What is the difference between Gitcoin and Gitcoin Core?"
-msgstr "Was ist der Unterschied zwischen Gitcoin und Gitcoin Core?"
+msgstr "Gitcoin和Gitcoin Core有什么区别？"
 
 #: retail/views.py:311
 msgid ""
@@ -4379,13 +4045,13 @@ msgid ""
 "The Gitcoin Network is a series of smart contracts that helps Grow Open Source, but enabling developers to easily post and manage funded issues.            "
 msgstr ""
 "\n"
-"Gitcoin Core LLC ist die juristische Person, die die Softwareentwicklung des Gitcoin Network (Gitcoin) verwaltet.\n"
+"Gitcoin Core LLC是管理Gitcoin网络（Gitcoin）软件开发的法律实体。\n"
 "\n"
-"Das Gitcoin-Netzwerk besteht aus einer Reihe intelligenter Verträge, die Grow Open Source unterstützen, es Entwicklern jedoch ermöglichen, fundierte Probleme einfach zu veröffentlichen und zu verwalten."
+"Gitcoin网络是一系列有助于Grow Open Source的智能合约，但可让开发人员轻松发布和管理资金问题。"
 
 #: retail/views.py:317
 msgid "Who is the team at Gitcoin Core?"
-msgstr "Wer ist das Team von Gitcoin Core?"
+msgstr "Gitcoin Core的团队是谁？"
 
 #: retail/views.py:318
 msgid ""
@@ -4398,14 +4064,14 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"<p> Der Gründer ist <a href=\"https://linkedin.com/in/owocki\"> Kevin Owocki </a>, ein Technologe aus der Boulder Colorado Tech-Szene. & nbsp; Kevin hat einen BS in Informatik, 15 Jahre Erfahrung in Open Source Software und Technologie Startups. Er ist ein Freiwilliger in der Boulder-Community für mehrere Community-Organisationen und ein begeisterter Open-Source-Entwickler. Seine Arbeiten wurden in <a href=\"http://techcrunch.com/2011/02/10/group-dating-startup-ignighter-raises-3-million/\"> TechCrunch </a> vorgestellt, & nbsp; <a href=\"http://www.cnn.com/2011/BUSINESS/03/29/india.online.matchmaking/\"> CNN </a>, <a href = \"http: // www. inc.com/30under30/2011/profile-adam-sachs-kevin-owocki-and-dan-osit-founders-ignighter.html\">Inc Magazine </a>, <a href = \"http: // www .nytimes.com / 2011/02/20 / business / 20ignite.html? _r = 4 & amp; pagewanted = 1 & amp; amp; ref = business \"> Die New York Times </a>, <a href =\" http://boingboing.net/2011/09/24/tosamend-turn-all-online-i-agree-button-into-negotiations.html\">BoingBoing </a>, <n href = \"http: //www.wired.com/2015/12/kevin-owocki-adblock-to-bitcoin/\"> WIRED </a>, <a href = \"https://www.forbes.com/sites/amycastor / 2017/08/31 / toothpick-takes-top-preis-in-silicon-strand-ethereum-hackathon / # 6bf23b7452ad \"> Forbes </a>, und <a href =\" http: //www.techdigest. tv / 2007/08 / super_mario_get_1.html \"> TechDigest </a>.</ p>\n"
-"<p> <strong> Gitcoin </ strong> wurde von der Community in Boulder Colorados florierender Tech-Szene getragen. Eines der erstaunlichsten Dinge an der Boulder Community ist das #givefirst Mantra. Das Gründungsteam hat seine Karriere von Beratung, Mentoring und Beziehungen in der lokalen Tech-Community aufgebaut. & nbsp; </ p>\n"
+"<p>创始人是博尔德科罗拉多科技公司的技术专家，他是<a href=\"https://linkedin.com/in/owocki\"> Kevin Owocki </a>。 ＆NBSP; ＆nbsp; Kevin拥有计算机科学学士学位，15年开源软件和技术创业经验。他是几个社区组织的博尔德社区的志愿者，也是一位狂热的开源开发人员。他的工作已在<a href=\"http://techcrunch.com/2011/02/10/group-dating-startup-ignighter-raises-3-million/\"> TechCrunch </a>中展示， <a href=\"http://www.cnn.com/2011/BUSINESS/03/29/india.online.matchmaking/\"> CNN </a>，＆nbsp; <a href =“http：// www。 inc.com/30under30/2011/profile-adam-sachs-kevin-owocki-and-dan-osit-founders-ignighter.html\">Inc杂志</a>，＆nbsp; <a href =“http：// www 。纽约时报</a>，＆nbsp; <a href =“http://cn.nytimes.com/ 2011/02/20 / business / 20ignite.html？_r = 4＆amp; amp; amp; pagewanted = 1＆amp; amp; ref = business” http://boingboing.net/2011/09/24/tosamend-turn-all-online-i-agree-buttons-into-negotiations.html\"> BoingBoing </a>，＆nbsp; <a href =“http： //www.wired.com/2015/12/kevin-owocki-adblock-to-bitcoin/\">有线</a>，＆nbsp; <a href =“https://www.forbes.com/sites/amycastor / 2017/08/31 / toothpick-take-top-prize-in-silicon-beach-ethereum-hackathon /＃6bf23b7452ad“> Forbes </a>，＆nbsp; <a href =”http：//www.techdigest。电视/ 2007/08 / super_mario_get_1.html“> TechDigest </A>。</ p>\n"
+"Gitcoin </ strong>出现在博尔德科罗拉多州蓬勃发展的科技领域。 #givefirst咒语是博尔德社区最令人惊叹的事情之一。创始团队的职业生涯建立在当地技术社区的建议，指导和关系之上。 ＆NBSP; </ P>\n"
 "\n"
-"<p> Wir stellen ein. Wenn Sie dem Team beitreten möchten, <a href=mailto:founders@gitcoin.co> mailen Sie uns </a>."
+"我们正在招聘。如果你想加入团队，请<a href=mailto:founders@gitcoin.co>给我们发电子邮件</a>。"
 
 #: retail/views.py:327
 msgid "What is the mission of Gitcoin Core?"
-msgstr "Was ist die Aufgabe von Gitcoin Core?"
+msgstr "Gitcoin Core的使命是什么？"
 
 #: retail/views.py:328
 msgid ""
@@ -4415,11 +4081,11 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"Die Mission von Gitcoin ist \"Open Source wachsen\"."
+"Gitcoin的使命是“开源开源”。"
 
 #: retail/views.py:334
 msgid "How can I stay in touch with project updates?"
-msgstr "Wie kann ich mit Projekt-Updates in Verbindung bleiben?"
+msgstr "我如何与项目更新保持联系？"
 
 #: retail/views.py:335
 msgid ""
@@ -4442,27 +4108,25 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"Der beste Weg, in Kontakt zu bleiben, ist\n"
+"保持联系的最佳方式是\n"
 "\n"
-"<ul>\n"
-"<li>\n"
-"    <a href=\"/#mailchimp\"> Abonnieren Sie die Mailingliste </a>\n"
-"</ li>\n"
-"<li>\n"
-"    <a href=\"/twitter\"> Folge dem Projekt auf Twitter </a>\n"
-"</ li>\n"
-"<li>\n"
-"    <a href=\"/slack\"> Tritt dem Slack Channel bei </a>\n"
-"</ li>\n"
+"<UL>\n"
+"<LI>\n"
+"    <a href=\"/#mailchimp\">订阅邮件列表</a>\n"
+"</ LI>\n"
+"<LI>\n"
+"    <a href=\"/twitter\">在Twitter上关注该项目</a>\n"
+"</ LI>\n"
+"<LI>\n"
+"    <a href=\"/slack\">加入松弛频道</a>\n"
+"</ LI>\n"
 "\n"
-"</ ul>"
+"</ UL>"
 
 #: retail/views.py:357
 msgid ""
 "What is the difference between Gitcoin and centralized hiring websites?"
-msgstr ""
-"Was ist der Unterschied zwischen Gitcoin und zentralisierten "
-"Einstellungswebseiten?"
+msgstr "Gitcoin和集中招聘网站有什么不同？"
 
 #: retail/views.py:358
 msgid ""
@@ -4486,26 +4150,26 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"<p> Es gibt viele erfolgreiche zentrale Einstellungsressourcen im Internet. Da diese Plattformen eine effiziente Methode zur Beschaffung, Auswahl und Verwaltung globaler Mitarbeiter darstellten, wurden jeden Tag Millionen von Dollars durch diese Systeme verarbeitet. </ p>\n"
-"<p> Gitcoin nimmt den Wert, der durch dieses System fließt, und macht es effizienter und fairer. & nbsp; Gitcoin ist ein verteiltes Netzwerk intelligenter Verträge, basierend auf Ethereum, das Probleme mit zentralisierten Einstellungsressourcen lösen soll, namentlich durch </ p>\n"
-"<ul>\n"
-"<li> ist offener, </ li>\n"
-"<li> ist fairer, </ li>\n"
-"<li> ist effizienter, </ li>\n"
-"<li> ist einfacher zu benutzen. </ li>\n"
-"<li> Nutzung einer globalen Belegschaft, </ li>\n"
-"<li> die Zwischenhändler auszuschneiden, </ li>\n"
-"</ ul>\n"
-"<p> Als Sir Tim Berners-Lee in den späten 1980er Jahren das World Wide Web zum ersten Mal erfand, um den Informationsaustausch im Internet zu erleichtern, tat er etwas sehr Wichtiges. Er spezifizierte ein offenes Protokoll, das Hypertext Transfer Protocol oder HTTP, das jeder verwenden könnte, um Informationen verfügbar zu machen und auf solche Informationen zuzugreifen. & nbsp; </ p>\n"
-"<p> Gitcoin ist in ähnlicher Weise auf einem offenen Protokoll von intelligenten Verträgen aufgebaut. </ p>\n"
-"<p> Tim Berners-Lee hat durch die Angabe eines Protokolls den Weg für jedermann freigemacht, Software zu bauen, sogenannte Web-Server und Browser, die mit diesem Protokoll kompatibel sind. & nbsp; Durch Angabe eines Open-Source-Protokolls für Funding Issues und Software Development Scoping & amp; Das Gitcoin Core-Team hofft, eine Generation von Erfindungen in der Software des 21. Jahrhunderts inspirieren zu können.</ p>\n"
-"<p>\n"
-"Um mehr über Blockchain zu erfahren, überprüfen Sie bitte <a href=\"{}\"> dieses Video über web3 </a> oder das <a href = \"https://github.com/gitcoinco/gitcoinco/issues?q=is% 3Aissue + ist% 3Aopen + label% 3Ahelp \"> Github Issues-Board </a>\n"
+"网络上有许多成功的集中招聘资源。 ＆nbsp;因为这些平台是获取，选择和管理全球劳动力的高效方式，所以每天都通过这些系统处理数百万美元。</ p>\n"
+"Gitcoin将流经这些系统的价值，并使其更加高效和公平。 ＆nbsp; Gitcoin是基于以太坊的分布式智能合约网络，旨在解决集中招聘资源的问题，即通过</ p>\n"
+"<UL>\n"
+"<li>更开放，</ li>\n"
+"<li>更公平，</ li>\n"
+"<li>更有效率，</ li>\n"
+"<li>更易于使用。</ li>\n"
+"<li>利用全球劳动力，</ li>\n"
+"<li>剪掉中间商，</ li>\n"
+"</ UL>\n"
+"当Tim Berners-Lee爵士在20世纪80年代后期首次发明万维网时，为了让互联网上的信息更容易分享，他做了一件非常重要的事情。他指定了一个开放的协议，即超文本传输​​协议或HTTP，任何人都可以使用它来提供信息并访问这些信息。 ＆NBSP; </ P>\n"
+"Gitcoin同样是建立在一个开放的智能合约协议上。</ p>\n"
+"通过指定一个协议，Tim Berners-Lee为任何人打开了构建软件的途径，所谓的web服务器和浏览器可以与这个协议兼容。 ＆NBSP;通过为资金问题和软件开发范围界定指定开源协议，支付，Gitcoin Core团队希望同样能够激发21世纪软件中的一代发明。</ p>\n"
+"<P>\n"
+"要详细了解区块链，请查看<a href=\"{}\">关于web3的此视频</a>或<a href =“https://github.com/gitcoinco/gitcoinco/issues?q=is% 3Aissue + is％3Aopen + label％3Ahelp“> Github问题板</a>\n"
 "</ p>"
 
 #: retail/views.py:378
 msgid "Why do I need metamask?"
-msgstr "Warum brauche ich Metamask?"
+msgstr "为什么我需要metamask？"
 
 #: retail/views.py:379
 msgid ""
@@ -4532,28 +4196,28 @@ msgid ""
 "           "
 msgstr ""
 "\n"
-"<p>\n"
-"Sie benötigen <a href=\"https://metamask.io/\"> Metamask </a>, um Gitcoin zu verwenden.\n"
+"<P>\n"
+"您需要<a href=\"https://metamask.io/\"> Metamask </a>才能使用Gitcoin。\n"
 "</ p>\n"
-"<p>\n"
+"<P>\n"
 "\n"
-"Metamask verwandelt Google Chrome in einen Web3-Browser. Web3 ist sehr leistungsfähig, da Websites Daten aus der Blockchain abrufen und die Identität sicher verwalten können.\n"
+"Metamask将谷歌浏览器变成Web3浏览器。 Web3功能强大，因为它可以让网站从区块链中检索数据，并让用户安全地管理身份。\n"
 "</ p>\n"
-"<p>\n"
+"<P>\n"
 "\n"
-"Im Gegensatz zu web2, wo Dritte Ihre Daten besitzen, besitzen Sie in web3 Ihre Daten und Sie haben immer die Kontrolle. Auf web3 sind Ihre Daten auf der Blockchain gesichert, was bedeutet, dass niemand Ihr Vermögen einfrieren oder zensieren kann.\n"
+"与第三方拥有您的数据的web2相反，在web3中，您拥有自己的数据，并且始终处于控制之中。在web3上，您的数据在区块链上得到保护，这意味着没有人可以冻结您的资产或审查您的资料。\n"
 "</ p>\n"
-"<p>\n"
+"<P>\n"
 "\n"
-"Laden Sie Metamask <a href=\"https://metamask.io/\"> hier </a> noch heute herunter.\n"
+"立即下载Metamask <a href=\"https://metamask.io/\">此处</a>。\n"
 "</ p>\n"
-"<p>\n"
-"Um mehr über Metamask zu erfahren, überprüfen Sie bitte <a href=\"{}\"> dieses Video über web3 </a> oder das <a href = \"https://github.com/gitcoinco/gitcoinco/issues?q=is% 3Aissue + ist% 3Aopen + label% 3Ahelp \"> Github Issues-Board </a>\n"
+"<P>\n"
+"要了解有关Metamask的更多信息，请查看<a href=\"{}\">关于web3的此视频</a>或<a href =“https://github.com/gitcoinco/gitcoinco/issues?q=is% 3Aissue + is％3Aopen + label％3Ahelp“> Github问题板</a>\n"
 "</ p>"
 
 #: retail/views.py:402
 msgid "Why do I need to pay gas?"
-msgstr "Warum muss ich Gas bezahlen?"
+msgstr "为什么我需要支付燃气费？"
 
 #: retail/views.py:403
 msgid ""
@@ -4573,22 +4237,22 @@ msgid ""
 "           "
 msgstr ""
 "\n"
-"<p>\n"
-"\"Gas\" ist der Name für eine spezielle Einheit in Ethereum. Er misst, wie viel \"Arbeit\" eine Aktion oder eine Reihe von Aktionen ausführen muss (z. B. das Speichern von Daten in einem Smart-Vertrag).\n"
+"<P>\n"
+"“天然气”是以太坊中使用的特殊装置的名称。它衡量一个或一组动作需要执行多少“工作”（例如，将数据存储在智能合同中）。\n"
 "</ p>\n"
-"<p>\n"
-"Der Grund, warum Gas wichtig ist, ist, dass es hilft sicherzustellen, dass eine angemessene Gebühr durch Transaktionen bezahlt wird, die an das Netzwerk gesendet werden. Indem wir verlangen, dass eine Transaktion für jede Operation bezahlt, die sie ausführt (oder einen Vertrag ausführt), stellen wir sicher, dass das Netzwerk nicht mit einer Menge intensiver Arbeit, die für niemanden wertvoll ist, ins Stocken gerät.\n"
+"<P>\n"
+"气体的重要性在于它有助于确保提交给网络的交易支付适当的费用。通过要求交易为其执行的每项操作付费（或导致合同执行），我们确保网络不会因执行大量对任何人无用的密集工作而陷入困境。\n"
 "</ p>\n"
-"<p>\n"
-"Die Gasgebühren werden an die Betreiber des Ethereum-Netzwerks gezahlt, als Gegenleistung für die Sicherung aller Ether- und Ethereum-basierten Transaktionen in der Welt. Gasgebühren werden nicht direkt oder indirekt an Gitcoin Core gezahlt.\n"
+"<P>\n"
+"天然气费用支付给以太坊网络的维护者，以换取全球以太网和以太坊交易的所有权。天然气费不会直接或间接支付给Gitcoin Core。\n"
 "</ p>\n"
-"<p>\n"
-"Um mehr über Gas zu erfahren, gehen Sie bitte auf das <a href=\"https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\"> Github Issues Board </a>\n"
+"<P>\n"
+"要了解有关天然气的更多信息，请参阅<a href=\"https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\"> Github问题板</a>\n"
 "</ p>"
 
 #: retail/views.py:419
 msgid "What are the advanages of Ethereum based applications?"
-msgstr "Was sind die Vorteile von Ethereum-basierten Anwendungen?"
+msgstr "以太坊应用程序有哪些优势？"
 
 #: retail/views.py:420
 msgid ""
@@ -4619,31 +4283,31 @@ msgid ""
 "           "
 msgstr ""
 "\n"
-"Hier sind einige der Vorteile von Ethereum-basierten Anwendungen:\n"
-"<ul>\n"
-"<li>\n"
-"    Niedrigere (oder keine) Gebühren\n"
-"</ li>\n"
-"<li>\n"
-"    Keine Zwischenhändler\n"
-"</ li>\n"
-"<li>\n"
-"    Kein Dritter besitzt oder kann Ihre Daten verkaufen\n"
-"</ li>\n"
-"<li>\n"
-"    Keine internationalen Umstellungsgebühren\n"
-"</ li>\n"
-"<li>\n"
-"    In Protokoll-, Dienstprogramm- oder Anwendungstoken bezahlt werden; nicht nur Bargeld.\n"
-"</ li>\n"
-"</ ul>\n"
-"<p>\n"
-"Um mehr über Ethereum-basierte Apps zu erfahren, überprüfen Sie bitte <a href=\"{}\"> dieses Video über web3 </a> oder das <a href = \"https://github.com/gitcoinco/gitcoinco/issues?q= ist% 3Aissue + ist% 3Aopen + Label% 3Ahelp \"> Github Issues-Board </a>\n"
+"以下是基于以太坊的应用程序的一些优点：\n"
+"<UL>\n"
+"<LI>\n"
+"    降低（或不收取）费用\n"
+"</ LI>\n"
+"<LI>\n"
+"    没有中间人\n"
+"</ LI>\n"
+"<LI>\n"
+"    没有第三方拥有或可以出售您的数据\n"
+"</ LI>\n"
+"<LI>\n"
+"    没有国际转换费用\n"
+"</ LI>\n"
+"<LI>\n"
+"    在协议，实用程序或应用程序令牌中获得付款;不只是现金。\n"
+"</ LI>\n"
+"</ UL>\n"
+"<P>\n"
+"要详细了解基于以太坊的应用，请结帐<a href=\"{}\">关于web3的此视频</a>或<a href =“https://github.com/gitcoinco/gitcoinco/issues?q=是％3Aissue +是％3Aopen +标签％3Ahelp“> Github问题委员会</a>\n"
 "</ p>"
 
 #: retail/views.py:447
 msgid "I still dont get it.  Help!"
-msgstr "Ich verstehe es immer noch nicht. Hilfe!"
+msgstr "我仍然没有得到它。帮帮我！"
 
 #: retail/views.py:448
 msgid ""
@@ -4653,39 +4317,39 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Wir wollen mit dir ein bisschen mehr nerdeln. <a href=\"/slack\"> Tritt der Gitcoin Slack Community bei </a> und lass uns reden.\n"
+"我们想和你多一点。 <a href=\"/slack\">加入Gitcoin Slack社区</a>，让我们来谈谈。\n"
 
 #: retail/views.py:460
 msgid "Leverage Gitcoin’s Firehose of Talent to Do More Faster"
-msgstr "Nutzen Sie Gitcoins Firehose of Talent, um noch schneller zu werden"
+msgstr "利用Gitcoin的Talent Talesh做更快"
 
 #: retail/views.py:464
 msgid "Post a Bounty in 90 Seconds"
-msgstr "Poste ein Kopfgeld in 90 Sekunden"
+msgstr "在90秒内发布奖励"
 
 #: retail/views.py:595
 msgid "You must provide an email address"
-msgstr "Sie müssen eine E-Mail-Adresse angeben"
+msgstr "您必须提供一个电子邮件地址"
 
 #: retail/views.py:597
 msgid "Your invite has been sent."
-msgstr "Ihre Einladung wurde gesendet."
+msgstr "您的邀请已发送。"
 
 #: retail/views.py:605
 msgid "Unknown error"
-msgstr "Unbekannter Fehler"
+msgstr "未知错误"
 
 #: retail/views.py:608
 msgid "Invalid email"
-msgstr "Ungültige E-Mail"
+msgstr "不合规电邮"
 
 #: tdi/views.py:56 tdi/views.py:57 tdi/views.py:115 tdi/views.py:116
 msgid "Whitepaper"
-msgstr "Weißes Papier"
+msgstr "白皮书"
 
 #: tdi/views.py:64 tdi/views.py:123
 msgid "You're ratelimited. Please contact founders@gitcoin.co"
-msgstr "Du bist ratenlimitiert. Bitte wenden Sie sich an Gründer@gitcoin.co"
+msgstr "你的速度有限。请联系founders@gitcoin.co"
 
 #: tdi/views.py:72
 msgid ""
@@ -4704,92 +4368,55 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"Email: {}\n"
+"电子邮件：{}\n"
 "\n"
-"Rolle: {}\n"
+"角色：{}\n"
 "\n"
-"Bemerkungen: {}\n"
+"注释： {}\n"
 "\n"
-"IP: {}\n"
+"IP：{}\n"
 "\n"
 "\n"
 "https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/"
 
 #: tdi/views.py:81
 msgid "New Whitepaper Request"
-msgstr "Neue Whitepaper-Anfrage"
+msgstr "新的白皮书请求"
 
 #: tdi/views.py:102 tdi/views.py:146
 msgid "Invalid Email. Please contact founders@gitcoin.co"
-msgstr "Ungültige E-Mail. Bitte wenden Sie sich an Gründer@gitcoin.co"
+msgstr "不合规电邮。请联系founders@gitcoin.co"
 
 #: tdi/views.py:106
 msgid ""
 "Your request has been sent.  <a href=/slack>Meantime, why don't you check "
 "out the slack channel?</a>"
-msgstr ""
-"Ihre Anfrage wurde verschickt. <a href=/slack> In der Zwischenzeit, warum "
-"nicht den freien Kanal ausprobieren? </a>"
+msgstr "您的申请已经提交。 <a href=/slack>同时，为什么你不检查松弛频道？</a>"
 
 #: tdi/views.py:131
 msgid "Invalid Access Code. Please contact founders@gitcoin.co"
-msgstr "Ungültiger Zugangscode. Bitte wenden Sie sich an Gründer@gitcoin.co"
+msgstr "无效的访问代码。请联系founders@gitcoin.co"
 
 #: tdi/views.py:136
 msgid ""
 "You have exceeded your maximum number of uses for this access code. Please "
 "contact founders@gitcoin.co"
-msgstr ""
-"Sie haben die maximale Anzahl von Verwendungen für diesen Zugriffscode "
-"überschritten. Bitte wenden Sie sich an Gründer@gitcoin.co"
+msgstr "您已超过此访问代码的最大使用次数。请联系founders@gitcoin.co"
 
 #: tdi/views.py:157
 msgid "New Whitepaper Generated"
-msgstr "Neues Whitepaper erstellt"
+msgstr "生成新的白皮书"
 
 #: tdi/views.py:168
 msgid ""
 "Generated for access code {} by email {} at {} via ip: {}. "
 "https://gitcoin.co/whitepaper"
-msgstr ""
-"Generiert für Zugangscode {} per E-Mail {} bei {} über IP: {}. "
-"https://gitcoin.co/whitepaper"
+msgstr "通过电子邮件{}通过ip：{}在{}生成访问码{}。 https://gitcoin.co/whitepaper"
 
 #: tdi/views.py:250
 msgid "Kevin from Gitcoin.co"
-msgstr "Kevin von Gitcoin.co"
+msgstr "凯文从Gitcoin.co"
 
 #: tdi/views.py:251
 msgid "Invite sent"
-msgstr "Einladung gesendet"
-
-#~ msgid "Kill Bounty"
-#~ msgstr "Töte Bounty"
-
-#~ msgid "The submitted github profile could not be found on github."
-#~ msgstr ""
-#~ "Das eingereichte GitHub-Profil konnte nicht auf GitHub gefunden werden."
-
-#~ msgid "Gitcoin's Top Community Members"
-#~ msgstr "Gitcoins Top Community-Mitglieder"
-
-#~ msgid "Entrepreneur In Residence"
-#~ msgstr "Unternehmer in Residence"
-
-#~ msgid ""
-#~ "<strong>2018 March 22</strong> - <i>\"If all you have is a hammer, "
-#~ "everything looks like a nail\" - Abraham Maslow</i>.  Have you seen our "
-#~ "revamped <a style=\"margin-right: 5px;\" "
-#~ "href=\"https://gitcoin.co/tools\">tools page</a>?"
-#~ msgstr ""
-#~ "<strong> 2018 March 22 </ strong> - <i> \"Wenn alles, was du hast, ein "
-#~ "Hammer ist, sieht alles wie ein Nagel aus\" - Abraham Maslow </ i>. Hast du "
-#~ "unseren neugestalteten <a style = \"margin-right: 5px;\" href = "
-#~ "\"https://gitcoin.co/tools\"> Tools-Seite </a>?"
-
-#~ msgid ""
-#~ "<h1>Coming soon!</h1> If youre seeing this page its because apple is "
-#~ "reviewing the app... and release is imminent :)"
-#~ msgstr ""
-#~ "<h1> In Kürze! </ h1> Wenn Sie diese Seite sehen, weil Apple die App "
-#~ "überprüft ... und die Veröffentlichung bevorsteht :)"
+msgstr "邀请已发送"

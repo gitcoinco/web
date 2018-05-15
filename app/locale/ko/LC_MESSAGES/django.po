@@ -16,138 +16,126 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: app/settings.py:190
 msgid "English"
-msgstr "Englisch"
+msgstr "영어"
 
 #: app/settings.py:191
 msgid "Spanish"
-msgstr "Spanisch"
+msgstr "스페인 사람"
 
 #: app/settings.py:192
 msgid "German"
-msgstr "Deutsche"
+msgstr "독일 사람"
 
 #: app/settings.py:193
 msgid "Hindi"
-msgstr "Hindi"
+msgstr "힌디 어"
 
 #: app/settings.py:194
 msgid "Italian"
-msgstr "Italienisch"
+msgstr "이탈리아 사람"
 
 #: app/settings.py:195
 msgid "Korean"
-msgstr "Koreanisch"
+msgstr "한국어"
 
 #: app/settings.py:196
-#, fuzzy
-#| msgid "English"
 msgid "Polish"
-msgstr "Polieren"
+msgstr "광택"
 
 #: app/settings.py:197
 msgid "Chinese"
-msgstr "Chinesisch"
+msgstr "중국말"
 
 #: dashboard/models.py:134
 msgid "Whether the bounty is still open for fulfillments."
-msgstr "Ob das Kopfgeld noch offen ist für Erfüllungen."
+msgstr "현상금이 아직 이행을 위해 열려 있는지 여부."
 
 #: dashboard/models.py:139
 msgid "Whether this bounty is the most current revision one or not"
-msgstr "Ob dieses Kopfgeld die aktuellste Revision ist oder nicht"
+msgstr "이 현상금이 최신 개정판인지 여부"
 
 #: dashboard/models.py:150
 msgid "Whether the bounty has been done"
-msgstr "Ob das Kopfgeld gemacht wurde"
+msgstr "현상금이 끝났는지의 여부"
 
 #: dashboard/templates/addinterest.html:26
-#, fuzzy
-#| msgid "Who are you?  What is your interest in the whitepaper?"
 msgid "Great to see that you're interested in this project!"
-msgstr "Schön zu sehen, dass Sie an diesem Projekt interessiert sind!"
+msgstr "이 프로젝트에 관심이 있으십니까?"
 
 #: dashboard/templates/addinterest.html:33
 msgid ""
 "Please provide an action plan and any initial questions you have for this "
 "ticket."
-msgstr ""
-"Bitte geben Sie einen Aktionsplan und alle anfänglichen Fragen zu diesem "
-"Ticket an."
+msgstr "실천 계획과이 티켓에 대한 초기 질문을 제공해주십시오."
 
 #: dashboard/templates/addinterest.html:35
 msgid "This will be reflected in a comment on the Github issue."
-msgstr "Dies wird sich in einem Kommentar zur Github-Frage widerspiegeln."
+msgstr "이것은 Github 문제에 대한 의견에 반영됩니다."
 
 #: dashboard/templates/addinterest.html:45
 msgid ""
 "I understand that if anyone has started work on this ticket before me, they "
 "may have precedence."
-msgstr ""
-"Ich verstehe, dass wenn jemand mit diesem Ticket vor mir begonnen hat, es "
-"Vorrang hat."
+msgstr "나는 누군가가 나보다 먼저이 티켓에 대한 작업을 시작했다면 우선 순위를 가질 수 있다는 것을 이해한다."
 
 #: dashboard/templates/addinterest.html:56
 msgid "I agree to keep the funder informed of my progress every few days."
-msgstr ""
-"Ich bin damit einverstanden, den Geldgeber alle paar Tage über meine "
-"Fortschritte auf dem Laufenden zu halten."
+msgstr "나는 며칠마다 장학생에게 나의 진도를 알리는 것에 동의한다."
 
 #: dashboard/templates/addinterest.html:61
 #: retail/templates/shared/mailchimp.html:10
 msgid "Submit"
-msgstr "einreichen"
+msgstr "제출"
 
 #: dashboard/templates/addinterest.html:68
 msgid "Please login with Github to get started."
-msgstr "Bitte logge dich mit Github ein, um loszulegen."
+msgstr "시작하려면 Github와 (과) 로그인하십시오."
 
 #: dashboard/templates/addinterest.html:71
 msgid "Login With Github"
-msgstr "Mit Github einloggen"
+msgstr "Github로 로그인"
 
 #: dashboard/templates/bounty_details.html:21
 msgid "Back to Issue Explorer"
-msgstr "Zurück zum Themen-Explorer"
+msgstr "이슈 탐색기로 돌아 가기"
 
 #: dashboard/templates/bounty_details.html:28
 msgid "Your transaction has been posted to web3"
-msgstr "Ihre Transaktion wurde in web3 veröffentlicht"
+msgstr "거래가 web3에 게시되었습니다."
 
 #: dashboard/templates/bounty_details.html:30
 msgid ""
 "Please wait a minute or two for web3 to sync\n"
 "            <a target=\"_blank\" href=\"javascript:void(0)\" id=\"transaction_url\">this transaction</a>."
 msgstr ""
-"Bitte warten Sie ein bis zwei Minuten, bis Web3 synchronisiert ist\n"
-"            <a target=\"_blank\" href=\"javascript:void(0)\" id=\"transaction_url\"> diese Transaktion </a>."
+"web3가 동기화 되려면 1 ~ 2 분 정도 기다려주세요.\n"
+"            <a target=\"_blank\" href=\"javascript:void(0)\" id=\"transaction_url\">이 거래 </a>"
 
 #: dashboard/templates/bounty_details.html:34
 msgid ""
 "This page will automatically refresh as soon as the blockchain is updated."
-msgstr ""
-"Diese Seite wird automatisch aktualisiert, sobald die Blockchain "
-"aktualisiert wird."
+msgstr "이 페이지는 블록 체인이 업데이트되는 즉시 자동으로 새로 고침됩니다."
 
 #: dashboard/templates/bounty_details.html:35
 msgid "You may close the browser tab."
-msgstr "Sie können die Browser-Registerkarte schließen."
+msgstr "브라우저 탭을 닫을 수 있습니다."
 
 #: dashboard/templates/bounty_details.html:45
 msgid "No funded issue found."
-msgstr "Kein finanziertes Problem gefunden."
+msgstr "자금 문제가 발견되지 않았습니다."
 
 #: dashboard/templates/bounty_details.html:46
 #, python-format
 msgid "Check out the <a href=\"%(explorerurl)s\">Issue Explorer</a>"
-msgstr "Überprüfen Sie den <a href=\"%(explorerurl)s\"> Problem-Explorer </a>"
+msgstr "<a href=\"%(explorerurl)s\"> 이슈 탐색기 </a>를 확인하십시오."
 
 #: dashboard/templates/bounty_details.html:48
 msgid "Be the OSS Funding you wish to see in the world."
-msgstr "Seien Sie die OSS-Finanzierung, die Sie in der Welt sehen möchten."
+msgstr "세계에서보고 싶은 OSS 기금이 되십시오."
 
 #: dashboard/templates/bounty_details.html:49
 #, python-format
@@ -155,135 +143,127 @@ msgid ""
 " Looking to fund some work?  You can submit a new Funded Issue <a "
 "href=\"%(new_fundingurl)s\">here</a>."
 msgstr ""
-"Möchten Sie etwas Arbeit finanzieren? Sie können hier ein neues finanziertes"
-" Problem <a href=\"%(new_fundingurl)s\"> einreichen </a>."
+"어떤 일에 기금을 모으고 싶습니까? <a href=\"%(new_fundingurl)s\"> 여기 </a>에서 새로운 재정 문제를 제출할"
+" 수 있습니다."
 
 #: dashboard/templates/bounty_details.html:77
 msgid "Time left"
-msgstr "Übrige Zeit"
+msgstr "남은 시간"
 
 #: dashboard/templates/bounty_details.html:87
 msgid "Opened"
-msgstr "Geöffnet"
+msgstr "열린"
 
 #: dashboard/templates/bounty_details.html:91
 msgid "Accepted"
-msgstr "Akzeptiert"
+msgstr "수락 됨"
 
 #: dashboard/templates/bounty_details.html:95
 #: dashboard/templates/onboard.html:154
 #: dashboard/templates/shared/sidebar_search.html:88
 #: dashboard/templates/submit_bounty.html:107
 msgid "Experience Level"
-msgstr "Erfahrungsstufe"
+msgstr "경험 수준"
 
 #: dashboard/templates/bounty_details.html:99
 msgid "Issue Type"
-msgstr "Fehlertyp"
+msgstr "이슈 유형"
 
 #: dashboard/templates/bounty_details.html:131
 #: external_bounties/templates/external_bounties_show.html:76
 msgid "Description"
-msgstr "Beschreibung"
+msgstr "기술"
 
 #: dashboard/templates/bounty_details.html:138
 msgid "Contributors"
-msgstr "Mitwirkende"
+msgstr "기여자"
 
 #: dashboard/templates/bounty_details.html:142
 #: dashboard/templates/shared/bounty_nav.html:31
 #: dashboard/templates/shared/sidebar_search.html:33
 #: dashboard/templates/shared/status_tooltip.html:30
 msgid "Work Started"
-msgstr "Arbeit begonnen"
+msgstr "작업 시작"
 
 #: dashboard/templates/bounty_details.html:147
 #: dashboard/templates/shared/bounty_nav.html:39
 #: dashboard/templates/shared/sidebar_search.html:38
 #: dashboard/templates/shared/status_tooltip.html:36
 msgid "Work Submitted"
-msgstr "Arbeit eingereicht"
+msgstr "제출 된 작업"
 
 #: dashboard/templates/bounty_details.html:152
 msgid "Work Accepted"
-msgstr "Arbeit akzeptiert"
+msgstr "허용 된 작업"
 
 #: dashboard/templates/bounty_details.html:158
 msgid "All Activity"
-msgstr "Alle Aktivitäten"
+msgstr "모든 활동"
 
 #: dashboard/templates/bounty_details.html:162
 #: dashboard/templates/bounty_details.html:170
 #: dashboard/templates/profile_details.html:160
 msgid "Funder"
-msgstr "Geldgeber"
+msgstr "Funder"
 
 #: dashboard/templates/bounty_details.html:174
 #: dashboard/templates/bounty_details.html:249
 msgid "Email"
-msgstr "Email"
+msgstr "이메일"
 
 #: dashboard/templates/bounty_details.html:178
 msgid "Gitcoin Profile"
-msgstr "Gitcoin Profil"
+msgstr "Gitcoin 프로필"
 
 #: dashboard/templates/bounty_details.html:243
 #: faucet/templates/faucet_form.html:76
 msgid "ETH Address"
-msgstr "ETH-Adresse"
+msgstr "ETH 주소"
 
 #: dashboard/templates/bounty_details.html:255
 msgid "Submission Id"
-msgstr "Übermittlungs-ID"
+msgstr "제출 ID"
 
 #: dashboard/templates/dashboard.html:36
-#, fuzzy
-#| msgid "Features of Gitcoin"
 msgid "Welcome to Gitcoin!"
-msgstr "Willkommen in Gitcoin!"
+msgstr "Gitcoin에 오신 것을 환영합니다!"
 
 #: dashboard/templates/dashboard.html:37
 msgid "We've found bounties that match your interest and experience"
-msgstr ""
-"Wir haben Bounties gefunden, die zu deinem Interesse und deiner Erfahrung "
-"passen"
+msgstr "우리는 당신의 관심과 경험에 맞는 현상금을 발견했습니다."
 
 #: dashboard/templates/dashboard.html:38 retail/templates/help.html:84
 msgid "How it works"
-msgstr "Wie es funktioniert"
+msgstr "작동 원리"
 
 #: dashboard/templates/dashboard.html:40
 msgid ""
 "Get Started with your first bounty ! Select on issue and click start work"
-msgstr ""
-"Beginne mit deinem ersten Kopfgeld! Wählen Sie das Problem aus und klicken "
-"Sie auf Start"
+msgstr "첫 번째 현상금으로 시작하십시오! 문제를 선택하고 작업 시작을 클릭하십시오."
 
 #: dashboard/templates/dashboard.html:41
 msgid "Ready for review ? Click submit work"
-msgstr "Bereit zur Überprüfung? Klicken Sie auf Arbeit senden"
+msgstr "검토 준비가 되셨습니까? 제출 작업을 클릭하십시오."
 
 #: dashboard/templates/dashboard.html:42
 msgid "Not able to deliver the work on time ? Click stop work"
-msgstr ""
-"Nicht in der Lage, die Arbeit pünktlich zu liefern? Klicken Sie auf Arbeit "
-"beenden"
+msgstr "시간에 맞춰 작업을 전달할 수 없습니까? 작업 중지를 클릭하십시오."
 
 #: dashboard/templates/dashboard.html:44
 msgid "Need more help ? Checkout the starting guide"
-msgstr "Benötigen Sie weitere Hilfe ? Überprüfen Sie den Start Guide"
+msgstr "도움이 더 필요하십니까? 시작 가이드 체크 아웃"
 
 #: dashboard/templates/dashboard.html:46
 msgid "GOT IT !"
-msgstr "ICH HABS !"
+msgstr "알았다 !"
 
 #: dashboard/templates/dashboard.html:76
 msgid "No results found."
-msgstr "Keine Ergebnisse gefunden."
+msgstr "검색 결과가 없습니다."
 
 #: dashboard/templates/dashboard.html:77
 msgid "Please try another query"
-msgstr "Bitte versuchen Sie eine andere Abfrage"
+msgstr "다른 쿼리를 시도하십시오."
 
 #: dashboard/templates/dashboard.html:78
 #: dashboard/templates/shared/no_metamask_error.html:32
@@ -295,27 +275,27 @@ msgstr "Bitte versuchen Sie eine andere Abfrage"
 #: retail/templates/getgitcoin.html:35 retail/templates/getgitcoin.html:54
 #: retail/templates/getgitcoin.html:61 retail/templates/getgitcoin.html:80
 msgid "or"
-msgstr "oder"
+msgstr "또는"
 
 #: dashboard/templates/dashboard.html:80
 msgid ""
 "<a href=\"#\" class=\"save_search\">save search</a>\n"
 "                to be notified when results do appear."
 msgstr ""
-"<a href=\"#\" class=\"save_search\"> Suche speichern </a>\n"
-"                benachrichtigt werden, wenn die Ergebnisse angezeigt werden."
+"<a href=\"#\" class=\"save_search\"> 검색 저장 </a>\n"
+"                결과가 나타날 때 통보 받는다."
 
 #: dashboard/templates/fulfill_bounty.html:41
 #: dashboard/templates/fulfill_bounty.html:69
 #: dashboard/templates/shared/bounty_nav.html:41 dashboard/views.py:579
 msgid "Submit Work"
-msgstr "Arbeit einreichen"
+msgstr "작업 제출"
 
 #: dashboard/templates/fulfill_bounty.html:47
 #: dashboard/templates/kill_bounty.html:47
 #: dashboard/templates/submit_bounty.html:50
 msgid "Issue URL"
-msgstr "URL eingeben"
+msgstr "문제 URL"
 
 #: dashboard/templates/fulfill_bounty.html:57
 #: dashboard/templates/kill_bounty.html:53
@@ -326,9 +306,8 @@ msgid ""
 "I have read, understand, and agree to, the <a href=\"%(termsurl)s\" "
 "target=\"_blank\" rel=\"noopener noreferrer\">Terms of Service</a>:"
 msgstr ""
-"Ich habe die <a href=\"%(termsurl)s\" target=\"_blank\" rel=\"noopener "
-"noreferrer\"> Nutzungsbedingungen </a> gelesen, verstanden und stimme ihnen "
-"zu:"
+"<a href=\"%(termsurl)s\" target=\"_blank\" rel=\"noopener noreferrer\"> 서비스 "
+"약관 </a>을 읽고 이해했으며 동의합니다."
 
 #: dashboard/templates/fulfill_bounty.html:63
 #: dashboard/templates/submit_bounty.html:142
@@ -337,81 +316,72 @@ msgid ""
 "immutable, blockchain.  No one, including Gitcoin Core, will be able to take"
 " my funds or change this information:"
 msgstr ""
-"Ich verstehe, dass diese Informationen einer öffentlichen, unveränderlichen "
-"Blockchain übermittelt werden. Niemand, einschließlich Gitcoin Core, wird in"
-" der Lage sein, mein Geld zu nehmen oder diese Informationen zu ändern:"
+"본인은이 정보가 공개적이고 불변 인 블록 체인에 제출되었음을 이해합니다. Gitcoin Core를 포함한 어느 누구도 내 자금을 가져 "
+"오거나이 정보를 변경할 수 없습니다."
 
 #: dashboard/templates/fulfill_bounty.html:71
 #: dashboard/templates/submit_bounty.html:150
 msgid "Having trouble?  Click here."
-msgstr "Probleme haben? Klick hier."
+msgstr "문제가있다? 여기를 클릭하십시오."
 
 #: dashboard/templates/ios.html:31 dashboard/templates/ios.html:50
 msgid "One Swipe Away From Your Next Bounty."
-msgstr "Wischen Sie von Ihrem nächsten Kopfgeld weg."
+msgstr "하나는 당신의 다음 현상금에서 멀리 훔칩니다."
 
 #: dashboard/templates/ios.html:37 dashboard/templates/ios.html:55
 #: retail/templates/index.html:434
 msgid "Browse funded work in open source software from anywhere, at anytime."
-msgstr ""
-"Durchsuchen Sie geförderte Arbeiten in Open-Source-Software von überall und "
-"jederzeit."
+msgstr "언제 어디서든 오픈 소스 소프트웨어로 자금을 지원하는 업무를 검색하십시오."
 
 #: dashboard/templates/ios.html:76
 msgid "It's Easy As"
-msgstr "Es ist einfach wie"
+msgstr "쉬운 방법"
 
 #: dashboard/templates/ios.html:89
 msgid "Sync"
-msgstr "Synchronisieren"
+msgstr "동조"
 
 #: dashboard/templates/ios.html:91
 msgid "Sync your github profile with the gitcoin app."
-msgstr "Synchronisieren Sie Ihr GitHub-Profil mit der Gitcoin-App."
+msgstr "Gitcoin 앱과 github 프로필을 동기화하십시오."
 
 #: dashboard/templates/ios.html:104
 msgid "Swipe"
-msgstr "Wischen"
+msgstr "강타"
 
 #: dashboard/templates/ios.html:106
 msgid "Swipe through funded work in open source software."
-msgstr "Swipe durch geförderte Arbeit in Open-Source-Software."
+msgstr "오픈 소스 소프트웨어에서 자금 지원을 통해 스 와이프합니다."
 
 #: dashboard/templates/ios.html:119
 msgid "Match"
-msgstr "Spiel"
+msgstr "시합"
 
 #: dashboard/templates/ios.html:121
-#, fuzzy
-#| msgid ""
-#| "The app will intro (via e-mail) you to the repository owners with whom "
-#| "you've matched with"
 msgid ""
 "The app will intro you (via github comments) to the repository owners with "
 "whom you've matched with"
-msgstr ""
-"Die App wird Sie (über Github-Kommentare) zu den Repository-Besitzern "
-"hinzufügen, mit denen Sie abgestimmt haben"
+msgstr "앱은 github 설명을 통해 나와 일치하는 저장소 소유자에게 귀하를 소개합니다."
 
 #: dashboard/templates/ios.html:134
 msgid "Get it now."
-msgstr "Hol es dir jetzt."
+msgstr "지금 사세요."
 
 #: dashboard/templates/kill_bounty.html:40
 msgid "Cancel Bounty and Reclaim Funds"
-msgstr "Kopfgeld zurücknehmen und Gelder zurückfordern"
+msgstr "현상금 취소 및 자금 회수"
 
 #: dashboard/templates/kill_bounty.html:41
 msgid "(Issue Submitters only)"
-msgstr "(Nur Problemeinreicher)"
+msgstr "(발행자 문제 만)"
 
 #: dashboard/templates/kill_bounty.html:59 dashboard/views.py:645
 msgid "Cancel Bounty"
-msgstr "Kopfgeld stornieren"
+msgstr "현상금 취소"
 
 #: dashboard/templates/onboard.html:40
 msgid "Get started with Gitcoin!"
-msgstr "Beginne mit Gitcoin!"
+msgstr "Gitcoin 시작하기!"
 
 #: dashboard/templates/onboard.html:43
 msgid ""
@@ -424,46 +394,40 @@ msgid ""
 "                "
 msgstr ""
 "\n"
-"<h3> Verwenden Sie gitcoin, um bezahlte Arbeitsprobleme zu finden\n"
-"                     im Blockchain / Web3-Ökosystem. <br> Erhalten Sie Zahlung in Ether,\n"
-"                     eine führende Kryptowährung </ h3>\n"
-"                  <h3> Triff neue Leute. Neue Fähigkeiten erlernen. Beitragen zu\n"
-"                     die Open-Source-Community </ h3>"
+"<h3> gitcoin을 사용하여 유료 직장 현실 세계 문제를 찾습니다.\n"
+"                     블록 체인 / web3 생태계에서. <br> <br> Ether,\n"
+"                     주요 cryptocurrency </ h3>\n"
+"                  <h3> 새로운 사람들을 만나십시오. 새로운 기술 습득. 에 기여하다\n"
+"                     오픈 소스 커뮤니티 </ h3>"
 
 #: dashboard/templates/onboard.html:53
 msgid "Build"
-msgstr "Bauen"
+msgstr "짓다"
 
 #: dashboard/templates/onboard.html:57
-#, fuzzy
-#| msgid "Get Started"
 msgid "Get Paid"
-msgstr "Bezahlt werden"
+msgstr "지불"
 
 #: dashboard/templates/onboard.html:61
 #: dashboard/templates/shared/sidebar_search.html:202
 msgid "Network"
-msgstr "Netzwerk"
+msgstr "회로망"
 
 #: dashboard/templates/onboard.html:69
-#, fuzzy
-#| msgid "You've Got ETH!"
 msgid "You've logged in!"
-msgstr "Du hast dich eingeloggt!"
+msgstr "로그인하셨습니다!"
 
 #: dashboard/templates/onboard.html:77
 msgid "Logout"
-msgstr "Ausloggen"
+msgstr "로그 아웃"
 
 #: dashboard/templates/onboard.html:88
 msgid "Login with github"
-msgstr "Einloggen mit GitHub"
+msgstr "github로 로그인"
 
 #: dashboard/templates/onboard.html:97
-#, fuzzy
-#| msgid "Install Metamask"
 msgid "Metamask"
-msgstr "Metamask"
+msgstr "메타 마스크"
 
 #: dashboard/templates/onboard.html:100
 msgid ""
@@ -475,46 +439,42 @@ msgid ""
 "                "
 msgstr ""
 "\n"
-"<h3> Installieren Sie MetaMask - Ihre sichere, verschlüsselte digitale Brieftasche\n"
+"<h3> MetaMask 설치 - 보안 암호화 된 디지털 지갑\n"
 "                    <br> <br>\n"
-"                    Sie werden Metamask einrichten, um ein Projekt zu übernehmen oder für die Arbeit bezahlt zu werden, die Sie bei gitcoin abgeschlossen haben\n"
+"                    Metamask를 설정하여 프로젝트를 수행하거나 gitcoin에서 완료 한 작업에 대한 보수를받습니다.\n"
 "                  </ h3>"
 
 #: dashboard/templates/onboard.html:116
-#, fuzzy
-#| msgid "Install Metamask"
 msgid "Setup Metamask"
-msgstr "Setup Metamask"
+msgstr "메타 마스크 설정"
 
 #: dashboard/templates/onboard.html:122
 msgid "Getting Ether, Your Digital Currency"
-msgstr "Ether, deine digitale Währung"
+msgstr "이더넷, 귀하의 디지털 통화 얻기"
 
 #: dashboard/templates/onboard.html:125
 msgid "How to send ETH to Metamask"
-msgstr "Wie versende ich die ETH zu Metamask?"
+msgstr "ETH를 Metamask로 보내는 방법"
 
 #: dashboard/templates/onboard.html:128
-#, fuzzy
-#| msgid "Install MetaMask"
 msgid "FAQ : MetaMask"
-msgstr "FAQ: MetaMask"
+msgstr "FAQ : 메타 마스크"
 
 #: dashboard/templates/onboard.html:134
 msgid "What's your skill set?"
-msgstr "Was sind deine Fähigkeiten?"
+msgstr "당신의 기술은 무엇입니까?"
 
 #: dashboard/templates/onboard.html:137
 msgid "Suggested"
-msgstr "Empfohlen"
+msgstr "제안 됨"
 
 #: dashboard/templates/onboard.html:141
 msgid "Add Skill"
-msgstr "Fertigkeit hinzufügen"
+msgstr "스킬 추가"
 
 #: dashboard/templates/onboard.html:143
 msgid "List out : Skill 1, Skill 2 ..."
-msgstr "Auflisten: Skill 1, Skill 2 ..."
+msgstr "리스트 아웃 : 스킬 1, 스킬 2 ..."
 
 #: dashboard/templates/onboard.html:158
 #: dashboard/templates/shared/sidebar_search.html:58
@@ -523,246 +483,240 @@ msgstr "Auflisten: Skill 1, Skill 2 ..."
 #: dashboard/templates/shared/sidebar_search.html:195
 #: dashboard/templates/shared/sidebar_search.html:236
 msgid "Any"
-msgstr "Irgendein"
+msgstr "어떤"
 
 #: dashboard/templates/onboard.html:159
 msgid "Beginner ( < 4 years Experience )"
-msgstr "Anfänger (<4 Jahre Erfahrung)"
+msgstr "초급 (4 년 경력)"
 
 #: dashboard/templates/onboard.html:160
 msgid "Intermediate ( 4 - 5 years Experience )"
-msgstr "Mittelstufe (4 - 5 Jahre Erfahrung)"
+msgstr "중급 (4 - 5 년 경력)"
 
 #: dashboard/templates/onboard.html:161
 msgid "Advanced ( > 5 years Experience )"
-msgstr "Fortgeschrittene (> 5 Jahre Erfahrung)"
+msgstr "고급 (> 5 년 경력)"
 
 #: dashboard/templates/onboard.html:168
 msgid "Build your avatar"
-msgstr "Baue deinen Avatar"
+msgstr "아바타 만들기"
 
 #: dashboard/templates/onboard.html:176
-#, fuzzy
-#| msgid "previous"
 msgid "Previous"
-msgstr "Bisherige"
+msgstr "너무 이른"
 
 #: dashboard/templates/onboard.html:177
 msgid "Next"
-msgstr "Nächster"
+msgstr "다음 것"
 
 #: dashboard/templates/process_bounty.html:42
 msgid "Accept Bounty Fulfillment"
-msgstr "Kopfgeld erfüllen"
+msgstr "현상금 수락을 수락하십시오"
 
 #: dashboard/templates/process_bounty.html:47
 msgid "Issue URL:"
-msgstr "URL des Problems:"
+msgstr "문제 URL :"
 
 #: dashboard/templates/process_bounty.html:51
 msgid "Bounty Submission:"
-msgstr "Prämieneinreichung:"
+msgstr "현상금 제출 :"
 
 #: dashboard/templates/process_bounty.html:53
 msgid "Submission"
-msgstr "Einreichung"
+msgstr "제출"
 
 #: dashboard/templates/process_bounty.html:64
 msgid "Accept"
-msgstr "Akzeptieren"
+msgstr "동의"
 
 #: dashboard/templates/process_bounty.html:68
 msgid "Having trouble? Click here."
-msgstr "Probleme haben? Klick hier."
+msgstr "문제가있다? 여기를 클릭하십시오."
 
 #: dashboard/templates/profile_details.html:83
 msgid "has received these tips"
-msgstr "hat diese Tipps erhalten"
+msgstr "이 도움말을 받았다."
 
 #: dashboard/templates/profile_details.html:86
 msgid "No tips found"
-msgstr "Keine Tipps gefunden"
+msgstr "팁을 찾을 수 없습니다."
 
 #: dashboard/templates/profile_details.html:91
 msgid "From"
-msgstr "Von"
+msgstr "에서"
 
 #: dashboard/templates/profile_details.html:94
 msgid "Related Issue"
-msgstr "Verwandte Ausgabe"
+msgstr "관련 호"
 
 #: dashboard/templates/profile_details.html:97
 #: dashboard/templates/profile_details.html:148
 msgid "Details"
-msgstr "Einzelheiten"
+msgstr "세부"
 
 #: dashboard/templates/profile_details.html:106
 msgid "Unknown"
-msgstr "unbekannte"
+msgstr "알 수 없는"
 
 #: dashboard/templates/profile_details.html:134
 msgid "has Participated in these Funded Issues"
-msgstr "hat an diesen finanzierten Ausgaben teilgenommen"
+msgstr "이 재정 문제에 참여했다."
 
 #: dashboard/templates/profile_details.html:137
 msgid "No funded issues found"
-msgstr "Keine finanzierten Probleme gefunden"
+msgstr "자금난 문제 없음"
 
 #: dashboard/templates/profile_details.html:142
 msgid "Relationship"
-msgstr "Beziehung"
+msgstr "관계"
 
 #: dashboard/templates/profile_details.html:145
 #: retail/templates/emails/bounty.html:92
 msgid "Status"
-msgstr "Status"
+msgstr "지위"
 
 #: dashboard/templates/profile_details.html:151
 #: dashboard/templates/submit_bounty.html:54
 msgid "Amount"
-msgstr "Menge"
+msgstr "양"
 
 #: dashboard/templates/profile_details.html:158
 #: dashboard/templates/profile_details.html:164
 msgid "Worker"
-msgstr "Arbeitnehmer"
+msgstr "노동자"
 
 #: dashboard/templates/profile_details.html:162
 msgid "Repo Owner"
-msgstr "Repo-Besitzer"
+msgstr "레포 소유자"
 
 #: dashboard/templates/profile_details.html:196
 #, python-format
 msgid "%(r.stargazers_count)s stars"
-msgstr "%(r.stargazers_count)s Sterne"
+msgstr "% (r.stargazers_count) 개"
 
 #: dashboard/templates/profile_details.html:208
 msgid "No repos"
-msgstr "Keine Repos"
+msgstr "리포지토리 없음"
 
 #: dashboard/templates/shared/bounty_def.html:24 dashboard/views.py:516
 #: dashboard/views.py:692 dashboard/views.py:832
 #: retail/templates/index.html:158 retail/templates/save_search.html:29
 msgid "Be the first to know about new funded issues."
-msgstr "Seien Sie der Erste, der über neue finanzierte Themen informiert."
+msgstr "새로운 자금 지원 문제에 대해 먼저 알아보십시오."
 
 #: dashboard/templates/shared/bounty_nav.html:23
 #: dashboard/templates/shared/sidebar_search.html:28
 #: dashboard/templates/shared/status_tooltip.html:24
 msgid "Open"
-msgstr "Öffnen"
+msgstr "열다"
 
 #: dashboard/templates/shared/bounty_nav.html:25
 msgid "Create Work"
-msgstr "Schaffen Sie Arbeit"
+msgstr "작업 만들기"
 
 #: dashboard/templates/shared/bounty_nav.html:33
 msgid "Start Work"
-msgstr "Fang an zu arbeiten"
+msgstr "일을 시작하다"
 
 #: dashboard/templates/shared/bounty_nav.html:47
 #: dashboard/templates/shared/sidebar_search.html:43
 #: dashboard/templates/shared/status_tooltip.html:42
 msgid "Work Done"
-msgstr "Arbeit erledigt"
+msgstr "업무 완료"
 
 #: dashboard/templates/shared/bounty_nav.html:49
 msgid "Accept Work"
-msgstr "Arbeit annehmen"
+msgstr "작업 수락"
 
 #: dashboard/templates/shared/github_link.html:19
 msgid "Github PR Link"
-msgstr "Github PR Verbindung"
+msgstr "Github PR Link"
 
 #: dashboard/templates/shared/github_username.html:19
 msgid "Github Username"
-msgstr "Github Benutzername"
+msgstr "Github 사용자 이름"
 
 #: dashboard/templates/shared/github_username.html:21
 #: dashboard/templates/shared/nav_auth.html:77
 #: faucet/templates/faucet_form.html:60
 msgid "Login"
-msgstr "Anmeldung"
+msgstr "로그인"
 
 #: dashboard/templates/shared/hours_worked.html:19
 msgid "Hours Worked"
-msgstr "Arbeitsstunden"
+msgstr "근무 시간"
 
 #: dashboard/templates/shared/name.html:19
 msgid "Full Name"
-msgstr "Vollständiger Name"
+msgstr "성명"
 
 #: dashboard/templates/shared/nav_auth.html:28
 #: dashboard/templates/yge/base.html:59 dashboard/templates/yge/send1.html:37
 #: dashboard/views.py:71 dashboard/views.py:464
 msgid "Send Tip"
-msgstr "Senden Sie einen Tipp"
+msgstr "팁 보내기"
 
 #: dashboard/templates/shared/nav_auth.html:32
 #: dashboard/templates/submit_bounty.html:148
 #: retail/templates/getgitcoin.html:50
 msgid "Fund Issue"
-msgstr "Fondsproblem"
+msgstr "기금 이슈"
 
 #: dashboard/templates/shared/nav_auth.html:37 retail/templates/about.html:227
 #: retail/templates/about.html:247 retail/templates/index.html:151
 #: retail/templates/index.html:310 retail/views.py:479
 msgid "Get Started"
-msgstr "Loslegen"
+msgstr "시작하다"
 
 #: dashboard/templates/shared/nav_auth.html:43
 msgid "View Profile"
-msgstr "Profil anzeigen"
+msgstr "프로필보기"
 
 #: dashboard/templates/shared/nav_auth.html:47
 msgid "Manage Settings"
-msgstr "Einstellungen verwalten"
+msgstr "설정 관리"
 
 #: dashboard/templates/shared/nav_auth.html:54
-#, fuzzy, python-format
-#| msgid "Claim $%(tip.value_in_usdt_now)s Tip "
+#, python-format
 msgid "Claim $%(tip.value_in_usdt_now)s Tip "
-msgstr "Claim $%(tip.value_in_usdt_now)s Tipp"
+msgstr "청구액 $ % (tip.value_in_usdt_now) s 팁"
 
 #: dashboard/templates/shared/nav_auth.html:62
 msgid "Administration"
-msgstr "Verwaltung"
+msgstr "관리"
 
 #: dashboard/templates/shared/nav_auth.html:68
 msgid "Log Out"
-msgstr "Ausloggen"
+msgstr "로그 아웃"
 
 #: dashboard/templates/shared/network_status.html:20
 #: faucet/templates/shared/faucet_network_status.html:22
 msgid "Enabled"
-msgstr "aktiviert"
+msgstr "사용"
 
 #: dashboard/templates/shared/network_status.html:22
 msgid "Available"
-msgstr "Verfügbar"
+msgstr "유효한"
 
 #: dashboard/templates/shared/newsletter.html:28
 msgid "Join Our Newsletter !"
-msgstr "Abonnieren Sie unseren Newsletter !"
+msgstr "뉴스 레터에 가입하십시오!"
 
 #: dashboard/templates/shared/newsletter.html:31
 msgid "Emails once a week max, & we never sell your data"
-msgstr ""
-"E-Mails maximal einmal pro Woche, und wir verkaufen Ihre Daten niemals"
+msgstr "일주일에 한 번 이메일을 보내고 데이터를 절대 판매하지 않습니다."
 
 #: dashboard/templates/shared/no_metamask_error.html:22
 #: faucet/templates/shared/faucet_no_metamask_error.html:25
 msgid "To continue, enable Web3."
-msgstr "Aktivieren Sie Web3, um fortzufahren."
+msgstr "계속하려면 Web3을 사용하도록 설정하십시오."
 
 #: dashboard/templates/shared/no_metamask_error.html:24
 #: faucet/templates/shared/faucet_no_metamask_error.html:27
 msgid ""
 "Web3 is the same web you know and love, but with Ethereum-enabled "
 "functionality."
-msgstr ""
-"Web3 ist das gleiche Web, das Sie kennen und lieben, aber mit Ethereum-"
-"fähiger Funktionalität."
+msgstr "Web3은 당신이 알고 사랑하는 웹이지만 Ethereum이 가능한 기능입니다."
 
 #: dashboard/templates/shared/no_metamask_error.html:27
 msgid ""
@@ -772,217 +726,211 @@ msgid ""
 " To continue submitting a bounty, please install Metamask and return to this"
 " page."
 msgstr ""
-"Der schnellste und einfachste Weg, Web3 zu Ihrem Browser hinzuzufügen, ist "
-"die Installation von <a target=\"_blank\" rel=\"noopener noreferrer\" "
+"Web3를 브라우저에 추가하는 가장 빠르고 쉬운 방법은 <a target=\"_blank\" rel=\"noopener "
+"noreferrer\" "
 "href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\"> "
-"Metamask < / a>. Um weiterhin ein Bounty zu senden, installieren Sie bitte "
-"Metamask und kehren Sie zu dieser Seite zurück."
+"Metamask < / a>. 현상금을 계속 제출하려면 Metamask를 설치하고이 페이지로 돌아가십시오."
 
 #: dashboard/templates/shared/no_metamask_error.html:30
 #: faucet/templates/shared/faucet_no_metamask_error.html:33
 msgid "Install MetaMask"
-msgstr "Installieren Sie MetaMask"
+msgstr "메타 마스크 설치"
 
 #: dashboard/templates/shared/no_metamask_error.html:34
 #: dashboard/templates/shared/unlock_metamask.html:31
 #: dashboard/templates/shared/zero_balance_error.html:37
 #: faucet/templates/shared/faucet_no_metamask_error.html:37
 msgid "Can't get web3 to work?  Get help here."
-msgstr "Kann web3 nicht zur Arbeit kommen? Holen Sie sich Hilfe hier."
+msgstr "web3을 사용할 수 없습니까? 여기에서 도움을 청하십시오."
 
 #: dashboard/templates/shared/notification_email.html:19
 msgid "Notification Email"
-msgstr "Benachrichtigungsemail"
+msgstr "알림 이메일"
 
 #: dashboard/templates/shared/search_bar.html:27
 msgid "Search"
-msgstr "Suche"
+msgstr "수색"
 
 #: dashboard/templates/shared/search_bar.html:30
 msgid "SORT"
-msgstr "SORTIEREN"
+msgstr "종류"
 
 #: dashboard/templates/shared/search_bar.html:32
-#, fuzzy
-#| msgid "Created By Me"
 msgid "Created: Recent"
-msgstr "Erstellt: Zuletzt"
+msgstr "생성됨 : 최근"
 
 #: dashboard/templates/shared/search_bar.html:33
-#, fuzzy
-#| msgid "Created By Me"
 msgid "Created: Oldest"
-msgstr "Erstellt: Ältester"
+msgstr "생성됨 : 가장 오래된"
 
 #: dashboard/templates/shared/search_bar.html:34
 msgid "Value: Highest"
-msgstr "Wert: Höchster"
+msgstr "값 : 최고"
 
 #: dashboard/templates/shared/search_bar.html:35
 msgid "Value: Lowest"
-msgstr "Wert: Niedrigster"
+msgstr "값 : 최저"
 
 #: dashboard/templates/shared/search_bar.html:44
 #: retail/templates/save_search.html:41
 msgid "Save Search"
-msgstr "Sichere Suche"
+msgstr "검색 저장"
 
 #: dashboard/templates/shared/send_tip_nav.html:23
 msgid "Sent"
-msgstr "Geschickt"
+msgstr "전송 됨"
 
 #: dashboard/templates/shared/send_tip_nav.html:25
 #: dashboard/templates/yge/send2.html:103
 msgid "Send"
-msgstr "Senden"
+msgstr "보내다"
 
 #: dashboard/templates/shared/send_tip_nav.html:31
 msgid "Fulfilled"
-msgstr "Erfüllt"
+msgstr "완성 된"
 
 #: dashboard/templates/shared/send_tip_nav.html:33
 msgid "Fulfill"
-msgstr "Erfüllen"
+msgstr "다하다"
 
 #: dashboard/templates/shared/show_information_publicly.html:19
 msgid "It's okay to show this information publicly on Gitcoin"
-msgstr ""
-"Es ist in Ordnung, diese Informationen öffentlich auf Gitcoin zu zeigen"
+msgstr "이 정보를 Gitcoin에 공개적으로 표시하면됩니다."
 
 #: dashboard/templates/shared/sidebar_profile.html:21
 msgid "Edit Profile"
-msgstr "Profil bearbeiten"
+msgstr "프로필 수정"
 
 #: dashboard/templates/shared/sidebar_profile.html:23
 msgid "Change Picture"
-msgstr "Bild ändern"
+msgstr "사진 바꾸기"
 
 #: dashboard/templates/shared/sidebar_profile.html:24
 msgid "Change Name"
-msgstr "Namen ändern"
+msgstr "이름을 바꿔라"
 
 #: dashboard/templates/shared/sidebar_profile.html:25
 msgid "Change Expertise"
-msgstr "Kompetenz ändern"
+msgstr "전문성 변경"
 
 #: dashboard/templates/shared/sidebar_profile.html:29
 msgid "Browse Other Users"
-msgstr "Durchsuchen Sie andere Benutzer"
+msgstr "다른 사용자 찾아보기"
 
 #: dashboard/templates/shared/sidebar_profile.html:31
 msgid "By Location"
-msgstr "Nach Ort"
+msgstr "위치 별"
 
 #: dashboard/templates/shared/sidebar_profile.html:32
 msgid "By Language"
-msgstr "Nach Sprache"
+msgstr "언어 별"
 
 #: dashboard/templates/shared/sidebar_profile.html:37
 msgid "CLEAR FIELDS"
-msgstr "KLARE FELDER"
+msgstr "지우기 필드"
 
 #: dashboard/templates/shared/sidebar_search.html:23
 msgid "PROJECT STATUS"
-msgstr "PROJEKT-STATUS"
+msgstr "프로젝트 상태"
 
 #: dashboard/templates/shared/sidebar_search.html:48
 #: dashboard/templates/shared/status_tooltip.html:51
 msgid "Expired"
-msgstr "Abgelaufen"
+msgstr "만료 된"
 
 #: dashboard/templates/shared/sidebar_search.html:53
 msgid "Cancelled"
-msgstr "Abgebrochen"
+msgstr "취소 된"
 
 #: dashboard/templates/shared/sidebar_search.html:65
 msgid "MY PROJECTS"
-msgstr "MEINE PROJEKTE"
+msgstr "내 프로젝트"
 
 #: dashboard/templates/shared/sidebar_search.html:69
 msgid "Created By Me"
-msgstr "Von mir erstellt"
+msgstr "나를 창조 한"
 
 #: dashboard/templates/shared/sidebar_search.html:73
 msgid "Started By Me"
-msgstr "Begonnen von mir"
+msgstr "나 시작했다."
 
 #: dashboard/templates/shared/sidebar_search.html:77
 msgid "Fulfilled By Me"
-msgstr "Erfüllt von mir"
+msgstr "나를 성취했다."
 
 #: dashboard/templates/shared/sidebar_search.html:81
 #: dataviz/templates/stats.html:33
 msgid "All"
-msgstr "Alle"
+msgstr "모든"
 
 #: dashboard/templates/shared/sidebar_search.html:94
 #: dashboard/templates/submit_bounty.html:108
 msgid "Beginner"
-msgstr "Anfänger"
+msgstr "초보자"
 
 #: dashboard/templates/shared/sidebar_search.html:101
 #: dashboard/templates/submit_bounty.html:109
 msgid "Intermediate"
-msgstr "Mittlere"
+msgstr "중급"
 
 #: dashboard/templates/shared/sidebar_search.html:108
 #: dashboard/templates/submit_bounty.html:110
 #: dashboard/templates/yge/send2.html:56 dashboard/views.py:967
 msgid "Advanced"
-msgstr "Fortgeschritten"
+msgstr "많은"
 
 #: dashboard/templates/shared/sidebar_search.html:122
 msgid "Tech Stack"
-msgstr "Tech Stapel"
+msgstr "기술 스택"
 
 #: dashboard/templates/shared/sidebar_search.html:127
 #: dashboard/templates/submit_bounty.html:115
 #: retail/templates/emails/bounty.html:121
 msgid "Project Length"
-msgstr "Projektlänge"
+msgstr "프로젝트 길이"
 
 #: dashboard/templates/shared/sidebar_search.html:133
 #: dashboard/templates/submit_bounty.html:116
 msgid "Hours"
-msgstr "Std"
+msgstr "시간"
 
 #: dashboard/templates/shared/sidebar_search.html:140
 #: dashboard/templates/submit_bounty.html:117
 msgid "Days"
-msgstr "Tage"
+msgstr "일"
 
 #: dashboard/templates/shared/sidebar_search.html:147
 #: dashboard/templates/submit_bounty.html:118
 msgid "Weeks"
-msgstr "Wochen"
+msgstr "주"
 
 #: dashboard/templates/shared/sidebar_search.html:154
 #: dashboard/templates/submit_bounty.html:119
 msgid "Months"
-msgstr "Monate"
+msgstr "개월"
 
 #: dashboard/templates/shared/sidebar_search.html:168
 msgid "Type"
-msgstr "Art"
+msgstr "유형"
 
 #: dashboard/templates/shared/sidebar_search.html:174
 #: dashboard/templates/submit_bounty.html:125
 msgid "Bug"
-msgstr "Fehler"
+msgstr "곤충"
 
 #: dashboard/templates/shared/sidebar_search.html:181
 #: dashboard/templates/submit_bounty.html:126
 msgid "Feature"
-msgstr "Feature"
+msgstr "특색"
 
 #: dashboard/templates/shared/sidebar_search.html:188
 #: dashboard/templates/submit_bounty.html:127
 msgid "Security"
-msgstr "Sicherheit"
+msgstr "보안"
 
 #: dashboard/templates/shared/sidebar_search.html:208
 msgid "Custom"
-msgstr "Brauch"
+msgstr "관습"
 
 #: dashboard/templates/shared/sidebar_search.html:215
 msgid "Ropsten"
@@ -994,74 +942,71 @@ msgstr "Rinkeby"
 
 #: dashboard/templates/shared/sidebar_search.html:229
 msgid "Mainnet"
-msgstr "Mainnet"
+msgstr "메인 넷"
 
 #: dashboard/templates/shared/sidebar_search.html:243
 msgid "Reset"
-msgstr "Zurücksetzen"
+msgstr "다시 놓기"
 
 #: dashboard/templates/shared/status_tooltip.html:19
 msgid "Possible Status"
-msgstr "Möglicher Status"
+msgstr "가능한 상태"
 
 #: dashboard/templates/shared/status_tooltip.html:24
 msgid "A funded bounty is available for anyone to work on."
-msgstr ""
-"Ein finanziertes Kopfgeld steht jedem zur Verfügung, an dem man arbeiten "
-"kann."
+msgstr "누구든지 일할 수있는 기금을받을 수 있습니다."
 
 #: dashboard/templates/shared/status_tooltip.html:30
 msgid "Work has been started by at least one person."
-msgstr "Die Arbeit wurde von mindestens einer Person begonnen."
+msgstr "최소한 한 사람이 작업을 시작했습니다."
 
 #: dashboard/templates/shared/status_tooltip.html:36
 msgid "Completed work has been submitted by for review."
-msgstr "Abgeschlossene Arbeiten wurden zur Überprüfung eingereicht."
+msgstr "완료 작업이 검토를 위해 제출되었습니다."
 
 #: dashboard/templates/shared/status_tooltip.html:42
 msgid "The submitted project has been accepted and the funds have been paid."
-msgstr ""
-"Das eingereichte Projekt wurde angenommen und die Mittel wurden bezahlt."
+msgstr "제출 된 프로젝트가 수락되었고 기금이 지급되었습니다."
 
 #: dashboard/templates/shared/status_tooltip.html:46
 msgid "Cancellation Status"
-msgstr "Stornierungsstatus"
+msgstr "취소 상태"
 
 #: dashboard/templates/shared/status_tooltip.html:51
 msgid "Work was not completed by the expiration date."
-msgstr "Die Arbeit wurde nicht bis zum Ablaufdatum abgeschlossen."
+msgstr "작업이 만료 날짜까지 완료되지 않았습니다."
 
 #: dashboard/templates/shared/status_tooltip.html:57
 msgid "Canceled"
-msgstr "Abgebrochen"
+msgstr "취소 된"
 
 #: dashboard/templates/shared/status_tooltip.html:57
 msgid "A funded bounty was  cancelled by the owner of the project"
-msgstr "Ein finanziertes Kopfgeld wurde vom Eigentümer des Projekts abgesagt"
+msgstr "프로젝트 소유주가 기금을 취소했다."
 
 #: dashboard/templates/shared/unlock_metamask.html:22
 #: dashboard/templates/shared/zero_balance_error.html:22
 #: faucet/templates/shared/faucet_unlock_metamask.html:25
 msgid "You're almost there!"
-msgstr "Du bist fast da!"
+msgstr "거의 다 왔어!"
 
 #: dashboard/templates/shared/unlock_metamask.html:24
 #: faucet/templates/shared/faucet_unlock_metamask.html:27
 msgid "In order to continue, you'll need to unlock metamask."
-msgstr "Um fortzufahren, musst du die Metamask freischalten."
+msgstr "계속하려면 메타 마스크를 해제해야합니다."
 
 #: dashboard/templates/shared/unlock_metamask.html:27
 #: faucet/templates/shared/faucet_unlock_metamask.html:30
 msgid "Please unlock Metamask and refresh the page."
-msgstr "Bitte entsperre Metamask und aktualisiere die Seite."
+msgstr "Metamask를 잠금 해제하고 페이지를 새로 고침하십시오."
 
 #: dashboard/templates/shared/wallet_estimate.html:20
 msgid "Warning: the ethereum network is quite congested at the moment."
-msgstr "Achtung: Das Ethereum-Netzwerk ist momentan ziemlich überlastet."
+msgstr "경고 : ethereum 네트워크는 현재 매우 혼잡합니다."
 
 #: dashboard/templates/shared/wallet_estimate.html:20
 msgid "Stats"
-msgstr "Statistiken"
+msgstr "통계"
 
 #: dashboard/templates/shared/wallet_estimate.html:22
 msgid ""
@@ -1069,14 +1014,14 @@ msgid ""
 " min confirmation for <span id=\"ethAmount\">unknown</span> ETH (<span "
 "id=\"usdAmount\">unknown</span> USD)"
 msgstr ""
-"Die folgenden MetaMask-Einstellungen sollten eine <span id = \"confTime\"> 5"
-" </ span> min-Bestätigung für <span id = \"ethAmount\"> unbekannt </ span> "
-"ETH (<span id = \"usdAmount\"> unbekannt </ span > USD)"
+"다음 MetaMask 설정은 <span id = \"ethAmount\"> 알 수 없음 </ span> ETH (<span id = "
+"\"usdAmount\"> 알 수 없음 </ span>에 대해 <span id = \"confTime\"> 5 </ span> > "
+"USD)"
 
 #: dashboard/templates/shared/wallet_estimate.html:22
 #: dashboard/templates/shared/wallet_estimate.html:24
 msgid "view graph"
-msgstr "Diagramm anzeigen"
+msgstr "그래프보기"
 
 #: dashboard/templates/shared/wallet_estimate.html:24
 msgid ""
@@ -1084,326 +1029,315 @@ msgid ""
 "min confirmation for <span id=\"ethAmount\">unknown</span> ETH (<span "
 "id=\"usdAmount\">unknown</span> USD)"
 msgstr ""
-"Die folgenden Trust-Einstellungen sollten eine <span id = \"confTime\"> 5 </"
-" span> min Bestätigung für <span id = \"ethAmount\"> unbekannt </ span> ETH "
-"(<span id = \"usdAmount\"> unknown </ span > USD)"
+"다음 트러스트 설정은 <span id = \"ethAmount\"> 알 수 없음 </ span> ETH (<span id = "
+"\"usdAmount\"> 알 수 없음 </ span>에 대해 <span id = \"confTime\"> 5 </ span> > "
+"USD)"
 
 #: dashboard/templates/shared/wallet_estimate.html:28
 msgid "Gas Limit (units)"
-msgstr "Gaslimit (Einheiten)"
+msgstr "가스 한도 (units)"
 
 #: dashboard/templates/shared/wallet_estimate.html:32
 msgid "Gas Price (gwei)"
-msgstr "Gaspreis (gwei)"
+msgstr "가스 가격 (gwei)"
 
 #: dashboard/templates/shared/wallet_estimate.html:36
 #: retail/templates/shared/footer.html:30 retail/templates/shared/nav.html:41
 #: retail/views.py:469
 msgid "Help"
-msgstr "Hilfe"
+msgstr "도움"
 
 #: dashboard/templates/shared/wallet_estimate.html:39
 msgid "Why do I need metamask / gas?"
-msgstr "Warum brauche ich Metamask / Gas?"
+msgstr "왜 메타 마스크 / 가스가 필요합니까?"
 
 #: dashboard/templates/shared/wallet_estimate.html:42
 msgid "What gas price should I use?"
-msgstr "Welchen Gaspreis sollte ich verwenden?"
+msgstr "어떤 가스 가격을 사용해야합니까?"
 
 #: dashboard/templates/shared/wallet_estimate.html:45
 msgid "What are current network condtions?"
-msgstr "Was sind aktuelle Netzwerkbedingungen?"
+msgstr "현재 네트워크 조건은 무엇입니까?"
 
 #: dashboard/templates/shared/zero_balance_error.html:24
 msgid "In order to continue, you'll need some Ether."
-msgstr "Um fortzufahren, brauchst du etwas Ether."
+msgstr "계속하려면 Ether이 필요합니다."
 
 #: dashboard/templates/shared/zero_balance_error.html:27
 msgid ""
 "'Ether' is a digital asset that can be used to pay for the computational "
 "resources needed to run an application or program. In this case, Gitcoin."
 msgstr ""
-"\"Ether\" ist ein digitales Asset, mit dem Rechenressourcen bezahlt werden "
-"können, die zum Ausführen einer Anwendung oder eines Programms benötigt "
-"werden. In diesem Fall, Gitcoin."
+"'Ether'은 응용 프로그램이나 프로그램을 실행하는 데 필요한 계산 자원을 지불하는 데 사용할 수있는 디지털 자산입니다. 이 경우, "
+"Gitcoin."
 
 #: dashboard/templates/shared/zero_balance_error.html:30
 msgid "The easiest way to get Ether is to request it via the Gitcoin Faucet:"
-msgstr ""
-"Der einfachste Weg, Ether zu bekommen, ist es, es über den Gitcoin-Hahn "
-"anzufordern:"
+msgstr "Ether을 얻는 가장 쉬운 방법은 Gitcoin 수도꼭지를 통해 요청하는 것입니다."
 
 #: dashboard/templates/shared/zero_balance_error.html:33
 msgid "View Faucet"
-msgstr "Wasserhahn anzeigen"
+msgstr "수도꼭지보기"
 
 #: dashboard/templates/submit_bounty.html:45
 msgid "Fund an Issue"
-msgstr "Fund ein Problem"
+msgstr "기금 모금"
 
 #: dashboard/templates/submit_bounty.html:72
 msgid "Issue Title"
-msgstr "Titel ausgeben"
+msgstr "이슈 제목"
 
 #: dashboard/templates/submit_bounty.html:76
 msgid "Issue Description"
-msgstr "Fehlerbeschreibung"
+msgstr "문제 설명"
 
 #: dashboard/templates/submit_bounty.html:80
 msgid "Keywords"
-msgstr "Schlüsselwörter"
+msgstr "키워드"
 
 #: dashboard/templates/submit_bounty.html:84
 msgid "Expires in"
-msgstr "Läuft ab in"
+msgstr "만료"
 
 #: dashboard/templates/submit_bounty.html:87
 msgid "1 day"
-msgstr "1 Tag"
+msgstr "1 일"
 
 #: dashboard/templates/submit_bounty.html:88
 msgid "3 days"
-msgstr "3 Tage"
+msgstr "3 일"
 
 #: dashboard/templates/submit_bounty.html:89
 msgid "1 week"
-msgstr "1 Woche"
+msgstr "일주"
 
 #: dashboard/templates/submit_bounty.html:90
 msgid "2 weeks"
-msgstr "2 Wochen"
+msgstr "이주"
 
 #: dashboard/templates/submit_bounty.html:91
 msgid "1 month"
-msgstr "1 Monat"
+msgstr "1 개월"
 
 #: dashboard/templates/submit_bounty.html:92
 msgid "3 months"
-msgstr "3 Monate"
+msgstr "3 개월"
 
 #: dashboard/templates/submit_bounty.html:93
 msgid "6 months"
-msgstr "6 Monate"
+msgstr "6 개월"
 
 #: dashboard/templates/submit_bounty.html:94
 msgid "1 year"
-msgstr "1 Jahr"
+msgstr "일년"
 
 #: dashboard/templates/submit_bounty.html:95
 #: dashboard/templates/yge/send2.html:86
 msgid "Never"
-msgstr "noch nie"
+msgstr "못"
 
 #: dashboard/templates/submit_bounty.html:101 dashboard/views.py:686
 msgid "Issue Details"
-msgstr "Details zum Problem"
+msgstr "문제 세부 정보"
 
 #: dashboard/templates/submit_bounty.html:124
 msgid "Bounty Type"
-msgstr "Kopfgeldart"
+msgstr "현상금 유형"
 
 #: dashboard/templates/submit_bounty.html:128
 #: retail/templates/whitepaper_new.html:127
 msgid "Other"
-msgstr "Andere"
+msgstr "다른"
 
 #: dashboard/templates/toolbox.html:37 dashboard/views.py:1008
 msgid "Toolbox"
-msgstr "Werkzeugkasten"
+msgstr "도구 상자"
 
 #: dashboard/templates/toolbox.html:38
 msgid "Make Gitcoin your own by enabling the tools that suit your needs."
-msgstr ""
-"Machen Sie sich das Gitcoin zu Eigen, indem Sie die Tools aktivieren, die "
-"Ihren Anforderungen entsprechen."
+msgstr "자신의 필요에 맞는 도구를 사용하여 Gitcoin을 나만의 것으로 만드십시오."
 
 #: dashboard/templates/toolbox.html:47
 msgid "Table of Contents"
-msgstr "Inhaltsverzeichnis"
+msgstr "목차"
 
 #: dashboard/templates/yge/receive.html:46
 #: dashboard/templates/yge/redeem_coin.html:45
 #: ethos/templates/redeem_ethos.html:45
 msgid "Loading"
-msgstr "Wird geladen"
+msgstr "로드 중"
 
 #: dashboard/templates/yge/receive.html:48
 #: dashboard/templates/yge/redeem_coin.html:47
 #: ethos/templates/redeem_ethos.html:47
 msgid "waiting for web3..."
-msgstr "Warten auf Web3 ..."
+msgstr "web3 기다리고 ..."
 
 #: dashboard/templates/yge/receive.html:51
 msgid "You've Got ETH!"
-msgstr "Du hast ETH!"
+msgstr "당신은 ETH를 얻었다!"
 
 #: dashboard/templates/yge/receive.html:52
 #: dashboard/templates/yge/redeem_coin.html:51
 #: ethos/templates/redeem_ethos.html:51
 msgid "To claim it, please install MetaMask and refresh the page."
-msgstr ""
-"Um es zu beanspruchen, installieren Sie bitte MetaMask und aktualisieren Sie"
-" die Seite."
+msgstr "그것을 주장하기 위해서는 MetaMask를 설치하고 페이지를 새로 고침하십시오."
 
 #: dashboard/templates/yge/receive.html:53
 #: dashboard/templates/yge/redeem_coin.html:52
 #: ethos/templates/redeem_ethos.html:52
 msgid "Install Metamask"
-msgstr "Installieren Sie Metamask"
+msgstr "메타 마스크 설치"
 
 #: dashboard/templates/yge/receive.html:56
 #: dashboard/templates/yge/redeem_coin.html:55
 #: ethos/templates/redeem_ethos.html:55
 msgid "What is Metamask?"
-msgstr "Was ist Metamask?"
+msgstr "Metamask 란 무엇입니까?"
 
 #: dashboard/templates/yge/receive.html:60
 msgid "Receive Ethereum Now."
-msgstr "Empfange jetzt Astraleum."
+msgstr "Ethereum을 받으십시오."
 
 #: dashboard/templates/yge/receive.html:68
 msgid "Forward it to a permanent address:"
-msgstr "Weiterleiten an eine feste Adresse:"
+msgstr "영구 주소로 전달하십시오."
 
 #: dashboard/templates/yge/receive.html:74
 #: dashboard/templates/yge/redeem_coin.html:67
 msgid "Claim"
-msgstr "Anspruch"
+msgstr "청구"
 
 #: dashboard/templates/yge/receive.html:74 retail/templates/getgitcoin.html:57
 msgid "Tip"
-msgstr "Spitze"
+msgstr "팁"
 
 #: dashboard/templates/yge/receive.html:79
 #: dashboard/templates/yge/redeem_coin.html:72
 msgid "Congrats!"
-msgstr "Glückwunsch!"
+msgstr "축하해!"
 
 #: dashboard/templates/yge/receive.html:80
 msgid "You've received Ethereum via transaction <span id=\"trans_id\"></span>."
-msgstr ""
-"Sie haben Ethereum über die Transaktion <span id = \"trans_id\"> </ span> "
-"erhalten."
+msgstr "트랜잭션 <span id = \"trans_id\"> </ span>을 통해 Ethereum을 받았습니다."
 
 #: dashboard/templates/yge/redeem_coin.html:50
 #: dashboard/templates/yge/redeem_coin.html:59
 msgid "You've got 1 COLO!"
-msgstr "Du hast 1 COLO!"
+msgstr "1 COLO가 있습니다!"
 
 #: dashboard/templates/yge/redeem_coin.html:61
 msgid "Enter a forwarding address"
-msgstr "Geben Sie eine Weiterleitungsadresse ein"
+msgstr "전달 주소 입력"
 
 #: dashboard/templates/yge/redeem_coin.html:73
 msgid "You've redeemed 1 COLO."
-msgstr "Sie haben 1 COLO eingelöst."
+msgstr "당신은 1 COLO를 되찾았습니다."
 
 #: dashboard/templates/yge/send1.html:38
 msgid "It's Fast.  It's Easy.  It's Free.️"
-msgstr "Es ist schnell. Es ist einfach. Es ist kostenlos"
+msgstr "그것은 빠르다. 그것은 간단합니다. 무료입니다 .️"
 
 #: dashboard/templates/yge/send1.html:39
 msgid "Supports any github username or email address"
-msgstr "Unterstützt jeden github Benutzernamen oder E-Mail Adresse"
+msgstr "github 사용자 이름 또는 이메일 주소 지원"
 
 #: dashboard/templates/yge/send1.html:42
 msgid "receipient"
-msgstr "Empfänger"
+msgstr "수령인"
 
 #: dashboard/templates/yge/send1.html:43 dashboard/templates/yge/send1.html:44
 #: dashboard/templates/yge/send1.html:45 dashboard/templates/yge/send1.html:46
 msgid "receipients"
-msgstr "Empfänger"
+msgstr "수령인"
 
 #: dashboard/templates/yge/send1.html:49
 msgid "Send Ether"
-msgstr "Sende Ether"
+msgstr "에테르 보내기"
 
 #: dashboard/templates/yge/send2.html:41
 msgid "Send Tip."
-msgstr "Senden Sie einen Tipp."
+msgstr "Tip 보내기."
 
 #: dashboard/templates/yge/send2.html:44
 msgid "Amount of"
-msgstr "Menge von"
+msgstr "금액"
 
 #: dashboard/templates/yge/send2.html:52
 msgid "To Github Username"
-msgstr "Zum Github-Benutzernamen"
+msgstr "Github 사용자 이름으로"
 
 #: dashboard/templates/yge/send2.html:60
 msgid "Related Github Issue URL"
-msgstr "Verwandte Github-Problem-URL"
+msgstr "관련 Github 문제 URL"
 
 #: dashboard/templates/yge/send2.html:60 dashboard/templates/yge/send2.html:64
 #: dashboard/templates/yge/send2.html:68 dashboard/templates/yge/send2.html:72
 #: dashboard/templates/yge/send2.html:90 dashboard/templates/yge/send2.html:94
 msgid "optional"
-msgstr "wahlweise"
+msgstr "선택 과목"
 
 #: dashboard/templates/yge/send2.html:64
 msgid "To Email address"
-msgstr "Zur E-Mail-Adresse"
+msgstr "이메일 주소로"
 
 #: dashboard/templates/yge/send2.html:68
 msgid "From Name"
-msgstr "Von Namen"
+msgstr "이름에서"
 
 #: dashboard/templates/yge/send2.html:72
 msgid "From Email"
-msgstr "Aus der Email"
+msgstr "보낸 사람 이메일"
 
 #: dashboard/templates/yge/send2.html:76
 msgid "Expires"
-msgstr "Läuft ab"
+msgstr "만료"
 
 #: dashboard/templates/yge/send2.html:78 marketing/mails.py:338
 msgid "day"
-msgstr "Tag"
+msgstr "일"
 
 #: dashboard/templates/yge/send2.html:79
 msgid "days"
-msgstr "Tage"
+msgstr "일"
 
 #: dashboard/templates/yge/send2.html:80
 msgid "week"
-msgstr "Woche"
+msgstr "주"
 
 #: dashboard/templates/yge/send2.html:81
 msgid "weeks"
-msgstr "Wochen"
+msgstr "주"
 
 #: dashboard/templates/yge/send2.html:82
 msgid "month"
-msgstr "Monat"
+msgstr "달"
 
 #: dashboard/templates/yge/send2.html:83 dashboard/templates/yge/send2.html:84
 msgid "months"
-msgstr "Monate"
+msgstr "개월"
 
 #: dashboard/templates/yge/send2.html:85
 msgid "year"
-msgstr "Jahr"
+msgstr "년"
 
 #: dashboard/templates/yge/send2.html:90
 msgid "Private Comments"
-msgstr "Private Kommentare"
+msgstr "비공개 댓글"
 
 #: dashboard/templates/yge/send2.html:94
 msgid "Public Comments"
-msgstr "Öffentliche Kommentare"
+msgstr "공개 댓글"
 
 #: dashboard/templates/yge/send2.html:101
 msgid ""
 "I understand &amp; agree to the <a href=\"https://gitcoin.co/terms\">terms "
 "of service</a>."
-msgstr ""
-"Ich verstehe & amp; stimme den <a href=\"https://gitcoin.co/terms\"> "
-"Nutzungsbedingungen zu </a>."
+msgstr "나는 & amp; <a href=\"https://gitcoin.co/terms\"> 서비스 약관 </a>에 동의하십시오."
 
 #: dashboard/templates/yge/send2.html:106
 msgid "Woo hoo!"
-msgstr "Woo hoo!"
+msgstr "우 후!"
 
 #: dashboard/templates/yge/send2.html:107
 msgid ""
@@ -1411,223 +1345,205 @@ msgid ""
 "target=\"_blank\" rel=\"noopener noreferrer\" id=\"trans_link\">to the "
 "blockchain</a>."
 msgstr ""
-"Ihr <span id = \"tokenName\"> ETH </ span> wurde <a href=\"\" "
-"target=\"_blank\" rel=\"noopener noreferrer\" id=\"trans_link\"> an die "
-"Blockchain </a> gesendet."
+"<span id = \"tokenName\"> ETH </ span>가 <a href=\"\" target=\"_blank\" "
+"rel=\"noopener noreferrer\" id=\"trans_link\"> 블록 체인에게 </a> 전송되었습니다."
 
 #: dashboard/templates/yge/send2.html:109
 msgid "The transaction is still pending."
-msgstr "Die Transaktion steht noch aus."
+msgstr "트랜잭션이 아직 보류 중입니다."
 
 #: dashboard/templates/yge/send2.html:109
 msgid "This page will auto-update when the transaction is confirmed"
-msgstr ""
-"Diese Seite wird automatisch aktualisiert, wenn die Transaktion bestätigt "
-"wird"
+msgstr "이 페이지는 거래가 확인되면 자동으로 업데이트됩니다."
 
 #: dashboard/templates/yge/send2.html:109
 msgid "but you can close the browser window if you want"
-msgstr "aber Sie können das Browserfenster schließen, wenn Sie möchten"
+msgstr "원하는 경우 브라우저 창을 닫을 수 있습니다."
 
 #: dashboard/templates/yge/send2.html:114
 msgid "<span id=\"new_username\"></span> has been notified"
-msgstr "<span id = \"neuer_Nutzername\"> </ span> wurde benachrichtigt"
+msgstr "<span id = \"new_username\"> </ span>에 알림이 전송되었습니다."
 
 #: dashboard/templates/yge/send2.html:115
 msgid "with instructions about how to receive their tip."
-msgstr "mit Anweisungen darüber, wie Sie ihren Trinkgeld erhalten."
+msgstr "도움말을받는 방법에 대한 안내가 나와 있습니다."
 
 #: dashboard/templates/yge/send2.html:117
 msgid "Start Over"
-msgstr "Von vorn anfangen"
+msgstr "다시 시작하다"
 
 #: dashboard/views.py:134
 msgid "Add Interest"
-msgstr "Zinsen hinzufügen"
+msgstr "관심 분야 추가"
 
 #: dashboard/views.py:169 dashboard/views.py:245 faucet/views.py:61
 msgid "You must be authenticated via github to use this feature!"
-msgstr ""
-"Sie müssen über Github authentifiziert sein, um diese Funktion nutzen zu "
-"können!"
+msgstr "이 기능을 사용하려면 github을 통해 인증을 받아야합니다!"
 
 #: dashboard/views.py:183
 #, python-brace-format
 msgid "You may only work on max of {num_issues} issues at once."
-msgstr ""
-"Sie können nur mit maximal {num_issues} Problemen gleichzeitig arbeiten."
+msgstr "한 번에 최대 {num_issues} 개의 문제로만 작업 할 수 있습니다."
 
 #: dashboard/views.py:189
 msgid ""
 "Because a staff member has had to remove you from a bounty in the past, you "
 "are unable to start more work at this time. Please contact support."
-msgstr ""
-"Da ein Mitarbeiter Sie in der Vergangenheit von einem Bounty entfernen "
-"musste, können Sie zu diesem Zeitpunkt nicht mehr arbeiten. Bitte "
-"kontaktieren Sie den Support."
+msgstr "직원이 과거에 현상금에서 당신을 제거해야했기 때문에, 현재 더 많은 작업을 시작할 수 없습니다. 지원팀에 문의하십시오."
 
 #: dashboard/views.py:196 dashboard/views.py:212
 msgid "You have already expressed interest in this bounty!"
-msgstr "Sie haben bereits Interesse an dieser Prämie gezeigt!"
+msgstr "당신은 이미이 현상금에 관심을 표명했습니다!"
 
 #: dashboard/views.py:264
 msgid "You haven't expressed interest on this bounty."
-msgstr "Sie haben Interesse an dieser Prämie nicht ausgedrückt."
+msgstr "이 현상금에 관심을 표명하지 않았습니다."
 
 #: dashboard/views.py:348
 msgid "Tip has been received"
-msgstr "Tipp wurde erhalten"
+msgstr "팁을 받았다."
 
 #: dashboard/views.py:374
 msgid "Receive Tip"
-msgstr "Trinkgeld erhalten"
+msgstr "수신 팁"
 
 #: dashboard/views.py:404
 msgid "Notification has been sent"
-msgstr "Benachrichtigung wurde gesendet"
+msgstr "알림이 전송되었습니다."
 
 #: dashboard/views.py:457
 msgid ""
 "Uh oh! No email addresses for this user were found via Github API.  Youll "
 "have to let the tipee know manually about their tip."
-msgstr ""
-"Oh oh! Über die Github API wurden keine E-Mail-Adressen für diesen Benutzer "
-"gefunden. Sie müssen den Tipee manuell über ihren Tipp wissen lassen."
+msgstr "어 오! Github API를 통해이 사용자의 이메일 주소를 찾을 수 없습니다. 팁은 팁을 수동으로 알려야합니다."
 
 #: dashboard/views.py:476
 msgid "Onboarding Flow"
-msgstr "Onboarding-Fluss"
+msgstr "온 보딩 플로우"
 
 #: dashboard/views.py:484 retail/templates/shared/footer.html:26
 #: retail/templates/shared/nav.html:37
 msgid "Issue Explorer"
-msgstr "Problem-Explorer"
+msgstr "이슈 탐색기"
 
 #: dashboard/views.py:510
 msgid "Create Funded Issue"
-msgstr "Erstellen Sie ein finanziertes Problem"
+msgstr "자금 이체 작성"
 
 #: dashboard/views.py:546
 msgid "Process Issue"
-msgstr "Prozessproblem"
+msgstr "프로세스 문제"
 
 #: dashboard/views.py:613
 msgid "Increase Bounty"
-msgstr "Bounty erhöhen"
+msgstr "현상금 증액"
 
 #: dashboard/views.py:687
 msgid "Funded Issue Details | Gitcoin"
-msgstr "Funded Details zum Thema | Gitcoin"
+msgstr "자금 이슈 세부 사항 | Gitcoin"
 
 #: dashboard/views.py:724
 #, python-brace-format
 msgid "Warning messages have been snoozed for {snooze_days} days"
-msgstr "Warnmeldungen wurden für {snooze_days} Tage verschoben"
+msgstr "{snooze_days} 일 동안 경고 메시지가 일시 중지되었습니다."
 
 #: dashboard/views.py:726
 msgid "Only the funder of this bounty may snooze warnings."
-msgstr "Nur der Geldgeber dieser Prämie darf Warnungen unterdrücken."
+msgstr "이 현상금을 기른 사람 만 경고를 울릴 수 있습니다."
 
 #: dashboard/views.py:963
 msgid "Basics"
-msgstr "Grundlagen"
+msgstr "기초"
 
 #: dashboard/views.py:964 dashboard/views.py:1011
 msgid "Accelerate your dev workflow with Gitcoin's incentivization tools."
-msgstr ""
-"Beschleunigen Sie Ihren Entwicklungsprozess mit Gitcoins "
-"Incentivierungswerkzeugen."
+msgstr "Gitcoin의 인센티브 도구를 사용하여 개발 워크 플로우를 가속화하십시오."
 
 #: dashboard/views.py:968
 msgid "Take your OSS game to the next level!"
-msgstr "Bringen Sie Ihr OSS-Spiel auf die nächste Stufe!"
+msgstr "OSS 게임을 한 단계 업그레이드하십시오!"
 
 #: dashboard/views.py:971
 msgid "Community"
-msgstr "Gemeinschaft"
+msgstr "커뮤니티"
 
 #: dashboard/views.py:972
 msgid "Friendship, mentorship, and community are all part of the process."
-msgstr ""
-"Freundschaft, Mentorschaft und Gemeinschaft sind Teil dieses Prozesses."
+msgstr "우정, 멘토십 및 커뮤니티는 모두 프로세스의 일부입니다."
 
 #: dashboard/views.py:975
 msgid "Tools to BUIDL Gitcoin"
-msgstr "Werkzeuge zu BUIDL Gitcoin"
+msgstr "BUIDL Gitcoin 도구"
 
 #: dashboard/views.py:976
 msgid "Gitcoin is built using Gitcoin.  Purdy cool, huh? "
-msgstr "Gitcoin wird mit Gitcoin gebaut. Purdy cool, nicht wahr?"
+msgstr "Gitcoin은 Gitcoin을 사용하여 만들어졌습니다. 퍼디, 응?"
 
 #: dashboard/views.py:979
 msgid "Tools in Alpha"
-msgstr "Werkzeuge in Alpha"
+msgstr "알파의 도구"
 
 #: dashboard/views.py:980
 msgid "These fresh new tools are looking for someone to test ride them!"
-msgstr "Diese neuen, neuen Tools suchen jemanden, der sie testen kann!"
+msgstr "이 새롭고 새로운 도구는 누군가를 타고 그들을 테스트 해보기를 원합니다!"
 
 #: dashboard/views.py:983
 msgid "Tools Coming Soon"
-msgstr "Werkzeuge, die bald kommen"
+msgstr "곧 나오는 도구들"
 
 #: dashboard/views.py:984
 msgid ""
 "These tools will be ready soon.  They'll get here sooner if you help BUIDL "
 "them :)"
-msgstr ""
-"Diese Werkzeuge werden bald fertig sein. Sie werden früher hier ankommen, "
-"wenn Sie BUIDL ihnen helfen :)"
+msgstr "이 도구들은 곧 준비 될 것입니다. BUIDL을 도와 주면 빨리 여기에 올거야 :)"
 
 #: dashboard/views.py:987
 msgid "Just for Fun"
-msgstr "Nur zum Spaß"
+msgstr "재미로"
 
 #: dashboard/views.py:988
 msgid "Some tools that the community built *just because* they should exist."
-msgstr ""
-"Einige Tools, die die Community gebaut hat, nur weil * sie existieren "
-"sollten."
+msgstr "* 그들이 존재해야만하기 때문에 커뮤니티가 만든 도구."
 
 #: dashboard/views.py:1009
 msgid "Gitcoin Toolbox"
-msgstr "Gitcoin-Toolbox"
+msgstr "Gitcoin 도구 상자"
 
 #: dashboard/views.py:1013
 msgid "Don't Miss New Tools!"
-msgstr "Verpasse keine neuen Werkzeuge!"
+msgstr "새로운 도구를 놓치지 마세요!"
 
 #: dashboard/views.py:1117 ethos/views.py:229
 msgid "Bad request"
-msgstr "Ungültige Anforderung"
+msgstr "잘못된 요청"
 
 #: dashboard/views.py:1135
 msgid "Coin Redemption"
-msgstr "Einlösung von Münzen"
+msgstr "동전 보너스"
 
 #: dashboard/views.py:1136
 msgid "PENDING"
-msgstr "STEHT AUS"
+msgstr "보류 중"
 
 #: dashboard/views.py:1143
 msgid "INITIAL"
-msgstr "INITIALE"
+msgstr "머리 글자"
 
 #: dataviz/models.py:30
 msgid "key for this data report"
-msgstr "Schlüssel für diesen Datenbericht"
+msgstr "이 데이터 보고서의 키"
 
 #: dataviz/models.py:31
 msgid "The report associated with this project"
-msgstr "Der mit diesem Projekt verknüpfte Bericht"
+msgstr "이 프로젝트와 관련된 보고서"
 
 #: dataviz/templates/stats.html:34
 msgid "Activity"
-msgstr "Aktivität"
+msgstr "활동"
 
 #: dataviz/templates/stats.html:35
 msgid "Marketing"
-msgstr "Marketing"
+msgstr "마케팅"
 
 #: dataviz/templates/stats.html:36
 msgid "KPI"
@@ -1635,7 +1551,7 @@ msgstr "KPI"
 
 #: dataviz/templates/stats.html:37
 msgid "bounty_skills"
-msgstr "bounty_skills"
+msgstr "바운티 _ 스킬"
 
 #: dataviz/templates/stats.html:38
 msgid "user_skills"
@@ -1643,213 +1559,208 @@ msgstr "user_skills"
 
 #: dataviz/templates/stats.html:40
 msgid "Hourly"
-msgstr "Stündlich"
+msgstr "매시간"
 
 #: dataviz/templates/stats.html:41
 msgid "Daily"
-msgstr "Täglich"
+msgstr "매일"
 
 #: dataviz/templates/stats.html:42
 msgid "Weekly"
-msgstr "Wöchentlich"
+msgstr "주간"
 
 #: dataviz/templates/stats.html:44
 msgid "Charts"
-msgstr "Diagramme"
+msgstr "차트"
 
 #: dataviz/templates/stats.html:45
 msgid "Table"
-msgstr "Tabelle"
+msgstr "표"
 
 #: dataviz/templates/stats.html:61
 msgid "Chart will be rendered here"
-msgstr "Diagramm wird hier gerendert"
+msgstr "차트가 여기 렌더링됩니다."
 
 #: ethos/templates/redeem_ethos.html:50
-#, fuzzy
-#| msgid "You've redeemed 1 COLO."
 msgid "You've received an EthOS"
-msgstr "Sie haben ein EthOS erhalten"
+msgstr "당신은 EthOS를 받았습니다."
 
 #: ethos/templates/redeem_ethos.html:59
-#, fuzzy
-#| msgid "You've Got ETH!"
 msgid "You've got Ethos!"
-msgstr "Du hast Ethos!"
+msgstr "Ethos가 있습니다!"
 
 #: ethos/templates/redeem_ethos.html:60
 msgid "Here's how to play:"
-msgstr "So spielt man:"
+msgstr "재생 방법은 다음과 같습니다."
 
 #: ethos/templates/redeem_ethos.html:67
 msgid "This experiment is over!"
-msgstr "Dieses Experiment ist vorbei!"
+msgstr "이 실험은 끝났습니다!"
 
 #: ethos/views.py:172
 msgid "Duplicate transaction detected"
-msgstr "Doppelte Transaktion erkannt"
+msgstr "중복 트랜잭션이 감지되었습니다."
 
 #: ethos/views.py:218
 msgid "Error while fetching Twitter account. Please try again"
-msgstr "Fehler beim Abrufen des Twitter-Kontos. Bitte versuche es erneut"
+msgstr "Twitter 계정을 가져 오는 중에 오류가 발생했습니다. 다시 시도하십시오."
 
 #: ethos/views.py:225
 #, python-brace-format
 msgid "Error while tweeting to Twitter. {e}"
-msgstr "Fehler beim Twittern auf Twitter. {e}"
+msgstr "트위터에 트윗하는 동안 오류가 발생했습니다. {이자형}"
 
 #: ethos/views.py:237
 msgid "Error while creating transaction. Please try again"
-msgstr "Fehler beim Erstellen der Transaktion. Bitte versuche es erneut"
+msgstr "트랜잭션을 만드는 동안 오류가 발생했습니다. 다시 시도하십시오."
 
 #: ethos/views.py:262
 msgid "EthOS Coin"
-msgstr "EthOS-Münze"
+msgstr "Ethos 동전"
 
 #: external_bounties/models.py:36
 msgid "Where to send interested parties"
-msgstr "Wohin schicken Sie Interessenten?"
+msgstr "이해 관계자를 보낼 곳"
 
 #: external_bounties/models.py:39
 msgid "Plainext only please!"
-msgstr "Bitte nur Plainext!"
+msgstr "평문 만 제발!"
 
 #: external_bounties/models.py:40
 msgid "The upstream project being linked it.."
-msgstr "Das vorgelagerte Projekt wird verlinkt .."
+msgstr "업스트림 프로젝트가 링크되어 있습니다 .."
 
 #: external_bounties/models.py:45
 msgid "comma delimited"
-msgstr "Komma abgegrenzt"
+msgstr "쉼표로 구분 된"
 
 #: external_bounties/models.py:47
 msgid ""
 "string representation of the payout (only needed it amount/denomination "
 "cannot be filled out"
-msgstr ""
-"String-Darstellung der Auszahlung (nur benötigt Betrag / Nennwert kann nicht"
-" ausgefüllt werden"
+msgstr "지불금의 문자열 표현 (필요한 금액 / 액면은 기입 할 수 없습니다.)"
 
 #: external_bounties/templates/external_bounties.html:23
 #: external_bounties/templates/external_bounties_show.html:30
 msgid "Bounties Universe"
-msgstr "Kopfgeld-Universum"
+msgstr "현상금 유니버스"
 
 #: external_bounties/templates/external_bounties.html:23
 #: external_bounties/templates/external_bounties_show.html:30
 #: faucet/templates/faucet_form.html:37 retail/templates/gas.html:65
 msgid "Alpha"
-msgstr "Alpha"
+msgstr "알파"
 
 #: external_bounties/templates/external_bounties.html:30
 msgid "View API"
-msgstr "API anzeigen"
+msgstr "View API"
 
 #: external_bounties/templates/external_bounties.html:43
 msgid "Sort by"
-msgstr "Sortiere nach"
+msgstr "정렬 기준"
 
 #: external_bounties/templates/external_bounties.html:44
 msgid "Oldest"
-msgstr "Älteste"
+msgstr "가장 오래된"
 
 #: external_bounties/templates/external_bounties.html:45
 msgid "Newest"
-msgstr "Neueste"
+msgstr "최신"
 
 #: external_bounties/templates/external_bounties.html:46
 msgid "Highest Value"
-msgstr "Höchster Wert"
+msgstr "최고의 가치"
 
 #: external_bounties/templates/external_bounties.html:47
 msgid "Lowest Value"
-msgstr "Niedrigster Wert"
+msgstr "최저값"
 
 #: external_bounties/templates/external_bounties.html:54
 msgid "Categories"
-msgstr "Kategorien"
+msgstr "카테고리"
 
 #: external_bounties/templates/external_bounties.html:66
 msgid "Post New"
-msgstr "Neue Nachricht verfassen"
+msgstr "새로운 소식"
 
 #: external_bounties/templates/external_bounties.html:136
 msgid "first"
-msgstr "zuerst"
+msgstr "먼저"
 
 #: external_bounties/templates/external_bounties.html:137
 msgid "previous"
-msgstr "Bisherige"
+msgstr "너무 이른"
 
 #: external_bounties/templates/external_bounties.html:141
 #, python-format
 msgid ""
-"Page %(bounties_paginator.number)s of %(bounties_paginator.paginator.num_pages)s."
-msgstr "Seite %(bounties_paginator.number)s von %(bounties_paginator.paginator.num_pages)s."
+"Page %(bounties_paginator.number)s of "
+"%(bounties_paginator.paginator.num_pages)s."
+msgstr ""
+"% (bounties_paginator.paginator.num_pages)의 페이지 % "
+"(bounties_paginator.number) s."
 
 #: external_bounties/templates/external_bounties.html:145
 msgid "next"
-msgstr "Nächster"
+msgstr "다음 것"
 
 #: external_bounties/templates/external_bounties.html:146
 msgid "last"
-msgstr "letzte"
+msgstr "마지막"
 
 #: external_bounties/templates/external_bounties_new.html:28
 #: external_bounties/views.py:135
 msgid "New Universal Bounty"
-msgstr "Neue Universale Prämie"
+msgstr "새로운 유니버설 현상금"
 
 #: external_bounties/templates/external_bounties_new.html:42
 #: external_bounties/templates/external_bounties_show.html:81
 msgid "Go Back"
-msgstr "Geh zurück"
+msgstr "돌아 가기"
 
 #: external_bounties/templates/external_bounties_show.html:45
 msgid "created"
-msgstr "erstellt"
+msgstr "만들어진"
 
 #: external_bounties/templates/external_bounties_show.html:47
 msgid "source"
-msgstr "Quelle"
+msgstr "출처"
 
 #: external_bounties/templates/external_bounties_show.html:51
 msgid "View Bounty"
-msgstr "Bounty anzeigen"
+msgstr "현상금보기"
 
 #: external_bounties/templates/external_bounties_show.html:55
 msgid "Funding"
-msgstr "Finanzierung"
+msgstr "자금 조달"
 
 #: external_bounties/views.py:57
 msgid "Created"
-msgstr "Erstellt"
+msgstr "만들어진"
 
 #: external_bounties/views.py:59
 msgid "Value"
-msgstr "Wert"
+msgstr "값"
 
 #: external_bounties/views.py:112 external_bounties/views.py:191
 msgid "Bounty Universe Explorer"
-msgstr "Kopfgeld-Universum-Explorer"
+msgstr "바운티 유니버스 탐색기"
 
 #: external_bounties/views.py:113
 msgid "Bounties for Software Work from across the internets."
-msgstr "Prämien für Software Arbeiten aus dem gesamten Internet."
+msgstr "소프트웨어에 대한 현상금은 인터넷을 통해 이루어집니다."
 
 #: external_bounties/views.py:136
 msgid "Create a new Bounty for Software Work from across the internets."
-msgstr "Erstellen Sie eine neue Bounty für Software-Arbeit über das Internet."
+msgstr "인터넷을 통해 새로운 Bounty for Software Work를 만듭니다."
 
 #: external_bounties/views.py:150
 msgid "An email has been sent to an administrator to approve your submission"
-msgstr ""
-"Eine E-Mail wurde an einen Administrator gesendet, um Ihre Einreichung zu "
-"bestätigen"
+msgstr "제출을 승인하는 이메일이 관리자에게 전송되었습니다."
 
 #: faucet/templates/faucet_form.html:37
 msgid "Faucet Request"
-msgstr "Wasserhahn Anfrage"
+msgstr "수도꼭지 요청"
 
 #: faucet/templates/faucet_form.html:39
 msgid ""
@@ -1860,111 +1771,105 @@ msgid ""
 "                  "
 msgstr ""
 "\n"
-"Ethereum und Gitcoin für Gitcoin zugänglich machen\n"
-"                  kann eine minimale Wasserhahn Verteilung von Ether bieten, so können Sie leicht\n"
-"                  Ansprüche geltend machen und mehr Äther gewinnen."
+"Ethereum과 Gitcoin을 모든 사람들에게 폭넓게 접근 할 수있게 만든 Gitcoin\n"
+"                  에테르의 최소 수도꼭지 분배를 제공 할 수 있으므로 쉽게\n"
+"                  문제를 주장하고 더 많은 에테르를 얻는다."
 
 #: faucet/templates/faucet_form.html:55
 msgid "Please note, all input fields are required. Comment is optional."
-msgstr ""
-"Bitte beachten Sie, dass alle Eingabefelder erforderlich sind. Kommentar ist"
-" optional."
+msgstr "모든 입력란은 필수 항목입니다. 댓글은 선택 사항입니다."
 
 #: faucet/templates/faucet_form.html:58
 #: faucet/templates/process_faucet_request.html:35
 msgid "Github Profile"
-msgstr "Github-Profil"
+msgstr "Github 프로필"
 
 #: faucet/templates/faucet_form.html:67
 msgid "Email Address"
-msgstr "E-Mail-Addresse"
+msgstr "이메일 주소"
 
 #: faucet/templates/faucet_form.html:72
 msgid "Comment"
-msgstr "Kommentar"
+msgstr "논평"
 
 #: faucet/templates/faucet_form.html:72
 msgid "char left"
-msgstr "Char links"
+msgstr "남은 숯"
 
 #: faucet/templates/faucet_form.html:80
 msgid "Proceed"
-msgstr "Vorgehen"
+msgstr "발하다"
 
 #: faucet/templates/faucet_form.html:85
 msgid "Request Received"
-msgstr "Anfrage erhalten"
+msgstr "수신 요청"
 
 #: faucet/templates/faucet_form.html:88
-#, fuzzy
-#| msgid ""
-#| "You request for a faucet distribution has been received. An administrator "
-#| "will review your request shortly and arrange a deposit if approved."
 msgid ""
 "Your request for a faucet distribution has been received. An administrator "
 "will review your request shortly (up to 24 hours on weekdays, on next "
 "business day if on weekends / holidays) and arrange a deposit if approved."
 msgstr ""
-"Ihre Anfrage für eine Wasserhahn Verteilung wurde erhalten. Ein "
-"Administrator überprüft Ihre Anfrage in Kürze (bis zu 24 Stunden an "
-"Wochentagen, am nächsten Werktag, wenn an Wochenenden / Feiertagen) und "
-"arrangiert eine Anzahlung, sofern genehmigt."
+"수도꼭지 배포에 대한 귀하의 요청이 접수되었습니다. 관리자는 곧 주중 / 공휴일 인 경우 주중 24 시간, 다음 영업일에 귀하의 요청을 "
+"검토하고 승인되면 입금을 정할 것입니다."
 
 #: faucet/templates/faucet_form.html:93
 msgid "There was an error"
-msgstr "Es gab einen Fehler"
+msgstr "오류가있었습니다"
 
 #: faucet/templates/faucet_form.html:96
 msgid "Something went wrong submitting your request"
-msgstr "Bei der Übermittlung Ihrer Anfrage ist ein Fehler aufgetreten"
+msgstr "요청을 제출하는 중에 문제가 발생했습니다."
 
 #: faucet/templates/process_faucet_request.html:33
 msgid "Process Faucet Request"
-msgstr "Prozesshahn Anfrage"
+msgstr "프로세스 수도꼭지 요청"
 
 #: faucet/templates/process_faucet_request.html:38
 #: retail/templates/settings/feedback.html:8
 #: retail/templates/whitepaper_new.html:133
 msgid "Comments"
-msgstr "Bemerkungen"
+msgstr "코멘트"
 
 #: faucet/templates/process_faucet_request.html:40
 msgid "MetaMask Extension Not Detected"
-msgstr "MetaMask-Erweiterung nicht erkannt"
+msgstr "메타 마스크 확장을 찾을 수 없음"
 
 #: faucet/templates/process_faucet_request.html:41
 msgid "Please Unlock MetaMask To Continue"
-msgstr "Bitte entsperren Sie MetaMask, um fortzufahren"
+msgstr "계속하려면 메타 마스크 잠금을 해제하십시오."
 
 #: faucet/templates/process_faucet_request.html:42
 msgid "MetaMask Active Account Is Empty"
-msgstr "Aktives MetaMask-Konto ist leer"
+msgstr "MetaMask 활성 계정이 비어 있습니다."
 
 #: faucet/templates/process_faucet_request.html:47
 msgid "Transaction Failed"
-msgstr "Transaktion fehlgeschlagen"
+msgstr "거래 실패"
 
 #: faucet/templates/process_faucet_request.html:51
 #, python-format
-msgid "By funding this faucet request, you will transfer %(faucet_amount)s ETH to\n    %(obj.github_username)s with a wallet address of %(obj.address)s"
-msgstr "Mit der Finanzierung dieser Wasserhahn-Anfrage überweisen Sie %(faucet_amount)s ETH an\n    %(obj.github_username)s mit einer Wallet-Adresse von %(obj.address)s"
+msgid ""
+"By funding this faucet request, you will transfer %(faucet_amount)s ETH to\n"
+"    %(obj.github_username)s with a wallet address of %(obj.address)s"
+msgstr ""
+"이 수도꼭지 요청에 자금을 제공하면 %(faucet_amount)s ETH를 (으)로 이전합니다.\n"
+"    % (obj.address) s의 지갑 주소가있는 % (obj.github_username) s"
 
 #: faucet/templates/process_faucet_request.html:70
 msgid ""
 "Please tell us what you're planning on using these funds for in the comments"
 " section!  Thanks."
-msgstr ""
-"Bitte teilen Sie uns im Kommentarbereich mit, was Sie für die Verwendung "
-"dieser Mittel planen! Vielen Dank."
+msgstr "의견 섹션에서이 기금 사용 계획을 알려주십시오. 감사."
 
 #: faucet/templates/shared/faucet_network_status.html:24
 msgid "About Zero"
-msgstr "Über Null"
+msgstr "Zero 정보"
 
 #: faucet/templates/shared/faucet_no_metamask_error.html:21
 #: faucet/templates/shared/faucet_unlock_metamask.html:21
 msgid "Apply for a faucet distribution"
-msgstr "Bewerben Sie sich für eine Wasserhahn Verteilung"
+msgstr "수도꼭지 배포 신청"
 
 #: faucet/templates/shared/faucet_no_metamask_error.html:30
 msgid ""
@@ -1973,246 +1878,224 @@ msgid ""
 " target=\"_blank\" rel=\"noopener noreferrer\"> Metamask</a>. To continue "
 "submitting a bounty, please install Metamask and return to this page."
 msgstr ""
-"Der schnellste und einfachste Weg, Web3 zu Ihrem Browser hinzuzufügen, ist "
-"die Installation von <a href = "
-"\"https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=de\""
-" target = \"_ blank\" rel = \"noopener noreferrer \"> Metamask </a>. Um "
-"weiterhin ein Bounty zu senden, installieren Sie bitte Metamask und kehren "
-"Sie zu dieser Seite zurück."
+"브라우저에 Web3를 추가하는 가장 빠르고 쉬운 방법은 <a href = "
+"\"https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=ko\"target"
+" = \"_ blank\"rel = \"noopener\"를 설치하는 것입니다. noreferrer \"> 메타 마스크 </a>. "
+"현상금을 계속 제출하려면 Metamask를 설치하고이 페이지로 돌아가십시오."
 
 #: faucet/templates/shared/faucet_over_balance_error.html:22
 msgid "You Appear to Have Ether!"
-msgstr "Du scheinst Ether zu haben!"
+msgstr "당신은 에테르가있는 것처럼 보입니다!"
 
 #: faucet/templates/shared/faucet_over_balance_error.html:24
 msgid "Thank you for your interest in receiving a faucet distribution."
-msgstr "Vielen Dank für Ihr Interesse an einer Wasserhahnverteilung."
+msgstr "수도꼭지 배포에 관심을 가져 주셔서 감사합니다."
 
 #: faucet/templates/shared/faucet_over_balance_error.html:27
 msgid ""
 "You have more ether currently in your wallet than the distribution would "
 "provide. Please use that ether to pay the transaction cost."
-msgstr ""
-"Sie haben derzeit mehr Ether in Ihrer Brieftasche, als die Distribution "
-"bereitstellen würde. Bitte benutzen Sie diesen Äther, um die "
-"Transaktionskosten zu bezahlen."
+msgstr "현재 배포판이 제공하는 것보다 더 많은 에테르가 지갑에 있습니다. 거래 비용을 지불하기 위해 그 에테르를 사용하십시오."
 
 #: faucet/templates/shared/faucet_unlock_metamask.html:34
 msgid "Can't get web3 to work? Get help here."
-msgstr "Kann web3 nicht zur Arbeit kommen? Holen Sie sich Hilfe hier."
+msgstr "web3을 사용할 수 없습니까? 여기에서 도움을 청하십시오."
 
 #: faucet/views.py:42
 msgid "Gitcoin Faucet"
-msgstr "Gitcoin Wasserhahn"
+msgstr "Gitcoin 수도꼭지"
 
 #: faucet/views.py:43
 msgid ""
 "Request a distribution of ETH so you can use the Ethereum network and "
 "Gitcoin."
-msgstr ""
-"Fordern Sie eine Verteilung der ETH an, damit Sie das Ethereum-Netzwerk und "
-"Gitcoin nutzen können."
+msgstr "Ethereum 네트워크와 Gitcoin을 사용할 수 있도록 ETH 배포판을 요청하십시오."
 
 #: faucet/views.py:74
 msgid "The submitted github profile shows a previous faucet distribution."
-msgstr ""
-"Das eingereichte GitHub-Profil zeigt eine vorherige Wasserhahnverteilung."
+msgstr "제출 된 github 프로필은 이전의 수도꼭지 분포를 보여줍니다."
 
 #: faucet/views.py:78
 msgid "The submitted github profile shows a pending faucet distribution."
-msgstr "Das eingereichte GitHub-Profil zeigt eine ausstehende Hahnverteilung."
+msgstr "제출 된 github 프로필은 보류중인 수도꼭지 분포를 보여줍니다."
 
 #: faucet/views.py:91
 msgid "Created."
-msgstr "Erstellt."
+msgstr "만들어진."
 
 #: gitcoinbot/views.py:63
 msgid "Gitcoinbot Responded"
-msgstr "Gitcoinbot antwortete"
+msgstr "Gitcoinbot 응답"
 
 #: marketing/mails.py:59
 msgid "[DEBUG] "
-msgstr "[DEBUGGEN]"
+msgstr "[DEBUG]"
 
 #: marketing/mails.py:116
 msgid "⚡️ New Tip Worth {} {} {}"
-msgstr "⚡️ Neuer Tipp wert {} {} {}"
+msgstr "W 새로운 팁 가치 {} {} {}"
 
 #: marketing/mails.py:118
 msgid "🕐 Tip Worth {} {} {} Expiring Soon"
-msgstr "🕐 Trinkgeld wert {} {} {} Abgelaufen in Kürze"
+msgstr "🕐 팁 가치 {} {} {} 만료 예정"
 
 #: marketing/mails.py:139
 msgid "New Faucet Request"
-msgstr "Neue Wasserhahn Anfrage"
+msgstr "새로운 수도꼭지 요청"
 
 #: marketing/mails.py:140
-#, fuzzy
-#| msgid ""
-#| "A new faucet request was completed. You may fund the request here :"
 msgid "A new faucet request was completed. You may fund the request here"
-msgstr ""
-"Eine neue Armaturenanforderung wurde abgeschlossen. Sie können die Anfrage "
-"hier finanzieren"
+msgstr "새로운 수도꼭지 요청이 완료되었습니다. 여기에 요청할 수 있습니다."
 
 #: marketing/mails.py:143 marketing/mails.py:167
 msgid "No Reply from Gitcoin.co"
-msgstr "Keine Antwort von Gitcoin.co"
+msgstr "Gitcoin.co에서 응답 없음"
 
 #: marketing/mails.py:164
 msgid "New External Bounty"
-msgstr "Neue externe Belohnung"
+msgstr "새로운 외부 현상금"
 
 #: marketing/mails.py:174 retail/templates/emails/faucet_request.html:24
 msgid "Faucet Request Processed"
-msgstr "Wasserhahn Anfrage verarbeitet"
+msgstr "수도꼭지 요청 처리됨"
 
 #: marketing/mails.py:189
 msgid "Faucet Request Rejected"
-msgstr "Wasserhahn Anfrage abgelehnt"
+msgstr "수도꼭지 거부 요청"
 
 #: marketing/mails.py:212
-#, fuzzy
-#| msgid ""
-#| "⚡️  {len(bounties)} New Funded Issue{plural}{worth} matching your profile"
 msgid ""
 "⚡️  {len(bounties)} New Open Funded Issue{plural}{worth} matching your "
 "profile"
-msgstr ""
-"Len {len (bounties)} Neues offen finanziertes Problem {plural} {lohnend} "
-"passend zu deinem Profil"
+msgstr "⚡️ {len (bounties)} 귀하의 프로필과 일치하는 새로운 공개 기금 문제 {복수} {가치}"
 
 #: marketing/mails.py:251
 msgid "✉️ New Work Submission Inside for {} ✉️"
-msgstr "✉️ Neue Work Submission Inside für {} ✉️"
+msgstr "for {} for을위한 새로운 일 제출"
 
 #: marketing/mails.py:270
 msgid "😕 Work Submission Rejected for {} 😕"
-msgstr "😕 Work Submission abgelehnt für {} 😕"
+msgstr "for {} 😕에 대한 출품작 거부 됨"
 
 #: marketing/mails.py:295
 msgid "🌈 Funds Paid for {} 🌈"
-msgstr "🌈 Für {} Pa bezahlte Guthaben"
+msgstr "P {} 🌈을 지불 한 자금"
 
 #: marketing/mails.py:312
 msgid "⚡️ {} Meet {}: {}! "
-msgstr "⚡️ {} Treffen Sie {}: {}!"
+msgstr "⚡️ {} 만나보세요 {} : {}!"
 
 #: marketing/mails.py:341
 msgid "hour"
-msgstr "Stunde"
+msgstr "시간"
 
 #: marketing/mails.py:344
 msgid "😕 Your Funded Issue ({}) Expires In {} {} ... 😕"
-msgstr "😕 Ihr finanziertes Problem ({}) läuft in {} {} ... 😕 ab"
+msgstr "😕 귀하의 자금 이체 된 문제 ({}) 만료 {} {} ... 😕"
 
 #: marketing/mails.py:363
 msgid "Are you still working on '{}' ? "
-msgstr "Arbeitest du noch an \"{}\"?"
+msgstr "아직도 '{}'에 대해 노력하고 있습니까?"
 
 #: marketing/mails.py:378
 msgid "We've removed you from the task: '{}' ? "
-msgstr "Wir haben dich von der Aufgabe entfernt: '{}'?"
+msgstr "'{}'작업에서 사용자를 삭제했습니다."
 
 #: marketing/utils.py:72
 msgid "Invalid Slack token."
-msgstr "Ungültiges Slack-Token"
+msgstr "슬랙 토큰이 잘못되었습니다."
 
 #: marketing/utils.py:73
 msgid "Slack channel not found."
-msgstr "Slack-Kanal nicht gefunden."
+msgstr "슬랙 채널을 찾을 수 없습니다."
 
 #: marketing/utils.py:77
 msgid "The Gitcoin Slack integration is working fine."
-msgstr "Die Gitcoin Slack Integration funktioniert gut."
+msgstr "Gitcoin Slack 통합은 잘 작동합니다."
 
 #: marketing/utils.py:94
 msgid "The test message was sent to Slack."
-msgstr "Die Testnachricht wurde an Slack gesendet."
+msgstr "테스트 메시지가 Slack으로 보냈습니다."
 
 #: marketing/utils.py:98
 msgid "An error has occurred."
-msgstr "Ein Fehler ist aufgetreten."
+msgstr "오류가 발생했습니다."
 
 #: marketing/views.py:138
 msgid "Privacy Settings"
-msgstr "Datenschutzeinstellungen"
+msgstr "개인 정보 설정"
 
 #: marketing/views.py:179 marketing/views.py:286 marketing/views.py:326
-#, fuzzy
-#| msgid "preferences"
 msgid "Updated your preferences."
-msgstr "Ihre Einstellungen wurden aktualisiert."
+msgstr "환경 설정을 업데이트했습니다."
 
 #: marketing/views.py:188
 msgid "Matching Settings"
-msgstr "Passende Einstellungen"
+msgstr "일치하는 설정"
 
 #: marketing/views.py:215
 msgid "We've received your feedback."
-msgstr "Wir haben Ihr Feedback erhalten."
+msgstr "귀하의 의견이 접수되었습니다."
 
 #: marketing/views.py:220 retail/templates/settings/feedback.html:7
 msgid "Feedback"
-msgstr "Feedback"
+msgstr "피드백"
 
 #: marketing/views.py:262
 msgid "Invalid Email"
-msgstr "Ungültige E-Mail"
+msgstr "잘못된 이메일"
 
 #: marketing/views.py:265
 msgid "Unknown language"
-msgstr "Unbekannte Sprache"
+msgstr "알 수없는 언어"
 
 #: marketing/views.py:269
 msgid "Invalid Level"
-msgstr "Ungültige Stufe"
+msgstr "레벨이 잘못되었습니다."
 
 #: marketing/views.py:290
 msgid "Email Settings"
-msgstr "Email Einstellungen"
+msgstr "이메일 설정"
 
 #: marketing/views.py:335
-#, fuzzy
-#| msgid "Privacy Settings"
 msgid "Slack Settings"
-msgstr "Schlafeinstellungen"
+msgstr "슬랙 설정"
 
 #: marketing/views.py:362
 msgid "Top Payers"
-msgstr "Top-Zahler"
+msgstr "인기 급상승"
 
 #: marketing/views.py:363
 msgid "Top Earners"
-msgstr "Top-Verdiener"
+msgstr "탑 에너너"
 
 #: retail/templates/about.html:33
 msgid "The Problem"
-msgstr "Das Problem"
+msgstr "문제"
 
 #: retail/templates/about.html:34
 msgid "Incentive problems in Open Source Software."
-msgstr "Anreizprobleme in Open-Source-Software."
+msgstr "오픈 소스 소프트웨어의 인센티브 문제."
 
 #: retail/templates/about.html:48
 msgid "The Solution"
-msgstr "Die Lösung"
+msgstr "해결책"
 
 #: retail/templates/about.html:49
 msgid "A decentralized App for value creation &amp; value capture."
-msgstr "Eine dezentrale App zur Wertschöpfung & amp; Wert erfassen."
+msgstr "가치 창출을위한 분권화 된 앱 (& amp; 가치 포착."
 
 #: retail/templates/about.html:63
 msgid "The Origin Story"
-msgstr "Die ursprüngliche Geschichte"
+msgstr "기원 이야기"
 
 #: retail/templates/about.html:64
 msgid "Who, what, when, where, and most importantly, why."
-msgstr "Wer, was, wann, wo und vor allem warum."
+msgstr "누가, 무엇을, 언제, 어디서, 그리고 가장 중요하게, 왜."
 
 #: retail/templates/about.html:70
 msgid "Built with &lt;3 in Boulder Colorado USA"
-msgstr "Gebaut mit & lt; 3 in Boulder Colorado USA"
+msgstr "콜로라도 주 볼더에 & lt; 3으로 건설 됨"
 
 #: retail/templates/about.html:72
 msgid ""
@@ -2222,15 +2105,13 @@ msgid ""
 "careers off of advice, mentorship, and relationships in the local tech "
 "community."
 msgstr ""
-"<strong> Gitcoin </ strong> wurde von der Community in Boulder Colorados "
-"florierender Tech-Szene getragen. Eines der erstaunlichsten Dinge an der "
-"Boulder Community ist das #givefirst Mantra. Das Gründungsteam hat seine "
-"Karriere von Beratung, Mentoring und Beziehungen in der lokalen Tech-"
-"Community aufgebaut."
+"<strong> Gitcoin </ strong>은 콜로라도 보울 더 (Boulder Colorado)의 번성하는 기술계 공동체에서 "
+"태어났습니다. 볼더 지역 사회에서 가장 놀라운 점 중 하나는 #givefirst 만트라입니다. 창립 팀은 현지 기술 커뮤니티의 조언, "
+"멘토십 및 관계로부터 경력을 쌓았습니다."
 
 #: retail/templates/about.html:77
 msgid "Goal: Grow Open Source"
-msgstr "Ziel: Open Source wachsen"
+msgstr "목표 : 오픈 소스 성장"
 
 #: retail/templates/about.html:79
 msgid ""
@@ -2240,15 +2121,14 @@ msgid ""
 "<span>financiers</span> to find one another, Gitcoin grows open source "
 "software."
 msgstr ""
-"<strong> Gitcoin </ strong> ist ein Projekt, das das #givefirst Mantra der "
-"Boulder-Community mit kapitalistischen Anreizen zum Schreiben großer "
-"Software kombiniert. Durch Aktivieren von <span> Repo Maintainern </ span>, "
-"<span> Entwicklern </ span> und <span> financiers </ span> finden Gitcoin "
-"Open Source-Software."
+"<strong> Gitcoin </ strong>은 Boulder 커뮤니티의 #givefirst 진언과 훌륭한 소프트웨어 작성을위한 "
+"자본주의 인센티브를 결합한 프로젝트입니다. Gitcoin은 <span> Repo Maintainers </ span>, <span> "
+"개발자 </ span> 및 <span> 금융업자 </ span>가 서로를 찾을 수 있도록함으로써 Gitcoin은 오픈 소스 소프트웨어를 "
+"개발합니다."
 
 #: retail/templates/about.html:86
 msgid "Cryptocurrencies provide new, decentralized, opportunities"
-msgstr "Kryptowährungen bieten neue, dezentralisierte Möglichkeiten"
+msgstr "Cryptocurrencies는 새로운 분산 된 기회를 제공합니다."
 
 #: retail/templates/about.html:88
 msgid ""
@@ -2259,12 +2139,9 @@ msgid ""
 " incentivized to provide value, and edge cases are handled _without_ having "
 "to involve legacy legal enforcement mechanisms."
 msgstr ""
-"<strong> Gitcoin </ strong> basiert auf dem Ethereum-Netzwerk und der "
-"Programmiersprache solidity smart contract. Ethereum bietet die Möglichkeit,"
-" Anreize für alle Akteure im Ökosystem auszurichten. Durch die direkte "
-"Programmierung der Rechte der Interessengruppen in Smart-Contracts erhalten "
-"die Akteure Anreize zur Wertschöpfung, und Edge-Fälle werden behandelt, ohne"
-" dass Legal-Enforcement-Mechanismen einbezogen werden müssen."
+"<strong> Gitcoin </ strong>은 Ethereum 네트워크와 견고한 스마트 계약 프로그래밍 언어를 기반으로합니다. 에테"
+" 리엄 (ethereum)은 생태계의 행위자에 대한 인센티브를 조정할 수있는 기회를 제공합니다. 이해 관계자의 권리를 똑똑한 계약으로 "
+"직접 프로그램함으로써 배우들은 가치 제공을 장려하고 기존의 법 집행 메커니즘을 포함하지 않고도 최첨단 사례를 처리합니다."
 
 #: retail/templates/about.html:95
 msgid ""
@@ -2283,245 +2160,234 @@ msgid ""
 "stronger the community is, the more successful open source projects are. The"
 " stronger open source projects are, the stronger the community is."
 msgstr ""
-"Der Gründer von Gitcoin, Kevin Owocki, hat Erfahrung als Organisator von <a "
-"href=\"http://boulderstartupweek.com\"> Boulder-Startup-Woche </a>, <a "
-"href=\"http://igniteboulder.com\"> Ignite Boulder </a>, <a "
-"href=\"https://startupcto.io\"> StartupCTO.io </a> , <a "
+"Gitcoin의 창시자 인 <a href=\"http://linkedin.com/in/owocki/\"> Kevin Owocki "
+"</a>는 <a href=\"http://boulderstartupweek.com\">의 주최자로서의 경험이 있습니다. Boulder "
+"Startup Week </a>, <a href=\"http://igniteboulder.com\"> Ignite Boulder "
+"</a>, <a href=\"https://startupcto.io\"> StartupCTO.io </a> , <a "
 "href=\"https://www.meetup.com/Boulder-Blockchain/\"> Boulder Blockchain "
-"Meetup </a> und die Open-Source-Projekte <a href = "
-"\"https://github.com/owocki/pytrader \"> pytrader </a>, <a "
-"href=\"https://github.com/owocki/adblock-to-bitcoin\"> adblock-zu-bitcoin "
-"</a>, <a href =\" https: // github .com / youvegetheth / youvegeth.github.io"
-" / \"> YouveGotETH </a> und <a "
-"href=\"https://github.com/owocki/coloradocoin\"> ColoradoCoin </a>. Je "
-"stärker die Community ist, desto erfolgreicher sind Open-Source-Projekte. Je"
-" stärker Open-Source-Projekte sind, desto stärker ist die Community."
+"Meetup </a> 및 오픈 소스 프로젝트 <a href = \"https://github.com/owocki/pytrader \"> "
+"pytrader </a>, <a href=\"https://github.com/owocki/adblock-to-bitcoin\"> "
+"adblock-to-bitcoin </a>, <a href =\"https : // github .com / youvegoteth / "
+"youvegoteth.github.io / \"> YouveGotETH </a>, <a "
+"href=\"https://github.com/owocki/coloradocoin\"> ColoradoCoin </a>. 커뮤니티가 "
+"강할수록 더 성공적인 오픈 소스 프로젝트가됩니다. 오픈 소스 프로젝트가 강할수록 커뮤니티가 강해집니다."
 
 #: retail/templates/about.html:104
 msgid "Team"
-msgstr "Mannschaft"
+msgstr "팀"
 
 #: retail/templates/about.html:105
 msgid "Built By &amp; For Open Source Software Developers"
-msgstr "Gebaut von & amp; Für Open-Source-Softwareentwickler"
+msgstr "작성자 & amp; 오픈 소스 소프트웨어 개발자를위한"
 
 #: retail/templates/about.html:140
 msgid "Join Us"
-msgstr "Begleiten Sie uns"
+msgstr "우리와 함께하십시오."
 
 #: retail/templates/about.html:141
 msgid "Want to Grow Open Source? We want to hear from you."
-msgstr "Willst du Open Source wachsen? Wir wollen von dir hören."
+msgstr "오픈 소스를 키우고 싶습니까? 우리는 당신에게서 소식을 듣고 싶습니다."
 
 #: retail/templates/about.html:144
 msgid "Open Gitcoin Roles"
-msgstr "Öffnen Sie Gitcoin Rollen"
+msgstr "Gitcoin 역할 열기"
 
 #: retail/templates/about.html:146
 msgid "Front End Developer"
-msgstr "Entwickler für Benutzeroberflächen"
+msgstr "프런트 엔드 개발자"
 
 #: retail/templates/about.html:148 retail/templates/about.html:154
 #: retail/templates/about.html:169
 msgid "Learn More"
-msgstr "Erfahren Sie mehr"
+msgstr "더 알아보기"
 
 #: retail/templates/about.html:152
 msgid "Technical Business Development Lead"
-msgstr "Technischer Leiter der Geschäftsentwicklung"
+msgstr "기술 사업 개발 리드"
 
 #: retail/templates/about.html:158
 msgid "Technical Project Manager"
-msgstr "Technischer Projektmanager"
+msgstr "기술 프로젝트 관리자"
 
 #: retail/templates/about.html:160
 msgid "Contact us"
-msgstr "Kontaktiere uns"
+msgstr "문의하기"
 
 #: retail/templates/about.html:165
 msgid "Open Bounties.Network Roles"
-msgstr "Open Bounties.Netzwerkrollen"
+msgstr "개방 된 금액. 네트워크 역할"
 
 #: retail/templates/about.html:167
 msgid "Data Scientist"
-msgstr "Datenwissenschaftler"
+msgstr "데이터 과학자"
 
 #: retail/templates/about.html:182
 msgid "Features of Gitcoin"
-msgstr "Eigenschaften von Gitcoin"
+msgstr "Gitcoin의 특징"
 
 #: retail/templates/about.html:191
 msgid "Fund Issues"
-msgstr "Fondsprobleme"
+msgstr "기금 문제"
 
 #: retail/templates/about.html:192
 msgid ""
 "Fund a feature, bug, or security issue that you care about, &amp; get "
 "results."
-msgstr ""
-"Ein Feature, einen Fehler oder ein Sicherheitsproblem, das Ihnen wichtig "
-"ist, & & amp; Ergebnisse bekommen."
+msgstr "관심있는 기능, 버그 또는 보안 문제에 대해 기금을 모으고 & amp; 결과를 얻는다."
 
 #: retail/templates/about.html:200
 msgid "Tip Developers"
-msgstr "Tipp Entwickler"
+msgstr "팁 개발자"
 
 #: retail/templates/about.html:201
 msgid ""
 "Reward contributors who have added value to your repository with a tip."
-msgstr ""
-"Belohnen Sie Mitwirkende, die mit einem Tipp zu Ihrem Repository beigetragen"
-" haben."
+msgstr "팁으로 저장소에 가치를 추가 한 기고가에게 보상하십시오."
 
 #: retail/templates/about.html:211
 msgid "Find Work"
-msgstr "Arbeit suchen"
+msgstr "직장 찾기"
 
 #: retail/templates/about.html:212
 msgid ""
 "Find interesting projects to work on, interesting people to work with. Try "
 "projects before you fully commit to them. Add value wherever you go."
 msgstr ""
-"Finde interessante Projekte, an denen du arbeiten kannst, interessante "
-"Leute, mit denen du arbeiten kannst. Probieren Sie Projekte aus, bevor Sie "
-"sie vollständig übernehmen. Fügen Sie überall einen Wert hinzu."
+"흥미로운 프로젝트를 찾고, 관심있는 사람들과 함께 작업하십시오. 프로젝트를 완수하기 전에 프로젝트를 시험해보십시오. 당신이가는 곳마다 "
+"가치를 더하십시오."
 
 #: retail/templates/about.html:220
 msgid "All on Github.com"
-msgstr "Alles auf Github.com"
+msgstr "Github.com의 모든 것"
 
 #: retail/templates/about.html:221
 msgid ""
 "The best thing about Gitcoin is that it works where you do your work; on "
 "Github."
-msgstr ""
-"Das Beste an Gitcoin ist, dass es dort funktioniert, wo Sie arbeiten; auf "
-"Github."
+msgstr "Gitcoin의 가장 좋은 점은 작업을 수행 할 때 작동한다는 것입니다. Github에."
 
 #: retail/templates/about.html:234
 msgid "Mission-Driven"
-msgstr "Missionsgesteuert"
+msgstr "임무 기반"
 
 #: retail/templates/about.html:235
 msgid "Everything we do is to support our mission to 'Grow Open Source'"
-msgstr "Alles, was wir tun, ist unsere Mission \"Open Source\" zu unterstützen"
+msgstr "우리가하는 모든 일은 '오픈 소스 성장'에 대한 우리의 사명을 지원하는 것입니다."
 
 #: retail/templates/admin/index.html:38
 #, python-format
 msgid "Models in the %(name)s application"
-msgstr "Modelle in der Anwendung %(name)s "
+msgstr " %(name)s 응용 프로그램의 모델"
 
 #: retail/templates/admin/index.html:49
 msgid "Add"
-msgstr "Hinzufügen"
+msgstr "더하다"
 
 #: retail/templates/admin/index.html:55
 msgid "Change"
-msgstr "Veränderung"
+msgstr "변화"
 
 #: retail/templates/admin/index.html:65
 msgid "You don't have permission to edit anything."
-msgstr "Sie sind nicht berechtigt, etwas zu bearbeiten."
+msgstr "아무 것도 수정할 수있는 권한이 없습니다."
 
 #: retail/templates/admin/index.html:74
 msgid "Analytics"
-msgstr "Analysen"
+msgstr "해석학"
 
 #: retail/templates/admin/index.html:87
 msgid "Administrative Tasks"
-msgstr "Verwaltungsaufgaben"
+msgstr "관리 작업"
 
 #: retail/templates/admin/index.html:103
 msgid "Recent Actions"
-msgstr "Letzte Aktionen"
+msgstr "최근 작업"
 
 #: retail/templates/admin/index.html:104
 msgid "My Actions"
-msgstr "Meine Handlungen"
+msgstr "내 행동"
 
 #: retail/templates/admin/index.html:108
 msgid "None available"
-msgstr "Keine verfügbar"
+msgstr "사용할 수 없음"
 
 #: retail/templates/admin/index.html:122
 msgid "Unknown content"
-msgstr "Unbekannter Inhalt"
+msgstr "알 수없는 콘텐츠"
 
 #: retail/templates/emails/bounty.html:116
 msgid "Expires:"
-msgstr "Läuft ab:"
+msgstr "만료일 :"
 
 #: retail/templates/emails/bounty.html:120
 msgid "Specs:"
-msgstr "Spezifikationen:"
+msgstr "명세서:"
 
 #: retail/templates/emails/bounty.html:123
 msgid "Type:"
-msgstr "Art:"
+msgstr "유형:"
 
 #: retail/templates/emails/bounty.html:125
 msgid "Experience Level:"
-msgstr "Erfahrungsstufe:"
+msgstr "경험 수준 :"
 
 #: retail/templates/emails/bounty.html:132
 msgid "View on Gitcoin.co"
-msgstr "Blick auf Gitcoin.co"
+msgstr "Gitcoin.co에서보기"
 
 #: retail/templates/emails/bounty_roundup.html:57
 msgid "The Gitcoin Weekly"
-msgstr "Das Gitcoin wöchentlich"
+msgstr "Gitcoin Weekly"
 
 #: retail/templates/emails/bounty_roundup.html:78
 msgid "Last Week's Highlights"
-msgstr "Höhepunkte der letzten Woche"
+msgstr "지난주의 하이라이트"
 
 #: retail/templates/emails/bounty_roundup.html:79
 msgid "Community Members growing open source"
-msgstr "Community-Mitglieder werden Open-Source-Mitglieder"
+msgstr "커뮤니티 회원 오픈 소스 성장"
 
 #: retail/templates/emails/bounty_roundup.html:105
 msgid "Open Funded Issues"
-msgstr "Offengelegte Probleme"
+msgstr "공개 자금 문제"
 
 #: retail/templates/emails/bounty_roundup.html:106
 msgid "Grow Open Source &amp; Make Some ETH"
-msgstr "Wachsen Open Source & amp; Machen Sie etwas ETH"
+msgstr "Grow Open Source & amp; 일부 ETH 만들기"
 
 #: retail/templates/emails/bounty_roundup.html:114
 msgid "Don't see anything that strikes your fancy above?"
-msgstr "Siehst du nichts, was dir oben gefällt?"
+msgstr "위의 당신의 공상을 치는 무엇이라도 보지 마라?"
 
 #: retail/templates/emails/bounty_roundup.html:115
 msgid "There are more issues in the Gitcoin Issue Explorer:"
-msgstr "Es gibt weitere Probleme im Gitcoin Issue Explorer:"
+msgstr "Gitcoin Issue Explorer에는 더 많은 문제가 있습니다."
 
 #: retail/templates/emails/bounty_roundup.html:118
 msgid "View Issue Explorer"
-msgstr "Zeigen Sie den Problem-Explorer an"
+msgstr "이슈 탐색기보기"
 
 #: retail/templates/emails/bounty_roundup.html:124
 msgid "Bounties from around the ecosystem"
-msgstr "Kopfgelder aus dem gesamten Ökosystem"
+msgstr "생태계의 현상금"
 
 #: retail/templates/emails/bounty_roundup.html:125
 msgid "From other great projects in OSS"
-msgstr "Von anderen großartigen Projekten in OSS"
+msgstr "OSS의 다른 위대한 프로젝트에서"
 
 #: retail/templates/emails/bounty_roundup.html:140
 msgid "There's much much more on the Gitcoin Universal Bounties Explorer:"
-msgstr "Es gibt viel mehr auf dem Gitcoin Universal Bounties Explorer:"
+msgstr "Gitcoin Universal Bounties Explorer에는 훨씬 더 많은 것이 있습니다."
 
 #: retail/templates/emails/bounty_roundup.html:143
 msgid "View Bounties Universe"
-msgstr "Bounty-Universum anzeigen"
+msgstr "현상금 유니버스보기"
 
 #: retail/templates/emails/bounty_roundup.html:153
 msgid ""
 "You are receiving this email because your email address is on the "
 "notification list."
-msgstr ""
-"Sie erhalten diese E-Mail, weil sich Ihre E-Mail-Adresse in der "
-"Benachrichtigungsliste befindet."
+msgstr "귀하의 이메일 주소가 알림 목록에 있기 때문에이 이메일을 보내드립니다."
 
 #: retail/templates/emails/bounty_roundup.html:153
 #: retail/templates/emails/bounty_startwork_expire_warning.html:61
@@ -2530,49 +2396,52 @@ msgstr ""
 #: retail/templates/emails/new_bounty_expire_warning.html:73
 #: retail/templates/emails/new_bounty_rejection.html:34
 msgid "Manage Email Settings"
-msgstr "E-Mail-Einstellungen verwalten"
+msgstr "이메일 설정 관리"
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:23
 msgid "Are you still working on this?"
-msgstr "Arbeitest du noch daran?"
+msgstr "아직도이 일을하고 있습니까?"
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:27
 msgid "Hey there, "
-msgstr "Sie da,"
+msgstr "이봐,"
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:37
 msgid ""
 "Do you still want to work on this?  Please let us know so we can find "
 "someone else to work on it if not!"
-msgstr ""
-"Möchtest du immer noch daran arbeiten? Bitte lass es uns wissen, damit wir "
-"jemanden finden können, der daran arbeitet, wenn nicht!"
+msgstr "아직도이 일을하고 싶니? 저희에게 알려주십시오. 그렇게하지 않으면 다른 사람들이 일할 수 있습니다!"
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:42
 msgid "If so, please leave a comment on the github thread to check in."
-msgstr ""
-"Wenn ja, hinterlasse einen Kommentar zum github-Thread, um einzuchecken."
+msgstr "그렇다면 github 스레드에 주석을 달아 체크인하십시오."
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:44
 msgid "OR"
-msgstr "ODER"
+msgstr "또는"
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:46
 #, python-format
-msgid "If not, click 'Stop Work' on the <a href=\"%(bounty.absolute_url)s\">issue detail page</a>."
-msgstr "Falls nicht, klicken Sie auf der <a href=\"%(bounty.absolute_url)s\"> Seite mit den Problemdetails </a> auf \"Stop Work\"."
+msgid ""
+"If not, click 'Stop Work' on the <a href=\"%(bounty.absolute_url)s\">issue "
+"detail page</a>."
+msgstr ""
+"그렇지 않은 경우 <a href=\"%(bounty.absolute_url)s\"> 문제 세부 정보 페이지 </a>에서 '직장 폐쇄'를 "
+"클릭하십시오."
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:50
 #: retail/templates/emails/new_bounty_expire_warning.html:51
 #: retail/templates/emails/render_bounty_startwork_expired.html:53
-msgid "If you have any questions, feel free to reach out <a href=\"https://gitcoin.co/slack\">on slack</a>."
-msgstr "Wenn Sie irgendwelche Fragen haben, zögern Sie nicht <a href=\"https://gitcoin.co/slack\"> auf Flaute </a>."
+msgid ""
+"If you have any questions, feel free to reach out <a "
+"href=\"https://gitcoin.co/slack\">on slack</a>."
+msgstr "궁금한 점이 있으면 <a href=\"https://gitcoin.co/slack\"> 여유를 가지고 </a> 문의하십시오."
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:53
 #: retail/templates/emails/new_bounty_expire_warning.html:65
 #: retail/templates/emails/render_bounty_startwork_expired.html:56
 msgid "Funded Issue Details"
-msgstr "Fundierte Details zum Thema"
+msgstr "자금 이슈 세부 사항"
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:61
 #: retail/templates/emails/new_bounty_expire_warning.html:73
@@ -2580,126 +2449,104 @@ msgstr "Fundierte Details zum Thema"
 msgid ""
 "You are receiving this email because your email address is on the "
 "notification list for this funded issue."
-msgstr ""
-"Sie erhalten diese E-Mail, weil sich Ihre E-Mail-Adresse in der "
-"Benachrichtigungsliste für dieses Problem befindet."
+msgstr "귀하의 이메일 주소가이 자금 문제에 대한 알림 목록에 있기 때문에이 이메일을 보내드립니다."
 
 #: retail/templates/emails/faucet_request.html:29
 #: retail/templates/emails/faucet_request_rejected.html:29
 msgid "Hey"
-msgstr "Hallo"
+msgstr "헤이"
 
 #: retail/templates/emails/faucet_request.html:34
 #, python-format
 msgid "Gitcoin has distributed your faucet request for %(amount)s ETH to"
-msgstr "Gitcoin hat Ihre Armaturenanfrage für %(amount)s ETH an Sie verteilt"
+msgstr "Gitcoin이 ETH에 대한 %(amount)s 에 대한 수도꼭지 요청을 배포했습니다."
 
 #: retail/templates/emails/faucet_request.html:39
 msgid ""
 "This should be enough gas to send your first Ethereum Transaction.  We hope "
 "you'll consider using it on Gitcoin!"
-msgstr ""
-"Dies sollte genug Gas sein, um deine erste Ethereum-Transaktion zu senden. "
-"Wir hoffen, dass Sie es auf Gitcoin verwenden werden!"
+msgstr "이것은 첫 번째 Ethereum 트랜잭션을 보낼 수있는 충분한 양이어야합니다. Gitcoin에서 사용 하시길 바랍니다."
 
 #: retail/templates/emails/faucet_request_rejected.html:24
 msgid "Faucet Request Rejected ‼️"
-msgstr "Wasserhahn Anfrage abgelehnt! ️"
+msgstr "수도꼭지 요청이 거부되었습니다! ️"
 
 #: retail/templates/emails/faucet_request_rejected.html:34
 #, python-format
 msgid "Gitcoin *could not* approve your faucet request for %(amount)s ETH to"
-msgstr ""
-"Gitcoin * konnte Ihre Armaturenanfrage für %(amount)s ETH nicht genehmigen"
+msgstr "Gitcoin * 님이 %(amount)s ETH에 대한 수도꼭지 요청을 승인 할 수 없습니다 *"
 
 #: retail/templates/emails/faucet_request_rejected.html:41
 msgid "Here are somme comments from the administrator:"
-msgstr "Hier sind einige Kommentare vom Administrator:"
+msgstr "다음은 관리자의 somme 설명입니다."
 
 #: retail/templates/emails/faucet_request_rejected.html:53
 msgid "You are welcome to re-apply at"
-msgstr "Sie können sich gerne erneut bei uns bewerben"
+msgstr "다시 신청하실 수 있습니다."
 
 #: retail/templates/emails/new_bounty.html:23
 msgid "New Funded Issue"
-msgstr "Neu finanzierte Ausgabe"
+msgstr "신규 자금 지원"
 
 #: retail/templates/emails/new_bounty.html:33
-#, fuzzy
-#| msgid "Open Funded Issues"
 msgid "Other Open Funded Issue"
-msgstr "Andere Open Funded-Ausgabe"
+msgstr "기타 공개 기금 문제"
 
 #: retail/templates/emails/new_bounty.html:44
 msgid ""
 "You are receiving this email because your email preferences matched with "
 "these keywords:"
-msgstr ""
-"Sie erhalten diese E-Mail, weil Ihre E-Mail-Einstellungen diesen Keywords "
-"entsprechen:"
+msgstr "귀하의 이메일 환경 설정이 다음 키워드와 일치하므로 본 이메일이 발송되었습니다."
 
 #: retail/templates/emails/new_bounty_acceptance.html:23
 msgid "Funds Paid!"
-msgstr "Gelder bezahlt!"
+msgstr "유료 펀드!"
 
 #: retail/templates/emails/new_bounty_acceptance.html:27
 msgid ""
 "Your claim has been accepted, and the fulfillment transaction is now on the "
 "Ethereum network!"
-msgstr ""
-"Ihr Antrag wurde angenommen und die Fulfillment-Transaktion ist jetzt im "
-"Ethereum-Netzwerk!"
+msgstr "귀하의 주장이 받아 들여지고, 성취 거래가 이제 Ethereum 네트워크에 있습니다!"
 
 #: retail/templates/emails/new_bounty_acceptance.html:35
 msgid ""
 "You are receiving this email because your email address is on the bounty "
 "notification list for this funded issue."
-msgstr ""
-"Sie erhalten diese E-Mail, weil sich Ihre E-Mail-Adresse in der Bounty-"
-"Benachrichtigungsliste für dieses finanzierte Problem befindet."
+msgstr "귀하의 이메일 주소가이 자금 문제에 대한 현상금 통지 목록에 있기 때문에이 이메일을 보내드립니다."
 
 #: retail/templates/emails/new_bounty_expire_warning.html:23
 msgid "Funded Issue Expiring ..."
-msgstr "Funded Issue läuft ab ..."
+msgstr "만료 된 기금이 만료 된 문제 ..."
 
 #: retail/templates/emails/new_bounty_expire_warning.html:28
 #, python-format
 msgid ""
 "Heads up! The funded issue that you posted (below) is expiring in %(num)s "
 "%(unit)s."
-msgstr ""
-"Kopf hoch! Das von Ihnen gepostete Problem (unten) läuft in %(num)s "
-"%(unit)sab."
+msgstr "헤즈 업! 귀하가 게시 한 자금 지원이 %(num)s %(unit)s에서 만료됩니다."
 
 #: retail/templates/emails/new_bounty_expire_warning.html:30
 #, python-format
 msgid ""
 "Heads up! The funded issue that you fulfilled (below) is expiring in %(num)s"
 " %(unit)s."
-msgstr ""
-"Kopf hoch! Das finanzierte Problem, das Sie (unten) erfüllt haben, läuft in "
-"%(num)s %(unit)sab."
+msgstr "헤즈 업! 귀하가 수행 한 (아래) 자금 지원 문제가 %(num)s %(unit)s에서 만료됩니다."
 
 #: retail/templates/emails/new_bounty_expire_warning.html:37
 msgid ""
 "There is a currently pending claim agains this funded issue. Please make "
 "sure you process them!"
-msgstr ""
-"Gegen diese finanzierte Ausgabe gibt es einen derzeit anhängigen Anspruch. "
-"Bitte stellen Sie sicher, dass Sie sie verarbeiten!"
+msgstr "이 자금 문제는 현재 보류 중입니다. 처리하도록하십시오!"
 
 #: retail/templates/emails/new_bounty_expire_warning.html:42
 msgid ""
 "After the funded issue has expired, you can still submit and accept work.  "
 "You may also 'Cancel' the bounty and get the funds back."
-msgstr ""
-"Nachdem das finanzierte Problem abgelaufen ist, können Sie noch arbeiten und"
-" annehmen. Sie können das Kopfgeld auch 'annullieren' und das Kapital "
-"zurückbekommen."
+msgstr "기금이 발행 된 문제가 만료 된 후에도 여전히 제출하고 수락 할 수 있습니다. 현상금을 '취소'하고 환불받을 수도 있습니다."
 
 #: retail/templates/emails/new_bounty_expire_warning.html:45
 msgid "Look for this button"
-msgstr "Suchen Sie nach dieser Schaltfläche"
+msgstr "이 버튼을 찾으십시오."
 
 #: retail/templates/emails/new_bounty_expire_warning.html:55
 #, python-format
@@ -2708,146 +2555,129 @@ msgid ""
 "github</a> and let the bounty owner know that you'd like to wrap this up "
 "soon? :)"
 msgstr ""
-"Warum hinterlässt du keinen Kommentar <a href=\"%(bounty.github_url)s\"> auf"
-" github </a> und lässt den Kopfgeldbesitzer wissen, dass du das bald "
-"einpacken möchtest? :)"
+"<a href=\"%(bounty.github_url)s\"> github </a>에 의견을 남기고 현상금 주인에게 곧이를 마무리하길 "
+"원한다는 것을 알려주시겠습니까? :)"
 
 #: retail/templates/emails/new_bounty_expire_warning.html:59
 msgid ""
 "If you have any problems, feel free to reach out <a "
 "href=\"https://gitcoin.co/slack\">on slack</a>."
-msgstr ""
-"Wenn Sie irgendwelche Probleme haben, zögern Sie nicht <a "
-"href=\"https://gitcoin.co/slack\"> auf Flaute </a>."
+msgstr "문제가 있으면 <a href=\"https://gitcoin.co/slack\"> 여유를 가지고 </a> 문의하십시오."
 
 #: retail/templates/emails/new_bounty_rejection.html:23
 msgid "Fulfillment Rejected"
-msgstr "Erfüllung abgelehnt"
+msgstr "이행이 거부 됨"
 
 #: retail/templates/emails/new_bounty_rejection.html:26
 msgid ""
 "There is a new funded issue fulfillment *rejection*. Please refer to the "
 "rejection comments on the github pull request to learn why."
 msgstr ""
-"Es gibt eine neue fundierte Problemerfüllung * Ablehnung *. Bitte beachten "
-"Sie die Ablehnungshinweise zur github Pull-Anfrage, um zu erfahren, warum."
+"새로운 자금 이체 이행 * 거부 *가 있습니다. 이유를 알아 보려면 github pull 요청에 대한 거부 의견을 참조하십시오."
 
 #: retail/templates/emails/new_match.html:39
 msgid "New Match Alert"
-msgstr "Neue Übereinstimmungswarnung"
+msgstr "새로운 경기 경고"
 
 #: retail/templates/emails/new_match.html:42
 msgid "meet"
-msgstr "Treffen"
+msgstr "만나다"
 
 #: retail/templates/emails/new_match.html:73
 msgid "You are both CCed on this email.  Feel free to reply all and say hey."
-msgstr ""
-"Sie sind beide mit dieser E-Mail verbunden. Fühlen Sie sich frei, alle zu "
-"antworten und sagen Sie hey."
+msgstr "이 이메일에 둘 다 CCed되어 있습니다. 자유롭게 모든 것을 회신하고 말하십시오."
 
 #: retail/templates/emails/new_tip.html:44
 msgid "New Tip Alert"
-msgstr "Neue Tippwarnung"
+msgstr "새로운 팁 경고"
 
 #: retail/templates/emails/new_tip.html:46
 msgid "Reminder: Tip Expires Soon"
-msgstr "Erinnerung: Tipp läuft bald ab"
+msgstr "알림 : 팁이 곧 만료됩니다."
 
 #: retail/templates/emails/new_tip.html:51
 #, python-format
-msgid "%(tip.from_name)s sent you a tip worth %(amount)s %(warning)s %(tokenName)s"
-msgstr "%(tip.from_name)s hat Ihnen einen Tipp im Wert von %(amount)s %(warning)s %(tokenName)s geschickt"
+msgid ""
+"%(tip.from_name)s sent you a tip worth %(amount)s %(warning)s %(tokenName)s"
+msgstr "% (tip.from_name) 님이 팁을 보냈습니다 %(amount)s %(warning)s %(tokenName)s"
 
 #: retail/templates/emails/new_tip.html:53
 #, python-format
 msgid "Someone sent you a tip worth %(amount)s %(warning)s %(tokenName)s"
-msgstr "Jemand hat dir einen Tipp geschickt im Wert von %(amount)s %(warning)s %(tokenName)s"
+msgstr "누군가 당신에게 팁을 보냈습니다. %(amount)s %(warning)s %(tokenName)s"
 
 #: retail/templates/emails/new_tip.html:65
 msgid "They had the following comments:"
-msgstr "Sie hatten die folgenden Kommentare:"
+msgstr "그들에는 뒤에 오는 코멘트가 있었다 :"
 
 #: retail/templates/emails/new_tip.html:76
 msgid "They had the following private comments:"
-msgstr "Sie hatten folgende private Kommentare:"
+msgstr "그들은 다음과 같은 비공식적 인 의견을 가지고 있습니다 :"
 
 #: retail/templates/emails/new_tip.html:85
 msgid "They had the following public comments:"
-msgstr "Sie hatten die folgenden öffentlichen Kommentare:"
+msgstr "그들은 다음과 같은 대중의 의견을 가지고있었습니다 :"
 
 #: retail/templates/emails/new_tip.html:94
 msgid "The tip expires on"
-msgstr "Der Tipp läuft ab am"
+msgstr "팁이 만료됩니다."
 
 #: retail/templates/emails/new_tip.html:94
 msgid "in just"
-msgstr "in nur"
+msgstr "단지"
 
 #: retail/templates/emails/new_tip.html:94
 msgid ""
 "No pressure, but if you wanted to redeem your tip sooner rather than later "
 "that'd be 👌:"
-msgstr ""
-"Kein Druck, aber wenn du deinen Tipp eher früher als später einlösen "
-"wolltest, wäre das 👌:"
+msgstr "압박감은 없지만 팁을 나중에 사용하지 않고 빨리 사용하려면 be :"
 
 #: retail/templates/emails/new_tip.html:98
 msgid ""
 "No pressure, but if you wanted to redeem your tip sooner rather than later "
 "that'd be 👌"
-msgstr ""
-"Kein Druck, aber wenn du deinen Trinkgeld eher früher als später einlösen "
-"wolltest, wäre das 👌"
+msgstr "압박감은 없지만 팁을 나중에 사용하지 않고 빨리 사용하려면 👌"
 
 #: retail/templates/emails/new_tip.html:105
 msgid "Redeem Tip"
-msgstr "Tipp einlösen"
+msgstr "팁 사용"
 
 #: retail/templates/emails/new_work_submission.html:23
 msgid "New Work Submission"
-msgstr "Neue Arbeitsaufgabe"
+msgstr "새로운 작업 제출"
 
 #: retail/templates/emails/new_work_submission.html:27
 msgid ""
 "There is a new work *submission* against your funded issue. Please check it "
 "out, below"
-msgstr ""
-"Es gibt eine neue Arbeit * Einreichung * gegen Ihr finanziertes Problem. "
-"Bitte schau es dir unten an"
+msgstr "귀하의 재정 문제에 대한 새로운 작품 * 제출 *이 있습니다. 아래에서 확인해주세요."
 
 #: retail/templates/emails/render_bounty_startwork_expired.html:23
 msgid "You've been removed from this task ..."
-msgstr "Du wurdest von dieser Aufgabe entfernt ..."
+msgstr "이 작업에서 제거되었습니다 ..."
 
 #: retail/templates/emails/render_bounty_startwork_expired.html:27
 msgid "Hey there,"
-msgstr "Sie da,"
+msgstr "이봐,"
 
 #: retail/templates/emails/render_bounty_startwork_expired.html:36
 msgid ""
 "Since we have a responsibility to the community to keep the list of claimees"
 " for this issue current, Gitcoin removed you from the task."
-msgstr ""
-"Da wir eine Verantwortung für die Community haben, die Liste der claimees "
-"für dieses Problem aktuell zu halten, hat Gitcoin Sie von der Aufgabe "
-"entfernt."
+msgstr "우리가이 문제에 대한 클레임리스트를 최신으로 유지할 책임이 있기 때문에 Gitcoin은 당신을 작업에서 제외 시켰습니다."
 
 #: retail/templates/emails/render_bounty_startwork_expired.html:40
 msgid ""
 "Do you still want to work on this?  No big deal!  We can help with that:"
-msgstr ""
-"Möchtest du immer noch daran arbeiten? Keine große Sache! Wir können damit "
-"helfen:"
+msgstr "아직도이 일을하고 싶니? 별거 아니야! 우리는 다음과 같이 도울 수 있습니다."
 
 #: retail/templates/emails/render_bounty_startwork_expired.html:45
 msgid "Please leave a comment on the github thread to check in."
-msgstr ""
-"Bitte hinterlassen Sie einen Kommentar zum github thread zum Einchecken."
+msgstr "체크인하려면 github 스레드에 대한 의견을 남겨주십시오."
 
 #: retail/templates/emails/render_bounty_startwork_expired.html:47
 msgid "AND"
-msgstr "UND"
+msgstr "과"
 
 #: retail/templates/emails/render_bounty_startwork_expired.html:49
 #, python-format
@@ -2855,49 +2685,54 @@ msgid ""
 "Click 'Start Work' on the <a href=\"%(bounty.absolute_url)s\">issue detail "
 "page</a>."
 msgstr ""
-"Klicken Sie auf der <a href=\"%(bounty.absolute_url)s\"> Seite mit den "
-"Problemdetails </a> auf \"Start Work\"."
+"<a href=\"%(bounty.absolute_url)s\"> 문제 세부 정보 페이지 </a>에서 'Start Work'를 "
+"클릭하십시오."
 
 #: retail/templates/emails/template.html:188
 msgid "All rights reserved."
-msgstr "Alle Rechte vorbehalten."
+msgstr "판권 소유."
 
 #: retail/templates/emails/template.html:193
 msgid "Want to change how you receive these emails?"
-msgstr "Möchten Sie ändern, wie Sie diese E-Mails erhalten?"
+msgstr "이 이메일 수신 방법을 변경하고 싶으십니까?"
 
 #: retail/templates/emails/template.html:195
 msgid "You can update your"
-msgstr "Sie können Ihre aktualisieren"
+msgstr "당신은"
 
 #: retail/templates/emails/template.html:195
 msgid "preferences"
-msgstr "Präferenzen"
+msgstr "환경 설정"
 
 #: retail/templates/emails/template.html:195
 msgid "unsubscribe"
-msgstr "Abmelden"
+msgstr "구독 취소"
 
 #: retail/templates/emails/template.html:195
 msgid "from this list."
-msgstr "aus dieser Liste."
+msgstr "이 목록에서."
 
 #: retail/templates/error.html:22
 #, python-format
 msgid "Error %(code)s."
-msgstr "Fehlercode__."
+msgstr "에러 코드__."
 
 #: retail/templates/error.html:23
-msgid "_Even the bots_ aren't sure what happened, but we'll look into it. <a href=\"mailto:founders@gitcoin.co\">Contact us</a> if you think this is something that shouldn't have happened."
-msgstr "Selbst die Bots sind sich nicht sicher, was passiert ist, aber wir werden uns darum kümmern. <a href=\"mailto:founders@gitcoin.co\"> Kontaktieren Sie uns </a>, wenn Sie der Meinung sind, dass dies etwas nicht sein sollte."
+msgid ""
+"_Even the bots_ aren't sure what happened, but we'll look into it. <a "
+"href=\"mailto:founders@gitcoin.co\">Contact us</a> if you think this is "
+"something that shouldn't have happened."
+msgstr ""
+"_ 심지어 봇들도 무슨 일이 일어 났는지는 확실하지 않지만 우리가 살펴볼 것입니다. <a "
+"href=\"mailto:founders@gitcoin.co\"> Google에 문의 </a>하십시오."
 
 #: retail/templates/gas.html:65
 msgid "Predicted Confirmation Times vs Gas Usage"
-msgstr "Vorhergesagte Bestätigungszeiten gegen Gasverbrauch"
+msgstr "예상 확인 시간과 가스 사용량"
 
 #: retail/templates/gas.html:161
 msgid "Useful Links"
-msgstr "Nützliche Links"
+msgstr "유용한 링크"
 
 #: retail/templates/gas.html:162
 msgid ""
@@ -2905,9 +2740,8 @@ msgid ""
 "href=\"https://ethgasstation.info/predictionTable.php\" target=\"_blank\" "
 "rel=\"noopener noreferrer\">ETH Gas Station</a>"
 msgstr ""
-"Um die Daten im Diagrammformat anzuzeigen, besuchen Sie <a "
-"href=\"https://ethgasstation.info/predictionTable.php\" target=\"_blank\" "
-"rel=\"noopener noreferrer\"> ETH-Tankstelle </a>"
+"차트 형식으로 데이터를 보려면 <a href=\"https://ethgasstation.info/predictionTable.php\" "
+"target=\"_blank\" rel=\"noopener noreferrer\"> ETH 주유소 </a>를 확인하십시오."
 
 #: retail/templates/gas.html:165
 msgid ""
@@ -2916,73 +2750,70 @@ msgid ""
 "extens/innfmlnnhfcebjcnfopadflecemoddnp target=\"_blank\" rel=\"noopener "
 "noreferrer\">this chrome extension</a>"
 msgstr ""
-"Um zu sehen, dass diese Informationen im Browser gespeichert bleiben, <a "
+"이 정보를 브라우저에서 확인하려면 <a "
 "href=https://chrome.google.com/webstore/detail/ethereum-gas-price-"
 "extens/innfmlnnhfcebjcnfopadflecemoddnp target=\"_blank\" rel=\"noopener "
-"noreferrer\"> dies Chrome Erweiterung </a>"
+"noreferrer\">이 내용을 확인하십시오. 크롬 확장판 </a>"
 
 #: retail/templates/gas.html:167 retail/templates/help.html:122
 msgid "FAQ"
-msgstr "FAQ"
+msgstr "자주하는 질문"
 
 #: retail/templates/gas.html:168
 msgid "Why do we need to pay gas?"
-msgstr "Warum müssen wir Gas bezahlen?"
+msgstr "왜 가스를 내야합니까?"
 
 #: retail/templates/gas.html:170
 msgid "What are the advantages of Ethereum-based applications??"
-msgstr "Was sind die Vorteile von Ethereum-basierten Anwendungen?"
+msgstr "Ethereum 기반 응용 프로그램의 장점은 무엇입니까 ??"
 
 #: retail/templates/gas.html:172
 msgid "I can't figure this out.  Help!"
-msgstr "Ich kann das nicht herausfinden. Hilfe!"
+msgstr "나는 이것을 알아낼 수 없다. 도움!"
 
 #: retail/templates/getgitcoin.html:21
 msgid "I Am A:"
-msgstr "Ich bin ein:"
+msgstr "나는:"
 
 #: retail/templates/getgitcoin.html:28
 #: retail/templates/whitepaper_new.html:122
 msgid "Open Source Developer"
-msgstr "Open-Source-Entwickler"
+msgstr "오픈 소스 개발자"
 
 #: retail/templates/getgitcoin.html:29
 msgid ""
 "Want to earn some extra coin? 💰 Check out the Issue Explorer and see what "
 "funded issues match your skillset and interests today."
 msgstr ""
-"Willst du ein paar extra Münzen verdienen? 💰 Sieh dir den Issue Explorer an "
-"und sieh dir an, welche fundierten Ausgaben heute deinen Fähigkeiten und "
-"Interessen entsprechen."
+"여분의 동전을 벌고 싶습니까? Issue 이슈 탐색기를 살펴보고 현재 귀하의 스킬 셋과 관심사에 맞는 자금 지원 이슈를 확인하십시오."
 
 #: retail/templates/getgitcoin.html:31
 msgid "See Issue Explorer"
-msgstr "Siehe Problem-Explorer"
+msgstr "이슈 탐색기보기"
 
 #: retail/templates/getgitcoin.html:38 retail/templates/help.html:45
 msgid "View Developer Guide"
-msgstr "Entwicklerhandbuch anzeigen"
+msgstr "개발자 가이드보기"
 
 #: retail/templates/getgitcoin.html:47
 msgid "Repository Maintainer"
-msgstr "Repository Maintainer"
+msgstr "저장소 관리자"
 
 #: retail/templates/getgitcoin.html:48
 msgid ""
 "Let's push your repo forward. 🚀  Create a funded issue of your own and start"
 " working with people in the OSS community on issues _you_ care about."
 msgstr ""
-"Lass uns dein Repo weiterleiten. 🚀 Erstellen Sie eine eigene finanzierte "
-"Ausgabe und beginnen Sie mit Menschen in der OSS-Community bei Fragen zu "
-"arbeiten, die Sie interessieren."
+"레포를 앞으로 밀어주십시오. fund 자신의 재정 문제를 작성하고 OSS 커뮤니티의 사람들과 함께 _ 관심있는 문제에 대해 작업을 "
+"시작하십시오."
 
 #: retail/templates/getgitcoin.html:64 retail/templates/help.html:58
 msgid "View Repo Maintainer Guide"
-msgstr "Betrachte den Repo-Betreuer-Leitfaden"
+msgstr "Repo Maintainer 가이드보기"
 
 #: retail/templates/getgitcoin.html:73
 msgid "Blockchain Evangelist"
-msgstr "Blockchain Evangelist"
+msgstr "블록 체인 에반젤리스트"
 
 #: retail/templates/getgitcoin.html:74
 msgid ""
@@ -2990,105 +2821,101 @@ msgid ""
 "incentives, tools built by &amp; for developers, and decentralization is the"
 " way it's all goin' down. Let’s dive deeper!"
 msgstr ""
-"Sie sehen, dass die Zukunft der Softwareentwicklung ausgerichtete Anreize, "
-"von & amp; für Entwickler und Dezentralisierung ist die Art und Weise, wie "
-"alles abläuft. Lass uns tiefer tauchen!"
+"소프트웨어 개발의 미래에는 맞춤형 인센티브와 & amp; 개발자에게는 분권화가 모든 방식으로 적용됩니다. 더 깊이 잠수합시다!"
 
 #: retail/templates/getgitcoin.html:76
 msgid "Read Whitepaper"
-msgstr "Lesen Sie Whitepaper"
+msgstr "백서 읽기"
 
 #: retail/templates/getgitcoin.html:83
 msgid "Join Gitcoin Slack"
-msgstr "Tritt Gitcoin Slack bei"
+msgstr "Gitcoin Slack에 가입하십시오"
 
 #: retail/templates/getgitcoin.html:89
 msgid "Not sure?"
-msgstr "Nicht sicher?"
+msgstr "확실하지 않다?"
 
 #: retail/templates/getgitcoin.html:89
 msgid "View all Gitcoin tools"
-msgstr "Alle Gitcoin-Werkzeuge anzeigen"
+msgstr "모든 Gitcoin 도구보기"
 
 #: retail/templates/help.html:38
 msgid "Developer?"
-msgstr "Entwickler?"
+msgstr "개발자?"
 
 #: retail/templates/help.html:39
 msgid "Check out the Gitcoin Developer guide"
-msgstr "Schauen Sie sich den Gitcoin Developer Guide an"
+msgstr "Gitcoin 개발자 가이드를 확인하십시오."
 
 #: retail/templates/help.html:51
 msgid "Repo Maintainer?"
-msgstr "Repo-Betreuer?"
+msgstr "Repo Maintainer?"
 
 #: retail/templates/help.html:52
 msgid "Check out the Gitcoin Repo Maintainer guide"
-msgstr "Schauen Sie sich den Gitcoin Repo Maintainer Guide an"
+msgstr "Gitcoin Repo Maintainer 가이드를 확인하십시오."
 
 #: retail/templates/help.html:64
 msgid "Does it work?"
-msgstr "Funktioniert es?"
+msgstr "작동합니까?"
 
 #: retail/templates/help.html:65
 msgid "Check out the Gitcoin Case Study"
-msgstr "Schauen Sie sich die Gitcoin-Fallstudie an"
+msgstr "Gitcoin 사례 연구 확인"
 
 #: retail/templates/help.html:71
 msgid "View Case Studies"
-msgstr "Fallstudien anzeigen"
+msgstr "사례 연구보기"
 
 #: retail/templates/help.html:81
 msgid "Featured Videos"
-msgstr "Empfohlene Videos"
+msgstr "추천 동영상"
 
 #: retail/templates/help.html:88
 msgid "Product Demo: Post a Bounty"
-msgstr "Produktdemo: Poste ein Kopfgeld"
+msgstr "제품 데모 : 현상금 게시"
 
 #: retail/templates/help.html:92
 msgid "What is Web3 and how do we use it?"
-msgstr "Was ist Web3 und wie benutzen wir es?"
+msgstr "Web3은 무엇이며 어떻게 사용합니까?"
 
 #: retail/templates/help.html:101
 msgid "Tutorials"
-msgstr "Anleitungen"
+msgstr "자습서"
 
 #: retail/templates/help.html:147
 msgid "Got another question?"
-msgstr "Hast du noch eine Frage?"
+msgstr "또 다른 질문이있어?"
 
 #: retail/templates/help.html:152
 msgid "View Github Repo"
-msgstr "Sehen Sie sich Github Repo an"
+msgstr "Github Repo보기"
 
 #: retail/templates/help.html:153
 msgid "Ask on slack"
-msgstr "Fragen Sie nach Durchhang"
+msgstr "여유분을 묻다."
 
 #: retail/templates/help.html:154
 msgid "Contact Gitcoin Core"
-msgstr "Kontakt Gitcoin Kern"
+msgstr "연락처 Gitcoin 코어"
 
 #: retail/templates/index.html:33
 msgid "What is Gitcoin?"
-msgstr "Was ist Gitcoin?"
+msgstr "Gitcoin은 무엇입니까?"
 
 #: retail/templates/index.html:44
 msgid "1. It's *not* a token."
-msgstr "1. Es ist * kein * Token."
+msgstr "1. 토큰이 아닙니다."
 
 #: retail/templates/index.html:45
 msgid ""
 "There is *no* native token on the Gitcoin community.  We're focused on "
 "honing our product/market fit."
-msgstr ""
-"Es gibt * kein * natives Token in der Gitcoin-Community. Wir konzentrieren "
-"uns darauf, unsere Produkt- / Markt-Passform zu verbessern."
+msgstr "Gitcoin 커뮤니티에는 토큰이 없습니다. 우리는 제품 / 시장 적합성을 연마하는 데 중점을 둡니다."
 
 #: retail/templates/index.html:49
 msgid "2. It's a community."
-msgstr "2. Es ist eine Gemeinschaft."
+msgstr "2. 그것은 공동체입니다."
 
 #: retail/templates/index.html:50
 msgid ""
@@ -3096,29 +2923,28 @@ msgid ""
 "(or give) economic opportunities and hopefully (3) make some lifelong "
 "friendships."
 msgstr ""
-"Das Gitcoin Toolset & amp; Community ermöglicht es Ihnen, (1) Fähigkeiten zu"
-" entwickeln (2) wirtschaftliche Möglichkeiten zu finden (oder zu geben) und "
-"hoffentlich (3) lebenslange Freundschaften zu schließen."
+"Gitcoin 도구 세트 & amp; 지역 사회는 (1) 기술을 쌓고 (2) 경제적 기회를 찾고 (또는 줄), 희망을 갖고 (3) 평생 "
+"동안 우정을 나누도록합니다."
 
 #: retail/templates/index.html:54
 msgid "3. It's a mission."
-msgstr "3. Es ist eine Mission."
+msgstr "3. 임무 다."
 
 #: retail/templates/index.html:55
 msgid "Our mission is to \"Grow Open Source\"."
-msgstr "Unsere Mission ist es, \"Open Source\" zu wachsen."
+msgstr "우리의 사명은 \"오픈 소스 성장\"입니다."
 
 #: retail/templates/index.html:55
 msgid "Read more"
-msgstr "Weiterlesen"
+msgstr "더 많은 것을 읽으십시오"
 
 #: retail/templates/index.html:64
 msgid "But How Does it Work?"
-msgstr "Aber wie funktioniert es?"
+msgstr "그러나 어떻게 작동합니까?"
 
 #: retail/templates/index.html:72
 msgid "1. Find Funded Github Issues."
-msgstr "1. Finden Sie fundierte Github-Probleme."
+msgstr "1. 자금 기부 문제를 찾으십시오."
 
 #: retail/templates/index.html:73
 #, python-format
@@ -3127,109 +2953,96 @@ msgid ""
 "href=\"%(explorerurl)s\">Gitcoin's Issue Explorer</a> is the easiest way to "
 "find paid work in open source."
 msgstr ""
-"Ob Fehler, Features oder Sicherheitslücken, <a href=\"%(explorerurl)s\"> "
-"Gitcoins Issue Explorer </a> ist der einfachste Weg, um bezahlte Arbeit in "
-"Open Source zu finden."
+"버그, 기능 또는 보안 문제와 상관없이 <a href=\"%(explorerurl)s\"> Gitcoin의 이슈 탐색기 </a>는 오픈 "
+"소스에서 유료 작업을 찾는 가장 쉬운 방법입니다."
 
 #: retail/templates/index.html:77
 msgid "2. Claim an Issue."
-msgstr "2. Beanspruchen Sie ein Problem."
+msgstr "2. 문제 제기."
 
 #: retail/templates/index.html:78
 msgid ""
 "Claim the issue on Gitcoin via the Funded Issue Detail Page (<a "
 "href=\"https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/skunkworks/issues/14\">Example</a>)."
 msgstr ""
-"Behaupten Sie das Problem auf Gitcoin über die Detailseite für finanzierte "
-"Ausgaben (<a "
+"재정 문제 세부 정보 페이지를 통해 Gitcoin에 문제 제기 (<a "
 "href=\"https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/skunkworks/issues/14\">"
-" Beispiel < / a>)."
+" 예 < / a>)."
 
 #: retail/templates/index.html:82
 msgid "3. Build Something Great."
-msgstr "3. Baue etwas Großartiges."
+msgstr "3. 좋은 것을 만들어라."
 
 #: retail/templates/index.html:83
 msgid ""
 "Coordinate with the Bounty Submitter on Github.  Build something great!"
-msgstr ""
-"Koordinieren Sie sich mit dem Bounty Submitter auf Github. Baue etwas "
-"Großartiges!"
+msgstr "Github의 Bounty Submitter와 협조하십시오. 훌륭한 것을 만들어라!"
 
 #: retail/templates/index.html:87
 msgid "4. Submit Your Work &amp; Get Paid."
-msgstr "4. Senden Sie Ihre Arbeit & amp; Bezahlt werden."
+msgstr "4. 귀하의 저작물을 제출하십시오 & amp; 지불."
 
 #: retail/templates/index.html:88
 msgid ""
 "Payments are Ethereum-based, &amp; released automatically after code is "
 "accepted by the bounty submitter."
-msgstr ""
-"Zahlungen sind Ethereum-basierte, & amp; wird automatisch freigegeben, "
-"nachdem der Code vom Übergeber akzeptiert wurde."
+msgstr "Payments는 Ethereum 기반이며 & amp; 현상금 제출자가 코드를 승인하면 자동으로 해제됩니다."
 
 #: retail/templates/index.html:100
 msgid "What's the TLDR?"
-msgstr "Was ist der TLDR?"
+msgstr "TLDR은 무엇입니까?"
 
 #: retail/templates/index.html:114
 msgid "Why use Gitcoin?"
-msgstr "Warum Gitcoin benutzen?"
+msgstr "왜 Gitcoin을 사용합니까?"
 
 #: retail/templates/index.html:122
 msgid "Find New &amp; Interesting Work"
-msgstr "Finden Sie neue & amp; Interessante Arbeit"
+msgstr "새로 찾기 & amp; 재미있는 일"
 
 #: retail/templates/index.html:123
 msgid ""
 "Work only on repositories that strike a chord with _you_. Gitcoin allows you"
 " to try before you go full time."
-msgstr ""
-"Arbeiten Sie nur an Repositories, die mit _you_ einen Akkord erreichen. "
-"Gitcoin erlaubt es Ihnen, es zu versuchen, bevor Sie ganztags gehen."
+msgstr "_you_와 함께 화음을 치는 리포지토리에서만 작업하십시오. Gitcoin은 풀 타임으로 가기 전에 시도 할 수 있습니다."
 
 #: retail/templates/index.html:129
 msgid "Deepen Relationships"
-msgstr "Beziehungen vertiefen"
+msgstr "깊은 관계"
 
 #: retail/templates/index.html:130
 msgid "Gitcoin is a way to meet and connect with open source developers."
-msgstr ""
-"Gitcoin ist eine Möglichkeit, sich mit Open-Source-Entwicklern zu treffen "
-"und zu verbinden."
+msgstr "Gitcoin은 오픈 소스 개발자를 만나고 연결할 수있는 방법입니다."
 
 #: retail/templates/index.html:138
 msgid "Learn New Skills"
-msgstr "Neue Fähigkeiten erlernen"
+msgstr "새로운 기술 습득"
 
 #: retail/templates/index.html:139
 msgid "Gitcoin is the easiest way to find paid work in open source."
-msgstr ""
-"Gitcoin ist der einfachste Weg, in Open Source bezahlte Arbeit zu finden."
+msgstr "Gitcoin은 오픈 소스에서 유료 작업을 찾는 가장 쉬운 방법입니다."
 
 #: retail/templates/index.html:145
 msgid "Make Some Extra Cash"
-msgstr "Machen Sie etwas zusätzliches Geld"
+msgstr "추가 현금 만들기"
 
 #: retail/templates/index.html:146
 msgid ""
 "You got into open source for the love of solving problems. Get paid for "
 "working on your passion."
-msgstr ""
-"Du bist aus Liebe zur Problemlösung in Open Source gekommen. Du wirst dafür "
-"bezahlt, dass du an deiner Leidenschaft arbeitest."
+msgstr "문제를 푸는 사랑에 대해 오픈 소스에 들어갔습니다. 열정에 대한 보수를받습니다."
 
 #: retail/templates/index.html:172
 msgid "Email Founders"
-msgstr "E-Mail-Gründer"
+msgstr "이메일 창업자"
 
 #: retail/templates/index.html:178
 msgid "Project Roadmap"
-msgstr "Projekt-Roadmap"
+msgstr "프로젝트 로드맵"
 
 #: retail/templates/index.html:188
 msgid "2016-2017: Experimentation"
-msgstr "2016-2017: Experimentieren"
+msgstr "2016-2017 : 실험"
 
 #: retail/templates/index.html:189
 msgid ""
@@ -3239,15 +3052,14 @@ msgid ""
 "and <a href=\"https://www.meetup.com/Boulder-Blockchain/\" target=\"_blank\""
 " rel=\"noopener noreferrer\">community organizing</a>."
 msgstr ""
-"Gründer Kevin Owocki experimentiert mit Ethereum Mining und baut <a "
-"href=\"https://github.com/owocki/\" target=\"_blank\" rel=\"noopener "
-"noreferrer\"> eine Handvoll Open-Source-Projekte im Space </a> auf , "
-"Investieren und <a href=\"https://www.meetup.com/Boulder-Blockchain/\" "
-"target=\"_blank\" rel=\"noopener noreferrer\"> Community-Organisation </a>."
+"창업자 Kevin Owocki는 Ethereum 마이닝을 실험하고 <a href=\"https://github.com/owocki/\" "
+"target=\"_blank\" rel=\"noopener noreferrer\"> 공간에서 소수의 오픈 소스 프로젝트 </a>를 "
+"구축합니다. , 투자 및 <a href=\"https://www.meetup.com/Boulder-Blockchain/\" "
+"target=\"_blank\" rel=\"noopener noreferrer\"> 커뮤니티 구성 </a>."
 
 #: retail/templates/index.html:201
 msgid "Q2 2017: Ideation"
-msgstr "Q2 2017: Ideenfindung"
+msgstr "질문 2 : 아이디어"
 
 #: retail/templates/index.html:202
 msgid ""
@@ -3258,29 +3070,23 @@ msgid ""
 "projects before they commit?  What if repo maintainers had a way to bring "
 "new developers onto their projects?"
 msgstr ""
-"Mit der Mentorschaft von Open Source Entwicklern der Boulder CO-Tech-"
-"Community wird die Idee eines dezentralen Netzwerks konzipiert, das auf <i> "
-"Grow Open Source </ i> ausgelegt ist. Was wäre, wenn die Rekrutierung für "
-"Softwareprojekte vollständig dezentralisiert und automatisiert werden "
-"könnte? Was wäre, wenn Entwickler Projekte ausprobieren könnten, bevor sie "
-"sich verpflichten? Was wäre, wenn Repo-Betreuer neue Entwickler in ihre "
-"Projekte einbinden könnten?"
+"Boulder CO 기술 커뮤니티의 오픈 소스 개발자에 대한 멘토링으로 <i> 오픈 소스 성장 </ i>을 목표로하는 분산 네트워크에 "
+"대한 아이디어가 탄생했습니다. 소프트웨어 프로젝트 모집이 완전히 분산되고 자동화 될 수 있다면 어떨까요? 개발자가 커밋하기 전에 "
+"프로젝트를 시도 할 수 있다면 어떨까요? Repo 관리자가 새로운 개발자를 프로젝트에 참여시킬 수있는 방법이 있다면 어떨까요?"
 
 #: retail/templates/index.html:214
 msgid "Q3 2017: Build &amp; Design"
-msgstr "Q3 2017: Build & amp; Design"
+msgstr "Q3 2017 : 빌드 & amp; 디자인"
 
 #: retail/templates/index.html:215
 msgid ""
 "Customer Development commences. The founder codes. The design team designs. "
 "Animator animates."
-msgstr ""
-"Die Kundenentwicklung beginnt. Die Gründercodes. Das Designteam entwirft. "
-"Animator animiert."
+msgstr "고객 개발이 시작됩니다. 설립자 코드. 디자인 팀이 디자인합니다. 애니메이터 애니메이션."
 
 #: retail/templates/index.html:227
 msgid "Q4 2017: Launch"
-msgstr "Q4 2017: Einführung"
+msgstr "Q4 2017 : 출시"
 
 #: retail/templates/index.html:228
 msgid ""
@@ -3289,23 +3095,19 @@ msgid ""
 "without a centralized middleman, and an incentive is provided to the open-"
 "source community to <i>Grow Open Source</i>, together."
 msgstr ""
-"Der Issues Explorer wird live geschaltet. Der Code hinter dem Projekt ist "
-"Open Source. Zum ersten Mal können Programmierer ihre Open-Source-Arbeit "
-"ohne einen zentralen Zwischenhändler monetarisieren, und der Open-Source-"
-"Community wird ein Anreiz geboten, <i> gemeinsam Open Source </ i> zu "
-"entwickeln."
+"이슈 탐색기가 실행됩니다. 이 프로젝트의 코드는 오픈 소스로 공개되었습니다. 처음으로 코드 작성자는 중앙 집중식 중개인이 없어도 오픈 "
+"소스 저작물로 수익을 창출 할 수 있으며 오픈 소스 커뮤니티에 <i> 오픈 소스 성장 </ i>을위한 인센티브가 제공됩니다."
 
 #: retail/templates/index.html:240
 msgid "Next: Gitcoin joins Consensys, launches Pilot Projects"
-msgstr "Weiter: Gitcoin tritt Consensys bei, startet Pilotprojekte"
+msgstr "다음 : Gitcoin은 Consensys에 가입하고 파일럿 프로젝트를 시작합니다."
 
 #: retail/templates/index.html:245
 msgid ""
 "Funded issues for EtherDelta, Consensys Security, Truffle, Metamask, and "
 "web3py are live at"
 msgstr ""
-"Geförderte Ausgaben für EtherDelta, Consensys Sicherheit, Trüffel, Metamask "
-"und web3py sind live bei"
+"EtherDelta, Consensys Security, Truffle, Metamask 및 web3py에 대한 자금 지원 문제"
 
 #: retail/templates/index.html:248
 msgid ""
@@ -3313,18 +3115,15 @@ msgid ""
 "system, Gitcoin becomes a place for OSS developers to get involved in the "
 "web3 ecosystem."
 msgstr ""
-"Mit Zehntausenden von Dollar an durch das System verarbeiteten "
-"Geldemissionen wird Gitcoin zu einem Ort, an dem sich OSS-Entwickler am "
-"Web3-Ökosystem beteiligen können."
+"Gitcoin은 수만 달러의 자금 이체로 시스템을 통해 처리되며, OSS 개발자가 web3 생태계에 참여할 수있는 장소가됩니다."
 
 #: retail/templates/index.html:251
 msgid "The system is dogfooded; Gitcoin is used to build Gitcoin."
-msgstr ""
-"Das System ist überflutet; Gitcoin wird verwendet, um Gitcoin zu bauen."
+msgstr "체계는 dogfooded이다; Gitcoin은 Gitcoin을 빌드하는 데 사용됩니다."
 
 #: retail/templates/index.html:264
 msgid "After that: Growth"
-msgstr "Danach: Wachstum"
+msgstr "그 후 : 성장"
 
 #: retail/templates/index.html:268
 #, python-format
@@ -3332,119 +3131,110 @@ msgid ""
 "The community, both on <a href=\"%(slackurl)s\">the slack channel</a> and <a"
 " href=\"#mailchimp\">the community mailing list</a> continue to grow."
 msgstr ""
-"Die Community sowohl auf <a href=\"%(slackurl)s\"> dem Slack Channel </a> "
-"als auch <a href=\"#mailchimp\"> der Community-Mailingliste </a> wächst "
-"weiter."
+"<a href=\"%(slackurl)s\"> 느슨한 채널 </a> 및 <a href=\"#mailchimp\"> 커뮤니티 메일 링리스트"
+" </a>에있는 커뮤니티는 계속 성장하고 있습니다."
 
 #: retail/templates/index.html:269
 msgid ""
 "The market for software jobs is massive, and Open Source software creates "
 "billions of dollars in economic value per year."
-msgstr ""
-"Der Markt für Software-Jobs ist massiv, und Open-Source-Software schafft "
-"Milliarden von Dollar an wirtschaftlichem Wert pro Jahr."
+msgstr "소프트웨어 작업 시장은 엄청 나서 오픈 소스 소프트웨어는 연간 수십억 달러의 경제적 가치를 창출합니다."
 
 #: retail/templates/index.html:270
 msgid ""
 "What will the world look like if decentralized ledger technology begins to "
 "disrupt the existing value systems in software?"
-msgstr ""
-"Wie wird die Welt aussehen, wenn die dezentrale Ledger-Technologie beginnt, "
-"die bestehenden Wertesysteme in Software zu stören?"
+msgstr "분산 된 원장 기술이 소프트웨어의 기존 가치 체계를 혼란에 빠뜨리면 세계는 어떻게 생겼을까요?"
 
 #: retail/templates/index.html:282
 msgid "Shipping New Tools Every Month"
-msgstr "Versand jeden Monat neue Werkzeuge"
+msgstr "매월 새로운 도구 배송"
 
 #: retail/templates/index.html:287
 msgid ""
 "Bounties are just the first tool we're launching.  We've got a bunch of new "
 "tools in the pipeline, including:"
-msgstr ""
-"Kopfgelder sind nur das erste Werkzeug, das wir starten. Wir haben eine "
-"Reihe neuer Tools in der Pipeline, darunter:"
+msgstr "현상금은 우리가 시작하는 첫 번째 도구 일뿐입니다. 우리는 파이프 라인에 다음과 같은 새로운 도구를 가지고 있습니다."
 
 #: retail/templates/index.html:290
 msgid "Dev Grants"
-msgstr "Dev Grants"
+msgstr "개발비 보조금"
 
 #: retail/templates/index.html:293
 msgid "Code Funding"
-msgstr "Code-Finanzierung"
+msgstr "코드 자금 지원"
 
 #: retail/templates/index.html:296
 msgid "Mentorship Matching"
-msgstr "Mentoring Matching"
+msgstr "멘토 매칭"
 
 #: retail/templates/index.html:300
 msgid "Want to learn about them?"
-msgstr "Willst du etwas über sie erfahren?"
+msgstr "그들에 대해 배우고 싶습니까?"
 
 #: retail/templates/index.html:300
 msgid "Click here"
-msgstr "Klick hier"
+msgstr "여기를 클릭하십시오."
 
 #: retail/templates/index.html:316 retail/templates/whitepaper_new.html:125
 msgid "Press"
-msgstr "Drücken Sie"
+msgstr "프레스"
 
 #: retail/templates/index.html:422
-#, fuzzy
-#| msgid "None available"
 msgid "iOS App Now Available"
-msgstr "iOS App jetzt verfügbar"
+msgstr "iOS 앱 사용 가능"
 
 #: retail/templates/index.html:437
 msgid "Get The App"
-msgstr "Hol dir die App"
+msgstr "앱 다운로드"
 
 #: retail/templates/leaderboard.html:67
 msgid "None found."
-msgstr "Keine gefunden."
+msgstr "발견 된 것이 없습니다."
 
 #: retail/templates/mission.html:43
 msgid ""
 "GITCOIN IS A <span class=\"text-highlight-dark-blue\">MISSION</span>\n"
 "                    AND <span class=\"text-highlight-dark-blue\">VALUE-ORIENTED</span>"
 msgstr ""
-"GITCOIN ist ein <span class = \"text-highlight-dark-blue\"> MISSION </ span>\n"
-"                    UND <span class = \"text-highlight-dunkelblau\"> WERTORIENTIERT </ span>"
+"GITCOIN은 <span class = \"text-highlight-dark-blue\"> MISSION </ span>\n"
+"                    AND <span class = \"text-highlight-dark-blue\"> 가치 중심의 </ span>"
 
 #: retail/templates/mission.html:46
 msgid ""
 "<span class=\"text-highlight-dark-blue\">DISTRIBUTED MOVEMENT</span> AIMED "
 "TO <span class=\"text-highlight-dark-blue\">DRIVE</span>"
 msgstr ""
-"<span class = \"text-highlight-dark-blue\"> VERTEILTE BEWEGUNG </ span> ZIEL"
-" AUF <span class = \"text-highlight-dark-blue\"> DRIVE </ span>"
+"<span class = \"text-highlight-dark-blue\"> DRIVE </ span>를 목표로 <span class "
+"= \"text-highlight-dark-blue\"> 배포 된 운동 </ span>"
 
 #: retail/templates/mission.html:48
 msgid ""
 "<span class=\"text-highlight-dark-blue\">CHANGE</span> AND <span "
 "class=\"text-highlight-pink\">GROW OPEN SOURCE</span>"
 msgstr ""
-"<span class = \"text-highlight-dark-blue\"> ÄNDERN </ span> UND <span class "
-"= \"text-highlight-pink\"> GROW ÖFFNEN QUELLE </ span>"
+"<span class = \"text-highlight-dark-blue\"> 변경 </ span> 및 <span class = "
+"\"text-highlight-pink\"> 성장 오픈 소스 </ span>"
 
 #: retail/templates/mission.html:60
 msgid "<span class=\"text-highlight-green\">We</span> Want"
-msgstr "<span class = \"text-highlight-green\"> Wir </ span> Wollen"
+msgstr "<span class = \"text-highlight-green\"> Google </ span>"
 
 #: retail/templates/mission.html:92
 msgid "<span class=\"text-highlight-green\">We</span> Value"
-msgstr "<span class = \"text-highlight-green\"> Wir </ span> Wert"
+msgstr "<span class = \"text-highlight-green\"> We </ span> 값"
 
 #: retail/templates/mission.html:150
 msgid "<span class=\"text-highlight-green\">We</span> Interact"
-msgstr "<span class = \"text-highlight-green\"> Wir </ span> Interagieren"
+msgstr "<span class = \"text-highlight-green\"> 인터랙트 </ span>"
 
 #: retail/templates/mission.html:227
 msgid "Read About Our Mission"
-msgstr "Lesen Sie über unsere Mission"
+msgstr "우리의 사명에 대해 읽어보십시오."
 
 #: retail/templates/process_accesscode_request.html:32
 msgid "Process"
-msgstr "Verarbeiten"
+msgstr "방법"
 
 #: retail/templates/process_accesscode_request.html:37
 #, python-format
@@ -3470,21 +3260,21 @@ msgid ""
 "\n"
 "https://twitter.com/owocki/\n"
 msgstr ""
-"> Neue Whitepaper-Anfrage:\n"
+"> 새로운 백서 요청 :\n"
 "> %(obj)s\n"
 "\n"
-"Sie da,\n"
+"이봐,\n"
 "\n"
-"Ich freue mich, dass Sie sich für das Whitepaper von Gitcoin interessieren. Woher hast du von dem Projekt gehört?\n"
+"Gitcoin 백서에 관심을 갖게되어 기쁩니다. 프로젝트에 대해 어디서 들었습니까?\n"
 "\n"
-"Hier ist ein Zugangscode für Sie: [code]\n"
-"Sie können es unter https://gitcoin.co/whitepaper/accesscode einlösen\n"
+"다음은 액세스 코드입니다. [code]\n"
+"https://gitcoin.co/whitepaper/accesscode에서 상환 할 수 있습니다.\n"
 "\n"
-"Ich würde gerne dein Feedback hören, nachdem du es gelesen hast. Sie können mich direkt hier zurückschicken oder dem slack Team bei https://gitcoin.co/slack beitreten (ich bin @owocki dort).\n"
+"읽고 나면 귀하의 의견을 듣고 싶습니다. 나에게 직접 이메일을 보내거나 https://gitcoin.co/slack에서 빈약 한 팀에 가입 할 수 있습니다 (저는 여기에 @owocki입니다).\n"
 "\n"
-"Beste,\n"
+"베스트,\n"
 "\n"
-"Kevin aus\n"
+"케빈\n"
 "https://gitcoin.co\n"
 "\n"
 "https://www.linkedin.com/in/owocki/\n"
@@ -3493,129 +3283,121 @@ msgstr ""
 
 #: retail/templates/save_search.html:26
 msgid "Unlock your potential in Open Source."
-msgstr "Schalte dein Potenzial in Open Source frei."
+msgstr "오픈 소스에서 잠재력을 열어보십시오."
 
 #: retail/templates/save_search.html:32
 msgid "Emails no more than 2x / week."
-msgstr "E-Mails nicht mehr als 2x / Woche."
+msgstr "이메일은 주당 2 회 이상입니다."
 
 #: retail/templates/save_search.html:35
 msgid "Gitcoin Core will never sell your email address."
-msgstr "Gitcoin Core wird niemals Ihre E-Mail-Adresse verkaufen."
+msgstr "Gitcoin Core는 귀하의 이메일 주소를 절대 판매하지 않습니다."
 
 #: retail/templates/settings/email.html:7
 msgid "Basic Preferences"
-msgstr "Grundlegende Einstellungen"
+msgstr "기본 환경 설정"
 
 #: retail/templates/settings/email.html:8 retail/templates/slack.html:48
 #: retail/templates/whitepaper_accesscode.html:44
 #: retail/templates/whitepaper_new.html:114
 msgid "Email address"
-msgstr "E-Mail-Addresse"
+msgstr "이메일 주소"
 
 #: retail/templates/settings/email.html:10
 msgid "We will never share your email with anyone else"
-msgstr "Wir werden Ihre E-Mails niemals mit anderen teilen"
+msgstr "우리는 귀하의 이메일을 다른 누구와도 절대 공유하지 않을 것입니다."
 
 #: retail/templates/settings/email.html:13
 msgid "Send me"
-msgstr "Schick mir"
+msgstr "보내줘"
 
 #: retail/templates/settings/email.html:16
 msgid "Regular: Weekly Roundups, Notifications, etc"
-msgstr "Regulär: Wöchentliche Zusammenfassungen, Benachrichtigungen usw"
+msgstr "일반 : 주간 라운드 업, 알림 등"
 
 #: retail/templates/settings/email.html:17
 msgid "Lite 1: Just Roundups"
-msgstr "Lite 1: Nur Roundups"
+msgstr "라이트 1 : 그냥 라운드 업"
 
 #: retail/templates/settings/email.html:18
 msgid "Lite 2: Just Notifications"
-msgstr "Lite 2: Nur Benachrichtigungen"
+msgstr "라이트 2 : 그냥 알림"
 
 #: retail/templates/settings/email.html:19
 msgid "Nothing: Don't Email"
-msgstr "Nichts: E-Mail nicht"
+msgstr "아무것도 : 이메일하지 마세요."
 
 #: retail/templates/settings/email.html:25
 msgid "roundup emails once a week"
-msgstr "E-Mails einmal wöchentlich versenden"
+msgstr "1 주일에 한 번 전자 메일을 모집합니다."
 
 #: retail/templates/settings/email.html:26
 msgid "notifications up to twice a day"
-msgstr "Benachrichtigungen bis zu zweimal am Tag"
+msgstr "하루에 두 번까지 알림"
 
 #: retail/templates/settings/email.html:29
 msgid "Preferred language"
-msgstr "Bevorzugte Sprache"
+msgstr "선호하는 언어"
 
 #: retail/templates/settings/feedback.html:10
 msgid "How are we doing?  What do you think?"
-msgstr "Wie machen wir uns? Was denken Sie?"
+msgstr "일은 잘되고 있니? 어떻게 생각해?"
 
 #: retail/templates/settings/matching.html:7
 msgid "Matching Preferences"
-msgstr "Passende Einstellungen"
+msgstr "일치하는 환경 설정"
 
 #: retail/templates/settings/matching.html:8
 msgid "Github username"
-msgstr "Github Benutzername"
+msgstr "Github 사용자 이름"
 
 #: retail/templates/settings/matching.html:12
 msgid "Programming languages"
-msgstr "Programmiersprachen"
+msgstr "프로그래밍 언어"
 
 #: retail/templates/settings/matching.html:13
 msgid "(pull from github)"
-msgstr "(zieh von github)"
+msgstr "(github에서 잡아 당김)"
 
 #: retail/templates/settings/matching.html:15
 msgid "so we know what funded work to route your way"
-msgstr "Wir wissen also, welche Art von finanzierter Arbeit dir den Weg weist"
+msgstr "그래서 우리는 당신의 길을 인도하기 위해 무슨 일을 돈으로 벌었는지 안다."
 
 #: retail/templates/settings/privacy.html:7
 msgid "Privacy Preferences"
-msgstr "Datenschutzeinstellungen"
+msgstr "개인 정보 환경 설정"
 
 #: retail/templates/settings/privacy.html:11
 msgid "Hide my profile from the leaderboard"
-msgstr "Verstecke mein Profil von der Bestenliste"
+msgstr "리더 보드에서 내 프로필 숨기기"
 
 #: retail/templates/settings/privacy.html:13
 msgid ""
 "If this option is chosen, we will remove your profile information from the "
 "leaderboard"
-msgstr ""
-"Wenn diese Option ausgewählt ist, werden Ihre Profilinformationen aus der "
-"Bestenliste entfernt"
+msgstr "이 옵션을 선택하면 리더 보드에서 프로필 정보가 삭제됩니다."
 
 #: retail/templates/settings/privacy.html:18
-#, fuzzy
-#| msgid "Hide my profile from the leaderboard"
 msgid "Hide my profile altogether"
-msgstr "Verstecken Sie mein Profil insgesamt"
+msgstr "내 프로필 숨기기"
 
 #: retail/templates/settings/privacy.html:20
 msgid "If this option is chosen, we will remove your profile altogether"
-msgstr ""
-"Wenn diese Option ausgewählt ist, werden wir Ihr Profil vollständig "
-"entfernen"
+msgstr "이 옵션을 선택하면 프로필이 모두 삭제됩니다."
 
 #: retail/templates/settings/privacy.html:26
 msgid "Hide that I'm a Gitcoin alumni"
-msgstr "Verstecke das ich ein Gitcoin Alumni bin"
+msgstr "내가 Gitcoin 동창임을 숨기세요."
 
 #: retail/templates/settings/privacy.html:28
 msgid ""
 "If this option is chosen, we not show that you are a Gitcoin alumni on your "
 "profile or about page."
-msgstr ""
-"Wenn diese Option ausgewählt ist, zeigen wir nicht, dass Sie ein Gitcoin-"
-"Alumni in Ihrem Profil oder auf Ihrer Seite sind."
+msgstr "이 옵션을 선택하면 프로필 또는 페이지에 대한 Gitcoin 동창임을 나타내지 않습니다."
 
 #: retail/templates/settings/slack.html:6
 msgid "Slack Integration"
-msgstr "Schlaf Integration"
+msgstr "슬랙 통합"
 
 #: retail/templates/settings/slack.html:8
 msgid ""
@@ -3624,166 +3406,155 @@ msgid ""
 "      <a href=\"https://my.slack.com/apps/A0F7YS25R-bots\">here</a>\n"
 "      and provide slack API token in the field below. "
 msgstr ""
-"Gitcoin kann Aktualisierungen der Bounties-Status Ihrer Repositorys in die freie Phase Ihres Teams posten.\n"
-"      Um dies zu tun, erstellen Sie einen Bot\n"
-"      <a href=\"https://my.slack.com/apps/A0F7YS25R-bots\"> hier </a>\n"
-"      und ein Slack-API-Token im unteren Feld bereitstellen."
+"Gitcoin은 리포지토리의 현상금 상태 업데이트를 팀의 여유 시간에 게시 할 수 있습니다.\n"
+"      이렇게하려면 bot 만들기\n"
+"      <a href=\"https://my.slack.com/apps/A0F7YS25R-bots\"> 여기 </a>\n"
+"      아래 필드에 슬랙 (slack) API 토큰을 제공합니다."
 
 #: retail/templates/settings/slack.html:13
 msgid "Slack API token"
-msgstr "Slack API-Token"
+msgstr "슬랙 API 토큰"
 
 #: retail/templates/settings/slack.html:17
 msgid ""
 "Github repos to monitor (use full name, like 'gitcoinco/web' for <a "
 "href=https://github.com/gitcoinco/web>this repo</a>)"
 msgstr ""
-"Github Repos zu überwachen (verwenden Sie den vollständigen Namen, wie "
-"'gitcoinco / web' für <a href=https://github.com/gitcoinco/web> dieses Repo "
-"</a>)"
+"모니터링 할 Github (<a href=https://github.com/gitcoinco/web>이 repo </a>에 "
+"'gitcoinco / web'와 같은 성명 사용)"
 
 #: retail/templates/settings/slack.html:21
 msgid "Slack channel to post to"
-msgstr "Slack-Kanal zum Posten an"
+msgstr "게시 할 빈 채널"
 
 #: retail/templates/settings/slack.html:25
 msgid "Go"
-msgstr "Gehen"
+msgstr "가기"
 
 #: retail/templates/settings/slack.html:26
 msgid "Test"
-msgstr "Prüfung"
+msgstr "테스트"
 
 #: retail/templates/shared/bottom_notification.html:20
-#, fuzzy
-#| msgid ""
-#| "Browse funded work in open source software from anywhere, at anytime."
 msgid "Browse funded work in OSS on the go.  Check out the "
-msgstr "Durchsuchen Sie geförderte Arbeiten in OSS unterwegs. Besuche die"
+msgstr "이동 중에도 OSS에서 자금 지원 된 작업을 찾아보십시오. 체크 아웃"
 
 #: retail/templates/shared/footer.html:22
 msgid "Home"
-msgstr "Zuhause"
+msgstr "집"
 
 #: retail/templates/shared/footer.html:23
 msgid "Mission"
-msgstr "Mission"
+msgstr "사명"
 
 #: retail/templates/shared/footer.html:24 retail/templates/shared/nav.html:35
 msgid "About"
-msgstr "Über"
+msgstr "약"
 
 #: retail/templates/shared/footer.html:25
 msgid "Jobs"
-msgstr "Arbeitsplätze"
+msgstr "채용 정보"
 
 #: retail/templates/shared/footer.html:27 retail/templates/shared/nav.html:36
 msgid "Tools"
-msgstr "Werkzeuge"
+msgstr "도구들"
 
 #: retail/templates/shared/footer.html:28
 msgid "Terms"
-msgstr "Begriffe"
+msgstr "자귀"
 
 #: retail/templates/shared/footer.html:29
 msgid "Privacy"
-msgstr "Privatsphäre"
+msgstr "은둔"
 
 #: retail/templates/shared/head.html:59 retail/templates/shared/hero.html:22
 msgid "Grow Open Source"
-msgstr "Wachsen Sie Open Source"
+msgstr "오픈 소스 성장"
 
 #: retail/templates/shared/hero.html:24
 msgid ""
 "Gitcoin is the easiest way to monetize or incentivize work in Open Source "
 "Software."
-msgstr ""
-"Gitcoin ist der einfachste Weg, mit Open-Source-Software Geld zu verdienen "
-"oder Anreize zu schaffen."
+msgstr "Gitcoin은 오픈 소스 소프트웨어에서 수익을 창출하거나 인센티브를 부여하는 가장 쉬운 방법입니다."
 
 #: retail/templates/shared/hero.html:36
 msgid "Join Our Slack"
-msgstr "Tritt unserer Slack bei"
+msgstr "우리의 여유있는 시간에 참여하십시오."
 
 #: retail/templates/shared/hero.html:37
 msgid "Explore Gitcoin's Tools"
-msgstr "Erkunde Gitcoins Werkzeuge"
+msgstr "Gitcoin 's Tools 살펴보기"
 
 #: retail/templates/shared/hero.html:40
 msgid "Join Mailing List"
-msgstr "Mailingliste beitreten"
+msgstr "메일 링리스트에 가입"
 
 #: retail/templates/shared/mailchimp.html:5
 msgid "(Emails once a week max, &amp; we never sell your data.)"
-msgstr ""
-"(E-Mails maximal einmal pro Woche, und wir verkaufen Ihre Daten niemals.)"
+msgstr "(이메일은 일주일에 한 번만 최대, Google은 절대 데이터를 판매하지 않습니다.)"
 
 #: retail/templates/shared/testimonials.html:5
 msgid "Who's using Gitcoin?"
-msgstr "Wer benutzt Gitcoin?"
+msgstr "누가 Gitcoin을 사용하고 있습니까?"
 
 #: retail/templates/shared/testimonials.html:12
 msgid "November 16 2017"
-msgstr "16. November 2017"
+msgstr "2017 년 11 월 16 일"
 
 #: retail/templates/shared/testimonials.html:12
 msgid ""
 "Gitcoin Announces Pilot Projects with EtherDelta, Consensys Dilligence, "
 "Truffle, Metamask, web3py"
 msgstr ""
-"Gitcoin kündigt Pilotprojekte mit EtherDelta, Consensys Dilligence, Trüffel,"
-" Metamask, web3py an"
+"Gitcoin, EtherDelta, Consensys Dilligence, Truffle, Metamask, web3py로 파일럿 "
+"프로젝트 발표"
 
 #: retail/templates/slack.html:32
 msgid "Gitcoin Slack Community"
-msgstr "Gitcoin Slack Community"
+msgstr "Gitcoin Slack 커뮤니티"
 
 #: retail/templates/slack.html:47
 msgid ""
 "Meet software developers, futurists, and funders who are building web3."
-msgstr ""
-"Treffen Sie Softwareentwickler, Futuristen und Geldgeber, die Web3 "
-"erstellen."
+msgstr "web3을 만드는 소프트웨어 개발자, 미래파 및 자금 제공자를 만나보십시오."
 
 #: retail/templates/slack.html:50
 #: retail/templates/whitepaper_accesscode.html:46
 #: retail/templates/whitepaper_new.html:116
 msgid "Gitcoin will never share your email with anyone else."
-msgstr "Gitcoin wird Ihre E-Mails niemals mit anderen teilen."
+msgstr "Gitcoin은 다른 사람과 이메일을 공유하지 않습니다."
 
 #: retail/templates/slack.html:56
 msgid "Sign in here"
-msgstr "Hier anmelden"
+msgstr "여기에서 로그인하십시오."
 
 #: retail/templates/whitepaper_accesscode.html:33
 msgid "Got an access code?"
-msgstr "Haben Sie einen Zugangscode?"
+msgstr "액세스 코드가 있습니까?"
 
 #: retail/templates/whitepaper_accesscode.html:34
 msgid "Good for you."
-msgstr "Schön für dich."
+msgstr "잘 됐네요."
 
 #: retail/templates/whitepaper_accesscode.html:36
 msgid "Please submit your info below for access to the draft whitepaper."
-msgstr ""
-"Bitte senden Sie Ihre Informationen unten für den Zugang zum Entwurf "
-"Whitepaper."
+msgstr "초안 백서에 액세스하려면 아래 정보를 제출하십시오."
 
 #: retail/templates/whitepaper_accesscode.html:49
 msgid "Access Code"
-msgstr "Zugangscode"
+msgstr "액세스 코드"
 
 #: retail/templates/whitepaper_new.html:35
 msgid "Hey, you!"
-msgstr "Hallo du!"
+msgstr "이봐, 너!"
 
 #: retail/templates/whitepaper_new.html:37
 msgid "Gitcoin is *not* a token."
-msgstr "Gitcoin ist * kein * Token."
+msgstr "Gitcoin은 토큰이 아닙니다."
 
 #: retail/templates/whitepaper_new.html:40
 msgid "Gitcoin is a distributed group of individuals focused:"
-msgstr "Gitcoin ist eine verteilte Gruppe von Individuen mit Fokus:"
+msgstr "Gitcoin은 분산 된 개인 그룹입니다."
 
 #: retail/templates/whitepaper_new.html:44
 #, python-format
@@ -3791,8 +3562,8 @@ msgid ""
 "on being <i>relentlessly mission driven</i>. <a href=\"%(missionurl)s\"> "
 "(more on this here) </a>"
 msgstr ""
-"darauf, unermüdlich missionsgesteuert zu sein </ i>. <a "
-"href=\"%(missionurl)s\"> (mehr dazu hier) </a>"
+"<i> 끊임없이 임무를 주도 </ i>하고 있습니다. <a href=\"%(missionurl)s\"> (여기에 대한 자세한 내용) "
+"</a>"
 
 #: retail/templates/whitepaper_new.html:47
 msgid ""
@@ -3800,9 +3571,9 @@ msgid ""
 "href=\"https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-"
 "projects-f5a0955de9d6\"> (more on this here) </a>"
 msgstr ""
-"über die Arbeit mit den <i> besten Repos </ i> in web3 .. <a "
+"web3의 <i> 최고의 repos </ i> 작업에 관한 정보. <a "
 "href=\"https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-"
-"projects-f5a0955de9d6\"> (mehr zu das hier) </a>"
+"projects-f5a0955de9d6\"> (자세한 내용은 이 여기에) </a>"
 
 #: retail/templates/whitepaper_new.html:50
 #, python-format
@@ -3810,8 +3581,8 @@ msgid ""
 "on building the <i>best tools</i> for them...  <a href=\"%(toolboxurl)s\"> "
 "(more on this here) </a>"
 msgstr ""
-"für den Bau der <i> besten Werkzeuge </ i> für sie ... <a "
-"href=\"%(toolboxurl)s\"> (mehr dazu hier) </a>"
+"<a href=\"%(toolboxurl)s\"> (자세한 내용은 여기를 참조하십시오) </a> <i> 최고의 도구 </ i>를 구축하는"
+" 방법 </a>"
 
 #: retail/templates/whitepaper_new.html:53
 msgid ""
@@ -3819,9 +3590,8 @@ msgid ""
 "href=\"https://medium.com/gitcoin/blockchain-is-the-next-tcp-"
 "ip-6663b62b5654\"> (more on this here) </a>"
 msgstr ""
-"über einen <i> langfristigen </ i> Zeithorizont .. <a "
-"href=\"https://medium.com/gitcoin/blockchain-is-the-next-tcp-"
-"ip-6663b62b5654\"> (mehr dazu hier ) </a>"
+"<i> 장기간 </ i> 시간대로 .. <a href=\"https://medium.com/gitcoin/blockchain-is-"
+"the-next-tcp-ip-6663b62b5654\"> (자세한 내용은 여기 ) </a>"
 
 #: retail/templates/whitepaper_new.html:56
 msgid ""
@@ -3829,135 +3599,121 @@ msgid ""
 "href=\"https://medium.com/gitcoin/playing-the-long-game-fbd78fb41de6\"> "
 "(more on this here) </a>"
 msgstr ""
-"und <i> etwas Historisches </ i> im Raum zu tun. <a "
-"href=\"https://medium.com/gitcoin/playing-the-long-game-fbd78fb41de6\"> "
-"(mehr dazu hier) </a>"
+"우주에서 <i> 역사적인 </ i>을하는 것입니다. <a href=\"https://medium.com/gitcoin/playing-"
+"the-long-game-fbd78fb41de6\"> (자세한 내용은 여기를 참조하십시오. </a>"
 
 #: retail/templates/whitepaper_new.html:59
 msgid "Quite Frankly..."
-msgstr "Ehrlich gesagt..."
+msgstr "솔직히..."
 
 #: retail/templates/whitepaper_new.html:61
 msgid ""
 "The project hasn't really had time to partipate in token related activities."
-msgstr ""
-"Das Projekt hatte nicht wirklich Zeit, an Token-Aktivitäten teilzunehmen."
+msgstr "이 프로젝트는 실제로 토큰 관련 활동에 참여할 시간이 없었습니다."
 
 #: retail/templates/whitepaper_new.html:64
 msgid "In fact, we're quite fatigued by the pervasiveness of tokens."
-msgstr ""
-"In der Tat sind wir ziemlich erschöpft von der Verbreitung von Tokens."
+msgstr "실제로 우리는 토큰의 보급에 상당히 지쳐 있습니다."
 
 #: retail/templates/whitepaper_new.html:67
 msgid ""
 "Its exhausting to have to pay attention to all of the rumours, the drama, "
 "the speculation."
-msgstr ""
-"Es ist anstrengend, auf all die Gerüchte, das Drama, die Spekulation zu "
-"achten."
+msgstr "그 모든 소문, 드라마, 추측에주의를 기울여야하는 것."
 
 #: retail/templates/whitepaper_new.html:70
 msgid ""
 "And there are *more worthwhile* uses of a completely-distributed trust-"
 "management supercomputer like the Ethereum blockchain."
-msgstr ""
-"Und es gibt * nützlichere * Anwendungen eines vollständig verteilten Trust-"
-"Management-Supercomputers wie der Ethereum-Blockchain."
+msgstr "그리고 Ethereum 블록 체인과 같이 완전히 분산 된 신뢰 관리 슈퍼 컴퓨터를 더 보람있게 사용할 수 있습니다."
 
 #: retail/templates/whitepaper_new.html:73
 msgid ""
 "So we're choosing to ignore it all (for now) and focusing on building stuff."
-msgstr ""
-"Also entscheiden wir uns, alles zu ignorieren (vorerst) und uns darauf zu "
-"konzentrieren, Dinge zu bauen."
+msgstr "그래서 우리는 그것을 (지금까지는) 모두 무시하고 건물을 만드는 데 집중합니다."
 
 #: retail/templates/whitepaper_new.html:75
 msgid "But that could change.."
-msgstr "Aber das könnte sich ändern .."
+msgstr "하지만 그건 바뀔 수 있어요 .."
 
 #: retail/templates/whitepaper_new.html:77
 msgid ""
 "It is possible that one day there will be tokens or other digital assets "
 "associated with the project.  Possible, but no promises."
-msgstr ""
-"Es ist möglich, dass eines Tages Tokens oder andere digitale Assets mit dem "
-"Projekt verknüpft werden. Möglich, aber keine Versprechungen."
+msgstr "언젠가 프로젝트와 관련된 토큰이나 다른 디지털 자산이있을 수 있습니다. 가능하지만 약속은 없습니다."
 
 #: retail/templates/whitepaper_new.html:80
 msgid "Want to participate now?"
-msgstr "Willst du jetzt teilnehmen?"
+msgstr "지금 참여하고 싶습니까?"
 
 #: retail/templates/whitepaper_new.html:81
 msgid "Some ways to get involved now:"
-msgstr "Einige Möglichkeiten, jetzt mitzumachen:"
+msgstr "지금 참여하는 몇 가지 방법 :"
 
 #: retail/templates/whitepaper_new.html:84
 msgid "Join the slack"
-msgstr "Mach mit beim Durchhängen"
+msgstr "여유가있다"
 
 #: retail/templates/whitepaper_new.html:87
 msgid "Follow the twitter"
-msgstr "Folge dem Twitter"
+msgstr "트위터를 따라 가라."
 
 #: retail/templates/whitepaper_new.html:90
 msgid "Build something cool"
-msgstr "Baue etwas Cooles"
+msgstr "멋진 것을 만들어라."
 
 #: retail/templates/whitepaper_new.html:93
 msgid "Pitch a new idea"
-msgstr "Stellen Sie eine neue Idee auf"
+msgstr "새로운 아이디어를 던져라."
 
 #: retail/templates/whitepaper_new.html:96
 msgid "Learn a new tool"
-msgstr "Erlernen Sie ein neues Werkzeug"
+msgstr "새로운 도구를 배우십시오."
 
 #: retail/templates/whitepaper_new.html:99
 msgid "Still want whitepaper access?"
-msgstr "Möchten Sie weiterhin Zugriff auf Whitepaper?"
+msgstr "백서 액세스를 원하십니까?"
 
 #: retail/templates/whitepaper_new.html:101
 msgid ""
 "Please submit your info below to receive access to the whitepaper if/when "
 "its available."
-msgstr ""
-"Bitte senden Sie Ihre Informationen unten, um Zugriff auf das Whitepaper zu "
-"erhalten, wenn es verfügbar ist."
+msgstr "사용 가능한 경우 백서에 액세스하려면 아래 정보를 제출하십시오."
 
 #: retail/templates/whitepaper_new.html:101
 msgid "Already have an access code?"
-msgstr "Hast du schon einen Zugangscode?"
+msgstr "이미 액세스 코드가 있습니까?"
 
 #: retail/templates/whitepaper_new.html:119
 msgid "Interested as a"
-msgstr "Interessiert als"
+msgstr "관심있는 사람으로"
 
 #: retail/templates/whitepaper_new.html:123
 msgid "Open Source Repo Maintainer"
-msgstr "Open Source Repo Maintainer"
+msgstr "오픈 소스 레포 메인테이너"
 
 #: retail/templates/whitepaper_new.html:124
 msgid "Token Purchaser"
-msgstr "Token Käufer"
+msgstr "토큰 구매자"
 
 #: retail/templates/whitepaper_new.html:126
 msgid "Advisor"
-msgstr "Berater"
+msgstr "고문관"
 
 #: retail/templates/whitepaper_new.html:130
 msgid "Feel free to select more than one."
-msgstr "Fühlen Sie sich frei, mehrere auszuwählen."
+msgstr "두 가지 이상을 선택하십시오."
 
 #: retail/templates/whitepaper_new.html:135
 msgid "Who are you?  What is your interest in the whitepaper?"
-msgstr "Wer bist du? Was interessiert Sie am Whitepaper?"
+msgstr "너 누구 니? 백서에 대한 관심은 무엇입니까?"
 
 #: retail/views.py:36
 msgid ""
 "Gitcoin is the catalyst open source development needs to move forward. The "
 "process is seamless and the results speak for themselves."
 msgstr ""
-"Gitcoin ist der Katalysator Open-Source-Entwicklung braucht, um "
-"voranzukommen. Der Prozess ist nahtlos und die Ergebnisse sprechen für sich."
+"Gitcoin은 촉매제 오픈 소스 개발이 앞으로 나아갈 필요가있다. 이 과정은 매끄럽게 진행되며 그 결과는 스스로를 말해줍니다."
 
 #: retail/views.py:39
 msgid ""
@@ -3967,12 +3723,9 @@ msgid ""
 "development.  So far the platform looks promising as a valuable addition to "
 "our development process."
 msgstr ""
-"Wir haben das Gitcoin-Bounty-Programm im Web3.py-Projekt getestet und sind "
-"sehr zufrieden mit den bisherigen Ergebnissen. Wir haben vier Probleme aus "
-"dem Weg geräumt, die von kleineren Säuberungsaufgaben bis hin zur "
-"vollständigen Entwicklung von Features reichen. Bis jetzt sieht die "
-"Plattform vielversprechend als eine wertvolle Ergänzung unseres "
-"Entwicklungsprozesses aus."
+"우리는 Web3.py 프로젝트에서 Gitcoin 현상금 프로그램을 시험해 보았으며 지금까지의 결과에 매우 만족합니다. 우리는 소규모 정리"
+" 작업부터 본격적인 기능 개발에 이르기까지 4 가지 문제를 해결했습니다. 지금까지이 플랫폼은 개발 프로세스에 가치있는 추가로 유망 해 "
+"보였습니다."
 
 #: retail/views.py:42
 msgid ""
@@ -3981,10 +3734,8 @@ msgid ""
 "Having fresh ideas and outside perspectives contribute to a new project is "
 "unbelievably valuable."
 msgstr ""
-"Unsere ersten Erfahrungen mit Gitcoin waren sehr positiv. Es hat dem MARKET "
-"geholfen, neue Leute schnell und kosteneffektiv einzubinden. Neue Ideen und "
-"Außenperspektiven zu einem neuen Projekt beizutragen, ist unglaublich "
-"wertvoll."
+"Gitcoin에 대한 우리의 첫 경험은 매우 긍정적이었습니다. MARKET은 새로운 사람들이 비용 효율적으로 신속하게 참여할 수 있도록 "
+"도왔습니다. 신선한 아이디어와 외부 시각을 갖는 것이 새로운 프로젝트에 기여하는 것은 믿을 수 없을 정도로 가치가 있습니다."
 
 #: retail/views.py:45
 msgid ""
@@ -3992,9 +3743,8 @@ msgid ""
 "concept and definitely sticking around to see this project through. Awesome "
 "community  + open source work + bounties"
 msgstr ""
-"Es ist schon eine Weile her, seit etwas mich so verärgert hat! Ich liebe das"
-" Konzept und bleibe definitiv dabei, dieses Projekt zu sehen. Tolle "
-"Community + Open Source-Arbeit + Bounties"
+"무언가가 나에게 이런 말을 걸었 기 때문에 오래되었습니다! 개념을 사랑하고 확실히이 프로젝트를 통해 주위를 고집합니다. 굉장한 커뮤니티 "
+"+ 오픈 소스 작업 + 현상금"
 
 #: retail/views.py:48
 msgid ""
@@ -4003,27 +3753,22 @@ msgid ""
 "projects, by powering up their capacity, and the developers, by paying for "
 "their work."
 msgstr ""
-"Jetzt, wo das Internet des Werts beginnt, eine Sache zu sein, fügt Gitcoin "
-"eine neue Schicht von Anreizen in die Open Source-Entwicklung ein und hilft "
-"sowohl den Projekten, indem sie ihre Kapazität antreibt, als auch den "
-"Entwicklern, indem sie für ihre Arbeit bezahlen."
+"Gitcoin은 가치있는 인터넷이 시작되기 시작 했으므로 Gitcoin은 오픈 소스 개발에 새로운 인센티브 계층을 추가하여 프로젝트 "
+"비용을 충당하고 개발자의 능력을 강화하여 프로젝트를 지원하고 있습니다."
 
 #: retail/views.py:51
 msgid ""
 "Gitcoin helps us to finally close out the issues we’ve been meaning to get "
 "around to for too long."
-msgstr ""
-"Gitcoin hilft uns, endlich die Probleme zu lösen, zu denen wir uns zu lange "
-"hingezogen gefühlt haben."
+msgstr "Gitcoin은 우리가 마침내 너무 오래 머물러야 만했던 이슈를 마침내 마무리 짓는 데 도움이됩니다."
 
 #: retail/views.py:54
 msgid ""
 "Gitcoin is precisely what I’ve been looking for! It gives every developer a "
 "vehicle to make extra money or move their open source project ahead."
 msgstr ""
-"Gitcoin ist genau das, was ich gesucht habe! Es gibt jedem Entwickler ein "
-"Vehikel, um zusätzliches Geld zu verdienen oder sein Open-Source-Projekt "
-"voranzutreiben."
+"Gitcoin 정확히 내가 무엇을 찾고 있었어요! 그것은 모든 개발자에게 여분의 돈을 벌거나 오픈 소스 프로젝트를 앞당길 수있는 수단을 "
+"제공합니다."
 
 #: retail/views.py:57
 msgid ""
@@ -4031,25 +3776,21 @@ msgid ""
 " love and get paid for it, and to have reasonable freedom about the way I "
 "work, that it already seems too good to be true. "
 msgstr ""
-"Ich finde es ist so toll, durch Gitcoin die Möglichkeit zu haben, das zu "
-"tun, was ich liebe und dafür bezahlt zu werden, und angemessene Freiheit in "
-"der Art zu haben, wie ich arbeite, dass es schon zu gut ist, um wahr zu "
-"sein."
+"Gitcoin을 통해 내가 좋아하는 것을하고 그에 대한 보수를 받고, 내가 일하는 방식에 대해 합리적인 자유를 가질 수있는 기회를 얻는 "
+"것이 너무 끔찍하다고 생각합니다. 그것은 이미 진실한 것이 너무 좋다고 생각합니다."
 
 #: retail/views.py:165
 msgid "Gitcoin is a mission-driven organization."
-msgstr "Gitcoin ist eine missionsgesteuerte Organisation."
+msgstr "Gitcoin은 선교 중심 조직입니다."
 
 #: retail/views.py:166
 msgid "Our mission is to grow open source."
-msgstr "Unsere Mission ist Open Source zu wachsen."
+msgstr "우리의 사명은 오픈 소스를 성장시키는 것입니다."
 
 #: retail/views.py:176
 msgid ""
 "I am a developer, I want build more Open Source Software. Where can I start?"
-msgstr ""
-"Ich bin ein Entwickler, ich möchte mehr Open Source Software erstellen. Wo "
-"kann ich anfangen?"
+msgstr "나는 개발자 다. 더 많은 오픈 소스 소프트웨어를 만들고 싶다. 어디에서 시작할 수 있습니까?"
 
 #: retail/views.py:177
 msgid ""
@@ -4058,14 +3799,13 @@ msgid ""
 "around. Check out the developer guide at <a "
 "href=https://gitcoin.co/help/dev>https://gitcoin.co/help/dev</a>."
 msgstr ""
-"Der <a href=https://gitcoin.co/explorer> Funded Issue Explorer </a> enthält "
-"eine Handvoll Probleme, die zur Auszahlung bereitstehen, sobald sie gewendet"
-" werden. Lesen Sie den Entwicklerleitfaden unter <a "
-"href=https://gitcoin.co/help/dev> https://gitcoin.co/help/dev </a>."
+"<a href=https://gitcoin.co/explorer> 자금 이체 탐색기 </a>에는 둘러보기가 시작되면 즉시 지급받을 수있는"
+" 몇 가지 문제가 있습니다. <a href=https://gitcoin.co/help/dev> "
+"https://gitcoin.co/help/dev </a>에서 개발자 가이드를 확인하십시오."
 
 #: retail/views.py:180
 msgid "I am a repo maintainer.  How do I get started?"
-msgstr "Ich bin ein Repo-Betreuer. Wie fange ich an?"
+msgstr "나는 레포 관리자입니다. 시작하려면 어떻게해야합니까?"
 
 #: retail/views.py:181
 msgid ""
@@ -4073,25 +3813,24 @@ msgid ""
 "done.  Check out the repo maintainers guide at <a "
 "href=https://gitcoin.co/help/repo>https://gitcoin.co/help/repo</a>."
 msgstr ""
-"Der beste Weg, um loszulegen, ist ein finanziertes Problem zu einer Aufgabe,"
-" die Sie tun müssen, zu buchen. Schau dir den Repo-Betreuer Guide an unter "
-"<a href=https://gitcoin.co/help/repo> https://gitcoin.co/help/repo </a>."
+"시작하는 가장 좋은 방법은 필요한 작업에 자금 문제를 게시하는 것입니다. <a "
+"href=https://gitcoin.co/help/repo> https://gitcoin.co/help/repo </a>에서 repo "
+"관리자 가이드를 확인하십시오."
 
 #: retail/views.py:184
 msgid "What tokens does Gitcoin support?"
-msgstr "Welche Tokens unterstützt Gitcoin?"
+msgstr "Gitcoin은 어떤 토큰을 지원합니까?"
 
 #: retail/views.py:185
 msgid ""
 "Gitcoin supports Ether and all ERC20 tokens.  If the token you'd like to use"
 " is Ethereum based, then Gitcoin supports it."
 msgstr ""
-"Gitcoin unterstützt Ether und alle ERC20-Token. Wenn das Token, das Sie "
-"verwenden möchten, Ethereum basiert, unterstützt Gitcoin es."
+"Gitcoin은 Ether 및 모든 ERC20 토큰을 지원합니다. 사용할 토큰이 Ethereum 기반이라면 Gitcoin이 지원합니다."
 
 #: retail/views.py:188
 msgid "What kind of issues are fundable?"
-msgstr "Welche Art von Emissionen sind finanzierbar?"
+msgstr "어떤 종류의 문제가 자금을 지원합니까?"
 
 #: retail/views.py:189
 msgid ""
@@ -4103,11 +3842,11 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"<p class = \"c5\"> <span class = \"c4 c0\"> Gitcoin unterstützt Bugs, Features und Sicherheitsprobleme. & nbsp; Jedes Problem, das Sie lösen müssen, ist ein guter Kandidat für ein fundiertes Problem, vorausgesetzt: </ span> </ p> <ul class = \"c13 lst-kix_twl0y342ii52-0 start\"> <li class = \"c5 c11\" > <span class = \"c4 c0\"> Heute geöffnet. </ span> </ li> <li class = \"c5 c11\"> <span class = \"c4 c0\"> Die repo README zählt eindeutig auf, wie neu Der Entwickler sollte eingerichtet werden, um einen Beitrag zu leisten. </ span> </ li> <li class = \"c5 c11\"> <span class = \"c4 c0\"> Die Aufgabe ist gut definiert. </ span> </ li> <li class = \"c5 c11\"> <span class = \"c4 c0\"> Der Endzustand der Aufgabe ist gut definiert. </ span> </ li> <li class = \"c5 c11\"> <span class = \"c4 c0 \"> Die Preisfindung der Aufgabe spiegelt (Marktzins * Komplexität) der Aufgabe wider. </ span> </ li> <li class =\" c5 c11 \"> <span class =\" c4 c0 \"> Das Problem ist auf der Roadmap, aber blockiert keine anderen Arbeiten. </ span> </ li> </ ul> <p class = \"c5 c6\"> <span class = \"c4 c0\"> </ span> </ p> <p klasse = \"c5\"> <span class = \"c4 c0\"> Um heute mit finanzierten Themen zu beginnen, könnte es gut sein, klein anzufangen. & nbsp; Gibt es einen kleinen Fehler, der behoben werden muss? & nbsp; Ein Problem, das eine Weile offen war, dass niemand anpackt? & nbsp; Eine administrative Aufgabe? </ span> </ p>"
+"<p class = \"c5\"> <span class = \"c4 c0\"> Gitcoin은 버그, 기능 및 보안 지원 문제를 지원합니다. & nbsp; 수행해야하는 모든 문제는 다음과 같은 조건으로 지원되는 자금 지원 대상입니다. </ span> </ p> <ul class = \"c13 lst-kix_twl0y342ii52-0 start\"> <li class = \"c5 c11\" > <span class = \"c4 c0\"> 오늘 열려 있습니다. </ span> </ span> <li class = \"c5 c11\"> <span class = \"c4 c0\"> 개발자는 기여하도록 설정해야합니다. </ span> </ li> <li class = \"c5 c11\"> <span class = \"c4 c0\"> 작업이 잘 정의되어 있어야합니다. </ span> </ li> <li <span class = \"c4 c0\"> 작업의 종료 상태는 잘 정의되어 있습니다. </ span> </ li> <li class = \"c5 c11\"> <span class = \"c4 c0 \"> 과제의 가격 정책은 과제의 (시장 속도 * 복잡성)을 반영합니다. </ span> </ li> <li class =\"c5 c11 \"> <span class =\"c4 c0 \"> 문제는 다른 작업을 차단하지는 않습니다. </ span> </ li> </ class> <p class = \"c5 c6\"> <span class = \"c4 c0\"> </ span> = \"c5\"> <span class = \"c4 c0\"> 오늘 자금 지원 문제를 시작하려면 소규모부터 시작하는 것이 좋습니다. & nbsp; 수정해야 할 작은 버그가 있습니까? & nbsp; 아무도 다루지 않는 동안 잠시 동안 열려 있었던 문제? & nbsp; 관리 작업은? </ span> </ p>"
 
 #: retail/views.py:197
 msgid "Whats the difference between tips & funded issues?"
-msgstr "Was ist der Unterschied zwischen Tipps & finanzierten Ausgaben?"
+msgstr "도움말 및 자금 지원 문제의 차이점은 무엇입니까?"
 
 #: retail/views.py:198
 msgid ""
@@ -4130,20 +3869,20 @@ msgid ""
 msgstr ""
 "\n"
 "<p>\n"
-"<strong> Ein Tipp </ strong> ist ein Tool, um Ether oder ein beliebiges Ethereum-Token an einen beliebigen GitHub-Account zu senden. Der Fluss für Tipps sieht so aus:\n"
+"<strong> 팁 </ strong>은 github 계정에 에테르 또는 기타 ethereum 토큰을 보내는 도구입니다. 팁의 흐름은 다음과 같습니다.\n"
 "</ p> <p>\n"
-"> Senden (Teilnehmer 1) => Empfangen (Teilnehmer 2)\n"
-"</ p> <p>\n"
-"\n"
-"Mit <strong> Funded Issues </ strong> können Open-Source-Funktionen, Bugs oder Sicherheits-Bounties finanziert werden. Der Fluss für finanzierte Ausgaben sieht folgendermaßen aus:\n"
+"> 보내기 (party 1) => 받기 (party 2)\n"
 "</ p> <p>\n"
 "\n"
-"> Fondsausgabe (Partei 1) => Anspruchskasse (Partei 2) => Akzeptieren (Partei 1)\n"
+"<strong> Funded Issues </ strong>는 오픈 소스 기능, 버그 또는 보안 특전에 자금을 제공하는 방법입니다. 재정 문제에 대한 흐름은 다음과 같습니다.\n"
+"</ p> <p>\n"
+"\n"
+"> 기금 발행 (1 기) => 기금 수령 (2 기) => 기부 (1 기)\n"
 "</ p>"
 
 #: retail/views.py:216
 msgid "What kind of contributors are successful on the Gitcoin network?"
-msgstr "Welche Art von Mitwirkenden sind im Gitcoin-Netzwerk erfolgreich?"
+msgstr "어떤 종류의 기여자가 Gitcoin 네트워크에서 성공 했습니까?"
 
 #: retail/views.py:217
 msgid ""
@@ -4216,64 +3955,64 @@ msgid ""
 msgstr ""
 "\n"
 "<p>\n"
-"Wenn Sie ein Problem-Board haben, das geprüft werden muss, lesen Sie weiter.\n"
+"면책을 필요로하는 문제 게시판을 가지고 있다면, 읽으십시오 ..\n"
 "</ p>\n"
 "<p>\n"
-"Wenn Sie Ingenieure für die Arbeit an Ihrem Repo rekrutieren möchten, lesen Sie weiter.\n"
+"레포 작업을 돕기 위해 엔지니어를 채용하고 싶다면, 다음을 읽으십시오.\n"
 "</ p>\n"
 "<p>\n"
-"Wenn Sie Wert schaffen und Ether-Token im Gegenzug erhalten möchten, lesen Sie weiter.\n"
+"가치를 창출하고 답례로 Ether 토큰을 받고 싶다면, 다음을 읽으십시오.\n"
 "</ p>\n"
 "<p>\n"
-"Wenn Sie auf der Suche nach einem schnellen Gewinn, einem einfachen Bock oder etwas Werbung sind, drehen Sie sich bitte um.\n"
+"당신이 빠른 승리, 쉬운 숫 사슴, 또는 무언가를 승진시키기 위하여 찾는 경우에, 돌아서십시오.\n"
 "</ p>\n"
 "\n"
 "<p>\n"
-"Wir schätzen Kommunikation, die ist:\n"
+"우리는 다음과 같은 커뮤니케이션을 중요하게 생각합니다.\n"
 "</ p>\n"
 "\n"
 "<ul>\n"
 "<li>\n"
-"    Kollaborativ\n"
+"    협업\n"
 "</ li>\n"
 "<li>\n"
-"    Intellektuell und intellektuell ehrlich\n"
+"    지적이고 지적으로 정직한\n"
 "</ li>\n"
 "<li>\n"
-"    Demütigen\n"
+"    겸손한\n"
 "</ li>\n"
 "<li>\n"
-"    Einfühlsam\n"
+"    Empathetic\n"
 "</ li>\n"
 "<li>\n"
-"    Pragmatisch\n"
+"    바쁜\n"
 "</ li>\n"
 "<li>\n"
-"    Stress reduzierend\n"
+"    스트레스 감소\n"
 "</ li>\n"
 "</ ul>\n"
 "\n"
 "<p>\n"
-"Hier sind einige unserer Werte\n"
+"다음은 Google의 가치 중 일부입니다.\n"
 "</ p>\n"
 "<ul>\n"
 "<li>\n"
-"    Zeigen Sie, erzählen Sie nicht\n"
+"    보여라, 말하지 마라.\n"
 "</ li>\n"
 "<li>\n"
-"    Gib zuerst\n"
+"    먼저주고\n"
 "</ li>\n"
 "<li>\n"
-"     Sei nachdenklich und direkt\n"
+"     사려 깊고 직접하라.\n"
 "</ li>\n"
 "<li>\n"
-"     Sei glaubwürdig\n"
+"     믿을만하다\n"
 "</ li>\n"
 "<li>\n"
-"     Fordere den Status quo heraus und sei bereit, herausgefordert zu werden\n"
+"     현상에 도전하고 기꺼이 도전하라.\n"
 "</ li>\n"
 "<li>\n"
-"     Erstellen Sie herrliche Erlebnisse\n"
+"     즐거운 경험 만들기\n"
 "</ li>\n"
 "</ ul>"
 
@@ -4281,9 +4020,7 @@ msgstr ""
 msgid ""
 "I received a notification about tip / funded issue, but I can't process it."
 "  Help!"
-msgstr ""
-"Ich habe eine Benachrichtigung über ein Trinkgeld erhalten, aber ich kann es"
-" nicht verarbeiten. Hilfe!"
+msgstr "팁 / 자금 문제에 대한 알림을 받았지만 처리 할 수 ​​없습니다. 도움!"
 
 #: retail/views.py:286
 msgid ""
@@ -4291,16 +4028,13 @@ msgid ""
 "href='mailto:founders@gitcoin.co'>founders@gitcoin.co</a> or join <a "
 "href=/slack>Gitcoin Community Slack</a>."
 msgstr ""
-"Wir würden gerne helfen! Bitte mailen Sie <a "
-"href='mailto:founders@gitcoin.co'> Gründer@gitcoin.co </a> oder treten Sie "
-"<a href=/slack> Gitcoin Community Slack </a> bei."
+"우리는 도와주고 싶습니다! 이메일 <a href='mailto:founders@gitcoin.co'> founders@gitcoin.co"
+" </a> 또는 <a href=/slack> Gitcoin Community Slack </a>에 가입하십시오."
 
 #: retail/views.py:289
 msgid ""
 "Am I allowed to place bounties on projects I don't contribute to or own?"
-msgstr ""
-"Darf ich Prämien an Projekten platzieren, die ich nicht beisteuere oder an "
-"denen ich nicht beteiligt bin?"
+msgstr "내가 기부하거나 소유하지 않은 프로젝트에 현상금을 배치 할 수 있습니까?"
 
 #: retail/views.py:290
 msgid ""
@@ -4309,17 +4043,13 @@ msgid ""
 "will need to work with the contributors or owners of that repo.  If not, you"
 " can always fork a repo and run your own roadmap."
 msgstr ""
-"TLDR: Ja, das bist du. Da OSS jedoch selbst entwickelt, haben wir die "
-"Erfahrung gemacht, dass Sie, wenn Sie das Produkt, an dem Sie arbeiten, in "
-"den Upstream integrieren möchten, mit den Kontributoren oder Eigentümern "
-"dieses Repos arbeiten müssen. Ist dies nicht der Fall, können Sie immer ein "
-"Repo forkieren und Ihre eigene Roadmap erstellen."
+"TLDR : 그렇습니다. 그러나 OSS가 스스로 개발 한 것처럼, 우리가 경험하는 것은 업스트림에 통합 된 제품을 얻으려면 해당 "
+"repo의 기여자 또는 소유자와 협력해야한다는 것입니다. 그렇지 않은 경우 항상 repo를 포크하고 고유 한 로드맵을 실행할 수 "
+"있습니다."
 
 #: retail/views.py:293
 msgid "I started work on a bounty but someone else has too.  Who gets it?"
-msgstr ""
-"Ich begann mit der Arbeit an einem Kopfgeld, aber jemand anderes hat es auch"
-" getan. Wer bekommt es?"
+msgstr "나는 현상금에 맞춰 일을 시작했으나 다른 누군가도 그렇게했습니다. 누가 그것을 얻습니까?"
 
 #: retail/views.py:294
 msgid ""
@@ -4329,16 +4059,12 @@ msgid ""
 " agreement is uanble to be made, then the first person to start work will "
 "have first shot at the bounty."
 msgstr ""
-"In der Regel neigen wir dazu, die Person, die mit der Arbeit begonnen hat, "
-"als vorrangig zu behandeln. Die beteiligten Parteien sind alle willkommen, "
-"zusammenzuarbeiten, um die Prämie zu teilen oder zu einer anderen "
-"Vereinbarung zu kommen, aber wenn eine Vereinbarung getroffen werden kann, "
-"dann wird die erste Person, die die Arbeit beginnt, zuerst auf die Prämie "
-"geschossen haben."
+"일반적으로 우리는 '일을 시작한 사람'을 우선적으로이 문제보다 우선 순위로 취급합니다. 참여한 당사자들은 모두 현상금을 나누거나 다른 "
+"합의에 도달하기 위해 함께 일할 수 있지만 합의가 이루어지지 않으면 작업을 시작한 사람이 현상금에서 처음으로 총을 쏜다."
 
 #: retail/views.py:299
 msgid "Is Gitcoin open source?"
-msgstr "Ist Gitcoin Open Source?"
+msgstr "Gitcoin은 오픈 소스입니까?"
 
 #: retail/views.py:300
 msgid ""
@@ -4346,14 +4072,13 @@ msgid ""
 " <a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  "
 "Please see the liscense.txt file in each repo for more details."
 msgstr ""
-"Ja, alle Kernsoftwaresysteme von Gitcoin sind Open Source und verfügbar "
-"unter <a href=https://github.com/gitcoinco/> https://github.com/gitcoinco/ "
-"</a>. Weitere Informationen finden Sie in der Datei liscense.txt in jedem "
-"Repo."
+"예, Gitcoin의 핵심 소프트웨어 시스템은 모두 공개 소스이며 <a href=https://github.com/gitcoinco/> "
+"https://github.com/gitcoinco/ </a>에서 다운로드 할 수 있습니다. 자세한 내용은 각 저장소의 "
+"liscense.txt 파일을 참조하십시오."
 
 #: retail/views.py:303
 msgid "Is a token distribution event planned for Gitcoin?"
-msgstr "Ist ein Token-Verteilungsereignis für Gitcoin geplant?"
+msgstr "Gitcoin에 토큰 배포 이벤트가 계획되어 있습니까?"
 
 #: retail/views.py:304
 msgid ""
@@ -4363,13 +4088,13 @@ msgid ""
 "<p>&nbsp;</p>            "
 msgstr ""
 "\n"
-"<p> Gitcoin Core erwägt, ein Token-Distribution-Event (TDI) zu machen, konzentriert sich aber zu diesem Zeitpunkt vor allem darauf, in Open-Source-Software auf schlanke Art und Weise Wert zu schaffen. </ p>\n"
-"<p> Um mehr über ein mögliches Token-Verteilungsereignis zu erfahren, sehen Sie sich <a href=\"https://gitcoin.co/whitepaper\"> https://gitcoin.co/whitepaper </a> <an / p>\n"
+"<p> Gitcoin Core는 토큰 배포 이벤트 (TDI)를 고려하고 있지만, 우선 오픈 소스 소프트웨어에서 가치있는 방법으로 & nbsp; 제공하는 것이 가장 중요합니다. </ p>\n"
+"<p> 예정된 토큰 배포 이벤트에 대해 자세히 알아 보려면 & nbsp; <a href=\"https://gitcoin.co/whitepaper\"> https://gitcoin.co/whitepaper </a> < / p>\n"
 "<p> & nbsp; </ p>"
 
 #: retail/views.py:310
 msgid "What is the difference between Gitcoin and Gitcoin Core?"
-msgstr "Was ist der Unterschied zwischen Gitcoin und Gitcoin Core?"
+msgstr "Gitcoin과 Gitcoin Core의 차이점은 무엇입니까?"
 
 #: retail/views.py:311
 msgid ""
@@ -4379,13 +4104,13 @@ msgid ""
 "The Gitcoin Network is a series of smart contracts that helps Grow Open Source, but enabling developers to easily post and manage funded issues.            "
 msgstr ""
 "\n"
-"Gitcoin Core LLC ist die juristische Person, die die Softwareentwicklung des Gitcoin Network (Gitcoin) verwaltet.\n"
+"Gitcoin Core LLC는 Gitcoin Network (Gitcoin)의 소프트웨어 개발을 관리하는 법인입니다.\n"
 "\n"
-"Das Gitcoin-Netzwerk besteht aus einer Reihe intelligenter Verträge, die Grow Open Source unterstützen, es Entwicklern jedoch ermöglichen, fundierte Probleme einfach zu veröffentlichen und zu verwalten."
+"Gitcoin 네트워크는 Grow Open Source를 돕는 일련의 현명한 계약이지만 개발자가 자금 문제를 쉽게 게시하고 관리 할 수있게 해줍니다."
 
 #: retail/views.py:317
 msgid "Who is the team at Gitcoin Core?"
-msgstr "Wer ist das Team von Gitcoin Core?"
+msgstr "Gitcoin Core 팀은 누구입니까?"
 
 #: retail/views.py:318
 msgid ""
@@ -4398,14 +4123,14 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"<p> Der Gründer ist <a href=\"https://linkedin.com/in/owocki\"> Kevin Owocki </a>, ein Technologe aus der Boulder Colorado Tech-Szene. & nbsp; Kevin hat einen BS in Informatik, 15 Jahre Erfahrung in Open Source Software und Technologie Startups. Er ist ein Freiwilliger in der Boulder-Community für mehrere Community-Organisationen und ein begeisterter Open-Source-Entwickler. Seine Arbeiten wurden in <a href=\"http://techcrunch.com/2011/02/10/group-dating-startup-ignighter-raises-3-million/\"> TechCrunch </a> vorgestellt, & nbsp; <a href=\"http://www.cnn.com/2011/BUSINESS/03/29/india.online.matchmaking/\"> CNN </a>, <a href = \"http: // www. inc.com/30under30/2011/profile-adam-sachs-kevin-owocki-and-dan-osit-founders-ignighter.html\">Inc Magazine </a>, <a href = \"http: // www .nytimes.com / 2011/02/20 / business / 20ignite.html? _r = 4 & amp; pagewanted = 1 & amp; amp; ref = business \"> Die New York Times </a>, <a href =\" http://boingboing.net/2011/09/24/tosamend-turn-all-online-i-agree-button-into-negotiations.html\">BoingBoing </a>, <n href = \"http: //www.wired.com/2015/12/kevin-owocki-adblock-to-bitcoin/\"> WIRED </a>, <a href = \"https://www.forbes.com/sites/amycastor / 2017/08/31 / toothpick-takes-top-preis-in-silicon-strand-ethereum-hackathon / # 6bf23b7452ad \"> Forbes </a>, und <a href =\" http: //www.techdigest. tv / 2007/08 / super_mario_get_1.html \"> TechDigest </a>.</ p>\n"
-"<p> <strong> Gitcoin </ strong> wurde von der Community in Boulder Colorados florierender Tech-Szene getragen. Eines der erstaunlichsten Dinge an der Boulder Community ist das #givefirst Mantra. Das Gründungsteam hat seine Karriere von Beratung, Mentoring und Beziehungen in der lokalen Tech-Community aufgebaut. & nbsp; </ p>\n"
+"<p> 창립자는 Colorado Colorado의 Boulder 기술 분야의 기술자 인 <a href=\"https://linkedin.com/in/owocki\"> Kevin Owocki </a>입니다. & nbsp; & nbsp; Kevin & nbsp;은 컴퓨터 과학 학사 학위를 취득했으며 오픈 소스 소프트웨어 및 기술 신생 기업에서 15 년의 경력을 쌓았습니다. 그는 여러 커뮤니티 조직 및 열렬한 오픈 소스 개발자를위한 볼더 커뮤니티에서 자원 봉사자입니다. 그의 작품은 & nbsp; <a href=\"http://techcrunch.com/2011/02/10/group-dating-startup-ignighter-raises-3-million/\"> TechCrunch </a>, & nbsp; <a href=\"http://www.cnn.com/2011/BUSINESS/03/29/india.online.matchmaking/\"> CNN </a>, & nbsp; <a href = \"http : // www. inc.com/30under30/2011/profile-adam-sachs-kevin-owocki-and-dan-osit-founders-ignighter.html \"> Inc Magazine </a>, & nbsp; <a href =\"http : // www .nytimes.com / 2011 / 02 / 20 / business / 20ignite.html? _r = 4 & pagewanted = 1 & ref = business \"> 뉴욕 타임즈 </a>, & nbsp; <a href =\" http://boingboing.net/2011/09/24/tosamend-turn-all-online-i-agree-buttons-into-negotiations.html\"> 보잉 보잉 </a>, & nbsp; <a href = \"http : //www.wired.com/2015/12/kevin-owocki-adblock-to-bitcoin/\"> 유선 </a>, & nbsp; <a href = \"https://www.forbes.com/sites/amycastor / 2017 / 08 / 31 / toothpick-takes-top-in-silicon-beach-ethereum-hackathon / # 6bf23b7452ad \"> 포브스 </a> 및 <a href =\"http : //www.techdigest. tv / 2007 / 08 / super_mario_get_1.html \"> TechDigest </a>.</ p>\n"
+"<p> <strong> Gitcoin </ strong>은 콜로라도 보울 더 (Boulder Colorado)의 번성하는 기술계 공동체에서 태어났습니다. 볼더 지역 사회에서 가장 놀라운 점 중 하나는 #givefirst 만트라입니다. 창립 팀은 현지 기술 커뮤니티의 조언, 멘토십 및 관계로부터 경력을 쌓았습니다. & nbsp; </ p>\n"
 "\n"
-"<p> Wir stellen ein. Wenn Sie dem Team beitreten möchten, <a href=mailto:founders@gitcoin.co> mailen Sie uns </a>."
+"<p> 우리는 고용하고 있습니다. 팀에 가입하려면 <a href=mailto:founders@gitcoin.co> 이메일을 보내주십시오 </a>."
 
 #: retail/views.py:327
 msgid "What is the mission of Gitcoin Core?"
-msgstr "Was ist die Aufgabe von Gitcoin Core?"
+msgstr "Gitcoin Core의 사명은 무엇입니까?"
 
 #: retail/views.py:328
 msgid ""
@@ -4415,11 +4140,11 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"Die Mission von Gitcoin ist \"Open Source wachsen\"."
+"Gitcoin의 사명은 \"Grow Open Source\"입니다."
 
 #: retail/views.py:334
 msgid "How can I stay in touch with project updates?"
-msgstr "Wie kann ich mit Projekt-Updates in Verbindung bleiben?"
+msgstr "프로젝트 업데이트와 어떻게 연락 할 수 있습니까?"
 
 #: retail/views.py:335
 msgid ""
@@ -4442,17 +4167,17 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"Der beste Weg, in Kontakt zu bleiben, ist\n"
+"연락을 유지하는 가장 좋은 방법은\n"
 "\n"
 "<ul>\n"
 "<li>\n"
-"    <a href=\"/#mailchimp\"> Abonnieren Sie die Mailingliste </a>\n"
+"    <a href=\"/#mailchimp\"> 메일 링리스트에 가입하십시오 </a>\n"
 "</ li>\n"
 "<li>\n"
-"    <a href=\"/twitter\"> Folge dem Projekt auf Twitter </a>\n"
+"    <a href=\"/twitter\"> 트위터에서 프로젝트 따라하기 </a>\n"
 "</ li>\n"
 "<li>\n"
-"    <a href=\"/slack\"> Tritt dem Slack Channel bei </a>\n"
+"    <a href=\"/slack\"> 느슨한 채널 가입 </a>\n"
 "</ li>\n"
 "\n"
 "</ ul>"
@@ -4460,9 +4185,7 @@ msgstr ""
 #: retail/views.py:357
 msgid ""
 "What is the difference between Gitcoin and centralized hiring websites?"
-msgstr ""
-"Was ist der Unterschied zwischen Gitcoin und zentralisierten "
-"Einstellungswebseiten?"
+msgstr "Gitcoin과 중앙 집중식 채용 웹 사이트의 차이점은 무엇입니까?"
 
 #: retail/views.py:358
 msgid ""
@@ -4486,26 +4209,26 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"<p> Es gibt viele erfolgreiche zentrale Einstellungsressourcen im Internet. Da diese Plattformen eine effiziente Methode zur Beschaffung, Auswahl und Verwaltung globaler Mitarbeiter darstellten, wurden jeden Tag Millionen von Dollars durch diese Systeme verarbeitet. </ p>\n"
-"<p> Gitcoin nimmt den Wert, der durch dieses System fließt, und macht es effizienter und fairer. & nbsp; Gitcoin ist ein verteiltes Netzwerk intelligenter Verträge, basierend auf Ethereum, das Probleme mit zentralisierten Einstellungsressourcen lösen soll, namentlich durch </ p>\n"
+"<p> 웹에서 사용 가능한 많은 성공적인 중앙 집중식 채용 정보가 있습니다. & nbsp;이 플랫폼은 글로벌 인력을 확보, 선정 및 관리하는 효율적인 방법 이었기 때문에 매일 수백만 달러를 처리했습니다. </ p>\n"
+"<p> Gitcoin은 이러한 시스템을 통해 전달되는 가치를 취하고 더 효율적이고 공정하게 만듭니다. & nbsp; Gitcoin은 Ethereum을 기반으로하는 스마트 계약의 분산 네트워크로, 중앙 집중식 채용 리소스를 통해 문제를 해결하는 것을 목표로합니다. 즉, </ p>\n"
 "<ul>\n"
-"<li> ist offener, </ li>\n"
-"<li> ist fairer, </ li>\n"
-"<li> ist effizienter, </ li>\n"
-"<li> ist einfacher zu benutzen. </ li>\n"
-"<li> Nutzung einer globalen Belegschaft, </ li>\n"
-"<li> die Zwischenhändler auszuschneiden, </ li>\n"
+"<li> 더 개방적입니다. </ li>\n"
+"<li>보다 공정하게 </ li>\n"
+"<li> 더 효율적입니다. </ li>\n"
+"<li> 사용하기 쉽습니다. </ li>\n"
+"<li> 글로벌 인력 활용 </ li>\n"
+"<li> 중개인 삭감 </ li>\n"
 "</ ul>\n"
-"<p> Als Sir Tim Berners-Lee in den späten 1980er Jahren das World Wide Web zum ersten Mal erfand, um den Informationsaustausch im Internet zu erleichtern, tat er etwas sehr Wichtiges. Er spezifizierte ein offenes Protokoll, das Hypertext Transfer Protocol oder HTTP, das jeder verwenden könnte, um Informationen verfügbar zu machen und auf solche Informationen zuzugreifen. & nbsp; </ p>\n"
-"<p> Gitcoin ist in ähnlicher Weise auf einem offenen Protokoll von intelligenten Verträgen aufgebaut. </ p>\n"
-"<p> Tim Berners-Lee hat durch die Angabe eines Protokolls den Weg für jedermann freigemacht, Software zu bauen, sogenannte Web-Server und Browser, die mit diesem Protokoll kompatibel sind. & nbsp; Durch Angabe eines Open-Source-Protokolls für Funding Issues und Software Development Scoping & amp; Das Gitcoin Core-Team hofft, eine Generation von Erfindungen in der Software des 21. Jahrhunderts inspirieren zu können.</ p>\n"
+"<p> Tim Berners-Lee 경이 1980 년대 말 처음으로 인터넷에서 정보 공유를 쉽게하기 위해 & nbsp; World Wide Web을 발명했을 때, 그는 매우 중요한 것을했습니다. 그는 공개 프로토콜 인 HTTP (Hypertext Transfer Protocol)를 지정하여 누구나 정보를 이용할 수있게하고 그러한 정보에 액세스 할 수있었습니다. & nbsp; </ p>\n"
+"<p> Gitcoin은 똑똑한 계약 프로토콜을 기반으로 만들어졌습니다. </ p>\n"
+"<p> 프로토콜을 지정함으로써 Tim Berners-Lee는 누구나이 프로토콜과 호환 될 수있는 웹 서버 및 브라우저라는 소프트웨어를 개발할 수있는 길을 열었습니다. & nbsp; 자금 지원 문제 및 소프트웨어 개발 범위 지정을위한 오픈 소스 프로토콜 지정 & amp; Gitcoin Core 팀은 21 세기 소프트웨어에서 한 세대의 발명품에 영감을 불어 넣기를 희망합니다.</ p>\n"
 "<p>\n"
-"Um mehr über Blockchain zu erfahren, überprüfen Sie bitte <a href=\"{}\"> dieses Video über web3 </a> oder das <a href = \"https://github.com/gitcoinco/gitcoinco/issues?q=is% 3Aissue + ist% 3Aopen + label% 3Ahelp \"> Github Issues-Board </a>\n"
+"블록 체인에 대해 자세히 알아 보려면 <a href=\"{}\"> web3 관련 동영상 </a> 또는 <a href = \"https://github.com/gitcoinco/gitcoinco/issues?q=is% 3Aissue +는 % 3Aopen + label % 3Ahelp \"> Github Issues 보드 </a>입니다.\n"
 "</ p>"
 
 #: retail/views.py:378
 msgid "Why do I need metamask?"
-msgstr "Warum brauche ich Metamask?"
+msgstr "메타 마스크가 필요한 이유는 무엇입니까?"
 
 #: retail/views.py:379
 msgid ""
@@ -4533,27 +4256,27 @@ msgid ""
 msgstr ""
 "\n"
 "<p>\n"
-"Sie benötigen <a href=\"https://metamask.io/\"> Metamask </a>, um Gitcoin zu verwenden.\n"
+"Gitcoin을 사용하려면 <a href=\"https://metamask.io/\"> Metamask </a>가 필요합니다.\n"
 "</ p>\n"
 "<p>\n"
 "\n"
-"Metamask verwandelt Google Chrome in einen Web3-Browser. Web3 ist sehr leistungsfähig, da Websites Daten aus der Blockchain abrufen und die Identität sicher verwalten können.\n"
+"Metamask는 Google 크롬을 Web3 브라우저로 변환합니다. Web3은 웹 사이트가 블록 체인에서 데이터를 검색하고 사용자가 신원을 안전하게 관리 할 수 ​​있기 때문에 강력합니다.\n"
 "</ p>\n"
 "<p>\n"
 "\n"
-"Im Gegensatz zu web2, wo Dritte Ihre Daten besitzen, besitzen Sie in web3 Ihre Daten und Sie haben immer die Kontrolle. Auf web3 sind Ihre Daten auf der Blockchain gesichert, was bedeutet, dass niemand Ihr Vermögen einfrieren oder zensieren kann.\n"
+"제 3자가 귀하의 데이터를 소유하고있는 web2와는 대조적으로 web3에서는 귀하가 귀하의 데이터를 소유하고 있으며 귀하는 항상 통제하에 있습니다. web3에서는 데이터가 블록 체인에 안전하게 보관되므로 아무도 자산을 고정하거나 검열 할 수 없습니다.\n"
 "</ p>\n"
 "<p>\n"
 "\n"
-"Laden Sie Metamask <a href=\"https://metamask.io/\"> hier </a> noch heute herunter.\n"
+"오늘 Metamask를 <a href=\"https://metamask.io/\"> 여기 </a>에서 다운로드하십시오.\n"
 "</ p>\n"
 "<p>\n"
-"Um mehr über Metamask zu erfahren, überprüfen Sie bitte <a href=\"{}\"> dieses Video über web3 </a> oder das <a href = \"https://github.com/gitcoinco/gitcoinco/issues?q=is% 3Aissue + ist% 3Aopen + label% 3Ahelp \"> Github Issues-Board </a>\n"
+"Metamask에 대해 자세히 알아 보려면 <a href=\"{}\"> web3 관련 동영상 </a> 또는 <a href = \"https://github.com/gitcoinco/gitcoinco/issues?q=is% 3Aissue +는 % 3Aopen + label % 3Ahelp \"> Github Issues 보드 </a>입니다.\n"
 "</ p>"
 
 #: retail/views.py:402
 msgid "Why do I need to pay gas?"
-msgstr "Warum muss ich Gas bezahlen?"
+msgstr "왜 가스를 내야합니까?"
 
 #: retail/views.py:403
 msgid ""
@@ -4574,21 +4297,21 @@ msgid ""
 msgstr ""
 "\n"
 "<p>\n"
-"\"Gas\" ist der Name für eine spezielle Einheit in Ethereum. Er misst, wie viel \"Arbeit\" eine Aktion oder eine Reihe von Aktionen ausführen muss (z. B. das Speichern von Daten in einem Smart-Vertrag).\n"
+"\"가스\"는 Ethereum에서 사용되는 특수 유닛의 이름입니다. 작업 또는 작업 집합이 수행해야하는 \"작업\"(예 : 스마트 계약의 데이터 저장)을 측정합니다.\n"
 "</ p>\n"
 "<p>\n"
-"Der Grund, warum Gas wichtig ist, ist, dass es hilft sicherzustellen, dass eine angemessene Gebühr durch Transaktionen bezahlt wird, die an das Netzwerk gesendet werden. Indem wir verlangen, dass eine Transaktion für jede Operation bezahlt, die sie ausführt (oder einen Vertrag ausführt), stellen wir sicher, dass das Netzwerk nicht mit einer Menge intensiver Arbeit, die für niemanden wertvoll ist, ins Stocken gerät.\n"
+"가스가 중요한 이유는 네트워크에 제출 된 거래로 적절한 요금을 지불하는 데 도움이된다는 것입니다. 거래가 각 작업에 대해 지불하도록 요구함으로써 (또는 계약 이행을 야기 함), 우리는 누구에게도 가치가없는 많은 집중적 인 작업을 수행하면서 네트워크가 망가지지 않도록 보장합니다.\n"
 "</ p>\n"
 "<p>\n"
-"Die Gasgebühren werden an die Betreiber des Ethereum-Netzwerks gezahlt, als Gegenleistung für die Sicherung aller Ether- und Ethereum-basierten Transaktionen in der Welt. Gasgebühren werden nicht direkt oder indirekt an Gitcoin Core gezahlt.\n"
+"Ethereum 네트워크의 관리자에게 가스 요금이 지급되며, 이는 세계에서 Ether 및 Ethereum 기반 트랜잭션을 모두 확보하는 대가로 제공됩니다. 가스 요금은 직접 또는 간접적으로 Gitcoin Core에 지불되지 않습니다.\n"
 "</ p>\n"
 "<p>\n"
-"Um mehr über Gas zu erfahren, gehen Sie bitte auf das <a href=\"https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\"> Github Issues Board </a>\n"
+"가스에 대해 자세히 알아 보려면 <a href=\"https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\"> Github Issues 게시판 </a>을 통해 청원서를 확인하십시오.\n"
 "</ p>"
 
 #: retail/views.py:419
 msgid "What are the advanages of Ethereum based applications?"
-msgstr "Was sind die Vorteile von Ethereum-basierten Anwendungen?"
+msgstr "Ethereum 기반 애플리케이션의 장점은 무엇입니까?"
 
 #: retail/views.py:420
 msgid ""
@@ -4619,31 +4342,31 @@ msgid ""
 "           "
 msgstr ""
 "\n"
-"Hier sind einige der Vorteile von Ethereum-basierten Anwendungen:\n"
+"Ethereum 기반 응용 프로그램의 장점은 다음과 같습니다.\n"
 "<ul>\n"
 "<li>\n"
-"    Niedrigere (oder keine) Gebühren\n"
+"    낮은 수수료\n"
 "</ li>\n"
 "<li>\n"
-"    Keine Zwischenhändler\n"
+"    중개자 없음\n"
 "</ li>\n"
 "<li>\n"
-"    Kein Dritter besitzt oder kann Ihre Daten verkaufen\n"
+"    제 3자가 귀하의 데이터를 소유하거나 판매 할 수 없습니다.\n"
 "</ li>\n"
 "<li>\n"
-"    Keine internationalen Umstellungsgebühren\n"
+"    국제 전환 수수료 없음\n"
 "</ li>\n"
 "<li>\n"
-"    In Protokoll-, Dienstprogramm- oder Anwendungstoken bezahlt werden; nicht nur Bargeld.\n"
+"    프로토콜, 유틸리티 또는 애플리케이션 토큰으로 수익을 올리십시오. 현금이 아닙니다.\n"
 "</ li>\n"
 "</ ul>\n"
 "<p>\n"
-"Um mehr über Ethereum-basierte Apps zu erfahren, überprüfen Sie bitte <a href=\"{}\"> dieses Video über web3 </a> oder das <a href = \"https://github.com/gitcoinco/gitcoinco/issues?q= ist% 3Aissue + ist% 3Aopen + Label% 3Ahelp \"> Github Issues-Board </a>\n"
+"Ethereum 기반 앱에 대해 자세히 알아 보려면 <a href=\"{}\"> web3 관련 동영상 </a> 또는 <a href = \"https://github.com/gitcoinco/gitcoinco/issues?q= % 3Aissue + is % 3Aopen + label % 3Ahelp \"> Github Issues 게시판 </a>\n"
 "</ p>"
 
 #: retail/views.py:447
 msgid "I still dont get it.  Help!"
-msgstr "Ich verstehe es immer noch nicht. Hilfe!"
+msgstr "나는 아직도 그것을 얻지 않는다. 도움!"
 
 #: retail/views.py:448
 msgid ""
@@ -4653,39 +4376,39 @@ msgid ""
 "\n"
 msgstr ""
 "\n"
-"Wir wollen mit dir ein bisschen mehr nerdeln. <a href=\"/slack\"> Tritt der Gitcoin Slack Community bei </a> und lass uns reden.\n"
+"우리는 당신과 조금 더 괴상하게하고 싶습니다. <a href=\"/slack\"> Gitcoin Slack 커뮤니티에 가입 </a>하여 이야기하겠습니다.\n"
 
 #: retail/views.py:460
 msgid "Leverage Gitcoin’s Firehose of Talent to Do More Faster"
-msgstr "Nutzen Sie Gitcoins Firehose of Talent, um noch schneller zu werden"
+msgstr "Gitcoin의 Firehose of Talent를보다 신속하게 활용하십시오."
 
 #: retail/views.py:464
 msgid "Post a Bounty in 90 Seconds"
-msgstr "Poste ein Kopfgeld in 90 Sekunden"
+msgstr "90 초 안에 현상금 붙이기"
 
 #: retail/views.py:595
 msgid "You must provide an email address"
-msgstr "Sie müssen eine E-Mail-Adresse angeben"
+msgstr "이메일 주소를 입력해야합니다."
 
 #: retail/views.py:597
 msgid "Your invite has been sent."
-msgstr "Ihre Einladung wurde gesendet."
+msgstr "초대장을 보냈습니다."
 
 #: retail/views.py:605
 msgid "Unknown error"
-msgstr "Unbekannter Fehler"
+msgstr "알수없는 오류"
 
 #: retail/views.py:608
 msgid "Invalid email"
-msgstr "Ungültige E-Mail"
+msgstr "이메일이 잘못되었습니다."
 
 #: tdi/views.py:56 tdi/views.py:57 tdi/views.py:115 tdi/views.py:116
 msgid "Whitepaper"
-msgstr "Weißes Papier"
+msgstr "백지"
 
 #: tdi/views.py:64 tdi/views.py:123
 msgid "You're ratelimited. Please contact founders@gitcoin.co"
-msgstr "Du bist ratenlimitiert. Bitte wenden Sie sich an Gründer@gitcoin.co"
+msgstr "너는 별표 없다. founders@gitcoin.co에게 연락하십시오."
 
 #: tdi/views.py:72
 msgid ""
@@ -4704,92 +4427,56 @@ msgid ""
 "    "
 msgstr ""
 "\n"
-"Email: {}\n"
+"이메일 : {}\n"
 "\n"
-"Rolle: {}\n"
+"역할 : {}\n"
 "\n"
-"Bemerkungen: {}\n"
+"코멘트: {}\n"
 "\n"
-"IP: {}\n"
+"IP : {}\n"
 "\n"
 "\n"
 "https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/"
 
 #: tdi/views.py:81
 msgid "New Whitepaper Request"
-msgstr "Neue Whitepaper-Anfrage"
+msgstr "새로운 백서 요청"
 
 #: tdi/views.py:102 tdi/views.py:146
 msgid "Invalid Email. Please contact founders@gitcoin.co"
-msgstr "Ungültige E-Mail. Bitte wenden Sie sich an Gründer@gitcoin.co"
+msgstr "이메일이 잘못되었습니다. founders@gitcoin.co에게 연락하십시오."
 
 #: tdi/views.py:106
 msgid ""
 "Your request has been sent.  <a href=/slack>Meantime, why don't you check "
 "out the slack channel?</a>"
-msgstr ""
-"Ihre Anfrage wurde verschickt. <a href=/slack> In der Zwischenzeit, warum "
-"nicht den freien Kanal ausprobieren? </a>"
+msgstr "요청이 전송되었습니다. <a href=/slack> 그 사이에 느슨한 채널을 확인해보세요. </a>"
 
 #: tdi/views.py:131
 msgid "Invalid Access Code. Please contact founders@gitcoin.co"
-msgstr "Ungültiger Zugangscode. Bitte wenden Sie sich an Gründer@gitcoin.co"
+msgstr "잘못된 액세스 코드. founders@gitcoin.co에게 연락하십시오."
 
 #: tdi/views.py:136
 msgid ""
 "You have exceeded your maximum number of uses for this access code. Please "
 "contact founders@gitcoin.co"
-msgstr ""
-"Sie haben die maximale Anzahl von Verwendungen für diesen Zugriffscode "
-"überschritten. Bitte wenden Sie sich an Gründer@gitcoin.co"
+msgstr "이 액세스 코드의 최대 사용 횟수를 초과했습니다. founders@gitcoin.co에게 연락하십시오."
 
 #: tdi/views.py:157
 msgid "New Whitepaper Generated"
-msgstr "Neues Whitepaper erstellt"
+msgstr "생성 된 새로운 백서"
 
 #: tdi/views.py:168
 msgid ""
 "Generated for access code {} by email {} at {} via ip: {}. "
 "https://gitcoin.co/whitepaper"
 msgstr ""
-"Generiert für Zugangscode {} per E-Mail {} bei {} über IP: {}. "
-"https://gitcoin.co/whitepaper"
+"{}을 (를) 통해 {}의 {} 이메일 주소로 액세스 코드 {}로 생성되었습니다. https://gitcoin.co/whitepaper"
 
 #: tdi/views.py:250
 msgid "Kevin from Gitcoin.co"
-msgstr "Kevin von Gitcoin.co"
+msgstr "Gitcoin.co의 Kevin"
 
 #: tdi/views.py:251
 msgid "Invite sent"
-msgstr "Einladung gesendet"
-
-#~ msgid "Kill Bounty"
-#~ msgstr "Töte Bounty"
-
-#~ msgid "The submitted github profile could not be found on github."
-#~ msgstr ""
-#~ "Das eingereichte GitHub-Profil konnte nicht auf GitHub gefunden werden."
-
-#~ msgid "Gitcoin's Top Community Members"
-#~ msgstr "Gitcoins Top Community-Mitglieder"
-
-#~ msgid "Entrepreneur In Residence"
-#~ msgstr "Unternehmer in Residence"
-
-#~ msgid ""
-#~ "<strong>2018 March 22</strong> - <i>\"If all you have is a hammer, "
-#~ "everything looks like a nail\" - Abraham Maslow</i>.  Have you seen our "
-#~ "revamped <a style=\"margin-right: 5px;\" "
-#~ "href=\"https://gitcoin.co/tools\">tools page</a>?"
-#~ msgstr ""
-#~ "<strong> 2018 March 22 </ strong> - <i> \"Wenn alles, was du hast, ein "
-#~ "Hammer ist, sieht alles wie ein Nagel aus\" - Abraham Maslow </ i>. Hast du "
-#~ "unseren neugestalteten <a style = \"margin-right: 5px;\" href = "
-#~ "\"https://gitcoin.co/tools\"> Tools-Seite </a>?"
-
-#~ msgid ""
-#~ "<h1>Coming soon!</h1> If youre seeing this page its because apple is "
-#~ "reviewing the app... and release is imminent :)"
-#~ msgstr ""
-#~ "<h1> In Kürze! </ h1> Wenn Sie diese Seite sehen, weil Apple die App "
-#~ "überprüft ... und die Veröffentlichung bevorsteht :)"
+msgstr "초대장을 보냈습니다."

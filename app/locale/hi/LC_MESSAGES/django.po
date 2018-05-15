@@ -1,0 +1,4656 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-05-15 13:29+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: app/settings.py:190
+msgid "English"
+msgstr "अंग्रेज़ी"
+
+#: app/settings.py:191
+msgid "Spanish"
+msgstr "स्पेनिश"
+
+#: app/settings.py:192
+msgid "German"
+msgstr "जर्मन"
+
+#: app/settings.py:193
+msgid "Hindi"
+msgstr "हिंदी"
+
+#: app/settings.py:194
+msgid "Italian"
+msgstr "इतालवी"
+
+#: app/settings.py:195
+msgid "Korean"
+msgstr "कोरियाई"
+
+#: app/settings.py:196
+msgid "Polish"
+msgstr "पोलिश"
+
+#: app/settings.py:197
+msgid "Chinese"
+msgstr "चीनी"
+
+#: dashboard/models.py:134
+msgid "Whether the bounty is still open for fulfillments."
+msgstr "चाहे उपहार के लिए अभी भी बक्षीस खुला है।"
+
+#: dashboard/models.py:139
+msgid "Whether this bounty is the most current revision one or not"
+msgstr "क्या यह बक्षीस सबसे वर्तमान संशोधन है या नहीं"
+
+#: dashboard/models.py:150
+msgid "Whether the bounty has been done"
+msgstr "चाहे बक्षीस किया गया हो"
+
+#: dashboard/templates/addinterest.html:26
+msgid "Great to see that you're interested in this project!"
+msgstr "यह देखने के लिए बढ़िया है कि आप इस परियोजना में रूचि रखते हैं!"
+
+#: dashboard/templates/addinterest.html:33
+msgid ""
+"Please provide an action plan and any initial questions you have for this "
+"ticket."
+msgstr ""
+"कृपया इस टिकट के लिए एक कार्य योजना और आपके प्रारंभिक प्रश्न प्रदान करें।"
+
+#: dashboard/templates/addinterest.html:35
+msgid "This will be reflected in a comment on the Github issue."
+msgstr "यह गिथूब मुद्दे पर एक टिप्पणी में दिखाई देगा।"
+
+#: dashboard/templates/addinterest.html:45
+msgid ""
+"I understand that if anyone has started work on this ticket before me, they "
+"may have precedence."
+msgstr ""
+"मैं समझता हूं कि अगर किसी ने मेरे सामने इस टिकट पर काम करना शुरू कर दिया है,"
+" तो उन्हें प्राथमिकता हो सकती है।"
+
+#: dashboard/templates/addinterest.html:56
+msgid "I agree to keep the funder informed of my progress every few days."
+msgstr ""
+"मैं फंडर को हर कुछ दिनों में अपनी प्रगति के बारे में सूचित रखने के लिए सहमत "
+"हूं।"
+
+#: dashboard/templates/addinterest.html:61
+#: retail/templates/shared/mailchimp.html:10
+msgid "Submit"
+msgstr "जमा करें"
+
+#: dashboard/templates/addinterest.html:68
+msgid "Please login with Github to get started."
+msgstr "शुरू करने के लिए कृपया जिथब के साथ लॉगिन करें।"
+
+#: dashboard/templates/addinterest.html:71
+msgid "Login With Github"
+msgstr "गितूब के साथ लॉगिन करें"
+
+#: dashboard/templates/bounty_details.html:21
+msgid "Back to Issue Explorer"
+msgstr "समस्या एक्सप्लोरर पर वापस"
+
+#: dashboard/templates/bounty_details.html:28
+msgid "Your transaction has been posted to web3"
+msgstr "आपका लेनदेन वेब 3 पर पोस्ट किया गया है"
+
+#: dashboard/templates/bounty_details.html:30
+msgid ""
+"Please wait a minute or two for web3 to sync\n"
+"            <a target=\"_blank\" href=\"javascript:void(0)\" id=\"transaction_url\">this transaction</a>."
+msgstr ""
+"वेब 3 सिंक करने के लिए कृपया एक या दो मिनट प्रतीक्षा करें\n"
+"            <a target=\"_blank\" href=\"javascript:void(0)\" id=\"transaction_url\"> यह लेनदेन </a>।"
+
+#: dashboard/templates/bounty_details.html:34
+msgid ""
+"This page will automatically refresh as soon as the blockchain is updated."
+msgstr ""
+"जैसे ही ब्लॉकचेन अपडेट हो जाता है, यह पृष्ठ स्वचालित रूप से रीफ्रेश हो "
+"जाएगा।"
+
+#: dashboard/templates/bounty_details.html:35
+msgid "You may close the browser tab."
+msgstr "आप ब्राउज़र टैब बंद कर सकते हैं।"
+
+#: dashboard/templates/bounty_details.html:45
+msgid "No funded issue found."
+msgstr "कोई वित्त पोषित मुद्दा नहीं मिला।"
+
+#: dashboard/templates/bounty_details.html:46
+#, python-format
+msgid "Check out the <a href=\"%(explorerurl)s\">Issue Explorer</a>"
+msgstr "<a href=\"%(explorerurl)s\"> समस्या एक्सप्लोरर </a> देखें"
+
+#: dashboard/templates/bounty_details.html:48
+msgid "Be the OSS Funding you wish to see in the world."
+msgstr "ओएसएस फंडिंग बनें जो आप दुनिया में देखना चाहते हैं।"
+
+#: dashboard/templates/bounty_details.html:49
+#, python-format
+msgid ""
+" Looking to fund some work?  You can submit a new Funded Issue <a "
+"href=\"%(new_fundingurl)s\">here</a>."
+msgstr ""
+"कुछ काम को फंड करना चाहते हैं? आप एक नया वित्त पोषित समस्या <a "
+"href=\"%(new_fundingurl)s\"> यहां </a> सबमिट कर सकते हैं।"
+
+#: dashboard/templates/bounty_details.html:77
+msgid "Time left"
+msgstr "शेष समय"
+
+#: dashboard/templates/bounty_details.html:87
+msgid "Opened"
+msgstr "खुल गया"
+
+#: dashboard/templates/bounty_details.html:91
+msgid "Accepted"
+msgstr "स्वीकार किए जाते हैं"
+
+#: dashboard/templates/bounty_details.html:95
+#: dashboard/templates/onboard.html:154
+#: dashboard/templates/shared/sidebar_search.html:88
+#: dashboard/templates/submit_bounty.html:107
+msgid "Experience Level"
+msgstr "अनुभव स्तर"
+
+#: dashboard/templates/bounty_details.html:99
+msgid "Issue Type"
+msgstr "समस्या का प्रकार"
+
+#: dashboard/templates/bounty_details.html:131
+#: external_bounties/templates/external_bounties_show.html:76
+msgid "Description"
+msgstr "विवरण"
+
+#: dashboard/templates/bounty_details.html:138
+msgid "Contributors"
+msgstr "योगदानकर्ता"
+
+#: dashboard/templates/bounty_details.html:142
+#: dashboard/templates/shared/bounty_nav.html:31
+#: dashboard/templates/shared/sidebar_search.html:33
+#: dashboard/templates/shared/status_tooltip.html:30
+msgid "Work Started"
+msgstr "काम शुरू"
+
+#: dashboard/templates/bounty_details.html:147
+#: dashboard/templates/shared/bounty_nav.html:39
+#: dashboard/templates/shared/sidebar_search.html:38
+#: dashboard/templates/shared/status_tooltip.html:36
+msgid "Work Submitted"
+msgstr "कार्य सबमिट"
+
+#: dashboard/templates/bounty_details.html:152
+msgid "Work Accepted"
+msgstr "कार्य स्वीकृत"
+
+#: dashboard/templates/bounty_details.html:158
+msgid "All Activity"
+msgstr "सभी गतिविधि"
+
+#: dashboard/templates/bounty_details.html:162
+#: dashboard/templates/bounty_details.html:170
+#: dashboard/templates/profile_details.html:160
+msgid "Funder"
+msgstr "Funder"
+
+#: dashboard/templates/bounty_details.html:174
+#: dashboard/templates/bounty_details.html:249
+msgid "Email"
+msgstr "ईमेल"
+
+#: dashboard/templates/bounty_details.html:178
+msgid "Gitcoin Profile"
+msgstr "गिटकोइन प्रोफाइल"
+
+#: dashboard/templates/bounty_details.html:243
+#: faucet/templates/faucet_form.html:76
+msgid "ETH Address"
+msgstr "ईटीएच पता"
+
+#: dashboard/templates/bounty_details.html:255
+msgid "Submission Id"
+msgstr "सबमिशन आईडी"
+
+#: dashboard/templates/dashboard.html:36
+msgid "Welcome to Gitcoin!"
+msgstr "गिटकोइन में आपका स्वागत है!"
+
+#: dashboard/templates/dashboard.html:37
+msgid "We've found bounties that match your interest and experience"
+msgstr "हमें उन बक्षीस मिल गए हैं जो आपकी रूचि और अनुभव से मेल खाते हैं"
+
+#: dashboard/templates/dashboard.html:38 retail/templates/help.html:84
+msgid "How it works"
+msgstr "यह काम किस प्रकार करता है"
+
+#: dashboard/templates/dashboard.html:40
+msgid ""
+"Get Started with your first bounty ! Select on issue and click start work"
+msgstr ""
+"अपने पहले उपहार के साथ शुरू करें! समस्या पर चयन करें और काम शुरू करें क्लिक "
+"करें"
+
+#: dashboard/templates/dashboard.html:41
+msgid "Ready for review ? Click submit work"
+msgstr "समीक्षा के लिए तैयार हैं? काम जमा करें पर क्लिक करें"
+
+#: dashboard/templates/dashboard.html:42
+msgid "Not able to deliver the work on time ? Click stop work"
+msgstr "समय पर काम देने में सक्षम नहीं है? काम बंद करो पर क्लिक करें"
+
+#: dashboard/templates/dashboard.html:44
+msgid "Need more help ? Checkout the starting guide"
+msgstr "क्या और मदद चाहिये ? प्रारंभिक गाइड चेकआउट करें"
+
+#: dashboard/templates/dashboard.html:46
+msgid "GOT IT !"
+msgstr "समझ गया !"
+
+#: dashboard/templates/dashboard.html:76
+msgid "No results found."
+msgstr "कोई परिणाम नहीं मिला।"
+
+#: dashboard/templates/dashboard.html:77
+msgid "Please try another query"
+msgstr "कृपया एक और प्रश्न आज़माएं"
+
+#: dashboard/templates/dashboard.html:78
+#: dashboard/templates/shared/no_metamask_error.html:32
+#: dashboard/templates/shared/unlock_metamask.html:29
+#: dashboard/templates/shared/zero_balance_error.html:35
+#: faucet/templates/shared/faucet_no_metamask_error.html:35
+#: faucet/templates/shared/faucet_unlock_metamask.html:32
+#: retail/templates/emails/template.html:195
+#: retail/templates/getgitcoin.html:35 retail/templates/getgitcoin.html:54
+#: retail/templates/getgitcoin.html:61 retail/templates/getgitcoin.html:80
+msgid "or"
+msgstr "या"
+
+#: dashboard/templates/dashboard.html:80
+msgid ""
+"<a href=\"#\" class=\"save_search\">save search</a>\n"
+"                to be notified when results do appear."
+msgstr ""
+"<a href=\"#\" class=\"save_search\"> खोज सहेजें </a>\n"
+"                परिणाम प्रकट होने पर अधिसूचित किया जाना चाहिए।"
+
+#: dashboard/templates/fulfill_bounty.html:41
+#: dashboard/templates/fulfill_bounty.html:69
+#: dashboard/templates/shared/bounty_nav.html:41 dashboard/views.py:579
+msgid "Submit Work"
+msgstr "कार्य सबमिट करें"
+
+#: dashboard/templates/fulfill_bounty.html:47
+#: dashboard/templates/kill_bounty.html:47
+#: dashboard/templates/submit_bounty.html:50
+msgid "Issue URL"
+msgstr "समस्या यूआरएल"
+
+#: dashboard/templates/fulfill_bounty.html:57
+#: dashboard/templates/kill_bounty.html:53
+#: dashboard/templates/process_bounty.html:58
+#: dashboard/templates/submit_bounty.html:136
+#, python-format
+msgid ""
+"I have read, understand, and agree to, the <a href=\"%(termsurl)s\" "
+"target=\"_blank\" rel=\"noopener noreferrer\">Terms of Service</a>:"
+msgstr ""
+"मैंने <a href=\"%(termsurl)s\" target=\"_blank\" rel=\"noopener "
+"noreferrer\"> सेवा की शर्तों </a> को पढ़, समझ और सहमति दी है:"
+
+#: dashboard/templates/fulfill_bounty.html:63
+#: dashboard/templates/submit_bounty.html:142
+msgid ""
+"I understand that this information is being submitted to a public, "
+"immutable, blockchain.  No one, including Gitcoin Core, will be able to take"
+" my funds or change this information:"
+msgstr ""
+"मैं समझता हूं कि यह जानकारी सार्वजनिक, अपरिवर्तनीय, ब्लॉकचेन को जमा की जा "
+"रही है। गिटकोइन कोर समेत कोई भी नहीं, मेरे फंड लेने या इस जानकारी को बदलने "
+"में सक्षम होगा:"
+
+#: dashboard/templates/fulfill_bounty.html:71
+#: dashboard/templates/submit_bounty.html:150
+msgid "Having trouble?  Click here."
+msgstr "परेशानी है? यहां क्लिक करे।"
+
+#: dashboard/templates/ios.html:31 dashboard/templates/ios.html:50
+msgid "One Swipe Away From Your Next Bounty."
+msgstr "एक अगली बाउंटी से दूर एक स्वाइप करें।"
+
+#: dashboard/templates/ios.html:37 dashboard/templates/ios.html:55
+#: retail/templates/index.html:434
+msgid "Browse funded work in open source software from anywhere, at anytime."
+msgstr ""
+"किसी भी समय, कहीं भी ओपन सोर्स सॉफ्टवेयर में वित्त पोषित काम ब्राउज़ करें।"
+
+#: dashboard/templates/ios.html:76
+msgid "It's Easy As"
+msgstr "यह आसान है"
+
+#: dashboard/templates/ios.html:89
+msgid "Sync"
+msgstr "सिंक"
+
+#: dashboard/templates/ios.html:91
+msgid "Sync your github profile with the gitcoin app."
+msgstr "गिटकोइन ऐप के साथ अपनी जिथब प्रोफाइल को सिंक करें।"
+
+#: dashboard/templates/ios.html:104
+msgid "Swipe"
+msgstr "कड़ी चोट"
+
+#: dashboard/templates/ios.html:106
+msgid "Swipe through funded work in open source software."
+msgstr "ओपन सोर्स सॉफ्टवेयर में वित्त पोषित काम के माध्यम से स्वाइप करें।"
+
+#: dashboard/templates/ios.html:119
+msgid "Match"
+msgstr "मैच"
+
+#: dashboard/templates/ios.html:121
+msgid ""
+"The app will intro you (via github comments) to the repository owners with "
+"whom you've matched with"
+msgstr ""
+"ऐप आपको (गिटब टिप्पणियों के माध्यम से) रिपोजिटरी स्वामियों से परिचय देगा "
+"जिनके साथ आप मेल खाते हैं"
+
+#: dashboard/templates/ios.html:134
+msgid "Get it now."
+msgstr "अब समझे।"
+
+#: dashboard/templates/kill_bounty.html:40
+msgid "Cancel Bounty and Reclaim Funds"
+msgstr "बाउंटी रद्द करें और फंड पुनः प्राप्त करें"
+
+#: dashboard/templates/kill_bounty.html:41
+msgid "(Issue Submitters only)"
+msgstr "(केवल समस्या सबमिट करने वाले)"
+
+#: dashboard/templates/kill_bounty.html:59 dashboard/views.py:645
+msgid "Cancel Bounty"
+msgstr "बाउंटी रद्द करें"
+
+#: dashboard/templates/onboard.html:40
+msgid "Get started with Gitcoin!"
+msgstr "गिटकोइन के साथ शुरू करें!"
+
+#: dashboard/templates/onboard.html:43
+msgid ""
+"\n"
+"                  <h3>Use gitcoin to find paid work real world problems\n"
+"                     in the blockchain / web3 ecosystem.<br>Receive payment in Ether,\n"
+"                     a leading cryptocurrency</h3>\n"
+"                  <h3>Meet new people. Learn New Skills. Contribute to\n"
+"                     the open source community</h3>\n"
+"                "
+msgstr ""
+"\n"
+"<h3> सशुल्क काम वास्तविक दुनिया की समस्याओं को खोजने के लिए गिटकोइन का उपयोग करें\n"
+"                     ब्लॉकचेन / वेब 3 पारिस्थितिकी तंत्र में। <br> ईथर में भुगतान प्राप्त करें,\n"
+"                     एक अग्रणी क्रिप्टोकुरेंसी </ h3>\n"
+"                  <h3> नए लोगों से मिलें। नए हुनर ​​सीखना। में योगदान\n"
+"                     ओपन सोर्स समुदाय </ h3>"
+
+#: dashboard/templates/onboard.html:53
+msgid "Build"
+msgstr "निर्माण"
+
+#: dashboard/templates/onboard.html:57
+msgid "Get Paid"
+msgstr "भुगतान प्राप्त करना"
+
+#: dashboard/templates/onboard.html:61
+#: dashboard/templates/shared/sidebar_search.html:202
+msgid "Network"
+msgstr "नेटवर्क"
+
+#: dashboard/templates/onboard.html:69
+msgid "You've logged in!"
+msgstr "आपने लॉग इन किया है!"
+
+#: dashboard/templates/onboard.html:77
+msgid "Logout"
+msgstr "लोग आउट"
+
+#: dashboard/templates/onboard.html:88
+msgid "Login with github"
+msgstr "जिथब के साथ लॉगिन करें"
+
+#: dashboard/templates/onboard.html:97
+msgid "Metamask"
+msgstr "Metamask"
+
+#: dashboard/templates/onboard.html:100
+msgid ""
+"\n"
+"                  <h3>Install MetaMask - your secure, encrypted digital wallet\n"
+"                    <br><br>\n"
+"                    You will set up Metamask to take on a project or get paid for the work you've completed on gitcoin\n"
+"                  </h3>\n"
+"                "
+msgstr ""
+"\n"
+"<h3> मेटामास्क इंस्टॉल करें - आपका सुरक्षित, एन्क्रिप्टेड डिजिटल वॉलेट\n"
+"                    <br> <br>\n"
+"                    आप एक परियोजना लेने के लिए मेटामास्क स्थापित करेंगे या आपके द्वारा गिटकोइन पर किए गए काम के लिए भुगतान प्राप्त करेंगे\n"
+"                  </ H3>"
+
+#: dashboard/templates/onboard.html:116
+msgid "Setup Metamask"
+msgstr "सेटअप मेटामास्क"
+
+#: dashboard/templates/onboard.html:122
+msgid "Getting Ether, Your Digital Currency"
+msgstr "ईथर, आपकी डिजिटल मुद्रा प्राप्त करना"
+
+#: dashboard/templates/onboard.html:125
+msgid "How to send ETH to Metamask"
+msgstr "मेटामास्क को ईटीएच कैसे भेजें"
+
+#: dashboard/templates/onboard.html:128
+msgid "FAQ : MetaMask"
+msgstr "अकसर किये गए सवाल: मेटामास्क"
+
+#: dashboard/templates/onboard.html:134
+msgid "What's your skill set?"
+msgstr "आपका कौशल सेट क्या है?"
+
+#: dashboard/templates/onboard.html:137
+msgid "Suggested"
+msgstr "सुझाव दिया"
+
+#: dashboard/templates/onboard.html:141
+msgid "Add Skill"
+msgstr "कौशल जोड़ें"
+
+#: dashboard/templates/onboard.html:143
+msgid "List out : Skill 1, Skill 2 ..."
+msgstr "सूची: कौशल 1, कौशल 2 ..."
+
+#: dashboard/templates/onboard.html:158
+#: dashboard/templates/shared/sidebar_search.html:58
+#: dashboard/templates/shared/sidebar_search.html:115
+#: dashboard/templates/shared/sidebar_search.html:161
+#: dashboard/templates/shared/sidebar_search.html:195
+#: dashboard/templates/shared/sidebar_search.html:236
+msgid "Any"
+msgstr "कोई"
+
+#: dashboard/templates/onboard.html:159
+msgid "Beginner ( < 4 years Experience )"
+msgstr "शुरुआती (<4 साल का अनुभव)"
+
+#: dashboard/templates/onboard.html:160
+msgid "Intermediate ( 4 - 5 years Experience )"
+msgstr "इंटरमीडिएट (4 - 5 साल का अनुभव)"
+
+#: dashboard/templates/onboard.html:161
+msgid "Advanced ( > 5 years Experience )"
+msgstr "उन्नत (> 5 साल का अनुभव)"
+
+#: dashboard/templates/onboard.html:168
+msgid "Build your avatar"
+msgstr "अपना अवतार बनाएं"
+
+#: dashboard/templates/onboard.html:176
+msgid "Previous"
+msgstr "पिछला"
+
+#: dashboard/templates/onboard.html:177
+msgid "Next"
+msgstr "आगामी"
+
+#: dashboard/templates/process_bounty.html:42
+msgid "Accept Bounty Fulfillment"
+msgstr "बाउंटी पूर्ति स्वीकार करें"
+
+#: dashboard/templates/process_bounty.html:47
+msgid "Issue URL:"
+msgstr "समस्या यूआरएल:"
+
+#: dashboard/templates/process_bounty.html:51
+msgid "Bounty Submission:"
+msgstr "बाउंटी सबमिशन:"
+
+#: dashboard/templates/process_bounty.html:53
+msgid "Submission"
+msgstr "प्रस्तुत करने"
+
+#: dashboard/templates/process_bounty.html:64
+msgid "Accept"
+msgstr "स्वीकार करना"
+
+#: dashboard/templates/process_bounty.html:68
+msgid "Having trouble? Click here."
+msgstr "परेशानी है? यहां क्लिक करे।"
+
+#: dashboard/templates/profile_details.html:83
+msgid "has received these tips"
+msgstr "इन सुझावों को प्राप्त किया है"
+
+#: dashboard/templates/profile_details.html:86
+msgid "No tips found"
+msgstr "कोई सुझाव नहीं मिला"
+
+#: dashboard/templates/profile_details.html:91
+msgid "From"
+msgstr "से"
+
+#: dashboard/templates/profile_details.html:94
+msgid "Related Issue"
+msgstr "संबंधित समस्या"
+
+#: dashboard/templates/profile_details.html:97
+#: dashboard/templates/profile_details.html:148
+msgid "Details"
+msgstr "विवरण"
+
+#: dashboard/templates/profile_details.html:106
+msgid "Unknown"
+msgstr "अनजान"
+
+#: dashboard/templates/profile_details.html:134
+msgid "has Participated in these Funded Issues"
+msgstr "इन वित्त पोषित मुद्दों में भाग लिया है"
+
+#: dashboard/templates/profile_details.html:137
+msgid "No funded issues found"
+msgstr "कोई वित्त पोषित मुद्दों नहीं मिला"
+
+#: dashboard/templates/profile_details.html:142
+msgid "Relationship"
+msgstr "संबंध"
+
+#: dashboard/templates/profile_details.html:145
+#: retail/templates/emails/bounty.html:92
+msgid "Status"
+msgstr "स्थिति"
+
+#: dashboard/templates/profile_details.html:151
+#: dashboard/templates/submit_bounty.html:54
+msgid "Amount"
+msgstr "रकम"
+
+#: dashboard/templates/profile_details.html:158
+#: dashboard/templates/profile_details.html:164
+msgid "Worker"
+msgstr "मज़दूर"
+
+#: dashboard/templates/profile_details.html:162
+msgid "Repo Owner"
+msgstr "रेपो मालिक"
+
+#: dashboard/templates/profile_details.html:196
+#, python-format
+msgid "%(r.stargazers_count)s stars"
+msgstr "%(r.stargazers_count)s सितारों"
+
+#: dashboard/templates/profile_details.html:208
+msgid "No repos"
+msgstr "कोई प्रतिनिधि नहीं"
+
+#: dashboard/templates/shared/bounty_def.html:24 dashboard/views.py:516
+#: dashboard/views.py:692 dashboard/views.py:832
+#: retail/templates/index.html:158 retail/templates/save_search.html:29
+msgid "Be the first to know about new funded issues."
+msgstr "नए वित्त पोषित मुद्दों के बारे में जानने वाले पहले व्यक्ति बनें।"
+
+#: dashboard/templates/shared/bounty_nav.html:23
+#: dashboard/templates/shared/sidebar_search.html:28
+#: dashboard/templates/shared/status_tooltip.html:24
+msgid "Open"
+msgstr "खुला"
+
+#: dashboard/templates/shared/bounty_nav.html:25
+msgid "Create Work"
+msgstr "काम बनाएं"
+
+#: dashboard/templates/shared/bounty_nav.html:33
+msgid "Start Work"
+msgstr "काम शुरु करें"
+
+#: dashboard/templates/shared/bounty_nav.html:47
+#: dashboard/templates/shared/sidebar_search.html:43
+#: dashboard/templates/shared/status_tooltip.html:42
+msgid "Work Done"
+msgstr "काम किया"
+
+#: dashboard/templates/shared/bounty_nav.html:49
+msgid "Accept Work"
+msgstr "कार्य स्वीकार करें"
+
+#: dashboard/templates/shared/github_link.html:19
+msgid "Github PR Link"
+msgstr "गिथब पीआर लिंक"
+
+#: dashboard/templates/shared/github_username.html:19
+msgid "Github Username"
+msgstr "गिथूब उपयोगकर्ता नाम"
+
+#: dashboard/templates/shared/github_username.html:21
+#: dashboard/templates/shared/nav_auth.html:77
+#: faucet/templates/faucet_form.html:60
+msgid "Login"
+msgstr "लॉग इन करें"
+
+#: dashboard/templates/shared/hours_worked.html:19
+msgid "Hours Worked"
+msgstr "घन्टे काम किया"
+
+#: dashboard/templates/shared/name.html:19
+msgid "Full Name"
+msgstr "पूरा नाम"
+
+#: dashboard/templates/shared/nav_auth.html:28
+#: dashboard/templates/yge/base.html:59 dashboard/templates/yge/send1.html:37
+#: dashboard/views.py:71 dashboard/views.py:464
+msgid "Send Tip"
+msgstr "सुझाव िलखो"
+
+#: dashboard/templates/shared/nav_auth.html:32
+#: dashboard/templates/submit_bounty.html:148
+#: retail/templates/getgitcoin.html:50
+msgid "Fund Issue"
+msgstr "फंड मुद्दा"
+
+#: dashboard/templates/shared/nav_auth.html:37 retail/templates/about.html:227
+#: retail/templates/about.html:247 retail/templates/index.html:151
+#: retail/templates/index.html:310 retail/views.py:479
+msgid "Get Started"
+msgstr "शुरू हो जाओ"
+
+#: dashboard/templates/shared/nav_auth.html:43
+msgid "View Profile"
+msgstr "प्रोफाइल देखिये"
+
+#: dashboard/templates/shared/nav_auth.html:47
+msgid "Manage Settings"
+msgstr "सेटिंग्स प्रबंधित करें"
+
+#: dashboard/templates/shared/nav_auth.html:54
+#, python-format
+msgid "Claim $%(tip.value_in_usdt_now)s Tip "
+msgstr "दावा $%(tip.value_in_usdt_now)s एस टिप"
+
+#: dashboard/templates/shared/nav_auth.html:62
+msgid "Administration"
+msgstr "शासन प्रबंध"
+
+#: dashboard/templates/shared/nav_auth.html:68
+msgid "Log Out"
+msgstr "लोग आउट"
+
+#: dashboard/templates/shared/network_status.html:20
+#: faucet/templates/shared/faucet_network_status.html:22
+msgid "Enabled"
+msgstr "सक्रिय"
+
+#: dashboard/templates/shared/network_status.html:22
+msgid "Available"
+msgstr "उपलब्ध"
+
+#: dashboard/templates/shared/newsletter.html:28
+msgid "Join Our Newsletter !"
+msgstr "हमारे समाचार पत्र से जुड जाओ !"
+
+#: dashboard/templates/shared/newsletter.html:31
+msgid "Emails once a week max, & we never sell your data"
+msgstr "सप्ताह में एक बार अधिकतम ईमेल, और हम आपका डेटा कभी नहीं बेचते हैं"
+
+#: dashboard/templates/shared/no_metamask_error.html:22
+#: faucet/templates/shared/faucet_no_metamask_error.html:25
+msgid "To continue, enable Web3."
+msgstr "जारी रखने के लिए, वेब 3 सक्षम करें।"
+
+#: dashboard/templates/shared/no_metamask_error.html:24
+#: faucet/templates/shared/faucet_no_metamask_error.html:27
+msgid ""
+"Web3 is the same web you know and love, but with Ethereum-enabled "
+"functionality."
+msgstr ""
+"वेब 3 वही वेब है जिसे आप जानते हैं और प्यार करते हैं, लेकिन एथेरियम-सक्षम "
+"कार्यक्षमता के साथ।"
+
+#: dashboard/templates/shared/no_metamask_error.html:27
+msgid ""
+"The fastest and easiest way to add Web3 to your browser is to install <a "
+"target=\"_blank\" rel=\"noopener noreferrer\" "
+"href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\">Metamask</a>."
+" To continue submitting a bounty, please install Metamask and return to this"
+" page."
+msgstr ""
+"अपने ब्राउज़र में वेब 3 जोड़ने का सबसे तेज़ और आसान तरीका है <a "
+"target=\"_blank\" rel=\"noopener noreferrer\" "
+"href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\"> "
+"मेटामास्क < / a>। बक्षीस जमा करना जारी रखने के लिए, कृपया मेटामास्क इंस्टॉल "
+"करें और इस पृष्ठ पर वापस आएं।"
+
+#: dashboard/templates/shared/no_metamask_error.html:30
+#: faucet/templates/shared/faucet_no_metamask_error.html:33
+msgid "Install MetaMask"
+msgstr "मेटामास्क स्थापित करें"
+
+#: dashboard/templates/shared/no_metamask_error.html:34
+#: dashboard/templates/shared/unlock_metamask.html:31
+#: dashboard/templates/shared/zero_balance_error.html:37
+#: faucet/templates/shared/faucet_no_metamask_error.html:37
+msgid "Can't get web3 to work?  Get help here."
+msgstr "काम करने के लिए web3 नहीं मिल सकता है? यहां सहायता पाएं।"
+
+#: dashboard/templates/shared/notification_email.html:19
+msgid "Notification Email"
+msgstr "अधिसूचना ईमेल"
+
+#: dashboard/templates/shared/search_bar.html:27
+msgid "Search"
+msgstr "खोज"
+
+#: dashboard/templates/shared/search_bar.html:30
+msgid "SORT"
+msgstr "SORT"
+
+#: dashboard/templates/shared/search_bar.html:32
+msgid "Created: Recent"
+msgstr "बनाया गया: हालिया"
+
+#: dashboard/templates/shared/search_bar.html:33
+msgid "Created: Oldest"
+msgstr "बनाया गया: सबसे पुराना"
+
+#: dashboard/templates/shared/search_bar.html:34
+msgid "Value: Highest"
+msgstr "मूल्य: सर्वोच्च"
+
+#: dashboard/templates/shared/search_bar.html:35
+msgid "Value: Lowest"
+msgstr "मूल्य: सबसे कम"
+
+#: dashboard/templates/shared/search_bar.html:44
+#: retail/templates/save_search.html:41
+msgid "Save Search"
+msgstr "खोज संग्रहित करें"
+
+#: dashboard/templates/shared/send_tip_nav.html:23
+msgid "Sent"
+msgstr "भेज दिया"
+
+#: dashboard/templates/shared/send_tip_nav.html:25
+#: dashboard/templates/yge/send2.html:103
+msgid "Send"
+msgstr "भेजना"
+
+#: dashboard/templates/shared/send_tip_nav.html:31
+msgid "Fulfilled"
+msgstr "पूरा"
+
+#: dashboard/templates/shared/send_tip_nav.html:33
+msgid "Fulfill"
+msgstr "पूरा"
+
+#: dashboard/templates/shared/show_information_publicly.html:19
+msgid "It's okay to show this information publicly on Gitcoin"
+msgstr "गिटकोइन पर सार्वजनिक रूप से यह जानकारी दिखाना ठीक है"
+
+#: dashboard/templates/shared/sidebar_profile.html:21
+msgid "Edit Profile"
+msgstr "प्रोफाइल एडिट करें"
+
+#: dashboard/templates/shared/sidebar_profile.html:23
+msgid "Change Picture"
+msgstr "चित्र बदलो"
+
+#: dashboard/templates/shared/sidebar_profile.html:24
+msgid "Change Name"
+msgstr "नाम परिवर्तित करें"
+
+#: dashboard/templates/shared/sidebar_profile.html:25
+msgid "Change Expertise"
+msgstr "विशेषज्ञता बदलें"
+
+#: dashboard/templates/shared/sidebar_profile.html:29
+msgid "Browse Other Users"
+msgstr "अन्य उपयोगकर्ताओं को ब्राउज़ करें"
+
+#: dashboard/templates/shared/sidebar_profile.html:31
+msgid "By Location"
+msgstr "स्थान से"
+
+#: dashboard/templates/shared/sidebar_profile.html:32
+msgid "By Language"
+msgstr "भाषा से"
+
+#: dashboard/templates/shared/sidebar_profile.html:37
+msgid "CLEAR FIELDS"
+msgstr "साफ क्षेत्र"
+
+#: dashboard/templates/shared/sidebar_search.html:23
+msgid "PROJECT STATUS"
+msgstr "परियोजना की स्थिति"
+
+#: dashboard/templates/shared/sidebar_search.html:48
+#: dashboard/templates/shared/status_tooltip.html:51
+msgid "Expired"
+msgstr "समय सीमा समाप्त"
+
+#: dashboard/templates/shared/sidebar_search.html:53
+msgid "Cancelled"
+msgstr "रद्द"
+
+#: dashboard/templates/shared/sidebar_search.html:65
+msgid "MY PROJECTS"
+msgstr "मेरे परियोजनाएं"
+
+#: dashboard/templates/shared/sidebar_search.html:69
+msgid "Created By Me"
+msgstr "मेरे द्वारा बनाई गई"
+
+#: dashboard/templates/shared/sidebar_search.html:73
+msgid "Started By Me"
+msgstr "मेरे द्वारा शुरू किया गया"
+
+#: dashboard/templates/shared/sidebar_search.html:77
+msgid "Fulfilled By Me"
+msgstr "मेरे द्वारा पूरा"
+
+#: dashboard/templates/shared/sidebar_search.html:81
+#: dataviz/templates/stats.html:33
+msgid "All"
+msgstr "सब"
+
+#: dashboard/templates/shared/sidebar_search.html:94
+#: dashboard/templates/submit_bounty.html:108
+msgid "Beginner"
+msgstr "शुरुआती"
+
+#: dashboard/templates/shared/sidebar_search.html:101
+#: dashboard/templates/submit_bounty.html:109
+msgid "Intermediate"
+msgstr "मध्यम"
+
+#: dashboard/templates/shared/sidebar_search.html:108
+#: dashboard/templates/submit_bounty.html:110
+#: dashboard/templates/yge/send2.html:56 dashboard/views.py:967
+msgid "Advanced"
+msgstr "उन्नत"
+
+#: dashboard/templates/shared/sidebar_search.html:122
+msgid "Tech Stack"
+msgstr "टेक स्टैक"
+
+#: dashboard/templates/shared/sidebar_search.html:127
+#: dashboard/templates/submit_bounty.html:115
+#: retail/templates/emails/bounty.html:121
+msgid "Project Length"
+msgstr "परियोजना की लंबाई"
+
+#: dashboard/templates/shared/sidebar_search.html:133
+#: dashboard/templates/submit_bounty.html:116
+msgid "Hours"
+msgstr "घंटे"
+
+#: dashboard/templates/shared/sidebar_search.html:140
+#: dashboard/templates/submit_bounty.html:117
+msgid "Days"
+msgstr "दिन"
+
+#: dashboard/templates/shared/sidebar_search.html:147
+#: dashboard/templates/submit_bounty.html:118
+msgid "Weeks"
+msgstr "सप्ताह"
+
+#: dashboard/templates/shared/sidebar_search.html:154
+#: dashboard/templates/submit_bounty.html:119
+msgid "Months"
+msgstr "महीने"
+
+#: dashboard/templates/shared/sidebar_search.html:168
+msgid "Type"
+msgstr "प्रकार"
+
+#: dashboard/templates/shared/sidebar_search.html:174
+#: dashboard/templates/submit_bounty.html:125
+msgid "Bug"
+msgstr "बग"
+
+#: dashboard/templates/shared/sidebar_search.html:181
+#: dashboard/templates/submit_bounty.html:126
+msgid "Feature"
+msgstr "फ़ीचर"
+
+#: dashboard/templates/shared/sidebar_search.html:188
+#: dashboard/templates/submit_bounty.html:127
+msgid "Security"
+msgstr "सुरक्षा"
+
+#: dashboard/templates/shared/sidebar_search.html:208
+msgid "Custom"
+msgstr "रिवाज"
+
+#: dashboard/templates/shared/sidebar_search.html:215
+msgid "Ropsten"
+msgstr "Ropsten"
+
+#: dashboard/templates/shared/sidebar_search.html:222
+msgid "Rinkeby"
+msgstr "Rinkeby"
+
+#: dashboard/templates/shared/sidebar_search.html:229
+msgid "Mainnet"
+msgstr "Mainnet"
+
+#: dashboard/templates/shared/sidebar_search.html:243
+msgid "Reset"
+msgstr "रीसेट"
+
+#: dashboard/templates/shared/status_tooltip.html:19
+msgid "Possible Status"
+msgstr "संभावित स्थिति"
+
+#: dashboard/templates/shared/status_tooltip.html:24
+msgid "A funded bounty is available for anyone to work on."
+msgstr "किसी के लिए काम करने के लिए एक वित्त पोषित बक्षीस उपलब्ध है।"
+
+#: dashboard/templates/shared/status_tooltip.html:30
+msgid "Work has been started by at least one person."
+msgstr "कम से कम एक व्यक्ति द्वारा कार्य शुरू किया गया है।"
+
+#: dashboard/templates/shared/status_tooltip.html:36
+msgid "Completed work has been submitted by for review."
+msgstr "पूरा काम समीक्षा के लिए जमा कर दिया गया है।"
+
+#: dashboard/templates/shared/status_tooltip.html:42
+msgid "The submitted project has been accepted and the funds have been paid."
+msgstr "प्रस्तुत परियोजना स्वीकार कर ली गई है और धन का भुगतान किया गया है।"
+
+#: dashboard/templates/shared/status_tooltip.html:46
+msgid "Cancellation Status"
+msgstr "रद्दीकरण की स्थिति"
+
+#: dashboard/templates/shared/status_tooltip.html:51
+msgid "Work was not completed by the expiration date."
+msgstr "कार्य समाप्ति तिथि से पूरा नहीं हुआ था।"
+
+#: dashboard/templates/shared/status_tooltip.html:57
+msgid "Canceled"
+msgstr "रद्द"
+
+#: dashboard/templates/shared/status_tooltip.html:57
+msgid "A funded bounty was  cancelled by the owner of the project"
+msgstr "परियोजना के मालिक द्वारा एक वित्त पोषित बकाया रद्द कर दिया गया था"
+
+#: dashboard/templates/shared/unlock_metamask.html:22
+#: dashboard/templates/shared/zero_balance_error.html:22
+#: faucet/templates/shared/faucet_unlock_metamask.html:25
+msgid "You're almost there!"
+msgstr "तुम लगभग वहां थे!"
+
+#: dashboard/templates/shared/unlock_metamask.html:24
+#: faucet/templates/shared/faucet_unlock_metamask.html:27
+msgid "In order to continue, you'll need to unlock metamask."
+msgstr "जारी रखने के लिए, आपको मेटामास्क अनलॉक करने की आवश्यकता होगी।"
+
+#: dashboard/templates/shared/unlock_metamask.html:27
+#: faucet/templates/shared/faucet_unlock_metamask.html:30
+msgid "Please unlock Metamask and refresh the page."
+msgstr "कृपया मेटामास्क अनलॉक करें और पृष्ठ को रीफ्रेश करें।"
+
+#: dashboard/templates/shared/wallet_estimate.html:20
+msgid "Warning: the ethereum network is quite congested at the moment."
+msgstr "चेतावनी: इस समय ईथरियम नेटवर्क काफी भीड़ में है।"
+
+#: dashboard/templates/shared/wallet_estimate.html:20
+msgid "Stats"
+msgstr "आँकड़े"
+
+#: dashboard/templates/shared/wallet_estimate.html:22
+msgid ""
+"The following MetaMask settings should give a <span id=\"confTime\">5</span>"
+" min confirmation for <span id=\"ethAmount\">unknown</span> ETH (<span "
+"id=\"usdAmount\">unknown</span> USD)"
+msgstr ""
+"निम्नलिखित मेटामास्क सेटिंग्स को <span id = \"confTime\"> 5 </ span> <span "
+"id = \"ethAmount\"> अज्ञात </ span> ETH (<span id = \"usdAmount\"> अज्ञात </"
+" span के लिए न्यूनतम पुष्टि देना चाहिए > यूएसडी)"
+
+#: dashboard/templates/shared/wallet_estimate.html:22
+#: dashboard/templates/shared/wallet_estimate.html:24
+msgid "view graph"
+msgstr "ग्राफ देखें"
+
+#: dashboard/templates/shared/wallet_estimate.html:24
+msgid ""
+"The following Trust settings should give a <span id=\"confTime\">5</span> "
+"min confirmation for <span id=\"ethAmount\">unknown</span> ETH (<span "
+"id=\"usdAmount\">unknown</span> USD)"
+msgstr ""
+"निम्नलिखित ट्रस्ट सेटिंग्स को <span id = \"confTime\"> 5 </ span> <span id ="
+" \"ethAmount\"> अज्ञात </ span> ETH (<span id = \"usdAmount\"> अज्ञात </ "
+"span के लिए न्यूनतम पुष्टि देना चाहिए > यूएसडी)"
+
+#: dashboard/templates/shared/wallet_estimate.html:28
+msgid "Gas Limit (units)"
+msgstr "गैस सीमा (इकाइयां)"
+
+#: dashboard/templates/shared/wallet_estimate.html:32
+msgid "Gas Price (gwei)"
+msgstr "गैस मूल्य (gwei)"
+
+#: dashboard/templates/shared/wallet_estimate.html:36
+#: retail/templates/shared/footer.html:30 retail/templates/shared/nav.html:41
+#: retail/views.py:469
+msgid "Help"
+msgstr "मदद"
+
+#: dashboard/templates/shared/wallet_estimate.html:39
+msgid "Why do I need metamask / gas?"
+msgstr "मुझे मेटामास्क / गैस की आवश्यकता क्यों है?"
+
+#: dashboard/templates/shared/wallet_estimate.html:42
+msgid "What gas price should I use?"
+msgstr "मुझे किस गैस की कीमत का उपयोग करना चाहिए?"
+
+#: dashboard/templates/shared/wallet_estimate.html:45
+msgid "What are current network condtions?"
+msgstr "वर्तमान नेटवर्क कंडेंशन क्या हैं?"
+
+#: dashboard/templates/shared/zero_balance_error.html:24
+msgid "In order to continue, you'll need some Ether."
+msgstr "जारी रखने के लिए, आपको कुछ ईथर की आवश्यकता होगी।"
+
+#: dashboard/templates/shared/zero_balance_error.html:27
+msgid ""
+"'Ether' is a digital asset that can be used to pay for the computational "
+"resources needed to run an application or program. In this case, Gitcoin."
+msgstr ""
+"'ईथर' एक डिजिटल संपत्ति है जिसका उपयोग किसी एप्लिकेशन या प्रोग्राम चलाने के "
+"लिए आवश्यक कम्प्यूटेशनल संसाधनों के लिए भुगतान करने के लिए किया जा सकता है। "
+"इस मामले में, गिटकोइन।"
+
+#: dashboard/templates/shared/zero_balance_error.html:30
+msgid "The easiest way to get Ether is to request it via the Gitcoin Faucet:"
+msgstr "ईथर पाने का सबसे आसान तरीका गिटकोइन नल के माध्यम से अनुरोध करना है:"
+
+#: dashboard/templates/shared/zero_balance_error.html:33
+msgid "View Faucet"
+msgstr "नल देखें"
+
+#: dashboard/templates/submit_bounty.html:45
+msgid "Fund an Issue"
+msgstr "एक मुद्दा निधि"
+
+#: dashboard/templates/submit_bounty.html:72
+msgid "Issue Title"
+msgstr "समस्या शीर्षक"
+
+#: dashboard/templates/submit_bounty.html:76
+msgid "Issue Description"
+msgstr "मुदे का विवरण"
+
+#: dashboard/templates/submit_bounty.html:80
+msgid "Keywords"
+msgstr "कीवर्ड"
+
+#: dashboard/templates/submit_bounty.html:84
+msgid "Expires in"
+msgstr "में समाप्त होने वाला है"
+
+#: dashboard/templates/submit_bounty.html:87
+msgid "1 day"
+msgstr "एक दिन"
+
+#: dashboard/templates/submit_bounty.html:88
+msgid "3 days"
+msgstr "3 दिन"
+
+#: dashboard/templates/submit_bounty.html:89
+msgid "1 week"
+msgstr "1 सप्ताह"
+
+#: dashboard/templates/submit_bounty.html:90
+msgid "2 weeks"
+msgstr "2 सप्ताह"
+
+#: dashboard/templates/submit_bounty.html:91
+msgid "1 month"
+msgstr "1 महीना"
+
+#: dashboard/templates/submit_bounty.html:92
+msgid "3 months"
+msgstr "3 महीने"
+
+#: dashboard/templates/submit_bounty.html:93
+msgid "6 months"
+msgstr "6 महीने"
+
+#: dashboard/templates/submit_bounty.html:94
+msgid "1 year"
+msgstr "1 साल"
+
+#: dashboard/templates/submit_bounty.html:95
+#: dashboard/templates/yge/send2.html:86
+msgid "Never"
+msgstr "कभी नहीँ"
+
+#: dashboard/templates/submit_bounty.html:101 dashboard/views.py:686
+msgid "Issue Details"
+msgstr "अंक विवरण"
+
+#: dashboard/templates/submit_bounty.html:124
+msgid "Bounty Type"
+msgstr "बाउंटी प्रकार"
+
+#: dashboard/templates/submit_bounty.html:128
+#: retail/templates/whitepaper_new.html:127
+msgid "Other"
+msgstr "अन्य"
+
+#: dashboard/templates/toolbox.html:37 dashboard/views.py:1008
+msgid "Toolbox"
+msgstr "उपकरण बॉक्स"
+
+#: dashboard/templates/toolbox.html:38
+msgid "Make Gitcoin your own by enabling the tools that suit your needs."
+msgstr "अपनी जरूरतों के अनुसार उपकरणों को सक्षम करके गिटकोइन को अपना बनाएं।"
+
+#: dashboard/templates/toolbox.html:47
+msgid "Table of Contents"
+msgstr "विषय - सूची"
+
+#: dashboard/templates/yge/receive.html:46
+#: dashboard/templates/yge/redeem_coin.html:45
+#: ethos/templates/redeem_ethos.html:45
+msgid "Loading"
+msgstr "लोड हो रहा है"
+
+#: dashboard/templates/yge/receive.html:48
+#: dashboard/templates/yge/redeem_coin.html:47
+#: ethos/templates/redeem_ethos.html:47
+msgid "waiting for web3..."
+msgstr "वेब 3 के लिए इंतजार कर रहा है ..."
+
+#: dashboard/templates/yge/receive.html:51
+msgid "You've Got ETH!"
+msgstr "आपको एटी मिल गया है!"
+
+#: dashboard/templates/yge/receive.html:52
+#: dashboard/templates/yge/redeem_coin.html:51
+#: ethos/templates/redeem_ethos.html:51
+msgid "To claim it, please install MetaMask and refresh the page."
+msgstr ""
+"इसका दावा करने के लिए, कृपया मेटामास्क इंस्टॉल करें और पृष्ठ को रीफ्रेश "
+"करें।"
+
+#: dashboard/templates/yge/receive.html:53
+#: dashboard/templates/yge/redeem_coin.html:52
+#: ethos/templates/redeem_ethos.html:52
+msgid "Install Metamask"
+msgstr "मेटामास्क स्थापित करें"
+
+#: dashboard/templates/yge/receive.html:56
+#: dashboard/templates/yge/redeem_coin.html:55
+#: ethos/templates/redeem_ethos.html:55
+msgid "What is Metamask?"
+msgstr "मेटामास्क क्या है?"
+
+#: dashboard/templates/yge/receive.html:60
+msgid "Receive Ethereum Now."
+msgstr "अब एथेरियम प्राप्त करें।"
+
+#: dashboard/templates/yge/receive.html:68
+msgid "Forward it to a permanent address:"
+msgstr "इसे स्थायी पते पर अग्रेषित करें:"
+
+#: dashboard/templates/yge/receive.html:74
+#: dashboard/templates/yge/redeem_coin.html:67
+msgid "Claim"
+msgstr "दावा"
+
+#: dashboard/templates/yge/receive.html:74 retail/templates/getgitcoin.html:57
+msgid "Tip"
+msgstr "टिप"
+
+#: dashboard/templates/yge/receive.html:79
+#: dashboard/templates/yge/redeem_coin.html:72
+msgid "Congrats!"
+msgstr "बधाई!"
+
+#: dashboard/templates/yge/receive.html:80
+msgid "You've received Ethereum via transaction <span id=\"trans_id\"></span>."
+msgstr ""
+"आपको लेनदेन के माध्यम से एथेरियम प्राप्त हुआ है <span id = \"trans_id\"> </ "
+"span>।"
+
+#: dashboard/templates/yge/redeem_coin.html:50
+#: dashboard/templates/yge/redeem_coin.html:59
+msgid "You've got 1 COLO!"
+msgstr "आपके पास 1 कोलो है!"
+
+#: dashboard/templates/yge/redeem_coin.html:61
+msgid "Enter a forwarding address"
+msgstr "एक अग्रेषण पता दर्ज करें"
+
+#: dashboard/templates/yge/redeem_coin.html:73
+msgid "You've redeemed 1 COLO."
+msgstr "आपने 1 कोलो रिडीम किया है।"
+
+#: dashboard/templates/yge/send1.html:38
+msgid "It's Fast.  It's Easy.  It's Free.️"
+msgstr "ये तेज़ है। यह आसान है। यह मुफ़्त है"
+
+#: dashboard/templates/yge/send1.html:39
+msgid "Supports any github username or email address"
+msgstr "किसी भी github उपयोगकर्ता नाम या ईमेल पते का समर्थन करता है"
+
+#: dashboard/templates/yge/send1.html:42
+msgid "receipient"
+msgstr "receipient"
+
+#: dashboard/templates/yge/send1.html:43 dashboard/templates/yge/send1.html:44
+#: dashboard/templates/yge/send1.html:45 dashboard/templates/yge/send1.html:46
+msgid "receipients"
+msgstr "receipients"
+
+#: dashboard/templates/yge/send1.html:49
+msgid "Send Ether"
+msgstr "ईथर भेजें"
+
+#: dashboard/templates/yge/send2.html:41
+msgid "Send Tip."
+msgstr "सुझाव िलखो।"
+
+#: dashboard/templates/yge/send2.html:44
+msgid "Amount of"
+msgstr "की राशि"
+
+#: dashboard/templates/yge/send2.html:52
+msgid "To Github Username"
+msgstr "Github उपयोगकर्ता नाम के लिए"
+
+#: dashboard/templates/yge/send2.html:60
+msgid "Related Github Issue URL"
+msgstr "संबंधित गीथूब अंक यूआरएल"
+
+#: dashboard/templates/yge/send2.html:60 dashboard/templates/yge/send2.html:64
+#: dashboard/templates/yge/send2.html:68 dashboard/templates/yge/send2.html:72
+#: dashboard/templates/yge/send2.html:90 dashboard/templates/yge/send2.html:94
+msgid "optional"
+msgstr "ऐच्छिक"
+
+#: dashboard/templates/yge/send2.html:64
+msgid "To Email address"
+msgstr "ईमेल पते पर"
+
+#: dashboard/templates/yge/send2.html:68
+msgid "From Name"
+msgstr "नाम से"
+
+#: dashboard/templates/yge/send2.html:72
+msgid "From Email"
+msgstr "ई - मेल से"
+
+#: dashboard/templates/yge/send2.html:76
+msgid "Expires"
+msgstr "समय-सीमा समाप्त"
+
+#: dashboard/templates/yge/send2.html:78 marketing/mails.py:338
+msgid "day"
+msgstr "दिन"
+
+#: dashboard/templates/yge/send2.html:79
+msgid "days"
+msgstr "दिन"
+
+#: dashboard/templates/yge/send2.html:80
+msgid "week"
+msgstr "सप्ताह"
+
+#: dashboard/templates/yge/send2.html:81
+msgid "weeks"
+msgstr "सप्ताह"
+
+#: dashboard/templates/yge/send2.html:82
+msgid "month"
+msgstr "महीना"
+
+#: dashboard/templates/yge/send2.html:83 dashboard/templates/yge/send2.html:84
+msgid "months"
+msgstr "महीने"
+
+#: dashboard/templates/yge/send2.html:85
+msgid "year"
+msgstr "साल"
+
+#: dashboard/templates/yge/send2.html:90
+msgid "Private Comments"
+msgstr "निजी टिप्पणियां"
+
+#: dashboard/templates/yge/send2.html:94
+msgid "Public Comments"
+msgstr "सार्वजनिक टिप्पणियां"
+
+#: dashboard/templates/yge/send2.html:101
+msgid ""
+"I understand &amp; agree to the <a href=\"https://gitcoin.co/terms\">terms "
+"of service</a>."
+msgstr ""
+"मैं समझता हूं & amp; <a href=\"https://gitcoin.co/terms\"> सेवा की शर्तों "
+"</a> से सहमत हैं।"
+
+#: dashboard/templates/yge/send2.html:106
+msgid "Woo hoo!"
+msgstr "वू हू!"
+
+#: dashboard/templates/yge/send2.html:107
+msgid ""
+"Your <span id=\"tokenName\">ETH</span> has been sent <a href=\"\" "
+"target=\"_blank\" rel=\"noopener noreferrer\" id=\"trans_link\">to the "
+"blockchain</a>."
+msgstr ""
+"आपका <span id = \"tokenName\"> ETH </ span> को अवरोधित किया गया है <a "
+"href=\"\" target=\"_blank\" rel=\"noopener noreferrer\" id=\"trans_link\"> "
+"ब्लॉकचेन </a> पर।"
+
+#: dashboard/templates/yge/send2.html:109
+msgid "The transaction is still pending."
+msgstr "लेनदेन अभी भी लंबित है।"
+
+#: dashboard/templates/yge/send2.html:109
+msgid "This page will auto-update when the transaction is confirmed"
+msgstr "लेनदेन की पुष्टि होने पर यह पृष्ठ स्वतः अपडेट हो जाएगा"
+
+#: dashboard/templates/yge/send2.html:109
+msgid "but you can close the browser window if you want"
+msgstr "लेकिन यदि आप चाहें तो ब्राउज़र विंडो बंद कर सकते हैं"
+
+#: dashboard/templates/yge/send2.html:114
+msgid "<span id=\"new_username\"></span> has been notified"
+msgstr "<span id = \"new_username\"> </ span> को अधिसूचित किया गया है"
+
+#: dashboard/templates/yge/send2.html:115
+msgid "with instructions about how to receive their tip."
+msgstr "उनके टिप को प्राप्त करने के निर्देशों के साथ।"
+
+#: dashboard/templates/yge/send2.html:117
+msgid "Start Over"
+msgstr "प्रारंभ करें"
+
+#: dashboard/views.py:134
+msgid "Add Interest"
+msgstr "ब्याज जोड़ें"
+
+#: dashboard/views.py:169 dashboard/views.py:245 faucet/views.py:61
+msgid "You must be authenticated via github to use this feature!"
+msgstr ""
+"इस सुविधा का उपयोग करने के लिए आपको गितब के माध्यम से प्रमाणित होना चाहिए!"
+
+#: dashboard/views.py:183
+#, python-brace-format
+msgid "You may only work on max of {num_issues} issues at once."
+msgstr "आप केवल अधिकतम {num_issues} समस्याओं पर एक बार काम कर सकते हैं।"
+
+#: dashboard/views.py:189
+msgid ""
+"Because a staff member has had to remove you from a bounty in the past, you "
+"are unable to start more work at this time. Please contact support."
+msgstr ""
+"चूंकि एक कर्मचारी सदस्य को आपको अतीत में एक बक्षीस से हटाना पड़ा है, इसलिए "
+"आप इस समय अधिक काम शुरू करने में असमर्थ हैं। कृपया समर्थन से संपर्क करें।"
+
+#: dashboard/views.py:196 dashboard/views.py:212
+msgid "You have already expressed interest in this bounty!"
+msgstr "आपने इस बक्षीस में पहले से ही रुचि व्यक्त की है!"
+
+#: dashboard/views.py:264
+msgid "You haven't expressed interest on this bounty."
+msgstr "आपने इस बक्षीस पर ब्याज व्यक्त नहीं किया है।"
+
+#: dashboard/views.py:348
+msgid "Tip has been received"
+msgstr "युक्ति प्राप्त की गई है"
+
+#: dashboard/views.py:374
+msgid "Receive Tip"
+msgstr "टिप प्राप्त करें"
+
+#: dashboard/views.py:404
+msgid "Notification has been sent"
+msgstr "अधिसूचना भेजी गई है"
+
+#: dashboard/views.py:457
+msgid ""
+"Uh oh! No email addresses for this user were found via Github API.  Youll "
+"have to let the tipee know manually about their tip."
+msgstr ""
+"उह ओह! इस उपयोगकर्ता के लिए कोई ईमेल पता नहीं मिला Github API के माध्यम से। "
+"आपको टिप को मैन्युअल रूप से उनकी टिप के बारे में जानना होगा।"
+
+#: dashboard/views.py:476
+msgid "Onboarding Flow"
+msgstr "ऑनबोर्डिंग प्रवाह"
+
+#: dashboard/views.py:484 retail/templates/shared/footer.html:26
+#: retail/templates/shared/nav.html:37
+msgid "Issue Explorer"
+msgstr "समस्या एक्सप्लोरर"
+
+#: dashboard/views.py:510
+msgid "Create Funded Issue"
+msgstr "वित्त पोषित मुद्दा बनाएं"
+
+#: dashboard/views.py:546
+msgid "Process Issue"
+msgstr "प्रक्रिया समस्या"
+
+#: dashboard/views.py:613
+msgid "Increase Bounty"
+msgstr "बाउंटी बढ़ाएं"
+
+#: dashboard/views.py:687
+msgid "Funded Issue Details | Gitcoin"
+msgstr "वित्त पोषित अंक विवरण | Gitcoin"
+
+#: dashboard/views.py:724
+#, python-brace-format
+msgid "Warning messages have been snoozed for {snooze_days} days"
+msgstr "{snooze_days} दिनों के लिए चेतावनी संदेश स्नूज़ किए गए हैं"
+
+#: dashboard/views.py:726
+msgid "Only the funder of this bounty may snooze warnings."
+msgstr "केवल इस बक्षीस के निधि चेतावनी को याद कर सकते हैं।"
+
+#: dashboard/views.py:963
+msgid "Basics"
+msgstr "मूल बातें"
+
+#: dashboard/views.py:964 dashboard/views.py:1011
+msgid "Accelerate your dev workflow with Gitcoin's incentivization tools."
+msgstr "गिटकोइन के प्रोत्साहन उपकरण के साथ अपने देव वर्कफ़्लो को तेज करें।"
+
+#: dashboard/views.py:968
+msgid "Take your OSS game to the next level!"
+msgstr "अपने ओएसएस खेल को अगले स्तर पर ले जाएं!"
+
+#: dashboard/views.py:971
+msgid "Community"
+msgstr "समुदाय"
+
+#: dashboard/views.py:972
+msgid "Friendship, mentorship, and community are all part of the process."
+msgstr "मैत्री, परामर्श, और समुदाय प्रक्रिया का हिस्सा हैं।"
+
+#: dashboard/views.py:975
+msgid "Tools to BUIDL Gitcoin"
+msgstr "BUIDL Gitcoin के लिए उपकरण"
+
+#: dashboard/views.py:976
+msgid "Gitcoin is built using Gitcoin.  Purdy cool, huh? "
+msgstr "गिटकोइन गिटकोइन का उपयोग करके बनाया गया है। शांत ठंडा, हुह?"
+
+#: dashboard/views.py:979
+msgid "Tools in Alpha"
+msgstr "अल्फा में उपकरण"
+
+#: dashboard/views.py:980
+msgid "These fresh new tools are looking for someone to test ride them!"
+msgstr "ये ताजा नए उपकरण किसी को सवारी करने के लिए किसी की तलाश कर रहे हैं!"
+
+#: dashboard/views.py:983
+msgid "Tools Coming Soon"
+msgstr "उपकरण जल्द ही आ रहा है"
+
+#: dashboard/views.py:984
+msgid ""
+"These tools will be ready soon.  They'll get here sooner if you help BUIDL "
+"them :)"
+msgstr ""
+"ये उपकरण जल्द ही तैयार हो जाएंगे। यदि आप उन्हें बुडेल की मदद करते हैं तो वे "
+"जल्द ही यहां आ जाएंगे :)"
+
+#: dashboard/views.py:987
+msgid "Just for Fun"
+msgstr "सिर्फ मनोरंजन के लिए"
+
+#: dashboard/views.py:988
+msgid "Some tools that the community built *just because* they should exist."
+msgstr "कुछ उपकरण जो समुदाय ने बनाया * बस क्योंकि * वे मौजूद होना चाहिए।"
+
+#: dashboard/views.py:1009
+msgid "Gitcoin Toolbox"
+msgstr "गिटकोइन टूलबॉक्स"
+
+#: dashboard/views.py:1013
+msgid "Don't Miss New Tools!"
+msgstr "नए उपकरण याद मत करो!"
+
+#: dashboard/views.py:1117 ethos/views.py:229
+msgid "Bad request"
+msgstr "खराब अनुरोध"
+
+#: dashboard/views.py:1135
+msgid "Coin Redemption"
+msgstr "सिक्का मोचन"
+
+#: dashboard/views.py:1136
+msgid "PENDING"
+msgstr "लंबित"
+
+#: dashboard/views.py:1143
+msgid "INITIAL"
+msgstr "प्रारंभिक"
+
+#: dataviz/models.py:30
+msgid "key for this data report"
+msgstr "इस डेटा रिपोर्ट के लिए कुंजी"
+
+#: dataviz/models.py:31
+msgid "The report associated with this project"
+msgstr "इस परियोजना से जुड़ी रिपोर्ट"
+
+#: dataviz/templates/stats.html:34
+msgid "Activity"
+msgstr "गतिविधि"
+
+#: dataviz/templates/stats.html:35
+msgid "Marketing"
+msgstr "विपणन"
+
+#: dataviz/templates/stats.html:36
+msgid "KPI"
+msgstr "KPI"
+
+#: dataviz/templates/stats.html:37
+msgid "bounty_skills"
+msgstr "bounty_skills"
+
+#: dataviz/templates/stats.html:38
+msgid "user_skills"
+msgstr "user_skills"
+
+#: dataviz/templates/stats.html:40
+msgid "Hourly"
+msgstr "प्रति घंटा"
+
+#: dataviz/templates/stats.html:41
+msgid "Daily"
+msgstr "रोज"
+
+#: dataviz/templates/stats.html:42
+msgid "Weekly"
+msgstr "साप्ताहिक"
+
+#: dataviz/templates/stats.html:44
+msgid "Charts"
+msgstr "चार्ट"
+
+#: dataviz/templates/stats.html:45
+msgid "Table"
+msgstr "तालिका"
+
+#: dataviz/templates/stats.html:61
+msgid "Chart will be rendered here"
+msgstr "चार्ट यहां प्रस्तुत किया जाएगा"
+
+#: ethos/templates/redeem_ethos.html:50
+msgid "You've received an EthOS"
+msgstr "आपको एथोस प्राप्त हुआ है"
+
+#: ethos/templates/redeem_ethos.html:59
+msgid "You've got Ethos!"
+msgstr "आपको एथोस मिला है!"
+
+#: ethos/templates/redeem_ethos.html:60
+msgid "Here's how to play:"
+msgstr "यहां खेलना है:"
+
+#: ethos/templates/redeem_ethos.html:67
+msgid "This experiment is over!"
+msgstr "यह प्रयोग खत्म हो गया है!"
+
+#: ethos/views.py:172
+msgid "Duplicate transaction detected"
+msgstr "डुप्लिकेट लेनदेन का पता चला"
+
+#: ethos/views.py:218
+msgid "Error while fetching Twitter account. Please try again"
+msgstr "ट्विटर खाता लाने में त्रुटि। कृपया पुन: प्रयास करें"
+
+#: ethos/views.py:225
+#, python-brace-format
+msgid "Error while tweeting to Twitter. {e}"
+msgstr "ट्विटर पर ट्वीट करते समय त्रुटि। {e}"
+
+#: ethos/views.py:237
+msgid "Error while creating transaction. Please try again"
+msgstr "लेनदेन बनाते समय त्रुटि। कृपया पुन: प्रयास करें"
+
+#: ethos/views.py:262
+msgid "EthOS Coin"
+msgstr "एथोस सिक्का"
+
+#: external_bounties/models.py:36
+msgid "Where to send interested parties"
+msgstr "इच्छुक पार्टियों को कहां भेजना है"
+
+#: external_bounties/models.py:39
+msgid "Plainext only please!"
+msgstr "कृपया प्लेनक्स्ट कृपया!"
+
+#: external_bounties/models.py:40
+msgid "The upstream project being linked it.."
+msgstr "अपस्ट्रीम परियोजना इसे जोड़ा जा रहा है .."
+
+#: external_bounties/models.py:45
+msgid "comma delimited"
+msgstr "अल्पविराम सीमांकित"
+
+#: external_bounties/models.py:47
+msgid ""
+"string representation of the payout (only needed it amount/denomination "
+"cannot be filled out"
+msgstr ""
+"भुगतान के स्ट्रिंग का प्रतिनिधित्व (केवल इसकी आवश्यकता है राशि / मूल्य भरा "
+"नहीं जा सकता है"
+
+#: external_bounties/templates/external_bounties.html:23
+#: external_bounties/templates/external_bounties_show.html:30
+msgid "Bounties Universe"
+msgstr "बक्षीस ब्रह्मांड"
+
+#: external_bounties/templates/external_bounties.html:23
+#: external_bounties/templates/external_bounties_show.html:30
+#: faucet/templates/faucet_form.html:37 retail/templates/gas.html:65
+msgid "Alpha"
+msgstr "अल्फा"
+
+#: external_bounties/templates/external_bounties.html:30
+msgid "View API"
+msgstr "एपीआई देखें"
+
+#: external_bounties/templates/external_bounties.html:43
+msgid "Sort by"
+msgstr "इसके अनुसार क्रमबद्ध करें"
+
+#: external_bounties/templates/external_bounties.html:44
+msgid "Oldest"
+msgstr "सबसे पुराना"
+
+#: external_bounties/templates/external_bounties.html:45
+msgid "Newest"
+msgstr "नवीनतम"
+
+#: external_bounties/templates/external_bounties.html:46
+msgid "Highest Value"
+msgstr "उच्चतम मूल्य"
+
+#: external_bounties/templates/external_bounties.html:47
+msgid "Lowest Value"
+msgstr "सबसे कम मूल्य"
+
+#: external_bounties/templates/external_bounties.html:54
+msgid "Categories"
+msgstr "श्रेणियाँ"
+
+#: external_bounties/templates/external_bounties.html:66
+msgid "Post New"
+msgstr "नया पोस्ट करें"
+
+#: external_bounties/templates/external_bounties.html:136
+msgid "first"
+msgstr "प्रथम"
+
+#: external_bounties/templates/external_bounties.html:137
+msgid "previous"
+msgstr "पिछला"
+
+#: external_bounties/templates/external_bounties.html:141
+#, python-format
+msgid ""
+"Page %(bounties_paginator.number)s of %(bounties_paginator.paginator.num_pages)s."
+msgstr "पृष्ठ %(bounties_paginator.number)s %(bounties_paginator.paginator.num_pages)s एस।"
+
+#: external_bounties/templates/external_bounties.html:145
+msgid "next"
+msgstr "आगामी"
+
+#: external_bounties/templates/external_bounties.html:146
+msgid "last"
+msgstr "अंतिम"
+
+#: external_bounties/templates/external_bounties_new.html:28
+#: external_bounties/views.py:135
+msgid "New Universal Bounty"
+msgstr "नई यूनिवर्सल बाउंटी"
+
+#: external_bounties/templates/external_bounties_new.html:42
+#: external_bounties/templates/external_bounties_show.html:81
+msgid "Go Back"
+msgstr "वापस जाओ"
+
+#: external_bounties/templates/external_bounties_show.html:45
+msgid "created"
+msgstr "बनाया था"
+
+#: external_bounties/templates/external_bounties_show.html:47
+msgid "source"
+msgstr "स्रोत"
+
+#: external_bounties/templates/external_bounties_show.html:51
+msgid "View Bounty"
+msgstr "बाउंटी देखें"
+
+#: external_bounties/templates/external_bounties_show.html:55
+msgid "Funding"
+msgstr "अनुदान"
+
+#: external_bounties/views.py:57
+msgid "Created"
+msgstr "बनाया था"
+
+#: external_bounties/views.py:59
+msgid "Value"
+msgstr "मूल्य"
+
+#: external_bounties/views.py:112 external_bounties/views.py:191
+msgid "Bounty Universe Explorer"
+msgstr "बाउंटी यूनिवर्स एक्सप्लोरर"
+
+#: external_bounties/views.py:113
+msgid "Bounties for Software Work from across the internets."
+msgstr "इंटरनेट के लिए सॉफ्टवेयर काम के लिए बाउंटी।"
+
+#: external_bounties/views.py:136
+msgid "Create a new Bounty for Software Work from across the internets."
+msgstr "इंटर्ननेट से सॉफ़्टवेयर कार्य के लिए एक नया बाउंटी बनाएं।"
+
+#: external_bounties/views.py:150
+msgid "An email has been sent to an administrator to approve your submission"
+msgstr "आपके सबमिशन को स्वीकार करने के लिए व्यवस्थापक को एक ईमेल भेजा गया है"
+
+#: faucet/templates/faucet_form.html:37
+msgid "Faucet Request"
+msgstr "नल का अनुरोध"
+
+#: faucet/templates/faucet_form.html:39
+msgid ""
+"\n"
+"                  Pursuant to making Ethereum and Gitcoin broadly accessible to everyone Gitcoin\n"
+"                  may provide a minimal faucet distribution of ether so you may easily\n"
+"                  claim issues and gain more ether.\n"
+"                  "
+msgstr ""
+"\n"
+"एथिरियम और गिटकोइन को गिटकोइन के लिए व्यापक रूप से सुलभ बनाने के लिए\n"
+"                  ईथर का न्यूनतम नल वितरण प्रदान कर सकता है ताकि आप आसानी से हो सकें\n"
+"                  मुद्दों का दावा करें और अधिक ईथर प्राप्त करें।"
+
+#: faucet/templates/faucet_form.html:55
+msgid "Please note, all input fields are required. Comment is optional."
+msgstr "कृपया ध्यान दें, सभी इनपुट फ़ील्ड आवश्यक हैं। टिप्पणी वैकल्पिक है।"
+
+#: faucet/templates/faucet_form.html:58
+#: faucet/templates/process_faucet_request.html:35
+msgid "Github Profile"
+msgstr "गिथब प्रोफाइल"
+
+#: faucet/templates/faucet_form.html:67
+msgid "Email Address"
+msgstr "ईमेल पता"
+
+#: faucet/templates/faucet_form.html:72
+msgid "Comment"
+msgstr "टिप्पणी"
+
+#: faucet/templates/faucet_form.html:72
+msgid "char left"
+msgstr "चार बाएं"
+
+#: faucet/templates/faucet_form.html:80
+msgid "Proceed"
+msgstr "बढ़ना"
+
+#: faucet/templates/faucet_form.html:85
+msgid "Request Received"
+msgstr "अनुरोध प्राप्त"
+
+#: faucet/templates/faucet_form.html:88
+msgid ""
+"Your request for a faucet distribution has been received. An administrator "
+"will review your request shortly (up to 24 hours on weekdays, on next "
+"business day if on weekends / holidays) and arrange a deposit if approved."
+msgstr ""
+"नल वितरण के लिए आपका अनुरोध प्राप्त हुआ है। एक व्यवस्थापक जल्द ही आपके "
+"अनुरोध की समीक्षा करेगा (सप्ताहांत पर 24 घंटे तक, अगले सप्ताह के दिन "
+"सप्ताहांत / छुट्टियों पर) और स्वीकृत होने पर जमा की व्यवस्था करें।"
+
+#: faucet/templates/faucet_form.html:93
+msgid "There was an error"
+msgstr "एक त्रुटि हुई"
+
+#: faucet/templates/faucet_form.html:96
+msgid "Something went wrong submitting your request"
+msgstr "आपका अनुरोध जमा करने में कुछ गड़बड़ हुई"
+
+#: faucet/templates/process_faucet_request.html:33
+msgid "Process Faucet Request"
+msgstr "प्रक्रिया नल अनुरोध"
+
+#: faucet/templates/process_faucet_request.html:38
+#: retail/templates/settings/feedback.html:8
+#: retail/templates/whitepaper_new.html:133
+msgid "Comments"
+msgstr "टिप्पणियाँ"
+
+#: faucet/templates/process_faucet_request.html:40
+msgid "MetaMask Extension Not Detected"
+msgstr "मेटामास्क एक्सटेंशन नहीं पता चला"
+
+#: faucet/templates/process_faucet_request.html:41
+msgid "Please Unlock MetaMask To Continue"
+msgstr "जारी रखने के लिए कृपया मेटामास्क अनलॉक करें"
+
+#: faucet/templates/process_faucet_request.html:42
+msgid "MetaMask Active Account Is Empty"
+msgstr "मेटामास्क सक्रिय खाता खाली है"
+
+#: faucet/templates/process_faucet_request.html:47
+msgid "Transaction Failed"
+msgstr "लेन देन असफल"
+
+#: faucet/templates/process_faucet_request.html:51
+#, python-format
+msgid "By funding this faucet request, you will transfer %(faucet_amount)s ETH to\n    %(obj.github_username)s with a wallet address of %(obj.address)s"
+msgstr "इस नल के अनुरोध को वित्त पोषित करके, आप %(faucet_amount)s ETH को स्थानांतरित कर देंगे\n    %(obj.github_username)s %(obj.address)s के वॉलेट पते के साथ है"
+
+#: faucet/templates/process_faucet_request.html:70
+msgid ""
+"Please tell us what you're planning on using these funds for in the comments"
+" section!  Thanks."
+msgstr ""
+"टिप्पणी अनुभाग में इन फंडों का उपयोग करने के लिए कृपया हमें बताएं कि आप क्या"
+" योजना बना रहे हैं! धन्यवाद।"
+
+#: faucet/templates/shared/faucet_network_status.html:24
+msgid "About Zero"
+msgstr "शून्य के बारे में"
+
+#: faucet/templates/shared/faucet_no_metamask_error.html:21
+#: faucet/templates/shared/faucet_unlock_metamask.html:21
+msgid "Apply for a faucet distribution"
+msgstr "एक नल वितरण के लिए आवेदन करें"
+
+#: faucet/templates/shared/faucet_no_metamask_error.html:30
+msgid ""
+"The fastest and easiest way to add Web3 to your browser is to install <a "
+"href=\"https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en\""
+" target=\"_blank\" rel=\"noopener noreferrer\"> Metamask</a>. To continue "
+"submitting a bounty, please install Metamask and return to this page."
+msgstr ""
+"अपने ब्राउज़र में वेब 3 जोड़ने का सबसे तेज़ और आसान तरीका <a href = "
+"\"https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=hi\""
+" target = \"_ blank\" rel = \"Noopener इंस्टॉल करना है noreferrer \"> "
+"मेटामास्क </a>। बक्षीस जमा करना जारी रखने के लिए, कृपया मेटामास्क इंस्टॉल "
+"करें और इस पृष्ठ पर वापस आएं।"
+
+#: faucet/templates/shared/faucet_over_balance_error.html:22
+msgid "You Appear to Have Ether!"
+msgstr "आप ईथर होने लगते हैं!"
+
+#: faucet/templates/shared/faucet_over_balance_error.html:24
+msgid "Thank you for your interest in receiving a faucet distribution."
+msgstr "नल वितरण प्राप्त करने में आपकी रूचि के लिए धन्यवाद।"
+
+#: faucet/templates/shared/faucet_over_balance_error.html:27
+msgid ""
+"You have more ether currently in your wallet than the distribution would "
+"provide. Please use that ether to pay the transaction cost."
+msgstr ""
+"वर्तमान में वितरण के मुकाबले आपके वॉलेट में आपके पास अधिक ईथर है। लेनदेन "
+"लागत का भुगतान करने के लिए कृपया उस ईथर का उपयोग करें।"
+
+#: faucet/templates/shared/faucet_unlock_metamask.html:34
+msgid "Can't get web3 to work? Get help here."
+msgstr "काम करने के लिए web3 नहीं मिल सकता है? यहां सहायता पाएं।"
+
+#: faucet/views.py:42
+msgid "Gitcoin Faucet"
+msgstr "गिटकोइन नल"
+
+#: faucet/views.py:43
+msgid ""
+"Request a distribution of ETH so you can use the Ethereum network and "
+"Gitcoin."
+msgstr ""
+"ईटीएच के वितरण का अनुरोध करें ताकि आप एथेरियम नेटवर्क और गिटकोइन का उपयोग कर"
+" सकें।"
+
+#: faucet/views.py:74
+msgid "The submitted github profile shows a previous faucet distribution."
+msgstr "सबमिट किया गया github प्रोफ़ाइल पिछले नल वितरण दिखाता है।"
+
+#: faucet/views.py:78
+msgid "The submitted github profile shows a pending faucet distribution."
+msgstr "सबमिट की गई github प्रोफ़ाइल लंबित नल वितरण दिखाती है।"
+
+#: faucet/views.py:91
+msgid "Created."
+msgstr "बनाया था।"
+
+#: gitcoinbot/views.py:63
+msgid "Gitcoinbot Responded"
+msgstr "गिटकोइनबॉट ने जवाब दिया"
+
+#: marketing/mails.py:59
+msgid "[DEBUG] "
+msgstr "[डीबग]"
+
+#: marketing/mails.py:116
+msgid "⚡️ New Tip Worth {} {} {}"
+msgstr "⚡️ नया टिप वर्थ {} {} {}"
+
+#: marketing/mails.py:118
+msgid "🕐 Tip Worth {} {} {} Expiring Soon"
+msgstr "🕐 टिप वर्थ {} {} {} जल्द ही समाप्त हो रहा है"
+
+#: marketing/mails.py:139
+msgid "New Faucet Request"
+msgstr "नया नल अनुरोध"
+
+#: marketing/mails.py:140
+msgid "A new faucet request was completed. You may fund the request here"
+msgstr "एक नया नल का अनुरोध पूरा हो गया था। आप यहां अनुरोध निधि दे सकते हैं"
+
+#: marketing/mails.py:143 marketing/mails.py:167
+msgid "No Reply from Gitcoin.co"
+msgstr "Gitcoin.co से कोई जवाब नहीं"
+
+#: marketing/mails.py:164
+msgid "New External Bounty"
+msgstr "नई बाहरी बाउंटी"
+
+#: marketing/mails.py:174 retail/templates/emails/faucet_request.html:24
+msgid "Faucet Request Processed"
+msgstr "नल का अनुरोध संसाधित"
+
+#: marketing/mails.py:189
+msgid "Faucet Request Rejected"
+msgstr "नल का अनुरोध अस्वीकार कर दिया गया"
+
+#: marketing/mails.py:212
+msgid ""
+"⚡️  {len(bounties)} New Open Funded Issue{plural}{worth} matching your "
+"profile"
+msgstr ""
+"⚡️ {len (bounties)} नई खुली निधि समस्या {बहुवचन} {worth} आपकी प्रोफ़ाइल से "
+"मेल खाते हैं"
+
+#: marketing/mails.py:251
+msgid "✉️ New Work Submission Inside for {} ✉️"
+msgstr "{} ✉️ के लिए Work️ नया कार्य सबमिशन"
+
+#: marketing/mails.py:270
+msgid "😕 Work Submission Rejected for {} 😕"
+msgstr "} कार्य सबमिशन {} 😕 के लिए अस्वीकार कर दिया गया"
+
+#: marketing/mails.py:295
+msgid "🌈 Funds Paid for {} 🌈"
+msgstr "} P के लिए भुगतान किए गए फंड"
+
+#: marketing/mails.py:312
+msgid "⚡️ {} Meet {}: {}! "
+msgstr "⚡️ {} मिलें {}: {}!"
+
+#: marketing/mails.py:341
+msgid "hour"
+msgstr "घंटा"
+
+#: marketing/mails.py:344
+msgid "😕 Your Funded Issue ({}) Expires In {} {} ... 😕"
+msgstr "😕 आपका निधि जारी ({}) {} {} ... 😕 में समाप्त हो जाता है"
+
+#: marketing/mails.py:363
+msgid "Are you still working on '{}' ? "
+msgstr "क्या आप अभी भी '{}' पर काम कर रहे हैं?"
+
+#: marketing/mails.py:378
+msgid "We've removed you from the task: '{}' ? "
+msgstr "हमने आपको कार्य से हटा दिया है: '{}'?"
+
+#: marketing/utils.py:72
+msgid "Invalid Slack token."
+msgstr "अमान्य स्लैक टोकन।"
+
+#: marketing/utils.py:73
+msgid "Slack channel not found."
+msgstr "स्लैक चैनल नहीं मिला।"
+
+#: marketing/utils.py:77
+msgid "The Gitcoin Slack integration is working fine."
+msgstr "गिटकोइन स्लैक एकीकरण ठीक काम कर रहा है।"
+
+#: marketing/utils.py:94
+msgid "The test message was sent to Slack."
+msgstr "परीक्षण संदेश स्लैक को भेजा गया था।"
+
+#: marketing/utils.py:98
+msgid "An error has occurred."
+msgstr "एक गलती हुई है।"
+
+#: marketing/views.py:138
+msgid "Privacy Settings"
+msgstr "गोपनीय सेटिंग"
+
+#: marketing/views.py:179 marketing/views.py:286 marketing/views.py:326
+msgid "Updated your preferences."
+msgstr "आपकी वरीयताओं को अपडेट किया गया।"
+
+#: marketing/views.py:188
+msgid "Matching Settings"
+msgstr "मिलान सेटिंग्स"
+
+#: marketing/views.py:215
+msgid "We've received your feedback."
+msgstr "हमें आपकी प्रतिक्रिया मिली है।"
+
+#: marketing/views.py:220 retail/templates/settings/feedback.html:7
+msgid "Feedback"
+msgstr "प्रतिक्रिया"
+
+#: marketing/views.py:262
+msgid "Invalid Email"
+msgstr "अवैध ईमेल"
+
+#: marketing/views.py:265
+msgid "Unknown language"
+msgstr "अज्ञात भाषा"
+
+#: marketing/views.py:269
+msgid "Invalid Level"
+msgstr "अमान्य स्तर"
+
+#: marketing/views.py:290
+msgid "Email Settings"
+msgstr "ईमेल सेटिंग"
+
+#: marketing/views.py:335
+msgid "Slack Settings"
+msgstr "ढेर सेटिंग्स"
+
+#: marketing/views.py:362
+msgid "Top Payers"
+msgstr "शीर्ष भुगतानकर्ता"
+
+#: marketing/views.py:363
+msgid "Top Earners"
+msgstr "शीर्ष कमाई"
+
+#: retail/templates/about.html:33
+msgid "The Problem"
+msgstr "समस्या"
+
+#: retail/templates/about.html:34
+msgid "Incentive problems in Open Source Software."
+msgstr "ओपन सोर्स सॉफ्टवेयर में प्रोत्साहन समस्याएं।"
+
+#: retail/templates/about.html:48
+msgid "The Solution"
+msgstr "समाधान"
+
+#: retail/templates/about.html:49
+msgid "A decentralized App for value creation &amp; value capture."
+msgstr "मूल्य निर्माण के लिए एक विकेन्द्रीकृत ऐप & amp; मूल्य कैप्चर"
+
+#: retail/templates/about.html:63
+msgid "The Origin Story"
+msgstr "मूल कहानी"
+
+#: retail/templates/about.html:64
+msgid "Who, what, when, where, and most importantly, why."
+msgstr "कौन, क्या, कब, कहाँ, और सबसे महत्वपूर्ण बात, क्यों।"
+
+#: retail/templates/about.html:70
+msgid "Built with &lt;3 in Boulder Colorado USA"
+msgstr "बोल्डर कोलोराडो यूएसए में & lt; 3 के साथ बनाया गया"
+
+#: retail/templates/about.html:72
+msgid ""
+"<strong>Gitcoin</strong> was borne of the community in Boulder Colorado's "
+"thriving tech scene. One of the most amazing things about the Boulder "
+"community is the #givefirst mantra. The founding team has built their "
+"careers off of advice, mentorship, and relationships in the local tech "
+"community."
+msgstr ""
+"<strong> गिटकोइन </ strong> बोल्डर कोलोराडो के संपन्न तकनीकी दृश्य में "
+"समुदाय से पैदा हुआ था। बोल्डर समुदाय के बारे में सबसे आश्चर्यजनक चीजों में "
+"से एक #givefirst मंत्र है। संस्थापक टीम ने अपने करियर को स्थानीय तकनीकी "
+"समुदाय में सलाह, परामर्श और रिश्ते से दूर कर दिया है।"
+
+#: retail/templates/about.html:77
+msgid "Goal: Grow Open Source"
+msgstr "लक्ष्य: ओपन सोर्स बढ़ाएं"
+
+#: retail/templates/about.html:79
+msgid ""
+"<strong>Gitcoin</strong> is a project that combines the #givefirst mantra of"
+" the Boulder community with capitalistic incentives to write great software."
+" By enabling <span>Repo Maintainers</span>, <span>developers</span>, and "
+"<span>financiers</span> to find one another, Gitcoin grows open source "
+"software."
+msgstr ""
+"<strong> गिटकोइन </ strong> एक ऐसी परियोजना है जो बोल्डर समुदाय के "
+"#givefirst मंत्र को महान सॉफ्टवेयर लिखने के लिए पूंजीवादी प्रोत्साहन के साथ "
+"जोड़ती है। एक दूसरे को खोजने के लिए <span> रिपो रखरखाव </ span>, <span> "
+"डेवलपर </ span>, और <span> financiers </ span> को सक्षम करके, गिटकोइन ओपन "
+"सोर्स सॉफ़्टवेयर बढ़ता है।"
+
+#: retail/templates/about.html:86
+msgid "Cryptocurrencies provide new, decentralized, opportunities"
+msgstr "क्रिप्टोकुरियां नई, विकेन्द्रीकृत, अवसर प्रदान करती हैं"
+
+#: retail/templates/about.html:88
+msgid ""
+"<strong>Gitcoin</strong> is built upon the Ethereum network, and the "
+"solidity smart contract programming language. Ethereum provides "
+"opportunities to align incentives across actors in the ecosystem. By "
+"programming rights of stakeholders directly into smart contracts, actors are"
+" incentivized to provide value, and edge cases are handled _without_ having "
+"to involve legacy legal enforcement mechanisms."
+msgstr ""
+"<strong> गिटकोइन </ strong> एथेरियम नेटवर्क पर बनाया गया है, और सॉलिड "
+"स्मार्ट अनुबंध प्रोग्रामिंग भाषा है। एथेरियम पारिस्थितिकी तंत्र में कलाकारों"
+" के प्रोत्साहनों को संरेखित करने के अवसर प्रदान करता है। सीधे हितधारकों के "
+"हितधारकों के अधिकारों को प्रोग्रामिंग करके, कलाकारों को मूल्य प्रदान करने के"
+" लिए प्रोत्साहित किया जाता है, और किनारे के मामलों को विरासत कानूनी प्रवर्तन"
+" तंत्र शामिल करने के लिए _without_ को संभाला जाता है।"
+
+#: retail/templates/about.html:95
+msgid ""
+"The founder of Gitcoin, <a href=\"http://linkedin.com/in/owocki/\">Kevin "
+"Owocki</a> has experience as an organizer of <a "
+"href=\"http://boulderstartupweek.com\">Boulder Startup Week</a>, <a "
+"href=\"http://igniteboulder.com\">Ignite Boulder</a>, <a "
+"href=\"https://startupcto.io\">StartupCTO.io</a>, <a "
+"href=\"https://www.meetup.com/Boulder-Blockchain/\">Boulder Blockchain "
+"Meetup</a> and the open source projects <a "
+"href=\"https://github.com/owocki/pytrader\">pytrader</a>, <a "
+"href=\"https://github.com/owocki/adblock-to-bitcoin\">adblock-to-"
+"bitcoin</a>, <a "
+"href=\"https://github.com/youvegoteth/youvegoteth.github.io/\">YouveGotETH</a>,"
+" & <a href=\"https://github.com/owocki/coloradocoin\">ColoradoCoin</a>. The "
+"stronger the community is, the more successful open source projects are. The"
+" stronger open source projects are, the stronger the community is."
+msgstr ""
+"गिटकोइन के संस्थापक, <a href=\"http://linkedin.com/in/owocki/\"> केविन ओवोकी"
+" </a> ने <a href=\"http://boulderstartupweek.com\"> के आयोजक के रूप में "
+"अनुभव किया है बोल्डर स्टार्टअप वीक </a>, <a "
+"href=\"http://igniteboulder.com\"> बोल्डर को इग्नाइट करें </a>, <a "
+"href=\"https://startupcto.io\"> StartupCTO.io </a> , <a "
+"href=\"https://www.meetup.com/Boulder-Blockchain/\"> बोल्डर ब्लॉकचेन मीटिंग "
+"</a> और ओपन सोर्स प्रोजेक्ट <a href = \"https://github.com/owocki/pytrader "
+"\"> pytrader </a>, <a href=\"https://github.com/owocki/adblock-to-bitcoin\">"
+" adblock-to-bitcoin </a>, <a href =\" https: // github .com / youvegoteth / "
+"youvegoteth.github.io / \"> YouveGotETH </a>, और <a "
+"href=\"https://github.com/owocki/coloradocoin\"> कोलोराडोकॉइन </a>। समुदाय "
+"जितना मजबूत होगा, उतनी ही सफल ओपन सोर्स परियोजनाएं हैं। मजबूत खुली स्रोत "
+"परियोजनाएं हैं, समुदाय जितना मजबूत है।"
+
+#: retail/templates/about.html:104
+msgid "Team"
+msgstr "टीम"
+
+#: retail/templates/about.html:105
+msgid "Built By &amp; For Open Source Software Developers"
+msgstr "द्वारा निर्मित & amp; ओपन सोर्स सॉफ्टवेयर डेवलपर्स के लिए"
+
+#: retail/templates/about.html:140
+msgid "Join Us"
+msgstr "हमसे जुड़ें"
+
+#: retail/templates/about.html:141
+msgid "Want to Grow Open Source? We want to hear from you."
+msgstr "ओपन सोर्स बढ़ाना चाहते हैं? हम तुम से सुनना चाहते है।"
+
+#: retail/templates/about.html:144
+msgid "Open Gitcoin Roles"
+msgstr "ओपन गिटकोइन भूमिकाएं"
+
+#: retail/templates/about.html:146
+msgid "Front End Developer"
+msgstr "अग्रणी डेवलपर"
+
+#: retail/templates/about.html:148 retail/templates/about.html:154
+#: retail/templates/about.html:169
+msgid "Learn More"
+msgstr "और अधिक जानें"
+
+#: retail/templates/about.html:152
+msgid "Technical Business Development Lead"
+msgstr "तकनीकी व्यापार विकास लीड"
+
+#: retail/templates/about.html:158
+msgid "Technical Project Manager"
+msgstr "तकनीकी परियोजना प्रबंधक"
+
+#: retail/templates/about.html:160
+msgid "Contact us"
+msgstr "हमसे संपर्क करें"
+
+#: retail/templates/about.html:165
+msgid "Open Bounties.Network Roles"
+msgstr "ओपन बाउंटीज। नेटवर्क्स रोल"
+
+#: retail/templates/about.html:167
+msgid "Data Scientist"
+msgstr "आँकड़े वाला वैज्ञानिक"
+
+#: retail/templates/about.html:182
+msgid "Features of Gitcoin"
+msgstr "गिटकोइन की विशेषताएं"
+
+#: retail/templates/about.html:191
+msgid "Fund Issues"
+msgstr "फंड मुद्दे"
+
+#: retail/templates/about.html:192
+msgid ""
+"Fund a feature, bug, or security issue that you care about, &amp; get "
+"results."
+msgstr ""
+"एक सुविधा, बग, या सुरक्षा समस्या को निधि दें जिसके बारे में आप परवाह करते "
+"हैं, & amp; परिणाम प्राप्त करें।"
+
+#: retail/templates/about.html:200
+msgid "Tip Developers"
+msgstr "टिप डेवलपर्स"
+
+#: retail/templates/about.html:201
+msgid ""
+"Reward contributors who have added value to your repository with a tip."
+msgstr ""
+"योगदानकर्ताओं को पुरस्कार दें जिन्होंने आपके भंडार में एक टिप के साथ मूल्य "
+"जोड़ा है।"
+
+#: retail/templates/about.html:211
+msgid "Find Work"
+msgstr "काम तलाशें"
+
+#: retail/templates/about.html:212
+msgid ""
+"Find interesting projects to work on, interesting people to work with. Try "
+"projects before you fully commit to them. Add value wherever you go."
+msgstr ""
+"काम करने के लिए दिलचस्प परियोजनाएं, दिलचस्प लोगों के साथ काम करने के लिए "
+"खोजें। पूरी तरह से प्रतिबद्ध करने से पहले परियोजनाओं को आजमाएं। जहां भी "
+"जाएं, मूल्य जोड़ें।"
+
+#: retail/templates/about.html:220
+msgid "All on Github.com"
+msgstr "सभी Github.com पर"
+
+#: retail/templates/about.html:221
+msgid ""
+"The best thing about Gitcoin is that it works where you do your work; on "
+"Github."
+msgstr ""
+"गिटकोइन के बारे में सबसे अच्छी बात यह है कि यह काम करता है जहां आप अपना काम "
+"करते हैं; गीथूब पर"
+
+#: retail/templates/about.html:234
+msgid "Mission-Driven"
+msgstr "मिशन संचालित"
+
+#: retail/templates/about.html:235
+msgid "Everything we do is to support our mission to 'Grow Open Source'"
+msgstr ""
+"हम जो कुछ भी करते हैं वह है 'ओपन सोर्स' बढ़ाने के हमारे मिशन का समर्थन करना"
+
+#: retail/templates/admin/index.html:38
+#, python-format
+msgid "Models in the %(name)s application"
+msgstr " %(name)s आवेदन में मॉडल"
+
+#: retail/templates/admin/index.html:49
+msgid "Add"
+msgstr "जोड़ना"
+
+#: retail/templates/admin/index.html:55
+msgid "Change"
+msgstr "परिवर्तन"
+
+#: retail/templates/admin/index.html:65
+msgid "You don't have permission to edit anything."
+msgstr "आपको कुछ भी संपादित करने की अनुमति नहीं है।"
+
+#: retail/templates/admin/index.html:74
+msgid "Analytics"
+msgstr "एनालिटिक्स"
+
+#: retail/templates/admin/index.html:87
+msgid "Administrative Tasks"
+msgstr "प्रशासनिक कार्य"
+
+#: retail/templates/admin/index.html:103
+msgid "Recent Actions"
+msgstr "हालिया क्रियाएं"
+
+#: retail/templates/admin/index.html:104
+msgid "My Actions"
+msgstr "मेरी कार्रवाई"
+
+#: retail/templates/admin/index.html:108
+msgid "None available"
+msgstr "उपलब्ध नहीं"
+
+#: retail/templates/admin/index.html:122
+msgid "Unknown content"
+msgstr "अज्ञात सामग्री"
+
+#: retail/templates/emails/bounty.html:116
+msgid "Expires:"
+msgstr "समय समाप्ति:"
+
+#: retail/templates/emails/bounty.html:120
+msgid "Specs:"
+msgstr "ऐनक:"
+
+#: retail/templates/emails/bounty.html:123
+msgid "Type:"
+msgstr "प्रकार:"
+
+#: retail/templates/emails/bounty.html:125
+msgid "Experience Level:"
+msgstr "अनुभव स्तर:"
+
+#: retail/templates/emails/bounty.html:132
+msgid "View on Gitcoin.co"
+msgstr "Gitcoin.co पर देखें"
+
+#: retail/templates/emails/bounty_roundup.html:57
+msgid "The Gitcoin Weekly"
+msgstr "गिटकोइन वीकली"
+
+#: retail/templates/emails/bounty_roundup.html:78
+msgid "Last Week's Highlights"
+msgstr "पिछले सप्ताह की हाइलाइट्स"
+
+#: retail/templates/emails/bounty_roundup.html:79
+msgid "Community Members growing open source"
+msgstr "सामुदायिक सदस्य ओपन सोर्स बढ़ रहे हैं"
+
+#: retail/templates/emails/bounty_roundup.html:105
+msgid "Open Funded Issues"
+msgstr "खुले वित्त पोषित मुद्दे"
+
+#: retail/templates/emails/bounty_roundup.html:106
+msgid "Grow Open Source &amp; Make Some ETH"
+msgstr "ओपन सोर्स बढ़ाएं & amp; कुछ ईटीएच बनाओ"
+
+#: retail/templates/emails/bounty_roundup.html:114
+msgid "Don't see anything that strikes your fancy above?"
+msgstr "उपरोक्त अपनी कल्पना पर हमला करने वाली कुछ भी न देखें?"
+
+#: retail/templates/emails/bounty_roundup.html:115
+msgid "There are more issues in the Gitcoin Issue Explorer:"
+msgstr "गिटकोइन इश्यु एक्सप्लोरर में और अधिक मुद्दे हैं:"
+
+#: retail/templates/emails/bounty_roundup.html:118
+msgid "View Issue Explorer"
+msgstr "समस्या एक्सप्लोरर देखें"
+
+#: retail/templates/emails/bounty_roundup.html:124
+msgid "Bounties from around the ecosystem"
+msgstr "पारिस्थितिक तंत्र के आसपास से बक्षीस"
+
+#: retail/templates/emails/bounty_roundup.html:125
+msgid "From other great projects in OSS"
+msgstr "ओएसएस में अन्य महान परियोजनाओं से"
+
+#: retail/templates/emails/bounty_roundup.html:140
+msgid "There's much much more on the Gitcoin Universal Bounties Explorer:"
+msgstr "गिटकोइन यूनिवर्सल बाउंटी एक्सप्लोरर पर बहुत कुछ है:"
+
+#: retail/templates/emails/bounty_roundup.html:143
+msgid "View Bounties Universe"
+msgstr "बंटियां ब्रह्मांड देखें"
+
+#: retail/templates/emails/bounty_roundup.html:153
+msgid ""
+"You are receiving this email because your email address is on the "
+"notification list."
+msgstr ""
+"आपको यह ईमेल प्राप्त हो रहा है क्योंकि आपका ईमेल पता अधिसूचना सूची पर है।"
+
+#: retail/templates/emails/bounty_roundup.html:153
+#: retail/templates/emails/bounty_startwork_expire_warning.html:61
+#: retail/templates/emails/new_bounty.html:44
+#: retail/templates/emails/new_bounty_acceptance.html:35
+#: retail/templates/emails/new_bounty_expire_warning.html:73
+#: retail/templates/emails/new_bounty_rejection.html:34
+msgid "Manage Email Settings"
+msgstr "ईमेल सेटिंग्स को प्रबंधित करें"
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:23
+msgid "Are you still working on this?"
+msgstr "क्या आप अभी भी इस पर काम कर रहे हैं?"
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:27
+msgid "Hey there, "
+msgstr "सुनो,"
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:37
+msgid ""
+"Do you still want to work on this?  Please let us know so we can find "
+"someone else to work on it if not!"
+msgstr ""
+"क्या आप अभी भी इस पर काम करना चाहते हैं? कृपया हमें बताएं ताकि हम किसी और को"
+" काम करने के लिए ढूंढ सकें यदि नहीं!"
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:42
+msgid "If so, please leave a comment on the github thread to check in."
+msgstr "यदि ऐसा है, तो कृपया जांचने के लिए जिथब थ्रेड पर एक टिप्पणी छोड़ दें।"
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:44
+msgid "OR"
+msgstr "या"
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:46
+#, python-format
+msgid ""
+"If not, click 'Stop Work' on the <a href=\"%(bounty.absolute_url)s\">issue "
+"detail page</a>."
+msgstr ""
+"यदि नहीं, तो <a href=\"%(bounty.absolute_url)s\"> समस्या विवरण पृष्ठ </a> पर"
+" 'कार्य रोकें' पर क्लिक करें।"
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:50
+#: retail/templates/emails/new_bounty_expire_warning.html:51
+#: retail/templates/emails/render_bounty_startwork_expired.html:53
+msgid ""
+"If you have any questions, feel free to reach out <a "
+"href=\"https://gitcoin.co/slack\">on slack</a>."
+msgstr ""
+"यदि आपके कोई प्रश्न हैं, तो <a href=\"https://gitcoin.co/slack\"> स्लैक पर "
+"पहुंचने के लिए स्वतंत्र महसूस करें </a>।"
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:53
+#: retail/templates/emails/new_bounty_expire_warning.html:65
+#: retail/templates/emails/render_bounty_startwork_expired.html:56
+msgid "Funded Issue Details"
+msgstr "वित्त पोषित अंक विवरण"
+
+#: retail/templates/emails/bounty_startwork_expire_warning.html:61
+#: retail/templates/emails/new_bounty_expire_warning.html:73
+#: retail/templates/emails/new_bounty_rejection.html:34
+msgid ""
+"You are receiving this email because your email address is on the "
+"notification list for this funded issue."
+msgstr ""
+"आपको यह ईमेल प्राप्त हो रहा है क्योंकि आपका ईमेल पता इस वित्त पोषित मुद्दे "
+"के लिए अधिसूचना सूची पर है।"
+
+#: retail/templates/emails/faucet_request.html:29
+#: retail/templates/emails/faucet_request_rejected.html:29
+msgid "Hey"
+msgstr "अरे"
+
+#: retail/templates/emails/faucet_request.html:34
+#, python-format
+msgid "Gitcoin has distributed your faucet request for %(amount)s ETH to"
+msgstr "गिटकोइन ने %(amount)s ETH के लिए अपना नल अनुरोध वितरित किया है"
+
+#: retail/templates/emails/faucet_request.html:39
+msgid ""
+"This should be enough gas to send your first Ethereum Transaction.  We hope "
+"you'll consider using it on Gitcoin!"
+msgstr ""
+"यह आपका पहला एथेरियम लेनदेन भेजने के लिए पर्याप्त गैस होना चाहिए। हमें आशा "
+"है कि आप इसे गिटकोइन पर इस्तेमाल करने पर विचार करेंगे!"
+
+#: retail/templates/emails/faucet_request_rejected.html:24
+msgid "Faucet Request Rejected ‼️"
+msgstr "नल का अनुरोध अस्वीकार! ️"
+
+#: retail/templates/emails/faucet_request_rejected.html:34
+#, python-format
+msgid "Gitcoin *could not* approve your faucet request for %(amount)s ETH to"
+msgstr ""
+"गिटकोइन * %(amount)s ETH के लिए आपके नल के अनुरोध को स्वीकार नहीं कर सका"
+
+#: retail/templates/emails/faucet_request_rejected.html:41
+msgid "Here are somme comments from the administrator:"
+msgstr "व्यवस्थापक से सोम्मे टिप्पणियां यहां दी गई हैं:"
+
+#: retail/templates/emails/faucet_request_rejected.html:53
+msgid "You are welcome to re-apply at"
+msgstr "आप पर फिर से आवेदन करने के लिए स्वागत है"
+
+#: retail/templates/emails/new_bounty.html:23
+msgid "New Funded Issue"
+msgstr "नया वित्त पोषित मुद्दा"
+
+#: retail/templates/emails/new_bounty.html:33
+msgid "Other Open Funded Issue"
+msgstr "अन्य खुले वित्त पोषित मुद्दे"
+
+#: retail/templates/emails/new_bounty.html:44
+msgid ""
+"You are receiving this email because your email preferences matched with "
+"these keywords:"
+msgstr ""
+"आपको यह ईमेल प्राप्त हो रहा है क्योंकि आपकी ईमेल प्राथमिकताएं इन खोजशब्दों "
+"से मेल खाती हैं:"
+
+#: retail/templates/emails/new_bounty_acceptance.html:23
+msgid "Funds Paid!"
+msgstr "निधि का भुगतान!"
+
+#: retail/templates/emails/new_bounty_acceptance.html:27
+msgid ""
+"Your claim has been accepted, and the fulfillment transaction is now on the "
+"Ethereum network!"
+msgstr ""
+"आपका दावा स्वीकार कर लिया गया है, और पूर्ति लेनदेन अब एथेरियम नेटवर्क पर है!"
+
+#: retail/templates/emails/new_bounty_acceptance.html:35
+msgid ""
+"You are receiving this email because your email address is on the bounty "
+"notification list for this funded issue."
+msgstr ""
+"आपको यह ईमेल प्राप्त हो रहा है क्योंकि आपका ईमेल पता इस वित्त पोषित मुद्दे "
+"के लिए बाउंटी अधिसूचना सूची पर है।"
+
+#: retail/templates/emails/new_bounty_expire_warning.html:23
+msgid "Funded Issue Expiring ..."
+msgstr "वित्त पोषित मुद्दा समाप्त हो रहा है ..."
+
+#: retail/templates/emails/new_bounty_expire_warning.html:28
+#, python-format
+msgid ""
+"Heads up! The funded issue that you posted (below) is expiring in %(num)s "
+"%(unit)s."
+msgstr ""
+"सचेत! आपके द्वारा पोस्ट किया गया वित्त पोषित मुद्दा %(num)s %(unit)sमें "
+"समाप्त हो रहा है।"
+
+#: retail/templates/emails/new_bounty_expire_warning.html:30
+#, python-format
+msgid ""
+"Heads up! The funded issue that you fulfilled (below) is expiring in %(num)s"
+" %(unit)s."
+msgstr ""
+"सचेत! आपके द्वारा पूरा (नीचे) वित्त पोषित मुद्दा %(num)s %(unit)sमें समाप्त "
+"हो रहा है।"
+
+#: retail/templates/emails/new_bounty_expire_warning.html:37
+msgid ""
+"There is a currently pending claim agains this funded issue. Please make "
+"sure you process them!"
+msgstr ""
+"इस वित्त पोषित मुद्दे पर वर्तमान में लंबित दावा फिर से है। कृपया सुनिश्चित "
+"करें कि आप उन्हें संसाधित करते हैं!"
+
+#: retail/templates/emails/new_bounty_expire_warning.html:42
+msgid ""
+"After the funded issue has expired, you can still submit and accept work.  "
+"You may also 'Cancel' the bounty and get the funds back."
+msgstr ""
+"वित्त पोषित मुद्दा समाप्त हो जाने के बाद, आप अभी भी काम सबमिट कर सकते हैं और"
+" स्वीकार कर सकते हैं। आप बक्षीस को 'रद्द' भी कर सकते हैं और धन वापस ले सकते "
+"हैं।"
+
+#: retail/templates/emails/new_bounty_expire_warning.html:45
+msgid "Look for this button"
+msgstr "इस बटन को देखो"
+
+#: retail/templates/emails/new_bounty_expire_warning.html:55
+#, python-format
+msgid ""
+"Why don't you leave a comment <a href=\"%(bounty.github_url)s\">on "
+"github</a> and let the bounty owner know that you'd like to wrap this up "
+"soon? :)"
+msgstr ""
+"आप github पर <a href=\"%(bounty.github_url)s\"> टिप्पणी क्यों नहीं छोड़ते "
+"हैं और बाउंटी स्वामी को यह पता है कि आप इसे जल्द ही लपेटना चाहते हैं? :)"
+
+#: retail/templates/emails/new_bounty_expire_warning.html:59
+msgid ""
+"If you have any problems, feel free to reach out <a "
+"href=\"https://gitcoin.co/slack\">on slack</a>."
+msgstr ""
+"यदि आपको कोई समस्या है, तो <a href=\"https://gitcoin.co/slack\"> slack </a> "
+"पर पहुंचने के लिए स्वतंत्र महसूस करें।"
+
+#: retail/templates/emails/new_bounty_rejection.html:23
+msgid "Fulfillment Rejected"
+msgstr "पूर्ति अस्वीकार कर दी गई"
+
+#: retail/templates/emails/new_bounty_rejection.html:26
+msgid ""
+"There is a new funded issue fulfillment *rejection*. Please refer to the "
+"rejection comments on the github pull request to learn why."
+msgstr ""
+"एक नया वित्त पोषित मुद्दा पूर्ति * अस्वीकृति * है। कृपया जानने के लिए जिथब "
+"पुल अनुरोध पर अस्वीकृति टिप्पणियों का संदर्भ लें।"
+
+#: retail/templates/emails/new_match.html:39
+msgid "New Match Alert"
+msgstr "नया मैच अलर्ट"
+
+#: retail/templates/emails/new_match.html:42
+msgid "meet"
+msgstr "मिलना"
+
+#: retail/templates/emails/new_match.html:73
+msgid "You are both CCed on this email.  Feel free to reply all and say hey."
+msgstr ""
+"आप दोनों इस ईमेल पर सीसीड हैं। सभी को जवाब देने के लिए स्वतंत्र महसूस करें "
+"और हे कहो।"
+
+#: retail/templates/emails/new_tip.html:44
+msgid "New Tip Alert"
+msgstr "नया टिप अलर्ट"
+
+#: retail/templates/emails/new_tip.html:46
+msgid "Reminder: Tip Expires Soon"
+msgstr "अनुस्मारक: युक्ति जल्द ही समाप्त हो जाती है"
+
+#: retail/templates/emails/new_tip.html:51
+#, python-format
+msgid ""
+"%(tip.from_name)s sent you a tip worth %(amount)s %(warning)s %(tokenName)s"
+msgstr ""
+"% (tip.from_name) ने आपको %(amount)s %(warning)s %(tokenName)sके एक टिप भेजा"
+" है"
+
+#: retail/templates/emails/new_tip.html:53
+#, python-format
+msgid "Someone sent you a tip worth %(amount)s %(warning)s %(tokenName)s"
+msgstr "किसी ने आपको %(amount)s %(warning)s %(tokenName)s के एक टिप भेजा"
+
+#: retail/templates/emails/new_tip.html:65
+msgid "They had the following comments:"
+msgstr "उनके पास निम्नलिखित टिप्पणियां थीं:"
+
+#: retail/templates/emails/new_tip.html:76
+msgid "They had the following private comments:"
+msgstr "उनके पास निम्नलिखित निजी टिप्पणियां थीं:"
+
+#: retail/templates/emails/new_tip.html:85
+msgid "They had the following public comments:"
+msgstr "उनके पास निम्नलिखित सार्वजनिक टिप्पणियां थीं:"
+
+#: retail/templates/emails/new_tip.html:94
+msgid "The tip expires on"
+msgstr "टिप समाप्त हो जाती है"
+
+#: retail/templates/emails/new_tip.html:94
+msgid "in just"
+msgstr "बस में"
+
+#: retail/templates/emails/new_tip.html:94
+msgid ""
+"No pressure, but if you wanted to redeem your tip sooner rather than later "
+"that'd be 👌:"
+msgstr ""
+"कोई दबाव नहीं, लेकिन अगर आप जल्द से जल्द अपनी टिप को रिडीम करना चाहते हैं तो"
+" यह होगा कि'd:"
+
+#: retail/templates/emails/new_tip.html:98
+msgid ""
+"No pressure, but if you wanted to redeem your tip sooner rather than later "
+"that'd be 👌"
+msgstr ""
+"कोई दबाव नहीं, लेकिन अगर आप जल्द ही बाद में अपनी टिप को रिडीम करना चाहते हैं"
+" तो'd"
+
+#: retail/templates/emails/new_tip.html:105
+msgid "Redeem Tip"
+msgstr "टिप रिडीम करें"
+
+#: retail/templates/emails/new_work_submission.html:23
+msgid "New Work Submission"
+msgstr "नया कार्य सबमिशन"
+
+#: retail/templates/emails/new_work_submission.html:27
+msgid ""
+"There is a new work *submission* against your funded issue. Please check it "
+"out, below"
+msgstr ""
+"आपके वित्त पोषित मुद्दे के खिलाफ एक नया काम * सबमिशन * है। कृपया इसे नीचे "
+"देखें"
+
+#: retail/templates/emails/render_bounty_startwork_expired.html:23
+msgid "You've been removed from this task ..."
+msgstr "आपको इस कार्य से हटा दिया गया है ..."
+
+#: retail/templates/emails/render_bounty_startwork_expired.html:27
+msgid "Hey there,"
+msgstr "सुनो,"
+
+#: retail/templates/emails/render_bounty_startwork_expired.html:36
+msgid ""
+"Since we have a responsibility to the community to keep the list of claimees"
+" for this issue current, Gitcoin removed you from the task."
+msgstr ""
+"चूंकि समुदाय को इस मुद्दे के लिए क्लैमेम्स की सूची रखने के लिए समुदाय की "
+"ज़िम्मेदारी है, इसलिए गिटकोइन ने आपको कार्य से हटा दिया।"
+
+#: retail/templates/emails/render_bounty_startwork_expired.html:40
+msgid ""
+"Do you still want to work on this?  No big deal!  We can help with that:"
+msgstr ""
+"क्या आप अभी भी इस पर काम करना चाहते हैं? कोई बड़ी बात नहीं! हम उसमें सहायता "
+"कर सकते हैं:"
+
+#: retail/templates/emails/render_bounty_startwork_expired.html:45
+msgid "Please leave a comment on the github thread to check in."
+msgstr "चेक इन करने के लिए कृपया जिथब थ्रेड पर एक टिप्पणी छोड़ दें।"
+
+#: retail/templates/emails/render_bounty_startwork_expired.html:47
+msgid "AND"
+msgstr "तथा"
+
+#: retail/templates/emails/render_bounty_startwork_expired.html:49
+#, python-format
+msgid ""
+"Click 'Start Work' on the <a href=\"%(bounty.absolute_url)s\">issue detail "
+"page</a>."
+msgstr ""
+"<a href=\"%(bounty.absolute_url)s\"> समस्या विवरण पृष्ठ </a> पर 'कार्य शुरू "
+"करें' पर क्लिक करें।"
+
+#: retail/templates/emails/template.html:188
+msgid "All rights reserved."
+msgstr "सर्वाधिकार सुरक्षित।"
+
+#: retail/templates/emails/template.html:193
+msgid "Want to change how you receive these emails?"
+msgstr "आप इन ईमेल को कैसे प्राप्त करते हैं इसे बदलना चाहते हैं?"
+
+#: retail/templates/emails/template.html:195
+msgid "You can update your"
+msgstr "आप अपना अपडेट कर सकते हैं"
+
+#: retail/templates/emails/template.html:195
+msgid "preferences"
+msgstr "पसंद"
+
+#: retail/templates/emails/template.html:195
+msgid "unsubscribe"
+msgstr "सदस्यता समाप्त"
+
+#: retail/templates/emails/template.html:195
+msgid "from this list."
+msgstr "इस सूची से।"
+
+#: retail/templates/error.html:22
+#, python-format
+msgid "Error %(code)s."
+msgstr "एरर कोड__।"
+
+#: retail/templates/error.html:23
+msgid ""
+"_Even the bots_ aren't sure what happened, but we'll look into it. <a href=\"mailto:founders@gitcoin.co\">Contact us</a> if you think this is something that shouldn't have happened."
+msgstr "_ बॉट्स_ भी सुनिश्चित नहीं हैं कि क्या हुआ, लेकिन हम इसमें देखेंगे। <a href=\"mailto:founders@gitcoin.co\"> हमसे संपर्क करें </a> यदि आपको लगता है कि यह ऐसा कुछ है जो नहीं होना चाहिए था।"
+
+#: retail/templates/gas.html:65
+msgid "Predicted Confirmation Times vs Gas Usage"
+msgstr "पूर्वानुमानित पुष्टि टाइम्स बनाम गैस उपयोग"
+
+#: retail/templates/gas.html:161
+msgid "Useful Links"
+msgstr "उपयोगी कड़ियाँ"
+
+#: retail/templates/gas.html:162
+msgid ""
+"To see the data in chart format, check out <a "
+"href=\"https://ethgasstation.info/predictionTable.php\" target=\"_blank\" "
+"rel=\"noopener noreferrer\">ETH Gas Station</a>"
+msgstr ""
+"चार्ट प्रारूप में डेटा देखने के लिए, <a "
+"href=\"https://ethgasstation.info/predictionTable.php\" target=\"_blank\" "
+"rel=\"noopener noreferrer\"> ईटीएच गैस स्टेशन </a> देखें"
+
+#: retail/templates/gas.html:165
+msgid ""
+"To see this information persisted in-browser check out <a "
+"href=https://chrome.google.com/webstore/detail/ethereum-gas-price-"
+"extens/innfmlnnhfcebjcnfopadflecemoddnp target=\"_blank\" rel=\"noopener "
+"noreferrer\">this chrome extension</a>"
+msgstr ""
+"यह जानकारी देखने के लिए ब्राउज़र में बने रहें <a "
+"href=https://chrome.google.com/webstore/detail/ethereum-gas-price-"
+"extens/innfmlnnhfcebjcnfopadflecemoddnp target=\"_blank\" rel=\"noopener "
+"noreferrer\"> यह क्रोम एक्सटेंशन </a>"
+
+#: retail/templates/gas.html:167 retail/templates/help.html:122
+msgid "FAQ"
+msgstr "सामान्य प्रश्न"
+
+#: retail/templates/gas.html:168
+msgid "Why do we need to pay gas?"
+msgstr "हमें गैस का भुगतान करने की ज़रूरत क्यों है?"
+
+#: retail/templates/gas.html:170
+msgid "What are the advantages of Ethereum-based applications??"
+msgstr "Ethereum- आधारित अनुप्रयोगों के फायदे क्या हैं ??"
+
+#: retail/templates/gas.html:172
+msgid "I can't figure this out.  Help!"
+msgstr "मैं इसे समझ नहीं सकता। मदद!"
+
+#: retail/templates/getgitcoin.html:21
+msgid "I Am A:"
+msgstr "मैं एक:"
+
+#: retail/templates/getgitcoin.html:28
+#: retail/templates/whitepaper_new.html:122
+msgid "Open Source Developer"
+msgstr "ओपन सोर्स डेवलपर"
+
+#: retail/templates/getgitcoin.html:29
+msgid ""
+"Want to earn some extra coin? 💰 Check out the Issue Explorer and see what "
+"funded issues match your skillset and interests today."
+msgstr ""
+"कुछ अतिरिक्त सिक्का कमा सकते हैं? Iss समस्या एक्सप्लोरर देखें और देखें कि "
+"कौन से वित्त पोषित मुद्दे आज आपके कौशल और रुचियों से मेल खाते हैं।"
+
+#: retail/templates/getgitcoin.html:31
+msgid "See Issue Explorer"
+msgstr "समस्या एक्सप्लोरर देखें"
+
+#: retail/templates/getgitcoin.html:38 retail/templates/help.html:45
+msgid "View Developer Guide"
+msgstr "डेवलपर गाइड देखें"
+
+#: retail/templates/getgitcoin.html:47
+msgid "Repository Maintainer"
+msgstr "रिपोजिटरी रखरखाव"
+
+#: retail/templates/getgitcoin.html:48
+msgid ""
+"Let's push your repo forward. 🚀  Create a funded issue of your own and start"
+" working with people in the OSS community on issues _you_ care about."
+msgstr ""
+"आइए आपके रेपो को आगे बढ़ाएं। 🚀 अपने आप का एक वित्त पोषित मुद्दा बनाएं और "
+"ओएसएस समुदाय में लोगों के साथ काम करना शुरू करें, जिन पर आप परवाह करते हैं।"
+
+#: retail/templates/getgitcoin.html:64 retail/templates/help.html:58
+msgid "View Repo Maintainer Guide"
+msgstr "रेपो रखरखाव गाइड देखें"
+
+#: retail/templates/getgitcoin.html:73
+msgid "Blockchain Evangelist"
+msgstr "ब्लॉकचेन प्रचारक"
+
+#: retail/templates/getgitcoin.html:74
+msgid ""
+"You can see that the future of software development involves aligned "
+"incentives, tools built by &amp; for developers, and decentralization is the"
+" way it's all goin' down. Let’s dive deeper!"
+msgstr ""
+"आप देख सकते हैं कि सॉफ्टवेयर विकास के भविष्य में गठबंधन प्रोत्साहन, उपकरण "
+"द्वारा निर्मित उपकरण शामिल हैं; डेवलपर्स के लिए, और विकेन्द्रीकरण जिस तरह से"
+" यह सब नीचे जा रहा है। चलो गहरी गोता लगाएँ!"
+
+#: retail/templates/getgitcoin.html:76
+msgid "Read Whitepaper"
+msgstr "व्हाइटपेपर पढ़ें"
+
+#: retail/templates/getgitcoin.html:83
+msgid "Join Gitcoin Slack"
+msgstr "गिटकोइन स्लैक में शामिल हों"
+
+#: retail/templates/getgitcoin.html:89
+msgid "Not sure?"
+msgstr "निश्चित नहीं?"
+
+#: retail/templates/getgitcoin.html:89
+msgid "View all Gitcoin tools"
+msgstr "सभी गिटकोइन उपकरण देखें"
+
+#: retail/templates/help.html:38
+msgid "Developer?"
+msgstr "डेवलपर?"
+
+#: retail/templates/help.html:39
+msgid "Check out the Gitcoin Developer guide"
+msgstr "गिटकोइन डेवलपर गाइड देखें"
+
+#: retail/templates/help.html:51
+msgid "Repo Maintainer?"
+msgstr "रेपो रखरखाव?"
+
+#: retail/templates/help.html:52
+msgid "Check out the Gitcoin Repo Maintainer guide"
+msgstr "गिटकोइन रेपो रखरखाव गाइड देखें"
+
+#: retail/templates/help.html:64
+msgid "Does it work?"
+msgstr "क्या यह काम करता है?"
+
+#: retail/templates/help.html:65
+msgid "Check out the Gitcoin Case Study"
+msgstr "गिटकोइन केस स्टडी देखें"
+
+#: retail/templates/help.html:71
+msgid "View Case Studies"
+msgstr "केस स्टडीज देखें"
+
+#: retail/templates/help.html:81
+msgid "Featured Videos"
+msgstr "विशेष रुप से प्रदर्शित वीडियोज़"
+
+#: retail/templates/help.html:88
+msgid "Product Demo: Post a Bounty"
+msgstr "उत्पाद डेमो: एक बक्षीस पोस्ट करें"
+
+#: retail/templates/help.html:92
+msgid "What is Web3 and how do we use it?"
+msgstr "वेब 3 क्या है और हम इसका उपयोग कैसे करते हैं?"
+
+#: retail/templates/help.html:101
+msgid "Tutorials"
+msgstr "ट्यूटोरियल"
+
+#: retail/templates/help.html:147
+msgid "Got another question?"
+msgstr "एक और सवाल मिला?"
+
+#: retail/templates/help.html:152
+msgid "View Github Repo"
+msgstr "जिथूब रेपो देखें"
+
+#: retail/templates/help.html:153
+msgid "Ask on slack"
+msgstr "ढीले पर पूछो"
+
+#: retail/templates/help.html:154
+msgid "Contact Gitcoin Core"
+msgstr "गिटकोइन कोर से संपर्क करें"
+
+#: retail/templates/index.html:33
+msgid "What is Gitcoin?"
+msgstr "गिटकोइन क्या है?"
+
+#: retail/templates/index.html:44
+msgid "1. It's *not* a token."
+msgstr "1. यह * टोकन नहीं है *।"
+
+#: retail/templates/index.html:45
+msgid ""
+"There is *no* native token on the Gitcoin community.  We're focused on "
+"honing our product/market fit."
+msgstr ""
+"गिटकोइन समुदाय पर * नहीं * देशी टोकन है। हम अपने उत्पाद / बाजार फिट को "
+"सम्मानित करने पर केंद्रित हैं।"
+
+#: retail/templates/index.html:49
+msgid "2. It's a community."
+msgstr "2. यह एक समुदाय है।"
+
+#: retail/templates/index.html:50
+msgid ""
+"The Gitcoin toolset &amp; community allows you to (1) build skills (2) find "
+"(or give) economic opportunities and hopefully (3) make some lifelong "
+"friendships."
+msgstr ""
+"गिटकोइन टूलसेट & amp; समुदाय आपको (1) कौशल कौशल (2) आर्थिक अवसरों को खोजने "
+"(या देने) की अनुमति देता है और उम्मीद है कि (3) कुछ आजीवन दोस्ती बनाते हैं।"
+
+#: retail/templates/index.html:54
+msgid "3. It's a mission."
+msgstr "3. यह एक मिशन है।"
+
+#: retail/templates/index.html:55
+msgid "Our mission is to \"Grow Open Source\"."
+msgstr "हमारा मिशन \"ओपन सोर्स बढ़ाना\" है।"
+
+#: retail/templates/index.html:55
+msgid "Read more"
+msgstr "और पढो"
+
+#: retail/templates/index.html:64
+msgid "But How Does it Work?"
+msgstr "लेकिन ये कैसे काम करता है?"
+
+#: retail/templates/index.html:72
+msgid "1. Find Funded Github Issues."
+msgstr "1. वित्त पोषित जिथब मुद्दे खोजें।"
+
+#: retail/templates/index.html:73
+#, python-format
+msgid ""
+"Whether it's Bugs, Features, or Security Issues, <a "
+"href=\"%(explorerurl)s\">Gitcoin's Issue Explorer</a> is the easiest way to "
+"find paid work in open source."
+msgstr ""
+"चाहे यह बग, फीचर्स या सुरक्षा समस्याएं हों, <a href=\"%(explorerurl)s\"> "
+"गिटकोइन का इश्यु एक्सप्लोरर </a> ओपन सोर्स में सशुल्क काम ढूंढने का सबसे "
+"आसान तरीका है।"
+
+#: retail/templates/index.html:77
+msgid "2. Claim an Issue."
+msgstr "2. एक समस्या का दावा करें।"
+
+#: retail/templates/index.html:78
+msgid ""
+"Claim the issue on Gitcoin via the Funded Issue Detail Page (<a "
+"href=\"https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/skunkworks/issues/14\">Example</a>)."
+msgstr ""
+"गिटकोइन पर फंड किए गए मुद्दे विवरण पृष्ठ के माध्यम से इस मुद्दे का दावा करें"
+" (<a "
+"href=\"https://gitcoin.co/funding/details?url=https://github.com/gitcoinco/skunkworks/issues/14\">"
+" उदाहरण < / a>)।"
+
+#: retail/templates/index.html:82
+msgid "3. Build Something Great."
+msgstr "3. कुछ बढ़िया बनाएँ।"
+
+#: retail/templates/index.html:83
+msgid ""
+"Coordinate with the Bounty Submitter on Github.  Build something great!"
+msgstr "गितूब पर बाउंटी सबमिटर के साथ समन्वय। कुछ बढ़िया बनाएं!"
+
+#: retail/templates/index.html:87
+msgid "4. Submit Your Work &amp; Get Paid."
+msgstr "4. अपना काम जमा करें & amp; भुगतान प्राप्त करना।"
+
+#: retail/templates/index.html:88
+msgid ""
+"Payments are Ethereum-based, &amp; released automatically after code is "
+"accepted by the bounty submitter."
+msgstr ""
+"भुगतान Ethereum आधारित हैं, & amp; बाउंटी सबमिटकर्ता द्वारा कोड स्वीकार किए "
+"जाने के बाद स्वचालित रूप से जारी किया गया।"
+
+#: retail/templates/index.html:100
+msgid "What's the TLDR?"
+msgstr "टीएलडीआर क्या है?"
+
+#: retail/templates/index.html:114
+msgid "Why use Gitcoin?"
+msgstr "गिटकोइन का उपयोग क्यों करें?"
+
+#: retail/templates/index.html:122
+msgid "Find New &amp; Interesting Work"
+msgstr "नया खोजें & amp; रोचक काम"
+
+#: retail/templates/index.html:123
+msgid ""
+"Work only on repositories that strike a chord with _you_. Gitcoin allows you"
+" to try before you go full time."
+msgstr ""
+"केवल उन भंडारों पर काम करें जो _you_ के साथ एक तार पर हमला करते हैं। गिटकोइन"
+" आपको पूर्ण समय जाने से पहले कोशिश करने की अनुमति देता है।"
+
+#: retail/templates/index.html:129
+msgid "Deepen Relationships"
+msgstr "गहरे संबंध"
+
+#: retail/templates/index.html:130
+msgid "Gitcoin is a way to meet and connect with open source developers."
+msgstr "गिटकोइन ओपन सोर्स डेवलपर्स से मिलने और कनेक्ट करने का एक तरीका है।"
+
+#: retail/templates/index.html:138
+msgid "Learn New Skills"
+msgstr "नए हुनर ​​सीखना"
+
+#: retail/templates/index.html:139
+msgid "Gitcoin is the easiest way to find paid work in open source."
+msgstr "ओपन सोर्स में सशुल्क काम खोजने का सबसे आसान तरीका गिटकोइन है।"
+
+#: retail/templates/index.html:145
+msgid "Make Some Extra Cash"
+msgstr "कुछ अतिरिक्त नकद बनाओ"
+
+#: retail/templates/index.html:146
+msgid ""
+"You got into open source for the love of solving problems. Get paid for "
+"working on your passion."
+msgstr ""
+"समस्याओं को हल करने के प्यार के लिए आप खुले स्रोत में आ गए। अपने जुनून पर "
+"काम करने के लिए भुगतान प्राप्त करें।"
+
+#: retail/templates/index.html:172
+msgid "Email Founders"
+msgstr "ईमेल संस्थापक"
+
+#: retail/templates/index.html:178
+msgid "Project Roadmap"
+msgstr "परियोजना रोडमैप"
+
+#: retail/templates/index.html:188
+msgid "2016-2017: Experimentation"
+msgstr "2016-2017: प्रयोग"
+
+#: retail/templates/index.html:189
+msgid ""
+"Founder Kevin Owocki experiments with Ethereum mining, building <a "
+"href=\"https://github.com/owocki/\" target=\"_blank\" rel=\"noopener "
+"noreferrer\">a handful of Open Source projects in the space</a>, investing, "
+"and <a href=\"https://www.meetup.com/Boulder-Blockchain/\" target=\"_blank\""
+" rel=\"noopener noreferrer\">community organizing</a>."
+msgstr ""
+"एथेरियम खनन के साथ संस्थापक केविन ओवोकी प्रयोग, <a "
+"href=\"https://github.com/owocki/\" target=\"_blank\" rel=\"noopener "
+"noreferrer\"> अंतरिक्ष में खुली स्रोत परियोजनाओं का एक मुट्ठी भर </a> , "
+"निवेश, और <a href=\"https://www.meetup.com/Boulder-Blockchain/\" "
+"target=\"_blank\" rel=\"noopener noreferrer\"> समुदाय आयोजन </a>।"
+
+#: retail/templates/index.html:201
+msgid "Q2 2017: Ideation"
+msgstr "प्रश्न 2 2017: विचार"
+
+#: retail/templates/index.html:202
+msgid ""
+"With the mentorship of Open Source Developers from the Boulder CO tech "
+"community, the idea of a decentralized network designed to <i>Grow Open "
+"Source</i> is conceived. What if recruitment for software projects could be "
+"completely decentralized and automated?  What if developers could try "
+"projects before they commit?  What if repo maintainers had a way to bring "
+"new developers onto their projects?"
+msgstr ""
+"बोल्डर सीओ टेक समुदाय से ओपन सोर्स डेवलपर्स के परामर्श के साथ, <i> ओपन सोर्स"
+" </ i> के लिए डिज़ाइन किए गए एक विकेन्द्रीकृत नेटवर्क का विचार कल्पना की गई "
+"है। क्या होगा यदि सॉफ्टवेयर परियोजनाओं के लिए भर्ती पूरी तरह से "
+"विकेन्द्रीकृत और स्वचालित हो सकती है? क्या होगा यदि डेवलपर्स प्रतिबद्ध होने "
+"से पहले परियोजनाओं का प्रयास कर सकें? क्या होगा यदि रेपो रखरखाव करने वालों "
+"के पास नई परियोजनाओं को अपनी परियोजनाओं पर लाने का कोई तरीका था?"
+
+#: retail/templates/index.html:214
+msgid "Q3 2017: Build &amp; Design"
+msgstr "क्यू 3 2017: बिल्ड एंड amp; डिज़ाइन"
+
+#: retail/templates/index.html:215
+msgid ""
+"Customer Development commences. The founder codes. The design team designs. "
+"Animator animates."
+msgstr ""
+"ग्राहक विकास शुरू होता है। संस्थापक कोड। डिजाइन टीम डिजाइन करता है। एनिमेटर "
+"एनिमेटेड।"
+
+#: retail/templates/index.html:227
+msgid "Q4 2017: Launch"
+msgstr "प्रश्न 4 2017: लॉन्च करें"
+
+#: retail/templates/index.html:228
+msgid ""
+"The Issues Explorer goes live. The code behind the project is released open "
+"source. For the first time, coders can monetize their open-source work "
+"without a centralized middleman, and an incentive is provided to the open-"
+"source community to <i>Grow Open Source</i>, together."
+msgstr ""
+"मुद्दे एक्सप्लोरर लाइव चला जाता है। परियोजना के पीछे कोड ओपन सोर्स जारी किया"
+" गया है। पहली बार, कोडर केंद्रीयकृत मध्यस्थ के बिना अपने ओपन-सोर्स काम का "
+"मुद्रीकरण कर सकते हैं, और ओपन-सोर्स समुदाय को <i> ओपन सोर्स </ i> को एक साथ "
+"बढ़ाने के लिए प्रोत्साहन प्रदान किया जाता है।"
+
+#: retail/templates/index.html:240
+msgid "Next: Gitcoin joins Consensys, launches Pilot Projects"
+msgstr "अगला: गिटकॉइन Consensys में शामिल हो गया, पायलट परियोजनाओं की शुरूआत"
+
+#: retail/templates/index.html:245
+msgid ""
+"Funded issues for EtherDelta, Consensys Security, Truffle, Metamask, and "
+"web3py are live at"
+msgstr ""
+"ईथरडेल्टा, Consensys सुरक्षा, Truffle, मेटामास्क, और web3py के लिए वित्त "
+"पोषित मुद्दों पर रहते हैं"
+
+#: retail/templates/index.html:248
+msgid ""
+"With tens of thousands of dollars of Funded Issues processed through the "
+"system, Gitcoin becomes a place for OSS developers to get involved in the "
+"web3 ecosystem."
+msgstr ""
+"प्रणाली के माध्यम से संसाधित किए गए वित्त पोषित मुद्दों के हजारों डॉलर के "
+"साथ, गिटकोइन वेब 3 पारिस्थितिक तंत्र में शामिल होने के लिए ओएसएस डेवलपर्स के"
+" लिए एक जगह बन गया है।"
+
+#: retail/templates/index.html:251
+msgid "The system is dogfooded; Gitcoin is used to build Gitcoin."
+msgstr ""
+"प्रणाली dogfooded है; गिटकोइन का निर्माण गिटकोइन बनाने के लिए किया जाता है।"
+
+#: retail/templates/index.html:264
+msgid "After that: Growth"
+msgstr "उसके बाद: विकास"
+
+#: retail/templates/index.html:268
+#, python-format
+msgid ""
+"The community, both on <a href=\"%(slackurl)s\">the slack channel</a> and <a"
+" href=\"#mailchimp\">the community mailing list</a> continue to grow."
+msgstr ""
+"समुदाय, दोनों <a href=\"%(slackurl)s\"> स्लैक चैनल </a> और <a "
+"href=\"#mailchimp\"> समुदाय मेलिंग सूची </a> पर बढ़ते रहते हैं।"
+
+#: retail/templates/index.html:269
+msgid ""
+"The market for software jobs is massive, and Open Source software creates "
+"billions of dollars in economic value per year."
+msgstr ""
+"सॉफ्टवेयर नौकरियों के लिए बाजार भारी है, और ओपन सोर्स सॉफ्टवेयर प्रति वर्ष "
+"आर्थिक मूल्य में अरबों डॉलर बनाता है।"
+
+#: retail/templates/index.html:270
+msgid ""
+"What will the world look like if decentralized ledger technology begins to "
+"disrupt the existing value systems in software?"
+msgstr ""
+"अगर विकेन्द्रीकृत लेजर तकनीक सॉफ्टवेयर में मौजूदा मूल्य प्रणाली को बाधित "
+"करने लगती है तो दुनिया कैसा दिखता है?"
+
+#: retail/templates/index.html:282
+msgid "Shipping New Tools Every Month"
+msgstr "शिपिंग हर उपकरण हर महीने"
+
+#: retail/templates/index.html:287
+msgid ""
+"Bounties are just the first tool we're launching.  We've got a bunch of new "
+"tools in the pipeline, including:"
+msgstr ""
+"बाउंटीज केवल पहला टूल है जिसे हम लॉन्च कर रहे हैं। हमारे पास पाइपलाइन में नए"
+" टूल्स का एक गुच्छा है, जिसमें निम्न शामिल हैं:"
+
+#: retail/templates/index.html:290
+msgid "Dev Grants"
+msgstr "देव अनुदान"
+
+#: retail/templates/index.html:293
+msgid "Code Funding"
+msgstr "कोड फंडिंग"
+
+#: retail/templates/index.html:296
+msgid "Mentorship Matching"
+msgstr "ध्यान मिलान मिलान"
+
+#: retail/templates/index.html:300
+msgid "Want to learn about them?"
+msgstr "उनके बारे में जानना चाहते हैं?"
+
+#: retail/templates/index.html:300
+msgid "Click here"
+msgstr "यहां क्लिक करे"
+
+#: retail/templates/index.html:316 retail/templates/whitepaper_new.html:125
+msgid "Press"
+msgstr "दबाएँ"
+
+#: retail/templates/index.html:422
+msgid "iOS App Now Available"
+msgstr "आईओएस ऐप अब उपलब्ध है"
+
+#: retail/templates/index.html:437
+msgid "Get The App"
+msgstr "एप्लिकेशन लें"
+
+#: retail/templates/leaderboard.html:67
+msgid "None found."
+msgstr "कोई नहीं मिला।"
+
+#: retail/templates/mission.html:43
+msgid ""
+"GITCOIN IS A <span class=\"text-highlight-dark-blue\">MISSION</span>\n"
+"                    AND <span class=\"text-highlight-dark-blue\">VALUE-ORIENTED</span>"
+msgstr ""
+"गिटकोइन एक <span class = \"text-highlight-dark-blue\"> मिशन </ span> है\n"
+"                    और <span class = \"text-highlight-dark-blue\"> VALUE-मूल </ span>"
+
+#: retail/templates/mission.html:46
+msgid ""
+"<span class=\"text-highlight-dark-blue\">DISTRIBUTED MOVEMENT</span> AIMED "
+"TO <span class=\"text-highlight-dark-blue\">DRIVE</span>"
+msgstr ""
+"<span class = \"text-highlight-dark-blue\"> वितरित मूवमेंट </ span> AIMED से"
+" <span class = \"टेक्स्ट-हाइलाइट-डार्क-ब्लू\"> ड्राइव </ span>"
+
+#: retail/templates/mission.html:48
+msgid ""
+"<span class=\"text-highlight-dark-blue\">CHANGE</span> AND <span "
+"class=\"text-highlight-pink\">GROW OPEN SOURCE</span>"
+msgstr ""
+"<span class = \"text-highlight-dark-blue\"> बदलें </ span> और <span class = "
+"\"टेक्स्ट-हाइलाइट-गुलाबी\"> बढ़ी स्रोत खोलें </ span>"
+
+#: retail/templates/mission.html:60
+msgid "<span class=\"text-highlight-green\">We</span> Want"
+msgstr "<span class = \"text-highlight-green\"> हम </ span> चाहते हैं"
+
+#: retail/templates/mission.html:92
+msgid "<span class=\"text-highlight-green\">We</span> Value"
+msgstr "<span class = \"text-highlight-green\"> हम </ span> मान"
+
+#: retail/templates/mission.html:150
+msgid "<span class=\"text-highlight-green\">We</span> Interact"
+msgstr "<span class = \"text-highlight-green\"> हम </ span> इंटरैक्ट करते हैं"
+
+#: retail/templates/mission.html:227
+msgid "Read About Our Mission"
+msgstr "हमारे मिशन के बारे में पढ़ें"
+
+#: retail/templates/process_accesscode_request.html:32
+msgid "Process"
+msgstr "प्रक्रिया"
+
+#: retail/templates/process_accesscode_request.html:37
+#, python-format
+msgid ""
+"> New Whitepaper Request:\n"
+"> %(obj)s\n"
+"\n"
+"Hey there,\n"
+"\n"
+"I'm glad to have you interested in the Gitcoin whitepaper. Where'd you hear about the project?\n"
+"\n"
+"Here's an access code for you: [code]\n"
+"You can redeeem it at https://gitcoin.co/whitepaper/accesscode\n"
+"\n"
+"I'd love to hear your feedback after you read it. You can email me back directly here or join the slack team at https://gitcoin.co/slack (I'm @owocki there).\n"
+"\n"
+"Best,\n"
+"\n"
+"Kevin from\n"
+"https://gitcoin.co\n"
+"\n"
+"https://www.linkedin.com/in/owocki/\n"
+"\n"
+"https://twitter.com/owocki/\n"
+msgstr ""
+"> नया व्हाइटपेपर अनुरोध:\n"
+"> %(obj)s\n"
+"\n"
+"सुनो,\n"
+"\n"
+"मुझे गिटकोइन व्हाइटपेपर में रुचि रखने में खुशी है। आपने परियोजना के बारे में कहां सुना?\n"
+"\n"
+"यहां आपके लिए एक एक्सेस कोड है: [कोड]\n"
+"आप इसे https://gitcoin.co/whitepaper/accesscode पर पुनः प्राप्त कर सकते हैं\n"
+"\n"
+"इसे पढ़ने के बाद मुझे आपकी प्रतिक्रिया सुनना अच्छा लगेगा। आप सीधे मुझे यहां ईमेल कर सकते हैं या https://gitcoin.co/slack पर स्लैक टीम में शामिल हो सकते हैं (मैं @owocki हूँ)।\n"
+"\n"
+"श्रेष्ठ,\n"
+"\n"
+"केविन से\n"
+"https://gitcoin.co\n"
+"\n"
+"https://www.linkedin.com/in/owocki/\n"
+"\n"
+"https://twitter.com/owocki/\n"
+
+#: retail/templates/save_search.html:26
+msgid "Unlock your potential in Open Source."
+msgstr "ओपन सोर्स में अपनी क्षमता अनलॉक करें।"
+
+#: retail/templates/save_search.html:32
+msgid "Emails no more than 2x / week."
+msgstr "ईमेल 2x / सप्ताह से अधिक नहीं है।"
+
+#: retail/templates/save_search.html:35
+msgid "Gitcoin Core will never sell your email address."
+msgstr "गिटकोइन कोर कभी भी आपका ईमेल पता नहीं बेच पाएगा।"
+
+#: retail/templates/settings/email.html:7
+msgid "Basic Preferences"
+msgstr "मूल प्राथमिकताएं"
+
+#: retail/templates/settings/email.html:8 retail/templates/slack.html:48
+#: retail/templates/whitepaper_accesscode.html:44
+#: retail/templates/whitepaper_new.html:114
+msgid "Email address"
+msgstr "ईमेल पता"
+
+#: retail/templates/settings/email.html:10
+msgid "We will never share your email with anyone else"
+msgstr "हम कभी भी आपके ईमेल को किसी और के साथ साझा नहीं करेंगे"
+
+#: retail/templates/settings/email.html:13
+msgid "Send me"
+msgstr "मुझे भेजें"
+
+#: retail/templates/settings/email.html:16
+msgid "Regular: Weekly Roundups, Notifications, etc"
+msgstr "नियमित: साप्ताहिक राउंडअप, अधिसूचनाएं, आदि"
+
+#: retail/templates/settings/email.html:17
+msgid "Lite 1: Just Roundups"
+msgstr "लाइट 1: बस राउंडअप"
+
+#: retail/templates/settings/email.html:18
+msgid "Lite 2: Just Notifications"
+msgstr "लाइट 2: बस अधिसूचनाएं"
+
+#: retail/templates/settings/email.html:19
+msgid "Nothing: Don't Email"
+msgstr "कुछ भी नहीं: ईमेल मत करो"
+
+#: retail/templates/settings/email.html:25
+msgid "roundup emails once a week"
+msgstr "सप्ताह में एक बार राउंडअप ईमेल"
+
+#: retail/templates/settings/email.html:26
+msgid "notifications up to twice a day"
+msgstr "दिन में दो बार अधिसूचनाएं"
+
+#: retail/templates/settings/email.html:29
+msgid "Preferred language"
+msgstr "पसंदीदा भाषा"
+
+#: retail/templates/settings/feedback.html:10
+msgid "How are we doing?  What do you think?"
+msgstr "हम कैसा कर रहे हैं? तुम क्या सोचते हो?"
+
+#: retail/templates/settings/matching.html:7
+msgid "Matching Preferences"
+msgstr "मिलान प्राथमिकताएं"
+
+#: retail/templates/settings/matching.html:8
+msgid "Github username"
+msgstr "गीथूब उपयोगकर्ता नाम"
+
+#: retail/templates/settings/matching.html:12
+msgid "Programming languages"
+msgstr "प्रोग्रामिंग की भाषाएँ"
+
+#: retail/templates/settings/matching.html:13
+msgid "(pull from github)"
+msgstr "(जिथूब से खींचें)"
+
+#: retail/templates/settings/matching.html:15
+msgid "so we know what funded work to route your way"
+msgstr ""
+"इसलिए हम जानते हैं कि आपके रास्ते को रूट करने के लिए किस वित्त पोषित काम है"
+
+#: retail/templates/settings/privacy.html:7
+msgid "Privacy Preferences"
+msgstr "गोपनीयता प्राथमिकताएं"
+
+#: retail/templates/settings/privacy.html:11
+msgid "Hide my profile from the leaderboard"
+msgstr "लीडरबोर्ड से मेरी प्रोफ़ाइल छुपाएं"
+
+#: retail/templates/settings/privacy.html:13
+msgid ""
+"If this option is chosen, we will remove your profile information from the "
+"leaderboard"
+msgstr ""
+"यदि यह विकल्प चुना गया है, तो हम लीडरबोर्ड से आपकी प्रोफ़ाइल जानकारी निकाल "
+"देंगे"
+
+#: retail/templates/settings/privacy.html:18
+msgid "Hide my profile altogether"
+msgstr "पूरी तरह से मेरी प्रोफाइल छुपाएं"
+
+#: retail/templates/settings/privacy.html:20
+msgid "If this option is chosen, we will remove your profile altogether"
+msgstr "यदि यह विकल्प चुना गया है, तो हम आपकी प्रोफ़ाइल को पूरी तरह हटा देंगे"
+
+#: retail/templates/settings/privacy.html:26
+msgid "Hide that I'm a Gitcoin alumni"
+msgstr "छुपाएं कि मैं एक गिटकोइन पूर्व छात्र हूं"
+
+#: retail/templates/settings/privacy.html:28
+msgid ""
+"If this option is chosen, we not show that you are a Gitcoin alumni on your "
+"profile or about page."
+msgstr ""
+"यदि यह विकल्प चुना गया है, तो हम यह नहीं दिखाते कि आप अपनी प्रोफ़ाइल या पेज "
+"पर एक गिटकोइन पूर्व छात्र हैं।"
+
+#: retail/templates/settings/slack.html:6
+msgid "Slack Integration"
+msgstr "स्लैक एकीकरण"
+
+#: retail/templates/settings/slack.html:8
+msgid ""
+" Gitcoin can post updates of bounties statuses of your repositories to your team's slack.\n"
+"      To do this create bot\n"
+"      <a href=\"https://my.slack.com/apps/A0F7YS25R-bots\">here</a>\n"
+"      and provide slack API token in the field below. "
+msgstr ""
+"गिटकोइन आपकी टीम के ढेर में आपकी रिपॉजिटरीज़ की बकाया स्थिति के अपडेट पोस्ट कर सकता है।\n"
+"      ऐसा करने के लिए बॉट बनाएँ\n"
+"      <a href=\"https://my.slack.com/apps/A0F7YS25R-bots\"> यहां </a>\n"
+"      और नीचे दिए गए क्षेत्र में ढीला एपीआई टोकन प्रदान करें।"
+
+#: retail/templates/settings/slack.html:13
+msgid "Slack API token"
+msgstr "स्लैक एपीआई टोकन"
+
+#: retail/templates/settings/slack.html:17
+msgid ""
+"Github repos to monitor (use full name, like 'gitcoinco/web' for <a "
+"href=https://github.com/gitcoinco/web>this repo</a>)"
+msgstr ""
+"निगरानी करने के लिए गिथब रिपोज़ (<a href=https://github.com/gitcoinco/web> "
+"इस रेपो </a> के लिए 'gitcoinco / web' जैसे पूर्ण नाम का उपयोग करें </a>)"
+
+#: retail/templates/settings/slack.html:21
+msgid "Slack channel to post to"
+msgstr "पोस्ट करने के लिए स्लैक चैनल"
+
+#: retail/templates/settings/slack.html:25
+msgid "Go"
+msgstr "चले जाओ"
+
+#: retail/templates/settings/slack.html:26
+msgid "Test"
+msgstr "परीक्षा"
+
+#: retail/templates/shared/bottom_notification.html:20
+msgid "Browse funded work in OSS on the go.  Check out the "
+msgstr ""
+"यात्रा पर ओएसएस में वित्त पोषित काम ब्राउज़ करें। इसकी जाँच पड़ताल करो"
+
+#: retail/templates/shared/footer.html:22
+msgid "Home"
+msgstr "होम"
+
+#: retail/templates/shared/footer.html:23
+msgid "Mission"
+msgstr "मिशन"
+
+#: retail/templates/shared/footer.html:24 retail/templates/shared/nav.html:35
+msgid "About"
+msgstr "के बारे में"
+
+#: retail/templates/shared/footer.html:25
+msgid "Jobs"
+msgstr "नौकरियां"
+
+#: retail/templates/shared/footer.html:27 retail/templates/shared/nav.html:36
+msgid "Tools"
+msgstr "उपकरण"
+
+#: retail/templates/shared/footer.html:28
+msgid "Terms"
+msgstr "शर्तें"
+
+#: retail/templates/shared/footer.html:29
+msgid "Privacy"
+msgstr "एकांत"
+
+#: retail/templates/shared/head.html:59 retail/templates/shared/hero.html:22
+msgid "Grow Open Source"
+msgstr "ओपन सोर्स बढ़ाएं"
+
+#: retail/templates/shared/hero.html:24
+msgid ""
+"Gitcoin is the easiest way to monetize or incentivize work in Open Source "
+"Software."
+msgstr ""
+"ओपन सोर्स सॉफ्टवेयर में काम को मुद्रीकृत या प्रोत्साहन देने का सबसे आसान "
+"तरीका गिटकोइन है।"
+
+#: retail/templates/shared/hero.html:36
+msgid "Join Our Slack"
+msgstr "हमारे ढेर में शामिल हों"
+
+#: retail/templates/shared/hero.html:37
+msgid "Explore Gitcoin's Tools"
+msgstr "गिटकोइन के उपकरण का अन्वेषण करें"
+
+#: retail/templates/shared/hero.html:40
+msgid "Join Mailing List"
+msgstr "मेलिंग सूची में शामिल हों"
+
+#: retail/templates/shared/mailchimp.html:5
+msgid "(Emails once a week max, &amp; we never sell your data.)"
+msgstr "(सप्ताह में एक बार अधिकतम ईमेल, और हम आपका डेटा कभी नहीं बेचते हैं।)"
+
+#: retail/templates/shared/testimonials.html:5
+msgid "Who's using Gitcoin?"
+msgstr "गिटकोइन का उपयोग कौन कर रहा है?"
+
+#: retail/templates/shared/testimonials.html:12
+msgid "November 16 2017"
+msgstr "16 नवंबर 2017"
+
+#: retail/templates/shared/testimonials.html:12
+msgid ""
+"Gitcoin Announces Pilot Projects with EtherDelta, Consensys Dilligence, "
+"Truffle, Metamask, web3py"
+msgstr ""
+"गिटकोइन ने इथरडेल्टा, कंसेंसिस डिलीजेंस, ट्रफल, मेटामास्क, वेब 3py के साथ "
+"पायलट परियोजनाओं की घोषणा की"
+
+#: retail/templates/slack.html:32
+msgid "Gitcoin Slack Community"
+msgstr "गिटकोइन स्लैक समुदाय"
+
+#: retail/templates/slack.html:47
+msgid ""
+"Meet software developers, futurists, and funders who are building web3."
+msgstr "वेब डेवलपर्स, फ़्यूचरिस्ट और फंडर्स से मिलें जो वेब 3 बना रहे हैं।"
+
+#: retail/templates/slack.html:50
+#: retail/templates/whitepaper_accesscode.html:46
+#: retail/templates/whitepaper_new.html:116
+msgid "Gitcoin will never share your email with anyone else."
+msgstr "गिटकोइन कभी भी आपके ईमेल को किसी और के साथ साझा नहीं करेगा।"
+
+#: retail/templates/slack.html:56
+msgid "Sign in here"
+msgstr "यहां साइन इन करो"
+
+#: retail/templates/whitepaper_accesscode.html:33
+msgid "Got an access code?"
+msgstr "एक एक्सेस कोड मिला?"
+
+#: retail/templates/whitepaper_accesscode.html:34
+msgid "Good for you."
+msgstr "आपके लिए अच्छा हैं।"
+
+#: retail/templates/whitepaper_accesscode.html:36
+msgid "Please submit your info below for access to the draft whitepaper."
+msgstr ""
+"मसौदे श्वेतपत्र तक पहुंच के लिए कृपया नीचे दी गई अपनी जानकारी जमा करें।"
+
+#: retail/templates/whitepaper_accesscode.html:49
+msgid "Access Code"
+msgstr "एक्सेस कोड"
+
+#: retail/templates/whitepaper_new.html:35
+msgid "Hey, you!"
+msgstr "अरे तुम!"
+
+#: retail/templates/whitepaper_new.html:37
+msgid "Gitcoin is *not* a token."
+msgstr "गिटकोइन * टोकन नहीं है *।"
+
+#: retail/templates/whitepaper_new.html:40
+msgid "Gitcoin is a distributed group of individuals focused:"
+msgstr "गिटकोइन केंद्रित व्यक्तियों का एक वितरित समूह है:"
+
+#: retail/templates/whitepaper_new.html:44
+#, python-format
+msgid ""
+"on being <i>relentlessly mission driven</i>. <a href=\"%(missionurl)s\"> "
+"(more on this here) </a>"
+msgstr ""
+"<i> निरंतर मिशन संचालित </ i> होने पर। <a href=\"%(missionurl)s\"> (यहां इस "
+"पर अधिक) </a>"
+
+#: retail/templates/whitepaper_new.html:47
+msgid ""
+"on working with the <i>best repos</i> in web3..  <a "
+"href=\"https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-"
+"projects-f5a0955de9d6\"> (more on this here) </a>"
+msgstr ""
+"वेब 3 में <i> सर्वोत्तम repos </ i> के साथ काम करने पर .. <a "
+"href=\"https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-"
+"projects-f5a0955de9d6\"> (और अधिक यह यहाँ) </a>"
+
+#: retail/templates/whitepaper_new.html:50
+#, python-format
+msgid ""
+"on building the <i>best tools</i> for them...  <a href=\"%(toolboxurl)s\"> "
+"(more on this here) </a>"
+msgstr ""
+"उनके लिए <i> सर्वोत्तम टूल </ i> बनाने पर ... <a href=\"%(toolboxurl)s\"> "
+"(यहां इस पर अधिक) </a>"
+
+#: retail/templates/whitepaper_new.html:53
+msgid ""
+"over a <i>long term</i> time horizon..  <a "
+"href=\"https://medium.com/gitcoin/blockchain-is-the-next-tcp-"
+"ip-6663b62b5654\"> (more on this here) </a>"
+msgstr ""
+"<i> दीर्घकालिक </ i> समय क्षितिज पर .. <a "
+"href=\"https://medium.com/gitcoin/blockchain-is-the-next-tcp-"
+"ip-6663b62b5654\"> (यहां पर अधिक ) </a>"
+
+#: retail/templates/whitepaper_new.html:56
+msgid ""
+"and doing <i>something historic</i> in the space.  <a "
+"href=\"https://medium.com/gitcoin/playing-the-long-game-fbd78fb41de6\"> "
+"(more on this here) </a>"
+msgstr ""
+"और अंतरिक्ष में <i> कुछ ऐतिहासिक </ i> कर रहा हूं। <a "
+"href=\"https://medium.com/gitcoin/playing-the-long-game-fbd78fb41de6\"> "
+"(यहां पर और अधिक) </a>"
+
+#: retail/templates/whitepaper_new.html:59
+msgid "Quite Frankly..."
+msgstr "बिल्कुल साफ - साफ..."
+
+#: retail/templates/whitepaper_new.html:61
+msgid ""
+"The project hasn't really had time to partipate in token related activities."
+msgstr ""
+"परियोजना में वास्तव में टोकन से संबंधित गतिविधियों में भाग लेने का समय नहीं "
+"था।"
+
+#: retail/templates/whitepaper_new.html:64
+msgid "In fact, we're quite fatigued by the pervasiveness of tokens."
+msgstr "वास्तव में, हम टोकन की व्यापकता से काफी थके हुए हैं।"
+
+#: retail/templates/whitepaper_new.html:67
+msgid ""
+"Its exhausting to have to pay attention to all of the rumours, the drama, "
+"the speculation."
+msgstr "सभी अफवाहों, नाटक, अटकलों पर ध्यान देना होगा।"
+
+#: retail/templates/whitepaper_new.html:70
+msgid ""
+"And there are *more worthwhile* uses of a completely-distributed trust-"
+"management supercomputer like the Ethereum blockchain."
+msgstr ""
+"और एथेरियम ब्लॉकचेन जैसे पूरी तरह से वितरित ट्रस्ट-प्रबंधन सुपरकंप्यूटर के *"
+" अधिक सार्थक * उपयोग हैं।"
+
+#: retail/templates/whitepaper_new.html:73
+msgid ""
+"So we're choosing to ignore it all (for now) and focusing on building stuff."
+msgstr ""
+"इसलिए हम इसे सभी (अभी के लिए) अनदेखा करना और निर्माण सामग्री पर ध्यान "
+"केंद्रित करना चुन रहे हैं।"
+
+#: retail/templates/whitepaper_new.html:75
+msgid "But that could change.."
+msgstr "लेकिन वह बदल सकता है .."
+
+#: retail/templates/whitepaper_new.html:77
+msgid ""
+"It is possible that one day there will be tokens or other digital assets "
+"associated with the project.  Possible, but no promises."
+msgstr ""
+"यह संभव है कि एक दिन परियोजना से जुड़े टोकन या अन्य डिजिटल संपत्तियां होंगी।"
+" संभव है, लेकिन कोई वादा नहीं है।"
+
+#: retail/templates/whitepaper_new.html:80
+msgid "Want to participate now?"
+msgstr "अभी भाग लेना चाहते हैं?"
+
+#: retail/templates/whitepaper_new.html:81
+msgid "Some ways to get involved now:"
+msgstr "अब शामिल होने के कुछ तरीके:"
+
+#: retail/templates/whitepaper_new.html:84
+msgid "Join the slack"
+msgstr "ढेर में शामिल हों"
+
+#: retail/templates/whitepaper_new.html:87
+msgid "Follow the twitter"
+msgstr "ट्विटर का पालन करें"
+
+#: retail/templates/whitepaper_new.html:90
+msgid "Build something cool"
+msgstr "कुछ ठंडा बनाएं"
+
+#: retail/templates/whitepaper_new.html:93
+msgid "Pitch a new idea"
+msgstr "एक नया विचार पिच"
+
+#: retail/templates/whitepaper_new.html:96
+msgid "Learn a new tool"
+msgstr "एक नया उपकरण सीखें"
+
+#: retail/templates/whitepaper_new.html:99
+msgid "Still want whitepaper access?"
+msgstr "अभी भी श्वेतपत्र का उपयोग चाहते हैं?"
+
+#: retail/templates/whitepaper_new.html:101
+msgid ""
+"Please submit your info below to receive access to the whitepaper if/when "
+"its available."
+msgstr ""
+"यदि उपलब्ध हो तो व्हाइटपेपर तक पहुंच प्राप्त करने के लिए कृपया नीचे दी गई "
+"अपनी जानकारी जमा करें।"
+
+#: retail/templates/whitepaper_new.html:101
+msgid "Already have an access code?"
+msgstr "पहले से ही एक एक्सेस कोड है?"
+
+#: retail/templates/whitepaper_new.html:119
+msgid "Interested as a"
+msgstr "ए के रूप में रूचि"
+
+#: retail/templates/whitepaper_new.html:123
+msgid "Open Source Repo Maintainer"
+msgstr "ओपन सोर्स रेपो रखरखाव"
+
+#: retail/templates/whitepaper_new.html:124
+msgid "Token Purchaser"
+msgstr "टोकन खरीदार"
+
+#: retail/templates/whitepaper_new.html:126
+msgid "Advisor"
+msgstr "सलाहकार"
+
+#: retail/templates/whitepaper_new.html:130
+msgid "Feel free to select more than one."
+msgstr "एक से अधिक का चयन करने के लिए स्वतंत्र महसूस करें।"
+
+#: retail/templates/whitepaper_new.html:135
+msgid "Who are you?  What is your interest in the whitepaper?"
+msgstr "तुम कौन हो? श्वेतपत्र में आपकी रूचि क्या है?"
+
+#: retail/views.py:36
+msgid ""
+"Gitcoin is the catalyst open source development needs to move forward. The "
+"process is seamless and the results speak for themselves."
+msgstr ""
+"गिटकोइन उत्प्रेरक ओपन सोर्स डेवलपमेंट को आगे बढ़ने की जरूरत है। प्रक्रिया "
+"निर्बाध है और परिणाम खुद के लिए बोलते हैं।"
+
+#: retail/views.py:39
+msgid ""
+"We have been trying out the Gitcoin bounty program in the Web3.py project "
+"and are very pleased with the results so far.  We’ve closed out four "
+"bountied issues ranging from smaller cleanup tasks to full fledged feature "
+"development.  So far the platform looks promising as a valuable addition to "
+"our development process."
+msgstr ""
+"हम Web3.py प्रोजेक्ट में गिटकोइन बाउंटी प्रोग्राम को आजमा रहे हैं और अब तक "
+"परिणामों से बहुत खुश हैं। हमने छोटे सफाई कार्यों से लेकर पूर्ण विकसित फीचर "
+"डेवलपमेंट तक चार बाउंटी मुद्दों को बंद कर दिया है। अभी तक मंच हमारी विकास "
+"प्रक्रिया के लिए एक मूल्यवान जोड़ के रूप में वादा करता है।"
+
+#: retail/views.py:42
+msgid ""
+"Our first experiences with Gitcoin have been very positive.  It has helped "
+"MARKET to get new people involved quickly and in a cost effective manner.  "
+"Having fresh ideas and outside perspectives contribute to a new project is "
+"unbelievably valuable."
+msgstr ""
+"गिटकोइन के साथ हमारा पहला अनुभव बहुत सकारात्मक रहा है। इसने मार्केट को नए "
+"लोगों को जल्दी और लागत प्रभावी तरीके से शामिल करने में मदद की है। नए विचारों"
+" और बाहरी दृष्टिकोणों को एक नई परियोजना में योगदान देना अविश्वसनीय रूप से "
+"मूल्यवान है।"
+
+#: retail/views.py:45
+msgid ""
+"It’s been a while since something has gotten me this riled up ! Love the "
+"concept and definitely sticking around to see this project through. Awesome "
+"community  + open source work + bounties"
+msgstr ""
+"यह थोड़ी देर हो गया है क्योंकि कुछ मुझे यह उलझा हुआ है! अवधारणा से प्यार "
+"करें और निश्चित रूप से इस परियोजना को देखने के लिए चारों ओर चिपके रहें। बहुत"
+" बढ़िया समुदाय + ओपन सोर्स वर्क + बाउंटीज़"
+
+#: retail/views.py:48
+msgid ""
+"Now that the internet of value is starting to be a thing, Gitcoin is adding "
+"a new layer of incentives into open source development, helping both the "
+"projects, by powering up their capacity, and the developers, by paying for "
+"their work."
+msgstr ""
+"अब जब मूल्य का इंटरनेट एक चीज शुरू हो रहा है, तो गिटकोइन ओपन सोर्स डेवलपमेंट"
+" में प्रोत्साहनों की एक नई परत जोड़ रहा है, दोनों परियोजनाओं की मदद कर रहा "
+"है, अपनी क्षमता को बढ़ाकर, और डेवलपर्स को अपने काम के लिए भुगतान करके।"
+
+#: retail/views.py:51
+msgid ""
+"Gitcoin helps us to finally close out the issues we’ve been meaning to get "
+"around to for too long."
+msgstr ""
+"गिटकोइन हमें अंततः उन मुद्दों को बंद करने में मदद करता है जिनका अर्थ है कि "
+"हम बहुत लंबे समय तक पहुंचने के लिए हैं।"
+
+#: retail/views.py:54
+msgid ""
+"Gitcoin is precisely what I’ve been looking for! It gives every developer a "
+"vehicle to make extra money or move their open source project ahead."
+msgstr ""
+"गिटकोइन ठीक वही है जो मैं ढूंढ रहा हूं! यह प्रत्येक डेवलपर को अतिरिक्त पैसा "
+"बनाने या आगे अपनी ओपन सोर्स प्रोजेक्ट को स्थानांतरित करने के लिए वाहन प्रदान"
+" करता है।"
+
+#: retail/views.py:57
+msgid ""
+"I feel it is so awesome to have the opportunity through Gitcoin to do what I"
+" love and get paid for it, and to have reasonable freedom about the way I "
+"work, that it already seems too good to be true. "
+msgstr ""
+"मुझे लगता है कि गिटकोइन के माध्यम से मुझे जो पसंद है वह करने के लिए और इसके "
+"लिए भुगतान करने का अवसर प्राप्त करना बहुत अच्छा है, और जिस तरह से मैं काम "
+"करता हूं उसके बारे में उचित स्वतंत्रता प्राप्त करने के लिए, यह सच होने के "
+"लिए पहले से ही बहुत अच्छा लगता है।"
+
+#: retail/views.py:165
+msgid "Gitcoin is a mission-driven organization."
+msgstr "गिटकोइन एक मिशन संचालित संगठन है।"
+
+#: retail/views.py:166
+msgid "Our mission is to grow open source."
+msgstr "हमारा मिशन ओपन सोर्स विकसित करना है।"
+
+#: retail/views.py:176
+msgid ""
+"I am a developer, I want build more Open Source Software. Where can I start?"
+msgstr ""
+"मैं एक डेवलपर हूं, मैं अधिक ओपन सोर्स सॉफ्टवेयर बनाना चाहता हूं। मैं कहां से"
+" शुरू कर सकता हूँ?"
+
+#: retail/views.py:177
+msgid ""
+"The <a href=https://gitcoin.co/explorer>Funded Issue Explorer</a> contains a"
+" handful of issues that are ready to be paid out as soon as they are turned "
+"around. Check out the developer guide at <a "
+"href=https://gitcoin.co/help/dev>https://gitcoin.co/help/dev</a>."
+msgstr ""
+"<a href=https://gitcoin.co/explorer> वित्त पोषित समस्या एक्सप्लोरर </a> में "
+"कुछ ऐसे मुद्दे हैं जो जल्द ही भुगतान किए जाने के लिए तैयार हैं। <a "
+"href=https://gitcoin.co/help/dev> https://gitcoin.co/help/dev </a> पर डेवलपर"
+" मार्गदर्शिका देखें।"
+
+#: retail/views.py:180
+msgid "I am a repo maintainer.  How do I get started?"
+msgstr "मैं एक रेपो रखरखाव हूँ। मैं कैसे शुरू करूँ?"
+
+#: retail/views.py:181
+msgid ""
+"The best way to get started is to post a funded issue on a task you need "
+"done.  Check out the repo maintainers guide at <a "
+"href=https://gitcoin.co/help/repo>https://gitcoin.co/help/repo</a>."
+msgstr ""
+"शुरू करने का सबसे अच्छा तरीका यह है कि आपको जिस कार्य की आवश्यकता है, उस पर "
+"एक वित्त पोषित मुद्दा पोस्ट करना है। <a href=https://gitcoin.co/help/repo> "
+"https://gitcoin.co/help/repo </a> पर रेपो रखरखाव मार्गदर्शिका देखें।"
+
+#: retail/views.py:184
+msgid "What tokens does Gitcoin support?"
+msgstr "गिटकोइन का समर्थन क्या टोकन करता है?"
+
+#: retail/views.py:185
+msgid ""
+"Gitcoin supports Ether and all ERC20 tokens.  If the token you'd like to use"
+" is Ethereum based, then Gitcoin supports it."
+msgstr ""
+"गिटकोइन ईथर और सभी ईआरसी 20 टोकन का समर्थन करता है। यदि टोकन आप उपयोग करना "
+"चाहते हैं तो एथेरियम आधारित है, तो गिटकोइन इसका समर्थन करता है।"
+
+#: retail/views.py:188
+msgid "What kind of issues are fundable?"
+msgstr "किस तरह के मुद्दे वित्त पोषित हैं?"
+
+#: retail/views.py:189
+msgid ""
+"\n"
+"\n"
+"    <p class=\"c5\"><span class=\"c4 c0\">Gitcoin supports bug, feature, and security funded issues. &nbsp;Any issue that you need done is a good candidate for a funded issue, provided that:</span></p><ul class=\"c13 lst-kix_twl0y342ii52-0 start\"><li class=\"c5 c11\"><span class=\"c4 c0\">It&rsquo;s open today.</span></li><li class=\"c5 c11\"><span class=\"c4 c0\">The repo README clearly enumerates how a new developer should get set up to contribute.</span></li><li class=\"c5 c11\"><span class=\"c4 c0\">The task is well defined.</span></li><li class=\"c5 c11\"><span class=\"c4 c0\">The end-state of the task is well defined.</span></li><li class=\"c5 c11\"><span class=\"c4 c0\">The pricing of the task reflects (market rate * complexity) of the task.</span></li><li class=\"c5 c11\"><span class=\"c4 c0\">The issue is on the roadmap, but does not block other work.</span></li></ul><p class=\"c5 c6\"><span class=\"c4 c0\"></span></p><p class=\"c5\"><span class=\"c4 c0\">To get started with funded issues today, it might be good to start small. &nbsp;Is there a small bug that needs fixed? &nbsp;An issue that&rsquo;s been open for a while that no one is tackling? &nbsp;An administrative task?</span></p>\n"
+"\n"
+"\n"
+"            "
+msgstr ""
+"\n"
+"<पी वर्ग = \"सी 5\"> <span class = \"c4 c0\"> गिटकोइन बग, सुविधा और सुरक्षा वित्त पोषित मुद्दों का समर्थन करता है। & nbsp; आपको जो भी मुद्दा चाहिए, वह एक वित्त पोषित मुद्दे के लिए एक अच्छा उम्मीदवार है, बशर्ते कि: </ span> </ p> <ul class = \"c13 lst-kix_twl0y342ii52-0 प्रारंभ करें\"> <li class = \"c5 c11\" > <span class = \"c4 c0\"> यह आज खुला है। </ span> </ li> <li class = \"c5 c11\"> <span class = \"c4 c0\"> रेपो रीडमे स्पष्ट रूप से बताता है कि कैसे नया डेवलपर को योगदान करने के लिए सेट अप किया जाना चाहिए। </ span> </ li> <li class = \"c5 c11\"> <span class = \"c4 c0\"> कार्य अच्छी तरह से परिभाषित किया गया है। </ span> </ li> <li वर्ग = \"सी 5 सी 11\"> <span class = \"c4 c0\"> कार्य की समाप्ति स्थिति अच्छी तरह परिभाषित है। </ span> </ li> <li class = \"c5 c11\"> <span class = \"c4 सी 0 \"> कार्य की कीमत कार्य के (बाजार दर * जटिलता) को दर्शाती है। </ span> </ li> <li class =\" c5 c11 \"> <span class =\" c4 c0 \"> समस्या इस पर है रोडमैप, लेकिन अन्य काम को अवरुद्ध नहीं करता है। </ span> </ li> </ ul> <p class = \"c5 c6\"> <span class = \"c4 c0\"> </ span> </ p> <p class = \"सी 5\"> <span class = \"c4 c0\"> आज वित्त पोषित मुद्दों के साथ शुरू करने के लिए, छोटे से शुरू करना अच्छा हो सकता है। & nbsp; क्या कोई छोटी बग है जिसे निश्चित करने की आवश्यकता है? & nbsp; एक समस्या जो थोड़ी देर के लिए खुली है कि कोई भी सामना नहीं कर रहा है? एक प्रशासनिक कार्य? </ span> </ p>"
+
+#: retail/views.py:197
+msgid "Whats the difference between tips & funded issues?"
+msgstr "टिप्स और वित्त पोषित मुद्दों के बीच क्या अंतर है?"
+
+#: retail/views.py:198
+msgid ""
+"\n"
+"\n"
+"<p>\n"
+"<strong>A tip</strong> is a tool to send ether or any ethereum token to any github account.  The flow for tips looks like this:\n"
+"</p><p>\n"
+"> Send (party 1) => receive (party 2)\n"
+"</p><p>\n"
+"\n"
+"<strong>Funded Issues</strong> are a way to fund open source features, bugs, or security bounties.  The flow for funded issues looks like this:\n"
+"</p><p>\n"
+"\n"
+">  Fund Issue (party 1) => claim funds  (party 2) => accept (party 1)\n"
+"</p>\n"
+"\n"
+"\n"
+"            "
+msgstr ""
+"\n"
+"<P>\n"
+"<strong> एक टिप </ strong> किसी भी github खाते में ईथर या किसी भी ethereum टोकन भेजने के लिए एक उपकरण है। सुझावों के लिए प्रवाह इस तरह दिखता है:\n"
+"</ P> <p>\n"
+"> भेजें (पार्टी 1) => प्राप्त करें (पार्टी 2)\n"
+"</ P> <p>\n"
+"\n"
+"<strong> वित्त पोषित मुद्दे </ strong> ओपन सोर्स फीचर्स, बग्स या सिक्योरिटी बाउंटीज़ को फंड करने का एक तरीका है। वित्त पोषित मुद्दों के लिए प्रवाह इस तरह दिखता है:\n"
+"</ P> <p>\n"
+"\n"
+"> फंड इश्यू (पार्टी 1) => दावा फंड (पार्टी 2) => स्वीकार करें (पार्टी 1)\n"
+"</ P>"
+
+#: retail/views.py:216
+msgid "What kind of contributors are successful on the Gitcoin network?"
+msgstr "गिटकोइन नेटवर्क पर किस प्रकार के योगदानकर्ता सफल होते हैं?"
+
+#: retail/views.py:217
+msgid ""
+"\n"
+"\n"
+"<p>\n"
+"If you have an issues board that needs triaged, read on..\n"
+"</p>\n"
+"<p>\n"
+"If you would like to recruit engineers to help work on your repo, read on..\n"
+"</p>\n"
+"<p>\n"
+"If you want to create value, and receive Ether tokens in return, read on..\n"
+"</p>\n"
+"<p>\n"
+"If you are looking for a quick win, an easy buck, or to promote something, please turn around.\n"
+"</p>\n"
+"\n"
+"<p>\n"
+"We value communication that is:\n"
+"</p>\n"
+"\n"
+"<ul>\n"
+"<li>\n"
+"    Collaborative\n"
+"</li>\n"
+"<li>\n"
+"    Intellectual & Intellectually Honest\n"
+"</li>\n"
+"<li>\n"
+"    Humble\n"
+"</li>\n"
+"<li>\n"
+"    Empathetic\n"
+"</li>\n"
+"<li>\n"
+"    Pragmatic\n"
+"</li>\n"
+"<li>\n"
+"    Stress reducing\n"
+"</li>\n"
+"</ul>\n"
+"\n"
+"<p>\n"
+"Here are some of our values\n"
+"</p>\n"
+"<ul>\n"
+"<li>\n"
+"    Show, don't tell\n"
+"</li>\n"
+"<li>\n"
+"    Give first\n"
+"</li>\n"
+"<li>\n"
+"     Be thoughtful & direct\n"
+"</li>\n"
+"<li>\n"
+"     Be credible\n"
+"</li>\n"
+"<li>\n"
+"     Challenge the status quo and be willing to be challenged\n"
+"</li>\n"
+"<li>\n"
+"     Create delightful experiences\n"
+"</li>\n"
+"</ul>\n"
+"\n"
+"\n"
+"            "
+msgstr ""
+"\n"
+"<P>\n"
+"यदि आपके पास कोई समस्या बोर्ड है जिसके लिए परीक्षण की आवश्यकता है, तो पढ़ें ..\n"
+"</ P>\n"
+"<P>\n"
+"यदि आप अपने रेपो पर काम करने में मदद करने के लिए इंजीनियरों की भर्ती करना चाहते हैं, तो पढ़ें ..\n"
+"</ P>\n"
+"<P>\n"
+"यदि आप मूल्य बनाना चाहते हैं, और बदले में ईथर टोकन प्राप्त करते हैं, तो पढ़ें ..\n"
+"</ P>\n"
+"<P>\n"
+"यदि आप त्वरित जीत, आसान हिरन, या कुछ को बढ़ावा देने की तलाश में हैं, तो कृपया चारों ओर मुड़ें।\n"
+"</ P>\n"
+"\n"
+"<P>\n"
+"हम संचार को महत्व देते हैं जो है:\n"
+"</ P>\n"
+"\n"
+"<Ul>\n"
+"<Li>\n"
+"    सहयोगात्मक\n"
+"</ Li>\n"
+"<Li>\n"
+"    बौद्धिक और बौद्धिक ईमानदार\n"
+"</ Li>\n"
+"<Li>\n"
+"    विनीत\n"
+"</ Li>\n"
+"<Li>\n"
+"    सहानुभूति\n"
+"</ Li>\n"
+"<Li>\n"
+"    व्यावहारिक\n"
+"</ Li>\n"
+"<Li>\n"
+"    तनाव कम करना\n"
+"</ Li>\n"
+"</ Ul>\n"
+"\n"
+"<P>\n"
+"यहां हमारे कुछ मूल्य हैं\n"
+"</ P>\n"
+"<Ul>\n"
+"<Li>\n"
+"    दिखाओ, मत बताओ\n"
+"</ Li>\n"
+"<Li>\n"
+"    पहले दें\n"
+"</ Li>\n"
+"<Li>\n"
+"     विचारशील और सीधा रहो\n"
+"</ Li>\n"
+"<Li>\n"
+"     विश्वसनीय रहो\n"
+"</ Li>\n"
+"<Li>\n"
+"     स्थिति को चुनौती दें और चुनौती देने के लिए तैयार रहें\n"
+"</ Li>\n"
+"<Li>\n"
+"     मोहक अनुभव बनाएं\n"
+"</ Li>\n"
+"</ Ul>"
+
+#: retail/views.py:285
+msgid ""
+"I received a notification about tip / funded issue, but I can't process it."
+"  Help!"
+msgstr ""
+"मुझे टिप / वित्त पोषित मुद्दे के बारे में अधिसूचना मिली, लेकिन मैं इसे "
+"संसाधित नहीं कर सकता। मदद!"
+
+#: retail/views.py:286
+msgid ""
+"We'd love to help!  Please email <a "
+"href='mailto:founders@gitcoin.co'>founders@gitcoin.co</a> or join <a "
+"href=/slack>Gitcoin Community Slack</a>."
+msgstr ""
+"हमें मदद करना अच्छा लगेगा! कृपया <a href='mailto:founders@gitcoin.co'> "
+"founders@gitcoin.co </a> ईमेल करें या <a href=/slack> गिटकोइन सामुदायिक "
+"स्लैक </a> में शामिल हों।"
+
+#: retail/views.py:289
+msgid ""
+"Am I allowed to place bounties on projects I don't contribute to or own?"
+msgstr ""
+"क्या मुझे उन परियोजनाओं पर बक्षीस लगाने की इजाजत है जिन्हें मैं योगदान नहीं "
+"देता हूं?"
+
+#: retail/views.py:290
+msgid ""
+"TLDR: Yes you are.  But as OSS devs ourselves, our experience has been that "
+"if you want to get the product you work on merged into the upstream, you "
+"will need to work with the contributors or owners of that repo.  If not, you"
+" can always fork a repo and run your own roadmap."
+msgstr ""
+"टीएलडीआर: हाँ आप हैं। लेकिन चूंकि ओएसएस स्वयं को समर्पित करता है, हमारा "
+"अनुभव यह रहा है कि यदि आप उस उत्पाद को प्राप्त करना चाहते हैं जो आप "
+"अपस्ट्रीम में विलय करने के लिए काम करते हैं, तो आपको उस रिपो के "
+"योगदानकर्ताओं या मालिकों के साथ काम करने की आवश्यकता होगी। यदि नहीं, तो आप "
+"हमेशा एक रेपो फोर्क कर सकते हैं और अपना खुद का रोडमैप चला सकते हैं।"
+
+#: retail/views.py:293
+msgid "I started work on a bounty but someone else has too.  Who gets it?"
+msgstr ""
+"मैंने एक बक्षीस पर काम करना शुरू किया लेकिन किसी और के पास भी है। यह कौन "
+"प्राप्त करता है?"
+
+#: retail/views.py:294
+msgid ""
+"As a general rule, we tend to treat the person who 'started work' first as "
+"having precedence over the issue.  The parties involved are all welcome to "
+"work together to split the bounty or come to some other agreement, but if an"
+" agreement is uanble to be made, then the first person to start work will "
+"have first shot at the bounty."
+msgstr ""
+"एक सामान्य नियम के रूप में, हम उस व्यक्ति से इलाज करते हैं जिसने इस मुद्दे "
+"पर प्राथमिकता के रूप में पहले 'काम शुरू किया' था। शामिल पार्टियां सभी को "
+"बक्षीस को विभाजित करने या किसी अन्य समझौते पर आने के लिए मिलकर काम करने के "
+"लिए स्वागत है, लेकिन अगर कोई समझौता करने के लिए तैयार किया जाता है, तो काम "
+"शुरू करने वाले पहले व्यक्ति को पहली बार बक्षीस पर गोली मार दी जाएगी।"
+
+#: retail/views.py:299
+msgid "Is Gitcoin open source?"
+msgstr "क्या गिटकोइन ओपन सोर्स है?"
+
+#: retail/views.py:300
+msgid ""
+"Yes, all of Gitcoin's core software systems are open source and available at"
+" <a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  "
+"Please see the liscense.txt file in each repo for more details."
+msgstr ""
+"हां, गिटकोइन के सभी कोर सॉफ्टवेयर सिस्टम खुले स्रोत हैं और <a "
+"href=https://github.com/gitcoinco/> https://github.com/gitcoinco/ </a> पर "
+"उपलब्ध हैं। अधिक जानकारी के लिए कृपया प्रत्येक रेपो में liscense.txt फ़ाइल "
+"देखें।"
+
+#: retail/views.py:303
+msgid "Is a token distribution event planned for Gitcoin?"
+msgstr "क्या गिटकोइन के लिए एक टोकन वितरण कार्यक्रम की योजना बनाई गई है?"
+
+#: retail/views.py:304
+msgid ""
+"\n"
+"<p>Gitcoin Core is considering doing a token distribution event (TDI), but at the time is focused first and foremost on providing value in Open Source Software&nbsp;in a lean way.</p>\n"
+"<p>To find out more about a possible upcoming token distribution event,&nbsp;check out&nbsp;<a href=\"https://gitcoin.co/whitepaper\">https://gitcoin.co/whitepaper</a></p>\n"
+"<p>&nbsp;</p>            "
+msgstr ""
+"\n"
+"<p> गिटकोइन कोर एक टोकन वितरण ईवेंट (टीडीआई) करने पर विचार कर रहा है, लेकिन उस समय ओपन सोर्स सॉफ्टवेयर में मूल्य प्रदान करने पर सबसे पहले और सबसे महत्वपूर्ण ध्यान केंद्रित किया गया है। </ p>\n"
+"<p> संभावित आगामी टोकन वितरण ईवेंट के बारे में और जानने के लिए, & nbsp; <a href=\"https://gitcoin.co/whitepaper\"> https://gitcoin.co/whitepaper </a> देखें < / p>\n"
+"<P> & nbsp; </ p>"
+
+#: retail/views.py:310
+msgid "What is the difference between Gitcoin and Gitcoin Core?"
+msgstr "गिटकोइन और गिटकोइन कोर के बीच क्या अंतर है?"
+
+#: retail/views.py:311
+msgid ""
+"\n"
+"Gitcoin Core LLC is the legal entity that manages the software development of the Gitcoin Network (Gitcoin).\n"
+"\n"
+"The Gitcoin Network is a series of smart contracts that helps Grow Open Source, but enabling developers to easily post and manage funded issues.            "
+msgstr ""
+"\n"
+"गिटकोइन कोर एलएलसी कानूनी इकाई है जो गिटकोइन नेटवर्क (गिटकोइन) के सॉफ्टवेयर विकास का प्रबंधन करती है।\n"
+"\n"
+"गिटकोइन नेटवर्क स्मार्ट अनुबंधों की एक श्रृंखला है जो ओपन सोर्स को बढ़ाने में मदद करता है, लेकिन डेवलपर्स को वित्त पोषित मुद्दों को आसानी से पोस्ट और प्रबंधित करने में सक्षम बनाता है।"
+
+#: retail/views.py:317
+msgid "Who is the team at Gitcoin Core?"
+msgstr "गिटकोइन कोर में टीम कौन है?"
+
+#: retail/views.py:318
+msgid ""
+"\n"
+"<p>The founder is <a href=\"https://linkedin.com/in/owocki\">Kevin Owocki</a>, a technologist from the Boulder Colorado tech scene. &nbsp; &nbsp;Kevin&nbsp;has a BS in Computer Science, 15 years experience in Open Source Software and Technology Startups. He is a volunteer in the Boulder Community for several community organizations, and an avid open source developer. His work has been featured in&nbsp;<a href=\"http://techcrunch.com/2011/02/10/group-dating-startup-ignighter-raises-3-million/\">TechCrunch</a>,&nbsp;<a href=\"http://www.cnn.com/2011/BUSINESS/03/29/india.online.matchmaking/\">CNN</a>,&nbsp;<a href=\"http://www.inc.com/30under30/2011/profile-adam-sachs-kevin-owocki-and-dan-osit-founders-ignighter.html\">Inc Magazine</a>,&nbsp;<a href=\"http://www.nytimes.com/2011/02/20/business/20ignite.html?_r=4&amp;amp;pagewanted=1&amp;amp;ref=business\">The New York Times</a>,&nbsp;<a href=\"http://boingboing.net/2011/09/24/tosamend-turn-all-online-i-agree-buttons-into-negotiations.html\">BoingBoing</a>,&nbsp;<a href=\"http://www.wired.com/2015/12/kevin-owocki-adblock-to-bitcoin/\">WIRED</a>,&nbsp;<a href=\"https://www.forbes.com/sites/amycastor/2017/08/31/toothpick-takes-top-prize-in-silicon-beach-ethereum-hackathon/#6bf23b7452ad\">Forbes</a>, and&nbsp;<a href=\"http://www.techdigest.tv/2007/08/super_mario_get_1.html\">TechDigest</a>.</p>\n"
+"<p><strong>Gitcoin</strong>&nbsp;was borne of the community in Boulder Colorado's thriving tech scene. One of the most amazing things about the Boulder community is the #givefirst mantra. The founding team has built their careers off of advice, mentorship, and relationships in the local tech community. &nbsp;</p>\n"
+"\n"
+"<p>We are hiring.  If you want to join the team, <a href=mailto:founders@gitcoin.co>email us</a>.\n"
+"\n"
+"            "
+msgstr ""
+"\n"
+"<p> संस्थापक BOLDer कोलोराडो तकनीकी दृश्य से एक तकनीकी विशेषज्ञ <a href=\"https://linkedin.com/in/owocki\"> केविन ओवोकी </a> है। & Nbsp; & nbsp; केविन & nbsp; कंप्यूटर विज्ञान में बीएस है, ओपन सोर्स सॉफ्टवेयर और प्रौद्योगिकी स्टार्टअप में 15 साल का अनुभव है। वह कई समुदाय संगठनों के लिए बोल्डर समुदाय में एक स्वयंसेवक है, और एक उग्र ओपन सोर्स डेवलपर है। उनके काम को & nbsp; <a href=\"http://techcrunch.com/2011/02/10/group-dating-startup-ignighter-raises-3-million/\"> TechCrunch </a> में दिखाया गया है, & nbsp; <a href=\"http://www.cnn.com/2011/BUSINESS/03/29/india.online.matchmaking/\"> सीएनएन </a>, & nbsp; <a href = \"http: // www। inc.com/30under30/2011/profile-adam-sachs-kevin-owocki-and-dan-osit-founders-ignighter.html\"> आईएनसी पत्रिका </a>, & nbsp; <a href = \"http: // www .nytimes.com / 2011/02/20 / व्यवसाय / 20ignite.html? _r = 4 & amp; amp; पृष्ठ वांटेड = 1 & amp; amp; ref = business \"> न्यूयॉर्क टाइम्स </a>, & nbsp; <a href =\" http://boingboing.net/2011/09/24/tosamend-turn-all-online-i-agree-buttons-into-negotiations.html\"> बोइंगबॉइंग </a>, & nbsp; <a href = \"http: //www.wired.com/2015/12/kevin-owocki-adblock-to-bitcoin/\">WIRED </a>, & nbsp; <a href = \"https://www.forbes.com/sites/amycastor / 2017/08/31 / टूथपिक-ले-टॉप-इनाम-इन-सिलिकॉन-बीच-एथेरियम-हैकथॉन / # 6bf23b7452ad \"> फोर्ब्स </a>, और & nbsp; <a href =\" http: //www.techdigest। टीवी / 2007/08 / super_mario_get_1.html \"> TechDigest </a>।</ P>\n"
+"<p> <strong> गिटकोइन </ strong> & nbsp; बोल्डर कोलोराडो के संपन्न तकनीकी दृश्य में समुदाय का जन्म हुआ था। बोल्डर समुदाय के बारे में सबसे आश्चर्यजनक चीजों में से एक #givefirst मंत्र है। संस्थापक टीम ने अपने करियर को स्थानीय तकनीकी समुदाय में सलाह, परामर्श और रिश्ते से दूर कर दिया है। & Nbsp; </ p>\n"
+"\n"
+"<p> हम भर्ती कर रहे हैं। यदि आप टीम में शामिल होना चाहते हैं, तो <a href=mailto:founders@gitcoin.co> हमें ईमेल करें </a>।"
+
+#: retail/views.py:327
+msgid "What is the mission of Gitcoin Core?"
+msgstr "गिटकोइन कोर का मिशन क्या है?"
+
+#: retail/views.py:328
+msgid ""
+"\n"
+"The mission of Gitcoin is \"Grow Open Source\".\n"
+"\n"
+"            "
+msgstr ""
+"\n"
+"गिटकोइन का मिशन \"ओपन सोर्स बढ़ाना\" है।"
+
+#: retail/views.py:334
+msgid "How can I stay in touch with project updates?"
+msgstr "मैं परियोजना अपडेट के संपर्क में कैसे रह सकता हूं?"
+
+#: retail/views.py:335
+msgid ""
+"\n"
+"The best way to stay in touch is to\n"
+"\n"
+"<ul>\n"
+"<li>\n"
+"    <a href=\"/#mailchimp\">Subscribe to the mailing list</a>\n"
+"</li>\n"
+"<li>\n"
+"    <a href=\"/twitter\">Follow the project on twitter</a>\n"
+"</li>\n"
+"<li>\n"
+"    <a href=\"/slack\">Join the slack channel</a>\n"
+"</li>\n"
+"\n"
+"</ul>\n"
+"\n"
+"            "
+msgstr ""
+"\n"
+"संपर्क में रहने का सबसे अच्छा तरीका है\n"
+"\n"
+"<Ul>\n"
+"<Li>\n"
+"    <a href=\"/#mailchimp\"> मेलिंग सूची की सदस्यता लें </a>\n"
+"</ Li>\n"
+"<Li>\n"
+"    <a href=\"/twitter\"> ट्विटर पर प्रोजेक्ट का पालन करें </a>\n"
+"</ Li>\n"
+"<Li>\n"
+"    <a href=\"/slack\"> स्लैक चैनल में शामिल हों </a>\n"
+"</ Li>\n"
+"\n"
+"</ Ul>"
+
+#: retail/views.py:357
+msgid ""
+"What is the difference between Gitcoin and centralized hiring websites?"
+msgstr "गिटकोइन और केंद्रीकृत भर्ती वेबसाइटों के बीच क्या अंतर है?"
+
+#: retail/views.py:358
+msgid ""
+"\n"
+"<p>There are many successful centralized hiring resources available on the web. &nbsp;Because these platforms were an&nbsp;efficient way to source, select, and manage a global workforce , millions of dollars was&nbsp;processed through these systems every day.</p>\n"
+"<p>Gitcoin takes the value that flows through these system, and makes it more efficient and fair. &nbsp;Gitcoin is a distributed network of smart contracts, based upon Ethereum, that aims to solve problems with centralized hiring resources, namely by</p>\n"
+"<ul>\n"
+"<li>being more open,</li>\n"
+"<li>being more fair,</li>\n"
+"<li>being more efficient,</li>\n"
+"<li>being easier to use.</li>\n"
+"<li>leveraging a global workforce,</li>\n"
+"<li>cutting out the middlemen,</li>\n"
+"</ul>\n"
+"<p>When Sir Tim Berners-Lee first invented the World Wide Web in the late 1980s&nbsp;to make information sharing on the Internet easier, he did something very important. He specified an open protocol, the Hypertext Transfer Protocol or HTTP, that anyone could use to make information available and to access such information. &nbsp;</p>\n"
+"<p>Gitcoin is similarly built on an open protocol of smart contracts.</p>\n"
+"<p>By specifying a&nbsp;protocol, Tim Berners-Lee opened the way for anyone to build software, so-called web servers and browsers that would be compatible with this protocol. &nbsp; By specifying an open source protocol for Funding Issues and software development scoping &amp; payment, the Gitcoin Core team hopes to similarly inspire a generation of inventions in 21st century software.</p>\n"
+"<p>\n"
+"To learn more about blockchain, please checkout <a href=\"{}\">this video about web3</a> or the <a href=\"https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\">Github Issues board</a>\n"
+"</p>\n"
+"            "
+msgstr ""
+"\n"
+"<p> वेब पर उपलब्ध कई सफल केंद्रीकृत भर्ती संसाधन हैं। & nbsp; चूंकि ये प्लेटफॉर्म वैश्विक कार्यबल का स्रोत, चयन और प्रबंधन करने का एक प्रभावी तरीका थे, इसलिए हर दिन इन सिस्टमों के माध्यम से लाखों डॉलर संसाधित होते थे। </ p>\n"
+"<p> गिटकोइन वह मान लेता है जो इन प्रणालियों के माध्यम से बहती है, और इसे अधिक कुशल और निष्पक्ष बनाती है। & nbsp; गिटकोइन एथेरियम के आधार पर स्मार्ट अनुबंधों का एक वितरित नेटवर्क है, जिसका उद्देश्य केंद्रीकृत भर्ती संसाधनों के साथ समस्याओं को हल करना है, अर्थात् </ p>\n"
+"<Ul>\n"
+"<li> अधिक खुले होने पर, </ li>\n"
+"<li> अधिक निष्पक्ष होना, </ li>\n"
+"<li> अधिक कुशल होने के नाते, </ li>\n"
+"<li> उपयोग करने में आसान होना। </ li>\n"
+"<li> वैश्विक कार्यबल का लाभ उठाना, </ li>\n"
+"<li> बिचौलियों को काटकर, </ li>\n"
+"</ Ul>\n"
+"<p> जब 1 9 80 के दशक के अंत में सर टिम बर्नर्स-ली ने वर्ल्ड वाइड वेब का आविष्कार किया, तो इंटरनेट पर सूचना साझा करना आसान बना दिया, उसने कुछ बहुत महत्वपूर्ण किया। उन्होंने एक खुला प्रोटोकॉल, हाइपरटेक्स्ट ट्रांसफर प्रोटोकॉल या HTTP निर्दिष्ट किया, कि कोई भी जानकारी उपलब्ध कराने और ऐसी जानकारी तक पहुंचने के लिए उपयोग कर सकता है। & Nbsp; </ p>\n"
+"<p> गिटकोइन समान रूप से स्मार्ट अनुबंधों के खुले प्रोटोकॉल पर बनाया गया है। </ p>\n"
+"<p> प्रोटोकॉल निर्दिष्ट करके, टिम बर्नर्स-ली ने सॉफ्टवेयर बनाने के लिए रास्ता खोल दिया, तथाकथित वेब सर्वर और ब्राउज़र जो इस प्रोटोकॉल के साथ संगत होंगे। & Nbsp; फंडिंग मुद्दों और सॉफ्टवेयर विकास स्कोपिंग के लिए ओपन सोर्स प्रोटोकॉल निर्दिष्ट करके & amp; भुगतान, गिटकोइन कोर टीम 21 वीं शताब्दी के सॉफ्टवेयर में आविष्कारों की एक पीढ़ी को प्रेरित करने की उम्मीद करती है।</ P>\n"
+"<P>\n"
+"ब्लॉकचेन के बारे में और जानने के लिए, कृपया <a href=\"{}\"> वेब 3 के बारे में यह वीडियो </a> या <a href = \"https://github.com/gitcoinco/gitcoinco/issues?q=is% चेकआउट करें 3 एसीयू +% 3 ओपन + लेबल% 3 एल्प \"> गीथब इश्यूज बोर्ड </a> है\n"
+"</ P>"
+
+#: retail/views.py:378
+msgid "Why do I need metamask?"
+msgstr "मुझे मेटामास्क की आवश्यकता क्यों है?"
+
+#: retail/views.py:379
+msgid ""
+"\n"
+"<p>\n"
+"You need <a href=\"https://metamask.io/\">Metamask</a> in order to use Gitcoin.\n"
+"</p>\n"
+"<p>\n"
+"\n"
+"Metamask turns google chrome into a Web3 Browser.   Web3 is powerful because it lets websites retrieve data from the blockchain, and lets users securely manage identity.\n"
+"</p>\n"
+"<p>\n"
+"\n"
+"In contrast to web2 where third parties own your data, in web3 you own your data and you are always in control.  On web3, your data is secured on the blockchain, which means that no one can ever freeze your assets or censor you.\n"
+"</p>\n"
+"<p>\n"
+"\n"
+"Download Metamask <a href=\"https://metamask.io/\">here</a> today.\n"
+"</p>\n"
+"<p>\n"
+"To learn more about Metamask, please checkout <a href=\"{}\">this video about web3</a> or the <a href=\"https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\">Github Issues board</a>\n"
+"</p>\n"
+"\n"
+"           "
+msgstr ""
+"\n"
+"<P>\n"
+"गिटकोइन का उपयोग करने के लिए आपको <a href=\"https://metamask.io/\"> मेटामास्क </a> की आवश्यकता है।\n"
+"</ P>\n"
+"<P>\n"
+"\n"
+"मेटामास्क Google क्रोम को वेब 3 ब्राउज़र में बदल देता है। वेब 3 शक्तिशाली है क्योंकि यह वेबसाइटों को ब्लॉकचेन से डेटा पुनर्प्राप्त करने देता है, और उपयोगकर्ताओं को सुरक्षित रूप से पहचान प्रबंधित करने देता है।\n"
+"</ P>\n"
+"<P>\n"
+"\n"
+"वेब 2 के विपरीत जहां तीसरे पक्ष के आपके डेटा हैं, वेब 3 में आप अपना डेटा रखते हैं और आप हमेशा नियंत्रण में रहते हैं। वेब 3 पर, आपका डेटा ब्लॉकचेन पर सुरक्षित है, जिसका अर्थ है कि कोई भी आपकी संपत्ति को कभी भी जमा नहीं कर सकता है या आपको सेंसर नहीं कर सकता है।\n"
+"</ P>\n"
+"<P>\n"
+"\n"
+"आज मेटामास्क <a href=\"https://metamask.io/\"> यहां </a> डाउनलोड करें।\n"
+"</ P>\n"
+"<P>\n"
+"मेटामास्क के बारे में और जानने के लिए, कृपया <a href=\"{}\"> वेब 3 के बारे में यह वीडियो </a> या <a href = \"https://github.com/gitcoinco/gitcoinco/issues?q=is% चेकआउट करें 3 एसीयू +% 3 ओपन + लेबल% 3 एल्प \"> गीथब इश्यूज बोर्ड </a> है\n"
+"</ P>"
+
+#: retail/views.py:402
+msgid "Why do I need to pay gas?"
+msgstr "मुझे गैस का भुगतान करने की ज़रूरत क्यों है?"
+
+#: retail/views.py:403
+msgid ""
+"\n"
+"<p>\n"
+"\"Gas\" is the name for a special unit used in Ethereum. It measures how much \"work\" an action or set of actions takes to perform (for example, storing data in a smart contract).\n"
+"</p>\n"
+"<p>\n"
+"The reason gas is important is that it helps to ensure an appropriate fee is being paid by transactions submitted to the network. By requiring that a transaction pay for each operation it performs (or causes a contract to perform), we ensure that network doesn't become bogged down with performing a lot of intensive work that isn't valuable to anyone.\n"
+"</p>\n"
+"<p>\n"
+"Gas fees are paid to the maintainers of the Ethereum network, in return for securing all of the Ether and Ethereum-based transactions in the world.  Gas fees are not paid to Gitcoin Core directly or indirectly.\n"
+"</p>\n"
+"<p>\n"
+"To learn more about gas, pleaes checkout the <a href=\"https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\">Github Issues board</a>\n"
+"</p>\n"
+"           "
+msgstr ""
+"\n"
+"<P>\n"
+"\"गैस\" एथेरियम में उपयोग की जाने वाली एक विशेष इकाई का नाम है। यह मापता है कि कितनी \"कार्य\" कार्रवाई या कार्यवाही का सेट करने के लिए होता है (उदाहरण के लिए, स्मार्ट अनुबंध में डेटा संग्रहीत करना)।\n"
+"</ P>\n"
+"<P>\n"
+"गैस महत्वपूर्ण है क्योंकि यह सुनिश्चित करने में मदद करता है कि नेटवर्क पर जमा लेनदेन द्वारा उचित शुल्क का भुगतान किया जा रहा है। प्रत्येक ऑपरेशन के लिए लेनदेन का भुगतान करने की आवश्यकता होती है (यह करने के लिए अनुबंध का कारण बनती है), हम यह सुनिश्चित करते हैं कि नेटवर्क बहुत गहन काम करने के साथ नीचे नहीं आ जाता है जो कि किसी के लिए मूल्यवान नहीं है।\n"
+"</ P>\n"
+"<P>\n"
+"ईथरियम नेटवर्क के रखरखाव करने वालों को गैस फीस का भुगतान किया जाता है, बदले में दुनिया में सभी ईथर और एथेरियम आधारित लेनदेन को सुरक्षित करने के लिए। सीधे या अप्रत्यक्ष रूप से गिटकोइन कोर को गैस शुल्क का भुगतान नहीं किया जाता है।\n"
+"</ P>\n"
+"<P>\n"
+"गैस के बारे में अधिक जानने के लिए, कृपया जांचें <a href=\"https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\"> गिथब मुद्दे बोर्ड </a>\n"
+"</ P>"
+
+#: retail/views.py:419
+msgid "What are the advanages of Ethereum based applications?"
+msgstr "एथेरियम आधारित अनुप्रयोगों की क्या सलाह है?"
+
+#: retail/views.py:420
+msgid ""
+"\n"
+"Here are some of the advantages of Ethereum based applications:\n"
+"<ul>\n"
+"<li>\n"
+"    Lower (or no) fees\n"
+"</li>\n"
+"<li>\n"
+"    No middlemen\n"
+"</li>\n"
+"<li>\n"
+"    No third party owns or can sell your data\n"
+"</li>\n"
+"<li>\n"
+"    No international conversion fees\n"
+"</li>\n"
+"<li>\n"
+"    Get paid in protocol, utility, or application tokens; not just cash.\n"
+"</li>\n"
+"</ul>\n"
+"<p>\n"
+"To learn more about Ethereum based apps, please checkout <a href=\"{}\">this video about web3</a> or the <a href=\"https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\">Github Issues board</a>\n"
+"</p>\n"
+"\n"
+"\n"
+"           "
+msgstr ""
+"\n"
+"इथेरियम आधारित अनुप्रयोगों के कुछ फायदे यहां दिए गए हैं:\n"
+"<Ul>\n"
+"<Li>\n"
+"    कम (या नहीं) शुल्क\n"
+"</ Li>\n"
+"<Li>\n"
+"    कोई बिचौलियों नहीं\n"
+"</ Li>\n"
+"<Li>\n"
+"    कोई तीसरी पार्टी का मालिक नहीं है या आपका डेटा बेच सकता है\n"
+"</ Li>\n"
+"<Li>\n"
+"    कोई अंतरराष्ट्रीय रूपांतरण शुल्क नहीं\n"
+"</ Li>\n"
+"<Li>\n"
+"    प्रोटोकॉल, उपयोगिता, या आवेदन टोकन में भुगतान प्राप्त करें; सिर्फ नकद नहीं।\n"
+"</ Li>\n"
+"</ Ul>\n"
+"<P>\n"
+"Ethereum आधारित ऐप्स के बारे में अधिक जानने के लिए, कृपया <a href=\"{}\"> वेब 3 के बारे में यह वीडियो </a> या <a href = \"https://github.com/gitcoinco/gitcoinco/issues?q= चेकआउट करें % 3Aissue +% 3 है ओपन + लेबल% 3 एल्प \"> गीथब मुद्दे बोर्ड </a>\n"
+"</ P>"
+
+#: retail/views.py:447
+msgid "I still dont get it.  Help!"
+msgstr "मुझे अभी भी यह नहीं मिला। मदद!"
+
+#: retail/views.py:448
+msgid ""
+"\n"
+"We want to nerd out with you a little bit more.  <a href=\"/slack\">Join the Gitcoin Slack Community</a> and let's talk.\n"
+"\n"
+"\n"
+msgstr ""
+"\n"
+"हम आपके साथ थोड़ा और बाहर निकलना चाहते हैं। <a href=\"/slack\"> गिटकोइन स्लैक समुदाय में शामिल हों </a> और चलो बात करते हैं।\n"
+
+#: retail/views.py:460
+msgid "Leverage Gitcoin’s Firehose of Talent to Do More Faster"
+msgstr "अधिक तेज़ करने के लिए प्रतिभा का गिटकोइन की फायरहोज लीवरेज"
+
+#: retail/views.py:464
+msgid "Post a Bounty in 90 Seconds"
+msgstr "90 सेकेंड में एक बक्षीस पोस्ट करें"
+
+#: retail/views.py:595
+msgid "You must provide an email address"
+msgstr "आपको एक ईमेल पता प्रदान करना होगा"
+
+#: retail/views.py:597
+msgid "Your invite has been sent."
+msgstr "आपका निमंत्रण भेजा गया है।"
+
+#: retail/views.py:605
+msgid "Unknown error"
+msgstr "अज्ञात त्रुटि"
+
+#: retail/views.py:608
+msgid "Invalid email"
+msgstr "अवैध ईमेल"
+
+#: tdi/views.py:56 tdi/views.py:57 tdi/views.py:115 tdi/views.py:116
+msgid "Whitepaper"
+msgstr "सफ़ेद कागज"
+
+#: tdi/views.py:64 tdi/views.py:123
+msgid "You're ratelimited. Please contact founders@gitcoin.co"
+msgstr "आप ratelimited हैं। कृपया संस्थापक@gitcoin.co से संपर्क करें"
+
+#: tdi/views.py:72
+msgid ""
+"\n"
+"Email: {} \n"
+"\n"
+"Role: {}\n"
+"\n"
+"Comments: {}\n"
+"\n"
+"IP: {}\n"
+"\n"
+"\n"
+"https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/\n"
+"\n"
+"    "
+msgstr ""
+"\n"
+"ईमेल: {}\n"
+"\n"
+"भूमिका: {}\n"
+"\n"
+"टिप्पणियाँ: {}\n"
+"\n"
+"आईपी: {}\n"
+"\n"
+"\n"
+"https://gitcoin.co/_administration/tdi/whitepaperaccessrequest/"
+
+#: tdi/views.py:81
+msgid "New Whitepaper Request"
+msgstr "नया व्हाइटपेपर अनुरोध"
+
+#: tdi/views.py:102 tdi/views.py:146
+msgid "Invalid Email. Please contact founders@gitcoin.co"
+msgstr "अवैध ईमेल। कृपया संस्थापक@gitcoin.co से संपर्क करें"
+
+#: tdi/views.py:106
+msgid ""
+"Your request has been sent.  <a href=/slack>Meantime, why don't you check "
+"out the slack channel?</a>"
+msgstr ""
+"आपका निवेदन भेज दिया गया है। <a href=/slack> इस समय, आप स्लैक चैनल क्यों "
+"नहीं देखते हैं? </a>"
+
+#: tdi/views.py:131
+msgid "Invalid Access Code. Please contact founders@gitcoin.co"
+msgstr "अमान्य एक्सेस कोड। कृपया संस्थापक@gitcoin.co से संपर्क करें"
+
+#: tdi/views.py:136
+msgid ""
+"You have exceeded your maximum number of uses for this access code. Please "
+"contact founders@gitcoin.co"
+msgstr ""
+"आपने इस एक्सेस कोड के लिए अपने अधिकतम उपयोगों को पार कर लिया है। कृपया "
+"संस्थापक@gitcoin.co से संपर्क करें"
+
+#: tdi/views.py:157
+msgid "New Whitepaper Generated"
+msgstr "नया व्हाइटपेपर जेनरेटेड"
+
+#: tdi/views.py:168
+msgid ""
+"Generated for access code {} by email {} at {} via ip: {}. "
+"https://gitcoin.co/whitepaper"
+msgstr ""
+"आईपी ​​के माध्यम से {} पर {{} द्वारा {@} {@} तक पहुंच कोड {} द्वारा एक्सेस "
+"कोड के लिए जेनरेट किया गया। https://gitcoin.co/whitepaper"
+
+#: tdi/views.py:250
+msgid "Kevin from Gitcoin.co"
+msgstr "Gitcoin.co से केविन"
+
+#: tdi/views.py:251
+msgid "Invite sent"
+msgstr "आमंत्रण भेज दिया"

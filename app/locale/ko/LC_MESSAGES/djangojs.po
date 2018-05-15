@@ -16,198 +16,189 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: assets/v2/js/amounts.js:11
 msgid "Approx: "
-msgstr "Ca."
+msgstr "대략 :"
 
 #: assets/v2/js/amounts.js:13 assets/v2/js/amounts.js:72
 msgid "Approx: Unknown amount"
-msgstr "Ungefähr: Unbekannte Menge"
+msgstr "대략 : 알 수없는 금액"
 
 #: assets/v2/js/amounts.js:43
 msgid "Incorrect amount"
-msgstr "Falscher Betrag"
+msgstr "부정확 한 금액"
 
 #: assets/v2/js/pages/bounty_details.js:79
 msgid "Issue"
-msgstr "Problem"
+msgstr "발행물"
 
 #: assets/v2/js/pages/bounty_details.js:80
 msgid "Issue Funding Info"
-msgstr "Ausgaben-Info ausgeben"
+msgstr "발행 자금 정보"
 
 #: assets/v2/js/pages/bounty_details.js:81
 msgid "Funder"
-msgstr "Geldgeber"
+msgstr "Funder"
 
 #: assets/v2/js/pages/bounty_details.js:82
 msgid "Submitter"
-msgstr "Übermittler"
+msgstr "제출자"
 
 #: assets/v2/js/pages/bounty_details.js:83
 msgid "Meta"
-msgstr "Meta"
+msgstr "메타"
 
 #: assets/v2/js/pages/bounty_details.js:103
 msgid "OPEN ISSUE"
-msgstr "OFFENES THEMA"
+msgstr "OPEN ISSUE"
 
 #: assets/v2/js/pages/bounty_details.js:106
 msgid "work started"
-msgstr "die Arbeit begann"
+msgstr "일이 시작되었습니다."
 
 #: assets/v2/js/pages/bounty_details.js:109
 msgid "work submitted"
-msgstr "Arbeit eingereicht"
+msgstr "제출 된 작품"
 
 #: assets/v2/js/pages/bounty_details.js:112
 msgid "done"
-msgstr "erledigt"
+msgstr "끝난"
 
 #: assets/v2/js/pages/bounty_details.js:115
 msgid "cancelled"
-msgstr "abgebrochen"
+msgstr "취소 된"
 
 #: assets/v2/js/pages/bounty_details.js:411
 msgid "Are you sure you want to remove your interest?"
-msgstr "Sind Sie sicher, dass Sie Ihr Interesse löschen möchten?"
+msgstr "관심을 제거 하시겠습니까?"
 
 #: assets/v2/js/pages/bounty_details.js:437
 msgid "Please provide an action plan for this ticket."
-msgstr "Bitte geben Sie einen Aktionsplan für dieses Ticket an."
+msgstr "이 티켓에 대한 실천 계획을 제공하십시오."
 
 #: assets/v2/js/pages/bounty_details.js:442
 msgid "You must agree to the precedence clause."
-msgstr "Sie müssen der Vorrangklausel zustimmen."
+msgstr "우선권 조항에 동의해야합니다."
 
 #: assets/v2/js/pages/bounty_details.js:446
 msgid "You must agree to keep the funder updated on your progress."
-msgstr "Sie müssen zustimmen, den Geldgeber auf dem Laufenden zu halten."
+msgstr "귀하는 귀하의 진척 상황에 대한 재정적 지원을 유지하는 것에 동의해야합니다."
 
 #: assets/v2/js/pages/bounty_details.js:451
 #: assets/v2/js/pages/bounty_details.js:561
 msgid "Stop Work"
-msgstr "Hör auf zu arbeiten"
+msgstr "작업 중지"
 
 #: assets/v2/js/pages/bounty_details.js:476
 msgid "Funded Issue Details: "
-msgstr "Fundierte Issue Details:"
+msgstr "자금 이슈 세부 사항 :"
 
 #: assets/v2/js/pages/bounty_details.js:546
 msgid "Submit Work"
-msgstr "Arbeit einreichen"
+msgstr "작업 제출"
 
 #: assets/v2/js/pages/bounty_details.js:548
 msgid "Submit work for the funder to review"
-msgstr "Reichen Sie Arbeit ein, damit der Geldgeber sie überprüfen kann"
+msgstr "후원사가 검토 할 수 있도록 작업 제출"
 
 #: assets/v2/js/pages/bounty_details.js:561
 msgid "Start Work"
-msgstr "Fang an zu arbeiten"
+msgstr "일을 시작하다"
 
 #: assets/v2/js/pages/bounty_details.js:563
 msgid "Notify the funder that you will not be working on this project"
-msgstr ""
-"Benachrichtigen Sie den Geldgeber, dass Sie nicht an diesem Projekt arbeiten"
-" werden"
+msgstr "이 프로젝트에서 일하지 않을 것이라고 기금업자에게 알리십시오."
 
 #: assets/v2/js/pages/bounty_details.js:563
 msgid "Notify the funder that you would like to take on this project"
-msgstr ""
-"Benachrichtigen Sie den Geldgeber, dass Sie an diesem Projekt teilnehmen "
-"möchten"
+msgstr "이 프로젝트를 수행하고 싶다는 것을 초청자에게 알리십시오."
 
 #: assets/v2/js/pages/bounty_details.js:576
 msgid "Cancel Bounty"
-msgstr "Kopfgeld stornieren"
+msgstr "현상금 취소"
 
 #: assets/v2/js/pages/bounty_details.js:578
 msgid "Cancel bounty and reclaim funds for this issue"
-msgstr ""
-"Stornieren Sie das Kopfgeld und fordern Sie Gelder für dieses Problem zurück"
+msgstr "현상금을 취소하고이 문제에 대한 자금 회수"
 
 #: assets/v2/js/pages/bounty_details.js:591
 msgid "Accept Submission"
-msgstr "Akzeptieren Sie die Einreichung"
+msgstr "제출을 수락하십시오"
 
 #: assets/v2/js/pages/bounty_details.js:592
 msgid "This will payout the bounty to the submitter."
-msgstr "Dies wird das Kopfgeld an den Übergeber auszahlen."
+msgstr "현상금을 제출자에게 지불합니다."
 
 #: assets/v2/js/pages/bounty_details.js:605
 msgid "Add Contribution"
-msgstr "Beitrag hinzufügen"
+msgstr "기고 추가"
 
 #: assets/v2/js/pages/bounty_details.js:607
 msgid "Increase the funding for this issue"
-msgstr "Erhöhen Sie die Finanzierung für dieses Problem"
+msgstr "이 문제에 대한 자금 지원 확대"
 
 #: assets/v2/js/pages/bounty_details.js:620
 #: assets/v2/js/pages/bounty_details.js:627
 msgid "View issue details and comments on Github"
-msgstr "Sehen Sie sich die Problemdetails und Kommentare zu Github an"
+msgstr "Github에 대한 문제 세부 정보 및 의견보기"
 
 #: assets/v2/js/pages/bounty_details.js:625
 msgid "View On Github"
-msgstr "Auf Github ansehen"
+msgstr "Github에서보기"
 
 #: assets/v2/js/pages/bounty_details.js:686
 msgid "got an error. please try again, or contact support@gitcoin.co"
-msgstr ""
-"habe einen Fehler bekommen. Bitte versuchen Sie es erneut oder wenden Sie "
-"sich an support@gitcoin.co"
+msgstr "오류가 발생했습니다. 다시 시도하거나 support@gitcoin.co에 문의하십시오."
 
 #: assets/v2/js/pages/bounty_details.js:707
 msgid "Work Accepted"
-msgstr "Arbeit akzeptiert"
+msgstr "허용 된 작업"
 
 #: assets/v2/js/pages/bounty_details.js:714
 msgid "Work Submitted"
-msgstr "Arbeit eingereicht"
+msgstr "제출 된 작업"
 
 #: assets/v2/js/pages/bounty_details.js:727
 msgid "Work Started"
-msgstr "Arbeit begonnen"
+msgstr "작업 시작"
 
 #: assets/v2/js/pages/bounty_details.js:740
 msgid "There's no activity yet!"
-msgstr "Es gibt noch keine Aktivitäten!"
+msgstr "아직 활동이 없습니다!"
 
 #: assets/v2/js/pages/dashboard.js:322
 msgid "No Results"
-msgstr "Keine Ergebnisse"
+msgstr "결과 없음"
 
 #: assets/v2/js/pages/dashboard.js:326
 msgid " Matching Result"
-msgstr "Übereinstimmendes Ergebnis"
+msgstr "매칭 결과"
 
 #: assets/v2/js/pages/dashboard.js:330
 msgid " Matching Results"
-msgstr "Passende Ergebnisse"
+msgstr "결과 매칭"
 
 #: assets/v2/js/pages/dashboard.js:707
 msgid "Please enter a valid email address."
-msgstr "Bitte geben Sie eine gültige E-Mail-Adresse ein."
+msgstr "유효한 이메일 주소를 입력하세요."
 
 #: assets/v2/js/pages/dashboard.js:718
 msgid "You're in! Keep an eye on your inbox for the next funding listing."
-msgstr ""
-"Du bist in! Behalten Sie Ihren Posteingang für die nächste "
-"Finanzierungsliste im Auge."
+msgstr "당신은 포함 됐어! 다음 기금 상장을 위해받은 편지함을 주시하십시오."
 
 #: assets/v2/js/pages/faucet_form.js:31
 msgid "We could not validate that input as an email address"
-msgstr "Wir konnten diese Eingabe nicht als E-Mail-Adresse validieren"
+msgstr "해당 입력을 이메일 주소로 확인할 수 없습니다."
 
 #: assets/v2/js/pages/faucet_form.js:59
 msgid "Please make sure to fill out all fields."
-msgstr "Bitte füllen Sie alle Felder aus."
+msgstr "모든 입력란을 작성하십시오."
 
 #: assets/v2/js/pages/faucet_form.js:79
 msgid "Got an unexpected error"
-msgstr "Ich habe einen unerwarteten Fehler erhalten"
+msgstr "예기치 않은 오류가 발생했습니다."
 
 #: assets/v2/js/pages/fulfill_bounty.js:31
 #: assets/v2/js/pages/increase_bounty.js:27
@@ -216,131 +207,117 @@ msgstr "Ich habe einen unerwarteten Fehler erhalten"
 msgid ""
 "You are on an unsupported network.  Please change your network to a "
 "supported network."
-msgstr ""
-"Sie befinden sich in einem nicht unterstützten Netzwerk. Bitte ändern Sie "
-"Ihr Netzwerk in ein unterstütztes Netzwerk."
+msgstr "지원되지 않는 네트워크에 있습니다. 네트워크를 지원되는 네트워크로 변경하십시오."
 
 #: assets/v2/js/pages/fulfill_bounty.js:111
 msgid "Could not get bounty details."
-msgstr "Konnte keine Kopfgelddetails erhalten."
+msgstr "현상금 세부 사항을 얻을 수 없었습니다."
 
 #: assets/v2/js/pages/fulfill_bounty.js:127
 msgid "Fulfillment submitted to web3."
-msgstr "Fulfillment an web3 übermittelt."
+msgstr "웹 2.0으로 제출 완료."
 
 #: assets/v2/js/pages/increase_bounty.js:61
 msgid "Please enter a valid github issue URL."
-msgstr "Bitte geben Sie eine gültige github-Ausgabe-URL ein."
+msgstr "유효한 github 문제 URL을 입력하십시오."
 
 #: assets/v2/js/pages/increase_bounty.js:97
 #: assets/v2/js/pages/new_bounty.js:252 assets/v2/js/pages/new_bounty.js:278
 #: assets/v2/js/pages/new_bounty.js:342
 msgid "There was an error.  Please try again or contact support."
-msgstr ""
-"Es gab einen Fehler. Bitte versuchen Sie es erneut oder wenden Sie sich an "
-"den Support."
+msgstr "오류가있었습니다. 다시 시도하거나 지원 팀에 문의하십시오."
 
 #: assets/v2/js/pages/increase_bounty.js:109
 msgid "Submission sent to web3."
-msgstr "Einreichung an web3 gesendet."
+msgstr "제출이 web3으로 전송되었습니다."
 
 #: assets/v2/js/pages/increase_bounty.js:124
 msgid "No active funded issue found at this address on "
-msgstr "Kein aktiv finanziertes Problem gefunden unter dieser Adresse auf"
+msgstr "이 주소에서 활성화 된 자금 문제가 없습니다."
 
 #: assets/v2/js/pages/increase_bounty.js:127
 msgid ""
 "Only the address that submitted this funded issue may increase the payout."
-msgstr ""
-"Nur die Adresse, die dieses finanzierte Problem eingereicht hat, kann die "
-"Auszahlung erhöhen."
+msgstr "이 자금 문제를 제출 한 주소 만 지불금을 높일 수 있습니다."
 
 #: assets/v2/js/pages/kill_bounty.js:50
 #: assets/v2/js/pages/process_bounty.js:110
 msgid "Could not get bounty details"
-msgstr "Konnte keine Kopfgelddetails erhalten"
+msgstr "현상금 세부 사항을 얻을 수 없었다."
 
 #: assets/v2/js/pages/kill_bounty.js:59
 #: assets/v2/js/pages/process_bounty.js:118
 msgid "No active bounty found for this Github URL on "
-msgstr "Kein aktives Bounty für diese Github-URL gefunden"
+msgstr "에 대한 Github URL에 대한 활성 현상금이 없습니다."
 
 #: assets/v2/js/pages/kill_bounty.js:76
 msgid ""
 "No active funded issue found at this address.  Are you sure this is an "
 "active funded issue?"
-msgstr ""
-"Unter dieser Adresse wurde kein aktiv finanziertes Problem gefunden. Sind "
-"Sie sicher, dass dies ein aktiv finanziertes Thema ist?"
+msgstr "이 주소에는 적극적인 자금 문제가 없습니다. 이것이 적극적인 자금 문제입니까?"
 
 #: assets/v2/js/pages/kill_bounty.js:80
 msgid "Only the address that submitted this funded issue may kill the bounty."
-msgstr ""
-"Nur die Adresse, die dieses finanzierte Problem eingereicht hat, kann das "
-"Kopfgeld töten."
+msgstr "이 자금 문제를 제출 한 주소 만이 현상금을 죽일 수 있습니다."
 
 #: assets/v2/js/pages/kill_bounty.js:99
 msgid "Kill bounty submitted to web3."
-msgstr "Töte Kopfgeld, das an web3 gesendet wurde."
+msgstr "현상금을 web3에 제출하십시오."
 
 #: assets/v2/js/pages/kill_bounty.js:112
 #: assets/v2/js/pages/process_bounty.js:166
 msgid "There was an error"
-msgstr "Es gab einen Fehler"
+msgstr "오류가있었습니다"
 
 #: assets/v2/js/pages/onboard.js:21
 msgid "Done"
-msgstr "Erledigt"
+msgstr "끝난"
 
 #: assets/v2/js/pages/onboard.js:28
 msgid "Next"
-msgstr "Nächster"
+msgstr "다음 것"
 
 #: assets/v2/js/pages/onboard.js:51
 msgid "Install Metamask"
-msgstr "Installieren Sie Metamask"
+msgstr "메타 마스크 설치"
 
 #: assets/v2/js/pages/onboard.js:60
 msgid "Unlock Metamask"
-msgstr "Schalte Metamask frei"
+msgstr "Metamask 잠금 해제"
 
 #: assets/v2/js/pages/process_bounty.js:20
 msgid "Could not get fulfillment details"
-msgstr "Ausführungsdetails konnten nicht abgerufen werden"
+msgstr "이행 세부 정보를 가져올 수 없음"
 
 #: assets/v2/js/pages/process_bounty.js:28
 msgid "No bounty fulfillments found for this Github URL."
-msgstr "Keine Bounty-Erfüllungen für diese Github-URL gefunden."
+msgstr "이 Github URL에는 현상금이 없습니다."
 
 #: assets/v2/js/pages/process_bounty.js:92
 msgid "Please enter a issue URL."
-msgstr "Bitte geben Sie eine Ausgabe-URL ein."
+msgstr "문제 URL을 입력하십시오."
 
 #: assets/v2/js/pages/process_bounty.js:96
 msgid "Please enter a fulfillment Id."
-msgstr "Bitte geben Sie eine Erfüllungs-ID ein."
+msgstr "이행 ID를 입력하십시오."
 
 #: assets/v2/js/pages/process_bounty.js:133
 msgid ""
 "No active funding found at this address.  Are you sure this is an active "
 "funded issue?"
-msgstr ""
-"Unter dieser Adresse wurde keine aktive Finanzierung gefunden. Sind Sie "
-"sicher, dass dies ein aktiv finanziertes Thema ist?"
+msgstr "이 주소에 활성 자금이 없습니다. 이것이 적극적인 자금 문제입니까?"
 
 #: assets/v2/js/pages/process_bounty.js:135
 msgid "No claimee found for this bounty."
-msgstr "Kein claimee fand für dieses Kopfgeld."
+msgstr "이 현상금에 claimee는 발견되지 않았습니다."
 
 #: assets/v2/js/pages/process_bounty.js:137
 msgid "You can only process a funded issue if you submitted it initially."
-msgstr ""
-"Sie können ein finanziertes Problem nur verarbeiten, wenn Sie es "
-"ursprünglich eingereicht haben."
+msgstr "처음 제출 한 경우에만 자금 지원 문제를 처리 할 수 ​​있습니다."
 
 #: assets/v2/js/pages/process_bounty.js:156
 msgid "Submitted transaction to web3."
-msgstr "Eingereichte Transaktion an web3."
+msgstr "웹 3에 제출 된 트랜잭션."
 
 #: assets/v2/js/waiting_room_entertainment.js:4
 msgid ""
@@ -349,10 +326,8 @@ msgid ""
 " software in various areas and is already included in many commercial "
 "software products."
 msgstr ""
-"Open-Source-Software ist zu einem relevanten Teil der Softwareindustrie und "
-"einer Reihe von Software-Ökosystemen geworden. Es ist eine Alternative zu "
-"kommerzieller Software in verschiedenen Bereichen geworden und ist bereits "
-"in vielen kommerziellen Softwareprodukten enthalten."
+"오픈 소스 소프트웨어는 소프트웨어 업계와 여러 소프트웨어 생태계의 중요한 부분이되었습니다. 그것은 다양한 분야에서 상업용 소프트웨어의 "
+"대안이되었으며 많은 상용 소프트웨어 제품에 이미 포함되어 있습니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:5
 msgid ""
@@ -361,10 +336,8 @@ msgid ""
 "catalyst for new software developments and the creation of new software "
 "companies."
 msgstr ""
-"OSS kann die Entwicklung neuer Software unterstützen, da Unternehmen "
-"bestehende Software zur Erstellung ihrer Softwareprodukte verwenden können. "
-"Daher kann es ein Katalysator für neue Softwareentwicklungen und die "
-"Schaffung neuer Softwareunternehmen sein."
+"OSS는 기업이 기존 소프트웨어를 사용하여 소프트웨어 제품을 만들 수 있기 때문에 새로운 소프트웨어 개발을 지원할 수 있습니다. 따라서 "
+"새로운 소프트웨어 개발 및 새로운 소프트웨어 회사 창설의 촉매제가 될 수 있습니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:6
 msgid ""
@@ -373,11 +346,8 @@ msgid ""
 "replaces the standard middleware platform provided by a third party. It "
 "limits costs and, more importantly, dependency to some extent."
 msgstr ""
-"OSS kann ... als ein wichtiger Faktor bei der Wertschöpfung anderer Software"
-" angesehen werden, auch wenn es schwer zu quantifizieren ist. Heute ersetzt "
-"OSS häufig die Standard-Middleware-Plattform, die von einer dritten Partei "
-"bereitgestellt wird. Es begrenzt die Kosten und vor allem die Abhängigkeit "
-"in gewissem Maße."
+"OSS는 다른 소프트웨어의 가치 창출에서 중요한 요소로 간주 될 수 있습니다. 오늘날 OSS는 종종 제 3자가 제공하는 표준 미들웨어 "
+"플랫폼을 대체합니다. 비용과 더 중요한 것은 종속성을 어느 정도 제한합니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:7
 msgid ""
@@ -387,11 +357,9 @@ msgid ""
 "can foster the development of new software products as well as the creation "
 "of new software vendors."
 msgstr ""
-"Softwareanbieter, die neue Produkte entwickeln, können Kosten sparen, wenn "
-"sie vorhandene Open-Source-Softwarekomponenten wiederverwenden, anstatt "
-"Software selbst zu entwickeln oder Softwarekomponenten zu kaufen. "
-"Infolgedessen kann Open-Source-Software die Entwicklung neuer "
-"Softwareprodukte sowie die Schaffung neuer Softwareanbieter fördern."
+"새 제품을 만드는 소프트웨어 공급 업체는 소프트웨어를 자체 개발하거나 소프트웨어 구성 요소를 구매하는 대신 기존 오픈 소스 소프트웨어 "
+"구성 요소를 재사용하면 비용을 절감 할 수 있습니다. 결과적으로 오픈 소스 소프트웨어는 새로운 소프트웨어 제품 개발 및 새로운 소프트웨어"
+" 벤더 창출을 촉진 할 수 있습니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:8
 msgid ""
@@ -399,10 +367,8 @@ msgid ""
 "Instead of buying commercial software that may involve the risk of a vendor "
 "lock-in, they just have to share value with the OSS community."
 msgstr ""
-"OSS ermöglicht Unternehmen die einfache Integration von IT in ihre "
-"Wertschöpfungskette. Anstatt kommerzielle Software zu kaufen, die das Risiko"
-" einer Verkäuferbindung mit sich bringen kann, müssen sie nur den Wert mit "
-"der OSS-Community teilen."
+"OSS를 통해 기업은 IT를 가치 사슬에 쉽게 통합 할 수 있습니다. 벤더에 종속 될 위험이있는 상업용 소프트웨어를 구매하는 대신 OSS"
+" 커뮤니티와 가치를 공유해야합니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:9
 msgid ""
@@ -410,9 +376,8 @@ msgid ""
 "of software experts contributes time and effort for coding, reviewing and "
 "testing to publicly available source code."
 msgstr ""
-"Das Grundprinzip der Open-Source-Softwareentwicklung ist, dass eine "
-"Gemeinschaft von Softwareexperten Zeit und Aufwand für die Codierung, "
-"Überprüfung und Prüfung von öffentlich verfügbarem Quellcode einbringt."
+"오픈 소스 소프트웨어 개발의 기본 원칙은 소프트웨어 전문가 커뮤니티가 공개적으로 사용 가능한 소스 코드를 코딩, 검토 및 테스트하는 데 "
+"시간과 노력을 투자한다는 것입니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:10
 msgid ""
@@ -421,10 +386,8 @@ msgid ""
 "very important for the development of emerging technologies and that help "
 "lower the total cost of ownership."
 msgstr ""
-"Open Source kann ... ein wichtiger Erfolgsfaktor für Co-Innovation sein, da "
-"keiner der Teilnehmer die Oberhand behält. OSS kann Standards erstellen, die"
-" für die Entwicklung aufkommender Technologien sehr wichtig sind und dazu "
-"beitragen, die Gesamtbetriebskosten zu senken."
+"오픈 소스는 참여자 중 누구도 우위를 차지하지 못하기 때문에 공동 혁신의 핵심 성공 요인이 될 수 있습니다. OSS는 신기술 개발에 매우"
+" ​​중요한 표준을 만들고 총 소유 비용 (TCO)을 낮추는 데 도움이됩니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:11
 msgid ""
@@ -434,11 +397,9 @@ msgid ""
 "modules: rather than developing from scratch, existing software must become "
 "more easily retrievable, interoperable and usable."
 msgstr ""
-"Zukünftige Software muss leicht aus Komponenten und frei verfügbarer "
-"Software entwickelt werden und ihre Wartung muss von einer breiten Community"
-" unterstützt werden. Dies beinhaltet die Wiederverwendung und "
-"Weiterentwicklung bestehender Software und Module: Statt neu zu entwickeln, "
-"muss vorhandene Software leichter abrufbar, interoperabel und nutzbar sein."
+"미래의 소프트웨어는 구성 요소와 자유롭게 사용할 수있는 소프트웨어로 쉽게 개발되어야하며 유지 보수는 광범위한 커뮤니티에서 지원해야합니다."
+" 여기에는 기존 소프트웨어 및 모듈의 재사용 및 발전이 포함됩니다. 기존 소프트웨어를 처음부터 개발하는 것이 아니라보다 쉽게 "
+"​​검색하고, 상호 운용 가능하며, 사용할 수 있어야합니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:12
 msgid ""
@@ -447,10 +408,8 @@ msgid ""
 "develop software in a collaborative way. Many enabling technologies for SMAC"
 " have strong OSS roots."
 msgstr ""
-"OSS ist auch ein starker Befürworter von Standards und Interoperabilität. "
-"Diese Offenheit verringert das Risiko einer Verkäuferbindung. OSS basiert "
-"auf Communities, die gemeinsam Software entwickeln. Viele Basistechnologien "
-"für SMAC haben starke OSS-Wurzeln."
+"OSS는 표준 및 상호 운용성에 대한 확고한 촉진자이기도합니다. 이러한 개방성은 벤더 종속의 위험을 낮 춥니 다. OSS는 공동 작업 "
+"방식으로 소프트웨어를 개발하는 커뮤니티를 기반으로합니다. SMAC을위한 많은 기술 구현에는 강력한 OSS 기반이 있습니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:13
 msgid ""
@@ -460,12 +419,9 @@ msgid ""
 "or professional editions that are based on the open source software. "
 "Examples are the providers of the Linux distributions RedHat and Suse."
 msgstr ""
-"Einige kommerzielle Anbieter bieten Open-Source-Software an, um eine große "
-"Benutzergemeinschaft zu schaffen. Sie generieren Einnahmen aus Abonnements "
-"für Support und Updates und / oder Professional Services sowie aus dem "
-"Verkauf von Erweiterungen oder professionellen Editionen, die auf der Open-"
-"Source-Software basieren. Beispiele sind die Anbieter der Linux-"
-"Distributionen RedHat und Suse."
+"일부 상용 업체는 대규모 사용자 커뮤니티를 만들기 위해 오픈 소스 소프트웨어를 제공합니다. 이들은 오픈 소스 소프트웨어를 기반으로하는 "
+"확장 또는 전문 에디션을 판매 할뿐만 아니라 지원 및 업데이트 및 / 또는 전문 서비스에 대한 구독으로 수익을 창출합니다. RedHat "
+"및 Suse와 같은 Linux 배포판의 제공 업체가 그 예입니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:14
 msgid ""
@@ -473,10 +429,8 @@ msgid ""
 "technology a part of their business by integrating it into their own "
 "products and by providing professional services for open source software."
 msgstr ""
-"Große kommerzielle Softwareanbieter wie IBM und HP haben die Open-Source-"
-"Technologie zu einem Teil ihres Geschäfts gemacht, indem sie es in ihre "
-"eigenen Produkte integriert und professionelle Dienstleistungen für Open-"
-"Source-Software bereitgestellt haben."
+"IBM 및 HP와 같은 주요 상용 소프트웨어 공급 업체는 오픈 소스 기술을 자체 제품에 통합하고 오픈 소스 소프트웨어에 전문적인 서비스를"
+" 제공함으로써 비즈니스의 일부로 만들었습니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:15
 msgid ""
@@ -487,12 +441,9 @@ msgid ""
 "hand, open source software that is free of charge can be an alternative to "
 "commercial application software."
 msgstr ""
-"Viele Geschäftsanwendungen enthalten bereits Open-Source-Software und dies "
-"wird zunehmen. Einige Anbieter können einen Teil ihrer Produkte an eine "
-"Open-Source-Stiftung spenden, um eine größere Nutzergemeinschaft zu "
-"schaffen, die möglicherweise Käufer von kommerziellen Add-Ons oder Diensten "
-"wird. Auf der anderen Seite kann Open-Source-Software, die kostenlos ist, "
-"eine Alternative zu kommerzieller Anwendungssoftware sein."
+"많은 비즈니스 응용 프로그램에는 이미 오픈 소스 소프트웨어가 포함되어 있으며 이러한 기능이 증가 할 것입니다. 일부 공급 업체는 "
+"잠재적으로 상업용 애드온 또는 서비스의 구매자가 될 수있는 더 큰 사용자 커뮤니티를 만들기 위해 오픈 소스 재단에 제품의 일부를 기부 할"
+" 수 있습니다. 반면에 무료 오픈 소스 소프트웨어는 상용 응용 소프트웨어의 대안 일 수 있습니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:16
 msgid ""
@@ -503,12 +454,9 @@ msgid ""
 "benefits of open source are reduced project failure and lower cost of code "
 "maintenance."
 msgstr ""
-"Laut Carlo Daffara, Forscher auf dem Gebiet der IT-Ökonomie, der zu mehreren"
-" Forschungsprojekten der Europäischen Kommission mit Open Source beigetragen"
-" hat, spart die europäische Wirtschaft jährlich rund 114 Milliarden Euro "
-"durch den Einsatz von Open-Source-Softwarelösungen. Zu den weiteren "
-"Vorteilen von Open Source gehören neben direkten Kosteneinsparungen auch "
-"weniger Projektfehler und geringere Kosten für die Codewartung."
+"오픈 소스 관련 유럽 집행위원회 (European Commission) 연구 프로젝트에 기여한 IT 경제학 분야의 연구원 카를로 다 파리"
+" (Carlo Daffara)에 따르면 유럽 경제는 오픈 소스 소프트웨어 솔루션을 사용함으로써 연간 약 1140 억 유로를 절약 할 수 "
+"있다고한다. 직접 비용 절감 외에도 오픈 소스의 다른 이점은 프로젝트 실패를 줄이고 코드 유지 관리 비용을 절감 할 수 있다는 것입니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:17
 msgid ""
@@ -516,9 +464,8 @@ msgid ""
 "estimates that about 35 per cent of the software  used in the past five "
 "years was directly or indirectly derived from open source."
 msgstr ""
-"Nach verschiedenen Quellen [Carlo Daffara, Forscher in IT-Ökonomie] schätzt "
-"man, dass etwa 35 Prozent der Software, die in den letzten fünf Jahren "
-"genutzt wurde, direkt oder indirekt aus Open Source stammt."
+"여러 소스를 인용하면 [Carlo Daffara, IT 경제 연구원]은 지난 5 년 동안 사용 된 소프트웨어의 약 35 %가 직접 또는 "
+"간접적으로 오픈 소스에서 파생 된 것으로 추정합니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:18
 msgid ""
@@ -527,10 +474,8 @@ msgid ""
 " autonomous driving technology, as this is highly confidential and highly "
 "relevant for its competitiveness."
 msgstr ""
-"Unternehmen lagern weniger wichtige Aktivitäten aus. Beispielsweise wird ein"
-" Automobilhersteller die hausinterne Softwareentwicklung für seine autonome "
-"Fahrtechnologie kaum auslagern, da diese streng vertraulich und für ihre "
-"Wettbewerbsfähigkeit sehr relevant ist."
+"기업은 그다지 중요하지 않은 활동을 아웃소싱합니다. 예를 들어, 자동차 제조업체는 자율 주행 기술에 대한 사내 소프트웨어 개발을 거의 "
+"아웃소싱하지 않습니다. 이는 매우 기밀적이고 경쟁력과 관련이 있기 때문입니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:19
 msgid ""
@@ -539,10 +484,8 @@ msgid ""
 "outsourcing in the area of in-house software development are testing and "
 "maintenance."
 msgstr ""
-"Outsourcing kann eine Alternative zur hausinternen Softwareentwicklung sein "
-"und immer mehr Unternehmen nutzen dies. ... Zwei Bereiche des potenziellen "
-"Outsourcing im Bereich der hausinternen Softwareentwicklung sind Test und "
-"Wartung."
+"아웃소싱은 사내 소프트웨어 개발의 대안 일 수 있으며 점점 더 많은 기업들이이를 활용합니다. ... 사내 소프트웨어 개발 영역에서 잠재적"
+" 아웃소싱의 두 영역은 테스트 및 유지 관리입니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:20
 msgid ""
@@ -550,9 +493,8 @@ msgid ""
 "ways to outsource such activities due to internal skill shortages and cost "
 "considerations."
 msgstr ""
-"Da die Nachfrage nach individueller Softwareentwicklung steigt, prüfen "
-"Unternehmen Möglichkeiten, solche Aktivitäten aufgrund interner "
-"Fachkräftemangel und Kostenüberlegungen auszulagern."
+"개별 소프트웨어 개발에 대한 요구가 증가함에 따라 기업은 내부 기술 부족 및 비용 고려로 인해 이러한 활동을 아웃소싱하는 방법을 "
+"평가합니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:22
 msgid ""
@@ -561,10 +503,9 @@ msgid ""
 " and deliver elements of response as to whether the time for a new "
 "entrepreneurial age has come."
 msgstr ""
-"Victor Hugo hat einmal bemerkt: \"Du kannst einer Invasionsarmee "
-"widerstehen; Sie können einer Idee nicht widerstehen, deren Zeit gekommen "
-"ist. Das Drucker Forum wird die Frage stellen und Elemente der Antwort "
-"liefern, ob die Zeit für ein neues unternehmerisches Zeitalter gekommen ist."
+"빅토르 위고 (Victor Hugo)는 다음과 같이 말했습니다 : '당신은 침략 군대에 저항 할 수 있습니다. 당신은 그 시간이 온 "
+"아이디어에 저항 할 수 없습니다. ' 드러커 포럼 (Drucker Forum)은 질문을하고 새로운 기업가 시대의 시대가 올지에 대한 응답"
+" 요소를 전달할 것입니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:23
 msgid ""
@@ -574,11 +515,8 @@ msgid ""
 "creation and sharing and by enabling new forms of continuous learning, all "
 "on a global canvas."
 msgstr ""
-"Die Digitaltechnologie hat eine beschleunigende Rolle in diesem Wandel [zu "
-"einer unternehmerischen Gesellschaft] gespielt, indem sie Eintrittsbarrieren"
-" in vielen Branchen dramatisch gesenkt und neue Werkzeuge für die Verwaltung"
-" von Wissenserzeugung und -austausch sowie für neue Formen des "
-"kontinuierlichen Lernens auf globaler Ebene bereitgestellt hat ."
+"디지털 기술은 많은 산업에서 진입 장벽을 극적으로 낮추고 지식 창출 및 공유를 관리하고 새로운 형태의 지속적인 학습을 가능하게하는 새로운"
+" 툴을 글로벌 캔버스에서 제공함으로써 기업 사회에 대한 이러한 변화에서 가속화 된 역할을 수행해 왔습니다 ."
 
 #: assets/v2/js/waiting_room_entertainment.js:24
 msgid ""
@@ -588,12 +526,8 @@ msgid ""
 "that was once regarded as peripheral, perhaps even a bit suspect, has become"
 " cool, celebrated by politicians and embraced by the new generations."
 msgstr ""
-"Während der Weg zu einer unternehmerischen Gesellschaft keineswegs eine "
-"geradlinige Entwicklung zu einem klar definierten Ziel ist, haben breite "
-"kulturelle Veränderungen den Unternehmergeist in den Mainstream gebracht. "
-"Eine Aktivität, die einst als peripher, vielleicht sogar als etwas "
-"verdächtig galt, ist cool geworden, von Politikern gefeiert und von den "
-"neuen Generationen umarmt."
+"기업가 사회로 향하는 여정이 결코 잘 정의 된 목적지를 향한 직선 진보가 결코 아니지만, 광범위한 문화적 변화는 기업가 정신을 주류로 "
+"끌어 들였습니다. 한때 주변부로 여겨지 던 활동가는 의심 스럽지만 정치인들이 찬사를 보냈고 새로운 세대가 받아 들였습니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:25
 msgid ""
@@ -602,20 +536,14 @@ msgid ""
 " proliferation of free agents in the form of contractors, freelancers and "
 "self-employed workers on on-demand platforms, for example."
 msgstr ""
-"Das Entstehen einer unternehmerischen Kultur bringt eine breitere "
-"Transformation des wirtschaftlichen Gefüges unserer Gesellschaft mit sich, "
-"wie wir an der raschen Verbreitung freier Agenten in Form von "
-"Auftragnehmern, Freiberuflern und selbständigen Erwerbstätigen auf "
-"Abrufplattformen, z Beispiel."
+"그는 기업 문화의 출현은 계약자, 프리랜서 및 자영업자의 형태로 자유 계약자가 급속하게 확산되는 것을 볼 때 우리 사회의 경제 구조가보다"
+" 넓게 변하게합니다. 예."
 
 #: assets/v2/js/waiting_room_entertainment.js:26
 msgid ""
 "[I]n a world of rapid change frequent job and career moves, switches between"
 " employed and independent roles become the rule rather than the exception."
-msgstr ""
-"[I] In einer Welt des schnellen Wandels werden häufige Job- und "
-"Karriereschritte, Wechsel zwischen angestellten und unabhängigen Rollen, "
-"eher zur Regel als zur Ausnahme."
+msgstr "급변하는 빈번한 직업 및 경력 이동의 세계에서 고용 및 독립 역할 간 전환이 예외가 아닌 규칙이됩니다."
 
 #: assets/v2/js/waiting_room_entertainment.js:27
 msgid ""
@@ -624,20 +552,13 @@ msgid ""
 " entrepreneurial society] i.e. a new mindset of ownership, responsibility "
 "and autonomy."
 msgstr ""
-"In großen Organisationen weist ein erneuter Fokus auf die Freistellung des "
-"kreativen und innovativen Potenzials von Arbeitnehmern in die gleiche "
-"Richtung [wie die der unternehmerischen Gesellschaft] hin, d. H. Eine neue "
-"Denkweise von Eigenverantwortung, Verantwortung und Autonomie."
+"대기업에서는 창의적이고 혁신적인 잠재력을 기업가 정신과 동일한 방향, 즉 소유권, 책임 및 자율성에 대한 새로운 사고 방식으로 끌어들이는"
+" 데 새롭게 중점을 둡니다."
 
 #: assets/yge/redeem_ethos.js:23
-#, fuzzy
-#| msgid "Please enter a valid email address."
 msgid "Not a valid forwarding address"
-msgstr "Keine gültige Weiterleitungsadresse"
+msgstr "유효한 전달 주소가 아닙니다."
 
 #: assets/yge/redeem_ethos.js:29
 msgid "Please enter your Twitter username"
-msgstr "Bitte geben Sie Ihren Twitter Benutzernamen ein"
-
-#~ msgid "Issue Explorer | Gitcoin"
-#~ msgstr "Problem Explorer | Gitcoin"
+msgstr "Twitter 사용자 이름을 입력하십시오."
