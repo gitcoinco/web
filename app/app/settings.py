@@ -92,6 +92,7 @@ INSTALLED_APPS = [
     'dataviz',
     'ethos',
     'impersonate',
+    'taggit',
 ]
 
 MIDDLEWARE = [
