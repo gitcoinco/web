@@ -459,7 +459,7 @@ a.btn {
 
 @media (min-width: 768px) {
   .activity-time {
-    margin-left: 0.625rem;
+    margin-left: 0.625rem !important;
   }
 }
 
