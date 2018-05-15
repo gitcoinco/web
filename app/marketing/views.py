@@ -239,7 +239,7 @@ def email_settings(request, key):
 
     """
     profile, es, user, is_logged_in = settings_helper_get_auth(request, key)
-    if not request.user.is_authenticated or (request.user.is_authenticated and not hasattr(request.user, 'profile')):
+    if not request.user.is_authenticated and (not es and key) or (request.user.is_authenticated and not hasattr(request.user, 'profile')):
         return redirect('/login/github?next=' + request.get_full_path())
 
     # handle 'noinput' case
@@ -267,22 +267,24 @@ def email_settings(request, key):
         if level not in ['lite', 'lite1', 'regular', 'nothing']:
             validation_passed = False
             msg = _('Invalid Level')
-        if validation_passed and profile and es:
-            profile.pref_lang_code = preferred_language
-            profile.save()
-            request.session[LANGUAGE_SESSION_KEY] = preferred_language
-            translation.activate(preferred_language)
-            key = get_or_save_email_subscriber(email, 'settings')
-            es.preferences['level'] = level
-            es.email = email
-            ip = get_ip(request)
-            es.active = level != 'nothing'
-            es.newsletter = level in ['regular', 'lite1']
-            if not es.metadata.get('ip', False):
-                es.metadata['ip'] = [ip]
-            else:
-                es.metadata['ip'].append(ip)
-            es.save()
+        if validation_passed:
+            if profile:
+                profile.pref_lang_code = preferred_language
+                profile.save()
+                request.session[LANGUAGE_SESSION_KEY] = preferred_language
+                translation.activate(preferred_language)
+            if es:
+                key = get_or_save_email_subscriber(email, 'settings')
+                es.preferences['level'] = level
+                es.email = email
+                ip = get_ip(request)
+                es.active = level != 'nothing'
+                es.newsletter = level in ['regular', 'lite1']
+                if not es.metadata.get('ip', False):
+                    es.metadata['ip'] = [ip]
+                else:
+                    es.metadata['ip'].append(ip)
+                es.save()
             msg = _('Updated your preferences.')
     context = {
         'nav': 'internal',
