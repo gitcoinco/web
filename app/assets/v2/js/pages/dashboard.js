@@ -545,6 +545,7 @@ var resetFilters = function() {
     $('#sidebar_container').addClass('invisible');
     $('#dashboard-title').addClass('hidden');
     $('#onboard-dashboard').removeClass('hidden');
+    $('#onboard-footer').removeClass('hidden');
     resetFilters();
     $('input[name=idx_status][value=open]').prop('checked', true);
     $('.search-area input[type=text]').text(getURLParams('q'));
@@ -555,12 +556,14 @@ var resetFilters = function() {
         $(this).removeClass('hidden');
       });
       $('#onboard-dashboard').addClass('hidden');
+      $('#onboard-footer').addClass('hidden');
       $('#sidebar_container').removeClass('invisible');
       $('#dashboard-title').removeClass('hidden');
       e.preventDefault();
     });
   } else {
     $('#onboard-dashboard').addClass('hidden');
+    $('#onboard-footer').addClass('hidden');
     $('#sidebar_container').removeClass('invisible');
     $('#dashboard-title').removeClass('hidden');
   }
