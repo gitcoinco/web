@@ -123,6 +123,15 @@ def about(request):
             "Gitcoin Requests",
             "Tangerine Gelato"
         ),
+        (
+            static("v2/images/team/aditya-anand.jpg"),
+            "Aditya Anand M C",
+            "Engineering",
+            "thelostone-mc",
+            "aditya-anand-m-c-95855b65",
+            "The Community",
+            "Cocktail Samosa"
+        ),
     ]
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
     community_members = [
