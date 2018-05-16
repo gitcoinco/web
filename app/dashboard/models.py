@@ -41,8 +41,9 @@ import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
+from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
-    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, issue_number, org_name, repo_name,
+    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, issue_number, org_name, repo_name,
 )
 from rest_framework import serializers
 from web3 import Web3
@@ -336,8 +337,7 @@ class Bounty(SuperModel):
         gitcoin_logo_flag = "/1" if gitcoin_logo_flag else ""
         if org_name:
             return f"{settings.BASE_URL}static/avatar/{org_name}{gitcoin_logo_flag}"
-        else:
-            return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
+        return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
 
     @property
     def keywords(self):
@@ -663,6 +663,24 @@ class Bounty(SuperModel):
             'accept': f"/issue/accept/{self.pk}",
             'cancel': f"/issue/cancel/{self.pk}",
         }
+
+    def get_context(self, github_username='', user=None, confirm_time_minutes_target=4, active='',
+                    title='', update=None):
+        """Get the context dictionary for use in view."""
+        context = {
+            'bounty': self,
+            'githubUsername': github_username,
+            'active': active,
+            'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+            'eth_usd_conv_rate': eth_usd_conv_rate(),
+            'conf_time_spread': conf_time_spread(),
+            'email': getattr(user, 'email', ''),
+            'handle': getattr(user, 'username', ''),
+            'title': title,
+        }
+        if update is not None and isinstance(update, dict):
+            context.update(update)
+        return context
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):
@@ -1393,9 +1411,6 @@ class Tool(SuperModel):
 
     def i18n_link_copy(self):
         return _(self.link_copy)
-
-    def __str__(self):
-        return self.name
 
 
 class ToolVote(models.Model):

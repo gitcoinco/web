@@ -571,18 +571,43 @@ def fulfill_bounty(request, pk):
         raise Http404
 
     is_user_authenticated = request.user.is_authenticated
-    params = {
-        'bounty': bounty,
-        'githubUsername': request.GET.get('githubUsername'),
-        'title': _('Submit Work'),
-        'active': 'fulfill_bounty',
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-        'email': request.user.email if is_user_authenticated else '',
-        'handle': request.user.username if is_user_authenticated else '',
-    }
+    params = bounty.get_context(
+        github_username=request.GET.get('githubUsername'),
+        user=request.user if is_user_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='fulfill_bounty',
+        title=_('Submit Work'),
+    )
+    return TemplateResponse(request, 'fulfill_bounty.html', params)
 
+
+def fulfill_std_bounty(request, network, standard_bounties_id):
+    """Fulfill a bounty.
+
+    Args:
+        network (str): The network of the associated bounty.
+        standard_bounties_id (int): The standard bounty ID of the bounty to be fulfilled.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The fulfill bounty view.
+
+    """
+    try:
+        bounty = Bounty.objects.get(standard_bounties_id=standard_bounties_id, network=network)
+    except (Bounty.DoesNotExist, ValueError):
+        raise Http404
+
+    is_user_authenticated = request.user.is_authenticated
+    params = bounty.get_context(
+        github_username=request.GET.get('githubUsername'),
+        user=request.user if is_user_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='fulfill_bounty',
+        title=_('Submit Work'),
+    )
     return TemplateResponse(request, 'fulfill_bounty.html', params)
 
 
