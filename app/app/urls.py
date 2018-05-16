@@ -76,9 +76,9 @@ urlpatterns = [
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
     path('issue/fulfill', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
-    re_path(r'^issue/accept/(?P<pk>.*)?', dashboard.views.accept_bounty, name='process_funding'),
-    re_path(r'^issue/increase/(?P<pk>.*)?', dashboard.views.increase_bounty, name='increase_bounty'),
-    re_path(r'^issue/cancel/(?P<pk>.*)?', dashboard.views.cancel_bounty, name='kill_bounty'),
+    path('issue/accept', dashboard.views.accept_bounty, name='process_funding'),
+    path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
+    path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
 
     # Interests
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),

@@ -41,7 +41,6 @@ import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
-from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, issue_number, org_name, repo_name,
 )
@@ -657,30 +656,11 @@ class Bounty(SuperModel):
             dict: A dictionary of action URLS for this bounty.
 
         """
-        return {
-            'fulfill': f"/issue/fulfill?pk={self.pk}&network={self.network}",
-            'increase': f"/issue/increase/{self.pk}",
-            'accept': f"/issue/accept/{self.pk}",
-            'cancel': f"/issue/cancel/{self.pk}",
-        }
-
-    def get_context(self, github_username='', user=None, confirm_time_minutes_target=4, active='',
-                    title='', update=None):
-        """Get the context dictionary for use in view."""
-        context = {
-            'bounty': self,
-            'githubUsername': github_username,
-            'active': active,
-            'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-            'eth_usd_conv_rate': eth_usd_conv_rate(),
-            'conf_time_spread': conf_time_spread(),
-            'email': getattr(user, 'email', ''),
-            'handle': getattr(user, 'username', ''),
-            'title': title,
-        }
-        if update is not None and isinstance(update, dict):
-            context.update(update)
-        return context
+        params = f'pk={self.pk}&network={self.network}'
+        urls = {}
+        for item in ['fulfill', 'increase', 'accept', 'cancel']:
+            urls.update({item: f'/issue/{item}?{params}'})
+        return urls
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):

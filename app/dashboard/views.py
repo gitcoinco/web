@@ -37,15 +37,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import ellipses, sync_profile
-from dashboard.models import (
-    Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip, Tool,
-    ToolVote, UserAction,
-)
-from dashboard.notifications import (
-    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
-    maybe_market_to_twitter, maybe_market_to_user_slack,
-)
-from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, record_user_action_on_interest, web3_process_bounty
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
@@ -55,6 +46,19 @@ from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
+
+from .helpers import handle_bounty_views
+from .models import (
+    Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip, Tool,
+    ToolVote, UserAction,
+)
+from .notifications import (
+    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
+    maybe_market_to_twitter, maybe_market_to_user_slack,
+)
+from .utils import (
+    get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
+)
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -495,31 +499,29 @@ def gas(request):
     context = {
         'conf_time_spread': _cts,
         'title': 'Live Gas Usage => Predicted Conf Times'
-        }
+    }
     return TemplateResponse(request, 'gas.html', context)
 
 
 def new_bounty(request):
     """Create a new bounty."""
-    issue_url = request.GET.get('source') or request.GET.get('url', '')
-    is_user_authenticated = request.user.is_authenticated
-    params = {
-        'issueURL': request.GET.get('source'),
+    bounty_params = {
+        'newsletter_headline': _('Be the first to know about new funded issues.'),
+        'issueURL': request.GET.get('source') or request.GET.get('url', ''),
         'amount': request.GET.get('amount'),
-        'active': 'submit_bounty',
-        'title': _('Create Funded Issue'),
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-        'from_email': request.user.email if is_user_authenticated else '',
-        'from_handle': request.user.username if is_user_authenticated else '',
-        'newsletter_headline': _('Be the first to know about new funded issues.')
     }
 
+    params = get_context(
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='submit_bounty',
+        title=_('Create Funded Issue'),
+        update=bounty_params,
+    )
     return TemplateResponse(request, 'submit_bounty.html', params)
 
 
-def accept_bounty(request, pk):
+def accept_bounty(request):
     """Process the bounty.
 
     Args:
@@ -532,23 +534,20 @@ def accept_bounty(request, pk):
         TemplateResponse: The accept bounty view.
 
     """
-    try:
-        bounty = Bounty.objects.get(pk=pk)
-    except (Bounty.DoesNotExist, ValueError):
-        raise Http404
-    except ValueError:
-        raise Http404
-
-    params = {
-        'bounty': bounty,
+    bounty = handle_bounty_views(request)
+    bounty_params = {
         'fulfillment_id': request.GET.get('id'),
         'fulfiller_address': request.GET.get('address'),
-        'title': _('Process Issue'),
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
     }
 
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='accept_bounty',
+        title=_('Process Issue'),
+        update=bounty_params,
+    )
     return TemplateResponse(request, 'process_bounty.html', params)
 
 
@@ -569,29 +568,11 @@ def fulfill_bounty(request):
         TemplateResponse: The fulfill bounty view.
 
     """
-    pk = request.GET.get('pk')
-    standard_bounties_id = request.GET.get('standard_bounties_id')
-    network = request.GET.get('network', 'mainnet')
-    bounty_kwargs = {'network': network}
-
-    if pk and pk.isdigit():
-        bounty_kwargs['pk'] = int(pk)
-    elif standard_bounties_id and standard_bounties_id.isdigit():
-        bounty_kwargs['standard_bounties_id'] = int(standard_bounties_id)
-    else:
-        raise Http404
-
-    try:
-        bounty = Bounty.objects.current().get(**bounty_kwargs)
-    except Bounty.MultipleObjectsReturned:
-        bounty = Bounty.objects.current().filter(**bounty_kwargs).distinct().latest('id')
-    except (Bounty.DoesNotExist, ValueError):
-        raise Http404
-
-    is_user_authenticated = request.user.is_authenticated
-    params = bounty.get_context(
+    bounty = handle_bounty_views(request)
+    params = get_context(
+        ref_object=bounty,
         github_username=request.GET.get('githubUsername'),
-        user=request.user if is_user_authenticated else None,
+        user=request.user if request.user.is_authenticated else None,
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='fulfill_bounty',
         title=_('Submit Work'),
@@ -599,7 +580,7 @@ def fulfill_bounty(request):
     return TemplateResponse(request, 'fulfill_bounty.html', params)
 
 
-def increase_bounty(request, pk):
+def increase_bounty(request):
     """Increase a bounty as the funder.
 
     Args:
@@ -612,26 +593,18 @@ def increase_bounty(request, pk):
         TemplateResponse: The increase bounty view.
 
     """
-    try:
-        bounty = Bounty.objects.get(pk=pk)
-    except (Bounty.DoesNotExist, ValueError):
-        raise Http404
-    except ValueError:
-        raise Http404
-
-    params = {
-        'bounty': bounty,
-        'title': _('Increase Bounty'),
-        'active': 'increase_bounty',
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-    }
-
+    bounty = handle_bounty_views(request)
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='increase_bounty',
+        title=_('Increase Bounty'),
+    )
     return TemplateResponse(request, 'increase_bounty.html', params)
 
 
-def cancel_bounty(request, pk):
+def cancel_bounty(request):
     """Kill an expired bounty.
 
     Args:
@@ -644,22 +617,14 @@ def cancel_bounty(request, pk):
         TemplateResponse: The cancel bounty view.
 
     """
-    try:
-        bounty = Bounty.objects.get(pk=pk)
-    except Bounty.DoesNotExist:
-        raise Http404
-    except ValueError:
-        raise Http404
-
-    params = {
-        'bounty': bounty,
-        'title': _('Cancel Bounty'),
-        'active': 'kill_bounty',
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-        'eth_usd_conv_rate': eth_usd_conv_rate(),
-        'conf_time_spread': conf_time_spread(),
-    }
-
+    bounty = handle_bounty_views(request)
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='kill_bounty',
+        title=_('Cancel Bounty'),
+    )
     return TemplateResponse(request, 'kill_bounty.html', params)
 
 
