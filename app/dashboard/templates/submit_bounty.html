@@ -110,6 +110,7 @@
                   <div class="form__group-item">
                     <div class="form__select2">
                       <select name='deonomination' id='token'></select>
+
                     </div>
                     <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
                   </div>
@@ -123,7 +124,7 @@
                   <div class="form__checkbox">
                     <input name='terms' id='terms' type="checkbox" value=1 />
                      <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
-                       <a href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms of Service" %}</a>:
+                       <a href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms of Service" %}</a>.
                     </label>
                   </div>
                 </div>
@@ -131,7 +132,7 @@
                   <div class="form__checkbox">
                     <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
                     <label class="form__label" for=blockchain_tos>{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain. No one, including
-                      Gitcoin Core, will be able to take my funds or change this information:{% endblocktrans %}</label>
+                      Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
                   </div>
                 </div>
                 <h4>Gas Settings</h4>

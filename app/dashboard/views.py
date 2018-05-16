@@ -174,7 +174,7 @@ def new_interest(request, bounty_id):
     except Bounty.DoesNotExist:
         raise Http404
 
-    num_issues = 3
+    num_issues = profile.max_num_issues_start_work
     active_bounties = Bounty.objects.current().filter(idx_status__in=['open', 'started'])
     num_active = Interest.objects.filter(profile_id=profile_id, bounty__in=active_bounties).count()
     is_working_on_too_much_stuff = num_active >= num_issues
@@ -568,8 +568,6 @@ def fulfill_bounty(request, pk):
     try:
         bounty = Bounty.objects.get(pk=pk)
     except (Bounty.DoesNotExist, ValueError):
-        raise Http404
-    except ValueError:
         raise Http404
 
     is_user_authenticated = request.user.is_authenticated

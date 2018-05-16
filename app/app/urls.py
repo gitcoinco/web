@@ -30,6 +30,7 @@ import dashboard.ios
 import dashboard.views
 import dataviz.d3_views
 import dataviz.views
+import ethos.views
 import external_bounties.views
 import faucet.views
 import gitcoinbot.views
@@ -116,7 +117,12 @@ urlpatterns = [
     path('actions/tool/<int:tool_id>/voteDown', dashboard.views.vote_tool_down, name='vote_tool_down'),
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
     url(r'^gas/?', dashboard.views.gas, name='gas'),
+
+    # redeem coin
     url(r'^coin/redeem/(.*)/?', dashboard.views.redeem_coin, name='redeem'),
+
+    # EthOS
+    path('ethos/', include('ethos.urls', namespace='ethos')),
 
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
