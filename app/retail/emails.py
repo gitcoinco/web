@@ -297,6 +297,27 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
     return response_html, response_txt
 
 
+def render_nth_day_email_campaign(nth, firstname):
+    subject_map = {
+        1: "Day 1: Growing Open Source",
+        2: "Day 2: Using Gitcoin's Issue Explorer",
+        3: "Day 3: Learning Blockchain",
+        4: "Day 4: Funding Issues With Gitcoin",
+        5: "Day 5: The Gitcoin Toolset",
+        6: "Day 6: The Gitcoin Community",
+    }
+
+    subject = subject_map[nth]
+
+    params = {
+        'firstname': firstname
+    }
+    response_html = premailer_transform(render_to_string("emails/email_campaign_day_{}.html".format(nth), params))
+    response_txt = render_to_string("emails/email_campaign_day_{}.txt".format(nth), params)
+
+    return response_html, response_txt, subject
+
+
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty

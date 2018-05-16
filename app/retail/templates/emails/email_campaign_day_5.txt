@@ -1,0 +1,12 @@
+Day 5: The Gitcoin Toolset
+
+Abraham Maslow once said “If the only tool you have is a hammer, to treat everything as if it were a nail.".
+
+Did you know that Gitcoin isn’t *just* bounties?   We’re building out whole a toolbox of OSS incentivization tools.
+
+Here are a few
+  CodeFund (https://codefund.io) -- Sustain your OSS project with ethical advertising
+  Tips (https://gitcoin.co/tips) -- Got a project contributor that’s doing really great work
+  Dev Grants -- Support your best contributors with a grant that recurs over time
+
+Click on any of the tools above to take them for a test drive, or learn more about our toolbox at https://gitcoin.co/tools

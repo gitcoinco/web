@@ -1,0 +1,118 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2018 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+
+{% block content %}
+
+<style>
+  .content {
+    text-align: left;
+    margin: 0.5em 2em 2em 2em;
+  }
+
+  .content p {
+    margin-bottom: 2em;
+  }
+
+  .content ul li {
+    margin-bottom: 1.5em;
+  }
+</style>
+
+<div class="campaign">
+
+  <h1>Day 2: Using Gitcoin's Issue Explorer</h1>
+
+  <div class="content">
+    <p>
+    {% trans "Hey" %} {{ firstname }},
+    </p>
+
+    <p>
+    {% blocktrans %}
+    By this point, you might have poked around the Gitcoin <a href="https://gitcoin.co/explorer?q=">Issue Explorer</a> to
+    see the open source projects you could make money by contributing!
+    If interested in doing work, here's how:
+    {% endblocktrans %}
+    </p>
+
+    <h2>Start Work</h2>
+    <p>
+      <ul>
+        <li>
+          {% trans "Click ‘Start Work' to kick off a message to the repo-maintainer that you're interested in the issue" %}
+        </li>
+        <li>
+            {% trans "Respond on the Github thread with your intended approach for the bounty" %}
+        </li>
+      </ul>
+    </p>
+
+    GIF
+
+    <h2>Make A Submission</h2>
+    <p>
+    <ul>
+      <li>
+        <a href="http://metamask.io/">Download MetaMask</a>
+          <ul style="list-style-type: lower-alpha;">
+            <li style="margin-top: 1.5em;">
+              {% trans "MetaMask is a bridge that allows you to visit the distributed web in your browser, today. It allows Gitcoin (an Ethereum based dApp) to run in your browser so you can use gas to claim an issue!" %}
+            </li>
+          </ul>
+      </li>
+      <li>
+        {% trans "Get some ETH (gas) in order to make a submission" %}
+        <ul style="list-style-type: lower-alpha;">
+          <li style="margin-top: 1.5em;">
+              What is gas, you say? Gas is the payment sent to Ethereum miners, in exchange for execution of a smart contract.
+          </li>
+          <li style="margin-top: 1.5em;">
+              If you need a small amount of ETH to make a claim, request some using the <a href="http://gitcoin.co/faucet">Gitcoin Faucet</a>!
+          </li>
+        </ul>
+      </li>
+      <li>
+          Click on ‘Submit Work' use your gas to make a submission!
+      </li>
+    </ul>
+    </p>
+
+    GIF
+
+    <p>
+    {% blocktrans %}
+    From here, you should be off to the races! The repo maintainer will review your PR and pay out accordingly.
+    Feel free to poke your head in if you have any issues.
+    {% endblocktrans %}
+
+    </p>
+
+    <p>
+      {% blocktrans %}
+        CTA: Check out the <a href="https://gitcoin.co/explorer?q=">Issue Explorer</a> if you haven't already!
+        If you don't find good fits, <a href="https://docs.google.com/forms/d/1AeiKhCO2TefXo8wAbFerjxe2Vgci3ueqzzUpa-PFPLo/edit">let us know an open source project</a> that you'd like to see using Gitcoin.
+        No promises, but we might have something up our sleeve.
+      {% endblocktrans %}
+    </p>
+
+  </div>
+</div>
+
+{% endblock %}

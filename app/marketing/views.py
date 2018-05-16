@@ -27,7 +27,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
 from django.db.models import Max
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -44,6 +44,7 @@ from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
 from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
+from retail.emails import render_nth_day_email_campaign
 from retail.helpers import get_ip
 
 
@@ -402,3 +403,40 @@ def leaderboard(request, key=''):
         'podium_items': items[:3] if items else []
     }
     return TemplateResponse(request, 'leaderboard.html', context)
+
+
+@staff_member_required
+def day_1_email_campaign(request):
+    response_html, _, _ = render_nth_day_email_campaign(1, "staff member")
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def day_2_email_campaign(request):
+    response_html, _, _ = render_nth_day_email_campaign(2, "staff member")
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def day_3_email_campaign(request):
+    response_html, _, _ = render_nth_day_email_campaign(3, "staff member")
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def day_4_email_campaign(request):
+    response_html, _, _ = render_nth_day_email_campaign(4, "staff member")
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def day_5_email_campaign(request):
+    response_html, _, _ = render_nth_day_email_campaign(5, "staff member")
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def day_6_email_campaign(request):
+
+    response_html, _, _ = render_nth_day_email_campaign(6, "staff member")
+    return HttpResponse(response_html)

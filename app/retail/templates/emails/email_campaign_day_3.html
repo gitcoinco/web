@@ -1,0 +1,92 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2018 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+
+{% block content %}
+
+<style>
+  .content {
+    text-align: left;
+    margin: 0.5em 2em 2em 2em;
+  }
+
+  .content p {
+    margin-bottom: 2em;
+  }
+
+  .content ul li {
+    margin-bottom: 1.5em;
+  }
+</style>
+
+<div class="campaign">
+
+  <h1>Day 3: Learning Blockchain</h1>
+
+  <div class="content">
+
+    <p>
+      {% blocktrans %}
+      Developing in blockchain can seem daunting.
+      If you’re an experienced developer, however, your skills are already extremely useful in the blockchain space.
+      We’ve found that many issues solved through Gitcoin are using skills in Python, JavaScript, Django, React and more.
+      {% endblocktrans %}
+    </p>
+
+    <p>
+      {% blocktrans %}
+      That being said, learning is a part of the fun at Gitcoin.
+      You’ll be exposed to many projects building in Ethereum’s blockchain space,
+      and will be exposed to concepts like web3 and languages like Solidity,
+      the JavaScript based smart contract programming language.
+      {% endblocktrans %}
+    </p>
+
+    <p>
+      {% blocktrans %}
+      Let’s dive into some of our favorite resources for someone to get their hands dirty with smart contract development.
+      {% endblocktrans %}
+    </p>
+
+    <h2>How the Ethereum Blockchain works</h2>
+    <p>
+      {% blocktrans %}
+      <a href="https://www.youtube.com/watch?time_continue=1&v=cZZMDOrIo2k">Check out this short video</a> about how to use the Ethereum Blockchain.
+      This will give you a high level view of what’s happening in the background.
+      {% endblocktrans %}
+    </p>
+
+    <h2>Learning to Dev in Ethereum</h2>
+    <p>
+      {% blocktrans %}
+      To see our favorite resources on blockchain development,
+      <a href="https://github.com/gitcoinco/gitcoinco/issues/38">click here</a>.
+      {% endblocktrans %}
+    </p>
+
+    <p>
+        {% blocktrans %}
+        CTA: <a href="http://gitcoin.co/slack">Join the Slack</a> and ask any Solidity questions you might have at #focus-dev-general.
+        If you want to get your hands dirty contributing, the <a href="http://gitcoin.co/explorer">Issue Explorer</a> might have the right project for you!
+        {% endblocktrans %}
+      </p>
+  </div>
+</div>
+
+{% endblock %}

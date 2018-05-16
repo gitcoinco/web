@@ -1,0 +1,93 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2018 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+
+{% block content %}
+
+<style>
+  .content {
+    text-align: left;
+    margin: 0.5em 2em 2em 2em;
+  }
+
+  .content p {
+    margin-bottom: 2em;
+  }
+
+  .content ul li {
+    margin-bottom: 1.5em;
+  }
+</style>
+
+<div class="campaign">
+
+  <h1>Day 4: Funding Issues With Gitcoin</h1>
+
+  <div class="content">
+
+    <p>
+    {% blocktrans %}
+    We’re leaning on the community to suggest projects which might be interested in using bounties to accelerate their roadmap.
+    <a href="https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75">Posting a bounty is easily done in 90 seconds</a> once you know Gitcoin is an option to accelerate your development.
+    {% endblocktrans %}
+    </p>
+
+    <p>
+    {% blocktrans %}
+    Adding bounties to an existing project is like adding icing to a cake.  We take what’s already great about OSS:
+    {% endblocktrans %}
+
+    <ul>
+      <li>The mission</li>
+      <li>The freedom</li>
+      <li>The great people</li>
+    </ul>
+    </p>
+
+    <p>
+      {% blocktrans %}
+      And we add to it with:
+      {% endblocktrans %}
+      <ul>
+        <li>Incentivisation mechanics</li>
+        <li>Developer flow</li>
+        <li>Funding</li>
+        <li>A community</li>
+      </ul>
+    </p>
+
+    <p>
+      {% blocktrans %}
+      CTA: Do you know an OSS project that might want to try bounties?
+      Let us know by <a href="https://docs.google.com/forms/d/1AeiKhCO2TefXo8wAbFerjxe2Vgci3ueqzzUpa-PFPLo/edit">filling out this form</a>. If the project funds a bounty, we’ll send you a 15% finders fee.
+      {% endblocktrans %}
+    </p>
+
+    <p>
+      {% blocktrans %}
+      If you are an OSS repo maintainer, Gitcoin can help you build a community around your product if used correctly.
+      We’re lucky we’ve been able to do so with our platform -
+      <a href="https://medium.com/@owocki/dcd39650fc5">here’s a bit more on how you can use Gitcoin to do so, too</a>!
+      {% endblocktrans %}
+    </p>
+
+  </div>
+</div>
+
+{% endblock %}

@@ -29,7 +29,7 @@ from retail.emails import (
     render_bounty_expire_warning, render_bounty_feedback, render_bounty_startwork_expire_warning,
     render_bounty_unintersted, render_faucet_rejected, render_faucet_request, render_match_email, render_new_bounty,
     render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
-    render_tip_email,
+    render_nth_day_email_campaign, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -416,3 +416,20 @@ def setup_lang(to_email):
     if user and hasattr(user, 'profile'):
         preferred_language = user.profile.get_profile_preferred_language()
         translation.activate(preferred_language)
+
+
+def nth_day_email_campaign(nth, subscriber):
+    # take first part of email as default first name
+    firstname = subscriber.email.split('@')[0]
+
+    if subscriber.profile and subscriber.profile.user and subscriber.profile.user.first_name:
+        firstname = subscriber.profile.user.first_name
+
+    cur_language = translation.get_language()
+    try:
+        setup_lang(subscriber.email)
+        from_email = settings.CONTACT_EMAIL
+        html, text, subject = render_nth_day_email_campaign(nth, firstname)
+        send_mail(from_email, subscriber.email, subject, text, html)
+    finally:
+        translation.activate(cur_language)

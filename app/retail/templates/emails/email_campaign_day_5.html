@@ -1,0 +1,78 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2018 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+
+{% block content %}
+
+<style>
+  .content {
+    text-align: left;
+    margin: 0.5em 2em 2em 2em;
+  }
+
+  .content p {
+    margin-bottom: 2em;
+  }
+
+  .content ul li {
+    margin-bottom: 1.5em;
+  }
+</style>
+
+<div class="campaign">
+
+  <h1>Day 5: The Gitcoin Toolset</h1>
+
+  <div class="content">
+    <p>
+    {% blocktrans %}
+    Abraham Maslow once said "If the only tool you have is a hammer, to treat everything as if it were a nail.".
+    {% endblocktrans %}
+    </p>
+
+    <p>
+    {% blocktrans %}
+    Did you know that Gitcoin isn't *just* bounties?
+    We're building out whole a toolbox of OSS incentivization tools.
+    {% endblocktrans %}
+    </p>
+
+    <p>
+    {% blocktrans %}
+    Here are a few
+    {% endblocktrans %}
+
+    <ul>
+      <li><a href="https://codefund.io">CodeFund</a> -- {% trans "Sustain your OSS project with ethical advertising" %}</li>
+      <li><a href="https://gitcoin.co/tips">Tips</a> -- {% trans "Got a project contributor that’s doing really great work" %}</li>
+      <li>Dev Grants -- {% trans "Support your best contributors with a grant that recurs over time" %}</li>
+    </ul>
+    </p>
+
+    <p>
+    {% blocktrans %}
+    Click on any of the tools above to take them for a test drive,
+    or learn more about our toolbox at <a href="https://gitcoin.co/tools">https://gitcoin.co/tools</a>
+    {% endblocktrans %}
+    </p>
+
+  </div>
+</div>
+
+{% endblock %}

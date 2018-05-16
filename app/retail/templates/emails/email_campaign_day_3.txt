@@ -1,0 +1,24 @@
+Day 3: Learning Blockchain
+
+Developing in blockchain can seem daunting.
+If you’re an experienced developer, however, your skills are already extremely useful in the blockchain space.
+We’ve found that many issues solved through Gitcoin are using skills in Python, JavaScript, Django, React and more.
+
+That being said, learning is a part of the fun at Gitcoin.
+You’ll be exposed to many projects building in Ethereum’s blockchain space,
+and will be exposed to concepts like web3 and languages like Solidity,
+the JavaScript based smart contract programming language.
+
+Let’s dive into some of our favorite resources for someone to get their hands dirty with smart contract development.
+
+How the Ethereum Blockchain works
+
+Check out this short video (https://www.youtube.com/watch?time_continue=1&v=cZZMDOrIo2k) about how to use the Ethereum Blockchain.
+This will give you a high level view of what’s happening in the background.
+
+Learning to Dev in Ethereum
+
+To see our favorite resources on blockchain development, click here (https://github.com/gitcoinco/gitcoinco/issues/38).
+
+CTA: Join the Slack (http://gitcoin.co/slack) and ask any Solidity questions you might have at #focus-dev-general.
+If you want to get your hands dirty contributing, the Issue Explorer (http://gitcoin.co/explorer) might have the right project for you!

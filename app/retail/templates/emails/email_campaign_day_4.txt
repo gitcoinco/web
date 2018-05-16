@@ -1,0 +1,23 @@
+Day 4: Funding Issues With Gitcoin
+
+We’re leaning on the community to suggest projects which might be interested in using bounties to accelerate their roadmap.
+Posting a bounty is easily done in 90 seconds (https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75) once you know Gitcoin is an option to accelerate your development.
+
+Adding bounties to an existing project is like adding icing to a cake.  We take what’s already great about OSS:
+
+The mission
+The freedom
+The great people
+
+And we add to it with:
+Incentivisation mechanics
+Developer flow
+Funding
+A community
+
+CTA: Do you know an OSS project that might want to try bounties?
+Let us know by filling out this form (https://docs.google.com/forms/d/1AeiKhCO2TefXo8wAbFerjxe2Vgci3ueqzzUpa-PFPLo/edit).
+If the project funds a bounty, we’ll send you a 15% finders fee.
+
+If you are an OSS repo maintainer, Gitcoin can help you build a community around your product if used correctly.
+We’re lucky we’ve been able to do so with our platform - here’s a bit more on how you can use Gitcoin to do so, too (https://medium.com/@owocki/dcd39650fc5)!

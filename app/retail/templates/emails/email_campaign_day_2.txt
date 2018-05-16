@@ -1,0 +1,32 @@
+Day 2: Using Gitcoin’s Issue Explorer
+
+Hey {{firstname}},
+
+By this point, you might have poked around the Gitcoin Issue Explorer (https://gitcoin.co/explorer?q=) to see the open source projects you could make money by contributing! If interested in doing work, here’s how:
+
+Start Work
+Click ‘Start Work’ to kick off a message to the repo-maintainer that you’re interested in the issue
+Respond on the Github thread with your intended approach for the bounty
+
+[GIF of Start Work]
+
+Make A Submission
+
+  Download MetaMask (http://metamask.io/)
+    MetaMask is a bridge that allows you to visit the distributed web in your browser, today.
+    It allows Gitcoin (an Ethereum based dApp) to run in your browser so you can use gas to claim an issue!
+
+  Get some ETH (gas) in order to make a submission
+    What is gas, you say? Gas is the payment sent to Ethereum miners, in exchange for execution of a smart contract.
+    If you need a small amount of ETH to make a claim, request some using the Gitcoin Faucet (http://gitcoin.co/faucet)!
+
+  Click on ‘Submit Work’ use your gas to make a submission!
+
+[GIF of Submit Work]
+
+From here, you should be off to the races! The repo maintainer will review your PR and pay out accordingly.
+Feel free to poke your head in if you have any issues.
+
+CTA: Check out the Issue Explorer (https://gitcoin.co/explorer?q=) if you haven’t already! If you don’t find good fits,
+let us know an open source project (https://docs.google.com/forms/d/1AeiKhCO2TefXo8wAbFerjxe2Vgci3ueqzzUpa-PFPLo/edit) that you’d like to see using Gitcoin.
+No promises, but we might have something up our sleeve.
