@@ -303,8 +303,7 @@ def render_nth_day_email_campaign(to_email, nth, firstname):
         2: "Day 2: Using Gitcoin's Issue Explorer",
         3: "Day 3: Learning Blockchain",
         4: "Day 4: Funding Issues With Gitcoin",
-        5: "Day 5: The Gitcoin Toolset",
-        6: "Day 6: The Gitcoin Community",
+        5: "Day 5: The Gitcoin Community",
     }
 
     subject = subject_map[nth]

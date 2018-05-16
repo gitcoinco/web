@@ -1,23 +1,22 @@
-Day 4: Funding Issues With Gitcoin
+Day 4: A Firehose Of Developers
 
-We’re leaning on the community to suggest projects which might be interested in using bounties to accelerate their roadmap.
-Posting a bounty is easily done in 90 seconds (https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75) once you know Gitcoin is an option to accelerate your development.
+Gitcoin Core is 4 team members, yet we’ve seen contributions from well over 35
+developers using Gitcoin. We’d like to see you do the same!  Here’s how to
+leverage a firehose of developer talent to do more, faster.
 
-Adding bounties to an existing project is like adding icing to a cake.  We take what’s already great about OSS:
+Posting a bounty can be done in 90 seconds, once you know Gitcoin is an option
+to accelerate your development.  Adding bounties to an existing project is like
+adding icing to a cake.  We take what’s already great about OSS (mission,
+freedom, and great people) and add financial incentivization, a home base for
+projects seeking contributors, funding for developer, and community.
 
-The mission
-The freedom
-The great people
+Alongside posting bounties on the Issue Explorer, Gitcoin offers two
+complimentary products for open source software enthusiasts.
 
-And we add to it with:
-Incentivisation mechanics
-Developer flow
-Funding
-A community
+Codefund: Sustain your OSS project with ethical advertising
 
-Do you know an OSS project that might want to try bounties?
-Let us know by filling out this form (https://docs.google.com/forms/d/1AeiKhCO2TefXo8wAbFerjxe2Vgci3ueqzzUpa-PFPLo/edit).
-If the project funds a bounty, we’ll send you a 15% finders fee.
+Gitcoin Tips: Have a contributor that’s doing fantastic work? Send them a
+token of appreciation using tips!
 
-If you are an OSS repo maintainer, Gitcoin can help you build a community around your product if used correctly.
-We’re lucky we’ve been able to do so with our platform - here’s a bit more on how you can use Gitcoin to do so, too (https://medium.com/@owocki/dcd39650fc5)!
+Do you know an OSS project that might want to try our tools?  Let us
+know by filling out this form. We think we can find a way to help!

@@ -30,9 +30,6 @@
     margin-bottom: 2em;
   }
 
-  .content ul li {
-    margin-bottom: 1.5em;
-  }
 </style>
 
 <div class="campaign">
@@ -54,46 +51,41 @@
 
     <h2>Start Work</h2>
     <p>
-      <ul>
-        <li>
-          {% trans "Click ‘Start Work' to kick off a message to the repo-maintainer that you're interested in the issue" %}
-        </li>
-        <li>
-            {% trans "Respond on the Github thread with your intended approach for the bounty" %}
-        </li>
-      </ul>
-      <img src='{% static "v2/images/email/start-work.gif" %}'
-
+        {% blocktrans %}
+        Click 'Start Work' to provide a brief message to the repo-maintainer that you’re interested in the issue
+        {% endblocktrans %}
+    </p>
+    <p>
+      <img src='{% static "v2/images/email/start-work.gif" %}' />
     </p>
 
 
     <h2>Make A Submission</h2>
     <p>
-    <ul>
-      <li>
-        <a href="http://metamask.io/">Download MetaMask</a>
-          <ul style="list-style-type: lower-alpha;">
-            <li style="margin-top: 1.5em;">
-              {% trans "MetaMask is a bridge that allows you to visit the distributed web in your browser, today. It allows Gitcoin (an Ethereum based dApp) to run in your browser so you can use gas to claim an issue!" %}
-            </li>
-          </ul>
-      </li>
-      <li>
-        {% trans "Get some ETH (gas) in order to make a submission" %}
-        <ul style="list-style-type: lower-alpha;">
-          <li style="margin-top: 1.5em;">
-              What is gas, you say? Gas is the payment sent to Ethereum miners, in exchange for execution of a smart contract.
-          </li>
-          <li style="margin-top: 1.5em;">
-              If you need a small amount of ETH to make a claim, request some using the <a href="http://gitcoin.co/faucet">Gitcoin Faucet</a>!
-          </li>
-        </ul>
-      </li>
-      <li>
-          Click on ‘Submit Work' use your gas to make a submission!
-      </li>
-    </ul>
-    <img src='{% static "v2/images/email/submit-work.gif" %}'
+      {% blocktrans %}
+      <b>First, <a href="http://metamask.io/">download MetaMask</a></b> 🦊
+      MetaMask is a bridge that allows you to visit the distributed web in your browser, today.
+      It allows Gitcoin (an Ethereum based dApp) to run in your browser so you can use <b>gas</b> to claim an issue!
+      {% endblocktrans %}
+    </p>
+
+    <p>
+      {% blocktrans %}
+      <b>Then, get some gas</b> ⛽️  What is gas, you say?
+      Gas is the payment sent to Ethereum miners (ETH) in exchange for execution of a smart contract.
+      If you need a small amount of gas, request some using the <a href="http://gitcoin.co/faucet">Gitcoin Faucet!</a>
+      {% endblocktrans %}
+    </p>
+
+    <p>
+      <b>
+        {% blocktrans %}
+        Click on ‘Submit Work’ use your gas (ETH) to make a submission! ⚡️
+        {% endblocktrans %}
+      </b>
+    </p>
+    <p>
+    <img src='{% static "v2/images/email/submit-work.gif" %}' />
     </p>
 
 

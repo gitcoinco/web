@@ -59,5 +59,5 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # day 1 email has been sent
         # start from day 2
-        for i in range(2, 7):
+        for i in range(2, 6):
             send_nth_email(i)
