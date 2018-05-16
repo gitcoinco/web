@@ -34,7 +34,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import ellipses, sync_profile
 from dashboard.models import (
@@ -581,12 +581,15 @@ def fulfill_bounty(request, pk):
     return TemplateResponse(request, 'fulfill_bounty.html', params)
 
 
-def fulfill_std_bounty(request, network, standard_bounties_id):
+@require_GET
+def fulfill_std_bounty(request):
     """Fulfill a bounty.
 
-    Args:
-        network (str): The network of the associated bounty.
-        standard_bounties_id (int): The standard bounty ID of the bounty to be fulfilled.
+    Parameters:
+        pk (int): The primary key of the Bounty.
+        standard_bounties_id (int): The standard bounties ID of the Bounty.
+        network (str): The network of the Bounty.
+        githubUsername (str): The Github Username of the referenced user.
 
     Raises:
         Http404: The exception is raised if no associated Bounty is found.
@@ -595,8 +598,22 @@ def fulfill_std_bounty(request, network, standard_bounties_id):
         TemplateResponse: The fulfill bounty view.
 
     """
+    pk = request.GET.get('pk')
+    standard_bounties_id = request.GET.get('standard_bounties_id')
+    network = request.GET.get('network', 'mainnet')
+    bounty_kwargs = {'network': network}
+
+    if pk and pk.isdigit():
+        bounty_kwargs['pk'] = int(pk)
+    elif standard_bounties_id and standard_bounties_id.isdigit():
+        bounty_kwargs['standard_bounties_id'] = int(standard_bounties_id)
+    else:
+        raise Http404
+
     try:
-        bounty = Bounty.objects.get(standard_bounties_id=standard_bounties_id, network=network)
+        bounty = Bounty.objects.current().get(**bounty_kwargs)
+    except Bounty.MultipleObjectsReturned:
+        bounty = Bounty.objects.current().filter(**bounty_kwargs).distinct().latest('id')
     except (Bounty.DoesNotExist, ValueError):
         raise Http404
 
