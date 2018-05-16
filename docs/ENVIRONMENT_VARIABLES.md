@@ -13,6 +13,13 @@ All of the environment variables used by this application conform to the [`djang
 | DEBUG | Whether or not to run the environment in Debug mode. | `bool` | True |
 | SECRET_KEY | The secret key to use for your Django environment. | `str` | TODO |
 
+## Project / Entry Specific
+
+| Variable | Description | Type | Default |
+| --- | --- | --- | --- |
+| FORCE_PROVISION | Whether or not to force provisioning even if the container has been previously provisioned | `bool` | False |
+| FORCE_GET_PRICES | Whether or not to force pulling fresh conversion rate data from etherdelta and poloniex | `bool` | False |
+
 ## Amazon Web Services
 
 | Variable | Description | Type | Default |
