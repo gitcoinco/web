@@ -569,8 +569,6 @@ def fulfill_bounty(request, pk):
         bounty = Bounty.objects.get(pk=pk)
     except (Bounty.DoesNotExist, ValueError):
         raise Http404
-    except ValueError:
-        raise Http404
 
     is_user_authenticated = request.user.is_authenticated
     params = {
