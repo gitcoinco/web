@@ -89,7 +89,8 @@
           <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">Show all</button>
         </div>
       </div>
-
+    </div>
+    <div class="container">
       <div class="row">
         <div class="col py-4">Bounties funded</div>
       </div>
@@ -98,7 +99,8 @@
           <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">Show all</button>
         </div>
       </div>
-
+    </div>
+    <div class="container">
       <div class="row">
         <div class="col py-4">Bounties completed</div>
       </div>
@@ -107,16 +109,14 @@
           <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">Show all</button>
         </div>
       </div>
-
-      <div class="row">
-        <div class="col py-4">Tips Recieved</div>
-      </div>
-      <div class="row">
-        <div class="container profile-bounties profile-bounties--tips pb-4">
-          {% if tips|length == 0 %}
-            {% trans "No tips found…" %}
-          {% endif %}
-          {% if tips|length > 0 %}
+    </div>
+    <div class="container">
+      {% if tips|length > 0 %}
+        <div class="row">
+          <div class="col py-4">Tips Recieved</div>
+        </div>
+        <div class="row">
+          <div class="container profile-bounties profile-bounties--tips pb-4">
             {% for tip in tips %}
               <div class="row result bounty_row {% if forloop.counter > 5 %}bounty_row--hidden{% endif %} {{tip.network}}" {% if tip.github_url %}href="{{tip.github_url}}"{% endif %}>
                   {% if tip.from_username %}
@@ -172,11 +172,11 @@
                 </div>
               </div>
             {% endfor %}
-          {% endif %}
 
-          <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">Show all</button>
+            <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">Show all</button>
+          </div>
         </div>
-      </div>
+      {% endif %}
 
       {% if activities %}
         <div class="row">
@@ -258,7 +258,7 @@
         var tmpl = $.templates('#result');
 
         if (results.length == 0) {
-          return '<p class="text-muted"><small>No results…</small></p>';
+          return false;
         }
 
         // Reused code from explorer/dashboard. Should be moved to some shared js.
@@ -324,28 +324,33 @@
           results = sanitizeAPIResults(results);
 
           var html = renderBountyRowsFromResults(results);
-          $(target).prepend(html);
-          $(target).removeClass('profile-bounties--loading');
 
-          if (results.length > 5) {
-            var $button = $(target + ' .profile-bounties__btn-show-all');
-            $button.removeClass('hidden');
-            $button.on('click', function(event) {
-              $(this).remove();
-              $(target + ' .bounty_row').removeClass('bounty_row--hidden');
-            });
-          }
+          if (html) {
+            $(target).prepend(html);
+            $(target).removeClass('profile-bounties--loading');
 
-          // Reused code from explorer/dashboard. Should be moved to some shared js.
-          $('div.bounty_row.result').each(function() {
-            var href = $(this).attr('href');
-
-            if (typeof $(this).changeElementType !== 'undefined') {
-              $(this).changeElementType('a'); // hack so that users can right click on the element
+            if (results.length > 5) {
+              var $button = $(target + ' .profile-bounties__btn-show-all');
+              $button.removeClass('hidden');
+              $button.on('click', function(event) {
+                $(this).remove();
+                $(target + ' .bounty_row').removeClass('bounty_row--hidden');
+              });
             }
 
-            $(this).attr('href', href);
-          });
+            // Reused code from explorer/dashboard. Should be moved to some shared js.
+            $('div.bounty_row.result').each(function() {
+              var href = $(this).attr('href');
+
+              if (typeof $(this).changeElementType !== 'undefined') {
+                $(this).changeElementType('a'); // hack so that users can right click on the element
+              }
+
+              $(this).attr('href', href);
+            });
+          } else {
+            console.log($(target).parent().closest('.container').addClass('hidden'));
+          }
         });
       }
 

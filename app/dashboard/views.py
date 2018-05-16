@@ -814,7 +814,7 @@ def profile(request, handle):
         'bounties': profile.bounties,
         'tips': Tip.objects.filter(username=handle, network='mainnet'),
         # TODO: Fill following with real data
-        'count_bounties_completed': 666,
+        'count_bounties_completed': profile.stats[4][0],
         'sum_eth_collected': 24.5,
         'scoreboard_position_contributor': 1,
         'sum_eth_funded': 32.2,
