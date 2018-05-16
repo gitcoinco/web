@@ -658,7 +658,7 @@ class Bounty(SuperModel):
 
         """
         return {
-            'fulfill': f"/issue/fulfill/{self.pk}",
+            'fulfill': f"/issue/fulfill?pk={self.pk}&network={self.network}",
             'increase': f"/issue/increase/{self.pk}",
             'accept': f"/issue/accept/{self.pk}",
             'cancel': f"/issue/cancel/{self.pk}",

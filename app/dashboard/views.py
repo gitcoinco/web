@@ -552,37 +552,8 @@ def accept_bounty(request, pk):
     return TemplateResponse(request, 'process_bounty.html', params)
 
 
-def fulfill_bounty(request, pk):
-    """Fulfill a bounty.
-
-    Args:
-        pk (int): The primary key of the bounty to be fulfilled.
-
-    Raises:
-        Http404: The exception is raised if no associated Bounty is found.
-
-    Returns:
-        TemplateResponse: The fulfill bounty view.
-
-    """
-    try:
-        bounty = Bounty.objects.get(pk=pk)
-    except (Bounty.DoesNotExist, ValueError):
-        raise Http404
-
-    is_user_authenticated = request.user.is_authenticated
-    params = bounty.get_context(
-        github_username=request.GET.get('githubUsername'),
-        user=request.user if is_user_authenticated else None,
-        confirm_time_minutes_target=confirm_time_minutes_target,
-        active='fulfill_bounty',
-        title=_('Submit Work'),
-    )
-    return TemplateResponse(request, 'fulfill_bounty.html', params)
-
-
 @require_GET
-def fulfill_std_bounty(request):
+def fulfill_bounty(request):
     """Fulfill a bounty.
 
     Parameters:
