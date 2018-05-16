@@ -769,7 +769,7 @@ class Tip(SuperModel):
     def __str__(self):
         """Return the string representation for a tip."""
         return f"({self.network}) - {self.status}{' ORPHAN' if not self.emails else ''} {self.amount} " \
-               f"{self.tokenName} to {self.username}, created: {naturalday(self.created_on)}, " \
+               f"from {self.from_name}, {self.tokenName} to {self.username}, created: {naturalday(self.created_on)}, " \
                f"expires: {naturalday(self.expires_date)}"
 
     # TODO: DRY
