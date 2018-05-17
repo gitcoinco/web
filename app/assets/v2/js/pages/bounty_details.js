@@ -508,7 +508,7 @@ var build_detail_page = function(result) {
           '<span aria-hidden="true">&times;</span>' +
         '</a>' +
       '</div>' +
-      '<div class="col-12"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
+      '<div class="col-12 pt-2 pb-2"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
 
     var modal = $(content).appendTo('body').modal({
       modalClass: 'modal magnify'
