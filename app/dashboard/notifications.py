@@ -398,8 +398,8 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
         bounty_owner_clear = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
         try:
             if profile_pairs:
-                msg += f"\n{bounty_owner_clear}, __please see the below comments on the approach / " \
-                       "questions:__ "
+                msg += f"\n{bounty_owner_clear}, __please see the below comments / questions regarding approach for " \
+                        "this ticket from the bounty hunter(s):__ "
                 for profile in profile_pairs:
                     interests = Interest.objects.filter(profile__handle=profile[0], bounty=bounty)
                     for interest in interests:
