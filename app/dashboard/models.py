@@ -42,7 +42,7 @@ from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from github.utils import (
-    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, issue_number, org_name, repo_name,
+    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, issue_number, org_name, repo_name,
 )
 from rest_framework import serializers
 from web3 import Web3
@@ -336,8 +336,7 @@ class Bounty(SuperModel):
         gitcoin_logo_flag = "/1" if gitcoin_logo_flag else ""
         if org_name:
             return f"{settings.BASE_URL}static/avatar/{org_name}{gitcoin_logo_flag}"
-        else:
-            return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
+        return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
 
     @property
     def keywords(self):
@@ -657,12 +656,11 @@ class Bounty(SuperModel):
             dict: A dictionary of action URLS for this bounty.
 
         """
-        return {
-            'fulfill': f"/issue/fulfill/{self.pk}",
-            'increase': f"/issue/increase/{self.pk}",
-            'accept': f"/issue/accept/{self.pk}",
-            'cancel': f"/issue/cancel/{self.pk}",
-        }
+        params = f'pk={self.pk}&network={self.network}'
+        urls = {}
+        for item in ['fulfill', 'increase', 'accept', 'cancel']:
+            urls.update({item: f'/issue/{item}?{params}'})
+        return urls
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):
@@ -1393,9 +1391,6 @@ class Tool(SuperModel):
 
     def i18n_link_copy(self):
         return _(self.link_copy)
-
-    def __str__(self):
-        return self.name
 
 
 class ToolVote(models.Model):
