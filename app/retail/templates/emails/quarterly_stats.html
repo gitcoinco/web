@@ -144,22 +144,22 @@
     border-color: #3E00FF;
   }
 
-  .user-skill-1 {
+  .user-skill-1, .user-skill-5, .user-skill-9 {
     background-color: rgba(255, 206, 8, .20);
     color: rgba(255, 206, 8, 1);
   }
 
-  .user-skill-2 {
+  .user-skill-2, .user-skill-6, .user-skill-10 {
     background-color: rgba(249, 0, 198, .20);
     color: rgba(249, 0, 198, 1);
   }
 
-  .user-skill-3 {
+  .user-skill-3, .user-skill-7, .user-skill-11 {
     background-color: rgba(142, 42, 90, .20);
     color: rgba(142, 42, 90, 1);
   }
 
-  .user-skill-4 {
+  .user-skill-4, .user-skill-8, .user-skill-12 {
     background-color: rgba(62, 0, 255, .20);
     color: rgba(62, 0, 255, 1);
   }
@@ -220,20 +220,16 @@
         <div class="centered-contents stat-box row">
             <div class="stat-img">
                   {% for language in user_languages %}
-                    <div class="user-skill-lang user-skill-{{forloop.counter}}">
-                      {{language}}
-                    </div>
+                      {% if forloop.counter < 10 and language %}
+                        <div class="user-skill-lang user-skill-{{forloop.counter}}">
+                          {{language}}
+                        </div>
+                      {% endif %}
                   {% endfor %}
             </div>
             <div class="stat-contents">
-                <p>You've boosted your skills in 4 different languages:
-                  {% for language in user_languages %}
-                      {% if forloop.counter == user_no_of_languages %}
-                          and
-                      {% elif forloop.first %}
-                      {% else %},{% endif %}
-                      {{language}}
-                  {% endfor %}!
+                <p>You've boosted your skills in {{user_no_of_languages}} different areas:
+                  {% for language in user_languages %}{% if forloop.counter == user_no_of_languages %} and {% elif forloop.first %}{% else %},{% endif %} {{language}}{% endfor %}!
                 </p>
             </div>
         </div>

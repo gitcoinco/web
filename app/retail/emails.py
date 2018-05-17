@@ -76,7 +76,7 @@ def render_match_email(bounty, github_username):
 
 def render_quarterly_stats(to_email, platform_wide_stats):
     from dashboard.models import Profile
-    profile = Profile.objects.get(email=to_email)
+    profile = Profile.objects.filter(email=to_email).first()
     quarterly_stats = profile.get_quarterly_stats
     params = {**quarterly_stats, **platform_wide_stats}
     params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),

@@ -1120,7 +1120,10 @@ class Profile(SuperModel):
         total_earned_usd = float('%.2f' % total_earned_usd)
 
         # TODO: fill these in on the backend
-        user_languages = ['HTML', 'CSS', 'Python', 'JavaScript']
+        user_languages = []
+        for bounty in fulfilled_bounties:
+            user_languages += bounty.keywords.split(',')
+        user_languages = set(user_languages)
         user_no_of_languages = len(user_languages)
 
         return {
