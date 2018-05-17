@@ -50,8 +50,8 @@ logger = logging.getLogger(__name__)
 def get_bounty_view_kwargs(request):
     """Get the relevant kwargs from the request."""
     # Define lookup criteria.
-    pk = request.GET.get('pk')
-    standard_bounties_id = request.GET.get('standard_bounties_id')
+    pk = request.GET.get('id') or request.GET.get('pk')
+    standard_bounties_id = request.GET.get('sb_id') or request.GET.get('standard_bounties_id')
     network = request.GET.get('network', 'mainnet')
     issue_url = request.GET.get('url')
     bounty_kwargs = {}
