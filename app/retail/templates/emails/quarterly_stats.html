@@ -282,25 +282,24 @@
             <p class="content">{{total_transaction_in_usd}} USD</p>
         </div>
         <div class="stat-contents">
-            {% comment %}
-            TODO: These are currently hard-coded in variables.
-            {% endcomment %}
-            <p>A total of value of ${{total_transaction_in_usd}} USD was transacted on the Gitcoin network - {{total_transaction_in_eth}} ETH, {{total_transaction_in_dai}} DAI, and {{total_transaction_in_wyv}} WYV.</p>
+            <p>A total of value of ${{total_transaction_in_usd}} USD was transacted on the Gitcoin network &amp; {{total_transaction_in_eth}} ETH.</p>
         </div>
     </div>
-    <div class="centered-contents stat-box">
-        <div class="stat-img">
-            <img style="width: 100%; border-radius: 50%;" src="https://gitcoin.co/static/avatar/{{largest_bounty.bounty_owner_github_username}}" />
+    {% if largest_bounty_value %}
+        <div class="centered-contents stat-box">
+            <div class="stat-img">
+                <img style="width: 100%; border-radius: 50%;" src="https://gitcoin.co/static/avatar/{{largest_bounty.bounty_owner_github_username}}" />
+            </div>
+            <div class="stat-contents">
+                <p>
+                    The largest bounty of the quarter was funded by
+                    @<a href="https://github.com/{{largest_bounty.bounty_owner_github_username}}">{{largest_bounty.bounty_owner_github_username}}</a>
+                    for ${{largest_bounty_value}} for
+                    <a href="{{largest_bounty.get_absolute_url}}">{{largest_bounty.title}}</a>.
+                </p>
+            </div>
         </div>
-        <div class="stat-contents">
-            <p>
-                The largest bounty of the quarter was funded by
-                @<a href="https://github.com/{{largest_bounty.bounty_owner_github_username}}">{{largest_bounty.bounty_owner_github_username}}</a>
-                for ${{largest_bounty.value_in_usdt}} for
-                <a href="{{largest_bounty.get_absolute_url}}">{{largest_bounty.title}}</a>.
-            </p>
-        </div>
-    </div>
+    {% endif %}
     <div class="button-action">
         <a class="button" href="https://gitcoin.co/explorer">{% trans "Explore New Bounties" %}</a>
     </div>

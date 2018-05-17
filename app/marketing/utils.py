@@ -152,7 +152,7 @@ def get_platform_wide_stats(since_last_n_days=90):
     from dashboard.models import Bounty, BountyFulfillment
 
     last_n_days = datetime.now() - timedelta(days=since_last_n_days)
-    bounties = Bounty.objects.stats_eligible().filter(created_on__gte=last_n_days)
+    bounties = Bounty.objects.stats_eligible().filter(created_on__gte=last_n_days, current_bounty=True)
     total_bounties = bounties.count()
     completed_bounties = bounties.filter(idx_status__in=['done'])
     num_completed_bounties = completed_bounties.count()
@@ -171,7 +171,8 @@ def get_platform_wide_stats(since_last_n_days=90):
     completed_bounties_fund = float('%.2f' % completed_bounties_fund)
     bounties_completion_percent = float('%.2f' % bounties_completion_percent)
 
-    largest_bounty = Bounty.objects.filter(created_on__gte=last_n_days).order_by('-value_in_token').first()
+    largest_bounty = Bounty.objects.filter(current_bounty=True, created_on__gte=last_n_days).order_by('-_val_usd_db').first()
+    largest_bounty_value = largest_bounty.value_in_usdt
 
     bounty_fulfillments = BountyFulfillment.objects.filter(
         accepted_on__gte=last_n_days).order_by('-bounty__value_in_token')[:5]
@@ -179,10 +180,8 @@ def get_platform_wide_stats(since_last_n_days=90):
     hunters = [username[0] for username in profiles]
 
     # Overall transactions across the network are hard-coded for now
-    total_transaction_in_usd = "132,810"
-    total_transaction_in_dai = "20,000"
-    total_transaction_in_eth = "812"
-    total_transaction_in_wyv = "12,400"
+    total_transaction_in_usd = round(sum([bounty.value_in_usdt for bounty in completed_bounties if bounty.value_in_usdt]))
+    total_transaction_in_eth = round(sum([bounty.value_in_eth for bounty in completed_bounties if bounty.value_in_eth]) / 10**18)
 
     return {
         'total_funded_bounties': total_bounties,
@@ -194,7 +193,5 @@ def get_platform_wide_stats(since_last_n_days=90):
         'hunters': hunters,
         'largest_bounty': largest_bounty,
         "total_transaction_in_usd": total_transaction_in_usd,
-        "total_transaction_in_dai": total_transaction_in_dai,
         "total_transaction_in_eth": total_transaction_in_eth,
-        "total_transaction_in_wyv": total_transaction_in_wyv
     }
