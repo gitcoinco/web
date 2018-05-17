@@ -55,6 +55,7 @@ ENABLE_NOTIFICATIONS_ON_NETWORK = env(
 
 # Application definition
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -92,6 +93,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -104,6 +106,8 @@ MIDDLEWARE = [
     'ratelimit.middleware.RatelimitMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = False
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
