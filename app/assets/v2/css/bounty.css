@@ -531,5 +531,5 @@ a.btn {
 .modal.magnify,
 .modal .magnify {
   width: auto;
-  height: auto;
+  max-width: 100%;
 }
