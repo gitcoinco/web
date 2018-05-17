@@ -2,6 +2,8 @@ load_tokens();
 
 // Wait until page is loaded, then run the function
 $(document).ready(function() {
+  waitforWeb3(actions_page_warn_if_not_on_same_network);
+  
   $('input[name=amount]').keyup(setUsdAmount);
   $('input[name=amount]').blur(setUsdAmount);
   $('select[name=deonomination]').change(setUsdAmount);
@@ -19,6 +21,13 @@ $(document).ready(function() {
 
   // submit bounty button click
   $('#submitBounty').click(function(e) {
+    try {
+      bounty_address();
+    } catch (exception) {
+      _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+      return;
+    }
+
     mixpanel.track('Increase Bounty Clicked (funder)', {});
 
     // setup
@@ -37,7 +46,7 @@ $(document).ready(function() {
     var isError = false;
 
     if ($('#terms:checked').length == 0) {
-      _alert({ message: 'Please accept the terms of service.' });
+      _alert({ message: gettext('Please accept the terms of service.') });
       isError = true;
     } else {
       localStorage['acceptTOS'] = true;
@@ -53,7 +62,7 @@ $(document).ready(function() {
       isError = true;
     }
     if (amount == '') {
-      _alert({ message: 'Please enter an amount.' });
+      _alert({ message: gettext('Please enter an amount.') });
       isError = true;
     }
     if (isError) {
@@ -112,7 +121,7 @@ $(document).ready(function() {
     var errormsg = undefined;
 
     if (bountyAmount == 0 || open == false) {
-      errormsg = gettext('No active funded issue found at this address. Are you sure this is an active funded issue?');
+      errormsg = gettext('No active funded issue found at this address on ' + document.web3network + '. Are you sure this is an active funded issue?');
     }
     if (fromAddress != web3.eth.coinbase) {
       errormsg = gettext('Only the address that submitted this funded issue may increase the payout.');

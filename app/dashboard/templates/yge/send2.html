@@ -100,7 +100,7 @@
       <input type="checkbox" id="tos" value="1" >
       <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
     </div>
-    <a href="#" id="send" class="button">{% trans "Send" %} ⚡️</a>
+    <a href="#" id="send" class="button button--primary">{% trans "Send" %} <span class="emoji">⚡️</span></a>
   </div>
   <div id="send_eth_done" style="display:none;">
     <h1>{% trans "Woo hoo!" %}</h1>
@@ -114,7 +114,7 @@
     <h1>{% blocktrans %}<span id="new_username"></span> has been notified{% endblocktrans %}</h1>
     <h3>{% trans "with instructions about how to receive their tip." %}</h1>
     <br>
-    <a id="" class="button" href="{% url "send_tip" %}">⬅ {% trans "Start Over" %}</a>
+    <a id="" class="button button--primary" href="{% url "send_tip" %}">⬅ {% trans "Start Over" %}</a>
   </div>
 </section>
 {% endblock %}

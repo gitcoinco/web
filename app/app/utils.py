@@ -6,7 +6,10 @@ import time
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.gis.geoip2 import GeoIP2
+from django.db.models import Lookup
+from django.db.models.fields import Field
 from django.utils import timezone
+from django.utils.translation import LANGUAGE_SESSION_KEY
 
 import requests
 import rollbar
@@ -15,9 +18,39 @@ from geoip2.errors import AddressNotFoundError
 from github.utils import _AUTH, HEADERS, get_user
 from ipware.ip import get_real_ip
 from marketing.utils import get_or_save_email_subscriber
+from pyshorteners import Shortener
 from social_django.models import UserSocialAuth
 
 logger = logging.getLogger(__name__)
+
+
+@Field.register_lookup
+class NotEqual(Lookup):
+    """Allow lookup and exclusion using not equal."""
+
+    lookup_name = 'ne'
+
+    def as_sql(self, compiler, connection):
+        """Handle as SQL method for not equal lookup."""
+        lhs, lhs_params = self.process_lhs(compiler, connection)
+        rhs, rhs_params = self.process_rhs(compiler, connection)
+        params = lhs_params + rhs_params
+        return f'%s <> %s' % (lhs, rhs), params
+
+
+def get_short_url(url):
+    is_short = False
+    for shortener in ['Tinyurl', 'Adfly', 'Isgd', 'QrCx']:
+        try:
+            if not is_short:
+                shortener = Shortener(shortener)
+                response = shortener.short(url)
+                if response != 'Error' and 'http' in response:
+                    url = response
+                is_short = True
+        except Exception:
+            pass
+    return url
 
 
 def ellipses(data, _len=75):
@@ -55,7 +88,31 @@ def add_contributors(repo_data):
     return repo_data
 
 
-def sync_profile(handle, user=None):
+def setup_lang(request, user):
+    """Handle setting the user's language preferences and store in the session.
+
+    Args:
+        request (Request): The Django request object.
+        user (User): The Django user object.
+
+    Raises:
+        DoesNotExist: The exception is raised if no profile is found for the specified handle.
+
+    """
+    profile = None
+    if user.is_authenticated and hasattr(user, 'profile'):
+        profile = user.profile
+    else:
+        try:
+            profile = Profile.objects.get(user_id=user.id)
+        except Profile.DoesNotExist:
+            pass
+    if profile:
+        request.session[LANGUAGE_SESSION_KEY] = profile.get_profile_preferred_language()
+        request.session.modified = True
+
+
+def sync_profile(handle, user=None, hide_profile=True):
     data = get_user(handle)
     email = ''
     is_error = 'name' not in data.keys()
@@ -72,6 +129,7 @@ def sync_profile(handle, user=None):
         'last_sync_date': timezone.now(),
         'data': data,
         'repos_data': repos_data,
+        'hide_profile': hide_profile,
     }
 
     if user and isinstance(user, User):

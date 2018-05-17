@@ -76,7 +76,7 @@ def render_match_email(bounty, github_username):
 
 def render_bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
     previous_bounties_str = ", ".join([bounty.github_url for bounty in previous_bounties])
-    if persona != 'submitter':
+    if persona == 'fulfiller':
         accepted_fulfillments = bounty.fulfillments.filter(accepted=True)
         github_username = " @" + accepted_fulfillments.first().fulfiller_github_username if accepted_fulfillments.exists() and accepted_fulfillments.first().fulfiller_github_username else ""
         txt = f"""
@@ -97,9 +97,10 @@ thanks again for being a member of the community.
 kevin
 
 """
-    else:
+    elif persona == 'funder':
         github_username = " @" + bounty.bounty_owner_github_username if bounty.bounty_owner_github_username else ""
-        txt = f"""
+        if bounty.status == 'done':
+            txt = f"""
 
 hi{github_username},
 
@@ -119,6 +120,29 @@ thanks for being a member of the community.
 
 kevin
 """
+        elif bounty.status == 'cancelled':
+            txt = f"""
+hi{github_username},
+
+we saw that you cancelled this bounty.
+
+i was sorry to see that the bounty did not get done.
+
+i have a few questions for you.
+
+> why did you decide to cancel the bounty?
+
+> would you use gitcoin again?
+
+thanks again for being a member of the community.
+
+kevin
+
+"""
+        else:
+            raise Exception('unknown bounty status')
+    else:
+        raise Exception('unknown persona')
 
     params = {
         'txt': txt,
@@ -129,12 +153,13 @@ kevin
     return response_html, response_txt
 
 
-def render_new_bounty(to_email, bounties):
+def render_new_bounty(to_email, bounties, old_bounties):
     sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
+        'old_bounties': old_bounties,
         'bounties': bounties,
         'subscriber': sub,
-        'keywords': ",".join(sub.keywords), 
+        'keywords': ",".join(sub.keywords),
     }
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
@@ -212,7 +237,7 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
         'time_delta_days': time_delta_days,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
     }
-    
+
     response_html = premailer_transform(render_to_string("emails/bounty_startwork_expire_warning.html", params))
     response_txt = render_to_string("emails/bounty_startwork_expire_warning.txt", params)
 
@@ -276,76 +301,75 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Post A Bounty in 90 Seconds"
+    subject = "Hiring is Broken | Web3 Hiring Can Fix That! "
 
     intro = '''
 
 <p>
-    Hi there 👋
+    Hi there
 </p>
 <p>
-    <a href="https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75">Here’s how to post a bounty in 90 seconds</a>! In less than two minutes, you’ll be well on your way to bringing contributors to your repositories. We plan to continue this tutorial series with more on best practices for using Gitcoin to grow your open source repo.   
+Hiring software developers is broken.  If you've been in software development for long, you'll be familiar with linkedin recruiter spam, with irrelevant whiteboard interviews, and sometimes if you get the job, it doesnt even match what you were told you'd be doing!  With Gitcoin, we believe the process is an order of magnitude better. <a href="https://medium.com/gitcoin/hiring-with-gitcoin-d58679de37ac">Read here</a> to learn more about how teams have scaled from bounties to full-time hires, and how you can do the same.  
 </p>
 <p>
-    What else is new?
+I’ll be at <a href="https://etherealsummit.com/">Ethereal Summit in NY</a> on Friday for the kick-off of Blockchain Week. Come say hello if you’re around - Gitcoin will be doing a demo at the event.
 </p>
+<h3>What else is new?</h3>
     <ul>
         <li>
-This week we’ll have the Aragon project, MARKET Protocol, and Wyvern Protocol on the livestream (in a few hours; at 3pm MST / 5pm EST). <a href="https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ">Add it to your Google Calendar here.</a>
+Last week, <a href="https://blog.ethereum.org/2018/05/02/announcing-may-2018-cohort-ef-grants/">we received a $25K grant from the Ethereum Foundation</a>, amongst $2.84 million in grants funded. Expect more detail on how we will use this funding to grow open source, soon. 
         </li>
         <li>
-Want to be the first to know when new open issues are added? We launched <a href="https://twitter.com/gitcoinfeed">@gitcoinfeed on Twitter</a> which provides updates on all new activity on Gitcoin.
+ConsenSys Academy’s 2018 Developer Program is here. <a href="https://consensys.net/academy/developer/">Click here for a cool option to get into blockchain development</a>! 
+        </li>
+        <li>
+<strong> Calling all project managers! </strong>  Are you interested in paid work in the intersection blockchain and open source?  Send us your resume at <a href="mailto:founders@gitcoin.co">founders@gitcoin.co</a> or just respond to this email.
+
         </li>
     </ul>
 </p>
 <p>
-I hope to see you on <a href="https://gitcoin.co/slack">Slack</a> or on <a href="https://github.com/gitcoinco/web">Github</a>. If you’re interested in growing open source and have some extra time, come by. We’re working to make Gitcoin the best place on the internet to do so. 
+<a href="http://gitcoin.co/livestream">The Gitcoin Livestream</a> is back as regularly scheduled this Friday at 5PM ET. Martin Köppelmann of Gnosis and Circles will be joining us alongside other guests.   Hope you’ll join us chillin' and shillin' at Ethereal and also on the Gitcoin Livestream! 
+
 </p>
 
 '''
     highlights = [
         {
-            'who': 'cryptomental',
+            'who': 'thelostone-mc',
             'who_link': True,
-            'what': 'Helping Gitcoin to de-couple the floating ETH/USD exchange rate from when the bounty was posted',
-            'link': 'https://gitcoin.co/issue/gitcoinco/web/693',
+            'what': 'Helped build a new onboarding flow for future Gitcoiner’s',
+            'link': 'https://gitcoin.co/issue/gitcoinco/web/441/210',
             'link_copy': 'See more',
         },
         {
-            'who': 'eemp',
+            'who': 'danieljoonlee',
             'who_link': True,
-            'what': 'Worked with @TimVanMourik on some file parsing work for his open source repo, GiraffeTools',
-            'link': 'https://github.com/TimVanMourik/GiraffeTools/issues/4',
+            'what': 'Made updates on Ethereum’s Solidity repo.',
+            'link': 'https://gitcoin.co/issue/ethereum/solidity/3965/316',
             'link_copy': 'View more',
         },
         {
-            'who': 'bakaoh',
+            'who': 'iamonuwa',
             'who_link': True,
-            'what': 'Back at it again! Created a new deployer for MARKET Protocol using the Binance API.',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/Dapp/85',
-            'link_copy': 'See more',
-        },
-        {
-            'who': 'jakerockland',
-            'who_link': True,
-            'what': 'Coded up the new email designs on Gitcoin (including the one you\'re looking at now!)',
-            'link': 'https://github.com/gitcoinco/web/pull/746',
+            'what': 'Worked with Tim van Mourik to bring Webpack 4 to Giraffe Tools! ',
+            'link': 'https://gitcoin.co/issue/TimVanMourik/GiraffeTools/19/297',
             'link_copy': 'View more',
         },
     ]
 
     bounties = [
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/gitcoinco/web/issues/865'),
-            'primer': 'We’re working on a new project called ETH Avatar! Appreciate anyone interested in contributing. ',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/ethereum/casper/issues/66'),
+            'primer': 'Casper FFG is a priority of the Ethereum Ecosystem! Help contribute directly to development here.',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/TimVanMourik/GiraffeTools/issues/7'),
-            'primer': 'Work with @TimVanMourik on the foundation for a Github OAuth Integration. ',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/buidlbox/issues/3'),
+            'primer': 'Wyvern is looking to build out a web design for their smart contract marketplace. ',
         },
         {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/gitcoinco/web/issues/796'),
-            'primer': 'We’re working on making Gitcoin more trustworthy. If you have ideas on best practices, we could use the help. ',
+            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/ProjectWyvern/frontends/issues/1'),
+            'primer': 'uPort is searching for ideas for applications which can be built on top of their platform! ',
         },
     ]
 
@@ -419,7 +443,9 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3])
+    bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
+    old_bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
+    response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties)
     return HttpResponse(response_html)
 
 
@@ -477,7 +503,7 @@ def start_work_expire_warning(request):
 def faucet(request):
     from faucet.models import FaucetRequest
     fr = FaucetRequest.objects.last()
-    response_html, txt = render_faucet_request(fr)
+    response_html, _ = render_faucet_request(fr)
     return HttpResponse(response_html)
 
 
@@ -485,7 +511,7 @@ def faucet(request):
 def faucet_rejected(request):
     from faucet.models import FaucetRequest
     fr = FaucetRequest.objects.exclude(comment_admin='').last()
-    response_html, txt = render_faucet_rejected(fr)
+    response_html, _ = render_faucet_rejected(fr)
     return HttpResponse(response_html)
 
 

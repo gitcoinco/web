@@ -15,7 +15,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
         return [
             'dashboard',
             'new_funding',
-            'fulfill_funding',
+            'fulfill_bounty',
             'process_funding',
             'funding_details',
             'tip',
@@ -60,7 +60,7 @@ class ProfileSitemap(Sitemap):
     priority = 0.8
 
     def items(self):
-        return Profile.objects.filter()
+        return Profile.objects.filter(hide_profile=False).all()
 
     def lastmod(self, obj):
         return obj.modified_on

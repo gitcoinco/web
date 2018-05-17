@@ -17,7 +17,9 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from dashboard.utils import get_bounty, get_bounty_id_from_db, get_bounty_id_from_web3, get_web3, getBountyContract
+from dashboard.utils import (
+    get_bounty, get_bounty_id_from_db, get_bounty_id_from_web3, get_ordinal_repr, get_web3, getBountyContract,
+)
 from test_plus.test import TestCase
 from web3.main import Web3
 from web3.providers.rpc import HTTPProvider
@@ -55,3 +57,17 @@ class DashboardUtilsTest(TestCase):
         # find bounty 249
         assert get_bounty_id_from_web3('https://github.com/raiden-network/raiden/issues/1195', 'mainnet', 246) == 249
         assert not get_bounty_id_from_web3('https://github.com/gitcoinco/web/issues/607', 'mainnet', 10000000)
+
+    @staticmethod
+    def test_get_ordinal_repr():
+        """Test the dashboard utility get_ordinal_repr."""
+        assert get_ordinal_repr(1) == '1st'
+        assert get_ordinal_repr(2) == '2nd'
+        assert get_ordinal_repr(3) == '3rd'
+        assert get_ordinal_repr(4) == '4th'
+        assert get_ordinal_repr(10) == '10th'
+        assert get_ordinal_repr(11) == '11th'
+        assert get_ordinal_repr(21) == '21st'
+        assert get_ordinal_repr(22) == '22nd'
+        assert get_ordinal_repr(23) == '23rd'
+        assert get_ordinal_repr(24) == '24th'

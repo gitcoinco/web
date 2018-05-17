@@ -21,6 +21,10 @@ span {
   cursor: pointer;
 }
 
+.dropdown-menu{
+  z-index: 9999999999;
+}
+
 .navbar {
   font-family: 'futura-pt', Futura, sans-serif;
 }
@@ -91,7 +95,7 @@ span {
 }
 
 .faq_item {
-  margin: 0px auto;
+  margin: 0 auto;
 }
 
 .faq_item h5 {
@@ -107,12 +111,12 @@ span {
   display: block;
   flex: none;
   max-width: none;
-  margin-left: 0px;
+  margin-left: 0;
 }
 
 .interior .container-fluid {
-  padding-left: 0px;
-  padding-right: 0px;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .with-grey-background .body {
@@ -209,7 +213,7 @@ span {
 .howworks_container {
   background-color: white;
   padding-bottom: 40px;
-  margin-top: 0px !important;
+  margin-top: 0 !important;
 }
 
 .whatisit,
@@ -260,11 +264,6 @@ span {
   padding-top: 10px;
 }
 
-#origin_story img {
-  max-height: 200px;
-  max-width: 300px;
-}
-
 #origin_story .row .col p {
   margin-left: 20px;
   margin-right: 20px;
@@ -288,6 +287,10 @@ p a {
 
 .modal a.close-modal {
   display: none !important;
+}
+
+.modal-close {
+  float:right;
 }
 
 .iama {
@@ -542,11 +545,41 @@ input[type=text].loading {
 #primary_form {
   max-width: 500px;
   margin: 0 auto;
-  padding: 0 4em;
+  padding: 0 2em;
+}
+
+.submit_bounty .select2-search,
+.fulfill_bounty .select2-search,
+.submit_bounty .select2-results__option,
+.fulfill_bounty .select2-results__option {
+  font-size: 0.875rem;
+  font-family: "Muli", sans-serif;
+}
+.select2-results__option:empty {
+  padding: 1px;
+  border-bottom: solid 1px darkgray;
+}
+
+.submit_bounty .select2-results__option,
+.fulfill_bounty .select2-results__option {
+  padding-left: 0.625rem;
+  padding-right: 0.625rem;
 }
 
 #primary_form img {
   max-width: 100px;
+}
+
+#primary_form .github-username {
+  margin-top: 14px !important;
+}
+
+#primary_form small {
+  display: inline;
+}
+
+#primary_form #amount {
+  height: 37px;
 }
 
 .bounty_nav {
@@ -766,7 +799,7 @@ input[type=text].loading {
 
 .quote_author {
   color: #70EFBE;
-  margin-top: 20px;
+  margin: 1rem auto;
   font-style: italic;
   font-weight: 700;
   font-size: 22px;
@@ -1101,8 +1134,8 @@ input[type=text].loading {
 }
 
 #interest_list {
-  margin-left: 0px;
-  padding-left: 0px;
+  margin-left: 0;
+  padding-left: 0;
 }
 
 #interest_list li {
@@ -1149,7 +1182,7 @@ input.is-invalid {
 }
 
 .tooltip-info .col-11 {
-  padding-left: 0px;
+  padding-left: 0;
 }
 
 
@@ -1177,6 +1210,50 @@ input.is-invalid {
   font-size: 8px;
   padding: 3px 5px;
   margin: 2px;
+}
+
+/* Dropdown styles */
+
+.ui-selectmenu-button.ui-button {
+  background: #FFF;
+  border-color: #0D0764;
+  line-height: 16px;
+  padding: .4em .75em;
+}
+
+.ui-selectmenu-icon.ui-icon {
+  background: url('/static/v2/images/caret-down.png') !important;
+  background-repeat: no-repeat;
+  background-position: 0 !important;
+  background-size: 10px 6px !important;
+  margin-top: 5px !important;
+  height: 6px;
+  width: 10px;
+}
+
+.ui-widget.ui-widget-content {
+  border: none !important;
+  border-radius: 2px;
+  background: #FAFAFA !important;
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.12);
+}
+
+.ui-menu-item-wrapper {
+  font-size: 12px;
+  padding: .4em .75em !important;
+}
+
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-button.ui-state-active:hover {
+  border: 1px solid #0D0764 !important;
+  background: #0D0764 !important;
+}
+
+.ui-button:hover,
+.ui-button:focus {
+  border: 1px solid #0D0764 !important;
+  background: #FAFAFA !important;
 }
 
 @media (max-width: 1350px) {
@@ -1218,7 +1295,7 @@ input.is-invalid {
 
   .profile_details .tips li div.details,
   .profile_details .repos li {
-    padding-left: 0px;
+    padding-left: 0;
     width: 100%;
   }
 
@@ -1247,7 +1324,7 @@ input.is-invalid {
     max-width: 90%;
     padding-left: 10px;
     padding-right: 10px;
-    margin: 0px auto;
+    margin: 0 auto;
   }
 
   .bounty_def .col-7 {
@@ -1369,7 +1446,7 @@ input.is-invalid {
   }
 
   .bounty_def .mt-4 {
-    margin-top: 0px !important;
+    margin-top: 0 !important;
   }
 
   .search_bar .sort_row {
@@ -1433,7 +1510,7 @@ input.is-invalid {
   }
 
   .header .row.ml-5 {
-    margin-left: 0em !important;
+    margin-left: 0 !important;
   }
 
   .header .header-line {
@@ -1461,10 +1538,10 @@ input.is-invalid {
   #mailchimp,
   .why_gitcoin,
   .why_gitcoin .row {
-    margin-left: 0px;
-    margin-right: 0px;
-    padding-left: 0px;
-    padding-right: 0px;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   #features .row,
@@ -1494,7 +1571,7 @@ input.is-invalid {
   .row.howworks iframe {
     width: 280px;
     height: 170px;
-    margin: 0px auto;
+    margin: 0 auto;
   }
 
   #get .row {
@@ -1552,9 +1629,6 @@ input.is-invalid {
 }
 
 @media (max-width: 576px) {
-  #sidebar_container {
-    display: none;
-  }
 
   .profile_details #stats {
     padding-right: 10px;
@@ -1588,5 +1662,11 @@ input.is-invalid {
 
   .bounty_nav li {
     display: block;
+  }
+}
+
+@media (max-width: 991.98px) {
+  #sidebar_container {
+    display: none;
   }
 }

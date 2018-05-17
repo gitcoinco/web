@@ -19,8 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from datetime import date, datetime, timedelta
 
+from django.conf import settings
+
 import pytz
-from dashboard.models import Bounty, BountyFulfillment, Interest, Profile, Tip
+from dashboard.models import Bounty, BountyFulfillment, Interest, Profile, Tip, Tool, ToolVote
 from economy.models import ConversionRate
 from test_plus.test import TestCase
 
@@ -73,7 +75,7 @@ class DashboardModelsTest(TestCase):
             profile=fulfiller_profile,
         )
         assert str(bounty) == 'foo 3 ETH 2008-10-31 00:00:00+00:00'
-        assert bounty.url == '/issue/gitcoinco/web/11'
+        assert bounty.url == f'{settings.BASE_URL}issue/gitcoinco/web/11/{bounty.standard_bounties_id}'
         assert bounty.title_or_desc == 'foo'
         assert bounty.issue_description_text == 'hello world'
         assert bounty.org_name == 'gitcoinco'
@@ -313,7 +315,7 @@ class DashboardModelsTest(TestCase):
     @staticmethod
     def test_bounty_expired():
         """Test the status and details of an expired bounty."""
-        bounty = Bounty.objects.create(
+        bounty = Bounty(
             title='foo',
             value_in_token=3,
             token_name='ETH',
@@ -346,7 +348,7 @@ class DashboardModelsTest(TestCase):
             created_on=date.today(),
             tokenAddress='0x0000000000000000000000000000000000000000',
         )
-        assert str(tip) == '(net) - PENDING 7 ETH to fred, created: today, expires: tomorrow'
+        assert str(tip) == '(net) - PENDING 7 ETH to fred from NA, created: today, expires: tomorrow'
         assert tip.get_natural_value() == 7e-18
         assert tip.value_in_eth == 7
         assert tip.value_in_usdt == 14
@@ -399,3 +401,47 @@ class DashboardModelsTest(TestCase):
         ]
         assert profile.github_url == 'https://github.com/gitcoinco'
         assert profile.get_relative_url() == '/profile/gitcoinco'
+
+    def test_tool(self):
+        """Test the dashboard Tool model."""
+        tool = Tool.objects.create(
+            name='Issue Explorer',
+            category=Tool.CAT_BASIC,
+            img='v2/images/why-different/code_great.png',
+            description='A searchable index of all of the funded work available in the system.',
+            link='http://gitcoin.co/explorer',
+            link_copy='Try It',
+            active=True,
+            stat_graph='bounties_fulfilled')
+        profile = Profile.objects.create(
+            handle='gitcoinco',
+            data={'type': 'Organization'},
+            repos_data=[{'contributors': [{'contributions': 50, 'login': 'foo'}]}],
+        )
+        vote = ToolVote.objects.create(profile_id=profile.id, value=1)
+        tool.votes.add(vote)
+        assert tool.vote_score() == 11
+        assert tool.link_url == 'http://gitcoin.co/explorer'
+
+    @staticmethod
+    def test_bounty_snooze_url():
+        """Test the dashboard Bounty model snooze_url method."""
+        bounty = Bounty(
+            title='foo',
+            value_in_token=3,
+            token_name='ETH',
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12',
+            token_address='0x0',
+            issue_description='hello world',
+            bounty_owner_github_username='flintstone',
+            is_open=False,
+            accepted=False,
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            idx_project_length=5,
+            project_length='Months',
+            bounty_type='Feature',
+            experience_level='Intermediate',
+            raw_data={},
+        )
+        assert bounty.snooze_url(1) == f'{bounty.get_absolute_url()}?snooze=1'

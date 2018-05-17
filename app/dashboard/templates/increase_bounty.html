@@ -37,21 +37,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             {% include 'shared/zero_balance_error.html' %}
             {% include 'shared/unlock_metamask.html' %}
             <input type="hidden" name="standardBountiesId"
-              value="{{standard_bounties_id}}">
+              value="{{bounty.standard_bounties_id}}">
             <input type="hidden" name="bountyOwnerAddress"
-              value="{{bounty_owner_address}}">
+              value="{{bounty.bounty_owner_address}}">
             <input type="hidden" name="valueInToken"
-              value="{{value_in_token}}">
+              value="{{bounty.value_in_token}}">
             <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
               <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
                 <div class="w-100" style="text-align: center;">
                   <h3>Increase Funding</h3>
                   <img src="{% static "v2/images/prime.png" %}">
                 </div>
+                {% include 'shared/bounty_actions_hidden_vars.html' %}
                 {% include 'shared/network_status.html' %}
                 <div class="w-100">
                   <label class="form__label" for=issueURL>Issue URL</label>
-                  <input name='issueURL' id="issueURL" class="w-100 form__input" type="url" placeholder="https://github.com/user/repo/pull/n" value="{% if issue_url %}{{issue_url}}{%endif%}" disabled/>
+                  <input name='issueURL' id="issueURL" class="w-100 form__input" type="url" placeholder="https://github.com/user/repo/pull/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" disabled/>
                 </div>
                 <div class="w-100 mt-2">
                   <label class="form__label" for="amount">Amount</label>
@@ -61,16 +62,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     </div>
                     <div class="form__group-item">
                       <div class="form__select2">
-                        <select name='deonomination' id='token' data-token-address='{{token_address}}' disabled></select>
+                        <select name='deonomination' id='token' data-token-address='{{bounty.token_address}}' disabled></select>
                       </div>
-                      <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
                     </div>
                   </div>
+                  <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
                 </div>
                 <div class="w-100 mt-2 terms_container" style="padding-top:5px;">
                   <div class="form__checkbox">
                     <input name='terms' id='terms' type="checkbox" value=1 />
-                    <label class="form__label" for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>:</label>
+                    <label class="form__label" for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>.</label>
                   </div>
                 </div>
                 {% include 'shared/wallet_estimate.html' %}
@@ -91,6 +92,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
 
   </body>
 
