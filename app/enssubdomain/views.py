@@ -25,6 +25,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 
 from dashboard.models import Profile
 from dashboard.views import w3
@@ -36,6 +37,7 @@ from .models import ENSSubdomainRegistration
 
 ns = ENS.fromWeb3(w3)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
+ENS_MAINNET_ADDR = '0x314159265dD8dbb310642f98f50C066173C1259b'
 
 
 @csrf_exempt
@@ -51,7 +53,17 @@ def ens_subdomain(request):
             recovered_signer = w3.eth.account.recoverHash(message_hash, signature=signedMsg).lower()
             if recovered_signer == signer:
                 txn_hash = '0x6477f3640d9d910c589937b25d5892f525cfde2dd634d9490abc7542c946e8e3'
-                #txn_hash = ns.setup_owner(f'{github_handle}.{settings.ENS_TLD}', signer)
+                transaction = {
+                    'to': ENS_MAINNET_ADDR,
+                    'from': settings.ENS_OWNER_ACCOUNT,
+                    'value': 0,
+                    'nonce': w3.eth.getTransactionCount(settings.ENS_OWNER_ACCOUNT),
+                    'gas': 100000,
+                    'gasPrice': recommend_min_gas_price_to_confirm_in_time(1) * 10**9
+                }
+                signed = w3.eth.account.signTransaction(transaction, settings.ENS_PRIVATE_KEY)
+                txn_hash = ns.setup_owner(f'{github_handle}.{settings.ENS_TLD}', signer, signed)
+                # TODO: https://github.com/ethereum/web3.py/issues/852#issuecomment-390040759
                 profile = Profile.objects.filter(handle=github_handle).first()
                 ENSSubdomainRegistration.objects.create(profile=profile,
                                                         subdomain_wallet_address=signer,
