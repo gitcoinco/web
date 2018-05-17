@@ -31,6 +31,7 @@ import dashboard.views
 import enssubdomain.views
 import dataviz.d3_views
 import dataviz.views
+import enssubdomain.views
 import ethos.views
 import external_bounties.views
 import faucet.views
@@ -253,7 +254,7 @@ urlpatterns = [
     path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
 
     # ENS urls
-    url(r'^ens/', enssubdomain.views.ens_subdomain, name='ens_subdomain'),
+    re_path(r'^ens/', enssubdomain.views.ens_subdomain, name='ens_subdomain'),
 
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
