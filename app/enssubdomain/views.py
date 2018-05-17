@@ -51,7 +51,7 @@ def ens_subdomain(request):
             recovered_signer = w3.eth.account.recoverHash(message_hash, signature=signedMsg).lower()
             if recovered_signer == signer:
                 txn_hash = '0x6477f3640d9d910c589937b25d5892f525cfde2dd634d9490abc7542c946e8e3'
-                # txn_hash = ns.setup_owner(f'{github_handle}.{settings.ENS_TLD}', signer)
+                #txn_hash = ns.setup_owner(f'{github_handle}.{settings.ENS_TLD}', signer)
                 profile = Profile.objects.filter(handle=github_handle).first()
                 ENSSubdomainRegistration.objects.create(profile=profile,
                                                         subdomain_wallet_address=signer,
@@ -76,12 +76,14 @@ def ens_subdomain(request):
                 'txn_hash_partial': f"{last_request.txn_hash[:20]}...",
                 'github_handle': github_handle,
                 'owner': last_request.subdomain_wallet_address,
+                'ens_domain': settings.ENS_TLD,
             }
             return TemplateResponse(request, 'ens/ens_pending.html', params)
         elif request_reset_time > last_request.created_on:
             params = {
                 'owner': last_request.subdomain_wallet_address,
                 'github_handle': github_handle,
+                'ens_domain': settings.ENS_TLD,
             }
             return TemplateResponse(request, 'ens/ens_edit.html', params)
         else:
@@ -89,11 +91,13 @@ def ens_subdomain(request):
                 'owner': last_request.subdomain_wallet_address,
                 'github_handle': github_handle,
                 'limit_reset_days': settings.ENS_LIMIT_RESET_DAYS,
-                'try_after': last_request.created_on + datetime.timedelta(days=settings.ENS_LIMIT_RESET_DAYS)
+                'try_after': last_request.created_on + datetime.timedelta(days=settings.ENS_LIMIT_RESET_DAYS),
+                'ens_domain': settings.ENS_TLD,
             }
             return TemplateResponse(request, 'ens/ens_rate_limit.html', params)
     except ENSSubdomainRegistration.DoesNotExist:
         params = {
             'github_handle': github_handle,
+            'ens_domain': settings.ENS_TLD,
         }
         return TemplateResponse(request, 'ens/ens_register.html', params)

@@ -8,7 +8,7 @@
   <h1>{% trans "Manage your ENS subdomain" %}</h1>
   <div>
     <br>
-    <h2><label id="githubHandle">{{ github_handle }}</label><label>{% trans ".gitcoin.eth" %}</label></h2>
+    <h2><label id="githubHandle">{{ github_handle }}</label><label>.{{ens_domain}}</label></h2>
     <h2><label>{% trans "Pending Txn: " %}<a href="https://etherscan.io/tx/{{ txn_hash }}" id="txn_hash" value="{{ txn_hash }}">{{ txn_hash_partial }}</a></label></h2>
     <h2><label>{% trans "Owner" %}: <a href="https://etherscan.io/address/{{ owner }}">{{ owner }}</a></label></h2>
   </div>

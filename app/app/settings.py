@@ -294,6 +294,8 @@ SERVER_EMAIL = env('SERVER_EMAIL', default='server@TODO.co')
 ENS_TLD = env('ENS_TLD', default='gitcoin.eth')
 ENS_LIMIT_RESET_DAYS = env.int('ENS_LIMIT_RESET_DAYS', default=30)
 ENS_OWNER_ACCOUNT = env('ENS_OWNER_ACCOUNT', default='0x00000')
+ENS_PRIVATE_KEY = env('ENS_PRIVATE_KEY', default=None)
+
 
 # IMAP Settings
 IMAP_EMAIL = env('IMAP_EMAIL', default='<email>')
