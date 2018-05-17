@@ -155,8 +155,9 @@ def get_platform_wide_stats(since_last_n_days=90):
     bounties = Bounty.objects.stats_eligible().filter(created_on__gte=last_n_days, current_bounty=True)
     total_bounties = bounties.count()
     completed_bounties = bounties.filter(idx_status__in=['done'])
+    terminal_state_bounties = bounties.filter(idx_status__in=['done', 'expired', 'cancelled'])
     num_completed_bounties = completed_bounties.count()
-    bounties_completion_percent = (num_completed_bounties / total_bounties) * 100
+    bounties_completion_percent = (num_completed_bounties / terminal_state_bounties.count()) * 100
 
     completed_bounties_fund = sum([
         bounty.value_in_usdt if bounty.value_in_usdt else 0
@@ -168,8 +169,8 @@ def get_platform_wide_stats(since_last_n_days=90):
         avg_fund_per_bounty = 0
 
     avg_fund_per_bounty = float('%.2f' % avg_fund_per_bounty)
-    completed_bounties_fund = float('%.2f' % completed_bounties_fund)
-    bounties_completion_percent = float('%.2f' % bounties_completion_percent)
+    completed_bounties_fund = round(completed_bounties_fund)
+    bounties_completion_percent = round(bounties_completion_percent)
 
     largest_bounty = Bounty.objects.filter(current_bounty=True, created_on__gte=last_n_days).order_by('-_val_usd_db').first()
     largest_bounty_value = largest_bounty.value_in_usdt

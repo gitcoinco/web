@@ -203,10 +203,10 @@
         <h4>An overview of your stats from the last 3 months.</h4>
         <div class="centered-contents stat-box row">
             <div class="stat-img total-transaction col-sm-12">
-                <p class="content">{{user_total_earned_usd}} USD</p>
+                <p class="content">{{user_total_earned_usd|intcomma}} USD</p>
             </div>
             <div class="stat-contents col-sm-12">
-                <p>You earned {{user_total_earned_eth}} ETH ({{user_total_earned_usd}} USD) from {{user_fulfilled_bounties_count}} completed bounties, for an average of {{user_avg_eth_earned_per_bounty}} ETH ({{ user_avg_usd_earned_per_bounty}} USD) per bounty!</p>
+                <p>You earned {{user_total_earned_eth|intcomma}} ETH ({{user_total_earned_usd|intcomma}} USD) from {{user_fulfilled_bounties_count|intcomma}} completed bounties, for an average of {{user_avg_eth_earned_per_bounty|intcomma}} ETH ({{ user_avg_usd_earned_per_bounty|intcomma}} USD) per bounty!</p>
             </div>
         </div>
         <div class="centered-contents stat-box row">
@@ -253,11 +253,11 @@
     </div>
     <div class="centered-contents stat-box">
         <div class="stat-img">
-            <p class="content bounty-img">{{num_completed_bounties}} bounties</p>
-            <p class="content bounty-fund-img">{{completed_bounties_fund}} USD</p>
+            <p class="content bounty-img">{{num_completed_bounties|intcomma}} bounties</p>
+            <p class="content bounty-fund-img">{{completed_bounties_fund|intcomma}} USD</p>
         </div>
         <div class="stat-contents">
-            <p>A total of {{num_completed_bounties}} bounties were funded an average of ${{avg_fund_per_bounty}} per bounty, for a total of ${{completed_bounties_fund}} USD.</p>
+            <p>A total of {{num_completed_bounties|intcomma}} bounties were funded an average of ${{avg_fund_per_bounty}} per bounty, for a total of ${{completed_bounties_fund|intcomma}} USD.</p>
         </div>
     </div>
     <div class="centered-contents stat-box">
@@ -268,13 +268,7 @@
         </div>
         <div class="stat-contents">
             <p>The top {{hunters|length}} hunters in this quarter were
-            {% for hunter in hunters %}
-                {% if forloop.counter == no_of_hunters %}
-                    &amp;
-                {% elif forloop.first %}
-                {% else %},{% endif %}
-                <a href="https://github.com/{{hunter}}">@{{hunter}}</a>
-            {% endfor %}</p>
+            {% for hunter in hunters %}{% if forloop.counter == no_of_hunters %} &amp; {% elif forloop.first %}{% else %}, {% endif %}<a href="https://github.com/{{hunter}}">@{{hunter}}</a>{% endfor %}</p>
         </div>
     </div>
     <div class="centered-contents stat-box">
@@ -282,7 +276,7 @@
             <p class="content">{{total_transaction_in_usd}} USD</p>
         </div>
         <div class="stat-contents">
-            <p>A total of value of ${{total_transaction_in_usd}} USD was transacted on the Gitcoin network &amp; {{total_transaction_in_eth}} ETH.</p>
+            <p>A total value of ${{total_transaction_in_usd|intcomma}} USD was transacted on the Gitcoin network &amp; {{total_transaction_in_eth|intcomma}} ETH.</p>
         </div>
     </div>
     {% if largest_bounty_value %}

@@ -1097,11 +1097,12 @@ class Profile(SuperModel):
             for bounty in fulfilled_bounties
         ])
 
-        num_completed_bounties = bounties.filter(idx_status__in=['submitted', 'done']).count()
+        num_completed_bounties = bounties.filter(idx_status__in=['done']).count()
+        terminal_state_bounties = bounties.filter(idx_status__in=['done', 'expired', 'cancelled']).count()
         total_bounties = bounties.count()
         completetion_percent = int(
-            round(num_completed_bounties * 1.0 / total_bounties, 2) * 100
-        ) if total_bounties != 0 else 0
+            round(num_completed_bounties * 1.0 / terminal_state_bounties, 2) * 100
+        ) if terminal_state_bounties != 0 else 0
 
         avg_eth_earned_per_bounty = 0
         avg_usd_earned_per_bounty = 0
