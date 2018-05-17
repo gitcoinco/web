@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from datetime import datetime
 
 from dashboard.models import Bounty
-from dashboard.notifications import amount_usdt_open_work, build_github_notification
+from dashboard.notifications import amount_usdt_open_work, append_snooze_copy, build_github_notification
 from pytz import UTC
 from test_plus.test import TestCase
 
@@ -76,6 +76,18 @@ class DashboardNotificationsTest(TestCase):
         assert self.usdt_value in message
         assert f'The funding of this issue was increased' in message
         assert f'${self.amount_open_work}' in message
+
+    def test_append_snooze_copy(self):
+        """Test the dashboard notification utility append_snooze_copy."""
+        snooze_copy = append_snooze_copy(self.bounty)
+        segments = snooze_copy.split(' | ')
+        assert len(segments) == 5
+        for i, day in enumerate([1, 3, 5, 10, 100]):
+            plural = "s" if day != 1 else ""
+            copy = f'[{day} day{plural}]({self.bounty.snooze_url(day)})'
+            if day == 1:
+                copy = f'\nFunders only: Snooze warnings for {copy}'
+            assert segments[i] == copy
 
     def tearDown(self):
         """Perform cleanup for the testcase."""

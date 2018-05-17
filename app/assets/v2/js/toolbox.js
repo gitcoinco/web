@@ -67,7 +67,7 @@ $(document).ready(function() {
   }
 
   function failVoteCallback(response) {
-    _alert({message: response.responseJSON.error}, 'error');
+    _alert({ message: response.responseJSON.error }, 'error');
   }
 
   $('.vote-up').click(function() {

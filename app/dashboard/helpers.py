@@ -47,6 +47,56 @@ from .models import Profile
 logger = logging.getLogger(__name__)
 
 
+def get_bounty_view_kwargs(request):
+    """Get the relevant kwargs from the request."""
+    # Define lookup criteria.
+    pk = request.GET.get('id') or request.GET.get('pk')
+    standard_bounties_id = request.GET.get('sb_id') or request.GET.get('standard_bounties_id')
+    network = request.GET.get('network', 'mainnet')
+    issue_url = request.GET.get('url')
+    bounty_kwargs = {}
+
+    # Check for relevant params.
+    if pk and pk.isdigit():
+        bounty_kwargs['pk'] = int(pk)
+    elif standard_bounties_id and standard_bounties_id.isdigit():
+        bounty_kwargs['standard_bounties_id'] = int(standard_bounties_id)
+        bounty_kwargs['network'] = network
+    elif issue_url:
+        bounty_kwargs['github_url'] = issue_url
+    else:
+        raise Http404
+
+    return bounty_kwargs
+
+
+def handle_bounty_views(request):
+    """Handle bounty view entry.
+
+    Attributes:
+        bounty (dashboard.Bounty): The bounty object for the specified request.
+        bounty_kwargs (dict): The relevant key/values from the request to be
+            used for the Bounty query.
+
+    Returns:
+        dashboard.Bounty: The Bounty object.
+    """
+    bounty = None
+    bounty_kwargs = get_bounty_view_kwargs(request)
+
+    try:
+        bounty = Bounty.objects.current().get(**bounty_kwargs)
+    except Bounty.MultipleObjectsReturned:
+        bounty = Bounty.objects.current().filter(**bounty_kwargs).distinct().latest('id')
+    except (Bounty.DoesNotExist, ValueError):
+        raise Http404
+    except Exception as e:
+        logger.error(f'Error in handle_bounty_views - {e}')
+        raise Http404
+
+    return bounty
+
+
 @ratelimit(key='ip', rate='100/m', method=ratelimit.UNSAFE, block=True)
 def amount(request):
     """Determine the value of the provided denomination and amount in ETH and USD.
@@ -409,6 +459,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 accepted=accepted,
                 interested_comment=interested_comment_id,
                 submissions_comment=submissions_comment_id,
+                privacy_preferences=bounty_payload.get('privacy_preferences', {}),
                 # These fields are after initial bounty creation, in bounty_details.js
                 expires_date=timezone.make_aware(
                     timezone.datetime.fromtimestamp(bounty_details.get('deadline')),
@@ -420,6 +471,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 github_comments=latest_old_bounty.github_comments if latest_old_bounty else 0,
                 override_status=latest_old_bounty.override_status if latest_old_bounty else '',
                 last_comment_date=latest_old_bounty.last_comment_date if latest_old_bounty else None,
+                snooze_warnings_for_days=latest_old_bounty.snooze_warnings_for_days if latest_old_bounty else 0,
             )
             new_bounty.fetch_issue_item()
 
@@ -494,7 +546,7 @@ def process_bounty_details(bounty_details):
 
 
 def record_user_action(event_name, old_bounty, new_bounty):
-    """Records a user action 
+    """Records a user action
 
     Args:
         event_name (string): the event

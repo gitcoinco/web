@@ -133,13 +133,13 @@ var callbacks = {
   'bounty_type': unknown_if_empty,
   'bounty_owner_github_username': gitcoin_ize,
   'bounty_owner_name': function(key, val, result) {
-    return [ 'bounty_owner_name', result.metadata.fullName ];
+    return [ 'bounty_owner_name', result.bounty_owner_name ];
   },
   'issue_keywords': function(key, val, result) {
-    if (!result.metadata.issueKeywords || result.metadata.issueKeywords.length == 0)
+    if (!result.keywords || result.keywords.length == 0)
       return [ 'issue_keywords', null ];
 
-    var keywords = result.metadata.issueKeywords.split(',');
+    var keywords = result.keywords.split(',');
     var tags = [];
 
     keywords.forEach(function(keyword) {
@@ -421,7 +421,7 @@ var show_interest_modal = function() {
   var self = this;
 
   setTimeout(function() {
-    $.get('/interest/modal', function(newHTML) {
+    $.get('/interest/modal?redirect=' + window.location.pathname, function(newHTML) {
       var modal = $(newHTML).appendTo('body').modal({
         modalClass: 'modal add-interest-modal'
       });
@@ -429,25 +429,27 @@ var show_interest_modal = function() {
       modal.on('submit', function(event) {
         event.preventDefault();
 
-        var has_question = event.target[0].value;
-        var issue_message = event.target[2].value;
+        var issue_message = event.target[0].value;
+        var agree_precedence = event.target[1].checked;
+        var agree_not_to_abandon = event.target[2].checked;
 
-        var agree_precedence = event.target[3].checked;
-        var agree_not_to_abandon = event.target[4].checked;
+        if (!issue_message) {
+          _alert({message: gettext('Please provide an action plan for this ticket.')}, 'error');
+          return false;
+        }
 
         if (!agree_precedence) {
-          alert('You must agree to the precedence clause.');
+          _alert({message: gettext('You must agree to the precedence clause.')}, 'error');
           return false;
         }
         if (!agree_not_to_abandon) {
-          alert('You must agree not to keep the fulfiller updated on your progress.');
+          _alert({message: gettext('You must agree to keep the funder updated on your progress.')}, 'error');
           return false;
         }
 
         $(self).attr('href', '/uninterested');
         $(self).find('span').text(gettext('Stop Work'));
         add_interest(document.result['pk'], {
-          has_question,
           issue_message
         });
         $.modal.close();
@@ -498,6 +500,20 @@ var build_detail_page = function(result) {
     }
   }
 
+  $('#bounty_details #issue_description img').on('click', function() {
+
+    var content = $.parseHTML(
+      '<div><div class="row"><div class="col-12 closebtn">' +
+        '<a id="" rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
+          '<span aria-hidden="true">&times;</span>' +
+        '</a>' +
+      '</div>' +
+      '<div class="col-12 pt-2 pb-2"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
+
+    var modal = $(content).appendTo('body').modal({
+      modalClass: 'modal magnify'
+    });
+  });
 };
 
 var do_actions = function(result) {
@@ -681,7 +697,7 @@ var pull_bounty_from_api = function() {
       $('.nonefound').css('display', 'block');
     }
   }).fail(function() {
-    _alert({message: gettext('got an error. please try again, or contact support@gitcoin.co')}, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
     $('#primary_view').css('display', 'none');
   }).always(function() {
     $('.loading').css('display', 'none');

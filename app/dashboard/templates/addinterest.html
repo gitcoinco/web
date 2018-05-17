@@ -25,49 +25,53 @@
     <div class="col-12">
       <h5 class="text-center font-title">{% trans "Great to see that you're interested in this project!" %}</h5>
     </div>
-    <div class="col-12">
-      <form class="font-body">
-        <label class="mt-2">{% trans "Do you have any questions about this ticket?" %}</label>
-        <div class="add-interest-options options">
-          <div class="form__radio option">
-            <input type="radio" id="interest-question-true" name="interest-question" value="true" checked="checked" />
-            <label for="interest-question-true">{% trans "Yes" %}</label>
+    {% if user_logged_in %}
+      <div class="col-12">
+        <form class="font-body">
+          <div>
+            <label for="issue-message">
+              <span>{% trans "Please provide an action plan and any initial questions you have for this ticket." %}</span>
+              <br>
+              <span>{% trans "This will be reflected in a comment on the Github issue." %}</span>
+            </label>
+            <textarea id="issue-message" class="form__input"></textarea>
           </div>
-          <div class="form__radio option" style="margin-left: 1.0em">
-            <input type="radio" id="interest-question-false" name="interest-question" value="false" />
-            <label for="interest-question-false">{% trans "No" %}</label>
-          </div>
-        </div>
-        <div>
-          <label for="issue-message">
-            {% trans "Anything the project owner should know?" %}
-          </label>
-          <textarea id="issue-message" class="form__input"></textarea>
-        </div>
-        <div>
-          <div class=checkbox_container>
-            <input type="checkbox" id="checkbox2" class="form__input" value="1">
-            <span class="checkbox"></span>
-            <div class="filter-label">
-              <label for="checkbox2">
-                {% trans "I understand that if anyone has started work on this ticket before me, they may have precedence." %}
-              </label>
+          <div>
+            <div class=checkbox_container>
+              <input type="checkbox" id="checkbox2" class="form__input" value="1">
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for="checkbox2">
+                  {% trans "I understand that if anyone has started work on this ticket before me, they may have precedence." %}
+                </label>
+              </div>
             </div>
           </div>
-        </div>
-        <div>
-          <div class=checkbox_container>
-            <input type="checkbox" id="checkbox1" class="form__input" value="1">
-            <span class="checkbox"></span>
-            <div class="filter-label">
-              <label for="checkbox1">
-                {% trans "I agree to keep the funder informed of my progress every few days." %}
-              </label>
+          <div>
+            <div class=checkbox_container>
+              <input type="checkbox" id="checkbox1" class="form__input" value="1">
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for="checkbox1">
+                  {% trans "I agree to keep the funder informed of my progress every few days." %}
+                </label>
+              </div>
             </div>
           </div>
+          <button class="row button button--primary btn-interested" type="submit">{% trans "Submit" %}</button>
+        </form>
+      </div>
+    {% else %}
+      <div class="col-12 text-center">
+        <div class="login">
+          <div class="login__text">
+            {% trans "Please login with Github to get started." %}
+          </div>
+          <a class="button button--primary login__button" href={{login_link}} onclick="dataLayer.push({'event': 'login'});">
+            <i class="fab fa-github"></i> <span>{% trans "Login With Github" %}</span>
+          </a>
         </div>
-        <button class="row button button--primary btn-interested" type="submit">{% trans "Submit" %}</button>
-      </form>
-    </div>
+      </div>
+    {% endif %}
   </div>
 </div>
