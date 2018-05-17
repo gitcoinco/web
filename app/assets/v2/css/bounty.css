@@ -352,7 +352,9 @@ a.btn {
 }
 
 #bounty_details #issue_description img {
-  max-width: 100%;
+  max-height: 30rem;
+  max-width: 30rem;
+  cursor: pointer;
 }
 
 #bounty_details #issue_description h1,
@@ -524,4 +526,10 @@ a.btn {
 
 .close:hover, .close:focus {
   box-shadow: none;
+}
+
+.modal.magnify,
+.modal .magnify {
+  width: auto;
+  height: auto;
 }

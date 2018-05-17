@@ -500,6 +500,20 @@ var build_detail_page = function(result) {
     }
   }
 
+  $('#bounty_details #issue_description img').on('click', function() {
+
+    var content = $.parseHTML(
+      '<div><div class="row"><div class="col-12 closebtn">' +
+        '<a id="" rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
+          '<span aria-hidden="true">&times;</span>' +
+        '</a>' +
+      '</div>' +
+      '<div class="col-12"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
+
+    var modal = $(content).appendTo('body').modal({
+      modalClass: 'modal magnify'
+    });
+  });
 };
 
 var do_actions = function(result) {
