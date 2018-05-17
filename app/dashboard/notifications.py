@@ -398,13 +398,13 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
         bounty_owner_clear = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
         try:
             if profile_pairs:
+                msg += f"\n{bounty_owner_clear}, __please see the below comments on the approach / " \
+                       "questions:__ "
                 for profile in profile_pairs:
                     interests = Interest.objects.filter(profile__handle=profile[0], bounty=bounty)
                     for interest in interests:
                         if interest.issue_message.strip():
-                            msg += f"\n{bounty_owner_clear}, __please see the below comments on the approach / " \
-                                    f"questions from__ [@{profile[0]}]({profile[1]}), __the bounty hunter__" \
-                                    f".\n\n {interest.issue_message}"
+                            msg += f"\n- [@{profile[0]}]({profile[1]}): {interest.issue_message}\n\n"
         except Exception as e:
             print(e)
     elif event_name == 'work_submitted':
