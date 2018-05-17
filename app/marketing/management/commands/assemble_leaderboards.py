@@ -58,6 +58,7 @@ def default_ranks():
         'all_earners': {},
     }
 
+
 ranks = default_ranks()
 
 
@@ -67,13 +68,13 @@ def add_element(key, username, amount):
         return
     if username not in ranks[key].keys():
         ranks[key][username] = 0
-    ranks[key][username] += round(float(amount) ,2)
+    ranks[key][username] += round(float(amount), 2)
 
 
 def sum_bounties(b, usernames):
     for username in usernames:
         if b.idx_status == 'done':
-            fulfiller_usernames = list(b.fulfillments.all().values_list('fulfiller_github_username'))
+            fulfiller_usernames = list(b.fulfillments.all().values_list('fulfiller_github_username', flat=True))
             add_element('all_fulfilled', username, b._val_usd_db)
             if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
                 add_element('all_payers', username, b._val_usd_db)
@@ -142,7 +143,10 @@ def should_suppress_leaderboard(handle):
     profiles = Profile.objects.filter(handle__iexact=handle)
     if profiles.exists():
         profile = profiles.first()
-        return profile.suppress_leaderboard
+        if profile.suppress_leaderboard:
+            return True
+        if profile.hide_profile:
+            return True
     return False
 
 

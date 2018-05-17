@@ -80,11 +80,13 @@ Technically, the system is architected:
 
 [For more information on the HTTPS API, please view the api README](API.md)
 
-## Running Locally with Docker (Recommended)
+## Running locally
+
+### With Docker (Recommended)
 
 [For more information on running the app locally, please view the running locally README](RUNNING_LOCALLY_DOCKER.md)
 
-## Running Locally without Docker
+### Without Docker
 
 [For more information on running the app locally, please view the running locally README](RUNNING_LOCALLY.md)
 
@@ -122,6 +124,13 @@ Gitcoinbot will allow you to add issues straight from github.
 Have an ERC20 compatible token that you'ud like to add support for?  Great!
 
 [Here is an example of how to do it](https://github.com/gitcoinco/web/pull/155)
+
+## High Level flow of a Bounty
+
+This is the high level flow of a bounty on Gitcoin:
+
+<img src='bounty_flow.png'>
+
 
 # Legal
 

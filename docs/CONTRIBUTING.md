@@ -17,6 +17,7 @@ valued.
   * [Step 3: Code](#step-3-code)
   * [Step 4: Commit](#step-4-commit)
   * [Step 5: Rebase](#step-5-rebase)
+  * [Step 6: PRs](#step-6-prs)
 
 ## Code of Conduct
 
@@ -95,6 +96,8 @@ To keep the style of the Javascript code consistent we have a basic linting conf
 * Indentation is as follows
   * 1 tab = 2 spaces for `.html` and `.js` files
   * 1 tab = 4 spaces for everything else
+* Use `rem` for CSS when applicable
+* Add relevant unit tests for all new Python logic and update existing tests to accommodate new logic.
 
 ### Step 4: Commit
 
@@ -143,6 +146,35 @@ top. Plus merge conflicts can be resolved
 git fetch upstream
 git rebase upstream/master
 ```
+
+### Step 6: PRs
+
+Please ensure that your pull request follows all of the community guidelines to include:
+
+* Title is descriptive and generally focused on what the PR addresses (If your PR is a work in progress, include `WIP` in the title. Once the PR is ready for review, please remove `WIP`)
+* Description explains what the PR achieves or addresses
+* If the PR modifies the frontend in any way, please attach screenshots and/or GIFs of all purposeful changes (before and after screens are recommended)
+* The PR passes all CI checks, to include Stickler, codecov, and Travis.
+
+## FAQ
+
+### Contributing Static Assets
+
+Note: Please remember to optimize/compress your image assets via: `make compress-images` (Requires: jpeq-recompress, optipng, and svgo in `PATH`)
+You can install the necessary binaries via:
+
+- `npm install -g jpeg-recompress-bin pngquant-bin svgo`
+- `brew install optipng`
+
+Q: `I need to add static assets...  Where to I put them?`
+
+All assets that will be used as static resources must be placed into their appropriate place in the `app/assets` directory.
+
+Q: `I've added the new assets to the appropriate directory, but can't seem to use them. How do I make Django recognize my newly added assets?`
+
+Run: `make collect-static` if using Docker or `cd app; python3 manage.py collectstatic -i other` for virtualenv/local setup.
+
+Additionally, you can check out the [Django Managing Static Files Documentation](https://docs.djangoproject.com/en/2.0/howto/static-files/)
 
 <img src='https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png'/>
 Welcome to the gitcoin community. Lets Grow Open Source Software.

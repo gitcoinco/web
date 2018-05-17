@@ -42,4 +42,49 @@ $(document).ready(function() {
       });
     }
   });
+
+  function markVote(toolId, direction, scoreDelta) {
+    var upVoteButton = $('#' + toolId + '_vote .vote-up');
+    var downVoteButton = $('#' + toolId + '_vote .vote-down');
+    var activeVoteClass = 'active';
+
+    upVoteButton.removeClass(activeVoteClass);
+    downVoteButton.removeClass(activeVoteClass);
+
+    if (direction == 1 && scoreDelta > 0)
+      upVoteButton.addClass(activeVoteClass);
+
+    if (direction == -1 && scoreDelta < 0)
+      downVoteButton.addClass(activeVoteClass);
+  }
+
+  function voteCallback(response, toolId, direction) {
+    var scoreEl = $('#' + toolId + '_vote .score');
+    var scoreDelta = response.score_delta;
+
+    markVote(toolId, direction, scoreDelta);
+    scoreEl.text(parseInt(scoreEl.text()) + scoreDelta);
+  }
+
+  function failVoteCallback(response) {
+    _alert({ message: response.responseJSON.error }, 'error');
+  }
+
+  $('.vote-up').click(function() {
+    var el = $(this);
+    var toolId = el.data('tool-id');
+
+    $.post('/actions/tool/' + toolId + '/voteUp', {}, function(response) {
+      voteCallback(response, toolId, 1);
+    }).fail(failVoteCallback);
+  });
+  $('.vote-down').click(function() {
+    var el = $(this);
+    var toolId = el.data('tool-id');
+
+    $.post('/actions/tool/' + toolId + '/voteDown', {}, function(response) {
+      voteCallback(response, toolId, -1);
+    }).fail(failVoteCallback);
+  });
+
 });

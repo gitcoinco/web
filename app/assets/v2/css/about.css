@@ -1,0 +1,236 @@
+.section {
+  border-top: 1px solid #EAEAEA;
+  margin: auto;
+}
+
+#team,
+#jobs {
+  background-color: #FFFFFF;
+}
+
+#team .row {
+  margin: auto;
+}
+
+h4 {
+  letter-spacing: 0;
+  text-transform: capitalize;
+}
+
+.caption {
+  font-weight: bold;
+}
+
+#team p,
+#jobs p,
+#origin_story p {
+  text-align: center;
+  font-family: "Muli", sans-serif;
+}
+.grow_hero img{
+  width: 100%;
+  max-width: 400px;
+}
+
+#origin_story img {
+  max-height: 200px;
+  max-width: 300px;
+  margin: auto;
+}
+
+#team .card  {
+  box-shadow: 0px 3px 15px rgba(0,0,0,0.2);
+  border-radius: 0;
+  background:#FFFFFF;
+  padding: 1.5rem 1.5rem 0;
+  margin: auto;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  width: 14em;
+  text-align: center;
+}
+
+#team .card-small {
+  padding-left: .5rem;
+  padding-right: .5rem;
+  width: 10em;
+}
+
+#team .organization,
+#team .role,
+#jobs .title,
+#team .card .title {
+  color: #999;
+}
+
+#team .card .desc {
+  font-weight: bolder;
+}
+
+#team .avatar {
+  border: 0.1rem solid #1AB56D;
+  width: 77px;
+  height: 77px;
+  border-radius: 50%;
+  margin: auto;
+  margin-bottom: 10px;
+}
+
+#team .name {
+  color: #1AB56D;
+  margin-bottom: 5px;
+}
+
+#team .social-links {
+  margin-bottom: 10px;
+}
+
+#team .social-links a svg {
+  font-size: 1.25em;
+  transition: all 0.3s;
+  color: black;
+}
+
+#team .social-links a:hover svg {
+  color: #1AB56D;
+  transform: scale(1.5) rotate(360deg);
+}
+
+#team .card-small .social-links a svg {
+  transition: none;
+}
+
+#team .card-small .social-links a:hover svg {
+  transition: none;
+  transform: none;
+  color: black;
+}
+
+#team .social-links a {
+  display: inline-block;
+}
+
+.gitcoin-svg {
+  background-size: cover !important;
+  background-image: url("/static/v2/images/ios/gitcoin.svg");
+  width: 2em;
+  height: 2em;
+  position: relative;
+  top: 4px;
+}
+
+.card-small .gitcoin-svg {
+  left: -4px;
+}
+
+#jobs,
+#origin_story {
+  padding-bottom: 2em;
+}
+
+#jobs .caption {
+  margin-bottom: 2em;
+}
+
+#jobs .right p {
+  text-align: left;
+}
+
+#jobs .left p {
+  text-align: right;
+}
+
+#jobs .title.font-caption {
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+#jobs .title:hover {
+  color: #1AB56D;
+}
+
+#jobs .right .font-heading,
+#jobs .left .font-heading {
+  font-weight: bold;
+}
+
+@media (max-width: 767.98px) {
+  #jobs .left p,
+  #jobs .right p {
+    text-align: center;
+  }
+
+  #jobs .left {
+    margin-bottom: 2em;
+  }
+}
+
+/* TODO: Clean up CSS*/
+
+div.teamProfileLeft,
+div.communityProfile {
+  background-color: #eff4ee;
+  padding: 1em;
+  margin-bottom: 2em;
+  box-shadow: 0px 2px 5px 0px #808080;
+}
+
+div.teamProfileRight {
+  background-color: #eff4ee;
+  padding: 1em;
+  margin-bottom: 2em;
+  box-shadow: 0px 2px 5px 0px #808080;
+}
+
+@media screen and (min-width: 48em) {
+  div.teamProfileLeft {
+    margin-left: 40%;
+  }
+
+  div.teamProfileRight {
+    margin-right: 40%;
+  }
+}
+
+img.teamProfileAvatar,
+img.communityProfileAvatar {
+  margin: 0.5em;
+  max-height: 200px;
+  border-radius: 50%;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #ffffff;
+}
+
+img.teamProfileSocialImg,
+img.communityProfileAvatarSocialImg {
+  max-height: 30px;
+  margin: 0px 2px 10px 2px;
+}
+
+img.teamProfileSocialImg:hover,
+img.communityProfileAvatarSocialImg {
+  opacity: 0.75;
+}
+
+div.communityProfile {
+  width: 10%;
+  display: inline-block;
+  background-color: #eee;
+}
+@media screen and (max-width: 1100px) {
+  div.communityProfile {
+    width: 20%
+  }
+  @media screen and (max-width: 700px) {
+    div.communityProfile {
+      width: 20%
+    }
+    @media screen and (max-width: 500px) {
+      div.communityProfile {
+        width: 31%
+      }
+
+
+    }}}

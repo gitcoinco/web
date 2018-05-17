@@ -26,6 +26,7 @@ from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
+from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
 
@@ -69,7 +70,87 @@ def robotstxt(request):
 
 
 def about(request):
+    core_team = [
+        (
+            static("v2/images/team/kevin-owocki.png"),
+            "Kevin Owocki",
+            "All the things",
+            "owocki",
+            "owocki",
+            "The Community",
+            "Avocado Toast"
+        ),
+        (
+            static("v2/images/team/alisa-march.jpg"),
+            "Alisa March", "User Experience Design",
+            "PixelantDesign",
+            "pixelant",
+            "Tips",
+            "Apple Cider Doughnuts"
+        ),
+        (
+            static("v2/images/team/justin-bean.jpg"),
+            "Justin Bean", "Engineering",
+            "StareIntoTheBeard",
+            "justinbean",
+            "Issue Explorer",
+            "Sushi"
+        ),
+        (
+            static("v2/images/team/mark-beacom.jpg"),
+            "Mark Beacom",
+            "Engineering",
+            "mbeacom",
+            "mbeacom",
+            "Start/Stop Work",
+            "Dolsot Bibimbap"
+        ),
+        (
+            static("v2/images/team/eric-berry.jpg"),
+            "Eric Berry",
+            "OSS Funding",
+            "coderberry",
+            "ericberry",
+            "Chrome/Firefox Extension",
+            "Pastel de nata"
+        ),
+        (
+            static("v2/images/team/vivek-singh.jpg"),
+            "Vivek Singh",
+            "Community Buidl-er",
+            "vs77bb",
+            "vivek-singh-b5a4b675",
+            "Gitcoin Requests",
+            "Tangerine Gelato"
+        ),
+        (
+            static("v2/images/team/aditya-anand.jpg"),
+            "Aditya Anand M C",
+            "Engineering",
+            "thelostone-mc",
+            "aditya-anand-m-c-95855b65",
+            "The Community",
+            "Cocktail Samosa"
+        ),
+    ]
+    exclude_community = ['kziemiane', 'owocki', 'mbeacom']
+    community_members = [
+    ]
+    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount')[0: 15]
+    for lr in leadeboardranks:
+        package = (lr.avatar_url, lr.github_username, lr.github_username, '')
+        community_members.append(package)
+
+    alumnis = [
+    ]
+    for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco'):
+        package = (alumni.profile.avatar_url, alumni.profile.username, alumni.profile.username, alumni.organization)
+        alumnis.append(package)
+
     context = {
+        'core_team': core_team,
+        'community_members': community_members,
+        'alumni': alumnis,
         'active': 'about',
         'title': 'About',
     }
@@ -207,6 +288,10 @@ Here are some of our values
         {
             'q': _('Am I allowed to place bounties on projects I don\'t contribute to or own?'),
             'a': _("TLDR: Yes you are.  But as OSS devs ourselves, our experience has been that if you want to get the product you work on merged into the upstream, you will need to work with the contributors or owners of that repo.  If not, you can always fork a repo and run your own roadmap.")
+        },
+        {
+            'q': _('I started work on a bounty but someone else has too.  Who gets it?'),
+            'a': _("As a general rule, we tend to treat the person who 'started work' first as having precedence over the issue.  The parties involved are all welcome to work together to split the bounty or come to some other agreement, but if an agreement is uanble to be made, then the first person to start work will have first shot at the bounty.")
         },
         ],
      'General': [
@@ -369,10 +454,21 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
      ],
     }
 
+    tutorials = [{
+        'img': static('v2/images/help/firehose.jpg'),
+        'url': 'https://medium.com/gitcoin/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster-dcd39650fc5',
+        'title': _('Leverage Gitcoin’s Firehose of Talent to Do More Faster'),
+    }, {
+        'img': static('v2/images/help/tools.png'),
+        'url': 'https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75',
+        'title': _('Post a Bounty in 90 Seconds'),
+    }]
+
     context = {
         'active': 'help',
         'title': _('Help'),
         'faq': faq,
+        'tutorials': tutorials,
     }
     return TemplateResponse(request, 'help.html', context)
 
@@ -463,8 +559,7 @@ def browser_extension_firefox(request):
 
 
 def itunes(request):
-    return HttpResponse(_('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)'))
-    return redirect('https://itunes.apple.com/us/app/gitcoin/idXXXXXXXXX')
+    return redirect('https://itunes.apple.com/us/app/gitcoin/id1319426014')
 
 
 def ios(request):
@@ -521,6 +616,10 @@ def btctalk(request):
 
 def reddit(request):
     return redirect('https://www.reddit.com/r/gitcoincommunity/')
+
+
+def livestream(request):
+    return redirect('https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ')
 
 
 def twitter(request):

@@ -31,14 +31,14 @@ actions_expired = [
         'user': {
             'login': 'fred'
         },
-        'created_at': (timezone.now() - timedelta(days=10)).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'created_at': (timezone.now() - timedelta(days=13)).strftime('%Y-%m-%dT%H:%M:%SZ'),
         'event': 'commented',
     },
     {
         'user': {
             'login': 'paul'
         },
-        'created_at': (timezone.now() - timedelta(days=10)).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'created_at': (timezone.now() - timedelta(days=13)).strftime('%Y-%m-%dT%H:%M:%SZ'),
         'event': 'commented',
     }
 ]
@@ -79,7 +79,7 @@ class TestExpiraionStartWork(TestCase):
         interest = Interest.objects.create(
             profile=profile
         )
-        interest.created = timezone.now() - timedelta(days=9)
+        interest.created = timezone.now() - timedelta(days=12)
         interest.save()
 
         bounty = Bounty.objects.create(
@@ -111,7 +111,7 @@ class TestExpiraionStartWork(TestCase):
         Command().handle()
 
         assert mock_bounty_startwork_expire_warning.call_count == 0
-        assert mock_bounty_startwork_expired.call_count == 1
+        assert mock_bounty_startwork_expired.call_count == 0
 
     @patch('marketing.management.commands.expiration_start_work.get_interested_actions', return_value=actions_warning)
     @patch('marketing.management.commands.expiration_start_work.bounty_startwork_expire_warning')

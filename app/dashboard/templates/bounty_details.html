@@ -54,7 +54,7 @@
           <div class="quote-container">
             <div class="quote_text"></div>
             <div class="quote_author"></div>
-            <input id="quoteRefresh" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
+            <input id="quoteRefresh" class="button button--primary" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
           </div>
         </div>
 
@@ -66,6 +66,7 @@
             <div class="col-12 col-lg-11 pl-lg-4">
               <div class="col-12">
                 <h4 id="title" class="font-title"></h4>
+                <span id="network"></span>
               </div>
               <div class="col-12">
                 <div id="status"></div>
@@ -113,7 +114,7 @@
                         <span id="value_in_token"></span>
                       </p>
                     </div>
-                    <div id=value_in_usdt_wrapper class="tag usd">
+                    <div id=value_in_usdt_wrapper title="" class="tag usd">
                       <p>
                         <span id="value_in_usdt"></span>
                         <span>USD @ </span>
@@ -261,7 +262,7 @@
               [[:text]]
             </div>
             [[if uninterest_possible]]
-              <div>
+              <div class="stop-work">
                 <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
                   <a id="remove-[[:name]]" class="button button--primary" role="button" href="remove-handle">
                     <span class="font-smaller-4">Stop work</span>
@@ -288,16 +289,21 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
   </body>
 
   <script>
     document.issueURL = '{{issueURL}}';
+    document.issueNetwork = '{{network}}';
+    document.issue_stdbounties_id = '{{stdbounties_id}}';
+    document.isStaff = '{{is_staff}}' != 'False';
   </script>
 
   <!-- jQuery -->
   <script src="{% static "v2/js/showdown.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/amounts.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>

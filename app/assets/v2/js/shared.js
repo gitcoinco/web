@@ -168,11 +168,11 @@ var showLoading = function() {
 };
 
 /** Add the current profile to the interested profiles list. */
-var add_interest = function(bounty_pk) {
+var add_interest = function(bounty_pk, data) {
   if (document.interested) {
     return;
   }
-  mutate_interest(bounty_pk, 'new');
+  mutate_interest(bounty_pk, 'new', data);
 };
 
 /** Remove the current profile from the interested profiles list. */
@@ -184,7 +184,7 @@ var remove_interest = function(bounty_pk) {
 };
 
 /** Helper function -- mutates interests in either direction. */
-var mutate_interest = function(bounty_pk, direction) {
+var mutate_interest = function(bounty_pk, direction, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
   $('#submit').toggleClass('none');
@@ -194,14 +194,14 @@ var mutate_interest = function(bounty_pk, direction) {
     .toggleClass('button--primary');
 
   if (direction === 'new') {
-    _alert({message: "Thanks for letting us know that you're ready to start work."}, 'success');
+    _alert({ message: gettext("Thanks for letting us know that you're ready to start work.") }, 'success');
     $('#interest a').attr('id', 'btn-white');
   } else if (direction === 'remove') {
-    _alert({message: "You've stopped working on this, thanks for letting us know."}, 'success');
+    _alert({ message: gettext("You've stopped working on this, thanks for letting us know.") }, 'success');
     $('#interest a').attr('id', '');
   }
 
-  $.post(request_url, function(result) {
+  $.post(request_url, data).then(function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
       pull_interest_list(bounty_pk);
@@ -220,13 +220,13 @@ var uninterested = function(bounty_pk, profileId) {
   $.post(request_url, function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
-      _alert({message: 'Contributor removed from bounty.'}, 'success');
+      _alert({ message: gettext('Contributor removed from bounty.') }, 'success');
       pull_interest_list(bounty_pk);
       return true;
     }
     return false;
   }).fail(function(result) {
-    _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
   });
 };
 
@@ -703,6 +703,21 @@ var listen_for_web3_changes = function() {
         trigger_form_hooks();
       }
     });
+  }
+};
+
+var actions_page_warn_if_not_on_same_network = function() {
+  var user_network = document.web3network;
+
+  if (typeof user_network == 'undefined') {
+    user_network = 'no network';
+  }
+  var bounty_network = $('input[name=network]').val();
+
+  if (bounty_network != user_network) {
+    var msg = 'Warning: You are on ' + user_network + ' and this bounty is on the ' + bounty_network + ' network.  Please change your network to the ' + bounty_network + ' network.';
+
+    _alert({ message: gettext(msg) }, 'error');
   }
 };
 

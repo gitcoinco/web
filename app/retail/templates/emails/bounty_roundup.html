@@ -26,18 +26,35 @@
         padding-bottom: 0.5em;
         padding-left: 2em;
         padding-right: 2em;
-    }
-    .intro, .intro li{
-        line-height: 16px;
+        line-height: 20px;
     }
     .intro li{
-        margin-bottom: 5px;
+        margin-bottom: 15px;
+    }
+    h1{
+        color: black;
+        font-weight: bold;
+    }
+    h3{
+        color: #0d0860;
+        font-weight: bold;
+    }
+    h5{
+        color: #aeaeae;
+    }
+    p, li, a{
+        color: #353535;
+        line-height: 26px;
+        font-size: 16px;
+    }
+    a{
+        text-decoration: underline;;
     }
 </style>
 
 <div class="roundup">
     <div>
-        <h1><img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"> {% trans "The Gitcoin Weekly" %} <img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"></h1>
+        <h1>{% trans "The Gitcoin Weekly" %}</h1>
     </div>
 
     <div style="text-align: left;" class='intro'>
@@ -59,14 +76,14 @@
     {% if highlights %}
 
         <h3>{% trans "Last Week's Highlights" %}</h3>
-        <h5>{% trans "Community Members growing open source" %}🌳</h5>
+        <h5>{% trans "Community Members growing open source" %}</h5>
 
         <div style="text-align: left;">
             {% for highlight in highlights %}
                 <li style="list-style:none; margin-bottom: 5px;">
                     {% if highlight.who_link %}
-                        <img src="https://gitcoin.co/funding/avatar?repo=https://github.com/{{highlight.who}}" width=30px height=30px>
-                        <a href="https://gitcoin.co/profile/{{highlight.who}}">{{highlight.who}}</a>
+                        <img style="border-radius: 20px;" src="https://gitcoin.co/funding/avatar?repo=https://github.com/{{highlight.who}}" width=30px height=30px>
+                        <a style="font-weight: bold; text-decoration: none;" href="https://gitcoin.co/profile/{{highlight.who}}">{{highlight.who}}</a>
                     {% else %}
                         * <strong>{{highlight.who}}</strong>
                     {% endif %}
@@ -86,7 +103,7 @@
 
     <div>
         <h3>{% trans "Open Funded Issues" %}</h3>
-        <h5>{% trans "Grow Open Source ⚡️ Make Some ETH" %} 💰</h5>
+        <h5>{% trans "Grow Open Source &amp; Make Some ETH" %}</h5>
     </div>
 
     {% for bounty in bounties %}
@@ -105,13 +122,13 @@
     <hr>
     <div>
         <h3>{% trans "Bounties from around the ecosystem" %}</h3>
-        <h5>{% trans "From other great projects in OSS" %} 💰</h5>
+        <h5>{% trans "From other great projects in OSS" %}</h5>
     </div>
     <ul>
         {% for bounty in ecosystem_bounties %}
                 <li style="list-style:none; margin-bottom: 5px;">
                 <img src="{{bounty.avatar}}" width=20px height="20px">
-                <a href="{{bounty.url}}">
+                <a href="https://gitcoin.co/{{bounty.url}}">
                     {{bounty.title}}
                 </a>
                 | Tagged: <i>{{bounty.tags |slice:":3" | join:", "}}</i>
@@ -123,7 +140,7 @@
         <p style="margin-top: 20px;">{% trans "There's much much more on the Gitcoin Universal Bounties Explorer:" %}</p>
 
         <div style="margin-bottom: 1.5em;">
-            <a class="button" href="https://gitcoin.co/explorer">{% trans "View Bounties Universe" %}</a>
+            <a class="button" href="https://gitcoin.co/universe">{% trans "View Bounties Universe" %}</a>
         </div>
     </div>
 
@@ -133,7 +150,7 @@
 </div>
 
 <p>
-    {% trans "You are receiving this email because your email address is on the notification list." %} <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">{% trans "Manage Email Settings" %}</a>.
+    {% trans "You are receiving this email because your email address is on the notification list." %} <a href="https://gitcoin.co/settings/email/{{subscriber.priv}}">{% trans "Manage Email Settings" %}</a>.
 </p>
 
 {% endblock %}

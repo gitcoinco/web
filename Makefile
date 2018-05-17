@@ -7,6 +7,9 @@ PROJECT_DIR := $(subst -,, $(shell pwd | xargs basename))
 CONTAINER_NAME := $(addsuffix _web_1, $(PROJECT_DIR))
 WEB_CONTAINER_ID := $(shell docker inspect --format="{{.Id}}" $(CONTAINER_NAME))
 
+collect-static: ## Collect newly added static resources from the assets directory.
+	@docker-compose exec web python3 app/manage.py collectstatic -i other
+
 compress-images: ## Compress and optimize images throughout the repository. Requires optipng, svgo, and jpeg-recompress.
 	@./scripts/compress_images.bash
 
@@ -22,16 +25,25 @@ fix-isort: ## Run isort against python files in the project directory.
 fix-stylelint: ## Run stylelint --fix against the project directory. Requires node, npm, and project dependencies.
 	@npm run stylelint:fix
 
+fix-yapf: ## Run yapf against any included or newly introduced Python code.
+	@docker-compose exec web yapf -i -r -e "app/**/migrations/*.py" -p app/dataviz/
+
 fix: fix-eslint fix-stylelint fix-isort ## Attempt to run all fixes against the project directory.
 
 fresh: ## Completely destroy all compose assets and start compose with a fresh build.
 	@docker-compose down -v; docker-compose up -d --build;
+
+load_initial_data: ## Load initial development fixtures.
+	@docker-compose exec web python3 app/manage.py loaddata initial
 
 logs: ## Print and actively tail the docker compose logs.
 	@docker-compose logs -f
 
 pytest: ## Run pytest (Backend)
 	@docker-compose exec web pytest -p no:ethereum
+
+pytest-pdb: ## Run pytest with pdb support (Backend)
+	@docker-compose exec web pytest -p no:ethereum --pdb --pdbcls=IPython.terminal.debugger:Pdb
 
 stylelint: ## Run stylelint against the project directory. Requires node, npm, and project dependencies.
 	@npm run stylelint
