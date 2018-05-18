@@ -31,21 +31,13 @@ from dashboard.models import Profile
 from dashboard.views import w3
 from ens import ENS
 from ens.abis import ENS as ens_abi
+from ens.main import ENS_MAINNET_ADDR
 from ens.utils import dot_eth_namehash, label_to_hash
 from eth_account.messages import defunct_hash_message
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from web3 import HTTPProvider, Web3
 
 from .models import ENSSubdomainRegistration
-
-ns = ENS.fromWeb3(w3)
-w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
-ENS_MAINNET_ADDR = '0x314159265dD8dbb310642f98f50C066173C1259b'
-
-ens_contract = w3.eth.contract(
-    address=ENS_MAINNET_ADDR,
-    abi=ens_abi,
-)
 
 
 def handle_subdomain_exists(request, github_handle):
@@ -103,6 +95,7 @@ def handle_subdomain_post_request(request, github_handle):
             }
             # TODO -- refactor to use_high_level_code once construct_sign_and_send_raw_middleware is merged 
             # into web3py
+            ns = ENS.fromWeb3(w3)
             use_high_level_code = False
             if use_high_level_code:
                 # from enssubdomain.web3.middleware.signing import construct_sign_and_send_raw_middleware
@@ -112,6 +105,10 @@ def handle_subdomain_post_request(request, github_handle):
             else:
                 owned = settings.ENS_TLD
                 label = github_handle
+                ens_contract = w3.eth.contract(
+                    address=ENS_MAINNET_ADDR,
+                    abi=ens_abi,
+                )
                 txn = ens_contract.functions.setSubnodeOwner(
                     dot_eth_namehash(owned),
                     label_to_hash(label),
