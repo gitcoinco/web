@@ -204,6 +204,7 @@ def get_platform_wide_stats(since_last_n_days=90):
         'avg_fund_per_bounty': avg_fund_per_bounty,
         'hunters': hunters,
         'largest_bounty': largest_bounty,
+        'largest_bounty_value': largest_bounty_value,
         "total_transaction_in_usd": total_transaction_in_usd,
         "total_transaction_in_eth": total_transaction_in_eth,
     }
