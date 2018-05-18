@@ -32,6 +32,7 @@ from dashboard.views import w3
 from ens import ENS
 from eth_account.messages import defunct_hash_message
 from web3 import HTTPProvider, Web3
+from enssubdomain.web3py.web3.middleware.signing import construct_sign_and_send_raw_middleware
 
 from .models import ENSSubdomainRegistration
 
@@ -61,8 +62,11 @@ def ens_subdomain(request):
                     'gas': 100000,
                     'gasPrice': recommend_min_gas_price_to_confirm_in_time(1) * 10**9
                 }
-                signed = w3.eth.account.signTransaction(transaction, settings.ENS_PRIVATE_KEY)
-                txn_hash = ns.setup_owner(f'{github_handle}.{settings.ENS_TLD}', signer, signed)
+                #w3.middleware_stack.add(construct_sign_and_send_raw_middleware(settings.ENS_PRIVATE_KEY))
+                import ipdb; ipdb.set_trace()
+                ns._assert_control = lambda *_: True # monkey patch https://github.com/ethereum/web3.py/issues/852#issuecomment-390054210
+                #signed = w3.eth.account.signTransaction(transaction, settings.ENS_PRIVATE_KEY)
+                txn_hash = ns.setup_owner(f'{github_handle}.{settings.ENS_TLD}', signer)
                 # TODO: https://github.com/ethereum/web3.py/issues/852#issuecomment-390040759
                 profile = Profile.objects.filter(handle=github_handle).first()
                 ENSSubdomainRegistration.objects.create(profile=profile,
