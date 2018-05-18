@@ -17,7 +17,7 @@
 """
 
 import datetime
-
+import binascii
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -34,11 +34,23 @@ from eth_account.messages import defunct_hash_message
 from web3 import HTTPProvider, Web3
 from enssubdomain.web3.middleware.signing import construct_sign_and_send_raw_middleware
 
+from ens.abis import ENS as ens_abi
+
 from .models import ENSSubdomainRegistration
+from ens.utils import (
+    dot_eth_namehash,
+    label_to_hash,
+)
 
 ns = ENS.fromWeb3(w3)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 ENS_MAINNET_ADDR = '0x314159265dD8dbb310642f98f50C066173C1259b'
+
+ens_contract = w3.eth.contract(
+    address=ENS_MAINNET_ADDR,
+    abi=ens_abi,
+)
+
 
 
 @csrf_exempt
@@ -53,21 +65,37 @@ def ens_subdomain(request):
             message_hash = defunct_hash_message(text=f'Github Username : {github_handle}')
             recovered_signer = w3.eth.account.recoverHash(message_hash, signature=signedMsg).lower()
             if recovered_signer == signer:
-                txn_hash = '0x6477f3640d9d910c589937b25d5892f525cfde2dd634d9490abc7542c946e8e3'
+                signer = Web3.toChecksumAddress(signer)
+                txn_hash = None
+                gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9
                 transaction = {
-                    'to': ENS_MAINNET_ADDR,
-                    'from': settings.ENS_OWNER_ACCOUNT,
+#                    'to': ENS_MAINNET_ADDR,
+                    'from': Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
                     'value': 0,
                     'nonce': w3.eth.getTransactionCount(settings.ENS_OWNER_ACCOUNT),
                     'gas': 100000,
-                    'gasPrice': recommend_min_gas_price_to_confirm_in_time(1) * 10**9
+                    'gasPrice': gasPrice
                 }
-                #w3.middleware_stack.add(construct_sign_and_send_raw_middleware(settings.ENS_PRIVATE_KEY))
-                import ipdb; ipdb.set_trace()
-                ns._assert_control = lambda *_: True # monkey patch https://github.com/ethereum/web3.py/issues/852#issuecomment-390054210
-                #signed = w3.eth.account.signTransaction(transaction, settings.ENS_PRIVATE_KEY)
-                txn_hash = ns.setup_owner(f'{github_handle}.{settings.ENS_TLD}', signer)
-                # TODO: https://github.com/ethereum/web3.py/issues/852#issuecomment-390040759
+                use_high_level_code = False
+                if use_high_level_code:
+                    w3.middleware_stack.add(construct_sign_and_send_raw_middleware(settings.ENS_PRIVATE_KEY))
+                    ns._assert_control = lambda *_: True # monkey patch https://github.com/ethereum/web3.py/issues/852#issuecomment-390054210
+                    txn_hash = ns.setup_owner(f'{github_handle}.{settings.ENS_TLD}', signer)
+                else:
+                    owned = settings.ENS_TLD
+                    label = github_handle
+                    txn = ens_contract.functions.setSubnodeOwner(
+                        dot_eth_namehash(owned),
+                        label_to_hash(label),
+                        signer,
+                        ).buildTransaction(transaction)
+                    signed_txn = w3.eth.account.signTransaction(txn, private_key=settings.ENS_PRIVATE_KEY)
+                    txn_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction) 
+                    # hack to convert 
+                    # "b'7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'"
+                    # to "0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39"
+                    txn_hash = str(binascii.b2a_hex(txn_hash)).replace("b'","0x").replace("'","") 
+
                 profile = Profile.objects.filter(handle=github_handle).first()
                 ENSSubdomainRegistration.objects.create(profile=profile,
                                                         subdomain_wallet_address=signer,
