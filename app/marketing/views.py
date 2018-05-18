@@ -39,13 +39,13 @@ from app.utils import sync_profile
 from chartit import Chart, DataPool
 from dashboard.models import Bounty, Profile, Tip, UserAction
 from dashboard.utils import create_user_action
+from enssubdomain.models import ENSSubdomainRegistration
 from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
 from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
 from retail.helpers import get_ip
-from enssubdomain.models import ENSSubdomainRegistration
 
 
 def get_settings_navs(request):
