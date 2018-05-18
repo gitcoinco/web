@@ -24,6 +24,8 @@ PyPdf2
 python-twitter==3.2
 sendgrid
 slackclient
+eth-tester
+websockets
 web3==4.0.0b10
 mailchimp3
 django_chartit==0.2.9

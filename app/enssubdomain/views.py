@@ -32,7 +32,7 @@ from dashboard.views import w3
 from ens import ENS
 from eth_account.messages import defunct_hash_message
 from web3 import HTTPProvider, Web3
-from enssubdomain.web3py.web3.middleware.signing import construct_sign_and_send_raw_middleware
+from enssubdomain.web3.middleware.signing import construct_sign_and_send_raw_middleware
 
 from .models import ENSSubdomainRegistration
 
