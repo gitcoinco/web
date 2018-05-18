@@ -18,6 +18,14 @@
     <!--[if lte IE 8]><link rel="stylesheet" href="{% static "yge/css/ie8.css" %}" /><![endif]-->
     <noscript><link rel="stylesheet" href="{% static "yge/css/noscript.css" %}" /></noscript>
     {% include 'shared/favicon.html' %}
+    <style>
+    #upper_left p{
+        color: white;
+    }
+    #upper_left{
+        border-radius: 5px;
+    }
+    </style>
   </head>
   <body class="{{class}}">
     {% block 'world' %}
@@ -36,7 +44,7 @@
             <a href="/">&copy; {% trans "Gitcoin.co" %}</a>
           </li>
           <li>
-            {% blocktrans %}Developed by: <a href="https://github.com/scottydelta/">Scottydetla</a>{% endblocktrans %}
+            {% blocktrans %}Made with <3 and with bounties by: <a href="https://github.com/gitcoinco/web/pull/509">Scottydelta</a>{% endblocktrans %}
           </li>
           <li>
             <a href="https://docs.ens.domains/en/latest/">{% trans "ENS Docs" %}</a>
