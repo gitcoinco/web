@@ -26,11 +26,11 @@ var _alert = function(msg, addClassName) {
 var metaMaskWarning = function() {
   if (typeof web3 == 'undefined' || !web3.currentProvider || !web3.currentProvider.isMetaMask) {
     if (typeof document.suppressweb3alert != 'undefined') {
-      _alert({message: 'You must install <a href=https://metamask.io/>Metamask</a> to use this tool.'}, 'info');
+      _alert({ message: gettext('You must install <a href=https://metamask.io/>Metamask</a> to use this tool.') }, 'info');
     }
     return true;
   } else if (web3.eth.accounts.length == 0) {
-    _alert({message: 'Please unlock Metamask.'}, 'info');
+    _alert({ message: gettext('Please unlock Metamask.') }, 'info');
     return true;
   }
   return false;

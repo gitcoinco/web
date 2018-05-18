@@ -54,7 +54,7 @@
           <div class="quote-container">
             <div class="quote_text"></div>
             <div class="quote_author"></div>
-            <input id="quoteRefresh" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
+            <input id="quoteRefresh" class="button button--primary" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
           </div>
         </div>
 
@@ -289,13 +289,14 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
   </body>
 
   <script>
     document.issueURL = '{{issueURL}}';
     document.issueNetwork = '{{network}}';
     document.issue_stdbounties_id = '{{stdbounties_id}}';
-    document.isStaff = '{{is_staff}}';
+    document.isStaff = '{{is_staff}}' != 'False';
   </script>
 
   <!-- jQuery -->

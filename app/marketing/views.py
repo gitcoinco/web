@@ -91,7 +91,9 @@ def settings_helper_get_auth(request, key=None):
             pass
 
     # lazily create profile if needed
-    profiles = Profile.objects.filter(handle__iexact=github_handle).exclude(email='') if github_handle else Profile.objects.none()
+    profiles = Profile.objects.none()
+    if github_handle:
+        profiles = Profile.objects.prefetch_related('alumni').filter(handle__iexact=github_handle).exclude(email='')
     profile = None if not profiles.exists() else profiles.first()
     if not profile and github_handle:
         profile = sync_profile(github_handle, user=request.user)
@@ -121,11 +123,16 @@ def privacy_settings(request):
     if request.POST and request.POST.get('submit'):
         if profile:
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
-            suppress_leaderboard = profile.suppress_leaderboard
+            profile.hide_profile = bool(request.POST.get('hide_profile', False))
+            if profile.alumni and profile.alumni.exists():
+                alumni = profile.alumni.first()
+                alumni.public = bool(not request.POST.get('hide_alumni', False))
+                alumni.save()
+
             profile.save()
 
     context = {
-        'suppress_leaderboard': suppress_leaderboard,
+        'profile': profile,
         'nav': 'internal',
         'active': '/settings/privacy',
         'title': _('Privacy Settings'),
@@ -137,6 +144,17 @@ def privacy_settings(request):
 
 
 def matching_settings(request):
+    """Handle viewing and updating EmailSubscriber matching settings.
+
+    TODO:
+        * Migrate this to a form and handle validation.
+        * Migrate Keyword to taggit.
+        * Maybe migrate keyword information to Profile instead of using ES?
+
+    Returns:
+        TemplateResponse: The populated matching template.
+
+    """
     # setup
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
     if not es:
@@ -148,8 +166,10 @@ def matching_settings(request):
     if request.POST and request.POST.get('submit'):
         github = request.POST.get('github', '')
         keywords = request.POST.get('keywords').split(',')
-        es.github = github
-        es.keywords = keywords
+        if github:
+            es.github = github
+        if keywords:
+            es.keywords = keywords
         ip = get_ip(request)
         if not es.metadata.get('ip', False):
             es.metadata['ip'] = [ip]
@@ -219,7 +239,7 @@ def email_settings(request, key):
 
     """
     profile, es, user, is_logged_in = settings_helper_get_auth(request, key)
-    if not request.user.is_authenticated or (request.user.is_authenticated and not hasattr(request.user, 'profile')):
+    if not request.user.is_authenticated and (not es and key) or (request.user.is_authenticated and not hasattr(request.user, 'profile')):
         return redirect('/login/github?next=' + request.get_full_path())
 
     # handle 'noinput' case
@@ -247,22 +267,24 @@ def email_settings(request, key):
         if level not in ['lite', 'lite1', 'regular', 'nothing']:
             validation_passed = False
             msg = _('Invalid Level')
-        if validation_passed and profile and es:
-            profile.pref_lang_code = preferred_language
-            profile.save()
-            request.session[LANGUAGE_SESSION_KEY] = preferred_language
-            translation.activate(preferred_language)
-            key = get_or_save_email_subscriber(email, 'settings')
-            es.preferences['level'] = level
-            es.email = email
-            ip = get_ip(request)
-            es.active = level != 'nothing'
-            es.newsletter = level in ['regular', 'lite1']
-            if not es.metadata.get('ip', False):
-                es.metadata['ip'] = [ip]
-            else:
-                es.metadata['ip'].append(ip)
-            es.save()
+        if validation_passed:
+            if profile:
+                profile.pref_lang_code = preferred_language
+                profile.save()
+                request.session[LANGUAGE_SESSION_KEY] = preferred_language
+                translation.activate(preferred_language)
+            if es:
+                key = get_or_save_email_subscriber(email, 'settings')
+                es.preferences['level'] = level
+                es.email = email
+                ip = get_ip(request)
+                es.active = level != 'nothing'
+                es.newsletter = level in ['regular', 'lite1']
+                if not es.metadata.get('ip', False):
+                    es.metadata['ip'] = [ip]
+                else:
+                    es.metadata['ip'].append(ip)
+                es.save()
             msg = _('Updated your preferences.')
     context = {
         'nav': 'internal',
@@ -300,7 +322,7 @@ def slack_settings(request):
         if test and token and channel:
             response = validate_slack_integration(token, channel)
 
-        if submit or (response and response['success']):
+        if submit or (response and response.get('success')):
             profile.update_slack_integration(token, channel, repos)
             if not response.get('output'):
                 response['output'] = _('Updated your preferences.')

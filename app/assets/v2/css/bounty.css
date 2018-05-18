@@ -352,7 +352,9 @@ a.btn {
 }
 
 #bounty_details #issue_description img {
-  max-width: 100%;
+  max-height: 30rem;
+  max-width: 30rem;
+  cursor: pointer;
 }
 
 #bounty_details #issue_description h1,
@@ -399,7 +401,6 @@ a.btn {
 
 .stop-work {
   float: right;
-  margin-right: 10px;
 }
 
 @media (max-width: 575px) {
@@ -458,6 +459,12 @@ a.btn {
   }
 }
 
+@media (min-width: 768px) {
+  .activity-time {
+    margin-left: 0.625rem !important;
+  }
+}
+
 #add_interest form > div {
   margin-top: 10px;
 }
@@ -482,6 +489,26 @@ a.btn {
   justify-content: flex-start;
 }
 
+#add_interest .login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem auto;
+}
+
+#add_interest .login__text {
+  margin-bottom: 1rem;
+}
+
+#add_interest .login__button .fa-github {
+  margin-right: 0.4rem;
+}
+
+#add_interest .login__button span {
+  padding-left: 0.5rem;
+  border-left: 1px solid #fff;
+}
+
 #add_interest form .filter-label {
   display: inline;
   margin-left: 0.625rem;
@@ -499,4 +526,10 @@ a.btn {
 
 .close:hover, .close:focus {
   box-shadow: none;
+}
+
+.modal.magnify,
+.modal .magnify {
+  width: auto;
+  max-width: 100%;
 }

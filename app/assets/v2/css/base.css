@@ -555,6 +555,10 @@ input[type=text].loading {
   font-size: 0.875rem;
   font-family: "Muli", sans-serif;
 }
+.select2-results__option:empty {
+  padding: 1px;
+  border-bottom: solid 1px darkgray;
+}
 
 .submit_bounty .select2-results__option,
 .fulfill_bounty .select2-results__option {
@@ -795,7 +799,7 @@ input[type=text].loading {
 
 .quote_author {
   color: #70EFBE;
-  margin-top: 20px;
+  margin: 1rem auto;
   font-style: italic;
   font-weight: 700;
   font-size: 22px;
