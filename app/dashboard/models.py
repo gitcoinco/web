@@ -73,9 +73,11 @@ class BountyQuerySet(models.QuerySet):
     def filter_by_status(self, filtered_status=None):
         """Filter results with a status matching the provided list."""
         if filtered_status is None:
-            filtered_status = []
-
-        return self.filter(idx_status__in=filtered_status)
+            filtered_status = list()
+        elif isinstance(filtered_status, list):
+            return self.filter(idx_status__in=filtered_status)
+        else:
+            return
 
 
 class Bounty(SuperModel):
@@ -88,6 +90,7 @@ class Bounty(SuperModel):
         STATUS_CHOICES (list of tuples): The valid status stages.
         OPEN_STATUSES (list of str): The list of status types considered open.
         CLOSED_STATUSES (list of str): The list of status types considered closed.
+        TERMINAL_STATUSES (list of str): The list of status types considered terminal states.
 
     """
 
@@ -122,6 +125,7 @@ class Bounty(SuperModel):
     )
     OPEN_STATUSES = ['open', 'started', 'submitted']
     CLOSED_STATUSES = ['expired', 'unknown', 'cancelled', 'done']
+    TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
@@ -1080,6 +1084,21 @@ class Profile(SuperModel):
 
     @property
     def get_quarterly_stats(self):
+        """Generate last 90 days stats for this user.
+
+        Returns:
+            dict : containing the following information
+            'user_total_earned_eth': Total earnings of user in ETH.
+            'user_total_earned_usd': Total earnings of user in USD.
+            'user_fulfilled_bounties_count': Total bounties fulfilled by user.
+            'user_avg_eth_earned_per_bounty': Average earning in ETH earned by user per bounty
+            'user_avg_usd_earned_per_bounty': Average earning in USD earned by user per bounty
+            'user_num_completed_bounties': Total no. of bounties completed.
+            'user_bounty_completion_percentage': Percentage of bounties successfully completed by the user
+            'user_active_in_last_quarter': bool, if the user was active in last quarter
+            'user_no_of_languages': No of languages user used while working on bounties.
+            'user_languages': Languages that were used in bounties that were worked on.
+        """
         user_active_in_last_quarter = False
         last_quarter = datetime.now() - timedelta(days=90)
         bounties = self.bounties.filter(modified_on__gte=last_quarter)
@@ -1098,8 +1117,7 @@ class Profile(SuperModel):
         ])
 
         num_completed_bounties = bounties.filter(idx_status__in=['done']).count()
-        terminal_state_bounties = bounties.filter(idx_status__in=['done', 'expired', 'cancelled']).count()
-        total_bounties = bounties.count()
+        terminal_state_bounties = bounties.filter(idx_status__in=Bounty.TERMINAL_STATUSES).count()
         completetion_percent = int(
             round(num_completed_bounties * 1.0 / terminal_state_bounties, 2) * 100
         ) if terminal_state_bounties != 0 else 0

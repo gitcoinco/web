@@ -55,7 +55,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-
         exclude_startswith = options['exclude_startswith']
         filter_startswith = options['filter_startswith']
 
@@ -67,14 +66,12 @@ class Command(BaseCommand):
         queryset = queryset.order_by('email')
         email_list = set(queryset.values_list('email', flat=True))
 
-        print("got {} emails".format(len(email_list)))
+        print('got {len(email_list)} emails')
 
         platform_wide_stats = get_platform_wide_stats()
 
-        counter = 0
-        for to_email in email_list:
-            counter += 1
-            print("-sending {} / {}".format(counter, to_email))
+        for counter, to_email in enumerate(email_list):
+            print("-sending {counter+1} / {to_email}")
             if options['live']:
                 try:
                     quarterly_stats([to_email], platform_wide_stats)

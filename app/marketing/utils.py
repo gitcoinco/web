@@ -145,8 +145,14 @@ def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=
 
 
 def get_platform_wide_stats(since_last_n_days=90):
-    """
-    get platform wide stats for quarterly stats email
+    """Get platform wide stats for quarterly stats email.
+
+    Args:
+        since_last_n_days (int): The number of days from now to retrieve stats.
+
+    Returns:
+        dict: The platform statistics dictionary.
+
     """
     # Import here to avoid circular import within utils
     from dashboard.models import Bounty, BountyFulfillment
@@ -172,7 +178,8 @@ def get_platform_wide_stats(since_last_n_days=90):
     completed_bounties_fund = round(completed_bounties_fund)
     bounties_completion_percent = round(bounties_completion_percent)
 
-    largest_bounty = Bounty.objects.filter(current_bounty=True, created_on__gte=last_n_days).order_by('-_val_usd_db').first()
+    largest_bounty = Bounty.objects.filter(
+        current_bounty=True, created_on__gte=last_n_days).order_by('-_val_usd_db').first()
     largest_bounty_value = largest_bounty.value_in_usdt
 
     bounty_fulfillments = BountyFulfillment.objects.filter(
@@ -181,8 +188,12 @@ def get_platform_wide_stats(since_last_n_days=90):
     hunters = [username[0] for username in profiles]
 
     # Overall transactions across the network are hard-coded for now
-    total_transaction_in_usd = round(sum([bounty.value_in_usdt for bounty in completed_bounties if bounty.value_in_usdt]))
-    total_transaction_in_eth = round(sum([bounty.value_in_eth for bounty in completed_bounties if bounty.value_in_eth]) / 10**18)
+    total_transaction_in_usd = round(sum(
+        [bounty.value_in_usdt for bounty in completed_bounties if bounty.value_in_usdt]
+    ))
+    total_transaction_in_eth = round(sum(
+        [bounty.value_in_eth for bounty in completed_bounties if bounty.value_in_eth]) / 10**18
+    )
 
     return {
         'total_funded_bounties': total_bounties,
