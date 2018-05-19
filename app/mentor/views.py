@@ -2,6 +2,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
+from django.utils.translation import gettext_lazy as _
 
 from dashboard.models import Profile
 from rest_framework import permissions
@@ -48,7 +49,7 @@ class MentorDetail(APIView):
     def get(self, request, pk):
         profile = get_object_or_404(Profile, pk=pk)
         serializer = MentorSerializer(profile)
-        return Response({'serializer': serializer, 'mentor': profile})
+        return Response({'serializer': serializer, 'mentor': profile, 'title': _('Mentor details')})
 
     def post(self, request, pk):
         profile = get_object_or_404(Profile, pk=pk)
@@ -60,4 +61,4 @@ class MentorDetail(APIView):
 
 
 def mentors(request):
-    return TemplateResponse(request, 'mentors.html')
+    return TemplateResponse(request, 'mentors.html', {'title': _('Mentors')})
