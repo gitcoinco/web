@@ -43,13 +43,13 @@ class MentorSerializer(serializers.ModelSerializer):
 
     experience = serializers.ChoiceField(
         style={'template': 'select-input.html'},
-        choices=Profile.TIME_RANGE,
+        choices=Profile.TIME_RANGE_YRS,
         label=_("Experience")
     )
 
     commitment_per_week = serializers.ChoiceField(
         style={'template': 'select-input.html'},
-        choices=Profile.TIME_RANGE,
+        choices=Profile.TIME_RANGE_HRS,
         label=_("Commitment per week")
     )
 

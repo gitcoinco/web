@@ -1046,12 +1046,20 @@ class Profile(SuperModel):
 
     """
 
-    TIME_RANGE = [
-        ('1_5', '1 - 5'),
-        ('5_10', '5 - 10'),
-        ('10_15', '10 - 15'),
-        ('15_20', '15 - 20'),
-        ('20_', '20+'),
+    TIME_RANGE_YRS = [
+        ('1_5', '1 - 5 years'),
+        ('5_10', '5 - 10 years'),
+        ('10_15', '10 - 15 years'),
+        ('15_20', '15 - 20 years'),
+        ('20_', '20+ years'),
+    ]
+
+    TIME_RANGE_HRS = [
+        ('1_5', '1 - 5 hours'),
+        ('5_10', '5 - 10 hours'),
+        ('10_15', '10 - 15 hours'),
+        ('15_20', '15 - 20 hours'),
+        ('20_', '20+ hours'),
     ]
 
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -1079,9 +1087,9 @@ class Profile(SuperModel):
     form_submission_records = JSONField(default=[], blank=True)
         org = models.CharField(max_length=255, blank=True)
     about = models.TextField(blank=True)
-    experience = models.CharField(max_length=5, choices=TIME_RANGE, blank=True)
+    experience = models.CharField(max_length=5, choices=TIME_RANGE_YRS, blank=True)
     available = models.BooleanField(default=False)
-    commitment_per_week = models.CharField(max_length=5, choices=TIME_RANGE, blank=True)
+    commitment_per_week = models.CharField(max_length=5, choices=TIME_RANGE_HRS, blank=True)
     skills_offered = TaggableManager(verbose_name='Skills offered',
                                      through=SkillOffered, blank=True, related_name="skills_offered")
     skills_needed = TaggableManager(verbose_name='Skills needed',

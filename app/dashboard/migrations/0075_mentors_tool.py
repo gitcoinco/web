@@ -10,7 +10,7 @@ def update(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0073_profile_max_num_issues_start_work'),
+        ('dashboard', '0074_auto_20180515_1510'),
     ]
 
     operations = [
