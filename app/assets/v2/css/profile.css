@@ -40,6 +40,7 @@
   list-style-type: none;
 }
 
+
 .profile-header__links a {
   color: #fff;
 }
@@ -50,6 +51,28 @@
   margin-right: 0.5em;
   filter: invert(100%);
 }
+
+@media (max-width: 767.98px) {
+  .profile-header__main-infos {
+    text-align: center;
+  }
+
+  .profile-header__avatar {
+    float: none;
+    margin-right: 0!important;
+  }
+
+  .profile-header__handle {
+    display: block;
+  }
+
+  .profile-header__links li {
+    text-align: center;
+    float: none;
+    margin-right: 0;
+  }
+}
+
 
 .profile-header__stats {
   background-color: transparent;
@@ -66,6 +89,18 @@
 .profile-header__stats .card-body {
   padding: 0.7rem;
   font-size: 1.2rem;
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .profile-header__stats .card-header {
+    padding: 0 0.5rem;
+    font-size: 1.2rem;
+  }
+
+  .profile-header__stats .card-body {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
 }
 
 .profile-header__stats ul {
@@ -137,6 +172,13 @@
   border-color: #D3D3D3;
   font-size: 0.875rem;
   font-weight: 300;
+}
+.profile-bounties .profile-bounties__btn-show-all:hover,
+.profile-bounties .profile-bounties__btn-show-all:focus,
+.profile-bounties .profile-bounties__btn-show-all:active {
+  border-color: #D3D3D3;
+  color: #6c757d;
+  background-color: #F9F9F9;
 }
 
 .profile-bounties__activities-group {
