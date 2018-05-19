@@ -11,6 +11,6 @@ class JobSerializer(serializers.ModelSerializer):
         model = Job
         fields = (
             'id', 'title', 'description', 'github_profile_link', 'apply_url',
-            'is_active', 'skills', 'expiry_date', 'location',
-            'job_type', 'url'
+            'is_active', 'skills', 'expiry_date', 'location', 'job_type', 'url',
+            'company'
         )

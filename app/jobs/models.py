@@ -52,6 +52,7 @@ class Job(models.Model):
     expiry_date = models.DateTimeField(
         _('Expiry Date'), null=False, blank=False, default=get_expiry_time
     )
+    company = models.CharField(_('Company'), max_length=50, null=True, blank=True)
 
     def get_absolute_url(self):
         """Get the absolute URL for the Job.
