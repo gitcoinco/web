@@ -40,6 +40,14 @@ from web3 import HTTPProvider, Web3
 from .models import ENSSubdomainRegistration
 
 
+def handle_default_response(request, github_handle):
+    params = {
+        'github_handle': github_handle,
+        'ens_domain': settings.ENS_TLD,
+    }
+    return TemplateResponse(request, 'ens/ens_register.html', params)
+
+
 def handle_subdomain_exists(request, github_handle):
     profile = Profile.objects.filter(handle=github_handle).first()
     last_request = ENSSubdomainRegistration.objects.filter(profile=profile).latest('created_on')
@@ -130,6 +138,7 @@ def handle_subdomain_post_request(request, github_handle):
                 {'success': _('false'), 'msg': _('Created Successfully! Please wait for the transaction to mine!')})
         else:
             return JsonResponse({'success': _('false'), 'msg': _('Sign Mismatch Error')})
+    return handle_default_response(request, github_handle)
 
 
 @csrf_exempt
@@ -142,8 +151,4 @@ def ens_subdomain(request):
     try:
         return handle_subdomain_exists(request, github_handle)
     except ENSSubdomainRegistration.DoesNotExist:
-        params = {
-            'github_handle': github_handle,
-            'ens_domain': settings.ENS_TLD,
-        }
-        return TemplateResponse(request, 'ens/ens_register.html', params)
+        return handle_default_response(request, github_handle)
