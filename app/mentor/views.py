@@ -41,7 +41,7 @@ class MentorsList(APIView):
 
 class MentorDetail(APIView):
     authentication_classes = (SessionAuthentication,)
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsProfileOwner,)
+    permission_classes = (permissions.IsAuthenticated, IsProfileOwner,)
 
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'mentor.html'

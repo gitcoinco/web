@@ -33,59 +33,21 @@
       <div class="container" style="padding-top:20px">
         <div class="row">
           <div class="col-xs-12 col-md-8">
-            {% if request.user == mentor.user %}
-              <div class="row no-gutter">
-                <h3>{% trans "Join the mentoring community" %} <span id="alpha">Alpha</span></h3>
-                <p>
-                  {% blocktrans %} Whether you want to learn or teach, this is place to be.
-                  Tell us a little about yourself and what you're hoping to get out of being
-                  part of the community. {% endblocktrans %}
-                </p>
-              </div>
-              <form method="POST"  action="{% url "mentor_details" pk=request.user.profile.id%}">
-                {% render_form serializer %}
-                <div>
-                  {% csrf_token %}
-                  <input class='button button--primary float-right' type='submit' name='submit' value="Submit">
-                </div>
-              </form>
-            {% else %}
+            <div class="row no-gutter">
+              <h3>{% trans "Join the mentoring community" %} <span id="alpha">Alpha</span></h3>
+              <p>
+                {% blocktrans %} Whether you want to learn or teach, this is place to be.
+                Tell us a little about yourself and what you're hoping to get out of being
+                part of the community. {% endblocktrans %}
+              </p>
+            </div>
+            <form method="POST"  action="{% url "mentor_details" pk=request.user.profile.id%}">
+              {% render_form serializer %}
               <div>
-                <h4>Viewing {{mentor.name}} mentor profile</h4>
+                {% csrf_token %}
+                <input class='button button--primary float-right' type='submit' name='submit' value="Submit">
               </div>
-              <div>
-                <h2>organization</h2>
-                <p>{{mentor.org}}</p>
-              </div>
-              <div>
-                <h2>about</h2>
-                <p>{{mentor.about}}</p>
-              </div>
-              <div>
-                <h2>experience</h2>
-                <p>{{mentor.experience_display}} years</p>
-              </div>
-              <div>
-                <h2>commitment per week</h2>
-                <p>{{mentor.commitment_per_week_display}} hours</p>
-              </div>
-              <div>
-                <h2>skills offered</h2>
-                <p>
-                  {% for skill in serializer.skills_offered_list.value %}
-                    <span class="badge badge-primary">{{skill}}</span>
-                  {% endfor %}
-                </p>
-              </div>
-              <div>
-                <h2>skills needed</h2>
-                <p>
-                  {% for skill in serializer.skills_needed_list.value %}
-                    <span class="badge badge-primary">{{skill}}</span>
-                  {% endfor %}
-                </p>
-              </div>
-            {% endif %}
+            </form>
           </div>
           <div class="col-4 d-none d-md-block" style="padding-top:300px">
             <img id='side_img' src="{% static "v2/images/regulus.png" %}" style="max-width:300px;">

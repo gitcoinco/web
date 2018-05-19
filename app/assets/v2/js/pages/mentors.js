@@ -87,7 +87,7 @@ var mentors = (function() {
 
         $('#mentor_search_results').append(html);
         $('#open_mentor_' + mentor.id).click(function() {
-          window.location = '' + mentor.id;
+          window.location = '/profile/' + mentor.handle;
         });
       });
       if (result.total_pages > pageIdx) {

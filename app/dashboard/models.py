@@ -53,6 +53,7 @@ from taggit.models import GenericTaggedItemBase, TagBase
 from web3 import Web3
 
 from .signals import m2m_changed_interested
+from mentor.models import MentorSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -1632,6 +1633,7 @@ class Profile(SuperModel):
             'sum_eth_on_repos': sum_eth_on_repos,
             'works_with_org': works_with_org,
             'count_bounties_on_repo': count_bounties_on_repo,
+            'mentor_serializer' = MentorSerializer(self)
         }
 
         if activities:

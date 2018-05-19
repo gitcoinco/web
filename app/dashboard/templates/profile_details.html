@@ -252,7 +252,27 @@
           </div>
         </div>
       {% endif %}
-
+      <div class="row">
+        <div class="col pt-4 py-2">{% trans "Mentor details" %}</div>
+      </div>
+      <div class="row">
+        <div class="container">
+          <p><strong>{% trans "Organization" %}: </strong>{{profile.org}}</p>
+          <p><strong>{% trans "About" %}: </strong>{{profile.about}}</p>
+          <p><strong>{% trans "Experience" %}: </strong>{{profile.experience_display}}</p>
+          <p><strong>{% trans "Commitment per week" %}: </strong>{{profile.commitment_per_week_display}}</p>
+          <p><strong>{% trans "Skills offered" %}: </strong>
+            {% for skill in mentor_serializer.skills_offered_list.value %}
+              <span class="badge badge-primary">{{skill}}</span>
+            {% endfor %}
+          </p>
+          <p><strong>{% trans "Skills needed" %}: </strong>
+            {% for skill in mentor_serializer.skills_needed_list.value %}
+              <span class="badge badge-primary">{{skill}}</span>
+            {% endfor %}
+          </p>
+        </div>
+      </div>
       {% if activities %}
         <div class="row">
           <div class="col pt-4 py-2">{% trans "Latest Activities" %}</div>

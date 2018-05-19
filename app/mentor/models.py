@@ -22,7 +22,7 @@ class MentorSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ('id', 'name', 'email', 'org', 'about', 'experience',
                   'skills_offered', 'skills_offered', 'skills_needed', 'commitment_per_week', 'available',
-                  'skills_offered_list', 'skills_needed_list')
+                  'skills_offered_list', 'skills_needed_list', 'handle')
 
     email = serializers.CharField(
         style={'template': 'email-input.html'},
