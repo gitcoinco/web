@@ -30,7 +30,8 @@ from django.views.decorators.csrf import csrf_exempt
 from dashboard.models import Profile
 from dashboard.views import w3
 from ens import ENS
-from ens.abis import ENS as ens_abi, RESOLVER as resolver_abi
+from ens.abis import ENS as ens_abi
+from ens.abis import RESOLVER as resolver_abi
 from ens.main import ENS_MAINNET_ADDR
 from ens.utils import dot_eth_namehash, label_to_hash
 from eth_account.messages import defunct_hash_message
@@ -166,7 +167,7 @@ def set_address_at_resolver(signer, github_handle, nonce):
         'from': Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
         'value': 0,
         'nonce': nonce,
-        'gas': 40000,
+        'gas': 100000,
         'gasPrice': gasPrice
     }
 
