@@ -396,6 +396,8 @@ if ROLLBAR_SERVER_TOKEN:
         'patch_debugview': False,  # Disable debug view patching.
         'branch': 'master',
         'exception_level_filters': [(Http404, 'ignored')],
+        'capture_ip': 'anonymize',
+        'capture_username': True,
         'scrub_fields': [
             'pw', 'passwd', 'password', 'secret', 'confirm_password', 'confirmPassword',
             'password_confirmation', 'passwordConfirmation', 'access_token', 'accessToken',
