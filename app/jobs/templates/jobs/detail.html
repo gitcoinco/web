@@ -54,7 +54,7 @@
             </div>
             <div class="job-company-exp">
               <div class="job-company">Company: <span class="company-name">[[:company]]</span></div>
-              <div class="job-experience">Experience: <span id="exp-lang">Java</span></div>
+              <div class="job-experience">Experience: <span id="exp-lang">[[:skills]]</span></div>
               <div class="job-posted">Posted: <span id="job-post-duration">2 days ago</span></div>
             </div>
             <a class="btn job-apply-btn btn-white" target="_blank" href="[[:apply_url]]">
@@ -68,10 +68,7 @@
               [[:description]]
             </div>
             <div class="job-tags tags">
-              <div class="job-tag tag keyword">python</div>
-              <div class="job-tag tag keyword">django</div>
-              <div class="job-tag tag keyword">javascript</div>
-              <div class="job-tag tag keyword">css</div>
+              <div class="job-tag tag keyword">[[:skills]]</div>
             </div>
             <div class="col-12">
               <div class="row box">
@@ -82,16 +79,23 @@
                   <span class="company-name">[[:company]]</span>
                 </div>
                 <div class="col-lg-12 col-md-12 col-md-1">
-                  <div id="job-mail">Email <span id="job-poster-mail">[[:apply_url]]</span></div>
+                  <div id="job-mail">Email <span id="job-poster-mail"><a href="mailto:[[:apply_email]]">[[:apply_email]]</a></span></div>
                 </div>
                 <div class="col-lg-12 col-md-12">
-                  <div id="job-profile">Gitcoin Profile <span id="job-poster-profile"></span></div>
+                <div id="job-profile">Gitcoin Profile
+                  <span id="job-poster-profile">
+                    [[if posted_by_user_profile_url]]
+                    <a href="[[:posted_by_user_profile_url]]">@[[:posted_by_gitcoin_username]]</a>
+                    [[else]]
+                    Not available
+                    [[/if]]
+                  </span>
+                </div>
                 </div>
               </div>
             </div>
           </div>
         </script>
-
 
       </div>
     </div>

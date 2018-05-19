@@ -2,21 +2,11 @@
 /* eslint no-redeclare: "warn" */
 
 var build_detail_page = function(result) {
-   var template = $.templates('#job_detail');
+  var template = $.templates('#job_detail');
 
-   html = template.render(result);
+  html = template.render(result);
 
-   $('#rendered_job_detail').html(html);
-};
-
-var render_actions = function(actions) {
-  for (var l = 0; l < actions.length; l++) {
-    var target = actions[l]['parent'];
-    var tmpl = $.templates('#action');
-    var html = tmpl.render(actions[l]);
-
-    $('#' + target).append(html);
-  }
+  $('#rendered_job_detail').html(html);
 };
 
 var pull_job_from_api = function() {
@@ -27,10 +17,10 @@ var pull_job_from_api = function() {
     var nonefound = true;
 
     if (result) {
-       nonefound = false;
-        build_detail_page(result);
-        document.result = result;
-        $('#rendered_job_detail').css('display', 'block');
+      nonefound = false;
+      build_detail_page(result);
+      document.result = result;
+      $('#rendered_job_detail').css('display', 'block');
     }
     if (nonefound) {
       $('#rendered_job_detail').css('display', 'none');
@@ -47,7 +37,7 @@ var pull_job_from_api = function() {
 
 var main = function() {
   setTimeout(function() {
-      pull_job_from_api();
+    pull_job_from_api();
   }, 100);
 };
 

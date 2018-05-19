@@ -11,6 +11,10 @@ h4 {
   text-align: left;
 }
 
+.job-title {
+  padding-top: 2em;
+}
+
 .job-header {
   padding-bottom: 6em;
 }
@@ -61,6 +65,7 @@ h4 {
   flex-direction: row;
   justify-content: space-between;
   margin: 1em 0 1em 0;
+  padding-bottom: 2em;
 }
 
 .job-posted {

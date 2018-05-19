@@ -419,13 +419,6 @@ var refreshjobs = function(event) {
       result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
       var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
 
-      // setup args to go into template
-      // if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
-      //   result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
-      // } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
-      //   result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
-      // }
-      console.log(result);
       result.action = result['url'];
       result['title'] = result['title'] ? result['title'] : result['github_url'];
 
@@ -433,7 +426,7 @@ var refreshjobs = function(event) {
 
       result['job_company'] = ((result['company'] ? result['company'] : 'Company Hidden') + ' &bull; ');
 
-      result['job_skill'] += result['skills'] ? result['skills'] : ''
+      result['job_skill'] += result['skills'] ? result['skills'] : '';
 
       result['watch'] = 'Watch';
 

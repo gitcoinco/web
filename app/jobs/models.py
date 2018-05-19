@@ -1,8 +1,9 @@
 from datetime import timedelta
 
-from django.contrib.postgres.fields import ArrayField
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -53,6 +54,16 @@ class Job(models.Model):
         _('Expiry Date'), null=False, blank=False, default=get_expiry_time
     )
     company = models.CharField(_('Company'), max_length=50, null=True, blank=True)
+    apply_email = models.EmailField(_('Contact Email for Job'), null=True, blank=True)
+    posted_by_gitcoin_username = models.CharField(
+        _('Username of person who posted Job'), max_length=50, null=True, blank=True
+    )
+
+    @property
+    def posted_by_user_profile_url(self):
+        if self.posted_by_gitcoin_username:
+            return reverse('profile', args=[self.posted_by_gitcoin_username])
+        return None
 
     def get_absolute_url(self):
         """Get the absolute URL for the Job.
