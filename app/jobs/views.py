@@ -2,21 +2,17 @@
 from django.template.response import TemplateResponse
 
 # gitcoin-web imports
-from .models import Job
+# from .models import Job
 
 
 def list_jobs(request):
-    context = {
-        'jobs': Job.objects.all()
-    }
-
+    context = dict()
     return TemplateResponse(request, 'jobs/list.html', context=context)
 
 
 def job_detail(request, pk):
-    job = Job.objects.filter(pk=pk)
     context = {
-        'job': job
+        'pk': pk
     }
 
     return TemplateResponse(request, 'jobs/detail.html', context=context)

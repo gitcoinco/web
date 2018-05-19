@@ -331,7 +331,7 @@ var paint_jobs_in_viewport = function(start, max) {
     $('#jobs').append(html);
   }
 
-  $('div.bounty_row.result').each(function() {
+  $('div.job-row.result').each(function() {
     var href = $(this).attr('href');
 
     if (typeof $(this).changeElementType !== 'undefined') {
@@ -343,7 +343,7 @@ var paint_jobs_in_viewport = function(start, max) {
   document.is_painting_now = false;
 
   if (document.referrer.search('/onboard') != -1) {
-    $('.bounty_row').each(function(index) {
+    $('.job-row').each(function(index) {
       if (index > 2)
         $(this).addClass('hidden');
     });
@@ -355,7 +355,7 @@ var trigger_scroll = debounce(function() {
     return;
   }
   var scrollPos = $(document).scrollTop();
-  var last_active_bounty = $('.bounty_row.result:last-child');
+  var last_active_bounty = $('.job-row.result:last-child');
 
   if (last_active_bounty.length == 0) {
     return;
@@ -382,7 +382,7 @@ var refreshjobs = function(event) {
 
   $('.nonefound').css('display', 'none');
   $('.loading').css('display', 'block');
-  $('.bounty_row').remove();
+  $('.job-row').remove();
 
   // filter
   var uri = get_search_URI();
@@ -425,40 +425,15 @@ var refreshjobs = function(event) {
       // } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
       //   result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
       // }
-
+      console.log(result);
       result.action = result['url'];
       result['title'] = result['title'] ? result['title'] : result['github_url'];
 
       var timeLeft = timeDifference(new Date(result['expiry_date']), new Date(), true);
 
-      result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
+      result['job_company'] = ((result['company'] ? result['company'] : 'Company Hidden') + ' &bull; ');
 
-      // if (result['status'] === 'done')
-      //   result['p'] += 'Done';
-      // if (result['fulfillment_accepted_on']) {
-      //   result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
-      // } else if (result['status'] === 'started') {
-      //   result['p'] += 'Started';
-      //   result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
-      // } else if (result['status'] === 'submitted') {
-      //   result['p'] += 'Submitted';
-      //   if (result['fulfillment_submitted_on']) {
-      //     result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
-      //   }
-      // } else if (result['status'] == 'cancelled') {
-      //   result['p'] += 'Cancelled';
-      //   if (result['canceled_on']) {
-      //     result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
-      //   }
-      // } else if (is_expired) {
-      //   var time_ago = timeDifference(new Date(), new Date(result['expiry_date']), true);
-
-      //   result['p'] += ('Expired ' + time_ago + ' ago');
-      // } else {
-      //   var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
-
-      //   result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
-      // }
+      result['job_skill'] += result['skills'] ? result['skills'] : ''
 
       result['watch'] = 'Watch';
 
@@ -504,13 +479,6 @@ var resetFilters = function() {
   for (var i = 0; i < sidebar_keys.length; i++) {
     var key = sidebar_keys[i];
     var tag = ($('input[name=' + key + '][value]'));
-
-    for (var j = 0; j < tag.length; j++) {
-      if (tag[j].value == 'any')
-        $('input[name=' + key + '][value=any]').prop('checked', true);
-      else
-        $('input[name=' + key + '][value=' + tag[j].value + ']').prop('checked', false);
-    }
   }
 };
 
@@ -525,7 +493,7 @@ var resetFilters = function() {
     document.referrer = '';
 
     $('#onboard-alert').click(function(e) {
-      $('.bounty_row').each(function(index) {
+      $('.job-row').each(function(index) {
         $(this).removeClass('hidden');
       });
       $('#onboard-dashboard').addClass('hidden');

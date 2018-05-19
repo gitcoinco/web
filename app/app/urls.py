@@ -258,8 +258,8 @@ urlpatterns = [
 
 
     # Job urls goes below
-    path('jobs', jobs.views.list_jobs, name='jobs'),
-    path('jobs/<int:pk>/', jobs.views.job_detail, name='jobs'),
+    path('jobs', jobs.views.list_jobs, name='job-list-template'),
+    path('jobs/<int:pk>/', jobs.views.job_detail, name='job-detail-template'),
 ]
 
 if settings.ENABLE_SILK:

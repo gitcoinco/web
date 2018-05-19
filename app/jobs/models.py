@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.contrib.postgres.fields import ArrayField
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -51,6 +52,32 @@ class Job(models.Model):
     expiry_date = models.DateTimeField(
         _('Expiry Date'), null=False, blank=False, default=get_expiry_time
     )
+
+    def get_absolute_url(self):
+        """Get the absolute URL for the Job.
+
+        Returns:
+            str: The absolute URL for the Job.
+
+        """
+        return settings.BASE_URL + self.get_relative_url(preceding_slash=False)
+
+    def get_relative_url(self, preceding_slash=True):
+        """Get the relative URL for the Job.
+
+        Attributes:
+            preceding_slash (bool): Whether or not to include a preceding slash.
+
+        Returns:
+            str: The relative URL for the Job.
+
+        """
+        job_id = self.id
+        return f"{'/' if preceding_slash else ''}jobs/{job_id}/"
+
+    @property
+    def url(self):
+        return self.get_absolute_url()
 
     class Meta:
         db_table = 'job'

@@ -73,7 +73,7 @@
 
     <!-- JSRender stuff -->
     <script id="result" type="text/x-jsrender">
-      <div class="row result bounty_row [[:network]]" href="[[:action]]">
+      <div class="row result job-row [[:network]]" href="[[:action]]">
           [[if avatar_url]]
             <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
               <img src='[[:avatar_url]]' class='avatar'>
@@ -84,45 +84,19 @@
             </div>
           [[/if]]
         <div class="col-12 col-md-8 d-flex flex-column">
-          <div class="bounty-detail">
+          <div class="job-details col-12">
             <div class="title font-subheader">
               [[:title]]
             </div>
-            <div class="bounty-summary col-12">
-              [[if github_comments]]
-                <div class="col-xs-1">
-                  <img src={% static "v2/images/comment.svg" %}>
-                  <span class="github-comment font-caption">[[:github_comments]]</span>
-                </div>
-              [[/if]]
-              <div class="info font-caption">
-                [[:p]]
-              </div>
+            <div class="col-12">
+                <div class="job-company">[[:job_company]]</div>
+                <div class="job-skill">[[:job_skill]]</div>
+            </div>
+            <div>
+                <div class="job-type">Contract</div>
+                <div class="job-location">Singapore</div>
             </div>
           </div>
-        </div>
-        <div class="col-12 col-md-2 tags font-caption align-items-center">
-          [[if network != 'mainnet']]
-          <div class="tag network_warning">
-            <p>
-              <span>[[:network]]</span>
-            </p>
-          </div>
-          [[/if]]
-          <div class="tag token">
-            <p>
-              [[:rounded_amount]]
-              <span>[[:token_name]]</span>
-            </p>
-          </div>
-          [[if value_in_usdt]]
-            <div class="tag usd">
-              <p>
-                [[:value_in_usdt]]
-                <span>USD</span>
-              </p>
-            </div>
-          [[/if]]
         </div>
       </div>
     </script>
