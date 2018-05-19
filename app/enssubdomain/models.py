@@ -42,6 +42,8 @@ class ENSSubdomainRegistration(SuperModel):
     txn_hash_3 = models.CharField(max_length=255)
     pending = models.BooleanField()
     signed_msg = models.TextField()
+    start_nonce = models.IntegerField(default=0)
+    end_nonce = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.profile.handle
+        return f"{self.profile.handle} at {self.created_on}, {self.start_nonce} => {self.end_nonce}"

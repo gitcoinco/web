@@ -190,6 +190,18 @@ def set_address_at_resolver(signer, github_handle, nonce):
     return txn_hash
 
 
+def get_nonce():
+    web3_nonce = w3.eth.getTransactionCount(settings.ENS_OWNER_ACCOUNT)
+    next_db_nonce = 0
+    try:
+        last_ens = ENSSubdomainRegistration.objects.order_by('-end_nonce').first()
+        next_db_nonce = last_ens.end_nonce + 1
+    except:
+        pass
+
+    return max([web3_nonce, next_db_nonce])
+
+
 def handle_subdomain_post_request(request, github_handle):
     # setup
     signedMsg = request.POST.get('signedMsg', '')
@@ -202,7 +214,8 @@ def handle_subdomain_post_request(request, github_handle):
             return JsonResponse({'success': _('false'), 'msg': _('Sign Mismatch Error')})
 
         # actually setup subdomain
-        nonce = w3.eth.getTransactionCount(settings.ENS_OWNER_ACCOUNT)
+        start_nonce = get_nonce()
+        nonce = start_nonce
         txn_hash_1 = set_owner(signer, github_handle, nonce)
         nonce += 1
         txn_hash_2 = set_resolver(signer, github_handle, nonce)
@@ -218,6 +231,8 @@ def handle_subdomain_post_request(request, github_handle):
             txn_hash_3=txn_hash_3,
             pending=True,
             signed_msg=signedMsg,
+            start_nonce=start_nonce,
+            end_nonce=nonce,
             )
         return JsonResponse(
             {'success': _('false'), 'msg': _('Your request has been submitted. Please wait for the transaction to mine!')})
