@@ -425,10 +425,6 @@ p a {
   margin-left: 0px;
 }
 
-.dashboard .special_tag a {
-  max-height: 30px;
-}
-
 .dashboard .body .avatar {
   max-height: 50px;
   max-width: 50px;
