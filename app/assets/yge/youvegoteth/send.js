@@ -47,12 +47,10 @@ var promptForAuth = function(event) {
   var denomination = jQuery('#token option:selected').text();
   var tokenAddress = jQuery('#token option:selected').val();
   if (denomination != 'ETH'){
-      var value = 10;
       var from = web3.eth.coinbase;
       var to = contract().address;
-      token_contract(tokenAddress).transferFrom.estimateGas(from,to,value, function(error, result){
-        console.log(error, result);
-        if(error){
+      token_contract(tokenAddress).allowance.call(from, to, function(error, result){
+        if(error || result.toNumber() == 0){
           _alert({ message: gettext("You have not yet enabled this token.  To enable this token, please sign this .approve() transaction in metamask. (this is only needed one time per token you use)")});
           var amount = (2**256)-1; // uint256
           var amount = 10 * 18 * 9999999999999999999999999999999999999999999999999999; // uint256
@@ -65,7 +63,7 @@ var promptForAuth = function(event) {
               gasPrice: web3.toHex(defaultGasPrice),
             },function(error,result){
               var link_url = etherscan_tx_url(result);
-              var msg = "Once <a href="+link+">this transaction</a> is confirmed, you will be able to use this token on Gitcoin."
+              var msg = "Once <a href="+link_url+">this transaction</a> is confirmed, you will be able to use this token on Gitcoin."
               _alert({ message: gettext(msg)},'success');
             });
           }
