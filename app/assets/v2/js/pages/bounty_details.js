@@ -429,7 +429,8 @@ var show_interest_modal = function() {
   var self = this;
 
   setTimeout(function() {
-    var url = '/interest/modal?redirect=' + window.location.pathname + "&pk=" + document.result['pk']
+    var url = '/interest/modal?redirect=' + window.location.pathname + '&pk=' + document.result['pk'];
+
     $.get(url, function(newHTML) {
       var modal = $(newHTML).appendTo('body').modal({
         modalClass: 'modal add-interest-modal'
@@ -539,7 +540,7 @@ var do_actions = function(result) {
   pull_interest_list(result['pk'], function(is_interested) {
 
     // which actions should we show?
-    var should_block_from_starting_work = !is_interested && result['work_scheme'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted')
+    var should_block_from_starting_work = !is_interested && result['work_scheme'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted');
     var show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work;
     var show_github_link = result['github_url'].substring(0, 4) == 'http';
     var show_submit_work = true;
