@@ -275,7 +275,7 @@ var load_tokens = function() {
       if (typeof localStorage['acceptTOS'] != 'undefined' && localStorage['acceptTOS']) {
         $('input[name=terms]').attr('checked', 'checked');
       }
-      if (typeof localStorage['accept_blockchain_tos'] != 'undefined' && localStorage['acceptblockchainterms']) {
+      if (typeof localStorage['accept_blockchain_tos'] != 'undefined' && localStorage['accept_blockchain_tos']) {
         $('input[name=blockchain_tos]').attr('checked', 'checked');
       }
     });

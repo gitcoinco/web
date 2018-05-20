@@ -47,7 +47,7 @@ class InterestSerializer(serializers.ModelSerializer):
         """Define the Interest serializer metadata."""
 
         model = Interest
-        fields = ('profile', 'created')
+        fields = ('profile', 'created', 'pending')
 
 
 # Serializers define the API representation.

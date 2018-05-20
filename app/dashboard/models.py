@@ -200,6 +200,15 @@ class Bounty(SuperModel):
             self.bounty_owner_github_username = self.bounty_owner_github_username.lstrip('@')
         super().save(*args, **kwargs)
 
+    @property
+    def profile_pairs(self):
+        profile_handles = []
+
+        for profile in self.interested.select_related('profile').all().order_by('pk'):
+            profile_handles.append((profile.profile.handle, profile.profile.absolute_url))
+
+        return profile_handles
+
     def get_absolute_url(self):
         """Get the absolute URL for the Bounty.
 
@@ -249,6 +258,30 @@ class Bounty(SuperModel):
 
         """
         return f'{self.get_absolute_url()}?snooze={num_days}'
+
+    def approve_worker_url(self, worker):
+        """Get the bounty work approval URL.
+
+        Args:
+            worker (string): The handle to approve
+
+        Returns:
+            str: The work approve URL based on the worker name
+
+        """
+        return f'{self.get_absolute_url()}?mutate_worker_action=approve&worker={worker}'
+
+    def reject_worker_url(self, worker):
+        """Get the bounty work rejection URL.
+
+        Args:
+            worker (string): The handle to reject
+
+        Returns:
+            str: The work reject URL based on the worker name
+
+        """
+        return f'{self.get_absolute_url()}?mutate_worker_action=reject&worker={worker}'
 
     @property
     def can_submit_after_expiration_date(self):
@@ -397,7 +430,7 @@ class Bounty(SuperModel):
                         return 'expired'
                     return 'done'
                 elif not fulfillments:
-                    if self.pk and self.interested.exists():
+                    if self.pk and self.interested.filter(pending=False).exists():
                         return 'started'
                     return 'open'
                 return 'submitted'
@@ -414,7 +447,7 @@ class Bounty(SuperModel):
                     # If its not expired or done, it must be cancelled.
                     return 'cancelled'
                 if self.num_fulfillments == 0:
-                    if self.pk and self.interested.exists():
+                    if self.pk and self.interested.filter(pending=False).exists():
                         return 'started'
                     return 'open'
                 return 'submitted'
@@ -896,10 +929,14 @@ class Interest(models.Model):
     profile = models.ForeignKey('dashboard.Profile', related_name='interested', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     issue_message = models.TextField(default='', blank=True)
+    pending = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, this interest is pending and not yet active',
+        )
 
     def __str__(self):
         """Define the string representation of an interested profile."""
-        return self.profile.handle
+        return f"{self.profile.handle} / pending: {self.pending}"
 
 
 @receiver(post_save, sender=Interest, dispatch_uid="psave_interest")
@@ -1148,6 +1185,10 @@ class Profile(SuperModel):
 
     def get_absolute_url(self):
         return settings.BASE_URL + self.get_relative_url(preceding_slash=False)
+
+    @property
+    def url(self):
+        return self.get_absolute_url()
 
     def get_access_token(self, save=True):
         """Get the Github access token from User.

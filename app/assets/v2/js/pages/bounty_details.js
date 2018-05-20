@@ -141,8 +141,7 @@ var callbacks = {
     return [ 'application_scheme', ucwords(result.application_scheme) ];
   },
   'work_scheme': function(key, val, result) {
-    return [ 'work_scheme', result.work_scheme ];
-    return [ 'bounty_owner_name', result.bounty_owner_name ];
+    return [ 'work_scheme', ucwords(result.work_scheme) ];
   },
   'issue_keywords': function(key, val, result) {
     if (!result.keywords || result.keywords.length == 0)
@@ -417,7 +416,7 @@ var attach_work_actions = function() {
     e.preventDefault();
     if ($(this).attr('href') == '/interested') {
       show_interest_modal.call(this);
-    } else if (confirm(gettext('Are you sure you want to remove your interest?'))) {
+    } else if (confirm(gettext('Are you sure you want to stop work?'))) {
       $(this).attr('href', '/interested');
       $(this).find('span').text('Start Work');
       remove_interest(document.result['pk']);
@@ -430,7 +429,8 @@ var show_interest_modal = function() {
   var self = this;
 
   setTimeout(function() {
-    $.get('/interest/modal?redirect=' + window.location.pathname, function(newHTML) {
+    var url = '/interest/modal?redirect=' + window.location.pathname + "&pk=" + document.result['pk']
+    $.get(url, function(newHTML) {
       var modal = $(newHTML).appendTo('body').modal({
         modalClass: 'modal add-interest-modal'
       });
@@ -748,7 +748,7 @@ var render_activity = function(result) {
       activities.push({
         profileId: _interested.profile.id,
         name: _interested.profile.handle,
-        text: gettext('Work Started'),
+        text: _interested.pending ? gettext('Worker Applied') : gettext('Work Started'),
         created_on: _interested.created,
         age: timeDifference(new Date(result['now']), new Date(_interested.created)),
         status: 'started',

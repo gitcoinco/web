@@ -191,7 +191,7 @@ body {
   padding: 5px;
 }
 
-#network {
+#network, .red_warning {
   background-color: #fbe0d6;
   color: #fb9470;
   padding: 5px 10px;
@@ -200,7 +200,7 @@ body {
   display: block;
 }
 
-#network a{
+#network a, .red_warning a{
   color: #fb9470;
   font-weight: bold;
 }

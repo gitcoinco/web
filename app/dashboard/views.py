@@ -54,7 +54,7 @@ from .models import (
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
-    maybe_market_to_twitter, maybe_market_to_user_slack,
+    maybe_market_to_twitter, maybe_market_to_user_slack, maybe_market_to_github,
 )
 from .utils import (
     get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
@@ -115,8 +115,13 @@ def helper_handle_access_token(request, access_token):
 
 
 def create_new_interest_helper(bounty, user, issue_message):
+    approval_required = bounty.application_scheme == 'approval'
     profile_id = user.profile.pk
-    interest = Interest.objects.create(profile_id=profile_id, issue_message=issue_message)
+    interest = Interest.objects.create(
+        profile_id=profile_id,
+        issue_message=issue_message,
+        pending=approval_required,
+        )
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
     maybe_market_to_slack(bounty, 'start_work')
@@ -133,7 +138,10 @@ def gh_login(request):
 
 def get_interest_modal(request):
 
+    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
+
     context = {
+        'bounty': bounty,
         'active': 'get_interest_modal',
         'title': _('Add Interest'),
         'user_logged_in': request.user.is_authenticated,
@@ -197,14 +205,14 @@ def new_interest(request, bounty_id):
 
     if profile.has_been_removed_by_staff():
         return JsonResponse({
-            'error': _('Because a staff member has had to remove you from a bounty in the past, you are unable to start more work at this time. Please contact support.'),
+            'error': _('Because a staff member has had to remove you from a bounty in the past, you are unable to start more work at this time. Please leave a message on slack if you feel this message is in error.'),
             'success': False},
             status=401)
 
     try:
         Interest.objects.get(profile_id=profile_id, bounty=bounty)
         return JsonResponse({
-            'error': _('You have already expressed interest in this bounty!'),
+            'error': _('You have already started work on this bounty!'),
             'success': False},
             status=401)
     except Interest.DoesNotExist:
@@ -220,11 +228,20 @@ def new_interest(request, bounty_id):
         Interest.objects.filter(pk__in=list(bounty_ids)).delete()
 
         return JsonResponse({
-            'error': _('You have already expressed interest in this bounty!'),
+            'error': _('You have already started work on this bounty!'),
             'success': False},
             status=401)
 
-    return JsonResponse({'success': True, 'profile': ProfileSerializer(interest.profile).data})
+    msg = _("You have started work.")
+    approval_required = bounty.application_scheme == 'approval'
+    if approval_required:
+        msg = _("You have applied to start work.  If approved, you will be notified via email.")
+
+    return JsonResponse({
+        'success': True,
+        'profile': ProfileSerializer(interest.profile).data,
+        'msg': msg,
+        })
 
 
 @csrf_exempt
@@ -286,7 +303,10 @@ def remove_interest(request, bounty_id):
         bounty.interested.remove(*interest_ids)
         Interest.objects.filter(pk__in=list(interest_ids)).delete()
 
-    return JsonResponse({'success': True})
+    return JsonResponse({
+        'success': True,
+        'msg': _("You've stopped working on this, thanks for letting us know."),
+        })
 
 
 @require_POST
@@ -347,7 +367,11 @@ def uninterested(request, bounty_id, profile_id):
         bounty_uninterested(profile.user.email, bounty, interest)
     else:
         print("no email sent -- user was not found")
-    return JsonResponse({'success': True})
+
+    return JsonResponse({
+        'success': True,
+        'msg': _("You've stopped working on this, thanks for letting us know."),
+        })
 
 
 @csrf_exempt
@@ -635,6 +659,58 @@ def cancel_bounty(request):
     return TemplateResponse(request, 'kill_bounty.html', params)
 
 
+def helper_handle_snooze(request, bounty):
+    snooze_days = int(request.GET.get('snooze', 0))
+    if snooze_days:
+        is_funder = bounty.is_funder(request.user.username.lower())
+        is_staff = request.user.is_staff
+        if is_funder or is_staff:
+            bounty.snooze_warnings_for_days = snooze_days
+            bounty.save()
+            messages.success(request, _(f'Warning messages have been snoozed for {snooze_days} days'))
+        else:
+            messages.warning(request, _('Only the funder of this bounty may snooze warnings.'))
+
+
+def helper_handle_approvals(request, bounty):
+    mutate_worker_action = request.GET.get('mutate_worker_action', None)
+    mutate_worker_action_past_tense = 'approved' if mutate_worker_action == 'approve' else "rejected"
+    worker = request.GET.get('worker', None)
+    if mutate_worker_action:
+        is_funder = bounty.is_funder(request.user.username.lower())
+        is_staff = request.user.is_staff
+        if is_funder or is_staff:
+            interests = bounty.interested.filter(pending=True, profile__handle=worker)
+            if not interests.exists():
+                messages.warning(request, _('This worker does not exist or is not in a pending state. Please check your link and try again.'))
+                return
+            interest = interests.first()
+
+            if mutate_worker_action == 'approve':
+                interest.pending = False
+                interest.save()
+
+                # TODO: send an email when 
+
+                maybe_market_to_github(bounty, 'work_started', profile_pairs=bounty.profile_pairs)
+                maybe_market_to_slack(bounty, 'worker_approved')
+                maybe_market_to_user_slack(bounty, 'worker_approved')
+                maybe_market_to_twitter(bounty, 'worker_approved')
+ 
+
+            else:
+                bounty.interested.remove(interest)
+                interest.delete()
+
+                maybe_market_to_slack(bounty, 'worker_rejected')
+                maybe_market_to_user_slack(bounty, 'worker_rejected')
+                maybe_market_to_twitter(bounty, 'worker_rejected')
+
+            messages.success(request, _(f'{worker} has been {mutate_worker_action_past_tense}'))
+        else:
+            messages.warning(request, _('Only the funder of this bounty may perform this action.'))
+
+
 def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None):
     """Display the bounty details.
 
@@ -697,16 +773,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
 
-                snooze_days = int(request.GET.get('snooze', 0))
-                if snooze_days:
-                    is_funder = bounty.is_funder(request.user.username.lower())
-                    is_staff = request.user.is_staff
-                    if is_funder or is_staff:
-                        bounty.snooze_warnings_for_days = snooze_days
-                        bounty.save()
-                        messages.success(request, _(f'Warning messages have been snoozed for {snooze_days} days'))
-                    else:
-                        messages.warning(request, _('Only the funder of this bounty may snooze warnings.'))
+                helper_handle_snooze(request, bounty)
+                helper_handle_approvals(request, bounty)
 
         except Bounty.DoesNotExist:
             pass

@@ -12,6 +12,22 @@ $(document).ready(function() {
   } else if (localStorage['issueURL']) {
     $('input[name=issueURL]').val(localStorage['issueURL']);
   }
+  if (localStorage['work_scheme']) {
+    $('select[name=work_scheme] option').prop('selected', false);
+    $(
+      "select[name=work_scheme] option[value='" +
+        localStorage['work_scheme'] +
+        "']"
+    ).prop('selected', true);
+  }
+  if (localStorage['application_scheme']) {
+    $('select[name=application_scheme] option').prop('selected', false);
+    $(
+      "select[name=application_scheme] option[value='" +
+        localStorage['application_scheme'] +
+        "']"
+    ).prop('selected', true);
+  }
   if (localStorage['expirationTimeDelta']) {
     $('select[name=expirationTimeDelta] option').prop('selected', false);
     $(
@@ -170,6 +186,8 @@ $(document).ready(function() {
       $(this).attr('disabled', 'disabled');
 
       // save off local state for later
+      localStorage['work_scheme'] = data.work_scheme;
+      localStorage['application_scheme'] = data.application_scheme;
       localStorage['issueURL'] = issueURL;
       localStorage['amount'] = amount;
       localStorage['notificationEmail'] = notificationEmail;

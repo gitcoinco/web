@@ -199,17 +199,18 @@ var mutate_interest = function(bounty_pk, direction, data) {
     .toggleClass('button')
     .toggleClass('button--primary');
 
-  if (direction === 'new') {
-    _alert({ message: gettext("Thanks for letting us know that you're ready to start work.") }, 'success');
-    $('#interest a').attr('id', 'btn-white');
-  } else if (direction === 'remove') {
-    _alert({ message: gettext("You've stopped working on this, thanks for letting us know.") }, 'success');
-    $('#interest a').attr('id', '');
-  }
-
   $.post(request_url, data).then(function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
+      console.log(result);
+      if (direction === 'new') {
+        _alert({ message: result.msg }, 'success');
+        $('#interest a').attr('id', 'btn-white');
+      } else if (direction === 'remove') {
+        _alert({ message: result.msg }, 'success');
+        $('#interest a').attr('id', '');
+      }
+
       pull_interest_list(bounty_pk);
       return true;
     }
