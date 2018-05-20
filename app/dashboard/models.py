@@ -1287,11 +1287,11 @@ class Profile(SuperModel):
             'activities': [{'title': _('No data available.')}]
         }
         if activities:
-            fulfilled = self.fulfilled
-            completed = fulfilled.filter(accepted=True).order_by('-created_on')
-            submitted = fulfilled.filter(accepted=False).order_by('-created_on')
+            fulfilled = self.fulfilled.select_related('bounty').all().order_by('-created_on')
+            completed = [fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=False)]
+            submitted = [fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=True)]
             started = self.interested.prefetch_related('bounty_set').all().order_by('-created')
-            started_bounties = [bounty.bounty_set.last() for bounty in started]
+            started_bounties = [interest.bounty_set.last() for interest in started]
 
             if completed or submitted or started:
                 params['activities'] = [{

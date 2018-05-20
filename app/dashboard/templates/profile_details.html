@@ -229,7 +229,6 @@
                         <div class="profile-bounties__group-title">{% trans "Started" %} {{ group.started|length }} {% if group.started|length > 1 %}{% trans "Bounties" %}{% else %}{% trans "Bounty" %}{% endif %}</div>
 
                         {% for bounty in group.started %}
-                          {{ bounty.status }}
                           {% include "shared/profile_activities_bounty.html" %}
                         {% endfor %}
                       </div>
@@ -371,13 +370,13 @@
         }
 
         // Fetch user bounties: "in progress" / actively started.
-        fetchBountiesAndAddToList('interested_github_username={{ profile.handle }}&status=started', '.profile-bounties--in-progress');
+        fetchBountiesAndAddToList('started={{ profile.handle }}&status__in=started,submitted', '.profile-bounties--in-progress');
 
         // Fetch bounties user is owner
         fetchBountiesAndAddToList('bounty_owner_github_username={{ profile.handle }}', '.profile-bounties--funded');
 
         // Fetch bounties user is fulfiller
-        fetchBountiesAndAddToList('fulfiller_github_username={{ profile.handle }}', '.profile-bounties--completed');
+        fetchBountiesAndAddToList('started={{ profile.handle }}&idx_status=done', '.profile-bounties--completed');
       });
     </script>
   </body>
