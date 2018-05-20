@@ -53,8 +53,8 @@ from .models import (
     ToolVote, UserAction,
 )
 from .notifications import (
-    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
-    maybe_market_to_twitter, maybe_market_to_user_slack, maybe_market_to_github,
+    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_github,
+    maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_slack,
 )
 from .utils import (
     get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
