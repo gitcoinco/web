@@ -802,38 +802,7 @@ def profile(request, handle):
     except ProfileHiddenException:
         raise Http404
 
-    params = {
-        'title': f"@{handle}",
-        'active': 'profile_details',
-        'newsletter_headline': _('Be the first to know about new funded issues.'),
-        'card_title': f'@{handle} | Gitcoin',
-        'card_desc': profile.desc,
-        'avatar_url': profile.avatar_url_with_gitcoin_logo,
-        'profile': profile,
-        'stats': profile.stats,
-        'bounties': profile.bounties,
-        'tips': Tip.objects.filter(username=handle, network='mainnet'),
-        # TODO: Fill following with real data
-        'count_bounties_completed': profile.stats[4][0],
-        'sum_eth_collected': 24.5,
-        'scoreboard_position_contributor': 1,
-        'sum_eth_funded': 32.2,
-        'scoreboard_position_funder': 4,
-        'activities': [
-            {
-                'title': 'May 2018',
-                'completed': [profile.bounties[0], profile.bounties[1]],
-                'submitted': [profile.bounties[0]],
-                'started': []
-            },
-            {
-                'title': 'April 2018',
-                'completed': [],
-                'submitted': [],
-                'started': [profile.bounties[2], profile.bounties[0]]
-            }
-        ]
-    }
+    params = profile.to_dict()
 
     return TemplateResponse(request, 'profile_details.html', params)
 
