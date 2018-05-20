@@ -1290,13 +1290,15 @@ class Profile(SuperModel):
             fulfilled = self.fulfilled
             completed = fulfilled.filter(accepted=True).order_by('-created_on')
             submitted = fulfilled.filter(accepted=False).order_by('-created_on')
-            started = self.interested.all().order_by('-created')
+            started = self.interested.prefetch_related('bounty_set').all().order_by('-created')
+            started_bounties = [bounty.bounty_set.last() for bounty in started]
+
             if completed or submitted or started:
                 params['activities'] = [{
                     'title': _('By Created Date'),
                     'completed': completed,
                     'submitted': submitted,
-                    'started': started
+                    'started': started_bounties,
                 }]
 
         if tips:

@@ -58,7 +58,7 @@
                 <ul>
                   <li><span class="highlight">{{ count_bounties_completed }}</span> {% trans "bounties completed" %}</li>
                   <li><span class="highlight">{{ sum_eth_collected }}</span> {% trans "ETH collected" %}</li>
-                  <li><span class="highlight">#{% if scoreboard_position_contributor %}{{ scoreboard_position_contributor }}{% else %}N/A{% endif %}</span> {% trans "contributor" %}</li>
+                  <li><span class="highlight">{% if scoreboard_position_contributor %}#{{ scoreboard_position_contributor }}{% else %}-{% endif %}</span> {% trans "contributor" %}</li>
                 </ul>
               </div>
             </div>
@@ -72,7 +72,7 @@
                 <ul>
                   <li><span class="highlight">{{ stats.1.0 }}</span> {% trans "bounties funded" %}</li>
                   <li><span class="highlight">{{ sum_eth_funded }}</span> {% trans "ETH funded" %}</li>
-                  <li><span class="highlight">#{% if scoreboard_position_funder %}{{ scoreboard_position_funder }}{% else %}N/A{% endif %}</span> {% trans "funder" %}</li>
+                  <li><span class="highlight">{% if scoreboard_position_funder %}#{{ scoreboard_position_funder }}{% else %}-{% endif %}</span> {% trans "funder" %}</li>
                 </ul>
               </div>
             </div>
@@ -87,6 +87,7 @@
       <div class="row">
         <div class="container profile-bounties profile-bounties--in-progress profile-bounties--loading">
           <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">{% trans "Show all" %}</button>
+
         </div>
       </div>
     </div>
@@ -119,7 +120,7 @@
           <div class="container profile-bounties profile-bounties--tips pb-4">
             {% if tips %}
             {% for tip in tips %}
-              <div class="row result bounty_row {% if forloop.counter > 5 %}bounty_row--hidden{% endif %} {{tip.network}}" {% if tip.github_url %}href="{{tip.github_url}}"{% endif %}>
+              <div class="row result bounty_row {% if forloop.counter > 5 %}bounty_row--hidden{% endif %} {{ tip.network }}" {% if tip.github_url %}href="{{ tip.github_url }}"{% endif %}>
                   {% if tip.from_username %}
                     <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
                       <img src="{% url "avatar" %}?repo=https://github.com/{{ tip.from_username }}" class="avatar">
@@ -228,6 +229,7 @@
                         <div class="profile-bounties__group-title">{% trans "Started" %} {{ group.started|length }} {% if group.started|length > 1 %}{% trans "Bounties" %}{% else %}{% trans "Bounty" %}{% endif %}</div>
 
                         {% for bounty in group.started %}
+                          {{ bounty.status }}
                           {% include "shared/profile_activities_bounty.html" %}
                         {% endfor %}
                       </div>
@@ -368,14 +370,14 @@
           });
         }
 
-        // TODO: Fix API call for bounties "in progress"
-        fetchBountiesAndAddToList('bounty_owner_github_username={{profile.handle}}&is_open=true', '.profile-bounties--in-progress');
+        // Fetch user bounties: "in progress" / actively started.
+        fetchBountiesAndAddToList('interested_github_username={{ profile.handle }}&status=started', '.profile-bounties--in-progress');
 
         // Fetch bounties user is owner
-        fetchBountiesAndAddToList('bounty_owner_github_username={{profile.handle}}', '.profile-bounties--funded');
+        fetchBountiesAndAddToList('bounty_owner_github_username={{ profile.handle }}', '.profile-bounties--funded');
 
         // Fetch bounties user is fulfiller
-        fetchBountiesAndAddToList('fulfiller_github_username={{profile.handle}}', '.profile-bounties--completed');
+        fetchBountiesAndAddToList('fulfiller_github_username={{ profile.handle }}', '.profile-bounties--completed');
       });
     </script>
   </body>
