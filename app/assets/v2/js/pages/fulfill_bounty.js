@@ -137,7 +137,7 @@ window.onload = function() {
                     error: error
                   });
                   console.error('err', error);
-                  _alert({ message: 'There was an error' });
+                  _alert({ message: gettext('There was an error') });
                   unloading_button($('.js-submit'));
                 } else {
                   next();

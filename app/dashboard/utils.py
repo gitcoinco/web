@@ -28,6 +28,7 @@ import rollbar
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty, UserAction
 from eth_utils import to_checksum_address
+from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
 from ipfsapi.exceptions import CommunicationError
 from web3 import HTTPProvider, Web3
@@ -388,3 +389,23 @@ def record_user_action_on_interest(interest, event_name, last_heard_from_user_da
             'interest_pk': interest.pk,
             'last_heard_from_user_days': last_heard_from_user_days,
         })
+
+
+def get_context(ref_object=None, github_username='', user=None, confirm_time_minutes_target=4,
+                active='', title='', update=None):
+    """Get the context dictionary for use in view."""
+    context = {
+        'githubUsername': github_username,  # TODO: Deprecate this field.
+        'active': active,
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+        'email': getattr(user, 'email', ''),
+        'handle': getattr(user, 'username', ''),
+        'title': title,
+    }
+    if ref_object is not None:
+        context.update({f'{ref_object.__class__.__name__}'.lower(): ref_object})
+    if update is not None and isinstance(update, dict):
+        context.update(update)
+    return context

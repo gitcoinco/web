@@ -50,6 +50,13 @@ h4 {
   text-align: center;
 }
 
+#team .card-small {
+  padding-left: .5rem;
+  padding-right: .5rem;
+  width: 10em;
+}
+
+#team .organization,
 #team .role,
 #jobs .title,
 #team .card .title {
@@ -84,9 +91,25 @@ h4 {
   color: black;
 }
 
+#team .social-links a:hover svg {
+  color: #1AB56D;
+  transform: scale(1.5) rotate(360deg);
+}
+
+#team .card-small .social-links a svg {
+  transition: none;
+}
+
+#team .card-small .social-links a:hover svg {
+  transition: none;
+  transform: none;
+  color: black;
+}
+
 #team .social-links a {
   display: inline-block;
 }
+
 .gitcoin-svg {
   background-size: cover !important;
   background-image: url("/static/v2/images/ios/gitcoin.svg");
@@ -96,9 +119,8 @@ h4 {
   top: 4px;
 }
 
-#team .social-links a:hover svg {
-  color: #1AB56D;
-  transform: scale(1.5) rotate(360deg);
+.card-small .gitcoin-svg {
+  left: -4px;
 }
 
 #jobs,
@@ -193,7 +215,7 @@ img.communityProfileAvatarSocialImg {
 }
 
 div.communityProfile {
-  width: 10%; 
+  width: 10%;
   display: inline-block;
   background-color: #eee;
 }

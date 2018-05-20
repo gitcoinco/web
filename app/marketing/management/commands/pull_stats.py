@@ -162,14 +162,8 @@ def github_stars():
 
 
 def github_issues():
-    from django.utils import timezone
-    from datetime import datetime
-    from marketing.models import Stat
     from github.utils import get_issues, get_user
-    import pytz
-
-    repos = [
-    ]
+    repos = []
 
     for org in ['bitcoin', 'gitcoinco', 'ethereum']:
         for repo in get_user(org, '/repos'):
@@ -193,7 +187,7 @@ def github_issues():
                 key=key,
                 val=(val),
                 )
-        except:
+        except Exception:
             pass
         if not val:
             break
@@ -283,7 +277,7 @@ def bounties():
 
 
 def bounties_hourly_rate():
-    from dashboard.models import Bounty, BountyFulfillment
+    from dashboard.models import Bounty
     that_time = timezone.now()
     bounties = Bounty.objects.filter(
         fulfillment_accepted_on__gt=(that_time - timezone.timedelta(hours=24)),
@@ -294,7 +288,7 @@ def bounties_hourly_rate():
         try:
             hours += bounty.fulfillments.filter(accepted=True).first().fulfiller_hours_worked
             value += bounty.value_in_usdt
-        except:
+        except Exception:
             pass
     print(that_time, bounties.count(), value, hours)
     if value and hours:
@@ -306,7 +300,7 @@ def bounties_hourly_rate():
                 key=key,
                 val=(val),
                 )
-        except:
+        except Exception:
             pass
 
 
@@ -478,6 +472,40 @@ def whitepaper_access_request():
         )
 
 
+def get_skills_keyword_counts():
+    from marketing.models import EmailSubscriber
+    keywords = {}
+    for es in EmailSubscriber.objects.all():
+        for keyword in es.keywords:
+            keyword = keyword.strip().lower().replace(" ", "_")
+            if keyword not in keywords.keys():
+                keywords[keyword] = 0
+            keywords[keyword] += 1
+    for keyword, val in keywords.items():
+        print(keyword, val)
+        Stat.objects.create(
+            key=f"subscribers_with_skill_{keyword}",
+            val=(val),
+            )
+
+
+def get_bounty_keyword_counts():
+    from dashboard.models import Bounty
+    keywords = {}
+    for bounty in Bounty.objects.filter(current_bounty=True).all():
+        for keyword in str(bounty.keywords).split(","):
+            keyword = keyword.strip().lower().replace(" ", "_")
+            if keyword not in keywords.keys():
+                keywords[keyword] = 0
+            keywords[keyword] += 1
+    for keyword, val in keywords.items():
+        print(keyword, val)
+        Stat.objects.create(
+            key=f"bounties_with_skill_{keyword}",
+            val=(val),
+            )
+
+
 def email_events():
     from marketing.models import EmailEvent
 
@@ -498,6 +526,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         fs = [
+            get_bounty_keyword_counts,
+            get_skills_keyword_counts,
             github_issues,
             gitter,
             medium_subscribers,
