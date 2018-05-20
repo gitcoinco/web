@@ -7,6 +7,8 @@ $(document).ready(function() {
   $('input[name=amount]').keyup(setUsdAmount);
   $('input[name=amount]').blur(setUsdAmount);
   $('select[name=deonomination]').change(setUsdAmount);
+  $('select[name=deonomination]').change(promptForAuth);
+
 
   $('input[name=amount]').focus();
 
@@ -133,7 +135,7 @@ $(document).ready(function() {
       return;
     }
 
-    function approveSuccessCallback() {
+    function do_bounty() {
       bounty.increasePayout(
         bountyId,
         bountyAmount + amount,
@@ -147,20 +149,7 @@ $(document).ready(function() {
       );
     }
 
-    if (isETH) {
-      // no approvals needed for ETH
-      approveSuccessCallback();
-    } else {
-      token_contract.approve(
-        bounty_address(),
-        amount,
-        {
-          from: account,
-          value: 0,
-          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-        },
-        approveSuccessCallback
-      );
-    }
+    do_bounty();
+
   });
 });
