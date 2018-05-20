@@ -7,7 +7,7 @@
 
 {% block 'body_block' %}
   {% if not user.is_authenticated %}
-    <a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" class="button">{% trans "Login to Github to continue" %}</a>
+    <a class="button button--primary" style="margin-top: 20px;" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" class="button">{% trans "Login to Github to continue" %}</a>
   {% else %}
     <h1>{% trans "Register your ENS subdomain" %}</h1>
     <div>

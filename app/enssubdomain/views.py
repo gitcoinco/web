@@ -21,7 +21,6 @@ import datetime
 
 from django.conf import settings
 from django.http import JsonResponse
-from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -243,11 +242,6 @@ def handle_subdomain_post_request(request, github_handle):
 def ens_subdomain(request):
     """Register ENS Subdomain."""
     github_handle = request.user.profile.handle if request.user.is_authenticated and hasattr(request.user, 'profile') else None
-
-    #TODO: this should really be a login_required decordator
-    if not github_handle:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
-        return login_redirect
 
     if request.method == "POST" and github_handle:
         return handle_subdomain_post_request(request, github_handle)

@@ -25,6 +25,9 @@
     #upper_left{
         border-radius: 5px;
     }
+    #main header{
+        min-height: 200px;
+    }
     </style>
   </head>
   <body class="{{class}}">
@@ -34,6 +37,7 @@
     {% include 'shared/rain.html' with class="color" %}
     <!-- Wrapper -->
     <div id="wrapper">
+      {% include 'shared/yge_auth.html' with source='authed' %}
       <!-- Main -->
       {% block 'main' %}
       {% endblock %}
