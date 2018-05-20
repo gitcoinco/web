@@ -133,7 +133,9 @@ class Bounty(SuperModel):
     bounty_owner_email = models.CharField(max_length=255, blank=True)
     bounty_owner_github_username = models.CharField(max_length=255, blank=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
-    bounty_owner_profile = models.ForeignKey('dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='bounties_funded')
+    bounty_owner_profile = models.ForeignKey(
+        'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='bounties_funded'
+    )
     is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
     raw_data = JSONField()
@@ -766,8 +768,12 @@ class Tip(SuperModel):
     received_on = models.DateTimeField(null=True, blank=True)
     from_address = models.CharField(max_length=255, default='', blank=True)
     receive_address = models.CharField(max_length=255, default='', blank=True)
-    recipient_profile = models.ForeignKey('dashboard.Profile', related_name='received_tips', on_delete=models.SET_NULL, null=True)
-    sender_profile = models.ForeignKey('dashboard.Profile', related_name='sent_tips', on_delete=models.SET_NULL, null=True)
+    recipient_profile = models.ForeignKey(
+        'dashboard.Profile', related_name='received_tips', on_delete=models.SET_NULL, null=True
+    )
+    sender_profile = models.ForeignKey(
+        'dashboard.Profile', related_name='sent_tips', on_delete=models.SET_NULL, null=True
+    )
 
     def __str__(self):
         """Return the string representation for a tip."""
