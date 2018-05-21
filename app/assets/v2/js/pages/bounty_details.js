@@ -301,7 +301,14 @@ var callbacks = {
 var isBountyOwner = function(result) {
   var bountyAddress = result['bounty_owner_address'];
 
-  return (typeof web3 != 'undefined' && (web3.eth.coinbase == bountyAddress));
+  if (typeof web3 == 'undefined') {
+    return false;
+  }
+  if (typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+    return false;
+  }
+
+  return (web3.eth.coinbase.toLowerCase() == bountyAddress.toLowerCase());
 };
 
 var update_title = function() {
