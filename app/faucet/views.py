@@ -32,6 +32,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from faucet.models import FaucetRequest
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from marketing.mails import new_faucet_request, processed_faucet_request, reject_faucet_request
 
 
@@ -128,6 +129,10 @@ def process_faucet_request(request, pk):
         return redirect(reverse('admin:index'))
 
     faucet_amount = settings.FAUCET_AMOUNT
-    context = {'obj': faucet_request, 'faucet_amount': faucet_amount}
+    context = {
+        'obj': faucet_request,
+        'faucet_amount': faucet_amount,
+        'recommend_gas_price': round(recommend_min_gas_price_to_confirm_in_time(1), 1),
+    }
 
     return TemplateResponse(request, 'process_faucet_request.html', context)
