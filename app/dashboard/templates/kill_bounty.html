@@ -45,7 +45,7 @@
                 <form id="submitBounty">
                   <div class="w-100">
                     <label class="form__label" for="issueURL">{% trans "Issue URL" %}</label>
-                    <input name='issueURL' id="issueURL" class="form__input" type="url" required placeholder="https://github.com/user/repo/pull/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
+                    <input name='issueURL' id="issueURL" class="form__input" type="url" required placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
                   </div>
                   <div class="w-100 mt-2 terms_container">
                     <div class="form__checkbox">
