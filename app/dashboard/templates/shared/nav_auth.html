@@ -70,7 +70,7 @@
     </div>
   </div>
 <img class="nav_avatar" width=50 height=50
-  src="{% url "avatar" %}?repo=https://github.com/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}">
+  src="/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}">
 {% else %}
 <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
   onclick="dataLayer.push({'event': 'login'});">

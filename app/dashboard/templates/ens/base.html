@@ -1,0 +1,61 @@
+{% load i18n static %}
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>{% trans "ENS Subdomains | Gitcoin" %}</title>
+    <meta charset="utf-8" />
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#ffffff">
+    <!--[if lte IE 8]><script src="{% static "yge/js/html5shiv.js" %}"></script><![endif]-->
+    <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
+    <link rel="stylesheet" href="{% static "yge/css/main.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/rain.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
+    <script src="{% static "v2/js/jquery.js" %}"></script>
+    <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
+    <!--[if lte IE 9]><link rel="stylesheet" href="{% static "yge/css/ie9.css" %}" /><![endif]-->
+    <!--[if lte IE 8]><link rel="stylesheet" href="{% static "yge/css/ie8.css" %}" /><![endif]-->
+    <noscript><link rel="stylesheet" href="{% static "yge/css/noscript.css" %}" /></noscript>
+    {% include 'shared/favicon.html' %}
+    <style>
+    #upper_left p{
+        color: white;
+    }
+    #upper_left{
+        border-radius: 5px;
+    }
+    #main header{
+        min-height: 200px;
+    }
+    </style>
+  </head>
+  <body class="{{class}}">
+    {% block 'world' %}
+    {% endblock %}
+    {% include 'shared/rain.html' with class="color" %}
+    {% include 'shared/rain.html' with class="color" %}
+    <!-- Wrapper -->
+    <div id="wrapper">
+      {% include 'shared/yge_auth.html' with source='authed' %}
+      <!-- Main -->
+      {% block 'main' %}
+      {% endblock %}
+      <!-- Footer -->
+      <footer id="footer">
+        <ul class="copyright">
+          <li>
+            <a href="/">&copy; {% trans "Gitcoin.co" %}</a>
+          </li>
+          <li>
+            {% blocktrans %}Made with <3 &amp; bounties by <a href="https://github.com/gitcoinco/web/pull/509">Scottydelta and Gitcoin Core</a>{% endblocktrans %}
+          </li>
+        </ul>
+      </footer>
+    </div>
+    <!-- Scripts -->
+    {% block 'scripts' %}
+    {% endblock %}
+    <script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
+  </body>
+</html>
