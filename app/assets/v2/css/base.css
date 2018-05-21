@@ -1100,6 +1100,7 @@ input[type=text].loading {
 
 .mission {
   font-family: Futura, sans-serif;
+  background-color: #eef4ee;
 }
 
 .text-highlight-green {
@@ -1113,6 +1114,7 @@ input[type=text].loading {
 .text-highlight-pink {
   color: #da086b;
 }
+
 
 #mission_hero .text {
   margin-left: 2rem;
