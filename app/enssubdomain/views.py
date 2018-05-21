@@ -234,7 +234,7 @@ def handle_subdomain_post_request(request, github_handle):
             end_nonce=nonce,
             )
         return JsonResponse(
-            {'success': _('false'), 'msg': _('Your request has been submitted. Please wait for the transaction to mine!')})
+            {'success': True, 'msg': _('Your request has been submitted. Please wait for the transaction to mine!')})
     return handle_default_response(request, github_handle)
 
 
