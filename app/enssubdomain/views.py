@@ -96,8 +96,8 @@ def set_resolver(signer, github_handle, nonce):
         'from': Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
         'value': 0,
         'nonce': nonce,
-        'gas': 100000,
-        'gasPrice': gasPrice
+        'gas':  Web3.toHex(100000),
+        'gasPrice': Web3.toHex(float(gasPrice)),
     }
 
     ens_contract = w3.eth.contract(
@@ -129,8 +129,8 @@ def set_owner(signer, github_handle, nonce):
         'from': Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
         'value': 0,
         'nonce': nonce,
-        'gas': 100000,
-        'gasPrice': gasPrice
+        'gas':  Web3.toHex(100000),
+        'gasPrice': Web3.toHex(float(gasPrice)),
     }
 
     ens_contract = w3.eth.contract(
@@ -166,8 +166,8 @@ def set_address_at_resolver(signer, github_handle, nonce):
         'from': Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
         'value': 0,
         'nonce': nonce,
-        'gas': 100000,
-        'gasPrice': gasPrice
+        'gas':  Web3.toHex(100000),
+        'gasPrice': Web3.toHex(float(gasPrice)),
     }
 
     resolver_contract = w3.eth.contract(
