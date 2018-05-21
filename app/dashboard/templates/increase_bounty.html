@@ -71,7 +71,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <div class="w-100 mt-2 terms_container" style="padding-top:5px;">
                   <div class="form__checkbox">
                     <input name='terms' id='terms' type="checkbox" value=1 />
-                    <label class="form__label" for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>:</label>
+                    <label class="form__label" for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>.</label>
                   </div>
                 </div>
                 {% include 'shared/wallet_estimate.html' %}
@@ -92,6 +92,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
 
   </body>
 

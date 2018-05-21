@@ -13,6 +13,13 @@ All of the environment variables used by this application conform to the [`djang
 | DEBUG | Whether or not to run the environment in Debug mode. | `bool` | True |
 | SECRET_KEY | The secret key to use for your Django environment. | `str` | TODO |
 
+## Project / Entry Specific
+
+| Variable | Description | Type | Default |
+| --- | --- | --- | --- |
+| FORCE_PROVISION | Whether or not to force provisioning even if the container has been previously provisioned | `bool` | False |
+| FORCE_GET_PRICES | Whether or not to force pulling fresh conversion rate data from etherdelta and poloniex | `bool` | False |
+
 ## Amazon Web Services
 
 | Variable | Description | Type | Default |
@@ -28,6 +35,18 @@ All of the environment variables used by this application conform to the [`djang
 | --- | --- | --- | --- |
 | COLO_ACCOUNT_ADDRESS | The coin distribution address. | `str` | '' |
 | COLO_ACCOUNT_PRIVATE_KEY | The coin distribution private key. | `str` | '' |
+
+## EthOS
+
+| Variable | Description | Type | Default |
+| --- | --- | --- | --- |
+| ETHOS_CONTRACT_ADDRESS | The coin contract address. | `str` | '' |
+| ETHOS_ACCOUNT_ADDRESS | The coin distribution address. | `str` | '' |
+| ETHOS_ACCOUNT_PRIVATE_KEY | The coin distribution private key. | `str` | '' |
+| ETHOS_TWITTER_CONSUMER_KEY | EthOSEthereal Twitter account consumer key. | `str` | '' |
+| ETHOS_TWITTER_CONSUMER_SECRET | EthOSEthereal Twitter account consumer secret. | `str` | '' |
+| ETHOS_TWITTER_ACCESS_TOKEN | EthOSEthereal Twitter account access token. | `str` | '' |
+| ETHOS_TWITTER_ACCESS_SECRET | TEthOSEthereal Twitter account access secret. | `str` | '' |
 
 ## Django
 

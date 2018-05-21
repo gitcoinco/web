@@ -1,0 +1,122 @@
+[{
+  "model": "marketing.alumni",
+  "pk": 1,
+  "fields": {
+    "created_on": "2018-05-14T15:34:27.881Z",
+    "modified_on": "2018-05-14T15:34:27.881Z",
+    "profile": 3,
+    "organization": "gitcoinco",
+    "comments": "Auto generated alumni by marketing.migraitons.0023",
+    "public": true
+  }
+}, {
+  "model": "marketing.alumni",
+  "pk": 2,
+  "fields": {
+    "created_on": "2018-05-14T15:34:27.886Z",
+    "modified_on": "2018-05-14T15:34:27.886Z",
+    "profile": 2,
+    "organization": "gitcoinco",
+    "comments": "Auto generated alumni by marketing.migraitons.0023",
+    "public": true
+  }
+}, {
+  "model": "marketing.alumni",
+  "pk": 3,
+  "fields": {
+    "created_on": "2018-05-14T15:34:27.889Z",
+    "modified_on": "2018-05-14T15:34:27.889Z",
+    "profile": 4,
+    "organization": "gitcoinco",
+    "comments": "Auto generated alumni by marketing.migraitons.0023",
+    "public": true
+  }
+}, {
+  "model": "marketing.alumni",
+  "pk": 4,
+  "fields": {
+    "created_on": "2018-05-14T15:34:27.891Z",
+    "modified_on": "2018-05-14T15:34:27.891Z",
+    "profile": 5,
+    "organization": "gitcoinco",
+    "comments": "Auto generated alumni by marketing.migraitons.0023",
+    "public": true
+  }
+}, {
+  "model": "marketing.alumni",
+  "pk": 5,
+  "fields": {
+    "created_on": "2018-05-14T15:34:27.894Z",
+    "modified_on": "2018-05-14T15:34:27.894Z",
+    "profile": 8,
+    "organization": "uport",
+    "comments": "Auto generated alumni by marketing.migraitons.0023",
+    "public": true
+  }
+}, {
+  "model": "marketing.alumni",
+  "pk": 6,
+  "fields": {
+    "created_on": "2018-05-14T15:34:27.896Z",
+    "modified_on": "2018-05-14T15:34:27.896Z",
+    "profile": 7,
+    "organization": "gitcoinco",
+    "comments": "Auto generated alumni by marketing.migraitons.0023",
+    "public": true
+  }
+}, {
+  "model": "marketing.alumni",
+  "pk": 7,
+  "fields": {
+    "created_on": "2018-05-14T15:34:27.898Z",
+    "modified_on": "2018-05-14T15:34:27.898Z",
+    "profile": 6,
+    "organization": "MARKETProtocol",
+    "comments": "Auto generated alumni by marketing.migraitons.0023",
+    "public": true
+  }
+}, {
+  "model": "marketing.alumni",
+  "pk": 8,
+  "fields": {
+    "created_on": "2018-05-14T15:34:27.899Z",
+    "modified_on": "2018-05-14T15:34:27.899Z",
+    "profile": 9,
+    "organization": "MARKETProtocol",
+    "comments": "Auto generated alumni by marketing.migraitons.0023",
+    "public": true
+  }
+}, {
+  "model": "marketing.alumni",
+  "pk": 9,
+  "fields": {
+    "created_on": "2018-05-14T15:34:27.901Z",
+    "modified_on": "2018-05-14T15:34:27.901Z",
+    "profile": 12,
+    "organization": "Metamask",
+    "comments": "Auto generated alumni by marketing.migraitons.0023",
+    "public": true
+  }
+}, {
+  "model": "marketing.alumni",
+  "pk": 10,
+  "fields": {
+    "created_on": "2018-05-14T15:34:27.902Z",
+    "modified_on": "2018-05-14T15:34:27.902Z",
+    "profile": 10,
+    "organization": "ethereum",
+    "comments": "Auto generated alumni by marketing.migraitons.0023",
+    "public": true
+  }
+}, {
+  "model": "marketing.alumni",
+  "pk": 11,
+  "fields": {
+    "created_on": "2018-05-14T15:34:27.904Z",
+    "modified_on": "2018-05-14T15:34:27.904Z",
+    "profile": 11,
+    "organization": "ethereum",
+    "comments": "Auto generated alumni by marketing.migraitons.0023",
+    "public": true
+  }
+}]

@@ -3,6 +3,7 @@ ccxt
 cryptocompare==0.6
 cryptography==2.1.4
 django==2.0.5
+django-cors-headers==2.2.0
 django-filter
 django-ratelimit
 djangorestframework==3.7.3
@@ -31,7 +32,7 @@ statistics
 django-email-obfuscator
 cytoolz==0.9.0
 boto==2.48.0
-rollbar==0.13.18
+rollbar==0.14.0
 awscli
 google-api-python-client
 whitenoise==3.3.1
@@ -50,3 +51,7 @@ boto3==1.7.4
 collectfast==0.6.2
 django-crispy-forms==1.7.2
 django-bootstrap4==0.0.6
+inotify==0.2.9
+matplotlib
+imageio
+easy-thumbnails

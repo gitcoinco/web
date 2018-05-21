@@ -138,7 +138,7 @@ class Bounty(SuperModel):
     is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
     raw_data = JSONField()
-    metadata = JSONField(default={})
+    metadata = JSONField(default={}, blank=True)
     current_bounty = models.BooleanField(
         default=False, help_text=_('Whether this bounty is the most current revision one or not'))
     _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=50)
@@ -161,13 +161,15 @@ class Bounty(SuperModel):
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
-    
+    snooze_warnings_for_days = models.IntegerField(default=0)
+
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
     token_value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_in_usdt_now = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_in_eth = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_true = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
+    privacy_preferences = JSONField(default={}, blank=True)
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
@@ -228,6 +230,18 @@ class Bounty(SuperModel):
     @property
     def url(self):
         return self.get_absolute_url()
+
+    def snooze_url(self, num_days):
+        """Get the bounty snooze URL.
+
+        Args:
+            num_days (int): The number of days to snooze the Bounty.
+
+        Returns:
+            str: The snooze URL based on the provided number of days.
+
+        """
+        return f'{self.get_absolute_url()}?snooze={num_days}'
 
     @property
     def can_submit_after_expiration_date(self):
@@ -326,8 +340,7 @@ class Bounty(SuperModel):
         gitcoin_logo_flag = "/1" if gitcoin_logo_flag else ""
         if org_name:
             return f"{settings.BASE_URL}static/avatar/{org_name}{gitcoin_logo_flag}"
-        else:
-            return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
+        return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
 
     @property
     def keywords(self):
@@ -617,14 +630,14 @@ class Bounty(SuperModel):
             return None
         try:
             return Bounty.objects.filter(standard_bounties_id=self.standard_bounties_id, created_on__gt=self.created_on).order_by('created_on').first()
-        except:
+        except Exception:
             return None
 
     @property
     def prev_bounty(self):
         try:
             return Bounty.objects.filter(standard_bounties_id=self.standard_bounties_id, created_on__lt=self.created_on).order_by('-created_on').first()
-        except:
+        except Exception:
             return None
 
     # returns true if this bounty was active at _time
@@ -647,12 +660,11 @@ class Bounty(SuperModel):
             dict: A dictionary of action URLS for this bounty.
 
         """
-        return {
-            'fulfill': f"/issue/fulfill/{self.pk}",
-            'increase': f"/issue/increase/{self.pk}",
-            'accept': f"/issue/accept/{self.pk}",
-            'cancel': f"/issue/cancel/{self.pk}",
-        }
+        params = f'pk={self.pk}&network={self.network}'
+        urls = {}
+        for item in ['fulfill', 'increase', 'accept', 'cancel']:
+            urls.update({item: f'/issue/{item}?{params}'})
+        return urls
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):
@@ -758,9 +770,9 @@ class Tip(SuperModel):
 
     def __str__(self):
         """Return the string representation for a tip."""
-        return f"({self.network}) - {self.status}{' ORPHAN' if not self.emails else ''} {self.amount} " \
-               f"{self.tokenName} to {self.username}, created: {naturalday(self.created_on)}, " \
-               f"expires: {naturalday(self.expires_date)}"
+        return f"({self.network}) - {self.status}{' ORPHAN' if not self.emails else ''} " \
+               f"{self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}, " \
+               f"created: {naturalday(self.created_on)}, expires: {naturalday(self.expires_date)}"
 
     # TODO: DRY
     def get_natural_value(self):
@@ -876,7 +888,6 @@ class Interest(models.Model):
 
     profile = models.ForeignKey('dashboard.Profile', related_name='interested', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    has_question = models.BooleanField(default=False)
     issue_message = models.TextField(default='', blank=True)
 
     def __str__(self):
@@ -901,7 +912,7 @@ class Profile(SuperModel):
 
     """
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True)
     last_sync_date = models.DateTimeField(null=True)
@@ -909,16 +920,21 @@ class Profile(SuperModel):
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES)
     slack_repos = ArrayField(models.CharField(max_length=200), blank=True, default=[])
-    slack_token = models.CharField(max_length=255, default='')
-    slack_channel = models.CharField(max_length=255, default='')
+    slack_token = models.CharField(max_length=255, default='', blank=True)
+    slack_channel = models.CharField(max_length=255, default='', blank=True)
     suppress_leaderboard = models.BooleanField(
         default=False,
         help_text='If this option is chosen, we will remove your profile information from the leaderboard',
     )
     avatar = models.ImageField(storage=asset_storage, upload_to=get_avatar_path, blank=True)
+    hide_profile = models.BooleanField(
+        default=True,
+        help_text='If this option is chosen, we will remove your profile information all_together',
+    )
     # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
     # Sample repos_data: https://gist.github.com/mbeacom/c9e4fda491987cb9728ee65b114d42c7
     repos_data = JSONField(default={})
+    max_num_issues_start_work = models.IntegerField(default=3)
 
     @property
     def is_org(self):
@@ -977,10 +993,10 @@ class Profile(SuperModel):
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
 
-    def has_abandoned_work(self):
+    def has_been_removed_by_staff(self):
         user_actions = UserAction.objects.filter(
             profile=self,
-            action='bounty_abandonment_final',
+            action='bounty_removed_by_staff',
             )
         return user_actions.exists()
 
@@ -1129,7 +1145,6 @@ class Profile(SuperModel):
                 return True
         return False
 
-
     def is_github_token_valid(self):
         """Check whether or not a Github OAuth token is valid.
 
@@ -1188,11 +1203,45 @@ class Profile(SuperModel):
     def get_profile_preferred_language(self):
         return settings.LANGUAGE_CODE if not self.pref_lang_code else self.pref_lang_code
 
+    def get_slack_repos(self, join=False):
+        """Get the profile's slack tracked repositories.
+
+        Args:
+            join (bool): Whether or not to return a joined string representation.
+                Defaults to: False.
+
+        Returns:
+            list of str: If joined is False, a list of slack repositories.
+            str: If joined is True, a combined string of slack repositories.
+
+        """
+        if join:
+            repos = ','.join(self.slack_repos)
+            return repos
+        return self.slack_repos
+
+    def update_slack_integration(self, token, channel, repos):
+        """Update the profile's slack integration settings.
+
+        Args:
+            token (str): The profile's slack token.
+            channel (str): The profile's slack channel.
+            repos (list of str): The profile's github repositories to track.
+
+        """
+        repos = repos.split()
+        self.slack_token = token
+        self.slack_repos = [repo.strip() for repo in repos]
+        self.slack_channel = channel
+        self.save()
+
+
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
     """Handle actions to take on user login."""
     from dashboard.utils import create_user_action
     create_user_action(user, 'Login', request)
+
 
 @receiver(user_logged_out)
 def post_logout(sender, request, user, **kwargs):
@@ -1247,6 +1296,8 @@ class UserAction(SuperModel):
     ACTION_TYPES = [
         ('Login', 'Login'),
         ('Logout', 'Logout'),
+        ('added_slack_integration', 'Added Slack Integration'),
+        ('removed_slack_integration', 'Removed Slack Integration'),
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
     user = models.ForeignKey(User, related_name='actions', on_delete=models.CASCADE, null=True)
@@ -1381,9 +1432,6 @@ class Tool(SuperModel):
     def i18n_link_copy(self):
         return _(self.link_copy)
 
-    def __str__(self):
-        return self.name
-
 
 class ToolVote(models.Model):
     """Define the vote placed on a tool."""
@@ -1395,7 +1443,7 @@ class ToolVote(models.Model):
     def tool(self):
         try:
             return Tool.objects.filter(votes__in=[self.pk]).first()
-        except:
+        except Exception:
             return None
 
     def __str__(self):

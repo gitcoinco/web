@@ -17,8 +17,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-
 import json
+import logging
 import subprocess
 import time
 
@@ -28,10 +28,13 @@ import rollbar
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty, UserAction
 from eth_utils import to_checksum_address
+from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
 from ipfsapi.exceptions import CommunicationError
 from web3 import HTTPProvider, Web3
 from web3.exceptions import BadFunctionCallOutput
+
+logger = logging.getLogger(__name__)
 
 
 class BountyNotFoundException(Exception):
@@ -73,7 +76,7 @@ def create_user_action(user, action_type, request=None, metadata=None):
         metadata = {}
 
     kwargs = {
-        'metadata': {},
+        'metadata': metadata,
         'action': action_type,
         'user': user
     }
@@ -93,9 +96,9 @@ def create_user_action(user, action_type, request=None, metadata=None):
         UserAction.objects.create(**kwargs)
         return True
     except Exception as e:
-        print(f'Failure in UserAction.create_action - ({e})')
+        logger.error(f'Failure in UserAction.create_action - ({e})')
         rollbar.report_message(
-            f'Failure in UserAction.create_action - ({e})', 'warning', extra_data=kwargs)
+            f'Failure in UserAction.create_action - ({e})', 'error', extra_data=kwargs)
         return False
 
 
@@ -374,3 +377,35 @@ def get_ordinal_repr(num):
     else:
         suffix = ordinal_suffixes.get(num % 10, 'th')
     return f'{num}{suffix}'
+
+
+
+def record_user_action_on_interest(interest, event_name, last_heard_from_user_days):
+    UserAction.objects.create(
+        profile=interest.profile,
+        action=event_name,
+        metadata={
+            'bounties': list(interest.bounty_set.values_list('pk', flat=True)),
+            'interest_pk': interest.pk,
+            'last_heard_from_user_days': last_heard_from_user_days,
+        })
+
+
+def get_context(ref_object=None, github_username='', user=None, confirm_time_minutes_target=4,
+                active='', title='', update=None):
+    """Get the context dictionary for use in view."""
+    context = {
+        'githubUsername': github_username,  # TODO: Deprecate this field.
+        'active': active,
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'eth_usd_conv_rate': eth_usd_conv_rate(),
+        'conf_time_spread': conf_time_spread(),
+        'email': getattr(user, 'email', ''),
+        'handle': getattr(user, 'username', ''),
+        'title': title,
+    }
+    if ref_object is not None:
+        context.update({f'{ref_object.__class__.__name__}'.lower(): ref_object})
+    if update is not None and isinstance(update, dict):
+        context.update(update)
+    return context

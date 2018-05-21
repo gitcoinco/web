@@ -139,4 +139,4 @@ class TestAssembleLeaderboards(TestCase):
         """Test command assemble leaderboards."""
         Command().handle()
 
-        assert LeaderboardRank.objects.all().count() == 8
+        assert LeaderboardRank.objects.all().count() == 4

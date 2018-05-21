@@ -20,12 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import socket
 
 from django.http import Http404
-
-import rollbar
-
-import environ
 from django.utils.translation import gettext_lazy as _
 
+import environ
+import rollbar
+from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
 
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
 env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
@@ -56,6 +55,7 @@ ENABLE_NOTIFICATIONS_ON_NETWORK = env(
 
 # Application definition
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -63,12 +63,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'collectfast',  # Collectfast | static file collector
     'django.contrib.staticfiles',
+    'storages',
     'social_django',
     'django.contrib.humanize',
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'storages',  # django-storages | files/asset storage
     'django_extensions',
+    'easy_thumbnails',
     'app',
     'retail',
     'rest_framework',
@@ -90,9 +92,11 @@ INSTALLED_APPS = [
     'gitcoinbot',
     'external_bounties',
     'dataviz',
+    'ethos',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -104,6 +108,8 @@ MIDDLEWARE = [
     'ratelimit.middleware.RatelimitMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = False
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
@@ -229,6 +235,9 @@ else:
 CRISPY_TEMPLATE_PACK = env('CRISPY_TEMPLATE_PACK', default='bootstrap4')
 GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/', ))
@@ -275,6 +284,22 @@ CACHES = {
     COLLECTFAST_CACHE: env.cache('COLLECTFAST_CACHE_URL'),
 }
 CACHES[COLLECTFAST_CACHE]['OPTIONS'] = {'MAX_ENTRIES': 1000}
+THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + (
+    'ethos.thumbnail_processors.circular_processor', )
+
+THUMBNAIL_ALIASES = {
+    '': {
+        'graph_node': {
+            'size': (30, 30),
+            'crop': True
+        },
+        'graph_node_circular': {
+            'size': (30, 30),
+            'crop': True,
+            'circle': True
+        }
+    }
+}
 
 # HTTPS Handling
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True)
@@ -361,6 +386,8 @@ if GITCOIN_BOT_CERT_PATH:
     with open(str(root.path(GITCOIN_BOT_CERT_PATH))) as f:
         SECRET_KEYSTRING = f.read()
 
+GITCOIN_SLACK_ICON_URL = 'https://gitcoin.co/static/v2/images/helmet.png'
+
 # Twitter Integration
 TWITTER_CONSUMER_KEY = env('TWITTER_CONSUMER_KEY', default='') # TODO
 TWITTER_CONSUMER_SECRET = env('TWITTER_CONSUMER_SECRET', default='') # TODO
@@ -408,7 +435,16 @@ if ROLLBAR_SERVER_TOKEN:
         'root': BASE_DIR,
         'patch_debugview': False,  # Disable debug view patching.
         'branch': 'master',
-        'exception_level_filters': [(Http404, 'info')]
+        'exception_level_filters': [(Http404, 'ignored')],
+        'capture_ip': 'anonymize',
+        'capture_username': True,
+        'scrub_fields': [
+            'pw', 'passwd', 'password', 'secret', 'confirm_password', 'confirmPassword',
+            'password_confirmation', 'passwordConfirmation', 'access_token', 'accessToken',
+            'auth', 'authentication', 'github_access_token', 'github_client_secret',
+            'secret_key', 'twitter_access_token', 'twitter_access_secret', 'twitter_consumer_secret',
+            'mixpanel_token', 'slack_verification_token', 'redirect_state', 'slack_token', 'priv_key',
+        ],
     }
     MIDDLEWARE.append('rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
     rollbar.init(**ROLLBAR)
@@ -422,6 +458,16 @@ AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='')  # TODO
 
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
+AWS_S3_OBJECT_PARAMETERS = env.dict('AWS_S3_OBJECT_PARAMETERS', default={'CacheControl': 'max-age=86400'})
+S3_USE_SIGV4 = env.bool('S3_USE_SIGV4', default=True)
+AWS_IS_GZIPPED = env.bool('AWS_IS_GZIPPED', default=True)
+AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='us-west-2')
+AWS_S3_SIGNATURE_VERSION = env('AWS_S3_SIGNATURE_VERSION', default='s3v4')
+AWS_QUERYSTRING_AUTH = env.bool('AWS_QUERYSTRING_AUTH', default=False)
+AWS_S3_FILE_OVERWRITE = env.bool('AWS_S3_FILE_OVERWRITE', default=True)
+# AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN', default='assets.gitcoin.co')
+
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 
 # Faucet App config
@@ -434,8 +480,18 @@ GITHUB_EVENT_HOOK_URL = env('GITHUB_EVENT_HOOK_URL', default='github/payload/')
 WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://rinkeby.infura.io')
 
 # COLO Coin
-COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')
-COLO_ACCOUNT_PRIVATE_KEY = env('COLO_ACCOUNT_PRIVATE_KEY', default='')
+COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')  # TODO
+COLO_ACCOUNT_PRIVATE_KEY = env('COLO_ACCOUNT_PRIVATE_KEY', default='')  # TODO
+
+# EthOS
+ETHOS_CONTRACT_ADDRESS = env('ETHOS_CONTRACT_ADDRESS', default='')  # TODO
+ETHOS_ACCOUNT_ADDRESS = env('ETHOS_ACCOUNT_ADDRESS', default='')  # TODO
+ETHOS_ACCOUNT_PRIVATE_KEY = env('ETHOS_ACCOUNT_PRIVATE_KEY', default='')  # TODO
+
+ETHOS_TWITTER_CONSUMER_KEY = env('ETHOS_TWITTER_CONSUMER_KEY', default='')  # TODO
+ETHOS_TWITTER_CONSUMER_SECRET = env('ETHOS_TWITTER_CONSUMER_SECRET', default='')  # TODO
+ETHOS_TWITTER_ACCESS_TOKEN = env('ETHOS_TWITTER_ACCESS_TOKEN', default='')  # TODO
+ETHOS_TWITTER_ACCESS_SECRET = env('ETHOS_TWITTER_ACCESS_SECRET', default='')  # TODO
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
