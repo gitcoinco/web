@@ -76,7 +76,7 @@ window.onload = function() {
       e.preventDefault();
       var whatAction = $(this).html().trim();
       var issueURL = $('input[name=issueURL]').val();
-      var fulfillmentId = $('select[name=bountyFulfillment').val();
+      var fulfillmentId = $('select[name=bountyFulfillment]').val();
 
       console.log(fulfillmentId);
 
