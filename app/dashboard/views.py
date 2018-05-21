@@ -690,7 +690,7 @@ def helper_handle_approvals(request, bounty):
                 interest.pending = False
                 interest.save()
 
-                # TODO: send an email when 
+                # TODO: send an email when this happen
 
                 maybe_market_to_github(bounty, 'work_started', profile_pairs=bounty.profile_pairs)
                 maybe_market_to_slack(bounty, 'worker_approved')
@@ -701,6 +701,8 @@ def helper_handle_approvals(request, bounty):
             else:
                 bounty.interested.remove(interest)
                 interest.delete()
+
+                # TODO: send an email when this happen
 
                 maybe_market_to_slack(bounty, 'worker_rejected')
                 maybe_market_to_user_slack(bounty, 'worker_rejected')
