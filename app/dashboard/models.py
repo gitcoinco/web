@@ -1,24 +1,25 @@
-'''
-    Copyright (C) 2017 Gitcoin Core
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-'''
 # -*- coding: utf-8 -*-
+"""
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 from __future__ import unicode_literals
 
 import logging
+import os
 from datetime import datetime
 from urllib.parse import urlsplit
 
@@ -28,6 +29,7 @@ from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.core.files.temp import NamedTemporaryFile
 from django.db import models
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
@@ -38,12 +40,14 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
+from app.storage import asset_storage, get_avatar_path
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from github.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, issue_number, org_name, repo_name,
 )
+from PIL import Image, ImageOps
 from rest_framework import serializers
 from web3 import Web3
 
@@ -922,6 +926,7 @@ class Profile(SuperModel):
         default=False,
         help_text='If this option is chosen, we will remove your profile information from the leaderboard',
     )
+    avatar = models.ImageField(storage=asset_storage, upload_to=get_avatar_path, blank=True)
     hide_profile = models.BooleanField(
         default=True,
         help_text='If this option is chosen, we will remove your profile information all_together',
@@ -946,6 +951,41 @@ class Profile(SuperModel):
         bounties = bounties | Bounty.objects.filter(github_url__in=[url for url in self.tips.values_list('github_url', flat=True)], current_bounty=True)
         bounties = bounties.distinct()
         return bounties.order_by('-web3_created')
+
+    def save_avatar_from_url(self, response=None, avatar_url=''):
+        """."""
+        avatar_url = avatar_url or self.data.get('avatar_url', '')
+
+        if response is None and avatar_url:
+            response = requests.get(avatar_url)
+
+        if response and response.status_code == 200:
+            img_temp = NamedTemporaryFile()
+            img_temp.write(response.content)
+            img_temp.flush()
+            img_temp.seek(0)
+
+            image = Image.open(img_temp)
+            img = Image.new('RGBA', (215, 215), (255, 255, 255))
+
+            # execute
+            image = Image.open(image, 'r').convert('RGBA')
+            image = ImageOps.fit(image, (215, 215), Image.ANTIALIAS)
+            offset = 0, 0
+            img.paste(image, offset, image)
+
+            # Save the thumbnail
+            image.save(img_temp, 'PNG')
+            img_temp.seek(0)
+
+            try:
+                self.avatar.save(f'{os.path.basename(avatar_url)}', img_temp, save=True)
+            except Exception as e:
+                print(f'({e}) - Failed to fetch avatar from: ({avatar_url})')
+                return False
+            return True
+        else:
+            return False
 
     @property
     def tips(self):

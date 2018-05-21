@@ -61,19 +61,22 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic',
+    'collectfast',  # Collectfast | static file collector
     'django.contrib.staticfiles',
     'storages',
     'social_django',
     'django.contrib.humanize',
     'django.contrib.sitemaps',
     'django.contrib.sites',
+    'storages',  # django-storages | files/asset storage
     'django_extensions',
     'easy_thumbnails',
     'app',
     'retail',
     'rest_framework',
-    'bootstrap3',
+    'bootstrap4',
+    'crispy_forms',
+    'account',
     'marketing',
     'economy',
     'dashboard',
@@ -95,7 +98,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -230,6 +232,7 @@ if not ENV in ['local', 'test']:
 else:
     LOGGING = {}
 
+CRISPY_TEMPLATE_PACK = env('CRISPY_TEMPLATE_PACK', default='bootstrap4')
 GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
@@ -237,13 +240,50 @@ THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
 STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/', ))
 STATIC_ROOT = root('static')
 
-STATIC_HOST = env('STATIC_HOST', default='')
-STATIC_URL = STATIC_HOST + env('STATIC_URL', default='/static/')
+if not DEBUG:
+    DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.storage.SilentFileStorage')
+    STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.storage.SilentFileStorage')
+    STATIC_HOST = env('STATIC_HOST', default='https://static.gitcoin.co/')
+    STATIC_URL = STATIC_HOST + env('STATIC_URL', default='static/')
+    MEDIA_URL = env('MEDIA_URL', default='https://cdnx.gitcoin.co/assets/')
+else:
+    STATIC_HOST = BASE_URL
+    STATIC_URL = env('STATIC_URL', default='/static/')
+    MEDIA_URL = env('MEDIA_URL', default='/assets/')
 
+MEDIA_ROOT = root('media')
+COMPRESS_ROOT = STATIC_ROOT
+COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
+
+# AWS S3
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='gitcoin-static')
+AWS_S3_ASSETS_BUCKET = env('AWS_S3_ASSETS_BUCKET', default='gitcoin-assets')
+AWS_S3_OBJECT_PARAMETERS = env.dict('AWS_S3_OBJECT_PARAMETERS', default=None)
+AWS_QUERYSTRING_AUTH = env.bool('AWS_QUERYSTRING_AUTH', default=True)
+AWS_S3_CACHE_MAX_AGE = env.str('AWS_S3_CACHE_MAX_AGE', default='86400')
+AWS_QUERYSTRING_EXPIRE = env.int('AWS_QUERYSTRING_EXPIRE', default=3600)
+AWS_S3_ENCRYPTION = env.bool('AWS_S3_ENCRYPTION', default=False)
+S3_USE_SIGV4 = env.bool('S3_USE_SIGV4', default=True)
+AWS_S3_SIGNATURE_VERSION = env('AWS_S3_SIGNATURE_VERSION', default='s3v4')
+AWS_IS_GZIPPED = env.bool('AWS_IS_GZIPPED', default=True)
+AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='us-west-2')
+AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN', default='')
+AWS_PRELOAD_METADATA = env.bool('AWS_PRELOAD_METADATA', default=True)
+if not AWS_S3_OBJECT_PARAMETERS:
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': f'max-age={AWS_S3_CACHE_MAX_AGE}',
+    }
+
+COLLECTFAST_CACHE = env('COLLECTFAST_CACHE', default='collectfast')
+COLLECTFAST_DEBUG = env.bool('COLLECTFAST_DEBUG', default=False)
+CACHES = {
+    'default': env.cache(),
+    COLLECTFAST_CACHE: env.cache('COLLECTFAST_CACHE_URL'),
+}
+CACHES[COLLECTFAST_CACHE]['OPTIONS'] = {'MAX_ENTRIES': 1000}
 THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + (
     'ethos.thumbnail_processors.circular_processor', )
 
@@ -260,8 +300,6 @@ THUMBNAIL_ALIASES = {
         }
     }
 }
-
-CACHES = {'default': env.cache()}
 
 # HTTPS Handling
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True)
@@ -417,6 +455,8 @@ IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
 # optional: only needed if you run the activity-report management command
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
+S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
+S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='')  # TODO
 
 AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
 AWS_S3_OBJECT_PARAMETERS = env.dict('AWS_S3_OBJECT_PARAMETERS', default={'CacheControl': 'max-age=86400'})
@@ -427,9 +467,6 @@ AWS_S3_SIGNATURE_VERSION = env('AWS_S3_SIGNATURE_VERSION', default='s3v4')
 AWS_QUERYSTRING_AUTH = env.bool('AWS_QUERYSTRING_AUTH', default=False)
 AWS_S3_FILE_OVERWRITE = env.bool('AWS_S3_FILE_OVERWRITE', default=True)
 # AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN', default='assets.gitcoin.co')
-
-S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='') # TODO
-S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='') # TODO
 
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 

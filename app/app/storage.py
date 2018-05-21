@@ -1,10 +1,19 @@
 # -*- coding: utf-8 -*-
 """Define the custom static storage to surpress bad URL references."""
-from whitenoise.storage import CompressedManifestStaticFilesStorage
+from os.path import basename
+from secrets import token_hex
+
+from django.conf import settings
+from django.contrib.staticfiles.storage import ManifestFilesMixin
+
+from storages.backends.s3boto3 import S3Boto3Storage
+
+# asset_storage = S3Boto3Storage(bucket=settings.AWS_S3_ASSETS_BUCKET)
+asset_storage = S3Boto3Storage()
 
 
-class SilentFileStorage(CompressedManifestStaticFilesStorage):
-    """Define the static storage using whitenoise with hashing.
+class SilentFileStorage(ManifestFilesMixin, S3Boto3Storage):
+    """Define the static storage using S3 via boto3 with hashing.
 
     If Django cannot find a referenced url in an asset, it will silently pass.
 
@@ -24,3 +33,7 @@ class SilentFileStorage(CompressedManifestStaticFilesStorage):
             return super(SilentFileStorage, self)._url(hashed_name, name, force)
         except Exception:
             return name
+
+
+def get_avatar_path(instance, filename):
+    return f'assets/avatars/{token_hex(16)[:15]}/{basename(filename)}.png'
