@@ -33,7 +33,7 @@ statistics
 django-email-obfuscator
 cytoolz==0.9.0
 boto==2.48.0
-rollbar==0.13.18
+rollbar==0.14.0
 awscli
 google-api-python-client
 whitenoise==3.3.1
