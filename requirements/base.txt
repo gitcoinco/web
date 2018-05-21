@@ -47,7 +47,7 @@ geoip2==2.8.0
 django-silk==2.0.0
 django-extensions==2.0.6
 ipdb==0.11
-inotify==0.2.9
+Werkzeug[watchdog]==0.14.1
 matplotlib
 imageio
 boto3
