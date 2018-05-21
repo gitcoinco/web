@@ -97,7 +97,7 @@ def set_resolver(signer, github_handle, nonce):
         'value': 0,
         'nonce': nonce,
         'gas':  Web3.toHex(100000),
-        'gasPrice': Web3.toHex(float(gasPrice)),
+        'gasPrice': Web3.toHex(int(float(gasPrice))),
     }
 
     ens_contract = w3.eth.contract(
@@ -130,7 +130,7 @@ def set_owner(signer, github_handle, nonce):
         'value': 0,
         'nonce': nonce,
         'gas':  Web3.toHex(100000),
-        'gasPrice': Web3.toHex(float(gasPrice)),
+        'gasPrice': Web3.toHex(int(float(gasPrice))),
     }
 
     ens_contract = w3.eth.contract(
@@ -167,7 +167,7 @@ def set_address_at_resolver(signer, github_handle, nonce):
         'value': 0,
         'nonce': nonce,
         'gas':  Web3.toHex(100000),
-        'gasPrice': Web3.toHex(float(gasPrice)),
+        'gasPrice': Web3.toHex(int(float(gasPrice))),
     }
 
     resolver_contract = w3.eth.contract(
