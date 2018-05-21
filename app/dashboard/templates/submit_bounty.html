@@ -48,7 +48,7 @@
                                 {% include 'shared/network_status.html' %}
                                 <div class="w-100">
                                     <label class="form__label" for=issueURL>{% trans "Issue URL" %}</label>
-                                    <input required name='issueURL' id="issueURL" class="w-100 form__input" type="url" placeholder="https://github.com/user/repo/pull/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
+                                    <input required name='issueURL' id="issueURL" class="w-100 form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
                                 </div>
                                 <div class="w-100 mt-2 amount_container">
                                     <label class="form__label" for="amount">{% trans "Amount" %}</label>
@@ -65,7 +65,7 @@
                                     <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
                                 </div>
                                 {% include 'shared/github_username.html' %}
-                                {% include 'shared/notification_email.html' %}
+                                {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
                                 {% include 'shared/name.html' %}
                                 <div id="advanced_container">
                                     <div class="w-100 mt-2">
@@ -133,7 +133,13 @@
                                 <div class="w-100 mt-2 terms_container">
                                     <div class="form__checkbox">
                                         <input name='terms' id='terms' type="checkbox" value=1 required />
-                                        <label class="form__label" for=terms>{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>:{% endblocktrans %}</label>
+                                        <label class="form__label" for=terms>{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.{% endblocktrans %}</label>
+                                    </div>
+                                </div>
+                                <div class="w-100 mt-2 terms_container">
+                                    <div class="form__checkbox">
+                                        <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
+                                        <label class="form__label" for=blockchain_tos>{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain.  No one, including Gitcoin Core, will be able to take my funds or change this information. {% endblocktrans %}</label>
                                     </div>
                                 </div>
                                 {% include 'shared/bounty_actions_hidden_vars.html' %}
@@ -156,6 +162,7 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
 
 </body>
 

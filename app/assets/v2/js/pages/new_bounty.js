@@ -119,6 +119,11 @@ $(document).ready(function() {
         tokenName
       };
 
+      var privacy_preferences = {
+        show_email_publicly: data.show_email_publicly,
+        show_name_publicly: data.show_name_publicly
+      };
+
       var expire_date =
         parseInt(expirationTimeDelta) + ((new Date().getTime() / 1000) | 0);
       var mock_expire_date = 9999999999; // 11/20/2286, https://github.com/Bounties-Network/StandardBounties/issues/25
@@ -137,6 +142,7 @@ $(document).ready(function() {
             githubUsername: metadata.githubUsername,
             address: '' // Fill this in later
           },
+          privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
           created: (new Date().getTime() / 1000) | 0,
@@ -171,6 +177,7 @@ $(document).ready(function() {
       localStorage['experienceLevel'] = $('select[name=experienceLevel]').val();
       localStorage['projectLength'] = $('select[name=projectLength]').val();
       localStorage['bountyType'] = $('select[name=bountyType]').val();
+      localStorage['accept_blockchain_tos'] = true;
       localStorage.removeItem('bountyId');
 
       // setup web3
@@ -223,7 +230,7 @@ $(document).ready(function() {
         issuePackage['timestamp'] = timestamp();
         localStorage[issueURL] = JSON.stringify(issuePackage);
 
-        _alert({ message: 'Submission sent to web3.' }, 'info');
+        _alert({ message: gettext('Submission sent to web3.') }, 'info');
         setTimeout(function() {
           delete localStorage['issueURL'];
           mixpanel.track('Submit New Bounty Success', {});
@@ -342,9 +349,10 @@ $(document).ready(function() {
             var txid = result;
             var link_url = etherscan_tx_url(txid);
 
-            _alert({ message: 'Token approval transaction (1 of 2) has been sent to web3.  <a target=new href="' + link_url + '">Once that tx is confirmed</a>, you will be prompted to confirm submission of this bounty (tx 2 of 2)' }, 'info');
+            _alert({ message: gettext('Token approval transaction (1 of 2) has been sent to web3.  <a target=new href="' +
+              link_url + '">Once that tx is confirmed</a>, you will be prompted to confirm submission of this bounty (tx 2 of 2)') }, 'info');
             callFunctionWhenTransactionMined(txid, function() {
-              _alert({ message: 'Tx 1 of 2 confirmed.  Please confirm the second transaction.' }, 'success');
+              _alert({ message: gettext('Tx 1 of 2 confirmed.  Please confirm the second transaction.') }, 'success');
               approve_success_callback();
             });
           }

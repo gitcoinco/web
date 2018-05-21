@@ -131,26 +131,8 @@
           {% endfor %}
         </div>
       </div>
-      <div class="row">
-        <div class="col pb-4">
-          <h4>{% trans "Community" %}</h4>
-          <h6 style="text-align: center;" >{% trans "Gitcoin's Top Community Members" %}</h6>
-        </div>
-      </div>
-      <div class="row animatedParent">
-        <div class="col pb-4 flex-column text-center animated fadeInLeftShort">
-          {% for avatar, name, handle in community_members %}
-          <div class="communityProfile mr-1 ml-1">
-            <img class="communityProfileAvatar img-fluid" src="{{avatar}}">
-            <p>
-              <span class="font-bigger-1 font-weight-300"><strong>{{name}}</strong></span>
-            </p>
-            <a href="https://gitcoin.co/profile/{{handle}}"><img class="communityProfileAvatarSocialImg" src="{% static "v2/images/social/gitcoin.png" %}"></a>
-            <a href="https://github.com/{{handle}}"><img class="communityProfileAvatarSocialImg" src="{% static "v2/images/social/github.png" %}"></a>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
+      {% include 'community.html' with h1="Community"  h2="Gitcoin's Top Community Members" community_members=community_members %}
+      {% include 'community.html' with h1="Alumni"  h2="Community Members that've 'graduated' into more work in the space" community_members=alumni %}
     </div>
     <div class="row" id="jobs">
       <div class="col-12 row section font-body">
@@ -270,5 +252,6 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
+    {% include 'shared/messages.html' %}
   </body>
 </html>

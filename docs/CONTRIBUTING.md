@@ -17,6 +17,7 @@ valued.
   * [Step 3: Code](#step-3-code)
   * [Step 4: Commit](#step-4-commit)
   * [Step 5: Rebase](#step-5-rebase)
+  * [Step 6: PRs](#step-6-prs)
 
 ## Code of Conduct
 
@@ -95,6 +96,8 @@ To keep the style of the Javascript code consistent we have a basic linting conf
 * Indentation is as follows
   * 1 tab = 2 spaces for `.html` and `.js` files
   * 1 tab = 4 spaces for everything else
+* Use `rem` for CSS when applicable
+* Add relevant unit tests for all new Python logic and update existing tests to accommodate new logic.
 
 ### Step 4: Commit
 
@@ -143,6 +146,15 @@ top. Plus merge conflicts can be resolved
 git fetch upstream
 git rebase upstream/master
 ```
+
+### Step 6: PRs
+
+Please ensure that your pull request follows all of the community guidelines to include:
+
+* Title is descriptive and generally focused on what the PR addresses (If your PR is a work in progress, include `WIP` in the title. Once the PR is ready for review, please remove `WIP`)
+* Description explains what the PR achieves or addresses
+* If the PR modifies the frontend in any way, please attach screenshots and/or GIFs of all purposeful changes (before and after screens are recommended)
+* The PR passes all CI checks, to include Stickler, codecov, and Travis.
 
 ## FAQ
 

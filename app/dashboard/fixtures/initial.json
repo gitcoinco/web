@@ -1,0 +1,241 @@
+[{
+  "model": "dashboard.profile",
+  "pk": 1,
+  "fields": {
+    "created_on": "2018-05-14T14:34:09.979Z",
+    "modified_on": "2018-05-14T14:34:09.979Z",
+    "data": {},
+    "handle": "owocki",
+    "last_sync_date": "2018-05-14T14:34:09.972Z",
+    "email": "kevin@gitcoin.co",
+    "github_access_token": "",
+    "pref_lang_code": "",
+    "slack_repos": "[]",
+    "slack_token": "",
+    "slack_channel": "",
+    "suppress_leaderboard": false,
+    "hide_profile": false,
+    "repos_data": [],
+    "max_num_issues_start_work": 3
+  }
+}, {
+  "model": "dashboard.profile",
+  "pk": 2,
+  "fields": {
+    "created_on": "2018-05-14T14:34:09.979Z",
+    "modified_on": "2018-05-14T14:34:09.979Z",
+    "data": {},
+    "handle": "mbeacom",
+    "last_sync_date": "2018-05-14T14:34:09.972Z",
+    "email": "mark.beacom@consensys.net",
+    "github_access_token": "",
+    "pref_lang_code": "",
+    "slack_repos": "[]",
+    "slack_token": "",
+    "slack_channel": "",
+    "suppress_leaderboard": false,
+    "hide_profile": false,
+    "repos_data": [],
+    "max_num_issues_start_work": 3
+  }
+}, {
+  "model": "dashboard.profile",
+  "pk": 3,
+  "fields": {
+    "created_on": "2018-05-14T14:34:09.979Z",
+    "modified_on": "2018-05-14T14:34:09.979Z",
+    "data": {},
+    "handle": "PixelantDesign",
+    "last_sync_date": "2018-05-14T14:34:09.972Z",
+    "email": "alisa.march@consensys.net",
+    "github_access_token": "",
+    "pref_lang_code": "",
+    "slack_repos": "[]",
+    "slack_token": "",
+    "slack_channel": "",
+    "suppress_leaderboard": false,
+    "hide_profile": false,
+    "repos_data": [],
+    "max_num_issues_start_work": 3
+  }
+}, {
+  "model": "dashboard.profile",
+  "pk": 4,
+  "fields": {
+    "created_on": "2018-05-14T14:34:09.979Z",
+    "modified_on": "2018-05-14T14:34:09.979Z",
+    "data": {},
+    "handle": "StareIntoTheBeard",
+    "last_sync_date": "2018-05-14T14:34:09.972Z",
+    "email": "justin.bean@consensys.net",
+    "github_access_token": "",
+    "pref_lang_code": "",
+    "slack_repos": "[]",
+    "slack_token": "",
+    "slack_channel": "",
+    "suppress_leaderboard": false,
+    "hide_profile": false,
+    "repos_data": [],
+    "max_num_issues_start_work": 3
+  }
+}, {
+  "model": "dashboard.profile",
+  "pk": 5,
+  "fields": {
+    "created_on": "2018-05-14T14:34:09.979Z",
+    "modified_on": "2018-05-14T14:34:09.979Z",
+    "data": {},
+    "handle": "thelostone-mc",
+    "last_sync_date": "2018-05-14T14:34:09.972Z",
+    "email": "aditya.chelliah@consensys.net",
+    "github_access_token": "",
+    "pref_lang_code": "",
+    "slack_repos": "[]",
+    "slack_token": "",
+    "slack_channel": "",
+    "suppress_leaderboard": false,
+    "hide_profile": false,
+    "repos_data": [],
+    "max_num_issues_start_work": 3
+  }
+}, {
+  "model": "dashboard.profile",
+  "pk": 6,
+  "fields": {
+    "created_on": "2018-05-14T14:34:09.979Z",
+    "modified_on": "2018-05-14T14:34:09.979Z",
+    "data": {},
+    "handle": "eswarasai",
+    "last_sync_date": "2018-05-14T14:34:09.972Z",
+    "email": "",
+    "github_access_token": "",
+    "pref_lang_code": "",
+    "slack_repos": "[]",
+    "slack_token": "",
+    "slack_channel": "",
+    "suppress_leaderboard": false,
+    "hide_profile": false,
+    "repos_data": [],
+    "max_num_issues_start_work": 3
+  }
+}, {
+  "model": "dashboard.profile",
+  "pk": 7,
+  "fields": {
+    "created_on": "2018-05-14T14:34:09.979Z",
+    "modified_on": "2018-05-14T14:34:09.979Z",
+    "data": {},
+    "handle": "SaptakS",
+    "last_sync_date": "2018-05-14T14:34:09.972Z",
+    "email": "",
+    "github_access_token": "",
+    "pref_lang_code": "",
+    "slack_repos": "[]",
+    "slack_token": "",
+    "slack_channel": "",
+    "suppress_leaderboard": false,
+    "hide_profile": false,
+    "repos_data": [],
+    "max_num_issues_start_work": 3
+  }
+}, {
+  "model": "dashboard.profile",
+  "pk": 8,
+  "fields": {
+    "created_on": "2018-05-14T14:34:09.979Z",
+    "modified_on": "2018-05-14T14:34:09.979Z",
+    "data": {},
+    "handle": "KamesCG",
+    "last_sync_date": "2018-05-14T14:34:09.972Z",
+    "email": "",
+    "github_access_token": "",
+    "pref_lang_code": "",
+    "slack_repos": "[]",
+    "slack_token": "",
+    "slack_channel": "",
+    "suppress_leaderboard": false,
+    "hide_profile": false,
+    "repos_data": [],
+    "max_num_issues_start_work": 3
+  }
+}, {
+  "model": "dashboard.profile",
+  "pk": 9,
+  "fields": {
+    "created_on": "2018-05-14T14:34:09.979Z",
+    "modified_on": "2018-05-14T14:34:09.979Z",
+    "data": {},
+    "handle": "Perfectmak",
+    "last_sync_date": "2018-05-14T14:34:09.972Z",
+    "email": "",
+    "github_access_token": "",
+    "pref_lang_code": "",
+    "slack_repos": "[]",
+    "slack_token": "",
+    "slack_channel": "",
+    "suppress_leaderboard": false,
+    "hide_profile": false,
+    "repos_data": [],
+    "max_num_issues_start_work": 3
+  }
+}, {
+  "model": "dashboard.profile",
+  "pk": 10,
+  "fields": {
+    "created_on": "2018-05-14T14:34:09.979Z",
+    "modified_on": "2018-05-14T14:34:09.979Z",
+    "data": {},
+    "handle": "voith",
+    "last_sync_date": "2018-05-14T14:34:09.972Z",
+    "email": "",
+    "github_access_token": "",
+    "pref_lang_code": "",
+    "slack_repos": "[]",
+    "slack_token": "",
+    "slack_channel": "",
+    "suppress_leaderboard": false,
+    "hide_profile": false,
+    "repos_data": [],
+    "max_num_issues_start_work": 3
+  }
+}, {
+  "model": "dashboard.profile",
+  "pk": 11,
+  "fields": {
+    "created_on": "2018-05-14T14:34:09.979Z",
+    "modified_on": "2018-05-14T14:34:09.979Z",
+    "data": {},
+    "handle": "dylanjw",
+    "last_sync_date": "2018-05-14T14:34:09.972Z",
+    "email": "",
+    "github_access_token": "",
+    "pref_lang_code": "",
+    "slack_repos": "[]",
+    "slack_token": "",
+    "slack_channel": "",
+    "suppress_leaderboard": false,
+    "hide_profile": false,
+    "repos_data": [],
+    "max_num_issues_start_work": 3
+  }
+}, {
+  "model": "dashboard.profile",
+  "pk": 12,
+  "fields": {
+    "created_on": "2018-05-14T14:34:09.979Z",
+    "modified_on": "2018-05-14T14:34:09.979Z",
+    "data": {},
+    "handle": "lazaridiscom",
+    "last_sync_date": "2018-05-14T14:34:09.972Z",
+    "email": "",
+    "github_access_token": "",
+    "pref_lang_code": "",
+    "slack_repos": "[]",
+    "slack_token": "",
+    "slack_channel": "",
+    "suppress_leaderboard": false,
+    "hide_profile": false,
+    "repos_data": [],
+    "max_num_issues_start_work": 3
+  }
+}]

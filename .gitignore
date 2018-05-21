@@ -9,6 +9,7 @@ app/mydatabase
 app/marketing/quotify/output/*
 app/output/*.pdf
 app/assets/other/wp.pdf
+app/assets/tmp/*
 app/assets/other/avatars/
 app/gcoin/
 .idea/
