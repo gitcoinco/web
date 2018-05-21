@@ -34,6 +34,7 @@ var hide_if_empty = function(key, val, result) {
 };
 var unknown_if_empty = function(key, val, result) {
   if (!_truthy(val)) {
+    $('#' + key).parent().hide();
     return [ key, 'Unknown' ];
   }
   return [ key, val ];

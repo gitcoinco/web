@@ -453,7 +453,7 @@ var refreshBounties = function(event) {
       result['title'] = result['title'] ? result['title'] : result['github_url'];
 
 
-      result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
+      result['p'] = ((result['experience_level'] ? result['experience_level'] + ' &bull; ' : ''));
 
       if (result['status'] === 'done')
         result['p'] += 'Done';
