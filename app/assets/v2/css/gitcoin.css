@@ -524,3 +524,57 @@ div.button-pink {
   margin-right: 20px;
   width: 15px;
 }
+
+/* TODO: Remove Post landing revamp */
+
+#ios {
+  background-color: #FFFFFF;
+}
+
+#ios .row .right {
+  text-align: right;
+}
+
+#ios .row .left {
+  text-align: left;
+  margin-top: auto;
+  margin-bottom: auto;
+  font-family:'Muli', sans-serif;
+  letter-spacing: 0;
+}
+
+#ios .row .left h5 {
+  text-transform: capitalize;
+  letter-spacing: 0;
+}
+
+#ios .row .left h5 ,
+#ios .row .left a {
+  font-weight: bold;
+}
+
+#ios .row .left a {
+  font-family: 'Muli', sans-serif;
+  font-size: 14px;
+}
+
+#ios .row .explain-img-wrapper {
+  height: auto;
+}
+
+#ios .row .explain-img-wrapper a img {
+  min-height: 12.5rem;
+}
+
+@media (max-width: 767.98px) {
+  #ios .row .right,
+  #ios .row .left {
+    text-align: center;
+  }
+
+  #ios .row .left {
+    margin-top: 0.625rem;
+    margin-bottom: 1rem;
+  }
+}
+/* TODO: End */

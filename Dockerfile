@@ -3,8 +3,9 @@ ENV PYTHONUNBUFFERED 1
 ENV C_FORCE_ROOT true
 RUN mkdir /code && \
     apt-get update && \
+    apt-get install build-essential -y && \
     apt-get install -y --no-install-recommends apt-utils && \
-    apt-get install -y --no-install-recommends libsecp256k1-dev libsecp256k1-0 gettext graphviz libgraphviz-dev wget git dos2unix gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev && \
+    apt-get install -y --no-install-recommends tk-dev python3-tk libsecp256k1-dev libsecp256k1-0 gettext graphviz libgraphviz-dev wget git dos2unix gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev libgdal-dev gdal-bin libgdal20 python3-gdal && \
     pip install --upgrade pip wheel setuptools && \
     pip3 install dumb-init && \
     rm -rf /var/lib/apt/lists/*
@@ -35,7 +36,7 @@ ADD . /code/
 
 RUN dos2unix /code/bin/docker-command.bash && \
     dos2unix /code/bin/celery/worker.bash && \
-    apt-get purge -y --auto-remove dos2unix wget gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev apt-utils
+    apt-get purge -y --auto-remove dos2unix wget gcc tk-dev libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev apt-utils
 
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["bash", "/code/bin/docker-command.bash"]

@@ -83,7 +83,7 @@ window.onload = function() {
       var isError = false;
 
       if ($('#terms:checked').length == 0) {
-        _alert({ message: 'Please accept the terms of service.' }, 'warning');
+        _alert({ message: gettext('Please accept the terms of service.') }, 'warning');
         isError = true;
       } else {
         localStorage['acceptTOS'] = true;

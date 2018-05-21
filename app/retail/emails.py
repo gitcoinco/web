@@ -301,7 +301,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "$10,000 of Dai-based Gitcoin Bounties! "
+    subject = "Ethos of Ethereal | Gitcoin Core Grows "
 
     intro = '''
 
@@ -309,65 +309,75 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-We announced <a href="https://medium.com/gitcoin/grow-open-source-gitcoin-makerdao-4f9df702afea">a partnership with MakerDAO this week</a> to provide $10,000 worth of bounties, denominated in Dai! We will start by allocation ~$2,000 to Ethereum Foundation repo’s. From here, we are open to suggestions on open source projects which may be interested in support through bounties. Please let us know <a href="https://gitcoin.co/slack">on Slack</a> or on <a href="https://twitter.com/MakerDAO/status/989641464001904641">Twitter</a>.
+This past week, I presented Gitcoin’s work in open source software at Ethereal Summit. We presented on the following:
+</p>
+<p>
+1) <a href="https://medium.com/gitcoin/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster-dcd39650fc5">Building an open source community</a>
+</p>
+<p>
+2) <a href="https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75">Using bounties</a> to augment open source projects, and
+</p>
+<p>
+3) The <a href="https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748">monetary implications of intersecting blockchain and open source.</a>
+</p>
+<p>
+While we were at Ethereal, we also launched a SolidCoin called <a href="https://medium.com/gitcoin/we-mapped-the-ethos-of-the-ethereal-summit-2018-and-it-sure-is-purdy-e299b99bbbde">Ethos. Ethos is an emergent social experiment</a> aimed to increase interaction at the conference. The project was built completely using Gitcoin bounties!
 </p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-Have you used <a href="https://medium.com/gitcoin/tutorial-send-a-tip-to-any-github-user-in-60-seconds-2eb20a648bc8">Gitcoin Tips</a> before? Tips are a great way to show appreciation for contributions while growing an open source community - in 60 seconds or less! 
+We excited to announce the addition of <a href="https://medium.com/gitcoin/oss-enthusiast-saptak-sengupta-joins-gitcoin-30c6d3af7933">Saptak Sengupta -- OSS enthusiast and full-stack developer -- to Gitcoin Core!</a>
         </li>
         <li>
-Want to be the first to know when new open issues are added? <a href="http://twitter.com/gitcoinfeed">@gitcoinfeed</a> on Twitter which provides updates on all new activity on Gitcoin.
+<a href="http://gitcoin.co/livestream">The Gitcoin Livestream</a> is back as regularly scheduled today at 5PM ET. Tom Kysar of Augur, Richard Burton of Balance, and potentially one other guest will be joining. Come hang!
         </li>
     </ul>
 </p>
 <p>
-On today’s <a href="http://gitcoin.co/livestream">Gitcoin Livestream</a>, we’re excited to host 1)  <a href="https://publisher.adchain.com/">AdChain</a>, a live TCR-based project, 2) <a href="https://www.uport.me/">uPort</a>, who will tell the group about their Gitcoin Bounty program, and 3) <a href="http://airswap.io/">Airswap</a>, who launched their decentralized exchange to mainnet today . <a href="https://gitcoin.co/livestream">Add it to your Google Calendar</a> and come hang out! 
+Excited to be back to building,
 </p>
-<p>
-I hope to see you on <a href="https://gitcoin.co/slack">Slack</a> or on <a href="https://github.com/gitcoinco/web">Github</a>. If you’re interested in growing open source and have some extra time, come by. We’re working to make Gitcoin is the best place on the internet to do so.
-
-</p>
-
 '''
     highlights = [
         {
-            'who': 'justpixel',
+            'who': 'eswarasai',
             'who_link': True,
-            'what': 'Worked with Bounties Network to draw up a new ‘Getting Started’ page.',
-            'link': 'https://gitcoin.co/issue/Bounties-Network/bounties.network/2/309',
+            'what': 'Worked with Livepeer, who recently launched to main net, on their dApp.',
+            'link': 'https://gitcoin.co/issue/livepeer/livepeerjs/17/454',
             'link_copy': 'See more',
         },
         {
-            'who': 'agni21',
+            'who': 'dilatebrave',
             'who_link': True,
-            'what': 'Helped Tim van Mourik out on the Giraffe Tools repo.',
-            'link': 'https://gitcoin.co/issue/TimVanMourik/GiraffeTools/16/262',
+            'what': 'Made updates to Ethereum’s CPP client!',
+            'link': 'https://gitcoin.co/issue/ethereum/cpp-ethereum/4961/443',
             'link_copy': 'View more',
         },
         {
-            'who': 'netrunnerX',
+            'who': 'bakaoh',
             'who_link': True,
-            'what': 'Made his first submission on Ethereum’s Solidity repo!',
-            'link': 'https://gitcoin.co/issue/ethereum/solidity/3750/216',
-            'link_copy': 'See more',
+            'what': 'Worked with Protinam on the Wyvern Protocol!',
+            'link': 'https://gitcoin.co/issue/ProjectWyvern/wyvern-ethereum/12/417',
+            'link_copy': 'View more',
         },
     ]
 
-    bounties = [
-        {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/PolymathNetwork/polymath-core/issues/87'),
-            'primer': 'Polymath released a Bug Bounty which pays up to 10ETH for critical issues. ',
-        },
-        {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/gitcoinco/web/issues/865'),
-            'primer': 'ETHAvatar is a project aiming at improving blockchain UX holistically. Interested in building out the web app?',
-        },
-        {
-            'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/buidlbox/issues/3'),
-            'primer': 'uPort is searching for ideas for applications which can be built on top of their platform! ',
-        },
-    ]
+    try:
+        bounties = [
+            {
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/gitcoinco/web/issues/1177'),
+                'primer': 'Work with the Gitcoin team on a Funder Dashboard!',
+            },
+            {
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/balance-io/balance-manager/issues/182'),
+                'primer': 'Have a Trezor? Balance is looking for help supporting the Trezor.',
+            },
+            {
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/livepeer/livepeerjs/issues/44'),
+                'primer': 'Livepeer is working on improving streams in full screen mode.',
+            },
+        ]
+    except:
+        bounties = []
 
     ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
 

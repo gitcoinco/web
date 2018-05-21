@@ -41,7 +41,7 @@
   </head>
   <body id="yge" class="{{ class }}">
     {% include 'shared/tag_manager_2.html' %}
-    {% include 'shared/analytics.html' %}
+    {% include 'shared/analytics.html' with suppress_sumo=1 %}
     {% block 'world' %} {% endblock %}
     {% include 'shared/rain.html' with class="color" %}
     <!-- Wrapper -->
@@ -54,9 +54,11 @@
           <li>
             <a href="/">&copy; Gitcoin.co</a>
           </li>
+          {% if not hide_send_tip %}
           <li>
             <a href="{% url "tip" %}">{% trans "Send Tip" %}</a>
           </li>
+          {% endif %}
         </ul>
       </footer>
     </div>
