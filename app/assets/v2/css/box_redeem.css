@@ -55,6 +55,13 @@
   margin-bottom: 1.5em;
 }
 
+#register img {
+  width: 24px;
+  position: relative;
+  top: 7px;
+  right: 4px;
+}
+
 #main .avatar img {
   display: block;
   margin: 0 auto;

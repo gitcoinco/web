@@ -32,6 +32,9 @@
         </div>
       </div>
     </div>
-    <a href="#" id="register" class="button button--primary">{% trans "Register" %} ⚡️</a>
+    <a href="#" id="register" class="button button--primary">
+      <img src={% static "v2/images/metamask.svg" %}>
+      <span>{% trans "Register" %}</span>
+    </a>
   {% endif %}
 {% endblock %}
