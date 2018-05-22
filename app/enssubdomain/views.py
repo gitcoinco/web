@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
-"""
-    Copyright (C) 2018 Gitcoin Core
+"""Define the ENS subdomain views.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 """
 
 import binascii
@@ -35,7 +37,7 @@ from ens.main import ENS_MAINNET_ADDR
 from ens.utils import dot_eth_namehash, label_to_hash
 from eth_account.messages import defunct_hash_message
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from web3 import HTTPProvider, Web3
+from web3 import Web3
 
 from .models import ENSSubdomainRegistration
 
@@ -89,7 +91,7 @@ def handle_subdomain_exists(request, github_handle):
 def set_resolver(signer, github_handle, nonce):
     if mock_request:
         return '0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'
-        
+
     ns = ENS.fromWeb3(w3)
     resolver_addr = ns.address('resolver.eth')
     signer = Web3.toChecksumAddress(signer)
@@ -114,12 +116,12 @@ def set_resolver(signer, github_handle, nonce):
         resolver_addr,
         ).buildTransaction(transaction)
     signed_txn = w3.eth.account.signTransaction(txn, private_key=settings.ENS_PRIVATE_KEY)
-    txn_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction) 
+    txn_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
 
-    # hack to convert 
+    # hack to convert
     # "b'7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'"
     # to "0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39"
-    txn_hash = str(binascii.b2a_hex(txn_hash)).replace("b'","0x").replace("'","") 
+    txn_hash = str(binascii.b2a_hex(txn_hash)).replace("b'","0x").replace("'","")
 
     return txn_hash
 
@@ -149,14 +151,14 @@ def set_owner(signer, github_handle, nonce):
         dot_eth_namehash(owned),
         label_to_hash(label),
         Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
-        ).buildTransaction(transaction)    
+        ).buildTransaction(transaction)
     signed_txn = w3.eth.account.signTransaction(txn, private_key=settings.ENS_PRIVATE_KEY)
-    txn_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction) 
+    txn_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
 
-    # hack to convert 
+    # hack to convert
     # "b'7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'"
     # to "0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39"
-    txn_hash = str(binascii.b2a_hex(txn_hash)).replace("b'","0x").replace("'","") 
+    txn_hash = str(binascii.b2a_hex(txn_hash)).replace("b'","0x").replace("'","")
 
     return txn_hash
 
@@ -188,12 +190,12 @@ def set_address_at_resolver(signer, github_handle, nonce):
         signer,
         ).buildTransaction(transaction)
     signed_txn = w3.eth.account.signTransaction(txn, private_key=settings.ENS_PRIVATE_KEY)
-    txn_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction) 
+    txn_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
 
-    # hack to convert 
+    # hack to convert
     # "b'7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'"
     # to "0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39"
-    txn_hash = str(binascii.b2a_hex(txn_hash)).replace("b'","0x").replace("'","") 
+    txn_hash = str(binascii.b2a_hex(txn_hash)).replace("b'","0x").replace("'","")
 
     return txn_hash
 
@@ -204,7 +206,7 @@ def get_nonce():
     try:
         last_ens = ENSSubdomainRegistration.objects.order_by('-end_nonce').first()
         next_db_nonce = last_ens.end_nonce + 1
-    except:
+    except Exception:
         pass
 
     return max([web3_nonce, next_db_nonce])
