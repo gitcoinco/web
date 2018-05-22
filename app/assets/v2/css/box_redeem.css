@@ -1,0 +1,95 @@
+
+#main {
+  font-family: 'Muli', sans-serif;
+  max-width: 100%;
+  min-width: 27em;
+  padding: 4.5em 3em 3em 3em;
+  background: #ffffff;
+  border-radius: 4px;
+  cursor: default;
+  opacity: 0.95;
+  text-align: center;
+  -moz-transform-origin: 50% 50%;
+  -webkit-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -moz-transform: rotateX(0deg);
+  -webkit-transform: rotateX(0deg);
+  -ms-transform: rotateX(0deg);
+  transform: rotateX(0deg);
+  -moz-transition: opacity 1s ease, -moz-transform 1s ease;
+  -webkit-transition: opacity 1s ease, -webkit-transform 1s ease;
+  -ms-transition: opacity 1s ease, -ms-transform 1s ease;
+  transition: opacity 1s ease, transform 1s ease;
+  z-index: 9999;
+  position: relative;
+  margin-top: 2rem;
+}
+
+#main #ens_subdomain h1 {
+  font-family: 'Muli', sans-serif;
+  letter-spacing: 0;
+}
+
+#main #ens_subdomain h2 {
+  font-family: 'Muli', sans-serif;
+  text-transform: none;
+}
+
+#main #send_eth #advanced div {
+  padding-top: 10px;
+}
+
+#main #send_eth input,
+#main #send_eth select {
+  font-size: 12px;
+}
+
+#main #advanced_toggle {
+  cursor: pointer;
+}
+
+#main .avatar {
+  position: relative;
+  display: block;
+  margin-bottom: 1.5em;
+}
+
+#main .avatar img {
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0 0 0 1.5em #ffffff;
+}
+
+#main .avatar:before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: -3em;
+  width: calc(100% + 6em);
+  height: 1px;
+  z-index: -1;
+  background: #c8cccf;
+}
+
+@media screen and (max-width: 480px) {
+  #main {
+    min-width: 0;
+    width: 100%;
+    padding: 4em 2em 2.5em 2em;
+  }
+
+  #main .avatar:before {
+    left: -2em;
+    width: calc(100% + 4em);
+  }
+}
+
+body.is-loading #main {
+  opacity: 0;
+  -moz-transform: rotateX(15deg);
+  -webkit-transform: rotateX(15deg);
+  -ms-transform: rotateX(15deg);
+  transform: rotateX(15deg);
+}
