@@ -1267,9 +1267,9 @@ class Profile(SuperModel):
         query_kwargs = {'network': network}
 
         sum_eth_funded = self.bounties_funded.filter(**query_kwargs) \
-            .aggregate(Sum('value_in_eth'))['value_in_eth__sum'] if self.bounties_funded.exists() else 0
+            .aggregate(Sum('value_in_eth'))['value_in_eth__sum'] / 10**18 if self.bounties_funded.exists() else 0
         sum_eth_collected = self.get_fulfilled_bounties() \
-            .aggregate(Sum('value_in_eth'))['value_in_eth__sum'] if self.get_fulfilled_bounties().exists() else 0
+            .aggregate(Sum('value_in_eth'))['value_in_eth__sum'] / 10**18 if self.get_fulfilled_bounties().exists() else 0
 
         params = {
             'title': f"@{self.handle}",
