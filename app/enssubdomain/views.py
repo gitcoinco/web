@@ -195,7 +195,7 @@ def set_address_at_resolver(signer, github_handle, nonce):
     # hack to convert
     # "b'7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'"
     # to "0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39"
-    txn_hash = str(binascii.b2a_hex(txn_hash)).replace("b'","0x").replace("'","")
+    txn_hash = str(binascii.b2a_hex(txn_hash)).replace("b'", "0x").replace("'", "")
 
     return txn_hash
 
