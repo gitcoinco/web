@@ -110,3 +110,29 @@ button:focus {
     box-shadow: 0 0 0 0 var(--hover);
   }
 }
+
+.btn-gc-blue {
+  background-color: var(--gc-blue);
+  color: var(--text-light);
+}
+.btn-outline-gc-blue {
+  border-color: var(--gc-blue);
+  color: var(--gc-blue);
+}
+
+.btn-gc-green {
+  background-color: var(--gc-green);
+  color: var(--text-light);
+}
+.btn-outline-gc-green {
+  border-color: var(--gc-green);
+  color: var(--gc-green);
+}
+
+.btn-gc-purple {
+  background-color: var(--gc-purple);
+}
+.btn-outline-gc-purple {
+  border-color: var(--gc-purple);
+  color: var(--gc-purple);
+}

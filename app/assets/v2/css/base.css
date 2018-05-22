@@ -216,6 +216,11 @@ span {
   margin-top: 0 !important;
 }
 
+.whatisit_container {
+  background-color: var(--gc-blue);
+  color: var(--text-light);
+}
+
 .whatisit,
 .howworks {
   margin-top: 20px;
@@ -1256,6 +1261,10 @@ input.is-invalid {
   background: #FAFAFA !important;
 }
 
+.youtube iframe {
+  max-width: 100%;
+}
+
 @media (max-width: 1350px) {
   .profile_details .tips li div.details {
     width: 300px;
@@ -1401,10 +1410,6 @@ input.is-invalid {
   body.slack .col-6 {
     flex: 0 0 100%;
     max-width: 100%;
-  }
-
-  .row.whatisit .explainer {
-    margin-top: 30px;
   }
 
   .bounty_def {
