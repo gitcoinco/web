@@ -209,16 +209,21 @@ span {
   padding-bottom: 20px;
 }
 
-.whatisit_container,
 .howworks_container {
-  background-color: white;
-  padding-bottom: 40px;
-  margin-top: 0 !important;
+  background-color: #F9F9F9;
 }
 
 .whatisit_container {
   background-color: var(--gc-blue);
   color: var(--text-light);
+}
+
+.pricing_container {
+  background-color: #F9F9F9;
+}
+
+.testimonial_container {
+  background-color: #F0F0F0;
 }
 
 .whatisit,
@@ -401,6 +406,12 @@ p a {
 
 .btn:focus {
   box-shadow: none;
+}
+
+.cta-green {
+  background-color: var(--gc-green);
+  text-align: center;
+  font-weight: bold;
 }
 
 #hero_cta a.btn-warning {
@@ -880,7 +891,7 @@ input[type=text].loading {
 }
 
 .press_container {
-  background: white;
+  background: #F9F9F9;
 }
 
 .press_container img {
@@ -1105,18 +1116,6 @@ input[type=text].loading {
 
 .mission {
   font-family: Futura, sans-serif;
-}
-
-.text-highlight-green {
-  color: #12c971;
-}
-
-.text-highlight-dark-blue {
-  color: #220e90;
-}
-
-.text-highlight-pink {
-  color: #da086b;
 }
 
 #mission_hero .text {

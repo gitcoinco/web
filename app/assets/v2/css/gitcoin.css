@@ -123,25 +123,9 @@
 } */
 
 body {
-  font-family: 'futura-pt', Futura, sans-serif;
+  font-family: Muli, sans-serif;
   overflow-x: hidden;
   width: 100%;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.h1,
-.h2,
-.h3,
-.h4,
-.h5,
-.h6 {
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
 }
 
 h4,
@@ -268,7 +252,7 @@ div.button-pink {
 
 .header-line {
   color: white;
-  font-family: Futura, sans-serif;
+  font-family: Muli, sans-serif;
   font-size: 3em;
   font-weight: 500;
   font-style: italic;
@@ -278,7 +262,7 @@ div.button-pink {
 
 .subheader-line {
   color: #70efbe;
-  font-family: Futura, sans-serif;
+  font-family: Muli, sans-serif;
   font-size: 2em;
   font-weight: 500;
   font-style: italic;

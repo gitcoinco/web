@@ -131,6 +131,7 @@ button:focus {
 
 .btn-gc-purple {
   background-color: var(--gc-purple);
+  color: var(--text-light);
 }
 .btn-outline-gc-purple {
   border-color: var(--gc-purple);

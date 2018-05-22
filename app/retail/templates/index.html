@@ -26,9 +26,16 @@
     <div class="container-fluid header">
       {% include 'shared/nav.html' %}
       {% include 'shared/hero.html' %}
+      <div class="row cta-green p-3 justify-content-center">
+        <span class="text-highlight-dark-blue">DEVELOPERS!</span>
+        Want to work on OSS Projects?
+        <a href="/explorer">View Available Bounties</a>
+        |
+        <a>Get Started with Gitcoin</a>
+      </div>
     </div>
 
-    <div class="container-fluid mt-3 p-4 whatisit_container">
+    <div class="container-fluid p-4 whatisit_container">
       <div class="row">
         <div class="col text-center">
           <h2>{% trans "What is Gitcoin?" %}</h2>
@@ -36,14 +43,12 @@
       </div>
       <div class="row d-flex justify-content-center whatisit">
         <div class="animatedParent col-6 col-md-5">
-          <div class="animated fadeInLeftShort font-italic">
-            <h3>A Mission to Grow Open Source.</h3>
-            <p>
-              A Community for Developers to Collaborate and montezise their skills while working on
-              Open Source projects through bounties
+          <div class="animated fadeInLeftShort">
+            <h3>{% trans "A Mission to Grow Open Source." %}</h3>
+            <p>{% trans "A Community for Developers to Collaborate and monetise their skills while working on Open Source projects through bounties" %}
             </p>
-            <a class="btn btn-gc-purple">Read More</a>
-            <p>Gitcoin does not have a native token.</p>
+            <a class="btn btn-gc-purple">{% trans "Read More" %}</a>
+            <p>{% trans "Gitcoin does not have a native token." %}</p>
           </div>
         </div>
         <div class="col-6 col-md-5 d-flex flex-column align-items-center animatedParent youtube">
@@ -52,7 +57,44 @@
       </div>
     </div>
 
-      {% include 'shared/testimonials.html' %}
+    <div class="container-fluid p-4 howworks_container">
+      <div class="row">
+        <div class="col text-center">
+          <h2>{% trans "Do This. Easily." %}</h2>
+        </div>
+      </div>
+      <a href="" class="btn btn-gc-blue">How to Use Gitcoin in 30 Seconds</a>
+    </div>
+
+    <div class="container-fluid p-4">
+      <div class="row">
+        <div class="col text-center">
+          <h2>{% trans "Read Case Studies" %}</h2>
+        </div>
+      </div>
+      <ul>
+        <li>{% trans "Case Study 1: Ethereum Foundation Hiring" %}</li>
+        <li>{% trans "Case Study 2: Tim Van Mourik" %}</li>
+        <li>{% trans "Case Study 3: Metamask Bounty Engineer" %}</li>
+      </ul>
+    </div>
+
+    <div class="container-fluid p-4 pricing_container">
+      <div class="row">
+        <div class="col text-center">
+          <h2>{% trans "Simple Pricing" %}</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid p-4 testimonial_container">
+      <div class="row">
+        <div class="col text-center">
+          <h2>{% trans "Who's using Gitcoin?" %}</h2>
+        </div>
+      </div>
+    </div>
+
       <div class="container-fluid pt-0 press_container ">
         <div class="row pb-1">
           <div class="col text-center">
