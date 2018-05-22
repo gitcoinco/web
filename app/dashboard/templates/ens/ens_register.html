@@ -1,0 +1,24 @@
+{% extends 'ens/ens.html' %}
+{% load i18n static %}
+
+{% block 'ens_script' %}
+  <script src = "{% static 'ens/register.js' %}"></script>
+{% endblock %}
+
+{% block 'body_block' %}
+  {% if not user.is_authenticated %}
+    <a class="button button--primary" style="margin-top: 20px;" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" class="button">{% trans "Login to Github to continue" %}</a>
+  {% else %}
+    <h1>{% trans "Register your ENS subdomain" %}</h1>
+    <div>
+      <br>
+      <h2><label id="githubHandle">{{ user.username }}</label><label>.{{ens_domain}}</label></h2>
+    </div>
+    <div>
+      <br>
+      <input type="checkbox" id="tos" value="1" >
+      {% blocktrans %}<label for="tos">I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.</label>{% endblocktrans %}
+    </div>
+    <a href="#" id="register" class="button button--primary">{% trans "Register" %}⚡️</a>
+  {% endif %}
+{% endblock %}
