@@ -39,7 +39,6 @@ from web3 import HTTPProvider, Web3
 
 from .models import ENSSubdomainRegistration
 
-
 mock_request = settings.DEBUG
 
 
