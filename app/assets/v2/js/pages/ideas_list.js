@@ -1,6 +1,7 @@
 (function() {
   var pageIdx = 1;
   var pageSize = 2;
+  var loadedIdeasIds = [];
 
   $('document').ready(() => {
     initialIdeasLoad(sorting());
@@ -38,8 +39,9 @@
 
   function initialIdeasLoad(sorting) {
     pageIdx = 1;
+    loadedIdeasIds = [];
     fetchIdeas(pageIdx, pageSize, sorting, (result) => {
-      var ideas = result.ideas;
+      var ideas = result.ideas.filter(idea => loadedIdeasIds.indexOf(idea.id) == -1);
       var html;
 
       if (ideas.length > 0) {
@@ -49,18 +51,20 @@
       }
       $('#ideas').html(html);
       toggleLoadMore(pageIdx, result.total_pages);
+      loadedIdeasIds = loadedIdeasIds.concat(ideas.map(idea => idea.id));
       initIdeasOpenHandlers(ideas);
     });
   }
 
   function loadMoreIdeas() {
     fetchIdeas(++pageIdx, pageSize, sorting(), (result) => {
-      var ideas = result.ideas;
+      var ideas = result.ideas.filter(idea => loadedIdeasIds.indexOf(idea.id) == -1);
 
       if (ideas.length > 0) {
         $('#ideas').append(getIdeasHtml(ideas));
       }
       toggleLoadMore(pageIdx, result.total_pages);
+      loadedIdeasIds = loadedIdeasIds.concat(ideas.map(idea => idea.id));
       initIdeasOpenHandlers(ideas);
     });
   }

@@ -570,11 +570,12 @@ def new_idea(request):
         designers_exists = bool(request.POST.get('designers_exists'))
         customer_exists = bool(request.POST.get('customer_exists'))
         profile = request.user.profile if request.user.is_authenticated else None
-        idea = Idea(full_name=full_name, email=email, github_username=github_username, summary=summary, more_info=more_info,
-                    looking_for_capital=looking_for_capital, looking_for_builders=looking_for_builders,
-                    looking_for_designers=looking_for_designers, looking_for_customers=looking_for_customers,
-                    capital_exists=capital_exists, builders_exists=builders_exists,
-                    designers_exists=designers_exists, customer_exists=customer_exists, profile=profile)
+        idea = Idea(full_name=full_name, email=email, github_username=github_username, summary=summary,
+                    more_info=more_info, looking_for_capital=looking_for_capital,
+                    looking_for_builders=looking_for_builders, looking_for_designers=looking_for_designers,
+                    looking_for_customers=looking_for_customers, capital_exists=capital_exists,
+                    builders_exists=builders_exists, designers_exists=designers_exists,
+                    customer_exists=customer_exists, profile=profile)
         idea.save(force_insert=True)
         return HttpResponseRedirect(f"idea/{idea.id}")
     return TemplateResponse(request, 'new_idea.html', {})
