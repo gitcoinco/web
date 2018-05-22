@@ -7,18 +7,34 @@
 
 {% block 'body_block' %}
   {% if not user.is_authenticated %}
-    <a class="button button--primary" style="margin-top: 20px;" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}" class="button">{% trans "Login to Github to continue" %}</a>
+    <div class="logged-out">
+      <a class="button button--primary" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
+        onclick="dataLayer.push({'event': 'login'});">
+        <i class="fab fa-github"></i>
+        <span>{% trans " Login with github" %}</span>
+      </a>
+    </div>
   {% else %}
     <h1>{% trans "Register your ENS subdomain" %}</h1>
-    <div>
-      <br>
+    <div class="mt-2">
       <h2><label id="githubHandle">{{ user.username }}</label><label>.{{ens_domain}}</label></h2>
     </div>
     <div>
-      <br>
-      <input type="checkbox" id="tos" value="1" >
-      {% blocktrans %}<label for="tos">I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.</label>{% endblocktrans %}
+      <div class="checkbox_container mt-2 mb-4">
+        <input type="checkbox" id="tos" class="form__input" value="1">
+        <span class="checkbox"></span>
+        <div class="filter-label">
+          {% blocktrans %}
+            <label for="tos">
+              I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.
+            </label>
+          {% endblocktrans %}
+        </div>
+      </div>
     </div>
-    <a href="#" id="register" class="button button--primary">{% trans "Register" %}⚡️</a>
+    <a href="#" id="register" class="button button--primary">
+      <img src={% static "v2/images/metamask.svg" %}>
+      <span>{% trans "Register" %}</span>
+    </a>
   {% endif %}
 {% endblock %}
