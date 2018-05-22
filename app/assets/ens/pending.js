@@ -58,7 +58,7 @@ if(typeof localStorage['ts'] == 'undefined' || parseInt(localStorage['ts']) < (t
 setInterval(function(){
   var delta = parseInt(localStorage['target_ts']) - ts();
   var text = delta > 0 ? parseInt(delta) + " seconds" : "any minute now";
-  jQuery("#timeestimate").text('estimated wait: ' + text)
+  jQuery("#timeestimate").text('estimated confirmation time: ' + text)
 },1000);
 
 var callFunctionWhenTransactionMined = function(txHash, f) {
