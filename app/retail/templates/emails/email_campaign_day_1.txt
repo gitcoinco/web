@@ -2,17 +2,17 @@ Day 1: Growing Open Source
 
 Hi {{ firstname }},
 
-Welcome to Gitcoin! Our mission is to grow open source. Open source software is a force for good in the world; and while a generation of software careers has been powered by open source software, it’s hard to make a living working on open source.
+Welcome to Gitcoin! Our mission is to grow open source. Open source software is a force for good in the world; and while a generation of software careers has been powered by open source software, it's hard to make a living working on open source.
 
-We’d like to change this imbalance at the intersection of open source and web3, an open source blockchain movement in the Ethereum ecosystem. More to come on Ethereum as this series unfolds.
+We'd like to change this imbalance at the intersection of open source and web3, an open source blockchain movement in the Ethereum ecosystem. More to come on Ethereum as this series unfolds.
 
 Gitcoin uses Ethereum to incentivize work in open source. We are experimenting with a variety of ways of providing engineers and designers a shot at supporting themselves with OSS contributions.
 
-Over the first week of you joining, we’re going to send over some information on key products and education tools available in the Gitcoin ecosystem. For now, we have a few areas you can nerd out with us, depending on where you’re most comfortable.
+Over the first week of you joining, we're going to send over some information on key products and education tools available in the Gitcoin ecosystem. For now, we have a few areas you can nerd out with us, depending on where you're most comfortable.
 
-Join the Slack channel (http://gitcoin.co/slack) and say hi on #community-intros 
-Follow us on Twitter (http://twitter.com/getgitcoin) for updates on open source software  
-Add the Gitcoin Livestream to your cal (iCal*, Google**) for Friday at 5PM EST. We’ll have two weekly product demo’s from the blockchain & open source ecosystems. 
+Join the Slack channel (http://gitcoin.co/slack) and say hi on #community-intros
+Follow us on Twitter (http://twitter.com/getgitcoin) for updates on open source software
+Add the Gitcoin Livestream to your cal (iCal*, Google**) for Friday at 5PM EST. We'll have two weekly product demo's from the blockchain & open source ecosystems.
 
 *iCal (https://calendar.google.com/calendar/ical/7rq7ga2oubv3tk93hk67agdv88%40group.calendar.google.com/public/basic.ics)
 **Google (https://calendar.google.com/calendar/hosted/consensys.net/event?action=TEMPLATE&hl=en&text=Gitcoin%20Community%20Livestream&dates=20180427T160000%2F20180427T173000&location=https%3A%2F%2Fconsensys.zoom.us%2Fj%2F385625394&ctz=America%2FChicago&details)
