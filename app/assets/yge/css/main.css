@@ -752,6 +752,17 @@ dl dd {
   transition: opacity 1s ease, transform 1s ease;
   z-index: 9999;
   position: relative;
+  margin-top: 2rem;
+}
+
+#main #ens_subdomain h1 {
+  font-family: 'Muli', sans-serif;
+  letter-spacing: 0;
+}
+
+#main #ens_subdomain h2 {
+  font-family: 'Muli', sans-serif;
+  text-transform: none;
 }
 
 #main #send_eth #advanced div {
