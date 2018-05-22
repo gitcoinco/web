@@ -186,7 +186,7 @@ def new_interest(request, bounty_id):
     except Bounty.DoesNotExist:
         raise Http404
 
-    is_too_many_already_started = bounty.work_scheme == 'traditional' and bounty.interested.count() > 0
+    is_too_many_already_started = bounty.work_scheme == 'traditional' and bounty.interested.filter(pending=False).count() > 0
     if is_too_many_already_started:
         return JsonResponse({
             'error': _(f'There is already someone working on this bounty.'),

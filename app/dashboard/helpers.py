@@ -414,7 +414,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
     # Currently we are only considering the latest fulfillment.  Std bounties supports multiple.
     # If any of the fulfillments have been accepted, the bounty is now accepted and complete.
     accepted = any([fulfillment.get('accepted') for fulfillment in fulfillments])
-
+    
     with transaction.atomic():
         old_bounties = old_bounties.distinct().order_by('created_on')
         latest_old_bounty = None
