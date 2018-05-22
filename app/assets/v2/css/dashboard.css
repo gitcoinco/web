@@ -72,10 +72,11 @@ body {
 
 .bounty_row .avatar-container {
   text-align: right;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .bounty_row img {
-  margin-top: 6px;
   margin-right: 20px;
 }
 
@@ -127,6 +128,13 @@ body {
   display: flex;
 }
 
+@media (max-width: 767.98px) {
+
+  .bounty_row .avatar-container {
+    display: none !important;
+  }
+}
+
 @media (max-width: 768px) {
 
   #onboard-dashboard .col-12 {
@@ -151,5 +159,20 @@ body {
 
   #stats {
     font-size: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+
+  .tag.network_warning {
+    margin-left: -100px;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1024px) {
+
+  .bounty_row {
+    padding-left: 1rem;
+    padding-right: 2rem;
   }
 }
