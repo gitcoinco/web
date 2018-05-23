@@ -255,6 +255,9 @@ def handle_subdomain_post_request(request, github_handle):
 def ens_subdomain(request):
     """Register ENS Subdomain."""
     github_handle = request.user.profile.handle if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    if github_handle:
+        github_handle = github_handle.lower().replace('.', '')
+        #TODO: UTS46 normalization 
 
     if request.method == "POST" and github_handle:
         return handle_subdomain_post_request(request, github_handle)
