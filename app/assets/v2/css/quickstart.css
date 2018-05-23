@@ -22,6 +22,10 @@ body.quickstart {
   width: 100%;
 }
 
+.quickstart .dont-show .checkbox_container .filter-label {
+  display: inline;
+}
+
 .quickstart ol,
 .quickstart ul {
   padding: 0;
