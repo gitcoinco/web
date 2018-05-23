@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import binascii
 import datetime
-import idna
 
 from django.conf import settings
 from django.http import JsonResponse
@@ -29,6 +28,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+import idna
 from dashboard.models import Profile
 from dashboard.views import w3
 from ens import ENS
