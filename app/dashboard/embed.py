@@ -11,6 +11,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 from ratelimit.decorators import ratelimit
 from svgutils.compose import SVG, Figure, Line
 from svgutils.transform import fromstring
+from django.views.decorators.csrf import csrf_exempt
 
 AVATAR_BASE = 'assets/other/avatars/'
 
@@ -430,6 +431,7 @@ def avatar(request, _org_name=None, add_gitcoincologo=None):
         print(e)
         return err_response
 
+@csrf_exempt
 def set_avatar(request):
     print(request, request.user)
-    return HttpResponse('hello there! %s' % (user))
+    return HttpResponse('hello there! %s' % (request.user))
