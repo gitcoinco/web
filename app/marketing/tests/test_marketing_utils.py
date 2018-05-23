@@ -49,28 +49,36 @@ class MarketingEmailUtilsTest(TestCase):
         EmailSubscriber.objects.create(
             email='emailSubscriber1@gitcoin.co',
             source='mysource',
-            priv='priv1'
+            preferences={
+                'suppression_preferences': {
+                    'foo', False
+                }
+            }
         )
         EmailSubscriber.objects.create(
             email='emailSubscriber2@gitcoin.co',
             source='mysource',
             preferences={
-                'level': 'something'
+                'suppression_preferences': {
+                    'foo', False
+                }
             }
         )
         EmailSubscriber.objects.create(
             email='emailSubscriber3@gitcoin.co',
             source='mysource',
             preferences={
-                'level': 'nothing'
+                'suppression_preferences': {
+                    'foo', True
+                }
             }
         )
 
     def test_should_suppress_notification_email(self):
         """Test the marketing util test_should_suppress_notification_email method."""
-        assert not should_suppress_notification_email('emailSubscriber1@gitcoin.co')
-        assert not should_suppress_notification_email('emailSubscriber2@gitcoin.co')
-        assert should_suppress_notification_email('emailSubscriber3@gitcoin.co')
+        assert not should_suppress_notification_email('emailSubscriber1@gitcoin.co', 'foo')
+        assert not should_suppress_notification_email('emailSubscriber2@gitcoin.co', 'foo')
+        assert should_suppress_notification_email('emailSubscriber3@gitcoin.co', 'foo')
 
     def test_get_of_get_or_save_email_subscriber(self):
         """Test the marketing util get_or_save_email_subscriber method."""

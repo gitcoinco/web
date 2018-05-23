@@ -34,6 +34,24 @@ from retail.utils import strip_double_chars, strip_html
 
 # RENDERERS
 
+#key, name, frequency
+MARKETING_EMAILS = [
+    ('roundup', 'Roundup Emails', 'Weekly'),
+    ('new_bounty_notifications', 'New Bounty Notification Emails', '(up to) Daily'),
+    ('important_product_updates', 'Product Update Emails', 'Quarterly'),
+]
+
+TRANSACTIONAL_EMAILS = [
+    ('tip', 'Tip Emails', 'Only when you are sent a tip'),
+    ('faucet', 'Faucet Notification Emails', 'Only when you are sent a faucet distribution'),
+    ('bounty', 'Bounty Notification Emails', 'Only when you\'re active on a bounty'),
+    ('bounty_match', 'Bounty Match Emails', 'Only when you\'ve posted a open bounty and you have a new match'),
+    ('bounty_feedback', 'Bounty Feedback Emails', 'Only after a bounty you participated in is finished.'),
+    ('bounty_expiration', 'Bounty Expiration Warning Emails', 'Only after you posted a bounty which is going to expire'),
+]
+
+ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
+
 
 def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)

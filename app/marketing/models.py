@@ -22,8 +22,9 @@ from secrets import token_hex
 
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
-
+from django.db.models.signals import pre_save
 from economy.models import SuperModel
+from django.dispatch import receiver
 
 
 class Alumni(SuperModel):
@@ -64,6 +65,54 @@ class EmailSubscriber(SuperModel):
     def set_priv(self):
         self.priv = token_hex(16)[:29]
 
+    def should_send_email_type_to(self, _type):
+        is_suppressed = es.preferences.get('suppression_preferences', {}).get(_type, False)
+        return is_suppressed
+
+    def build_email_preferences(self, form={}):
+        from retail.emails import ALL_EMAILS, TRANSACTIONAL_EMAILS, MARKETING_EMAILS
+
+        suppression_preferences = self.preferences.get('suppression_preferences', {})
+
+        # update from legacy email preferences
+        level = self.preferences.get('level', None)
+        if level:
+            if level == 'lite1':
+                for email_tuple in MARKETING_EMAILS:
+                    key, ui_name, frequency = email_tuple
+                    suppression_preferences[key] = True
+                for email_tuple in TRANSACTIONAL_EMAILS:
+                    key, ui_name, frequency = email_tuple
+                    suppression_preferences[key] = False
+            elif level == 'lite':
+                for email_tuple in MARKETING_EMAILS:
+                    key, ui_name, frequency = email_tuple
+                    suppression_preferences[key] = False
+                for email_tuple in TRANSACTIONAL_EMAILS:
+                    key, ui_name, frequency = email_tuple
+                    suppression_preferences[key] = True
+            else:
+                for email_tuple in ALL_EMAILS:
+                    key, ui_name, frequency = email_tuple
+                    suppression_preferences[key] = False
+            del self.preferences['level']
+
+        # update from form
+        for email_tuple in ALL_EMAILS:
+            key, ui_name, frequency = email_tuple
+            if key in form.keys():
+                suppression_preferences[key] = bool(form[key])
+
+        # save and return
+        self.preferences['suppression_preferences'] = suppression_preferences
+        return suppression_preferences
+
+
+# method for updating
+@receiver(pre_save, sender=EmailSubscriber, dispatch_uid="psave_es")
+def psave_es(sender, instance, **kwargs):
+    instance.build_email_preferences()
+
 
 class Stat(SuperModel):
 
@@ -92,7 +141,6 @@ class Stat(SuperModel):
             return self.val - Stat.objects.filter(key=self.key, created_on__lt=self.created_on).order_by('-created_on').first().val
         except Exception:
             return 0
-
 
 class LeaderboardRank(SuperModel):
 

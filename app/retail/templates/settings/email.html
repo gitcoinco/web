@@ -2,28 +2,39 @@
 {% load i18n static %}
 
 {% block settings_content %}
+    <style>
+    #select_all{
+        font-size: 12px;
+    }
+    label.form__label{
+        margin-bottom: 0px;
+    }
+    small{
+        display: block;
+    }
+    .email_pref_container{
+        height: 50px;
+    }
+    </style>
     <form id="whitepaper" method="POST">
       <div class="form-group">
-        <h5>{% trans "Basic Preferences" %}</h5>
+        <h5>{% trans "Email Preferences" %}</h5>
         <label class="form__label" for="email">{% trans "Email address" %}</label>
         <input type="email" name="email" class="form__input" placeholder='you@somewhere' value="{{ es.email }}" required>
         <small id="emailHelp" class="form__input-help">{% trans "We will never share your email with anyone else" %}</small>
       </div>
       <div class="form-group">
-        <label class="form__label" for="level">{% trans "Send me" %}</label>
-        <div class="form__select">
-          <select id="level" name="level" required>
-            <option value="regular"  {% if es.preferences.level == 'regular' %}selected{% endif %}>{% trans "Regular: Weekly Roundups, Notifications, etc" %}</option>
-            <option value="lite1" {% if es.preferences.level == 'lite1' %}selected{% endif %}>{% trans "Lite 1: Just Roundups" %}</option>
-            <option value="lite" {% if es.preferences.level == 'lite' %}selected{% endif %}>{% trans "Lite 2: Just Notifications" %}</option>
-            <option value="nothing" {% if es.preferences.level == 'nothing' %}selected{% endif %}>{% trans "Nothing: Don't Email" %}</option>
-          </select>
-          <div class="form__select__icon">
-            {% include 'svgs/arrow-down.svg' %}
-          </div>
+        <a href="#" id="select_all" data-direction="+" >[Select All]</a>
+        {% for email_type in email_types %}
+        <div class="email_pref_container">
+            <input class='priv_checkbox' type=checkbox name="{{email_type.0}}" id="{{email_type.0}}" value="1">
+            <label class="form__label" for="{{email_type.0}}">{% trans "Don't send me" %} <strong>{{email_type.1}}</strong></label>
+            <small id="{{email_type.0}}" class="form__input-help">{% trans "Frequency" %}: {{email_type.2}}</small>
+            
+            <br>
+            
         </div>
-        <small id="level" class="form__input-help">{% trans "roundup emails once a week" %}</small>
-        <small id="level" class="form__input-help">{% trans "notifications up to twice a day" %}</small>
+        {% endfor %}
       </div>
       <div class="form-group">
         <label class="form__label" for="level">{% trans "Preferred language" %}</label>
@@ -48,6 +59,28 @@
 
 {% block scripts %}
 <script>
+    $("document").ready(function(){
+        // select / deselect all
+        $("#select_all").click(function(e){
+            e.preventDefault();
+            if($(this).data('direction') == '+'){
+                $(".priv_checkbox").prop('checked', true);
+                $(this).text('[Deselect All]');
+                $(this).data('direction','-');
+            } else {
+                $(".priv_checkbox").prop('checked', false);
+                $(this).text('[Select All]');
+                $(this).data('direction','+');
+            }
+        });
 
+        // suppression preferences form
+        var suppression_preferences = {{suppression_preferences|safe}};
+        for(var key in suppression_preferences){
+            var pref = suppression_preferences[key];
+            $("#"+key).prop('checked', pref);
+        }
+
+    });
 </script>
 {% endblock %}
