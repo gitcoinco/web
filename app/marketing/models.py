@@ -23,8 +23,9 @@ from secrets import token_hex
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models.signals import pre_save
-from economy.models import SuperModel
 from django.dispatch import receiver
+
+from economy.models import SuperModel
 
 
 class Alumni(SuperModel):
