@@ -13,9 +13,9 @@ def migrate_bounty_owner_profiles(apps, schema_editor):
     for bounty in bounties:
         try:
             bounty.bounty_owner_profile = profiles.filter(
-                Q(handle__iexact=bounty.bounty_owner_github_username) | \
+                Q(handle__iexact=bounty.bounty_owner_github_username) |
                 Q(handle__iexact=f'@{bounty.bounty_owner_github_username}')
-            ).latest('id')
+            ).last()
             bounty.save()
         except Profile.DoesNotExist:
             # print('No profile found for ({bounty.bounty_owner_github_username})')
@@ -33,13 +33,13 @@ def migrate_tip_profiles(apps, schema_editor):
     for tip in tips:
         try:
             tip.recipient_profile = profiles.filter(
-                Q(handle__iexact=tip.username) | \
+                Q(handle__iexact=tip.username) |
                 Q(handle__iexact=f'@{tip.username}')
-            ).latest('id')
+            ).last()
             tip.sender_profile = profiles.filter(
-                Q(handle__iexact=tip.from_username) | \
+                Q(handle__iexact=tip.from_username) |
                 Q(handle__iexact=f'@{tip.from_username}')
-            ).latest('id')
+            ).last()
             tip.save()
         except Profile.DoesNotExist:
             # print('No profile found for: Recipient ({tip.username}) - Sender ({tip.from_username})')
