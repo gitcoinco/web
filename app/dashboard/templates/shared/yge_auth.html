@@ -15,6 +15,12 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
+<div class="nav-link logo">
+    <a href="/">
+    <img class="nav_avatar" title='Gitcoin' alt="Gitcoin" width=25 height=25 src="/static/v2/images/helmet_icon.png">
+    </a>
+</div>
+
 {% if user.is_authenticated %}
 <div class="nav-link login">
     <img class="nav_avatar" width=25 height=25
@@ -38,13 +44,19 @@
 }
 .nav-link.login{
   position: absolute;
-  top:20px;
-  right: 20px;
+  top:15px;
+  right: 15px;
 }
 
 .nav-link.login svg{
   margin-right: 15px;
 }
+.nav-link.logo{
+  position: absolute;
+  top:20px;
+  left: 20px;
+}
+
 
 @media screen and (max-width: 600px) {
   .nav-link.login,
