@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import binascii
 import datetime
+import idna
 
 from django.conf import settings
 from django.http import JsonResponse
@@ -257,7 +258,7 @@ def ens_subdomain(request):
     github_handle = request.user.profile.handle if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     if github_handle:
         github_handle = github_handle.lower().replace('.', '')
-        #TODO: UTS46 normalization 
+        github_handle = idna.encode(github_handle, uts46=True).decode("utf-8")
 
     if request.method == "POST" and github_handle:
         return handle_subdomain_post_request(request, github_handle)
