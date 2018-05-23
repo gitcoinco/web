@@ -10,7 +10,7 @@ $(document).ready(function() {
   $(document).on('click', '.show_video', function(e) {
     e.preventDefault();
     $('#video').remove();
-    var url = '/sync/get_quickstart_video';
+    var url = '/modal/get_quickstart_video';
 
     setTimeout(function() {
       $.get(url, function(newHTML) {

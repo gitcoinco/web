@@ -15,14 +15,16 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static %}
-<div id="no_issue_error" class="submit-notification metamask-error container-fluid" style="display: block;">
+{% load i18n static %}
+<div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #3d00fd;">
   <div class="row align-items-center px-4 pt-2 text-center text-lg-left">
     <div class="col-lg-10 col-sm-12">
-      <h3>Get Started Funding You First Issue</h3>
+      <h3>{% trans "Tips for Funding an Issue" %}</h3>
       <p>
-          Before you begin, create an issue on Github so that we can reference the details of the issue.
-          <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/gitcoinco/issues/4">Can't get web3 to work?  Get help here.</a>
+        <ol>
+          <li>{% trans "Create an issue on Github so that we can reference the details of the issue." %}</li>
+          <li>{% trans "What to fund? A new feature, feature improvements, bug fixes, code review, design and more." %}</li>
+        </ol>
       </p>
     </div>
     <div class="col-lg-2 col-sm-12">
