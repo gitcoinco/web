@@ -67,15 +67,16 @@ class EmailSubscriber(SuperModel):
 
     @property
     def is_eu(self):
-        ip_address = self.metadata.get('ip')
-
-        if ip_address:
-            try:
-                country = get_country_from_ip(ip_address)
-                if country.continent.code == 'EU':
-                    return True
-            except Exception:
-                pass
+        try:
+            ip_addresses = self.metadata.get('ip')
+            if ip_addresses:
+                for ip_address in ip_addresses:
+                    country = get_country_from_ip(ip_address)
+                    if country.continent.code == 'EU':
+                        return True
+        except Exception:
+            # Cowardly pass on everything for the moment.
+            pass
         return False
 
 
