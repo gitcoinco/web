@@ -1,0 +1,69 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div class="nav-link logo">
+    <a href="/">
+    <img class="nav_avatar" title='Gitcoin' alt="Gitcoin" width=25 height=25 src="/static/v2/images/helmet_icon.png">
+    </a>
+</div>
+
+{% if user.is_authenticated %}
+<div class="nav-link login">
+    <img class="nav_avatar" width=25 height=25
+  src="/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}">
+  {{ user }}
+</div>
+{% else %}
+<script>
+  FontAwesomeConfig = { searchPseudoElements: true };
+</script>
+<script defer src="{% static "v2/js/fontawesome-all.min.js" %}"></script>
+<a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">
+  <i class="fab fa-github"></i>{% trans "Login" %}
+</a>
+{% endif %}
+<style>
+
+.nav_avatar{
+  border-radius: 1px;
+  margin-bottom: -7px;
+}
+.nav-link.login{
+  position: absolute;
+  top:15px;
+  right: 15px;
+}
+
+.nav-link.login svg{
+  margin-right: 15px;
+}
+.nav-link.logo{
+  position: absolute;
+  top:20px;
+  left: 20px;
+}
+
+
+@media screen and (max-width: 600px) {
+  .nav-link.login,
+  .nav_avatar{
+    display: none;
+  }
+}
+
+
+</style>

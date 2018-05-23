@@ -4,6 +4,7 @@ cryptocompare==0.6
 cryptography==2.1.4
 django==2.0.5
 django-bootstrap3==8.2.3
+django-cors-headers==2.2.0
 django-filter
 django-ratelimit
 djangorestframework==3.7.3
@@ -23,6 +24,8 @@ PyPdf2
 python-twitter==3.2
 sendgrid
 slackclient
+eth-tester
+websockets
 web3==4.0.0b10
 mailchimp3
 django_chartit==0.2.9
@@ -32,7 +35,7 @@ statistics
 django-email-obfuscator
 cytoolz==0.9.0
 boto==2.48.0
-rollbar==0.13.18
+rollbar==0.14.0
 awscli
 google-api-python-client
 whitenoise==3.3.1
@@ -46,9 +49,11 @@ geoip2==2.8.0
 django-silk==2.0.0
 django-extensions==2.0.6
 ipdb==0.11
-inotify==0.2.9
+Werkzeug[watchdog]==0.14.1
 matplotlib
 imageio
 boto3
 django-storages
 easy-thumbnails
+eth-account==0.2.2
+

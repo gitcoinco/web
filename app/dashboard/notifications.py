@@ -179,7 +179,12 @@ def maybe_market_to_slack(bounty, event_name):
     try:
         channel = 'notif-gitcoin'
         sc = SlackClient(settings.SLACK_TOKEN)
-        sc.api_call("chat.postMessage", channel=channel, text=msg)
+        sc.api_call(
+            "chat.postMessage",
+            channel=channel,
+            text=msg,
+            icon_url=settings.GITCOIN_SLACK_ICON_URL,
+        )
     except Exception as e:
         print(e)
         return False
@@ -242,7 +247,12 @@ def maybe_market_to_user_slack(bounty, event_name):
         for subscriber in subscribers:
             try:
                 sc = SlackClient(subscriber.slack_token)
-                sc.api_call("chat.postMessage", channel=subscriber.slack_channel, text=msg)
+                sc.api_call(
+                    "chat.postMessage",
+                    channel=subscriber.slack_channel,
+                    text=msg,
+                    icon_url=settings.GITCOIN_SLACK_ICON_URL,
+                )
                 sent = True
             except Exception as e:
                 print(e)
@@ -290,7 +300,12 @@ def maybe_market_tip_to_slack(tip, event_name):
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
         channel = 'notif-gitcoin'
-        sc.api_call("chat.postMessage", channel=channel, text=msg)
+        sc.api_call(
+            "chat.postMessage",
+            channel=channel,
+            text=msg,
+            icon_url=settings.GITCOIN_SLACK_ICON_URL,
+        )
     except Exception as e:
         print(e)
         return False
@@ -398,12 +413,13 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
         bounty_owner_clear = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
         try:
             if profile_pairs:
+                msg += f"\n{bounty_owner_clear}, __please see the below comments / questions regarding approach for " \
+                        "this ticket from the bounty hunter(s):__ "
                 for profile in profile_pairs:
                     interests = Interest.objects.filter(profile__handle=profile[0], bounty=bounty)
                     for interest in interests:
                         if interest.issue_message.strip():
-                            msg += f"\n__Please answer following questions/comments__ {bounty_owner_clear}:\n\n" + \
-                                    interest.issue_message
+                            msg += f"\n- [@{profile[0]}]({profile[1]}): {interest.issue_message}\n\n"
         except Exception as e:
             print(e)
     elif event_name == 'work_submitted':
@@ -727,7 +743,12 @@ def maybe_notify_bounty_user_escalated_to_slack(bounty, username, last_heard_fro
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
         channel = 'notif-gitcoin'
-        sc.api_call("chat.postMessage", channel=channel, text=msg)
+        sc.api_call(
+            "chat.postMessage",
+            channel=channel,
+            text=msg,
+            icon_url=settings.GITCOIN_SLACK_ICON_URL,
+        )
     except Exception as e:
         print(e)
         return False
@@ -799,7 +820,12 @@ def maybe_notify_bounty_user_warned_removed_to_slack(bounty, username, last_hear
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
         channel = 'notif-gitcoin'
-        sc.api_call("chat.postMessage", channel=channel, text=msg)
+        sc.api_call(
+            "chat.postMessage",
+            channel=channel,
+            text=msg,
+            icon_url=settings.GITCOIN_SLACK_ICON_URL,
+        )
     except Exception as e:
         print(e)
         return False

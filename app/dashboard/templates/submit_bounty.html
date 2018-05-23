@@ -50,7 +50,7 @@
               <form id="primary_form" class="submit_bounty_form">
                 <h1>{% trans "Fund an Issue" %}</h1>
                 <label class="form__label" for=issueURL>{% trans "Issue URL" %}</label>
-                <input name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/pull/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
+                <input name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
                 <label class="form__label" for="title">{% trans "Issue Title" %}</label>
                 <input name='title' id="title"  class="form__input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" />
                 <label class="form__label" for="description">{% trans "Issue Description" %}</label>
@@ -110,7 +110,6 @@
                   <div class="form__group-item">
                     <div class="form__select2">
                       <select name='deonomination' id='token'></select>
-
                     </div>
                     <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
                   </div>

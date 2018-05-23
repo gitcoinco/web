@@ -425,10 +425,6 @@ p a {
   margin-left: 0px;
 }
 
-.dashboard .special_tag a {
-  max-height: 30px;
-}
-
 .dashboard .body .avatar {
   max-height: 50px;
   max-width: 50px;
@@ -543,6 +539,10 @@ input[type=text].loading {
 .fulfill_bounty .select2-results__option {
   font-size: 0.875rem;
   font-family: "Muli", sans-serif;
+}
+.select2-results__option:empty {
+  padding: 1px;
+  border-bottom: solid 1px darkgray;
 }
 
 .submit_bounty .select2-results__option,
@@ -1085,6 +1085,7 @@ input[type=text].loading {
 
 .mission {
   font-family: Futura, sans-serif;
+  background-color: #eef4ee;
 }
 
 .text-highlight-green {
@@ -1098,6 +1099,7 @@ input[type=text].loading {
 .text-highlight-pink {
   color: #da086b;
 }
+
 
 #mission_hero .text {
   margin-left: 2rem;

@@ -19,6 +19,7 @@
 <html>
   <head>
     {% include 'shared/tag_manager_1.html' %}
+    {% include 'shared/cards_pic.html' with title='Send Tip | Gitcoin'  card_desc='Send a tip to any github user at the click of a button.'  %}
     <title>{{title}} | Gitcoin</title>
     <meta charset="utf-8" />
     <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
@@ -26,9 +27,11 @@
     <!--[if lte IE 8]><script src="{% static "yge/js/html5shiv.js" %}"></script><![endif]-->
     <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
     <link rel="stylesheet" href="{% static "yge/css/main.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/box_redeem.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/rain.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}" />
+
     <script src="{% static "v2/js/jquery.js" %}"></script>
     <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
     <!--[if lte IE 9]><link rel="stylesheet" href="{% static "yge/css/ie9.css" %}" /><![endif]-->
@@ -46,6 +49,7 @@
     {% include 'shared/rain.html' with class="color" %}
     <!-- Wrapper -->
     <div id="wrapper">
+      {% include 'shared/yge_auth.html' with source='authed' %}
       <!-- Main -->
       {% block 'main' %} {% endblock %}
       <!-- Footer -->
