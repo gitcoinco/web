@@ -38,6 +38,7 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
+from app.utils import get_country_from_ip
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -1201,6 +1202,18 @@ class Profile(SuperModel):
         self.slack_repos = [repo.strip() for repo in repos]
         self.slack_channel = channel
         self.save()
+
+    @property
+    def is_eu(self):
+        try:
+            ip_addresses = list(set(self.actions.filter(action='Login').values_list('ip_address', flat=True)))
+            for ip_address in ip_addresses:
+                country = get_country_from_ip(ip_address)
+                if country.continent.code == 'EU':
+                    return True
+        except Exception:
+            pass
+        return False
 
 
 @receiver(user_logged_in)
