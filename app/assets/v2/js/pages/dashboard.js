@@ -456,7 +456,7 @@ var refreshBounties = function(event) {
 
       var work_scheme = ucwords(result['work_scheme']) + ' &bull; ';
 
-      result['p'] = work_scheme + ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
+      result['p'] = work_scheme + ((result['experience_level'] ? result['experience_level'] + ' &bull; ' : ''));
 
       if (result['status'] === 'done')
         result['p'] += 'Done';

@@ -187,7 +187,12 @@ def maybe_market_to_slack(bounty, event_name):
     try:
         channel = 'notif-gitcoin'
         sc = SlackClient(settings.SLACK_TOKEN)
-        sc.api_call("chat.postMessage", channel=channel, text=msg)
+        sc.api_call(
+            "chat.postMessage",
+            channel=channel,
+            text=msg,
+            icon_url=settings.GITCOIN_SLACK_ICON_URL,
+        )
     except Exception as e:
         print(e)
         return False
@@ -250,7 +255,12 @@ def maybe_market_to_user_slack(bounty, event_name):
         for subscriber in subscribers:
             try:
                 sc = SlackClient(subscriber.slack_token)
-                sc.api_call("chat.postMessage", channel=subscriber.slack_channel, text=msg)
+                sc.api_call(
+                    "chat.postMessage",
+                    channel=subscriber.slack_channel,
+                    text=msg,
+                    icon_url=settings.GITCOIN_SLACK_ICON_URL,
+                )
                 sent = True
             except Exception as e:
                 print(e)
@@ -298,7 +308,12 @@ def maybe_market_tip_to_slack(tip, event_name):
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
         channel = 'notif-gitcoin'
-        sc.api_call("chat.postMessage", channel=channel, text=msg)
+        sc.api_call(
+            "chat.postMessage",
+            channel=channel,
+            text=msg,
+            icon_url=settings.GITCOIN_SLACK_ICON_URL,
+        )
     except Exception as e:
         print(e)
         return False
@@ -756,7 +771,12 @@ def maybe_notify_bounty_user_escalated_to_slack(bounty, username, last_heard_fro
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
         channel = 'notif-gitcoin'
-        sc.api_call("chat.postMessage", channel=channel, text=msg)
+        sc.api_call(
+            "chat.postMessage",
+            channel=channel,
+            text=msg,
+            icon_url=settings.GITCOIN_SLACK_ICON_URL,
+        )
     except Exception as e:
         print(e)
         return False
@@ -828,7 +848,12 @@ def maybe_notify_bounty_user_warned_removed_to_slack(bounty, username, last_hear
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
         channel = 'notif-gitcoin'
-        sc.api_call("chat.postMessage", channel=channel, text=msg)
+        sc.api_call(
+            "chat.postMessage",
+            channel=channel,
+            text=msg,
+            icon_url=settings.GITCOIN_SLACK_ICON_URL,
+        )
     except Exception as e:
         print(e)
         return False

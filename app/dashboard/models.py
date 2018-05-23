@@ -1046,6 +1046,13 @@ class Profile(SuperModel):
                f"funded issue{plural} on Gitcoin"
 
     @property
+    def github_created_on(self):
+        from datetime import datetime
+        created_on = datetime.strptime(self.data['created_at'], '%Y-%m-%dT%H:%M:%SZ')
+        return created_on.replace(tzinfo=pytz.UTC)
+
+
+    @property
     def is_moderator(self):
         """Determine whether or not the user is a moderator.
 
