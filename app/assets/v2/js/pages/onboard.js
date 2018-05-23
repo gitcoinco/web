@@ -1,5 +1,5 @@
 var onboard = {};
-var steps = [ 'github', 'metamask', 'skills', 'avatar' ];
+var steps = [ 'github', 'metamask', 'avatar', 'skills' ];
 var current = 0;
 var words = [];
 
@@ -29,6 +29,7 @@ onboard.showTab = function(num) {
     $('#next-btn').attr('onclick', 'changeStep(1)');
   }
   onboard.highlightStep(num);
+  $('#next-btn').addClass('completed');
 };
 
 onboard.highlightStep = function(currentStep) {
@@ -123,9 +124,9 @@ onboard.getFilters = function(savedKeywords) {
   };
 
   $.ajax(settings).done(function(response) {
-    console.log('DONE');
+    // TODO : Update keywords for user profile
   }).fail(function(error) {
-    console.log('ERROR', error);
+    // TODO: Handle Error
   });
 };
 
@@ -150,7 +151,7 @@ steps.forEach(function(step, index) {
 onboard.showTab(current);
 
 onboard.watchMetamask();
-setInterval(onboard.watchMetamask, 5000);
+setInterval(onboard.watchMetamask, 2000);
 
 var keywords = [ 'css', 'solidity', 'python', 'javascript', 'ruby', 'django',
   'java', 'html', 'test', 'design' ];
@@ -168,7 +169,7 @@ keywords.forEach(function(keyword) {
   );
 });
 
-$('#step-3 #suggested-tags').html(suggested_tags);
+$('#skills #suggested-tags').html(suggested_tags);
 
 if ($('.navbar #navbarDropdown').html()) {
   var url = '/api/v0.1/profile/' + $('.navbar #navbarDropdown').html().trim() + '/keywords';
@@ -184,14 +185,9 @@ $('.suggested-tag input[type=checkbox]').change(function(e) {
 
 $('.search-area input[type=text]').keypress(function(e) {
   if (e.which == 13) {
-    $('#next-btn').addClass('completed');
     onboard.getFilters();
     e.preventDefault();
   }
-});
-
-$('#experienceLevel, .suggested-tag input[type=checkbox]').change(function() {
-  $('#next-btn').addClass('completed');
 });
 
 var redirectURL = function() {
@@ -199,6 +195,6 @@ var redirectURL = function() {
 
   localStorage['experience_level'] = level;
   var url = '/explorer?q=' + words.join(',');
-
+  localStorage['referrer'] = 'onboard';
   document.location.href = url;
 };

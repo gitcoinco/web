@@ -37,8 +37,10 @@
             <span class="step-state"></span>
           </div>
           <div id="step-1" link="github" class="step">
-            <h2>{% trans "Get started with Gitcoin!" %}</h2>
             <div class="row">
+              <div class="col-12">
+                <h2>{% trans "Get started with Gitcoin!" %}</h2>
+              </div>
               <div class="col-12 col-md-8 offset-md-2">
                 {% blocktrans %}
                   <h3>Use gitcoin to find paid work real world problems
@@ -61,113 +63,23 @@
                     <p>{% trans "Network" %}</p>
                   </div>
                 </div>
-                <div class="col-12 mt-4">
-                  {% if github_handle %}
-                    <div class="logged-in">
-                      <h3>
-                        <i class="far fa-check-circle"></i>
-                        {% trans "You are logged in!" %}
-                      </h3>
-                      <div class="font-caption row">
-                        <div class="col-12">
-                          <img class="github-avatar" src="{% url "avatar" %}?repo=https://github.com/{{ github_handle }}">
-                          <span>
-                            <p>{{ github_handle }}</p>
-                            <a href="{% url "logout" %}?next={{ request.get_full_path }}">
-                              {% trans "Logout" %}
-                            </a>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  {% else %}
-                    <div class="logged-out">
-                      <a class="button button--primary" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
-                        onclick="dataLayer.push({'event': 'login'});">
-                        <i class="fab fa-github"></i>
-                        <span>{% trans "Login with github" %}</span>
-                      </a>
-                    </div>
-                  {% endif %}
-                </div>
+                {% include 'ftux/github.html' %}
               </div>
             </div>
           </div>
           <div id="step-2" link="metamask" class="step">
-            <h2>{% trans "Connect Metamask" %}</h2>
-            <div class="row">
-              <div class="col-12 col-md-8 offset-md-2">
-                {% blocktrans %}
-                  <h3>Install MetaMask - your secure, encrypted digital wallet.</h3>
-                  <h3>
-                    You will set up Metamask to take on a project or get paid for the work you've completed on Gitcoin.
-                  </h3>
-                {% endblocktrans %}
-                <div class="col-12">
-                  <iframe width="400" height="200"
-                    src="https://www.youtube.com/embed/6Gf_kRE4MJU?rel=0&amp;showinfo=0"
-                    frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                </div>
-                <div class="col-12">
-                  <div id="metamask">
-                    <div class="locked">
-                      <a class="button button--primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
-                        <img src={% static "v2/images/metamask.svg" %}>
-                        <span>{% trans "Setup Metamask" %}</span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12 font-caption mt-2">
-                  <a href="https://metamask.io/" target="_blank">{% trans "How to send ETH to Metamask" %}</a>
-                </div>
-                <div class="col-12 font-caption mt-2">
-                  <a href="https://github.com/MetaMask/faq#metamask-faq" target="_blank" class="mb-0">{% trans "FAQ : MetaMask" %}</a>
-                </div>
-              </div>
-            </div>
+            {% include 'ftux/metamask.html' %}
           </div>
-          <div id="step-3" link="skills" class="step">
-            <h2>{% trans "What's your skill set?" %}</h2>
-            <div class="row">
-              <div class="col-12 offset-md-2 col-md-8 font-body pl-0 pr-0">
-                <p class="font-caption label">{% trans "Suggested" %}</p>
-                <div id="suggested-tags"></div>
-              </div>
-              <div class="search col-12 offset-md-2 col-md-8 pl-0 pr-0">
-                <p class="font-caption label">{% trans "Add Skill" %}</p>
-                <div class="search-area col-12">
-                  <input class="focus-effect form__input form__input_lg" id="keywords" type="text" placeholder="{% trans 'List out : Skill 1, Skill 2 ...' %}" />
-                  <span class="focus-border">
-                    <i></i>
-                  </span>
-                </div>
-              </div>
-              <div class="col-12 offset-md-2 col-md-8 font-body pl-0 pr-0">
-                <div class="filter-tags"></div>
-              </div>
-              <div class="col-12 offset-md-2 col-md-8 row pl-0 pr-0">
-                <div class="col-12 col-md-4 col-lg-3 pl-0 pr-0">
-                  <p class="font-caption label experienceLabel">{% trans "Experience Level" %}</p>
-                </div>
-                <div class="form__select2 col-12 col-md-8 col-lg-9 pl-0 pr-0">
-                    <select class="w-100 js-select2" id="experienceLevel">
-                        <option value="">{% trans "Any" %}</option>
-                        <option value="beginner">{% trans "Beginner ( < 4 years Experience )" %}</option>
-                        <option value="intermediate">{% trans "Intermediate ( 4 - 5 years Experience )" %}</option>
-                        <option value="advanced">{% trans "Advanced ( > 5 years Experience )" %}</option>
-                    </select>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div id="step-4" link="avatar" class="step">
+          <div id="step-3" link="avatar" class="step">
             <h2>{% trans "Build your avatar" %}</h2>
             <div class="row">
               <div class="col-12">
                 <img style="width:45em;max-width:100%;" src="https://i.imgur.com/UMRUvGe.png">
               </div>
             </div>
+          </div>
+          <div id="step-4" link="skills" class="step">
+            {% include 'ftux/skills.html' %}
           </div>
           <div class="controls">
             <p id="prev-btn" class= ""onclick="changeStep(-1)">{% trans "Previous" %}</p>

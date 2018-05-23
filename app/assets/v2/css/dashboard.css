@@ -68,6 +68,10 @@ body {
   margin-bottom: 0.45rem;
 }
 
+#onboard-dashboard .no-results {
+  background: #FFFFFF;
+}
+
 .title-row {
   display: flex;
   margin-top: 2em;
@@ -153,6 +157,10 @@ body {
   color: white;
   width: 20px;
   top: 0px;
+}
+
+#onboard-dashboard .no-results img {
+  width: 15rem;
 }
 
 .bounty-detail .info {

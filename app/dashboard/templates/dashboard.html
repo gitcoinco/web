@@ -31,37 +31,8 @@
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
     </div>
-    <div id="onboard-dashboard" class="row hidden font-body">
-      <div class="col-lg-3 text-right robot">
-        <img src="{% static "v2/images/prime.png" %}">
-      </div>
-      <div class="col-12 offset-md-1 col-md-9 offset-lg-0 col-lg-5 info">
-        <h2 class="font-title">{% trans "Welcome to Gitcoin!" %}</h2>
-        <h3 class="font-subheader pb-2">{% trans "We’ve Found Bounties That Match Your Interest And Experience." %}</h3>
-        <p class="darkify mt-4">{% trans "HOW IT WORKS" %}</p>
-        <p><i class="fas fa-circle"></i>{% trans "Get Started with your first bounty! Select an issue and Click Start Work" %}</p>
-        <p><i class="fas fa-circle"></i>{% trans "When you're finished and ready to review. Click Submit Work." %}</p>
-        <p><i class="fas fa-circle"></i>{% trans "Can't finish the project ? Click stop work" %}</p>
-        <p>{% trans "Need more help? Checkout the" %}
-          <a href="#">Getting Starting Guide</a>
-        </p>
-        <a id="onboard-alert" class="button button--primary" role="button" href="" target="">
-          <span class="font-caption">{% trans "Got It!" %}</span>
-        </a>
-      </div>
-      <div class="col-12 offset-md-1 offset-lg-0 col-lg-3 tips">
-        <h2 class="darkify font-subheader">{% trans "TIPS & TRICKS!" %}</h2>
-        <div class="font-body tips-info">
-          <p><i class="fas fa-circle"></i>{% trans "Understand the acceptance criteria" %}</p>
-          <p><i class="fas fa-circle"></i>{% trans "Understand the timeframe" %}</p>
-          <p><i class="fas fa-circle"></i>{% trans "Ask questions" %}</p>
-          <p><i class="fas fa-circle"></i>{% trans "Leave room for adjustments" %}</p>
-          <p><i>{% trans "Have fun! Meet new people!" %}</i></p>
-          <a href="#">{% trans "More Contributor Tips" %}</a>
-        </div>
-      </div>
-    </div>
-    <div class="row no-gutter">
+    {% include '_dashboard/ftux.html' %}
+    <div id="dashboard-content" class="row no-gutter">
       <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
         {% include 'shared/current_balance.html' %}
         {% include 'shared/sidebar_search.html' %}
