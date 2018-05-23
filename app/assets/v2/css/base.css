@@ -254,6 +254,9 @@ span {
   padding-bottom: 60px !important;
 }
 
+.bg-darkBlue{
+  background-color: #0d023b;
+}
 .bg-darkBlue a {
   color: #eee;
 }
