@@ -1260,7 +1260,6 @@ class Profile(SuperModel):
 
         return eth_sum
 
-
     def to_dict(self, activities=True, leaderboards=True, network=None, tips=True):
         """Get the dictionary representation with additional data.
 
@@ -1294,7 +1293,7 @@ class Profile(SuperModel):
         sum_eth_collected = self.get_eth_sum(**query_kwargs)
 
         funded_bounties = Bounty.objects.current().filter(
-            Q(bounty_owner_github_username__iexact=self.handle)| \
+            Q(bounty_owner_github_username__iexact=self.handle) |
             Q(bounty_owner_github_username__iexact=f'@{self.handle}')
         )
 
