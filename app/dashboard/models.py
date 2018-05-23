@@ -38,7 +38,6 @@ from django.utils.translation import gettext_lazy as _
 
 import pytz
 import requests
-from app.utils import get_country_from_ip
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
@@ -1205,6 +1204,7 @@ class Profile(SuperModel):
 
     @property
     def is_eu(self):
+        from app.utils import get_country_from_ip
         try:
             ip_addresses = list(set(self.actions.filter(action='Login').values_list('ip_address', flat=True)))
             for ip_address in ip_addresses:

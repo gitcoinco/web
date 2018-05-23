@@ -23,7 +23,6 @@ from secrets import token_hex
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 
-from app.utils import get_country_from_ip
 from economy.models import SuperModel
 
 
@@ -67,6 +66,7 @@ class EmailSubscriber(SuperModel):
 
     @property
     def is_eu(self):
+        from app.utils import get_country_from_ip
         try:
             ip_addresses = self.metadata.get('ip')
             if ip_addresses:
