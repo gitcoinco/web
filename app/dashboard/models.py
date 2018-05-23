@@ -29,7 +29,7 @@ from django.contrib.humanize.templatetags.humanize import naturalday, naturaltim
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.db import models
-from django.db.models import Sum
+from django.db.models import Q, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.urls import reverse
@@ -1226,7 +1226,7 @@ class Profile(SuperModel):
                 active=True,
                 github_username=self.handle,
             ).latest('id')
-            score = LeaderboardRank.objects.filter(active=True, key=key, amount__lt=rank.amount).count()
+            score = LeaderboardRank.objects.filter(active=True, leaderboard=key, amount__lt=rank.amount).count()
         except LeaderboardRank.DoesNotExist:
             score = 0
         return score
@@ -1236,6 +1236,30 @@ class Profile(SuperModel):
 
     def get_funder_leaderboard_index(self):
         return self.get_leaderboard_index('all_payers')
+
+    def get_eth_sum(self, sum_type='collected', network='mainnet'):
+        """Get the sum of collected or funded ETH based on the provided type.
+
+        Args:
+            sum_type (str): The sum to lookup.  Defaults to: collected.
+            network (str): The network to query results for.
+                Defaults to: mainnet.
+
+        Returns:
+            float: The total sum of all ETH of the provided type.
+
+        """
+        if sum_type == 'funded':
+            obj = self.bounties_funded.filter(network=network)
+        elif sum_type == 'collected':
+            obj = self.get_fulfilled_bounties()
+
+        eth_sum = obj.aggregate(
+            Sum('value_in_eth')
+        )['value_in_eth__sum'] / 10**18 if obj.exists() else 0
+
+        return eth_sum
+
 
     def to_dict(self, activities=True, leaderboards=True, network=None, tips=True):
         """Get the dictionary representation with additional data.
@@ -1266,10 +1290,13 @@ class Profile(SuperModel):
 
         query_kwargs = {'network': network}
 
-        sum_eth_funded = self.bounties_funded.filter(**query_kwargs) \
-            .aggregate(Sum('value_in_eth'))['value_in_eth__sum'] / 10**18 if self.bounties_funded.exists() else 0
-        sum_eth_collected = self.get_fulfilled_bounties() \
-            .aggregate(Sum('value_in_eth'))['value_in_eth__sum'] / 10**18 if self.get_fulfilled_bounties().exists() else 0
+        sum_eth_funded = self.get_eth_sum(sum_type='funded', **query_kwargs)
+        sum_eth_collected = self.get_eth_sum(**query_kwargs)
+
+        funded_bounties = Bounty.objects.current().filter(
+            Q(bounty_owner_github_username__iexact=self.handle)| \
+            Q(bounty_owner_github_username__iexact=f'@{self.handle}')
+        )
 
         params = {
             'title': f"@{self.handle}",
@@ -1279,13 +1306,14 @@ class Profile(SuperModel):
             'card_desc': self.desc,
             'avatar_url': self.avatar_url_with_gitcoin_logo,
             'profile': self,
-            'stats': self.stats,
             'bounties': self.bounties,
             'count_bounties_completed': self.fulfilled.filter(accepted=True).count(),
             'sum_eth_collected': sum_eth_collected,
             'sum_eth_funded': sum_eth_funded,
+            'funded_bounties_count': funded_bounties.count(),
             'activities': [{'title': _('No data available.')}]
         }
+
         if activities:
             fulfilled = self.fulfilled.select_related('bounty').all().order_by('-created_on')
             completed = [fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=False)]
