@@ -27,18 +27,46 @@
       {% include 'shared/nav.html' %}
       {% include 'shared/hero.html' %}
       <div class="row cta-green p-3 justify-content-center">
-        <span class="text-highlight-dark-blue">DEVELOPERS!</span>
+        <span class="text-highlight-dark-blue mr-1">DEVELOPERS!</span>
         Want to work on OSS Projects?
-        <a href="/explorer">View Available Bounties</a>
-        |
-        <a>Get Started with Gitcoin</a>
+        <div class="ml-3">
+          <a href="/explorer">View Available Bounties</a>
+          |
+          <a href="">Get Started with Gitcoin</a>
+        </div>
       </div>
     </div>
 
-    <div class="container-fluid p-4 whatisit_container">
-      <div class="row">
+    <div class="container-fluid p-5 benefits_container">
+      <div class="benefit">
+        <h3>Augment Your Team's Workflow</h3>
+        <p>
+          Save time on non-core tasks. Create space for your team to focus on
+          the right problems (better ROI by outsourcing).
+        </p>
+        <a href="">Watch a Video</a>
+      </div>
+      <div class="benefit">
+        <h3>Work with Global Talent</h3>
+        <p>
+          Supporting Copy in a few sentences, Hire based on merit and work on
+          your platform.
+        </p>
+        <a href="">Learn About Our Community</a>
+      </div>
+      <div class="benefit">
+        <h3>Grow Your Open Source Community</h3>
+        <p>
+          Leverage Gitcoin's firehose of talent. Why should they do this?
+        </p>
+        <a href="">Learn More</a>
+      </div>
+    </div>
+
+    <div class="container-fluid p-5 whatisit_container">
+      <div class="row mb-5">
         <div class="col text-center">
-          <h2>{% trans "What is Gitcoin?" %}</h2>
+          <h1>{% trans "What is Gitcoin?" %}</h1>
         </div>
       </div>
       <div class="row d-flex justify-content-center whatisit">
@@ -57,32 +85,108 @@
       </div>
     </div>
 
-    <div class="container-fluid p-4 howworks_container">
-      <div class="row">
+    <div class="container-fluid p-5 howworks_container">
+      <div class="row mb-5">
         <div class="col text-center">
-          <h2>{% trans "Do This. Easily." %}</h2>
+          <h1>{% trans "Do This. Easily." %}</h1>
         </div>
       </div>
-      <a href="" class="btn btn-gc-blue">How to Use Gitcoin in 30 Seconds</a>
+      <div class="howworks-steps">
+        <div class="howworks-step">
+          <div class="howworks-step__label">1</div>
+          <h3>Find a Bounty on the Issue Explorer</h3>
+          <p>
+            Whether it's Bugs, Features, or Security Issues, Gitcoin's Issue
+            Explorer is the easiest way to find paid work in open source.
+          </p>
+        </div>
+        <div class="howworks-step">
+          <div class="howworks-step__label">2</div>
+          <h3>Build Something Great</h3>
+          <p>
+            Select an open issue, work on a project, collaborate, build your
+            skills, and contribute towards the open source projects.
+          </p>
+        </div>
+        <div class="howworks-step">
+          <div class="howworks-step__label">3</div>
+          <h3>Submit Work and Get Paid</h3>
+          <p>
+            Payments are Ethereum-based, & released automatically after code is
+            accepted by the bounty submitter.
+          </p>
+        </div>
+      </div>
+      <a href="" class="btn btn-gc-blue m-4">
+        <i class="fas fa-play" aria-hidden="true"></i>
+        How to Use Gitcoin in 30 Seconds
+      </a>
+      <p>Gitcoin is a bounty-based collaboration tool that works easily with Github.
+        <i class="fab fa-github" aria-hidden="true"></i>
+      </p>
     </div>
 
-    <div class="container-fluid p-4">
-      <div class="row">
+    <div class="container-fluid p-5">
+      <div class="row mb-5">
         <div class="col text-center">
-          <h2>{% trans "Read Case Studies" %}</h2>
+          <h1>{% trans "Read Case Studies" %}</h1>
         </div>
       </div>
-      <ul>
+      <ul class="case-studies-list">
         <li>{% trans "Case Study 1: Ethereum Foundation Hiring" %}</li>
         <li>{% trans "Case Study 2: Tim Van Mourik" %}</li>
         <li>{% trans "Case Study 3: Metamask Bounty Engineer" %}</li>
       </ul>
     </div>
 
-    <div class="container-fluid p-4 pricing_container">
-      <div class="row">
+    <div class="container-fluid p-5 pricing_container">
+      <div class="row mb-5">
         <div class="col text-center">
-          <h2>{% trans "Simple Pricing" %}</h2>
+          <h1>{% trans "Simple Pricing" %}</h1>
+        </div>
+      </div>
+      <div class="pricing-tiers-container">
+        <div class="text-highlight-light-blue pricing-tier__title">Lite</div>
+        <div class="pricing-tier__subtitle">A Taste of Our Product</div>
+        <div>
+          <div class="pricing-tier__price">Free</div>
+        </div>
+        <ul class="pricing-tier__features">
+          <li>Do it yourself. You post and manage the bounties.</li>
+        </ul>
+        <div>
+          <a class="btn btn-outline-gc-green btn-block" href="">Get Started</a>
+        </div>
+
+        <div class="text-highlight-light-blue pricing-tier__title">Silver</div>
+        <div class="pricing-tier__subtitle">We Manage the Development Flow</div>
+        <div>
+          <div class="pricing-tier__price">$10k</div>
+        </div>
+        <ul class="pricing-tier__features">
+          <li>Access Gitcoin's torrent of dev flow</li>
+          <li>We manage the project for you</li>
+          <li>We advise on pricing</li>
+          <li>We will monitor it for you</li>
+        </ul>
+        <div>
+          <a class="btn btn-outline-gc-green btn-block" href="">Get Started</a>
+        </div>
+
+        <div class="pricing-tier__title emphasis">Gold</div>
+        <div class="pricing-tier__subtitle emphasis">We Spin Up Projects and Manage Them</div>
+        <div class="emphasis">
+          <div class="pricing-tier__price">$20k</div>
+        </div>
+        <ul class="pricing-tier__features emphasis">
+          <li>Access Gitcoin's torrent of dev flow</li>
+          <li>We manage the project for you</li>
+          <li>We advise on pricing</li>
+          <li>We will monitor it for you</li>
+          <li>We scope and define the project</li>
+        </ul>
+        <div class="emphasis">
+          <a class="btn btn-gc-green btn-block" href="">Get Started</a>
         </div>
       </div>
     </div>

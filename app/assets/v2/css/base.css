@@ -211,6 +211,28 @@ span {
 
 .howworks_container {
   background-color: #F9F9F9;
+  text-align: center;
+}
+
+.howworks-steps {
+  border-top: 1px solid #E1E8EE;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.howworks-step {
+  position: relative;
+  padding-top: 2rem;
+}
+.howworks-step__label {
+  border-radius: 50%;
+  height: 2rem;
+  width: 2rem;
+  line-height: 1.75rem;
+  border: 1px solid #E1E8EE;
+  position: absolute;
+  top: -1rem;
+  left: calc(50% - 1rem);
+  background: #F9F9F9;
 }
 
 .whatisit_container {
@@ -218,8 +240,65 @@ span {
   color: var(--text-light);
 }
 
+.benefits_container {
+  background-color: #F9F9F9;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 1rem;
+}
+
+.benefit {
+  background-color: white;
+  text-align: center;
+}
+
+.case-studies-list {
+  list-style-type: none;
+}
+
 .pricing_container {
   background-color: #F9F9F9;
+}
+
+.pricing-tiers-container {
+  background: #F9F9F9;
+  box-shadow: 4px 5px 10px 3px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(5, min-content);
+  grid-auto-flow: column;
+  grid-gap: 0 2px;
+  border-radius: 5px;
+  overflow: hidden;
+  text-align: center;
+}
+.pricing-tiers-container > * {
+  padding: 1rem;
+  background: white;
+}
+
+.pricing-tier__subtitle {
+  padding-bottom: 1rem;
+}
+.emphasis {
+  background: var(--gc-blue);
+  color: white;
+}
+.pricing-tier__features {
+  text-align: left;
+  padding-left: 2rem;
+  margin-bottom: 0;
+}
+.pricing-tier__features li {
+  margin-bottom: 1em;
+}
+.pricing-tier__price {
+  font-size: 3rem;
+  line-height: 1em;
+  padding: 3rem 0;
+  margin: 0 1rem;
+  border-top: 1px solid #E1E8EE;
+  border-bottom: 1px solid #E1E8EE;
 }
 
 .testimonial_container {
@@ -1369,6 +1448,10 @@ input.is-invalid {
 
 @media (max-width: 769px) {
 
+  .pricing-tiers-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(15, min-content);
+  }
   #gitcoinTestimonials {
     height: 202px;
     width: 350px;
