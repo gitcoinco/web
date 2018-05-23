@@ -1,0 +1,11 @@
+Hello there,
+
+You may have heard about the new General Data Protection Regulation ("GDPR"), that comes into effect May 25, 2018. To help comply with GDPR consent requirements, we need to confirm that you would like to receive content from us.
+
+We hope that our content is useful to you. If you'd like to continue hearing from us, please update your subscription settings.
+
+Click here to update your subscription settings: https://gitcoin.co/settings/email/{{subscriber.priv}}
+
+Best,
+@owocki
+

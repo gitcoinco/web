@@ -153,6 +153,7 @@ kevin
     return response_html, response_txt
 
 
+
 def render_new_bounty(to_email, bounties, old_bounties):
     sub = get_or_save_email_subscriber(to_email, 'internal')
     params = {
@@ -164,6 +165,17 @@ def render_new_bounty(to_email, bounties, old_bounties):
 
     response_html = premailer_transform(render_to_string("emails/new_bounty.html", params))
     response_txt = render_to_string("emails/new_bounty.txt", params)
+
+    return response_html, response_txt
+
+def render_gdpr_reconsent(to_email):
+    sub = get_or_save_email_subscriber(to_email, 'internal')
+    params = {
+        'subscriber': sub,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/gdpr_reconsent.html", params))
+    response_txt = render_to_string("emails/gdpr_reconsent.txt", params)
 
     return response_html, response_txt
 
@@ -521,7 +533,13 @@ def faucet_rejected(request):
     return HttpResponse(response_html)
 
 
+
 @staff_member_required
 def roundup(request):
     response_html, _, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
+
+@staff_member_required
+def gdpr_reconsent(request):
+    response_html, _ = render_gdpr_reconsent(settings.CONTACT_EMAIL)
     return HttpResponse(response_html)
