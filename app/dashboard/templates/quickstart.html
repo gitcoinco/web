@@ -1,19 +1,18 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
 <!DOCTYPE html>
@@ -60,9 +59,11 @@
             <li>{% trans "4) Confirm the transaction in metamask" %}</li>
           </ol>
           <p>
-            {% trans "Once confirmed on blockchain, your bounty is posted to Gitcoin!
+            {% blocktrans %}
+            Once confirmed on blockchain, your bounty is posted to Gitcoin!
             Wait for developers across the world to discover your bounty and
-            start working on your issue." %}
+            start working on your issue.
+            {% endblocktrans %}
           </p>
           <div class="d-flex pt-5 action-footer">
             <div class="video-link">
@@ -144,16 +145,14 @@
             </li>
             <li>
               <i class="far fa-2x fa-times-circle"></i>
-              <span>{% blocktrans %} Anything that requires privleged access (like SSH access, 
+              <span>{% blocktrans %}Anything that requires privileged access (like SSH access,
               prod private API key){% endblocktrans %}</span>
             </li>
           </ol>
-          <span>{% blocktrans %}If you're unsure, please reachout to a Gitcoin Core Team member on <a href="https://gitcoincommunity.slack.com/">slack{% endblocktrans %}</a></span>
+          <span>{% blocktrans %}If you're unsure, please reach out to a Gitcoin Core Team member on <a href="{% url 'slack' %}">slack{% endblocktrans %}</a></span>
         </div>
       </div>
     </div>
-
-    
 
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
