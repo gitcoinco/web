@@ -23,6 +23,7 @@ import math
 import random
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
@@ -66,8 +67,11 @@ def get_settings_navs(request):
         'body': 'Slack',
         'href': reverse('slack_settings'),
     }, {
-        'body': f"{subdomain}{settings.ENS_TLD}",
+        'body': f"ENS",
         'href': reverse('ens_settings'),
+    }, {
+        'body': f"Account",
+        'href': reverse('account_settings'),
     }]
 
 
@@ -387,6 +391,52 @@ def ens_settings(request):
         'msg': response['output'],
     }
     return TemplateResponse(request, 'settings/ens.html', context)
+
+
+def account_settings(request):
+    """Displays and saves user's Account settings.
+
+    Returns:
+        TemplateResponse: The user's Account settings template response.
+
+    """
+    response = {'output': ''}
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    if request.POST:
+
+        if request.POST.get('disconnect', False):
+            profile.github_access_token = ''
+            profile.save()
+            messages.success(request, _(f'Your account has been disconnected from Github'))
+            logout_redirect = redirect(reverse('logout') + "?next=/")
+            return logout_redirect
+        if request.POST.get('delete', False):
+            profile.hide_profile = True
+            profile.save()
+            request.user.delete()
+            messages.success(request, _(f'Your account has been deleted'))
+            logout_redirect = redirect(reverse('logout') + "?next=/")
+            return logout_redirect
+        else:
+            msg = "Error: did not understand your request"
+
+
+    context = {
+        'is_logged_in': is_logged_in,
+        'nav': 'internal',
+        'active': '/settings/account',
+        'title': _('Account Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'msg': response['output'],
+    }
+    return TemplateResponse(request, 'settings/account.html', context)
 
 
 def _leaderboard(request):
