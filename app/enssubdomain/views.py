@@ -259,9 +259,11 @@ def ens_subdomain(request):
         github_handle = github_handle.lower().replace('.', '')
         #TODO: UTS46 normalization 
 
-    if request.method == "POST" and github_handle:
-        return handle_subdomain_post_request(request, github_handle)
-    try:
-        return handle_subdomain_exists(request, github_handle)
-    except ENSSubdomainRegistration.DoesNotExist:
-        return handle_default_response(request, github_handle)
+    if github_handle:
+        if request.method == "POST":
+            return handle_subdomain_post_request(request, github_handle)
+        try:
+            return handle_subdomain_exists(request, github_handle)
+        except ENSSubdomainRegistration.DoesNotExist:
+            return handle_default_response(request, github_handle)
+    return handle_default_response(request, github_handle)
