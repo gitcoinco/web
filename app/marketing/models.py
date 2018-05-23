@@ -108,13 +108,28 @@ class EmailSubscriber(SuperModel):
         self.preferences['suppression_preferences'] = suppression_preferences
         return suppression_preferences
 
+    @property
+    def is_eu(self):
+        from app.utils import get_country_from_ip
+        try:
+            ip_addresses = self.metadata.get('ip')
+            if ip_addresses:
+                for ip_address in ip_addresses:
+                    country = get_country_from_ip(ip_address)
+                    if country.continent.code == 'EU':
+                        return True
+        except Exception:
+            # Cowardly pass on everything for the moment.
+            pass
+        return False
+
 
 # method for updating
 @receiver(pre_save, sender=EmailSubscriber, dispatch_uid="psave_es")
 def psave_es(sender, instance, **kwargs):
     instance.build_email_preferences()
 
-
+    
 class Stat(SuperModel):
 
     key = models.CharField(max_length=50, db_index=True)
@@ -143,6 +158,7 @@ class Stat(SuperModel):
         except Exception:
             return 0
 
+          
 class LeaderboardRank(SuperModel):
 
     github_username = models.CharField(max_length=255)
