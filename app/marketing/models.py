@@ -23,6 +23,7 @@ from secrets import token_hex
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 
+from app.utils import get_country_from_ip
 from economy.models import SuperModel
 
 
@@ -63,6 +64,19 @@ class EmailSubscriber(SuperModel):
 
     def set_priv(self):
         self.priv = token_hex(16)[:29]
+
+    @property
+    def is_eu(self):
+        ip_address = self.metadata.get('ip')
+
+        if ip_address:
+            try:
+                country = get_country_from_ip(ip_address)
+                if country.continent.code == 'EU':
+                    return True
+            except Exception:
+                pass
+        return False
 
 
 class Stat(SuperModel):
