@@ -23,7 +23,6 @@ from datetime import datetime
 from urllib.parse import urlsplit
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
