@@ -64,6 +64,21 @@ class EmailSubscriber(SuperModel):
     def set_priv(self):
         self.priv = token_hex(16)[:29]
 
+    @property
+    def is_eu(self):
+        from app.utils import get_country_from_ip
+        try:
+            ip_addresses = self.metadata.get('ip')
+            if ip_addresses:
+                for ip_address in ip_addresses:
+                    country = get_country_from_ip(ip_address)
+                    if country.continent.code == 'EU':
+                        return True
+        except Exception:
+            # Cowardly pass on everything for the moment.
+            pass
+        return False
+
 
 class Stat(SuperModel):
 

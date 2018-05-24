@@ -272,12 +272,6 @@ var load_tokens = function() {
       if (typeof localStorage['notificationEmail'] != 'undefined') {
         $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
       }
-      if (typeof localStorage['acceptTOS'] != 'undefined' && localStorage['acceptTOS']) {
-        $('input[name=terms]').attr('checked', 'checked');
-      }
-      if (typeof localStorage['accept_blockchain_tos'] != 'undefined' && localStorage['acceptblockchainterms']) {
-        $('input[name=blockchain_tos]').attr('checked', 'checked');
-      }
     });
   });
 };

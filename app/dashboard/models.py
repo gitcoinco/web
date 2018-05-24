@@ -1207,6 +1207,19 @@ class Profile(SuperModel):
         self.slack_channel = channel
         self.save()
 
+    @property
+    def is_eu(self):
+        from app.utils import get_country_from_ip
+        try:
+            ip_addresses = list(set(self.actions.filter(action='Login').values_list('ip_address', flat=True)))
+            for ip_address in ip_addresses:
+                country = get_country_from_ip(ip_address)
+                if country.continent.code == 'EU':
+                    return True
+        except Exception:
+            pass
+        return False
+
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
