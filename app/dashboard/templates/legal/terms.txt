@@ -20,7 +20,7 @@
    <body class="c15 c31">
       <p class="c18 title" id="h.cn4lvjpnb7pd"><span class="c6">Gitcoin Terms of Use</span></p>
       <p class="c5 c7"><span class="c0"></span></p>
-      <p class="c5"><span class="c0">Last updated: December 1, 2017</span></p>
+      <p class="c5"><span class="c0">Last updated: May 24, 2018</span></p>
       <p class="c5 c7"><span class="c0"></span></p>
       <p class="c5"><span class="c3">IMPORTANT NOTICE: THIS AGREEMENT IS SUBJECT TO BINDING ARBITRATION AND A WAIVER OF CLASS ACTION RIGHTS AS DETAILED IN </span><span class="c3">SECTION </span><span class="c3">22.</span><span class="c0">&nbsp;PLEASE READ THE AGREEMENT CAREFULLY.</span></p>
       <h2 class="c11" id="h.kkdg9whr5sl0"><span class="c14 c3">1. </span><span class="c2">ACCEPTANCE OF TERMS</span></h2>
