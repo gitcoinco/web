@@ -22,7 +22,7 @@
     name="mc-embedded-subscribe-form" target="_blank" novalidate>
 
     <h4 class="col-12" id="newsletter-title">
-      {%if newsletter_headline %}
+      {% if newsletter_headline %}
         {{ newsletter_headline }}
       {% else %}
         {% trans "Join Our Newsletter !" %}
@@ -34,7 +34,7 @@
       <button id="newsletter-subscribe" type="submit" class="addon subscribe"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
     </div>
       <span style="display: block; margin-top: 3px; font-size: 10px;">
-        You may withdraw email consent at any time | <a href="/settings/email">Manage preferences</a> | <a href="/settings/email">Opt out</a> | <a href="privacy@gitcoin.co">Email us</a>
+        {% trans "You may withdraw email consent at any time" %} | <a href="{% url 'email_settings' email_key %}">{% trans "Manage preferences" %}</a> | <a href="{% url 'email_settings' email_key %}">{% trans "Opt out" %}</a> | <a href="privacy@gitcoin.co">{% trans "Email us" %}</a>
       </span>
 
   </form>
