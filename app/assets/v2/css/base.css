@@ -1166,10 +1166,6 @@ input.is-invalid {
   width: 25em;
 }
 
-.blocker {
-  background-color: rgba(93,90,149, 0.8) !important;
-}
-
 .ui-widget-shadow,
 .modal {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1) !important;
