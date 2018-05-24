@@ -302,7 +302,7 @@ def render_gdpr_update(to_email):
     params = {
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'terms_of_use_link': reverse('terms'),
-        'privacy_policy_link': reverse('policy'),
+        'privacy_policy_link': reverse('privacy'),
         'cookie_policy_link': reverse('cookie'),
     }
 

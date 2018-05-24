@@ -251,7 +251,9 @@ def gdpr_update(to_emails=None):
             setup_lang(to_email)
             html, text, subject = render_gdpr_update(to_email)
             from_email = settings.PERSONAL_CONTACT_EMAIL
-            send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
+
+            if not should_suppress_notification_email(to_email, 'roundup'):
+                send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
         finally:
             translation.activate(cur_language)
 
