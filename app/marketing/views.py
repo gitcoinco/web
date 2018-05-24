@@ -367,18 +367,7 @@ def ens_settings(request):
 
     ens_subdomains = ENSSubdomainRegistration.objects.filter(profile=profile).order_by('-pk')
     ens_subdomain = ens_subdomains.first() if ens_subdomains.exists() else None
-    if request.POST:
-
-        if test and token and channel:
-            response = validate_slack_integration(token, channel)
-
-        if submit or (response and response.get('success')):
-            profile.update_slack_integration(token, channel, repos)
-            if not response.get('output'):
-                response['output'] = _('Updated your preferences.')
-            ua_type = 'added_slack_integration' if token and channel and repos else 'removed_slack_integration'
-            create_user_action(user, ua_type, request, {'channel': channel, 'repos': repos})
-
+    
     context = {
         'is_logged_in': is_logged_in,
         'nav': 'internal',

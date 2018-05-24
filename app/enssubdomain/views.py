@@ -223,7 +223,7 @@ def handle_subdomain_post_request(request, github_handle):
         recovered_signer = w3.eth.account.recoverHash(message_hash, signature=signedMsg).lower()
         if recovered_signer != signer:
             return JsonResponse({'success': False, 'msg': _('Sign Mismatch Error')})
-        if request.user.profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
+        if not request.user.profile.trust_profile and request.user.profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
             return JsonResponse({'success': False, 'msg': _('For SPAM prevention reasons, you may not perform this action right now.  Please contact support if you believe this message is in error.')})
 
         # actually setup subdomain
