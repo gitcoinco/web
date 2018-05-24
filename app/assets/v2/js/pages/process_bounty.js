@@ -8,9 +8,6 @@ window.onload = function() {
     if (getParam('source')) {
       $('input[name=issueURL]').val(getParam('source'));
     }
-    if (typeof localStorage['acceptTOS'] != 'undefined' && localStorage['acceptTOS']) {
-      $('input[name=terms]').attr('checked', 'checked');
-    }
 
     var bountyDetails = [];
 

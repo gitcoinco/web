@@ -913,19 +913,19 @@ def terms(request):
 
 
 def privacy(request):
-    return redirect('https://gitcoin.co/terms#privacy')
+    return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def cookie(request):
-    return redirect('https://gitcoin.co/terms#privacy')
+    return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def prirp(request):
-    return redirect('https://gitcoin.co/terms#privacy')
+    return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def apitos(request):
-    return redirect('https://gitcoin.co/terms#privacy')
+    return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def toolbox(request):

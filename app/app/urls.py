@@ -102,13 +102,13 @@ urlpatterns = [
     url(r'^tip/?', dashboard.views.send_tip, name='tip'),
 
     # Legal
-    url(r'^legal/?', dashboard.views.terms, name='legal'),
     url(r'^terms/?', dashboard.views.terms, name='_terms'),
     url(r'^legal/terms/?', dashboard.views.terms, name='terms'),
     url(r'^legal/privacy/?', dashboard.views.privacy, name='privacy'),
     url(r'^legal/cookie/?', dashboard.views.cookie, name='cookie'),
     url(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
+    url(r'^legal/?', dashboard.views.terms, name='legal'),
 
     # Alpha functionality
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
@@ -213,6 +213,7 @@ urlpatterns = [
     re_path(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
     re_path(r'^settings/slack/?', marketing.views.slack_settings, name='slack_settings'),
     re_path(r'^settings/ens/?', marketing.views.ens_settings, name='ens_settings'),
+    re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
 
     # marketing views
