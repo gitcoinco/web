@@ -6,15 +6,15 @@ We recently reviewed our Privacy Policy to comply with requirements of General D
 
 As always, the entire Gitcoin team works every day to make Gitcoin a safe and trustworthy place to grow open source. We invite you to learn more about our outlined updates to our Policies and Terms of Use:
 
-1) Our updated Terms of Use [1]
-2) Our updated Privacy Policy [2]
-3) Our updated Cookie Policy [3]
+1) Our updated Privacy Policy [1]
+2) Our updated Cookie Policy [2]
+3) Our updated Terms of Use [3]
 
 We’ll continue to keep you updated on our data privacy policies on the path towards a more open, transparent web. Thanks for using Gitcoin, and please let us know if you have any questions or feedback. 
 
-[1] {{ terms_of_use_link }}
-[2] {{ privacy_policy_link }}
-[3] {{ cookie_policy_link }}
+[1] {{ privacy_policy_link }}
+[2] {{ cookie_policy_link }}
+[3] {{ terms_of_use_link }}
 
 Warmly, 
 Gitcoin Core
