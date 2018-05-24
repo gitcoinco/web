@@ -99,12 +99,12 @@ def validate_slack_integration(token, channel, message=None, icon_url=''):
     return result
 
 
-def should_suppress_notification_email(email, _type):
+def should_suppress_notification_email(email, email_type):
     from marketing.models import EmailSubscriber
     queryset = EmailSubscriber.objects.filter(email__iexact=email)
     if queryset.exists():
         es = queryset.first()
-        return not es.should_send_email_type_to(_type)
+        return not es.should_send_email_type_to(email_type)
     return False
 
 

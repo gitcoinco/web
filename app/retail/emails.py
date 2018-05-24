@@ -26,6 +26,7 @@ from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
 from django.utils import timezone
+from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
@@ -34,20 +35,23 @@ from retail.utils import strip_double_chars, strip_html
 
 # RENDERERS
 
-#key, name, frequency
+# key, name, frequency
 MARKETING_EMAILS = [
-    ('roundup', 'Roundup Emails', 'Weekly'),
-    ('new_bounty_notifications', 'New Bounty Notification Emails', '(up to) Daily'),
-    ('important_product_updates', 'Product Update Emails', 'Quarterly'),
+    ('roundup', _('Roundup Emails'), _('Weekly')),
+    ('new_bounty_notifications', _('New Bounty Notification Emails'), _('(up to) Daily')),
+    ('important_product_updates', _('Product Update Emails'), _('Quarterly')),
 ]
 
 TRANSACTIONAL_EMAILS = [
-    ('tip', 'Tip Emails', 'Only when you are sent a tip'),
-    ('faucet', 'Faucet Notification Emails', 'Only when you are sent a faucet distribution'),
-    ('bounty', 'Bounty Notification Emails', 'Only when you\'re active on a bounty'),
-    ('bounty_match', 'Bounty Match Emails', 'Only when you\'ve posted a open bounty and you have a new match'),
-    ('bounty_feedback', 'Bounty Feedback Emails', 'Only after a bounty you participated in is finished.'),
-    ('bounty_expiration', 'Bounty Expiration Warning Emails', 'Only after you posted a bounty which is going to expire'),
+    ('tip', _('Tip Emails'), _('Only when you are sent a tip')),
+    ('faucet', _('Faucet Notification Emails'), _('Only when you are sent a faucet distribution')),
+    ('bounty', _('Bounty Notification Emails'), _('Only when you\'re active on a bounty')),
+    ('bounty_match', _('Bounty Match Emails'), _('Only when you\'ve posted a open bounty and you have a new match')),
+    ('bounty_feedback', _('Bounty Feedback Emails'), _('Only after a bounty you participated in is finished.')),
+    (
+        'bounty_expiration', _('Bounty Expiration Warning Emails'),
+        _('Only after you posted a bounty which is going to expire')
+    ),
 ]
 
 ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS

@@ -27,14 +27,8 @@ class MarketingStatUtilsTest(TestCase):
 
     def setUp(self):
         """Perform setup for the testcase."""
-        Stat.objects.create(
-            key='mykey',
-            val=1
-        )
-        Stat.objects.create(
-            key='mykey',
-            val=2
-        )
+        Stat.objects.create(key='mykey', val=1)
+        Stat.objects.create(key='mykey', val=2)
 
     def test_get_stat(self):
         """Test the marketing util get_stat method."""
@@ -49,29 +43,23 @@ class MarketingEmailUtilsTest(TestCase):
         EmailSubscriber.objects.create(
             email='emailSubscriber1@gitcoin.co',
             source='mysource',
-            preferences={
-                'suppression_preferences': {
-                    'foo', False
-                }
-            }
+            preferences={'suppression_preferences': {
+                'foo': False
+            }}
         )
         EmailSubscriber.objects.create(
             email='emailSubscriber2@gitcoin.co',
             source='mysource',
-            preferences={
-                'suppression_preferences': {
-                    'foo', False
-                }
-            }
+            preferences={'suppression_preferences': {
+                'foo': False
+            }}
         )
         EmailSubscriber.objects.create(
             email='emailSubscriber3@gitcoin.co',
             source='mysource',
-            preferences={
-                'suppression_preferences': {
-                    'foo', True
-                }
-            }
+            preferences={'suppression_preferences': {
+                'foo': True
+            }}
         )
 
     def test_should_suppress_notification_email(self):
@@ -91,7 +79,6 @@ class MarketingEmailUtilsTest(TestCase):
 
     def test_save_get_or_save_email_subscriber_get(self):
         """Test the marketing util get_or_save_email_subscriber method."""
-        self.assertIsNotNone(
-            get_or_save_email_subscriber('newemail@gitcoin.co', 'mysource', send_slack_invite=False))
+        self.assertIsNotNone(get_or_save_email_subscriber('newemail@gitcoin.co', 'mysource', send_slack_invite=False))
 
         assert EmailSubscriber.objects.filter().count() == 4
