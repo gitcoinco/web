@@ -1166,7 +1166,8 @@ input.is-invalid {
   width: 25em;
 }
 
-.ui-widget-shadow {
+.ui-widget-shadow,
+.modal {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1) !important;
 }
 
@@ -1670,4 +1671,21 @@ input.is-invalid {
   #sidebar_container {
     display: none;
   }
+}
+
+/* TODO : Remove after GDPR */
+.notify_policy_update {
+  font-family: "Muli", sans-serif;
+}
+
+.notify_policy_update h2 {
+  letter-spacing: 0;
+}
+
+.modal.notify_policy_update {
+  max-width: 34rem;
+}
+
+.notify_policy_update .button {
+  padding: 0.25rem 1.25rem;
 }

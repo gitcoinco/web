@@ -70,7 +70,7 @@ def save_faucet(request):
         return JsonResponse({'message': str(e)}, status=400)
 
     comment = escape(strip_tags(request.POST.get('comment', '')))
-    if profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
+    if not profile.trust_profile and profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
         return JsonResponse({
             'message': _('For SPAM prevention reasons, you may not perform this action right now.  Please contact support if you believe this message is in error.')
         }, status=403)
