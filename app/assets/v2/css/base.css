@@ -1098,8 +1098,92 @@ input[type=text].loading {
 /* Mission Page */
 
 .mission {
-  font-family: Futura, sans-serif;
-  background-color: #eef4ee;
+  font-family: futura-pt, sans-serif;
+}
+
+.mission p {
+  font-family: futura-pt;
+  font-size: 20px;
+  font-weight: 500;
+  color: #666666;
+}
+
+.mission .icon {
+  width: 70px;
+  float: left;
+  margin-right: 50px;
+}
+
+.mission .divider {
+  border-bottom: 2px solid #3e24fb;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.mission .icon-small {
+  height: 60px;
+  width: auto;
+}
+
+.mission .falcon-wrapper {
+  position: relative;
+  height: 100%;
+}
+
+.mission .falcon-wrapper .falcon-pull, .mission .falcon {
+  float: right;
+}
+
+@media(min-width: 768px) and (max-width: 991px)  {
+  .mission .falcon-wrapper .falcon {
+    width: 350px;
+    height: auto;
+  }
+}
+
+@media(min-width: 992px) and (max-width: 1199px)  {
+  .mission .falcon-wrapper .falcon {
+    width: 400px;
+    height: auto;
+  }
+}
+
+@media(min-width: 1200px) {
+  .mission .falcon-wrapper .falcon {
+    width: 450px;
+    height: auto;
+  }
+}
+
+@media(min-width: 768px) and (max-width: 991px)  {
+  .mission .falcon-wrapper .falcon-pull {
+    width: 350px;
+    height: auto;
+    margin-top: -225px;
+  }
+}
+
+@media(min-width: 992px) and (max-width: 1199px)  {
+  .mission .falcon-wrapper .falcon-pull {
+    width: 400px;
+    height: auto;
+    margin-top: -225px;
+  }
+}
+
+@media(min-width: 1200px) {
+  .mission .falcon-wrapper .falcon-pull {
+    width: 450px;
+    height: auto;
+    margin-top: -335px;
+  }
+}
+
+.mission .icon-text {
+  font-weight: 500;
+  font-size: 18px;
+  font-family: futura-pt, sans-serif;
+  color: #666666;
 }
 
 .text-highlight-green {
@@ -1114,7 +1198,6 @@ input[type=text].loading {
   color: #da086b;
 }
 
-
 #mission_hero .text {
   margin-left: 2rem;
 }
@@ -1127,11 +1210,6 @@ input[type=text].loading {
 #we_value,
 #we_interact {
   padding: 0 10vw;
-}
-
-.mission-divider {
-  width: 90vw;
-  border-color: black;
 }
 
 #interest_list {
