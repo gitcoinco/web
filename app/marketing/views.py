@@ -425,6 +425,8 @@ def account_settings(request):
         if request.POST.get('delete', False):
             profile.hide_profile = True
             profile.save()
+            if es:
+                es.delete()
             request.user.delete()
             messages.success(request, _('Your account has been deleted'))
             logout_redirect = redirect(reverse('logout') + '?next=/')
