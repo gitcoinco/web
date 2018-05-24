@@ -5,7 +5,7 @@ $(document).ready(function() {
   const height = movementStrength / $(window).height();
   const width = movementStrength / $(window).width();
 
-  $('.header, .white-light-bg, .offchain .body').each(function(index, element) {
+  $('.white-light-bg, .offchain .body').each(function(index, element) {
     $(element).mousemove(e => {
       const pageX = e.pageX - ($(window).width() / 2);
       const pageY = e.pageY - ($(window).height() / 2);

@@ -10,7 +10,7 @@
 }
 .howworks-step {
   position: relative;
-  padding-top: 2rem;
+  padding: 2rem 1rem;
 }
 .howworks-step__label {
   border-radius: 50%;
@@ -39,6 +39,7 @@
 .benefit {
   background-color: white;
   text-align: center;
+  padding: 3rem 1rem;
 }
 
 .pricing_container {
@@ -91,10 +92,40 @@
   background-color: #F0F0F0;
 }
 
+.whatisit {
+  height: min-content;
+}
+.whatisit_container iframe {
+  height: 100%;
+}
+
 /* Landing Page Animations */
 #WindmillBlades {
   animation: rotate-blades 4s linear infinite;
   transform-origin: 48.5px 56px;
+}
+
+.navbar {
+  position: sticky;
+  position: -webkit-sticky;
+  top: -1px;
+  width: 100%;
+  z-index: 10;
+}
+.navbar__cta {
+  transition: opacity .3s;
+}
+.navbar.following .nav-link {
+  opacity: 0;
+}
+.navbar__cta {
+  color: white;
+  opacity: 0;
+  display: none;
+}
+.navbar.following .navbar__cta {
+  opacity: 1;
+  display: inline;
 }
 
 @keyframes rotate-blades {
@@ -110,5 +141,9 @@
   .pricing-tiers-container {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(15, min-content);
+  }
+
+  .benefits_container {
+    grid-template-columns: 1fr;
   }
 }

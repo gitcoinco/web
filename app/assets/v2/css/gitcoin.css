@@ -161,7 +161,7 @@ h4,
   color: lightgray !important;
 }
 
-.header {
+.header, .navbar {
   background-image: url('/static/v2/images/header-bg.png');
   background-color: #0d023b;
   background-size: cover;

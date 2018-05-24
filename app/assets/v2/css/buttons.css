@@ -108,7 +108,7 @@ button:focus {
 
 .btn-gc-blue {
   background-color: var(--gc-blue);
-  color: var(--text-light);
+  color: white;
 }
 .btn-outline-gc-blue {
   border-color: var(--gc-blue);
@@ -117,7 +117,7 @@ button:focus {
 
 .btn-gc-green {
   background-color: var(--gc-green);
-  color: var(--text-light);
+  color: white;
 }
 .btn-outline-gc-green {
   border-color: var(--gc-green);
@@ -126,7 +126,7 @@ button:focus {
 
 .btn-gc-purple {
   background-color: var(--gc-purple);
-  color: var(--text-light);
+  color: white;
 }
 .btn-outline-gc-purple {
   border-color: var(--gc-purple);

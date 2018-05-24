@@ -24,8 +24,8 @@
   </head>
   <body class=index>
     {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/nav.html' %}
     <div class="container-fluid header">
-      {% include 'shared/nav.html' %}
       {% include 'shared/hero.html' %}
       <div class="row cta-green p-3 justify-content-center">
         <span class="text-highlight-dark-blue mr-1">DEVELOPERS!</span>
@@ -40,7 +40,6 @@
 
     <div class="container-fluid p-5 benefits_container">
       <div class="benefit">
-
         <svg width="100px" height="117px" viewBox="0 0 100 117" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
           <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
           <title>Windmill</title>
@@ -382,6 +381,7 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/rollbar.html' %}
+    <script src="/static/v2/js/landing_page.js"></script>
   </body>
   {% include 'shared/analytics.html' %}
   {% block scripts %}{% endblock %}

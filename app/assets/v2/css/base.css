@@ -1255,12 +1255,6 @@ input.is-invalid {
     display: none;
   }
 
-  .whatisit iframe,
-  .howworks iframe {
-    width: 460px;
-    height: 258px;
-  }
-
   .advisor {
     width: 130px;
   }
@@ -1359,10 +1353,7 @@ input.is-invalid {
   }
 
   #team .row,
-  #team .row .d-flex,
-  .row.whatisit .d-flex,
-  .row.whatisit .row.howworks .d-flex,
-  .row.howworks {
+  #team .row .d-flex {
     display: block;
     width: 100%;
   }
@@ -1373,12 +1364,6 @@ input.is-invalid {
 
   #team .row img.img-fluid {
     float: none !important;
-  }
-
-  .whatisit iframe,
-  .howworks iframe {
-    width: 460px;
-    height: 250px;
   }
 
   .advisor {
@@ -1500,25 +1485,6 @@ input.is-invalid {
     display: block;
     width: 100%;
     text-align: center;
-  }
-
-  .row.whatisit .d-flex,
-  .row.whatisit,
-  .row.howworks .d-flex,
-  .row.howworks {
-    text-align: left;
-  }
-
-  .row.whatisit .font-bigger-2,
-  .row.howworks .font-bigger-2 {
-    font-size: 1rem;
-  }
-
-  .row.whatisit iframe,
-  .row.howworks iframe {
-    width: 280px;
-    height: 170px;
-    margin: 0 auto;
   }
 
   #get .row {
