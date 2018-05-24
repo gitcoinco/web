@@ -154,17 +154,17 @@ h4,
 }
 
 .blue {
-  color: #3e24fb;
+  color: #3e24fb
 }
 
 .gitcoin-gray {
-  color: lightgray !important;
+  color: lightgray !important
 }
 
 .header, .navbar {
   background-image: url('/static/v2/images/header-bg.png');
   background-color: #0d023b;
-  background-size: cover;
+  background-size: 2000px;
   background-position: 0px 0px;
   background-repeat: no-repeat;
 }

@@ -116,7 +116,7 @@
   transition: opacity .3s;
 }
 .navbar.following .nav-link {
-  opacity: 0;
+  display: none;
 }
 .navbar__cta {
   color: white;

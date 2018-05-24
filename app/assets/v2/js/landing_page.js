@@ -19,14 +19,16 @@ $(document).ready(function() {
       return;
     }
     throttledHandler = requestAnimationFrame(() => {
-      if (window.scrollY > 50) {
+      const followStateHeight = 500;
+
+      if (window.scrollY > followStateHeight) {
         navbar.addClass('following');
-      } else if (window.scrollY < 50) {
+      } else if (window.scrollY < followStateHeight) {
         navbar.removeClass('following');
       }
       const pageX = mouseX - ($(window).width() / 2);
       const pageY = mouseY - ($(window).height() / 2) + window.scrollY * 2;
-      const newvalueX = width * (pageX - startX) * -1 + 200;
+      const newvalueX = width * (pageX - startX) * -1 - 100;
       let newvalueY = height * (pageY - startY) * -1 - 140;
 
       if (!startX) {
@@ -40,10 +42,6 @@ $(document).ready(function() {
       const newNavY = newvalueY - navbar[0].getBoundingClientRect().top;
       const newHeaderY = newvalueY - header[0].getBoundingClientRect().top;
 
-      // Not sure why, but this is required to make header and nav completely seamless
-      // if (window.scrollY > 0) {
-      //   newvalueY -= 1;
-      // }
       navbar.css('background-position', `${newvalueX - startX}px ${newNavY - startY}px`);
       header.css('background-position', `${newvalueX - startX}px ${newHeaderY - startY}px`);
       throttledHandler = undefined;
