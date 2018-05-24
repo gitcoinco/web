@@ -2,9 +2,11 @@
 <div id="CookielawBanner">
   <div class="container">
     <h6>{% trans "COOKIE_INFO_HEADER" %}</h6>
-    <p>
-      <a class="btn btn-primary pull-right" href="javascript:Cookielaw.createCookielawCookie();">{% trans "COOKIE_INFO_OK" %}</a>
-      {% trans "COOKIE_INFO_PARA" %}
-    </p>
+    <div class="d-flex">
+      <p class="cookie-info font-body">
+        {% trans "COOKIE_INFO_PARA" %}
+      </p>
+      <a class="button button--primary pull-right" href="javascript:Cookielaw.createCookielawCookie();">{% trans "COOKIE_INFO_OK" %}</a>
+    </div>
   </div>
 </div>
