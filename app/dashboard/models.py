@@ -53,10 +53,6 @@ from .signals import m2m_changed_interested
 logger = logging.getLogger(__name__)
 
 
-def get_sentinel_user():
-    return get_user_model().objects.get_or_create(username='deleted')[0]
-
-
 class BountyQuerySet(models.QuerySet):
     """Handle the manager queryset for Bounties."""
 
