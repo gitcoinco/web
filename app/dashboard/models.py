@@ -908,7 +908,7 @@ class Profile(SuperModel):
 
     """
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True)
     last_sync_date = models.DateTimeField(null=True)
@@ -1280,7 +1280,7 @@ class UserAction(SuperModel):
         ('removed_slack_integration', 'Removed Slack Integration'),
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
-    user = models.ForeignKey(User, related_name='actions', on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True)
     profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True)
     ip_address = models.GenericIPAddressField(null=True)
     location_data = JSONField(default={})
