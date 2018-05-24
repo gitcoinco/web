@@ -27,9 +27,9 @@ from marketing.utils import get_or_save_email_subscriber, should_suppress_notifi
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     render_bounty_expire_warning, render_bounty_feedback, render_bounty_startwork_expire_warning,
-    render_bounty_unintersted, render_faucet_rejected, render_faucet_request, render_gdpr_update, render_match_email,
-    render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
-    render_new_work_submission, render_tip_email,
+    render_bounty_unintersted, render_faucet_rejected, render_faucet_request, render_gdpr_reconsent, render_gdpr_update,
+    render_match_email, render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection,
+    render_new_bounty_roundup, render_new_work_submission, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -152,6 +152,14 @@ def new_feedback(email, feedback):
     body = f"New feedback from {email}: {feedback}"
     if not should_suppress_notification_email(to_email, 'admin'):
         send_mail(from_email, to_email, subject, body, from_name="No Reply from Gitcoin.co")
+
+
+def gdpr_reconsent(email):
+    to_email = email
+    from_email = settings.PERSONAL_CONTACT_EMAIL
+    subject = "Would you still like to receive email from Gitcoin?"
+    html, text = render_gdpr_reconsent(to_email)
+    send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
 
 
 def new_external_bounty():
