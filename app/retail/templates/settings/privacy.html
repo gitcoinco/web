@@ -32,6 +32,9 @@
       </div>
       {% csrf_token %}
       <input class='button button--primary' type='submit' name='submit' value="Go">
+      <br>
+      <br>
+      <a style="float:right;" target="new" href="{% url 'privacy' %}">Gitcoin's Privacy Policy</a>
     </form>
   </div>
 {% endblock %}
