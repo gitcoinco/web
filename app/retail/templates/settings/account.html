@@ -42,7 +42,7 @@
 <script>
     $("document").ready(function(){
         $("#delete").submit(function(e){
-            var _continue = confirm('Are you sure you want to delete all of your data from Gitcoin?');
+            var _continue = confirm({% trans "Are you sure you want to delete all of your data from Gitcoin?" %});
             if(!_continue){
                 e.preventDefault()
                 return;
