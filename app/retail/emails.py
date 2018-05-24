@@ -300,9 +300,9 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
 def render_gdpr_update(to_email):
     params = {
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
-        'terms_of_use_link': '',
-        'privacy_policy_link': '',
-        'cookie_policy_link': '',
+        'terms_of_use_link': '',  # TODO
+        'privacy_policy_link': '',  # TODO
+        'cookie_policy_link': '',  # TODO
     }
 
     subject = "Gitcoin: Updated Terms & Policies"
