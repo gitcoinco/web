@@ -67,8 +67,8 @@ class EmailSubscriber(SuperModel):
         self.priv = token_hex(16)[:29]
 
     def should_send_email_type_to(self, email_type):
-        is_suppressed = self.preferences.get('suppression_preferences', {}).get(email_type, False)
-        return is_suppressed
+        should_suppress = self.preferences.get('suppression_preferences', {}).get(email_type, False)
+        return not should_suppress
 
     def build_email_preferences(self, form={}):
         from retail.emails import ALL_EMAILS, TRANSACTIONAL_EMAILS, MARKETING_EMAILS

@@ -43,6 +43,7 @@ class MarketingEmailUtilsTest(TestCase):
         EmailSubscriber.objects.create(
             email='emailSubscriber1@gitcoin.co',
             source='mysource',
+            priv='priv1',
             preferences={'suppression_preferences': {
                 'foo': False
             }}
