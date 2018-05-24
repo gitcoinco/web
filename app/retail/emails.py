@@ -23,6 +23,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponse
 from django.shortcuts import redirect
+from django.urls import reverse
 from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
 from django.utils import timezone
@@ -300,9 +301,9 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
 def render_gdpr_update(to_email):
     params = {
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
-        'terms_of_use_link': '',  # TODO
-        'privacy_policy_link': '',  # TODO
-        'cookie_policy_link': '',  # TODO
+        'terms_of_use_link': reverse('terms'),
+        'privacy_policy_link': reverse('policy'),
+        'cookie_policy_link': reverse('cookie'),
     }
 
     subject = "Gitcoin: Updated Terms & Policies"
