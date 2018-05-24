@@ -67,10 +67,10 @@ def get_settings_navs(request):
         'body': 'Slack',
         'href': reverse('slack_settings'),
     }, {
-        'body': f"ENS",
+        'body': "ENS",
         'href': reverse('ens_settings'),
     }, {
-        'body': f"Account",
+        'body': "Account",
         'href': reverse('account_settings'),
     }]
 
@@ -400,7 +400,7 @@ def account_settings(request):
         TemplateResponse: The user's Account settings template response.
 
     """
-    response = {'output': ''}
+    msg = ''
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
 
     if not user or not is_logged_in:
@@ -412,19 +412,18 @@ def account_settings(request):
         if request.POST.get('disconnect', False):
             profile.github_access_token = ''
             profile.save()
-            messages.success(request, _(f'Your account has been disconnected from Github'))
-            logout_redirect = redirect(reverse('logout') + "?next=/")
+            messages.success(request, _('Your account has been disconnected from Github'))
+            logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
         if request.POST.get('delete', False):
             profile.hide_profile = True
             profile.save()
             request.user.delete()
-            messages.success(request, _(f'Your account has been deleted'))
-            logout_redirect = redirect(reverse('logout') + "?next=/")
+            messages.success(request, _('Your account has been deleted'))
+            logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
         else:
-            msg = "Error: did not understand your request"
-
+            msg = _('Error: did not understand your request')
 
     context = {
         'is_logged_in': is_logged_in,
@@ -434,7 +433,7 @@ def account_settings(request):
         'navs': get_settings_navs(request),
         'es': es,
         'profile': profile,
-        'msg': response['output'],
+        'msg': msg,
     }
     return TemplateResponse(request, 'settings/account.html', context)
 
