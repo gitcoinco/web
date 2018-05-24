@@ -297,6 +297,21 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
     return response_html, response_txt
 
 
+def render_gdpr_update(to_email):
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'terms_of_use_link': 'https://gitcoin.co/legal/terms',
+        'privacy_policy_link': 'https://gitcoin.co/legal/privacy',
+        'cookie_policy_link': 'https://gitcoin.co/legal/cookie',
+    }
+
+    subject = "Gitcoin: Updated Terms & Policies"
+    response_html = premailer_transform(render_to_string("emails/gdpr_update.html", params))
+    response_txt = render_to_string("emails/gdpr_update.txt", params)
+
+    return response_html, response_txt, subject
+
+
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty

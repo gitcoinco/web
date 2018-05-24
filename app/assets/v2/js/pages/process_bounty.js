@@ -8,9 +8,6 @@ window.onload = function() {
     if (getParam('source')) {
       $('input[name=issueURL]').val(getParam('source'));
     }
-    if (typeof localStorage['acceptTOS'] != 'undefined' && localStorage['acceptTOS']) {
-      $('input[name=terms]').attr('checked', 'checked');
-    }
 
     var bountyDetails = [];
 
@@ -76,7 +73,7 @@ window.onload = function() {
       e.preventDefault();
       var whatAction = $(this).html().trim();
       var issueURL = $('input[name=issueURL]').val();
-      var fulfillmentId = $('select[name=bountyFulfillment').val();
+      var fulfillmentId = $('select[name=bountyFulfillment]').val();
 
       console.log(fulfillmentId);
 

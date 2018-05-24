@@ -376,7 +376,7 @@ def receive_tip(request):
         'issueURL': request.GET.get('source'),
         'class': 'receive',
         'title': _('Receive Tip'),
-        'recommend_gas_price': round(recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target), 1),
+        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target), 1),
     }
 
     return TemplateResponse(request, 'yge/receive.html', params)
@@ -913,19 +913,19 @@ def terms(request):
 
 
 def privacy(request):
-    return redirect('https://gitcoin.co/terms#privacy')
+    return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def cookie(request):
-    return redirect('https://gitcoin.co/terms#privacy')
+    return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def prirp(request):
-    return redirect('https://gitcoin.co/terms#privacy')
+    return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def apitos(request):
-    return redirect('https://gitcoin.co/terms#privacy')
+    return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def toolbox(request):

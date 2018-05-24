@@ -40,6 +40,7 @@ class GeneralAdmin(admin.ModelAdmin):
 class ProfileAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['email', 'data']
+    list_display = ['handle', 'created_on', 'github_created_on']
 
 
 class TipAdmin(admin.ModelAdmin):

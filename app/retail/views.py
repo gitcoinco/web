@@ -647,7 +647,7 @@ def github(request):
 
 
 def youtube(request):
-    return redirect('https://www.youtube.com/watch?v=DJartWzDn0E')
+    return redirect('https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w')
 
 
 def web3(request):

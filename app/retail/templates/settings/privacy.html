@@ -31,8 +31,27 @@
 
       </div>
       {% csrf_token %}
-      <input class='button button--primary' type='submit' name='submit' value="Go">
+      <input class='button button--primary' type='submit' name='submit' value="Save">
+      <a href="{% url 'privacy' %}" style="float: right;">{% trans "Gitcoin's Privacy Policy" %}</a>
     </form>
+    <div class="disclosure pt-5">
+      <h5>{% trans "Disclosure" %}</h5>
+      <ul style="padding: 1rem;">    
+        <li>{% trans "We collect your profile information to provide context on the bounties you submit to the gitcoin system, or to help bounty funders evaluate your fitness for performing their bounty." %}</li>
+        <li>{% trans "We collect your email address so that we can keep in touch about updates to bounties." %}</li>
+        <li>{% trans "We collect your email address so that we can keep in touch about important updates to Gitcoin's featureset." %}</li>
+      </ul>
+      <p>{% trans "We aim to collect as little information from you as possible. Any information that you share is used to provide an experience that is relevant to you." %}</p>
+    </div>
+    <div class="withdrawal pt-5">
+      <h5>{% trans "How to Withdraw Consent?" %}</h5>
+      <ul style="padding: 1rem;">    
+        <li>{% trans "You may withdraw consent for profile related activities, by using the checkboxes above." %}</li>
+        <li>{% trans "You may withdraw consent for any email related activities " %}<a href="{% url 'email_settings' '' %}">{% trans "here" %}</a></li>
+        <li>{% trans "You may remove your account altogether " %}<a href="{% url 'account_settings' %}">{% trans "here" %}</a></li>
+      </ul>
+    </div>
+    <p>{% trans "Have more questions? Contact the team at " %}<a href="mailto:privacy@gitcoin.co">privacy@gitcoin.co</a></p>
   </div>
 {% endblock %}
 
