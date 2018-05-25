@@ -6,17 +6,23 @@ body {
 .invisible {
   background: #FFFFFF !important;
   visibility: hidden;
+  height: 0;
 }
 
 #onboard-dashboard {
-  background: #E8FFF2;
-  padding-top: 2em;
-  padding-bottom: 1em;
+  background: #F2F6F9;
   margin-bottom: 2em;
 }
 
-#onboard-dashboard h2, {
+#onboard-dashboard > div {
+  padding-top: 3.5rem;
+  padding-bottom: 2em;
+}
+
+#onboard-dashboard .info svg.circle,
+.darkify {
   font-weight: bolder;
+  color: #280076;
 }
 
 #onboard-dashboard h2,
@@ -25,10 +31,45 @@ body {
   letter-spacing: 0;
 }
 
-#onboard-dashboard a {
+#onboard-footer p a,
+#onboard-dashboard .info p a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+#onboard-dashboard .info #onboard-alert {
   float: right;
-  padding-left: 25px;
-  padding-right: 25px;
+  padding: .3rem 1.7rem;
+}
+
+#onboard-dashboard .info svg {
+  font-size: 0.7rem;
+  margin-right: 1rem;
+}
+
+#onboard-dashboard .tips svg {
+  font-size: 0.35rem;
+  margin-right: 0.4rem;
+  top: -2px;
+  position: relative;
+}
+
+#onboard-footer p {
+  margin: 0;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+#onboard-dashboard .tips .tips-info {
+  margin-top: 1rem;
+}
+
+#onboard-dashboard .tips .tips-info p {
+  margin-bottom: 0.45rem;
+}
+
+#onboard-dashboard .no-results {
+  background: #FFFFFF;
 }
 
 .title-row {
@@ -118,20 +159,63 @@ body {
   top: 0px;
 }
 
+#onboard-dashboard .no-results img {
+  width: 15rem;
+}
+
 .bounty-detail .info {
   font-family: 'Muli', sans-serif;
   font-weight: 300;
   color: #666666;
 }
 
+#onboard-dashboard .robot {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+#onboard-dashboard .robot img {
+  width: 12rem;
+}
+
 .tags {
   display: flex;
 }
 
-@media (max-width: 767.98px) {
+#onboard-footer {
+  text-align: center;
+  background: #F2F6F9;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
 
-  .bounty_row .avatar-container {
-    display: none !important;
+@media (min-width: 992px) {
+
+  #onboard-dashboard .tips {
+    padding-left: 2rem;
+    border-left: 1.5px solid #dbdcdc;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1024px) {
+
+  .bounty_row {
+    padding-left: 1rem;
+    padding-right: 2rem;
+  }
+}
+
+@media (max-width: 991.98px) {
+
+  #onboard-dashboard .robot {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+
+  .tag.network_warning {
+    margin-left: -100px;
   }
 }
 
@@ -162,17 +246,9 @@ body {
   }
 }
 
-@media (min-width: 768px) {
+@media (max-width: 767.98px) {
 
-  .tag.network_warning {
-    margin-left: -100px;
-  }
-}
-
-@media (min-width: 992px) and (max-width: 1024px) {
-
-  .bounty_row {
-    padding-left: 1rem;
-    padding-right: 2rem;
+  .bounty_row .avatar-container {
+    display: none !important;
   }
 }
