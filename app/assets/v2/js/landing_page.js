@@ -52,6 +52,7 @@ $(document).ready(function() {
   header.mousemove(moveBackground);
   window.addEventListener('scroll', (e) => {
     moveBackground(e);
+    $('#gc-robot').css('top', (-window.scrollY + 1900) / 2 + 'px');
   }, { passive: true });
   moveBackground({});
 });

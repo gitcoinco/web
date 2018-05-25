@@ -64,7 +64,7 @@
               </g>
           </g>
         </svg>
-        <h3>Augment Your Team's Workflow</h3>
+        <h4>Augment Your Team's Workflow</h4>
         <p>
           Save time on non-core tasks. Create space for your team to focus on
           the right problems (better ROI by outsourcing).
@@ -97,7 +97,7 @@
               </g>
           </g>
         </svg>
-        <h3>Work with Global Talent</h3>
+        <h4>Work with Global Talent</h4>
         <p>
           Supporting Copy in a few sentences, Hire based on merit and work on
           your platform.
@@ -126,7 +126,7 @@
               </g>
           </g>
         </svg>
-        <h3>Grow Your Open Source Community</h3>
+        <h4>Grow Your Open Source Community</h4>
         <p>
           Leverage Gitcoin's firehose of talent. Why should they do this?
         </p>
@@ -140,13 +140,14 @@
           <h1>{% trans "What is Gitcoin?" %}</h1>
         </div>
       </div>
-      <div class="row d-flex justify-content-center whatisit">
+      <div class="row d-flex justify-content-center align-items-center whatisit">
         <div class="animatedParent col-6 col-md-5">
           <div class="animated fadeInLeftShort">
             <h3>{% trans "A Mission to Grow Open Source." %}</h3>
-            <p>{% trans "A Community for Developers to Collaborate and monetise their skills while working on Open Source projects through bounties" %}
+            <p class="mb-3">
+              {% trans "A Community for Developers to Collaborate and monetise their skills while working on Open Source projects through bounties" %}
             </p>
-            <a class="btn btn-gc-purple">{% trans "Read More" %}</a>
+            <a class="btn btn-gc-purple mb-3">{% trans "Read More" %}</a>
             <p>{% trans "Gitcoin does not have a native token." %}</p>
           </div>
         </div>
@@ -197,17 +198,19 @@
       </p>
     </div>
 
-    <div class="container-fluid p-5">
+    <div class="container-fluid p-5 case-studies-container">
       <div class="row mb-5">
         <div class="col text-center">
           <h1>{% trans "Read Case Studies" %}</h1>
         </div>
       </div>
       <ul class="case-studies-list">
-        <li>{% trans "Case Study 1: Ethereum Foundation Hiring" %}</li>
-        <li>{% trans "Case Study 2: Tim Van Mourik" %}</li>
-        <li>{% trans "Case Study 3: Metamask Bounty Engineer" %}</li>
+        <li><a href="">{% trans "Case Study 1: Ethereum Foundation Hiring" %}</a></li>
+        <li><a href="">{% trans "Case Study 2: Tim Van Mourik" %}</a></li>
+        <li><a href="">{% trans "Case Study 3: Metamask Bounty Engineer" %}</a></li>
       </ul>
+      <img id="gc-robot" src="/static/v2/images/Robot.png" alt="Gitcoin Robot" />
+      <a class="btn btn-gc-purple" href="">See All Case Studies</a>
     </div>
 
     <div class="container-fluid p-5 pricing_container">

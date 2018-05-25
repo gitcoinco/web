@@ -1,3 +1,25 @@
+.case-studies-container {
+  text-align: center;
+  position: relative;
+  overflow: visible !important;
+}
+.case-studies-list {
+  font-size: 1.5rem;
+  list-style-type: none;
+  text-align: left;
+  margin-left: 15vw;
+  margin-bottom: 4rem;
+}
+.case-studies-list li {
+  margin-bottom: 1rem;
+}
+#gc-robot {
+  position: absolute;
+  top: -50px;
+  right: 10vw;
+  height: 100%;
+}
+
 .howworks_container {
   background-color: #F9F9F9;
   text-align: center;
@@ -40,6 +62,15 @@
   background-color: white;
   text-align: center;
   padding: 3rem 1rem;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+.benefit > p {
+  flex-grow: 1;
+}
+.benefit > h4 {
+  padding-top: 2rem;
 }
 
 .pricing_container {
@@ -95,8 +126,13 @@
 .whatisit {
   height: min-content;
 }
-.whatisit_container iframe {
+.whatisit .youtube {
   height: 100%;
+}
+.whatisit_container iframe {
+  width: 100%;
+  height: 20vw;
+  min-height: 100%;
 }
 
 /* Landing Page Animations */
