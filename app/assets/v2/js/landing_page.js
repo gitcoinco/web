@@ -61,4 +61,13 @@ $(document).ready(function() {
     $('#gc-robot').css('top', (-window.scrollY + robotContainerPos - 100) / 2 + 'px');
   }, { passive: true });
   moveBackground({});
+
+  $('#funder-toggle').click(function(e) {
+    $('#funder-toggle').addClass('active');
+    $('#contributor-toggle').removeClass('active');
+  });
+  $('#contributor-toggle').click(function(e) {
+    $('#funder-toggle').removeClass('active');
+    $('#contributor-toggle').addClass('active');
+  });
 });

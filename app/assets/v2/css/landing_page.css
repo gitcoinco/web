@@ -31,6 +31,20 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
+.howworks-section-toggle {
+  background: transparent;
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+.howworks-section-toggle:hover, .howworks-section-toggle:active, .howworks-section-toggle:focus {
+  color: var(--gc-blue) !important;
+}
+
+.howworks-section-toggle.active {
+  color: var(--gc-blue);
+  text-decoration: underline;
+}
 .howworks-step {
   position: relative;
   padding: 2rem 1rem;
