@@ -337,14 +337,6 @@ div.button-pink {
   height: 600px;
 }
 
-.explain-img-wrapper {
-  height: 150px;
-}
-
-.explain-img-wrapper img {
-  max-height: 150px;
-}
-
 .mission-img-wrapper {
   height: 250px;
 }
@@ -540,14 +532,6 @@ div.button-pink {
 #ios .row .left a {
   font-family: 'Muli', sans-serif;
   font-size: 14px;
-}
-
-#ios .row .explain-img-wrapper {
-  height: auto;
-}
-
-#ios .row .explain-img-wrapper a img {
-  min-height: 12.5rem;
 }
 
 @media (max-width: 767.98px) {

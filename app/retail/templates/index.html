@@ -278,7 +278,7 @@
     </div>
 
     <div class="container-fluid p-5 testimonial_container">
-      <div class="row">
+      <div class="row mb-5">
         <div class="col text-center">
           <h2>{% trans "Who's using Gitcoin?" %}</h2>
         </div>
@@ -295,111 +295,83 @@
       </div>
     </div>
 
-      <div class="container-fluid pt-0 press_container ">
-        <div class="row pb-1">
+      <div class="container-fluid p-5 press_container ">
+        <div class="row mb-5">
           <div class="col text-center">
-            <h4 class="">{% trans "Press" %}</h4>
+            <h2>{% trans "Press" %}</h2>
           </div>
         </div>
         <div class="row press">
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <a href="https://www.youtube.com/watch?v=8TKWY5JFTCM" target="_blank" rel="noopener noreferrer">
-                <img src="{% static "v2/images/press/coincrunch.png" %}">
-              </a>
+          <a href="https://www.youtube.com/watch?v=8TKWY5JFTCM" target="_blank" rel="noopener noreferrer">
+            <div class="explain-img-wrapper">
+              <img src="{% static "v2/images/press/coincrunch.png" %}">
             </div>
-          </div>
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <a href="https://twit.tv/shows/floss-weekly/episodes/474" target="_blank" rel="noopener noreferrer">
-                <img src="{% static "v2/images/press/floss_weekly.jpg" %}">
-              </a>
+          </a>
+          <a href="https://twit.tv/shows/floss-weekly/episodes/474" target="_blank" rel="noopener noreferrer">
+            <div class="explain-img-wrapper">
+              <img src="{% static "v2/images/press/floss_weekly.jpg" %}">
             </div>
-          </div>
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <a href="http://www.ibtimes.com/how-web-30-will-protect-our-online-identity-2667000" target="_blank" rel="noopener noreferrer">
-                <img src="{% static "v2/images/press/ibtimes.jpg" %}">
-              </a>
+          </a>
+          <a href="http://www.ibtimes.com/how-web-30-will-protect-our-online-identity-2667000" target="_blank" rel="noopener noreferrer">
+            <div class="explain-img-wrapper">
+              <img src="{% static "v2/images/press/ibtimes.jpg" %}">
             </div>
-          </div>
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <a href="https://changelog.com/podcast/281" target="_blank" rel="noopener noreferrer">
-                <img src="{% static "v2/images/press/changelog.jpg" %}">
-              </a>
+          </a>
+          <a href="https://changelog.com/podcast/281" target="_blank" rel="noopener noreferrer">
+            <div class="explain-img-wrapper">
+              <img src="{% static "v2/images/press/changelog.jpg" %}">
             </div>
-          </div>
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <a href="https://www.forbes.com/sites/curtissilver/2017/09/25/gitcoin-launches-today-pushing-open-source-forward-with-cryptocurrency-bounties/" target="_blank" rel="noopener noreferrer">
-                <img src="{% static "v2/images/press/forbes.jpg" %}">
-              </a>
+          </a>
+          <a href="https://www.forbes.com/sites/curtissilver/2017/09/25/gitcoin-launches-today-pushing-open-source-forward-with-cryptocurrency-bounties/" target="_blank" rel="noopener noreferrer">
+            <div class="explain-img-wrapper">
+              <img src="{% static "v2/images/press/forbes.jpg" %}">
             </div>
-          </div>
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <a href="https://www.coloradotechcast.com/kevin-owocki-gitcoin/" target="_blank" rel="noopener noreferrer">
-                <img src="{% static "v2/images/press/coloradotechcast.jpg" %}">
-              </a>
+          </a>
+          <a href="https://www.coloradotechcast.com/kevin-owocki-gitcoin/" target="_blank" rel="noopener noreferrer">
+            <div class="explain-img-wrapper">
+              <img src="{% static "v2/images/press/coloradotechcast.jpg" %}">
             </div>
-          </div>
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" target="_blank" rel="noopener noreferrer">
-                <img src="{% static "v2/images/consensys-logo-dark-small.png" %}" >
-              </a>
+          </a>
+          <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" target="_blank" rel="noopener noreferrer">
+            <div class="explain-img-wrapper">
+              <img src="{% static "v2/images/consensys-logo-dark-small.png" %}" >
             </div>
-          </div>
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <a href="https://btcmanager.com/solve-software-problems-git-bounty/" target="_blank" rel="noopener noreferrer">
-                <img src="{% static "v2/images/press/btcmanager2.jpg" %}">
-              </a>
+          </a>
+          <a href="https://btcmanager.com/solve-software-problems-git-bounty/" target="_blank" rel="noopener noreferrer">
+            <div class="explain-img-wrapper">
+              <img src="{% static "v2/images/press/btcmanager2.jpg" %}">
             </div>
-          </div>
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <a href="http://www.builtincolorado.com/2017/10/19/boulder-tech-gitcoin-open-source-software" target="_blank" rel="noopener noreferrer">
-                <img src="{% static "v2/images/press/builtin.jpg" %}">
-              </a>
+          </a>
+          <a href="http://www.builtincolorado.com/2017/10/19/boulder-tech-gitcoin-open-source-software" target="_blank" rel="noopener noreferrer">
+            <div class="explain-img-wrapper">
+              <img src="{% static "v2/images/press/builtin.jpg" %}">
             </div>
-          </div>
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <a href="https://pressurecast.simplecast.fm/2adb78e7" target="_blank" rel="noopener noreferrer">
-                <img src="{% static "v2/images/press/pressurecast.jpg" %}">
-              </a>
+          </a>
+          <a href="https://pressurecast.simplecast.fm/2adb78e7" target="_blank" rel="noopener noreferrer">
+            <div class="explain-img-wrapper">
+              <img src="{% static "v2/images/press/pressurecast.jpg" %}">
             </div>
-          </div>
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <a href="https://thebitcoinpodcast.com/an-ethereum-podcast-episode-8/" target="_blank" rel="noopener noreferrer">
-                <img src="{% static "v2/images/press/btc_podcast.jpg" %}">
-              </a>
+          </a>
+          <a href="https://thebitcoinpodcast.com/an-ethereum-podcast-episode-8/" target="_blank" rel="noopener noreferrer">
+            <div class="explain-img-wrapper">
+              <img src="{% static "v2/images/press/btc_podcast.jpg" %}">
             </div>
-          </div>
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <a href="https://softwareengineeringdaily.com/2018/04/03/gitcoin-open-source-bounties-with-kevin-owocki/" target="_blank" rel="noopener noreferrer">
-                <img src="{% static "v2/images/press/se_daily.png" %}">
-              </a>
+          </a>
+          <a href="https://softwareengineeringdaily.com/2018/04/03/gitcoin-open-source-bounties-with-kevin-owocki/" target="_blank" rel="noopener noreferrer">
+            <div class="explain-img-wrapper">
+              <img src="{% static "v2/images/press/se_daily.png" %}">
             </div>
-          </div>
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <a href="https://www.youtube.com/watch?v=CTLIrsL5el4" target="_blank" rel="noopener noreferrer">
-                <img src="{% static "v2/images/press/codingblonde.png" %}">
-              </a>
+          </a>
+          <a href="https://www.youtube.com/watch?v=CTLIrsL5el4" target="_blank" rel="noopener noreferrer">
+            <div class="explain-img-wrapper">
+              <img src="{% static "v2/images/press/codingblonde.png" %}">
             </div>
-          </div>
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <a href="https://www.youtube.com/watch?v=xvu1mUdYcuw" target="_blank" rel="noopener noreferrer">
-                <img src="{% static "v2/images/press/devhour.jpg" %}">
-              </a>
+          </a>
+          <a href="https://www.youtube.com/watch?v=xvu1mUdYcuw" target="_blank" rel="noopener noreferrer">
+            <div class="explain-img-wrapper">
+              <img src="{% static "v2/images/press/devhour.jpg" %}">
             </div>
-          </div>
+          </a>
         </div>
       </div>
     </div>

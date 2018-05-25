@@ -828,28 +828,6 @@ input[type=text].loading {
   color: black;
 }
 
-.press_container {
-  background: #F9F9F9;
-}
-
-.press_container img {
-  max-width: 200px;
-  max-height: 100px;
-  filter: grayscale(100%);
-  -moz-filter: grayscale(100%);
-  -ms-filter: grayscale(100%);
-  -o-filter: grayscale(100%);
-}
-
-.press_container img:hover {
-  max-width: 200px;
-  max-height: 100px;
-  filter: grayscale(0%);
-  -moz-filter: grayscale(0%);
-  -ms-filter: grayscale(0%);
-  -o-filter: grayscale(0%);
-}
-
 .body {
   padding-bottom: 4em;
 }
