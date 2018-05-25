@@ -260,6 +260,7 @@ urlpatterns = [
     # Job urls goes below
     path('jobs', jobs.views.list_jobs, name='job-list-template'),
     path('jobs/<int:pk>/', jobs.views.job_detail, name='job-detail-template'),
+    path('jobs/new/', jobs.views.create_job, name='job-create-template'),
 ]
 
 if settings.ENABLE_SILK:

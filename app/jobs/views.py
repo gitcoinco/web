@@ -1,8 +1,9 @@
 # Third-Party imports
+from django.shortcuts import render
 from django.template.response import TemplateResponse
 
 # gitcoin-web imports
-# from .models import Job
+from .forms import JobForm
 
 
 def list_jobs(request):
@@ -16,3 +17,15 @@ def job_detail(request, pk):
     }
 
     return TemplateResponse(request, 'jobs/detail.html', context=context)
+
+
+def create_job(request):
+    if request.method == 'POST':
+        form = JobForm(request.POST)
+        if form.is_valid():
+            # import ipdb; ipdb.set_trace()
+            form.save()
+            print("saved")
+    else:
+        form = JobForm(user=request.user)
+    return render(request, 'jobs/create_job.html', {'form': form})

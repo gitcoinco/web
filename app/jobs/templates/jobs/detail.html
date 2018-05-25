@@ -18,7 +18,7 @@
       <div class="col-12 col-md-2 left-rails text-center" style="background: #F2F6F9;">
         {% include 'shared/current_balance.html' %}
         <div class="explorer font-body">
-          <a href="{% url 'explorer' %}"><i class="fa fa-chevron-left"></i> {% trans "Back to Issue Explorer" %}</a>
+          <a href="{% url 'job-list-template' %}"><i class="fa fa-chevron-left"></i> {% trans "Back to Issue Explorer" %}</a>
         </div>
       </div>
 
@@ -73,7 +73,7 @@
             <div class="col-12">
               <div class="row box">
                 <div class="col-lg-12 col-md-12 col-md-1 funder-avatar">
-                  <div id="issuer_avatar_url"></div>
+                  <div id="issuer_avatar_url"><img src="[[:company_avatar]]" /></div>
                 </div>
                 <div class="col-lg-12 col-md-12 col-md-1 funder-avatar">
                   <span class="company-name">[[:company]]</span>

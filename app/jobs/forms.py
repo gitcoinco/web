@@ -17,19 +17,24 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from django.forms import ModelForm
+from django import forms
 
+from dashboard.views import profile_keywords_helper
 from .models import Job
 
 
-class JobForm(ModelForm):
+class JobForm(forms.ModelForm):
     """Define the Job form handling."""
+    skills = forms.ChoiceField(choices=(), required=True)
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['skills'].choices = profile_keywords_helper(user)
 
     class Meta:
         """Define the JOB form metadata."""
 
         model = Job
         fields = [
-            'title', 'description', 'github_profile_link', 'apply_url',
-            'is_active', 'skills', 'expiry_date'
+            'title', 'job_type', 'location', 'skills', 'company', 'description'
         ]

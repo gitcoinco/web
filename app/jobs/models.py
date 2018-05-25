@@ -9,9 +9,6 @@ from django.utils.translation import ugettext_lazy as _
 
 # Create your models here.
 
-SKILL_CHOICES = (
-)
-
 JOB_TYPE_CHOICES = (
     ('Full Time', 'Full-Time'),
     ('Part Time', 'Part-Time'),
@@ -43,12 +40,8 @@ class Job(models.Model):
         verbose_name=_('Is this job active?'), default=False,
         null=False, blank=True
     )
-    skills = ArrayField(
-        models.CharField(
-            verbose_name=_('skill'),
-            choices=SKILL_CHOICES, max_length=30, null=False, blank=True
-        ),
-        null=True, blank=True
+    skills = models.CharField(
+        verbose_name=_('skill'), max_length=60, null=False, blank=True
     )
     expiry_date = models.DateTimeField(
         _('Expiry Date'), null=False, blank=False, default=get_expiry_time
