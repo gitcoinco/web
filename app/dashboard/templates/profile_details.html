@@ -59,6 +59,16 @@
                   <li><span class="highlight">{{ count_bounties_completed }}</span> {% trans "bounties completed" %}</li>
                   <li><span class="highlight">{{ sum_eth_collected }}</span> {% trans "ETH collected" %}</li>
                   <li><span class="highlight">{% if scoreboard_position_contributor %}#{{ scoreboard_position_contributor }}{% else %}-{% endif %}</span> {% trans "contributor" %}</li>
+                  <li class="works_with_list">
+                    {% if works_with_collected|length != 0 %}
+                    Contributes to: 
+                        {% for profile, num_times in works_with_collected.items %}
+                            <a href="{% url 'profile' profile %} ">
+                                <img src='/static/avatar/{{profile}}' title="{{profile}}: {{num_times}} times">
+                            </a>
+                        {% endfor %}
+                    {% endif %}
+                  </li>
                 </ul>
               </div>
             </div>
@@ -73,6 +83,16 @@
                   <li><span class="highlight">{{ funded_bounties_count }}</span> {% trans "bounties funded" %}</li>
                   <li><span class="highlight">{{ sum_eth_funded }}</span> {% trans "ETH funded" %}</li>
                   <li><span class="highlight">{% if scoreboard_position_funder %}#{{ scoreboard_position_funder }}{% else %}-{% endif %}</span> {% trans "funder" %}</li>
+                  <li class="works_with_list">
+                    {% if works_with_funded|length %}
+                        Funds: 
+                        {% for profile, num_times in works_with_funded.items %}
+                            <a href="{% url 'profile' profile %} ">
+                                <img src='/static/avatar/{{profile}}' title="{{profile}}: {{num_times}} times">
+                            </a>
+                        {% endfor %}
+                    {% endif %}
+                  </li>
                 </ul>
               </div>
             </div>

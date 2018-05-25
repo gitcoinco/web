@@ -194,5 +194,7 @@
 .profile_details .bounty_row:first-child {
   border-top: none;
 }
-
+.works_with_list img{
+  max-width: 25px;
+}
 /* END Profile details */

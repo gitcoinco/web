@@ -1271,6 +1271,30 @@ class Profile(SuperModel):
 
         return eth_sum
 
+    def get_who_works_with(self, work_type='collected', network='mainnet'):
+        """Get an array of profiles that this user works with.
+
+        Args:
+            work_type (str): The work type to lookup.  Defaults to: collected.
+            network (str): The network to query results for.
+                Defaults to: mainnet.
+
+        Returns:
+            dict: list of the profiles that were worked with (key) and the number of times they occured
+
+        """
+        if work_type == 'funded':
+            obj = self.bounties_funded.filter(network=network)
+        elif work_type == 'collected':
+            obj = self.get_fulfilled_bounties()
+
+        profiles = [bounty.org_name for bounty in obj if bounty.org_name]
+        profiles_dict = {profile: 0 for profile in profiles}
+        for profile in profiles:
+            profiles_dict[profile] += 1
+
+        return profiles_dict
+
     def to_dict(self, activities=True, leaderboards=True, network=None, tips=True):
         """Get the dictionary representation with additional data.
 
@@ -1302,6 +1326,8 @@ class Profile(SuperModel):
 
         sum_eth_funded = self.get_eth_sum(sum_type='funded', **query_kwargs)
         sum_eth_collected = self.get_eth_sum(**query_kwargs)
+        works_with_funded = self.get_who_works_with(work_type='funded', **query_kwargs)
+        works_with_collected = self.get_who_works_with(work_type='collected', **query_kwargs)
 
         funded_bounties = Bounty.objects.current().filter(
             Q(bounty_owner_github_username__iexact=self.handle) |
@@ -1320,6 +1346,8 @@ class Profile(SuperModel):
             'count_bounties_completed': self.fulfilled.filter(accepted=True).count(),
             'sum_eth_collected': sum_eth_collected,
             'sum_eth_funded': sum_eth_funded,
+            'works_with_collected': works_with_collected,
+            'works_with_funded': works_with_funded,
             'funded_bounties_count': funded_bounties.count(),
             'activities': [{'title': _('No data available.')}]
         }
