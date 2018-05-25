@@ -1059,6 +1059,7 @@ class Profile(SuperModel):
                 (bounties.count(), 'Total Funded Issues'),
                 (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
                 (loyalty_rate, 'Loyalty Rate'),
+                (total_fulfilled, 'Bounties completed'),
             ]
         elif role == 'coder':
             return [
@@ -1066,6 +1067,7 @@ class Profile(SuperModel):
                 (bounties.count(), 'Total Funded Issues'),
                 (success_rate, 'Success Rate'),
                 (loyalty_rate, 'Loyalty Rate'),
+                (total_fulfilled, 'Bounties completed'),
             ]
         # funder
         return [
@@ -1073,6 +1075,7 @@ class Profile(SuperModel):
             (bounties.count(), 'Total Funded Issues'),
             (bounties.filter(idx_status='open').count(), 'Open Funded Issues'),
             (success_rate, 'Success Rate'),
+            (total_fulfilled, 'Bounties completed'),
         ]
 
     @property

@@ -813,7 +813,28 @@ def profile(request, handle):
         'stats': profile.stats,
         'bounties': profile.bounties,
         'tips': Tip.objects.filter(username=handle, network='mainnet'),
+        # TODO: Fill following with real data
+        'count_bounties_completed': profile.stats[4][0],
+        'sum_eth_collected': 24.5,
+        'scoreboard_position_contributor': 1,
+        'sum_eth_funded': 32.2,
+        'scoreboard_position_funder': 4,
+        'activities': [
+            {
+                'title': 'May 2018',
+                'completed': [profile.bounties[0], profile.bounties[1]],
+                'submitted': [profile.bounties[0]],
+                'started': []
+            },
+            {
+                'title': 'April 2018',
+                'completed': [],
+                'submitted': [],
+                'started': [profile.bounties[2], profile.bounties[0]]
+            }
+        ]
     }
+
     return TemplateResponse(request, 'profile_details.html', params)
 
 
