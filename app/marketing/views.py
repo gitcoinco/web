@@ -134,6 +134,7 @@ def privacy_settings(request):
         if profile:
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
             profile.hide_profile = bool(request.POST.get('hide_profile', False))
+            profile = record_form_submission(request, profile, 'privacy')
             if profile.alumni and profile.alumni.exists():
                 alumni = profile.alumni.first()
                 alumni.public = bool(not request.POST.get('hide_alumni', False))
@@ -151,6 +152,15 @@ def privacy_settings(request):
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/privacy.html', context)
+
+
+def record_form_submission(request, obj, _type):
+    obj.form_submission_records.append({
+        'ip': get_ip(request),
+        'timestamp': int(timezone.now().timestamp()),
+        'type': _type,
+        })
+    return obj
 
 
 def matching_settings(request):
@@ -180,11 +190,7 @@ def matching_settings(request):
             es.github = github
         if keywords:
             es.keywords = keywords
-        ip = get_ip(request)
-        if not es.metadata.get('ip', False):
-            es.metadata['ip'] = [ip]
-        else:
-            es.metadata['ip'].append(ip)
+        es = record_form_submission(request, es, 'match')
         es.save()
         msg = _('Updated your preferences.')
 
@@ -216,11 +222,7 @@ def feedback_settings(request):
         if has_comment_changed:
             new_feedback(es.email, comments)
         es.metadata['comments'] = comments
-        ip = get_ip(request)
-        if not es.metadata.get('ip', False):
-            es.metadata['ip'] = [ip]
-        else:
-            es.metadata['ip'].append(ip)
+        es = record_form_submission(request, es, 'feedback')
         es.save()
         msg = _('We\'ve received your feedback.')
 
@@ -291,6 +293,7 @@ def email_settings(request, key):
                     if key not in form.keys():
                         form[key] = False
                 es.build_email_preferences(form)
+                es = record_form_submission(request, es, 'email')
                 ip = get_ip(request)
                 es.active = level != 'nothing'
                 es.newsletter = level in ['regular', 'lite1']
@@ -340,6 +343,7 @@ def slack_settings(request):
 
         if submit or (response and response.get('success')):
             profile.update_slack_integration(token, channel, repos)
+            profile = record_form_submission(request, profile, 'slack')
             if not response.get('output'):
                 response['output'] = _('Updated your preferences.')
             ua_type = 'added_slack_integration' if token and channel and repos else 'removed_slack_integration'
@@ -407,12 +411,14 @@ def account_settings(request):
 
         if request.POST.get('disconnect', False):
             profile.github_access_token = ''
+            profile = record_form_submission(request, profile, 'account-disconnect')
             profile.save()
             messages.success(request, _('Your account has been disconnected from Github'))
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
         if request.POST.get('delete', False):
             profile.hide_profile = True
+            profile = record_form_submission(request, profile, 'account-delete')
             profile.save()
             if es:
                 es.delete()
