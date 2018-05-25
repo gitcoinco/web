@@ -456,6 +456,7 @@ def leaderboard(request, key=''):
     titles = {
         'quarterly_payers': _('Top Payers'),
         'quarterly_earners': _('Top Earners'),
+        'quarterly_orgs': _('Top Orgs'),
         #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
         #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
         #        'monthly_fulfilled': 'Monthly Leaderboard',
@@ -489,7 +490,7 @@ def leaderboard(request, key=''):
         'selected': title,
         'title': f'Leaderboard: {title}',
         'card_title': f'Leaderboard: {title}',
-        'card_desc': f'See the most valued members in the Gitcoin community this month. {top_earners}',
+        'card_desc': f'See the most valued members in the Gitcoin community recently . {top_earners}',
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
         'podium_items': items[:3] if items else []
