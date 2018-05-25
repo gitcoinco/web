@@ -57,7 +57,7 @@
               <div class="card-body">
                 <ul>
                   <li><span class="highlight">{{ count_bounties_completed }}</span> {% trans "bounties completed" %}</li>
-                  <li><span class="highlight">{{ sum_eth_collected }}</span> {% trans "ETH collected" %}</li>
+                  <li><span class="highlight">{{ sum_eth_collected|floatformat:2 }}</span> {% trans "ETH collected" %}</li>
                   {% if scoreboard_position_contributor %}
                       <li><span class="highlight">#{{ scoreboard_position_contributor }}</span> {% trans "contributor" %}</li>
                   {% endif %}
@@ -86,7 +86,7 @@
               <div class="card-body">
                 <ul>
                   <li><span class="highlight">{{ funded_bounties_count }}</span> {% trans "bounties funded" %}</li>
-                  <li><span class="highlight">{{ sum_eth_funded }}</span> {% trans "ETH funded" %}</li>
+                  <li><span class="highlight">{{ sum_eth_funded|floatformat:2 }}</span> {% trans "ETH funded" %}</li>
                   {% if scoreboard_position_funder %}
                       <li><span class="highlight">#{{ scoreboard_position_funder }}</span> {% trans "funder" %}</li>
                   {% endif %}
