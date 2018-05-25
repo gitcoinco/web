@@ -396,13 +396,13 @@
         }
 
         // Fetch user bounties: "in progress" / actively started.
-        fetchBountiesAndAddToList('started={{ profile.handle }}&status__in=started,submitted', '.profile-bounties--in-progress');
+        fetchBountiesAndAddToList('network=mainnet&started={{ profile.handle }}&status__in=started,submitted', '.profile-bounties--in-progress');
 
         // Fetch bounties user is owner
-        fetchBountiesAndAddToList('bounty_owner_github_username={{ profile.handle }}', '.profile-bounties--funded');
+        fetchBountiesAndAddToList('network=mainnet&bounty_owner_github_username={{ profile.handle }}', '.profile-bounties--funded');
 
         // Fetch bounties user is fulfiller
-        fetchBountiesAndAddToList('started={{ profile.handle }}&idx_status=done', '.profile-bounties--completed');
+        fetchBountiesAndAddToList('network=mainnet&started={{ profile.handle }}&idx_status=done', '.profile-bounties--completed');
       });
     </script>
   </body>
