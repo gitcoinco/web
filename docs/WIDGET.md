@@ -10,9 +10,9 @@ We support both *image* widgets (see below) and dynamically resizing *javascript
 
 ### Preview
 
-The JS image is responsive
+The JS image is responsive.  Here are some screenshots of it:
 
-<img src='imgs/example.png' width="300px">
+<img src='imgs/example.png' width="300">
 <img src='imgs/example2.png' width="300">
 
 ### Example
