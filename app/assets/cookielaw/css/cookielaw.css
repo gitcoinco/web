@@ -1,0 +1,37 @@
+#CookielawBanner {
+  padding: 15px 0;
+  position: fixed;
+  bottom: 0;
+  background-color: #f8f9fa;
+  width: 100%;
+  z-index: 20;
+  font-family: 'Muli', sans-serif;
+}
+
+#CookielawBanner .container {
+  position: relative;
+  max-width: none;
+}
+
+#CookielawBanner .container .button {
+  max-height: 3rem;
+}
+
+#CookielawBanner .container .d-flex {
+  justify-content: space-between;
+}
+
+#CookielawBanner .container .cookie-info {
+  width: 90%;
+}
+
+#CookielawBanner #CookielawCross {
+  background: url('../img/close.png') no-repeat 0 0;
+  cursor: pointer;
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 15px;
+  height: 15px;
+}
