@@ -41,6 +41,7 @@ from chartit import Chart, DataPool
 from dashboard.models import Bounty, Profile, Tip, UserAction
 from dashboard.utils import create_user_action
 from enssubdomain.models import ENSSubdomainRegistration
+from mailchimp3 import MailChimp
 from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
@@ -417,9 +418,24 @@ def account_settings(request):
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
         if request.POST.get('delete', False):
+
+            # remove profile
             profile.hide_profile = True
             profile = record_form_submission(request, profile, 'account-delete')
             profile.save()
+
+            # remove email
+            try:
+                client = MailChimp(mc_user=settings.MAILCHIMP_USER, mc_api=settings.MAILCHIMP_API_KEY)
+                result = client.search_members.get(query=es.email)
+                subscriber_hash = result['exact_matches']['members'][0]['id']
+                client.lists.members.notes.delete(
+                    list_id=settings.MAILCHIMP_LIST_ID,
+                    subscriber_hash=subscriber_hash,
+                    note_id='deleted per user request'
+                    )
+            except Exception as e:
+                print(e)
             if es:
                 es.delete()
             request.user.delete()
