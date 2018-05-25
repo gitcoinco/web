@@ -37,6 +37,7 @@ from django.urls.exceptions import NoReverseMatch
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+import collections
 import pytz
 import requests
 from dashboard.tokens import addr_to_token
@@ -1222,7 +1223,7 @@ class Profile(SuperModel):
 
     @staticmethod
     def get_network():
-        return 'mainnet' if not settings.DEBUG else 'rinkeby'
+        return 'mainnet' 
 
     def get_fulfilled_bounties(self, network=None):
         network = network or self.get_network()
@@ -1293,7 +1294,11 @@ class Profile(SuperModel):
         for profile in profiles:
             profiles_dict[profile] += 1
 
-        return profiles_dict
+        ordered_profiles_dict = collections.OrderedDict()
+        for ele in sorted(profiles_dict.items(), key=lambda x: x[1], reverse=True):
+            ordered_profiles_dict[ele[0]] = ele[1]
+        return ordered_profiles_dict
+
 
     def to_dict(self, activities=True, leaderboards=True, network=None, tips=True):
         """Get the dictionary representation with additional data.

@@ -61,7 +61,10 @@
                   <li><span class="highlight">{% if scoreboard_position_contributor %}#{{ scoreboard_position_contributor }}{% else %}-{% endif %}</span> {% trans "contributor" %}</li>
                   <li class="works_with_list">
                     {% if works_with_collected|length != 0 %}
-                    Contributes to: 
+                        Contributes to: 
+                        {% if works_with_collected|length > 2 %}
+                        <br>
+                        {% endif %}
                         {% for profile, num_times in works_with_collected.items %}
                             <a href="{% url 'profile' profile %} ">
                                 <img src='/static/avatar/{{profile}}' title="{{profile}}: {{num_times}} times">
@@ -86,6 +89,9 @@
                   <li class="works_with_list">
                     {% if works_with_funded|length %}
                         Funds: 
+                        {% if works_with_funded|length > 2 %}
+                        <br>
+                        {% endif %}
                         {% for profile, num_times in works_with_funded.items %}
                             <a href="{% url 'profile' profile %} ">
                                 <img src='/static/avatar/{{profile}}' title="{{profile}}: {{num_times}} times">
