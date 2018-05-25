@@ -1,0 +1,71 @@
+{% extends 'yge/base.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+{% block 'scripts' %}
+<script src="{% static "yge/ethereumjs/ethereumjs-accounts.js" %}"></script>
+<script src="{% static "yge/ethereumjs/web3.js" %}"></script>
+<script src="{% static "yge/ethereumjs/hooked-web3-provider.js" %}"></script>
+<script src="{% static "yge/ethereumjs/tx.js" %}"></script>
+<script src="{% static "yge/youvegoteth/index.js" %}"></script>
+<script src="{% static "yge/youvegoteth/tokens.js" %}"></script>
+<script src="{% static "yge/youvegoteth/pre.js" %}"></script>
+<script src="{% static "yge/redeem_ethos.js" %}"></script>
+<script src="{% static "yge/youvegoteth/confetti.js" %}"></script>
+<script src="{% static "yge/youvegoteth/web3alert.js" %}"></script>
+{% endblock %}
+<!-- Main -->
+{% block 'world' %}
+<canvas id="world" style="position:absolute; top:0; left: 0;"></canvas>
+{% endblock %}
+{% block 'main' %}
+<section id="main">
+  <header>
+    <span class="avatar">
+      <a href='/'>
+        <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" />
+      </a>
+    </span>
+  </header>
+  <div id="loading">
+    <h1>{% trans "Loading" %}</h1>
+    <img src="{% static "yge/images/loading.gif" %}" style="max-width: 70px; max-height: 70px;">
+    <p id="loading_txt">{% trans "waiting for web3..." %}</p>
+  </div>
+  <div id="step_zero" style="display:none;">
+    <h1 id="zeroh1">{% trans "You've received an EthOS" %}</h1>
+    <p>{% trans "To claim it, please install MetaMask and refresh the page." %}</p>
+    <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" id="install" class="button">{% trans "Install Metamask" %} 🐬</a>
+    <br>
+    <br>
+    <h2>{% trans "What is Metamask?" %}</h2>
+    <iframe width="100%" src="https://www.youtube.com/embed/6Gf_kRE4MJU" frameborder="0" allowfullscreen></iframe>
+  </div>
+  <div id="send_eth" style="display:none;">
+    <h1 id="oneh1">{% trans "You've got Ethos!" %}</h1>
+    <h2>{%trans "Here's how to play:" %}</h2>
+    <h3>1. 🦄 Give solid coin to someone great.</h3>
+    <h3>2. 📱 Scan solid coin with a QR Reader to register.</h3>
+    <h3>3. 🌈 Repeat step 1.</h3>
+    <h3>4. 🙌 On Monday, you will receive Ethos ERC20 token. </h3>
+    <h3>5. 📈 Whomever was a part of the longest edge gets the most Ethos.</h3>
+    <img src="/ethos/graph.gif?key=latest" style="max-width: 300px;">
+    <h2>{%trans "This experiment is over!" %}</h2>
+    <h4><a class="button" style="background-color: #15003e;"  href="https://medium.com/gitcoin/we-mapped-the-ethos-of-the-ethereal-summit-2018-and-it-sure-is-purdy-e299b99bbbde">🌈 Click here to view the wrap up 🌈 </a></h4>
+  </div>
+</section>
+{% endblock %}

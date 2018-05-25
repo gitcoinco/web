@@ -251,7 +251,7 @@ var get_search_URI = function() {
   if (localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, pos, arr) {
       keywords += v;
-      if (arr.length < pos + 1) {
+      if (arr.length > pos + 1) {
         keywords += ',';
       }
     });
@@ -354,7 +354,7 @@ var paint_bounties_in_viewport = function(start, max) {
   });
   document.is_painting_now = false;
 
-  if (document.referrer.search('/onboard') != -1) {
+  if (localStorage['referrer'] === 'onboard') {
     $('.bounty_row').each(function(index) {
       if (index > 2)
         $(this).addClass('hidden');
@@ -420,7 +420,12 @@ var refreshBounties = function(event) {
     results = sanitizeAPIResults(results);
 
     if (results.length === 0) {
-      $('.nonefound').css('display', 'block');
+      if (localStorage['referrer'] === 'onboard') {
+        $('.no-results').removeClass('hidden');
+        $('#dashboard-content').addClass('hidden');
+      } else {
+        $('.nonefound').css('display', 'block');
+      }
     }
 
     document.is_painting_now = false;
@@ -453,7 +458,7 @@ var refreshBounties = function(event) {
       result['title'] = result['title'] ? result['title'] : result['github_url'];
 
 
-      result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
+      result['p'] = ((result['experience_level'] ? result['experience_level'] + ' &bull; ' : ''));
 
       if (result['status'] === 'done')
         result['p'] += 'Done';
@@ -499,7 +504,7 @@ var refreshBounties = function(event) {
 
     process_stats(results);
   }).fail(function() {
-    _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
   }).always(function() {
     $('.loading').css('display', 'none');
   });
@@ -538,29 +543,46 @@ var resetFilters = function() {
         $('input[name="' + key + '"][value="' + tag[j].value + '"]').prop('checked', false);
     }
   }
+
+  if (localStorage['keywords']) {
+    localStorage['keywords'].split(',').forEach(function(v, k) {
+      removeFilter('keywords', v);
+    });
+  }
 };
 
 (function() {
-  if (document.referrer.search('/onboard') != -1) {
+  if (localStorage['referrer'] === 'onboard') {
     $('#sidebar_container').addClass('invisible');
     $('#dashboard-title').addClass('hidden');
     $('#onboard-dashboard').removeClass('hidden');
+    $('#onboard-footer').removeClass('hidden');
     resetFilters();
     $('input[name=idx_status][value=open]').prop('checked', true);
     $('.search-area input[type=text]').text(getURLParams('q'));
-    document.referrer = '';
 
     $('#onboard-alert').click(function(e) {
+
+      if (!$('.no-results').hasClass('hidden'))
+        $('.nonefound').css('display', 'block');
+
       $('.bounty_row').each(function(index) {
         $(this).removeClass('hidden');
       });
+
       $('#onboard-dashboard').addClass('hidden');
+      $('#onboard-footer').addClass('hidden');
       $('#sidebar_container').removeClass('invisible');
       $('#dashboard-title').removeClass('hidden');
+      $('#dashboard-content').removeClass('hidden');
+
+      localStorage['referrer'] = '';
       e.preventDefault();
     });
   } else {
+    $('#dashboard-content').removeClass('hidden');
     $('#onboard-dashboard').addClass('hidden');
+    $('#onboard-footer').addClass('hidden');
     $('#sidebar_container').removeClass('invisible');
     $('#dashboard-title').removeClass('hidden');
   }
@@ -715,10 +737,10 @@ $(document).ready(function() {
         var status = response['status'];
 
         if (status == 200) {
-          _alert({message: gettext("You're in! Keep an eye on your inbox for the next funding listing.")}, 'success');
+          _alert({ message: gettext("You're in! Keep an eye on your inbox for the next funding listing.") }, 'success');
           $.modal.close();
         } else {
-          _alert({message: response['msg']}, 'error');
+          _alert({ message: response['msg'] }, 'error');
         }
       });
     }

@@ -18,33 +18,57 @@
 {% load i18n static %}
 {% block body %}
 <style>
-.form_container .nav a.nav-link,
-.form_container .nav a.nav-link:visited{
+
+  body {
+    font-family: "Muli", sans-serif;
+  }
+
+  h5 {
+    font-family: 18px;
+    letter-spacing: 0;
+  }
+
+  p {
+    font-size: 14px;
+  }
+
+  a {
+    font-size: 12px;
+  }
+
+  ul a {
+    font-size: 14px;
+  }
+
+  .form_container {
+    padding-left: 6px;
+  }
+
+  .form_container .nav a.nav-link,
+  .form_container .nav a.nav-link:visited{
     background-color: white;
     color: black !important;
     border-bottom: 1px solid #eee;
-}
-.form_container .nav a.nav-link.active,
-.form_container .nav a.nav-link.active:visited{
+  }
+
+  .form_container .nav a.nav-link.active,
+  .form_container .nav a.nav-link.active:visited{
     background-color: #eee;
-}
-.form_container .nav-item{
-}
-.form_container .nav {
+  }
+
+  .form_container .nav {
     margin-bottom: 20px;
-}
+  }
 </style>
-<div class="container-fluid" style="">
-  <div class=" row ">
-    <div class="col-4 pb-4">
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-md-block col-md-4 pb-4">
       <div class="align-items-right justify-content-right" style="text-align: right;">
         <img id='side_img' src="{% static "v2/images/regulus.png" %}" style="max-width:300px;">
       </div>
     </div>
-    <div class="col-1 pb-4">
-    </div>
-    <div class="col-6 pb-4">
-      <div class="form_container" style="padding-left: 6px;">
+    <div class="col-12 md-offset-1 col-md-6 pb-4">
+      <div class="form_container">
         <ul class="nav nav-tabs">
             {% for nav in navs %}
               <li class="nav-item">
@@ -65,7 +89,6 @@
         <br>
       </div>
     </div>
-    <div class="col-1 pb-4"></div>
   </div>
 </div>
 {% endblock %}

@@ -58,7 +58,7 @@ class Command(BaseCommand):
         exclude_startswith = options['exclude_startswith']
         filter_startswith = options['filter_startswith']
 
-        queryset = EmailSubscriber.objects.filter(newsletter=True)
+        queryset = EmailSubscriber.objects.all()
         if exclude_startswith:
             queryset = queryset.exclude(email__startswith=exclude_startswith)
         if filter_startswith:

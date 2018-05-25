@@ -7,6 +7,7 @@ WEB_INTERFACE=${WEB_INTERFACE:-'0.0.0.0'}
 WEB_PORT=${WEB_PORT:-'8000'}
 # General / Overrides
 FORCE_PROVISION=${FORCE_PROVISION:-'off'}
+FORCE_GET_PRICES=${FORCE_GET_PRICES:-'off'}
 
 cd app
 # Check whether or not the .env file exists. If not, create it.
@@ -27,9 +28,13 @@ if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
     python manage.py createcachetable
     python manage.py collectstatic --noinput -i other &
     python manage.py migrate
-    python manage.py get_prices
+    python manage.py loaddata initial
     date >> /provisioned
     echo "Provisioning completed!"
+fi
+
+if [ "$FORCE_GET_PRICES" = "on" ]; then
+    python manage.py get_prices
 fi
 
 python manage.py "$WEB_WORKER" "$WEB_INTERFACE":"$WEB_PORT" --extra-file /code/app/app/.env --nopin

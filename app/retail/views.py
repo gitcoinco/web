@@ -26,7 +26,7 @@ from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
-from marketing.models import LeaderboardRank
+from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
 
@@ -123,18 +123,34 @@ def about(request):
             "Gitcoin Requests",
             "Tangerine Gelato"
         ),
+        (
+            static("v2/images/team/aditya-anand.jpg"),
+            "Aditya Anand M C",
+            "Engineering",
+            "thelostone-mc",
+            "aditya-anand-m-c-95855b65",
+            "The Community",
+            "Cocktail Samosa"
+        ),
     ]
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
     community_members = [
     ]
     leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount')[0: 15]
     for lr in leadeboardranks:
-        package = (lr.avatar_url, lr.github_username, lr.github_username)
+        package = (lr.avatar_url, lr.github_username, lr.github_username, '')
         community_members.append(package)
+
+    alumnis = [
+    ]
+    for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco'):
+        package = (alumni.profile.avatar_url, alumni.profile.username, alumni.profile.username, alumni.organization)
+        alumnis.append(package)
 
     context = {
         'core_team': core_team,
         'community_members': community_members,
+        'alumni': alumnis,
         'active': 'about',
         'title': 'About',
     }
@@ -631,7 +647,7 @@ def github(request):
 
 
 def youtube(request):
-    return redirect('https://www.youtube.com/watch?v=DJartWzDn0E')
+    return redirect('https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w')
 
 
 def web3(request):

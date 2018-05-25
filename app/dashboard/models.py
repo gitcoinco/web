@@ -42,7 +42,7 @@ from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from github.utils import (
-    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, get_user, issue_number, org_name, repo_name,
+    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, issue_number, org_name, repo_name,
 )
 from rest_framework import serializers
 from web3 import Web3
@@ -176,7 +176,7 @@ class Bounty(SuperModel):
     value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_in_eth = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_true = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
-    privacy_preferences = JSONField(default={})
+    privacy_preferences = JSONField(default={}, blank=True)
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
@@ -347,8 +347,7 @@ class Bounty(SuperModel):
         gitcoin_logo_flag = "/1" if gitcoin_logo_flag else ""
         if org_name:
             return f"{settings.BASE_URL}static/avatar/{org_name}{gitcoin_logo_flag}"
-        else:
-            return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
+        return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
 
     @property
     def keywords(self):
@@ -638,14 +637,14 @@ class Bounty(SuperModel):
             return None
         try:
             return Bounty.objects.filter(standard_bounties_id=self.standard_bounties_id, created_on__gt=self.created_on).order_by('created_on').first()
-        except:
+        except Exception:
             return None
 
     @property
     def prev_bounty(self):
         try:
             return Bounty.objects.filter(standard_bounties_id=self.standard_bounties_id, created_on__lt=self.created_on).order_by('-created_on').first()
-        except:
+        except Exception:
             return None
 
     # returns true if this bounty was active at _time
@@ -668,12 +667,11 @@ class Bounty(SuperModel):
             dict: A dictionary of action URLS for this bounty.
 
         """
-        return {
-            'fulfill': f"/issue/fulfill/{self.pk}",
-            'increase': f"/issue/increase/{self.pk}",
-            'accept': f"/issue/accept/{self.pk}",
-            'cancel': f"/issue/cancel/{self.pk}",
-        }
+        params = f'pk={self.pk}&network={self.network}'
+        urls = {}
+        for item in ['fulfill', 'increase', 'accept', 'cancel']:
+            urls.update({item: f'/issue/{item}?{params}'})
+        return urls
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):
@@ -779,9 +777,9 @@ class Tip(SuperModel):
 
     def __str__(self):
         """Return the string representation for a tip."""
-        return f"({self.network}) - {self.status}{' ORPHAN' if not self.emails else ''} {self.amount} " \
-               f"{self.tokenName} to {self.username}, created: {naturalday(self.created_on)}, " \
-               f"expires: {naturalday(self.expires_date)}"
+        return f"({self.network}) - {self.status}{' ORPHAN' if not self.emails else ''} " \
+               f"{self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}, " \
+               f"created: {naturalday(self.created_on)}, expires: {naturalday(self.expires_date)}"
 
     # TODO: DRY
     def get_natural_value(self):
@@ -921,7 +919,7 @@ class Profile(SuperModel):
 
     """
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True)
     last_sync_date = models.DateTimeField(null=True)
@@ -939,9 +937,14 @@ class Profile(SuperModel):
         default=True,
         help_text='If this option is chosen, we will remove your profile information all_together',
     )
+    trust_profile = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
+    )
     # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
     # Sample repos_data: https://gist.github.com/mbeacom/c9e4fda491987cb9728ee65b114d42c7
-    repos_data = JSONField(default={})
+    repos_data = JSONField(default={}, blank=True)
+    max_num_issues_start_work = models.IntegerField(default=3)
 
     @property
     def is_org(self):
@@ -1008,6 +1011,13 @@ class Profile(SuperModel):
         plural = 's' if total_funded_participated != 1 else ''
         return f"@{self.handle} is a {role} who has participated in {total_funded_participated} " \
                f"funded issue{plural} on Gitcoin"
+
+    @property
+    def github_created_on(self):
+        from datetime import datetime
+        created_on = datetime.strptime(self.data['created_at'], '%Y-%m-%dT%H:%M:%SZ')
+        return created_on.replace(tzinfo=pytz.UTC)
+
 
     @property
     def is_moderator(self):
@@ -1288,6 +1298,19 @@ class Profile(SuperModel):
         self.slack_channel = channel
         self.save()
 
+    @property
+    def is_eu(self):
+        from app.utils import get_country_from_ip
+        try:
+            ip_addresses = list(set(self.actions.filter(action='Login').values_list('ip_address', flat=True)))
+            for ip_address in ip_addresses:
+                country = get_country_from_ip(ip_address)
+                if country.continent.code == 'EU':
+                    return True
+        except Exception:
+            pass
+        return False
+
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
@@ -1353,7 +1376,7 @@ class UserAction(SuperModel):
         ('removed_slack_integration', 'Removed Slack Integration'),
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
-    user = models.ForeignKey(User, related_name='actions', on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True)
     profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True)
     ip_address = models.GenericIPAddressField(null=True)
     location_data = JSONField(default={})
@@ -1485,9 +1508,6 @@ class Tool(SuperModel):
     def i18n_link_copy(self):
         return _(self.link_copy)
 
-    def __str__(self):
-        return self.name
-
 
 class ToolVote(models.Model):
     """Define the vote placed on a tool."""
@@ -1499,7 +1519,7 @@ class ToolVote(models.Model):
     def tool(self):
         try:
             return Tool.objects.filter(votes__in=[self.pk]).first()
-        except:
+        except Exception:
             return None
 
     def __str__(self):

@@ -22,7 +22,7 @@ function redeemCoin() {
   // Check for valid address
   isValidForwardingAddress = forwarding_address.indexOf('0x') != -1;
   if (!forwarding_address || !isValidForwardingAddress) {
-    _alert({message: 'Not a valid forwarding address.'}, 'error');
+    _alert({ message: gettext('Not a valid forwarding address.') }, 'error');
     return;
   }
 
@@ -45,9 +45,9 @@ function redeemCoin() {
             $('send_eth').innerHTML = '<h1>Success 🚀!</h1> <a href="https://' + etherscanDomain() + '/tx/' + data.message + '" target="_blank" rel="noopener noreferrer">See your transaction on the blockchain here</a>.<br><br><span id="mighttake">It might take a few minutes to sync, depending upon: <br> - network congestion<br> - network fees that sender allocated to transaction<br></span><br><a href="/" class="button">⬅ Check out Gitcoin.co</a>';
           } else {
             if (data.message.indexOf('Address has an invalid EIP checksum') !== -1) {
-              _alert({message: 'Please enter a valid checksum address.'}, 'warning');
+              _alert({ message: gettext('Please enter a valid checksum address.') }, 'warning');
             } else {
-              _alert({message: data.message}, 'error');
+              _alert({ message: gettext(data.message) }, 'error');
             }
 
             $('send_eth').innerHTML = sendEthInnerHTML;

@@ -22,8 +22,25 @@ from secrets import token_hex
 
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 from economy.models import SuperModel
+
+
+class Alumni(SuperModel):
+
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        on_delete=models.CASCADE,
+        related_name='alumni',
+        null=True)
+    organization = models.CharField(max_length=255, db_index=True, blank=True)
+    comments = models.TextField(max_length=5000, blank=True)
+    public = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.profile} - {self.organization} - {self.comments}"
 
 
 class EmailSubscriber(SuperModel):
@@ -49,6 +66,68 @@ class EmailSubscriber(SuperModel):
     def set_priv(self):
         self.priv = token_hex(16)[:29]
 
+    def should_send_email_type_to(self, email_type):
+        should_suppress = self.preferences.get('suppression_preferences', {}).get(email_type, False)
+        return not should_suppress
+
+    def build_email_preferences(self, form={}):
+        from retail.emails import ALL_EMAILS, TRANSACTIONAL_EMAILS, MARKETING_EMAILS
+
+        suppression_preferences = self.preferences.get('suppression_preferences', {})
+
+        # update from legacy email preferences
+        level = self.preferences.pop('level', None)
+        if level:
+            if level == 'lite1':
+                for email_tuple in MARKETING_EMAILS:
+                    key, __, __ = email_tuple
+                    suppression_preferences[key] = True
+                for email_tuple in TRANSACTIONAL_EMAILS:
+                    key, __, __ = email_tuple
+                    suppression_preferences[key] = False
+            elif level == 'lite':
+                for email_tuple in MARKETING_EMAILS:
+                    key, __, __ = email_tuple
+                    suppression_preferences[key] = False
+                for email_tuple in TRANSACTIONAL_EMAILS:
+                    key, __, __ = email_tuple
+                    suppression_preferences[key] = True
+            else:
+                for email_tuple in ALL_EMAILS:
+                    key, __, __ = email_tuple
+                    suppression_preferences[key] = False
+
+        # update from form
+        for email_tuple in ALL_EMAILS:
+            key, __, __ = email_tuple
+            if key in form.keys():
+                suppression_preferences[key] = bool(form[key])
+
+        # save and return
+        self.preferences['suppression_preferences'] = suppression_preferences
+        return suppression_preferences
+
+    @property
+    def is_eu(self):
+        from app.utils import get_country_from_ip
+        try:
+            ip_addresses = self.metadata.get('ip')
+            if ip_addresses:
+                for ip_address in ip_addresses:
+                    country = get_country_from_ip(ip_address)
+                    if country.continent.code == 'EU':
+                        return True
+        except Exception:
+            # Cowardly pass on everything for the moment.
+            pass
+        return False
+
+
+# method for updating
+@receiver(pre_save, sender=EmailSubscriber, dispatch_uid="psave_es")
+def psave_es(sender, instance, **kwargs):
+    instance.build_email_preferences()
+
 
 class Stat(SuperModel):
 
@@ -68,14 +147,14 @@ class Stat(SuperModel):
     def val_since_yesterday(self):
         try:
             return self.val - Stat.objects.filter(key=self.key, created_on__lt=self.created_on, created_on__hour=self.created_on.hour).order_by('-created_on').first().val
-        except:
+        except Exception:
             return 0
 
     @property
     def val_since_hour(self):
         try:
             return self.val - Stat.objects.filter(key=self.key, created_on__lt=self.created_on).order_by('-created_on').first().val
-        except:
+        except Exception:
             return 0
 
 

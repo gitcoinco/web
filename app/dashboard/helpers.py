@@ -47,6 +47,56 @@ from .models import Profile
 logger = logging.getLogger(__name__)
 
 
+def get_bounty_view_kwargs(request):
+    """Get the relevant kwargs from the request."""
+    # Define lookup criteria.
+    pk = request.GET.get('id') or request.GET.get('pk')
+    standard_bounties_id = request.GET.get('sb_id') or request.GET.get('standard_bounties_id')
+    network = request.GET.get('network', 'mainnet')
+    issue_url = request.GET.get('url')
+    bounty_kwargs = {}
+
+    # Check for relevant params.
+    if pk and pk.isdigit():
+        bounty_kwargs['pk'] = int(pk)
+    elif standard_bounties_id and standard_bounties_id.isdigit():
+        bounty_kwargs['standard_bounties_id'] = int(standard_bounties_id)
+        bounty_kwargs['network'] = network
+    elif issue_url:
+        bounty_kwargs['github_url'] = issue_url
+    else:
+        raise Http404
+
+    return bounty_kwargs
+
+
+def handle_bounty_views(request):
+    """Handle bounty view entry.
+
+    Attributes:
+        bounty (dashboard.Bounty): The bounty object for the specified request.
+        bounty_kwargs (dict): The relevant key/values from the request to be
+            used for the Bounty query.
+
+    Returns:
+        dashboard.Bounty: The Bounty object.
+    """
+    bounty = None
+    bounty_kwargs = get_bounty_view_kwargs(request)
+
+    try:
+        bounty = Bounty.objects.current().get(**bounty_kwargs)
+    except Bounty.MultipleObjectsReturned:
+        bounty = Bounty.objects.current().filter(**bounty_kwargs).distinct().latest('id')
+    except (Bounty.DoesNotExist, ValueError):
+        raise Http404
+    except Exception as e:
+        logger.error(f'Error in handle_bounty_views - {e}')
+        raise Http404
+
+    return bounty
+
+
 @ratelimit(key='ip', rate='100/m', method=ratelimit.UNSAFE, block=True)
 def amount(request):
     """Determine the value of the provided denomination and amount in ETH and USD.
@@ -496,7 +546,7 @@ def process_bounty_details(bounty_details):
 
 
 def record_user_action(event_name, old_bounty, new_bounty):
-    """Records a user action 
+    """Records a user action
 
     Args:
         event_name (string): the event
