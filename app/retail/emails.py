@@ -351,7 +351,7 @@ def render_gdpr_update(to_email):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Ethos of Ethereal | Gitcoin Core Grows "
+    subject = "Register _you_.gitcoin.eth today! "
 
     intro = '''
 
@@ -360,11 +360,10 @@ def render_new_bounty_roundup(to_email):
 </p>
 <p>
 This week, we released <a href="https://medium.com/gitcoin/personalize-your-own-gitcoin-ens-name-f8e5d7438e3e">Gitcoin ENS subdomains!</a> Want to enjoy the benefits of an human readable ENS domain,
-without having to deal with the upkeep? A Gitcoin subdomain could be a happy medium. We're excited to see
-more <you>.gitcoin.eth's out in the world, soon!
+without having to deal with the upkeep? A Gitcoin subdomain could be a happy medium. We're excited to see more _you_.gitcoin.eth's out in the world, soon!
 </p>
 <p>
-Additionally, we released our OKR's <a href="https://medium.com/gitcoin/grow-open-source-ethereum-foundation-grant-d393802fe9aa">our Ethereum Foundation grant!</a>
+Additionally, we announced <a href="https://medium.com/gitcoin/grow-open-source-ethereum-foundation-grant-d393802fe9aa">our Ethereum Foundation grant!</a>
 Have an open source project which is moving forward Ethereum's infrastructure? We have $25K in budget to bounty issues that developers would love to solve.
 </p>
 <h3>What else is new?</h3>
