@@ -3,7 +3,7 @@
 {% block settings_content %}
 <form id="settings" method="POST" action="{% url 'ens' %}">
   <div class="form-group">
-    <h5>{{github_handle}}.gitcoin.eth</h5>
+    <h5 style="text-transform: none;">{{ github_handle }}.gitcoin.eth</h5>
     <p>
       {% trans " Gitcoin will issue you an ENS subdomain which matches your github username, which makes it easy to remember your ETH address." %}
     </p>
@@ -13,7 +13,7 @@
   </div>
   <div class="form-group">
     <label class="form__label" for="repos">{% trans "Github Username" %}</label>
-    <input type="text" name="repos" class="form__input" value="{{github_handle}}" disabled>
+    <input type="text" name="repos" class="form__input" value="{{ github_handle }}" disabled>
   </div>
   <div class="form-group">
     <label class="form__label" for="channel">{% trans "Ethereum Address" %}</label>

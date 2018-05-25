@@ -1,8 +1,8 @@
 #CookielawBanner {
-  padding: 15px 0;
+  padding: 15px;
   position: fixed;
   bottom: 0;
-  background-color: #f8f9fa;
+  background-color: #F2F6F9;
   width: 100%;
   z-index: 20;
   font-family: 'Muli', sans-serif;
@@ -13,8 +13,14 @@
   max-width: none;
 }
 
+#CookielawBanner .container h6 {
+  letter-spacing: 0;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
 #CookielawBanner .container .button {
-  max-height: 3rem;
+  max-height: 2.5rem;
 }
 
 #CookielawBanner .container .d-flex {
@@ -34,4 +40,15 @@
   right: 0;
   width: 15px;
   height: 15px;
+}
+
+@media (max-width: 767.98px) {
+
+  #CookielawBanner .container .d-flex {
+    display: inline !important;
+  }
+
+  #CookielawBanner .container .cookie-info {
+    margin-bottom: 1.5rem;
+  }
 }

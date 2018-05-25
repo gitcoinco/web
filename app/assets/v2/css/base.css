@@ -64,6 +64,7 @@ span {
 }
 
 .modal {
+  font-family: "Muli", sans-serif;
   z-index: 9;
   border-radius: 4px !important;
 }
@@ -1489,18 +1490,16 @@ input.is-invalid {
 }
 
 /* TODO : Remove after GDPR */
-.notify_policy_update {
-  font-family: "Muli", sans-serif;
-}
-
-.notify_policy_update h2 {
+.modal h2 {
   letter-spacing: 0;
 }
 
+.modal.delete_account,
 .modal.notify_policy_update {
   max-width: 34rem;
 }
 
+.modal.delete_account .button,
 .notify_policy_update .button {
   padding: 0.25rem 1.25rem;
 }
