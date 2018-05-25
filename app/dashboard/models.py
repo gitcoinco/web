@@ -18,6 +18,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import collections
 import logging
 from datetime import datetime
 from urllib.parse import urlsplit
@@ -37,7 +38,6 @@ from django.urls.exceptions import NoReverseMatch
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-import collections
 import pytz
 import requests
 from dashboard.tokens import addr_to_token
