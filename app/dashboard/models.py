@@ -1230,14 +1230,14 @@ class Profile(SuperModel):
         bounties = Bounty.objects.filter(pk__in=fulfilled_bounty_ids, current_bounty=True, network=network)
         return bounties
 
-    def get_leaderboard_index(self, key='all_earners'):
+    def get_leaderboard_index(self, key='quarterly_earners'):
         try:
             rank = LeaderboardRank.objects.filter(
                 leaderboard=key,
                 active=True,
                 github_username=self.handle,
             ).latest('id')
-            score = LeaderboardRank.objects.filter(active=True, leaderboard=key, amount__lt=rank.amount).count()
+            score = LeaderboardRank.objects.filter(active=True, leaderboard=key, amount__gt=rank.amount).count()
         except LeaderboardRank.DoesNotExist:
             score = 0
         return score
@@ -1246,7 +1246,7 @@ class Profile(SuperModel):
         return self.get_leaderboard_index()
 
     def get_funder_leaderboard_index(self):
-        return self.get_leaderboard_index('all_payers')
+        return self.get_leaderboard_index('quarterly_payers')
 
     def get_eth_sum(self, sum_type='collected', network='mainnet'):
         """Get the sum of collected or funded ETH based on the provided type.
