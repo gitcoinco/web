@@ -4,9 +4,19 @@
 
 These widgets will help you advertise your support for Gitcoin bounties.
 
-## Dynamic Widget
+We support both *image* widgets (see below) and dynamically resizing *javascript* widgets (see directly below)
+
+## Dynamic Javascript Widget
+
+### Preview
+
+The JS image is responsive
+
+<img src='imgs/example.png'>
 
 ### Example
+
+[Click here to see an example JSFiddle widget][https://jsfiddle.net/j73nqdg2/]
 
 Step 1: Include the JavaScript SDK on your page once, ideally right after the opening body tag.
 
@@ -68,7 +78,7 @@ new Widget({
 });
 ```
 
-## Static Widget
+## Static Image Widget
 
 ### Example
 
