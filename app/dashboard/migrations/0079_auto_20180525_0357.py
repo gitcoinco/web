@@ -51,7 +51,7 @@ def migrate_tip_profiles(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0075_auto_20180520_0349'),
+        ('dashboard', '0078_auto_20180525_0349'),
     ]
 
     operations = [migrations.RunPython(migrate_bounty_owner_profiles), migrations.RunPython(migrate_tip_profiles)]
