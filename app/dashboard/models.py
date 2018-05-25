@@ -1222,7 +1222,7 @@ class Profile(SuperModel):
 
     def get_fulfilled_bounties(self, network=None):
         network = network or self.get_network()
-        fulfilled_bounty_ids = self.fulfilled.all().values_list('bounty_id')
+        fulfilled_bounty_ids = self.fulfilled.all().values_list('bounty_id', flat=True)
         bounties = Bounty.objects.filter(pk__in=fulfilled_bounty_ids, current_bounty=True, network=network)
         return bounties
 
