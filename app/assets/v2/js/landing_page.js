@@ -50,9 +50,15 @@ $(document).ready(function() {
 
   navbar.mousemove(moveBackground);
   header.mousemove(moveBackground);
+  let robotContainerPos = $('.case-studies-container').position().top;
+
+  window.addEventListener('resize', function(e) {
+    robotContainerPos = $('.case-studies-container').position().top;
+  });
+
   window.addEventListener('scroll', (e) => {
     moveBackground(e);
-    $('#gc-robot').css('top', (-window.scrollY + 1900) / 2 + 'px');
+    $('#gc-robot').css('top', (-window.scrollY + robotContainerPos - 100) / 2 + 'px');
   }, { passive: true });
   moveBackground({});
 });

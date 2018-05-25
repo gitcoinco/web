@@ -7,8 +7,9 @@
   font-size: 1.5rem;
   list-style-type: none;
   text-align: left;
-  margin-left: 15vw;
   margin-bottom: 4rem;
+  padding-left: 0;
+  margin-left: calc(20vw - 100px);
 }
 .case-studies-list li {
   margin-bottom: 1rem;
@@ -16,8 +17,8 @@
 #gc-robot {
   position: absolute;
   top: -50px;
-  right: 10vw;
-  height: 100%;
+  right: calc(5vw - 50px);
+  max-width: 30vw;
 }
 
 .howworks_container {
@@ -185,5 +186,8 @@
 
   .benefits_container {
     grid-template-columns: 1fr;
+  }
+  .case-studies-list {
+    margin-left: 0;
   }
 }
