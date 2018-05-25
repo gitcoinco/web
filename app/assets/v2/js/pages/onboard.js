@@ -195,6 +195,7 @@ var redirectURL = function() {
 
   localStorage['experience_level'] = level;
   var url = '/explorer?q=' + words.join(',');
+
   localStorage['referrer'] = 'onboard';
   document.location.href = url;
 };
