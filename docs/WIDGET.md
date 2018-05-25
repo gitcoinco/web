@@ -12,11 +12,12 @@ We support both *image* widgets (see below) and dynamically resizing *javascript
 
 The JS image is responsive
 
-<img src='imgs/example.png'>
+<img src='imgs/example.png' width="300px">
+<img src='imgs/example2.png' width="300">
 
 ### Example
 
-[Click here to see an example JSFiddle widget][https://jsfiddle.net/j73nqdg2/]
+[Click here to see an example JSFiddle widget](https://jsfiddle.net/j73nqdg2/)
 
 Step 1: Include the JavaScript SDK on your page once, ideally right after the opening body tag.
 
