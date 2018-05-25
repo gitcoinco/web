@@ -46,6 +46,7 @@ from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
 from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
+from retail.emails import ALL_EMAILS
 from retail.helpers import get_ip
 
 
@@ -273,9 +274,6 @@ def email_settings(request, key):
             if preferred_language not in [i[0] for i in settings.LANGUAGES]:
                 msg = _('Unknown language')
                 validation_passed = False
-        if level not in ['lite', 'lite1', 'regular', 'nothing']:
-            validation_passed = False
-            msg = _('Invalid Level')
         if validation_passed:
             if profile:
                 profile.pref_lang_code = preferred_language
@@ -286,6 +284,13 @@ def email_settings(request, key):
                 key = get_or_save_email_subscriber(email, 'settings')
                 es.preferences['level'] = level
                 es.email = email
+                form = dict(request.POST)
+                # form was not sending falses, so default them if not there
+                for email_tuple in ALL_EMAILS:
+                    key = email_tuple[0]
+                    if key not in form.keys():
+                        form[key] = False
+                es.build_email_preferences(form)
                 ip = get_ip(request)
                 es.active = level != 'nothing'
                 es.newsletter = level in ['regular', 'lite1']
@@ -300,7 +305,9 @@ def email_settings(request, key):
         'active': '/settings/email',
         'title': _('Email Settings'),
         'es': es,
+        'suppression_preferences': json.dumps(es.preferences.get('suppression_preferences', {}) if es else {}),
         'msg': msg,
+        'email_types': ALL_EMAILS,
         'navs': get_settings_navs(request),
         'preferred_language': pref_lang
     }
@@ -407,6 +414,8 @@ def account_settings(request):
         if request.POST.get('delete', False):
             profile.hide_profile = True
             profile.save()
+            if es:
+                es.delete()
             request.user.delete()
             messages.success(request, _('Your account has been deleted'))
             logout_redirect = redirect(reverse('logout') + '?next=/')

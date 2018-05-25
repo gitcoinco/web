@@ -101,7 +101,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=[]):
         subject = bounty.github_url
         html, text = render_bounty_feedback(bounty, persona, previous_bounties)
         cc_emails = [from_email, 'team@gitcoin.co']
-        if not should_suppress_notification_email(to_email, 'transactional'):
+        if not should_suppress_notification_email(to_email, 'bounty_feedback'):
             send_mail(from_email, to_email, subject, text, cc_emails=cc_emails, from_name="Kevin Owocki (Gitcoin.co)")
     finally:
         translation.activate(cur_language)
@@ -124,7 +124,7 @@ def tip_email(tip, to_emails, is_new):
             from_email = settings.CONTACT_EMAIL
             html, text = render_tip_email(to_email, tip, is_new)
 
-            if not should_suppress_notification_email(to_email, 'urgent'):
+            if not should_suppress_notification_email(to_email, 'tip'):
                 send_mail(from_email, to_email, subject, text, html)
         finally:
             translation.activate(cur_language)
@@ -139,7 +139,7 @@ def new_faucet_request(fr):
         subject = _("New Faucet Request")
         body_str = _("A new faucet request was completed. You may fund the request here")
         body = f"{body_str}: https://gitcoin.co/_administration/process_faucet_request/{fr.pk}"
-        if not should_suppress_notification_email(to_email, 'admin'):
+        if not should_suppress_notification_email(to_email, 'faucet'):
             send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"))
     finally:
         translation.activate(cur_language)
@@ -186,7 +186,7 @@ def processed_faucet_request(fr):
         setup_lang(to_email)
         html, text = render_faucet_request(fr)
 
-        if not should_suppress_notification_email(to_email, 'urgent'):
+        if not should_suppress_notification_email(to_email, 'faucet'):
             send_mail(from_email, to_email, subject, text, html)
     finally:
         translation.activate(cur_language)
@@ -200,7 +200,7 @@ def reject_faucet_request(fr):
     try:
         setup_lang(to_email)
         html, text = render_faucet_rejected(fr)
-        if not should_suppress_notification_email(to_email, 'urgent'):
+        if not should_suppress_notification_email(to_email, 'faucet'):
             send_mail(from_email, to_email, subject, text, html)
     finally:
         translation.activate(cur_language)
@@ -226,7 +226,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
             from_email = settings.CONTACT_EMAIL
             html, text = render_new_bounty(to_email, bounties, old_bounties)
 
-            if not should_suppress_notification_email(to_email, 'transactional'):
+            if not should_suppress_notification_email(to_email, 'new_bounty_notifications'):
                 send_mail(from_email, to_email, subject, text, html)
         finally:
             translation.activate(cur_language)
@@ -282,7 +282,7 @@ def new_work_submission(bounty, to_emails=None):
             from_email = settings.CONTACT_EMAIL
             html, text = render_new_work_submission(to_email, bounty)
 
-            if not should_suppress_notification_email(to_email, 'transactional'):
+            if not should_suppress_notification_email(to_email, 'bounty'):
                 send_mail(from_email, to_email, subject, text, html)
         finally:
             translation.activate(cur_language)
@@ -304,7 +304,7 @@ def new_bounty_rejection(bounty, to_emails=None):
             from_email = settings.CONTACT_EMAIL
             html, text = render_new_bounty_rejection(to_email, bounty)
 
-            if not should_suppress_notification_email(to_email, 'transactional'):
+            if not should_suppress_notification_email(to_email, 'bounty'):
                 send_mail(from_email, to_email, subject, text, html)
         finally:
             translation.activate(cur_language)
@@ -326,7 +326,7 @@ def new_bounty_acceptance(bounty, to_emails=None):
             from_email = settings.CONTACT_EMAIL
             html, text = render_new_bounty_acceptance(to_email, bounty)
 
-            if not should_suppress_notification_email(to_email, 'transactional'):
+            if not should_suppress_notification_email(to_email, 'bounty'):
                 send_mail(from_email, to_email, subject, text, html)
         finally:
             translation.activate(cur_language)
@@ -342,7 +342,7 @@ def new_match(to_emails, bounty, github_username):
         setup_lang(to_email)
         from_email = settings.CONTACT_EMAIL
         html, text = render_match_email(bounty, github_username)
-        if not should_suppress_notification_email(to_email, 'transactional'):
+        if not should_suppress_notification_email(to_email, 'bounty_match'):
             send_mail(from_email, to_email, subject, text, html, cc_emails=to_emails)
     finally:
         translation.activate(cur_language)
@@ -371,7 +371,7 @@ def bounty_expire_warning(bounty, to_emails=None):
             from_email = settings.CONTACT_EMAIL
             html, text = render_bounty_expire_warning(to_email, bounty)
 
-            if not should_suppress_notification_email(to_email, 'transactional'):
+            if not should_suppress_notification_email(to_email, 'bounty_expiration'):
                 send_mail(from_email, to_email, subject, text, html)
         finally:
             translation.activate(cur_language)
@@ -387,7 +387,7 @@ def bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
         html, text = render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
         subject = gettext("Are you still working on '{}' ? ").format(bounty.title_or_desc)
 
-        if not should_suppress_notification_email(to_email, 'transactional'):
+        if not should_suppress_notification_email(to_email, 'bounty_expiration'):
             send_mail(from_email, to_email, subject, text, html)
     finally:
         translation.activate(cur_language)
@@ -402,10 +402,11 @@ def bounty_startwork_expired(to_email, bounty, interest, time_delta_days):
         html, text = render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delta_days)
         subject = gettext("We've removed you from the task: '{}' ? ").format(bounty.title_or_desc)
 
-        if not should_suppress_notification_email(to_email, 'transactional'):
+        if not should_suppress_notification_email(to_email, 'bounty_expiration'):
             send_mail(from_email, to_email, subject, text, html)
     finally:
         translation.activate(cur_language)
+
 
 def bounty_uninterested(to_email, bounty, interest):
     from_email = settings.CONTACT_EMAIL
@@ -415,7 +416,7 @@ def bounty_uninterested(to_email, bounty, interest):
         html, text = render_bounty_unintersted(to_email, bounty, interest)
         subject = "Funder has removed you from the task: '{}' ? ".format(bounty.title_or_desc)
 
-        if not should_suppress_notification_email(to_email, 'transactional'):
+        if not should_suppress_notification_email(to_email, 'bounty'):
             send_mail(from_email, to_email, subject, text, html)
     finally:
         translation.activate(cur_language)
