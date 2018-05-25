@@ -1581,7 +1581,6 @@ input.is-invalid {
   max-width: 34rem;
 }
 
-.modal.delete_account .button,
 .notify_policy_update .button {
   padding: 0.25rem 1.25rem;
 }
