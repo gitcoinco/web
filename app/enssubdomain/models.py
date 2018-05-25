@@ -46,4 +46,7 @@ class ENSSubdomainRegistration(SuperModel):
     end_nonce = models.IntegerField(default=0)
 
     def __str__(self):
-        return f"{self.profile.handle} at {self.created_on}, {self.start_nonce} => {self.end_nonce}"
+        try:
+            return f"{self.profile.handle} at {self.created_on}, {self.start_nonce} => {self.end_nonce}"
+        except:
+            return None

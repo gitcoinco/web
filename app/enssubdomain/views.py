@@ -28,6 +28,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+import idna
 from dashboard.models import Profile
 from dashboard.views import w3
 from ens import ENS
@@ -222,7 +223,7 @@ def handle_subdomain_post_request(request, github_handle):
         recovered_signer = w3.eth.account.recoverHash(message_hash, signature=signedMsg).lower()
         if recovered_signer != signer:
             return JsonResponse({'success': False, 'msg': _('Sign Mismatch Error')})
-        if request.user.profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
+        if not request.user.profile.trust_profile and request.user.profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
             return JsonResponse({'success': False, 'msg': _('For SPAM prevention reasons, you may not perform this action right now.  Please contact support if you believe this message is in error.')})
 
         # actually setup subdomain
@@ -255,10 +256,15 @@ def handle_subdomain_post_request(request, github_handle):
 def ens_subdomain(request):
     """Register ENS Subdomain."""
     github_handle = request.user.profile.handle if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    if github_handle:
+        github_handle = github_handle.lower().replace('.', '')
+        github_handle = idna.encode(github_handle, uts46=True).decode("utf-8")
 
-    if request.method == "POST" and github_handle:
-        return handle_subdomain_post_request(request, github_handle)
-    try:
-        return handle_subdomain_exists(request, github_handle)
-    except ENSSubdomainRegistration.DoesNotExist:
-        return handle_default_response(request, github_handle)
+    if github_handle:
+        if request.method == "POST":
+            return handle_subdomain_post_request(request, github_handle)
+        try:
+            return handle_subdomain_exists(request, github_handle)
+        except ENSSubdomainRegistration.DoesNotExist:
+            return handle_default_response(request, github_handle)
+    return handle_default_response(request, github_handle)

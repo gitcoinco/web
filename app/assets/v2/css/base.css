@@ -64,6 +64,7 @@ span {
 }
 
 .modal {
+  font-family: "Muli", sans-serif;
   z-index: 9;
   border-radius: 4px !important;
 }
@@ -254,6 +255,9 @@ span {
   padding-bottom: 60px !important;
 }
 
+.bg-darkBlue{
+  background-color: #0d023b;
+}
 .bg-darkBlue a {
   color: #eee;
 }
@@ -978,7 +982,8 @@ input.is-invalid {
   width: 25em;
 }
 
-.ui-widget-shadow {
+.ui-widget-shadow,
+.modal {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1) !important;
 }
 
@@ -1482,4 +1487,19 @@ input.is-invalid {
   #sidebar_container {
     display: none;
   }
+}
+
+/* TODO : Remove after GDPR */
+.modal h2 {
+  letter-spacing: 0;
+}
+
+.modal.delete_account,
+.modal.notify_policy_update {
+  max-width: 34rem;
+}
+
+.modal.delete_account .button,
+.notify_policy_update .button {
+  padding: 0.25rem 1.25rem;
 }

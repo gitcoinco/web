@@ -1,0 +1,47 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% load i18n static %}
+<div class="col-12 mt-4">
+  {% if github_handle %}
+    <div class="logged-in">
+      <h3>
+        <i class="far fa-check-circle"></i>
+        {% trans "You are logged in!" %}
+      </h3>
+      <div class="font-caption row">
+        <div class="col-12">
+          <img class="github-avatar" src="{% url "avatar" %}?repo=https://github.com/{{ github_handle }}">
+          <span>
+            <p>{{ github_handle }}</p>
+            <a href="{% url "logout" %}?next={{ request.get_full_path }}">
+              {% trans "Logout" %}
+            </a>
+          </span>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="logged-out">
+      <a class="button button--primary" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
+        onclick="dataLayer.push({'event': 'login'});">
+        <i class="fab fa-github"></i>
+        <span>{% trans "Login with github" %}</span>
+      </a>
+    </div>
+  {% endif %}
+</div>

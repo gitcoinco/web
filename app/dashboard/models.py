@@ -919,7 +919,7 @@ class Profile(SuperModel):
 
     """
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True)
     last_sync_date = models.DateTimeField(null=True)
@@ -937,9 +937,13 @@ class Profile(SuperModel):
         default=True,
         help_text='If this option is chosen, we will remove your profile information all_together',
     )
+    trust_profile = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
+    )
     # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
     # Sample repos_data: https://gist.github.com/mbeacom/c9e4fda491987cb9728ee65b114d42c7
-    repos_data = JSONField(default={})
+    repos_data = JSONField(default={}, blank=True)
     max_num_issues_start_work = models.IntegerField(default=3)
 
     @property
@@ -1344,6 +1348,19 @@ class Profile(SuperModel):
 
         return params
 
+    @property
+    def is_eu(self):
+        from app.utils import get_country_from_ip
+        try:
+            ip_addresses = list(set(self.actions.filter(action='Login').values_list('ip_address', flat=True)))
+            for ip_address in ip_addresses:
+                country = get_country_from_ip(ip_address)
+                if country.continent.code == 'EU':
+                    return True
+        except Exception:
+            pass
+        return False
+
 
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
@@ -1409,7 +1426,7 @@ class UserAction(SuperModel):
         ('removed_slack_integration', 'Removed Slack Integration'),
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
-    user = models.ForeignKey(User, related_name='actions', on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True)
     profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True)
     ip_address = models.GenericIPAddressField(null=True)
     location_data = JSONField(default={})

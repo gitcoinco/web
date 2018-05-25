@@ -17,7 +17,7 @@
   {% else %}
     <h1>{% trans "Register your ENS subdomain" %}</h1>
     <div class="mt-2">
-      <h2><label id="githubHandle">{{ user.username }}</label><label>.{{ens_domain}}</label></h2>
+      <h2><label id="githubHandle">{{ user.username|force_escape|lower }}</label><label>.{{ens_domain}}</label></h2>
     </div>
     <div>
       <div class="checkbox_container mt-2 mb-4">
