@@ -1109,20 +1109,24 @@ input[type=text].loading {
 }
 
 .mission .icon {
-  width: 70px;
+  width: 5rem;
   float: left;
-  margin-right: 50px;
+  margin-right: 4rem;
 }
 
 .mission .divider {
   border-bottom: 2px solid #3e24fb;
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .mission .icon-small {
-  height: 60px;
+  height: 4rem;
   width: auto;
+}
+
+.mission .header-text {
+  font-weight: 700;
 }
 
 .mission .falcon-wrapper {
@@ -1136,46 +1140,46 @@ input[type=text].loading {
 
 @media(min-width: 768px) and (max-width: 991px)  {
   .mission .falcon-wrapper .falcon {
-    width: 350px;
+    width: 28rem;
     height: auto;
   }
 }
 
 @media(min-width: 992px) and (max-width: 1199px)  {
   .mission .falcon-wrapper .falcon {
-    width: 400px;
+    width: 25rem;
     height: auto;
   }
 }
 
 @media(min-width: 1200px) {
   .mission .falcon-wrapper .falcon {
-    width: 450px;
+    width: 30rem;
     height: auto;
   }
 }
 
 @media(min-width: 768px) and (max-width: 991px)  {
   .mission .falcon-wrapper .falcon-pull {
-    width: 350px;
+    width: 22rem;
     height: auto;
-    margin-top: -225px;
+    margin-top: -18rem;
   }
 }
 
 @media(min-width: 992px) and (max-width: 1199px)  {
   .mission .falcon-wrapper .falcon-pull {
-    width: 400px;
+    width: 30rem;
     height: auto;
-    margin-top: -225px;
+    margin-top: -18rem;
   }
 }
 
 @media(min-width: 1200px) {
   .mission .falcon-wrapper .falcon-pull {
-    width: 450px;
+    width: 30rem;
     height: auto;
-    margin-top: -335px;
+    margin-top: -22rem;
   }
 }
 

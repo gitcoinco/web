@@ -33,9 +33,9 @@
 
 <div class="container-fluid" style="background: white;" id="mission_hero">
   <div class="row p-5 p-5 animatedParent">
-    <div class="col-12 col-lg-10 offset-lg-1 d-flex flex-sm-row flex-column text-center text-lg animated fadeInLeftShort">
+    <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column text-center animated fadeInLeftShort">
       <div class="text">
-        <div class="font-bigger-4">
+        <div class="font-bigger-4 header-text">
           {% blocktrans %}
           GITCOIN IS A
           <span class="text-highlight-dark-blue">MISSION</span> AND
@@ -71,7 +71,7 @@
   </div>
 
   <div class="row animatedParent we-want">
-    <div class="col-md-8 col-lg-6 animated fadeInLeftShort">
+    <div class="col-md-12 col-lg-8 col-xl-6 animated fadeInLeftShort">
       <div class="row mb-5">
         <div class="col-md-10 col-lg-8 d-flex align-items-center">
           <img
@@ -111,7 +111,7 @@
       </div>
     </div>
 
-    <div class="d-none d-md-block col-md-4 col-lg-6 animated fadeInDownShort">
+    <div class="d-none d-lg-block col-md-4 col-lg-4 col-xl-6 animated fadeInDownShort">
       <div class="falcon-wrapper">
         <img
           class="falcon-pull"
@@ -134,7 +134,7 @@
   </div>
 
   <div class="row animatedParent mb-5">
-    <div class="col-md-8 col-lg-6">
+    <div class="col-md-12 col-lg-6">
       <div class="row">
         <div class="col-6">
           <img
@@ -221,7 +221,7 @@
       </div>
     </div>
 
-    <div class="col-md-6 animated fadeInDownShort">
+    <div class="d-none d-lg-block col-lg-6 animated fadeInDownShort">
       <div class="falcon-wrapper">
         <img
           class="falcon"
@@ -244,7 +244,7 @@
   </div>
 
   <div class="row animatedParent">
-    <div class="col-md-8 col-lg-6 animated fadeInLeftShort">
+    <div class="col-md-12 col-lg-8 col-xl-6 animated fadeInLeftShort">
       <div class="row mb-5">
         <div class="col-md-10 col-lg-8 d-flex align-items-center">
           <img
@@ -354,7 +354,7 @@
       </div>
 
       <div class="row mb-5">
-        <div class="col-md-10 col-lg-8 d-flex align-items-center">
+        <div class="col-md-12 col-lg-8 d-flex align-items-center">
           <img
             class="icon"
             src="{% static "v2/images/mission/interact/swiss_army.svg" %}"
@@ -366,7 +366,7 @@
       </div>
     </div>
 
-    <div class="d-none d-md-block col-md-4 col-lg-6 animated fadeInDownShort">
+    <div class="d-none d-lg-block col-md-4 col-lg-4 col-xl-6 animated fadeInDownShort">
       <div class="falcon-wrapper">
         <img
           class="falcon"
@@ -376,8 +376,6 @@
     </div>
   </div>
 </div>
-
-<br /><br />
 
 {% include 'shared/footer.html' %}
 {% include 'shared/analytics.html' %}
