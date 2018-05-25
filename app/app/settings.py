@@ -92,7 +92,7 @@ INSTALLED_APPS = [
     'external_bounties',
     'dataviz',
     'ethos',
-    'django-impersonate',
+    'impersonate',
 ]
 
 MIDDLEWARE = [
