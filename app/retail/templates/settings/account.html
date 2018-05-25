@@ -42,14 +42,14 @@
       <input type="submit" class="button button--primary" name="disconnect" value="Disconnect">
     </form>
     <h5 class="font-subheader">{% trans "Github" %}</h5>
-    <p class="font-body">{% trans "Connected as " %}{{github_handle}}</p>
+    <p class="font-body">{% trans "Connected as " %}{{ github_handle }}</p>
   </div>
 </div>
 <div class="form-group">
   <div class="major_button_container">
     <form id="delete" method="POST" action="{% url 'account_settings' %}">
       {% csrf_token %}
-      <a id="delete_account" class="button button--primary warning">Delete</a>
+      <a id="delete_account" class="button button--primary warning">{% trans "Delete" %}</a>
       <input type='hidden' class="button button--primary warning" name="delete" value="Delete">
     </form>
     <h5 class="font-subheader">{% trans "Delete My Account" %}</h5>
@@ -59,7 +59,7 @@
 {% endblock %}
 {% block scripts %}
 <script>
-  $("document").ready(function() {
+  $(document).ready(function() {
     $("#delete_account").on('click', function(e) {
       var content = $.parseHTML(
         '<div>' +
