@@ -1102,7 +1102,7 @@ input[type=text].loading {
 }
 
 .mission p {
-  font-family: futura-pt;
+  font-family: futura-pt, sans-serif;
   font-size: 20px;
   font-weight: 500;
   color: #666666;
