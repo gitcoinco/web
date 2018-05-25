@@ -123,6 +123,10 @@
   background-color: #F0F0F0;
 }
 
+.tree_container {
+  text-align: center;
+}
+
 .whatisit {
   height: min-content;
 }
