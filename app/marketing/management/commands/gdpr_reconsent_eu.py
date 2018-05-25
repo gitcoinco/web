@@ -41,8 +41,10 @@ class Command(BaseCommand):
         queryset = EmailSubscriber.objects.all()
         print(f"got {queryset.count()} emails")
 
-        for counter, es in enumerate(queryset):
+        counter = 0
+        for es in queryset:
             if es.is_eu:
+                counter += 1
                 print(f"-sending {counter} / {es.email}")
                 try:
                     gdpr_reconsent(es.email)
