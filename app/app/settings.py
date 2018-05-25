@@ -92,6 +92,7 @@ INSTALLED_APPS = [
     'external_bounties',
     'dataviz',
     'ethos',
+    'django-impersonate',
 ]
 
 MIDDLEWARE = [
@@ -107,6 +108,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ratelimit.middleware.RatelimitMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
+    'impersonate.middleware.ImpersonateMiddleware',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = False
