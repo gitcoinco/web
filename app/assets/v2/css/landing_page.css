@@ -88,6 +88,9 @@
   padding-top: 2rem;
 }
 
+.pilot_container img {
+  margin: 1.5rem 3rem;
+}
 .pricing_container {
   background-color: #F9F9F9;
 }
