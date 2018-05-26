@@ -22,6 +22,8 @@ import logging
 import subprocess
 import time
 
+from django.conf import settings
+
 import ipfsapi
 import requests
 import rollbar
@@ -186,6 +188,9 @@ def getBountyContract(network):
 
 
 def get_bounty(bounty_enum, network):
+    if (settings.DEBUG or settings.ENV != 'prod') and network == 'mainnet':
+        return {}
+
     standard_bounties = getBountyContract(network)
 
     try:
@@ -253,6 +258,9 @@ def get_bounty(bounty_enum, network):
 
 # processes a bounty returned by get_bounty
 def web3_process_bounty(bounty_data):
+    if not bounty_data or (settings.DEBUG or settings.ENV != 'prod') and bounty_data.get('network') == 'mainnet':
+        return None
+
     did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
 
     if did_change and new_bounty:
