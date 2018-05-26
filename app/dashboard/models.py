@@ -1223,7 +1223,7 @@ class Profile(SuperModel):
 
     @staticmethod
     def get_network():
-        return 'mainnet' 
+        return 'mainnet' if not settings.DEBUG else 'rinkeby'   
 
     def get_fulfilled_bounties(self, network=None):
         network = network or self.get_network()
