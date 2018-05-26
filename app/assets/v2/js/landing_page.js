@@ -51,14 +51,19 @@ $(document).ready(function() {
   navbar.mousemove(moveBackground);
   header.mousemove(moveBackground);
   let robotContainerPos = $('.case-studies-container').position().top;
+  let treeContainerPos = $('.tree_container').position().top;
+  const $gcRobot = $('#gc-robot');
+  const $gcTree = $('#gc-tree');
 
   window.addEventListener('resize', function(e) {
     robotContainerPos = $('.case-studies-container').position().top;
+    treeContainerPos = $('.tree_container').position().top;
   });
 
   window.addEventListener('scroll', (e) => {
     moveBackground(e);
-    $('#gc-robot').css('top', (-window.scrollY + robotContainerPos - 100) / 2 + 'px');
+    $gcRobot.css('top', (-window.scrollY + robotContainerPos - 100) / 2 + 'px');
+    $gcTree.css('top', (window.scrollY - treeContainerPos + 100) / 6 + 'px');
   }, { passive: true });
   moveBackground({});
 

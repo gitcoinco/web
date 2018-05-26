@@ -197,6 +197,21 @@ h4,
 .footer .nav-link {
   font-size: 0.8rem !important;
 }
+.footer .nav-link:hover {
+  border-radius: 2px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.footer .nav-link img {
+  width: 25px;
+  height: 25px;
+  filter: invert(100%);
+}
+.footer__consensys {
+  border-top: 1px solid var(--gc-green);
+  background: black;
+}
+
 
 .nav-link:visited {
   color: #eff4ee;
@@ -372,15 +387,22 @@ div.button-pink {
   letter-spacing: 0.1em;
 }
 
-.footer {
-  overflow: hidden;
-  height: 300px;
+.footer__main {
   background-image: url('/static/v2/images/footer.jpg');
   background-color: #0d023b;
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
-  z-index: 5;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  grid-auto-rows: min-content;
+  align-items: center;
+}
+.footer__social {
+  grid-column: span 4;
+}
+.sitenav__product {
+  grid-column: 2;
 }
 
 .lil-white-button {

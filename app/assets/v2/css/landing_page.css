@@ -20,6 +20,9 @@
   right: calc(5vw - 50px);
   max-width: 30vw;
 }
+#gc-tree {
+  position: relative;
+}
 
 .howworks_container {
   background-color: #F9F9F9;
@@ -178,6 +181,7 @@
 
 .tree_container {
   text-align: center;
+  overflow: hidden;
 }
 
 .whatisit {
@@ -194,8 +198,28 @@
 
 /* Landing Page Animations */
 #WindmillBlades {
-  animation: rotate-blades 4s linear infinite;
+  animation: rotate-blades 6s linear infinite;
   transform-origin: 48.5px 56px;
+}
+.globe-longitude {
+  animation: rotate-globe 6s linear infinite;
+  transform-origin: center;
+}
+#long-1 {
+  animation-delay: 2s;
+}
+#long-2 {
+  animation-delay: 4s;
+}
+#globe-center-fill {
+  animation: globe-center-fill 2s linear infinite;
+  transform-origin: center;
+  animation-delay: 2s;
+  transform: scaleX(0);
+}
+#pot-leaves {
+  animation: swaying-leaves 6s ease-in-out infinite;
+  transform-origin: center 60%;
 }
 
 .navbar {
@@ -227,6 +251,30 @@
   }
   to {
     transform: rotate(360deg) translate(27px, 28px);
+  }
+}
+@keyframes rotate-globe {
+  from {
+    transform: rotateY(0);
+  }
+  to {
+    transform: rotateY(180deg);
+  }
+}
+@keyframes globe-center-fill {
+  0%, 41%, 59%, 100% {
+    transform: scaleX(0);
+  }
+  50% {
+    transform: scaleX(0.5);
+  }
+}
+@keyframes swaying-leaves {
+  0%, 100% {
+    transform: rotate(-10deg);
+  }
+  50% {
+    transform: rotate(10deg);
   }
 }
 
