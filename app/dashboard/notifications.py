@@ -36,6 +36,15 @@ from pyshorteners import Shortener
 from slackclient import SlackClient
 
 
+MAKE_GITCOIN_BOT_COWARDLY_IN_DEV = True
+cowardly_bot_exception = CowardlyGitcoinBotException('Cowardly ')
+# Be VERY CAREFUL when changing this setting.  You don't want to accidently
+# send a bunch of github notifications :)
+# See https://medium.com/gitcoin/github-notification-spam-post-mortem-e1ed200936e
+class CowardlyGitcoinBotException(Exception):
+    pass
+
+
 def github_org_to_twitter_tags(github_org):
     """Build a string of github organization twitter tags.
 
@@ -69,6 +78,8 @@ def maybe_market_to_twitter(bounty, event_name):
         return False
     if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
+    if settings.DEBUG and MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
+        raise cowardly_bot_exception
 
     api = twitter.Api(
         consumer_key=settings.TWITTER_CONSUMER_KEY,
@@ -171,6 +182,8 @@ def maybe_market_to_slack(bounty, event_name):
         return False
     if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
+    if settings.DEBUG and MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
+        raise cowardly_bot_exception
 
     msg = build_message_for_slack(bounty, event_name)
     if not msg:
@@ -233,6 +246,8 @@ def maybe_market_to_user_slack(bounty, event_name):
         return False
     if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
+    if settings.DEBUG and MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
+        raise cowardly_bot_exception
 
     msg = build_message_for_slack(bounty, event_name)
     if not msg:
@@ -275,6 +290,8 @@ def maybe_market_tip_to_email(tip, emails):
     """
     if tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
+    if settings.DEBUG and MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
+        raise cowardly_bot_exception
 
     tip_email(tip, set(emails), True)
     return True
@@ -293,6 +310,8 @@ def maybe_market_tip_to_slack(tip, event_name):
     """
     if not settings.SLACK_TOKEN or (tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
+    if settings.DEBUG and MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
+        raise cowardly_bot_exception
 
     title = tip.github_url
     msg = f"{event_name} worth {round(tip.amount, 4)} {tip.tokenName}: {title} \n\n{tip.github_url}"
@@ -467,6 +486,8 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
     if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
+    if settings.DEBUG and MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
+        raise cowardly_bot_exception
 
     # Define posting specific variables.
     comment_id = None
@@ -548,6 +569,8 @@ def maybe_market_tip_to_github(tip):
     if (not settings.GITHUB_CLIENT_ID) or (not tip.github_url) or (
        tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
+    if settings.DEBUG and MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
+        raise cowardly_bot_exception
 
     # prepare message
     username = tip.username if '@' in tip.username else f'@{tip.username}'
@@ -588,6 +611,8 @@ def maybe_market_to_email(b, event_name):
     to_emails = []
     if b.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
+    if settings.DEBUG and MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
+        raise cowardly_bot_exception
 
     if event_name == 'new_bounty' and not settings.DEBUG:
         # handled in 'new_bounties_email'
@@ -737,6 +762,8 @@ def maybe_notify_bounty_user_escalated_to_slack(bounty, username, last_heard_fro
     if not settings.SLACK_TOKEN or bounty.get_natural_value() < 0.0001 or (
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
+    if settings.DEBUG and MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
+        raise cowardly_bot_exception
 
     msg = f"@vivek, {bounty.github_url} is being escalated to you, due to inactivity for {last_heard_from_user_days} days from @{username} on the github thread."
 
@@ -782,6 +809,8 @@ def maybe_notify_user_escalated_github(bounty, username, last_heard_from_user_da
     if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
+    if settings.DEBUG and MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
+        raise cowardly_bot_exception
 
     if not last_heard_from_user_days:
         last_heard_from_user_days = num_days_back_to_delete_interest
@@ -801,6 +830,8 @@ def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days):
     if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
+    if settings.DEBUG and MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
+        raise cowardly_bot_exception
 
     msg = f"""@{username} Hello from Gitcoin Core - are you still working on this issue? Please submit a WIP PR or comment back within the next 3 days or you will be removed from this ticket and it will be returned to an ‘Open’ status. Please let us know if you have questions!
 * [x] warning ({num_days_back_to_warn} days)
@@ -814,6 +845,8 @@ def maybe_notify_bounty_user_warned_removed_to_slack(bounty, username, last_hear
     if not settings.SLACK_TOKEN or bounty.get_natural_value() < 0.0001 or (
        bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
         return False
+    if settings.DEBUG and MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
+        raise cowardly_bot_exception
 
     msg = f"@{username} has been warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
 
