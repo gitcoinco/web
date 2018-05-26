@@ -1,0 +1,23 @@
+{
+    "website":"https://aion.network/",
+    "published_on":"2017-11-24",
+    "links":{
+        "telegram":"https://t.me/aion_blockchain",
+        "reddit":"https://www.reddit.com/r/AionNetwork/",
+        "github":"https://github.com/aionnetwork",
+        "facebook":"https://www.facebook.com/AionBlockchain",
+        "twitter":"https://twitter.com/Aion_Network"
+    },
+    "overview":{
+        "en":"The Aion Network is a multi-tier blockchain system designed to address scalability, privacy, and interoperability.",
+        "zh":"Aion 网络是多层级的区块链系统，致力于解决区块链网络在可扩展性、隐私性和互用性方面的问题。"
+    },
+    "symbol":"AION",
+    "initial_price":{
+        "ETH":"0.003427 ETH",
+        "USD":"1.00 USD"
+    },
+    "whitepaper":"https://aion.network/whitepapers.html",
+    "address":"0x4CEdA7906a5Ed2179785Cd3A40A69ee8bc99C466",
+    "email":"hello@aion.network"
+}

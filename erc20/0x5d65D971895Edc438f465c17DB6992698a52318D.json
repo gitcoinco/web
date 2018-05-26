@@ -1,4 +1,20 @@
 {
-  "symbol": "NAS",
-  "address": "0x5d65D971895Edc438f465c17DB6992698a52318D"
+    "website":"https://nebulas.io",
+    "published_on":"2017-12-16",
+    "links":{
+        "twitter":"https://twitter.com/nebulasio",
+        "slack":"https://nebulasio.slack.com/"
+    },
+    "overview":{
+        "en":"Nebulas is a public blockchain, aiming for a continuously improving ecosystem.",
+        "zh":"Nebulas 的目标是建立具备持续进化能力的生态系统。"
+    },
+    "symbol":"NAS",
+    "initial_price":{
+        "ETH":"0.004428 ETH",
+        "USD":"2.00 USD"
+    },
+    "whitepaper":"https://nebulas.io/docs/NebulasWhitepaper.pdf",
+    "address":"0x5d65D971895Edc438f465c17DB6992698a52318D",
+    "email":"contact@nebulas.io"
 }

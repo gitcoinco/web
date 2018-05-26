@@ -1,4 +1,23 @@
 {
-  "symbol": "GNT",
-  "address": "0xa74476443119A942dE498590Fe1f2454d7D4aC0d"
+    "website":"https://golem.network/",
+    "published_on":"2016-11-11",
+    "links":{
+        "reddit":"https://www.reddit.com/r/GolemProject/",
+        "github":"https://github.com/golemfactory/golem",
+        "facebook":"https://www.facebook.com/golemproject/",
+        "slack":"http://golemproject.org:3000/",
+        "twitter":"https://twitter.com/golemproject"
+    },
+    "overview":{
+        "en":"Golem is going to create the first decentralized global market for computing power.",
+        "zh":"Golem - 第一个去中心化的全球算力市场：出借算力，获得加密数字货币。"
+    },
+    "symbol":"GNT",
+    "initial_price":{
+        "ETH":"0.001 ETH",
+        "USD":"0.01 USD"
+    },
+    "whitepaper":"https://golem.network/doc/Golemwhitepaper.pdf",
+    "address":"0xa74476443119A942dE498590Fe1f2454d7D4aC0d",
+    "email":"contact@golemproject.net"
 }

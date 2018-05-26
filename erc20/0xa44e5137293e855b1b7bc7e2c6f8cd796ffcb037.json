@@ -1,0 +1,14 @@
+{
+    "website":"https://sentinelgroup.io/",
+    "overview":{
+        "en":"A modern VPN backed by blockchain anonymity and security.",
+        "zh":"基于区块链匿名和安全的 VPN 服务。"
+    },
+    "symbol":"SENT",
+    "links":{
+        "telegram":"https://t.me/sentinelsecuritygroup",
+        "twitter":"https://twitter.com/SentinelGroupio",
+        "github":"https://github.com/sentinel-official"
+    },
+    "address":"0xa44e5137293e855b1b7bc7e2c6f8cd796ffcb037"
+}

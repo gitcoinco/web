@@ -1,4 +1,22 @@
 {
-  "symbol": "R",
-  "address": "0x48f775EFBE4F5EcE6e0DF2f7b5932dF56823B990"
+    "website":"https://revain.org/",
+    "published_on":"2017-08-21",
+    "links":{
+        "telegram":"https://t.me/joinchat/CzZcC0PCgpJcbBCb3JfNeQ",
+        "twitter":"https://twitter.com/Revain_org",
+        "github":"https://github.com/Revain/Token",
+        "facebook":"https://www.facebook.com/revain.org/"
+    },
+    "overview":{
+        "en":"Revain is a new-generation feedback platform, based on the blockchain technology that does not allow to change or delete reviews and its authors get rewards for creating them.",
+        "zh":"Revain 是一个基于区块链技术新一代的反馈平台，在平台上用户发表的评论无法修改和删除，用户的评论将获得奖励。"
+    },
+    "symbol":"R",
+    "initial_price":{
+        "USD":"0.04 USD",
+        "BTC":"0.000011 BTC"
+    },
+    "whitepaper":"http://revain.org/pdf/wp/en-wp.pdf",
+    "address":"0x48f775efbe4f5ece6e0df2f7b5932df56823b990",
+    "email":"contact@revain.org"
 }

@@ -1,4 +1,23 @@
 {
-  "symbol": "OMG",
-  "address": "0xd26114cd6EE289AccF82350c8d8487fedB8A0C07"
+    "website":"https://omisego.network/",
+    "published_on":"2017-06-23",
+    "links":{
+        "reddit":"https://www.reddit.com/r/omise_go/",
+        "github":"https://github.com/omisego",
+        "facebook":"https://www.facebook.com/OmiseGO/",
+        "slack":"https://chat.omisego.network/",
+        "twitter":"https://twitter.com/omise_go"
+    },
+    "overview":{
+        "en":"OmiseGO enables financial inclusion and interoperability through the public, decentralized OMG network.",
+        "zh":"OmiseGO 通过公共的、去中心化的 OMG 网络来实现金融包容性和互操作性。"
+    },
+    "symbol":"OMG",
+    "initial_price":{
+        "ETH":"0.001188 ETH",
+        "USD":"0.24 USD"
+    },
+    "whitepaper":"https://cdn.omise.co/omg/whitepaper.pdf",
+    "address":"0xd26114cd6EE289AccF82350c8d8487fedB8A0C07",
+    "email":"omg@omise.co"
 }

@@ -1,4 +1,15 @@
 {
-  "symbol": "MKR",
-  "address": "0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2"
+    "website":"https://makerdao.com/",
+    "published_on":"2017-01-30",
+    "links":{
+        "reddit":"https://www.reddit.com/r/MakerDAO/",
+        "slack":"https://chat.makerdao.com/"
+    },
+    "overview":{
+        "en":"Maker is a Decentralized Autonomous Organization that creates and insures the dai stablecoin on the Ethereum blockchain.",
+        "zh":"Maker 是去中心化自治组织，开发了基于以太坊的 dai 稳定货币并为其背书。"
+    },
+    "symbol":"MKR",
+    "whitepaper":"https://makerdao.com/assets/documents/purple.pdf",
+    "address":"0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2"
 }

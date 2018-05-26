@@ -1,0 +1,21 @@
+{
+    "website":"https://www.xinfin.io/",
+    "published_on":"2018-02-05",
+    "links":{
+        "telegram":"https://t.me/xinfintalk",
+        "reddit":"https://www.reddit.com/r/xinfin/",
+        "slack":"https://xinfin-public.slack.com/",
+        "twitter":"https://twitter.com/xinfinf"
+    },
+    "overview":{
+        "en":"Hybrid Blockchain technology company focused on international trade and finance.",
+        "zh":"面向国际贸易和金融的混合型解决方案。"
+    },
+    "symbol":"XDCE",
+    "initial_price":{
+        "ETH":"0.00000752 ETH"
+    },
+    "whitepaper":"https://www.xinfin.io/#white-paper",
+    "address":"0x41ab1b6fcbb2fa9dced81acbdec13ea6315f2bf2",
+    "email":"info@xinfin.org"
+}

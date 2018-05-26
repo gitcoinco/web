@@ -1,4 +1,23 @@
 {
-  "symbol": "CMT",
-  "address": "0xf85fEea2FdD81d51177F6b8F35F0e6734Ce45F5F"
+    "website":"https://www.cybermiles.io/",
+    "published_on":"2017-11-21",
+    "links":{
+        "telegram":"https://t.me/cybermilestoken",
+        "twitter":"https://twitter.com/cybermiles",
+        "github":"https://github.com/CyberMiles",
+        "facebook":"https://www.facebook.com/cybermiles",
+        "slack":"https://cybermiles-dev.slack.com/join/shared_invite/enQtMzU2NjM1MTgwNDUyLTNjZjEyYmZlNzczNmJjNGM3ZjYxMWQ1ZjUzOGQ2MjAyMWQwM2FjMTY3OWQwOTkwYTNiZWI0ODc0ZTc3MmVhZGM"
+    },
+    "overview":{
+        "en":"Empowering the Decentralization of Online Marketplaces.",
+        "zh":"为电子商务创建的智能合约。"
+    },
+    "symbol":"CMT",
+    "initial_price":{
+        "ETH":"0.00014 ETH",
+        "USD":"0.0524 USD"
+    },
+    "whitepaper":"https://www.cybermiles.io/vision/",
+    "address":"0xf85feea2fdd81d51177f6b8f35f0e6734ce45f5f",
+    "email":"contact@cybermiles.io"
 }

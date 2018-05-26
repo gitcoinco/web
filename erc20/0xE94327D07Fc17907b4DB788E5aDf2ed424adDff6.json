@@ -1,4 +1,21 @@
 {
-  "symbol": "REP",
-  "address": "0xE94327D07Fc17907b4DB788E5aDf2ed424adDff6"
+    "website":"https://www.augur.net/",
+    "published_on":"2015-08-01",
+    "links":{
+        "reddit":"https://www.reddit.com/r/augur",
+        "github":"https://github.com/AugurProject",
+        "facebook":"https://www.facebook.com/augurproject",
+        "slack":"http://invite.augur.net/",
+        "twitter":"https://twitter.com/AugurProject"
+    },
+    "overview":{
+        "en":"An open-source, decentralized, peer-to-peer oracle and prediction market platform built on the Ethereum blockchain.",
+        "zh":"基于以太坊，开源、去中心化、点对点的预言机和预测市场。"
+    },
+    "symbol":"REP",
+    "initial_price":{
+        "USD":"0.602 USD"
+    },
+    "address":"0xe94327d07fc17907b4db788e5adf2ed424addff6",
+    "email":"team@augur.net"
 }

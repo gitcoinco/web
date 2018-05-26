@@ -1,4 +1,24 @@
 {
-  "symbol": "GNX",
-  "address": "0x6EC8a24CaBdc339A06a172F8223ea557055aDAa5"
+    "website":"https://genaro.network/en",
+    "published_on":"2017-11-17",
+    "links":{
+        "reddit":"https://www.reddit.com/r/GenaroNetwork/",
+        "github":"https://github.com/GenaroNetwork",
+        "slack":"https://genaronetwork.slack.com/",
+        "telegram":"https://t.me/GenaroNetworkOfficial",
+        "twitter":"https://twitter.com/GenaroNetwork",
+        "facebook":"https://www.facebook.com/GenaroNetwork"
+    },
+    "overview":{
+        "en":"The Genaro Network is the first Turing-complete public blockchain combining peer-to-peer storage with a sustainable consensus mechanism. Genaro's mixed consensus uses SPoR and PoS, ensuring stronger performance and security.",
+        "zh":"Genaro Network 是首个结合去中心化存储网络的图灵完备公有链，它为区块链开发人员提供了一站式解决方案，在部署智慧合约的同时，可以存储用户资料。"
+    },
+    "symbol":"GNX",
+    "initial_price":{
+	    "ETH":"0.00033 ETH",
+        "USD":"0.15 USD"
+    },
+    "whitepaper":"https://genaro.network/en/documentation/whitepaper",
+    "address":"0x6ec8a24cabdc339a06a172f8223ea557055adaa5",
+    "email":"info@genaro.network"
 }

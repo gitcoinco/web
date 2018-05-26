@@ -1,4 +1,15 @@
 {
-  "symbol": "CTXC",
-  "address": "0xEa11755Ae41D889CeEc39A63E6FF75a02Bc1C00d"
+    "website":"http://www.cortexlabs.ai/",
+    "published_on":"2018-02-07",
+    "links":{
+        "github":"https://github.com/CortexFoundation",
+        "twitter":"https://twitter.com/CTXCBlockchain"
+    },
+    "overview":{
+        "en":"Decentralized AI autonomous system.",
+        "zh":"去中心化的人工智能自治系统。"
+    },
+    "symbol":"CTXC",
+    "address":"0xea11755ae41d889ceec39a63e6ff75a02bc1c00d",
+    "whitepaper":"http://www.cortexlabs.ai/Cortex_AI_on_Blockchain_EN.pdf"
 }

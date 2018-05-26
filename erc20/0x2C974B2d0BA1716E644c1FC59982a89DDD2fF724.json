@@ -1,0 +1,20 @@
+{
+    "website":"https://www.viberate.io/",
+    "published_on":"2017-09-05",
+    "links":{
+        "telegram":"https://t.me/joinchat/F-zenkQffjbGY7YqqSQl1w",
+        "twitter":"https://twitter.com/viberate_com",
+        "facebook":"https://www.facebook.com/viberateOFC/"
+    },
+    "overview":{
+        "en":"Viberate is a crowdsourced live music ecosystem and a blockchain-based marketplace, where musicians are matched with booking agencies and event organizers.",
+        "zh":"现场音乐生态系统众包平台。"
+    },
+    "symbol":"VIB",
+    "initial_price":{
+        "USD":"0.1 USD"
+    },
+    "whitepaper":"https://www.viberate.io/pdf/Viberate.io_Whitepaper.pdf",
+    "address":"0x2C974B2d0BA1716E644c1FC59982a89DDD2fF724",
+    "email":"ico@viberate.com"
+}

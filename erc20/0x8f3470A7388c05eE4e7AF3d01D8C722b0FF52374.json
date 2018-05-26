@@ -1,0 +1,18 @@
+{
+    "website":"http://veritas.veritaseum.com/",
+    "published_on":"2017-04-25",
+    "links":{
+        "twitter":"https://twitter.com/ReggieMiddleton",
+        "facebook":"https://www.facebook.com/reggiemiddletonfintech/"
+    },
+    "overview":{
+        "en":"Veritaseum builds blockchain-based, peer-to-peer capital markets as software on a global scale.",
+        "zh":"Veritaseum 的目标是建立基于区块链的点对点资本市场。"
+    },
+    "symbol":"VERI",
+    "initial_price":{
+        "USD":"6.12 USD"
+    },
+    "address":"0x8f3470A7388c05eE4e7AF3d01D8C722b0FF52374",
+    "email":"reggie@veritaseum.com"
+}

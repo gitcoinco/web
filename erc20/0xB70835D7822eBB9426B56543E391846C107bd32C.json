@@ -1,4 +1,23 @@
 {
-  "symbol": "GTC",
-  "address": "0xB70835D7822eBB9426B56543E391846C107bd32C"
+    "website":"https://www.game.com/",
+    "published_on":"2017-10-10",
+    "links":{
+        "telegram":"https://github.com/GameLeLe",
+        "twitter":"https://twitter.com/gamecom666",
+        "github":"https://github.com/GameLeLe",
+        "facebook":"https://www.facebook.com/Gamecom-2055954348021983/",
+        "slack":"https://gameico.slack.com/"
+    },
+    "overview":{
+        "en":"Game.com is focused on creating a global gaming platform for blockchain digital currencies.",
+        "zh":"Game.com 致力于打造一个基于区块链加密货币的游戏平台。"
+    },
+    "symbol":"GTC",
+    "initial_price":{
+        "ETH":"0.00033333 ETH",
+        "USD":"0.1 USD"
+    },
+    "whitepaper":"https://ic.game.com/download/Game.com-Whitepaper_EN.pdf",
+    "address":"0xB70835D7822eBB9426B56543E391846C107bd32C",
+    "email":"ico@game.com"
 }

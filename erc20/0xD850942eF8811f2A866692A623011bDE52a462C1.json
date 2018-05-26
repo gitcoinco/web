@@ -1,4 +1,21 @@
 {
-  "symbol": "VEN",
-  "address": "0xD850942eF8811f2A866692A623011bDE52a462C1"
+    "website":"https://www.vechain.org/",
+    "published_on":"2017-08-18",
+    "links":{
+        "github":"https://github.com/vechain/",
+        "slack":"https://vechainofficial.slack.com/",
+        "twitter":"https://twitter.com/vechainofficial"
+    },
+    "overview":{
+        "en":"VeChain aims to connect blockchain technology to the real world by providing a comprehensive governance structure, a robust economic model as well as advanced IoT integration.",
+        "zh":"VeChain 致力于通过提供全面的治理结构、强大的经济模型和先进的物联网整合，将区块链技术和现实世界联系起来。"
+    },
+    "symbol":"VEN",
+    "initial_price":{
+        "ETH":"0.00028571 ETH",
+        "USD":"0.08 USD"
+    },
+    "whitepaper":"https://cdn.vechain.com/vechain_ico_ideas_of_development_en.pdf",
+    "address":"0xd850942ef8811f2a866692a623011bde52a462c1",
+    "email":"support@vechain.com"
 }

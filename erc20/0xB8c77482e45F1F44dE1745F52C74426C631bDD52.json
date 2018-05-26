@@ -1,4 +1,20 @@
 {
-  "symbol": "BNB",
-  "address": "0xB8c77482e45F1F44dE1745F52C74426C631bDD52"
+    "website":"https://www.binance.com/",
+    "published_on":"2017-07-08",
+    "links":{
+        "reddit":"https://www.reddit.com/r/binance/",
+        "facebook":"https://www.facebook.com/binance2017/",
+        "twitter":"https://twitter.com/binance"
+    },
+    "overview":{
+        "en":"Binance aims to build a world-class crypto exchange, powering the future of crypto finance.",
+        "zh":"币安以建立世界级加密数字货币交易所为目标，助力加密金融的未来。"
+    },
+    "symbol":"BNB",
+    "initial_price":{
+        "USD":"0.1553 USD"
+    },
+    "whitepaper":"https://www.binance.com/resources/ico/Binance_WhitePaper_en.pdf",
+    "address":"0xB8c77482e45F1F44dE1745F52C74426C631bDD52",
+    "email":"support@binance.zendesk.com"
 }
