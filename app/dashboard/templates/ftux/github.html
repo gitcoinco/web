@@ -16,32 +16,60 @@
 {% endcomment %}
 
 {% load i18n static %}
-<div class="col-12 mt-4">
-  {% if github_handle %}
-    <div class="logged-in">
-      <h3>
-        <i class="far fa-check-circle"></i>
-        {% trans "You are logged in!" %}
-      </h3>
-      <div class="font-caption row">
-        <div class="col-12">
-          <img class="github-avatar" src="{% url "avatar" %}?repo=https://github.com/{{ github_handle }}">
-          <span>
-            <p>{{ github_handle }}</p>
-            <a href="{% url "logout" %}?next={{ request.get_full_path }}">
-              {% trans "Logout" %}
-            </a>
-          </span>
-        </div>
+<div class="row">
+  <div class="col-12">
+    <h2>{% trans "Get started with Gitcoin!" %}</h2>
+  </div>
+  <div class="col-12 col-md-8 offset-md-2">
+    {% blocktrans %}
+      <h3>Use gitcoin to find paid work real world problems
+          in the blockchain / web3 ecosystem.</h3>
+      <h3>Receive payment in Ether,a leading cryptocurrency.</h3>
+      <h3>Meet new people. Learn New Skills. Contribute to
+          the open source community.</h3>
+    {% endblocktrans %}
+    <div class="row icons">
+      <div class="col-3">
+        <i class="fas fa-wrench"></i>
+        <p>{% trans "Build" %}</p>
+      </div>
+      <div class="col-3">
+        <i class="fab fa-ethereum"></i>
+        <p>{% trans "Get Paid" %}</p>
+      </div>
+      <div class="col-3">
+        <i class="fab fa-connectdevelop"></i>
+        <p>{% trans "Network" %}</p>
       </div>
     </div>
-  {% else %}
-    <div class="logged-out">
-      <a class="button button--primary" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
-        onclick="dataLayer.push({'event': 'login'});">
-        <i class="fab fa-github"></i>
-        <span>{% trans "Login with github" %}</span>
-      </a>
+    <div class="col-12 mt-4">
+      {% if github_handle %}
+        <div class="logged-in">
+          <h3>
+            <i class="far fa-check-circle"></i>
+            {% trans "You are logged in!" %}
+          </h3>
+          <div class="font-caption row">
+            <div class="col-12">
+              <img class="github-avatar" src="{% url "avatar" %}?repo=https://github.com/{{ github_handle }}">
+              <span>
+                <p>{{ github_handle }}</p>
+                <a href="{% url "logout" %}?next={{ request.get_full_path }}">
+                  {% trans "Logout" %}
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div class="logged-out">
+          <a class="button button--primary" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
+            onclick="dataLayer.push({'event': 'login'});">
+            <i class="fab fa-github"></i>
+            <span>{% trans "Login with github" %}</span>
+          </a>
+        </div>
+      {% endif %}
     </div>
-  {% endif %}
+  </div>
 </div>
