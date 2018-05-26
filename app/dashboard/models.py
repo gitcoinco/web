@@ -676,7 +676,7 @@ class Bounty(SuperModel):
 
         """
         if not var_to_check or self.get_natural_value() < 0.0001 or (
-            self.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+           self.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
             return False
         if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
             return False
