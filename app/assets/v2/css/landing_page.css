@@ -21,7 +21,7 @@
   max-width: 30vw;
 }
 #gc-tree {
-  position: relative;
+  max-width: 100%;
 }
 
 .howworks_container {
@@ -30,7 +30,6 @@
 }
 
 .howworks-steps {
-  border-top: 1px solid #E1E8EE;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
@@ -50,6 +49,7 @@
 }
 .howworks-step {
   position: relative;
+  border-top: 1px solid #E1E8EE;
   padding: 2rem 1rem;
 }
 .howworks-step__label {
@@ -191,9 +191,11 @@
   height: 100%;
 }
 .whatisit_container iframe {
+  min-height: 400px;
   width: 100%;
-  height: 20vw;
-  min-height: 100%;
+  /* height: 20vw; */
+  height: 100%;
+  /* min-height: 100%; */
 }
 
 /* Landing Page Animations */
@@ -262,7 +264,7 @@
   }
 }
 @keyframes globe-center-fill {
-  0%, 41%, 59%, 100% {
+  0%, 42%, 58%, 100% {
     transform: scaleX(0);
   }
   50% {
@@ -278,6 +280,11 @@
   }
 }
 
+@media (max-width: 1300px) {
+  .whatisit_container iframe {
+    min-height: 250px;
+  }
+}
 @media (max-width: 769px) {
   .pricing-tiers-container {
     grid-template-columns: 1fr;
@@ -289,5 +296,8 @@
   }
   .case-studies-list {
     margin-left: 0;
+  }
+  .howworks-steps {
+    grid-template-columns: 1fr;
   }
 }

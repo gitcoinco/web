@@ -62,8 +62,8 @@ $(document).ready(function() {
 
   window.addEventListener('scroll', (e) => {
     moveBackground(e);
-    $gcRobot.css('top', (-window.scrollY + robotContainerPos - 100) / 2 + 'px');
-    $gcTree.css('top', (window.scrollY - treeContainerPos + 100) / 6 + 'px');
+    $gcRobot.css('transform', `translateY(${(-window.scrollY + robotContainerPos - 100) / 2}px)`);
+    $gcTree.css('transform', `translateY(${(window.scrollY - treeContainerPos + 100) / 6}px)`);
   }, { passive: true });
   moveBackground({});
 
