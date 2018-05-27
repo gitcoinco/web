@@ -26,219 +26,359 @@
 <body class="{{ active }}">
 {% include 'shared/tag_manager_2.html' %}
 <div class="container-fluid header">
-    {% include 'shared/nav.html' %}
-    {% include 'shared/minihero.html' with h1='Mission' position_h1_below_logo=1 %}
+  {% include 'shared/nav.html' %}
+  {% include 'shared/minihero.html' with h1='Mission' position_h1_below_logo=1 %}
 </div>
 
 
-<div class="container-fluid " style="background: white;" id="mission_hero">
-    <div class="row p-5 animatedParent">
-        <div class="col d-flex flex-sm-row flex-column align-items-center justify-content-center animated fadeInLeftShort">
-            <div class="mission-img-wrapper d-flex align-items-center">
-                <img src="{% static "v2/images/mission/grow_hero.png" %}" />
-            </div>
-
-            <div class="text">
-                <div class="font-bigger-4">
-                    {% blocktrans %}GITCOIN IS A <span class="text-highlight-dark-blue">MISSION</span>
-                    AND <span class="text-highlight-dark-blue">VALUE-ORIENTED</span>{% endblocktrans %}
-                    <br />
-                    {% blocktrans %}<span class="text-highlight-dark-blue">DISTRIBUTED MOVEMENT</span> AIMED TO <span class="text-highlight-dark-blue">DRIVE</span>{% endblocktrans %}
-                    <br />
-                    {% blocktrans %}<span class="text-highlight-dark-blue">CHANGE</span> AND <span class="text-highlight-pink">GROW OPEN SOURCE</span>{% endblocktrans %}
-                </div>
-            </div>
+<div class="container-fluid" style="background: white;" id="mission_hero">
+  <div class="row p-5 p-5 animatedParent">
+    <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column text-center animated fadeInLeftShort">
+      <div class="text">
+        <div class="font-bigger-4 header-text">
+          {% blocktrans %}
+          GITCOIN IS A
+          <span class="text-highlight-dark-blue">MISSION</span> AND
+          <span class="text-highlight-dark-blue">VALUE-ORIENTED</span>
+          {% endblocktrans %}
+          <br />
+          {% blocktrans %}
+          <span class="text-highlight-dark-blue">
+            DISTRIBUTED MOVEMENT
+          </span> AIMED TO
+          <span class="text-highlight-dark-blue">DRIVE</span>
+          {% endblocktrans %}
+          <br />
+          {% blocktrans %}
+          <span class="text-highlight-dark-blue"> CHANGE </span> AND
+          <span class="text-highlight-pink">GROW OPEN SOURCE</span>
+          {% endblocktrans %}
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
+<div class="container-fluid" style="background-color: #f2f6f9;" id="we_want">
+  <div class="row">
+    <div class="col pb-4">
+      <h4 class="text-left text-uppercase">
+        {% blocktrans %}
+        <span class="text-highlight-green">We</span> Want
+        {% endblocktrans %}
+      </h4>
+    </div>
+  </div>
 
-<div class="container-fluid" style="background-color: #eef4ee;" id="we_want">
-    <div class="row">
-        <div class="col pb-4">
-            <h4 class="text-left text-uppercase">
-                {% blocktrans %}<span class="text-highlight-green">We</span> Want{% endblocktrans %}
-            </h4>
+  <div class="row animatedParent we-want">
+    <div class="col-md-12 col-lg-8 col-xl-6 animated fadeInLeftShort">
+      <div class="row mb-5">
+        <div class="col-md-10 col-lg-8 d-flex align-items-center">
+          <img
+            class="icon"
+            src="{% static "v2/images/mission/want/rocket_man.svg" %}"
+          />
+          <span class="icon-text">
+          {% blocktrans %}
+            We want to build a world in which anyone has the financial
+            leverage to leave their job.
+          {% endblocktrans %}
+          </span>
         </div>
+      </div>
+
+      <div class="row mb-5">
+        <div class="col-md-10 col-lg-8 d-flex align-items-center">
+          <img
+            class="icon"
+            src="{% static "v2/images/mission/want/find_work.svg" %}"
+          />
+          <span class="icon-text">
+          {% blocktrans %}
+            We want it to be as easy to find work in software, as it is for an
+            Uber driver to find a ride today.
+          {% endblocktrans %}
+          </span>
+        </div>
+      </div>
+
+      <div class="row mb-5">
+        <div class="col-md-10 col-lg-8 d-flex align-items-center">
+          <img
+            class="icon"
+            src="{% static "v2/images/mission/want/incentive.svg" %}"
+          />
+          <span class="icon-text">
+            {% trans "We want to build a network with aligned incentives." %}
+          </span>
+        </div>
+      </div>
     </div>
 
-    <div class="row mb-5 animatedParent">
-        <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/want/financial.png" %}" />
-            </div>
-        </div>
-
-        <div class="col d-flex flex-column align-items-center animated fadeInDownShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/want/work.png" %}" />
-            </div>
-        </div>
-
-        <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/want/incentives.png" %}" />
-            </div>
-        </div>
+    <div class="d-none d-lg-block col-md-4 col-lg-4 col-xl-6 animated fadeInDownShort">
+      <div class="falcon-wrapper">
+        <img
+          class="falcon-pull"
+          src="{% static "v2/images/mission/want/falcon_1.svg" %}"
+        />
+      </div>
     </div>
+  </div>
 </div>
 
-<hr class="mission-divider">
+<div class="container-fluid" style="background-color: #fff;" id="we_value">
+  <div class="row">
+    <div class="col pb-4">
+      <h4 class="text-left text-uppercase">
+        {% blocktrans %}
+        <span class="text-highlight-green">We</span> Value
+        {% endblocktrans %}
+      </h4>
+    </div>
+  </div>
 
-<div class="container-fluid" style="background-color: #eef4ee;" id="we_value">
-    <div class="row">
-        <div class="col pb-4">
-            <h4 class="text-left text-uppercase">
-                {% blocktrans %}<span class="text-highlight-green">We</span> Value{% endblocktrans %}
-            </h4>
+  <div class="row animatedParent mb-5">
+    <div class="col-md-12 col-lg-6">
+      <div class="row">
+        <div class="col-6">
+          <img
+            class="icon-small"
+            src="{% static "v2/images/mission/value/collaborative.svg" %}"
+          />
+
+          <div class="divider"></div>
+
+          <p>{% trans "Collaborative" %}</p>
         </div>
+
+        <div class="col-6">
+          <img
+            class="icon-small"
+            src="{% static "v2/images/mission/value/love_hands.svg" %}"
+          />
+
+          <div class="divider"></div>
+          <p>{% trans "Intellectual honesty" %}</p>
+        </div>
+      </div>
+
+      <div class="row mb-5 mt-5">
+        <div class="col-6">
+          <img
+            class="icon-small"
+            src="{% static "v2/images/mission/value/humble.svg" %}"
+          />
+
+          <div class="divider"></div>
+
+          <p>{% trans "Humble" %}</p>
+        </div>
+
+        <div class="col-6">
+          <img
+            class="icon-small"
+            src="{% static "v2/images/mission/value/empathetic.svg" %}"
+          />
+
+          <div class="divider"></div>
+
+          <p>{% trans "Empathetic" %}</p>
+        </div>
+      </div>
+
+      <div class="row mb-5 mt-5">
+        <div class="col-6">
+          <img
+            class="icon-small"
+            src="{% static "v2/images/mission/value/stress_reducing.svg" %}"
+          />
+
+          <div class="divider"></div>
+
+          <p>{% trans "Stress Reducing" %}</p>
+        </div>
+
+        <div class="col-6">
+          <img
+            class="icon-small"
+            src="{% static "v2/images/mission/value/inclusive.svg" %}"
+          />
+
+          <div class="divider"></div>
+
+          <p>{% trans "Inclusive" %}</p>
+        </div>
+      </div>
+
+      <div class="row mb-5 mt-5">
+        <div class="col-6">
+          <img
+            class="icon-small"
+            src="{% static "v2/images/mission/value/give_first.svg" %}"
+          />
+
+          <div class="divider"></div>
+          <p>{% trans "Give first" %}</p>
+        </div>
+      </div>
     </div>
 
-    <div class="row mb-5 animatedParent">
-        <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/value/collaborative.png" %}" />
-            </div>
-        </div>
-
-        <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/value/intellectual-honesty.png" %}" />
-            </div>
-        </div>
-
-        <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/value/humble.png" %}" />
-            </div>
-        </div>
-
-        <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/value/empathetic.png" %}" />
-            </div>
-        </div>
+    <div class="d-none d-lg-block col-lg-6 animated fadeInDownShort">
+      <div class="falcon-wrapper">
+        <img
+          class="falcon"
+          src="{% static "v2/images/mission/value/falcon_2.svg" %}"
+        />
+      </div>
     </div>
-
-    <div class="row mb-5 animatedParent">
-        <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/value/stress-reducing.png" %}" />
-            </div>
-        </div>
-
-        <div class="col d-flex flex-column align-items-center animated fadeInDownShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/value/inclusive.png" %}" />
-            </div>
-        </div>
-
-        <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/value/give-first.png" %}" />
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
 
-<hr class="mission-divider">
+<div class="container-fluid" style="background-color: #f2f6f9;" id="we_interact">
+  <div class="row">
+    <div class="col pb-4">
+      <h4 class="text-left text-uppercase">
+        {% blocktrans %}
+        <span class="text-highlight-green">We</span> Interact
+        {% endblocktrans %}
+      </h4>
+    </div>
+  </div>
 
-<div class="container-fluid" style="background-color: #eef4ee;" id="we_interact">
-    <div class="row">
-        <div class="col pb-4">
-            <h4 class="text-left text-uppercase">
-                {% blocktrans %}<span class="text-highlight-green">We</span> Interact{% endblocktrans %}
-            </h4>
+  <div class="row animatedParent">
+    <div class="col-md-12 col-lg-8 col-xl-6 animated fadeInLeftShort">
+      <div class="row mb-5">
+        <div class="col-md-10 col-lg-8 d-flex align-items-center">
+          <img
+            class="icon"
+            src="{% static "v2/images/mission/interact/world.svg" %}"
+          />
+          <span class="icon-text">
+            {% trans "Happen to the world. Don't let the world happen to you." %}
+          </span>
         </div>
+      </div>
+
+      <div class="row mb-5">
+        <div class="col-md-10 col-lg-8 d-flex align-items-center">
+          <img class="icon" src="{% static "v2/images/mission/interact/book.svg" %}" />
+          <span class="icon-text">
+            {% trans "Show, don't tell." %}
+          </span>
+        </div>
+      </div>
+
+      <div class="row mb-5">
+        <div class="col-md-10 col-lg-8 d-flex align-items-center">
+          <img
+            class="icon"
+            src="{% static "v2/images/mission/interact/head.svg" %}"
+          />
+          <span class="icon-text">
+            {% trans "Be thoughtful, clear, and direct." %}
+          </span>
+        </div>
+      </div>
+
+      <div class="row mb-5">
+        <div class="col-md-10 col-lg-8 d-flex align-items-center">
+          <img
+            class="icon"
+            src="{% static "v2/images/mission/interact/scale.svg" %}"
+          />
+          <span class="icon-text">
+            {% trans "Find a balance between a proactive and reactive strategy." %}
+          </span>
+        </div>
+      </div>
+
+      <div class="row mb-5">
+        <div class="col-md-10 col-lg-8 d-flex align-items-center">
+          <img
+            class="icon"
+            src="{% static "v2/images/mission/interact/goal.svg" %}"
+          />
+          <span class="icon-text">
+            {% trans "Challenge the status quo / Be willing to be changed." %}
+          </span>
+        </div>
+      </div>
+
+      <div class="row mb-5">
+        <div class="col-md-10 col-lg-8 d-flex align-items-center">
+          <img
+            class="icon"
+            src="{% static "v2/images/mission/interact/hammer.svg" %}"
+          />
+          <span class="icon-text">
+            {% trans "Fix things twice." %}
+          </span>
+        </div>
+      </div>
+
+      <div class="row mb-5">
+        <div class="col-md-10 col-lg-8 d-flex align-items-center">
+          <img
+            class="icon"
+            src="{% static "v2/images/mission/interact/microscope.svg" %}"
+          />
+          <span class="icon-text">
+            {% trans "Identify and validate your assumptions." %}
+          </span>
+        </div>
+      </div>
+
+      <div class="row mb-5">
+        <div class="col-md-10 col-lg-8 d-flex align-items-center">
+          <img
+            class="icon"
+            src="{% static "v2/images/mission/interact/people_care.svg" %}"
+          />
+          <span class="icon-text">
+            {% trans "Care about people (not just tasks)" %}
+          </span>
+        </div>
+      </div>
+
+      <div class="row mb-5">
+        <div class="col-md-10 col-lg-8 d-flex align-items-center">
+          <img
+            class="icon"
+            src="{% static "v2/images/mission/interact/hear.svg" %}"
+          />
+          <span class="icon-text">
+            {% trans "Listen - try to understand one another's ideas. Don't just impose your own." %}
+          </span>
+        </div>
+      </div>
+
+      <div class="row mb-5">
+        <div class="col-md-12 col-lg-8 d-flex align-items-center">
+          <img
+            class="icon"
+            src="{% static "v2/images/mission/interact/swiss_army.svg" %}"
+          />
+          <span class="icon-text">
+            {% trans "Pragmatism over dogmatism." %}
+          </span>
+        </div>
+      </div>
     </div>
 
-    <div class="row mb-5 animatedParent">
-        <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/interact/1.png" %}" />
-            </div>
-        </div>
-
-        <div class="col d-flex flex-column align-items-center animated fadeInDownShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/interact/2.png" %}" />
-            </div>
-        </div>
-
-        <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/interact/3.png" %}" />
-            </div>
-        </div>
+    <div class="d-none d-lg-block col-md-4 col-lg-4 col-xl-6 animated fadeInDownShort">
+      <div class="falcon-wrapper">
+        <img
+          class="falcon"
+          src="{% static "v2/images/mission/interact/falcon_3.svg" %}"
+        />
+      </div>
     </div>
-
-    <div class="row mb-5 animatedParent">
-        <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/interact/4.png" %}" />
-            </div>
-        </div>
-
-        <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/interact/5.png" %}" />
-            </div>
-        </div>
-
-        <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/interact/6.png" %}" />
-            </div>
-        </div>
-
-        <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/interact/7.png" %}" />
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-5 animatedParent">
-        <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/interact/8.png" %}" />
-            </div>
-        </div>
-
-        <div class="col d-flex flex-column align-items-center animated fadeInDownShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/interact/9.png" %}" />
-            </div>
-        </div>
-
-        <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
-            <div class="mission-img-wrapper d-flex justify-content-center align-items-center">
-                <img src="{% static "v2/images/mission/interact/10.png" %}" />
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
-
-<div class="container-fluid text-center white-light-bg">
-    <div class="row mt-5 pb-3 animatedParent">
-        <div class="col animated pulse fast">
-            <a class="btn btn-lg btn-warning" role="button" target="_blank"
-               href="https://medium.com/gitcoin/pushing-open-source-forward-for-the-web3-generation-26a5726902ea">
-                {% trans "Read About Our Mission" %}
-            </a>
-        </div>
-    </div>
-</div>
-
-<br /><br />
-
-
 {% include 'shared/footer.html' %}
 {% include 'shared/analytics.html' %}
 {% include 'shared/footer_scripts.html' %}
 {% include 'shared/rollbar.html' %}
 {% include 'shared/messages.html' %}
-
 </body>
-
 </html>
