@@ -1,13 +1,18 @@
 
 // Header and Nav
 $(document).ready(function() {
-  const navbar = $('.navbar');
-  const header = $('.header');
+  const $background = $('#gitcoin-background');
+  const $navbar = $('.navbar');
+  const $header = $('.header');
+  const scrollWrapper = $('#landing_page_wrapper');
 
   let startX = null;
   let startY = null;
   let mouseX = 0;
   let mouseY = 0;
+  const followStateHeight = 500;
+  let navFollowState = scrollWrapper.scrollTop() > followStateHeight;
+
   const movementStrength = 25;
   const height = movementStrength / $(window).height();
   const width = movementStrength / $(window).width();
@@ -19,15 +24,15 @@ $(document).ready(function() {
       return;
     }
     throttledHandler = requestAnimationFrame(() => {
-      const followStateHeight = 500;
-
-      if (window.scrollY > followStateHeight) {
-        navbar.addClass('following');
-      } else if (window.scrollY < followStateHeight) {
-        navbar.removeClass('following');
+      if (!navFollowState && scrollWrapper.scrollTop() > followStateHeight) {
+        $navbar.addClass('following');
+        navFollowState = true;
+      } else if (navFollowState && scrollWrapper.scrollTop() < followStateHeight) {
+        $navbar.removeClass('following');
+        navFollowState = false;
       }
       const pageX = mouseX - ($(window).width() / 2);
-      const pageY = mouseY - ($(window).height() / 2) + window.scrollY * 2;
+      const pageY = mouseY - ($(window).height() / 2) + scrollWrapper.scrollTop() * 2;
       const newvalueX = width * (pageX - startX) * -1 - 100;
       let newvalueY = height * (pageY - startY) * -1 - 140;
 
@@ -39,17 +44,13 @@ $(document).ready(function() {
         startY = newvalueY;
       }
 
-      const newNavY = newvalueY - navbar[0].getBoundingClientRect().top;
-      const newHeaderY = newvalueY - header[0].getBoundingClientRect().top;
-
-      navbar.css('background-position', `${newvalueX - startX}px ${newNavY - startY}px`);
-      header.css('background-position', `${newvalueX - startX}px ${newHeaderY - startY}px`);
+      $background.css('transform', `translate(${newvalueX - startX}px, ${newvalueY - startY}px)`);
       throttledHandler = undefined;
     });
   };
 
-  navbar.mousemove(moveBackground);
-  header.mousemove(moveBackground);
+  $navbar.mousemove(moveBackground);
+  $header.mousemove(moveBackground);
   let robotContainerPos = $('.case-studies-container').position().top;
   let treeContainerPos = $('.tree_container').position().top;
   const $gcRobot = $('#gc-robot');
@@ -60,11 +61,11 @@ $(document).ready(function() {
     treeContainerPos = $('.tree_container').position().top;
   });
 
-  window.addEventListener('scroll', (e) => {
+  scrollWrapper.scroll((e) => {
     moveBackground(e);
-    $gcRobot.css('transform', `translateY(${(-window.scrollY + robotContainerPos - 100) / 2}px)`);
-    $gcTree.css('transform', `translateY(${(window.scrollY - treeContainerPos + 100) / 6}px)`);
-  }, { passive: true });
+    $gcRobot.css('transform', `translateY(${(-scrollWrapper.scrollTop() + robotContainerPos - 100) / 2}px)`);
+    $gcTree.css('transform', `translateY(${(scrollWrapper.scrollTop() - treeContainerPos) / 6}px)`);
+  });
   moveBackground({});
 
   $('#funder-toggle').click(function(e) {

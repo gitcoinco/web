@@ -26,6 +26,7 @@
 </head>
 <body class="{{active}}">
     {% include 'shared/tag_manager_2.html' %}
+    <div id="gitcoin-background"></div>
     <div class="container-fluid header">
         {% include 'shared/nav.html' %}
         {% include 'shared/minihero.html' with h1='Help' suppress_logo=1 %}
@@ -77,8 +78,8 @@
 
 
 
-    <div id="feature_videos">
-        <h4 class="heading">{% trans "Featured Videos" %}</h4>
+    <div id="feature_videos" class="pt-3">
+        <h4 class="heading mt-0">{% trans "Featured Videos" %}</h4>
         <div class="animatedParent video-row">
             <div class="video animated fadeInLeftShort">
                 <h6 class="sub-heading">{% trans "How it works" %}</h6>
@@ -96,12 +97,12 @@
     </div>
 
     <div id=tutorials class="container-fluid text-center white-light-bg">
-        <div class="row mt-5">
+        <div class="row pt-5">
             <div class="col">
                 <h3>{% trans "Tutorials" %}</h3>
             </div>
         </div>
-        <div class="row mt-2 mb-2 pb-3 tutorial_item">
+        <div class="row mt-2 pb-3 tutorial_item">
             <div class="col col-12 text-left">
                 <ul>
                     {% for item in tutorials %}
@@ -117,12 +118,12 @@
 
 
     <div id=faq class="container-fluid text-center white-light-bg" id="faq">
-        <div class="row mt-5">
+        <div class="row pt-5">
             <div class="col">
                 <h3>{% trans "FAQ" %}</h3>
             </div>
         </div>
-        <div class="row mt-2 mb-2 pb-3 faq_item">
+        <div class="row mt-2 pb-3 faq_item">
         {% for category, items in faq.items %}
             <div class="col col-4 text-left">
                 <h4 class="heading">{{category}}</h4>

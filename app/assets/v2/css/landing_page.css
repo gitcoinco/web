@@ -1,4 +1,19 @@
+html {
+  overflow: hidden;
+}
+body {
+  height: 100vh;
+}
+.navbar {
+  flex-shrink: 0;
+}
+#landing_page_wrapper {
+  overflow-y: scroll;
+  /* height: 100vh; */
+}
+
 .case-studies-container {
+  background: white;
   text-align: center;
   position: relative;
   overflow: visible !important;
@@ -91,6 +106,9 @@
   padding-top: 2rem;
 }
 
+.pilot_container {
+  background: white;
+}
 .pilot_container img {
   margin: 1.5rem 3rem;
 }
@@ -180,6 +198,7 @@
 }
 
 .tree_container {
+  background: white;
   text-align: center;
   overflow: hidden;
 }

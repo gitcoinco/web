@@ -198,6 +198,9 @@ span {
   padding-bottom: 20px;
 }
 
+#feature_videos {
+  background: white;
+}
 #feature_videos .video {
   text-align: center;
 }
