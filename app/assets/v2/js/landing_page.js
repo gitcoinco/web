@@ -5,9 +5,9 @@ $(document).ready(function() {
   const $navbar = $('.navbar');
   const $header = $('.header');
   const scrollWrapper = $('#landing_page_wrapper');
+  const $gcRobot = $('#gc-robot');
+  const $gcTree = $('#gc-tree');
 
-  let startX = null;
-  let startY = null;
   let mouseX = 0;
   let mouseY = 0;
   const followStateHeight = 500;
@@ -32,42 +32,32 @@ $(document).ready(function() {
         navFollowState = false;
       }
       const pageX = mouseX - ($(window).width() / 2);
-      const pageY = mouseY - ($(window).height() / 2) + scrollWrapper.scrollTop() * 2;
-      const newvalueX = width * (pageX - startX) * -1 - 100;
-      let newvalueY = height * (pageY - startY) * -1 - 140;
+      const pageY = mouseY - ($(window).height() / 2) - scrollWrapper.scrollTop() * 2;
+      const newvalueX = width * pageX - 10;
+      let newvalueY = height * pageY;
 
-      if (!startX) {
-        startX = newvalueX;
-      }
+      $gcRobot.css('transform', `translateY(${($gcRobot.parent()[0].getBoundingClientRect().top - 100) / 2}px)`);
+      $gcTree.css('transform', `translateY(${(-$gcTree.parent()[0].getBoundingClientRect().top) / 6 + 40}px)`);
 
-      if (!startY) {
-        startY = newvalueY;
-      }
-
-      $background.css('transform', `translate(${newvalueX - startX}px, ${newvalueY - startY}px)`);
+      $background.css('transform', `translate(${newvalueX}px, ${newvalueY}px)`);
       throttledHandler = undefined;
     });
   };
 
   $navbar.mousemove(moveBackground);
   $header.mousemove(moveBackground);
-  let robotContainerPos = $('.case-studies-container').position().top;
-  let treeContainerPos = $('.tree_container').position().top;
-  const $gcRobot = $('#gc-robot');
-  const $gcTree = $('#gc-tree');
+  let robotContainerPos = $('.case-studies-container').offset().top;
+  let treeContainerPos = $('.tree_container').offset().top;
 
-  window.addEventListener('resize', function(e) {
-    robotContainerPos = $('.case-studies-container').position().top;
-    treeContainerPos = $('.tree_container').position().top;
-  });
-
-  scrollWrapper.scroll((e) => {
+  // Robot and Tree Parallax
+  const moveWithScroll = (e) => {
     moveBackground(e);
-    $gcRobot.css('transform', `translateY(${(-scrollWrapper.scrollTop() + robotContainerPos - 100) / 2}px)`);
-    $gcTree.css('transform', `translateY(${(scrollWrapper.scrollTop() - treeContainerPos) / 6}px)`);
-  });
+  };
+
+  scrollWrapper.scroll(moveWithScroll);
   moveBackground({});
 
+  // How It Works section toggle
   $('#funder-toggle').click(function(e) {
     $('#funder-toggle').addClass('active');
     $('#contributor-toggle').removeClass('active');
@@ -75,5 +65,17 @@ $(document).ready(function() {
   $('#contributor-toggle').click(function(e) {
     $('#funder-toggle').removeClass('active');
     $('#contributor-toggle').addClass('active');
+  });
+
+  const prevScroll = localStorage.getItem('scrollTop');
+
+  if (prevScroll) {
+    console.log(prevScroll);
+    scrollWrapper.scrollTop(prevScroll);
+    moveWithScroll({});
+  }
+  // before the current page goes away, save the menu position
+  $(window).on('beforeunload', function() {
+    localStorage.setItem('scrollTop', scrollWrapper.scrollTop());
   });
 });
