@@ -29,7 +29,7 @@ from retail.emails import (
     render_bounty_expire_warning, render_bounty_feedback, render_bounty_startwork_expire_warning,
     render_bounty_unintersted, render_faucet_rejected, render_faucet_request, render_gdpr_reconsent, render_gdpr_update,
     render_match_email, render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection,
-    render_new_bounty_roundup, render_new_work_submission, render_tip_email,
+    render_new_bounty_roundup, render_new_work_submission, render_quarterly_stats, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
