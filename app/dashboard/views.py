@@ -782,7 +782,7 @@ def profile_keywords_helper(handle):
     """
     profile = profile_helper(handle, True)
 
-    keywords = []
+    keywords = ['java', 'python']
     for repo in profile.repos_data:
         language = repo.get('language') if repo.get('language') else ''
         _keywords = language.split(',')

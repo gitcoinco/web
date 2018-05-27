@@ -21,7 +21,7 @@ def job_detail(request, pk):
 
 def create_job(request):
     if request.method == 'POST':
-        form = JobForm(request.POST)
+        form = JobForm(user=request.user, data=request.POST)
         if form.is_valid():
             # import ipdb; ipdb.set_trace()
             form.save()

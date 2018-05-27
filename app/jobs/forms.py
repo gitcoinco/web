@@ -29,7 +29,7 @@ class JobForm(forms.ModelForm):
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['skills'].choices = profile_keywords_helper(user)
+        self.fields['skills'].choices = [(x, x) for x in profile_keywords_helper(user.profile.handle)]
 
     class Meta:
         """Define the JOB form metadata."""

@@ -1,7 +1,6 @@
 from datetime import timedelta
 
 from django.conf import settings
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -41,7 +40,7 @@ class Job(models.Model):
         null=False, blank=True
     )
     skills = models.CharField(
-        verbose_name=_('skill'), max_length=60, null=False, blank=True
+        verbose_name=_('skill'), max_length=60, null=True, blank=True
     )
     expiry_date = models.DateTimeField(
         _('Expiry Date'), null=False, blank=False, default=get_expiry_time
