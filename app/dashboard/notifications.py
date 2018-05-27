@@ -36,13 +36,13 @@ from pyshorteners import Shortener
 from slackclient import SlackClient
 
 
-MAKE_GITCOIN_BOT_COWARDLY_IN_DEV = True
-cowardly_bot_exception = CowardlyGitcoinBotException('Cowardly ')
 # Be VERY CAREFUL when changing this setting.  You don't want to accidently
 # send a bunch of github notifications :)
 # See https://medium.com/gitcoin/github-notification-spam-post-mortem-e1ed200936e
 class CowardlyGitcoinBotException(Exception):
     pass
+MAKE_GITCOIN_BOT_COWARDLY_IN_DEV = True
+cowardly_bot_exception = CowardlyGitcoinBotException('Cowardly ')
 
 
 def github_org_to_twitter_tags(github_org):
