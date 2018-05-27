@@ -591,6 +591,7 @@ def quarterly_roundup(request):
     from marketing.utils import get_platform_wide_stats
     platform_wide_stats = get_platform_wide_stats()
     response_html, _ = render_quarterly_stats(settings.CONTACT_EMAIL, platform_wide_stats)
+    return HttpResponse(response_html)
 
 
 @staff_member_required
