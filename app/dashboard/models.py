@@ -76,7 +76,6 @@ class BountyQuerySet(models.QuerySet):
 
 class Bounty(SuperModel):
     """Define the structure of a Bounty.
-
     Attributes:
         BOUNTY_TYPES (list of tuples): The valid bounty types.
         EXPERIENCE_LEVELS (list of tuples): The valid experience levels.
@@ -1223,7 +1222,7 @@ class Profile(SuperModel):
 
     @staticmethod
     def get_network():
-        return 'mainnet' 
+        return 'mainnet'
 
     def get_fulfilled_bounties(self, network=None):
         network = network or self.get_network()

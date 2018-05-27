@@ -831,6 +831,8 @@ def save_search(request):
     }
     return TemplateResponse(request, 'save_search.html', context)
 
+def funder_dashboard(request):
+    return TemplateResponse(request, 'funder_dashboard.html', {})
 
 @require_POST
 @csrf_exempt
