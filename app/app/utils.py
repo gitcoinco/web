@@ -122,14 +122,9 @@ def sync_profile(handle, user=None, hide_profile=True):
         rollbar.report_message('Failed to fetch github username', 'warning', extra_data=data)
         return None
 
-    repos_data = get_user(handle, '/repos')
-    repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
-    repos_data = [add_contributors(repo_data) for repo_data in repos_data]
-
     defaults = {
         'last_sync_date': timezone.now(),
         'data': data,
-        'repos_data': repos_data,
         'hide_profile': hide_profile,
     }
 

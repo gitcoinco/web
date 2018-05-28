@@ -172,7 +172,6 @@ class DashboardModelsTest(TestCase):
         assert profile.is_org is True
         assert profile.bounties.first() == bounty
         assert profile.tips.first() == tip
-        assert profile.authors == ['foo', 'gitcoinco']
         assert profile.desc == '@gitcoinco is a newbie who has participated in 1 funded issue on Gitcoin'
         assert profile.stats == [
             ('newbie', 'Status'),

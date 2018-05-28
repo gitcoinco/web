@@ -246,7 +246,7 @@ class EmailEvent(SuperModel):
 
     email = models.EmailField(max_length=255, db_index=True)
     event = models.CharField(max_length=255, db_index=True)
-    payload = JSONField(default={})
+    ip_address = models.GenericIPAddressField(default=None, null=True)
 
     def __str__(self):
         return f"{self.email} - {self.event} - {self.created_on}"
