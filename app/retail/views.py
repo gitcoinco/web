@@ -32,15 +32,15 @@ from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
 def index(request):
     slides = [
-        ("Zack Coburn, EtherDelta", static("v2/images/testimonials/zack.jpg"),
+        ("Zack Coburn", static("v2/images/testimonials/zack.jpg"),
          _("Gitcoin is the catalyst open source development needs to move forward. The process is seamless and the results speak for themselves."),
-         'https://github.com/zackcoburn'),
-        ("Piper Merriam, web3py", static("v2/images/testimonials/piper.jpg"),
+         'https://github.com/zackcoburn', "EtherDelta"),
+        ("Piper Merriam", static("v2/images/testimonials/piper.jpg"),
          _("We have been trying out the Gitcoin bounty program in the Web3.py project and are very pleased with the results so far.  We’ve closed out four bountied issues ranging from smaller cleanup tasks to full fledged feature development.  So far the platform looks promising as a valuable addition to our development process."),
-         'https://github.com/pipermerriam'),
-        ("Phil Elsasser, Market", static("v2/images/testimonials/phil.jpg"),
+         'https://github.com/pipermerriam', "web3py"),
+        ("Phil Elsasser", static("v2/images/testimonials/phil.jpg"),
          _("Our first experiences with Gitcoin have been very positive.  It has helped MARKET to get new people involved quickly and in a cost effective manner.  Having fresh ideas and outside perspectives contribute to a new project is unbelievably valuable."),
-         'http://www.marketprotocol.io/'),
+         'http://www.marketprotocol.io/', 'Market'),
         ("Aditya Anand", static("v2/images/testimonials/aditya.jpg"),
          _("It’s been a while since something has gotten me this riled up ! Love the concept and definitely sticking around to see this project through. Awesome community  + open source work + bounties"),
          "https://github.com/thelostone-mc"),

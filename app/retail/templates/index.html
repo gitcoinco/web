@@ -190,8 +190,8 @@
             <div class="howworks-step__label">1</div>
             <h3>Find a Bounty on the Issue Explorer</h3>
             <p>
-              Whether it's Bugs, Features, or Security Issues, Gitcoin's Issue
-              Explorer is the easiest way to find paid work in open source.
+              Whether it's Bugs, Features, or Security Issues, Gitcoin's
+              <a href="{% url "explorer" %}">Issue Explorer</a> is the easiest way to find paid work in open source.
             </p>
           </div>
           <div class="howworks-step">
@@ -287,12 +287,13 @@
         </div>
       </div>
 
-      <div class="container-fluid p-5 testimonial_container">
-        <div class="row mb-5">
+      <div class="container-fluid py-5 px-0 testimonial_container">
+        <div class="row mb-4">
           <div class="col text-center">
             <h2>{% trans "Who's using Gitcoin?" %}</h2>
           </div>
         </div>
+        {% include "shared/testimonials.html" %}
       </div>
 
       <div class="container-fluid pilot_container">

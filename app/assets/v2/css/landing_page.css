@@ -34,9 +34,11 @@ body {
   top: -50px;
   right: calc(5vw - 50px);
   max-width: 30vw;
+  will-change: transform;
 }
 #gc-tree {
   max-width: 100%;
+  will-change: transform;
 }
 
 .howworks_container {
@@ -283,11 +285,14 @@ body {
   }
 }
 @keyframes globe-center-fill {
-  0%, 42%, 58%, 100% {
-    transform: scaleX(0);
+  0%, 39% {
+    transform: scaleX(0) translateX(-7px);
   }
   50% {
-    transform: scaleX(0.5);
+    transform: scaleX(0.4) translateX(0);
+  }
+  61%, 100% {
+    transform: scaleX(0) translateX(7px);
   }
 }
 @keyframes swaying-leaves {

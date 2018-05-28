@@ -70,7 +70,6 @@ $(document).ready(function() {
   const prevScroll = localStorage.getItem('scrollTop');
 
   if (prevScroll) {
-    console.log(prevScroll);
     scrollWrapper.scrollTop(prevScroll);
     moveWithScroll({});
   }
