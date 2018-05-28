@@ -2,6 +2,7 @@
 /* eslint no-redeclare: "warn" */
 
 var build_detail_page = function(result) {
+  result['posted_at'] = timeDifference(new Date(), new Date(result['posted_at']));
   var template = $.templates('#job_detail');
 
   html = template.render(result);

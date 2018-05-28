@@ -18,5 +18,5 @@ class JobSerializer(serializers.ModelSerializer):
             'id', 'title', 'description', 'github_profile_link', 'apply_url',
             'is_active', 'skills', 'expiry_date', 'location', 'job_type', 'url',
             'company', 'apply_email', 'posted_by_user_profile_url',
-            'posted_by_gitcoin_username', 'company_avatar'
+            'posted_by_gitcoin_username', 'company_avatar', 'posted_at'
         )

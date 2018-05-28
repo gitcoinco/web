@@ -47,6 +47,7 @@ class Job(models.Model):
     )
     company = models.CharField(_('Company'), max_length=50, null=True, blank=True)
     apply_email = models.EmailField(_('Contact Email for Job'), null=True, blank=True)
+    posted_at = models.DateTimeField(_('Posted At'), null=False, blank=False, default=timezone.now)
     posted_by_gitcoin_username = models.CharField(
         _('Username of person who posted Job'), max_length=50, null=True, blank=True
     )
