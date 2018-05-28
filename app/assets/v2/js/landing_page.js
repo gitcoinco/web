@@ -68,13 +68,16 @@ $(document).ready(function() {
   });
 
   const prevScroll = localStorage.getItem('scrollTop');
+  const lastAccessed = localStorage.getItem('lastAccessed');
 
-  if (prevScroll) {
+  // Preserve scroll position if user was just here
+  if (prevScroll && lastAccessed && new Date().getTime() - lastAccessed < 60 * 1000) {
     scrollWrapper.scrollTop(prevScroll);
     moveWithScroll({});
   }
   // before the current page goes away, save the menu position
   $(window).on('beforeunload', function() {
     localStorage.setItem('scrollTop', scrollWrapper.scrollTop());
+    localStorage.setItem('lastAccessed', new Date().getTime());
   });
 });

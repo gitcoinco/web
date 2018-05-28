@@ -9,7 +9,6 @@ body {
 }
 #landing_page_wrapper {
   overflow-y: scroll;
-  /* height: 100vh; */
 }
 
 .case-studies-container {

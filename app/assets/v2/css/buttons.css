@@ -110,25 +110,49 @@ button:focus {
   background-color: var(--gc-blue);
   color: white;
 }
+.btn-gc-blue:hover {
+  background-color: var(--gc-blue-hover);
+  color: white;
+}
 .btn-outline-gc-blue {
   border-color: var(--gc-blue);
   color: var(--gc-blue);
+}
+.btn-outline-gc-blue:hover {
+  background-color: var(--gc-blue);
+  color: white;
 }
 
 .btn-gc-green {
   background-color: var(--gc-green);
   color: white;
 }
+.btn-gc-green:hover {
+  background-color: var(--gc-green-hover);
+  color: white;
+}
 .btn-outline-gc-green {
   border-color: var(--gc-green);
   color: var(--gc-green);
+}
+.btn-outline-gc-green:hover {
+  background-color: var(--gc-green);
+  color: white;
 }
 
 .btn-gc-purple {
   background-color: var(--gc-purple);
   color: white;
 }
+.btn-gc-purple:hover {
+  background-color: var(--gc-purple-hover);
+  color: white;
+}
 .btn-outline-gc-purple {
   border-color: var(--gc-purple);
   color: var(--gc-purple);
+}
+.btn-outline-gc-purple:hover {
+  background-color: var(--gc-purple);
+  color: white;
 }
