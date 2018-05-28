@@ -407,12 +407,14 @@ def account_settings(request):
 
         if request.POST.get('disconnect', False):
             profile.github_access_token = ''
+            profile.email = ''
             profile.save()
             messages.success(request, _('Your account has been disconnected from Github'))
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
         if request.POST.get('delete', False):
             profile.hide_profile = True
+            profile.email = ''
             profile.save()
             if es:
                 es.delete()
