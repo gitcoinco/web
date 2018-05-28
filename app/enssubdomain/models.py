@@ -44,9 +44,7 @@ class ENSSubdomainRegistration(SuperModel):
     signed_msg = models.TextField()
     start_nonce = models.IntegerField(default=0)
     end_nonce = models.IntegerField(default=0)
+    gas_cost_eth = models.FloatField(default=0.000649197)
 
     def __str__(self):
-        try:
-            return f"{self.profile.handle} at {self.created_on}, {self.start_nonce} => {self.end_nonce}"
-        except:
-            return None
+        return f"{self.profile.handle if self.profile else 'unknown'} at {self.created_on}, {self.start_nonce} => {self.end_nonce}"

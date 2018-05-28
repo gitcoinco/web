@@ -44,6 +44,14 @@ from .models import ENSSubdomainRegistration
 
 mock_request = settings.DEBUG
 
+RESOLVER_GAS_COST = 100000
+OWNER_GAS_COST = 100000
+SET_ADDRESS_GAS_COST = 100000
+
+
+def getGasPrice():
+    return recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9
+
 
 def handle_default_response(request, github_handle):
     params = {
@@ -97,14 +105,14 @@ def set_resolver(signer, github_handle, nonce):
     resolver_addr = ns.address('resolver.eth')
     signer = Web3.toChecksumAddress(signer)
     txn_hash = None
-    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9
+    gasPrice = getGasPrice()
     subdomain = f"{github_handle}.{settings.ENS_TLD}"
 
     transaction = {
         'from': Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
         'value': 0,
         'nonce': nonce,
-        'gas':  Web3.toHex(100000),
+        'gas':  Web3.toHex(RESOLVER_GAS_COST),
         'gasPrice': Web3.toHex(int(float(gasPrice))),
     }
 
@@ -133,13 +141,13 @@ def set_owner(signer, github_handle, nonce):
     owned = settings.ENS_TLD
     label = github_handle
     txn_hash = None
-    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9
+    gasPrice = getGasPrice()
 
     transaction = {
         'from': Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
         'value': 0,
         'nonce': nonce,
-        'gas':  Web3.toHex(100000),
+        'gas':  Web3.toHex(OWNER_GAS_COST),
         'gasPrice': Web3.toHex(int(float(gasPrice))),
     }
 
@@ -171,14 +179,14 @@ def set_address_at_resolver(signer, github_handle, nonce):
     resolver_addr = ns.address('resolver.eth')
     signer = Web3.toChecksumAddress(signer)
     txn_hash = None
-    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9
+    gasPrice = getGasPrice()
     subdomain = f"{github_handle}.{settings.ENS_TLD}"
 
     transaction = {
         'from': Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
         'value': 0,
         'nonce': nonce,
-        'gas':  Web3.toHex(100000),
+        'gas':  Web3.toHex(SET_ADDRESS_GAS_COST),
         'gasPrice': Web3.toHex(int(float(gasPrice))),
     }
 
@@ -235,6 +243,8 @@ def handle_subdomain_post_request(request, github_handle):
         nonce += 1
         txn_hash_3 = set_address_at_resolver(signer, github_handle, nonce)
 
+        gasPrice = getGasPrice()
+        gas_cost_eth = (RESOLVER_GAS_COST + OWNER_GAS_COST + SET_ADDRESS_GAS_COST) * gasPrice / 10**18
         profile = Profile.objects.filter(handle=github_handle).first()
         ENSSubdomainRegistration.objects.create(
             profile=profile,
@@ -246,6 +256,7 @@ def handle_subdomain_post_request(request, github_handle):
             signed_msg=signedMsg,
             start_nonce=start_nonce,
             end_nonce=nonce,
+            gas_cost_eth=gas_cost_eth,
             )
         return JsonResponse(
             {'success': True, 'msg': _('Your request has been submitted. Please wait for the transaction to mine!')})
