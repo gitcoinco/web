@@ -49,11 +49,27 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
+.howworks-toggle-container {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, min-content);
+  grid-template-rows: min-content 2px;
+  justify-content: center;
+}
 .howworks-section-toggle {
   background: transparent;
   outline: none;
   border: none;
   cursor: pointer;
+  padding: 0 1rem;
+}
+#howworks-toggle-indicator {
+  background: var(--gc-blue);
+  transition: transform .3s, left .3s;
+  left: 0;
+  transform-origin: left;
+  grid-column: 1;
+  position: relative;
 }
 .howworks-section-toggle:hover, .howworks-section-toggle:active, .howworks-section-toggle:focus {
   color: var(--gc-blue) !important;
@@ -61,7 +77,21 @@ body {
 
 .howworks-section-toggle.active {
   color: var(--gc-blue);
-  text-decoration: underline;
+}
+
+.howworks-sections {
+  width: 100%;
+  position: relative;
+  left: 0;
+  transition: left .3s;
+}
+.howworks-sections.contributor-section {
+  left: -100%;
+}
+.howworks-section {
+  width: 100%;
+  flex-shrink: 0;
+  padding: 0 2rem;
 }
 .howworks-step {
   position: relative;

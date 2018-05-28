@@ -57,15 +57,30 @@ $(document).ready(function() {
   scrollWrapper.scroll(moveWithScroll);
   moveBackground({});
 
+  const $toggleIndicator = $('#howworks-toggle-indicator');
+
   // How It Works section toggle
-  $('#funder-toggle').click(function(e) {
-    $('#funder-toggle').addClass('active');
-    $('#contributor-toggle').removeClass('active');
-  });
-  $('#contributor-toggle').click(function(e) {
-    $('#funder-toggle').removeClass('active');
-    $('#contributor-toggle').addClass('active');
-  });
+  const $funderToggle = $('#funder-toggle');
+  const $contributorToggle = $('#contributor-toggle');
+  const $sections = $('.howworks-sections');
+
+  function switchToFunder(e) {
+    $funderToggle.addClass('active');
+    $contributorToggle.removeClass('active');
+    $toggleIndicator.css('transform', 'scaleX(1)');
+    $toggleIndicator.css('left', '0');
+    $sections.removeClass('contributor-section');
+  }
+  function switchToContributor(e) {
+    $funderToggle.removeClass('active');
+    $contributorToggle.addClass('active');
+    $toggleIndicator.css('transform', `scaleX(${$contributorToggle.innerWidth() / $funderToggle.innerWidth()})`);
+    $toggleIndicator.css('left', `${$funderToggle.innerWidth()}px`);
+    $sections.addClass('contributor-section');
+  }
+  $funderToggle.click(switchToFunder);
+  $contributorToggle.click(switchToContributor);
+  switchToContributor();
 
   const prevScroll = localStorage.getItem('scrollTop');
   const lastAccessed = localStorage.getItem('lastAccessed');

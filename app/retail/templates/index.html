@@ -171,53 +171,66 @@
         </div>
       </div>
 
-      <div class="container-fluid p-5 howworks_container">
-        <div class="row mb-3 justify-content-center">
+      <div class="container-fluid py-5 px-0 howworks_container">
+        <div class="mb-3 howworks-toggle-container">
           <button type="button" id="funder-toggle" class="howworks-section-toggle">
             Funder
           </button>
           <button type="button" id="contributor-toggle" class="howworks-section-toggle active">
             Contributor
           </button>
+          <div id="howworks-toggle-indicator"></div>
         </div>
-        <div class="row mb-5">
-          <div class="col text-center">
-            <h1>{% trans "Do This. Easily." %}</h1>
+        <div class="howworks-sections d-flex">
+          <div class="howworks-section">
+            <div class="row mb-5">
+              <div class="col text-center">
+                <h1>{% trans "Funder Section Copy" %}</h1>
+              </div>
+            </div>
+
           </div>
-        </div>
-        <div class="howworks-steps">
-          <div class="howworks-step">
-            <div class="howworks-step__label">1</div>
-            <h3>Find a Bounty on the Issue Explorer</h3>
-            <p>
-              Whether it's Bugs, Features, or Security Issues, Gitcoin's
-              <a href="{% url "explorer" %}">Issue Explorer</a> is the easiest way to find paid work in open source.
+          <div class="howworks-section">
+            <div class="row mb-5">
+              <div class="col text-center">
+                <h1>{% trans "Do This. Easily." %}</h1>
+              </div>
+            </div>
+            <div class="howworks-steps">
+              <div class="howworks-step">
+                <div class="howworks-step__label">1</div>
+                <h3>Find a Bounty on the Issue Explorer</h3>
+                <p>
+                  Whether it's Bugs, Features, or Security Issues, Gitcoin's
+                  <a href="{% url "explorer" %}">Issue Explorer</a> is the easiest way to find paid work in open source.
+                </p>
+              </div>
+              <div class="howworks-step">
+                <div class="howworks-step__label">2</div>
+                <h3>Build Something Great</h3>
+                <p>
+                  Select an open issue, work on a project, collaborate, build your
+                  skills, and contribute towards the open source projects.
+                </p>
+              </div>
+              <div class="howworks-step">
+                <div class="howworks-step__label">3</div>
+                <h3>Submit Work and Get Paid</h3>
+                <p>
+                  Payments are Ethereum-based, & released automatically after code is
+                  accepted by the bounty submitter.
+                </p>
+              </div>
+            </div>
+            <a href="" class="btn btn-gc-blue m-4">
+              <i class="fas fa-play" aria-hidden="true"></i>
+              How to Use Gitcoin in 30 Seconds
+            </a>
+            <p>Gitcoin is a bounty-based collaboration tool that works easily with Github.
+              <i class="fab fa-github" aria-hidden="true"></i>
             </p>
           </div>
-          <div class="howworks-step">
-            <div class="howworks-step__label">2</div>
-            <h3>Build Something Great</h3>
-            <p>
-              Select an open issue, work on a project, collaborate, build your
-              skills, and contribute towards the open source projects.
-            </p>
-          </div>
-          <div class="howworks-step">
-            <div class="howworks-step__label">3</div>
-            <h3>Submit Work and Get Paid</h3>
-            <p>
-              Payments are Ethereum-based, & released automatically after code is
-              accepted by the bounty submitter.
-            </p>
-          </div>
         </div>
-        <a href="" class="btn btn-gc-blue m-4">
-          <i class="fas fa-play" aria-hidden="true"></i>
-          How to Use Gitcoin in 30 Seconds
-        </a>
-        <p>Gitcoin is a bounty-based collaboration tool that works easily with Github.
-          <i class="fab fa-github" aria-hidden="true"></i>
-        </p>
       </div>
 
       <div class="container-fluid p-5 case-studies-container">
