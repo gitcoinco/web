@@ -72,6 +72,10 @@ span {
 #tutorials li{
   list-style: none;
 }
+#tutorials img{
+  max-width: 300px;
+  width: 100%;
+}
 
 .tutorial_item{
   background-color: #fff;
