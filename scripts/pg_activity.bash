@@ -19,8 +19,9 @@ END
 
 # Settings
 PGUSER=${PGUSER:-'postgres'}
+PGPASSWORD=${PGPASSWORD:-'postgres'}
+PGDATABASE=${PGDATABASE:-'postgres'}
 PGHOST=${PGHOST=-'db'}
-PGPORT=${PGPORT=-'5432'}
 
-echo "version: $(pg_top --version)"
-exec pg_top -U "$PGUSER" -p "$PGPORT" -h "$PGHOST"
+echo "version: $(/usr/local/bin/pg_activity --version)"
+exec /usr/local/bin/pg_activity -U "$PGUSER" -h "$PGHOST" -d "$PGDATABASE"
