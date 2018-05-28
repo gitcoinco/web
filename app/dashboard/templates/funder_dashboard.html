@@ -1,3 +1,169 @@
-<div>
-  Welcome to the Funder Dashboard!
-</div>
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/funder_dashboard.css" %}"
+  </head>
+
+  <style>
+    .funder-dashboard__header {
+      background-color: #3e00ff;
+    }
+
+    .funder-dashboard__header__hero {
+      letter-spacing: 0.100rem;
+      font-size: 2.7rem;
+    }
+
+    .funder-dashboard__dashboard__wrapper {
+      background-color: #eff3f6;
+    }
+
+    .funder-dashboard__dashboard {
+      height: 1200px;
+
+      position: relative;
+      top: -50px;
+    }
+
+    .funder-dashboard__whats-next__rocket {
+      /* TODO: replace this placeholder with the actual image */
+      height: 64px;
+      width: 64px;
+      background-color: gray;
+    }
+
+    .funder-dashboard__whats-next__rocket-text {
+      color: #3e00ff;
+    }
+
+
+    .funder-dashboard__whats-next__expiring-bounties {
+      font-size: 1.2rem;
+    }
+
+    .funder-dashboard__whats-next__expiring-bounties a {
+      color: #3e00ff;
+    }
+
+    .funder-dashboard__whats-next__new-comments {
+      font-size: 1.2rem;
+    }
+
+    .funder-dashboard__whats-next__new-comments a {
+      color: #3e00ff;
+    }
+  </style>
+  <body>
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header">
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="funder-dashboard">
+      <div class="funder-dashboard__header container-fluid pt-4 pb-4">
+        <div class="row">
+          <div class="col">
+            <h1 class="funder-dashboard__header__hero text-white text-center text-capitalize pt-5 pb-4">
+              {% trans "Dashboard" %}
+            </h1>
+          </div>
+        </div>
+        <div class=" row ">
+          <div class="col pb-4">
+            <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="funder-dashboard__dashboard__wrapper container-fluid">
+        <div class="row">
+          <div class="col-lg"></div>
+          <div class="col-12 col-lg-9 funder-dashboard__dashboard">
+            <div class="funder-dashboard__whats-next card pt-1 pb-1">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-3 funder-dashboard__whats-next__rocket-wrapper
+                              d-flex align-items-center justify-content-center">
+                    <div class="funder-dashboard__whats-next__rocket align-middle">
+                    </div>
+                    <div class="funder-dashboard__whats-next__rocket-text text align-middle pl-2 text-uppercase">
+                      {% trans "What's next" %}
+                    </div>
+                  </div>
+                  <div class="col-9 funder-dashboard__whats-next__items">
+                    <!-- should be a default message saying they have no expiring bounties in the next 7 days if they
+                     don't have any -->
+                    <div class="funder-dashboard__whats-next__expiring-bounties">
+                      You have 2 bounties expiring in 3 days! <a href="#" class="">view bounties</a>
+                    </div>
+                    <!-- should have a default message saying they don't have any new comments on their funded
+                    issues -->
+                    <div class="funder-dashboard__whats-next__new-comments">
+                      3 contributors have commented on your open issues. <a href="#" class="">view comments</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg"></div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid " style="background: white;">
+      <div class="row pb-5 pt-5">
+        <div class="col pb-4">
+        </div>
+      </div>
+      <div class=" row ">
+        <div class="col pb-4">
+          <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid white-light-bg font-body"  id="origin_story">
+      <div class="row">
+        <div class="col pb-4">
+        </div>
+      </div>
+      <div class="row col-12 offset-lg-1 col-lg-10 animatedParent">
+        <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
+          <p>
+          </p>
+        </div>
+        <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
+        </div>
+      </div>
+      <div class="row col-12 offset-lg-1 col-lg-10 animatedParent">
+        <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
+        </div>
+        <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
+        </div>
+      </div>
+    </div>
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/messages.html' %}
+  </body>
+</html>
