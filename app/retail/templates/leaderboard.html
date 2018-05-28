@@ -81,7 +81,7 @@
                         @{{item.github_username}}
                       </a>
                     </td>
-                    <td class="col-6 progress_container">
+                    <td class="col-5 progress_container">
                       <div class="progress ">
                         {% with forloop.counter0 as index %}
                           <div class="progress-bar progress-bar-striped bg-success"
@@ -93,8 +93,11 @@
                         {% endwith %}
                       </div>
                     </td>
-                    <td class="col-2 d-flex align-items-center item-amount">
-                      ${{item.amount}}
+                    <td class="col-1 d-flex align-items-center item-count item-count-bounties">
+                      {{item.count}} bounties
+                    </td>
+                    <td class="col-2 d-flex align-items-center item-amount item-amount-revenue">
+                      ${{item.amount|intcomma}}
                     </td>
                   </tr>
                 {% endfor %}
