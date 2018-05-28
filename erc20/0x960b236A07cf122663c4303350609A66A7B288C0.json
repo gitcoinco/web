@@ -1,4 +1,17 @@
 {
-  "symbol": "ANT",
-  "address": "0x960b236A07cf122663c4303350609A66A7B288C0"
+    "website":"https://aragon.network/",
+    "published_on":"2017-05-17",
+    "links":{
+        "twitter":"https://twitter.com/AragonProject"
+    },
+    "overview":{
+        "en":"Create and manage unstoppable organizations. Aragon lets you manage entire organizations using the blockchain. This makes Aragon organizations more efficient than their traditional counterparties.",
+        "zh":"Aragon 是以太坊区块链上的一个可以让任何人创建和管理任意组织（公司、开源项目、非政府组织、基金会、对冲基金…）的 DApp。"
+    },
+    "symbol":"ANT",
+    "initial_price":{
+        "USD":"0.92 USD"
+    },
+    "address":"0x960b236A07cf122663c4303350609A66A7B288C0",
+    "email":"founders@aragon.one"
 }

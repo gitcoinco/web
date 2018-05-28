@@ -1,13 +1,19 @@
 {
   "symbol": "Token symbol",
   "address": "Contract Address",
-  "overview": "Token Description",
+  "overview":{
+        "en":"Token Description."
+  },
   "email": "Email",
   "website": "https://your-awesome-project.com/",
   "whitepaper": "https://your-awesome-project.com/file.pdf",
   "state": "LOCKED",
   "published_on": "2018-01-01",
-  "initial_price": "2000:1 ETH",
+  "initial_price":{
+        "ETH":"0.00166666 ETH",
+        "USD":"0.7 USD",
+        "BTC":"0.00004137 BTC"
+  },
   "links": {
     "blog": "https://your-awesome-project.com/blog",
     "twitter": "https://twitter.com/your-awesome-project",

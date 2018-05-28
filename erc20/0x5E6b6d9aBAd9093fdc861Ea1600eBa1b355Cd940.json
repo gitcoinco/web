@@ -1,4 +1,19 @@
 {
-  "symbol": "ITC",
-  "address": "0x5E6b6d9aBAd9093fdc861Ea1600eBa1b355Cd940"
+    "website":"https://iotchain.io/",
+    "links":{
+        "reddit":"https://www.reddit.com/r/itcofficial/",
+        "github":"https://github.com/IoTChainCode",
+        "slack":"https://iotchaingroup.slack.com/",
+        "telegram":"https://t.me/IoTChain",
+        "twitter":"https://twitter.com/IoT_Chain",
+        "facebook":"https://www.facebook.com/IoTChain/"
+    },
+    "overview":{
+        "en":"IoT Chain aims to be a A High Security Lite IoT OS.",
+        "zh":"ITC 旨在打造一个基于区块链的高度安全的物联网轻操作系统。"
+    },
+    "symbol":"ITC",
+    "whitepaper":"https://iotchain.io/pdf/ITCWHITEPAPER.pdf",
+    "address":"0x5e6b6d9abad9093fdc861ea1600eba1b355cd940",
+    "email":"support@iotchain.io"
 }

@@ -1,4 +1,20 @@
 {
-  "symbol": "IOST",
-  "address": "0xFA1a856Cfa3409CFa145Fa4e20Eb270dF3EB21ab"
+    "website":"https://iost.io/",
+    "published_on":"2018-01-11",
+    "links":{
+        "telegram":"https://t.me/officialios",
+        "twitter":"https://twitter.com/iostoken"
+    },
+    "overview":{
+        "en":"A Secure & Scalable Blockchain for Smart Services.",
+        "zh":"Internet of Services(IOS)为在线服务提供商提供安全和可扩展的区块链基础设施。"
+    },
+    "symbol":"IOST",
+    "initial_price":{
+        "ETH":"0.00001 ETH",
+        "USD":"0.01 USD"
+    },
+    "whitepaper":"https://docsend.com/view/ihwqcdg",
+    "address":"0xfa1a856cfa3409cfa145fa4e20eb270df3eb21ab",
+    "email":"team@iost.io"
 }

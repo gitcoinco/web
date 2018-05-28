@@ -1,4 +1,21 @@
 {
-  "symbol": "RLC",
-  "address": "0x607F4C5BB672230e8672085532f7e901544a7375"
+    "website":"http://iex.ec/",
+    "published_on":"2017-04-19",
+    "links":{
+        "reddit":"https://www.reddit.com/r/iexec/",
+        "github":"https://github.com/iExecBlockchainComputing",
+        "facebook":"https://www.facebook.com/iexecteam/",
+        "twitter":"https://twitter.com/iEx_ec"
+    },
+    "overview":{
+        "en":"Blockchain Based distributed cloud computing.",
+        "zh":"iExec 创建了一个提供商网络，构成了一个虚拟云基础架构。您可以利用此基础架构来运行您的应用程序，或者通过出租您的资源成为提供商之一。"
+    },
+    "symbol":"RLC",
+    "initial_price":{
+        "USD":"0.25 USD"
+    },
+    "whitepaper":"https://iex.ec/app/uploads/2017/04/iExec-WPv2.0-English.pdf",
+    "address":"0x607F4C5BB672230e8672085532f7e901544a7375",
+    "email":"contact@iex.ec"
 }

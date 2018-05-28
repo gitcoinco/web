@@ -1,4 +1,20 @@
 {
-  "symbol": "RDN",
-  "address": "0x255Aa6DF07540Cb5d3d297f0D0D4D84cb52bc8e6"
+    "website":"https://raiden.network/",
+    "published_on":"2017-10-18",
+    "links":{
+        "reddit":"https://www.reddit.com/r/raidennetwork/",
+        "github":"https://github.com/raiden-network/raiden/",
+        "twitter":"https://twitter.com/raiden_network"
+    },
+    "overview":{
+        "en":"The Raiden Network is an off-chain scaling solution, enabling near-instant, low-fee and scalable payments. It’s complementary to the Ethereum blockchain and works with any ERC20 compatible token.",
+        "zh":"雷电网络(Raiden Network)是一个 ERC-20 代币的链外传输网络，相比于链上的代币传输，雷电网络提供了一个快速的、可扩展的和经济的选择。"
+    },
+    "symbol":"RDN",
+    "initial_price":{
+        "ETH":"0.00213663 ETH",
+        "USD":"0.67 USD"
+    },
+    "address":"0x255aa6df07540cb5d3d297f0d0d4d84cb52bc8e6",
+    "email":"contact@raiden.network"
 }

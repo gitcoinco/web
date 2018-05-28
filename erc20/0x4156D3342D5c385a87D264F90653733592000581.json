@@ -1,0 +1,20 @@
+{
+    "website":"https://saltlending.com/",
+    "published_on":"2017-08-01",
+    "links":{
+        "telegram":"https://t.me/joinchat/BmtZ5kKgf4ekiNLggHRDmQ",
+        "twitter":"https://twitter.com/SALTLending",
+        "facebook":"http://facebook.com/SALTLENDING/"
+    },
+    "overview":{
+        "en":"SALT lets you leverage your blockchain assets to secure cash loans. We make it easy to get money without having to sell your favorite investment.",
+        "zh":"用户可通过 SALT 以区块链资产为杠杆来取得现金贷款。 "
+    },
+    "symbol":"SALT",
+    "initial_price":{
+        "ETH":"0.0032806 ETH",
+        "USD":"0.94 USD"
+    },
+    "address":"0x4156D3342D5c385a87D264F90653733592000581",
+    "email":"support@saltlending.com"
+}

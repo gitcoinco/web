@@ -1,0 +1,23 @@
+{
+    "website":"https://dentacoin.com/",
+    "published_on":"2017-10-01",
+    "links":{
+        "reddit":"https://www.reddit.com/r/Dentacoin/",
+        "github":"https://github.com/Dentacoin",
+        "facebook":"https://www.facebook.com/dentacoin/",
+        "slack":"https://dentacoin.slack.com/",
+        "twitter":"https://twitter.com/dentacoin"
+    },
+    "overview":{
+        "en":"Aims to be the blockchain solution for the global dental industry.",
+        "zh":"Dentacoin 致力于为全球牙科行业提供区块链解决方案。"
+    },
+    "symbol":"Dentacoin",
+    "initial_price":{
+        "ETH":"0.0000004 ETH",
+        "USD":"0.0001 USD"
+    },
+    "whitepaper":"https://www.dentacoin.com/white-paper/Whitepaper-en%20v.1.0.pdf",
+    "address":"0x08d32b0da63e2C3bcF8019c9c5d849d7a9d791e6",
+    "email":"admin@dentacoin.com"
+}

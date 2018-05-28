@@ -1,0 +1,22 @@
+{
+    "website":"https://hive-project.net/",
+    "published_on":"2017-09-11",
+    "links":{
+        "reddit":"https://www.reddit.com/r/HiveProject_net/",
+        "github":"https://github.com/HiveProjectLtd",
+        "facebook":"https://www.facebook.com/HiveProject.net/",
+        "slack":"https://hiveprojectnet.herokuapp.com/",
+        "twitter":"https://twitter.com/hiveproject_net"
+    },
+    "overview":{
+        "en":"A blockchain based platform providing you fast and low-cost liquidity.",
+        "zh":"Hive Project 是一个基于区块链技术的平台，快速廉价的服务于中小型企业。"
+    },
+    "symbol":"HVN",
+    "initial_price":{
+        "USD":"0.02 USD"
+    },
+    "whitepaper":"https://www.hive-project.net/whitepapers/Hive_Project_Whitepaper.pdf?v2",
+    "address":"0xC0Eb85285d83217CD7c891702bcbC0FC401E2D9D",
+    "email":"info@hive-project.net"
+}

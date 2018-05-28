@@ -1,0 +1,21 @@
+{
+    "website":"https://www.metalpay.com/",
+    "published_on":"2017-06-09",
+    "links":{
+        "telegram":"https://t.me/metalpay",
+        "twitter":"https://twitter.com/metalpaysme",
+        "facebook":"https://www.facebook.com/metalpaysme/",
+        "slack":"https://metalpay.chat/"
+    },
+    "overview":{
+        "en":"Transfer money instantly around the globe with nothing more than a phone number. Earn rewards every time you spend or make a purchase. Ditch the bank and go digital.",
+        "zh":"Metal 是一款数字资产存储支付钱包，通过“加工付款证明”(PoPP)的方式分配代币。"
+    },
+    "symbol":"MTL",
+    "initial_price":{
+        "USD":"0.18 USD"
+    },
+    "whitepaper":"https://www.metalpay.com/assets/pdf/whitepaper.pdf",
+    "address":"0xF433089366899D83a9f26A773D59ec7eCF30355e",
+    "email":"support@metalpay.co"
+}

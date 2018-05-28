@@ -1,4 +1,19 @@
 {
-  "symbol": "IHT",
-  "address": "0xEda8B016efA8b1161208Cf041cD86972eeE0F31E"
+    "website":"https://ihtcoin.com/",
+    "published_on":"2018-01-01",
+    "links":{
+        "telegram":"https://t.me/IHTcoin",
+        "twitter":"https://twitter.com/ihtcoin",
+        "facebook":"https://www.facebook.com/ihtcoin/"
+    },
+    "overview":{
+        "en":"Real Estate Blockchain Cloud Platform.",
+        "zh":"IHT 是 i-house.com 项下开发的专门用于拆分不动产的智能合约技术和分布式记账技术。"
+    },
+    "symbol":"IHT",
+    "initial_price":{
+        "ETH":"0.00009524 ETH"
+    },
+    "address":"0xeda8b016efa8b1161208cf041cd86972eee0f31e",
+    "email":"investment@ihtcoin.com"
 }

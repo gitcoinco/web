@@ -1,4 +1,22 @@
 {
-  "symbol": "PAY",
-  "address": "0xB97048628DB6B661D4C2aA833e95Dbe1A905B280"
+    "website":"http://www.tenx.tech/",
+    "published_on":"2017-06-24",
+    "links":{
+        "reddit":"https://www.reddit.com/r/TenX/",
+        "facebook":"https://www.facebook.com/tenxwallet/",
+        "slack":"https://ten-x.herokuapp.com/",
+        "twitter":"https://twitter.com/tenxwallet"
+    },
+    "overview":{
+        "en":"TenX connects your blockchain assets for everyday use. TenX’s debit card and banking licence will allow us to be a hub for the blockchain ecosystem to connect for real-world use cases.",
+        "zh":"TenX 的目标是建立一个连接现实世界和区块链网络的支付系统。"
+    },
+    "symbol":"PAY",
+    "initial_price":{
+        "ETH":"0.00285714 ETH",
+        "USD":"0.87 USD"
+    },
+    "whitepaper":"http://www.tenx.tech/whitepaper/tenx_whitepaper_final.pdf",
+    "address":"0xB97048628DB6B661D4C2aA833e95Dbe1A905B280",
+    "email":"team@tenx.tech"
 }

@@ -1,4 +1,20 @@
 {
-  "symbol": "STORJ",
-  "address": "0xB64ef51C888972c908CFacf59B47C1AfBC0Ab8aC"
+    "website":"https://storj.io/",
+    "published_on":"2017-05-19",
+    "links":{
+        "reddit":"https://www.reddit.com/r/storj/",
+        "github":"https://github.com/Storj/",
+        "facebook":"https://www.facebook.com/storjproject",
+        "twitter":"https://twitter.com/storjproject"
+    },
+    "overview":{
+        "en":"Blockchain-based, end-to-end encrypted, distributed object storage, where only you have access to your data.",
+        "zh":"Storj 是一个不会停机的云存储平台。Storj 的平台通过加密和一系列分散的应用程序，允许用户以安全和分散的方式存储数据。"
+    },
+    "symbol":"STORJ",
+    "initial_price":{
+        "USD":"0.50 USD"
+    },
+    "whitepaper":"https://storj.io/storj.pdf",
+    "address":"0xb64ef51c888972c908cfacf59b47c1afbc0ab8ac"
 }

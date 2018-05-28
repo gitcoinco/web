@@ -1,0 +1,23 @@
+{
+    "website":"https://suncontract.org",
+    "published_on":"2017-06-28",
+    "links":{
+        "telegram":"https://t.me/joinchat/GL05EULsRTS7hxxMfXCTVw",
+        "reddit":"https://www.reddit.com/r/suncontract/",
+        "github":"https://github.com/SunContract/",
+        "facebook":"https://www.facebook.com/suncontractorg/",
+        "twitter":"https://twitter.com/sun_contract"
+    },
+    "overview":{
+        "en":"The SunContract platform aims to empower individuals, with an emphasis on home owners, to freely buy, sell or trade electricity.",
+        "zh":"SunContract 是一个直接将能源生产者和消费者连接到能源池的智能合约平台。"
+    },
+    "symbol":"SNC",
+    "initial_price":{
+        "ETH":"0.00006332 ETH",
+        "USD":"0.02 USD",
+        "BTC":"0.00000776 BTC"
+    },
+    "whitepaper":"https://suncontract.org/res/whitepaper.pdf",
+    "address":"0xF4134146AF2d511Dd5EA8cDB1C4AC88C57D60404"
+}

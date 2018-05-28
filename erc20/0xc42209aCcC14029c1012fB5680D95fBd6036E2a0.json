@@ -1,0 +1,22 @@
+{
+    "website":"https://www.paypie.com/",
+    "published_on":"2017-10-08",
+    "links":{
+        "telegram":"https://t.me/PayPieTokens",
+        "reddit":"https://www.reddit.com/r/PayPie/",
+        "facebook":"https://www.facebook.com/PayPiePlatform",
+        "twitter":"https://twitter.com/PayPiePlatform"
+    },
+    "overview":{
+        "en":"PayPie platform brings ultimate trust and transparency to the financial markets by introducing the world’s first risk score algorithm based on business accounting.",
+        "zh":"PayPie 将区块链技术与会计软件集成在一起，致力于改变企业的传统会计和审计模式。"
+    },
+    "symbol":"PPP",
+    "initial_price":{
+        "ETH":"0.0011 ETH",
+        "USD":"0.34 USD"
+    },
+    "whitepaper":"https://www.paypie.com/Content/files/PayPie-Whitepaper-English.pdf",
+    "address":"0xc42209aCcC14029c1012fB5680D95fBd6036E2a0",
+    "email":"help@paypie.com"
+}

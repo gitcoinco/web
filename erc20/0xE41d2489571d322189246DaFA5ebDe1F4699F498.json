@@ -1,4 +1,20 @@
 {
-  "symbol": "ZRX",
-  "address": "0xE41d2489571d322189246DaFA5ebDe1F4699F498"
+    "website":"https://0xproject.com/",
+    "published_on":"2017-08-12",
+    "links":{
+        "twitter":"https://twitter.com/0xproject",
+        "github":"https://github.com/0xProject",
+        "slack":"https://0xproject.slack.com/"
+    },
+    "overview":{
+        "en":"An open protocol for decentralized exchange of Ethereum tokens.",
+        "zh":"0x 是一个无需许可的开源协议，用于促进以太坊区块链中 ERC20 代币的交易。"
+    },
+    "symbol":"ZRX",
+    "initial_price":{
+        "ETH":"0.00016 ETH",
+        "USD":"0.048 USD"
+    },
+    "whitepaper":"https://0xproject.com/pdfs/0x_white_paper.pdf",
+    "address":"0xe41d2489571d322189246dafa5ebde1f4699f498"
 }

@@ -1,0 +1,16 @@
+{
+    "website":"http://blockchain.capital/",
+    "published_on":"2017-04-10",
+    "links":{
+        "twitter":"https://twitter.com/blockchaincap"
+    },
+    "overview":{
+        "en":"Blockchain Capital is a pioneer and the premier venture capital firm investing in Blockchain enabled technology.",
+        "zh":"区块链投资基金。"
+    },
+    "symbol":"BCAP",
+    "initial_price":{
+        "USD":"1.0 USD"
+    },
+    "address":"0xff3519eeeea3e76f1f699ccce5e23ee0bdda41ac"
+}

@@ -1,4 +1,22 @@
 {
-  "symbol": "C20",
-  "address": "0x26E75307Fc0C021472fEb8F727839531F112f317"
+    "website":"https://crypto20.com/",
+    "published_on":"2017-10-16",
+    "links":{
+        "reddit":"https://www.reddit.com/r/cryptotwenty/",
+        "github":"https://github.com/cryptotwenty",
+        "facebook":"https://www.facebook.com/cryptotwenty/",
+        "slack":"https://discordapp.com/invite/cgZd4uc",
+        "twitter":"https://twitter.com/CRYPTOtwenty"
+    },
+    "overview":{
+        "en":"Tokenized Crypto Index Fund.",
+        "zh":"Crypto20 是一种自主式加密货币指数基金。"
+    },
+    "symbol":"C20",
+    "initial_price":{
+        "USD":"1.0 USD"
+    },
+    "whitepaper":"https://static.crypto20.com/pdf/c20-whitepaper.pdf",
+    "address":"0x26e75307fc0c021472feb8f727839531f112f317",
+    "email":"contact@crypto20.com"
 }
