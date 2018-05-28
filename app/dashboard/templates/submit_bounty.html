@@ -113,7 +113,7 @@
                     <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
                   </div>
                 </div>
-                <h4>{% trans "Creator Details" %}</h4>
+                <h4 class="mt-5">{% trans "Creator Details" %}</h4>
                 {% include 'shared/github_username.html' %}
                 {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
                 {% include 'shared/name.html' %}
@@ -133,8 +133,10 @@
                       Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
                   </div>
                 </div>
-                <h4>Gas Settings</h4>
+                <h4>{% trans "Gas Settings" %}</h4>
                 <div>
+                  {% include 'shared/bounty_actions_hidden_vars.html' %}
+                  {% include 'shared/wallet_estimate.html' %}
                   <div class="form__footer form__footer--right">
                     <button class="button button--primary btn-block" type="submit" id="submitBounty">Fund Issue</button>
                     <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
