@@ -1223,7 +1223,7 @@ class Profile(SuperModel):
 
     @staticmethod
     def get_network():
-        return 'mainnet' 
+        return 'mainnet'
 
     def get_fulfilled_bounties(self, network=None):
         network = network or self.get_network()
@@ -1261,14 +1261,20 @@ class Profile(SuperModel):
             float: The total sum of all ETH of the provided type.
 
         """
+        eth_sum = 0
+
         if sum_type == 'funded':
             obj = self.bounties_funded.filter(network=network)
         elif sum_type == 'collected':
             obj = self.get_fulfilled_bounties()
 
-        eth_sum = obj.aggregate(
-            Sum('value_in_eth')
-        )['value_in_eth__sum'] / 10**18 if obj.exists() else 0
+        try:
+            if obj.exists():
+                eth_sum = obj.aggregate(
+                    Sum('value_in_eth')
+                )['value_in_eth__sum'] / 10**18
+        except Exception:
+            pass
 
         return eth_sum
 
