@@ -189,6 +189,7 @@ def getBountyContract(network):
 
 def get_bounty(bounty_enum, network):
     if (settings.DEBUG or settings.ENV != 'prod') and network == 'mainnet':
+        # This block will return {} if env isn't prod and the network is mainnet.
         return {}
 
     standard_bounties = getBountyContract(network)
@@ -258,7 +259,10 @@ def get_bounty(bounty_enum, network):
 
 # processes a bounty returned by get_bounty
 def web3_process_bounty(bounty_data):
+    """Process web3 bounty data by creating new or updated Bounty objects."""
+    # Check whether or not the bounty data payload is for mainnet and env is prod or other network and not mainnet.
     if not bounty_data or (settings.DEBUG or settings.ENV != 'prod') and bounty_data.get('network') == 'mainnet':
+        # This block will return None if running in debug/non-prod env and the network is mainnet.
         return None
 
     did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
