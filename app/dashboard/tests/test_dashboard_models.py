@@ -166,7 +166,6 @@ class DashboardModelsTest(TestCase):
         profile = Profile(
             handle='gitcoinco',
             data={'type': 'Organization'},
-            repos_data=[{'contributors': [{'contributions': 50, 'login': 'foo'}]}],
         )
         assert str(profile) == 'gitcoinco'
         assert profile.is_org is True
@@ -197,7 +196,6 @@ class DashboardModelsTest(TestCase):
         profile = Profile.objects.create(
             handle='gitcoinco',
             data={'type': 'Organization'},
-            repos_data=[{'contributors': [{'contributions': 50, 'login': 'foo'}]}],
         )
         vote = ToolVote.objects.create(profile_id=profile.id, value=1)
         tool.votes.add(vote)
