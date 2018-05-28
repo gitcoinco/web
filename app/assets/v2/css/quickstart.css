@@ -102,18 +102,19 @@ body.quickstart {
   width: 100%;
   color: #15003e;
   text-transform: none;
+  letter-spacing: 0;
 }
 
 .issuetypes-container h5 {
   font-size: 1.1rem;
   margin-top: 1rem;
   flex: 1;
+  letter-spacing: 0;
 }
 
 .issuetypes-container p {
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   line-height: 0.9rem;
-  padding: 0 1.7rem;
 }
 
 .notsuggested-container ol {
