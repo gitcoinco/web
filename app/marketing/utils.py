@@ -22,7 +22,6 @@ from django.conf import settings
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
-from marketing.models import EmailSubscriber, Stat
 from slackclient import SlackClient
 from slackclient.exceptions import SlackClientError
 
@@ -30,6 +29,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_stat(key):
+    from marketing.models import Stat
     return Stat.objects.filter(key=key).order_by('-created_on').first().val
 
 
@@ -99,22 +99,17 @@ def validate_slack_integration(token, channel, message=None, icon_url=''):
     return result
 
 
-def should_suppress_notification_email(email, _type='transactional'):
+def should_suppress_notification_email(email, email_type):
+    from marketing.models import EmailSubscriber
     queryset = EmailSubscriber.objects.filter(email__iexact=email)
     if queryset.exists():
-        level = queryset.first().preferences.get('level', '')
-        if _type in ['urgent', 'admin']:
-            return False # these email types are always sent
-        if level == 'nothing':
-            return True
-        if level == 'lite1' and _type == 'transactional':
-            return True
-        if level == 'lite' and _type == 'roundup':
-            return True
+        es = queryset.first()
+        return not es.should_send_email_type_to(email_type)
     return False
 
 
 def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=None):
+    from marketing.models import EmailSubscriber
     defaults = {'source': source, 'email': email}
 
     if profile:

@@ -1,0 +1,200 @@
+/* Profile details */
+
+.profile-header > .container {
+  padding-top: 3.5rem;
+  color: #fff;
+}
+
+.profile-header__avatar {
+  float: left;
+  width: 6.75rem;
+  height: 6.75rem;
+  border: 0.1rem solid #fff;
+  border-radius: 6.875rem;
+}
+
+.profile-header__handle {
+  padding-top: 1.5rem;
+  display: inline-block;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.profile-header__handle small {
+  text-transform: none;
+}
+
+.profile-header__bio {
+  clear: both;
+}
+
+.profile-header__links {
+  margin: 0;
+  padding: 0;
+}
+
+.profile-header__links li {
+  float: left;
+  margin-right: 2em;
+  list-style-type: none;
+}
+
+
+.profile-header__links a {
+  color: #fff;
+}
+
+.profile-header__links img {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.5em;
+  filter: invert(100%);
+}
+
+@media (max-width: 767.98px) {
+  .profile-header__main-infos {
+    text-align: center;
+  }
+
+  .profile-header__avatar {
+    float: none;
+    margin-right: 0!important;
+  }
+
+  .profile-header__handle {
+    display: block;
+  }
+
+  .profile-header__links li {
+    text-align: center;
+    float: none;
+    margin-right: 0;
+  }
+}
+
+
+.profile-header__stats {
+  background-color: transparent;
+}
+
+.profile-header__stats .card-header {
+  padding: 0 0.7rem;
+  color: #0D0764;
+  text-transform: uppercase;
+  font-size: 1.4rem;
+  border-radius: 0;
+}
+
+.profile-header__stats .card-body {
+  padding: 0.7rem;
+  font-size: 1.2rem;
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .profile-header__stats .card-header {
+    padding: 0 0.5rem;
+    font-size: 1.2rem;
+  }
+
+  .profile-header__stats .card-body {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+}
+
+.profile-header__stats ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-header__stats li {
+  margin: 0.15rem 0 0;
+}
+
+.profile-header__stats li:first-child {
+  margin-top: 0;
+}
+
+.profile-header__stats--contributor {
+  border: 0.2rem solid #25E899;
+}
+
+.profile-header__stats--contributor .card-header {
+  background-color: #25E899;
+}
+
+.profile-header__stats--contributor .highlight {
+  color: #25E899;
+}
+
+.profile-header__stats--funder {
+  border: 0.2rem solid #FFCE08;
+}
+
+.profile-header__stats--funder .card-header {
+  background-color: #FFCE08;
+}
+
+.profile-header__stats--funder .highlight {
+  color: #FFCE08;
+}
+
+.profile-bounties--loading {
+  background-image: url('/static/v2/images/loading_v2.gif');
+  background-repeat: no-repeat;
+  background-position: 0 -1rem;
+  background-size: 4rem;
+  height: 3rem;
+}
+
+.profile-bounties .avatar {
+  max-width: 3.125rem;
+  max-height: 3.125rem;
+}
+
+.profile-bounties .bounty_row {
+  padding: 0;
+  border-top: 0.0625rem solid #D3D3D3;
+}
+
+.profile-bounties .bounty_row--hidden {
+  display: none;
+}
+
+.profile-bounties .bounty-summary {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.profile-bounties .profile-bounties__btn-show-all {
+  border-color: #D3D3D3;
+  font-size: 0.875rem;
+  font-weight: 300;
+}
+.profile-bounties .profile-bounties__btn-show-all:hover,
+.profile-bounties .profile-bounties__btn-show-all:focus,
+.profile-bounties .profile-bounties__btn-show-all:active {
+  border-color: #D3D3D3;
+  color: #6c757d;
+  background-color: #F9F9F9;
+}
+
+.profile-bounties__activities-group {
+  border: 0.0625rem solid #D3D3D3;
+}
+
+.profile-bounties__group-title {
+  color: #0D0764;
+  font-size: 1rem;
+  padding: 0.5rem 0 0.75rem;
+}
+
+.profile_details .bounty_row:first-child {
+  border-top: none;
+}
+.works_with_list img{
+  max-width: 25px;
+}
+/* END Profile details */

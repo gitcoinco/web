@@ -14,7 +14,8 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static cookielaw_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -25,6 +26,7 @@
   <body class="index d-flex flex-column">
     <div id="gitcoin-background"></div>
     {% include 'shared/tag_manager_2.html' %}
+    {% cookielaw_banner %}
     {% include 'shared/nav.html' %}
     <div id="landing_page_wrapper">
       <div class="container-fluid header">

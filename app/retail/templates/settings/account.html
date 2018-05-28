@@ -2,52 +2,96 @@
 {% load i18n static %}
 {% block settings_content %}
 <style type="text/css">
-    .major_button_container{
-        border: 1px solid #090909;
-        padding: 20px;
-    }
-    .major_button_container input{
-        float: right;
-    }
-    .major_button_container input.warning{
-        background-color: #ca001a;
-    }
+  body {
+    font-family: "Muli", sans-serif;
+  }
+
+  h4, h5 {
+    letter-spacing: 0;
+    text-transform: capitalize;
+  }
+
+  .major_button_container {
+    border: 1px solid #090909;
+    padding: 20px;
+  }
+
+  .major_button_container input,
+  .major_button_container a {
+    float: right;
+    color: #FFFFFF !important;
+    width: 7rem;
+    text-align: center;
+  }
+
+  .major_button_container .warning {
+      background-color: #ca001a;
+  }
+
+  .major_button_container p {
+    margin-bottom: 0;
+  }
 </style>
-  <div class="form-group">
-    <h5>{% trans " Account Settings" %}</h5>
+<div class="form-group">
+  <h4 class="font-title mb-4 text-left">{% trans "Account Preferences" %}</h5>
+</div>
+<div class="form-group mb-4">
+  <div class="major_button_container">
+    <form id="disconnect" method="POST" action="{% url 'account_settings' %}">
+      {% csrf_token %}
+      <input type="submit" class="button button--primary" name="disconnect" value="Disconnect">
+    </form>
+    <h5 class="font-subheader">{% trans "Github" %}</h5>
+    <p class="font-body">{% trans "Connected as " %}{{ github_handle }}</p>
   </div>
-  <div class="form-group">
-    <div class="major_button_container">
-        <form id="disconnect" method="POST" action="{% url 'account_settings' %}">
-            {% csrf_token %}
-            <input type="submit" class="button button--primary" name="disconnect" value="Disconnect">
-        </form>
-        <h5>{% trans "Github" %}</h5>
-        <p>{% trans "Connected as " %}{{github_handle}}</p>
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="major_button_container">
-        <form id="delete" method="POST" action="{% url 'account_settings' %}">
-            {% csrf_token %}
-            <input type="submit" class="button button--primary warning" name="delete" value="Delete">
-        </form>
-        <h5>{% trans "Delete My Account" %}</h5>
-        <p>{% trans "This action deletes all of your data" %}</p>
-    </div>
+</div>
+<div class="form-group">
+  <div class="major_button_container">
+    <form id="delete" method="POST" action="{% url 'account_settings' %}">
+      {% csrf_token %}
+      <a id="delete_account" class="button button--primary warning">{% trans "Delete" %}</a>
+      <input type='hidden' class="button button--primary warning" name="delete" value="Delete">
+    </form>
+    <h5 class="font-subheader">{% trans "Delete My Account" %}</h5>
+    <p class="font-body">{% trans "This action deletes all of your data" %}</p>
   </div>
 </div>
 {% endblock %}
 {% block scripts %}
 <script>
-    $("document").ready(function(){
-        $("#delete").submit(function(e){
-            var _continue = confirm({% trans "Are you sure you want to delete all of your data from Gitcoin?" %});
-            if(!_continue){
-                e.preventDefault()
-                return;
-            }
-        });
+  $(document).ready(function() {
+    $("#delete_account").on('click', function(e) {
+      var content = $.parseHTML(
+        '<div>' +
+          '<div class="row">' +
+            '<div class="col-12 closebtn">' +
+              '<a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
+                '<span aria-hidden="true">&times;</span>' +
+              '</a>' +
+            '</div>' +
+            '<div class="col-12 pt-2 pb-2 text-center">' +
+              '<h2 class="font-title">' + gettext('Are you sure you want to delete all of your data from Gitcoin?') + '</h2>' +
+            '</div>' +
+            '<div class="col-12 pt-2 pb-2 font-body">' +
+              '<p>' + gettext('Once you delete your account, there is no going back.') + '<br>' + gettext('Please be certain.') + '</p>' +
+              '<p>' + gettext('This action cannot be undone. This will permanently delete your account, stats, bounties funded and worked upon by you.') + '</p>' +
+              '<p>' + gettext('Your data will not be removed from the Ethereum blockchain, which is immutable. However, this will no longer tie to your Gitcoin account.') + '</p>' +
+            '</div>' +
+            '<div class="col-12 mt-4 mb-2 text-right font-caption">' +
+              '<a rel="modal:close" href="javascript:void" aria-label="Close dialog" class="button button--primary-o mr-3">Cancel</a>' +
+              '<button class="modal-delete button button--warning">Delete</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+      var modal = $(content).appendTo('#delete').modal({
+        modalClass: 'modal delete_account'
+      });
+
+      $(".modal-delete").on('click', function(e) {
+        $('#delete').submit();
+      });
     });
+  });
 </script>
 {% endblock %}
