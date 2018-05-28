@@ -80,8 +80,8 @@
           />
           <span class="icon-text">
           {% blocktrans %}
-            We want to build a world in which anyone has the financial
-            leverage to leave their job.
+            We want to build a world in which everyone has the <strong>financial
+            leverage to leave</strong> their job.
           {% endblocktrans %}
           </span>
         </div>
@@ -95,7 +95,7 @@
           />
           <span class="icon-text">
           {% blocktrans %}
-            We want it to be as easy to find work in software, as it is for an
+            We want it to be as <strong>easy to find work in software</strong>, as it is for an
             Uber driver to find a ride today.
           {% endblocktrans %}
           </span>
@@ -109,7 +109,7 @@
             src="{% static "v2/images/mission/want/incentive.svg" %}"
           />
           <span class="icon-text">
-            {% trans "We want to build a network with aligned incentives." %}
+            {% trans "We want to build a network with <strong>aligned incentives</strong>, especially between capital &amp; labour." %}
           </span>
         </div>
       </div>
@@ -148,7 +148,7 @@
 
           <div class="divider"></div>
 
-          <p>{% trans "Collaborative" %}</p>
+          <p>{% trans "Collaboration" %}</p>
         </div>
 
         <div class="col-6">
@@ -171,7 +171,7 @@
 
           <div class="divider"></div>
 
-          <p>{% trans "Humble" %}</p>
+          <p>{% trans "Humbleness" %}</p>
         </div>
 
         <div class="col-6">
@@ -182,7 +182,7 @@
 
           <div class="divider"></div>
 
-          <p>{% trans "Empathetic" %}</p>
+          <p>{% trans "Empathy" %}</p>
         </div>
       </div>
 
@@ -195,7 +195,7 @@
 
           <div class="divider"></div>
 
-          <p>{% trans "Stress Reducing" %}</p>
+          <p>{% trans "Stress Reducers" %}</p>
         </div>
 
         <div class="col-6">
@@ -206,7 +206,7 @@
 
           <div class="divider"></div>
 
-          <p>{% trans "Inclusive" %}</p>
+          <p>{% trans "Inclusivity" %}</p>
         </div>
       </div>
 
@@ -218,7 +218,7 @@
           />
 
           <div class="divider"></div>
-          <p>{% trans "Give first" %}</p>
+          <p>{% trans "Giving first" %}</p>
         </div>
       </div>
     </div>
@@ -254,7 +254,7 @@
             src="{% static "v2/images/mission/interact/world.svg" %}"
           />
           <span class="icon-text">
-            {% trans "Happen to the world. Don't let the world happen to you." %}
+            {% trans "We happen to the world. We don't let the world happen to us." %}
           </span>
         </div>
       </div>
@@ -263,7 +263,7 @@
         <div class="col-md-10 col-lg-8 d-flex align-items-center">
           <img class="icon" src="{% static "v2/images/mission/interact/book.svg" %}" />
           <span class="icon-text">
-            {% trans "Show, don't tell." %}
+            {% trans "We show, don't tell." %}
           </span>
         </div>
       </div>
@@ -275,7 +275,7 @@
             src="{% static "v2/images/mission/interact/head.svg" %}"
           />
           <span class="icon-text">
-            {% trans "Be thoughtful, clear, and direct." %}
+            {% trans "We are thoughtful, clear, and direct." %}
           </span>
         </div>
       </div>
@@ -287,7 +287,7 @@
             src="{% static "v2/images/mission/interact/scale.svg" %}"
           />
           <span class="icon-text">
-            {% trans "Find a balance between a proactive and reactive strategy." %}
+            {% trans "We seek balance." %}
           </span>
         </div>
       </div>
@@ -299,7 +299,7 @@
             src="{% static "v2/images/mission/interact/goal.svg" %}"
           />
           <span class="icon-text">
-            {% trans "Challenge the status quo / Be willing to be changed." %}
+            {% trans "We challenge the status quo &amp; are willing to be challenged." %}
           </span>
         </div>
       </div>
@@ -311,7 +311,7 @@
             src="{% static "v2/images/mission/interact/hammer.svg" %}"
           />
           <span class="icon-text">
-            {% trans "Fix things twice." %}
+            {% trans "We fix things twice." %}
           </span>
         </div>
       </div>
@@ -323,7 +323,7 @@
             src="{% static "v2/images/mission/interact/microscope.svg" %}"
           />
           <span class="icon-text">
-            {% trans "Identify and validate your assumptions." %}
+            {% trans "We identify and validate our assumptions." %}
           </span>
         </div>
       </div>
@@ -335,7 +335,7 @@
             src="{% static "v2/images/mission/interact/people_care.svg" %}"
           />
           <span class="icon-text">
-            {% trans "Care about people (not just tasks)" %}
+            {% trans "We care about people (not just tasks)" %}
           </span>
         </div>
       </div>
@@ -347,7 +347,7 @@
             src="{% static "v2/images/mission/interact/hear.svg" %}"
           />
           <span class="icon-text">
-            {% trans "Listen - try to understand one another's ideas. Don't just impose your own." %}
+            {% trans "We listen. " %}
           </span>
         </div>
       </div>
@@ -359,7 +359,7 @@
             src="{% static "v2/images/mission/interact/swiss_army.svg" %}"
           />
           <span class="icon-text">
-            {% trans "Pragmatism over dogmatism." %}
+            {% trans "We value pragmatism over dogmatism." %}
           </span>
         </div>
       </div>
@@ -375,6 +375,12 @@
     </div>
   </div>
 </div>
+  <div class="row mt-5 pb-3 animatedParent text-center">
+    <div class="col animated pulse fast">
+      <a class="btn btn-lg btn-warning" role="button" href="{% url "get_gitcoin" %}">{% trans "Get Started" %}</a>
+    </div>
+  </div>
+
 {% include 'shared/footer.html' %}
 {% include 'shared/analytics.html' %}
 {% include 'shared/footer_scripts.html' %}
