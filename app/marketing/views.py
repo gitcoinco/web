@@ -51,6 +51,9 @@ from retail.emails import ALL_EMAILS
 from retail.helpers import get_ip
 
 
+logger = logging.getLogger(__name__)
+
+
 def get_settings_navs(request):
     subdomain = f"{request.user.username}." if request.user.is_authenticated else False
     return [{
