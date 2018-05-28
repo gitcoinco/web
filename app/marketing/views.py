@@ -155,11 +155,11 @@ def privacy_settings(request):
     return TemplateResponse(request, 'settings/privacy.html', context)
 
 
-def record_form_submission(request, obj, _type):
+def record_form_submission(request, obj, submission_type):
     obj.form_submission_records.append({
         'ip': get_ip(request),
         'timestamp': int(timezone.now().timestamp()),
-        'type': _type,
+        'type': submission_type,
         })
     return obj
 
@@ -434,7 +434,7 @@ def account_settings(request):
                     subscriber_hash=subscriber_hash,
                     )
             except Exception as e:
-                print(e)
+                logger.exception(e)
             if es:
                 es.delete()
             request.user.delete()
