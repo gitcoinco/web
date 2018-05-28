@@ -52,6 +52,7 @@ CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
 ENABLE_NOTIFICATIONS_ON_NETWORK = env(
     'ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
 
+MAKE_GITCOIN_BOT_COWARDLY_IN_DEV = env.bool('MAKE_GITCOIN_BOT_COWARDLY_IN_DEV', default=True)
 
 # Application definition
 INSTALLED_APPS = [
