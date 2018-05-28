@@ -47,6 +47,6 @@ class ENSSubdomainRegistration(SuperModel):
 
     def __str__(self):
         try:
-            return f"{self.profile.handle} at {self.created_on}, {self.start_nonce} => {self.end_nonce}"
+            return f"{self.profile.handle if self.profile else ''} at {self.created_on}, {self.start_nonce} => {self.end_nonce}"
         except:
             return None
