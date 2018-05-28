@@ -429,10 +429,9 @@ def account_settings(request):
                 client = MailChimp(mc_user=settings.MAILCHIMP_USER, mc_api=settings.MAILCHIMP_API_KEY)
                 result = client.search_members.get(query=es.email)
                 subscriber_hash = result['exact_matches']['members'][0]['id']
-                client.lists.members.notes.delete(
+                client.lists.members.delete(
                     list_id=settings.MAILCHIMP_LIST_ID,
                     subscriber_hash=subscriber_hash,
-                    note_id='deleted per user request'
                     )
             except Exception as e:
                 print(e)
