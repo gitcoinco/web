@@ -166,6 +166,8 @@ class LeaderboardRank(SuperModel):
     leaderboard = models.CharField(max_length=255)
     amount = models.FloatField()
     active = models.BooleanField()
+    count = models.IntegerField(default=0)
+    rank = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.leaderboard}, {self.github_username}: {self.amount}"

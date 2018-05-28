@@ -246,6 +246,7 @@ urlpatterns = [
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
     path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
     path('actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/', dashboard.views.uninterested, name='uninterested'),
+
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
     re_path(r'^logout/$', auth_views.logout, name='logout'),
@@ -260,6 +261,9 @@ urlpatterns = [
 
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
+
+    url(r'^impersonate/', include('impersonate.urls')),
+
 ]
 
 if settings.ENABLE_SILK:

@@ -58,3 +58,5 @@ easy-thumbnails
 eth-account==0.2.2
 django-classy-tags==0.8.0
 django-cookie-law==2.0.1
+django-impersonate==1.3
+
