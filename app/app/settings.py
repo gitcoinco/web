@@ -210,7 +210,7 @@ if not ENV in ['local', 'test']:
                 'level': 'ERROR',
                 'class': 'django.utils.log.AdminEmailHandler',
                 'include_html': True,
-            }
+            },
         },
         'loggers': {
             'django': {
@@ -394,7 +394,7 @@ GOOGLE_ANALYTICS_AUTH_JSON = {
 # Rollbar - https://rollbar.com/docs/notifier/pyrollbar/#django
 ROLLBAR_CLIENT_TOKEN = env('ROLLBAR_CLIENT_TOKEN', default='')  # post_client_item
 ROLLBAR_SERVER_TOKEN = env('ROLLBAR_SERVER_TOKEN', default='')  # post_server_item
-if ROLLBAR_SERVER_TOKEN:
+if ROLLBAR_SERVER_TOKEN and ENV not in ['local', 'test']:
     # Handle rollbar initialization.
     ROLLBAR = {
         'access_token': ROLLBAR_SERVER_TOKEN,
@@ -437,7 +437,7 @@ if ROLLBAR_SERVER_TOKEN:
         'filters': ['require_debug_false'],
         'access_token': ROLLBAR_SERVER_TOKEN,
         'environment': ENV,
-        'class': 'rollbar.logger.RollbarHandler'
+        'class': 'rollbar.logger.RollbarHandler',
     }
     LOGGING['loggers']['django']['handlers'].append('rollbar')
     rollbar.init(**ROLLBAR)
