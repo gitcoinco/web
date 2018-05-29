@@ -174,6 +174,13 @@ class BountyViewSet(viewsets.ModelViewSet):
                 fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfiller_github_username')
             )
 
+        # Retrieve all DONE fullfilled bounties by fulfiller_username
+        if 'fulfiller_github_username_done' in param_keys:
+            queryset = queryset.filter(
+                fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfiller_github_username'),
+                fulfillments__accepted=True,
+            )
+
         # Retrieve all interested bounties by profile handle
         if 'interested_github_username' in param_keys:
             queryset = queryset.filter(

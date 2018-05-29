@@ -402,7 +402,7 @@
         fetchBountiesAndAddToList('network=mainnet&bounty_owner_github_username={{ profile.handle }}', '.profile-bounties--funded');
 
         // Fetch bounties user is fulfiller
-        fetchBountiesAndAddToList('network=mainnet&fulfiller_github_username={{ profile.handle }}&idx_status=done', '.profile-bounties--completed');
+        fetchBountiesAndAddToList('network=mainnet&fulfiller_github_username_done={{ profile.handle }}&idx_status=done', '.profile-bounties--completed');
       });
     </script>
   </body>
