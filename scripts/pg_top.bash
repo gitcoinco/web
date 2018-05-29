@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/local/bin/dumb-init /bin/bash
 
 : <<'END'
 Copyright (C) 2018 Gitcoin Core
@@ -17,7 +17,10 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 END
 
-apt-get update
-apt-get install postgresql-client -y
+# Settings
+PGUSER=${PGUSER:-'postgres'}
+PGHOST=${PGHOST=-'db'}
+PGPORT=${PGPORT=-'5432'}
 
-psql postgres -p 5432 -h db -U postgres
+echo "version: $(pg_top --version)"
+exec pg_top -U "$PGUSER" -p "$PGPORT" -h "$PGHOST"
