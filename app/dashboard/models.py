@@ -994,7 +994,7 @@ class Profile(SuperModel):
         from github.utils import get_user
         from app.utils import add_contributors
         # TODO: maybe rewrite this so it doesnt have to go to the internet to get the info
-        # but in a way that is respectful of db size too 
+        # but in a way that is respectful of db size too
         repos_data = get_user(self.handle, '/repos')
         repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
         repos_data = [add_contributors(repo_data) for repo_data in repos_data]
@@ -1189,7 +1189,7 @@ class Profile(SuperModel):
 
     @staticmethod
     def get_network():
-        return 'mainnet' 
+        return 'mainnet'
 
     def get_fulfilled_bounties(self, network=None):
         network = network or self.get_network()
