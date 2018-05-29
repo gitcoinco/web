@@ -23,6 +23,30 @@
   </head>
 
   <style>
+    .text-fd-green {
+      color: #00a55e;
+    }
+
+    .text-fd-blue--light {
+      color: #519bdc;
+    }
+
+    .text-fd-blue--dark {
+      color: #3e00ff;
+    }
+
+    .text-fd-orange {
+      color: #dc9937;
+    }
+
+    .text-fd-red {
+      color: #d82a3f;
+    }
+
+    .text-fd-purple {
+      color: #8e2abe;
+    }
+
     .funder-dashboard__header {
       background-color: #3e00ff;
     }
@@ -52,21 +76,12 @@
       color: #3e00ff;
     }
 
-
     .funder-dashboard__whats-next__expiring-bounties {
       font-size: 1.2rem;
     }
 
-    .funder-dashboard__whats-next__expiring-bounties a {
-      color: #3e00ff;
-    }
-
     .funder-dashboard__whats-next__new-comments {
       font-size: 1.2rem;
-    }
-
-    .funder-dashboard__whats-next__new-comments a {
-      color: #3e00ff;
     }
   </style>
   <body>
@@ -81,12 +96,6 @@
             <h1 class="funder-dashboard__header__hero text-white text-center text-capitalize pt-5 pb-4">
               {% trans "Dashboard" %}
             </h1>
-          </div>
-        </div>
-        <div class=" row ">
-          <div class="col pb-4">
-            <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
-            </div>
           </div>
         </div>
       </div>
@@ -111,39 +120,89 @@
                     <!-- should be a default message saying they have no expiring bounties in the next 7 days if they
                      don't have any -->
                     <div class="funder-dashboard__whats-next__expiring-bounties">
-                      You have 2 bounties expiring in 3 days! <a href="#" class="">view bounties</a>
+                      You have 2 bounties expiring in 3 days!
+                      <a href="#" class="text-fd-blue--dark">view bounties</a>
                     </div>
                     <!-- should have a default message saying they don't have any new comments on their funded
                     issues -->
                     <div class="funder-dashboard__whats-next__new-comments">
-                      3 contributors have commented on your open issues. <a href="#" class="">view comments</a>
+                      3 contributors have commented on your open issues.
+                      <a href="#" class="text-fd-blue--dark">view comments</a>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="row mt-4" style="height: 100px;">
-              <div class=" funder-dashboard__stats col-12 col-lg-8 row">
-                <div class="col-6 col-lg-3 row no-gutters">
-                  <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--bounties col-12 card">
+            <div class="row mt-4">
+              <div class="funder-dashboard__stats col-12 col-lg-8 row row-eq-height">
+                <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--bounties
+                            col-6 p-0 col-lg mr-lg-3 card">
+                  <div class="card-body pb-2 text-center">
+                    <h4 class="card-title pt-0 font-weight-bold">
+                      394
+                    </h4>
+                    <small class="card-text text-fd-blue--light text-uppercase">
+                      {% trans "Bounties Submitted" %}
+                    </small>
                   </div>
+                  <small class="funder-dashboard__stats__stat__footer
+                                card-footer text-uppercase text-center p0 text-muted">
+                    {% trans "All Time" %}
+                  </small>
                 </div>
-                <div class="col-6 col-lg-3 row no-gutters">
-                  <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--contributors col-12 card">
+                <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--contributors
+                            col-6 p-0 col-lg mr-lg-3 card">
+                  <div class="card-body pb-2 text-center">
+                    <h4 class="card-title pt-0 font-weight-bold">
+                      142
+                    </h4>
+                    <small class="card-text text-fd-blue--light text-uppercase">
+                      {% trans "Total Contributors" %}
+                    </small>
                   </div>
+                  <small class="funder-dashboard__stats__stat__footer
+                                card-footer text-uppercase text-center p0 text-muted">
+                    {% trans "All Time" %}
+                  </small>
                 </div>
-                <div class="col-6 col-lg-3 row no-gutters">
-                  <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--total-spent col-12 card">
+                <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--total-spent
+                            col-6 p-0 col-lg mr-lg-3 card">
+                  <div class="card-body pb-2 text-center">
+                    <h5 class="card-title pt-0 font-weight-bold">
+                      $50.890
+                      <small class="text-fd-blue--dark d-block">
+                        100 ETH
+                      </small>
+                    </h5>
+                    <small class="card-text text-fd-orange text-uppercase">
+                      {% trans "Total paid out" %}
+                    </small>
                   </div>
+                  <small class="funder-dashboard__stats__stat__footer
+                                card-footer text-uppercase text-center p0 text-muted">
+                    {% trans "As of May 5. 2018" %}
+                  </small>
                 </div>
-                <div class="col-6 col-lg-3 no-gutters row">
-                  <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--total-budget col-12 card">
+                <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--total-budget
+                            col-6 p-0 col-lg card">
+                  <div class="card-body d-flex flex-column justify-content-center pb-2 text-center">
+                    <h5 class="card-title pt-0 font-weight-bold">
+                      $50.890
+                      <small class="text-fd-blue--dark d-block">
+                        100 ETH
+                      </small>
+                    </h5>
+                    <small class="card-text text-fd-green mb-5 text-uppercase">
+                      {% trans "Total budget" %}
+                    </small>
                   </div>
+                  <small class="funder-dashboard__stats__stat__footer
+                                card-footer text-uppercase text-center p0 text-muted">
+                    {% trans "All Time" %}
+                  </small>
                 </div>
               </div>
-              <div class="col-12 col-lg-4" >
-                <div class="col-lg-12" style="background-color: red">
-                </div>
+              <div class="col ml-3" style="background-color: red" >
               </div>
             </div>
             <div class="funder-dasboard__outgoing-funds row" style="height: 300px">
