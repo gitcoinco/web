@@ -11,9 +11,4 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='emailsubscriber',
-            name='form_submission_records',
-            field=django.contrib.postgres.fields.jsonb.JSONField(blank=True, default=[]),
-        ),
     ]
