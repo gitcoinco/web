@@ -106,9 +106,17 @@ button:focus {
   }
 }
 
+.btn-gc-blue, .btn-gc-green, .btn-gc-purple {
+  color: white;
+  padding: .75rem 1.5rem;
+}
+
+.btn-outline-gc-blue, .btn-outline-gc-purple, .btn-outline-gc-green {
+  padding: .5rem 1.5rem;
+}
+
 .btn-gc-blue {
   background-color: var(--gc-blue);
-  color: white;
 }
 .btn-gc-blue:hover {
   background-color: var(--gc-blue-hover);
@@ -125,7 +133,6 @@ button:focus {
 
 .btn-gc-green {
   background-color: var(--gc-green);
-  color: white;
 }
 .btn-gc-green:hover {
   background-color: var(--gc-green-hover);
@@ -142,7 +149,6 @@ button:focus {
 
 .btn-gc-purple {
   background-color: var(--gc-purple);
-  color: white;
 }
 .btn-gc-purple:hover {
   background-color: var(--gc-purple-hover);
@@ -155,4 +161,9 @@ button:focus {
 .btn-outline-gc-purple:hover {
   background-color: var(--gc-purple);
   color: white;
+}
+
+/* Icons in buttons */
+.btn > svg:first-child {
+  margin-right: .5rem;
 }

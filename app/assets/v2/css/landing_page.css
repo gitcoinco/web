@@ -3,6 +3,7 @@ html {
 }
 body {
   height: 100vh;
+  color: var(--text-dark);
 }
 .navbar {
   flex-shrink: 0;
@@ -28,6 +29,10 @@ body {
 .case-studies-list li {
   margin-bottom: 1rem;
 }
+.case-studies-list a {
+  color: var(--gc-blue);
+}
+
 #gc-robot {
   position: absolute;
   top: -50px;
@@ -35,6 +40,7 @@ body {
   max-width: 30vw;
   will-change: transform;
 }
+
 #gc-tree {
   max-width: 100%;
   will-change: transform;
@@ -43,6 +49,7 @@ body {
 .howworks_container {
   background-color: #F9F9F9;
   text-align: center;
+  color: var(--text-dark);
 }
 
 .howworks-steps {
@@ -53,7 +60,8 @@ body {
   position: relative;
   display: grid;
   grid-template-columns: repeat(2, min-content);
-  grid-template-rows: min-content 2px;
+  grid-gap: 0 20px;
+  grid-template-rows: min-content 5px;
   justify-content: center;
 }
 .howworks-section-toggle {
@@ -61,7 +69,8 @@ body {
   outline: none;
   border: none;
   cursor: pointer;
-  padding: 0 1rem;
+  color: var(--gc-purple);
+  padding: 0;
 }
 #howworks-toggle-indicator {
   background: var(--gc-blue);
@@ -98,6 +107,11 @@ body {
   border-top: 1px solid #E1E8EE;
   padding: 2rem 1rem;
 }
+.howworks-step h5 {
+  color: var(--gc-purple);
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
 .howworks-step__label {
   border-radius: 50%;
   height: 2rem;
@@ -108,6 +122,7 @@ body {
   top: -1rem;
   left: calc(50% - 1rem);
   background: #F9F9F9;
+  color: var(--gc-purple);
 }
 
 .whatisit_container {
@@ -117,11 +132,16 @@ body {
 
 .benefits_container {
   background-color: #F9F9F9;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 1rem;
+  justify-items: center;
 }
 
+.benefit_list {
+  grid-gap: 1rem;
+  max-width: 70rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0 auto;
+}
 .benefit {
   background-color: white;
   text-align: center;
@@ -194,13 +214,16 @@ body {
   overflow: hidden;
   text-align: center;
 }
+.pricing-tier__title {
+  padding-top: 2rem !important;
+}
 .pricing-tiers-container > * {
-  padding: 1rem;
+  padding: 1rem 2rem;
   background: white;
 }
 
 .pricing-tier__subtitle {
-  padding-bottom: 1rem;
+  padding-top: 0;
 }
 .emphasis {
   background: var(--gc-blue);
@@ -219,7 +242,6 @@ body {
   font-size: 3rem;
   line-height: 1em;
   padding: 3rem 0;
-  margin: 0 1rem;
   border-top: 1px solid #E1E8EE;
   border-bottom: 1px solid #E1E8EE;
 }
@@ -250,7 +272,7 @@ body {
 
 /* Landing Page Animations */
 #WindmillBlades {
-  animation: rotate-blades 6s linear infinite;
+  animation: rotate-blades 8s linear infinite;
   transform-origin: 48.5px 56px;
 }
 .globe-longitude {
@@ -270,20 +292,10 @@ body {
   transform: scaleX(0);
 }
 #pot-leaves {
-  animation: swaying-leaves 6s ease-in-out infinite;
+  animation: swaying-leaves 8s ease-in-out infinite;
   transform-origin: center 60%;
 }
 
-.navbar {
-  position: sticky;
-  position: -webkit-sticky;
-  top: -1px;
-  width: 100%;
-  z-index: 10;
-}
-.navbar__cta {
-  transition: opacity .3s;
-}
 .navbar.following .nav-link {
   display: none;
 }
@@ -291,10 +303,15 @@ body {
   color: white;
   opacity: 0;
   display: none;
+  transition: opacity .3s;
 }
 .navbar.following .navbar__cta {
   opacity: 1;
   display: inline;
+}
+
+.navbar:not(.following) .btn {
+  background: transparent;
 }
 
 @keyframes rotate-blades {
@@ -338,15 +355,17 @@ body {
     min-height: 250px;
   }
 }
+@media (max-width: 869px) {
+  .benefit_list {
+    grid-template-columns: 1fr;
+  }
+}
 @media (max-width: 769px) {
   .pricing-tiers-container {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(15, min-content);
   }
 
-  .benefits_container {
-    grid-template-columns: 1fr;
-  }
   .case-studies-list {
     margin-left: 0;
   }

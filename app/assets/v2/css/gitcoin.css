@@ -126,6 +126,7 @@ body {
   font-family: Muli, sans-serif;
   overflow-x: hidden;
   width: 100%;
+  background-color: #0d023b;
 }
 
 h4,
@@ -161,9 +162,6 @@ h4,
   color: lightgray !important
 }
 
-body {
-  background-color: #0d023b;
-}
 #gitcoin-background {
   background-image: url("/static/v2/images/header-bg.png");
   background-size: 2000px;
@@ -261,7 +259,6 @@ div.button-pink {
   font-size: 3em;
   font-weight: 500;
   font-style: italic;
-  text-transform: uppercase;
   letter-spacing: 0.1em;
 }
 
