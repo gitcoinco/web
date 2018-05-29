@@ -1265,7 +1265,7 @@ class Profile(SuperModel):
                 active=True,
                 github_username=self.handle,
             ).latest('id')
-            score = LeaderboardRank.objects.filter(active=True, leaderboard=key, amount__gt=rank.amount).count()
+            return rank.rank
         except LeaderboardRank.DoesNotExist:
             score = 0
         return score
