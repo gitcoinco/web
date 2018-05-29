@@ -56,6 +56,7 @@ class Command(BaseCommand):
                 obj.txn_hash_3 = None
                 obj.start_nonce = 0
                 obj.end_nonce = 0
+                obj.save()
 
         if options['reprocess']:
             print("submitting reprocess")
