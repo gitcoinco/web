@@ -996,12 +996,19 @@ class Profile(SuperModel):
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
 
-    def has_been_removed_by_staff(self):
+    def no_times_been_removed_by_staff(self):
         user_actions = UserAction.objects.filter(
             profile=self,
             action='bounty_removed_by_staff',
             )
-        return user_actions.exists()
+        return user_actions.count()
+
+    def no_times_been_removed_by_funder(self):
+        user_actions = UserAction.objects.filter(
+            profile=self,
+            action='bounty_removed_by_funder',
+            )
+        return user_actions.count()
 
     @property
     def authors(self):
@@ -1404,7 +1411,10 @@ class Profile(SuperModel):
             'works_with_collected': works_with_collected,
             'works_with_funded': works_with_funded,
             'funded_bounties_count': funded_bounties.count(),
-            'activities': [{'title': _('No data available.')}]
+            'activities': [{'title': _('No data available.')}],
+            'no_times_been_removed_by_staff': self.no_times_been_removed_by_staff(),
+            'no_times_been_removed_by_funder': self.no_times_been_removed_by_funder(),
+            'no_times_been_removed': self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff(),
         }
 
         if activities:

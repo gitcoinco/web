@@ -48,7 +48,8 @@ class InterestAdmin(admin.ModelAdmin):
 
 
 class UserActionAdmin(admin.ModelAdmin):
-    raw_id_fields = ['profile']
+    raw_id_fields = ['profile', 'user']
+    search_fields = ['action', 'ip_address', 'metadata']
     ordering = ['-id']
 
 

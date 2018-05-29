@@ -188,7 +188,7 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
 
-    if profile.has_been_removed_by_staff():
+    if profile.no_times_been_removed_by_staff():
         return JsonResponse({
             'error': _('Because a staff member has had to remove you from a bounty in the past, you are unable to start more work at this time. Please contact support.'),
             'success': False},

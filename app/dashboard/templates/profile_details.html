@@ -60,6 +60,9 @@
                 <ul>
                   <li><span class="highlight">{{ count_bounties_completed }}</span> {% trans "bounties completed" %}</li>
                   <li><span class="highlight">{{ sum_eth_collected|floatformat:2 }}</span> {% trans "ETH collected" %}</li>
+                  {% if no_times_been_removed %}
+                      <li> - {% trans "removed from" %} <span class="highlight">{{ no_times_been_removed }}</span> {% trans "bounties" %}</li>
+                  {% endif %}
                   {% if scoreboard_position_contributor %}
                       <li><span class="highlight">#{{ scoreboard_position_contributor }}</span> {% trans "contributor" %}</li>
                   {% endif %}
