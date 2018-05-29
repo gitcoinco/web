@@ -324,11 +324,11 @@ var process_stats = function(results) {
       break;
     case 1:
       matchesEl.html(num + gettext(' Matching Result'));
-      fundingInfoEl.html("<span id='modifiers'>Funded Issue</span><span id='stats' class='font-caption'>(" + stats + ')</span>');
+      fundingInfoEl.html('<span id="modifiers">Funded Issue</span><span id="stats" class="font-caption">(' + stats + ')</span>');
       break;
     default:
       matchesEl.html(num + gettext(' Matching Results'));
-      fundingInfoEl.html("<span id='modifiers'>Funded Issues</span><span id='stats' class='font-caption'>(" + stats + ')</span>');
+      fundingInfoEl.html('<span id="modifiers">Funded Issues</span><span id="stats" class="font-caption">(' + stats + ')</span>');
   }
 };
 
