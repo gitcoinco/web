@@ -39,7 +39,7 @@ class Command(BaseCommand):
     help = 'syncs bounties with geth'
 
     def add_arguments(self, parser):
-        parser.add_argument('network')
+        parser.add_argument('network', default='rinkeby', type=str)
         parser.add_argument('start_id', default=0, type=int)
         parser.add_argument('end_id', default=99999999999, type=int)
 
