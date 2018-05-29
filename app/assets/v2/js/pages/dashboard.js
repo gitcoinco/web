@@ -480,7 +480,7 @@ var refreshBounties = function(event) {
       } else if (is_expired) {
         var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
 
-        result['p'] += ('Expired ' + time_ago + ' ago');
+        result['p'] += (' Expired ' + time_ago + ' ago');
       } else {
         var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
 
