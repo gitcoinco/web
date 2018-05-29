@@ -1291,7 +1291,7 @@ class Profile(SuperModel):
         eth_sum = 0
 
         if sum_type == 'funded':
-            obj = self.bounties_funded.filter(network=network)
+            obj = self.get_funded_bounties(network=network)
         elif sum_type == 'collected':
             obj = self.get_fulfilled_bounties(network=network)
 
@@ -1333,6 +1333,27 @@ class Profile(SuperModel):
         return ordered_profiles_dict
 
 
+    def get_funded_bounties(self, network='mainnet'):
+        """Get the bounties that this user has funded
+
+        Args:
+            network (string): the network to look at.
+                Defaults to: mainnet.
+
+
+        Returns:
+            queryset: list of bounties
+
+        """
+
+        funded_bounties = Bounty.objects.current().filter(
+            Q(bounty_owner_github_username__iexact=self.handle) |
+            Q(bounty_owner_github_username__iexact=f'@{self.handle}')
+        )
+        funded_bounties = funded_bounties.filter(network=network)
+        return funded_bounties
+
+
     def to_dict(self, activities=True, leaderboards=True, network=None, tips=True):
         """Get the dictionary representation with additional data.
 
@@ -1366,12 +1387,7 @@ class Profile(SuperModel):
         sum_eth_collected = self.get_eth_sum(**query_kwargs)
         works_with_funded = self.get_who_works_with(work_type='funded', **query_kwargs)
         works_with_collected = self.get_who_works_with(work_type='collected', **query_kwargs)
-
-        funded_bounties = Bounty.objects.current().filter(
-            Q(bounty_owner_github_username__iexact=self.handle) |
-            Q(bounty_owner_github_username__iexact=f'@{self.handle}')
-        )
-        funded_bounties = funded_bounties.filter(network=network)
+        funded_bounties = self.get_funded_bounties(network=network)
 
         params = {
             'title': f"@{self.handle}",
