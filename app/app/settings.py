@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'storages',
     'social_django',
+    'cookielaw',
     'django.contrib.humanize',
     'django.contrib.sitemaps',
     'django.contrib.sites',
@@ -91,6 +92,7 @@ INSTALLED_APPS = [
     'external_bounties',
     'dataviz',
     'ethos',
+    'impersonate',
 ]
 
 MIDDLEWARE = [
@@ -106,6 +108,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ratelimit.middleware.RatelimitMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
+    'impersonate.middleware.ImpersonateMiddleware',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = False

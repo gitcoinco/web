@@ -808,18 +808,8 @@ def profile(request, handle):
     except ProfileHiddenException:
         raise Http404
 
-    params = {
-        'title': f"@{handle}",
-        'active': 'profile_details',
-        'newsletter_headline': _('Be the first to know about new funded issues.'),
-        'card_title': f'@{handle} | Gitcoin',
-        'card_desc': profile.desc,
-        'avatar_url': profile.avatar_url_with_gitcoin_logo,
-        'profile': profile,
-        'stats': profile.stats,
-        'bounties': profile.bounties,
-        'tips': Tip.objects.filter(username=handle, network='mainnet'),
-    }
+    params = profile.to_dict()
+
     return TemplateResponse(request, 'profile_details.html', params)
 
 
@@ -931,19 +921,19 @@ def terms(request):
 
 
 def privacy(request):
-    return redirect('https://gitcoin.co/terms#privacy')
+    return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def cookie(request):
-    return redirect('https://gitcoin.co/terms#privacy')
+    return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def prirp(request):
-    return redirect('https://gitcoin.co/terms#privacy')
+    return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def apitos(request):
-    return redirect('https://gitcoin.co/terms#privacy')
+    return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def toolbox(request):

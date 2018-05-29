@@ -4,7 +4,7 @@
   <h1>{% trans "Manage your ENS subdomain" %}</h1>
   <div>
     <br>
-    <h2><label id="githubHandle">{{ github_handle }}</label><label>.{{ens_domain}}</label></h2>
+    <h2><label id="githubHandle">{{ github_handle|force_escape|lower  }}</label><label>.{{ens_domain}}</label></h2>
     <h2><label>{% trans "Address: "%}{{ owner }}</label></h2>
     {% include "ens/tweet.html" %}
   </div>

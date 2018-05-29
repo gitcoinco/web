@@ -103,13 +103,13 @@ urlpatterns = [
     url(r'^tip/?', dashboard.views.send_tip, name='tip'),
 
     # Legal
-    url(r'^legal/?', dashboard.views.terms, name='legal'),
     url(r'^terms/?', dashboard.views.terms, name='_terms'),
     url(r'^legal/terms/?', dashboard.views.terms, name='terms'),
     url(r'^legal/privacy/?', dashboard.views.privacy, name='privacy'),
     url(r'^legal/cookie/?', dashboard.views.cookie, name='cookie'),
     url(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
+    url(r'^legal/?', dashboard.views.terms, name='legal'),
 
     # Alpha functionality
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
@@ -206,6 +206,7 @@ urlpatterns = [
     url(r'^_administration/email/bounty_feedback$', retail.emails.bounty_feedback, name='bounty_feedback'),
     url(r'^_administration/email/start_work_expire_warning$', retail.emails.start_work_expire_warning, name='start_work_expire_warning'),
     url(r'^_administration/email/start_work_expired$', retail.emails.start_work_expired, name='start_work_expired'),
+    re_path(r'^_administration/email/gdpr_reconsent$', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
     url(r'^_administration/email/new_tip/resend$', retail.emails.resend_new_tip, name='resend_new_tip'),
     url(r'^_administration/process_accesscode_request/(.*)$', tdi.views.process_accesscode_request, name='process_accesscode_request'),
     url(r'^_administration/process_faucet_request/(.*)$', faucet.views.process_faucet_request, name='process_faucet_request'),
@@ -217,6 +218,7 @@ urlpatterns = [
     re_path(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
     re_path(r'^settings/slack/?', marketing.views.slack_settings, name='slack_settings'),
     re_path(r'^settings/ens/?', marketing.views.ens_settings, name='ens_settings'),
+    re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
 
     # marketing views
@@ -248,6 +250,7 @@ urlpatterns = [
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
     path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
     path('actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/', dashboard.views.uninterested, name='uninterested'),
+
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
     re_path(r'^logout/$', auth_views.logout, name='logout'),
@@ -262,6 +265,9 @@ urlpatterns = [
 
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
+
+    url(r'^impersonate/', include('impersonate.urls')),
+
 ]
 
 if settings.ENABLE_SILK:

@@ -149,6 +149,11 @@ class BountyViewSet(viewsets.ModelViewSet):
         if 'pk__gt' in param_keys:
             queryset = queryset.filter(pk__gt=self.request.query_params.get('pk__gt'))
 
+        # filter by statuses
+        if 'status__in' in param_keys:
+            statuses = self.request.query_params.get('status__in').split(',')
+            queryset = queryset.filter(idx_status__in=statuses)
+
         # filter by who is interested
         if 'started' in param_keys:
             queryset = queryset.filter(interested__profile__handle__in=[self.request.query_params.get('started')])
@@ -167,6 +172,13 @@ class BountyViewSet(viewsets.ModelViewSet):
         if 'fulfiller_github_username' in param_keys:
             queryset = queryset.filter(
                 fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfiller_github_username')
+            )
+
+        # Retrieve all DONE fullfilled bounties by fulfiller_username
+        if 'fulfiller_github_username_done' in param_keys:
+            queryset = queryset.filter(
+                fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfiller_github_username'),
+                fulfillments__accepted=True,
             )
 
         # Retrieve all interested bounties by profile handle

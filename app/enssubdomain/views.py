@@ -28,6 +28,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+import idna
 from dashboard.models import Profile
 from dashboard.views import w3
 from ens import ENS
@@ -88,7 +89,7 @@ def handle_subdomain_exists(request, github_handle):
         return TemplateResponse(request, 'ens/ens_rate_limit.html', params)
 
 
-def set_resolver(signer, github_handle, nonce):
+def set_resolver(signer, github_handle, nonce, gas_multiplier=1):
     if mock_request:
         return '0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'
 
@@ -96,7 +97,7 @@ def set_resolver(signer, github_handle, nonce):
     resolver_addr = ns.address('resolver.eth')
     signer = Web3.toChecksumAddress(signer)
     txn_hash = None
-    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9
+    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9 * gas_multiplier
     subdomain = f"{github_handle}.{settings.ENS_TLD}"
 
     transaction = {
@@ -126,13 +127,13 @@ def set_resolver(signer, github_handle, nonce):
     return txn_hash
 
 
-def set_owner(signer, github_handle, nonce):
+def set_owner(signer, github_handle, nonce, gas_multiplier=1):
     if mock_request:
         return '0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'
     owned = settings.ENS_TLD
     label = github_handle
     txn_hash = None
-    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9
+    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9 * gas_multiplier
 
     transaction = {
         'from': Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
@@ -163,14 +164,14 @@ def set_owner(signer, github_handle, nonce):
     return txn_hash
 
 
-def set_address_at_resolver(signer, github_handle, nonce):
+def set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=1):
     if mock_request:
         return '0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'
     ns = ENS.fromWeb3(w3)
     resolver_addr = ns.address('resolver.eth')
     signer = Web3.toChecksumAddress(signer)
     txn_hash = None
-    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9
+    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9 * gas_multiplier
     subdomain = f"{github_handle}.{settings.ENS_TLD}"
 
     transaction = {
@@ -212,6 +213,31 @@ def get_nonce():
     return max([web3_nonce, next_db_nonce])
 
 
+def helper_process_registration(signer, github_handle, signedMsg, gas_multiplier=1, override_nonce=None):
+    # actually setup subdomain
+    start_nonce = get_nonce() if not override_nonce else override_nonce
+    nonce = start_nonce
+    txn_hash_1 = set_owner(signer, github_handle, nonce, gas_multiplier=gas_multiplier)
+    nonce += 1
+    txn_hash_2 = set_resolver(signer, github_handle, nonce, gas_multiplier=gas_multiplier)
+    nonce += 1
+    txn_hash_3 = set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=gas_multiplier)
+
+    profile = Profile.objects.filter(handle__iexact=github_handle).first()
+    return ENSSubdomainRegistration.objects.create(
+        profile=profile,
+        subdomain_wallet_address=signer,
+        txn_hash_1=txn_hash_1,
+        txn_hash_2=txn_hash_2,
+        txn_hash_3=txn_hash_3,
+        pending=True,
+        signed_msg=signedMsg,
+        start_nonce=start_nonce,
+        end_nonce=nonce,
+        comments=f"github_handle: {github_handle}\n\n",
+        )
+
+
 def handle_subdomain_post_request(request, github_handle):
     # setup
     signedMsg = request.POST.get('signedMsg', '')
@@ -222,30 +248,11 @@ def handle_subdomain_post_request(request, github_handle):
         recovered_signer = w3.eth.account.recoverHash(message_hash, signature=signedMsg).lower()
         if recovered_signer != signer:
             return JsonResponse({'success': False, 'msg': _('Sign Mismatch Error')})
-        if request.user.profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
+        if not request.user.profile.trust_profile and request.user.profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
             return JsonResponse({'success': False, 'msg': _('For SPAM prevention reasons, you may not perform this action right now.  Please contact support if you believe this message is in error.')})
 
-        # actually setup subdomain
-        start_nonce = get_nonce()
-        nonce = start_nonce
-        txn_hash_1 = set_owner(signer, github_handle, nonce)
-        nonce += 1
-        txn_hash_2 = set_resolver(signer, github_handle, nonce)
-        nonce += 1
-        txn_hash_3 = set_address_at_resolver(signer, github_handle, nonce)
+        helper_process_registration(signer, github_handle, signedMsg)
 
-        profile = Profile.objects.filter(handle=github_handle).first()
-        ENSSubdomainRegistration.objects.create(
-            profile=profile,
-            subdomain_wallet_address=signer,
-            txn_hash_1=txn_hash_1,
-            txn_hash_2=txn_hash_2,
-            txn_hash_3=txn_hash_3,
-            pending=True,
-            signed_msg=signedMsg,
-            start_nonce=start_nonce,
-            end_nonce=nonce,
-            )
         return JsonResponse(
             {'success': True, 'msg': _('Your request has been submitted. Please wait for the transaction to mine!')})
     return handle_default_response(request, github_handle)
@@ -255,10 +262,15 @@ def handle_subdomain_post_request(request, github_handle):
 def ens_subdomain(request):
     """Register ENS Subdomain."""
     github_handle = request.user.profile.handle if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    if github_handle:
+        github_handle = github_handle.lower().replace('.', '')
+        github_handle = idna.encode(github_handle, uts46=True).decode("utf-8")
 
-    if request.method == "POST" and github_handle:
-        return handle_subdomain_post_request(request, github_handle)
-    try:
-        return handle_subdomain_exists(request, github_handle)
-    except ENSSubdomainRegistration.DoesNotExist:
-        return handle_default_response(request, github_handle)
+    if github_handle:
+        if request.method == "POST":
+            return handle_subdomain_post_request(request, github_handle)
+        try:
+            return handle_subdomain_exists(request, github_handle)
+        except ENSSubdomainRegistration.DoesNotExist:
+            return handle_default_response(request, github_handle)
+    return handle_default_response(request, github_handle)

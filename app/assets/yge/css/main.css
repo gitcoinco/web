@@ -20,7 +20,7 @@
 
 body {
   line-height: 1;
-  font-family: 'futura-pt', Futura, sans-serif !important;
+  font-family: futura-pt, sans-serif !important;
   -webkit-text-size-adjust: none;
   overflow-x: hidden;
   width: 100%;
