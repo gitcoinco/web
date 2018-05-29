@@ -53,7 +53,7 @@ class ENSSubdomainRegistration(SuperModel):
             return None
 
     def reprocess(self):
-        from enssubdomains.views import helper_process_registration
+        from enssubdomain.views import helper_process_registration
 
         self.start_nonce = 0
         self.end_nonce = 0
