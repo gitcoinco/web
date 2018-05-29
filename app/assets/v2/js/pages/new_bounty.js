@@ -12,7 +12,9 @@ try {
   localStorage = {};
 }
 
-if (localStorage['quickstart_dontshow'] !== 'true' && doShowQuickstart(document.referrer)) {
+if (localStorage['quickstart_dontshow'] !== 'true' &&
+    doShowQuickstart(document.referrer) &&
+    doShowQuickstart(document.URL)) {
   window.location = quickstartURL;
 }
 
