@@ -439,7 +439,7 @@ if ROLLBAR_SERVER_TOKEN:
         'environment': ENV,
         'class': 'rollbar.logger.RollbarHandler'
     }
-    LOGGING['loggers']['rollbar']['handlers'].append('rollbar')
+    LOGGING['loggers']['django']['handlers'].append('rollbar')
     rollbar.init(**ROLLBAR)
 
 # List of github usernames to not count as comments on an issue
