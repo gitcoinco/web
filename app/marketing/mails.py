@@ -473,7 +473,7 @@ def nth_day_email_campaign(nth, subscriber):
     try:
         setup_lang(subscriber.email)
         from_email = settings.CONTACT_EMAIL
-        if not should_suppress_notification_email(to_email, 'welcome_mail'):
+        if not should_suppress_notification_email(subscriber.email, 'welcome_mail'):
             html, text, subject = render_nth_day_email_campaign(subscriber.email, nth, firstname)
             send_mail(from_email, subscriber.email, subject, text, html)
     finally:
