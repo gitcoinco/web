@@ -221,6 +221,7 @@ class Command(BaseCommand):
                     amount=amount,
                     count=count,
                     active=True,
+                    rank=rank,
                     )
                 rank += 1
                 print(key, username, amount, count, rank)
