@@ -145,6 +145,21 @@ def new_faucet_request(fr):
         translation.activate(cur_language)
 
 
+def warn_account_out_of_eth(account, balance, denomination):
+    to_email = settings.PERSONAL_CONTACT_EMAIL
+    from_email = settings.SERVER_EMAIL
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = account + str(_(" is out of gas"))
+        body_str = _("is down to ")
+        body = f"{account } {body_str} {balance} {denomination}"
+        if not should_suppress_notification_email(to_email, 'admin'):
+            send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"))
+    finally:
+        translation.activate(cur_language)
+
+
 def new_feedback(email, feedback):
     to_email = settings.PERSONAL_CONTACT_EMAIL
     from_email = settings.SERVER_EMAIL
