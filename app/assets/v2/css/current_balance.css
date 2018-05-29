@@ -1,10 +1,13 @@
 #upper_left {
   min-height: 100px;
-  height: 100%;
   font-family: 'Muli', sans-serif;
   font-weight: 600;
   background-color: #26cd7f;
   color: #000000;
+}
+
+.submit_bounty #upper_left {
+  height: 100%;
 }
 
 #upper_left svg {
