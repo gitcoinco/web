@@ -1,21 +1,23 @@
 {% extends 'emails/template.html' %}
+
 {% comment %}
-    Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
+
 {% load i18n humanize static %}
 
 {% block content %}
@@ -39,22 +41,23 @@
 
   <div class="content">
     <p>
-    {% trans "Hey" %} {{ firstname }},
+      {% trans "Hey" %} {{ firstname }},
     </p>
 
     <p>
-    {% blocktrans %}
-    By this point, you might have poked around the Gitcoin <a href="https://gitcoin.co/explorer?q=">Issue Explorer</a> to
-    see the open source projects you could make money by contributing!
-    If interested in doing work, here's how:
-    {% endblocktrans %}
+      {% blocktrans %}
+        By this point, you might have poked around the Gitcoin
+        <a href="https://gitcoin.co/explorer?q=">Issue Explorer</a> to see the open source projects you could make money by contributing!
+        If interested in doing work,
+        here's how:
+      {% endblocktrans %}
     </p>
 
     <h2>Start Work</h2>
     <p>
-        {% blocktrans %}
+      {% blocktrans %}
         Click 'Start Work' to provide a brief message to the repo-maintainer that you're interested in the issue
-        {% endblocktrans %}
+      {% endblocktrans %}
     </p>
     <p>
       <img src='{% static "v2/images/email/start-work.gif" %}' />
@@ -64,45 +67,48 @@
     <h2>Make A Submission</h2>
     <p>
       {% blocktrans %}
-      <b>First, <a href="http://metamask.io/">download MetaMask</a></b> 🦊
-      MetaMask is a bridge that allows you to visit the distributed web in your browser, today.
-      It allows Gitcoin (an Ethereum based dApp) to run in your browser so you can use <b>gas</b> to claim an issue!
+        <b>First,
+          <a href="http://metamask.io/">download MetaMask</a>
+        </b> 🦊 MetaMask is a bridge that allows you to visit the distributed web in your browser, today.
+        It allows Gitcoin (an Ethereum based dApp) to run in your browser so you can use
+        <b>gas</b> to claim an issue!
       {% endblocktrans %}
     </p>
 
     <p>
       {% blocktrans %}
-      <b>Then, get some gas</b> ⛽️  What is gas, you say?
-      Gas is the payment sent to Ethereum miners (ETH) in exchange for execution of a smart contract.
-      If you need a small amount of gas, request some using the <a href="http://gitcoin.co/faucet">Gitcoin Faucet!</a>
+        <b>Then, get some gas</b> ⛽️ What is gas, you say? Gas is the payment sent to Ethereum miners (ETH) in exchange for execution
+        of a smart contract. If you need a small amount of gas, request some using the
+        <a href="http://gitcoin.co/faucet">Gitcoin Faucet!</a>
       {% endblocktrans %}
     </p>
 
     <p>
       <b>
         {% blocktrans %}
-        Click on 'Submit Work' use your gas (ETH) to make a submission! ⚡️
+          Click on 'Submit Work' use your gas (ETH) to make a submission! ⚡️
         {% endblocktrans %}
       </b>
     </p>
     <p>
-    <img src='{% static "v2/images/email/submit-work.gif" %}' />
+      <img src='{% static "v2/images/email/submit-work.gif" %}' />
     </p>
 
 
     <p>
-    {% blocktrans %}
-    From here, you should be off to the races! The repo maintainer will review your PR and pay out accordingly.
-    Feel free to poke your head in if you have any issues.
-    {% endblocktrans %}
+      {% blocktrans %}
+        From here, you should be off to the races! The repo maintainer will review your PR and pay out accordingly.
+        Feel free to poke your head in if you have any issues.
+      {% endblocktrans %}
 
     </p>
 
     <p>
       {% blocktrans %}
-        Check out the <a href="https://gitcoin.co/explorer?q=">Issue Explorer</a> if you haven't already!
-        If you don't find good fits, <a href="https://docs.google.com/forms/d/1AeiKhCO2TefXo8wAbFerjxe2Vgci3ueqzzUpa-PFPLo/edit">let us know an open source project</a> that you'd like to see using Gitcoin.
-        No promises, but we might have something up our sleeve.
+        Check out the
+        <a href="https://gitcoin.co/explorer?q=">Issue Explorer</a> if you haven't already! If you don't find good fits,
+        <a href="https://docs.google.com/forms/d/1AeiKhCO2TefXo8wAbFerjxe2Vgci3ueqzzUpa-PFPLo/edit">let us know an open source project</a> that you'd like to see using Gitcoin. No promises, but we might have something
+        up our sleeve.
       {% endblocktrans %}
     </p>
 

@@ -26,4 +26,4 @@ class MarketingConfig(AppConfig):
     name = 'marketing'
 
     def ready(self):
-        import marketing.signals  # noqa
+        from .signals import create_email_subscriber

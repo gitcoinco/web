@@ -1,21 +1,23 @@
 {% extends 'emails/template.html' %}
+
 {% comment %}
-    Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
+
 {% load i18n humanize %}
 
 {% block content %}
@@ -35,6 +37,7 @@
     margin-bottom: 1.5em;
     letter-spacing: 0em;
   }
+
 </style>
 
 <div class="campaign">
@@ -43,40 +46,38 @@
 
   <div class="content">
     <p>
-    {% trans "Hi" %} {{ firstname }},
+      {% trans "Hi" %} {{ firstname }},
     </p>
 
     <p>
-    {% blocktrans %}
-    Welcome to Gitcoin! Our mission is to <b>grow open source</b>.
-    Open source software is a force for good in the world;
-    and while a generation of software careers has been powered by open source software,
-    it's hard to make a living working on open source.
-    {% endblocktrans %}
+      {% blocktrans %}
+        Welcome to Gitcoin! Our mission is to
+        <b>grow open source</b>. Open source software is a force for good in the world; and while a generation of software careers
+        has been powered by open source software, it's hard to make a living working on open source.
+      {% endblocktrans %}
     </p>
 
     <p>
-    {% blocktrans %}
-    We'd like to change this imbalance at the intersection of open source and web3,
-    an open source blockchain movement in the Ethereum ecosystem.
-    More to come on Ethereum as this series unfolds.
-    {% endblocktrans %}
+      {% blocktrans %}
+        We'd like to change this imbalance at the intersection of open source and web3, an open source blockchain
+        movement in the Ethereum ecosystem. More to come on Ethereum as this series unfolds.
+      {% endblocktrans %}
     </p>
 
     <p>
-    {% blocktrans %}
-    Gitcoin uses Ethereum to incentivize work in open source.
-    We are experimenting with a variety of ways of providing engineers and designers a shot at supporting themselves with OSS contributions.
-    {% endblocktrans %}
+      {% blocktrans %}
+        Gitcoin uses Ethereum to incentivize work in open source. We are experimenting with a variety of ways of
+        providing engineers and designers a shot at supporting themselves with OSS contributions.
+      {% endblocktrans %}
 
     </p>
 
     <p>
-    {% blocktrans %}
-    Over the first week of you joining,
-    we're going to send over some information on key products and education tools available in the Gitcoin ecosystem.
-    For now, we have a few areas you can nerd out with us, depending on where you're most comfortable.
-    {% endblocktrans %}
+      {% blocktrans %}
+        Over the first week of you joining, we're going to send over some information on key products and education
+        tools available in the Gitcoin ecosystem. For now, we have a few areas you can nerd out with us, depending on where
+        you're most comfortable.
+      {% endblocktrans %}
 
     </p>
 
@@ -87,12 +88,13 @@
         </li>
         <li>
           <a href="http://twitter.com/getgitcoin">{% trans "Follow us on Twitter" %} {% trans "for updates on open source software" %}
-          </li>
+        </li>
         <li>
-          {% trans "Add the Gitcoin Livestream to your cal" %}
-          (<a href="https://calendar.google.com/calendar/ical/7rq7ga2oubv3tk93hk67agdv88%40group.calendar.google.com/public/basic.ics">iCal</a>,
+          {% trans "Add the Gitcoin Livestream to your cal" %} (
+          <a href="https://calendar.google.com/calendar/ical/7rq7ga2oubv3tk93hk67agdv88%40group.calendar.google.com/public/basic.ics">iCal</a>,
           <a href="https://calendar.google.com/calendar/hosted/consensys.net/event?action=TEMPLATE&hl=en&text=Gitcoin%20Community%20Livestream&dates=20180427T160000%2F20180427T173000&location=https%3A%2F%2Fconsensys.zoom.us%2Fj%2F385625394&ctz=America%2FChicago&details">Google</a>)
-          {% trans "for Friday at 5PM EST." %} {% trans "We'll have two weekly product demo's from the blockchain & open source ecosystems." %}
+          {% trans "for Friday at 5PM EST." %}
+          {% trans "We'll have two weekly product demo's from the blockchain & open source ecosystems." %}
         </li>
       </ul>
 
