@@ -60,6 +60,6 @@ class Command(BaseCommand):
 
         if options['reprocess']:
             print("submitting reprocess")
-            for obj in objs.exclude(profile__isnull=True):
+            for obj in objs.exclude(profile__isnull=True).distinct('profile'):
                 obj.reprocess(gas_multiplier=1.2)
                 obj.save()

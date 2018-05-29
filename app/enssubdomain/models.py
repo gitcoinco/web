@@ -52,7 +52,7 @@ class ENSSubdomainRegistration(SuperModel):
         except:
             return None
 
-    def reprocess(self, gas_multiplier=1):
+    def reprocess(self, gas_multiplier=1, override_nonce=None):
         from enssubdomain.views import helper_process_registration
 
         self.start_nonce = 0
@@ -62,5 +62,5 @@ class ENSSubdomainRegistration(SuperModel):
         signer = self.subdomain_wallet_address
         github_handle = self.profile.handle
         signedMsg = self.signed_msg
-        replacement = helper_process_registration(signer, github_handle, signedMsg, gas_multiplier=gas_multiplier)
+        replacement = helper_process_registration(signer, github_handle, signedMsg, gas_multiplier=gas_multiplier, override_nonce=override_nonce)
         self.comments += f"replaced by {replacement.pk}"

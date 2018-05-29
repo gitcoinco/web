@@ -213,9 +213,9 @@ def get_nonce():
     return max([web3_nonce, next_db_nonce])
 
 
-def helper_process_registration(signer, github_handle, signedMsg, gas_multiplier=1):
+def helper_process_registration(signer, github_handle, signedMsg, gas_multiplier=1, override_nonce=None):
     # actually setup subdomain
-    start_nonce = get_nonce()
+    start_nonce = get_nonce() if not override_nonce else override_nonce
     nonce = start_nonce
     txn_hash_1 = set_owner(signer, github_handle, nonce, gas_multiplier=gas_multiplier)
     nonce += 1
