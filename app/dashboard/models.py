@@ -1293,7 +1293,7 @@ class Profile(SuperModel):
         if sum_type == 'funded':
             obj = self.bounties_funded.filter(network=network)
         elif sum_type == 'collected':
-            obj = self.get_fulfilled_bounties()
+            obj = self.get_fulfilled_bounties(network=network)
 
         try:
             if obj.exists():
