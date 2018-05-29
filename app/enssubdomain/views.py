@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import binascii
 import datetime
+import logging
 
 from django.conf import settings
 from django.http import JsonResponse
@@ -42,6 +43,7 @@ from web3 import Web3
 
 from .models import ENSSubdomainRegistration
 
+logger = logging.getLogger(__name__)
 mock_request = settings.DEBUG
 
 
@@ -89,7 +91,7 @@ def handle_subdomain_exists(request, github_handle):
         return TemplateResponse(request, 'ens/ens_rate_limit.html', params)
 
 
-def set_resolver(signer, github_handle, nonce, gas_multiplier=1):
+def set_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
     if mock_request:
         return '0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'
 
@@ -127,7 +129,7 @@ def set_resolver(signer, github_handle, nonce, gas_multiplier=1):
     return txn_hash
 
 
-def set_owner(signer, github_handle, nonce, gas_multiplier=1):
+def set_owner(signer, github_handle, nonce, gas_multiplier=1.101):
     if mock_request:
         return '0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'
     owned = settings.ENS_TLD
@@ -164,7 +166,7 @@ def set_owner(signer, github_handle, nonce, gas_multiplier=1):
     return txn_hash
 
 
-def set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=1):
+def set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
     if mock_request:
         return '0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'
     ns = ENS.fromWeb3(w3)
@@ -191,12 +193,15 @@ def set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=1):
         signer,
         ).buildTransaction(transaction)
     signed_txn = w3.eth.account.signTransaction(txn, private_key=settings.ENS_PRIVATE_KEY)
-    txn_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+    try:
+        txn_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
 
-    # hack to convert
-    # "b'7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'"
-    # to "0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39"
-    txn_hash = str(binascii.b2a_hex(txn_hash)).replace("b'", "0x").replace("'", "")
+        # hack to convert
+        # "b'7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'"
+        # to "0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39"
+        txn_hash = str(binascii.b2a_hex(txn_hash)).replace("b'", "0x").rstrip("'")
+    except ValueError:
+        logger.warning('Error in set_address_at_resolver')
 
     return txn_hash
 
@@ -213,7 +218,7 @@ def get_nonce():
     return max([web3_nonce, next_db_nonce])
 
 
-def helper_process_registration(signer, github_handle, signedMsg, gas_multiplier=1, override_nonce=None):
+def helper_process_registration(signer, github_handle, signedMsg, gas_multiplier=1.101, override_nonce=None):
     # actually setup subdomain
     start_nonce = get_nonce() if not override_nonce else override_nonce
     nonce = start_nonce
