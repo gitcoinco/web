@@ -1371,6 +1371,7 @@ class Profile(SuperModel):
             Q(bounty_owner_github_username__iexact=self.handle) |
             Q(bounty_owner_github_username__iexact=f'@{self.handle}')
         )
+        funded_bounties = funded_bounties.filter(network=network)
 
         params = {
             'title': f"@{self.handle}",
@@ -1381,7 +1382,7 @@ class Profile(SuperModel):
             'avatar_url': self.avatar_url_with_gitcoin_logo,
             'profile': self,
             'bounties': self.bounties,
-            'count_bounties_completed': self.fulfilled.filter(accepted=True).count(),
+            'count_bounties_completed': self.fulfilled.filter(accepted=True, bounty__network=network).count(),
             'sum_eth_collected': sum_eth_collected,
             'sum_eth_funded': sum_eth_funded,
             'works_with_collected': works_with_collected,
