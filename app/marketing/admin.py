@@ -31,9 +31,20 @@ class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
+class GithubEventAdmin(admin.ModelAdmin):
+    raw_id_fields = ['profile']
+    ordering = ['-id']
+
+
+class MatchAdmin(admin.ModelAdmin):
+    raw_id_fields = ['bounty']
+    ordering = ['-id']
+
+
 class AlumniAdmin(GeneralAdmin):
     """Define the Alumni admin layout."""
 
+    raw_id_fields = ['profile']
     search_fields = ['organization', ]
     list_display = ['get_profile_username', 'get_profile_email', 'organization', 'created_on', ]
     readonly_fields = ['created_on', 'modified_on', ]
@@ -64,12 +75,14 @@ class AlumniAdmin(GeneralAdmin):
 
 
 class EmailSubscriberAdmin(admin.ModelAdmin):
+    raw_id_fields = ['profile']
     ordering = ['-id']
     search_fields = ['email', 'source']
     list_display = ['email', 'created_on', 'source']
 
 
 class SlackUserAdmin(admin.ModelAdmin):
+    raw_id_fields = ['slackuser']
     ordering = ['-times_seen']
     search_fields = ['email', 'username']
     list_display = ['email', 'username', 'times_seen', 'pct_seen', 'membership_length_in_days', 'last_seen']
@@ -85,8 +98,8 @@ class SlackUserAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Alumni, AlumniAdmin)
-admin.site.register(GithubEvent, GeneralAdmin)
-admin.site.register(Match, GeneralAdmin)
+admin.site.register(GithubEvent, GithubEventAdmin)
+admin.site.register(Match, MatchAdmin)
 admin.site.register(Stat, GeneralAdmin)
 admin.site.register(EmailEvent, GeneralAdmin)
 admin.site.register(EmailSubscriber, EmailSubscriberAdmin)
