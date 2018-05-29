@@ -714,12 +714,6 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     return TemplateResponse(request, 'bounty_details.html', params)
 
 
-@staff_member_required(login_url='index')
-def quickstart(request):
-    """Display quickstart guide."""
-    return TemplateResponse(request, 'quickstart.html', {})
-
-
 class ProfileHiddenException(Exception):
     pass
 
@@ -837,21 +831,9 @@ def save_search(request):
 
     context = {
         'active': 'save',
-        'title': _('Save Search'),
+        'title': 'Save Search',
     }
     return TemplateResponse(request, 'save_search.html', context)
-
-
-@staff_member_required(login_url='index')
-@csrf_exempt
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def get_quickstart_video(request):
-    """Show quickstart video."""
-    context = {
-        'active': 'video',
-        'title': _('Quickstart Video'),
-    }
-    return TemplateResponse(request, 'quickstart_video.html', context)
 
 
 @require_POST
