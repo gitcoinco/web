@@ -29,9 +29,16 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('nonce', type=int, help='nonce to start above')
         parser.add_argument(
-            '-live', '--live',
+            '-clear-nonces', '--clear-nonces',
             action='store_true',
-            dest='live',
+            dest='clear-nonces',
+            default=False,
+            help='Actually clear the nonces'
+        )
+        parser.add_argument(
+            '-reprocess', '--reprocess',
+            action='store_true',
+            dest='reprocess',
             default=False,
             help='Actually reprocess the tx'
         )
@@ -41,7 +48,7 @@ class Command(BaseCommand):
         objs = ENSSubdomainRegistration.objects.filter(start_nonce__gte=options['nonce'])
         print(f"got {objs.count()} objs")
 
-        if options['live']:
+        if options['clear-nonces']:
             print("wiping current objects")
             for obj in objs:
                 obj.txn_hash_1 = None
@@ -50,6 +57,7 @@ class Command(BaseCommand):
                 obj.start_nonce = 0
                 obj.end_nonce = 0
 
+        if options['reprocess']:
             print("submitting reprocess")
             for obj in objs.exclude(profile__isnull=True):
                 obj.reprocess()
