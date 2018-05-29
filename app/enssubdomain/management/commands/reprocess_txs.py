@@ -53,3 +53,4 @@ class Command(BaseCommand):
             print("submitting reprocess")
             for obj in objs.exclude(profile__isnull=True):
                 obj.reprocess()
+                obj.save()
