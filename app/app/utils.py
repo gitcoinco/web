@@ -185,7 +185,7 @@ def fetch_mails_since_id(email_id, password, since_id=None, host='imap.gmail.com
     all_ids = all_ids[0].decode("utf-8").split()
     print(all_ids)
     if since_id:
-        ids = all_ids[all_ids.index(str(since_id))+1:]
+        ids = all_ids[all_ids.index(str(since_id)) + 1:]
     else:
         ids = all_ids
     emails = {}

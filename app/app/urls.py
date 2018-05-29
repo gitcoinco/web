@@ -47,7 +47,6 @@ from external_bounties.router import router as ebrouter
 from .sitemaps import sitemaps
 
 urlpatterns = [
-
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
     # api views
@@ -67,7 +66,6 @@ urlpatterns = [
     url(r'^universe/new/?', external_bounties.views.external_bounties_new, name="universe_new"),
     url(r'^universe/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='universe'),
     url(r'^universe/?', external_bounties.views.external_bounties_index, name="universe_index"),
-
     re_path(r'^onboard/?', dashboard.views.onboard, name='onboard'),
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
@@ -84,13 +82,33 @@ urlpatterns = [
     # Interests
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
     path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
-    path('actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/', dashboard.views.uninterested, name='uninterested'),
+    path(
+        'actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/',
+        dashboard.views.uninterested,
+        name='uninterested'
+    ),
 
     # View Bounty
-    url(r'^bounty/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='bounty_details_new'),
-    url(r'^funding/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='funding_details_new'),
-    url(r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)/(?P<stdbounties_id>.*)', dashboard.views.bounty_details, name='issue_details_new3'),
-    url(r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)', dashboard.views.bounty_details, name='issue_details_new2'),
+    url(
+        r'^bounty/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)',
+        dashboard.views.bounty_details,
+        name='bounty_details_new'
+    ),
+    url(
+        r'^funding/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)',
+        dashboard.views.bounty_details,
+        name='funding_details_new'
+    ),
+    url(
+        r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)/(?P<stdbounties_id>.*)',
+        dashboard.views.bounty_details,
+        name='issue_details_new3'
+    ),
+    url(
+        r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)',
+        dashboard.views.bounty_details,
+        name='issue_details_new2'
+    ),
     url(r'^bounty/details/?', dashboard.views.bounty_details, name='bounty_details'),
     url(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
 
@@ -196,16 +214,40 @@ urlpatterns = [
     url(r'^_administration/email/new_tip$', retail.emails.new_tip, name='new_tip'),
     url(r'^_administration/email/new_match$', retail.emails.new_match, name='new_match'),
     url(r'^_administration/email/new_work_submission$', retail.emails.new_work_submission, name='new_work_submission'),
-    url(r'^_administration/email/new_bounty_rejection$', retail.emails.new_bounty_rejection, name='new_bounty_rejection'),
-    url(r'^_administration/email/new_bounty_acceptance$', retail.emails.new_bounty_acceptance, name='new_bounty_acceptance'),
-    url(r'^_administration/email/bounty_expire_warning$', retail.emails.bounty_expire_warning, name='bounty_expire_warning'),
+    url(
+        r'^_administration/email/new_bounty_rejection$',
+        retail.emails.new_bounty_rejection,
+        name='new_bounty_rejection'
+    ),
+    url(
+        r'^_administration/email/new_bounty_acceptance$',
+        retail.emails.new_bounty_acceptance,
+        name='new_bounty_acceptance'
+    ),
+    url(
+        r'^_administration/email/bounty_expire_warning$',
+        retail.emails.bounty_expire_warning,
+        name='bounty_expire_warning'
+    ),
     url(r'^_administration/email/bounty_feedback$', retail.emails.bounty_feedback, name='bounty_feedback'),
-    url(r'^_administration/email/start_work_expire_warning$', retail.emails.start_work_expire_warning, name='start_work_expire_warning'),
+    url(
+        r'^_administration/email/start_work_expire_warning$',
+        retail.emails.start_work_expire_warning,
+        name='start_work_expire_warning'
+    ),
     url(r'^_administration/email/start_work_expired$', retail.emails.start_work_expired, name='start_work_expired'),
     re_path(r'^_administration/email/gdpr_reconsent$', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
     url(r'^_administration/email/new_tip/resend$', retail.emails.resend_new_tip, name='resend_new_tip'),
-    url(r'^_administration/process_accesscode_request/(.*)$', tdi.views.process_accesscode_request, name='process_accesscode_request'),
-    url(r'^_administration/process_faucet_request/(.*)$', faucet.views.process_faucet_request, name='process_faucet_request'),
+    url(
+        r'^_administration/process_accesscode_request/(.*)$',
+        tdi.views.process_accesscode_request,
+        name='process_accesscode_request'
+    ),
+    url(
+        r'^_administration/process_faucet_request/(.*)$',
+        faucet.views.process_faucet_request,
+        name='process_faucet_request'
+    ),
 
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
@@ -245,7 +287,11 @@ urlpatterns = [
     path('interest/modal', dashboard.views.get_interest_modal, name='get_interest_modal'),
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
     path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
-    path('actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/', dashboard.views.uninterested, name='uninterested'),
+    path(
+        'actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/',
+        dashboard.views.uninterested,
+        name='uninterested'
+    ),
 
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
@@ -261,9 +307,7 @@ urlpatterns = [
 
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
-
     url(r'^impersonate/', include('impersonate.urls')),
-
 ]
 
 if settings.ENABLE_SILK:
