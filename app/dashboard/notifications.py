@@ -71,11 +71,7 @@ def maybe_market_to_twitter(bounty, event_name):
         bool: Whether or not the twitter notification was sent successfully.
 
     """
-    if not settings.TWITTER_CONSUMER_KEY:
-        return False
-    if bounty.get_natural_value() < 0.0001:
-        return False
-    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+    if not bounty.is_notification_eligible(var_to_check=settings.TWITTER_CONSUMER_KEY):
         return False
     if settings.DEBUG and settings.MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
         raise cowardly_bot_exception
@@ -175,11 +171,7 @@ def maybe_market_to_slack(bounty, event_name):
         bool: Whether or not the Slack notification was sent successfully.
 
     """
-    if not settings.SLACK_TOKEN:
-        return False
-    if bounty.get_natural_value() < 0.0001:
-        return False
-    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+    if not bounty.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
     if settings.DEBUG and settings.MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
         raise cowardly_bot_exception
@@ -307,7 +299,7 @@ def maybe_market_tip_to_slack(tip, event_name):
         bool: Whether or not the Slack notification was sent successfully.
 
     """
-    if not settings.SLACK_TOKEN or (tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+    if not tip.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
     if settings.DEBUG and settings.MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
         raise cowardly_bot_exception
@@ -482,8 +474,7 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         bool: Whether or not the Github comment was posted successfully.
 
     """
-    if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
-       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+    if not bounty.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID):
         return False
     if settings.DEBUG and settings.MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
         raise cowardly_bot_exception
@@ -565,8 +556,7 @@ def maybe_market_tip_to_github(tip):
         bool: Whether or not the Github comment was posted successfully.
 
     """
-    if (not settings.GITHUB_CLIENT_ID) or (not tip.github_url) or (
-       tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+    if not tip.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID) or not tip.github_url:
         return False
     if settings.DEBUG and settings.MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
         raise cowardly_bot_exception
@@ -758,8 +748,7 @@ def maybe_post_on_craigslist(bounty):
 
 
 def maybe_notify_bounty_user_escalated_to_slack(bounty, username, last_heard_from_user_days):
-    if not settings.SLACK_TOKEN or bounty.get_natural_value() < 0.0001 or (
-       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+    if not bounty.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
     if settings.DEBUG and settings.MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
         raise cowardly_bot_exception
@@ -805,8 +794,7 @@ def append_snooze_copy(bounty):
 
 
 def maybe_notify_user_escalated_github(bounty, username, last_heard_from_user_days=None):
-    if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
-       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+    if not bounty.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID):
         return False
     if settings.DEBUG and settings.MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
         raise cowardly_bot_exception
@@ -826,8 +814,7 @@ def maybe_notify_user_escalated_github(bounty, username, last_heard_from_user_da
 
 
 def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days):
-    if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
-       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+    if not bounty.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID):
         return False
     if settings.DEBUG and settings.MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
         raise cowardly_bot_exception
@@ -841,8 +828,7 @@ def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days):
 
 
 def maybe_notify_bounty_user_warned_removed_to_slack(bounty, username, last_heard_from_user_days=None):
-    if not settings.SLACK_TOKEN or bounty.get_natural_value() < 0.0001 or (
-       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+    if not bounty.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
     if settings.DEBUG and settings.MAKE_GITCOIN_BOT_COWARDLY_IN_DEV:
         raise cowardly_bot_exception

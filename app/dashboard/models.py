@@ -668,6 +668,20 @@ class Bounty(SuperModel):
             urls.update({item: f'/issue/{item}?{params}'})
         return urls
 
+    def is_notification_eligible(self, var_to_check=True):
+        """Determine whether or not a notification is eligible for transmission outside of production.
+
+        Returns:
+            bool: Whether or not the Bounty is eligible for outbound notifications.
+
+        """
+        if not var_to_check or self.get_natural_value() < 0.0001 or (
+           self.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+            return False
+        if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
+            return False
+        return True
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
@@ -849,6 +863,19 @@ class Tip(SuperModel):
         if self.receive_txid:
             return "RECEIVED"
         return "PENDING"
+
+    def is_notification_eligible(self, var_to_check=True):
+        """Determine whether or not a notification is eligible for transmission outside of production.
+
+        Returns:
+            bool: Whether or not the Tip is eligible for outbound notifications.
+
+        """
+        if not var_to_check or self.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+            return False
+        if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
+            return False
+        return True
 
 
 # @receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
@@ -1223,7 +1250,7 @@ class Profile(SuperModel):
 
     @staticmethod
     def get_network():
-        return 'mainnet' if not settings.DEBUG else 'rinkeby'   
+        return 'mainnet' if not settings.DEBUG else 'rinkeby'
 
     def get_fulfilled_bounties(self, network=None):
         network = network or self.get_network()

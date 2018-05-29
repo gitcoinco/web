@@ -26,7 +26,7 @@ from enssubdomain.models import ENSSubdomainRegistration
 
 class ENSSubdomainAdmin(admin.ModelAdmin):
     """Handle displaying conversion rates in the django admin."""
-
+    raw_id_fields = ("profile",)
     ordering = ['-id']
 
 
