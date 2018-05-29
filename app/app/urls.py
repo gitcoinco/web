@@ -73,7 +73,7 @@ urlpatterns = [
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
 
     # action URLs
-    url(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
+    re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
@@ -137,7 +137,7 @@ urlpatterns = [
     url(r'^sync/search_save?', dashboard.views.save_search, name='save_search'),
 
     # modals
-    url(r'^modal/get_quickstart_video?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
+    re_path(r'^modal/get_quickstart_video?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
 
     # brochureware views
     url(r'^about/?', retail.views.about, name='about'),
