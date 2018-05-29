@@ -23,6 +23,7 @@ import math
 import random
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
@@ -39,16 +40,19 @@ from app.utils import sync_profile
 from chartit import Chart, DataPool
 from dashboard.models import Bounty, Profile, Tip, UserAction
 from dashboard.utils import create_user_action
+from enssubdomain.models import ENSSubdomainRegistration
 from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
 from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
 from retail.emails import render_nth_day_email_campaign
+from retail.emails import ALL_EMAILS
 from retail.helpers import get_ip
 
 
-def get_settings_navs():
+def get_settings_navs(request):
+    subdomain = f"{request.user.username}." if request.user.is_authenticated else False
     return [{
         'body': 'Email',
         'href': reverse('email_settings', args=('', ))
@@ -64,6 +68,12 @@ def get_settings_navs():
     }, {
         'body': 'Slack',
         'href': reverse('slack_settings'),
+    }, {
+        'body': "ENS",
+        'href': reverse('ens_settings'),
+    }, {
+        'body': "Account",
+        'href': reverse('account_settings'),
     }]
 
 
@@ -137,7 +147,7 @@ def privacy_settings(request):
         'nav': 'internal',
         'active': '/settings/privacy',
         'title': _('Privacy Settings'),
-        'navs': get_settings_navs(),
+        'navs': get_settings_navs(request),
         'is_logged_in': is_logged_in,
         'msg': msg,
     }
@@ -187,7 +197,7 @@ def matching_settings(request):
         'nav': 'internal',
         'active': '/settings/matching',
         'title': _('Matching Settings'),
-        'navs': get_settings_navs(),
+        'navs': get_settings_navs(request),
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/matching.html', context)
@@ -219,7 +229,7 @@ def feedback_settings(request):
         'nav': 'internal',
         'active': '/settings/feedback',
         'title': _('Feedback'),
-        'navs': get_settings_navs(),
+        'navs': get_settings_navs(request),
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/feedback.html', context)
@@ -265,9 +275,6 @@ def email_settings(request, key):
             if preferred_language not in [i[0] for i in settings.LANGUAGES]:
                 msg = _('Unknown language')
                 validation_passed = False
-        if level not in ['lite', 'lite1', 'regular', 'nothing']:
-            validation_passed = False
-            msg = _('Invalid Level')
         if validation_passed:
             if profile:
                 profile.pref_lang_code = preferred_language
@@ -278,6 +285,13 @@ def email_settings(request, key):
                 key = get_or_save_email_subscriber(email, 'settings')
                 es.preferences['level'] = level
                 es.email = email
+                form = dict(request.POST)
+                # form was not sending falses, so default them if not there
+                for email_tuple in ALL_EMAILS:
+                    key = email_tuple[0]
+                    if key not in form.keys():
+                        form[key] = False
+                es.build_email_preferences(form)
                 ip = get_ip(request)
                 es.active = level != 'nothing'
                 es.newsletter = level in ['regular', 'lite1']
@@ -292,8 +306,10 @@ def email_settings(request, key):
         'active': '/settings/email',
         'title': _('Email Settings'),
         'es': es,
+        'suppression_preferences': json.dumps(es.preferences.get('suppression_preferences', {}) if es else {}),
         'msg': msg,
-        'navs': get_settings_navs(),
+        'email_types': ALL_EMAILS,
+        'navs': get_settings_navs(request),
         'preferred_language': pref_lang
     }
     return TemplateResponse(request, 'settings/email.html', context)
@@ -336,12 +352,91 @@ def slack_settings(request):
         'nav': 'internal',
         'active': '/settings/slack',
         'title': _('Slack Settings'),
-        'navs': get_settings_navs(),
+        'navs': get_settings_navs(request),
         'es': es,
         'profile': profile,
         'msg': response['output'],
     }
     return TemplateResponse(request, 'settings/slack.html', context)
+
+def ens_settings(request):
+    """Displays and saves user's ENS settings.
+
+    Returns:
+        TemplateResponse: The user's ENS settings template response.
+
+    """
+    response = {'output': ''}
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    ens_subdomains = ENSSubdomainRegistration.objects.filter(profile=profile).order_by('-pk')
+    ens_subdomain = ens_subdomains.first() if ens_subdomains.exists() else None
+    
+    context = {
+        'is_logged_in': is_logged_in,
+        'nav': 'internal',
+        'ens_subdomain': ens_subdomain,
+        'active': '/settings/ens',
+        'title': _('ENS Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'msg': response['output'],
+    }
+    return TemplateResponse(request, 'settings/ens.html', context)
+
+
+def account_settings(request):
+    """Displays and saves user's Account settings.
+
+    Returns:
+        TemplateResponse: The user's Account settings template response.
+
+    """
+    msg = ''
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    if request.POST:
+
+        if request.POST.get('disconnect', False):
+            profile.github_access_token = ''
+            profile.email = ''
+            profile.save()
+            messages.success(request, _('Your account has been disconnected from Github'))
+            logout_redirect = redirect(reverse('logout') + '?next=/')
+            return logout_redirect
+        if request.POST.get('delete', False):
+            profile.hide_profile = True
+            profile.email = ''
+            profile.save()
+            if es:
+                es.delete()
+            request.user.delete()
+            messages.success(request, _('Your account has been deleted'))
+            logout_redirect = redirect(reverse('logout') + '?next=/')
+            return logout_redirect
+        else:
+            msg = _('Error: did not understand your request')
+
+    context = {
+        'is_logged_in': is_logged_in,
+        'nav': 'internal',
+        'active': '/settings/account',
+        'title': _('Account Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'msg': msg,
+    }
+    return TemplateResponse(request, 'settings/account.html', context)
 
 
 def _leaderboard(request):
@@ -364,6 +459,7 @@ def leaderboard(request, key=''):
     titles = {
         'quarterly_payers': _('Top Payers'),
         'quarterly_earners': _('Top Earners'),
+        'quarterly_orgs': _('Top Orgs'),
         #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
         #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
         #        'monthly_fulfilled': 'Monthly Leaderboard',
@@ -397,7 +493,7 @@ def leaderboard(request, key=''):
         'selected': title,
         'title': f'Leaderboard: {title}',
         'card_title': f'Leaderboard: {title}',
-        'card_desc': f'See the most valued members in the Gitcoin community this month. {top_earners}',
+        'card_desc': f'See the most valued members in the Gitcoin community recently . {top_earners}',
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
         'podium_items': items[:3] if items else []

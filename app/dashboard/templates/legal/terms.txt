@@ -18,9 +18,9 @@
 <html>
    <head>
    <body class="c15 c31">
-      <p class="c18 title" id="h.cn4lvjpnb7pd"><span class="c6">Gitcoin Terms of Use and Privacy Policy</span></p>
+      <p class="c18 title" id="h.cn4lvjpnb7pd"><span class="c6">Gitcoin Terms of Use</span></p>
       <p class="c5 c7"><span class="c0"></span></p>
-      <p class="c5"><span class="c0">Last updated: December 1, 2017</span></p>
+      <p class="c5"><span class="c0">Last updated: May 24, 2018</span></p>
       <p class="c5 c7"><span class="c0"></span></p>
       <p class="c5"><span class="c3">IMPORTANT NOTICE: THIS AGREEMENT IS SUBJECT TO BINDING ARBITRATION AND A WAIVER OF CLASS ACTION RIGHTS AS DETAILED IN </span><span class="c3">SECTION </span><span class="c3">22.</span><span class="c0">&nbsp;PLEASE READ THE AGREEMENT CAREFULLY.</span></p>
       <h2 class="c11" id="h.kkdg9whr5sl0"><span class="c14 c3">1. </span><span class="c2">ACCEPTANCE OF TERMS</span></h2>
@@ -145,95 +145,6 @@
       <p class="c5"><span class="c3">Users with questions, complaints or claims with respect to the Service may contact us at </span><span class="c0">legalnotices@gitcoin.co.</span></p>
       <h2 class="c11" id="h.bw8713icc2ga"><span class="c14 c3">25</span><span class="c2">. INTERNATIONAL USERS</span></h2>
       <p class="c5"><span class="c3">The Site is controlled, operated and administered by </span><span class="c3">Gitcoin</span><span class="c3">&nbsp;from its offices within the United States of America and is not intended to subject </span><span class="c3">Gitcoin</span><span class="c3">&nbsp;to the laws or jurisdiction of any state, country or territory other than that of the United States. </span><span class="c3">Gitcoin</span><span class="c3">&nbsp;does not represent or warrant that the Site or any part thereof is appropriate or available for use in any particular jurisdiction other than the United States. Those who choose to access the Site do so on their own initiative and at their own risk, and are responsible for complying with all local statutes, orders, regulations, rules, and other laws. You are also subject to United States export controls and are responsible for any violations of such controls, including without limitation any United States embargoes or other federal rules and regulations restricting exports. Gitcoin may limit the Site&rsquo;s availability, in whole or in part, to any person, geographic area or jurisdiction we choose, at any time and in our sole discretion.</span></p>
-      <h1 id="privacy" class="c27" id="h.bp0vt1tn6u5y"><span class="c14 c25">PRIVACY POLICY</span></h1>
-      <p class="c5"><span class="c0">Last updated: December 1, 2017</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <p class="c5"><span class="c3">The </span><span class="c3">Gitcoin</span><span class="c3">&nbsp;development team is extremely passionate about providing incentivizing tools for open source software and takes consumer privacy very seriously. T</span><span class="c3">he Privacy Policy, along with our Terms of Service, </span><span class="c0">describes how we collect, use, disclose, and store the information you provide to us. The Privacy Policy applies to the website, products, and services (collectively, &ldquo;Services&rdquo;) on or in which it is posted, linked, or referenced.</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <p class="c5"><span class="c0">This policy covers:</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <p class="c5"><span class="c0">&bull; Information that we receive from you when you interact with our Services;</span></p>
-      <p class="c5"><span class="c0">&bull; How we use and process the information that we receive;</span></p>
-      <p class="c5"><span class="c0">&bull; If and why Personal Information may be disclosed to third parties; and</span></p>
-      <p class="c5"><span class="c3">&bull; Your choices regarding the collection and processing of your Personal Information.</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <p class="c5"><span class="c0">Please note that this Privacy Policy does not apply to information collected through third-party websites or services that you may access through the Services or that you submit to us through email, text message or other electronic message or offline.</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <ul class="c13 lst-kix_mvua59pj7i7-0 start">
-         <li class="c5 c10"><span class="c2">User consent</span></li>
-      </ul>
-      <p class="c5"><span class="c0">By using the Services, you accept the terms of this Privacy Policy and our Terms of Service, and consent to our collection, use, disclosure, and retention of your information as described in this Privacy Policy. If you have not done so already, please also review our Terms of Service. The Terms of Service contain provisions that limit our liability to you and require you to resolve any dispute with us on an individual basis and not as part of any class or representative action. IF YOU DO NOT AGREE WITH ANY PART OF THIS PRIVACY POLICY OR OUR TERMS OF SERVICE, THEN PLEASE DO NOT USE ANY OF THE SERVICES.</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <ul class="c13 lst-kix_xzxqnzh1waq6-0 start">
-         <li class="c5 c10"><span class="c2">Effective date and changes to this policy </span></li>
-      </ul>
-      <p class="c5"><span class="c0">The Effective Date of this Privacy Policy is set forth at the top of this webpage. Whenever possible, we will provide you with advance written notice of our changes to this Privacy Policy. We will not make retroactive changes that reduce your privacy rights unless we are legally required to do so. Your continued use of the Services after the Effective Date constitutes your acceptance of the amended Privacy Policy. The amended Privacy Policy supersedes all previous versions.</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <ul class="c13 lst-kix_p1eeg763pm44-0 start">
-         <li class="c5 c10"><span class="c14 c3">Information we collect in connection with accessing our Service</span></li>
-      </ul>
-      <ul class="c13 lst-kix_p1eeg763pm44-2 start">
-         <li class="c5 c12"><span class="c0">Email </span></li>
-         <li class="c5 c12"><span class="c0">Ethereum Wallet Address</span></li>
-         <li class="c5 c12"><span class="c0">Device and OS Information</span></li>
-         <li class="c5 c12"><span class="c0">Carrier Information</span></li>
-         <li class="c5 c12"><span class="c0">Location Information</span></li>
-         <li class="c5 c12"><span class="c3">Application Version Information</span><span class="c3">&nbsp;&amp; History</span></li>
-         <li class="c5 c12"><span class="c0">Github Username</span></li>
-         <li class="c5 c12"><span class="c0">Desired Programming Languages</span></li>
-      </ul>
-      <p class="c5 c7 c21"><span class="c0"></span></p>
-      <ul class="c13 lst-kix_8nkyc1tjmudk-0 start">
-         <li class="c5 c10"><span class="c2">How we use information we collect?</span></li>
-      </ul>
-      <p class="c5"><span class="c0">We use the information we collect from our services to provide, maintain, and improve the Services, to develop new Services, and to protect the Services and our users. </span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <ul class="c13 lst-kix_7792xp58hy5p-0 start">
-         <li class="c5 c10"><span class="c2">How and when is information shared? </span></li>
-      </ul>
-      <p class="c5"><span class="c3">Gitcoin</span><span class="c3">&nbsp;does not share personal information with companies, organizations and individuals outside of the </span><span class="c3">Gitcoin</span><span class="c3">&nbsp;community or our affiliate companies unless one of the following circumstances applies:</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <p class="c5"><span class="c3 c9">With your consent</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <p class="c5"><span class="c0">We will share personal information with companies, organizations or individuals outside of the Services when we have your consent to do so. We require opt-in consent for the sharing of any sensitive personal information as well as . </span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <p class="c5"><span class="c9 c3">For external processing</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <p class="c5"><span class="c0">The internet is a complex highway system and until the emergence of the fully decentralizing Web 3.0, information must be processed along those rails in some instances. We make reasonable efforts to limit the exposure of any personal information to external processors.</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <p class="c5"><span class="c9 c3">For legal reasons</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <p class="c5"><span class="c0">When permitted or required by law, we may share information with additional third parties for purposes including response to legal process. To the extent such activity is permissive in nature, we will endeavor to provide adequate notice in the instance of such disclosures. To the extent disclosures are required, we will still endeavor to provide notice where possible.</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <p class="c5"><span class="c0">We may also disclose information about you if we determine that disclosure is reasonably necessary to enforce our terms and conditions or protect our operations or users.</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <p class="c5"><span class="c3">If </span><span class="c3">Gitcoin</span><span class="c0">&nbsp;is involved in a merger, acquisition or asset sale, we will transfer any personal information to such third parties following notice and a reasonable opportunity for users to object to the transfer of such personal information.</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <ul class="c13 lst-kix_afcfwyj03uwc-0 start">
-         <li class="c5 c10"><span class="c2">How information is retained and secured [Layman&#39;s: We try really hard to keep your info secure]</span></li>
-      </ul>
-      <p class="c5"><span class="c3">Of the information </span><span class="c3">Gitcoin</span><span class="c0">&nbsp;collects, we store the information publicly on IPFS, and we retain information as long as it is necessary and relevant for our operations. In addition, we retain personal information to comply with applicable law where required, prevent fraud, resolve disputes, troubleshoot problems, assist with any investigation, enforce our Terms of Service, and other actions permitted by law.</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <p class="c5"><span class="c0">We employ industry standard security measures designed to protect the security of all information submitted through the Services. However, the security of information transmitted through the internet can never be guaranteed. We are not responsible for any interception or interruption of any communications through the internet or for changes to or losses of data. Users of the Services are responsible for maintaining the security of any password, biometrics, user ID or other form of authentication involved in obtaining access to password protected or secure areas of any of our digital services. In order to protect you and your data, we may suspend your use of any of the Services, without notice, pending an investigation, if any breach of security is suspected.</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <ul class="c13 lst-kix_f2unyinrvi3e-0 start">
-         <li class="c5 c10"><span class="c2">Your choices [If you disagree with how we collect, process, store, and transmit your information, your only choice at this time is to not use Gitcoin]</span></li>
-      </ul>
-      <p class="c5"><span class="c3">With regard to information we collect, you have sole discretion whether to provide such information. Once provided, this information may be transmitted and shared in accordance with the terms of this policy unless and until you provide us notice to delete your personal information in writing at legalnotices@gitcoin.co</span><span class="c3">.</span><span class="c0">&nbsp;Users acknowledge that we will make reasonable efforts to delete such information as is technically possible. You acknowledge that the inherent nature of blockchain networks will make many records impossible to delete. Some personal information is automatically collected via the use of data analytics tools. If you object to this collection, your only choice is to not use the Services.</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <ul class="c13 lst-kix_peosb9yupa1e-0 start">
-         <li class="c5 c10"><span class="c2">Linked Services [Gitcoin will be a gateway to the decentralized Web 3.0. Our policies only cover the gateway, not what you find on the other side.]</span></li>
-      </ul>
-      <p class="c5"><span class="c0">The Services may provide access or interaction with third-party websites and services (&ldquo;Third Party Services&rdquo;) with which we have no affiliation. We do not endorse any Third Party Service or the quality or accuracy of information presented on it. If you decide to visit a Third Party Service, you are subject to its privacy policy and practices and not this Privacy Policy. We encourage you to carefully review the legal and privacy notices of all other digital services that you visit.</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <ul class="c13 lst-kix_p8slntkscpjd-0 start">
-         <li class="c5 c10"><span class="c2">Special Provisions [Gitcoin is for those of legal age of majority!]</span></li>
-      </ul>
-      <p class="c5"><span class="c3">The Services are not intended for use by children. If you are under the age of majority in your place of residence, you may use the Services only with the consent of or under the supervision of your parent or legal guardian. Consistent with the requirements of the Children&#39;s Online Privacy Protection Act (COPPA), if we learn that we have received any information directly from a child under age 13 without first receiving his or her parent&#39;s verified consent, we will use that information only to respond directly to that child (or his or her parent or legal guardian) to inform the child that he or she cannot use the Services and subsequently we will delete that information.</span></p>
-      <p class="c5 c7"><span class="c0"></span></p>
-      <p class="c5"><span class="c3">Under California Civil Code Section 1789.3, California users are entitled to the following consumer rights notice: California residents may reach the Complaint Assistance Unit of the Division of Consumer Services of the California Department of Consumer Affairs by mail at 1625 North Market Blvd., Sacramento, CA 95834, or by telephone at (916) 445-1254 or (800) 952-5210.</span></p>
-      <div class="c32">
-         <p class="c26"><a href="#cmnt_ref1" id="cmnt1">[a]</a><span class="c24">Edit more in line with Amazon Mechanical Turk Use Policy- https://www.mturk.com/mturk/acceptableuse</span></p>
-      </div>
+
    </body>
 </html>

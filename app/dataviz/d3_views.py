@@ -74,10 +74,12 @@ def data_viz_helper_get_data_responses(request, visual_type):
 
         elif visual_type == 'repos':
             value = bounty.value_in_usdt_then
+            bounty_org_name = getattr(bounty, 'org_name', '')
+            bounty_repo_name = getattr(bounty, 'github_repo_name', '')
 
             response = [
-                bounty.org_name.replace('-', ''),
-                bounty.github_repo_name.replace('-', ''),
+                bounty_org_name.replace('-', ''),
+                bounty_repo_name.replace('-', ''),
                 str(bounty.github_issue_number),
             ]
 

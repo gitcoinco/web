@@ -179,6 +179,7 @@ class DashboardModelsTest(TestCase):
             (1, 'Total Funded Issues'),
             (1, 'Open Funded Issues'),
             ('0x', 'Loyalty Rate'),
+            (0, 'Bounties completed'),
         ]
         assert profile.github_url == 'https://github.com/gitcoinco'
         assert profile.get_relative_url() == '/profile/gitcoinco'

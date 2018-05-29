@@ -34,6 +34,7 @@ var hide_if_empty = function(key, val, result) {
 };
 var unknown_if_empty = function(key, val, result) {
   if (!_truthy(val)) {
+    $('#' + key).parent().hide();
     return [ key, 'Unknown' ];
   }
   return [ key, val ];
@@ -301,7 +302,14 @@ var callbacks = {
 var isBountyOwner = function(result) {
   var bountyAddress = result['bounty_owner_address'];
 
-  return (typeof web3 != 'undefined' && (web3.eth.coinbase == bountyAddress));
+  if (typeof web3 == 'undefined') {
+    return false;
+  }
+  if (typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+    return false;
+  }
+
+  return (web3.eth.coinbase.toLowerCase() == bountyAddress.toLowerCase());
 };
 
 var update_title = function() {
@@ -500,6 +508,20 @@ var build_detail_page = function(result) {
     }
   }
 
+  $('#bounty_details #issue_description img').on('click', function() {
+
+    var content = $.parseHTML(
+      '<div><div class="row"><div class="col-12 closebtn">' +
+        '<a id="" rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
+          '<span aria-hidden="true">&times;</span>' +
+        '</a>' +
+      '</div>' +
+      '<div class="col-12 pt-2 pb-2"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
+
+    var modal = $(content).appendTo('body').modal({
+      modalClass: 'modal magnify'
+    });
+  });
 };
 
 var do_actions = function(result) {
@@ -525,7 +547,7 @@ var do_actions = function(result) {
     var submit_work_enabled = !isBountyOwner(result);
     var start_stop_work_enabled = !isBountyOwner(result);
     var increase_bounty_enabled = isBountyOwner(result);
-    var show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done && !is_status_expired;
+    var show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
 
     if (is_legacy) {
       show_start_stop_work = false;

@@ -30,6 +30,7 @@ import dashboard.ios
 import dashboard.views
 import dataviz.d3_views
 import dataviz.views
+import enssubdomain.views
 import ethos.views
 import external_bounties.views
 import faucet.views
@@ -75,10 +76,10 @@ urlpatterns = [
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
-    re_path(r'^issue/fulfill/(?P<pk>.*)?', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
-    re_path(r'^issue/accept/(?P<pk>.*)?', dashboard.views.accept_bounty, name='process_funding'),
-    re_path(r'^issue/increase/(?P<pk>.*)?', dashboard.views.increase_bounty, name='increase_bounty'),
-    re_path(r'^issue/cancel/(?P<pk>.*)?', dashboard.views.cancel_bounty, name='kill_bounty'),
+    path('issue/fulfill', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
+    path('issue/accept', dashboard.views.accept_bounty, name='process_funding'),
+    path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
+    path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
 
     # Interests
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
@@ -101,13 +102,13 @@ urlpatterns = [
     url(r'^tip/?', dashboard.views.send_tip, name='tip'),
 
     # Legal
-    url(r'^legal/?', dashboard.views.terms, name='legal'),
     url(r'^terms/?', dashboard.views.terms, name='_terms'),
     url(r'^legal/terms/?', dashboard.views.terms, name='terms'),
     url(r'^legal/privacy/?', dashboard.views.privacy, name='privacy'),
     url(r'^legal/cookie/?', dashboard.views.cookie, name='cookie'),
     url(r'^legal/prirp/?', dashboard.views.prirp, name='prirp'),
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
+    url(r'^legal/?', dashboard.views.terms, name='legal'),
 
     # Alpha functionality
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
@@ -201,6 +202,7 @@ urlpatterns = [
     url(r'^_administration/email/bounty_feedback$', retail.emails.bounty_feedback, name='bounty_feedback'),
     url(r'^_administration/email/start_work_expire_warning$', retail.emails.start_work_expire_warning, name='start_work_expire_warning'),
     url(r'^_administration/email/start_work_expired$', retail.emails.start_work_expired, name='start_work_expired'),
+    re_path(r'^_administration/email/gdpr_reconsent$', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
     url(r'^_administration/email/new_tip/resend$', retail.emails.resend_new_tip, name='resend_new_tip'),
     path('_administration/email/day_email_campaign/<int:day>', marketing.views.day_email_campaign, name='day_email_campaign'),
     url(r'^_administration/process_accesscode_request/(.*)$', tdi.views.process_accesscode_request, name='process_accesscode_request'),
@@ -212,6 +214,8 @@ urlpatterns = [
     re_path(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
     re_path(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
     re_path(r'^settings/slack/?', marketing.views.slack_settings, name='slack_settings'),
+    re_path(r'^settings/ens/?', marketing.views.ens_settings, name='ens_settings'),
+    re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
 
     # marketing views
@@ -243,6 +247,7 @@ urlpatterns = [
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
     path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
     path('actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/', dashboard.views.uninterested, name='uninterested'),
+
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
     re_path(r'^logout/$', auth_views.logout, name='logout'),
@@ -251,8 +256,15 @@ urlpatterns = [
     # webhook routes
     # sendgrid webhook processing
     path(settings.SENDGRID_EVENT_HOOK_URL, marketing.webhookviews.process, name='sendgrid_event_process'),
+
+    # ENS urls
+    re_path(r'^ens/', enssubdomain.views.ens_subdomain, name='ens'),
+
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
+
+    url(r'^impersonate/', include('impersonate.urls')),
+
 ]
 
 if settings.ENABLE_SILK:
