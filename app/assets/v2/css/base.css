@@ -537,7 +537,7 @@ input[type=text].loading {
   padding: 0 2em;
 }
 
-#primary_form.submit_bounty_form {
+#primary_form .submit_bounty_form {
   max-width: none;
 }
 

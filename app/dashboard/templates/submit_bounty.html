@@ -45,8 +45,8 @@
       <div class="col-sm-12 col-lg-12">
         <div id="form_container">
           <div class="row d-flex justify-content-center my-5">
-            <div class="col-lg-5 col-sm-12">
-              <form id="primary_form" class="submit_bounty_form">
+            <div id="primary_form" class="col-lg-5 col-sm-12">
+              <form id="submitBounty" class="submit_bounty_form">
                 <h1>{% trans "Fund an Issue" %}</h1>
                 <label class="form__label" for=issueURL>{% trans "Issue URL" %}</label>
                 <input name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
@@ -138,7 +138,7 @@
                   {% include 'shared/bounty_actions_hidden_vars.html' %}
                   {% include 'shared/wallet_estimate.html' %}
                   <div class="form__footer form__footer--right">
-                    <button class="button button--primary btn-block" type="submit" id="submitBounty">Fund Issue</button>
+                    <button class="button button--primary btn-block js-submit" type="submit">Fund Issue</button>
                     <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
                   </div>
                 </div>
