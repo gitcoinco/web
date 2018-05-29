@@ -89,7 +89,7 @@ def handle_subdomain_exists(request, github_handle):
         return TemplateResponse(request, 'ens/ens_rate_limit.html', params)
 
 
-def set_resolver(signer, github_handle, nonce):
+def set_resolver(signer, github_handle, nonce, gas_multiplier=1):
     if mock_request:
         return '0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'
 
@@ -97,7 +97,7 @@ def set_resolver(signer, github_handle, nonce):
     resolver_addr = ns.address('resolver.eth')
     signer = Web3.toChecksumAddress(signer)
     txn_hash = None
-    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9
+    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9 * gas_multiplier
     subdomain = f"{github_handle}.{settings.ENS_TLD}"
 
     transaction = {
@@ -127,13 +127,13 @@ def set_resolver(signer, github_handle, nonce):
     return txn_hash
 
 
-def set_owner(signer, github_handle, nonce):
+def set_owner(signer, github_handle, nonce, gas_multiplier=1):
     if mock_request:
         return '0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'
     owned = settings.ENS_TLD
     label = github_handle
     txn_hash = None
-    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9
+    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9 * gas_multiplier
 
     transaction = {
         'from': Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
@@ -164,14 +164,14 @@ def set_owner(signer, github_handle, nonce):
     return txn_hash
 
 
-def set_address_at_resolver(signer, github_handle, nonce):
+def set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=1):
     if mock_request:
         return '0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'
     ns = ENS.fromWeb3(w3)
     resolver_addr = ns.address('resolver.eth')
     signer = Web3.toChecksumAddress(signer)
     txn_hash = None
-    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9
+    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9 * gas_multiplier
     subdomain = f"{github_handle}.{settings.ENS_TLD}"
 
     transaction = {
@@ -213,15 +213,15 @@ def get_nonce():
     return max([web3_nonce, next_db_nonce])
 
 
-def helper_process_registration(signer, github_handle, signedMsg):
+def helper_process_registration(signer, github_handle, signedMsg, gas_multiplier=1):
     # actually setup subdomain
     start_nonce = get_nonce()
     nonce = start_nonce
-    txn_hash_1 = set_owner(signer, github_handle, nonce)
+    txn_hash_1 = set_owner(signer, github_handle, nonce, gas_multiplier=gas_multiplier)
     nonce += 1
-    txn_hash_2 = set_resolver(signer, github_handle, nonce)
+    txn_hash_2 = set_resolver(signer, github_handle, nonce, gas_multiplier=gas_multiplier)
     nonce += 1
-    txn_hash_3 = set_address_at_resolver(signer, github_handle, nonce)
+    txn_hash_3 = set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=gas_multiplier)
 
     profile = Profile.objects.filter(handle__iexact=github_handle).first()
     return ENSSubdomainRegistration.objects.create(

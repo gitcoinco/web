@@ -61,5 +61,5 @@ class Command(BaseCommand):
         if options['reprocess']:
             print("submitting reprocess")
             for obj in objs.exclude(profile__isnull=True):
-                obj.reprocess()
+                obj.reprocess(gas_multiplier=1.2)
                 obj.save()
