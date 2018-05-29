@@ -44,9 +44,23 @@ class ENSSubdomainRegistration(SuperModel):
     signed_msg = models.TextField()
     start_nonce = models.IntegerField(default=0)
     end_nonce = models.IntegerField(default=0)
+    comments = models.TextField(blank=True)
 
     def __str__(self):
         try:
-            return f"{self.profile.handle if self.profile else ''} at {self.created_on}, {self.start_nonce} => {self.end_nonce}"
+            return f"{self.profile.handle if self.profile else 'unknown'} at {self.created_on}, {self.start_nonce} => {self.end_nonce}"
         except:
             return None
+
+    def reprocess(self):
+        from enssubdomains.views import helper_process_registration
+
+        self.start_nonce = 0
+        self.end_nonce = 0
+        self.pending = False
+
+        signer = self.subdomain_wallet_address
+        github_handle = self.profile.handle
+        signedMsg = self.signed_msg
+        replacement = helper_process_registration(signer, github_handle, signedMsg)
+        self.comments += f"replaced by {replacement.pk}"

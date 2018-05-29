@@ -213,6 +213,31 @@ def get_nonce():
     return max([web3_nonce, next_db_nonce])
 
 
+def helper_process_registration(signer, github_handle, signedMsg):
+    # actually setup subdomain
+    start_nonce = get_nonce()
+    nonce = start_nonce
+    txn_hash_1 = set_owner(signer, github_handle, nonce)
+    nonce += 1
+    txn_hash_2 = set_resolver(signer, github_handle, nonce)
+    nonce += 1
+    txn_hash_3 = set_address_at_resolver(signer, github_handle, nonce)
+
+    profile = Profile.objects.filter(handle__iexact=github_handle).first()
+    return ENSSubdomainRegistration.objects.create(
+        profile=profile,
+        subdomain_wallet_address=signer,
+        txn_hash_1=txn_hash_1,
+        txn_hash_2=txn_hash_2,
+        txn_hash_3=txn_hash_3,
+        pending=True,
+        signed_msg=signedMsg,
+        start_nonce=start_nonce,
+        end_nonce=nonce,
+        comments=f"github_handle: {github_handle}\n\n",
+        )
+
+
 def handle_subdomain_post_request(request, github_handle):
     # setup
     signedMsg = request.POST.get('signedMsg', '')
@@ -226,27 +251,8 @@ def handle_subdomain_post_request(request, github_handle):
         if not request.user.profile.trust_profile and request.user.profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
             return JsonResponse({'success': False, 'msg': _('For SPAM prevention reasons, you may not perform this action right now.  Please contact support if you believe this message is in error.')})
 
-        # actually setup subdomain
-        start_nonce = get_nonce()
-        nonce = start_nonce
-        txn_hash_1 = set_owner(signer, github_handle, nonce)
-        nonce += 1
-        txn_hash_2 = set_resolver(signer, github_handle, nonce)
-        nonce += 1
-        txn_hash_3 = set_address_at_resolver(signer, github_handle, nonce)
+        helper_process_registration(signer, github_handle, signedMsg)
 
-        profile = Profile.objects.filter(handle=github_handle).first()
-        ENSSubdomainRegistration.objects.create(
-            profile=profile,
-            subdomain_wallet_address=signer,
-            txn_hash_1=txn_hash_1,
-            txn_hash_2=txn_hash_2,
-            txn_hash_3=txn_hash_3,
-            pending=True,
-            signed_msg=signedMsg,
-            start_nonce=start_nonce,
-            end_nonce=nonce,
-            )
         return JsonResponse(
             {'success': True, 'msg': _('Your request has been submitted. Please wait for the transaction to mine!')})
     return handle_default_response(request, github_handle)
