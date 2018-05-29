@@ -36,6 +36,11 @@ class GithubEventAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
+class SlackPresenceAdmin(admin.ModelAdmin):
+    raw_id_fields = ['slackuser']
+    ordering = ['-id']
+
+
 class MatchAdmin(admin.ModelAdmin):
     raw_id_fields = ['bounty']
     ordering = ['-id']
@@ -82,7 +87,6 @@ class EmailSubscriberAdmin(admin.ModelAdmin):
 
 
 class SlackUserAdmin(admin.ModelAdmin):
-    raw_id_fields = ['slackuser']
     ordering = ['-times_seen']
     search_fields = ['email', 'username']
     list_display = ['email', 'username', 'times_seen', 'pct_seen', 'membership_length_in_days', 'last_seen']
@@ -105,5 +109,5 @@ admin.site.register(EmailEvent, GeneralAdmin)
 admin.site.register(EmailSubscriber, EmailSubscriberAdmin)
 admin.site.register(LeaderboardRank, GeneralAdmin)
 admin.site.register(SlackUser, SlackUserAdmin)
-admin.site.register(SlackPresence, GeneralAdmin)
+admin.site.register(SlackPresence, SlackPresenceAdmin)
 admin.site.register(GithubOrgToTwitterHandleMapping, GeneralAdmin)
