@@ -46,8 +46,7 @@ from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
 from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
-from retail.emails import render_nth_day_email_campaign
-from retail.emails import ALL_EMAILS
+from retail.emails import ALL_EMAILS, render_nth_day_email_campaign
 from retail.helpers import get_ip
 
 

@@ -37,6 +37,7 @@ from retail.utils import strip_double_chars, strip_html
 
 # key, name, frequency
 MARKETING_EMAILS = [
+    ('welcome_mail', _('Welcome Emails'), _('First 6 days after you sign up')),
     ('roundup', _('Roundup Emails'), _('Weekly')),
     ('new_bounty_notifications', _('New Bounty Notification Emails'), _('(up to) Daily')),
     ('important_product_updates', _('Product Update Emails'), _('Quarterly')),

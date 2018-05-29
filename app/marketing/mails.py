@@ -29,7 +29,7 @@ from retail.emails import (
     render_bounty_expire_warning, render_bounty_feedback, render_bounty_startwork_expire_warning,
     render_bounty_unintersted, render_faucet_rejected, render_faucet_request, render_gdpr_reconsent, render_gdpr_update,
     render_match_email, render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection,
-    render_new_bounty_roundup, render_new_work_submission, render_tip_email, render_nth_day_email_campaign,
+    render_new_bounty_roundup, render_new_work_submission, render_nth_day_email_campaign, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -473,7 +473,8 @@ def nth_day_email_campaign(nth, subscriber):
     try:
         setup_lang(subscriber.email)
         from_email = settings.CONTACT_EMAIL
-        html, text, subject = render_nth_day_email_campaign(subscriber.email, nth, firstname)
-        send_mail(from_email, subscriber.email, subject, text, html)
+        if not should_suppress_notification_email(to_email, 'welcome_mail'):
+            html, text, subject = render_nth_day_email_campaign(subscriber.email, nth, firstname)
+            send_mail(from_email, subscriber.email, subject, text, html)
     finally:
         translation.activate(cur_language)
