@@ -1392,10 +1392,13 @@ class Profile(SuperModel):
         }
 
         if activities:
-            fulfilled = self.fulfilled.filter(bounty__network=network).select_related('bounty').all().order_by('-created_on')
-            completed = [fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=False)]
-            submitted = [fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=True)]
-            started = self.interested.prefetch_related('bounty_set').filter(bounty__network=network).all().order_by('-created')
+            fulfilled = self.fulfilled.filter(
+                bounty__network=network
+            ).select_related('bounty').all().order_by('-created_on')
+            completed = [fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=False).distinct()]
+            submitted = [fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=True).distinct()]
+            started = self.interested.prefetch_related('bounty_set') \
+                .filter(bounty__network=network).all().distinct().order_by('-created')
             started_bounties = [interest.bounty_set.last() for interest in started]
 
             if completed or submitted or started:
