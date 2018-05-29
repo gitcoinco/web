@@ -4,7 +4,6 @@ load_tokens();
 
 /* Check if quickstart page is to be shown */
 var localStorage;
-var quickstartURL = document.location.origin + '/bounty/quickstart';
 
 try {
   localStorage = window.localStorage;
@@ -12,8 +11,23 @@ try {
   localStorage = {};
 }
 
-if (localStorage['quickstart_dontshow'] !== 'true' && document.referrer !== quickstartURL) {
+if (localStorage['quickstart_dontshow'] !== 'true' && doShowQuickstart(document.referrer)) {
   window.location = quickstartURL;
+}
+
+function doShowQuickstart(url) {
+  var fundingURL = document.location.origin + '/funding/new\\?';
+  var bountyURL = document.location.origin + '/bounty/new\\?';
+  var quickstartURL = document.location.origin + '/bounty/quickstart';
+  var blacklist = [ fundingURL, bountyURL, quickstartURL ];
+
+  $.each(blacklist, function(blacklisted_url) {
+    if (url.match(blacklisted_url)) {
+      return false;
+    }
+  });
+
+  return true;
 }
 
 // Wait until page is loaded, then run the function
