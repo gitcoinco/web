@@ -1265,7 +1265,7 @@ class Profile(SuperModel):
                 active=True,
                 github_username=self.handle,
             ).latest('id')
-            return rank.rank + 1
+            return rank.rank
         except LeaderboardRank.DoesNotExist:
             score = 0
         return score
