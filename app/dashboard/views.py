@@ -475,10 +475,14 @@ def send_tip_2(request):
 
 
 @staff_member_required
-def onboard(request):
+def contributor_onboard(request):
     """Handle displaying the first time user experience flow."""
-    params = {'title': _('Onboarding Flow')}
-    return TemplateResponse(request, 'onboard.html', params)
+    params = {
+        'title': _('Onboarding Flow'),
+        'steps': ['github', 'metamask', 'avatar', 'skills'],
+        'flow': 'contributor',
+    }
+    return TemplateResponse(request, 'ftux/onboard.html', params)
 
 
 def dashboard(request):
