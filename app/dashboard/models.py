@@ -969,6 +969,7 @@ class Profile(SuperModel):
         default=False,
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
     )
+    form_submission_records = JSONField(default=[], blank=True)
     # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
     # Sample repos_data: https://gist.github.com/mbeacom/c9e4fda491987cb9728ee65b114d42c7
     repos_data = JSONField(default={}, blank=True)
@@ -976,7 +977,10 @@ class Profile(SuperModel):
 
     @property
     def is_org(self):
-        return self.data['type'] == 'Organization'
+        try:
+            return self.data['type'] == 'Organization'
+        except:
+            return False
 
     @property
     def bounties(self):
@@ -1265,6 +1269,12 @@ class Profile(SuperModel):
         bounties = Bounty.objects.filter(pk__in=fulfilled_bounty_ids, accepted=True, current_bounty=True, network=network)
         return bounties
 
+    def get_orgs_bounties(self, network=None):
+        network = network or self.get_network()
+        url = f"https://github.com/{self.handle}"
+        bounties = Bounty.objects.filter(current_bounty=True, network=network, github_url__contains=url)
+        return bounties
+
     def get_leaderboard_index(self, key='quarterly_earners'):
         try:
             rank = LeaderboardRank.objects.filter(
@@ -1282,6 +1292,9 @@ class Profile(SuperModel):
 
     def get_funder_leaderboard_index(self):
         return self.get_leaderboard_index('quarterly_payers')
+
+    def get_org_leaderboard_index(self):
+        return self.get_leaderboard_index('quarterly_orgs')
 
     def get_eth_sum(self, sum_type='collected', network='mainnet'):
         """Get the sum of collected or funded ETH based on the provided type.
@@ -1301,6 +1314,8 @@ class Profile(SuperModel):
             obj = self.get_funded_bounties(network=network)
         elif sum_type == 'collected':
             obj = self.get_fulfilled_bounties(network=network)
+        elif sum_type == 'org':
+            obj = self.get_orgs_bounties(network=network)
 
         try:
             if obj.exists():
@@ -1328,8 +1343,18 @@ class Profile(SuperModel):
             obj = self.bounties_funded.filter(network=network)
         elif work_type == 'collected':
             obj = self.get_fulfilled_bounties()
+        elif work_type == 'org':
+            obj = self.get_orgs_bounties()
 
-        profiles = [bounty.org_name for bounty in obj if bounty.org_name]
+        if work_type != 'org':
+            profiles = [bounty.org_name for bounty in obj if bounty.org_name]
+        else:
+            profiles = []
+            for bounty in obj:
+                for bf in bounty.fulfillments.filter(accepted=True):
+                    if bf.fulfiller_github_username:
+                        profiles.append(bf.fulfiller_github_username)
+
         profiles_dict = {profile: 0 for profile in profiles}
         for profile in profiles:
             profiles_dict[profile] += 1
@@ -1396,6 +1421,16 @@ class Profile(SuperModel):
         works_with_collected = self.get_who_works_with(work_type='collected', **query_kwargs)
         funded_bounties = self.get_funded_bounties(network=network)
 
+        # org only
+        works_with_org = []
+        count_bounties_on_repo = 0
+        sum_eth_on_repos = 0
+        if self.is_org:
+            works_with_org = self.get_who_works_with(work_type='org', **query_kwargs)
+            count_bounties_on_repo = self.get_orgs_bounties(network=network).count()
+            sum_eth_on_repos = self.get_eth_sum(sum_type='org', **query_kwargs)
+
+
         params = {
             'title': f"@{self.handle}",
             'active': 'profile_details',
@@ -1415,17 +1450,20 @@ class Profile(SuperModel):
             'no_times_been_removed_by_staff': self.no_times_been_removed_by_staff(),
             'no_times_been_removed_by_funder': self.no_times_been_removed_by_funder(),
             'no_times_been_removed': self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff(),
+            'sum_eth_on_repos': sum_eth_on_repos,
+            'works_with_org': works_with_org,
+            'count_bounties_on_repo': count_bounties_on_repo,
         }
 
         if activities:
             fulfilled = self.fulfilled.filter(
                 bounty__network=network
             ).select_related('bounty').all().order_by('-created_on')
-            completed = [fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=False)]
-            submitted = [fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=True)]
+            completed = list(set([fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=False)]))
+            submitted = list(set([fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=True)]))
             started = self.interested.prefetch_related('bounty_set') \
                 .filter(bounty__network=network).all().order_by('-created')
-            started_bounties = [interest.bounty_set.last() for interest in started]
+            started_bounties = list(set([interest.bounty_set.last() for interest in started]))
 
             if completed or submitted or started:
                 params['activities'] = [{
@@ -1441,6 +1479,8 @@ class Profile(SuperModel):
         if leaderboards:
             params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
             params['scoreboard_position_funder'] = self.get_funder_leaderboard_index()
+            if self.is_org:
+                params['scoreboard_position_org'] = self.get_org_leaderboard_index()
 
         return params
 

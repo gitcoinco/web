@@ -747,7 +747,7 @@ def profile_helper(handle, suppress_profile_hidden_exception=False):
         profile = Profile.objects.filter(handle__iexact=handle).latest('id')
         logging.error(e)
 
-    if profile.hide_profile and not suppress_profile_hidden_exception:
+    if profile.hide_profile and not profile.is_org and not suppress_profile_hidden_exception:
         raise ProfileHiddenException
 
     return profile
