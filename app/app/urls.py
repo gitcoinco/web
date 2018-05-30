@@ -206,6 +206,11 @@ urlpatterns = [
     url(r'^_administration/email/new_tip/resend$', retail.emails.resend_new_tip, name='resend_new_tip'),
     url(r'^_administration/process_accesscode_request/(.*)$', tdi.views.process_accesscode_request, name='process_accesscode_request'),
     url(r'^_administration/process_faucet_request/(.*)$', faucet.views.process_faucet_request, name='process_faucet_request'),
+    re_path(r'^_administration/email/start_work_approved$', retail.emails.start_work_approved, name='start_work_approved'),
+    re_path(r'^_administration/email/start_work_rejected$', retail.emails.start_work_rejected, name='start_work_rejected'),
+    re_path(r'^_administration/email/start_work_new_applicant$', retail.emails.start_work_new_applicant, name='start_work_new_applicant'),
+    re_path(r'^_administration/email/start_work_applicant_about_to_expire$', retail.emails.start_work_applicant_about_to_expire, name='start_work_applicant_about_to_expire'),
+    re_path(r'^_administration/email/start_work_applicant_expired$', retail.emails.start_work_applicant_expired, name='start_work_applicant_expired'),
 
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),

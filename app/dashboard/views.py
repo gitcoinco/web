@@ -41,7 +41,7 @@ from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_pri
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
 )
-from marketing.mails import bounty_uninterested
+from marketing.mails import bounty_uninterested, start_work_rejected, start_work_approved, start_work_new_applicant
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -218,6 +218,8 @@ def new_interest(request, bounty_id):
     except Interest.DoesNotExist:
         issue_message = request.POST.get("issue_message")
         interest = create_new_interest_helper(bounty, request.user, issue_message)
+        if interest.pending:
+            start_work_new_applicant(interest, bounty)
 
     except Interest.MultipleObjectsReturned:
         bounty_ids = bounty.interested \
@@ -695,7 +697,7 @@ def helper_handle_approvals(request, bounty):
                 interest.pending = False
                 interest.save()
 
-                # TODO: send an email when this happen
+                start_work_approved(interest, bounty)
 
                 maybe_market_to_github(bounty, 'work_started', profile_pairs=bounty.profile_pairs)
                 maybe_market_to_slack(bounty, 'worker_approved')
@@ -703,10 +705,10 @@ def helper_handle_approvals(request, bounty):
                 maybe_market_to_twitter(bounty, 'worker_approved')
 
             else:
+                start_work_rejected(interest, bounty)
+
                 bounty.interested.remove(interest)
                 interest.delete()
-
-                # TODO: send an email when this happen
 
                 maybe_market_to_slack(bounty, 'worker_rejected')
                 maybe_market_to_user_slack(bounty, 'worker_rejected')

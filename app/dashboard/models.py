@@ -983,6 +983,10 @@ class Interest(models.Model):
         """Define the string representation of an interested profile."""
         return f"{self.profile.handle} / pending: {self.pending}"
 
+    @property
+    def bounties(self):
+        return Bounty.objects.filter(interested=self)
+
 
 @receiver(post_save, sender=Interest, dispatch_uid="psave_interest")
 @receiver(post_delete, sender=Interest, dispatch_uid="pdel_interest")
