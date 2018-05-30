@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -16,7 +16,6 @@
 
 '''
 
-
 from django.core.management.base import BaseCommand
 
 from enssubdomain.models import ENSSubdomainRegistration
@@ -29,14 +28,16 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('nonce', type=int, help='nonce to start above')
         parser.add_argument(
-            '-clear-nonces', '--clear-nonces',
+            '-clear-nonces',
+            '--clear-nonces',
             action='store_true',
             dest='clear-nonces',
             default=False,
             help='Actually clear the nonces'
         )
         parser.add_argument(
-            '-reprocess', '--reprocess',
+            '-reprocess',
+            '--reprocess',
             action='store_true',
             dest='reprocess',
             default=False,
@@ -44,7 +45,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-
         objs = ENSSubdomainRegistration.objects.filter(start_nonce__gte=options['nonce'])
         print(f"got {objs.count()} objs")
 
