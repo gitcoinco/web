@@ -977,7 +977,10 @@ class Profile(SuperModel):
 
     @property
     def is_org(self):
-        return self.data['type'] == 'Organization'
+        try:
+            return self.data['type'] == 'Organization'
+        except:
+            return False
 
     @property
     def bounties(self):
