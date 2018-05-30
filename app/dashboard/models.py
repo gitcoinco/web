@@ -1338,7 +1338,7 @@ class Profile(SuperModel):
         else:
             profiles = []
             for bounty in obj:
-                for bf in bounty.fullments.filter(accepted=True):
+                for bf in bounty.fulfillments.filter(accepted=True):
                     if bf.fulfiller_github_username:
                         profiles.append(bf.fulfiller_github_username)
 
