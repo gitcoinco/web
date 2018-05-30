@@ -31,7 +31,8 @@ var get_rates_estimate = function(usd_amount) {
   rates_addon = rates_addon.join(', ');
 
   var help_addon = ' <a href="https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e">[Read our pricing guide]</a>';
-  var final_text = rates_addon + help_addon
+  var final_text = rates_addon + help_addon;
+
   return final_text;
 };
 
