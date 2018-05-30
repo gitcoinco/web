@@ -1333,7 +1333,7 @@ class Profile(SuperModel):
         elif work_type == 'org':
             obj = self.get_orgs_bounties()
 
-        if work_type == 'org':
+        if work_type != 'org':
             profiles = [bounty.org_name for bounty in obj if bounty.org_name]
         else:
             profiles = []
