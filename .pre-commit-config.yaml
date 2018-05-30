@@ -4,7 +4,6 @@ repos:
   hooks:
   - id: isort
     args:
-      - --check-only
       - --recursive
       - --settings-path
       - ./setup.cfg
@@ -14,12 +13,20 @@ repos:
   - id: eslint
     name: eslint
     language: system
-    entry: sh -c 'npm run eslint'
+    entry: sh -c 'npm run eslint:fix'
     files: .js$
 - repo: local
   hooks:
   - id: stylelint
     name: stylelint
     language: system
-    entry: sh -c 'npm run stylelint'
+    entry: sh -c 'npm run stylelint:fix'
     files: .css$
+- repo: local
+  hooks:
+  - id: yapf
+    name: yapf
+    language: python
+    entry: yapf
+    files: \.py$
+    args: [-r, -e, "app/**/migrations/", app/dataviz/, app/app/]
