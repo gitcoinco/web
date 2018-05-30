@@ -16,8 +16,8 @@ var sidebar_keys = [
   'network',
   'idx_status',
   'tech_stack',
-  'work_scheme',
-  'application_scheme'
+  'project_type',
+  'permission_type'
 ];
 
 var localStorage;
@@ -459,9 +459,9 @@ var refreshBounties = function(event) {
       result.action = result['url'];
       result['title'] = result['title'] ? result['title'] : result['github_url'];
 
-      var work_scheme = ucwords(result['work_scheme']) + ' &bull; ';
+      var project_type = ucwords(result['project_type']) + ' &bull; ';
 
-      result['p'] = work_scheme + ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
+      result['p'] = project_type + ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
 
       if (result['status'] === 'done')
         result['p'] += 'Done';

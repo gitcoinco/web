@@ -405,7 +405,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
         started_work = bounty.interested.filter(pending=False).all()
         # pending_approval = bounty.interested.filter(pending=True).all()
         bounty_owner_clear = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
-        approval_required = bounty.application_scheme == 'approval'
+        approval_required = bounty.permission_type == 'approval'
 
         if started_work.exists():
             msg = f"{status_header}__Work has been started__.\n\n"

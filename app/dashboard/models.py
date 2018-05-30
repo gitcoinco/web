@@ -87,11 +87,11 @@ class Bounty(SuperModel):
 
     """
 
-    APPLICATION_SCHEMES = [
+    PERMISSION_TYPES = [
         ('permissionless', 'permissionless'),
         ('approval', 'approval'),
     ]
-    WORK_SCHEMES = [
+    PROJECT_TYPES = [
         ('traditional', 'traditional'),
         ('contest', 'contest'),
         ('cooperative', 'cooperative'),
@@ -172,8 +172,8 @@ class Bounty(SuperModel):
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
-    work_scheme = models.CharField(max_length=50, choices=WORK_SCHEMES, default='traditional')
-    application_scheme = models.CharField(max_length=50, choices=APPLICATION_SCHEMES, default='permissionless')
+    project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional')
+    permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless')
     snooze_warnings_for_days = models.IntegerField(default=0)
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
@@ -728,18 +728,18 @@ class Bounty(SuperModel):
 
 
     @property
-    def is_work_scheme_fulfilled(self):
-        """Determine whether or not the work scheme is currently fulfilled.
+    def is_project_type_fulfilled(self):
+        """Determine whether or not the Project Type is currently fulfilled.
 
         Todo:
-            * Add remaining work scheme fulfillment handling.
+            * Add remaining Project Type fulfillment handling.
 
         Returns:
-            bool: Whether or not the Bounty work scheme is fully staffed.
+            bool: Whether or not the Bounty Project Type is fully staffed.
 
         """
         fulfilled = False
-        if self.work_scheme == 'traditional':
+        if self.project_type == 'traditional':
             fulfilled = self.interested.filter(pending=False).exists()
         return fulfilled
 

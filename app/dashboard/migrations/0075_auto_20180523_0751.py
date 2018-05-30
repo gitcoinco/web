@@ -12,12 +12,12 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='bounty',
-            name='application_scheme',
+            name='permission_type',
             field=models.CharField(choices=[('permissionless', 'permissionless'), ('approval', 'approval')], default='permissionless', max_length=50),
         ),
         migrations.AddField(
             model_name='bounty',
-            name='work_scheme',
+            name='project_type',
             field=models.CharField(choices=[('traditional', 'traditional'), ('contest', 'contest'), ('cooperative', 'cooperative')], default='traditional', max_length=50),
         ),
         migrations.AddField(

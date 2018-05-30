@@ -59,8 +59,8 @@ var rows = [
   'token_value_time_peg',
   'web3_created',
   'status',
-  'work_scheme',
-  'application_scheme',
+  'project_type',
+  'permission_type',
   'bounty_owner_address',
   'bounty_owner_email',
   'issue_description',
@@ -138,11 +138,11 @@ var callbacks = {
   'bounty_owner_name': function(key, val, result) {
     return [ 'bounty_owner_name', result.bounty_owner_name ];
   },
-  'application_scheme': function(key, val, result) {
-    return [ 'application_scheme', ucwords(result.application_scheme) ];
+  'permission_type': function(key, val, result) {
+    return [ 'permission_type', ucwords(result.permission_type) ];
   },
-  'work_scheme': function(key, val, result) {
-    return [ 'work_scheme', ucwords(result.work_scheme) ];
+  'project_type': function(key, val, result) {
+    return [ 'project_type', ucwords(result.project_type) ];
   },
   'issue_keywords': function(key, val, result) {
     if (!result.keywords || result.keywords.length == 0)
@@ -548,7 +548,7 @@ var do_actions = function(result) {
   pull_interest_list(result['pk'], function(is_interested) {
 
     // which actions should we show?
-    var should_block_from_starting_work = !is_interested && result['work_scheme'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted');
+    var should_block_from_starting_work = !is_interested && result['project_type'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted');
     var show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work;
     var show_github_link = result['github_url'].substring(0, 4) == 'http';
     var show_submit_work = true;

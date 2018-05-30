@@ -115,7 +115,7 @@ def helper_handle_access_token(request, access_token):
 
 
 def create_new_interest_helper(bounty, user, issue_message):
-    approval_required = bounty.application_scheme == 'approval'
+    approval_required = bounty.permission_type == 'approval'
     profile_id = user.profile.pk
     interest = Interest.objects.create(
         profile_id=profile_id,
@@ -186,7 +186,7 @@ def new_interest(request, bounty_id):
     except Bounty.DoesNotExist:
         raise Http404
 
-    if bounty.is_work_scheme_fulfilled:
+    if bounty.is_project_type_fulfilled:
         return JsonResponse({
             'error': _(f'There is already someone working on this bounty.'),
             'success': False},
@@ -233,7 +233,7 @@ def new_interest(request, bounty_id):
             status=401)
 
     msg = _("You have started work.")
-    approval_required = bounty.application_scheme == 'approval'
+    approval_required = bounty.permission_type == 'approval'
     if approval_required:
         msg = _("You have applied to start work.  If approved, you will be notified via email.")
 

@@ -12,19 +12,19 @@ $(document).ready(function() {
   } else if (localStorage['issueURL']) {
     $('input[name=issueURL]').val(localStorage['issueURL']);
   }
-  if (localStorage['work_scheme']) {
-    $('select[name=work_scheme] option').prop('selected', false);
+  if (localStorage['project_type']) {
+    $('select[name=project_type] option').prop('selected', false);
     $(
-      "select[name=work_scheme] option[value='" +
-        localStorage['work_scheme'] +
+      "select[name=project_type] option[value='" +
+        localStorage['project_type'] +
         "']"
     ).prop('selected', true);
   }
-  if (localStorage['application_scheme']) {
-    $('select[name=application_scheme] option').prop('selected', false);
+  if (localStorage['permission_type']) {
+    $('select[name=permission_type] option').prop('selected', false);
     $(
-      "select[name=application_scheme] option[value='" +
-        localStorage['application_scheme'] +
+      "select[name=permission_type] option[value='" +
+        localStorage['permission_type'] +
         "']"
     ).prop('selected', true);
   }
@@ -159,8 +159,8 @@ $(document).ready(function() {
             address: '' // Fill this in later
           },
           schemes: {
-            work_scheme: data.work_scheme,
-            application_scheme: data.application_scheme
+            project_type: data.project_type,
+            permission_type: data.permission_type
           },
           privacy_preferences: privacy_preferences,
           funders: [],
@@ -186,8 +186,8 @@ $(document).ready(function() {
       $(this).attr('disabled', 'disabled');
 
       // save off local state for later
-      localStorage['work_scheme'] = data.work_scheme;
-      localStorage['application_scheme'] = data.application_scheme;
+      localStorage['project_type'] = data.project_type;
+      localStorage['permission_type'] = data.permission_type;
       localStorage['issueURL'] = issueURL;
       localStorage['amount'] = amount;
       localStorage['notificationEmail'] = notificationEmail;
