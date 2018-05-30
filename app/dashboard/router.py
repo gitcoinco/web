@@ -168,10 +168,23 @@ class BountyViewSet(viewsets.ModelViewSet):
             urls = self.request.query_params.get('github_url').split(',')
             queryset = queryset.filter(github_url__in=urls)
 
+        # filter by urls
+        if 'org' in param_keys:
+            org = self.request.query_params.get('org')
+            url = f"https://github.com/{org}"
+            queryset = queryset.filter(github_url__contains=url)
+
         # Retrieve all fullfilled bounties by fulfiller_username
         if 'fulfiller_github_username' in param_keys:
             queryset = queryset.filter(
                 fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfiller_github_username')
+            )
+
+        # Retrieve all DONE fullfilled bounties by fulfiller_username
+        if 'fulfiller_github_username_done' in param_keys:
+            queryset = queryset.filter(
+                fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfiller_github_username'),
+                fulfillments__accepted=True,
             )
 
         # Retrieve all interested bounties by profile handle

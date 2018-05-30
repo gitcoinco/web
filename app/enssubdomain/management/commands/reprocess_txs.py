@@ -51,9 +51,6 @@ class Command(BaseCommand):
         if options['clear-nonces']:
             print("wiping current objects")
             for obj in objs:
-                obj.txn_hash_1 = None
-                obj.txn_hash_2 = None
-                obj.txn_hash_3 = None
                 obj.start_nonce = 0
                 obj.end_nonce = 0
                 obj.save()
@@ -61,5 +58,5 @@ class Command(BaseCommand):
         if options['reprocess']:
             print("submitting reprocess")
             for obj in objs.exclude(profile__isnull=True).distinct('profile'):
-                obj.reprocess(gas_multiplier=1.2)
+                obj.reprocess(gas_multiplier=2)
                 obj.save()
