@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Define authentication pipeline functions and logic.
+"""Handle ENS subdomain utility related tests.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -17,12 +17,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from app.utils import setup_lang, sync_profile
+from enssubdomain.utils import convert_txn
+from test_plus.test import TestCase
 
 
-def save_profile(backend, user, response, request, *args, **kwargs):
-    """Associate a Profile with a User."""
-    if backend.name == 'github':
-        handle = user.username
-        sync_profile(handle, user, hide_profile=False)
-        setup_lang(request, user)
+class ENSSubdomainUtilsTest(TestCase):
+    """Define tests for enssubdomain utilities."""
+
+    @staticmethod
+    def test_convert_txn():
+        """Test the enssubdomain utility convert_txn."""
+        b_txn = b'123456789'
+        txn = convert_txn(b_txn)
+        assert txn == "0x313233343536373839"

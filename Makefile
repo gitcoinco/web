@@ -26,9 +26,9 @@ fix-stylelint: ## Run stylelint --fix against the project directory. Requires no
 	@npm run stylelint:fix
 
 fix-yapf: ## Run yapf against any included or newly introduced Python code.
-	@docker-compose exec web yapf -i -r -e "app/**/migrations/*.py" -p app/dataviz/
+	@docker-compose exec web yapf -i -r -e "app/**/migrations/*.py" -p app/dataviz/ app/app/ app/enssubdomain/
 
-fix: fix-eslint fix-stylelint fix-isort ## Attempt to run all fixes against the project directory.
+fix: fix-eslint fix-stylelint fix-isort fix-yapf ## Attempt to run all fixes against the project directory.
 
 fresh: ## Completely destroy all compose assets and start compose with a fresh build.
 	@docker-compose down -v; docker-compose up -d --build;
@@ -68,6 +68,12 @@ get_ipdb_shell: ## Drop into the active Django shell for inspection via ipdb.
 
 get_django_shell: ## Open a standard Django shell.
 	@docker-compose exec web python3 app/manage.py shell
+
+pgactivity: ## Run pg_activivty against the local postgresql instance.
+	@docker-compose exec web scripts/pg_activity.bash
+
+pgtop: ## Run pg_top against the local postgresql instance.
+	@docker-compose exec web scripts/pg_top.bash
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

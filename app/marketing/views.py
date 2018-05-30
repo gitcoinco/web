@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 import json
+import logging
 import math
 import random
 
@@ -41,6 +42,7 @@ from chartit import Chart, DataPool
 from dashboard.models import Bounty, Profile, Tip, UserAction
 from dashboard.utils import create_user_action
 from enssubdomain.models import ENSSubdomainRegistration
+from mailchimp3 import MailChimp
 from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
@@ -48,6 +50,11 @@ from marketing.models import (
 from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
 from retail.emails import ALL_EMAILS
 from retail.helpers import get_ip
+
+logger = logging.getLogger(__name__)
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_settings_navs(request):
@@ -134,6 +141,7 @@ def privacy_settings(request):
         if profile:
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
             profile.hide_profile = bool(request.POST.get('hide_profile', False))
+            profile = record_form_submission(request, profile, 'privacy')
             if profile.alumni and profile.alumni.exists():
                 alumni = profile.alumni.first()
                 alumni.public = bool(not request.POST.get('hide_alumni', False))
@@ -151,6 +159,15 @@ def privacy_settings(request):
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/privacy.html', context)
+
+
+def record_form_submission(request, obj, submission_type):
+    obj.form_submission_records.append({
+        'ip': get_ip(request),
+        'timestamp': int(timezone.now().timestamp()),
+        'type': submission_type,
+        })
+    return obj
 
 
 def matching_settings(request):
@@ -180,11 +197,7 @@ def matching_settings(request):
             es.github = github
         if keywords:
             es.keywords = keywords
-        ip = get_ip(request)
-        if not es.metadata.get('ip', False):
-            es.metadata['ip'] = [ip]
-        else:
-            es.metadata['ip'].append(ip)
+        es = record_form_submission(request, es, 'match')
         es.save()
         msg = _('Updated your preferences.')
 
@@ -216,11 +229,7 @@ def feedback_settings(request):
         if has_comment_changed:
             new_feedback(es.email, comments)
         es.metadata['comments'] = comments
-        ip = get_ip(request)
-        if not es.metadata.get('ip', False):
-            es.metadata['ip'] = [ip]
-        else:
-            es.metadata['ip'].append(ip)
+        es = record_form_submission(request, es, 'feedback')
         es.save()
         msg = _('We\'ve received your feedback.')
 
@@ -291,6 +300,7 @@ def email_settings(request, key):
                     if key not in form.keys():
                         form[key] = False
                 es.build_email_preferences(form)
+                es = record_form_submission(request, es, 'email')
                 ip = get_ip(request)
                 es.active = level != 'nothing'
                 es.newsletter = level in ['regular', 'lite1']
@@ -340,6 +350,7 @@ def slack_settings(request):
 
         if submit or (response and response.get('success')):
             profile.update_slack_integration(token, channel, repos)
+            profile = record_form_submission(request, profile, 'slack')
             if not response.get('output'):
                 response['output'] = _('Updated your preferences.')
             ua_type = 'added_slack_integration' if token and channel and repos else 'removed_slack_integration'
@@ -407,15 +418,30 @@ def account_settings(request):
 
         if request.POST.get('disconnect', False):
             profile.github_access_token = ''
+            profile = record_form_submission(request, profile, 'account-disconnect')
             profile.email = ''
             profile.save()
             messages.success(request, _('Your account has been disconnected from Github'))
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
         if request.POST.get('delete', False):
+            # remove profile
             profile.hide_profile = True
+            profile = record_form_submission(request, profile, 'account-delete')
             profile.email = ''
             profile.save()
+
+            # remove email
+            try:
+                client = MailChimp(mc_user=settings.MAILCHIMP_USER, mc_api=settings.MAILCHIMP_API_KEY)
+                result = client.search_members.get(query=es.email)
+                subscriber_hash = result['exact_matches']['members'][0]['id']
+                client.lists.members.delete(
+                    list_id=settings.MAILCHIMP_LIST_ID,
+                    subscriber_hash=subscriber_hash,
+                    )
+            except Exception as e:
+                logger.exception(e)
             if es:
                 es.delete()
             request.user.delete()

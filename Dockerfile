@@ -4,7 +4,7 @@ RUN mkdir /code && \
     apt-get update && \
     apt-get install build-essential -y && \
     apt-get install -y --no-install-recommends apt-utils && \
-    apt-get install -y --no-install-recommends libsecp256k1-dev libsecp256k1-0 gettext graphviz libgraphviz-dev wget git dos2unix gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev libgdal-dev gdal-bin libgdal20 python3-gdal && \
+    apt-get install -y --no-install-recommends pgtop libsecp256k1-dev libsecp256k1-0 gettext graphviz libgraphviz-dev wget git dos2unix gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev libgdal-dev gdal-bin libgdal20 python3-gdal && \
     pip install --upgrade pip wheel setuptools && \
     pip3 install dumb-init && \
     rm -rf /var/lib/apt/lists/*
