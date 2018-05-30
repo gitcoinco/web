@@ -18,6 +18,7 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+
 from dashboard.models import Bounty, Interest
 from marketing.mails import start_work_applicant_about_to_expire, start_work_applicant_expired, start_work_approved
 
@@ -55,4 +56,3 @@ class Command(BaseCommand):
         
        # auto approval
         helper_execute_emails(THRESHOLD_HOURS_AUTO_APPROVE, start_work_applicant_expired_executer, 'auto approval')
-        
