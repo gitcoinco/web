@@ -1259,6 +1259,12 @@ class Profile(SuperModel):
         bounties = Bounty.objects.filter(pk__in=fulfilled_bounty_ids, accepted=True, current_bounty=True, network=network)
         return bounties
 
+    def get_orgs_bounties(self, network=None):
+        network = network or self.get_network()
+        url = f"https://github.com/{self.handle}"
+        bounties = Bounty.objects.filter(current_bounty=True, network=network, github_url__contains=url)
+        return bounties
+
     def get_leaderboard_index(self, key='quarterly_earners'):
         try:
             rank = LeaderboardRank.objects.filter(
@@ -1295,6 +1301,8 @@ class Profile(SuperModel):
             obj = self.get_funded_bounties(network=network)
         elif sum_type == 'collected':
             obj = self.get_fulfilled_bounties(network=network)
+        elif sum_type == 'org':
+            obj = self.get_orgs_bounties(network=network)
 
         try:
             if obj.exists():
@@ -1322,8 +1330,18 @@ class Profile(SuperModel):
             obj = self.bounties_funded.filter(network=network)
         elif work_type == 'collected':
             obj = self.get_fulfilled_bounties()
+        elif work_type == 'org':
+            obj = self.get_orgs_bounties()
 
-        profiles = [bounty.org_name for bounty in obj if bounty.org_name]
+        if work_type == 'org':
+            profiles = [bounty.org_name for bounty in obj if bounty.org_name]
+        else:
+            profiles = []
+            for bounty in obj:
+                for bf in bounty.fullments.filter(accepted=True):
+                    if bf.fulfiller_github_username:
+                        profiles.append(bf.fulfiller_github_username)
+
         profiles_dict = {profile: 0 for profile in profiles}
         for profile in profiles:
             profiles_dict[profile] += 1
@@ -1390,6 +1408,15 @@ class Profile(SuperModel):
         works_with_collected = self.get_who_works_with(work_type='collected', **query_kwargs)
         funded_bounties = self.get_funded_bounties(network=network)
 
+        # org only
+        works_with_org = []
+        count_bounties_on_repo = 0
+        sum_eth_on_repos = 0
+        if self.is_org:
+            works_with_org = self.get_who_works_with(work_type='org', **query_kwargs)
+            count_bounties_on_repo = self.get_orgs_bounties(network=network).count()
+
+
         params = {
             'title': f"@{self.handle}",
             'active': 'profile_details',
@@ -1405,7 +1432,10 @@ class Profile(SuperModel):
             'works_with_collected': works_with_collected,
             'works_with_funded': works_with_funded,
             'funded_bounties_count': funded_bounties.count(),
-            'activities': [{'title': _('No data available.')}]
+            'activities': [{'title': _('No data available.')}],
+            'sum_eth_on_repos': sum_eth_on_repos,
+            'works_with_org': works_with_org,
+            'count_bounties_on_repo': count_bounties_on_repo,
         }
 
         if activities:
