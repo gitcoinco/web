@@ -439,13 +439,13 @@ def bounty_uninterested(to_email, bounty, interest):
         translation.activate(cur_language)
 
 
-def start_work_approved(bounty, interest):
+def start_work_approved(interest, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = interest.profile.email
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
-        html, text, subject = render_start_work_approved(to_email, bounty, interest)
+        html, text, subject = render_start_work_approved(interest, bounty)
 
         if not should_suppress_notification_email(to_email, 'bounty'):
             send_mail(from_email, to_email, subject, text, html)
@@ -453,13 +453,13 @@ def start_work_approved(bounty, interest):
         translation.activate(cur_language)
 
 
-def start_work_rejected(bounty, interest):
+def start_work_rejected(interest, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = interest.profile.email
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
-        html, text, subject = render_start_work_rejected(to_email, bounty, interest)
+        html, text, subject = render_start_work_rejected(interest, bounty)
 
         if not should_suppress_notification_email(to_email, 'bounty'):
             send_mail(from_email, to_email, subject, text, html)
@@ -467,13 +467,13 @@ def start_work_rejected(bounty, interest):
         translation.activate(cur_language)
 
 
-def start_work_new_applicant(bounty, interest):
+def start_work_new_applicant(interest, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = bounty.bounty_owner_email
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
-        html, text, subject = render_start_work_new_applicant(to_email, bounty, interest)
+        html, text, subject = render_start_work_new_applicant(interest, bounty)
 
         if not should_suppress_notification_email(to_email, 'bounty'):
             send_mail(from_email, to_email, subject, text, html)
@@ -481,14 +481,13 @@ def start_work_new_applicant(bounty, interest):
         translation.activate(cur_language)
 
 
-
-def start_work_applicant_about_to_expire(bounty, interest):
+def start_work_applicant_about_to_expire(interest, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = bounty.bounty_owner_email
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
-        html, text, subject = render_start_work_applicant_about_to_expire(to_email, bounty, interest)
+        html, text, subject = render_start_work_applicant_about_to_expire(interest, bounty)
 
         if not should_suppress_notification_email(to_email, 'bounty'):
             send_mail(from_email, to_email, subject, text, html)
@@ -496,13 +495,13 @@ def start_work_applicant_about_to_expire(bounty, interest):
         translation.activate(cur_language)
 
 
-def start_work_applicant_expired(bounty, interest):
+def start_work_applicant_expired(interest, bounty):
     from_email = settings.CONTACT_EMAIL
     to_email = bounty.bounty_owner_email
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
-        html, text, subject = render_start_work_applicant_expired(to_email, bounty, interest)
+        html, text, subject = render_start_work_applicant_expired(interest, bounty)
 
         if not should_suppress_notification_email(to_email, 'bounty'):
             send_mail(from_email, to_email, subject, text, html)

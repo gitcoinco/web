@@ -412,7 +412,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
         else:
             msg = f"{status_header}__Workers have applied to start work__.\n\n"
 
-        msg += f"\nThese users each claimed they can complete the work by {from_now}:\n\n"
+        msg += f"\nThese users each claimed they can complete the work by {from_now}. Please review their questions below:\n\n"
 
         for i, interest in enumerate(interested, start=1):
 
@@ -429,8 +429,8 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
 
             issue_message = interest.issue_message.strip()
             if issue_message:
-                msg += f"{bounty_owner_clear} they have the following comments/questions for you:\n\n" \
-                       f"```{issue_message}```"
+                msg += f"\t\n * Q: " \
+                       f"{issue_message}"
             msg += "\n\n"
 
     elif event_name == 'work_submitted':
