@@ -99,7 +99,9 @@ def set_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
     resolver_addr = ns.address('resolver.eth')
     signer = Web3.toChecksumAddress(signer)
     txn_hash = None
-    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9 * gas_multiplier
+    gasPrice = recommend_min_gas_price_to_confirm_in_time(
+        1
+    ) * 10**9 if not settings.DEBUG else 15 * 10**9 * gas_multiplier
     subdomain = f"{github_handle}.{settings.ENS_TLD}"
 
     transaction = {

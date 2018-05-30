@@ -29,4 +29,4 @@ repos:
     language: python
     entry: yapf
     files: \.py$
-    args: [-r, -e, "app/**/migrations/", app/dataviz/, app/app/]
+    args: [-r, -e, "app/**/migrations/", app/dataviz/, app/app/, app/enssubdomain/]
