@@ -46,6 +46,15 @@ from .utils import convert_txn
 logger = logging.getLogger(__name__)
 mock_request = settings.DEBUG
 
+RESOLVER_GAS_COST = 100000
+OWNER_GAS_COST = 100000
+SET_ADDRESS_GAS_COST = 100000
+
+
+def get_gas_price(gas_multiplier=1.101):
+    """Get the recommended minimum gas price."""
+    return recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if not settings.DEBUG else 15 * 10**9 * gas_multiplier
+
 
 def handle_default_response(request, github_handle):
     params = {
@@ -99,17 +108,15 @@ def set_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
     resolver_addr = ns.address('resolver.eth')
     signer = Web3.toChecksumAddress(signer)
     txn_hash = None
-    gasPrice = recommend_min_gas_price_to_confirm_in_time(
-        1
-    ) * 10**9 if not settings.DEBUG else 15 * 10**9 * gas_multiplier
+    gas_price = get_gas_price(gas_multiplier)
     subdomain = f"{github_handle}.{settings.ENS_TLD}"
 
     transaction = {
         'from': Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
         'value': 0,
         'nonce': nonce,
-        'gas': Web3.toHex(100000),
-        'gasPrice': Web3.toHex(int(float(gasPrice))),
+        'gas': Web3.toHex(RESOLVER_GAS_COST),
+        'gasPrice': Web3.toHex(int(float(gas_price))),
     }
 
     ens_contract = w3.eth.contract(
@@ -135,16 +142,14 @@ def set_owner(signer, github_handle, nonce, gas_multiplier=1.101):
     owned = settings.ENS_TLD
     label = github_handle
     txn_hash = None
-    gasPrice = recommend_min_gas_price_to_confirm_in_time(
-        1
-    ) * 10**9 if not settings.DEBUG else 15 * 10**9 * gas_multiplier
+    gas_price = get_gas_price(gas_multiplier)
 
     transaction = {
         'from': Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
         'value': 0,
         'nonce': nonce,
-        'gas': Web3.toHex(100000),
-        'gasPrice': Web3.toHex(int(float(gasPrice))),
+        'gas': Web3.toHex(OWNER_GAS_COST),
+        'gasPrice': Web3.toHex(int(float(gas_price))),
     }
 
     ens_contract = w3.eth.contract(
@@ -172,16 +177,15 @@ def set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
     resolver_addr = ns.address('resolver.eth')
     signer = Web3.toChecksumAddress(signer)
     txn_hash = None
-    gasPrice = recommend_min_gas_price_to_confirm_in_time(1) * 10**9 if \
-        not settings.DEBUG else 15 * 10**9 * gas_multiplier
+    gas_price = get_gas_price(gas_multiplier)
     subdomain = f"{github_handle}.{settings.ENS_TLD}"
 
     transaction = {
         'from': Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
         'value': 0,
         'nonce': nonce,
-        'gas': Web3.toHex(100000),
-        'gasPrice': Web3.toHex(int(float(gasPrice))),
+        'gas': Web3.toHex(SET_ADDRESS_GAS_COST),
+        'gasPrice': Web3.toHex(int(float(gas_price))),
     }
 
     resolver_contract = w3.eth.contract(
@@ -260,8 +264,30 @@ def handle_subdomain_post_request(request, github_handle):
                     )
             })
 
-        helper_process_registration(signer, github_handle, signedMsg)
+        # actually setup subdomain
+        start_nonce = get_nonce()
+        nonce = start_nonce
+        txn_hash_1 = set_owner(signer, github_handle, nonce)
+        nonce += 1
+        txn_hash_2 = set_resolver(signer, github_handle, nonce)
+        nonce += 1
+        txn_hash_3 = set_address_at_resolver(signer, github_handle, nonce)
 
+        gas_price = get_gas_price()
+        gas_cost_eth = (RESOLVER_GAS_COST + OWNER_GAS_COST + SET_ADDRESS_GAS_COST) * gas_price / 10**18
+        profile = Profile.objects.filter(handle=github_handle).first()
+        ENSSubdomainRegistration.objects.create(
+            profile=profile,
+            subdomain_wallet_address=signer,
+            txn_hash_1=txn_hash_1,
+            txn_hash_2=txn_hash_2,
+            txn_hash_3=txn_hash_3,
+            pending=True,
+            signed_msg=signedMsg,
+            start_nonce=start_nonce,
+            end_nonce=nonce,
+            gas_cost_eth=gas_cost_eth,
+        )
         return JsonResponse({
             'success': True,
             'msg': _('Your request has been submitted. Please wait for the transaction to mine!')
