@@ -1283,6 +1283,9 @@ class Profile(SuperModel):
     def get_funder_leaderboard_index(self):
         return self.get_leaderboard_index('quarterly_payers')
 
+    def get_org_leaderboard_index(self):
+        return self.get_leaderboard_index('quarterly_orgs')
+
     def get_eth_sum(self, sum_type='collected', network='mainnet'):
         """Get the sum of collected or funded ETH based on the provided type.
 
@@ -1338,7 +1341,7 @@ class Profile(SuperModel):
         else:
             profiles = []
             for bounty in obj:
-                for bf in bounty.fullments.filter(accepted=True):
+                for bf in bounty.fulfillments.filter(accepted=True):
                     if bf.fulfiller_github_username:
                         profiles.append(bf.fulfiller_github_username)
 
@@ -1415,6 +1418,7 @@ class Profile(SuperModel):
         if self.is_org:
             works_with_org = self.get_who_works_with(work_type='org', **query_kwargs)
             count_bounties_on_repo = self.get_orgs_bounties(network=network).count()
+            sum_eth_on_repos = self.get_eth_sum(sum_type='org', **query_kwargs)
 
 
         params = {
@@ -1462,6 +1466,8 @@ class Profile(SuperModel):
         if leaderboards:
             params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
             params['scoreboard_position_funder'] = self.get_funder_leaderboard_index()
+            if self.is_org:
+                params['scoreboard_position_org'] = self.get_org_leaderboard_index()
 
         return params
 

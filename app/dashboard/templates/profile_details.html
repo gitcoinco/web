@@ -61,8 +61,8 @@
                 <ul>
                   <li><span class="highlight">{{ count_bounties_on_repo }}</span> {% trans "bounties" %}</li>
                   <li><span class="highlight">{{ sum_eth_on_repos|floatformat:2 }}</span> {% trans "ETH" %}</li>
-                  {% if scoreboard_position_contributor %}
-                      <li><span class="highlight">#{{ scoreboard_position_contributor }}</span> {% trans "contributor" %}</li>
+                  {% if scoreboard_position_org %}
+                      <li><span class="highlight">#{{ scoreboard_position_org }}</span> {% trans "org" %}</li>
                   {% endif %}
                   <li class="works_with_list">
                     {% if works_with_org|length != 0 %}
