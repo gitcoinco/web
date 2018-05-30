@@ -25,10 +25,6 @@ span {
   z-index: 9999999999;
 }
 
-.navbar {
-  font-family: futura-pt, sans-serif;
-}
-
 .navbar-nav .nav-link {
   border-radius: 2px;
 }
