@@ -259,7 +259,8 @@ def handle_subdomain_post_request(request, github_handle):
                 'success': False,
                 'msg':
                     _(
-                        'For SPAM prevention reasons, you may not perform this action right now.  Please contact support if you believe this message is in error.'
+                        'For SPAM prevention reasons, you may not perform this action right now.  '
+                        'Please contact support if you believe this message is in error.'
                     )
             })
 
