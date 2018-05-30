@@ -1,5 +1,4 @@
 var onboard = {};
-var steps = [ 'github', 'metamask', 'avatar', 'skills' ];
 var current = 0;
 var words = [];
 
@@ -10,7 +9,7 @@ $('.js-select2').each(function() {
 onboard.showTab = function(num) {
   $($('.step')[num]).addClass('block').outerWidth();
   $($('.step')[num]).addClass('show');
-  window.history.pushState('', '', '/onboard/' + $($('.step')[num]).attr('link'));
+  window.history.pushState('', '', '/onboard/' + flow + '/' + $($('.step')[num]).attr('link'));
 
   if (num == 0)
     $('#prev-btn').hide();
@@ -36,11 +35,9 @@ onboard.highlightStep = function(currentStep) {
   var steps = $('.step-state');
 
   for (i = 0; i < steps.length; i++) {
-    if (i < currentStep)
+    if (i <= currentStep)
       $(steps[i]).addClass('finish');
-    $(steps[i]).removeClass('active');
   }
-  $(steps[currentStep]).addClass('active');
 };
 
 onboard.watchMetamask = function() {

@@ -59,6 +59,8 @@ class EmailSubscriber(SuperModel):
         on_delete=models.CASCADE,
         related_name='email_subscriptions',
         null=True)
+    form_submission_records = JSONField(default=[], blank=True)
+
 
     def __str__(self):
         return self.email
