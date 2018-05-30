@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
-"""Define authentication pipeline functions and logic.
+#!/usr/local/bin/dumb-init /bin/bash
 
+: <<'END'
 Copyright (C) 2018 Gitcoin Core
 
 This program is free software: you can redistribute it and/or modify
@@ -15,14 +15,13 @@ GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
+END
 
-"""
-from app.utils import setup_lang, sync_profile
+# Settings
+PGUSER=${PGUSER:-'postgres'}
+PGPASSWORD=${PGPASSWORD:-'postgres'}
+PGDATABASE=${PGDATABASE:-'postgres'}
+PGHOST=${PGHOST=-'db'}
 
-
-def save_profile(backend, user, response, request, *args, **kwargs):
-    """Associate a Profile with a User."""
-    if backend.name == 'github':
-        handle = user.username
-        sync_profile(handle, user, hide_profile=False)
-        setup_lang(request, user)
+echo "version: $(/usr/local/bin/pg_activity --version)"
+exec /usr/local/bin/pg_activity -U "$PGUSER" -h "$PGHOST" -d "$PGDATABASE"

@@ -37,13 +37,30 @@ class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
+class ToolVoteAdmin(admin.ModelAdmin):
+    raw_id_fields = ['profile']
+    ordering = ['-id']
+
+
+class InterestAdmin(admin.ModelAdmin):
+    raw_id_fields = ['profile']
+    ordering = ['-id']
+
+
+class UserActionAdmin(admin.ModelAdmin):
+    raw_id_fields = ['profile']
+    ordering = ['-id']
+
+
 class ProfileAdmin(admin.ModelAdmin):
+    raw_id_fields = ['user']
     ordering = ['-id']
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on', 'github_created_on']
 
 
 class TipAdmin(admin.ModelAdmin):
+    raw_id_fields = ['recipient_profile', 'sender_profile']
     ordering = ['-id']
     readonly_fields = ['resend']
     search_fields = ['tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url', 'emails']
@@ -55,7 +72,7 @@ class TipAdmin(admin.ModelAdmin):
 
 # Register your models here.
 class BountyAdmin(admin.ModelAdmin):
-    raw_id_fields = ['interested']
+    raw_id_fields = ['interested', 'bounty_owner_profile']
     ordering = ['-id']
 
     search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
@@ -88,8 +105,8 @@ class BountyAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Subscription, GeneralAdmin)
-admin.site.register(UserAction, GeneralAdmin)
-admin.site.register(Interest, GeneralAdmin)
+admin.site.register(UserAction, UserActionAdmin)
+admin.site.register(Interest, InterestAdmin)
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Bounty, BountyAdmin)
 admin.site.register(BountyFulfillment, BountyFulfillmentAdmin)
@@ -98,4 +115,4 @@ admin.site.register(Tip, TipAdmin)
 admin.site.register(CoinRedemption, GeneralAdmin)
 admin.site.register(CoinRedemptionRequest, GeneralAdmin)
 admin.site.register(Tool, GeneralAdmin)
-admin.site.register(ToolVote, GeneralAdmin)
+admin.site.register(ToolVote, ToolVoteAdmin)

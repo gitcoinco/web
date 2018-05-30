@@ -18,8 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-import binascii
 import datetime
+import logging
 
 from django.conf import settings
 from django.http import JsonResponse
@@ -41,7 +41,9 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from web3 import Web3
 
 from .models import ENSSubdomainRegistration
+from .utils import convert_txn
 
+logger = logging.getLogger(__name__)
 mock_request = settings.DEBUG
 
 RESOLVER_GAS_COST = 100000
@@ -97,7 +99,7 @@ def handle_subdomain_exists(request, github_handle):
         return TemplateResponse(request, 'ens/ens_rate_limit.html', params)
 
 
-def set_resolver(signer, github_handle, nonce):
+def set_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
     if mock_request:
         return '0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'
 
@@ -112,7 +114,7 @@ def set_resolver(signer, github_handle, nonce):
         'from': Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
         'value': 0,
         'nonce': nonce,
-        'gas':  Web3.toHex(RESOLVER_GAS_COST),
+        'gas': Web3.toHex(RESOLVER_GAS_COST),
         'gasPrice': Web3.toHex(int(float(gasPrice))),
     }
 
@@ -123,19 +125,17 @@ def set_resolver(signer, github_handle, nonce):
     txn = ens_contract.functions.setResolver(
         dot_eth_namehash(subdomain),
         resolver_addr,
-        ).buildTransaction(transaction)
+    ).buildTransaction(transaction)
     signed_txn = w3.eth.account.signTransaction(txn, private_key=settings.ENS_PRIVATE_KEY)
-    txn_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
-
-    # hack to convert
-    # "b'7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'"
-    # to "0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39"
-    txn_hash = str(binascii.b2a_hex(txn_hash)).replace("b'","0x").replace("'","")
+    try:
+        txn_hash = convert_txn(w3.eth.sendRawTransaction(signed_txn.rawTransaction))
+    except ValueError as e:
+        logger.warning(f'{e} - set_resolver')
 
     return txn_hash
 
 
-def set_owner(signer, github_handle, nonce):
+def set_owner(signer, github_handle, nonce, gas_multiplier=1.101):
     if mock_request:
         return '0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'
     owned = settings.ENS_TLD
@@ -147,7 +147,7 @@ def set_owner(signer, github_handle, nonce):
         'from': Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
         'value': 0,
         'nonce': nonce,
-        'gas':  Web3.toHex(OWNER_GAS_COST),
+        'gas': Web3.toHex(OWNER_GAS_COST),
         'gasPrice': Web3.toHex(int(float(gasPrice))),
     }
 
@@ -160,19 +160,16 @@ def set_owner(signer, github_handle, nonce):
         dot_eth_namehash(owned),
         label_to_hash(label),
         Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
-        ).buildTransaction(transaction)
+    ).buildTransaction(transaction)
     signed_txn = w3.eth.account.signTransaction(txn, private_key=settings.ENS_PRIVATE_KEY)
-    txn_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
-
-    # hack to convert
-    # "b'7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'"
-    # to "0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39"
-    txn_hash = str(binascii.b2a_hex(txn_hash)).replace("b'","0x").replace("'","")
-
+    try:
+        txn_hash = convert_txn(w3.eth.sendRawTransaction(signed_txn.rawTransaction))
+    except ValueError as e:
+        logger.warning(f'{e} - set_owner')
     return txn_hash
 
 
-def set_address_at_resolver(signer, github_handle, nonce):
+def set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
     if mock_request:
         return '0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'
     ns = ENS.fromWeb3(w3)
@@ -186,7 +183,7 @@ def set_address_at_resolver(signer, github_handle, nonce):
         'from': Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
         'value': 0,
         'nonce': nonce,
-        'gas':  Web3.toHex(SET_ADDRESS_GAS_COST),
+        'gas': Web3.toHex(SET_ADDRESS_GAS_COST),
         'gasPrice': Web3.toHex(int(float(gasPrice))),
     }
 
@@ -197,14 +194,12 @@ def set_address_at_resolver(signer, github_handle, nonce):
     txn = resolver_contract.functions.setAddr(
         dot_eth_namehash(subdomain),
         signer,
-        ).buildTransaction(transaction)
+    ).buildTransaction(transaction)
     signed_txn = w3.eth.account.signTransaction(txn, private_key=settings.ENS_PRIVATE_KEY)
-    txn_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
-
-    # hack to convert
-    # "b'7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'"
-    # to "0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39"
-    txn_hash = str(binascii.b2a_hex(txn_hash)).replace("b'", "0x").replace("'", "")
+    try:
+        txn_hash = convert_txn(w3.eth.sendRawTransaction(signed_txn.rawTransaction))
+    except ValueError as e:
+        logger.warning(f'{e} - set_address_at_resolver')
 
     return txn_hash
 
@@ -219,6 +214,31 @@ def get_nonce():
         pass
 
     return max([web3_nonce, next_db_nonce])
+
+
+def helper_process_registration(signer, github_handle, signedMsg, gas_multiplier=1.101, override_nonce=None):
+    # actually setup subdomain
+    start_nonce = get_nonce() if not override_nonce else override_nonce
+    nonce = start_nonce
+    txn_hash_1 = set_owner(signer, github_handle, nonce, gas_multiplier=gas_multiplier)
+    nonce += 1
+    txn_hash_2 = set_resolver(signer, github_handle, nonce, gas_multiplier=gas_multiplier)
+    nonce += 1
+    txn_hash_3 = set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=gas_multiplier)
+
+    profile = Profile.objects.filter(handle__iexact=github_handle).first()
+    return ENSSubdomainRegistration.objects.create(
+        profile=profile,
+        subdomain_wallet_address=signer,
+        txn_hash_1=txn_hash_1,
+        txn_hash_2=txn_hash_2,
+        txn_hash_3=txn_hash_3,
+        pending=True,
+        signed_msg=signedMsg,
+        start_nonce=start_nonce,
+        end_nonce=nonce,
+        comments=f"github_handle: {github_handle}\n\n",
+    )
 
 
 def handle_subdomain_post_request(request, github_handle):
@@ -266,7 +286,9 @@ def handle_subdomain_post_request(request, github_handle):
 @csrf_exempt
 def ens_subdomain(request):
     """Register ENS Subdomain."""
-    github_handle = request.user.profile.handle if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    github_handle = request.user.profile.handle if request.user.is_authenticated and hasattr(
+        request.user, 'profile'
+    ) else None
     if github_handle:
         github_handle = github_handle.lower().replace('.', '')
         github_handle = idna.encode(github_handle, uts46=True).decode("utf-8")

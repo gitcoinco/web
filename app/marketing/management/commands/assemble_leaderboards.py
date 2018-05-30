@@ -175,7 +175,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # get bounties
-        bounties = Bounty.objects.current()
+        bounties = Bounty.objects.current().filter(network='mainnet')
 
         # iterate
         for b in bounties:
@@ -221,6 +221,7 @@ class Command(BaseCommand):
                     amount=amount,
                     count=count,
                     active=True,
+                    rank=rank,
                     )
                 rank += 1
                 print(key, username, amount, count, rank)

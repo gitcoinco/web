@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Define authentication pipeline functions and logic.
+"""Define the ENS subdomain utilities and miscellaneous logic.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -17,12 +17,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from app.utils import setup_lang, sync_profile
+import binascii
 
 
-def save_profile(backend, user, response, request, *args, **kwargs):
-    """Associate a Profile with a User."""
-    if backend.name == 'github':
-        handle = user.username
-        sync_profile(handle, user, hide_profile=False)
-        setup_lang(request, user)
+def convert_txn(b_txn):
+    """Convert a b'' represented string to 0x.
+
+    Args:
+        b_txn (str): The txn to be converted.
+            Example: "b'7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'"
+
+    Usage:
+        convert_txn("b'7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'")
+        "0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39"
+
+    Returns:
+        str: The '0x0 representation of the txn.
+
+    """
+    return f"0x{binascii.b2a_hex(b_txn).decode('utf-8')}"
