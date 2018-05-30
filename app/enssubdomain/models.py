@@ -35,7 +35,9 @@ def get_time():
 class ENSSubdomainRegistration(SuperModel):
     """Define the schema for storing ENS sub-domain registration info."""
 
-    profile = models.ForeignKey('dashboard.Profile', related_name='ens_registration', null=True, on_delete=models.SET_NULL)
+    profile = models.ForeignKey(
+        'dashboard.Profile', related_name='ens_registration', null=True, on_delete=models.SET_NULL
+    )
     subdomain_wallet_address = models.CharField(max_length=50)
     txn_hash_1 = models.CharField(max_length=255)
     txn_hash_2 = models.CharField(max_length=255)
@@ -49,10 +51,11 @@ class ENSSubdomainRegistration(SuperModel):
     def __str__(self):
         try:
             return f"{self.profile.handle if self.profile else 'unknown'} at {self.created_on}, {self.start_nonce} => {self.end_nonce}"
-        except:
+        except Exception:
             return None
 
-    def reprocess(self, gas_multiplier=1, override_nonce=None):
+    def reprocess(self, gas_multiplier=1.101, override_nonce=None):
+        """Reprocess the registration request."""
         from enssubdomain.views import helper_process_registration
 
         self.start_nonce = 0
@@ -61,6 +64,8 @@ class ENSSubdomainRegistration(SuperModel):
 
         signer = self.subdomain_wallet_address
         github_handle = self.profile.handle
-        signedMsg = self.signed_msg
-        replacement = helper_process_registration(signer, github_handle, signedMsg, gas_multiplier=gas_multiplier, override_nonce=override_nonce)
+        signed_msg = self.signed_msg
+        replacement = helper_process_registration(
+            signer, github_handle, signed_msg, gas_multiplier=gas_multiplier, override_nonce=override_nonce
+        )
         self.comments += f"replaced by {replacement.pk}"

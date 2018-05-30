@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Define ENS Subdomain related django administration sections.
+"""Define the ENS subdomain utilities and miscellaneous logic.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -17,18 +17,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from __future__ import unicode_literals
-
-from django.contrib import admin
-
-from enssubdomain.models import ENSSubdomainRegistration
+import binascii
 
 
-class ENSSubdomainAdmin(admin.ModelAdmin):
-    """Handle displaying conversion rates in the django admin."""
+def convert_txn(b_txn):
+    """Convert a b'' represented string to 0x.
 
-    raw_id_fields = ("profile", )
-    ordering = ['-id']
+    Args:
+        b_txn (str): The txn to be converted.
+            Example: "b'7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'"
 
+    Usage:
+        convert_txn("b'7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'")
+        "0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39"
 
-admin.site.register(ENSSubdomainRegistration, ENSSubdomainAdmin)
+    Returns:
+        str: The '0x0 representation of the txn.
+
+    """
+    return f"0x{binascii.b2a_hex(b_txn).decode('utf-8')}"

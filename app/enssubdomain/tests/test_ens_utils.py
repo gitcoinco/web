@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Define ENS Subdomain related django administration sections.
+"""Handle ENS subdomain utility related tests.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -17,18 +17,16 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from __future__ import unicode_literals
-
-from django.contrib import admin
-
-from enssubdomain.models import ENSSubdomainRegistration
+from enssubdomain.utils import convert_txn
+from test_plus.test import TestCase
 
 
-class ENSSubdomainAdmin(admin.ModelAdmin):
-    """Handle displaying conversion rates in the django admin."""
+class ENSSubdomainUtilsTest(TestCase):
+    """Define tests for enssubdomain utilities."""
 
-    raw_id_fields = ("profile", )
-    ordering = ['-id']
-
-
-admin.site.register(ENSSubdomainRegistration, ENSSubdomainAdmin)
+    @staticmethod
+    def test_convert_txn():
+        """Test the enssubdomain utility convert_txn."""
+        b_txn = b'123456789'
+        txn = convert_txn(b_txn)
+        assert txn == "0x313233343536373839"
