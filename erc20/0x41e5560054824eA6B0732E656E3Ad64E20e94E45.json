@@ -1,20 +1,20 @@
 {
-    "website":"https://www.civic.com/",
-    "published_on":"2017-06-21",
-    "links":{
-        "telegram":"https://t.me/civicplatform",
-        "twitter":"https://twitter.com/civickey",
-        "facebook":"https://www.facebook.com/pg/civictechnologiesinc/about/?ref=page_internal"
+    "website": "https://www.civic.com/",
+    "published_on": "2017-06-21",
+    "links": {
+        "telegram": "https://t.me/civicplatform",
+        "twitter": "https://twitter.com/civickey",
+        "facebook": "https://www.facebook.com/pg/civictechnologiesinc/about/?ref=page_internal"
     },
-    "overview":{
-        "en":"Giving businesses and individuals the tools to control and protect identities.",
-        "zh":"Civic 是一个身份管理系统，提供安全、高效的身份认证功能。"
+    "overview": {
+        "en": "Giving businesses and individuals the tools to control and protect identities.",
+        "zh": "Civic 是一个身份管理系统，提供安全、高效的身份认证功能。"
     },
-    "symbol":"CVC",
-    "initial_price":{
-        "ETH":"0.0002853 ETH",
-        "USD":"0.1 USD"
+    "symbol": "CVC",
+    "initial_price": {
+        "ETH": "0.0002853 ETH",
+        "USD": "0.1 USD"
     },
-    "whitepaper":"https://tokensale.civic.com/CivicTokenSaleWhitePaper.pdf",
-    "address":"0x41e5560054824ea6b0732e656e3ad64e20e94e45"
+    "whitepaper": "https://tokensale.civic.com/CivicTokenSaleWhitePaper.pdf",
+    "address": "0x41e5560054824eA6B0732E656E3Ad64E20e94E45"
 }

@@ -1,23 +1,23 @@
 {
-    "website":"https://po.et/",
-    "published_on":"2017-08-08",
-    "links":{
-        "telegram":"https://github.com/poetapp",
-        "reddit":"https://www.reddit.com/r/poetproject/",
-        "github":"https://github.com/poetapp",
-        "slack":"https://poet-slack.herokuapp.com/",
-        "twitter":"https://twitter.com/_poetproject"
+    "website": "https://po.et/",
+    "published_on": "2017-08-08",
+    "links": {
+        "telegram": "https://github.com/poetapp",
+        "reddit": "https://www.reddit.com/r/poetproject/",
+        "github": "https://github.com/poetapp",
+        "slack": "https://poet-slack.herokuapp.com/",
+        "twitter": "https://twitter.com/_poetproject"
     },
-    "overview":{
-        "en":"Po.et aims to reclaim value for content creators, publishers and consumers.",
-        "zh":"Po.et 是一个共享、开放、通用的帐本，旨在记录元数据和数字创意资产的所有权信息。"
+    "overview": {
+        "en": "Po.et aims to reclaim value for content creators, publishers and consumers.",
+        "zh": "Po.et 是一个共享、开放、通用的帐本，旨在记录元数据和数字创意资产的所有权信息。"
     },
-    "symbol":"POE",
-    "initial_price":{
-        "ETH":"0.00004 ETH",
-        "USD":"0.01 USD"
+    "symbol": "POE",
+    "initial_price": {
+        "ETH": "0.00004 ETH",
+        "USD": "0.01 USD"
     },
-    "whitepaper":"https://po.et/whitepaper.pdf",
-    "address":"0x0e0989b1f9b8a38983c2ba8053269ca62ec9b195",
-    "email":"contact@po.et"
+    "whitepaper": "https://po.et/whitepaper.pdf",
+    "address": "0x0e0989b1f9B8A38983c2BA8053269Ca62Ec9B195",
+    "email": "contact@po.et"
 }

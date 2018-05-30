@@ -1,21 +1,21 @@
 {
-    "website":"http://www.mona.co",
-    "published_on":"2017-05-18",
-    "links":{
-        "telegram":"https://t.me/MonacoCard",
-        "twitter":"https://twitter.com/monaco_card",
-        "facebook":"https://www.facebook.com/Monaco-Card-1355426087883151/",
-        "slack":"https://slack.mona.co/"
+    "website": "http://www.mona.co",
+    "published_on": "2017-05-18",
+    "links": {
+        "telegram": "https://t.me/MonacoCard",
+        "twitter": "https://twitter.com/monaco_card",
+        "facebook": "https://www.facebook.com/Monaco-Card-1355426087883151/",
+        "slack": "https://slack.mona.co/"
     },
-    "overview":{
-        "en":"Monaco is a cryptocurrency card. Spend and send money globally at interbank exchange rates.",
-        "zh":"Monaco 是一款加密货币借记卡，通过该借记卡您将得到全球最好的中间利率实现消费和转账，完全没有任何额外费用。"
+    "overview": {
+        "en": "Monaco is a cryptocurrency card. Spend and send money globally at interbank exchange rates.",
+        "zh": "Monaco 是一款加密货币借记卡，通过该借记卡您将得到全球最好的中间利率实现消费和转账，完全没有任何额外费用。"
     },
-    "symbol":"MCO",
-    "initial_price":{
-        "ETH":"0.00666 ETH",
-        "USD":"0.64 USD"
+    "symbol": "MCO",
+    "initial_price": {
+        "ETH": "0.00666 ETH",
+        "USD": "0.64 USD"
     },
-    "whitepaper":"https://www.mona.co/monaco-whitepaper.pdf",
-    "address":"0xb63b606ac810a52cca15e44bb630fd42d8d1d83d"
+    "whitepaper": "https://www.mona.co/monaco-whitepaper.pdf",
+    "address": "0xB63B606Ac810a52cCa15e44bB630fd42D8d1d83d"
 }

@@ -1,19 +1,19 @@
 {
-    "website":"https://nuls.io/",
-    "published_on":"2017-10-26",
-    "links":{
-        "reddit":"https://www.reddit.com/user/nulsservice/",
-        "github":"https://github.com/nuls-io/nuls",
-        "slack":"https://nuls.slack.com/",
-        "telegram":"https://www.reddit.com/user/nulsservice/",
-        "twitter":"https://twitter.com/nulsservice",
-        "facebook":"https://www.facebook.com/nul.ben.71"
+    "website": "https://nuls.io/",
+    "published_on": "2017-10-26",
+    "links": {
+        "reddit": "https://www.reddit.com/user/nulsservice/",
+        "github": "https://github.com/nuls-io/nuls",
+        "slack": "https://nuls.slack.com/",
+        "telegram": "https://www.reddit.com/user/nulsservice/",
+        "twitter": "https://twitter.com/nulsservice",
+        "facebook": "https://www.facebook.com/nul.ben.71"
     },
-    "overview":{
-        "en":"NULS is a global blockchain open-source project which is a highly customizable modular blockchain infrastructure consisting of a microkernel and functional modules.",
-        "zh":"NULS 是开源的区块链项目。它由微内核和功能模块组成，是一个可定制的区块链基础设施。"
+    "overview": {
+        "en": "NULS is a global blockchain open-source project which is a highly customizable modular blockchain infrastructure consisting of a microkernel and functional modules.",
+        "zh": "NULS 是开源的区块链项目。它由微内核和功能模块组成，是一个可定制的区块链基础设施。"
     },
-    "symbol":"NULS",
-    "address":"0xb91318f35bdb262e9423bc7c7c2a3a93dd93c92c",
-    "email":"hi@nuls.io"
+    "symbol": "NULS",
+    "address": "0xB91318F35Bdb262E9423Bc7c7c2A3A93DD93C92C",
+    "email": "hi@nuls.io"
 }

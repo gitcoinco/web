@@ -1,24 +1,24 @@
 {
-    "website":"https://ambrosus.com/",
-    "published_on":"2017-09-22",
-    "links":{
-        "reddit":"https://www.reddit.com/r/ambrosus/",
-        "github":"https://github.com/ambrosus",
-        "slack":"https://discordapp.com/invite/jbmWg8c",
-        "telegram":"https://t.me/AmbrosusAMB",
-        "twitter":"https://twitter.com/AmbrosusAMB",
-        "facebook":"https://www.facebook.com/ambrosusAMB"
+    "website": "https://ambrosus.com/",
+    "published_on": "2017-09-22",
+    "links": {
+        "reddit": "https://www.reddit.com/r/ambrosus/",
+        "github": "https://github.com/ambrosus",
+        "slack": "https://discordapp.com/invite/jbmWg8c",
+        "telegram": "https://t.me/AmbrosusAMB",
+        "twitter": "https://twitter.com/AmbrosusAMB",
+        "facebook": "https://www.facebook.com/ambrosusAMB"
     },
-    "overview":{
-        "en":"Combining high-tech sensors, blockchain protocol and smart contracts, we are building a universally verifiable, community-driven ecosystem to assure the quality, safety & origins of products.",
-        "zh":"Ambrosus 通过应用分布式账本、数据处理及传感器系统，使平台能被整合于供应链，并确保其中每个节点的透明性。"
+    "overview": {
+        "en": "Combining high-tech sensors, blockchain protocol and smart contracts, we are building a universally verifiable, community-driven ecosystem to assure the quality, safety & origins of products.",
+        "zh": "Ambrosus 通过应用分布式账本、数据处理及传感器系统，使平台能被整合于供应链，并确保其中每个节点的透明性。"
     },
-    "symbol":"AMB",
-    "initial_price":{
-        "ETH":"0.00110287 ETH",
-        "USD":"0.29 USD"
+    "symbol": "AMB",
+    "initial_price": {
+        "ETH": "0.00110287 ETH",
+        "USD": "0.29 USD"
     },
-    "whitepaper":"https://ambrosus.com/assets/Ambrosus-White-Paper-V8-1.pdf",
-    "address":"0x4dc3643dbc642b72c158e7f3d2ff232df61cb6ce",
-    "email":"info@ambrosus.com"
+    "whitepaper": "https://ambrosus.com/assets/Ambrosus-White-Paper-V8-1.pdf",
+    "address": "0x4DC3643DbC642b72C158E7F3d2ff232df61cb6CE",
+    "email": "info@ambrosus.com"
 }

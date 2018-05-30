@@ -1,23 +1,23 @@
 {
-    "website":"https://loopring.org/",
-    "published_on":"2017-08-01",
-    "links":{
-        "telegram":"https://t.me/loopringfans",
-        "reddit":"https://www.reddit.com/r/loopring/",
-        "github":"https://github.com/loopring",
-        "slack":"https://loopring-team.slack.com/",
-        "twitter":"https://twitter.com/loopringorg"
+    "website": "https://loopring.org/",
+    "published_on": "2017-08-01",
+    "links": {
+        "telegram": "https://t.me/loopringfans",
+        "reddit": "https://www.reddit.com/r/loopring/",
+        "github": "https://github.com/loopring",
+        "slack": "https://loopring-team.slack.com/",
+        "twitter": "https://twitter.com/loopringorg"
     },
-    "overview":{
-        "en":"Loopring is not only a protocol but also a decentralized automated execution system that trades across the crypto-token exchanges.",
-        "zh":"路印协议是区块链资产交易协议和交易所。它采用去中心化技术，提供零风险的代币交易所模式，并允许多家交易所通过竞争，对同样的订单进行链外撮合及链上清结算。"
+    "overview": {
+        "en": "Loopring is not only a protocol but also a decentralized automated execution system that trades across the crypto-token exchanges.",
+        "zh": "路印协议是区块链资产交易协议和交易所。它采用去中心化技术，提供零风险的代币交易所模式，并允许多家交易所通过竞争，对同样的订单进行链外撮合及链上清结算。"
     },
-    "symbol":"LRC",
-    "initial_price":{
-        "ETH":"0.0002 ETH",
-        "USD":"0.053 USD"
+    "symbol": "LRC",
+    "initial_price": {
+        "ETH": "0.0002 ETH",
+        "USD": "0.053 USD"
     },
-    "whitepaper":"https://github.com/Loopring/whitepaper",
-    "address":"0xef68e7c694f40c8202821edf525de3782458639f",
-    "email":"foundation@loopring.org"
+    "whitepaper": "https://github.com/Loopring/whitepaper",
+    "address": "0xEF68e7C694F40c8202821eDF525dE3782458639f",
+    "email": "foundation@loopring.org"
 }

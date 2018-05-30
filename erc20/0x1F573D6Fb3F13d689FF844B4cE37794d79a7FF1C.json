@@ -1,19 +1,19 @@
 {
-    "website":"https://bancor.network/",
-    "published_on":"2017-06-12",
-    "links":{
-        "reddit":"https://www.reddit.com/r/Bancor/",
-        "slack":"https://bancor-slack-invite.herokuapp.com/",
-        "twitter":"https://twitter.com/bancornetwork"
+    "website": "https://bancor.network/",
+    "published_on": "2017-06-12",
+    "links": {
+        "reddit": "https://www.reddit.com/r/Bancor/",
+        "slack": "https://bancor-slack-invite.herokuapp.com/",
+        "twitter": "https://twitter.com/bancornetwork"
     },
-    "overview":{
-        "en":"Bancor is a decentralized liquidity network that provides users with a simple, low-cost way to convert tokens directly from their wallets.",
-        "zh":"Bancor 是去中心化的代币流通网络，为用户直接在钱包中进行币币兑换提供了一种简单且低成本的方法。"
+    "overview": {
+        "en": "Bancor is a decentralized liquidity network that provides users with a simple, low-cost way to convert tokens directly from their wallets.",
+        "zh": "Bancor 是去中心化的代币流通网络，为用户直接在钱包中进行币币兑换提供了一种简单且低成本的方法。"
     },
-    "symbol":"BNT",
-    "initial_price":{
-        "ETH":"0.01137455 ETH",
-        "USD":"3.86 USD"
+    "symbol": "BNT",
+    "initial_price": {
+        "ETH": "0.01137455 ETH",
+        "USD": "3.86 USD"
     },
-    "address":"0x1f573d6fb3f13d689ff844b4ce37794d79a7ff1c"
+    "address": "0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C"
 }

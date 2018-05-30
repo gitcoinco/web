@@ -1,21 +1,21 @@
 {
-    "website":"https://digix.global/",
-    "published_on":"2016-03-01",
-    "links":{
-        "reddit":"https://www.reddit.com/r/digix/",
-        "github":"https://github.com/digixglobal",
-        "twitter":"https://twitter.com/digixglobal"
+    "website": "https://digix.global/",
+    "published_on": "2016-03-01",
+    "links": {
+        "reddit": "https://www.reddit.com/r/digix/",
+        "github": "https://github.com/digixglobal",
+        "twitter": "https://twitter.com/digixglobal"
     },
-    "overview":{
-        "en":"DigixDAO is a decentralized voting / utility token that allows users to submit and manage proposals that relate to the growth of the Digix ecosystem and platform.",
-        "zh":"Digix 通过资产证明(PoA)协议为实体资产代币化提供了实例。它实现了开放和公开的资产存在性认证，无需一个中心化数据库。Digix 也提供一个应用程序接口(API)，允许其它应用建立在资产代币化服务之上。"
+    "overview": {
+        "en": "DigixDAO is a decentralized voting / utility token that allows users to submit and manage proposals that relate to the growth of the Digix ecosystem and platform.",
+        "zh": "Digix 通过资产证明(PoA)协议为实体资产代币化提供了实例。它实现了开放和公开的资产存在性认证，无需一个中心化数据库。Digix 也提供一个应用程序接口(API)，允许其它应用建立在资产代币化服务之上。"
     },
-    "symbol":"DGD",
-    "initial_price":{
-        "ETH":"0.425714 ETH",
-        "USD":"3.23 USD"
+    "symbol": "DGD",
+    "initial_price": {
+        "ETH": "0.425714 ETH",
+        "USD": "3.23 USD"
     },
-    "whitepaper":"https://digix.global/whitepaper.pdf",
-    "address":"0xe0b7927c4af23765cb51314a0e0521a9645f0e2a",
-    "email":"support@digix.io"
+    "whitepaper": "https://digix.global/whitepaper.pdf",
+    "address": "0xE0B7927c4aF23765Cb51314A0E0521A9645F0E2A",
+    "email": "support@digix.io"
 }

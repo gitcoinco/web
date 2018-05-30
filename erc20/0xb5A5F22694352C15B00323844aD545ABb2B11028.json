@@ -1,23 +1,23 @@
 {
-    "website":"https://icon.foundation/",
-    "published_on":"2017-09-20",
-    "links":{
-        "telegram":"https://t.me/helloiconworld_official",
-        "reddit":"https://www.reddit.com/r/helloicon/",
-        "github":"https://github.com/theloopkr/loopchain",
-        "facebook":"https://www.facebook.com/helloicon",
-        "twitter":"https://twitter.com/helloiconworld"
+    "website": "https://icon.foundation/",
+    "published_on": "2017-09-20",
+    "links": {
+        "telegram": "https://t.me/helloiconworld_official",
+        "reddit": "https://www.reddit.com/r/helloicon/",
+        "github": "https://github.com/theloopkr/loopchain",
+        "facebook": "https://www.facebook.com/helloicon",
+        "twitter": "https://twitter.com/helloiconworld"
     },
-    "overview":{
-        "en":"The ICON Network is comprised of various institutions ranging from: financial institutions, insurance companies, hospitals, universities and more.",
-        "zh":"ICON 网络由各种机构组成：金融机构、保险公司、医院、大学等。"
+    "overview": {
+        "en": "The ICON Network is comprised of various institutions ranging from: financial institutions, insurance companies, hospitals, universities and more.",
+        "zh": "ICON 网络由各种机构组成：金融机构、保险公司、医院、大学等。"
     },
-    "symbol":"ICX",
-    "initial_price":{
-        "ETH":"0.0004 ETH",
-        "USD":"0.12 USD"
+    "symbol": "ICX",
+    "initial_price": {
+        "ETH": "0.0004 ETH",
+        "USD": "0.12 USD"
     },
-    "whitepaper":"http://docs.icon.foundation/ICON-Whitepaper-EN-Draft.pdf",
-    "address":"0xb5a5f22694352c15b00323844ad545abb2b11028",
-    "email":"hello@icon.foundation"
+    "whitepaper": "http://docs.icon.foundation/ICON-Whitepaper-EN-Draft.pdf",
+    "address": "0xb5A5F22694352C15B00323844aD545ABb2B11028",
+    "email": "hello@icon.foundation"
 }

@@ -1,19 +1,19 @@
 {
-    "website":"https://gnosis.pm/",
-    "published_on":"2017-04-24",
-    "links":{
-        "reddit":"https://www.reddit.com/r/gnosisPM/",
-        "facebook":"https://www.facebook.com/Gnosis.pm/",
-        "slack":"https://slack.gnosis.pm/",
-        "twitter":"https://twitter.com/gnosisPM"
+    "website": "https://gnosis.pm/",
+    "published_on": "2017-04-24",
+    "links": {
+        "reddit": "https://www.reddit.com/r/gnosisPM/",
+        "facebook": "https://www.facebook.com/Gnosis.pm/",
+        "slack": "https://slack.gnosis.pm/",
+        "twitter": "https://twitter.com/gnosisPM"
     },
-    "overview":{
-        "en":"Crowd Sourced Wisdom - The next generation blockchain network. Speculate on anything with an easy-to-use prediction market.",
-        "zh":"Gnosis 是建立在以太坊协议上的去中心化预测市场。"
+    "overview": {
+        "en": "Crowd Sourced Wisdom - The next generation blockchain network. Speculate on anything with an easy-to-use prediction market.",
+        "zh": "Gnosis 是建立在以太坊协议上的去中心化预测市场。"
     },
-    "symbol":"GNO",
-    "initial_price":{
-        "USD":"25.51 USD"
+    "symbol": "GNO",
+    "initial_price": {
+        "USD": "25.51 USD"
     },
-    "address":"0x6810e776880c02933d47db1b9fc05908e5386b96"
+    "address": "0x6810e776880C02933D47DB1b9fc05908e5386b96"
 }

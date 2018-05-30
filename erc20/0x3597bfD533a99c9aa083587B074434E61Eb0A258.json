@@ -1,22 +1,22 @@
 {
-    "website":"http://www.dentcoin.com",
-    "published_on":"2017-07-12",
-    "links":{
-        "telegram":"https://t.me/dentcoin",
-        "twitter":"https://twitter.com/dentcoin",
-        "facebook":"https://facebook.com/dentcoin",
-        "slack":"https://dentcoin.herokuapp.com/"
+    "website": "http://www.dentcoin.com",
+    "published_on": "2017-07-12",
+    "links": {
+        "telegram": "https://t.me/dentcoin",
+        "twitter": "https://twitter.com/dentcoin",
+        "facebook": "https://facebook.com/dentcoin",
+        "slack": "https://dentcoin.herokuapp.com/"
     },
-    "overview":{
-        "en":"Aims to disrupt the mobile operator industry by creating an open marketplace for buying and selling of mobile data.",
-        "zh":"旨在通过创建一个开放的移动数据购买和销售市场来打破现在的移动运营商的垄断地位。"
+    "overview": {
+        "en": "Aims to disrupt the mobile operator industry by creating an open marketplace for buying and selling of mobile data.",
+        "zh": "旨在通过创建一个开放的移动数据购买和销售市场来打破现在的移动运营商的垄断地位。"
     },
-    "symbol":"DENT",
-    "initial_price":{
-        "ETH":"0.0000025 ETH",
-		"USD":"0.0006 USD"
+    "symbol": "DENT",
+    "initial_price": {
+        "ETH": "0.0000025 ETH",
+        "USD": "0.0006 USD"
     },
-    "whitepaper":"https://drive.google.com/file/d/0B7XC9TPzyTmOd0pqQ3hRLUM0UzQ/view",
-    "address":"0x3597bfd533a99c9aa083587b074434e61eb0a258",
-    "email":"info@dentcoin.com"
+    "whitepaper": "https://drive.google.com/file/d/0B7XC9TPzyTmOd0pqQ3hRLUM0UzQ/view",
+    "address": "0x3597bfD533a99c9aa083587B074434E61Eb0A258",
+    "email": "info@dentcoin.com"
 }

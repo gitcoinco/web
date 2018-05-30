@@ -1,21 +1,21 @@
 {
-    "website":"http://substratum.net/",
-    "published_on":"2017-08-14",
-    "links":{
-        "reddit":"https://www.reddit.com/r/SubstratumNetwork/",
-        "slack":"https://substratumcoin.slack.com/join/shared_invite/MjI3Nzc5NzExNDg4LTE1MDMwNDY5ODItODlkYjNiYzhkZg",
-        "twitter":"https://twitter.com/SubstratumNet"
+    "website": "http://substratum.net/",
+    "published_on": "2017-08-14",
+    "links": {
+        "reddit": "https://www.reddit.com/r/SubstratumNetwork/",
+        "slack": "https://substratumcoin.slack.com/join/shared_invite/MjI3Nzc5NzExNDg4LTE1MDMwNDY5ODItODlkYjNiYzhkZg",
+        "twitter": "https://twitter.com/SubstratumNet"
     },
-    "overview":{
-        "en":"Substratum is an open-source network that allows anyone to allocate spare computing resources to make the internet a free and fair place for the entire world.",
-        "zh":"Substratum 是开源网络，允许任何人配置闲余的计算资源以使互联网更加自由和公平。"
+    "overview": {
+        "en": "Substratum is an open-source network that allows anyone to allocate spare computing resources to make the internet a free and fair place for the entire world.",
+        "zh": "Substratum 是开源网络，允许任何人配置闲余的计算资源以使互联网更加自由和公平。"
     },
-    "symbol":"SUB",
-    "initial_price":{
-        "ETH":"0.00033333 ETH",
-        "USD":"0.0817 USD"
+    "symbol": "SUB",
+    "initial_price": {
+        "ETH": "0.00033333 ETH",
+        "USD": "0.0817 USD"
     },
-    "whitepaper":"http://substratum.net/wp-content/uploads/2017/08/substratum_whitepaper.pdf",
-    "address":"0x12480e24eb5bec1a9d4369cab6a80cad3c0a377a",
-    "email":"justin@substratum.net"
+    "whitepaper": "http://substratum.net/wp-content/uploads/2017/08/substratum_whitepaper.pdf",
+    "address": "0x12480E24eb5bec1a9D4369CaB6a80caD3c0A377A",
+    "email": "justin@substratum.net"
 }

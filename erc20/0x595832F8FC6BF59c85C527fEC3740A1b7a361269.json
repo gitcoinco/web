@@ -1,22 +1,22 @@
 {
-    "website":"https://powerledger.io/",
-    "published_on":"2017-09-08",
-    "links":{
-        "telegram":"https://t.me/joinchat/Gop-90DIMiPF7N_EtvFzjA",
-        "reddit":"https://www.reddit.com/r/icocrypto/comments/6mr791/power_ledger_token_sale_powr/",
-        "facebook":"https://www.facebook.com/powerledger",
-        "twitter":"https://twitter.com/PowerLedger_io"
+    "website": "https://powerledger.io/",
+    "published_on": "2017-09-08",
+    "links": {
+        "telegram": "https://t.me/joinchat/Gop-90DIMiPF7N_EtvFzjA",
+        "reddit": "https://www.reddit.com/r/icocrypto/comments/6mr791/power_ledger_token_sale_powr/",
+        "facebook": "https://www.facebook.com/powerledger",
+        "twitter": "https://twitter.com/PowerLedger_io"
     },
-    "overview":{
-        "en":"Power Ledger is a peer-to-peer marketplace for renewable energy.",
-        "zh":"Power Ledger 是关于可再生能源的点对点交易市场。"
+    "overview": {
+        "en": "Power Ledger is a peer-to-peer marketplace for renewable energy.",
+        "zh": "Power Ledger 是关于可再生能源的点对点交易市场。"
     },
-    "symbol":"POWR",
-    "initial_price":{
-        "ETH":"0.00029363 ETH",
-        "USD":"0.09 USD"
+    "symbol": "POWR",
+    "initial_price": {
+        "ETH": "0.00029363 ETH",
+        "USD": "0.09 USD"
     },
-    "whitepaper":"https://powerledger.io/#papers",
-    "address":"0x595832f8fc6bf59c85c527fec3740a1b7a361269",
-    "email":"support@powerledger.io"
+    "whitepaper": "https://powerledger.io/#papers",
+    "address": "0x595832F8FC6BF59c85C527fEC3740A1b7a361269",
+    "email": "support@powerledger.io"
 }

@@ -1,21 +1,21 @@
 {
-    "website":"https://kyber.network",
-    "published_on":"2017-09-15",
-    "links":{
-        "twitter":"https://twitter.com/KyberNetwork",
-        "github":"https://github.com/KyberNetwork",
-        "slack":"https://kybernetwork.slack.com"
+    "website": "https://kyber.network",
+    "published_on": "2017-09-15",
+    "links": {
+        "twitter": "https://twitter.com/KyberNetwork",
+        "github": "https://github.com/KyberNetwork",
+        "slack": "https://kybernetwork.slack.com"
     },
-    "overview":{
-        "en":"On-chain, instant and liquid platform for exchange and payment service.",
-        "zh":"Kyber 网络是一个支持多种数字资产即时币币兑换的去中心化协议，具有速度快、流动性高等优点。"
+    "overview": {
+        "en": "On-chain, instant and liquid platform for exchange and payment service.",
+        "zh": "Kyber 网络是一个支持多种数字资产即时币币兑换的去中心化协议，具有速度快、流动性高等优点。"
     },
-    "symbol":"KNC",
-    "initial_price":{
-        "ETH":"0.0016666 ETH",
-        "USD":"0.46 USD"
+    "symbol": "KNC",
+    "initial_price": {
+        "ETH": "0.0016666 ETH",
+        "USD": "0.46 USD"
     },
-    "whitepaper":"https://kyber.network/assets/KyberNetworkWhitepaper.pdf",
-    "address":"0xdd974d5c2e2928dea5f71b9825b8b646686bd200",
-    "email":"hello@kyber.network"
+    "whitepaper": "https://kyber.network/assets/KyberNetworkWhitepaper.pdf",
+    "address": "0xdd974D5C2e2928deA5F71b9825b8b646686BD200",
+    "email": "hello@kyber.network"
 }

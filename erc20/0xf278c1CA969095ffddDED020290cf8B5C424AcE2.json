@@ -1,18 +1,18 @@
 {
-    "website":"http://ruffchain.com/",
-    "links":{
-        "telegram":"https://t.me/RuffChain",
-        "github":"https://github.com/RuffNotes/RuffChain",
-        "facebook":"https://www.facebook.com/RuffChainProject/"
+    "website": "http://ruffchain.com/",
+    "links": {
+        "telegram": "https://t.me/RuffChain",
+        "github": "https://github.com/RuffNotes/RuffChain",
+        "facebook": "https://www.facebook.com/RuffChainProject/"
     },
-    "overview":{
-        "en":"Decentralized open source blockchain architecture for high efficiency Internet of Things application development.",
-        "zh":"Ruff Chain 是一个结合物联网和区块链的架构，它包含一个分布式操作系统和一条开放式的主链。"
+    "overview": {
+        "en": "Decentralized open source blockchain architecture for high efficiency Internet of Things application development.",
+        "zh": "Ruff Chain 是一个结合物联网和区块链的架构，它包含一个分布式操作系统和一条开放式的主链。"
     },
-    "symbol":"RUFF",
-    "initial_price":{
-        "ETH":"0.0000625 ETH"
+    "symbol": "RUFF",
+    "initial_price": {
+        "ETH": "0.0000625 ETH"
     },
-    "whitepaper":"https://github.com/RuffNotes/RuffChain/blob/master/WhitePaper.md",
-    "address":"0xf278c1ca969095ffddded020290cf8b5c424ace2"
+    "whitepaper": "https://github.com/RuffNotes/RuffChain/blob/master/WhitePaper.md",
+    "address": "0xf278c1CA969095ffddDED020290cf8B5C424AcE2"
 }

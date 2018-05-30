@@ -1,23 +1,23 @@
 {
-    "website":"https://www.aeternity.com/",
-    "published_on":"2017-05-29",
-    "links":{
-        "telegram":"https://telegram.me/aeternity",
-        "reddit":"https://www.reddit.com/r/Aeternity/",
-        "github":"https://github.com/aeternity",
-        "facebook":"https://www.facebook.com/aeternityproject/",
-        "twitter":"https://twitter.com/aeternity"
+    "website": "https://www.aeternity.com/",
+    "published_on": "2017-05-29",
+    "links": {
+        "telegram": "https://telegram.me/aeternity",
+        "reddit": "https://www.reddit.com/r/Aeternity/",
+        "github": "https://github.com/aeternity",
+        "facebook": "https://www.facebook.com/aeternityproject/",
+        "twitter": "https://twitter.com/aeternity"
     },
-    "overview":{
-        "en":"Aeternity is a scalable blockchain platform that enables high-speed transacting, purely-functional smart contracts, and decentralized oracles.",
-        "zh":"Aeternity 是可拓展的区块链平台，亮点：快速交易、图灵完备的智能合约和去中心化预言机。"
+    "overview": {
+        "en": "Aeternity is a scalable blockchain platform that enables high-speed transacting, purely-functional smart contracts, and decentralized oracles.",
+        "zh": "Aeternity 是可拓展的区块链平台，亮点：快速交易、图灵完备的智能合约和去中心化预言机。"
     },
-    "symbol":"AE",
-    "initial_price":{
-        "ETH":"0.0014 ETH",
-        "USD":"0.27 USD"
+    "symbol": "AE",
+    "initial_price": {
+        "ETH": "0.0014 ETH",
+        "USD": "0.27 USD"
     },
-    "whitepaper":"https://aeternity.com/aeternity-blockchain-whitepaper.pdf",
-    "address":"0x5ca9a71b1d01849c0a95490cc00559717fcf0d1d",
-    "email":"info@aeternity.com"
+    "whitepaper": "https://aeternity.com/aeternity-blockchain-whitepaper.pdf",
+    "address": "0x5CA9a71B1d01849C0a95490Cc00559717fCF0D1d",
+    "email": "info@aeternity.com"
 }

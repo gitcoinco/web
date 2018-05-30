@@ -1,23 +1,23 @@
 {
-    "website":"https://eos.io/",
-    "published_on":"2017-06-26",
-    "links":{
-        "telegram":"https://t.me/joinchat/AAAAAEQbOeucnaMWN0A9dQ",
-        "twitter":"https://twitter.com/eos_io",
-        "github":"https://github.com/eosio",
-        "facebook":"https://www.facebook.com/eosblockchain"
+    "website": "https://eos.io/",
+    "published_on": "2017-06-26",
+    "links": {
+        "telegram": "https://t.me/joinchat/AAAAAEQbOeucnaMWN0A9dQ",
+        "twitter": "https://twitter.com/eos_io",
+        "github": "https://github.com/eosio",
+        "facebook": "https://www.facebook.com/eosblockchain"
     },
-    "overview":{
-        "en":"Infrastructure for Decentralized Applications.",
-        "zh":"EOS 是基于区块链的智能合约平台，致力于实现可支撑高性能分布式应用的区块链架构。"
+    "overview": {
+        "en": "Infrastructure for Decentralized Applications.",
+        "zh": "EOS 是基于区块链的智能合约平台，致力于实现可支撑高性能分布式应用的区块链架构。"
     },
-    "symbol":"EOS",
-    "initial_price":{
-        "ETH":"0.00327 ETH",
-        "USD":"0.99 USD",
-        "BTC":"0.00036526 BTC"
+    "symbol": "EOS",
+    "initial_price": {
+        "ETH": "0.00327 ETH",
+        "USD": "0.99 USD",
+        "BTC": "0.00036526 BTC"
     },
-    "whitepaper":"https://github.com/EOSIO/Documentation/blob/master/TechnicalWhitePaper.md",
-    "address":"0x86fa049857e0209aa7d9e616f7eb3b3b78ecfdb0",
-    "email":"eos@block.one"
+    "whitepaper": "https://github.com/EOSIO/Documentation/blob/master/TechnicalWhitePaper.md",
+    "address": "0x86Fa049857E0209aa7D9e616F7eb3b3B78ECfdb0",
+    "email": "eos@block.one"
 }

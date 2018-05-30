@@ -1,19 +1,19 @@
 {
-    "website":"https://bytom.io/",
-    "published_on":"2017-06-20",
-    "links":{
-        "twitter":"https://twitter.com/Bytom_Official",
-        "github":"https://github.com/bytom"
+    "website": "https://bytom.io/",
+    "published_on": "2017-06-20",
+    "links": {
+        "twitter": "https://twitter.com/Bytom_Official",
+        "github": "https://github.com/bytom"
     },
-    "overview":{
-        "en":"Transfer assets from atomic world to byteworld.",
-        "zh":"比原链是一种多元比特资产的交互协议。"
+    "overview": {
+        "en": "Transfer assets from atomic world to byteworld.",
+        "zh": "比原链是一种多元比特资产的交互协议。"
     },
-    "symbol":"BTM",
-    "initial_price":{
-        "ETH":"0.0001 ETH",
-        "USD":"0.038 USD"
+    "symbol": "BTM",
+    "initial_price": {
+        "ETH": "0.0001 ETH",
+        "USD": "0.038 USD"
     },
-    "address":"0xcb97e65f07da24d46bcdd078ebebd7c6e6e3d750",
-    "email":"contact@bytom.io"
+    "address": "0xcB97e65F07DA24D46BcDD078EBebd7C6E6E3d750",
+    "email": "contact@bytom.io"
 }

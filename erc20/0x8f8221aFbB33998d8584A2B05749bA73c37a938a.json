@@ -1,23 +1,23 @@
 {
-    "website":"https://request.network/",
-    "published_on":"2017-10-13",
-    "links":{
-        "reddit":"https://www.reddit.com/r/RequestNetwork/",
-        "github":"https://github.com/RequestNetwork/",
-        "slack":"https://requestnetwork.slack.com/",
-        "telegram":"https://t.me/requestnetwork",
-        "twitter":"https://twitter.com/requestnetwork",
-        "facebook":"https://www.facebook.com/TheRequestNetwork/"
+    "website": "https://request.network/",
+    "published_on": "2017-10-13",
+    "links": {
+        "reddit": "https://www.reddit.com/r/RequestNetwork/",
+        "github": "https://github.com/RequestNetwork/",
+        "slack": "https://requestnetwork.slack.com/",
+        "telegram": "https://t.me/requestnetwork",
+        "twitter": "https://twitter.com/requestnetwork",
+        "facebook": "https://www.facebook.com/TheRequestNetwork/"
     },
-    "overview":{
-        "en":"A decentralized network built on top of Ethereum, which allows anyone, anywhere to request a payment.",
-        "zh":"Request 是一个允许任何人请求付款（Request 发票）的去中心化网络, 受众可以以安全的方式进行支付。"
+    "overview": {
+        "en": "A decentralized network built on top of Ethereum, which allows anyone, anywhere to request a payment.",
+        "zh": "Request 是一个允许任何人请求付款（Request 发票）的去中心化网络, 受众可以以安全的方式进行支付。"
     },
-    "symbol":"REQ",
-    "initial_price":{
-        "ETH":"0.0002 ETH",
-        "USD":"0.07 USD"
+    "symbol": "REQ",
+    "initial_price": {
+        "ETH": "0.0002 ETH",
+        "USD": "0.07 USD"
     },
-    "whitepaper":"https://request.network/assets/pdf/request_whitepaper.pdf",
-    "address":"0x8f8221afbb33998d8584a2b05749ba73c37a938a"
+    "whitepaper": "https://request.network/assets/pdf/request_whitepaper.pdf",
+    "address": "0x8f8221aFbB33998d8584A2B05749bA73c37a938a"
 }

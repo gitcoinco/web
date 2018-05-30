@@ -1,22 +1,22 @@
 {
-    "website":"https://status.im/",
-    "published_on":"2017-06-20",
-    "links":{
-        "reddit":"https://www.reddit.com/r/statusim/",
-        "github":"https://github.com/status-im",
-        "facebook":"https://www.facebook.com/ethstatus",
-        "slack":"http://slack.status.im/",
-        "twitter":"https://twitter.com/ethstatus"
+    "website": "https://status.im/",
+    "published_on": "2017-06-20",
+    "links": {
+        "reddit": "https://www.reddit.com/r/statusim/",
+        "github": "https://github.com/status-im",
+        "facebook": "https://www.facebook.com/ethstatus",
+        "slack": "http://slack.status.im/",
+        "twitter": "https://twitter.com/ethstatus"
     },
-    "overview":{
-        "en":"Status is an open source messaging platform and mobile browser to interact with decentralized applications that run on the Ethereum Network.",
-        "zh":"Status 既是开源的移动端 DApp 浏览器，也是基于以太坊的通讯应用。"
+    "overview": {
+        "en": "Status is an open source messaging platform and mobile browser to interact with decentralized applications that run on the Ethereum Network.",
+        "zh": "Status 既是开源的移动端 DApp 浏览器，也是基于以太坊的通讯应用。"
     },
-    "symbol":"SNT",
-    "initial_price":{
-        "ETH":"0.0001 ETH",
-        "USD":"0.037 USD"
+    "symbol": "SNT",
+    "initial_price": {
+        "ETH": "0.0001 ETH",
+        "USD": "0.037 USD"
     },
-    "whitepaper":"https://status.im/whitepaper.pdf",
-    "address":"0x744d70fdbe2ba4cf95131626614a1763df805b9e"
+    "whitepaper": "https://status.im/whitepaper.pdf",
+    "address": "0x744d70FDBE2Ba4CF95131626614a1763DF805B9E"
 }
