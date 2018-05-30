@@ -199,7 +199,6 @@ $(document).ready(function() {
       localStorage['experienceLevel'] = $('select[name=experienceLevel]').val();
       localStorage['projectLength'] = $('select[name=projectLength]').val();
       localStorage['bountyType'] = $('select[name=bountyType]').val();
-      localStorage['accept_blockchain_tos'] = true;
       localStorage.removeItem('bountyId');
 
       // setup web3

@@ -253,7 +253,7 @@ var get_search_URI = function() {
   if (localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, pos, arr) {
       keywords += v;
-      if (arr.length < pos + 1) {
+      if (arr.length > pos + 1) {
         keywords += ',';
       }
     });
@@ -326,11 +326,11 @@ var process_stats = function(results) {
       break;
     case 1:
       matchesEl.html(num + gettext(' Matching Result'));
-      fundingInfoEl.html("<span id='modifiers'>Funded Issue</span><span id='stats' class='font-body'>(" + stats + ')</span>');
+      fundingInfoEl.html('<span id="modifiers">Funded Issue</span><span id="stats" class="font-caption">(' + stats + ')</span>');
       break;
     default:
       matchesEl.html(num + gettext(' Matching Results'));
-      fundingInfoEl.html("<span id='modifiers'>Funded Issues</span><span id='stats' class='font-body'>(" + stats + ')</span>');
+      fundingInfoEl.html('<span id="modifiers">Funded Issues</span><span id="stats" class="font-caption">(' + stats + ')</span>');
   }
 };
 
@@ -356,7 +356,7 @@ var paint_bounties_in_viewport = function(start, max) {
   });
   document.is_painting_now = false;
 
-  if (document.referrer.search('/onboard') != -1) {
+  if (localStorage['referrer'] === 'onboard') {
     $('.bounty_row').each(function(index) {
       if (index > 2)
         $(this).addClass('hidden');
@@ -422,7 +422,12 @@ var refreshBounties = function(event) {
     results = sanitizeAPIResults(results);
 
     if (results.length === 0) {
-      $('.nonefound').css('display', 'block');
+      if (localStorage['referrer'] === 'onboard') {
+        $('.no-results').removeClass('hidden');
+        $('#dashboard-content').addClass('hidden');
+      } else {
+        $('.nonefound').css('display', 'block');
+      }
     }
 
     document.is_painting_now = false;
@@ -478,7 +483,7 @@ var refreshBounties = function(event) {
       } else if (is_expired) {
         var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
 
-        result['p'] += ('Expired ' + time_ago + ' ago');
+        result['p'] += (' Expired ' + time_ago + ' ago');
       } else {
         var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
 
@@ -541,29 +546,46 @@ var resetFilters = function() {
         $('input[name="' + key + '"][value="' + tag[j].value + '"]').prop('checked', false);
     }
   }
+
+  if (localStorage['keywords']) {
+    localStorage['keywords'].split(',').forEach(function(v, k) {
+      removeFilter('keywords', v);
+    });
+  }
 };
 
 (function() {
-  if (document.referrer.search('/onboard') != -1) {
+  if (localStorage['referrer'] === 'onboard') {
     $('#sidebar_container').addClass('invisible');
     $('#dashboard-title').addClass('hidden');
     $('#onboard-dashboard').removeClass('hidden');
+    $('#onboard-footer').removeClass('hidden');
     resetFilters();
     $('input[name=idx_status][value=open]').prop('checked', true);
     $('.search-area input[type=text]').text(getURLParams('q'));
-    document.referrer = '';
 
     $('#onboard-alert').click(function(e) {
+
+      if (!$('.no-results').hasClass('hidden'))
+        $('.nonefound').css('display', 'block');
+
       $('.bounty_row').each(function(index) {
         $(this).removeClass('hidden');
       });
+
       $('#onboard-dashboard').addClass('hidden');
+      $('#onboard-footer').addClass('hidden');
       $('#sidebar_container').removeClass('invisible');
       $('#dashboard-title').removeClass('hidden');
+      $('#dashboard-content').removeClass('hidden');
+
+      localStorage['referrer'] = '';
       e.preventDefault();
     });
   } else {
+    $('#dashboard-content').removeClass('hidden');
     $('#onboard-dashboard').addClass('hidden');
+    $('#onboard-footer').addClass('hidden');
     $('#sidebar_container').removeClass('invisible');
     $('#dashboard-title').removeClass('hidden');
   }

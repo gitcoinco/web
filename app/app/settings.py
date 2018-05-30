@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'storages',
     'social_django',
+    'cookielaw',
     'django.contrib.humanize',
     'django.contrib.sitemaps',
     'django.contrib.sites',
@@ -77,6 +78,7 @@ INSTALLED_APPS = [
     'marketing',
     'economy',
     'dashboard',
+    'enssubdomain',
     'faucet',
     'tdi',
     'gas',
@@ -90,6 +92,7 @@ INSTALLED_APPS = [
     'external_bounties',
     'dataviz',
     'ethos',
+    'impersonate',
 ]
 
 MIDDLEWARE = [
@@ -105,6 +108,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ratelimit.middleware.RatelimitMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
+    'impersonate.middleware.ImpersonateMiddleware',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = False
@@ -287,6 +291,15 @@ EMAIL_PORT = env.int('EMAIL_PORT', default=587)
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 SERVER_EMAIL = env('SERVER_EMAIL', default='server@TODO.co')
 
+# ENS Subdomain Settings
+# The value of ENS_LIMIT_RESET_DAYS should be higher since only one transaction is allowed per user.
+# The only reason for a user to make more than one request is when he looses access to the wallet.
+ENS_TLD = env('ENS_TLD', default='gitcoin.eth')
+ENS_LIMIT_RESET_DAYS = env.int('ENS_LIMIT_RESET_DAYS', default=30)
+ENS_OWNER_ACCOUNT = env('ENS_OWNER_ACCOUNT', default='0x00000')
+ENS_PRIVATE_KEY = env('ENS_PRIVATE_KEY', default=None)
+
+
 # IMAP Settings
 IMAP_EMAIL = env('IMAP_EMAIL', default='<email>')
 IMAP_PASSWORD = env('IMAP_PASSWORD', default='<password>')
@@ -348,6 +361,8 @@ if GITCOIN_BOT_CERT_PATH:
     with open(str(root.path(GITCOIN_BOT_CERT_PATH))) as f:
         SECRET_KEYSTRING = f.read()
 
+GITCOIN_SLACK_ICON_URL = 'https://gitcoin.co/static/v2/images/helmet.png'
+
 # Twitter Integration
 TWITTER_CONSUMER_KEY = env('TWITTER_CONSUMER_KEY', default='') # TODO
 TWITTER_CONSUMER_SECRET = env('TWITTER_CONSUMER_SECRET', default='') # TODO
@@ -396,6 +411,8 @@ if ROLLBAR_SERVER_TOKEN:
         'patch_debugview': False,  # Disable debug view patching.
         'branch': 'master',
         'exception_level_filters': [(Http404, 'ignored')],
+        'capture_ip': 'anonymize',
+        'capture_username': True,
         'scrub_fields': [
             'pw', 'passwd', 'password', 'secret', 'confirm_password', 'confirmPassword',
             'password_confirmation', 'passwordConfirmation', 'access_token', 'accessToken',

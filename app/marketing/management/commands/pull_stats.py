@@ -409,6 +409,15 @@ def bounties_fulfilled():
         )
 
 
+def ens():
+    from enssubdomain.models import ENSSubdomainRegistration
+
+    Stat.objects.create(
+        key='ens_subdomains',
+        val=(ENSSubdomainRegistration.objects.count()),
+        )
+
+
 def tips():
     from dashboard.models import Tip
 
@@ -556,6 +565,7 @@ class Command(BaseCommand):
             faucet,
             email_events,
             bounties_hourly_rate,
+            ens,
         ]
 
         for f in fs:

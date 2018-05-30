@@ -38,11 +38,6 @@
   --hover: #ffdc7f;
 }
 
-.close:hover,
-.close:focus {
-  box-shadow: inset -3.5em 0 0 0 var(--hover), inset 3.5em 0 0 0 var(--hover);
-}
-
 .raise {
   --color: #000;
   --hover: #000;

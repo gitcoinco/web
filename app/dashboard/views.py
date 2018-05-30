@@ -407,7 +407,7 @@ def receive_tip(request):
         'issueURL': request.GET.get('source'),
         'class': 'receive',
         'title': _('Receive Tip'),
-        'recommend_gas_price': round(recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target), 1),
+        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target), 1),
     }
 
     return TemplateResponse(request, 'yge/receive.html', params)
@@ -506,10 +506,14 @@ def send_tip_2(request):
 
 
 @staff_member_required
-def onboard(request):
+def contributor_onboard(request):
     """Handle displaying the first time user experience flow."""
-    params = {'title': _('Onboarding Flow')}
-    return TemplateResponse(request, 'onboard.html', params)
+    params = {
+        'title': _('Onboarding Flow'),
+        'steps': ['github', 'metamask', 'avatar', 'skills'],
+        'flow': 'contributor',
+    }
+    return TemplateResponse(request, 'ftux/onboard.html', params)
 
 
 def dashboard(request):
@@ -820,7 +824,7 @@ def profile_helper(handle, suppress_profile_hidden_exception=False):
         profile = Profile.objects.filter(handle__iexact=handle).latest('id')
         logging.error(e)
 
-    if profile.hide_profile and not suppress_profile_hidden_exception:
+    if profile.hide_profile and not profile.is_org and not suppress_profile_hidden_exception:
         raise ProfileHiddenException
 
     return profile
@@ -879,18 +883,8 @@ def profile(request, handle):
     except ProfileHiddenException:
         raise Http404
 
-    params = {
-        'title': f"@{handle}",
-        'active': 'profile_details',
-        'newsletter_headline': _('Be the first to know about new funded issues.'),
-        'card_title': f'@{handle} | Gitcoin',
-        'card_desc': profile.desc,
-        'avatar_url': profile.avatar_url_with_gitcoin_logo,
-        'profile': profile,
-        'stats': profile.stats,
-        'bounties': profile.bounties,
-        'tips': Tip.objects.filter(username=handle, network='mainnet'),
-    }
+    params = profile.to_dict()
+
     return TemplateResponse(request, 'profile_details.html', params)
 
 
@@ -990,19 +984,19 @@ def terms(request):
 
 
 def privacy(request):
-    return redirect('https://gitcoin.co/terms#privacy')
+    return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def cookie(request):
-    return redirect('https://gitcoin.co/terms#privacy')
+    return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def prirp(request):
-    return redirect('https://gitcoin.co/terms#privacy')
+    return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def apitos(request):
-    return redirect('https://gitcoin.co/terms#privacy')
+    return TemplateResponse(request, 'legal/privacy.html', {})
 
 
 def toolbox(request):

@@ -3,238 +3,462 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
   <head>
     {% include 'shared/head.html' %}
-    {% include 'shared/cards_pic.html' %}    
+    {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/profile.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
   </head>
-
-  <body class="interior {{active}}">
+  <body class="interior {{ active }}">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
+    <div class="container-fluid header profile-header dash">
       {% include 'shared/nav.html' %}
-    </div>
-    <div class="row no-gutter">
-      <div class="col body">
-        <div class="container-fluid">
-          <div id="hero" class="pt-4">
-            <img class="avatar" src="{{profile.avatar_url}}">
-            <h2 class="mt-3">
-                <span>Profile</span>
-                <span id="alpha">Alpha</span>
-                <br>
-                <span style="font-size: 24px;">{{profile.handle}}</span>
-            </h2>
+      <div class="container">
+        <div class="row">
+          <div class="col-12 col-lg-6 profile-header__main-infos">
+            <div class="clearfix">
+              <img class="profile-header__avatar mr-4" src="{{profile.avatar_url}}">
+              <span class="profile-header__handle">
+                {{ profile.data.name }}<br>
+                <small>{{ profile.handle }}</small>
+              </span>
+            </div>
             {% if profile.data.bio %}
-              <p>
-                {{profile.data.bio}}
-              </p>
-            {% endif %} 
-            {% if profile.authors|length %}
-              <ul class='authors'>
-                Works with: 
-                {% for author in profile.authors %}
-                  <li>
-                    <a href="{% url "profile" %}{{author}}" title="{{author}}" target="_blank" rel="noopener noreferrer">
-                      <img src="{% url "avatar" %}?repo=https://github.com/{{author}}">
-                    </a>
-                  </li>
-                {% endfor %}
-              </ul>
+              <div class="profile-header__bio my-4">
+                {{ profile.data.bio }}
+              </div>
             {% endif %}
-            <ul class='ctas'>
+            <ul class="profile-header__links clearfix my-4">
+              {% if profile.data.blog and user.is_authenticated %}
               <li>
-                <a href="{{profile.data.blog}}">
-                  <img src="{% static "v2/images/social/web.png" %}" alt="Medium">
+                <a href="{{ profile.data.blog }}">
+                  <img src="{% static "v2/images/social/web.png" %}">
                 </a>
               </li>
+              {% endif %}
               {% if profile.data.email and user.is_authenticated %}
                 <li>
                   <a href="mailto:{{profile.data.email | obfuscate}}">
-                    <img src="{% static "v2/images/social/mail.png" %}" alt="Medium">
+                    <img src="{% static "v2/images/social/mail.png" %}" alt="Medium">{{ profile.data.email | obfuscate }}
                   </a>
                 </li>
               {% endif %}
-              </li>
+              <li>
                 <a href="{{profile.data.html_url}}?tab=repositories">
-                  <img src="{% static "v2/images/social/github.png" %}" alt="Medium">
+                  <img src="{% static "v2/images/social/github.png" %}" alt="Medium">{{ profile.data.login }}
                 </a>
               </li>
             </ul>
           </div>
-        </div>
-        <div class="container">
-          <div>
-            <div>
-              {% if stats|length > 0 %}
-                <ul id="stats">
-                  {% for stat in stats %}
-                  <li>
-                    {{stat.0}}
-                    <span>
-                      {{stat.1}}
-                    </span>
+        {% if profile.is_org %}
+          <div class="col-12 col-lg-3">
+            <div class="profile-header__stats profile-header__stats--contributor card mb-4">
+              <div class="card-header">
+                {% trans "Organization" %}
+              </div>
+              <div class="card-body">
+                <ul>
+                  <li><span class="highlight">{{ count_bounties_on_repo }}</span> {% trans "bounties" %}</li>
+                  <li><span class="highlight">{{ sum_eth_on_repos|floatformat:2 }}</span> {% trans "ETH" %}</li>
+                  {% if scoreboard_position_org %}
+                      <li><span class="highlight">#{{ scoreboard_position_org }}</span> {% trans "org" %}</li>
+                  {% endif %}
+                  <li class="works_with_list">
+                    {% if works_with_org|length != 0 %}
+                        Contributors:
+                        {% if works_with_org|length > 2 %}
+                        <br>
+                        {% endif %}
+                        {% for profile, num_times in works_with_org.items %}
+                            <a href="{% url 'profile' profile %} ">
+                                <img src='/static/avatar/{{profile}}' title="{{profile}}: {{num_times}} times">
+                            </a>
+                        {% endfor %}
+                    {% endif %}
                   </li>
-                  {% endfor %}
                 </ul>
-              {% endif %}
-              <div>
-                <div>
-                  <h4>{% blocktrans %}{{profile.handle}} has received these tips{% endblocktrans %}</h4>
-                  <div class="text-center">
-                    {% if tips|length == 0 %} 
-                      {% trans "No tips found" %}
-                    {% endif %} 
-                    {% if tips|length > 0 %}
-                      <div class="row">
-                        <div class="col-3">
-                          {% trans "From" %}
-                        </div>
-                        <div class="col-3">
-                          {% trans "Related Issue" %}
-                        </div>
-                        <div class="col-6">
-                          {% trans "Details" %}
-                        </div>
-                      </div>
-                      {% for tip in tips %}
-                        <div class="row tip-row" data-ref-url="{{tip.github_url}}">
-                          <div class="col-3">
-                          {% if tip.from_username %} 
-                            {{tip.from_username}} 
-                          {% else %} 
-                            {% trans "Unknown" %} 
-                          {% endif %}
-                          </div>
-                          <div class="col-3">
-                            {% if tip.github_url %}
-                              <a href="{{tip.github_url}}">{{tip.github_url}}</a>
-                            {% else %} 
-                              Unknown 
-                            {% endif %}
-                          </div>
-                          <div class="col-6">
-                            <a class="btn btn-sm btn-darkBlue font-smaller-2 tip-value">
-                              {{tip.amount}} {{tip.tokenName}}, {{tip.value_in_usdt_now}} USD
-                            </a>
-                            <div>
-                              {% if tip.comments_public %} 
-                                Comments: {{tip.comments_public}} 
-                              {% endif %}
-                            </div>
-                          </div>
-                        </div>
-                      {% endfor %} 
-                    {% endif %}
-                  </div>
-                </div>
               </div>
-              <div>
-                <div>
-                  <h4>{% blocktrans %}{{profile.handle}} has Participated in these Funded Issues{% endblocktrans%}</h4>
-                  <div class="bounties text-center">
-                    {% if bounties|length == 0 %} 
-                      {% trans "No funded issues found" %} 
-                    {% endif %} 
-                    {% if bounties|length > 0 %}
-                      <div class="row">
-                        <div class="col-2 d-none d-sm-block">
-                          <strong>{% trans "Relationship" %}</strong>
-                        </div>
-                        <div class="col-2">
-                          <strong>{% trans "Status" %}</strong>
-                        </div>
-                        <div class="col-10 col-sm-8 col-md-4">
-                          <strong>{% trans "Details" %}</strong>
-                        </div>
-                        <div class="col-4 col-md-4  d-none d-md-block">
-                          <strong>{% trans "Amount" %}</strong>
-                        </div>
-                      </div>
-                      {% for b in bounties %}
-                        <div class="row bounty-row" data-ref-url="{{b.url}}">
-                          <div class="col-2 d-none d-sm-block">
-                            {% if profile.handle == b.fulfiller_github_username %} 
-                              {% trans "Worker" %} 
-                            {% elif profile.handle == b.bounty_owner_github_username%}
-                              {% trans "Funder" %} 
-                            {% elif profile.handle == b.org_name %} 
-                              {% trans "Repo Owner" %} 
-                            {% else %}
-                              {% trans "Worker" %} 
-                            {% endif %}
-                          </div>
-                          <div class="col-2">
-                            {{b.status}}
-                          </div>
-                          <div class="col-10 col-sm-8 col-md-4">
-                            <img style="max-width: 30px;" src="{{b.avatar_url}}">
-                            <h6>
-                              {{b.title_or_desc | truncatechars:50}}
-                            </h6>
-                            <p class="bounty-desc">
-                              {{b.desc}}
-                            </p>
-                          </div>
-                          <div class="col-4 col-md-4  d-none d-md-block bounty-value">
-                            <a class="btn btn-sm btn-darkBlue font-smaller-2">
-                              {{b.value_true}} {{b.token_name}}, {{b.value_in_usdt_now}} USD
-                            </a>
-                          </div>
-                        </div>
-                      {% endfor %} 
-                    {% endif %}
-                  </div>
-                </div>
-                <div>
-                  <h4>Repos</h4>
-                  <ul class="repos">
-                    {% for r in profile.repos_data %}
-                      <li>
-                        <div class="dot">&nbsp;</div>
-                        <a href="{% url "explorer" %}?q={{r.html_url}}">
-                          <p class="meta mr-3">{% blocktrans %}{{r.stargazers_count}} stars{% endblocktrans %}</p>
-                          <h6>
-                            {{r.full_name}}
-                          </h6>
-                          {% if r.description %}
-                            <p class="mb-1">{{r.description}}</p>
-                          {% endif %}
-                        </a>
-                      </li>
-                    {% endfor %} 
-                    {% if profile.repos_data|length == 0 %}
-                      <li>
-                        {% trans "No repos" %}
-                      </li>
-                    {% endif %}
-                  </ul>
-                </div>
-              </div>
-              {% include 'shared/newsletter.html' %}
             </div>
           </div>
+        {% else %}
+          <div class="col-12 col-lg-3">
+            <div class="profile-header__stats profile-header__stats--contributor card mb-4">
+              <div class="card-header">
+                {% trans "Contributor" %}
+              </div>
+              <div class="card-body">
+                <ul>
+                  <li><span class="highlight">{{ count_bounties_completed }}</span> {% trans "bounties completed" %}</li>
+                  <li><span class="highlight">{{ sum_eth_collected|floatformat:2 }}</span> {% trans "ETH collected" %}</li>
+                  {% if scoreboard_position_contributor %}
+                      <li><span class="highlight">#{{ scoreboard_position_contributor }}</span> {% trans "contributor" %}</li>
+                  {% endif %}
+                  <li class="works_with_list">
+                    {% if works_with_collected|length != 0 %}
+                        Contributes to:
+                        {% if works_with_collected|length > 2 %}
+                        <br>
+                        {% endif %}
+                        {% for profile, num_times in works_with_collected.items %}
+                            <a href="{% url 'profile' profile %} ">
+                                <img src='/static/avatar/{{profile}}' title="{{profile}}: {{num_times}} times">
+                            </a>
+                        {% endfor %}
+                    {% endif %}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-3">
+            <div class="profile-header__stats profile-header__stats--funder card mb-4">
+              <div class="card-header">
+                {% trans "Funder" %}
+              </div>
+              <div class="card-body">
+                <ul>
+                  <li><span class="highlight">{{ funded_bounties_count }}</span> {% trans "bounties funded" %}</li>
+                  <li><span class="highlight">{{ sum_eth_funded|floatformat:2 }}</span> {% trans "ETH funded" %}</li>
+                  {% if scoreboard_position_funder %}
+                      <li><span class="highlight">#{{ scoreboard_position_funder }}</span> {% trans "funder" %}</li>
+                  {% endif %}
+                  <li class="works_with_list">
+                    {% if works_with_funded|length %}
+                        Funds:
+                        {% if works_with_funded|length > 2 %}
+                        <br>
+                        {% endif %}
+                        {% for profile, num_times in works_with_funded.items %}
+                            <a href="{% url 'profile' profile %} ">
+                                <img src='/static/avatar/{{profile}}' title="{{profile}}: {{num_times}} times">
+                            </a>
+                        {% endfor %}
+                    {% endif %}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
         </div>
       </div>
     </div>
+    <div class="container">
+      <div class="row">
+        <div class="col py-4">{% trans "Bounties in progress" %}</div>
+      </div>
+      <div class="row">
+        <div class="container profile-bounties profile-bounties--in-progress profile-bounties--loading">
+          <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">{% trans "Show all" %}</button>
 
-    {% include 'shared/bottom_notification.html' %} 
-    {% include 'shared/analytics.html' %} 
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col py-4">{% trans "Bounties funded" %}</div>
+      </div>
+      <div class="row">
+        <div class="container profile-bounties profile-bounties--funded profile-bounties--loading">
+          <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">{% trans "Show all" %}</button>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col py-4">{% trans "Bounties completed" %}</div>
+      </div>
+      <div class="row">
+        <div class="container profile-bounties profile-bounties--completed profile-bounties--loading">
+          <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">{% trans "Show all" %}</button>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col py-4">{% trans "Bounties" %}</div>
+      </div>
+      <div class="row">
+        <div class="container profile-bounties profile-bounties--all profile-bounties--loading">
+          <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">{% trans "Show all" %}</button>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      {% if tips|length > 0 %}
+        <div class="row">
+          <div class="col py-4">{% trans "Tips Received" %}</div>
+        </div>
+        <div class="row">
+          <div class="container profile-bounties profile-bounties--tips pb-4">
+            {% if tips %}
+            {% for tip in tips %}
+              <div class="row result bounty_row {% if forloop.counter > 5 %}bounty_row--hidden{% endif %} {{ tip.network }}" {% if tip.github_url %}href="{{ tip.github_url }}"{% endif %}>
+                <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
+                  <img src="{% url "avatar" %}?repo=https://github.com/{% if tip.from_username %}{{ tip.from_username }}{% else %}Self{%endif%}" class="avatar">
+                </div>
+                <div class="col-12 col-md-8 d-flex flex-column">
+                  <div class="bounty-detail">
+                    {% if tip.comments_public %}
+                      <div class="title font-subheader">
+                        {% trans "Comments" %}: {{ tip.comments_public }}
+                      </div>
+                    {% endif %}
+                    <div class="bounty-summary col-12">
+                      <div class="info font-caption">
+                        from
+                        {% if tip.from_username %}
+                          {{ tip.from_username }}
+                        {% else %}
+                          {% trans "an anonymous user" %}
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-2 tags font-caption align-items-center">
+                  {% if tip.network != 'mainnet' %}
+                  <div class="tag network_warning">
+                    <p>
+                      <span>{{ tip.network }}</span>
+                    </p>
+                  </div>
+                  {% endif %}
+                  <div class="tag token">
+                    <p>
+                      {{ tip.amount }}
+                      <span>{{ tip.tokenName }}</span>
+                    </p>
+                  </div>
+                  {% if tip.value_in_usdt_now %}
+                    <div class="tag usd">
+                      <p>
+                        {{ tip.value_in_usdt_now }}
+                        <span>USD</span>
+                      </p>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+            {% else %}
+            {% trans "No tips" %}
+            {% endif %}
+
+            <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">{% trans "Show all" %}</button>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if activities %}
+        <div class="row">
+          <div class="col py-4">{% trans "Latest Activities" %}</div>
+        </div>
+        <div class="row">
+          <div class="container profile-bounties profile-bounties--activities">
+            {% for group in activities %}
+              <div class="row">
+                <div class="col-12">
+                  <p><small>{{ group.title }}</small></p>
+                </div>
+                {% if group.completed %}
+                  <div class="container">
+                    <div class="row profile-bounties__activities-group mb-3 p-2">
+                      <div class="col-12">
+                        <div class="profile-bounties__group-title profile-bounties__group-title--completed">{% trans "Completed" %} {{ group.completed|length }} {% if group.completed|length > 1 %}{% trans "Bounties" %}{% else %}{% trans "Bounty" %}{% endif %} <img src="{% static "v2/images/check-green.svg" %}"></div>
+
+                        {% for bounty in group.completed %}
+                          {% include "shared/profile_activities_bounty.html" %}
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+
+                {% if group.submitted %}
+                  <div class="container">
+                    <div class="row profile-bounties__activities-group mb-3 p-2">
+                      <div class="col-12">
+                        <div class="profile-bounties__group-title">{% trans "Submitted" %} {{ group.submitted|length }} {% if group.submitted|length > 1 %}{% trans "Bounties" %}{% else %}{% trans "Bounty" %}{% endif %}</div>
+
+                        {% for bounty in group.submitted %}
+                          {% include "shared/profile_activities_bounty.html" %}
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+
+                {% if group.started %}
+                  <div class="container">
+                    <div class="row profile-bounties__activities-group mb-3 p-2">
+                      <div class="col-12">
+                        <div class="profile-bounties__group-title">{% trans "Started" %} {{ group.started|length }} {% if group.started|length > 1 %}{% trans "Bounties" %}{% else %}{% trans "Bounty" %}{% endif %}</div>
+
+                        {% for bounty in group.started %}
+                          {% include "shared/profile_activities_bounty.html" %}
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    {% include 'shared/result.html' %}
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html'%}
-    {% include 'shared/rollbar.html' %} 
+    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
 
+    <!-- jQuery -->
+    <script src="{% static "v2/js/abi.js" %}"></script>
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/pages/profile_details.js" %}"></script>
+    <script src="{% static "v2/js/shared.js" %}"></script>
+
+    <script type="text/javascript">
+      function renderBountyRowsFromResults(results) {
+        var html = '';
+        var tmpl = $.templates('#result');
+
+        if (results.length == 0) {
+          return false;
+        }
+
+        // Reused code from explorer/dashboard. Should be moved to some shared js.
+        for (var i = 0; i < results.length; i++) {
+            // setup
+            var result = results[i];
+            var related_token_details = tokenAddressToDetails(result['token_address']);
+            var decimals = 18;
+
+            if (related_token_details && related_token_details.decimals) {
+              decimals = related_token_details.decimals;
+            }
+
+            var divisor = Math.pow(10, decimals);
+
+            result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
+            var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
+
+            result['action'] = result['url'];
+            result['title'] = result['title'] ? result['title'] : result['github_url'];
+
+            var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
+
+            result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
+
+            if (result['status'] === 'done')
+              result['p'] += 'Done';
+            if (result['fulfillment_accepted_on']) {
+              result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
+            } else if (result['status'] === 'started') {
+              result['p'] += 'Started';
+              result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
+            } else if (result['status'] === 'submitted') {
+              result['p'] += 'Submitted';
+              if (result['fulfillment_submitted_on']) {
+                result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
+              }
+            } else if (result['status'] == 'cancelled') {
+              result['p'] += 'Cancelled';
+              if (result['canceled_on']) {
+                result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
+              }
+            } else if (is_expired) {
+              var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
+
+              result['p'] += ('Expired ' + time_ago + ' ago');
+            } else {
+              var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
+
+              result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
+            }
+
+            result['hidden'] = (i > 4) ? true : false;
+
+            html += tmpl.render(result);
+          }
+
+          return html;
+      }
+
+      function fetchBountiesAndAddToList(params, target) {
+        $.get('/api/v0.1/bounties/?' + params, function(results) {
+          results = sanitizeAPIResults(results);
+
+          var html = renderBountyRowsFromResults(results);
+
+          if (html) {
+            $(target).prepend(html);
+            $(target).removeClass('profile-bounties--loading');
+
+            if (results.length > 5) {
+              var $button = $(target + ' .profile-bounties__btn-show-all');
+              $button.removeClass('hidden');
+              $button.on('click', function(event) {
+                $(this).remove();
+                $(target + ' .bounty_row').removeClass('bounty_row--hidden');
+              });
+            }
+
+            // Reused code from explorer/dashboard. Should be moved to some shared js.
+            $('div.bounty_row.result').each(function() {
+              var href = $(this).attr('href');
+
+              if (typeof $(this).changeElementType !== 'undefined') {
+                $(this).changeElementType('a'); // hack so that users can right click on the element
+              }
+
+              $(this).attr('href', href);
+            });
+          } else {
+            console.log($(target).parent().closest('.container').addClass('hidden'));
+          }
+        });
+      }
+
+      $(document).ready(function() {
+        if ($('.profile-bounties--tips .bounty_row--hidden').length > 0) {
+          var $button = $('.profile-bounties--tips .profile-bounties__btn-show-all');
+          $button.removeClass('hidden');
+          $button.on('click', function(event) {
+            $(this).remove();
+            $('.profile-bounties--tips .bounty_row').removeClass('bounty_row--hidden');
+          });
+        }
+
+        {% if profile.is_org %}
+            // Fetch bounties user is fulfiller
+            fetchBountiesAndAddToList('network=mainnet&org={{ profile.handle }}', '.profile-bounties--all');
+            $('.profile-bounties--in-progress').parents('.container').remove();
+            $('.profile-bounties--funded').parents('.container').remove();
+            $('.profile-bounties--completed').parents('.container').remove();
+            $('.profile-bounties--activities').parents('.container').remove();
+
+        {% else %}
+            $('.profile-bounties--all').parents('.container').remove();
+            // Fetch user bounties: "in progress" / actively started.
+            fetchBountiesAndAddToList('network=mainnet&started={{ profile.handle }}&status__in=started,submitted', '.profile-bounties--in-progress');
+
+            // Fetch bounties user is owner
+            fetchBountiesAndAddToList('network=mainnet&bounty_owner_github_username={{ profile.handle }}', '.profile-bounties--funded');
+
+            // Fetch bounties user is fulfiller
+            fetchBountiesAndAddToList('network=mainnet&fulfiller_github_username_done={{ profile.handle }}&idx_status=done', '.profile-bounties--completed');
+      {% endif %}
+
+      });
+    </script>
   </body>
-  <!-- jQuery -->
-  <script src="{% static "v2/js/abi.js" %}"></script>
-  <script src="{% static "v2/js/tokens.js" %}"></script>
-  <script src="{% static "v2/js/shared.js" %}"></script>
-
-  <script>
-    $('.tip-row, .bounty-row').click(function () {
-      window.location = $(this).data('ref-url')
-    })
-  </script>
-
 </html>
