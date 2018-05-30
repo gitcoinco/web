@@ -186,8 +186,7 @@ def new_interest(request, bounty_id):
     except Bounty.DoesNotExist:
         raise Http404
 
-    is_too_many_already_started = bounty.work_scheme == 'traditional' and bounty.interested.filter(pending=False).count() > 0
-    if is_too_many_already_started:
+    if bounty.is_work_scheme_fulfilled:
         return JsonResponse({
             'error': _(f'There is already someone working on this bounty.'),
             'success': False},
@@ -205,7 +204,8 @@ def new_interest(request, bounty_id):
 
     if profile.has_been_removed_by_staff():
         return JsonResponse({
-            'error': _('Because a staff member has had to remove you from a bounty in the past, you are unable to start more work at this time. Please leave a message on slack if you feel this message is in error.'),
+            'error': _('Because a staff member has had to remove you from a bounty in the past, you are unable to start'
+                       'more work at this time. Please leave a message on slack if you feel this message is in error.'),
             'success': False},
             status=401)
 
@@ -686,7 +686,8 @@ def helper_handle_approvals(request, bounty):
         if is_funder or is_staff:
             interests = bounty.interested.filter(pending=True, profile__handle=worker)
             if not interests.exists():
-                messages.warning(request, _('This worker does not exist or is not in a pending state. Please check your link and try again.'))
+                messages.warning(request,
+                    _('This worker does not exist or is not in a pending state. Please check your link and try again.'))
                 return
             interest = interests.first()
 
@@ -700,7 +701,6 @@ def helper_handle_approvals(request, bounty):
                 maybe_market_to_slack(bounty, 'worker_approved')
                 maybe_market_to_user_slack(bounty, 'worker_approved')
                 maybe_market_to_twitter(bounty, 'worker_approved')
- 
 
             else:
                 bounty.interested.remove(interest)

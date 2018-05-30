@@ -400,10 +400,10 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
               f"${amount_open_work} more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
     elif event_name == 'work_started':
         interested = bounty.interested.all()
-        interestd_plural = "s" if interested.count() != 0 else ""
+        # interested_plural = "s" if interested.count() != 0 else ""
         from_now = naturaltime(bounty.expires_date)
         started_work = bounty.interested.filter(pending=False).all()
-        pending_approval = bounty.interested.filter(pending=True).all()
+        # pending_approval = bounty.interested.filter(pending=True).all()
         bounty_owner_clear = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
         approval_required = bounty.application_scheme == 'approval'
 
@@ -429,7 +429,8 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
 
             issue_message = interest.issue_message.strip()
             if issue_message:
-                msg += f"{bounty_owner_clear} they have the following comments/questions for you:\n\n```{issue_message}```"
+                msg += f"{bounty_owner_clear} they have the following comments/questions for you:\n\n" \
+                       f"```{issue_message}```"
             msg += "\n\n"
 
     elif event_name == 'work_submitted':

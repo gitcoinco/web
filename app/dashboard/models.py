@@ -727,6 +727,23 @@ class Bounty(SuperModel):
         return True
 
 
+    @property
+    def is_work_scheme_fulfilled(self):
+        """Determine whether or not the work scheme is currently fulfilled.
+
+        Todo:
+            * Add remaining work scheme fulfillment handling.
+
+        Returns:
+            bool: Whether or not the Bounty work scheme is fully staffed.
+
+        """
+        fulfilled = False
+        if self.work_scheme == 'traditional':
+            fulfilled = self.interested.filter(pending=False).exists()
+        return fulfilled
+
+
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
 
