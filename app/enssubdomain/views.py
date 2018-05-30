@@ -159,7 +159,7 @@ def set_owner(signer, github_handle, nonce, gas_multiplier=1.101):
     try:
         txn_hash = convert_txn(w3.eth.sendRawTransaction(signed_txn.rawTransaction))
     except ValueError as e:
-        logger.warning(f'{e} - set_address_at_resolver')
+        logger.warning(f'{e} - set_owner')
     return txn_hash
 
 
