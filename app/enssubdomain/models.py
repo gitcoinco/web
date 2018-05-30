@@ -50,7 +50,9 @@ class ENSSubdomainRegistration(SuperModel):
     comments = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.profile.handle if self.profile else 'unknown'} at {self.created_on}, {self.start_nonce} => {self.end_nonce}"
+        """Return the string representation of an ENS subdomain registration."""
+        return f"{self.profile.handle if self.profile else 'unknown'} at " \
+               f"{self.created_on}, {self.start_nonce} => {self.end_nonce}"
 
     def reprocess(self, gas_multiplier=1.101, override_nonce=None):
         """Reprocess the registration request."""
