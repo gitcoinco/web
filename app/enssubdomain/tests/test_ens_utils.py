@@ -27,6 +27,6 @@ class ENSSubdomainUtilsTest(TestCase):
     @staticmethod
     def test_convert_txn():
         """Test the enssubdomain utility convert_txn."""
-        b_txn = "b'7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39'"
+        b_txn = b'123456789'
         txn = convert_txn(b_txn)
-        assert txn == "0x7bce7e4bcd2fea4d26f3d254bb8cf52b9ee8dd7353b19bfbc86803c27d9bbf39"
+        assert txn == "0x313233343536373839"

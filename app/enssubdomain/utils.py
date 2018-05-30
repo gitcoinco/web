@@ -35,4 +35,4 @@ def convert_txn(b_txn):
         str: The '0x0 representation of the txn.
 
     """
-    return str(binascii.b2a_hex(b_txn)).replace("b'", "0x").rstrip("'")
+    return f"0x{binascii.b2a_hex(b_txn).decode('utf-8')}"
