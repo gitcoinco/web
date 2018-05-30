@@ -426,40 +426,29 @@ class Bounty(SuperModel):
         if self.override_status:
             return self.override_status
         if self.is_legacy:
-            # TODO: Remove following full deprecation of legacy bounties
-            try:
-                fulfillments = self.fulfillments \
-                    .exclude(fulfiller_address='0x0000000000000000000000000000000000000000') \
-                    .exists()
-                if not self.is_open:
-                    if timezone.now() > self.expires_date and fulfillments:
-                        return 'expired'
+            return self.idx_status
+
+        # standard bounties
+        try:
+            if not self.is_open:
+                if self.accepted:
                     return 'done'
-                elif not fulfillments:
-                    if self.pk and self.interested.filter(pending=False).exists():
-                        return 'started'
-                    return 'open'
-                return 'submitted'
-            except Exception as e:
-                logger.warning(e)
-                return 'unknown'
-        else:
-            try:
-                if not self.is_open:
-                    if self.accepted:
-                        return 'done'
-                    elif self.past_hard_expiration_date:
-                        return 'expired'
-                    # If its not expired or done, it must be cancelled.
-                    return 'cancelled'
-                if self.num_fulfillments == 0:
-                    if self.pk and self.interested.filter(pending=False).exists():
-                        return 'started'
-                    return 'open'
-                return 'submitted'
-            except Exception as e:
-                logger.warning(e)
-                return 'unknown'
+                elif self.past_hard_expiration_date:
+                    return 'expired'
+                # If its not expired or done, it must be cancelled.
+                return 'cancelled'
+            # per https://github.com/gitcoinco/web/pull/1098 , 
+            # contests are open no matter how much started/submitted work they have
+            if self.pk and self.project_type == 'contest':
+                return 'open'
+            if self.num_fulfillments == 0:
+                if self.pk and self.interested.filter(pending=False).exists():
+                    return 'started'
+                return 'open'
+            return 'submitted'
+        except Exception as e:
+            logger.warning(e)
+            return 'unknown'
 
     @property
     def get_value_true(self):
