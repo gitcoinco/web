@@ -20,7 +20,7 @@ from __future__ import unicode_literals
 
 import collections
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib.parse import urlsplit
 
 from django.conf import settings
@@ -64,7 +64,7 @@ class BountyQuerySet(models.QuerySet):
 
     def stats_eligible(self):
         """Exclude results that we don't want to track in statistics."""
-        return self.exclude(idx_status__in=['unknown', 'cancelled'])
+        return self.exclude(current_bounty=True, idx_status__in=['unknown', 'cancelled'])
 
     def exclude_by_status(self, excluded_statuses=None):
         """Exclude results with a status matching the provided list."""
@@ -72,6 +72,15 @@ class BountyQuerySet(models.QuerySet):
             excluded_statuses = []
 
         return self.exclude(idx_status__in=excluded_statuses)
+
+    def filter_by_status(self, filtered_status=None):
+        """Filter results with a status matching the provided list."""
+        if filtered_status is None:
+            filtered_status = list()
+        elif isinstance(filtered_status, list):
+            return self.filter(idx_status__in=filtered_status)
+        else:
+            return
 
 
 class Bounty(SuperModel):
@@ -84,6 +93,7 @@ class Bounty(SuperModel):
         STATUS_CHOICES (list of tuples): The valid status stages.
         OPEN_STATUSES (list of str): The list of status types considered open.
         CLOSED_STATUSES (list of str): The list of status types considered closed.
+        TERMINAL_STATUSES (list of str): The list of status types considered terminal states.
 
     """
 
@@ -118,6 +128,7 @@ class Bounty(SuperModel):
     )
     OPEN_STATUSES = ['open', 'started', 'submitted']
     CLOSED_STATUSES = ['expired', 'unknown', 'cancelled', 'done']
+    TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
@@ -1075,8 +1086,14 @@ class Profile(SuperModel):
     def stats(self):
         bounties = self.bounties.stats_eligible()
         loyalty_rate = 0
-        total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_funder(self.handle)])
-        total_fulfilled = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
+        total_funded = sum([
+            bounty.value_in_usdt if bounty.value_in_usdt else 0
+            for bounty in bounties if bounty.is_funder(self.handle)
+        ])
+        total_fulfilled = sum([
+            bounty.value_in_usdt if bounty.value_in_usdt else 0
+            for bounty in bounties if bounty.is_hunter(self.handle)
+        ])
         print(total_funded, total_fulfilled)
         role = 'newbie'
         if total_funded > total_fulfilled:
@@ -1120,6 +1137,81 @@ class Profile(SuperModel):
             (success_rate, 'Success Rate'),
             (total_fulfilled, 'Bounties completed'),
         ]
+
+    @property
+    def get_quarterly_stats(self):
+        """Generate last 90 days stats for this user.
+
+        Returns:
+            dict : containing the following information
+            'user_total_earned_eth': Total earnings of user in ETH.
+            'user_total_earned_usd': Total earnings of user in USD.
+            'user_fulfilled_bounties_count': Total bounties fulfilled by user.
+            'user_avg_eth_earned_per_bounty': Average earning in ETH earned by user per bounty
+            'user_avg_usd_earned_per_bounty': Average earning in USD earned by user per bounty
+            'user_num_completed_bounties': Total no. of bounties completed.
+            'user_bounty_completion_percentage': Percentage of bounties successfully completed by the user
+            'user_active_in_last_quarter': bool, if the user was active in last quarter
+            'user_no_of_languages': No of languages user used while working on bounties.
+            'user_languages': Languages that were used in bounties that were worked on.
+        """
+        user_active_in_last_quarter = False
+        last_quarter = datetime.now() - timedelta(days=90)
+        bounties = self.bounties.filter(modified_on__gte=last_quarter)
+        fulfilled_bounties = [
+            bounty for bounty in bounties if bounty.is_hunter(self.handle) and bounty.status == 'done'
+        ]
+        fulfilled_bounties_count = len(fulfilled_bounties)
+        total_earned_eth = sum([
+            bounty.value_in_eth if bounty.value_in_eth else 0
+            for bounty in fulfilled_bounties
+        ])
+        total_earned_eth /= 10**18
+        total_earned_usd = sum([
+            bounty.value_in_usdt if bounty.value_in_usdt else 0
+            for bounty in fulfilled_bounties
+        ])
+
+        num_completed_bounties = bounties.filter(idx_status__in=['done']).count()
+        terminal_state_bounties = bounties.filter(idx_status__in=Bounty.TERMINAL_STATUSES).count()
+        completetion_percent = int(
+            round(num_completed_bounties * 1.0 / terminal_state_bounties, 2) * 100
+        ) if terminal_state_bounties != 0 else 0
+
+        avg_eth_earned_per_bounty = 0
+        avg_usd_earned_per_bounty = 0
+
+        if fulfilled_bounties_count:
+            avg_eth_earned_per_bounty = total_earned_eth / fulfilled_bounties_count
+            avg_usd_earned_per_bounty = total_earned_usd / fulfilled_bounties_count
+
+        if num_completed_bounties or fulfilled_bounties_count:
+            user_active_in_last_quarter = True
+
+        # Round to 2 places of decimals to be diplayed in templates
+        completetion_percent = float('%.2f' % completetion_percent)
+        avg_eth_earned_per_bounty = float('%.2f' % avg_eth_earned_per_bounty)
+        total_earned_eth = float('%.2f' % total_earned_eth)
+        total_earned_usd = float('%.2f' % total_earned_usd)
+
+        user_languages = []
+        for bounty in fulfilled_bounties:
+            user_languages += bounty.keywords.split(',')
+        user_languages = set(user_languages)
+        user_no_of_languages = len(user_languages)
+
+        return {
+            'user_total_earned_eth': total_earned_eth,
+            'user_total_earned_usd': total_earned_usd,
+            'user_fulfilled_bounties_count': fulfilled_bounties_count,
+            'user_avg_eth_earned_per_bounty': avg_eth_earned_per_bounty,
+            'user_avg_usd_earned_per_bounty': avg_usd_earned_per_bounty,
+            'user_num_completed_bounties': num_completed_bounties,
+            'user_bounty_completion_percentage': completetion_percent,
+            'user_active_in_last_quarter': user_active_in_last_quarter,
+            'user_no_of_languages': user_no_of_languages,
+            'user_languages': user_languages
+        }
 
     @property
     def github_url(self):
