@@ -177,6 +177,7 @@ def mission(request):
     }
     return TemplateResponse(request, 'mission.html', context)
 
+
 def results(request):
     """Render the Mission response."""
     context = {
