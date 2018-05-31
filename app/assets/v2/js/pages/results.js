@@ -77,8 +77,8 @@ function communityChart() {
   chart.draw(data, options);
 }
 
-$(window).resize(function(){
-  drawChart1();
+$(window).resize(function() {
+  drawChart();
   repoChart();
   communityChart();
 });
