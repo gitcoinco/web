@@ -27,8 +27,9 @@ var unPackAddresses = function() {
       }
     }, 3000);
   }
-  localStorage.setItem('addresses', null);
+  localStorage.setItem('addresses', '');
 };
+
 var updateEstimate = function(e) {
   var denomination = jQuery('#token option:selected').text();
   var amount = jQuery('#amount').val();
@@ -43,6 +44,43 @@ var updateEstimate = function(e) {
 
 };
 
+function isSendTipPage() {
+  return (/\/tip\/send/).test(window.location.pathname);
+}
+
+function prePopulateFunderFields() {
+  if (localStorage['amount']) {
+    $('amount').value = localStorage['amount'];
+  }
+  if (localStorage['issueURL']) {
+    $('issueURL').value = localStorage['issueURL'];
+  }
+  if (localStorage['fromName']) {
+    $('fromName').value = localStorage['fromName'];
+  }
+  if (localStorage['fromEmail']) {
+    $('fromEmail').value = localStorage['fromEmail'];
+  }
+  if (localStorage['expires']) {
+    $('expires').selectedIndex = localStorage['expires'];
+  }
+}
+
+function prePopulateGitcoinerFields() {
+  if (localStorage['username']) {
+    $('username').value = localStorage['username'];
+  }
+  if (localStorage['email']) {
+    $('email').value = localStorage['email'];
+  }
+  if (localStorage['comments_priv']) {
+    $('comments_priv').value = localStorage['comments_priv'];
+  }
+  if (localStorage['comments_public']) {
+    $('comments_public').value = localStorage['comments_public'];
+  }
+}
+
 window.onload = function() {
   jQuery('#amount').on('keyup blur change', updateEstimate);
   jQuery('#token').on('change', updateEstimate);
@@ -51,32 +89,9 @@ window.onload = function() {
 
   var min_send_amt_wei = 6000000;
 
-  if (localStorage['amount']) {
-    $('amount').value = localStorage['amount'];
-  }
-  if (localStorage['username']) {
-    $('username').value = localStorage['username'];
-  }
-  if (localStorage['issueURL']) {
-    $('issueURL').value = localStorage['issueURL'];
-  }
-  if (localStorage['email']) {
-    $('email').value = localStorage['email'];
-  }
-  if (localStorage['fromName']) {
-    $('fromName').value = localStorage['fromName'];
-  }
-  if (localStorage['fromEmail']) {
-    $('fromEmail').value = localStorage['fromEmail'];
-  }
-  if (localStorage['comments_priv']) {
-    $('comments_priv').value = localStorage['comments_priv'];
-  }
-  if (localStorage['comments_public']) {
-    $('comments_public').value = localStorage['comments_public'];
-  }
-  if (localStorage['expires']) {
-    $('expires').selectedIndex = localStorage['expires'];
+  prePopulateFunderFields();
+  if (!isSendTipPage) {
+    prePopulateGitcoinerFields();
   }
 
   waitforWeb3(function() {
@@ -168,15 +183,19 @@ window.onload = function() {
       return;
     }
 
-    localStorage['amount'] = amountInEth;
-    localStorage['username'] = username;
-    localStorage['issueURL'] = github_url;
-    localStorage['fromName'] = from_name;
-    localStorage['fromEmail'] = from_email;
-    localStorage['email'] = email;
-    localStorage['comments_priv'] = comments_priv;
-    localStorage['comments_public'] = comments_public;
-    localStorage['expires'] = $('expires').selectedIndex;
+    try {
+      localStorage.setItem('amount', amountInEth);
+      localStorage.setItem('username', username);
+      localStorage.setItem('issueURL', github_url);
+      localStorage.setItem('fromName', from_name);
+      localStorage.setItem('fromEmail', from_email);
+      localStorage.setItem('email', email);
+      localStorage.setItem('comments_priv', comments_priv);
+      localStorage.setItem('comments_public', comments_public);
+      localStorage.setItem('expires', $('expires').selectedIndex);
+    } catch (error) {
+      console.log('Could not save values in local storage');
+    }
 
     loading_button(jQuery('#send'));
     var numBatches = document.addresses.length;
