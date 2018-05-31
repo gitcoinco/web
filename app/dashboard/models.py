@@ -54,6 +54,38 @@ from .signals import m2m_changed_interested
 
 logger = logging.getLogger(__name__)
 
+class BountyRequest(SuperModel):
+    """Define the structure of a Request."""
+
+    STATUS_FUNDED = 'funded'
+    STATUS_UNFUNDED = 'unfunded'
+
+    REQUEST_STATUSES = (
+        (STATUS_FUNDED, 'funded'),
+        (STATUS_UNFUNDED, 'unfunded'),
+    )
+
+    github_url = models.CharField(max_length=255, blank=True)  # Github/Whatever URL
+    amount = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=50)
+    denomination = models.CharField(default='ETH', max_length=5)
+    creator = models.ForeignKey('dashboard.Profile', related_name='bounty_requests', null=True, on_delete=models.SET_NULL)  # Or requests for reverse name should work fine.
+    status = models.CharField(max_length=8, choices=REQUEST_STATUSES, default=STATUS_FUNDED)
+    followers = models.ManyToManyField('dashboard.Profile')
+    bounty = models.ForeignKey('dashboard.Bounty', related_name='requests', null=True, on_delete=models.SET_NULL)  # We could probably get away with a OneToOne here as well.
+
+    def __str__(self):
+        return self.github_url
+
+class Comment(models.Model):
+    """Define the structure of a Comment."""
+    
+    request = models.ForeignKey('dashboard.BountyRequest', related_name="comments", on_delete=models.CASCADE)
+    text = models.TextField()
+    author = models.CharField(max_length=200)
+    created_on = models.DateField()
+
+    def __str__(self):
+        return f"{self.text} {self.created_on}"
 
 class BountyQuerySet(models.QuerySet):
     """Handle the manager queryset for Bounties."""

@@ -50,7 +50,7 @@ from web3 import HTTPProvider, Web3
 from .helpers import handle_bounty_views
 from .models import (
     Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip, Tool,
-    ToolVote, UserAction,
+    ToolVote, UserAction, BountyRequest,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_github,
@@ -529,6 +529,33 @@ def dashboard(request):
     }
     return TemplateResponse(request, 'dashboard.html', params)
 
+def new_bounty_request(request):
+    """Create a new bounty."""
+    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    profile = Profile.objects.get(pk=profile_id)
+
+    if request.method == "POST":
+        bounty_request = BountyRequest()
+
+        bounty_request.github_url = request.POST.get('github_url')
+        bounty_request.amount = request.POST.get('amount')
+        bounty_request.denomination = _('ETH')
+        bounty_request.creator = profile
+        bounty_request.status = _('unfunded')
+
+        bounty_request.save()
+    else:
+        bounty_request = {}
+
+    params = {
+        'active': 'dashboard',
+        'title': 'New Request',
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+        'request': bounty_request,
+    }
+
+    print(bounty_request)
+    return TemplateResponse(request, 'bounty_request.html', params)
 
 def gas(request):
     _cts = conf_time_spread()
@@ -558,6 +585,7 @@ def new_bounty(request):
         title=_('Create Funded Issue'),
         update=bounty_params,
     )
+
     return TemplateResponse(request, 'submit_bounty.html', params)
 
 
