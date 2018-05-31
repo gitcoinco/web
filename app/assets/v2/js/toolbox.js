@@ -7,7 +7,8 @@ setInterval(function() {
   if (document.preloads.length) {
     var url = document.preloads.pop();
 
-    $.get(url);
+    if (url)
+      $.get(url);
   }
 }, interval);
 
