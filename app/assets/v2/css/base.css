@@ -1010,12 +1010,20 @@ input[type=text].loading {
   color: #666666;
 }
 
+.text-highlight-purple {
+  color: #8E2ABE;
+}
+
 .text-highlight-green {
   color: #12c971;
 }
 
 .text-highlight-dark-blue {
   color: #220e90;
+}
+
+.text-highlight-light-blue {
+  color: #3E00FF;
 }
 
 .text-highlight-pink {
@@ -1587,4 +1595,68 @@ input.is-invalid {
 
 .notify_policy_update .button {
   padding: 0.25rem 1.25rem;
+}
+
+/* Results */
+.results h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.results h3 {
+  font-weight: 700;
+}
+
+.results h5 {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.results .bounty_status {
+  margin-top: 1.5rem;
+}
+
+.results .bounty_status p {
+  font-size: 1.2rem;
+}
+
+.results .bounty_status .yellow_box, .green_box, .blue_box, .pink_box {
+  float: left;
+  width: 1rem;
+  height: 1rem;
+  margin-top: .2rem;
+  margin-right: 1rem;
+}
+
+.results #repo_chart {
+}
+
+.yellow_box {
+  color: #FFCE08;
+  border: 10px solid #FFCE08;
+}
+
+.green_box {
+  color: #25E899;
+  border: 10px solid #25E899;
+}
+
+.blue_box {
+  color: #3E00FF;
+  border: 10px solid #3E00FF;
+}
+
+.pink_box {
+  color: #F9006C;
+  border: 10px solid #F9006C;
+}
+
+.results .icon {
+  height: 6rem;
+  width: auto;
+}
+
+.results p {
+  font-size: 1.3rem;
+  font-weight: 500;
 }

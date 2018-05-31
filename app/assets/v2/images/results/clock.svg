@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="107px" height="105px" viewBox="0 0 107 105" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>Clock</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Results-Page" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-HD" transform="translate(-253.000000, -197.000000)">
+            <g id="Health" transform="translate(49.000000, 109.000000)">
+                <g id="Row-1" transform="translate(134.000000, 59.000000)">
+                    <g id="Clock" transform="translate(71.000000, 30.000000)">
+                        <g>
+                            <path d="M55.9872755,101.087331 C83.3564033,99.3575051 105,77.4140731 105,50.5985915 C105,22.6537611 81.4949494,0 52.5,0 C23.5050506,0 0,22.6537611 0,50.5985915 C0,74.1902472 16.7523244,94.0108958 39.4174855,99.6136269" id="face" stroke="#15003E" fill="#0FCE7C" stroke-linecap="round"></path>
+                            <polygon id="arrow" fill="#15003E" transform="translate(59.624217, 100.563380) rotate(-10.000000) translate(-59.624217, -100.563380) " points="55.6784969 100.56338 63.5699374 96.7605634 63.5699374 104.366197"></polygon>
+                            <g id="notches" transform="translate(3.726514, 3.802817)" stroke="#15003E" stroke-linecap="round" stroke-width="2">
+                                <path d="M48.9149749,90.8450704 L48.9149749,94.0140845" id="Stroke-821"></path>
+                                <path d="M25.8663883,9.08450704 L24.1040005,6.40914761" id="Stroke-821"></path>
+                                <path d="M73.229731,87.7014078 L71.627757,84.9339444" id="Stroke-821"></path>
+                                <path d="M91.2062366,23.405673 L88.3515458,24.9782473" id="Stroke-821"></path>
+                                <path d="M10.7411273,69.5070423 L7.75869684,70.8413545" id="Stroke-821"></path>
+                                <path d="M8.11064718,27.2535211 L5.21885009,25.7452358" id="Stroke-821"></path>
+                                <path d="M89.0781079,72.2184623 L86.3508077,70.4482905" id="Stroke-821"></path>
+                                <path d="M94.4042391,46.6901408 L97.6923393,46.6901408" id="Stroke-821"></path>
+                                <path d="M0.145366419,46.6901408 L3.43346663,46.6901408" id="Stroke-821"></path>
+                                <path d="M73.9975213,6.23433674 L72.2161943,8.89801956" id="Stroke-821"></path>
+                                <path d="M48.9149749,0 L48.9149749,3.16901408" id="Stroke-821"></path>
+                                <path d="M26.5240084,84.5070423 L24.9264745,87.4881564" id="Path"></path>
+                            </g>
+                            <g id="hands" transform="translate(33.977035, 19.436620)">
+                                <path d="M0.10960334,0.105633803 L18.6325678,30.9980058" id="Stroke-821" stroke="#F9006C"></path>
+                                <path d="M32.0187556,15.4095571 L18.6325678,31.056338" id="Stroke-821" stroke="#15003E" stroke-width="2" stroke-linecap="round"></path>
+                                <path d="M18.8517745,31.0828525 L18.8517745,66.2800023" id="Stroke-821" stroke="#15003E" stroke-width="2" stroke-linecap="round"></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
