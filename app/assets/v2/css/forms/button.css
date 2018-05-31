@@ -6,6 +6,7 @@
   cursor: pointer;
   font-size: 14px;
   font-family: 'Muli', sans-serif;
+  font-weight: 300;
   padding: 10px 20px;
   -webkit-appearance: none;
 }
@@ -32,4 +33,19 @@
 
 .button--primary:active {
   background-color: #1B0050;
+}
+
+.button--primary-o {
+  background-color: #fff;
+  border: 1px solid #0D0764;
+  color: #0D0764;
+  padding: 8px 18px;
+}
+
+.button--primary-o:hover {
+  color: #0D0764;
+}
+
+.button--warning {
+  background-color: #ca001a;
 }

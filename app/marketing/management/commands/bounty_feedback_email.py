@@ -36,12 +36,14 @@ class Command(BaseCommand):
         end_time = timezone.now() - timezone.timedelta(hours=12)
         statues = ['done', 'cancelled']
         bounties_fulfilled_last_timeperiod = Bounty.objects.filter(
+            network='mainnet',
             current_bounty=True,
             fulfillment_accepted_on__gt=start_time,
             fulfillment_accepted_on__lt=end_time,
             idx_status='done'
             ).values_list('pk', flat=True)
         bounties_cancelled_last_timeperiod = Bounty.objects.filter(
+            network='mainnet',
             current_bounty=True,
             canceled_on__gt=start_time,
             canceled_on__lt=end_time,

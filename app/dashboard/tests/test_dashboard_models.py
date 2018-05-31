@@ -129,7 +129,7 @@ class DashboardModelsTest(TestCase):
             created_on=date.today(),
             tokenAddress='0x0000000000000000000000000000000000000000',
         )
-        assert str(tip) == '(net) - PENDING 7 ETH to fred, created: today, expires: tomorrow'
+        assert str(tip) == '(net) - PENDING 7 ETH to fred from NA, created: today, expires: tomorrow'
         assert tip.get_natural_value() == 7e-18
         assert tip.value_in_eth == 7
         assert tip.value_in_usdt == 14
@@ -179,6 +179,7 @@ class DashboardModelsTest(TestCase):
             (1, 'Total Funded Issues'),
             (1, 'Open Funded Issues'),
             ('0x', 'Loyalty Rate'),
+            (0, 'Bounties completed'),
         ]
         assert profile.github_url == 'https://github.com/gitcoinco'
         assert profile.get_relative_url() == '/profile/gitcoinco'
@@ -203,3 +204,26 @@ class DashboardModelsTest(TestCase):
         tool.votes.add(vote)
         assert tool.vote_score() == 11
         assert tool.link_url == 'http://gitcoin.co/explorer'
+
+    @staticmethod
+    def test_bounty_snooze_url():
+        """Test the dashboard Bounty model snooze_url method."""
+        bounty = Bounty(
+            title='foo',
+            value_in_token=3,
+            token_name='ETH',
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12',
+            token_address='0x0',
+            issue_description='hello world',
+            bounty_owner_github_username='flintstone',
+            is_open=False,
+            accepted=False,
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            idx_project_length=5,
+            project_length='Months',
+            bounty_type='Feature',
+            experience_level='Intermediate',
+            raw_data={},
+        )
+        assert bounty.snooze_url(1) == f'{bounty.get_absolute_url()}?snooze=1'

@@ -65,7 +65,8 @@ class TestAssembleLeaderboards(TestCase):
             experience_level='Intermediate',
             raw_data={},
             idx_status='submitted',
-            current_bounty=True
+            current_bounty=True,
+            network='mainnet',
         )
         bounty = Bounty.objects.create(
             title='foo',
@@ -85,7 +86,8 @@ class TestAssembleLeaderboards(TestCase):
             experience_level='Intermediate',
             raw_data={},
             idx_status='submitted',
-            current_bounty=True
+            current_bounty=True,
+            network='mainnet',
         )
         BountyFulfillment.objects.create(
             fulfiller_address='0x0000000000000000000000000000000000000000',

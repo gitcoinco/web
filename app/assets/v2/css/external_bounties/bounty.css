@@ -28,7 +28,7 @@
 }
 
 .bounty-container .sub-title {
-  font-family: Futura, sans-serif;
+  font-family: 'futura-pt', sans-serif;
   text-transform: none;
   letter-spacing: 0;
   margin-bottom: 1rem;
@@ -63,7 +63,7 @@
 
 .bounty__crypto-price,
 .bounty__fiat-price {
-  font-family: Futura, sans-serif;
+  font-family: 'futura-pt', sans-serif;
   text-transform: none;
   font-weight: bolder;
   letter-spacing: 0;

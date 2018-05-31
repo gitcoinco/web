@@ -140,20 +140,20 @@ class AppUrlsTestCase(TestCase):
 
     def test_uniterested_resolve(self):
         """Test the uninterested url and check the resolution"""
-        self.assertEqual(resolve('/actions/bounty/1/interest/2/uninterested/').view_name, 'uninterested')        
+        self.assertEqual(resolve('/actions/bounty/1/interest/2/uninterested/').view_name, 'uninterested')
 
-    def test_vote_up_reverse(self):        
+    def test_vote_up_reverse(self):
         """Test the vote up url and check the reverse"""
         self.assertEqual(reverse('vote_tool_up', args=[1]), '/actions/tool/1/voteUp')
 
     def test_vote_up_resolve(self):
         """Test the vote up url and check the resolution"""
-        self.assertEqual(resolve('/actions/tool/1/voteUp').view_name, 'vote_tool_up')        
+        self.assertEqual(resolve('/actions/tool/1/voteUp').view_name, 'vote_tool_up')
 
-    def test_vote_down_reverse(self):        
+    def test_vote_down_reverse(self):
         """Test the vote down url and check the reverse"""
         self.assertEqual(reverse('vote_tool_down', args=[1]), '/actions/tool/1/voteDown')
 
     def test_vote_down_resolve(self):
         """Test the vote down url and check the resolution"""
-        self.assertEqual(resolve('/actions/tool/1/voteDown').view_name, 'vote_tool_down')                
+        self.assertEqual(resolve('/actions/tool/1/voteDown').view_name, 'vote_tool_down')

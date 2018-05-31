@@ -14,6 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
+{% load cookielaw_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,6 +29,7 @@
       {% include 'shared/minihero.html' with h1=minihero %}
     {% endif %}
   </div>
+  {% cookielaw_banner %}
   <div class="container-fluid mt-3">
     </div>
     <div class="row mt-5 pb-3">
@@ -39,6 +41,7 @@
   {% include 'shared/footer.html' %}
   {% include 'shared/footer_scripts.html' %}
   {% include 'shared/rollbar.html' %}
+  {% include 'shared/messages.html' %}
 </body>
 {% include 'shared/analytics.html' %}
 {% block scripts %}{% endblock %}

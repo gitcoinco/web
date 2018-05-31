@@ -29,10 +29,10 @@ from django.utils import timezone
 from django.utils.html import escape, strip_tags
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from faucet.models import FaucetRequest
-from github.utils import search_github
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from marketing.mails import new_faucet_request, processed_faucet_request, reject_faucet_request
 
 
@@ -70,6 +70,10 @@ def save_faucet(request):
         return JsonResponse({'message': str(e)}, status=400)
 
     comment = escape(strip_tags(request.POST.get('comment', '')))
+    if not profile.trust_profile and profile.github_created_on > (timezone.now() - timezone.timedelta(days=7)):
+        return JsonResponse({
+            'message': _('For SPAM prevention reasons, you may not perform this action right now.  Please contact support if you believe this message is in error.')
+        }, status=403)
     if profile.faucet_requests.filter(fulfilled=True):
         return JsonResponse({
             'message': _('The submitted github profile shows a previous faucet distribution.')
@@ -92,7 +96,7 @@ def save_faucet(request):
     return JsonResponse({'message': _('Created.')}, status=201)
 
 
-@require_POST
+@require_http_methods(['GET', 'POST'])
 @staff_member_required
 def process_faucet_request(request, pk):
     try:
@@ -129,6 +133,10 @@ def process_faucet_request(request, pk):
         return redirect(reverse('admin:index'))
 
     faucet_amount = settings.FAUCET_AMOUNT
-    context = {'obj': faucet_request, 'faucet_amount': faucet_amount}
+    context = {
+        'obj': faucet_request,
+        'faucet_amount': faucet_amount,
+        'recommend_gas_price': round(recommend_min_gas_price_to_confirm_in_time(1), 1),
+    }
 
     return TemplateResponse(request, 'process_faucet_request.html', context)

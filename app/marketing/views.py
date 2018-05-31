@@ -19,10 +19,12 @@
 from __future__ import unicode_literals
 
 import json
+import logging
 import math
 import random
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
@@ -38,15 +40,25 @@ from django.utils.translation import gettext_lazy as _
 from app.utils import sync_profile
 from chartit import Chart, DataPool
 from dashboard.models import Bounty, Profile, Tip, UserAction
+from dashboard.utils import create_user_action
+from enssubdomain.models import ENSSubdomainRegistration
+from mailchimp3 import MailChimp
 from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
-from marketing.utils import get_or_save_email_subscriber
+from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
+from retail.emails import ALL_EMAILS
 from retail.helpers import get_ip
 
+logger = logging.getLogger(__name__)
 
-def get_settings_navs():
+
+logger = logging.getLogger(__name__)
+
+
+def get_settings_navs(request):
+    subdomain = f"{request.user.username}." if request.user.is_authenticated else False
     return [{
         'body': 'Email',
         'href': reverse('email_settings', args=('', ))
@@ -62,6 +74,12 @@ def get_settings_navs():
     }, {
         'body': 'Slack',
         'href': reverse('slack_settings'),
+    }, {
+        'body': "ENS",
+        'href': reverse('ens_settings'),
+    }, {
+        'body': "Account",
+        'href': reverse('account_settings'),
     }]
 
 
@@ -90,7 +108,9 @@ def settings_helper_get_auth(request, key=None):
             pass
 
     # lazily create profile if needed
-    profiles = Profile.objects.filter(handle__iexact=github_handle).exclude(email='') if github_handle else Profile.objects.none()
+    profiles = Profile.objects.none()
+    if github_handle:
+        profiles = Profile.objects.prefetch_related('alumni').filter(handle__iexact=github_handle).exclude(email='')
     profile = None if not profiles.exists() else profiles.first()
     if not profile and github_handle:
         profile = sync_profile(github_handle, user=request.user)
@@ -120,22 +140,48 @@ def privacy_settings(request):
     if request.POST and request.POST.get('submit'):
         if profile:
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
-            suppress_leaderboard = profile.suppress_leaderboard
+            profile.hide_profile = bool(request.POST.get('hide_profile', False))
+            profile = record_form_submission(request, profile, 'privacy')
+            if profile.alumni and profile.alumni.exists():
+                alumni = profile.alumni.first()
+                alumni.public = bool(not request.POST.get('hide_alumni', False))
+                alumni.save()
+
             profile.save()
 
     context = {
-        'suppress_leaderboard': suppress_leaderboard,
+        'profile': profile,
         'nav': 'internal',
         'active': '/settings/privacy',
         'title': _('Privacy Settings'),
-        'navs': get_settings_navs(),
+        'navs': get_settings_navs(request),
         'is_logged_in': is_logged_in,
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/privacy.html', context)
 
 
+def record_form_submission(request, obj, submission_type):
+    obj.form_submission_records.append({
+        'ip': get_ip(request),
+        'timestamp': int(timezone.now().timestamp()),
+        'type': submission_type,
+        })
+    return obj
+
+
 def matching_settings(request):
+    """Handle viewing and updating EmailSubscriber matching settings.
+
+    TODO:
+        * Migrate this to a form and handle validation.
+        * Migrate Keyword to taggit.
+        * Maybe migrate keyword information to Profile instead of using ES?
+
+    Returns:
+        TemplateResponse: The populated matching template.
+
+    """
     # setup
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
     if not es:
@@ -147,13 +193,11 @@ def matching_settings(request):
     if request.POST and request.POST.get('submit'):
         github = request.POST.get('github', '')
         keywords = request.POST.get('keywords').split(',')
-        es.github = github
-        es.keywords = keywords
-        ip = get_ip(request)
-        if not es.metadata.get('ip', False):
-            es.metadata['ip'] = [ip]
-        else:
-            es.metadata['ip'].append(ip)
+        if github:
+            es.github = github
+        if keywords:
+            es.keywords = keywords
+        es = record_form_submission(request, es, 'match')
         es.save()
         msg = _('Updated your preferences.')
 
@@ -165,7 +209,7 @@ def matching_settings(request):
         'nav': 'internal',
         'active': '/settings/matching',
         'title': _('Matching Settings'),
-        'navs': get_settings_navs(),
+        'navs': get_settings_navs(request),
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/matching.html', context)
@@ -185,11 +229,7 @@ def feedback_settings(request):
         if has_comment_changed:
             new_feedback(es.email, comments)
         es.metadata['comments'] = comments
-        ip = get_ip(request)
-        if not es.metadata.get('ip', False):
-            es.metadata['ip'] = [ip]
-        else:
-            es.metadata['ip'].append(ip)
+        es = record_form_submission(request, es, 'feedback')
         es.save()
         msg = _('We\'ve received your feedback.')
 
@@ -197,7 +237,7 @@ def feedback_settings(request):
         'nav': 'internal',
         'active': '/settings/feedback',
         'title': _('Feedback'),
-        'navs': get_settings_navs(),
+        'navs': get_settings_navs(request),
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/feedback.html', context)
@@ -218,7 +258,7 @@ def email_settings(request, key):
 
     """
     profile, es, user, is_logged_in = settings_helper_get_auth(request, key)
-    if not request.user.is_authenticated or (request.user.is_authenticated and not hasattr(request.user, 'profile')):
+    if not request.user.is_authenticated and (not es and key) or (request.user.is_authenticated and not hasattr(request.user, 'profile')):
         return redirect('/login/github?next=' + request.get_full_path())
 
     # handle 'noinput' case
@@ -243,33 +283,42 @@ def email_settings(request, key):
             if preferred_language not in [i[0] for i in settings.LANGUAGES]:
                 msg = _('Unknown language')
                 validation_passed = False
-        if level not in ['lite', 'lite1', 'regular', 'nothing']:
-            validation_passed = False
-            msg = _('Invalid Level')
-        if validation_passed and profile and es:
-            profile.pref_lang_code = preferred_language
-            profile.save()
-            request.session[LANGUAGE_SESSION_KEY] = preferred_language
-            translation.activate(preferred_language)
-            key = get_or_save_email_subscriber(email, 'settings')
-            es.preferences['level'] = level
-            es.email = email
-            ip = get_ip(request)
-            es.active = level != 'nothing'
-            es.newsletter = level in ['regular', 'lite1']
-            if not es.metadata.get('ip', False):
-                es.metadata['ip'] = [ip]
-            else:
-                es.metadata['ip'].append(ip)
-            es.save()
+        if validation_passed:
+            if profile:
+                profile.pref_lang_code = preferred_language
+                profile.save()
+                request.session[LANGUAGE_SESSION_KEY] = preferred_language
+                translation.activate(preferred_language)
+            if es:
+                key = get_or_save_email_subscriber(email, 'settings')
+                es.preferences['level'] = level
+                es.email = email
+                form = dict(request.POST)
+                # form was not sending falses, so default them if not there
+                for email_tuple in ALL_EMAILS:
+                    key = email_tuple[0]
+                    if key not in form.keys():
+                        form[key] = False
+                es.build_email_preferences(form)
+                es = record_form_submission(request, es, 'email')
+                ip = get_ip(request)
+                es.active = level != 'nothing'
+                es.newsletter = level in ['regular', 'lite1']
+                if not es.metadata.get('ip', False):
+                    es.metadata['ip'] = [ip]
+                else:
+                    es.metadata['ip'].append(ip)
+                es.save()
             msg = _('Updated your preferences.')
     context = {
         'nav': 'internal',
         'active': '/settings/email',
         'title': _('Email Settings'),
         'es': es,
+        'suppression_preferences': json.dumps(es.preferences.get('suppression_preferences', {}) if es else {}),
         'msg': msg,
-        'navs': get_settings_navs(),
+        'email_types': ALL_EMAILS,
+        'navs': get_settings_navs(request),
         'preferred_language': pref_lang
     }
     return TemplateResponse(request, 'settings/email.html', context)
@@ -282,43 +331,137 @@ def slack_settings(request):
         TemplateResponse: The user's slack settings template response.
 
     """
-    # setup
+    response = {'output': ''}
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
-    if not es:
+
+    if not user or not is_logged_in:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
 
-    msg = ''
-
-    if request.POST and request.POST.get('submit'):
+    if request.POST:
+        test = request.POST.get('test')
+        submit = request.POST.get('submit')
         token = request.POST.get('token', '')
-        repos = request.POST.get('repos').split(',')
+        repos = request.POST.get('repos', '')
         channel = request.POST.get('channel', '')
-        profile.slack_token = token
-        profile.slack_repos = [repo.strip() for repo in repos]
-        print(profile.slack_repos)
-        profile.slack_channel = channel
-        ip = get_ip(request)
-        if not es.metadata.get('ip', False):
-            es.metadata['ip'] = [ip]
-        else:
-            es.metadata['ip'].append(ip)
-        es.save()
-        profile.save()
-        msg = _('Updated your preferences.')
+
+        if test and token and channel:
+            response = validate_slack_integration(token, channel)
+
+        if submit or (response and response.get('success')):
+            profile.update_slack_integration(token, channel, repos)
+            profile = record_form_submission(request, profile, 'slack')
+            if not response.get('output'):
+                response['output'] = _('Updated your preferences.')
+            ua_type = 'added_slack_integration' if token and channel and repos else 'removed_slack_integration'
+            create_user_action(user, ua_type, request, {'channel': channel, 'repos': repos})
 
     context = {
-        'repos': ",".join(profile.slack_repos),
+        'repos': profile.get_slack_repos(join=True),
         'is_logged_in': is_logged_in,
         'nav': 'internal',
         'active': '/settings/slack',
         'title': _('Slack Settings'),
-        'navs': get_settings_navs(),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'msg': response['output'],
+    }
+    return TemplateResponse(request, 'settings/slack.html', context)
+
+def ens_settings(request):
+    """Displays and saves user's ENS settings.
+
+    Returns:
+        TemplateResponse: The user's ENS settings template response.
+
+    """
+    response = {'output': ''}
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    ens_subdomains = ENSSubdomainRegistration.objects.filter(profile=profile).order_by('-pk')
+    ens_subdomain = ens_subdomains.first() if ens_subdomains.exists() else None
+    
+    context = {
+        'is_logged_in': is_logged_in,
+        'nav': 'internal',
+        'ens_subdomain': ens_subdomain,
+        'active': '/settings/ens',
+        'title': _('ENS Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'msg': response['output'],
+    }
+    return TemplateResponse(request, 'settings/ens.html', context)
+
+
+def account_settings(request):
+    """Displays and saves user's Account settings.
+
+    Returns:
+        TemplateResponse: The user's Account settings template response.
+
+    """
+    msg = ''
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    if request.POST:
+
+        if request.POST.get('disconnect', False):
+            profile.github_access_token = ''
+            profile = record_form_submission(request, profile, 'account-disconnect')
+            profile.email = ''
+            profile.save()
+            messages.success(request, _('Your account has been disconnected from Github'))
+            logout_redirect = redirect(reverse('logout') + '?next=/')
+            return logout_redirect
+        if request.POST.get('delete', False):
+            # remove profile
+            profile.hide_profile = True
+            profile = record_form_submission(request, profile, 'account-delete')
+            profile.email = ''
+            profile.save()
+
+            # remove email
+            try:
+                client = MailChimp(mc_user=settings.MAILCHIMP_USER, mc_api=settings.MAILCHIMP_API_KEY)
+                result = client.search_members.get(query=es.email)
+                subscriber_hash = result['exact_matches']['members'][0]['id']
+                client.lists.members.delete(
+                    list_id=settings.MAILCHIMP_LIST_ID,
+                    subscriber_hash=subscriber_hash,
+                    )
+            except Exception as e:
+                logger.exception(e)
+            if es:
+                es.delete()
+            request.user.delete()
+            messages.success(request, _('Your account has been deleted'))
+            logout_redirect = redirect(reverse('logout') + '?next=/')
+            return logout_redirect
+        else:
+            msg = _('Error: did not understand your request')
+
+    context = {
+        'is_logged_in': is_logged_in,
+        'nav': 'internal',
+        'active': '/settings/account',
+        'title': _('Account Settings'),
+        'navs': get_settings_navs(request),
         'es': es,
         'profile': profile,
         'msg': msg,
     }
-    return TemplateResponse(request, 'settings/slack.html', context)
+    return TemplateResponse(request, 'settings/account.html', context)
 
 
 def _leaderboard(request):
@@ -341,6 +484,7 @@ def leaderboard(request, key=''):
     titles = {
         'quarterly_payers': _('Top Payers'),
         'quarterly_earners': _('Top Earners'),
+        'quarterly_orgs': _('Top Orgs'),
         #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
         #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
         #        'monthly_fulfilled': 'Monthly Leaderboard',
@@ -374,7 +518,7 @@ def leaderboard(request, key=''):
         'selected': title,
         'title': f'Leaderboard: {title}',
         'card_title': f'Leaderboard: {title}',
-        'card_desc': f'See the most valued members in the Gitcoin community this month. {top_earners}',
+        'card_desc': f'See the most valued members in the Gitcoin community recently . {top_earners}',
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
         'podium_items': items[:3] if items else []

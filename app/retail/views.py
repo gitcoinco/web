@@ -31,7 +31,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
 
-from marketing.models import LeaderboardRank
+from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from retail.models import Idea, IdeaSerializer
 
@@ -129,18 +129,43 @@ def about(request):
             "Gitcoin Requests",
             "Tangerine Gelato"
         ),
+        (
+            static("v2/images/team/aditya-anand.jpg"),
+            "Aditya Anand M C",
+            "Engineering",
+            "thelostone-mc",
+            "aditya-anand-m-c-95855b65",
+            "The Community",
+            "Cocktail Samosa"
+        ),
+        (
+            static("v2/images/team/saptaks.jpg"),
+            "Saptak Sengupta",
+            "Engineering",
+            "saptaks",
+            "saptaks",
+            "Everything Open Source",
+            "daab chingri"
+        ),
     ]
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
     community_members = [
     ]
     leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount')[0: 15]
     for lr in leadeboardranks:
-        package = (lr.avatar_url, lr.github_username, lr.github_username)
+        package = (lr.avatar_url, lr.github_username, lr.github_username, '')
         community_members.append(package)
+
+    alumnis = [
+    ]
+    for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco'):
+        package = (alumni.profile.avatar_url, alumni.profile.username, alumni.profile.username, alumni.organization)
+        alumnis.append(package)
 
     context = {
         'core_team': core_team,
         'community_members': community_members,
+        'alumni': alumnis,
         'active': 'about',
         'title': 'About',
     }
@@ -449,9 +474,17 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'url': 'https://medium.com/gitcoin/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster-dcd39650fc5',
         'title': _('Leverage Gitcoin’s Firehose of Talent to Do More Faster'),
     }, {
+        'img': static('v2/images/tools/api.jpg'),
+        'url': 'https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e',
+        'title': _('How to Price Work on Gitcoin'),
+    }, {
         'img': static('v2/images/help/tools.png'),
         'url': 'https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75',
         'title': _('Post a Bounty in 90 Seconds'),
+    }, {
+        'img': static('v2/images/tldr/tips_noborder.jpg'),
+        'url': 'https://medium.com/gitcoin/tutorial-send-a-tip-to-any-github-user-in-60-seconds-2eb20a648bc8',
+        'title': _('Send a Tip to any Github user in 60 seconds'),
     }]
 
     context = {
@@ -626,8 +659,7 @@ def ideas_list(request):
 
 
 def itunes(request):
-    return HttpResponse(_('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)'))
-    return redirect('https://itunes.apple.com/us/app/gitcoin/idXXXXXXXXX')
+    return redirect('https://itunes.apple.com/us/app/gitcoin/id1319426014')
 
 
 def ios(request):
@@ -715,7 +747,7 @@ def github(request):
 
 
 def youtube(request):
-    return redirect('https://www.youtube.com/watch?v=DJartWzDn0E')
+    return redirect('https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w')
 
 
 def web3(request):

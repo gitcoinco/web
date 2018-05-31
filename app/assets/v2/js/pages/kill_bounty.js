@@ -5,12 +5,6 @@ window.onload = function() {
     waitforWeb3(actions_page_warn_if_not_on_same_network);
     var account = web3.eth.accounts[0];
 
-    if (
-      typeof localStorage['acceptTOS'] != 'undefined' &&
-      localStorage['acceptTOS']
-    ) {
-      $('input[name=terms]').attr('checked', 'checked');
-    }
     if (getParam('source')) {
       $('input[name=issueURL]').val(getParam('source'));
     }
