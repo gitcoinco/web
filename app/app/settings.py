@@ -433,13 +433,13 @@ if ROLLBAR_SERVER_TOKEN and ENV not in ['local', 'test']:
     }
     MIDDLEWARE.append('rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
     REST_FRAMEWORK['EXCEPTION_HANDLER'] = 'rollbar.contrib.django_rest_framework.post_exception_handler'
-    LOGGING['handlers']['rollbar'] = {
-        'filters': ['require_debug_false'],
-        'access_token': ROLLBAR_SERVER_TOKEN,
-        'environment': ENV,
-        'class': 'rollbar.logger.RollbarHandler',
-    }
-    LOGGING['loggers']['django']['handlers'].append('rollbar')
+    # LOGGING['handlers']['rollbar'] = {
+    #     'filters': ['require_debug_false'],
+    #     'access_token': ROLLBAR_SERVER_TOKEN,
+    #     'environment': ENV,
+    #     'class': 'rollbar.logger.RollbarHandler',
+    # }
+    # LOGGING['loggers']['django']['handlers'].append('rollbar')
     rollbar.init(**ROLLBAR)
 
 # List of github usernames to not count as comments on an issue
