@@ -1628,9 +1628,6 @@ input.is-invalid {
   margin-right: 1rem;
 }
 
-.results #repo_chart {
-}
-
 .yellow_box {
   color: #FFCE08;
   border: 10px solid #FFCE08;
