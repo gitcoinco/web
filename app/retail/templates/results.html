@@ -33,9 +33,11 @@
       <div class="container" id="results_hero">
         <div class="row p-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center animated fadeInLeftShort">
+            {% blocktrans %}
             <h2>
               GITCOIN PLATFORM STATS
             </h2>
+            {% endblocktrans %}
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
@@ -44,7 +46,9 @@
               src="{% static "v2/images/results/clock.svg" %}"
             />
             <h3 class="text-highlight-green mt-3">12 Hrs</h3>
+            {% blocktrans %}
             <p>Median Bounty Pickup Time</p>
+            {% endblocktrans %}
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
@@ -54,7 +58,9 @@
             />
 
             <h3 class="text-highlight-purple mt-3">98%</h3>
+            {% blocktrans %}
             <p>Claimed Bounty Completion Rate</p>
+            {% endblocktrans %}
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
@@ -63,7 +69,9 @@
               src="{% static "v2/images/results/hourly_rate_distribution.svg" %}"
             />
             <h3 class="text-highlight-light-blue mt-3">$20 - $80</h3>
+            {% blocktrans %}
             <p>Hourly Rate Distribution</p>
+            {% endblocktrans %}
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
@@ -72,7 +80,9 @@
               src="{% static "v2/images/results/calendar_icon.svg" %}"
             />
             <h3 class="text-highlight-green mt-3">1.5 Wks</h3>
+            {% blocktrans %}
             <p>Average Bounty Turnaround Time</p>
+            {% endblocktrans %}
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
@@ -82,7 +92,9 @@
             />
 
             <h3 class="text-highlight-purple mt-3">1.5%</h3>
+            {% blocktrans %}
             <p>Bounty Abandonment Rate</p>
+            {% endblocktrans %}
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
@@ -91,7 +103,9 @@
               src="{% static "v2/images/results/gitcoin_alumni.svg" %}"
             />
             <h3 class="text-highlight-light-blue mt-3">206</h3>
+            {% blocktrans %}
             <p>GitCoin Alumni Hired</p>
+            {% endblocktrans %}
           </div>
         </div>
       </div>
@@ -101,9 +115,11 @@
       <div class="container" id="bounty_universe">
         <div class="row p-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center animated fadeInLeftShort">
+            {% blocktrans %}
             <h2>
               160K USD BOUNTY UNIVERSE
             </h2>
+            {% endblocktrans %}
           </div>
 
           <div class="col-md-8">
@@ -111,11 +127,21 @@
           </div>
 
           <div class="col-md-4 p-5 bounty_status">
+            {% blocktrans %}
             <h5>Bounty Status</h5>
+            {% endblocktrans %}
+            {% blocktrans %}
             <p><span class="yellow_box"></span> Open / Available</p>
+            {% endblocktrans %}
+            {% blocktrans %}
             <p><span class="green_box"></span> Claimed / In Progress</p>
+            {% endblocktrans %}
+            {% blocktrans %}
             <p><span class="blue_box"></span> Completed </p>
+            {% endblocktrans %}
+            {% blocktrans %}
             <p><span class="pink_box"></span> CodeFund Bounties</p>
+            {% endblocktrans %}
           </div>
         </div>
       </div>
@@ -125,9 +151,11 @@
       <div class="container" id="repo_transaction">
         <div class="row p-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center animated fadeInLeftShort">
+            {% blocktrans %}
             <h2>
               GITCOIN PLATFORM STATS
             </h2>
+            {% endblocktrans %}
           </div>
 
           <div class="col-12 col-md-6">
@@ -135,9 +163,15 @@
           </div>
 
           <div class="col-md-6 p-5 bounty_status">
+            {% blocktrans %}
             <p><span class="blue_box"></span> 200 repos with open & claimed bounties </p>
+            {% endblocktrans %}
+            {% blocktrans %}
             <p><span class="green_box"></span> 150 repos with claimed bounties in progress</p>
+            {% endblocktrans %}
+            {% blocktrans %}
             <p><span class="yellow_box"></span> 105 repos with more then 3 bounties in progress </p>
+            {% endblocktrans %}
           </div>
         </div>
       </div>
@@ -147,9 +181,11 @@
       <div class="container" id="bounty_universe">
         <div class="row p-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center animated fadeInLeftShort">
+            {% blocktrans %}
             <h2>
               SLACK & TWITTER COMMUNITY GROWTH
             </h2>
+            {% endblocktrans %}
           </div>
 
           <div class="col-12">
@@ -159,7 +195,9 @@
 
         <div class="row mt-5 pb-5 animatedParent text-center">
           <div class="col animated pulse fast">
+            {% blocktrans %}
             <p> Meet software developers, futurists, and funders who are building web3 </p>
+            {% endblocktrans %}
             <a class="btn btn-lg btn-warning" role="button" href="{% url "slack" %}">{% trans "# Join Our Slack" %}</a>
           </div>
         </div>
