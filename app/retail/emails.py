@@ -96,6 +96,19 @@ def render_match_email(bounty, github_username):
     return response_html, response_txt
 
 
+def render_quarterly_stats(to_email, platform_wide_stats):
+    from dashboard.models import Profile
+    profile = Profile.objects.filter(email=to_email).first()
+    quarterly_stats = profile.get_quarterly_stats
+    params = {**quarterly_stats, **platform_wide_stats}
+    params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),
+    print(params)
+    response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
+    response_txt = render_to_string("emails/quarterly_stats.txt", params)
+
+    return response_html, response_txt
+
+
 def render_bounty_feedback(bounty, persona='submitter', previous_bounties=[]):
     previous_bounties_str = ", ".join([bounty.github_url for bounty in previous_bounties])
     if persona == 'fulfiller':
@@ -278,6 +291,7 @@ def render_bounty_startwork_expire_warning(to_email, bounty, interest, time_delt
 
     return response_html, response_txt
 
+
 def render_bounty_unintersted(to_email, bounty, interest):
     params = {
         'bounty': bounty,
@@ -289,6 +303,7 @@ def render_bounty_unintersted(to_email, bounty, interest):
     response_txt = render_to_string("emails/bounty_uninterested.txt", params)
 
     return response_html, response_txt
+
 
 def render_faucet_rejected(fr):
 
@@ -648,6 +663,14 @@ def faucet_rejected(request):
 @staff_member_required
 def roundup(request):
     response_html, _, _ = render_new_bounty_roundup(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def quarterly_roundup(request):
+    from marketing.utils import get_platform_wide_stats
+    platform_wide_stats = get_platform_wide_stats()
+    response_html, _ = render_quarterly_stats(settings.CONTACT_EMAIL, platform_wide_stats)
     return HttpResponse(response_html)
 
 
