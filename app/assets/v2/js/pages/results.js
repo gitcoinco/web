@@ -1,4 +1,4 @@
-google.charts.load('current', { packages:[ 'corechart', 'bar' ]});
+google.charts.load('current', { packages: [ 'corechart', 'bar' ]});
 google.charts.setOnLoadCallback(drawChart);
 google.charts.setOnLoadCallback(repoChart);
 google.charts.setOnLoadCallback(communityChart);
@@ -41,15 +41,16 @@ function drawChart() {
   };
 
   var chart = new google.visualization.ColumnChart(document.getElementById('bounty_universe_chart'));
+
   chart.draw(view, options);
 }
 
 function repoChart() {
   var data = google.visualization.arrayToDataTable([
-    [ 'Repo', 'Bounties'],
-    [ 'Open & Claimed Bounties',     200 ],
-    [ 'Claimed Bounties in Progress',      150 ],
-    [ 'More than 3 bounties in Progress',  105 ]
+    [ 'Repo', 'Bounties' ],
+    [ 'Open & Claimed Bounties', 200 ],
+    [ 'Claimed Bounties in Progress', 150 ],
+    [ 'More than 3 bounties in Progress', 105 ]
   ]);
 
   var options = {
@@ -62,13 +63,14 @@ function repoChart() {
   };
 
   var chart = new google.visualization.PieChart(document.getElementById('repo_chart'));
+
   chart.draw(data, options);
 }
 
 function communityChart() {
   var data = google.visualization.arrayToDataTable([
     [ 'Year', 'Members' ],
-    [ 'Launch',  0 ],
+    [ 'Launch', 0 ],
     [ '', 30 ],
     [ '', 50 ],
     [ '', 100 ],
@@ -78,7 +80,7 @@ function communityChart() {
     [ '', 800 ],
     [ '', 900 ],
     [ '', 1000 ],
-    [ 'Today',  1170 ]
+    [ 'Today', 1170 ]
   ]);
 
   var options = {
