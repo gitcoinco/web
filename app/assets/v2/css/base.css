@@ -1598,6 +1598,9 @@ input.is-invalid {
 }
 
 /* Results */
+.results {
+  font-family: 'Muli', sans-serif;
+}
 .results h2 {
   font-size: 1.8rem;
   font-weight: 700;
@@ -1634,7 +1637,7 @@ input.is-invalid {
 }
 
 .green_box {
-  color: #25E899;
+  color: #F2F6F9;
   border: 10px solid #25E899;
 }
 
