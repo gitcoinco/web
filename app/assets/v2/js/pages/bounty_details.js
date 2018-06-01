@@ -347,12 +347,6 @@ var showWarningMessage = function(txid) {
   $('.transaction-status').show();
   $('.waiting_room_entertainment').show();
 
-  var radioButtons = $('.sidebar_search input');
-
-  for (var i = radioButtons.length - 1; i >= 0; i--) {
-    radioButtons[i].disabled = true;
-  }
-
   var secondsBetweenQuoteChanges = 30;
 
   waitingRoomEntertainment();
