@@ -199,6 +199,7 @@
     <h1>GITCOIN QUARTERLY</h1>
 
     {% if user_active_in_last_quarter %}
+    	{% if user_fulfilled_bounties %}
         <h2>You've Been BUILDing</h2>
         <h4>An overview of your stats from the last 3 months.</h4>
         <div class="centered-contents stat-box row">
@@ -237,8 +238,52 @@
         <div class="button-action">
             <a class="button" href="{% url 'dashboard' %}">{% trans "Share my stats" %}</a>
         </div>
-    {% endif %}
+        {% endif %}
 
+    	{% if user_funded_bounties_count %}
+        <h2>You've Been Making Money Moves</h2>
+        <h4>An overview of your OSS project's stats from the last 3 months.</h4>
+        <div class="centered-contents stat-box row">
+            <div class="stat-img full-bordered-circle percent-content col-sm-12">
+                <p class="content">{{ user_funded_fulfilled_percentage}} %</p>
+            </div>
+            <div class="stat-contents col-sm-12">
+		    <p>Of the {{ user_funded_bounties_count | intcomma }} issue{%if user_funded_bounties_count > 1 %}s{% endif %} that you funded a bounty for, {{ user_num_funded_fulfilled_bounties | intcomma }} were fulfilled -- that's a {{ user_funded_fulfilled_percentage}}% success rate!</p>
+            </div>
+        </div>
+        <div class="centered-contents stat-box row">
+	   <div class="stat-img total-transaction">
+	      <p class="content">{{ user_funded_bounty_developers | length }} contributors</p>
+	   </div>
+            <div class="stat-contents col-sm-12">
+               <p>The following {{ user_funded_bounty_developers | length }} developers have made contributions to your OSS projects this quarter:
+               {% for developer in user_funded_bounty_developers %}{% if forloop.counter == user_num_funded_bounty_developers %} &amp; {% elif forloop.first %}{% else %}, {% endif %}<a href="https://github.com/{{ developer }}">@{{ developer }}</a>{% endfor %}</p>
+	    </div>
+        </div>
+        <div class="centered-contents stat-box row">
+            <div class="stat-img">
+	      <p class="content bounty-img">{{ user_funded_hours | intcomma }} hours</p>
+	      <p class="content bounty-fund-img">{{ funded_bounties_fund | intcomma }} USD</p>
+            </div>
+            <div class="stat-contents">
+		    <p>Developers worked an average of {{ user_avg_hours_per_funded_bounty }} hours per issue on your projects. You funded a total of ${{ user_total_funded_usd | intcomma }} USD of work at an average rate of ${{ user_average_hourly_rate_per_funded_bounty }} USD / hour..</p>
+            </div>
+        </div>
+
+        <div class="button-action">
+            <a class="button" href="{% url 'dashboard' %}">{% trans "Share my stats" %}</a>
+        </div>
+    {% endif %}
+{% endif %}
+{% if not user_active_last_quarter and relevant_bounties %}
+    	<h2>You could have been BUILDing</h2>
+	{% if relevant_bounties|length == 1 %} This bounty {% endif %}{% if relevant_bounties|length > 1 %} These bounties {% endif %} from the issue explorer match your skillset:
+	<br>
+	{% for bounty in relevant_bounties %}
+		<br>
+		{% include 'emails/bounty.html' with bounty=bounty %}
+	{% endfor %}
+{% endif %}
     <hr>
 
     <h2>Platform-wide Stats</h2>
