@@ -1,0 +1,14 @@
+{
+    "symbol": "XT(XstarToken)",
+    "address": "0x528d068ae69e90c90ad090b3c2b0d18241e9e9b5",
+    "overview":{
+        "en":"Xstar exchange token."
+    },
+    "website": "https://www.xstar.io",
+    "published_on": "2018-05-30",
+    "links": {
+        "twitter": "https://twitter.com/XstarExchange",
+        "telegram": "https://t.me/xstarexchange",
+        "slack": "https://xstarexchange.slack.com/"
+    }
+}
