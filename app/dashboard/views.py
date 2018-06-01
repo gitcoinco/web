@@ -690,7 +690,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
                 params['bounty_pk'] = bounty.pk
                 params['network'] = bounty.network
-                params['stdbounties_id'] = bounty.standard_bounties_id
+                params['stdbounties_id'] = bounty.standard_bounties_id if not stdbounties_id else stdbounties_id
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
 
