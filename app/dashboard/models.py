@@ -983,8 +983,6 @@ class Profile(SuperModel):
     )
     form_submission_records = JSONField(default=[], blank=True)
     # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
-    # Sample repos_data: https://gist.github.com/mbeacom/c9e4fda491987cb9728ee65b114d42c7
-    repos_data = JSONField(default={}, blank=True)
     max_num_issues_start_work = models.IntegerField(default=3)
 
     @property
@@ -1020,34 +1018,6 @@ class Profile(SuperModel):
         return user_actions.exists()
 
     @property
-    def authors(self):
-        auto_include_contributors_with_count_gt = 40
-        limit_to_num = 10
-
-        _return = []
-
-        for repo in sorted(self.repos_data, key=lambda repo: repo.get('contributions', -1), reverse=True):
-            for c in repo.get('contributors', []):
-                if isinstance(c, dict) and c.get('contributions', 0) > auto_include_contributors_with_count_gt:
-                    _return.append(c['login'])
-
-        include_gitcoin_users = len(_return) < limit_to_num
-        if include_gitcoin_users:
-            for b in self.bounties:
-                vals = [b.bounty_owner_github_username]
-                for val in vals:
-                    if val:
-                        _return.append(val.lstrip('@'))
-            for t in self.tips:
-                vals = [t.username]
-                for val in vals:
-                    if val:
-                        _return.append(val.lstrip('@'))
-        _return = list(set(_return))
-        _return.sort()
-        return _return[:limit_to_num]
-
-    @property
     def desc(self):
         stats = self.stats
         role = stats[0][0]
@@ -1062,6 +1032,16 @@ class Profile(SuperModel):
         created_on = datetime.strptime(self.data['created_at'], '%Y-%m-%dT%H:%M:%SZ')
         return created_on.replace(tzinfo=pytz.UTC)
 
+    @property
+    def repos_data(self):
+        from github.utils import get_user
+        from app.utils import add_contributors
+        # TODO: maybe rewrite this so it doesnt have to go to the internet to get the info
+        # but in a way that is respectful of db size too
+        repos_data = get_user(self.handle, '/repos')
+        repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
+        repos_data = [add_contributors(repo_data) for repo_data in repos_data]
+        return repos_data
 
     @property
     def is_moderator(self):
@@ -1240,20 +1220,6 @@ class Profile(SuperModel):
             handle = self.handle
         return handle
 
-    def has_repo(self, full_name):
-        """Check if user has access to repo.
-
-        Args:
-            full_name (str): Repository name, like gitcoin/web.
-
-        Returns:
-            bool: Whether or not user has access to repository.
-
-        """
-        for repo in self.repos_data:
-            if repo['full_name'] == full_name:
-                return True
-        return False
 
     def is_github_token_valid(self):
         """Check whether or not a Github OAuth token is valid.
