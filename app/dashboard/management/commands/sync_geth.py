@@ -21,6 +21,7 @@ import logging
 import sys
 import warnings
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
 import rollbar
@@ -32,6 +33,7 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
+default_start_id = 0 if not settings.DEBUG else 402
 
 
 class Command(BaseCommand):
@@ -40,11 +42,10 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('network', default='rinkeby', type=str)
-        parser.add_argument('start_id', default=0, type=int)
+        parser.add_argument('start_id', default=default_start_id, type=int)
         parser.add_argument('end_id', default=99999999999, type=int)
 
     def handle(self, *args, **options):
-
         # config
         network = options['network']
         hour = datetime.datetime.now().hour
