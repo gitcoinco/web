@@ -182,7 +182,7 @@ def results(request):
     """Render the Results response."""
     context = {
         'active': 'results',
-        'title': 'Results',
+        'title': 'Results'
     }
     return TemplateResponse(request, 'results.html', context)
 
