@@ -323,7 +323,6 @@ SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'last_name', 'email']
 SOCIAL_AUTH_GITHUB_SCOPE = [
     'read:public_repo',
-    'read:org',
     'read:user',
     'user:email',
 ]
