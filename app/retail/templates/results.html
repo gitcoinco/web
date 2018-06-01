@@ -68,7 +68,7 @@
           <div class="col-6 col-md-4 text-center py-4">
             <img class="icon" src="{% static "v2/images/results/gitcoin_alumni.svg" %}" />
             <h3 class="text-highlight-light-blue mt-3">{{ alumni_count }}</h3>
-            <p>GitCoin {% trans "Alumni Hired" %}</p>
+            <p>GitCoin {% trans "Alumni Hired in the Ecosystem" %}</p>
           </div>
         </div>
       </div>
@@ -80,10 +80,14 @@
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
             <h2 class="text-center">
               {% blocktrans %}
-              {{ universe_total_usd|intword }} USD BOUNTY UNIVERSE
+              {{ universe_total_usd|intword }} BOUNTY HISTORY
               {% endblocktrans %}
             </h2>
           </div>
+          <script>
+            document.bounty_history = [[ '', 'Open / Available', { role: 'annotation' }, 'Claimed / In Progress', { role: 'annotation' }, 'Completed', { role: 'annotation' }, 'CodeFund Bounties' ],[ 'Q1 2017', 20000, '20K', 40000, '40K', 50000, '50K', 5000 ],[ 'Q2 2017', 24000, '24K', 50000, '50K', 50000, '50K', 5000 ],[ 'Q3 2017', 30000, '30K', 60000, '60K', 50000, '50K', 5000 ],[ 'Q4 2017', 40000, '40K', 70000, '70K', 50000, '50K', 5000 ],[ 'Q1 2018', 50000, '50K', 80000, '80K', 50000, '50K', 5000 ]];
+  
+          </script>
 
           <div class="col-md-8">
             <div id="bounty_universe_chart"></div>
@@ -113,25 +117,32 @@
 
           <div class="col-md-6 py-5 bounty_status">
             {% blocktrans %}
-            <p><span class="blue_box"></span> {{ repos_count_open_claimed }} repos with open & claimed bounties </p>
+            <p><span class="blue_box"></span> {{ count_open }} open bounties </p>
             {% endblocktrans %}
             {% blocktrans %}
-            <p><span class="green_box"></span> {{ repos_count_claimed_progress }} repos with claimed bounties in progress</p>
+            <p><span class="green_box"></span> {{ count_started }} bounties with started work</p>
             {% endblocktrans %}
             {% blocktrans %}
-            <p><span class="yellow_box"></span> {{ repos_count_gt_progress }} repos with more then 3 bounties in progress </p>
+            <p><span class="yellow_box"></span> {{ count_done }} completed bounties </p>
             {% endblocktrans %}
           </div>
         </div>
       </div>
     </div>
+    <script>
+        document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Open Bounties', {{ count_open }}],  [ 'Bounties w. started work', {{ count_started }}],  [ 'Completed bounties', {{ count_done }} ] ];
+    </script>
 
     <div style="background-color: #F2F6F9;">
       <div class="container" id="bounty_universe">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
-            <h2>{% trans "SLACK & TWITTER COMMUNITY GROWTH" %}</h2>
+            <h2>{% trans "COMMUNITY GROWTH" %}</h2>
           </div>
+          <script>
+            document.slack_ticks = [ 0, 500, 6000 ];
+            document.members_history = [[ 'Year', 'Members' ],[ 'Launch', 0 ],[ '', 100 ],[ '', 500 ],[ '', 1000 ],[ 'Today', 2000 ]];
+          </script>
 
           <div class="col-12">
             <div id="community_chart" height="600"></div>

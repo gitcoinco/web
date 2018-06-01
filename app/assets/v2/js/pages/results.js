@@ -6,14 +6,7 @@ google.charts.setOnLoadCallback(communityChart);
 // TODO: Implement Real Data for Graphs
 
 function drawChart() {
-  var data = google.visualization.arrayToDataTable([
-    [ '', 'Open / Available', { role: 'annotation' }, 'Claimed / In Progress', { role: 'annotation' }, 'Completed', { role: 'annotation' }, 'CodeFund Bounties' ],
-    [ 'Q1 2017', 20000, '20K', 40000, '40K', 50000, '50K', 5000 ],
-    [ 'Q2 2017', 24000, '24K', 50000, '50K', 50000, '50K', 5000 ],
-    [ 'Q3 2017', 30000, '30K', 60000, '60K', 50000, '50K', 5000 ],
-    [ 'Q4 2017', 40000, '40K', 70000, '70K', 50000, '50K', 5000 ],
-    [ 'Q1 2018', 50000, '50K', 80000, '80K', 50000, '50K', 5000 ]
-  ]);
+  var data = google.visualization.arrayToDataTable(document.bounty_history);
 
   var view = new google.visualization.DataView(data);
 
@@ -33,12 +26,7 @@ function drawChart() {
 }
 
 function repoChart() {
-  var data = google.visualization.arrayToDataTable([
-    [ 'Repo', 'Bounties' ],
-    [ 'Open & Claimed Bounties', 200 ],
-    [ 'Claimed Bounties in Progress', 150 ],
-    [ 'More than 3 bounties in Progress', 105 ]
-  ]);
+  var data = google.visualization.arrayToDataTable(document.platform_stats);
 
   var options = {
     pieHole: 0.8,
@@ -55,21 +43,14 @@ function repoChart() {
 }
 
 function communityChart() {
-  var data = google.visualization.arrayToDataTable([
-    [ 'Year', 'Members' ],
-    [ 'Launch', 0 ],
-    [ '', 100 ],
-    [ '', 500 ],
-    [ '', 1000 ],
-    [ 'Today', 2000 ]
-  ]);
+  var data = google.visualization.arrayToDataTable(document.members_history);
 
   var options = {
     curveType: 'function',
     legend: { position: 'none' },
     backgroundColor: 'transparent',
     height: 400,
-    vAxis: { ticks: [ 0, 500, 1000 ], gridlines: { color: 'transparent' } },
+    vAxis: { ticks: document.slack_ticks, gridlines: { color: 'transparent' } },
     hAxis: { ticks: [ 'LAUNCH', 'TODAY' ], scaleType: 'log' },
     series: { 0: { color: '#F9006C' } }
   };

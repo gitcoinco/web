@@ -53,24 +53,27 @@ def strip_double_chars(txt, char=' '):
 
 
 def build_stat_results():
+    from dashboard.models import Bounty
+
     """Buidl the results page context."""
     context = {
         'active': 'results',
         'title': _('Results'),
     }
 
+    baes_bounties = Bounty.objects.current()
     context['alumni_count'] = Alumni.objects.count()
-    # Handle repo counts
-    context['repos_count_open_claimed'] = 200  # TODO
-    context['repos_count_claimed_progress'] = 150  # TODO
-    context['repos_count_gt_progress'] = 105  # TODO
+    context['count_open'] = baes_bounties.filter(network='mainnet', idx_status__in=['open']).count()
+    context['count_started'] = baes_bounties.filter(network='mainnet', idx_status__in=['started', 'submitted']).count()
+    context['count_done'] = baes_bounties.filter(network='mainnet', idx_status__in=['done']).count()
 
     # Bounties
+    # TODO: make this info dynamic
     context['universe_total_usd'] = 160000  # TODO
-    context['bounty_abandonment_rate'] = '1.5%'  # TODO
-    context['bounty_average_turnaround'] = '1.5 Weeks'  # TODO
-    context['hourly_rate_distribution'] = '$20 - $80'  # TODO
-    context['bounty_claimed_completion_rate'] = '98%'  # TODO
-    context['bounty_median_pickup_time'] = '1.5'  # TODO
+    context['bounty_abandonment_rate'] = '9.5%'  # TODO
+    context['bounty_average_turnaround'] = '2.1 Weeks'  
+    context['hourly_rate_distribution'] = '$15 - $120' 
+    context['bounty_claimed_completion_rate'] = '98%'  
+    context['bounty_median_pickup_time'] = '1.5'  
 
     return context
