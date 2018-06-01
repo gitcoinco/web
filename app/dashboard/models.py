@@ -60,7 +60,7 @@ class BountyQuerySet(models.QuerySet):
 
     def current(self):
         """Filter results down to current bounties only."""
-        return self.filter(current_bounty=True)
+        return self.filter(current_bounty=True, admin_override_and_hide=False)
 
     def stats_eligible(self):
         """Exclude results that we don't want to track in statistics."""
@@ -183,6 +183,7 @@ class Bounty(SuperModel):
     value_in_eth = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_true = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     privacy_preferences = JSONField(default={}, blank=True)
+    admin_override_and_hide = models.BooleanField(default=False, help_text=_('Admin override to hide the bounty from the system'))
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
