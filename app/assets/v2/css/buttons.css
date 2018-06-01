@@ -105,3 +105,65 @@ button:focus {
     box-shadow: 0 0 0 0 var(--hover);
   }
 }
+
+.btn-gc-blue, .btn-gc-green, .btn-gc-purple {
+  color: white;
+  padding: .75rem 1.5rem;
+}
+
+.btn-outline-gc-blue, .btn-outline-gc-purple, .btn-outline-gc-green {
+  padding: .5rem 1.5rem;
+}
+
+.btn-gc-blue {
+  background-color: var(--gc-blue);
+}
+.btn-gc-blue:hover {
+  background-color: var(--gc-blue-hover);
+  color: white;
+}
+.btn-outline-gc-blue {
+  border-color: var(--gc-blue);
+  color: var(--gc-blue);
+}
+.btn-outline-gc-blue:hover {
+  background-color: var(--gc-blue);
+  color: white;
+}
+
+.btn-gc-green {
+  background-color: var(--gc-green);
+}
+.btn-gc-green:hover {
+  background-color: var(--gc-green-hover);
+  color: white;
+}
+.btn-outline-gc-green {
+  border-color: var(--gc-green);
+  color: var(--gc-green);
+}
+.btn-outline-gc-green:hover {
+  background-color: var(--gc-green);
+  color: white;
+}
+
+.btn-gc-purple {
+  background-color: var(--gc-purple);
+}
+.btn-gc-purple:hover {
+  background-color: var(--gc-purple-hover);
+  color: white;
+}
+.btn-outline-gc-purple {
+  border-color: var(--gc-purple);
+  color: var(--gc-purple);
+}
+.btn-outline-gc-purple:hover {
+  background-color: var(--gc-purple);
+  color: white;
+}
+
+/* Icons in buttons */
+.btn > svg:first-child {
+  margin-right: .5rem;
+}

@@ -24,7 +24,8 @@
       "vw",
       "vh",
       "pt",
-      "vmin"
+      "vmin",
+      "fr"
     ]
   }
 }
