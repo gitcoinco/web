@@ -177,6 +177,7 @@ def mission(request):
     }
     return TemplateResponse(request, 'mission.html', context)
 
+
 def results(request):
     # TODO: RESULTS AJAX REQUEST / STUB
     """Render the Results response."""
