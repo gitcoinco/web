@@ -59,6 +59,8 @@ class EmailSubscriber(SuperModel):
         on_delete=models.CASCADE,
         related_name='email_subscriptions',
         null=True)
+    form_submission_records = JSONField(default=[], blank=True)
+
 
     def __str__(self):
         return self.email
@@ -164,6 +166,8 @@ class LeaderboardRank(SuperModel):
     leaderboard = models.CharField(max_length=255)
     amount = models.FloatField()
     active = models.BooleanField()
+    count = models.IntegerField(default=0)
+    rank = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.leaderboard}, {self.github_username}: {self.amount}"
@@ -244,7 +248,7 @@ class EmailEvent(SuperModel):
 
     email = models.EmailField(max_length=255, db_index=True)
     event = models.CharField(max_length=255, db_index=True)
-    payload = JSONField(default={})
+    ip_address = models.GenericIPAddressField(default=None, null=True)
 
     def __str__(self):
         return f"{self.email} - {self.event} - {self.created_on}"

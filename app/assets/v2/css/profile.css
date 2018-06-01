@@ -3,6 +3,11 @@
 .profile-header > .container {
   padding-top: 3.5rem;
   color: #fff;
+  
+}
+
+.container:last-child{
+  padding-bottom: 3.5rem;
 }
 
 .profile-header__avatar {

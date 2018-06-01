@@ -107,8 +107,12 @@
                 <ul>
                     {% for item in tutorials %}
                     <li class='tutorial_parent pb-4 pt-4'>
-                        <img src="{{item.img}}" />
-                        <a href="{{item.url}}">{{item.title}}</a>
+                        <div style="width:33%; display: inline-block;">
+                            <img src="{{item.img}}" />
+                        </div>
+                        <div style="width: 60%;  display: inline-block; margin-left: 3%;">
+                            <a href="{{item.url}}">{{item.title}}</a>
+                        </div>
                     </li>
                     {% endfor %}
                 </ul>

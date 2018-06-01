@@ -49,9 +49,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
 
 # Notifications - Global on / off switch
-ENABLE_NOTIFICATIONS_ON_NETWORK = env(
-    'ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
-
+ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
 
 # Application definition
 INSTALLED_APPS = [
@@ -92,6 +90,7 @@ INSTALLED_APPS = [
     'external_bounties',
     'dataviz',
     'ethos',
+    'impersonate',
 ]
 
 MIDDLEWARE = [
@@ -107,6 +106,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ratelimit.middleware.RatelimitMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
+    'impersonate.middleware.ImpersonateMiddleware',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = False
@@ -173,9 +173,7 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '1000/day',
     },
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ],
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'],
     'DEFAULT_AUTHENTICATION_CLASSES': []
 }
 
@@ -187,13 +185,9 @@ USE_L10N = env.bool('USE_L10N', default=True)
 USE_TZ = env.bool('USE_TZ', default=True)
 TIME_ZONE = env.str('TIME_ZONE', default='UTC')
 
-LOCALE_PATHS = (
-    'locale',
-)
+LOCALE_PATHS = ('locale', )
 
-LANGUAGES = [
-    ('en', _('English'))
-]
+LANGUAGES = [('en', _('English'))]
 
 if not ENV in ['local', 'test']:
     LOGGING = {
@@ -216,7 +210,7 @@ if not ENV in ['local', 'test']:
                 'level': 'ERROR',
                 'class': 'django.utils.log.AdminEmailHandler',
                 'include_html': True,
-            }
+            },
         },
         'loggers': {
             'django': {
@@ -247,7 +241,8 @@ STATIC_HOST = env('STATIC_HOST', default='')
 STATIC_URL = STATIC_HOST + env('STATIC_URL', default='/static/')
 
 THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + (
-    'ethos.thumbnail_processors.circular_processor', )
+    'ethos.thumbnail_processors.circular_processor',
+)
 
 THUMBNAIL_ALIASES = {
     '': {
@@ -279,12 +274,12 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool('SECURE_CONTENT_TYPE_NOSNIFF', default=Tr
 X_FRAME_OPTIONS = env('X_FRAME_OPTIONS', default='DENY')
 
 # Email Integrations
-CONTACT_EMAIL = env('CONTACT_EMAIL', default='') # TODO
+CONTACT_EMAIL = env('CONTACT_EMAIL', default='')  # TODO
 PERSONAL_CONTACT_EMAIL = env('PERSONAL_CONTACT_EMAIL', default='you@foo.bar')
-SENDGRID_API_KEY = env('SENDGRID_API_KEY', default='') # TODO - Required to send email.
+SENDGRID_API_KEY = env('SENDGRID_API_KEY', default='')  # TODO - Required to send email.
 EMAIL_HOST = env('EMAIL_HOST', default='smtp.sendgrid.net')
-EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='') # TODO
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='') # TODO
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')  # TODO
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')  # TODO
 EMAIL_PORT = env.int('EMAIL_PORT', default=587)
 EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 SERVER_EMAIL = env('SERVER_EMAIL', default='server@TODO.co')
@@ -296,7 +291,6 @@ ENS_TLD = env('ENS_TLD', default='gitcoin.eth')
 ENS_LIMIT_RESET_DAYS = env.int('ENS_LIMIT_RESET_DAYS', default=30)
 ENS_OWNER_ACCOUNT = env('ENS_OWNER_ACCOUNT', default='0x00000')
 ENS_PRIVATE_KEY = env('ENS_PRIVATE_KEY', default=None)
-
 
 # IMAP Settings
 IMAP_EMAIL = env('IMAP_EMAIL', default='<email>')
@@ -311,11 +305,11 @@ MAILCHIMP_LIST_ID = env('MAILCHIMP_LIST_ID', default='')
 GITHUB_API_BASE_URL = env('GITHUB_API_BASE_URL', default='https://api.github.com')
 GITHUB_AUTH_BASE_URL = env('GITHUB_AUTH_BASE_URL', default='https://github.com/login/oauth/authorize')
 GITHUB_TOKEN_URL = env('GITHUB_TOKEN_URL', default='https://github.com/login/oauth/access_token')
-GITHUB_SCOPE = env('GITHUB_SCOPE', default='read:user,user:email,read:org')
-GITHUB_CLIENT_ID = env('GITHUB_CLIENT_ID', default='') # TODO
-GITHUB_CLIENT_SECRET = env('GITHUB_CLIENT_SECRET', default='') # TODO
-GITHUB_API_USER = env('GITHUB_API_USER', default='') # TODO
-GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='') # TODO
+GITHUB_SCOPE = env('GITHUB_SCOPE', default='read:user,user:email')
+GITHUB_CLIENT_ID = env('GITHUB_CLIENT_ID', default='')  # TODO
+GITHUB_CLIENT_SECRET = env('GITHUB_CLIENT_SECRET', default='')  # TODO
+GITHUB_API_USER = env('GITHUB_API_USER', default='')  # TODO
+GITHUB_API_TOKEN = env('GITHUB_API_TOKEN', default='')  # TODO
 GITHUB_APP_NAME = env('GITHUB_APP_NAME', default='gitcoin-local')
 
 # Social Auth
@@ -329,7 +323,6 @@ SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'last_name', 'email']
 SOCIAL_AUTH_GITHUB_SCOPE = [
     'read:public_repo',
-    'read:org',
     'read:user',
     'user:email',
 ]
@@ -362,16 +355,16 @@ if GITCOIN_BOT_CERT_PATH:
 GITCOIN_SLACK_ICON_URL = 'https://gitcoin.co/static/v2/images/helmet.png'
 
 # Twitter Integration
-TWITTER_CONSUMER_KEY = env('TWITTER_CONSUMER_KEY', default='') # TODO
-TWITTER_CONSUMER_SECRET = env('TWITTER_CONSUMER_SECRET', default='') # TODO
-TWITTER_ACCESS_TOKEN = env('TWITTER_ACCESS_TOKEN', default='') # TODO
-TWITTER_ACCESS_SECRET = env('TWITTER_ACCESS_SECRET', default='') # TODO
-TWITTER_USERNAME = env('TWITTER_USERNAME', default='') # TODO
+TWITTER_CONSUMER_KEY = env('TWITTER_CONSUMER_KEY', default='')  # TODO
+TWITTER_CONSUMER_SECRET = env('TWITTER_CONSUMER_SECRET', default='')  # TODO
+TWITTER_ACCESS_TOKEN = env('TWITTER_ACCESS_TOKEN', default='')  # TODO
+TWITTER_ACCESS_SECRET = env('TWITTER_ACCESS_SECRET', default='')  # TODO
+TWITTER_USERNAME = env('TWITTER_USERNAME', default='')  # TODO
 
 # Slack Integration
 # optional: only needed if you slack things
-SLACK_TOKEN = env('SLACK_TOKEN', default='') # TODO
-SLACK_WELCOMEBOT_TOKEN = env('SLACK_WELCOMEBOT_TOKEN', default='') # TODO
+SLACK_TOKEN = env('SLACK_TOKEN', default='')  # TODO
+SLACK_WELCOMEBOT_TOKEN = env('SLACK_WELCOMEBOT_TOKEN', default='')  # TODO
 
 # Reporting Integrations
 MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
@@ -392,15 +385,15 @@ GOOGLE_ANALYTICS_AUTH_JSON = {
     'client_id': env('GA_CLIENT_ID', default=''),
     'auth_uri': env('GA_AUTH_URI', default='https://accounts.google.com/o/oauth2/auth'),
     'token_uri': env('GA_TOKEN_URI', default='https://accounts.google.com/o/oauth2/token'),
-    'auth_provider_x509_cert_url': env('GA_AUTH_PROVIDER_X509_CERT_URL',
-                                       default='https://www.googleapis.com/oauth2/v1/certs'),
+    'auth_provider_x509_cert_url':
+        env('GA_AUTH_PROVIDER_X509_CERT_URL', default='https://www.googleapis.com/oauth2/v1/certs'),
     'client_x509_cert_url': env('GA_CLIENT_X509_CERT_URL', default='')
 }
 
 # Rollbar - https://rollbar.com/docs/notifier/pyrollbar/#django
 ROLLBAR_CLIENT_TOKEN = env('ROLLBAR_CLIENT_TOKEN', default='')  # post_client_item
 ROLLBAR_SERVER_TOKEN = env('ROLLBAR_SERVER_TOKEN', default='')  # post_server_item
-if ROLLBAR_SERVER_TOKEN:
+if ROLLBAR_SERVER_TOKEN and ENV not in ['local', 'test']:
     # Handle rollbar initialization.
     ROLLBAR = {
         'access_token': ROLLBAR_SERVER_TOKEN,
@@ -412,18 +405,46 @@ if ROLLBAR_SERVER_TOKEN:
         'capture_ip': 'anonymize',
         'capture_username': True,
         'scrub_fields': [
-            'pw', 'passwd', 'password', 'secret', 'confirm_password', 'confirmPassword',
-            'password_confirmation', 'passwordConfirmation', 'access_token', 'accessToken',
-            'auth', 'authentication', 'github_access_token', 'github_client_secret',
-            'secret_key', 'twitter_access_token', 'twitter_access_secret', 'twitter_consumer_secret',
-            'mixpanel_token', 'slack_verification_token', 'redirect_state', 'slack_token', 'priv_key',
+            'pw',
+            'passwd',
+            'password',
+            'secret',
+            'confirm_password',
+            'confirmPassword',
+            'password_confirmation',
+            'passwordConfirmation',
+            'access_token',
+            'accessToken',
+            'auth',
+            'authentication',
+            'github_access_token',
+            'github_client_secret',
+            'secret_key',
+            'twitter_access_token',
+            'twitter_access_secret',
+            'twitter_consumer_secret',
+            'mixpanel_token',
+            'slack_verification_token',
+            'redirect_state',
+            'slack_token',
+            'priv_key',
         ],
     }
     MIDDLEWARE.append('rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
+    REST_FRAMEWORK['EXCEPTION_HANDLER'] = 'rollbar.contrib.django_rest_framework.post_exception_handler'
+    # LOGGING['handlers']['rollbar'] = {
+    #     'filters': ['require_debug_false'],
+    #     'access_token': ROLLBAR_SERVER_TOKEN,
+    #     'environment': ENV,
+    #     'class': 'rollbar.logger.RollbarHandler',
+    # }
+    # LOGGING['loggers']['django']['handlers'].append('rollbar')
     rollbar.init(**ROLLBAR)
 
 # List of github usernames to not count as comments on an issue
-IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
+IGNORE_COMMENTS_FROM = [
+    'gitcoinbot',
+]
 
 # optional: only needed if you run the activity-report management command
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
@@ -439,8 +460,8 @@ AWS_QUERYSTRING_AUTH = env.bool('AWS_QUERYSTRING_AUTH', default=False)
 AWS_S3_FILE_OVERWRITE = env.bool('AWS_S3_FILE_OVERWRITE', default=True)
 # AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN', default='assets.gitcoin.co')
 
-S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='') # TODO
-S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='') # TODO
+S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
+S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='')  # TODO
 
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 
@@ -490,5 +511,4 @@ if ENABLE_SILK:
             'function': 'index',
             'name': 'Index View',
         }]
-    SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int(
-        'SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
+    SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
