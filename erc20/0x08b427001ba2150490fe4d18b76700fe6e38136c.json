@@ -1,0 +1,19 @@
+{
+  "symbol": "GSG",
+  "address": "0x08b427001ba2150490fe4d18b76700fe6e38136c",
+  "overview":{
+        "en":"Sharing and transparent is the core concept of block chain, GSG will launch platform sharing plan, improve the GSG universal integral gradually, sent candy to platform users freely, let each user participate in the construction and development of platform, and build GSG block chain ecosystem together.",
+        "zh":"共享和透明是区块链的核心理念， GSG将推出平台共享计划，将GSG全球通用积分逐步免费糖果派送给平台用户，让每一位用户参与平台的建设和发展，共建GSG区块链生态系统。"
+  },
+  "email": "support@gsgone.com",
+  "website": "https://www.gsgone.com/",
+  "whitepaper": "https://www.gsgone.com/GSG.pdf",
+  "published_on": "2018-05-28",
+  "initial_price":{
+        "ETH":"0.000025 ETH",
+        "BTC":"0.000002 BTC"
+  },
+  "links": {
+    "telegram": "https://t.me/GSG_SG"
+  }
+}
