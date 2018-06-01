@@ -1,22 +1,21 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not,see
-    <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not,see
+  <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load humanize i18n static %}
 <!DOCTYPE html>
 <html lang="en">
   {% include 'shared/head.html' %}
@@ -33,97 +32,43 @@
       <div class="container" id="results_hero">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
-            {% blocktrans %}
-            <h2 class="text-center">
-              GITCOIN PLATFORM STATS
-            </h2>
-            {% endblocktrans %}
+            <h2 class="text-center">{% trans "GITCOIN PLATFORM STATS" %}</h2>
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
-            <img
-              class="icon"
-              src="{% static "v2/images/results/clock.svg" %}"
-            />
-            <h3 class="text-highlight-green mt-3">
-              <!-- TODO: Median Block Time -->
-              12 Hrs
-            </h3>
-            {% blocktrans %}
-            <p>Median Bounty Pickup Time</p>
-            {% endblocktrans %}
+            <img class="icon" src="{% static "v2/images/results/clock.svg" %}" />
+            <h3 class="text-highlight-green mt-3">{{ bounty_median_pickup_time }} {% trans "Hours" %}</h3>
+            <p>{% trans "Median Bounty Pickup Time" %}</p>
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
-            <img
-              class="icon"
-              src="{% static "v2/images/results/completed_bounties.svg" %}"
-            />
-
-            <h3 class="text-highlight-purple mt-3">
-              <!-- TODO: Bounty Completion Rate -->
-              98%
-            </h3>
-            {% blocktrans %}
-            <p>Claimed Bounty Completion Rate</p>
-            {% endblocktrans %}
+            <img class="icon" src="{% static "v2/images/results/completed_bounties.svg" %}" />
+            <h3 class="text-highlight-purple mt-3">{{ bounty_claimed_completion_rate }}</h3>
+            <p>{% trans "Claimed Bounty Completion Rate" %}</p>
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
-            <img
-              class="icon"
-              src="{% static "v2/images/results/hourly_rate_distribution.svg" %}"
-            />
-            <h3 class="text-highlight-light-blue mt-3">
-              <!-- TODO: Hourly Rate Distribution -->
-              $20 - $80
-            </h3>
-            {% blocktrans %}
-            <p>Hourly Rate Distribution</p>
-            {% endblocktrans %}
+            <img class="icon" src="{% static "v2/images/results/hourly_rate_distribution.svg" %}" />
+            <h3 class="text-highlight-light-blue mt-3">{{ hourly_rate_distribution }}</h3>
+            <p>{% trans "Hourly Rate Distribution" %}</p>
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
-            <img
-              class="icon"
-              src="{% static "v2/images/results/calendar_icon.svg" %}"
-            />
-            <h3 class="text-highlight-green mt-3">
-              <!-- TODO: Average Bounty Turnaround -->
-              1.5 Wks
-            </h3>
-            {% blocktrans %}
-            <p>Average Bounty Turnaround Time</p>
-            {% endblocktrans %}
+            <img class="icon" src="{% static "v2/images/results/calendar_icon.svg" %}" />
+            <h3 class="text-highlight-green mt-3">{{ bounty_average_turnaround }}</h3>
+            <p>{% trans "Average Bounty Turnaround Time" %}</p>
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
-            <img
-              class="icon"
-              src="{% static "v2/images/results/abandoned_bounties.svg" %}"
-            />
-
-            <h3 class="text-highlight-purple mt-3">
-              <!-- TODO: Bounty Abandonment Rate -->
-              1.5%
-            </h3>
-            {% blocktrans %}
-            <p>Bounty Abandonment Rate</p>
-            {% endblocktrans %}
+            <img class="icon" src="{% static "v2/images/results/abandoned_bounties.svg" %}" />
+            <h3 class="text-highlight-purple mt-3">{{ bounty_abandonment_rate }}</h3>
+            <p>{% trans "Bounty Abandonment Rate" %}</p>
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
-            <img
-              class="icon"
-              src="{% static "v2/images/results/gitcoin_alumni.svg" %}"
-            />
-            <h3 class="text-highlight-light-blue mt-3">
-              <!-- TODO: Alumni Hired -->
-              206
-            </h3>
-            {% blocktrans %}
-            <p>GitCoin Alumni Hired</p>
-            {% endblocktrans %}
+            <img class="icon" src="{% static "v2/images/results/gitcoin_alumni.svg" %}" />
+            <h3 class="text-highlight-light-blue mt-3">{{ alumni_count }}</h3>
+            <p>GitCoin {% trans "Alumni Hired" %}</p>
           </div>
         </div>
       </div>
@@ -133,11 +78,11 @@
       <div class="container" id="bounty_universe">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
-            {% blocktrans %}
             <h2 class="text-center">
-              160K USD BOUNTY UNIVERSE
+              {% blocktrans %}
+              {{ universe_total_usd|intword }} USD BOUNTY UNIVERSE
+              {% endblocktrans %}
             </h2>
-            {% endblocktrans %}
           </div>
 
           <div class="col-md-8">
@@ -145,21 +90,11 @@
           </div>
 
           <div class="col-md-4 py-5 bounty_status">
-            {% blocktrans %}
-            <h5>Bounty Status</h5>
-            {% endblocktrans %}
-            {% blocktrans %}
-            <p><span class="yellow_box"></span> Open / Available</p>
-            {% endblocktrans %}
-            {% blocktrans %}
-            <p><span class="green_box"></span> Claimed / In Progress</p>
-            {% endblocktrans %}
-            {% blocktrans %}
-            <p><span class="blue_box"></span> Completed </p>
-            {% endblocktrans %}
-            {% blocktrans %}
-            <p><span class="pink_box"></span> CodeFund Bounties</p>
-            {% endblocktrans %}
+            <h5>{% trans "Bounty Status" %}</h5>
+            <p><span class="yellow_box"></span> {% trans "Open / Available" %}</p>
+            <p><span class="green_box"></span> {% trans "Claimed / In Progress" %}</p>
+            <p><span class="blue_box"></span> {% trans "Completed" %}</p>
+            <p><span class="pink_box"></span> CodeFund {% trans "Bounties" %}</p>
           </div>
         </div>
       </div>
@@ -169,11 +104,7 @@
       <div class="container" id="repo_transaction">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
-            {% blocktrans %}
-            <h2 class="text-center">
-              GITCOIN PLATFORM STATS
-            </h2>
-            {% endblocktrans %}
+            <h2 class="text-center">GITCOIN {% tran "PLATFORM STATS" %}</h2>
           </div>
 
           <div class="col-12 col-md-6">
@@ -182,13 +113,13 @@
 
           <div class="col-md-6 py-5 bounty_status">
             {% blocktrans %}
-            <p><span class="blue_box"></span> 200 repos with open & claimed bounties </p>
+            <p><span class="blue_box"></span> {{ repos_count_open_claimed }} repos with open & claimed bounties </p>
             {% endblocktrans %}
             {% blocktrans %}
-            <p><span class="green_box"></span> 150 repos with claimed bounties in progress</p>
+            <p><span class="green_box"></span> {{ repos_count_claimed_progress }} repos with claimed bounties in progress</p>
             {% endblocktrans %}
             {% blocktrans %}
-            <p><span class="yellow_box"></span> 105 repos with more then 3 bounties in progress </p>
+            <p><span class="yellow_box"></span> {{ repos_count_gt_progress }} repos with more then 3 bounties in progress </p>
             {% endblocktrans %}
           </div>
         </div>
@@ -199,11 +130,7 @@
       <div class="container" id="bounty_universe">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
-            {% blocktrans %}
-            <h2>
-              SLACK & TWITTER COMMUNITY GROWTH
-            </h2>
-            {% endblocktrans %}
+            <h2>{% trans "SLACK & TWITTER COMMUNITY GROWTH" %}</h2>
           </div>
 
           <div class="col-12">
@@ -213,15 +140,12 @@
 
         <div class="row mt-5 pb-5 animatedParent text-center">
           <div class="col animated pulse fast">
-            {% blocktrans %}
-            <p class="mt-5 mb-5"> Meet software developers, futurists, and funders who are building web3 </p>
-            {% endblocktrans %}
+            <p class="mt-5 mb-5"> {% trans "Meet software developers, futurists, and funders who are building web3" %} </p>
             <a class="button button--primary" role="button" href="{% url "slack" %}">{% trans "# Join Our Slack" %}</a>
           </div>
         </div>
       </div>
     </div>
-
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}

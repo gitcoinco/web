@@ -29,6 +29,8 @@ from django.utils.translation import gettext_lazy as _
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
+from .utils import build_stat_results
+
 
 def index(request):
     slides = [
@@ -179,12 +181,8 @@ def mission(request):
 
 
 def results(request):
-    # TODO: RESULTS AJAX REQUEST / STUB
     """Render the Results response."""
-    context = {
-        'active': 'results',
-        'title': 'Results'
-    }
+    context = build_stat_results()
     return TemplateResponse(request, 'results.html', context)
 
 
