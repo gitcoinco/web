@@ -386,7 +386,7 @@ The online hackathon runs June 5th - June 24th and celebrates the release of the
 <a href='http://bit.ly/2LsssHG'>You can register here. </a>
 </p>
 <a href='http://bit.ly/2LsssHG'>
-<img src='https://gitcoin.co/static/v2/images/colony.png'>
+<img src='https://gitcoin.co/static/v2/images/colony.png?1'>
 </a>
 <h3>What else is new?</h3>
     <ul>
