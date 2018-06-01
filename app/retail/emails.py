@@ -131,6 +131,8 @@ thanks again for being a member of the community.
 
 kevin
 
+PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+
 """
     elif persona == 'funder':
         github_username = " @" + bounty.bounty_owner_github_username if bounty.bounty_owner_github_username else ""
@@ -154,6 +156,9 @@ in that spirit,  i have a few questions for you:
 thanks for being a member of the community.
 
 kevin
+
+PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+
 """
         elif bounty.status == 'cancelled':
             txt = f"""
@@ -172,6 +177,8 @@ i have a few questions for you.
 thanks again for being a member of the community.
 
 kevin
+
+PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
         else:
@@ -366,7 +373,7 @@ def render_gdpr_update(to_email):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Register _you_.gitcoin.eth today! "
+    subject = "How to Price Work on Gitcoin | Colony Hackathon "
 
     intro = '''
 
@@ -374,48 +381,59 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-This week, we released <a href="https://medium.com/gitcoin/personalize-your-own-gitcoin-ens-name-f8e5d7438e3e">Gitcoin ENS subdomains!</a> Want to enjoy the benefits of an human readable ENS domain,
-without having to deal with the upkeep? A Gitcoin subdomain could be a happy medium. We're excited to see more _you_.gitcoin.eth's out in the world, soon!
+This week, we shipped a <a href='https://medium.com/gitcoin/funder-guide-how-to-price-work-on-gitcoin-49bafcdd201e'>data-driven pricing guide for posting work on Gitcoin</a>. We share what we’ve learned about pricing for our first 300 bounties and look forward to continuing the analysis as time passes.  
 </p>
 <p>
-Additionally, we announced <a href="https://medium.com/gitcoin/grow-open-source-ethereum-foundation-grant-d393802fe9aa">our Ethereum Foundation grant!</a>
-Have an open source project which is moving forward Ethereum's infrastructure? We have $25K in budget to bounty issues that developers would love to solve.
+We’ve proudly <a href='http://bit.ly/2LsssHG'>partnered up with our friends at Colony for their hackathon</a>! Colony is the Ethereum-based blockchain project building a platform for the future of work. The hackathon features $25K in prizes (paid in Dai) and an all-star panel of 16 judges from the ecosystem.
+</p>
+<p>
+The online hackathon runs June 5th - June 24th and celebrates the release of the colonyJS library—tools that allow developers to leverage the power of Colony’s smart contracts in their own applications.
+</p>
+<p>
+<a href='http://bit.ly/2LsssHG'>You can register here. </a>
+</p>
+<p style="text-align:center;">
+<a href='http://bit.ly/2LsssHG'>
+<img style="margin: 0px auto" src='https://gitcoin.co/static/v2/images/colony.png?1' width='450', height='184'>
+</a>
 </p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-<a href="https://medium.com/gitcoin/gitcoin-grows-by-1-90a718672c8">Gitcoin Core grows again!</a> We're excited to welcome Aditya, one of our oldest contributors, to the Core team.
+We released Richard Burton’s demo of Balance on the Gitcoin Livestream channel on YouTube. <a href=https://www.youtube.com/watch?v=SoIJ6JJdO8o&t=4s</a>Check it out here!</a>
         </li>
         <li>
-<a href="http://gitcoin.co/livestream">The Gitcoin Livestream</a> is back as regularly scheduled today at 5PM ET. Guests include Dharma Protocol, who just launched to mainnet.
-It'll be guaranteed blockchain nerdery. Come hang!
+I did a 2 minute interview  on Gitcoin at Ethereal 2018. <a href='https://www.youtube.com/watch?v=pdoa09b_2J4'>See it here.</a>
+        </li>
+        <li>
+<a href='https://gitcoin.co/livestream'>The Gitcoin Livestream </a>is back as regularly scheduled today at 5PM ET. Colony will be joining to speak further on their hackathon alongside Livepeer, a fully decentralized live-video streaming service! 
         </li>
     </ul>
 </p>
 <p>
-Let's grow open source together,
+Back to BUIDLing, 
 </p>
 '''
     highlights = [
         {
-            'who': 'darkdarkdragon',
+            'who': 'dilatebrave',
             'who_link': True,
-            'what': 'Helped CodeFund build a Slack integration!',
-            'link': 'https://gitcoin.co/issue/gitcoinco/codefund/93/435',
+            'what': 'Worked with Bounties Network on Weekly Graph Support',
+            'link': 'https://gitcoin.co/issue/Bounties-Network/StdBountiesAnaltyics/4/515',
             'link_copy': 'See more',
         },
         {
-            'who': 'cryptomental',
+            'who': 'iamonuwa',
             'who_link': True,
-            'what': 'Ran Augur smart contracts through Solidity SMTChecker. Truly amazing work!',
-            'link': 'https://gitcoin.co/issue/AugurProject/augur-core/607/283',
+            'what': 'Created a Smart Contract search engine with AbieFund!',
+            'link': 'https://gitcoin.co/issue/AbieFund/abie/5/508',
             'link_copy': 'View more',
         },
         {
-            'who': 'pfilippi24',
+            'who': 'antonper',
             'who_link': True,
-            'what': 'Worked with MARKETProtocol on their CheckERC20 Contract!',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/dApp/170/487',
+            'what': 'Cleaned up an error rejection messages on MetaMask! ',
+            'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/1546/499',
             'link_copy': 'View more',
         },
     ]
@@ -423,16 +441,16 @@ Let's grow open source together,
     try:
         bounties = [
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/Bounties-Network/BountiesAPI/issues/45'),
-                'primer': 'Work with the Bounties Network team on Analytics Dashboard updates!',
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/XLNT/gnarly/issues/8'),
+                'primer': 'Ethereum Foundation grantee XLNT needs help with their Gas Price Oracle Reducer!',
             },
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/ethereumjs/ethereumjs-devp2p/issues/19'),
-                'primer': 'Our biggest bounty is making Node Discovery possible in ethereumJS.',
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/buidlbox/issues/17'),
+                'primer': 'uPort aims to build a Transaction Manager ',
             },
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/livepeer/livepeerjs/issues/44'),
-                'primer': 'Livepeer is working on improving streams in full screen mode.',
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/paritytech/parity/issues/8725'),
+                'primer': 'Contribute to Parity Tech, a leading Ethereum client',
             },
         ]
     except:

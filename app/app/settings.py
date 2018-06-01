@@ -305,7 +305,7 @@ MAILCHIMP_LIST_ID = env('MAILCHIMP_LIST_ID', default='')
 GITHUB_API_BASE_URL = env('GITHUB_API_BASE_URL', default='https://api.github.com')
 GITHUB_AUTH_BASE_URL = env('GITHUB_AUTH_BASE_URL', default='https://github.com/login/oauth/authorize')
 GITHUB_TOKEN_URL = env('GITHUB_TOKEN_URL', default='https://github.com/login/oauth/access_token')
-GITHUB_SCOPE = env('GITHUB_SCOPE', default='read:user,user:email,read:org')
+GITHUB_SCOPE = env('GITHUB_SCOPE', default='read:user,user:email')
 GITHUB_CLIENT_ID = env('GITHUB_CLIENT_ID', default='')  # TODO
 GITHUB_CLIENT_SECRET = env('GITHUB_CLIENT_SECRET', default='')  # TODO
 GITHUB_API_USER = env('GITHUB_API_USER', default='')  # TODO
@@ -323,7 +323,6 @@ SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'last_name', 'email']
 SOCIAL_AUTH_GITHUB_SCOPE = [
     'read:public_repo',
-    'read:org',
     'read:user',
     'user:email',
 ]
