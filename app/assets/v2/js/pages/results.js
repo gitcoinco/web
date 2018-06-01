@@ -3,6 +3,8 @@ google.charts.setOnLoadCallback(drawChart);
 google.charts.setOnLoadCallback(repoChart);
 google.charts.setOnLoadCallback(communityChart);
 
+// TODO: Implement Real Data for Graphs
+
 function drawChart() {
   var data = google.visualization.arrayToDataTable([
     [ '', 'Open / Available', { role: 'annotation' }, 'Claimed / In Progress', { role: 'annotation' }, 'Completed', { role: 'annotation' }, 'CodeFund Bounties' ],
@@ -67,7 +69,7 @@ function communityChart() {
     legend: { position: 'none' },
     backgroundColor: 'transparent',
     height: 400,
-    vAxis: { ticks: [ 0, 1000, 2000 ], gridlines: { color: 'transparent' } },
+    vAxis: { ticks: [ 0, 500, 1000 ], gridlines: { color: 'transparent' } },
     hAxis: { ticks: [ 'LAUNCH', 'TODAY' ], scaleType: 'log' },
     series: { 0: { color: '#F9006C' } }
   };

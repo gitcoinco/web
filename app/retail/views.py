@@ -177,15 +177,12 @@ def mission(request):
     }
     return TemplateResponse(request, 'mission.html', context)
 
-
 def results(request):
-    """Render the Mission response."""
+    # TODO: RESULTS AJAX REQUEST / STUB
+    """Render the Results response."""
     context = {
         'active': 'results',
         'title': 'Results',
-        'card_title': _('Results of a mission-driven organization.'),
-        'card_desc': _('Our mission is to grow open source.'),
-        'avatar_url': static('v2/images/grow_open_source.png'),
     }
     return TemplateResponse(request, 'results.html', context)
 
