@@ -131,6 +131,8 @@ thanks again for being a member of the community.
 
 kevin
 
+PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+
 """
     elif persona == 'funder':
         github_username = " @" + bounty.bounty_owner_github_username if bounty.bounty_owner_github_username else ""
@@ -154,6 +156,9 @@ in that spirit,  i have a few questions for you:
 thanks for being a member of the community.
 
 kevin
+
+PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+
 """
         elif bounty.status == 'cancelled':
             txt = f"""
@@ -172,6 +177,8 @@ i have a few questions for you.
 thanks again for being a member of the community.
 
 kevin
+
+PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
 
 """
         else:
