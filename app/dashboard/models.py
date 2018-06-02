@@ -1013,7 +1013,7 @@ class Profile(SuperModel):
     def has_been_removed_by_staff(self):
         user_actions = UserAction.objects.filter(
             profile=self,
-            action='bounty_removed_by_staff',
+            action='bounty_removed_slashed_by_staff',
             )
         return user_actions.exists()
 

@@ -269,6 +269,15 @@
                   </a>
                 </span>
               </div>
+              [[if slash_possible]]
+                <div class="stop-work">
+                  <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
+                    <a id="remove-slash-[[:name]]" class="button button--primary" role="button" href="remove-handle">
+                      <span class="font-smaller-4">Stop work + Slash</span>
+                    </a>
+                  </span>
+                </div>
+              [[/if]]
             [[/if]]
           </div>
         [[else]]

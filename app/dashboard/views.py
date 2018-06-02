@@ -284,7 +284,7 @@ def remove_interest(request, bounty_id):
 
 @require_POST
 @csrf_exempt
-def uninterested(request, bounty_id, profile_id):
+def uninterested(request, bounty_id, profile_id, slash):
     """Remove party from given bounty
 
     Can only be called by the bounty funder
@@ -294,6 +294,7 @@ def uninterested(request, bounty_id, profile_id):
     Args:
         bounty_id (int): ID of the Bounty
         profile_id (int): ID of the interested profile
+        slash (int): if the interested profile will be slashed
 
     Returns:
         dict: The success key with a boolean value and accompanying error.
@@ -316,7 +317,12 @@ def uninterested(request, bounty_id, profile_id):
         bounty.interested.remove(interest)
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
-        event_name = "bounty_removed_by_staff" if is_staff else "bounty_removed_by_funder"
+        if is_staff and slash:
+            event_name = "bounty_removed_slashed_by_staff"
+        elif is_staff:
+            event_name = "bounty_removed_by_staff"
+        else:
+            event_name = "bounty_removed_by_funder"
         record_user_action_on_interest(interest, event_name, None)
         interest.delete()
     except Interest.DoesNotExist:
