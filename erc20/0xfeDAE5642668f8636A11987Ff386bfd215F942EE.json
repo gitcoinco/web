@@ -8,7 +8,6 @@
     "email": "hello@policypal.com",
     "website": "https://www.policypal.network/",
     "whitepaper": "https://www.policypal.network/whitepaper/PolicyPal_WhitePaper.pdf",
-    "state": "UNLOCKED",
     "published_on": "2018-04-01",
     "initial_price":{
         "ETH":"0.00004762 ETH",
