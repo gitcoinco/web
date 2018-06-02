@@ -15,7 +15,6 @@
 .form__input + label.error {
   color: #D50000;
   margin-bottom: 0;
-  margin-top: .5rem 0;
   display: block;
   font-size: 12px;
 }
