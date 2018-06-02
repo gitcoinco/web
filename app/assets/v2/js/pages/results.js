@@ -17,7 +17,7 @@ function drawChart() {
     isStacked: true,
     backgroundColor: 'transparent',
     height: 400,
-    vAxis: { title: 'USD', ticks: [ 0, 150000 ], format: 'short', gridlines: { color: 'transparent' } }
+    vAxis: { title: 'USD', ticks: [ 0, document.max_bounty_history ], format: 'short', gridlines: { color: 'transparent' } }
   };
 
   var chart = new google.visualization.ColumnChart(document.getElementById('bounty_universe_chart'));

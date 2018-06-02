@@ -68,7 +68,7 @@
           <div class="col-6 col-md-4 text-center py-4">
             <img class="icon" src="{% static "v2/images/results/gitcoin_alumni.svg" %}" />
             <h3 class="text-highlight-light-blue mt-3">{{ alumni_count }}</h3>
-            <p>GitCoin {% trans "Alumni Hired in the Ecosystem" %}</p>
+            <p>GitCoin {% trans "Bounty Hunters Hired Full Time" %}</p>
           </div>
         </div>
       </div>
@@ -79,13 +79,14 @@
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
             <h2 class="text-center">
-              {% blocktrans %}
-              {{ universe_total_usd|intword }} BOUNTY HISTORY
+              ${{ universe_total_usd|intcomma }} of {% blocktrans %}
+               BOUNTY HISTORY
               {% endblocktrans %}
             </h2>
           </div>
           <script>
-            document.bounty_history = [[ '', 'Open / Available', { role: 'annotation' }, 'Claimed / In Progress', { role: 'annotation' }, 'Completed', { role: 'annotation' }, 'CodeFund Bounties' ],[ 'Q1 2017', 20000, '20K', 40000, '40K', 50000, '50K', 5000 ],[ 'Q2 2017', 24000, '24K', 50000, '50K', 50000, '50K', 5000 ],[ 'Q3 2017', 30000, '30K', 60000, '60K', 50000, '50K', 5000 ],[ 'Q4 2017', 40000, '40K', 70000, '70K', 50000, '50K', 5000 ],[ 'Q1 2018', 50000, '50K', 80000, '80K', 50000, '50K', 5000 ]];
+            document.max_bounty_history = {{max_bounty_history}};
+            document.bounty_history = {{bounty_history|safe}};
   
           </script>
 
@@ -96,9 +97,9 @@
           <div class="col-md-4 py-5 bounty_status">
             <h5>{% trans "Bounty Status" %}</h5>
             <p><span class="yellow_box"></span> {% trans "Open / Available" %}</p>
-            <p><span class="green_box"></span> {% trans "Claimed / In Progress" %}</p>
+            <p><span class="green_box"></span> {% trans "Started / In Progress" %}</p>
             <p><span class="blue_box"></span> {% trans "Completed" %}</p>
-            <p><span class="pink_box"></span> CodeFund {% trans "Bounties" %}</p>
+            <p><span class="pink_box"></span> {% trans "Cancelled Bounties" %}</p>
           </div>
         </div>
       </div>
@@ -108,7 +109,7 @@
       <div class="container" id="repo_transaction">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
-            <h2 class="text-center">GITCOIN {% trans "PLATFORM STATS" %}</h2>
+            <h2 class="text-center">GITCOIN {% trans "STATUS BREAKDOWN" %}</h2>
           </div>
 
           <div class="col-12 col-md-6">
@@ -129,6 +130,30 @@
         </div>
       </div>
     </div>
+
+    <div style="background-color: #F2F6F9;">
+      <div class="container" id="bounty_universe">
+        <div class="row py-5 animatedParent">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
+            <h2 class="text-center">
+              TOP REPOS
+            </h2>
+          </div>
+
+          <div class="col-md-12">
+            <div id="repo_repos">
+                {% for org in top_orgs %}
+                    <a href="/profile/{{org}}">
+                        <img src="/static/avatar/{{org}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
+                    </a>
+                {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
     <script>
         document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Open Bounties', {{ count_open }}],  [ 'Bounties w. started work', {{ count_started }}],  [ 'Completed bounties', {{ count_done }} ] ];
     </script>
@@ -140,8 +165,8 @@
             <h2>{% trans "COMMUNITY GROWTH" %}</h2>
           </div>
           <script>
-            document.slack_ticks = [ 0, 500, 6000 ];
-            document.members_history = [[ 'Year', 'Members' ],[ 'Launch', 0 ],[ '', 100 ],[ '', 500 ],[ '', 1000 ],[ 'Today', 2000 ]];
+            document.slack_ticks = {{slack_ticks|safe}};
+            document.members_history = {{members_history|safe}};
           </script>
 
           <div class="col-12">
