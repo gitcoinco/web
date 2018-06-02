@@ -53,7 +53,6 @@ from taggit.models import GenericTaggedItemBase, TagBase
 from web3 import Web3
 
 from .signals import m2m_changed_interested
-from mentor.models import MentorSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -1086,7 +1085,7 @@ class Profile(SuperModel):
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
     )
     form_submission_records = JSONField(default=[], blank=True)
-        org = models.CharField(max_length=255, blank=True)
+    org = models.CharField(max_length=255, blank=True)
     about = models.TextField(blank=True)
     experience = models.CharField(max_length=5, choices=TIME_RANGE_YRS, blank=True)
     available = models.BooleanField(default=False)
@@ -1632,8 +1631,7 @@ class Profile(SuperModel):
             'activities': [{'title': _('No data available.')}],
             'sum_eth_on_repos': sum_eth_on_repos,
             'works_with_org': works_with_org,
-            'count_bounties_on_repo': count_bounties_on_repo,
-            'mentor_serializer' = MentorSerializer(self)
+            'count_bounties_on_repo': count_bounties_on_repo
         }
 
         if activities:

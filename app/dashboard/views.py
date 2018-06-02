@@ -43,6 +43,7 @@ from github.utils import (
 )
 from marketing.mails import bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected
 from marketing.models import Keyword
+from mentor.models import MentorSerializer
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
@@ -897,6 +898,7 @@ def profile(request, handle):
         raise Http404
 
     params = profile.to_dict()
+    params['mentor_serializer'] = MentorSerializer(profile)
 
     return TemplateResponse(request, 'profile_details.html', params)
 

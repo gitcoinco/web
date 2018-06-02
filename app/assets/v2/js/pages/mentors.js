@@ -83,7 +83,7 @@ var mentors = (function() {
       var mentor_tmpl = $.templates('#mentor');
 
       result.mentors.forEach((mentor) => {
-        var html = mentor_tmpl.render(mentor);
+        var html = mentor_tmpl.render(sanitizeDict(mentor));
 
         $('#mentor_search_results').append(html);
         $('#open_mentor_' + mentor.id).click(function() {

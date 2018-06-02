@@ -10,7 +10,7 @@ def update(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0074_auto_20180515_1510'),
+        ('dashboard', '0083_merge_20180601_1945'),
     ]
 
     operations = [

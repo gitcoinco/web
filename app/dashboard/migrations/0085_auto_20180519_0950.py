@@ -8,8 +8,7 @@ import taggit.managers
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
-        ('dashboard', '0075_mentors_tool'),
+        ('dashboard', '0084_mentors_tool')
     ]
 
     operations = [
