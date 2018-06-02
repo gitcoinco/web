@@ -23,35 +23,33 @@
 
 {% if user.is_authenticated %}
 <div class="nav-link login">
-    <img class="nav_avatar" width=25 height=25
-  src="/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}">
+  <img class="nav_avatar" width=25 height=25
+    src="/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}">
   {{ user }}
 </div>
 {% else %}
-<script>
-  FontAwesomeConfig = { searchPseudoElements: true };
-</script>
-<script defer src="{% static "v2/js/fontawesome-all.min.js" %}"></script>
+<link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}" />
+
 <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">
   <i class="fab fa-github"></i>{% trans "Login" %}
 </a>
 {% endif %}
 <style>
 
-.nav_avatar{
+.nav_avatar {
   border-radius: 1px;
   margin-bottom: -7px;
 }
-.nav-link.login{
+.nav-link.login {
   position: absolute;
   top:15px;
   right: 15px;
 }
 
-.nav-link.login svg{
+.nav-link.login i {
   margin-right: 15px;
 }
-.nav-link.logo{
+.nav-link.logo {
   position: absolute;
   top:20px;
   left: 20px;
@@ -60,7 +58,7 @@
 
 @media screen and (max-width: 600px) {
   .nav-link.login,
-  .nav_avatar{
+  .nav_avatar {
     display: none;
   }
 }

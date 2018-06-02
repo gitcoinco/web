@@ -436,7 +436,7 @@ var show_interest_modal = function() {
       modal.on('submit', function(event) {
         event.preventDefault();
 
-        var issue_message = event.target[0].value;
+        var issue_message = event.target[0].value.trim();
         var agree_precedence = event.target[1].checked;
         var agree_not_to_abandon = event.target[2].checked;
 
