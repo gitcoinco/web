@@ -1,0 +1,27 @@
+{
+  "symbol": "PAI",
+  "address": "0xB9bb08AB7E9Fa0A1356bd4A39eC0ca267E03b0b3",
+  "overview":{
+        "en":"The first native multichain system that supports EVM in the world.Making large scale blockchain applications possible"
+  },
+  "email": "king@pchain.org",
+  "website": "https://pchain.org/",
+  "whitepaper": "https://pchain.org/js/generic/web/viewer.html",
+  "state": "UNLOCKED",
+  "published_on": "2018-05-24",
+  "initial_price":{
+        "ETH":"0.0001 ETH",
+        "USD":"",
+        "BTC":""
+  },
+  "links": {
+    "blog": "https://your-awesome-project.com/blog",
+    "twitter": "https://twitter.com/pchain_org",
+    "telegram": "https://t.me/pchain_org",
+    "github": "https://github.com/pchain-org",
+    "facebook": "",
+    "reddit": "",
+    "slack": "",
+    "medium": ""
+  }
+}
