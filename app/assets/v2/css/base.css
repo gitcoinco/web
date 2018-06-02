@@ -1076,6 +1076,12 @@ input.is-invalid {
   width: 25em;
 }
 
+.tooltip-xs {
+  font-size: 10px;
+  padding: 2px;
+  width: auto;
+}
+
 .ui-widget-shadow,
 .modal {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1) !important;
