@@ -33,7 +33,7 @@ span {
   border-radius: 2px;
 }
 
-.nav-link.login svg {
+.nav-link.login i {
   font-size: 1.5em;
   position: relative;
   top: 3px;
@@ -48,7 +48,7 @@ span {
   color: #4aeaa7 !important;
 }
 
-.navbar a.slack svg {
+.navbar a.slack i {
   margin-right: 3px;
 }
 
@@ -184,7 +184,7 @@ span {
   color: white;
 }
 
-#mc_embed_signup_scroll #mc-embedded-subscribe svg {
+#mc_embed_signup_scroll #mc-embedded-subscribe i {
   margin-left: 5px;
 }
 
