@@ -317,10 +317,8 @@ def uninterested(request, bounty_id, profile_id, slash):
         bounty.interested.remove(interest)
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
-        if is_staff and slash:
-            event_name = "bounty_removed_slashed_by_staff"
-        elif is_staff:
-            event_name = "bounty_removed_by_staff"
+        if is_staff:
+            event_name = "bounty_removed_slashed_by_staff" if slash else "bounty_removed_by_staff"
         else:
             event_name = "bounty_removed_by_funder"
         record_user_action_on_interest(interest, event_name, None)

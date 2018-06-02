@@ -197,7 +197,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
   if (direction === 'new') {
     _alert({ message: gettext("Thanks for letting us know that you're ready to start work.") }, 'success');
     $('#interest a').attr('id', 'btn-white');
-  } else if (direction === 'remove' && slash != true) {
+  } else if (direction === 'remove') {
     _alert({ message: gettext("You've stopped working on this, thanks for letting us know.") }, 'success');
     $('#interest a').attr('id', '');
   }
