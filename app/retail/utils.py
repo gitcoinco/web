@@ -84,7 +84,7 @@ def build_stat_results():
     context = {
         'active': 'results',
         'title': _('Results'),
-        'card_desc': _('Gitcoin is designed to be completely transparent about our network results'),
+        'card_desc': _('Gitcoin is transparent by design.  Here are some stats about our core bounty product.'),
     }
 
     base_bounties = Bounty.objects.current().filter(network='mainnet')
